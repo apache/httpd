@@ -113,7 +113,7 @@ void *create_cgi_config (pool *p, server_rec *s)
 void *merge_cgi_config (pool *p, void *basev, void *overridesv)
 {
     cgi_server_conf *base = (cgi_server_conf *)basev,
-      *overrides = (cgi_server_conf *)overrides;
+      *overrides = (cgi_server_conf *)overridesv;
 
     return overrides->logname ? overrides : base;
 }
