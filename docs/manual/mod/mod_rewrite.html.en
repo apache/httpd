@@ -240,7 +240,7 @@ URLs on the fly</td></tr>
       <p>As of Apache 1.3.20, special characters in
       <em>TestString</em> and <em>Substitution</em> strings can be
       escaped (that is, treated as normal characters without their
-      usual special meaning) by prefixing them with a slosh ('\')
+      usual special meaning) by prefixing them with a slash ('\')
       character. In other words, you can include an actual
       dollar-sign character in a <em>Substitution</em> string by
       using '<code>\$</code>'; this keeps mod_rewrite from trying
