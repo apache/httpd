@@ -389,14 +389,6 @@ typedef struct {
  * (i.e. the global configuration for each httpd process)
  */
 
-typedef struct {
-    SSL                *pssl;
-    BIO                *pbioRead;
-    BIO                *pbioWrite;
-    ap_filter_t        *pInputFilter;
-    ap_filter_t        *pOutputFilter;
-} SSLFilterRec;
-
 typedef enum {
     SSL_SHUTDOWN_TYPE_UNSET,
     SSL_SHUTDOWN_TYPE_STANDARD,
@@ -590,17 +582,12 @@ void         ssl_init_Child(apr_pool_t *, server_rec *);
 apr_status_t ssl_init_ModuleKill(void *data);
 
 /*  Apache API hooks  */
-void         ssl_hook_NewConnection(conn_rec *);
-void         ssl_hook_TimeoutConnection(int);
-int          ssl_hook_process_connection(SSLFilterRec *pRec);
-apr_status_t ssl_hook_CloseConnection(SSLFilterRec *);
 int          ssl_hook_Translate(request_rec *);
 int          ssl_hook_Auth(request_rec *);
 int          ssl_hook_UserCheck(request_rec *);
 int          ssl_hook_Access(request_rec *);
 int          ssl_hook_Fixup(request_rec *);
 int          ssl_hook_ReadReq(request_rec *);
-int          ssl_hook_Handler(request_rec *);
 
 /*  OpenSSL callbacks */
 RSA         *ssl_callback_TmpRSA(SSL *, int, int);
