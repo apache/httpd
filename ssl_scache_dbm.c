@@ -116,7 +116,7 @@ void ssl_scache_dbm_kill(server_rec *s)
     SSLModConfigRec *mc = myModConfig(s);
     apr_pool_t *p;
 
-    apr_pool_sub_make(&p, mc->pPool, NULL)
+    apr_pool_sub_make(&p, mc->pPool, NULL);
     if (p != NULL) {
         /* the correct way */
         unlink(apr_pstrcat(p, mc->szSessionCacheDataFile, SSL_DBM_FILE_SUFFIX_DIR, NULL));
@@ -329,7 +329,7 @@ void ssl_scache_dbm_expire(server_rec *s)
     ssl_mutex_on(s);
     for (;;) {
         /* allocate the key array in a memory sub pool */
-        apr_pool_sub_make(&p, mc->pPool, NULL)
+        apr_pool_sub_make(&p, mc->pPool, NULL);
         if (p == NULL)
             break;
         if ((keylist = apr_palloc(p, sizeof(dbmkey)*KEYMAX)) == NULL) {
