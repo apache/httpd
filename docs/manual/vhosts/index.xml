@@ -13,9 +13,9 @@
     running more than one web site (such as
     <code>www.company1.com</code> and <code>www.company2.com</code>)
     on a single machine. Virtual hosts can be "<a
-    href="ip-based.html">IP-based</a>," meaning that you have a
+    href="ip-based.html">IP-based</a>", meaning that you have a
     different IP address for every web site, or "<a
-    href="name-based.html">name-based</a>," meaning that you have
+    href="name-based.html">name-based</a>", meaning that you have
     multiple names running on each IP address. The fact that they
     are running on the same physical server is not apparent to the 
     end user.</p>
