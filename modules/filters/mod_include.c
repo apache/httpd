@@ -1289,44 +1289,36 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         case TOKEN_GT:
         case TOKEN_LE:
         case TOKEN_LT:
-            /* Percolate upwards */
-            while (current) {
-                switch (current->token.type) {
-                case TOKEN_STRING:
-                case TOKEN_RE:
-                case TOKEN_GROUP:
-                    current = current->parent;
-                    continue;
+            if (current->token.type == TOKEN_STRING) {
+                current = current->parent;
 
+                if (!current) {
+                    new->left = root;
+                    root->parent = new;
+                    current = root = new;
+                    continue;
+                }
+
+                switch (current->token.type) {
                 case TOKEN_LBRACE:
                 case TOKEN_AND:
                 case TOKEN_OR:
-                    break;
+                    new->left = current->right;
+                    new->left->parent = new;
+                    new->parent = current;
+                    current = current->right = new;
+                    continue;
 
                 default:
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "Invalid expression \"%s\" in file %s",
-                                  expr, r->filename);
-                    *was_error = 1;
-                    return retval;
+                    break;
                 }
-                break;
             }
 
-            if (!current) {
-                new->left = root;
-                new->left->parent = new;
-                new->parent = NULL;
-                root = new;
-            }
-            else {
-                new->left = current->right;
-                new->left->parent = new;
-                current->right = new;
-                new->parent = current;
-            }
-            current = new;
-            break;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Invalid expression \"%s\" in file %s",
+                          expr, r->filename);
+            *was_error = 1;
+            return retval;
 
         case TOKEN_RBRACE:
             while (current && current->token.type != TOKEN_LBRACE) {
