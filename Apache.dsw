@@ -446,9 +446,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libapr
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name apriconv ces
-    End Project Dependency
 }}}
 
 ###############################################################################
