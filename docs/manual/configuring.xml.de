@@ -198,7 +198,7 @@
     <p>Pr&uuml;fen Sie den <a
         href="mod/directive-dict.html#Context">Kontext</a> der Direktive, um
       herauszufinden, welche Direktiven in <code>.htaccess</code>-Dateien
-      angegeben werden k&ouml;nnen. Darüber hinaus steuert der
+      angegeben werden k&ouml;nnen. Dar&uuml;ber hinaus steuert der
       Serveradministrator mit der Einstellung der Direktive <directive
         module="core">AllowOverride</directive> in den
       Hauptkonfigurationsdateien welche Direktiven in
