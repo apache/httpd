@@ -693,8 +693,8 @@ const char *
 proxy_host2addr(const char *host, struct hostent *reqhp)
 {
     int i;
-    struct in_addr ipaddr;
-    char *addr_str;
+    struct hostent *hp;
+    u_long ipaddr;
 
     for (i=0; host[i] != '\0'; i++)
 	if (!isdigit(host[i]) && host[i] != '.')
@@ -702,18 +702,17 @@ proxy_host2addr(const char *host, struct hostent *reqhp)
 
     if (host[i] != '\0')
     {
-	struct hostent *hp;
-
 	hp = gethostbyname(host);
-	if (hp == NULL) return "Host not found";
-	memcpy(reqhp, hp, sizeof(struct hostent));
+	if (hp == NULL)
+	    return "Host not found";
     } else
     {
-	if ((ipaddr.s_addr = inet_addr(host)) == -1)
-	    return "Bad IP address";
-	Explain1("Address is %s", addr_str);
-	memcpy(reqhp->h_addr, &ipaddr, sizeof(struct in_addr));
+	ipaddr = inet_addr(host);
+	hp = gethostbyaddr((char *)&ipaddr, sizeof(u_long), AF_INET);
+	if (hp == NULL)
+	    return "Address not found";
     }
+    memcpy(reqhp, hp, sizeof(struct hostent));
     return NULL;
 }
 
