@@ -266,7 +266,7 @@ static int get_path_info(request_rec *r)
         if (cp != end)
             *cp = '/';
 
-        if (rv != APR_SUCCESS) {    
+        if (rv == APR_SUCCESS) {    
             /*
              * Aha!  Found something.  If it was a directory, we will search
              * contents of that directory for a multi_match, so the PATH_INFO
