@@ -406,7 +406,6 @@ apr_getaddrinfo
 apr_getnameinfo
 apr_get_dir_filename
 apr_get_filedata
-apr_get_hostname
 apr_get_ipaddr
 apr_get_lockdata
 apr_get_os_dir
