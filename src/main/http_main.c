@@ -400,9 +400,9 @@ static int version_locked = 0;
 enum server_token_type ap_server_tokens = SrvTk_FULL;
 
 /* Also global, for http_core and http_protocol */
-int ap_protocol_req_check = 1;
+API_VAR_EXPORT int ap_protocol_req_check = 1;
 
-int ap_change_shmem_uid = 0;
+API_VAR_EXPORT int ap_change_shmem_uid = 0;
 
 /*
  * This routine is called when the pconf pool is vacuumed.  It resets the
