@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.4 $ -->
+<!-- $Revision: 1.5 $ -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -52,7 +52,7 @@ version 2.1</compatibility>
 <seealso><module>mod_log_config</module></seealso>
 
 <section id="formats"><title>Forensic Log Format</title>
-    <p>Each request is logged two times. The first time <em>before</em> it's
+    <p>Each request is logged two times. The first time is <em>before</em> it's
     processed further (that is, after receiving the headers). The second log
     entry is written <em>after</em> the request processing at the same time
     where normal logging occurs.</p>
@@ -73,7 +73,7 @@ version 2.1</compatibility>
         Firefox/0.8|Accept:image/png, <var>etc...</var>
     </example>
 
-    <p>The plus character at the beginning indicates that this is first log
+    <p>The plus character at the beginning indicates that this is the first log
     line of this request. The second line just contains a minus character and
     the ID again:</p>
 
