@@ -723,6 +723,8 @@ fi
 #    contain modules we want to build from both AddModule and Module
 #    lines
 
+echo " + Adding selected modules"
+
 MODFILES=`awk <$tmpfile '$1 == "AddModule" { printf "%s ", $2 }'`
 MODDIRS=`awk < $tmpfile '\
 	($1 == "Module" && $3 ~ /^modules\//) { \
@@ -857,7 +859,7 @@ cp $OSDIR/os.h core/os.h
 # check
 #
 echo " + doing sanity check on compiler and options"
-if ./helpers/TestCompile ansi; then
+if ./helpers/TestCompile sanity; then
     :
 else
    echo "** A test compilation with your Makefile configuration"

@@ -9,8 +9,8 @@ trap 'rm -f Makefile dummy; exit $exstat' 0 1 2 3 15
 # ./helpers/TestCompile lib <libname>
 #    Which checks to see if <libname> exists on this system
 #
-# ./helpers/TestCompile ansi
-#    Which checks to see if $(CC) is ANSI
+# ./helpers/TestCompile sanity
+#    Which does a simple sanity check/test compile
 #
 # It does these by creating a small mini-makefile, based on
 # ../Makefile.config and trying to compile a small dummy
@@ -53,7 +53,7 @@ case "$1" in
 	    ERRDIR='2>/dev/null'
 	fi
 	;;
-    "ansi")
+    "sanity")
 	TLIB=""
 	if [ "$VERBOSE" = "no" ]; then
 	    ERRDIR='2>/dev/null'
