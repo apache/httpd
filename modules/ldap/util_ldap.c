@@ -239,9 +239,15 @@ LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_cleanup(void *param)
 LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r, 
                                             util_ldap_connection_t *ldc)
 {
-    int result = 0;
+    int rc = 0;
     int failures = 0;
     int version  = LDAP_VERSION3;
+    apr_ldap_err_t *result = NULL;
+
+    /* sanity check for NULL */
+    if (!ldc) {
+        return -1;
+    }
 
     /* If the connection is already bound, return
     */
@@ -255,16 +261,24 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
     */
     if (NULL == ldc->ldap)
     {
-        apr_ldap_err_t *result = NULL;
+        /* To work around a bug in the Netware SDK, if no client certs are
+         * present (Netware client certs are global), we apply the SSL
+         * settings immediately. If client certs are present, we defer the
+         * setting of SSL on the connection until later.
+         */
 
-	/* Since the host will include a port if the default port is not used,
-	   always specify the default ports for the port parameter.  This will allow
-	   a host string that contains multiple hosts the ability to mix some
-	   hosts with ports and some without. All hosts which do not specify 
-	   a port will use the default port.*/
-        apr_ldap_init(r->pool, &(ldc->ldap),
-                      ldc->host, ldc->secure?LDAPS_PORT:LDAP_PORT,
-                      ldc->secure, &(result));
+        /* Since the host will include a port if the default port is not used,
+         * always specify the default ports for the port parameter.  This will allow
+         * a host string that contains multiple hosts the ability to mix some
+         * hosts with ports and some without. All hosts which do not specify 
+         * a port will use the default port.
+         */
+        apr_ldap_init(ldc->pool, &(ldc->ldap),
+                      ldc->host,
+                      APR_LDAP_SSL == ldc->secure ? LDAPS_PORT : LDAP_PORT,
+                      apr_is_empty_array(ldc->client_certs) ? ldc->secure : APR_LDAP_NONE,
+                      &(result));
+
 
         if (result != NULL) {
             ldc->reason = result->reason;
@@ -273,9 +287,37 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
         if (NULL == ldc->ldap)
         {
             ldc->bound = 0;
-            if (NULL == ldc->reason)
+            if (NULL == ldc->reason) {
                 ldc->reason = "LDAP: ldap initialization failed";
-            return(-1);
+            }
+            else {
+                ldc->reason = result->reason;
+            }
+            return(result->rc);
+        }
+
+        /* set client certificates */
+        if (!apr_is_empty_array(ldc->client_certs)) {
+            apr_ldap_set_option(ldc->pool, ldc->ldap, APR_LDAP_OPT_TLS_CERT,
+                                ldc->client_certs, &(result));
+            if (LDAP_SUCCESS != result->rc) {
+                ldap_unbind_s(ldc->ldap);
+                ldc->ldap = NULL;
+                ldc->bound = 0;
+                ldc->reason = result->reason;
+                return(result->rc);
+            }
+        }
+
+        /* switch on SSL/TLS */
+        apr_ldap_set_option(ldc->pool, ldc->ldap, 
+                            APR_LDAP_OPT_TLS, &ldc->secure, &(result));
+        if (LDAP_SUCCESS != result->rc) {
+            ldap_unbind_s(ldc->ldap);
+            ldc->ldap = NULL;
+            ldc->bound = 0;
+            ldc->reason = result->reason;
+            return(result->rc);
         }
 
         /* Set the alias dereferencing option */
@@ -297,16 +339,17 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
       */
     for (failures=0; failures<10; failures++)
     {
-        result = ldap_simple_bind_s(ldc->ldap,
-                                    (char *)ldc->binddn,
-                                    (char *)ldc->bindpw);
-        if (LDAP_SERVER_DOWN != result)
+        rc = ldap_simple_bind_s(ldc->ldap,
+                                (char *)ldc->binddn,
+                                (char *)ldc->bindpw);
+        if (LDAP_SERVER_DOWN != rc) {
             break;
+        }
     }
 
     /* free the handle if there was an error
     */
-    if (LDAP_SUCCESS != result)
+    if (LDAP_SUCCESS != rc)
     {
         ldap_unbind_s(ldc->ldap);
         ldc->ldap = NULL;
@@ -318,7 +361,44 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
         ldc->reason = "LDAP: connection open successful";
     }
 
-    return(result);
+    return(rc);
+}
+
+
+/*
+ * Compare client certificate arrays.
+ *
+ * Returns 1 on compare failure, 0 otherwise.
+ */
+int compare_client_certs(apr_array_header_t *srcs, apr_array_header_t *dests) {
+
+    int i = 0;
+    struct apr_ldap_opt_tls_cert_t *src, *dest;
+
+    /* arrays both NULL? if so, then equal */
+    if (srcs == NULL && dests == NULL) {
+        return 0;
+    }
+
+    /* arrays different length or either NULL? If so, then not equal */
+    if (srcs == NULL || dests == NULL || srcs->nelts != dests->nelts) {
+        return 1;
+    }
+
+    /* run an actual comparison */
+    src = (struct apr_ldap_opt_tls_cert_t *)srcs->elts;
+    dest = (struct apr_ldap_opt_tls_cert_t *)dests->elts;
+    for (i = 0; i < srcs->nelts; i++) {
+        if (apr_strnatcmp(src[i].path, dest[i].path) ||
+            apr_strnatcmp(src[i].password, dest[i].password) ||
+            src[i].type != dest[i].type) {
+            return 1;
+        }
+    }
+
+    /* if we got here, the cert arrays were identical */
+    return 0;
+
 }
 
 
@@ -330,11 +410,12 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
  * and returned to the caller. If found in the cache, a pointer to the existing
  * ldc structure will be returned.
  */
-LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, const char *host, int port,
-                                              const char *binddn, const char *bindpw, deref_options deref,
-                                              int secure )
-{
-    struct util_ldap_connection_t *l, *p;	/* To traverse the linked list */
+LDAP_DECLARE(util_ldap_connection_t *)
+             util_ldap_connection_find(request_rec *r,
+                                       const char *host, int port,
+                                       const char *binddn, const char *bindpw,
+                                       deref_options deref, int secure) {
+    struct util_ldap_connection_t *l, *p; /* To traverse the linked list */
 
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
@@ -359,7 +440,8 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
         if ((l->port == port) && (strcmp(l->host, host) == 0) && 
             ((!l->binddn && !binddn) || (l->binddn && binddn && !strcmp(l->binddn, binddn))) && 
             ((!l->bindpw && !bindpw) || (l->bindpw && bindpw && !strcmp(l->bindpw, bindpw))) && 
-            (l->deref == deref) && (l->secure == secure)) {
+            (l->deref == deref) && (l->secure == secure) &&
+            !compare_client_certs(st->client_certs, l->client_certs)) {
 
             break;
         }
@@ -383,7 +465,8 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
 
 #endif
             if ((l->port == port) && (strcmp(l->host, host) == 0) && 
-                (l->deref == deref) && (l->secure == secure)) {
+                (l->deref == deref) && (l->secure == secure) &&
+                !compare_client_certs(st->client_certs, l->client_certs)) {
 
                 /* the bind credentials have changed */
                 l->bound = 0;
@@ -428,7 +511,18 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
         l->deref = deref;
         util_ldap_strdup((char**)&(l->binddn), binddn);
         util_ldap_strdup((char**)&(l->bindpw), bindpw);
-        l->secure = secure;
+
+        /* The security mode after parsing the URL will always be either
+         * APR_LDAP_NONE (ldap://) or APR_LDAP_SSL (ldaps://).
+         * If the security setting is NONE, override it to the security
+         * setting optionally supplied by the admin using LDAPTrustedMode
+         */
+        l->secure = (APR_LDAP_NONE == secure) ?
+                     st->secure :
+                     secure;
+
+        /* save away a copy of the client cert list that is presently valid */
+        l->client_certs = apr_array_copy_hdr(l->pool, st->client_certs);
 
         /* add the cleanup to the pool */
         apr_pool_cleanup_register(l->pool, l,
@@ -1131,7 +1225,7 @@ LDAP_DECLARE(int) util_ldap_ssl_supported(request_rec *r)
    util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
                                 r->server->module_config, &ldap_module);
 
-   return(st->ssl_support);
+   return(st->ssl_supported);
 }
 
 
@@ -1242,64 +1336,252 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy, co
     return NULL;
 }
 
-static const char *util_ldap_set_cert_auth(cmd_parms *cmd, void *dummy, const char *file)
+
+/**
+ * Parse the certificate type.
+ *
+ * The type can be one of the following:
+ * CA_DER, CA_BASE64, CA_CERT7_DB, CA_SECMOD, CERT_DER, CERT_BASE64,
+ * CERT_KEY3_DB, CERT_NICKNAME, KEY_DER, KEY_BASE64
+ *
+ * If no matches are found, APR_LDAP_CA_TYPE_UNKNOWN is returned.
+ */
+static const int util_ldap_parse_cert_type(const char *type) {
+
+    /* Authority file in binary DER format */
+    if (0 == strcasecmp("CA_DER", type)) {
+        return APR_LDAP_CA_TYPE_DER;
+    }
+
+    /* Authority file in Base64 format */
+    else if (0 == strcasecmp("CA_BASE64", type)) {
+        return APR_LDAP_CA_TYPE_BASE64;
+    }
+
+    /* Netscape certificate database file/directory */
+    else if (0 == strcasecmp("CA_CERT7_DB", type)) {
+        return APR_LDAP_CA_TYPE_CERT7_DB;
+    }
+
+    /* Netscape secmod file/directory */
+    else if (0 == strcasecmp("CA_SECMOD", type)) {
+        return APR_LDAP_CA_TYPE_SECMOD;
+    }
+
+    /* Client cert file in DER format */
+    else if (0 == strcasecmp("CERT_DER", type)) {
+        return APR_LDAP_CERT_TYPE_DER;
+    }
+
+    /* Client cert file in Base64 format */
+    else if (0 == strcasecmp("CERT_BASE64", type)) {
+        return APR_LDAP_CERT_TYPE_BASE64;
+    }
+
+    /* Netscape client cert database file/directory */
+    else if (0 == strcasecmp("CERT_KEY3_DB", type)) {
+        return APR_LDAP_CERT_TYPE_KEY3_DB;
+    }
+
+    /* Netscape client cert nickname */
+    else if (0 == strcasecmp("CERT_NICKNAME", type)) {
+        return APR_LDAP_CERT_TYPE_NICKNAME;
+    }
+
+    /* Client cert key file in DER format */
+    else if (0 == strcasecmp("KEY_DER", type)) {
+        return APR_LDAP_KEY_TYPE_DER;
+    }
+
+    /* Client cert key file in Base64 format */
+    else if (0 == strcasecmp("KEY_BASE64", type)) {
+        return APR_LDAP_KEY_TYPE_BASE64;
+    }
+
+    else {
+        return APR_LDAP_CA_TYPE_UNKNOWN;
+    }
+
+}
+
+
+/**
+ * Set LDAPTrustedGlobalCert.
+ *
+ * This directive takes either two or three arguments:
+ * - certificate type
+ * - certificate file / directory / nickname
+ * - certificate password (optional)
+ *
+ * This directive may only be used globally.
+ */
+static const char *util_ldap_set_trusted_global_cert(cmd_parms *cmd, void *dummy, const char *type, const char *file, const char *password)
 {
-    util_ldap_state_t *st = 
-        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
-						  &ldap_module);
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                                  &ldap_module);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     apr_finfo_t finfo;
     apr_status_t rv;
+    int cert_type = 0;
 
     if (err != NULL) {
         return err;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "LDAP: SSL trusted certificate authority file - %s", 
-                       file);
+    /* handle the certificate type */
+    if (type) {
+        cert_type = util_ldap_parse_cert_type(type);
+        if (APR_LDAP_CA_TYPE_UNKNOWN == cert_type) {
+           return apr_psprintf(cmd->pool, "The certificate type %s is "
+                                          "not recognised. It should be one "
+                                          "of CA_DER, CA_BASE64, CA_CERT7_DB, "
+                                          "CA_SECMOD, CERT_DER, CERT_BASE64, "
+                                          "CERT_KEY3_DB, CERT_NICKNAME, "
+                                          "KEY_DER, KEY_BASE64", type);
+        }
+    }
+    else {
+        return "Certificate type was not specified.";
+    }
 
-    st->cert_auth_file = ap_server_root_relative(cmd->pool, file);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+                      "LDAP: SSL trusted global cert - %s (type %s)",
+                       file, type);
 
-    if (st->cert_auth_file && 
-        ((rv = apr_stat (&finfo, st->cert_auth_file, APR_FINFO_MIN, cmd->pool)) != APR_SUCCESS))
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server, 
-                     "LDAP: Could not open SSL trusted certificate authority file - %s", 
-                     st->cert_auth_file == NULL ? file : st->cert_auth_file);
-        return "Invalid file path";
+    /* add the certificate to the global array */
+    apr_ldap_opt_tls_cert_t *cert = (apr_ldap_opt_tls_cert_t *)apr_array_push(st->global_certs);
+    cert->type = cert_type;
+    cert->path = file;
+    cert->password = password;
+
+    /* if file is a file or path, fix the path */
+    if (cert_type != APR_LDAP_CA_TYPE_UNKNOWN &&
+        cert_type != APR_LDAP_CERT_TYPE_NICKNAME) {
+
+        cert->path = ap_server_root_relative(cmd->pool, file);
+        if (cert->path &&
+            ((rv = apr_stat (&finfo, cert->path, APR_FINFO_MIN, cmd->pool)) != APR_SUCCESS)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server,
+                         "LDAP: Could not open SSL trusted certificate "
+                         "authority file - %s",
+                         cert->path == NULL ? file : cert->path);
+            return "Invalid global certificate file path";
+        }
+
     }
 
     return(NULL);
 }
 
 
-static const char *util_ldap_set_cert_type(cmd_parms *cmd, void *dummy, const char *Type)
+/**
+ * Set LDAPTrustedClientCert.
+ *
+ * This directive takes either two or three arguments:
+ * - certificate type
+ * - certificate file / directory / nickname
+ * - certificate password (optional)
+ */
+static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, void *config, const char *type, const char *file, const char *password)
 {
-    util_ldap_state_t *st = 
-    (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
-                                              &ldap_module);
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                                  &ldap_module);
+    apr_finfo_t finfo;
+    apr_status_t rv;
+    int cert_type = 0;
+
+    /* handle the certificate type */
+    if (type) {
+        cert_type = util_ldap_parse_cert_type(type);
+        if (APR_LDAP_CA_TYPE_UNKNOWN == cert_type) {
+            return apr_psprintf(cmd->pool, "The certificate type \"%s\" is "
+                                           "not recognised. It should be one "
+                                           "of CERT_DER, CERT_BASE64, "
+                                           "CERT_NICKNAME, "
+                                           "KEY_DER, KEY_BASE64", type);
+        }
+        else if (APR_LDAP_CA_TYPE_DER == cert_type ||
+                 APR_LDAP_CA_TYPE_BASE64 == cert_type ||
+                 APR_LDAP_CA_TYPE_CERT7_DB == cert_type ||
+                 APR_LDAP_CA_TYPE_SECMOD == cert_type ||
+                 APR_LDAP_CERT_TYPE_KEY3_DB == cert_type) {
+            return apr_psprintf(cmd->pool, "The certificate type \"%s\" is "
+                                           "only valid within a "
+                                           "LDAPTrustedGlobalCert directive. "
+                                           "Only CERT_DER, CERT_BASE64, "
+                                           "CERT_NICKNAME, KEY_DER, and "
+                                           "KEY_BASE64 may be used.", type);
+        }
+    }
+    else {
+        return "Certificate type was not specified.";
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
-                      "LDAP: SSL trusted certificate authority file type - %s", 
-                       Type);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+                      "LDAP: SSL trusted client cert - %s (type %s)",
+                       file, type);
 
-    if (0 == strcmp("DER_FILE", Type))
-        st->cert_file_type = LDAP_CA_TYPE_DER;
+    /* add the certificate to the global array */
+    apr_ldap_opt_tls_cert_t *cert = (apr_ldap_opt_tls_cert_t *)apr_array_push(st->global_certs);
+    cert->type = cert_type; 
+    cert->path = file;
+    cert->password = password;
 
-    else if (0 == strcmp("BASE64_FILE", Type))
-        st->cert_file_type = LDAP_CA_TYPE_BASE64;
+    /* if file is a file or path, fix the path */
+    if (cert_type != APR_LDAP_CA_TYPE_UNKNOWN &&
+        cert_type != APR_LDAP_CERT_TYPE_NICKNAME) {
 
-    else if (0 == strcmp("CERT7_DB_PATH", Type))
-        st->cert_file_type = LDAP_CA_TYPE_CERT7_DB;
+        cert->path = ap_server_root_relative(cmd->pool, file);
+        if (cert->path &&
+            ((rv = apr_stat (&finfo, cert->path, APR_FINFO_MIN, cmd->pool)) != APR_SUCCESS)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, cmd->server,
+                         "LDAP: Could not open SSL client certificate "
+                         "file - %s",
+                         cert->path == NULL ? file : cert->path);
+            return "Invalid client certificate file path";
+        }
 
-    else
-        st->cert_file_type = LDAP_CA_TYPE_UNKNOWN;
+    }
 
+    return(NULL);
+}
+
+
+/**
+ * Set LDAPTrustedMode.
+ *                    
+ * This directive sets what encryption mode to use on a connection:
+ * - None (No encryption)
+ * - SSL (SSL encryption)
+ * - STARTTLS (TLS encryption)
+ */ 
+static const char *util_ldap_set_trusted_mode(cmd_parms *cmd, void *dummy, const char *mode)
+{
+    util_ldap_state_t *st =
+    (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                              &ldap_module);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server,
+                      "LDAP: SSL trusted mode - %s",
+                       mode);
+
+    if (0 == strcasecmp("NONE", mode)) {
+        st->secure = APR_LDAP_NONE;
+    }
+    else if (0 == strcasecmp("SSL", mode)) {
+        st->secure = APR_LDAP_SSL;
+    }
+    else if (0 == strcasecmp("TLS", mode) || 0 == strcasecmp("STARTTLS", mode)) {
+        st->secure = APR_LDAP_STARTTLS;
+    }
+    else {
+        return "Invalid LDAPTrustedMode setting: must be one of NONE, "
+               "SSL, or TLS/STARTTLS";
+    }
+
+    st->secure_set = 1;
     return(NULL);
 }
 
@@ -1317,9 +1599,33 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->compare_cache_ttl = 600000000;
     st->compare_cache_size = 1024;
     st->connections = NULL;
-    st->cert_auth_file = NULL;
-    st->cert_file_type = LDAP_CA_TYPE_UNKNOWN;
-    st->ssl_support = 0;
+    st->ssl_supported = 0;
+    st->global_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
+    st->client_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
+    st->secure = APR_LDAP_NONE;
+    st->secure_set = 0;
+
+    return st;
+}
+
+static void *util_ldap_merge_config(apr_pool_t *p, void *basev, void *overridesv)
+{
+    util_ldap_state_t *st = apr_pcalloc(p, sizeof(util_ldap_state_t));
+    util_ldap_state_t *base = (util_ldap_state_t *) basev;
+    util_ldap_state_t *overrides = (util_ldap_state_t *) overridesv;
+
+    st->pool = p;
+
+    st->cache_bytes = base->cache_bytes;
+    st->search_cache_ttl = base->search_cache_ttl;
+    st->search_cache_size = base->search_cache_size;
+    st->compare_cache_ttl = base->compare_cache_ttl;
+    st->compare_cache_size = base->compare_cache_size;
+    st->connections = base->connections;
+    st->ssl_supported = base->ssl_supported;
+    st->global_certs = apr_array_append(p, base->global_certs, overrides->global_certs);
+    st->client_certs = apr_array_append(p, base->client_certs, overrides->client_certs);
+    st->secure = (overrides->secure_set == 0) ? base->secure : overrides->secure;
 
     return st;
 }
@@ -1331,7 +1637,7 @@ static apr_status_t util_ldap_cleanup_module(void *data)
     util_ldap_state_t *st = (util_ldap_state_t *)ap_get_module_config(
         s->module_config, &ldap_module);
     
-    if (st->ssl_support) {
+    if (st->ssl_supported) {
         apr_ldap_ssl_deinit();
     }
 
@@ -1443,36 +1749,33 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     apr_pool_cleanup_register(p, s, util_ldap_cleanup_module,
                               util_ldap_cleanup_module); 
 
-    /* initialize SSL support if requested
-    */
-    if (st->cert_auth_file) {
-
-        apr_ldap_err_t *result = NULL;
-        int rc = apr_ldap_ssl_init(p,
-                                   st->cert_auth_file,
-                                   st->cert_file_type,
-                                   &(result));
-
-        if (LDAP_SUCCESS == rc) {
-            st->ssl_support = 1;
-        }
-        else if (NULL != result) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "%s", result->reason);
-            st->ssl_support = 0;
-        }
-
-    }
-      
-    /* log SSL status - If SSL isn't available it isn't necessarily
-     * an error because the modules asking for LDAP connections 
-     * may not ask for SSL support
+    /*
+     * Initialize SSL support, and log the result for the benefit of the admin.
+     *
+     * If SSL is not supported it is not necessarily an error, as the
+     * application may not want to use it.
      */
-    if (st->ssl_support) {
-       ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+    apr_ldap_err_t *result_err = NULL;
+    int rc = apr_ldap_ssl_init(p,
+                               NULL,
+                               NULL,
+                               &(result_err));
+    if (APR_SUCCESS == rc) {
+        rc = apr_ldap_set_option(p, NULL, APR_LDAP_OPT_TLS_CERT,
+                                 (void *)st->global_certs, &(result_err));
+    }
+
+    if (APR_SUCCESS == rc) {
+        st->ssl_supported = 1;
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
                          "LDAP: SSL support available" );
     }
     else {
-       ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
+        st->ssl_supported = 0;
+        if (NULL != result_err) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s, "%s", result_err->reason);
+        }
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
                          "LDAP: SSL support unavailable" );
     }
     
@@ -1531,16 +1834,45 @@ command_rec util_ldap_cmds[] = {
                   "Sets the maximum time (in seconds) that an item is cached in the LDAP "
                   "operation cache. Zero means no limit. Defaults to 600 seconds (10 minutes)."),
 
-    AP_INIT_TAKE1("LDAPTrustedCA", util_ldap_set_cert_auth, NULL, RSRC_CONF,
-                  "Sets the file containing the trusted Certificate Authority certificate. "
-                  "Used to validate the LDAP server certificate for SSL connections."),
+    AP_INIT_TAKE23("LDAPTrustedGlobalCert", util_ldap_set_trusted_global_cert, NULL, RSRC_CONF,
+                  "Sets the file and/or directory containing the trusted "
+                  "certificate authority certificates, and global client "
+                  "certificates (Netware). Used to validate the LDAP server "
+                  "certificate for SSL/TLS connections. "
+                  "The following types are supported:  "
+                  "  CA_DER        - Authority file in binary DER format "
+                  "  CA_BASE64     - Authority file in Base64 format "
+                  "  CA_CERT7_DB   - Netscape certificate database file/directory "
+                  "  CA_SECMOD     - Netscape secmod file/directory "
+                  "  CERT_DER      - Client cert file in DER format "
+                  "  CERT_BASE64   - Client cert file in Base64 format "
+                  "  CERT_KEY3_DB  - Netscape client cert database file/directory "
+                  "  CERT_NICKNAME - Netscape client cert nickname "
+                  "  KEY_DER       - Client cert key file in DER format "
+                  "  KEY_BASE64    - Client cert key file in Base64 format "),
 
-    AP_INIT_TAKE1("LDAPTrustedCAType", util_ldap_set_cert_type, NULL, RSRC_CONF,
-                 "Specifies the type of the Certificate Authority file.  "
+    AP_INIT_TAKE23("LDAPTrustedClientCert", util_ldap_set_trusted_client_cert, NULL, OR_ALL,
+                  "Specifies a file containing a client certificate or private "
+                  "key, or the ID of the certificate to usethe type of the Certificate Authority file.  "
                  "The following types are supported:  "
-                 "    DER_FILE      - file in binary DER format "
-                 "    BASE64_FILE   - file in Base64 format "
-                 "    CERT7_DB_PATH - Netscape certificate database file "),
+                 "  CA_DER        - Authority file in binary DER format "
+                 "  CA_BASE64     - Authority file in Base64 format "
+                 "  CA_CERT7_DB   - Netscape certificate database file/directory "
+                 "  CA_SECMOD     - Netscape secmod file/directory "
+                 "  CERT_DER      - Client cert file in DER format "
+                 "  CERT_BASE64   - Client cert file in Base64 format "
+                 "  CERT_KEY3_DB  - Netscape client cert database file/directory "
+                 "  CERT_NICKNAME - Netscape client cert nickname "
+                 "  KEY_DER       - Client cert key file in DER format "
+                 "  KEY_BASE64    - Client cert key file in Base64 format "),
+
+    AP_INIT_TAKE1("LDAPTrustedMode", util_ldap_set_trusted_mode, NULL, OR_ALL,
+                  "Specifies the type of security that should be applied to "
+                  "an LDAP connection. The types supported are: "
+                  "   NONE - no encryption enabled "
+                  "   SSL - SSL encryption enabled (forced by ldaps://) "
+                  "   STARTTLS - STARTTLS MUST be enabled "),
+
     {NULL}
 };
 
@@ -1556,7 +1888,7 @@ module ldap_module = {
    NULL,				/* dir config creater */
    NULL,				/* dir merger --- default is to override */
    util_ldap_create_config,		/* server config */
-   NULL,				/* merge server config */
+   util_ldap_merge_config,		/* merge server config */
    util_ldap_cmds,			/* command table */
    util_ldap_register_hooks,		/* set up request processing hooks */
 };

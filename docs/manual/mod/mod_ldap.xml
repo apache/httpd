@@ -45,7 +45,7 @@ by other LDAP modules</description>
     <p>SSL support requires that <module>mod_ldap</module> be linked
     with one of the following LDAP SDKs: <a href="http://www.openldap.org/">
     OpenLDAP SDK</a> (both 1.x and 2.x), <a href="http://developer.novell.com/ndk/cldap.htm">
-    Novell LDAP SDK</a> or the <a href="http://www.iplanet.com/downloads/developer/">
+    Novell LDAP SDK</a>, native Solaris LDAP SDK, native Microsoft LDAP SDK, or the <a href="http://www.iplanet.com/downloads/developer/">
     iPlanet(Netscape)</a> SDK.</p>
 
 </summary>
@@ -182,23 +182,22 @@ by other LDAP modules</description>
     </section>
 </section>
 
-<section id="usingssltls"><title>Using SSL</title>
+<section id="usingssltls"><title>Using SSL/TLS</title>
 
-    <p>The ability to create an SSL connections to an LDAP server 
+    <p>The ability to create an SSL and TLS connections to an LDAP server 
     is defined by the directives <directive module="mod_ldap">
-    LDAPTrustedCA</directive> and <directive module="mod_ldap">
-    LDAPTrustedCAType</directive>. These directives specify the certificate
-    file or database and the certificate type. Whenever the LDAP url
-    includes <em>ldaps://</em>, <module>mod_ldap</module> will establish
-    a secure connection to the LDAP server.</p>
+    LDAPTrustedGlobalCert</directive>, <directive module="mod_ldap">
+    LDAPTrustedClientCert</directive> and <directive module="mod_ldap">
+    LDAPTrustedMode</directive>. These directives specify the CA and
+    optional client certificates to be used, as well as the type of
+    encryption to be used on the connection (none, SSL or TLS/STARTTLS).</p>
 
     <example>
-      # Establish an SSL LDAP connection. Requires that <br />
+      # Establish an SSL LDAP connection on port 636. Requires that <br />
       # mod_ldap and mod_authnz_ldap be loaded. Change the <br />
       # "yourdomain.example.com" to match your domain.<br />
       <br />
-      LDAPTrustedCA /certs/certfile.der<br />
-      LDAPTrustedCAType DER_FILE<br />
+      LDAPTrustedGlobalCert CA_DER /certs/certfile.der<br />
       <br />
       &lt;Location /ldap-status&gt;<br />
       <indent>
@@ -214,16 +213,163 @@ by other LDAP modules</description>
       &lt;/Location&gt;
     </example>
 
-    <p>If <module>mod_ldap</module> is linked against the
-    Netscape/iPlanet LDAP SDK, it will not talk to any SSL server
-    unless that server has a certificate signed by a known Certificate
-    Authority. As part of the configuration
-    <module>mod_ldap</module> needs to be told where it can find
-    a database containing the known CAs. This database is in the same
-    format as Netscape Communicator's <code>cert7.db</code>
-    database. The easiest way to get this file is to start up a fresh
-    copy of Netscape, and grab the resulting
-    <code>$HOME/.netscape/cert7.db</code> file.</p>
+    <example>
+      # Establish a TLS LDAP connection on port 389. Requires that <br />
+      # mod_ldap and mod_authnz_ldap be loaded. Change the <br />
+      # "yourdomain.example.com" to match your domain.<br />
+      <br />
+      LDAPTrustedGlobalCert CA_DER /certs/certfile.der<br />
+      <br />
+      &lt;Location /ldap-status&gt;<br />
+      <indent>
+        SetHandler ldap-status<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from yourdomain.example.com<br />
+        AuthLDAPEnabled on<br />
+        LDAPTrustedMode TLS
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
+        AuthLDAPAuthoritative on<br />
+        require valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+</section>
+
+<section id="settingcerts"><title>SSL/TLS Certificates</title>
+
+    <p>The different LDAP SDKs have widely different methods of setting
+    and handling both CA and client side certificates. Some of the
+    differences are described below:</p>
+
+    <section id="settingcerts-netscape"><title>Netscape/Mozilla/iPlanet SDK</title>
+        <p>CA certificates are specified within a file called cert7.db.
+        The SDK will not talk to any LDAP server whose certificate was
+        not signed by a CA specified in this file. If
+        client certificates are required, an optional key3.db file may
+        be specified with an optional password. The secmod file can be
+        specified if required. These files are in the same format as
+        used by Netscape Communicator / Mozilla web browser. The easiest
+        way to obtain these files is to grab them from a browser
+        installation.</p>
+
+        <p>Client certificates are specified per connection by referring
+        to the certificate "nickname", and an optional password may be
+        specified.</p>
+
+        <p>The SDK supports SSL only. An attempt to use STARTTLS will cause
+        an error when an attempt is made to contact the LDAP server at
+        runtime.</p>
+
+        <example>
+            # Specify a Netscape CA certificate file<br />
+            LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db<br />
+            # Specify an optional key3.db file for client certificate support<br />
+            LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db<br />
+            # Specify the secmod file if required<br />
+            LDAPTrustedGlobalCert CA_SECMOD /certs/secmod<br />
+            &lt;Location /ldap-status&gt;<br />
+            <indent>
+                SetHandler ldap-status<br />
+                Order deny,allow<br />
+                Deny from all<br />
+                Allow from yourdomain.example.com<br />
+                AuthLDAPEnabled on<br />
+                LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]<br />
+                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
+                AuthLDAPAuthoritative on<br />
+                require valid-user<br />
+            </indent>
+            &lt;/Location&gt;
+        </example>
+
+    </section>
+
+    <section id="settingcerts-novell"><title>Novell SDK</title>
+
+        <p>One or more CA certificates must be specified for the Novell
+        SDK to work correctly. These certificates can be specified as
+        binary DER or Base64 (PEM) encoded files.</p>
+
+        <p>Client certificates are specified globally rather than per
+        connection, and so must be specified with the global certificate
+        option as below. Trying to set client certificates via the
+        LDAPTrustedClientCert option will cause an error to be thrown
+        when httpd starts up.</p>
+
+        <p>The SDK supports both SSL and STARTTLS, set using the
+        LDAPTrustedMode parameter. If an ldaps:// URL is specified,
+        SSL mode is forced.</p>
+
+        <example>
+             # Specify two CA certificate files<br />
+             LDAPTrustedGlobalCert CA_DER /certs/cacert1.der<br />
+             LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem<br />
+             # Specify a client certificate file and key<br />
+             LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem<br />
+             LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]<br />
+        </example>
+
+    </section>
+
+    <section id="settingcerts-openldap"><title>OpenLDAP SDK</title>
+
+        <p>One or more CA certificates must be specified for the OpenLDAP
+        SDK to work correctly. These certificates can be specified as
+        binary DER or Base64 (PEM) encoded files.</p>
+
+        <p>Client certificates are specified per connection using the
+        LDAPTrustedClientCert directive.</p>
+
+        <p>The documentation for the SDK claims to support both SSL and
+        STARTTLS, however STARTTLS does not seem to work on all versions
+        of the SDK. The SSL/TLS mode can be set using the
+        LDAPTrustedMode parameter. If an ldaps:// URL is specified,
+        SSL mode is forced. The OpenLDAP documentation notes that SSL
+        (ldaps://) support has been deprecated to be replaced with TLS,
+        although the SSL functionality still works.</p>
+
+        <example>
+             # Specify two CA certificate files<br />
+             LDAPTrustedGlobalCert CA_DER /certs/cacert1.der<br />
+             LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem<br />
+            &lt;Location /ldap-status&gt;<br />
+            <indent>
+                SetHandler ldap-status<br />
+                Order deny,allow<br />
+                Deny from all<br />
+                Allow from yourdomain.example.com<br />
+                AuthLDAPEnabled on<br />
+                LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
+                LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
+                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
+                AuthLDAPAuthoritative on<br />
+                require valid-user<br />
+            </indent>
+            &lt;/Location&gt;
+        </example>
+
+    </section>
+
+    <section id="settingcerts-solaris"><title>Solaris SDK</title>
+
+        <p>SSL/TLS for the native Solaris LDAP libraries is not yet
+        supported. If required, install and use the OpenLDAP libraries
+        instead.</p>
+
+    </section>
+
+    <section id="settingcerts-microsoft"><title>Microsoft SDK</title>
+
+        <p>SSL/TLS certificate configuration for the native Microsoft
+        LDAP libraries is done inside the system registry, and no
+        configuration directives are required.</p>
+
+        <p>Both SSL and TLS are supported by using the ldaps:// URL
+        format, or by using the LDAPTrustedMode directive accordingly.</p>
+
+    </section>
 
 </section>
 
@@ -313,32 +459,83 @@ valid</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>LDAPTrustedCA</name>
-<description>Sets the file containing the trusted Certificate Authority certificate or database</description>
-<syntax>LDAPTrustedCA <var>directory-path/filename</var></syntax>
+<name>LDAPTrustedGlobalCert</name>
+<description>Sets the file or database containing global trusted
+Certificate Authority or global client certificates</description>
+<syntax>LDAPTrustedGlobalCert <var>type</var> <var>directory-path/filename</var> <var>[password]</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>It specifies the directory path and file name of the trusted CA
-    <module>mod_ldap</module> should use when establishing an SSL
-    connection to an LDAP server. If using the Netscape/iPlanet Directory
-    SDK, the file name should be <code>cert7.db</code>.</p>
+    certificates and/or client certificates <module>mod_ldap</module>
+    should use when establishing an SSL or TLS connection to an LDAP
+    server. The type specifies the kind of certificate parameter being
+    set, depending on the LDAP toolkit being used. Supported types are:
+      <ul>
+        <li>CA_DER - binary DER encoded CA certificate</li>
+        <li>CA_BASE64 - PEM encoded CA certificate</li>
+        <li>CA_CERT7_DB - Netscape cert7.db CA certificate database file</li>
+        <li>CA_SECMOD - Netscape secmod database file</li>
+        <li>CERT_DER - binary DER encoded client certificate</li>
+        <li>CERT_BASE64 - PEM encoded client certificate</li>
+        <li>CERT_KEY3_DB - Netscape key3.db client certificate database file</li>
+        <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
+        <li>KEY_DER - binary DER encoded private key</li>
+        <li>KEY_BASE64 - PEM encoded private key</li>
+      </ul>
+    </p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>LDAPTrustedCAType</name>
-<description>Specifies the type of the Certificate Authority file</description>
-<syntax>LDAPTrustedCAType <var>type</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<name>LDAPTrustedClientCert</name>
+<description>Sets the file containing or nickname referring to a per
+connection client certificate. Not all LDAP toolkits support per
+connection client certificates.</description>
+<syntax>LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></syntax>
+<contextlist><context>All</context></contextlist>
 
 <usage>
-    <p>The following types are supported:</p>
+    <p>It specifies the directory path, file name or nickname of a
+    per connection client certificate used when establishing an SSL
+    or TLS connection to an LDAP server. Not all LDAP toolkits support
+    per connection client certificates (See the toolkit guide for details).
+    The type specifies the kind of certificate parameter being
+    set, depending on the LDAP toolkit being used. Supported types are:
       <ul>
-	<li>DER_FILE - file in binary DER format</li>
-	<li>BASE64_FILE - file in Base64 format</li>
-	<li>CERT7_DB_PATH - Netscape certificate database file</li>
+        <li>CERT_DER - binary DER encoded client certificate</li>
+        <li>CERT_BASE64 - PEM encoded client certificate</li>
+        <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
+        <li>KEY_DER - binary DER encoded private key</li>
+        <li>KEY_BASE64 - PEM encoded private key</li>
       </ul>
+    </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPTrustedMode</name>
+<description>Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</description>
+<syntax>LDAPTrustedMode <var>type</var></syntax>
+<contextlist><context>All</context></contextlist>
+
+<usage>
+    <p>The following modes are supported:</p>
+      <ul>
+	<li>NONE - no encryption</li>
+	<li>SSL - ldaps:// encryption on default port 636</li>
+	<li>TLS - STARTTLS encryption on default port 389</li>
+      </ul>
+    </p>
+
+    <p>Not all LDAP toolkits support all the above modes. An error message
+    will be logged at runtime if a mode is not supported, and the
+    connection to the LDAP server will fail.
+    </p>
+
+    <p>If an ldaps:// URL is specified, the mode becomes SSL and the setting
+    of LDAPTrustedMode is ignored.</p>
+
 </usage>
 </directivesynopsis>
 
