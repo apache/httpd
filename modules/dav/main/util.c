@@ -58,6 +58,7 @@
 */
 
 #include "apr_strings.h"
+#include "apr_lib.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
