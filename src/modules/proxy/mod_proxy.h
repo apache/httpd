@@ -82,7 +82,7 @@ More things to do:
 
 1. add 230 response output for ftp now that it works
 
-2. Add gopher & WAIS
+2. Make the ftp proxy transparent, also same with (future) gopher & wais
 
 3. Use protocol handler struct a la Apache module handlers (Dirk van Gulik)
  
