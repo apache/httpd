@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.88 $ -->
+<!-- $Revision: 1.89 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -355,12 +355,15 @@ be passed through</description>
       module="mod_authz_host">Deny</directive> and <directive
       module="mod_authz_host">Order</directive>).</dd>
 
-      <dt>Options</dt>
+      <dt>Options[=<var>Option</var>,...]</dt>
 
       <dd>
       Allow use of the directives controlling specific directory
       features (<directive module="core">Options</directive> and
-      <directive module="mod_include">XBitHack</directive>).</dd>
+      <directive module="mod_include">XBitHack</directive>).
+      An equal sign may be given followed by a comma (but no spaces)
+      separated lists of options that may be set using the Options
+      command.</dd>
     </dl>
 
     <p>Example:</p>

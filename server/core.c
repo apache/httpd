@@ -108,6 +108,8 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
     conf->override = dir ? OR_UNSET : OR_UNSET|OR_ALL;
+    conf->override_opts = OPT_UNSET | OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER
+   			 | OPT_MULTI;
 
     conf->content_md5 = 2;
     conf->accept_path_info = 3;
@@ -255,6 +257,10 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (!(new->override & OR_UNSET)) {
         conf->override = new->override;
+    }
+
+    if (!(new->override_opts & OPT_UNSET)) {
+	conf->override_opts = new->override_opts;
     }
 
     if (new->ap_default_type) {
@@ -1220,10 +1226,72 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
     return NULL;
 }
 
+static const char *set_allow_opts(cmd_parms *cmd, allow_options_t *opts,
+                                  const char *l)
+{
+    allow_options_t opt;
+    int first = 1;
+
+    char *p = (char *) l;
+
+    while (p && *p) {
+        char *w = strsep(&p, ",");
+
+        if (first) {
+            *opts = OPT_NONE;
+            first = 0;
+        }
+
+	if (!w)
+	    continue;
+
+        if (!strcasecmp(w, "Indexes")) {
+            opt = OPT_INDEXES;
+        }
+        else if (!strcasecmp(w, "Includes")) {
+            opt = OPT_INCLUDES;
+        }
+        else if (!strcasecmp(w, "IncludesNOEXEC")) {
+            opt = (OPT_INCLUDES | OPT_INCNOEXEC);
+        }
+        else if (!strcasecmp(w, "FollowSymLinks")) {
+            opt = OPT_SYM_LINKS;
+        }
+        else if (!strcasecmp(w, "SymLinksIfOwnerMatch")) {
+            opt = OPT_SYM_OWNER;
+        }
+        else if (!strcasecmp(w, "ExecCGI")) {
+            opt = OPT_EXECCGI;
+        }
+        else if (!strcasecmp(w, "MultiViews")) {
+            opt = OPT_MULTI;
+        }
+        else if (!strcasecmp(w, "RunScripts")) { /* AI backcompat. Yuck */
+            opt = OPT_MULTI|OPT_EXECCGI;
+        }
+        else if (!strcasecmp(w, "None")) {
+            opt = OPT_NONE;
+        }
+        else if (!strcasecmp(w, "All")) {
+            opt = OPT_ALL;
+        }
+        else {
+            return apr_pstrcat(cmd->pool, "Illegal option ", w, NULL);
+        }
+
+        *opts |= opt;
+    }
+
+    (*opts) &= (~OPT_UNSET);
+
+    return NULL;
+}
+
 static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
 {
     core_dir_config *d = d_;
     char *w;
+    char *k, *v;
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
@@ -1240,11 +1308,22 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
     d->override = OR_NONE;
     while (l[0]) {
         w = ap_getword_conf(cmd->pool, &l);
+
+	k = w;
+	v = strchr(k, '=');
+	if (v) {
+		*v++ = '\0';
+	}
+
         if (!strcasecmp(w, "Limit")) {
             d->override |= OR_LIMIT;
         }
-        else if (!strcasecmp(w, "Options")) {
+        else if (!strcasecmp(k, "Options")) {
             d->override |= OR_OPTIONS;
+	    if (v) 
+                set_allow_opts(cmd, &(d->override_opts), v);
+	    else
+	        d->override_opts = OPT_ALL;
         }
         else if (!strcasecmp(w, "FileInfo")) {
             d->override |= OR_FILEINFO;
@@ -1305,7 +1384,7 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
         else if (!strcasecmp(w, "SymLinksIfOwnerMatch")) {
             opt = OPT_SYM_OWNER;
         }
-        else if (!strcasecmp(w, "execCGI")) {
+        else if (!strcasecmp(w, "ExecCGI")) {
             opt = OPT_EXECCGI;
         }
         else if (!strcasecmp(w, "MultiViews")) {
@@ -1324,8 +1403,11 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
             return apr_pstrcat(cmd->pool, "Illegal option ", w, NULL);
         }
 
-        /* we ensure the invariant (d->opts_add & d->opts_remove) == 0 */
-        if (action == '-') {
+	if (!(cmd->override_opts & opt) && opt != OPT_NONE) {
+	    return apr_pstrcat(cmd->pool, "Option ", w, " not allowed here", NULL);
+        }
+        else if (action == '-') {
+            /* we ensure the invariant (d->opts_add & d->opts_remove) == 0 */
             d->opts_remove |= opt;
             d->opts_add &= ~opt;
             d->opts &= ~opt;

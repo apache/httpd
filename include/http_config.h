@@ -291,6 +291,9 @@ struct cmd_parms_struct {
     struct ap_conf_vector_t *context;
     /** directive with syntax error */
     const ap_directive_t *err_directive;
+
+    /** Which allow-override-opts bits are set */
+    int override_opts;
 };
 
 /**
@@ -854,6 +857,7 @@ AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_conn_config(apr_pool_t *p);
  */
 AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result, 
                                        request_rec *r, int override,
+                                       int override_opts,
                                        const char *path, 
                                        const char *access_name);
 

@@ -651,6 +651,8 @@ struct htaccess_result {
     const char *dir;
     /** the overrides allowed for the .htaccess file */
     int override;
+    /** the override options allowed for the .htaccess file */
+    int override_opts;
     /** the configuration directives */
     struct ap_conf_vector_t *htaccess;
     /** the next one, or NULL if no more; N.B. never change this */

@@ -1384,6 +1384,7 @@ static const char *process_command_config(server_rec *s,
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
+    parms.override_opts = OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER | OPT_MULTI;
 
     parms.config_file = ap_pcfg_open_custom(p, "-c/-C directives",
                                             &arr_parms, NULL,
@@ -1490,6 +1491,7 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
+    parms.override_opts = OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER | OPT_MULTI;
 
     if (ap_pcfg_openfile(&cfp, p, fname) != APR_SUCCESS) {
         return apr_pstrcat(p, "Could not open document config file ",
@@ -1625,6 +1627,7 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
+    parms.override_opts = OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER | OPT_MULTI;
     parms.limited = -1;
 
     errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
@@ -1643,6 +1646,7 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
 
 AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
                                        request_rec *r, int override,
+				       int override_opts,
                                        const char *d, const char *access_name)
 {
     ap_configfile_t *f = NULL;
@@ -1663,6 +1667,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
 
     parms = default_parms;
     parms.override = override;
+    parms.override_opts = override_opts;
     parms.pool = r->pool;
     parms.temp_pool = r->pool;
     parms.server = r->server;
@@ -1719,6 +1724,7 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
     new = apr_palloc(r->pool, sizeof(struct htaccess_result));
     new->dir = parms.path;
     new->override = override;
+    new->override_opts = override_opts;
     new->htaccess = dc;
 
     /* add to head of list */

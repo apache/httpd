@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) core: Add Options= syntax to AllowOverride to specify which options
+     may be overridden in .htaccess files. PR 29310.
+     [Tom Alsberg <alsbergt cs.huji.ac.il>, Paul Querna]
+
   *) ab: Handle long URLs with an error instead of an buffer overflow.
      PR 28204. [Erik Weide <erik.weidel mplus-technologies.de>, Paul Querna]
 
