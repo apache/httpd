@@ -670,6 +670,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
        /* Is it an HTTP/1 response?
         * This is buggy if we ever see an HTTP/1.10
+        * XXX: This code is way crufty...
         */
         if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
             int major, minor;
@@ -689,7 +690,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                             "server: ", buffer, NULL));
             }
             backasswards = 0;
-            buffer[--len] = '\0';
 
             buffer[12] = '\0';
             r->status = atoi(&buffer[9]);
