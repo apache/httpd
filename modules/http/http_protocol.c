@@ -849,8 +849,8 @@ struct dechunk_ctx {
 static long get_chunk_size(char *);
 static int getline(char *s, int n, request_rec *r, int fold);
 
-apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
-                            ap_input_mode_t mode)
+apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
+                               ap_input_mode_t mode)
 {
     apr_status_t rv;
     struct dechunk_ctx *ctx = f->ctx;
@@ -865,7 +865,7 @@ apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
 
     do {
         if (ctx->chunk_size == ctx->bytes_delivered) {
-            /* Time to read another chunk header or trailer...  http_filter() is 
+            /* Time to read another chunk header or trailer...  ap_http_filter() is 
              * the next filter in line and it knows how to return a brigade with 
              * one line.
              */
@@ -905,13 +905,13 @@ apr_status_t dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
     } while (ctx->state != WANT_BODY);
 
     if (ctx->state == WANT_BODY) {
-        /* Tell http_filter() how many bytes to deliver. */
+        /* Tell ap_http_filter() how many bytes to deliver. */
         f->c->remain = ctx->chunk_size - ctx->bytes_delivered;
         if ((rv = ap_get_brigade(f->next, bb, mode)) != APR_SUCCESS) {
             return rv;
         }
         /* Walk through the body, accounting for bytes, and removing an eos bucket if
-         * http_filter() delivered the entire chunk.
+         * ap_http_filter() delivered the entire chunk.
          */
         b = AP_BRIGADE_FIRST(bb);
         while (b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
@@ -935,7 +935,7 @@ typedef struct http_filter_ctx {
     ap_bucket_brigade *b;
 } http_ctx_t;
 
-apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
+apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_t mode)
 {
 #define ASCII_LF '\012'
     ap_bucket *e;
