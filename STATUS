@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/29 13:37:52 $]
+  Last modified at [$Date: 2002/05/29 19:56:21 $]
 
 Release:
 
@@ -49,6 +49,8 @@ RELEASE SHOWSTOPPERS:
       Bugz #9181 (Unable to set headers on non-2XX responses)
         +1: Martin, Jim
       Gnats #10246 (Add ProxyConnAllow directive)
+        +0: Martin (or rather -.5, see dev@ Message
+	            <20020529215048.A56015@deejai2.mch.fsc.net>)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
