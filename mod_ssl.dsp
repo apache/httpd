@@ -196,6 +196,10 @@ SOURCE=.\ssl_expr_parse.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ssl_toolkit_compat.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ssl_util_ssl.h
 # End Source File
 # Begin Source File
