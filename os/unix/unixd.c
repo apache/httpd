@@ -198,7 +198,8 @@ int unixd_setup_child(void)
 	if (setuid(unixd_config.user_id) == -1) {
 	    GETUSERMODE();
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
-			"setuid: unable to change to uid: %d", unixd_config.user_id);
+			"setuid: unable to change to uid: %ld",
+                        (long) unixd_config.user_id);
 	    exit(1);
 	}
 	GETUSERMODE();
@@ -211,7 +212,8 @@ int unixd_setup_child(void)
 #endif
 	setuid(unixd_config.user_id) == -1)) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
-		    "setuid: unable to change to uid: %d", unixd_config.user_id);
+		    "setuid: unable to change to uid: %ld",
+                    (long) unixd_config.user_id);
 	return -1;
     }
 #endif
