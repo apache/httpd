@@ -160,7 +160,7 @@ static const command_rec status_module_cmds[] =
 };
 
 /* Format the number of bytes nicely */
-static void format_byte_out(request_rec *r, unsigned long bytes)
+static void format_byte_out(request_rec *r, apr_off_t bytes)
 {
     if (bytes < (5 * KBYTE))
 	ap_rprintf(r, "%d B", (int) bytes);
@@ -172,7 +172,7 @@ static void format_byte_out(request_rec *r, unsigned long bytes)
 	ap_rprintf(r, "%.1f GB", (float) bytes / GBYTE);
 }
 
-static void format_kbyte_out(request_rec *r, unsigned long kbytes)
+static void format_kbyte_out(request_rec *r, apr_off_t kbytes)
 {
     if (kbytes < KBYTE)
 	ap_rprintf(r, "%d kB", (int) kbytes);
@@ -236,11 +236,9 @@ static int status_handler(request_rec *r)
     int ready = 0;
     int busy = 0;
     unsigned long count = 0;
-    unsigned long lres, bytes;
-    unsigned long my_lres, my_bytes, conn_bytes;
-    unsigned short conn_lres;
-    unsigned long bcount = 0;
-    unsigned long kbcount = 0;
+    unsigned long lres, my_lres, conn_lres;
+    apr_off_t bytes, my_bytes, conn_bytes;
+    apr_off_t bcount = 0, kbcount = 0;
     long req_time;
 #ifdef HAVE_TIMES
 #ifdef _SC_CLK_TCK
