@@ -132,7 +132,7 @@
 /* config globals */
 
 int ap_threads_per_child=0;         /* Worker threads per child */
-static apr_lock_t *accept_lock;
+static apr_proc_mutex_t *accept_mutex;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
@@ -242,54 +242,9 @@ static void expand_lock_fname(apr_pool_t *p)
 	ap_server_root_relative(p, ap_lock_fname), (unsigned long)getpid());
 }
 
-/* Initialize mutex lock.
- * Done by each child at its birth
- */
-static void accept_mutex_child_init(apr_pool_t *p)
-{
-    apr_status_t rv;
-
-    rv = apr_lock_child_init(&accept_lock, ap_lock_fname, p);
-    if (rv) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, 
-                     "couldn't do child init for accept mutex");
-        clean_child_exit(APEXIT_CHILDINIT);
-    }
-}
-
-/* Initialize mutex lock.
- * Must be safe to call this on a restart.
- */
-static void accept_mutex_init(apr_pool_t *p)
-{
-    apr_status_t rv;
-
-    expand_lock_fname(p);
-    rv = apr_lock_create(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, 
-                         ap_accept_lock_mech, ap_lock_fname, p);
-    if (rv) {
-	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't create accept mutex");
-        exit(APEXIT_INIT);
-    }
-
-#if APR_USE_SYSVSEM_SERIALIZE
-    if (ap_accept_lock_mech == APR_LOCK_DEFAULT || 
-        ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
-#else
-    if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
-#endif
-        rv = unixd_set_lock_perms(accept_lock);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL,
-                         "Couldn't set permissions on cross-process lock");
-            exit(APEXIT_INIT);
-        }
-    }
-}
-
 static void accept_mutex_on(void)
 {
-    apr_status_t rv = apr_lock_acquire(accept_lock);
+    apr_status_t rv = apr_proc_mutex_lock(accept_mutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't grab the accept mutex");
         exit(APEXIT_CHILDFATAL);
@@ -298,7 +253,7 @@ static void accept_mutex_on(void)
 
 static void accept_mutex_off(void)
 {
-    apr_status_t rv = apr_lock_release(accept_lock);
+    apr_status_t rv = apr_proc_mutex_unlock(accept_mutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't release the accept mutex");
         exit(APEXIT_CHILDFATAL);
@@ -579,6 +534,7 @@ static void child_main(int child_num_arg)
     int offset;
     void *csd;
     ap_sb_handle_t *sbh;
+    apr_status_t rv;
 
     my_child_num = child_num_arg;
     ap_my_pid = getpid();
@@ -595,7 +551,12 @@ static void child_main(int child_num_arg)
 
     /* needs to be done before we switch UIDs so we have permissions */
     ap_reopen_scoreboard(pchild, NULL, 0);
-    SAFE_ACCEPT(accept_mutex_child_init(pchild));
+    rv = apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname, pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
+                     "Couldn't initialize cross-process lock in child");
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
 
     if (unixd_setup_child()) {
 	clean_child_exit(APEXIT_CHILDFATAL);
@@ -972,6 +933,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int index;
     int remaining_children_to_start;
+    apr_status_t rv;
 
     ap_log_pid(pconf, ap_pid_fname);
 
@@ -983,7 +945,19 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         changed_limit_at_restart = 0;
     }
 
-    SAFE_ACCEPT(accept_mutex_init(pconf));
+    /* Initialize cross-process accept lock */
+    ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_OS_PROC_T_FMT,
+                                 ap_server_root_relative(_pconf, ap_lock_fname),
+                                 ap_my_pid);
+
+    rv = apr_proc_mutex_create(&accept_mutex, ap_lock_fname, 
+                               ap_accept_lock_mech, _pconf);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
+                     "Couldn't create accept lock");
+        return 1;
+    }
+
     if (!is_graceful) {
         if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
             return 1;
