@@ -95,6 +95,7 @@
  * This file replaces mod_cookies.c
  */
 
+#define IS_MODULE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"

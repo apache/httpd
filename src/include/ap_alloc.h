@@ -218,7 +218,7 @@ API_EXPORT(void) run_cleanup(pool *p, void *data, void (*cleanup) (void *));
 
 /* A "do-nothing" cleanup, for register_cleanup; it's faster to do
  * things this way than to test for NULL. */
-API_EXPORT(void) null_cleanup(void *data);
+API_EXPORT_NONSTD(void) null_cleanup(void *data);
 
 /* The time between when a resource is actually allocated, and when it
  * its cleanup is registered is a critical section, during which the

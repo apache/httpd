@@ -363,8 +363,8 @@
 #define SERVER_VERSION	SERVER_BASEVERSION
 #endif
 
-const char *apapi_get_server_version();
-const char *apapi_get_server_built();
+API_EXPORT(const char *) apapi_get_server_version(void);
+API_EXPORT(const char *) apapi_get_server_built(void);
 
 /* Numeric release version identifier: major minor bugfix betaseq
  * Always increases along the same track as the source branch.
@@ -800,8 +800,8 @@ struct listen_rec {
  */
 
 /* Time */
-extern MODULE_VAR_EXPORT const char month_snames[12][4];
-extern MODULE_VAR_EXPORT const char day_snames[7][4];
+extern API_VAR_EXPORT const char month_snames[12][4];
+extern API_VAR_EXPORT const char day_snames[7][4];
 
 API_EXPORT(struct tm *) get_gmtoff(int *tz);
 API_EXPORT(char *) get_time(void);

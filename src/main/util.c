@@ -75,11 +75,11 @@ extern int fclose(FILE *);
 #endif
 
 
-const char month_snames[12][4] =
+API_VAR_EXPORT const char month_snames[12][4] =
 {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
-const char day_snames[7][4] =
+API_VAR_EXPORT const char day_snames[7][4] =
 {
     "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };

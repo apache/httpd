@@ -52,7 +52,7 @@
  */
 
 /* Utility routines for Apache proxy */
-
+#define IS_MODULE
 #include "mod_proxy.h"
 #include "http_main.h"
 #include "md5.h"

@@ -455,12 +455,21 @@ DEP_CPP_ALLOC=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\multithread.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_ALLOC=\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
 	
 
 "$(INTDIR)\alloc.obj" : $(SOURCE) $(DEP_CPP_ALLOC) "$(INTDIR)"
@@ -478,6 +487,7 @@ DEP_CPP_ALLOC=\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
 	".\include\multithread.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -498,6 +508,7 @@ DEP_CPP_BUFF_=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
@@ -529,6 +540,7 @@ DEP_CPP_BUFF_=\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -544,25 +556,65 @@ SOURCE=.\buildmark.c
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
+DEP_CPP_BUILD=\
+	".\include\alloc.h"\
+	".\include\ap.h"\
+	".\include\buff.h"\
+	".\include\conf.h"\
+	".\include\hide.h"\
+	".\include\hsregex.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_BUILD=\
+	".\include\ebcdic.h"\
+	".\include\os.h"\
+	".\include\sfio.h"\
+	
 
-"$(INTDIR)\buildmark.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\buildmark.obj" : $(SOURCE) $(DEP_CPP_BUILD) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
+DEP_CPP_BUILD=\
+	".\include\alloc.h"\
+	".\include\ap.h"\
+	".\include\buff.h"\
+	".\include\conf.h"\
+	".\include\hsregex.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
 
-"$(INTDIR)\buildmark.obj"	"$(INTDIR)\buildmark.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\buildmark.obj"	"$(INTDIR)\buildmark.sbr" : $(SOURCE)\
+ $(DEP_CPP_BUILD) "$(INTDIR)"
 
 
 !ENDIF 
 
 SOURCE=.\main\fnmatch.c
-DEP_CPP_FNMAT=\
-	".\include\fnmatch.h"\
-	
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
+DEP_CPP_FNMAT=\
+	".\include\conf.h"\
+	".\include\fnmatch.h"\
+	".\include\hide.h"\
+	".\include\hsregex.h"\
+	".\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_FNMAT=\
+	".\include\os.h"\
+	
 
 "$(INTDIR)\fnmatch.obj" : $(SOURCE) $(DEP_CPP_FNMAT) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
@@ -570,6 +622,12 @@ DEP_CPP_FNMAT=\
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
+DEP_CPP_FNMAT=\
+	".\include\conf.h"\
+	".\include\fnmatch.h"\
+	".\include\hsregex.h"\
+	".\os\win32\os.h"\
+	
 
 "$(INTDIR)\fnmatch.obj"	"$(INTDIR)\fnmatch.sbr" : $(SOURCE) $(DEP_CPP_FNMAT)\
  "$(INTDIR)"
@@ -605,6 +663,7 @@ DEP_CPP_HTTP_=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
@@ -632,6 +691,7 @@ DEP_CPP_HTTP_=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -653,6 +713,7 @@ DEP_CPP_HTTP_C=\
 	".\include\buff.h"\
 	".\include\conf.h"\
 	".\include\explain.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -693,6 +754,7 @@ DEP_CPP_HTTP_C=\
 	".\include\http_request.h"\
 	".\include\http_vhost.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -714,6 +776,7 @@ DEP_CPP_HTTP_CO=\
 	".\include\buff.h"\
 	".\include\conf.h"\
 	".\include\fnmatch.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -766,6 +829,7 @@ DEP_CPP_HTTP_CO=\
 	".\include\rfc1413.h"\
 	".\include\scoreboard.h"\
 	".\include\util_md5.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -786,6 +850,7 @@ DEP_CPP_HTTP_L=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -821,6 +886,7 @@ DEP_CPP_HTTP_L=\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -842,6 +908,7 @@ DEP_CPP_HTTP_M=\
 	".\include\buff.h"\
 	".\include\conf.h"\
 	".\include\explain.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -919,6 +986,7 @@ DEP_CPP_HTTP_P=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -964,6 +1032,7 @@ DEP_CPP_HTTP_P=\
 	".\include\http_vhost.h"\
 	".\include\httpd.h"\
 	".\include\util_date.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -985,6 +1054,7 @@ DEP_CPP_HTTP_R=\
 	".\include\buff.h"\
 	".\include\conf.h"\
 	".\include\fnmatch.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1027,6 +1097,7 @@ DEP_CPP_HTTP_R=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\scoreboard.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1047,6 +1118,7 @@ DEP_CPP_HTTP_V=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -1084,6 +1156,7 @@ DEP_CPP_HTTP_V=\
 	".\include\http_protocol.h"\
 	".\include\http_vhost.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1101,6 +1174,7 @@ SOURCE=.\main\md5c.c
 
 DEP_CPP_MD5C_=\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\md5.h"\
 	".\os\win32\os.h"\
@@ -1140,6 +1214,7 @@ DEP_CPP_MOD_A=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1175,6 +1250,7 @@ DEP_CPP_MOD_A=\
 	".\include\http_log.h"\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1195,6 +1271,7 @@ DEP_CPP_MOD_AC=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1236,6 +1313,7 @@ DEP_CPP_MOD_AC=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1256,6 +1334,7 @@ DEP_CPP_MOD_AL=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
@@ -1285,6 +1364,7 @@ DEP_CPP_MOD_AL=\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1305,6 +1385,7 @@ DEP_CPP_MOD_AS=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
@@ -1344,6 +1425,7 @@ DEP_CPP_MOD_AS=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1364,6 +1446,7 @@ DEP_CPP_MOD_AU=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1399,6 +1482,7 @@ DEP_CPP_MOD_AU=\
 	".\include\http_log.h"\
 	".\include\http_protocol.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1419,6 +1503,7 @@ DEP_CPP_MOD_AUT=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1460,6 +1545,7 @@ DEP_CPP_MOD_AUT=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1480,6 +1566,7 @@ DEP_CPP_MOD_C=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -1523,6 +1610,7 @@ DEP_CPP_MOD_C=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1543,6 +1631,7 @@ DEP_CPP_MOD_D=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1584,6 +1673,7 @@ DEP_CPP_MOD_D=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1604,6 +1694,7 @@ DEP_CPP_MOD_E=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
@@ -1633,6 +1724,7 @@ DEP_CPP_MOD_E=\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1653,6 +1745,7 @@ DEP_CPP_MOD_I=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1694,6 +1787,7 @@ DEP_CPP_MOD_I=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1714,6 +1808,7 @@ DEP_CPP_MOD_IN=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1757,6 +1852,7 @@ DEP_CPP_MOD_IN=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1777,6 +1873,7 @@ DEP_CPP_MOD_IS=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1815,6 +1912,7 @@ DEP_CPP_MOD_IS=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1835,6 +1933,7 @@ DEP_CPP_MOD_L=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1868,6 +1967,7 @@ DEP_CPP_MOD_L=\
 	".\include\http_core.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1888,6 +1988,7 @@ DEP_CPP_MOD_M=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
@@ -1918,6 +2019,7 @@ DEP_CPP_MOD_M=\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\modules\standard\mod_mime.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
@@ -1939,6 +2041,7 @@ DEP_CPP_MOD_N=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -1976,6 +2079,7 @@ DEP_CPP_MOD_N=\
 	".\include\http_request.h"\
 	".\include\httpd.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -1996,6 +2100,7 @@ DEP_CPP_MOD_S=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_core.h"\
@@ -2029,6 +2134,7 @@ DEP_CPP_MOD_S=\
 	".\include\http_core.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2049,6 +2155,7 @@ DEP_CPP_MOD_SO=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
@@ -2080,6 +2187,7 @@ DEP_CPP_MOD_SO=\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2100,6 +2208,7 @@ DEP_CPP_MOD_U=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
@@ -2129,6 +2238,7 @@ DEP_CPP_MOD_U=\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2149,6 +2259,7 @@ DEP_CPP_MODUL=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
@@ -2177,6 +2288,7 @@ DEP_CPP_MODUL=\
 	".\include\hsregex.h"\
 	".\include\http_config.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2194,6 +2306,7 @@ SOURCE=.\os\win32\multithread.c
 
 DEP_CPP_MULTI=\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\multithread.h"\
 	".\os\win32\os.h"\
@@ -2256,6 +2369,7 @@ DEP_CPP_REGIS=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
@@ -2284,6 +2398,7 @@ DEP_CPP_REGIS=\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2304,6 +2419,7 @@ DEP_CPP_RFC14=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
@@ -2337,6 +2453,7 @@ DEP_CPP_RFC14=\
 	".\include\http_main.h"\
 	".\include\httpd.h"\
 	".\include\rfc1413.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2357,6 +2474,7 @@ DEP_CPP_SERVI=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
@@ -2393,6 +2511,7 @@ DEP_CPP_SERVI=\
 	".\include\http_main.h"\
 	".\include\httpd.h"\
 	".\include\multithread.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	".\os\win32\registry.h"\
@@ -2415,6 +2534,7 @@ DEP_CPP_UTIL_=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
@@ -2446,6 +2566,7 @@ DEP_CPP_UTIL_=\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2463,6 +2584,7 @@ SOURCE=.\main\util_date.c
 
 DEP_CPP_UTIL_D=\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\util_date.h"\
 	".\os\win32\os.h"\
@@ -2502,6 +2624,7 @@ DEP_CPP_UTIL_M=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
 	".\include\md5.h"\
@@ -2533,6 +2656,7 @@ DEP_CPP_UTIL_M=\
 	".\include\httpd.h"\
 	".\include\md5.h"\
 	".\include\util_md5.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2553,6 +2677,7 @@ DEP_CPP_UTIL_S=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_config.h"\
@@ -2598,6 +2723,7 @@ DEP_CPP_UTIL_S=\
 	".\include\httpd.h"\
 	".\include\util_date.h"\
 	".\include\util_script.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
@@ -2618,6 +2744,7 @@ DEP_CPP_UTIL_U=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\http_conf_globals.h"\
 	".\include\http_log.h"\
@@ -2670,6 +2797,7 @@ DEP_CPP_UTIL_W=\
 	".\include\ap.h"\
 	".\include\buff.h"\
 	".\include\conf.h"\
+	".\include\hide.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
 	".\include\util_uri.h"\
@@ -2696,6 +2824,7 @@ DEP_CPP_UTIL_W=\
 	".\include\conf.h"\
 	".\include\hsregex.h"\
 	".\include\httpd.h"\
+	".\include\util_uri.h"\
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	

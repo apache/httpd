@@ -185,6 +185,7 @@ DEP_CPP_MOD_S=\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
+	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
@@ -194,8 +195,16 @@ DEP_CPP_MOD_S=\
 	"..\..\include\httpd.h"\
 	"..\..\include\scoreboard.h"\
 	"..\..\include\util_script.h"\
+	"..\..\include\util_uri.h"\
 	".\os.h"\
 	".\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_S=\
+	"..\..\include\ebcdic.h"\
+	"..\..\include\os.h"\
+	"..\..\include\sfio.h"\
 	
 
 "$(INTDIR)\mod_status.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
@@ -204,8 +213,26 @@ DEP_CPP_MOD_S=\
 
 !ELSEIF  "$(CFG)" == "ApacheModuleStatus - Win32 Debug"
 
+DEP_CPP_MOD_S=\
+	"..\..\include\alloc.h"\
+	"..\..\include\ap.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\conf.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_core.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_main.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\scoreboard.h"\
+	"..\..\include\util_script.h"\
+	"..\..\include\util_uri.h"\
+	".\os.h"\
+	".\readdir.h"\
+	
 
-"$(INTDIR)\mod_status.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\mod_status.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

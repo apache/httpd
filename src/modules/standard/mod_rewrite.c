@@ -1120,8 +1120,9 @@ static int hook_uri2file(request_rec *r)
             /* it was finally rewritten to a local path */
 
             /* expand "/~user" prefix */
+#ifndef WIN32
             r->filename = expand_tildepaths(r, r->filename);
-
+#endif
             rewritelog(r, 2, "local path result: %s", r->filename);
 
             /* the filename has to start with a slash! */
@@ -2316,7 +2317,7 @@ static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
 **  Unix /etc/passwd database information
 **
 */
-
+#ifndef WIN32
 static char *expand_tildepaths(request_rec *r, char *uri)
 {
     char user[LONG_STRING_LEN];
@@ -2350,7 +2351,7 @@ static char *expand_tildepaths(request_rec *r, char *uri)
     }
     return newuri;
 }
-
+#endif
 
 /*
 **

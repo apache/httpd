@@ -1314,7 +1314,7 @@ API_EXPORT(void) cleanup_for_exec(void)
 #endif /* ndef WIN32 */
 }
 
-API_EXPORT(void) null_cleanup(void *data)
+API_EXPORT_NONSTD(void) null_cleanup(void *data)
 {
     /* do nothing cleanup routine */
 }
