@@ -625,7 +625,7 @@ directive]&quot;</default>
 <name>SSIStartTag</name>
 <description>String that starts an include element</description>
 <syntax>SSIStartTag <var>tag</var></syntax>
-<default>SSIStartTag &quot;&lt;!--&quot;</default>
+<default>SSIStartTag &quot;&lt;!--#&quot;</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Available in version 2.0.30 and later.</compatibility>
