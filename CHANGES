@@ -1,5 +1,15 @@
 Changes with Apache 2.0.31-dev
 
+  *) FTP directory listings are now always retrieved in ASCII mode.
+     The FTP proxy properly escapes URI's and HTML in the generated
+     listing, and escapes the path components when talking to the FTP
+     server. It is now possible to browse the root directory by using
+     a url like:   ftp://user@host/%2f/ (ported from apache_1.3.24)
+     Also, the last path component may contain wildcard characters
+     '*' and '?', and if they do, a directory listing is created instead
+     of a file retrieval. Example: ftp://user@host/httpd/server/*.c
+     [Martin Kraemer]
+
   *) Added single-listener unserialized accept support to the
      worker MPM [Brian Pane]
 
