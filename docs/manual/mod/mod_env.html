@@ -57,14 +57,17 @@
     <em>env-variable</em> [<em>env-variable</em>] ...<br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> Base<br />
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_env<br />
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> PassEnv is only
-    available in Apache 1.1 and later. 
+    available in Apache 1.1 and later.  Directory and .htaccess context
+    is availble in Apache 1.3.7 and later.
 
     <p>Specifies one or more environment variables to pass to CGI
     scripts and SSI pages from the environment of the shell which
@@ -80,14 +83,17 @@
     value</em><br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> Base<br />
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_env<br />
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> SetEnv is only
-    available in Apache 1.1 and later. 
+    available in Apache 1.1 and later.  Directory and .htaccess context
+    is availble in Apache 1.3.7 and later.
 
     <p>Sets an environment variable, which is then passed on to CGI
     scripts and SSI pages. Example:</p>
@@ -103,14 +109,17 @@
     <em>env-variable</em> [<em>env-variable</em>] ...<br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config, virtual
-    host<br />
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
      <a href="directive-dict.html#Status"
     rel="Help"><strong>Status:</strong></a> Base<br />
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_env<br />
      <a href="directive-dict.html#Compatibility"
     rel="Help"><strong>Compatibility:</strong></a> UnsetEnv is only
-    available in Apache 1.1 and later. 
+    available in Apache 1.1 and later.  Directory and .htaccess context
+    is availble in Apache 1.3.7 and later.
 
     <p>Removes one or more environment variables from those passed
     on to CGI scripts and SSI pages. Example:</p>
