@@ -215,7 +215,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         int i;
 
         /* Take the MD5 hash of the string argument.  */
-        apr_md5(hash, pw, strlen(pw));
+        apr_md5(hash, (const unsigned char*)pw, strlen(pw));
 
         for (i = 0, r = cpw; i < MD5_DIGESTSIZE; i++) {
             *r++ = hex[hash[i] >> 4];
