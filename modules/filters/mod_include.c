@@ -3353,12 +3353,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         ap_add_cgi_vars(r);
         add_include_vars(r, conf->default_time_fmt);
     }
-    /* XXX: this is bogus, at some point we're going to do a subrequest,
-     * and when we do it we're going to be subjecting code that doesn't
-     * expect to be signal-ready to SIGALRM.  There is no clean way to
-     * fix this, except to put alarm support into BUFF. -djg
-     */
-
     /* Always unset the content-length.  There is no way to know if
      * the content will be modified at some point by send_parsed_content.
      * It is very possible for us to not find any content in the first
