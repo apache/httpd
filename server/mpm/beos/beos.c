@@ -337,7 +337,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock,
     (void)apr_os_sock_get(&csd, sock);
     
     if (csd >= FD_SETSIZE) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
                      "filedescriptor (%u) larger than FD_SETSIZE (%u) "
                      "found, you probably need to rebuild Apache with a "
                      "larger FD_SETSIZE", csd, FD_SETSIZE);
@@ -503,7 +503,7 @@ static int32 worker_thread(void * dummy)
 
     apr_bucket_alloc_destroy(bucket_alloc);
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE | APLOG_NOERRNO, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL,
                  "worker_thread %ld exiting", find_thread(NULL));
     
     apr_thread_mutex_lock(worker_thread_count_mutex);
@@ -565,7 +565,7 @@ static void check_restart(void *data)
     if (!restart_pending && !shutdown_pending) {
         int slot = (int)data;
         make_worker(slot);
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL, 
             "spawning a new worker thread in slot %d", slot);
     }
 }
@@ -694,7 +694,7 @@ static void server_main_loop(int remaining_threads_to_start)
                  * scoreboard.  Somehow we don't know about this
                  * child.
                  */
-                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
+                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
 			                  "long lost child came home! (pid %ld)", pid.pid);
             }
 	    
@@ -806,7 +806,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
  
     if ((num_listening_sockets = ap_setup_listeners(ap_server_conf)) < 1) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
         return 1;
     }
@@ -912,11 +912,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /*
      * record that we've entered the world !
      */
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
 		"Server built: %s", ap_get_server_built());
 
     restart_pending = shutdown_pending = 0;
@@ -943,7 +943,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         const char *pidfile = NULL;
         pidfile = ap_server_root_relative (pconf, ap_pid_fname);
         if ( pidfile != NULL && unlink(pidfile) == 0)
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                          "removed PID file %s (pid=%ld)", pidfile, 
                          (long)getpid());
     }
@@ -968,7 +968,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         if (!child_fatal) {         /* already recorded */
             /* record the shutdown in the log */
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                          "caught SIGTERM, shutting down");
         }
     
@@ -979,7 +979,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     signal(SIGHUP, SIG_IGN);
 
     if (is_graceful) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		    AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
     }
     else {
@@ -989,7 +989,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          */
 	    
         ap_reclaim_child_processes(1);		/* Start with SIGTERM */
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+	    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGHUP received.  Attempting to restart");
     }
     
@@ -1067,7 +1067,7 @@ static const char *set_threads_to_start(cmd_parms *cmd, void *dummy, const char 
 
     ap_threads_to_start = atoi(arg);
     if (ap_threads_to_start < 0) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "StartThreads set to a value less than 0, reset to 1");
         ap_threads_to_start = 1;
     }
@@ -1083,11 +1083,11 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, const char
 
     min_spare_threads = atoi(arg);
     if (min_spare_threads <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: detected MinSpareThreads set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Please read the documentation.");
        min_spare_threads = 1;
     }
@@ -1115,18 +1115,18 @@ static const char *set_threads_limit (cmd_parms *cmd, void *dummy, const char *a
 
     ap_thread_limit = atoi(arg);
     if (ap_thread_limit > HARD_THREAD_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: MaxClients of %d exceeds compile time limit "
                     "of %d servers,", ap_thread_limit, HARD_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " lowering MaxClients to %d.  To increase, please "
                     "see the", HARD_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " HARD_THREAD_LIMIT define in server/mpm/beos/mpm_default.h.");
        ap_thread_limit = HARD_THREAD_LIMIT;
     } 
     else if (ap_thread_limit < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require MaxClients > 0, setting to %d", HARD_THREAD_LIMIT);
         ap_thread_limit = HARD_THREAD_LIMIT;
     }
@@ -1142,7 +1142,7 @@ static const char *set_max_requests_per_thread (cmd_parms *cmd, void *dummy, con
 
     ap_max_requests_per_thread = atoi(arg);
     if (ap_max_requests_per_thread < 0) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "WARNING: MaxRequestsPerThread was set below 0"
                      "reset to 0, but this may not be what you want.");
         ap_max_requests_per_thread = 0;

@@ -336,7 +336,7 @@ static void sig_coredump(int sig)
     chdir(ap_coredump_dir);
     apr_signal(sig, SIG_DFL);
     if (ap_my_pid == parent_pid) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+            ap_log_error(APLOG_MARK, APLOG_NOTICE,
                          0, ap_server_conf,
                          "seg fault or similar nasty error detected "
                          "in the parent process");
@@ -747,7 +747,7 @@ static int make_child(server_rec *s, int slot)
 	int status = bindprocessor(BINDPROCESS, (int)getpid(), 
 				   PROCESSOR_CLASS_ANY);
 	if (status != OK) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, 
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, 
                          ap_server_conf, "processor unbind failed %d", status);
 	}
 #endif
@@ -871,7 +871,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
 	    static int reported = 0;
 
 	    if (!reported) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
+		ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
 			    "server reached MaxClients setting, consider"
 			    " raising the MaxClients setting");
 		reported = 1;
@@ -880,7 +880,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
 	}
 	else {
 	    if (idle_spawn_rate >= 8) {
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+		ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
 		    "server seems busy, (you may need "
 		    "to increase StartServers, or Min/MaxSpareServers), "
 		    "spawning %d children, there are %d idle, and "
@@ -892,7 +892,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
         if (make_child(ap_server_conf, free_slots[i]) == -1) {
             if(free_length == 1) {
                 shutdown_pending = 1;
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, ap_server_conf,
                 "No active child processes: shutting down");
             }
         }
@@ -930,7 +930,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     first_server_limit = server_limit;
     if (changed_limit_at_restart) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_NOERRNO, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                      "WARNING: Attempt to change ServerLimit "
                      "ignored during restart");
         changed_limit_at_restart = 0;
@@ -1005,13 +1005,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	hold_off_on_exponential_spawning = 10;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
 		"Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
 		"AcceptMutex: %s", ap_valid_accept_mutex_string);
 #endif
     restart_pending = shutdown_pending = 0;
@@ -1065,7 +1065,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		    * scoreboard.  Somehow we don't know about this
 		    * child.
 		    */
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 
+		ap_log_error(APLOG_MARK, APLOG_WARNING, 
                             0, ap_server_conf,
 			    "long lost child came home! (pid %ld)", (long)pid.pid);
 	    }
@@ -1112,13 +1112,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    const char *pidfile = NULL;
 	    pidfile = ap_server_root_relative (pconf, ap_pid_fname);
 	    if ( pidfile != NULL && unlink(pidfile) == 0)
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
+		ap_log_error(APLOG_MARK, APLOG_INFO,
 				0, ap_server_conf,
 				"removed PID file %s (pid=%ld)",
 				pidfile, (long)getpid());
 	}
 
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		    "caught SIGTERM, shutting down");
 	return 1;
     }
@@ -1138,7 +1138,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_scoreboard_image->global->running_generation = ap_my_generation;
     
     if (is_graceful) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		    "Graceful restart requested, doing restart");
 
 	/* kill off the idle ones */
@@ -1161,7 +1161,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGHUP");
 	}
 	ap_reclaim_child_processes(0);		/* Not when just starting up */
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
+	ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGHUP received.  Attempting to restart");
     }
 
@@ -1179,7 +1179,7 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     ap_server_conf = s;
 
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0, 
+        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0, 
                      NULL, "no listening sockets available, shutting down");
 	return DONE;
     }
@@ -1280,11 +1280,11 @@ static const char *set_min_free_servers(cmd_parms *cmd, void *dummy, const char 
 
     ap_daemons_min_free = atoi(arg);
     if (ap_daemons_min_free <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: detected MinSpareServers set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "Please read the documentation.");
        ap_daemons_min_free = 1;
     }
@@ -1312,18 +1312,18 @@ static const char *set_max_clients (cmd_parms *cmd, void *dummy, const char *arg
 
     ap_daemons_limit = atoi(arg);
     if (ap_daemons_limit > server_limit) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: MaxClients of %d exceeds ServerLimit value "
                     "of %d servers,", ap_daemons_limit, server_limit);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " lowering MaxClients to %d.  To increase, please "
                     "see the ServerLimit", server_limit);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     " directive.");
        ap_daemons_limit = server_limit;
     } 
     else if (ap_daemons_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require MaxClients > 0, setting to 1");
 	ap_daemons_limit = 1;
     }
@@ -1355,15 +1355,15 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
     server_limit = tmp_server_limit;
     
     if (server_limit > MAX_SERVER_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     "WARNING: ServerLimit of %d exceeds compile time limit "
                     "of %d servers,", server_limit, MAX_SERVER_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                     " lowering ServerLimit to %d.", MAX_SERVER_LIMIT);
        server_limit = MAX_SERVER_LIMIT;
     } 
     else if (server_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require ServerLimit > 0, setting to 1");
 	server_limit = 1;
     }

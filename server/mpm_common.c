@@ -143,7 +143,7 @@ void ap_reclaim_child_processes(int terminate)
             case 6:     /* 344ms */
             case 7:     /* 1.4sec */
                 /* ok, now it's being annoying */
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+                ap_log_error(APLOG_MARK, APLOG_WARNING,
                              0, ap_server_conf,
                              "child process %ld still did not exit, "
                              "sending a SIGTERM",
@@ -153,7 +153,7 @@ void ap_reclaim_child_processes(int terminate)
 
             case 8:     /*  6 sec */
                 /* die child scum */
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+                ap_log_error(APLOG_MARK, APLOG_ERR,
                              0, ap_server_conf,
                              "child process %ld still did not exit, "
                              "sending a SIGKILL",
@@ -177,7 +177,7 @@ void ap_reclaim_child_processes(int terminate)
                  * exited, we will likely fail to bind to the port
                  * after the restart.
                  */
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
+                ap_log_error(APLOG_MARK, APLOG_ERR,
                              0, ap_server_conf,
                              "could not make child process %ld exit, "
                              "attempting to continue anyway",
@@ -258,7 +258,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
         }
 
         if (status == APEXIT_CHILDFATAL) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO,
+            ap_log_error(APLOG_MARK, APLOG_ALERT,
                          0, ap_server_conf,
                          "Child %" APR_PID_T_FMT
                          " returned a Fatal error..." APR_EOL_STR
@@ -280,7 +280,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
 
         default:
             if (APR_PROC_CHECK_CORE_DUMP(why)) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+                ap_log_error(APLOG_MARK, APLOG_NOTICE,
                              0, ap_server_conf,
                              "child pid %ld exit signal %s (%d), "
                              "possible coredump in %s",
@@ -288,7 +288,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
                              ap_coredump_dir);
             }
             else {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+                ap_log_error(APLOG_MARK, APLOG_NOTICE,
                              0, ap_server_conf,
                              "child pid %ld exit signal %s (%d)",
                              (long)pid->pid, sigdesc, signum);
@@ -329,7 +329,7 @@ AP_DECLARE(uid_t) ap_uname2id(const char *name)
         return (atoi(&name[1]));
 
     if (!(ent = getpwnam(name))) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "%s: bad user name %s", ap_server_argv0, name);
         exit(1);
     }
@@ -347,7 +347,7 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name)
         return (atoi(&name[1]));
 
     if (!(ent = getgrnam(name))) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "%s: bad group name %s", ap_server_argv0, name);
         exit(1);
     }

@@ -253,7 +253,7 @@ apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached)
         return APR_SUCCESS;
     }
     if (apr_shm_size_get(ap_scoreboard_shm) < scoreboard_size) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL,
                      "Fatal error: shared scoreboard too small for child!");
         apr_shm_detach(ap_scoreboard_shm);
         ap_scoreboard_shm = NULL;
@@ -323,7 +323,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         /* A simple malloc will suffice */
         void *sb_mem = calloc(1, scoreboard_size);
         if (sb_mem == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT | APLOG_NOERRNO, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL,
                          "(%d)%s: cannot allocate scoreboard",
                          errno, strerror(errno));
             return HTTP_INTERNAL_SERVER_ERROR;

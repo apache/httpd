@@ -177,18 +177,18 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg
 
     ap_threads_per_child = atoi(arg);
     if (ap_threads_per_child > HARD_THREAD_LIMIT) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: ThreadsPerChild of %d exceeds compile time"
                      " limit of %d threads,", ap_threads_per_child, 
                      HARD_THREAD_LIMIT);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      " lowering ThreadsPerChild to %d. To increase, please"
                      " see the  HARD_THREAD_LIMIT define in %s.", 
                      HARD_THREAD_LIMIT, AP_MPM_HARD_LIMITS_FILE);
         ap_threads_per_child = HARD_THREAD_LIMIT;
     }
     else if (ap_threads_per_child < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require ThreadsPerChild > 0, setting to 1");
 	ap_threads_per_child = 1;
     }
@@ -249,7 +249,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
         if (num_completion_contexts >= ap_threads_per_child) {
             static int reported = 0;
             if (!reported) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
                              "Server ran out of threads to serve requests. Consider "
                              "raising the ThreadsPerChild setting");
                 reported = 1;
@@ -558,10 +558,10 @@ static int set_listeners_noninheritable(apr_pool_t *p)
     }
 
     if (my_pid == parent_pid) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                      "Parent: Marked listeners as not inheritable.");
     } else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                      "Child %d: Marked listeners as not inheritable.", my_pid);
     }
     return 1;
@@ -637,7 +637,7 @@ void get_handles_from_parent(server_rec *s)
      */
     ap_init_scoreboard(sb_shared);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                  "Child %d: Retrieved our scoreboard from the parent.", my_pid);
 }
 
@@ -687,7 +687,7 @@ void get_listeners_from_parent(server_rec *s)
         apr_os_sock_put(&lr->sd, &nsd, s->process->pool);
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                  "Child %d: retrieved %d listeners from parent", my_pid, lcnt);
 
     if (!set_listeners_noninheritable(s->process->pool)) {
@@ -735,7 +735,7 @@ static void add_job(int sock)
 
     new_job = (joblist *) malloc(sizeof(joblist));
     if (new_job == NULL) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "Ouch!  Out of memory in add_job()!");
         return;
     }
@@ -1386,7 +1386,7 @@ static void child_main()
      */
     rv = apr_proc_mutex_unlock(start_mutex);
     if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK,APLOG_NOTICE | APLOG_NOERRNO, rv, ap_server_conf, 
+        ap_log_error(APLOG_MARK,APLOG_NOTICE, rv, ap_server_conf, 
                      "Child %d: Released the start mutex", my_pid);
     }
     else {
@@ -1501,7 +1501,7 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
         return -1;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                  "Parent: Sent the scoreboard to the child");
     return 0;
 }
@@ -1541,7 +1541,7 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPip
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                  "Parent: Sent %d listeners to child %d", lcnt, dwProcessId);
     return 0;
 }
@@ -1647,7 +1647,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
             return -1;
         }
         else if (hShareError == INVALID_HANDLE_VALUE) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
                          "Parent: Failed to share error log with child.\n");
             CloseHandle(hPipeWrite);
             CloseHandle(hPipeRead);
@@ -1882,7 +1882,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     else if (cld == SHUTDOWN_HANDLE) {
         /* shutdown_event signalled */
         shutdown_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, APR_SUCCESS, s, 
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, s, 
                      "Parent: Received shutdown signal -- Shutting down the server.");
         if (ResetEvent(shutdown_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
@@ -1894,7 +1894,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          * then signal the child process to exit. 
          */
         restart_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, 
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, 
                      "Parent: Received restart signal -- Restarting the server.");
         if (ResetEvent(restart_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
@@ -1921,13 +1921,13 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         if (   exitcode == APEXIT_CHILDFATAL 
             || exitcode == APEXIT_CHILDINIT
             || exitcode == APEXIT_INIT) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf, 
                          "Parent: child process exited with status %u -- Aborting.", exitcode);
         }
         else {
             int i;
             restart_pending = 1;
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                          "Parent: child process exited with status %u -- Restarting.", exitcode);
             for (i = 0; i < ap_threads_per_child; i++) {
                 ap_update_child_status_from_indexes(0, i, SERVER_DEAD, NULL);
@@ -1960,13 +1960,13 @@ die_now:
         if (event_handles[CHILD_HANDLE]) {
             rv = WaitForSingleObject(event_handles[CHILD_HANDLE], timeout);
             if (rv == WAIT_OBJECT_0) {
-                ap_log_error(APLOG_MARK,APLOG_NOTICE|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
+                ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                              "Parent: Child process exited successfully.");
                 CloseHandle(event_handles[CHILD_HANDLE]);
                 event_handles[CHILD_HANDLE] = NULL;
             }
             else {
-                ap_log_error(APLOG_MARK,APLOG_NOTICE|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
+                ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                              "Parent: Forcing termination of child process %d ", event_handles[CHILD_HANDLE]);
                 TerminateProcess(event_handles[CHILD_HANDLE], 1);
                 CloseHandle(event_handles[CHILD_HANDLE]);
@@ -2248,7 +2248,7 @@ void winnt_rewrite_args(process_rec *process)
             rv = mpm_merge_service_args(process->pool, mpm_new_argv, 
                                         fixed_args);
             if (rv == APR_SUCCESS) {
-                ap_log_error(APLOG_MARK,APLOG_NOERRNO|APLOG_INFO, 0, NULL,
+                ap_log_error(APLOG_MARK,APLOG_INFO, 0, NULL,
                              "Using ConfigArgs of the installed service "
                              "\"%s\".", service_name);
             }
@@ -2468,7 +2468,7 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
     }
 
     if (ap_setup_listeners(s) < 1) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0, 
+        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0, 
                      NULL, "no listening sockets available, shutting down");
         return DONE;
     }
@@ -2556,7 +2556,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
             const char *pidfile = ap_server_root_relative (pconf, ap_pid_fname);
 
             if (pidfile != NULL && unlink(pidfile) == 0) {
-                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS,
+                ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS,
                              ap_server_conf, "removed PID file %s (pid=%ld)",
                              pidfile, GetCurrentProcessId());
             }

@@ -339,7 +339,7 @@ static void dump_iphash_statistics(server_rec *main_s)
     }
     p += apr_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
                       total, count[IPHASH_TABLE_SIZE - 1]);
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, main_s, buf);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, main_s, buf);
 }
 #endif
 
@@ -517,7 +517,7 @@ static int add_name_vhost_config(apr_pool_t *p, server_rec *main_s,
         ic->server = s;
         if (sar->host_port != ic->sar->host_port) {
             /* one of the two is a * port, the other isn't */
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, main_s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_s,
                          "VirtualHost %s:%u -- mixing * "
                          "ports and non-* ports with "
                          "a NameVirtualHost address is not supported,"
@@ -538,7 +538,7 @@ static void remove_unused_name_vhosts(server_rec *main_s, ipaddr_chain **pic)
         ipaddr_chain *ic = *pic;
         
         if (ic->server == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, main_s,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, main_s,
                          "NameVirtualHost %s:%u has no VirtualHosts",
                          ic->sar->virthost, ic->sar->host_port);
             *pic = ic->next;
@@ -624,7 +624,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                 ic = find_default_server(sar->host_port);
                 if (!ic || !add_name_vhost_config(p, main_s, s, sar, ic)) {
                     if (ic && ic->sar->host_port != 0) {
-                        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+                        ap_log_error(APLOG_MARK, APLOG_WARNING,
                                      0, main_s, "_default_ VirtualHost "
                                      "overlap on port %u, the first has "
                                      "precedence", sar->host_port);
@@ -647,7 +647,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                     *iphash_table_tail[bucket] = ic;
                 }
                 else if (!add_name_vhost_config(p, main_s, s, sar, ic)) {
-                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+                    ap_log_error(APLOG_MARK, APLOG_WARNING,
                                  0, main_s, "VirtualHost %s:%u overlaps "
                                  "with VirtualHost %s:%u, the first has "
                                  "precedence, perhaps you need a "
@@ -796,7 +796,7 @@ static void fix_hostname(request_rec *r)
 
 bad:
     r->status = HTTP_BAD_REQUEST;
-    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "Client sent malformed Host header");
     return;
 }
