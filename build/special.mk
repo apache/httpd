@@ -62,7 +62,7 @@ SHARED_TARGETS = $(shared)
 INSTALL_TARGETS = install-modules
 
 install-modules:
-	@test -d $(DESTDIR)$(libexecdir) || $(MKINSTALLDIRS) $(DESTDIR)$(libexecdir);
+	@test -d $(DESTDIR)$(libexecdir) || $(MKINSTALLDIRS) $(DESTDIR)$(libexecdir)
 	@builtin='$(BUILTIN_LIBS)'; \
 	has_mod_so=`echo $$builtin|sed 's/^.*mod_so.*$$/has_mod_so/'`; \
 	if [ "x$$has_mod_so" = "xhas_mod_so" ]; then \
