@@ -535,7 +535,7 @@ ScriptAlias /cgi-bin/ "@@ServerRoot@@/cgi-bin/"
 #
 # FancyIndexing is whether you want fancy directory indexing or standard
 #
-FancyIndexing On
+IndexOptions FancyIndexing
 
 #
 # AddIcon* directives tell the server which icon to show for different
