@@ -629,11 +629,11 @@ struct ap_method_list_t {
  * Possible values for request_rec.used_path_info:
  */
 
-/** Accept request given path_info */
-#define AP_REQ_ACCEPT_PATH_INFO     0
-/** Send 404 error if path_info was given */
+/** Accept the path_info from the request */
+#define AP_REQ_ACCEPT_PATH_INFO    0
+/** Return a 404 error if path_info was given */
 #define AP_REQ_REJECT_PATH_INFO    1
-/** Module's choice for handling path_info */
+/** Module may chose to use the given path_info */
 #define AP_REQ_DEFAULT_PATH_INFO   2
 /** @} */
 
@@ -689,11 +689,11 @@ typedef struct request_rec request_rec;
 
 /** A structure that represents one process */
 struct process_rec {
-    /** Global pool. Please try to cleared on _all_ exits */
+    /** Global pool. Cleared upon normal exit */
     apr_pool_t *pool;
-    /** aka configuration pool, cleared on restarts */
+    /** Configuration pool. Cleared upon restart */
     apr_pool_t *pconf;
-    /** How many command line arguments were pass to the program */
+    /** Number of command line arguments passed to the program */
     int argc;
     /** The command line arguments */
     const char * const *argv;
@@ -705,26 +705,23 @@ struct process_rec {
 struct request_rec {
     /** The pool associated with the request */
     apr_pool_t *pool;
-    /** The connection over which this connection has been read */
+    /** The connection to the client */
     conn_rec *connection;
-    /** The virtual host this request is for */
+    /** The virtual host for this request */
     server_rec *server;
 
-    /** If we wind up getting redirected, pointer to the request we 
-     *  redirected to.  */
+    /** Pointer to the redirected request if this is an external redirect */
     request_rec *next;
-    /** If this is an internal redirect, pointer to where we redirected 
-     *  *from*.  */
+    /** Pointer to the previous request if this is an internal redirect */
     request_rec *prev;
 
-    /** If this is a sub_request (see request.h) pointer back to the 
-     *  main request.  */
+    /** Pointer to the main request if this is a sub-request (see request.h) */
     request_rec *main;
 
     /* Info about the request itself... we begin with stuff that only
      * protocol.c should ever touch...
      */
-    /** First line of request, so we can log it */
+    /** First line of request */
     char *the_request;
     /** HTTP/0.9, "simple" request (e.g. GET /foo\n w/no headers) */
     int assbackwards;
@@ -735,32 +732,32 @@ struct request_rec {
     int proxyreq;
     /** HEAD request, as opposed to GET */
     int header_only;
-    /** Protocol, as given to us, or HTTP/0.9 */
+    /** Protocol string, as given to us, or HTTP/0.9 */
     char *protocol;
-    /** Number version of protocol; 1.1 = 1001 */
+    /** Protocol version number of protocol; 1.1 = 1001 */
     int proto_num;
     /** Host, as set by full URI or Host: */
     const char *hostname;
 
-    /** When the request started */
+    /** Time when the request started */
     apr_time_t request_time;
 
     /** Status line, if set by script */
     const char *status_line;
-    /** In any case */
+    /** Status line */
     int status;
 
     /* Request method, two ways; also, protocol, etc..  Outside of protocol.c,
      * look, but don't touch.
      */
 
-    /** GET, HEAD, POST, etc. */
+    /** Request method (eg. GET, HEAD, POST, etc.) */
     const char *method;
     /** M_GET, M_POST, etc. */
     int method_number;
 
     /**
-     *  allowed is a bitvector of the allowed methods.
+     *  'allowed' is a bitvector of the allowed methods.
      *
      *  A handler must ensure that the request method is one that
      *  it is capable of handling.  Generally modules should DECLINE
@@ -789,7 +786,7 @@ struct request_rec {
     apr_off_t sent_bodyct;
     /** body byte count, for easy access */
     apr_off_t bytes_sent;
-    /** Time the resource was last modified */
+    /** Last modified time of the requested resource */
     apr_time_t mtime;
 
     /* HTTP/1.1 connection-level features */
@@ -801,11 +798,13 @@ struct request_rec {
     /** The "real" content length */
     apr_off_t clength;
 
-    /** bytes left to read */
+    /** Remaining bytes left to read from the request body */
     apr_off_t remaining;
-    /** bytes that have been read */
+    /** Number of bytes that have been read  from the request body */
     apr_off_t read_length;
-    /** how the request body should be read */
+    /** Method for reading the request body
+     * (eg. REQUEST_CHUNKED_ERROR, REQUEST_NO_BODY,
+     *  REQUEST_CHUNKED_DECHUNK, etc...) */
     int read_body;
     /** reading chunked transfer-coding */
     int read_chunked;
@@ -843,11 +842,11 @@ struct request_rec {
     /** The content-type for the current request */
     const char *content_type;	/* Break these out --- we dispatch on 'em */
     /** The handler string that we use to call a handler function */
-    const char *handler;	/* What we *really* dispatch on           */
+    const char *handler;	/* What we *really* dispatch on */
 
     /** How to encode the data */
     const char *content_encoding;
-    /** array of (char*) representing the content languages */
+    /** Array of strings representing the content languages */
     apr_array_header_t *content_languages;
 
     /** variant list validator (if negotiated) */
@@ -858,7 +857,7 @@ struct request_rec {
     /** If an authentication check was made, this gets set to the auth type. */
     char *ap_auth_type;
 
-    /** This response is non-cache-able */
+    /** This response can not be cached */
     int no_cache;
     /** There is no local copy of this response */
     int no_local_copy;
@@ -867,29 +866,31 @@ struct request_rec {
      * or content-negotiation mapping).
      */
 
-    /** the uri without any parsing performed */
+    /** The URI without any parsing performed */
     char *unparsed_uri;	
-    /** the path portion of the URI */
+    /** The path portion of the URI */
     char *uri;
-    /** The filename on disk that this response corresponds to */
+    /** The filename on disk corresponding to this response */
     char *filename;
+    /* XXX: What does this mean? Please define "canonicalize" -aaron */
     /** The true filename, we canonicalize r->filename if these don't match */
     char *canonical_filename;
-    /** The path_info for this request if there is any. */
+    /** The PATH_INFO extracted from this request */
     char *path_info;
-    /** QUERY_ARGS, if any */
+    /** The QUERY_ARGS extracted from this request */
     char *args;	
     /** ST_MODE set to zero if no such file */
     apr_finfo_t finfo;
-    /** components of uri, dismantled */
+    /** A struct containing the components of URI */
     apr_uri_t parsed_uri;
 
-    /** Flag for the handler to accept or reject path_info on 
-     *  the current request.  All modules should respect the
-     *  AP_REQ_ACCEPT_PATH_INFO and AP_REQ_REJECT_PATH_INFO 
-     *  values, while AP_REQ_DEFAULT_PATH_INFO indicates they
-     *  may follow existing conventions.  This is set to the
-     *  user's preference upon HOOK_VERY_FIRST of the fixups.
+    /**
+     * Flag for the handler to accept or reject path_info on 
+     * the current request.  All modules should respect the
+     * AP_REQ_ACCEPT_PATH_INFO and AP_REQ_REJECT_PATH_INFO 
+     * values, while AP_REQ_DEFAULT_PATH_INFO indicates they
+     * may follow existing conventions.  This is set to the
+     * user's preference upon HOOK_VERY_FIRST of the fixups.
      */
     int used_path_info;
 
@@ -903,12 +904,12 @@ struct request_rec {
     /** Notes on *this* request */
     struct ap_conf_vector_t *request_config;
 
-/**
- * a linked list of the configuration directives in the .htaccess files
- * accessed by this request.
- * N.B. always add to the head of the list, _never_ to the end.
- * that way, a sub request's list can (temporarily) point to a parent's list
- */
+    /**
+     * A linked list of the .htaccess configuration directives
+     * accessed by this request.
+     * N.B. always add to the head of the list, _never_ to the end.
+     * that way, a sub request's list can (temporarily) point to a parent's list
+     */
     const struct htaccess_result *htaccess;
 
     /** A list of output filters to be used for this request */
