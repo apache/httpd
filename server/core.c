@@ -3681,17 +3681,13 @@ static int default_handler(request_rec *r)
         }
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
-#if APR_HAS_LARGE_FILES
-#if APR_HAS_SENDFILE
-        if ((d->enable_sendfile != ENABLE_SENDFILE_OFF) &&
-#else
-        if (
-#endif
-            (r->finfo.size > AP_MAX_SENDFILE)) {
-            /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets,
-             * no greater than MAX(apr_size_t), and more granular than that
-             * in case the brigade code/filters attempt to read it directly.
-             */
+
+        /* For platforms where the size of the file may be larger than
+         * that which can be stored in a single bucket (whether the
+         * length field is an apr_size_t), split it into several
+         * buckets */
+        if (sizeof(apr_off_t) > sizeof(apr_size_t) 
+            && r->finfo.size > AP_MAX_SENDFILE) {
             apr_off_t fsize = r->finfo.size;
             e = apr_bucket_file_create(fd, 0, AP_MAX_SENDFILE, r->pool,
                                        c->bucket_alloc);
@@ -3705,7 +3701,6 @@ static int default_handler(request_rec *r)
             e->length = (apr_size_t)fsize; /* Resize just the last bucket */
         }
         else
-#endif
             e = apr_bucket_file_create(fd, 0, (apr_size_t)r->finfo.size,
                                        r->pool, c->bucket_alloc);
 
