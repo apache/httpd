@@ -289,6 +289,7 @@
 <h3><a name="dimensions" id="dimensions">ネゴシエーションの次元</a></h3>
 
     <table>
+      
       <tr valign="top">
         <th>次元</th>
 
@@ -312,7 +313,7 @@
 	ヘッダフィールドで優先傾向を指定します。
 	要素それぞれに品質数値を持たせることができます。
 	variants は 0 か 1 つかそれ以上の言語と
-	関連づけることができます。</td>
+	関連づけることができます。</td>
       </tr>
 
       <tr valign="top">
@@ -368,9 +369,9 @@
 	  <li>(もしあれば) Accept-Language ヘッダの言語順か、
 	  (もしあれば)
 	  <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code> 
-	  ディレクティブの言語順で最適な言語の variant を選びます。</li>
+	  ディレクティブの言語順で最適な言語の variant を選びます。</li>
 
-	  <li>最高「レベル」のメディアパラメータ
+	  <li>最高「レベル」のメディアパラメータ
 	  (text/html メディアタイプのバージョンを与えるために使われます)
 	  を持つ variant を選びます。</li>
 
@@ -411,7 +412,7 @@
       HTTP レスポンスヘッダ Vary が設定されます
       (リソースのキャッシュをする時に、
       ブラウザやキャッシュはこの情報を使うことができます)。
-      以上で終わり。</li>
+      以上で終わり。</li>
 
       <li>ここに来たということは、variant が一つも選択されなかった
       (ブラウザが許容するものがなかったため) ということです。
@@ -457,7 +458,7 @@
 </code></p></div>
     <p>こうすることの狙いは、明示的にリストしているタイプが優先されるけれども、
     異なる表現が利用可能であればそれでも良い、ということです。
-    しかしながら、上の基本的なアルゴリズムでは、
+    しかしながら、上の基本的なアルゴリズムでは、
     */* ワイルドカードは他の全てのタイプと全く同等なので優先されません。
     ブラウザは */* にもっと低い品質 (優先) 
     値を付けてリクエストを送るべきなのです。例えば:</p>
@@ -493,7 +494,7 @@
     か "Multiple Choices" レスポンスをクライアントに返します。
     これらのエラーメッセージを返さないように、
     このような場合には Apache が Accept-Language を無視して、
-    クライアントのリクエストに明示的には合致しないドキュメントを
+    クライアントのリクエストに明示的には合致しないドキュメントを
     提供するように設定できます。
     <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
     ディレクティブは、これらのエラーの一つか両方をオーバーライドするために
@@ -529,8 +530,8 @@
     必要です。</p>
 
     <p>より高度なテクニック (Cookie や特殊な URL パス等)
-    においてもユーザの言語選択をサポートするため、
-    Apache 2.1 からは、<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
+    においてもユーザの言語選択をサポートするため、
+    Apache 2.0.47 からは、<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
     が<a href="env.html">環境変数</a> <code>prefer-language</code>
     を認識するようになりました。
     この変数が存在して、適切な言語タグが代入されているのであれば、
@@ -590,6 +591,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     <p>ファイル名と、それに対して使えるリンクと使えないリンクの例です:</p>
 
     <table class="bordered">
+      
       <tr>
         <th>ファイル名</th>
 
@@ -666,8 +668,8 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 
     <p>リンクに MIME タイプを使い続けたい (<em>例えば</em>
     <code>foo.html</code>)時は、言語拡張子は
-    (エンコーディング拡張子もあればそれも含めて)
-    MIME タイプ拡張子の右側になければなりません
+    (エンコーディング拡張子もあればそれも含めて)
+    MIME タイプ拡張子の右側になければなりません
     (<em>例えば</em> <code>foo.html.en</code>)。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

@@ -38,11 +38,11 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#ssl">Apache の SSL/TLS 暗号化</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#howto">ガイド、チュートリアル、ハウツー</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#platform">プラットフォーム固有の情報</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programs">Apache HTTP サーバとサポートプログラム</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#programs">Apache HTTP サーバとサポートプログラム</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Apache その他</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#modules">Apache モジュール</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#developer">開発者のためのドキュメント</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#descriptive">説明用の情報</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#index">用語集と索引</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -88,8 +88,8 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="faq" id="faq">Apache サーバのよくある質問</a></h2>
 <ul><li><a href="faq/">概略</a></li>
-<li class="separate"><a href="faq/all_in_one.html">1 ページ版</a></li>
 <li><a href="faq/support.html">サポート</a></li>
+<li><a href="faq/error.html">エラーメッセージ</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache の SSL/TLS 暗号化</a></h2>
@@ -119,7 +119,7 @@
 <li><a href="platform/ebcdic.html">EBCDIC 版 Apache</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="programs" id="programs">Apache HTTP サーバとサポートプログラム</a></h2>
+<div class="section"><h2><a name="programs" id="programs">Apache HTTP サーバとサポートプログラム</a></h2>
 <ul><li class="separate"><a href="programs/">概略</a></li>
 <li><a href="programs/httpd.html">マニュアルページ: httpd</a></li>
 <li><a href="programs/ab.html">マニュアルページ: ab</a></li>
@@ -140,9 +140,8 @@
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache モジュール</a></h2>
-<ul><li><a href="mod/">モジュール索引</a></li>
-<li><a href="mod/directives.html">ディレクティブ索引</a></li>
-<li><a href="mod/quickreference.html">ディレクティブクイックリファレンス</a></li>
+<ul><li><a href="mod/module-dict.html">Apache ディレクティブの説明に使われる用語</a></li>
+<li><a href="mod/directive-dict.html">Apache ディレクティブを説明に使われる用語</a></li>
 </ul><ul><li><a href="mod/core.html">Apache コア機能</a></li>
 <li><a href="mod/mpm_common.html">Apache MPM 共通ディレクティブ</a></li>
 <li><a href="mod/beos.html">Apache MPM beos</a></li>
@@ -231,11 +230,11 @@
 <li><a href="developer/filters.html">Apache 2.0 のフィルタの動作の仕方</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="descriptive" id="descriptive">説明用の情報</a></h2>
-<ul><li><a href="mod/module-dict.html">Apache モジュールを説明するために使われている用語</a></li>
-<li><a href="mod/directive-dict.html">Apache ディレクティブを説明するために使われている用語</a></li>
-<li><a href="glossary.html">用語集</a></li>
-<li>サイトマップ (この文書)</li>
+<div class="section"><h2><a name="index" id="index">用語集と索引</a></h2>
+<ul><li><a href="glossary.html">用語集</a></li>
+<li><a href="mod/">モジュール索引</a></li>
+<li><a href="mod/directives.html">ディレクティブ索引</a></li>
+<li><a href="mod/quickreference.html">ディレクティブ クイックリファレンス</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
