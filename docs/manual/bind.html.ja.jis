@@ -24,8 +24,6 @@
 <a href="./ja/bind.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>Apache が使用するアドレスとポートの設定をします。</p>
   </div>
@@ -57,7 +55,7 @@
     すべてのインターフェースの与えられたポート番号を
     listen します。 IP アドレスがポート番号と同時に与えられた場合は、
     サーバは与えられたポートとインターフェースを listen します。
-    複数の Listen ディレクティブを用いて
+    複数の <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブを用いて
     いくつかの listen するアドレスとポートを指定できます。
     サーバはリストされたアドレスやポートからのすべてのリクエストに
     対して応答します。</p>
@@ -108,7 +106,8 @@
     の両方を扱うには、マップトアドレスを使用する<strong>以外の方法はありません</strong>。
     IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
     IPv4 マップの IPv6 アドレスを使用する必要があり、
-    <code>--enable-v4-mapped</code> configure オプションを指定します。</p>
+    <code>--enable-v4-mapped</code> <a href="programs/configure.html">configure</a>
+    オプションを指定します。</p>
 
     <p><code>--enable-v4-mapped</code> は、
     FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
@@ -117,7 +116,7 @@
     <p>プラットフォームや APR が何をサポートするかに関わらず、
     IPv4 コネクションのみを扱うようにしたい場合は、
     次の例のように全ての
-    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブで
+    <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブで
     IPv4 アドレスを指定してください。</p>
 
     <div class="example"><p><code>
@@ -128,7 +127,8 @@
     <p>条件を満たすプラットホームで、Apache が
     IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
     (つまり IPv4 マップのアドレスを無効にしたい場合)
-    は、<code>--disable-v4-mapped</code> configure
+    は、<code>--disable-v4-mapped</code>
+    <a href="programs/configure.html">configure</a>
     オプションを指定して、次のように個別指定の
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     ディレクティブを使用してください。
@@ -139,7 +139,8 @@
 <h2><a name="virtualhost" id="virtualhost">バーチャルホストに対してどう働くのか</a></h2>
     
 
-    <p>Listen でバーチャルホストが実装されるわけではありません。
+    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    でバーチャルホストが実装されるわけではありません。
     Listen は単にメインサーバにどのアドレスとポートを listen すべきかを
     教えるだけです。
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>

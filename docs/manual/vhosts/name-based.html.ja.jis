@@ -23,13 +23,9 @@
 <a href="../ja/vhosts/name-based.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
-
 
     <p>この文書では名前ベースのバーチャルホストをどんなとき、
     どうやって使うかを説明します。</p>
-
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">名前ベースと IP ベースのバーチャルホストの比較</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#using">名前ベースのバーチャルホストを利用する</a></li>
@@ -65,7 +61,7 @@
       バーチャルホストを行いたい場合は、この文書の最後の方に
       書かれている解決策になるかもしれない方法を見てください。</li>
 
-      <li>名前ベースのバーチャルホストは SSL プロトコルの特徴により、
+      <li>名前ベースのバーチャルホストは SSL プロトコルの特徴により、
       SSL セキュアサーバには使えません。</li>
 
       <li>オペレーティングシステムやネットワーク装置のなかには、
@@ -85,6 +81,8 @@
     これは <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>
     ディレクティブで設定します。通常、<code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> で
     <code>*</code> の属性を使ってサーバの全ての IP アドレスを使います。
+    (例えば SSL の使用などで) 複数のポートを使うことを計画しているのであれば、
+    引数に <code>*:80</code> のようにポートも含めるようにしてください。
     <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> ディレクティブで
     IP アドレスを書いても、
     自動的にサーバがその IP アドレスをリッスンするということはないことに
@@ -98,21 +96,21 @@
     ディレクティブの引数は <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>
     ディレクティブの引数と同じにしてください (すなわち、IP アドレスか、全てのアドレスを意味する
     <code>*</code>)。それぞれの <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    ディレクティブの中には、最低限、どのホストが扱われるかを示す <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ディレクティブと、
+    ディレクティブの中には、最低限、どのホストが扱われるかを示す <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ディレクティブと、
     そのホスト用のコンテンツがファイルシステム上のどこにあるかを示す
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> ディレクティブを
     書く必要があります。</p>
 
     <div class="note"><h3>メインホストはなくなります</h3>
-    <p>既にあるウェブサーバにバーチャルホストを追加する場合、
-    既存のウェブサーバに対しても <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    ブロックを作らなければなりません。このバーチャルホストの
-    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と
-    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
-    は、グローバルな <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と
-    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
-    と同じものにします。また、このバーチャルホストを設定ファイルの中で
-    先頭に置いて、デフォルトホストとして動作するようにします。</p>
+        <p>既にあるウェブサーバにバーチャルホストを追加する場合、
+        既存のウェブサーバに対しても <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+        ブロックを作らなければなりません。このバーチャルホストの
+        <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と
+        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+        は、グローバルな <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> と
+        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+        と同じものにします。また、このバーチャルホストを設定ファイルの中で
+        先頭に置いて、デフォルトホストとして動作するようにします。</p>
     </div>
 
     <p>たとえば、<code>www.domain.tld</code> を動かしていて、
@@ -122,26 +120,30 @@
     に以下のようなコードを追加するだけです</p>
 
     <div class="example"><p><code>
-    NameVirtualHost *<br />
-    <br />
-    &lt;VirtualHost *&gt;<br />
-    <span class="indent">
-    ServerName www.domain.tld<br />
-    DocumentRoot /www/domain<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost *&gt;<br />
-    <span class="indent">
-    ServerName www.otherdomain.tld<br />
-    DocumentRoot /www/otherdomain<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
+        NameVirtualHost *:80<br />
+        <br />
+        &lt;VirtualHost *:80&gt;<br />
+        <span class="indent">
+            ServerName www.domain.tld<br />
+            ServerAlias domain.tld *.domain.tld<br />
+            DocumentRoot /www/domain<br />
+        </span>
+        &lt;/VirtualHost&gt;<br />
+        <br />
+        &lt;VirtualHost *:80&gt;<br />
+        <span class="indent">ServerName www.otherdomain.tld<br />
+            DocumentRoot /www/otherdomain<br />
+        </span>
+        &lt;/VirtualHost&gt;<br />
     </code></p></div>
 
     <p><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> 及び
     <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> のどちらの場合も、
-    * の部分には明示的に IP アドレスを指定することができます。</p>
+    * の部分には明示的に IP アドレスを指定することができます。
+    例えば、ある IP アドレスでは名前ベースのバーチャルホストを使いたい一方で、
+    別の IP アドレスでは、他の IP ベースのバーチャルホストや
+    別組の名前ベースのバーチャルホストを使いたい場合、
+    そう設定することになるでしょう。</p>
 
     <p>複数の名前でサーバアクセスができるようにしたいことも多いでしょう。
     このようなことは、<code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> ディレクティブを <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
@@ -150,10 +152,10 @@
     次のように一覧に挙げられた名前が、
     ユーザが同一のウェブサイトとして目にして使用できるサーバ名である、
     と <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>
-    ディレクティブで指定できます。</p> 
+    ディレクティブで指定できます。</p> 
 
     <div class="example"><p><code>
-    ServerAlias domain.tld *.domain.tld
+        ServerAlias domain.tld *.domain.tld
     </code></p></div>
 
     <p><code>domain.tld</code> ドメインへの全てのホストへのリクエストは
@@ -221,15 +223,15 @@
     <p>設定例</p>
 
     <div class="example"><p><code>
-    NameVirtualHost 111.22.33.44<br />
-    <br />
-    &lt;VirtualHost 111.22.33.44&gt;<br />
-    <span class="indent">
-    ServerName www.domain.tld<br />
-    ServerPath /domain<br />
-    DocumentRoot /web/domain<br />
-    </span>
-    &lt;/VirtualHost&gt;<br />
+        NameVirtualHost 111.22.33.44<br />
+        <br />
+        &lt;VirtualHost 111.22.33.44&gt;<br />
+        <span class="indent">
+            ServerName www.domain.tld<br />
+            ServerPath /domain<br />
+            DocumentRoot /web/domain<br />
+        </span>
+        &lt;/VirtualHost&gt;<br />
     </code></p></div>
 
     <p>この例にはどういう意味があるでしょうか? これは
@@ -242,7 +244,7 @@
     という意味です。</p>
 
     <p>これが動作するようにするには、
-    プライマリのバーチャルホストのページに
+    プライマリのバーチャルホストのページに
     <code>http://www.domain.tld/domain/</code> へのリンクを設置します。
     そして、バーチャルホストのページでは、純粋な相対リンク (<em>例:</em>
     "<code>file.html</code>" や "<code>../icons/image.gif</code>")、
