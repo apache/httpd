@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/27 16:08:31 $]
+Last modified at [$Date: 2004/08/27 18:46:51 $]
 
 Release:
 
@@ -72,11 +72,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    *) Win32: Orderly shutdown of the command process after apache -k start,restart,config,
-       install to prevent stranded piped logger processes.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/mpm_winnt.c?r1=1.311&r2=1.312
-       +1: stoddard, trawick, nd
 
     *) EOC bucket handling fix for core_output_filter (prevents possible variable use-
        after-free since .49).
