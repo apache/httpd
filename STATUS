@@ -166,6 +166,26 @@ Needs patch:
 
 Open issues:
 
+    * Underscores on symbols in DSO situation is broken for NetBSD:
+      Here is a private conversation between me (rse) and Charles Hannum of
+      the NetBSD project:
+
+      From: "Charles M. Hannum" <mycroft@netbsd.org>
+      > We have a bug report at the Apache BugDB (see
+      > http://bugs.apache.org/private/index/full/2462) where a user says
+      > under a particular NetBSD platform (NetBSD/pmax 1.3.2) the symbols on
+      > dlsym() don't need an underscore.  In FreeBSD world we always had the
+      > underscore,
+      > [...]                               
+      This is less an issue of OS, and more an issue of a.out vs. ELF.  The
+      underscores are always used for a.out, and are never used for ELF.
+      Therefore, on any platform where we use ELF (that would be Alpha, MIPS,
+      PowerPC and UltraSPARC currently, although there are plans to eventually
+      switch on other platforms), the underscores should not be added, and on
+      all other platforms they should be.
+      You can differentiate by comparing the output of `uname -m' with any
+      of: alpha bebox macppc newsmips ofppc pica pmax sparc64.
+
     * How should an Apache binary release tarball look?
       NOTE: This should be resolved before 1.3.1 !!
 
