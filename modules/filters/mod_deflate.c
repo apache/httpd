@@ -273,6 +273,12 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
+        /* content is already encoded, so don't encode it again */
+        if (apr_table_get(r->headers_in, "Content-Encoding")) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);			
+        }
+
         /* if they don't have the line, then they can't play */
         accepts = apr_table_get(r->headers_in, "Accept-Encoding");
         if (accepts == NULL) {
