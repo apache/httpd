@@ -1,5 +1,10 @@
 Changes with Apache 1.3.10
 
+  *) Add %q logging format directive (logs "?" and the query string part
+     of a query, or the empty string if no query).
+     Can be used in combination with %m, %U and %H: "%m %U%q %H" is the
+     same as "%r".  [Peter Watkins <peterw@usa.net>]
+
   *) Improve OS390 port to work on older system releases
      [Paul Gilmartin <pg@sweng.stortek.com>]
 
