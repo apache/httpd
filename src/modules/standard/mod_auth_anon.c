@@ -217,10 +217,10 @@ static int anon_authenticate_basic_user(request_rec *r)
     (anon_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					       &anon_auth_module);
     conn_rec *c = r->connection;
-    char *send_pw;
+    const char *sent_pw;
     int res = DECLINED;
 
-    if ((res = ap_get_basic_auth_pw(r, &send_pw)))
+    if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
 	return res;
 
     /* Ignore if we are not configured */
@@ -246,15 +246,15 @@ static int anon_authenticate_basic_user(request_rec *r)
     /* username is OK */
 	   (res == OK)
     /* password been filled out ? */
-	   && ((!sec->auth_anon_mustemail) || strlen(send_pw))
+	   && ((!sec->auth_anon_mustemail) || strlen(sent_pw))
     /* does the password look like an email address ? */
 	   && ((!sec->auth_anon_verifyemail)
-	       || ((strpbrk("@", send_pw) != NULL)
-		   && (strpbrk(".", send_pw) != NULL)))) {
+	       || ((strpbrk("@", sent_pw) != NULL)
+		   && (strpbrk(".", sent_pw) != NULL)))) {
 	if (sec->auth_anon_logemail && ap_is_initial_req(r)) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
 			"Anonymous: Passwd <%s> Accepted",
-			send_pw ? send_pw : "\'none\'");
+			sent_pw ? sent_pw : "\'none\'");
 	}
 	return OK;
     }
@@ -262,7 +262,7 @@ static int anon_authenticate_basic_user(request_rec *r)
 	if (sec->auth_anon_authoritative) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 			"Anonymous: Authoritative, Passwd <%s> not accepted",
-			send_pw ? send_pw : "\'none\'");
+			sent_pw ? sent_pw : "\'none\'");
 	    return AUTH_REQUIRED;
 	}
 	/* Drop out the bottom to return DECLINED */

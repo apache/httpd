@@ -206,7 +206,8 @@ static int dbm_authenticate_basic_user(request_rec *r)
     (dbm_auth_config_rec *) ap_get_module_config(r->per_dir_config,
 					      &dbm_auth_module);
     conn_rec *c = r->connection;
-    char *sent_pw, *real_pw, *colon_pw;
+    const char *sent_pw;
+    char *real_pw, *colon_pw;
     int res;
 
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
@@ -247,7 +248,7 @@ static int dbm_check_auth(request_rec *r)
     char *user = r->connection->user;
     int m = r->method_number;
 
-    array_header *reqs_arr = ap_requires(r);
+    const array_header *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
     register int x;

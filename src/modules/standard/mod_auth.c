@@ -201,7 +201,8 @@ static int authenticate_basic_user(request_rec *r)
     auth_config_rec *sec =
     (auth_config_rec *) ap_get_module_config(r->per_dir_config, &auth_module);
     conn_rec *c = r->connection;
-    char *sent_pw, *real_pw;
+    const char *sent_pw;
+    char *real_pw;
     int res;
 
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
