@@ -818,7 +818,6 @@ struct dechunk_ctx {
 };
 
 static long get_chunk_size(char *);
-static int getline(char *s, int n, request_rec *r, int fold);
 
 apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
                                ap_input_mode_t mode)
@@ -841,7 +840,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
              */
             char line[30];
             
-            if ((rv = getline(line, sizeof(line), f->r, 0)) < 0) {
+            if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
                 return rv;
             }
             switch(ctx->state) {
@@ -1028,7 +1027,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
  *        If no LF is detected on the last line due to a dropped connection 
  *        or a full buffer, that's considered an error.
  */
-static int getline(char *s, int n, request_rec *r, int fold)
+int ap_getline(char *s, int n, request_rec *r, int fold)
 {
     char *pos = s;
     char *last_char;
@@ -1224,7 +1223,7 @@ static int read_request_line(request_rec *r)
     ap_bsetflag(conn->client, B_SAFEREAD, 1); 
     ap_bflush(conn->client);
 #endif
-    while ((len = getline(l, sizeof(l), r, 0)) <= 0) {
+    while ((len = ap_getline(l, sizeof(l), r, 0)) <= 0) {
         if (len < 0) {             /* includes EOF */
 #if 0
     /* XXX: I am 99% sure that these are already taken care of, but I want to
@@ -1276,7 +1275,7 @@ static int read_request_line(request_rec *r)
 
     ap_parse_uri(r, uri);
 
-    /* getline returns (size of max buffer - 1) if it fills up the
+    /* ap_getline returns (size of max buffer - 1) if it fills up the
      * buffer before finding the end-of-line.  This is only going to
      * happen if it exceeds the configured limit for a request-line.
      */
@@ -1316,7 +1315,7 @@ static void get_mime_headers(request_rec *r)
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), reach the server limit, or we timeout.
      */
-    while ((len = getline(field, sizeof(field), r, 1)) > 0) {
+    while ((len = ap_getline(field, sizeof(field), r, 1)) > 0) {
 
         if (r->server->limit_req_fields &&
             (++fields_read > r->server->limit_req_fields)) {
@@ -1326,7 +1325,7 @@ static void get_mime_headers(request_rec *r)
 			   "this server's limit.<P>\n");
             return;
         }
-        /* getline returns (size of max buffer - 1) if it fills up the
+        /* ap_getline returns (size of max buffer - 1) if it fills up the
          * buffer before finding the end-of-line.  This is only going to
          * happen if it exceeds the configured limit for a field size.
          */
@@ -2683,7 +2682,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 
 #ifdef AP_DEBUG
     {
-        /* Make sure getline() didn't leave any droppings. */
+        /* Make sure ap_getline() didn't leave any droppings. */
         core_request_config *req_cfg = 
             (core_request_config *)ap_get_module_config(r->request_config,
                                                         &core_module);
