@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html>
-<head>
-<title>International Customized Server Error Messages</title>
-</head>
+<HTML>
+<HEAD>
+<TITLE>International Customized Server Error Messages</TITLE>
+</HEAD>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 <BODY
@@ -103,7 +103,7 @@ of as much server support as we can get:
  <LI>The <A HREF="../mod/mod_mime.html#addhandler">AddHandler</A> and
      <A HREF="../mod/mod_mime.html#addtype">AddType</A> directives are useful
      for automatically XSSI-expanding all files with a <SAMP>.shtml</SAMP>
-     suffix to <em>text/html</em>.
+     suffix to <EM>text/html</EM>.
  <LI>By using the <A HREF="../mod/mod_alias.html#alias">Alias</A> directive,
      we keep the error document directory outside of the document tree
      because it can be regarded more as a server part than part of
@@ -119,7 +119,7 @@ of as much server support as we can get:
      Note that we only define the basename of the document here
      because the MultiViews option will select the best candidate
      based on the language suffixes and the client's preferences.
-     Any error situation with an error code <em>not</em> handled by a
+     Any error situation with an error code <EM>not</EM> handled by a
      custom document will be dealt with by the server in the standard way
      (i.e., a plain error message in english).
  <LI>Finally, the <A HREF="../mod/core.html#allowoverride">AllowOverride</A>
@@ -128,12 +128,12 @@ of as much server support as we can get:
      optimization.
 </OL>
 The resulting <SAMP>httpd.conf</SAMP> configuration would the look
-similar to this: <small>(Note that you can defrine your own error
+similar to this: <SMALL>(Note that you can defrine your own error
 messages using this method for only part of the document tree,
 e.g., a /~user/ subtree. In this case, the configuration could as well
 be put into the .htaccess file at the root of the subtree. In this case,
 the &lt;Directory&gt; and &lt;/Directory&gt; directives -but not
-the contained directives- must be omitted.)</small>
+the contained directives- must be omitted.)</SMALL>
 <PRE>
   LanguagePriority en fr de 
   Alias  /errordocs  /usr/local/apache/errordocs
@@ -176,9 +176,9 @@ the configured error documents):
      would be bypassed.
  <LI>For each language for which we have a translation (note that this need not
      be the same set of languages for each error code - you can get by
-     with a single language version until you actually <em>have</em>
+     with a single language version until you actually <EM>have</EM>
      translated versions), a document
-     <SAMP>errordocs/403.shtml.<em>lang</em></SAMP> is created and
+     <SAMP>errordocs/403.shtml.<EM>lang</EM></SAMP> is created and
      filled with the error text in that language (<A HREF="#createdocs">see
      below</A>).
  <LI>One fallback document called <SAMP>errordocs/403.shtml</SAMP> is
@@ -214,9 +214,9 @@ because it contains server-parsed content but no language specific
 information. The footer file exists once for each language translation,
 plus a symlink for the default language.<P>
 <STRONG>Example:</STRONG> for english, french and german versions (default english)<BR>
-<CODE>foot.shtml.en</CODE>,<br>
-<CODE>foot.shtml.fr</CODE>,<br>
-<CODE>foot.shtml.de</CODE>,<br>
+<CODE>foot.shtml.en</CODE>,<BR>
+<CODE>foot.shtml.fr</CODE>,<BR>
+<CODE>foot.shtml.de</CODE>,<BR>
 <CODE>foot.shtml</CODE> symlink to <CODE>foot.shtml.en</CODE><P>
 Both files are then simply included into the error document by using the
 directives <CODE>&lt;!--#include virtual="head" --&gt;</CODE>
@@ -377,13 +377,13 @@ for browser types which support animated GIFs).
 
 <H3>More welcome!</H3>
 
-If you have tips to contribute, send mail to <a
-href="mailto:Martin.Kraemer@Mch.SNI.De">Martin.Kraemer@Mch.SNI.De</a>
+If you have tips to contribute, send mail to <A
+HREF="mailto:Martin.Kraemer@Mch.SNI.De">Martin.Kraemer@Mch.SNI.De</A>
 
 <HR>
 
 <A HREF="./"><IMG SRC="../images/index.gif" ALT="Index"></A>
 <A HREF="../"><IMG SRC="../images/home.gif" ALT="Home"></A>
 
-</body></html>
+</BODY></HTML>
 

@@ -12,11 +12,11 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Apache Keep-Alive Support</H1>
+<H1 ALIGN="CENTER">Apache Keep-Alive Support</H1>
 
 <HR>
 
-<h2>What is Keep-Alive?</h2>
+<H2>What is Keep-Alive?</H2>
 
 The Keep-Alive extension to HTTP, as defined by the
 <CODE>HTTP/1.1</CODE> draft, allows persistent connections. These
@@ -25,7 +25,7 @@ same TCP connection, and in some cases have been shown to result in an
 almost 50% speedup in latency times for HTML documents with lots of
 images.
 
-<h2>Enabling Keep-Alive Support</h2>
+<H2>Enabling Keep-Alive Support</H2>
 
 Apache 1.1 comes with Keep-Alive support on by default, however there
 are some directives you can use to modify Apache's behavior:
@@ -33,7 +33,7 @@ are some directives you can use to modify Apache's behavior:
 <P><STRONG>Note</STRONG>: Apache 1.2 uses a different syntax for the <A
 HREF="mod/core.html#keepalive">KeepAlive</A> directive.</P>
 
-<h3>KeepAlive</h3>
+<H3>KeepAlive</H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -56,7 +56,7 @@ to the maximum number of requests you want Apache to entertain per
 connection. A limit is imposed to prevent a client from hogging your
 server resources. Set this to <CODE>0</CODE> to disable support.
 
-<h3>KeepAliveTimeout</h3>
+<H3>KeepAliveTimeout</H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -80,7 +80,7 @@ value specified by the <A
 HREF="mod/core.html#timeout"><CODE>Timeout</CODE></A> directive
 applies.
 
-<h2>When Keep-Alive Is Used</h2>
+<H2>When Keep-Alive Is Used</H2>
 
 In order for Keep-Alive support to be used, first the browser must
 support it. Many current browsers, including Netscape Navigator 2.0,

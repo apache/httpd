@@ -13,7 +13,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Module mod_imap</H1>
+<H1 ALIGN="CENTER">Module mod_imap</H1>
 
 This module is contained in the <CODE>mod_imap.c</CODE> file, and is
 compiled in by default. It provides for <CODE>.map</CODE> files,
@@ -24,7 +24,7 @@ HREF="mod_mime.html#addhandler">AddHandler</A> </CODE> or <CODE><A
 HREF="mod_mime.html#sethandler">SetHandler</A></CODE>) will be
 processed by this module.
 
-<h2>Summary</h2>
+<H2>Summary</H2>
 
 This module is in the default Apache distribution. The following directive will
 activate files ending with <CODE>.map</CODE> as imagemap files:
@@ -52,7 +52,7 @@ possible with previously distributed imagemap programs.<P>
 </UL>
 <P>
 
-<h2>Configuration Directives</h2>
+<H2>Configuration Directives</H2>
 <UL>
 <LI><A HREF="#imapmenu">ImapMenu</A>
 <LI><A HREF="#imapdefault">ImapDefault</A>
@@ -62,7 +62,7 @@ possible with previously distributed imagemap programs.<P>
 
 <P>
 
-<h3><A name="imapmenu">ImapMenu</A></h3>
+<H3><A name="imapmenu">ImapMenu</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -115,7 +115,7 @@ is called without valid coordinates.
 
 <P>
 
-<h3><A name="imapdefault">ImapDefault</A></h3>
+<H3><A name="imapdefault">ImapDefault</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -149,7 +149,7 @@ case, the client should continue to display the original page.
 
 <P>
 
-<h3><A name="imapbase">ImapBase</A></h3>
+<H3><A name="imapbase">ImapBase</A></H3>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -180,7 +180,7 @@ directive within the imagemap file.  If not present, the
 <HR>
 <P>
 
-<h2>Imagemap File</h2>
+<H2>Imagemap File</H2>
 The lines in the imagemap files can have one of several formats:
 <BLOCKQUOTE>
 <CODE>directive value [x,y ...]</CODE><BR>
@@ -195,7 +195,7 @@ of the special values listed below.  The coordinates are
 used as the text of the link if a imagemap menu is generated.  Lines
 beginning with '#' are comments.
 
-<h3>Imagemap File Directives</h3>
+<H3>Imagemap File Directives</H3>
 There are six directives allowed in the imagemap file.  The directives
 can come in any order, but are processed in the order they are found
 in the imagemap file.
@@ -241,7 +241,7 @@ in the imagemap file.
 
 
 
-<h3>Values</h3>
+<H3>Values</H3>
 The values for each of the directives can any of the following:
 <DL>
   <DT>a URL
@@ -275,7 +275,7 @@ The values for each of the directives can any of the following:
        <CODE>default</CODE>.
 </DL>
 
-<h3>Coordinates</h3>
+<H3>Coordinates</H3>
 <DL>
   <DT><CODE>0,0 200,200</CODE>
   <DD>A coordinate consists of an <TT>x</TT> and a <TT>y</TT> value
@@ -285,7 +285,7 @@ The values for each of the directives can any of the following:
        no coordinate had been selected.
 </DL>
 
-<h3>Quoted Text</h3>
+<H3>Quoted Text</H3>
 <DL>
   <DT><CODE>"Menu Text"</CODE>
   <DD>After the value or after the coordinates, the line optionally may
@@ -300,7 +300,7 @@ The values for each of the directives can any of the following:
 
 <HR>
 
-<h2>Example Mapfile</h2>
+<H2>Example Mapfile</H2>
 <BLOCKQUOTE><CODE>
 #Comments are printed in a 'formatted' or 'semiformatted' menu. <BR>
 #And can contain html tags. &lt;hr&gt; <BR>
@@ -315,7 +315,7 @@ rect mailto:nate@tripod.com 100,150 200,0 "Bugs?" <BR>
 </CODE></BLOCKQUOTE>
 <P>
 
-<h2>Referencing your mapfile</h2>
+<H2>Referencing your mapfile</H2>
 <BLOCKQUOTE><CODE>
 &lt;A HREF="/maps/imagemap1.map"&gt; <BR>
 &lt;IMG ISMAP SRC="/images/imagemap1.gif"&gt; <BR>

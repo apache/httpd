@@ -19,7 +19,7 @@ This module is contained in the <CODE>mod_mime.c</CODE> file, and is
 compiled in by default. It provides for determining the types of files
 from the filename.
 
-<h2>Summary</h2>
+<H2>Summary</H2>
 
 This module is used to determine various bits of "meta information"
 about documents. This information relates to the content of the
@@ -71,7 +71,7 @@ copies may still be used by a client or proxy.
 
 <P>
 
-<h2> Directives</h2>
+<H2> Directives</H2>
 <UL>
 <LI><A HREF="#addencoding">AddEncoding</A>
 <LI><A HREF="#addhandler">AddHandler</A>
@@ -84,7 +84,7 @@ copies may still be used by a client or proxy.
 <HR>
 
 
-<h2><A name="addencoding">AddEncoding</A></h2>
+<H2><A name="addencoding">AddEncoding</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddEncoding} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -119,7 +119,7 @@ AddEncoding x-compress Z
 This will cause files ending in .gz to be marked as encoded using the x-gzip
 encoding, and .Z files to be marked as encoded with x-compress.<P><HR>
 
-<h2><A name="addhandler">AddHandler</A></h2>
+<H2><A name="addhandler">AddHandler</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -156,7 +156,7 @@ file ending with "<CODE>.cgi</CODE>" will be treated as a CGI
 program.</P>
 <HR>
 
-<h2><A name="addlanguage">AddLanguage</A></h2>
+<H2><A name="addlanguage">AddLanguage</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddLanguage} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -195,7 +195,7 @@ the browser is unlikely to use this information. The AddLanguage directive
 is more useful for content negotiation, where the server returns one
 from several documents based on the client's language preference.<P><HR>
 
-<h2><A name="addtype">AddType</A></h2>
+<H2><A name="addtype">AddType</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddType} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
@@ -230,7 +230,7 @@ rather than changing the <A HREF="#typesconfig">TypesConfig</A> file.<P>
 Note that, unlike the NCSA httpd, this directive cannot be used to set the
 type of particular files.<P><HR>
 
-<h2><A name="forcetype">ForceType</A></h2>
+<H2><A name="forcetype">ForceType</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -266,7 +266,7 @@ had a directory full of GIF files, but did not want to label them all with
 <P>Note that this will override any filename extensions that might
 media type.</P>
 
-<h2><A name="sethandler">SetHandler</A></h2>
+<H2><A name="sethandler">SetHandler</A></H2>
 
 <A
  HREF="directive-dict.html#Syntax"
@@ -312,7 +312,7 @@ called, you might put the following into access.conf:
 </PRE>
 <HR>
 
-<h2><A name="typesconfig">TypesConfig</A></h2>
+<H2><A name="typesconfig">TypesConfig</A></H2>
 <!--%plaintext &lt;?INDEX {\tt TypesConfig} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"

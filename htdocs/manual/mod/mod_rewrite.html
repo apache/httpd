@@ -17,7 +17,7 @@
 >
 <!--#include virtual="header.html" -->
 
-<h1 ALIGN="CENTER">Module mod_rewrite</H1>
+<H1 ALIGN="CENTER">Module mod_rewrite</H1>
 
 This module is contained in the <CODE>mod_rewrite.c</CODE> file, with Apache
 1.2 and later.  It provides a rule-based rewriting engine to rewrite requested
@@ -28,7 +28,7 @@ in the server build Configuration file:
     AddModule  modules/standard/mod_rewrite.o
 </PRE>
 
-<h2>Summary</h2>
+<H2>Summary</H2>
 
 This module uses a rule-based rewriting engine (based on a
 regular-expression parser) to rewrite requested URLs on the fly.
@@ -61,7 +61,7 @@ gifted exclusively to the The Apache Group in July 1997 by
 <!--/%hypertext -->
 
 <P>
-<h2>Directives</h2>
+<H2>Directives</H2>
 
 <UL>
     <LI><A HREF="#RewriteEngine">RewriteEngine</A>
@@ -85,7 +85,7 @@ gifted exclusively to the The Apache Group in July 1997 by
 </A>
 </CENTER>
 
-<A name="RewriteEngine"><h3>RewriteEngine</h3></A>
+<A name="RewriteEngine"><H3>RewriteEngine</H3></A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -119,7 +119,7 @@ HREF="#RewriteOptions">RewriteOptions inherit</A> is enabled.
 <hr noshade size=1>
 <P>
 
-<A name="RewriteOptions"><h3>RewriteOptions</h3></A>
+<A name="RewriteOptions"><H3>RewriteOptions</H3></A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -151,7 +151,7 @@ strings can be one of the following:
 <hr noshade size=1>
 <P>
 
-<A name="RewriteLog"><h3>RewriteLog</h3></A>
+<A name="RewriteLog"><H3>RewriteLog</H3></A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -209,7 +209,7 @@ RewriteLog "/usr/local/var/apache/logs/rewrite.log"
 <hr noshade size=1>
 <P>
 
-<A name="RewriteLogLevel"><h3>RewriteLogLevel</h3></A>
+<A name="RewriteLogLevel"><H3>RewriteLogLevel</H3></A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -254,7 +254,7 @@ RewriteLogLevel 3
 <hr noshade size=1>
 <P>
 
-<A name="RewriteMap"><h3>RewriteMap</h3></A>
+<A name="RewriteMap"><H3>RewriteMap</H3></A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -405,7 +405,7 @@ only happens once!
 <hr noshade size=1>
 <P>
 
-<A name="RewriteBase"><h3>RewriteBase</h3></A>
+<A name="RewriteBase"><H3>RewriteBase</H3></A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -517,7 +517,7 @@ sure the design and implementation is correct.
 <hr noshade size=1>
 <P>
 
-<A name="RewriteCond"><h3>RewriteCond</h3></A>
+<A name="RewriteCond"><H3>RewriteCond</H3></A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -822,7 +822,7 @@ use any other browser you get the standard homepage.
 <hr noshade size=1>
 <P>
 
-<A name="RewriteRule"><h3>RewriteRule</h3></A>
+<A name="RewriteRule"><H3>RewriteRule</H3></A>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
@@ -1293,7 +1293,7 @@ RewriteRule  ^/([^/]+)/~([^/]+)/(.*)$   /u/${real-to-user:$2|nobody}/$3.$1
 </CENTER>
 
 <A name="EnvVar">
-<h2>Environment Variables</h2>
+<H2>Environment Variables</H2>
 </A>
 
 This module keeps track of two additional (non-standard) CGI/SSI environment

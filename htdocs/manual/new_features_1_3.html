@@ -12,9 +12,9 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Overview of new features</H1>
+<H1 ALIGN="CENTER">Overview of new features</H1>
 
-<h2>New Features with Apache 1.3</h2>
+<H2>New Features with Apache 1.3</H2>
 <P>New features with this release, as extensions of the Apache
 functionality. Because the core code has changed so
 significantly, there are certain liberties that earlier versions of
@@ -299,9 +299,9 @@ Allows additional information to be listed along with a specified module.
 	and IRIX.
     <LI><CODE><A HREF="mod/mod_log_config.html">mod_log_config</A></CODE>
 	can be compile-time configured to buffer writes.
-    <LI>Replaced <code>strncpy()</code> with <code>ap_cpystrn()</code>, a
+    <LI>Replaced <CODE>strncpy()</CODE> with <CODE>ap_cpystrn()</CODE>, a
 	routine which doesn't have to zero-fill the entire result.  This
-	has dramatic effects on <code>mod_include</code> speed.
+	has dramatic effects on <CODE>mod_include</CODE> speed.
     <LI>Additions to the internal "table" API (used for keeping lists of
 	key/value string pairs) provide for up to 20% performance
 	improvement in many situations.
@@ -474,25 +474,25 @@ Allows additional information to be listed along with a specified module.
     such as Electric Fence and Purify.  See <CODE>main/alloc.c</CODE>
     for more details.
 
-    <LI><strong><code>ap_cpystrn</code></strong><br>
-    The new <code>strncpy</code> "lookalike", with slightly different
-    semantics is much faster than <code>strncpy</code> because it
+    <LI><STRONG><CODE>ap_cpystrn</CODE></STRONG><BR>
+    The new <CODE>strncpy</CODE> "lookalike", with slightly different
+    semantics is much faster than <CODE>strncpy</CODE> because it
     doesn't have to zero-fill the entire buffer.
 
-    <LI><strong><code>table_addn</code>, <code>table_setn</code>,
-    <code>table_mergen</code></strong><br>
-    These new functions do <b>not</b> call <code>pstrdup</code>
+    <LI><STRONG><CODE>table_addn</CODE>, <CODE>table_setn</CODE>,
+    <CODE>table_mergen</CODE></STRONG><BR>
+    These new functions do <STRONG>not</STRONG> call <CODE>pstrdup</CODE>
     on their arguments.  This provides for big speedups.  There is
     also some debugging support to ensure code uses them properly.
-    See <code>src/CHANGES</code> for more information.
+    See <CODE>src/CHANGES</CODE> for more information.
 
-    <li><strong><code>construct_url</code></strong><br>
+    <LI><STRONG><CODE>construct_url</CODE></STRONG><BR>
     The function prototype for this changed from taking a
-    <code>server_rec *</code> to taking a <code>request_rec *</code>.
+    <CODE>server_rec *</CODE> to taking a <CODE>request_rec *</CODE>.
 
-    <li><strong><code>get_server_name</code>, <code>get_server_port</code></strong><br>
+    <LI><STRONG><CODE>get_server_name</CODE>, <CODE>get_server_port</CODE></STRONG><BR>
     These are wrappers which deal with the
-    <a href="mod/core.html#usecanonicalname">UseCanonicalName</a> directive
+    <A HREF="mod/core.html#usecanonicalname">UseCanonicalName</A> directive
     when retrieving the server name and port for a request.
 
     </UL>
@@ -534,15 +534,15 @@ Allows additional information to be listed along with a specified module.
   chain (often found in intranet environments).
  </LI>
 
- <li><strong>New <samp><a href="mod/core.html#usecanonicalname">UseCanonicalName</a></samp> directive</strong>
-  <br>
+ <LI><STRONG>New <SAMP><A HREF="mod/core.html#usecanonicalname">UseCanonicalName</A></SAMP> directive</STRONG>
+  <BR>
   This directive gives control over how Apache creates self-referential URLs.
-  Previously Apache would always use the <a href="mod/core.html#servername">
-  ServerName</a> and <a href="mod/core.html#port">Port</a> directives to
-  construct a "canonical" name for the server.  With <samp>UseCanonicalName
-  off</samp> Apache will use the hostname and port supplied by the client,
+  Previously Apache would always use the <A HREF="mod/core.html#servername">
+  ServerName</A> and <A HREF="mod/core.html#port">Port</A> directives to
+  construct a "canonical" name for the server.  With <SAMP>UseCanonicalName
+  off</SAMP> Apache will use the hostname and port supplied by the client,
   if available.
- </li>
+ </LI>
 </UL>
 
 <!--#include virtual="footer.html" -->

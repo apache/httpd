@@ -12,7 +12,7 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Upgrading to 1.3 from 1.2</H1>
+<H1 ALIGN="CENTER">Upgrading to 1.3 from 1.2</H1>
 
 <P>In order to assist folks upgrading we are now going to maintain a
 document describing information critical to existing Apache users.  Note
@@ -26,7 +26,7 @@ which tracks code changes.
 more information in either the <A HREF="new_features_1_3.html">New Features</A>
 document, or in the <CODE>src/CHANGES</CODE> file.
 
-<h3>Compile-Time Configuration Changes</h3>
+<H3>Compile-Time Configuration Changes</H3>
 
 <UL>
   <LI>The source code has been <A HREF="sourcereorg.html">reorganized</A>,
@@ -60,7 +60,7 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 
 </UL>
 
-<h3>Run-Time Configuration Changes</h3>
+<H3>Run-Time Configuration Changes</H3>
 
 <UL>
   <LI><STRONG><SAMP>AuthName</SAMP> strings may need to be quoted</STRONG>
@@ -128,7 +128,7 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 
 </UL>
 
-<h3>Misc Changes</h3>
+<H3>Misc Changes</H3>
 
 <UL>
   <LI><CODE>ServerType inetd</CODE> has been deprecated.  It still exists,
@@ -161,37 +161,37 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 
 </UL>
 
-<h3>Third Party Modules</h3>
+<H3>Third Party Modules</H3>
 
-<p>The following changes between the 1.2 and 1.3 API may require slight
+<P>The following changes between the 1.2 and 1.3 API may require slight
 changes in third party modules not maintained by Apache.
 
-<ul>
-  <li><code>construct_url</code> prototype change.  The second parameter
-    was previously a <code>server_rec</code>, it has been changed to
-    a <code>request_rec</code>.
+<UL>
+  <LI><CODE>construct_url</CODE> prototype change.  The second parameter
+    was previously a <CODE>server_rec</CODE>, it has been changed to
+    a <CODE>request_rec</CODE>.
 
-  <li>The <code>table</code> datatype has been made an opaque type.
-    Code which assumes a <code>table</code> is the same as an
-    <code>array_header</code> will not compile.  This is actually a
+  <LI>The <CODE>table</CODE> datatype has been made an opaque type.
+    Code which assumes a <CODE>table</CODE> is the same as an
+    <CODE>array_header</CODE> will not compile.  This is actually a
     change to enforce the API the way it was intended, all versions
-    of Apache have had a <code>table_elts()</code> function which
+    of Apache have had a <CODE>table_elts()</CODE> function which
     is intended for code which needs to access the elements of
     a table.  The changes required for this are pretty easy, and
     work with all versions of Apache.
 
-    <p>Suppose <code>t</code> is a table.  Whenever code refers to
-    <code>t-&gt;elts</code>, replace it with something like this:
+    <P>Suppose <CODE>t</CODE> is a table.  Whenever code refers to
+    <CODE>t-&gt;elts</CODE>, replace it with something like this:
 
-<blockquote><pre>
+<BLOCKQUOTE><PRE>
     array_header *arr = table_elts(t);
     table_entry *elts = (table_entry *)arr-&gt;elts;
-</pre></blockquote>
+</PRE></BLOCKQUOTE>
 
-    Whenever code refers to <code>t-&gt;nelts</code> use
-    <code>arr-&gt;nelts</code>.  Many examples can be found in
-    the standard modules, search for <code>table_elts</code>.
-</ul>
+    Whenever code refers to <CODE>t-&gt;nelts</CODE> use
+    <CODE>arr-&gt;nelts</CODE>.  Many examples can be found in
+    the standard modules, search for <CODE>table_elts</CODE>.
+</UL>
 
 <!--#include virtual="footer.html" -->
 </BODY>
