@@ -11,6 +11,9 @@
 #include "stddef.h"
 #include "ws2nlm.h"
 
+int _lib_start_ws();
+int _lib_stop_ws();
+
 #ifdef __GNUC__
 #include <string.h>        /* memset */
 extern char _edata, _end ; /* end of DATA (start of BSS), end of BSS */

@@ -9,6 +9,9 @@
   provide.
 ------------------------------------------------------------------*/
 
+int _lib_start();
+int _lib_stop();
+
 #ifdef __GNUC__
 #include <string.h>        /* memset */
 extern char _edata, _end ; /* end of DATA (start of BSS), end of BSS */
