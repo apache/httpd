@@ -109,7 +109,6 @@ typedef struct {
     unsigned short timeout_len;	/* length of the timeout */
 #endif
     unsigned char status;
-#if defined(STATUS)
     unsigned long access_count;
     unsigned long bytes_served;
     unsigned long my_access_count;
@@ -132,7 +131,6 @@ typedef struct {
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
     char vhost[32];		/* What virtual host is being accessed? */
-#endif
 } short_score;
 
 typedef struct {

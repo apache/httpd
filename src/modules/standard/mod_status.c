@@ -91,27 +91,15 @@
  *          piece in short reports [Ben Laurie]
  * 21.5.96  Additional Status codes (DNS and LOGGING only enabled if
  *          extended STATUS is enabled) [George Burgyan/Jim J.]
- */
-
-/*
- * Module definition information - the part between the -START and -END
- * lines below is used by Configure. This could be stored in a separate
- * instead.
- *
- * MODULE-DEFINITION-START
- * Name: status_module
- * ConfigStart
- if [ "$RULE_STATUS" = "yes" ]; then
- CFLAGS="$CFLAGS -DSTATUS"
- fi
- * ConfigEnd
- * MODULE-DEFINITION-END
+ * 10.8.98  Allow for extended status info at runtime (no more STATUS)
+ *          [Jim J.]
  */
 
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_protocol.h"
+#include "http_conf_globals.h"	/* for ap_extended_status */
 #include "http_main.h"
 #include "util_script.h"
 #include <time.h>
@@ -142,9 +130,7 @@
 
 module MODULE_VAR_EXPORT status_module;
 
-#ifdef STATUS
 /* Format the number of bytes nicely */
-
 static void format_byte_out(request_rec *r, unsigned long bytes)
 {
     if (bytes < (5 * KBYTE))
@@ -166,8 +152,6 @@ static void format_kbyte_out(request_rec *r, unsigned long kbytes)
     else
 	ap_rprintf(r, "%.1f GB", (float) kbytes / MBYTE);
 }
-
-#endif
 
 static void show_time(request_rec *r, time_t tsecs)
 {
@@ -222,7 +206,6 @@ static int status_handler(request_rec *r)
     int i, res;
     int ready = 0;
     int busy = 0;
-#if defined(STATUS)
     unsigned long count = 0;
     unsigned long lres, bytes;
     unsigned long my_lres, my_bytes, conn_bytes;
@@ -235,7 +218,6 @@ static int status_handler(request_rec *r)
 #elif !defined(NO_TIMES)
     float tick = sysconf(_SC_CLK_TCK);
 #endif
-#endif /* STATUS */
     int short_report = 0;
     int no_table_report = 0;
     short_score score_record;
@@ -268,10 +250,12 @@ static int status_handler(request_rec *r)
 		switch (status_options[i].id) {
 		case STAT_OPT_REFRESH:
 		    if (*(loc + strlen(status_options[i].form_data_str)) == '=')
-			ap_table_set(r->headers_out, status_options[i].hdr_out_str,
-				  loc + strlen(status_options[i].hdr_out_str) + 1);
+			ap_table_set(r->headers_out,
+			      status_options[i].hdr_out_str,
+			      loc + strlen(status_options[i].hdr_out_str) + 1);
 		    else
-			ap_table_set(r->headers_out, status_options[i].hdr_out_str, "1");
+			ap_table_set(r->headers_out,
+			      status_options[i].hdr_out_str, "1");
 		    break;
 		case STAT_OPT_NOTABLE:
 		    no_table_report = 1;
@@ -302,24 +286,24 @@ static int status_handler(request_rec *r)
 	    ready++;
 	else if (res != SERVER_DEAD)
 	    busy++;
-#if defined(STATUS)
-	lres = score_record.access_count;
-	bytes = score_record.bytes_served;
-	if (lres != 0 || (res != SERVER_READY && res != SERVER_DEAD)) {
+	if (ap_extended_status) {
+	    lres = score_record.access_count;
+	    bytes = score_record.bytes_served;
+	    if (lres != 0 || (res != SERVER_READY && res != SERVER_DEAD)) {
 #ifndef NO_TIMES
-	    tu += score_record.times.tms_utime;
-	    ts += score_record.times.tms_stime;
-	    tcu += score_record.times.tms_cutime;
-	    tcs += score_record.times.tms_cstime;
+		tu += score_record.times.tms_utime;
+		ts += score_record.times.tms_stime;
+		tcu += score_record.times.tms_cutime;
+		tcs += score_record.times.tms_cstime;
 #endif /* NO_TIMES */
-	    count += lres;
-	    bcount += bytes;
-	    if (bcount >= KBYTE) {
-		kbcount += (bcount >> 10);
-		bcount = bcount & 0x3ff;
+		count += lres;
+		bcount += bytes;
+		if (bcount >= KBYTE) {
+		    kbcount += (bcount >> 10);
+		    bcount = bcount & 0x3ff;
+		}
 	    }
 	}
-#endif /* STATUS */
     }
 
     up_time = nowtime - ap_restart_time;
@@ -330,72 +314,79 @@ static int status_handler(request_rec *r)
 	ap_rputs("<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n", r);
 	ap_rputs("<H1>Apache Server Status for ", r);
 	ap_rvputs(r, ap_get_server_name(r), "</H1>\n\n", NULL);
-	ap_rvputs(r, "Server Version: ", ap_get_server_version(), "<br>\n",
-	       NULL);
-	ap_rvputs(r, "Server Built: ", ap_get_server_built(), "<br>\n<hr>\n",
-	       NULL);
-	ap_rvputs(r, "Current Time: ", ap_ht_time(r->pool, nowtime, DEFAULT_TIME_FORMAT, 0), 
-               "<br>\n", NULL);
-	ap_rvputs(r, "Restart Time: ", ap_ht_time(r->pool, ap_restart_time, DEFAULT_TIME_FORMAT, 0), 
-	       "<br>\n", NULL);
+	ap_rvputs(r, "Server Version: ",
+	  ap_get_server_version(), "<br>\n", NULL);
+	ap_rvputs(r, "Server Built: ",
+	  ap_get_server_built(), "<br>\n<hr>\n", NULL);
+	ap_rvputs(r, "Current Time: ",
+	  ap_ht_time(r->pool, nowtime, DEFAULT_TIME_FORMAT, 0), "<br>\n", NULL);
+	ap_rvputs(r, "Restart Time: ",
+	  ap_ht_time(r->pool, ap_restart_time, DEFAULT_TIME_FORMAT, 0), 
+	  "<br>\n", NULL);
 	ap_rputs("Server uptime: ", r);
 	show_time(r, up_time);
 	ap_rputs("<br>\n", r);
     }
 
-#if defined(STATUS)
-    if (short_report) {
-	ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %lu\n", count, kbcount);
+    if (ap_extended_status) {
+	if (short_report) {
+	    ap_rprintf(r, "Total Accesses: %lu\nTotal kBytes: %lu\n",
+		count, kbcount);
 
 #ifndef NO_TIMES
-	/* Allow for OS/2 not having CPU stats */
-	if (ts || tu || tcu || tcs)
-	    ap_rprintf(r, "CPULoad: %g\n", (tu + ts + tcu + tcs) / tick / up_time * 100.);
+	    /* Allow for OS/2 not having CPU stats */
+	    if (ts || tu || tcu || tcs)
+		ap_rprintf(r, "CPULoad: %g\n",
+		    (tu + ts + tcu + tcs) / tick / up_time * 100.);
 #endif
 
-	ap_rprintf(r, "Uptime: %ld\n", (long) (up_time));
-	if (up_time > 0)
-	    ap_rprintf(r, "ReqPerSec: %g\n", (float) count / (float) up_time);
-
-	if (up_time > 0)
-	    ap_rprintf(r, "BytesPerSec: %g\n", KBYTE * (float) kbcount / (float) up_time);
-
-	if (count > 0)
-	    ap_rprintf(r, "BytesPerReq: %g\n", KBYTE * (float) kbcount / (float) count);
-    }
-    else {			/* !short_report */
-	ap_rprintf(r, "Total accesses: %lu - Total Traffic: ", count);
-	format_kbyte_out(r, kbcount);
-
-#ifndef NO_TIMES
-	/* Allow for OS/2 not having CPU stats */
-	ap_rputs("<br>\n", r);
-	ap_rprintf(r, "CPU Usage: u%g s%g cu%g cs%g",
-		tu / tick, ts / tick, tcu / tick, tcs / tick);
-
-	if (ts || tu || tcu || tcs)
-	    ap_rprintf(r, " - %.3g%% CPU load", (tu + ts + tcu + tcs) / tick / up_time * 100.);
-#endif
-
-	ap_rputs("<br>\n", r);
-
-	if (up_time > 0)
-	    ap_rprintf(r, "%.3g requests/sec - ",
+	    ap_rprintf(r, "Uptime: %ld\n", (long) (up_time));
+	    if (up_time > 0)
+		ap_rprintf(r, "ReqPerSec: %g\n",
 		    (float) count / (float) up_time);
 
-	if (up_time > 0) {
-	    format_byte_out(r, KBYTE * (float) kbcount / (float) up_time);
-	    ap_rputs("/second - ", r);
-	}
+	    if (up_time > 0)
+		ap_rprintf(r, "BytesPerSec: %g\n",
+		    KBYTE * (float) kbcount / (float) up_time);
 
-	if (count > 0) {
-	    format_byte_out(r, KBYTE * (float) kbcount / (float) count);
-	    ap_rputs("/request", r);
+	    if (count > 0)
+		ap_rprintf(r, "BytesPerReq: %g\n",
+		    KBYTE * (float) kbcount / (float) count);
 	}
+	else {			/* !short_report */
+	    ap_rprintf(r, "Total accesses: %lu - Total Traffic: ", count);
+	    format_kbyte_out(r, kbcount);
 
-	ap_rputs("<br>\n", r);
-    }				/* short_report */
-#endif /* STATUS */
+#ifndef NO_TIMES
+	    /* Allow for OS/2 not having CPU stats */
+	    ap_rputs("<br>\n", r);
+	    ap_rprintf(r, "CPU Usage: u%g s%g cu%g cs%g",
+		    tu / tick, ts / tick, tcu / tick, tcs / tick);
+
+	    if (ts || tu || tcu || tcs)
+		ap_rprintf(r, " - %.3g%% CPU load",
+		    (tu + ts + tcu + tcs) / tick / up_time * 100.);
+#endif
+
+	    ap_rputs("<br>\n", r);
+
+	    if (up_time > 0)
+		ap_rprintf(r, "%.3g requests/sec - ",
+			(float) count / (float) up_time);
+
+	    if (up_time > 0) {
+		format_byte_out(r, KBYTE * (float) kbcount / (float) up_time);
+		ap_rputs("/second - ", r);
+	    }
+
+	    if (count > 0) {
+		format_byte_out(r, KBYTE * (float) kbcount / (float) count);
+		ap_rputs("/request", r);
+	    }
+
+	    ap_rputs("<br>\n", r);
+	}				/* short_report */
+    }					/* ap_extended_status */
 
     if (!short_report)
 	ap_rprintf(r, "\n%d requests currently being processed, %d idle servers\n"
@@ -431,111 +422,113 @@ static int status_handler(request_rec *r)
 	ap_rputs("\"<B><code>G</code></B>\" Gracefully finishing, \n", r);
 	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
 	ap_rputs("<P>\n", r);
-	ap_rputs("PID Key: <br>\n", r);
-	ap_rputs("<UL>\n", r);
-	for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	    if (stat_buffer[i] != '.')
-		ap_rprintf(r, "<LI>%d in state: %c <BR>\n", pid_buffer[i],
-		 stat_buffer[i]);
+	if (!ap_extended_status) {
+	    ap_rputs("PID Key: <br>\n", r);
+	    ap_rputs("<UL>\n", r);
+	    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
+		if (stat_buffer[i] != '.')
+		    ap_rprintf(r, "<LI>%d in state: %c <BR>\n", pid_buffer[i],
+		     stat_buffer[i]);
+	    }
+	    ap_rputs("</UL>\n", r);
 	}
-	ap_rputs("</UL>\n", r);
     }
 
-#if defined(STATUS)
-    if (!short_report) {
-	if (no_table_report)
-	    ap_rputs("<p><hr><h2>Server Details</h2>\n\n", r);
-	else
+    if (ap_extended_status) {
+	if (!short_report) {
+	    if (no_table_report)
+		ap_rputs("<p><hr><h2>Server Details</h2>\n\n", r);
+	    else
 #ifdef NO_TIMES
-	    /* Allow for OS/2 not having CPU stats */
-	    ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
+		/* Allow for OS/2 not having CPU stats */
+		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
 #else
-	    ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
+		ap_rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Req<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n", r);
 #endif
-    }
+	}
 
-    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
-	score_record = ap_scoreboard_image->servers[i];
-	ps_record = ap_scoreboard_image->parent[i];
+	for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
+	    score_record = ap_scoreboard_image->servers[i];
+	    ps_record = ap_scoreboard_image->parent[i];
 
 #if defined(NO_GETTIMEOFDAY)
 #ifndef NO_TIMES
-	if (score_record.start_time == (clock_t) 0)
+	    if (score_record.start_time == (clock_t) 0)
 #endif /* NO_TIMES */
-	    req_time = 0L;
+		req_time = 0L;
 #ifndef NO_TIMES
-	else {
-	    req_time = score_record.stop_time - score_record.start_time;
-	    req_time = (req_time * 1000) / (int) tick;
-	}
+	    else {
+		req_time = score_record.stop_time - score_record.start_time;
+		req_time = (req_time * 1000) / (int) tick;
+	    }
 #endif /* NO_TIMES */
 #else
-	if (score_record.start_time.tv_sec == 0L &&
-	    score_record.start_time.tv_usec == 0L)
-	    req_time = 0L;
-	else
-	    req_time =
-		((score_record.stop_time.tv_sec - score_record.start_time.tv_sec) * 1000) +
-		((score_record.stop_time.tv_usec - score_record.start_time.tv_usec) / 1000);
+	    if (score_record.start_time.tv_sec == 0L &&
+		score_record.start_time.tv_usec == 0L)
+		req_time = 0L;
+	    else
+		req_time =
+		    ((score_record.stop_time.tv_sec - score_record.start_time.tv_sec) * 1000) +
+		    ((score_record.stop_time.tv_usec - score_record.start_time.tv_usec) / 1000);
 #endif
-	if (req_time < 0L)
-	    req_time = 0L;
+	    if (req_time < 0L)
+		req_time = 0L;
 
-	lres = score_record.access_count;
-	my_lres = score_record.my_access_count;
-	conn_lres = score_record.conn_count;
-	bytes = score_record.bytes_served;
-	my_bytes = score_record.my_bytes_served;
-	conn_bytes = score_record.conn_bytes;
-	if (lres != 0 || (score_record.status != SERVER_READY
-			  && score_record.status != SERVER_DEAD)) {
-	    if (!short_report) {
-		if (no_table_report) {
-		    if (score_record.status == SERVER_DEAD)
-			ap_rprintf(r, "<b>Server %d</b> (-): %d|%lu|%lu [",
-				i, (int) conn_lres, my_lres, lres);
-		    else
-			ap_rprintf(r, "<b>Server %d</b> (%d): %d|%lu|%lu [",
-				i, (int) ps_record.pid, (int) conn_lres, my_lres, lres);
+	    lres = score_record.access_count;
+	    my_lres = score_record.my_access_count;
+	    conn_lres = score_record.conn_count;
+	    bytes = score_record.bytes_served;
+	    my_bytes = score_record.my_bytes_served;
+	    conn_bytes = score_record.conn_bytes;
+	    if (lres != 0 || (score_record.status != SERVER_READY
+			      && score_record.status != SERVER_DEAD)) {
+		if (!short_report) {
+		    if (no_table_report) {
+			if (score_record.status == SERVER_DEAD)
+			    ap_rprintf(r, "<b>Server %d</b> (-): %d|%lu|%lu [",
+				    i, (int) conn_lres, my_lres, lres);
+			else
+			    ap_rprintf(r, "<b>Server %d</b> (%d): %d|%lu|%lu [",
+				    i, (int) ps_record.pid, (int) conn_lres, my_lres, lres);
 
-		    switch (score_record.status) {
-		    case SERVER_READY:
-			ap_rputs("Ready", r);
-			break;
-		    case SERVER_STARTING:
-			ap_rputs("Starting", r);
-			break;
-		    case SERVER_BUSY_READ:
-			ap_rputs("<b>Read</b>", r);
-			break;
-		    case SERVER_BUSY_WRITE:
-			ap_rputs("<b>Write</b>", r);
-			break;
-		    case SERVER_BUSY_KEEPALIVE:
-			ap_rputs("<b>Keepalive</b>", r);
-			break;
-		    case SERVER_BUSY_LOG:
-			ap_rputs("<b>Logging</b>", r);
-			break;
-		    case SERVER_BUSY_DNS:
-			ap_rputs("<b>DNS lookup</b>", r);
-			break;
-		    case SERVER_DEAD:
-			ap_rputs("Dead", r);
-			break;
-		    case SERVER_GRACEFUL:
-			ap_rputs("Graceful", r);
-			break;
-		    default:
-			ap_rputs("?STATE?", r);
-			break;
-		    }
+			switch (score_record.status) {
+			case SERVER_READY:
+			    ap_rputs("Ready", r);
+			    break;
+			case SERVER_STARTING:
+			    ap_rputs("Starting", r);
+			    break;
+			case SERVER_BUSY_READ:
+			    ap_rputs("<b>Read</b>", r);
+			    break;
+			case SERVER_BUSY_WRITE:
+			    ap_rputs("<b>Write</b>", r);
+			    break;
+			case SERVER_BUSY_KEEPALIVE:
+			    ap_rputs("<b>Keepalive</b>", r);
+			    break;
+			case SERVER_BUSY_LOG:
+			    ap_rputs("<b>Logging</b>", r);
+			    break;
+			case SERVER_BUSY_DNS:
+			    ap_rputs("<b>DNS lookup</b>", r);
+			    break;
+			case SERVER_DEAD:
+			    ap_rputs("Dead", r);
+			    break;
+			case SERVER_GRACEFUL:
+			    ap_rputs("Graceful", r);
+			    break;
+			default:
+			    ap_rputs("?STATE?", r);
+			    break;
+			}
 #ifdef NO_TIMES
-		    /* Allow for OS/2 not having CPU stats */
-		    ap_rprintf(r, "]\n %.0f %ld (",
+			/* Allow for OS/2 not having CPU stats */
+			ap_rprintf(r, "]\n %.0f %ld (",
 #else
 
-		    ap_rprintf(r, "] u%g s%g cu%g cs%g\n %.0f %ld (",
+			ap_rprintf(r, "] u%g s%g cu%g cs%g\n %.0f %ld (",
 			    score_record.times.tms_utime / tick,
 			    score_record.times.tms_stime / tick,
 			    score_record.times.tms_cutime / tick,
@@ -547,61 +540,61 @@ static int status_handler(request_rec *r)
 			    difftime(nowtime, score_record.last_used),
 #endif
 			    (long) req_time);
-		    format_byte_out(r, conn_bytes);
-		    ap_rputs("|", r);
-		    format_byte_out(r, my_bytes);
-		    ap_rputs("|", r);
-		    format_byte_out(r, bytes);
-		    ap_rputs(")\n", r);
-		    ap_rprintf(r, " <i>%s {%s}</i><br>\n\n",
-			    score_record.client,
-			    ap_escape_html(r->pool, score_record.request));
-		}
-		else {		/* !no_table_report */
-		    if (score_record.status == SERVER_DEAD)
-			ap_rprintf(r, "<tr><td><b>%d</b><td>-<td>%d/%lu/%lu",
-				i, (int) conn_lres, my_lres, lres);
-		    else
-			ap_rprintf(r, "<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
-				i, (int) ps_record.pid, (int) conn_lres, my_lres, lres);
-
-		    switch (score_record.status) {
-		    case SERVER_READY:
-			ap_rputs("<td>_", r);
-			break;
-		    case SERVER_STARTING:
-			ap_rputs("<td><b>S</b>", r);
-			break;
-		    case SERVER_BUSY_READ:
-			ap_rputs("<td><b>R</b>", r);
-			break;
-		    case SERVER_BUSY_WRITE:
-			ap_rputs("<td><b>W</b>", r);
-			break;
-		    case SERVER_BUSY_KEEPALIVE:
-			ap_rputs("<td><b>K</b>", r);
-			break;
-		    case SERVER_BUSY_LOG:
-			ap_rputs("<td><b>L</b>", r);
-			break;
-		    case SERVER_BUSY_DNS:
-			ap_rputs("<td><b>D</b>", r);
-			break;
-		    case SERVER_DEAD:
-			ap_rputs("<td>.", r);
-			break;
-		    case SERVER_GRACEFUL:
-			ap_rputs("<td>G", r);
-			break;
-		    default:
-			ap_rputs("<td>?", r);
-			break;
+			format_byte_out(r, conn_bytes);
+			ap_rputs("|", r);
+			format_byte_out(r, my_bytes);
+			ap_rputs("|", r);
+			format_byte_out(r, bytes);
+			ap_rputs(")\n", r);
+			ap_rprintf(r, " <i>%s {%s}</i><br>\n\n",
+				score_record.client,
+				ap_escape_html(r->pool, score_record.request));
 		    }
+		    else {		/* !no_table_report */
+			if (score_record.status == SERVER_DEAD)
+			    ap_rprintf(r, "<tr><td><b>%d</b><td>-<td>%d/%lu/%lu",
+				    i, (int) conn_lres, my_lres, lres);
+			else
+			    ap_rprintf(r, "<tr><td><b>%d</b><td>%d<td>%d/%lu/%lu",
+				    i, (int) ps_record.pid, (int) conn_lres, my_lres, lres);
+
+			switch (score_record.status) {
+			case SERVER_READY:
+			    ap_rputs("<td>_", r);
+			    break;
+			case SERVER_STARTING:
+			    ap_rputs("<td><b>S</b>", r);
+			    break;
+			case SERVER_BUSY_READ:
+			    ap_rputs("<td><b>R</b>", r);
+			    break;
+			case SERVER_BUSY_WRITE:
+			    ap_rputs("<td><b>W</b>", r);
+			    break;
+			case SERVER_BUSY_KEEPALIVE:
+			    ap_rputs("<td><b>K</b>", r);
+			    break;
+			case SERVER_BUSY_LOG:
+			    ap_rputs("<td><b>L</b>", r);
+			    break;
+			case SERVER_BUSY_DNS:
+			    ap_rputs("<td><b>D</b>", r);
+			    break;
+			case SERVER_DEAD:
+			    ap_rputs("<td>.", r);
+			    break;
+			case SERVER_GRACEFUL:
+			    ap_rputs("<td>G", r);
+			    break;
+			default:
+			    ap_rputs("<td>?", r);
+			    break;
+			}
 #ifdef NO_TIMES
-		    /* Allow for OS/2 not having CPU stats */
-		    ap_rprintf(r, "\n<td>%.0f<td>%ld",
+			/* Allow for OS/2 not having CPU stats */
+			ap_rprintf(r, "\n<td>%.0f<td>%ld",
 #else
-		    ap_rprintf(r, "\n<td>%.2f<td>%.0f<td>%ld",
+			ap_rprintf(r, "\n<td>%.2f<td>%.0f<td>%ld",
 			    (score_record.times.tms_utime +
 			     score_record.times.tms_stime +
 			     score_record.times.tms_cutime +
@@ -613,20 +606,20 @@ static int status_handler(request_rec *r)
 			    difftime(nowtime, score_record.last_used),
 #endif
 			    (long) req_time);
-		    ap_rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
-		       (float) conn_bytes / KBYTE, (float) my_bytes / MBYTE,
+			ap_rprintf(r, "<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
+			   (float) conn_bytes / KBYTE, (float) my_bytes / MBYTE,
 			    (float) bytes / MBYTE);
-		    ap_rprintf(r, "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
+			ap_rprintf(r, "<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
 			    score_record.client, score_record.vhost,
 			    ap_escape_html(r->pool, score_record.request));
-		}		/* no_table_report */
-	    }			/* !short_report */
-	}			/* if (<active child>) */
-    }				/* for () */
+		    }		/* no_table_report */
+		}			/* !short_report */
+	    }			/* if (<active child>) */
+	}				/* for () */
 
-    if (!(short_report || no_table_report)) {
+	if (!(short_report || no_table_report)) {
 #ifdef OS2
-	ap_rputs("</table>\n \
+	    ap_rputs("</table>\n \
 <hr> \
 <table>\n \
 <tr><th>Srv<td>Server number\n \
@@ -640,7 +633,7 @@ static int status_handler(request_rec *r)
 <tr><th>Slot<td>Total megabytes transferred this slot\n \
 </table>\n", r);
 #else
-	ap_rputs("</table>\n \
+	    ap_rputs("</table>\n \
 <hr> \
 <table>\n \
 <tr><th>Srv<td>Server number\n \
@@ -655,16 +648,15 @@ static int status_handler(request_rec *r)
 <tr><th>Slot<td>Total megabytes transferred this slot\n \
 </table>\n", r);
 #endif
-    }
+	}
 
-#else /* !defined(STATUS) */
+    } else {
 
     ap_rputs("<hr>To obtain a full report with current status information and", r);
     ap_rputs(" DNS and LOGGING status codes \n", r);
-    ap_rputs("you need to recompile Apache after adding the line <pre>", r);
-    ap_rputs("Rule STATUS=yes</pre>into the file <code>Configuration</code>\n", r);
+    ap_rputs("you need to use the <code>ExtendedStatus On</code>directive. \n", r);
 
-#endif /* STATUS */
+    }
 
     if (!short_report) {
 	ap_rputs(ap_psignature("<HR>\n",r), r);

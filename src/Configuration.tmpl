@@ -118,7 +118,7 @@ Rule SHARED_CHAIN=default
 # functions. The format is: Rule RULE=value
 #
 # At present, only the following RULES are known: WANTHSREGEX, SOCKS4,
-# SOCKS5, STATUS, IRIXNIS, IRIXN32 and PARANOID.
+# SOCKS5, IRIXNIS, IRIXN32 and PARANOID.
 #
 # For all Rules, if set to "yes", then Configure knows we want that
 # capability and does what is required to add it in. If set to "default"
@@ -134,12 +134,6 @@ Rule SHARED_CHAIN=default
 #  If SOCKS5 is set to 'yes', be sure that you add the socks5 library
 #  location to EXTRA_LIBS, otherwise Configure will assume
 #  "-L/usr/local/lib -lsocks5"
-#
-# STATUS:
-#  If Configure determines that you are using the status_module,
-#  it will automatically enable full status information if set
-#  to 'yes'. If the status module is not included, having STATUS
-#  set to 'yes' has no impact.
 #
 # IRIXNIS:
 #  Only takes effect if Configure determines that you are running
@@ -161,7 +155,6 @@ Rule SHARED_CHAIN=default
 #  actually print-out the code that the modules execute
 #
 
-Rule STATUS=yes
 Rule SOCKS4=no
 Rule SOCKS5=no
 Rule IRIXNIS=no
@@ -249,8 +242,8 @@ AddModule modules/standard/mod_negotiation.o
 ##
 ## The status module allows the server to display current details about 
 ## how well it is performing and what it is doing.  Consider also enabling 
-## STATUS=yes (see the Rules section near the start of this file) to allow
-## full status information.  Check conf/access.conf on how to enable this.
+## the 'ExtendedStatus On' directive to allow full status information.
+## Please note that doing so can result in a palpable performance hit.
 
 # AddModule modules/standard/mod_status.o
 

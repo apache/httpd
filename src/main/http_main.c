@@ -247,6 +247,7 @@ time_t ap_restart_time;
 int ap_suexec_enabled = 0;
 int ap_listenbacklog;
 int ap_dump_settings;
+int ap_extended_status = 0;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -352,7 +353,7 @@ enum server_token_type ap_server_tokens = SrvTk_FULL;
 /*
  * This routine is called when the pconf pool is vacuumed.  It resets the
  * server version string to a known value and [re]enables modifications
- * (which are disabled by configuration completion).
+ * (which are disabled by configuration completion). 
  */
 static void reset_version(void *dummy)
 {
@@ -1961,40 +1962,39 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
     ++ss->cur_vtime;
 #endif
 
-#if defined(STATUS)
+    if (ap_extended_status) {
 #ifndef OPTIMIZE_TIMEOUTS
-    ss->last_used = time(NULL);
+	ss->last_used = time(NULL);
 #endif
-    if (status == SERVER_READY || status == SERVER_DEAD) {
-	/*
-	 * Reset individual counters
-	 */
-	if (status == SERVER_DEAD) {
-	    ss->my_access_count = 0L;
-	    ss->my_bytes_served = 0L;
+	if (status == SERVER_READY || status == SERVER_DEAD) {
+	    /*
+	     * Reset individual counters
+	     */
+	    if (status == SERVER_DEAD) {
+		ss->my_access_count = 0L;
+		ss->my_bytes_served = 0L;
+	    }
+	    ss->conn_count = (unsigned short) 0;
+	    ss->conn_bytes = (unsigned long) 0;
 	}
-	ss->conn_count = (unsigned short) 0;
-	ss->conn_bytes = (unsigned long) 0;
-    }
-    if (r) {
-	conn_rec *c = r->connection;
-	ap_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
-			      REMOTE_NOLOOKUP), sizeof(ss->client));
-    if (r->the_request == NULL) {
-		ap_cpystrn(ss->request, "NULL", sizeof(ss->request));
-	} else if (r->parsed_uri.password == NULL) {
-		ap_cpystrn(ss->request, r->the_request, sizeof(ss->request));
-	} else {
-	    /* Don't reveal the password in the server-status view */
-		ap_cpystrn(ss->request, ap_pstrcat(r->pool, r->method, " ",
-					   ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD),
-					   r->assbackwards ? NULL : " ", r->protocol, NULL),
-				   sizeof(ss->request));
+	if (r) {
+	    conn_rec *c = r->connection;
+	    ap_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
+				  REMOTE_NOLOOKUP), sizeof(ss->client));
+	if (r->the_request == NULL) {
+		    ap_cpystrn(ss->request, "NULL", sizeof(ss->request));
+	    } else if (r->parsed_uri.password == NULL) {
+		    ap_cpystrn(ss->request, r->the_request, sizeof(ss->request));
+	    } else {
+		/* Don't reveal the password in the server-status view */
+		    ap_cpystrn(ss->request, ap_pstrcat(r->pool, r->method, " ",
+					       ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD),
+					       r->assbackwards ? NULL : " ", r->protocol, NULL),
+				       sizeof(ss->request));
+	    }
+	    ap_cpystrn(ss->vhost, r->server->server_hostname, sizeof(ss->vhost));
 	}
-	ap_cpystrn(ss->vhost, r->server->server_hostname, sizeof(ss->vhost));
     }
-#endif
-
     put_scoreboard_info(child_num, ss);
 
     return old_status;
@@ -2010,7 +2010,6 @@ static void update_scoreboard_global(void)
 #endif
 }
 
-#if defined(STATUS)
 void ap_time_process_request(int child_num, int status)
 {
     short_score *ss;
@@ -2078,9 +2077,6 @@ static void increment_counts(int child_num, request_rec *r)
 
     put_scoreboard_info(child_num, ss);
 }
-
-#endif
-
 
 static int find_child_by_pid(int pid)
 {
@@ -3705,9 +3701,8 @@ static void child_main(int child_num_arg)
 	    if (r->status == HTTP_OK)
 		ap_process_request(r);
 
-#if defined(STATUS)
-	    increment_counts(my_child_num, r);
-#endif
+	    if(ap_extended_status)
+		increment_counts(my_child_num, r);
 
 	    if (!current_conn->keepalive || current_conn->aborted)
 		break;
@@ -4787,9 +4782,8 @@ static void child_sub_main(int child_num)
 	    if (r->status == HTTP_OK)
 		ap_process_request(r);
 
-#if defined(STATUS)
-	    increment_counts(child_num, r);
-#endif
+	    if (ap_extended_status)
+		increment_counts(child_num, r);
 
 	    if (!current_conn->keepalive || current_conn->aborted)
 		break;

@@ -71,6 +71,7 @@
 #include "http_request.h"
 #include "http_core.h"
 #include "http_protocol.h"
+#include "http_conf_globals.h"	/* for ap_extended_status */
 #include "http_log.h"
 #include "http_main.h"
 #include "scoreboard.h"
@@ -1182,9 +1183,8 @@ void ap_process_request(request_rec *r)
 {
     int old_stat;
 
-#ifdef STATUS
-    ap_time_process_request(r->connection->child_num, START_PREQUEST);
-#endif
+    if (ap_extended_status)
+	ap_time_process_request(r->connection->child_num, START_PREQUEST);
 
     process_request_internal(r);
 
@@ -1202,9 +1202,8 @@ void ap_process_request(request_rec *r)
     ap_log_transaction(r);
 
     (void) ap_update_child_status(r->connection->child_num, old_stat, r);
-#ifdef STATUS
-    ap_time_process_request(r->connection->child_num, STOP_PREQUEST);
-#endif
+    if (ap_extended_status)
+	ap_time_process_request(r->connection->child_num, STOP_PREQUEST);
 }
 
 static table *rename_original_env(pool *p, table *t)

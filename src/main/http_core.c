@@ -2313,6 +2313,26 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
+/*
+ * Here, and not in the status module, because we want this GLOBAL_ONLY.
+ * Note that if enabled, there is a nasty performance hit, even if
+ * the status module is NOT loaded.
+ */
+static const char *set_extended_status(cmd_parms *cmd, void *dummy, char *arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    if (!strcasecmp(arg, "off") || !strcmp(arg, "0")) {
+	ap_extended_status = 0;
+    }
+    else {
+	ap_extended_status = 1;
+    }
+    return NULL;
+}
+
 static const char *set_limit_req_body(cmd_parms *cmd, core_dir_config *conf,
                                       char *arg) 
 {
@@ -2531,6 +2551,8 @@ static const command_rec core_cmds[] = {
 #endif
 { "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
+{ "ExtendedStatus", set_extended_status, NULL, RSRC_CONF, TAKE1,
+  "\On\" to enable extended status information, \"Off\" to disable" },
 { "LimitRequestBody", set_limit_req_body,
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   RSRC_CONF|ACCESS_CONF|OR_ALL, TAKE1,

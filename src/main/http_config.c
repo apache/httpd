@@ -1390,6 +1390,7 @@ static void init_config_globals(pool *p)
     ap_bind_address.s_addr = htonl(INADDR_ANY);
     ap_listeners = NULL;
     ap_listenbacklog = DEFAULT_LISTENBACKLOG;
+    ap_extended_status = 0;
 
     /* Global virtual host hash bucket pointers.  Init to null. */
     ap_init_vhost_config(p);
