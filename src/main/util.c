@@ -2013,12 +2013,14 @@ static char *find_fqdn(pool *a, struct hostent *p)
     int x;
 
     if (!strchr(p->h_name, '.')) {
-	for (x = 0; p->h_aliases[x]; ++x) {
-	    if (strchr(p->h_aliases[x], '.') &&
-		(!strncasecmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
-		return ap_pstrdup(a, p->h_aliases[x]);
-	}
-	return NULL;
+        if (p->h_aliases) {
+        	for (x = 0; p->h_aliases[x]; ++x) {
+                if (p->h_aliases[x] && strchr(p->h_aliases[x], '.') &&
+            		(!strncasecmp(p->h_aliases[x], p->h_name, strlen(p->h_name))))
+		            return ap_pstrdup(a, p->h_aliases[x]);
+            }
+	    }
+	    return NULL;
     }
     return ap_pstrdup(a, (void *) p->h_name);
 }
@@ -2047,7 +2049,7 @@ char *ap_get_local_host(pool *a)
         if ((!(p = gethostbyname(str))) 
             || (!(server_hostname = find_fqdn(a, p)))) {
             /* Recovery - return the default servername by IP: */
-            if (p && p->h_addr_list[0]) {
+            if (p && p->h_addr_list && p->h_addr_list[0]) {
                 ap_snprintf(str, sizeof(str), "%pA", p->h_addr_list[0]);
 	        server_hostname = ap_pstrdup(a, str);
                 /* We will drop through to report the IP-named server */
