@@ -11,7 +11,7 @@ Release:
 
 Current Modes:
 
-    o Commit-Then-Review
+    o Commit-Then-Review (see <http://dev.apache.org/guidelines.html#ctr>
     o NO lazy voting
 
 Plan:
@@ -170,18 +170,22 @@ Closed issues:
 	people/places who need it
 
     * The decision has been made to experiment with allowing code
-      changes to be committed without prior review.  Specific guidelines
-      and implementation date to be worked out.
+      changes to be committed without prior review.
 
     * Guidelines for commit-then-review are documented at
       <http://dev.apache.org/guidelines.html#ctr>
 
 Open issues:
 
+    * Maybe moving *all* of the *.h header files into a new
+      src/include directory?
+	Status: Ken +1
+
     * Renaming the "apache" CVS module to "apache-1.2" and the
       "apachen" module to "apache-1.3" - and, at some point,
       copying (*not* branching) the apache-1.3 module to a new
       apache-2.x tree and opening up 2.0 development.
+	Status: Ken +1
 
     * Ken's [POLL] apachen/patches directory
       Shall we experiment with allowing patches to be distributed for
@@ -243,8 +247,12 @@ Open issues:
       the base input name be referenced?
 
 
-
 Win32 specific issues:
+
+ Open issues:
+
+    * Should ApacheCore.dll be merged back into the main server
+      image?  May make debugging easier..
 
  In progress:
 
@@ -273,7 +281,7 @@ Win32 specific issues:
 
     * some errors printed by CGIs to stderr don't end up making it
       to the server log unless an extra debugging message is added
-      after they run?
+      after they run? (PR#1725 indicates this may not be just Win32)
 
     * bad use of chdir in some places; it isn't thread-specific
 
