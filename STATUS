@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/09/26 17:10:11 $]
+Last modified at [$Date: 2002/09/28 17:35:21 $]
 
 Release:
 
@@ -80,13 +80,6 @@ CURRENT VOTES:
                   usually needs major customizations
          -1:   Ken
 
-    * Should we always build [support*] binaries statically unless otherwise
-      indicated?
-        Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
-
-      +1:  Ken, *wrowe [they are PITAs on OSX]
-      -1:  Justin, Ian
-        
     * If the parent process dies, should the remaining child processes
       "gracefully" self-terminate. Or maybe we should make it a runtime
       option, or have a concept of 2 parent processes (one being a 
