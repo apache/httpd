@@ -142,9 +142,9 @@ AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p)
 /* ap_cleanup_scoreboard
  * 
  */
-static void ap_cleanup_scoreboard(void *d) {
+static apr_status_t ap_cleanup_scoreboard(void *d) {
     if (ap_scoreboard_image == NULL)
-        return;
+        return APR_SUCCESS;
     if (ap_scoreboard_image->global.sb_type == SB_SHARED) {
         ap_cleanup_shared_mem(NULL);
     }
@@ -152,6 +152,7 @@ static void ap_cleanup_scoreboard(void *d) {
         free(ap_scoreboard_image);
         ap_scoreboard_image = NULL;
     }
+    return APR_SUCCESS;
 }
 
 /* ap_create_scoreboard(apr_pool_t*, ap_scoreboard_e t)
