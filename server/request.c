@@ -1082,21 +1082,57 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
 #endif /* defined REPLACE_PATH_INFO_METHOD */
 
+typedef struct walk_walked_t {
+    ap_conf_vector_t *matched; /* A dir_conf sections we matched */
+    ap_conf_vector_t *merged;  /* The dir_conf merged result */
+} walk_walked_t;
+
+typedef struct walk_cache_t {
+    const char         *cached;         /* The identifier we matched */
+    ap_conf_vector_t  **dir_conf_tested;/* The sections we matched against */
+    ap_conf_vector_t   *per_dir_result; /* per_dir_config += walked result */
+    apr_array_header_t *walked;         /* The list of walk_walked_t results */
+} walk_cache_t;
 
 AP_DECLARE(int) ap_location_walk(request_rec *r)
 {
+    ap_conf_vector_t *now_merged = NULL;
     core_server_config *sconf = ap_get_module_config(r->server->module_config,
                                                      &core_module);
-    ap_conf_vector_t *per_uri_defaults = NULL;
     ap_conf_vector_t **locations = (ap_conf_vector_t **) sconf->sec_url->elts;
-    ap_conf_vector_t **loc_done = NULL;
-    int len, num_loc = sconf->sec_url->nelts;
-    char *test_location;
-    ap_conf_vector_t *this_conf;
-    ap_conf_vector_t *entry_config;
+    int num_loc = sconf->sec_url->nelts;
     core_dir_config *entry_core;
-    char *entry_uri;
-    int j;
+    walk_cache_t *cache;
+    walk_walked_t *last_walk;
+    const char *entry_uri;
+    int len, j;
+
+    /* Find the most relevant, recent entry to work from.  That would be
+     * this request (on the second call), or the parent request of a
+     * subrequest, or the prior request of an internal redirect.
+     */
+    if ((apr_pool_userdata_get((void **)&cache, 
+                               "ap_location_walk::cache", r->pool)
+                != APR_SUCCESS) || !cache) 
+    {
+        if ((r->main && (apr_pool_userdata_get((void **)&cache, 
+                                               "ap_location_walk::cache",
+                                               r->main->pool)
+                                 == APR_SUCCESS) && cache)
+         || (r->prev && (apr_pool_userdata_get((void **)&cache, 
+                                               "ap_location_walk::cache",
+                                               r->prev->pool)
+                                 == APR_SUCCESS) && cache)) {
+            cache = apr_pmemdup(r->pool, cache, sizeof(*cache));
+            cache->walked = apr_array_copy(r->pool, cache->walked);
+        }
+        else {
+            cache = apr_pcalloc(r->pool, sizeof(*cache));
+            cache->walked = apr_array_make(r->pool, 4, sizeof(walk_walked_t));
+        }
+        apr_pool_userdata_set(cache, "ap_location_walk::cache", 
+                              apr_pool_cleanup_null, r->pool);
+    }
 
     /* If the initial request creation logic failed to reset the
      * per_dir_config, we will do so here.
@@ -1105,58 +1141,65 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     if (!r->per_dir_config)
         r->per_dir_config = r->server->lookup_defaults;
     
-
-    /* No tricks here, there are no <Locations > to parse in this vhost
+    /* No tricks here, there are no <Locations > to parse in this vhost.
+     * We cache NULL because it's possible that another vhost had some
+     * different locations, and we are throwing those away.
      */
     if (!num_loc) {
-        apr_pool_userdata_set(NULL, "ap_location_walk::dir_conf", 
-                              apr_pool_cleanup_null, r->pool);
-        apr_pool_userdata_set(NULL, "ap_location_walk::loc_done", 
-                              apr_pool_cleanup_null, r->pool);
-        apr_pool_userdata_set(NULL, "ap_location_walk::last_uri",
-                              apr_pool_cleanup_null, r->pool);
 	return OK;
     }
 
-    apr_pool_userdata_get((void **)&entry_uri, "ap_location_walk::last_uri", r->pool);
-    apr_pool_userdata_get((void **)&loc_done, "ap_location_walk::loc_done", r->pool);
-
-    /* If we have an ap_location_walk::last_uri that matches r->uri,
-     * and the vhost's list of locations hasn't changed,
-     * we will go through the location_walk entries.
+    /* Location and LocationMatch differ on their behaviour w.r.t. multiple
+     * slashes.  Location matches multiple slashes with a single slash,
+     * LocationMatch doesn't.  An exception, for backwards brokenness is
+     * absoluteURIs... in which case neither match multiple slashes.
      */
-    if (!entry_uri || (loc_done != locations) 
-                   || (strcmp(r->uri, entry_uri) != 0))
-    {
-        /* Location and LocationMatch differ on their behaviour w.r.t. multiple
-         * slashes.  Location matches multiple slashes with a single slash,
-         * LocationMatch doesn't.  An exception, for backwards brokenness is
-         * absoluteURIs... in which case neither match multiple slashes.
+    if (r->uri[0] != '/') {
+	entry_uri = r->uri;
+    }
+    else {
+        char *uri = apr_pstrdup(r->pool, r->uri);
+	ap_no2slash(uri);
+        entry_uri = uri;
+    }
+
+    /* If we have an cache->cached location that matches r->uri,
+     * and the vhost's list of locations hasn't changed, we can skip
+     * rewalking the location_walk entries.
+     */
+    if (cache->cached && (cache->dir_conf_tested == locations) 
+                      && (strcmp(entry_uri, cache->cached) == 0)) {
+        /* Well this looks really familiar!  If our end-result (per_dir_result)
+         * didn't change, we have absolutely nothing to do :)  
+         * Otherwise (as is the case with most dir_merged/file_merged requests)
+         * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
-        if (r->uri[0] != '/') {
-	    test_location = r->uri;
-        }
-        else {
-	    test_location = apr_pstrdup(r->pool, r->uri);
-	    ap_no2slash(test_location);
-        }
+        if (cache->per_dir_result == r->per_dir_config)
+            return OK;
+        if (cache->walked->nelts)
+            now_merged = ((walk_walked_t*)cache->walked->elts)
+                                            [cache->walked->nelts - 1].merged;
+    }
+    else {
+        /* We start now_merged from NULL since we want to build 
+         * a locations list that can be merged to any vhost.
+         */
+        int matches = cache->walked->nelts;
+        last_walk = (walk_walked_t*)cache->walked->elts;
+        cache->cached = entry_uri;
+        cache->dir_conf_tested = locations;
 
-        /* Go through the location entries, and check for matches. */
-
-        /* we apply the directive sections in some order;
-         * should really try them with the most general first.
+        /* Go through the location entries, and check for matches.
+         * We apply the directive sections in given order, we should
+         * really try them with the most general first.
          */
         for (j = 0; j < num_loc; ++j) {
 
-	    entry_config = locations[j];
-
-	    entry_core = ap_get_module_config(entry_config, &core_module);
+	    entry_core = ap_get_module_config(locations[j], &core_module);
 	    entry_uri = entry_core->d;
 
 	    len = strlen(entry_uri);
 
-	    this_conf = NULL;
-            
             /* Test the regex, fnmatch or string as appropriate.
              * If it's a strcmp, and the <Location > pattern was 
              * not slash terminated, then this uri must be slash
@@ -1165,60 +1208,57 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
 	    if (entry_core->r 
                   ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
                   : (entry_core->d_is_fnmatch
-                       ? apr_fnmatch(entry_uri, test_location, FNM_PATHNAME)
-                       : (strncmp(test_location, entry_uri, len)
+                       ? apr_fnmatch(entry_uri, cache->cached, FNM_PATHNAME)
+                       : (strncmp(cache->cached, entry_uri, len)
                             || (entry_uri[len - 1] != '/'
-                             && test_location[len] != '/' 
-                             && test_location[len] != '\0')))) {
+                             && cache->cached[len] != '/' 
+                             && cache->cached[len] != '\0')))) {
 	        continue;
             }
 
-            if (per_uri_defaults)
-	        per_uri_defaults = ap_merge_per_dir_configs(r->pool,
-                                                            per_uri_defaults,
-                                                            entry_config);
+            /* If we merged this same section last time, reuse it
+             */
+            if (matches) {
+                if (last_walk->matched == locations[j]) {
+                    now_merged = last_walk->merged;
+                    ++last_walk;
+                    --matches;
+                    continue;
+                }
+                /* We fell out of sync.  This is our own copy of walked,
+                 * so truncate the remaining matches and reset remaining.
+                 */
+                cache->walked->nelts -= matches;
+                matches = 0;
+            }
+
+            if (now_merged)
+	        now_merged = ap_merge_per_dir_configs(r->pool, 
+                                                      now_merged,
+                                                      locations[j]);
             else
-                per_uri_defaults = entry_config;
+                now_merged = locations[j];
+
+            last_walk = (walk_walked_t*)apr_array_push(cache->walked);
+            last_walk->matched = locations[j];
+            last_walk->merged = now_merged;
         }
-
-        /* Set aside this walk result, in case we end up back here with
-         * the same uri again.
+        /* Whoops - everything matched in sequence, but the original walk
+         * found some additional matches.  Truncate them.
          */
-        apr_pool_userdata_set(per_uri_defaults, "ap_location_walk::dir_conf", 
-                              apr_pool_cleanup_null, r->pool);
-        apr_pool_userdata_set(locations, "ap_location_walk::loc_done", 
-                              apr_pool_cleanup_null, r->pool);
-        apr_pool_userdata_set(r->uri, "ap_location_walk::last_uri", 
-                              apr_pool_cleanup_null, r->pool);
-    }
-    else {
-        /* Well this looks familiar!  If our end-result (dir_merged) hasn't
-         * changed, we have nothing to do :)  This test really doesn't play well
-         * with other walkers who reset to the vhost default, but we will
-         * leave this escape in for simpler modules.
-         */
-        apr_pool_userdata_get((void **)&per_uri_defaults, "ap_location_walk::dir_merged",
-                              r->pool);
-        if (per_uri_defaults == r->per_dir_config)
-            return OK;
-
-        /* Well, we will need our per_uri_defaults from the last location walk. 
-         * after all.
-         */
-        apr_pool_userdata_get((void **)&per_uri_defaults, "ap_location_walk::dir_conf",
-                              r->pool);
+        if (matches)
+            cache->walked->nelts -= matches;
     }
 
-    /* Merge our per_uri_defaults preconstruct onto the r->per_dir_configs,
-     * and note the end result for later optimization.
+    /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
+     * and note the end result to (potentially) skip this step next time.
      */
-    if (per_uri_defaults)
+    if (now_merged)
         r->per_dir_config = ap_merge_per_dir_configs(r->pool,
                                                      r->per_dir_config,
-                                                     per_uri_defaults);
+                                                     now_merged);
+    cache->per_dir_result = r->per_dir_config;
 
-    apr_pool_userdata_set(r->per_dir_config, "ap_location_walk::dir_merged", 
-                          apr_pool_cleanup_null, r->pool);
     return OK;
 }
 
