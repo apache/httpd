@@ -117,7 +117,7 @@ void util_ald_free(const void *ptr)
 #if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
         if (ptr)
-            apr_shm_free(util_ldap_shm, (void *)ptr);
+            apr_rmm_free(util_ldap_rmm, apr_rmm_offset_get(util_ldap_rmm, (void *)ptr));
     } else {
         if (ptr)
             free((void *)ptr);
@@ -134,7 +134,7 @@ void *util_ald_alloc(unsigned long size)
         return NULL;
 #if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
-        return (void *)apr_shm_calloc(util_ldap_shm, size);
+        return (void *)apr_rmm_addr_get(util_ldap_rmm, apr_rmm_calloc(util_ldap_rmm, size));
     } else {
         return (void *)calloc(sizeof(char), size);
     }
@@ -147,7 +147,7 @@ const char *util_ald_strdup(const char *s)
 {
 #if APR_HAS_SHARED_MEMORY
     if (util_ldap_shm) {
-        char *buf = apr_shm_malloc(util_ldap_shm, strlen(s)+1);
+        char *buf = (char *)apr_rmm_addr_get(util_ldap_rmm, apr_rmm_calloc(util_ldap_rmm, strlen(s)+1));
         if (buf) {
             strcpy(buf, s);
             return buf;
