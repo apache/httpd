@@ -1,7 +1,10 @@
 Changes with Apache 1.2b7
 
+  *) Fixed core dump when DocumentRoot is a CGI.
+     [Ben Laurie, reported by geddis@tesserae.com]
+
   *) Fixed potential file descriptor leak in mod_asis; updated it and
-     http__core to use pfopen/pfclose instead of fopen/fclose.
+     http_core to use pfopen/pfclose instead of fopen/fclose.
      [Randy Terbush and Roy Fielding]
 
   *) Fixed handling of unsigned ints in ap_snprintf() on some chips such
@@ -27,7 +30,7 @@ Changes with Apache 1.2b7
   *) Tweak byteserving code (e.g. serving PDF files) to work around a 
      bug in Netscape Navigator. [Alexei Kosut]
 
-  *) Port to  HP MPE operating system for HP 3000 machines
+  *) Port to HP MPE operating system for HP 3000 machines
      [Mark Bixby <markb@cccd.edu>]
 
   *) Fixed bug which caused a segmentation fault if only one argument

@@ -223,6 +223,9 @@ static int find_path_info (char *uri, char *path_info)
 
     while (lu-- && lp-- && uri[lu] == path_info[lp]);
 
+    if (lu == -1)
+	lu=0;
+
     while (uri[lu] != '\0' && uri[lu] != '/')
 	lu++;
 
