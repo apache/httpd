@@ -134,27 +134,27 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
      * Note that the condition evaluation order is extremely important.
      */
     if ((r->connection->keepalive != -1)
-	&& ((r->status == HTTP_NOT_MODIFIED)
-	    || (r->status == HTTP_NO_CONTENT)
-	    || r->header_only
-	    || apr_table_get(r->headers_out, "Content-Length")
-	    || ap_find_last_token(r->pool,
-				  apr_table_get(r->headers_out,
-						"Transfer-Encoding"),
-				  "chunked")
-	    || ((r->proto_num >= HTTP_VERSION(1,1))
-		&& (r->chunked = 1))) /* THIS CODE IS CORRECT, see comment above. */
+        && ((r->status == HTTP_NOT_MODIFIED)
+            || (r->status == HTTP_NO_CONTENT)
+            || r->header_only
+            || apr_table_get(r->headers_out, "Content-Length")
+            || ap_find_last_token(r->pool,
+                                  apr_table_get(r->headers_out,
+                                                "Transfer-Encoding"),
+                                  "chunked")
+            || ((r->proto_num >= HTTP_VERSION(1,1))
+                && (r->chunked = 1))) /* THIS CODE IS CORRECT, see above. */
         && r->server->keep_alive
-	&& (r->server->keep_alive_timeout > 0)
-	&& ((r->server->keep_alive_max == 0)
-	    || (r->server->keep_alive_max > r->connection->keepalives))
-	&& !ap_status_drops_connection(r->status)
-	&& !wimpy
-	&& !ap_find_token(r->pool, conn, "close")
-	&& (!apr_table_get(r->subprocess_env, "nokeepalive")
-	    || apr_table_get(r->headers_in, "Via"))
-	&& ((ka_sent = ap_find_token(r->pool, conn, "keep-alive"))
-	    || (r->proto_num >= HTTP_VERSION(1,1)))) {
+        && (r->server->keep_alive_timeout > 0)
+        && ((r->server->keep_alive_max == 0)
+            || (r->server->keep_alive_max > r->connection->keepalives))
+        && !ap_status_drops_connection(r->status)
+        && !wimpy
+        && !ap_find_token(r->pool, conn, "close")
+        && (!apr_table_get(r->subprocess_env, "nokeepalive")
+            || apr_table_get(r->headers_in, "Via"))
+        && ((ka_sent = ap_find_token(r->pool, conn, "keep-alive"))
+            || (r->proto_num >= HTTP_VERSION(1,1)))) {
         int left = r->server->keep_alive_max - r->connection->keepalives;
 
         r->connection->keepalive = 1;
@@ -163,13 +163,13 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         /* If they sent a Keep-Alive token, send one back */
         if (ka_sent) {
             if (r->server->keep_alive_max) {
-		apr_table_setn(r->headers_out, "Keep-Alive",
+                apr_table_setn(r->headers_out, "Keep-Alive",
                                apr_psprintf(r->pool, "timeout=%d, max=%d",
                                             r->server->keep_alive_timeout,
                                             left));
             }
             else {
-		apr_table_setn(r->headers_out, "Keep-Alive",
+                apr_table_setn(r->headers_out, "Keep-Alive",
                                apr_psprintf(r->pool, "timeout=%d",
                                             r->server->keep_alive_timeout));
             }
@@ -188,7 +188,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
      * to a HTTP/1.1 client. Better safe than sorry.
      */
     if (!wimpy) {
-	apr_table_mergen(r->headers_out, "Connection", "close");
+        apr_table_mergen(r->headers_out, "Connection", "close");
     }
 
     r->connection->keepalive = 0;
@@ -227,8 +227,8 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      */
     if ((if_match = apr_table_get(r->headers_in, "If-Match")) != NULL) {
         if (if_match[0] != '*'
-	    && (etag == NULL || etag[0] == 'W'
-		|| !ap_find_list_item(r->pool, if_match, etag))) {
+            && (etag == NULL || etag[0] == 'W'
+                || !ap_find_list_item(r->pool, if_match, etag))) {
             return HTTP_PRECONDITION_FAILED;
         }
     }
@@ -264,12 +264,12 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
     if (if_nonematch != NULL) {
         if (r->method_number == M_GET) {
             if (if_nonematch[0] == '*') {
-		return HTTP_NOT_MODIFIED;
-	    }
+                return HTTP_NOT_MODIFIED;
+            }
             if (etag != NULL) {
                 if (apr_table_get(r->headers_in, "Range")) {
                     if (etag[0] != 'W'
-			&& ap_find_list_item(r->pool, if_nonematch, etag)) {
+                        && ap_find_list_item(r->pool, if_nonematch, etag)) {
                         return HTTP_NOT_MODIFIED;
                     }
                 }
@@ -279,8 +279,8 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
             }
         }
         else if (if_nonematch[0] == '*'
-		 || (etag != NULL
-		     && ap_find_list_item(r->pool, if_nonematch, etag))) {
+                 || (etag != NULL
+                     && ap_find_list_item(r->pool, if_nonematch, etag))) {
             return HTTP_PRECONDITION_FAILED;
         }
     }
@@ -294,10 +294,10 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
     else if ((r->method_number == M_GET)
              && ((if_modified_since =
                   apr_table_get(r->headers_in,
-				"If-Modified-Since")) != NULL)) {
+                                "If-Modified-Since")) != NULL)) {
         apr_time_t ims = apr_date_parse_http(if_modified_since);
 
-	if ((ims >= mtime) && (ims <= r->request_time)) {
+        if ((ims >= mtime) && (ims <= r->request_time)) {
             return HTTP_NOT_MODIFIED;
         }
     }
@@ -329,8 +329,8 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p)
 {
     methods_registry = apr_hash_make(p);
     apr_pool_cleanup_register(p, NULL,
-			      ap_method_registry_destroy,
-			      apr_pool_cleanup_null);
+                              ap_method_registry_destroy,
+                              apr_pool_cleanup_null);
 }
 
 AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
@@ -338,22 +338,22 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
     int *newmethnum;
 
     if (methods_registry == NULL) {
-	ap_method_registry_init(p);
+        ap_method_registry_init(p);
     }
 
     if (methname == NULL) {
-	return M_INVALID;
+        return M_INVALID;
     }
 
     if (cur_method_number > METHOD_NUMBER_LAST) {
-	/* The method registry  has run out of dynamically
-	 * assignable method numbers. Log this and return M_INVALID.
-	 */
-	ap_log_perror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, p,
-		      "Maximum new request methods %d reached while "
+        /* The method registry  has run out of dynamically
+         * assignable method numbers. Log this and return M_INVALID.
+         */
+        ap_log_perror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, p,
+                      "Maximum new request methods %d reached while "
                       "registering method %s.",
-		      METHOD_NUMBER_LAST, methname);
-	return M_INVALID;
+                      METHOD_NUMBER_LAST, methname);
+        return M_INVALID;
     }
 
     newmethnum  = (int*)apr_palloc(p, sizeof(int));
@@ -447,11 +447,11 @@ AP_DECLARE(int) ap_method_number_of(const char *method)
 
     /* check if the method has been dynamically registered */
     if (methods_registry != NULL) {
-	methnum = (int*)apr_hash_get(methods_registry,
-				     method,
-				     APR_HASH_KEY_STRING);
-	if (methnum != NULL) {
-	    return *methnum;
+        methnum = (int*)apr_hash_get(methods_registry,
+                                     method,
+                                     APR_HASH_KEY_STRING);
+        if (methnum != NULL) {
+            return *methnum;
         }
     }
 
@@ -472,34 +472,34 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum)
      * is, this works, and we only have to do it once.
      */
     if (AP_HTTP_METHODS[0] == NULL) {
-	AP_HTTP_METHODS[M_GET]       = "GET";
-	AP_HTTP_METHODS[M_PUT]       = "PUT";
-	AP_HTTP_METHODS[M_POST]      = "POST";
-	AP_HTTP_METHODS[M_DELETE]    = "DELETE";
-	AP_HTTP_METHODS[M_CONNECT]   = "CONNECT";
-	AP_HTTP_METHODS[M_OPTIONS]   = "OPTIONS";
-	AP_HTTP_METHODS[M_TRACE]     = "TRACE";
-	AP_HTTP_METHODS[M_PATCH]     = "PATCH";
-	AP_HTTP_METHODS[M_PROPFIND]  = "PROPFIND";
-	AP_HTTP_METHODS[M_PROPPATCH] = "PROPPATCH";
-	AP_HTTP_METHODS[M_MKCOL]     = "MKCOL";
-	AP_HTTP_METHODS[M_COPY]      = "COPY";
-	AP_HTTP_METHODS[M_MOVE]      = "MOVE";
-	AP_HTTP_METHODS[M_LOCK]      = "LOCK";
-	AP_HTTP_METHODS[M_UNLOCK]    = "UNLOCK";
-	AP_HTTP_METHODS[M_INVALID]   = NULL;
-	/*
-	 * Since we're using symbolic names, make sure we only do
-	 * this once by forcing a value into the first slot IFF it's
-	 * still NULL.
-	 */
-	if (AP_HTTP_METHODS[0] == NULL) {
-	    AP_HTTP_METHODS[0] = "INVALID";
-	}
+        AP_HTTP_METHODS[M_GET]       = "GET";
+        AP_HTTP_METHODS[M_PUT]       = "PUT";
+        AP_HTTP_METHODS[M_POST]      = "POST";
+        AP_HTTP_METHODS[M_DELETE]    = "DELETE";
+        AP_HTTP_METHODS[M_CONNECT]   = "CONNECT";
+        AP_HTTP_METHODS[M_OPTIONS]   = "OPTIONS";
+        AP_HTTP_METHODS[M_TRACE]     = "TRACE";
+        AP_HTTP_METHODS[M_PATCH]     = "PATCH";
+        AP_HTTP_METHODS[M_PROPFIND]  = "PROPFIND";
+        AP_HTTP_METHODS[M_PROPPATCH] = "PROPPATCH";
+        AP_HTTP_METHODS[M_MKCOL]     = "MKCOL";
+        AP_HTTP_METHODS[M_COPY]      = "COPY";
+        AP_HTTP_METHODS[M_MOVE]      = "MOVE";
+        AP_HTTP_METHODS[M_LOCK]      = "LOCK";
+        AP_HTTP_METHODS[M_UNLOCK]    = "UNLOCK";
+        AP_HTTP_METHODS[M_INVALID]   = NULL;
+        /*
+         * Since we're using symbolic names, make sure we only do
+         * this once by forcing a value into the first slot IFF it's
+         * still NULL.
+         */
+        if (AP_HTTP_METHODS[0] == NULL) {
+            AP_HTTP_METHODS[0] = "INVALID";
+        }
     }
 
     if ((methnum == M_INVALID) || (methnum >= METHODS)) {
-	return NULL;
+        return NULL;
     }
     return AP_HTTP_METHODS[methnum];
 }
@@ -552,8 +552,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         else if (lenp) {
             const char *pos = lenp;
 
-            while (apr_isdigit(*pos) || apr_isspace(*pos))
+            while (apr_isdigit(*pos) || apr_isspace(*pos)) {
                 ++pos;
+            }
+
             if (*pos == '\0') {
                 ctx->state = BODY_LENGTH;
                 ctx->remaining = atol(lenp);
@@ -708,8 +710,9 @@ AP_DECLARE(int) ap_index_of_response(int status)
     LEVEL_500, RESPONSE_CODES};
     int i, pos;
 
-    if (status < 100)           /* Below 100 is illegal for HTTP status */
+    if (status < 100) {               /* Below 100 is illegal for HTTP status */
         return LEVEL_500;
+    }
 
     for (i = 0; i < 5; i++) {
         status -= 100;
@@ -717,13 +720,13 @@ AP_DECLARE(int) ap_index_of_response(int status)
             pos = (status + shortcut[i]);
             if (pos < shortcut[i + 1]) {
                 return pos;
-	    }
+            }
             else {
-                return LEVEL_500;       /* status unknown (falls in gap) */
-	    }
+                return LEVEL_500;            /* status unknown (falls in gap) */
+            }
         }
     }
-    return LEVEL_500;           /* 600 or above is also illegal */
+    return LEVEL_500;                         /* 600 or above is also illegal */
 }
 
 AP_DECLARE(const char *) ap_get_status_line(int status)
@@ -876,34 +879,34 @@ static char *make_allow(request_rec *r)
 
     mask = r->allowed_methods->method_mask;
     list = apr_pstrcat(r->pool,
-		       (mask & (AP_METHOD_BIT << M_GET))	   ? ", GET, HEAD" : "",
-		       (mask & (AP_METHOD_BIT << M_POST))	   ? ", POST"      : "",
-		       (mask & (AP_METHOD_BIT << M_PUT))	   ? ", PUT"       : "",
-		       (mask & (AP_METHOD_BIT << M_DELETE))	   ? ", DELETE"    : "",
-		       (mask & (AP_METHOD_BIT << M_CONNECT))   ? ", CONNECT"   : "",
-		       (mask & (AP_METHOD_BIT << M_OPTIONS))   ? ", OPTIONS"   : "",
-		       (mask & (AP_METHOD_BIT << M_PATCH))	   ? ", PATCH"     : "",
-		       (mask & (AP_METHOD_BIT << M_PROPFIND))  ? ", PROPFIND"  : "",
-		       (mask & (AP_METHOD_BIT << M_PROPPATCH)) ? ", PROPPATCH" : "",
-		       (mask & (AP_METHOD_BIT << M_MKCOL))	   ? ", MKCOL"     : "",
-		       (mask & (AP_METHOD_BIT << M_COPY))	   ? ", COPY"      : "",
-		       (mask & (AP_METHOD_BIT << M_MOVE))	   ? ", MOVE"      : "",
-		       (mask & (AP_METHOD_BIT << M_LOCK))	   ? ", LOCK"      : "",
-		       (mask & (AP_METHOD_BIT << M_UNLOCK))	   ? ", UNLOCK"    : "",
-		       ", TRACE",
-		       NULL);
+                   (mask & (AP_METHOD_BIT << M_GET))       ? ", GET, HEAD" : "",
+                   (mask & (AP_METHOD_BIT << M_POST))      ? ", POST"      : "",
+                   (mask & (AP_METHOD_BIT << M_PUT))       ? ", PUT"       : "",
+                   (mask & (AP_METHOD_BIT << M_DELETE))    ? ", DELETE"    : "",
+                   (mask & (AP_METHOD_BIT << M_CONNECT))   ? ", CONNECT"   : "",
+                   (mask & (AP_METHOD_BIT << M_OPTIONS))   ? ", OPTIONS"   : "",
+                   (mask & (AP_METHOD_BIT << M_PATCH))     ? ", PATCH"     : "",
+                   (mask & (AP_METHOD_BIT << M_PROPFIND))  ? ", PROPFIND"  : "",
+                   (mask & (AP_METHOD_BIT << M_PROPPATCH)) ? ", PROPPATCH" : "",
+                   (mask & (AP_METHOD_BIT << M_MKCOL))     ? ", MKCOL"     : "",
+                   (mask & (AP_METHOD_BIT << M_COPY))      ? ", COPY"      : "",
+                   (mask & (AP_METHOD_BIT << M_MOVE))      ? ", MOVE"      : "",
+                   (mask & (AP_METHOD_BIT << M_LOCK))      ? ", LOCK"      : "",
+                   (mask & (AP_METHOD_BIT << M_UNLOCK))    ? ", UNLOCK"    : "",
+                   ", TRACE",
+                   NULL);
     if ((mask & (AP_METHOD_BIT << M_INVALID))
-	&& (r->allowed_methods->method_list != NULL)
-	&& (r->allowed_methods->method_list->nelts != 0)) {
-	int i;
-	char **xmethod = (char **) r->allowed_methods->method_list->elts;
+        && (r->allowed_methods->method_list != NULL)
+        && (r->allowed_methods->method_list->nelts != 0)) {
+        int i;
+        char **xmethod = (char **) r->allowed_methods->method_list->elts;
 
-	/*
-	 * Append all of the elements of r->allowed_methods->method_list
-	 */
-	for (i = 0; i < r->allowed_methods->method_list->nelts; ++i) {
-	    list = apr_pstrcat(r->pool, list, ", ", xmethod[i], NULL);
-	}
+        /*
+         * Append all of the elements of r->allowed_methods->method_list
+         */
+        for (i = 0; i < r->allowed_methods->method_list->nelts; ++i) {
+            list = apr_pstrcat(r->pool, list, ", ", xmethod[i], NULL);
+        }
     }
     /*
      * Space past the leading ", ".  Wastes two bytes, but that's better
@@ -1007,7 +1010,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
             }
         }
         if (i == values->nelts) {  /* if not found */
-	    *(char **)apr_array_push(values) = start;
+            *(char **)apr_array_push(values) = start;
         }
     } while (*e != '\0');
 
@@ -1035,8 +1038,8 @@ static void fixup_vary(request_rec *r)
     /* If we found any, replace old Vary fields with unique-ified value */
 
     if (varies->nelts > 0) {
-	apr_table_setn(r->headers_out, "Vary",
-		       apr_array_pstrcat(r->pool, varies, ','));
+        apr_table_setn(r->headers_out, "Vary",
+                       apr_array_pstrcat(r->pool, varies, ','));
     }
 }
 
@@ -1108,12 +1111,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
      *       basic_http_header_check()
      */
     if (apr_table_get(r->subprocess_env, "force-no-vary") != NULL) {
-	apr_table_unset(r->headers_out, "Vary");
-	r->proto_num = HTTP_VERSION(1,0);
-	apr_table_set(r->subprocess_env, "force-response-1.0", "1");
+        apr_table_unset(r->headers_out, "Vary");
+        r->proto_num = HTTP_VERSION(1,0);
+        apr_table_set(r->subprocess_env, "force-response-1.0", "1");
     }
     else {
-	fixup_vary(r);
+        fixup_vary(r);
     }
 
     /* determine the protocol and whether we should use keepalives. */
@@ -1125,12 +1128,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
-    apr_table_setn(r->headers_out, "Content-Type", ap_make_content_type(r,
-        r->content_type));
+    apr_table_setn(r->headers_out, "Content-Type", 
+                   ap_make_content_type(r, r->content_type));
 
     if (r->content_encoding) {
         apr_table_setn(r->headers_out, "Content-Encoding",
-		       r->content_encoding);
+                       r->content_encoding);
     }
 
     if (!apr_is_empty_table(r->content_languages)) {
@@ -1180,7 +1183,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
                      "Connection",
                      "Keep-Alive",
                      "ETag",
-                    "Content-Location",
+                     "Content-Location",
                      "Expires",
                      "Cache-Control",
                      "Vary",
@@ -1273,12 +1276,12 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     if (tenc) {
         if (strcasecmp(tenc, "chunked")) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "Unknown Transfer-Encoding %s", tenc);
+                          "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;
         }
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "chunked Transfer-Encoding forbidden: %s", r->uri);
+                          "chunked Transfer-Encoding forbidden: %s", r->uri);
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
 
@@ -1289,10 +1292,10 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
 
         while (apr_isdigit(*pos) || apr_isspace(*pos)) {
             ++pos;
-	}
+        }
         if (*pos != '\0') {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-			  "Invalid Content-Length %s", lenp);
+                          "Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
 
@@ -1302,7 +1305,7 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     if ((r->read_body == REQUEST_NO_BODY)
         && (r->read_chunked || (r->remaining > 0))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "%s with body is not allowed for %s", r->method, r->uri);
+                      "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
@@ -1310,8 +1313,8 @@ AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
     if (max_body && (r->remaining > max_body)) {
         /* XXX shouldn't we enforce this for chunked encoding too? */
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		      "Request content-length of %s is larger than "
-		      "the configured limit of %" APR_OFF_T_FMT, lenp,
+                      "Request content-length of %s is larger than "
+                      "the configured limit of %" APR_OFF_T_FMT, lenp,
                       max_body);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
@@ -1366,13 +1369,13 @@ static long get_chunk_size(char *b)
 
         if (*b >= '0' && *b <= '9') {
             xvalue = *b - '0';
-	}
+        }
         else if (*b >= 'A' && *b <= 'F') {
             xvalue = *b - 'A' + 0xa;
-	}
+        }
         else if (*b >= 'a' && *b <= 'f') {
             xvalue = *b - 'a' + 0xa;
-	}
+        }
 
         chunksize = (chunksize << 4) | xvalue;
         ++b;
@@ -1403,7 +1406,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
     const char *tempbuf;
     apr_off_t len_read;
     core_request_config *req_cfg =
-	(core_request_config *)ap_get_module_config(r->request_config,
+        (core_request_config *)ap_get_module_config(r->request_config,
                                                     &core_module);
     apr_bucket_brigade *bb = req_cfg->bb;
 
@@ -1801,7 +1804,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
      * former.
      */
     if (location == NULL) {
-	location = apr_table_get(r->err_headers_out, "Location");
+        location = apr_table_get(r->err_headers_out, "Location");
     }
     /* We need to special-case the handling of 204 and 304 responses,
      * since they have specific HTTP requirements and do not include a
@@ -1831,7 +1834,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
 
         if (ap_is_HTTP_REDIRECT(status) || (status == HTTP_CREATED)) {
             if ((location != NULL) && *location) {
-	        apr_table_setn(r->headers_out, "Location", location);
+                apr_table_setn(r->headers_out, "Location", location);
             }
             else {
                 location = "";   /* avoids coredump when printing, below */
@@ -2131,18 +2134,18 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
      */
 
     weak = ((r->request_time - r->mtime > APR_USEC_PER_SEC)
-	    && !force_weak) ? "" : "W/";
+            && !force_weak) ? "" : "W/";
 
     if (r->finfo.filetype != 0) {
         etag = apr_psprintf(r->pool,
-			    "%s\"%lx-%lx-%lx\"", weak,
-			    (unsigned long) r->finfo.inode,
-			    (unsigned long) r->finfo.size,
-			    (unsigned long) r->mtime);
+                            "%s\"%lx-%lx-%lx\"", weak,
+                            (unsigned long) r->finfo.inode,
+                            (unsigned long) r->finfo.size,
+                            (unsigned long) r->mtime);
     }
     else {
         etag = apr_psprintf(r->pool, "%s\"%lx\"", weak,
-			    (unsigned long) r->mtime);
+                            (unsigned long) r->mtime);
     }
 
     return etag;
@@ -2221,7 +2224,7 @@ static int parse_byterange(char *range, apr_off_t clength,
     }
 
     if (*start < 0) {
-	*start = 0;
+        *start = 0;
     }
 
     if (*end >= clength) {
@@ -2229,7 +2232,7 @@ static int parse_byterange(char *range, apr_off_t clength,
     }
 
     if (*start > *end) {
-	return -1;
+        return -1;
     }
 
     return (*start > 0 || *end < clength);
@@ -2285,7 +2288,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
         if (num_ranges == -1) {
             ap_remove_output_filter(f);
             bsend = apr_brigade_create(r->pool);
-            e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL, r->pool);
+            e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL, 
+                                       r->pool);
             APR_BRIGADE_INSERT_TAIL(bsend, e);
             e = apr_bucket_eos_create();
             APR_BRIGADE_INSERT_TAIL(bsend, e);
@@ -2510,7 +2514,7 @@ static int ap_set_byterange(request_rec *r)
         apr_table_setn(r->headers_out, "Content-Range",
                        apr_psprintf(r->pool, "bytes " BYTERANGE_FMT,
                                     range_start, range_end, r->clength));
-	apr_table_setn(r->headers_out, "Content-Type", ct);
+        apr_table_setn(r->headers_out, "Content-Type", ct);
 
         num_ranges = 1;
     }
@@ -2524,9 +2528,9 @@ static int ap_set_byterange(request_rec *r)
                                    r->request_time, (long) getpid());
 
         apr_table_setn(r->headers_out, "Content-Type",
-		       apr_pstrcat(r->pool,
+                       apr_pstrcat(r->pool,
                                    "multipart", use_range_x(r) ? "/x-" : "/",
-				   "byteranges; boundary=", r->boundary,
+                                   "byteranges; boundary=", r->boundary,
                                    NULL));
     }
 
@@ -2535,4 +2539,3 @@ static int ap_set_byterange(request_rec *r)
 
     return num_ranges;
 }
-
