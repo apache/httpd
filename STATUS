@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/23 12:28:24 $]
+Last modified at [$Date: 2003/06/23 13:07:19 $]
 
 Release:
 
@@ -75,11 +75,6 @@ PATCHES TO PORT FROM 2.1
       connection.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c.diff?r1=1.237&r2=1.238
       +1: brianp, trawick
-
-    * Win32: Whack the fully qualified names that appear in the log when
-      loglevel debug is being used.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c.diff?r1=1.133&r2=1.134
-      +1: stoddard, trawick, brianp
 
     * Backport LimitInteralRecursion to 2.0 and 1.3.
       (1.3 patch is here: <http://cvs.apache.org/~nd/recursion13.patch>)
@@ -220,7 +215,7 @@ PATCHES TO PORT FROM 2.1
 
     * winnt MPM: fix some invalid ap_log_error() invocations
         server/mpm/winnt/child.c 1.15
-        +1: trawick, wrowe, brianp
+        +1: trawick, wrowe, brianp, stoddard
 
     * handle switching between libtools and unwritable ltconfig/ltmain.sh
         buildconf 1.36, 1.37
