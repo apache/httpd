@@ -94,6 +94,8 @@ Committed Code Changes:
     * some of Marc's 1.2.5 security patches (minus proxy fixes)
     * John Van Essen <jve@gamers.org>'s fix for mod_autoindex <PRE>
       misplacement.
+    * Ken's addition of src/ap/ap.h for prototypes of routines in libap.a
+    * Ken's addition of #ifndef wrappers to src/main/*.h header files
 
 Available Patches:
 
