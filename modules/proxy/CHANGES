@@ -1,5 +1,8 @@
 mod_proxy changes for httpd 2.0.23-dev
 
+  *) break the proxy_http_handler into multiple smaller functions.
+     [John Barbee <barbee@veribox.net>]
+
   *) Fix the proxy when the origin server sends back a 100
      Continue response.  [John Barbee <barbee@veribox.net>]
 
