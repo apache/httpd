@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Recursive Include directives no longer crash. The server stops
+     including configuration files after a certain nesting level (128
+     as distributed). This is configurable at compile time using the
+     -DAP_MAX_INCLUDE_DEPTH switch. PR 28370.  [André Malo]
+
   *) mod_headers: Allow %% in header values to represent a literal %.
      [André Malo]
 
