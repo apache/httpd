@@ -101,6 +101,7 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->nMutexMode             = SSL_MUTEXMODE_UNSET;
     mc->nMutexMech             = APR_LOCK_DEFAULT;
     mc->szMutexFile            = NULL;
+    mc->ChownMutexFile         = FALSE;
     mc->pMutex                 = NULL;
     mc->aRandSeed              = apr_array_make(pool, 4,
                                                 sizeof(ssl_randseed_t));
@@ -400,6 +401,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
      */
     mc->nMutexMode  = SSL_MUTEXMODE_USED;
     mc->szMutexFile = NULL;
+    mc->ChownMutexFile = FALSE;
 
     /* NOTE: previously, 'yes' implied 'sem' */
     if (!strcasecmp(meth, "default") || !strcasecmp(meth, "yes")) {
@@ -413,6 +415,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
 #if APR_HAS_FLOCK_SERIALIZE
     else if ((!strcasecmp(meth, "flock") || !strcasecmp(meth, "file")) && file) {
         mc->nMutexMech = APR_LOCK_FLOCK;
+        mc->ChownMutexFile = TRUE;
     }
 #endif
 #if APR_HAS_POSIXSEM_SERIALIZE
