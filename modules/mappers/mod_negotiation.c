@@ -108,10 +108,11 @@ static void *merge_neg_dir_configs(ap_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *set_language_priority(cmd_parms *cmd, void *n, const char *lang)
+static const char *set_language_priority(cmd_parms *cmd, void *n,
+					 const char *lang)
 {
     ap_array_header_t *arr = ((neg_dir_config *) n)->language_priority;
-    char **langp = (char **) ap_push_array(arr);
+    const char **langp = (const char **) ap_push_array(arr);
 
     *langp = lang;
     return NULL;
