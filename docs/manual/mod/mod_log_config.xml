@@ -280,6 +280,12 @@
       <p>If a program is used, then it will be run under the user who
       started httpd. This will be root if the server was started by root;
       be sure that the program is secure.</p>
+      </note>
+      <note type="warning"><title>Note</title>
+        <p>When entering a file path on non-Unix platforms, care should be taken
+        to make sure that only forward slashed are used even though the platform
+        may allow the use of back slashes. In general it is a good idea to always 
+        use forward slashes throughout the configuration files.</p>
       </note></dd>
     </dl>
 
