@@ -129,7 +129,8 @@ char ap_coredump_dir[MAX_STRING_LEN];
 
 static apr_file_t *pipe_of_death_in = NULL;
 static apr_file_t *pipe_of_death_out = NULL;
-static apr_lock_t *pipe_of_death_mutex;
+static apr_lock_t *pipe_of_death_mutex;   /* insures that a child process only
+                                             consumes one character */
 
 /* *Non*-shared http_main globals... */
 
