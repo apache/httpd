@@ -388,39 +388,21 @@ static int file_cache_xlat(request_rec *r)
 }
 
 
-static int mmap_handler(request_rec *r, a_file *file, int rangestatus)
+static int mmap_handler(request_rec *r, a_file *file)
 {
 #if APR_HAS_MMAP
-    if (!rangestatus) {
-        ap_send_mmap (file->mm, r, 0, file->finfo.size);
-    }
-    else {
-        apr_size_t length;
-        apr_off_t offset;
-        while (ap_each_byterange(r, &offset, &length)) {
-            ap_send_mmap(file->mm, r, offset, length);
-        }
-    }
+    ap_send_mmap (file->mm, r, 0, file->finfo.size);
 #endif
     return OK;
 }
 
-static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
+static int sendfile_handler(request_rec *r, a_file *file)
 {
 #if APR_HAS_SENDFILE
-    apr_size_t length, nbytes;
-    apr_off_t offset = 0;
+    apr_size_t nbytes;
     apr_status_t rv = APR_EINIT;
 
-    if (!rangestatus) {
-        rv = ap_send_fd(file->file, r, 0, file->finfo.size, &nbytes);
-    }
-    else {
-        while (ap_each_byterange(r, &offset, &length)) {
-            if ((rv = ap_send_fd(file->file, r, offset, length, &nbytes)) != APR_SUCCESS)
-                break;
-        }
-    }
+    rv = ap_send_fd(file->file, r, 0, file->finfo.size, &nbytes);
     if (rv != APR_SUCCESS) {
         /* ap_send_fd will log the error */
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -432,7 +414,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
 static int file_cache_handler(request_rec *r) 
 {
     a_file *match;
-    int rangestatus, errstatus;
+    int errstatus;
     int rc = OK;
 
     /* we don't handle anything but GET */
@@ -462,15 +444,14 @@ static int file_cache_handler(request_rec *r)
     }
     ap_set_content_length(r, match->finfo.size);
 
-    rangestatus = ap_set_byterange(r);
     ap_send_http_header(r);
 
     /* Call appropriate handler */
     if (!r->header_only) {    
         if (match->is_mmapped == TRUE)
-            rc = mmap_handler(r, match, rangestatus);
+            rc = mmap_handler(r, match);
         else
-            rc = sendfile_handler(r, match, rangestatus);
+            rc = sendfile_handler(r, match);
     }
 
     return rc;
