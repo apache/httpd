@@ -8787,7 +8787,7 @@ Changes with Apache 1.3.1
 
   *) Cache a proxied request in the event that the client cancels the
      transfer, provided that the configured percentage of the file has
-     already been transfered. It works for HTTP transfers only.  The 
+     already been transferred. It works for HTTP transfers only.  The 
      new configuration directive is called CacheForceCompletion. 
      [Glen Parker <glenebob nwlink.com>] PR#2277
 
