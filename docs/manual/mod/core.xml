@@ -1463,6 +1463,41 @@ except the named ones</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LimitInternalRecursion</name>
+<description>Determine maximum number of internal redirects and nested
+subrequests</description>
+<syntax>LimitInternalRecursion <var>number</var> [<var>number</var>]</syntax>
+<default>LimitInternalRecursion 10</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<usage>
+    <p>An internal redirect happens, for example, when using the <directive
+    module="mod_actions">Action</directive> directive, which internally
+    redirects the original request to a CGI script. A subrequest is Apache's
+    mechanism to find out what would happen for some URI if it were requested.
+    For example, <module>mod_dir</module> uses subrequests to look for the
+    files listed in the <directive module="mod_dir">DirectoryIndex</directive>
+    directive.</p>
+
+    <p><directive>LimitInternalRecursion</directive> prevents the server
+    from crashing when entering an infinite loop of internal redirects or
+    subrequests. Such loops are usually caused by misconfigurations.</p>
+
+    <p>The directive stores two different limits, which are evaluated on
+    per-request basis. The first <var>number</var> is the maximum number of
+    internal redirects, that may follow each other. The second <var>number</var>
+    determines, how deep subrequests may be nested. If you specify only one
+    <var>number</var>, it will be assigned to both limits.</p>
+
+    <example><title>Example</title>
+      LimitInternalRecursion 5
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>LimitRequestBody</name>
 <description>Restricts the total size of the HTTP request body sent
 from the client</description>
