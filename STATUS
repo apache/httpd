@@ -31,7 +31,7 @@ FINAL RELEASE SHOWSTOPPERS:
 	     mod_mime MIME-file, IMAP handler imap-file and digest
 	     password file. What others are we concerned about?
         Dean: ap_pcfg_openfile() should use pfopen() instead of
-              fopen(). Jim agrees.
+              fopen().
 
 WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
