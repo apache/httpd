@@ -226,9 +226,9 @@ static int translate_userdir(request_rec *r)
     }
 
     /*
-     * If there's no username, it's not for us.
+     * If there's no username, it's not for us.  Ignore . and .. as well.
      */
-    if (!strcmp(w, "")) {
+    if (w[0] == '\0' || (w[1] == '.' && (w[2] == '\0' || (w[2] == '.' && w[3] == '\0')))) {
         return DECLINED;
     }
     /*
@@ -259,12 +259,7 @@ static int translate_userdir(request_rec *r)
         if (strchr(userdir, '*'))
             x = getword(r->pool, &userdir, '*');
 
-#if defined(__EMX__) || defined(WIN32)
-        /* Add support for OS/2 drive letters */
-        if ((userdir[0] == '/') || (userdir[1] == ':') || (userdir[0] == '\0')) {
-#else
-        if ((userdir[0] == '/') || (userdir[0] == '\0')) {
-#endif
+	if (userdir[0] == '\0' || os_is_path_absolute(userdir)) {
             if (x) {
 #ifdef WIN32
                 /*
@@ -273,10 +268,11 @@ static int translate_userdir(request_rec *r)
                  * know of no protocols that are a single letter, if the : is
                  * the second character, I will assume a file was specified
                  */
-                if (strchr(x + 2, ':')) {
+                if (strchr(x + 2, ':'))
 #else
-                if (strchr(x, ':')) {
+                if (strchr(x, ':'))
 #endif                          /* WIN32 */
+		{
                     redirect = pstrcat(r->pool, x, w, userdir, dname, NULL);
                     table_setn(r->headers_out, "Location", redirect);
                     return REDIRECT;
