@@ -644,7 +644,7 @@ BEGIN {
 <<
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
 	    copy "$(INSTDIR)\conf\httpd.default.conf" "$(INSTDIR)\conf\httpd.conf"
-	copy docs\conf\ssl-std.conf "$(INSTDIR)\conf\ssl.default.conf" <.y
+	copy docs\conf\ssl-std.conf.in "$(INSTDIR)\conf\ssl.default.conf" <.y
 	-awk -f <<script.awk "docs/conf/ssl-std.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\ssl.default.conf"
     BEGIN { 
 	serverroot = ARGV[2];
