@@ -1576,7 +1576,7 @@ static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
-static void prefork_hooks(void)
+static void prefork_hooks(apr_pool_t *p)
 {
     INIT_SIGLIST();
 #ifdef AUX3
