@@ -197,11 +197,6 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
-#ifdef SIGHUP
-    /* No concept of a child process on Win32 */
-    apr_signal(SIGHUP, SIG_IGN);
-#endif /* ndef SIGHUP */
-
     if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS) &&
         ((rc = apr_procattr_io_set(procattr,
                                    APR_FULL_BLOCK,
@@ -604,9 +599,6 @@ static int piped_log_spawn(piped_log *pl)
     apr_proc_t *procnew = NULL;
     apr_status_t status;
 
-#ifdef SIGHUP
-    apr_signal(SIGHUP, SIG_IGN);
-#endif
     if (((status = apr_procattr_create(&procattr, pl->p)) != APR_SUCCESS) ||
         ((status = apr_procattr_child_in_set(procattr,
                                              ap_piped_log_read_fd(pl), 
