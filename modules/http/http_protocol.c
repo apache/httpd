@@ -2228,11 +2228,6 @@ AP_CORE_DECLARE(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
     char *date = NULL;
     request_rec *r = f->r;
 
-    if ((int)f->ctx != 0) {
-        return ap_pass_brigade(f->next, b);
-    }
-    (int)f->ctx++;
-
     if (r->assbackwards) {
         if (!r->main)
             ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
@@ -2325,6 +2320,7 @@ AP_CORE_DECLARE(int) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
     if (r->chunked) {
         ap_bsetflag(r->connection->client, B_CHUNK, 1);
     }
+    ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, b);
 }
 

@@ -360,6 +360,8 @@ AP_DECLARE(void) ap_add_input_filter(const char *name, void *ctx, request_rec *r
 AP_DECLARE(void) ap_add_output_filter(const char *name, void *ctx, 
                                       request_rec *r, conn_rec *c);
 
+AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
+
 /* The next two filters are for abstraction purposes only.  They could be
  * done away with, but that would require that we break modules if we ever
  * want to change our filter registration method.  The basic idea, is that
