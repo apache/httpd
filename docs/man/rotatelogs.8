@@ -61,13 +61,13 @@ rotatelogs \- rotate Apache logs without having to kill the server
 .SH DESCRIPTION
 .B rotatelogs
 is a simple program for use in conjunction with Apache's piped logfile
-feature which can be used like this:
+feature, which can be used like this:
 
 .fi
-   TransferLog "| rotatelogs /path/to/logs/access_log 86400"
+TransferLog "|bin/rotatelogs /path/to/logs/logfile 86400"
 .mf
 
-This creates the files /path/to/logs/access_log.nnnn where nnnn is the system
+This creates the files /path/to/logs/logfile.nnnn where nnnn is the system
 time at which the log nominally starts (this time will always be a multiple of
 the rotation time, so you can synchronize cron scripts with it).  At the end
 of each rotation time (here after 24 hours) a new log is started.
@@ -75,14 +75,63 @@ of each rotation time (here after 24 hours) a new log is started.
 .IP \fB\fIlogfile\fP
 The path plus basename of the logfile.  If \fBlogfile\fP includes any
 '%' characters, it is treated as a format string for \fIstrftime(3)\fP.
-Otherwise, the suffix .nnnn is automatically added and is the time at which
-the logfile was created.
+Otherwise, the suffix .nnnnnnnnnn is automatically added and is the time
+in seconds.  Both formats compute the start time from the beginning of the
+current period.
 .IP \fB\fIrotationtime\fP
 The rotation time in seconds.
 .IP \fB\fIoffset\fP
 The number of minutes offset from UTC.  If omitted, zero is assumed and
 UTC is used.  For example, to use local time in the zone UTC -5 hours,
 specify a value of \fI-300\fP for this argument.
+.SH PORTABILITY
+The following logfile format string substitutions should be supported by
+all \fIstrftime(3)\fP implementations, see the \fIstrftime(3)\fP man page
+for library-specific extensions.
+.IP %A
+full weekday name (localized)
+.IP %a
+3-character weekday name (localized)
+.IP %B
+full month name (localized)
+.IP %b
+3-character month name (localized)
+.IP %c
+date and time (localized)
+.IP %d
+2-digit day of month
+.IP %H
+2-digit hour (24 hour clock)
+.IP %I
+2-digit hour (12 hour clock)
+.IP %j
+3-digit day of year
+.IP %M
+2-digit minute
+.IP %m
+2-digit month
+.IP %p
+am/pm of 12 hour clock (localized)
+.IP %S
+2-digit second
+.IP %U
+2-digit week of year (Sunday first day of week)
+.IP %W
+2-digit week of year (Monday first day of week)
+.IP %w
+1-digit weekday (Sunday first day of week)
+.IP %X
+time (localized)
+.IP %x
+date (localized)
+.IP %Y
+4-digit year
+.IP %y
+2-digit year
+.IP %Z
+time zone name
+.IP %%
+literal `%'
 .PD
 .SH SEE ALSO
 .BR httpd(8)
