@@ -47,7 +47,8 @@ usage?, seealso*)>
 
 <!ATTLIST a  href CDATA #IMPLIED 
              name CDATA #IMPLIED
-             id   CDATA #IMPLIED >
+             id   CDATA #IMPLIED
+             rel  CDATA #IMPLIED >
 
 <!ELEMENT img EMPTY>
 <!ATTLIST img
@@ -131,3 +132,13 @@ usage?, seealso*)>
 <!ELEMENT blockquote %BlockOrInline;>
 
 <!ELEMENT pre %Inline;>
+
+<!-- Used in allmodules.xml -->
+<!ELEMENT modulefilelist (modulefile+)>
+<!ELEMENT modulefile (#PCDATA)>
+
+<!-- Used in index.xml -->
+<!ELEMENT moduleindex (title | summary | modulefilelist)+>
+
+<!-- Used in directive.xml -->
+<!ELEMENT directiveindex (title | summary | modulefilelist)+>
