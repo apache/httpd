@@ -414,7 +414,8 @@ static int check_speling(request_rec *r)
 			      NULL);
 
             ap_table_setn(r->headers_out, "Location",
-			  ap_construct_url(r->pool, nuri, r));
+			  ap_escape_uri(r->pool,
+					ap_construct_url(r->pool, nuri, r)));
 
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r,
 			 ref ? "Fixed spelling: %s to %s from %s"
