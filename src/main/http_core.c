@@ -998,6 +998,7 @@ char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     else
 	new->local_addr.sin_addr.s_addr = get_virthost_addr(ips, NULL);
     new->local_addr.sin_port = htons(atoi(ports));
+    new->fd = -1;
     new->next = listeners;
     listeners = new;
     return NULL;
