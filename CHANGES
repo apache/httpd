@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_include no longer allows an ETag header on 304 responses.
+     PR 19355. [Geoffrey Young <geoff@apache.org>, André Malo]
+
   *) mod_autoindex: Add 'XHTML' option in order to allow switching between
      HTML 3.2 and XHTML 1.0 output. PR 23747.  [André Malo]
 
