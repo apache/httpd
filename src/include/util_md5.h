@@ -52,7 +52,7 @@
 
 #include "md5.h"
 
-char *md5(pool *a, unsigned char *string);
-char *md5contextTo64(pool *p, MD5_CTX *context);
-char *md5digest(pool *p, FILE *infile);
+API_EXPORT(char *) md5(pool *a, unsigned char *string);
+API_EXPORT(char *) md5contextTo64(pool *p, MD5_CTX *context);
+API_EXPORT(char *) md5digest(pool *p, FILE *infile);
 

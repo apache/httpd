@@ -76,7 +76,7 @@ extern int listenbacklog;
 extern char *pid_fname;
 extern char *scoreboard_fname;
 extern char *lock_fname;
-extern char *server_argv0;
+MODULE_VAR_EXPORT char *server_argv0;
 
 /* Trying to allocate these in the config pool gets us into some *nasty*
  * chicken-and-egg problems in http_main.c --- where do you stick them

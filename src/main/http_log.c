@@ -158,14 +158,13 @@ void log_pid(pool *p, char *pid_fname) {
     fclose(pid_file);
 }
 
-void log_error(char *err, server_rec *s) {
+API_EXPORT(void) log_error(char *err, server_rec *s) {
     fprintf(s->error_log, "[%s] %s\n",get_time(),err);
     fflush(s->error_log);
 }
 
-void
-log_unixerr(const char *routine, const char *file, const char *msg,
-	    server_rec *s)
+API_EXPORT(void) log_unixerr(const char *routine, const char *file,
+			     const char *msg, server_rec *s)
 {
     const char *p, *q;
     FILE *err=s ? s->error_log : stderr;
@@ -182,8 +181,7 @@ log_unixerr(const char *routine, const char *file, const char *msg,
     fflush(err);
 }
 
-void
-log_printf(const server_rec *s, const char *fmt, ...)
+API_EXPORT(void) log_printf(const server_rec *s, const char *fmt, ...)
 {
     va_list args;
     
@@ -206,7 +204,7 @@ API_EXPORT(void) log_reason(const char *reason, const char *file, request_rec *r
     fflush (r->server->error_log);
 }
 
-void log_assert(const char *szExp,const char *szFile,int nLine)
+API_EXPORT(void) log_assert(const char *szExp, const char *szFile, int nLine)
 {
     fprintf(stderr, "[%s] file %s, line %d, assertion \"%s\" failed\n",
 	get_time(), szFile, nLine, szExp);

@@ -239,7 +239,7 @@ API_EXPORT(void) set_module_config (void *conf_vector, module *m, void *val);
 /* Generic command handling function... */
 
 API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *, char *, char *);
-const char *set_flag_slot (cmd_parms *, char *, int);
+API_EXPORT_NONSTD(const char *) set_flag_slot (cmd_parms *, char *, int);
 
 /* For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise
@@ -250,11 +250,11 @@ API_EXPORT(char *) server_root_relative (pool *p, char *fname);
      
 /* Finally, the hook for dynamically loading modules in... */
 
-void add_module (module *m);
-int add_named_module (const char *name);
-void clear_module_list ();
-const char *find_module_name (module *m);
-module *find_linked_module (const char *name);
+API_EXPORT(void) add_module (module *m);
+API_EXPORT(int) add_named_module (const char *name);
+API_EXPORT(void) clear_module_list ();
+API_EXPORT(const char *) find_module_name (module *m);
+API_EXPORT(module *) find_linked_module (const char *name);
 
 #ifdef CORE_PRIVATE
 

@@ -86,7 +86,7 @@ API_EXPORT(void) destroy_pool (pool *);
 
 /* Clearing out EVERYTHING in an pool... destroys any sub-pools */
 
-void clear_pool (struct pool *);
+API_EXPORT(void) clear_pool (struct pool *);
 
 /* Preparing for exec() --- close files, etc., but *don't* flush I/O
  * buffers, *don't* wait for subprocesses, and *don't* free any memory.
@@ -262,5 +262,5 @@ API_EXPORT(int) spawn_child_err (pool *, int (*)(void *), void *,
 
 /* Finally, some accounting */
 
-long bytes_in_pool(pool *p);
-long bytes_in_free_blocks();
+API_EXPORT(long) bytes_in_pool(pool *p);
+API_EXPORT(long) bytes_in_free_blocks();

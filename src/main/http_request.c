@@ -601,7 +601,8 @@ request_rec *make_sub_request (const request_rec *r)
 }
 
 
-request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
+API_EXPORT(request_rec *) sub_req_lookup_uri (const char *new_file,
+					      const request_rec *r)
 {
     request_rec *rnew;
     int res;
@@ -676,7 +677,8 @@ request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
     return rnew;
 }
 
-request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
+API_EXPORT(request_rec *) sub_req_lookup_file (const char *new_file,
+					       const request_rec *r)
 {
     request_rec *rnew;
     int res;
@@ -764,14 +766,14 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
     return rnew;
 }
 
-int run_sub_req (request_rec *r)
+API_EXPORT(int) run_sub_req (request_rec *r)
 {
     int retval = invoke_handler (r);
     finalize_sub_req_protocol (r);
     return retval;
 }
 
-void destroy_sub_req (request_rec *r)
+API_EXPORT(void) destroy_sub_req (request_rec *r)
 {
     /* Reclaim the space */
     destroy_pool (r->pool);
@@ -1116,7 +1118,7 @@ request_rec *internal_internal_redirect (const char *new_uri, request_rec *r)
     return new;
 }
 
-void internal_redirect (const char *new_uri, request_rec *r)
+API_EXPORT(void) internal_redirect (const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     process_request_internal (new);
@@ -1139,7 +1141,7 @@ API_EXPORT(void) internal_redirect_handler (const char *new_uri, request_rec *r)
  * it is the initial main request, which we only get *once* per HTTP request 
  */
 
-int is_initial_req(request_rec *r)
+API_EXPORT(int) is_initial_req(request_rec *r)
 {
     return
 	(r->main == NULL) /* otherwise, this is a sub-request */

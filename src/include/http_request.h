@@ -70,10 +70,12 @@
  * about which was allocated in its pool elsewhere before doing this.
  */
 
-request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r);
-request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r);
-int run_sub_req (request_rec *r);
-void destroy_sub_req (request_rec *r);
+API_EXPORT(request_rec *) sub_req_lookup_uri (const char *new_file,
+					      const request_rec *r);
+API_EXPORT(request_rec *) sub_req_lookup_file (const char *new_file,
+					       const request_rec *r);
+API_EXPORT(int) run_sub_req (request_rec *r);
+API_EXPORT(void) destroy_sub_req (request_rec *r);
      
 /*
  * Then there's the case that you want some other request to be served
@@ -81,10 +83,10 @@ void destroy_sub_req (request_rec *r);
  * If so, call this from a handler, and then immediately return OK.
  */
 
-void internal_redirect (const char *new_uri, request_rec *);     
+API_EXPORT(void) internal_redirect (const char *new_uri, request_rec *);     
 API_EXPORT(void) internal_redirect_handler (const char *new_uri, request_rec *);
 API_EXPORT(int) some_auth_required (request_rec *r);
-int is_initial_req(request_rec *r);
+API_EXPORT(int) is_initial_req(request_rec *r);
 
 #ifdef CORE_PRIVATE
 /* Function called by main.c to handle first-level request */

@@ -93,9 +93,9 @@ void send_error_response (request_rec *r, int recursive_error);
  * permit_cache argument is set to one).
  */
 
-int set_content_length (request_rec *r, long length);
+API_EXPORT(int) set_content_length (request_rec *r, long length);
 int set_keepalive (request_rec *r);
-int set_last_modified (request_rec *r, time_t mtime);
+API_EXPORT(int) set_last_modified (request_rec *r, time_t mtime);
 
 /* Other ways to send stuff at the client.  All of these keep track
  * of bytes_sent automatically.  This indirection is intended to make
@@ -108,19 +108,19 @@ int set_last_modified (request_rec *r, time_t mtime);
  * (Ditto the send_header stuff).
  */
 
-long send_fd(FILE *f, request_rec *r);
-long send_fd_length(FILE *f, request_rec *r, long length);
+API_EXPORT(long) send_fd(FILE *f, request_rec *r);
+API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length);
      
 /* Hmmm... could macrofy these for now, and maybe forever, though the
  * definitions of the macros would get a whole lot hairier.
  */
      
-int rputc (int c, request_rec *r);     
-int rputs(const char *str, request_rec *r);
-int rwrite(const void *buf, int nbyte, request_rec *r);
-int rvputs(request_rec *r, ...);
-int rprintf(request_rec *r,const char *fmt,...);
-int rflush(request_rec *r);
+API_EXPORT(int) rputc (int c, request_rec *r);     
+API_EXPORT(int) rputs(const char *str, request_rec *r);
+API_EXPORT(int) rwrite(const void *buf, int nbyte, request_rec *r);
+API_EXPORT_NONSTD(int) rvputs(request_rec *r, ...);
+API_EXPORT_NONSTD(int) rprintf(request_rec *r,const char *fmt,...);
+API_EXPORT(int) rflush(request_rec *r);
      
 /*
  * Index used in custom_responses array for a specific error code
@@ -137,8 +137,8 @@ API_EXPORT(long) get_client_block (request_rec *r, char *buffer, int bufsiz);
 
 /* Sending a byterange */
 
-int set_byterange (request_rec *r);
-int each_byterange (request_rec *r, long *offset, long *length);
+API_EXPORT(int) set_byterange (request_rec *r);
+API_EXPORT(int) each_byterange (request_rec *r, long *offset, long *length);
      
 /* Finally, this charming little number is here to encapsulate the
  * degree to which nph- scripts completely escape from any discipline
@@ -147,7 +147,7 @@ int each_byterange (request_rec *r, long *offset, long *length);
  * to explicitly set the status line).
  */
 
-void client_to_stdout (conn_rec *c); 
+API_EXPORT(void) client_to_stdout (conn_rec *c); 
 
 
 /* Support for the Basic authentication protocol.  Note that there's
@@ -172,10 +172,10 @@ void client_to_stdout (conn_rec *c);
  *
  */
 
-void note_auth_failure(request_rec *r);
-void note_basic_auth_failure(request_rec *r);
-void note_digest_auth_failure(request_rec *r);
-int get_basic_auth_pw (request_rec *r, char **pw);
+API_EXPORT(void) note_auth_failure(request_rec *r);
+API_EXPORT(void) note_basic_auth_failure(request_rec *r);
+API_EXPORT(void) note_digest_auth_failure(request_rec *r);
+API_EXPORT(int) get_basic_auth_pw (request_rec *r, char **pw);
 
 /*
  * Setting up the protocol fields for subsidiary requests...

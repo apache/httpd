@@ -75,7 +75,7 @@ API_EXPORT(char *) get_time() {
     return (time_string);
 }
 
-char *ht_time(pool *p, time_t t, const char *fmt, int gmt) {
+API_EXPORT(char *) ht_time(pool *p, time_t t, const char *fmt, int gmt) {
     char ts[MAX_STRING_LEN];
     struct tm *tms;
 
@@ -86,7 +86,7 @@ char *ht_time(pool *p, time_t t, const char *fmt, int gmt) {
     return pstrdup (p, ts);
 }
 
-char *gm_timestr_822(pool *p, time_t sec) {
+API_EXPORT(char *) gm_timestr_822(pool *p, time_t sec) {
     static const char *const days[7]=
        {"Sun","Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     char ts[50];
@@ -105,7 +105,7 @@ char *gm_timestr_822(pool *p, time_t sec) {
 
 /* What a pain in the ass. */
 #if defined(HAVE_GMTOFF)
-struct tm *get_gmtoff(int *tz) {
+API_EXPORT(struct tm *) get_gmtoff(int *tz) {
     time_t tt = time(NULL);
     struct tm *t;
 
@@ -114,7 +114,7 @@ struct tm *get_gmtoff(int *tz) {
     return t;
 }
 #else
-struct tm *get_gmtoff(int *tz) {
+API_EXPORT(struct tm *) get_gmtoff(int *tz) {
     time_t tt = time(NULL);
     struct tm gmt;
     struct tm *t;
@@ -137,7 +137,7 @@ struct tm *get_gmtoff(int *tz) {
 /* Based loosely on sections of wildmat.c by Rich Salz
  * Hmmm... shouldn't this really go component by component?
  */
-int strcmp_match(const char *str, const char *exp) {
+API_EXPORT(int) strcmp_match(const char *str, const char *exp) {
     int x,y;
 
     for(x=0,y=0;exp[y];++y,++x) {
@@ -160,7 +160,7 @@ int strcmp_match(const char *str, const char *exp) {
     return (str[x] != '\0');
 }
 
-int strcasecmp_match(const char *str, const char *exp) {
+API_EXPORT(int) strcasecmp_match(const char *str, const char *exp) {
     int x,y;
 
     for(x=0,y=0;exp[y];++y,++x) {
@@ -183,7 +183,7 @@ int strcasecmp_match(const char *str, const char *exp) {
     return (str[x] != '\0');
 }
 
-int is_matchexp(const char *str) {
+API_EXPORT(int) is_matchexp(const char *str) {
     register int x;
 
     for(x=0;str[x];x++)
@@ -274,7 +274,7 @@ API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
 /*
  * Parse .. so we don't compromise security
  */
-void getparents(char *name)
+API_EXPORT(void) getparents(char *name)
 {
     int l, w;
 
@@ -329,7 +329,7 @@ void getparents(char *name)
     }
 } 
 
-void no2slash(char *name) {
+API_EXPORT(void) no2slash(char *name) {
     register int x,y;
 
     for(x=0; name[x];)
@@ -352,7 +352,7 @@ void no2slash(char *name) {
  *    /a/b, 3  ==> /a/b/
  *    /a/b, 4  ==> /a/b/
  */
-char *make_dirstr_prefix (char *d, const char *s, int n)
+API_EXPORT(char *) make_dirstr_prefix (char *d, const char *s, int n)
 {
     for(;;) {
 	*d = *s;
@@ -372,7 +372,7 @@ char *make_dirstr_prefix (char *d, const char *s, int n)
 /*
  * return the parent directory name including trailing / of the file s
  */
-char *make_dirstr_parent (pool *p, const char *s)
+API_EXPORT(char *) make_dirstr_parent (pool *p, const char *s)
 {
     char *last_slash = strrchr (s, '/');
     char *d;
@@ -394,7 +394,7 @@ char *make_dirstr_parent (pool *p, const char *s)
  * This function is deprecated.  Use one of the preceeding two functions
  * which are faster.
  */
-char *make_dirstr(pool *p, const char *s, int n) {
+API_EXPORT(char *) make_dirstr(pool *p, const char *s, int n) {
     register int x,f;
     char *res;
 
@@ -415,7 +415,7 @@ char *make_dirstr(pool *p, const char *s, int n) {
         return pstrcat (p, s, "/", NULL);
 }
 
-int count_dirs(const char *path) {
+API_EXPORT(int) count_dirs(const char *path) {
     register int x,n;
 
     for(x=0,n=0;path[x];x++)
@@ -434,7 +434,7 @@ API_EXPORT(void) chdir_file(const char *file) {
     ((char *)file)[i] = '/';
 }
 
-char *getword_nc(pool* atrans, char **line, char stop)
+API_EXPORT(char *) getword_nc(pool* atrans, char **line, char stop)
     {
     return getword(atrans,(const char **)line,stop);
     }
@@ -460,12 +460,12 @@ API_EXPORT(char *) getword(pool* atrans, const char **line, char stop) {
     return res;
 }
 
-char *getword_white_nc(pool* atrans, char **line)
+API_EXPORT(char *) getword_white_nc(pool* atrans, char **line)
 {
     return getword_white(atrans,(const char **)line);
 }
 
-char *getword_white(pool* atrans, const char **line) {
+API_EXPORT(char *) getword_white(pool* atrans, const char **line) {
     int pos = -1, x;
     char *res;
 
@@ -493,12 +493,12 @@ char *getword_white(pool* atrans, const char **line) {
     return res;
 }
 
-char *getword_nulls_nc(pool* atrans, char **line, char stop)
+API_EXPORT(char *) getword_nulls_nc(pool* atrans, char **line, char stop)
 {
     return getword_nulls(atrans,(const char **)line,stop);
 }
 
-char *getword_nulls(pool* atrans, const char **line, char stop) {
+API_EXPORT(char *) getword_nulls(pool* atrans, const char **line, char stop) {
     int pos = ind(*line, stop);
     char *res;
 
@@ -541,7 +541,7 @@ static char *substring_conf (pool *p, const char *start, int len, char quote)
     return result;
 }
 
-char *getword_conf_nc(pool* p, char **line) {
+API_EXPORT(char *) getword_conf_nc(pool* p, char **line) {
     return getword_conf(p,(const char **)line);
 }
 
@@ -643,7 +643,7 @@ API_EXPORT(int) cfg_getline(char *s, int n, FILE *f) {
  * by whitespace at the caller's option.
  */
 
-char *get_token (pool *p, char **accept_line, int accept_white)
+API_EXPORT(char *) get_token (pool *p, char **accept_line, int accept_white)
 {
     char *ptr = *accept_line;
     char *tok_start;
@@ -717,7 +717,7 @@ static char *next_token (char **toks) {
     return ret;
 }
 
-int find_token (pool *p, const char *line, const char *tok) {
+API_EXPORT(int) find_token (pool *p, const char *line, const char *tok) {
     char *ltok;
     char *lcopy;
 
@@ -731,7 +731,7 @@ int find_token (pool *p, const char *line, const char *tok) {
     return 0;
 }
 
-int find_last_token (pool *p, const char *line, const char *tok)
+API_EXPORT(int) find_last_token (pool *p, const char *line, const char *tok)
 {
     int llen, tlen, lidx;
 
@@ -748,7 +748,7 @@ int find_last_token (pool *p, const char *line, const char *tok)
     return (strncasecmp(&line[lidx], tok, tlen) == 0);
 }
 
-char *escape_shell_cmd(pool *p, const char *s) {
+API_EXPORT(char *) escape_shell_cmd(pool *p, const char *s) {
     register int x,y,l;
     char *cmd;
 
@@ -809,8 +809,7 @@ static char x2c(const char *what) {
  *   decoding %2f -> /   (a special character)
  *                      returns NOT_FOUND
  */
-int
-unescape_url(char *url) {
+API_EXPORT(int) unescape_url(char *url) {
     register int x,y, badesc, badpath;
 
     badesc = 0;
@@ -837,7 +836,8 @@ unescape_url(char *url) {
     else return OK;
 }
 
-char *construct_server(pool *p, const char *hostname, unsigned port) {
+API_EXPORT(char *) construct_server(pool *p, const char *hostname,
+				    unsigned port) {
     char portnum[22];		
 	/* Long enough, even if port > 16 bits for some reason */
   
@@ -849,7 +849,8 @@ char *construct_server(pool *p, const char *hostname, unsigned port) {
     }
 }
 
-char *construct_url(pool *p, const char *uri, const server_rec *s) {
+API_EXPORT(char *)construct_url(pool *p, const char *uri,
+				const server_rec *s) {
     return pstrcat (p, "http://",
 		    construct_server(p, s->server_hostname, s->port),
 		    uri, NULL);
@@ -872,7 +873,7 @@ If partial is set, os_escape_path() assumes that the path will be appended to
 something with a '/' in it (and thus does not prefix "./").
 */
 
-char *escape_path_segment(pool *p, const char *segment) {
+API_EXPORT(char *) escape_path_segment(pool *p, const char *segment) {
     register int x,y;
     char *copy = palloc (p, 3 * strlen (segment) + 1);
             
@@ -924,7 +925,7 @@ API_EXPORT(char *) os_escape_path(pool *p,const char *path,int partial) {
 
 /* escape_uri is now a macro for os_escape_path */
 
-char *escape_html(pool *p, const char *s)
+API_EXPORT(char *) escape_html(pool *p, const char *s)
 {
     int i, j;
     char *x;
@@ -956,7 +957,7 @@ char *escape_html(pool *p, const char *s)
     return x;
 }
 
-int is_directory(const char *path) {
+API_EXPORT(int) is_directory(const char *path) {
     struct stat finfo;
 
     if(stat(path,&finfo) == -1)
@@ -965,7 +966,8 @@ int is_directory(const char *path) {
     return(S_ISDIR(finfo.st_mode));
 }
 
-char *make_full_path(pool *a, const char *src1, const char *src2) {
+API_EXPORT(char *) make_full_path(pool *a, const char *src1,
+				  const char *src2) {
     register int x;
 
     x = strlen(src1);
@@ -1116,7 +1118,7 @@ int waitpid(pid_t pid, int *statusp, int options)
 }
 #endif
 
-int ind(const char *s, char c) {
+API_EXPORT(int) ind(const char *s, char c) {
     register int x;
 
     for(x=0;s[x];x++)
@@ -1125,7 +1127,7 @@ int ind(const char *s, char c) {
     return -1;
 }
 
-int rind(const char *s, char c) {
+API_EXPORT(int) rind(const char *s, char c) {
     register int x;
 
     for(x=strlen(s)-1;x != -1;x--)
@@ -1141,7 +1143,7 @@ API_EXPORT(void) str_tolower(char *str) {
     }
 }
         
-uid_t uname2id(const char *name) {
+API_EXPORT(uid_t) uname2id(const char *name) {
 #ifdef WIN32
     return(1);
 #else
@@ -1158,7 +1160,7 @@ uid_t uname2id(const char *name) {
 #endif
 }
 
-gid_t gname2id(const char *name) {
+API_EXPORT(gid_t) gname2id(const char *name) {
 #ifdef WIN32
     return(1);
 #else
@@ -1307,7 +1309,7 @@ const int pr2six[256]={
     64,64,64,64,64,64,64,64,64,64,64,64,64
 };
 
-char *uudecode(pool *p, const char *bufcoded) {
+API_EXPORT(char *) uudecode(pool *p, const char *bufcoded) {
     int nbytesdecoded;
     register unsigned char *bufin;
     register char *bufplain;

@@ -60,7 +60,7 @@ static void CopyAndAdvance(char **destPtr, const char **srcPtr, int n)
     *srcPtr = src;
     }
 
-int vbprintf(BUFF *bp, const char *format, va_list arg)
+API_EXPORT_NONSTD(int) vbprintf(BUFF *bp, const char *format, va_list arg)
     {
     const char *f,*fStop,*percentPtr,*p;
     char *fmtBuffPtr, *buffPtr;

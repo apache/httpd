@@ -299,7 +299,7 @@ void init_alloc()
     permanent_pool = make_sub_pool (NULL);
 }
 
-void clear_pool (struct pool *a)
+API_EXPORT(void) clear_pool (struct pool *a)
 {
   block_alarms();
   
@@ -333,8 +333,12 @@ API_EXPORT(void) destroy_pool (pool *a)
   unblock_alarms();
 }
 
-long bytes_in_pool (pool *p) { return bytes_in_block_list (p->first); }
-long bytes_in_free_blocks () { return bytes_in_block_list (block_freelist); }
+API_EXPORT(long) bytes_in_pool (pool *p) {
+    return bytes_in_block_list (p->first);
+}
+API_EXPORT(long) bytes_in_free_blocks () {
+    return bytes_in_block_list (block_freelist);
+}
 
 /*****************************************************************
  *

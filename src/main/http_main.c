@@ -777,7 +777,7 @@ void cleanup_scoreboard ()
     scoreboard_image = NULL;
 }
 
-void sync_scoreboard_image ()
+API_EXPORT(void) sync_scoreboard_image ()
 {}
 
 
@@ -1057,7 +1057,7 @@ void cleanup_scoreboard ()
  * anyway.
  */
 
-void sync_scoreboard_image ()
+API_EXPORT(void) sync_scoreboard_image ()
 {
 #ifdef SCOREBOARD_FILE
     lseek (scoreboard_fd, 0L, 0);
@@ -1067,7 +1067,7 @@ void sync_scoreboard_image ()
 
 #endif /* MULTITHREAD */
 
-int exists_scoreboard_image ()
+API_EXPORT(int) exists_scoreboard_image ()
 {
     return (scoreboard_image ? 1 : 0);
 }
@@ -1143,7 +1143,7 @@ static void update_scoreboard_global()
 #endif
 }
 
-short_score get_scoreboard_info(int i)
+API_EXPORT(short_score) get_scoreboard_info(int i)
 {
     return (scoreboard_image->servers[i]);
 }

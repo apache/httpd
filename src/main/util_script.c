@@ -221,7 +221,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
  * and find as much of the two that match as possible.
  */
 
-int find_path_info (char *uri, char *path_info)
+API_EXPORT(int) find_path_info (char *uri, char *path_info)
 {
     int lu = strlen(uri);
     int lp = strlen(path_info);
@@ -312,7 +312,7 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
     }
 }
 
-int scan_script_header_err(request_rec *r, FILE *f, char *buffer)
+API_EXPORT(int) scan_script_header_err(request_rec *r, FILE *f, char *buffer)
 {
     char x[MAX_STRING_LEN];
     char *w, *l;
@@ -402,7 +402,7 @@ int scan_script_header_err(request_rec *r, FILE *f, char *buffer)
     }
 }
 
-void send_size(size_t size, request_rec *r) {
+API_EXPORT(void) send_size(size_t size, request_rec *r) {
     char ss[20];
 
     if(size == -1) 

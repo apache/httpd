@@ -442,7 +442,7 @@ int invoke_handler (request_rec *r)
 
 /* One-time setup for precompiled modules --- NOT to be done on restart */
 
-void add_module (module *m)
+API_EXPORT(void) add_module (module *m)
 {
     /* This could be called from an AddModule httpd.conf command,
      * after the file has been linked and the module structure within it
@@ -489,12 +489,12 @@ void setup_prelinked_modules ()
     }
 }
 
-const char *find_module_name (module *m)
+API_EXPORT(const char *) find_module_name (module *m)
 {
     return m->name;
 }
 
-module *find_linked_module (const char *name)
+API_EXPORT(module *) find_linked_module (const char *name)
 {
     module *modp;
 
@@ -506,7 +506,7 @@ module *find_linked_module (const char *name)
 }
 
 /* Add a named module.  Returns 1 if module found, 0 otherwise.  */
-int add_named_module (const char *name)
+API_EXPORT(int) add_named_module (const char *name)
 {
     extern module *preloaded_modules[];
     module *modp;
@@ -526,7 +526,7 @@ int add_named_module (const char *name)
 }
 
 /* Clear the internal list of modules, in preparation for starting over. */
-void clear_module_list ()
+API_EXPORT(void) clear_module_list ()
 {
     module **m = &top_module;
     module **next_m;
@@ -776,7 +776,8 @@ const char *srm_command_loop (cmd_parms *parms, void *config)
  * Generic command functions...
  */
 
-API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg)
+API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *cmd,
+						 char *struct_ptr, char *arg)
 {
     /* This one's pretty generic... */
   
@@ -785,7 +786,8 @@ API_EXPORT_NONSTD(const char *) set_string_slot (cmd_parms *cmd, char *struct_pt
     return NULL;
 }
 
-const char *set_flag_slot (cmd_parms *cmd, char *struct_ptr, int arg)
+API_EXPORT_NONSTD(const char *) set_flag_slot (cmd_parms *cmd,
+					       char *struct_ptr, int arg)
 {
     /* This one's pretty generic too... */
   

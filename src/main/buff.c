@@ -246,8 +246,7 @@ doerror(BUFF *fb, int err)
 /*
  * Create a new buffered stream
  */
-BUFF *
-bcreate(pool *p, int flags)
+API_EXPORT(BUFF *) bcreate(pool *p, int flags)
 {
     BUFF *fb;
 
@@ -290,15 +289,13 @@ bcreate(pool *p, int flags)
 /*
  * Push some I/O file descriptors onto the stream
  */
-void
-bpushfd(BUFF *fb, int fd_in, int fd_out)
+API_EXPORT(void) bpushfd(BUFF *fb, int fd_in, int fd_out)
 {
     fb->fd = fd_out;
     fb->fd_in = fd_in;
 }
 
-int
-bsetopt(BUFF *fb, int optname, const void *optval)
+API_EXPORT(int) bsetopt(BUFF *fb, int optname, const void *optval)
 {
     if (optname == BO_BYTECT)
     {
@@ -311,8 +308,7 @@ bsetopt(BUFF *fb, int optname, const void *optval)
     }
 }
 
-int
-bgetopt(BUFF *fb, int optname, void *optval)
+API_EXPORT(int) bgetopt(BUFF *fb, int optname, void *optval)
 {
     if (optname == BO_BYTECT)
     {
@@ -415,7 +411,7 @@ end_chunk( BUFF *fb )
 /*
  * Set a flag on (1) or off (0).
  */
-int bsetflag(BUFF *fb, int flag, int value)
+API_EXPORT(int) bsetflag(BUFF *fb, int flag, int value)
 {
     if (value) {
 	fb->flags |= flag;
@@ -518,8 +514,7 @@ Sfdisc_t *bsfio_new(pool *p, BUFF *b)
  * If fewer than byte bytes are currently available, then return those.
  * Returns 0 for EOF, -1 for error.
  */
-int
-bread(BUFF *fb, void *buf, int nbyte)
+API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte)
 {
     int i, nrd;
 
@@ -684,7 +679,7 @@ API_EXPORT(int) bgets(char *buff, int n, BUFF *fb)
  * Returns 1 on success, zero on end of transmission, or -1 on an error.
  *
  */
-int blookc(char *buff, BUFF *fb)
+API_EXPORT(int) blookc(char *buff, BUFF *fb)
 {
     int i;
 
@@ -723,8 +718,7 @@ int blookc(char *buff, BUFF *fb)
  * Skip data until a linefeed character is read
  * Returns 1 on success, 0 if no LF found, or -1 on error
  */
-int
-bskiplf(BUFF *fb)
+API_EXPORT(int) bskiplf(BUFF *fb)
 {
     unsigned char *x;
     int i;
@@ -762,8 +756,7 @@ bskiplf(BUFF *fb)
 /*
  * Emtpy the buffer after putting a single character in it
  */
-int
-bflsbuf(int c, BUFF *fb)
+API_EXPORT(int) bflsbuf(int c, BUFF *fb)
 {
     char ss[1];
 
@@ -774,8 +767,7 @@ bflsbuf(int c, BUFF *fb)
 /*
  * Fill the buffer and read a character from it
  */
-int
-bfilbuf(BUFF *fb)
+API_EXPORT(int) bfilbuf(BUFF *fb)
 {
     int i;
     char buf[1];
@@ -1130,8 +1122,7 @@ API_EXPORT(int) bclose(BUFF *fb)
 /*
  * returns the number of bytes written or -1 on error
  */
-int
-bputs(const char *x, BUFF *fb)
+API_EXPORT(int) bputs(const char *x, BUFF *fb)
 {
     int i, j=strlen(x);
     i = bwrite(fb, x, j);
@@ -1142,8 +1133,7 @@ bputs(const char *x, BUFF *fb)
 /*
  * returns the number of bytes written or -1 on error
  */
-int
-bvputs(BUFF *fb, ...)
+API_EXPORT_NONSTD(int) bvputs(BUFF *fb, ...)
 {
     int i, j, k;
     va_list v;
@@ -1169,8 +1159,8 @@ bvputs(BUFF *fb, ...)
     return k;
 }
 
-void
-bonerror(BUFF *fb, void (*error)(BUFF *, int, void *), void *data)
+API_EXPORT(void) bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),
+			  void *data)
 {
     fb->error = error;
     fb->error_data = data;

@@ -120,34 +120,34 @@ extern Sfdisc_t *bsfio_new(pool *p, BUFF *b);
 #define BO_BYTECT (1)
 
 /* Stream creation and modification */
-extern BUFF *bcreate(pool *p, int flags);
-extern void bpushfd(BUFF *fb, int fd_in, int fd_out);
-extern int bsetopt(BUFF *fb, int optname, const void *optval);
-extern int bgetopt(BUFF *fb, int optname, void *optval);
-extern int bsetflag(BUFF *fb, int flag, int value);
+API_EXPORT(BUFF *) bcreate(pool *p, int flags);
+API_EXPORT(void) bpushfd(BUFF *fb, int fd_in, int fd_out);
+API_EXPORT(int) bsetopt(BUFF *fb, int optname, const void *optval);
+API_EXPORT(int) bgetopt(BUFF *fb, int optname, void *optval);
+API_EXPORT(int) bsetflag(BUFF *fb, int flag, int value);
 API_EXPORT(int) bclose(BUFF *fb);
 
 #define bgetflag(fb, flag)	((fb)->flags & (flag))
 
 /* Error handling */
-extern void bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),
+API_EXPORT(void) bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),
 		     void *data);
 
 /* I/O */
-extern int bread(BUFF *fb, void *buf, int nbyte);
+API_EXPORT(int) bread(BUFF *fb, void *buf, int nbyte);
 API_EXPORT(int) bgets(char *s, int n, BUFF *fb);
-extern int blookc(char *buff, BUFF *fb);
-extern int bskiplf(BUFF *fb);
+API_EXPORT(int) blookc(char *buff, BUFF *fb);
+API_EXPORT(int) bskiplf(BUFF *fb);
 API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte);
 API_EXPORT(int) bflush(BUFF *fb);
-extern int bputs(const char *x, BUFF *fb);
-extern int bvputs(BUFF *fb, ...);
-extern int bprintf(BUFF *fb,const char *fmt,...);
-extern int vbprintf(BUFF *fb,const char *fmt,va_list vlist);
+API_EXPORT(int) bputs(const char *x, BUFF *fb);
+API_EXPORT(int) bvputs(BUFF *fb, ...);
+API_EXPORT_NONSTD(int) bprintf(BUFF *fb,const char *fmt,...);
+API_EXPORT_NONSTD(int) vbprintf(BUFF *fb,const char *fmt,va_list vlist);
 
 /* Internal routines */
-extern int bflsbuf(int c, BUFF *fb);
-extern int bfilbuf(BUFF *fb);
+API_EXPORT(int) bflsbuf(int c, BUFF *fb);
+API_EXPORT(int) bfilbuf(BUFF *fb);
 
 #define bgetc(fb)   ( ((fb)->incnt == 0) ? bfilbuf(fb) : \
 		    ((fb)->incnt--, *((fb)->inptr++)) )

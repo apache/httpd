@@ -108,7 +108,7 @@ static int parse_byterange (char *range, long clength, long *start, long *end)
 
 static int internal_byterange(int, long*, request_rec*, char**, long*, long*);
 
-int set_byterange (request_rec *r)
+API_EXPORT(int) set_byterange (request_rec *r)
 {
     char *range, *if_range, *match;
     char ts[MAX_STRING_LEN];
@@ -182,7 +182,7 @@ int set_byterange (request_rec *r)
     return 1;
 }
 
-int each_byterange (request_rec *r, long *offset, long *length)
+API_EXPORT(int) each_byterange (request_rec *r, long *offset, long *length)
 {
     return internal_byterange(1, NULL, r, &r->range, offset, length);
 }
@@ -245,7 +245,7 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
     return 1;
 }
 
-int set_content_length (request_rec *r, long clength)
+API_EXPORT(int) set_content_length (request_rec *r, long clength)
 {
     char ts[MAX_STRING_LEN];
 
@@ -344,7 +344,7 @@ int set_keepalive(request_rec *r)
     return 0;
 }
 
-int set_last_modified(request_rec *r, time_t mtime)
+API_EXPORT(int) set_last_modified(request_rec *r, time_t mtime)
 {
     char *etag, weak_etag[MAX_STRING_LEN];
     char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
@@ -883,7 +883,7 @@ void finalize_sub_req_protocol (request_rec *sub)
 /* Support for the Basic authentication protocol, and a bit for Digest.
  */
 
-void note_auth_failure(request_rec *r)
+API_EXPORT(void) note_auth_failure(request_rec *r)
 {
     if (!strcasecmp(auth_type(r), "Basic"))
       note_basic_auth_failure(r);
@@ -891,7 +891,7 @@ void note_auth_failure(request_rec *r)
       note_digest_auth_failure(r);
 }
 
-void note_basic_auth_failure(request_rec *r)
+API_EXPORT(void) note_basic_auth_failure(request_rec *r)
 {
     if (strcasecmp(auth_type(r), "Basic"))
       note_auth_failure(r);
@@ -900,7 +900,7 @@ void note_basic_auth_failure(request_rec *r)
 		 pstrcat(r->pool, "Basic realm=\"", auth_name(r), "\"", NULL));
 }
 
-void note_digest_auth_failure(request_rec *r)
+API_EXPORT(void) note_digest_auth_failure(request_rec *r)
 {
     char nonce[256];
 
@@ -910,7 +910,7 @@ void note_digest_auth_failure(request_rec *r)
                        "\", nonce=\"", nonce, "\"", NULL));
 }
 
-int get_basic_auth_pw (request_rec *r, char **pw)
+API_EXPORT(int) get_basic_auth_pw (request_rec *r, char **pw)
 {
     const char *auth_line = table_get (r->headers_in, "Authorization");
     char *t;
@@ -1525,9 +1525,11 @@ API_EXPORT(long) get_client_block (request_rec *r, char *buffer, int bufsiz)
     return (chunk_start + len_read);
 }
 
-long send_fd(FILE *f, request_rec *r) { return send_fd_length(f, r, -1); }
+API_EXPORT(long)send_fd(FILE *f, request_rec *r) {
+    return send_fd_length(f, r, -1);
+}
 
-long send_fd_length(FILE *f, request_rec *r, long length)
+API_EXPORT(long) send_fd_length(FILE *f, request_rec *r, long length)
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
@@ -1582,7 +1584,7 @@ long send_fd_length(FILE *f, request_rec *r, long length)
     return total_bytes_sent;
 }
 
-int rputc (int c, request_rec *r)
+API_EXPORT(int) rputc (int c, request_rec *r)
 {
     if (r->connection->aborted) return EOF;
     bputc(c, r->connection->client);
@@ -1590,14 +1592,14 @@ int rputc (int c, request_rec *r)
     return c;
 }
 
-int rputs(const char *str, request_rec *r)
+API_EXPORT(int) rputs(const char *str, request_rec *r)
 {
     if (r->connection->aborted) return EOF;
     SET_BYTES_SENT(r);
     return bputs(str, r->connection->client);
 }
 
-int rwrite(const void *buf, int nbyte, request_rec *r)
+API_EXPORT(int) rwrite(const void *buf, int nbyte, request_rec *r)
 {
     int n;
     if (r->connection->aborted) return EOF;
@@ -1606,7 +1608,7 @@ int rwrite(const void *buf, int nbyte, request_rec *r)
     return n;
 }
 
-int rprintf(request_rec *r,const char *fmt,...)
+API_EXPORT(int) rprintf(request_rec *r,const char *fmt,...)
 {
     va_list vlist;
     int n;
@@ -1619,7 +1621,7 @@ int rprintf(request_rec *r,const char *fmt,...)
     return n;
 }
 
-int rvputs(request_rec *r, ...)
+API_EXPORT_NONSTD(int) rvputs(request_rec *r, ...)
 {
     va_list args;
     int i, j, k;
@@ -1648,7 +1650,7 @@ int rvputs(request_rec *r, ...)
     return k;
 }
 
-int rflush (request_rec *r) {
+API_EXPORT(int) rflush (request_rec *r) {
     return bflush(r->connection->client);
 }
 
@@ -1919,7 +1921,7 @@ void send_error_response (request_rec *r, int recursive_error)
  * comes along?
  */
 
-void client_to_stdout (conn_rec *c)
+API_EXPORT(void) client_to_stdout (conn_rec *c)
 {
     bflush(c->client);
     dup2(c->client->fd, STDOUT_FILENO);

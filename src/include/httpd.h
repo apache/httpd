@@ -678,60 +678,62 @@ struct listen_rec {
  */
 
 /* Time */
-extern const char month_snames[12][4];
+extern MODULE_VAR_EXPORT const char month_snames[12][4];
 
-struct tm *get_gmtoff(int *tz);
+API_EXPORT(struct tm *) get_gmtoff(int *tz);
 API_EXPORT(char *) get_time();
-char *ht_time (pool *p, time_t t, const char *fmt, int gmt);     
-char *gm_timestr_822(pool *p, time_t t);
+API_EXPORT(char *) ht_time (pool *p, time_t t, const char *fmt, int gmt);     
+API_EXPORT(char *) gm_timestr_822(pool *p, time_t t);
      
 /* String handling. The *_nc variants allow you to use non-const char **s as
 arguments (unfortunately C won't automatically convert a char ** to a const
 char **) */     
      
 API_EXPORT(char *) getword(pool *p, const char **line, char stop);
-char *getword_nc(pool *p, char **line, char stop);
-char *getword_white(pool *p, const char **line);
-char *getword_white_nc(pool *p, char **line);
-char *getword_nulls (pool *p, const char **line, char stop);
-char *getword_nulls_nc (pool *p, char **line, char stop);
+API_EXPORT(char *) getword_nc(pool *p, char **line, char stop);
+API_EXPORT(char *) getword_white(pool *p, const char **line);
+API_EXPORT(char *) getword_white_nc(pool *p, char **line);
+API_EXPORT(char *) getword_nulls (pool *p, const char **line, char stop);
+API_EXPORT(char *) getword_nulls_nc (pool *p, char **line, char stop);
 API_EXPORT(char *) getword_conf (pool *p, const char **line);      
-char *getword_conf_nc (pool *p, char **line);      
+API_EXPORT(char *) getword_conf_nc (pool *p, char **line);      
 
-char *get_token (pool *p, char **accept_line, int accept_white);
-int find_token (pool *p, const char *line, const char *tok);
-int find_last_token (pool *p, const char *line, const char *tok);
+API_EXPORT(char *) get_token (pool *p, char **accept_line, int accept_white);
+API_EXPORT(int) find_token (pool *p, const char *line, const char *tok);
+API_EXPORT(int) find_last_token (pool *p, const char *line, const char *tok);
      
 API_EXPORT(int) is_url(const char *u);
-extern int unescape_url(char *url);
-void no2slash(char *name);
-void getparents(char *name);
-char *escape_path_segment(pool *p, const char *s);
+API_EXPORT(int) unescape_url(char *url);
+API_EXPORT(void) no2slash(char *name);
+API_EXPORT(void) getparents(char *name);
+API_EXPORT(char *) escape_path_segment(pool *p, const char *s);
 API_EXPORT(char *) os_escape_path(pool *p,const char *path,int partial);
 #define escape_uri(ppool,path) os_escape_path(ppool,path,1)
-extern char *escape_html(pool *p, const char *s);
-char *construct_server(pool *p, const char *hostname, unsigned port);
-char *construct_url (pool *p, const char *path, const server_rec *s);     
-char *escape_shell_cmd (pool *p, const char *s);
+API_EXPORT(char *) escape_html(pool *p, const char *s);
+API_EXPORT(char *) construct_server(pool *p, const char *hostname,
+				    unsigned port);
+API_EXPORT(char *) construct_url (pool *p, const char *path,
+				  const server_rec *s);     
+API_EXPORT(char *) escape_shell_cmd (pool *p, const char *s);
      
-int count_dirs(const char *path);
-char *make_dirstr_prefix (char *d, const char *s, int n);
-char *make_dirstr_parent (pool *p, const char *s);
+API_EXPORT(int) count_dirs(const char *path);
+API_EXPORT(char *) make_dirstr_prefix (char *d, const char *s, int n);
+API_EXPORT(char *) make_dirstr_parent (pool *p, const char *s);
 /* deprecated.  The previous two routines are preferred. */
-char *make_dirstr(pool *a, const char *s, int n);
-char *make_full_path(pool *a, const char *dir, const char *f);
-     
-int is_matchexp(const char *str);
-int strcmp_match(const char *str, const char *exp);
-int strcasecmp_match(const char *str, const char *exp);
-char *uudecode (pool *, const char *);
+API_EXPORT(char *) make_dirstr(pool *a, const char *s, int n);
+API_EXPORT(char *) make_full_path(pool *a, const char *dir, const char *f);
+  
+API_EXPORT(int) is_matchexp(const char *str);
+API_EXPORT(int) strcmp_match(const char *str, const char *exp);
+API_EXPORT(int) strcasecmp_match(const char *str, const char *exp);
+API_EXPORT(char *) uudecode (pool *, const char *);
 
 API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
 	      size_t nmatch, regmatch_t pmatch[]);
 
 API_EXPORT(void) str_tolower (char *);
-int ind (const char *, char);	/* Sigh... */
-int rind (const char *, char);     
+API_EXPORT(int) ind (const char *, char);	/* Sigh... */
+API_EXPORT(int) rind (const char *, char);     
 
 API_EXPORT(int) cfg_getline(char *s, int n, FILE *f);
 
@@ -741,16 +743,16 @@ char *strerror (int err);
 
 /* Misc system hackery */
      
-uid_t uname2id(const char *name);
-gid_t gname2id(const char *name);
-int is_directory(const char *name);
+API_EXPORT(uid_t) uname2id(const char *name);
+API_EXPORT(gid_t) gname2id(const char *name);
+API_EXPORT(int) is_directory(const char *name);
 API_EXPORT(int) can_exec(const struct stat *);     
 API_EXPORT(void) chdir_file(const char *file);
      
 char *get_local_host(pool *);
 unsigned long get_virthost_addr (const char *hostname, unsigned short *port);
 
-extern time_t restart_time;
+MODULE_VAR_EXPORT time_t restart_time;
 
 /*
  * Apache tries to keep all of its long term filehandles (such as log files,
@@ -787,5 +789,5 @@ int ap_slack (int fd, int line);
 /*
  * Redefine assert() to something more useful for an Apache...
  */
-void log_assert(const char *szExp,const char *szFile,int nLine);
+API_EXPORT(void) log_assert(const char *szExp,const char *szFile,int nLine);
 #define ap_assert(exp) (void)( (exp) || (log_assert(#exp, __FILE__, __LINE__), 0) )
