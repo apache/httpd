@@ -1486,8 +1486,8 @@ static const char *get_hash(request_rec *r, const char *user,
         auth_result = provider->get_realm_hash(r, user, conf->realm,
                                                &password);
 
-        /* User is found.  Stop checking. */
-        if (auth_result == AUTH_USER_FOUND) {
+        /* Something occured.  Stop checking. */
+        if (auth_result != AUTH_USER_NOT_FOUND) {
             break;
         }
 
