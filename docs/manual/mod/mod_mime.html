@@ -46,7 +46,7 @@ which determines how the document will be processed within the server.
 
 The directives <a href="#addcharset">AddCharset</a>,
 <A HREF="#addencoding">AddEncoding</A>, <A HREF="#addhandler">AddHandler</A>,
-A HREF="#SetFilter">SetFilter</A>, <A HREF="#addlanguage">AddLanguage</A> 
+<A HREF="#SetFilter">SetFilter</A>, <A HREF="#addlanguage">AddLanguage</A> 
 and <A HREF="#addtype">AddType</A> are all used to map file extensions onto 
 the meta-information for that file.  Respectively they set the character set,
 content-encoding, handler, content-language, and MIME-type (content-type) of 
@@ -163,6 +163,10 @@ for <A HREF="../content-negotiation.html">content negotiation</A>, where
 the server returns one from several documents based on the client's
 charset preference.
 </P>
+
+<p>The <em>extension</em> argument is case-insensitive, and can
+be specified with or without a leading dot.</p>
+
 <P>
 <STRONG>See also</STRONG>: <A HREF="mod_negotiation.html">mod_negotiation</A>
 </P>
@@ -199,7 +203,9 @@ to any already in force, overriding any mappings that already exist
 for the same <EM>extension</EM>.
 
 Example:
-<BLOCKQUOTE><CODE> AddEncoding x-gzip gz<BR> AddEncoding x-compress Z
+<BLOCKQUOTE><CODE>
+AddEncoding x-gzip .gz<BR> 
+AddEncoding x-compress .Z
 </CODE></BLOCKQUOTE>
 
 This will cause filenames containing the .gz extension to be marked as
@@ -217,6 +223,9 @@ the <CODE>AddEncoding</CODE> directive.  To make this long story short,
 you should always use <CODE>x-gzip</CODE> and <CODE>x-compress</CODE>
 for these two specific encodings.  More recent encodings, such as
 <CODE>deflate</CODE> should be specified without the <CODE>x-</CODE>.
+
+<p>The <em>extension</em> argument is case-insensitive, and can
+be specified with or without a leading dot.</p>
 
 <P>
 
@@ -256,12 +265,15 @@ already exist for the same <EM>extension</EM>.
 For example, to activate CGI scripts
 with the file extension "<CODE>.cgi</CODE>", you might use:
 <PRE>
-    AddHandler cgi-script cgi
+    AddHandler cgi-script .cgi
 </PRE>
 
 <P>Once that has been put into your srm.conf or httpd.conf file, any
 file containing the "<CODE>.cgi</CODE>" extension will be treated as a
 CGI program.</P> 
+
+<p>The <em>extension</em> argument is case-insensitive, and can
+be specified with or without a leading dot.</p>
 
 <P>
 
@@ -302,7 +314,7 @@ same <EM>extension</EM>.
 </P>
 <P>
 Example: <BLOCKQUOTE><CODE>
-AddEncoding x-compress Z<BR> AddLanguage en .en<BR> AddLanguage fr
+AddEncoding x-compress .Z<BR> AddLanguage en .en<BR> AddLanguage fr
 .fr<BR> </CODE></BLOCKQUOTE>
 </P>
 <P>
@@ -329,6 +341,10 @@ case of:
 documents with the extension "<CODE>.en</CODE>" would be treated as
 being "<CODE>en-us</CODE>".
 </P>
+
+<p>The <em>extension</em> argument is case-insensitive, and can
+be specified with or without a leading dot.</p>
+
 <P>
 <STRONG>See also</STRONG>: <A HREF="#multipleext">Files with
 multiple extensions</A>
@@ -425,12 +441,15 @@ HREF="#typesconfig">TypesConfig</A></CODE> directive).
 
 Example:
 <BLOCKQUOTE><CODE>
-AddType image/gif GIF
+AddType image/gif .gif
 </CODE></BLOCKQUOTE>
 It is recommended that new MIME types be added using the AddType directive
 rather than changing the <A HREF="#typesconfig">TypesConfig</A> file.<P>
 Note that, unlike the NCSA httpd, this directive cannot be used to set the
 type of particular files.<P>
+
+<p>The <em>extension</em> argument is case-insensitive, and can
+be specified with or without a leading dot.</p>
 
 <P>
 
@@ -559,6 +578,9 @@ This has the effect of returning <SAMP>.html</SAMP> files in the
 files, rather than as candidates for parsing (see the
 <A HREF="mod_include.html"><SAMP>mod_include</SAMP></A> module).
 </P>
+<p>The <em>extension</em> argument is case-insensitive, and can
+be specified with or without a leading dot.</p>
+
 <HR>
 
 <H2><A NAME="sethandler">SetHandler</A> directive</H2>
