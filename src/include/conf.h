@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: conf.h,v 1.36 1996/08/23 18:19:09 jim Exp $ */
+/* $Id: conf.h,v 1.37 1996/09/12 21:18:49 jim Exp $ */
 
 /*
  * conf.h: system-dependant #defines and includes...
@@ -234,6 +234,9 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 
 #elif defined(AUX)
+/* These are to let -Wall compile more cleanly */
+extern int strcasecmp(const char *, const char *);
+extern int strncasecmp(const char *,const char *,unsigned);
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
@@ -243,10 +246,14 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #undef USE_FLOCK_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define MOVEBREAK		0x4000000
+/*
+ * NOTE: If when you run Apache under A/UX and you get a warning
+ * that httpd couldn't move break, then the above value for
+ * MOVEBREAK (64megs) is too large for your setup. Try reducing
+ * to 0x2000000 which is still PLENTY of space. I doubt if
+ * even on heavy systems sbrk() would be called at all...
+ */
 #undef NO_LINGCLOSE
-/* These are to let -Wall compile more cleanly */
-extern int strcasecmp(const char *, const char *);
-extern int strncasecmp(const char *,const char *,unsigned);
 
 #elif defined(SVR4)
 #define NO_KILLPG
