@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/18 16:21:55 $]
+Last modified at [$Date: 2002/12/19 05:47:21 $]
 
 Release:
 
@@ -64,7 +64,7 @@ PATCHES TO PORT FROM 2.1
       +1: stoddard, brianp
 
     * mod_mime: Workaround to prevent a segfault if r->filename=NULL
-      +1: brianp, jim
+      +1: brianp, jim, jerenkrantz
 
     * mod_cache lazy initialization
       +1: stoddard, brianp, jim
@@ -78,7 +78,8 @@ PATCHES TO PORT FROM 2.1
       or include a C-L for the request body.  Connection: Close is not
       an option. [jerenkrantz    2002/12/08 21:37:27]
       +1: stoddard, striker, jim
-      -1: brianp (we need a more robust solution than what's in 2.1 right now)
+      -1: brianp (we need a more robust solution than what's in 2.1 right now),
+          jerenkrantz (should be fixed, but I don't have time to do this)
 
 CURRENT RELEASE NOTES:
 
