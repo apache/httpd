@@ -196,7 +196,6 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
     char *cpA;
 
     /*  initialization  */
-    va_start(ap, msg);
     safe_errno = errno;
     sc = mySrvConfig(s);
 
@@ -251,7 +250,9 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
     }
 
     /*  create custom message  */
+    va_start(ap, msg);
     apr_vsnprintf(vstr, sizeof(vstr), msg, ap);
+    va_end(ap);
 
     /*  write out SSLog message  */
     if ((add & SSL_ADD_ERRNO) && (add & SSL_ADD_SSLERR))
@@ -309,7 +310,6 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
     if (sc->fileLogFile != NULL)
         apr_file_flush(sc->fileLogFile);
     errno = safe_errno;
-    va_end(ap);
     return;
 }
 
