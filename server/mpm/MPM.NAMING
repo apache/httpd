@@ -9,6 +9,9 @@ The following MPMs currently exist:
                   Variable number of processes, constant number of
                   threads/child (= Apache/thread)
   spmt_os2 ...... Single Process Model with Threading on OS/2
+  mpmt_os2 ...... Multi Process Model with Threading on OS/2
+                  Constant number of processes, variable number of threads.
+                  One acceptor thread per process, multiple workers threads.
   winnt ......... Single Process Model with Threading on Windows NT
   worker ........ Multi Process model with threads.  One acceptor thread,
                   multiple worker threads.
