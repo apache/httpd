@@ -1,4 +1,9 @@
 Changes with Apache 2.0.22-dev
+ 
+  *) Fix seg faults in mod_status with ExtendedStatus enabled, after
+     restarts.  A garbage pointer to a vhost's server_rec from the
+     previous generation was being left around under certain
+     conditions.
 
   *) Fix a cosmetic problem with mod_include.  Non-existant SSI vars
      used to appear as '(none', without the closing paren.
