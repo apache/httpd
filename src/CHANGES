@@ -1,5 +1,16 @@
 Changes with Apache 1.3.4
 
+  *) WIN32: Created new makefiles Makefile_win32.txt (normal build)
+     and Makefile_win32_debug.txt (debug build) that work on Win95.
+     Run each of the following from the src directory:
+        nmake /f Makefile_win32.txt           # compiles normal build
+        nmake /f Makefile_win32.txt install   # compiles and installs
+        nmake /f Makefile_win32.txt clean     # removes compiled junk
+        nmake /f Makefile_win32_debug.txt     # compiles debug build
+        nmake /f Makefile_win32_debug.txt install
+        nmake /f Makefile_win32_debug.txt clean
+     [Roy Fielding]
+
   *) Added binbuild.sh and findprg.sh helpers to make it easier for us
      to build binary distributions. [Lars Eilebrecht]
 
