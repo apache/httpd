@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/19 05:47:21 $]
+Last modified at [$Date: 2002/12/24 00:27:25 $]
 
 Release:
 
@@ -56,18 +56,8 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 PATCHES TO PORT FROM 2.1
-    * mod_cache: Rename of CacheMaxStreamingBuffer directive to
-      MCacheMaxStreamingBuffer. Reimplementation of 
-      MCacheMaxStreamingBuffer from mod_cache to mod_mem_cache.
-      This will eliminate the need for most users to use
-      MCacheMaxStreamingBuffer directive.
-      +1: stoddard, brianp
-
     * mod_mime: Workaround to prevent a segfault if r->filename=NULL
       +1: brianp, jim, jerenkrantz
-
-    * mod_cache lazy initialization
-      +1: stoddard, brianp, jim
 
     * Rewrite how proxy sends its request to allow input bodies to 
       morph the request bodies.  Previously, if an input filter
