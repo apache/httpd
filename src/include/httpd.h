@@ -396,6 +396,8 @@ API_EXPORT(const char *) ap_get_server_built(void);
 
 /* Numeric release version identifier: major minor bugfix betaseq
  * Always increases along the same track as the source branch.
+ * For a final release, 'betaseq' should be set to '99'.
+ * For example, Apache 1.4.2 should be '1040299'
  */
 #define APACHE_RELEASE 1030101
 
