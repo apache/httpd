@@ -353,13 +353,14 @@ static int char_buffer_write(char_buffer_t *buffer, char *in, int inl)
 static int bio_bucket_in_read(BIO *bio, char *in, int inl)
 {
     BIO_bucket_in_t *inbio = BIO_bucket_in_ptr(bio);
+    SSLConnRec *sslconn = myConnConfig(inbio->f->c);
     int len = 0;
 
     /* XXX: flush here only required for SSLv2;
      * OpenSSL calls BIO_flush() at the appropriate times for
      * the other protocols.
      */
-    if (SSL_version(inbio->ssl) == SSL2_VERSION) {
+    if ((SSL_version(inbio->ssl) == SSL2_VERSION) || sslconn->is_proxy) {
         BIO_bucket_flush(inbio->wbio);
     }
 
@@ -584,6 +585,10 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     if (!ctx->pssl) {
         /* ssl_abort() has been called */
         return ap_pass_brigade(f->next, bb);
+    }
+
+    if ((status = ssl_hook_process_connection(ctx)) != APR_SUCCESS) {
+        return status;
     }
 
     while (!APR_BRIGADE_EMPTY(bb)) {
