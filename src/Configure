@@ -518,23 +518,23 @@ case "$PLAT" in
 	;;
     *-unixware1)
 	DEF_WANTHSREGEX=yes
-	OS='Unixware'
+	OS='UnixWare 1.x'
 	CFLAGS="$CFLAGS -DUW=100"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt"
 	;;
     *-unixware2)
 	DEF_WANTHSREGEX=yes
-	OS='Unixware'
+	OS='UnixWare 2.x'
 	CFLAGS="$CFLAGS -DUW=200"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	;;
     *-unixware211)
-	OS='Unixware 2.1.1'
+	OS='UnixWare 2.1.1'
 	CFLAGS="$CFLAGS -DUW=211"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	;;
     *-unixware212)
-	OS='Unixware 2.1.2'
+	OS='UnixWare 2.1.2'
 	CFLAGS="$CFLAGS -DUW=212"
 	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen"
 	DBM_LIB=""
@@ -813,14 +813,21 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="-shared -expect_unresolved '*' -msym -s"
             LDFLAGS_SHLIB_EXPORT=""
             ;;
+        *-unixware2)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+            esac
+            LDFLAGS_SHLIB="-Bdynamic -G"
+            LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
+            ;;
         *-unixware21*)
             case $CC in
                 */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
                 */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
             esac
             LDFLAGS_SHLIB="-Bdynamic -G"
-            LDFLAGS_SHLIB_EXPORT=""
-            DEF_SHARED_CORE=yes
+            LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
             ;;
         RM*-sni-sysv4*)
             # MIPS hosts can take advantage of the LDFLAGS_SHLIB_EXPORT switch

@@ -157,6 +157,7 @@ Committed Code Changes:
     * Build the libraries before building the rest of the tools
     * Ralf's and Martin's DSO support for all SVR4-derivate Unix platforms
     * THE BIG SYMBOL RENAMING
+    * Ralf's DSO configuration updates for the UnixWare platform
 
 Available Patches:
 

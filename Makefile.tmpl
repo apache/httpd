@@ -221,7 +221,7 @@ install-mktree:
 install-programs:
 	@echo "===> [programs: Installing Apache httpd program and shared objects]"
 	$(INSTALL_PROGRAM) $(SRC)/httpd $(sbindir)/httpd
-	@if [ ".`grep 'SUBTARGET=target_shared' $(SRC)/Makefile`" != . ]; then \
+	-@if [ ".`grep 'SUBTARGET=target_shared' $(SRC)/Makefile`" != . ]; then \
 		echo "$(INSTALL_PROGRAM) $(SRC)/libhttpd.ep $(libexecdir)/libhttpd.ep"; \
 		$(INSTALL_SCRIPT) $(SRC)/libhttpd.ep $(libexecdir)/libhttpd.ep; \
 		echo "$(INSTALL_SCRIPT) $(SRC)/libhttpd.so $(libexecdir)/libhttpd.so"; \
@@ -286,7 +286,7 @@ install-support:
     	< $(SRC)/support/apxs > .install.tmp && \
     	$(INSTALL_SCRIPT) .install.tmp $(sbindir)/apxs
 	$(INSTALL_DATA) $(SRC)/support/apxs.8 $(mandir)/man8/apxs.8
-	@if [ ".$(suexec)" = .1 ]; then \
+	-@if [ ".$(suexec)" = .1 ]; then \
 	    echo "$(INSTALL_PROGRAM) $(SRC)/support/suexec $(sbindir)/suexec"; \
 	    $(INSTALL_PROGRAM) $(SRC)/support/suexec $(sbindir)/suexec; \
 	    echo "chown root $(sbindir)/suexec"; \

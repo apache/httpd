@@ -1,4 +1,8 @@
 Changes with Apache 1.3b6
+ 
+  *) PORT: Updated UnixWare 2.0.x and 2.1.x entries for DSO support and made
+     APACI Makefile.tmpl "install" target more robust for sensible UnixWare
+     Make. [Ralf S. Engelschall]
 
   *) ++++ THE BIG SYMBOL RENAMING ++++
      To avoid symbol clashes with third-party code compiled into the server,
