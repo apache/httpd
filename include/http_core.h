@@ -489,7 +489,7 @@ typedef struct {
     
     /* Access control */
     apr_array_header_t *sec_file;
-    regex_t *r;
+    ap_regex_t *r;
 
     const char *mime_type;       /* forced with ForceType  */
     const char *handler;         /* forced with SetHandler */

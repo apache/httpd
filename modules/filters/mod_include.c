@@ -155,7 +155,7 @@ typedef struct {
     const char *source;
     const char *rexp;
     apr_size_t  nsub;
-    regmatch_t  match[AP_MAX_REG_MATCH];
+    ap_regmatch_t match[AP_MAX_REG_MATCH];
 } backref_t;
 
 typedef struct {
@@ -917,11 +917,11 @@ static char *ap_ssi_parse_string(include_ctx_t *ctx, const char *in, char *out,
 static APR_INLINE int re_check(include_ctx_t *ctx, const char *string,
                                const char *rexp)
 {
-    regex_t *compiled;
+    ap_regex_t *compiled;
     backref_t *re = ctx->intern->re;
     int rc;
 
-    compiled = ap_pregcomp(ctx->dpool, rexp, REG_EXTENDED);
+    compiled = ap_pregcomp(ctx->dpool, rexp, AP_REG_EXTENDED);
     if (!compiled) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, ctx->intern->r, "unable to "
                       "compile pattern \"%s\"", rexp);

@@ -1048,7 +1048,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 continue;
             }
 
-            if (ap_regexec(entry_core->r, r->filename, 0, NULL, REG_NOTEOL)) {
+            if (ap_regexec(entry_core->r, r->filename, 0, NULL, AP_REG_NOTEOL)) {
                 continue;
             }
 

@@ -96,7 +96,7 @@ struct proxy_remote {
     const char *protocol;   /* the scheme used to talk to this proxy */
     const char *hostname;   /* the hostname of this proxy */
     apr_port_t  port;       /* the port for this proxy */
-    regex_t *regexp;        /* compiled regex (if any) for the remote */
+    ap_regex_t *regexp;        /* compiled regex (if any) for the remote */
     int use_regex;          /* simple boolean. True if we have a regex pattern */
 };
 
@@ -190,7 +190,7 @@ typedef struct {
 typedef struct {
     const char *p;            /* The path */
     int         p_is_fnmatch; /* Is this path an fnmatch candidate? */
-    regex_t    *r;            /* Is this a regex? */
+    ap_regex_t  *r;            /* Is this a regex? */
 } proxy_dir_conf;
 
 typedef struct {

@@ -245,7 +245,7 @@ typedef enum {
 typedef struct {
     char        *input;   /* Input string of RewriteCond   */
     char        *pattern; /* the RegExp pattern string     */
-    regex_t     *regexp;  /* the precompiled regexp        */
+    ap_regex_t  *regexp;  /* the precompiled regexp        */
     int          flags;   /* Flags which control the match */
     pattern_type ptype;   /* pattern type                  */
 } rewritecond_entry;
@@ -259,7 +259,7 @@ typedef struct data_item {
 typedef struct {
     apr_array_header_t *rewriteconds;/* the corresponding RewriteCond entries */
     char      *pattern;              /* the RegExp pattern string             */
-    regex_t   *regexp;               /* the RegExp pattern compilation        */
+    ap_regex_t *regexp;              /* the RegExp pattern compilation        */
     char      *output;               /* the Substitution string               */
     int        flags;                /* Flags which control the substitution  */
     char      *forced_mimetype;      /* forced MIME type of substitution      */
@@ -318,7 +318,7 @@ typedef struct {
 typedef struct backrefinfo {
     char *source;
     int nsub;
-    regmatch_t regmatch[AP_MAX_REG_MATCH];
+    ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
 } backrefinfo;
 
 /* single linked list used for
@@ -3046,7 +3046,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     char *str = apr_pstrdup(cmd->pool, in_str);
     rewrite_server_conf *sconf;
     rewritecond_entry *newcond;
-    regex_t *regexp;
+    ap_regex_t *regexp;
     char *a1;
     char *a2;
     char *a3;
@@ -3133,8 +3133,8 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
 
     if (!newcond->ptype) {
         regexp = ap_pregcomp(cmd->pool, a2,
-                             REG_EXTENDED | ((newcond->flags & CONDFLAG_NOCASE)
-                                             ? REG_ICASE : 0));
+                             AP_REG_EXTENDED | ((newcond->flags & CONDFLAG_NOCASE)
+                                             ? AP_REG_ICASE : 0));
         if (!regexp) {
             return apr_pstrcat(cmd->pool, "RewriteCond: cannot compile regular "
                                "expression '", a2, "'", NULL);
@@ -3374,7 +3374,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     char *str = apr_pstrdup(cmd->pool, in_str);
     rewrite_server_conf *sconf;
     rewriterule_entry *newrule;
-    regex_t *regexp;
+    ap_regex_t *regexp;
     char *a1;
     char *a2;
     char *a3;
@@ -3419,9 +3419,9 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
         ++a1;
     }
 
-    regexp = ap_pregcomp(cmd->pool, a1, REG_EXTENDED |
+    regexp = ap_pregcomp(cmd->pool, a1, AP_REG_EXTENDED |
                                         ((newrule->flags & RULEFLAG_NOCASE)
-                                         ? REG_ICASE : 0));
+                                         ? AP_REG_ICASE : 0));
     if (!regexp) {
         return apr_pstrcat(cmd->pool,
                            "RewriteRule: cannot compile regular expression '",
@@ -3493,7 +3493,7 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
     char *input = do_expand(p->input, ctx);
     apr_finfo_t sb;
     request_rec *rsub, *r = ctx->r;
-    regmatch_t regmatch[AP_MAX_REG_MATCH];
+    ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
     int rc = 0;
 
     switch (p->ptype) {
@@ -3646,7 +3646,7 @@ static APR_INLINE void force_type_handler(rewriterule_entry *p,
  */
 static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 {
-    regmatch_t regmatch[AP_MAX_REG_MATCH];
+    ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
     apr_array_header_t *rewriteconds;
     rewritecond_entry *conds;
     int i, rc;

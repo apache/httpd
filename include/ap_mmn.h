@@ -86,12 +86,15 @@
  *                      ap_setup_prelinked_modules, ap_process_resource_config
  * 20040425.1 (2.1.0-dev) Added ap_module_symbol_t and ap_prelinked_module_symbols
  * 20050101.0 (2.1.2-dev) Axed misnamed http_method for http_scheme (which it was!)
+ * 20050127.0 (2.1.3-dev) renamed regex_t->ap_regex_t, regmatch_t->ap_regmatch_t,
+ *                        REG_*->AP_REG_*, removed reg* in place of ap_reg*;
+ *                        added ap_regex.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20050101
+#define MODULE_MAGIC_NUMBER_MAJOR 20050127
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
