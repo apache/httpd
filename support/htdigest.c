@@ -85,6 +85,10 @@
 #include <conio.h>
 #endif
 
+#if 'A' == 0xC1
+#define CHARSET_EBCDIC
+#endif
+
 #ifdef CHARSET_EBCDIC
 #define LF '\n'
 #define CR '\r'
@@ -97,6 +101,9 @@
 
 char *tn;
 ap_pool_t *cntxt;
+#ifdef CHARSET_EBCDIC
+ap_xlate_t *to_ascii;
+#endif
 
 static void getword(char *word, char *line, char stop)
 {
@@ -178,6 +185,9 @@ static void add_password(char *user, char *realm, ap_file_t *f)
     sprintf(string, "%s:%s:%s", user, realm, pw);
 
     ap_MD5Init(&context);
+#ifdef CHARSET_EBCDIC
+    ap_MD5SetXlate(&context, to_ascii);
+#endif
     ap_MD5Update(&context, (unsigned char *) string, strlen(string));
     ap_MD5Final(digest, &context);
 
@@ -204,7 +214,8 @@ static void interrupted(void)
 
 int main(int argc, char *argv[])
 {
-    ap_file_t *tfp, *f;
+    ap_file_t *tfp = NULL, *f;
+    ap_status_t rv;
     char user[MAX_STRING_LEN];
     char realm[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
@@ -214,10 +225,24 @@ int main(int argc, char *argv[])
     char command[MAX_STRING_LEN];
     int found;
    
-    ap_initialize();
+    rv = ap_initialize();
+    if (rv) {
+        fprintf(stderr, "ap_initialize(): %s (%d)\n",
+                ap_strerror(rv, line, sizeof(line)), rv);
+        exit(1);
+    }
     atexit(ap_terminate); 
     ap_create_pool(&cntxt, NULL);
 
+#ifdef CHARSET_EBCDIC
+    rv = ap_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
+    if (rv) {
+        fprintf(stderr, "ap_xlate_open(): %s (%d)\n",
+                ap_strerror(rv, line, sizeof(line)), rv);
+        exit(1);
+    }
+#endif
+    
     tn = NULL;
     ap_signal(SIGINT, (void (*)(int)) interrupted);
     if (argc == 5) {
