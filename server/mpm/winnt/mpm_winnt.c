@@ -464,7 +464,7 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
            return;
     }
 
-    e = OpenEvent(EVENT_ALL_ACCESS, FALSE, signal_name);
+    e = OpenEvent(EVENT_MODIFY_STATE, FALSE, signal_name);
     if (!e) {
 	/* Um, problem, can't signal the parent, which means we can't
 	 * signal ourselves to die. Ignore for now...
