@@ -807,6 +807,7 @@ void ssl_init_ConfigureServer(server_rec *s,
     EVP_PKEY *pkey;
     SSL_CTX *ctx;
     int i;
+    int have_rsa, have_dsa;
 
     ssl_init_check_server(s, p, ptemp, sc);
 
@@ -836,9 +837,10 @@ void ssl_init_ConfigureServer(server_rec *s,
     rsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_RSA);
     dsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_DSA);
 
-    if (!(ssl_server_import_cert(s, sc, rsa_id, SSL_AIDX_RSA) ||
-          ssl_server_import_cert(s, sc, dsa_id, SSL_AIDX_DSA)))
-    {
+    have_rsa = ssl_server_import_cert(s, sc, rsa_id, SSL_AIDX_RSA);
+    have_dsa = ssl_server_import_cert(s, sc, dsa_id, SSL_AIDX_DSA);
+
+    if (!(have_rsa || have_dsa)) {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Oops, no RSA or DSA server certificate found?!");
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
@@ -851,9 +853,10 @@ void ssl_init_ConfigureServer(server_rec *s,
         ssl_check_public_cert(s, ptemp, sc->pPublicCert[i], i);
     }
 
-    if (!(ssl_server_import_key(s, sc, rsa_id, SSL_AIDX_RSA) ||
-          ssl_server_import_key(s, sc, dsa_id, SSL_AIDX_DSA)))
-    {
+    have_rsa = ssl_server_import_key(s, sc, rsa_id, SSL_AIDX_RSA);
+    have_dsa = ssl_server_import_key(s, sc, dsa_id, SSL_AIDX_DSA);
+
+    if (!(have_rsa || have_dsa)) {
         ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
                 "Oops, no RSA or DSA server private key found?!");
         ssl_die();
