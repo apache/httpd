@@ -2637,7 +2637,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
              * non-neighboring variant.  We can have a non-neighboring
              * variant when processing a type map.  
              */
-            if (strchr(variant->file_name, '/'))
+            if (ap_strchr_c(variant->file_name, '/'))
                 neg->is_transparent = 0;
         }
     }
