@@ -165,6 +165,32 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Object not found!"
+--><!--#include virtual="include/top.html" -->
+
+    要求された URL は本サーバでは見つかりませんでした。
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">
+    参照元ページ</a>のリンクが間違っているか、古くなってしまっているようです。
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->"
+    >ページ</a>の著者にこのエラーをお知らせ下さい。
+
+  <!--#else -->
+
+    もし手入力で URL を入力した場合は、綴りを確認して再度お試し下さい。
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

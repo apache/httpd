@@ -88,6 +88,21 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Service unavailable!"
+--><!--#include virtual="include/top.html" -->
+
+    メンテナンスで停止中か、サーバの処理能力の問題のため、
+    現在リクエストに応じることができません。
+    後ほど再度お試し下さい。
+
+<!--#include virtual="include/bottom.html" -->
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

@@ -75,6 +75,19 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Precondition failed!"
+--><!--#include virtual="include/top.html" -->
+
+    指定された URL へのリクエストにおける事前条件が満たされませんでした。
+  
+<!--#include virtual="include/bottom.html" --> 
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

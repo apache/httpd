@@ -43,6 +43,14 @@ Se pensi che questo sia un errore del server, per favore contatta il
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>.
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+サーバーの障害と思われる場合は、<a 
+href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->"
+>ウェブ管理者</a>までご連絡ください。
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--

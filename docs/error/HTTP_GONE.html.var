@@ -156,6 +156,33 @@ Body:----------it--
 <!--#include virtual="include/bottom.html" -->
 ----------it--
 
+Content-language: ja
+Content-type: text/html; charset=ISO-2022-JP
+Body:----------ja--
+<!--#set var="CONTENT_LANGUAGE" value="ja"
+--><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
+--><!--#set var="TITLE" value="Resource is no longer available!"
+--><!--#include virtual="include/top.html" -->
+
+    要求された URL は既に本サーバでは利用できませんし、
+    移動先もわかりません。
+  
+  <!--#if expr="$HTTP_REFERER" -->
+  
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->"
+    >参照元ページ</a>の著者に、
+    リンクが古くなっていることをご連絡ください。
+   
+  <!--#else -->
+  
+    他のページからのリンクを辿ってきた場合は、
+    そのページの著者にご連絡ください。
+   
+  <!--#endif -->
+  
+<!--#include virtual="include/bottom.html" --> 
+----------ja--
+
 Content-language: ko
 Content-type: text/html; charset=EUC-KR
 Body:----------ko--
