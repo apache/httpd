@@ -1,5 +1,9 @@
 Changes with Apache 1.3.23
 
+  *) Use "httpready" accept filter rather than "dataready" on
+     FreeBSD after 4.1.1-RELEASE where it works correctly.
+     [Tony Finch]
+
   *) Fix incorrect "Content-Length" header in the 416 "range not
      satisfiable" response. [Joe Orton <joe@manyfish.co.uk>]
 

@@ -3728,8 +3728,14 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #ifdef SO_ACCEPTFILTER
     if (ap_acceptfilter) {
 #ifndef ACCEPT_FILTER_NAME
+#define ACCEPT_FILTER_NAME "httpready"
+#ifdef __FreeBSD_version
+#if __FreeBSD_version < 411000 /* httpready broken before 4.1.1 */
+#undef ACCEPT_FILTER_NAME
 #define ACCEPT_FILTER_NAME "dataready"
 #endif
+#endif
+#endif /* ! ACCEPT_FILTER_NAME */
 	/*
 	 * See htdocs/manual/misc/perf-bsd44.html for a discussion of
 	 * how to enable this feature and various issues with it.
