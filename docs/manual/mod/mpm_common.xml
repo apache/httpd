@@ -477,7 +477,7 @@ the child processes</description>
 
     <p>With the <module>prefork</module> MPM, use this directive only
     if you need to set <directive
-    module="mpm_common">MaxClients</directive> higher higher than 256.
+    module="mpm_common">MaxClients</directive> higher than 256.
     Do not set the value of this directive any higher than what you
     might want to set <directive
     module="mpm_common">MaxClients</directive> to.</p>
@@ -582,7 +582,7 @@ per child process</description>
 <usage>
     <p>This directive sets the number of threads created by each
     child process. The child creates these threads at startup and
-    never creates more. if using an MPM like mpmt_winnt, where
+    never creates more. If using an MPM like mpmt_winnt, where
     there is only one child process, this number should be high
     enough to handle the entire load of the server. If using an MPM
     like worker, where there are multiple child processes, the
