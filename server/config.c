@@ -193,7 +193,7 @@ static ap_conf_vector_t *create_default_per_dir_config(apr_pool_t *p)
     return (ap_conf_vector_t *) conf_vector;
 }
 
-ap_conf_vector_t *ap_merge_per_dir_configs(apr_pool_t *p,
+AP_CORE_DECLARE(ap_conf_vector_t*) ap_merge_per_dir_configs(apr_pool_t *p,
                                            ap_conf_vector_t *base,
                                            ap_conf_vector_t *new_conf)
 {
@@ -256,7 +256,7 @@ AP_CORE_DECLARE(ap_conf_vector_t *)ap_create_request_config(apr_pool_t *p)
     return create_empty_config(p);
 }
 
-ap_conf_vector_t *ap_create_conn_config(apr_pool_t *p)
+AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_conn_config(apr_pool_t *p)
 {
     return create_empty_config(p);
 }
@@ -266,7 +266,7 @@ AP_CORE_DECLARE(ap_conf_vector_t *) ap_create_per_dir_config(apr_pool_t *p)
     return create_empty_config(p);
 }
 
-int ap_invoke_handler(request_rec *r)
+AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
 {
     const char *handler;
     const char *p;
@@ -891,7 +891,8 @@ static const char * ap_build_config_sub(apr_pool_t *p, apr_pool_t *temp_pool,
     return NULL;
 }
 
-const char *ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
+AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p, 
+                                 apr_pool_t *temp_pool,
 				 cmd_parms *parms,
 				 ap_directive_t **current,
 				 ap_directive_t **curr_parent,
@@ -1281,7 +1282,7 @@ static int fname_alphasort(const void *fn1, const void *fn2)
     return strcmp(f1->fname,f2->fname);
 }
 
-void ap_process_resource_config(server_rec *s, const char *fname, 
+AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname, 
                                 ap_directive_t **conftree, apr_pool_t *p, 
                                 apr_pool_t *ptemp)
 {
@@ -1412,7 +1413,8 @@ AP_DECLARE(void) ap_process_config_tree(server_rec *s,
     }
 }
 
-int ap_parse_htaccess(ap_conf_vector_t **result, request_rec *r, int override,
+AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result, 
+                      request_rec *r, int override,
 		      const char *d, const char *access_name)
 {
     ap_configfile_t *f = NULL;
