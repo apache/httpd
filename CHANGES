@@ -53,13 +53,6 @@ Changes with Apache 2.1.0-dev
      ap_add_module, ap_add_loaded_module, ap_setup_prelinked_modules,
      and ap_process_resource_config.  [André Malo]
 
-  *) Restore the ability to disable the use of AcceptEx on Win9x systems
-     automatically. PR 28529.  [André Malo]
-
-  *) ap_set_sub_req_protocol and ap_finalize_sub_req_protocol are now
-     exported on Win32 as well.  PR 28523.
-     [Edward Rudd <eddie omegaware.com>, André Malo]
-
   *) Include directives no longer refuse to process symlinks on
      directories. Instead there's now a maximum nesting level
      of included directories (128 as distributed). This is configurable
@@ -112,9 +105,6 @@ Changes with Apache 2.1.0-dev
   *) Allow Digest providers to return AUTH_DENIED to propagate a 401
      status and terminate the provider chain prior to checking the password.
      [Geoffrey Young]
-
-  *) mod_rewrite no longer turns forward proxy requests into reverse proxy
-     requests. PR 28125  [ast domdv.de, André Malo]
 
   *) mod_rewrite now officially supports RewriteRules in <Proxy> sections.
      PR 27985.  [André Malo]
@@ -380,6 +370,16 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) mod_rewrite no longer turns forward proxy requests into reverse proxy
+     requests. PR 28125  [ast domdv.de, André Malo]
+
+  *) ap_set_sub_req_protocol and ap_finalize_sub_req_protocol are now
+     exported on Win32 and Netware as well (minor MMN bump).  PR 28523.
+     [Edward Rudd <eddie omegaware.com>, André Malo]
+
+  *) Restore the ability to disable the use of AcceptEx on Win9x systems
+     automatically (broken in2.0.49). PR 28529.  [André Malo]
 
   *) <VirtualHost myhost> now applies to all IP addresses for myhost
      instead of just the first one reported by the resolver.  This
