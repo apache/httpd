@@ -1,5 +1,7 @@
 Changes with Apache 2.0.30-dev
 
+  *) Allow mod_auth_dbm to handle multiple DBM types [Ian Holsman]
+
   *) Fix matching of vhosts by ip address so we find IPv4
      vhost address when target address is v4-mapped form of
      that address.  [Jeff Trawick]

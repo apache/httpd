@@ -74,13 +74,13 @@
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_strings.h"
 
 #if defined(AP_AUTH_DBM_USE_APR)
 #include "apr_dbm.h"
 #define DBM apr_dbm_t
 #define datum apr_datum_t
-#define dbm_open apr_dbm_open
-#define dbm_fetch apr_dbm_fetch
+
 #define dbm_close apr_dbm_close
 #else
 #include <ndbm.h>
@@ -112,6 +112,7 @@ typedef struct {
 
     char *auth_dbmpwfile;
     char *auth_dbmgrpfile;
+    char *auth_dbmtype;
     int auth_dbmauthoritative;
 
 } dbm_auth_config_rec;
@@ -122,7 +123,8 @@ static void *create_dbm_auth_dir_config(apr_pool_t *p, char *d)
 
     conf->auth_dbmpwfile = NULL;
     conf->auth_dbmgrpfile = NULL;
-    conf->auth_dbmauthoritative = 1;	/* fortress is secure by default */
+    conf->auth_dbmtype ="default";
+    conf->auth_dbmauthoritative = 1;  /* fortress is secure by default */
 
     return conf;
 }
@@ -135,6 +137,17 @@ static const char *set_dbm_slot(cmd_parms *cmd, void *offset,
 
     return ap_set_file_slot(cmd, offset, f);
 }
+
+static const char *set_dbm_type(cmd_parms *cmd, 
+                                void *dir_config, 
+                                const char *arg)
+{
+    dbm_auth_config_rec *conf = dir_config;
+   
+    conf->auth_dbmtype = apr_pstrdup(cmd->pool ,arg);
+    return NULL;
+}
+
 
 static const command_rec dbm_auth_cmds[] =
 {
@@ -150,6 +163,11 @@ static const command_rec dbm_auth_cmds[] =
     AP_INIT_TAKE12("AuthGroupFile", set_dbm_slot,
      (void *) APR_XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
      OR_AUTHCFG, NULL),
+
+    AP_INIT_TAKE1("AuthDBMType", set_dbm_type,
+     NULL,
+     OR_AUTHCFG, "what type of DBM file the user file is"),
+
     AP_INIT_FLAG("AuthDBMAuthoritative", ap_set_flag_slot,
      (void *) APR_XtOffsetOf(dbm_auth_config_rec, auth_dbmauthoritative),
      OR_AUTHCFG, "Set to 'no' to allow access control to be passed along to lower modules, if the UserID is not known in this module"),
@@ -158,7 +176,10 @@ static const command_rec dbm_auth_cmds[] =
 
 module AP_MODULE_DECLARE_DATA auth_dbm_module;
 
-static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
+static char *get_dbm_pw(request_rec *r, 
+                        char *user, 
+                        char *auth_dbmpwfile, 
+                        char*dbtype)
 {
     DBM *f;
     datum d, q;
@@ -174,12 +195,13 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
 #endif
 
 #ifdef AP_AUTH_DBM_USE_APR
-    if (!(retval = dbm_open(&f, auth_dbmpwfile, APR_DBM_READONLY, APR_OS_DEFAULT, r->pool))) {
+    retval  = apr_dbm_open_ex(&f, dbtype, auth_dbmpwfile, APR_DBM_READONLY, APR_OS_DEFAULT, r->pool);
+    if (retval != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r,
-		    "could not open sdbm auth file: %s", auth_dbmpwfile);
-	return NULL;
+            "could not open dbm (type %s) auth file: %s", dbtype, auth_dbmpwfile);
+        return NULL;
     }
-    if (dbm_fetch(f, q, &d) == APR_SUCCESS)
+    if (apr_dbm_fetch(f, q, &d) == APR_SUCCESS)
         /* sorry for the obscurity ... falls through to the 
          * if (d.dptr) {  block ...
          */
@@ -187,8 +209,8 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
 #else
     if (!(f = dbm_open(auth_dbmpwfile, O_RDONLY, 0664))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
-		    "could not open dbm auth file: %s", auth_dbmpwfile);
-	return NULL;
+            "could not open dbm auth file: %s", auth_dbmpwfile);
+        return NULL;
     }
     d = dbm_fetch(f, q);
 
@@ -215,9 +237,9 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
  * mark@telescope.org, 22Sep95
  */
 
-static char *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile)
+static char *get_dbm_grp(request_rec *r, char *user, char *auth_dbmgrpfile, char*dbtype)
 {
-    char *grp_data = get_dbm_pw(r, user, auth_dbmgrpfile);
+    char *grp_data = get_dbm_pw(r, user, auth_dbmgrpfile,dbtype);
     char *grp_colon;
     char *grp_colon2;
 
@@ -248,7 +270,7 @@ static int dbm_authenticate_basic_user(request_rec *r)
     if (!conf->auth_dbmpwfile)
 	return DECLINED;
 
-    if (!(real_pw = get_dbm_pw(r, r->user, conf->auth_dbmpwfile))) {
+    if (!(real_pw = get_dbm_pw(r, r->user, conf->auth_dbmpwfile,conf->auth_dbmtype))) {
 	if (!(conf->auth_dbmauthoritative))
 	    return DECLINED;
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -306,7 +328,7 @@ static int dbm_check_auth(request_rec *r)
 	    const char *orig_groups, *groups;
 	    char *v;
 
-	    if (!(groups = get_dbm_grp(r, user, conf->auth_dbmgrpfile))) {
+        if (!(groups = get_dbm_grp(r, user, conf->auth_dbmgrpfile,conf->auth_dbmtype))) {
 		if (!(conf->auth_dbmauthoritative))
 		    return DECLINED;
 		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
