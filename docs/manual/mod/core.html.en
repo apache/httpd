@@ -968,6 +968,12 @@ ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
+    <div class="warning"><h3>Note</h3>
+      <p>When entering a file path on non-Unix platforms, care should be taken
+      to make sure that only forward slashed are used even though the platform
+      may allow the use of back slashes. In general it is a good idea to always 
+      use forward slashes throughout the configuration files.</p>
+    </div>
 
 <h3>See also</h3>
 <ul>

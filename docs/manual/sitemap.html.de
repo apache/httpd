@@ -193,6 +193,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_mime.html">Apache-Modul mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache-Modul mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache-Modul mod_negotiation</a></li>
+<li><a href="mod/mod_nw_ssl.html">Apache-Modul mod_nw_ssl</a></li>
 <li><a href="mod/mod_proxy.html">Apache-Modul mod_proxy</a></li>
 <li><a href="mod/mod_proxy_connect.html">Apache-Modul mod_proxy_connect</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache-Modul mod_proxy_ftp</a></li>
