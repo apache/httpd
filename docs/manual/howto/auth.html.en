@@ -22,8 +22,8 @@
 
       <li><a href="#the prerequisites">The prerequisites</a></li>
 
-      <li><a href="#getting it working.">Getting it
-      working.</a></li>
+      <li><a href="#getting it working">Getting it
+      working</a></li>
 
       <li><a href="#letting more than one person in">Letting more
       than one person in</a></li>
@@ -43,6 +43,7 @@
 <td valign="top"><strong>Related Modules</strong><br>
 <br>
  <a href="../mod/mod_auth.html">mod_auth</a><br>
+ <a href="../mod/mod_access.html">mod_access</a><br>
  </td>
 <td valign="top"><strong>Related Directives</strong><br>
 <br>
@@ -106,7 +107,7 @@
     kept. This should not be terribly difficult, and I'll try to
     make this clear when we come to that point.</p>
 
-    <h2><a name="getting it working.">Getting it working.</a></h2>
+    <h2><a name="getting it working">Getting it working</a></h2>
 
     <p>Here's the basics of password protecting a directory on your
     server.</p>
@@ -310,9 +311,9 @@
     <h2><a name="more information">More information</a></h2>
 
     <p>You should also read the documentation for
-    <code><a href="../mod/mod_auth.html">mod_auth</a></code>
-    which contains
-    some more information about how this all works.</p>
+    <code><a href="../mod/mod_auth.html">mod_auth</a></code> and
+    <code><a href="../mod/mod_access.html">mod_access</a></code>
+    which contain some more information about how this all works.</p>
   </body>
 </html>
 
