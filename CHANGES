@@ -1,5 +1,10 @@
 Changes with Apache 2.0.12-dev
 
+  *) Rename mpmt_pthread to threaded.  This is more in line with the
+     fact that mpmt_pthread shouldn't be using pthreads directly, and
+     it is a smaller name that doesn't tie into anything.
+     [Ryan Bloom]
+
   *) Rename the module structures so that the exported symbol matches
      the file name, and it is easier to automate the installation
      process (generating LoadModule directives from the module filenames).

@@ -27,7 +27,7 @@ The following MPMs currently exist:
   perchild ...... Multi  Process Model with Threading via Pthreads
                   Constant number of processes, variable number of threads
                   each child process can have a different uid/gid.  
-  mpmt_pthread .. Multi  Process Model with Threading via Pthreads
+  threaded ...... Multi  Process Model with Threading via Pthreads
                   Variable number of processes, constant number of
                   threads/child (= Apache/pthread)
   spmt_os2 ...... Single Process Model with Threading on OS/2
