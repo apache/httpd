@@ -88,22 +88,16 @@ ab \- Apache HTTP server benchmarking tool
 .BI \-X " proxy [ :port ]"
 ] [
 .BI \-v " verbosity"
-]
 ] [
 .BI \-w " output HTML"
-]
 ] [
 .BI \-g " output GNUPLOT"
-]
 ] [
 .BI \-e " output CSV"
-]
 ] [
 .BI \-x " <table> attributes"
-]
 ] [
 .BI \-y " <tr> attributes"
-]
 ] [
 .BI \-z " <td> attributes"
 ]
@@ -153,7 +147,7 @@ rather than the
 .B http
 protocol. This feature is experimental and
 .B very
-rudimentary. You propably do not want to use it.
+rudimentary. You probably do not want to use it.
 .TP 12
 .B \-k 
 Enable the HTTP KeepAlive feature; that is, perform multiple requests
@@ -278,11 +272,11 @@ The HTML output is not as complete as the text output.
 .P
 Up to version 1.3d
 .B ab
-has propably reported values way to low for most measurements;
+has probably reported values way too low for most measurements;
 as a single timeout (which is usually in the order of seconds)
-will shift several thousands of milli-second responses by a
-considerable factor. This was further componded by a serious
-interger overrun which would for realistic run's (i.e. those
+will shift several thousands of millisecond responses by a
+considerable factor. This was further compounded by a serious
+integer overrun, which would for realistic runs (i.e. those
 longer than a few minutes) produce believable but totally 
 bogus results. Thanks to Sander Temme <sander@covalent.net>
 for solving this riddle.
