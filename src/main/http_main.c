@@ -294,6 +294,7 @@ int sig;
     char errstr[MAX_STRING_LEN];
     void *dirconf;
 
+    signal(SIGPIPE, SIG_IGN);		/* Block SIGPIPE */
     if (alarms_blocked) {
 	alarm_pending = 1;
 	return;

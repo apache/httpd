@@ -720,7 +720,7 @@ long send_fd(FILE *f, request_rec *r)
 	
         while(n && !r->connection->aborted) {
             w=bwrite(c->client, &buf[o], n);
-	    if (w)
+	    if (w > 0)
 	        reset_timeout(r); /* reset timeout after successfule write */
             n-=w;
             o+=w;
