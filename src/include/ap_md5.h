@@ -108,7 +108,9 @@ API_EXPORT(void) ap_MD5Init(AP_MD5_CTX * context);
 API_EXPORT(void) ap_MD5Update(AP_MD5_CTX * context, const unsigned char *input,
 			   unsigned int inputLen);
 API_EXPORT(void) ap_MD5Final(unsigned char digest[16], AP_MD5_CTX * context);
-API_EXPORT(char *) ap_MD5Encode(const char *, const char *);
+API_EXPORT(void) ap_MD5Encode(const char *password, const char *salt,
+			      char *result, size_t nbytes);
+API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash);
 
 #ifdef __cplusplus
 }

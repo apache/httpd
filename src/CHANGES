@@ -1,5 +1,10 @@
 Changes with Apache 1.3.5
 
+  *) Rework the MD5 authentication scheme to use FreeBSD's algorithm,
+     and use a private significator ('$apr1$') to mark passwords as
+     being smashed with our own algorithm.  Also abstract the password
+     checking into a new ap_validate_password() routine.  [Ken Coar]
+
   *) Win32: The filename validity checker now allows "COM" but refuses 
      access to "COM1" through "COM4". This allows filenames such
      as "com.name" to be served. [Paul Sutton] PR#3769.

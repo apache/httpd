@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/02 16:15:50 $]
+  Last modified at [$Date: 1999/02/03 16:22:25 $]
 
 Release:
 
@@ -15,7 +15,6 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * md5 passwd stuff incompatible with FreeBSD implementation.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 

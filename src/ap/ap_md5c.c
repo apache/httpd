@@ -88,6 +88,17 @@
  *
  */
 
+/*
+ * The ap_MD5Encode() routine uses much code obtained from the FreeBSD 3.0
+ * MD5 crypt() function, which is licenced as follows:
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <phk@login.dknet.dk> wrote this file.  As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
+ * ----------------------------------------------------------------------------
+ */
+
 #include <string.h>
 
 #include "ap_config.h"
@@ -381,7 +392,7 @@ static void Encode(unsigned char *output, const UINT4 *input, unsigned int len)
 }
 
 /* Decodes input (unsigned char) into output (UINT4). Assumes len is
-   a multiple of 4.
+ * a multiple of 4.
  */
 static void Decode(UINT4 *output, const unsigned char *input, unsigned int len)
 {
@@ -392,46 +403,209 @@ static void Decode(UINT4 *output, const unsigned char *input, unsigned int len)
 	    (((UINT4) input[j + 2]) << 16) | (((UINT4) input[j + 3]) << 24);
 }
 
-API_EXPORT(char *) ap_MD5Encode(const char *password, const char * salt) {
-/* salt has size 2, md5 hash size 22, plus 1 for trailing NUL, plus 4 for
-   '$' separators between md5 distinguisher, salt, and password.*/
+/*
+ * Define the Magic String prefix that identifies a password as being
+ * hashed using our algorithm.
+ */
+static const char *apr1_id = "$apr1$";
 
-    static unsigned char ret[2+22+1+4];
-    AP_MD5_CTX my_md5;
-    unsigned char hash[16], *cp;
-    register int i;
-    static const char *alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
- 
+/*
+ * The following MD5 password encryption code was largely borrowed from
+ * the FreeBSD 3.0 /usr/src/lib/libcrypt/crypt.c file, which is
+ * licenced as stated at the top of this file.
+ */
+
+static void to64 __P((char *, unsigned long, int));
+
+static void to64(char *s, unsigned long v, int n)
+{
+static void to64 __P((char *, unsigned long, int));
+    static unsigned char itoa64[] =         /* 0 ... 63 => ASCII - 64 */
+	"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    while (--n >= 0) {
+	*s++ = itoa64[v&0x3f];
+	v >>= 6;
+    }
+}
+
+API_EXPORT(void) ap_MD5Encode(const char *pw, const char *salt,
+			      char *result, size_t nbytes)
+{
     /*
-     * Take the MD5 hash of the string argument.
-    */
- 
-    sprintf(ret, "$1$%s$", salt); 
- 
-    /* If the salt is shorter than 2, pad with random characters */
-    for (cp = &ret[strlen(ret)]; cp < &ret[2]; ++cp) {
-        *cp = alphabet[rand() & 0x3F];
+     * Minimum size is 8 bytes for salt, plus 1 for the trailing NUL,
+     * plus 4 for the '$' separators, plus the password hash itself.
+     * Let's leave a goodly amount of leeway.
+     */
+
+    char passwd[120], *p;
+    const char *sp, *ep;
+    unsigned char final[16];
+    int sl, pl, i;
+    AP_MD5_CTX ctx, ctx1;
+    unsigned long l;
+
+    /* 
+     * Refine the salt first.  It's possible we were given an already-hashed
+     * string as the salt argument, so extract the actual salt value from it
+     * if so.  Otherwise just use the string up to the first '$' as the salt.
+     */
+    sp = salt;
+
+    /*
+     * If it starts with the magic string, then skip that.
+     */
+    if (!strncmp(sp, apr1_id, strlen(apr1_id))) {
+	sp += strlen(apr1_id);
     }
-    ap_MD5Init(&my_md5);
-    ap_MD5Update(&my_md5, salt, 2);
-    ap_MD5Update(&my_md5, password, strlen(password));
-    ap_MD5Final(hash, &my_md5);
- 
-    /* Take 3*8 bits (3 bytes) and store them as 4 base64 bytes (of 6 bit each) */
-    /* Copy first 15 bytes in loop (producing 20 result bytes) */
-    for (i = 0, cp = &ret[6]; i < 15; i += 3, cp += 4) {
-        long l = hash[i] | (hash[i+1] << 8) | (hash[i+2] << 16);
- 
-        cp[0] = alphabet[l&0x3F];
-        cp[1] = alphabet[(l>>6)&0x3F];
-        cp[2] = alphabet[(l>>12)&0x3F];
-        cp[3] = alphabet[(l>>18)&0x3F];
+
+    /*
+     * It stops at the first '$' or 8 chars, whichever comes first
+     */
+    for (ep = sp; (*ep != '\0') && (*ep != '$') && (ep < (sp + 8)); ep++) {
+	continue;
     }
-    cp[0] = alphabet[hash[i]&0x3F]; /* Use 16th byte as 21st result byte */
-    cp[1] = alphabet[(hash[i]>>6)&0x3F]; /* Last 2 bits of 16th byte are 22nd result byte */
-    cp[2] = '\0';
- 
-    /*ap_assert(&cp[2] == &ret[(sizeof ret)-1]);*/
- 
-    return (char *)ret;
+
+    /*
+     * Get the length of the true salt
+     */
+    sl = ep - sp;
+
+    /*
+     * 'Time to make the doughnuts..'
+     */
+    ap_MD5Init(&ctx);
+
+    /*
+     * The password first, since that is what is most unknown
+     */
+    ap_MD5Update(&ctx, pw, strlen(pw));
+
+    /*
+     * Then our magic string
+     */
+    ap_MD5Update(&ctx, apr1_id, strlen(apr1_id));
+
+    /*
+     * Then the raw salt
+     */
+    ap_MD5Update(&ctx, sp, sl);
+
+    /*
+     * Then just as many characters of the MD5(pw, salt, pw)
+     */
+    ap_MD5Init(&ctx1);
+    ap_MD5Update(&ctx1, pw, strlen(pw));
+    ap_MD5Update(&ctx1, sp, sl);
+    ap_MD5Update(&ctx1, pw, strlen(pw));
+    ap_MD5Final(final, &ctx1);
+    for(pl = strlen(pw); pl > 0; pl -= 16) {
+	ap_MD5Update(&ctx, final, (pl > 16) ? 16 : pl);
+    }
+
+    /*
+     * Don't leave anything around in vm they could use.
+     */
+    memset(final, 0, sizeof(final));
+
+    /*
+     * Then something really weird...
+     */
+    for (i = strlen(pw); i != 0; i >>= 1) {
+	if (i & 1) {
+	    ap_MD5Update(&ctx, final, 1);
+	}
+	else {
+	    ap_MD5Update(&ctx, pw, 1);
+	}
+    }
+
+    /*
+     * Now make the output string.  We know our limitations, so we
+     * can use the string routines without bounds checking.
+     */
+    strcpy(passwd, apr1_id);
+    strncat(passwd, sp, sl);
+    strcat(passwd, "$");
+
+    ap_MD5Final(final, &ctx);
+
+    /*
+     * And now, just to make sure things don't run too fast..
+     * On a 60 Mhz Pentium this takes 34 msec, so you would
+     * need 30 seconds to build a 1000 entry dictionary...
+     */
+    for (i = 0; i < 1000; i++) {
+	ap_MD5Init(&ctx1);
+	if (i & 1) {
+	    ap_MD5Update(&ctx1, pw, strlen(pw));
+	}
+	else {
+	    ap_MD5Update(&ctx1, final, 16);
+	}
+	if (i % 3) {
+	    ap_MD5Update(&ctx1, sp, sl);
+	}
+
+	if (i % 7) {
+	    ap_MD5Update(&ctx1, pw, strlen(pw));
+	}
+
+	if (i & 1) {
+	    ap_MD5Update(&ctx1, final, 16);
+	}
+	else {
+	    ap_MD5Update(&ctx1, pw, strlen(pw));
+	}
+	ap_MD5Final(final,&ctx1);
+    }
+
+    p = passwd + strlen(passwd);
+
+    l = (final[ 0]<<16) | (final[ 6]<<8) | final[12]; to64(p, l, 4); p += 4;
+    l = (final[ 1]<<16) | (final[ 7]<<8) | final[13]; to64(p, l, 4); p += 4;
+    l = (final[ 2]<<16) | (final[ 8]<<8) | final[14]; to64(p, l, 4); p += 4;
+    l = (final[ 3]<<16) | (final[ 9]<<8) | final[15]; to64(p, l, 4); p += 4;
+    l = (final[ 4]<<16) | (final[10]<<8) | final[ 5]; to64(p, l, 4); p += 4;
+    l =                    final[11]                ; to64(p, l, 2); p += 2;
+    *p = '\0';
+
+    /*
+     * Don't leave anything around in vm they could use.
+     */
+    memset(final, 0, sizeof(final));
+
+    ap_cpystrn(result, passwd, nbytes - 1);
+}
+
+/*
+ * Validate a plaintext password against a smashed one.  Use either
+ * crypt() (if available) or ap_MD5Encode(), depending upon the format
+ * of the smashed input password.  Return NULL if they match, or
+ * an explanatory text string if they don't.
+ */
+
+API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
+{
+    char sample[120];
+    char *crypt_pw;
+
+    if (!strncmp(hash, apr1_id, strlen(apr1_id))) {
+	/*
+	 * The hash was created using our custom algorithm.
+	 */
+	ap_MD5Encode(passwd, hash, sample, sizeof(sample));
+    }
+    else {
+	/*
+	 * It's not our algorithm, so feed it to crypt() if possible.
+	 */
+#ifdef WIN32
+	return "crypt() unavailable on Win32, cannot validate password";
+#else
+	crypt_pw = crypt(passwd, hash);
+	ap_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
+    }
+    return (strcmp(sample, hash) == 0) ? NULL : "password mismatch";
+#endif
 }

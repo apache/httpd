@@ -352,6 +352,7 @@ ap_user_name
 ap_util_init
 ap_util_uri_init
 ap_uudecode
+ap_validate_password
 ap_vbprintf
 ap_vformatter
 ap_vsnprintf

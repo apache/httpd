@@ -326,4 +326,5 @@ EXPORTS
 	ap_os_is_filename_valid   @319
 	ap_find_opaque_token   @320
 	ap_MD5Encode   @321
+	ap_validate_password   @322
 

@@ -13,6 +13,7 @@
 #include "ap_config.h"
 #include <sys/types.h>
 #include <signal.h>
+#include "ap.h"
 #include "ap_md5.h"
 
 #ifdef WIN32
@@ -159,7 +160,7 @@ static char *getpass(const char *prompt)
 
 static void add_password(char *user, FILE *f, int use_md5)
 {
-    char *pw, *cpw, salt[3];
+    char *pw, cpw[120], salt[9];
 
     pw = strd((char *) getpass("New password:"));
     if (strcmp(pw, (char *) getpass("Re-type new password:"))) {
@@ -170,14 +171,14 @@ static void add_password(char *user, FILE *f, int use_md5)
 	exit(1);
     }
     (void) srand((int) time((time_t *) NULL));
-    to64(&salt[0], rand(), 2);
-    salt[2] = '\0';
+    to64(&salt[0], rand(), 8);
+    salt[8] = '\0';
 
     if (use_md5) {
-        cpw = (char *)ap_MD5Encode(pw, salt);
+        ap_MD5Encode(pw, salt, cpw, sizeof(cpw));
     }
     else {
-	cpw = (char *)crypt(pw, salt);
+	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
     }
     free(pw);
     fprintf(f, "%s:%s\n", user, cpw);
