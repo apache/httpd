@@ -4,11 +4,11 @@
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
 
-#if defined(__GNUC__) && !defined(INLINE)
+#if !defined(INLINE) && defined(USE_GNU_INLINE)
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
  */
-#define INLINE extern __inline__
+#define INLINE extern ap_inline
 #include "os-inline.c"
 #endif
 

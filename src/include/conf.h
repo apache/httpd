@@ -657,13 +657,15 @@ typedef int rlim_t;
 
 /* So that we can use inline on some critical functions, and use
  * GNUC attributes (such as to get -Wall warnings for printf-like
- * functions).
+ * functions).  Only do this in gcc 2.7 or later ... it may work
+ * on earlier stuff, but why chance it.
  */
-#if !defined(__GNUC__)
+#if !defined(__GNUC__) || __GNUC__ < 2 || __GNUC_MINOR__ < 7
 #define ap_inline
 #define __attribute__(__x)
 #else
 #define ap_inline __inline__
+#define USE_GNU_INLINE
 #endif
 
 /* Do we have sys/resource.h; assume that BSD does. */
