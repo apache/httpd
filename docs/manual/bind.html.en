@@ -2,7 +2,7 @@
 <title>Setting which addresses and ports Apache uses</title>
 </head><body>
 
-<img src="../images/apache_sub.gif" alt="">
+<!--#include virtual="header.html" -->
 <h1>Setting which addresses and ports Apache uses</h1>
 
 <hr>
@@ -94,10 +94,7 @@ and
 <a href="core.html#virtualhost">&lt;VirtualHost&gt; section</a>.
 </ul>
 
-<hr>
-<A HREF="../"><IMG SRC="../images/apache_home.gif" ALT="Home"></A>
-<A HREF="./"><IMG SRC="../images/apache_index.gif" ALT="Index"></A>
-
+<!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
 
