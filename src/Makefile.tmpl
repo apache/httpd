@@ -26,7 +26,7 @@ all: @@Configuration@@ httpd
 	@false
 
 httpd: $(REGLIB) $(OBJS)
-	$(CC) $(LFLAGS)  -o httpd $(OBJS) $(REGLIB) $(LIBS)
+	$(CC) $(LFLAGS)  -o httpd $(OBJS) $(LIBS) $(REGLIB)
 
 regex/libregex.a:
 	(cd regex; $(MAKE) lib CC=$(CC) AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)')
