@@ -166,7 +166,7 @@ char server_confname[MAX_STRING_LEN];
 /* *Non*-shared http_main globals... */
 
 server_rec *server_conf;
-JMP_BUF __declspec( thread ) jmpbuffer;
+JMP_BUF APACHE_TLS jmpbuffer;
 int sd;
 static fd_set listenfds;
 static int listenmaxfd;
@@ -351,11 +351,11 @@ void usage(char *bin)
  * one timeout in progress at a time...
  */
 
-static  __declspec( thread ) conn_rec * current_conn;
-static __declspec( thread ) request_rec *timeout_req;
-static __declspec( thread ) char *timeout_name = NULL;
-static __declspec( thread ) int alarms_blocked = 0;
-static __declspec( thread ) int alarm_pending = 0;
+static APACHE_TLS conn_rec * current_conn;
+static APACHE_TLS request_rec *timeout_req;
+static APACHE_TLS char *timeout_name = NULL;
+static APACHE_TLS int alarms_blocked = 0;
+static APACHE_TLS int alarm_pending = 0;
 
 #ifndef NO_USE_SIGACTION
 /*
@@ -457,9 +457,9 @@ void unblock_alarms() {
 }
 
 
-static __declspec( thread ) void (*alarm_fn)(int) = NULL;
+static APACHE_TLS void (*alarm_fn)(int) = NULL;
 #ifdef WIN32
-static __declspec( thread ) unsigned int alarm_expiry_time = 0;
+static APACHE_TLS unsigned int alarm_expiry_time = 0;
 #endif /* WIN32 */
 
 unsigned int

@@ -1,25 +1,21 @@
 #ifndef MULTITHREAD_H
 #define MULTITHREAD_H
 
-#include "conf.h"
-
 #define MULTI_OK (0)
 #define MULTI_TIMEOUT (1)
 #define MULTI_ERR (2)
-
-/*
- * Ambarish: Need to do the right stuff on multi-threaded unix
- * I believe this is terribly ugly
- */
-#ifndef MULTITHREAD
-#define __declspec( thread )
-#endif /* ndef MULTITHREAD */
 
 typedef void mutex;
 typedef void semaphore;
 typedef void thread;
 typedef void event;
 
+/*
+ * Ambarish: Need to do the right stuff on multi-threaded unix
+ * I believe this is terribly ugly
+ */
+#ifdef MULTITHREAD
+#define APACHE_TLS __declspec( thread )
 
 thread *create_thread(void (thread_fn)(void *thread_arg), void *thread_arg);
 int kill_thread(thread *thread_id);
@@ -46,6 +42,17 @@ int acquire_event(event *event_id);
 int set_event(event *event_id);
 int reset_event(event *event_id);
 void destroy_event(event *event_id);
+
+#else /* ndef MULTITHREAD */
+
+#define APACHE_TLS
+/* Only define the ones actually used, for now */
+#define create_mutex(name)	NULL
+#define acquire_mutex(mutex_id)	MULTI_OK
+#define release_mutex(mutex_id)	MULTI_OK
+
+
+#endif /* ndef MULTITHREAD */
 
 #endif /* ndef MULTITHREAD_H */
 
