@@ -3245,7 +3245,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
         apr_brigade_destroy(b);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, c->base_server,
+            ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                "core_output_filter: writing data to the network");
             if (more)
                 apr_brigade_destroy(more);
