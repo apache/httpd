@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.73 $ ($Date: 1997/06/21 18:56:36 $)
+  $Revision: 1.74 $ ($Date: 1997/06/26 12:17:20 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1165,7 +1165,7 @@
   </P>
   <P>
   <DL>
-   <DD><CODE>if ($0 =~ m:/*nph-:) {
+   <DD><CODE>if ($0 =~ m:^(.*/)*nph-[^/]*$:) {
     <BR>
     &nbsp;&nbsp;&nbsp;&nbsp;
     $HTTP_headers&nbsp;=&nbsp;
@@ -1176,9 +1176,9 @@
     &quot;Connection:&nbsp;close\015\012&quot;;
     <BR>
     &nbsp;&nbsp;&nbsp;&nbsp;
-    printf&nbsp;($HTTP_headers);
+    print&nbsp;$HTTP_headers;
     <BR>
-    };</CODE>
+    }</CODE>
    </DD>
   </DL>
   </P>
