@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/07/24 00:09:34 $]
+Last modified at [$Date: 2002/07/24 09:43:59 $]
 
 Release:
 
@@ -71,6 +71,7 @@ CURRENT VOTES:
       b) tailored httpd-std.conf should be copied by install to
          sysconfdir/examples
          +1:   trawick
+         -0:   striker
 
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
@@ -78,7 +79,7 @@ CURRENT VOTES:
 
       d) Installing a set of default config files when upgrading a server
          doesn't make ANY sense at all.
-	 +1:   rbb, 
+         +1:   rbb, striker
            ianh - medium/big sites don't use 'standard config' anyway, as it
                   usually needs major customizations
 
@@ -113,7 +114,7 @@ CURRENT VOTES:
                                   something useful?)
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
-      +1:   Justin, Ian, Cliff, BillS
+      +1:   Justin, Ian, Cliff, BillS, striker
       +0:   BrianP, Aaron (mutex contention is looking better with the
             latest code, let's continue tuning and testing)
       -0:   Lars
@@ -335,7 +336,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       and in-your-face.)  DocumentRoot unset would be accepted [and would
       not permit content to be served, only virtual resources such as
       server-info or server-status.
-        This proposed change would _not_ depricate Alias.
+      This proposed change would _not_ depricate Alias.
+        striker: See the thread starting with Message-ID:
+          JLEGKKNELMHCJPNMOKHOGEEJFBAA.striker@apache.org.
+
 
     * Win32: Rotatelogs sometimes is not terminated when Apache
       goes down hard.  FirstBill was looking at possibly tracking the 
