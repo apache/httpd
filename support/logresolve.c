@@ -300,12 +300,12 @@ int main (int argc, char *argv[])
     char *bar, hoststring[MAXDNAME + 1], line[MAXLINE], *statfile;
     int i, check;
 
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
     /*  If we apr'ify this code, apr_pool_create/apr_pool_destroy
      *  should perform the WSAStartup/WSACleanup for us. 
      */
     WSADATA wsaData;
-    WSAStartup(0x101, &wsaData);
+    WSAStartup(MAKEWORD(2, 0), &wsaData);
 #endif
 
     check = 0;
@@ -362,7 +362,7 @@ int main (int argc, char *argv[])
 	    puts(hoststring);
     }
 
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
      WSACleanup();
 #endif
 

@@ -93,7 +93,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= logreslv
+NLM_NAME		= logres
 
 #
 # This is used by the link '-desc ' directive.
@@ -105,7 +105,7 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) Logresolve Utility for NetWare
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= logreslv
+NLM_THREAD_NAME	= logres
 
 #
 # This is used by the '-screenname' directive.  If left blank,
@@ -122,7 +122,7 @@ NLM_VERSION		=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	= 8192
+NLM_STACK_SIZE	= 65536
 
 
 #
