@@ -61,6 +61,7 @@
 #include <stdlib.h>
 #include <direct.h>
 
+#define  CORE_PRIVATE 
 #include "httpd.h"
 #include "http_conf_globals.h"
 #include "http_log.h"
@@ -78,6 +79,7 @@ static struct
     int exit_status;
     SERVICE_STATUS ssStatus;
     FILE *logFile;
+    char *service_dir;
 } globdat;
 
 static void WINAPI service_main_fn(DWORD, LPTSTR *);
@@ -97,6 +99,7 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
     globdat.main_fn = main_fn;
     globdat.stop_event = CreateEvent(NULL, 0, 0, "apache-signal");
     globdat.connected = 1;
+    globdat.service_dir = argv[0];
 
     if(!StartServiceCtrlDispatcher(dispatchTable))
     {
@@ -122,7 +125,23 @@ void service_cd()
 
 void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
 {
+    int i, new_argc;
+    char **new, *server_root, *tmp;
+    char *server_confname = SERVER_CONFIG_FILE;
+    ap_array_header_t *cmdtbl;
+    ap_context_t *pwincmd;
+
+    ap_create_context(&pwincmd, NULL);
+    if (pwincmd == NULL) {
+        exit(0);
+    }
+
     ap_server_argv0 = globdat.name = argv[0];
+    cmdtbl = ap_make_array(pwincmd, 1, sizeof(char *));
+
+    server_root = ap_pstrdup(pwincmd, globdat.service_dir); 
+    tmp = strrchr(server_root, '\\');
+    *tmp = '\0';
 
     if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler( globdat.name, service_ctrl)))
     {
@@ -137,9 +156,28 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
         3000);                 // wait hint
 
     service_cd();
-//    if( service_init() ) 
-        /* Arguments are ok except for \! */
-        globdat.exit_status = (*globdat.main_fn)( argc, argv );
+
+    /* Fetch server_conf from the registry 
+     *  Rebuild argv and argc adding the -d server_root and -f server_conf then 
+     *  call apache_main
+     */
+    ap_registry_get_service_conf(pwincmd, &server_confname, argv[0]);
+    for (i = 0; i < argc ; i++) {
+        new = (char **) ap_push_array(cmdtbl);
+        *new = argv[i];
+    }
+    /* Add server_confname to the argument list */
+    new = (char **) ap_push_array(cmdtbl);
+    *new = "-f";
+    new = (char **) ap_push_array(cmdtbl);
+    *new = server_confname;
+    new = (char **) ap_push_array(cmdtbl);
+    *new = "-d";
+    new = (char **) ap_push_array(cmdtbl);
+    *new = server_root;
+    new_argc = argc + 4;
+
+    globdat.exit_status = (*globdat.main_fn)( new_argc, (char**) cmdtbl->elts );
     
     ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
 
