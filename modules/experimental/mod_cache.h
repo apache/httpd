@@ -279,7 +279,7 @@ CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, cons
 /* Create a new table consisting of those elements from a request_rec's
  * headers_out that are allowed to be stored in a cache
  */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(request_rec *r);
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool, apr_table_t *t);
 
 /**
  * cache_storage.c

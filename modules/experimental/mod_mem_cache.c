@@ -86,10 +86,12 @@ typedef struct {
 typedef struct mem_cache_object {
     cache_type_e type;
     apr_ssize_t num_header_out;
+    apr_ssize_t num_err_header_out;
     apr_ssize_t num_subprocess_env;
     apr_ssize_t num_notes;
     apr_ssize_t num_req_hdrs;
     cache_header_tbl_t *header_out;
+    cache_header_tbl_t *err_header_out;
     cache_header_tbl_t *subprocess_env;
     cache_header_tbl_t *notes;
     cache_header_tbl_t *req_hdrs; /* for Vary negotiation */
@@ -302,6 +304,11 @@ static void cleanup_cache_object(cache_object_t *obj)
             if (mobj->header_out[0].hdr) 
                 free(mobj->header_out[0].hdr);
             free(mobj->header_out);
+        }
+        if (mobj->err_header_out) {
+            if (mobj->err_header_out[0].hdr) 
+                free(mobj->err_header_out[0].hdr);
+            free(mobj->err_header_out);
         }
         if (mobj->subprocess_env) {
             if (mobj->subprocess_env[0].hdr) 
@@ -782,6 +789,7 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
  
     h->req_hdrs = apr_table_make(r->pool, mobj->num_req_hdrs);
     r->headers_out = apr_table_make(r->pool, mobj->num_header_out);
+    r->err_headers_out = apr_table_make(r->pool, mobj->num_err_header_out);
     r->subprocess_env = apr_table_make(r->pool, mobj->num_subprocess_env);
     r->notes = apr_table_make(r->pool, mobj->num_notes);
 
@@ -791,6 +799,9 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     rc = unserialize_table( mobj->header_out,
                             mobj->num_header_out, 
                             r->headers_out);
+    rc = unserialize_table( mobj->err_header_out,
+                            mobj->num_err_header_out, 
+                            r->err_headers_out);
     rc = unserialize_table( mobj->subprocess_env, 
                             mobj->num_subprocess_env, 
                             r->subprocess_env);
@@ -852,7 +863,13 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
     /* Precompute how much storage we need to hold the headers */
     rc = serialize_table(&mobj->header_out, 
                          &mobj->num_header_out, 
-                         ap_cache_cacheable_hdrs_out(r));   
+                         ap_cache_cacheable_hdrs_out(r->pool, r->headers_out));   
+    if (rc != APR_SUCCESS) {
+        return rc;
+    }
+    rc = serialize_table(&mobj->err_header_out, 
+                         &mobj->num_err_header_out, 
+                         ap_cache_cacheable_hdrs_out(r->pool, r->err_headers_out));   
     if (rc != APR_SUCCESS) {
         return rc;
     }
@@ -891,6 +908,22 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
             return APR_ENOMEM;
         }
         memcpy(obj->info.content_type, info->content_type, len);
+    }
+    if (info->etag) {
+        apr_size_t len = strlen(info->etag) + 1;
+        obj->info.etag = (char*) malloc(len);
+        if (!obj->info.etag) {
+            return APR_ENOMEM;
+        }
+        memcpy(obj->info.etag, info->etag, len);
+    }
+    if (info->lastmods) {
+        apr_size_t len = strlen(info->lastmods) + 1;
+        obj->info.lastmods = (char*) malloc(len);
+        if (!obj->info.lastmods) {
+            return APR_ENOMEM;
+        }
+        memcpy(obj->info.lastmods, info->lastmods, len);
     }
     if ( info->filename) {
         apr_size_t len = strlen(info->filename) + 1;

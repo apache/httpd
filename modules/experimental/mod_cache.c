@@ -250,7 +250,9 @@ static int cache_url_handler(request_rec *r, int lookup)
             return OK;
         }
         else {
-	    r->err_headers_out = apr_table_make(r->pool, 3);
+            if (!r->err_headers_out) {
+                r->err_headers_out = apr_table_make(r->pool, 3);
+            }
             /* stale data available */
             if (lookup) {
                 return DECLINED;
@@ -272,6 +274,16 @@ static int cache_url_handler(request_rec *r, int lookup)
             }
             /* else if non-conditional request */
             else {
+                /* Temporarily hack this to work the way it had been. Its broken,
+                 * but its broken the way it was before. I'm working on figuring
+                 * out why the filter add in the conditional filter doesn't work. pjr
+                 *
+                 * info = &(cache->handle->cache_obj->info);
+                 *
+                 * Uncomment the above when the code in cache_conditional_filter_handle
+                 * is properly fixed...  pjr
+                 */
+                
                 /* fudge response into a conditional */
                 if (info && info->etag) {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, 
@@ -415,6 +427,7 @@ static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
 static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     int rv;
+    int date_in_errhdr = 0;
     request_rec *r = f->r;
     cache_request_rec *cache;
     cache_server_conf *conf;
@@ -478,7 +491,10 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /* read expiry date; if a bad date, then leave it so the client can
      * read it 
      */
-    exps = apr_table_get(r->headers_out, "Expires");
+    exps = apr_table_get(r->err_headers_out, "Expires");
+    if (exps == NULL) {
+        exps = apr_table_get(r->headers_out, "Expires");
+    }
     if (exps != NULL) {
         if (APR_DATE_BAD == (exp = apr_date_parse_http(exps))) {
             exps = NULL;
@@ -489,7 +505,10 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     /* read the last-modified date; if the date is bad, then delete it */
-    lastmods = apr_table_get(r->headers_out, "Last-Modified");
+    lastmods = apr_table_get(r->err_headers_out, "Last-Modified");
+    if (lastmods ==NULL) {
+        lastmods = apr_table_get(r->headers_out, "Last-Modified");
+    }
     if (lastmods != NULL) {
         if (APR_DATE_BAD == (lastmod = apr_date_parse_http(lastmods))) {
             lastmods = NULL;
@@ -501,8 +520,14 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config, &cache_module);
     /* read the etag and cache-control from the entity */
-    etag = apr_table_get(r->headers_out, "Etag");
-    cc_out = apr_table_get(r->headers_out, "Cache-Control");
+    etag = apr_table_get(r->err_headers_out, "Etag");
+    if (etag == NULL) {
+        etag = apr_table_get(r->headers_out, "Etag");
+    }
+    cc_out = apr_table_get(r->err_headers_out, "Cache-Control");
+    if (cc_out == NULL) {
+        cc_out = apr_table_get(r->headers_out, "Cache-Control");
+    }
 
     /*
      * what responses should we not cache?
@@ -603,7 +628,10 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* Set the content length if known. 
      */
-    cl = apr_table_get(r->headers_out, "Content-Length");
+    cl = apr_table_get(r->err_headers_out, "Content-Length");
+    if (cl == NULL) {
+        cl = apr_table_get(r->headers_out, "Content-Length");
+    }
     if (cl) {
         size = apr_atoi64(cl);
     }
@@ -652,7 +680,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
     /* pre-existing cache handle and 304, make entity fresh */
     else if (r->status == HTTP_NOT_MODIFIED) {
-        /* update headers */
+        /* update headers: TODO */
 
         /* remove this filter ??? */
 
@@ -689,7 +717,13 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
      */
 
     /* Read the date. Generate one if one is not supplied */
-    dates = apr_table_get(r->headers_out, "Date");
+    dates = apr_table_get(r->err_headers_out, "Date");
+    if (dates != NULL) {
+        date_in_errhdr = 1;
+    }
+    else {
+        dates = apr_table_get(r->headers_out, "Date");
+    }
     if (dates != NULL) {
         info->date = apr_date_parse_http(dates);
     }
@@ -700,10 +734,13 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     now = apr_time_now();
     if (info->date == APR_DATE_BAD) {  /* No, or bad date */
         char *dates;
-        /* no date header! */
+        /* no date header (or bad header)! */
         /* add one; N.B. use the time _now_ rather than when we were checking
          * the cache 
          */
+        if (date_in_errhdr == 1) {
+            apr_table_unset(r->err_headers_out, "Date");
+        }
         date = now;
         dates = apr_pcalloc(r->pool, MAX_STRING_LEN);
         apr_rfc822_date(dates, now);
@@ -736,9 +773,9 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* if no expiry date then
      *   if lastmod
-     *      expiry date = now + min((date - lastmod) * factor, maxexpire)
+     *      expiry date = date + min((date - lastmod) * factor, maxexpire)
      *   else
-     *      expire date = now + defaultexpire
+     *      expire date = date + defaultexpire
      */
     if (exp == APR_DATE_BAD) {
         /* if lastmod == date then you get 0*conf->factor which results in
@@ -747,18 +784,21 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         if ((lastmod != APR_DATE_BAD) && (lastmod < date)) {
             apr_time_t x = (apr_time_t) ((date - lastmod) * conf->factor);
+
             if (x > conf->maxex) {
                 x = conf->maxex;
             }
-            exp = now + x;
+            exp = date + x;
         }
         else {
-            exp = now + conf->defex;
+            exp = date + conf->defex;
         }
     }
     info->expire = exp;
 
     info->content_type = apr_pstrdup(r->pool, r->content_type);
+    info->etag = apr_pstrdup(r->pool, etag);
+    info->lastmods = apr_pstrdup(r->pool, lastmods);
     info->filename = apr_pstrdup(r->pool, r->filename );
 
     /*

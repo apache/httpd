@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/10 08:50:10 $]
+Last modified at [$Date: 2003/12/10 16:48:45 $]
 
 Release:
 
@@ -106,19 +106,6 @@ PATCHES TO BACKPORT FROM 2.1
     * Better descriptions for the configure --help output for some modules
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/config9.m4.diff?r1=1.17&r2=1.18
       +1: kess, trawick, nd, erikabele
-
-    * Modifies the cache code to be header-location agnostic. Also
-      fixes a number of other cache code bugs related to PR 15852
-      (an RFC 2616 violation).
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/cache_storage.c.diff?r1=1.28&r2=1.29
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/cache_storage.c.diff?r1=1.29&r2=1.30
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/cache_util.c.diff?r1=1.27&r2=1.28
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.c.diff?r1=1.74&r2=1.75
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.c.diff?r1=1.75&r2=1.76
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.h.diff?r1=1.39&r2=1.40
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_disk_cache.c.diff?r1=1.46&r2=1.47
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_mem_cache.c.diff?r1=1.93&r2=1.94
-      +1: rederpj, fielding, trawick
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.

@@ -1,5 +1,11 @@
 Changes with Apache 2.0.49
 
+  *) Modified the cache code to be header-location agnostic. Also
+     fixed a number of other cache code bugs related to PR 15852.
+     Includes a patch submitted by Sushma Rai <rsushma novell.com>.
+     This fixes mod_mem_cache but not mod_disk_cache yet so I'm not
+     closing the PR since that is what they are using. [Paul J. Reder]
+
   *) complain via error_log when mod_include's INCLUDES filter is
      enabled, but the relevant Options flag allowing the filter to run
      for the specific resource wasn't set, so that the filter won't
