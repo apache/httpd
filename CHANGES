@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Added FreeBSD directory layout. PR 21100.
+     [Sander Holthaus <info@orangexl.com>, André Malo]
+
   *) Correct the code in ap_check_cache_feshness to check max_age,
      smax_age, and expires correctly. Patch submitted by Thomas
      Castelle [Paul J. Reder]
