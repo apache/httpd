@@ -642,6 +642,65 @@ Location</a></seealso>
     <example>
       EnableMMAP off
     </example>
+
+    <p>For NFS mounted files, this feature may be disabled explicitly for
+    the offending files by specifying:</p>
+
+    <example>
+      &lt;Directory "/path-to-nfs-files"&gt;
+            EnableMMAP off
+      &lt;/Directory&gt;
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>EnableSendfile</name>
+<description>Use the kernel sendfile support to deliver files to the client</description>
+<syntax>EnableSendfile on|off</syntax>
+<default>EnableSendfile on</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>This directive controls whether the httpd may use the sendfile
+    support from the kernel to transmit file contents to the client.
+    By default, when the handling of a request requires no access
+    to the data within a file -- for example, when delivering a
+    static file -- Apache uses sendfile to deliver the file contents
+    without ever reading the file if the OS supports it.</p>
+
+    <p>This sendfile mechanism avoids seperate read and send operations,
+    and buffer allocations.  But on some platforms or within some
+    filesystems, it is better to disable this feature to avoid 
+    operational problems:</p>
+
+    <ul>
+    <li>Some platforms may have broken sendfile support that the build
+    system did not detect, especially if the binaries were built on
+    another box and moved to such a machine with broken sendfile support.</li>
+    <li>With an NFS-mounted <directive module="core">DocumentRoot</directive>,
+    the kernel may be unable to serve the network file through 
+    it's own cache.</li>
+    </ul>
+
+    <p>For server configurations that are vulnerable to these problems,
+    you should disable memory-mapping of delivered files by specifying:</p>
+
+    <example>
+      EnableSendfile off
+    </example>
+
+    <p>For NFS mounted files, this feature may be disabled explicitly for
+    the offending files by specifying:</p>
+
+    <example>
+      &lt;Directory "/path-to-nfs-files"&gt;
+            EnableSendfile off
+      &lt;/Directory&gt;
+    </example>
 </usage>
 </directivesynopsis>
 
