@@ -182,6 +182,7 @@ MaxRequestsPerChild 0
 # LoadModule info_module modules/info.nlm
 # LoadModule usertrack_module modules/usrtrack.nlm
 # LoadModule tls_module modules/mod_tls.nlm
+# LoadModule vhost_alias_module modules/vhost.nlm
 
 #
 # ExtendedStatus controls whether Apache will generate "full" status
