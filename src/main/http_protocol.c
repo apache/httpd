@@ -1348,6 +1348,9 @@ int setup_client_block (request_rec *r, int read_policy)
 
 int should_client_block (request_rec *r)
 {
+    if (is_HTTP_ERROR(r->status))
+        return 0;
+
     if (!r->read_chunked && (r->remaining <= 0))
         return 0;
 
