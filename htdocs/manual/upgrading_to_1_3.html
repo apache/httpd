@@ -131,6 +131,18 @@ document, or in the <CODE>src/CHANGES</CODE> file.
 
   <LI><CODE>HostnameLookups</CODE> defaults to Off.
 
+  <LI><STRONG><SAMP>REMOTE_HOST</SAMP> CGI variable changed.</STRONG>
+    In Apache 1.2 and earlier, the <SAMP>REMOTE_HOST</SAMP> environment
+    variable made available to CGI scripts was set to either the
+    full DNS name of the client, or else to the client's IP address
+    if the name was not known.  This behaviour differed from that
+    specified by the CGI specification, which defines this variable as being
+    NULL if the name isn't known.  In Apache 1.3, we have made this correction.
+    <SAMP>REMOTE_ADDR</SAMP> always contains the client's IP address,
+    but <SAMP>REMOTE_HOST</SAMP> is only defined when the server has
+    been able to determine the client's DNS name.
+  </LI>
+
   <LI>The undocumented
     <A HREF="mod/mod_access.html"><CODE>mod_access</CODE></A>
     syntax "allow user-agents" was removed.  The replacement is the
