@@ -1774,6 +1774,9 @@ API_EXPORT(long) send_fb_length(BUFF *fb, request_rec *r, long length)
  * entire transaction to complete.  Essentially this should be small enough
  * so that in one Timeout period, your slowest clients should be reasonably
  * able to receive this many bytes.
+ *
+ * To take advantage of zero-copy TCP under Solaris 2.6 this should be a
+ * multiple of 16k.  (And you need a SunATM2.0 network card.)
  */
 #ifndef MMAP_SEGMENT_SIZE
 #define MMAP_SEGMENT_SIZE	32768
