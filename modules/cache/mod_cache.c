@@ -117,9 +117,18 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                  "Adding CACHE_SAVE filter.");
+
                 /* add cache_save filter to cache this request */
                 ap_add_output_filter_handle(cache_save_filter_handle, NULL, r,
                                             r->connection);
+            }
+            else if (cache->stale_headers) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                  "Restoring request headers.");
+
+                r->headers_in = cache->stale_headers;
             }
         }
         else {
