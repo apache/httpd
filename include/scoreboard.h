@@ -196,7 +196,7 @@ AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sbh, request_rec *r);
 int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
 apr_status_t ap_reopen_scoreboard(apr_pool_t *p, apr_shm_t **shm, int detached);
 void ap_init_scoreboard(void *shared_score);
-int ap_calc_scoreboard_size(void);
+AP_DECLARE(int) ap_calc_scoreboard_size(void);
 apr_status_t ap_cleanup_scoreboard(void *d);
 void ap_sync_scoreboard_image(void);
 
