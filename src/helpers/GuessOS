@@ -50,148 +50,147 @@ if [ "x$XREL" != "x" ]; then
 		;;
 	esac
     fi
-else
+fi
 # Now we simply scan though... In most cases, the SYSTEM info is enough
 #
-    case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
-    	A/UX:*)
-	    echo "m68k-apple-aux3"; exit 0
-	    ;;
+case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
+    A/UX:*)
+	echo "m68k-apple-aux3"; exit 0
+	;;
 
-	AIX:*)
-	    echo "${MACHINE}-ibm-aix"; exit 0
-	    ;;
+    AIX:*)
+	echo "${MACHINE}-ibm-aix"; exit 0
+	;;
 
-	dgux:*)
-	    echo "${MACHINE}-dg-dgux"; exit 0
-	    ;;
+    dgux:*)
+	echo "${MACHINE}-dg-dgux"; exit 0
+	;;
 
-	HP-UX:*)
-	    HPUXVER=`echo ${RELEASE}|sed -e 's/[^.]*.[0B]*//'`
-	    case "$HPUXVER" in
-	    	10.*)
-		    echo "${MACHINE}-hp-hpux10."; exit 0
-		    ;;
-		*)
-		    echo "${MACHINE}-hp-hpux"; exit 0
-		    ;;
-	    esac
-	    ;;
+    HP-UX:*)
+	HPUXVER=`echo ${RELEASE}|sed -e 's/[^.]*.[0B]*//'`
+	case "$HPUXVER" in
+	    10.*)
+		echo "${MACHINE}-hp-hpux10."; exit 0
+		;;
+	    *)
+		echo "${MACHINE}-hp-hpux"; exit 0
+		;;
+	esac
+	;;
 
-	IRIX:*)
-	    echo "${MACHINE}-sgi-irix"; exit 0
-	    ;;
+    IRIX:*)
+	echo "${MACHINE}-sgi-irix"; exit 0
+	;;
 
-	IRIX64:*)
-	    echo "${MACHINE}-sgi-irix64"; exit 0
-	    ;;
+    IRIX64:*)
+	echo "${MACHINE}-sgi-irix64"; exit 0
+	;;
 
-	Linux:*)
-	    echo "${MACHINE}-whatever-linux"; exit 0
-	    ;;
+    Linux:*)
+	echo "${MACHINE}-whatever-linux"; exit 0
+	;;
 
-	LynxOS:*)
-	    echo "${MACHINE}-lynx-lynxos"; exit 0
-	    ;;
+    LynxOS:*)
+	echo "${MACHINE}-lynx-lynxos"; exit 0
+	;;
 
-	BSD/386:*:*:*486*|BSD/OS:*:*:*:*486*)
-	    echo "i486-whatever-bsdi"; exit 0
-	    ;;
+    BSD/386:*:*:*486*|BSD/OS:*:*:*:*486*)
+	echo "i486-whatever-bsdi"; exit 0
+	;;
 
-	BSD/386:*|BSD/OS:*)
-	    echo "${MACHINE}-whatever-bsdi"; exit 0
-	    ;;
+    BSD/386:*|BSD/OS:*)
+	echo "${MACHINE}-whatever-bsdi"; exit 0
+	;;
 
-	FreeBSD:*:*:*486*)
-	    echo "i486-whatever-freebsd"; exit 0
-	    ;;
+    FreeBSD:*:*:*486*)
+	echo "i486-whatever-freebsd"; exit 0
+	;;
 
-	FreeBSD:*)
-	    echo "${MACHINE}-whatever-freebsd"; exit 0
-	    ;;
+    FreeBSD:*)
+	echo "${MACHINE}-whatever-freebsd"; exit 0
+	;;
 
-	NetBSD:*:*:*486*)
-	    echo "i486-whatever-netbsd"; exit 0
-	    ;;
+    NetBSD:*:*:*486*)
+	echo "i486-whatever-netbsd"; exit 0
+	;;
 
-	NetBSD:*)
-	    echo "${MACHINE}-whatever-netbsd"; exit 0
-	    ;;
+    NetBSD:*)
+	echo "${MACHINE}-whatever-netbsd"; exit 0
+	;;
 
-        OpenBSD:*)
-       	    echo "${MACHINE}-whatever-openbsd"; exit 0
-            ;;
+    OpenBSD:*)
+	echo "${MACHINE}-whatever-openbsd"; exit 0
+	;;
 
-	OSF1:*:*:*alpha*)
-	    echo "${MACHINE}-dec-osf"; exit 0
-	    ;;
+    OSF1:*:*:*alpha*)
+	echo "${MACHINE}-dec-osf"; exit 0
+	;;
 
-	QNX:*)
-	    case "$VERSION" in
-		423)
-		    echo "${MACHINE}-qssl-qnx32"
-		    ;;
-		*)
-		    echo "${MACHINE}-qssl-qnx"
-		    ;;
-	    esac
-	    exit 0
-	    ;;
+    QNX:*)
+	case "$VERSION" in
+	    423)
+		echo "${MACHINE}-qssl-qnx32"
+		;;
+	    *)
+		echo "${MACHINE}-qssl-qnx"
+		;;
+	esac
+	exit 0
+	;;
 
-	Paragon*:*:*:*)
-	    echo "i860-intel-osf1"; exit 0
-	    ;;
- 
-	SunOS:5.*)
-	    echo "${MACHINE}-sun-solaris2"; exit 0
-	    ;;
+    Paragon*:*:*:*)
+	echo "i860-intel-osf1"; exit 0
+	;;
 
-	SunOS:*)
-	    echo "${MACHINE}-sun-sunos4"; exit 0
-	    ;;
+    SunOS:5.*)
+	echo "${MACHINE}-sun-solaris2"; exit 0
+	;;
 
-	UNIX_System_V:4.*:*)
-	    echo "${MACHINE}-whatever-sysv4"; exit 0
-	    ;;
+    SunOS:*)
+	echo "${MACHINE}-sun-sunos4"; exit 0
+	;;
 
-	*:4*:R4*:m88k)
-	    echo "${MACHINE}-whatever-sysv4"; exit 0
-	    ;;
+    UNIX_System_V:4.*:*)
+	echo "${MACHINE}-whatever-sysv4"; exit 0
+	;;
 
-	DYNIX/ptx:4*:*)
-	    echo "${MACHINE}-whatever-sysv4"; exit 0
-	    ;;
+    *:4*:R4*:m88k)
+	echo "${MACHINE}-whatever-sysv4"; exit 0
+	;;
 
-	*:4.0:3.0:3[34]??,* | *:4.0:3.0:3[34]??,*)
-	    echo "${MACHINE}-whatever-sysv4"; exit 0
-	    ;;
+    DYNIX/ptx:4*:*)
+	echo "${MACHINE}-whatever-sysv4"; exit 0
+	;;
 
-	*:4.0:*:3[34]??,* | *:4.0:*:3[34]??,*)
-	    echo "${MACHINE}-whatever-sysv4"; exit 0
-	    ;;
+    *:4.0:3.0:3[34]??,* | *:4.0:3.0:3[34]??,*)
+	echo "${MACHINE}-whatever-sysv4"; exit 0
+	;;
 
-	ULTRIX:*)
-	    echo "${MACHINE}-unknown-ultrix"; exit 0
-	    ;;
+    *:4.0:*:3[34]??,* | *:4.0:*:3[34]??,*)
+	echo "${MACHINE}-whatever-sysv4"; exit 0
+	;;
 
-	SINIX*)
-	    echo "${MACHINE}-sni-sysv4"; exit 0
-	    ;;
+    ULTRIX:*)
+	echo "${MACHINE}-unknown-ultrix"; exit 0
+	;;
 
-	machten:*)
-	   echo "${MACHINE}-tenon-${SYSTEM}"; exit 0;
-	   ;;
+    SINIX*)
+	echo "${MACHINE}-sni-sysv4"; exit 0
+	;;
 
-	library:*)
-	    echo "${MACHINE}-ncr-sysv4"; exit 0
-	    ;;
+    machten:*)
+       echo "${MACHINE}-tenon-${SYSTEM}"; exit 0;
+       ;;
 
-	ConvexOS:*:11.0:*)
-	    echo "${MACHINE}-v11-${SYSTEM}"; exit 0;
-	    ;;
+    library:*)
+	echo "${MACHINE}-ncr-sysv4"; exit 0
+	;;
 
-    esac
-fi
+    ConvexOS:*:11.0:*)
+	echo "${MACHINE}-v11-${SYSTEM}"; exit 0;
+	;;
+
+esac
 
 #
 # Ugg. These are all we can determine by what we know about
