@@ -255,11 +255,15 @@ static void wakeup_listener(void)
 {
     listener_may_exit = 1;
     /*
-     * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" and wake
-     * up the listener thread since it is the only thread with SIGHUP
-     * unblocked, but that doesn't work on Linux
+     * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
+     * platforms and wake up the listener thread since it is the only thread 
+     * with SIGHUP unblocked, but that doesn't work on Linux
      */
+#ifdef HAVE_PTHREAD_KILL
     pthread_kill(*listener_os_thread, LISTENER_SIGNAL);
+#else
+    kill(ap_my_pid, LISTENER_SIGNAL);
+#endif
 }
 
 #define ST_INIT              0
@@ -1043,7 +1047,13 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads)
          */
 
         iter = 0;
-        while (iter < 10 && pthread_kill(*listener_os_thread, 0) == 0) {
+        while (iter < 10 && 
+#ifdef HAVE_PTHREAD_KILL
+               pthread_kill(*listener_os_thread, 0)
+#else
+               kill(ap_my_pid, 0)
+#endif
+               == 0) {
             /* listener not dead yet */
             apr_sleep(APR_USEC_PER_SEC / 2);
             wakeup_listener();
