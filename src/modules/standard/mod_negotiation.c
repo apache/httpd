@@ -1022,26 +1022,43 @@ var_rec *best_match(negotiation_state *neg)
 char *set_vary (pool *p, negotiation_state *neg)
 {
     var_rec *var_recs = (var_rec*)neg->avail_vars->elts;
-    int i, accept_encoding = 0;
-    int accept_language = 0;
-    char *enc, *lang;
+    int i;
+    int accept_type, accept_enc, accept_lang;
+    char *type, *enc, *lang;
+    char *last_type, *last_enc, *last_lang;
 
-    /* Go through each variant and check for an encoding
-     * or language (we always set "Accept", so no need to check).
+    accept_type = accept_enc = accept_lang = 0;
+    last_type = last_enc = last_lang = NULL;
+
+    /* Go through each variant and check for a differing
+     * type, encoding or type.
      */
 
     for (i = 0; i < neg->avail_vars->nelts; ++i) {
-        enc = var_recs[i].content_encoding;
-	lang = var_recs[i].content_language;
+	/* Ideally, we wouldn't have to do this, but strcmp(NULL, NULL)
+	 * isn't legal
+	 */
+	type = var_recs[i].type_name ? var_recs[i].type_name : "";
+        enc = var_recs[i].content_encoding ? var_recs[i].content_encoding : "";
+       lang = var_recs[i].content_language ? var_recs[i].content_language : "";
 
-        if (!accept_encoding && !(!enc || !strcmp(enc, "")))
-	    accept_encoding = 1;
-	if (!accept_language && !(!lang || !strcmp(lang, "")))
-	    accept_language = 1;
+	if (!accept_type && last_type && strcmp(last_type, type))
+	    accept_type = 1;
+	else if (!accept_type && !last_type) last_type = type;
+
+	if (!accept_enc && last_enc && strcmp(last_enc, enc))
+	    accept_enc = 1;
+	else if (!accept_enc && !last_enc) last_enc = enc;
+
+	if (!accept_lang && last_lang && strcmp(last_lang, lang))
+	    accept_lang = 1;
+	else if (!accept_lang && !last_lang) last_lang = lang;
     }
 
-    return pstrcat(p, "Accept", accept_encoding ? ", Accept-Encoding" : "",
-		   accept_language ? ", Accept-Language" : "", NULL);
+    if (!accept_type && !accept_enc && !accept_lang) return NULL;
+    else return 2 + pstrcat(p, accept_type ? ", Accept" : "",
+			    accept_enc ? ", Accept-Encoding" : "",
+			    accept_lang ? ", Accept-Language" : "", NULL);
 }
 
 /****************************************************************
@@ -1055,7 +1072,7 @@ int handle_map_file (request_rec *r)
     var_rec *best;
     int res;
     
-    char *udir;
+    char *vary, *udir;
     
     if ((res = read_type_map (neg, r->filename))) return res;
     
@@ -1073,7 +1090,8 @@ int handle_map_file (request_rec *r)
      */
     if (!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
         r->no_cache = 1;
-    table_merge(r->err_headers_out, "Vary", set_vary(r->pool, neg));
+    if ((vary = set_vary(r->pool, neg)))
+	table_merge(r->err_headers_out, "Vary", vary);
 
     udir = make_dirstr (r->pool, r->uri, count_dirs (r->uri));
     udir = escape_uri(r->pool, udir);
@@ -1086,6 +1104,7 @@ int handle_multi (request_rec *r)
     negotiation_state *neg;
     var_rec *best;
     request_rec *sub_req;
+    char *vary;
     int res;
     
     if (r->finfo.st_mode != 0 || !(allow_options (r) & OPT_MULTI))
@@ -1124,7 +1143,8 @@ int handle_multi (request_rec *r)
     
     if (!do_cache_negotiated_docs(r->server) && (r->proto_num < 1001))
         r->no_cache = 1;
-    table_merge(r->err_headers_out, "Vary", set_vary(r->pool, neg));
+    if ((vary = set_vary(r->pool, neg)))
+	table_merge(r->err_headers_out, "Vary", vary);
 
     r->filename = sub_req->filename;
     r->handler = sub_req->handler;
