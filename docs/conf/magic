@@ -87,9 +87,13 @@
 # Microsoft WAVE format (*.wav)
 # [GRR 950115:  probably all of the shorts and longs should be leshort/lelong]
 #					Microsoft RIFF
-0	string		RIFF		audio/unknown	
+0	string		RIFF		audio/unknown
 #					- WAVE format
->8	string		WAVE		audio/x-wav	
+>8	string		WAVE		audio/x-wav
+# MPEG audio.
+0   beshort&0xfff0  0xfff0  audio/mpeg
+# C64 SID Music files, from Linus Walleij <triad@df.lth.se>
+0   string      PSID        audio/prs.sid
 
 #------------------------------------------------------------------------------
 # c-lang:  file(1) magic for C programs or various scripts
@@ -172,17 +176,20 @@
 # from Daniel Quinlan <quinlan@yggdrasil.com>
 # and Anna Shergold <anna@inext.co.uk>
 #
-0	string		\<!DOCTYPE\ HTML	text/html
-0	string		\<!doctype\ html	text/html
-0	string		\<HEAD		text/html
-0	string		\<head		text/html
-0	string		\<TITLE		text/html
-0	string		\<title		text/html
-0       string          \<html          text/html
-0       string          \<HTML          text/html
-0	string		\<!--		text/html
-0	string		\<h1		text/html
-0	string		\<H1		text/html
+0   string      \<!DOCTYPE\ HTML    text/html
+0   string      \<!doctype\ html    text/html
+0   string      \<HEAD      text/html
+0   string      \<head      text/html
+0   string      \<TITLE     text/html
+0   string      \<title     text/html
+0   string      \<html      text/html
+0   string      \<HTML      text/html
+0   string      \<!--       text/html
+0   string      \<h1        text/html
+0   string      \<H1        text/html
+
+# XML eXtensible Markup Language, from Linus Walleij <triad@df.lth.se>
+0   string      \<?xml      text/xml
 
 #------------------------------------------------------------------------------
 # images:  file(1) magic for image formats (see also "c-lang" for XPM bitmaps)
@@ -368,4 +375,8 @@
 #						DL file version 1 , medium format (160x100, 4 images/screen)
 0	byte		1			video/unknown
 0	byte		2			video/unknown
+# Quicktime video, from Linus Walleij <triad@df.lth.se>
+# from Apple quicktime file format documentation.
+4   string      moov        video/quicktime 
+4   string      mdat        video/quicktime
 
