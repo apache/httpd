@@ -295,7 +295,7 @@ AC_DEFUN(APACHE_LAYOUT,[
   for var in prefix exec_prefix bindir sbindir libexecdir mandir \
              sysconfdir datadir errordir iconsdir htdocsdir cgidir \
              includedir localstatedir runtimedir logfiledir \
-             proxycachedir installbuilddir; do
+             manualdir proxycachedir installbuilddir; do
     eval "val=\"\$$var\""
     case $val in
       *+)
