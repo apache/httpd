@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
  <HEAD>
-  <META NAME="ContentType" CONTENT="text/html; charset=iso-8859-2">
+  <META HTTP-Equiv="Content-Type" CONTENT="text/html; charset=iso-8859-2">
   <TITLE>Testovací stránka instalace web serveru Apache</TITLE>
  </HEAD>
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -36,7 +36,7 @@
   <P>
   Zde najdete
   <A
-   HREF="manual/index.html"
+   HREF="manual/"
   >dokumentaci</A>
   Apache (anglicky) obsaženou v této distribuci.
   </P>
