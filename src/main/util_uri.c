@@ -192,7 +192,7 @@ API_EXPORT(char *) ap_unparse_uri_components(pool *p, const uri_components *uptr
     /* Append path, query and fragment strings: */
     ret = ap_pstrcat (p,
 		   ret,
-		   uptr->path,
+		   uptr->path ? uptr->path : "",
 		   uptr->query ? "?" : "",
 		   uptr->query ? uptr->query : "",
 		   uptr->fragment ? "#" : NULL,
