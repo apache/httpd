@@ -215,7 +215,7 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
 
     /*  determine whether newline should be written */
     if (add & SSL_NO_NEWLINE)
-        nstr = NUL;
+        nstr = "";
     else {
         nstr = APR_EOL_STR;
     }
