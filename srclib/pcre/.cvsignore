@@ -1,0 +1,14 @@
+*.la
+*.lo
+.libs
+Makefile
+chartables.c
+config.h
+config.log
+config.status
+dftables
+libtool
+pcre-config
+pcre.h
+pcretest
+pgrep
