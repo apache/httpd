@@ -2874,7 +2874,8 @@ static const command_rec core_cmds[] = {
 { "LimitRequestBody", set_limit_req_body,
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   OR_ALL, TAKE1,
-  "Limit (in bytes) on maximum size of request message body" }
+  "Limit (in bytes) on maximum size of request message body" },
+{ NULL }
 };
 
 /*****************************************************************
