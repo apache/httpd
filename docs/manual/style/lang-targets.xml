@@ -91,7 +91,7 @@
 <!-- Japanese                                                             -->
 <!-- ==================================================================== -->
 <property value=".xml.ja" name="inputext.ja"/>
-<property value=".html.ja.jis" name="outputext.ja"/>
+<property value=".html.ja.euc-jp" name="outputext.ja"/>
 
 <target description="- builds Japanese HTML files" name="ja">
     <html.generic lang="ja"/>

@@ -4,7 +4,7 @@
 <item charset="ISO-8859-1" lang="en">.html.en</item>
 <item charset="ISO-8859-1" lang="es">.html.es</item>
 <item charset="ISO-8859-1" lang="fr">.html.fr</item>
-<item charset="ISO-2022-JP" lang="ja">.html.ja.jis</item>
+<item charset="EUC-JP" lang="ja">.html.ja.euc-jp</item>
 <item charset="EUC-KR" lang="ko">.html.ko.euc-kr</item>
 <item charset="KOI8-R" lang="ru">.html.ru.koi8-r</item>
 </items>
