@@ -108,6 +108,7 @@ static int send_rndchunk(request_rec *r)
 
     if (!r->chunked) {
 	rputs("Not chunked!", r);
+	kill_timeout(r);
 	return 0;
     }
 
@@ -115,6 +116,7 @@ static int send_rndchunk(request_rec *r)
     if (!args) {
 error:
 	rputs("Must include args! ... of the form <code>?seed,count</code>", r);
+	kill_timeout(r);
 	return 0;
     }
     seed = strtol(args, &endptr, 0);
@@ -143,6 +145,7 @@ error:
 	    rputs(buf, r);
 	}
     }
+    kill_timeout(r);
     return 0;
 }
 
