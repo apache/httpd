@@ -8,7 +8,7 @@ OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   md5c.o util_md5.o explain.o http_bprintf.o $(MODULES)
 
 .c.o:
-	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $<
+	$(CC) -c $(REGINC) $(CFLAGS) $(AUX_CFLAGS) $<
 
 all: Configuration httpd
 
@@ -38,7 +38,7 @@ dist.tar:
 
 # Work around broken compilers
 http_bprintf.o: http_bprintf.c
-	$(CC) -c $(CFLAGS) $(AUX_CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
+	$(CC) -c $(REGINC) $(CFLAGS) $(AUX_CFLAGS) $(BROKEN_BPRINTF_FLAGS) http_bprintf.c
 
 #Dependencies
 #Core code

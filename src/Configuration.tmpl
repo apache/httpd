@@ -39,21 +39,23 @@ CC= gcc
 # If you find that your OS can't cope with mmap (compiles OKAY but refuses
 # to run and moans "httpd: Could not mmap memory" .. or similar) try
 # disabling use of shared memory for process management (scoreboard with
-# -DNO_MMAP
+# -DNO_MMAP) by uncommenting the line below:
+#NOMMAPCFLAG= -DNO_MMAP
 
 # Status Instrumentation
 # In order for the status module to obtain full statistics Apache must
 # be modified to keep track of various information.  This is not
-# turned on by default. In order to enable full status details add -DSTATUS 
-# to the end of the CFLAGS line below.
+# turned on by default. In order to enable full status details uncomment
+# the line below:
+#STATCFLAG= -DSTATUS
 
 # Using SOCKS
 # Apache can be compiled to work over a SOCKS firewall by 
-# adding the following string to your CFLAGS define:
+# uncommenting the line below:
+#SOCKSCFLAG= -Dconnect=Rconnect -Dselect=Rselect -Dgethostbyname=Rgethostbyname
+
 #
-#  -Dconnect=Rconnect -Dselect=Rselect -Dgethostbyname=Rgethostbyname
-#
-# and by adding the following to the EXTRA_LIBS define:
+# Also add the following to the EXTRA_LIBS define:
 #
 #  -L/usr/local/lib -lsocks
 #
@@ -65,7 +67,26 @@ CC= gcc
 #  defaults in.  Note that this config file does not include DBM auth by
 #  default --- configure it in below if you need it].
 
-CFLAGS= -O2
+# What level of optimization?
+OPTMCFLAG= -O2
+
+# Add whatever other flags you'd like here... Like, maybe -Wall
+XTRACFLAG=
+
+# Apache requires a POSIX regex implementation. Some/most platforms provide
+# this capability, but for those that don't, Apache provides, simply for
+# convenience, a regex implementation. The regex code is NOT official
+# Apache code and the Apache team does not support or guarantee the code.
+# If you want to use the supplied regex package, uncomment the following
+# line (or set it equal to the regex lib on your system). ALSO: If
+# using this _regex_ package, be sure to also uncomment REGINC as well
+#REGLIBS=regex/libregex.a
+#REGINC= -Iregex
+
+# Default to using ranlib on libraries (for regex). Set this to something else
+# if ranlib kills your system (usually by setting it again in the OS specific
+# section below)
+RANLIB=ranlib
 
 # Place here any flags you may need upon linking, such as a flag to
 # prevent dynamic linking (if desired)
@@ -75,21 +96,10 @@ LFLAGS=
 # -lndbm is commonly required for DBM auth, if that is configured in.
 EXTRA_LIBS=
 
-# Apache requires a POSIX regex implementation. Some/most platforms provide
-# this capability, but for those that don't, Apache provides, simply for
-# convenience, a regex implementation. The regex code is NOT official
-# Apache code and the Apache team does not support or guarantee the code.
-# If you want to use the supplied regex package, uncomment the following
-# line (or set it equal to the regex lib on your system). ALSO: If
-# using this _regex_ package, be sure to #define USE_HS_POSIX in conf.h
-# for your platform.
-#REGLIBS=regex/libregex.a
+# Build CFLAGS
+CFLAGS= $(OPTMCFLAG) $(NOMMAPCFLAG) $(STATCFLAG) $(SOCKSCFLAG) $(XTRACFLAG)
 
-# Default to using ranlib on libraries (for regex). Set this to something else
-# if ranlib kills your system (usually by setting it again in the OS specific
-# section below)
-RANLIB=ranlib
-
+#
 # AUX_CFLAGS are system-specific control flags.
 # NOTE: IF YOU DO NOT CHOOSE ONE OF THESE, EDIT httpd.h AND CHOOSE
 # SETTINGS FOR THE SYSTEM FLAGS. IF YOU DON'T, BAD THINGS WILL HAPPEN.

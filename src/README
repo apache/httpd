@@ -209,10 +209,6 @@ of these #defines.
      USE_LONGJMP:
       use the longjmp() call instead of siglongjmp()
 
-     USE_HS_REGEX:
-      Define this (and adjust Configuration as required) if you want
-      or need to use H. Spencer's POSIX/regex package which is
-      included.
 --
 
   NO_*:
