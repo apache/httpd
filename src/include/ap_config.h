@@ -390,6 +390,7 @@ typedef int pid_t;
 #endif
 
 #elif defined(MAC_OS) || defined(MAC_OS_X_SERVER) /* Mac OS (>= 10.0) and Mac OS X Server (<= 5.x) */
+#undef PLATFORM
 #ifdef MAC_OS_X_SERVER
 #define PLATFORM "Mac OS X Server"
 #else
