@@ -541,7 +541,16 @@ int main(int argc, char *argv[])
     /*
      * Execute the command, replacing our image with its own.
      */
+#ifdef NEED_HASHBANG_EMUL
+    /* We need the #! emulation when we want to execute scripts */
+    {
+	extern char **environ;
+
+	ap_execve(cmd, &argv[3], environ);
+    }
+#else /*NEED_HASHBANG_EMUL*/
     execv(cmd, &argv[3]);
+#endif /*NEED_HASHBANG_EMUL*/
 
     /*
      * (I can't help myself...sorry.)
