@@ -1,5 +1,7 @@
 
 mod_proxy changes for httpd 2.0.20-dev
+  *) Timeout added for backend connections.
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
 
   *) Fix abort code path in proxy_http.c, similar to FTP fix.
      [Chuck Murcko <chuck@topsail.org>]
