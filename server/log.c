@@ -491,7 +491,7 @@ static void log_error_core(const char *file, int line, int level,
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
                             "[client %s] ", r->connection->remote_ip);
     }
-    if (!(level & APLOG_NOERRNO) && (status != 0)) {
+    if (status != 0) {
         char buf[120];
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
                             "(%d)%s: ", status,
