@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: proxy_util.c,v 1.2 1996/10/09 14:52:59 chuck Exp $ */
+/* $Id: proxy_util.c,v 1.3 1996/10/09 21:36:13 chuck Exp $ */
 
 /* Utility routines for Apache proxy */
 
@@ -720,7 +720,7 @@ proxy_parsedate(const char *date, struct tm *d)
     if (d == NULL) d = &x;
 
     d->tm_year = 0;  /* bad date */
-    comma = index(date,',') ;
+    comma = strchr(date,',') ;
     lday =  (comma-date) ;
     
     if( lday >= 6 && lday <= 8) {   /* RFC850 */
