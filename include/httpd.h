@@ -1506,20 +1506,6 @@ AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);
 
 /* Misc system hackery */
 /**
- * Convert a username to a numeric ID
- * @param name The name to convert
- * @return The user id corresponding to a name
- * @deffunc uid_t ap_uname2id(const char *name) 
- */
-AP_DECLARE(uid_t) ap_uname2id(const char *name);
-/**
- * Convert a group name to a numeric ID
- * @param name The name to convert
- * @return The group id corresponding to a name
- * @deffunc gid_t ap_gname2id(const char *name) 
- */
-AP_DECLARE(gid_t) ap_gname2id(const char *name);
-/**
  * Given the name of an object in the file system determine if it is a directory
  * @param p The pool to allocate out of 
  * @param name The name of the object to check
