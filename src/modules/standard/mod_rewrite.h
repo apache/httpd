@@ -291,20 +291,20 @@ static void *config_perdir_create(pool *p, char *path);
 static void *config_perdir_merge (pool *p, void *basev, void *overridesv);
 
     /* config directive handling */
-const char *cmd_rewriteengine  (cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag);
-const char *cmd_rewriteoptions (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option);
+static const char *cmd_rewriteengine  (cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag);
+static const char *cmd_rewriteoptions (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option);
 static char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name);
-const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
-const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
-const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1, char *a2);
+static const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
+static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
+static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1, char *a2);
 
-const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1);
+static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1);
 
-const char *cmd_rewritecond    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
+static const char *cmd_rewritecond    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
 static char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *new, char *str);
 static char *cmd_rewritecond_setflag       (pool *p, rewritecond_entry *cfg, char *key, char *val);
 
-const char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
+extern const char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
 static char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *new, char *str);
 static char *cmd_rewriterule_setflag       (pool *p, rewriterule_entry *cfg, char *key, char *val);
 
