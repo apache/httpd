@@ -1,5 +1,10 @@
 Changes with Apache 2.0.35
 
+  *) worker MPM: Don't create a listener thread until we have a worker
+     thread.  Otherwise, in situations where we'll have to wait a while
+     to take over scoreboard slots from a previous generation, we'll be
+     accepting connections we can't process yet.  [Jeff Trawick]
+
   *) Allow worker MPM to build on systems without pthread_kill().
      [Pier Fumagalli, Jeff Trawick]
 
