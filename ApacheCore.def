@@ -37,8 +37,8 @@ EXPORTS
 	ap_blookc   @30
 	;ap_bnonblock   @31
 	ap_bonerror   @32
-	;ap_bpushfd   @33
-	;ap_bpushh   @34
+	ap_bpush_iol @33
+        ap_bpop_iol @34
 	ap_bputs   @35
 	ap_bread   @36
 	ap_bsetflag   @37
