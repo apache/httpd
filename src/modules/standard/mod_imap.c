@@ -83,6 +83,8 @@
  *    New:  directive URL "Menu text" [x,y ...]
  *     or:  directive URL x,y ... "Menu text"
  * Map format and menu concept courtesy Joshua Bell, jsbell@acs.ucalgary.ca.
+ *
+ * Mark Cox, mark@ukweb.com, Allow relative URLs even when no base specified
  */
 
 #include "httpd.h"
@@ -630,6 +632,8 @@ int imap_handler(request_rec *r)
   if (showmenu) {        /* send start of imagemap menu if we're going to */
     menu_header(r, imap_menu);
   }
+
+  imap_url(r, NULL, r->uri, base); /* Fake our base to allow relative URLs */
 
   while (!cfg_getline(input, LARGEBUF, imap)) {
     string_pos = input;   /* always start at the beginning of line */
