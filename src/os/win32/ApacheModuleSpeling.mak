@@ -59,8 +59,8 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\main" /D "WIN32" /D\
- "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleSpeling.pch" /YX\
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\ap" /I "..\..\regex" /I "..\..\main"\
+ /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleSpeling.pch" /YX\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleSpelingR/
 CPP_SBRS=.
@@ -148,9 +148,10 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\main" /D\
- "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleSpeling.pch" /YX\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\ap" /I "..\..\regex" /I\
+ "..\..\main" /D "WIN32" /D "_DEBUG" /D "_WINDOWS"\
+ /Fp"$(INTDIR)\ApacheModuleSpeling.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
+ /FD /c 
 CPP_OBJS=.\ApacheModuleSpelingD/
 CPP_SBRS=.
 
@@ -233,6 +234,7 @@ DEP_CPP_MOD_S=\
 !ELSEIF  "$(CFG)" == "ApacheModuleSpeling - Win32 Debug"
 
 DEP_CPP_MOD_S=\
+	"..\..\ap\ap.h"\
 	"..\..\main\alloc.h"\
 	"..\..\main\buff.h"\
 	"..\..\main\conf.h"\
@@ -242,6 +244,13 @@ DEP_CPP_MOD_S=\
 	"..\..\regex\regex.h"\
 	".\os.h"\
 	".\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_S=\
+	"..\..\main\ebcdic.h"\
+	"..\..\main\os.h"\
+	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_speling.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
