@@ -5,10 +5,6 @@ Changes with Apache 2.1.0-dev
   *) mod_deflate: Don't attempt to hold all of the response until we're
      done.  [Justin Erenkrantz]
 
-  *) mod_include: Fix a trio of bugs that would cause various unusual
-     sequences of parsed bytes to omit portions of the output stream.
-     PR 21095. [Ron Park <ronald.park@cnet.com>, André Malo, Cliff Woolley]
-
   *) mod_ssl: Fix segfaults after renegotiation failure. PR 21370
      [Hartmut Keil <Hartmut.Keil@adnovum.ch>]
 
@@ -202,6 +198,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) mod_include: Fix a trio of bugs that would cause various unusual
+     sequences of parsed bytes to omit portions of the output stream.
+     PR 21095. [Ron Park <ronald.park@cnet.com>, André Malo, Cliff Woolley]
 
   *) Update the header token parsing code to allow LWS between the
      token word and the ':' seperator.  [PR 16520]
