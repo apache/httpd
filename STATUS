@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/23 17:49:58 $]
+Last modified at [$Date: 2004/10/30 15:37:21 $]
 
 Release:
 
@@ -87,7 +87,7 @@ PATCHES TO BACKPORT FROM 2.1
        runtime.
        http://cvs.apache.org/viewcvs/httpd-2.0/modules/ssl/ssl_engine_init.c.diff?r1=1.118&r2=1.119
        PR: 24030
-       +1: jorton, minfrin
+       +1: jorton, minfrin, jerenkrantz
 
     *) Allow for the use of --with-module=foo:bar where the ./modules/foo
        directory is a local addition to the ./modules directory.
@@ -95,7 +95,7 @@ PATCHES TO BACKPORT FROM 2.1
        but makes it easier to statically build "external" modules by
        simply adding them to ./modules.
          modules/config5.m4: 1.4
-       +1: jim
+       +1: jim, jerenkrantz
 
     *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
        library handles special characters.
