@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a build problem with passing unsupported --enable-layout
+     args to apr and apr-util.  This broke binbuild.sh as well as
+     user-specified layout parameters.  PR 18649 [Justin Erenkrantz,
+     Jeff Trawick]
+
   *) ap_get_mime_headers_core: allocate space for the trailing null
      when folding is in effect.
      PR 18170 [Peter Mayne <PeterMayne@SPAM_SUX.ap.spherion.com>]
