@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 106849 -->
+<!-- English Revision: 123298 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -734,7 +734,7 @@ werden</description>
     Beispielsweise w&uuml;rde</p>
 
     <example>
-      &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
+      &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
     </example>
 
     <p>auf Verzeichnisse in <code>/www/</code> passen, die aus drei
