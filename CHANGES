@@ -1,10 +1,16 @@
 Changes with Apache 2.1.0-dev
+
+  [Remove entries to the current 2.0 section below, when backported]
+
+  *) Fix a bug where we leak fd's until the end of a keepalive 
+     connection, which may result in:
+       (24)Too many open files: file permissions deny server access
+     especially on threaded servers.  [Greg Ames]
+
   *) If an httpd.conf has commented out AddModule directives, 
      apxs -i -a will add an un-commented AddModule directive for 
      the new module, which breaks the config.
      PR: 11212 [Joe Orton]
-
-  [Remove entries to the current 2.0 section below, when backported]
 
   *) Fix mod_proxy handling of filtered input bodies.  [Justin Erenkrantz]
 
@@ -142,11 +148,6 @@ Changes with Apache 2.0.44
      terminates during post-config processing. An error is logged
      once per worker, indicating that the CacheRoot needs to be set.
      [Paul J. Reder]
-
-  *) Fix a bug where we keep files open until the end of a 
-     keepalive connection, which can result in:
-     (24)Too many open files: file permissions deny server access
-     especially on threaded servers.  [Greg Ames, Jeff Trawick]
 
   *) Fix a bug in which mod_proxy sent an invalid Content-Length
      when a proxied URL was invoked as a server-side include within
