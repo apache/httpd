@@ -156,10 +156,10 @@ Ausnahmefehler behandeln lassen kann</description>
     Kindprozesses noch Aktionen durchzuf&uuml;hren.</p>
 
     <p>Es existieren bereits zwei Module, <code>mod_whatkilledus</code> und
-    <code>mod_backtrace</code>, welchen diesen Hook verwenden. Lesen Sie
-    bitte auf Jeff Trawicks <a
+    <code>mod_backtrace</code>, welche diesen Hook verwenden. Weitere
+    Informationen hierzu finden Sie auf Jeff Trawicks <a
     href="http://www.apache.org/~trawick/exception_hook.html"
-    >EnableExceptionHook-Seite</a> f&uuml;r weitere Informationen dazu.</p>
+    >EnableExceptionHook-Seite</a>.</p>
 </usage>
 </directivesynopsis>
 
