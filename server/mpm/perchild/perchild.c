@@ -1490,7 +1490,7 @@ static int perchild_post_read(request_rec *r)
                                                  &mpm_perchild_module);
 
     while (f) {
-        if (!strcmp("PERCHILD_BUFFER", f->frec->name)) {
+        if (!strcasecmp("PERCHILD_BUFFER", f->frec->name)) {
             ap_remove_output_filter(f);
             break;
         }
