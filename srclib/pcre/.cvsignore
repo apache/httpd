@@ -22,3 +22,8 @@ pcre.h
 *.plg
 *.dep
 *.mak
+BuildLog.htm
+*.stc
+*.stt
+*.sto
+*.vcproj
