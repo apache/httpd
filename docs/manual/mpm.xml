@@ -87,6 +87,7 @@ choice at compile-time.</p>
 
 <table>
 <tr><td>BeOS</td><td><module>beos</module></td></tr>
+<tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
 <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
 <tr><td>Unix</td><td><module>prefork</module></td></tr>
 <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
