@@ -73,7 +73,7 @@ closedir DIR;
 foreach $dir (@dirs) {
     print "Entering directory $dir\n";
     opendir SUBDIR, "$dir" or die "Could not open subdir $dir: $!";
-    foreach $file (grep /\.html$/, readdir SUBDIR) {
+    foreach $file (grep /\.html(\.[^.]+)*$/, readdir SUBDIR) {
 	print "Expanding file $dir/$file\n";
 	rename "$dir/$file", "$dir/${file}.old";
 	open READ, "$dir/${file}.old" or die "Couldn't read $dir/$file: $!";
