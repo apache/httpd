@@ -144,10 +144,6 @@ int ap_execve(const char *filename, const char *argv[],
      */
 	&& (argv = hashbang(filename, argv)) != NULL) {
 
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, NULL,
-                    "Script %s needs interpreter %s to exec", filename,
-                    argv[0]);
-
 	/* new filename is the interpreter to call */
 	filename = argv[0];
 
