@@ -235,13 +235,21 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
         /* a multiple range */
         const char *r_range = ap_pstrdup(r->pool, range + 6);
         long tlength = 0;
-
-        r->byterange = 2;
+	int ret;
+	
         r->boundary = ap_psprintf(r->pool, "%lx%lx",
 				r->request_time, (long) getpid());
-        while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
+        do {
+	    /* Loop while we have another range spec to process */
+	    ret = internal_byterange(0, &tlength, r, &r_range, NULL, NULL);
+	} while (ret == 1);
+	/* If an error occured processing one of the range specs, we
+	 * must fail */
+	if (ret < 0)
+	    return 0;
         ap_table_setn(r->headers_out, "Content-Length",
 	    ap_psprintf(r->pool, "%ld", tlength));
+        r->byterange = 2;
     }
 
     r->status = PARTIAL_CONTENT;
@@ -262,8 +270,8 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length)
  * If it is called with realreq=0, it will add to tlength the length
  * it *would* have used with realreq=1.
  *
- * Either case will return 1 if it should be called again, and 0
- * when done.
+ * Either case will return 1 if it should be called again, 0 when done,
+ * or -1 if an error occurs AND realreq=0.
  */
 static int internal_byterange(int realreq, long *tlength, request_rec *r,
                               const char **r_range, long *offset, long *length)
@@ -296,9 +304,12 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
 #ifdef CHARSET_EBCDIC
         POP_EBCDIC_OUTPUTCONVERSION_STATE(r->connection->client);
 #endif /*CHARSET_EBCDIC*/
-        /* Skip this one */
-        return internal_byterange(realreq, tlength, r, r_range, offset,
-                                  length);
+	if (!realreq)
+	    /* Return error on invalid syntax */
+	    return -1;
+	else
+	    /* Should never get here */
+	    return 0;
     }
 
     if (r->byterange > 1) {
