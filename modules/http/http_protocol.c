@@ -943,30 +943,26 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
     apr_ssize_t len;
     char *pos;
     http_ctx_t *ctx = f->ctx;
-    ap_bucket_brigade *bb;
     apr_status_t rv;
 
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(f->c->pool, sizeof(*ctx));
-        if ((rv = ap_get_brigade(f->next, b, AP_GET_ANY_AMOUNT)) != APR_SUCCESS) {
+        ctx->b = ap_brigade_create(f->c->pool);
+        if ((rv = ap_get_brigade(f->next, ctx->b, AP_GET_ANY_AMOUNT)) != APR_SUCCESS) {
             return rv;
         }
     }
     else {
-        if (ctx->b) {
-            AP_BRIGADE_CONCAT(b, ctx->b);
-            ctx->b = NULL;
-        }
-        else {
-            if ((rv = ap_get_brigade(f->next, b, AP_GET_LINE)) != APR_SUCCESS) {
+        if (AP_BRIGADE_EMPTY(ctx->b)) {
+            if ((rv = ap_get_brigade(f->next, ctx->b, AP_GET_LINE)) != APR_SUCCESS) {
                 return rv;
             }
         }
     }
 
     if (f->c->remain) {
-        e = AP_BRIGADE_FIRST(b);
-        while (e != AP_BRIGADE_SENTINEL(b)) {
+        e = AP_BRIGADE_FIRST(ctx->b);
+        while (e != AP_BRIGADE_SENTINEL(ctx->b)) {
             const char *ignore;
 
             if ((rv = ap_bucket_read(e, &ignore, &len, 0)) != APR_SUCCESS) {
@@ -985,9 +981,13 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
                 else {
                     f->c->remain -= len;
                 }
-                bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
-                ctx->b = bb;
+                AP_BUCKET_REMOVE(e);
+                AP_BRIGADE_INSERT_TAIL(b, e);
                 break; /* once we've gotten some data, deliver it to caller */
+            }
+            else {
+                AP_BUCKET_REMOVE(e);
+                ap_bucket_destroy(e);
             }
             e = AP_BUCKET_NEXT(e);
         }
@@ -999,7 +999,8 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
         return APR_SUCCESS;
     }
 
-    AP_BRIGADE_FOREACH(e, b) {
+    while (!AP_BRIGADE_EMPTY(ctx->b)) {
+        e = AP_BRIGADE_FIRST(ctx->b);
         if ((rv = ap_bucket_read(e, (const char **)&buff, &len, 0)) != APR_SUCCESS) {
             return rv;
         }
@@ -1007,10 +1008,12 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b, apr_ssize_t lengt
         pos = memchr(buff, ASCII_LF, len);
         if (pos != NULL) {
             ap_bucket_split(e, pos - buff + 1);
-            bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
-            ctx->b = bb;
+            AP_BUCKET_REMOVE(e);
+            AP_BRIGADE_INSERT_TAIL(b, e);
             return APR_SUCCESS;
         }
+        AP_BUCKET_REMOVE(e);
+        AP_BRIGADE_INSERT_TAIL(b, e);
     }
     return APR_SUCCESS;
 }
@@ -2438,15 +2441,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     ap_bucket_brigade *bb = conf->bb;
 
     if (!bb) {
-        /* XXX Yes, the pool for this brigade looks funky.  Right now it is
-         * allocated from the connection pool instead of the request pool 
-         * because HTTP_IN will sometimes split one of these brigades, with
-         * the second part of the brigade holding data belonging to another 
-         * request.  Since AP_BRIGADE_SPLIT() uses the same pool as the 
-         * original brigade, we need to use a pool that won't be cleaned up 
-         * until any subsequent requests on this connection are done.
-         */
-        conf->bb = bb = ap_brigade_create(r->connection->pool);
+        conf->bb = bb = ap_brigade_create(r->pool);
     }
 
     do {
