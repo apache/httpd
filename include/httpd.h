@@ -77,7 +77,6 @@ extern "C" {
 
 /* Headers in which EVERYONE has an interest... */
 #include "ap_config.h"
-#include "ap_buckets.h"
 #include "os.h"
 #include "apr_general.h"
 #include "apr_lib.h"
@@ -904,9 +903,6 @@ struct conn_rec {
     /** A list of input filters to be used for this request 
      *  @defvar ap_filter_t *filters */
     struct ap_filter_t *input_filters;
-    /** Location to store data read from the client.
-     *  @defvar ap_bucket_brigade *input_data */
-    struct ap_bucket_brigade *input_data;
     /** A list of output filters to be used for this connection
      *  @defvar ap_filter_t *filters */
     struct ap_filter_t *output_filters;

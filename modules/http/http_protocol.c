@@ -956,12 +956,7 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     ap_bucket_brigade *b;
     ap_bucket *e;
 
-    if (!c->input_data) {
-        b = ap_brigade_create(c->pool);
-    }
-    else {
-        b = c->input_data;
-    }
+    b = ap_brigade_create(c->pool);
 
     while (1) {
         if (AP_BRIGADE_EMPTY(b)) {
