@@ -681,7 +681,7 @@ static void winnt_accept(void *listen_socket)
             if (num_completion_contexts >= ap_threads_per_child) {
                 static int reported = 0;
                 if (!reported) {
-                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
                                  "Server ran out of threads to serve requests. Consider "
                                  "raising the ThreadsPerChild setting");
                     reported = 1;
