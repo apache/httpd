@@ -602,8 +602,6 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     }
 
     if (!first_time) {
-        apr_pool_create(&pcgi, p); 
-
         total_modules = 0;
         for (m = ap_preloaded_modules; *m != NULL; m++)
             total_modules++;
@@ -614,6 +612,7 @@ static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                          "Couldn't spawn cgid daemon process"); 
         }
         else if (pid == 0) {
+            apr_pool_create(&pcgi, p); 
             cgid_server(main_server);
             exit(-1);
         } 
