@@ -1,4 +1,7 @@
 Changes with Apache 1.3b3
+  
+  *) Inherit a bugfix to fnmatch.c from FreeBSD sources.
+     ["[KOI8-R] Андрей Чернов" <ache@nagual.pp.ru>] PR#1311
 
   *) When a configuration parse complained about a bad directive,
      the logger would use whatever (unrelated) value was in errno.

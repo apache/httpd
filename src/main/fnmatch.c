@@ -110,6 +110,10 @@ int fnmatch(pattern, string, flags)
 		return (FNM_NOMATCH);
 	    if (*string == '/' && flags & FNM_PATHNAME)
 		return (FNM_NOMATCH);
+	    if (*string == '.' && (flags & FNM_PERIOD) &&
+		(string == stringstart ||
+		((flags & FNM_PATHNAME) && *(string - 1) == '/')))
+		    return (FNM_NOMATCH);
 	    if ((pattern =
 		 rangematch(pattern, *string, flags)) == NULL)
 		return (FNM_NOMATCH);
