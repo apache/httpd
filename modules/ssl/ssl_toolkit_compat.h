@@ -49,7 +49,7 @@
 
 #define modssl_set_cipher_list SSL_set_cipher_list
 
-#define HAVE_SSL_RAND_EDG /* since 9.5.1 */
+#define HAVE_SSL_RAND_EGD /* since 9.5.1 */
 
 #else /* RSA sslc */
 
