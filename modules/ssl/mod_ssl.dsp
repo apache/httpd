@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MD /W3 /O2 /I "..\..\include" /I "..\..\os\win32" /I "..\..\server\mpm\winnt" /I "..\..\srclib\apr\include" /I "../../srclib/apr-util/include" /I "..\..\srclib\openssl\inc32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_ssl" /FD /c
+# ADD CPP /nologo /MD /W3 /O2 /I "../../include" /I "../../os/win32" /I "../../server/mpm/winnt" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Release\mod_ssl" /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
-# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"..\..\srclib\openssl\out32dll" /subsystem:windows /dll /incremental:no /map /out:"Release/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
+# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"../../srclib/openssl/out32dll" /subsystem:windows /dll /incremental:no /map /out:"Release/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
 
 !ELSEIF  "$(CFG)" == "mod_ssl - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\include" /I "..\..\os\win32" /I "..\..\server\mpm\winnt" /I "..\..\srclib\apr\include" /I "..\..\srclib\apr-util\include" /I "..\..\srclib\openssl\inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_ssl" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../../include" /I "../../os/win32" /I "../../server/mpm/winnt" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_ssl" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
-# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"..\..\srclib\openssl\out32dll" /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
+# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"../../srclib/openssl/out32dll" /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
 
 !ENDIF 
 
