@@ -84,6 +84,27 @@ stat() properly */
 #include <sys/types.h>
 #include <sys/stat.h>
 
+/* So that we can use inline on some critical functions, and use
+ * GNUC attributes (such as to get -Wall warnings for printf-like
+ * functions).  Only do this in gcc 2.7 or later ... it may work
+ * on earlier stuff, but why chance it.
+ *
+ * We've since discovered that the gcc shipped with NeXT systems
+ * as "cc" is completely broken.  It claims to be __GNUC__ and so
+ * on, but it doesn't implement half of the things that __GNUC__
+ * means.  In particular it's missing inline and the __attribute__
+ * stuff.  So we hack around it.  PR#1613. -djg
+ */
+#if !defined(__GNUC__) || __GNUC__ < 2 || __GNUC_MINOR__ < 7 || defined(NEXT)
+#define ap_inline
+#define __attribute__(__x)
+#define ENUM_BITFIELD(e,n,w)  signed int n : w
+#else
+#define ap_inline __inline__
+#define USE_GNU_INLINE
+#define ENUM_BITFIELD(e,n,w)  e n : w
+#endif
+
 #ifdef WIN32
 /* include process.h first so we can override spawn[lv]e* properly */
 #include <process.h>
@@ -888,27 +909,6 @@ typedef int rlim_t;
 #define ap_private_extern __private_extern__
 #else
 #define ap_private_extern
-#endif
-
-/* So that we can use inline on some critical functions, and use
- * GNUC attributes (such as to get -Wall warnings for printf-like
- * functions).  Only do this in gcc 2.7 or later ... it may work
- * on earlier stuff, but why chance it.
- *
- * We've since discovered that the gcc shipped with NeXT systems
- * as "cc" is completely broken.  It claims to be __GNUC__ and so
- * on, but it doesn't implement half of the things that __GNUC__
- * means.  In particular it's missing inline and the __attribute__
- * stuff.  So we hack around it.  PR#1613. -djg
- */
-#if !defined(__GNUC__) || __GNUC__ < 2 || __GNUC_MINOR__ < 7 || defined(NEXT)
-#define ap_inline
-#define __attribute__(__x)
-#define ENUM_BITFIELD(e,n,w)  signed int n : w
-#else
-#define ap_inline __inline__
-#define USE_GNU_INLINE
-#define ENUM_BITFIELD(e,n,w)  e n : w
 #endif
 
 /*
