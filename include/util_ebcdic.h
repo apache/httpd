@@ -67,8 +67,8 @@ extern "C" {
 
 #include "apr_xlate.h"
 
-extern ap_xlate_t *hdrs_to_ascii, *hdrs_from_ascii;
-extern ap_xlate_t *locale_to_ascii, *locale_from_ascii;
+extern ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
+extern ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 
 ap_status_t ap_init_ebcdic(ap_pool_t *);
 

@@ -65,32 +65,32 @@
 #include "http_log.h"
 #include "util_ebcdic.h"
 
-ap_xlate_t *hdrs_to_ascii, *hdrs_from_ascii;
-ap_xlate_t *locale_to_ascii, *locale_from_ascii;
+ap_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
+ap_xlate_t *ap_locale_to_ascii, *ap_locale_from_ascii;
 
 ap_status_t ap_init_ebcdic(ap_pool_t *pool)
 {
     ap_status_t rv;
     char buf[80];
 
-    rv = ap_xlate_open(&hdrs_to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
+    rv = ap_xlate_open(&ap_hdrs_to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                      "ap_xlate_open() failed");
         return rv;
     }
 
-    rv = ap_xlate_open(&hdrs_from_ascii, APR_DEFAULT_CHARSET, "ISO8859-1", pool);
+    rv = ap_xlate_open(&ap_hdrs_from_ascii, APR_DEFAULT_CHARSET, "ISO8859-1", pool);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                      "ap_xlate_open() failed");
         return rv;
     }
 
-    locale_to_ascii = hdrs_to_ascii; /* TODO: "ISO8859-1" to APR_LOCALE_CHARSET */
-    locale_from_ascii = hdrs_from_ascii; /* TODO: APR_LOCALE_CHARSET to "ISO8859-1" */
+    ap_locale_to_ascii = ap_hdrs_to_ascii; /* TODO: "ISO8859-1" to APR_LOCALE_CHARSET */
+    ap_locale_from_ascii = ap_hdrs_from_ascii; /* TODO: APR_LOCALE_CHARSET to "ISO8859-1" */
 
-    rv = ap_MD5InitEBCDIC(hdrs_to_ascii);
+    rv = ap_MD5InitEBCDIC(ap_hdrs_to_ascii);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                      "ap_MD5InitEBCDIC() failed");

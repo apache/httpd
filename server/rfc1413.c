@@ -156,7 +156,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 		sav_our_port);
 #ifdef CHARSET_EBCDIC
     inbytes_left = outbytes_left = buflen;
-    ap_xlate_conv_buffer(hdrs_to_ascii, buffer, &inbytes_left,
+    ap_xlate_conv_buffer(ap_hdrs_to_ascii, buffer, &inbytes_left,
                          buffer, &outbytes_left);
 #endif
 
@@ -209,7 +209,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
 /* RFC1413_USERLEN = 512 */
 #ifdef CHARSET_EBCDIC
     inbytes_left = outbytes_left = i;
-    ap_xlate_conv_buffer(hdrs_from_ascii, buffer, &inbytes_left,
+    ap_xlate_conv_buffer(ap_hdrs_from_ascii, buffer, &inbytes_left,
                          buffer, &outbytes_left);
 #endif
     if (sscanf(buffer, "%u , %u : USERID :%*[^:]:%512s", &rmt_port, &our_port,
