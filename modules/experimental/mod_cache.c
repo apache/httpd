@@ -752,9 +752,6 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
 {
     cache_server_conf *ps = apr_pcalloc(p, sizeof(cache_server_conf));
 
-    /* 1 if the cache is enabled, 0 otherwise */
-    ps->cacheon = 0;
-    ps->cacheon_set = 0;
     /* array of URL prefixes for which caching is enabled */
     ps->cacheenable = apr_array_make(p, 10, sizeof(struct cache_enable));
     /* array of URL prefixes for which caching is disabled */
@@ -784,9 +781,6 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
     cache_server_conf *base = (cache_server_conf *) basev;
     cache_server_conf *overrides = (cache_server_conf *) overridesv;
 
-    /* 1 if the cache is enabled, 0 otherwise */
-    ps->cacheon = 
-        (overrides->cacheon_set == 0) ? base->cacheon : overrides->cacheon;
     /* array of URL prefixes for which caching is disabled */
     ps->cachedisable = apr_array_append(p, 
                                         base->cachedisable, 
@@ -831,17 +825,6 @@ static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
 
 }
 
-static const char *set_cache_on(cmd_parms *parms, void *dummy, int flag)
-{
-    cache_server_conf *conf;
-
-    conf =
-        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
-                                                  &cache_module);
-    conf->cacheon = 1;
-    conf->cacheon_set = 1;
-    return NULL;
-}
 static const char *set_cache_ignore_cachecontrol(cmd_parms *parms,
                                                  void *dummy, int flag)
 {
@@ -968,8 +951,6 @@ static const command_rec cache_cmds[] =
      * This is more intuitive that requiring a LoadModule directive.
      */
 
-    AP_INIT_FLAG("CacheOn", set_cache_on, NULL, RSRC_CONF,
-                 "On if the transparent cache should be enabled"),
     AP_INIT_TAKE2("CacheEnable", add_cache_enable, NULL, RSRC_CONF,
                   "A cache type and partial URL prefix below which "
                   "caching is enabled"),

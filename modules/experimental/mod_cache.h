@@ -163,8 +163,6 @@ struct cache_disable {
 
 /* static information about the local cache */
 typedef struct {
-    int cacheon;			/* Cache enabled? */
-    int cacheon_set;
     apr_array_header_t *cacheenable;	/* URLs to cache */
     apr_array_header_t *cachedisable;	/* URLs not to cache */
     apr_time_t maxex;			/* Maximum time to keep cached files in msecs */

@@ -1,5 +1,9 @@
 Changes with Apache 2.0.41
 
+  *) Remove CacheOn config directive since it is set but never checked.
+     No sense wasting cycles on unused code. Besides, the only truly
+     bug free code is deleted code. :)   [Paul J. Reder]
+
   *) BufferLogs are now run-time enabled, and the log_config now has 2 new
      callbacks to allow a 3rd party module to actually do the writing of the
      log file [Ian Holsman]
