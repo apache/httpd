@@ -375,7 +375,6 @@ static void initialize_secret(server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s, "Digest: done");
 }
 #endif
-#endif
 
 #ifdef HAVE_SHMEM_MM
 static void initialize_tables(server_rec *s)
