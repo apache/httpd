@@ -323,7 +323,6 @@ static void lingering_close (request_rec *r)
 
     /* Prevent a slow-drip client from holding us here indefinitely */
 
-    kill_timeout(r);                 /* Remove any leftover timeouts */
     hard_timeout("lingering_close", r);
 
     /* Send any leftover data to the client, but never try to again */
@@ -341,6 +340,7 @@ static void lingering_close (request_rec *r)
 	if (errno != ENOTCONN)
 	    log_unixerr("shutdown", NULL, "lingering_close", r->server);
 	bclose(r->connection->client);
+	kill_timeout(r);
 	return;
     }
 
@@ -1583,6 +1583,7 @@ void child_main(int child_num_arg)
 #endif    
 
     while (1) {
+	int errsave;
 	BUFF *conn_io;
 	request_rec *r;
       
@@ -1629,10 +1630,13 @@ void child_main(int child_num_arg)
 #else
             srv = select(listenmaxfd+1, &main_fds, NULL, NULL, NULL);
 #endif
+            errsave = errno;
+
             sync_scoreboard_image();
             if (scoreboard_image->global.exit_generation >= generation)
                 exit(0);
 
+            errno = errsave;
             if (srv < 0 && errno != EINTR)
                 log_unixerr("select", "(listen)", NULL, server_conf);
 
