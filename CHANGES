@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) Remove 2Gb log file size restriction on some 32-bit platforms.
+     PR 13511.  [Joe Orton]
+
   *) mod_logio no longer removes the EOS bucket. PR 27928.
      [Bojan Smojver <bojan rexursive.com>]
 
@@ -21,24 +24,24 @@ Changes with Apache 2.0.50
 
   *) Fix a segfault when requests for shared memory fails and returns
      NULL. Fix a segfault caused by a lack of bounds checking on the
-     cache. PR 24801 [Graham Leggett]
+     cache.  PR 24801.  [Graham Leggett]
 
   *) Throw an error message if an attempt is made to use the LDAPTrustedCA
      or LDAPTrustedCAType directives in a VirtualHost. PR 26390
      [Brad Nicholes]
 
   *) Fix a potential segfault if the bind password in the LDAP cache
-     is NULL. PR 28250 [Jari Ahonen <jah@progress.com>]
+     is NULL.  PR 28250.  [Jari Ahonen <jah progress.com>]
 
   *) Quotes cannot be used around require group and require dn
      directives, update the documentation to reflect this. Also add
      quotes around the dn and group within debug messages, to make it
      more obvious why authentication is failing if quotes are used in
-     error. PR 19304 [Graham Leggett]
+     error.  PR 19304.  [Graham Leggett]
 
   *) The Microsoft LDAP SDK escapes filters for us, stop util_ldap
      from escaping filters twice when the backslash character is used.
-     PR 24437 [Jess Holle <jessh@ptc.com>]
+     PR 24437.  [Jess Holle <jessh ptc.com>]
 
   *) Overhaul handling of LDAP error conditions, so that the util_ldap_*
      functions leave the connections in a sane state after errors have

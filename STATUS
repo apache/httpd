@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/31 09:47:50 $]
+Last modified at [$Date: 2004/06/01 15:30:15 $]
 
 Release:
 
@@ -95,19 +95,6 @@ PATCHES TO BACKPORT FROM 2.1
        instead of db3. Fixed complaints about unpackaged files.
        build/rpm/httpd.spec.in: r1.5
        +1: minfrin, nd
- 
-    *) Use APR_LARGEFILE when opening log files, and not APR_WRITE,
-       allowing >2Gb log files on some platforms with a 32-bit off_t
-       http://www.apache.org/~jorton/largelog.diff
-       
-       which is:
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c?r1=1.143&r2=1.144
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c?r1=1.134&r2=1.135
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.116&r2=1.117
-       with conditional use of APR_LARGEFILE
-
-       PR: 13511
-       +1: jorton, trawick, nd
 
     *) mod_ssl: Fix potential SEGV in 'shmcb' session cache.
        modules/ssl/ssl_scache_shmcb.c: r1.26

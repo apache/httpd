@@ -50,6 +50,10 @@
 #include "util_time.h"
 #include "ap_mpm.h"
 
+#ifndef APR_LARGEFILE
+#define APR_LARGEFILE 0
+#endif
+
 typedef struct {
     char    *t_name;
     int      t_val;
@@ -158,7 +162,7 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
         return APR_EBADPATH;
     }
     if ((rc = apr_file_open(&stderr_file, filename,
-                            APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
+                            APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
                             APR_OS_DEFAULT, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                      "%s: could not open error log file %s.",
@@ -271,7 +275,7 @@ static int open_error_log(server_rec *s, apr_pool_t *p)
             return DONE;
         }
         if ((rc = apr_file_open(&s->error_log, fname,
-                               APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
+                               APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
                                APR_OS_DEFAULT, p)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                          "%s: could not open error log file %s.",
