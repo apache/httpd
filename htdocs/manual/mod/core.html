@@ -245,9 +245,15 @@ If the value is *, then the server will listen for connections on
 every IP address, otherwise it will only listen on the IP address
 specified. <p>
 
-This option can be used as an alternative method for supporting
-<A HREF="../virtual-host.html">virtual hosts</A> instead of using
-<A HREF="#virtualhost">&lt;VirtualHost&gt;</A> sections.
+Only one <code>BindAddress</code> directive can be used. For more
+control over which address and ports Apache listens to, use the
+<code><a href="#listen">Listen</a></code> directive instead of
+<code>BindAddress</code>.<p>
+
+<code>BindAddress</code> can be used as an alternative method for
+supporting <A HREF="../virtual-host.html">virtual hosts</A> using
+multiple independent servers, instead of using <code><A
+HREF="#virtualhost">&lt;VirtualHost&gt;</A></code> sections.
 
 <p><strong>See Also:</strong>
 <a href="../dns-caveats.html">DNS Issues</a><br>
@@ -783,8 +789,41 @@ Listen [<em>IP address</em>:]<em>port number</em><br>
 
 <p>The Listen directive instructs Apache to listen to more than one IP
 address or port; by default it responds to requests on all IP
-interfaces, but only on the port given by the <a href="#port">Port</a>
-directive.</p>
+interfaces, but only on the port given by the <code><a
+href="#port">Port</a></code> directive.</p>
+
+<tt>Listen</tt> can be used instead of <tt><a
+href="bindaddress">BindAddress</a></tt> and <tt>Port</tt>. It tells
+the server to accept incoming requests on the specified port or
+address-and-port combination. If the first format is used, with a port
+number only, the server listens to the given port on all interfaces,
+instead of the port given by the <tt>Port</tt> directive. If an IP
+address is given as well as a port, the server will listen on the
+given port and interface.  <p>
+
+Note that you may still require a <tt>Port</tt> directive so
+that URLs that Apache generates that point to your server still
+work.<p>
+
+Multiple Listen directives may be used
+to specify a number of addresses and ports to listen to. The server
+will respond to requests from any of the listed addresses and
+ports. 
+<p>
+
+For example, to make the server accept connections on both port
+80 and port 8000, use:
+<pre>
+   Listen 80
+   Listen 8000
+</pre>
+
+To make the server accept connections on two specified
+interfaces and port numbers, use
+<pre>
+   Listen 192.170.2.1:80
+   Listen 192.170.2.5:8000
+</pre>
 
 <p><strong>See Also:</strong>
 <a href="../dns-caveats.html">DNS Issues</a><br>
@@ -1626,6 +1665,12 @@ document for details on why your security could be compromised if
 the directory where logfiles are stored is writable by anyone other
 than the user that starts the server.
 
+<p><strong>NOTE</strong>: The use of &lt;VirtualHost&gt; does
+<strong>not</strong> affect what addresses Apache listens on. You may
+need to ensure that Apache is listening on the correct addresses using
+either <a href="#bindaddress">BindAddress</a> or <a
+href="#listen">Listen</a>.
+
 <p><strong>See also:</strong>
 <A HREF="../dns-caveats.html">Warnings about DNS and Apache</a><br>
 <strong>See also:</strong>
@@ -1634,7 +1679,9 @@ than the user that starts the server.
 <strong>See also:</strong>
 <a href="../host.html">Non-IP address-based Virtual Hosts</a><br>
 <strong>See also:</strong>
-<a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a>
+<a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a><br>
+<strong>See also:</strong>
+<a href="../bind.html">Setting which addresses and ports Apache uses</a>
 </p>
 
 <!--#include virtual="footer.html" -->
