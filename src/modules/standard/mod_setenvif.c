@@ -364,6 +364,9 @@ static int match_headers(request_rec *r)
 		break;
 	    case SPECIAL_NOT:
 		val = ap_table_get(r->headers_in, b->name);
+		if (val == NULL) {
+		    val = ap_table_get(r->subprocess_env, b->name);
+		}
 		break;
 	    }
         }

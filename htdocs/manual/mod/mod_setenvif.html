@@ -261,7 +261,8 @@
    HREF="directive-dict.html#Compatibility"
    REL="Help"
   ><STRONG>Compatibility:</STRONG></A> Apache 1.3 and above; the
-  Request_Protocol keyword is only available with 1.3.7 and later
+  Request_Protocol keyword and environment-variable matching are only
+  available with 1.3.7 and later
   </P>
   <P>
   The <SAMP>SetEnvIf</SAMP> directive defines environment variables
@@ -299,15 +300,34 @@
   <SAMP>Host</SAMP>, <SAMP>User-Agent</SAMP>, and <SAMP>Referer</SAMP>.
   </P>
   <P>
+  If the <EM>attribute</EM> name doesn't match any of the special keywords,
+  nor any of the request's header field names, it is tested as the name
+  of an environment variable in the list of those associated with the request.
+  This allows <CODE>SetEnvIf</CODE> directives to test against the result
+  of prior matches.
+  </P>
+  <BLOCKQUOTE>
+   <STRONG>Only those environment variables defined by earlier
+   <CODE>SetEnvIf[NoCase]</CODE> directives are available for testing in
+   this manner.  'Earlier' means that they were defined at a broader scope
+   (such as server-wide) or previously in the current directive's
+   scope.</STRONG>
+  </BLOCKQUOTE>
+  <P>
   Example:
   </P>
   <PRE>
-   SetEnvIf Request_URI "\.(gif)|(jpg)|(xbm)$" object_is_image
+   SetEnvIf Request_URI "\.gif$" object_is_image=gif
+   SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
+   SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
+        :
    SetEnvIf Referer www\.mydomain\.com intra_site_referral
+        :
+   SetEnvIf object_is_image xbm XBIT_PROCESSING=1
   </PRE>
   <P>
-  The first will set the envariable <SAMP>object_is_image</SAMP> if the
-  request was for an image file, and the second sets
+  The first three will set the envariable <SAMP>object_is_image</SAMP> if the
+  request was for an image file, and the fourth sets
   <SAMP>intra_site_referral</SAMP> if the referring page was somewhere
   on the <SAMP>www.mydomain.com</SAMP> Web site.
   </P>
