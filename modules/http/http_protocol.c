@@ -2204,7 +2204,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
             (void) ap_rflush(r);
             break;
         }
-        else if (read_rv != APR_EAGAIN) {
+        else if (ap_canonical_error(read_rv) != APR_EAGAIN) {
             r->connection->aborted = 1;
             break;
         }
