@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/24 04:16:49 $]
+Last modified at [$Date: 2002/12/03 18:26:44 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -302,10 +302,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Architect start-up code that avoids initializing all the modules 
       in the parent process on platforms that do not support fork.
 
-    * Win32: Migrate the MPM over to use APR thread/process calls. This
-      would eliminate some code in the Win32 branch that essentially
-      duplicates what is in APR.
-
     * There are still a number of places in the code where we are
       losing error status (i.e. throwing away the error returned by a
       system call and replacing it with a generic error code)
@@ -414,6 +410,20 @@ TODO ISSUES REMAINING IN MOD_SSL:
     * the shmcb code should just align its memory segment rather than
       jumping through all the "safe" memcpy and memset hoops
 
+WISH LIST
+    * mod_proxy performance: when mod_proxy is configured to do proxy
+      gateway (aka reverse proxy), it would be nice to be able to reuse
+      connections to the backend servers. Now, connections to the 
+      backend servers are taken down when the corresponding frontend
+      connection is taken down.
+
+    * mod_proxy: Ability to run SSL over proxy gateway connections,
+      encrypting (or reencrypting) at the proxy.
+
+    * mod_proxy: Add capability of mod_proxy to load balance across
+      a farm of backend servers.
+
+    * mod_cache: Handle ESI tags.
 
 EXPERIMENTAL MODULES:
 
@@ -426,6 +436,10 @@ EXPERIMENTAL MODULES:
     * mod_cache: handle cache_control: no_cache "field_name" to enable 
       cacheing the response w/o header "field_name"
       See RFC2616 section 14.9.1
+
+    * mod_mem_cache: Consider adding a RevalidateTimeout directive to
+      specify time at which local cached content is to be revalidated
+      (ie, underlying file stat'ed to see if it has changed).
 
     * mod_cache: CacheEnable/CacheDisable should accept regular expressions.
 
