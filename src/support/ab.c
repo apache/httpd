@@ -89,20 +89,12 @@
 /* affects include files on Solaris */
 #define BSD_COMP
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "conf.h"
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <netdb.h>
 #include <sys/time.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#ifdef AIX
-#include <sys/select.h>
-#endif
 
 /* ------------------- DEFINITIONS -------------------------- */
 
