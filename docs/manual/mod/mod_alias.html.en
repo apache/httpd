@@ -169,8 +169,8 @@ a different URL</td></tr>
 
 <div class="note"><h3>Note</h3> <p>Redirect directives take precedence over
 Alias and ScriptAlias directives, irrespective of their ordering in
-the configuration file. Also, <var>URL-path</var> must be an absolute
-path, not a relative path, even when used with .htaccess files or
+the configuration file. Also, <var>URL-path</var> must be a fully
+qualified URL, not a relative path, even when used with .htaccess files or
 inside of <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
 sections.</p></div>
 
