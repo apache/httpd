@@ -68,13 +68,18 @@
 
 #include "ap_config.h"
 #include <sys/types.h>
-#if defined(MPE) || defined(QNX)
+#include "ap.h"
+#include "ap_md5.h"
+#if defined(MPE) || defined(QNX) || defined(WIN32)
 #include <signal.h>
 #else
 #include <sys/signal.h>
 #endif
-#include "ap.h"
-#include "ap_md5.h"
+
+#ifdef WIN32
+#include <conio.h>
+#define unlink _unlink
+#endif
 
 #ifdef CHARSET_EBCDIC
 #define LF '\n'
@@ -197,7 +202,7 @@ int main(int argc, char *argv[])
     int found;
 
     tn = NULL;
-    signal(SIGINT, (void (*)()) interrupted);
+    signal(SIGINT, (void (*)(int)) interrupted);
     if (argc == 5) {
 	if (strcmp(argv[1], "-c"))
 	    usage();

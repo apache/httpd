@@ -49,6 +49,8 @@ ALL : "$(OUTDIR)\htpasswd.exe"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\ap_cpystrn.obj"
+	-@erase "$(INTDIR)\ap_getpass.obj"
 	-@erase "$(INTDIR)\ap_md5c.obj"
 	-@erase "$(INTDIR)\htpasswd.obj"
 	-@erase "$(INTDIR)\vc50.idb"
@@ -67,11 +69,12 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\htpasswd.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=..\ap\Release\ap.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:console\
- /incremental:no /pdb:"$(OUTDIR)\htpasswd.pdb" /machine:I386\
- /out:"$(OUTDIR)\htpasswd.exe" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
+ advapi32.lib shell32.lib /nologo /subsystem:console /incremental:no\
+ /pdb:"$(OUTDIR)\htpasswd.pdb" /machine:I386 /out:"$(OUTDIR)\htpasswd.exe" 
 LINK32_OBJS= \
+	"$(INTDIR)\ap_cpystrn.obj" \
+	"$(INTDIR)\ap_getpass.obj" \
 	"$(INTDIR)\ap_md5c.obj" \
 	"$(INTDIR)\htpasswd.obj"
 
@@ -99,6 +102,8 @@ ALL : "$(OUTDIR)\htpasswd.exe"
 !ENDIF 
 
 CLEAN :
+	-@erase "$(INTDIR)\ap_cpystrn.obj"
+	-@erase "$(INTDIR)\ap_getpass.obj"
 	-@erase "$(INTDIR)\ap_md5c.obj"
 	-@erase "$(INTDIR)\htpasswd.obj"
 	-@erase "$(INTDIR)\vc50.idb"
@@ -120,11 +125,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\htpasswd.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=..\ap\Debug\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib\
- comdlg32.lib advapi32.lib shell32.lib /nologo /subsystem:console\
- /incremental:yes /pdb:"$(OUTDIR)\htpasswd.pdb" /debug /machine:I386\
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\
+ advapi32.lib shell32.lib /nologo /subsystem:console /incremental:yes\
+ /pdb:"$(OUTDIR)\htpasswd.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\htpasswd.exe" /pdbtype:sept 
 LINK32_OBJS= \
+	"$(INTDIR)\ap_cpystrn.obj" \
+	"$(INTDIR)\ap_getpass.obj" \
 	"$(INTDIR)\ap_md5c.obj" \
 	"$(INTDIR)\htpasswd.obj"
 
@@ -168,26 +175,65 @@ LINK32_OBJS= \
 
 !IF "$(CFG)" == "htpasswd - Win32 Release" || "$(CFG)" ==\
  "htpasswd - Win32 Debug"
-SOURCE=..\ap\ap_md5c.c
+SOURCE=..\ap\ap_cpystrn.c
 
 !IF  "$(CFG)" == "htpasswd - Win32 Release"
 
-DEP_CPP_AP_MD=\
+DEP_CPP_AP_CP=\
+	"..\include\alloc.h"\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
-	"..\include\ap_md5.h"\
 	"..\include\ap_mmn.h"\
+	"..\include\buff.h"\
 	"..\include\hsregex.h"\
+	"..\include\httpd.h"\
+	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
+	"..\os\win32\readdir.h"\
 	
 
-"$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
+"$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "htpasswd - Win32 Debug"
 
+DEP_CPP_AP_CP=\
+	"..\include\alloc.h"\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\buff.h"\
+	"..\include\hsregex.h"\
+	"..\include\httpd.h"\
+	"..\include\util_uri.h"\
+	"..\os\win32\os.h"\
+	"..\os\win32\readdir.h"\
+	
+
+"$(INTDIR)\ap_cpystrn.obj" : $(SOURCE) $(DEP_CPP_AP_CP) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\ap\ap_getpass.c
+DEP_CPP_AP_GE=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+"$(INTDIR)\ap_getpass.obj" : $(SOURCE) $(DEP_CPP_AP_GE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=..\ap\ap_md5c.c
 DEP_CPP_AP_MD=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
@@ -196,20 +242,11 @@ DEP_CPP_AP_MD=\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_AP_MD=\
-	"..\ap\ebcdic.h"\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\ap_md5c.obj" : $(SOURCE) $(DEP_CPP_AP_MD) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ENDIF 
 
 SOURCE=.\htpasswd.c
 
@@ -240,12 +277,6 @@ DEP_CPP_HTPAS=\
 	"..\include\hsregex.h"\
 	"..\os\win32\getopt.h"\
 	"..\os\win32\os.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_HTPAS=\
-	"..\include\ap_config_auto.h"\
-	"..\include\os.h"\
 	
 
 "$(INTDIR)\htpasswd.obj" : $(SOURCE) $(DEP_CPP_HTPAS) "$(INTDIR)"

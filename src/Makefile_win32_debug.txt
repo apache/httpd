@@ -35,6 +35,7 @@ _build:
 	cd ..
 	cd support
 	 nmake /nologo CFG="htpasswd - Win32 Debug" -f htpasswd.mak
+	 nmake /nologo CFG="htdigest - Win32 Debug" -f htdigest.mak
 	cd ..
 	cd main
 	 nmake /nologo CFG="gen_uri_delims - Win32 Debug" -f gen_uri_delims.mak
@@ -80,6 +81,7 @@ _install:
 	copy os\win32\ApacheModuleUserTrackD\ApacheModuleUserTrack.dll $(INSTDIR)\modules
 	copy modules\proxy\Debug\ApacheModuleProxy.dll $(INSTDIR)\modules
 	copy support\Debug\htpasswd.exe $(INSTDIR)\bin
+	copy support\Debug\htdigest.exe $(INSTDIR)\bin
 
 clean:
 	cd os\win32
@@ -93,6 +95,7 @@ clean:
 	cd ..
 	cd support
 	 nmake /nologo CFG="htpasswd - Win32 Debug" -f htpasswd.mak clean
+	 nmake /nologo CFG="htdigest - Win32 Debug" -f htdigest.mak clean
 	cd ..
 	cd main
 	 nmake /nologo CFG="gen_uri_delims - Win32 Debug" -f gen_uri_delims.mak clean
