@@ -1,7 +1,11 @@
 Changes with Apache 1.3b4
 
+  *) The NeXT cc (which is gcc hacked up) doesn't appear to support some
+     gcc functionality.  Work around it.
+     [Keith Severson <keith@sssd.navy.mil>] PR#1613
+
   *) Some linkers complain when .o files contain no functions.
-     [Dean Gaudet] PR#1614
+     [Keith Severson <keith@sssd.navy.mil>] PR#1614
 
   *) Some const declarations in mod_imap.c that were added for debugging
      purposes caused some compilers heartburn without adding any

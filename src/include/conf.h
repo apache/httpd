@@ -730,8 +730,14 @@ typedef int rlim_t;
  * GNUC attributes (such as to get -Wall warnings for printf-like
  * functions).  Only do this in gcc 2.7 or later ... it may work
  * on earlier stuff, but why chance it.
+ *
+ * We've since discovered that the gcc shipped with NeXT systems
+ * as "cc" is completely broken.  It claims to be __GNUC__ and so
+ * on, but it doesn't implement half of the things that __GNUC__
+ * means.  In particular it's missing inline and the __attribute__
+ * stuff.  So we hack around it.  PR#1613. -djg
  */
-#if !defined(__GNUC__) || __GNUC__ < 2 || __GNUC_MINOR__ < 7
+#if !defined(__GNUC__) || __GNUC__ < 2 || __GNUC_MINOR__ < 7 || defined(NEXT)
 #define ap_inline
 #define __attribute__(__x)
 #else
