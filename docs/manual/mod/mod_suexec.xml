@@ -28,7 +28,7 @@ and Group.</description>
 later.</compatibility>
 
 <usage>
-    <p>The <code>SuexecUserGroup</code> directive allows you to
+    <p>The <directive>SuexecUserGroup</directive> directive allows you to
     specify a user and group for CGI programs to run as. Non-CGI
     requests are still processes with the user specified in the
     User directive. This directive replaces using the User and
