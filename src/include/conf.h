@@ -87,6 +87,7 @@ char *crypt(const char *pw, const char *salt);
 #include <sys/time.h>     
 #define NEED_STRERROR
 typedef int rlim_t;
+#define NO_LINGCLOSE
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF
