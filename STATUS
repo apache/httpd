@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/10/28 15:15:32 $]
+Last modified at [$Date: 2002/10/28 15:20:40 $]
 
 Release:
 
@@ -68,14 +68,14 @@ CURRENT VOTES:
       such that MMN major number changes and eliminating non-experimental
       modules are deferred for the next minor version bump (e.g. 2.1, 2.2 
       or 3.0).
-        +1: wrowe, jerenkrantz, aaron, brianp, trawick, stoddard
+        +1: wrowe, jerenkrantz, aaron, brianp, trawick, stoddard, jwoolley
          0: 
         -1: 
 
     * Defer the Auth module overhaul to the next minor version bump
       (e.g. 2.1, 2.2, 3.0) on the condition that forward compatibility
       resolution is adopted.
-        +1: wrowe, aaron, trawick, stoddard
+        +1: wrowe, aaron, trawick, stoddard, jwoolley
          0: jerenkrantz
         -1: 
 
@@ -85,13 +85,13 @@ CURRENT VOTES:
       Perl, etc.  In pratical terms, this implies C-T-R-T-C, where
       patches are (generally) first applied to the development branch,
       tested, and then (after vote) applied to the stable branch.
-        +1: wrowe, jerenkrantz, aaron, trawick, stoddard
+        +1: wrowe, jerenkrantz, aaron, trawick, stoddard, jwoolley
          0: 
         -1: 
 
     * Branch APACHE_2_0_BRANCH today, changing the version in CVS HEAD
       to 2.1.0-dev.
-        +1 [from APACHE_2_0_43]: wrowe, aaron, trawick, stoddard
+        +1 [from APACHE_2_0_43]: wrowe, aaron, trawick, stoddard, jwoolley
         +1 [from HEAD]: 
          0: jerenkrantz
         -1: 
@@ -100,7 +100,7 @@ CURRENT VOTES:
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames, ianh, Ken, wrowe
+         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley
            wrowe - prefer httpd.default.conf to avoid ambiguity with cvs
 
       b) tailored httpd-std.conf should be copied by install to
@@ -116,7 +116,7 @@ CURRENT VOTES:
          +1:   striker
            ianh - medium/big sites don't use 'standard config' anyway, as it
                   usually needs major customizations
-         -1:   Ken, wrowe
+         -1:   Ken, wrowe, jwoolley
            wrowe - diff is wonderful when comparing old/new default configs,
                    even for customized sites that ianh mentions
 
