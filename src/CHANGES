@@ -1,6 +1,3 @@
-  *) Edit Configure and INSTALL to reflect the change from Configuration
-     to Configuration.tmpl. [Jim Jagielski]
-
   *) If there was no default MIME type defined, Apache sent Content-type:
      without a newline, thus swallowing the next header. Changed to send no
      Content-type: at all. [Ben Laurie]
