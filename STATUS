@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/03 18:07:36 $]
+Last modified at [$Date: 2002/06/03 18:14:44 $]
 
 Release:
 
@@ -60,6 +60,9 @@ RELEASE SHOWSTOPPERS:
       to fix, probably just some extraneous #include's that are fouling
       things up.
       PR: 9457
+      Jeff: See my reply and patch in the PR (and previous commit to
+      stop using "pipe" as a field name).  If patch is committed, we
+      should be okay.  I'll wait to see if the user tests the patch.
 
     * Win32: httpd won't start.  There was a command line args problem
       that got fixed, but now something else is wrong.
