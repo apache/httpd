@@ -75,6 +75,16 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) Add charset to the painfully old example CGI scripts.
+       [These should really be replaced with proper encoding of the output.]
+       svn rev 111580
+       +1: fielding
+
+    *) conf: Remove AddDefaultCharset from the default configuration because
+       setting a site-wide default does more harm than good. PR 23421.
+       svn rev 111581
+       +1: fielding
+
     *) mpm/winnt/child.c: thread_num is long, aught to use %ld not %d for logs
        svn rev 106653
        +1: wrowe, nd, trawick
