@@ -111,10 +111,10 @@ module AP_MODULE_DECLARE_DATA isapi_module;
 /* Our isapi server config structure */
 typedef struct {
     apr_array_header_t *loaded;
-    DWORD ReadAheadBuffer;
-    int LogNotSupported;
-    int AppendLogToErrors;
-    int AppendLogToQuery;
+    DWORD read_ahead_buflen;
+    int log_unsupported;
+    int log_to_errlog;
+    int log_to_query;
 } isapi_server_conf;
 
 typedef struct isapi_loaded isapi_loaded;
@@ -123,10 +123,23 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
                                request_rec *r, const char *fpath, 
                                isapi_loaded** isa);
 
+static void *create_isapi_server_config(apr_pool_t *p, server_rec *s)
+{
+    isapi_server_conf *sconf = apr_palloc(p, sizeof(isapi_server_conf));
+    sconf->loaded = apr_array_make(p, 20, sizeof(isapi_loaded*));
+    
+    sconf->read_ahead_buflen = 49152;
+    sconf->log_unsupported    = -1;
+    sconf->log_to_errlog   = 0;
+    sconf->log_to_query    = 0;
+
+    return sconf;
+}
+
 /*
- * Command handler for the ISAPIReadAheadBuffer directive, which is TAKE1
+ * Command handler for the ISAPIread_ahead_buflen directive, which is TAKE1
  */
-static const char *isapi_cmd_readaheadbuffer(cmd_parms *cmd, void *config, 
+static const char *isapi_cmd_read_ahead_buflen(cmd_parms *cmd, void *config, 
                                              char *arg)
 {
     isapi_server_conf *sconf = ap_get_module_config(cmd->server->module_config,
@@ -135,65 +148,65 @@ static const char *isapi_cmd_readaheadbuffer(cmd_parms *cmd, void *config,
     long val;
 
     if (((val = strtol(arg, (char **) &scan, 10)) <= 0) || *scan)
-        return "ISAPIReadAheadBuffer must be a legitimate value.";
+        return "ISAPIread_ahead_buflen must be a legitimate value.";
     
-    sconf->ReadAheadBuffer = val;
+    sconf->read_ahead_buflen = val;
     return NULL;
 }
 
 /*
- * Command handler for the ISAPIReadAheadBuffer directive, which is TAKE1
+ * Command handler for the ISAPIread_ahead_buflen directive, which is TAKE1
  */
-static const char *isapi_cmd_lognotsupported(cmd_parms *cmd, void *config, 
+static const char *isapi_cmd_log_unsupported(cmd_parms *cmd, void *config, 
                                              char *arg)
 {
     isapi_server_conf *sconf = ap_get_module_config(cmd->server->module_config,
                                                &isapi_module);
 
     if (strcasecmp(arg, "on") == 0) {
-        sconf->LogNotSupported = -1;
+        sconf->log_unsupported = -1;
     }
     else if (strcasecmp(arg, "off") == 0) {
-        sconf->LogNotSupported = 0;
+        sconf->log_unsupported = 0;
     }
     else {
-        return "ISAPILogNotSupported must be on or off";
+        return "ISAPIlog_unsupported must be on or off";
     }
     return NULL;
 }
 
-static const char *isapi_cmd_appendlogtoerrors(cmd_parms *cmd, void *config, 
+static const char *isapi_cmd_log_to_errlog(cmd_parms *cmd, void *config, 
                                                char *arg)
 {
     isapi_server_conf *sconf = ap_get_module_config(cmd->server->module_config,
                                                    &isapi_module);
 
     if (strcasecmp(arg, "on") == 0) {
-        sconf->AppendLogToErrors = -1;
+        sconf->log_to_errlog = -1;
     }
     else if (strcasecmp(arg, "off") == 0) {
-        sconf->AppendLogToErrors = 0;
+        sconf->log_to_errlog = 0;
     }
     else {
-        return "ISAPIAppendLogToErrors must be on or off";
+        return "ISAPIlog_to_errlog must be on or off";
     }
     return NULL;
 }
 
-static const char *isapi_cmd_appendlogtoquery(cmd_parms *cmd, void *config, 
+static const char *isapi_cmd_log_to_query(cmd_parms *cmd, void *config, 
                                               char *arg)
 {
     isapi_server_conf *sconf = ap_get_module_config(cmd->server->module_config,
                                                    &isapi_module);
 
     if (strcasecmp(arg, "on") == 0) {
-        sconf->AppendLogToQuery = -1;
+        sconf->log_to_query = -1;
     }
     else if (strcasecmp(arg, "off") == 0) {
-        sconf->AppendLogToQuery = 0;
+        sconf->log_to_query = 0;
     }
     else {
-        return "ISAPIAppendLogToQuery must be on or off";
+        return "ISAPIlog_to_query must be on or off";
     }
     return NULL;
 }
@@ -243,17 +256,17 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
 }
 
 static const command_rec isapi_cmds[] = {
-AP_INIT_TAKE1("ISAPIReadAheadBuffer", isapi_cmd_readaheadbuffer, NULL, RSRC_CONF,
-  "Maximum bytes to initially pass to the ISAPI handler"),
-AP_INIT_TAKE1("ISAPILogNotSupported", isapi_cmd_lognotsupported, NULL, RSRC_CONF,
-  "Log requests not supported by the ISAPI server"),
-AP_INIT_TAKE1("ISAPIAppendLogToErrors", isapi_cmd_appendlogtoerrors, NULL, RSRC_CONF,
-  "Send all Append Log requests to the error log"),
-AP_INIT_TAKE1("ISAPIAppendLogToQuery", isapi_cmd_appendlogtoquery, NULL, RSRC_CONF,
-  "Append Log requests are concatinated to the query args"),
-AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL, RSRC_CONF,
-  "Cache the specified ISAPI extension in-process"),
-{ NULL }
+    AP_INIT_TAKE1("ISAPIReadAheadBuffer", isapi_cmd_read_ahead_buflen, NULL,
+        RSRC_CONF, "Maximum bytes to initially pass to the ISAPI handler"),
+    AP_INIT_TAKE1("ISAPILogNotSupported", isapi_cmd_log_unsupported, NULL,
+        RSRC_CONF, "Log requests not supported by the ISAPI server"),
+    AP_INIT_TAKE1("ISAPIAppendLogToErrors", isapi_cmd_log_to_errlog, NULL,
+        RSRC_CONF, "Send all Append Log requests to the error log"),
+    AP_INIT_TAKE1("ISAPIAppendLogToQuery", isapi_cmd_log_to_query, NULL,
+        RSRC_CONF, "Append Log requests are concatinated to the query args"),
+    AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL, 
+        RSRC_CONF, "Cache the specified ISAPI extension in-process"),
+    { NULL }
 };
 
 /**********************************************************
@@ -275,19 +288,6 @@ struct isapi_loaded {
     BOOL  fakeasync;
     DWORD reportversion;
 };
-
-static void *create_isapi_server_config(apr_pool_t *p, server_rec *s)
-{
-    isapi_server_conf *sconf = apr_palloc(p, sizeof(isapi_server_conf));
-    sconf->loaded = apr_array_make(p, 20, sizeof(isapi_loaded*));
-    
-    sconf->ReadAheadBuffer = 49152;
-    sconf->LogNotSupported    = -1;
-    sconf->AppendLogToErrors   = 0;
-    sconf->AppendLogToQuery    = 0;
-
-    return sconf;
-}
 
 static apr_status_t isapi_unload(isapi_loaded* isa, int force)
 {
@@ -359,7 +359,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
     if (rv)
     {
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
-                      "ISAPI %s failed to load", fpath);
+                      "ISAPI: %s failed to load", fpath);
         (*isa)->handle = NULL;
         return rv;
     }
@@ -369,7 +369,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
     if (rv)
     {
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
-                      "ISAPI %s is missing GetExtensionVersion()",
+                      "ISAPI: %s is missing GetExtensionVersion()",
                       fpath);
         apr_dso_unload((*isa)->handle);
         (*isa)->handle = NULL;
@@ -381,7 +381,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
     if (rv)
     {
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
-                      "ISAPI %s is missing HttpExtensionProc()",
+                      "ISAPI: %s is missing HttpExtensionProc()",
                       fpath);
         apr_dso_unload((*isa)->handle);
         (*isa)->handle = NULL;
@@ -397,7 +397,7 @@ static apr_status_t isapi_load(apr_pool_t *p, isapi_server_conf *sconf,
     if (!((*isa)->GetExtensionVersion)((*isa)->pVer)) {
         apr_status_t rv = apr_get_os_error();
         ap_log_rerror(APLOG_MARK, APLOG_ALERT, rv, r,
-                      "ISAPI %s call GetExtensionVersion() failed", 
+                      "ISAPI: %s call GetExtensionVersion() failed", 
                       fpath);
         apr_dso_unload((*isa)->handle);
         (*isa)->handle = NULL;
@@ -567,7 +567,7 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
     return TRUE;
 }
 
-static apr_ssize_t SendResponseHeaderEx(isapi_cid *cid, const char *stat,
+static apr_ssize_t send_response_header(isapi_cid *cid, const char *stat,
                                         const char *head, apr_size_t statlen,
                                         apr_size_t headlen)
 {
@@ -668,7 +668,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
             statlen = strlen((char*) lpvBuffer);
         if (lpdwDataType)
             headlen = strlen((char*) lpdwDataType);
-        ate = SendResponseHeaderEx(cid, (char*) lpvBuffer,
+        ate = send_response_header(cid, (char*) lpvBuffer,
                                    (char*) lpdwDataType,
                                    statlen, headlen);
         if (ate < 0) {
@@ -719,9 +719,9 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
     }
 
     case 1002: /* HSE_REQ_GET_SSPI_INFO */
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                           "ISAPI ServerSupportFunction HSE_REQ_GET_SSPI_INFO "
+                           "ISAPI: ServerSupportFunction HSE_REQ_GET_SSPI_INFO "
                            "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
@@ -730,15 +730,15 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         /* Log lpvBuffer, of lpdwSize bytes, in the URI Query (cs-uri-query) field
          */
         apr_table_set(r->notes, "isapi-parameter", (char*) lpvBuffer);
-        if (cid->sconf->AppendLogToQuery) {
+        if (cid->sconf->log_to_query) {
             if (r->args)
                 r->args = apr_pstrcat(r->pool, r->args, (char*) lpvBuffer, NULL);
             else
                 r->args = apr_pstrdup(r->pool, (char*) lpvBuffer);
         }
-        if (cid->sconf->AppendLogToErrors)
+        if (cid->sconf->log_to_errlog)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
-                          "ISAPI %s: %s", cid->r->filename,
+                          "ISAPI: %s: %s", cid->r->filename,
                           (char*) lpvBuffer);
         return TRUE;
         
@@ -750,9 +750,9 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
          * to HSE_REQ_IO_COMPLETION, and lpvBuffer may be set to NULL.
          */
         if (!cid->isa->fakeasync) {
-            if (cid->sconf->LogNotSupported)
+            if (cid->sconf->log_unsupported)
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI ServerSupportFunction HSE_REQ_IO_COMPLETION "
+                          "ISAPI: ServerSupportFunction HSE_REQ_IO_COMPLETION "
                           "is not supported: %s", r->filename);
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
@@ -770,9 +770,9 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         apr_file_t *fd;
 
         if (!cid->isa->fakeasync && (tf->dwFlags & HSE_IO_ASYNC)) {
-            if (cid->sconf->LogNotSupported)
+            if (cid->sconf->log_unsupported)
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                         "ISAPI ServerSupportFunction HSE_REQ_TRANSMIT_FILE "
+                         "ISAPI: ServerSupportFunction HSE_REQ_TRANSMIT_FILE "
                          "as HSE_IO_ASYNC is not supported: %s", r->filename);
             SetLastError(ERROR_INVALID_PARAMETER);
             return FALSE;
@@ -796,7 +796,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
              * response headers, and without, pHead simply contains text
              * (handled after this case).
              */
-            apr_ssize_t ate = SendResponseHeaderEx(cid, tf->pszStatusCode, 
+            apr_ssize_t ate = send_response_header(cid, tf->pszStatusCode, 
                                                    (char*)tf->pHead,
                                                    strlen(tf->pszStatusCode), 
                                                    tf->HeadLength);
@@ -848,9 +848,9 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
     }
 
     case 1007: /* HSE_REQ_REFRESH_ISAPI_ACL */
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI ServerSupportFunction "
+                          "ISAPI: ServerSupportFunction "
                           "HSE_REQ_REFRESH_ISAPI_ACL "
                           "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
@@ -861,17 +861,17 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         return TRUE;
 
     case 1010: /* XXX: Fake it : HSE_REQ_ASYNC_READ_CLIENT */
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI asynchronous I/O not supported: %s", 
+                          "ISAPI: asynchronous I/O not supported: %s", 
                           r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
 
     case 1011: /* HSE_REQ_GET_IMPERSONATION_TOKEN  Added in ISAPI 4.0 */
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI ServerSupportFunction "
+                          "ISAPI: ServerSupportFunction "
                           "HSE_REQ_GET_IMPERSONATION_TOKEN "
                           "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
@@ -949,17 +949,17 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
 #endif
 
     case 1014: /* HSE_REQ_ABORTIVE_CLOSE */
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE"
+                          "ISAPI: ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE"
                           " is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
 
     case 1015: /* HSE_REQ_GET_CERT_INFO_EX  Added in ISAPI 4.0 */
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI ServerSupportFunction "
+                          "ISAPI: ServerSupportFunction "
                           "HSE_REQ_GET_CERT_INFO_EX "
                           "is not supported: %s", r->filename);        
         SetLastError(ERROR_INVALID_PARAMETER);
@@ -972,7 +972,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
                                   = (LPHSE_SEND_HEADER_EX_INFO) lpvBuffer;
         /* XXX: ignore shi->fKeepConn?  We shouldn't need the advise */
         /* r->connection->keepalive = shi->fKeepConn; */
-        apr_ssize_t ate = SendResponseHeaderEx(cid, shi->pszStatus, 
+        apr_ssize_t ate = send_response_header(cid, shi->pszStatus, 
                                                shi->pszHeader,
                                                shi->cchStatus, 
                                                shi->cchHeader);
@@ -998,9 +998,9 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
 #endif
 
     case 1017: /* HSE_REQ_CLOSE_CONNECTION  Added after ISAPI 4.0 */
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI ServerSupportFunction "
+                          "ISAPI: ServerSupportFunction "
                           "HSE_REQ_CLOSE_CONNECTION "
                           "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
@@ -1016,18 +1016,18 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
     case 1020: /* HSE_REQ_EXTENSION_TRIGGER  Added after ISAPI 4.0 */
         /*  Undocumented - defined by the Microsoft Jan '00 Platform SDK
          */
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI ServerSupportFunction "
+                          "ISAPI: ServerSupportFunction "
                           "HSE_REQ_EXTENSION_TRIGGER "
                           "is not supported: %s", r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
 
     default:
-        if (cid->sconf->LogNotSupported)
+        if (cid->sconf->log_unsupported)
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                          "ISAPI ServerSupportFunction (%d) not supported: "
+                          "ISAPI: ServerSupportFunction (%d) not supported: "
                           "%s", dwHSERequest, r->filename);
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
@@ -1136,19 +1136,19 @@ apr_status_t isapi_handler (request_rec *r)
     if (ap_should_client_block(r)) {
         /* Time to start reading the appropriate amount of data,
          * and allow the administrator to tweak the number
-         * TODO: add the httpd.conf option for ReadAheadBuffer.
+         * TODO: add the httpd.conf option for read_ahead_buflen.
          */
         if (r->remaining) {
             cid->ecb->cbTotalBytes = (apr_size_t)r->remaining;
-            if (cid->ecb->cbTotalBytes > cid->sconf->ReadAheadBuffer)
-                cid->ecb->cbAvailable = cid->sconf->ReadAheadBuffer;
+            if (cid->ecb->cbTotalBytes > cid->sconf->read_ahead_buflen)
+                cid->ecb->cbAvailable = cid->sconf->read_ahead_buflen;
             else
                 cid->ecb->cbAvailable = cid->ecb->cbTotalBytes;
         }
         else
         {
             cid->ecb->cbTotalBytes = 0xffffffff;
-            cid->ecb->cbAvailable = cid->sconf->ReadAheadBuffer;
+            cid->ecb->cbAvailable = cid->sconf->read_ahead_buflen;
         }
 
         cid->ecb->lpbData = apr_pcalloc(r->pool, cid->ecb->cbAvailable + 1);
@@ -1186,7 +1186,7 @@ apr_status_t isapi_handler (request_rec *r)
     /* Check for a log message - and log it */
     if (cid->ecb->lpszLogData && *cid->ecb->lpszLogData)
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
-                      "ISAPI %s: %s", r->filename, cid->ecb->lpszLogData);
+                      "ISAPI: %s: %s", r->filename, cid->ecb->lpszLogData);
 
     switch(rv) {
         case 0:  /* Strange, but MS isapi accepts this as success */
@@ -1213,10 +1213,10 @@ apr_status_t isapi_handler (request_rec *r)
              */
             
             if (!isa->fakeasync) {
-                if (cid->sconf->LogNotSupported)
+                if (cid->sconf->log_unsupported)
                 {
                      ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
-                                   "ISAPI %s asynch I/O request refused", 
+                                   "ISAPI: %s asynch I/O request refused", 
                                    r->filename);
                      cid->r->status = HTTP_INTERNAL_SERVER_ERROR;
                 }
