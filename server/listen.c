@@ -224,8 +224,8 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
          */
         if ((status = apr_getaddrinfo(&new->bind_addr, addr, APR_UNSPEC, port, 0, 
                                       process->pool)) != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_CRIT, status, NULL,
-                          "alloc_listener: failed to set up sockaddr for %s", addr);
+            ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
+			 "alloc_listener: failed to set up sockaddr for %s", addr);
             return;
         }
         if ((status = apr_create_socket(&new->sd, new->bind_addr->sa.sin.sin_family, 
