@@ -1,5 +1,5 @@
 #!/bin/sh
-trap 'rm -rf Makefile a.out; exit' 0 1 2 3 15
+trap 'rm -rf Makefile dummy; exit' 0 1 2 3 15
 #
 # Yet another Apache Configure helper script.
 # This one exists simply to test for the existance of
@@ -17,29 +17,34 @@ trap 'rm -rf Makefile a.out; exit' 0 1 2 3 15
 #
 
 #
+# Make sure we have an argument
+#
+if [ "x$1" = "x" ]; then
+  exit 1
+fi
+
+#
 # Get makefile settings and build a basic Makefile
 #
 cd ./helpers
-rm -rf a.out
+rm -rf dummy
 cat ../Makefile.config > Makefile
 cat <<EOF >> Makefile
-TLIB=-l$1
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
 INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 all:
+	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) dummy.c -o dummy -l$1
+
 EOF
-cat <<\EOFF >> Makefile
-	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) dummy.c $(TLIB) 
-EOFF
 
 # Now run that Makefile
 `make > /dev/null 2<&1`
 
-# And see if a.out exists
-if [ -f a.out ]; then
+# And see if dummy exists
+if [ -f dummy ]; then
     echo "yes"
 else
     echo "no"

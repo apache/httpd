@@ -10,20 +10,23 @@ trap 'rm -f $tmpfile; exit' 0 1 2 3 15
 # modules and "rules". These rules are used to allow Configure to
 # be totally configured from Configuration
 #
-# Uses 3 supplemental scripts located in ./helpers: CutRule,
-# GuessOS and PrintPath
+# Uses 4 supplemental scripts located in ./helpers:
+#	CutRule: Determines the value for a specified Rule
+#	GuessOS: Uses uname to determine OS/platform
+#	PrintPath: generic "type" or "whence" replacement
+#	TestLib: See if a specified library is available
 #
-#
-# Setup some defaults
-#
+####################################################################
+## Setup some defaults
+##
 file=Configuration
 tmpfile=htconf.$$
 makefile_tmpl=Makefile.tmpl
 
-#
-# Now handle any arguments, which, for now, are -file and -make
-# to select alternate Configuration and Makefile.tmpl files
-#
+####################################################################
+## Now handle any arguments, which, for now, are -file and -make
+## to select alternate Configuration and Makefile.tmpl files
+##
 while [ "x$1" != "x" ]; do
   if [ "x$1" = "x-file" ] ; then
     shift 1; file=$1; shift 1
@@ -50,8 +53,12 @@ if [ ! -r $file ]; then
   exit 1
 fi
 
+####################################################################
+## From the Configuration file, create a "cleaned-up" version
+## that's easy to scan
+##
 #
-# First, strip comments and blank lines, remove whitespace around
+# Strip comments and blank lines, remove whitespace around
 # "=" assignments, change Rules to comments and then remove whitespace
 # before Module declarations
 #
@@ -64,17 +71,19 @@ sed 's/#.*//' $file | \
  sed 's/^[        ]*%Module/%Module/' > $tmpfile
 
 #
-# Check for syntax errors...
+# Only "assignment" ("=") statements and Module lines
+# should be left at this point. If there is other stuff
+# we bail out
 #
 if egrep -v '^%?Module[ 	]+[A-Za-z0-9_]+[ 	]+[^ 	]+$' $tmpfile \
-   | grep -v = > /dev/null
+ | grep -v = > /dev/null
 then
-   echo "Syntax error --- The configuration file is used only to"
-   echo "define the list of included modules or to set Makefile"
-   echo "options or Configure rules, and I don't see that at all:"
-   egrep -v '^Module[ 	]+[A-Za-z0-9_]+[ 	]+[^ 	]+$' $tmpfile | \
-     grep -v =
-   exit 1
+  echo "Syntax error --- The configuration file is used only to"
+  echo "define the list of included modules or to set Makefile"
+  echo "options or Configure rules, and I don't see that at all:"
+  egrep -v '^Module[ 	]+[A-Za-z0-9_]+[ 	]+[^ 	]+$' $tmpfile | \
+   grep -v =
+  exit 1
 fi
 
 #
@@ -83,10 +92,10 @@ fi
 if [ -f Makefile ] ; then mv Makefile Makefile.bak; fi
 if [ -f modules.c ] ; then mv modules.c modules.c.bak; fi
 
-#
+####################################################################
 # Start building the modules.c file from what was included
 # in Configuration
-#
+####
 sed -e 's/_module//' $tmpfile | awk >modules.c '\
    BEGIN { modules[n++] = "core" ; pmodules[pn++] = "core"} \
    /^Module/ { modules[n++] = $2 ; pmodules[pn++] = $2 } \
@@ -116,9 +125,9 @@ sed -e 's/_module//' $tmpfile | awk >modules.c '\
 	 print "};"; \
    }'
 
-#
+####################################################################
 # Start creating the Makefile. We add some comments and
-# then fold in the modules
+# then fold in the modules that were included in Configuration
 #
 echo "#" > Makefile
 echo "# Makefile automatically generated from $makefile_tmpl" >> Makefile
@@ -137,7 +146,8 @@ awk >>Makefile <$tmpfile '\
 	 } \
 	 print "" \
        }'
-#
+
+####################################################################
 # Now we create a stub file, called Makefile.config, which
 # just includes those assignments (eg: CC=gcc) in Configuration
 #
@@ -148,7 +158,7 @@ awk >Makefile.config <$tmpfile '\
     /\=/ { print } \
     END { print "###############"; }'
 
-#
+####################################################################
 # Extract the rules.
 #
 RULE_WANTHSREGEX=`./helpers/CutRule WANTHSREGEX $file`
@@ -156,7 +166,7 @@ RULE_STATUS=`./helpers/CutRule STATUS $file`
 RULE_SOCKS4=`./helpers/CutRule SOCKS4 $file`
 RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 
-#
+####################################################################
 # Preset some "constants"; can be overridden on a per-platform basis below.
 #
 DBM_LIB="-ldbm"
@@ -168,8 +178,7 @@ else
     RANLIB="true"
 fi
 
-#
-#
+####################################################################
 # Now we determine the OS/Platform automagically, thanks to
 # GuessOS, a home-brewed OS-determiner ala config.guess
 #
@@ -492,7 +501,7 @@ case "$PLAT" in
 esac
 
 #
-# See if we need to override WANTHSREGEX
+# And adjust/override WANTHSREGEX as needed
 #
 if [ "$RULE_WANTHSREGEX" = "default" ]; then
 	if [ "x$DEF_WANTHSREGEX" = "x" ]; then
@@ -502,13 +511,13 @@ if [ "$RULE_WANTHSREGEX" = "default" ]; then
 	fi
 fi
 
-#
-# Now that _that's_ done, get on with it
+####################################################################
+# Show user what OS we came up with
 #
 echo " + configured for $OS platform"
 
-#
-# Show the final values of the rules
+####################################################################
+# And update Makefile.config with what we came up with
 #
 echo "###############" >> Makefile.config
 echo "# Platform: $OS" >> Makefile.config
@@ -516,7 +525,7 @@ echo "# Final Rules:" >> Makefile.config
 echo "#  Rule WANTHSREGEX=$RULE_WANTHSREGEX" >> Makefile.config
 echo "###############" >> Makefile.config
 
-#
+####################################################################
 # Now we determine the C-compiler and optimization level
 # to use. Settings of CC and OPTIM in Configuration have
 # the highest precedence; next comes any settings from
@@ -564,14 +573,14 @@ if [ "x$TOPTIM" = "x" ]; then
     echo " + setting C compiler optimization-level to $OPTIM"
 fi
 
-#
+####################################################################
 # Set the value of CC if need be; don't worry about OPTIM yet
 #
 if [ "x$TCC" = "x" ]; then
     echo "CC=$CC" >> Makefile.config
 fi
 
-#
+####################################################################
 # Now we do some OS specific adjustments... for some OSs, we need
 # to adjust CFLAGS and/or OPTIM depending on which compiler we
 # are going to use. This is easy, since this can be gleamed from
@@ -605,14 +614,14 @@ case "$OS" in
 	;;
 esac
 
-#
+####################################################################
 # OK, now we can write OPTIM
 #
 if [ "x$TOPTIM" = "x" ]; then
     echo "OPTIM=$OPTIM" >> Makefile.config
 fi
 
-#
+####################################################################
 # Now we do some general checks and some intelligent Configuration
 # control.
 #
@@ -658,8 +667,9 @@ if [ "$RULE_SOCKS4" = "yes" ]; then
     fi
 fi
 
-#
-# FINALLY, finish (with the exception of LIBS) building Makefile.config
+####################################################################
+# Continue building Makefile.config. We can add all flags with
+# the exception of LIBS at this point
 #
 echo "CFLAGS1=$CFLAGS">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
@@ -669,7 +679,7 @@ echo "REGLIB=$REGLIB">> Makefile.config
 echo "RANLIB=$RANLIB">> Makefile.config
 echo "SHELL=$SHELL">> Makefile.config
 
-#
+####################################################################
 # This would be the area to do any ./helpers/TestLib tests,
 # before we actually write LIBS to Makefile.config.
 # Punt for now...
@@ -684,21 +694,27 @@ if grep mod_auth_db Makefile > /dev/null; then
     LIBS="$LIBS $DB_LIB"
 fi
 
-#
+####################################################################
 # NOW we finish Makefile.config
 #
 echo "LIBS1=$LIBS">> Makefile.config
 echo >> Makefile.config
 echo "#### End of Configure created section ####">> Makefile.config
 
-
+####################################################################
 # Now (finish) creating the makefiles
+#
+# ./Makefile
+#
 cat Makefile.config >> Makefile
 sed -e "s#@@Configuration@@#$file#" "$makefile_tmpl" >>Makefile
 awk >>Makefile <$tmpfile \
    '($1 == "Module" && $3 ~ /modules\//) { printf "%s: modules/last-built ; @cat /dev/null\n\n", $3, $3}'
 cat Makefile.config ../support/Makefile.tmpl > ../support/Makefile
 
+#
+# ./modules/Makefile
+#
 cat << EOF > modules/Makefile
 # 
 # Simple Makefile for modules in src/modules.
