@@ -5449,8 +5449,6 @@ void worker_main(void)
     int i;
     struct timeval tv;
     int wait_time = 1;
-    int start_exit = 0;
-    int start_mutex_released = 0;
     int max_jobs_per_exe;
     int max_jobs_after_exit_request;
     HANDLE hObjects[2];
@@ -5495,7 +5493,7 @@ void worker_main(void)
     rv = WaitForMultipleObjects(2, hObjects, FALSE, INFINITE);
     if (rv == WAIT_FAILED) {
 	ap_log_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
-	    "Waiting for start_mutex or exit_event -- process will exit");
+                     "Waiting for start_mutex or exit_event -- process will exit");
 
 	ap_destroy_pool(pchild);
 	cleanup_scoreboard();
@@ -5557,29 +5555,17 @@ void worker_main(void)
     }
 
     while (1) {
-#if SEVERELY_VERBOSE
-	APD4("child PID %d: thread_main total_jobs=%d start_exit=%d",
-		my_pid, total_jobs, start_exit);
-#endif
-	if ((max_jobs_per_exe && (total_jobs > max_jobs_per_exe) && !start_exit)) {
-            /* When MaxRequestsPerChild is hit, handle everything on the stack's 
-             * listen queue before exiting. This may take a while if the server 
-             * is really busy.
+        if (max_jobs_per_exe && (total_jobs > max_jobs_per_exe)) {
+            /* MaxRequestsPerChild hit...
              */
-	    start_exit = 1;
-	    wait_time = 1;
-	    ap_release_mutex(start_mutex);
-	    start_mutex_released = 1;
-	    APD2("process PID %d: start mutex released\n", my_pid);
+            break;
 	}
-        /* Always check for the exit event being signaled. Honor the exit event, 
-         * even if it means loosing connections in the stack's listen queue.
+        /* Always check for the exit event being signaled.
          */
         rv = WaitForSingleObject(exit_event, 0);
         ap_assert((rv == WAIT_TIMEOUT) || (rv == WAIT_OBJECT_0));
         if (rv == WAIT_OBJECT_0) {
             APD1("child: exit event signalled, exiting");
-            start_exit = 1;
             break;
         }
 
@@ -5615,10 +5601,7 @@ void worker_main(void)
 	}
 	count_select_errors = 0;    /* reset count of errors */
 	if (srv == 0) {
-	    if (start_exit)
-		break;
-	    else
-		continue;
+            continue;
 	}
 
 	{
@@ -5661,9 +5644,7 @@ void worker_main(void)
 
     /* Get ready to shutdown and exit */
     allowed_globals.exit_now = 1;
-    if (!start_mutex_released) {
-	ap_release_mutex(start_mutex);
-    }
+    ap_release_mutex(start_mutex);
 
 #ifdef UNGRACEFUL_RESTART
     SetEvent(allowed_globals.thread_exit_event);
