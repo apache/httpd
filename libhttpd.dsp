@@ -323,6 +323,10 @@ SOURCE=.\modules\mappers\mod_so.c
 
 SOURCE=.\modules\mappers\mod_userdir.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\modules\arch\win32\mod_win32.c
+# End Source File
 # End Group
 # Begin Group "util"
 
