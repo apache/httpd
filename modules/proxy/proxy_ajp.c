@@ -422,8 +422,8 @@ apr_status_t ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* parse the reponse */
-    result = ajp_parse_type(r,p_conn->data);
-    if (result == 4) {
+    result = ajp_parse_type(r, p_conn->data);
+    if (result == CMD_AJP13_SEND_HEADERS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: got response from %pI (%s)",
                      p_conn->addr, p_conn->name);
@@ -464,14 +464,14 @@ apr_status_t ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
     
     type = ajp_parse_type(r, p_conn->data);
     status = APR_SUCCESS;
-    while (type != 5) {
-        if (type == 4) {
+    while (type != CMD_AJP13_END_RESPONSE) {
+        if (type == CMD_AJP13_SEND_HEADERS) {
             /* AJP13_SEND_HEADERS: process them */
             status = ajp_parse_headers(r, p_conn->data); 
             if (status != APR_SUCCESS) {
                 break;
             }
-        } else if  (type == 3) {
+        } else if  (type == CMD_AJP13_SEND_BODY_CHUNK) {
             /* AJP13_SEND_BODY_CHUNK: piece of data */
             apr_uint16_t size;
             char *buff;
