@@ -2,6 +2,9 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cache: One more try at proper handling of revalidated responses.
+     [Justin Erenkrantz]
+
   *) mod_disk_cache: Properly load cached ETag from on-disk structures.
      [Justin Erenkrantz]
 

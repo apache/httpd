@@ -538,6 +538,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             /* Oh, hey.  It isn't that stale!  Yay! */
             cache->handle = cache->stale_handle;
             info = &cache->handle->cache_obj->info;
+            rv = OK;
         }
         else {
             /* Oh, well.  Toss it. */
