@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) "File does not exist" error message was erroneously including the
+     errno.  [Marc Slemko]
+
   *) Defining GPROF will disable profiling in the parent and enable it
      in the children.  If you're profiling under Linux this is pretty much
      necessary because SIGPROF is lost across a fork(). [Dean Gaudet]

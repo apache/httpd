@@ -1845,8 +1845,9 @@ int default_handler (request_rec *r)
     if (r->method_number == M_PUT) return METHOD_NOT_ALLOWED;
 
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "File does not exist: %s",
-		    r->path_info ? pstrcat(r->pool, r->filename, r->path_info, NULL)
+	aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server, 
+                    "File does not exist: %s", r->path_info ? 
+                    pstrcat(r->pool, r->filename, r->path_info, NULL)
 		    : r->filename);
 	return NOT_FOUND;
     }
