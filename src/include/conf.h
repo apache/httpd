@@ -310,6 +310,8 @@ typedef quad_t rlim_t;
 #undef NO_SETSID
 #define NEED_INITGROUPS
 #define NEED_SELECT_H
+#define NEED_PROCESS_H
+
 #define JMP_BUF sigjmp_buf
 
 #elif defined(LYNXOS)
@@ -395,6 +397,9 @@ typedef quad_t rlim_t;
 #include <limits.h>
 #ifndef QNX
 #include <memory.h>
+#endif
+#ifdef NEED_PROCESS_H
+#include <process.h>
 #endif
 
 #include <regex.h>

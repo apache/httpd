@@ -185,7 +185,7 @@ case "$PLAT" in
     QNX)
 	OS='QNX'
 	CFLAGS="$CFLAGS -DQNX"
-	LIBS="$LIBS -N 0x20000"
+	LIBS="$LIBS -N128k -lsocket"
 	;;
     SCO3)
 	OS='SCO 3'
