@@ -186,13 +186,13 @@ int ap_url_cache_handler(request_rec *r)
 
             /* We are in the quick handler hook, which means that no output
              * filters have been set. So lets run the insert_filter hook.
-             * Humm... Probably should not go through most of these hooks
-             * for a proxy request, so take out all but the basics.
+             * XXX - Should we be inserting filters in the output stream
+             * for proxy requests? Certainly we need the core filters
+             * (byterange, chunking, etc.).  I can also see the need to
+             * conditionally insert tag processing filters (e.g. INCLUDES).
              */
             ap_run_insert_filter(r);
-            if (r->proxyreq) {
-                ap_cache_reset_output_filters(r);
-            }
+
             /* Now add the cache_out filter. cache_out is a FTYPE_CONTENT
              * which means it will be inserted first in the stream, which
              * is exactly what we need.

@@ -101,7 +101,7 @@ int cache_remove_url(request_rec *r, const char *types, char *url)
  */
 int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t size)
 {
-    cache_handle *h;
+    cache_handle_t *h = apr_pcalloc(r->pool, sizeof(h));
     const char *next = types;
     const char *type;
     apr_status_t rv;
@@ -111,7 +111,7 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t
     /* for each specified cache type, delete the URL */
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
-        switch (rv = cache_run_create_entity(&h, type, url, size)) {
+        switch (rv = cache_run_create_entity(h, type, url, size)) {
         case OK: {
             cache->handle = h;
             return OK;
@@ -134,7 +134,7 @@ int cache_create_entity(request_rec *r, const char *types, char *url, apr_size_t
  * from the cache, and the cache_handle is closed.
  */
 /* XXX Don't think we need to pass in request_rec or types ... */
-int cache_remove_entity(request_rec *r, const char *types, cache_handle *h)
+int cache_remove_entity(request_rec *r, const char *types, cache_handle_t *h)
 {
     h->remove_entity(h);
     return 1;
@@ -160,17 +160,25 @@ int cache_select_url(request_rec *r, const char *types, char *url)
                                                                           &cache_module);
 
     /* go through the cache types till we get a match */
-    cache->handle = apr_palloc(r->pool, sizeof(cache_handle));
+    cache->handle = apr_palloc(r->pool, sizeof(cache_handle_t));
 
     while (next) {
         type = ap_cache_tokstr(r->pool, next, &next);
         switch ((rv = cache_run_open_entity(cache->handle, type, url))) {
         case OK: {
-            /* cool bananas! */
-/*** loop through returned entities */
-/*** do freshness calculation here */
-            cache->fresh = 1;
-/*** do content negotiation here */
+            /* XXX:
+             * Handle being returned a collection of entities.
+             */
+
+            /* Has the cache entry expired? */
+#if 0
+            if (r->request_time > cache->handle... need to get info out of the cache... info.expire)
+                cache->fresh = 0;
+            else
+#endif
+                cache->fresh = 1;
+
+            /*** do content negotiation here */
             return OK;
         }
         case DECLINED: {
@@ -188,13 +196,13 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     return DECLINED;
 }
 
-apr_status_t cache_write_entity_headers(cache_handle *h, request_rec *r, cache_info *info,
+apr_status_t cache_write_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info,
                                         apr_table_t *headers)
 {
     h->write_headers(h, r, info, headers);
     return APR_SUCCESS;
 }
-apr_status_t cache_write_entity_body(cache_handle *h, apr_bucket_brigade *b) 
+apr_status_t cache_write_entity_body(cache_handle_t *h, apr_bucket_brigade *b) 
 {
     apr_status_t rv = APR_SUCCESS;
     if (h->write_body(h, b) != OK) {
@@ -202,29 +210,27 @@ apr_status_t cache_write_entity_body(cache_handle *h, apr_bucket_brigade *b)
     return rv;
 }
 
-apr_status_t cache_read_entity_headers(cache_handle *h, request_rec *r, 
+apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r, 
                                        apr_table_t **headers)
 {
-    cache_info *info;
-
     /* Build the header table from info in the info struct */
     *headers = apr_table_make(r->pool, 15);
 
-    h->read_headers(h, r, &info, *headers);
+    h->read_headers(h, r, *headers);
 
     return APR_SUCCESS;
 }
-apr_status_t cache_read_entity_body(cache_handle *h, apr_bucket_brigade *b) 
+apr_status_t cache_read_entity_body(cache_handle_t *h, apr_bucket_brigade *b) 
 {
     h->read_body(h, b);
     return APR_SUCCESS;
 }
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, create_entity, 
-                                      (cache_handle **hp, const char *type, 
-                                      char *url, apr_size_t len),(hp,type,url,len),DECLINED)
+                                      (cache_handle_t *h, const char *type, 
+                                      char *url, apr_size_t len),(h,type,url,len),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(cache, CACHE, int, open_entity,  
-                                      (cache_handle *h, const char *type, 
+                                      (cache_handle_t *h, const char *type, 
                                       char *url),(h,type,url),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(cache, CACHE, int, remove_url, 
                                     (const char *type, char *url),(type,url),OK,DECLINED)
