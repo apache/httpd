@@ -65,6 +65,7 @@ typedef struct {
     char *real;
     char *fake;
     char *handler;
+    int redir_status;		/* 301, 302, 303 */
 } alias_entry;
 
 typedef struct {
@@ -136,17 +137,21 @@ const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *f,
     server_rec *s = cmd->server;
     alias_server_conf *serverconf =
         (alias_server_conf *)get_module_config(s->module_config,&alias_module);
+    int status;
 
-    if (!is_url (url)) return "Redirect to non-URL";
+    if (!strcasecmp(url, "gone"))
+	status = HTTP_GONE;
+    else {
+	if (!is_url (url)) return "Redirect to non-URL";
+	status = (int)cmd->info;
+    }
     if ( cmd->path )
-    {
         new = push_array (dirconf->redirects);
-    }
     else
-    {
         new = push_array (serverconf->redirects);
-    }
+
     new->fake = f; new->real = url;
+    new->redir_status = status;
     return NULL;
 }
 
@@ -155,7 +160,11 @@ command_rec alias_cmds[] = {
     "a fakename and a realname"},
 { "ScriptAlias", add_alias, "cgi-script", RSRC_CONF, TAKE2, 
     "a fakename and a realname"},
-{ "Redirect", add_redirect, NULL, OR_FILEINFO, TAKE2, 
+{ "Redirect", add_redirect, (void*)302, OR_FILEINFO, TAKE2, 
+    "a document to be redirected, then the destination URL (or \"Gone\")" },
+{ "RedirectTemp", add_redirect, (void*)302, OR_FILEINFO, TAKE2, 
+    "a document to be redirected, then the destination URL" },
+{ "RedirectPermanent", add_redirect, (void*)301, OR_FILEINFO, TAKE2, 
     "a document to be redirected, then the destination URL" },
 { NULL }
 };
@@ -194,7 +203,7 @@ int alias_matches (char *uri, char *alias_fakename)
     return urip - uri;
 }
 
-char *try_alias_list (request_rec *r, array_header *aliases, int doesc)
+char *try_alias_list (request_rec *r, array_header *aliases, int doesc, int *status)
 {
     alias_entry *entries = (alias_entry *)aliases->elts;
     int i;
@@ -209,9 +218,12 @@ char *try_alias_list (request_rec *r, array_header *aliases, int doesc)
 		table_set (r->notes, "alias-forced-type", p->handler);
 	    }
 
+	    *status = p->redir_status;
+
 	    if (doesc) {
 		char *escurl;
 		escurl = os_escape_path(r->pool, r->uri + l, 1);
+
 		return pstrcat(r->pool, p->real, escurl, NULL);
 	    } else
 		return pstrcat(r->pool, p->real, r->uri + l, NULL);
@@ -227,6 +239,7 @@ int translate_alias_redir(request_rec *r)
     alias_server_conf *serverconf =
         (alias_server_conf *)get_module_config(sconf, &alias_module);
     char *ret;
+    int status;
 
 #ifdef __EMX__
     /* Add support for OS/2 drive names */
@@ -236,12 +249,12 @@ int translate_alias_redir(request_rec *r)
 #endif    
         return DECLINED;
 
-    if ((ret = try_alias_list (r, serverconf->redirects, 1)) != NULL) {
+    if ((ret = try_alias_list (r, serverconf->redirects, 1, &status)) != NULL) {
         table_set (r->headers_out, "Location", ret);
-        return REDIRECT;
+        return status;
     }
     
-    if ((ret = try_alias_list (r, serverconf->aliases, 0)) != NULL) {
+    if ((ret = try_alias_list (r, serverconf->aliases, 0, &status)) != NULL) {
         r->filename = ret;
         return OK;
     }
@@ -255,12 +268,13 @@ int fixup_redir(request_rec *r)
     alias_dir_conf *dirconf =
         (alias_dir_conf *)get_module_config(dconf, &alias_module);
     char *ret;
+    int status;
 
     /* It may have changed since last time, so try again */
 
-    if ((ret = try_alias_list (r, dirconf->redirects, 1)) != NULL) {
+    if ((ret = try_alias_list (r, dirconf->redirects, 1, &status)) != NULL) {
         table_set (r->headers_out, "Location", ret);
-        return REDIRECT;
+        return status;
     }
 
     return DECLINED;
