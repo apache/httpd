@@ -1487,7 +1487,7 @@ apr_status_t isapi_handler (request_rec *r)
                 apr_thread_mutex_t *comp;
 
                 rv = apr_thread_mutex_create(&cid->completed, 
-                                             APR_THREAD_MUTEX_DEFAULT, 
+                                             APR_THREAD_MUTEX_UNNESTED, 
                                              r->pool);
                 comp = cid->completed;
                 if (cid->completed && (rv == APR_SUCCESS)) {
