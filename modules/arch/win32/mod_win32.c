@@ -419,7 +419,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                                          request_rec *r, apr_pool_t *p, 
                                          cgi_exec_info_t *e_info)
 {
-    const apr_table_entry_t *elts = (apr_table_entry_t *)r->subprocess_env->a.elts;
+    const apr_array_header_t *elts_arr = apr_table_elts(r->subprocess_env);
+    const apr_table_entry_t *elts = (apr_table_entry_t *) elts_arr->elts;
     const char *ext = NULL;
     const char *interpreter = NULL;
     win32_dir_conf *d;
@@ -547,7 +548,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
      * (using 0x0080-0x00ff) or is linked as a command or windows
      * application (following the OEM or Ansi code page in effect.)
      */
-    for (i = 0; i < r->subprocess_env->a.nelts; ++i) {
+    for (i = 0; i < elts_arr->nelts; ++i) {
         if (win_nt && elts[i].key && *elts[i].key 
                 && (strncmp(elts[i].key, "HTTP_", 5) == 0
                  || strncmp(elts[i].key, "SERVER_", 7) == 0

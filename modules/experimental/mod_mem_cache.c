@@ -657,22 +657,23 @@ static apr_status_t serialize_table(cache_header_tbl_t **obj,
                                     apr_ssize_t *nelts, 
                                     apr_table_t *table)
 {
-    apr_table_entry_t *elts = (apr_table_entry_t *) table->a.elts;
+    const apr_array_header_t *elts_arr = apr_table_elts(table);
+    apr_table_entry_t *elts = (apr_table_entry_t *) elts_arr->elts;
     apr_ssize_t i;
     apr_size_t len = 0;
     apr_size_t idx = 0;
     char *buf;
    
-    *nelts = table->a.nelts;
+    *nelts = elts_arr->nelts;
     if (*nelts == 0 ) {
         *obj=NULL;
         return APR_SUCCESS;
     }
-    *obj = calloc(1, sizeof(cache_header_tbl_t) * table->a.nelts);
+    *obj = calloc(1, sizeof(cache_header_tbl_t) * elts_arr->nelts);
     if (NULL == *obj) {
         return APR_ENOMEM;
     }
-    for (i = 0; i < table->a.nelts; ++i) {
+    for (i = 0; i < elts_arr->nelts; ++i) {
         len += strlen(elts[i].key);
         len += strlen(elts[i].val);
         len += 2;  /* Extra space for NULL string terminator for key and val */
