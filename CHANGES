@@ -6,7 +6,7 @@ Changes with Apache 2.1.3
      were escaped as fallout from CAN-2003-0020.
      [Eric Covener <ecovener gmail.com>]
 
-  *) mod_cache: One more try at proper handling of revalidated responses.
+  *) mod_cache: Fix up handling of revalidated responses.
      [Justin Erenkrantz]
 
   *) mod_disk_cache: Properly load cached ETag from on-disk structures.
