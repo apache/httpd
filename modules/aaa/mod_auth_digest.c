@@ -403,6 +403,7 @@ static void initialize_module(apr_pool_t *p, apr_pool_t *plog,
 	initialize_secret(s);
 
 /* Disable shmem until pools/init gets sorted out - remove next line when fixed */
+#undef APR_HAS_SHARED_MEMORY
 #define APR_HAS_SHARED_MEMORY 0
 
 #if APR_HAS_SHARED_MEMORY
@@ -499,7 +500,7 @@ static const char *set_group_file(cmd_parms *cmd, void *config,
 static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
-    char **tmp;
+    const char **tmp;
     int cnt;
 
     if (!strcasecmp(op, "none")) {
@@ -629,26 +630,26 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
 
 static const command_rec digest_cmds[] =
 {
-    {"AuthName", set_realm, NULL, OR_AUTHCFG, TAKE1,
-     "The authentication realm (e.g. \"Members Only\")"},
-    {"AuthDigestFile", set_digest_file, NULL, OR_AUTHCFG, TAKE1,
-     "The name of the file containing the usernames and password hashes"},
-    {"AuthDigestGroupFile", set_group_file, NULL, OR_AUTHCFG, TAKE1,
-     "The name of the file containing the group names and members"},
-    {"AuthDigestQop", set_qop, NULL, OR_AUTHCFG, ITERATE,
-     "A list of quality-of-protection options"},
-    {"AuthDigestNonceLifetime", set_nonce_lifetime, NULL, OR_AUTHCFG, TAKE1,
-     "Maximum lifetime of the server nonce (seconds)"},
-    {"AuthDigestNonceFormat", set_nonce_format, NULL, OR_AUTHCFG, TAKE1,
-     "The format to use when generating the server nonce"},
-    {"AuthDigestNcCheck", set_nc_check, NULL, OR_AUTHCFG, FLAG,
-     "Whether or not to check the nonce-count sent by the client"},
-    {"AuthDigestAlgorithm", set_algorithm, NULL, OR_AUTHCFG, TAKE1,
-     "The algorithm used for the hash calculation"},
-    {"AuthDigestDomain", set_uri_list, NULL, OR_AUTHCFG, ITERATE,
-     "A list of URI's which belong to the same protection space as the current URI"},
-    {"AuthDigestShmemSize", set_shmem_size, NULL, RSRC_CONF, TAKE1,
-     "The amount of shared memory to allocate for keeping track of clients"},
+    AP_INIT_TAKE1("AuthName", set_realm, NULL, OR_AUTHCFG, 
+     "The authentication realm (e.g. \"Members Only\")"),
+    AP_INIT_TAKE1("AuthDigestFile", set_digest_file, NULL, OR_AUTHCFG, 
+     "The name of the file containing the usernames and password hashes"),
+    AP_INIT_TAKE1("AuthDigestGroupFile", set_group_file, NULL, OR_AUTHCFG, 
+     "The name of the file containing the group names and members"),
+    AP_INIT_ITERATE("AuthDigestQop", set_qop, NULL, OR_AUTHCFG, 
+     "A list of quality-of-protection options"),
+    AP_INIT_TAKE1("AuthDigestNonceLifetime", set_nonce_lifetime, NULL, OR_AUTHCFG, 
+     "Maximum lifetime of the server nonce (seconds)"),
+    AP_INIT_TAKE1("AuthDigestNonceFormat", set_nonce_format, NULL, OR_AUTHCFG, 
+     "The format to use when generating the server nonce"),
+    AP_INIT_FLAG("AuthDigestNcCheck", set_nc_check, NULL, OR_AUTHCFG, 
+     "Whether or not to check the nonce-count sent by the client"),
+    AP_INIT_TAKE1("AuthDigestAlgorithm", set_algorithm, NULL, OR_AUTHCFG, 
+     "The algorithm used for the hash calculation"),
+    AP_INIT_ITERATE("AuthDigestDomain", set_uri_list, NULL, OR_AUTHCFG, 
+     "A list of URI's which belong to the same protection space as the current URI"),
+    AP_INIT_TAKE1("AuthDigestShmemSize", set_shmem_size, NULL, RSRC_CONF, 
+     "The amount of shared memory to allocate for keeping track of clients"),
     {NULL}
 };
 
@@ -1432,7 +1433,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     if (conf->nonce_lifetime > 0) {
 	if (dt > conf->nonce_lifetime) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0,r,
-			  "Digest: user %s: nonce expired (%.2lf seconds old - max lifetime %.2lf) - sending new nonce", 
+			  "Digest: user %s: nonce expired (%.2f seconds old - max lifetime %.2f) - sending new nonce", 
 			  r->user, ((double)dt)/APR_USEC_PER_SEC, 
 			  ((double)(conf->nonce_lifetime))/APR_USEC_PER_SEC);
 	    note_digest_auth_failure(r, conf, resp, 1);
