@@ -383,16 +383,16 @@ modified?</title>
         &lt;!--#set var="name" value="Rich" --&gt;
 </example>
 
-    <p>In addition to merely setting values literally like that,
-    you can use any other variable, including, for example,
-    environment variables, or some of the variables we discussed in
-    the last article (like <code>LAST_MODIFIED</code>, for example)
-    to give values to your variables. You will specify that
-    something is a variable, rather than a literal string, by using
-    the dollar sign ($) before the name of the variable.</p>
-<example>
-        &lt;!--#set var="modified" value="$LAST_MODIFIED" --&gt;
-</example>
+    <p>In addition to merely setting values literally like that, you
+    can use any other variable, including <a
+    href="../env.html">environment variables</a> or the variables
+    discussed above (like <code>LAST_MODIFIED</code>, for example) to
+    give values to your variables. You will specify that something is
+    a variable, rather than a literal string, by using the dollar sign
+    ($) before the name of the variable.</p> 
+
+    <example> &lt;!--#set var="modified" value="$LAST_MODIFIED" --&gt;
+    </example>
 
     <p>To put a literal dollar sign into the value of your
     variable, you need to escape the dollar sign with a
