@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.7.2.5 $ -->
+<!-- $Revision: 1.7.2.6 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -156,9 +156,6 @@ respect to case</description>
       <li><code>Server_Addr</code> - the IP address of the server
       on which the request was received (only with versions later
       than 2.0.43)</li>
-
-      <li><code>Remote_User</code> - the authenticated username (if
-      available)</li>
 
       <li><code>Request_Method</code> - the name of the method
       being used (<code>GET</code>, <code>POST</code>, <em>et

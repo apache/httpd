@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/19 22:53:12 $]
+Last modified at [$Date: 2004/08/19 23:29:40 $]
 
 Release:
 
@@ -274,11 +274,6 @@ PATCHES TO BACKPORT FROM 2.1
        +1: bnicholes
        -0: jerenkrantz (should wait for 2.2)
        -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
-
-    * mod_setenvif: remove support for remote_user variable which never
-      worked at all. PR 25725 (2.0 + 1.3)
-        modules/metadata/mod_setenvif.c: r1.50
-      +1: nd, jerenkrantz, pquerna
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
