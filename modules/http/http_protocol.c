@@ -201,7 +201,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     apr_off_t range_end;
     char *current;
     const char *bound_head;
-    const char *ct = make_content_type(r, r->content_type);
 
     if (!ctx) {
         int num_ranges = ap_set_byterange(r);
@@ -210,9 +209,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
+
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
-        ctx->num_ranges = ap_set_byterange(r);
-        
+        ctx->num_ranges = num_ranges;
+
+        /* create a brigade in case we never call ap_save_brigade() */
+        ctx->bb = ap_brigade_create(r->pool);
     }
 
     /* We can't actually deal with byte-ranges until we have the whole brigade
@@ -224,16 +226,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         return APR_SUCCESS;
     }
 
-    /* compute this once (it is an invariant) and store it away */
-    bound_head = apr_pstrcat(r->pool, CRLF "--", r->boundary,
-                                  CRLF "Content-type: ", ct,
-                                  CRLF "Content-range: bytes ", 
-                                  NULL);
+    /* compute this once (it is an invariant) */
+    bound_head = apr_pstrcat(r->pool,
+                             CRLF "--", r->boundary,
+                             CRLF "Content-type: ",
+                             make_content_type(r, r->content_type),
+                             CRLF "Content-range: bytes ", 
+                             NULL);
 
     /* concat the passed brigade with our saved brigade */
     AP_BRIGADE_CONCAT(ctx->bb, bb);
     bb = ctx->bb;
-    ctx->bb = NULL;     /* ### strictly necessary? */
+    ctx->bb = NULL;     /* ### strictly necessary? call brigade_destroy? */
 
     /* this brigade holds what we will be sending */
     bsend = ap_brigade_create(r->pool);
@@ -2319,6 +2323,7 @@ static int ap_set_byterange(request_rec *r)
     apr_off_t range_end;
     int num_ranges;
 
+    /* ### this test for r->clength is probably a Bad Thing. need to fix */
     if (!r->clength || r->assbackwards)
         return 0;
 
