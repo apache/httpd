@@ -408,6 +408,8 @@ static request_rec *internal_internal_redirect(const char *new_uri,
 /* XXX: Is this function is so bogus and fragile that we deep-6 it? */
 AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
 {
+    ap_filter_t *filters;
+
     /* We need to tell POOL_DEBUG that we're guaranteeing that rr->pool
      * will exist as long as r->pool.  Otherwise we run into troubles because
      * some values in this request will be allocated in r->pool, and others in
@@ -445,6 +447,27 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     else if (r->output_filters->frec == ap_subreq_core_filter_handle) {
         ap_remove_output_filter(r->output_filters);
         r->output_filters = r->output_filters->next;
+    }
+
+    /* If any filters pointed at the now-defunct rr, we must point them
+     * at our "new" instance of r.  In particular, some of rr's structures
+     * will now be bogus (say rr->headers_out).  If a filter tried to modify
+     * their f->r structure when it is pointing to rr, the real request_rec
+     * will not get updated.  Fix that here.
+     */
+    filters = r->input_filters;
+    while (filters) {
+        if (filters->r == rr) {
+            filters->r = r;
+        } 
+        filters = filters->next;
+    }
+    filters = r->output_filters;
+    while (filters) {
+        if (filters->r == rr) {
+            filters->r = r;
+        } 
+        filters = filters->next;
     }
 }
 
