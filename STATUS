@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/23 18:00:16 $]
+Last modified at [$Date: 2001/07/23 18:07:21 $]
 
 Release:
 
@@ -112,11 +112,6 @@ RELEASE SHOWSTOPPERS:
       the modules/http/config.m4 file has been renamed to 
       modules/http/config2.m4 to work around this problem, it should moved
       back when this is fixed.    rbb
-
-    * We need a thread-safe resolver, at least on Unix.
-        Status: The best known candidate would be something from
-	BIND v9.
-        Status: Greg asks, "why? doesn't gethostbyname_r() handle this?"
 
     * The AddInputFilter and AddOutputFilter directives do not allow the
       administrator to remove or reorder filters.  Once a filter is added
