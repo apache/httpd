@@ -332,7 +332,7 @@ static apr_status_t ap_unix_create_privileged_process(
         return apr_proc_create(newproc, progname, args, env, attr, p);
     }
 
-    argv0 = strrchr(progname, '/');
+    argv0 = ap_strrchr_c(progname, '/');
     /* Allow suexec's "/" check to succeed */
     if (argv0 != NULL) {
         argv0++;
