@@ -1,5 +1,9 @@
 Changes with Apache 2.0.44
 
+  *) mod_cgid: Handle environment variables containing newlines.
+     PR 14550  [Piotr Czejkowski <apache@czarny.eu.org>, Jeff
+     Trawick]
+
   *) Move mod_ext_filter out of experimental and into filters.
      [Jeff Trawick]
 
