@@ -1,10 +1,10 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/12 08:40:33 $]
+Last modified at [$Date: 2001/11/13 05:04:24 $]
 
 Release:
 
     2.0.29  :
-    2.0.28  : tagged November 8, 2001
+    2.0.28  : rolled November 12, 2001
     2.0.27  : rolled November 6, 2001
     2.0.26  : tagged October 16, 2001.  not rolled.
     2.0.25  : rolled August 29, 2001
@@ -135,12 +135,12 @@ RELEASE SHOWSTOPPERS:
         This can't wait until we have a 2.0-gold release, if folks need
         to move over to auth_dbm, we can't do that to them after 2.0 gold.
 
-    * Source code should follow style guidelines.
-        This can't wait until we have a 2.0-gold release because then
-        style corrections will conflict with bug fixes found after
-        release which is not nice.
-
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Source code should follow style guidelines.
+        This shouldn't wait until we have a 2.0-gold release because 
+        then style corrections will conflict with bug fixes found after
+        release which is not nice.
 
     * Allow the DocumentRoot directive within <Location > scopes?  This
       allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
