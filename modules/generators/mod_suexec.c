@@ -154,6 +154,5 @@ module MODULE_VAR_EXPORT suexec_module =
     create_mconfig_for_server,  /* server config */
     NULL,                       /* merge server config */
     suexec_cmds,                /* command table */
-    NULL,                       /* handlers */
     suexec_hooks		/* register hooks */
 };

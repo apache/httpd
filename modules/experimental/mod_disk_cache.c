@@ -166,6 +166,5 @@ module MODULE_VAR_EXPORT disk_cache_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     NULL,			/* command apr_table_t */
-    NULL,          		/* handlers */
     disk_cache_register_hook	/* register hooks */
 };

@@ -132,6 +132,5 @@ AP_DECLARE_DATA module echo_module = {
     create_echo_server_config,	/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     echo_cmds,			/* command apr_table_t */
-    NULL,			/* handlers */
     register_hooks		/* register hooks */
 };
