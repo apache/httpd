@@ -2522,7 +2522,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
         if (lookup.err.status == HTTP_BAD_REQUEST) {
             /* This supplies additional information for the default message. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          lookup.err.desc);
+                          "%s", lookup.err.desc);
             return HTTP_BAD_REQUEST;
         }
 
@@ -3684,7 +3684,7 @@ static int dav_method_update(request_rec *r)
             if (lookup.err.status == HTTP_BAD_REQUEST) {
                 /* This supplies additional information for the default message. */
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              lookup.err.desc);
+                              "%s", lookup.err.desc);
                 return HTTP_BAD_REQUEST;
             }
 
@@ -4147,7 +4147,7 @@ static int dav_method_merge(request_rec *r)
         if (lookup.err.status == HTTP_BAD_REQUEST) {
             /* This supplies additional information for the default message. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          lookup.err.desc);
+                          "%s", lookup.err.desc);
             return HTTP_BAD_REQUEST;
         }
 
@@ -4269,7 +4269,7 @@ static int dav_method_bind(request_rec *r)
         if (lookup.err.status == HTTP_BAD_REQUEST) {
             /* This supplies additional information for the default message. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          lookup.err.desc);
+                          "%s", lookup.err.desc);
             return HTTP_BAD_REQUEST;
         }
         else if (lookup.err.status == HTTP_BAD_GATEWAY) {
