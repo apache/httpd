@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/29 21:09:46 $]
+Last modified at [$Date: 2003/09/30 17:41:58 $]
 
 Release:
 
@@ -77,15 +77,6 @@ PATCHES TO PORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_disk_cache.c.diff?r1=1.46&r2=1.47
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_mem_cache.c.diff?r1=1.93&r2=1.94
       +1: rederpj, fielding, trawick
-
-    * mod_rewrite.c: Fix mod_rewrite's support of the [P] option to send
-      rewritten request using "proxy:". The code was adding multiple "proxy:"
-      fields in the rewritten URI. PR: 13946.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.153&r2=1.154
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.154&r2=1.155
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.156&r2=1.157
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.173&r2=1.174
-      +1: rederpj, nd, trawick, fielding
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.

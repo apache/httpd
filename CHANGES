@@ -1,5 +1,9 @@
 Changes with Apache 2.0.48
 
+  *) mod_rewrite: Fix mod_rewrite's support of the [P] option to send
+      rewritten request using "proxy:". The code was adding multiple "proxy:"
+      fields in the rewritten URI. PR: 13946. [Eider Oliveira <eider@bol.com.br>]
+
   *) cache_util: Fix ap_check_cache_freshness to check max_age, smax_age, and
      expires as directed in RFC 2616. [Thomas Castelle tcastelle@generali.fr]
 

@@ -1107,6 +1107,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
 static int hook_uri2file(request_rec *r)
 {
     rewrite_server_conf *conf;
+    const char *saved_rulestatus;
     const char *var;
     const char *thisserver;
     char *thisport;
@@ -1185,19 +1186,34 @@ static int hook_uri2file(request_rec *r)
                       thisurl, NULL);
     apr_table_setn(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
 
-    /* if filename was not initially set,
-     * we start with the requested URI
-     */
-    if (r->filename == NULL) {
-        r->filename = apr_pstrdup(r->pool, r->uri);
-        rewritelog(r, 2, "init rewrite engine with requested uri %s",
-                   r->filename);
+    if (!(saved_rulestatus = apr_table_get(r->notes,"mod_rewrite_rewritten"))) {
+        /* if filename was not initially set,
+         * we start with the requested URI
+         */
+        if (r->filename == NULL) {
+            r->filename = apr_pstrdup(r->pool, r->uri);
+            rewritelog(r, 2, "init rewrite engine with requested uri %s",
+                       r->filename);
+        }
+        else {
+            rewritelog(r, 2, "init rewrite engine with passed filename %s."
+                       " Original uri = %s", r->filename, r->uri);
+        }
+
+        /*
+         *  now apply the rules ...
+         */
+        rulestatus = apply_rewrite_list(r, conf->rewriterules, NULL);
+        apr_table_set(r->notes,"mod_rewrite_rewritten",
+                      apr_psprintf(r->pool,"%d",rulestatus));
+    }
+    else {
+        rewritelog(r, 2,
+                   "uri already rewritten. Status %s, Uri %s, r->filename %s",
+                   saved_rulestatus, r->uri, r->filename);
+        rulestatus = atoi(saved_rulestatus);
     }
 
-    /*
-     *  now apply the rules ...
-     */
-    rulestatus = apply_rewrite_list(r, conf->rewriterules, NULL);
     if (rulestatus) {
         unsigned skip;
 
