@@ -23,8 +23,6 @@
 <a href="./ja/install.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
 
     <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
@@ -55,7 +53,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#upgrading">アップグレード</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><a href="invoking.html">Apacheの起動</a></li><li><a href="stopping.html">Apacheの停止と再起動</a></li></ul></div>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="programs/configure.html">ソースツリーの設定</a></li><li><a href="invoking.html">Apacheの起動</a></li><li><a href="stopping.html">Apacheの停止と再起動</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">概要 (せっかちな人向け)</a></h2>
@@ -144,7 +142,7 @@
       正確な時刻にシンクロさせる機能をシステムに設定することを吟味してみて下さい。
       Network Time Protocol (NTP) をベースとした ntpdate や xntpd プログラムが
       この目的によく用いられます。NTP ソフトウェアや公開 NTP 
-      サーバに関する詳細は、Usenet ニュースグループ <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a> や <a href="http://www.ntp.org">NTP ホームページ</a> をご覧下さい。</dd>
+      サーバに関する詳細は、Usenet ニュースグループ <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a> や <a href="http://www.ntp.org">NTP ホームページ</a> をご覧下さい。</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
       [オプション]</dt>
@@ -167,56 +165,23 @@
     <p>Apache は <a href="http://httpd.apache.org/download.cgi">Apache HTTP
     サーバダウンロードサイト</a>からダウンロードできますし、
     同じ場所に幾つかのミラーサイトもリストしています。
-    ここから最新の安定版が手に入ります。</p>
+    UNIX に類似するシステムで Apache を使うユーザは、ソースを
+    ダウンロードしてビルドしたほうが良いでしょう。
+    ビルドの手順（下記）は簡単ですし、そのおかげでニーズに
+    見合ったカスタマイズを簡単にできます。
+    さらに、バイナリのリリースはソースリリースよりも
+    遅れていることがよくあります。
+    それでもバイナリをダウンロードしたのであれば、
+    ディストリビューションの中にある <code>INSSTALL.bindist</code> 
+    ファイルの説明に従ってください。</p>
 
-    <p>ダウンロード後、特にミラーサイトを使った場合は、
-    ダウンロードしたものが Apache HTTP 
+    <p>ダウンロード後、ダウンロードしたものが Apache HTTP 
     サーバの完全で改竄されていないバージョンであることを
     検証することが重要です。これはダウンロードした tarball の PGP 署名を
     テストすることによって検証します。
-    これは二つの段階があります。
-    まず <a href="http://www.apache.org/dist/httpd/KEYS"><code>KEYS</code></a>
-    ファイルを <a href="http://www.apache.org/dist/httpd/">Apache 配布サイト</a>
-    からダウンロードしてください。(<code>KEYS</code> ファイル自体が
-    改竄されていないことを確実にするために、以前の Apache 
-    配布から取り出したファイルを使ったり、
-    公開鍵サーバから鍵を取り込むのもいいでしょう。)
-    自分の個人キーホルダーに鍵を取り込むには、
-    次のコマンド (pgp のバージョンに依存) を使います:</p>
-
-<div class="example"><p><code>$ pgp &lt; KEYS</code></p></div>
-
-    <p>または、</p>
-
-<div class="example"><p><code>$ gpg --import KEYS</code></p></div>
-
-    <p>次のステップでは、tarball を PGP 署名でテストします。
-    PGP 署名は必ず <a href="http://httpd.apache.org/download.cgi">メインの Apache
-    ウェブサイト</a>から取得してください。
-    署名ファイルへのリンクは対応するダウンロードリンクの隣にあり、また
-    <a href="http://www.apache.org/dist/httpd/">Apache
-    配布サイト</a>の特定のディレクトリで見つけることもできるでしょう。
-    署名ファイルの名前は、ソースファイルの tarball と同じ名前に
-    <code>.asc</code> を付加したものになっています。
-    以下のコマンド (やっぱり pgp のバージョンに依存) のどれか一つで、
-    配布ファイルをチェックすることができます:</p>
-
-<div class="example"><p><code>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</code></p></div>
-    
-    <p>または、</p>
-
-<div class="example"><p><code>$ gpg --verify httpd-2_1_<em>NN</em>.tar.gz.asc</code></p></div>
-    
-    <p>すると、こんなメッセージを受けるはずです。</p>
-
-<div class="example"><p><code>Good signature from user "Martin Kraemer
-      &lt;martin@apache.org&gt;".</code></p></div>
-
-    <p>自分のキーホルダーに格納されている信頼関係が原因で、
-    "鍵とその鍵の署名者が検証できなかった"
-    という旨のメッセージを同時に受けるかもしれません。
-    しかし、<code>KEYS</code> 
-    ファイルの信憑性を受け入れるならば問題ではありません。</p>
+    この手順の詳細は <a href="http://httpd.apache.org/download.cgi#verify">ダウンロード
+    ページ</a> にあり、さらに詳しい例は <a href="http://httpd.apache.org/dev/verification.html">PGP の使用
+    </a> に記載されています。</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -227,8 +192,8 @@
     単なる圧縮の解除と tar の展開です:</p>
 
 <div class="example"><p><code>
-      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-       $ tar xvf httpd-2_1_<em>NN</em>.tar
+$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+$ tar xvf httpd-2_1_<em>NN</em>.tar
 </code></p></div>
 
     <p>配布用のソースコードがある現在いるディレクトリの下に、
@@ -242,8 +207,9 @@
     <p>次のステップは、あなたのプラットホームと
     個人的な要求に合うように Apache
     ソースツリーを設定することです。
-    これは配布ディレクトリのルートディレクトリにある、
-    <code>configure</code> スクリプトで行ないます。
+    これは配布ディレクトリのルートディレクトリにある、
+    <code><a href="programs/configure.html">configure</a></code>
+    スクリプトで行ないます。
      (Apache ソースツリーの CVS
     版をダウンロードした開発者は、次のステップに進む前に
     <code>autoconf</code> と<code>libtool</code>
@@ -254,14 +220,38 @@
     <p>デフォルトオプションを使ってソースツリーを全て設定する
     のであれば、単純に <code>./configure</code> とタイプしてください。
     デフォルトオプションを変更できるように、<code>configure</code>
-    には様々な変数やコマンドラインオプションが用意されています。
-    一般的に、環境変数が <code>./configure</code> の前に設置されて、
-    他のオプションはその後に設置されます。
-    ここで最も重要なオプションは Apache 
-    をどこにインストールするかを決める location prefix です。
-    なぜなら、Apache が正しく動作するためには
-    この場所用に設定されていないといけないからです。
-    しかし、お好みにより利用できるオプションはもっと沢山あります。</p>
+    には様々な変数やコマンドラインオプションが用意されています。</p>
+
+    <p>最も重要なオプションは、Apache がこの後でインストールされる位置
+    <code>--prefix</code> です。Apache は、このインストール位置に
+    おいて正常に動作するように設定しなければならないからです。
+    さらに詳細なファイル位置の制御は追加の <a href="programs/configure.html#installationdirectories">設定オプション
+    </a> でできます。</p>
+
+    <p>この時点で、<a href="mod/">モジュール</a> を有効にしたり
+    無効にしたりすることで Apache 本体に含まれる <a href="programs/configure.html#optionalfeatures">機能</a>
+    を指定できます。Apache 本体にはデフォルトで、モジュールの <a href="mod/module-dict.html#Status">Base</a> セットが
+    含まれます。その他のモジュールは 
+    <code>--enable-<var>module</var></code> オプションで
+    有効になります。ここで <var>module</var> はモジュールの名前で、
+    つまりそれはモジュールの名前から <code>mod_</code> 文字列を取り除いた後に
+    アンダースコアをダッシュで置換した文字列です。
+    これとは別の方法で <code>--enable-<var>module</var>=shared</code>
+    オプションを使って、モジュールを<a href="dso.html">
+    シェアードオブジェクト (DSO)</a> -- 実行時にロードしたり
+    アンロードしたりできる形式 -- としてコンパイルすることもできます。
+    同様に、<code>--disable-<var>module</var></code> オプションで
+    Base モジュールを無効化することもできます。
+    これらのオプションを使っているときに、もし指定したモジュールが存在しなくても
+    <code>configure</code> は警告を上げることなく、単純にオプションを
+    無視することに気をつけてください。</p>
+
+    <p>上記に加えて、<code>configure</code> スクリプトに、
+    コンパイラ、ライブラリ、ヘッダファイルの位置を追加情報として渡す
+    必要がある場合があります。このような場合には、環境変数あるいは
+    コマンドラインオプションで <code>configure</code> に渡します。
+    詳細に関しては <a href="programs/configure.html">configure マニュアルページ</a>
+    をご覧ください。</p>
 
     <p>ちょっとどんなことができるかを見せましょう。
     ここで典型的な例として、<code>/sw/pkg/apache</code> 
@@ -281,285 +271,9 @@
     テストしたり、後でサーバをコンパイルするために必要な Makefile
     を生成したりするのに数分間かかるでしょう。</p>
 
-    <p>Apache の全ての設定フラグを見る最も簡単な方法は、
-    <code>./configure --help</code> を実行する方法です。
-    引数や環境変数に関する簡単な記述が出力されます。</p>
-
-<h3><a name="environment" id="environment">環境変数</a></h3>
-
-    <p><code>autoconf</code> でのビルドでは幾つかの環境変数を使ってビルド環境を
-    設定します。一般的に、これらの変数で Apache をビルドする際の
-    方法が変わったりしますが、できあがるサーバの機能には影響ありません。
-    これらの変数は <code>configure</code> を呼び出す直前の環境中に
-    置くことができますが、通常は上に示した例のように <code>configure</code>
-    のコマンドラインでもっと簡単に指定できます。</p>
-
-    <dl>
-      <dt><code>CC=...</code></dt>
-
-      <dd>C コンパイラのコマンド名。</dd>
-
-      <dt><code>CPPFLAGS=...</code></dt>
-
-      <dd>その他の C プリプロセッサやコンパイラのオプション。</dd>
-
-      <dt><code>CFLAGS=...</code></dt>
-
-      <dd>C コンパイラのデバッグ・最適化オプション。</dd>
-
-      <dt><code>LDFLAGS=...</code></dt>
-
-      <dd>その他のリンカに渡されるオプション。</dd>
-
-      <dt><code>LIBS=...</code></dt>
-
-      <dd>リンカに渡すライブラリの位置情報
-      ("<code>-L</code>"と"<code>-l</code>"オプション) 。
-      </dd>
-
-      <dt><code>INCLUDES=...</code></dt>
-
-      <dd>ヘッダファイルの探索ディレクトリ ("<code>-I<em>dir</em></code>") 。</dd>
-
-      <dt><code>TARGET=...</code> [デフォルト値: <code>httpd</code>]</dt>
-
-      <dd>ビルドする実行ファイルの名前。</dd>
-
-      <dt><code>NOTEST_CPPFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_CFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_LDFLAGS=...</code></dt>
-
-      <dt><code>NOTEST_LIBS=...</code></dt>
-
-      <dd>これらの変数は "<code>NOTEST</code> でない版" のものと同じ機能を
-      持っています。しかし、これらの変数は <code>autoconf</code> 
-      がテストを行った後のビルドプロセスにおいてのみ、適用されます。
-      これを使うと、テスト中に問題を起すけれども
-      最終的には必要になるフラグを
-      含めることができるようになります。</dd>
-
-      <dt><code>SHLIB_PATH=...</code></dt>
-
-      <dd>コンパイラとリンカに渡す、共有ライブラリへのパスを指定する
-      オプション。</dd>
-    </dl>
-
-
-<h3><a name="output" id="output"><code>autoconf</code> 出力オプション</a></h3>
-
-    <dl>
-      <dt><code>--help</code></dt>
-
-      <dd>使用可能な全オプションなど使い方をプリントします。
-      実際に設定はされません。</dd>
-
-      <dt><code>--quiet</code></dt>
-
-      <dd>"<code>cheking...</code>" といったメッセージがプリントされないように
-      します。</dd>
-
-      <dt><code>--verbose</code></dt>
-
-      <dd>検査される全ファイル名を含め、設定プロセス中に
-      情報をたくさんプリントします。</dd>
-    </dl>
-
-
-<h3><a name="pathnames" id="pathnames">パス名</a></h3>
-
-    <p>Apache をインストールするパス名を設定するには、
-    現在二通りの方法があります。まず一つ目は、
-    ディレクトリを指定して、その下にデフォルトの配置で
-    Apache のインストールを行う方法です。</p>
-
-    <dl>
-      <dt><code>--prefix=<em>PREFIX</em></code> [デフォルト値:
-      <code>/usr/local/apache2</code>]</dt>
-
-      <dd>Apache のファイル群がインストールされるディレクトリを
-      指定します。</dd>
-    </dl>
-
-    <p>アーキテクチャに依存したファイルを、
-    異なるディレクトリに配置するようにもできます。</p>
-
-    <dl>
-      <dt><code>--exec-prefix=<em>EPREFIX</em></code>
-      [デフォルト値: <em>PREFIX</em>]</dt>
-
-      <dd>アーキテクチャ依存のファイルを配置すべき
-      ディレクトリを指定します。</dd>
-    </dl>
-
-    <p>二つ目の方法は、もっと柔軟にインストールパスの配置を
-    設定する方法で、<code>config.layout</code> ファイルを
-    使います。この方法を使うことによって、
-    Apache のインストール中に、それぞれのファイルのための配置を
-    個々に指定できるようになります。<code>config.layout</code>
-    ファイルには設定例が幾つか含まれていますし、
-    お好みの設定を次の例に従って作り出すこともできます。
-    このファイル中では、異なる配置は <code>&lt;Layout
-    FOO&gt;...&lt;/Layout&gt;</code> セクションでグループ化され、
-    <code>FOO</code> といった名前で参照されます。</p>
-
-    <dl>
-      <dt><code>--enable-layout=<em>LAYOUT</em></code></dt>
-
-      <dd>インストールパスを指定するため、
-      <code>config.layout</code> ファイル中での、
-      指定された名前のレイアウトを使用します。</dd>
-    </dl>
-
-
-
-<h3><a name="modules" id="modules">モジュール</a></h3>
-
-    <p>Apache はモジュール化されたサーバです。
-    ごくごく基本的な機能だけが、コアサーバに含まれています。
-    拡張機能は様々なモジュールの形で提供されます。
-    設定プロセス中では、どんなモジュールをサーバで使うように
-    コンパイルするか選ばなければなりません。このマニュアルにある<a href="mod/">モジュールの一覧</a>を
-    参照できます。
-    "Base" <a href="mod/module-dict.html#Status">ステータス</a>の
-    モジュールはデフォルトで含まれますし、
-    使いたくないのであれば、わざと無効にしなければ
-    なりません (例えば <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> )。
-    他のステータスのモジュールは、
-    使いたければ有効にしなければなりません
-    (例えば <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code>)。</p>
-
-    <p>Apache と一緒にコンパイルして使うようにするには、
-    二通りの方法があります。一つめはモジュールを
-    <em>スタティックコンパイル</em>する方法です。この場合は、
-    Apache のバイナリに恒久的に組み込まれることになります。
-    これの代わりに、もしオペレーティングシステムが動的共有
-    ライブラリ (DSO) (訳注: Dynamic Shared Object) を
-    提供していて <code>autoconf</code> がそれを認識できる
-    場合は、モジュールを<em>ダイナミックコンパイル</em>する方法があります。
-    DSO モジュールは Apache のバイナリとは別に
-    保存され、<code class="module"><a href="./mod/mod_so.html">mod_so</a></code> で提供される
-    実行時設定ディレクティブを使って
-    組み込んだり取り外したりできます。
-    動的モジュールを実際に一つもコンパイルすることなく
-    サーバが DSO をロードできるようにするには、
-    <code>--enable-so</code> と明示的にすることができます。</p>
-
-    <dl>
-      <dt><code>--enable-<em>MODULE</em>[=shared]</code></dt>
-
-      <dd><em>MODULE</em> モジュールをコンパイルして
-      インクルードします。識別子 <em>MODULE</em> は
-      モジュール文書に記載されている<a href="mod/module-dict.html#ModuleIdentifier">モジュール
-      識別子</a>から "_module" を取り除いた文字列です。
-      DSO としてモジュールをコンパイルする場合は、
-      <code>=shared</code> オプションを付加してください。</dd>
-
-      <dt><code>--disable-<em>MODULE</em></code></dt>
-
-      <dd>通常はコンパイルされてインクルードされる
-      <em>MODULE</em> モジュールを除去します。</dd>
-
-      <dt><code>--enable-modules=<em>MODULE-LIST</em></code></dt>
-
-      <dd>スペース区切りの <em>MODULE-LIST</em> 
-      に列挙されたモジュールをコンパイルして
-      インクルードします。</dd>
-
-      <dt>
-      <code>--enable-mods-shared=<em>MODULE-LIST</em></code></dt>
-
-      <dd>スペース区切りの <em>MODULE-LIST</em> を
-      ダイナミックロード (DSO) できるモジュールとして
-      コンパイルとインクルードをします。</dd>
-    </dl>
-
-    <p><code>--enable-modules</code> や
-    <code>--enable-mods-shared</code> オプションに使う
-    <em>MODULE-LIST</em> は、普通はスペース区切りの
-    モジュール識別子のリストです。
-    例えば <code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code> と <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>
-    を有効にする場合は、次のどちらかが使えます。</p>
-
-<div class="example"><p><code>./configure --enable-dav --enable-info</code></p></div>
-
-    <p>または、同等の</p>
-
-<div class="example"><p><code>./configure --enable-modules="dav info"</code></p></div>
-
-    <p>これに加えて、特別なキーワード <code>all</code> や
-    <code>most</code> を使って、
-    一度に全てあるいはほとんどのモジュールを加えることができます。
-    その後で好きなモジュールを <code>--disable-<em>MODULE</em>
-    </code>オプションを使って取り除くことができます。
-    例えば、<code class="module"><a href="./mod/mod_info.html">mod_info</a></code> を除く全てのモジュールを DSO
-    モジュールとして組み込む場合は、次のようにします。</p>
-
-<div class="example"><p><code>
-      ./configure --enable-mods-shared=all
-      --disable-info
-</code></p></div>
-
-    <p>標準的なモジュールに加えて、Apache 2.0 では
-    <a href="mpm.html">Multi-Processing Modules</a> (MPM)
-    を選択してインクルードします。ただ一つだけの MPM
-    をコンパイルのプロセスで含める必要があります。
-    個々のプラットホーム向けのデフォルトの MPM は <a href="mpm.html">MPM 文書</a>に一覧がありますが、
-    <code>configure</code> 
-    コマンドで置き換えることができます。</p>
-
-    <dl>
-      <dt><code>--with-mpm=<em>NAME</em></code></dt>
-
-      <dd>MPM モジュール <em>NAME</em> を選択します。</dd>
-    </dl>
-
-    <p><var>mpm_name</var> という MPM を有効にするには次のようにします。</p>
-
-<div class="example"><p><code>
-     ./configure --with-mpm=<var>mpm_name</var>
-</code></p></div>
-
-
-
-<h3><a name="dbm" id="dbm">DBM</a></h3>
-
-    <p><code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code> と <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
-    の DBM <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 
-    等、 Apache 機能の幾つかでは情報の検索に単純な key/value
-    データベースを使用します。Apache には SDBM がソースコードごと
-    含まれていますので、このデータベースはいつでも利用可能です。
-    他のタイプのデータベースを使用したい場合は、次の
-    <code>configure</code> オプションが利用できます。</p>
-
-<dl>
-<dt><code>--with-gdbm[=<em>path</em>]</code></dt>
-<dt><code>--with-ndbm[=<em>path</em>]</code></dt>
-<dt><code>--with-berkeley-db[=<em>path</em>]</code></dt> 
-
-<dd>もしパス (<em>path</em>) が指定されなかった場合は、Apache
-は通常の検索パス上でインクルードファイルとライブラリを探します。
-明示的に <em>path</em> を指定すると、Apache は
-<em>path</em><code>/lib</code> と <em>path</em><code>/include</code>
-を検索して関連ファイルを探します。<em>path</em>
-にはコロンで区切って複数のインクルード、ライブラリパスを指定できます。
-</dd>
-</dl>
-
-
-
-<h3><a name="suexec" id="suexec">Suexec</a></h3>
-
-    <p>Apache には <a href="suexec.html">suexec</a> と呼ばれる
-    補助プログラムがあります。
-    このプログラムはユーザの CGI プログラムを隔離するために
-    使用することができます。しかしながら、suexec 
-    を適切に設定しなければ、
-    セキュリティ上致命的な問題をかかえる場合があります。
-    そのため、この機能を実装する前に <a href="suexec.html">suexec
-    文書</a>をよく読んで一考しておきましょう。</p>
-
+    <p>個々の <code>configure</code> オプションの詳細に関しては
+    <a href="programs/configure.html">configure マニュアルページ</a>
+    をご覧ください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compile" id="compile">ビルド</a></h2>
@@ -620,12 +334,12 @@
 <div class="section">
 <h2><a name="upgrading" id="upgrading">アップグレード</a></h2>
 
-    <p>アップグレードでまず行なうべきことは、リリースアナウンスと
+    <p>アップグレードでまず行なうべきことは、リリースアナウンスと
     ソースディストリビューションに入っている <code>CHANGES</code> を読んで、
     自身のサイトに対して影響を及ぼす変更点を探すことです。
     メジャーリリース間の変更をする場合 (例えば 1.3 から 2.0 へ、2.0 から 2.2 へ)
     は、コンパイル時や実行時の設定に大きな差異があるでしょうから、
-    手動の調整が必要になるでしょう。モジュールも全て、API
+    手動の調整が必要になるでしょう。モジュールも全て、API
     の変更に合わせるためにアップグレードが必要になるでしょう。</p>
 
     <p>マイナーバージョンから次のバージョンにアップグレードする場合
