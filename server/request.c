@@ -1347,7 +1347,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
      * We will catch it later if it's heading for the core handler.
      * directory_walk already posted an INFO note for module debugging.
      */
-     if (r->filename == NULL) {
+    if (r->filename == NULL) {
         return OK;
     }
 
