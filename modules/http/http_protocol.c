@@ -854,7 +854,7 @@ static void basic_http_header_check(request_rec *r,
         r->status_line = status_lines[ap_index_of_response(r->status)];
     }
 
-    /* kluge around broken browsers when indicated by force-response-1.0
+    /* kludge around broken browsers when indicated by force-response-1.0
      */
     if (r->proto_num == HTTP_VERSION(1,0)
         && apr_table_get(r->subprocess_env, "force-response-1.0")) {

@@ -442,7 +442,7 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     if (!types_confname) {
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
 		     "Invalid mime types config path %s", 
-                     ap_get_module_config(s->module_config, &mime_module));
+                     (const char *)ap_get_module_config(s->module_config, &mime_module));
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     if ((status = ap_pcfg_openfile(&f, ptemp, types_confname)) 
