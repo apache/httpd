@@ -1,10 +1,13 @@
-<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!-- 
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                This file is generated from xml source: DO NOT EDIT
-          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>perchild- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module perchild</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:</span></td><td>Multi-Processing Module allowing for daemon processes
+<html xmlns="http://www.w3.org/TR/xhtml1/strict"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      --><title>perchild - Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module perchild</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap" valign="top"><span class="help">Description:
+                      </span></td><td>Multi-Processing Module allowing for daemon processes
     serving requests to be assigned a variety of different
-    userids</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>mpm_perchild_module</td></tr></table></td></tr></table><h2>Summary</h2>
+    userids</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#Status" class="help">Status:
+                      </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:
+                        </a></td><td>mpm_perchild_module</td></tr></table></td></tr></table><h2>Summary</h2>
 <blockquote><table><tr><td bgcolor="#ffe5f5">
 This MPM does not currently work on most platforms.  Work is ongoing to
 make it functional.
@@ -17,9 +20,9 @@ make it functional.
     threads in each process.</p>
 
     <p>A single control process launches the number of child processes
-    indicated by the <a href="mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a> directive at server
+    indicated by the <a href="../mod/mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a> directive at server
     startup. Each child process creates threads as specified in the
-    <a href="mpm_common.html#startthreads" class="directive"><code class="directive">StartThreads</code></a> directive.
+    <a href="../mod/mpm_common.html#startthreads" class="directive"><code class="directive">StartThreads</code></a> directive.
     The individual threads then
     listen for connections and serve them when they arrive.</p>
 
@@ -29,27 +32,27 @@ make it functional.
     threads to be created. For each child process, Apache assesses
     the number of idle threads and creates or destroys threads to
     keep this number within the boundaries specified by
-    <a href="mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a>
-    and <a href="mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>.
+    <a href="../mod/mpm_common.html#minsparethreads" class="directive"><code class="directive">MinSpareThreads</code></a>
+    and <a href="../mod/mpm_common.html#maxsparethreads" class="directive"><code class="directive">MaxSpareThreads</code></a>.
     Since this process is very self-regulating, it is rarely
     necessary to modify these directives from their default values.
     The maximum number of clients that may be served simultaneously
     is determined by multiplying the number of server processes
-    that will be created (<a href="mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a>) by the maximum
+    that will be created (<a href="../mod/mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a>) by the maximum
     number of threads created in each process
-    (<a href="mpm_common.html#maxthreadsperchild" class="directive"><code class="directive">MaxThreadsPerChild</code></a>).</p>
+    (<a href="../mod/mpm_common.html#maxthreadsperchild" class="directive"><code class="directive">MaxThreadsPerChild</code></a>).</p>
 
     <p>While the parent process is usually started as root under
     Unix in order to bind to port 80, the child processes and
     threads are launched by Apache as a less-privileged user. The
-    <a href="mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="mpm_common.html#group" class="directive"><code class="directive">Group</code></a> directives are used to
+    <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="../mod/mpm_common.html#group" class="directive"><code class="directive">Group</code></a> directives are used to
     set the privileges of the Apache child processes. The child
     processes must be able to read all the content that will be
     served, but should have as few privileges beyond that as
     possible. In addition, unless <a href="../suexec.html">suexec</a> is used, these directives also
     set the privileges which will be inherited by CGI scripts.</p>
 
-    <p><a href="mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
+    <p><a href="../mod/mpm_common.html#maxrequestsperchild" class="directive"><code class="directive">MaxRequestsPerChild</code></a>
     controls how frequently the
     server recycles processes by killing old ones and launching new
     ones.</p>
@@ -62,15 +65,25 @@ make it functional.
     userids. These processes can then be associated with specific
     virtual hosts.</p>
     
-<h2>Directives</h2><ul><li><a href="#assignuserid">AssignUserId</a></li><li><a href="#childperuserid">ChildPerUserId</a></li><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><a href="mpm_common.html#numservers">NumServers</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#startthreads">StartThreads</a></li><li><a href="mpm_common.html#user">User</a></li></ul><hr/><h2><a name="AssignUserId">AssignUserId</a> <a name="assignuserid">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AssignUserID <em>user_id</em> <em>group_id</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>perchild</td></tr></table></td></tr></table>
+<h2>Directives</h2><ul><li><a href="#assignuserid">AssignUserId</a></li><li><a href="#childperuserid">ChildPerUserId</a></li><li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><a href="mpm_common.html#group">Group</a></li><li><a href="mpm_common.html#listen">Listen</a></li><li><a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><a href="mpm_common.html#lockfile">LockFile</a></li><li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li><li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><a href="mpm_common.html#numservers">NumServers</a></li><li><a href="mpm_common.html#pidfile">PidFile</a></li><li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><a href="mpm_common.html#startthreads">StartThreads</a></li><li><a href="mpm_common.html#user">User</a></li></ul><hr/><h2><a name="AssignUserId">AssignUserId</a> <a name="assignuserid">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>AssignUserID <em>user_id</em> <em>group_id</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>virtual host</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>perchild</td></tr></table></td></tr></table>
     <p>Tie a virtual host to a specific child process. Requests addressed to
 the virtual host where this directive appears will be served by the process
 running with the specified user and group id.</p>
-<hr/><h2><a name="ChildPerUserId">ChildPerUserId</a> <a name="childperuserid">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>child_id</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>perchild</td></tr></table></td></tr></table>
+<hr/><h2><a name="ChildPerUserId">ChildPerUserId</a> <a name="childperuserid">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: 
+                  </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:
+                  </a></td><td>ChildPerUserID <em>user_id</em>
+<em>group_id</em> <em>child_id</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:
+                  </a></td><td>server config</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:
+                  </a></td><td>MPM</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
+                  </a></td><td>perchild</td></tr></table></td></tr></table>
 <p>Specify a user id and group id for a specific child process. The number of
-children is set by the <a href="mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a>
-directive. For example, the default value for <a href="mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a> is 5 and that means
+children is set by the <a href="../mod/mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a>
+directive. For example, the default value for <a href="../mod/mpm_common.html#numservers" class="directive"><code class="directive">NumServers</code></a> is 5 and that means
 children ids 1,2,3,4 and 5 are available for assigment. If a child does not
-have an associated ChildPerUserID, it inherits the <a href="mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="mpm_common.html#group" class="directive"><code class="directive">Group</code></a> settings from the main server </p> 
+have an associated ChildPerUserID, it inherits the <a href="../mod/mpm_common.html#user" class="directive"><code class="directive">User</code></a> and <a href="../mod/mpm_common.html#group" class="directive"><code class="directive">Group</code></a> settings from the main server </p> 
 <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
