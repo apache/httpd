@@ -14,7 +14,7 @@
  */
 
 #ifndef EBCDIC_H
-#define EBCDIC_H  "$Id: ebcdic.h,v 1.5 2004/02/20 20:57:17 nd Exp $"
+#define EBCDIC_H  "$Id$"
 
 #include <ap_ebcdic.h>
 
