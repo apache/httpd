@@ -769,8 +769,8 @@ static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
 	parent_resource->uri = uri;
     }
 
-    apr_stat(&parent_ctx->finfo, parent_ctx->pathname, 
-             APR_FINFO_NORM, ctx->pool);
+    rv = apr_stat(&parent_ctx->finfo, parent_ctx->pathname, 
+                  APR_FINFO_NORM, ctx->pool);
     if (rv == APR_SUCCESS || rv == APR_INCOMPLETE) {
         parent_resource->exists = 1;
     }
