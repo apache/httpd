@@ -1,0 +1,13 @@
+bin/vhget 127.0.0.1 8080 '' '' vhost1
+bin/vhget 127.0.0.1 8080 vhost1:8080 '' vhost1
+bin/vhget 127.0.0.1 8080 vhost2:8080 'vhost1:8080' vhost1
+bin/vhget 127.0.0.1 8080 vhost2:8080 'vhost3:8080' vhost1
+bin/vhget 127.0.0.1 8080 vhost2:8080 '' vhost2
+bin/vhget 127.0.0.1 8080 vhost3:8080 '' vhost1
+
+bin/vhget 127.0.0.1 8081 '' '' vhost1
+bin/vhget 127.0.0.1 8081 vhost1:8081 '' vhost1
+bin/vhget 127.0.0.1 8081 vhost2:8081 'vhost1:8081' vhost1
+bin/vhget 127.0.0.1 8081 vhost2:8081 'vhost3:8081' vhost1
+bin/vhget 127.0.0.1 8081 vhost2:8081 '' vhost2
+bin/vhget 127.0.0.1 8081 vhost3:8081 '' vhost1
