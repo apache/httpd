@@ -4,7 +4,7 @@
 # Put -Dconst= in for a pre-ANSI compiler.
 # Do not take -DPOSIX_MISTAKE out.
 # REGCFLAGS isn't important to you (it's for my use in some special contexts).
-CFLAGS=-I. -DPOSIX_MISTAKE $(AUX_CFLAGS)
+CFLAGS=-I. -I../include -DPOSIX_MISTAKE $(AUX_CFLAGS)
 
 # If you have a pre-ANSI compiler, put -o into MKHFLAGS.  If you want
 # the Berkeley __P macro, put -b in.
@@ -46,16 +46,16 @@ purge:
 	rm -f *.o
 
 # stuff to build regex.h
-REGEXH=regex.h
+REGEXH=../include/regex.h
 REGEXHSRC=regex2.h $(REGSRC)
 $(REGEXH):	$(REGEXHSRC) mkh
-	sh ./mkh $(MKHFLAGS) -i _REGEX_H_ $(REGEXHSRC) >regex.h
+	sh ./mkh $(MKHFLAGS) -i _REGEX_H_ $(REGEXHSRC) > $(REGEXH)
 
 #	cmp -s regex.tmp regex.h 2>/dev/null || cp regex.tmp regex.h
 #	rm -f regex.tmp
 
 # dependencies
-$(OBJPRODN) debug.o:	utils.h regex.h regex2.h
+$(OBJPRODN) debug.o:	utils.h $(REGEXH) regex2.h
 regcomp.o:	cclass.h cname.h regcomp.ih
 regexec.o:	engine.c engine.ih
 regerror.o:	regerror.ih
@@ -105,7 +105,8 @@ print:
 
 
 mf.tmp:	Makefile
-	sed '/^REGEXH=/s/=.*/=regex.h/' Makefile | sed '/#DEL$$/d' >$@
+	sed '/^REGEXH=/s/=.*/=..\/include\\regex.h/' Makefile \
+	| sed '/#DEL$$/d' >$@
 
 DTRH=cclass.h cname.h regex2.h utils.h
 PRE=COPYRIGHT README WHATSNEW

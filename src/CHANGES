@@ -1,5 +1,15 @@
 Changes with Apache 1.3b4
 
+  *) Yet another rearrangement of the source tree.. now all the common
+     header files are in the src/include directory.  The -Imain -Iap
+     references in Makefiles have been changed to the simpler -Iinclude
+     instead.  In addition to simplifying the build a little bit, this
+     also makes it clear when a module is referencing something in a
+     other than kosher manner (e.g., the proxy including mod_mime.h).
+     Module-private header files (the proxy, mod_mime, the regex library,
+     and mod_rewrite) have not been moved to src/include; nor have
+     the OS-abstraction files.
+
   *) Fix a bug where r->hostname didn't have the :port stripped
      from it.  [Dean Gaudet]
 

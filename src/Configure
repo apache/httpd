@@ -873,7 +873,6 @@ done
 if [ "$RULE_WANTHSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
     SUBDIRS="$SUBDIRS regex"
-#    INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH regex"
 fi
 
 # create modules.c
@@ -991,7 +990,6 @@ echo  >> Makefile
 echo "CFLAGS1=$CFLAGS">> Makefile.config
 echo "INCLUDES1=$INCLUDES">> Makefile.config
 
-#INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH $OSDIR main ap"
 INCLUDES_AUTODEPTH="$INCLUDES_AUTODEPTH $OSDIR include"
 incprefix="-I"
 for depth in 0 1 2; do
