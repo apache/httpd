@@ -3048,7 +3048,13 @@ static void rewrite_rand_init(void)
 static int rewrite_rand(int l, int h)
 {
     rewrite_rand_init();
-    return rand() % (h - l + 1) + l;
+
+    /* Get [0,1) and then scale to the appropriate range. Note that using
+     * a floating point value ensures that we use all bits of the rand()
+     * result. Doing an integer modulus would only use the lower-order bits
+     * which may not be as uniformly random.
+     */
+    return ((double)(rand() % RAND_MAX) / RAND_MAX) * (h - l + 1) + l;
 }
 
 static char *select_random_value_part(request_rec *r, char *value)
