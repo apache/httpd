@@ -535,7 +535,7 @@ struct conn_rec {
                                  * "" if it has and no address was found.
                                  * N.B. Only access this though
 				 * get_remote_host() */
-  char *remote_logname;		/* Only ever set if doing_rfc931
+  char *remote_logname;		/* Only ever set if doing rfc1413 lookups.
                                  * N.B. Only access this through
 				 * get_remote_logname() */
     char *user;			/* If an authentication check was made,

@@ -884,27 +884,6 @@ char *escape_html(pool *p, const char *s)
     return x;
 }
 
-#ifdef NOTDEF
-
-void escape_url(char *url) {
-    register int x,y;
-    register char digit;
-    char *copy;
-
-    copy = strdup(url);
-            
-    for(x=0,y=0;copy[x];x++,y++) {
-        if(ind("% ?+&",url[y] = copy[x]) != -1) {
-            c2x(copy[x],&url[y]);
-            y+=2;
-        }
-    }
-    url[y] = '\0';
-    free(copy);
-}
-
-#endif
-
 int is_directory(const char *path) {
     struct stat finfo;
 
@@ -1190,32 +1169,6 @@ unsigned long get_virthost_addr (const char *w, short int *ports) {
     return ((struct in_addr *)(hep->h_addr))->s_addr;
 }
 
-
-#ifdef NOTDEF    
-    
-char *get_remote_logname(FILE *fd) {
-    int len;
-    char *result;
-#if defined(NEXT) || defined(BSD4_4) || defined(SOLARIS2) || defined(LINUX) || defined(__EMX__)
-    struct sockaddr sa_server, sa_client;
-#else
-    struct sockaddr_in sa_server,sa_client;
-#endif
-
-    len = sizeof(sa_client);
-    if(getpeername(fileno(stdout),&sa_client,&len) != -1) {
-        len = sizeof(sa_server);
-        if(getsockname(fileno(stdout),&sa_server,&len) == -1)
-            result = "unknown";
-        else
-            result = rfc931((struct sockaddr_in *) & sa_client,
-                                    (struct sockaddr_in *) & sa_server);
-    }
-    else result = "unknown";
-
-    return result; /* robm=pinhead */
-}
-#endif    
 
 static char *find_fqdn(pool *a, struct hostent *p) {
     int x;
