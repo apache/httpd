@@ -155,7 +155,7 @@
  * Interval, in microseconds, between scoreboard maintenance.
  */
 #ifndef SCOREBOARD_MAINTENANCE_INTERVAL
-#define SCOREBOARD_MAINTENANCE_INTERVAL 15000
+#define SCOREBOARD_MAINTENANCE_INTERVAL 1000000
 #endif
 
 /* Number of requests to try to handle in a single process.  If <= 0,
