@@ -1,4 +1,4 @@
-Changes with Apache 2.0.45
+Changes with Apache 2.0.44
 
   *) mod_autoindex: Bring forward the IndexOptions IgnoreCase option
      from Apache 1.3.  PR 14276
@@ -16,8 +16,6 @@ Changes with Apache 2.0.45
   *) Fix the building of cgi command lines when the query string
      contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
      Jeff Trawick]
-
-Changes with Apache 2.0.44
 
   *) Rename CacheMaxStreamingBuffer to MCacheMaxStreamingBuffer. Move
      implementation of MCacheMaxStreamingBuffer from mod_cache to
