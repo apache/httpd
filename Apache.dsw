@@ -132,28 +132,16 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name expat
+    Project_Dep_Name apr
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name apr
+    Project_Dep_Name xml
     End Project Dependency
 }}}
 
 ###############################################################################
 
 Project: "dftables"=".\srclib\pcre\dftables.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "expat"=".\srclib\expat-lite\expat.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -255,20 +243,8 @@ Package=<4>
     Project_Dep_Name libapr
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name libexpat
+    Project_Dep_Name xml
     End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "libexpat"=".\srclib\expat-lite\libexpat.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
 }}}
 
 ###############################################################################
@@ -286,9 +262,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libexpat
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name pcre
@@ -616,6 +589,18 @@ Package=<4>
 ###############################################################################
 
 Project: "rotatelogs"=".\support\rotatelogs.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "xml"=".\srclib\apr-util\xml\expat\lib\xml.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

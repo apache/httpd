@@ -1,5 +1,0 @@
-LTLIBRARY_NAME = libexpat.la
-LTLIBRARY_SOURCES = hashtable.c xmlparse.c xmlrole.c xmltok.c
-
-# our output is a library, so include "ltlib.mk"
-include $(top_srcdir)/build/ltlib.mk

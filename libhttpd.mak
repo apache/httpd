@@ -42,16 +42,15 @@ ALL : "$(OUTDIR)\libhttpd.dll"
 !ELSE 
 
 ALL : "gen_uri_delims - Win32 Release" "gen_test_char - Win32 Release"\
- "pcreposix - Win32 Release" "pcre - Win32 Release" "libexpat - Win32 Release"\
- "libaprutil - Win32 Release" "libapr - Win32 Release" "$(OUTDIR)\libhttpd.dll"
+ "pcreposix - Win32 Release" "pcre - Win32 Release" "libaprutil - Win32 Release"\
+ "libapr - Win32 Release" "$(OUTDIR)\libhttpd.dll"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
 CLEAN :"libapr - Win32 ReleaseCLEAN" "libaprutil - Win32 ReleaseCLEAN"\
- "libexpat - Win32 ReleaseCLEAN" "pcre - Win32 ReleaseCLEAN"\
- "pcreposix - Win32 ReleaseCLEAN" "gen_test_char - Win32 ReleaseCLEAN"\
- "gen_uri_delims - Win32 ReleaseCLEAN" 
+ "pcre - Win32 ReleaseCLEAN" "pcreposix - Win32 ReleaseCLEAN"\
+ "gen_test_char - Win32 ReleaseCLEAN" "gen_uri_delims - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -209,7 +208,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\vhost.obj" \
 	".\srclib\apr-util\Release\libaprutil.lib" \
 	".\srclib\apr\Release\libapr.lib" \
-	".\srclib\expat-lite\Release\libexpat.lib" \
 	".\srclib\pcre\LibR\pcre.lib" \
 	".\srclib\pcre\LibR\pcreposix.lib"
 
@@ -233,16 +231,15 @@ ALL : "$(OUTDIR)\libhttpd.dll"
 !ELSE 
 
 ALL : "gen_uri_delims - Win32 Debug" "gen_test_char - Win32 Debug"\
- "pcreposix - Win32 Debug" "pcre - Win32 Debug" "libexpat - Win32 Debug"\
- "libaprutil - Win32 Debug" "libapr - Win32 Debug" "$(OUTDIR)\libhttpd.dll"
+ "pcreposix - Win32 Debug" "pcre - Win32 Debug" "libaprutil - Win32 Debug"\
+ "libapr - Win32 Debug" "$(OUTDIR)\libhttpd.dll"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
 CLEAN :"libapr - Win32 DebugCLEAN" "libaprutil - Win32 DebugCLEAN"\
- "libexpat - Win32 DebugCLEAN" "pcre - Win32 DebugCLEAN"\
- "pcreposix - Win32 DebugCLEAN" "gen_test_char - Win32 DebugCLEAN"\
- "gen_uri_delims - Win32 DebugCLEAN" 
+ "pcre - Win32 DebugCLEAN" "pcreposix - Win32 DebugCLEAN"\
+ "gen_test_char - Win32 DebugCLEAN" "gen_uri_delims - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -402,7 +399,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\vhost.obj" \
 	".\srclib\apr-util\Debug\libaprutil.lib" \
 	".\srclib\apr\Debug\libapr.lib" \
-	".\srclib\expat-lite\Debug\libexpat.lib" \
 	".\srclib\pcre\LibD\pcre.lib" \
 	".\srclib\pcre\LibD\pcreposix.lib"
 
@@ -2552,34 +2548,6 @@ NODEP_CPP_SERVI=\
    cd ".\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Debug" RECURSE=1 
-   cd "..\.."
-
-!ENDIF 
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-"libexpat - Win32 Release" : 
-   cd ".\srclib\expat-lite"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libexpat.mak" CFG="libexpat - Win32 Release" 
-   cd "..\.."
-
-"libexpat - Win32 ReleaseCLEAN" : 
-   cd ".\srclib\expat-lite"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libexpat.mak"\
- CFG="libexpat - Win32 Release" RECURSE=1 
-   cd "..\.."
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-"libexpat - Win32 Debug" : 
-   cd ".\srclib\expat-lite"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libexpat.mak" CFG="libexpat - Win32 Debug" 
-   cd "..\.."
-
-"libexpat - Win32 DebugCLEAN" : 
-   cd ".\srclib\expat-lite"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libexpat.mak" CFG="libexpat - Win32 Debug"\
- RECURSE=1 
    cd "..\.."
 
 !ENDIF 
