@@ -417,7 +417,7 @@ void ssl_init_ConfigureServer(server_rec *s,
      * Now check for important parameters and the
      * possibility that the user forgot to set them.
      */
-    if (!sc->szPublicCertFile[0]) {
+    if (!sc->szPublicCertFiles[0]) {
         ssl_log(s, SSL_LOG_ERROR,
                 "Init: (%s) No SSL Certificate set [hint: SSLCertificateFile]",
                 vhost_id);
@@ -826,8 +826,8 @@ void ssl_init_ConfigureServer(server_rec *s,
     if (sc->szCertificateChain) {
         BOOL skip_first = FALSE;
 
-        for (i = 0; (i < SSL_AIDX_MAX) && sc->szPublicCertFile[i]; i++) {
-            if (strEQ(sc->szPublicCertFile[i], sc->szCertificateChain)) {
+        for (i = 0; (i < SSL_AIDX_MAX) && sc->szPublicCertFiles[i]; i++) {
+            if (strEQ(sc->szPublicCertFiles[i], sc->szCertificateChain)) {
                 skip_first = TRUE;
                 break;
             }
