@@ -315,7 +315,8 @@ require user "Joe Manager"<br />
 
     <p>This directive specifies an LDAP group whose members are
     allowed access. It takes the distinguished name of the LDAP
-    group. For example, assume that the following entry existed in
+    group. Note: Do not surround the group name with quotes.
+    For example, assume that the following entry existed in
     the LDAP directory:</p>
 <div class="example"><p><code>
 dn: cn=Administrators, o=Airius<br />
@@ -326,7 +327,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
-<div class="example"><p><code>require group "cn=Administrators, o=Airius"</code></p></div>
+<div class="example"><p><code>require group cn=Administrators, o=Airius</code></p></div>
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code> and
     <code class="directive"><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></code>
@@ -340,11 +341,12 @@ uniqueMember: cn=Fred User, o=Airius<br />
     that must match for access to be granted. If the distinguished
     name that was retrieved from the directory server matches the
     distinguished name in the <code>require dn</code>, then
-    authorization is granted.</p>
+    authorization is granted. Note: do not surround the distinguished
+    name with quotes.</p>
 
     <p>The following directive would grant access to a specific
     DN:</p>
-<div class="example"><p><code>require dn "cn=Barbara Jenson, o=Airius"</code></p></div>
+<div class="example"><p><code>require dn cn=Barbara Jenson, o=Airius</code></p></div>
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></code>
     directive.</p>
@@ -358,8 +360,9 @@ uniqueMember: cn=Fred User, o=Airius<br />
         Grant access to anyone who exists in the LDAP directory,
         using their UID for searches.
 
-<div class="example"><p><code>AuthLDAPURL "ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)"<br />
-require valid-user
+<div class="example"><p><code>
+ AuthLDAPURL ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)<br />
+ require valid-user
 </code></p></div>
       </li>
 
@@ -367,7 +370,7 @@ require valid-user
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server. 
-<div class="example"><p><code>AuthLDAPURL "ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius"<br />
+<div class="example"><p><code>AuthLDAPURL ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius<br />
 require valid-user
 </code></p></div>
       </li>
@@ -382,7 +385,7 @@ require valid-user
         choose an attribute that is guaranteed unique in your
         directory, such as <code>uid</code>. 
 <div class="example"><p><code>
-AuthLDAPURL "ldap://ldap.airius.com/ou=People, o=Airius?cn"<br />
+AuthLDAPURL ldap://ldap.airius.com/ou=People, o=Airius?cn<br />
 require valid-user
 </code></p></div>
       </li>
@@ -391,7 +394,7 @@ require valid-user
         Grant access to anybody in the Administrators group. The
         users must authenticate using their UID. 
 <div class="example"><p><code>
-AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid"<br />
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
 require group cn=Administrators, o=Airius
 </code></p></div>
       </li>
@@ -403,7 +406,7 @@ require group cn=Administrators, o=Airius
         only to people (authenticated via their UID) who have
         alphanumeric pagers: 
 <div class="example"><p><code>
-AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)"<br />
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
 require valid-user
 </code></p></div>
       </li>
@@ -419,7 +422,7 @@ require valid-user
         have a pager, but does need to access the same
         resource:</p>
 <div class="example"><p><code>
-AuthLDAPURL "ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))"<br />
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
 require valid-user
 </code></p></div>
 
