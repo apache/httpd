@@ -261,7 +261,8 @@ AP_DECLARE(int) ap_xml_parse_input(request_rec *r, ap_xml_doc **pdoc);
  */
 AP_DECLARE(void) ap_xml_to_text(apr_pool_t *p, const ap_xml_elem *elem,
 				int style, apr_array_header_t *namespaces,
-				int *ns_map, const char **pbuf, size_t *psize);
+				int *ns_map, const char **pbuf,
+                                apr_size_t *psize);
 
 /* style argument values: */
 #define AP_XML_X2T_FULL		0	/* start tag, contents, end tag */
