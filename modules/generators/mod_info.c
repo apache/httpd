@@ -91,6 +91,7 @@
 #include "http_main.h"
 #include "http_protocol.h"
 #include "util_script.h"
+#include "apr_strings.h"
 #include "apr_lib.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"

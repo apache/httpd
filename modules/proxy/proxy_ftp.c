@@ -62,6 +62,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "http_core.h"
+#include "apr_strings.h"
 
 #define AUTODETECT_PWD
 
