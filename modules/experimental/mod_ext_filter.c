@@ -517,7 +517,8 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
     ctx->p = f->r->pool;
     if (ctx->filter->intype &&
         ctx->filter->intype != INTYPE_ALL &&
-        strcasecmp(ctx->filter->intype, f->r->content_type)) {
+        (!f->r->content_type ||
+         strcasecmp(ctx->filter->intype, f->r->content_type))) {
         /* wrong IMT for us; don't mess with the output */
         ctx->noop = 1;
     }

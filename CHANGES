@@ -1,5 +1,8 @@
 Changes with Apache 2.0.40
 
+  *) mod_ext_filter: don't segfault if content-type is not set.  PR 10617.
+     [Arthur P. Smith <apsmith@aps.org>, Jeff Trawick]
+
   *) Fix an error when building ApacheMonitor. 
      [James Cox <imajes@php.net>]
 
