@@ -14,3 +14,6 @@ EXPORTS
   "_swapl"
   "h_errno"
   "inet_ntoa"
+
+; mod_proxy needs this one
+  "inet_addr"
