@@ -82,9 +82,9 @@ char *ap_os_error_message(int err)
         len = sizeof(result-1);
 
       for (c=0; c<len; c++) {
-          while (isspace(message[c]) && isspace(message[c+1])) /* skip multiple whitespace */
+          while (ap_isspace(message[c]) && ap_isspace(message[c+1])) /* skip multiple whitespace */
               c++;
-          *(pos++) = isspace(message[c]) ? ' ' : message[c];
+          *(pos++) = ap_isspace(message[c]) ? ' ' : message[c];
       }
   
       *pos = 0;

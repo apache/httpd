@@ -267,16 +267,16 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 #endif
 
 #ifdef OS2
-    if (env_temp = getenv("COMSPEC")) {
+    if ((env_temp = getenv("COMSPEC")) != NULL) {
         ap_table_addn(e, "COMSPEC", env_temp);            
     }
-    if (env_temp = getenv("ETC")) {
+    if ((env_temp = getenv("ETC")) != NULL) {
         ap_table_addn(e, "ETC", env_temp);            
     }
-    if (env_temp = getenv("DPATH")) {
+    if ((env_temp = getenv("DPATH")) != NULL) {
         ap_table_addn(e, "DPATH", env_temp);            
     }
-    if (env_temp = getenv("PERLLIB_PREFIX")) {
+    if ((env_temp = getenv("PERLLIB_PREFIX")) != NULL) {
         ap_table_addn(e, "PERLLIB_PREFIX", env_temp);            
     }
 #endif
@@ -673,7 +673,7 @@ API_EXPORT(void) ap_send_size(size_t size, request_rec *r)
     }
 }
 
-#if defined(OS2) || defined(WIN32)
+#if defined(WIN32)
 static char **create_argv_cmd(pool *p, char *av0, const char *args, char *path)
 {
     register int x, n;
