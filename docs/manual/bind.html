@@ -18,20 +18,17 @@
 
     <p>When Apache starts, it connects to some port and address on
     the local machine and waits for incoming requests. By default,
-    it listens to all addresses on the machine, and to the port as
-    specified by the <code>Port</code> directive in the server
-    configuration. However, it can be told to listen to more the
-    one port, or to listen to only selected addresses, or a
-    combination. This is often combined with the Virtual Host
-    feature which determines how Apache responds to different IP
-    addresses, hostnames and ports.</p>
+    it listens to all addresses on the machine.  However, it needs to
+    be told to listen to specific ports, or to listen to only selected 
+    addresses, or a combination. This is often combined with the 
+    Virtual Host feature which determines how Apache responds to 
+    different IP addresses, hostnames and ports.</p>
 
     <p>The <code>Listen</code> directive tells the server to accept
     incoming requests only on the specified port or
     address-and-port combinations. If only a port number is
     specified in the <code>Listen</code> directive, the server
-    listens to the given port on all interfaces, instead of the
-    port given by the <code>Port</code> directive. If an IP address
+    listens to the given port on all interfaces. If an IP address
     is given as well as a port, the server will listen on the given
     port and interface. Multiple Listen directives may be used to
     specify a number of addresses and ports to listen to. The
@@ -70,7 +67,6 @@
     See also the documentation on <a
     href="mod/mpm_common.html#listen">Listen directive</a>, <a
     href="vhosts/">Virtual Hosts</a>, <a
-    href="mod/core.html#port">Port directive</a>, <a
     href="dns-caveats.html">DNS Issues</a> and <a
     href="mod/core.html#virtualhost">&lt;VirtualHost&gt;
     section</a>. <!--#include virtual="footer.html" -->
