@@ -332,7 +332,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     /*
      * Configuration consistency checks
      */
-    ssl_init_CheckServers(base_server, p);
+    ssl_init_CheckServers(base_server, ptemp);
 
     /*
      *  Announce mod_ssl and SSL library in HTTP Server field
@@ -850,11 +850,12 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p,
 
 void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
 {
-    server_rec *s, **ps;
+    server_rec *s, *ps;
     SSLSrvConfigRec *sc;
-    ssl_ds_table *table;
-    apr_pool_t *subpool;
-    char *key;
+    apr_hash_t *table;
+    const char *key;
+    apr_ssize_t klen;
+
     BOOL conflict = FALSE;
 
     /*
@@ -887,8 +888,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
      * just the certificate/keys of one virtual host (which one cannot be said
      * easily - but that doesn't matter here).
      */
-    apr_pool_create(&subpool, p);
-    table = ssl_ds_table_make(subpool, sizeof(server_rec *));
+    table = apr_hash_make(p);
 
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
@@ -897,30 +897,26 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
             continue;
         }
 
-        key = apr_psprintf(subpool, "%pA:%u",
+        key = apr_psprintf(p, "%pA:%u",
                            &s->addrs->host_addr, s->addrs->host_port);
-        
-        if ((ps = ssl_ds_table_get(table, key))) {
+        klen = strlen(key);
+
+        if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
             ssl_log(base_server, SSL_LOG_WARN,
                     "Init: SSL server IP/port conflict: "
                     "%s (%s:%d) vs. %s (%s:%d)",
                     ssl_util_vhostid(p, s), 
                     (s->defn_name ? s->defn_name : "unknown"),
                     s->defn_line_number,
-                    ssl_util_vhostid(p, *ps),
-                    ((*ps)->defn_name ? (*ps)->defn_name : "unknown"), 
-                    (*ps)->defn_line_number);
+                    ssl_util_vhostid(p, ps),
+                    (ps->defn_name ? ps->defn_name : "unknown"), 
+                    ps->defn_line_number);
             conflict = TRUE;
             continue;
         }
 
-        ps = ssl_ds_table_push(table, key);
-        *ps = s;
+        apr_hash_set(table, key, klen, s);
     }
-
-    ssl_ds_table_kill(table);
-    /* XXX - It was giving some problem earlier - check it out - TBD */
-    apr_pool_destroy(subpool);
 
     if (conflict) {
         ssl_log(base_server, SSL_LOG_WARN,
