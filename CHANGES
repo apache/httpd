@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Move mod_deflate out of experimental and into filters.
+     [Justin Erenkrantz]
+
   *) Get proxy CONNECT basically working.  [Jeff Trawick]
 
   *) Fix mod_rewrite hang when APR uses SysV Semaphores and

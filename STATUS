@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/06 22:14:09 $]
+Last modified at [$Date: 2002/05/06 22:23:51 $]
 
 Release:
 
@@ -53,8 +53,6 @@ CURRENT RELEASE NOTES:
 RELEASE SHOWSTOPPERS:
 
     * for 2.0.37: decide if the MMN bump was warranted
-
-    * Move mod_deflate out of experimental
 
 CURRENT VOTES:
 
