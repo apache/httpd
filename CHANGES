@@ -37,23 +37,15 @@ features:
        string of the browser. Combined with XSSI, this allows you to
        write browser-based conditional HTML documents.
 
-  *) SetUID CGI Execution Apache now supports the execution of CGI
-       scripts as users other than the server user. A number of security
-       checks are built in to try and make this as safe as possible.
+  *) SetUID CGI Execution 
+       Apache now supports the execution of CGI scripts as users other
+       than the server user. A number of security checks are built in to
+       try and make this as safe as possible.
 
   *) URL Rewriting Module
        The optional mod_rewrite module is now included. This module can
        provide powerful URL mapping, using regular expressions. There's
        nothing this module can't do!
-
-  *) Optional FastCGI Module Included
-       FastCGI is a high-performance alternative to CGI. FastCGI gets its
-       speed by having the Web server keep the application processes
-       running between requests. So, unlike CGI, you do not have the
-       overhead of starting up a new process and doing application
-       initialization (e.g. connecting to a database) each time somebody
-       requests a document. The processes start up with the Web server
-       and keep on running.
 
   *) Enhanced, Configurable Logging
        The optional mod_log_config included with earlier versions of
@@ -92,10 +84,6 @@ features:
        "Gone" or "See Other" HTTP status. For NCSA-compatibility,
        RedirectTemp and RedirectPermanent are also implemented.
 
-  *) Graceful Restarts
-       Apache can re-read the config files and re-open log files without
-       terminating transactions in progress.
-
   *) Simplified Compilation
        The process of configuring Apache for compilation has been
        simplified.
@@ -120,7 +108,7 @@ features:
        The AuthUserFile, AuthGroupFile and AuthDigestFile commands now
        have a syntax compatible with the NCSA server.
 
-  *) Optional proxy module
+  *) Optional Proxy Module
        An improved FTP, HTTP, and CONNECT mode SSL proxy is included with
        Apache 1.2. Some of the changes visible to users:
        
@@ -129,3 +117,9 @@ features:
               - CONNECT mode ports are configurable from a list
               - NoCache * directive for disabling proxy caching
               - Numerous bug fixes
+
+  *) Optional Example Module
+       An example module that demonstrates many of the aspects of the
+       API is now included with Apache as of version 1.2.  It can be
+       used as a base for those who wish to write their own Apache
+       modules.
