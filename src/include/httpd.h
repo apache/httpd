@@ -562,6 +562,9 @@ int strcmp_match(char *str, char *exp);
 int strcasecmp_match(char *str, char *exp);
 char *uudecode (pool *, char *);
 
+char *pregsub(pool *p, const char *input, const char *source,
+	      size_t nmatch, regmatch_t pmatch[]);
+
 void str_tolower (char *);
 int ind (const char *, char);	/* Sigh... */
 int rind (const char *, char);     

@@ -227,6 +227,84 @@ int is_matchexp(char *str) {
     return 0;
 }
 
+/* This function substitues for $0-$9, filling in regular expression
+ * submatches. Pass it the same nmatch and pmatch arguments that you
+ * passed regexec(). pmatch should not be greater than the maximum number
+ * of subexpressions - i.e. one more than the re_nsub member of regex_t.
+ *
+ * input should be the string with the $-expressions, source should be the
+ * string that was matched against.
+ *
+ * It returns the substituted string, or NULL on error.
+ *
+ * Parts of this code are based on Henry Spencer's regsub(), from his
+ * AT&T V8 regexp package.
+ */
+
+char *pregsub(pool *p, const char *input, const char *source,
+	      size_t nmatch, regmatch_t pmatch[]) {
+    const char *src = input;
+    char *dest, *dst;
+    char c;
+    int no, len;
+
+    if (!source) return NULL;
+    if (!nmatch) return pstrdup(p, src);
+
+    /* First pass, find the size */
+
+    len = 0;
+
+    while ((c = *src++) != '\0') {
+	if (c == '&')
+	    no = 0;
+	else if (c == '$' && isdigit(*src))
+	    no = *src++ - '0';
+	else
+	    no = -1;
+	
+	if (no < 0) {   /* Ordinary character. */
+	    if (c == '\\' && (*src == '$' || *src == '&'))
+		c = *src++;
+	    len++;
+	} else if (no <= nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
+	    len += pmatch[no].rm_eo - pmatch[no].rm_so;
+	}
+
+    }
+
+    dest = dst = pcalloc(p, len + 1);
+
+    /* Now actually fill in the string */
+
+    src = input;
+
+    while ((c = *src++) != '\0') {
+	if (c == '&')
+	    no = 0;
+	else if (c == '$' && isdigit(*src))
+	    no = *src++ - '0';
+	else
+	    no = -1;
+	
+	if (no < 0) {   /* Ordinary character. */
+	    if (c == '\\' && (*src == '$' || *src == '&'))
+		c = *src++;
+	    *dst++ = c;
+	} else if (no <= nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
+	    len = pmatch[no].rm_eo - pmatch[no].rm_so;
+	    strncpy(dst, source + pmatch[no].rm_so, len);
+	    dst += len;
+	    if (*(dst-1) == '\0') /* strncpy hit NULL. */
+		return NULL;
+	}
+
+    }
+    *dst = '\0';
+    
+    return dest;
+}
+
 /*
  * Parse .. so we don't compromise security
  */
