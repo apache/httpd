@@ -1,5 +1,10 @@
-# This is a comment. I love comments.
+# This file controls what MIME types are sent to the client for the
+# given file extensions.  Sending the correct MIME type to the client
+# is important so they know how to handle the content of the file.
+# Extra types can either be added here or by using an AddType directive
+# in your config files.
 
+# MIME type			Extension
 application/activemessage
 application/andrew-inset
 application/applefile
