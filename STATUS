@@ -395,7 +395,7 @@ PATCHES TO BACKPORT FROM 2.1
     * support/check_forensic: Fix tempfile usage
       svn rev 125495, 126224
       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
-      +1: thommay (125495 only), jerenkrantz
+      +1: thommay, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
