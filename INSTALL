@@ -435,8 +435,11 @@
         $ PREFIX/sbin/apachectl start
  
      and then you should be able to request your first document via URL
-     http://localhost/. Then stop the server again by running:
-  
+     http://localhost/ (when you built and installed Apache as root or at
+     least used the --without-confadjust option) or http://localhost:8080/
+     (when you built and installed Apache as a regular user). Then stop the
+     server again by running: 
+
         $ PREFIX/sbin/apachectl stop
  
   7. Customizing the package
@@ -449,7 +452,7 @@
         $ vi PREFIX/etc/access.conf
         $ vi PREFIX/etc/srm.conf
  
-     Have a look at the Apache manual under http://localhost/manual/ or
+     Have a look at the Apache manual under htdocs/manual/ or
      http://www.apache.org/docs/ for a complete reference of available
      configuration directives.
 

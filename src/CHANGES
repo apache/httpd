@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) Fix http://localhost/ hints in top-level INSTALL document.
+     [Rob Jenson <robjen@spotch.com>, Ralf S. Engelschall] PR#3088
+
   *) Quote paths in default configuration files.  [Wilfredo Sanchez]
 
   *) PORT: Remove extra HAVE_SYS_RESOURCE_H define for RHAPSODY since
