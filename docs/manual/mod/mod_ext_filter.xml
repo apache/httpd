@@ -11,20 +11,14 @@ delivery to the client</description>
 <identifier>ext_filter_module</identifier>
 
 <summary>
-    <p>This is an <strong>experimental</strong> module and should
-    be used with care. Test your <module>mod_ext_filter</module>
-    configuration carefully to ensure that it performs the desired
-    function. You may wish to review <a href="../filter.html">
-    this information</a> for background on the Apache filtering 
-    model.</p>
-
     <p><module>mod_ext_filter</module> presents a simple and familiar
-    programming model for filters. With this module, a program
-    which reads from stdin and writes to stdout (i.e., a Unix-style
-    filter command) can be a filter for Apache. This filtering
-    mechanism is much slower than using a filter which is specially
-    written for the Apache API and runs inside of the Apache server
-    process, but it does have the following benefits:</p>
+    programming model for <a href="../filter.html">filters</a>. With
+    this module, a program which reads from stdin and writes to stdout
+    (i.e., a Unix-style filter command) can be a filter for
+    Apache. This filtering mechanism is much slower than using a
+    filter which is specially written for the Apache API and runs
+    inside of the Apache server process, but it does have the
+    following benefits:</p>
 
     <ul>
       <li>the programming model is much simpler</li>
@@ -40,8 +34,9 @@ delivery to the client</description>
     <p>Even when the performance characteristics are not suitable
     for production use, <module>mod_ext_filter</module> can be used as
     a prototype environment for filters.</p>
+
 </summary>
-<seealso><a href="../filter.html">The filter documentation</a></seealso>
+<seealso><a href="../filter.html">Filters</a></seealso>
 
 <section id="examples"><title>Examples</title>
 
