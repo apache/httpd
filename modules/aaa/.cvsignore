@@ -1,6 +1,9 @@
+Makefile.in
+.deps
+.libs
+*.la
 Makefile
 *.lo
 *.so
 *.dll
 *.def
-*.exp

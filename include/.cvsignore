@@ -1,1 +1,2 @@
-ap_config_auto.h
+stamp-h*
+ap_config_auto.h*

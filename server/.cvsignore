@@ -1,4 +1,9 @@
 Makefile
+Makefile.in
+.deps
+.libs
+*.lo
+*.la
 uri_delims.h
 gen_uri_delims
 test_char.h
