@@ -3310,7 +3310,7 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
  */
 #define ASCII_LF '\012'
     char *buff;
-    apr_ssize_t length = HUGE_STRING_LEN, templen;
+    apr_ssize_t length = HUGE_STRING_LEN, templen = 0;
     apr_socket_t *csock = NULL;
     apr_status_t rv;
     ap_bucket *e;
