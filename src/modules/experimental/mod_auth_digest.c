@@ -130,6 +130,17 @@
 #include "util_uri.h"
 #include "util_md5.h"
 #include "ap_sha1.h"
+
+#ifdef WIN32
+/*
+ * Crypt APIs are only available in WinNT and Win95 with OSR 2 so 
+ * wincrypt.h is protected by this macro definition.
+ */
+#define _WIN32_WINNT 0x0400
+#include <wincrypt.h>
+#undef _WIN32_WINNT
+#endif
+
 #ifdef HAVE_SHMEM_MM
 #include "mm.h"
 #endif	/* HAVE_SHMEM_MM */
@@ -216,7 +227,7 @@ typedef struct digest_header_struct {
 
 typedef union time_union {
     time_t	  time;
-    unsigned char arr[sizeof(time_t)];
+    unsigned char arr[sizeof(time_t)+1]; /* leave room for the NULL terminator */
 } time_rec;
 
 
@@ -271,6 +282,30 @@ static void cleanup_tables(void *not_used)
 }
 #endif	/* HAVE_SHMEM_MM */
 
+#ifdef WIN32
+/* TODO: abstract out the random number generation. APR? */
+static void initialize_secret(server_rec *s)
+{
+    HCRYPTPROV hProv;
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s,
+		 "Digest: generating secret for digest authentication ...");
+    if (!CryptAcquireContext(&hProv,NULL,NULL,PROV_RSA_FULL,0)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, s, 
+                     "Digest: Error acquiring context. Errno = %d",
+                     GetLastError());
+        exit(EXIT_FAILURE);
+    }
+    if (!CryptGenRandom(hProv,sizeof(secret),secret)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, s, 
+                     "Digest: Error generating secret. Errno = %d",
+                     GetLastError());
+        exit(EXIT_FAILURE);
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s, "Digest: done");
+}
+#else
 static void initialize_secret(server_rec *s)
 {
 #ifdef	DEV_RANDOM
@@ -317,6 +352,7 @@ static void initialize_secret(server_rec *s)
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, s, "Digest: done");
 }
+#endif
 
 #ifdef HAVE_SHMEM_MM
 static void initialize_tables(server_rec *s)
