@@ -3472,7 +3472,7 @@ void standalone_main(int argc, char **argv)
 	    /* Clear the pool - including any registered cleanups */
 	    destroy_pool(pconf);
 	    cleanup_scoreboard();
-	    accept_mutex_cleanup();
+	    SAFE_ACCEPT(accept_mutex_cleanup());
 
 	    exit(0);
 	}
