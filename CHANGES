@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Allow forced mimetypes [T=...] to get expanded.
+     PR 14223.  [André Malo]
+
   *) mod_log_config: Fix %b log format to write really "-" when 0 bytes
      were sent (e.g. with 304 or 204 response codes).  [Astrid Keßler]
 
