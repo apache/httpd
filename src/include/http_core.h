@@ -83,7 +83,6 @@ extern "C" {
 #define OPT_INCNOEXEC 32
 #define OPT_SYM_OWNER 64
 #define OPT_MULTI 128
-#define OPT_DEBUG500 256
 #define OPT_ALL (OPT_INDEXES|OPT_INCLUDES|OPT_SYM_LINKS|OPT_EXECCGI)
 
 /* options for get_remote_host() */
@@ -166,7 +165,7 @@ extern API_VAR_EXPORT module core_module;
 
 /* Per-directory configuration */
 
-typedef unsigned int allow_options_t;
+typedef unsigned char allow_options_t;
 typedef unsigned char overrides_t;
 
 typedef struct {

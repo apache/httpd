@@ -2385,9 +2385,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	             " and inform them of the time the error occurred,\n"
 	             "and anything you might have done that may have\n"
 	             "caused the error.<P>\n", NULL);
-	    if ((ap_allow_options(r) & OPT_DEBUG500)
-                && (error_notes = ap_table_get(r->notes, "error-notes"))
-		   != NULL) {
+	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
 		ap_bvputs(fd, error_notes, "<P>\n", NULL);
 	    }
 	    break;
