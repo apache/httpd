@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/12 21:34:18 $]
+Last modified at [$Date: 2004/04/13 11:47:58 $]
 
 Release:
 
@@ -74,7 +74,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_headers: Allow conditional RequestHeader directives. PR 27951
          modules/metadata/mod_headers.c: r1.52
-       +1: nd
+       +1: nd, trawick
 
     *) Allow URLs for ServerAdmin. PR 28174.
          server/core.c: r1.274
@@ -125,12 +125,12 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_logio no longer removes the EOS bucket. PR 27928.
          modules/loggers/mod_logio.c: r1.8
-       +1: nd
+       +1: nd, trawick
 
     *) mod_rewrite no longer turns forward proxy requests into reverse proxy
        requests. PR 28125
          modules/mappers/mod_rewrite.c: r1.255
-       +1: nd
+       +1: nd, trawick
 
     *) Update the ldc->binddn and ldc->bindpw associated with the LDAP 
        connection to match the authenticating user DN and password after
