@@ -166,11 +166,6 @@ fi
 ##  determine default parameters
 ##
 
-#   target name
-if [ ".$TARGET" = . ]; then
-    TARGET=httpd
-fi
-
 #   default paths
 prefix=UNSET
 
@@ -833,6 +828,15 @@ if [ ".$PERL" = .no-perl-on-this-system ]; then
 fi
 
 ##
+##  target name
+##
+if [ ".$TARGET" != . ]; then
+    thetarget=$TARGET
+else
+    thetarget=httpd
+fi
+
+##
 ##  expand path variables and make sure
 ##  they do not end with a backslash
 ##
@@ -933,13 +937,13 @@ if [ ".$show_layout" = .1 ]; then
     echo "Compilation paths:"
     echo "           HTTPD_ROOT: $prefix"
     echo "      SHARED_CORE_DIR: $libexecdir"
-    echo "       DEFAULT_PIDLOG: ${runtimedir_relative}${TARGET}.pid"
-    echo "   DEFAULT_SCOREBOARD: ${runtimedir_relative}${TARGET}.scoreboard"
-    echo "     DEFAULT_LOCKFILE: ${runtimedir_relative}${TARGET}.lock"
+    echo "       DEFAULT_PIDLOG: ${runtimedir_relative}${thetarget}.pid"
+    echo "   DEFAULT_SCOREBOARD: ${runtimedir_relative}${thetarget}.scoreboard"
+    echo "     DEFAULT_LOCKFILE: ${runtimedir_relative}${thetarget}.lock"
     echo "      DEFAULT_XFERLOG: ${logfiledir_relative}access_log"
     echo "     DEFAULT_ERRORLOG: ${logfiledir_relative}error_log"
     echo "    TYPES_CONFIG_FILE: ${sysconfdir_relative}mime.types"
-    echo "   SERVER_CONFIG_FILE: ${sysconfdir_relative}${TARGET}.conf"
+    echo "   SERVER_CONFIG_FILE: ${sysconfdir_relative}${thetarget}.conf"
     echo "   ACCESS_CONFIG_FILE: ${sysconfdir_relative}access.conf"
     echo " RESOURCE_CONFIG_FILE: ${sysconfdir_relative}srm.conf"
     echo ""
@@ -970,7 +974,7 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@SRC@%$src%g" \
 -e "s%@MKF@%$mkf%g" \
 -e "s%@AUX@%$aux%g" \
--e "s%@TARGET@%$TARGET%g" \
+-e "s%@TARGET@%$thetarget%g" \
 -e "s%@prefix@%$prefix%g" \
 -e "s%@exec_prefix@%$exec_prefix%g" \
 -e "s%@bindir@%$bindir%g" \
@@ -1013,13 +1017,13 @@ echo "## WITHOUT DISTURBING THE KNOWN MAKE BUILD PROCESS DISPLAY" >>$src/apaci
 echo "echo '-DHTTPD_ROOT=\"$prefix\"'" >>$src/apaci
 echo "echo '-DSUEXEC_BIN=\"$sbindir/suexec\"'" >>$src/apaci
 echo "echo '-DSHARED_CORE_DIR=\"$libexecdir\"'" >>$src/apaci
-echo "echo '-DDEFAULT_PIDLOG=\"${runtimedir_relative}${TARGET}.pid\"'" >>$src/apaci
-echo "echo '-DDEFAULT_SCOREBOARD=\"${runtimedir_relative}${TARGET}.scoreboard\"'" >>$src/apaci
-echo "echo '-DDEFAULT_LOCKFILE=\"${runtimedir_relative}${TARGET}.lock\"'" >>$src/apaci
+echo "echo '-DDEFAULT_PIDLOG=\"${runtimedir_relative}${thetarget}.pid\"'" >>$src/apaci
+echo "echo '-DDEFAULT_SCOREBOARD=\"${runtimedir_relative}${thetarget}.scoreboard\"'" >>$src/apaci
+echo "echo '-DDEFAULT_LOCKFILE=\"${runtimedir_relative}${thetarget}.lock\"'" >>$src/apaci
 echo "echo '-DDEFAULT_XFERLOG=\"${logfiledir_relative}access_log\"'" >>$src/apaci
 echo "echo '-DDEFAULT_ERRORLOG=\"${logfiledir_relative}error_log\"'" >>$src/apaci
 echo "echo '-DTYPES_CONFIG_FILE=\"${sysconfdir_relative}mime.types\"'" >>$src/apaci
-echo "echo '-DSERVER_CONFIG_FILE=\"${sysconfdir_relative}${TARGET}.conf\"'" >>$src/apaci
+echo "echo '-DSERVER_CONFIG_FILE=\"${sysconfdir_relative}${thetarget}.conf\"'" >>$src/apaci
 echo "echo '-DACCESS_CONFIG_FILE=\"${sysconfdir_relative}access.conf\"'" >>$src/apaci
 echo "echo '-DRESOURCE_CONFIG_FILE=\"${sysconfdir_relative}srm.conf\"'" >>$src/apaci
 chmod a+x $src/apaci
