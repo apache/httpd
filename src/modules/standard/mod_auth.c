@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_auth.c,v 1.5 1996/08/20 11:50:57 paul Exp $ */
+/* $Id: mod_auth.c,v 1.6 1996/10/08 22:19:22 brian Exp $ */
 
 /*
  * http_auth: authentication
@@ -79,11 +79,19 @@ void *create_auth_dir_config (pool *p, char *d)
     return pcalloc (p, sizeof(auth_config_rec));
 }
 
+char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+{
+    if (t && strcmp(t, "standard"))
+        return pstrcat(cmd->pool, "Invalid auth file type: ",  t, NULL);
+
+    return set_string_slot(cmd, offset, f);
+}
+
 command_rec auth_cmds[] = {
-{ "AuthUserFile", set_string_slot,
-    (void*)XtOffsetOf(auth_config_rec,auth_pwfile), OR_AUTHCFG, TAKE1, NULL },
-{ "AuthGroupFile", set_string_slot,
-    (void*)XtOffsetOf(auth_config_rec,auth_grpfile), OR_AUTHCFG, TAKE1, NULL },
+{ "AuthUserFile", set_auth_slot,
+  (void*)XtOffsetOf(auth_config_rec,auth_pwfile), OR_AUTHCFG, TAKE12, NULL },
+{ "AuthGroupFile", set_auth_slot,
+  (void*)XtOffsetOf(auth_config_rec,auth_grpfile), OR_AUTHCFG, TAKE12, NULL },
 { NULL }
 };
 

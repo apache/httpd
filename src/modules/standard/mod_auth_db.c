@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_auth_db.c,v 1.2 1996/08/20 11:50:58 paul Exp $ */
+/* $Id: mod_auth_db.c,v 1.3 1996/10/08 22:19:23 brian Exp $ */
 
 /*
  * mod_auth_db: authentication
@@ -95,6 +95,14 @@ void *create_db_auth_dir_config (pool *p, char *d)
     return pcalloc (p, sizeof(db_auth_config_rec));
 }
 
+char *set_db_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+{
+    if (!t || strcmp(t, "db"))
+        return DECLINE_CMD;
+
+    return set_string_slot(cmd, offset, f);
+}
+
 command_rec db_auth_cmds[] = {
 { "AuthDBUserFile", set_string_slot,
     (void*)XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
@@ -102,6 +110,12 @@ command_rec db_auth_cmds[] = {
 { "AuthDBGroupFile", set_string_slot,
     (void*)XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
     OR_AUTHCFG, TAKE1, NULL },
+{ "AuthUserFile", set_db_slot,
+    (void*)XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
+    OR_AUTHCFG, TAKE12, NULL },
+{ "AuthGroupFile", set_db_slot,
+    (void*)XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
+    OR_AUTHCFG, TAKE12, NULL },
 { NULL }
 };
 

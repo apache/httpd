@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_digest.c,v 1.7 1996/08/20 11:51:05 paul Exp $ */
+/* $Id: mod_digest.c,v 1.8 1996/10/08 22:19:24 brian Exp $ */
 
 /*
  * mod_digest: MD5 digest authentication
@@ -84,9 +84,17 @@ void *create_digest_dir_config (pool *p, char *d)
     return pcalloc (p, sizeof(digest_config_rec));
 }
 
+char *set_digest_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+{
+    if (t && strcmp(t, "standard"))
+	return pstrcat(cmd->pool, "Invalid auth file type: ",  t, NULL);
+
+    return set_string_slot(cmd, offset, f);
+}
+
 command_rec digest_cmds[] = {
-{ "AuthDigestFile", set_string_slot,
-    (void*)XtOffsetOf(digest_config_rec,pwfile), OR_AUTHCFG, TAKE1, NULL },
+{ "AuthDigestFile", set_digest_slot,
+  (void*)XtOffsetOf(digest_config_rec,pwfile), OR_AUTHCFG, TAKE12, NULL },
 { NULL }
 };
 

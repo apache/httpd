@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.c,v 1.24 1996/10/06 02:25:03 fielding Exp $ */
+/* $Id: http_config.c,v 1.25 1996/10/08 22:19:20 brian Exp $ */
 
 /*
  * http_config.c: once was auxillary functions for reading httpd's config
@@ -439,6 +439,17 @@ char *invoke_cmd(command_rec *cmd, cmd_parms *parms, void *mconfig, char *args)
 
 	return (*cmd->func) (parms, mconfig, w, w2);
 	
+    case TAKE12:
+
+	w = getword_conf (parms->pool, &args);
+	w2 = getword_conf (parms->pool, &args);
+	
+	if (*w == '\0' || *args != 0) 
+	    return pstrcat (parms->pool, cmd->name, " takes 1-2 arguments",
+			    cmd->errmsg ? ", " : NULL, cmd->errmsg, NULL);
+
+	return (*cmd->func) (parms, mconfig, w, *w2 ? w2 : NULL);
+	
     case ITERATE:
 
 	while (*(w = getword_conf (parms->pool, &args)) != '\0')
@@ -497,7 +508,7 @@ command_rec *find_command_in_modules (char *cmd_name, module **mod)
    command_rec *cmdp;
    module *modp;
 
-   for (modp = top_module; modp; modp = modp->next) 
+   for (modp = *mod; modp; modp = modp->next) 
        if (modp->cmds && (cmdp = find_command (cmd_name, modp->cmds))) {
 	   *mod = modp;
 	   return cmdp;
@@ -508,9 +519,9 @@ command_rec *find_command_in_modules (char *cmd_name, module **mod)
 
 char *handle_command (cmd_parms *parms, void *config, char *l)
 {
-    char *args, *cmd_name;
+    char *args, *cmd_name, *retval;
     command_rec *cmd;
-    module *mod;
+    module *mod = top_module;
 
     ++parms->config_line;
     if((l[0] == '#') || (!l[0])) return NULL;
@@ -519,25 +530,32 @@ char *handle_command (cmd_parms *parms, void *config, char *l)
     cmd_name = getword_conf (parms->temp_pool, &args);
     if (*cmd_name == '\0') return NULL;
 	
-    if (!(cmd = find_command_in_modules (cmd_name, &mod))) {
-	return pstrcat (parms->pool, "Invalid command ", cmd_name, NULL);
-    }
-    else {
-	void *mconfig = get_module_config (config, mod);
-	void *sconfig = get_module_config (parms->server->module_config, mod);
-	      
-	if (!mconfig && mod->create_dir_config) {
-	    mconfig = (*mod->create_dir_config) (parms->pool, parms->path);
-	    set_module_config (config, mod, mconfig);
+    do {
+	if (!(cmd = find_command_in_modules (cmd_name, &mod))) {
+	    return pstrcat (parms->pool, "Invalid command ", cmd_name, NULL);
 	}
+	else {
+	    void *mconfig = get_module_config (config, mod);
+	    void *sconfig =
+		get_module_config (parms->server->module_config, mod);
 	    
-	if (!sconfig && mod->create_server_config) {
-	    sconfig = (*mod->create_server_config)(parms->pool, parms->server);
-	    set_module_config (parms->server->module_config, mod, sconfig);
+	    if (!mconfig && mod->create_dir_config) {
+		mconfig = (*mod->create_dir_config) (parms->pool, parms->path);
+		set_module_config (config, mod, mconfig);
+	    }
+	    
+	    if (!sconfig && mod->create_server_config) {
+		sconfig =
+		    (*mod->create_server_config)(parms->pool, parms->server);
+		set_module_config (parms->server->module_config, mod, sconfig);
+	    }
+	    
+	    retval = invoke_cmd (cmd, parms, mconfig, args);
+	    mod = mod->next;	/* Next time around, skip this one */
 	}
-	
-	return invoke_cmd (cmd, parms, mconfig, args);
-    }
+    } while (retval && !strcmp(retval, DECLINE_CMD));
+
+    return retval;
 }
 
 char *srm_command_loop (cmd_parms *parms, void *config)

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_auth_dbm.c,v 1.6 1996/08/20 11:50:59 paul Exp $ */
+/* $Id: mod_auth_dbm.c,v 1.7 1996/10/08 22:19:23 brian Exp $ */
 
 /*
  * http_auth: authentication
@@ -79,6 +79,14 @@ void *create_dbm_auth_dir_config (pool *p, char *d)
     return pcalloc (p, sizeof(dbm_auth_config_rec));
 }
 
+char *set_dbm_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+{
+    if (!t || strcmp(t, "dbm"))
+	return DECLINE_CMD;
+
+    return set_string_slot(cmd, offset, f);
+}
+
 command_rec dbm_auth_cmds[] = {
 { "AuthDBMUserFile", set_string_slot,
     (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
@@ -86,6 +94,12 @@ command_rec dbm_auth_cmds[] = {
 { "AuthDBMGroupFile", set_string_slot,
     (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
     OR_AUTHCFG, TAKE1, NULL },
+{ "AuthUserFile", set_dbm_slot,
+    (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmpwfile),
+    OR_AUTHCFG, TAKE12, NULL },
+{ "AuthGroupFile", set_dbm_slot,
+    (void*)XtOffsetOf(dbm_auth_config_rec, auth_dbmgrpfile),
+    OR_AUTHCFG, TAKE12, NULL },
 { NULL }
 };
 

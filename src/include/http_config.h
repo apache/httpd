@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.h,v 1.13 1996/10/08 21:46:57 brian Exp $ */
+/* $Id: http_config.h,v 1.14 1996/10/08 22:19:21 brian Exp $ */
 
 /*
  * The central data structures around here...
@@ -69,7 +69,8 @@ enum cmd_how {
 				 * (e.g., AddIcon)
 				 */
   FLAG,				/* One of 'On' or 'Off' */
-  NO_ARGS			/* No args at all, e.g. </Directory> */
+  NO_ARGS,			/* No args at all, e.g. </Directory> */
+  TAKE12			/* one or two arguments */
 };
 
 typedef struct command_struct {
@@ -112,6 +113,13 @@ typedef struct command_struct {
 #define ACCESS_CONF 64
 #define RSRC_CONF 128
 #define OR_ALL (OR_LIMIT|OR_OPTIONS|OR_FILEINFO|OR_AUTHCFG|OR_INDEXES)
+
+/* This can be returned by a function if they don't wish to handle
+ * a command. Make it something not likely someone will actually use
+ * as an error code.
+ */
+
+#define DECLINE_CMD "\a\b"
 
 /*
  * This structure is passed to a command which is being invoked,
