@@ -983,11 +983,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* Wait for all of the threads to terminate before initiating the restart */
         while (worker_thread_count > 0) {
-            printf ("Restart pending. Waiting for %d thread(s) to terminate...",
+            printf ("\rRestart pending. Waiting for %d thread(s) to terminate...",
                     worker_thread_count);
             apr_thread_yield();
         }
-        DBPRINT0 ("restarting...\n");
+        printf ("\nRestarting...\n");
     }
 
     return 0;
