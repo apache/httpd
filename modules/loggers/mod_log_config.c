@@ -457,9 +457,9 @@ static const char *log_request_time_custom(request_rec *r, char *a,
 
 #define DEFAULT_REQUEST_TIME_SIZE 32
 typedef struct {
-    apr_int64_t t;
+    unsigned t;
     char timestr[DEFAULT_REQUEST_TIME_SIZE];
-    apr_int64_t t_validate;
+    unsigned t_validate;
 } cached_request_time;
 
 #define TIME_CACHE_SIZE 4
@@ -507,11 +507,11 @@ static const char *log_request_time(request_rec *r, char *a)
 #else
         apr_time_t request_time = r->request_time;
 #endif
-        unsigned i = (unsigned)(request_time / APR_USEC_PER_SEC);
-        i &= TIME_CACHE_MASK;
+        unsigned t_seconds = (unsigned)(request_time / APR_USEC_PER_SEC);
+        unsigned i = t_seconds & TIME_CACHE_MASK;
         memcpy(cached_time, &(request_time_cache[i]), sizeof(*cached_time));
-        if ((request_time != cached_time->t) ||
-            (request_time != cached_time->t_validate)) {
+        if ((t_seconds != cached_time->t) ||
+            (t_seconds != cached_time->t_validate)) {
 
             /* Invalid or old snapshot, so compute the proper time string
              * and store it in the cache
@@ -528,13 +528,13 @@ static const char *log_request_time(request_rec *r, char *a)
             else {
                 sign = '+';
             }
-            cached_time->t = request_time;
+            cached_time->t = t_seconds;
             apr_snprintf(cached_time->timestr, DEFAULT_REQUEST_TIME_SIZE,
                          "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
                          xt.tm_mday, apr_month_snames[xt.tm_mon],
                          xt.tm_year+1900, xt.tm_hour, xt.tm_min, xt.tm_sec,
                          sign, timz / (60*60), timz % (60*60));
-            cached_time->t_validate = request_time;
+            cached_time->t_validate = t_seconds;
             memcpy(&(request_time_cache[i]), cached_time,
                    sizeof(*cached_time));
         }
