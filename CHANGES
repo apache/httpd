@@ -1,4 +1,7 @@
 Changes with Apache 2.0.32-dev
+  *) Win32: apache -k shutdown now behaves like apache -k stop.
+     [Bill Stoddard]
+
   *) Win32: Get apache -k restart -n apache2 working reliabily again.
      [Bill Stoddard]
  

@@ -2110,6 +2110,7 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
      *   -k runservice [WinNT errors logged from rewrite_args]
      *   -k uninstall
      *   -k stop
+     *   -k shutdown (same as -k stop). Maintained for backward compatability.
      *
      * in these cases we -don't- care if httpd.conf has config errors!
      */
@@ -2133,7 +2134,8 @@ static int winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
         exit(rv);
     }
 
-    if (!strcasecmp(signal_arg, "stop")) {
+    if ((!strcasecmp(signal_arg, "stop")) || 
+        (!strcasecmp(signal_arg, "shutdown"))) {
         mpm_signal_service(ptemp, 0);
         exit(0);
     }
