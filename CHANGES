@@ -1,5 +1,7 @@
 Changes with Apache 2.0.33-dev
 
+  *) Fix segfault when proxy recieves an invalid HTTP response [Ian Holsman]
+
   *) OS/390: Get make install to properly copy DSO modules.
      [Jeff Trawick]
 
