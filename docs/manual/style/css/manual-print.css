@@ -26,6 +26,10 @@ strong {
     font-weight: bold;
 }
 
+q, em, var {
+    font-style: italic;
+}
+
 /* fixup IE & Opera
  * otherwise they forget to inherit
  * the computed font-size value
@@ -134,7 +138,7 @@ h2 a:active {
     text-decoration: none;
 }
 
-/* h3                     */
+/* h3, h4                 */
 /* ====================== */
 h3 {
     background-color: inherit;
@@ -146,8 +150,18 @@ h3 {
     padding: 0 0 0 0.2em;
 }
 
+h4 {
+    background-color: inherit;
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 11pt;
+    margin: 1.3em 0 0.2em 0;
+    padding: 0 0 0 0.2em;
+}
+
 /* margin adjustment */
-h3 + * {
+h3 + *, h4 + * {
     margin-top: 0;
 }
 
@@ -182,7 +196,10 @@ div#quickview h3.directives {
 /* take care of <a name>s inside */
 h3 a,
 h3 a:hover,
-h3 a:active {
+h3 a:active,
+h4 a,
+h4 a:hover,
+h4 a:active {
     color: inherit;
     background-color: inherit;
     text-decoration: none;
@@ -222,6 +239,11 @@ td, th {
 
 th {
     font-weight: bold;
+}
+
+tr.header, tr.header th {
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
 }
 
 /* bordered table cells   */

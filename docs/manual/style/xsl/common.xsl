@@ -218,6 +218,46 @@
 
 
   <!--                                                            -->
+  <!-- handle subsubsections (h4)                                 -->
+  <!--                                                            -->
+  <xsl:template match="section/section/section">
+
+    <!-- Section heading -->
+    <h4>
+      <xsl:if test="@id">
+        <a id="{@id}" name="{@id}">
+          <xsl:apply-templates select="title" mode="print"/>
+        </a>
+      </xsl:if>
+
+      <xsl:if test="not(@id)">
+        <xsl:apply-templates select="title" mode="print"/>
+      </xsl:if>
+    </h4>
+    
+    <!-- Section body -->
+    <xsl:apply-templates/>
+
+  </xsl:template>
+  <!-- /section/section/section -->
+
+
+  <!--                                                            -->
+  <!-- section nesting > h4 is not supported for now              -->
+  <!--                                                            -->
+  <xsl:template match="section/section/section/section">
+    <xsl:message terminate="yes">
+      <xsl:text>FATAL: exceeding maximum section nesting level.
+
+      Perhaps you should consider to split your document into
+      several ones...
+      </xsl:text>
+    </xsl:message>
+  </xsl:template>
+  <!-- /section/section/section/section -->
+
+
+  <!--                                                            -->
   <!-- (sub)section titles                                        -->
   <!--                                                            -->
   <xsl:template match="section/title" mode="print">
@@ -501,18 +541,56 @@
 
 
   <!--                                                    -->
-  <!-- <table border>                                     -->
+  <!-- <table>                                            -->
   <!--                                                    -->
   <xsl:template match="table">
+    <xsl:variable name="content"><xsl:choose>
+      <xsl:when test="@style = 'zebra'">
+        <xsl:for-each select="tr">
+
+          <!-- catch content -->
+          <xsl:variable name="current">
+            <xsl:apply-templates />
+          </xsl:variable>
+          
+          <!-- header line -->
+          <xsl:if test="count(td) = 0">
+            <tr class="header"><xsl:copy-of select="$current" /></tr>
+          </xsl:if>
+          
+          <!-- data line -->
+          <xsl:if test="count(td) &gt; 0">
+            <xsl:variable name="offset" select="count(preceding-sibling::*[count(td) = 0]) mod 2" />
+
+            <xsl:if test="position() mod 2 = $offset">
+              <tr class="odd"><xsl:copy-of select="$current" /></tr>
+            </xsl:if>
+
+            <xsl:if test="position() mod 2 != $offset">
+              <tr><xsl:copy-of select="$current" /></tr>
+            </xsl:if>
+          </xsl:if>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+        </xsl:for-each>
+      </xsl:when>
+
+      <xsl:otherwise>
+        <xsl:apply-templates />
+      </xsl:otherwise></xsl:choose>
+    </xsl:variable>
+    
     <xsl:if test="@border">
       <table class="bordered">
-        <xsl:apply-templates/>
+        <xsl:copy-of select="$content" />
       </table>
     </xsl:if>
 
     <xsl:if test="not(@border)">
       <table>
-        <xsl:apply-templates/>
+        <xsl:copy-of select="$content" />
       </table>
     </xsl:if>
   </xsl:template>
