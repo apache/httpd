@@ -1154,7 +1154,7 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
     char       *tag_val   = NULL;
     const char *echo_text = NULL;
     apr_bucket  *tmp_buck;
-    apr_size_t e_len, e_wrt;
+    apr_size_t e_len;
     enum {E_NONE, E_URL, E_ENTITY} encode;
 
     encode = E_ENTITY;
@@ -1187,8 +1187,8 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     }
 
                     e_len = strlen(echo_text);
-                    tmp_buck = apr_bucket_heap_create(echo_text, e_len, 1, 
-                                                      &e_wrt);
+                    /* XXX: it'd probably be nice to use a pool bucket here */
+                    tmp_buck = apr_bucket_heap_create(echo_text, e_len, 1);
                 }
                 else {
                     tmp_buck = apr_bucket_immortal_create("(none)", 
@@ -1382,7 +1382,7 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_finfo_t  finfo;
-    apr_size_t  s_len, s_wrt;
+    apr_size_t  s_len;
     apr_bucket   *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
@@ -1402,6 +1402,11 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 ap_ssi_parse_string(r, tag_val, parsed_string, 
                                     sizeof(parsed_string), 0);
                 if (!find_file(r, "fsize", tag, parsed_string, &finfo)) {
+                    /* XXX: if we *know* we're going to have to copy the
+                     * thing off of the stack anyway, why not palloc buff
+                     * instead of sticking it on the stack; then we can just
+                     * use a pool bucket and skip the copy
+                     */
                     char buff[50];
 
                     if (!(ctx->flags & FLAG_SIZE_IN_BYTES)) {
@@ -1425,7 +1430,7 @@ static int handle_fsize(include_ctx_t *ctx, apr_bucket_brigade **bb,
                         s_len = pos;
                     }
 
-                    tmp_buck = apr_bucket_heap_create(buff, s_len, 1, &s_wrt);
+                    tmp_buck = apr_bucket_heap_create(buff, s_len, 1);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -1448,7 +1453,7 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
     char *tag     = NULL;
     char *tag_val = NULL;
     apr_finfo_t  finfo;
-    apr_size_t  t_len, t_wrt;
+    apr_size_t  t_len;
     apr_bucket   *tmp_buck;
     char parsed_string[MAX_STRING_LEN];
 
@@ -1473,7 +1478,10 @@ static int handle_flastmod(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     t_val = ap_ht_time(r->pool, finfo.mtime, ctx->time_str, 0);
                     t_len = strlen(t_val);
 
-                    tmp_buck = apr_bucket_heap_create(t_val, t_len, 1, &t_wrt);
+                    /* XXX: t_val was already pstrdup'ed into r->pool by
+                     * ap_ht_time. no sense copying it again to the heap.
+                     * should just use a pool bucket */
+                    tmp_buck = apr_bucket_heap_create(t_val, t_len, 1);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                     if (*inserted_head == NULL) {
                         *inserted_head = tmp_buck;
@@ -2290,14 +2298,13 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 #define LOG_COND_STATUS(cntx, t_buck, h_ptr, ins_head, tag_text)           \
 {                                                                          \
     char *cond_txt = "**** X     conditional_status=\"0\"\n";              \
-    apr_size_t c_wrt;                                                      \
                                                                            \
     if (cntx->flags & FLAG_COND_TRUE) {                                    \
         cond_txt[31] = '1';                                                \
     }                                                                      \
     memcpy(&cond_txt[5], tag_text, sizeof(tag_text));                      \
-    t_buck = apr_bucket_heap_create(cond_txt, sizeof(cond_txt), 1, &c_wrt); \
-    APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                                \
+    t_buck = apr_bucket_heap_create(cond_txt, sizeof(cond_txt), 1);        \
+    APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                               \
                                                                            \
     if (ins_head == NULL) {                                                \
         ins_head = t_buck;                                                 \
@@ -2305,10 +2312,9 @@ static int parse_expr(request_rec *r, const char *expr, int *was_error,
 }
 #define DUMP_PARSE_EXPR_DEBUG(t_buck, h_ptr, d_buf, ins_head)            \
 {                                                                        \
-    apr_size_t b_wrt;                                                    \
     if (d_buf[0] != '\0') {                                              \
-        t_buck = apr_bucket_heap_create(d_buf, strlen(d_buf), 1, &b_wrt); \
-        APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                          \
+        t_buck = apr_bucket_heap_create(d_buf, strlen(d_buf), 1);        \
+        APR_BUCKET_INSERT_BEFORE(h_ptr, t_buck);                         \
                                                                          \
         if (ins_head == NULL) {                                          \
             ins_head = t_buck;                                           \
@@ -2381,10 +2387,9 @@ static int handle_if(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 expr = tag_val;
 #ifdef DEBUG_INCLUDE
                 if (1) {
-                    apr_size_t d_len = 0, d_wrt = 0;
+                    apr_size_t d_len = 0;
                     d_len = sprintf(debug_buf, "**** if expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1, 
-                                                      &d_wrt);
+                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
@@ -2464,10 +2469,9 @@ static int handle_elif(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 expr = tag_val;
 #ifdef DEBUG_INCLUDE
                 if (1) {
-                    apr_size_t d_len = 0, d_wrt = 0;
+                    apr_size_t d_len = 0;
                     d_len = sprintf(debug_buf, "**** elif expr=\"%s\"\n", expr);
-                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1, 
-                                                      &d_wrt);
+                    tmp_buck = apr_bucket_heap_create(debug_buf, d_len, 1);
                     APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
 
                     if (*inserted_head == NULL) {
@@ -2613,7 +2617,7 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
             const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
             int i;
             const char *key_text, *val_text;
-            apr_size_t   k_len, v_len, t_wrt;
+            apr_size_t   k_len, v_len;
 
             *inserted_head = NULL;
             for (i = 0; i < arr->nelts; ++i) {
@@ -2626,8 +2630,15 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 k_len = strlen(key_text);
                 v_len = strlen(val_text);
 
+                /* XXX: this isn't a very efficient way to do this.  Buckets
+                 * aren't optimized for single-byte allocations.  All of
+                 * this stuff is getting copied anyway, so it'd be better to
+                 * pstrcat them into a single pool buffer and use a single
+                 * pool bucket.  Less alloc calls, easier to send out to the
+                 * network.
+                 */
                 /*  Key_text                                               */
-                tmp_buck = apr_bucket_heap_create(key_text, k_len, 1, &t_wrt);
+                tmp_buck = apr_bucket_heap_create(key_text, k_len, 1);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 if (*inserted_head == NULL) {
                     *inserted_head = tmp_buck;
@@ -2636,7 +2647,7 @@ static int handle_printenv(include_ctx_t *ctx, apr_bucket_brigade **bb,
                 tmp_buck = apr_bucket_immortal_create("=", 1);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 /*              Value_text                                 */
-                tmp_buck = apr_bucket_heap_create(val_text, v_len, 1, &t_wrt);
+                tmp_buck = apr_bucket_heap_create(val_text, v_len, 1);
                 APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
                 /*                        newline...                       */
                 tmp_buck = apr_bucket_immortal_create("\n", 1);

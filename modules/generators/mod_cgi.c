@@ -771,20 +771,26 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
 
     rr_status = ap_run_sub_req(rr);
     if (ap_is_HTTP_REDIRECT(rr_status)) {
-        apr_size_t len_loc, h_wrt;
+        apr_size_t len_loc;
         const char *location = apr_table_get(rr->headers_out, "Location");
 
         location = ap_escape_html(rr->pool, location);
         len_loc = strlen(location);
 
+        /* XXX: if most of this stuff is going to get copied anyway,
+         * it'd be more efficient to pstrcat it into a single pool buffer
+         * and a single pool bucket */
+
         tmp_buck = apr_bucket_immortal_create("<A HREF=\"", sizeof("<A HREF=\""));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
-        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1, &h_wrt);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        /* XXX: this looks like a bug: should be sizeof - 1 */
         tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">"));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1, &h_wrt);
+        tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
+        /* XXX: this looks like a bug: should be sizeof - 1 */
         tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>"));
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
 

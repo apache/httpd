@@ -91,6 +91,7 @@
 
 /* XXX this works around an issue with the heap bucket: apr_bucket_heap_create will 
  *     copy only the first 4096 bytes
+ * XXX: this comment is just plain wrong, or at least it is now. --jcw 11/01
  */
 #undef INPUT_XLATE_BUF_SIZE         /* XXX */
 #define INPUT_XLATE_BUF_SIZE (4096) /* XXX must match DEFAULT_BUCKET_SIZE */
@@ -1070,8 +1071,7 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
             apr_bucket *e;
 
             e = apr_bucket_heap_create(ctx->tmp, 
-                                      INPUT_XLATE_BUF_SIZE - buffer_size, 1, 
-                                      NULL);
+                                      INPUT_XLATE_BUF_SIZE - buffer_size, 1);
             /* make sure we insert at the head, because there may be
              * an eos bucket already there, and the eos bucket should 
              * come after the data

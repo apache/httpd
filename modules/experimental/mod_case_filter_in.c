@@ -147,7 +147,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
 	for(n=0 ; n < len ; ++n)
 	    buf[n]=toupper(data[n]);
 
-	pbktOut=apr_bucket_heap_create(buf,len,0,NULL);
+	pbktOut = apr_bucket_heap_create(buf, len, 0);
 	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
 	apr_bucket_delete(pbktIn);
     }
