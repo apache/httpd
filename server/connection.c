@@ -226,6 +226,7 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
 
     ap_run_pre_connection(c);
 
-    ap_run_process_connection(c);
-
+    if (!c->aborted) {
+        ap_run_process_connection(c);
+    }
 }
