@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Remove no longer used non-API function ap_single_module_init().
+     [Ralf S. Engelschall]
+
   *) Add Apple's Mac OS X Server Layout "Rhapsody" to config.layout.
      [Wilfredo Sanchez]
 

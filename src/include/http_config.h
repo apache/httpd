@@ -344,7 +344,6 @@ extern API_VAR_EXPORT module **ap_loaded_modules;
 /* For mod_so.c... */
 
 void ap_single_module_configure(pool *p, server_rec *s, module *m);
-void ap_single_module_init(pool *p, server_rec *s, module *m);
 
 /* For http_main.c... */
 

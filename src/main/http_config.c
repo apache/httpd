@@ -1492,14 +1492,6 @@ void ap_single_module_configure(pool *p, server_rec *s, module *m)
                              (*m->create_dir_config)(p, NULL));
 }
 
-void ap_single_module_init(pool *p, server_rec *s, module *m)
-{
-    if (m->init)
-        (*m->init)(s, p);
-    build_method_shortcuts();
-    init_handlers(p);
-}
-
 void ap_init_modules(pool *p, server_rec *s)
 {
     module *m;
