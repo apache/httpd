@@ -479,8 +479,9 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
 /*
  * this is the function called by SSL_read()
  */
-static int bio_filter_in_read(BIO *bio, char *in, int inl)
+static int bio_filter_in_read(BIO *bio, char *in, int inlen)
 {
+    apr_size_t inl = inlen;
     bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
     apr_read_type_e block = inctx->block;
     SSLConnRec *sslconn = myConnConfig(inctx->f->c);
@@ -536,13 +537,13 @@ static int bio_filter_in_read(BIO *bio, char *in, int inl)
     inctx->rc = brigade_consume(inctx->bb, block, in, &inl);
 
     if (inctx->rc == APR_SUCCESS) {
-        return inl;
+        return (int)inl;
     }
 
     if (APR_STATUS_IS_EAGAIN(inctx->rc) 
             || APR_STATUS_IS_EINTR(inctx->rc)) {
         BIO_set_retry_read(bio);
-        return inl;
+        return (int)inl;
     }
         
     /* Unexpected errors and APR_EOF clean out the brigade.
@@ -555,7 +556,7 @@ static int bio_filter_in_read(BIO *bio, char *in, int inl)
         /* Provide the results of this read pass,
          * without resetting the BIO retry_read flag
          */
-        return inl;
+        return (int)inl;
     }
 
     return -1;
