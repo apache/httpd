@@ -32,8 +32,9 @@
 <seealso><directive module="mod_mime">AddEncoding</directive></seealso>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 <seealso><directive module="mod_mime">AddType</directive></seealso>
+<seealso><directive module="mod_mime">MultiViewsMatch</directive></seealso>
 
-<section><title>Type maps</title>
+<section id="typemaps"><title>Type maps</title>
     <p>A type map has the same format as RFC822 mail headers. It
     contains document descriptions separated by blank lines, with
     lines beginning with a hash character ('#') treated as
@@ -97,15 +98,38 @@
         </dl>
         Example: 
 
-        <blockquote>
-          <code>Content-Type: image/jpeg; qs=0.8</code>
-        </blockquote>
+<example>Content-Type: image/jpeg; qs=0.8</example>
       </dd>
 
       <dt>URI:</dt>
 
-      <dd>The path to the file containing this variant, relative to
-      the map file.</dd>
+      <dd>uri of the file containing the variant (of the given
+      media type, encoded with the given content encoding). These
+      are interpreted as URLs relative to the map file; they must
+      be on the same server (!), and they must refer to files to
+      which the client would be granted access if they were to be
+      requested directly.</dd>
+
+      <dt>Body:</dt>
+   
+      <dd><p>New in Apache 2.0, the actual content of the resource may
+      be included in the type-map file using the Body header.  This
+      header must contain a string that designates a delimiter for
+      the body content.  Then all following lines in the type map
+      file will be considered part of the resource body until the
+      delimiter string is found.</p>
+
+      <p>Example:</p>
+<example>
+Body:----xyz----<br />
+&lt;html&gt;<br />
+&lt;body&gt;<br />
+&lt;p&gt;Content of the page.&lt;/p&gt;<br />
+&lt;/body&gt;<br />
+&lt;/html&gt;<br />
+----xyz----
+</example>
+      </dd>
     </dl>
 </section>
 
