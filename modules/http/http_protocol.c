@@ -2436,7 +2436,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     b2 = ap_brigade_create(r->pool);
     e = ap_bucket_create_pool(buff_start, strlen(buff_start), r->pool);
     AP_BRIGADE_INSERT_HEAD(b2, e);
-    ap_remove_output_filter(f);
     ap_pass_brigade(f->next, b2);
 
     if (r->chunked) {
@@ -2447,6 +2446,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
     }
 
+    /* Don't remove this filter until after we have added the CHUNK filter.
+     * Otherwise, f->next won't be the CHUNK filter and thus the first
+     * brigade won't be chunked properly.
+     */
+    ap_remove_output_filter(f);
     return ap_pass_brigade(f->next, b);
 }
 
