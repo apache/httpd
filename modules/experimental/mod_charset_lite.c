@@ -79,25 +79,15 @@
 #include "util_filter.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_xlate.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
-
-#ifndef APACHE_XLATE
-#error mod_charset_lite cannot work without APACHE_XLATE enabled
-#endif
 
 #define OUTPUT_XLATE_BUF_SIZE (16*1024) /* size of translation buffer used on output */
 #define INPUT_XLATE_BUF_SIZE  (8*1024)  /* size of translation buffer used on input */
 
-/* XXX this works around an issue with the heap bucket: apr_bucket_heap_create will 
- *     copy only the first 4096 bytes
- * XXX: this comment is just plain wrong, or at least it is now. --jcw 11/01
- */
-#undef INPUT_XLATE_BUF_SIZE         /* XXX */
-#define INPUT_XLATE_BUF_SIZE (4096) /* XXX must match DEFAULT_BUCKET_SIZE */
-
 #define XLATE_MIN_BUFF_LEFT 128  /* flush once there is no more than this much
-                                  * space is left in the translation buffer 
+                                  * space left in the translation buffer 
                                   */
 
 #define FATTEST_CHAR  8          /* we don't handle chars wider than this that straddle 
@@ -144,7 +134,7 @@ typedef struct charset_filter_ctx_t {
     int ran;                /* has filter instance run before? */
     int noop;               /* should we pass brigades through unchanged? */
     char *tmp;              /* buffer for input filtering */
-    apr_bucket_brigade *bb;  /* input buckets we couldn't finish translating */
+    apr_bucket_brigade *bb; /* input buckets we couldn't finish translating */
 } charset_filter_ctx_t;
 
 /* charset_req_t is available via r->request_config if any translation is
