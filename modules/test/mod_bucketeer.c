@@ -74,7 +74,7 @@ module AP_MODULE_DECLARE_DATA bucketeer_module;
 
 typedef struct bucketeer_filter_config_t
 {
-    char bucketdelimter;
+    char bucketdelimiter;
     char passdelimiter;
     char flushdelimiter;
 
@@ -85,7 +85,7 @@ static void *create_bucketeer_server_config(apr_pool_t *p, server_rec *s)
 {
     bucketeer_filter_config_t *c = apr_pcalloc(p, sizeof *c);
 
-    c->bucketdelimter = 0x02; /* ^B */
+    c->bucketdelimiter = 0x02; /* ^B */
     c->passdelimiter = 0x10; /* ^P */
     c->flushdelimiter = 0x06; /* ^F */
 
@@ -157,7 +157,10 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
         if (len>0) {
             lastpos=0;
             for (i=0; i<len;i++) {
-                if ( data[i] == c->flushdelimiter ||data[i] == c->bucketdelimter || data[i] == c->passdelimiter) {
+                if (data[i] == c->flushdelimiter ||
+                    data[i] == c->bucketdelimiter ||
+                    data[i] == c->passdelimiter)
+                {
                     apr_bucket *p;
                     if ( i-lastpos>0) {
                         p = apr_bucket_pool_create(apr_pmemdup( f->r->pool,
