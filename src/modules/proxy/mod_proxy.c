@@ -126,45 +126,40 @@ static int proxy_trans(request_rec *r)
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
     (proxy_server_conf *) get_module_config(sconf, &proxy_module);
+    int i, len;
+    struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
 
-    if (conf->req) {
-	if (!r->parsed_uri.scheme) {
-	    return DECLINED; /* definately not a proxy request */
-	}
+    if (conf->req && r->parsed_uri.scheme) {
 	/* but it might be something vhosted */
-	if (r->parsed_uri.hostname
+       if (!(r->parsed_uri.hostname
 	    && !strcasecmp(r->parsed_uri.scheme, http_method(r))
 	    && matches_request_vhost(r, r->parsed_uri.hostname,
-		r->parsed_uri.port_str ? r->parsed_uri.port : default_port(r))) {
-	    return DECLINED; /* it's a vhost request */
-	}
-	r->proxyreq = 1;
-	r->uri = r->unparsed_uri;
-	r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
-	r->handler = "proxy-server";
-	return OK;
+               r->parsed_uri.port_str ? r->parsed_uri.port : default_port(r)))) {
+           r->proxyreq = 1;
+           r->uri = r->unparsed_uri;
+           r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
+           r->handler = "proxy-server";
+           return OK;
+        }
     }
-    else {
-	/* XXX: since r->uri has been manipulated already we're not really
-	 * compliant with RFC1945 at this point.  But this probably isn't
-	 * an issue because this is a hybrid proxy/origin server.
-	 */
-	int i, len;
-	struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
 
-	for (i = 0; i < conf->aliases->nelts; i++) {
-	    len = alias_match(r->uri, ent[i].fake);
+    /* XXX: since r->uri has been manipulated already we're not really
+     * compliant with RFC1945 at this point.  But this probably isn't
+     * an issue because this is a hybrid proxy/origin server.
+     */
+
+    for (i = 0; i < conf->aliases->nelts; i++) {
+        len = alias_match(r->uri, ent[i].fake);
 	    
-	    if (len > 0) {
-		r->filename = pstrcat(r->pool, "proxy:", ent[i].real,
-				      r->uri + len, NULL);
-		r->handler = "proxy-server";
-		r->proxyreq = 1;
-		return OK;
-	    }
+       if (len > 0) {
+           r->filename = pstrcat(r->pool, "proxy:", ent[i].real,
+                                 r->uri + len, NULL);
+           r->handler = "proxy-server";
+           r->proxyreq = 1;
+           return OK;
 	}
-	return DECLINED;
     }
+    return DECLINED;
 }
 
 /* -------------------------------------------------------------- */
