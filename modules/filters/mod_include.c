@@ -475,7 +475,7 @@ static int get_directive(ap_file_t *in, char *dest, size_t len, ap_pool_t *p)
     }
     /* now get directive */
     while (1) {
-	if (d - dest == len) {
+	if (d - dest == (int)len) {
 	    return 1;
 	}
         *d++ = ap_tolower(c);
@@ -572,7 +572,7 @@ static void parse_string(request_rec *r, const char *in, char *out,
 		    /* zero-length variable name causes just the $ to be copied */
 		    l = 1;
 		}
-		l = (l > end_out - next) ? (end_out - next) : l;
+		l = ((int)l > end_out - next) ? (end_out - next) : l;
 		memcpy(next, expansion, l);
 		next += l;
                 break;
