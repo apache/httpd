@@ -39,20 +39,17 @@
 <description>List of resources to look for when the client requests
 a directory</description>
 <syntax>DirectoryIndex
-    <em>local-url</em> [<em>local-url</em>] ...</syntax>
+    <var>local-url</var> [<var>local-url</var>] ...</syntax>
 <default>DirectoryIndex index.html</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 
 <usage>
     <p>The <directive>DirectoryIndex</directive> directive sets the
     list of resources to look for, when the client requests an index
     of the directory by specifying a / at the end of the a directory
-    name.  <em>Local-url</em> is the (%-encoded) URL of a document on
+    name.  <var>Local-url</var> is the (%-encoded) URL of a document on
     the server relative to the requested directory; it is usually the
     name of a file in the directory. Several URLs may be given, in
     which case the server will return the first one that it finds.  If
@@ -60,9 +57,9 @@ a directory</description>
     set, the server will generate its own listing of the
     directory.</p>
 
-<example><title>Example</title>
-DirectoryIndex index.html
-</example>
+    <example><title>Example</title>
+      DirectoryIndex index.html
+    </example>
 
     <p>then a request for <code>http://myserver/docs/</code> would
     return <code>http://myserver/docs/index.html</code> if it
@@ -71,10 +68,13 @@ DirectoryIndex index.html
     <p>Note that the documents do not need to be relative to the
     directory;</p>
 
-<example>DirectoryIndex index.html index.txt  /cgi-bin/index.pl</example>
+    <example>
+      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </example>
+
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
-    executed if neither <code>index.html</code> or
-    <code>index.txt</code> existed in a directory.</p>
+    executed if neither <code>index.html</code> or <code>index.txt</code>
+    existed in a directory.</p>
 </usage>
 </directivesynopsis>
 
