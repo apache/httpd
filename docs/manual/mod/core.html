@@ -21,15 +21,12 @@ always available.
 </P>
 <H2>Directives</H2>
 <UL>
-<LI><A HREF="#accessconfig">AccessConfig</A>
 <LI><A HREF="#accessfilename">AccessFileName</A>
 <LI><A HREF="#adddefaultcharset">AddDefaultCharset</A>
 <LI><A HREF="#addmodule">AddModule</A>
 <LI><A HREF="#allowoverride">AllowOverride</A>
 <LI><A HREF="#authname">AuthName</A>
 <LI><A HREF="#authtype">AuthType</A>
-<LI><A HREF="#bindaddress">BindAddress</A>
-<LI><A HREF="#bs2000account">BS2000Account</A>
 <LI><A HREF="#clearmodulelist">ClearModuleList</A>
 <LI><A HREF="#contentdigest">ContentDigest</A>
 <LI><A HREF="#coredumpdirectory">CoreDumpDirectory</A>
@@ -54,6 +51,7 @@ always available.
 <LI><A HREF="#limitrequestfields">LimitRequestFields</A>
 <LI><A HREF="#limitrequestfieldsize">LimitRequestFieldsize</A>
 <LI><A HREF="#limitrequestline">LimitRequestLine</A>
+<LI><A HREF="#limitxmlrequestbody">LimitXMLRequestBody</A>
 <LI><A HREF="#location">&lt;Location&gt;</A>
 <LI><A HREF="#locationmatch">&lt;LocationMatch&gt;</A>
 <LI><A HREF="#loglevel">LogLevel</A>
@@ -62,7 +60,6 @@ always available.
 <LI><A HREF="#options">Options</A>
 <LI><A HREF="#port">Port</A>
 <LI><A HREF="#require">Require</A>
-<LI><A HREF="#resourceconfig">ResourceConfig</A>
 <LI><A HREF="#rlimitcpu">RLimitCPU</A>
 <LI><A HREF="#rlimitmem">RLimitMEM</A>
 <LI><A HREF="#rlimitnproc">RLimitNPROC</A>
@@ -76,45 +73,11 @@ always available.
 <LI><A HREF="#serversignature">ServerSignature</A>
 <LI><A HREF="#servertokens">ServerTokens</A>
 <LI><A HREF="#servertype">ServerType</A>
-<LI><A HREF="#threadstacksize">ThreadStackSize</A>
 <LI><A HREF="#timeout">TimeOut</A>
 <LI><A HREF="#usecanonicalname">UseCanonicalName</A>
 <LI><A HREF="#virtualhost">&lt;VirtualHost&gt;</A>
 </UL>
 <HR>
-
-<H2><A NAME="accessconfig">AccessConfig directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> AccessConfig <EM>filename</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>AccessConfig conf/access.conf</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
-
-The server will read this file for more directives after reading the
-<A HREF="#resourceconfig">ResourceConfig</A> file. <EM>Filename</EM> is
-relative to the <A HREF="#serverroot">ServerRoot</A>.
-This feature can be disabled using:
-<BLOCKQUOTE><CODE>AccessConfig /dev/null</CODE></BLOCKQUOTE>
-Historically, this file only contained
-<A HREF="#directory">&lt;Directory&gt;</A> sections; in fact it can now
-contain any server directive allowed in the <EM>server config</EM> context.
-<P><HR>
 
 <H2><A NAME="accessfilename">AccessFileName directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AccessFileName} directive&gt; -->
@@ -331,99 +294,6 @@ It must be accompanied by <A HREF="#authname">AuthName</A> and
 <A HREF="#require">Require</A> directives, and directives such as
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> to work.<P><HR>
-
-<H2><A NAME="bindaddress">BindAddress directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt BindAddress} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> BindAddress <EM>saddr</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>BindAddress *</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
-<A HREF="../mpm.html">MPMs</A>.<P>
-
-A Unix&#174; http server can either listen for connections to every
-IP address of the server machine, or just one IP address of the server
-machine. <EM>Saddr</EM> can be
-
-<MENU>
-<LI>*
-<LI>An IP address
-<LI>A fully-qualified Internet domain name
-</MENU>
-If the value is *, then the server will listen for connections on
-every IP address, otherwise it will only listen on the IP address
-specified. <P>
-
-Only one <CODE>BindAddress</CODE> directive can be used. For more
-control over which address and ports Apache listens to, use the
-<CODE><A HREF="#listen">Listen</A></CODE> directive instead of
-<CODE>BindAddress</CODE>.<P>
-
-<CODE>BindAddress</CODE> can be used as an alternative method for
-supporting <A HREF="../vhosts/index.html">virtual hosts</A> using
-multiple independent servers, instead of using <CODE><A
-HREF="#virtualhost">&lt;VirtualHost&gt;</A></CODE> sections.
-
-<P><STRONG>See Also:</STRONG>
-<A HREF="../dns-caveats.html">DNS Issues</A><BR>
-<STRONG>See Also:</STRONG>
-<A HREF="../bind.html">Setting which addresses and ports Apache uses</A></P>
-
-<HR>
-
-<H2><A NAME="bs2000account">BS2000Account directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt BS2000Account} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> BS2000Account <EM>account</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <EM>none</EM><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> BS2000Account is only available for
-BS2000 machines, as of Apache 1.3 and later.<P>
-
-The <CODE>BS2000Account</CODE> directive is available for BS2000 hosts
-only. It must be used to define the account number for the non-privileged
-apache server user (which was configured using the
-<A HREF="#user">User</A> directive).
-This is required by the BS2000 POSIX subsystem (to change the underlying
-BS2000 task environment by performing a sub-LOGON) to prevent CGI scripts
-from accessing resources of the privileged account which started the
-server, usually <SAMP>SYSROOT</SAMP>.<BR>
-Only one <CODE>BS2000Account</CODE> directive can be used. <P>
-
-<P><STRONG>See Also:</STRONG>
-<A HREF="../ebcdic.html">Apache EBCDIC port</A></P>
-
-<HR>
 
 <H2><A NAME="clearmodulelist">ClearModuleList directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt ClearModuleList} directive&gt; -->
@@ -1542,6 +1412,29 @@ not be changed from the default.<P>
 
 <P><HR>
 
+
+<H2><A NAME="limitxmlrequestbody">LimitXMLRequestBody directive</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> LimitXMLRequestBody <EM>number</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>LimitXMLRequestBody 1000000</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+
+<P>Limit (in bytes) on maximum size of an XML-based request body.</p>
+
+<P><HR>
+
 <H2><A NAME="location">&lt;Location&gt; directive</A></H2>
 
 <A
@@ -2071,41 +1964,6 @@ HREF="#limit">&lt;Limit&gt;</A> section<P>
 <P>See also <A HREF="#satisfy">Satisfy</A> and <A HREF="mod_access.html">mod_access</A>.
 <HR>
 
-<H2><A NAME="resourceconfig">ResourceConfig directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt ResourceConfig} directive&gt; -->
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ResourceConfig <EM>filename</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>ResourceConfig conf/srm.conf</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
-
-The server will read this file for more directives after reading the
-httpd.conf file. <EM>Filename</EM> is relative to the
-<A HREF="#serverroot">ServerRoot</A>.
-This feature can be disabled using:
-<BLOCKQUOTE><CODE>ResourceConfig /dev/null</CODE></BLOCKQUOTE>
-Historically, this file contained most directives except for server
-configuration directives and <A HREF="#directory">&lt;Directory&gt;</A>
-sections; in fact it can now contain any server directive allowed in the
-<EM>server config</EM> context.<P>
-
-See also <A HREF="#accessconfig">AccessConfig</A>.<P><HR>
-
 <H2><A NAME="rlimit">RLimitCPU</A> <A NAME="rlimitcpu">directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt RLimitCPU} directive&gt; -->
 <A
@@ -2605,33 +2463,6 @@ Standalone is the most common setting for ServerType since
 it is far more efficient. The server is started once, and services all
 subsequent connections. If you intend running Apache to serve a busy site,
 standalone will probably be your only option.<P>
-<HR>
-
-<H2><A NAME="threadstacksize">ThreadStackSize</A></H2>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ThreadStackSize <EM>number</EM><BR>
-<A
- HREF="directive-dict.html#Default"
- REL="Help"
-><STRONG>Default:</STRONG></A> <CODE>ThreadStackSize 65536</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config<BR>
-<A
- HREF="directive-dict.html#Status"
- REL="Help"
-><STRONG>Status:</STRONG></A> core (NetWare)<BR>
-<STRONG>Compatibility:</STRONG> Available only with Apache 1.3 and later
-with NetWare. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.
-
-<P>This directive tells the server what stack size to use for each of the
-   running threads. If you ever get a stack overflow you will need to bump
-   this number to a higher setting.
-   
-<P>This directive has no effect on other systems.
 <HR>
 
 <H2><A NAME="timeout">TimeOut directive</A></H2>
