@@ -1,5 +1,8 @@
 Changes with Apache 1.3.13
 
+  *) Add mod_auth_dbm (sdbm flavor) binary build for Win32.
+     [William Rowe]
+
   *) Overhaul of dbmmanage to allow a groups arg (as in Apache 1.2)
      as well as a comment arg to the add, adduser and update cmds.
      update allows the user to clear or preserve pw/groups/comment.

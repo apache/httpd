@@ -74,7 +74,12 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#if defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
+#if defined(WIN32)
+#include <sdbm.h>
+#define dbm_open sdbm_open
+#define dbm_fetch sdbm_fetch
+#define dbm_close sdbm_close
+#elif defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
     && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
 #include <db1/ndbm.h>
 #else
@@ -142,7 +147,7 @@ static const command_rec dbm_auth_cmds[] =
     {NULL}
 };
 
-module dbm_auth_module;
+module MODULE_VAR_EXPORT dbm_auth_module;
 
 static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
 {
@@ -311,7 +316,7 @@ static int dbm_check_auth(request_rec *r)
 }
 
 
-module dbm_auth_module =
+module MODULE_VAR_EXPORT dbm_auth_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,			/* initializer */

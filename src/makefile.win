@@ -80,6 +80,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f xmltok.mak CFG="xmltok - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f xmlparse.mak CFG="xmlparse - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ../..
+	cd lib/sdbm
+	 $(MAKE) $(MAKEOPT) -f sdbm.mak CFG="sdbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ../..
 	cd main
 	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -100,6 +103,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f ApacheModuleUserTrack.mak CFG="ApacheModuleUserTrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f ApacheModuleRewrite.mak CFG="ApacheModuleRewrite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f ApacheModuleAuthDigest.mak CFG="ApacheModuleAuthDigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f ApacheModuleAuthDBM.mak CFG="ApacheModuleAuthDBM - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\proxy
 	 $(MAKE) $(MAKEOPT) -f ApacheModuleProxy.mak CFG="ApacheModuleProxy - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -126,11 +130,13 @@ _install:
 	copy os\win32\ApacheModuleSpeling$(SHORT)\ApacheModuleSpeling.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleUserTrack$(SHORT)\ApacheModuleUserTrack.dll $(INSTDIR)\modules
 	copy os\win32\ApacheModuleAuthDigest$(SHORT)\ApacheModuleAuthDigest.dll $(INSTDIR)\modules
+	copy os\win32\ApacheModuleAuthDBM$(SHORT)\ApacheModuleAuthDBM.dll $(INSTDIR)\modules
 	copy modules\proxy\$(LONG)\ApacheModuleProxy.dll $(INSTDIR)\modules
 	copy support\$(LONG)\htpasswd.exe $(INSTDIR)\bin
 	copy support\$(LONG)\htdigest.exe $(INSTDIR)\bin
 	copy support\$(LONG)\logresolve.exe $(INSTDIR)\bin
 	copy support\$(LONG)\rotatelogs.exe $(INSTDIR)\bin
+        copy support\dbmmanage $(INSTDIR)\bin\dbmmanage.pl
 
 _installdll:
  	cd os\win32\installer\installdll
