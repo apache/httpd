@@ -504,7 +504,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, long conn_id)
     }
 
     sock_disable_nagle(csd);
-    iol = ap_iol_attach_socket(sock);
+    iol = ap_iol_attach_socket(p, sock);
     conn_io = ap_bcreate(p, B_RDWR);
     ap_bpush_iol(conn_io, iol);
 

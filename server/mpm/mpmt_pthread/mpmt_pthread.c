@@ -499,7 +499,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, in
 
     sock_disable_nagle(csd);
 
-    iol = ap_iol_attach_socket(sock);
+    iol = ap_iol_attach_socket(p, sock);
 
     (void) ap_update_child_status(my_child_num, my_thread_num,  
 				  SERVER_BUSY_READ, (request_rec *) NULL);

@@ -994,7 +994,7 @@ static void child_main(void *child_num_arg)
 
 	sock_disable_nagle(csd);
 
-        iol = ap_iol_attach_socket(csd);
+        iol = ap_iol_attach_socket(ptrans, csd);
 
 	if (iol == NULL) {
           ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, NULL,
