@@ -979,12 +979,8 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     }
     ext = strrchr(exename, '.');
 
-    if (ext && (!strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd")) &&
-        d->script_interpreter_source != INTERPRETER_SOURCE_REGISTRY) 
+    if (ext && (!strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) 
     {
-        /* The registry does these for us unless INTERPRETER_SOURCE_REGISTRY
-         * was not enabled.
-         */
         char *p, *shellcmd = getenv("COMSPEC");
         if (!shellcmd)
             shellcmd = SHELL_PATH;
