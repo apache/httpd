@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/21 14:13:59 $]
+Last modified at [$Date: 2000/10/23 14:48:06 $]
 
 Release:
 
@@ -57,6 +57,10 @@ RELEASE SHOWSTOPPERS:
         Status: The best known candidate would be something from
 	BIND v9.
         Status: Greg asks, "why? doesn't gethostbyname_r() handle this?"
+
+    * There are still thread-unsafe functions used in the server.
+      - getpwnam in mod_userdir
+      - more?
 
     * Modify mod_cgi and mod_cgid to deal with directories.  This allows
       a lot of directives to be removed from the core.
