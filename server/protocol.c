@@ -1236,7 +1236,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
             eos = 1;
             break;
         }
-        if (e->length == -1) {
+        if (e->length == (apr_size_t)-1) {
             apr_size_t len;
             const char *ignored;
             apr_status_t rv;

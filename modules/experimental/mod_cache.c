@@ -627,7 +627,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
                     unresolved_length = 1;
                     continue;
                 }
-                if (e->length < 0) {
+                if (e->length == (apr_size_t)-1) {
                     break;
                 }
                 size += e->length;
