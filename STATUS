@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/01 14:05:16 $]
+Last modified at [$Date: 2003/11/01 15:12:43 $]
 
 Release:
 
@@ -282,6 +282,9 @@ PATCHES TO BACKPORT FROM 2.1
       +1: trawick, striker
        0: nd
          nd: I'm not really sure, what is it good for. What is it good for? ;-)
+         trawick: It is a minor debug aid.  If you're debugging/tracing some
+           apr operation or other utility routine, it is nice to display/trace
+           the pool tag and know whether or not it is the [sub-]request pool.
 
     * mod_status: Report total CPU time accurately when using a
       threaded MPM.  PR: 23795
@@ -290,7 +293,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_info: Escape html code in directives and arguments. PR: 24232
         modules/generators/mod_info.c: r1.52
-      +1: thommay, nd
+      +1: thommay, nd, trawick
 
 CURRENT RELEASE NOTES:
 
