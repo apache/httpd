@@ -419,7 +419,7 @@ int main(int argc, char *argv[])
      * Initialize BS2000 user environment
      */
     {
-	pid_t pid;
+	pid_t pid, reaped;
 	int status;
 
 	switch (pid = ufork(target_uname))
@@ -432,7 +432,8 @@ int main(int argc, char *argv[])
 	case 0:	/* Child */
 	    break;
 	default:	/* Father */
-	    while (pid != waitpid(pid, &status, 0))
+	    while (pid != (reaped = waitpid(pid, &status, 0))
+		   && (reaped != -1 || errno != ECHILD))
 		;
 	    /* @@@ FIXME: should we deal with STOP signals as well? */
 	    if (WIFSIGNALED(status)) {
