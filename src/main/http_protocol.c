@@ -1379,6 +1379,15 @@ rputs(const char *str, request_rec *r)
     return bputs(str, r->connection->client);
 }
 
+int rwrite(const void *buf, int nbyte, request_rec *r)
+{
+    int n;
+    if (r->connection->aborted) return EOF;
+    n=bwrite(r->connection->client, buf, nbyte);
+    SET_BYTES_SENT(r);
+    return n;
+}
+
 int rprintf(request_rec *r,const char *fmt,...)
     {
     va_list vlist;

@@ -112,6 +112,7 @@ long send_fd_length(FILE *f, request_rec *r, long length);
      
 int rputc (int c, request_rec *r);     
 int rputs(const char *str, request_rec *r);
+int rwrite(const void *buf, int nbyte, request_rec *r);
 int rvputs(request_rec *r, ...);
 int rprintf(request_rec *r,const char *fmt,...);
      
