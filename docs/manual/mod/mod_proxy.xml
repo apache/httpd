@@ -36,6 +36,9 @@ and filter support was enabled.</p>
 mod_proxy up to Apache v1.3.x has been <strong>removed</strong> from
 mod_proxy and will be incorporated into a new module, mod_cache.</p>
 
+<p>If you need to use SSL when contacting remote servers, have a look at the
+<code>SSLProxy*</code> directives in mod_ssl.</p>
+
 <note type="warning"><p>Do not enable proxying with <directive
 module="mod_proxy">ProxyRequests</directive> until you have 
 <a href="#access">secured your server</a>.  Open proxy servers are
