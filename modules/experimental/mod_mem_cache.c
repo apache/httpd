@@ -436,6 +436,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     cache_object_t *obj, *tmp_obj;
     mem_cache_object_t *mobj;
     cache_type_e type_e;
+    apr_size_t key_len;
 
     if (!strcasecmp(type, "mem")) {
         type_e = CACHE_TYPE_HEAP;
@@ -476,12 +477,13 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     if (!obj) {
         return DECLINED;
     }
-    obj->key = calloc(1, strlen(key) + 1);
+    key_len = strlen(key) + 1;
+    obj->key = malloc(key_len);
     if (!obj->key) {
         cleanup_cache_object(obj);
         return DECLINED;
     }
-    strncpy(obj->key, key, strlen(key) + 1);
+    memcpy(obj->key, key, key_len);
     obj->info.len = len;
 
 
@@ -867,18 +869,20 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
         obj->info.expire = info->expire;
     }
     if (info->content_type) {
-        obj->info.content_type = (char*) calloc(1, strlen(info->content_type) + 1);
+        apr_size_t len = strlen(info->content_type) + 1;
+        obj->info.content_type = (char*) malloc(len);
         if (!obj->info.content_type) {
             return APR_ENOMEM;
         }
-        strcpy(obj->info.content_type, info->content_type);
+        memcpy(obj->info.content_type, info->content_type, len);
     }
     if ( info->filename) {
-        obj->info.filename = (char*) calloc(1, strlen(info->filename) + 1);
+        apr_size_t len = strlen(info->filename) + 1;
+        obj->info.filename = (char*) malloc(len);
         if (!obj->info.filename ) {
             return APR_ENOMEM;
         }
-        strcpy(obj->info.filename, info->filename );
+        memcpy(obj->info.filename, info->filename, len);
     }
 
     return APR_SUCCESS;
