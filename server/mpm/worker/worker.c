@@ -680,6 +680,12 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             apr_pool_tag(ptrans, "transaction");
             rv = lr->accept_func(&csd, lr, ptrans);
 
+            /* If we were interrupted for whatever reason, just start
+             * the main loop over again. (The worker MPM still uses
+             * signals in the one_process case.) */
+            if (APR_STATUS_IS_EINTR(rv)) {
+                continue;
+            }
             if (rv == APR_EGENERAL) {
                 /* E[NM]FILE, ENOMEM, etc */
                 resource_shortage = 1;
@@ -768,6 +774,16 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
+}
+
+static int check_signal(int signum)
+{
+    switch (signum) {
+    case SIGTERM:
+    case SIGINT:
+        return 1;
+    }
+    return 0;
 }
 
 static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
@@ -951,27 +967,52 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    /* Watch for any messages from the parent over the POD */
-    while (1) {
-        rv = ap_mpm_pod_check(pod);
-        if (rv == AP_GRACEFUL || rv == AP_RESTART) {
-            signal_workers();
-            break;
-        }
-    }
-
-    if (rv == AP_GRACEFUL) {
-        /* A terminating signal was received. Now join each of the workers to 
-         * clean them up.
-         *   If the worker already exited, then the join frees their resources 
-         *   and returns.
-         *   If the worker hasn't exited, then this blocks until they have (then
-         *   cleans up).
+    /* If we are only running in one_process mode, we will want to
+     * still handle signals. */
+    if (one_process) {
+        /* Set up a signal handler for this thread. */
+        apr_signal_thread(check_signal);
+        signal_workers(); /* helps us terminate a little more quickly when
+                           * the dispatch of the signal thread
+                           * beats the Pipe of Death and the browsers
+                           */
+        /* A terminating signal was received. Now join each of the
+         * workers to clean them up.
+         *   If the worker already exited, then the join frees
+         *   their resources and returns.
+         *   If the worker hasn't exited, then this blocks until
+         *   they have (then cleans up).
          */
         apr_thread_join(&rv, start_thread_id);
         for (i = 0; i < ap_threads_per_child; i++) {
             if (threads[i]) { /* if we ever created this thread */
                 apr_thread_join(&rv, threads[i]);
+            }
+        }
+    }
+    else { /* !one_process */
+        /* Watch for any messages from the parent over the POD */
+        while (1) {
+            rv = ap_mpm_pod_check(pod);
+            if (rv == AP_GRACEFUL || rv == AP_RESTART) {
+                signal_workers();
+                break;
+            }
+        }
+
+        if (rv == AP_GRACEFUL) {
+            /* A terminating signal was received. Now join each of the
+             * workers to clean them up.
+             *   If the worker already exited, then the join frees
+             *   their resources and returns.
+             *   If the worker hasn't exited, then this blocks until
+             *   they have (then cleans up).
+             */
+            apr_thread_join(&rv, start_thread_id);
+            for (i = 0; i < ap_threads_per_child; i++) {
+                if (threads[i]) { /* if we ever created this thread */
+                    apr_thread_join(&rv, threads[i]);
+                }
             }
         }
     }
@@ -1453,10 +1494,12 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
         return DONE;
     }
 
-    if ((rv = ap_mpm_pod_open(pconf, &pod))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_STARTUP, rv, NULL,
-                "Could not open pipe-of-death.");
-        return DONE;
+    if (!one_process) {
+        if ((rv = ap_mpm_pod_open(pconf, &pod))) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_STARTUP, rv, NULL,
+                    "Could not open pipe-of-death.");
+            return DONE;
+        }
     }
     return OK;
 }
