@@ -53,7 +53,7 @@
     <page href="content-negotiation.html">Negocia&#231;&#227;o de Conte&#250;do</page>
     <page href="dso.html">Objetos Din&#226;micos Compartilhados (DSO)</page>
     <page href="env.html">Vari&#225;veis de Ambiente</page>
-    <page href="logs.html">Arquivos de Log</page>
+    <page href="logs.html">Arquivos de Registro</page>
     <page href="urlmapping.html">Mapeando URLs para o Sistema de Arquivos</page>
     <page href="misc/perf-tuning.html">Ajustes de Performance</page>
     <page href="misc/security_tips.html">Dicas de Seguran&#231;a</page>

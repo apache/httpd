@@ -91,7 +91,7 @@
 	  <code>APR-Util</code>. Para mais detalhes, visite o
           <a href="http://apr.apache.org/">Website do APR</a>.</dd>
 
-      <dt>Di&#225;rio de Erros de Conex&#227;o (logs)</dt>
+      <dt>Registros de Erros de Conex&#227;o (logs)</dt>
 
       <dd>Uma nova fun&#231;&#227;o <code>ap_log_cerror</code>, foi adicionada
           para registrar erros que ocorrem na conex&#227;o do cliente.

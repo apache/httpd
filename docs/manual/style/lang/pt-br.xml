@@ -55,7 +55,7 @@
         <message id="obsoleteapachemodule">M&#243;dulo Obsoleto Apache</message>
         <message id="apachemodule">M&#243;dulo Apache</message>
         <message id="apachecore">Funcionalidades Principais Apache</message>
-        <message id="apachempmcommon">Diretivas Comuns Apache MPM</message>
+        <message id="apachempmcommon">Diretrizes Comuns Apache MPM</message>
         <message id="apachempm">Apache MPM</message>
 
         <!-- Used in description box for modulesynopsis -->
@@ -69,7 +69,7 @@
 
         <!-- Used in manualpage -->
         <message id="relatedmodules">M&#243;dulos Relacionados</message>
-        <message id="relateddirectives">Diretivas Relacionadas</message>
+        <message id="relateddirectives">Diretrizes Relacionadas</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sintaxe</message>
@@ -125,6 +125,7 @@
         <message id="langavail">L&#237;nguas Dispon&#237;veis</message>
  
         <!-- not up to date -->
-        <message id="outofdate">Esta tradu&#231;&#227;o pode estar desatualizada. Verifique a vers&#227;o em Ingl&#234;s para mudan&#231;as recentes.</message>
+        <message id="outofdate">Esta tradu&#231;&#227;o pode estar desatualizada. 
+        Verifique a vers&#227;o em Ingl&#234;s para mudan&#231;as recentes.</message>
     </messages>
 </language>
