@@ -210,6 +210,14 @@ API_EXPORT(struct tm *) ap_get_gmtoff(int *tz)
 }
 #endif
 
+/* Roy owes Rob beer. */
+/* Rob owes Roy dinner. */
+
+/* These legacy comments would make a lot more sense if Roy hadn't
+ * replaced the old later_than() routine with util_date.c.
+ *
+ * Well, okay, they still wouldn't make any sense.
+ */
 
 /* Match = 0, NoMatch = 1, Abort = -1
  * Based loosely on sections of wildmat.c by Rich Salz

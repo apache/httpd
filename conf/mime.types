@@ -1,3 +1,5 @@
+# This is a comment. I love comments.
+
 # This file controls what Internet media types are sent to the client for
 # given file extension(s).  Sending the correct media type to the client
 # is important so they know how to handle the content of the file.
