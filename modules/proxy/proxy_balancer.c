@@ -329,6 +329,11 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     PROXY_BALANCER_UNLOCK(*balancer);
     
     access_status = rewrite_url(r, *worker, url);
+    /* Add the session route to request notes if present */
+    if (route) {
+        apr_table_setn(r->notes, "session-sticky", (*balancer)->sticky);
+        apr_table_setn(r->notes, "session-route", route);
+    }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy_balancer_pre_request rewriting to %s", *url);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
@@ -378,10 +383,10 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,		/* create per-directory config structure */
-    NULL,		/* merge per-directory config structures */
-    NULL,		/* create per-server config structure */
-    NULL,		/* merge per-server config structures */
-    NULL,		/* command apr_table_t */
-    ap_proxy_balancer_register_hook	/* register hooks */
+    NULL,       /* create per-directory config structure */
+    NULL,       /* merge per-directory config structures */
+    NULL,       /* create per-server config structure */
+    NULL,       /* merge per-server config structures */
+    NULL,       /* command apr_table_t */
+    ap_proxy_balancer_register_hook /* register hooks */
 };
