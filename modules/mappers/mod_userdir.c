@@ -227,7 +227,6 @@ static int translate_userdir(request_rec *r)
     const char *userdirs;
     const char *w, *dname;
     char *redirect;
-    char *x = NULL;
     apr_finfo_t statbuf;
 
     /*
@@ -285,7 +284,7 @@ static int translate_userdir(request_rec *r)
 
     while (*userdirs) {
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
-        char *filename = NULL;
+        char *filename = NULL, *x = NULL;
         apr_status_t rv;
         int is_absolute = ap_os_is_path_absolute(r->pool, userdir);
 
@@ -317,7 +316,7 @@ static int translate_userdir(request_rec *r)
             else
                 filename = apr_pstrcat(r->pool, userdir, "/", w, NULL);
         }
-        else if (ap_strchr_c(x, ':')) {
+        else if (x && ap_strchr_c(x, ':')) {
             redirect = apr_pstrcat(r->pool, x, w, dname, NULL);
             apr_table_setn(r->headers_out, "Location", redirect);
             return HTTP_MOVED_TEMPORARILY;
