@@ -125,7 +125,6 @@
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         </xsl:comment>
-        <xsl:apply-templates select="meta"/>
         <title>
           <xsl:value-of select="title"/><xsl:value-of
           select="$messages/message[@name='apachetitle']"/>
@@ -142,9 +141,7 @@
             <h3><xsl:value-of
             select="$messages/message[@name='apachehttpserver']"/></h3>
           </div>
-          <h1 align="center"><xsl:value-of
-          select="$messages/message[@name='apachemodule']"/><xsl:text>
-          </xsl:text> <xsl:value-of select="title"/></h1>
+          <h1 align="center"><xsl:value-of select="title"/></h1>
 
           <xsl:apply-templates select="summary"/>
           
@@ -181,7 +178,6 @@
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         </xsl:comment>
-        <xsl:apply-templates select="meta"/>
         <title>
           <xsl:value-of select="name"/><xsl:value-of select="$messages/message[@name='apachetitle']"/>
         </title>
