@@ -91,5 +91,6 @@ apr_status_t ap_queue_pop(FDQueue *queue, apr_socket_t **sd, apr_pool_t **p, int
 int ap_queue_size(FDQueue *queue);
 int ap_queue_full(FDQueue *queue);
 int ap_block_on_queue(FDQueue *queue);
+void ap_queue_signal_all_wakeup(FDQueue *queue);
 
 #endif /* FDQUEUE_H */
