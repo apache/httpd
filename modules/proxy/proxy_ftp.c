@@ -363,16 +363,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             ++path;
 
         reldir = strrchr(path, '/');
-        if (reldir != NULL) {
-            for (n=0; reldir[n] != '\0'; ++n) {
-                if (reldir[n] == '\\' && reldir[n+1] != '\0')
-                    ++n; /* escaped character */
-                else if (strchr(FTP_GLOBBING_CHARS, reldir[n]) != NULL) {
-                    wildcard = &reldir[1];
-                    reldir[0] = '\0'; /* strip off the wildcard suffix */
-                    break;
-                }
-            }
+        if (reldir != NULL && ftp_check_globbingchars(reldir)) {
+            wildcard = &reldir[1];
+            reldir[0] = '\0'; /* strip off the wildcard suffix */
         }
 
         /* Copy path, strip (all except the last) trailing slashes */
