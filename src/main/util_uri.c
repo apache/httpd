@@ -284,205 +284,6 @@ API_EXPORT(char *) ap_unparse_uri_components(pool *p,
     );
 }
 
-/* The regex version of parse_uri_components has the advantage that it is
- * relatively easy to understand and extend.  But it has the disadvantage
- * that the regexes are complex enough that regex libraries really
- * don't do a great job with them performancewise.
- *
- * The default is a hand coded scanner that is two orders of magnitude
- * faster.
- */
-#ifdef UTIL_URI_REGEX
-
-static regex_t re_uri;
-static regex_t re_hostpart;
-
-void ap_util_uri_init(void)
-{
-    int ret;
-    const char *re_str;
-
-    /* This is a modified version of the regex that appeared in
-     * draft-fielding-uri-syntax-01.  It doesnt allow the uri to contain a
-     * scheme but no hostinfo or vice versa. 
-     *
-     * draft-fielding-uri-syntax-01.txt, section 4.4 tells us:
-     *
-     *      Although the BNF defines what is allowed in each component, it is
-     *      ambiguous in terms of differentiating between a site component and
-     *      a path component that begins with two slash characters.
-     *  
-     * RFC2068 disambiguates this for the Request-URI, which may only ever be
-     * the "abs_path" portion of the URI.  So a request "GET //foo/bar
-     * HTTP/1.1" is really referring to the path //foo/bar, not the host foo,
-     * path /bar.  Nowhere in RFC2068 is it possible to have a scheme but no
-     * hostinfo or a hostinfo but no scheme.  (Unless you're proxying a
-     * protocol other than HTTP, but this parsing engine probably won't work
-     * for other protocols.)
-     *
-     *         12            3          4       5   6        7 8 */
-    re_str = "^(([^:/?#]+)://([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?$";
-    /*          ^scheme--^   ^site---^  ^path--^   ^query^    ^frag */
-    if ((ret = regcomp(&re_uri, re_str, REG_EXTENDED)) != 0) {
-        char line[1024];
-
-        /* Make a readable error message */
-        ret = regerror(ret, &re_uri, line, sizeof line);
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, NULL,
-                     "Internal error: regcomp(\"%s\") returned non-zero (%s) - "
-                     "possibly due to broken regex lib! "
-                     "Did you define WANTHSREGEX=yes?", re_str, line);
-
-        exit(1);
-    }
-
-    /* This is a sub-RE which will break down the hostinfo part,
-     * i.e., user, password, hostname and port.
-     * $          12      3 4        5       6 7    */
-    re_str = "^(([^:]*)(:(.*))?@)?([^@:]*)(:([0-9]*))?$";
-    /*             ^^user^ :pw        ^host^ ^:[port]^ */
-    if ((ret = regcomp(&re_hostpart, re_str, REG_EXTENDED)) != 0) {
-        char line[1024];
-
-        /* Make a readable error message */
-        ret = regerror(ret, &re_hostpart, line, sizeof line);
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, NULL,
-                     "Internal error: regcomp(\"%s\") returned non-zero (%s) - "
-                     "possibly due to broken regex lib! "
-                     "Did you define WANTHSREGEX=yes?", re_str, line);
-
-        exit(1);
-    }
-}
-
-
-/* parse_uri_components():
- * Parse a given URI, fill in all supplied fields of a uri_components
- * structure. This eliminates the necessity of extracting host, port,
- * path, query info repeatedly in the modules.
- * Side effects:
- *  - fills in fields of uri_components *uptr
- *  - none on any of the r->* fields
- */
-API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri,
-                                        uri_components * uptr)
-{
-    int ret;
-    regmatch_t match[10];       /* This must have at least as much elements
-                                   * as there are braces in the re_strings */
-
-    ap_assert(uptr != NULL);
-
-    /* Initialize the structure. parse_uri() and parse_uri_components()
-     * can be called more than once per request.
-     */
-    memset(uptr, '\0', sizeof(*uptr));
-    uptr->is_initialized = 1;
-
-    ret = ap_regexec(&re_uri, uri, re_uri.re_nsub + 1, match, 0);
-
-    if (ret != 0) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, NULL,
-                     "ap_regexec() could not parse uri (\"%s\")", uri);
-
-        return HTTP_BAD_REQUEST;
-    }
-
-    if (match[2].rm_so != match[2].rm_eo)
-        uptr->scheme =
-            ap_pstrndup(p, uri + match[2].rm_so,
-                        match[2].rm_eo - match[2].rm_so);
-
-    /* empty hostinfo is valid, that's why we test $1 but use $3 */
-    if (match[1].rm_so != match[1].rm_eo)
-        uptr->hostinfo =
-            ap_pstrndup(p, uri + match[3].rm_so,
-                        match[3].rm_eo - match[3].rm_so);
-
-    if (match[4].rm_so != match[4].rm_eo)
-        uptr->path =
-            ap_pstrndup(p, uri + match[4].rm_so,
-                        match[4].rm_eo - match[4].rm_so);
-
-    /* empty query string is valid, that's why we test $5 but use $6 */
-    if (match[5].rm_so != match[5].rm_eo)
-        uptr->query =
-            ap_pstrndup(p, uri + match[6].rm_so,
-                        match[6].rm_eo - match[6].rm_so);
-
-    /* empty fragment is valid, test $7 use $8 */
-    if (match[7].rm_so != match[7].rm_eo)
-        uptr->fragment =
-            ap_pstrndup(p, uri + match[8].rm_so,
-                        match[8].rm_eo - match[8].rm_so);
-
-    if (uptr->hostinfo) {
-        /* Parse the hostinfo part to extract user, password, host, and port */
-        ret =
-            ap_regexec(&re_hostpart, uptr->hostinfo, re_hostpart.re_nsub + 1,
-                       match, 0);
-        if (ret != 0) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, NULL,
-                         "ap_regexec() could not parse (\"%s\") as host part",
-                         uptr->hostinfo);
-
-            return HTTP_BAD_REQUEST;
-        }
-
-        /* $      12      3 4        5       6 7            */
-        /*      "^(([^:]*)(:(.*))?@)?([^@:]*)(:([0-9]*))?$" */
-        /*         ^^user^ :pw        ^host^ ^:[port]^      */
-
-        /* empty user is valid, that's why we test $1 but use $2 */
-        if (match[1].rm_so != match[1].rm_eo)
-            uptr->user =
-                ap_pstrndup(p, uptr->hostinfo + match[2].rm_so,
-                            match[2].rm_eo - match[2].rm_so);
-
-        /* empty password is valid, test $3 but use $4 */
-        if (match[3].rm_so != match[3].rm_eo)
-            uptr->password =
-                ap_pstrndup(p, uptr->hostinfo + match[4].rm_so,
-                            match[4].rm_eo - match[4].rm_so);
-
-        /* empty hostname is valid, and implied by the existence of hostinfo */
-        uptr->hostname =
-            ap_pstrndup(p, uptr->hostinfo + match[5].rm_so,
-                        match[5].rm_eo - match[5].rm_so);
-
-        if (match[6].rm_so != match[6].rm_eo) {
-            /* Note that the port string can be empty.
-             * If it is, we use the default port associated with the scheme
-             */
-            uptr->port_str =
-                ap_pstrndup(p, uptr->hostinfo + match[7].rm_so,
-                            match[7].rm_eo - match[7].rm_so);
-            if (uptr->port_str[0] != '\0') {
-                char *endstr;
-                int port;
-
-                port = strtol(uptr->port_str, &endstr, 10);
-                uptr->port = port;
-                if (*endstr != '\0') {
-                    /* Invalid characters after ':' found */
-                    return HTTP_BAD_REQUEST;
-                }
-            }
-            else {
-                uptr->port =
-                    uptr->scheme ? ap_default_port_for_scheme(uptr->
-                                                              scheme) :
-                    DEFAULT_HTTP_PORT;
-            }
-        }
-    }
-
-    if (ret == 0)
-        ret = HTTP_OK;
-    return ret;
-}
-#else
-
 /* Here is the hand-optimized parse_uri_components().  There are some wild
  * tricks we could pull in assembly language that we don't pull here... like we
  * can do word-at-time scans for delimiter characters using the same technique
@@ -518,7 +319,10 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri,
 
 void ap_util_uri_init(void)
 {
-    /* nothing to do */
+    /* Nothing to do - except....
+       UTIL_URI_REGEX was removed, but third parties may depend on this symbol
+       being present. So, we'll leave it in.... - vjo
+     */
 }
 
 /* parse_uri_components():
@@ -617,6 +421,7 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri,
         if (s == NULL) {
             /* we expect the common case to have no port */
             uptr->hostname = ap_pstrndup(p, hostinfo, uri - hostinfo);
+            uptr->port = uptr->scheme ? ap_default_port_for_scheme(uptr->scheme) : DEFAULT_HTTP_PORT;
             goto deal_with_path;
         }
         uptr->hostname = ap_pstrndup(p, hostinfo, s - hostinfo);
@@ -686,4 +491,3 @@ API_EXPORT(int) ap_parse_hostinfo_components(pool *p, const char *hostinfo,
     }
     return HTTP_BAD_REQUEST;
 }
-#endif
