@@ -79,7 +79,7 @@ PATCHES TO BACKPORT FROM 2.1
        off an N*64 character variable expansion (in some cases).
        http://issues.apache.org/bugzilla/attachment.cgi?id=14025
        PR: 32985
-       +1: jorton
+       +1: jorton, trawick
 
     *) mod_ssl: fail quickly if SSL connection is aborted rather than
        making many doomed ap_pass_brigade calls
@@ -99,7 +99,7 @@ PATCHES TO BACKPORT FROM 2.1
        sizeof(apr_off_t)>sizeof(apr_size_t)
        http://www.apache.org/~jorton/ap_splitlfs.diff
        PR: 28898
-       +1: jorton
+       +1: jorton, trawick
 
     *) modules/config5.m4 & docs/manual/programs/configure.xml:
        --with-module can now take more than one module to be statically
