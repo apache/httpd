@@ -698,7 +698,7 @@ AddEncoding x-gzip gz tgz
 #
 # Danish (da) - Dutch (nl) - English (en) - Estonian (et)
 # French (fr) - German (de) - Greek-Modern (el)
-# Italian (it) - Norwegian (no) - Norwegian Nynorsk (nn) - Korean (kr) 
+# Italian (it) - Norwegian (no) - Norwegian Nynorsk (nn) - Korean (ko) 
 # Portugese (pt) - Luxembourgeois* (ltz)
 # Spanish (es) - Swedish (sv) - Catalan (ca) - Czech(cz)
 # Polish (pl) - Brazilian Portuguese (pt-br) - Japanese (ja)
@@ -715,7 +715,7 @@ AddLanguage el .el
 AddLanguage it .it
 AddLanguage ja .ja
 AddLanguage pl .po
-AddLanguage kr .kr
+AddLanguage ko .ko
 AddLanguage pt .pt
 AddLanguage nn .nn
 AddLanguage no .no
@@ -737,7 +737,7 @@ AddLanguage hr .hr
 # Just list the languages in decreasing order of preference. We have
 # more or less alphabetized them here. You probably want to change this.
 #
-LanguagePriority en da nl et fr de el it ja kr no pl pt pt-br ltz ca es sv tw
+LanguagePriority en da nl et fr de el it ja ko no pl pt pt-br ltz ca es sv tw
 
 #
 # ForceLanguagePriority allows you to serve a result page rather than
