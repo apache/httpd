@@ -1,4 +1,7 @@
 Changes with Apache 1.3b6
+  
+  *) Make Configure die when you give it an unknown command switch.
+     [Ben Hyde]
 
   *) Add five new and fresh manpages for the support programs: dbmmanage.1,
      suexec.8, htdigest.1, rotatelogs.8 and logresolve.8.  Now all up-to-date

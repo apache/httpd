@@ -101,8 +101,9 @@ while [ "x$1" != "x" ]; do
       exit 1
     fi
   else
-    echo "Ignoring command line option '$1'"
-    shift 1
+    echo "ERROR: Bad command line option '$1'"
+    echo "  Please read the file INSTALL."
+    exit 1
   fi
 done
 if [ ! -r $file ]; then
