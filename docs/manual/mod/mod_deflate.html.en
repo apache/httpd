@@ -39,6 +39,10 @@ SetOutputFilter DEFLATE
       SetOutputFilter DEFLATE<br />
 &lt;/Directory&gt;
 </code></p></div>
+
+    <p>For browsers that have problems even with compression of html files,
+    use the <code class="directive">BrowserMatch</code> directive to set the 'no-gzip' note
+    for that particular browser so that no compression will be performed.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Fragment size to be compressed at one time by zlib</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>DeflateBufferSize <em>value</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
