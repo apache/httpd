@@ -1,6 +1,6 @@
 #!/bin/sh
 exitcode=0
-trap 'rm -f $tmpfile $tmpfile2 $tmpfile3 $awkfile; exit $exitcode' 0 1 2 3 15
+trap 'rm -f $tmpfile $tmpfile2 $tmpfile3 $tmpconfig $awkfile; exit $exitcode' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
 # Don't like it?  Inspired to do something better?  Go for it.
@@ -26,6 +26,7 @@ tmpfile=htconf.$$
 tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
 awkfile=$tmpfile.4
+tmpconfig=$tmpfile.5
 SUBDIRS='$(OSDIR) main ap modules'
 
 ####################################################################
@@ -838,6 +839,24 @@ MODDIRS=`awk < $tmpfile '
 		SEEN[pp[2]] = 1
 	    } 
     	}'`
+
+#
+# At this point we can pick out all -D's from CFLAGS and create ap_config.h
+# to be used by external modules needing to include Apache header files.
+#
+
+for cflag in $CFLAGS; do
+	echo $cflag >>$tmpconfig ;
+done
+awk > include/ap_config.h < $tmpconfig '
+	BEGIN {
+		printf "/* Automatically generated file - do not edit */\n\n"
+	}
+	/^-D.*/ {
+		split(substr($1,3,length($1)),parts,"=")
+		printf ("#define %s %s\n",parts[1],parts[2])
+	}
+'
 
 #
 # Now autoconfigure each of the modules specified by AddModule.

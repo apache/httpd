@@ -80,7 +80,7 @@ stat() properly */
 /* Define one of these according to your system. */
 #if defined(MINT)
 typedef int rlim_t;
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H 1
 #define JMP_BUF sigjmp_buf
 #define NO_LONG_DOUBLE
 #define USE_FLOCK_SERIALIZED_ACCEPT
@@ -95,7 +95,7 @@ int gethostname (char *name, int namelen);
 #define NO_SETSID
 #define NO_KILLPG
 #define NO_WRITEV
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 #define SHM_R 0400  /* Read permission */
 #define SHM_W 0200  /* Write permission */
@@ -114,13 +114,13 @@ extern char *inet_ntoa();
 #define PF_INET  AF_INET
 
 #elif defined(SUNOS4)
-#define HAVE_GMTOFF
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_GMTOFF 1
+#define HAVE_SYS_RESOURCE_H 1
 #undef NO_KILLPG
 #undef NO_SETSID
 char *crypt(const char *pw, const char *salt);
 char *mktemp(char *template);
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #include <sys/time.h>
@@ -130,25 +130,26 @@ typedef int rlim_t;
 #define NO_LINGCLOSE
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define NEED_DIFFTIME
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H 1
+#define HAVE_DLFCN_H 1
 #define bzero(a,b) memset(a,0,b)
 #if !defined(USE_SYSVSEM_SERIALIZED_ACCEPT) && \
     !defined(USE_PTHREAD_SERIALIZED_ACCEPT)
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
 #define NEED_UNION_SEMUN
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H
+#define HAVE_CRYPT_H 1
 int gethostname(char *name, int namelen);
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(IRIX)
 #undef HAVE_GMTOFF
@@ -159,31 +160,32 @@ int gethostname(char *name, int namelen);
 #if !defined(USE_FCNTL_SERIALIZED_ACCEPT) && !defined(USE_USLOCK_SERIALIZED_ACCEPT)
 #define USE_SYSVSEM_SERIALIZED_ACCEPT
 #endif
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H
+#define HAVE_CRYPT_H 1
+#define HAVE_DLFCN_H 1
 #define NO_LONG_DOUBLE
-#define HAVE_BSTRING_H
+#define HAVE_BSTRING_H 1
 #define NO_LINGCLOSE
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(HIUX)
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H 1
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
 #ifndef _HIUX_SOURCE
 #define _HIUX_SOURCE
 #endif
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 #define SELECT_NEEDS_CAST
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(HPUX) || defined(HPUX10)
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H 1
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
@@ -191,9 +193,9 @@ int gethostname(char *name, int namelen);
 #ifndef _HPUX_SOURCE
 #define _HPUX_SOURCE
 #endif
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #ifndef HPUX10
 #define SELECT_NEEDS_CAST
 typedef int rlim_t;
@@ -203,12 +205,12 @@ typedef int rlim_t;
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define HAVE_SYS_SELECT_H
+#define HAVE_SYS_SELECT_H 1
 #ifndef __ps2__
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #ifndef DEFAULT_GROUP
 #define DEFAULT_GROUP "nobody"
 #endif
@@ -225,7 +227,7 @@ typedef int rlim_t;
 #endif
 
 #elif defined(ULTRIX)
-#define HAVE_GMTOFF
+#define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #undef NO_SETSID
 #define ULTRIX_BRAIN_DEATH
@@ -236,41 +238,41 @@ typedef int rlim_t;
 #endif
 
 #elif defined(OSF1)
-#define HAVE_GMTOFF
+#define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #undef NO_SETSID
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H
+#define HAVE_CRYPT_H 1
 #define NO_LONG_DOUBLE
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 
 #elif defined(PARAGON)
-#define HAVE_GMTOFF
+#define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #undef NO_SETSID
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H
+#define HAVE_CRYPT_H 1
 #define NO_LONG_DOUBLE
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 typedef int rlim_t;
 
 #elif defined(SEQUENT)
-#define HAVE_GMTOFF
+#define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_STRDUP
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #define tolower(c) (isupper(c) ? tolower(c) : c)
 
 #elif defined(NEXT)
 typedef unsigned short mode_t;
-#define HAVE_GMTOFF
+#define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_STRDUP
@@ -325,9 +327,10 @@ typedef u_long n_long;
 typedef int pid_t;
 #define USE_LONGJMP
 #define NO_USE_SIGACTION
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(LINUX)
+#define HAVE_DLFCN_H 1
 
 #if LINUX > 1
 #include <features.h>
@@ -357,11 +360,11 @@ typedef int pid_t;
 #define NET_SIZE_T socklen_t
 #endif
 
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_FILES
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H 1
 
 /* glibc 2.1 and later finally define rlim_t */
 #if !defined(__GLIBC__) || __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1)
@@ -380,7 +383,7 @@ typedef int rlim_t;
 #undef NO_SETSID
 #undef NEED_STRDUP
 #include <sys/time.h>
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(SCO)
 #undef HAVE_GMTOFF
@@ -390,19 +393,19 @@ typedef int rlim_t;
 #define NO_WRITEV
 #define SIGURG SIGUSR1		/* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
 #include <sys/time.h>
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(SCO5)
 
 #define SIGURG SIGUSR1
-#define HAVE_SYS_SELECT_H
+#define HAVE_SYS_SELECT_H 1
 #define USE_FCNTL_SERIALIZED_ACCEPT
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H 1
 #define SecureWare
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 /* Although SCO 5 defines these in <strings.h> (note the "s") they don't have
    consts. Sigh. */
@@ -431,7 +434,7 @@ extern char *crypt();
 /* fcntl() locking is expensive with NFS */
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 /*
  * NOTE: If when you run Apache under A/UX and you get a warning
@@ -443,7 +446,7 @@ extern char *crypt();
 #define MOVEBREAK		0x4000000
 #define NO_LINGCLOSE
 #define NO_SLACK
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(SVR4)
 #define NO_KILLPG
@@ -458,9 +461,9 @@ extern char *crypt();
 #ifndef USE_SYSVSEM_SERIALIZED_ACCEPT
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #define NET_SIZE_T size_t
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 #ifdef _OSD_POSIX /* BS2000-POSIX mainframe needs initgroups */
 #define NEED_INITGROUPS
@@ -478,21 +481,21 @@ extern char *crypt();
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
 #define bzero(a,b) memset(a,0,b)
-#define HAVE_RESOURCE
-#define HAVE_MMAP
+#define HAVE_RESOURCE 1
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #undef USE_SHMGET_SCOREBOARD	/* force use of mmap() scoreboard */
-#define HAVE_CRYPT_H
-#define HAVE_SYS_SELECT_H
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_CRYPT_H 1
+#define HAVE_SYS_SELECT_H 1
+#define HAVE_SYS_RESOURCE_H 1
 #include <sys/time.h>
 #if UW >= 200
 #define _POSIX_SOURCE
 #endif
 #define NET_SIZE_T size_t
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
 #elif defined(DGUX)
@@ -505,14 +508,14 @@ extern char *crypt();
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define ap_inet_addr inet_network
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(__NetBSD__) || defined(__OpenBSD__) || defined(NETBSD)
-#define HAVE_SYS_RESOURCE_H
-#define HAVE_GMTOFF
+#define HAVE_SYS_RESOURCE_H 1
+#define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #undef NO_SETSID
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #ifndef DEFAULT_USER
 #define DEFAULT_USER "nobody"
 #endif
@@ -529,7 +532,7 @@ extern char *crypt();
 #define STDIN_FILENO 0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #define strftime(buf,bufsize,fmt,tm)    ascftime(buf,fmt,tm)
 #include <sys/types.h>
 
@@ -537,17 +540,18 @@ extern char *crypt();
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(__FreeBSD__) || defined(__bsdi__)
 #if defined(__FreeBSD__)
 #include <osreldate.h>
 #endif
-#define HAVE_SYS_RESOURCE_H
-#define HAVE_GMTOFF
+#define HAVE_DLFCN_H 1
+#define HAVE_SYS_RESOURCE_H 1
+#define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #undef NO_SETSID
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
 #ifndef DEFAULT_USER
@@ -561,7 +565,7 @@ extern char *crypt();
 typedef quad_t rlim_t;
 #endif
 #define USE_FLOCK_SERIALIZED_ACCEPT
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(QNX)
 #ifndef crypt
@@ -578,20 +582,20 @@ int initgroups(char *, int);
 #define NEED_INITGROUPS
 #define NEED_SELECT_H
 #define NEED_PROCESS_H
-#define HAVE_SYS_SELECT_H
+#define HAVE_SYS_SELECT_H 1
 #include <unix.h>
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(LYNXOS)
 #undef HAVE_GMTOFF
-#define HAVE_RESOURCE
+#define HAVE_RESOURCE 1
 #undef USE_MMAP_SCOREBOARD
 #undef USE_SHMGET_SCOREBOARD
 #undef HAVE_CRYPT_H
 #undef HAVE_SYS_SELECT_H
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H 1
 #undef HAVE_SNPRINTF
 #undef USE_FCNTL_SERIALIZED_ACCEPT
 #undef USE_FLOCK_SERIALIZED_ACCEPT
@@ -601,10 +605,10 @@ int initgroups(char *, int);
 #undef NO_SETSID
 #undef NO_USE_SIGACTION
 #undef NO_LINGCLOSE
-#define HAVE_CVT
+#define HAVE_CVT 1
 extern char *crypt(char *pw, char *salt);
 typedef int rlim_t;
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(UXPDS)
 #undef NEED_STRCASECMP
@@ -613,14 +617,14 @@ typedef int rlim_t;
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
-#define HAVE_RESOURCE 1
+#define HAVE_RESOURCE 1 
 #define bzero(a,b) memset(a,0,b)
 #define USE_FCNTL_SERIALIZED_ACCEPT
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H
-#define HAVE_SYSLOG
+#define HAVE_CRYPT_H 1
+#define HAVE_SYSLOG 1
 
 #elif defined(__EMX__)
 /* Defines required for EMX OS/2 port. */
@@ -633,7 +637,7 @@ typedef int rlim_t;
 #define chdir _chdir2
 #include <sys/time.h>
 #define MAXSOCKETS 4096
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define NO_RELIABLE_PIPED_LOGS
 
@@ -641,7 +645,7 @@ typedef int rlim_t;
 typedef int rlim_t;
 #undef NO_KILLPG
 #define NO_SETSID
-#define HAVE_GMTOFF
+#define HAVE_GMTOFF 1
 #ifndef __MACHTEN_PPC__
 #ifndef __MACHTEN_68K__
 #define __MACHTEN_68K__
@@ -652,7 +656,7 @@ typedef int rlim_t;
 #define USE_LONGJMP
 #undef NEED_STRDUP
 #else
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #endif
@@ -663,10 +667,10 @@ typedef int rlim_t;
 #undef NO_KILLPG
 #undef NO_SETSID
 #undef NEED_STRDUP
-#define HAVE_MMAP
+#define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #define NO_TIMEZONE
 #include <stdio.h>
@@ -677,22 +681,22 @@ typedef int rlim_t;
 #include <net/errno.h>
 #define NO_KILLPG
 #undef NO_SETSID
-#define HAVE_SHMGET
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 #define SIGURG SIGUSR1
 #define USE_FCNTL_SERIALIZED_ACCEPT
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 
 #elif defined(NEWSOS)
-#define HAVE_SYS_RESOURCE_H
-#define HAVE_SHMGET
+#define HAVE_SYS_RESOURCE_H 1
+#define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 #define USE_LONGJMP
 #define NO_SETSID
 #define NO_USE_SIGACTION
 #define NEED_WAITPID
 #define NO_OTHER_CHILD
-#define HAVE_SYSLOG
+#define HAVE_SYSLOG 1
 #include <sys/time.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -729,7 +733,7 @@ typedef int rlim_t;
 #else
 /* Unknown system - Edit these to match */
 #ifdef BSD
-#define HAVE_GMTOFF
+#define HAVE_GMTOFF 1
 #else
 #undef HAVE_GMTOFF
 #endif
@@ -778,7 +782,7 @@ typedef int rlim_t;
 /* Do we have sys/resource.h; assume that BSD does. */
 #ifndef HAVE_SYS_RESOURCE_H
 #ifdef BSD
-#define HAVE_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H 1
 #endif
 #endif /* HAVE_SYS_RESOURCE_H */
 
@@ -836,6 +840,7 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <arpa/inet.h>		/* for inet_ntoa */
 #endif
 #include <sys/wait.h>
+#include <pwd.h>
 #include <grp.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -849,17 +854,7 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <malloc.h>
 #include <io.h>
 #include <fcntl.h>
-#endif /* WIN32 */
-
-/* 
- * Under Unix we have <pwd.h> for getpwnam() and friends,
- * under WIN32 this is emulated by our os/win32/passwd.h
- */
-#ifdef WIN32
-#include "../os/win32/passwd.h"
-#else
-#include <pwd.h>
-#endif
+#endif /* ndef WIN32 */
 
 #include <time.h>		/* for ctime */
 #include <signal.h>

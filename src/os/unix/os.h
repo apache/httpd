@@ -83,15 +83,6 @@
 extern int os_is_path_absolute(const char *f);
 #endif
 
-/*
- * Abstraction layer for dynamic loading of modules (mod_so.c)
- */
-
-#if defined(LINUX) || defined(__FreeBSD__) || defined(SOLARIS2) || \
-    defined(__bsdi__) || defined(IRIX)
-# define HAS_DLFCN
-#endif
-
 #if defined(__FreeBSD__)
 # define NEED_UNDERSCORE_SYM
 #endif
@@ -102,7 +93,7 @@ extern int os_is_path_absolute(const char *f);
 #endif
 
      /* Start of real module */
-#ifdef HAS_DLFCN
+#ifdef HAVE_DLFCN_H
 # include <dlfcn.h>
 #else
 void * dlopen (const char * __filename, int __flag);

@@ -1,5 +1,13 @@
 Changes with Apache 1.3b6
 
+  *) The Configure script now generates src/include/ap_config.h which
+     contains the set of defines used when Apache is compiled on a platform.
+     This file can then be included by external modules before including
+     any Apache header files in case they are being built separately from
+     Apache.  Along with this change, a couple of minor changes were
+     made to make Apache's #defines coexist peacefully with any autoconf
+     defines and external module might have. [Rasmus Lerdorf]
+
   *) Fix mod_rewrite for the ugly API case where <VirtualHost> sections exist
      but without any RewriteXXXXX directives. Here mod_rewrite is given no
      chance by the API to initialise its per-server configuration and thus
