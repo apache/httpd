@@ -1064,6 +1064,14 @@ int ap_proxy_ssl_enable(conn_rec *c)
     return 0;
 }
 
+static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                             apr_pool_t *ptemp, server_rec *s)
+{
+    proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
+
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     /* handler */
@@ -1076,8 +1084,8 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
-
-    proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
+    /* post config handling */
+    ap_hook_post_config(proxy_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_module =
