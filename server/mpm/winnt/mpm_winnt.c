@@ -1691,8 +1691,9 @@ void winnt_rewrite_args(process_rec *process)
     optbuf[0] = '-';
     optbuf[2] = '\0';
     apr_getopt_init(&opt, process->pool, process->argc, (char**) process->argv);
-    while (apr_getopt(opt, "n:k:iu" AP_SERVER_BASEARGS, 
-                      optbuf + 1, &optarg) == APR_SUCCESS) {
+    opt->errfn = NULL;
+    while ((rv = apr_getopt(opt, "n:k:iu" AP_SERVER_BASEARGS, 
+                            optbuf + 1, &optarg)) == APR_SUCCESS) {
         switch (optbuf[1]) {
         case 'n':
             service_set = mpm_service_set_name(process->pool, &service_name, 
@@ -1722,6 +1723,16 @@ void winnt_rewrite_args(process_rec *process)
         }
     }
     
+    /* back up to capture the bad argument */
+    if (rv == APR_BADCH || rv == APR_BADARG) {
+        opt->ind--;
+    }
+
+    while (opt->ind < opt->argc) {
+        *(const char **)apr_array_push(mpm_new_argv) =
+            apr_pstrdup(process->pool, opt->argv[opt->ind++]);
+    }
+
     /* Track the number of args actually entered by the user */
     inst_argc = mpm_new_argv->nelts - fixed_args;
 

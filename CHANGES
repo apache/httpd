@@ -1,5 +1,8 @@
 Changes with Apache 2.0.30-dev
 
+  *) Prevent the Win32 port from continuing after encountering an
+     error in the command line args to apache.  [William Rowe]
+
   *) On a error in the proxy, make it write a line to the error log
      [Ian Holsman]
 
