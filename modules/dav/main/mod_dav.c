@@ -370,12 +370,11 @@ static int dav_error_response(request_rec *r, int status, const char *body)
 	      DAV_RESPONSE_BODY_2,
 	      &r->status_line[4],
 	      DAV_RESPONSE_BODY_3,
-	      NULL);
-
-    ap_rputs(body, r);
-
-    ap_rputs(ap_psignature("\n<P><HR>\n", r), r);
-    ap_rputs(DAV_RESPONSE_BODY_4, r);
+              body,
+	      DAV_RESPONSE_BODY_4,
+              ap_psignature("<hr />\n", r),
+	      DAV_RESPONSE_BODY_5,
+              NULL);
 
     /* the response has been sent. */
     /*
