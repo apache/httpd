@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) Moved man pages for ab and apachectrl to section 8.
+     [Wilfredo Sanchez, Roy Fielding]
+
   *) Added -S option to install.sh so that options can be passed to
      strip on some platforms. [Ralf S. Engelschall, Wilfredo Sanchez]
 

@@ -312,7 +312,7 @@ install-programs:
 install-support:
 	@echo "===> [support: Installing Apache support programs and scripts]"
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/ab $(root)$(sbindir)/ab
-	$(INSTALL_DATA) $(TOP)/$(SRC)/support/ab.1 $(root)$(mandir)/man1/ab.1
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/ab.8 $(root)$(mandir)/man8/ab.8
 	@if [ ".$(TARGET)" = .httpd ]; then \
 		apachectl='apachectl'; \
 	else \
@@ -323,8 +323,8 @@ install-support:
 		-e 's;HTTPD=.*;HTTPD=$(sbindir)/$(TARGET);' \
 		< $(TOP)/$(SRC)/support/apachectl > $(TOP)/$(SRC)/.apaci.install.tmp && \
 		$(INSTALL_SCRIPT) $(TOP)/$(SRC)/.apaci.install.tmp $(root)$(sbindir)/$${apachectl}; \
-	echo "$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.1 $(root)$(mandir)/man1/$${apachectl}.1"; \
-	$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.1 $(root)$(mandir)/man1/$${apachectl}.1
+	echo "$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.8 $(root)$(mandir)/man8/$${apachectl}.8"; \
+	$(INSTALL_DATA) $(TOP)/$(SRC)/support/apachectl.8 $(root)$(mandir)/man8/$${apachectl}.8
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htpasswd $(root)$(bindir)/htpasswd
 	$(INSTALL_DATA) $(TOP)/$(SRC)/support/htpasswd.1 $(root)$(mandir)/man1/htpasswd.1
 	$(INSTALL_PROGRAM) $(TOP)/$(SRC)/support/htdigest $(root)$(bindir)/htdigest
