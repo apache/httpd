@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/12 13:26:41 $]
+Last modified at [$Date: 2003/07/12 15:13:29 $]
 
 Release:
 
@@ -71,7 +71,7 @@ PATCHES TO PORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c.diff?r1=1.132&r2=1.133
       +1: rederpj, nd (though I think it's actually a bad request, being lenient
           is probably the best here), trawick (prefer style changes in
-          r1.135 to be committed at same time)
+          r1.135 to be committed at same time), jim
 
     * ap_get_mime_headers(): eliminate the temporary table used to
       combine duplicate headers (performance enhancement)
