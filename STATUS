@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/30 15:37:21 $]
+Last modified at [$Date: 2004/11/01 13:13:32 $]
 
 Release:
 
@@ -96,6 +96,13 @@ PATCHES TO BACKPORT FROM 2.1
        simply adding them to ./modules.
          modules/config5.m4: 1.4
        +1: jim, jerenkrantz
+
+    *) several changes to improve logging of connection-oriented errors, including
+       ap_log_cerror() API (needs minor bump in addition to changes below)
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.289&r2=1.291
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c?r1=1.150&r2=1.151
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/include/http_log.h?r1=1.46&r2=1.48
+       +1: trawick
 
     *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
        library handles special characters.
