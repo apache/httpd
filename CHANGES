@@ -197,6 +197,11 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.48
 
+  *) Eliminate creation of a temporary table in ap_get_mime_headers_core()
+     Submitted by: Joe Schaefer <joe+gmane@sunstarsys.com>
+     Reviewed by: Brian Pane
+     Backported: Paul J. Reder
+
   *) Added FreeBSD directory layout. PR 21100.
      [Sander Holthaus <info@orangexl.com>, André Malo]
 
