@@ -99,9 +99,9 @@ static const command_rec authn_default_cmds[] =
                  (void *)APR_OFFSETOF(authn_default_config_rec,
                                       authoritative),
                  OR_AUTHCFG,
-                 "Set to 'no' to allow access control to be passed along to "
+                 "Set to 'Off' to allow access control to be passed along to "
                  "lower modules if the UserID is not known to this module. "
-		         "(default is yes)."),
+		         "(default is On)."),
     {NULL}
 };
 

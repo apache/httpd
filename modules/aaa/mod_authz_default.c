@@ -98,8 +98,8 @@ static const command_rec authz_default_cmds[] =
     AP_INIT_FLAG("AccessAuthoritative", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authz_default_config_rec, authoritative),
                  OR_AUTHCFG,
-                 "Set to 'no' to allow access control to be passed along to "
-                 "lower modules. (default is yes.)"),
+                 "Set to 'Off' to allow access control to be passed along to "
+                 "lower modules. (default is On.)"),
     {NULL}
 };
 

@@ -155,7 +155,7 @@ static const command_rec auth_basic_cmds[] =
     AP_INIT_FLAG("AuthBasicAuthoritative", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(auth_basic_config_rec, authoritative),
                  OR_AUTHCFG,
-                 "Set to 'no' to allow access control to be passed along to "
+                 "Set to 'Off' to allow access control to be passed along to "
                  "lower modules if the UserID is not known to this module"),
     {NULL}
 };

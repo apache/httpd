@@ -151,9 +151,9 @@ static const command_rec authz_dbm_cmds[] =
      OR_AUTHCFG, "what type of DBM file the group file is"),
     AP_INIT_FLAG("AuthzDBMAuthoritative", ap_set_flag_slot,
      (void *)APR_OFFSETOF(authz_dbm_config_rec, authoritative),
-     OR_AUTHCFG, "Set to 'no' to allow access control to be passed along to "
+     OR_AUTHCFG, "Set to 'Off' to allow access control to be passed along to "
      "lower modules, if the group required is not found or empty, or the user "
-     " is not in the required groups. (default is yes.)"),
+     " is not in the required groups. (default is On.)"),
     {NULL}
 };
 
