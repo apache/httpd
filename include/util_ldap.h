@@ -128,6 +128,7 @@ typedef struct util_ldap_state_t {
     /* cache ald */
     void *util_ldap_cache;
     char *lock_file;           /* filename for shm lock mutex */
+    int connectionTimeout;
 
 } util_ldap_state_t;
 
