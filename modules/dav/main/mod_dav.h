@@ -2169,15 +2169,23 @@ struct dav_hooks_vsn
     ** must be passed to this routine.
     **
     ** The dav_xml_doc structure contains the parsed report request
-    ** body. The report response is generated into the ap_text_header
-    ** structure.
+    ** body. The report response should be generated into the specified
+    ** output filter.
     **
-    ** ### shouldn't generate large responses to memory ###
+    ** If an error occurs, and a response has not yet been generated,
+    ** then an error can be returned from this function. mod_dav will
+    ** construct an appropriate error response. Once some output has
+    ** been placed into the filter, however, the provider should not
+    ** return an error -- there is no way that mod_dav can deliver it
+    ** properly.
+    **
+    ** ### maybe we need a way to signal an error anyways, and then
+    ** ### apache can abort the connection?
     */
-    dav_error * (*get_report)(request_rec *r,
-                              const dav_resource *resource,
-                              const ap_xml_doc *doc,
-                              ap_text_header *report);
+    dav_error * (*deliver_report)(request_rec *r,
+                                  const dav_resource *resource,
+                                  const ap_xml_doc *doc,
+                                  ap_filter_t *output);
 
     /*
     ** OPTIONAL HOOKS
