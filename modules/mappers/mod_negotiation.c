@@ -1619,7 +1619,6 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
              * we are allowed to use the prefix of in HTTP/1.1
              */
             char *lang = ((char **) (variant->content_languages->elts))[j];
-            size_t alen = strlen(lang);
             int idx = -1;
         
             /* If we wish to fallback or 
