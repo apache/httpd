@@ -141,7 +141,7 @@
               <xsl:value-of select="$messages/message[@name='modules']"/>
             </a>
           </xsl:if>
-          <xsl:if test="parentdocument">
+          <xsl:if test="parentdocument/text()">
             <xsl:text> &gt; </xsl:text>
             <a href="{parentdocument/@href}">
               <xsl:value-of select="parentdocument"/>
