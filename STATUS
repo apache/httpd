@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/13 21:02:04 $]
+Last modified at [$Date: 2003/08/13 21:05:02 $]
 
 Release:
 
@@ -70,7 +70,7 @@ PATCHES TO PORT FROM 2.1
       deflate to generate a fatal error according to the zlib spec.)
       PR 22259. [Stas Bekman]
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/filters/mod_deflate.c.diff?r1=1.35&r2=1.36
-      +1: stas
+      +1: stas, jwoolley
 
     * Correct the code in ap_check_cache_feshness to check max_age, smax_age,
       and expires correctly. This is a RFC 2616 compliance issue.
