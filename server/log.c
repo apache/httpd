@@ -157,8 +157,7 @@ static const TRANS priorities[] = {
 };
 
 static int log_child(ap_context_t *p, const char *progname,
-                     ap_file_t **fpout, ap_file_t **fpin,
-                     ap_file_t **fperr)
+                     ap_file_t **fpin)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -179,9 +178,9 @@ static int log_child(ap_context_t *p, const char *progname,
 
     if ((ap_createprocattr_init(&procattr, p)          != APR_SUCCESS) ||
         (ap_setprocattr_io(procattr,
-                           fpin  ? 1 : 0,
-                           fpout ? 1 : 0,
-                           fperr ? 1 : 0)              != APR_SUCCESS) ||
+                           APR_NO_PIPE,
+                           APR_FULL_BLOCK,
+                           APR_NO_PIPE) != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, progname)        != APR_SUCCESS)) {
         /* Something bad happened, give up and go away. */
         rc = -1;
@@ -198,17 +197,7 @@ static int log_child(ap_context_t *p, const char *progname,
             ap_get_os_proc(&fred, procnew);
             ap_note_subprocess(p, fred, kill_after_timeout);
 #endif
-            if (fpin) {
-                ap_get_childin(fpin, procnew);
-            }
-
-            if (fpout) {
-                ap_get_childout(fpout, procnew);
-            }
-
-            if (fperr) {
-                ap_get_childerr(fperr, procnew);
-            }
+            ap_get_childin(fpin, procnew);
         }
     }
 
@@ -226,7 +215,7 @@ static void open_error_log(server_rec *s, ap_context_t *p)
 	ap_file_t *dummy;
 
         /* This starts a new process... */
-        rc = log_child (p, s->error_fname+1, NULL, &dummy, NULL);
+        rc = log_child (p, s->error_fname+1, &dummy);
         if (rc != APR_SUCCESS) {
 	    perror("ap_spawn_child");
 	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
@@ -767,7 +756,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     ap_file_t *dummy;
     int rc;
 
-    rc = log_child(p, program, NULL, &dummy, NULL);
+    rc = log_child(p, program, &dummy);
     if (rc != APR_SUCCESS) {
 	perror("ap_spawn_child");
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 

@@ -2162,7 +2162,8 @@ static int uncompress_child(struct uncompress_parms *parm, ap_context_t *cntxt,
     env = ap_create_environment(child_context, r->subprocess_env);
 
     if ((ap_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
-        (ap_setprocattr_io(procattr, 1, 1, 0)             != APR_SUCCESS) ||
+        (ap_setprocattr_io(procattr, APR_FULL_BLOCK, 
+                           APR_FULL_BLOCK, APR_NO_PIPE)   != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, r->filename)        != APR_SUCCESS) ||
         (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
