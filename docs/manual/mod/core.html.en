@@ -221,7 +221,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
     charset parameter (the name of a character encoding) to be added
     to a response if and only if the response's content-type is either
     <code>text/plain</code> or <code>text/html</code>.  This should override
-    any charset specified in the body of the document via a <code>META</code>
+    any charset specified in the body of the response via a <code>META</code>
     element, though the exact behavior is often dependent on the user's client
     configuration. A setting of <code>AddDefaultCharset Off</code>
     disables this functionality. <code>AddDefaultCharset On</code> enables
@@ -3182,6 +3182,6 @@ hostname or IP address</td></tr>
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
