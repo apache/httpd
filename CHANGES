@@ -1,5 +1,11 @@
 Changes with Apache 2.0b1
 
+  *) Get all of the auth modules to the point that they will install and
+     be loadable into the server.  Our new build/install mechanism expects
+     that all modules will have a common name format.  The auth modules 
+     didn't use that format, so we didn't install them properly.
+     [Ryan Bloom]
+
   *) API routines ap_pgethostbyname() and ap_pduphostent() are no longer
      available.  Use apr_getaddrinfo() instead.  [Jeff Trawick]
 
