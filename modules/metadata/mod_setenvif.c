@@ -115,6 +115,7 @@
  *    SetEnvIf remote_addr (127.0.0.1|192.168.10.) LOCAL
  */
 
+#include "apr_strings.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"

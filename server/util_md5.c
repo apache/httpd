@@ -87,6 +87,7 @@
 
 #include "ap_config.h"
 #include "apr_portable.h"
+#include "apr_strings.h"
 #include "httpd.h"
 #include "util_md5.h"
 #include "util_ebcdic.h"

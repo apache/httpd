@@ -79,6 +79,7 @@
  *  6: Failure; username contains illegal or reserved characters
  */
 
+#include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_errno.h"
 #include "ap_config.h"

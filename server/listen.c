@@ -63,6 +63,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "ap_listen.h"
+#include "apr_strings.h"
 #include "http_log.h"
 #include "mpm.h"
 #ifdef HAVE_STRING_H

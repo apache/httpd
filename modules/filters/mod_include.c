@@ -87,6 +87,7 @@
 #endif
 #include "modules/perl/mod_perl.h"
 #else
+#include "apr_strings.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"

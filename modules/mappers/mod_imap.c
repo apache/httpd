@@ -92,6 +92,7 @@
  * Mark Cox, mark@ukweb.com, Allow relative URLs even when no base specified
  */
 
+#include "apr_strings.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"

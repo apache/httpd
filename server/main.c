@@ -65,6 +65,7 @@
 #include "http_vhost.h"
 #include "util_uri.h" 
 #include "util_ebcdic.h"
+#include "apr_strings.h"
 #include "apr_getopt.h"
 #include "ap_mpm.h"
 

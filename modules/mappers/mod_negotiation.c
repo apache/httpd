@@ -64,6 +64,7 @@
  */
 
 #include "ap_config.h"
+#include "apr_strings.h"
 #include "apr_file_io.h"
 #include "httpd.h"
 #include "http_config.h"

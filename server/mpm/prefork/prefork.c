@@ -89,6 +89,7 @@
 
 #include "ap_config.h"
 #include "apr_portable.h"
+#include "apr_strings.h"
 #include "apr_thread_proc.h"
 #include "httpd.h"
 #include "mpm_default.h"
