@@ -11,10 +11,6 @@ Changes with Apache 2.1.0-dev
   *) mod_ssl: Fix segfault on a non-SSL request if the the 'c' log
      format code is used. PR 22741. [Gary E. Miller <gem@rellim.com>]
 
-  *) Set the scoreboard state to indicate logging prior to running 
-     logging hooks so that server-status will show 'L' for hung loggers
-     instead of 'W'.  [Jeff Trawick]
-
   *) Log an error when requests for URIs which fail to map to a valid 
      filesystem name are rejected with 403.  [Jeff Trawick]
 
@@ -213,6 +209,12 @@ Changes with Apache 2.1.0-dev
 
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
+
+Changes with Apache 2.0.49
+
+  *) Set the scoreboard state to indicate logging prior to running 
+     logging hooks so that server-status will show 'L' for hung loggers
+     instead of 'W'.  [Jeff Trawick]
 
 Changes with Apache 2.0.48
 
