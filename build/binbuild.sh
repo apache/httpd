@@ -17,6 +17,13 @@ VER=`echo $APDIR | sed s/httpd-//`
 TAR="`srclib/apr/build/PrintPath tar`"
 GZIP="`srclib/apr/build/PrintPath gzip`"
 COMPRESS="`srclib/apr/build/PrintPath compress`"
+MD5="`srclib/apr/build/PrintPath md5`"
+if [ x$MD5 = x ]; then
+  OPENSSL="`srclib/apr/build/PrintPath openssl`"
+  if [ x$OPENSSL != x ]; then
+    MD5="$OPENSSL md5"
+  fi
+fi
 
 if [ x$1 != x ]; then
   USER=$1
@@ -168,6 +175,10 @@ else
     echo "         gzip -9 ../httpd-$VER-$OS.tar"
   fi
 
+  if [ "x$MD5" != "x" ]; then
+    $MD5 $ARCHIVE > $ARCHIVE.md5
+  fi
+
   if [ -f $ARCHIVE ] && [ -f ../httpd-$VER-$OS.README ]; then
     echo "Ready."
     echo "You can find the binary archive ($ARCHIVE)"
@@ -175,6 +186,7 @@ else
     echo "parent directory."
     exit 0;
   else
+    echo "ERROR: Archive or README is missing."
     exit 1;
   fi
 fi
