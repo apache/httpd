@@ -458,9 +458,6 @@ static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, struct stat *sb);
 static void   add_env_variable(request_rec *r, char *s);
 
-    /* Proxy Module check */
-static int is_proxy_available(server_rec *s);
-
     /* File locking */
 static void fd_lock(int fd);
 static void fd_unlock(int fd);

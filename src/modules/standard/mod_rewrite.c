@@ -878,7 +878,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
 static void init_module(server_rec *s, pool *p)
 {
     /* check if proxy module is available */
-    proxy_available = is_proxy_available(s);
+    proxy_available = (find_linked_module("mod_proxy.c") != NULL);
 
     /* precompile a static pattern
        for the txt mapfile parsing */
@@ -3783,18 +3783,6 @@ static int prefix_stat(const char *path, struct stat *sb)
         return 1;
     else
         return 0;
-}
-
-/*
-**
-**  check if proxy module is available
-**  i.e. if it is compiled in and turned on
-**
-*/
-
-static int is_proxy_available(server_rec *s)
-{
-    return (find_linked_module("mod_proxy.c") != NULL);
 }
 
 
