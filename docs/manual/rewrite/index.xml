@@ -75,6 +75,15 @@
 
 </summary>
 
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite reference
+documentation</a></seealso>
+<seealso><a href="rewrite_intro.html">Introduction</a></seealso>
+<seealso><a href="rewrite_tech.html">Technical details</a></seealso>
+<seealso><a href="rewrite_guide.html">Practical solutions to common
+problems</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Practical solutions to
+advanced problems</a></seealso>
+
 <section id="documentation"><title>Documentation</title>
 <ul>
 <li><a href="../mod/mod_rewrite.html">mod_rewrite reference
@@ -83,6 +92,8 @@ documentation</a></li>
 <li><a href="rewrite_tech.html">Technical details</a></li>
 <li><a href="rewrite_guide.html">Practical solutions to common
 problems</a></li>
+<li><a href="rewrite_guide_advanced.html">Practical solutions to
+advanced problems</a></li>
 <li><a href="../glossary.html">Glossary</a></li>
 </ul>
 </section>
