@@ -166,6 +166,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_authz_default.html">Apache-Modul mod_authz_default</a></li>
 <li><a href="mod/mod_authz_groupfile.html">Apache-Modul mod_authz_groupfile</a></li>
 <li><a href="mod/mod_authz_host.html">Apache-Modul mod_authz_host</a></li>
+<li><a href="mod/mod_authz_owner.html">Apache-Modul mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">Apache-Modul mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Apache-Modul mod_autoindex</a></li>
 <li><a href="mod/mod_cache.html">Apache-Modul mod_cache</a></li>
@@ -185,6 +186,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_ext_filter.html">Apache-Modul mod_ext_filter</a></li>
 <li><a href="mod/mod_file_cache.html">Apache-Modul mod_file_cache</a></li>
 <li><a href="mod/mod_headers.html">Apache-Modul mod_headers</a></li>
+<li><a href="mod/mod_ident.html">Apache-Modul mod_ident</a></li>
 <li><a href="mod/mod_imap.html">Apache-Modul mod_imap</a></li>
 <li><a href="mod/mod_include.html">Apache-Modul mod_include</a></li>
 <li><a href="mod/mod_info.html">Apache-Modul mod_info</a></li>
