@@ -23,7 +23,7 @@
  *  Additional Utility Functions for OpenSSL
  */
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*  _________________________________________________________________
 **

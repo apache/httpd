@@ -27,7 +27,7 @@
                                   I couldn't give it up because by that
                                   time I was too famous.''
                                             -- Unknown                */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*
  *  Post Read Request Handler

@@ -19,6 +19,7 @@
 #include "mod_core.h"
 
 #include "apr_optional.h"
+#include "mod_ssl.h"
 
 #ifndef MAX
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
@@ -1026,9 +1027,6 @@ static const command_rec proxy_cmds[] =
  
     {NULL}
 };
-
-APR_DECLARE_OPTIONAL_FN(int, ssl_proxy_enable, (conn_rec *));
-APR_DECLARE_OPTIONAL_FN(int, ssl_engine_disable, (conn_rec *));
 
 static APR_OPTIONAL_FN_TYPE(ssl_proxy_enable) *proxy_ssl_enable = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_engine_disable) *proxy_ssl_disable = NULL;

@@ -25,7 +25,7 @@
                                       /* ``Damned if you do,
                                            damned if you don't.''
                                                -- Unknown        */
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*  _________________________________________________________________
 **

@@ -23,6 +23,7 @@
  *  Apache API interface structures
  */
 
+#include "ssl_private.h"
 #include "mod_ssl.h"
 #include "util_md5.h"
 #include <assert.h>

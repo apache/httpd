@@ -27,7 +27,7 @@
  * Diffie-Hellman Built-in Temporary Parameters
  */
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /* ----BEGIN GENERATED SECTION-------- */
 

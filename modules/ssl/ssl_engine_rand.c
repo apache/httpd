@@ -26,7 +26,7 @@
                                   numbers is too important
                                   to be left to chance.'' */
 
-#include "mod_ssl.h"
+#include "ssl_private.h"
 
 /*  _________________________________________________________________
 **
