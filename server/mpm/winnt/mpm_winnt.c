@@ -1130,7 +1130,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
  *    accepted socket, instead of blocking on a mutex or select().
  */
 
-static void worker_main(int child_num)
+static void worker_main(int thread_num)
 {
     PCOMP_CONTEXT context = NULL;
     apr_os_sock_info_t sockinfo;
@@ -1138,6 +1138,9 @@ static void worker_main(int child_num)
     while (1) {
         conn_rec *c;
         apr_int32_t disconnected;
+
+        (void) ap_update_child_status(0, thread_num, SERVER_READY, 
+                                      (request_rec *) NULL);
 
         /* Grab a connection off the network */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -1149,6 +1152,7 @@ static void worker_main(int child_num)
 
         if (!context)
             break;
+
         sock_disable_nagle(context->accept_socket);
 
         sockinfo.os_sock = &context->accept_socket;
@@ -1158,8 +1162,11 @@ static void worker_main(int child_num)
         sockinfo.type    = SOCK_STREAM;
         apr_make_os_sock(&context->sock, &sockinfo, context->ptrans);
 
+        ap_update_child_status(0, thread_num,  
+                               SERVER_BUSY_READ, (request_rec *) NULL);
+
         c = ap_new_connection(context->ptrans, server_conf, context->sock,
-                              child_num);
+                              thread_num);
 
         ap_process_connection(c);
 
