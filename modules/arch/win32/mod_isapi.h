@@ -74,7 +74,7 @@ typedef struct HSE_VERSION_INFO {
 /* The startup entry point that must be exported by every ISAPI handler
  */
 int APR_THREAD_FUNC GetExtensionVersion(HSE_VERSION_INFO *ver_info);
-typedef (APR_THREAD_FUNC *PFN_GETEXTENSIONVERSION)(HSE_VERSION_INFO *ver_info);
+typedef int (APR_THREAD_FUNC *PFN_GETEXTENSIONVERSION)(HSE_VERSION_INFO *ver_info);
 
 /* Our internal 'HCONN' representation, always opaque to the user.
  */
