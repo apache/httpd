@@ -324,7 +324,7 @@ extern API_VAR_EXPORT module *top_module;
 
 extern module *ap_prelinked_modules[];
 extern module *ap_preloaded_modules[];
-extern module **ap_loaded_modules;
+extern API_VAR_EXPORT module **ap_loaded_modules;
 
 /* For http_main.c... */
 
