@@ -806,7 +806,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                     && ((entry_core->d_components < seg)
                      || (entry_core->d_is_fnmatch
                          ? (apr_fnmatch(entry_core->d, r->filename,
-                                        APR_FNM_PATHNAME) != APR_SUCCESS)
+                                        FNM_PATHNAME) != APR_SUCCESS)
                          : (strcmp(r->filename, entry_core->d) != 0)))) {
                     continue;
                 }
@@ -1273,7 +1273,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             if (entry_core->r
                 ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
                 : (entry_core->d_is_fnmatch
-                   ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
+                   ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
                    : (strncmp(entry_core->d, cache->cached, len)
                       || (entry_core->d[len - 1] != '/'
                           && cache->cached[len] != '/'
@@ -1422,7 +1422,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             if (entry_core->r
                 ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
                 : (entry_core->d_is_fnmatch
-                   ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
+                   ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
                    : strcmp(entry_core->d, cache->cached))) {
                 continue;
             }

@@ -812,7 +812,7 @@ static char *find_default_item(char *bogus_name, apr_array_header_t *list)
  */
 
 #ifdef CASE_BLIND_FILESYSTEM
-#define MATCH_FLAGS APR_FNM_CASE_BLIND
+#define MATCH_FLAGS FNM_CASE_BLIND
 #else
 #define MATCH_FLAGS 0
 #endif
@@ -1298,7 +1298,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
 
 #ifndef CASE_BLIND_FILESYSTEM
     if (pattern && (apr_fnmatch(pattern, dirent->name,
-                                APR_FNM_NOESCAPE | APR_FNM_PERIOD)
+                                FNM_NOESCAPE | FNM_PERIOD)
                         != APR_SUCCESS))
         return (NULL);
 #else  /* !CASE_BLIND_FILESYSTEM */
@@ -1308,7 +1308,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
          * reliably - so we have to granularise at the OS level.
          */
     if (pattern && (apr_fnmatch(pattern, dirent->name,
-                                APR_FNM_NOESCAPE | APR_FNM_PERIOD | APR_FNM_CASE_BLIND)
+                                FNM_NOESCAPE | FNM_PERIOD | FNM_CASE_BLIND)
                         != APR_SUCCESS))
         return (NULL);
 #endif /* !CASE_BLIND_FILESYSTEM */
