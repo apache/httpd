@@ -249,9 +249,7 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 
-$(OBJDIR)/%.o: ../arch/netware/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
-	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
+vpath %.c ../arch/netware
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
