@@ -36,15 +36,15 @@
         <td><a href="#download">ダウンロード</a></td>
 
         <td><code>$ lynx
-        http://www.apache.org/dist/httpd/httpd-2_0_<em>NN</em>.tar.gz</code>
+        http://www.apache.org/dist/httpd/httpd-2_1_<em>NN</em>.tar.gz</code>
         </td>
       </tr>
 
       <tr>
         <td><a href="#extract">展開</a></td>
 
-        <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_0_<em>NN</em>.tar</code> </td>
+        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
       </tr>
 
       <tr>
@@ -186,11 +186,11 @@
     以下のコマンド (やっぱり pgp のバージョンに依存) のどれか一つで、
     配布ファイルをチェックすることができます:</p>
 
-<example>$ pgp httpd-2_0_<em>NN</em>.tar.gz.asc</example>
+<example>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</example>
     
     <p>または、</p>
 
-<example>$ gpg --verify httpd-2_0_<em>NN</em>.tar.gz.asc</example>
+<example>$ gpg --verify httpd-2_1_<em>NN</em>.tar.gz.asc</example>
     
     <p>すると、こんなメッセージを受けるはずです。</p>
 
@@ -212,8 +212,8 @@
     単なる圧縮の解除と tar の展開です:</p>
 
 <example>
-      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
-       $ tar xvf httpd-2_0_<em>NN</em>.tar
+      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
+       $ tar xvf httpd-2_1_<em>NN</em>.tar
 </example>
 
     <p>配布用のソースコードがある現在いるディレクトリの下に、
@@ -580,7 +580,7 @@
 
     <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
     または、<a
-    href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>
+    href="http://httpd.apache.org/docs-2.1/">http://httpd.apache.org/docs-2.1/</a>
     にあるマニュアル最新版、<a
     href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </section>

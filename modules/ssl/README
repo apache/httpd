@@ -1,6 +1,6 @@
 SYNOPSIS
 
- This Apache module provides strong cryptography for the Apache 2.0 webserver
+ This Apache module provides strong cryptography for the Apache 2 webserver
  via the Secure Sockets Layer (SSL v2/v3) and Transport Layer Security (TLS
  v1) protocols by the help of the SSL/TLS implementation library OpenSSL which
  is based on SSLeay from Eric A. Young and Tim J. Hudson. 
@@ -13,7 +13,7 @@ SYNOPSIS
 
 SOURCES
 
- See the top-level LAYOUT file in httpd-2.0 for file descriptions.
+ See the top-level LAYOUT file in httpd-2.1 for file descriptions.
 
  The source files are written in clean ANSI C and pass the ``gcc -O -g
  -ggdb3 -Wall -Wshadow -Wpointer-arith -Wcast-align -Wmissing-prototypes
@@ -87,7 +87,7 @@ EXPERIMENTAL CODE
 INCOMPATIBILITIES
 
  The following intentional incompatibilities exist between mod_ssl 2.x
- from Apache 1.3 and this mod_ssl version for Apache 2.0:
+ from Apache 1.3 and this mod_ssl version for Apache 2:
 
  o The complete EAPI-based SSL_VENDOR stuff was removed.
  o The complete EAPI-based SSL_COMPAT stuff was removed.
@@ -95,10 +95,10 @@ INCOMPATIBILITIES
 
 MAJOR CHANGES 
 
- For a complete history of changes for Apache 2.0 mod_ssl, see the 
- CHANGES file in the top-level httpd-2.0 directory.  The following 
+ For a complete history of changes for Apache 2 mod_ssl, see the 
+ CHANGES file in the top-level httpd-2.1 directory.  The following 
  is a condensed summary of the major changes were made between 
- mod_ssl 2.x from Apache 1.3 and this mod_ssl version for Apache 2.0:
+ mod_ssl 2.x from Apache 1.3 and this mod_ssl version for Apache 2:
 
  o The DBM based session cache is now based on APR's DBM API only.
  o The shared memory based session cache is now based on APR's APIs.
@@ -126,4 +126,4 @@ MAJOR CHANGES
 
 TODO
 
- See the top-level STATUS file in httpd-2.0 for current efforts and goals.
+ See the top-level STATUS file in httpd-2.1 for current efforts and goals.

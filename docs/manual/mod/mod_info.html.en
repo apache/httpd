@@ -71,8 +71,8 @@ information displayed by the server-info handler</td></tr><tr><th><a href="direc
     <div class="example"><p><code>
       AddModuleInfo mod_deflate.c 'See &lt;a \<br />
       <span class="indent">
-      href="http://www.apache.org/docs-2.0/mod/mod_deflate.html"&gt;\<br />
-      http://www.apache.org/docs-2.0/mod/mod_deflate.html&lt;/a&gt;'
+      href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
+      http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
       </span>
     </code></p></div>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>

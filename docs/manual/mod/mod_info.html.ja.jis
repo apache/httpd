@@ -68,8 +68,8 @@ SetHandler server-info<br />
 <div class="example"><p><code>
   AddModuleInfo mod_authn_file.c 'See &lt;a \<br />
   <span class="indent">
-    href="http://www.apache.org/docs-2.0/mod/mod_authn_file.html"&gt;\<br />
-    http://www.apache.org/docs-2.0/mod/mod_authn_file.html&lt;/a&gt;'
+    href="http://www.apache.org/docs-2.1/mod/mod_authn_file.html"&gt;\<br />
+    http://www.apache.org/docs-2.1/mod/mod_authn_file.html&lt;/a&gt;'
   </span>
 </code></p></div>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>

@@ -339,7 +339,7 @@ called a <a href="#uniformresourceidentifier">Uniform Resource
 Identifier</a>.  URLs are usually made up of a scheme, like
 <code>http</code> or <code>https</code>, a hostname, and a path.  A
 URL for this page is
-<code>http://httpd.apache.org/docs-2.0/glossary.html</code>.</dd>
+<code>http://httpd.apache.org/docs-2.1/glossary.html</code>.</dd>
 
 <dt><a name="uniformresourceidentifier">Uniform Resource Identifier</a> <a
 name="URI">(URI)</a></dt> <dd>A compact string of characters for

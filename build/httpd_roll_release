@@ -18,7 +18,7 @@ USER=$3
 
 REPO="httpd-2.0"
 WORKING_DIR=`echo "$REPO" | sed -e 's/[\-\.]/./g'`
-WORKING_TAG=`echo "$TAG" | sed -e 's/APACHE_2_0_/./'`
+WORKING_TAG=`echo "$TAG" | sed -e 's/APACHE_2_1_/./'`
 WORKING_DIR="$WORKING_DIR$WORKING_TAG"
 
 START_DIR=`echo "$PWD"`
@@ -37,12 +37,12 @@ cd $START_DIR/$WORKING_DIR
 # Make sure the master site's FAQ is up-to-date.  It doesn't hurt to do this
 # all the time.  :-)
 echo "REMEMBER TO UPDATE THE SITE'S FAQ!!"
-#(cd /www/httpd.apache.org/docs-2.0/faq/; cvs update)
+#(cd /www/httpd.apache.org/docs-2.1/faq/; cvs update)
 
 # Now update the FAQ in the tarball via a download from the master site.
 # The FAQ contains SSI tags too complex for the expand.pl script to handle.
 rm -f docs/manual/faq/*.html
-links -source http://httpd.apache.org/docs-2.0/faq/index.html?ONEPAGE \
+links -source http://httpd.apache.org/docs-2.1/faq/index.html?ONEPAGE \
               > docs/manual/faq/index.html
 
 # Create the configure scripts
