@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/11 17:13:51 $]
+Last modified at [$Date: 2004/08/12 15:24:02 $]
 
 Release:
 
@@ -245,11 +245,6 @@ PATCHES TO BACKPORT FROM 2.1
        necessary and forbids legal actions.
           modules/filters/mod_include.c: r1.296
        +1: nd
-
-    *) Fixed mean and median calculations in ab, also changed where time values
-       are set for start and connect when doing keep alive benchmarking.
-           support/ab.c: r1.143
-       +1: jjclar, nd, bnicholes
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
