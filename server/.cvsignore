@@ -11,3 +11,4 @@ gen_test_char
 exports.c
 Debug
 Release
+apache.exports
