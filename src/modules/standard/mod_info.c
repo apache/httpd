@@ -311,7 +311,7 @@ int display_info(request_rec *r) {
 			rputs(buf,r);
 			ap_snprintf(buf, sizeof(buf), "<strong>Daemons:</strong> <tt>start: %d &nbsp;&nbsp; min idle: %d &nbsp;&nbsp; max idle: %d &nbsp;&nbsp; max: %d</tt><br>\n",daemons_to_start,daemons_min_free,daemons_max_free,daemons_limit);
 			rputs(buf,r);
-			ap_snprintf(buf, sizeof(buf), "<strong>Max Requests:</strong> <tt>per child: %d &nbsp;&nbsp; per connection: %d</tt><br>\n",max_requests_per_child,serv->keep_alive);
+			ap_snprintf(buf, sizeof(buf), "<strong>Max Requests:</strong> <tt>per child: %d &nbsp;&nbsp; keep alive: %s &nbsp;&nbsp; max per connection: %d</tt><br>\n",max_requests_per_child,serv->keep_alive ? "on":"off", serv->keep_alive_max);
 			rputs(buf,r);
 			ap_snprintf(buf, sizeof(buf), "<strong>Timeouts:</strong> <tt>connection: %d &nbsp;&nbsp; keep-alive: %d</tt><br>",serv->timeout,serv->keep_alive_timeout);
 			rputs(buf,r);
