@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/11 12:15:22 $]
+Last modified at [$Date: 2002/12/11 13:01:47 $]
 
 Release:
 
@@ -58,8 +58,20 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
 
     * stoddard: All mod_cache (and related) patches as of 12/10/02.
-      +1: trawick
+      +1: stoddard, trawick
 
+    * Fix the building of cgi command lines when the query string
+      contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
+      Jeff Trawick]
+      +1: trawick, wrowe
+
+    * Reorder the definitions for mod_ldap and mod_auth_ldap within
+      config.m4 to make sure the parent mod_ldap is defined first.
+      This ensures that mod_ldap comes before mod_auth_ldap in the
+      httpd.conf file, which is necessary for mod_auth_ldap to load.
+      PR 14256  [Graham Leggett]
+      +1: trawick, wrowe
+ 
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
