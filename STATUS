@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/04 01:09:00 $]
+Last modified at [$Date: 2004/08/04 19:17:50 $]
 
 Release:
 
@@ -72,6 +72,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Proposal: Several folks want to aggressively backport changes
+       from mod_cache, mod_mem_cache and mod_file_cache from Apache
+       2.1 back into the 2.0 tree. Proposal is this: Lets drop the 
+       '3 vote' backport rule for mod_cache, mod_mem_cache and
+       mod_file cache (for xx days?). This is a very tightly scoped
+       easing of a rule that has served us well and we can even put an
+       expiration date on it if we like. I intentionally did not
+       include all exerimental modules out of respect for folks
+       working on ldap.
+       stoddard: +1
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
