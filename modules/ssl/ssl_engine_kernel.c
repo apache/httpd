@@ -442,7 +442,7 @@ int ssl_hook_Access(request_rec *r)
         SSL_set_verify_result(ssl, X509_V_OK);
 
         /* determine whether we've to force a renegotiation */
-        if (verify != verify_old) {
+        if (!renegotiate && verify != verify_old) {
             if (((verify_old == SSL_VERIFY_NONE) &&
                  (verify     != SSL_VERIFY_NONE)) ||
 
