@@ -73,7 +73,7 @@
 
 typedef struct util_cache_node_t {
     void *payload;		/* Pointer to the payload */
-    time_t add_time;		/* Time node was added to cache */
+    apr_time_t add_time;	/* Time node was added to cache */
     struct util_cache_node_t *next;
 } util_cache_node_t;
 
@@ -82,16 +82,16 @@ typedef struct util_ald_cache_t {
     unsigned long maxentries;	/* Maximum number of cache entries */
     unsigned long numentries;	/* Current number of cache entries */
     unsigned long fullmark;	/* Used to keep track of when cache becomes 3/4 full */
-    time_t marktime;		/* Time that the cache became 3/4 full */
+    apr_time_t marktime;	/* Time that the cache became 3/4 full */
     unsigned long (*hash)(void *);  /* Func to hash the payload */
     int (*compare)(void *, void *); /* Func to compare two payloads */
     void * (*copy)(void *);	/* Func to alloc mem and copy payload to new mem */
-    void (*free)(void *);		/* Func to free mem used by the payload */
+    void (*free)(void *);	/* Func to free mem used by the payload */
     util_cache_node_t **nodes;
 
     unsigned long numpurges;	/* No. of times the cache has been purged */
-    double avg_purgetime;		/* Average time to purge the cache */
-    time_t last_purge;		/* Time of the last purge */
+    double avg_purgetime;	/* Average time to purge the cache */
+    apr_time_t last_purge;	/* Time of the last purge */
     unsigned long npurged;	/* Number of elements purged in last purge. This is not
 				   obvious: it won't be 3/4 the size of the cache if 
 				   there were a lot of expired entries. */
