@@ -164,10 +164,10 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../os/win32" /I\
+CPP_PROJ=/nologo /MDd /W3 /GX /Od /I "../../include" /I "../../os/win32" /I\
  "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I\
  "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_tls" /FD /c 
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\mod_tls" /FD /ZI /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -212,7 +212,7 @@ LINK32=link.exe
 LINK32_FLAGS=kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows\
  /dll /incremental:no /pdb:"$(OUTDIR)\mod_tls.pdb" /map:"$(INTDIR)\mod_tls.map"\
  /debug /machine:I386 /out:"$(OUTDIR)\mod_tls.so"\
- /implib:"$(OUTDIR)\mod_tls.lib" /libpath:"../../srclib/openssl/out32dll"\
+ /implib:"$(OUTDIR)\mod_tls.lib" /libpath:"../../srclib/openssl/out32dll.dbg"\
  /base:@..\..\os\win32\BaseAddr.ref,mod_tls 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_tls.obj" \
@@ -368,6 +368,50 @@ NODEP_CPP_MOD_T=\
 SOURCE=.\openssl_state_machine.c
 DEP_CPP_OPENS=\
 	"..\..\srclib\apr\include\apr.h"\
+	"..\..\srclib\openssl\inc32\openssl\asn1.h"\
+	"..\..\srclib\openssl\inc32\openssl\bio.h"\
+	"..\..\srclib\openssl\inc32\openssl\blowfish.h"\
+	"..\..\srclib\openssl\inc32\openssl\bn.h"\
+	"..\..\srclib\openssl\inc32\openssl\buffer.h"\
+	"..\..\srclib\openssl\inc32\openssl\cast.h"\
+	"..\..\srclib\openssl\inc32\openssl\comp.h"\
+	"..\..\srclib\openssl\inc32\openssl\crypto.h"\
+	"..\..\srclib\openssl\inc32\openssl\des.h"\
+	"..\..\srclib\openssl\inc32\openssl\dh.h"\
+	"..\..\srclib\openssl\inc32\openssl\dsa.h"\
+	"..\..\srclib\openssl\inc32\openssl\e_os2.h"\
+	"..\..\srclib\openssl\inc32\openssl\ebcdic.h"\
+	"..\..\srclib\openssl\inc32\openssl\err.h"\
+	"..\..\srclib\openssl\inc32\openssl\evp.h"\
+	"..\..\srclib\openssl\inc32\openssl\idea.h"\
+	"..\..\srclib\openssl\inc32\openssl\lhash.h"\
+	"..\..\srclib\openssl\inc32\openssl\md2.h"\
+	"..\..\srclib\openssl\inc32\openssl\md4.h"\
+	"..\..\srclib\openssl\inc32\openssl\md5.h"\
+	"..\..\srclib\openssl\inc32\openssl\mdc2.h"\
+	"..\..\srclib\openssl\inc32\openssl\obj_mac.h"\
+	"..\..\srclib\openssl\inc32\openssl\objects.h"\
+	"..\..\srclib\openssl\inc32\openssl\opensslconf.h"\
+	"..\..\srclib\openssl\inc32\openssl\opensslv.h"\
+	"..\..\srclib\openssl\inc32\openssl\pem.h"\
+	"..\..\srclib\openssl\inc32\openssl\pem2.h"\
+	"..\..\srclib\openssl\inc32\openssl\pkcs7.h"\
+	"..\..\srclib\openssl\inc32\openssl\rc2.h"\
+	"..\..\srclib\openssl\inc32\openssl\rc4.h"\
+	"..\..\srclib\openssl\inc32\openssl\rc5.h"\
+	"..\..\srclib\openssl\inc32\openssl\ripemd.h"\
+	"..\..\srclib\openssl\inc32\openssl\rsa.h"\
+	"..\..\srclib\openssl\inc32\openssl\safestack.h"\
+	"..\..\srclib\openssl\inc32\openssl\sha.h"\
+	"..\..\srclib\openssl\inc32\openssl\ssl.h"\
+	"..\..\srclib\openssl\inc32\openssl\ssl2.h"\
+	"..\..\srclib\openssl\inc32\openssl\ssl23.h"\
+	"..\..\srclib\openssl\inc32\openssl\ssl3.h"\
+	"..\..\srclib\openssl\inc32\openssl\stack.h"\
+	"..\..\srclib\openssl\inc32\openssl\symhacks.h"\
+	"..\..\srclib\openssl\inc32\openssl\tls1.h"\
+	"..\..\srclib\openssl\inc32\openssl\x509.h"\
+	"..\..\srclib\openssl\inc32\openssl\x509_vfy.h"\
 	".\openssl_state_machine.h"\
 	
 
