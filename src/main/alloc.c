@@ -1763,9 +1763,9 @@ static void cleanup_pool_for_exec(pool *p)
 
 API_EXPORT(void) ap_cleanup_for_exec(void)
 {
-#if !defined(WIN32) && !defined(OS2)
+#if !defined(WIN32) && !defined(OS2) && !defined(NETWARE)
     /*
-     * Don't need to do anything on NT or OS/2, because I
+     * Don't need to do anything on NT, NETWARE or OS/2, because I
      * am actually going to spawn the new process - not
      * exec it. All handles that are not inheritable, will
      * be automajically closed. The only problem is with
@@ -2103,7 +2103,7 @@ static int socket_magic_cleanup(void *fpv)
 
 API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *p, int fd, int domagic)
 {
-#ifdef TPF
+#if defined(TPF) || defined(NETWARE)
     domagic = 0; /* skip magic (fcntl) for TPF sockets, at least for now */
 #endif
     ap_register_cleanup_ex(p, (void *) (long) fd, socket_cleanup,
