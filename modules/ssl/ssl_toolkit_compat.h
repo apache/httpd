@@ -57,6 +57,11 @@
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c, NULL)
 
+/* XXX: add configure check */
+#ifndef HAVE_SSL_SET_STATE
+#define SSL_set_state(ssl, state)
+#endif
+
 #if SSLC_VERSION < 0x2000
 
 #define X509_STORE_CTX_set_depth(st, d)    
