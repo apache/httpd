@@ -49,6 +49,13 @@ DLNAME=`grep "^dlname" $TARGETDIR/$DSOARCHIVE_BASENAME | sed -e "s/dlname='\([^'
 LIBRARY_NAMES=`grep "library_names" $TARGETDIR/$DSOARCHIVE_BASENAME | sed -e "s/dlname='\([^']*\)'/\1/"`
 LIBRARY_NAMES=`echo $LIBRARY_NAMES | sed -e "s/ *$DLNAME//g"`
 
+if test -z "$DLNAME"
+then
+  echo "Warning!  dlname not found in $TARGETDIR/$DSOARCHIVE_BASENAME."
+  echo "Assuming installing a .so rather than a libtool archive."
+  exit 0
+fi
+
 if test -n "$LIBRARY_NAMES"
 then
     for f in $LIBRARY_NAMES
