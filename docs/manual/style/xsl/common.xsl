@@ -115,10 +115,6 @@
 
     <div id="path">
 
-      <!-- XXX: choose just for now, so it works until the
-           translations are done! -->
-      <xsl:choose>
-        <xsl:when test="$messages/message[@name='maintainedby']">
           <a href="http://www.apache.org/">
             <xsl:value-of select="$messages/message[@name='apache']"/>
           </a>
@@ -140,22 +136,6 @@
               <xsl:value-of select="$messages/message[@name='modules']"/>
             </a>
           </xsl:if>
-        </xsl:when>
-
-        <xsl:otherwise>
-          <a href="http://www.apache.org/">Apache</a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="http://httpd.apache.org/">HTTP Server</a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="http://httpd.apache.org/docs-project/">Documentation</a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="{$path}/">Version 2.0</a>
-          <xsl:if test="../modulesynopsis or ../directiveindex">
-            <xsl:text> &gt; </xsl:text>
-            <a href="./">Modules</a>
-          </xsl:if>
-        </xsl:otherwise>
-      </xsl:choose>
 
     </div> <!-- /path -->
   </xsl:template>
@@ -169,17 +149,7 @@
     <div id="footer">
       <p class="apache">
 
-        <!-- XXX: choose just for now, so it works until the
-             translations are done! -->
-        <xsl:choose>
-          <xsl:when test="$messages/message[@name='maintainedby']">
             <xsl:value-of select="$messages/message[@name='maintainedby']"/>
-          </xsl:when>
-
-          <xsl:otherwise>
-            <xsl:text>Maintained by the</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
 
         <xsl:text> </xsl:text>
         <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a>
@@ -303,10 +273,6 @@
   <xsl:template name="super-menu">
     <p class="menu">
 
-      <!-- XXX: choose just for now, so it works until the
-           translations are done! -->
-      <xsl:choose>
-        <xsl:when test="$messages/message[@name='maintainedby']">
           <a href="{$path}/mod/">
             <xsl:value-of select="$messages/message[@name='modules']"/>
           </a>
@@ -326,20 +292,6 @@
           <a href="{$path}/sitemap.html">
             <xsl:value-of select="$messages/message[@name='sitemap']"/>
           </a>
-        </xsl:when>
-
-        <xsl:otherwise>
-          <a href="{$path}/mod/">Modules</a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/mod/directives.html">Directives</a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/faq/">FAQ</a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/glossary.html">Glossary</a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/sitemap.html">Sitemap</a>
-        </xsl:otherwise>
-      </xsl:choose>
 
     </p>
   </xsl:template>
