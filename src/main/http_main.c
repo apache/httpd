@@ -1861,8 +1861,7 @@ void child_main(int child_num_arg)
          * until no requests are left or we decide to close.
          */
 
-        for (;;) {
-            r = read_request(current_conn);
+        while ((r = read_request(current_conn)) != NULL) {
 
 	    /* ok we've read the request... it's a little too late
 	     * to do a graceful restart, so ignore them for now.
@@ -1871,11 +1870,11 @@ void child_main(int child_num_arg)
 
             (void)update_child_status(child_num, SERVER_BUSY_WRITE, r);
 
-            if (r) process_request(r); /* else premature EOF --- ignore */
+            process_request(r);
 #if defined(STATUS)
-            if (r) increment_counts(child_num, r);
+            increment_counts(child_num, r);
 #endif
-            if (!r || !current_conn->keepalive)
+            if (!current_conn->keepalive || current_conn->aborted)
                 break;
 
             destroy_pool(r->pool);
@@ -2468,7 +2467,7 @@ main(int argc, char *argv[])
 	r = read_request (conn);
 	if (r) process_request (r); /* else premature EOF (ignore) */
 
-        while (r && conn->keepalive) {
+        while (r && conn->keepalive && !conn->aborted) {
 	    destroy_pool(r->pool);
             r = read_request (conn);
             if (r) process_request (r);
