@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/06 22:30:56 $]
+Last modified at [$Date: 2002/02/06 22:32:34 $]
 
 Release:
 
@@ -215,9 +215,8 @@ CURRENT VOTES:
       look at accept() error handling first: gregames
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
-      +1:   Justin, Jeff, Ian
+      +1:   Justin, Jeff, Ian, Cliff
       -0:   Aaron (premature decision, needs more discussion), Lars
-      -0:   Cliff (I think the default config should be the safest possible)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
