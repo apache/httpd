@@ -18,10 +18,11 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div><div id="page-content"><div id="preamble"><h1>Apache の起動</h1>
     <p>Windows 上では、Apache は通常は
-    Windows NT ではサービスとして、Windows 95 
+    Windows NT, 2000, XP ではサービスとして、Windows 9x, ME 
     ではコンソールアプリケーションとして実行されます。
-    詳細に関しては、「<a href="platform/windows.html#run">
-    Windows で Apache を実行する</a>」をご覧下さい。</p>
+    詳細に関しては、「<a href="platform/windows.html#winsvc">
+    サービスとして実行する</a>」と「<a href="platform/windows.html#wincons">
+    コンソールアプリケーションとして実行する</a>」をご覧下さい。</p>
 
     <p>Unixでは、<a href="programs/httpd.html">httpd</a> 
     プログラムが、バックグラウンドで常にリクエスト処理を行う
@@ -32,7 +33,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">起動時のエラー</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">ブート時の起動</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">追加情報</a></li>
-</ul></div>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="stopping.html">停止と再起動</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="startup" id="startup">Apache の起動方法</a></h2>
@@ -50,6 +51,19 @@
     子プロセスはもっと低い権限で走ります。
     これは選択した<a href="mpm.html">マルチプロセッシングモジュール</a>で制御されます。</p>
 
+    <p>推奨の <code>httpd</code> 実行プログラムの起動方法は、
+    <a href="programs/apachectl.html">apachectl</a>
+    制御スクリプトを使用する方法です。このスクリプトは、<code>httpd</code> 
+    がオペレーティングシステム上で正常に動作するように必要な環境変数を
+    適切に設定して、<code>httpd</code> バイナリを起動します。
+    <code>apachectl</code> はどんなコマンドライン引数も通過させますので、
+    <code>httpd</code> のどのコマンドラインオプションも
+    <code>apchectl</code> のオプションとして使用できます。
+    また、<code>apchectl</code> スクリプトを直接編集し、
+    スクリプト先頭付近の <code>HTTPD</code> 変数を変更することで、
+    <code>httpd</code> バイナリの正しい位置を指定したり、<em>常に</em>
+    付加させるコマンドライン引数を指定したりすることができます。</p>
+
     <p><code>httpd</code> が起動されてまず最初にすることは、
     <a href="configuring.html">設定ファイル</a>
     <code>httpd.conf</code> の位置を特定して読み込むことです。
@@ -57,15 +71,8 @@
     <code>-f</code> コマンドラインオプションを使って
     位置を指定することもできます。例えば次のようにです。</p>
 
-<div class="example"><p><code>/usr/local/apache/bin/httpd -f
+<div class="example"><p><code>/usr/local/apache2/bin/apachectl -f
       /usr/local/apache/conf/httpd.conf</code></p></div>
-
-    <p><code>httpd</code> のバイナリを直接起動する代わりに、
-    <a href="programs/apachectl.html">apachectl</a>
-    というシェルスクリプトが提供されています。
-    <code>apachectl start</code> や <code>apachectl stop</code>
-    といった簡単なコマンドで、
-    デーモンプロセスを制御するのに使えます。</p>
 
     <p>スタートアップが万事上手くいったら、サーバはターミナルから
     切り離されて、コマンドプロンプトが即座に戻ってくるでしょう。
@@ -103,15 +110,21 @@
 
     <p>システムがリブートした後でも
     サーバが実行され続けるようにしたい場合は、
-    <code>httpd</code> か <code>apachectl</code>
+    <code>apachectl</code>
     を呼び出すものをシステムスタートアップファイル
     (通常 <code>rc.local</code> や <code>rc.N</code>
     内のファイル) に追加しなければなりません。
     この方法では Apache を root 権限で起動します。
     これをする前に、セキュリティやアクセス制限が
-    適切に設定されていていることを確認してください。
-    <code>apachectl</code> スクリプトは通常は、 init 
-    スクリプトとして直接リンクできるように設計されていますが、
+    適切に設定されていていることを確認してください。</p>
+
+    <p><code>apachectl</code> スクリプトは通常は、標準的な SysV init 
+    スクリプトとして動作するように設計されています。
+    <code>start</code>, <code>restart</code>, <code>stop</code>
+    といった引数をとって、<code>httpd</code> 
+    への適切なシグナルに変換します。
+    ですから、通常は単に適切な init ディレクトリ内から
+    <code>apachectl</code> へリンクすることができます。しかし、
     念のためシステムの要求に合致していることを確認してください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
