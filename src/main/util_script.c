@@ -721,13 +721,13 @@ API_EXPORT(void) ap_send_size(size_t size, request_rec *r)
 	ap_rputs("   1k", r);
     }
     else if (size < 1048576) {
-	ap_rprintf(r, "%4dk", (size + 512) / 1024);
+	ap_rprintf(r, "%4dk", (int)((size + 512) / 1024));
     }
     else if (size < 103809024) {
 	ap_rprintf(r, "%4.1fM", size / 1048576.0);
     }
     else {
-	ap_rprintf(r, "%4dM", (size + 524288) / 1048576);
+	ap_rprintf(r, "%4dM", (int)((size + 524288) / 1048576));
     }
 }
 
