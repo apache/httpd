@@ -270,8 +270,9 @@ static void sig_term(int sig)
     shutdown_pending = 1;
 
     DBPRINT0 ("waiting for threads\n");
-    while (wait_to_finish)
-        delay(500);
+    while (wait_to_finish) {
+        apr_thread_yield();
+    }
     DBPRINT0 ("goodbye\n");
 }
 
@@ -582,7 +583,7 @@ static void startup_workers(int number_to_start)
  */
 static int idle_spawn_rate = 1;
 #ifndef MAX_SPAWN_RATE
-#define MAX_SPAWN_RATE	(32)
+#define MAX_SPAWN_RATE	(64)
 #endif
 static int hold_off_on_exponential_spawning;
 
@@ -812,6 +813,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_run_pre_mpm(pconf, SB_NOT_SHARED);
     }
 
+    /* Only set slot 0 since that is all NetWare will ever have. */
+    ap_scoreboard_image->parent[0].pid = getpid();
+
     set_signals();
 
     apr_pool_create(&pmain, pconf);
@@ -830,13 +834,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     printf("%s \n", ap_get_server_version());
 
-    /* Give everything just a few seconds to spin up */
-    apr_sleep(5000);
-
     while (!restart_pending && !shutdown_pending) {
         perform_idle_server_maintenance(pconf);
         if (show_settings)
             display_settings();
+        apr_thread_yield();
         apr_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
     }
 
@@ -864,8 +866,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
         /* Wait for all of the threads to terminate before initiating the restart */
         DBPRINT0 ("Restart pending. Waiting for threads to terminate...\n");
-        while (worker_thread_count > 0)
-            apr_sleep(500);
+        while (worker_thread_count > 0) {
+            apr_thread_yield();
+        }
         DBPRINT0 ("restarting...\n");
     }
 
@@ -1015,7 +1018,7 @@ static int InstallConsoleHandler(void)
     /*  Our command line handler interfaces the system operator
     with this NLM */
 
-    NX_WRAP_INTERFACE(CommandLineInterpreter, 2, &(ConsoleHandler.parser));
+    NX_WRAP_INTERFACE(CommandLineInterpreter, 2, (void*)&(ConsoleHandler.parser));
 
     ConsoleHandler.rTag = AllocateResourceTag(getnlmhandle(), "Command Line Processor",
         ConsoleCommandSignature);
