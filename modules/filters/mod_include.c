@@ -447,16 +447,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
 
             /* False alarm... 
              */
-            if (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade)) {
-                for (;;) {
-                    apr_bucket *e = APR_BRIGADE_LAST(ctx->ssi_tag_brigade);
-                    if (e == APR_BRIGADE_SENTINEL(ctx->ssi_tag_brigade)) {
-                        break;
-                    }
-                    APR_BUCKET_REMOVE(e);
-                    APR_BRIGADE_INSERT_HEAD(bb, e);
-                }
-            }
+            APR_BRIGADE_PREPEND(bb, ctx->ssi_tag_brigade);
 
             ctx->state = PRE_HEAD;
         }
