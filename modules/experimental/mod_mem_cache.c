@@ -288,14 +288,7 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
  */
 static void *create_cache_config(apr_pool_t *p, server_rec *s)
 {
-    int threaded_mpm;
-
     sconf = apr_pcalloc(p, sizeof(mem_cache_conf));
-
-    ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
-    if (threaded_mpm) {
-        apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
-    }
 
     sconf->min_cache_object_size = DEFAULT_MIN_CACHE_OBJECT_SIZE;
     sconf->max_cache_object_size = DEFAULT_MAX_CACHE_OBJECT_SIZE;
@@ -305,8 +298,6 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
     /* Size of the cache in bytes */
     sconf->max_cache_size = DEFAULT_MAX_CACHE_SIZE;
     sconf->cache_size = 0;
-
-    apr_pool_cleanup_register(p, sconf, cleanup_cache_mem, apr_pool_cleanup_null);
 
     return sconf;
 }
@@ -880,7 +871,14 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
 static int mem_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
+    int threaded_mpm;
+    ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
+    if (threaded_mpm) {
+        apr_thread_mutex_create(&sconf->lock, APR_THREAD_MUTEX_DEFAULT, p);
+    }
     sconf->cacheht = cache_hash_make(sconf->max_object_cnt);
+    apr_pool_cleanup_register(p, sconf, cleanup_cache_mem, apr_pool_cleanup_null);
+
     return OK;
 }
 
