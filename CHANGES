@@ -1,5 +1,11 @@
 Changes with Apache 2.0.44
 
+  *) mod_autoindex: AddDescription directives for directories
+     now work as in Apache 1.3, where no trailing '/' is
+     specified on the directory name.  Previously, the trailing
+     '/' *had* to be specified, which was incompatible with
+     Apache 1.3.  PR 7990  [Jeff Trawick]
+
   *) Fix for PR 14556. The expiry calculations in mod_cache were
      trying to perform "now + ((date - lastmod) * factor)" where
      date == lastmod resulting in "now + 0". The code now follows
