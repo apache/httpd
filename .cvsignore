@@ -3,4 +3,8 @@ config.status
 src.*
 bin
 modules
+proxy
+Apache.exe
 ApacheCore.dll
+xmltok.dll
+xmlparse.dll
