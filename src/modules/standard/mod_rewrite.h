@@ -64,7 +64,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.9 (11-Jul-1997)
+**  URL Rewriting Module
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -81,12 +81,9 @@
 **  can lead to internal subprocessing, external request redirection or even
 **  to internal proxy throughput.
 **
-**  The documentation and latest release can be found on
-**  http://www.engelschall.com/sw/mod_rewrite/
+**  This module was originally written in April 1996 and 
+**  gifted exclusively to the The Apache Group in July 1997 by
 **
-**  Copyright (c) 1996-1997 Ralf S. Engelschall, All rights reserved.
-**
-**  Written for The Apache Group by
 **      Ralf S. Engelschall
 **      rse@engelschall.com
 **      www.engelschall.com
@@ -357,21 +354,13 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
 
     /* rewriting logfile support */
 static void  open_rewritelog(server_rec *s, pool *p);
-#if MODULE_MAGIC_NUMBER > 19970622
 static int   rewritelog_child(void *cmd);
-#else
-static void  rewritelog_child(void *cmd);
-#endif
 static void  rewritelog(request_rec *r, int level, const char *text, ...);
 static char *current_logtime(request_rec *r);
 
     /* program map support */
 static void  run_rewritemap_programs(server_rec *s, pool *p);
-#if MODULE_MAGIC_NUMBER > 19970622
 static int   rewritemap_program_child(void *cmd);
-#else
-static void  rewritemap_program_child(void *cmd);
-#endif
 
     /* env variable support */
 static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);

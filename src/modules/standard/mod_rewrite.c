@@ -52,16 +52,14 @@
  */
 
 
-/*
-**  mod_rewrite.c -- The Main Module Code
-**                       _                            _ _ 
+/*                       _                            _ _ 
 **   _ __ ___   ___   __| |    _ __ _____      ___ __(_) |_ ___ 
 **  | '_ ` _ \ / _ \ / _` |   | '__/ _ \ \ /\ / / '__| | __/ _ \
 **  | | | | | | (_) | (_| |   | | |  __/\ V  V /| |  | | ||  __/
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.9 (11-Jul-1997)
+**  URL Rewriting Module
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -78,12 +76,9 @@
 **  can lead to internal subprocessing, external request redirection or even
 **  to internal proxy throughput.
 **
-**  The documentation and latest release can be found on
-**  http://www.engelschall.com/sw/mod_rewrite/
+**  This module was originally written in April 1996 and 
+**  gifted exclusively to the The Apache Group in July 1997 by
 **
-**  Copyright (c) 1996-1997 Ralf S. Engelschall, All rights reserved.
-**
-**  Written for The Apache Group by
 **      Ralf S. Engelschall
 **      rse@engelschall.com
 **      www.engelschall.com
@@ -218,7 +213,7 @@ module rewrite_module = {
    hook_fixup,                  /* [#7] pre-run fixups */
    NULL,                        /* [#9] log a transaction */
    NULL,                        /* [#3] header parser */
-   NULL				/* child_init */
+   NULL                         /* child_init */
 };
 
     /* the cache */
@@ -2328,15 +2323,9 @@ static void open_rewritelog(server_rec *s, pool *p)
 }
 
 /* Child process code for 'RewriteLog "|..."' */
-#if MODULE_MAGIC_NUMBER > 19970622
 static int rewritelog_child(void *cmd)
-#else
-static void rewritelog_child(void *cmd)
-#endif
 {
-#if MODULE_MAGIC_NUMBER > 19970622
     int child_pid = 1;
-#endif
 
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
@@ -2348,11 +2337,7 @@ static void rewritelog_child(void *cmd)
 #else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
-#if MODULE_MAGIC_NUMBER > 19970622
     return(child_pid);
-#else
-    return;
-#endif
 }
 
 static void rewritelog(request_rec *r, int level, const char *text, ...)
@@ -2494,15 +2479,9 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
 }
 
 /* child process code */
-#if MODULE_MAGIC_NUMBER > 19970622
 static int rewritemap_program_child(void *cmd)
-#else
-static void rewritemap_program_child(void *cmd)
-#endif
 {
-#if MODULE_MAGIC_NUMBER > 19970622
     int child_pid = 1;
-#endif
     
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
@@ -2514,11 +2493,7 @@ static void rewritemap_program_child(void *cmd)
 #else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
 #endif
-#if MODULE_MAGIC_NUMBER > 19970622
     return(child_pid);
-#else
-    return;
-#endif
 }
 
 
