@@ -1,5 +1,9 @@
 Changes with Apache 2.0.48
 
+  *) mod_include: Fix a trio of bugs that would cause various unusual
+     sequences of parsed bytes to omit portions of the output stream.
+     PR 21095. [Ron Park <ronald.park@cnet.com>, André Malo, Cliff Woolley]
+
   *) Update the header token parsing code to allow LWS between the
      token word and the ':' seperator.  [PR 16520]
      [Kris Verbeeck <kris.verbeeck@advalvas.be>, Nicel KM <mnicel@yahoo.com>]
