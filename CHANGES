@@ -1,5 +1,8 @@
 Changes with Apache 2.0.23-dev
 
+  *) Fix broken mod_mime behavior in merging its arguments.  Possible
+     cause of unexplicable crashes introduced in 2.0.20.  [William Rowe]
+
   *) Solve many mod_ssl porting issues (too many to detail) with 
      help from the whole team, but most notably [Ralf S. Engelschall, 
      Madhusudan Mathihalli <madhusudan_mathihalli@hp.com>, 
