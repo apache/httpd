@@ -62,6 +62,10 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "unixd.h"
+#include "os.h"
+#include "ap_mpm.h"
+#include "apr_thread_proc.h"
+#include "apr_strings.h"
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
@@ -412,5 +416,70 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, cmd->server,
                  "Platform does not support rlimit for %s", cmd->cmd->name);
 #endif
+}
+
+AP_HOOK_STRUCT(
+               AP_HOOK_LINK(get_suexec_identity)
+)
+
+AP_IMPLEMENT_HOOK_RUN_FIRST(ap_unix_identity_t *, get_suexec_identity,
+                         (const request_rec *r), (r), NULL)
+
+static apr_status_t ap_unix_create_privileged_process(
+                              apr_proc_t *newproc, const char *progname,
+                              char *const *args, char **env,
+                              apr_procattr_t *attr, ap_unix_identity_t *ugid,
+                              apr_pool_t *p)
+{
+    int i = 0;
+    char **newargs;
+    char *newprogname;
+    char *execuser, *execgroup;
+
+    if (!unixd_config.suexec_enabled) {
+        return apr_create_process(newproc, progname, args, env, attr, p);
+    }
+
+    execuser = apr_psprintf(p, "%ld", (long) ugid->uid);
+    execgroup = apr_psprintf(p, "%ld", (long) ugid->gid);
+
+    if (!execuser || !execgroup) {
+        return APR_ENOMEM;
+    }
+
+    i = 0;
+    if (args) {
+        while (args[i]) {
+            i++;
+	    }
+    }
+    newargs = apr_palloc(p, sizeof(char *) * (i + 4));
+    newprogname = SUEXEC_BIN;
+    newargs[0] = SUEXEC_BIN;
+    newargs[1] = execuser;
+    newargs[2] = execgroup;
+    newargs[3] = apr_pstrdup(p, progname);
+
+    i = 0;
+    do {
+        newargs[i + 4] = args[i];
+    } while (args[i++]);
+
+    return apr_create_process(newproc, newprogname, newargs, env, attr, p);
+}
+
+AP_DECLARE(apr_status_t) ap_os_create_privileged_process(const request_rec *r,
+                              apr_proc_t *newproc, const char *progname,
+                              char *const *args, char **env,
+                              apr_procattr_t *attr, apr_pool_t *p)
+{
+    ap_unix_identity_t *ugid = ap_run_get_suexec_identity(r);
+
+    if (ugid == NULL) {
+        return apr_create_process(newproc, progname, args, env, attr, p);
+    }
+
+    return ap_unix_create_privileged_process(newproc, progname, args, env,
+                                              attr, ugid, p);
 }
 
