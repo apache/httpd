@@ -411,9 +411,10 @@ int ssl_hook_Access(request_rec *r)
 
         /* configure new state */
         if (!modssl_set_cipher_list(ssl, dc->szCipherSuite)) {
-            ssl_log(r->server, SSL_LOG_WARN|SSL_ADD_SSLERR,
+            ssl_log(r->server, SSL_LOG_WARN,
                     "Unable to reconfigure (per-directory) "
                     "permitted SSL ciphers");
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, r->server);
 
             if (cipher_list_old) {
                 sk_SSL_CIPHER_free(cipher_list_old);
@@ -600,9 +601,10 @@ int ssl_hook_Access(request_rec *r)
         cert_store = X509_STORE_new();
 
         if (!X509_STORE_load_locations(cert_store, ca_file, ca_path)) {
-            ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+            ssl_log(r->server, SSL_LOG_ERROR,
                     "Unable to reconfigure verify locations "
                     "for client authentication");
+            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, r->server);
 
             X509_STORE_free(cert_store);
 
@@ -756,8 +758,9 @@ int ssl_hook_Access(request_rec *r)
                                        (char *)ssl);
 
             if (!modssl_X509_verify_cert(&cert_store_ctx)) {
-                ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR, 
+                ssl_log(r->server, SSL_LOG_ERROR,
                         "Re-negotiation verification step failed");
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, r->server);
             }
 
             SSL_set_verify_result(ssl, cert_store_ctx.error);

@@ -327,8 +327,9 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
      * so we can detach later.
      */
     if (!(ssl = SSL_new(mctx->ssl_ctx))) {
-        ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+        ssl_log(c->base_server, SSL_LOG_ERROR,
                 "Unable to create a new SSL connection from the SSL context");
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
         c->aborted = 1;
 
@@ -340,8 +341,9 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
                                     MD5_DIGESTSIZE*2))
     {
-        ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+        ssl_log(c->base_server, SSL_LOG_ERROR,
                 "Unable to set session id context to `%s'", vhost_md5);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
         c->aborted = 1;
 
@@ -408,8 +410,9 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
         if (sslconn->is_proxy) {
             if ((n = SSL_connect(filter->pssl)) <= 0) {
                 ssl_log(c->base_server,
-                        SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                        SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "SSL Proxy connect failed");
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
                 return ssl_abort(filter, c);
             }
 
@@ -450,15 +453,17 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
             {
                 if (errno > 0) {
                     ssl_log(c->base_server,
-                            SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                            SSL_LOG_ERROR|SSL_ADD_ERRNO,
                             "SSL handshake interrupted by system "
                             "[Hint: Stop button pressed in browser?!]");
+                    ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
                 }
                 else {
                     ssl_log(c->base_server,
-                            SSL_LOG_INFO|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                            SSL_LOG_INFO|SSL_ADD_ERRNO,
                             "Spurious SSL handshake interrupt [Hint: "
                             "Usually just one of those OpenSSL confusions!?]");
+                    ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
                 }
             }
             else {
@@ -466,10 +471,11 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
                  * Ok, anything else is a fatal error
                  */
                 ssl_log(c->base_server,
-                        SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                        SSL_LOG_ERROR|SSL_ADD_ERRNO,
                         "SSL handshake failed (server %s, client %s)",
                         ssl_util_vhostid(c->pool, c->base_server),
                         c->remote_ip ? c->remote_ip : "unknown");
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
             }
 
             return ssl_abort(filter, c);
@@ -494,19 +500,21 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
                  * optional_no_ca doesn't appear to work as advertised
                  * in 1.x
                  */
-                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                ssl_log(c->base_server, SSL_LOG_ERROR,
                         "SSL client authentication failed, "
                         "accepting certificate based on "
                         "\"SSLVerifyClient optional_no_ca\" configuration");
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
             }
             else {
                 const char *error = sslconn->verify_error ?
                     sslconn->verify_error :
                     X509_verify_cert_error_string(verify_result);
 
-                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                ssl_log(c->base_server, SSL_LOG_ERROR,
                         "SSL client authentication failed: %s",
                         error ? error : "unknown");
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
 
                 return ssl_abort(filter, c);
             }
