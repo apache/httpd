@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 125573:151408 (outdated) -->
+<!-- English Revision: 151408 -->
 
 <!--
- Copyright 2004-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -239,25 +239,35 @@
 
 <directivesynopsis>
 <name>CacheIgnoreCacheControl</name>
-<description>クライアントがコンテンツをキャッシュしないように指示しても無視する。</description>
+<description>キャッシュされているコンテンツを返さないようにクライアントから
+リクエストされても無視する</description>
 <syntax>CacheIgnoreCacheControl On|Off</syntax>
 <default>CacheIgnoreCacheControl Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>no-cache ヘッダや no-store ヘッダのあるドキュメントは通常キャッシュ
-    されません。<directive>CacheIgnoreCacheControl</directive> ディレクティブ
-    でこの動作を上書きできるようになります。
-    <directive>CacheIgnoreCacheControl</directive> On とするとサーバに
-    ドキュメントに no-cache や no-store ヘッダがあったとしてもドキュメントを
-    キャッシュするように指示します。認証を必要とするドキュメントは<em>決して</em>
+    <p>Cache-Control: no-cache ヘッダや Pragma: no-store ヘッダのあるリクエストに
+    対しては、通常キャッシュを使いません。<directive>CacheIgnoreCacheControl</directive> 
+    ディレクティブを使うと、この動作を上書きできます。
+    <directive>CacheIgnoreCacheControl</directive> On とすると、
+    リクエストに no-cache という値があっても、キャッシュを使ってドキュメントを
+    返すようになります。認証を必要とするドキュメントは<em>決して</em>
     キャッシュされません。</p>
 
     <example>
       CacheIgnoreCacheControl On
     </example>
+
+    <note type="warning"><title>警告</title>
+       このディレクティブを使うと、ドキュメント取得時にキャッシュを使わないように
+       クライアントがリクエストしているにもかかわらず、キャッシュを
+       使うようになります。その結果、
+       古いコンテンツが送られ続けることになってしまうかもしれません。
+    </note>
 </usage>
+<seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
+<seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -349,4 +359,65 @@
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>CacheStorePrivate</name>
+<description>private と指定されているレスポンスのキャッシュを試みる。</description>
+<syntax>CacheStorePrivate On|Off</syntax>
+<default>CacheStorePrivate Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>通常 Cache-Control: private ヘッダのついているレスポンスは
+       キャッシュされません。<directive>CacheStorePrivate</directive> 
+       ディレクティブでこの挙動を上書きできます。
+       <directive>CacheStorePrivate</directive> On で private ヘッダのついている
+       リソースに対してもキャッシュを試みるようになります。
+       ただし認証の求められるリソースは <em>決して</em> キャッシュされません。</p>
+
+    <example>
+      CacheStorePrivate On
+    </example>
+
+    <note type="warning"><title>警告:</title>
+       上流サーバがキャッシュしないように指定してきても、
+       それを無視してキャッシュするようになります。
+       望ましい挙動になるのは、本当に 'private' なキャッシュについてのみでしょう。
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
+<seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheStoreNoStore</name>
+<description>no-store と指定されているレスポンスのキャッシュを試みる。</description>
+<syntax>CacheStoreNoStore On|Off</syntax>
+<default>CacheStoreNoStore Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>通常 Cache-Control: no-store ヘッダのついているレスポンスは
+       キャッシュされません。<directive>CacheStoreNoCache</directive> 
+       ディレクティブでこの挙動を上書きできます。
+       <directive>CacheStoreNoCache</directive> On で no-store ヘッダのついている
+       リソースに対してもキャッシュを試みるようになります。
+       ただし認証の求められるリソースは <em>決して</em> キャッシュされません。</p>
+
+    <example>
+      CacheStoreNoStore On
+    </example>
+
+    <note type="warning"><title>警告:</title>
+       RFC 2616 に記載されているように no-store ディレクティブは、
+       "不注意による機密情報の漏洩や残留 (バックアップテープ等) を防ぐ"
+       目的で使われますが、このオプションを有効にすると、
+       機密情報を保持することになってしまいます。
+       ですので、ここで警告しておきます。
+    </note>
+</usage>
+<seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
+<seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
+</directivesynopsis>
 </modulesynopsis>
