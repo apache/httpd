@@ -1,5 +1,9 @@
 Changes with Apache 1.3.5
 
+  *) BS2000: Adapt to the new ufork() system call interface which will
+     make subtasking easier on the OSD/POSIX mainframe environment.
+     [Martin Kraemer]
+
   *) Add a compatibility define for escape_uri() -> ap_escape_uri() to
      ap_compat.h. [David White <david@persimmon.com>] PR#3725
 

@@ -3935,7 +3935,7 @@ static int make_child(server_rec *s, int slot, time_t now)
     if ((pid = fork()) == -1) {
 #else /*_OSD_POSIX*/
     /* BS2000 requires a "special" version of fork() before a setuid() call */
-    if ((pid = os_fork()) == -1) {
+    if ((pid = os_fork(ap_user_name)) == -1) {
 #endif /*_OSD_POSIX*/
 	ap_log_error(APLOG_MARK, APLOG_ERR, s, "fork: Unable to fork new process");
 

@@ -66,6 +66,17 @@
 #define USER_LEN 8
 
 static const char *bs2000_account = NULL;
+typedef enum
+{
+    bs2_unknown,     /* not initialized yet. */
+    bs2_noFORK,      /* no fork() because -X flag was specified */
+    bs2_FORK,        /* only fork() because uid != 0 */
+    bs2_FORK_RINI,   /* prior to A17, regular fork() and _rini() was used. */
+    bs2_RFORK_RINI,  /* for A17, use of _rfork() and _rini() was required */
+    bs2_UFORK        /* As of A18, the new ufork() is used. */
+} bs2_ForkType;
+
+static bs2_ForkType forktype = bs2_unknown;
 
 
 static void ap_pad(char *dest, size_t size, char ch)
@@ -85,6 +96,75 @@ static void ap_str_toupper(char *str)
 	++str;
     }
 }
+
+/* Determine the method for forking off a child in such a way as to
+ * set both the POSIX and BS2000 user id's to the unprivileged user.
+ */
+static bs2_ForkType os_forktype(void)
+{
+    struct utsname os_version;
+
+    /* have we checked the OS version before? If yes return the previous
+     * result - the OS release isn't going to change suddenly!
+     */
+    if (forktype != bs2_unknown) {
+	return forktype;
+    }
+
+    /* If the user is unprivileged, use the normal fork() only. */
+    if (getuid() != 0) {
+	return forktype = bs2_FORK;
+    }
+
+    if (uname(&os_version) < 0)
+    {
+	ap_log_error(APLOG_MARK, APLOG_ALERT, NULL,
+		     "uname() failed - aborting.");
+	exit(APEXIT_CHILDFATAL);
+    }
+
+    /*
+     * Old BS2000/OSD versions (before XPG4 SPEC1170) don't work with Apache.
+     * Anyway, simply return a fork().
+     */
+    if (strcmp(os_version.release, "01.0A") == 0 ||
+	strcmp(os_version.release, "02.0A") == 0 ||
+	strcmp(os_version.release, "02.1A") == 0)
+    {
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, NULL,
+		     "Error: unsupported OS version. "
+		     "You may encounter problems.");
+	forktype = bs2_FORK;
+    }
+
+    /* The following versions are special:
+     * OS versions before A17 needs regular fork() and _rini().
+     * A17 requires _rfork() and _rini(),
+     * and later versions need ufork().
+     */
+    else if (strcmp(os_version.release, "01.1A") == 0 ||
+	     strcmp(os_version.release, "03.0A") == 0 ||
+	     strcmp(os_version.release, "03.1A") == 0 ||
+	     strcmp(os_version.release, "04.0A") == 0)
+    {
+        if (strcmp (os_version.version, "A18") >= 0)
+            forktype = bs2_UFORK;
+
+	else if (strcmp (os_version.version, "A17") < 0)
+            forktype = bs2_FORK_RINI;
+
+	else
+	    forktype = bs2_RFORK_RINI;
+    }
+
+    /* All later OS versions will hopefully use ufork() only  ;-) */
+    else
+        forktype = bs2_UFORK;
+
+    return forktype;
+}
+
+
 
 /* This routine is called by http_core for the BS2000Account directive */
 /* It stores the account name for later use */
@@ -113,6 +193,7 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
     _rini_struct            inittask; 
     char                    username[USER_LEN+1];
     int                     save_errno;
+    bs2_ForkType            type = os_forktype();
 
     /* We can be sure that no change to uid==0 is possible because of
      * the checks in http_core.c:set_user()
@@ -121,6 +202,20 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
     /* The _rini() function works only after a prior _rfork().
      * In the case of one_process, it would fail.
      */
+    if (one_process) {
+
+	type = forktype = bs2_noFORK;
+
+	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server,
+		     "The debug mode of Apache should only "
+		     "be started by an unprivileged user!");
+	return 0;
+    }
+
+    /* If no _rini() is required, then return quickly. */
+    if (type != bs2_RFORK_RINI && type != bs2_FORK_RINI)
+	return 0;
+
     /* An Account is required for _rini() */
     if (bs2000_account == NULL)
     {
@@ -128,16 +223,6 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 		     "No BS2000Account configured - cannot switch to User %s",
 		     user_name);
 	exit(APEXIT_CHILDFATAL);
-    }
-
-    /* The one_process test is placed _behind_ the BS2000Account test
-     * because we never want the user to forget configuring an account.
-     */
-    if (one_process) {
-	ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, server,
-		     "The debug mode of Apache should only "
-		     "be started by an unprivileged user!");
-	return 0;
     }
 
     ap_cpystrn(username, user_name, sizeof username);
@@ -153,34 +238,13 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
     inittask.processor_name = "        ";
 
     /* Switch to the new logon user (setuid() and setgid() are done later) */
-    /* Only the super use can switch identities. */
+    /* Only the super user can switch identities. */
     if (_rini(&inittask) != 0) {
-	save_errno = errno;
 
 	ap_log_error(APLOG_MARK, APLOG_ALERT, server,
 		     "_rini: BS2000 auth failed for user \"%s\" acct \"%s\"",
 		     inittask.username, inittask.account);
 
-	if (save_errno == EAGAIN) {
-	    /* This funny error code does NOT mean that the operation should
-	     * be retried. Instead it means that authentication failed
-	     * because of possibly incompatible `JOBCLASS'es between
-	     * the calling (SYSROOT) and the target non-privileged user id.
-	     * Help the administrator by logging a hint.
-	     */
-	    char *curr_user, curr_uid[L_cuserid];
-
-	    if ((curr_user = cuserid(curr_uid)) == NULL) {
-		/* This *SHOULD* not occur. But if it does, deal with it. */
-		ap_snprintf(curr_uid, sizeof curr_uid, "#%u", getuid());
-		curr_user = curr_uid;
-	    }
-
-	    ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, server,
-		     "_rini: Hint: Possible reason: JOBCLASS of user %s "
-		     "not compatible with that of user %s ?",
-		     curr_user, inittask.username);
-	}
 	exit(APEXIT_CHILDFATAL);
     }
 
@@ -188,51 +252,30 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 }
 
 /* BS2000 requires a "special" version of fork() before a setuid()/_rini() call */
-/* Additionally, there's an OS release dependency here :-((( */
-/* I'm sorry, but there was no other way to make it work.  -Martin */
-pid_t os_fork(void)
+pid_t os_fork(const char *user)
 {
-    struct utsname os_version;
+    pid_t pid;
 
-    /*
-     * When we run as a normal user (and bypass setuid() and _rini()),
-     * we use the regular fork().
-     */
-    if (getuid() != 0) {
-	return fork();
+    switch (os_forktype()) {
+      case bs2_FORK:
+      case bs2_FORK_RINI:
+	pid = fork();
+	break;
+
+      case bs2_RFORK_RINI:
+	pid = _rfork();
+	break;
+
+      case bs2_UFORK:
+	pid = ufork(user);
+	break;
+
+      default:
+	pid = 0;
+	break;
     }
 
-    if (uname(&os_version) >= 0)
-    {
-	/*
-	 * Old versions (before XPG4 SPEC1170) don't work with Apache
-	 * and they require a fork(), not a _rfork()
-	 */
-	if (strcmp(os_version.release, "01.0A") == 0 ||
-	    strcmp(os_version.release, "02.0A") == 0 ||
-	    strcmp(os_version.release, "02.1A") == 0)
-	{
-	    return fork();
-	}
-
-	/* The following versions are special:
-	 * OS versions before A17 work with regular fork() only,
-	 * later versions with _rfork() only.
-	 */
-	if (strcmp(os_version.release, "01.1A") == 0 ||
-	    strcmp(os_version.release, "03.0A") == 0 ||
-	    strcmp(os_version.release, "03.1A") == 0 ||
-	    strcmp(os_version.release, "04.0A") == 0)
-	{
-		return (strcmp (os_version.version, "A17") < 0)
-			? fork() : _rfork();
-	}
-    }
-
-    /* All later OS versions will require _rfork()
-     * to prepare for authorization with _rini()
-     */
-    return _rfork();
+    return pid;
 }
 
 #else /* _OSD_POSIX */
