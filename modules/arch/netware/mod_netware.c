@@ -154,7 +154,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
 
         /* Run in its own address space if specified */
         if(apr_table_get(d->file_handler_mode, ext))
-            e_info->detached |= 2;
+            e_info->addrspace = 1;
     }
 
     /* Tokenize the full command string into its arguments */
