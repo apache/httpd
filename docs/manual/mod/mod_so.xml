@@ -125,6 +125,11 @@
     to load additional code which may be required for some module
     to work. <em>Filename</em> is either an absolute path or
     relative to <a href="core.html#serverroot">ServerRoot</a>.</p>
+
+    <p>For example:</p>
+
+    <example>LoadFile libexex/libxmlparse.so</example>
+
 </usage>
 </directivesynopsis>
 
