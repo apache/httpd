@@ -847,7 +847,9 @@ API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
          * any are supplied (otherwise it will use the canonical name).
          */
         port = r->parsed_uri.port_str ? r->parsed_uri.port : 
+#ifdef UCN_OFF_HONOR_PHYSICAL_PORT
           cport ? cport :
+#endif
             r->server->port ? r->server->port :
               ap_default_port(r);
     } else { /* d->use_canonical_name == USE_CANONICAL_NAME_ON */
