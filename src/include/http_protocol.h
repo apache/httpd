@@ -217,6 +217,11 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri);
  */
 API_EXPORT(int) ap_method_number_of(const char *method);
 
+API_EXPORT(int) ap_getline(char *s, int n, BUFF *in, int fold);
+
+API_EXPORT(long) ap_get_chunk_size(char *b);
+
+
 #ifdef __cplusplus
 }
 #endif
