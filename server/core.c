@@ -395,12 +395,16 @@ static int reorder_sorter(const void *va, const void *vb)
     core_a = ap_get_module_config(a->elt, &core_module);
     core_b = ap_get_module_config(b->elt, &core_module);
 
-    if (core_a->r < core_b->r) {
+    /* a regex always sorts after a non-regex
+     */
+    if (!core_a->r && core_b->r) {
         return -1;
     }
-    else if (core_a->r > core_b->r) {
+    else if (core_a->r && !core_b->r) {
         return 1;
     }
+    /* we always sort next by the number of components
+     */
     if (core_a->d_components < core_b->d_components) {
         return -1;
     }
@@ -408,7 +412,7 @@ static int reorder_sorter(const void *va, const void *vb)
         return 1;
     }
     /* They have the same number of components, we now have to compare
-     * the minor key to maintain the original order. 
+     * the minor key to maintain the original order (from the config.) 
      */
     return a->orig_index - b->orig_index;
 }
