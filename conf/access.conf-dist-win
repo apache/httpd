@@ -73,6 +73,18 @@ Options None
 #allow from .your_domain.com
 #</Location>
 
+# Allow remote server configuration reports, with the URL of
+#  http://servername/server-info (requires that mod_info.c be loaded).
+# Change the ".your_domain.com" to match your domain to enable.
+
+#<Location /server-info>
+#SetHandler server-info
+
+#order deny,allow
+#deny from all
+#allow from .your_domain.com
+#</Location>
+
 # There have been reports of people trying to abuse an old bug from pre-1.1
 # days.  This bug involved a CGI script distributed as a part of Apache.
 # By uncommenting these lines you can redirect these attacks to a logging 

@@ -133,8 +133,18 @@ ScoreBoardFile logs/apache_runtime_status
 # Note: You cannot just invent host names and hope they work. The name you 
 # define here must be a valid DNS name for your host. If you don't understand
 # this, ask your network administrator.
+# If your host doesn't have a registered DNS name, enter its IP address here.
+# You will have to access it by its address (e.g., http://123.45.67.89)
+# anyway, and this will make redirections work in a sensible way.
 
 #ServerName new.host.name
+
+# Optionally add a line containing the server version and virtual host
+# name to server-generated pages (error documents, ftp directory listings,
+# mod_status and mod_info output etc., but not SSI generated documents).
+# Set to "EMail" to also include a mailto: link to the ServerAdmin.
+# Set to one of:  On | Off | EMail
+ServerSignature on
 
 # UseCanonicalName:  (new for 1.3)  With this setting turned on, whenever
 # Apache needs to construct a self-referencing URL (a url that refers back
@@ -211,9 +221,16 @@ MaxRequestsPerChild 30
 
 #ProxyRequests On
 
+# Enable/disable the handling of HTTP/1.1 "Via:" headers.
+# ("Full" adds the server version; "Block" removes all outgoing Via: headers)
+# Set to one of: Off | On | Full | Block
+ProxyVia on
+
 # To enable the cache as well, edit and uncomment the following lines:
+# (no cacheing without CacheRoot)
 
 #CacheRoot @@ServerRoot@@/proxy
+
 #CacheSize 5
 #CacheGcInterval 4
 #CacheMaxExpire 24
