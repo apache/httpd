@@ -1,5 +1,8 @@
 Changes with Apache 2.0.52
-
+  *) mod_mem_cache: Fixed race condition causing segfault because of memory being
+     freed twice, or reused after being freed.
+     [J. Clar, W. Stoddard, G. Ames]
+    
   *) Add -l option to rotatelogs to let it use local time rather than
      UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
 
