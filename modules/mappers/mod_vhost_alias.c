@@ -481,7 +481,9 @@ static int mva_translate(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_translate_name(mva_translate, NULL, NULL, APR_HOOK_MIDDLE);
+    static const char * const aszPre[]={ "mod_alias.c","mod_userdir.c",NULL };
+
+    ap_hook_translate_name(mva_translate, aszPre, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA vhost_alias_module =
