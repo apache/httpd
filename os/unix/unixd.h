@@ -120,6 +120,16 @@ AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy,
 AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type);
 #endif
+
+/**
+ * One of the functions to set mutex permissions should be called in
+ * the parent process on platforms that switch identity when the 
+ * server is started as root.
+ * If the child init logic is performed before switching identity
+ * (e.g., MPM setup for an accept mutex), it should only be called
+ * for SysV semaphores.  Otherwise, it is safe to call it for all
+ * mutex types.
+ */
 AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex);
 AP_DECLARE(apr_status_t) unixd_set_global_mutex_perms(apr_global_mutex_t *gmutex);
 AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr, apr_pool_t *ptrans);
