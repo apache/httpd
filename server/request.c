@@ -954,10 +954,11 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
     return ap_sub_req_method_uri("GET", new_file, r, next_filter);
 }
 
-AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(apr_finfo_t *dirent,
+AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
                                                    const request_rec *r,
                                                    ap_filter_t *next_filter)
 {
+    apr_status_t rv;
     request_rec *rnew;
     int res;
     char *fdir;
@@ -982,13 +983,12 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(apr_finfo_t *dirent,
      */
 
     udir = ap_make_dirstr_parent(rnew->pool, r->uri);
-    apr_status_t rv;
 
     rnew->uri = ap_make_full_path(rnew->pool, udir, dirent->name);
     rnew->filename = ap_make_full_path(rnew->pool, fdir, dirent->name);
     ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
 
-    if ((dirent->finfo & APR_FINFO_MIN) != APR_FINFO_MIN) {
+    if ((dirent->valid & APR_FINFO_MIN) != APR_FINFO_MIN) {
         if (((rv = apr_stat(&rnew->finfo, rnew->filename,
                             APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
                                                  && (rv != APR_INCOMPLETE)) {
@@ -996,8 +996,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(apr_finfo_t *dirent,
         }
     }
     else {
-        r->finfo = apr_palloc(rnew->pool, sizeof(apr_finfo_t));
-        memcpy (r->finfo, dirent);
+        memcpy (&rnew->finfo, dirent, sizeof(apr_finfo_t));
     }
 
     if ((res = check_safe_file(rnew))) {
