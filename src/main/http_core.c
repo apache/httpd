@@ -709,7 +709,8 @@ char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 
 char *end_virthost_magic = "</Virtualhost> out of place";
 
-char *end_virtualhost_section (cmd_parms *cmd, void *dummy) {
+char *end_virtualhost_section (cmd_parms *cmd, void *dummy)
+{
     return end_virthost_magic;
 }
 
@@ -737,6 +738,9 @@ char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
 
     if (s->access_confname)
 	process_resource_config (s, s->access_confname, p, ptemp);
+    
+    s->server_uid = user_id;
+    s->server_gid = group_id;
     
     if (errmsg == end_virthost_magic) return NULL;
     return errmsg;
@@ -767,14 +771,33 @@ char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-char *set_user (cmd_parms *cmd, void *dummy, char *arg) {
-    user_name = pstrdup (cmd->pool, arg);
-    user_id = uname2id (user_name);
+char *set_user (cmd_parms *cmd, void *dummy, char *arg)
+{
+    uid_t uid;
+    
+    uid = uname2id (arg);
+    
+    if (!cmd->server->is_virtual) {
+	user_name = pstrdup (cmd->pool, arg);
+	user_id = uid;
+    }
+    
+    cmd->server->server_uid = uid;
+
     return NULL;
 }
 
-char *set_group (cmd_parms *cmd, void *dummy, char *arg) {
-    group_id = gname2id(arg);
+char *set_group (cmd_parms *cmd, void *dummy, char *arg)
+{
+    gid_t gid;
+    
+    gid = gname2id(arg);
+
+    if (!cmd->server->is_virtual)
+	group_id = gid;
+    
+    cmd->server->server_gid = gid;
+
     return NULL;
 }
 
@@ -1018,8 +1041,8 @@ command_rec core_cmds[] = {
 { "ServerType", server_type, NULL, RSRC_CONF, TAKE1,"'inetd' or 'standalone'"},
 { "Port", server_port, NULL, RSRC_CONF, TAKE1, "a TCP port number"},
 { "HostnameLookups", set_hostname_lookups, NULL, ACCESS_CONF|RSRC_CONF, FLAG, NULL },
-{ "User", set_user, NULL, RSRC_CONF, TAKE1, "a username"},
-{ "Group", set_group, NULL, RSRC_CONF, TAKE1, "a group name"},
+{ "User", set_user, NULL, RSRC_CONF, TAKE1, "effective user id for this server"},
+{ "Group", set_group, NULL, RSRC_CONF, TAKE1, "effective group id for this server"},
 { "ServerAdmin", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, server_admin), RSRC_CONF, TAKE1,
   "The email address of the server administrator" },

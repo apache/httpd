@@ -1,5 +1,11 @@
 Changes with Apache 1.2b1:
 
+  *) Add setuid/gid execution via setuid wrapper
+      Apache can now execute CGI scripts as the User/Group of the
+      virtualhost, or as the owner of the UserDir through ~user.
+      The wrapper program (suexec) is detected and configured at
+      startup. [Randy Terbush, Jason Dour]
+
   *) Supplemental POSIX regex package included in source
       for those platforms that require/want it. We start needing
       POSIX/regex...
@@ -16,7 +22,7 @@ Changes with Apache 1.2b1:
       changed #tmpXXXX to tmpXXXX in temp file template, for broken link/unlink
       changed Expire to Expires in cache_update()
       added appropriate #defines for Next compile
-      added $Id: CHANGES,v 1.46 1996/07/29 22:51:59 jim Exp $ for RCS/CVS [Chuck Murcko]
+      added $Id: CHANGES,v 1.47 1996/08/02 20:39:09 randy Exp $ for RCS/CVS [Chuck Murcko]
 
   *) Fix ErrorDocument handling.  When ErrorDocument failed it used to 
      display filename instead of error message. [Paul Sutton]

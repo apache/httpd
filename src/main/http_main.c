@@ -89,6 +89,7 @@
 #include "scoreboard.h"
 #include <setjmp.h>
 #include <assert.h>
+#include <sys/stat.h>
 #ifdef HAVE_SHMGET
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -132,6 +133,7 @@ int daemons_min_free;
 int daemons_max_free;
 int daemons_limit;
 time_t restart_time;
+int suexec_enabled = 0;
 
 char server_root[MAX_STRING_LEN];
 char server_confname[MAX_STRING_LEN];
@@ -1122,6 +1124,22 @@ static void set_group_privs()
   }
 }
 
+/* check to see if we have the 'suexec' setuid wrapper installed */
+int init_suexec ()
+{
+    struct stat wrapper;
+    
+    if ((stat(SUEXEC_BIN, &wrapper)) != 0)
+      return (suexec_enabled);
+    
+    if ((wrapper.st_mode & S_ISUID) && wrapper.st_uid == 0) {
+      suexec_enabled = 1;
+      fprintf(stderr, "Configuring Apache for use with suexec wrapper.\n");
+    }
+
+    return (suexec_enabled);
+}
+
 static int is_graceful;
 static int generation;
 
@@ -1821,6 +1839,7 @@ main(int argc, char *argv[])
     setup_prelinked_modules();
     
     server_conf = read_config (pconf, ptrans, server_confname);
+    suexec_enabled = init_suexec();
     
     if(standalone) {
         clear_pool (pconf);	/* standalone_main rereads... */

@@ -369,7 +369,11 @@ char **create_argv_cmd(pool *p, char *av0, char *args, char *path) {
 
 void call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
 {
+    char *execuser;
     core_dir_config *conf;
+    struct passwd *pw;
+    struct group *gr;
+    
 
     conf = (core_dir_config *)pcalloc(r->pool, sizeof(core_dir_config));
     
@@ -439,15 +443,54 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execv(r->filename, create_argv(r->pool, argv0, r->args));
     }
 #else
-    
-    if (shellcmd) 
-	execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
+    if ( suexec_enabled &&
+	 ((r->server->server_uid != user_id) ||
+	  (r->server->server_gid != group_id) ||
+	  (!strncmp("/~",r->uri,2))) ) {
 
-    else if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0))
-	execle(r->filename, argv0, NULL, env);
+        if (!strncmp("/~",r->uri,2)) {
+            r->uri += 2;
+            if ((pw = getpwnam (getword (r->pool, &r->uri, '/'))) == NULL) {
+		log_unixerr("getpwnam", NULL, "invalid username", r->server);
+		return;
+	    }
+            r->uri -= 2;
+            gr = getgrgid (pw->pw_gid);
+            execuser = (char *) palloc (r->pool, (sizeof(pw->pw_name) + 1));
+            execuser = pstrcat (r->pool, "~", pw->pw_name, NULL);
+        }
+	else {
+	    if ((pw = getpwuid (r->server->server_uid)) == NULL) {
+		log_unixerr("getpwuid", NULL, "invalid userid", r->server);
+		return;
+	    }
+            if ((gr = getgrgid (r->server->server_gid)) == NULL) {
+		log_unixerr("getgrgid", NULL, "invalid groupid", r->server);
+		return;
+	    }
+            execuser = (char *) palloc (r->pool, sizeof(pw->pw_name));
+            execuser = pw->pw_name;
+        }
+  
+  	if (shellcmd)
+	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, gr->gr_name, argv0, NULL, env);
 
-    else
-	execve(r->filename, create_argv(r->pool, argv0, r->args), env);
-    
+  	else if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0))
+	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, gr->gr_name, argv0, NULL, env);
+  
+  	else
+	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, gr->gr_name,
+  		   create_argv(r->pool, argv0, r->args), NULL, env);
+    }
+    else {
+	if (shellcmd) 
+	    execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
+	
+	else if((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0))
+	    execle(r->filename, argv0, NULL, env);
+
+	else
+	    execve(r->filename, create_argv(r->pool, argv0, r->args), env);
+    }
 #endif
 }

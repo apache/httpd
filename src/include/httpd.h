@@ -169,6 +169,9 @@
 #define SHELL_PATH "/bin/sh"
 #endif
 
+/* The path to the suExec wrapper */
+#define SUEXEC_BIN "/usr/local/etc/httpd/sbin/suexec"
+
 /* The default string lengths */
 #define MAX_STRING_LEN HUGE_STRING_LEN
 #define HUGE_STRING_LEN 8192
@@ -470,46 +473,49 @@ struct conn_rec {
 
 struct server_rec {
 
-  server_rec *next;
+    server_rec *next;
   
-  /* Full locations of server config info */
+    /* Full locations of server config info */
   
-  char *srm_confname;
-  char *access_confname;
+    char *srm_confname;
+    char *access_confname;
   
-  /* Contact information */
+    /* Contact information */
   
-  char *server_admin;
-  char *server_hostname;
-  short port;                    /* for redirects, etc. */
+    char *server_admin;
+    char *server_hostname;
+    short port;                    /* for redirects, etc. */
   
-  /* Log files --- note that transfer log is now in the modules... */
+    /* Log files --- note that transfer log is now in the modules... */
   
-  char *error_fname;
-  FILE *error_log;
+    char *error_fname;
+    FILE *error_log;
   
-  /* Module-specific configuration for server, and defaults... */
+    /* Module-specific configuration for server, and defaults... */
 
-  int is_virtual;               /* true if this is the virtual server */
-  void *module_config;		/* Config vector containing pointers to
+    int is_virtual;             /* true if this is the virtual server */
+    void *module_config;	/* Config vector containing pointers to
 				 * modules' per-server config structures.
 				 */
-  void *lookup_defaults;	/* MIME type info, etc., before we start
+    void *lookup_defaults;	/* MIME type info, etc., before we start
 				 * checking per-directory info.
 				 */
-  /* Transaction handling */
+    /* Transaction handling */
 
-  struct in_addr host_addr;	/* The bound address, for this server */
-  short host_port;              /* The bound port, for this server */
-  int timeout;			/* Timeout, in seconds, before we give up */
-  int keep_alive_timeout;	/* Seconds we'll wait for another request */
-  int keep_alive;		/* Maximum requests per connection */
+    struct in_addr host_addr;	/* The bound address, for this server */
+    short host_port;            /* The bound port, for this server */
+    int timeout;		/* Timeout, in seconds, before we give up */
+    int keep_alive_timeout;	/* Seconds we'll wait for another request */
+    int keep_alive;		/* Maximum requests per connection */
 
-  char *path;			/* Pathname for ServerPath */
-  int pathlen;			/* Length of path */
+    char *path;			/* Pathname for ServerPath */
+    int pathlen;		/* Length of path */
 
-  char *names;			/* Wildcarded names for HostAlias servers */
-  char *virthost;		/* The name given in <VirtualHost> */
+    char *names;		/* Wildcarded names for HostAlias servers */
+    char *virthost;		/* The name given in <VirtualHost> */
+
+    uid_t server_uid;		/* effective user id when calling exec wrapper */
+    gid_t server_gid;		/* effective group id when calling exec wrapper */
 };
 
 /* These are more like real hosts than virtual hosts */
