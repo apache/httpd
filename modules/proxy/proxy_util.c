@@ -996,7 +996,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     char *c, *uri = apr_pstrdup(p, url);
     int i;
     
-    c = strchr(url, ':');   
+    c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return NULL;
     /* remove path from uri */
@@ -1020,7 +1020,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
     int port;
     apr_status_t rc = 0;
 
-    c = strchr(url, ':');   
+    c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return "Bad syntax for a remote proxy server";
     /* remove path from uri */
@@ -1032,14 +1032,12 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
         if (sscanf(q + 1, "%u", &port) != 1 || port > 65535) {
             return "Bad syntax for a remote proxy server (bad port number)";
         }
-        *q = '\0';
     }
     else
         port = -1;
     ap_str_tolower(uri);
     *balancer = apr_array_push(conf->balancers);
-    (*balancer)->name = apr_pstrdup(p, uri);
-    *c = '\0';
+    (*balancer)->name = uri;
     (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_runtime_worker));
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS
@@ -1061,19 +1059,29 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     char *c, *uri = apr_pstrdup(p, url);
     int i;
     
-    c = strchr(url, ':');   
+    c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return NULL;
     /* remove path from uri */
     if ((c = strchr(c + 3, '/')))
         *c = '\0';
+
     worker = (proxy_worker *)conf->workers->elts;
     for (i = 0; i < conf->workers->nelts; i++) {
-        if (strcasecmp(worker->name, uri) == 0)
+        if (strcasecmp(worker->name, uri) == 0) {
             return worker;
+        }
         worker++;
     }
     return NULL;
+}
+
+static apr_status_t conn_pool_cleanup(void *thepool)
+{
+    proxy_conn_pool *cp = (proxy_conn_pool *)thepool;
+    /* Close the socket */
+    cp->addr = NULL;
+    return APR_SUCCESS;
 }
 
 static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
@@ -1091,29 +1099,12 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
      * proxy_conn_pool is permanently attached to the worker. 
      */
     cp = (proxy_conn_pool *)apr_pcalloc(p, sizeof(proxy_conn_pool));
-    cp->pool = pool;
-#if APR_HAS_THREADS
-    {
-        int mpm_threads;
-        ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
-        if (mpm_threads > 1) {
-            /* Set hard max to no more then mpm_threads */
-            if (worker->hmax == 0 || worker->hmax > mpm_threads)
-                 worker->hmax = mpm_threads;
-            if (worker->smax == 0 || worker->smax > worker->hmax)
-                 worker->smax = worker->hmax;
-            /* Set min to be lower then smax */
-            if (worker->min > worker->smax)
-                 worker->min = worker->smax; 
-        }
-        else {
-            /* This will supress the apr_reslist creation */
-            worker->min = worker->smax = worker->hmax = 0;
-        }
-    }
-#endif
-    
+    cp->pool = pool;    
     worker->cp = cp;
+    apr_pool_cleanup_register(p, (void *)cp,
+                              conn_pool_cleanup,
+                              apr_pool_cleanup_null);      
+
 }
 
 PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
@@ -1136,13 +1127,13 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
         if (sscanf(q + 1, "%u", &port) != 1 || port > 65535) {
             return "Bad syntax for a remote proxy server (bad port number)";
         }
-        *q = '\0';
     }
     else
         port = -1;
     ap_str_tolower(uri);
     *worker = apr_array_push(conf->workers);
-    (*worker)->name = apr_pstrdup(p, url);
+    memset(*worker, 0, sizeof(proxy_worker));
+    (*worker)->name = (*worker)->hostname = apr_pstrdup(p, uri);
     *c = '\0';
     (*worker)->scheme = uri;
     if (port == -1)
@@ -1321,6 +1312,7 @@ static apr_status_t proxy_conn_cleanup(void *theconn)
     if (conn->sock)
         apr_socket_close(conn->sock);
     conn->sock = NULL;
+    conn->pool = NULL;
     return APR_SUCCESS;
 }
 
@@ -1332,7 +1324,6 @@ static apr_status_t connection_cleanup(void *theconn)
         if (conn->sock)
             apr_socket_close(conn->sock);
         conn->sock = NULL;
-
     }
     conn->connection = NULL;
     ap_proxy_release_connection(NULL, conn, NULL);
@@ -1359,7 +1350,8 @@ static apr_status_t connection_constructor(void **resource, void *params,
     *resource = conn;
     /* register the pool cleanup */
     apr_pool_cleanup_register(ctx, (void *)conn,
-                              proxy_conn_cleanup, apr_pool_cleanup_null);      
+                              proxy_conn_cleanup,
+                              apr_pool_cleanup_null);      
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "proxy: socket is constructed");
@@ -1374,11 +1366,20 @@ static apr_status_t connection_destructor(void *resource, void *params,
     proxy_conn_rec *conn = (proxy_conn_rec *)resource;
     server_rec *s = (server_rec *)params;
     
-    apr_pool_destroy(conn->pool);
+#if 0
+    if (conn->sock)
+        apr_socket_close(conn->sock);
+    conn->sock = NULL;
+    apr_pool_cleanup_kill(conn->pool, conn, proxy_conn_cleanup);
+#endif
+    if (conn->pool)
+        apr_pool_destroy(conn->pool);
+    conn->pool = NULL;
+#if 0
     if (s != NULL)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "proxy: socket is destructed");
-
+#endif
     return APR_SUCCESS;
 }
 
@@ -1387,6 +1388,7 @@ static apr_status_t connection_destructor(void *resource, void *params,
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn)
 {
+
     if (conn->worker && conn->worker->cp)
         conn->worker->cp->conn = NULL;
     return connection_destructor(conn, NULL, NULL);
@@ -1395,7 +1397,25 @@ PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn)
 static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
 {
     apr_status_t rv;
+
 #if APR_HAS_THREADS
+    int mpm_threads;
+
+    ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
+    if (mpm_threads > 1) {
+        /* Set hard max to no more then mpm_threads */
+        if (worker->hmax == 0 || worker->hmax > mpm_threads)
+            worker->hmax = mpm_threads;
+        if (worker->smax == 0 || worker->smax > worker->hmax)
+            worker->smax = worker->hmax;
+        /* Set min to be lower then smax */
+        if (worker->min > worker->smax)
+            worker->min = worker->smax; 
+    }
+    else {
+        /* This will supress the apr_reslist creation */
+        worker->min = worker->smax = worker->hmax = 0;
+    }
     if (worker->hmax) {
         rv = apr_reslist_create(&(worker->cp->res),
                                 worker->min, worker->smax,
@@ -1424,6 +1444,17 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
                                                server_rec *s)
 {
     apr_status_t rv;
+
+    if (!worker->status) {
+        if ((rv = init_conn_worker(worker, s)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "proxy: %s: failed to initialize worker for (%s)",
+                         proxy_function, worker->hostname);
+            return DECLINED;
+        }
+        /* TODO: make worker status codes */
+        worker->status = 1;
+    }
 #if APR_HAS_THREADS
     if (worker->hmax) {
         rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
@@ -1474,7 +1505,7 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
         apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
 
 #if APR_HAS_THREADS
-    if (worker->hmax) {
+    if (worker->hmax && worker->cp->res) {
         rv = apr_reslist_release(worker->cp->res, (void *)conn);
     }
     else
@@ -1491,7 +1522,7 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
     return OK;
 }
 
-PROXY_DECLARE(apr_status_t)
+PROXY_DECLARE(int)
 ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                               proxy_server_conf *conf,
                               proxy_worker *worker,
@@ -1691,7 +1722,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 
 PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               proxy_conn_rec *conn,
-                                              int close_on_recycle,
                                               conn_rec *c,
                                               server_rec *s)
 {
@@ -1733,7 +1763,6 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
         /* TODO: See if this will break FTP */
         ap_proxy_ssl_disable(conn->connection);
     }
-    conn->close_on_recycle = close_on_recycle;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "proxy: %s: connection complete to %pI (%s)",
@@ -1745,7 +1774,8 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     /* register the connection cleanup to client connection
      * so that the connection can be closed or reused
      */
-    apr_pool_cleanup_register(c->pool, (void *)conn, connection_cleanup,
+    apr_pool_cleanup_register(conn->connection->pool, (void *)conn,
+                              connection_cleanup,
                               apr_pool_cleanup_null);      
 
     return OK;

@@ -619,7 +619,7 @@ static int proxy_handler(request_rec *r)
                 /* handle the scheme */
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "Trying to run scheme_handler against proxy");
-                access_status = proxy_run_scheme_handler(r, conf, url, ents[i].hostname, ents[i].port);
+                access_status = proxy_run_scheme_handler(r, worker, conf, url, ents[i].hostname, ents[i].port);
 
                 /* an error or success */
                 if (access_status != DECLINED && access_status != HTTP_BAD_GATEWAY) {
@@ -638,7 +638,7 @@ static int proxy_handler(request_rec *r)
     /* handle the scheme */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "Trying to run scheme_handler");
-    access_status = proxy_run_scheme_handler(r, conf, url, NULL, 0);
+    access_status = proxy_run_scheme_handler(r, worker, conf, url, NULL, 0);
     if (DECLINED == access_status) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
                     "proxy: No protocol handler was valid for the URL %s. "
@@ -892,7 +892,7 @@ static const char *
         }
     }
     else {
-        proxy_worker *worker = ap_proxy_get_worker(cmd->pool, conf, r);
+        proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, conf, r);
         if (!worker) {
             const char *err = ap_proxy_add_worker(&worker, cmd->pool, conf, r);
             if (err)
@@ -1552,13 +1552,14 @@ APR_HOOK_STRUCT(
 )
 
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, scheme_handler, 
-                                     (request_rec *r, proxy_server_conf *conf, 
-                                     char *url, const char *proxyhost, 
-                                     apr_port_t proxyport),(r,conf,url,
-                                     proxyhost,proxyport),DECLINED)
+                                     (request_rec *r, proxy_worker *worker,
+                                      proxy_server_conf *conf, 
+                                      char *url, const char *proxyhost, 
+                                      apr_port_t proxyport),(r,worker,conf,
+                                      url,proxyhost,proxyport),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, canon_handler, 
-                                     (request_rec *r, char *url),(r,
-                                     url),DECLINED)
+                                      (request_rec *r, char *url),(r,
+                                      url),DECLINED)
 APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(proxy, PROXY, int, pre_request, (
                                       proxy_worker **worker,
                                       proxy_balancer **balancer,
