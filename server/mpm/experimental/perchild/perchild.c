@@ -1327,7 +1327,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
 		"AcceptMutex: %s (default: %s)",
-		apr_proc_mutex_name(accept_mutex),
+		apr_proc_mutex_name(process_accept_mutex),
 		apr_proc_mutex_defname());
 #endif
     restart_pending = shutdown_pending = 0;
