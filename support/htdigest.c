@@ -70,6 +70,7 @@
 #include "apr_lib.h"            /* for apr_getpass() */
 #include "apr_general.h"
 #include "apr_signal.h"
+#include "apr_strings.h"        /* for apr_pstrdup() */
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
@@ -97,11 +98,44 @@
 
 #define MAX_STRING_LEN 256
 
+/* DELONCLOSE is quite cool, but:
+ * we need to close the file before we can copy it.
+ * otherwise it's locked by the system ;-(
+ *
+ * XXX: Other systems affected? (Netware?, OS2?)
+ */
+#if (defined(WIN32))
+#define OMIT_DELONCLOSE 1
+#endif
+
 apr_file_t *tfp = NULL;
 apr_pool_t *cntxt;
 #if APR_CHARSET_EBCDIC
 apr_xlate_t *to_ascii;
 #endif
+
+static void cleanup_tempfile_and_exit(int rc)
+{
+    if (tfp) {
+#ifdef OMIT_DELONCLOSE
+        const char *cfilename;
+        char *filename = NULL;
+
+        if (apr_file_name_get(&cfilename, tfp) == APR_SUCCESS) {
+            filename = apr_pstrdup(cntxt, cfilename);
+        }
+#endif
+	apr_file_close(tfp);
+
+#ifdef OMIT_DELONCLOSE
+        if (filename) {
+            apr_file_remove(filename, cntxt);
+        }
+#endif
+    }
+
+    exit(rc);
+}
 
 static void getword(char *word, char *line, char stop)
 {
@@ -160,16 +194,13 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
 
     if (apr_password_get("New password: ", pwin, &len) != APR_SUCCESS) {
 	fprintf(stderr, "password too long");
-	exit(5);
+	cleanup_tempfile_and_exit(5);
     }
     len = sizeof(pwin);
     apr_password_get("Re-type new password: ", pwv, &len);
     if (strcmp(pwin, pwv) != 0) {
 	fprintf(stderr, "They don't match, sorry.\n");
-	if (tfp) {
-	    apr_file_close(tfp);
-	}
-	exit(1);
+        cleanup_tempfile_and_exit(1);
     }
     pw = pwin;
     apr_file_printf(f, "%s:%s:", user, realm);
@@ -200,10 +231,7 @@ static void usage(void)
 static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
-    if (tfp) {
-        apr_file_close(tfp);
-    }
-    exit(1);
+    cleanup_tempfile_and_exit(1);
 }
 
 static void terminate(void)
@@ -262,7 +290,13 @@ int main(int argc, const char * const argv[])
     else if (argc != 4)
 	usage();
 
-    if (apr_file_mktemp(&tfp, tn, 0, cntxt) != APR_SUCCESS) {
+    if (apr_file_mktemp(&tfp, tn,
+#ifdef OMIT_DELONCLOSE
+    APR_CREATE | APR_READ | APR_WRITE | APR_EXCL
+#else
+    0
+#endif
+    , cntxt) != APR_SUCCESS) {
 	fprintf(stderr, "Could not open temp file.\n");
 	exit(1);
     }
@@ -271,7 +305,7 @@ int main(int argc, const char * const argv[])
 	fprintf(stderr,
 		"Could not open passwd file %s for reading.\n", argv[1]);
 	fprintf(stderr, "Use -c option to create new one.\n");
-	exit(1);
+	cleanup_tempfile_and_exit(1);
     }
     strcpy(user, argv[3]);
     strcpy(realm, argv[2]);
@@ -305,7 +339,15 @@ int main(int argc, const char * const argv[])
 #else
     sprintf(command, "cp %s %s", tn, argv[1]);
 #endif
+
+#ifdef OMIT_DELONCLOSE
+    apr_file_close(tfp);
+    system(command);
+    apr_file_remove(tn, cntxt);
+#else
     system(command);
     apr_file_close(tfp);
+#endif
+
     return 0;
 }
