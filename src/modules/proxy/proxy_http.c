@@ -171,8 +171,8 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 		       const char *proxyhost, int proxyport)
 {
     const char *strp;
-    char *strp2, *pragma;
-    const char *err, *desthost;
+    char *strp2;
+    const char *err, *desthost, *pragma;
     int i, j, sock, len, backasswards;
     array_header *reqhdrs_arr;
     table *resp_hdrs;
