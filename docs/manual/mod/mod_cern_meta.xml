@@ -32,7 +32,11 @@
 <description>Activates CERN meta-file processing</description>
 <syntax>MetaFiles on|off</syntax>
 <default>MetaFiles off</default>
-<contextlist><context>directory</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
 
 <usage>
     <p>Turns on/off Meta file processing on a per-directory basis.</p>
@@ -45,7 +49,11 @@
 files</description>
 <syntax>MetaDir <em>directory</em></syntax>
 <default>MetaDir .web</default>
-<contextlist><context>directory</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
 
 <usage>
     <p>Specifies the name of the directory in which Apache can find
@@ -69,7 +77,11 @@ files</description>
 meta information</description>
 <syntax>MetaSuffix <em>suffix</em></syntax>
 <default>MetaSuffix .meta</default>
-<contextlist><context>directory</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>Indexes</override>
 
 <usage>
     <p>Specifies the file name suffix for the file containing the
