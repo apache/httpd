@@ -279,6 +279,10 @@ of the index listing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.ht
     of the file that will be inserted at the top of the index
     listing. <em>Filename</em> is the name of the file to include.</p>
 
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+HeaderName HEADER.html
+</code></td></tr></table></blockquote>
+
 <blockquote><table><tr><td bgcolor="#e0e5f5">
       <p>Both HeaderName and <a href="#readmename" class="directive"><code class="directive">ReadmeName</code></a> now treat
       <em>Filename</em> as a URI path relative to the one used to
@@ -628,6 +632,10 @@ of the index listing</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.ht
     of the file that will be appended to the end of the index
     listing. <em>Filename</em> is the name of the file to include, and
     is taken to be relative to the location being indexed.</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    ReadmeName FOOTER.html
+    </code></td></tr></table></blockquote>
 
     <p>See also <a href="#headername" class="directive"><code class="directive">HeaderName</code></a>, where this behavior
     is described in greater detail.</p>

@@ -407,6 +407,10 @@ of the index listing</description>
     of the file that will be inserted at the top of the index
     listing. <em>Filename</em> is the name of the file to include.</p>
 
+<example><title>Example</title>
+HeaderName HEADER.html
+</example>
+
 <note>
       <p>Both HeaderName and <directive
       module="mod_autoindex">ReadmeName</directive> now treat
@@ -833,6 +837,10 @@ of the index listing</description>
     of the file that will be appended to the end of the index
     listing. <em>Filename</em> is the name of the file to include, and
     is taken to be relative to the location being indexed.</p>
+
+    <example><title>Example</title>
+    ReadmeName FOOTER.html
+    </example>
 
     <p>See also <directive
     module="mod_autoindex">HeaderName</directive>, where this behavior
