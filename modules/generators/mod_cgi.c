@@ -295,7 +295,7 @@ struct cgi_child_stuff {
     char *argv0;
 };
 
-static int  cgi_child(struct cgi_child_stuff *child_stuff,
+static ap_status_t cgi_child(struct cgi_child_stuff *child_stuff,
                       BUFF **script_out, BUFF **script_in, BUFF **script_err)
 {
     struct cgi_child_stuff *cld = child_stuff;
@@ -308,7 +308,7 @@ static int  cgi_child(struct cgi_child_stuff *child_stuff,
     ap_procattr_t *procattr;
     ap_proc_t *procnew;
     ap_os_proc_t fred;
-    int rc;
+    ap_status_t rc = APR_SUCCESS;
 
 #ifdef DEBUG_CGI
 #ifdef OS2
@@ -346,11 +346,6 @@ static int  cgi_child(struct cgi_child_stuff *child_stuff,
      * NB only ISINDEX scripts get decoded arguments.
      */
 
-#ifdef TPF
-    ap_unblock_alarms();
-
-    return (0);
-#else
     ap_cleanup_for_exec();
 
     if ((ap_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
@@ -363,9 +358,7 @@ static int  cgi_child(struct cgi_child_stuff *child_stuff,
         /* Something bad happened, tell the world. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		      "couldn't create child process: %s", r->filename);
-        ap_unblock_alarms();
-
-        return (-1);
+        rc = !APR_SUCCESS;
     }
     else {
 
@@ -409,12 +402,9 @@ static int  cgi_child(struct cgi_child_stuff *child_stuff,
                 *script_err = ap_bcreate(child_context, B_RD);
             }
         }
-
-        ap_unblock_alarms();
-
-        return (rc);
     }
-#endif  /* TPF */
+    ap_unblock_alarms();
+    return (rc);
 }
 
 static int cgi_handler(request_rec *r)
@@ -500,7 +490,7 @@ static int cgi_handler(request_rec *r)
      * waiting for free_proc_chain to cleanup in the middle of an
      * SSI request -djg
      */
-    if (cgi_child(&cld, &script_out, &script_in, &script_err) < 0) {
+    if (cgi_child(&cld, &script_out, &script_in, &script_err) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
