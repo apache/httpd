@@ -218,7 +218,7 @@ response without an explicit character set</description>
 
 <directivesynopsis>
 <name>AllowEncodedSlashes</name>
-<description>Determines, whether encoded path separators in URLs are allowed to
+<description>Determines whether encoded path separators in URLs are allowed to
 be passed through</description>
 <syntax>AllowEncodedSlashes On|Off</syntax>
 <default>AllowEncodedSlashes Off</default>
