@@ -1,5 +1,7 @@
 Changes with Apache 2.0.30-dev
 
+  *) Allow mod-include to look for alternate start & end tags [Ian Holsman]
+
   *) Introduced the ForceLanguagePriority directive, to prevent
      returning MULTIPLE_CHOICES or NONE_ACCEPTABLE in some cases,
      when using Multiviews.  [William Rowe]

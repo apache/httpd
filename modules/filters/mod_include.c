@@ -106,11 +106,23 @@ enum xbithack {
     xbithack_off, xbithack_on, xbithack_full
 };
 
+struct bndm_t {
+    unsigned int T[256];
+    unsigned int x;
+} ;
+
 typedef struct {
     char *default_error_msg;
     char *default_time_fmt;
     enum xbithack *xbithack;
 } include_dir_config;
+
+typedef struct {
+    char *default_start_tag;
+    char *default_end_tag;
+    int  start_tag_len;
+    bndm_t start_seq_pat;
+} include_server_config;
 
 #ifdef XBITHACK
 #define DEFAULT_XBITHACK xbithack_full
@@ -216,16 +228,6 @@ static const char *get_include_var(request_rec *r, const char *var)
  * Initial code submitted by Sascha Schumann.
  */
    
-typedef struct {
-    unsigned int T[256];
-    unsigned int x;
-} bndm_t;
-
-/* This is the pattern matcher that holds the STARTING_SEQUENCE bndm_t
- * structure.
- */
-static bndm_t start_seq_pat;
-
 /* Precompile the bndm_t data structure. */
 static void bndm_compile(bndm_t *t, const char *n, apr_size_t nl)
 {
@@ -328,8 +330,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     apr_size_t len;
     const char *c;
     const char *buf;
-    const char *str = STARTING_SEQUENCE;
-    apr_size_t slen = sizeof(STARTING_SEQUENCE) - 1;
+    const char *str = ctx->start_seq ;
+    apr_size_t slen = ctx->start_seq_len;
     apr_size_t pos;
 
     *do_cleanup = 0;
@@ -411,7 +413,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
 
         if (len)
         {
-            pos = bndm(str, slen, c, len, &start_seq_pat);
+            pos = bndm(str, slen, c, len, ctx->start_seq_pat);
             if (pos != len)
             {
                 ctx->head_start_bucket = dptr;
@@ -475,7 +477,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     apr_size_t len;
     const char *c;
     const char *buf;
-    const char *str = ENDING_SEQUENCE;
+    const char *str = ctx->end_seq;
 
     do {
         apr_status_t rv = 0;
@@ -2713,7 +2715,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
             if ((do_cleanup) && (!APR_BRIGADE_EMPTY(ctx->ssi_tag_brigade))) {
                 apr_bucket *tmp_bkt;
 
-                tmp_bkt = apr_bucket_immortal_create(STARTING_SEQUENCE,
+                tmp_bkt = apr_bucket_immortal_create(ctx->start_seq,
                                                      cleanup_bytes);
                 APR_BRIGADE_INSERT_HEAD(*bb, tmp_bkt);
                 apr_brigade_cleanup(ctx->ssi_tag_brigade);
@@ -3018,6 +3020,19 @@ static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
     return result;
 }
 
+static void *create_includes_server_config(apr_pool_t*p, server_rec *server)
+{
+    include_server_config *result =
+        (include_server_config *)apr_palloc(p, sizeof(include_server_config));
+    result->default_end_tag = ENDING_SEQUENCE;
+    result->default_start_tag =STARTING_SEQUENCE;
+    result->start_tag_len = sizeof(STARTING_SEQUENCE)-1;
+    /* compile the pattern used by find_start_sequence */
+    bndm_compile(&result->start_seq_pat, result->default_start_tag, 
+                 result->start_tag_len); 
+
+    return result; 
+}
 static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
 {
     include_dir_config *conf = (include_dir_config *)xbp;
@@ -3047,6 +3062,9 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
                    (include_dir_config *)ap_get_module_config(r->per_dir_config,
                                                               &include_module);
 
+    include_server_config *sconf= ap_get_module_config(r->server->module_config,
+                                                              &include_module);
+
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
         return ap_pass_brigade(f->next, b);
     }
@@ -3065,6 +3083,10 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
             ctx->error_str = conf->default_error_msg;
             ctx->time_str = conf->default_time_fmt;
             ctx->pool = f->c->pool;
+            ctx->start_seq_pat = &sconf->start_seq_pat;
+            ctx->start_seq  = sconf->default_start_tag;
+            ctx->start_seq_len = sconf->start_tag_len;
+            ctx->end_seq = sconf->default_end_tag;
         }
         else {
             return ap_pass_brigade(f->next, b);
@@ -3139,11 +3161,7 @@ static int include_post_config(apr_pool_t *p, apr_pool_t *plog,
                                 apr_pool_t *ptemp, server_rec *s)
 {
     include_hash = apr_hash_make(p);
-
-    /* compile the pattern used by find_start_sequence */
-    bndm_compile(&start_seq_pat, STARTING_SEQUENCE, 
-                 sizeof(STARTING_SEQUENCE)-1); 
-
+    
     ssi_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_include_handler);
 
     if(ssi_pfn_register) {
@@ -3169,6 +3187,27 @@ static const char *set_default_error_msg(cmd_parms *cmd, void *mconfig, const ch
     return NULL;
 }
 
+static const char *set_default_start_tag(cmd_parms *cmd, void *mconfig, const char *msg)
+{
+    include_server_config *conf;
+    conf= ap_get_module_config(cmd->server->module_config , &include_module);
+    conf->default_start_tag = apr_pstrdup(cmd->pool, msg);
+    conf->start_tag_len = strlen(conf->default_start_tag );
+    bndm_compile(&conf->start_seq_pat, conf->default_start_tag, 
+                 conf->start_tag_len); 
+
+    return NULL;
+}
+
+static const char *set_default_end_tag(cmd_parms *cmd, void *mconfig, const char *msg)
+{
+    include_server_config *conf;
+    conf= ap_get_module_config(cmd->server->module_config , &include_module);
+    conf->default_end_tag = apr_pstrdup(cmd->pool, msg);
+
+    return NULL;
+}
+
 static const char *set_default_time_fmt(cmd_parms *cmd, void *mconfig, const char *fmt)
 {
     include_dir_config *conf = (include_dir_config *)mconfig;
@@ -3187,6 +3226,11 @@ static const command_rec includes_cmds[] =
                   "a string"),
     AP_INIT_TAKE1("SSITimeFormat", set_default_time_fmt, NULL, OR_ALL,
                   "a strftime(3) formatted string"),
+    AP_INIT_TAKE1("SSIStartTag", set_default_start_tag, NULL, RSRC_CONF,
+                  "SSI Start String Tag"),
+    AP_INIT_TAKE1("SSIEndTag", set_default_end_tag, NULL, RSRC_CONF,
+                  "SSI End String Tag"),
+
     {NULL}
 };
 
@@ -3246,10 +3290,10 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA include_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_includes_dir_config, /* dir config creater */
-    NULL,                       /* dir merger --- default is to override */
-    NULL,                       /* server config */
-    NULL,                       /* merge server config */
-    includes_cmds,              /* command apr_table_t */
-    register_hooks              /* register hooks */
+    create_includes_dir_config,   /* dir config creater */
+    NULL,                         /* dir merger --- default is to override */
+    create_includes_server_config,/* server config */
+    NULL,                         /* merge server config */
+    includes_cmds,                /* command apr_table_t */
+    register_hooks                /* register hooks */
 };
