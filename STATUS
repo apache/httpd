@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/02 15:32:47 $]
+Last modified at [$Date: 2003/12/02 19:11:12 $]
 
 Release:
 
@@ -361,6 +361,10 @@ PATCHES TO BACKPORT FROM 2.1
       (This causes DBMAuthGroupFile to break)
         support/htdbm.c r1.11
       +1: jerenkrantz, striker, trawick
+
+    * Fix mod_mem_cache removal ordering bug.
+        modules/experimental/mod_mem_cache.c r1.97
+      +1: jwoolley
 
 CURRENT RELEASE NOTES:
 
