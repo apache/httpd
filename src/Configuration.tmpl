@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.42 1996/10/01 03:25:41 brian Exp $
+# $Id: Configuration.tmpl,v 1.43 1996/10/01 11:00:42 ben Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -34,15 +34,15 @@
 # and needed for your platform.
 #
 # You can also set the compiler and Optimization used here as well.
-# Settings here have priority; If not set, Configure will assume
-# 'gcc' and '-O2'
+# Settings here have priority; If not set, Configure will attempt to guess
+# the C compiler, and set OPTIM to '-O2'
 #
 EXTRA_CFLAGS=
 EXTRA_LFLAGS=
 EXTRA_LIBS=
 EXTRA_INCLUDES=
 
-CC=gcc
+#CC=
 OPTIM=-O2
 
 #
