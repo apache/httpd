@@ -1,0 +1,225 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English revision: 1.2.2.2 -->
+<manualpage>
+<relativepath href="."/>
+
+  <title>Beenden und Neustarten</title>
+
+<summary>
+    <p>Dieses Dokument umfasst das Beenden und Neustarten des
+    Apache auf Unix-&#228;hnlichen Systemen. Windows-Anwender sollten  <a
+    href="platform/windows.html#signal">Signale an den laufenden Apache
+    senden</a> lesen.</p>
+</summary>
+
+<seealso><a href="programs/httpd.html">httpd</a></seealso>
+<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+
+<section id="introduction"><title>Einleitung</title>
+
+    <p>Um den Apache zu stoppen oder neu zu starten, m&#252;ssen Sie
+    ein Signal an den laufenden <code>httpd</code>-Prozess senden. Es gibt
+    zwei M&#246;glichkeiten, diese Signale zu senden. Zum einen k&#246;nnen
+    Sie den Unix-Befehl <code>kill</code> verwenden, um den Prozessen
+    direkt Signale zu senden. Sie werden feststellen, dass auf Ihrem
+    System mehrere <code>httpd</code>-Programme laufen. Sie sollten jedoch
+    nicht jedem dieser Prozesse ein Signal senden, sondern nur dem
+    Elternprozess, dessen PID im <directive
+    module="mpm_common">PidFile</directive> steht. Das hei&#223;t, Sie
+    sollten es niemals n&#246;tig haben, einem anderen Prozess, als dem
+    Elternprozess, ein Signal zu senden. Es gibt drei Signale, die Sie an den
+    Elternprozess senden k&#246;nnen: <code>TERM</code>, <code>HUP</code>
+    und <code>USR1</code>, die nachfolgend beschrieben werden.</p>
+
+    <p>Um dem Elternprozess ein Signal zu senden, verwenden Sie einen
+    Befehl wie z.B.:</p>
+
+    <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
+
+    <p>Die zweite Methode, dem <code>httpd</code>-Prozess zu signalisieren,
+    ist die Verwendung der <code>-k</code>-Befehlszeilenoptionen
+    <code>stop</code>, <code>restart</code> und <code>graceful</code>, wie
+    unten beschrieben. Dies sind Argumente des <a
+    href="programs/httpd.html">httpd</a>-Programms, es wird jedoch
+    empfohlen, sie unter Verwendung des Steuerskripts <a
+    href="programs/apachectl.html">apachectl</a> zu senden, welches diese
+    an <code>httpd</code> durchreicht.</p>
+
+    <p>Nachdem Sie <code>httpd</code> signalisiert haben, k&#246;nnen Sie
+    dessen Fortschritt beobachten, indem Sie eingeben:</p>
+
+    <example>tail -f /usr/local/apache2/logs/error_log</example>
+
+    <p>Passen Sie diese Beispiele entsprechend Ihren <directive
+    module="core">ServerRoot</directive>- und <directive
+    module="mpm_common">PidFile</directive>-Einstellungen an.</p>
+</section>
+
+<section id="term"><title>Beenden</title>
+
+    <dl><dt>Signal: TERM</dt>
+      <dd><code>apachectl -k stop</code></dd>
+    </dl>
+
+    <p>Das Senden des <code>TERM</code>- oder <code>stop</code>-Signals an
+    den Elternprozess veranlasst diesen, sofort zu versuchen, alle seine
+    Kindprozesse zu beenden. Es kann einige Sekunden dauern, bis alle
+    Kindprozesse komplett beendet sind. Danach beendet sich der Elternprozess
+    selbst. Alle gerade bearbeiteten Anfragen werden abgebrochen.
+    Es werden keine weiteren Anfragen mehr bedient.</p>
+</section>
+
+<section id="graceful"><title>Unterbrechungsfreier Neustart</title>
+
+    <dl><dt>Signal: USR1</dt>
+      <dd><code>apachectl -k graceful</code></dd>
+    </dl>
+
+    <p>Das <code>USR1</code>- oder <code>graceful</code>-Signal
+    veranlasst den Elternprozess, die Kinder <em>anzuweisen</em>, sich
+    nach Abschlu&#223; ihrer momentanen bearbeiteten Anfrage zu beenden
+    (oder sich sofort zu beenden, wenn sie gerade keine Anfrage bedienen).
+    Der Elternprozess liest seine Konfigurationsdateien erneut ein und
+    &#246;ffnet seine Logdateien neu. Wenn ein Kindprozess stirbt,
+    ersetzt der Elternprozess ihn durch ein Kind der neuen
+    Konfigurations-<em>Generation</em>. Dieses beginnt sofort damit,
+    neue Anfragen zu bedienen.</p>
+
+    <note>Auf bestimmten Plattformen, welche kein <code>USR1</code>
+    f&#252;r einen unterbrechungsfreien Neustart erlauben, kann ein
+    alternatives Signal verwendet werden (wie z.B.
+    <code>WINCH</code>). Der Befehl <code>apachectl graceful</code>
+    sendet das jeweils richtige Signal f&#252;r Ihre Platform.</note>
+
+    <p>Der Code ist daf&#252;r ausgelegt, stets die MPM-Direktiven
+    zur Prozesssteuerung zu beachten, so dass die Anzahl der Prozesse
+    und Threads, die zur Bedienung der Clients bereitstehen, w&#228;hrend
+    des Neustarts auf die entsprechenden Werte gesetzt werden.
+    Weiterhin wird <directive module="mpm_common">StartServers</directive>
+    auf folgende Art und Weise interpretiert: Wenn nach einer Sekunde
+    nicht mindestens <directive module="mpm_common">StartServers</directive>
+    neue Kindprozesse erstellt wurden, dann werden, um den Durchsatz zu
+    beschleunigen, entsprechend weitere erstellt. Auf diese Weise versucht
+    der Code sowohl die Anzahl der Kinder entsprechend der Serverlast
+    anzupassen als auch Ihre W&#252;nsche hinsichtlich des Parameters
+    <directive>StartServers</directive> zu ber&#252;cksichtigen.</p>
+
+    <p>Benutzer von <module>mod_status</module> werden feststellen,
+    dass die Serverstatistiken <strong>nicht</strong> auf Null
+    zur&#252;ckgesetzt werden, wenn ein <code>USR1</code> gesendet
+    wurde. Der Code wurde so geschrieben, dass sowohl die Zeit minimiert
+    wird, in der der Server nicht in der Lage ist, neue Anfragen zu
+    bedienen (diese werden vom Betriebssystem in eine Warteschlange
+    gestellt, so dass sie auf keinen Fall verloren gehen) als auch
+    Ihre Parameter zur Feinabstimmung ber&#252;cksichtigt werden.
+    Um dies zu erreichen, muss die <em>Statustabelle</em> (Scoreboard),
+    die dazu verwendet wird, alle Kinder &#252;ber mehrere Generationen
+    zu verfolgen, erhalten bleiben.</p>
+
+    <p>Das Statusmodul benutzt au&#223;erdem ein <code>G</code>, um
+    diejenigen Kinder zu kennzeichen, die noch immer Anfragen bedienen,
+    welche gestartet wurden, bevor ein unterbrechungsfreier Neustart
+    veranla&#223;t wurde.</p>
+
+    <p>Derzeit gibt es keine M&#246;glichkeit f&#252;r ein
+    Log-Rotationsskript, das <code>USR1</code> verwendet, sicher
+    festzustellen, dass alle Kinder, die in ein vor dem Neustart
+    ge&#246;ffnetes Log schreiben, beendet sind. Wir schlagen vor, dass
+    Sie nach dem Senden des Signals <code>USR1</code> eine angemessene
+    Zeitspanne warten, bevor Sie das alte Log anfassen. Wenn beispielsweise
+    die meisten Ihrer Zugriffe bei Benutzern mit niedriger Bandbreite
+    weniger als 10 Minuten f&#252;r eine vollst&#228;ndige Antwort
+    ben&#246;tigen, dann k&#246;nnten Sie 15 Minuten warten, bevor Sie auf
+    das alte Log zugreifen.</p>
+
+    <note>Wenn Ihre Konfigurationsdatei Fehler enth&#228;lt, w&#228;hrend
+    Sie einen Neustart anweisen, dann wird Ihr Elternprozess nicht neu starten,
+    sondern sich mit einem Fehler beenden. Im Falle eines unterbrechungsfreien
+    Neustarts l&#228;&#223;t er die Kinder weiterlaufen, wenn er sich beendet.
+    (Dies sind die Kinder, die sich "sanft beenden", indem sie ihre letzte
+    Anfrage erledigen.) Das verursacht Probleme, wenn Sie versuchen,
+    den Server neu zu starten -- er ist nicht in der Lage, sich an die Ports zu
+    binden, an denen er lauschen soll. Bevor Sie einen Neustart
+    durchf&#252;hren, k&#246;nnen Sie die Syntax der Konfigurationsdateien
+    mit dem Befehlszeilenargument <code>-t</code> &#252;berpr&#252;fen
+    (siehe auch <a href="programs/httpd.html">httpd</a>). Das garantiert
+    allerdings nicht, dass der Server korrekt starten wird. Um sowohl die
+    Syntax als auch die Semantik der Konfigurationsdateien zu pr&#252;fen,
+    k&#246;nnen Sie versuchen, <code>httpd</code> als nicht-root-Benutzer
+    zu starten. Wenn dabei keine Fehler auftreten, wird er versuchen, seine
+    Sockets und Logdateien zu &#246;ffnen und fehlschlagen, da er nicht root
+    ist (oder weil sich der gegenw&#228;rtig laufende <code>httpd</code>
+    bereits diese Ports gebunden hat). Wenn er aus einem anderen Grund
+    fehlschl&#228;gt, dann liegt wahrscheinlich ein Konfigurationsfehler vor.
+    Der Fehler sollte behoben werden, bevor der unterbrechungsfreie Neustart
+    angewiesen wird.</note>
+</section>
+
+<section id="hup"><title>Neustarten</title>
+
+    <dl><dt>Signal: HUP</dt>
+      <dd><code>apachectl -k restart</code></dd>
+    </dl>
+
+    <p>Das Senden des Signals <code>HUP</code> oder <code>restart</code>
+    veranla&#223;t den Elternprozess, wie bei <code>TERM</code> alle seine
+    Kinder zu beenden. Der Elternprozess beendet sich jedoch nicht. Er liest
+    seine Konfigurationsdateien neu ein und &#246;ffnet alle Logdateien
+    erneut. Dann erzeugt er einen neuen Satz Kindprozesse und setzt die
+    Bedienung von Zugriffen fort.</p>
+
+    <p>Benutzer von <module>mod_status</module> werden feststellen, dass
+    die Serverstatistiken auf Null gesetzt werden, wenn ein <code>HUP</code>
+    gesendet wurde.</p>
+
+    <note>Wenn Ihre Konfigurationsdatei einen Fehler enth&#228;lt,
+    w&#228;hrend Sie einen Neustart anweisen, dann wird Ihr Elternprozess
+    nicht neu starten, sondern sich mit einem Fehler beenden. Lesen Sie oben,
+    wie Sie das vermeiden k&#246;nnen.</note>
+</section>
+
+<section id="race"><title>Anhang: Signale und Wettkampfsituationen</title>
+
+    <p>Vor der Version 1.2b9 des Apache existierten verschiedene
+    <em>Wettkampfsituationen</em> (race conditions), die den Neustart und
+    die Signale beeinflu&#223;t haben. (Eine einfache Beschreibung einer
+    Wettkampfsituation lautet: es ist ein zeitabh&#228;ngiges Problem; wenn
+    etwas zum falschen Zeitpunkt erfolgt, wird es sich nicht wie erwartet
+    verhalten.) Bei Architekturen mit dem "richtigen" Funktionsumfang
+    haben wir so viele eliminiert wie wir nur konnten. Dennoch
+    sollte beachtet werden, dass noch immer Wettkampfsituationen auf
+    bestimmten Architekturen existieren.</p>
+
+    <p>Bei Architekturen, die ein <directive
+    module="mpm_common">ScoreBoardFile</directive> auf Platte verwenden,
+    besteht die Gefahr, dass die Statustabelle besch&#228;digt wird.
+    Das kann zu "bind: Address already in use" ("bind: Adresse wird
+    bereits verwendet", nach einem <code>HUP</code>) oder "long lost
+    child came home!" ("Der verlorene Sohn ist heimgekehrt", nach einem
+    <code>USR1</code>) f&#252;hren. Ersteres ist ein schwerer Fehler,
+    w&#228;rend letzteres lediglich bewirkt, dass der Server einen Eintrag
+    in der Statustabelle verliert. So kann es ratsam sein, unterbrechungsfreie
+    Neustarts zusammen mit einem gelegentlichen harten Neustart zu verwenden.
+    Diese Probleme lassen sich nur sehr schwer umgehen, aber
+    gl&#252;cklicherweise ben&#246;tigen die meisten Architekturen keine
+    Statustabelle in Form einer Datei. Bitte lesen Sie f&#252;r Architekturen,
+    die sie ben&#246;tigen, die Dokumentation zu <directive
+    module="mpm_common">ScoreBoardFile</directive>.</p>
+
+    <p>Alle Architekturen haben in jedem Kindprozess eine kleine
+    Wettkampfsituation, welche die zweite und nachfolgende Anfragen
+    einer persistenten HTTP-Verbindung (KeepAlive) umfa&#223;t. Der Prozess
+    kann nach dem Lesen der Anfragezeile aber vor dem Lesen der Anfrage-Header
+    enden. Es existiert eine Korrektur, die f&#252;r 1.2 zu sp&#228;t kam.
+    Theoretisch sollte das kein Problem darstellen, da
+    der KeepAlive-Client derartige Ereignisse aufgrund von
+    Netzwerk-Latenzzeiten und Auszeiten des Servers erwarten sollte.
+    In der Praxis scheint keiner von beiden beeinflu&#223;t zu werden
+    -- in einem Testfall wurde der Server zwanzig mal
+    pro Sekunde neu gestartet, w&#228;hrend Clients das Angebot abgegrast
+    haben, ohne kaputte Bilder oder leere Dokumente zu erhalten.</p>
+</section>
+
+</manualpage>
