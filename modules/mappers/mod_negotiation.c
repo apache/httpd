@@ -108,7 +108,7 @@ static void *merge_neg_dir_configs(ap_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *set_language_priority(cmd_parms *cmd, void *n, char *lang)
+static const char *set_language_priority(cmd_parms *cmd, void *n, const char *lang)
 {
     ap_array_header_t *arr = ((neg_dir_config *) n)->language_priority;
     char **langp = (char **) ap_push_array(arr);
@@ -134,10 +134,10 @@ static int do_cache_negotiated_docs(server_rec *s)
 
 static const command_rec negotiation_cmds[] =
 {
-    {"CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, FLAG,
-     "Either 'on' or 'off' (default)"},
-    {"LanguagePriority", set_language_priority, NULL, OR_FILEINFO, ITERATE,
-     "space-delimited list of MIME language abbreviations"},
+    AP_INIT_FLAG("CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, 
+                 "Either 'on' or 'off' (default)"),
+    AP_INIT_ITERATE("LanguagePriority", set_language_priority, NULL, OR_FILEINFO, 
+                    "space-delimited list of MIME language abbreviations"),
     {NULL}
 };
 

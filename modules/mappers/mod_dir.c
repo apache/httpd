@@ -78,7 +78,7 @@ typedef struct dir_config_struct {
 
 #define DIR_CMD_PERMS OR_INDEXES
 
-static const char *add_index(cmd_parms *cmd, void *dummy, char *arg)
+static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
 {
     dir_config_rec *d = dummy;
 
@@ -91,9 +91,8 @@ static const char *add_index(cmd_parms *cmd, void *dummy, char *arg)
 
 static const command_rec dir_cmds[] =
 {
-    {"DirectoryIndex", add_index, NULL,
-     DIR_CMD_PERMS, ITERATE,
-     "a list of file names"},
+    AP_INIT_ITERATE("DirectoryIndex", add_index, NULL, DIR_CMD_PERMS,
+                    "a list of file names"),
     {NULL}
 };
 
