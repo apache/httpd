@@ -208,6 +208,10 @@
               </tr>
 
               <tr>
+                <td><a href="ssl/">SSL/TLS Strong Encryption</a></td>
+              </tr>
+
+              <tr>
                 <td><a href="howto/ssi.html">Server Side
                 Includes</a> </td>
               </tr>
