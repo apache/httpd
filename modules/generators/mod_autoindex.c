@@ -2044,10 +2044,8 @@ static int index_directory(request_rec *r,
                 continue;
             }
             memcpy(&dirent, &fi, sizeof(fi));
-            if (savename) {
-                dirent.name = savename;
-                dirent.valid |= APR_FINFO_NAME;
-            }
+            dirent.name = savename;
+            dirent.valid |= APR_FINFO_NAME;
         }
         p = make_autoindex_entry(&dirent, autoindex_opts, autoindex_conf, r, 
                                  keyid, direction, pstring);
