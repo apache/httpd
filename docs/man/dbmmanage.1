@@ -1,168 +1,124 @@
-.TH dbmmanage 1 "March 1998"
-.\" The Apache Software License, Version 1.1
-.\"
-.\" Copyright (c) 2000-2003 The Apache Software Foundation.  All rights
-.\" reserved.
-.\"
-.\" Redistribution and use in source and binary forms, with or without
-.\" modification, are permitted provided that the following conditions
-.\" are met:
-.\"
-.\" 1. Redistributions of source code must retain the above copyright
-.\"    notice, this list of conditions and the following disclaimer.
-.\"
-.\" 2. Redistributions in binary form must reproduce the above copyright
-.\"    notice, this list of conditions and the following disclaimer in
-.\"    the documentation and/or other materials provided with the
-.\"    distribution.
-.\"
-.\" 3. The end-user documentation included with the redistribution,
-.\"    if any, must include the following acknowledgment:
-.\"       "This product includes software developed by the
-.\"        Apache Software Foundation (http://www.apache.org/)."
-.\"    Alternately, this acknowledgment may appear in the software itself,
-.\"    if and wherever such third-party acknowledgments normally appear.
-.\"
-.\" 4. The names "Apache" and "Apache Software Foundation" must
-.\"    not be used to endorse or promote products derived from this
-.\"    software without prior written permission. For written
-.\"    permission, please contact apache@apache.org.
-.\"
-.\" 5. Products derived from this software may not be called "Apache",
-.\"    nor may "Apache" appear in their name, without prior written
-.\"    permission of the Apache Software Foundation.
-.\"
-.\" THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-.\" WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-.\" OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-.\" DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-.\" ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-.\" SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-.\" LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-.\" USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-.\" ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-.\" OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-.\" OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-.\" SUCH DAMAGE.
-.\"
-.\" This software consists of voluntary contributions made by many
-.\" individuals on behalf of the Apache Software Foundation.  For more
-.\" information on the Apache Software Foundation, please see
-.\" <http://www.apache.org/>.
-.\"
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "DBMMANAGE" 1 "2003-04-30" "Apache HTTP Server" "dbmmanage"
+
 .SH NAME
-dbmmanage \- Create and update user authentication files in DBM format
-.SH SYNOPSIS
-.B dbmmanage
-.I filename
-[
-.I command
-] [
-.I username
-[
-.I encpasswd
-] ]
+dbmmanage \- Manage user authentication files in DBM format
+
+.SH "SYNOPSIS"
+ 
 .PP
-.SH DESCRIPTION
-.B dbmmanage
-is used to create and update the DBM format files used to store
-usernames and password for basic authentication of HTTP users.
-Resources available from the
-.B httpd
-Apache web server can be restricted to just the users listed
-in the files created by 
-.B dbmmanage.
-This program can only be used
-when the usernames are stored in a DBM file. To use a
-flat-file database see 
-\fBhtpasswd\fP.
+\fBdbmmanage\fR [ \fIencoding\fR ] \fIfilename\fR add|adduser|check|delete|update \fIusername\fR [ \fIencpasswd\fR [ \fIgroup\fR[,\fIgroup\fR\&.\&.\&.] [ \fIcomment\fR ] ] ]
+ 
 .PP
-This manual page only lists the command line arguments. For details of
-the directives necessary to configure user authentication in 
-.B httpd 
-see
-the Apache manual, which is part of the Apache distribution or can be
-found at http://www.apache.org/.
-.SH OPTIONS
-.IP \fB\fIfilename\fP
-The filename of the DBM format file. Usually without the 
-extension .db, .pag, or .dir.
-.IP \fB\fIcommand\fP
-This selects the operation to perform:
-.TP 12
-.B add
-Adds an entry for \fIusername\fP to \fIfilename\fP using the encrypted
-password \fIencpassword\fP.
-.TP 12
-.B adduser
-Asks for a password and then adds an entry for \fIusername\fP to
-\fIfilename\fP .
-.TP 12
-.B check
-Asks for a password and then checks if 
-\fIusername\fP is in \fIfilename\fP and if it's password matches
-the specified one.
-.TP 12
-.B delete
-Deletes the \fIusername\fP entry from \fIfilename\fP.
-.TP 12
-.B import
-Reads username:password entries (one per line) from STDIN and adds them to
-\fIfilename\fP. The passwords already has to be crypted.
-.TP 12
-.B update
-Same as the "adduser" command, except that it makes sure \fIusername\fP
-already exists in \fIfilename\fP.
-.TP 12
-.B view
-Just displays the complete contents of the DBM file.
-.IP \fB\fIusername\fP
-The user for which the update operation is performed.
-.PD
-.SH BUGS
+\fBdbmmanage\fR \fIfilename\fR view [ \fIusername\fR ]
+ 
 .PP
-One should be aware that there are a number of different DBM file
-formats in existence, and with all likelihood, libraries for more than
-one format may exist on your system.  The three primary examples are
-NDBM, the GNU project's GDBM, and Berkeley DB 2.  Unfortunately, all
-these libraries use different file formats, and you must make sure
-that the file format used by
-.I filename
-is the same format that 
-.B dbmmanage
-expects to see.  
-.B dbmmanage
-currently has no way of determining what type of DBM file it is
-looking at.  If used against the wrong format, 
-.dbmmanage
-will simply return nothing, or may create a different DBM file with a
-different name, or at worst, it may corrupt the DBM file if you were
-attempting to write to it.
+\fBdbmmanage\fR \fIfilename\fR import
+ 
+
+.SH "SUMMARY"
+ 
 .PP
-.B dbmmanage
-has a list of DBM format preferences, defined by the 
-.B @AnyDBM::ISA
-array near the beginning of the program.  Since we prefer the Berkeley
-DB 2 file format, the order in which
-.B dbmmanage 
-will look for system libraries is Berkeley DB 2, then NDBM, and then
-GDBM.  The first library found will be the library
-.B dbmmanage
-will attempt to use for all DBM file transactions.  This ordering is
-slightly different than the standard 
-.B @AnyDBM::ISA
-ordering in perl, as well as the ordering used by the simple dbmopen()
-call in Perl, so if you use any other utilities to manage your DBM
-files, they must also follow this preference ordering.  Similar care
-must be taken if using programs in other languages, like C, to 
-access these files.
+dbmmanage is used to create and update the DBM format files used to store usernames and password for basic authentication of HTTP users\&. Resources available from the Apache HTTP server can be restricted to just the users listed in the files created by dbmmanage\&. This program can only be used when the usernames are stored in a DBM file\&. To use a flat-file database see htpasswd\&.
+ 
 .PP
-Apache's 
-.B mod_auth_dbm.c
-corresponds to the NDBM library.  Also, one can usually use the 
-.B file
-program supplied with most Unix systems to see what format a DBM file is in.
-.PD
-.SH SEE ALSO
-.BR httpd(8)
-.
+This manual page only lists the command line arguments\&. For details of the directives necessary to configure user authentication in httpd see the httpd manual, which is part of the Apache distribution or can be found at http://httpd\&.apache\&.org/\&.
+ 
+
+.SH "OPTIONS"
+ 
+.RS
+ 
+.TP
+\fIfilename\fR
+The filename of the DBM format file\&. Usually without the extension \&.db, \&.pag, or \&.dir\&.  
+.TP
+\fIusername\fR
+The user for which the operations are performed\&. The \fIusername\fR may not contain a colon (:)\&.  
+.TP
+\fIencpasswd\fR
+This is the already encrypted password to use for the update and add commands\&. You may use a hyphen (-) if you want to get prompted for the password, but fill in the fields afterwards\&. Additionally when using the update command, a period (\&.) keeps the original password untouched\&.  
+.TP
+\fIgroup\fR
+A group, which the user is member of\&. A groupname may not contain a colon (:)\&. You may use a hyphen (-) if you don't want to assign the user to a group, but fill in the comment field\&. Additionally when using the update command, a period (\&.) keeps the original groups untouched\&.  
+.TP
+\fIcomment\fR
+This is the place for your opaque comments about the user, like realname, mailaddress or such things\&. The server will ignore this field\&.  
+.RE
+ 
+.Sh "ENCODINGS"
+ 
+.RS
+ 
+.TP
+-d
+crypt encryption (default, except on Win32, Netware)  
+.TP
+-m
+MD5 encryption (default on Win32, Netware)  
+.TP
+-s
+SHA1 encryption  
+.TP
+-p
+plaintext (\fInot recommended\fR)  
+.RE
+  
+.Sh "COMMANDS"
+ 
+.RS
+ 
+.TP
+add
+Adds an entry for \fIusername\fR to \fIfilename\fR using the encrypted password \fIencpasswd\fR\&.  
+.TP
+adduser
+Asks for a password and then adds an entry for \fIusername\fR to \fIfilename\fR\&.  
+.TP
+check
+Asks for a password and then checks if \fIusername\fR is in \fIfilename\fR and if it's password matches the specified one\&.  
+.TP
+delete
+Deletes the \fIusername\fR entry from \fIfilename\fR\&.  
+.TP
+import
+Reads \fIusername\fR:\fIpassword\fR entries (one per line) from STDIN and adds them to \fIfilename\fR\&. The passwords already have to be crypted\&.  
+.TP
+update
+Same as the adduser command, except that it makes sure \fIusername\fR already exists in \fIfilename\fR\&.  
+.TP
+view
+Just displays the contents of the DBM file\&. If you specify a \fIusername\fR, it displays the particular record only\&.  
+.RE
+  
+.SH "BUGS"
+ 
+.PP
+One should be aware that there are a number of different DBM file formats in existence, and with all likelihood, libraries for more than one format may exist on your system\&. The three primary examples are SDBM, NDBM, the GNU project's GDBM, and Berkeley DB 2\&. Unfortunately, all these libraries use different file formats, and you must make sure that the file format used by \fIfilename\fR is the same format that dbmmanage expects to see\&. dbmmanage currently has no way of determining what type of DBM file it is looking at\&. If used against the wrong format, will simply return nothing, or may create a different DBM file with a different name, or at worst, it may corrupt the DBM file if you were attempting to write to it\&.
+ 
+.PP
+dbmmanage has a list of DBM format preferences, defined by the @AnyDBM::ISA array near the beginning of the program\&. Since we prefer the Berkeley DB 2 file format, the order in which dbmmanage will look for system libraries is Berkeley DB 2, then NDBM, then GDBM and then SDBM\&. The first library found will be the library dbmmanage will attempt to use for all DBM file transactions\&. This ordering is slightly different than the standard @AnyDBM::ISA ordering in perl, as well as the ordering used by the simple dbmopen() call in Perl, so if you use any other utilities to manage your DBM files, they must also follow this preference ordering\&. Similar care must be taken if using programs in other languages, like C, to access these files\&.
+ 
+.PP
+One can usually use the file program supplied with most Unix systems to see what format a DBM file is in\&.
+ 
