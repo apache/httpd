@@ -1052,12 +1052,16 @@ API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
 					 ap_pool_t *p, ap_pool_t *temp_pool,
 					 ap_directive_t **conftree)
 {
-    ap_directive_t *current = NULL;
+    ap_directive_t *current = *conftree;
     ap_directive_t *curr_parent = NULL;
     char l[MAX_STRING_LEN];
     const char *errmsg;
 
-    *conftree = NULL;
+    if (current != NULL) {
+        while (current->next) {
+            current = current->next;
+        }
+    }
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
 
@@ -1246,13 +1250,13 @@ static int arr_elts_close(void *param)
     return 0;
 }
 
-static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_pool_t *p,
-				    ap_pool_t *ptemp)
+static void process_command_config(server_rec *s, ap_array_header_t *arr, 
+                              ap_directive_t **conftree, ap_pool_t *p,
+			      ap_pool_t *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
     arr_elts_param_t arr_parms;
-    ap_directive_t *conftree;
 
     arr_parms.curr_idx = 0;
     arr_parms.array = arr;
@@ -1267,9 +1271,7 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_poo
 			      &arr_parms, NULL,
 			      arr_elts_getstr, arr_elts_close);
 
-    errmsg = ap_build_config(&parms, p, ptemp, &conftree);
-    if (errmsg == NULL)
-	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
+    errmsg = ap_build_config(&parms, p, ptemp, conftree);
     if (errmsg) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
                      "Syntax error in -C/-c directive:\n%s", errmsg);
@@ -1279,11 +1281,12 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_poo
     ap_cfg_closefile(parms.config_file);
 }
 
-void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, ap_pool_t *ptemp)
+void ap_process_resource_config(server_rec *s, const char *fname, 
+                                ap_directive_t **conftree, ap_pool_t *p, 
+                                ap_pool_t *ptemp)
 {
     cmd_parms parms;
     ap_finfo_t finfo;
-    ap_directive_t *conftree;
     const char *errmsg;
     configfile_t *cfp;
 
@@ -1312,9 +1315,8 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, 
     }
 
     parms.config_file = cfp;
-    errmsg = ap_build_config(&parms, p, ptemp, &conftree);
-    if (errmsg == NULL)
-	errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
+
+    errmsg = ap_build_config(&parms, p, ptemp, conftree);
 
     if (errmsg != NULL) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
@@ -1329,6 +1331,29 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, 
     ap_cfg_closefile(cfp);
 }
 
+void ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
+                            ap_pool_t *p, ap_pool_t *ptemp)
+{
+    const char *errmsg;
+    cmd_parms parms;
+
+    parms = default_parms;
+    parms.pool = p;
+    parms.temp_pool = ptemp;
+    parms.server = s;
+    parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
+
+    errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
+    if (errmsg) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                     "Syntax error on line %d of %s:",
+                     parms.err_directive->line_num,
+                     parms.err_directive->filename);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s", errmsg);
+        exit(1);
+    }
+}
 
 int ap_parse_htaccess(void **result, request_rec *r, int override,
 		   const char *d, const char *access_name)
@@ -1547,7 +1572,8 @@ static server_rec *init_server_config(process_rec *process, ap_pool_t *p)
 
 
 API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *ptemp,
-                                       const char *confname)
+                                       const char *confname, 
+                                       ap_directive_t **conftree)
 {
     ap_pool_t *p = process->pconf;
     server_rec *s = init_server_config(process, p);
@@ -1556,11 +1582,13 @@ API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *ptemp,
 
     /* All server-wide config files now have the SAME syntax... */
 
-    process_command_config(s, ap_server_pre_read_config, p, ptemp);
+    process_command_config(s, ap_server_pre_read_config, conftree,
+                                      p, ptemp);
 
-    ap_process_resource_config(s, confname, p, ptemp);
+    ap_process_resource_config(s, confname, conftree, p, ptemp);
 
-    process_command_config(s, ap_server_post_read_config, p, ptemp);
+    process_command_config(s, ap_server_post_read_config, conftree,
+                                      p, ptemp);
 
     fixup_virtual_hosts(p, s);
     ap_fini_vhost_config(p, s);

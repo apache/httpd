@@ -380,7 +380,7 @@ void ap_single_module_configure(ap_pool_t *p, server_rec *s, module *m);
 API_EXPORT(void) ap_setup_prelinked_modules(process_rec *process);
 API_EXPORT(void) ap_show_directives(void);
 API_EXPORT(void) ap_show_modules(void);
-API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name);
+API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree);
 API_EXPORT(void) ap_pre_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
 API_EXPORT(void) ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
 API_EXPORT(void) ap_run_rewrite_args(process_rec *process);
@@ -403,7 +403,11 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
 CORE_EXPORT(const char *) ap_init_virtual_host(ap_pool_t *p, const char *hostname,
 				server_rec *main_server, server_rec **);
-void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, ap_pool_t *ptemp);
+void ap_process_resource_config(server_rec *s, const char *fname, 
+                 ap_directive_t **conftree, ap_pool_t *p, ap_pool_t *ptemp);
+void ap_process_config_tree(server_rec *s, ap_directive_t *conftree,
+                            ap_pool_t *p, ap_pool_t *ptemp);
+
 
 /* For individual MPMs... */
 

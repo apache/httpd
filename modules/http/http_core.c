@@ -1924,11 +1924,14 @@ static const char *set_use_canonical_name(cmd_parms *cmd, core_dir_config *d,
 }
 
 
-static const char *include_config (cmd_parms *cmd, void *dummy, char *name)
+static const char *include_config (cmd_parms *cmd, void **dummy, char *name)
 {
+    ap_directive_t *conftree = NULL;
+
     ap_process_resource_config(cmd->server,
 	ap_server_root_relative(cmd->pool, name),
-	cmd->pool, cmd->temp_pool);
+                               	 &conftree, cmd->pool, cmd->temp_pool);
+    *(ap_directive_t **)dummy = conftree;
     return NULL;
 }
 
@@ -2269,7 +2272,7 @@ static const command_rec core_cmds[] = {
 { "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF | EXEC_ON_READ,
   NO_ARGS, NULL },
 /* TODO: ListenBacklog in MPM */
-{ "Include", include_config, NULL, (RSRC_CONF | ACCESS_CONF), TAKE1,
+{ "Include", include_config, NULL, (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ), TAKE1,
   "Name of the config file to be included" },
 { "LogLevel", set_loglevel, NULL, RSRC_CONF, TAKE1,
   "Level of verbosity in error logging" },
