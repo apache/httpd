@@ -72,7 +72,11 @@ struct ap_listen_rec {
 extern ap_listen_rec *ap_listeners;
 
 void ap_listen_pre_config(void);
+#ifndef WIN32
+int ap_setup_listeners(server_rec *s);
+#else
 int ap_listen_open(process_rec *process, unsigned port);
+#endif
 const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg);
 const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips);
 const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy,

@@ -741,27 +741,6 @@ int ap_stop_signalled(void)
     return 0;
 }
 
-
-
-static int setup_listeners(ap_pool_t *pchild, ap_pollfd_t **listen_poll)
-{
-    ap_listen_rec *lr;
-    int numfds = 0;
-
-    for (lr = ap_listeners; lr; lr = lr->next) {
-        numfds++;
-    }
-
-    ap_setup_poll(listen_poll, numfds, pchild);
-
-    for (lr = ap_listeners; lr; lr = lr->next) {
-	ap_add_poll_socket(*listen_poll, lr->sd, APR_POLLIN);
-    }
-    return 0;
-}
-
-
-
 static void child_main(void *child_num_arg)
 {
     ap_listen_rec *lr = NULL;
@@ -796,7 +775,7 @@ static void child_main(void *child_num_arg)
     THREAD_GLOBAL(pchild) = pchild;
     ap_create_pool(&ptrans, pchild);
 
-    if (setup_listeners(pchild, &listen_poll)) {
+    if (ap_setup_listeners(pchild, &listen_poll)) {
 	clean_child_exit(1);
     }
 
