@@ -896,17 +896,12 @@ static int dav_method_put(request_rec *r)
     const char *body;
     dav_error *err;
     dav_error *err2;
-    int result;
     dav_stream_mode mode;
     dav_stream *stream;
     dav_response *multi_response;
     int has_range;
     apr_off_t range_start;
     apr_off_t range_end;
-
-    if ((result = ap_setup_client_block(r, REQUEST_CHUNKED_DECHUNK)) != OK) {
-        return result;
-    }
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
@@ -982,40 +977,58 @@ static int dav_method_put(request_rec *r)
     }
 
     if (err == NULL) {
-        if (ap_should_client_block(r)) {
-            char *buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
-            long len;
+        apr_bucket_brigade *bb;
+        apr_bucket *b;
+        int seen_eos = 0;
 
-            /*
-             * Once we start reading the request, then we must read the
-             * whole darn thing. ap_discard_request_body() won't do anything
-             * for a partially-read request.
-             */
+        bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-            while ((len = ap_get_client_block(r, buffer,
-                                              DAV_READ_BLOCKSIZE)) > 0) {
-                   if (err == NULL) {
-                       /* write whatever we read, until we see an error */
-                       err = (*resource->hooks->write_stream)(stream,
-                                                              buffer, len);
-                   }
+        do {
+            apr_status_t rc;
+
+            rc = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+                                APR_BLOCK_READ, DAV_READ_BLOCKSIZE);
+
+            if (rc != APR_SUCCESS) {
+                err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                    "Could not get next bucket brigade");
+                break;
             }
 
-            /*
-             * ### what happens if we read more/less than the amount
-             * ### specified in the Content-Range? eek...
-             */
+            for (b = APR_BRIGADE_FIRST(bb);
+                 b != APR_BRIGADE_SENTINEL(bb);
+                 b = APR_BUCKET_NEXT(b))
+            {
+                const char *data;
+                apr_size_t len;
 
-            if (len == -1) {
-                /*
-                 * Error reading request body. This has precedence over
-                 * prior errors.
-                 */
-                err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
-                                    "An error occurred while reading the "
-                                    "request body.");
+                if (APR_BUCKET_IS_EOS(b)) {
+                    seen_eos = 1;
+                    break;
+                }
+
+                if (APR_BUCKET_IS_METADATA(b)) {
+                    continue;
+                }
+
+                rc = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
+                if (rc != APR_SUCCESS) {
+                    err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                                        "An error occurred while reading "
+                                        "the request body.");
+                    break;
+                }
+
+                if (err == NULL) {
+                    /* write whatever we read, until we see an error */
+                    err = (*resource->hooks->write_stream)(stream, data, len);
+                }
             }
-        }
+
+            apr_brigade_cleanup(bb);
+        } while (!seen_eos);
+
+        apr_brigade_destroy(bb);
 
         err2 = (*resource->hooks->close_stream)(stream,
                                                 err == NULL /* commit */);
