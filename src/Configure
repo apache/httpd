@@ -1889,7 +1889,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	SUBTARGET=target_shared
 	#    determine additional suffixes for libhttpd.so
 	V=1 R=3 P=21
-	If [ "x$SHLIB_SUFFIX_DEPTH" = "x0" ]; then
+	if [ "x$SHLIB_SUFFIX_DEPTH" = "x0" ]; then
 	    SHLIB_SUFFIX_LIST=""
 	fi
 	if [ "x$SHLIB_SUFFIX_DEPTH" = "x1" ]; then
