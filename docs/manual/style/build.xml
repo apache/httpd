@@ -13,6 +13,22 @@
   <target name="xslt"
    description="Render HTML Pages via XSLT">
 
+    <!-- Additional dependencies -->
+    <dependset>
+      <targetfilelist dir="../mod/"
+                      files="directives.html.en"/>
+      <srcfileset dir="../mod/"
+                  includes="*.xml"
+                  excludes="allmodules.xml index.xml"/>
+    </dependset>
+
+    <dependset>
+      <targetfilelist dir="../mod/"
+                      files="index.html.en"/>
+      <srcfilelist dir="../mod/"
+                   files="allmodules.xml"/>
+    </dependset>
+
     <!-- Transform the modules directory -->
     <style   basedir="../mod/"
              destdir="../mod/"
