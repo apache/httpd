@@ -797,27 +797,6 @@ request_rec *read_request(conn_rec *conn)
 
     conn->keptalive = 0;        /* We now have a request to play with */
 
-    if (!strcmp(r->method, "HEAD")) {
-        r->header_only = 1;
-        r->method_number = M_GET;
-    }
-    else if (!strcmp(r->method, "GET"))
-        r->method_number = M_GET;
-    else if (!strcmp(r->method, "POST"))
-        r->method_number = M_POST;
-    else if (!strcmp(r->method, "PUT"))
-        r->method_number = M_PUT;
-    else if (!strcmp(r->method, "DELETE"))
-        r->method_number = M_DELETE;
-    else if (!strcmp(r->method, "CONNECT"))
-        r->method_number = M_CONNECT;
-    else if (!strcmp(r->method, "OPTIONS"))
-        r->method_number = M_OPTIONS;
-    else if (!strcmp(r->method, "TRACE"))
-        r->method_number = M_TRACE;
-    else
-        r->method_number = M_INVALID;   /* Will eventually croak. */
-
     if ((access_status = run_post_read_request(r))) {
         die(access_status, r);
         return NULL;
