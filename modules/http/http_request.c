@@ -1351,7 +1351,7 @@ static void process_request_internal(request_rec *r)
      */
     ap_run_insert_filter(r);
 
-    if ((access_status = ap_invoke_handler(r)) != 0) {
+    if ((access_status = ap_invoke_handler(r)) != 0 && access_status != -3) {
         ap_die(access_status, r);
         return;
     }

@@ -73,6 +73,7 @@ extern "C" {
 
 #define AP_NOBODY_WROTE         -1
 #define AP_NOBODY_READ          -2
+#define AP_FILTER_ERROR         -3
 
 /* ap_input_mode_t - input filtering modes 
  * 

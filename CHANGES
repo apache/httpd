@@ -1,5 +1,14 @@
 Changes with Apache 2.0b1
 
+  *) filters can now report an HTTP error to the server.  This is done
+     by sending a brigade where the first bucket is an error_bucket.
+     This bucket is a simple bucket that stores an HTTP error and
+     a string.  Currently the string is not used, but it may be needed
+     to output an error log.  The http_header_filter will find this
+     bucket, and output the error text, and then return 
+     AP_FILTER_ERROR, which informs the server that the error web page
+     has already been sent.  [Ryan Bloom]
+
   *) If we get an error, then we should remove all filters except for
      those critical to serving a web page.  This fixes a bug, where
      error pages were going through the byterange filter, even though
