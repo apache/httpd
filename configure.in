@@ -2,7 +2,7 @@ dnl ## Process this file with autoconf to produce a configure script
 
 AC_PREREQ(2.13)
 AC_INIT(acinclude.m4)
-
+ 
 dnl ## This is the central place where Apache's version should be kept.
 dnl AM_INIT_AUTOMAKE(apache, 2.0-dev)
 
@@ -159,5 +159,6 @@ echo $MODLIST | $AWK -f $srcdir/helpers/build-modules-c.awk > $srcdir/modules.c
 
 AC_SUBST(prefix)
 
-AC_OUTPUT($APACHE_OUTPUT_FILES apaci)
-chmod 744 apaci
+AC_OUTPUT($APACHE_OUTPUT_FILES apaci, chmod 744 apaci)
+
+
