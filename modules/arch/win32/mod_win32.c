@@ -95,17 +95,19 @@ typedef struct {
 
 static void *create_win32_dir_config(apr_pool_t *p, char *dir)
 {
-    win32_dir_conf *conf = (win32_dir_conf*)apr_palloc(p, sizeof(win32_dir_conf));
+    win32_dir_conf *conf;
+    conf = (win32_dir_conf*)apr_palloc(p, sizeof(win32_dir_conf));
     conf->script_interpreter_source = INTERPRETER_SOURCE_UNSET;
     return conf;
 }
 
 static void *merge_win32_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
-    win32_dir_conf *new = (win32_dir_conf *) apr_pcalloc(p, sizeof(win32_dir_conf));
+    win32_dir_conf *new;
     win32_dir_conf *base = (win32_dir_conf *) basev;
     win32_dir_conf *add = (win32_dir_conf *) addv;
 
+    new = (win32_dir_conf *) apr_pcalloc(p, sizeof(win32_dir_conf));
     new->script_interpreter_source = (add->script_interpreter_source 
                                            != INTERPRETER_SOURCE_UNSET)
                                    ? add->script_interpreter_source 
@@ -119,14 +121,17 @@ static const char *set_interpreter_source(cmd_parms *cmd, void *dv,
     win32_dir_conf *d = (win32_dir_conf *)dv;
     if (!strcasecmp(arg, "registry")) {
         d->script_interpreter_source = INTERPRETER_SOURCE_REGISTRY;
-    } else if (!strcasecmp(arg, "registry-strict")) {
+    }
+    else if (!strcasecmp(arg, "registry-strict")) {
         d->script_interpreter_source = INTERPRETER_SOURCE_REGISTRY_STRICT;
-    } else if (!strcasecmp(arg, "script")) {
+    }
+    else if (!strcasecmp(arg, "script")) {
         d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
-    } else {
+    }
+    else {
         return apr_pstrcat(cmd->temp_pool, "ScriptInterpreterSource \"", arg, 
-                          "\" must be \"registry\", \"registry-strict\" or "
-                          "\"script\"", NULL);
+                           "\" must be \"registry\", \"registry-strict\" or "
+                           "\"script\"", NULL);
     }
     return NULL;
 }
@@ -146,8 +151,9 @@ static apr_status_t get_win32_registry_default_value(apr_pool_t *p, HKEY hkey,
     DWORD result = RegOpenKeyEx(hkey, relativepath, 0, 
                                 KEY_QUERY_VALUE, &hkeyOpen);
     
-    if (result != ERROR_SUCCESS) 
+    if (result != ERROR_SUCCESS) {
         return APR_FROM_OS_ERROR(result);
+    }
 
     /* Read to NULL buffer to determine value size */
     result = RegQueryValueEx(hkeyOpen, "", 0, &type, NULL, &size);
@@ -167,8 +173,7 @@ static apr_status_t get_win32_registry_default_value(apr_pool_t *p, HKEY hkey,
      * somewhere that some environment variables may -not- be translated,
      * seeing as we may have chopped the environment table down somewhat.
      */
-    if ((result == ERROR_SUCCESS) && (type == REG_EXPAND_SZ)) 
-    {
+    if ((result == ERROR_SUCCESS) && (type == REG_EXPAND_SZ)) {
         char *tmp = *value;
         size = ExpandEnvironmentStrings(tmp, *value, 0);
         if (size) {
@@ -199,8 +204,9 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
     int result;
     char *buffer;
     
-    if (!ext)
+    if (!ext) {
         return NULL;
+    }
     /* 
      * Future optimization:
      * When the registry is successfully searched, store the strings for
@@ -211,8 +217,9 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
     result = RegOpenKeyEx(HKEY_CLASSES_ROOT, ext, 0, KEY_QUERY_VALUE, 
                           &hkeyType);
 
-    if (result != ERROR_SUCCESS) 
+    if (result != ERROR_SUCCESS) {
         return NULL;
+    }
 
     /* Retrieve the name of the script filetype extension */
     size = sizeof(typeName);
@@ -223,8 +230,9 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
         result = RegOpenKeyEx(HKEY_CLASSES_ROOT, typeName, 0, 
                               KEY_QUERY_VALUE, &hkeyName);
 
-        if (result == ERROR_SUCCESS)
+        if (result == ERROR_SUCCESS) {
             cmdOfName = TRUE;
+        }
     }
 
     /* Open the key for the script command path by:
@@ -258,19 +266,22 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
                                                   execopen_path, &buffer);
     }
 
-    if (cmdOfName)
+    if (cmdOfName) {
         RegCloseKey(hkeyName);
+    }
 
     RegCloseKey(hkeyType);
 
-    if (result != ERROR_SUCCESS  || !buffer[0])
+    if (result != ERROR_SUCCESS  || !buffer[0]) {
         return NULL;
+    }
 
     return buffer;
 }
 
 
-static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const char *cgiprg, const char *cgiargs)
+static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
+                                      const char *cgiprg, const char *cgiargs)
 {
     apr_array_header_t *args = apr_array_make(p, 8, sizeof(char*));
     char *d = apr_palloc(p, strlen(interp));
@@ -292,8 +303,9 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
             argtaken = 1;
             for (;;) {
                 char *w = ap_getword_nulls(p, &cgiarg, '+');
-                if (!*w)
+                if (!*w) {
                     break;
+                }
                 ap_unescape_url(w);
                 arg = (const char**)apr_array_push(args);
                 *arg = ap_escape_shell_cmd(p, w);
@@ -308,27 +320,31 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
             if (*ch == '%') {
                 char *repl = apr_pstrdup(p, cgiprg);
                 *arg = repl;
-                while ((repl = strchr(repl, '/')))
+                while ((repl = strchr(repl, '/'))) {
                     *repl++ = '\\';
+                }
             }
-            else
+            else {
                 *arg = cgiprg;
+            }
             ch += 2;
             continue;
         }
         if ((*ch == '\"') && ((*(ch + 1) == '$') 
-                           || (*(ch + 1) == '%')) && (*(ch + 2) == '1') 
-                                                  && (*(ch + 3) == '\"')) {
+                              || (*(ch + 1) == '%')) && (*(ch + 2) == '1') 
+            && (*(ch + 3) == '\"')) {
             prgtaken = 1;
             arg = (const char**)apr_array_push(args);
             if (*(ch + 1) == '%') {
                 char *repl = apr_pstrdup(p, cgiprg);
                 *arg = repl;
-                while ((repl = strchr(repl, '/')))
+                while ((repl = strchr(repl, '/'))) {
                     *repl++ = '\\';
+                }
             }
-            else
+            else {
                 *arg = cgiprg;
+            }
             ch += 4;
             continue;
         }
@@ -340,12 +356,14 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
                 ++ch; break;
             }
             /* Get 'em backslashes */
-            for (sl = 0; *ch == '\\'; ++sl)
+            for (sl = 0; *ch == '\\'; ++sl) {
                 *d++ = *ch++;
+            }
             if (sl & 1) {
                 /* last unmatched '\' + '"' sequence is a '"' */
-                if (*ch == '\"')
+                if (*ch == '\"') {
                     *(d - 1) = *ch++;
+                }
                 continue;
             }
             if (*ch == '\"') {
@@ -377,8 +395,9 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
         const char *cgiarg = cgiargs;
         for (;;) {
             char *w = ap_getword_nulls(p, &cgiarg, '+');
-            if (!*w)
+            if (!*w) {
                 break;
+            }
             ap_unescape_url(w);
             arg = (const char**)apr_array_push(args);
             *arg = ap_escape_shell_cmd(p, w);
@@ -387,7 +406,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
 
     arg = (const char**)apr_array_push(args);
     *arg = NULL;
-        
+
     return args;
 }
 
@@ -397,11 +416,12 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
 {
     const char *ext = NULL;
     const char *interpreter = NULL;
-    win32_dir_conf *d = 
-        (win32_dir_conf *)ap_get_module_config(r->per_dir_config, 
-                                               &win32_module);
+    win32_dir_conf *d;
     apr_file_t *fh;
     const char *args = r->args;
+
+    d = (win32_dir_conf *)ap_get_module_config(r->per_dir_config, 
+                                               &win32_module);
 
     /* Handle the complete file name, we DON'T want to follow suexec, since
      * an unrooted command is as predictable as shooting craps in Win32.
@@ -416,11 +436,10 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
      * we've been instructed to search the registry, then do so.
      */
     if (ext && (!strcasecmp(ext,".exe") || !strcasecmp(ext,".com")
-             || !strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
+                || !strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
         interpreter = "";
     }
-    if (!interpreter)
-    {
+    if (!interpreter) {
         apr_status_t rv;
         char buffer[1024];
         apr_size_t bytes = sizeof(buffer);
@@ -430,10 +449,11 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
          * ### aught to go back and build a cache for this one of these days.
          */
         if (((rv = apr_file_open(&fh, r->filename, APR_READ | APR_BUFFERED,
-                                APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) 
-         || ((rv = apr_file_read(fh, buffer, &bytes)) != APR_SUCCESS)) {
+                                 APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) 
+            || ((rv = apr_file_read(fh, buffer, &bytes)) != APR_SUCCESS)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                          "Failed to read cgi file %s for testing", r->filename);
+                          "Failed to read cgi file %s for testing",
+                          r->filename);
             return rv;
         }
         apr_file_close(fh);
@@ -449,29 +469,34 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
             }
             if (i < sizeof(buffer)) {
                 interpreter = buffer + 2;
-                while (isspace(*interpreter))
+                while (isspace(*interpreter)) {
                     ++interpreter;
+                }
             }
         }
         else {
             /* Not a script, is it an executable? */
             IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)buffer;    
-            if ((bytes >= sizeof(IMAGE_DOS_HEADER)) && (hdr->e_magic == IMAGE_DOS_SIGNATURE)) {
-                if (hdr->e_lfarlc < 0x40)
-                    /* Aught to invoke this 16 bit exe by a stub, (cmd /c?) */
+            if ((bytes >= sizeof(IMAGE_DOS_HEADER))
+                && (hdr->e_magic == IMAGE_DOS_SIGNATURE)) {
+                if (hdr->e_lfarlc < 0x40) {
+                    /* Ought to invoke this 16 bit exe by a stub, (cmd /c?) */
                     interpreter = "";
-                else
+                }
+                else {
                     interpreter = "";
+                }
             }
         }
     }
     if (!interpreter && ext &&
-        (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY ||
-         d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY_STRICT)) {
+        (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY
+         || d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY_STRICT)) {
          /* Check the registry */
         int strict = (d->script_interpreter_source 
-                            == INTERPRETER_SOURCE_REGISTRY_STRICT);
-        interpreter = get_interpreter_from_win32_registry(r->pool, ext, strict);
+                      == INTERPRETER_SOURCE_REGISTRY_STRICT);
+        interpreter = get_interpreter_from_win32_registry(r->pool, ext,
+                                                          strict);
         if (!interpreter) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
                  strict ? "No ExecCGI verb found for files of type '%s'."
@@ -487,16 +512,19 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         return APR_EBADF;
     }
 
-    if (!args || ap_strchr_c(args, '='))
+    if (!args || ap_strchr_c(args, '=')) {
         args = "";
+    }
 
-    *argv = (const char **)(split_argv(p, interpreter, r->filename, args)->elts);
+    *argv = (const char **)(split_argv(p, interpreter, r->filename,
+                                       args)->elts);
     *cmd = (*argv)[0];
     return APR_SUCCESS;
 }
 
-APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command, (const char **cmd, 
-                        const char ***argv, request_rec *r, apr_pool_t *p));
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command,
+                        (const char **cmd, 
+                         const char ***argv, request_rec *r, apr_pool_t *p));
 
 static void register_hooks(apr_pool_t *p)
 {
@@ -505,8 +533,9 @@ static void register_hooks(apr_pool_t *p)
 
 static const command_rec win32_cmds[] = {
 AP_INIT_TAKE1("ScriptInterpreterSource", set_interpreter_source, NULL,
-  OR_FILEINFO,
-  "Where to find interpreter to run Win32 scripts (Registry or script shebang line)"),
+              OR_FILEINFO,
+              "Where to find interpreter to run Win32 scripts "
+              "(Registry or script shebang line)"),
 { NULL }
 };
 
