@@ -1,8 +1,0 @@
-AuthDBgroup and authDB user point to the DBM file but the anchors are
-missing.  They are post 1.1 directives and this ain't documented
-either.
-
-identitycheck was removed from current core.html's index but not
-content. I've put it back.
-
-the old 1.0 FAQ has some stuff that might want to be resurrected.
