@@ -67,8 +67,8 @@
  * @param argv Pointer to the arguments to pass (may be overridden)
  * @param r The current request
  * @param p The pool to allocate correct cmd/argv elements within.
- * @param replace_cmd Set true if r->filename is valid and may 
- *                    replace argv[0] and cmd, otherwise false
+ * @param process_cgi Set true if processing r->filename and r->args
+ *                    as a CGI invocation, otherwise false
  * @param type Set to APR_SHELLCMD or APR_PROGRAM on entry, may be
  *             changed to invoke the program with alternate semantics.
  * @remark This callback may be registered by the os-specific module 
@@ -78,6 +78,6 @@
 APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_cgi_build_command, 
                         (const char **cmd, const char ***argv,
                          request_rec *r, apr_pool_t *p, 
-                         int replace_cmd, apr_cmdtype_e *type));
+                         int process_cgi, apr_cmdtype_e *type));
 
 #endif /* _MOD_CGI_H */
