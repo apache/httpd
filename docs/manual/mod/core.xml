@@ -153,7 +153,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
     charset parameter (the name of a character encoding) to be added
     to a response if and only if the response's content-type is either
     <code>text/plain</code> or <code>text/html</code>.  This should override
-    any charset specified in the body of the document via a <code>META</code>
+    any charset specified in the body of the response via a <code>META</code>
     element, though the exact behavior is often dependent on the user's client
     configuration. A setting of <code>AddDefaultCharset Off</code>
     disables this functionality. <code>AddDefaultCharset On</code> enables
