@@ -421,6 +421,7 @@ API_EXPORT(int) ap_parse_uri_components(pool *p, const char *uri,
         if (s == NULL) {
             /* we expect the common case to have no port */
             uptr->hostname = ap_pstrndup(p, hostinfo, uri - hostinfo);
+            uptr->port = uptr->scheme ? ap_default_port_for_scheme(uptr->scheme) : DEFAULT_HTTP_PORT;
             goto deal_with_path;
         }
         uptr->hostname = ap_pstrndup(p, hostinfo, s - hostinfo);
