@@ -377,7 +377,7 @@ static int example_handler
      * Now send our actual output.  Since we tagged this as being
      * "text/html", we need to embed any HTML.
      */
-    rputs ("<!DOCTYPE HTML PUBLIC \"+//W3C//DTD HTML 3.2//EN\">\n", r);
+    rputs ("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n", r);
     rputs ("<HTML>\n", r);
     rputs (" <HEAD>\n", r);
     rputs ("  <TITLE>mod_example Module Content-Handler Output\n", r);
