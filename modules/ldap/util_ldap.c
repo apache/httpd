@@ -259,7 +259,12 @@ LDAP_DECLARE(int) util_ldap_connection_open(request_rec *r,
     {
         apr_ldap_err_t *result = NULL;
 
-        apr_ldap_init(r->pool, &(ldc->ldap), ldc->host, ldc->port,
+	/* Since the host will include a port if the default port is not used,
+	   always specify the default ports for the port parameter.  This will allow
+	   a host string that contains multiple hosts the ability to mix some
+	   hosts with ports and some without. All hosts which do not specify 
+	   a port will use the default port.*/
+        apr_ldap_init(r->pool, &(ldc->ldap), ldc->host, ldc->secure?LDAPS_PORT:LDAP_PORT,
                       ldc->secure, &(result));
 
         if (result != NULL) {
