@@ -38,3 +38,4 @@ BuildLog.htm
 *.sto
 *.vcproj
 autom4te.cache
+httpd.spec
