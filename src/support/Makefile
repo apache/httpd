@@ -6,14 +6,13 @@ CC= gcc
 #For Optimization
 #CFLAGS= -O2
 #For debugging
-CFLAGS= -g
+CFLAGS= -g -Wall
 # For SCO ODT
 #EXTRA_LIBS= -lcrypt_i
 # For OS/2 port
 #EXTRA_LIBS= -llibufc -lsocket
 
-
-INCLUDES= -I../src
+INCLUDES= -I../src -I../src/regex
 
 RM= /bin/rm -f
 #--- You shouldn't have to edit anything else. ---
@@ -70,6 +69,9 @@ rotatelogs: rotatelogs.c
 
 logresolve: logresolve.c
 	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve $(EXTRA_LIBS)
+
+suexec: suexec.c
+	$(CC) $(INCLUDES) $(CFLAGS) suexec.c -o suexec
 
 clean:
 	rm -f $(TARGETS)
