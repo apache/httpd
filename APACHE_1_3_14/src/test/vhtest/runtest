@@ -1,0 +1,42 @@
+#!/bin/sh
+
+if [ $# -lt 1 ]; then
+    echo "usage: runtest /path/to/httpd" 1>&2
+    exit 1
+fi;
+
+httpd="$1"
+shift
+pwd="`pwd`"
+
+
+if [ $# = 0 ]; then
+    list=conf/test*.conf
+else
+    list=$*
+fi
+
+pid=0
+exitcode=0
+trap 'kill $pid >/dev/null 2>&1; exit $exitcode' 0 1 2 3 15
+
+for i in $list; do
+    j=`echo $i | sed -e 's#.*/##' -e 's#\.conf$##'`
+    echo ''
+    echo "==== $j ===="
+    f="$pwd/conf/$j.conf"
+    grep '^##' $f
+    $httpd -f $f
+    # such a pain to wait for the pid file to be created
+    sleep 1
+    pid="`cat logs/httpd.pid`"
+
+    sh bin/$j
+
+    # such a pain to know if it has finished
+    kill $pid
+    sleep 1
+    while kill -0 $pid >/dev/null 2>&1; do
+	sleep 1
+    done
+done

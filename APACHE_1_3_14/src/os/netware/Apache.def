@@ -1,0 +1,4 @@
+# NLMs Apache depends on
+
+MODULE clib.nlm
+MODULE apachec.nlm

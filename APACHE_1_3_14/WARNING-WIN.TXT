@@ -1,0 +1,8 @@
+WARNING: The Win32 release of Apache should 
+still be considered beta quality code.  
+It does not meet the normal standards of 
+stability and security that Unix releases do.  
+There are numerous known bugs and 
+inconsistencies.  There is also a much 
+greater chance of security holes being 
+present in the Win32 version of Apache.

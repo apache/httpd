@@ -1,0 +1,13 @@
+Makefile
+uri_delims.h
+gen_uri_delims
+test_char.h
+gen_test_char
+gen_uri_delims_R
+gen_test_char_R
+gen_uri_delims_D
+gen_uri_delims.ilk
+gen_uri_delims.pdb
+gen_test_char_D
+gen_test_char.ilk
+gen_test_char.pdb
