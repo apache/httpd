@@ -1147,16 +1147,7 @@ static void worker_main(int child_num)
 
 
         apr_getsocketopt(context->sock, APR_SO_DISCONNECTED, &disconnected);
-        if (disconnected) {
-            /* I have no idea if we should do anything here, so I leave this
-             * for a windows guy
-             */
-            /* Kill the clean-up registered by the iol. We want to leave 
-             * the accept socket open because we are about to try to 
-             * reuse it
-             */
-        }
-        else {
+        if (!disconnected) {
             context->accept_socket = INVALID_SOCKET;
             ap_lingering_close(c);
         }
