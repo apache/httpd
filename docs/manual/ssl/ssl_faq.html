@@ -87,7 +87,6 @@ author.
 <ul>
 <li><a href="#ToC25">What are Keys, CSRs and Certs?</a></li>
 <li><a href="#ToC26">Difference on startup?</a></li>
-<li><a href="#ToC27">How to create a dummy cert?</a></li>
 <li><a href="#ToC28">How to create a real cert?</a></li>
 <li><a href="#ToC29">How to create my own CA?</a></li>
 <li><a href="#ToC30">How to change a pass phrase?</a></li>
@@ -443,7 +442,6 @@ configuration directive?
     <strong id="faq">
 When I fire up the server, mod_ssl stops with the error
 "Failed to generate temporary 512 bit RSA private key", why?
-And a "PRNG not seeded" error occurs if I try "make certificate".
 </strong>&nbsp;&nbsp;
     [<a href="#entropy"><b>L</b></a>]
     <p>
@@ -456,13 +454,8 @@ And a "PRNG not seeded" error occurs if I try "make certificate".
     encryption. As of version 0.9.5, the OpenSSL functions that need
     randomness report an error if the PRNG has not been seeded with
     at least 128 bits of randomness. So mod_ssl has to provide enough
-    entropy to the PRNG to work correctly. For this one has to use the
-    <code>SSLRandomSeed</code> directives (to solve the run-time problem)
-    and create a <code>$HOME/.rnd</code> file to make sure enough
-    entropy is available also for the "<code>make certificate</code>"
-    step (in case the "<code>make certificate</code>" procedure is not
-    able to gather enough entropy theirself by searching for system
-    files).
+    entropy to the PRNG to work correctly.  For this one has to use the
+    <code>SSLRandomSeed</code> directives.
 </ul>
 <p>
 <br>
@@ -632,30 +625,6 @@ Seems like there is a difference on startup between the original Apache and an S
     scripts. As an alternative to this situation you can follow the steps
     below under ``How can I get rid of the pass-phrase dialog at Apache
     startup time?''.
-<p>
-<li><a name="ToC27"></a>
-    <a name="cert-dummy"></a>
-    <strong id="faq">
-How can I create a dummy SSL server Certificate for testing purposes?
-</strong>&nbsp;&nbsp;
-    [<a href="#cert-dummy"><b>L</b></a>]
-    <p>
-    A Certificate does not have to be signed by a public CA. You can use your
-    private key to sign the Certificate which contains your public key. You
-    can install this Certificate into your server, and people using Netscape
-    Navigator (not MSIE) will be able to connect after clicking OK to a
-    warning dialogue. You can get MSIE to work, and your customers can
-    eliminate the dialogue, by installing that Certificate manually into their
-    browsers.
-    <p>
-    Just use the ``<code>make certificate</code>'' command at the top-level
-    directory of the Apache source tree right before installing Apache via
-    ``<code>make install</code>''. This creates a self-signed SSL Certificate
-    which expires after 30 days and isn't encrypted (which means you don't
-    need to enter a pass-phrase at Apache startup time).
-    <p>
-    BUT REMEMBER: YOU REALLY HAVE TO CREATE A REAL CERTIFICATE FOR THE LONG
-    RUN! HOW THIS IS DONE IS DESCRIBED IN THE NEXT ANSWER.
 <p>
 <li><a name="ToC28"></a>
     <a name="cert-real"></a>
@@ -1097,8 +1066,8 @@ I try to connect to my freshly installed server?
     Either you have messed up your <code>SSLCipherSuite</code>
     directive (compare it with the pre-configured example in
     <code>httpd.conf-dist</code>) or you have choosen the DSA/DH
-    algorithms instead of RSA under "<code>make certificate</code>"
-    and ignored or overseen the warnings. Because if you have choosen
+    algorithms instead of RSA when you generated your private key
+    and ignored or overlooked the warnings.  If you have choosen
     DSA/DH, then your server no longer speaks RSA-based SSL ciphers
     (at least not until you also configure an additional RSA-based
     certificate/key pair). But current browsers like NS or IE only speak
