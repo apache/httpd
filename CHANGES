@@ -1,5 +1,8 @@
 Changes with Apache 2.0.45
 
+  *) mod_autoindex no longer forgets output format and enabled version
+     sort in linked column headers.  [André Malo]
+
   *) Use .sv instead of .se as extension for Swedish documents in the
      default configuration. PR 12877.  [André Malo]
 

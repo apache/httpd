@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 20:30:38 $]
+Last modified at [$Date: 2003/03/07 20:43:47 $]
 
 Release:
 
@@ -181,11 +181,6 @@ PATCHES TO PORT FROM 2.1
       modules/mappers/mod_rewrite.c: r1.148
       modules/mappers/mod_rewrite.h: r1.43
       +1: nd, wrowe
-
-    * let mod_autoindex not forget output format and enabled version
-      sort in linked column headers.
-      modules/generators/mod_autoindex.c: r1.116
-      +1: nd, wrowe, trawick (this looks like a simple typo)
 
     * mod_autoindex emits and accepts modern query string parameter
       delimiters (;). Thus column headers no longer contain unescaped

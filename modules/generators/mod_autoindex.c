@@ -2048,7 +2048,7 @@ static int index_directory(request_rec *r,
                 else if (qstring[2] == '1') {
                     autoindex_opts |= VERSION_SORT;
                 }
-                strcpy(fval, "&V= ");
+                strcpy(vval, "&V= ");
                 vval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }
