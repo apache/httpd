@@ -60,9 +60,9 @@ CLEAN :
 
 CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "../srclib/apr/include" /I\
- "../srclib/apr-util/include" /I "../include" /I "../os/win32" /D "NDEBUG" /D\
- "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "AP_DECLARE_STATIC"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\htdigest" /FD /c 
+ "../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D\
+ "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\htdigest" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 
@@ -141,7 +141,7 @@ CLEAN :
 	-@erase "$(INTDIR)\htdigest.idb"
 	-@erase "$(INTDIR)\htdigest.obj"
 	-@erase "$(OUTDIR)\htdigest.exe"
-	-@erase "$(OUTDIR)\htdigest.ilk"
+	-@erase "$(OUTDIR)\htdigest.map"
 	-@erase "$(OUTDIR)\htdigest.pdb"
 
 "$(OUTDIR)" :
@@ -149,9 +149,9 @@ CLEAN :
 
 CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I\
- "../srclib/apr-util/include" /I "../include" /I "../os/win32" /D "_DEBUG" /D\
- "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "AP_DECLARE_STATIC"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\htdigest" /FD /c 
+ "../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D\
+ "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\htdigest" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -192,8 +192,9 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo\
- /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\htdigest.pdb" /debug\
- /machine:I386 /out:"$(OUTDIR)\htdigest.exe" /pdbtype:sept 
+ /subsystem:console /incremental:no /pdb:"$(OUTDIR)\htdigest.pdb"\
+ /map:"$(INTDIR)\htdigest.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\htdigest.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\htdigest.obj" \
 	"..\srclib\apr-util\LibD\aprutil.lib" \
@@ -213,12 +214,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "htdigest - Win32 Release"
 
 "apr - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Release" 
    cd "..\..\support"
 
 "apr - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Release"\
  RECURSE=1 
    cd "..\..\support"
@@ -226,12 +227,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "htdigest - Win32 Debug"
 
 "apr - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Debug" 
    cd "..\..\support"
 
 "apr - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Debug" RECURSE=1\
  
    cd "..\..\support"
@@ -241,12 +242,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "htdigest - Win32 Release"
 
 "aprutil - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Release" 
    cd "..\..\support"
 
 "aprutil - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Release"\
  RECURSE=1 
    cd "..\..\support"
@@ -254,12 +255,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "htdigest - Win32 Debug"
 
 "aprutil - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Debug" 
    cd "..\..\support"
 
 "aprutil - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Debug"\
  RECURSE=1 
    cd "..\..\support"
@@ -270,14 +271,18 @@ SOURCE=.\htdigest.c
 DEP_CPP_HTDIG=\
 	"..\srclib\apr\include\apr.h"\
 	"..\srclib\apr\include\apr_errno.h"\
+	"..\srclib\apr\include\apr_file_info.h"\
 	"..\srclib\apr\include\apr_file_io.h"\
 	"..\srclib\apr\include\apr_general.h"\
 	"..\srclib\apr\include\apr_lib.h"\
 	"..\srclib\apr\include\apr_md5.h"\
 	"..\srclib\apr\include\apr_pools.h"\
+	"..\srclib\apr\include\apr_signal.h"\
 	"..\srclib\apr\include\apr_time.h"\
+	"..\srclib\apr\include\apr_user.h"\
+	"..\srclib\apr\include\apr_want.h"\
 	"..\srclib\apr\include\apr_xlate.h"\
-	"..\srclib\apr\network_io\os2\os2nerrno.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
 	
 
 "$(INTDIR)\htdigest.obj" : $(SOURCE) $(DEP_CPP_HTDIG) "$(INTDIR)"

@@ -43,16 +43,11 @@ ALL : "$(OUTDIR)\gen_uri_delims.exe"
 
 !ELSE 
 
-ALL : "aprutil - Win32 Release" "apr - Win32 Release"\
- "$(OUTDIR)\gen_uri_delims.exe"
+ALL : "$(OUTDIR)\gen_uri_delims.exe"
 
 !ENDIF 
 
-!IF "$(RECURSE)" == "1" 
-CLEAN :"apr - Win32 ReleaseCLEAN" "aprutil - Win32 ReleaseCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\gen_uri_delims.idb"
 	-@erase "$(INTDIR)\gen_uri_delims.obj"
 	-@erase "$(OUTDIR)\gen_uri_delims.exe"
@@ -106,9 +101,7 @@ LINK32_FLAGS=kernel32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\Release\gen_uri_delims.pdb" /machine:I386\
  /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \
-	"$(INTDIR)\gen_uri_delims.obj" \
-	"..\srclib\apr-util\LibR\aprutil.lib" \
-	"..\srclib\apr\LibR\apr.lib"
+	"$(INTDIR)\gen_uri_delims.obj"
 
 "$(OUTDIR)\gen_uri_delims.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -129,16 +122,11 @@ ALL : "$(OUTDIR)\gen_uri_delims.exe"
 
 !ELSE 
 
-ALL : "aprutil - Win32 Debug" "apr - Win32 Debug"\
- "$(OUTDIR)\gen_uri_delims.exe"
+ALL : "$(OUTDIR)\gen_uri_delims.exe"
 
 !ENDIF 
 
-!IF "$(RECURSE)" == "1" 
-CLEAN :"apr - Win32 DebugCLEAN" "aprutil - Win32 DebugCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\gen_uri_delims.idb"
 	-@erase "$(INTDIR)\gen_uri_delims.obj"
 	-@erase "$(OUTDIR)\Debug\gen_uri_delims.pdb"
@@ -193,9 +181,7 @@ LINK32_FLAGS=kernel32.lib /nologo /subsystem:console /incremental:no\
  /pdb:"$(OUTDIR)\Debug\gen_uri_delims.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\gen_uri_delims.exe" 
 LINK32_OBJS= \
-	"$(INTDIR)\gen_uri_delims.obj" \
-	"..\srclib\apr-util\LibD\aprutil.lib" \
-	"..\srclib\apr\LibD\apr.lib"
+	"$(INTDIR)\gen_uri_delims.obj"
 
 "$(OUTDIR)\gen_uri_delims.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -207,63 +193,6 @@ LINK32_OBJS= \
 
 !IF "$(CFG)" == "gen_uri_delims - Win32 Release" || "$(CFG)" ==\
  "gen_uri_delims - Win32 Debug"
-
-!IF  "$(CFG)" == "gen_uri_delims - Win32 Release"
-
-"apr - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Release" 
-   cd "..\..\server"
-
-"apr - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Release"\
- RECURSE=1 
-   cd "..\..\server"
-
-!ELSEIF  "$(CFG)" == "gen_uri_delims - Win32 Debug"
-
-"apr - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Debug" 
-   cd "..\..\server"
-
-"apr - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Debug" RECURSE=1\
- 
-   cd "..\..\server"
-
-!ENDIF 
-
-!IF  "$(CFG)" == "gen_uri_delims - Win32 Release"
-
-"aprutil - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Release" 
-   cd "..\..\server"
-
-"aprutil - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Release"\
- RECURSE=1 
-   cd "..\..\server"
-
-!ELSEIF  "$(CFG)" == "gen_uri_delims - Win32 Debug"
-
-"aprutil - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Debug" 
-   cd "..\..\server"
-
-"aprutil - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Debug"\
- RECURSE=1 
-   cd "..\..\server"
-
-!ENDIF 
-
 SOURCE=.\gen_uri_delims.c
 
 "$(INTDIR)\gen_uri_delims.obj" : $(SOURCE) "$(INTDIR)"

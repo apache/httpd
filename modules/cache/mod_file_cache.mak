@@ -43,14 +43,13 @@ ALL : "$(OUTDIR)\mod_file_cache.so"
 
 !ELSE 
 
-ALL : "libaprutil - Win32 Release" "libhttpd - Win32 Release"\
- "libapr - Win32 Release" "$(OUTDIR)\mod_file_cache.so"
+ALL : "libhttpd - Win32 Release" "libapr - Win32 Release"\
+ "$(OUTDIR)\mod_file_cache.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN"\
- "libaprutil - Win32 ReleaseCLEAN" 
+CLEAN :"libapr - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -117,7 +116,6 @@ LINK32_FLAGS=/nologo /subsystem:windows /dll /incremental:no\
 LINK32_OBJS= \
 	"$(INTDIR)\mod_file_cache.obj" \
 	"..\..\Release\libhttpd.lib" \
-	"..\..\srclib\apr-util\Release\libaprutil.lib" \
 	"..\..\srclib\apr\Release\libapr.lib"
 
 "$(OUTDIR)\mod_file_cache.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -139,14 +137,13 @@ ALL : "$(OUTDIR)\mod_file_cache.so"
 
 !ELSE 
 
-ALL : "libaprutil - Win32 Debug" "libhttpd - Win32 Debug"\
- "libapr - Win32 Debug" "$(OUTDIR)\mod_file_cache.so"
+ALL : "libhttpd - Win32 Debug" "libapr - Win32 Debug"\
+ "$(OUTDIR)\mod_file_cache.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN"\
- "libaprutil - Win32 DebugCLEAN" 
+CLEAN :"libapr - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -214,7 +211,6 @@ LINK32_FLAGS=/nologo /subsystem:windows /dll /incremental:no\
 LINK32_OBJS= \
 	"$(INTDIR)\mod_file_cache.obj" \
 	"..\..\Debug\libhttpd.lib" \
-	"..\..\srclib\apr-util\Debug\libaprutil.lib" \
 	"..\..\srclib\apr\Debug\libapr.lib"
 
 "$(OUTDIR)\mod_file_cache.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -231,12 +227,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_file_cache - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\cache"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\cache"
@@ -244,12 +240,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\cache"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\cache"
@@ -259,12 +255,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_file_cache - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "\test\httpd-2.0"
+   cd "\clean\httpd-2.0"
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\cache"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0"
+   cd "\clean\httpd-2.0"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
  CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\cache"
@@ -272,44 +268,15 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "\test\httpd-2.0"
+   cd "\clean\httpd-2.0"
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\cache"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0"
+   cd "\clean\httpd-2.0"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\cache"
-
-!ENDIF 
-
-!IF  "$(CFG)" == "mod_file_cache - Win32 Release"
-
-"libaprutil - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
- 
-   cd "..\..\modules\cache"
-
-"libaprutil - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
- CFG="libaprutil - Win32 Release" RECURSE=1 
-   cd "..\..\modules\cache"
-
-!ELSEIF  "$(CFG)" == "mod_file_cache - Win32 Debug"
-
-"libaprutil - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Debug" 
-   cd "..\..\modules\cache"
-
-"libaprutil - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
- CFG="libaprutil - Win32 Debug" RECURSE=1 
-   cd "..\..\modules\cache"
 
 !ENDIF 
 
@@ -317,6 +284,7 @@ SOURCE=.\mod_file_cache.c
 DEP_CPP_MOD_F=\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_mmn.h"\
+	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
@@ -328,15 +296,16 @@ DEP_CPP_MOD_F=\
 	"..\..\include\util_filter.h"\
 	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
-	"..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apu.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\
 	"..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
-	"..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\srclib\apr\include\apr_lock.h"\
 	"..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\srclib\apr\include\apr_network_io.h"\
@@ -346,11 +315,13 @@ DEP_CPP_MOD_F=\
 	"..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\srclib\apr\include\apr_thread_proc.h"\
 	"..\..\srclib\apr\include\apr_time.h"\
-	"..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\srclib\apr\include\apr_user.h"\
+	"..\..\srclib\apr\include\apr_want.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
+	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_F=\
 	"..\..\include\ap_config_auto.h"\
-	"..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\mod_file_cache.obj" : $(SOURCE) $(DEP_CPP_MOD_F) "$(INTDIR)"

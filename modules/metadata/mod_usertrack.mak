@@ -43,14 +43,13 @@ ALL : "$(OUTDIR)\mod_usertrack.so"
 
 !ELSE 
 
-ALL : "libaprutil - Win32 Release" "libhttpd - Win32 Release"\
- "libapr - Win32 Release" "$(OUTDIR)\mod_usertrack.so"
+ALL : "libhttpd - Win32 Release" "libapr - Win32 Release"\
+ "$(OUTDIR)\mod_usertrack.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN"\
- "libaprutil - Win32 ReleaseCLEAN" 
+CLEAN :"libapr - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -117,7 +116,6 @@ LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
 LINK32_OBJS= \
 	"$(INTDIR)\mod_usertrack.obj" \
 	"..\..\Release\libhttpd.lib" \
-	"..\..\srclib\apr-util\Release\libaprutil.lib" \
 	"..\..\srclib\apr\Release\libapr.lib"
 
 "$(OUTDIR)\mod_usertrack.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -139,14 +137,13 @@ ALL : "$(OUTDIR)\mod_usertrack.so"
 
 !ELSE 
 
-ALL : "libaprutil - Win32 Debug" "libhttpd - Win32 Debug"\
- "libapr - Win32 Debug" "$(OUTDIR)\mod_usertrack.so"
+ALL : "libhttpd - Win32 Debug" "libapr - Win32 Debug"\
+ "$(OUTDIR)\mod_usertrack.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN"\
- "libaprutil - Win32 DebugCLEAN" 
+CLEAN :"libapr - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -214,7 +211,6 @@ LINK32_FLAGS=kernel32.lib /nologo /subsystem:windows /dll /incremental:no\
 LINK32_OBJS= \
 	"$(INTDIR)\mod_usertrack.obj" \
 	"..\..\Debug\libhttpd.lib" \
-	"..\..\srclib\apr-util\Debug\libaprutil.lib" \
 	"..\..\srclib\apr\Debug\libapr.lib"
 
 "$(OUTDIR)\mod_usertrack.so" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -231,12 +227,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_usertrack - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\metadata"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\metadata"
@@ -244,12 +240,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_usertrack - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\metadata"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\metadata"
@@ -259,12 +255,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_usertrack - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "\test\httpd-2.0"
+   cd "\clean\httpd-2.0"
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\metadata"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0"
+   cd "\clean\httpd-2.0"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
  CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\metadata"
@@ -272,44 +268,15 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_usertrack - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "\test\httpd-2.0"
+   cd "\clean\httpd-2.0"
    $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\metadata"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0"
+   cd "\clean\httpd-2.0"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\metadata"
-
-!ENDIF 
-
-!IF  "$(CFG)" == "mod_usertrack - Win32 Release"
-
-"libaprutil - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
- 
-   cd "..\..\modules\metadata"
-
-"libaprutil - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
- CFG="libaprutil - Win32 Release" RECURSE=1 
-   cd "..\..\modules\metadata"
-
-!ELSEIF  "$(CFG)" == "mod_usertrack - Win32 Debug"
-
-"libaprutil - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Debug" 
-   cd "..\..\modules\metadata"
-
-"libaprutil - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
- CFG="libaprutil - Win32 Debug" RECURSE=1 
-   cd "..\..\modules\metadata"
 
 !ENDIF 
 
@@ -317,6 +284,7 @@ SOURCE=.\mod_usertrack.c
 DEP_CPP_MOD_U=\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_mmn.h"\
+	"..\..\include\ap_release.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_request.h"\
@@ -326,11 +294,13 @@ DEP_CPP_MOD_U=\
 	"..\..\include\util_filter.h"\
 	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
-	"..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apu.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\srclib\apr\include\apr_general.h"\
 	"..\..\srclib\apr\include\apr_lib.h"\
@@ -340,11 +310,12 @@ DEP_CPP_MOD_U=\
 	"..\..\srclib\apr\include\apr_strings.h"\
 	"..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\srclib\apr\include\apr_time.h"\
-	"..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\srclib\apr\include\apr_user.h"\
+	"..\..\srclib\apr\include\apr_want.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MOD_U=\
 	"..\..\include\ap_config_auto.h"\
-	"..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\mod_usertrack.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"

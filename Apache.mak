@@ -39,14 +39,14 @@ ALL : "$(OUTDIR)\Apache.exe"
 
 !ELSE 
 
-ALL : "libaprutil - Win32 Release" "libhttpd - Win32 Release"\
+ALL : "libhttpd - Win32 Release" "libaprutil - Win32 Release"\
  "libapr - Win32 Release" "$(OUTDIR)\Apache.exe"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 ReleaseCLEAN" "libhttpd - Win32 ReleaseCLEAN"\
- "libaprutil - Win32 ReleaseCLEAN" 
+CLEAN :"libapr - Win32 ReleaseCLEAN" "libaprutil - Win32 ReleaseCLEAN"\
+ "libhttpd - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -132,14 +132,14 @@ ALL : "$(OUTDIR)\Apache.exe"
 
 !ELSE 
 
-ALL : "libaprutil - Win32 Debug" "libhttpd - Win32 Debug"\
+ALL : "libhttpd - Win32 Debug" "libaprutil - Win32 Debug"\
  "libapr - Win32 Debug" "$(OUTDIR)\Apache.exe"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 DebugCLEAN" "libhttpd - Win32 DebugCLEAN"\
- "libaprutil - Win32 DebugCLEAN" 
+CLEAN :"libapr - Win32 DebugCLEAN" "libaprutil - Win32 DebugCLEAN"\
+ "libhttpd - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -247,34 +247,6 @@ LINK32_OBJS= \
 
 !IF  "$(CFG)" == "Apache - Win32 Release"
 
-"libhttpd - Win32 Release" : 
-   cd "."
-   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
-   cd "."
-
-"libhttpd - Win32 ReleaseCLEAN" : 
-   cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
- CFG="libhttpd - Win32 Release" RECURSE=1 
-   cd "."
-
-!ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
-
-"libhttpd - Win32 Debug" : 
-   cd "."
-   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
-   cd "."
-
-"libhttpd - Win32 DebugCLEAN" : 
-   cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
- RECURSE=1 
-   cd "."
-
-!ENDIF 
-
-!IF  "$(CFG)" == "Apache - Win32 Release"
-
 "libaprutil - Win32 Release" : 
    cd ".\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
@@ -299,6 +271,34 @@ LINK32_OBJS= \
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Debug" RECURSE=1 
    cd "..\.."
+
+!ENDIF 
+
+!IF  "$(CFG)" == "Apache - Win32 Release"
+
+"libhttpd - Win32 Release" : 
+   cd "."
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
+   cd "."
+
+"libhttpd - Win32 ReleaseCLEAN" : 
+   cd "."
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
+ CFG="libhttpd - Win32 Release" RECURSE=1 
+   cd "."
+
+!ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
+
+"libhttpd - Win32 Debug" : 
+   cd "."
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
+   cd "."
+
+"libhttpd - Win32 DebugCLEAN" : 
+   cd "."
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
+ RECURSE=1 
+   cd "."
 
 !ENDIF 
 
@@ -328,6 +328,7 @@ DEP_CPP_MAIN_=\
 	".\include\ap_config.h"\
 	".\include\ap_mmn.h"\
 	".\include\ap_mpm.h"\
+	".\include\ap_release.h"\
 	".\include\http_config.h"\
 	".\include\http_log.h"\
 	".\include\http_main.h"\
@@ -339,9 +340,11 @@ DEP_CPP_MAIN_=\
 	".\include\util_ebcdic.h"\
 	".\include\util_uri.h"\
 	".\os\win32\os.h"\
-	".\srclib\apr-util\include\ap_hooks.h"\
+	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apu.h"\
 	".\srclib\apr\include\apr.h"\
 	".\srclib\apr\include\apr_errno.h"\
+	".\srclib\apr\include\apr_file_info.h"\
 	".\srclib\apr\include\apr_file_io.h"\
 	".\srclib\apr\include\apr_general.h"\
 	".\srclib\apr\include\apr_getopt.h"\
@@ -352,12 +355,13 @@ DEP_CPP_MAIN_=\
 	".\srclib\apr\include\apr_tables.h"\
 	".\srclib\apr\include\apr_thread_proc.h"\
 	".\srclib\apr\include\apr_time.h"\
+	".\srclib\apr\include\apr_user.h"\
+	".\srclib\apr\include\apr_want.h"\
 	".\srclib\apr\include\apr_xlate.h"\
-	".\srclib\apr\network_io\os2\os2nerrno.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_MAIN_=\
 	".\include\ap_config_auto.h"\
-	".\include\ap_config_path.h"\
 	".\server\xmlparse.h"\
 	
 
