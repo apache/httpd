@@ -395,7 +395,7 @@
 <example>Accept: image/*, */*</example>
 
     <p>would indicate that any type starting "image/" is acceptable,
-    as is any other type (so the first "image/*" is redundant).
+    as is any other type.
     Some browsers routinely send wildcards in addition to explicit
     types they can handle. For example:</p>
 
@@ -404,11 +404,8 @@
 </example>
     <p>The intention of this is to indicate that the explicitly listed
     types are preferred, but if a different representation is
-    available, that is ok too. However under the basic algorithm,
-    as given above, the */* wildcard has exactly equal preference
-    to all the other types, so they are not being preferred. The
-    browser should really have sent a request with a lower quality
-    (preference) value for *.*, such as:</p>
+    available, that is ok too.  Using explicit quality values,
+    what the browser really wants is something like:</p>
 <example>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*; q=0.01
 </example>
@@ -424,7 +421,7 @@
     preferred over matches against "*/*". If any media type on the
     Accept: header contains a q factor, these special values are
     <em>not</em> applied, so requests from browsers which send the
-    correct information to start with work as expected.</p>
+    explicit information to start with work as expected.</p>
 </section>
 
 <section id="exceptions"><title>Language Negotiation Exceptions</title>
