@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/06/07 10:46:12 $]
+Last modified at [$Date: 2001/06/18 12:52:21 $]
 
 Release:
 
@@ -277,9 +277,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       remove any old functionality. Keep everything, even if it needs
       #if 0...endif wrapped to not make trouble for you.
 
-    * Performance: Get SINGLE_LISTENER_UNSERIALIZED_ACCEPT
-      optimization working again. Bill would like to see this
-      working for the threaded MPM, then prefork.
+    * Performance: Get the SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+      optimization working in threaded.  prefork's new design for how
+      to notice data on the pod should be sufficient.
 
     * mod_tls is very specific to OpenSSL. Make the API calls
       more generic to support other encryption libraries.
