@@ -1301,8 +1301,9 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	}
 
 	pid = (*func) (data);
-	if (pid == -1) {
-	    /* If we are going to save it, we ought to do something with it later, right? - Ben */
+        if (pid == -1) pid = 0;     // map Win32 error code onto Unix default
+
+        if (!pid) {
 	    save_errno = errno;
 	    close(in_fds[1]);
 	    close(out_fds[0]);
@@ -1317,9 +1318,7 @@ static int spawn_child_err_core(pool *p, int (*func) (void *), void *data,
 	if (pipe_err)
 	    dup2(hStdErr, fileno(stderr));
 
-	if(pid == -1)
-	    aplog_error(APLOG_MARK, APLOG_ERR, NULL, "spawn failed");
-	else {
+        if (pid) {
 	    note_subprocess(p, pid, kill_how);
 	    if (pipe_in) {
 		*pipe_in = in_fds[1];
