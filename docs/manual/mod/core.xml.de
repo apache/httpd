@@ -2429,13 +2429,6 @@ Ressource zugreifen k&ouml;nnen</description>
     <directive module="core" type="section">Limit</directive>-Abschnitts
     platzieren.</p>
 </usage>
-<note type="warning">A <directive type="section"
-       module="core">LimitExcept</directive> section should always be
-       used in preference to a <directive type="section"
-       module="core">Limit</directive> section when restricting access,
-       since a <directive type="section"
-       module="core">LimitExcept</directive> section provides protection
-       against arbitrary methods.</note>
 <seealso><directive module="core">Satisfy</directive></seealso>
 <seealso><module>mod_access</module></seealso>
 </directivesynopsis>
