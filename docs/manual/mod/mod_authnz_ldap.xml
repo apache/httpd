@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.2 $ -->
+<!-- $Revision: 1.3 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -87,6 +87,7 @@ for HTTP Basic authentication.</description>
           <li><a href="#requser">require ldap-user</a></li>
           <li><a href="#reqgroup">require ldap-group</a></li>
           <li><a href="#reqdn">require ldap-dn</a></li>
+          <li><a href="#reqattribute">require ldap-attribute</a></li>
         </ul>
       </li>
 
@@ -210,6 +211,11 @@ for HTTP Basic authentication.</description>
       the DN fetched from the LDAP directory (or the username
       passed by the client) occurs in the LDAP group.</li>
 
+      <li>Grant access if there is a <a href="#reqattribute">
+      <code>require ldap-attribute</code></a> 
+      directive, and the attribute fetched from the LDAP directory
+      matches the given value.</li> 
+
       <li>otherwise, deny or decline access</li>
     </ul>
 
@@ -278,9 +284,10 @@ for HTTP Basic authentication.</description>
     <p>Apache's <directive module="core">Require</directive>
     directives are used during the authorization phase to ensure that
     a user is allowed to access a resource.  mod_authnz_ldap extends the 
-    authorization types with <code>ldap-user</code>, <code>ldap-dn</code> 
-    and <code>ldap-group</code>.  Other authorization types may also be 
-    used but may require that additional authorization modules be loaded.</p>
+    authorization types with <code>ldap-user</code>, <code>ldap-dn</code>, 
+    <code>ldap-group</code> and <code>ldap-attribute</code>.  Other 
+    authorization types may also be used but may require that additional 
+    authorization modules be loaded.</p>
 
 <section id="reqvaliduser"><title>require valid-user</title>
 
@@ -371,6 +378,34 @@ uniqueMember: cn=Fred User, o=Airius<br />
     module="mod_authnz_ldap">AuthLDAPCompareDNOnServer</directive>
     directive.</p>
 </section>
+
+<section id="reqattribute"><title>require ldap-attribute</title>
+
+    <p>The <code>require ldap-attribute</code> directive allows the
+    administrator to grant access based on attributes of the authenticated
+    user in the LDAP directory.  If the attribute in the directory
+    matches the value given in the configuration, access is granted.</p>
+    
+    <p>The following directive would grant access to anyone with
+    the attribute employeeType = active</p>
+
+    <example>require ldap-attribute employeeType=active</example>
+
+    <p>Multiple attribute/value pairs can be specified on the same line
+    separated by spaces or they can be specified in multiple 
+    <code>require ldap-attribute</code> directives. The effect of listing 
+    multiple attribute/values pairs is an OR operation. Access will be 
+    granted if any of the listed attribute values match the value of the 
+    corresponding attribute in the user object. If the value of the 
+    attribute contains a space, only the value must be within double quotes.</p>
+
+    <p>The following directive would grant access to anyone with
+    the city attribute equal to "San Jose" or status equal to "Active"</p>
+
+    <example>require ldap-attribute city="San Jose" status=active</example>
+
+</section>
+
 </section>
 
 <section id="examples"><title>Examples</title>
