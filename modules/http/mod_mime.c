@@ -787,6 +787,7 @@ static int find_ct(request_rec *r)
     char *ext;
     const char *type;
     const char *charset = NULL;
+    int found_any = 0;
     apr_array_header_t *exception_list =
         apr_array_make(r->pool, 2, sizeof(char *));
 
@@ -869,15 +870,18 @@ static int find_ct(request_rec *r)
 
         /* Not good... nobody claims it.
          */
-        if (!found)
+        if (found)
+            found_any = 1;
+        else
             *((const char **) apr_array_push(exception_list)) = ext;
     }
 
     /*
      * Need to set a notes entry on r for unrecognized elements.
-     * Somebody better claim them!
+     * Somebody better claim them!  If we did absolutely nothing,
+     * skip the notes to alert mod_negotiation we are clueless.
      */
-    if (exception_list->nelts) {
+    if (found_any) {
         apr_table_setn(r->notes, "ap-mime-exceptions-list", 
                        (void *)exception_list);
     }
