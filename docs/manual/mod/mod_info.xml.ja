@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.9 -->
 
 <name>mod_info</name>
 <description>サーバの設定の包括的な概観を提供する</description>
@@ -23,8 +23,8 @@ SetHandler server-info<br />
 </example>
 
     <p>サーバ設定の情報へのアクセスを制限するために、
-    <directive module="core">&lt;location&gt;</directive>
-    ディレクティブの中に <directive module="core">&lt;Limit&gt;</directive>
+    <directive type="section" module="core">Location</directive>
+    ディレクティブの中に <directive type="section" module="core">Limit</directive>
     節を入れるとよいかもしれません。</p>
 
     <p>一旦設定すると、<code>http://your.host.dom/server-info</code>
@@ -62,8 +62,8 @@ SetHandler server-info<br />
 <description>server-info ハンドラにより表示されるモジュールの情報に
 追加の情報を付け加える</description>
 <syntax>AddModuleInfo <em>module-name string</em></syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 <compatibility>Apache 1.3 以降</compatibility>
 
 <usage>
@@ -72,9 +72,11 @@ SetHandler server-info<br />
     として解釈され、表示されるようにします。例:</p>
 
 <example>
-AddModuleInfo mod_auth.c 'See &lt;A \<br />
-  HREF="http://www.apache.org/docs/mod/mod_auth.html"&gt;\<br />
-  http://www.apache.org/docs/mod/mod_auth.html&lt;/A&gt;'
+  AddModuleInfo mod_authn_file.c 'See &lt;a \<br />
+  <indent>
+    href="http://www.apache.org/docs-2.0/mod/mod_authn_file.html"&gt;\<br />
+    http://www.apache.org/docs-2.0/mod/mod_authn_file.html&lt;/a&gt;'
+  </indent>
 </example>
 </usage>
 

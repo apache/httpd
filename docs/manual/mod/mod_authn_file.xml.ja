@@ -2,14 +2,14 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.2 -->
+<!-- English revision: 1.3 -->
 
 <name>mod_authn_file</name>
 <description>テキストファイルを用いたユーザ認証</description>
 <status>Base</status>
 <sourcefile>mod_authn_file.c</sourcefile>
 <identifier>authn_file_module</identifier>
-<compatibility>Apache 2.0.42 以降</compatibility>
+<compatibility>Apache 2.0.44 以降</compatibility>
 
 <summary>
 
@@ -41,7 +41,7 @@
 テキストファイルの名前を設定する</description>
 <syntax>AuthUserFile <em>file-path</em></syntax>
 <contextlist>
-  <context>ディレクトリ</context>
+  <context>directory</context>
   <context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
