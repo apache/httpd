@@ -1,5 +1,9 @@
 Changes with Apache 2.0.25-dev
 
+  *) Added the common error/ tree to the build/install targets 
+     (similar to the common icons/ tree) for the multi-language error 
+     messages that Lars committed earlier.  [William Rowe]
+
   *) Added a multi process, multi threaded OS/2 MPM mpmt_os2.  [Brian Havard]
 
   *) Added a default commented-out mod_ldap and mod_auth_ldap
