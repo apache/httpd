@@ -211,7 +211,8 @@ char *pregsub(pool *p, const char *input, const char *source,
     const char *src = input;
     char *dest, *dst;
     char c;
-    int no, len;
+    size_t no;
+    int len;
 
     if (!source) return NULL;
     if (!nmatch) return pstrdup(p, src);
@@ -226,9 +227,9 @@ char *pregsub(pool *p, const char *input, const char *source,
 	else if (c == '$' && isdigit(*src))
 	    no = *src++ - '0';
 	else
-	    no = -1;
+	    no = 10;
 	
-	if (no < 0) {   /* Ordinary character. */
+	if (no > 9) {   /* Ordinary character. */
 	    if (c == '\\' && (*src == '$' || *src == '&'))
 		c = *src++;
 	    len++;
@@ -250,9 +251,9 @@ char *pregsub(pool *p, const char *input, const char *source,
 	else if (c == '$' && isdigit(*src))
 	    no = *src++ - '0';
 	else
-	    no = -1;
+	    no = 10;
 	
-	if (no < 0) {   /* Ordinary character. */
+	if (no > 9) {   /* Ordinary character. */
 	    if (c == '\\' && (*src == '$' || *src == '&'))
 		c = *src++;
 	    *dst++ = c;
