@@ -597,7 +597,7 @@ struct process_rec {
     /** How many command line arguments were pass to the program */
     int argc;
     /** The command line arguments */
-    char *const *argv;
+    const char * const *argv;
     /** The program name used to execute the program */
     const char *short_name;
 };

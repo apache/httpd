@@ -358,7 +358,9 @@ apr_status_t ap_registry_store_value(const char *key, const char *name, const ch
     return_error(rv);
 }
 
-apr_status_t ap_registry_store_array(apr_pool_t *p, const char *key, const char *name, int nelts, char const* const* elts)
+apr_status_t ap_registry_store_array(apr_pool_t *p,
+                                     const char *key, const char *name,
+                                     int nelts, const char * const * elts)
 {
     int  bufsize, i;
     char *buf, *tmp;
