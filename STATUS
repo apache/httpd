@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/12/17 16:58:41 $]
+  Last modified at [$Date: 2000/12/18 03:24:11 $]
 
 Release:
 
@@ -33,8 +33,9 @@ RELEASE SHOWSTOPPERS:
 
     * protocol/6973: http_protocol.c isn't compatible with HTTP RFC.
       Message-ID: <007401c06544$a0b48320$92c0b0d0@roweclan.net>
-      Status: See suggested patch:
-        <000d01c067d1$21116db0$92c0b0d0@roweclan.net
+      Status: See most recently revised patch:
+        <002601c0685a$b78bc630$92c0b0d0@roweclan.net>
+        Caviat - need 2nd patch to accept ';' suffix on Ranges:bytes= line
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
