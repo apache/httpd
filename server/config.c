@@ -1088,27 +1088,28 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 
     /* loop through the access names and find the first one */
 
-    while (!f && access_name[0]) {
-        char * w = ap_getword_conf(r->pool, &access_name);
-        filename = ap_make_full_path(r->pool, d, w);
-	f = ap_pcfg_openfile(r->pool, filename);
-    }
-    if (f) {
-        dc = ap_create_per_dir_config(r->pool);
+    while (access_name[0]) {
+        filename = ap_make_full_path(r->pool, d,
+                                     ap_getword_conf(r->pool, &access_name));
 
-	parms.config_file = f;
+        if ((f = ap_pcfg_openfile(r->pool, filename)) != NULL) {
 
-	errmsg = ap_srm_command_loop(&parms, dc);
+            dc = ap_create_per_dir_config(r->pool);
 
-	ap_cfg_closefile(f);
+            parms.config_file = f;
 
-	if (errmsg) {
-	    ap_log_rerror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r,
-			  "%s: %s", filename, errmsg);
-	    return HTTP_INTERNAL_SERVER_ERROR;
-	}
-	*result = dc;
-    }
+            errmsg = ap_srm_command_loop(&parms, dc);
+
+            ap_cfg_closefile(f);
+
+            if (errmsg) {
+                ap_log_rerror(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, r,
+                              "%s: %s", filename, errmsg);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+            *result = dc;
+            break;
+        }
         else if (errno != ENOENT && errno != ENOTDIR) {
             ap_log_rerror(APLOG_MARK, APLOG_CRIT, r,
                           "%s pcfg_openfile: unable to check htaccess file, "

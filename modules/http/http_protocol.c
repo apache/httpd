@@ -1558,9 +1558,6 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
         r->sent_bodyct = 1;
         return;
     }
-    else {
-	fixup_vary(r);
-    }
 
     /*
      * Now that we are ready to send a response, we need to combine the two
@@ -1580,6 +1577,9 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 	ap_table_unset(r->headers_out, "Vary");
 	r->proto_num = HTTP_VERSION(1,0);
 	ap_table_set(r->subprocess_env, "force-response-1.0", "1");
+    }
+    else {
+	fixup_vary(r);
     }
 
     ap_basic_http_header(r);
