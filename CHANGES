@@ -1,4 +1,4 @@
-Changes with Apache 2.0.21-dev
+Changes with Apache 2.0.21
 
   *) Introduce connection sub-pools into ab.  Truncating the lifetime
      of these allocations means that ab no longer perpetually grows
