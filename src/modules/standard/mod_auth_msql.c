@@ -280,7 +280,7 @@
  *		management tool. Added EncryptedPassword on/off functionality.
  *		msqlClose() statements added upon error. Support for persistent
  *		connections with the mSQL database (riscy). Escaping of ' and \.
- *		Replaced some MAX_STRING_LENGTH claims. 
+ *		Replaced some MAX_STRING_LEN claims. 
  *	   1.0  removed some error check as they where already done elsehwere
  *	        NumFields -> NumRows (Thanks Vitek). More stack memory.
  *	   1.1	no logging of empty password strings.
@@ -560,7 +560,7 @@ char *msql_escape(char *out, char *in, char *msql_errstr) {
 
       /* does this fit ? */
       if (j >= (MAX_FIELD_LEN-1)) {
-	ap_snprintf(msql_errstr, MAX_STRING_LENGTH, 
+	ap_snprintf(msql_errstr, MAX_STRING_LEN, 
 		"Could not escape '%s', longer than %d",in,MAX_FIELD_LEN);
 	return NULL;
 	};
@@ -602,7 +602,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int 
 	/* (re) open if nessecary
 	 */
     	if (sock==-1) if ((sock=msqlConnect(host)) == -1) {
-		ap_snprintf (msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf (msql_errstr, MAX_STRING_LEN,
 			"mSQL: Could not connect to Msql DB %s (%s)",
 			(sec->auth_msql_host ? sec->auth_msql_host : "\'unset, assuming localhost!\'"),
 			msqlErrMsg);
@@ -613,7 +613,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int 
 	 * and is quite cheap anyway
 	 */
     	if (msqlSelectDB(sock,sec->auth_msql_database) == -1 ) {
-		ap_snprintf (msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf (msql_errstr, MAX_STRING_LEN,
 			"mSQL: Could not select Msql Table \'%s\' on host \'%s\'(%s)",
 			(sec->auth_msql_database ? sec->auth_msql_database : "\'unset!\'"),
 		        (sec->auth_msql_host ? sec->auth_msql_host : "\'unset, assuming localhost!\'"),
@@ -624,7 +624,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int 
 		}
 
     	if (msqlQuery(sock,query) == -1 ) {
-		ap_snprintf (msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf (msql_errstr, MAX_STRING_LEN,
 			"mSQL: Could not Query database '%s' on host '%s' (%s) with query [%s]",
 			(sec->auth_msql_database ? sec->auth_msql_database : "\'unset!\'"),
 		        (sec->auth_msql_host ? sec->auth_msql_host : "\'unset, assuming localhost!\'"),
@@ -636,7 +636,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int 
 		}
 
 	if (!(results=msqlStoreResult())) {
-		ap_snprintf (msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf (msql_errstr, MAX_STRING_LEN,
 			"mSQL: Could not get the results from mSQL database \'%s\' on \'%s\' (%s) with query [%s]",
 			(sec->auth_msql_database ? sec->auth_msql_database : "\'unset!\'"),
 		        (sec->auth_msql_host ? sec->auth_msql_host : "\'unset, assuming localhost!\'"),
@@ -653,7 +653,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int 
           /* complain if there are to many
            * matches.
            */
-          ap_snprintf (msql_errstr, MAX_STRING_LENGTH,
+          ap_snprintf (msql_errstr, MAX_STRING_LEN,
 		"mSQL: More than %d matches (%d) whith query [%s]",
          	once,hit,( query ? query : "\'unset!\'") );
 	} else
@@ -663,7 +663,7 @@ char *do_msql_query(request_rec *r, char *query, msql_auth_config_rec *sec, int 
 		if ( (currow=msqlFetchRow(results)) != NULL) {
 			/* copy the first matching field value */
 			if (!(result=palloc(r->pool,strlen(currow[0])+1))) {
-				ap_snprintf (msql_errstr, MAX_STRING_LENGTH,
+				ap_snprintf (msql_errstr, MAX_STRING_LEN,
 					"mSQL: Could not get memory for mSQL %s (%s) with [%s]",
 					(sec->auth_msql_database ? sec->auth_msql_database : "\'unset!\'"),
 					msqlErrMsg,
@@ -701,7 +701,7 @@ char *get_msql_pw(request_rec *r, char *user, msql_auth_config_rec *sec ,char *m
 	    (!sec->auth_msql_pwd_field) ||
 	    (!sec->auth_msql_uname_field)
 	   ) {
-		ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf(msql_errstr, MAX_STRING_LEN,
 			"mSQL: Missing parameters for password lookup: %s%s%s",
 			(sec->auth_msql_pwd_table ? "" : "Password table "),
 			(sec->auth_msql_pwd_field ? "" : "Password field name "),
@@ -711,7 +711,7 @@ char *get_msql_pw(request_rec *r, char *user, msql_auth_config_rec *sec ,char *m
 		};
 
     	if (!(msql_escape(esc_user, user, msql_errstr))) {
-		ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf(msql_errstr, MAX_STRING_LEN,
 			"mSQL: Could not cope/escape the '%s' user_id value; ",user);
 		return NULL;
     	};
@@ -738,7 +738,7 @@ char *get_msql_grp(request_rec *r, char *group,char *user, msql_auth_config_rec 
 	    (!sec->auth_msql_grp_field) ||
 	    (!sec->auth_msql_uname_field)
 	   ) {
-		ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf(msql_errstr, MAX_STRING_LEN,
 			"mSQL: Missing parameters for group lookup: %s%s%s",
 			(sec->auth_msql_grp_table ? "" : "Group table "),
 			(sec->auth_msql_grp_field ? "" : "GroupID field name "),
@@ -748,13 +748,13 @@ char *get_msql_grp(request_rec *r, char *group,char *user, msql_auth_config_rec 
 		};
 
     	if (!(msql_escape(esc_user, user,msql_errstr))) {
-		ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf(msql_errstr, MAX_STRING_LEN,
 			"mSQL: Could not cope/escape the '%s' user_id value",user);
 
 		return NULL;
     	};
     	if (!(msql_escape(esc_group, group,msql_errstr))) {
-		ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+		ap_snprintf(msql_errstr, MAX_STRING_LEN,
 			"mSQL: Could not cope/escape the '%s' group_id value",group);
 
 		return NULL;
@@ -806,7 +806,7 @@ int msql_authenticate_basic_user (request_rec *r)
 		if (sec->auth_msql_authoritative) {
           	   /* insist that the user is in the database
           	    */
-          	   ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+          	   ap_snprintf(msql_errstr, MAX_STRING_LEN,
 			"mSQL: Password for user %s not found", c->user);
 		   note_basic_auth_failure (r);
 		   res = AUTH_REQUIRED;
@@ -826,7 +826,7 @@ int msql_authenticate_basic_user (request_rec *r)
 
     if ((sec->auth_msql_nopasswd) && (!strlen(real_pw))) {
 /*
-        ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+        ap_snprintf(msql_errstr, MAX_STRING_LEN,
 		"mSQL: user %s: Empty/'any' password accepted",c->user);
 	log_reason (msql_errstr, r->uri, r);
  */
@@ -837,7 +837,7 @@ int msql_authenticate_basic_user (request_rec *r)
      * an arms length.
      */
     if ((!strlen(real_pw)) || (!strlen(sent_pw))) {
-        ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+        ap_snprintf(msql_errstr, MAX_STRING_LEN,
 		"mSQL: user %s: Empty Password(s) Rejected",c->user);
 	log_reason (msql_errstr, r->uri, r);
 	note_basic_auth_failure (r);
@@ -856,7 +856,7 @@ int msql_authenticate_basic_user (request_rec *r)
         };
 
     if (strcmp(real_pw,sent_pw)) {
-        ap_snprintf(msql_errstr, MAX_STRING_LENGTH,
+        ap_snprintf(msql_errstr, MAX_STRING_LEN,
 		"mSQL user %s: password mismatch",c->user);
 	log_reason (msql_errstr, r->uri, r);
 	note_basic_auth_failure (r);
@@ -891,7 +891,7 @@ int msql_check_auth (request_rec *r) {
 
     if (!reqs_arr) {
 	if (sec->auth_msql_authoritative) {
-	        ap_snprintf(msql_errstr, MAX_STRING_LENGTH, "user %s denied, no access rules specified (MSQL-Authoritative) ",user);
+	        ap_snprintf(msql_errstr, MAX_STRING_LEN, "user %s denied, no access rules specified (MSQL-Authoritative) ",user);
 		log_reason (msql_errstr, r->uri, r);
 	        note_basic_auth_failure(r);
 		return AUTH_REQUIRED;
@@ -916,7 +916,7 @@ int msql_check_auth (request_rec *r) {
 		};
             }
 	    if ((sec->auth_msql_authoritative) && ( user_result != OK)) {
-           	ap_snprintf(msql_errstr, MAX_STRING_LENGTH, "User %s not found (MSQL-Auhtorative)",user);
+           	ap_snprintf(msql_errstr, MAX_STRING_LEN, "User %s not found (MSQL-Auhtorative)",user);
 		log_reason (msql_errstr, r->uri, r);
            	note_basic_auth_failure(r);
 		return AUTH_REQUIRED;
@@ -944,7 +944,7 @@ int msql_check_auth (request_rec *r) {
 		};
 
 	   if ( (sec->auth_msql_authoritative) && (group_result != OK) ) {
-           	ap_snprintf(msql_errstr, MAX_STRING_LENGTH, "user %s not in right groups (MSQL-Authoritative) ",user);
+           	ap_snprintf(msql_errstr, MAX_STRING_LEN, "user %s not in right groups (MSQL-Authoritative) ",user);
 		log_reason (msql_errstr, r->uri, r);
            	note_basic_auth_failure(r);
 		return AUTH_REQUIRED;
@@ -961,7 +961,7 @@ int msql_check_auth (request_rec *r) {
      * This really is not needed.
      */
     if (((group_result == AUTH_REQUIRED) || (user_result == AUTH_REQUIRED)) && (sec->auth_msql_authoritative) ) {
-        ap_snprintf(msql_errstr, MAX_STRING_LENGTH, "mSQL-Authoritative: Access denied on %s %s rule(s) ", 
+        ap_snprintf(msql_errstr, MAX_STRING_LEN, "mSQL-Authoritative: Access denied on %s %s rule(s) ", 
 		(group_result == AUTH_REQUIRED) ? "USER" : "", 
 		(user_result == AUTH_REQUIRED) ? "GROUP" : ""
 		);
