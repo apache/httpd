@@ -328,6 +328,8 @@ static int sendfile_handler(request_rec *r, a_file *file)
 #if APR_HAS_SENDFILE
     apr_size_t nbytes;
     apr_status_t rv = APR_EINIT;
+    apr_file_t *rfile;
+    apr_os_file_t fd;
 
     /* A cached file handle (more importantly, its file pointer) is 
      * shared by all threads in the process. The file pointer will 
@@ -350,8 +352,14 @@ static int sendfile_handler(request_rec *r, a_file *file)
             return DECLINED;
     }
 
-
-    rv = ap_send_fd(file->file, r, 0, file->finfo.size, &nbytes);
+    /* Create an apr_file_t anchored out of the request pool to use 
+     * on the call to ap_send_fd(). The cached apr_file_t is allocated 
+     * out of pconf (a life of the server pool) and sending it down
+     * the filter chain could cause memory leaks.
+     */
+    apr_os_file_get(&fd, file->file);
+    apr_os_file_put(&rfile, &fd, r->pool);
+    rv = ap_send_fd(rfile, r, 0, file->finfo.size, &nbytes);
     if (rv != APR_SUCCESS) {
         /* ap_send_fd will log the error */
         return HTTP_INTERNAL_SERVER_ERROR;
