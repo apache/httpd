@@ -53,7 +53,7 @@
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml.ja</modulefile>
   <modulefile>mod_nw_ssl.xml</modulefile>
-  <modulefile>mod_proxy.xml</modulefile>
+  <modulefile>mod_proxy.xml.ja</modulefile>
   <modulefile>mod_proxy_ajp.xml.ja</modulefile>
   <modulefile>mod_proxy_balancer.xml.ja</modulefile>
   <modulefile>mod_proxy_connect.xml</modulefile>
