@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/28 16:20:08 $]
+Last modified at [$Date: 2004/08/31 08:16:56 $]
 
 Release:
 
@@ -77,16 +77,17 @@ PATCHES TO BACKPORT FROM 2.1
         (2.0 + 1.3)
           modules/mappers/mod_rewrite.c: r1.259
         +1: nd
-
-    *) EOC bucket handling fix for core_output_filter (prevents possible variable use-
-       after-free since .49).
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.276&r2=1.277
-       +1: jorton, trawick, nd
        
     *) Don't link suexec against APR/etc libraries.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/Makefile.in?r1=1.38&r2=1.39
        +1: jorton, trawick
        nd: what about the need of -static (dunno)?
+       jorton: -static was needed only to make sure libapr etc were linked statically
+       into suexec; they didn't work shared in a binary distribution because
+       LD_LIBRARY_PATH etc are ignored for a setuid binary (that only matters
+       for binary distributors where suexec gets relocated, since libtool 
+       puts an appropriate RPATH in the binary).  Not linking suexec against libapr 
+       etc avoids the issue entirely (and avoids scary >1Mb suexec binaries)
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
