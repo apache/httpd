@@ -120,12 +120,11 @@ static apr_pool_t *pchild = NULL;
 static int workers_may_exit = 0;
 static int shutdown_in_progress = 0;
 static unsigned int g_blocked_threads = 0;
-static int ap_max_requests_per_child=0;
 
 static HANDLE shutdown_event;	/* used to signal the parent to shutdown */
 static HANDLE restart_event;	/* used to signal the parent to restart */
 static HANDLE exit_event;       /* used by parent to signal the child to exit */
-static HANDLE maintenance_event;
+static HANDLE max_requests_per_child_event;
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -669,6 +668,7 @@ static void winnt_accept(void *listen_socket)
 
     while (!shutdown_in_progress) {
         if (ap_max_requests_per_child && (requests_this_child > ap_max_requests_per_child)) {
+            SetEvent(max_requests_per_child_event);
             break;
 	}
         pCompContext = NULL;
@@ -935,6 +935,7 @@ static void cleanup_thread(thread *handles, int *thread_cnt, int thread_to_clean
 static void child_main()
 {
     apr_status_t status;
+    ap_listen_rec *lr;
     HANDLE child_events[2];
     char* exit_event_name;
     int nthreads = ap_threads_per_child;
@@ -964,13 +965,13 @@ static void child_main()
     }
 
     /* Initialize the child_events */
-    maintenance_event = CreateEvent(NULL, TRUE, FALSE, NULL);
+    max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     child_events[0] = exit_event;
-    child_events[1] = maintenance_event;
+    child_events[1] = max_requests_per_child_event;
 
     ap_assert(start_mutex);
     ap_assert(exit_event);
-    ap_assert(maintenance_event);
+    ap_assert(max_requests_per_child_event);
 
     apr_pool_create(&pchild, pconf);
     allowed_globals.jobsemaphore = CreateSemaphore(NULL, 0, 1000000, NULL);
@@ -1040,9 +1041,9 @@ static void child_main()
      *    The exit_event is signaled by the parent process to notify 
      *    the child that it is time to exit.
      *
-     * maintenance_event: 
-     *    This event is signaled by the worker thread pool to direct 
-     *    this thread to create more completion contexts.
+     * max_requests_per_child_event: 
+     *    This event is signaled by the worker threads to indicate that
+     *    the process has handled MaxRequestsPerChild connections.
      *
      * TIMEOUT:
      *    To do periodic maintenance on the server (check for thread exits,
@@ -1067,10 +1068,15 @@ static void child_main()
             break;
         }
         else {
-            /* Child maintenance event signaled */
-            ResetEvent(maintenance_event);
+            /* MaxRequestsPerChild event set by the worker threads.
+             * Signal the parent to restart
+             */
             ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                         "Child %d: Child maintenance event signaled.", my_pid);
+                         "Child %d: Process exiting because it reached "
+                         "MaxRequestsPerChild. Signaling the parent to "
+                         "restart a new child process.", my_pid);
+            ap_signal_parent(SIGNAL_PARENT_RESTART);
+            break;
         }
     }
 
@@ -1085,15 +1091,10 @@ static void child_main()
      */
     shutdown_in_progress = 1;
 
-    /* Close the listening sockets */
-    {
-        ap_listen_rec *lr;
-        for (lr = ap_listeners; lr ; lr = lr->next) {
-            apr_socket_close(lr->sd);
-        }
+    /* Close the listening sockets. */
+    for (lr = ap_listeners; lr ; lr = lr->next) {
+        apr_socket_close(lr->sd);
     }
-
-    /* Give the worker threads time to handle already accepted connections */
     Sleep(1000);
 
     /* Release the start_mutex to let the new process (in the restart
