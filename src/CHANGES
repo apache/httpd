@@ -1,5 +1,9 @@
 Changes with Apache 1.3.2
 
+  *) The IRIXN32 Rule was being ignored. Configure now correctly adds
+     -n32 only if IRIXN32 says to. [Jim Jagielski, Alain St-Denis
+     <alain.st-denis@ec.gc.ca>] PR#2736
+
   *) Clean up a warning in mod_proxy. [Ralf S. Engelschall]
 
   *) Renamed __EMX__ (internal define of the gcc port under OS/2) to OS2

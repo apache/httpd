@@ -888,6 +888,24 @@ if [ "x$using_shlib" = "x1" ] ; then
             fi
             LDFLAGS_SHLIB_EXPORT=""
             ;;
+        *-sgi-irix64)
+            case $CC in
+                */gcc|gcc )
+		    CFLAGS_SHLIB="-fpic"
+		    N32FLAG=""
+		    ;;
+                */cc|cc )
+		    CFLAGS_SHLIB="-KPIC"
+		    N32FLAG="-n32"
+		    ;;
+            esac
+            if [ "$RULE_IRIXN32" = "yes" ]; then
+                LDFLAGS_SHLIB="$N32FLAG -shared"
+            else
+                LDFLAGS_SHLIB="-shared"
+            fi
+            LDFLAGS_SHLIB_EXPORT=""
+            ;;
         *-sgi-irix)
             case $CC in
                 */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
@@ -1095,20 +1113,24 @@ case "$OS" in
 	esac
 	;;
     *IRIX-64*)
-	case "$CC" in
-	    */cc|cc )
-		CFLAGS="$CFLAGS -n32"
-		LDFLAGS="$LDFLAGS -n32"
-	    ;;
-	esac
+	if [ "$RULE_IRIXN32" = "yes" ]; then
+	    case "$CC" in
+		*/cc|cc )
+		    CFLAGS="$CFLAGS -n32"
+		    LDFLAGS="$LDFLAGS -n32"
+		;;
+	    esac
+	fi
 	;;
     *IRIX-32*)
-	case "$CC" in
-	    */cc|cc )
-		CFLAGS="$CFLAGS -n32"
-		LDFLAGS="$LDFLAGS -n32"
-	    ;;
-	esac
+	if [ "$RULE_IRIXN32" = "yes" ]; then
+	    case "$CC" in
+		*/cc|cc )
+		    CFLAGS="$CFLAGS -n32"
+		    LDFLAGS="$LDFLAGS -n32"
+		;;
+	    esac
+	fi
 	;;
     IBM?AIX?4.[123])
 	case $CC in
