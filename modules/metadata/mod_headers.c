@@ -78,6 +78,8 @@
 #include "util_filter.h"
 #include "http_protocol.h"
 
+#include "mod_ssl.h" /* for the ssl_var_lookup optional function defn */
+
 /* format_tag_hash is initialized during pre-config */
 static apr_hash_t *format_tag_hash;
 
@@ -133,6 +135,9 @@ typedef struct {
 
 module AP_MODULE_DECLARE_DATA headers_module;
 
+/* Pointer to ssl_var_lookup, if available. */
+static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *header_ssl_lookup = NULL;
+
 /*
  * Tag formatting functions
  */
@@ -149,15 +154,49 @@ static const char *header_request_time(request_rec *r, char *a)
 {
     return apr_psprintf(r->pool, "t=%" APR_TIME_T_FMT, r->request_time);
 }
+
+/* unwrap_header returns HDR with any newlines converted into
+ * whitespace if necessary. */
+static const char *unwrap_header(apr_pool_t *p, const char *hdr)
+{
+    if (ap_strchr_c(hdr, APR_ASCII_LF) || ap_strchr_c(hdr, APR_ASCII_CR)) {
+        char *ptr;
+        
+        hdr = ptr = apr_pstrdup(p, hdr);
+        
+        do {
+            if (*ptr == APR_ASCII_LF || *ptr == APR_ASCII_CR)
+                *ptr = APR_ASCII_BLANK;
+        } while (*ptr++);
+    }
+    return hdr;
+}
+
 static const char *header_request_env_var(request_rec *r, char *a)
 {
     const char *s = apr_table_get(r->subprocess_env,a);
 
     if (s)
-        return s;
+        return unwrap_header(r->pool, s);
     else
         return "(null)";
 }
+
+static const char *header_request_ssl_var(request_rec *r, char *name)
+{
+    if (header_ssl_lookup) {
+        const char *val = header_ssl_lookup(r->pool, r->server, 
+                                            r->connection, r, name);
+        if (val && val[0])
+            return unwrap_header(r->pool, val);
+        else
+            return "(null)";
+    }
+    else {
+        return "(null)";
+    }
+}
+
 /*
  * Config routines
  */
@@ -668,7 +707,14 @@ static int header_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
     register_format_tag_handler(p, "D", (void*) header_request_duration, 0);
     register_format_tag_handler(p, "t", (void*) header_request_time, 0);
     register_format_tag_handler(p, "e", (void*) header_request_env_var, 0);
+    register_format_tag_handler(p, "s", (void*) header_request_ssl_var, 0);
+    return OK;
+}
 
+static int header_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                              apr_pool_t *ptemp, server_rec *s)
+{
+    header_ssl_lookup = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
     return OK;
 }
 
@@ -679,6 +725,7 @@ static void register_hooks(apr_pool_t *p)
     ap_register_output_filter("FIXUP_HEADERS_ERR", ap_headers_error_filter,
                               NULL, AP_FTYPE_CONTENT_SET);
     ap_hook_pre_config(header_pre_config,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_post_config(header_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_insert_filter(ap_headers_insert_output_filter, NULL, NULL, APR_HOOK_LAST);
     ap_hook_insert_error_filter(ap_headers_insert_error_filter,
                                 NULL, NULL, APR_HOOK_LAST);
