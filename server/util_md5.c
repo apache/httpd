@@ -93,8 +93,8 @@
 API_EXPORT(char *) ap_md5_binary(ap_pool_t *p, const unsigned char *buf, int length)
 {
     const char *hex = "0123456789abcdef";
-    AP_MD5_CTX my_md5;
-    unsigned char hash[16];
+    ap_md5_ctx_t my_md5;
+    unsigned char hash[MD5_DIGESTSIZE];
     char *r, result[33];
     int i;
 
@@ -106,7 +106,7 @@ API_EXPORT(char *) ap_md5_binary(ap_pool_t *p, const unsigned char *buf, int len
     ap_MD5Update(&my_md5, buf, (unsigned int)length);
     ap_MD5Final(hash, &my_md5);
 
-    for (i = 0, r = result; i < 16; i++) {
+    for (i = 0, r = result; i < MD5_DIGESTSIZE; i++) {
 	*r++ = hex[hash[i] >> 4];
 	*r++ = hex[hash[i] & 0xF];
     }
@@ -165,7 +165,7 @@ API_EXPORT(char *) ap_md5(ap_pool_t *p, const unsigned char *string)
 static char basis_64[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *a, AP_MD5_CTX * context)
+API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *a, ap_md5_ctx_t *context)
 {
     unsigned char digest[18];
     char *encodedDigest;
@@ -194,7 +194,7 @@ API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *a, AP_MD5_CTX * context)
 
 API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile, int convert)
 {
-    AP_MD5_CTX context;
+    ap_md5_ctx_t context;
     unsigned char buf[1000];
     long length = 0;
     int nbytes;
@@ -216,7 +216,7 @@ API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile, int convert)
 
 API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile)
 {
-    AP_MD5_CTX context;
+    ap_md5_ctx_t context;
     unsigned char buf[1000];
     long length = 0;
     ap_ssize_t nbytes;

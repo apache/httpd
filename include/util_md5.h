@@ -63,11 +63,11 @@
 extern "C" {
 #endif
 
-#include "ap_md5.h"
+#include "apr_md5.h"
 
 API_EXPORT(char *) ap_md5(ap_pool_t *a, const unsigned char *string);
 API_EXPORT(char *) ap_md5_binary(ap_pool_t *a, const unsigned char *buf, int len);
-API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *p, AP_MD5_CTX * context);
+API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *p, ap_md5_ctx_t *context);
 API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile);
 
 #ifdef __cplusplus

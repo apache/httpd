@@ -59,7 +59,7 @@
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
 #include "http_main.h"
-#include "ap_md5.h"
+#include "apr_md5.h"
 #include "http_log.h"
 #include "util_uri.h"
 #include "util_date.h"	/* get ap_checkmask() decl. */
@@ -667,8 +667,8 @@ int ap_proxy_liststr(const char *list, const char *val)
  */
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
 {
-    AP_MD5_CTX context;
-    unsigned char digest[16];
+    ap_md5_ctx_t context;
+    unsigned char digest[MD5_DIGESTSIZE];
     char tmp[26];
     int i, k, d;
     unsigned int x;
@@ -714,8 +714,8 @@ void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
 
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength)
 {
-    AP_MD5_CTX context;
-    unsigned char digest[16];
+    ap_md5_ctx_t context;
+    unsigned char digest[MD5_DIGESTSIZE];
     char tmp[22];
     int i, k, d;
     unsigned int x;
