@@ -49,4 +49,5 @@ usage?, seealso*)>
 <!ELEMENT directiveindex (title | summary | modulefilelist)+>
 
 <!-- Used in quickreference.xml -->
-<!ELEMENT quickreference (title | summary | modulefilelist)+>
+<!ELEMENT quickreference (title | summary | legend | modulefilelist)+>
+<!ELEMENT legend (table, table)>

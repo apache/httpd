@@ -134,7 +134,7 @@
           <a href="{$path}/">
             <xsl:value-of select="$messages/message[@name='version']"/>
           </a>
-          <xsl:if test="../modulesynopsis or ../directiveindex">
+          <xsl:if test="../modulesynopsis or ../directiveindex or ../quickreference">
             <xsl:text> &gt; </xsl:text>
             <a href="./">
               <xsl:value-of select="$messages/message[@name='modules']"/>

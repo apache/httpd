@@ -242,11 +242,60 @@ table table.bordered th {
     border: 1px solid #000;
 }
 
-/* mod/dir. overview table  */
-/* ======================== */
+/* mod/dir. overview table and quick reference  */
+/* ============================================ */
 table.module th,
 table.directive th {
     white-space: nowrap;
+}
+
+table.qref {
+    border-collapse: collapse;
+    width: auto;
+}
+
+table.qref td {
+    border-style: none solid;
+    border-color: #000;
+    border-width: 1px;
+}
+
+table.qref td.descr {
+    padding-left: 1em;
+    font-size: 11pt;
+}
+
+table#legend {
+    width: 100%;
+    border-style: none;
+    border-width: 0;
+    vertical-align: bottom;
+    padding: 0;
+    margin: 0;
+}
+
+table#legend td {
+    vertical-align: bottom;
+    margin: 0;
+    padding: 0;
+}
+
+table#legend table {
+    vertical-align: bottom;
+    margin: 0 0 0 0.4em;
+    padding: 0;
+    height: 7.5em;
+}
+
+table#legend td.letters span {
+    display: none;
+}
+
+table#legend table td,
+table#legend table th {
+    vertical-align: middle;
+    padding: 0.1ex 0.2em;
+    line-height: 1em;
 }
 
 /* related modules & dir. */
@@ -454,11 +503,17 @@ div.directive-section {
 }
 
 /* look for this on directive
- * list page...
+ * list pages
  */
 div#directive-list {
     margin-left: 0;
     padding: 0 0 1em 1em;
+}
+
+div#directive-ref {
+    margin: -1em 0 0 1px;
+    padding: 0 0 1em 0;
+    width: auto;
 }
 
 /* no sidebar */
