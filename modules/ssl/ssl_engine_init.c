@@ -882,6 +882,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
             if (sk_X509_NAME_find(skCAList, sk_X509_NAME_value(sk, n)) < 0)
                 sk_X509_NAME_push(skCAList, sk_X509_NAME_value(sk, n));
         }
+        sk_X509_NAME_free(sk);
     }
 
     /*
@@ -899,6 +900,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
                 if (sk_X509_NAME_find(skCAList, sk_X509_NAME_value(sk, n)) < 0)
                     sk_X509_NAME_push(skCAList, sk_X509_NAME_value(sk, n));
             }
+            sk_X509_NAME_free(sk);
         }
         apr_dir_close(dir);
     }
