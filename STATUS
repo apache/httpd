@@ -1,11 +1,10 @@
   1.3 STATUS:
-  Last modified at [$Date: 2001/01/21 01:03:24 $]
+  Last modified at [$Date: 2001/01/21 03:06:46 $]
 
 Release:
 
-    1.3.16-dev: We are in Code Freeze! Jim is RM. Will be tagged and
-            rolled as soon as we figure out this core dumping
-            problem.
+    1.3.16: Tagged and Rolled Jan 20, 2001. To be Released and
+            Announced Jan 22/23, 2001.
     1.3.15: Not released. Pulled due to CVS dumping core during the
             tagging when it reached src/os/win32/
     1.3.14: Tagged & Rolled Oct 10, 2000.  Released and
