@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.1.2.5 -->
 <manualpage metafile="content-negotiation.xml.meta">
 
 <title>내용협상 (Content Negotiation)</title>
@@ -402,18 +402,6 @@
     문서가 있다면, "fr" 문서가 선택됨을 주의하라. 이는 HTTP/1.1
     표준을 지키고, 올바로 설정된 클라이언트와 효율적으로
     동작하기위함이다.</p>
-
-    <p>사용자가 선호하는 언어를 알아내기위한 (쿠키나 특별한
-	URL-경로 같은) 고급 기법을 지원하기위해 아파치 2.1부터
-	<module>mod_negotiation</module>은 <code>prefer-language</code>라는
-	<a href="env.html">환경변수</a>를 인식한다. 이 환경변수가
-	존재하고 적절한 언어태그를 포함한다면,
-	<module>mod_negotiation</module>은 해당하는 변형을 선택하려고
-	시도한다. 그런 변형이 없다면 일반적인 협상과정을 시작한다.</p>
-
-    <example><title>예제</title>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1
-    </example>
 </section>
 </section>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English revision: 1.8 -->
+<!-- English revision: 1.3.2.4 -->
 
 <manualpage metafile="glossary.xml.meta">
 
@@ -327,7 +327,7 @@ SSL 버전 3과 거의 유사하다.<br />
 Identifier</a>라고 하는 것의 일상적인 비공식 용어다. 보통 URL은
 <code>http</code>나 <code>https</code>같은 스킴(scheme), 호스트명,
 경로로 구성된다. 이 페이지의 URL은
-<code>http://httpd.apache.org/docs-2.1/glossary.html</code>이다.</dd>
+<code>http://httpd.apache.org/docs-2.0/glossary.html</code>이다.</dd>
 
 <dt><a name="uniformresourceidentifier">Uniform Resource Identifier</a>
 <a name="URI">(URI)</a></dt> <dd>추상적인 자원이나 실제 자원을

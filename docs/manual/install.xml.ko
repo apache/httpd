@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English revision: 1.18 -->
+<!-- English revision: 1.11.2.7 -->
 <manualpage metafile="install.xml.meta">
 
   <title>컴파일과 설치</title>
@@ -32,15 +32,15 @@
         <td><a href="#download">다운로드</a></td>
 
         <td><code>$ lynx
-        http://www.apache.org/dist/httpd/httpd-2_1_<em>NN</em>.tar.gz</code>
+        http://www.apache.org/dist/httpd/httpd-2_0_<em>NN</em>.tar.gz</code>
         </td>
       </tr>
 
       <tr>
         <td><a href="#extract">압축 풀기</a></td>
 
-        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
+        <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-2_0_<em>NN</em>.tar</code> </td>
       </tr>
 
       <tr>
@@ -164,11 +164,11 @@
     pgp 버전에 따라 다름) 다음 명령어중 하나로 배포본을 확인할
     수 있다:</p>
 
-<example>$ pgp httpd-2_1_<em>NN</em>.tar.gz.asc</example>
+<example>$ pgp httpd-2_0_<em>NN</em>.tar.gz.asc</example>
 
     <p>혹은</p>
 
-<example>$ gpg --verify httpd-2_1_<em>NN</em>.tar.gz.asc</example>
+<example>$ gpg --verify httpd-2_0_<em>NN</em>.tar.gz.asc</example>
 
     <p>다음과 같은 메세지가 나와야 한다.</p>
 
@@ -187,8 +187,8 @@
     tar를 푸는 것이다:</p>
 
 <example>
-      $ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-       $ tar xvf httpd-2_1_<em>NN</em>.tar
+      $ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
+       $ tar xvf httpd-2_0_<em>NN</em>.tar
 </example>
 
     <p>그러면 현재 디렉토리 아래에 배포본의 소스코드를 담은
@@ -452,7 +452,7 @@
 <section id="dbm"><title>DBM</title>
 
     <p>
-    <module>mod_authn_dbm</module>과 <module>mod_rewrite</module>의
+    <module>mod_auth_dbm</module>과 <module>mod_rewrite</module>의
     DBM <directive module="mod_rewrite">RewriteMap</directive>같은
     여러 아파치 기능은 정보를 빨리 찾아보기위해 키와 값으로된
     간단한 데이터베이스를 사용한다. 아파치는 소스코드에 SDBM을
@@ -520,8 +520,8 @@
     <p>사용가능한 <a href="mod/directives.html">설정 지시어</a>에
     대한 완전한 설명과 이 문서의 가장 최근 판은 <a
     href="./">docs/manual/</a>이나 <a
-    href="http://httpd.apache.org/docs-2.1/"
-    >http://httpd.apache.org/docs-2.1/</a>에 있는 아파치 설명서를
+    href="http://httpd.apache.org/docs-2.0/"
+    >http://httpd.apache.org/docs-2.0/</a>에 있는 아파치 설명서를
     참고하라.</p>
 </section>
 

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English revision: 1.10 -->
+<!-- English revision: 1.3.2.7 -->
 
 <manualpage metafile="index.xml.meta">
 

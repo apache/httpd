@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.2.2.2 -->
 
 <manualpage metafile="details.xml.meta">
 <parentdocument href="./">가상호스트</parentdocument>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.2.2.6 -->
 <manualpage metafile="stopping.xml.meta">
 
   <title>중단과 재시작</title>

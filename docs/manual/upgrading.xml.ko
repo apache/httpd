@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English revision: 1.11 -->
+<!-- English revision: 1.6.2.5 -->
 <manualpage metafile="upgrading.xml.meta">
 
 <title>1.3에서 2.0으로 업그레이드</title>
