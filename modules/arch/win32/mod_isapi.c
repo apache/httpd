@@ -655,7 +655,7 @@ BOOL WINAPI WriteClient (HCONN ConnID, LPVOID Buffer, LPDWORD lpwdwBytes,
         ; /* XXX: Fake it */
 
     bb = apr_brigade_create(r->pool);
-    b = apr_bucket_transient_create(Buffer, (apr_size_t)lpwdwBytes);
+    b = apr_bucket_transient_create(Buffer, *lpwdwBytes);
     APR_BRIGADE_INSERT_TAIL(bb, b);
     b = apr_bucket_eos_create();
     APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -727,6 +727,10 @@ static apr_off_t SendResponseHeaderEx(isapi_cid *cid, const char *stat,
         return -1;
     
     /* Headers will actually go when they are good and ready */
+
+    /* If all went well, tell the caller we consumed the headers complete */
+    if (!termch)
+        return(headlen);
 
     /* Any data left is sent directly by the caller, all we
      * give back is the size of the headers we consumed
