@@ -359,7 +359,12 @@ case "$PLAT" in
     	SOLVER=`echo $PLAT | sed -e 's/^.*solaris2.//'`
 	OS="Solaris $SOLVER"
 	CFLAGS="$CFLAGS -DSOLARIS2=$SOLVER"
-	LIBS="$LIBS -lsocket -lnsl -lpthread"
+	LIBS="$LIBS -lsocket -lnsl"
+	case "$SOLVER" in
+	    25*)
+	    	LIBS="$LIBS -lpthread"
+		;;
+	esac
 	DBM_LIB=""
 	case "$SOLVER" in
 	    2[0123]*)
