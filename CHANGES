@@ -1,3 +1,8 @@
+Changes with Apache 2.0.42
+
+  *) Fixed mod_disk_cache's generation of 304s
+     [Kris Verbeeck <Kris.Verbeeck@ubizen.com>]
+
 Changes with Apache 2.0.41
 
   *) Add support for using fnmatch patterns in the final path
