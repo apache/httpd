@@ -131,7 +131,7 @@
 
       <li>The <code>AddModule</code> and
       <code>ClearModuleList</code> directives no longer exist.
-      These directives where used to ensure that modules could be
+      These directives were used to ensure that modules could be
       enabled in the correct order. The new Apache 2.0 API allows
       modules to explicitly specify their ordering, eliminating the
       need for these directives.</li>
