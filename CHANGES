@@ -159,6 +159,11 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.46
 
+  *) If a Date response header was already set in the headers array,
+     this value was ignored in favour of the current time. This meant
+     that Date headers on proxied requests where rewritten when they
+     should not have been. PR: 14376 [Graham Leggett]
+
   *) Add code to buildconf that produces an httpd.spec file from
      httpd.spec.in, using build/get-version.sh from APR.
      [Graham Leggett]
