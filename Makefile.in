@@ -54,8 +54,8 @@ install-htdocs:
 	@echo Installing HTML documents
 	@test -d $(htdocsdir) || $(MKINSTALLDIRS) $(htdocsdir)
 	@test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(htdocsdir))
-        @test -d $(htdocsdir)/manual || $(MKINSTALLDIRS) $(htdocsdir)/manual
-        @test -d docs/manual && (cd docs/manual && cp -rp * $(htdocsdir)/manual)
+	@test -d $(htdocsdir)/manual || $(MKINSTALLDIRS) $(htdocsdir)/manual
+	@test -d docs/manual && (cd docs/manual && cp -rp * $(htdocsdir)/manual)
 
 install-icons:
 	@echo Installing icons
