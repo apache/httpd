@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.30 $ -->
+<!-- $Revision: 1.31 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -166,6 +166,17 @@ query can be done in two ways which can be configured by
     you have to enter all of them, of course) while minimizing the terminal
     dialog (i.e. when you use a single Pass Phrase for all N Private Key files
     this Pass Phrase is queried only once).</p></li>
+
+<li><code>|/path/to/program [args...]</code> 
+
+   <p>This mode allows an external program to be used which acts as a
+   pipe to a particular input device; the program is sent the standard
+   prompt text used for the <code>builtin</code> mode on
+   <code>stdin</code>, and is expected to write password strings on
+   <code>stdout</code>.  If several passwords are needed (or an
+   incorrect password is entered), additional prompt text will be
+   written subsequent to the first password being returned, and more
+   passwords must then be written back.</p></li>
 
 <li><code>exec:/path/to/program</code>
     <p>
