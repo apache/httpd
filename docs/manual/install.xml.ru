@@ -473,7 +473,7 @@
 
 <section id="dbm"><title>DBM</title>
 
-    <p>Некоторые модули Apache, как например <module>mod_authn_dbm</module> и <module>mod_rewrite</module>
+    <p>Некоторые модули Apache, как например <module>mod_auth_dbm</module> и <module>mod_rewrite</module>
     (директива <directive module="mod_rewrite">RewriteMap</directive>), используют в своей работе простые
     базы данных, организованные по принципу ключ/значение, что увеличивает скорость доступа к информации.
     Поддержка SDBM баз данных включена в ядро сервера, так что использование баз данных подобного типа возможно

@@ -472,7 +472,7 @@
 
 <h3><a name="dbm" id="dbm">DBM</a></h3>
 
-    <p>Некоторые модули Apache, как например <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code> и <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
+    <p>Некоторые модули Apache, как например <code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code> и <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
     (директива <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>), используют в своей работе простые
     базы данных, организованные по принципу ключ/значение, что увеличивает скорость доступа к информации.
     Поддержка SDBM баз данных включена в ядро сервера, так что использование баз данных подобного типа возможно
