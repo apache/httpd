@@ -44,12 +44,16 @@
 
     <p>The single biggest hardware issue affecting webserver
     performance is RAM. A webserver should never ever have to swap,
-    swapping increases the latency of each request beyond a point
+    as swapping increases the latency of each request beyond a point
     that users consider "fast enough". This causes users to hit
     stop and reload, further increasing the load. You can, and
     should, control the <directive module="mpm_common"
     >MaxClients</directive> setting so that your server
-    does not spawn so many children it starts swapping.</p>
+    does not spawn so many children it starts swapping. This procedure
+    for doing this is simple: determine the size of your average Apache
+    process, by looking at your process list via a tool such as
+    <code>top</code>, and divide this into your total available memory,
+    leaving some room for other processes.</p>
 
     <p>Beyond that the rest is mundane: get a fast enough CPU, a
     fast enough network card, and fast enough disks, where "fast
@@ -105,21 +109,34 @@
       </directivelist>
     </related>
 
-    <section>
+    <section id="dns">
 
-      <title>HostnameLookups</title>
+      <title>HostnameLookups and other DNS considerations</title>
 
       <p>Prior to Apache 1.3, <directive module="core"
       >HostnameLookups</directive> defaulted to <code>On</code>.
       This adds latency to every request because it requires a
       DNS lookup to complete before the request is finished. In
-      Apache 1.3 this setting defaults to <code>Off</code>.
-      However (1.3 or later), if you use any <code>Allow from domain</code>
-      or <code>Deny from domain</code> directives then you will pay for
+      Apache 1.3 this setting defaults to <code>Off</code>. If you need
+      to have addresses in your log files resolved to hostnames, use the
+      <a href="../programs/logresolve.html"><code>logresolve</code></a>
+      program that comes with Apache, on one of the numerous log
+      reporting packages which are available.</p>
+
+      <p>It is recommended that you do this sort of postprocessing of
+      your log files on some machine other than the production web
+      server machine, in order that this activity not adversely affect
+      server performance.</p>
+
+      If you use any <code><directive module="access">Allow</directive> 
+      from domain</code> or <code><directive 
+      module="access">Deny</directive> from domain</code> 
+      directives (i.e., using a hostname, or a domain name, rather than
+      an IP address) then you will pay for
       a double reverse DNS lookup (a reverse, followed by a forward
-      to make sure that the reverse is not being spoofed). So for the
-      highest performance avoid using these directives (it's fine to
-      use IP addresses rather than domain names).</p>
+      to make sure that the reverse is not being spoofed). For best
+      performence, therefore, use IP addresses, rather than names, when
+      using these directives, if possible.</p>
 
       <p>Note that it's possible to scope the directives, such as
       within a <code>&lt;Location /server-status&gt;</code> section.
@@ -140,19 +157,9 @@
       could consider doing the <code>gethostbyname</code> call in the
       specific CGIs that need it.</p>
 
-      <p>Similarly, if you need to have hostname information in your
-      server logs in order to generate reports of this information,
-      you can postprocess your log file with <a
-      href="../programs/logresolve.html"><code>logresolve</code></a>,
-      so that these lookups can be done without making the client wait.
-      It is recommended that you do this postprocessing, and any other
-      statistical analysis of the log file, somewhere other than your
-      production web server machine, in order that this activity does
-      not adversely affect server performance.</p>
-
     </section>
 
-    <section>
+    <section id="symlinks">
 
       <title>FollowSymLinks and SymLinksIfOwnerMatch</title>
 
@@ -205,7 +212,7 @@
 
     </section>
 
-    <section>
+    <section id="htacess">
 
       <title>AllowOverride</title>
 
@@ -233,7 +240,7 @@
 
     </section>
 
-    <section>
+    <section id="negotiation">
 
       <title>Negotiation</title>
 
@@ -260,6 +267,13 @@
       <code>MultiViews</code>, as the necessary information can be
       determined by reading this single file, rather than having to
       scan the directory for files.</p>
+
+    <p>If your site needs content negotiation consider using
+    <code>type-map</code> files, rather than the <code>Options
+    MultiViews</code> directive to accomplish the negotiation. See the
+    <a href="../content-negotiation.html">Content Negotiation</a>
+    documentation for a full discussion of the methods of negotiation,
+    and instructions for creating <code>type-map</code> files.</p>
 
     </section>
 
@@ -331,7 +345,7 @@
 
     </section>
 
-    <section>
+    <section id="process">
 
       <title>Process Creation</title>
 
@@ -437,6 +451,34 @@
 
       <p>For more information on these and other MPMs, please
       see the MPM <a href="../mpm.html">documentation</a>.</p>
+
+    </section>
+
+    <section id="modules">
+
+        <title>Modules</title>
+
+        <p>Since memory usage is such an important consideration in
+        performance, you should attempt to eliminate modules that youare
+        not actually using. If you have built the modules as <a
+        href="../dso.html">DSOs</a>, eliminating modules is a simple
+        matter of commenting out the associated <directive
+        module="so">LoadModule</directive> directive for that module.
+        This allows you to experiment with removing modules, and seeing
+        if your site still functions in their absense.</p>
+
+        <p>If, on the other hand, you have modules statically linked
+        into your Apache binary, you will need to recompile Apache in
+        order to remove unwanted modules.</p>
+
+        <p>An associated question that arises here is, of course, what
+        modules you need, and which ones you don't. The answer here
+        will, of course, vary from one web site to another. However, the
+        <i>minimal</i> list of modules which you can get by with tends
+        to include <module>mod_mime</module>, <module>mod_dir</module>,
+        and <module>mod_log_config</module>. <code>mod_log_config</code> is,
+        of course, optional, as you can run a web site without log
+        files. This is, however, not recommended.</p>
 
     </section>
 
