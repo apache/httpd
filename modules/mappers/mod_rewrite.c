@@ -2265,21 +2265,30 @@ static void add_cookie(request_rec *r, char *s)
         notename = apr_pstrcat(rmain->pool, var, "_rewrite", NULL);
         apr_pool_userdata_get(&data, notename, rmain->pool);
         if (!data) {
+            char *exp_time = NULL;
+
             expires = apr_strtok(NULL, ":", &tok_cntx);
             path = expires ? apr_strtok(NULL, ":", &tok_cntx) : NULL;
 
+            if (expires) {
+                apr_time_exp_t tms;
+                apr_time_exp_gmt(&tms, r->request_time
+                                     + apr_time_from_sec((60 * atol(expires))));
+                exp_time = apr_psprintf(r->pool, "%s, %.2d-%s-%.4d "
+                                                 "%.2d:%.2d:%.2d GMT",
+                                        apr_day_snames[tms.tm_wday],
+                                        tms.tm_mday,
+                                        apr_month_snames[tms.tm_mon],
+                                        tms.tm_year+1900,
+                                        tms.tm_hour, tms.tm_min, tms.tm_sec);
+            }
+
             cookie = apr_pstrcat(rmain->pool,
                                  var, "=", val,
-                                 "; path=", (path)? path : "/",
+                                 "; path=", path ? path : "/",
                                  "; domain=", domain,
-                                 (expires)? "; expires=" : NULL,
-                                 (expires)?
-                                 ap_ht_time(r->pool,
-                                            r->request_time +
-                                            apr_time_from_sec((60 *
-                                                               atol(expires))),
-                                            "%a, %d-%b-%Y %T GMT", 1)
-                                          : NULL,
+                                 expires ? "; expires=" : NULL,
+                                 expires ? exp_time : NULL,
                                  NULL);
 
             apr_table_add(rmain->err_headers_out, "Set-Cookie", cookie);
