@@ -1,5 +1,9 @@
 Changes with Apache 2.0.48
 
+  *) Unix: Handle permissions settings for flock-based mutexes in 
+     unixd_set_global|proc_mutex_perms().  Allow the functions to be
+     called for any type of mutex.  PR 20312  [Jeff Trawick]
+
   *) ab: Work over non-loopback on Unix again. PR 21495. [Jeff Trawick]
 
   *) Fix a misleading message from the some of the threaded MPMs when 
