@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/06/18 12:52:21 $]
+Last modified at [$Date: 2001/06/26 11:59:50 $]
 
 Release:
 
@@ -378,6 +378,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * callers of ap_run_create_request() should check the return value
       for failure (Doug volunteers)
+
+    * when prefork bails out due to an initialization error in the detached
+      process (e.g., mutex init failure), other children (cgid, at least) 
+      are left hanging around
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
