@@ -70,7 +70,7 @@
  *      Apache server, and also to have child processes do accept() directly.
  *
  * April-July '95 rst
- *      Extensive rework for Shambhala.
+ *      Extensive rework for Apache.
  */
 
 
@@ -155,7 +155,7 @@ pid_t pgrp;
  * which is a pretty nice debugging environment.  (You'll get a SIGHUP
  * early in standalone_main; just continue through.  This is the server
  * trying to kill off any child processes which it might have lying
- * around --- Shambhala doesn't keep track of their pids, it just sends
+ * around --- Apache doesn't keep track of their pids, it just sends
  * SIGHUP to the process group, ignoring it in the root process.
  * Continue through and you'll be fine.).
  */

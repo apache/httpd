@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: rfc1413.c,v 1.4 1996/08/20 11:51:21 paul Exp $ */
+/* $Id: rfc1413.c,v 1.5 1996/11/03 20:52:11 brian Exp $ */
 
 /*
  * rfc1413() speaks a common subset of the RFC 1413, AUTH, TAP and IDENT
@@ -64,7 +64,7 @@
  * The Netherlands.
  */
 
-/* Some small additions for Shambhala --- ditch the "sccsid" var if
+/* Some small additions for Apache --- ditch the "sccsid" var if
  * compiling with gcc (it *has* changed), include conf.h for the
  * prototypes it defines on at least one system (SunlOSs) which has
  * them missing from the standard header files, and one minor change

@@ -55,7 +55,7 @@
  * 
  * Rob McCool 3/21/93
  *
- * Thoroughly revamped by rst for Shambhala.  NB this file reads
+ * Thoroughly revamped by rst for Apache.  NB this file reads
  * best from the bottom up.
  * 
  */
@@ -497,7 +497,7 @@ int file_walk (request_rec *r)
  * These do all access checks, etc., but don't actually run the transaction
  * ... use run_sub_req below for that.  Also, be sure to use destroy_sub_req
  * as appropriate if you're likely to be creating more than a few of these.
- * (An early Shambhala version didn't destroy the sub_reqs used in directory
+ * (An early Apache version didn't destroy the sub_reqs used in directory
  * indexing.  The result, when indexing a directory with 800-odd files in
  * it, was massively excessive storage allocation).
  *

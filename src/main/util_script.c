@@ -175,7 +175,7 @@ void add_common_vars(request_rec *r)
     table_set (e, "REMOTE_ADDR", c->remote_ip);
     table_set (e, "DOCUMENT_ROOT", document_root(r)); /* Apache */
     table_set (e, "SERVER_ADMIN", s->server_admin); /* Apache */
-    table_set (e, "SCRIPT_FILENAME", r->filename); /* Shambhala */
+    table_set (e, "SCRIPT_FILENAME", r->filename); /* Apache */
     
     if (c->user) table_set(e, "REMOTE_USER", c->user);
     if (c->auth_type) table_set(e, "AUTH_TYPE", c->auth_type);

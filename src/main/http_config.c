@@ -56,10 +56,10 @@
  *
  * Rob McCool 
  * 
- * Wall-to-wall rewrite for Shambhala... commands which are part of the
+ * Wall-to-wall rewrite for Apache... commands which are part of the
  * server core can now be found next door in "http_core.c".  Now contains
  * general command loop, and functions which do bookkeeping for the new
- * Shambhala config stuff (modules and configuration vectors).
+ * Apache config stuff (modules and configuration vectors).
  *
  * rst
  *
