@@ -841,7 +841,11 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
         return NULL;
     }
 
+#ifdef OS2
     file = ap_pfopen(p, name, "rt");
+#else
+    file = ap_pfopen(p, name, "r");
+#endif
 #ifdef DEBUG
     saved_errno = errno;
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, NULL,

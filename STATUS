@@ -1,13 +1,13 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/02/20 01:35:26 $]
+  Last modified at [$Date: 2000/02/20 15:04:59 $]
 
 Release:
 
-    1.3.12-dev: In development with a plan to RELEASE on Feb. 18, 2000.
+    1.3.12-dev: In development with a plan to RELEASE on Feb. 25, 2000.
          Jim offers to be RM.
-           Feb. 15: Freeze CVS tree
-           Feb. 16: tag and roll tarball
-           Feb. 18: Announce and release
+           Feb. 22: Freeze CVS tree
+           Feb. 23: tag and roll tarball
+           Feb. 25: Announce and release
     1.3.11: Tagged and rolled Jan. 19, 2000. Released and
             announced on the 21st.
     1.3.10: Not released. Pulled at "last minute" due to
@@ -27,7 +27,7 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-      general/5760: Use of text type "t" in fopen call...
+    * None at present
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
