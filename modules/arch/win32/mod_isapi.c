@@ -421,10 +421,10 @@ apr_status_t isapi_handler (request_rec *r)
 
     
     /* Set up client input */
-    rv = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR);
-    if (rv) {
+    res = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR);
+    if (res) {
         isapi_unload(isa, FALSE);
-        return HTTP_INTERNAL_SERVER_ERROR; /* XXX: The wrong error */
+        return res;
     }
 
     if (ap_should_client_block(r)) {
@@ -677,13 +677,6 @@ BOOL WINAPI ReadClient (HCONN ConnID, LPVOID lpvBuffer, LPDWORD lpdwSize)
     while (read < *lpdwSize &&
            ((res = ap_get_client_block(r, (char*)lpvBuffer + read,
                                        *lpdwSize - read)) > 0)) {
-        if (res < 0) {
-            *lpdwSize = 0;
-            if (!apr_get_os_error())
-                SetLastError(TODO_ERROR); /* XXX: Find the right error code */
-            return FALSE;
-        }
-
         read += res;
     }
 
@@ -742,7 +735,6 @@ static apr_off_t SendResponseHeaderEx(isapi_cid *cid, const char *stat,
     return 0;
 }
 
-/* XXX: Is there is still an O(n^2) attack possible here?  Please detail. */
 BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
                                   LPVOID lpvBuffer, LPDWORD lpdwSize,
                                   LPDWORD lpdwDataType)
