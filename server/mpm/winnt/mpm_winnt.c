@@ -443,7 +443,22 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
     HANDLE e;
     char *signal_name;
     
-    if (one_process) {
+    if (parent_pid == my_pid) {
+        switch(type) {
+           case SIGNAL_PARENT_SHUTDOWN: 
+           {
+               SetEvent(shutdown_event); 
+               break;
+           }
+           /* This MPM supports only graceful restarts right now */
+           case SIGNAL_PARENT_RESTART: 
+           case SIGNAL_PARENT_RESTART_GRACEFUL:
+           {
+               is_graceful = 1;
+               SetEvent(restart_event); 
+               break;
+           }
+        }
 	return;
     }
 
