@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/16 13:37:32 $]
+Last modified at [$Date: 2003/09/17 01:51:55 $]
 
 Release:
 
@@ -276,10 +276,6 @@ PATCHES TO PORT FROM 2.1
         modules/dav/main/mod_dav.c: r1.98, r1.99
       +1: nd, trawick
       (gstein likes the concept, but needs to review...)
-
-    * fix extern "C" declaration of util_ebcdic.h. PR: 22203
-        include/util_ebcdic.h: r1.15
-      +1: nd, trawick, fielding
 
     * Avoid an infinite recursion, which occured if the name of an included
       config file or directory contained a wildcard character. PR 22194.
