@@ -102,6 +102,7 @@ case $host in
       CORE_IMPLIB="$abs_srcdir/server/$CORE_IMPLIB_FILE"
       MK_IMPLIB="emximp"
       other_targets="$other_targets os2core"
+      INSTALL_PROG_FLAGS="-e .exe"
       ;;
   *)
       if test "x$LTFLAGS" = "x"; then
