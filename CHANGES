@@ -1,5 +1,9 @@
 Changes with Apache 2.0.19-dev
 
+  *) Fix an ab problem which could cause a divide-by-zero exception
+     with certain invocations (e.g., ab -k -c 6 -n 100 localhost/).
+     [Ian Holsman <ianh@cnet.com>]
+
   *) Solve case-insensitive platforms' confusion about negotiated
      filenames, allowing files of differnt case to match in choosing
      the document to serve.  [William Rowe]
