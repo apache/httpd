@@ -74,6 +74,7 @@ always available.
 <LI><A HREF="#servername">ServerName</A>
 <LI><A HREF="#serverpath">ServerPath</A>
 <LI><A HREF="#serverroot">ServerRoot</A>
+<LI><A HREF="#serversignature">ServerSignature</A>
 <LI><A HREF="#servertype">ServerType</A>
 <LI><A HREF="#startservers">StartServers</A>
 <LI><A HREF="#threadsperchild">ThreadsPerChild</A>
@@ -1584,6 +1585,32 @@ as relative to this directory.<P>
 See also <A HREF="../invoking.html">the <CODE>-d</CODE> option to httpd</A>.<P>
 See also <A HREF="../misc/security_tips.html#serverroot">the security tips</A>
 for information on how to properly set permissions on the ServerRoot.<P>
+
+<HR>
+
+<H2><A name="serversignature">ServerSignature directive</A></h2>
+<!--%plaintext &lt;?INDEX {\tt ServerSignature} directive&gt; -->
+<strong>Syntax:</strong> ServerSignature <em>Off | On | EMail</em><br>
+<strong>Default:</strong> <code>ServerSignature Off</code><br>
+<strong>Context:</strong> directory, .htaccess<br>
+<strong>Status:</strong> core<p>
+<strong>Compatibility:</strong> ServerSignature is only available in Apache
+1.3 and later.<p>
+
+The ServerSignature directive allows the configuration of a trailing
+footer line under server-generated documents (error messages,
+mod_proxy ftp directory listings, mod_info output, ...). The reason
+why you would want to enable such a footer line is that in a chain
+of proxies, the user often has no possibility to tell which of the
+chained servers actually produced a returned error message.<br>
+The <samp>Off</samp> setting, which is the default, suppresses the
+error line (and is therefore compatible with the behavior of
+Apache-1.2 and below). The <samp>On</samp> setting simply adds a
+line with the server version number and <A
+HREF="#servername">ServerName</A> of the serving virtual host, and
+the <samp>EMail</samp> setting additionally creates a "mailto:"
+reference to the <A HREF="#serveradmin">ServerAdmin</A> of the
+referenced document.
 
 <HR>
 

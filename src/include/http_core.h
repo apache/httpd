@@ -194,6 +194,7 @@ typedef struct {
 #endif
 
     /* logging options */
+    enum { srv_sig_off, srv_sig_on, srv_sig_withmail } server_signature;
     int loglevel;
     
     /* Access control */

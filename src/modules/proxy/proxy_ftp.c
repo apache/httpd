@@ -379,11 +379,23 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	    o += w;
 	}
     }
-    strcpy (buf, "</PRE><HR></BODY></HTML>\n");
-    bputs(buf, con->client);
+    site = "</PRE><HR>\n";
+    bputs(site, con->client);
     if (f2 != NULL)
-	bputs(buf, f2);
-    total_bytes_sent += strlen(buf);
+	bputs(site, f2);
+    total_bytes_sent += strlen(site);
+
+    site = psignature("", r);
+    bputs(site, con->client);
+    if (f2 != NULL)
+	bputs(site, f2);
+    total_bytes_sent += strlen(site);
+
+    site = "</BODY></HTML>\n";
+    bputs(site, con->client);
+    if (f2 != NULL)
+	bputs(site, f2);
+    total_bytes_sent += strlen(site);
     bflush(con->client);
 
     return total_bytes_sent;
@@ -1033,6 +1045,8 @@ int proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     if (pasvmode)
 	bclose(data);
     bclose(f);
+
+    rflush(r);	/* flush before garbage collection */
 
     proxy_garbage_coll(r);
 

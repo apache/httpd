@@ -2181,6 +2181,7 @@ void send_error_response(request_rec *r, int recursive_error)
                    "\nerror was encountered while trying to use an "
                    "ErrorDocument to handle the request.\n", NULL);
         }
+	bputs(psignature("<HR>\n", r), fd);
         bputs("</BODY></HTML>\n", fd);
     }
     kill_timeout(r);

@@ -1160,6 +1160,21 @@ const char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+const char *set_signature_flag (cmd_parms *cmd, core_dir_config *d, char *arg) {
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
+    if (err != NULL) return err;
+
+    if (strcasecmp(arg, "On") == 0)
+	d->server_signature = srv_sig_on;
+    else if (strcasecmp(arg, "Off") == 0)
+	d->server_signature = srv_sig_off;
+    else if (strcasecmp(arg, "EMail") == 0)
+	d->server_signature = srv_sig_withmail;
+    else
+	return "ServerSignature: use one of: off | on | email";
+    return NULL;
+}
+
 const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
     int s = atoi (arg);
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1616,6 +1631,28 @@ const char *set_loglevel (cmd_parms *cmd, void *dummy, const char *arg)
    return NULL;
 }
 
+const char *psignature(const char *prefix, request_rec *r)
+{
+    char sport[20];
+    core_dir_config *conf =
+    (core_dir_config *) get_module_config(r->per_dir_config, &core_module);
+
+    if (conf->server_signature == srv_sig_off)
+	return "";
+
+    ap_snprintf(sport, sizeof sport, "%u", (unsigned) r->server->port);
+
+    if (conf->server_signature == srv_sig_withmail) {
+	return pstrcat(r->pool, prefix, "<ADDRESS>" SERVER_BASEVERSION
+	     " Server at <A HREF=\"mailto:", r->server->server_admin, "\">",
+		       r->server->server_hostname, "</A> Port ", sport,
+		       "</ADDRESS>\n", NULL);
+    }
+    return pstrcat(r->pool, prefix, "<ADDRESS>" SERVER_BASEVERSION
+	     " Server at ", r->server->server_hostname, "</A> Port ", sport,
+		   "</ADDRESS>\n", NULL);
+}
+
 /*
  * Load an authorisation realm into our location configuration, applying the
  * usual rules that apply to realms.
@@ -1686,6 +1723,8 @@ command_rec core_cmds[] = {
 { "ServerName", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, server_hostname), RSRC_CONF, TAKE1,
   "The hostname of the server" },
+{ "ServerSignature", set_signature_flag, NULL, ACCESS_CONF|RSRC_CONF, TAKE1,
+  "En-/disable server signature (on|off|email)" },
 { "ServerRoot", set_server_root, NULL, RSRC_CONF, TAKE1, "Common directory of server-related files (logs, confs, etc)" },
 { "ErrorLog", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, error_fname), RSRC_CONF, TAKE1,

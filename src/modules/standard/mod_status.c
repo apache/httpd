@@ -637,8 +637,10 @@ static int status_handler(request_rec *r)
 
 #endif /* STATUS */
 
-    if (!short_report)
+    if (!short_report) {
+	rputs(psignature("<HR>\n",r), r);
 	rputs("</BODY></HTML>\n", r);
+    }
 
     kill_timeout(r);
     return 0;

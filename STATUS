@@ -1,3 +1,5 @@
+
+
 Apache 1.3 STATUS:
 
 Release:
@@ -135,6 +137,7 @@ Committed Code Changes:
     * more mod_mime_magic cleanup
     * Add more compile time diagnosis to main's -V switch
     * [Port] Fix CGI-Execution for EBCDIC hosts.
+    * Martin's [PATCH] "Signing" server generated pages
 
 Available Patches:
 
@@ -142,10 +145,6 @@ Available Patches:
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
 	Status: Dean +1, Martin +1, Alexei -1 (shared lib concerns)
-
-    * Martin's [PATCH] "Signing" server generated pages
-	<19971122001602.03385@deejai.mch.sni.de>
-	Status: Martin +1, Roy 0, 
 
 Concepts:
 

@@ -627,7 +627,9 @@ static int display_info(request_rec *r)
             }
         }
     }
-    rputs("</dl></body></html>\n", r);
+    rputs("</dl>\n", r);
+    rputs(psignature("",r), r);
+    rputs("</body></html>\n", r);
     /* Done, turn off timeout, close file and return */
     kill_timeout(r);
     return 0;
