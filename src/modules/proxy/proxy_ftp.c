@@ -229,6 +229,7 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
     int hostlen;
     conn_rec *con = r->connection;
     char *dir, *path, *reldir, *site, *psite;
+    const char *sig;
 
     tempurl = pstrdup(r->pool, url);
 
@@ -385,11 +386,11 @@ static long int send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c,
 	bputs(site, f2);
     total_bytes_sent += strlen(site);
 
-    site = psignature("", r);
-    bputs(site, con->client);
+    sig = psignature("", r);
+    bputs(sig, con->client);
     if (f2 != NULL)
-	bputs(site, f2);
-    total_bytes_sent += strlen(site);
+	bputs(sig, f2);
+    total_bytes_sent += strlen(sig);
 
     site = "</BODY></HTML>\n";
     bputs(site, con->client);
