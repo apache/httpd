@@ -242,7 +242,7 @@ typedef int rlim_t;
 #define USE_MMAP_FILES
 #define HAVE_SYSLOG 1
 #ifndef DEFAULT_GROUP
-#define DEFAULT_GROUP "nobody"
+#define DEFAULT_GROUP "nogroup"
 #endif
 #endif
 #ifndef DEFAULT_USER
