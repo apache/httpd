@@ -101,7 +101,7 @@ allows users to share URLs.
 
 <h2><A name="LogEmail">Anonymous_LogEmail directive</A></h2>
 <strong>Syntax:</strong> Anonymous_LogEmail <em>on | off</em><br>
-<strong>Default:</strong> <code>Anonymous_LogEmail off</code><br>
+<strong>Default:</strong> <code>Anonymous_LogEmail on</code><br>
 <strong>Context:</strong> directory, .htaccess<br>
 <strong>Override:</strong> AuthConfig<br>
 <strong>Status:</strong> Extension<br>
@@ -114,7 +114,7 @@ allows users to share URLs.
 <h2><A name="MustGiveEmail">Anonymous_MustGiveEmail directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Anonymous_MustGiveEmail} directive&gt; -->
 <strong>Syntax:</strong> Anonymous_MustGiveEmail <em>on</em> | <em>off</em><br>
-<strong>Default:</strong> <code>Anonymous_MustGiveEmail off</code><br>
+<strong>Default:</strong> <code>Anonymous_MustGiveEmail on</code><br>
 <strong>Context:</strong> directory, .htaccess<br>
 <strong>Override:</strong> AuthConfig<br>
 <strong>Status:</strong> Extension<br>
@@ -170,29 +170,33 @@ The password entered must be a valid email address, ie. contain at least one '@'
 <li>
 The userID must be one of <code>anonymous guest www test welcome</code>
 and comparison is <b>not</b> case sensitive.
-<code>&lt;directory /web/docs/public&gt;</code>
 <li>
-And the Email addresses entered in the passswd field are logged to
+And the Email addresses entered in the passwd field are logged to
 the httpd-log file
 (<code>Anonymous_LogEmail</code>)
 </ul>
 <p>
 Excerpt of access.conf:
 <blockquote><code>
-Anonymous        anonymous guest www test welcome<p>
+Anonymous_NoUserId      off<br>
 Anonymous_MustGiveEmail on<br>
 Anonymous_VerifyEmail    on<br>
-Anonymous_NoUserId      off<br>
 Anonymous_LogEmail      on<br>
+Anonymous        anonymous guest www test welcome<p>
 <p>
 AuthName                Use 'anonymous' & Email address for guest entry<br>
-AuthType                basic<p>
-
-</code>
+AuthType                basic
+<p>
+# An AuthUserFile/AuthDBUserFile/AuthDBMUserFile<br>
+# directive must be specified, or use<br>
+# Anonymous_Authoritative for public access.<br>
+# In the .htaccess for the public directory, add:<br>
+&lt;Files *&gt;<br>
 order deny,allow          <br>
 allow from all            <br>
 <p>
 require valid-user        <br>
+&lt;/Files&gt;<br>
 </code></blockquote>
 
 
