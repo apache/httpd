@@ -186,7 +186,7 @@ static void err_output(const char *fmt, va_list ap)
     return;
 }
 
-void log_err(const char *fmt,...)
+static void log_err(const char *fmt,...)
 {
 #ifdef LOG_EXEC
     va_list ap;
@@ -198,7 +198,7 @@ void log_err(const char *fmt,...)
     return;
 }
 
-void clean_env()
+static void clean_env(void)
 {
     char pathbuf[512];
     char **cleanenv;

@@ -30,7 +30,7 @@
 
 char *tn;
 
-char *strd(char *s)
+static char *strd(char *s)
 {
     char *d;
 
@@ -39,7 +39,7 @@ char *strd(char *s)
     return (d);
 }
 
-void getword(char *word, char *line, char stop)
+static void getword(char *word, char *line, char stop)
 {
     int x = 0, y;
 
@@ -54,7 +54,7 @@ void getword(char *word, char *line, char stop)
     while ((line[y++] = line[x++]));
 }
 
-int getline(char *s, int n, FILE *f)
+static int getline(char *s, int n, FILE *f)
 {
     register int i = 0;
 
@@ -72,7 +72,7 @@ int getline(char *s, int n, FILE *f)
     }
 }
 
-void putline(FILE *f, char *l)
+static void putline(FILE *f, char *l)
 {
     int x;
 
@@ -86,7 +86,7 @@ void putline(FILE *f, char *l)
 static unsigned char itoa64[] =	/* 0 ... 63 => ascii - 64 */
 "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-void to64(register char *s, register long v, register int n)
+static void to64(register char *s, register long v, register int n)
 {
     while (--n >= 0) {
 	*s++ = itoa64[v & 0x3f];
@@ -99,7 +99,7 @@ void to64(register char *s, register long v, register int n)
  * issue the prompt and read the results with echo.  (Ugh).
  */
 
-char *getpass(const char *prompt)
+static char *getpass(const char *prompt)
 {
 
     static char password[81];
@@ -116,7 +116,7 @@ char *getpass(const char *prompt)
 
 #endif
 
-void add_password(char *user, FILE *f)
+static void add_password(char *user, FILE *f)
 {
     char *pw, *cpw, salt[3];
 
@@ -135,14 +135,14 @@ void add_password(char *user, FILE *f)
     fprintf(f, "%s:%s\n", user, cpw);
 }
 
-void usage()
+static void usage(void)
 {
     fprintf(stderr, "Usage: htpasswd [-c] passwordfile username\n");
     fprintf(stderr, "The -c flag creates a new file.\n");
     exit(1);
 }
 
-void interrupted()
+static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
     if (tn)

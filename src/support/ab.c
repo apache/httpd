@@ -183,7 +183,7 @@ static void err(char *s)
 /* write out request to a connection - assumes we can write 
    (small) request out in one go into our new socket buffer  */
 
-void write_request(struct connection *c)
+static void write_request(struct connection *c)
 {
     gettimeofday(&c->connect, 0);
     write(c->fd, request, reqlen);
@@ -196,7 +196,7 @@ void write_request(struct connection *c)
 
 /* make an fd non blocking */
 
-void nonblock(int fd)
+static void nonblock(int fd)
 {
     int i = 1;
     ioctl(fd, FIONBIO, &i);
@@ -206,7 +206,7 @@ void nonblock(int fd)
 
 /* returns the time in ms between two timevals */
 
-int timedif(struct timeval a, struct timeval b)
+static int timedif(struct timeval a, struct timeval b)
 {
     register int us, s;
 
@@ -221,7 +221,7 @@ int timedif(struct timeval a, struct timeval b)
 
 /* calculate and output results and exit */
 
-void output_results()
+static void output_results(void)
 {
     int timetaken;
 
@@ -285,7 +285,7 @@ void output_results()
 
 /* start asnchronous non-blocking connection */
 
-void start_connect(struct connection *c)
+static void start_connect(struct connection *c)
 {
     c->read = 0;
     c->bread = 0;
@@ -325,7 +325,7 @@ void start_connect(struct connection *c)
 
 /* close down connection and save stats */
 
-void close_connection(struct connection *c)
+static void close_connection(struct connection *c)
 {
     if (c->read == 0 && c->keepalive) {
         /* server has legitiamately shut down an idle keep alive request */
@@ -365,7 +365,7 @@ void close_connection(struct connection *c)
 
 /* read data from connection */
 
-void read_connection(struct connection *c)
+static void read_connection(struct connection *c)
 {
     int r;
 
@@ -490,7 +490,7 @@ void read_connection(struct connection *c)
 
 /* run the tests */
 
-int test()
+static void test(void)
 {
     struct timeval timeout, now;
     fd_set sel_read, sel_except, sel_write;
@@ -580,13 +580,12 @@ int test()
         if (done >= requests)
             output_results();
     }
-    return 0;
 }
 
 /* ------------------------------------------------------- */
 
 /* display copyright information */
-void copyright(void) 
+static void copyright(void) 
 {
     printf("This is ApacheBench, Version %s\n", VERSION);
     printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
@@ -595,7 +594,7 @@ void copyright(void)
 }
 
 /* display usage information */
-void usage(char *progname)
+static void usage(char *progname)
 {
     fprintf(stderr, "Usage: %s [options] [http://]hostname[:port]/path\n", progname);
     fprintf(stderr, "Options are:\n");
@@ -612,7 +611,7 @@ void usage(char *progname)
 
 /* split URL into parts */
 
-int parse_url(char *url)
+static int parse_url(char *url)
 {
     char *cp;
     char *h;

@@ -32,7 +32,7 @@
 
 char *tn;
 
-char *strd(char *s)
+static char *strd(char *s)
 {
     char *d;
 
@@ -41,7 +41,7 @@ char *strd(char *s)
     return (d);
 }
 
-void getword(char *word, char *line, char stop)
+static void getword(char *word, char *line, char stop)
 {
     int x = 0, y;
 
@@ -56,7 +56,7 @@ void getword(char *word, char *line, char stop)
     while ((line[y++] = line[x++]));
 }
 
-int getline(char *s, int n, FILE *f)
+static int getline(char *s, int n, FILE *f)
 {
     register int i = 0;
 
@@ -74,7 +74,7 @@ int getline(char *s, int n, FILE *f)
     }
 }
 
-void putline(FILE *f, char *l)
+static void putline(FILE *f, char *l)
 {
     int x;
 
@@ -84,7 +84,7 @@ void putline(FILE *f, char *l)
 }
 
 
-void add_password(char *user, char *realm, FILE *f)
+static void add_password(char *user, char *realm, FILE *f)
 {
     char *pw;
     AP_MD5_CTX context;
@@ -114,14 +114,14 @@ void add_password(char *user, char *realm, FILE *f)
     fprintf(f, "\n");
 }
 
-void usage()
+static void usage(void)
 {
     fprintf(stderr, "Usage: htdigest [-c] passwordfile realm username\n");
     fprintf(stderr, "The -c flag creates a new file.\n");
     exit(1);
 }
 
-void interrupted()
+static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
     if (tn)
