@@ -91,8 +91,7 @@ API_VAR_EXPORT int ap_extended_status = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
-static struct pollfd *listenfds_child; /* The listenfds that each thread copies
-                                          for itself */
+static struct pollfd *listenfds;
 
 /* The structure used to pass unique initialization info to each thread */
 typedef struct {
@@ -102,7 +101,7 @@ typedef struct {
     pool *tpool; /* "pthread" would be confusing */
 } proc_info;
 
-#ifdef SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+#if 0
 #define SAFE_ACCEPT(stmt) do {if (ap_listeners->next != NULL) {stmt;}} while (0)
 #else
 #define SAFE_ACCEPT(stmt) do {stmt;} while (0)
@@ -867,7 +866,6 @@ static void * worker_thread(void * dummy)
     char pipe_read_char;
     int curr_pollfd, last_pollfd = 0;
     size_t len = sizeof(struct sockaddr);
-    struct pollfd *listenfds;
 
     free(ti);
 
@@ -879,9 +877,6 @@ static void * worker_thread(void * dummy)
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
-    /* set up each thread's individual pollfd array */
-    listenfds = ap_palloc(tpool, sizeof(struct pollfd) * (num_listenfds + 1));
-    memcpy(listenfds, listenfds_child, sizeof(struct pollfd) * (num_listenfds + 1));
     while (!workers_may_exit) {
         workers_may_exit |= (ap_max_requests_per_child != 0) && (requests_this_child <= 0);
         if (workers_may_exit) break;
@@ -1017,14 +1012,14 @@ static void child_main(int child_num_arg)
     requests_this_child = ap_max_requests_per_child;
     
     /* Set up the pollfd array */
-    listenfds_child = ap_palloc(pchild, sizeof(struct pollfd) * (num_listenfds + 1));
-    listenfds_child[0].fd = pipe_of_death[0];
-    listenfds_child[0].events = POLLIN;
-    listenfds_child[0].revents = 0;
+    listenfds = ap_palloc(pchild, sizeof(struct pollfd) * (num_listenfds + 1));
+    listenfds[0].fd = pipe_of_death[0];
+    listenfds[0].events = POLLIN;
+    listenfds[0].revents = 0;
     for (lr = ap_listeners, i = 1; i <= num_listenfds; lr = lr->next, ++i) {
-        listenfds_child[i].fd = lr->fd;
-        listenfds_child[i].events = POLLIN; /* should we add POLLPRI ?*/
-        listenfds_child[i].revents = 0;
+        listenfds[i].fd = lr->fd;
+        listenfds[i].events = POLLIN; /* should we add POLLPRI ?*/
+        listenfds[i].revents = 0;
     }
 
     /* Setup worker threads */
