@@ -183,14 +183,15 @@ AP_INIT_TAKE1("ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF,
 };
 
 static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
-			   int show_errno, char *error)
+			   apr_status_t rv, char *error)
 {
     apr_file_t *f = NULL;
     apr_finfo_t finfo;
     char time_str[APR_CTIME_LEN];
+    int log_flags = rv ? APLOG_ERR : APLOG_NOERRNO | APLOG_ERR;
 
-    ap_log_rerror(APLOG_MARK, show_errno|APLOG_ERR, errno, r, 
-		"%s: %s", error, r->filename);
+    ap_log_rerror(APLOG_MARK, log_flags, rv, r, 
+                  "%s: %s", error, r->filename);
 
     if (!conf->logname ||
         ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname), r->pool) == APR_SUCCESS)
@@ -511,6 +512,7 @@ static int cgi_handler(request_rec *r)
     int is_included = !strcmp(r->protocol, "INCLUDED");
     apr_pool_t *p;
     cgi_server_conf *conf;
+    apr_status_t rv;
 
     p = r->main ? r->main->pool : r->pool;
 
@@ -530,10 +532,10 @@ static int cgi_handler(request_rec *r)
     conf = ap_get_module_config(r->server->module_config, &cgi_module);
 
     if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
                                "Options ExecCGI is off in this directory");
     if (nph && is_included)
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
                                "attempt to include NPH CGI script");
 
 #if defined(OS2) || defined(WIN32)
@@ -545,11 +547,12 @@ static int cgi_handler(request_rec *r)
     if (r->finfo.protection == 0) {
         apr_finfo_t finfo;
         char *newfile;
+        apr_status_t rv;
 
         newfile = apr_pstrcat(r->pool, r->filename, ".EXE", NULL);
-        if ((apr_stat(&finfo, newfile, r->pool) != APR_SUCCESS) || 
+        if (((rv = apr_stat(&finfo, newfile, r->pool)) != APR_SUCCESS) || 
             (finfo.filetype != APR_REG)) {
-            return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
+            return log_scripterror(r, conf, HTTP_NOT_FOUND, rv,
                                    "script not found or unable to stat");
         } else {
             r->filename = newfile;
@@ -557,17 +560,17 @@ static int cgi_handler(request_rec *r)
     }
 #else
     if (r->finfo.protection == 0)
-	return log_scripterror(r, conf, HTTP_NOT_FOUND, APLOG_NOERRNO,
+	return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
 			       "script not found or unable to stat");
 #endif
     if (r->finfo.filetype == APR_DIR)
-	return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
+	return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
 			       "attempt to invoke directory as script");
 
 /*
     if (!ap_suexec_enabled) {
 	if (!ap_can_exec(&r->finfo))
-	    return log_scripterror(r, conf, HTTP_FORBIDDEN, APLOG_NOERRNO,
+	    return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
 				   "file permissions deny server execution");
     }
 
@@ -578,23 +581,23 @@ static int cgi_handler(request_rec *r)
     ap_add_common_vars(r);
 
     /* build the command line */
-    if (build_command_line(&command, r, p) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+    if ((rv = build_command_line(&command, r, p)) != APR_SUCCESS) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 	      "couldn't spawn child process: %s", r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* build the argument list */
-    else if (build_argv_list(&argv, r, p) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+    else if ((rv = build_argv_list(&argv, r, p)) != APR_SUCCESS) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 		      "couldn't spawn child process: %s", r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
     argv[0] = apr_pstrdup(p, command);
 
     /* run the script in its own process */
-    if (run_cgi_child(&script_out, &script_in, &script_err,
-                      command, argv, r, p) != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+    if ((rv = run_cgi_child(&script_out, &script_in, &script_err,
+                            command, argv, r, p)) != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
