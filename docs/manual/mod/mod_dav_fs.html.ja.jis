@@ -13,11 +13,11 @@
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.1</a> &gt; <a href="./">モジュール</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_dav_fs</h1>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> のためのファイルシステムプロバイダ</td></tr>
@@ -39,7 +39,8 @@
     </code></p></div>
 
     <p><code>filesystem</code> は <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>
-    のデフォルトプロバイダになっていますから、代わりに単に
+    のデフォルトプロバイダになっていますから、<code>filesystem</code>
+    の代わりに単に
     <code>On</code> と指定することもできます。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
@@ -63,7 +64,7 @@
     <p>ロックデータベースへのフルパスを、拡張子を除いた形で
     指定するには、<code class="directive">DavLockDB</code>
     を使います。パスが絶対パスでなければ、<code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> からの相対パスと解釈されます。
-    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> 実装では、ユーザロックを
+    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> の実装では、ユーザロックを
     追跡するために SDBM データベースを使います。</p>
 
     
