@@ -70,6 +70,19 @@ Committed Code Changes:
 
 Available Patches:
 
+    * Doug's httpd -MApache::httpd_conf
+	<34AFFF3D.3E932275@telebusiness.co.nz>
+	Status: Doug +1, Randy +1, Dean would really prefer Ben's proposal
+	of httpd -M "config file directive" if it works.
+
+    * Martin's [PATCH] <Location > within .htaccess?
+	<19980105152218.30720@deejai.mch.sni.de>
+	Status: Martin +1
+
+    * Brian Havard's [Patch] OS/2 - fix up shut down
+	<199801051625.DAA25173@silk.apana.org.au>
+	Status: Dean +1
+
     * Ken's [PATCH] for copyright year update
 	<34AA4B95.36726117@Golux.Com>
 	Status: Ken +1, Jim +1
