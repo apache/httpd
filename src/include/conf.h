@@ -402,6 +402,22 @@ typedef quad_t rlim_t;
 #define ARG_MAX    _POSIX_ARG_MAX
 #define HAVE_MMAP
     
+#elif defined(__MACHTEN__)
+typedef int rlim_t;
+#define JMP_BUF sigjmp_buf
+#undef NO_KILLPG
+#define NO_SETSID
+#define HAS_GMTOFF
+#ifndef __MACHTEN_PPC__
+#ifndef __MACHTEN_68K__
+#define __MACHTEN_68K__
+#endif
+#define FLOCK_SERIALIZED_ACCEPT
+#define NO_USE_SIGACTION
+#undef NEED_STRDUP
+#else
+#define FCNTL_SERIALIZED_ACCEPT
+#endif
 
 /* Unknown system - Edit these to match */
 #else

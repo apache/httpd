@@ -1,5 +1,8 @@
 Changes with Apache 1.2b4:
 
+  *) Add changes to allow compilation on Machten 4.0.3 for PowerPC.
+     [Randal Schwartz]
+
   *) OS/2 changes to support an MMAP style scoreboard file and UNIX
      style magic #! token for better script portability. [Garey Smiley]
 

@@ -340,6 +340,9 @@ case "$PLAT" in
 	CFLAGS="-DULTRIX"
 	DEF_WANTHSREGEX=yes
 	;;
+    *-powerpc-tenon-*)
+	LFLAGS="$LFLAGS -Xlstack=131072 -Xldelcsect"
+	;;
     *) # default: Catch systems we don't know about
     	echo Sorry, but we cannot grok \"$PLAT\"
 	echo uname -m

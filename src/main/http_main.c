@@ -195,7 +195,11 @@ accept_mutex_init(pool *p)
     {
     char lock_fname[30];
 
+#ifdef __MACHTEN__
+    strcpy(lock_fname, "/var/tmp/htlock.XXXXXX");
+#else
     strcpy(lock_fname, "/usr/tmp/htlock.XXXXXX");
+#endif
     
     if (mktemp(lock_fname) == NULL || lock_fname[0] == '\0')
     {
