@@ -40,12 +40,12 @@ EXPORTS
 	ap_bpush_iol @33
         ap_bpop_iol @34
 	ap_bputs   @35
-	ap_bread   @36
+;	ap_bread   @36
 	ap_bsetflag   @37
 	ap_bsetopt   @38
 	;ap_bskiplf   @39
 ;	ap_bspawn_child   @40
-	ap_bwrite   @41
+;	ap_bwrite   @41
 	;ap_bytes_in_free_blocks   @42
 	;ap_bytes_in_pool   @43
 ;	ap_call_exec   @44
@@ -397,3 +397,5 @@ EXPORTS
         ap_get_status_table @392
         ap_run_default_port @393
         ap_run_http_method @394
+        ap_bread_core @395
+        ap_bwrite_core @396
