@@ -93,7 +93,7 @@ static int process_echo_connection(conn_rec *c)
     apr_bucket_brigade *bb;
     apr_bucket *b;
     apr_status_t rv;
-    int zero = 0;
+    apr_off_t zero = 0;
     EchoConfig *pConfig = ap_get_module_config(c->base_server->module_config,
                                                &echo_module);
 
