@@ -11,8 +11,9 @@ Changes with Apache 1.3.10
   *) Updated README.config to reflect current APACI state.
      [Brian Slesinsky <bslesins@best.com>] PR#5397
 
-  *) Added SuSE layout to config.layout for convinience reasons.
-     [Sebastian Helms <sebastian.helms@gmx.de>] PR#5112
+  *) Added SuSE and BSDI layouts to config.layout for convinience reasons.
+     [Sebastian Helms <sebastian.helms@gmx.de>, Timur Bakeyev
+     <timur@com.bat.ru>] PR#5112 PR#5154
 
   *) Consistency cleanup of the complete APXS tool and corresponding manpage.
      [Ralf S. Engelschall]

@@ -170,3 +170,23 @@
     proxycachedir: $localstatedir/cache/httpd
 </Layout>
 
+#   BSD/OS layout
+<Layout BSDI>
+    prefix:        /var/www
+    exec_prefix:   /usr/contrib
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/bin
+    libexecdir:    $exec_prefix/libexec/apache
+    mandir:        $exec_prefix/man
+    sysconfdir:    $prefix/conf
+    datadir:       $prefix
+    iconsdir:      $datadir/icons
+    htdocsdir:     $datadir/htdocs
+    cgidir:        $datadir/cgi-bin
+    includedir:    $exec_prefix/include/apache
+    localstatedir: /var
+    runtimedir:    $localstatedir/run
+    logfiledir:    $localstatedir/log/httpd
+    proxycachedir: $localstatedir/proxy
+</Layout>
+
