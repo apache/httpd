@@ -269,7 +269,7 @@ static char *ap_gcvt(double number, int ndigit, char *buf, boolean_e altform)
  */
 #define INS_CHAR(c, sp, bep, cc)				\
 	    {							\
-		if (sp == bep) {				\
+		if (sp >= bep) {				\
 		    vbuff->curpos = sp;                         \
 		    if (flush_func(vbuff))			\
 			return -1;				\
