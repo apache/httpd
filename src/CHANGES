@@ -1,5 +1,9 @@
 Changes with Apache 1.3b6
 
+  *) Fix `RewriteMap' program lookup in situations where such maps are
+     defined but disabled (`RewriteEngine off') in per-server context. 
+     [Ralf S. Engelschall, PR#1431]
+
   *) Fix bug introduced in 1.3b4-dev, config with no Port setting would cause
      server to bind to port 0 rather than 80.  [Dean Gaudet]
 

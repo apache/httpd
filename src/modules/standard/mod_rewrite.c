@@ -488,8 +488,8 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
         new->datafile  = a2;
         new->checkfile = a2;
     }
-    new->fpin  = 0;
-    new->fpout = 0;
+    new->fpin  = -1;
+    new->fpout = -1;
 
     if (new->checkfile && (sconf->state == ENGINE_ENABLED)
                        && (stat(new->checkfile, &st) == -1))
@@ -2661,6 +2661,14 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     char c;
     int i;
 
+    /* when `RewriteEngine off' was used in the per-server
+     * context then the rewritemap-programs were not spawned.
+     * In this case using such a map (usually in per-dir context)
+     * is useless because it is not available.
+     */
+    if (fpin == -1 || fpout == -1)
+        return NULL;
+
     /* take the lock */
     rewritelock_alloc(r);
 
@@ -3027,13 +3035,12 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
     int rc;
 
     conf = get_module_config(s->module_config, &rewrite_module);
-    /*
-     * If the engine isn't turned on, don't even try to do anything.
-     */
-    if (conf->state == ENGINE_DISABLED) {
-        return;
-    }
 
+    /*  If the engine isn't turned on, 
+     *  don't even try to do anything.
+     */
+    if (conf->state == ENGINE_DISABLED)
+        return;
 
     rewritemaps = conf->rewritemaps;
     entries = (rewritemap_entry *)rewritemaps->elts;
@@ -3041,13 +3048,13 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
         map = &entries[i];
         if (map->type != MAPTYPE_PRG)
             continue;
-        if (map->datafile == NULL    ||
-            *(map->datafile) == '\0' ||
-            map->fpin > 0        ||
-            map->fpout > 0         )
+        if (map->datafile == NULL 
+            || *(map->datafile) == '\0'
+            || map->fpin  != -1
+            || map->fpout != -1        )
             continue;
         fname = server_root_relative(p, map->datafile);
-        fpin = NULL;
+        fpin  = NULL;
         fpout = NULL;
         rc = spawn_child(p, rewritemap_program_child, (void *)map->datafile,
                          kill_after_timeout, &fpin, &fpout);
