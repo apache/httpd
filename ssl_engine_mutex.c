@@ -81,7 +81,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
         return FALSE;
     }
 
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
+#if APR_USE_SYSVSEM_SERIALIZE
     rv = unixd_set_global_mutex_perms(mc->pMutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
