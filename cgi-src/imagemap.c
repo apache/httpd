@@ -43,16 +43,27 @@
 ** 1.8 : Fixed bug (strcat->sprintf) when reporting error.
 **       Included getline() function from util.c in NCSA httpd distribution.
 **
+** 11/08/95: Brandon Long, blong@ncsa.uiuc.edu
+**
+** 1.9 : Fixed bug:  If you requested a new style conf file in DOCUMENT_ROOT,
+**       and didn't have an old style conf file, it would fail
+** 1.9a: Most other imagemap programs seem to allow a non-full path as the url,
+**	 so we'll switch to that.  Any url not starting with / goes to the
+**	 same path as the map file.
 */
 
 #include <stdio.h>
 #include <string.h>
-#ifndef pyr
+#if !defined(pyr) && !defined(NO_STDLIB_H)
 #include <stdlib.h>
 #else
+#include <sys/types.h>
+#include <ctype.h>
+char *getenv();
 #include <ctype.h>
 #endif
 #include <sys/types.h>
+#include "util.h"
 #include <sys/stat.h>
 
 #define CONF_FILE "/usr/local/etc/httpd/conf/imagemap.conf"
@@ -63,6 +74,13 @@
 #define Y 1
 #define LF 10
 #define CR 13
+
+
+static void servererr(char *msg);
+static void sendmesg(char *url);
+static int pointinpoly(double point[2], double pgon[MAXVERTS][2]);
+static int pointincircle(double point[2], double coords[MAXVERTS][2]);
+static int pointinrect(double point[2], double coords[MAXVERTS][2]);
 
 int isname(char);
 
@@ -81,7 +99,7 @@ int main(int argc, char **argv)
     mapname=getenv("PATH_INFO");
 
     if((!mapname) || (!mapname[0]))
-        servererr("No map name given. Please read the <A HREF=\"http://hoohoo.ncsa.uiuc.edu/docs/setup/admin/Imagemap.html\">instructions</A>.<P>");
+        servererr("No map name given. Please read the <A HREF=\"http://hoohoo.ncsa.uiuc.edu/docs/tutorials/imagemapping.html\">instructions</A>.<P>");
 
 
     mapname++;
@@ -101,8 +119,9 @@ int main(int argc, char **argv)
     }
     
     if ((fp = fopen(CONF_FILE, "r")) == NULL){
-        sprintf(errstr, "Couldn't open configuration file: %s", CONF_FILE);
-        servererr(errstr);
+      /* Assume new style request if CONF_FILE doesn't exist
+       */
+       goto openconf;
     }
 
     while(!(getline(input,MAXLINE,fp))) {
@@ -222,26 +241,50 @@ int main(int argc, char **argv)
     servererr("No default specified.");
 }
 
-sendmesg(char *url)
+static void sendmesg(char *url)
 {
-  if (strchr(url, ':'))   /*** It is a full URL ***/
-    printf("Location: ");
-  else                    /*** It is a virtual URL ***/
-    printf("Location: http://%s:%s", getenv("SERVER_NAME"), 
-           getenv("SERVER_PORT"));
+  char *port;
+  char *path_info;
+  char path[MAXLINE];
 
-    printf("%s%c%c",url,10,10);
-    printf("This document has moved <A HREF=\"%s\">here</A>%c",url,10);
-    exit(1);
+  if (strchr(url, ':'))   /*** It is a full URL ***/
+    printf("Location: %s%c%c",url,LF,LF);
+  else {                   /*** It is a virtual URL ***/
+    printf("Location: http://%s", getenv("SERVER_NAME"));
+
+      /* only add port if it's not the default */
+     if ((port = getenv("SERVER_PORT")) && strcmp(port,"80"))
+      printf(":%s",port);
+    
+    /* if its a full path, just use it, else add path from PATH_INFO */
+    if (url[0] == '/') {
+      printf("%s%c%c",url,LF,LF);
+    } else { 
+      if ((path_info = getenv("PATH_INFO"))) {
+	char *last = strrchr(path_info,'/');
+	int x = 0;
+	while (((path_info+x) <= last) && (x < MAXLINE)) {
+	  path[x] = *(path_info+x);
+	  x++;
+        }
+	path[x] = '\0';
+      }	else { 
+	strcpy(path,"/");
+      }
+      printf("%s%s%c%c",path,url,LF,LF);
+    }
+  }
+  printf("This document has moved <A HREF=\"%s\">here</A>%c",url,LF);
+  exit(1);
 }
 
-int pointinrect(double point[2], double coords[MAXVERTS][2])
+static int pointinrect(double point[2], double coords[MAXVERTS][2])
 {
         return ((point[X] >= coords[0][X] && point[X] <= coords[1][X]) &&
         (point[Y] >= coords[0][Y] && point[Y] <= coords[1][Y]));
 }
 
-int pointincircle(double point[2], double coords[MAXVERTS][2])
+static int pointincircle(double point[2], double coords[MAXVERTS][2])
 {
         int radius1, radius2;
 
@@ -253,7 +296,7 @@ int pointincircle(double point[2], double coords[MAXVERTS][2])
         return (radius2 <= radius1);
 }
 
-int pointinpoly(double point[2], double pgon[MAXVERTS][2])
+static int pointinpoly(double point[2], double pgon[MAXVERTS][2])
 {
         int i, numverts, inside_flag, xflag0;
         int crossings;
@@ -319,9 +362,9 @@ int pointinpoly(double point[2], double pgon[MAXVERTS][2])
         return (inside_flag);
 }
 
-servererr(char *msg)
+static void servererr(char *msg)
 {
-    printf("Content-type: text/html%c%c",10,10);
+    printf("Content-type: text/html%c%c",LF,LF);
     printf("<title>Mapping Server Error</title>");
     printf("<h1>Mapping Server Error</h1>");
     printf("This server encountered an error:<p>");

@@ -2,7 +2,12 @@
 
 
 #include <stdio.h>
+#ifndef NO_STDLIB_H
 #include <stdlib.h>
+#else
+char *getenv();
+#endif
+#include <string.h>
 
 typedef struct {
     char name[128];
