@@ -569,21 +569,21 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         /* Add X-Forwarded-For: so that the upstream has a chance to
          * determine, where the original request came from.
          */
-        apr_table_setn(r->headers_in, "X-Forwarded-For",
+        apr_table_mergen(r->headers_in, "X-Forwarded-For",
                        r->connection->remote_ip);
 
         /* Add X-Forwarded-Host: so that upstream knows what the
          * original request hostname was.
          */
         if ((buf = apr_table_get(r->headers_in, "Host"))) {
-            apr_table_setn(r->headers_in, "X-Forwarded-Host", buf);
+            apr_table_mergen(r->headers_in, "X-Forwarded-Host", buf);
         }
 
         /* Add X-Forwarded-Server: so that upstream knows what the
          * name of this proxy server is (if there are more than one)
          * XXX: This duplicates Via: - do we strictly need it?
          */
-        apr_table_setn(r->headers_in, "X-Forwarded-Server",
+        apr_table_mergen(r->headers_in, "X-Forwarded-Server",
                        r->server->server_hostname);
     }
 
@@ -834,6 +834,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                               ap_proxy_location_reverse_map(r, conf, buf));
             }
         }
+
+        /* cookies are special: they must not be merged (stupid browsers) */
+        ap_proxy_table_unmerge(r->pool, r->headers_out, "Set-Cookie");
+        ap_proxy_table_unmerge(r->pool, r->headers_out, "Set-Cookie2");
 
         r->sent_bodyct = 1;
         /* Is it an HTTP/0.9 response? If so, send the extra data */
