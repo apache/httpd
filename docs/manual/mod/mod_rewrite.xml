@@ -313,7 +313,7 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility><code>MaxRedirects</code> is available in Apache 2.1 and
+<compatibility><code>MaxRedirects</code> is available in Apache 2.0.45 and
 later</compatibility>
 <usage>
 
