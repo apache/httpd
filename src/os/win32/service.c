@@ -181,8 +181,10 @@ static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
     {
         case CTRL_C_EVENT:
         case CTRL_BREAK_EVENT:
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                         "Ctrl+C/Break initiated, shutting down server.");
+
             real_exit_code = 0;
-            fprintf(stderr, "Apache server interrupted...\n");
             /* for Interrupt signals, shut down the server.
              * Tell the system we have dealt with the signal
              * without waiting for Apache to terminate.
@@ -197,11 +199,14 @@ static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
 
         case CTRL_CLOSE_EVENT:
         case CTRL_SHUTDOWN_EVENT:
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                         "Close/Logoff/Shutdown initiated, shutting down server.");
+
             /* for Terminate signals, shut down the server.
              * Wait for Apache to terminate, but respond
              * after a reasonable time to tell the system
              * that we have already tried to shut down.
-             */            
+             */
             real_exit_code = 0;
             fprintf(stderr, "Apache server shutdown initiated...\n");
             ap_start_shutdown();
@@ -238,6 +243,9 @@ static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
 
 void stop_child_monitor(void)
 {
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                 "Unhooking the child process monitor for shutdown.");
+
     FixConsoleCtrlHandler(ap_control_handler, 0);
 }
 
@@ -251,6 +259,9 @@ void stop_child_monitor(void)
 void ap_start_child_console(int is_child_of_service)
 {
     int maxwait = 100;
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                 "Hooking up the child process monitor to watch for shutdown.");
 
     /* The child is never exactly a service */
     is_service = 0;
@@ -309,6 +320,9 @@ void stop_console_monitor(void)
     /* Remove the control handler at the end of the day. */
     SetConsoleCtrlHandler(ap_control_handler, FALSE);
 
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                 "Unhooking the console monitor for shutdown.");
+
     if (!isWindowsNT())
         FixConsoleCtrlHandler(ap_control_handler, 0);
 }
@@ -316,6 +330,9 @@ void stop_console_monitor(void)
 void ap_start_console_monitor(void)
 {
     HANDLE console_input;
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                 "Hooking up the console monitor to watch for shutdown.");
 
     die_on_logoff = TRUE;
 
@@ -357,6 +374,9 @@ void ap_start_console_monitor(void)
 
 void stop_service_monitor(void)
 {
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                 "Unhooking up the service monitor for shutdown.");
+
     Windows9xServiceCtrlHandler(ap_control_handler, FALSE);
 }
 
@@ -365,6 +385,9 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
 {
     /* Windows 95/98 */
     char *service_name;
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                 "Hooking up the service monitor to watch for shutdown.");
 
     is_service = 1;
     die_on_logoff = FALSE;
@@ -419,22 +442,13 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
     }
     else
     {
+
         return(globdat.exit_status);
     }
 }
 
-void service_cd()
-{
-    /* change to the drive and directory with the executable */
-    char buf[300], *p;
-    GetModuleFileName(NULL, buf, 300);
-    p = strrchr(buf, '\\');
-    if (p < strrchr(buf, '/'))
-        p = strrchr(buf, '/');
-    if (p != NULL)
-        *p = 0;
-    chdir(buf);
-}
+static HANDLE eventlog_pipewrite = NULL;
+static HANDLE eventlog_thread = NULL;
 
 long __stdcall service_stderr_thread(LPVOID hPipe)
 {
@@ -499,23 +513,46 @@ long __stdcall service_stderr_thread(LPVOID hPipe)
         }
     }
 
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                 "Shut down the Service Error Event Logger.");
+
+    CloseHandle(eventlog_pipewrite);
+    eventlog_pipewrite = NULL;
+    
     CloseHandle(hPipeRead);
+
+    CloseHandle(eventlog_thread);
+    eventlog_thread = NULL;
     return 0;
+}
+
+static void service_main_fn_terminate(void)
+{
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                 "The service manager thread is terminating.");
+
+    if (eventlog_pipewrite)
+    {
+        CloseHandle(eventlog_pipewrite);
+        WaitForSingleObject(eventlog_thread, 10000);
+        eventlog_pipewrite = NULL;
+        eventlog_pipewrite = NULL;
+    }
+
+    ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
 }
 
 void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
 {
     HANDLE hCurrentProcess;
     HANDLE hPipeRead = NULL;
-    HANDLE hPipeWrite = NULL;
     HANDLE hPipeReadDup;
-    HANDLE thread;
     DWORD  threadid;
     SECURITY_ATTRIBUTES sa = {0};
     char **newargv;
 
     if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], 
-		                                                     service_ctrl)))
+                                                             service_ctrl)))
     {
         ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
         "Failure registering service handler");
@@ -529,22 +566,21 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
 
     /* Create a pipe to send stderr messages to the system error log */
     hCurrentProcess = GetCurrentProcess();
-    if (CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) 
+    if (CreatePipe(&hPipeRead, &eventlog_pipewrite, &sa, 0)) 
     {
         if (DuplicateHandle(hCurrentProcess, hPipeRead, hCurrentProcess,
                             &hPipeReadDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
         {
             CloseHandle(hPipeRead);
             hPipeRead = hPipeReadDup;
-            thread = CreateThread(NULL, 0, service_stderr_thread, 
-                                  (LPVOID) hPipeRead, 0, &threadid);
-            if (thread)
+            eventlog_thread = CreateThread(NULL, 0, service_stderr_thread, 
+                                           (LPVOID) hPipeRead, 0, &threadid);
+            if (eventlog_thread)
             {
                 int fh;
                 FILE *fl;
-                CloseHandle(thread);
             	fflush(stderr);
-		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
+		SetStdHandle(STD_ERROR_HANDLE, eventlog_pipewrite);
 				
                 fh = _open_osfhandle((long) STD_ERROR_HANDLE, 
                                      _O_WRONLY | _O_BINARY);
@@ -555,17 +591,22 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
             else
             {
                 CloseHandle(hPipeRead);
-                CloseHandle(hPipeWrite);
-                hPipeWrite = NULL;
+                CloseHandle(eventlog_pipewrite);
+                eventlog_pipewrite = NULL;
             }            
         }
         else
         {
             CloseHandle(hPipeRead);
-            CloseHandle(hPipeWrite);
-            hPipeWrite = NULL;
+            CloseHandle(eventlog_pipewrite);
+            eventlog_pipewrite = NULL;
         }            
     }
+
+    atexit(service_main_fn_terminate);
+
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+             "Hooked up the Service Error Event Logger.");
 
     /* Fold the "Start Parameters" in with the true executable argv[0],
      * and insert a -n tag to pass the service name from the SCM's argv[0]
@@ -581,15 +622,7 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     /* Use the name of the service as the error log marker */
     ap_server_argv0 = globdat.name = argv[0];
 
-    service_cd();
     globdat.exit_status = globdat.main_fn( argc, argv );
-
-    if (hPipeWrite)
-        CloseHandle(hPipeWrite);
-
-    ReportStatusToSCMgr(SERVICE_STOPPED, NO_ERROR, 0);
-
-    return;
 }
 
 
@@ -618,18 +651,22 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
 {
     int state;
 
-
     state = globdat.ssStatus.dwCurrentState;
     switch(dwCtrlCode)
     {
         // Stop the service.
         //
+        case SERVICE_CONTROL_SHUTDOWN:
         case SERVICE_CONTROL_STOP:
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                         "Service Stop/Shutdown signaled, shutting down server.");
             state = SERVICE_STOP_PENDING;
 	    ap_start_shutdown();
             break;
 
         case SERVICE_APACHE_RESTART:
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
+                         "Service Restart signaled, shutting down server.");
             state = SERVICE_START_PENDING;
 	    ap_start_restart(1);
             break;
@@ -637,16 +674,17 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
         // Update the service status.
         //
         case SERVICE_CONTROL_INTERROGATE:
-            break;
+            ReportStatusToSCMgr(state, NO_ERROR, 0);
+            return;
 
         // invalid control code
         //
         default:
-            break;
+            return;
 
     }
 
-    ReportStatusToSCMgr(state, NO_ERROR, 0);
+    ReportStatusToSCMgr(state, NO_ERROR, 15000);
 }
 
 
@@ -666,10 +704,12 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
 
     if(globdat.connected)
     {
-        if (currentState == SERVICE_START_PENDING)
+        if ((currentState == SERVICE_START_PENDING)
+         || (currentState == SERVICE_STOP_PENDING))
             globdat.ssStatus.dwControlsAccepted = 0;
         else
-            globdat.ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+            globdat.ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP 
+                                                | SERVICE_ACCEPT_SHUTDOWN;
 
         globdat.ssStatus.dwCurrentState = currentState;
         globdat.ssStatus.dwWin32ExitCode = exitCode;

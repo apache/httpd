@@ -1,6 +1,17 @@
 Changes with Apache 1.3.19
 
-Changes with Apache 1.3.18
+  *) Fixed system shutdown on Windows 2000 to assure that the modules have
+     an opportunity to clean up.  Note there is a _very_ limited amount of
+     time in which to execute all cleanups [see MSKB Q146092] so all of
+     the modules may still not be given an opportunity to complete their
+     cleanups if they require more than 20 seconds total.  [William Rowe]
+
+  *) Fixed a potential bug in the 1.3.18 candidate that had the possibility
+     of corrupting a module's string space if they replaced the r->hostname
+     argument provided by the Apache core prior to http_vhost unescaping
+     the hostname string.  [Greg Stein, William Rowe]
+
+Changes with Apache 1.3.18 [not released]
 
   *) Workaround enabled for a core dump which appeared in broken
      NameVirtualHost configurations. [Martin Kraemer]
@@ -108,11 +119,11 @@ Changes with Apache 1.3.17
   *) Handle port numbers in Host headers properly again after
      the code was broken in 1.3.15. [Tony Finch]
 
-Changes with Apache 1.3.16
+Changes with Apache 1.3.16 [not released]
 
   *) None from 1.3.15 [repository tags were the issue, no code altered]
 
-Changes with Apache 1.3.15
+Changes with Apache 1.3.15 [not released]
 
   *) Fix a new problem introduced with the -k config syntax, that the
      service installed with the -i flag would attempt to re-install

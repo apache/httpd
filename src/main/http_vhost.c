@@ -703,11 +703,11 @@ void ap_fini_vhost_config(pool *p, server_rec *main_s)
 static void fix_hostname(request_rec *r)
 {
     char *host = ap_palloc(r->pool, strlen(r->hostname) + 1);
-    const char *src;
+    char *src;
     char *dst;
 
     /* check and copy the host part */
-    src = r->hostname;
+    src = ap_pstrdup(r->pool, r->hostname);
     /* unescape the hostname first */
     if (ap_unescape_url(src) != OK) {
 	goto bad;
