@@ -96,6 +96,72 @@ AP_HOOK_STRUCT(
           ap_bgetopt (r->connection->client, BO_BYTECT, &r->bytes_sent); \
   } while (0)
 
+
+/* if this is the first error, then log an INFO message and shut down the
+ * connection.
+ */
+static void check_first_conn_error(const request_rec *r, const char *operation,
+                                   ap_status_t status)
+{
+    if (!r->connection->aborted) {
+        if (status == 0)
+            status = ap_berror(r->connection->client);
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
+                      "client stopped connection before %s completed",
+                      operation);
+        ap_bsetflag(r->connection->client, B_EOUT, 1);
+        r->connection->aborted = 1;
+    }
+}
+
+static int checked_bputstrs(request_rec *r, ...)
+{
+    va_list va;
+    int n;
+
+    if (r->connection->aborted)
+        return EOF;
+
+    va_start(va, r);
+    n = ap_vbputstrs(r->connection->client, va);
+    va_end(va);
+
+    if (n < 0) {
+        check_first_conn_error(r, "checked_bputstrs", 0);
+        return EOF;
+    }
+
+    SET_BYTES_SENT(r);
+    return n;
+}
+
+static int checked_bflush(request_rec *r)
+{
+    ap_status_t rv;
+
+    if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
+        check_first_conn_error(r, "checked_bflush", rv);
+        return EOF;
+    }
+    return 0;
+}
+
+static int checked_bputs(const char *str, request_rec *r)
+{
+    int rcode;
+
+    if (r->connection->aborted)
+        return EOF;
+    
+    rcode = ap_bputs(str, r->connection->client);
+    if (rcode < 0) {
+        check_first_conn_error(r, "checked_bputs", 0);
+        return EOF;
+    }
+    SET_BYTES_SENT(r);
+    return rcode;
+}
+
 /*
  * Builds the content-type that should be sent to the client from the
  * content-type specified.  The following rules are followed:
@@ -276,10 +342,17 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
 
     if (!**r_range) {
         if (r->byterange > 1) {
-            if (realreq)
-                ap_rvputs(r, CRLF "--", r->boundary, "--" CRLF, NULL);
-            else
+            if (realreq) {
+                /* ### this isn't "content" so we can't use ap_rvputs(), but
+                 * ### it should be processed by non-processing filters. We
+                 * ### have no "in-between" APIs yet, so send it to the
+                 * ### network for now
+                 */
+                (void) checked_bputstrs(r, CRLF "--", r->boundary, "--" CRLF,
+                                        NULL);
+            } else {
                 *tlength += 4 + strlen(r->boundary) + 4;
+            }
         }
 #ifdef APACHE_XLATE
         AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
@@ -303,9 +376,10 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
         ap_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end,
                     r->clength);
         if (realreq)
-            ap_rvputs(r, CRLF "--", r->boundary, CRLF "Content-type: ",
-                   ct, CRLF "Content-range: bytes ", ts, CRLF CRLF,
-                   NULL);
+            (void) checked_bputstrs(r, CRLF "--", r->boundary,
+                                    CRLF "Content-type: ", ct,
+                                    CRLF "Content-range: bytes ", ts,
+                                    CRLF CRLF, NULL);
         else
             *tlength += 4 + strlen(r->boundary) + 16 + strlen(ct) + 23 +
                         strlen(ts) + 4;
@@ -1394,7 +1468,7 @@ API_EXPORT(int) ap_index_of_response(int status)
 API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r,
     const char *fieldname, const char *fieldval)
 {
-    return (0 < ap_rvputs(r, fieldname, ": ", fieldval, CRLF, NULL));
+    return (0 < checked_bputstrs(r, fieldname, ": ", fieldval, CRLF, NULL));
 }
 
 API_EXPORT(void) ap_basic_http_header(request_rec *r)
@@ -1428,7 +1502,7 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
-    ap_rvputs(r, protocol, " ", r->status_line, CRLF, NULL);
+    (void) checked_bputstrs(r, protocol, " ", r->status_line, CRLF, NULL);
 
     date = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
     ap_rfc822_date(date, r->request_time);
@@ -1465,9 +1539,9 @@ static void terminate_header(request_rec *r)
 
     ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
     if (bs >= 255 && bs <= 257)
-        ap_rputs("X-Pad: avoid browser bug" CRLF, r);
+        (void) checked_bputs("X-Pad: avoid browser bug" CRLF, r);
 
-    ap_rputs(CRLF, r);  /* Send the terminating empty line */
+    (void) checked_bputs(CRLF, r);  /* Send the terminating empty line */
 }
 
 /* Build the Allow field-value from the request handler method mask.
@@ -1747,6 +1821,11 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
 #endif /*APACHE_XLATE*/
 }
 
+static void flush_filters(request_rec *r)
+{
+    /* ### place holder to flush pending content through the filters */
+}
+
 /* finalize_request_protocol is called at completion of sending the
  * response.  It's sole purpose is to send the terminating protocol
  * information for any wrappers around the response message body
@@ -1754,6 +1833,8 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
  */
 API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
+    flush_filters(r);
+
     if (r->chunked && !r->connection->aborted) {
 #ifdef APACHE_XLATE
 	AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
@@ -1765,9 +1846,12 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
         r->chunked = 0;
         ap_bsetflag(r->connection->client, B_CHUNK, 0);
 
-        ap_rputs("0" CRLF, r);
+        (void) checked_bputs("0" CRLF, r);
+
         /* If we had footer "headers", we'd send them now */
-        ap_rputs(CRLF, r);
+        /* ### these need to be added to allow message digests */
+
+        (void) checked_bputs(CRLF, r);
 
 #ifdef APACHE_XLATE
 	AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
@@ -1901,9 +1985,9 @@ API_EXPORT(int) ap_should_client_block(request_rec *r)
 
     if (r->expecting_100 && r->proto_num >= HTTP_VERSION(1,1)) {
         /* sending 100 Continue interim response */
-        ap_rvputs(r, AP_SERVER_PROTOCOL, " ", status_lines[0], CRLF CRLF,
-                  NULL);
-        ap_rflush(r);
+        (void) checked_bputstrs(r, AP_SERVER_PROTOCOL, " ", status_lines[0],
+                                CRLF CRLF, NULL);
+        (void) checked_bflush(r);
     }
 
     return 1;
@@ -2148,23 +2232,6 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
     return OK;
 }
 
-/* if this is the first error, then log an INFO message and shut down the
- * connection.
- */
-static void check_first_conn_error(const request_rec *r, const char *operation,
-                                   ap_status_t status)
-{
-    if (!r->connection->aborted) {
-        if (status == 0)
-            status = ap_berror(r->connection->client);
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
-                      "client stopped connection before %s completed",
-                      operation);
-        ap_bsetflag(r->connection->client, B_EOUT, 1);
-        r->connection->aborted = 1;
-    }
-}
-
 /*
  * Send the body of a response to the client.
  */
@@ -2208,7 +2275,6 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
     register int o;
-    ap_ssize_t w;
     ap_ssize_t n;
     ap_status_t rv;
 
@@ -2217,11 +2283,10 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
 
     while (!r->connection->aborted) {
         if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
-            o = length - total_bytes_sent;
+            n = length - total_bytes_sent;
         else
-            o = IOBUFSIZE;
+            n = IOBUFSIZE;
         
-        n = o;
         do {
             rv = ap_read(fd, buf, &n);
         } while (rv == APR_EINTR && !r->connection->aborted);
@@ -2230,20 +2295,10 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
             break;
         }
 
-        o = 0;
-
-        while (n && !r->connection->aborted) {
-            rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
-            if (w > 0) {
-                total_bytes_sent += w;
-                n -= w;
-                o += w;
-            }
-            else if (rv != APR_SUCCESS) {
-                check_first_conn_error(r, "send-body", rv);
-                break;
-            }
-        }
+        o = ap_rwrite(buf, n, r);
+        if (o < 0)
+            break;
+        total_bytes_sent += o;
     }
 
     SET_BYTES_SENT(r);
@@ -2264,10 +2319,8 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     long total_bytes_sent = 0;
     long zero_timeout = 0;
     register int o;
-    ap_ssize_t w;
     ap_ssize_t n;
     ap_ssize_t bytes_read;
-    ap_status_t rv;
     ap_status_t read_rv;
 
     if (length == 0) {
@@ -2285,19 +2338,10 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     got_read:
         bytes_read = n;
         /* Regardless of read errors, EOF, etc, bytes may have been read */
-        o = 0;
-        while (n && !r->connection->aborted) {
-            rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
-            if (w > 0) {
-                total_bytes_sent += w;
-                n -= w;
-                o += w;
-            }
-            else if (rv != APR_SUCCESS) {
-                check_first_conn_error(r, "rflush", rv);
-                break;
-            }
-        }
+        o = ap_rwrite(buf, n, r);
+        if (o < 0)
+            break;
+        total_bytes_sent += o;
         if (read_rv == APR_SUCCESS) {
             /* Assume a sucessful read of 0 bytes is an EOF 
              * Note: I don't think this is ultimately the right thing.
@@ -2354,7 +2398,6 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
     size_t total_bytes_sent = 0;
     int n;
     ap_ssize_t w;
-    ap_status_t rv;
     char *addr;
     
     if (length == 0)
@@ -2370,25 +2413,12 @@ API_EXPORT(size_t) ap_send_mmap(ap_mmap_t *mm, request_rec *r, size_t offset,
             n = length - offset;
         }
 
-        while (n && !r->connection->aborted) {
-            ap_mmap_offset((void**)&addr, mm, offset);
-            rv = ap_bwrite(r->connection->client, addr, n, &w);
-            if (w > 0) {
-                total_bytes_sent += w;
-                n -= w;
-                offset += w;
-            }
-            else if (rv != APR_SUCCESS) {
-                if (r->connection->aborted)
-                    break;
-                else if (ap_canonical_error(rv) == APR_EAGAIN)
-                    continue;
-                else {
-                    check_first_conn_error(r, "send-mmap", rv);
-                    break;
-                }
-            }
-        }
+        ap_mmap_offset((void**)&addr, mm, offset);
+        w = ap_rwrite(addr, n, r);
+        if (w < 0)
+            break;
+        total_bytes_sent += w;
+        offset += w;
     }
 
     SET_BYTES_SENT(r);
@@ -2433,6 +2463,7 @@ API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
     if (r->connection->aborted)
         return EOF;
 
+    /* ### should loop to avoid partial writes */
     rv = ap_bwrite(r->connection->client, buf, nbyte, &n);
     if (n < 0) {
         check_first_conn_error(r, "rwrite", rv);

@@ -120,6 +120,7 @@ AP_DECLARE_HOOK(int,fixups,(request_rec *))
 AP_DECLARE_HOOK(int,type_checker,(request_rec *))
 AP_DECLARE_HOOK(int,access_checker,(request_rec *))
 AP_DECLARE_HOOK(int,auth_checker,(request_rec *))
+AP_DECLARE_HOOK(void,insert_filter,(request_rec *))
 
 #ifdef __cplusplus
 }
