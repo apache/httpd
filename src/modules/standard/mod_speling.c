@@ -53,6 +53,7 @@
  */
 
 #include "httpd.h"
+#include "http_core.h"
 #include "http_config.h"
 #include "http_log.h"
 
