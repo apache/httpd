@@ -226,13 +226,10 @@ void open_error_log (server_rec *s, pool *p)
 void open_logs (server_rec *s_main, pool *p)
 {
     server_rec *virt, *q;
-#ifndef WIN32
     int replace_stderr;
-#endif
 
     open_error_log (s_main, p);
 
-#ifndef WIN32
     replace_stderr = 1;
     if (s_main->error_log) {
 	/* replace stderr with this new log */
@@ -252,7 +249,6 @@ void open_logs (server_rec *s_main, pool *p)
 	aplog_error(APLOG_MARK, APLOG_CRIT, s_main,
 	    "unable to replace stderr with /dev/null");
     }
-#endif
 
     for (virt = s_main->next; virt; virt = virt->next) {
 	if (virt->error_fname)
