@@ -1005,6 +1005,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
 {
     char *date;
     char *tmp;
+    const char *server;
     header_struct h;
     apr_size_t len;
 
@@ -1026,8 +1027,17 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     h.pool = r->pool;
     h.bb = bb;
     form_header_field(&h, "Date", date);
-    form_header_field(&h, "Server", ap_get_server_version());
 
+    /* keep a previously set server header (possibly from proxy), otherwise
+     * generate a new server header */
+    if (server = apr_table_get(r->headers_out, "Server")) {
+        form_header_field(&h, "Server", server);
+    }
+    else {
+        form_header_field(&h, "Server", ap_get_server_version());
+    }
+
+    /* unset so we don't send them again */
     apr_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     apr_table_unset(r->headers_out, "Server");
 }
