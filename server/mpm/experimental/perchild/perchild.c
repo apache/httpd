@@ -1312,7 +1312,7 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 	my_pid = getpid();
     }
 
-    unixd_pre_config();
+    unixd_pre_config(ptemp);
     ap_listen_pre_config();
     num_daemons = DEFAULT_NUM_DAEMON;
     threads_to_start = DEFAULT_START_THREAD;
