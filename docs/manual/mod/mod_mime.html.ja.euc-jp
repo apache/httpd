@@ -24,8 +24,6 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</td></tr>
@@ -241,8 +239,9 @@
 </table>
     <p><code class="directive">AddCharset</code> ディレクティブは、
     与えられた拡張子を指定された charset にマップします。<var>charset</var> 
-    は、拡張子 <var>extension</var> を含んでいるファイル名の MIME charset
-    パラメータです。新しいマッピングは既にある他のマッピングに追加され、同じ拡張子
+    は、拡張子 <var>extension</var> を含んでいるファイル名の 
+    <a href="http://www.iana.org/assignments/character-sets">MIME charset
+    パラメータ</a>です。新しいマッピングは既にある他のマッピングに追加され、同じ拡張子
     <var>extension</var> のためのマッピングを上書きします。</p>
 
     <div class="example"><h3>例</h3><p><code>
@@ -933,6 +932,6 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>

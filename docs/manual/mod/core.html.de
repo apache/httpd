@@ -25,9 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -221,8 +218,8 @@ Servers</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a>-<a name="adddefaultcharset" id="adddefaultcharset">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Standard-Zeichenkodierung für Antworten ohne
-explizit angegebene Zeichenkodierung
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Standard-Charset-Parameter, der bei Antworten vom Content-Type 
+  <code>text/plain</code> oder <code>text/html</code> hinzugefügt wird
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddDefaultCharset On|Off|<var>Zeichenkodierung</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>AddDefaultCharset Off</code></td></tr>
@@ -231,21 +228,41 @@ explizit angegebene Zeichenkodierung
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
-    <p>Die Direktive gibt den Namen der Zeichenkodierung an, die
-    jeder Antwort hinzugefügt wird, welche in den HTTP-Headern
-    keinen Parameter zum Content-Type enthält. Dies überschreibt
-    jede Zeichenkodierung, die mittels <code>META</code>-Tag im Dokument
-    angegeben ist. Die Angabe von <code>AddDefaultCharset Off</code>
-    deaktiviert die Funktion. <code>AddDefaultCharset On</code>
-    ermöglicht es, mit der Direktive die Apache-interne
-    Standard-Zeichenkodierung <code>iso-8859-1</code> vorzuschreiben.
-    Sie können auch angeben, dass eine andere
-    <var>Zeichenkodierung</var> verwendet werden soll. Zum Beispiel:</p>
+  <p>Die Direktive gibt einen Standardwert für den Charset-Paramter des
+    Medientyps (den Namen einer Zeichencodierung) an, der einer Antwort
+    genau dann hinzugefügt wird, wenn der Content-Type der Antwort entweder
+    <code>text/plain</code> oder <code>text/html</code> ist. Dies sollte jedes
+    mittels <code>META</code>-Element im Datenteil der Antwort angegebene
+    Charset überschreiben. Das genaue Verhalten hängt jedoch oft von
+    der Client-Konfiguration des Benutzers ab. Die Einstellung
+    <code>AddDefaultCharset Off</code> deaktiviert diese Funktionalität.
+    <code>AddDefaultCharset On</code> aktiviert die Standard-Zeichenkodierung
+    <code>iso-8859-1</code>. Jeder andere Wert wird als die zu verwendende
+    <var>Zeichenkodierung</var> aufgefaßt, die eines der bei <a href="http://www.iana.org/assignments/character-sets">IANA registrierten
+      Charset-Werte</a> zur Verwendung in MIME-Medientypen sein sollte. Zum
+    Beispiel:</p>
 
     <div class="example"><p><code>
       AddDefaultCharset utf-8
     </code></p></div>
 
+    <p><code class="directive">AddDefaultCharset</code> sollte nur verwendet werden,
+      wenn von allen Textressourcen, für die es gilt, bekannt ist, dass sie
+      in dieser Zeichkodierung vorliegen, oder wenn es zu unbequem ist, ihre
+      Zeichenkodierung indivuell zu benennen. Ein solches Beispiel ist das
+      Hinzufügen des Charset-Parameters zu Ressourcen, die generierte
+      Inhalte enthalten. Ein Beispiel sind CGI-Skript-Altlasten, die aufgrund von
+      in die Ausgabe integrierten Daten, die durch den Benutzer übermittelt
+      wurden, gegen Cross-Site-Scripting-Angriffe verwundbar sind. Eine bessere
+      Lösung wäre jedoch, diese Skripte zu korrigieren (oder zu
+      löschen), da die Angabe einer Standard-Zeichencodierung keine
+      Anwender schützt, die in ihrem Browser die Funktion zur
+      automatischen Erkennung der Zeichenkodierung aktiviert haben.</p>
+
+<h3>Siehe auch</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_mime.html#addcharset">AddCharset</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a>-<a name="addoutputfilterbytype" id="addoutputfilterbytype">Direktive</a></h2>
@@ -3329,6 +3346,6 @@ IP-Adressen angewendet werden</td></tr>
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div>
 </body></html>
