@@ -86,7 +86,7 @@ case $host in
         # this works in any locale, unlike the default command below, which
         # fails in a non-English locale if the hard limit is unlimited
         # since the display of the limit will translate "unlimited", but
-	# ulimit only accepts English "unlimited" on input
+        # ulimit only accepts English "unlimited" on input
         APACHECTL_ULIMIT="ulimit -S -n unlimited"
         ;;
     *alpha*-dec-osf*)
