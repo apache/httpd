@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Update APXS manual page: some -q option arguments were missing
+     and another was incorrect. [Mark Anderson <mda@discerning.com>] PR#3553
+
   *) Cleanup the command line options: `-?' was documented to show
      the usage list but does it with an error because `?' is not a valid
      command. OTOH a lot of users expect `-h' to print such a usage list and
