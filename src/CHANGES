@@ -1,5 +1,8 @@
 Changes with Apache 1.3b1
 
+  *) Configure uses a sh trap and didn't set its exitcode properly.
+     [Dean Gaudet] PR#1159
+
   *) Yet another vhost revamp.  Add the NameVirtualHost directive which
      explicitly lists the ip:port pairs that are to be used for name-vhosts.
      From a given ip:port, regardless what the Host: header is, you can

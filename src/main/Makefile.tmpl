@@ -5,7 +5,7 @@
 
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
-INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
+INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
@@ -26,7 +26,7 @@ $(LIB): $(OBJS)
 	$(RANLIB) $@
 
 clean:
-	rm -f $(OBJS) $(LIB)
+	rm -f *.o $(LIB)
 
 # Work around broken compilers
 http_bprintf.o: http_bprintf.c

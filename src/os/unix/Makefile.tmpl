@@ -1,21 +1,14 @@
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
 LIBS=$(EXTRA_LIBS) $(LIBS1)
-INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
+INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH2) $(EXTRA_INCLUDES)
 LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
 INCDIR=../../main
 
 OBJS=	os.o os-inline.o
-COPY=	os.h os-inline.c
 
 LIB=	libos.a
 
-all:	$(LIB) copy
-
-copy:
-	for i in $(COPY); do  \
-		rm -f $(INCDIR)/$$i ;\
-		ln -s `pwd`/$$i $(INCDIR)/$$i ;\
-	done
+all:	$(LIB)
 
 $(LIB): $(OBJS)
 	rm -f $@
@@ -26,7 +19,6 @@ $(LIB): $(OBJS)
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 clean:
-	for i in $(COPY); do  rm -f $(INCDIR)/$$i ; done
 	rm -f $(OBJS) $(LIB)
 
 $(OBJS): Makefile

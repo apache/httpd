@@ -137,7 +137,7 @@ mod_setenvif.o: mod_setenvif.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
 	$(INCDIR)/http_core.h $(INCDIR)/http_log.h
 
 mod_speling.o: mod_speling.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
-	$(INCDIR)/os.h $(INCDIR)/os-inline.c $(INCDIR)/alloc.h \
+	../../$(OSDIR)/os.h ../../$(OSDIR)/os-inline.c $(INCDIR)/alloc.h \
 	$(INCDIR)/buff.h $(INCDIR)/http_config.h $(INCDIR)/http_log.h
 
 mod_status.o: mod_status.c $(INCDIR)/httpd.h $(INCDIR)/conf.h \
