@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) mod_dir: the trailing-slash behaviour is now configurable using the
+     DirectorySlash directive.  [André Malo]
+
   *) Allow proxying of resources that are invoked via DirectoryIndex.
      PR 14648, 15112, 29961.  [André Malo]
 

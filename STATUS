@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/15 21:35:15 $]
+Last modified at [$Date: 2004/08/15 21:59:57 $]
 
 Release:
 
@@ -151,11 +151,6 @@ PATCHES TO BACKPORT FROM 2.1
        <http://www.apache.org/~clar/detach-addrspace_HTTP_2_0.patch>
        <http://www.apache.org/~clar/detach-addrspace_APR_0_9.patch>
        +1: jjclar, bnicholes
-
-    *) mod_dir: Backport DirectorySlash directive to work around problems
-       with <Location>-SetHandler combinations and trailing slash redirects.
-         modules/mappers/mod_dir.c: r1.48
-       +1: nd, jerenkrantz, trawick
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47

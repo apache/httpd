@@ -30,8 +30,15 @@
 
 module AP_MODULE_DECLARE_DATA dir_module;
 
+typedef enum {
+    SLASH_OFF = 0,
+    SLASH_ON,
+    SLASH_UNSET
+} slash_cfg;
+
 typedef struct dir_config_struct {
     apr_array_header_t *index_names;
+    slash_cfg do_slash;
 } dir_config_rec;
 
 #define DIR_CMD_PERMS OR_INDEXES
@@ -47,10 +54,20 @@ static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
+static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
+{
+    dir_config_rec *d = d_;
+
+    d->do_slash = arg ? SLASH_ON : SLASH_OFF;
+    return NULL;
+}
+
 static const command_rec dir_cmds[] =
 {
     AP_INIT_ITERATE("DirectoryIndex", add_index, NULL, DIR_CMD_PERMS,
                     "a list of file names"),
+    AP_INIT_FLAG("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
+                 "On or Off"),
     {NULL}
 };
 
@@ -59,6 +76,7 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
     dir_config_rec *new = apr_pcalloc(p, sizeof(dir_config_rec));
 
     new->index_names = NULL;
+    new->do_slash = SLASH_UNSET;
     return (void *) new;
 }
 
@@ -69,6 +87,8 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
     dir_config_rec *add = (dir_config_rec *)addv;
 
     new->index_names = add->index_names ? add->index_names : base->index_names;
+    new->do_slash =
+        (add->do_slash == SLASH_UNSET) ? base->do_slash : add->do_slash;
     return new;
 }
 
@@ -95,10 +115,17 @@ static int fixup_dir(request_rec *r)
         return DECLINED;
     }
 
+    d = (dir_config_rec *)ap_get_module_config(r->per_dir_config,
+                                               &dir_module);
+
     /* Redirect requests that are not '/' terminated */
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') 
     {
         char *ifile;
+
+        if (!d->do_slash) {
+            return DECLINED;
+        }
 
         /* Only redirect non-get requests if we have no note to warn
          * that this browser cannot handle redirs on non-GET requests 
@@ -126,9 +153,6 @@ static int fixup_dir(request_rec *r)
     if (strcmp(r->handler, DIR_MAGIC_TYPE)) {
         return DECLINED;
     }
-
-    d = (dir_config_rec *)ap_get_module_config(r->per_dir_config,
-                                               &dir_module);
 
     if (d->index_names) {
         names_ptr = (char **)d->index_names->elts;
