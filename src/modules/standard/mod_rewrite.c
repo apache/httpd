@@ -208,10 +208,6 @@ static cache *cachep;
     /* whether proxy module is available or not */
 static int proxy_available;
 
-    /* the txt mapfile parsing stuff */
-static regex_t   *lookup_map_txtfile_regexp = NULL;
-static regmatch_t lookup_map_txtfile_regmatch[MAX_NMATCH];
-
 
 /*
 ** +-------------------------------------------------------+
@@ -951,10 +947,6 @@ static void init_module(server_rec *s, pool *p)
 {
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
-
-    /* precompile a static pattern
-       for the txt mapfile parsing */
-    lookup_map_txtfile_regexp = ap_pregcomp(p, MAPFILE_PATTERN, REG_EXTENDED);
 
     /* create the rewriting lockfile in the parent */
     rewritelock_create(s, p);
@@ -2729,13 +2721,15 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
                                    "key=%s", s->name, key);
+                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                                         st.st_mtime, key, "");
                         return NULL;
                     }
                 }
                 else {
                     rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s "
                                "-> val=%s", s->name, key, value);
-                    return value;
+                    return value[0] != '\0' ? value : NULL;
                 }
             }
             else if (s->type == MAPTYPE_DBM) {
@@ -2764,13 +2758,15 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[dbm] "
                                    "key=%s", s->name, key);
+                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                                         st.st_mtime, key, "");
                         return NULL;
                     }
                 }
                 else {
                     rewritelog(r, 5, "cache lookup OK: map=%s[dbm] key=%s "
                                "-> val=%s", s->name, key, value);
-                    return value;
+                    return value[0] != '\0' ? value : NULL;
                 }
 #else
                 return NULL;
@@ -2823,6 +2819,8 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     else {
                         rewritelog(r, 5, "map lookup FAILED: map=%s[txt] "
                                    "key=%s", s->name, key);
+                        set_cache_string(cachep, s->name, CACHEMODE_TS,
+                                         st.st_mtime, key, "");
                         return NULL;
                     }
                 }
@@ -2830,8 +2828,13 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     rewritelog(r, 5, "cache lookup OK: map=%s[txt] key=%s "
                                "-> val=%s", s->name, key, value);
                 }
-                value = select_random_value_part(r, value);
-                rewritelog(r, 5, "randomly choosen the subvalue `%s'", value);
+                if (value[0] != '\0') {
+                   value = select_random_value_part(r, value);
+                   rewritelog(r, 5, "randomly choosen the subvalue `%s'", value);
+                }
+                else {
+                    value = NULL;
+                }
                 return value;
             }
         }
@@ -2839,44 +2842,45 @@ static char *lookup_map(request_rec *r, char *name, char *key)
     return NULL;
 }
 
-
 static char *lookup_map_txtfile(request_rec *r, char *file, char *key)
 {
     FILE *fp = NULL;
     char line[1024];
-    char output[1024];
-    char result[1024];
     char *value = NULL;
     char *cpT;
+    size_t skip;
     char *curkey;
     char *curval;
 
     if ((fp = ap_pfopen(r->pool, file, "r")) == NULL) {
-        return NULL;
+       return NULL;
     }
 
-    ap_cpystrn(output, MAPFILE_OUTPUT, sizeof(output));
     while (fgets(line, sizeof(line), fp) != NULL) {
-        if (line[strlen(line)-1] == '\n') {
-            line[strlen(line)-1] = '\0';
-        }
-        if (regexec(lookup_map_txtfile_regexp, line,
-                    lookup_map_txtfile_regexp->re_nsub+1,
-                    lookup_map_txtfile_regmatch, 0) == 0) {
-            ap_cpystrn(result, ap_pregsub(r->pool, output, line,
-                    lookup_map_txtfile_regexp->re_nsub+1,
-                    lookup_map_txtfile_regmatch),
-                    sizeof(result)); /* substitute in output */
-            cpT = strchr(result, ',');
-            *cpT = '\0';
-            curkey = result;
-            curval = cpT+1;
-
-            if (strcmp(curkey, key) == 0) {
-                value = ap_pstrdup(r->pool, curval);
-                break;
-            }
-        }
+        if (line[0] == '#')
+            continue; /* ignore comments */
+        cpT = line;
+        curkey = cpT;
+        skip = strcspn(cpT," \t\r\n");
+        if (skip == 0)
+            continue; /* ignore lines that start with a space, tab, CR, or LF */
+        cpT += skip;
+        *cpT = '\0';
+        if (strcmp(curkey, key) != 0)
+            continue; /* key does not match... */
+            
+        /* found a matching key; now extract and return the value */
+        ++cpT;
+        skip = strspn(cpT, " \t\r\n");
+        cpT += skip;
+        curval = cpT;
+        skip = strcspn(cpT, " \t\r\n");
+        if (skip == 0)
+            continue; /* no value... */
+        cpT += skip;
+        *cpT = '\0';
+        value = ap_pstrdup(r->pool, curval);
+        break;
     }
     ap_pfclose(r->pool, fp);
     return value;
@@ -3834,12 +3838,57 @@ static char *get_cache_string(cache *c, char *res, int mode,
     return ap_pstrdup(c->pool, ce->value);
 }
 
+static int cache_tlb_hash(char *key)
+{
+    unsigned long n;
+    char *p;
+
+    n = 0;
+    for (p=key; *p != '\0'; ++p) {
+        n = n * 53711 + 134561 + (unsigned)(*p & 0xff);
+    }
+
+    return n % CACHE_TLB_ROWS;
+}
+
+static cacheentry *cache_tlb_lookup(cachetlbentry *tlb, cacheentry *elt,
+                                    char *key)
+{
+    int ix = cache_tlb_hash(key);
+    int i;
+    int j;
+
+    for (i=0; i < CACHE_TLB_COLS; ++i) {
+        j = tlb[ix].t[i];
+        if (j < 0)
+            return NULL;
+        if (strcmp(elt[j].key, key) == 0)
+            return &elt[j];
+    }
+    return NULL;
+}
+
+static void cache_tlb_replace(cachetlbentry *tlb, cacheentry *elt,
+                              cacheentry *e)
+{
+    int ix = cache_tlb_hash(e->key);
+    int i;
+
+    tlb = &tlb[ix];
+
+    for (i=1; i < CACHE_TLB_COLS; ++i)
+        tlb->t[i] = tlb->t[i-1];
+
+    tlb->t[0] = e - elt;
+}
+
 static void store_cache_string(cache *c, char *res, cacheentry *ce)
 {
     int i;
     int j;
     cachelist *l;
     cacheentry *e;
+    cachetlbentry *t;
     int found_list;
 
     found_list = 0;
@@ -3848,11 +3897,22 @@ static void store_cache_string(cache *c, char *res, cacheentry *ce)
         l = &(((cachelist *)c->lists->elts)[i]);
         if (strcmp(l->resource, res) == 0) {
             found_list = 1;
+
+            e = cache_tlb_lookup((cachetlbentry *)l->tlb->elts,
+                                 (cacheentry *)l->entries->elts, ce->key);
+            if (e != NULL) {
+                e->time  = ce->time;
+                e->value = ap_pstrdup(c->pool, ce->value);
+                return;
+            }
+
             for (j = 0; j < l->entries->nelts; j++) {
                 e = &(((cacheentry *)l->entries->elts)[j]);
                 if (strcmp(e->key, ce->key) == 0) {
                     e->time  = ce->time;
                     e->value = ap_pstrdup(c->pool, ce->value);
+                  cache_tlb_replace((cachetlbentry *)l->tlb->elts,
+                                    (cacheentry *)l->entries->elts, e);
                     return;
                 }
             }
@@ -3864,6 +3924,13 @@ static void store_cache_string(cache *c, char *res, cacheentry *ce)
         l = ap_push_array(c->lists);
         l->resource = ap_pstrdup(c->pool, res);
         l->entries  = ap_make_array(c->pool, 2, sizeof(cacheentry));
+        l->tlb      = ap_make_array(c->pool, CACHE_TLB_ROWS,
+                                    sizeof(cachetlbentry));
+        for (i=0; i<CACHE_TLB_ROWS; ++i) {
+            t = &((cachetlbentry *)l->tlb->elts)[i];
+                for (j=0; j<CACHE_TLB_COLS; ++j)
+                    t->t[j] = -1;
+        }
     }
 
     /* create the new entry */
@@ -3874,6 +3941,8 @@ static void store_cache_string(cache *c, char *res, cacheentry *ce)
             e->time  = ce->time;
             e->key   = ap_pstrdup(c->pool, ce->key);
             e->value = ap_pstrdup(c->pool, ce->value);
+            cache_tlb_replace((cachetlbentry *)l->tlb->elts,
+                              (cacheentry *)l->entries->elts, e);
             return;
         }
     }
@@ -3892,6 +3961,12 @@ static cacheentry *retrieve_cache_string(cache *c, char *res, char *key)
     for (i = 0; i < c->lists->nelts; i++) {
         l = &(((cachelist *)c->lists->elts)[i]);
         if (strcmp(l->resource, res) == 0) {
+
+            e = cache_tlb_lookup((cachetlbentry *)l->tlb->elts,
+                                 (cacheentry *)l->entries->elts, key);
+            if (e != NULL)
+                return e;
+
             for (j = 0; j < l->entries->nelts; j++) {
                 e = &(((cacheentry *)l->entries->elts)[j]);
                 if (strcmp(e->key, key) == 0) {

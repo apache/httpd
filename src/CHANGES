@@ -1,5 +1,15 @@
 Changes with Apache 1.3.5
 
+  *) Enhanced mod_rewrite's mapfile handling: The in-core cache for text and
+     DBM format mapfiles now uses a 4-way hash table with LRU functionality.
+     Furthermore map lookups for non-existent keys are now cached as well.
+     Additionally "txt" maps are now parsed with simple string functions
+     instead of using ap_pregcomp(). As a side effect a bug that prevented
+     the usage of keys containing the "," character was fixed.
+     The changes drastically improve the performance when large rewrite maps
+     are in use.
+     [Michael van Elst <mlelstv@serpens.swb.de>, Lars Eilebrecht] PR#3160
+
   *) Added ap_sub_req_method_uri() for doing a subrequest with a method
      other than GET, and const'd the definition of method in request_rec.
      [Greg Stein]

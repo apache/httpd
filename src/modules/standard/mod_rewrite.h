@@ -219,6 +219,9 @@
 #define CACHEMODE_TS                1<<0
 #define CACHEMODE_TTL               1<<1
 
+#define CACHE_TLB_ROWS 1024
+#define CACHE_TLB_COLS 4
+
 #ifndef FALSE
 #define FALSE 0
 #define TRUE  !FALSE
@@ -240,10 +243,6 @@
 #define MAX_ENV_FLAGS 15
 
 #define MAX_NMATCH    10
-
-#define MAPFILE_PATTERN "^([^ \t]+)[ \t]+([^ \t]+).*$"
-#define MAPFILE_OUTPUT  "$1,$2"
-
 
 /*
 **
@@ -317,17 +316,23 @@ typedef struct {
 } rewrite_perdir_conf;
 
 
-    /* the cache structures */
-
+    /* the cache structures,
+     * a 4-way hash table with LRU functionality
+     */
 typedef struct cacheentry {
     time_t time;
     char  *key;
     char  *value;
 } cacheentry;
 
+typedef struct tlbentry {
+    int t[CACHE_TLB_COLS];
+} cachetlbentry;
+
 typedef struct cachelist {
     char         *resource;
     array_header *entries;
+    array_header *tlb;
 } cachelist;
 
 typedef struct cache {
@@ -335,9 +340,10 @@ typedef struct cache {
     array_header *lists;
 } cache;
 
-    /* the regex structure for the
-       substitution of backreferences */
 
+    /* the regex structure for the
+     * substitution of backreferences
+     */
 typedef struct backrefinfo {
     char *source;
     int nsub;
