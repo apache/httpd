@@ -820,6 +820,8 @@ Ascending|Descending Name|Date|Size|Description</syntax>
 
 <directivesynopsis>
 <name>ReadmeName</name>
+<description>Name of the file that will be inserted at the end
+of the index listing</description>
 <syntax>ReadmeName <em>filename</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
