@@ -326,7 +326,7 @@ void ap_single_module_configure(ap_context_t *p, server_rec *s, module *m);
 void ap_setup_prelinked_modules(void);
 void ap_show_directives(void);
 void ap_show_modules(void);
-server_rec *ap_read_config(ap_context_t *conf_pool, ap_context_t *temp_pool, const char *config_name);
+server_rec *ap_read_config(process_rec *process, ap_context_t *temp_pool, const char *config_name);
 void ap_post_config_hook(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s);
 void ap_child_init_hook(ap_context_t *pchild, server_rec *s);
 

@@ -616,11 +616,27 @@ struct htaccess_result {
     const struct htaccess_result *next;
 };
 
-typedef struct conn_rec conn_rec;
+/* The following four types define a hierarchy of activities, so that
+ * given a request_rec r you can write r->connection->server->process
+ * to get to the process_rec.  While this reduces substantially the
+ * number of arguments that various hooks require beware that in
+ * threaded versions of the server you must consider multiplexing
+ * issues.  */
+
+typedef struct process_rec process_rec;
 typedef struct server_rec server_rec;
+typedef struct conn_rec conn_rec;
 typedef struct request_rec request_rec;
 
 #include "util_uri.h"
+
+struct process_rec {
+    ap_context_t *pool;  /* Global pool. Please try to cleared on _all_ exits */
+    ap_context_t *pconf; /* aka configuration pool, cleared on restarts */
+    int argc;
+    const char **argv;
+    const char *short_name;
+};
 
 struct request_rec {
 
@@ -838,7 +854,7 @@ struct server_addr_rec {
 };
 
 struct server_rec {
-
+    process_rec *process;
     server_rec *next;
 
     /* description of where the definition came from */
