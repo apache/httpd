@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1998/12/29 18:04:29 $]
+  Last modified at [$Date: 1998/12/30 00:40:40 $]
 
 Release:
 
@@ -16,9 +16,6 @@ Release:
     2.0  : In pre-alpha development, see apache-2.0 repository
 
 RELEASE SHOWSTOPPERS:
-
-    * APACI: make "--config-layout=Apache" the default path layout
-        Status: Ralf is working on a patch
 
     * Version component misbehaviour
         See: <36738822.D2FD6C0@lyra.org>
