@@ -692,8 +692,9 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
                                     void *config,
                                     const char *url)
 {
-    int result;
+    int rc;
     apr_ldap_url_desc_t *urld;
+    apr_ldap_err_t *result;
 
     mod_auth_ldap_config_t *sec = config;
 
@@ -701,20 +702,9 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
 	         cmd->server, "[%d] auth_ldap url parse: `%s'", 
 	         getpid(), url);
 
-    result = apr_ldap_url_parse(url, &(urld));
-    if (result != LDAP_SUCCESS) {
-        switch (result) {
-        case LDAP_URL_ERR_NOTLDAP:
-            return "LDAP URL does not begin with ldap://";
-        case LDAP_URL_ERR_NODN:
-            return "LDAP URL does not have a DN";
-        case LDAP_URL_ERR_BADSCOPE:
-            return "LDAP URL has an invalid scope";
-        case LDAP_URL_ERR_MEM:
-            return "Out of memory parsing LDAP URL";
-        default:
-            return "Could not parse LDAP URL";
-        }
+    rc = apr_ldap_url_parse(cmd->pool, url, &(urld), &(result));
+    if (rc != APR_SUCCESS) {
+        return result->reason;
     }
     sec->url = apr_pstrdup(cmd->pool, url);
 
@@ -801,7 +791,6 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
     }
 
     sec->have_ldap_url = 1;
-    apr_ldap_free_urldesc(urld);
     return NULL;
 }
 
