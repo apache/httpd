@@ -14,7 +14,6 @@ chdir '..';
 $root = cwd;
 $root =~ s|.:(.*)|cd "$1|;
 $root =~ s|/|\\\\|g;
-print $root . "\n";
 find(\&fixcwd, '.');
 
 sub fixcwd { 
@@ -22,7 +21,7 @@ sub fixcwd {
 	$repl = $File::Find::dir;
         $repl =~ s|^./||;
         $repl =~ s|[^\./]+|..|g;
-        $repl =~ s|/|\\\\|;
+        $repl =~ s|/|\\|;
         $oname = $_;
 	$tname = '.#' . $_;
 	$verchg = 0;
