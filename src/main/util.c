@@ -74,6 +74,54 @@ extern char *fgets(char *s, int, FILE*);
 extern int fclose(FILE *);
 #endif
 
+/* A bunch of functions in util.c scan strings looking for certain characters.
+ * To make that more efficient we encode a lookup table.
+ */
+#define T_ESCAPE_SHELL_CMD	(0x01)
+#define T_ESCAPE_PATH_SEGMENT	(0x02)
+#define T_OS_ESCAPE_PATH	(0x04)
+#define T_HTTP_TOKEN_STOP	(0x08)
+
+static unsigned char test_char_table[256];
+
+#define TEST_CHAR(c, f)	(test_char_table[((unsigned char)(c)) & 0xff] & (f))
+
+/* XXX: this should be compile-time initialized so that test_char_table can
+ * live in read-only memory and not require backing store across fork(). 
+ */
+void util_init(void)
+{
+    unsigned c;
+    unsigned char flags;
+
+    /* explicitly deal with NUL in case some strchr() do bogosity with it */
+    test_char_table[0] = 0;
+
+    for (c = 1; c < 256; ++c) {
+	flags = 0;
+
+	/* escape_shell_cmd */
+	if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
+	    flags |= T_ESCAPE_SHELL_CMD;
+	}
+
+	if (!isalnum(c) && !strchr("$-_.+!*'(),:@&=~", c)) {
+	    flags |= T_ESCAPE_PATH_SEGMENT;
+	}
+
+	if (!isalnum(c) && !strchr("$-_.+!*'(),:@&=/~", c)) {
+	    flags |= T_OS_ESCAPE_PATH;
+	}
+
+	/* these are the "tspecials" from RFC2068 */
+	if (iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c)) {
+	    flags |= T_HTTP_TOKEN_STOP;
+	}
+
+	test_char_table[c] = flags;
+    }
+}
+
 
 API_VAR_EXPORT const char month_snames[12][4] =
 {
@@ -944,59 +992,41 @@ API_EXPORT(char *) get_token(pool *p, char **accept_line, int accept_white)
     return token;
 }
 
-static char *tspecials = " \t()<>@,;:\\/[]?={}";
 
-/* Next HTTP token from a header line.  Warning --- destructive!
- * Use only with a copy!
- */
-
-static char *next_token(char **toks)
-{
-    char *cp = *toks;
-    char *ret;
-
-    while (*cp && (iscntrl(*cp) || strchr(tspecials, *cp))) {
-	if (*cp == '"')
-	    while (*cp && (*cp != '"'))
-		++cp;
-	else
-	    ++cp;
-    }
-
-    if (!*cp)
-	ret = NULL;
-    else {
-	ret = cp;
-
-	while (*cp && !iscntrl(*cp) && !strchr(tspecials, *cp))
-	    ++cp;
-
-	if (*cp) {
-	    *toks = cp + 1;
-	    *cp = '\0';
-	}
-	else
-	    *toks = cp;
-    }
-
-    return ret;
-}
-
+/* find http tokens, see the definition of token from RFC2068 */
 API_EXPORT(int) find_token(pool *p, const char *line, const char *tok)
 {
-    char *ltok;
-    char *lcopy;
+    const char *start_token;
+    const char *s;
 
     if (!line)
 	return 0;
 
-    lcopy = pstrdup(p, line);
-    while ((ltok = next_token(&lcopy)))
-	if (!strcasecmp(ltok, tok))
+    s = line;
+    for (;;) {
+	/* find start of token, skip all stop characters, note NUL
+	 * isn't a token stop, so we don't need to test for it
+	 */
+	while (TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
+	    ++s;
+	}
+	if (!*s) {
+	    return 0;
+	}
+	start_token = s;
+	/* find end of the token */
+	while (*s && !TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
+	    ++s;
+	}
+	if (!strncasecmp(start_token, tok, s - start_token)) {
 	    return 1;
-
-    return 0;
+	}
+	if (!*s) {
+	    return 0;
+	}
+    }
 }
+
 
 API_EXPORT(int) find_last_token(pool *p, const char *line, const char *tok)
 {
@@ -1035,7 +1065,7 @@ API_EXPORT(char *) escape_shell_cmd(pool *p, const char *s)
 	}
 #endif
 
-	if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", cmd[x])) {
+	if (TEST_CHAR(cmd[x], T_ESCAPE_SHELL_CMD)) {
 	    for (y = l + 1; y > x; y--)
 		cmd[y] = cmd[y - 1];
 	    l++;		/* length has been increased */
@@ -1164,12 +1194,7 @@ API_EXPORT(char *) escape_path_segment(pool *p, const char *segment)
 
     for (x = 0, y = 0; segment[x]; x++, y++) {
 	char c = segment[x];
-#ifndef CHARSET_EBCDIC
-	if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9')
-#else /* CHARSET_EBCDIC*/
-	if (!isalnum(c)
-#endif /*CHARSET_EBCDIC*/
-	    && !strchr("$-_.+!*'(),:@&=~", c)) {
+	if (TEST_CHAR(c, T_ESCAPE_PATH_SEGMENT)) {
 	    c2x(c, &copy[y]);
 	    y += 2;
 	}
@@ -1196,12 +1221,7 @@ API_EXPORT(char *) os_escape_path(pool *p, const char *path, int partial)
     }
     for (; *path; ++path) {
 	char c = *path;
-#ifndef CHARSET_EBCDIC
-	if ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z') && (c < '0' || c > '9')
-#else /* CHARSET_EBCDIC*/
-	if (!isalnum(c)
-#endif /*CHARSET_EBCDIC*/
-	    && !strchr("$-_.+!*'(),:@&=/~", c)) {
+	if (TEST_CHAR(c, T_OS_ESCAPE_PATH)) {
 	    c2x(c, s);
 	    s += 3;
 	}

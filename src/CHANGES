@@ -1,5 +1,7 @@
 Changes with Apache 1.3b6
 
+  *) util.c cleanup and speedup. [Dean Gaudet]
+
   *) API: Clarification, pstrndup() will always copy n bytes of the source
      and NUL terminate at the (n+1)st byte.  [Dean Gaudet]
 

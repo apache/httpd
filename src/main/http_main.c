@@ -2957,6 +2957,9 @@ static void show_compile_settings(void)
 }
 
 
+/* DEAN WILL CLEAN THIS UP! */
+extern void util_init(void);
+
 /* Some init code that's common between win32 and unix... well actually
  * some of it is #ifdef'd but was duplicated before anyhow.  This stuff
  * is still a mess.
@@ -2986,6 +2989,7 @@ static void common_init(void)
     pconf = permanent_pool;
     ptrans = make_sub_pool(pconf);
 
+    util_init();
     util_uri_init();
 
     pcommands = make_sub_pool(NULL);
