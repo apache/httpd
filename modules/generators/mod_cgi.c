@@ -185,7 +185,7 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
     cgi_server_conf *conf = ap_get_module_config(s->module_config,
                                                  &cgi_module);
 
-    conf->logname = arg;
+    conf->logname = ap_server_root_relative(cmd->pool, arg);
     return NULL;
 }
 
@@ -233,11 +233,12 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     ap_log_rerror(APLOG_MARK, log_flags, rv, r, 
                   "%s: %s", error, r->filename);
 
+    /* XXX Very expensive mainline case! Open, then getfileinfo! */
     if (!conf->logname ||
-        ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname),
+        ((apr_stat(&finfo, conf->logname,
                    APR_FINFO_SIZE, r->pool) == APR_SUCCESS)
          &&  (finfo.size > conf->logbytes)) ||
-          (apr_file_open(&f, ap_server_root_relative(r->pool, conf->logname),
+          (apr_file_open(&f, conf->logname,
                    APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool)
               != APR_SUCCESS)) {
 	return ret;
@@ -285,11 +286,12 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     apr_finfo_t finfo;
     char time_str[APR_CTIME_LEN];
 
+    /* XXX Very expensive mainline case! Open, then getfileinfo! */
     if (!conf->logname ||
-        ((apr_stat(&finfo, ap_server_root_relative(r->pool, conf->logname),
+        ((apr_stat(&finfo, conf->logname,
                    APR_FINFO_SIZE, r->pool) == APR_SUCCESS)
          &&  (finfo.size > conf->logbytes)) ||
-         (apr_file_open(&f, ap_server_root_relative(r->pool, conf->logname),
+         (apr_file_open(&f, conf->logname,
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
 	/* Soak up script output */
 	while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, script_in) == 0)
