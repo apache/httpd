@@ -56,21 +56,25 @@ Committed:
 
 Available:
 
+    * Jim's [PATCH] ap_cpystrn() function (replace strncpy)
+	<199712261651.LAA09735@devsys.jaguNET.com>
+	Status: Jim +1
+
     * [PATCH] mod_digest/1599: proxy authentication using the digest auth scheme never succeeds (fwd)
 	<Pine.LNX.3.95dg3.971225184830.17380C-100000@twinlark.arctic.org>
-	Status: Dean +1
+	Status: Dean +1, Jim +1
 
     * Ken's [PATCH] for PR#1195 (" in realm names)
 	<34A13B2C.EAD80C05@Golux.Com>
-	Status: Ken +1, Dean +1
+	Status: Ken +1, Dean +1, Jim +1
 
     * Dean's [PATCH] Re: [BUGFIXES] Wrong GID for PID file and UMASK for logs
 	<Pine.LNX.3.95dg3.971216000231.213J-100000@twinlark.arctic.org>
-	Status: Dean +1, Martin +1
+	Status: Dean +1, Martin +1, Jim +1
 
     * Dean's [PATCH] fix Rasmus' chunking error
 	<Pine.LNX.3.95dg3.971220143033.544I-100000@twinlark.arctic.org>
-	Status: Dean +1, Rasmus +1
+	Status: Dean +1, Rasmus +1, Jim +1
 
     * Dean's [PATCH] mod_status cleanups
 	<Pine.LNX.3.95dg3.971220023128.4924E-100000@twinlark.arctic.org>
