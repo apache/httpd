@@ -359,7 +359,11 @@ char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
     void *sconf = cmd->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
   
-    if (!is_directory (arg)) return "DocumentRoot must be a directory";
+    if (!is_directory (arg))
+	if (cmd->server->is_virtual)
+	    fprintf (stderr, "Warning: DocumentRoot [%s] does not exist", arg);
+	else
+	    return "DocumentRoot must be a directory";
     
     conf->document_root = arg;
     return NULL;
@@ -608,6 +612,45 @@ char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     return errmsg;
 }
 
+char *read_configdir (cmd_parms *cmd, void *dummy, char *arg)
+{
+    DIR *vdir;
+    struct DIR_TYPE *vdir_entry;
+    char *dirname, *fname, *p;
+    
+    dirname = server_root_relative (cmd->pool, arg);
+    
+    if (!is_directory (dirname))
+	log_error ("ConfigDir must be a valid directory", cmd->server);
+    
+    vdir = opendir (dirname);
+
+    if (vdir == NULL) {
+        return NULL;
+    }
+
+    if ((p = strrchr (dirname, '\0')))
+    {
+	if (*--p != '/')
+	    dirname = pstrcat (cmd->pool, dirname, "/", NULL);
+    }
+    
+    while ((vdir_entry = readdir (vdir))) {
+
+	if ((strstr(vdir_entry->d_name, ".conf")) != NULL)
+	{
+	    fname = pstrcat (cmd->pool, dirname, vdir_entry->d_name, NULL);
+	    process_resource_config (cmd->server, fname,
+				     cmd->pool, cmd->temp_pool);
+	}
+	else
+	    continue;
+    }
+
+    closedir (vdir);
+    return NULL;
+}
+
 char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
 {
     /* This one's pretty generic... */
@@ -837,6 +880,7 @@ command_rec core_cmds[] = {
       "a port number or a numeric IP address and a port number"},
 { "<VirtualHost", virtualhost_section, NULL, RSRC_CONF, RAW_ARGS, NULL },
 { "</VirtualHost>", end_virtualhost_section, NULL, RSRC_CONF, NO_ARGS, NULL },
+{ "ConfigDir", read_configdir, NULL, RSRC_CONF, TAKE1, "directory containing config files" },
 { NULL },
 };
 
