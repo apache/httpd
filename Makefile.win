@@ -446,8 +446,6 @@ _install:
 	copy srclib\apr\$(LONG)\libapr.pdb "$(INSTDIR)\bin" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv.pdb "$(INSTDIR)\bin" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil.pdb "$(INSTDIR)\bin" <.y
-	copy srclib\apr-iconv\ccs\$(LONG)\*.pdb "$(INSTDIR)\bin\iconv" <.y
-	copy srclib\apr-iconv\ces\$(LONG)\*.pdb "$(INSTDIR)\bin\iconv" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.pdb "$(INSTDIR)\modules" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.pdb "$(INSTDIR)\modules" <.y
 	copy modules\aaa\$(LONG)\mod_authn_anon.pdb "$(INSTDIR)\modules" <.y
