@@ -104,9 +104,9 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
 
   APACHE_MKDIR_P_CHECK
   echo creating config_vars.mk
-  > config_vars.mk
+  > build/config_vars.mk
   for i in $APACHE_VAR_SUBST; do
-    eval echo "$i = \$$i" >> config_vars.mk
+    eval echo "$i = \$$i" >> build/config_vars.mk
   done
 ])
 

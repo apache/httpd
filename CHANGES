@@ -1,5 +1,8 @@
 Changes with Apache 2.0.34-dev
 
+  *) Fix apxs -g handling.  Move config_vars.mk from the top build
+     directory to the build directory.  PR 10163  [Jeff Trawick]
+
   *) Fix some mod_include problems which broke evaluation of some
      expressions.  PR 10108  [Jeff Trawick]
 

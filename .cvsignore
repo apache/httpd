@@ -14,7 +14,6 @@ shlibtool
 config.status
 modules.c
 config.cache
-config_vars.mk
 .libs
 httpd
 modules.lo

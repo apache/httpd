@@ -21,7 +21,8 @@ INSTALL_TARGETS = install-conf install-htdocs install-error install-icons \
 	install-build
 
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
-	modules.c config.cache config.log config.status config_vars.mk
+	modules.c config.cache config.log config.status build/config_vars.mk \
+        build/rules.mk
 EXTRACLEAN_TARGETS = configure include/ap_config_auto.h.in generated_lists
 
 include $(top_builddir)/build/rules.mk
@@ -86,9 +87,9 @@ install-conf:
 install-build:
 	@echo Installing build system files 
 	@test -d $(installbuilddir) || $(MKINSTALLDIRS) $(installbuilddir) 
-	@sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
-	    config_vars.mk > $(installbuilddir)/config_vars.mk; \
-	cp build/*.mk $(installbuilddir); \
+	@cp build/*.mk $(installbuilddir); \
+	sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
+	    build/config_vars.mk > $(installbuilddir)/config_vars.mk; \
 	cp $(top_srcdir)/build/instdso.sh $(installbuilddir);
 
 htdocs-srcdir = $(top_srcdir)/docs/docroot
