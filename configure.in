@@ -88,5 +88,5 @@ AC_SUBST(MPM_LIB)
 AC_SUBST(OS)
 AC_SUBST(OS_DIR)
 
-AC_OUTPUT([Makefile ap/Makefile main/Makefile lib/apr/Makefile os/Makefile
+AC_OUTPUT([Makefile ap/Makefile main/Makefile os/Makefile
           $APACHE_OUTPUT_FILES])
