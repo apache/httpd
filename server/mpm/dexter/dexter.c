@@ -737,21 +737,14 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
-                           int conn_id)
+static void process_socket(ap_context_t *p, ap_socket_t *sock, long conn_id)
 {
-    struct sockaddr sa_server; /* ZZZZ */
-    NET_SIZE_T len = sizeof(struct sockaddr);
     BUFF *conn_io;
     conn_rec *current_conn;
     ap_iol *iol;
+    int csd;
 
-    if (getsockname(csd, &sa_server, &len) < 0) { 
-	ap_log_error(APLOG_MARK, APLOG_ERR, errno, server_conf, "getsockname");
-	close(csd);
-	return;
-    }
-
+    ap_get_os_sock(&csd, sock);
     sock_disable_nagle(csd);
 
     iol = unix_attach_socket(csd);
@@ -766,17 +759,15 @@ static void process_socket(ap_context_t *p, struct sockaddr *sa_client, int csd,
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
                 "error attaching to socket");
         }
-        close(csd);
+        ap_close_socket(sock);
 	return;
     }
 
     conn_io = ap_bcreate(p, B_RDWR);
     ap_bpush_iol(conn_io, iol);
 
-    current_conn = ap_new_connection(p, server_conf, conn_io,
-                                  (const struct sockaddr_in *) sa_client, 
-                                  (const struct sockaddr_in *) &sa_server,
-                                  conn_id);
+    current_conn = ap_new_apr_connection(p, server_conf, conn_io, sock,
+                                         conn_id);
 
     ap_process_connection(current_conn);
 }
@@ -848,7 +839,6 @@ static void check_pipe_of_death(void)
 
 static void *worker_thread(void *arg)
 {
-    struct sockaddr sa_client;
     ap_socket_t *csd = NULL;
     ap_context_t *tpool;		/* Pool for this thread           */
     ap_context_t *ptrans;		/* Pool for per-transaction stuff */
@@ -858,7 +848,6 @@ static void *worker_thread(void *arg)
     int thread_just_started = 1;
     int thread_num = *((int *) arg);
     long conn_id = child_num * HARD_THREAD_LIMIT + thread_num;
-    int native_socket;
 
     pthread_mutex_lock(&thread_pool_create_mutex);
     ap_create_context(&tpool, thread_pool_parent);
@@ -955,8 +944,7 @@ static void *worker_thread(void *arg)
             pthread_mutex_unlock(&idle_thread_count_mutex);
 	    break;
 	}
-        ap_get_os_sock(&native_socket, csd);
-        process_socket(ptrans, &sa_client, native_socket, conn_id);
+        process_socket(ptrans, csd, conn_id);
         ap_clear_pool(ptrans);
         requests_this_child--;
     }
