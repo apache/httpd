@@ -321,8 +321,8 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
                            "<base href=\"%s%s\">\n</head>\n\n"
                            "<body>\n\n<h2>Directory of "
                            "<a href=\"/\">%s</a>/",
-                           site, ap_escape_uri(p, path),
-                           site, ap_escape_html(p, path), site);
+                           site, ap_escape_html(p, path),
+                           site, ap_escape_uri(p, path), site);
 
         e = apr_bucket_pool_create(str, strlen(str), p);
         APR_BRIGADE_INSERT_TAIL(out, e);
@@ -462,7 +462,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             }
 
             filename = strrchr(ctx->buffer, ' ');
-            *(filename++) = 0;
+            *(filename++) = '\0';
 
             /* handle filenames with spaces in 'em */
             if (!strcmp(filename, ".") || !strcmp(filename, "..") || firstfile) {
@@ -471,11 +471,11 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             }
             else if (searchidx != 0 && ctx->buffer[searchidx] != 0) {
                 *(--filename) = ' ';
-                ctx->buffer[searchidx - 1] = 0;
+                ctx->buffer[searchidx - 1] = '\0';
                 filename = &ctx->buffer[searchidx];
             }
 
-            /* Special handling for '.' and '..' */
+            /* Append a slash to the HREF link for directories */
             if (!strcmp(filename, ".") || !strcmp(filename, "..") || ctx->buffer[0] == 'd') {
                 str = apr_psprintf(p, "%s <a href=\"%s/\">%s</a>\n",
                                    ap_escape_html(p, ctx->buffer),
@@ -492,9 +492,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* Try a fallback for listings in the format of "ls -s1" */
         else if (0 == ap_regexec(re, ctx->buffer, 3, re_result, 0)) {
 
-            char *filename = apr_pstrndup(p, &ctx->buffer[re_result[2].rm_so], re_result[2].rm_eo - re_result[2].rm_so);
+            filename = apr_pstrndup(p, &ctx->buffer[re_result[2].rm_so], re_result[2].rm_eo - re_result[2].rm_so);
 
-            str = ap_pstrcat(p, ap_escape_html(p, apr_pstrndup(p, &ctx->buffer[0], re_result[2].rm_so)),
+            str = ap_pstrcat(p, ap_escape_html(p, apr_pstrndup(p, ctx->buffer, re_result[2].rm_so)),
                              "<a href=\"", ap_escape_uri(p, filename), "\">",
                              ap_escape_html(p, filename), "</a>\n", NULL);
         }
@@ -640,7 +640,7 @@ static char *ftp_get_PWD(request_rec *r, conn_rec *ftp_ctrl, apr_bucket_brigade 
         case 421:
         case 550:
             ap_proxyerror(r, HTTP_BAD_GATEWAY,
-                             "Failed to read CWD on ftp server");
+                             "Failed to read PWD on ftp server");
             break;
 
         case 257: {
@@ -1056,8 +1056,14 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
         len = decodeenc(path);
 
-        rc = proxy_ftp_command(apr_pstrcat(p, "CWD ", path, CRLF, NULL),
-                           r, origin, bb, &ftpmessage);
+        /* NOTE: FTP servers do globbing on the path.
+	 * So we need to escape the URI metacharacters.
+         * In the current implementation, we use shell escaping, because
+         * it masks all characters which are also dangerous for FTP.
+         * We could also have extended gen_test_char.c with a special T_ESCAPE_FTP_PATH
+         */
+        rc = proxy_ftp_command(apr_pstrcat(p, "CWD ",
+                           ap_escape_shell_cmd(p, path), CRLF, NULL),
         *strp = '/';
         /* responses: 250, 421, 500, 501, 502, 530, 550 */
         /* 250 Requested file action okay, completed. */
@@ -1371,9 +1377,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* set request; "path" holds last path component */
     len = decodeenc(path);
 
-    /* TM - if len == 0 then it must be a directory (you can't RETR nothing) */
-
-    if (len == 0) {
+    /* If len == 0 then it must be a directory (you can't RETR nothing)
+     * Also, don't allow to RETR by wildcard. Instead, create a dirlisting
+     */
+    if (len == 0 || strpbrk(path, "*?") != NULL) {
         dirlisting = 1;
     }
     else {
@@ -1395,7 +1402,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
             ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                              "proxy: FTP: SIZE shows this is a directory");
             dirlisting = 1;
-            rc = proxy_ftp_command(apr_pstrcat(p, "CWD ", path, CRLF, NULL),
+            rc = proxy_ftp_command(apr_pstrcat(p, "CWD ", 
+                           ap_escape_shell_cmd(p, path), CRLF, NULL),
                            r, origin, bb, &ftpmessage);
             /* possible results: 250, 421, 500, 501, 502, 530, 550 */
             /* 250 Requested file action okay, completed. */
@@ -1428,8 +1436,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     if (dirlisting) {
         /* If the current directory contains no slash, we are talking to
          * a non-unix ftp system. Try LIST instead of "LIST -lag", it
-         * should return a long listing anyway (unlink NLST).
+         * should return a long listing anyway (unlike NLST).
          * Some exotic FTP servers might choke on the "-lag" switch.
+         */
+        /* Note that we do not escape the path here, to allow for
+         * queries like: ftp://user@host/apache/src/server/http_*.c
          */
         if (len != 0)
             buf = apr_pstrcat(p, "LIST ", path, CRLF, NULL);
@@ -1442,7 +1453,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         /* switch to binary if the user did not specify ";type=a" */
         ftp_set_TYPE(xfer_type, r, origin, bb, &ftpmessage);
 /* FIXME: Handle range requests - send REST */
-        buf = apr_pstrcat(p, "RETR ", path, CRLF, NULL);
+        buf = apr_pstrcat(p, "RETR ", ap_escape_shell_cmd(p, path), CRLF, NULL);
     }
     rc = proxy_ftp_command(buf, r, origin, bb, &ftpmessage);
     /* rc is an intermediate response for the LIST or RETR commands */
@@ -1478,7 +1489,8 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         dirlisting = 1;
         ftp_set_TYPE('A', r, origin, bb, NULL);
 
-        rc = proxy_ftp_command(apr_pstrcat(p, "CWD ", path, CRLF, NULL),
+        rc = proxy_ftp_command(apr_pstrcat(p, "CWD ",
+                               ap_escape_shell_cmd(p, path), CRLF, NULL),
                                r, origin, bb, &ftpmessage);
         /* possible results: 250, 421, 500, 501, 502, 530, 550 */
         /* 250 Requested file action okay, completed. */
