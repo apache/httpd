@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/27 18:17:09 $]
+Last modified at [$Date: 2003/09/27 18:24:38 $]
 
 Release:
 
@@ -323,11 +323,6 @@ PATCHES TO PORT FROM 2.1
       config file name.
         modules/generators/mod_info.c r1.151
       +1: trawick
-
-    * mod_usertrack: use a regex instead of strstr() to fix false-positive
-      matches on the user tracking cookie's name.
-        modules/metadata/mod_usertrack.c r1.42
-      +1: jwoolley, trawick, striker
 
 CURRENT RELEASE NOTES:
 

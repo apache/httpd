@@ -125,6 +125,8 @@ typedef struct {
     cookie_type_e style;
     char *cookie_name;
     char *cookie_domain;
+    char *regexp_string;  /* used to compile regexp; save for debugging */
+    regex_t *regexp;  /* used to find usertrack cookie in cookie header */
 } cookie_dir_rec;
 
 /* Make Cookie: Now we have to generate something that is going to be
@@ -193,36 +195,48 @@ static void make_cookie(request_rec *r)
     return;
 }
 
+/* dcfg->regexp is "^cookie_name=([^;]+)|;[ \t]+cookie_name=([^;]+)",
+ * which has three subexpressions, $0..$2 */
+#define NUM_SUBS 3
+
 static int spot_cookie(request_rec *r)
 {
     cookie_dir_rec *dcfg = ap_get_module_config(r->per_dir_config,
 						&usertrack_module);
-    const char *cookie;
-    const char *value;
+    const char *cookie_header;
+    regmatch_t regm[NUM_SUBS];
 
     /* Do not run in subrequests */
     if (!dcfg->enabled || r->main) {
         return DECLINED;
     }
 
-    if ((cookie = apr_table_get(r->headers_in,
-                                (dcfg->style == CT_COOKIE2
-                                 ? "Cookie2"
-                                 : "Cookie"))))
-        if ((value = ap_strstr_c(cookie, dcfg->cookie_name))) {
-            char *cookiebuf, *cookieend;
-
-            value += strlen(dcfg->cookie_name) + 1;  /* Skip over the '=' */
-            cookiebuf = apr_pstrdup(r->pool, value);
-            cookieend = strchr(cookiebuf, ';');
-            if (cookieend)
-                *cookieend = '\0';      /* Ignore anything after a ; */
-
+    if ((cookie_header = apr_table_get(r->headers_in,
+                                       (dcfg->style == CT_COOKIE2
+                                        ? "Cookie2"
+                                        : "Cookie")))) {
+        if (!ap_regexec(dcfg->regexp, cookie_header, NUM_SUBS, regm, 0)) {
+            char *cookieval = NULL;
+            /* Our regexp,
+             * ^cookie_name=([^;]+)|;[ \t]+cookie_name=([^;]+)
+             * only allows for $1 or $2 to be available. ($0 is always
+             * filled with the entire matched expression, not just
+             * the part in parentheses.) So just check for either one
+             * and assign to cookieval if present. */
+            if (regm[1].rm_so != -1) {
+                cookieval = ap_pregsub(r->pool, "$1", cookie_header,
+                                       NUM_SUBS, regm);
+            }
+            if (regm[2].rm_so != -1) {
+                cookieval = ap_pregsub(r->pool, "$2", cookie_header,
+                                       NUM_SUBS, regm);
+            }
             /* Set the cookie in a note, for logging */
-            apr_table_setn(r->notes, "cookie", cookiebuf);
+            apr_table_setn(r->notes, "cookie", cookieval);
 
             return DECLINED;    /* There's already a cookie, no new one */
         }
+    }
     make_cookie(r);
     return OK;                  /* We set our cookie */
 }
@@ -331,7 +345,26 @@ static const char *set_cookie_name(cmd_parms *cmd, void *mconfig,
 {
     cookie_dir_rec *dcfg = (cookie_dir_rec *) mconfig;
 
+    /* The goal is to end up with this regexp,
+     * ^cookie_name=([^;]+)|;[ \t]+cookie_name=([^;]+)
+     * with cookie_name
+     * obviously substituted with the real cookie name set by the
+     * user in httpd.conf. */
+    dcfg->regexp_string = apr_pstrcat(cmd->pool, "^", name,
+                                      "=([^;]+)|;[ \t]+", name,
+                                      "=([^;]+)", NULL);
+
     dcfg->cookie_name = apr_pstrdup(cmd->pool, name);
+
+    dcfg->regexp = ap_pregcomp(cmd->pool, dcfg->regexp_string, REG_EXTENDED);
+    if (dcfg->regexp == NULL) {
+        return "Regular expression could not be compiled.";
+    }
+    if (dcfg->regexp->re_nsub + 1 != NUM_SUBS) {
+        return apr_pstrcat(cmd->pool, "Invalid cookie name \"",
+                           name, "\"", NULL);
+    }
+
     return NULL;
 }
 
