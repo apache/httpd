@@ -21,7 +21,8 @@
 <div id="page-content">
 <div id="preamble"><h1>아파치 MPM leader</h1>
 <div class="toplang">
-<p><span>가능한 언어: </span><a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>가능한 언어: </span><a href="../de/mod/leader.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/leader.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>표준 <code class="module"><a href="../mod/worker.html">worker</a></code> MPM의 실험적인 변형</td></tr>
@@ -76,7 +77,8 @@
 
 </div>
 <div class="bottomlang">
-<p><span>가능한 언어: </span><a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>가능한 언어: </span><a href="../de/mod/leader.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/leader.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/mod/leader.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>

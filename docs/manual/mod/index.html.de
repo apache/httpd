@@ -48,8 +48,8 @@ Servers</dd>
   Multi-Processing-Modul (MPM) implementiert sind.</dd>
 <dt><a href="beos.html">beos</a></dt><dd>Dieses Multi-Processing-Modul ist für BeOS
   optimiert.</dd>
-<dt><a href="leader.html">leader</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</dd>
+<dt><a href="leader.html">leader</a></dt><dd>Eine experimentelle Variante des Standard-MPMs
+  <code class="module"><a href="../mod/worker.html">worker</a></code></dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
