@@ -168,8 +168,8 @@ tool:
   $ apxs -i -a -c mod_foo.c
   gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
   ld -Bshareable -o mod_foo.so mod_foo.o
-  cp mod_foo.so /path/to/apache/libexec/mod_foo.so
-  chmod 755 /path/to/apache/libexec/mod_foo.so
+  cp mod_foo.so /path/to/apache/modules/mod_foo.so
+  chmod 755 /path/to/apache/modules/mod_foo.so
   [activating module `foo' in /path/to/apache/etc/httpd.conf]
   $ apachectl restart
   /path/to/apache/sbin/apachectl restart: httpd not running, trying to start
@@ -327,7 +327,7 @@ DSO installation and configuration options:
 This indicates the installation operation and installs one or more
 dynamically shared objects into the
 server's
-.I libexec
+.I modules
 directory.
 .TP 12
 .B \-a
@@ -375,14 +375,14 @@ directive is present to load this shared object. To simplify this
 step
 .B apxs
 provides an automatic way to install the shared object in its
-"libexec" directory and updating the
+"modules" directory and updating the
 .B httpd.conf
 file accordingly. This can be achieved by running:
 
 .nf
   $ apxs -i -a mod_foo.c
-  cp mod_foo.so /path/to/apache/libexec/mod_foo.so
-  chmod 755 /path/to/apache/libexec/mod_foo.so
+  cp mod_foo.so /path/to/apache/modules/mod_foo.so
+  chmod 755 /path/to/apache/modules/mod_foo.so
   [activating module `foo' in /path/to/apache/etc/httpd.conf]
   $ _
 .fi
@@ -390,7 +390,7 @@ file accordingly. This can be achieved by running:
 This way a line named
 
 .nf
-  LoadModule foo_module libexec/mod_foo.so
+  LoadModule foo_module modules/mod_foo.so
 .fi
 
 is added to the configuration file if still not present.
@@ -423,8 +423,8 @@ load it into the Apache server:
   gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
   ld -Bshareable -o mod_foo.so mod_foo.o
   apxs -i -a -n "foo" mod_foo.so
-  cp mod_foo.so /path/to/apache/libexec/mod_foo.so
-  chmod 755 /path/to/apache/libexec/mod_foo.so
+  cp mod_foo.so /path/to/apache/modules/mod_foo.so
+  chmod 755 /path/to/apache/modules/mod_foo.so
   [activating module `foo' in /path/to/apache/etc/httpd.conf]
   apachectl restart
   /path/to/apache/sbin/apachectl restart: httpd not running, trying to start
