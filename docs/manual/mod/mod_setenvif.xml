@@ -135,6 +135,10 @@ respect to case</description>
       <li><code>Remote_Addr</code> - the IP address of the client
       making the request</li>
 
+      <li><code>Server_Addr</code> - the IP address of the server
+      on which the request was received (only with versions later
+      than 2.0.43)</li>
+
       <li><code>Remote_User</code> - the authenticated username (if
       available)</li>
 
