@@ -133,8 +133,8 @@ static char *asn1_table_vhost_key(SSLModConfigRec *mc, apr_pool_t *p,
 #define BUILTIN_DIALOG_BACKOFF 2
 #define BUILTIN_DIALOG_RETRIES 5
 
-apr_file_t *writetty = NULL;
-apr_file_t *readtty = NULL;
+static apr_file_t *writetty = NULL;
+static apr_file_t *readtty = NULL;
     
 int ssl_pphrase_Handle_CB(char *, int, int, void *);
 
