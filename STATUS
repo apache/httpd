@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/08/13 21:14:13 $]
+Last modified at [$Date: 2003/08/19 00:57:31 $]
 
 Release:
 
@@ -311,6 +311,10 @@ PATCHES TO PORT FROM 2.1
         modules/ssl/ssl_engine_config.c: r1.82
       +1: jwoolley
 
+    * Catch an edge case, where strange subsequent RewriteRules could lead to
+      a 400 (Bad Request) response. (2.0 + 1.3)
+        modules/mappers/mod_rewrite.c: r1.228
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
