@@ -104,13 +104,13 @@ case "$host_alias" in
       other_targets="$other_targets os2core"
       ;;
   *)
+      LIBTOOL='$(SHELL) $(top_builddir)/srclib/apr/libtool --silent'
       SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool --silent'
       ;;
 esac
 
 dnl
 dnl ## Preload our OS configuration
-APR_PRELOAD
 APACHE_PRELOAD
 
 dnl
@@ -123,8 +123,6 @@ dnl ## Check for programs
 
 AC_PATH_PROG(RM, rm)
 AC_PROG_AWK
-AC_PROG_CC
-AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
@@ -132,7 +130,6 @@ dnl AC_PATH_PROG(PERL_PATH, perl)
 
 dnl various OS checks that apparently set required flags
 AC_AIX
-AC_ISC_POSIX
 AC_MINIX
 
 dnl ## Check for libraries
@@ -204,12 +201,6 @@ APACHE_SUBST(MPM_LIB)
 APACHE_SUBST(OS)
 APACHE_SUBST(OS_DIR)
 APACHE_SUBST(BUILTIN_LIBS)
-
-AM_DISABLE_SHARED
-if test -z "$LIBTOOL"; then
-  AM_PROG_LIBTOOL
-  APACHE_LIBTOOL_SILENT
-fi
 
 PRE_SHARED_CMDS='echo ""'
 POST_SHARED_CMDS='echo ""'
