@@ -30,7 +30,7 @@ all: @@Configuration@@ httpd
 
 httpd: $(REGLIB) modules.o subdirs
 	rm -f buildmark.c
-	echo 'const char SERVER_BUILT[] = "'`/bin/date`'";' > buildmark.c
+	echo 'const char SERVER_BUILT[] = "'`date`'";' > buildmark.c
 	$(CC) -c $(CFLAGS) buildmark.c
 	$(CC) $(LDFLAGS)  -o httpd buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
