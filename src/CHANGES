@@ -1,5 +1,10 @@
 Changes with Apache 1.3.7
 
+  *) Do setgid() before initgroups() in http_main; some platforms
+     zap the grouplist when setgid() is called.  This was fixed in
+     suexec earlier, but the main httpd code missed the change.
+     [Rob Saccoccio <robs@InfiniteTechnology.com>]  PR#2579
+
   *) Add recognition of .tgz as a gzipped tarchive.
      [Bertrand de Singly <bertrand.de-singly@polytechnique.fr>]  PR#2364
 

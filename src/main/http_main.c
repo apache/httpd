@@ -2993,6 +2993,17 @@ static void set_group_privs(void)
 #if !defined(OS2) && !defined(TPF)
 	/* OS/2 and TPF don't support groups. */
 
+	/*
+	 * Set the GID before initgroups(), since on some platforms
+	 * setgid() is known to zap the group list.
+	 */
+	if (setgid(ap_group_id) == -1) {
+	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
+			"setgid: unable to set group id to Group %u",
+			(unsigned)ap_group_id);
+	    clean_child_exit(APEXIT_CHILDFATAL);
+	}
+
 	/* Reset `groups' attributes. */
 
 	if (initgroups(name, ap_group_id) == -1) {
@@ -3007,14 +3018,8 @@ static void set_group_privs(void)
 			"getgroups: unable to get group list");
 	    clean_child_exit(APEXIT_CHILDFATAL);
 	}
-#endif
-	if (setgid(ap_group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
-			"setgid: unable to set group id to Group %u",
-			(unsigned)ap_group_id);
-	    clean_child_exit(APEXIT_CHILDFATAL);
-	}
-#endif
+#endif /* MULTIPLE_GROUPS */
+#endif /* !defined(OS2) && !defined(TPF) */
     }
 #endif /* ndef WIN32 */
 }
