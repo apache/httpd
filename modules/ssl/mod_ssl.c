@@ -207,8 +207,8 @@ static const command_rec ssl_config_cmds[] = {
 static int ssl_hook_pre_config(
     apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    /* unused */
-    return DECLINED;
+    ssl_ext_register(pconf);
+    return APR_SUCCESS;
 }
 
 static int ssl_hook_post_read_request(request_rec *r)
@@ -511,7 +511,6 @@ static void ssl_register_hooks(apr_pool_t *p)
 #endif
 #if 0 /* XXX */
     ssl_var_register();
-    ssl_ext_register();
     ssl_io_register();
 #endif
 }
