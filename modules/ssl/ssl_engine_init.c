@@ -105,6 +105,21 @@ static void ssl_add_version_components(apr_pool_t *p,
             vals[2]); /* SSL_VERSION_LIBRARY */
 }
 
+
+/*
+ *  Initialize SSL library
+ */
+static void ssl_init_SSLLibrary(server_rec *s)
+{
+    ssl_log(s, SSL_LOG_INFO,
+            "Init: Initializing %s library", SSL_LIBRARY_NAME);
+
+    CRYPTO_malloc_init();
+    SSL_load_error_strings();
+    SSL_library_init();
+    X509V3_add_standard_extensions();
+}
+
 /*
  *  Per-module initialization
  */
@@ -167,10 +182,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         ssl_log_open(base_server, s, p);
     }
 
-    ssl_log(base_server, SSL_LOG_INFO,
-            "Init: Initializing %s library", SSL_LIBRARY_NAME);
-
-    ssl_init_SSLLibrary();
+    ssl_init_SSLLibrary(base_server);
 
 #if APR_HAS_THREADS
     ssl_util_thread_setup(base_server, p);
@@ -260,17 +272,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     SSL_init_app_data2_idx(); /* for SSL_get_app_data2() at request time */
 
     return OK;
-}
-
-/*
- *  Initialize SSL library (also already needed for the pass phrase dialog)
- */
-void ssl_init_SSLLibrary(void)
-{
-    CRYPTO_malloc_init();
-    SSL_load_error_strings();
-    SSL_library_init();
-    X509V3_add_standard_extensions();
 }
 
 /*
