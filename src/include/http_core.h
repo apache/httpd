@@ -253,6 +253,10 @@ typedef struct {
 
 typedef struct {
   
+#ifdef GPROF
+    char *gprof_dir;
+#endif
+
     /* Name translations --- we want the core to be able to do *something*
      * so it's at least a minimally functional web server on its own (and
      * can be tested that way).  But let's keep it to the bare minimum:

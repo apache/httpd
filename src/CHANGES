@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) new `GprofDir' directive when compiled with -DGPROF, where gprof can
+     plop gmon.out profile data for each child [Doug MacEachern]
+   
   *) Use the construct ``"$@"'' instead of ``$*'' in the generated
      config.status script to be immune against arguments with whitespaces.
      [Yves Arrouye <yves@apple.com>] PR#2866

@@ -271,6 +271,9 @@ static void *create_core_server_config(pool *a, server_rec *s)
     int is_virtual = s->is_virtual;
   
     conf = (core_server_config *)ap_pcalloc(a, sizeof(core_server_config));
+#ifdef GPROF
+    conf->gprof_dir = NULL;
+#endif
     conf->access_name = is_virtual ? NULL : DEFAULT_ACCESS_FNAME;
     conf->ap_document_root = is_virtual ? NULL : DOCUMENT_LOCATION;
     conf->sec = ap_make_array(a, 40, sizeof(void *));
@@ -792,6 +795,23 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy, char *arg)
     conf->access_name = ap_pstrdup(cmd->pool, arg);
     return NULL;
 }
+
+#ifdef GPROF
+static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, char *arg)
+{
+    void *sconf = cmd->server->module_config;
+    core_server_config *conf = ap_get_module_config(sconf, &core_module);
+
+    const char *err = ap_check_cmd_context(cmd,
+					   NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    if (err != NULL) {
+        return err;
+    }
+
+    conf->gprof_dir = ap_pstrdup(cmd->pool, arg);
+    return NULL;
+}
+#endif /*GPROF*/
 
 static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
 {
@@ -2458,6 +2478,10 @@ static const command_rec core_cmds[] = {
   "Selects which authenticated users or groups may access a protected space" },
 { "Satisfy", satisfy, NULL, OR_AUTHCFG, TAKE1,
   "access policy if both allow and require used ('all' or 'any')" },    
+#ifdef GPROF
+{ "GprofDir", set_gprof_dir, NULL, RSRC_CONF, TAKE1,
+  "Directory to plop gmon.out files" },
+#endif
 
 /* Old resource config file commands */
   
