@@ -103,6 +103,9 @@
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <setjmp.h>
+#ifdef HAVE_SYS_PROCESSOR_H
+#include <sys/processor.h> /* for bindprocessor() */
+#endif
 
 /*
  * Actual definitions of config globals
@@ -967,11 +970,10 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (!pid) {
-#ifdef HAVE_SYS_PROCESSOR_H
-      /* By default, AIX binds to a single processor.  This bit unbinds
-	 children which will then bind to another CPU.
-      */
-#include <sys/processor.h>
+#ifdef HAVE_BINDPROCESSOR
+        /* By default, AIX binds to a single processor.  This bit unbinds
+         * children which will then bind to another CPU.
+         */
         int status = bindprocessor(BINDPROCESS, (int)getpid(),
 			       PROCESSOR_CLASS_ANY);
 	if (status != OK)
