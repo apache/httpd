@@ -67,6 +67,12 @@
 #include "apr_getopt.h"
 #include "ap_mpm.h"
 
+/* WARNING: Win32 binds http_main.c dynamically to the server. Please place 
+ *          extern functions and global data in another appropriate module.
+ *
+ * Most significant main() global data can be found in http_config.c
+ */
+
 /* XXX - We should be able to grab the per-MPM settings here too */
 static void show_compile_settings(void)
 {
