@@ -56,6 +56,7 @@
 #define AP_AC_CONFIG_H
 
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
+#include "apr_lib.h"		/* ap_isfoo() macros */
 
 /* Implemented flags for dynamic library bindings.
  *
@@ -99,9 +100,6 @@
 #include <stdlib.h>
 #include <string.h>
 #endif
-
-/* ap_ versions of ctype macros to make sure they deal with 8-bit chars */
-#include "ap_ctype.h"
 
 #ifdef SIGWAIT_TAKES_ONE_ARG
 #define ap_sigwait(a,b) ((*(b)=sigwait((a)))<0?-1:0)

@@ -58,6 +58,7 @@
 
 /* we need some of the portability definitions... for strchr */
 #include "ap_config.h"
+#include "apr_lib.h"
 #include "httpd.h"
 
 /* A bunch of functions in util.c scan strings looking for certain characters.
