@@ -30,7 +30,7 @@ XINCDIRS	+= \
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
-			-prefix pre_nw.h \
+			-relax_pointers \
 			$(EOLIST)
 
 #
@@ -53,28 +53,28 @@ ifeq "$(RELEASE)" "debug"
 XINCDIRS	+= \
 			$(EOLIST)
 
-XCFLAGS		+= -relax_pointers \
+XCFLAGS		+= \
 			$(EOLIST)
 
 XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
 XINCDIRS	+= \
 			$(EOLIST)
 
-XCFLAGS		+= -relax_pointers \
+XCFLAGS		+= \
 			$(EOLIST)
 
 XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -114,7 +114,7 @@ NLM_THREAD_NAME	= Proxy AJP Module
 # If this is specified, it will override VERSION value in 
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		=
+NLM_VERSION	=
 
 #
 # If this is specified, it will override the default of 64K
@@ -140,14 +140,14 @@ NLM_CHECK_SYM	=
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=  AUTOUNLOAD, PSEUDOPREEMPTION
+NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
 
 #
 # If this is specified it will be linked in with the XDCData option in the def 
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         = 
+XDCDATA		= 
 
 #
 # If there is an NLM target, put it here
@@ -180,7 +180,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -230,13 +230,13 @@ FILES_nlm_Ximports = \
 FILES_nlm_exports = \
 	proxy_ajp_module \
 	$(EOLIST)
-	
+
 #   
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
