@@ -82,7 +82,7 @@ void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
     }
     apr_dbm_close(dbm);
 
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)
+#if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
     /*
      * We have to make sure the Apache child processes have access to
      * the DBM file. But because there are brain-dead platforms where we
