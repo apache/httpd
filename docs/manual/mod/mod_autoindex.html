@@ -623,7 +623,8 @@ width of the description column in characters.</dd>
 <dd><samp>-DescriptionWidth</samp> (or unset) allows mod_autoindex to calculate 
 the best width.</dd>
 <dd><samp>DescriptionWidth=n</samp> fixes the column width to n bytes wide.</dd>
-<dd><samp>DescriptionWidth=*</samp> grows the column to the necessary width.</dd>
+<dd><samp>DescriptionWidth=*</samp> grows the column to the width necessary to
+accomodate the longest description string.</dd>
 <dd><b>See the section on <a href="#adddescription"><samp>AddDescription</samp></a>
 for dangers inherent in truncating descriptions.</b></dd>
 <DT><A NAME="indexoptions:fancyindexing">FancyIndexing</A>
@@ -681,8 +682,8 @@ software.
 <DD>
 <!--%plaintext &lt;?INDEX {\tt IgnoreClient} index option&gt; -->
 This option causes mod_autoindex to ignore all query variables from the
-client, including sort order (implies <EM><A 
- HREF="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</A></EM>.)
+client, including sort order (implies <SAMP><A 
+ HREF="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</A></SAMP>.)
 <DT><A NAME="indexoptions:namewidth">NameWidth=[<EM>n</EM> | *] (<EM>Apache 1.3.2 and later</EM>)</A>
 <DD>
 The NameWidth keyword allows you to specify the width of the
@@ -712,7 +713,7 @@ That behavior is now controled by <A HREF="#indexoptions:ignoreclient"
 <DD>
 <!--%plaintext &lt;?INDEX {\tt SuppressDescription} index option&gt; -->
 This will suppress the file description in fancy indexing listings.
-By default, files have no descriptions, and so the use of this option
+By default, no file descriptions are defined, and so the use of this option
 will regain 23 characters of screen space to use for something else.
 See <A HREF="#adddescription"><samp>AddDescription</samp></A> 
 for information about setting the file description. See also the
