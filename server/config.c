@@ -1280,6 +1280,7 @@ void ap_process_resource_config(server_rec *s, const char *fname,
      */
     if (ap_is_rdirectory(ptemp, fname)) {
         apr_dir_t *dirp;
+        apr_finfo_t dirent;
 	int current;
 	apr_array_header_t *candidates = NULL;
 	fnames *fnew;
@@ -1300,17 +1301,15 @@ void ap_process_resource_config(server_rec *s, const char *fname,
 	    exit(1);
 	}
 	candidates = apr_make_array(p, 1, sizeof(fnames));
-        while (apr_readdir(dirp) == APR_SUCCESS) {
-            const char *d_name;
-	    apr_get_dir_filename(&d_name, dirp);
-	    /* strip out '.' and '..' */
-	    if (strcmp(d_name, ".") &&
-		strcmp(d_name, "..")) {
+        while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
+            /* strip out '.' and '..' */
+	    if (strcmp(dirent.name, ".") &&
+		strcmp(dirent.name, "..")) {
 		fnew = (fnames *) apr_push_array(candidates);
-		fnew->fname = ap_make_full_path(p, fname, d_name);
+		fnew->fname = ap_make_full_path(p, fname, dirent.name);
 	    }
 	}
-	apr_closedir(dirp);
+	apr_dir_close(dirp);
 	if (candidates->nelts != 0) {
             qsort((void *) candidates->elts, candidates->nelts,
               sizeof(fnames), fname_alphasort);

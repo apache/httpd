@@ -1540,8 +1540,8 @@ static int index_directory(request_rec *r,
     char *title_name = ap_escape_html(r->pool, r->uri);
     char *title_endp;
     char *name = r->filename;
-
-    apr_dir_t *d;
+    apr_finfo_t dirent;
+    apr_dir_t *thedir;
     apr_status_t status;
     int num_ent = 0, x;
     struct ent *head, *p;
@@ -1551,7 +1551,7 @@ static int index_directory(request_rec *r,
     char keyid;
     char direction;
 
-    if ((status = apr_dir_open(&d, name, r->pool)) != APR_SUCCESS) {
+    if ((status = apr_dir_open(&thedir, name, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "Can't open directory for index: %s", r->filename);
 	return HTTP_FORBIDDEN;
@@ -1569,7 +1569,7 @@ static int index_directory(request_rec *r,
     ap_send_http_header(r);
 
     if (r->header_only) {
-	apr_closedir(d);
+	apr_dir_close(thedir);
 	return 0;
     }
 
@@ -1621,10 +1621,8 @@ static int index_directory(request_rec *r,
      * linked list and then arrayificate them so qsort can use them. 
      */
     head = NULL;
-    while (apr_readdir(d) == APR_SUCCESS) {
-        const char *d_name;
-        apr_get_dir_filename(&d_name, d);
-	p = make_autoindex_entry(d_name, autoindex_opts,
+    while (apr_dir_read(&dirent, APR_FINFO_DIRENT, thedir) == APR_SUCCESS) {
+	p = make_autoindex_entry(dirent.name, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);
 	if (p != NULL) {
 	    p->next = head;
@@ -1647,7 +1645,7 @@ static int index_directory(request_rec *r,
     }
     output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts, keyid,
 		       direction);
-    apr_closedir(d);
+    apr_dir_close(thedir);
 
     if (autoindex_opts & FANCY_INDEXING) {
 	ap_rputs("<HR>\n", r);
