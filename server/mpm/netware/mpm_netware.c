@@ -312,13 +312,13 @@ static void set_signals(void)
 
 int nlmUnloadSignaled()
 {
-    if (shutdown_pending == 1) {
-        printf ("Shutdown in progress. Please wait...\n");
+    shutdown_pending = 1;
+
+/* Hold off on this change for now */
+/*    while (wait_to_finish) {
+        NXThreadYield();
     }
-    else {
-        shutdown_pending = 1;
-        printf ("Shutdown signalled. Please wait...\n");
-    }
+*/
     return 0;
 }
 
@@ -1051,10 +1051,12 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
 
     if (commandLine == NULL)
         return NOTMYCOMMAND;
+    if (strlen(commandLine) <= strlen(szCommand))
+        return NOTMYCOMMAND;
 
     strncpy (szcommandLine, commandLine, sizeof(szcommandLine)-1);
 
-    /*  All added commands begin with "HTTPD " */
+    /*  All added commands begin with "APACHE2 " */
 
     if (!strnicmp(szCommand, szcommandLine, iCommandLen)) {
         ActivateScreen (getscreenhandle());
@@ -1105,8 +1107,8 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
         else {
             show_settings = 0;
             if (!strnicmp("HELP",&szcommandLine[iCommandLen],3))
-                printf("Unknown HTTPD command %s\n", &szcommandLine[iCommandLen]);
-            printf("Usage: HTTPD [command] [-p <instance ID>]\n");
+                printf("Unknown APACHE2 command %s\n", &szcommandLine[iCommandLen]);
+            printf("Usage: APACHE2 [command] [-p <instance ID>]\n");
             printf("Commands:\n");
             printf("\tDIRECTIVES - Show directives\n");
             printf("\tHELP       - Display this help information\n");
