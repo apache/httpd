@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/11 21:10:46 $]
+Last modified at [$Date: 2003/10/11 21:14:32 $]
 
 Release:
 
@@ -265,6 +265,15 @@ PATCHES TO BACKPORT FROM 2.1
       request.
         modules/generators/mod_cgid.c r1.157
       +1: trawick, stoddard
+
+    * httpd-2.0's config parser is incompatible with httpd-1.3's one,
+      which allowed containers like <Perl>. httpd-2.0's config parser
+      doesn't like container directives with no arguments (Syntax
+      error on line nn of httpd.conf: <Perl> directive missing closing
+      '>'). This fix restores the support for <Foo>..</Foo> containers.
+        server/config.c: r1.167
+      +1: stas, jwoolley
+
 
 CURRENT RELEASE NOTES:
 
