@@ -68,7 +68,6 @@
 #include "apr_buckets.h"
 #include "http_request.h"
 
-
 static const char bucketeerFilterName[] = "BUCKETEER";
 module AP_MODULE_DECLARE_DATA bucketeer_module;
 
@@ -77,7 +76,6 @@ typedef struct bucketeer_filter_config_t
     char bucketdelimiter;
     char passdelimiter;
     char flushdelimiter;
-
 } bucketeer_filter_config_t;
 
 
@@ -86,12 +84,11 @@ static void *create_bucketeer_server_config(apr_pool_t *p, server_rec *s)
     bucketeer_filter_config_t *c = apr_pcalloc(p, sizeof *c);
 
     c->bucketdelimiter = 0x02; /* ^B */
-    c->passdelimiter = 0x10; /* ^P */
-    c->flushdelimiter = 0x06; /* ^F */
+    c->passdelimiter = 0x10;   /* ^P */
+    c->flushdelimiter = 0x06;  /* ^F */
 
     return c;
 }
-
 
 typedef struct bucketeer_ctx_t
 {
@@ -99,21 +96,16 @@ typedef struct bucketeer_ctx_t
 } bucketeer_ctx_t;
 
 static apr_status_t bucketeer_out_filter(ap_filter_t *f,
-                                       apr_bucket_brigade *bb)
+                                         apr_bucket_brigade *bb)
 {
     apr_bucket *e;
     request_rec *r = f->r;
     bucketeer_ctx_t *ctx = f->ctx;
-   
-    bucketeer_filter_config_t *c = ap_get_module_config(r->server->module_config,
-                                                    &bucketeer_module);
+    bucketeer_filter_config_t *c;
 
-    /* If we don't have a context, we need to ensure that it is okay to send
-     * the deflated content.  If we have a context, that means we've done
-     * this before and we liked it.
-     * This could be not so nice if we always fail.  But, if we succeed,
-     * we're in better shape.
-     */
+    c = ap_get_module_config(r->server->module_config, &bucketeer_module);
+
+    /* If have a context, it means we've done this before successfully. */
     if (!ctx) {  
         if (!r->content_type || strncmp(r->content_type, "text/", 5)) {
             ap_remove_output_filter(f);
@@ -128,13 +120,9 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
 
     APR_BRIGADE_FOREACH(e, bb) {
         const char *data;
-        apr_size_t len;
-
-        apr_size_t i;
-        apr_size_t lastpos;
+        apr_size_t len, i, lastpos;
 
         if (APR_BUCKET_IS_EOS(e)) {
-
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
@@ -154,43 +142,46 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
 
         /* read */
         apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
-        if (len>0) {
-            lastpos=0;
-            for (i=0; i<len;i++) {
+
+        if (len > 0) {
+            lastpos = 0;
+            for (i = 0; i < len; i++) {
                 if (data[i] == c->flushdelimiter ||
                     data[i] == c->bucketdelimiter ||
-                    data[i] == c->passdelimiter)
-                {
+                    data[i] == c->passdelimiter) {
                     apr_bucket *p;
-                    if ( i-lastpos>0) {
-                        p = apr_bucket_pool_create(apr_pmemdup( f->r->pool,
-                                                            &data[lastpos],
-                                                            i-lastpos),
-                                                    i-lastpos, f->r->pool,
+                    if (i - lastpos > 0) {
+                        p = apr_bucket_pool_create(apr_pmemdup(f->r->pool,
+                                                               &data[lastpos],
+                                                               i - lastpos),
+                                                    i - lastpos,
+                                                    f->r->pool,
                                                     f->c->bucket_alloc);
-                        APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
+                        APR_BRIGADE_INSERT_TAIL(ctx->bb, p);
                     }
-                    lastpos=i+1;
-                    if ( data[i] == c->flushdelimiter) {
+                    lastpos = i + 1;
+                    if (data[i] == c->flushdelimiter) {
                         p = apr_bucket_flush_create(f->c->bucket_alloc);
-                        APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
+                        APR_BRIGADE_INSERT_TAIL(ctx->bb, p);
                     }
-                    if ( data[i] == c->flushdelimiter || data[i] == c->passdelimiter ) {
+                    if (data[i] == c->flushdelimiter ||
+                        data[i] == c->passdelimiter) {
                         ap_pass_brigade(f->next, ctx->bb);
                        /* apr_brigade_cleanup(ctx->bb);*/
                     }
                 }                       
             }
             /* XXX: really should append this to the next 'real' bucket */
-            if ( lastpos < i ) {
+            if (lastpos < i) {
                 apr_bucket *p;
                 p = apr_bucket_pool_create(apr_pmemdup(f->r->pool,
                                                        &data[lastpos],
-                                                       i-lastpos),
-                                           i-lastpos, f->r->pool,
+                                                       i - lastpos),
+                                           i - lastpos,
+                                           f->r->pool,
                                            f->c->bucket_alloc);
-                lastpos=i;
-                APR_BRIGADE_INSERT_TAIL(ctx->bb,p);
+                lastpos = i;
+                APR_BRIGADE_INSERT_TAIL(ctx->bb, p);
             }
         }     
     }
