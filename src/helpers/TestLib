@@ -10,10 +10,16 @@ trap 'rm -rf Makefile a.out; exit' 0 1 2 3 15
 # library exists and we print out "yes" otherwise we
 # print out "no"
 #
+# This must be run as './helpers/TestLib <libname>' from
+# the ./src directory (same directory that Configure is
+# located) if you want to test it out. Configure must
+# also call it as './helpers/TestLib <libname>'
+#
 
 #
 # Get makefile settings and build a basic Makefile
 #
+cd ./helpers
 rm -rf a.out
 cat ../Makefile.config > Makefile
 cat <<EOF >> Makefile
