@@ -89,7 +89,7 @@ typedef struct {
 } unique_id_rec;
 
 /* We are using thread_index (the index into the scoreboard), because we
- * cannont garauntee the thread_id will be an integer.
+ * cannot guarantee the thread_id will be an integer.
  *
  * This code looks like it won't give a unique ID with the new thread logic.
  * It will.  The reason is, we don't increment the counter in a thread_safe 
