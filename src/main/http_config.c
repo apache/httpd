@@ -944,6 +944,7 @@ server_rec *init_virtual_host (pool *p, const char *hostname,
     s->keep_alive_timeout = 0;
     s->keep_alive = -1;
     s->keep_alive_max = -1;
+    s->error_log = main_server->error_log;
     /* start the list of addreses */
     addrs = &s->addrs;
     while( hostname[0] ) {
