@@ -54,7 +54,7 @@
 # The build environment was originally provided by Sascha Schumann.
 #
 
-include $(top_builddir)/config_vars.mk
+include $(top_builddir)/build/config_vars.mk
 
 # Combine all of the flags together in the proper order so that
 # the user-defined flags can always override the configure ones, if needed.
