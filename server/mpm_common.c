@@ -74,6 +74,10 @@
 #include "mpm.h"
 #include "mpm_common.h"
 
+#if HAVE_SYS_TIME_H
+#include <sys/time.h> /* for timeval definitions */
+#endif
+
 #if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM)
 #define CHILD_TABLE 1
 #define CHILD_INFO_TABLE     ap_child_table
