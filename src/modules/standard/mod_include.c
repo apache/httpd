@@ -2279,14 +2279,13 @@ static int send_parsed_file(request_rec *r)
     }
 
     if (r->main) {
-        /* Kludge --- for nested includes, we want to keep the
-         * subprocess environment of the base document (for compatibility);
-         * that means torquing our own last_modified date as well so that
-         * the LAST_MODIFIED variable gets reset to the proper value if
-         * the nested document resets <!--#config timefmt-->
+	/* Kludge --- for nested includes, we want to keep the subprocess
+	 * environment of the base document (for compatibility).  This is only
+	 * necessary when there has been an internal redirect somewhere along
+	 * the way.  When that happens the original environment has been
+	 * renamed REDIRECT_foobar for each foobar.
          */
-        r->subprocess_env = r->main->subprocess_env;
-        r->finfo.st_mtime = r->main->finfo.st_mtime;
+        r->subprocess_env = copy_table(r->pool, r->main->subprocess_env);
     }
     else {
         add_common_vars(r);
