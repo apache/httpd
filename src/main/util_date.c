@@ -136,7 +136,7 @@ time_t tm2sec(const struct tm * t)
 {
     int year;
     time_t days;
-    const int dayoffset[12] =
+    static const int dayoffset[12] =
     {306, 337, 0, 31, 61, 92, 122, 153, 184, 214, 245, 275};
 
     year = t->tm_year;
@@ -215,7 +215,7 @@ API_EXPORT(time_t) parseHTTPdate(const char *date)
     struct tm ds;
     int mint, mon;
     const char *monstr, *timstr;
-    const int months[12] =
+    static const int months[12] =
     {
 	('J' << 16) | ('a' << 8) | 'n', ('F' << 16) | ('e' << 8) | 'b',
 	('M' << 16) | ('a' << 8) | 'r', ('A' << 16) | ('p' << 8) | 'r',
