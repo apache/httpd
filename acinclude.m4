@@ -409,6 +409,11 @@ if test "x$ap_ssltk_base" = "x"; then
   AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,SSL/TLS toolkit (OpenSSL)), [
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
       ap_ssltk_base="$withval"
+      if test -f "$ap_ssltk_base/bin/openssl"; then
+          ap_ssltk_version="`$ap_ssltk_base/bin/openssl version`"
+      else
+          ap_ssltk_version="unknown"
+      fi
     fi
   ])
   if test "x$ap_ssltk_base" = "x"; then
@@ -416,29 +421,15 @@ if test "x$ap_ssltk_base" = "x"; then
       #
       # shotgun approach: find all occurrences of the openssl program
       #
-      ap_ssltk_try=""
       # The IFS=... trick eliminates the colons from $PATH, without using an external program
       for p in `IFS=":$IFS"; echo $PATH` /usr/local/openssl/bin /usr/local/ssl/bin; do
         if test -f "$p/openssl"; then
-          ap_ssltk_try="$ap_ssltk_try $p"
+          ap_ssltk_version="`$p/openssl version`"
+          if test "x$ap_ssltk_version" != "x"; then
+            ap_cv_ssltk="`(cd $p/.. && pwd)`"
+            break
+          fi
         fi
-      done
-      if test "x$ap_ssltk_try" = "x"; then
-        AC_MSG_ERROR(['openssl' not found in path])
-      fi
-      for p in $ap_ssltk_try; do
-        ap_ssltk_version="`$p/openssl version`"
-        case "$ap_ssltk_version" in
-            "OpenSSL "[[1-9]]* | \
-            "OpenSSL "0.9.[[6-9]][[e-z]]* | \
-            "OpenSSL "0.[[1-9]][[0-9]]* )
-                ap_cv_ssltk="`(cd $p/.. && pwd)`"
-                break
-                ;;
-            *)
-                # skip because it is too old or a bad result
-                ;;
-        esac
       done
       if test "x$ap_cv_ssltk" = "x"; then
         AC_MSG_ERROR([requires OpenSSL 0.9.6e or higher])
@@ -453,6 +444,20 @@ if test "x$ap_ssltk_base" = "x"; then
     
   AC_MSG_CHECKING(for SSL/TLS toolkit version)
   AC_MSG_RESULT($ap_ssltk_version)
+  case "$ap_ssltk_version" in
+    "OpenSSL "[[1-9]]* | \
+    "OpenSSL "0.9.6[[e-z]]* | \
+    "OpenSSL "0.9.[[7-9]]* | \
+    "OpenSSL "0.[[1-9]][[0-9]]* )
+       # okay versions that do not have known security holes
+       ;;
+    "OpenSSL"*)
+       AC_MSG_WARN([OpenSSL versions prior to 0.9.6e have known security holes])
+       ;;
+    *)
+       # unknown version -- assume the user knows what they are doing
+       ;;
+  esac
     
   AC_MSG_CHECKING(for SSL/TLS toolkit includes)
   ap_ssltk_incdir=""
