@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) Add query (-q) option to apxs support tool to be able to manually query
+     specific settings from apxs. This is needed for instance when you
+     manually want to access Apache's header files and you need to assemble
+     the -I option.  Now you can do -I`apxs -q INCLUDEDIR`.
+     [Ralf S. Engelschall]
+
   *) Now src/Configure uses a fallback strategy for the shared object support
      on platforms where no explicit information is available: If a Perl
      installation exists we ask it about its shared object support and if it's

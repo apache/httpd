@@ -136,6 +136,7 @@ Committed Code Changes:
     * Martin's fix accept (and pass) http://user:pass@host proxy requests
     * Martin's fix CONNECT proxy handling again
     * Ralf's fallback strategy for DSO by trying to guess flags from Perl
+    * Ralf's add of the query (-q) option to apxs
 
 Available Patches:
 

@@ -75,9 +75,16 @@ my $CFG_CFLAGS_SHLIB  = '@CFLAGS_SHLIB@';  # substituted via Makefile.tmpl
 my $CFG_LDFLAGS_SHLIB = '@LDFLAGS_SHLIB@'; # substituted via Makefile.tmpl 
 my $CFG_PREFIX        = '@prefix@';        # substituted via APACI install
 my $CFG_SBINDIR       = '@sbindir@';       # substituted via APACI install
-my $CFG_INCDIR        = '@includedir@';    # substituted via APACI install
+my $CFG_INCLUDEDIR    = '@includedir@';    # substituted via APACI install
 my $CFG_LIBEXECDIR    = '@libexecdir@';    # substituted via APACI install
 my $CFG_SYSCONFDIR    = '@sysconfdir@';    # substituted via APACI install
+
+##
+##  Cleanup the above stuff
+##
+$CFG_CFLAGS =~ s|^\s+||;
+$CFG_CFLAGS =~ s|\s+$||;
+$CFG_CFLAGS =~ s|\s+`.+apaci`||;
 
 ##
 ##  Initial shared object support check
@@ -106,6 +113,7 @@ my @opt_l = ();
 my $opt_i = 0;
 my $opt_a = 0;
 my $opt_A = 0;
+my $opt_q = 0;
 
 #   this subroutine is derived from Perl's getopts.pl with the enhancement of
 #   the "+" metacharater at the format string to allow a list to be build by
@@ -173,21 +181,23 @@ sub Getopts {
 }
 
 sub usage {
-    print STDERR "apxs:Usage: apxs -g -n <name>\n";
-    print STDERR "apxs:Usage: apxs -c [-o mod_<name>.so] [-D..] [-I..] [-l..] [-L..] mod_<name>.c ...\n";
-    print STDERR "apxs:Usage: apxs -i [-e] [-n <name>] mod_<name>.so ...\n";
+    print STDERR "Usage: apxs -g -n <modname>\n";
+    print STDERR "       apxs -q <query> ...\n";
+    print STDERR "       apxs -c [-o <dsofile>] [-D <name>[=<value>]] [-I <incdir>]\n";
+    print STDERR "               [-L <libdir>] [-l <libname>] <files> ...\n";
+    print STDERR "       apxs -i [-a] [-n <modname>] <dsofile> ...\n";
     exit(1);
 }
 
 #   option handling
 my $rc;
-($rc, @ARGV) = &Getopts("n:gco:I+D+L+l+iaA", @ARGV);
+($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+iaA", @ARGV);
 &usage if ($rc == 0);
 &usage if ($#ARGV == -1 and not $opt_g);
-&usage if (not ($opt_g and $opt_n) and not $opt_i and not $opt_c);
+&usage if (not $opt_q and not ($opt_g and $opt_n) and not $opt_i and not $opt_c);
 
 #   argument handling
-my @files = @ARGV;
+my @args = @ARGV;
 my $name = 'unknown';
 $name = $opt_n if ($opt_n ne '');
 
@@ -240,6 +250,37 @@ if ($opt_g) {
     exit(0);
 }
 
+
+if ($opt_q) {
+    ##
+    ##  QUERY INFORMATION 
+    ##
+
+    my $result = '';
+    my $arg;
+    foreach $arg (@args) {
+        my $ok = 0;
+        my $name;
+        foreach $name (qw(
+            CC LD CFLAGS CFLAGS_SHLIB LDFLAGS_SHLIB 
+            PREFIX SBINDIR INCLUDEDIR LIBEXECDIR SYSCONFDIR
+        )) {
+            if ($arg eq $name or $arg eq lc($name)) {
+                my $val = eval "\$CFG_$name";
+                $result .= "${val}::";
+                $ok = 1;
+            }
+        }
+        if (not $ok) {
+            printf(STDERR "apxs:Error: Invalid query string `%s'\n", $arg);
+            exit(1);
+        }
+    }
+    $result =~ s|::$||;
+    $result =~ s|::| |;
+    print $result;
+}
+
 if ($opt_c) {
     ##
     ##  SHARED OBJECT COMPILATION
@@ -249,7 +290,7 @@ if ($opt_c) {
     my @srcs = ();
     my @objs = ();
     my $f;
-    foreach $f (@files) {
+    foreach $f (@args) {
         if ($f =~ m|\.c$|) {
             push(@srcs, $f);
         }
@@ -288,14 +329,11 @@ if ($opt_c) {
         $opt .= "-D$opt_D ";
     }
     my $cflags = "$CFG_CFLAGS $CFG_CFLAGS_SHLIB";
-    $cflags =~ s|^\s+||;
-    $cflags =~ s|\s+$||;
-    $cflags =~ s|\s+`.+apaci`||;
     my $s;
     foreach $s (@srcs) {
         my $o = $s;
         $o =~ s|\.c$|.o|;
-        push(@cmds, "$CFG_CC $cflags -I$CFG_INCDIR $opt -c $s");
+        push(@cmds, "$CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c $s");
         unshift(@objs, $o);
     }
 
@@ -321,7 +359,7 @@ if ($opt_c) {
 
     #   allow one-step compilation and installation
     if ($opt_i) {
-        @files = ( $dso_file );
+        @args = ( $dso_file );
     }
 }
 
@@ -335,7 +373,7 @@ if ($opt_i) {
     my @lmd = ();
     my @cmds = ();
     my $f;
-    foreach $f (@files) {
+    foreach $f (@args) {
         if ($f !~ m|\.so$|) {
             print STDERR "apxs:Error: file $f is not a shared object\n";
             exit(1);

@@ -59,6 +59,10 @@ apxs \- APache eXtenSion tool
 .BI \-n " modname"
 
 .B apxs
+.B \-q
+.IR query " ..."
+
+.B apxs
 .B \-c
 [
 .BI \-o " dsofile"
@@ -168,7 +172,7 @@ source file.
 
 .PP
 .SH OPTIONS
-Shared options:
+Common options:
 .TP 12
 .BI \-n " modname"
 This explicitly sets the module name for the
@@ -186,7 +190,29 @@ the
 tool tries to determine the name from the source or (as a fallback) at least
 by guessing it from the filename.
 .PP
-Template generation:
+Query options:
+.TP 12
+.B \-q 
+Performs a query for 
+.BR apxs 's
+knowledge about certain settings. The
+.I query
+parameters can be one or more of the following strings:
+.nf
+  CC             PREFIX     
+  LD             SBINDIR    
+  CFLAGS         INCLUDEDIR     
+  CFLAGS_SHLIB   LIBEXECDIR 
+  LDFLAGS_SHLIB  SYSCONFDIR 
+.fi
+Use this for manually determining settings. For instance use
+.nf
+  INC=-I`apxs -q INCLUDEDIR`
+.fi
+inside your own Makefiles if you need manual access
+to Apache's C header files.
+.PP
+Template Generation options:
 .TP 12
 .B \-g
 This generates a subdirectory
@@ -201,7 +227,7 @@ And a corresponding
 .B Makefile
 for even easier build and installing of this module.
 .PP
-Shared object compilation:
+DSO compilation options:
 .TP 12
 .B \-c
 This indicates the compilation operation. It first compiles the C source
@@ -244,7 +270,7 @@ Use this to add your own library directories to search to the build process.
 This option is directly passed through to the linker command.
 Use this to add your own libraries to search to the build process.
 .PP
-Shared object installation:
+DSO installation options:
 .TP 12
 .B \-i
 This indicates the installation operartion and installs one or more
