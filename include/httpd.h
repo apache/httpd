@@ -594,6 +594,7 @@ typedef struct request_rec request_rec;
 struct ap_rr_xlate {
     /* contents are experimental! expect it to change! */
     ap_xlate_t *to_net;
+    int to_net_sb; /* whether or not write translation is single-byte-only */
     ap_xlate_t *from_net;
 };
 #endif /*APACHE_XLATE*/

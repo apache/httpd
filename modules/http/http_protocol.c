@@ -333,6 +333,17 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
                            ap_table_get(r->headers_out, "Connection"), "close");
     const char *conn = ap_table_get(r->headers_in, "Connection");
 
+#ifdef APACHE_XLATE
+    if (r->rrx->to_net && !r->rrx->to_net_sb) {
+        /* Translation is not single-byte-only, so we don't know the
+         * content length. Zap the Content-Length header before the 
+         * following logic, as the absence of the Content-Length header
+         * may affect the decision on chunked encoding.
+         */
+        ap_table_unset(r->headers_out,"Content-Length");
+    }
+#endif /* APACHE_XLATE */
+
     /* The following convoluted conditional determines whether or not
      * the current connection should remain persistent after this response
      * (a.k.a. HTTP Keep-Alive) and whether or not the output message
