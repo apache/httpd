@@ -1,5 +1,7 @@
 Changes with Apache 2.0.37
 
+Changes with Apache 2.0.36
+
   *) Close sockets on worker MPM when doing a graceless restart.
      [Aaron Bannert]
 
@@ -21,8 +23,6 @@ Changes with Apache 2.0.37
   *) Introduce mod_ext_filter and mod_deflate experimental modules
      to the Win32 build (zlib sources must be in srclib\zlib.)
      [William Rowe]
-
-Changes with Apache 2.0.36
 
   *) Changes to the worker MPM's queue management and thread
      synchronization code to reduce mutex contention  [Brian Pane]
