@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_dav_fs.so" /machine:I386 /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_dav_fs.so" /machine:I386 /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs
 
 !ELSEIF  "$(CFG)" == "mod_dav_fs - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\main" /I "..\..\..\srclib\aputil" /I "..\..\..\srclib\sdbm" /I "..\..\..\srclib\expat-lite" /I "..\..\..\srclib\apr\include" /I "../../../srclib/apr-util/include" /I "..\..\..\include" /I "..\..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_dav_fs" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\main" /I "..\..\..\srclib\aputil" /I "..\..\..\srclib\sdbm" /I "..\..\..\srclib\expat-lite" /I "..\..\..\srclib\apr\include" /I "../../../srclib/apr-util/include" /I "..\..\..\include" /I "..\..\..\os\win32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /Fd"Debug\mod_dav_fs" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_dav_fs.so" /machine:I386 /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_dav_fs.so" /machine:I386 /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_dav_fs.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav_fs
 
 !ENDIF 
 
@@ -130,8 +130,7 @@ SOURCE=..\..\..\build\win32\win32ver.awk
 InputPath=..\..\..\build\win32\win32ver.awk
 
 ".\mod_dav_fs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../../build/win32/win32ver.awk mod_dav_fs\
- "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
+	awk -f ../../../build/win32/win32ver.awk mod_dav_fs  "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
 
 # End Custom Build
 
@@ -142,8 +141,7 @@ InputPath=..\..\..\build\win32\win32ver.awk
 InputPath=..\..\..\build\win32\win32ver.awk
 
 ".\mod_dav_fs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../../build/win32/win32ver.awk mod_dav_fs\
- "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
+	awk -f ../../../build/win32/win32ver.awk mod_dav_fs  "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
 
 # End Custom Build
 

@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /out:"Release/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
-# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"../../srclib/openssl/out32dll" /subsystem:windows /dll /incremental:no /map /out:"Release/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_ssl.so" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
+# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows /dll /map /machine:I386 /out:"Release/mod_ssl.so" /libpath:"../../srclib/openssl/out32dll" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
 
 !ELSEIF  "$(CFG)" == "mod_ssl - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "../../include" /I "../../os/win32" /I "../../server/mpm/winnt" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "NOCRYPT" /Fd"Debug\mod_ssl" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../include" /I "../../os/win32" /I "../../server/mpm/winnt" /I "../../srclib/apr/include" /I "../../srclib/apr-util/include" /I "../../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "NOCRYPT" /Fd"Debug\mod_ssl" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
-# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /libpath:"../../srclib/openssl/out32dll.dbg" /subsystem:windows /dll /incremental:no /map /debug /out:"Debug/mod_ssl.so" /machine:I386 /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_ssl.so" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
+# ADD LINK32 kernel32.lib ssleay32.lib libeay32.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"Debug/mod_ssl.so" /libpath:"../../srclib/openssl/out32dll.dbg" /base:@..\..\os\win32\BaseAddr.ref,mod_ssl
 
 !ENDIF 
 
@@ -216,7 +216,7 @@ SOURCE=.\ssl_util_table.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ssl_expr_parse.y .\ssl_expr_parse.h
+SOURCE=.\ssl_expr_parse.y
 
 !IF  "$(CFG)" == "mod_ssl - Win32 Release"
 
@@ -225,9 +225,7 @@ InputPath=.\ssl_expr_parse.y
 
 BuildCmds= \
 	bison -y -d ssl_expr_parse.y \
-	sed -e "s;yy;ssl_expr_yy;g" -e\
- "/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d" <y.tab.c\
- >ssl_expr_parse.c \
+	sed -e "s;yy;ssl_expr_yy;g" -e  "/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d" <y.tab.c  >ssl_expr_parse.c \
 	del y.tab.c \
 	sed -e "s;yy;ssl_expr_yy;g" <y.tab.h >ssl_expr_parse.h \
 	del y.tab.h \
@@ -247,9 +245,7 @@ InputPath=.\ssl_expr_parse.y
 
 BuildCmds= \
 	bison -y -d ssl_expr_parse.y \
-	sed -e "s;yy;ssl_expr_yy;g" -e\
- "/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d" <y.tab.c\
- >ssl_expr_parse.c \
+	sed -e "s;yy;ssl_expr_yy;g" -e  "/#if defined(c_plusplus) || defined(__cplusplus)/,/#endif/d" <y.tab.c  >ssl_expr_parse.c \
 	del y.tab.c \
 	sed -e "s;yy;ssl_expr_yy;g" <y.tab.h >ssl_expr_parse.h \
 	del y.tab.h \
@@ -314,8 +310,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_ssl.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ssl\
- "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
+	awk -f ../../build/win32/win32ver.awk mod_ssl  "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
 
 # End Custom Build
 
@@ -326,8 +321,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_ssl.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ssl\
- "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
+	awk -f ../../build/win32/win32ver.awk mod_ssl  "ssl_module for Apache" ../../include/ap_release.h > .\mod_ssl.rc
 
 # End Custom Build
 
