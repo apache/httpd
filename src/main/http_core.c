@@ -361,7 +361,7 @@ char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
   
     if (!is_directory (arg))
 	if (cmd->server->is_virtual)
-	    fprintf (stderr, "Warning: DocumentRoot [%s] does not exist", arg);
+	    fprintf (stderr, "Warning: DocumentRoot [%s] does not exist\n", arg);
 	else
 	    return "DocumentRoot must be a directory";
     
