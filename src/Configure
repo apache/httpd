@@ -791,7 +791,7 @@ case "$PLAT" in
     *-BeOS*)
 	PLATOSVER=`uname -r`
         case "$PLATOSVER" in
-            5.1*)
+            5.0.4*)
                 OS="BeOS BONE"
                 LIBS="-lbind -lsocket -lbe -lroot"
                 CFLAGS="$CFLAGS -DBONE"
