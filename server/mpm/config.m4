@@ -22,7 +22,7 @@ if test "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "perchild"; then
     apache_cv_mpm=prefork
   fi
 fi
-if test ! -f "server/mpm/$apache_cv_mpm/mpm.h"; then
+if test ! -f "$abs_srcdir/server/mpm/$apache_cv_mpm/mpm.h"; then
     AC_MSG_ERROR(the selected mpm -- $apache_cv_mpm -- is not supported)
 fi
 
