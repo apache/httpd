@@ -421,7 +421,7 @@ if test "x$ap_ssltk_configured" = "x"; then
   if test "x$ap_ssltk_lib" != "x"; then
     APR_ADDTO(LDFLAGS, ["-L$ap_ssltk_lib"])
     if test "x$ap_platform_runtime_link_flag" != "x"; then
-      APR_ADDTO(LDFLAGS, ["$ap_platform_runtime_link_flag$ap_ssltk_libdir"])
+      APR_ADDTO(LDFLAGS, ["$ap_platform_runtime_link_flag$ap_ssltk_lib"])
     fi
   fi
   dnl (d) add "-lssl -lcrypto" OR "-lsslc" to LIBS because restoring LIBS
