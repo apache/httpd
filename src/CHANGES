@@ -1,5 +1,12 @@
 Changes with Apache 1.3.10
 
+  *) EBCDIC: Fixed binary upload capability (plain and chunked) for
+     all methods using the ap_*_client_block() functions, most notably
+     POST and PUT. The functionality to switch input between protocol
+     parts (chunks) and (possibly binary) data had been missing all
+     the time, making chunked PUT impossible until now.
+     [Martin Kraemer]
+
   *) Fixed a recently introduced off-by-one-character bug in 
      mod_rewrite's expansion of expression back-references.
      [Cliff Woolley <jwoolley@wlu.edu>] PR#4766 PR#5389
