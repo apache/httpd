@@ -545,7 +545,8 @@ void parse_uri (request_rec *r, const char *uri)
         if (r->uri[loop] == '\\')
             r->uri[loop] = '/';
     };
-    
+#endif
+#ifdef __EMX__
     /* Fix OS/2 HPFS filename case problem. */
     r->uri = strlwr(r->uri);
 #endif
