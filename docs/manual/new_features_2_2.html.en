@@ -19,7 +19,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Overview of new features in Apache 2.2</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/new_features_2_2.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
 
   <p>This document describes some of the major changes between the
@@ -150,7 +151,8 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/new_features_2_2.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
