@@ -1,5 +1,8 @@
 Changes with Apache 1.3.27
 
+  *) Added support for Berkeley-DB/4.x to mod_auth_db.
+     [Martin Kraemer]
+
   *) PR 10993: add image/x-icon to default httpd.conf files
      [Ian Holsman, Peter Bieringer <pb@bieringer.de>
 
