@@ -255,6 +255,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
      * we're in better shape.
      */
     if (!ctx) {
+        int eos_only = 1;
+        apr_bucket *bkt;
         char *buf, *token;
         const char *encoding;
 
@@ -370,6 +372,21 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 return ap_pass_brigade(f->next, bb);
             }
         }
+
+        /* don't deflate responses with zero length e.g. proxied 304's */
+        for (bkt = APR_BRIGADE_FIRST(bb);
+             bkt != APR_BRIGADE_SENTINEL(bb);
+             bkt = APR_BUCKET_NEXT(bkt))
+        {
+            if (!APR_BUCKET_IS_EOS(bkt)) {
+                 eos_only = 0;                 
+                 break;
+            }
+        }
+        if (eos_only) {
+            return ap_pass_brigade(f->next, bb);
+        }
+
         /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);

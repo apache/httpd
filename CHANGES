@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_deflate: Don't deflate responses with zero length 
+     e.g. proxied 304's [Allan Edwards]
+
   *) <VirtualHost myhost> now applies to all IP addresses for myhost
      instead of just the first one reported by the resolver.  This
      corrects a regression since 1.3.  [Jeff Trawick]
