@@ -319,7 +319,7 @@ static apr_size_t bndm(const char *n, apr_size_t nl, const char *h,
 /* We've now found a start sequence tag... */
 static apr_bucket* found_start_sequence(apr_bucket *dptr,
                                         include_ctx_t *ctx, 
-                                        int tagStart,
+                                        apr_size_t tagStart,
                                         apr_size_t len)
 {
     /* We want to split the bucket at the '<'. */
