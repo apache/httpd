@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.83 $ ($Date: 1997/07/08 15:56:30 $)
+  $Revision: 1.84 $ ($Date: 1997/07/25 10:25:46 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -77,6 +77,8 @@
 <!--   the simple fact that older versions of Apache (and new ones  -->
 <!--   that have been upgraded without upgrading the mime.types     -->
 <!--   file) don't have the type listed at all.                     -->
+<!-- - Why is my .htaccess ignored?                                 -->
+<!-- - RewriteRule /~fraggle/* /cgi-bin/fraggle.pl does not work    -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -204,6 +206,9 @@
    <LI><A HREF="#user-authentication">How do I set up Apache to require
     a username and password to access certain documents?</A>
    </LI>
+   <LI><A HREF="#remote-user-var">Why is the environment variable
+   <SAMP>REMOTE_USER</SAMP> not set?</A>
+   </LI>
    <LI><A HREF="#remote-auth-only">How do I set up Apache to allow access
     to certain documents only if a site is either a local site
     <EM>or</EM> the user supplies a password and username?</A>
@@ -219,6 +224,30 @@
       authentification information on the same machine?</A>
    </LI>
    <LI><A HREF="#msql-slow">Why is my mSQL authentification terribly slow?</A>
+   </LI>
+   <LI><A HREF="#rewrite-more-config">Where can I find mod_rewrite rulesets
+       which already solve particular URL-related problems?</A>
+   </LI>
+   <LI><A HREF="#rewrite-article">Where can I find any published information about
+       URL-manipulations and mod_rewrite?</A>
+   </LI>
+   <LI><A HREF="#rewrite-complexity">Why is mod_rewrite so difficult to learn
+       and seems so complicated?</A>
+   </LI>
+   <LI><A HREF="#rewrite-dontwork">What can I do if my RewriteRules don't work
+       as expected?</A>
+   </LI>
+   <LI><A HREF="#rewrite-prefixdocroot">Why are some of my URLs don't get
+       prefixed with DocumentRoot when using mod_rewrite?</A>
+   </LI>
+   <LI><A HREF="#rewrite-nocase">How can I make all my URLs case-insensitive
+       with mod_rewrite?</A>
+   </LI>
+   <LI><A HREF="#rewrite-virthost">Why are RewriteRules in my VirtualHost
+       parts ignored?</A>
+   </LI>
+   <LI><A HREF="#rewrite-envwhitespace">How can I use strings with whitespaces
+       in RewriteRule's ENV flag?</A>
    </LI>
   </OL>
  </LI>
@@ -310,7 +339,7 @@
       <STRONG>How thoroughly tested is Apache?</STRONG>
      </A>
   <P>
-  Apache is run on over 400,000 Internet servers (as of April 1997). It has
+  Apache is run on over 500,000 Internet servers (as of July 1997). It has
   been tested thoroughly by both developers and users. The Apache Group
   maintains rigorous standards before releasing new versions of their
   server, and our server runs without a hitch on over one third of all
@@ -568,6 +597,39 @@
      HREF="../mod/core.html#options"
     ><SAMP>Options</SAMP></A>
     declaration that includes the <SAMP>ExecCGI</SAMP> option.
+    <P>
+    </P>
+   </LI>
+  </OL>
+  In some situations it can be not conform to your local policy to actually
+  allow all files named &quot;<SAMP>*.cgi</SAMP>&quot; to be executable.
+  Perhaps all you want is to enable a particular file in a normal directory to
+  be executable. This can be alternatively accomplished 
+  via 
+  <A
+   HREF="../mod/mod_rewrite.html"
+  ><SAMP>mod_rewrite</SAMP></A> 
+  and the following steps:
+  </P>
+  <OL>
+   <LI>Locally add to the corresponding <SAMP>.htaccess</SAMP> file a ruleset
+       similar to this one:
+    <P>
+    <DL>
+     <DD><CODE>
+	 RewriteEngine on<br>
+	 RewriteBase   /~foo/bar/<br>
+	 RewriteRule   ^quux\.cgi$  -  [T=application/x-httpd-cgi]<br>
+	 </CODE></DD>
+    </DL>
+    </P>
+   </LI>
+   <LI>Make sure that the directory location is covered by an
+    <A
+     HREF="../mod/core.html#options"
+    ><SAMP>Options</SAMP></A>
+	declaration that includes the <SAMP>ExecCGI</SAMP> and
+	<SAMP>FollowSymLinks</SAMP> option.
     <P>
     </P>
    </LI>
@@ -1561,7 +1623,7 @@
   <A HREF="../mod/mod_auth_dbm.html">mod_auth_dbm</A> modules.
   </P>
   <P>
-  For an explaination on how to implement these restrictions, see
+  For an explanation on how to implement these restrictions, see
   <A
    HREF="http://www.apacheweek.com/"
   ><CITE>Apache Week</CITE></A>'s
@@ -1573,6 +1635,36 @@
   <A
    HREF="http://www.apacheweek.com/features/dbmauth"
   ><CITE>DBM User Authentication</CITE></A>.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="remote-user-var">
+	 <STRONG>Why is the environment variable 
+	 <SAMP>REMOTE_USER</SAMP> not set?</STRONG>
+	 </A>
+  <P>
+  This variable is set and thus available in SSI or CGI scripts <STRONG>if and
+  only if</STRONG> the requested document was protected by access
+  authentication.  For an explanation on how to implement these restrictions,
+  see
+  <A
+   HREF="http://www.apacheweek.com/"
+  ><CITE>Apache Week</CITE></A>'s
+  articles on
+  <A
+   HREF="http://www.apacheweek.com/features/userauth"
+  ><CITE>Using User Authentication</CITE></A>
+  or
+  <A
+   HREF="http://www.apacheweek.com/features/dbmauth"
+  ><CITE>DBM User Authentication</CITE></A>.
+  </P>
+  <P>
+  Hint: When using a CGI script to receive the data of a HTML <SAMP>FORM</SAMP>
+  notice that protecting the document containing the <SAMP>FORM</SAMP> is not
+  sufficient to provide <SAMP>REMOTE_USER</SAMP> to the CGI script.  You have
+  to protect the CGI script, too. Or alternatively only the CGI script (then
+  authentication happens only after filling out the form).
   </P>
   <HR>
  </LI>
@@ -1751,6 +1843,154 @@
   documentation warn you about this.  If you have to use different
   hosts, check out the <SAMP>mod_auth_msql</SAMP> code for
   some compile time flags which might - or might not - suit you.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rewrite-more-config">
+	  <STRONG>Where can I find mod_rewrite rulesets which already solve
+	  particular URL-related problems?</STRONG>
+     </A>
+  <P>
+  There is a collection of 
+  <A
+      HREF="http://www.engelschall.com/sw/mod_rewrite/docs/mod_rewrite/solutions.html#Solutions"
+  >Practical Solutions for URL-Manipulation</A>
+  where you can
+  find all typical solutions the author of 
+  <A
+   HREF="../mod/mod_rewrite.html"
+  ><SAMP>mod_rewrite</SAMP></A> 
+  currently knows of. If you have more
+  interesting rulesets which solve particular problems not currently covered in
+  this document, send it to 
+  <A
+      HREF="mailto:rse@apache.org"
+  >Ralf S. Engelschall</A>
+  for inclusion. The
+  other webmasters will thank you for avoiding the reinvention of the wheel.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rewrite-article">
+	  <STRONG>Where can I find any published information about URL-manipulations and
+	  mod_rewrite?</STRONG>
+     </A>
+  <P>
+  There is an article from 
+  <A
+      HREF="mailto:rse@apache.org"
+  >Ralf S. Engelschall</A>
+  about URL-manipulations based on
+  <A
+   HREF="../mod/mod_rewrite.html"
+  ><SAMP>mod_rewrite</SAMP></A> 
+  in the &quot;iX Multiuser Multitasking Magazin&quot; issue #12/96. The
+  german (original) version
+  can be read online at 
+  <A
+      HREF="http://www.heise.de/ix/artikel/9612149/"
+  >http://www.heise.de/ix/artikel/9612149/</A>,
+  the english (translated) version can be found at 
+  <A
+      HREF="http://www.heise.de/ix/artikel/E/9612149/"
+  >http://www.heise.de/ix/artikel/E/9612149/</A>.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rewrite-complexity">
+	  <STRONG>Why is mod_rewrite so difficult to learn and seems so
+	  complicated?</STRONG>
+     </A>
+  <P>
+  Hmmm... there are a lot of reasons. First, mod_rewrite itself is a powerful
+  module which can help you in really <b>all</b> aspects of URL rewriting, so
+  it can be no trivial module per definition. To accomplish its hard job it
+  uses software leverage and makes use of a powerful regular expression
+  library by Henry Spencer which is an integral part of Apache since its
+  version 1.2.  And regular expressions itself can be difficult to newbies,
+  while providing the most flexible power to the advanced hacker. 
+  </P>
+  <P>
+  On the other hand mod_rewrite has to work inside the Apache API environment
+  and needs to do some tricks to fit there. For instance the Apache API as of
+  1.x really was not designed for URL rewriting at the <tt>.htaccess</tt>
+  level of processing. Or the problem of multiple rewrites in sequence, which
+  is also not handled by the API per design. To provide this features
+  mod_rewrite has to do some special (but API compliant!) handling which leads
+  to difficult processing inside the Apache kernel. While the user usually
+  doesn't see anything of this processing, it can be difficult to find
+  problems when some of your RewriteRules seem not to work.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rewrite-dontwork">
+	  <STRONG>What can I do if my RewriteRules don't work as expected?
+	  </STRONG>
+     </A>
+  <P>
+  Use &quot;<SAMP>RewriteLog somefile</SAMP>&quot; and
+  &quot;<SAMP>RewriteLogLevel 9</SAMP>&quot; and have a precise look at the
+  steps the rewriting engine performs. This is really the only one and best
+  way to debug your rewriting configuration.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rewrite-prefixdocroot">
+	  <STRONG>Why are some of my URLs don't get prefixed with DocumentRoot
+	  when using mod_rewrite?</STRONG>
+     </A>
+  <P>
+  If the rule starts with <SAMP>/somedir/...</SAMP> make sure that really no
+  <SAMP>/somedir</SAMP> exists on the filesystem if you don't want to lead the
+  URL to match this directory, i.e. there must be no root directory named
+  <SAMP>somedir</SAMP> on the filesystem. Because if there is such a
+  directory, the URL will not get prefixed with DocumentRoot. This behaviour
+  looks ugly, but is really important for some other aspects of URL
+  rewriting.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rewrite-nocase">
+	  <STRONG>How can I make all my URLs case-insensitive with mod_rewrite?
+	  </STRONG>
+     </A>
+  <P>
+  You can't! The reason is: First, case translations for arbitrary length URLs
+  cannot be done via regex patterns and corresponding substitutions. One need
+  a per-character pattern like sed/Perl <SAMP>tr|..|..|</SAMP> feature.  Second, just
+  making URLs always upper or lower case will not resolve the complete problem
+  of case-INSENSITIVE URLs, because actually the URLs had to be rewritten to
+  the correct case-variant residing on the filesystem because in later
+  processing Apache needs to access the file.  And Unix filesystem is always
+  case-SENSITIVE.
+  </P>
+  <P>
+  But there is a module named <CODE>mod_speling.c</CODE> (yes, it is named
+  this way!) out there on the net. Try this one.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rewrite-virthost">
+	  <STRONG> Why are RewriteRules in my VirtualHost parts ignored?
+	  </STRONG>
+     </A>
+  <P>
+  Because you have to enable the engine for every virtual host explicitly due
+  to security concerns. Just add a &quot;RewriteEngine on&quot; to your
+  virtual host configuration parts.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="rewrite-envwhitespace">
+	  <STRONG> How can I use strings with whitespaces in RewriteRule's ENV
+	  flag?</STRONG>
+     </A>
+  <P>
+  There is only one ugly solution: You have to surround the complete flag
+  argument by quotation marks (<SAMP>"[E=...]"</SAMP>). Notice: The argument
+  to quote here is not the argument to the E-flag, it is the argument of the
+  Apache config file parser, i.e. the third argument of the RewriteRule here.
+  So you have to write <SAMP>"[E=any text with whitespaces]"</SAMP>.
   </P>
   <HR>
  </LI>
