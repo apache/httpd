@@ -224,6 +224,15 @@
 #define LEFT_CURLY  '{'
 #define RIGHT_CURLY '}'
 
+/*
+ * check that a subrequest won't cause infinite recursion
+ *
+ * either not in a subrequest, or in a subrequest
+ * and URIs aren't NULL and sub/main URIs differ
+ */
+#define subreq_ok(r) (!r->main || \
+    (r->main->uri && r->uri && strcmp(r->main->uri, r->uri)))
+
 
 /*
  * +-------------------------------------------------------+
@@ -1518,17 +1527,6 @@ static const char *lookup_header(request_rec *r, const char *name)
     }
 
     return val;
-}
-
-/* check that a subrequest won't cause infinite recursion */
-static int subreq_ok(request_rec *r)
-{
-    /*
-     * either not in a subrequest, or in a subrequest
-     * and URIs aren't NULL and sub/main URIs differ
-     */
-    return (!r->main ||
-            (r->main->uri && r->uri && strcmp(r->main->uri, r->uri)));
 }
 
 /*
