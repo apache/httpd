@@ -121,7 +121,6 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
     char buffer[HUGE_STRING_LEN];
     int nbytes, i;
 
-    BUFF *sock_buff;
     apr_socket_t *client_sock = NULL;
     apr_pollfd_t *pollfd;
     apr_int32_t pollcnt;
@@ -212,9 +211,6 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
         ap_rflush(r);
     }
 
-    sock_buff = ap_bcreate(r->pool, B_RDWR);
-    ap_bpush_socket(sock_buff, sock);
-
     if(apr_setup_poll(&pollfd, 2, r->pool) != APR_SUCCESS)
     {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -258,7 +254,8 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
             if (pollevent & APR_POLLIN) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                              "sock was set");
-                if(ap_bread(sock_buff, buffer, HUGE_STRING_LEN, &nbytes) == APR_SUCCESS) {
+                nbytes = HUGE_STRING_LEN;
+                if(apr_recv(sock, buffer, &nbytes) == APR_SUCCESS) {
                     int o = 0;
                     while(nbytes)
                     {
@@ -282,7 +279,8 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
                     int o = 0;
                     while(nbytes)
                     {
-                        ap_bwrite(sock_buff, buffer + o, nbytes, &i);
+                        i = nbytes;
+                        apr_send(sock, buffer + o, &i);
                         o += i;
                         nbytes -= i;
                     }
