@@ -233,14 +233,16 @@
  * 19990320.10          - add ap_is_rdirectory() and ap_stripprefix()
  * 20011130.11          - Add a couple of fields, callback_data and
  *                        filter_callback to the end of buff.h
+ * 20020108.0           - Add some fields to the end of the core_dir_config
+ *                        structure
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19990320
+#define MODULE_MAGIC_NUMBER_MAJOR 20020108
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 11                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /* Useful for testing for features. */
 #define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\

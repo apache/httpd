@@ -3013,7 +3013,7 @@ set_debug_header(cmd_parms *cmd, core_dir_config *m, int arg)
 #endif /* CHARSET_EBCDIC */
 
 /*
- * Note whether file inodes may be used when forming ETag values.
+ * Note what data should be used when forming file ETag values.
  * It would be nicer to do this as an ITERATE, but then we couldn't
  * remember the +/- state properly.
  */
