@@ -313,7 +313,7 @@
 </pre>
 
     <p>For more details on the <code>timefmt</code> format, go to
-    your favorite search site and look for <code>ctime</code>. The
+    your favorite search site and look for <code>strftime</code>. The
     syntax is the same.</p>
     <hr />
 
