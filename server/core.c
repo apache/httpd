@@ -2985,7 +2985,7 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
     }
 
     /* Seek the file to 'offset' */
-    if (offset != 0 && rv == APR_SUCCESS) {
+    if (offset >= 0 && rv == APR_SUCCESS) {
         rv = apr_file_seek(fd, APR_SET, &offset);
     }
 

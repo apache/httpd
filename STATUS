@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/25 02:07:27 $]
+Last modified at [$Date: 2004/03/25 02:20:27 $]
 
 Release:
 
@@ -76,14 +76,6 @@ PATCHES TO BACKPORT FROM 2.1
        are set for start and connect when doing keep alive benchmarking.
            support/ab.c: r1.143
        +1: jjclar
-
-    *) Bojan Smojver's fix to core_output_filter emulate_sendfile()
-       Fix bug that could result in sending garbage over the network 
-       when module handlers construct bucket brigades containing 
-       multiple file buckets all referencing the same open file 
-       descriptor.
-           server/core.c?r1=1.268&r2=1.269
-       +1: stoddard, rederpj, jwoolley
 
     *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
        is set in r->subprocess_env allow mismatched query strings to pass.

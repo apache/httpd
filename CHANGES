@@ -1,5 +1,10 @@
 Changes with Apache 2.0.50
 
+  *) core_output_filter: Fix bug that could result in sending
+     garbage over the network when module handlers construct
+     bucket brigades containing multiple file buckets all referencing
+     the same open file descriptor. [Bojan Smojver]
+
   *) Fix memory corruption problem with ap_custom_response() function.
      The core per-dir config would later point to request pool data
      that would be reused for different purposes on different requests.
