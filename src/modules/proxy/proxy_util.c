@@ -1519,35 +1519,6 @@ int ap_proxy_table_replace(table *base, table *overlay)
     return q;
 }
 
-/* unmerge an element in the table */
-void ap_proxy_table_unmerge(pool *p, table *t, char *key)
-{
-    long int offset = 0;
-    long int count = 0;
-    char *value = NULL;
-
-    /* get the value to unmerge */
-    const char *initial = ap_table_get(t, key);
-    if (!initial) {
-        return;
-    }
-    value = ap_pstrdup(p, initial);
-
-    /* remove the value from the headers */
-    ap_table_unset(t, key);
-
-    /* find each comma */
-    while (value[count]) {
-        if (value[count] == ',') {
-            value[count] = 0;
-            ap_table_add(t, key, value + offset);
-            offset = count + 1;
-        }
-        count++;
-    }
-    ap_table_add(t, key, value + offset);
-}
-
 #if defined WIN32
 
 static DWORD tls_index;
