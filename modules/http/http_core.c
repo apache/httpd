@@ -88,17 +88,22 @@ static const command_rec http_cmds[] = {
     AP_INIT_TAKE1("KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF,
                   "Keep-Alive timeout duration (sec)"),
     AP_INIT_TAKE1("MaxKeepAliveRequests", set_keep_alive_max, NULL, RSRC_CONF,
-     "Maximum number of Keep-Alive requests per connection, or 0 for infinite"),
+                  "Maximum number of Keep-Alive requests per connection, "
+                  "or 0 for infinite"),
     AP_INIT_TAKE1("KeepAlive", set_keep_alive, NULL, RSRC_CONF,
                   "Whether persistent connections should be On or Off"),
     { NULL }
 };
 
 static const char *http_method(const request_rec *r)
-    { return "http"; }
+{
+    return "http";
+}
 
 static apr_port_t http_port(const request_rec *r)
-    { return DEFAULT_HTTP_PORT; }
+{
+    return DEFAULT_HTTP_PORT;
+}
 
 static int ap_process_http_async_connection(conn_rec *c)
 {
@@ -208,14 +213,14 @@ static void register_hooks(apr_pool_t *p)
      * use a different processing function
      */
     int async_mpm = 0;
-    if(ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) == APR_SUCCESS 
-       && async_mpm == 1) {
-        ap_hook_process_connection(ap_process_http_async_connection,NULL,
-            NULL,APR_HOOK_REALLY_LAST);
+    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) == APR_SUCCESS 
+        && async_mpm == 1) {
+        ap_hook_process_connection(ap_process_http_async_connection, NULL,
+                                   NULL, APR_HOOK_REALLY_LAST);
     }
     else {
-    ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
-			       APR_HOOK_REALLY_LAST);
+        ap_hook_process_connection(ap_process_http_connection, NULL, NULL, 
+                                   APR_HOOK_REALLY_LAST);
     }
 
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);
