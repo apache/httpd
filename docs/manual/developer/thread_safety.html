@@ -103,8 +103,8 @@ individual symbols in the module.</p>
         <td> </td>
       </tr>
       <tr>
-        <td>Expat</td>
-        <td> </td>
+        <td><a href="http://expat.sourceforge.net/">Expat</a></td>
+        <td></td>
         <td>Yes</td>
         <td>Need a separate parser instance per thread</td>
       </tr>
@@ -225,8 +225,8 @@ individual symbols in the module.</p>
       <tr>
         <td><a href="http://www.gzip.org/zlib/">zlib</a></td>
         <td>1.1.4</td>
-        <td>Yes?</td>
-        <td></td>
+        <td>Yes</td>
+        <td>Relies upon thread-safe zalloc and zfree functions.  Default is to use libc's calloc/free which are thread-safe.</td>
       </tr>
     </table>
     <!--#include virtual="footer.html" -->
