@@ -764,10 +764,12 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
                                             int type, int *str_is_ip)
 {
     int hostname_lookups;
+    int ignored_str_is_ip;
 
-    if (str_is_ip) { /* if caller wants to know */
-        *str_is_ip = 0;
+    if (!str_is_ip) { /* caller doesn't want to know */
+        str_is_ip = &ignored_str_is_ip;
     }
+    *str_is_ip = 0;
 
     /* If we haven't checked the host name, and we want to */
     if (dir_config) {
@@ -827,10 +829,7 @@ AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
             return NULL;
         }
         else {
-            if (str_is_ip) { /* if caller wants to know */
-                *str_is_ip = 1;
-            }
-
+            *str_is_ip = 1;
             return conn->remote_ip;
         }
     }
