@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/21 03:16:31 $]
+Last modified at [$Date: 2004/05/21 15:18:51 $]
 
 Release:
 
@@ -71,6 +71,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Fix a potential segfault if the bind password in the LDAP cache
+       is NULL.
+       modules/experimental/util_ldap_cache.c r1.16
+       PR 26686 [Jari Ahonen <jah@progress.com>]
 
     *) Quotes cannot be used around require group and require dn
        directives, update the documentation to reflect this. Also add
