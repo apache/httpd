@@ -858,10 +858,11 @@ struct conn_rec {
 
     /** Are we still talking? */
     unsigned aborted:1;
-    /** Are we using HTTP Keep-Alive?  -1 fatal error, 0 undecided, 1 yes */
+
+    /** Are we going to keep the connection alive for another request?
+     *  -1 fatal error, 0 undecided, 1 yes   */
     signed int keepalive:2;
-    /** Did we use HTTP Keep-Alive? */
-    unsigned keptalive:1;
+
     /** have we done double-reverse DNS? -1 yes/failure, 0 not yet, 
      *  1 yes/success */
     signed int double_reverse:2;

@@ -547,7 +547,7 @@ request_rec *ap_read_request(conn_rec *conn)
     request_rec *r;
     apr_pool_t *p;
     const char *expect;
-    int access_status;
+    int access_status, keptalive;
 
     apr_pool_create(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));
@@ -555,7 +555,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->connection      = conn;
     r->server          = conn->base_server;
 
-    conn->keptalive    = conn->keepalive == 1;
+    keptalive          = conn->keepalive == 1;
     conn->keepalive    = 0;
 
     r->user            = NULL;
@@ -584,7 +584,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->input_filters   = conn->input_filters;
 
     apr_setsocketopt(conn->client_socket, APR_SO_TIMEOUT, 
-                     (int)(conn->keptalive
+                     (int)(keptalive
                      ? r->server->keep_alive_timeout * APR_USEC_PER_SEC
                      : r->server->timeout * APR_USEC_PER_SEC));
                      
@@ -603,7 +603,7 @@ request_rec *ap_read_request(conn_rec *conn)
         }
         return NULL;
     }
-    if (r->connection->keptalive) {
+    if (keptalive) {
         apr_setsocketopt(r->connection->client_socket, APR_SO_TIMEOUT,
                          (int)(r->server->timeout * APR_USEC_PER_SEC));
     }
@@ -644,8 +644,6 @@ request_rec *ap_read_request(conn_rec *conn)
 
     /* we may have switched to another server */
     r->per_dir_config = r->server->lookup_defaults;
-
-    conn->keptalive = 0;        /* We now have a request to play with */
 
     if ((!r->hostname && (r->proto_num >= HTTP_VERSION(1,1))) ||
         ((r->proto_num == HTTP_VERSION(1,1)) &&
