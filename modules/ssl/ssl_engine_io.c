@@ -120,7 +120,7 @@ static int ssl_io_hook_read(SSL *ssl, unsigned char *buf, int len)
              * XXX - Just trying to reflect the behaviour in 
              * openssl_state_machine.c [mod_tls]. TBD
              */
-            rc = 0;
+            rc = -1;
     }
     else
         rc = -1;
@@ -251,7 +251,10 @@ static apr_status_t churn (SSLFilterRec *pRec,
 	/* read filter */
 	ret=apr_bucket_read(pbktIn,&data,&len,eReadType);
 
-	APR_BUCKET_REMOVE(pbktIn);
+        if (!(eReadType == APR_NONBLOCK_READ && APR_STATUS_IS_EAGAIN(ret))) {
+            /* allow retry */
+            APR_BUCKET_REMOVE(pbktIn);
+        }
 
 	if(ret == APR_SUCCESS && len == 0 && eReadType == APR_BLOCK_READ)
 	    ret=APR_EOF;
@@ -285,8 +288,10 @@ static apr_status_t churn (SSLFilterRec *pRec,
 
         ssl_hook_process_connection (pRec);
 
-        n = ssl_io_hook_read(pRec->pssl, (unsigned char *)buf, sizeof(buf));
-	if(n > 0) {
+        /* pass along all of the current BIO */
+        while ((n = ssl_io_hook_read(pRec->pssl,
+                                     (unsigned char *)buf, sizeof(buf))) > 0)
+        {
 	    apr_bucket *pbktOut;
 	    char *pbuf;
 
@@ -297,17 +302,11 @@ static apr_status_t churn (SSLFilterRec *pRec,
 	    pbktOut=apr_bucket_pool_create(pbuf,n,pRec->pInputFilter->c->pool);
 	    APR_BRIGADE_INSERT_TAIL(pRec->pbbPendingInput,pbktOut);
 
-	    /* Once we've read something, we can move to non-blocking mode (if
-	     * we weren't already).
-	     */
-	    eReadType=APR_NONBLOCK_READ;
-
-	    /* XXX: deal with EOF! */
-	    /*	} else if(n == 0) {
-	    apr_bucket *pbktEOS=apr_bucket_create_eos();
-	    APR_BRIGADE_INSERT_TAIL(pbbInput,pbktEOS);*/
+           /* Once we've read something, we can move to non-blocking mode (if
+            * we weren't already).
+            */
+            eReadType = APR_NONBLOCK_READ;
 	}
-	assert(n >= 0);
 
 	ret=churn_output(pRec);
 	if(ret != APR_SUCCESS)
