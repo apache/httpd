@@ -86,13 +86,27 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     char b2[HUGE_STRING_LEN];
-    char *s;
+    char *s,*d;
 
     ap_assert(strlen(szFile) < sizeof b2);
     strcpy(b2,szFile);
     for(s=b2 ; *s ; ++s)
 	if(*s == '/')
 	    *s='\\';
+
+    /* Eliminate directories consisting of three or more dots.
+       These act like ".." but are not detected by other machinery.
+       This is a bit of a kludge - Ben.
+    */
+    for(d=s=b2 ; (*d=*s) ; ++d,++s)
+	if(!strncmp(s,"\\...",3))
+	    {
+	    int n=strspn(s+1,".");
+	    if(s[n+1] != '\\')
+		continue;
+	    s+=n;
+	    --d;
+	    }
 
     sub_canonical_filename(buf, sizeof buf, b2);
     buf[0]=tolower(buf[0]);
