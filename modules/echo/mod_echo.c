@@ -57,9 +57,9 @@ static const command_rec echo_cmds[] = {
 };
 
 static void register_hooks()
-    {
+{
     ap_hook_process_connection(process_echo_connection,NULL,NULL,HOOK_MIDDLE);
-    }
+}
 
 API_VAR_EXPORT module echo_module = {
     STANDARD20_MODULE_STUFF,
