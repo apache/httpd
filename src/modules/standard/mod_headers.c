@@ -197,7 +197,6 @@ command_rec headers_cmds[] = {
 void do_headers_fixup(request_rec *r, array_header *headers)
 {
     int i;
-    array_header *arr;
 
     for (i = 0; i < headers->nelts; ++i) {
 	header_entry *hdr = &((header_entry*)(headers->elts))[i];
