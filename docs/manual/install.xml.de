@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English revision: 1.11.2.2 -->
+<!-- English revision: 1.11.2.3 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -160,9 +160,9 @@
     modifizierte Version des Apache HTTP Servers erhalten haben. Dies kann
     durch Pr&#252;fen des heruntergeladenen Tarballs gegen die PGP-Signatur
     erreicht werden. Dies ist wiederum ein Zweischrittverfahren. Zuerst
-    m&#252;ssen Sie die <code>KEYS</code>-Datei ebenfalls von der <a
-    href="http://httpd.apache.org/download.cgi">Apache HTTP
-    Server Downloadseite</a> beziehen. (Um sicherzustellen, dass die
+    m&#252;ssen Sie die <a href="http://www.apache.org/dist/httpd/KEYS">
+    <code>KEYS</code></a>-Datei ebenfalls von der Apache
+    Distributionsseite beziehen. (Um sicherzustellen, dass die
     <code>KEYS</code>-Datei selbst nicht ver&#228;ndert wurde, ist
     es sinnvoll, eine Datei aus einer fr&#252;heren Distribution des
     Apache zu verwenden, oder den Schl&#252;ssel von einem &#246;ffentlichen
@@ -176,14 +176,16 @@
 
   <example>$ gpg --import KEYS</example>
 
-    <p>Der n&#228;chste Schritt ist das Testen des Tarballs gegen
+    <p>Der n&auml;chste Schritt ist das Testen des Tarballs gegen
     die PGP-Signatur, die immer von der <a
-    href="http://httpd.apache.org/download.cgi">Apache
-    Originalseite</a> bezogen werden sollte. Die Signaturdatei hat den
-    gleichen Dateinamen wie der Tarball, aber zus&#228;tzlich die
-    Endung <code>.asc</code>. Nun k&#246;nnen Sie die Distribution mit
-    einem der folgenden Befehle (wiederum abh&#228;ngig von Ihrer PGP
-    Version) pr&#252;fen:</p>
+    href="http://httpd.apache.org/download.cgi">Apache Originalseite</a>
+    bezogen werden sollte. Den Link zur Signaturdatei finden Sie hinter
+    dem jeweiligen Download-Link oder im entsprechenden Verzeichnis auf der
+    <a href="http://www.apache.org/dist/httpd/">Apache-Distributionsseite</a>
+    Sie hat den gleichen Dateinamen wie der Tarball, aber zus&auml;tzlich die
+    Endung <code>.asc</code>. Nun k&ouml;nnen Sie die Distribution mit
+    einem der folgenden Befehle (wiederum abh&auml;ngig von Ihrer PGP
+    Version) pr&uuml;fen:</p>
 
   <example>$ pgp httpd-2_0_<em>NN</em>.tar.gz.asc</example>
 
