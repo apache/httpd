@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/13 07:48:22 $]
+Last modified at [$Date: 2002/06/13 18:00:18 $]
 
 Release:
 
@@ -48,6 +48,11 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
+    2.0.38: Cliff plans on tagging TONIGHT (6/13/02).  Let's get this thing
+            wrapped up (again).  Just a few last-minute tussles over the
+            500 vs. 501 thing and whether we're REALLY done with the
+            if (!r->header_only) thing (Cliff thinks we're not), and that
+            should be it.
 
 RELEASE SHOWSTOPPERS:
 
@@ -94,7 +99,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Message-ID: <20020613001913.J22524@apache.org>
       Is this a showstopper?
         +1: Justin
-        -1:
+        -1: Cliff
 
     * Returning invalid 304 errors when filters are present.  [PR 9673]
       Message-ID: <Pine.GSO.4.44.0206061713320.3848-100000@lab26.lacfas.hec.ca>
@@ -108,7 +113,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
               proposed patch.  Consensus needed.
       Is this a showstopper?
         +1: Justin
-        -1:
+        -1: Cliff
 
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
