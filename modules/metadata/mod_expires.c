@@ -197,6 +197,9 @@
 #ifdef HAVE_CTYPE_H
 #include <ctype.h>
 #endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"

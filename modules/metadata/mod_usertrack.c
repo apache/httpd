@@ -106,6 +106,10 @@
 #include "http_request.h"
 #include "apr_strings.h"
 
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+
 module AP_MODULE_DECLARE_DATA usertrack_module;
 
 typedef struct {

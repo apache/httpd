@@ -66,6 +66,10 @@
 #include "apr_file_io.h"
 #include "apr_strings.h"
 
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+
 /* mod_speling.c - by Alexei Kosut <akosut@organic.com> June, 1996
  *
  * This module is transparent, and simple. It attempts to correct
