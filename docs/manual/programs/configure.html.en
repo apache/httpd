@@ -442,10 +442,16 @@
           <code>http</code> protocol module.</dd>
 
         <dt><code>--enable-dav-fs</code></dt>
-        <dd>Enable DAV support for filesystem resources, which is provides by
+        <dd>Enable DAV support for filesystem resources, which is provided by
           <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>. This module is a provider for the
           <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> module, so you should also use
           <code>--enable-dav</code>.</dd> 
+
+        <dt><code>--enable-dav-lock</code></dt>
+        <dd>Enable <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> which provides generic DAV
+          locking support for backend modules. This module needs at least
+          <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> to function, so you should also use
+          <code>--enable-dav</code>.</dd>
 
         <dt><code>--enable-deflate</code></dt>
         <dd>Enable deflate transfer encoding provided by
