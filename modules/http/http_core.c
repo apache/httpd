@@ -2570,7 +2570,9 @@ static apr_status_t sendfile_it_all(conn_rec   *c,
                                     apr_int32_t flags)
 {
     apr_status_t rv;
+#ifdef AP_DEBUG
     apr_int32_t timeout = 0;
+#endif
 
     AP_DEBUG_ASSERT((apr_getsocketopt(c->client_socket, APR_SO_TIMEOUT, 
                        &timeout) == APR_SUCCESS) && 
