@@ -1,5 +1,9 @@
 Changes with Apache 1.3.9
 
+  *) Remove bogus error message when a redirect doesn't set Location.
+     Instead, use an empty string to avoid coredump if the error message
+     was supposed to include a location.  [Roy Fielding]
+
   *) Don't allow configure to include mod_auth_digest unless it is
      explicitly requested, even if the user asked for all modules.
      [Roy Fielding]

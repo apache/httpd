@@ -2450,24 +2450,13 @@ void ap_send_error_response(request_rec *r, int recursive_error)
         ap_clear_table(r->err_headers_out);
 
         if (ap_is_HTTP_REDIRECT(status) || (status == HTTP_CREATED)) {
-	    if ((location != NULL) && *location) {
-		ap_table_setn(r->headers_out, "Location", location);
-	    }
-	    else {
-		/*
-		 * We're supposed to tell the client to go somewhere,
-		 * but the destination was omitted.  Turn this into
-		 * a 500 status with an explanatory note in the error log.
-		 */
-		ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-		              "resource created or redirection requested "
-			      "(status=%03d) but no Location field set "
-			      "(URI=%s)",
-			      r->status, r->unparsed_uri);
-		r->status = status = HTTP_INTERNAL_SERVER_ERROR;
-		r->status_line = NULL;
-	    }
-	}
+            if ((location != NULL) && *location) {
+	        ap_table_setn(r->headers_out, "Location", location);
+            }
+            else {
+                location = "";   /* avoids coredump when printing, below */
+            }
+        }
 
         r->content_language = NULL;
         r->content_languages = NULL;
