@@ -310,7 +310,7 @@ int ap_update_child_status(int child_num, int thread_num, int status, request_re
 	    } else {
 		/* Don't reveal the password in the server-status view */
 		    apr_cpystrn(ws->request, apr_pstrcat(r->pool, r->method, " ",
-					       ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD),
+					       apr_uri_unparse_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD),
 					       r->assbackwards ? NULL : " ", r->protocol, NULL),
 				       sizeof(ws->request));
 	    }

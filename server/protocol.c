@@ -326,14 +326,14 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     r->unparsed_uri = apr_pstrdup(r->pool, uri);
 
     if (r->method_number == M_CONNECT) {
-	status = ap_parse_hostinfo_components(r->pool, uri, &r->parsed_uri);
+	status = apr_uri_parse_hostinfo_components(r->pool, uri, &r->parsed_uri);
     }
     else {
 	/* Simple syntax Errors in URLs are trapped by parse_uri_components(). */
-	status = ap_parse_uri_components(r->pool, uri, &r->parsed_uri);
+	status = apr_uri_parse_components(r->pool, uri, &r->parsed_uri);
     }
 
-    if (ap_is_HTTP_SUCCESS(status)) {
+    if (status == APR_SUCCESS) {
 	/* if it has a scheme we may need to do absoluteURI vhost stuff */
 	if (r->parsed_uri.scheme
 	    && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))) {
@@ -361,7 +361,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     else {
 	r->args = NULL;
 	r->hostname = NULL;
-	r->status = status;             /* set error status */
+	r->status = HTTP_BAD_REQUEST;             /* set error status */
 	r->uri = apr_pstrdup(r->pool, uri);
     }
 }

@@ -114,7 +114,7 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#include "util_uri.h"
+#include "apr_uri.h"
 #include "util_md5.h"
 
 /* Disable shmem until pools/init gets sorted out - remove next line when fixed */
@@ -236,7 +236,7 @@ typedef struct digest_header_struct {
     apr_time_t             nonce_time;
     enum hdr_sts          auth_hdr_sts;
     const char           *raw_request_uri;
-    uri_components       *psd_request_uri;
+    apr_uri_components    *psd_request_uri;
     int                   needed_auth;
     client_entry         *client;
 } digest_header_rec;
@@ -1514,8 +1514,8 @@ static const char *new_digest(const request_rec *r,
 }
 
 
-static void copy_uri_components(uri_components *dst, uri_components *src,
-				request_rec *r) {
+static void copy_uri_components(apr_uri_components *dst, 
+                                apr_uri_components *src, request_rec *r) {
     if (src->scheme && src->scheme[0] != '\0')
 	dst->scheme = src->scheme;
     else
@@ -1624,10 +1624,10 @@ static int authenticate_digest_user(request_rec *r)
 	/* Hmm, the simple match didn't work (probably a proxy modified the
 	 * request-uri), so lets do a more sophisticated match
 	 */
-	uri_components r_uri, d_uri;
+	apr_uri_components r_uri, d_uri;
 
 	copy_uri_components(&r_uri, resp->psd_request_uri, r);
-	if (ap_parse_uri_components(r->pool, resp->uri, &d_uri) != HTTP_OK) {
+	if (apr_uri_parse_components(r->pool, resp->uri, &d_uri) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 			  "Digest: invalid uri <%s> in Authorization header",
 			  resp->uri);

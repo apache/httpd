@@ -344,7 +344,7 @@ static const char *log_request_line(request_rec *r, char *a)
 	     * (note also that r->the_request contains the unmodified request)
 	     */
     return (r->parsed_uri.password) ? apr_pstrcat(r->pool, r->method, " ",
-					 ap_unparse_uri_components(r->pool, &r->parsed_uri, 0),
+					 apr_uri_unparse_components(r->pool, &r->parsed_uri, 0),
 					 r->assbackwards ? NULL : " ", r->protocol, NULL)
 					: r->the_request;
 }

@@ -578,7 +578,7 @@ typedef struct request_rec request_rec;
 
 /* ### would be nice to not include this from httpd.h ... */
 /* This comes after we have defined the request_rec type */
-#include "util_uri.h"
+#include "apr_uri.h"
 
 /** A structure that represents one process */
 struct process_rec {
@@ -777,7 +777,7 @@ struct request_rec {
     /** ST_MODE set to zero if no such file */
     apr_finfo_t finfo;
     /** components of uri, dismantled */
-    uri_components parsed_uri;
+    apr_uri_components parsed_uri;
 
     /* Various other config info which may change with .htaccess files
      * These are config vectors, with one void* pointer for each module
