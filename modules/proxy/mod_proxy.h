@@ -135,7 +135,7 @@ struct proxy_remote {
     const char *scheme;		/* the schemes handled by this proxy, or '*' */
     const char *protocol;	/* the scheme used to talk to this proxy */
     const char *hostname;	/* the hostname of this proxy */
-    int port;			/* the port for this proxy */
+    apr_port_t  port;		/* the port for this proxy */
 };
 
 struct proxy_alias {
