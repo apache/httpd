@@ -106,6 +106,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
     int i;
     char *cp;
     char buffer[RFC1413_MAXDATA + 1];
+    int buflen;
 
     /*
      * Bind the local and remote ends of the query socket to the same
@@ -137,10 +138,10 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
 	            return -1;
 
 /* send the data */
-    ap_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", ntohs(rmt_sin->sin_port),
+    buflen = ap_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", ntohs(rmt_sin->sin_port),
 		ntohs(our_sin->sin_port));
     do
-	i = write(sock, buffer, strlen(buffer));
+	i = write(sock, buffer, buflen);
     while (i == -1 && errno == EINTR);
     if (i == -1) {
 	aplog_error(APLOG_MARK, APLOG_CRIT, srv,
