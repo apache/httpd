@@ -75,6 +75,10 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) Add a build script to create a solaris package.
+       svn rev 124104
+       +1: minfrin
+
     *) Win32: Eliminate a very ugly race - the parallel starting 
        threads were picking up thread identifiers other than their
        own.  Because the limit of threads is an int, stuffing the 
