@@ -2778,7 +2778,7 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
  * There is a total 3-second delay between sending a SIGINT 
  * and sending of the final SIGKILL.
  * TIMEOUT_INTERVAL should be set to TIMEOUT_USECS / 64
- * for the exponetial timeout alogrithm.
+ * for the exponential timeout alogrithm.
  */
 #define TIMEOUT_USECS    3000000
 #define TIMEOUT_INTERVAL   46875
