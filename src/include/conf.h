@@ -327,7 +327,7 @@ extern char *getwd();
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
-#elif defined(__NetBSD__)
+#elif defined(__NetBSD__) || defined(__OpenBSD__)
 #define HAVE_SYS_RESOURCE_H
 #define HAVE_GMTOFF
 #undef NO_KILLPG

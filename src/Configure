@@ -255,6 +255,9 @@ case "$PLAT" in
 	LIBS="$LIBS -lcrypt"
 	DBM_LIB=""
 	;;
+    *-openbsd*)
+	OS='OpenBSD'
+	;;
     *-next-nextstep*)
 	OS='NeXT'
 	CFLAGS="$CFLAGS -DNEXT"
