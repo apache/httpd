@@ -136,8 +136,8 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D\
- "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_uri_delims" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /GX /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D\
+ "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_uri_delims" /FD /ZI /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 

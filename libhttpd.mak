@@ -41,16 +41,16 @@ ALL : "$(OUTDIR)\libhttpd.dll"
 
 !ELSE 
 
-ALL : "gen_uri_delims - Win32 Release" "gen_test_char - Win32 Release"\
- "pcreposix - Win32 Release" "pcre - Win32 Release" "libaprutil - Win32 Release"\
- "libapr - Win32 Release" "$(OUTDIR)\libhttpd.dll"
+ALL : "libapr - Win32 Release" "gen_uri_delims - Win32 Release"\
+ "gen_test_char - Win32 Release" "pcreposix - Win32 Release"\
+ "pcre - Win32 Release" "libaprutil - Win32 Release" "$(OUTDIR)\libhttpd.dll"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 ReleaseCLEAN" "libaprutil - Win32 ReleaseCLEAN"\
- "pcre - Win32 ReleaseCLEAN" "pcreposix - Win32 ReleaseCLEAN"\
- "gen_test_char - Win32 ReleaseCLEAN" "gen_uri_delims - Win32 ReleaseCLEAN" 
+CLEAN :"libaprutil - Win32 ReleaseCLEAN" "pcre - Win32 ReleaseCLEAN"\
+ "pcreposix - Win32 ReleaseCLEAN" "gen_test_char - Win32 ReleaseCLEAN"\
+ "gen_uri_delims - Win32 ReleaseCLEAN" "libapr - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -230,16 +230,16 @@ ALL : "$(OUTDIR)\libhttpd.dll"
 
 !ELSE 
 
-ALL : "gen_uri_delims - Win32 Debug" "gen_test_char - Win32 Debug"\
- "pcreposix - Win32 Debug" "pcre - Win32 Debug" "libaprutil - Win32 Debug"\
- "libapr - Win32 Debug" "$(OUTDIR)\libhttpd.dll"
+ALL : "libapr - Win32 Debug" "gen_uri_delims - Win32 Debug"\
+ "gen_test_char - Win32 Debug" "pcreposix - Win32 Debug" "pcre - Win32 Debug"\
+ "libaprutil - Win32 Debug" "$(OUTDIR)\libhttpd.dll"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libapr - Win32 DebugCLEAN" "libaprutil - Win32 DebugCLEAN"\
- "pcre - Win32 DebugCLEAN" "pcreposix - Win32 DebugCLEAN"\
- "gen_test_char - Win32 DebugCLEAN" "gen_uri_delims - Win32 DebugCLEAN" 
+CLEAN :"libaprutil - Win32 DebugCLEAN" "pcre - Win32 DebugCLEAN"\
+ "pcreposix - Win32 DebugCLEAN" "gen_test_char - Win32 DebugCLEAN"\
+ "gen_uri_delims - Win32 DebugCLEAN" "libapr - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -300,10 +300,10 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I ".\include" /I ".\srclib\apr\include"\
- /I ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite"\
- /I "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
- "AP_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /GX /Od /I ".\include" /I ".\srclib\apr\include" /I\
+ ".\srclib\apr-util\include" /I "./server/mpm/winnt" /I "./srclib/expat-lite" /I\
+ "./os/win32" /I "./modules/http" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D\
+ "AP_DECLARE_EXPORT" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\libhttpd" /FD /ZI /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -2497,34 +2497,6 @@ NODEP_CPP_SERVI=\
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
-"libapr - Win32 Release" : 
-   cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
-   cd "..\.."
-
-"libapr - Win32 ReleaseCLEAN" : 
-   cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
- RECURSE=1 
-   cd "..\.."
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-"libapr - Win32 Debug" : 
-   cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
-   cd "..\.."
-
-"libapr - Win32 DebugCLEAN" : 
-   cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
- RECURSE=1 
-   cd "..\.."
-
-!ENDIF 
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
 "libaprutil - Win32 Release" : 
    cd ".\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
@@ -2665,6 +2637,34 @@ NODEP_CPP_SERVI=\
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\gen_uri_delims.mak"\
  CFG="gen_uri_delims - Win32 Debug" RECURSE=1 
    cd ".."
+
+!ENDIF 
+
+!IF  "$(CFG)" == "libhttpd - Win32 Release"
+
+"libapr - Win32 Release" : 
+   cd ".\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
+   cd "..\.."
+
+"libapr - Win32 ReleaseCLEAN" : 
+   cd ".\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
+ RECURSE=1 
+   cd "..\.."
+
+!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
+
+"libapr - Win32 Debug" : 
+   cd ".\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
+   cd "..\.."
+
+"libapr - Win32 DebugCLEAN" : 
+   cd ".\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
+ RECURSE=1 
+   cd "..\.."
 
 !ENDIF 
 
