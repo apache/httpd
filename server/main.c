@@ -411,6 +411,7 @@ int main(int argc, const char * const argv[])
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
     }
+    apr_pool_clear(plog);
     if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Unable to open logs\n");
         destroy_and_exit_process(process, 1);
@@ -442,6 +443,7 @@ int main(int argc, const char * const argv[])
         ap_fixup_virtual_hosts(pconf, server_conf);
         ap_fini_vhost_config(pconf, server_conf);
         apr_sort_hooks();
+        apr_pool_clear(plog);
         if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR| APLOG_NOERRNO, 0, NULL, "Unable to open logs\n");
             destroy_and_exit_process(process, 1);
