@@ -324,15 +324,11 @@ case "$PLAT" in
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX=2"
 	LIBS="$LIBS -lm"
-	CFLAGS_SHLIB="-fpic"
-	LDFLAGS_SHLIB="-Bshareable"
 	;;
     *-linux1)
 	DEF_WANTHSREGEX=yes
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX=1"
-	CFLAGS_SHLIB="-fpic"
-	LDFLAGS_SHLIB="-Bshareable"
 	;;
     *-lynx-lynxos)
 	OS='LynxOS 2.x'
@@ -371,8 +367,6 @@ case "$PLAT" in
 	LIBS="$LIBS -lcrypt"
 	DBM_LIB=""
 	DB_LIB=""
-	CFLAGS_SHLIB="-fpic"
-	LDFLAGS_SHLIB="-Bshareable"
 	;;
     *-openbsd*)
 	OS='OpenBSD'
@@ -648,12 +642,10 @@ if [ "x$TCC" = "x" ]; then
     echo " + setting C compiler to $CC"
 fi
 
-#
+####################################################################
 # Look for OPTIM and save for later
 #
 TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
-TLDFLAGS_SHLIB=`egrep '^LDFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
-TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 
 ####################################################################
 # Set the value of CC if need be
@@ -662,11 +654,66 @@ if [ "x$TCC" = "x" ]; then
     echo "CC=$CC" >> Makefile.config
 fi
 
+####################################################################
+# Check for user provided flags for shared object support
+#
+TLDFLAGS_SHLIB=`egrep '^LDFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+
+####################################################################
+# We adjust now CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT as
+# required.  For more PLATFORMs just add the required lines below.
+#
 if [ "x$using_shlib" = "x1" ] ; then
-    #
-    # Set the value of the shared libary flags, if they aren't explicitly
-    # set in the configuration file
-    #
+    case "$PLAT" in
+	*-linux1)
+	    CFLAGS_SHLIB="-fpic"
+	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
+	    ;;
+	*-linux2)
+	    CFLAGS_SHLIB="-fpic"
+	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
+	    ;;
+	*-freebsd*)
+	    CFLAGS_SHLIB="-fpic"
+	    LDFLAGS_SHLIB="-Bshareable"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    ;;
+	*-solaris2*)
+	    case $CC in
+		    */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		      */cc|cc ) CFLAGS_SHLIB="-KPIC" ;;
+	    esac
+	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_SHLIB_EXPORT=""
+	    ;;
+    esac
+fi
+
+####################################################################
+#  Check if we really have some information to compile
+#  the shared objects if SharedModule was used.
+#
+if [ "x$using_shlib" = "x1" ] ; then
+    if [ "x$TCFLAGS_SHLIB"  = x -a "x$CFLAGS_SHLIB"  = x  -a \
+         "x$TLDFLAGS_SHLIB" = x -a "x$LDFLAGS_SHLIB" = x ]; then
+        echo "Sorry, no shared object support available."
+        echo "Either compile all modules statically (use AddModule instead"
+        echo "of SharedModule in the Configuration file) or at least provide"
+        echo "us with the apropriate compiler and linker flags via the"
+        echo "CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT entries"
+        echo "in the configuration file."
+        exit 1
+    fi
+fi
+
+####################################################################
+# Set the value of the shared libary flags, if they aren't explicitly
+# set in the configuration file
+#
+if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$TCFLAGS_SHLIB" = "x" ]; then
         echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
     fi
@@ -674,10 +721,6 @@ if [ "x$using_shlib" = "x1" ] ; then
         echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
     fi
     if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
-        if [ "x$TCC" = "xgcc" ] ||
-    	[ "x$TCC" = "x" -a "x$CC" = "xgcc" ] ; then
-    	LDFLAGS_SHLIB_EXPORT=-rdynamic
-        fi
         echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
     fi
 fi	# end of $using_shlib section

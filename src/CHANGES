@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) Various improvements to the configuration and build support for compiling
+     modules as shared objects. Especially Solaris 2.x support with GCC and
+     WorkShop Compilers 4.2 was added. This way shared object support is now
+     provided out-of-the-box for FreeBSD, Linux and Solaris.  
+     [Ralf S. Engelschall]
+
   *) Minor cleanup in http_main -- split QNX and OS2 specific "mmap"
      scoreboard code into separate #defines -- USE_POSIX_SCOREBOARD
      and USE_OS2_SCOREBOARD.  [Dean Gaudet]
