@@ -71,8 +71,12 @@ int ap_proxy_http_canon(request_rec *r, char *url)
      */
     port = def_port;
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
-    if (err)
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "error parsing URL %s: %s",
+                      url, err);
         return HTTP_BAD_REQUEST;
+    }
 
     /* now parse path/search args, according to rfc1738 */
     /* N.B. if this isn't a true proxy request, then the URL _path_
@@ -97,6 +101,9 @@ int ap_proxy_http_canon(request_rec *r, char *url)
     else
         sport[0] = '\0';
 
+    if (ap_strchr_c(host, ':')) { /* if literal IPv6 address */
+        host = apr_pstrcat(r->pool, "[", host, "]", NULL);
+    }
     r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport, 
             "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;

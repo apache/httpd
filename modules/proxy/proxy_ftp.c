@@ -205,6 +205,9 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
     else
         sport[0] = '\0';
 
+    if (ap_strchr_c(host, ':')) { /* if literal IPv6 address */
+        host = apr_pstrcat(p, "[", host, "]");
+    }
     r->filename = apr_pstrcat(p, "proxy:ftp://", (user != NULL) ? user : "",
                               (password != NULL) ? ":" : "",
                               (password != NULL) ? password : "",

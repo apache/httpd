@@ -2,6 +2,8 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix handling of IPv6 numeric strings in mod_proxy.  [Jeff Trawick]
+
   *) External rewrite map responses are no longer limited to 2048
      bytes.  [André Malo]
 
