@@ -69,51 +69,50 @@
 #include <assert.h>
 
 module AP_MODULE_DECLARE_DATA tls_module;
-static const char s_szTLSFilterName[]="TLSFilter";
-typedef struct
-{
-    int bEnabled;
-    const char *szCertificateFile;
-    const char *szKeyFile;
-} TLSServerConfig;
+static const char tls_filter_name[] = "TLSFilter";
 
-typedef struct
+typedef struct tls_config_rec
 {
-    SSLStateMachine *pStateMachine;
-    ap_filter_t *pInputFilter;
-    ap_filter_t *pOutputFilter;
-    apr_bucket_brigade *pbbInput;		/* encrypted input */
-    apr_bucket_brigade *pbbPendingInput;	/* decrypted input */
-} TLSFilterCtx;
+    int enabled;
+    const char *certificate_file;
+    const char *key_file;
+} tls_config_rec;
+
+typedef struct tls_filter_ctx
+{
+    SSLStateMachine *state_machine;
+    ap_filter_t *input_filter;
+    ap_filter_t *output_filter;
+    apr_bucket_brigade *bb_encrypted;     /* encrypted input */
+    apr_bucket_brigade *bb_decrypted;     /* decrypted input */
+} tls_filter_ctx;
 
 static void *create_tls_server_config(apr_pool_t *p, server_rec *s)
 {
-    TLSServerConfig *pConfig = apr_pcalloc(p, sizeof *pConfig);
+    tls_config_rec *tcfg = apr_pcalloc(p, sizeof *tcfg);
 
-    pConfig->bEnabled = 0;
-    pConfig->szCertificateFile = pConfig->szKeyFile = NULL;
+    tcfg->enabled = 0;
+    tcfg->certificate_file = tcfg->key_file = NULL;
 
-    return pConfig;
+    return tcfg;
 }
 
 static const char *tls_on(cmd_parms *cmd, void *dummy, int arg)
 {
-    TLSServerConfig *pConfig = ap_get_module_config(cmd->server->module_config,
-						    &tls_module);
-    pConfig->bEnabled = arg;
-
+    tls_config_rec *tcfg = ap_get_module_config(cmd->server->module_config,
+                                                &tls_module);
+    tcfg->enabled = arg;
     return NULL;
 }
 
 static const char *tls_cert_file(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    TLSServerConfig *pConfig = ap_get_module_config(cmd->server->module_config,
-						    &tls_module);
-    pConfig->szCertificateFile = ap_server_root_relative(cmd->pool, arg);
-
+    tls_config_rec *tcfg = ap_get_module_config(cmd->server->module_config,
+                                                &tls_module);
+    tcfg->certificate_file = ap_server_root_relative(cmd->pool, arg);
+    
     /* temp */
-    pConfig->szKeyFile=pConfig->szCertificateFile;
-
+    tcfg->key_file = tcfg->certificate_file;
     return NULL;
 }
 
@@ -125,247 +124,260 @@ static apr_status_t tls_filter_cleanup(void *data)
 
 static int tls_filter_inserter(conn_rec *c)
 {
-    TLSServerConfig *pConfig =
-      ap_get_module_config(c->base_server->module_config,
-			   &tls_module);
-    TLSFilterCtx *pCtx;
+    tls_config_rec *tcfg = ap_get_module_config(c->base_server->module_config,
+                                                &tls_module);
+    tls_filter_ctx *ctx;
 
-    if (!pConfig->bEnabled)
+    if (!tcfg->enabled)
         return DECLINED;
 
-    pCtx=apr_pcalloc(c->pool,sizeof *pCtx);
-    pCtx->pStateMachine=SSLStateMachine_new(pConfig->szCertificateFile,
-					    pConfig->szKeyFile);
+    ctx = apr_pcalloc(c->pool, sizeof(*ctx));
+    ctx->state_machine = SSLStateMachine_new(tcfg->certificate_file,
+                                             tcfg->key_file);
 
-    if (!pCtx->pStateMachine) {
+    if (!ctx->state_machine) {
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    pCtx->pInputFilter=ap_add_input_filter(s_szTLSFilterName,pCtx,NULL,c);
-    pCtx->pOutputFilter=ap_add_output_filter(s_szTLSFilterName,pCtx,NULL,c);
-    pCtx->pbbInput=apr_brigade_create(c->pool);
-    pCtx->pbbPendingInput=apr_brigade_create(c->pool);
+    ctx->input_filter = ap_add_input_filter(tls_filter_name, ctx, NULL, c);
+    ctx->output_filter = ap_add_output_filter(tls_filter_name, ctx, NULL, c);
+    ctx->bb_encrypted = apr_brigade_create(c->pool);
+    ctx->bb_decrypted = apr_brigade_create(c->pool);
 
-    apr_pool_cleanup_register(c->pool, (void*)pCtx->pStateMachine,
+    apr_pool_cleanup_register(c->pool, (void*)ctx->state_machine,
                               tls_filter_cleanup, apr_pool_cleanup_null);
 
     return OK;
 }
 
-static apr_status_t churn_output(TLSFilterCtx *pCtx)
+static apr_status_t churn_output(tls_filter_ctx *ctx)
 {
-    apr_bucket_brigade *pbbOutput=NULL;
+    apr_bucket_brigade *bb_out = NULL;
     int done;
 
     do {
-	char buf[1024];
-	int n;
-	apr_bucket *pbkt;
+        char buf[1024];
+        int n;
+        apr_bucket *b;
 
-	done=0;
+        done = 0;
 
-	if(SSLStateMachine_write_can_extract(pCtx->pStateMachine)) {
-	    n=SSLStateMachine_write_extract(pCtx->pStateMachine,buf,
-					    sizeof buf);
-	    if(n > 0) {
-		char *pbuf;
+        if (SSLStateMachine_write_can_extract(ctx->state_machine)) {
+            n = SSLStateMachine_write_extract(ctx->state_machine, buf,
+                                              sizeof buf);
+            if (n > 0) {
+                char *buf;
 
-		if(!pbbOutput)
-		    pbbOutput=apr_brigade_create(pCtx->pOutputFilter->c->pool);
+                if (!bb_out)
+                    bb_out = apr_brigade_create(ctx->output_filter->c->pool);
 
-		pbuf=apr_pmemdup(pCtx->pOutputFilter->c->pool,buf,n);
-		pbkt=apr_bucket_pool_create(pbuf,n,
-					    pCtx->pOutputFilter->c->pool);
-		APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
-		done=1;
-		/*	} else if(n == 0) {
-			apr_bucket *pbktEOS=apr_bucket_create_eos();
-			APR_BRIGADE_INSERT_TAIL(pbbOutput,pbktEOS);*/
-	    }
-	    assert(n > 0);
-	}
-    } while(done);
+                buf = apr_pmemdup(ctx->output_filter->c->pool, buf, n);
+                b = apr_bucket_pool_create(buf, n, 
+                                           ctx->output_filter->c->pool);
+                APR_BRIGADE_INSERT_TAIL(bb_out, b);
+                done = 1;
+                /* } else if (n == 0) {
+                 x     apr_bucket *b_eos = apr_bucket_create_eos();
+                 x     APR_BRIGADE_INSERT_TAIL(bb_out, b_eos);
+                 x } 
+                 */
+            }
+            assert(n > 0);
+        }
+    } while (done);
     
     /* XXX: check for errors */
-    if(pbbOutput) {
-	apr_bucket *pbkt;
+    if (bb_out) {
+        apr_bucket *b;
 
-	/* XXX: it may be possible to not always flush */
-	pbkt=apr_bucket_flush_create();
-	APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
-	ap_pass_brigade(pCtx->pOutputFilter->next,pbbOutput);
+        /* XXX: it may be possible to not always flush */
+        b = apr_bucket_flush_create();
+        APR_BRIGADE_INSERT_TAIL(bb_out, b);
+        ap_pass_brigade(ctx->output_filter->next, bb_out);
     }
 
     return APR_SUCCESS;
 }
 
-static apr_status_t churn(TLSFilterCtx *pCtx,apr_read_type_e eReadType,apr_size_t *readbytes)
+static apr_status_t churn(tls_filter_ctx *ctx, apr_read_type_e readtype, 
+                          apr_size_t *readbytes)
 {
-    ap_input_mode_t eMode=eReadType == APR_BLOCK_READ ? AP_MODE_BLOCKING
-      : AP_MODE_NONBLOCKING;
-    apr_bucket *pbktIn;
+    ap_input_mode_t mode = (readtype == APR_BLOCK_READ)
+                                ? AP_MODE_BLOCKING
+                                : AP_MODE_NONBLOCKING;
+    apr_bucket *b_in;
 
-    if(APR_BRIGADE_EMPTY(pCtx->pbbInput)) {
-	ap_get_brigade(pCtx->pInputFilter->next,pCtx->pbbInput,eMode,readbytes);
-	if(APR_BRIGADE_EMPTY(pCtx->pbbInput))
-	    return APR_EOF;
+    if (APR_BRIGADE_EMPTY(ctx->bb_encrypted)) {
+        ap_get_brigade(ctx->input_filter->next, ctx->bb_encrypted, 
+                       mode, readbytes);
+        if (APR_BRIGADE_EMPTY(ctx->bb_encrypted))
+            return APR_EOF;
     }
 
-    APR_BRIGADE_FOREACH(pbktIn,pCtx->pbbInput) {
-	const char *data;
-	apr_size_t len;
-	int n;
-	char buf[1024];
-	apr_status_t ret;
+    APR_BRIGADE_FOREACH(b_in, ctx->bb_encrypted) {
+        const char *data;
+        apr_size_t len;
+        int n;
+        char buf[1024];
+        apr_status_t ret;
 
-	if(APR_BUCKET_IS_EOS(pbktIn)) {
-	    /* XXX: why can't I reuse pbktIn??? */
-	    /* Write eof! */
-	    break;
-	}
+        if (APR_BUCKET_IS_EOS(b_in)) {
+            /* XXX: why can't I reuse b_in??? */
+            /* Write eof! */
+            break;
+        }
 
-	/* read filter */
-	ret=apr_bucket_read(pbktIn,&data,&len,eReadType);
+        /* read filter */
+        ret = apr_bucket_read(b_in, &data, &len, readtype);
 
-	APR_BUCKET_REMOVE(pbktIn);
+        APR_BUCKET_REMOVE(b_in);
 
-	if(ret == APR_SUCCESS && len == 0 && eReadType == APR_BLOCK_READ)
-	    ret=APR_EOF;
+        if (ret == APR_SUCCESS && len == 0 && readtype == APR_BLOCK_READ)
+            ret = APR_EOF;
 
-	if(len == 0) {
-	    /* Lazy frickin browsers just reset instead of shutting down. */
-            if(ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret)) {
-		if(APR_BRIGADE_EMPTY(pCtx->pbbPendingInput))
-		    return APR_EOF;
-		else
-		    /* Next time around, the incoming brigade will be empty,
-		     * so we'll return EOF then
-		     */
-		    return APR_SUCCESS;
-	    }
-		
-	    if(eReadType != APR_NONBLOCK_READ)
-		ap_log_error(APLOG_MARK,APLOG_ERR,ret,NULL,
-			     "Read failed in tls_in_filter");
-	    assert(eReadType == APR_NONBLOCK_READ);
-	    assert(ret == APR_SUCCESS || APR_STATUS_IS_EAGAIN(ret));
-	    /* In this case, we have data in the output bucket, or we were
-	     * non-blocking, so returning nothing is fine.
-	     */
-	    return APR_SUCCESS;
-	}
+        if (len == 0) {
+            /* Lazy frickin browsers just reset instead of shutting down. */
+            if (ret == APR_EOF || APR_STATUS_IS_ECONNRESET(ret)) {
+                if (APR_BRIGADE_EMPTY(ctx->bb_decrypted))
+                    return APR_EOF;
+                else
+                    /* Next time around, the incoming brigade will be empty,
+                     * so we'll return EOF then
+                     */
+                    return APR_SUCCESS;
+            }
+                
+            if (readtype != APR_NONBLOCK_READ)
+                ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL,
+                             "Read failed in tls_in_filter");
+            assert(readtype == APR_NONBLOCK_READ);
+            assert(ret == APR_SUCCESS || APR_STATUS_IS_EAGAIN(ret));
+            /* In this case, we have data in the output bucket, or we were
+             * non-blocking, so returning nothing is fine.
+             */
+            return APR_SUCCESS;
+        }
 
-	assert(len > 0);
+        assert(len > 0);
 
-	/* write SSL */
-	SSLStateMachine_read_inject(pCtx->pStateMachine,data,len);
+        /* write SSL */
+        SSLStateMachine_read_inject(ctx->state_machine, data, len);
 
-	n=SSLStateMachine_read_extract(pCtx->pStateMachine,buf,sizeof buf);
-	if(n > 0) {
-	    apr_bucket *pbktOut;
-	    char *pbuf;
+        n = SSLStateMachine_read_extract(ctx->state_machine, buf, sizeof buf);
+        if (n > 0) {
+            apr_bucket *b_out;
+            char *buf;
 
-	    pbuf=apr_pmemdup(pCtx->pInputFilter->c->pool,buf,n);
-	    /* XXX: should we use a heap bucket instead? Or a transient (in
-	     * which case we need a separate brigade for each bucket)?
-	     */
-	    pbktOut=apr_bucket_pool_create(pbuf,n,pCtx->pInputFilter->c->pool);
-	    APR_BRIGADE_INSERT_TAIL(pCtx->pbbPendingInput,pbktOut);
+            buf = apr_pmemdup(ctx->input_filter->c->pool, buf, n);
+            /* XXX: should we use a heap bucket instead? Or a transient (in
+             * which case we need a separate brigade for each bucket)?
+             */
+            b_out = apr_bucket_pool_create(buf, n, ctx->input_filter->c->pool);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb_decrypted, b_out);
 
-	    /* Once we've read something, we can move to non-blocking mode (if
-	     * we weren't already).
-	     */
-	    eReadType=APR_NONBLOCK_READ;
+            /* Once we've read something, we can move to non-blocking mode
+             * (if we weren't already).
+             */
+            readtype = APR_NONBLOCK_READ;
 
-	    /* XXX: deal with EOF! */
-	    /*	} else if(n == 0) {
-	    apr_bucket *pbktEOS=apr_bucket_create_eos();
-	    APR_BRIGADE_INSERT_TAIL(pbbInput,pbktEOS);*/
-	}
-	assert(n >= 0);
+            /* XXX: deal with EOF! */
+            /* } else if (n == 0) {
+             x    apr_bucket *b_eos = apr_bucket_create_eos();
+             x    APR_BRIGADE_INSERT_TAIL(bb_encrypted, b_eos);
+             x }
+             */
+        }
+        assert(n >= 0);
 
-	ret=churn_output(pCtx);
-	if(ret != APR_SUCCESS)
-	    return ret;
+        ret = churn_output(ctx);
+        if (ret != APR_SUCCESS)
+            return ret;
     }
 
-    return churn_output(pCtx);
+    return churn_output(ctx);
 }
 
-static apr_status_t tls_out_filter(ap_filter_t *f,apr_bucket_brigade *pbbIn)
+static apr_status_t tls_out_filter(ap_filter_t *f, apr_bucket_brigade *bb_in)
 {
-    TLSFilterCtx *pCtx=f->ctx;
-    apr_bucket *pbktIn;
+    tls_filter_ctx *ctx = f->ctx;
+    apr_bucket *b_in;
 
-    APR_BRIGADE_FOREACH(pbktIn,pbbIn) {
-	const char *data;
-	apr_size_t len;
-	apr_status_t ret;
+    APR_BRIGADE_FOREACH(b_in, bb_in) {
+        const char *data;
+        apr_size_t len;
+        apr_status_t ret;
 
-	if(APR_BUCKET_IS_EOS(pbktIn)) {
-	    /* XXX: demote to debug */
-	    ap_log_error(APLOG_MARK,APLOG_ERR,0,NULL,"Got EOS on output");
-	    SSLStateMachine_write_close(pCtx->pStateMachine);
-	    /* XXX: dubious - does this always terminate? Does it return the right thing? */
-	    for( ; ; ) {
-		ret=churn_output(pCtx);
-		if(ret != APR_SUCCESS)
-		    return ret;
-		ret=churn(pCtx,APR_NONBLOCK_READ,0);
-		if(ret != APR_SUCCESS) {
-		    if(ret == APR_EOF)
-			return APR_SUCCESS;
-		    else
-			return ret;
-		}
-	    }
-	    break;
-	}
+        if (APR_BUCKET_IS_EOS(b_in)) {
+            /* XXX: demote to debug */
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, "Got EOS on output");
+            SSLStateMachine_write_close(ctx->state_machine);
+            /* XXX: dubious - does this always terminate? 
+             * Does it return the right thing? 
+             */
+            for( ; ; ) {
+                ret = churn_output(ctx);
+                if (ret != APR_SUCCESS)
+                    return ret;
+                ret = churn(ctx, APR_NONBLOCK_READ, 0);
+                if (ret != APR_SUCCESS) {
+                    if (ret == APR_EOF)
+                        return APR_SUCCESS;
+                    else
+                        return ret;
+                }
+            }
+            break;
+        }
 
-	if(APR_BUCKET_IS_FLUSH(pbktIn)) {
-	    /* assume that churn will flush (or already has) if there's output */
-	    ret=churn(pCtx,APR_NONBLOCK_READ,0);
-	    if(ret != APR_SUCCESS)
-		return ret;
-	    continue;
-	}
+        if (APR_BUCKET_IS_FLUSH(b_in)) {
+            /* assume that churn will flush (or already has) 
+             * if there's output
+             */
+            ret = churn(ctx, APR_NONBLOCK_READ, 0);
+            if (ret != APR_SUCCESS)
+                return ret;
+            continue;
+        }
 
-	/* read filter */
-	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
+        /* read filter */
+        apr_bucket_read(b_in, &data, &len, APR_BLOCK_READ);
 
-	/* write SSL */
-	SSLStateMachine_write_inject(pCtx->pStateMachine,data,len);
+        /* write SSL */
+        SSLStateMachine_write_inject(ctx->state_machine, data, len);
 
-	/* churn the state machine */
-	ret=churn_output(pCtx);
-	if(ret != APR_SUCCESS)
-	    return ret;
+        /* churn the state machine */
+        ret = churn_output(ctx);
+        if (ret != APR_SUCCESS)
+            return ret;
     }
 
     return APR_SUCCESS;
 }
 
-static apr_status_t tls_in_filter(ap_filter_t *f,apr_bucket_brigade *pbbOut,
-				  ap_input_mode_t eMode, apr_size_t *readbytes)
+static apr_status_t tls_in_filter(ap_filter_t *f, apr_bucket_brigade *bb_out,
+                                  ap_input_mode_t mode, apr_size_t *readbytes)
 {
-    TLSFilterCtx *pCtx=f->ctx;
-    apr_read_type_e eReadType=eMode == AP_MODE_BLOCKING ? APR_BLOCK_READ :
-      APR_NONBLOCK_READ;
+    tls_filter_ctx *ctx = f->ctx;
+    apr_read_type_e readtype = (mode == AP_MODE_BLOCKING)
+                                    ? APR_BLOCK_READ
+                                    : APR_NONBLOCK_READ;
     apr_status_t ret;
 
-    /* XXX: we don't currently support peek */
-    assert(eMode != AP_MODE_PEEK);
+    /* XXX: we don't currently support peek 
+     * And we don't need to, it should be eaten by the protocol filter!
+     */
+    assert(mode != AP_MODE_PEEK);
 
     /* churn the state machine */
-    ret=churn(pCtx,eReadType,readbytes);
-    if(ret != APR_SUCCESS)
-	return ret;
+    ret = churn(ctx, readtype, readbytes);
+    if (ret != APR_SUCCESS)
+        return ret;
 
     /* XXX: shame that APR_BRIGADE_FOREACH doesn't work here */
-    while(!APR_BRIGADE_EMPTY(pCtx->pbbPendingInput)) {
-	apr_bucket *pbktIn=APR_BRIGADE_FIRST(pCtx->pbbPendingInput);
-	APR_BUCKET_REMOVE(pbktIn);
-	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktIn);
+    while (!APR_BRIGADE_EMPTY(ctx->bb_decrypted)) {
+        apr_bucket *b_in = APR_BRIGADE_FIRST(ctx->bb_decrypted);
+        APR_BUCKET_REMOVE(b_in);
+        APR_BRIGADE_INSERT_TAIL(bb_out, b_in);
     }
 
     return APR_SUCCESS;
@@ -373,11 +385,11 @@ static apr_status_t tls_in_filter(ap_filter_t *f,apr_bucket_brigade *pbbOut,
 
 static const char *tls_method(const request_rec *r)
 {
-    TLSServerConfig *pConfig =
-      ap_get_module_config(r->connection->base_server->module_config,
-			   &tls_module);
+    tls_config_rec *tcfg =
+        ap_get_module_config(r->connection->base_server->module_config,
+                             &tls_module);
 
-    if (!pConfig->bEnabled)
+    if (!tcfg->enabled)
         return NULL;
 
     return "https";
@@ -385,11 +397,11 @@ static const char *tls_method(const request_rec *r)
 
 static unsigned short tls_port(const request_rec *r)
 {
-    TLSServerConfig *pConfig =
-      ap_get_module_config(r->connection->base_server->module_config,
-			   &tls_module);
+    tls_config_rec *tcfg =
+        ap_get_module_config(r->connection->base_server->module_config,
+                             &tls_module);
 
-    if (!pConfig->bEnabled)
+    if (!tcfg->enabled)
         return 0;
 
     return 443;
@@ -409,21 +421,21 @@ static void register_hooks(apr_pool_t *p)
 {
     SSLStateMachine_init();
 
-    ap_register_output_filter(s_szTLSFilterName,tls_out_filter,
-			      AP_FTYPE_NETWORK);
-    ap_register_input_filter(s_szTLSFilterName,tls_in_filter,
-			     AP_FTYPE_NETWORK);
-    ap_hook_pre_connection(tls_filter_inserter,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_default_port(tls_port,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_http_method(tls_method,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_register_output_filter(tls_filter_name, tls_out_filter,
+                              AP_FTYPE_NETWORK);
+    ap_register_input_filter(tls_filter_name, tls_in_filter,
+                             AP_FTYPE_NETWORK);
+    ap_hook_pre_connection(tls_filter_inserter, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_default_port(tls_port, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_http_method(tls_method, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA tls_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    create_tls_server_config,	/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    tls_cmds,			/* command apr_table_t */
-    register_hooks		/* register hooks */
+    NULL,                        /* create per-directory config structure */
+    NULL,                        /* merge per-directory config structures */
+    create_tls_server_config,    /* create per-server config structure */
+    NULL,                        /* merge per-server config structures */
+    tls_cmds,                    /* command apr_table_t */
+    register_hooks               /* register hooks */
 };
