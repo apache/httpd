@@ -2,8 +2,11 @@ Apache 1.3 STATUS:
 
 Release:
 
-    1.3.0: Shoot for June 1st, 1998 Release
-           Brian to be RM, Jim will do announcements
+    1.3.0: Current plan is to roll the tarball June 1 (~5pm eastern)
+           and then release it on the 5th. Jim will roll and tag
+	   on the 1st. Everyone should test the tarball so we're
+	   sure the tarball is ready for the 5th. Jim will announce
+	   as well.
 
     1.3b7: Released 26/5/98.  If no major errors, will become 1.3.0
 
