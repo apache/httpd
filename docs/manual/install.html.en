@@ -63,8 +63,7 @@
       <tr>
         <td><a href="#download">Download</a></td>
 
-        <td><code>$ lynx
-        http://www.apache.org/dist/httpd/httpd-2_1_<em>NN</em>.tar.gz</code>
+        <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
