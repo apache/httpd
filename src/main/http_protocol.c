@@ -628,6 +628,7 @@ const char *check_fulluri(request_rec *r, const char *uri)
     char *host, *proto, *slash, *colon;
     int plen;
     unsigned port;
+    const char *res_uri;
 
     /* This routine parses full URLs, if they match the server */
     proto = http_method(r);
@@ -664,15 +665,20 @@ const char *check_fulluri(request_rec *r, const char *uri)
         return uri;
 
     /* Save it for later use */
-    r->hostname = pstrdup(r->pool, host);
+    r->hostname = host;
     r->hostlen = plen + 3 + slash - host;
+    res_uri = uri + r->hostlen;
+    /* deal with "http://host" */
+    if (*res_uri == '\0') {
+	res_uri = "/";
+    }
 
     /* The easy cases first */
     if (!strcasecmp(host, r->server->server_hostname)) {
-        return (uri + r->hostlen);
+        return res_uri;
     }
     else if (!strcmp(host, inet_ntoa(r->connection->local_addr.sin_addr))) {
-        return (uri + r->hostlen);
+        return res_uri;
     }
     else {
         /* Now things get a bit trickier - check the IP address(es) of
@@ -685,7 +691,7 @@ const char *check_fulluri(request_rec *r, const char *uri)
             for (n = 0; hp->h_addr_list[n] != NULL; n++) {
                 if (r->connection->local_addr.sin_addr.s_addr ==
                     (((struct in_addr *) (hp->h_addr_list[n]))->s_addr)) {
-                    return (uri + r->hostlen);
+                    return res_uri;
                 }
             }
         }

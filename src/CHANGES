@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) Fix problems with absoluteURIs.  [Dean Gaudet,
+     Alvaro Martinez Echevarria <alvaro@lander.es>]
+
   *) Fix multiple UserDir problem introduced during 1.3b4-dev. [Dean Gaudet]
 
   *) ap_cpystrn() had an off-by-1 error.
