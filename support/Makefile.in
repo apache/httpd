@@ -5,7 +5,7 @@ targets  = $(PROGRAMS)
 
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES = \
-	../srclib/apr-util/libaprutil.la ../srclib/apr/$(LIBPRE)apr.a
+	../srclib/apr-util/libaprutil.la ../srclib/apr/$(LIBPRE)apr.la
 
 include $(top_srcdir)/build/rules.mk
 
