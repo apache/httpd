@@ -1165,7 +1165,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd,
     return NULL;
 }
 
-AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_ptr, 
+AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_ptr, 
                                                  const char *arg)
 {
     /* Prepend server_root to relative arg.

@@ -523,9 +523,9 @@ AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, void *, int);
  * @param struct_ptr pointer into a given type
  * @param arg The argument to the directive
  * @return An error string or NULL on success
- * @deffunc const char *ap_set_file_slot(cmd_parms *cmd, char *struct_ptr, const char *arg)
+ * @deffunc const char *ap_set_file_slot(cmd_parms *cmd, void *struct_ptr, const char *arg)
  */
-AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, const char *);
+AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *, void *, const char *);
 
 /**
  * For modules which need to read config files, open logs, etc. ...
