@@ -88,9 +88,19 @@ memmove \
 bzero \
 )
 
+AC_CHECK_LIB(nsl, gethostbyname)
+AC_CHECK_LIB(socket, socket)
+
 AC_CHECK_FUNCS(inet_addr inet_network, break, [
   AC_MSG_ERROR(inet_addr function not found)
 ])
+
+APACHE_INADDR_NONE
+
+case "`uname -sr`" in
+"SunOS 5"*)
+	CFLAGS="$CFLAGS -D_POSIX_PTHREAD_SEMANTICS";;
+esac
 
 AC_FUNC_SELECT_ARGTYPES
 

@@ -195,6 +195,9 @@ typedef int rlim_t;
 int gethostname(char *name, int namelen);
 #define HAVE_SYSLOG 1
 #define SYS_SIGLIST _sys_siglist
+#ifndef INADDR_NONE
+#define INADDR_NONE ((unsigned int) 0xffffffff)
+#endif
 
 #elif defined(IRIX)
 #undef HAVE_GMTOFF

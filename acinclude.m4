@@ -12,7 +12,7 @@ AC_DEFUN(APACHE_MODULE,[
   if test -d "$cwd/$srcdir/modules/standard" ; then
 dnl    MOD_SUBDIRS="$MOD_SUBDIRS $1"
     if test "$2" != "shared" -a "$2" != "yes"; then
-      libname=$(basename $1)
+      libname="`basename $1`"
       _extlib="libapachemod_${libname}.a"
       MOD_LTLIBS="$MOD_LTLIBS modules/standard/libapachemod_${libname}.la"
       MOD_LIBS="$MOD_LIBS standard/$_extlib"
@@ -137,4 +137,25 @@ define(APACHE_CHECK_THREADS, [dnl
       threads_result="Threads not found"
   done
 ] )
-        
+
+dnl
+dnl APACHE_INADDR_NONE
+dnl
+dnl checks for missing INADDR_NONE macro
+dnl
+AC_DEFUN(APACHE_INADDR_NONE,[
+  AC_TRY_COMPILE([
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+],[
+unsigned long foo = INADDR_NONE;
+],[
+    HAVE_INADDR_NONE=yes
+],[
+    HAVE_INADDR_NONE=no
+    AC_DEFINE(INADDR_NONE, ((unsigned int) 0xffffffff), [ ])
+])
+  AC_MSG_CHECKING(whether system defines INADDR_NONE)
+  AC_MSG_RESULT($HAVE_INADDR_NONE)
+])
