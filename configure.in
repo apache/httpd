@@ -41,7 +41,7 @@ dnl
 dnl Process command line arguments. This is done early in the process so the
 dnl user can get feedback quickly in case of an error.
 dnl
-APACHE_CHECK_DBM
+dnl ### need to move some of the arguments "up here"
 
 dnl ## Check for programs
 
@@ -177,11 +177,6 @@ dnl AP_LIB_DIRS specifies the additional libs from srclib/ that we need
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.
 AP_LIBS="srclib/pcre/libpcre.la srclib/apr-util/libaprutil.la"
 
-if test "$apache_need_sdbm" = "yes"; then
-  AP_LIB_DIRS="$AP_LIB_DIRS sdbm"
-  AP_LIBS="$AP_LIBS srclib/sdbm/libsdbm.la"
-  INCLUDES="$INCLUDES -I\$(top_srcdir)/srclib/sdbm"
-fi
 if test "$apache_need_expat" = "yes"; then
   AP_LIB_DIRS="$AP_LIB_DIRS expat-lite"
   AP_LIBS="$AP_LIBS srclib/expat-lite/libexpat.la"
