@@ -329,7 +329,6 @@ char *response_code_string (request_rec *r, int error_index)
 static inline void do_double_reverse (conn_rec *conn)
 {
     struct hostent *hptr;
-    char **haddr;
 
     if (conn->double_reverse) {
 	/* already done */
@@ -342,18 +341,17 @@ static inline void do_double_reverse (conn_rec *conn)
     }
     hptr = gethostbyname(conn->remote_host);
     if (hptr) {
+	char **haddr;
+
 	for (haddr = hptr->h_addr_list; *haddr; haddr++) {
 	    if (((struct in_addr *)(*haddr))->s_addr
 		== conn->remote_addr.sin_addr.s_addr) {
-		break;
+		conn->double_reverse = 1;
+		return;
 	    }
 	}
     }
-    if (!hptr || !*haddr) {
-	conn->double_reverse = -1;
-    } else {
-	conn->double_reverse = 1;
-    }
+    conn->double_reverse = -1;
 }
 
 API_EXPORT(const char *) get_remote_host(conn_rec *conn, void *dir_config, int type)
