@@ -519,7 +519,7 @@ typedef struct {
     apr_hash_t     *tTmpKeys;
     void           *pTmpKeys[SSL_TKPIDX_MAX];
     ssl_ds_table   *tPublicCert;
-    ssl_ds_table   *tPrivateKey;
+    apr_hash_t     *tPrivateKey;
 #ifdef SSL_EXPERIMENTAL_ENGINE
     char           *szCryptoDevice;
 #endif
