@@ -1,4 +1,5 @@
 # access.conf: Global access configuration
+# $Id: access.conf-dist,v 1.6 1996/08/20 13:18:55 paul Exp $
 # Online docs at http://www.apache.org/
 
 # This file defines server settings which affect which types of services

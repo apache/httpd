@@ -1,3 +1,5 @@
+$Id: CHANGES,v 1.4 1996/08/20 13:16:34 paul Exp $
+
 New features with this release, as extensions of the Apache functionality
 (see also more detailed CHANGES file) in the source directory. For more
 information, see http://www.apache.org/docs/1.1/
