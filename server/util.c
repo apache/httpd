@@ -564,20 +564,25 @@ AP_DECLARE(void) ap_no2slash(char *name)
  * *** See also directory_walk in src/main/http_request.c
 
  * examples:
+ *    /a/b, 0  ==> /  (true for all platforms)
  *    /a/b, 1  ==> /
  *    /a/b, 2  ==> /a/
  *    /a/b, 3  ==> /a/b/
  *    /a/b, 4  ==> /a/b/
+ *
+ *    c:/a/b 0 ==> /
+ *    c:/a/b 1 ==> c:/
+ *    c:/a/b 2 ==> c:/a/
+ *    c:/a/b 3 ==> c:/a/b
+ *    c:/a/b 4 ==> c:/a/b
  */
 AP_DECLARE(char *) ap_make_dirstr_prefix(char *d, const char *s, int n)
 {
-#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
-    if (!n) {
+    if (n < 1) {
         *d = '/';
         *++d = '\0';
         return (d);
     }
-#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
 
     for (;;) {
 	if (*s == '\0' || (*s == '/' && (--n) == 0)) {
