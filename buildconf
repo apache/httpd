@@ -140,6 +140,17 @@ if [ -f $apr_src_dir/build/ltmain.sh ]; then
     cp $apr_src_dir/build/ltmain.sh build
 fi
 
+# ensure that the mod_ssl expression parser sources are never regenerated
+# when running make
+echo fixing timestamps for mod_ssl sources
+cd modules/ssl
+touch ssl_expr_parse.y
+sleep 1
+touch ssl_expr_parse.c ssl_expr_parse.h ssl_expr_scan.l
+sleep 1
+touch ssl_expr_scan.c
+cd ../..
+
 echo rebuilding $pcre_configure
 (cd srclib/pcre && ${AUTOCONF:-autoconf})
 
@@ -150,6 +161,9 @@ ${AUTOHEADER:-autoheader} 2>&1 | grep -v "$cross_compile_warning"
 echo rebuilding configure
 rm -f config.cache
 ${AUTOCONF:-autoconf} 2>&1 | grep -v "$cross_compile_warning"
+
+# Remove autoconf 2.5x's cache directory
+rm -rf autom4te*.cache
 
 echo rebuilding rpm spec file
 ( VMMN=`build/get-version.sh mmn include/ap_mmn.h MODULE_MAGIC_NUMBER`

@@ -5,3 +5,6 @@ find_apr.m4
 find_apu.m4
 ltconfig
 ltmain.sh
+config.guess
+config.sub
+PrintPath
