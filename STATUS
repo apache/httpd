@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/09/10 13:45:12 $]
+Last modified at [$Date: 2001/09/10 15:18:01 $]
 
 Release:
 
@@ -34,6 +34,27 @@ on related projects:
 
 RELEASE SHOWSTOPPERS:
 
+    * Revert to a 1.3 behavior and allow a non-file request to travel
+      through the request cycle.  If any request gets to the core handler,
+      without a flag that this r->filename was tested by dir/file_walk,
+      then we 500 at the very end of the request cycle.  This provides
+      authors of older modules better compatibility, while still improving
+      the security and robustness of 2.0.  This does not remove the new
+      map_to_storage hook itself, but makes it optional for some cases.
+
+    * There is an observation that svn + ssl has a significant interaction
+      in dir_merge sections with the new location_walk optimization.  This
+      could reflect a bug in retrieving the cached location_walk, or some
+      other nasty mis-config.  Core dump post to httpd-dev;
+      Message-ID: <JLEGKKNELMHCJPNMOKHOIENKEIAA.striker@apache.org>
+
+    * There is an interesting problem with directory_walk, now that it is
+      optional (may be overridden by a map_to_storage hook.)  The change
+      of per_dir_default for a vhost switch doesn't happen until dir_walk.
+      This switch needs to be pushed out of directory_walk, perhaps the
+      burden is put on the 'switcher' of the ->server entry, such as 
+      mod_vhost_alias itself.
+
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
       order, but the second time, we don't sort them correctly.  Currently,
@@ -41,11 +62,12 @@ RELEASE SHOWSTOPPERS:
       modules/http/config2.m4 to work around this problem, it should moved
       back when this is fixed.    rbb
 
-    * The AddInputFilter and AddOutputFilter directives do not allow the
-      administrator to remove or reorder filters.  Once a filter is added
-      in a container, it is present in any subcontainers.  It can only be
-      added to the filter chain after any filters specified in enclosing
-      containers.
+    * The Add...Filter and Set...Filter directives do not allow the
+      administrator to order filters, beyond the order of filename (mime)
+      extensions.  It isn't clear if Set...Filter(s) should be inserted 
+      before or after the Add...Filter(s) which are ordered by sequence of
+      filename extensions.  Add...FilterByType will add to this quandry.
+      Some sort of resolution needs to be proposed, 
 
     * mod_dir should normally redirect ALL directory requests which do
       not include a trailing slash on the URI. However, if a "notes"
@@ -87,6 +109,12 @@ RELEASE SHOWSTOPPERS:
         as a compiled-in module (bad).
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Allow the DocumentRoot directive within <Location > scopes?  This
+      allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
+      by a <Directory /somepath/foo> to become simply 
+      <Location /foo/> DocumentRoot /somefile/foo (IMHO a bit more legible
+      and in-your-face.)  This proposed change would not depricate Alias.
 
     * add mod_gz to httpd-2.0 (in modules/experimental/)
       +1: Greg, Justin, Cliff, ben, Ken, Jeff
