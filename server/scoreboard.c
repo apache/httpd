@@ -275,7 +275,7 @@ AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid)
     return -1;
 }
 
-int ap_update_child_status(int child_num, int thread_num, int status, request_rec *r)
+AP_DECLARE(int) ap_update_child_status(int child_num, int thread_num, int status, request_rec *r)
 {
     int old_status;
     worker_score *ws;
