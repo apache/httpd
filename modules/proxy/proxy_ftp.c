@@ -872,8 +872,9 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el *c, char *url)
 	    ap_bclose(f);
 	    return HTTP_INTERNAL_SERVER_ERROR;
 	}
-        apr_get_port(&npport, APR_LOCAL, sock);
-        apr_get_ipaddr(&npaddr, APR_LOCAL, sock);
+        apr_get_sockaddr(&localsa, APR_LOCAL, sock);
+        apr_get_port(&npport, localsa);
+        apr_get_ipaddr(&npaddr, localsa);
 
 	if (apr_setsocketopt(dsock, APR_SO_REUSEADDR, one) != APR_SUCCESS) {
 #ifndef _OSD_POSIX /* BS2000 has this option "always on" */

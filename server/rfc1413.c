@@ -159,8 +159,9 @@ static int get_rfc1413(apr_socket_t *sock, apr_pool_t *p,
  */
     if (apr_connect(sock, destsa) != APR_SUCCESS)
         return -1;
-    apr_get_port(&sav_our_port, APR_LOCAL, sock);
-    apr_get_port(&sav_rmt_port, APR_REMOTE, sock);
+    apr_get_sockaddr(&localsa, APR_LOCAL, sock);
+    apr_get_port(&sav_our_port, localsa);
+    sav_rmt_port = RFC1413_PORT;
 
 /* send the data */
     buflen = apr_snprintf(buffer, sizeof(buffer), "%hu,%hu\r\n", sav_rmt_port,
