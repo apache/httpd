@@ -400,24 +400,23 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
 
 /**
  * Allocate a msg to send data
- * @param r         current request
+ * @param pool      pool to allocate from
  * @param ptr       data buffer
  * @param len       the length of allocated data buffer
  * @param msg       returned AJP message
  * @return          APR_SUCCESS or error
  */
-apr_status_t  ajp_alloc_data_msg(request_rec *r, char **ptr, apr_size_t *len,
-                                 ajp_msg_t **msg);
+apr_status_t  ajp_alloc_data_msg(apr_pool_t *pool, char **ptr,
+                                 apr_size_t *len, ajp_msg_t **msg);
 
 /**
  * Send the data message
  * @param sock      backend socket
- * @param r         current request
  * @param msg       AJP message to send
  * @param len       AJP message length      
  * @return          APR_SUCCESS or error
  */
-apr_status_t  ajp_send_data_msg(apr_socket_t *sock, request_rec  *r,
+apr_status_t  ajp_send_data_msg(apr_socket_t *sock,
                                 ajp_msg_t *msg, apr_size_t len);
 
 /**
