@@ -616,8 +616,10 @@ static dav_resource * dav_fs_get_resource(
 
     /* Create private resource context descriptor */
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
-    ctx->pool = r->pool;
     ctx->finfo = r->finfo;
+
+    /* ### this should go away */
+    ctx->pool = r->pool;
 
     /* Preserve case on OSes which fold canonical filenames */
 #if 0
@@ -647,6 +649,7 @@ static dav_resource * dav_fs_get_resource(
     resource->type = DAV_RESOURCE_TYPE_REGULAR;
     resource->info = ctx;
     resource->hooks = &dav_hooks_repository_fs;
+    resource->pool = r->pool;
 
     /* make sure the URI does not have a trailing "/" */
     len = strlen(r->uri);
@@ -719,6 +722,8 @@ static dav_resource * dav_fs_get_parent_resource(const dav_resource *resource)
 
     /* Create private resource context descriptor */
     parent_ctx = apr_pcalloc(ctx->pool, sizeof(*parent_ctx));
+
+    /* ### this should go away */
     parent_ctx->pool = ctx->pool;
 
     dirpath = ap_make_dirstr_parent(ctx->pool, ctx->pathname);
@@ -730,6 +735,7 @@ static dav_resource * dav_fs_get_parent_resource(const dav_resource *resource)
     parent_resource->info = parent_ctx;
     parent_resource->collection = 1;
     parent_resource->hooks = &dav_hooks_repository_fs;
+    parent_resource->pool = resource->pool;
 
     if (resource->uri != NULL) {
         char *uri = ap_make_dirstr_parent(ctx->pool, resource->uri);
@@ -1604,6 +1610,7 @@ static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
     /* ### zero out versioned, working, baselined? */
 
     fsctx.res1 = *params->root;
+    fsctx.res1.pool = params->pool;
 
     fsctx.res1.info = &fsctx.info1;
     fsctx.info1 = *params->root->info;
@@ -1625,6 +1632,7 @@ static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
 	fsctx.res2.exists = 0;
 	fsctx.res2.collection = 0;
         fsctx.res2.uri = NULL;          /* we don't track this */
+        fsctx.res2.pool = params->pool;
 
 	fsctx.res2.info = &fsctx.info2;
 	fsctx.info2 = *root_dst->info;
