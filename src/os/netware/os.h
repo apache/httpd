@@ -115,6 +115,9 @@ typedef int gid_t;
 #define getpid GetThreadID
 /* Netware doesn't have symlinks so S_ISLNK is always false */
 #define S_ISLNK(m) 0
+/* Netware doesn't have isnan,isinf so they always return false */
+#define isnan(m) 0
+#define isinf(m) 0
 #define lstat(x, y) stat(x, y)
 #define strcasecmp(s1, s2) stricmp(s1, s2)
 #define strncasecmp(s1, s2, n) strnicmp(s1, s2, n)
