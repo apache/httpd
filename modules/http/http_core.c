@@ -3384,6 +3384,13 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
         }
         if (fd) {
             apr_hdtr_t hdtr;
+#if APR_HAS_SENDFILE
+/*
+ * TODO: fix the call to send_the_file somehow to remove the need for
+ * the apr_hdtr_t paramater if !APR_HAS_SENDFILE. The way it is
+ * now, we have to define a dummy apr_hdtr_t typedef and then
+ * wrap sections anyway. -- jj
+ */
             memset(&hdtr, '\0', sizeof(hdtr));
             if (nvec) {
                 hdtr.numheaders = nvec;
@@ -3393,6 +3400,7 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 hdtr.numtrailers = nvec_trailers;
                 hdtr.trailers = vec_trailers;
             }
+#endif
             rv = send_the_file(c, fd, &hdtr, foffset, flen, &bytes_sent);
         }
         else {
