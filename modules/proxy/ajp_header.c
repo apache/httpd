@@ -712,7 +712,7 @@ apr_status_t  ajp_send_data_msg(apr_socket_t *sock, request_rec  *r,
     msg->len += len + 2; /* + 1 XXXX where is '\0' */
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-               "ajp_send_data_msg: sending %d", len);
+               "ajp_send_data_msg: sending %" APR_SIZE_T_FMT, len);
 
     rc = ajp_ilink_send(sock, msg);
     if (rc != APR_SUCCESS) {

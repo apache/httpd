@@ -38,8 +38,9 @@ apr_status_t ajp_msg_dump(ajp_msg_t *msg, char *err)
         len = 1024;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                  "ajp_msg_dump(): %s pos=%d len=%d max=%d",
-                  err, msg->pos, msg->len, AJP_MSG_BUFFER_SZ);
+                 "ajp_msg_dump(): %s pos=%" APR_SIZE_T_FMT 
+                 " len=%" APR_SIZE_T_FMT " max=%d",
+                 err, msg->pos, msg->len, AJP_MSG_BUFFER_SZ);
 
     for (i = 0; i < len; i += 16) {
         current = line;
@@ -68,7 +69,7 @@ apr_status_t ajp_msg_dump(ajp_msg_t *msg, char *err)
         *current++ = '\0';
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                      "ajp_msg_dump(): %.4x    %s",
+                      "ajp_msg_dump(): %.4lx    %s",
                       i, line);
     }
     
@@ -103,8 +104,9 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
 
     if (msglen > AJP_MSG_BUFFER_SZ) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_check_msg_header() incoming message is too big %d, max is %d",
-                      msglen, AJP_MSG_BUFFER_SZ);
+                     "ajp_check_msg_header() incoming message is "
+                     "too big %" APR_SIZE_T_FMT ", max is %d",
+                     msglen, AJP_MSG_BUFFER_SZ);
         return AJP_ETOBIG;
     }
 
@@ -154,6 +156,15 @@ apr_status_t ajp_msg_end(ajp_msg_t *msg)
     return APR_SUCCESS;
 }
 
+static APR_INLINE int ajp_log_overflow(ajp_msg_t *msg, const char *context)
+{
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+                 "%s(): BufferOverflowException %" APR_SIZE_T_FMT 
+                 " %" APR_SIZE_T_FMT,
+                 context, msg->pos, msg->len);
+    return AJP_EOVERFLOW;
+}
+
 /**
  * Add an unsigned 32bits value to AJP Message
  *
@@ -166,10 +177,7 @@ apr_status_t ajp_msg_append_uint32(ajp_msg_t *msg, apr_uint32_t value)
     apr_size_t len = msg->len;
 
     if ((len + 4) > AJP_MSG_BUFFER_SZ) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_append_uint32(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_append_uint32");
     }
 
     msg->buf[len]     = (apr_byte_t)((value >> 24) & 0xFF);
@@ -194,10 +202,7 @@ apr_status_t ajp_msg_append_uint16(ajp_msg_t *msg, apr_uint16_t value)
     apr_size_t len = msg->len;
 
     if ((len + 2) > AJP_MSG_BUFFER_SZ) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_append_uint16(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_append_uint16");
     }
 
     msg->buf[len]     = (apr_byte_t)((value >> 8) & 0xFF);
@@ -220,10 +225,7 @@ apr_status_t ajp_msg_append_uint8(ajp_msg_t *msg, apr_byte_t value)
     apr_size_t len = msg->len;
 
     if ((len + 1) > AJP_MSG_BUFFER_SZ) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_append_uint8(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_append_uint8");
     }
 
     msg->buf[len] = value;
@@ -252,10 +254,7 @@ apr_status_t ajp_msg_append_string_ex(ajp_msg_t *msg, const char *value,
 
     len = strlen(value);
     if ((msg->len + len + 2) > AJP_MSG_BUFFER_SZ) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-            "ajp_msg_append_cvt_string(): BufferOverflowException %d %d",
-            msg->pos, msg->len);
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_append_cvt_string");
     }
 
     /* ignore error - we checked once */
@@ -288,10 +287,7 @@ apr_status_t ajp_msg_append_bytes(ajp_msg_t *msg, const apr_byte_t *value,
     }
 
     if ((msg->len + valuelen) > AJP_MSG_BUFFER_SZ) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_append_bytes(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_append_bytes");
     }
 
     /* We checked for space !!  */
@@ -313,11 +309,7 @@ apr_status_t ajp_msg_get_uint32(ajp_msg_t *msg, apr_uint32_t *rvalue)
     apr_uint32_t value;
 
     if ((msg->pos + 3) > msg->len) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_get_long(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_get_uint32");
     }
 
     value  = ((msg->buf[(msg->pos++)] & 0xFF) << 24);
@@ -342,11 +334,7 @@ apr_status_t ajp_msg_get_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
     apr_uint16_t value;
     
     if ((msg->pos + 1) > msg->len) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_get_int(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_get_uint16");
     }
 
     value  = ((msg->buf[(msg->pos++)] & 0xFF) << 8);
@@ -369,11 +357,7 @@ apr_status_t ajp_msg_peek_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
     apr_uint16_t value;
 
     if ((msg->pos + 1) > msg->len) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_peek_int(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_peek_uint16");
     }
     
     value = ((msg->buf[(msg->pos)] & 0xFF) << 8);
@@ -394,11 +378,7 @@ apr_status_t ajp_msg_peek_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
 apr_status_t ajp_msg_peek_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
 {
     if (msg->pos > msg->len) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_peek_uint8(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_peek_uint8");
     }
     
     *rvalue = msg->buf[msg->pos];
@@ -416,11 +396,7 @@ apr_status_t ajp_msg_get_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
 {
 
     if (msg->pos > msg->len) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_get_uint8(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_get_uint8");
     }
     
     *rvalue = msg->buf[msg->pos++];
@@ -445,11 +421,7 @@ apr_status_t ajp_msg_get_string(ajp_msg_t *msg, char **rvalue)
     start = msg->pos;
 
     if ((status != APR_SUCCESS) || (size + start > AJP_MSG_BUFFER_SZ)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_get_string(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_get_string");
     }
 
     msg->pos += (apr_size_t)size;
@@ -480,10 +452,7 @@ apr_status_t ajp_msg_get_bytes(ajp_msg_t *msg, apr_byte_t **rvalue,
     start = msg->pos;
 
     if ((status != APR_SUCCESS) || (size + start > AJP_MSG_BUFFER_SZ)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_get_bytes(): BufferOverflowException %d %d",
-                      msg->pos, msg->len);
-        return AJP_EOVERFLOW;
+        return ajp_log_overflow(msg, "ajp_msg_get_bytes");
     }
     msg->pos += (apr_size_t)size;   /* only bytes, no trailer */
 
@@ -545,14 +514,15 @@ apr_status_t ajp_msg_copy(ajp_msg_t *smsg, ajp_msg_t *dmsg)
 {
     if (dmsg == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_msg_copy(): destination msg is null");
+                     "ajp_msg_copy(): destination msg is null");
         return AJP_EINVAL;
     }
     
     if (smsg->len > AJP_MSG_BUFFER_SZ) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-            "ajp_msg_copy(): destination buffer too small %d, max size is %d",
-            smsg->len, AJP_MSG_BUFFER_SZ);
+                     "ajp_msg_copy(): destination buffer too "
+                     "small %" APR_SIZE_T_FMT ", max size is %d",
+                     smsg->len, AJP_MSG_BUFFER_SZ);
         return  AJP_ETOSMALL;
     }
 
