@@ -843,7 +843,12 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     return ret; 
 } 
 
-
+static apr_status_t close_unix_socket(void *thefd)
+{
+    int fd = (int)thefd;
+    
+    return close(fd);
+}
 
 /**************************************************************** 
  * 
@@ -926,7 +931,10 @@ static int cgid_handler(request_rec *r)
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
             return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno, 
                                    "unable to create socket to cgi daemon");
-    } 
+    }
+    apr_pool_cleanup_register(r->pool, (void *)sd, close_unix_socket,
+                              apr_pool_cleanup_null);
+    
     memset(&unix_addr, 0, sizeof(unix_addr));
     unix_addr.sun_family = AF_UNIX;
     strcpy(unix_addr.sun_path, conf->sockname);
@@ -938,8 +946,10 @@ static int cgid_handler(request_rec *r)
 
     send_req(sd, r, argv0, env, CGI_REQ); 
 
-    /* We are putting the tempsock variable into a file so that we can use
-     * a pipe bucket to send the data to the client.
+    /* We are putting the socket discriptor into an apr_file_t so that we can
+     * use a pipe bucket to send the data to the client.
+     * Note that this does not register a cleanup for the socket.  We did
+     * that explicitly right after we created the socket.
      */
     apr_os_file_put(&tempsock, &sd, 0, r->pool);
 
@@ -1033,7 +1043,13 @@ static int cgid_handler(request_rec *r)
             return HTTP_MOVED_TEMPORARILY; 
         } 
 
-        if (!r->header_only) { 
+        if (!r->header_only) {
+            /* Passing our socket down the filter chain in a pipe bucket
+             * gives up the responsibility of closing the socket, so
+             * get rid of the cleanup.
+             */
+            apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
+
             bb = apr_brigade_create(r->pool);
             b = apr_bucket_pipe_create(tempsock);
             APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -1044,6 +1060,12 @@ static int cgid_handler(request_rec *r)
     } 
 
     if (nph) {
+        /* Passing our socket down the filter chain in a pipe bucket
+         * gives up the responsibility of closing the socket, so
+         * get rid of the cleanup.
+         */
+        apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
+
         bb = apr_brigade_create(r->pool);
         b = apr_bucket_pipe_create(tempsock);
         APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -1051,8 +1073,6 @@ static int cgid_handler(request_rec *r)
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
     } 
-
-    apr_file_close(tempsock);
 
     return OK; /* NOT r->status, even if it has changed. */ 
 } 
@@ -1188,7 +1208,9 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
             return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, 0, 
                                    "unable to create socket to cgi daemon");
     }
-
+    apr_pool_cleanup_register(r->pool, (void *)sd, close_unix_socket,
+                              apr_pool_cleanup_null);
+    
     memset(&unix_addr, 0, sizeof(unix_addr));
     unix_addr.sun_family = AF_UNIX;
     strcpy(unix_addr.sun_path, conf->sockname);
@@ -1205,8 +1227,10 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
 
     send_req(sd, r, command, env, SSI_REQ); 
 
-    /* We are putting the tempsock variable into a file so that we can use
-     * a pipe bucket to send the data to the client.
+    /* We are putting the socket discriptor into an apr_file_t so that we can
+     * use a pipe bucket to send the data to the client.
+     * Note that this does not register a cleanup for the socket.  We did
+     * that explicitly right after we created the socket.
      */
     apr_os_file_put(&tempsock, &sd, 0, r->pool);
 
@@ -1246,6 +1270,12 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     } 
 
     if (!r->header_only) { 
+        /* Passing our socket down the filter chain in a pipe bucket
+         * gives up the responsibility of closing the socket, so
+         * get rid of the cleanup.
+         */
+        apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
+
         bcgi = apr_brigade_create(r->pool);
         b    = apr_bucket_pipe_create(tempsock);
         APR_BRIGADE_INSERT_TAIL(bcgi, b);

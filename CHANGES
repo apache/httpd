@@ -1,5 +1,9 @@
 Changes with Apache 2.0.31-dev
 
+  *) Fix some unix socket descriptor leaks in the handler side of
+     mod_cgid (the part that runs in the server process).  Whack a
+     silly "close(-1)" in the handler too.  [Jeff Trawick]
+
   *) Change the pre_mpm hook to return a value, so that scoreboard
      init errors percolate up to code that knows how to exit 
      cleanly.  This required bump to the MMN.  [Jeff Trawick]
