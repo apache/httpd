@@ -264,7 +264,7 @@ int main(int argc, char *argv[])
     else if (argc != 4)
 	usage();
 
-    if (apr_file_mktemp(&tfp, tn, cntxt) != APR_SUCCESS) {
+    if (apr_file_mktemp(&tfp, tn, 0, cntxt) != APR_SUCCESS) {
 	fprintf(stderr, "Could not open temp file.\n");
 	exit(1);
     }
