@@ -1,3 +1,4 @@
+
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -72,18 +73,20 @@
 #include "mpm_default.h"
 #include "mpm_winnt.h"
 #include "mpm_common.h"
+#include "scoreboard.h"
 
 typedef HANDLE thread;
 
 /*
  * Definitions of WINNT MPM specific config globals
  */
+
 static int workers_may_exit = 0;
 static int shutdown_in_progress = 0;
 static unsigned int g_blocked_threads = 0;
 
 static char *ap_pid_fname = NULL;
-static int ap_threads_per_child = 0;
+int ap_threads_per_child = 0;
 
 static int max_requests_per_child = 0;
 static HANDLE shutdown_event;	/* used to signal shutdown to parent */
@@ -118,6 +121,15 @@ static HANDLE maintenance_event;
 apr_lock_t *start_mutex;
 DWORD my_pid;
 DWORD parent_pid;
+
+/* ap_get_max_daemons and ap_my_generation are used by the scoreboard
+ * code
+ */
+ap_generation_t volatile ap_my_generation=0; /* Used by the scoreboard */
+AP_DECLARE(int) ap_get_max_daemons(void)
+{
+    return 1;
+}
 
 /* This is the helper code to resolve late bound entry points 
  * missing from one or more releases of the Win32 API...
@@ -1216,6 +1228,10 @@ static void child_main()
     int cld;
     apr_pool_t *pchild;
 
+    /* Set up the scoreboard. The scoreboard in this MPM only applies to the
+     * child process and is not shared across processes
+     */
+    ap_create_scoreboard(pconf, SB_NOT_SHARED);
 
     /* This is the child process or we are running in single process
      * mode.

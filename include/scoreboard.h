@@ -139,6 +139,14 @@ typedef unsigned vtime_t;
  */
 typedef int ap_generation_t;
 
+/* Is the scoreboard shared between processes or not? 
+ * Set by the MPM when the scoreboard is created.
+ */
+typedef enum {
+    SB_SHARED = 1,
+    SB_NOT_SHARED = 2
+} ap_scoreboard_e;
+
 /* stuff which is thread/process specific */
 typedef struct {
 #ifdef OPTIMIZE_TIMEOUTS
@@ -168,6 +176,7 @@ typedef struct {
 } short_score;
 
 typedef struct {
+    ap_scoreboard_e sb_type;
     ap_generation_t running_generation;	/* the generation of children which
                                          * should still be serving requests. */
 } global_score;
@@ -211,12 +220,13 @@ typedef struct {
 #endif
 
 AP_DECLARE(int) ap_exists_scoreboard_image(void);
+AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e t);
 void reinit_scoreboard(apr_pool_t *p);
 apr_status_t ap_cleanup_shared_mem(void *d);
 
 AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p);
 
-apr_inline void ap_sync_scoreboard_image(void);
+void ap_sync_scoreboard_image(void);
 void increment_counts(int child_num, int thread_num, request_rec *r);
 void update_scoreboard_global(void);
 AP_DECLARE(int) find_child_by_pid(apr_proc_t *pid);
