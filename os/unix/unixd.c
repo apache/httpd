@@ -213,10 +213,14 @@ AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp)
         return;
     }
 
-    /* XXX - apr_stat is incapable of checking suid bits (grumble) */
-    /* if ((wrapper.filetype & S_ISUID) && wrapper.user == 0) { */
+/* since APR 0.9.5 */
+#ifdef APR_USETID
+    if ((wrapper.protection & APR_USETID) && wrapper.user == 0) {
+#endif
         unixd_config.suexec_enabled = 1;
-    /* } */
+#ifdef APR_USETID
+    }
+#endif
 }
 
 
