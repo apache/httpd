@@ -6,11 +6,33 @@
 
 <BODY>
 <!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">
-Known bugs/problems with the<BR>Apache HTTP Server</H1>
+<H1>Known Bugs in Apache</H1>
+
+The most up-to-date resource for bug tracking and information is the
+<A HREF="http://www.apache.org/bugdb.cgi">Apache bug database</A>.
+All existing bugs will be noted there.  Below is a synopsis of
+significant outstanding bugs at release time.
 
 <P>See Also: <A HREF="compat_notes.html">Compatibility notes</A></P>
 <HR>
+
+<H2>Version 1.2</H2>
+
+<OL>
+	<LI>hard_timeout() for request reads uses incorrect logic, and
+ends up waiting for an initial request read for the default "timeout"
+number of seconds, 1200, yet only the "KeepAliveTimeout" number of
+seconds on keepalive connections.  
+
+	<LI>mod_info output is not displaying current configuration as
+it should.
+
+	<LI>Invalid commands in .htaccess files may cause segmentation faults.
+
+	<LI>There may still be compilation problem with http_bprintf.c on AIX - if
+someone can confirm/deny this it would be appreciated.
+
+</OL>
 
 <H2>Version 1.1.1</H2>
 
@@ -24,7 +46,7 @@ isalpha() check creates a security hole, consider the DNS map
 "allow from 2.2.2" it will allow 1.1.1.1 in (unless -DMAXIMUM_DNS).
 -- which is bad because it breaks people who understand double reverse
 lookup and are trying to avoid it by using only ip addresses on
-allow/deny statements. - reported by Dean Gaudet
+allow/deny statements. - reported by Dean Gaudet, fixed in 1.2.
 
 </OL>
 
