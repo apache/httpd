@@ -43,11 +43,15 @@
 <!ELEMENT p %Inline;>
 <!ATTLIST p class CDATA  #IMPLIED>
 
+<!-- the indent element is used to indent code examples. example/indent and
+     code/indent is now replacing pre. -->
+<!ELEMENT indent ( #PCDATA | indent | %inlinetags; )*>
+
 <!ELEMENT em %Inline;>
 
 <!ELEMENT strong %Inline;>
 
-<!ELEMENT code %Inline;>
+<!ELEMENT code (#PCDATA | indent | %inlinetags;)*>
 
 <!ELEMENT cite %Inline;>
 
@@ -65,7 +69,9 @@
 
 <!ELEMENT br EMPTY>
 
-<!ELEMENT example (#PCDATA | title | %inlinetags; | %blocktags;)*>
+<!-- Note: The example and note elements should not have more then one
+           title. -->
+<!ELEMENT example (#PCDATA | title | indent | %inlinetags; | %blocktags;)*>
 
 <!ELEMENT note (#PCDATA | title | %inlinetags; | %blocktags;)*>
 <!ATTLIST note type CDATA #IMPLIED>
