@@ -2227,6 +2227,8 @@ static int use_range_x(request_rec *r)
 }
 
 #define BYTERANGE_FMT "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT
+#define PARTITION_ERR_FMT "apr_brigade_partition() failed " \
+                          "[%" APR_OFF_T_FMT ",%" APR_OFF_T_FMT "]"
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     ap_filter_t *f,
@@ -2320,10 +2322,23 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
 
         if (rv == -1) {
             continue;
-        }        
-        else {
-            found = 1;
         }
+
+        /* these calls to apr_brigade_partition() should theoretically
+         * never fail because of the above call to apr_brigade_length(),
+         * but what the heck, we'll check for an error anyway */
+        if ((rv = apr_brigade_partition(bb, range_start, &ec)) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          PARTITION_ERR_FMT, range_start, clength);
+            continue;
+        }
+        if ((rv = apr_brigade_partition(bb, range_end+1, &e2)) != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          PARTITION_ERR_FMT, range_end+1, clength);
+            continue;
+        }
+        
+        found = 1;
 
         if (ctx->num_ranges > 1) {
             char *ts;
@@ -2339,10 +2354,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
             APR_BRIGADE_INSERT_TAIL(bsend, e);
         }
         
-        e = apr_brigade_partition(bb, range_start);
-        e2 = apr_brigade_partition(bb, range_end + 1);
-        
-        ec = e;
         do {
             apr_bucket *foo;
             const char *str;
