@@ -211,8 +211,9 @@
 /* default maximum number of internal redirects */
 #define REWRITE_REDIRECT_LIMIT 10
 
-/* for rewrite lock file */
-#define REWRITELOCK_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
+/* for rewrite log file */
+#define REWRITELOG_MODE  ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
+#define REWRITELOG_FLAGS ( APR_WRITE | APR_APPEND | APR_CREATE )
 
 /* max line length (incl.\n) in text rewrite maps */
 #ifndef REWRITE_MAX_TXT_MAP_LINE
@@ -386,9 +387,6 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
     const char *fname;
     apr_status_t rc;
     piped_log *pl;
-    int rewritelog_flags = ( APR_WRITE | APR_APPEND | APR_CREATE );
-    apr_fileperms_t rewritelog_mode = ( APR_UREAD | APR_UWRITE |
-                                        APR_GREAD | APR_WREAD );
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
@@ -420,7 +418,7 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
             exit(1);
         }
         if ((rc = apr_file_open(&conf->rewritelogfp, fname,
-                                rewritelog_flags, rewritelog_mode, p))
+                                REWRITELOG_FLAGS, REWRITELOG_MODE, p))
                 != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                          "mod_rewrite: could not open RewriteLog "
