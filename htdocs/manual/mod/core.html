@@ -836,6 +836,9 @@ Execution of CGI scripts is permitted.
 <dd>
 <!--%plaintext &lt;?INDEX {\tt FollowSymLinks} option&gt; -->
 The server will follow symbolic links in this directory.
+<b>Note</b>: even though the server follows the symlink it does <i>not</i>
+change the pathname used to match against <code>&lt;Directory&gt;</code>
+sections.
 <dt>Includes
 <dd>
 <!--%plaintext &lt;?INDEX {\tt Includes} option&gt; -->
