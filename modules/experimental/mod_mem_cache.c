@@ -348,33 +348,26 @@ static apr_status_t decrement_refcount(void *arg)
             cache_remove(sconf->cache_cache, obj);
             obj->cleanup = 1;
         }
-        if (sconf->lock) {
-            apr_thread_mutex_unlock(sconf->lock);
-        }
+    }
+    else if (sconf->lock) {
+        apr_thread_mutex_lock(sconf->lock);
     }
 
     /* Cleanup the cache object */
 #ifdef USE_ATOMICS
-    if (!apr_atomic_dec32(&obj->refcount)) {
-        if (obj->cleanup) {
-            cleanup_cache_object(obj);
-        }
-    }
+    if (!apr_atomic_dec32(&obj->refcount) && (obj->cleanup)) {
 #else
-    if (sconf->lock) {
-        apr_thread_mutex_lock(sconf->lock);
-    }
     obj->refcount--;
     /* If the object is marked for cleanup and the refcount
      * has dropped to zero, cleanup the object
      */
     if ((obj->cleanup) && (!obj->refcount)) {
+#endif
         cleanup_cache_object(obj);
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
-#endif
     return APR_SUCCESS;
 }
 static apr_status_t cleanup_cache_mem(void *sconfv)
@@ -739,35 +732,25 @@ static int remove_url(const char *type, const char *key)
   
     obj = cache_find(sconf->cache_cache, key);       
     if (obj) {
-        mem_cache_object_t *mobj;
         cache_remove(sconf->cache_cache, obj);
-        mobj = (mem_cache_object_t *) obj->vobj;
 
 #ifdef USE_ATOMICS
         /* Refcount increment in this case MUST be made under 
          * protection of the lock 
          */
         apr_atomic_inc32(&obj->refcount);
+        obj->cleanup = 1;
+        if (!apr_atomic_dec32(&obj->refcount)) {
 #else
+        obj->cleanup = 1;
         if (!obj->refcount) {
-            cleanup_cache_object(obj);
-            obj = NULL;
-        }
 #endif
-        if (obj) {
-            obj->cleanup = 1;
+            cleanup_cache_object(obj);
         }
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
-#ifdef USE_ATOMICS
-    if (obj) {
-        if (!apr_atomic_dec32(&obj->refcount)) {
-            cleanup_cache_object(obj);
-        }
-    }
-#endif
     return OK;
 }
 
