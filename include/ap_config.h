@@ -246,7 +246,7 @@
 
 /**
  * Hook an optional hook. Unlike static hooks, this uses a macro instead of a
- * function
+ * function.
  */
 #define AP_OPTIONAL_HOOK(name,fn,pre,succ,order) \
         APR_OPTIONAL_HOOK(ap,name,fn,pre,succ,order)

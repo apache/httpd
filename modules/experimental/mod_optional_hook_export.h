@@ -55,7 +55,7 @@
 #ifndef MOD_OPTIONAL_HOOK_EXPORT_H
 #define MOD_OPTOPNAL_HOOK_EXPORT_H
 
-#include "apr_optional_hooks.h"
+#include "ap_config.h"
 
 AP_DECLARE_HOOK(int,optional_hook_test,(const char *))
 
