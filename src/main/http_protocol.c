@@ -2415,6 +2415,9 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	case BAD_GATEWAY:
 	    ap_bputs("The proxy server received an invalid\015\012", fd);
 	    ap_bputs("response from an upstream server.<P>\015\012", fd);
+	    if ((error_notes = ap_table_get(r->notes, "error-notes")) != NULL) {
+		ap_bvputs(fd, error_notes, "<P>\n", NULL);
+	    }
 	    break;
 	case VARIANT_ALSO_VARIES:
 	    ap_bvputs(fd, "A variant for the requested resource\n<PRE>\n",
