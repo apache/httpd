@@ -138,29 +138,22 @@ typedef struct deflate_filter_config_t
 /* Outputs a long in LSB order to the given file
  * only the bottom 4 bits are required for the deflate file format.
  */
-static void putLong(char *string, unsigned long x)
+static void putLong(unsigned char *string, unsigned long x)
 {
-    int n;
-    for (n = 0; n < 4; n++) {
-        string[n] = (int) (x & 0xff);
-        x >>= 8;
-    }
+    string[0] = (unsigned char)(x & 0xff);
+    string[1] = (unsigned char)((x & 0xff00) >> 8);
+    string[2] = (unsigned char)((x & 0xff0000) >> 16);
+    string[3] = (unsigned char)((x & 0xff000000) >> 24);
 }
 
 /* Inputs a string and returns a long.
  */
 static unsigned long getLong(unsigned char *string)
 {
-    int n = 3;
-    unsigned long x = 0;
-
-    while (n) {
-        x |= (unsigned long)(string[n--]) & 0xff;
-        x <<= 8;
-    }
-
-    x |= (unsigned long)(string[0]) & 0xff;
-    return x;
+    return ((unsigned long)string[0])
+          | (((unsigned long)string[1]) << 8)
+          | (((unsigned long)string[2]) << 16)
+          | (((unsigned long)string[3]) << 24);
 }
 
 static void *create_deflate_server_config(apr_pool_t *p, server_rec *s)
