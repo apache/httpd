@@ -404,7 +404,7 @@ int main(int argc, const char * const argv[])
 	ap_hook_deregister_all();
 	apr_clear_pool(pconf);
 	for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
-		ap_register_hooks(*mod);
+		ap_register_hooks(*mod, pconf);
 	}
         /* This is a hack until we finish the code so that it only reads
          * the config file once and just operates on the tree already in

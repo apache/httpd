@@ -529,10 +529,12 @@ AP_DECLARE(const char *) ap_server_root_relative(apr_pool_t *p, const char *fnam
 
 /**
  * Add a module to the server
- * @param m the module structure of the module to add
- * @deffunc void ap_add_module(module *m)
+ * @param m The module structure of the module to add
+ * @param p The pool of the same lifetime as the module
+ * @deffunc void ap_add_module(module *m, apr_pool_t *p)
  */
-AP_DECLARE(void) ap_add_module(module *m);
+AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p);
+
 /**
  * Remove a module from the server.  There are some caveats:
  * when the module is removed, its slot is lost so all the current
@@ -545,10 +547,11 @@ AP_DECLARE(void) ap_add_module(module *m);
 AP_DECLARE(void) ap_remove_module(module *m);
 /**
  * Add a module to the chained modules list and the list of loaded modules
- * @param m the module structure of the module to add
- * @deffunc void ap_add_loaded_module(module *m)
+ * @param m The module structure of the module to add
+ * @param p The pool with the same lifetime as the module
+ * @deffunc void ap_add_loaded_module(module *m, apr_pool_t *p)
  */
-AP_DECLARE(void) ap_add_loaded_module(module *mod);
+AP_DECLARE(void) ap_add_loaded_module(module *mod, apr_pool_t *p);
 /**
  * Remove a module fromthe chained modules list and the list of loaded modules
  * @param m the module structure of the module to remove
@@ -559,15 +562,17 @@ AP_DECLARE(void) ap_remove_loaded_module(module *mod);
  * Add a module to the list of loaded module based on the name of the
  * module
  * @param name The name of the module
+ * @param p The pool valid for the lifetime of the module
  * @return 1 on success, 0 on failure
- * @deffunc int ap_add_named_module(const char *name)
+ * @deffunc int ap_add_named_module(const char *name, apr_pool_t *p)
  */
-AP_DECLARE(int) ap_add_named_module(const char *name);
+AP_DECLARE(int) ap_add_named_module(const char *name, apr_pool_t *p);
 /**
  * Clear all of the modules from the loaded module list 
- * @deffunc void ap_add_named_module(void)
+ * @param p The pool valid for the lifetime of the modules
+ * @deffunc void ap_add_named_module(apr_pool_t *p)
  */
-AP_DECLARE(void) ap_clear_module_list(void);
+AP_DECLARE(void) ap_clear_module_list(apr_pool_t *p);
 /**
  * Find the name of the specified module
  * @param m The module to get the name for
@@ -800,9 +805,10 @@ AP_DECLARE(void) ap_run_rewrite_args(process_rec *process);
 /**
  * Run the register hooks function for a specified module
  * @param m The module to run the register hooks function fo
- * @deffunc void ap_register_hooks(module *m)
+ * @param p The pool valid for the lifetime of the module
+ * @deffunc void ap_register_hooks(module *m, apr_pool_t *p)
  */
-AP_DECLARE(void) ap_register_hooks(module *m);
+AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p);
 
 /**
  * Setup all virtual hosts

@@ -1903,7 +1903,7 @@ static const char *add_module_command(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    if (!ap_add_named_module(arg)) {
+    if (!ap_add_named_module(arg, cmd->pool)) {
 	return apr_pstrcat(cmd->pool, "Cannot add module via name '", arg, 
 			  "': not in list of loaded modules", NULL);
     }
@@ -1918,7 +1918,7 @@ static const char *clear_module_list_command(cmd_parms *cmd, void *dummy)
         return err;
     }
 
-    ap_clear_module_list();
+    ap_clear_module_list(cmd->pool);
     *(ap_directive_t **)dummy = NULL;
     return NULL;
 }
