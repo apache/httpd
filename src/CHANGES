@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) Add support to suexec wrapper program for mod_unique_id's UNIQUE_ID
+     variable to provide this one to suexec'd CGIs, too.
+	 [Ralf S. Engelschall] PR#1284
+
   *) New support tool: src/support/split-logfile, a sample Perl script which
      splits up a combined access log into separate files based on the
      name of the virtual host (listed first in the log records by "%v").
