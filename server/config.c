@@ -144,7 +144,7 @@ AP_DECLARE(int) ap_hook_post_config(ap_HOOK_post_config_t *pf,
     ap_LINK_post_config_t *pHook;
 
     if (!_hooks.link_post_config) {
-        _hooks.link_post_config = apr_array_make(apr_global_hook_pool, 1,
+        _hooks.link_post_config = apr_array_make(apr_hook_global_pool, 1,
                                                  sizeof(ap_LINK_post_config_t));
         apr_hook_sort_register("post_config", &_hooks.link_post_config);
     }
@@ -154,10 +154,10 @@ AP_DECLARE(int) ap_hook_post_config(ap_HOOK_post_config_t *pf,
     pHook->aszPredecessors = aszPre;
     pHook->aszSuccessors = aszSucc;
     pHook->nOrder = nOrder;
-    pHook->szName = apr_current_hooking_module;
+    pHook->szName = apr_hook_debug_current;
 
-    if (apr_debug_module_hooks)
-        apr_show_hook("post_config", aszPre, aszSucc);
+    if (apr_hook_debug_enabled)
+        apr_hook_debug_show("post_config", aszPre, aszSucc);
 }
 
 AP_DECLARE(apr_array_header_t *) ap_hook_get_post_config(void) {
@@ -431,10 +431,10 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)
     if (m->register_hooks) {
         if (getenv("SHOW_HOOKS")) {
             printf("Registering hooks for %s\n", m->name);
-            apr_debug_module_hooks = 1;
+            apr_hook_debug_enabled = 1;
         }
 
-        apr_current_hooking_module = m->name;
+        apr_hook_debug_current = m->name;
         m->register_hooks(p);
     }
 }
@@ -610,7 +610,7 @@ AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
     module **m;
     module **m2;
 
-    apr_global_hook_pool=process->pconf;
+    apr_hook_global_pool=process->pconf;
 
     /*
      *  Initialise total_modules variable and module indices
@@ -641,7 +641,7 @@ AP_DECLARE(void) ap_setup_prelinked_modules(process_rec *process)
     for (m = ap_prelinked_modules; *m != NULL; m++)
         ap_add_module(*m, process->pconf);
 
-    apr_sort_hooks();
+    apr_hook_sort_all();
 }
 
 AP_DECLARE(const char *) ap_find_module_name(module *m)

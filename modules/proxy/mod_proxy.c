@@ -604,7 +604,7 @@ static const char *
     ap_str_tolower(p + 3);		/* lowercase hostname */
 
     if (port == -1) {
-        port = apr_uri_default_port_for_scheme(scheme);
+        port = apr_uri_port_of_scheme(scheme);
     }
 
     new = apr_array_push(conf->proxies);

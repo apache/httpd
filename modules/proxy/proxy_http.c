@@ -92,7 +92,7 @@ int ap_proxy_http_canon(request_rec *r, char *url)
     const char *scheme;
     apr_port_t port, def_port;
 
-    /* ap_default_port_for_scheme() */
+    /* ap_port_of_scheme() */
     if (strncasecmp(url, "http:", 5) == 0) {
         url += 5;
         scheme = "http";
@@ -104,7 +104,7 @@ int ap_proxy_http_canon(request_rec *r, char *url)
     else {
         return DECLINED;
     }
-    def_port = apr_uri_default_port_for_scheme(scheme);
+    def_port = apr_uri_port_of_scheme(scheme);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: HTTP: canonicalising URL %s", url);
@@ -215,7 +215,7 @@ apr_status_t ap_proxy_http_determine_connection(apr_pool_t *p, request_rec *r,
                                          NULL));
     }
     if (!uri->port) {
-        uri->port = apr_uri_default_port_for_scheme(uri->scheme);
+        uri->port = apr_uri_port_of_scheme(uri->scheme);
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,

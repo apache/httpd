@@ -1,5 +1,7 @@
 Changes with Apache 2.0.40
 
+  *) APR-Util Renames pending have been completed [Thom May]
+
   *) Performance improvements for the code that reads request
      headers (ap_rgetline_core() and related functions)  [Brian Pane]
 

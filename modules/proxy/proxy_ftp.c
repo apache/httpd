@@ -188,7 +188,7 @@ int ap_proxy_ftp_canon(request_rec *r, char *url)
     else {
         return DECLINED;
     }
-    def_port = apr_uri_default_port_for_scheme("ftp");
+    def_port = apr_uri_port_of_scheme("ftp");
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: FTP: canonicalising URL %s", url);
@@ -851,7 +851,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     connectname = r->parsed_uri.hostname;
     connectport = (r->parsed_uri.port != 0)
         ? r->parsed_uri.port
-        : apr_uri_default_port_for_scheme("ftp");
+        : apr_uri_port_of_scheme("ftp");
     path = apr_pstrdup(p, r->parsed_uri.path);
     path = (path != NULL && path[0] != '\0') ? &path[1] : "";
 
