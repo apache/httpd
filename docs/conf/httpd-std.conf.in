@@ -896,7 +896,7 @@ AddHandler type-map var
 #        AddHandler type-map var
 #        Order allow,deny
 #        Allow from all
-#        LanguagePriority en es de fr
+#        LanguagePriority en es de fr sv
 #        ForceLanguagePriority Prefer Fallback
 #    </Directory>
 #
