@@ -5,7 +5,6 @@ dnl     Use ./buildconf to produce a configure script
 dnl
 
 AC_PREREQ(2.13)
-AC_PREFIX_DEFAULT(/usr/local/apache2)
 AC_INIT(ABOUT_APACHE)
 
 AC_CONFIG_HEADER(include/ap_config_auto.h)
@@ -18,6 +17,11 @@ sinclude(srclib/apr/build/apr_common.m4)
 sinclude(srclib/apr/build/apr_network.m4)
 sinclude(srclib/apr/build/apr_threads.m4)
 sinclude(acinclude.m4)
+
+dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
+dnl by configure until it is too late.  Is that how it should be or not?
+dnl Something seems broken here.                                               
+AC_PREFIX_DEFAULT(/usr/local/apache2)
 
 dnl Get the layout here, so we can pass the required variables to apr
 dnl APACHE_ENABLE_LAYOUT
