@@ -327,10 +327,16 @@ static apr_bucket* found_start_sequence(apr_bucket *dptr,
     ctx->tag_length = 0;
     ctx->parse_pos = 0;
 
-    /* Don't set tag_start_bucket if tagStart indexes the end of the bucket. */
+    /* If tagStart indexes the end of the bucket, then tag_start_bucket
+     * should be the next bucket
+     */
     if (tagStart < len) {
         ctx->tag_start_bucket = dptr;
         ctx->tag_start_index = tagStart;
+    }
+    else {
+        ctx->tag_start_bucket = APR_BUCKET_NEXT(dptr);
+        ctx->tag_start_index = 0;
     }
 
     if (ctx->head_start_index > 0) {
