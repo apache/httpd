@@ -197,12 +197,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Can a static httpd be built reliably?
         Message-ID: <20020207142751.T31582@clove.org>
 
-    * [Ken] Test suite failures:
-      o worker is also failing some of the 'cgi' subtests
-      (see <URL:http://Source-Zone.Org/Apache/regression/>):
-        Justin says: "Worker should be fine and passes httpd-test here.
-                      I think it's a perl or a httpd-test problem."
-
     * Usage of APR_BRIGADE_NORMALIZE in core_input_filter should be
       removed if possible.
         Message-ID: <Pine.LNX.4.33.0201202232430.318-100000@deepthought.cs.virginia.edu>
