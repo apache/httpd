@@ -26,7 +26,7 @@ This is a first attempt at writing the lessons I learned when trying to convert 
 
 <h3>Cleanup Routines</h3>
 <p>
-These now need to be of type ap_status_t and return a value of that type.  Normally the return value will be APR_SUCCESS unless there is some need to signal an error in the cleanup.  Be aware that even though you signal an error not all code yet checks and acts upon the error.
+These now need to be of type apr_status_t and return a value of that type.  Normally the return value will be APR_SUCCESS unless there is some need to signal an error in the cleanup.  Be aware that even though you signal an error not all code yet checks and acts upon the error.
 </p>
 
 <h3>Initialisation Routines</h3>
