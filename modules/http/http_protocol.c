@@ -311,7 +311,7 @@ AP_DECLARE(int) ap_set_byterange(request_rec *r)
         long tlength = 0;
 
         r->byterange = 2;
-        r->boundary = apr_psprintf(r->pool, "%llx%lx",
+        r->boundary = apr_psprintf(r->pool, "%qx%lx",
 				r->request_time, (long) getpid());
         while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
         apr_table_setn(r->headers_out, "Content-Length",
@@ -2820,12 +2820,8 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
     ap_bucket_brigade *bb = NULL;
     ap_bucket *b;
 
-    /* WE probably need to do something to make sure we are respecting the
-     * offset and length.  I think I know how to do this, but I will wait
-     * until after the commit to actually write the code.
-     */
     bb = ap_brigade_create(r->pool);
-    b = ap_bucket_create_mmap(mm, 0, mm->size);
+    b = ap_bucket_create_mmap(mm, offset, length);
     AP_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
