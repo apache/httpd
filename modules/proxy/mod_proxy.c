@@ -421,9 +421,35 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->cache_completion = DEFAULT_CACHE_COMPLETION;
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
+    ps->viaopt_set = 0; /* 0 means default */
     ps->req = 0;
+    ps->req_set = 0;
+    ps->recv_buffer_size = 0; /* this default was left unset for some reason */
+    ps->recv_buffer_size_set = 0;
 
     ap_cache_init(&ps->cache, "mod_proxy cache", s);
+    return ps;
+}
+
+static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
+{
+    proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
+    proxy_server_conf *base = (proxy_server_conf *) basev;
+    proxy_server_conf *overrides = (proxy_server_conf *) overridesv;
+
+    ps->proxies = ap_append_arrays(p, base->proxies, overrides->proxies);
+    ps->aliases = ap_append_arrays(p, base->aliases, overrides->aliases);
+    ps->raliases = ap_append_arrays(p, base->raliases, overrides->raliases);
+    ps->noproxies = ap_append_arrays(p, base->noproxies, overrides->noproxies);
+    ps->dirconn = ap_append_arrays(p, base->dirconn, overrides->dirconn);
+    ps->nocaches = ap_append_arrays(p, base->nocaches, overrides->nocaches);
+    ps->allowed_connect_ports = ap_append_arrays(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
+
+    ps->domain = (overrides->domain == NULL) ? base->domain : overrides->domain;
+    ps->viaopt = (overrides->viaopt_set == 0) ? base->viaopt : overrides->viaopt;
+    ps->req = (overrides->req_set == 0) ? base->req : overrides->req;
+    ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
+
     return ps;
 }
 
@@ -659,6 +685,7 @@ static const char *
     ap_get_module_config(parms->server->module_config, &proxy_module);
 
     psf->req = flag;
+    psf->req_set = 1;
     return NULL;
 }
 
@@ -673,6 +700,7 @@ static const char *
     }
 
     psf->recv_buffer_size = s;
+    psf->recv_buffer_size_set = 1;
     return NULL;
 }
 
@@ -695,6 +723,7 @@ static const char*
                "off | on | full | block";
     }
 
+    psf->viaopt_set = 1;
     return NULL;    
 }
 
@@ -760,7 +789,7 @@ module AP_MODULE_DECLARE_DATA proxy_module =
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     create_proxy_config,	/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
+    merge_proxy_config,		/* merge per-server config structures */
     proxy_cmds,			/* command table */
     register_hooks
 };
