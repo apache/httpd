@@ -2193,7 +2193,7 @@ static struct {
     },
     {
         "\037\213", 2, {
-            "gzip", "-dq", NULL
+	    "gzip", "-dcq", NULL
         }, 1, "x-gzip"
     },
     /*
@@ -2202,7 +2202,7 @@ static struct {
      */
     {
         "\037\036", 2, {
-            "gzip", "-dq", NULL
+	    "gzip", "-dcq", NULL
         }, 0, "x-gzip"
     },
 };
@@ -2226,7 +2226,7 @@ zmagic(request_rec * r, unsigned char *buf, int nbytes)
     if (i == ncompr)
         return 0;
 
-    if ((newsize = uncompress(r, i, buf, &newbuf, nbytes)) != 0) {
+    if ((newsize = uncompress(r, i, buf, &newbuf, nbytes)) > 0) {
         tryit(r, newbuf, newsize);
 
         /* set encoding type in the request record */

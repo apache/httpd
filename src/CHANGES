@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) mod_mime_magic would core dump if there was a decompression error.
+     [Martin Kraemer <Martin.Kraemer@mch.sni.de>] PR#904
+
   *) PORT: some variants of DGUX require -lsocket -lnsl
      [Alexander L Jones <alex@systems-options.co.uk>] PR#732
 
