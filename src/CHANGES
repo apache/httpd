@@ -1,5 +1,11 @@
 Changes with Apache 1.3b4
 
+  *) The large_write() changes tickled a bug in bputc(), this would
+     show up as certain modules not working with Internet Explorer 4.0.
+     Fix this bug, and also fix a performance bug related to bputc()
+     causing a large_write() -- don't do large_write() unless there's
+     at least two bytes to write.  [Dean Gaudet]
+
   *) Move the gid switching code into the child so that log files
      and pid files are opened with the root gid.
      [Gregory A Lundberg <lundberg@vr.net>]

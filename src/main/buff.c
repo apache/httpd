@@ -807,9 +807,16 @@ API_EXPORT(int) bskiplf(BUFF *fb)
 API_EXPORT(int) bflsbuf(int c, BUFF *fb)
 {
     char ss[1];
+    int rc;
 
     ss[0] = c;
-    return bwrite(fb, ss, 1);
+    rc = bwrite(fb, ss, 1);
+    /* We do start_chunk() here so that the bputc macro can be smaller
+     * and faster
+     */
+    if (rc == 1 && (fb->flags & B_CHUNK))
+	start_chunk(fb);
+    return rc;
 }
 
 /*
@@ -1056,9 +1063,12 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
 #ifndef NO_WRITEV
 /*
  * Detect case where we're asked to write a large buffer, and combine our
- * current buffer with it in a single writev()
+ * current buffer with it in a single writev().  Note we don't consider
+ * the case nbyte == 1 because modules which use rputc() loops will cause
+ * us to use writev() too frequently.  In those cases we really should just
+ * start a new buffer.
  */
-    if (fb->outcnt > 0 && nbyte + fb->outcnt >= fb->bufsiz) {
+    if (fb->outcnt > 0 && nbyte > 1 && nbyte + fb->outcnt >= fb->bufsiz) {
 	return large_write(fb, buf, nbyte);
     }
 #endif
