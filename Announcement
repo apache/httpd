@@ -67,16 +67,18 @@
        so that the lookup can depend on the requested URI etc.
      * PHP now works under Unixware 7.
      * Eliminate caching problems of mod_autoindex results.
-     * Win32 console and service fixes.
+     * Win32 CGI execution on all Windows platforms is corrected.
        
    The main new features include:
      * Add a new LogFormat directive, %c.
      * mod_status now respects ?refresh=n of 1 or greater.
+     * mod_autoindex fixes browser caching by sending LastModified
+       and ETag headers if IndexOptions TrackModified is enabled.
 
-   Selected new features that relate to windows platforms:
-     *The ScriptInterpreterSource Registry source now handles any
-      post-scriptname arguments, substitutes environment variables,
-      and uses the short or long path name as appropriate
+   Selected new features that relate to Windows platforms:
+     * Complete handling of ScriptInterpreterSource Registry execution.
+     * NT and 2000 services can be started with -D FOO style options.
+     * The close console window button/menu option on 95 and 98 works.
        
    Selected new features relating to other platforms:
      * Better discovery of dbm_open() under Linux.
