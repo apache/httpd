@@ -91,20 +91,20 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 
     stat = apr_setsocketopt(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-		    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+                    "make_sock: for address %pI, setsockopt: (SO_REUSEADDR)", 
                      server->bind_addr);
-	apr_socket_close(s);
-	return stat;
+        apr_socket_close(s);
+        return stat;
     }
     
     stat = apr_setsocketopt(s, APR_SO_KEEPALIVE, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-		    "make_sock: for address %pI, setsockopt: (SO_KEEPALIVE)", 
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+                    "make_sock: for address %pI, setsockopt: (SO_KEEPALIVE)", 
                      server->bind_addr);
-	apr_socket_close(s);
-	return stat;
+        apr_socket_close(s);
+        return stat;
     }
 
     /*
@@ -127,14 +127,14 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
      * If no size is specified, use the kernel default.
      */
     if (send_buffer_size) {
-	stat = apr_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
+        stat = apr_setsocketopt(s, APR_SO_SNDBUF,  send_buffer_size);
         if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, stat, p,
-			"make_sock: failed to set SendBufferSize for "
+                        "make_sock: failed to set SendBufferSize for "
                          "address %pI, using default", 
                          server->bind_addr);
-	    /* not a fatal error */
-	}
+            /* not a fatal error */
+        }
     }
 
 #if APR_TCP_NODELAY_INHERITED
@@ -142,19 +142,19 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 #endif
 
     if ((stat = apr_bind(s, server->bind_addr)) != APR_SUCCESS) {
-	ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
                      "make_sock: could not bind to address %pI", 
                      server->bind_addr);
-	apr_socket_close(s);
-	return stat;
+        apr_socket_close(s);
+        return stat;
     }
 
     if ((stat = apr_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
-	ap_log_perror(APLOG_MARK, APLOG_ERR, stat, p,
-	    "make_sock: unable to listen for connections on address %pI", 
+        ap_log_perror(APLOG_MARK, APLOG_ERR, stat, p,
+            "make_sock: unable to listen for connections on address %pI", 
                      server->bind_addr);
-	apr_socket_close(s);
-	return stat;
+        apr_socket_close(s);
+        return stat;
     }
 
 #if APR_HAS_SO_ACCEPTFILTER
@@ -179,8 +179,8 @@ static apr_status_t close_listeners_on_exec(void *v)
     ap_listen_rec *lr;
 
     for (lr = ap_listeners; lr; lr = lr->next) {
-	apr_socket_close(lr->sd);
-	lr->active = 0;
+        apr_socket_close(lr->sd);
+        lr->active = 0;
     }
     return APR_SUCCESS;
 }
@@ -238,28 +238,28 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
         sa = (*walk)->bind_addr;
         apr_sockaddr_port_get(&oldport, sa);
-	apr_sockaddr_ip_get(&oldaddr, sa);
-	if (!strcmp(oldaddr, addr) && port == oldport) {
-	    /* re-use existing record */
-	    new = *walk;
-	    *walk = new->next;
-	    new->next = ap_listeners;
-	    ap_listeners = new;
-	    return;
-	}
+        apr_sockaddr_ip_get(&oldaddr, sa);
+        if (!strcmp(oldaddr, addr) && port == oldport) {
+            /* re-use existing record */
+            new = *walk;
+            *walk = new->next;
+            new->next = ap_listeners;
+            ap_listeners = new;
+            return;
+        }
     }
 
     /* this has to survive restarts */
     new = apr_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if ((status = apr_sockaddr_info_get(&new->bind_addr, addr, APR_UNSPEC, port, 0, 
-                                  process->pool)) != APR_SUCCESS) {
+    if ((status = apr_sockaddr_info_get(&new->bind_addr, addr, APR_UNSPEC, 
+                                      port, 0, process->pool)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                      "alloc_listener: failed to set up sockaddr for %s", addr);
         return;
     }
     if ((status = apr_socket_create(&new->sd, new->bind_addr->sa.sin.sin_family, 
-                                    SOCK_STREAM, process->pool)) != APR_SUCCESS) {
+                                  SOCK_STREAM, process->pool)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, status, process->pool,
                      "alloc_listener: failed to get a socket for %s", addr);
         return;
@@ -284,31 +284,32 @@ int ap_listen_open(process_rec *process, apr_port_t port)
      */
     num_open = 0;
     for (lr = ap_listeners; lr; lr = lr->next) {
-	if (lr->active) {
-	    ++num_open;
-	}
-	else {
-	    if (make_sock(pconf, lr) == APR_SUCCESS) {
-		++num_open;
-		lr->active = 1;
-	    }
+        if (lr->active) {
+            ++num_open;
+        }
+        else {
+            if (make_sock(pconf, lr) == APR_SUCCESS) {
+                ++num_open;
+                lr->active = 1;
+            }
             else {
                 /* fatal error */
                 return -1;
             }
-	}
+        }
     }
 
     /* close the old listeners */
     for (lr = old_listeners; lr; lr = next) {
-	apr_socket_close(lr->sd);
-	lr->active = 0;
-	next = lr->next;
-/*	free(lr);*/
+        apr_socket_close(lr->sd);
+        lr->active = 0;
+        next = lr->next;
+        /*free(lr);*/
     }
     old_listeners = NULL;
 
-    apr_pool_cleanup_register(pconf, NULL, apr_pool_cleanup_null, close_listeners_on_exec);
+    apr_pool_cleanup_register(pconf, NULL, apr_pool_cleanup_null, 
+                              close_listeners_on_exec);
 
     return num_open ? 0 : -1;
 }
@@ -382,7 +383,8 @@ const char *ap_set_listenbacklog(cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy, const char *arg)
+const char *ap_set_send_buffer_size(cmd_parms *cmd, void *dummy, 
+                                    const char *arg)
 {
     int s = atoi(arg);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
