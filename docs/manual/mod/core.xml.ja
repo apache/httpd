@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.90 (outdated: 1.91) -->
+<!-- English Revision: 1.91 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -2437,6 +2437,10 @@ module="core">Directory</directive></seealso>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
+<compatibility>バージョン 2.0.51 以降では <directive module="core" type="section"
+	>Limit</directive> ディレクティブと <directive module="core"
+	type="section">LimitExcept</directive> ディレクティブの影響を受ける
+</compatibility>
 
 <usage>
     <p><directive module="mod_authz_host">Allow</directive> と
@@ -2463,6 +2467,14 @@ module="core">Directory</directive></seealso>
     Satisfy Any
     </example>
    
+    <p>バージョン 2.0.51 からは
+    <directive module="core"
+    type="section">Limit</directive> セクションと
+    <directive module="core" type="section"
+    >LimitExcept</directive> セクションを使用することで
+    <directive>Satisfy</directive> ディレクティブが
+    適用されるメソッドを制限することが
+    できるようになりました。</p>
 </usage>
    <seealso><directive module="mod_authz_host">Allow</directive></seealso>
    <seealso><directive module="core">Require</directive></seealso>
