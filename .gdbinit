@@ -106,6 +106,7 @@ define dump_bucket_ex
         # buckets that contain data not in memory (ie not printable)
 
         print_bkt_datacol "contents" "[**unprintable**%c" ']' $sh
+        printf "     "
         if $bucket->type == &apr_bucket_type_file
             set $refcount = ((apr_bucket_refcount *)$bucket->data)->refcount
             print_bkt_datacol "rc" "%d" $refcount $sh
