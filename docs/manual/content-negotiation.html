@@ -114,16 +114,17 @@ file suffix as <CODE>type-map</CODE>; this is best done with a
   AddHandler type-map .var
 </PRE>
 
-in the server configuration file.  See the comments in the sample config
-file for more details. <P>
+in the server configuration file.<p>
 
-Type map files have an entry for each available variant; these entries
+Type map files should have the same name as the resource which they are
+describing, and have an entry for each available variant; these entries
 consist of contiguous HTTP-format header lines.  Entries for
 different variants are separated by blank lines.  Blank lines are
 illegal within an entry.  It is conventional to begin a map file with
 an entry for the combined entity as a whole (although this
 is not required, and if present will be ignored). An example
-map file is:
+map file is shown below. This file would be named <code>foo.html</code>,
+as it describes a resource named <code>foo</code>.
 
 <PRE>
   URI: foo
@@ -136,6 +137,9 @@ map file is:
   Content-type: text/html;charset=iso-8859-2
   Content-language: fr, de
 </PRE>
+
+Note also that a typemap file will take precedence over the filename's
+extension, even when Multiviews is on.
 
 If the variants have different source qualities, that may be indicated
 by the "qs" parameter to the media type, as in this picture (available
@@ -196,7 +200,7 @@ The full list of headers recognized is:
        for compress'd files, and <CODE>x-gzip</CODE> for gzip'd files.
        The <CODE>x-</CODE> prefix is ignored for encoding comparisons.
   <DT> <CODE>Content-Length:</CODE>
-  <DD> The size of the file.  Specifying content
+  <DD> The size of the file in bytes.  Specifying content
        lengths in the type-map allows the server to compare file sizes
        without checking the actual files.
   <DT> <CODE>Description:</CODE>
@@ -205,6 +209,11 @@ The full list of headers recognized is:
        response which lists all available variants instead.  Such a variant
        list will include the human-readable variant descriptions.
 </DL>
+
+Using a type map file is preferred over <code>MultiViews</code> because
+it requires less CPU time, and less file access, to parse a file
+explicitly listing the various resource variants, than to have to look
+at every matching file, and parse its file extensions.
 
 <H3>Multiviews</H3>
 
@@ -485,7 +494,8 @@ quality factors to 5 decimal places before choosing the best variant.
 If you are using language negotiation you can choose between
 different naming conventions, because files can have more than one
 extension, and the order of the extensions is normally irrelevant
-(see <A HREF="mod/mod_mime.html">mod_mime</A> documentation for details).
+(see the <A HREF="mod/mod_mime.html#multipleext">mod_mime</A>
+documentation for details).
 <P>
 A typical file has a MIME-type extension (<EM>e.g.</EM>, <SAMP>html</SAMP>),
 maybe an encoding extension (<EM>e.g.</EM>, <SAMP>gz</SAMP>), and of course a
