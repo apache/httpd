@@ -1518,6 +1518,7 @@ static void reopen_scoreboard(pool *p)
 }
 
 #elif defined(USE_POSIX_SCOREBOARD)
+#include <sys/mman.h>
 /* 
  * POSIX 1003.4 style
  *

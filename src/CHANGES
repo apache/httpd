@@ -1,5 +1,9 @@
 Changes with Apache 1.3b8
 
+  *) PORT: QNX needed a #include <sys/mman.h>; and now it uses flock
+     serialized accept to handle multiple sockets.
+     [Rob Saccoccio <robs@InfiniteTechnology.com>] PR#2295, 2296
+ 
   *) Have NT properly set the directory for CGI scripts 
      (& other spawned children)
      [W G Stoddard <wgstodda@us.ibm.com>]

@@ -626,6 +626,8 @@ int initgroups(char *, int);
 #include <unix.h>
 #define HAVE_MMAP 1
 #define USE_POSIX_SCOREBOARD
+#define USE_FLOCK_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #define HAVE_SYSLOG 1
 
 #elif defined(LYNXOS)
