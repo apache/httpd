@@ -160,17 +160,6 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
 
-/**
- * Convert the file size given in size into a formatted string and send the
- * string to the client.  The size should always be in bytes, although the
- * string sent to the client may be in bytes, kb, or MB, depending on the size
- * of the file.
- * @param size The size of the file
- * @param r The currnt request
- * @deffunc void ap_send_size(apr_ssize_t size, request_rec *r)
- */
-AP_DECLARE(void) ap_send_size(apr_ssize_t size, request_rec *r);
-
 #ifdef __cplusplus
 }
 #endif

@@ -634,27 +634,3 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
     va_end(strs.args);
     return res;
 }
-
-AP_DECLARE(void) ap_send_size(apr_ssize_t size, request_rec *r)
-{
-    /* XXX: this -1 thing is a gross hack */
-    if (size == (apr_ssize_t)-1) {
-	ap_rputs("    -", r);
-    }
-    else if (!size) {
-	ap_rputs("   0k", r);
-    }
-    else if (size < 1024) {
-	ap_rputs("   1k", r);
-    }
-    else if (size < 1048576) {
-	ap_rprintf(r, "%4" APR_SSIZE_T_FMT "k", (size + 512) / 1024);
-    }
-    else if (size < 103809024) {
-	ap_rprintf(r, "%4.1fM", size / 1048576.0);
-    }
-    else {
-	ap_rprintf(r, "%4" APR_SSIZE_T_FMT "M", (size + 524288) / 1048576);
-    }
-}
-
