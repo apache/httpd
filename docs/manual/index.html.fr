@@ -49,10 +49,11 @@
 <table cellspacing="0" cellpadding="0" border="0" width="600">
 <tr><td align="center">
    <form method="post" action="http://search.apache.org/">
-   <input type="hidden" name="what" value="ap">
+   <input type="hidden" name="what" value="httpd.apache.org">
    <input type="hidden" name="results" value="20">
+   <input type="hidden" name="version" value="2">
    <input type="text" name="keyword" size="20">
-   <input type="button" value="Chercher">
+   <input type="submit" value="Search">
    </form>
 </td></tr></table>
 
