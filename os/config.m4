@@ -5,4 +5,4 @@ OS=unix
 OS_DIR=os/$OS
 
 AC_MSG_RESULT([$OS])
-APACHE_OUTPUT(os/$OS/Makefile)
+APACHE_FAST_OUTPUT(os/$OS/Makefile)

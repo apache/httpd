@@ -1,0 +1,33 @@
+#
+# default definition of these two. dunno how to get it prepended when the
+# Makefile is built, so we do it manually
+#
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
+
+# If you know what your system's byte order is, define BYTE_ORDER:
+# use -DBYTE_ORDER=12 for little-endian byte order;
+# use -DBYTE_ORDER=21 for big-endian (network) byte order.
+#CFLAGS=-O2
+
+OBJS=xmltok.o xmlrole.o xmlparse.o hashtable.o
+
+all lib: libexpat.a
+
+libexpat.a: $(OBJS)
+	rm -f libexpat.a
+	ar cr libexpat.a $(OBJS)
+	$(RANLIB) libexpat.a
+
+clean:
+	rm -f $(OBJS) libexpat.a
+
+distclean: clean
+	-rm -f Makefile
+
+.SUFFIXES: .o
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
+
+depend:
