@@ -56,6 +56,7 @@
  * Any inlineable functions should be defined in os-inline.c instead.
  */
 
+#include "httpd.h"
 #include "os.h"
 
 /* Check the Content-Type to decide if conversion is needed */
