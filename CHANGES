@@ -1,4 +1,6 @@
 Changes with Apache 2.0.29-dev
+  *) Prevent segv in ap_note_basic_auth_failure() when no AuthName is
+     configured [John Sterling <sterling@covalent.net>]
 
   *) Fix apxs to use sbindir.  [Henri Gomez <hgomez@slib.fr>]
 
