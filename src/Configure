@@ -1228,6 +1228,14 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-Blargedynsym"
 	    ;;
+	BS2000-siemens-sysv4*)
+	    CFLAGS_SHLIB="-K PIC"
+	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
+	    LDFLAGS_SHLIB_EXPORT=""
+	    SHLIB_SUFFIX_DEPTH=0
+	    DEF_SHARED_CORE=no
+	    ;;
 	*-siemens-sysv4*)
 	    # Older SINIX machines must be linked as "shared core"-Apache
 	    case $CC in
@@ -1519,6 +1527,18 @@ case "$PLAT" in
 	if TLIB=$TLIB ./helpers/TestCompile lib socket; then
 	    LIBS="-lsocket $LIBS"
 	fi
+	# Auto-detect presence of libdl for dynamic loading
+	if ./helpers/TestCompile lib dl; then
+	    if ./helpers/TestCompile func dlopen; then
+		LIBS="$LIBS -ldl"
+		TLIB='-ldl'
+	    fi
+	fi
+	# Test for the presence of the _rini_struct typedef:
+	if TCADDINCL='#include <pwd.h>' ./helpers/TestCompile sizeof _rini_struct; then
+	    CFLAGS="$CFLAGS -DHAVE_RINI_STRUCT"
+	fi
+	# Test whether initgroups() must be emulated:
 	if ./helpers/TestCompile func initgroups; then
 	    :
 	else
