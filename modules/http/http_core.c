@@ -2875,6 +2875,8 @@ static int do_nothing(request_rec *r) { return OK; }
 
 static int default_handler(request_rec *r)
 {
+    ap_bucket_brigade *bb;
+    ap_bucket *e;
     core_dir_config *d =
 	    (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
     int errstatus;
@@ -2939,18 +2941,14 @@ static int default_handler(request_rec *r)
                        ap_md5digest(r->pool, fd));
     }
 
-    if (!r->header_only) {
-        ap_bucket_brigade *bb = ap_brigade_create(r->pool);
-        ap_bucket *e = ap_bucket_create_file(fd, 0, r->finfo.size);
+    bb = ap_brigade_create(r->pool);
+    e = ap_bucket_create_file(fd, 0, r->finfo.size);
 
-        AP_BRIGADE_INSERT_HEAD(bb, e);
-        e = ap_bucket_create_eos();
-        AP_BRIGADE_INSERT_TAIL(bb, e);
+    AP_BRIGADE_INSERT_HEAD(bb, e);
+    e = ap_bucket_create_eos();
+    AP_BRIGADE_INSERT_TAIL(bb, e);
 
-        ap_pass_brigade(r->output_filters, bb);
-    }
-
-    return OK;
+    return ap_pass_brigade(r->output_filters, bb);
 }
 
 /*
