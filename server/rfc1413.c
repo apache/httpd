@@ -158,7 +158,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
     /* send query to server. Handle short write. */
     i = 0;
     while(i < strlen(buffer)) {
-        apr_ssize_t j = strlen(buffer + i);
+        apr_size_t j = strlen(buffer + i);
         apr_status_t status;
 	status  = apr_send(sock, buffer+i, &j);
 	if (status != APR_SUCCESS && !APR_STATUS_IS_EINTR(status)) {
@@ -184,7 +184,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
      * this allows it to work on both ASCII and EBCDIC machines.
      */
     while((cp = strchr(buffer, '\012')) == NULL && i < sizeof(buffer) - 1) {
-        apr_ssize_t j = sizeof(buffer) - 1 - i;
+        apr_size_t j = sizeof(buffer) - 1 - i;
         apr_status_t status;
 	status = apr_recv(sock, buffer+i, &j);
 	if (status != APR_SUCCESS && !APR_STATUS_IS_EINTR(status)) {

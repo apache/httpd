@@ -200,7 +200,7 @@ AP_DECLARE(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
     apr_md5_ctx_t context;
     unsigned char buf[1000];
     long length = 0;
-    apr_ssize_t nbytes;
+    apr_size_t nbytes;
     apr_off_t offset = 0L;
 
     apr_MD5Init(&context);

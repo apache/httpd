@@ -156,7 +156,7 @@ void ap_lingering_close(conn_rec *c)
 {
     char dummybuf[512];
     apr_time_t start;
-    apr_ssize_t nbytes;
+    apr_size_t nbytes;
     apr_status_t rc;
     int timeout;
 

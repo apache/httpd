@@ -2560,12 +2560,12 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 #endif
 
 static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec, 
-                                  apr_ssize_t len, apr_ssize_t *nbytes)
+                                  apr_size_t len, apr_size_t *nbytes)
 {
     apr_size_t bytes_written = 0;
     apr_status_t rv;
-    apr_ssize_t n = len;
-    apr_ssize_t i = 0;
+    apr_size_t n = len;
+    apr_size_t i = 0;
 
     *nbytes = 0;
 
@@ -2607,12 +2607,12 @@ static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec,
  */
 static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd, 
                                   apr_hdtr_t *hdtr, apr_off_t offset, 
-                                  apr_ssize_t length, apr_ssize_t *nbytes) 
+                                  apr_size_t length, apr_size_t *nbytes) 
 {
     apr_status_t rv = APR_SUCCESS;
     apr_int32_t togo;         /* Remaining number of bytes in the file to send */
-    apr_ssize_t sendlen = 0;
-    apr_ssize_t bytes_sent;
+    apr_size_t sendlen = 0;
+    apr_size_t bytes_sent;
     apr_int32_t i;
     apr_off_t o;              /* Track the file offset for partial writes */
     char buffer[8192];
@@ -3071,8 +3071,8 @@ static int default_handler(request_rec *r)
 typedef struct COALESCE_FILTER_CTX {
     char *buf;           /* Start of buffer */
     char *cur;           /* Pointer to next location to write */
-    apr_ssize_t cnt;     /* Number of bytes put in buf */
-    apr_ssize_t avail;   /* Number of bytes available in the buf */
+    apr_size_t cnt;     /* Number of bytes put in buf */
+    apr_size_t avail;   /* Number of bytes available in the buf */
 } coalesce_filter_ctx_t;
 #define FILTER_BUFF_SIZE 8192
 #define MIN_BUCKET_SIZE 200
@@ -3107,7 +3107,7 @@ static apr_status_t coalesce_filter(ap_filter_t *f, ap_bucket_brigade *b)
         }
         else {
             const char *str;
-            apr_ssize_t n;
+            apr_size_t n;
             rv = ap_bucket_read(e, &str, &n, AP_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 /* XXX: log error */
@@ -3220,7 +3220,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 	    else if (e->length == -1) {
                 /* unknown amount of data (e.g. a pipe) */
 		const char *data;
-		apr_ssize_t len;
+		apr_size_t len;
 
 		rv = ap_bucket_read(e, &data, &len, AP_BLOCK_READ);
 		if (rv != APR_SUCCESS) {
@@ -3343,18 +3343,18 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     apr_status_t rv;
     ap_bucket_brigade *more = NULL;
-    apr_ssize_t bytes_sent = 0, nbytes;
+    apr_size_t bytes_sent = 0, nbytes;
     ap_bucket *e;
     conn_rec *c = f->c;
     core_output_filter_ctx_t *ctx = f->ctx;
 
-    apr_ssize_t nvec = 0;
-    apr_ssize_t nvec_trailers= 0;
+    apr_size_t nvec = 0;
+    apr_size_t nvec_trailers= 0;
     struct iovec vec[MAX_IOVEC_TO_WRITE];
     struct iovec vec_trailers[MAX_IOVEC_TO_WRITE];
 
     apr_file_t *fd = NULL;
-    apr_ssize_t flen = 0;
+    apr_size_t flen = 0;
     apr_off_t foffset = 0;
 
     if (ctx == NULL) {
@@ -3384,7 +3384,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
             }
             else {
                 const char *str;
-                apr_ssize_t n;
+                apr_size_t n;
                 rv = ap_bucket_read(e, &str, &n, AP_BLOCK_READ);
                 if (n) {
                     nbytes += n;
