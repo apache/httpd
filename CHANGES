@@ -1,9 +1,10 @@
-Changes with Apache 2.0.18-dev
+Changes with Apache 2.0.19-dev
+
   *) Reimplement mod_headers as an output filter. mod_headers can now
-     add custom headers to inbound requests using the HeaderIn directive
-     and to responses using the HeaderOut directive. The Header
-     directive has been deprecated in favor of the HeaderOut directive.
-     [Graham Leggett]
+     add custom headers to inbound requests using the RequestHeader directive
+     and to responses using the same old Header directive.  [Graham Leggett]
+
+Changes with Apache 2.0.18
 
   *) Fix command-line processing so that if a bad argument is specified
      Apache will exit.  [Jeff Trawick]
