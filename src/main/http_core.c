@@ -2120,6 +2120,7 @@ static int default_handler (request_rec *r)
     ap_update_mtime (r, r->finfo.st_mtime);
     ap_set_last_modified(r);
     ap_set_etag(r);
+    ap_table_setn(r->headers_out, "Accept-Ranges", "bytes");
     if (((errstatus = ap_meets_conditions(r)) != OK)
 	|| (errstatus = ap_set_content_length (r, r->finfo.st_size))) {
 	    return errstatus;

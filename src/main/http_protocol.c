@@ -141,7 +141,6 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
         range = ap_table_get(r->headers_in, "Request-Range");
 
     if (!range || strncasecmp(range, "bytes=", 6)) {
-        ap_table_setn(r->headers_out, "Accept-Ranges", "bytes");
         return 0;
     }
 

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
   
+  *) Emit the "Accept-Range" header for the default handler.
+     [Brian Behlendorf] PR#1464
+
   *) Add a note to httpd.conf-dist that apache will on some systems fail
      to start when the Group # is set to a negative or large positive value.
      [Martin Kraemer]
