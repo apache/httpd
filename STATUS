@@ -56,6 +56,12 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Ken's Adding the OS Type Patch
+      <3550567D.DDE10900@Golux.Com>
+      Status: Ken +1, Jim +1 (with Brian's suggested changes),
+              Martin +1, Brian +1 (change 'add_component' and
+	      'add_platform' to something a bit more clear)
+
     * Ed Korthof's patch to fix protocol issues surrounding 400, 408, and
       414 responses.
       <Pine.GSO.3.95.980204191834.4314K-200000@aether.organic.com>
