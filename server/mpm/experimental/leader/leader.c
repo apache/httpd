@@ -844,13 +844,9 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
     got_fd:
         if (!workers_may_exit) {
             rv = lr->accept_func(&csd, lr, ptrans);
+            /* later we trash rv and rely on csd to indicate success/failure */
+            AP_DEBUG_ASSERT(rv == APR_SUCCESS || !csd);
 
-            /* If we were interrupted for whatever reason, just start
-             * the main loop over again.
-             */
-            if (APR_STATUS_IS_EINTR(rv)) {
-                continue;
-            }
             if (rv == APR_EGENERAL) {
                 /* E[NM]FILE, ENOMEM, etc */
                 resource_shortage = 1;
@@ -1178,17 +1174,26 @@ static void child_main(int child_num_arg)
                     break;
                 }
             }
+            if (rv == AP_GRACEFUL || rv == AP_RESTART) {
+                /* make sure the start thread has finished; 
+                 * signal_threads() and join_workers depend on that
+                 */
+                join_start_thread(start_thread_id);
+                signal_threads(rv == AP_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
+                break;
+            }
         }
 
-        signal_threads(ST_GRACEFUL);
-        /* A terminating signal was received. Now join each of the
-         * workers to clean them up.
-         *   If the worker already exited, then the join frees
-         *   their resources and returns.
-         *   If the worker hasn't exited, then this blocks until
-         *   they have (then cleans up).
-         */
-        join_workers(threads);
+        if (rv == AP_GRACEFUL) {
+            /* A terminating signal was received. Now join each of the
+             * workers to clean them up.
+             *   If the worker already exited, then the join frees
+             *   their resources and returns.
+             *   If the worker hasn't exited, then this blocks until
+             *   they have (then cleans up).
+             */
+            join_workers(threads);
+        }
     }
 
     free(threads);
