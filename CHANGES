@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix bug in mod_deflate, which was passing calling deflate()
+     without checkinig first whether it has something to deflate. (currently 
+     this causes deflate to generate a fatal error according to the zlib spec).
+     PR 22259. [Stas Bekman]
+
   *) Avoid an infinite recursion, which occured if the name of an included
      config file or directory contained a wildcard character. PR 22194.
      [André Malo]
