@@ -658,6 +658,21 @@ static int cgid_server(void *data)
                               apr_filename_of_pathname(r->filename));
             }
         }
+        /* SNAFU: no call to apr_pool_note_subprocess() to cause the
+         *        CGI to be cleaned up when the request ends (in case
+         *        client drops connection)...  can't write the pid back
+         *        to cgid_handler() because by the time we know the pid
+         *        the new CGI is already started and potentially writing
+         *        headers and body back to the handler...
+         *        perhaps cgid_handler() needs to provide a key with
+         *        a request to which cgid daemon will associate the
+         *        CGI pid...  at request_rec cleanup time, that key
+         *        gets sent back to cgid_handler() telling it to kill
+         *        whatever pid is associated with the key...
+         *        2 flows per request, which isn't cool...  but 
+         *        having the CGI running after client killed connection
+         *        isn't cool either...
+         */
     } 
     return -1; 
 } 
