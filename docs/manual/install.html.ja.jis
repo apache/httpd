@@ -95,7 +95,7 @@
       </tr>
     </table>
 
-    <p><em>NN</em> は最新のマイナーバージョンナンバーに、
+    <p><em>NN</em> は最新のマイナーバージョンナンバーに、
     <em>PREFIX</em> はインストールするサーバでのファイルシステムのパスに、
     置き換えてください。<em>PREFIX</em> を指定しなかった場合は、
     デフォルトの <code>/usr/local/apache2</code> になります。</p>
@@ -493,7 +493,7 @@
     をコンパイルのプロセスで含める必要があります。
     個々のプラットホーム向けのデフォルトの MPM は <a href="mpm.html">MPM 文書</a>に一覧がありますが、
     <code>configure</code> 
-    コマンドで置き換えることができます。</p>
+    コマンドで置き換えることができます。</p>
 
     <dl>
       <dt><code>--with-mpm=<em>NAME</em></code></dt>
@@ -558,7 +558,7 @@
     <p>基本的な設定をするのに、Pentium III/Linux 2.2 
     のシステムでおおよそ 3 分程度かかりますが、
     あらかじめご了承下さい。
-    また、時間はハードウェアや有効にしたモジュールの数に
+    また、時間はハードウェアや有効にしたモジュールの数に
     大きく依存するでしょう。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

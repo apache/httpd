@@ -62,7 +62,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
 
       <li>サーバは特定のサイト向けに、より上手にカスタマイズできます。
       例えば、非常に大きなスケーラビリティを必要とするサイトでは、
-      <code class="module"><a href="./mod/worker.html">worker</a></code> といったスレッド化された
+      <code class="module"><a href="./mod/worker.html">worker</a></code> といったスレッド化された
       MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
       必要とするサイトでは <code class="module"><a href="./mod/prefork.html">prefork</a></code>
       が利用できます。また、

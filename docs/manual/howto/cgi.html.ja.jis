@@ -22,7 +22,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#writing">CGI プログラムを書く</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">しかし、まだ動かない !</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">裏で何が起こっているのか?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#libraries">CGI モジュール/ライブラリ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#libraries">CGI モジュール/ライブラリ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinfo">更なる情報</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -67,7 +67,7 @@
       <p>デフォルト位置に Apache をインストールしたならば、
       この例はデフォルト状態の <code>httpd.conf</code>
       設定ファイルに含まれています。<code>ScriptAlias</code>
-      ディレクティブは、URL の前に付加するディレクトリを定義する
+      ディレクティブは、URL の前に付加するディレクトリを定義する
       <code>Alias</code> ディレクティブとかなり似ています。
       <code>Alias</code> と <code>ScriptAlias</code> は通常、
       <code>DocumentRoot</code>
@@ -100,7 +100,7 @@
       彼らのホームディレクトリ配下にウェブコンテンツを持たせたいとします。
       もし、彼らが CGI プログラムを持つことを望んでいても、メインの
       <code>cgi-bin</code> ディレクトリへのアクセスができない場合、
-      CGI プログラムを実行することができる他の場所が必要になります。</p>
+      CGI プログラムを実行することができる他の場所が必要になります。</p>
     
 
     <h3><a name="options" id="options">CGI の実行を可能にするために Options を明示的に使用する</a></h3>
@@ -283,7 +283,7 @@
 
       <p>コマンドラインからプログラムを実行するとき、
       意識しなくてもシェルに渡される情報があります。
-      例えば、参照するファイルのためにどこを検索したらよいかを
+      例えば、参照するファイルのためにどこを検索したらよいかを
       シェルに伝えるパスがあります。</p>
 
       <p>プログラムが CGI プログラムとしてウェブサーバによって実行されるとき、
@@ -332,7 +332,7 @@
     裏で起こっていることについて更に理解することは有益になるでしょう。
     ブラウザとサーバがどのように相互通信するかについては特にそうです。
     なぜなら、``Hello, World.''
-    を印字するプログラムを書くことはまことに結構ですが、
+    を印字するプログラムを書くことはまことに結構ですが、
     それは特に有益ではありません。</p>
 
     <h3><a name="env" id="env">環境変数</a></h3>
@@ -414,7 +414,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">CGI モジュール/ライブラリ</a></h2>
+<h2><a name="libraries" id="libraries">CGI モジュール/ライブラリ</a></h2>
     
 
     <p>CGI プログラムを書くとき、面倒な仕事の大部分をしてくれる

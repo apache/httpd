@@ -87,7 +87,7 @@
     <a href="../handler.html">ハンドラ</a> も INCLUDES フィルタを
     有効にします。MIME タイプ <code>text/x-server-parsed-html</code> や
     <code>text/x-server-parsed-html3</code> のドキュメントに対しても
-    Apache は INCLUDES フィルタを有効にします (出力されるものは
+    Apache は INCLUDES フィルタを有効にします (出力されるものは
     MIME タイプ <code>text/html</code> になります)。</p>
 
     <p>詳しい情報は <a href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
@@ -184,7 +184,7 @@
       呼ばれています。これはリンク等の URL の使用に適切です) が
       行なわれます。<code>echo</code> 要素の開始時は、デフォルトは
       <code>entity</code> に設定されています。これはエンティティエンコード
-      (段落やテキストなどのブロックレベルの HTML エレメントのコンテキストに
+      (段落やテキストなどのブロックレベルの HTML エレメントのコンテキストに
       適しています) を行ないます。これは <code>encoding</code> 属性
       を加えることで変更できます。変更は次の <code>encoding</code> 属性か、
       要素の終了まで効力を持ちます。</p>
@@ -226,7 +226,7 @@
       <code>PATH_INFO</code> とクエリー文字列 (<code>QUERY_STRING</code>) が渡されます。
       これらは URL パスとして特定<em>できない</em>ものです。
       スクリプトは標準 <a href="mod_cgi.html">CGI</a> 環境に加えて、include 変数を
-      使用することができます。</p>
+      使用することができます。</p>
 
       <div class="example"><h3>例</h3><p><code>
         &lt;!--#exec cgi="/cgi-bin/example.cgi" --&gt;
@@ -643,7 +643,7 @@ directive]"</code></td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>日付けを現す文字列の書式を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>日付けを現す文字列の書式を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSITimeFormat <var>formatstring</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSITimeFormat "%A, %d-%b-%Y %H:%M:%S %Z"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
@@ -680,7 +680,7 @@ directive]"</code></td></tr>
 </table>
     <p>このディレクティブは変数が定義されていないにも関わらず
     "echo" されたときに <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
-    が表示する文字列を変更します。</p>
+    が表示する文字列を変更します。</p>
 
     <div class="example"><h3>例</h3><p><code>
       SSIUndefinedEcho "&lt;!-- undef --&gt;"

@@ -140,7 +140,7 @@
 
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
     は、古いプロセスを停止して新しいプロセスを起動することによって、
-    どの程度の頻度でサーバがプロセスをリサイクルするかを制御します。</p>
+    どの程度の頻度でサーバがプロセスをリサイクルするかを制御します。</p>
 </div>
 </div>
 <div id="footer">

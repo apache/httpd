@@ -63,7 +63,7 @@ Redirect / http://otherserver.example.com/<br />
 部分に書かれている必要があります。このディレクティブは特定のモジュールの
 存在に関わらず設定ファイルが動作する必要がある場合にのみ使ってください。
 常に動作して欲しいディレクティブを囲むために使うべきではありません。
-存在しないモジュールに関する有用なエラーメッセージの発生を抑制してしまいますので。
+存在しないモジュールに関する有用なエラーメッセージの発生を抑制してしまいますので。
 </p>
 
 <p>次の例では、<code class="module"><a href="./mod/mod_mime_magic.html">mod_mime_magic</a></code> があるときにのみ <code class="directive"><a href="./mod/mod_mime_magic.html#mimemagicfiles">MimeMagicFiles</a></code> ディレクティブが
@@ -107,7 +107,7 @@ MimeMagicFile conf/magic<br />
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> セクションの
 中のディレクティブは指定されたディレクトリとそのすべてのサブディレクトリに
 適用されます。<a href="howto/htaccess.html">.htaccess ファイル</a>を
-使うことでも同じ効果を得ることができます。例えば、次の設定では
+使うことでも同じ効果を得ることができます。例えば、次の設定では
 <code>/var/web/dir1</code> とすべてのサブディレクトリに対して
 ディレクトリインデックスを行ないます。</p>
 
@@ -229,7 +229,7 @@ Deny from all<br />
 
 <p>ファイルシステムコンテナとウェブ空間コンテナを使い分けるのは、
 実際には非常に簡単です。ファイルシステムに依存する
-オブジェクトにディレクティブを適応する場合は、必ず
+オブジェクトにディレクティブを適応する場合は、必ず
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> か
 <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
 を使用します。ファイルシステムに依存しないオブジェクト
@@ -284,7 +284,7 @@ Deny from all<br />
 <h2><a name="virtualhost" id="virtualhost">バーチャルホスト</a></h2>
 
 <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-コンテナは特定のホストに適用するディレクティブを格納します。
+コンテナは特定のホストに適用するディレクティブを格納します。
 一台のマシンで複数のホストを異なる設定で提供したいときに有用です。
 詳細に関しては<a href="vhosts/">バーチャルホストドキュメント</a>を
 ご覧下さい。</p>
@@ -424,7 +424,7 @@ A<br />
 
 <p>もっと具体的な、次の例を考えてみましょう。
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> 
-セクションに設置されたアクセス制限に関わらず、
+セクションに設置されたアクセス制限に関わらず、
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 セクションが最後に評価されて、サーバへのアクセスは制限されません。
 つまり、マージの順番は重要ですので、注意して使用してください!</p>

@@ -67,7 +67,7 @@
       実装されていたものがフィルタとして実装されるようになったものは
       <code>PATH_INFO</code> のあるリクエストを受け付けません。<a href="mod/mod_include.html">INCLUDES</a> や
       <a href="http://www.php.net/">PHP</a> などのフィルタは
-      コアハンドラの上に実装されていますので、<code>PATH_INFO</code>
+      コアハンドラの上に実装されていますので、<code>PATH_INFO</code>
       付きのリクエストを拒否します。
       <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>
       ディレクティブを使ってコアハンドラが <code>PATH_INFO</code>
@@ -110,7 +110,7 @@
       上のディレクティブのデフォルト値を使っていた場合は、
       <code>httpd.conf</code> に <code>Include conf/access.conf</code> と
       <code>Include conf/srm.conf</code> を追加する必要があるでしょう。
-      以前のディレクティブによる順番のように Apache が設定ファイルを
+      以前のディレクティブによる順番のように Apache が設定ファイルを
       読み込むようにするためには、<code>httpd.conf</code> の最後に
       <code>srm.conf</code>、<code>access.conf</code> の順にそれぞれ
       <code class="directive"><a href="./mod/core.html#include">Include</a></code>

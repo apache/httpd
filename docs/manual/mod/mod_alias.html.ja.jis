@@ -88,7 +88,7 @@
     ファイル /ftp/pub/image/foo.gif を返します。</p>
 
     <p>もし <var>url-path</var> の最後に /
-    を書いたなら、サーバがエイリアスを展開するためには、最後の /
+    を書いたなら、サーバがエイリアスを展開するためには、最後の /
     が必要になることに注意してください。すなわち、<code>Alias /icons/
      /usr/local/apache/icons/</code> というものを使用している場合は、
     <code>/icons</code> という url はエイリアスされません。</p>
@@ -190,7 +190,7 @@ Redirect 系のディレクティブは Alias
 
       <dt>temp</dt>
 
-      <dd>一時的なリダイレクトステータス (302)
+      <dd>一時的なリダイレクトステータス (302)
       を返します。これがデフォルトです。</dd>
 
       <dt>seeother</dt>

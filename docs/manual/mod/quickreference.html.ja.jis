@@ -493,7 +493,7 @@ header for proxied requests</td></tr>
 <tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">クライアントが違う URL を取得するように外部への一時的な
 リダイレクトを送る</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removecharset">RemoveCharset
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>dh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
+    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>dh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</td></tr>
 <tr><td><a href="mod_mime.html#removeencoding">RemoveEncoding
     <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
@@ -587,7 +587,7 @@ server</td></tr>
 <tr><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">include 要素を終了させる文字列</td></tr>
 <tr class="odd"><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">SSI のエラーがあったときに表示されるエラーメッセージ</td></tr>
 <tr><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">include 要素を開始する文字列</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>formatstring</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">日付けを現す文字列の書式を設定する</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>formatstring</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">日付けを現す文字列の書式を設定する</td></tr>
 <tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>string</var></a></td><td> "(none)" </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">未定義の変数が echo されたときに表示される文字列</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates 
 for Client Auth</td></tr>
