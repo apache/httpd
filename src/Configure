@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: Configure,v 1.35 1996/11/12 05:22:02 fielding Exp $
+# $Id: Configure,v 1.36 1996/11/20 05:12:57 brian Exp $
 trap 'rm -f $tmpfile; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
@@ -241,6 +241,7 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DSOLARIS2"
 	LIBS="$LIBS -lsocket -lnsl"
         DBM_LIB=""
+	DEF_WANTHSREGEX=yes
 	;;
     *-sunos4*)
 	OS='SunOS 4'
