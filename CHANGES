@@ -2,10 +2,14 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
+     mod_rewrite proxied URLs will not be escaped accidentally by
+     mod_proxy's fixup. PR 16368  [André Malo]
+
   *) While processing filters on internal redirects, remember seen EOS
      buckets also in the request structure of the redirect issuer(s). This
-     prevents filters (such as mod_deflate) to add garbage to the response.
-     PR 14451.  [André Malo]
+     prevents filters (such as mod_deflate) from adding garbage to the
+     response. PR 14451.  [André Malo]
 
   *) Allow restart of httpd to occur even with syntax errors in the config
      file.  PR 16813.  [Justin Erenkrantz]

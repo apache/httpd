@@ -1109,6 +1109,11 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 static void register_hooks(apr_pool_t *p)
 {
+    /* fixup before mod_rewrite, so that the proxied url will not
+     * escaped accidentally by our fixup.
+     */
+    static const char * const aszSucc[]={ "mod_rewrite.c", NULL };
+
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
@@ -1116,7 +1121,7 @@ static void register_hooks(apr_pool_t *p)
     /* walk <Proxy > entries and suppress default TRACE behavior */
     ap_hook_map_to_storage(proxy_map_location, NULL,NULL, APR_HOOK_FIRST);
     /* fixups */
-    ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_fixups(proxy_fixup, NULL, aszSucc, APR_HOOK_FIRST);
     /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
     /* post config handling */
