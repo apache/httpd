@@ -437,8 +437,8 @@ do
             OOIFS="$IFS"  # most likely not needed: jmj
             IFS="$DIFS"   # ditto
             for var in prefix exec_prefix bindir sbindir libexecdir mandir \
-                       sysconfdir datadir includedir localstatedir runtimedir \
-                       logfiledir proxycachedir; do
+                       sysconfdir datadir iconsdir htdocsdir cgidir includedir \
+                       localstatedir runtimedir logfiledir proxycachedir; do
                 eval "val=\"\$$var\""
                 case $val in
                     *+ )
@@ -1004,8 +1004,9 @@ fi
 OIFS="$IFS"
 IFS="$DIFS"
 for var in prefix exec_prefix bindir sbindir libexecdir mandir \
-           sysconfdir datadir includedir localstatedir runtimedir \
-           logfiledir proxycachedir suexec_docroot suexec_logexec; do
+           sysconfdir datadir iconsdir htdocsdir cgidir includedir \
+           localstatedir runtimedir logfiledir proxycachedir \
+           suexec_docroot suexec_logexec; do
     eval "val=\"\$$var\"";
     val=`echo $val | sed -e 's:/*$::'`
     eval "$var=\"$val\""
@@ -1111,6 +1112,9 @@ if [ "x$show_layout" = "x1" ]; then
     echo "               mandir: $mandir" 
     echo "           sysconfdir: $sysconfdir" 
     echo "              datadir: $datadir" 
+    echo "             iconsdir: $iconsdir" 
+    echo "            htdocsdir: $htdocsdir" 
+    echo "               cgidir: $cgidir" 
     echo "           includedir: $includedir" 
     echo "        localstatedir: $localstatedir" 
     echo "           runtimedir: $runtimedir" 
@@ -1173,6 +1177,9 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@mandir@%$mandir%g" \
 -e "s%@sysconfdir@%$sysconfdir%g" \
 -e "s%@datadir@%$datadir%g" \
+-e "s%@iconsdir@%$iconsdir%g" \
+-e "s%@htdocsdir@%$htdocsdir%g" \
+-e "s%@cgidir@%$cgidir%g" \
 -e "s%@localstatedir@%$localstatedir%g" \
 -e "s%@includedir@%$includedir%g" \
 -e "s%@runtimedir@%$runtimedir%g" \
