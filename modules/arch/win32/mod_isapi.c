@@ -121,16 +121,6 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
                                    LPVOID lpvBuffer, LPDWORD lpdwSize,
                                    LPDWORD lpdwDataType);
 
-/*
-    The optimiser blows it totally here. What happens is that autos are addressed relative to the
-    stack pointer, which, of course, moves around. The optimiser seems to lose track of it somewhere
-    between setting HttpExtensionProc's address and calling through it. We work around the problem by 
-    forcing it to use frame pointers.
-
-    The revisions below may eliminate this artifact.
-*/
-#pragma optimize("y",off)
-
 /* Our isapi server config structure */
 
 typedef struct {
@@ -547,7 +537,6 @@ apr_status_t isapi_handler (request_rec *r)
     
     return OK;		/* NOT r->status, even if it has changed. */
 }
-#pragma optimize("",on)
 
 BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
                                LPVOID lpvBuffer, LPDWORD lpdwSizeofBuffer)
