@@ -41,9 +41,6 @@ Changes with Apache 2.1.0-dev
   *) Added proxy_ajp.c module for proxy support to ajp:// backends.
      [Jean Frederic Clere]
 
-  *) mod_disk_cache: Implement binary format for on-disk header files.
-     [Brian Akins <bakins web.turner.com>, Justin Erenkrantz]
-
   *) Fixes the build of proxy on Windows. Since the proxy_module is declared
      as extern using AP_MODULE_DECLARE_DATA that expands to dllexport, there
      is a LNK2001 error when building proxy_http. [Mladen Turk]
@@ -417,6 +414,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) mod_disk_cache: Implement binary format for on-disk header files.
+     [Brian Akins <bakins web.turner.com>, Justin Erenkrantz]
 
   *) mod_autoindex: Don't truncate the directory listing if a stat()
      call fails (for instance on a >2Gb file).  PR 17357.
