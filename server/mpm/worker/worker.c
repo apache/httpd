@@ -1457,8 +1457,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     if (shutdown_pending) {
         /* Time to gracefully shut down:
          * Kill child processes, tell them to call child_exit, etc...
+         * (By "gracefully" we don't mean graceful in the same sense as 
+         * "apachectl graceful" where we allow old connections to finish.)
          */
-        ap_mpm_pod_killpg(pod, ap_daemons_limit, TRUE);
+        ap_mpm_pod_killpg(pod, ap_daemons_limit, FALSE);
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
 
         if (!child_fatal) {
