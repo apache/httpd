@@ -79,6 +79,7 @@ extern "C" {
 #include "ap_config.h"
 #include "ap_mmn.h"
 
+#include "release.h"
 #include "os.h"
 
 #include "apr_tables.h"
@@ -277,12 +278,6 @@ extern "C" {
 #define DEFAULT_INDEXING 0
 #endif
 #endif /* CORE_PRIVATE */
-
-#define AP_SERVER_BASEVENDOR "Apache Software Foundation"
-#define AP_SERVER_BASEPRODUCT "Apache"
-#define AP_SERVER_BASEREVISION "2.0b1-dev"
-#define AP_SERVER_BASEVERSION AP_SERVER_BASEPRODUCT "/" AP_SERVER_BASEREVISION
-#define AP_SERVER_VERSION  AP_SERVER_BASEVERSION
 
 #define AP_SERVER_PROTOCOL "HTTP/1.1"
 
