@@ -185,7 +185,7 @@ Side Includes</a>를 처리한다.<br />
 <dd><a href="#http">HTTP</a> 요청과 응답에서 실제 내용 이전에
 보내는 부분으로 내용을 설명하는 정보가 있다.</dd>
 
-<dt><a name=".htaccess">.htaccess</a></dt> <dd>웹문서들 안에 있는
+<dt><a name="htaccess">.htaccess</a></dt> <dd>웹문서들 안에 있는
 <a href="#configurationfile">설정파일 (configuration file)</a>로,
 설정 <a href="#directive">지시어 (directive)</a>를 자신이 위치한
 디렉토리와 모든 하위디렉토리에 적용한다. 이름과 달리 이
