@@ -1066,6 +1066,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
     const char *server;
     header_struct h;
     apr_size_t len;
+    struct iovec vec[4];
 
     if (r->assbackwards) {
         /* there are no headers to send */
@@ -1074,8 +1075,15 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
 
     /* Output the HTTP/1.x Status-Line and the Date and Server fields */
 
-    tmp = apr_pstrcat(r->pool, protocol, " ", r->status_line, CRLF, NULL);
-    len = strlen(tmp);
+    vec[0].iov_base = (void *)protocol;
+    vec[0].iov_len  = strlen(protocol);
+    vec[1].iov_base = (void *)" ";
+    vec[1].iov_len  = sizeof(" ") - 1;
+    vec[2].iov_base = (void *)(r->status_line);
+    vec[2].iov_len  = strlen(r->status_line);
+    vec[3].iov_base = (void *)CRLF;
+    vec[3].iov_len  = sizeof(CRLF) - 1;
+    tmp = apr_pstrcatv(r->pool, vec, 4, &len);
     ap_xlate_proto_to_ascii(tmp, len);
     apr_brigade_write(bb, NULL, NULL, tmp, len);
 
