@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) table_set() and table_unset() did not deal correctly with
+     multiple occurrences of the same key. [Stephen Scheck
+	 <sscheck@infonex.net>, Ben Laurie] PR#1604
+
   *) Correct handling of quotation marks in AuthName realm names; as a
      byproduct, a new function: ap_escape_quotes().  [Ken Coar] PR#1195
 

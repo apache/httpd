@@ -732,11 +732,12 @@ API_EXPORT(void) table_set(table *t, const char *key, const char *val)
     table_entry *elts = (table_entry *) t->elts;
     int done = 0;
 
-    for (i = 0; i < t->nelts; ++i)
+    for (i = 0; i < t->nelts; )
 	if (!strcasecmp(elts[i].key, key)) {
 	    if (!done) {
 		elts[i].val = pstrdup(t->pool, val);
 		done = 1;
+		++i;
 	    }
 	    else {		/* delete an extraneous element */
 		for (j = i, k = i + 1; k < t->nelts; ++j, ++k) {
@@ -746,6 +747,7 @@ API_EXPORT(void) table_set(table *t, const char *key, const char *val)
 		--t->nelts;
 	    }
 	}
+	else ++i;
 
     if (!done) {
 	elts = (table_entry *) push_array(t);
@@ -759,7 +761,7 @@ API_EXPORT(void) table_unset(table *t, const char *key)
     register int i, j, k;
     table_entry *elts = (table_entry *) t->elts;
 
-    for (i = 0; i < t->nelts; ++i)
+    for (i = 0; i < t->nelts; )
 	if (!strcasecmp(elts[i].key, key)) {
 
 	    /* found an element to skip over
@@ -773,6 +775,7 @@ API_EXPORT(void) table_unset(table *t, const char *key)
 	    }
 	    --t->nelts;
 	}
+	else ++i;
 }
 
 API_EXPORT(void) table_merge(table *t, const char *key, const char *val)
