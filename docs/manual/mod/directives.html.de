@@ -88,7 +88,6 @@
 <li><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></li>
 <li><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize</a></li>
 <li><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></li>
-<li><a href="mod_authnz_ldap.html#authldapauthoritative">AuthLDAPAuthoritative</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></li>
 <li><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
@@ -105,6 +104,7 @@
 <li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
 <li><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative</a></li>
 <li><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
+<li><a href="mod_authnz_ldap.html#authzldapauthoritative">AuthzLDAPAuthoritative</a></li>
 <li><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
 <li><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative</a></li>
 <li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
