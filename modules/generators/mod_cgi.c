@@ -767,7 +767,7 @@ static int cgi_handler(request_rec *r)
 	ap_send_http_header(r);
 	if (!r->header_only) {
             bb = apr_brigade_create(r->pool);
-	    b = apr_bucket_pipe_creat(script_in);
+	    b = apr_bucket_pipe_create(script_in);
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_eos_create();
 	    APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -780,7 +780,7 @@ static int cgi_handler(request_rec *r)
 
     if (script_in && nph) {
         bb = apr_brigade_create(r->pool);
-	b = apr_bucket_pipe_creat(script_in);
+	b = apr_bucket_pipe_create(script_in);
 	APR_BRIGADE_INSERT_TAIL(bb, b);
 	b = apr_bucket_eos_create();
 	APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -893,7 +893,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     }
 
     bcgi = apr_brigade_create(r->pool);
-    b = apr_bucket_pipe_creat(script_in);
+    b = apr_bucket_pipe_create(script_in);
     APR_BRIGADE_INSERT_TAIL(bcgi, b);
     ap_pass_brigade(f->next, bcgi);
 
