@@ -2193,9 +2193,6 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     ap_directive_t *conftree = NULL;
     const char* conffile = ap_server_root_relative(cmd->pool, name);
 
-    /* XXX: ap_server_root_relative won't work on the wildcard pattern...
-     */
-    
     if (!conffile) {
         return apr_pstrcat(cmd->pool, "Invalid Include path ", 
                            name, NULL);
