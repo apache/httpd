@@ -432,137 +432,6 @@ static int wait_or_timeout(ap_wait_t *status)
     return -1;
 }
 
-#if defined(NSIG)
-#define NumSIG NSIG
-#elif defined(_NSIG)
-#define NumSIG _NSIG
-#elif defined(__NSIG)
-#define NumSIG __NSIG
-#else
-#define NumSIG 32   /* for 1998's unixes, this is still a good assumption */
-#endif
-
-#ifdef SYS_SIGLIST /* platform has sys_siglist[] */
-#define INIT_SIGLIST()  /*nothing*/
-#else /* platform has no sys_siglist[], define our own */
-#define SYS_SIGLIST ap_sys_siglist
-#define INIT_SIGLIST() siglist_init();
-
-const char *ap_sys_siglist[NumSIG];
-
-static void siglist_init(void)
-{
-    int sig;
-
-    ap_sys_siglist[0] = "Signal 0";
-#ifdef SIGHUP
-    ap_sys_siglist[SIGHUP] = "Hangup";
-#endif
-#ifdef SIGINT
-    ap_sys_siglist[SIGINT] = "Interrupt";
-#endif
-#ifdef SIGQUIT
-    ap_sys_siglist[SIGQUIT] = "Quit";
-#endif
-#ifdef SIGILL
-    ap_sys_siglist[SIGILL] = "Illegal instruction";
-#endif
-#ifdef SIGTRAP
-    ap_sys_siglist[SIGTRAP] = "Trace/BPT trap";
-#endif
-#ifdef SIGIOT
-    ap_sys_siglist[SIGIOT] = "IOT instruction";
-#endif
-#ifdef SIGABRT
-    ap_sys_siglist[SIGABRT] = "Abort";
-#endif
-#ifdef SIGEMT
-    ap_sys_siglist[SIGEMT] = "Emulator trap";
-#endif
-#ifdef SIGFPE
-    ap_sys_siglist[SIGFPE] = "Arithmetic exception";
-#endif
-#ifdef SIGKILL
-    ap_sys_siglist[SIGKILL] = "Killed";
-#endif
-#ifdef SIGBUS
-    ap_sys_siglist[SIGBUS] = "Bus error";
-#endif
-#ifdef SIGSEGV
-    ap_sys_siglist[SIGSEGV] = "Segmentation fault";
-#endif
-#ifdef SIGSYS
-    ap_sys_siglist[SIGSYS] = "Bad system call";
-#endif
-#ifdef SIGPIPE
-    ap_sys_siglist[SIGPIPE] = "Broken pipe";
-#endif
-#ifdef SIGALRM
-    ap_sys_siglist[SIGALRM] = "Alarm clock";
-#endif
-#ifdef SIGTERM
-    ap_sys_siglist[SIGTERM] = "Terminated";
-#endif
-#ifdef SIGUSR1
-    ap_sys_siglist[SIGUSR1] = "User defined signal 1";
-#endif
-#ifdef SIGUSR2
-    ap_sys_siglist[SIGUSR2] = "User defined signal 2";
-#endif
-#ifdef SIGCLD
-    ap_sys_siglist[SIGCLD] = "Child status change";
-#endif
-#ifdef SIGCHLD
-    ap_sys_siglist[SIGCHLD] = "Child status change";
-#endif
-#ifdef SIGPWR
-    ap_sys_siglist[SIGPWR] = "Power-fail restart";
-#endif
-#ifdef SIGWINCH
-    ap_sys_siglist[SIGWINCH] = "Window changed";
-#endif
-#ifdef SIGURG
-    ap_sys_siglist[SIGURG] = "urgent socket condition";
-#endif
-#ifdef SIGPOLL
-    ap_sys_siglist[SIGPOLL] = "Pollable event occurred";
-#endif
-#ifdef SIGIO
-    ap_sys_siglist[SIGIO] = "socket I/O possible";
-#endif
-#ifdef SIGSTOP
-    ap_sys_siglist[SIGSTOP] = "Stopped (signal)";
-#endif
-#ifdef SIGTSTP
-    ap_sys_siglist[SIGTSTP] = "Stopped";
-#endif
-#ifdef SIGCONT
-    ap_sys_siglist[SIGCONT] = "Continued";
-#endif
-#ifdef SIGTTIN
-    ap_sys_siglist[SIGTTIN] = "Stopped (tty input)";
-#endif
-#ifdef SIGTTOU
-    ap_sys_siglist[SIGTTOU] = "Stopped (tty output)";
-#endif
-#ifdef SIGVTALRM
-    ap_sys_siglist[SIGVTALRM] = "virtual timer expired";
-#endif
-#ifdef SIGPROF
-    ap_sys_siglist[SIGPROF] = "profiling timer expired";
-#endif
-#ifdef SIGXCPU
-    ap_sys_siglist[SIGXCPU] = "exceeded cpu limit";
-#endif
-#ifdef SIGXFSZ
-    ap_sys_siglist[SIGXFSZ] = "exceeded file size limit";
-#endif
-    for (sig=0; sig < sizeof(ap_sys_siglist)/sizeof(ap_sys_siglist[0]); ++sig)
-        if (ap_sys_siglist[sig] == NULL)
-            ap_sys_siglist[sig] = "";
-}
-#endif /* platform has sys_siglist[] */
-
 /* handle all varieties of core dumping signals */
 static void sig_coredump(int sig)
 {
@@ -803,7 +672,7 @@ static void process_child_status(int pid, ap_wait_t status)
 	}
     }
 }
- 
+
 static int setup_listeners(pool *pconf, server_rec *s)
 {
     ap_listen_rec *lr;
