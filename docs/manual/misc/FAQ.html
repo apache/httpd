@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.114 $ ($Date: 1998/05/05 05:09:31 $)
+  $Revision: 1.115 $ ($Date: 1998/05/20 11:12:42 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -282,6 +282,8 @@
    </LI>
    <LI><A HREF="#zoom">What's the best hardware/operating system/... How do
         I get the most out of my Apache Web server?</A>
+   </LI>
+   <LI><A HREF="#regex">What are "regular expressions"?</A>
    </LI>
   </OL>
  </LI>
@@ -2277,6 +2279,26 @@
   </P>
   <HR>
  </LI>
+ <LI><A NAME="regex">
+      <STRONG>What are "regular expressions"?</STRONG></A>
+   <P>
+   Regular expressions are a way of describing a pattern - for example, "all the words
+   that begin with the letter A" or "every 10-digit phone number" or even "Every sentence
+   with two commas in it, and no capital letter Q".  Regular expressions (aka "regexp"s)
+   are useful in Apache because they let you apply certain attributes against collections
+   of files or resources in very flexible ways - for example, all .gif and .jpg files under
+   any "images" directory could be written as /.*\/images\/.*[jpg|gif]/.
+
+   <P>The best overview around is probably the one which comes with
+   Perl.  We implement a simple subset of Perl's regexp support, but
+   it's still a good way to learn what they mean.  You can start by
+   going to the <A
+   HREF="http://www.perl.com/CPAN-local/doc/manual/html/pod/perlre.html#Version_8_Regular_Expresions">CPAN
+   page on regular expressions</A>, and branching out from there.
+
+  <HR>
+  </LI>
+
   <!-- Don't forget to add HR tags at the end of each list item.. -->
 
 </OL>
