@@ -662,7 +662,14 @@ int read_types_multi (negotiation_state *neg)
 	 */
 	
 	sub_req = sub_req_lookup_file (dir_entry->d_name, r);
-	
+
+	/* If it has a handler, we'll pretend it's a CGI script,
+	 * since that's a good indication of the sort of thing it
+	 * might be doing.
+	 */
+	if (sub_req->handler && !sub_req->content_type)
+	  sub_req->content_type = CGI_MAGIC_TYPE;
+
 	if (sub_req->status != 200 || !sub_req->content_type) continue;
 	
 	/* If it's a map file, we use that instead of the map
