@@ -128,8 +128,9 @@ typedef struct {
 /* pull this in from the other source file */
 extern const dav_hooks_locks dav_hooks_locks_fs;
 
-/* forward-declare this sucker */
+/* forward-declare the hook structures */
 static const dav_hooks_repository dav_hooks_repository_fs;
+static const dav_hooks_liveprop dav_hooks_liveprop_fs;
 
 /*
 ** The namespace URIs that we use. This list and the enumeration must
@@ -148,45 +149,66 @@ enum {
 };
 
 /*
-** The properties that we define.
+** The single property that we define (in the DAV_FS_URI_MYPROPS namespace)
 */
-enum {
-    /* using DAV_FS_URI_DAV */
-    DAV_PROPID_FS_creationdate = DAV_PROPID_FS,
-    DAV_PROPID_FS_displayname,
-    DAV_PROPID_FS_getcontentlength,
-    DAV_PROPID_FS_getetag,
-    DAV_PROPID_FS_getlastmodified,
-    DAV_PROPID_FS_source,
+#define DAV_PROPID_FS_executable        1
 
-    /* using DAV_FS_URI_MYPROPS */
-    DAV_PROPID_FS_executable
-};
-/* NOTE: the magic "200" is derived from the ranges in mod_dav.h */
-#define DAV_PROPID_FS_OURS(id)	(DAV_PROPID_FS <= (id) && \
-				 (id) < DAV_PROPID_FS + 200)
-
-typedef struct {
-    int ns;
-    const char * name;
-
-    int propid;
-} dav_fs_liveprop_name;
-
-static const dav_fs_liveprop_name dav_fs_props[] =
+static const dav_liveprop_spec dav_fs_props[] =
 {
-    { DAV_FS_URI_DAV,     "creationdate",     DAV_PROPID_FS_creationdate },
-    { DAV_FS_URI_DAV,     "getcontentlength", DAV_PROPID_FS_getcontentlength },
-    { DAV_FS_URI_DAV,     "getetag",          DAV_PROPID_FS_getetag },
-    { DAV_FS_URI_DAV,     "getlastmodified",  DAV_PROPID_FS_getlastmodified },
+    {
+        DAV_FS_URI_DAV,
+        "creationdate",
+        DAV_PROPID_creationdate,
+        0
+    },
+    {
+        DAV_FS_URI_DAV,
+        "getcontentlength",
+        DAV_PROPID_getcontentlength,
+        0
+    },
+    {
+        DAV_FS_URI_DAV,
+        "getetag",
+        DAV_PROPID_getetag,
+        0
+    },
+    {
+        DAV_FS_URI_DAV,
+        "getlastmodified",
+        DAV_PROPID_getlastmodified,
+        0
+    },
 
-    { DAV_FS_URI_MYPROPS, "executable",       DAV_PROPID_FS_executable },
+    {
+        DAV_FS_URI_MYPROPS,
+        "executable",
+        DAV_PROPID_FS_executable,
+        0       /* handled special in dav_fs_is_writeable */
+    },
       
     /* ### these aren't FS specific */
-    { DAV_FS_URI_DAV,     "displayname",      DAV_PROPID_FS_displayname },
-    { DAV_FS_URI_DAV,     "source",           DAV_PROPID_FS_source },
+    {
+        DAV_FS_URI_DAV,
+        "displayname",
+        DAV_PROPID_displayname,
+        1,
+    },
+    {
+        DAV_FS_URI_DAV,
+        "source",
+        DAV_PROPID_source,
+        1,
+    },
 
     { 0 }	/* sentinel */
+};
+
+static const dav_liveprop_group dav_fs_liveprop_group =
+{
+    dav_fs_props,
+    dav_fs_namespace_uris,
+    &dav_hooks_liveprop_fs
 };
 
 
@@ -1694,30 +1716,6 @@ static const dav_hooks_repository dav_hooks_repository_fs =
     dav_fs_getetag,
 };
 
-static int dav_fs_find_prop(const char *ns_uri, const char *name)
-{
-    const dav_fs_liveprop_name *scan;
-    int ns;
-
-    if (*ns_uri == 'h'
-	&& strcmp(ns_uri, dav_fs_namespace_uris[DAV_FS_URI_MYPROPS]) == 0) {
-	ns = DAV_FS_URI_MYPROPS;
-    }
-    else if (*ns_uri == 'D' && strcmp(ns_uri, "DAV:") == 0) {
-	ns = DAV_FS_URI_DAV;
-    }
-    else {
-	/* we don't define this property */
-	return 0;
-    }
-
-    for (scan = dav_fs_props; scan->name != NULL; ++scan)
-	if (ns == scan->ns && strcmp(name, scan->name) == 0)
-	    return scan->propid;
-
-    return 0;
-}
-
 static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 					  int propid, int insvalue,
 					  ap_text_header *phdr)
@@ -1726,15 +1724,12 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     const char *s;
     dav_prop_insert which;
     apr_pool_t *p = resource->info->pool;
-    const dav_fs_liveprop_name *scan;
-    int ns;
+    const dav_liveprop_spec *info;
+    int global_ns;
 
     /* an HTTP-date can be 29 chars plus a null term */
     /* a 64-bit size can be 20 chars plus a null term */
     char buf[DAV_TIMEBUF_SIZE];
-
-    if (!DAV_PROPID_FS_OURS(propid))
-	return DAV_PROP_INSERT_NOTME;
 
     /*
     ** None of FS provider properties are defined if the resource does not
@@ -1745,14 +1740,14 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     ** look there for the value.
     **
     ** Even though we state that the FS properties are not defined, the
-    ** client cannot store dead values -- we deny that thru the is_writable
+    ** client cannot store dead values -- we deny that thru the is_writeable
     ** hook function.
     */
     if (!resource->exists)
 	return DAV_PROP_INSERT_NOTDEF;
 
     switch (propid) {
-    case DAV_PROPID_FS_creationdate:
+    case DAV_PROPID_creationdate:
 	/*
 	** Closest thing to a creation date. since we don't actually
 	** perform the operations that would modify ctime (after we
@@ -1764,7 +1759,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	value = buf;
 	break;
 
-    case DAV_PROPID_FS_getcontentlength:
+    case DAV_PROPID_getcontentlength:
 	/* our property, but not defined on collection resources */
 	if (resource->collection)
 	    return DAV_PROP_INSERT_NOTDEF;
@@ -1773,11 +1768,11 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	value = buf;
 	break;
 
-    case DAV_PROPID_FS_getetag:
+    case DAV_PROPID_getetag:
 	value = dav_fs_getetag(resource);
 	break;
 
-    case DAV_PROPID_FS_getlastmodified:
+    case DAV_PROPID_getlastmodified:
 	dav_format_time(DAV_STYLE_RFC822,
                         resource->info->finfo.mtime,
                         buf);
@@ -1801,8 +1796,8 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	break;
 #endif /* WIN32 */
 
-    case DAV_PROPID_FS_displayname:
-    case DAV_PROPID_FS_source:
+    case DAV_PROPID_displayname:
+    case DAV_PROPID_source:
     default:
 	/*
 	** This property is not defined. However, it may be a dead
@@ -1813,26 +1808,20 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 
     /* assert: value != NULL */
 
-    for (scan = dav_fs_props; scan->name != NULL; ++scan)
-	if (scan->propid == propid)
-	    break;
+    /* get the information and global NS index for the property */
+    global_ns = dav_get_liveprop_info(propid, &dav_fs_liveprop_group, &info);
 
-    /* assert: scan->name != NULL */
-
-    /* map our namespace into a global NS index */
-    ns = dav_get_liveprop_ns_index(dav_fs_namespace_uris[scan->ns]);
+    /* assert: info != NULL && info->name != NULL */
 
     /* DBG3("FS: inserting lp%d:%s  (local %d)", ns, scan->name, scan->ns); */
 
     if (insvalue) {
-	/* use D: prefix to refer to the DAV: namespace URI */
 	s = apr_psprintf(p, "<lp%d:%s>%s</lp%d:%s>" DEBUG_CR,
-			ns, scan->name, value, ns, scan->name);
+                         global_ns, info->name, value, global_ns, info->name);
 	which = DAV_PROP_INSERT_VALUE;
     }
     else {
-	/* use D: prefix to refer to the DAV: namespace URI */
-	s = apr_psprintf(p, "<lp%d:%s/>" DEBUG_CR, ns, scan->name);
+	s = apr_psprintf(p, "<lp%d:%s/>" DEBUG_CR, global_ns, info->name);
 	which = DAV_PROP_INSERT_NAME;
     }
     ap_text_append(p, phdr, s);
@@ -1841,57 +1830,18 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
     return which;
 }
 
-static void dav_fs_insert_all(const dav_resource *resource, int insvalue,
-			      ap_text_header *phdr)
+static int dav_fs_is_writeable(const dav_resource *resource, int propid)
 {
-    if (!resource->exists) {
-	/* a lock-null resource */
-	/*
-	** ### technically, we should insert empty properties. dunno offhand
-	** ### what part of the spec said this, but it was essentially thus:
-	** ### "the properties should be defined, but may have no value".
-	*/
-	return;
-    }
-
-    (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_creationdate,
-			      insvalue, phdr);
-    (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_getcontentlength,
-			      insvalue, phdr);
-    (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_getlastmodified,
-			      insvalue, phdr);
-    (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_getetag,
-			      insvalue, phdr);
+    const dav_liveprop_spec *info;
 
 #ifndef WIN32
-    /*
-    ** Note: this property is not defined on the Win32 platform.
-    **       dav_fs_insert_prop() won't insert it, but we may as
-    **       well not even call it.
-    */
-    (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_executable,
-			      insvalue, phdr);
+    /* this property is not usable (writeable) on the Win32 platform */
+    if (propid == DAV_PROPID_FS_executable && !resource->collection)
+	return 1;
 #endif
 
-    /* ### we know the others aren't defined as liveprops */
-}
-
-static dav_prop_rw dav_fs_is_writeable(const dav_resource *resource,
-				       int propid)
-{
-    if (!DAV_PROPID_FS_OURS(propid))
-	return DAV_PROP_RW_NOTME;
-
-    if (propid == DAV_PROPID_FS_displayname
-	|| propid == DAV_PROPID_FS_source
-#ifndef WIN32
-        /* this property is not usable (writeable) on the Win32 platform */
-	|| (propid == DAV_PROPID_FS_executable && !resource->collection)
-#endif
-	)
-	return DAV_PROP_RW_YES;
-
-    return DAV_PROP_RW_NO;
+    (void) dav_get_liveprop_info(propid, &dav_fs_liveprop_group, &info);
+    return info->is_writable;
 }
 
 static dav_error *dav_fs_patch_validate(const dav_resource *resource,
@@ -2061,29 +2011,48 @@ void dav_fs_gather_propsets(apr_array_header_t *uris)
 int dav_fs_find_liveprop(request_rec *r, const char *ns_uri, const char *name,
                          const dav_hooks_liveprop **hooks)
 {
-    int propid = dav_fs_find_prop(ns_uri, name);
-
-    if (propid == 0)
-        return 0;
-
-    *hooks = &dav_hooks_liveprop_fs;
-    return propid;
+    return dav_do_find_liveprop(ns_uri, name, &dav_fs_liveprop_group, hooks);
 }
 
 void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
                                  int insvalue, ap_text_header *phdr)
 {
-    dav_fs_insert_all(resource, insvalue, phdr);
+    if (!resource->exists) {
+	/* a lock-null resource */
+	/*
+	** ### technically, we should insert empty properties. dunno offhand
+	** ### what part of the spec said this, but it was essentially thus:
+	** ### "the properties should be defined, but may have no value".
+	*/
+	return;
+    }
+
+    (void) dav_fs_insert_prop(resource, DAV_PROPID_creationdate,
+			      insvalue, phdr);
+    (void) dav_fs_insert_prop(resource, DAV_PROPID_getcontentlength,
+			      insvalue, phdr);
+    (void) dav_fs_insert_prop(resource, DAV_PROPID_getlastmodified,
+			      insvalue, phdr);
+    (void) dav_fs_insert_prop(resource, DAV_PROPID_getetag,
+			      insvalue, phdr);
+
+#ifndef WIN32
+    /*
+    ** Note: this property is not defined on the Win32 platform.
+    **       dav_fs_insert_prop() won't insert it, but we may as
+    **       well not even call it.
+    */
+    (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_executable,
+			      insvalue, phdr);
+#endif
+
+    /* ### we know the others aren't defined as liveprops */
 }
 
 void dav_fs_register(apr_pool_t *p)
 {
     /* register the namespace URIs */
-    const char * const * uris = dav_fs_namespace_uris;
-
-    for ( ; *uris != NULL; ++uris) {
-        dav_register_liveprop_namespace(p, *uris);
-    }
+    dav_register_liveprop_group(p, &dav_fs_liveprop_group);
 
     /* register the repository provider */
     dav_register_provider(p, "filesystem", &dav_fs_provider);

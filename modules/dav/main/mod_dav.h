@@ -581,12 +581,6 @@ DAV_DECLARE(void) dav_register_provider(apr_pool_t *p, const char *name,
                                         const dav_provider *hooks);
 const dav_provider * dav_lookup_provider(const char *name);
 
-DAV_DECLARE(void) dav_register_liveprop_namespace(apr_pool_t *pool, 
-                                                  const char *uri);
-DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri);
-int dav_get_liveprop_ns_count(void);
-void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr);
-
 
 /* ### deprecated */
 #define DAV_GET_HOOKS_PROPDB(r)         dav_get_propdb_hooks(r)
@@ -666,7 +660,6 @@ dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl);
 */
 
 typedef enum {
-    DAV_PROP_INSERT_NOTME,	/* prop not defined by this provider */
     DAV_PROP_INSERT_NOTDEF,	/* property is defined by this provider,
 				   but nothing was inserted because the
 				   (live) property is not defined for this
@@ -678,12 +671,6 @@ typedef enum {
 				   into the text block */
 } dav_prop_insert;
 
-typedef enum {
-    DAV_PROP_RW_NOTME,		/* not my property */
-    DAV_PROP_RW_NO,		/* property is NOT writeable */
-    DAV_PROP_RW_YES		/* property IS writeable */
-} dav_prop_rw;
-
 /* opaque type for PROPPATCH rollback information */
 typedef struct dav_liveprop_rollback dav_liveprop_rollback;
 
@@ -691,11 +678,9 @@ struct dav_hooks_liveprop
 {
     /*
     ** Insert a property name/value into a text block. The property to
-    ** insert is identified by the propid value. Providers should return
-    ** DAV_PROP_INSERT_NOTME if they do not define the specified propid.
-    ** If insvalue is true, then the property's value should be inserted;
-    ** otherwise, an empty element (ie. just the prop's name) should be
-    ** inserted.
+    ** insert is identified by the propid value. If insvalue is true,
+    ** then the property's value should be inserted; otherwise, an empty
+    ** element (ie. just the prop's name) should be inserted.
     **
     ** Returns one of DAV_PROP_INSERT_* based on what happened.
     **
@@ -711,9 +696,9 @@ struct dav_hooks_liveprop
     ** ### we may want a different semantic. i.e. maybe it should be
     ** ### "can we write <value> into this property?"
     **
-    ** Returns appropriate read/write status.
+    ** Returns 1 if the live property can be written, 0 if read-only.
     */
-    dav_prop_rw (*is_writeable)(const dav_resource *resource, int propid);
+    int (*is_writeable)(const dav_resource *resource, int propid);
 
     /*
     ** This member defines the set of namespace URIs that the provider
@@ -779,6 +764,136 @@ struct dav_hooks_liveprop
 				  int operation,
 				  void *context,
 				  dav_liveprop_rollback *rollback_ctx);
+};
+
+/*
+** dav_liveprop_spec: specify a live property
+**
+** This structure is used as a standard way to determine if a particular
+** property is a live property. Its use is not part of the mandated liveprop
+** interface, but can be used by liveprop providers in conjuction with the
+** utility routines below.
+*/
+typedef struct {
+    int ns;             /* provider-local namespace index */
+    const char *name;   /* name of the property */
+
+    int propid;         /* provider-local property ID */
+
+    int is_writable;    /* is the property writeable? */
+
+} dav_liveprop_spec;
+
+/*
+** dav_liveprop_group: specify a group of liveprops
+**
+** This structure specifies a group of live properties, their namespaces,
+** and how to handle them.
+*/
+typedef struct {
+    const dav_liveprop_spec *specs;
+    const char * const *namespace_uris;
+    const dav_hooks_liveprop *hooks;
+
+} dav_liveprop_group;
+
+/* ### docco */
+DAV_DECLARE(int) dav_do_find_liveprop(const char *ns_uri, const char *name,
+                                      const dav_liveprop_group *group,
+                                      const dav_hooks_liveprop **hooks);
+
+/* ### docco */
+DAV_DECLARE(int) dav_get_liveprop_info(int propid,
+                                       const dav_liveprop_group *group,
+                                       const dav_liveprop_spec **info);
+
+/* ### docco */
+DAV_DECLARE(void) dav_register_liveprop_group(apr_pool_t *pool, 
+                                              const dav_liveprop_group *group);
+
+/* ### docco */
+DAV_DECLARE(int) dav_get_liveprop_ns_index(const char *uri);
+
+/* ### docco */
+int dav_get_liveprop_ns_count(void);
+
+/* ### docco */
+void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr);
+
+/*
+** Standard WebDAV Property Identifiers
+**
+** A live property provider does not need to use these; they are simply
+** provided for convenience.
+**
+** Property identifiers need to be unique within a given provider, but not
+** *across* providers (note: this uniqueness constraint was different in
+** older versions of mod_dav).
+**
+** The identifiers start at 20000 to make it easier for providers to avoid
+** conflicts with the standard properties. The properties are arranged
+** alphabetically, and may be reordered from time to time (as properties
+** are introduced).
+**
+** NOTE: there is no problem with reordering (e.g. binary compat) since the
+** identifiers are only used within a given provider, which would pick up
+** the entire set of changes upon a recompile.
+*/
+enum {
+    DAV_PROPID_BEGIN = 20000,
+
+    /* Standard WebDAV properties (RFC 2518 and DeltaV I-D) */
+    DAV_PROPID_comment,                         /* from DeltaV I-D */
+    DAV_PROPID_creationdate,
+    DAV_PROPID_creator_displayname,             /* from DeltaV I-D */
+    DAV_PROPID_displayname,
+    DAV_PROPID_getcontentlanguage,
+    DAV_PROPID_getcontentlength,
+    DAV_PROPID_getcontenttype,
+    DAV_PROPID_getetag,
+    DAV_PROPID_getlastmodified,
+    DAV_PROPID_lockdiscovery,
+    DAV_PROPID_resourcetype,
+    DAV_PROPID_source,
+    DAV_PROPID_supportedlock,
+    DAV_PROPID_supported_method_set,            /* from DeltaV I-D */
+    DAV_PROPID_supported_live_property_set,     /* from DeltaV I-D */
+    DAV_PROPID_supported_report_set,            /* from DeltaV I-D */
+
+    /* DeltaV properties (from the I-D) */
+    DAV_PROPID_activity_collection_set,
+    DAV_PROPID_activity_set,
+    DAV_PROPID_auto_merge_set,
+    DAV_PROPID_auto_version,
+    DAV_PROPID_baseline_selector,
+    DAV_PROPID_baselined_collection,
+    DAV_PROPID_baselined_collection_set,
+    DAV_PROPID_checked_out,
+    DAV_PROPID_checkin_date,
+    DAV_PROPID_checkin_fork,
+    DAV_PROPID_checkout_fork,
+    DAV_PROPID_checkout_set,
+    DAV_PROPID_current_activity_set,
+    DAV_PROPID_current_workspace_set,
+    DAV_PROPID_initial_version,
+    DAV_PROPID_label_name_set,
+    DAV_PROPID_latest_version,
+    DAV_PROPID_merge_set,
+    DAV_PROPID_mutable,
+    DAV_PROPID_predecessor_set,
+    DAV_PROPID_subactivity_set,
+    DAV_PROPID_successor_set,
+    DAV_PROPID_target,
+    DAV_PROPID_unreserved,
+    DAV_PROPID_version,
+    DAV_PROPID_version_history,
+    DAV_PROPID_version_name,
+    DAV_PROPID_version_set,
+    DAV_PROPID_workspace,
+    DAV_PROPID_workspace_checkout_set,
+    DAV_PROPID_workspace_collection_set,
+
+    DAV_PROPID_END
 };
 
 /*
