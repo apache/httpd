@@ -32,6 +32,7 @@
 #include "apr_optional.h"
 #include "apr_buckets.h"
 #include "apr_lib.h"
+#include "apr_poll.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -191,13 +192,14 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
 
 /* Soak up stderr from a script and redirect it to the error log. 
  */
-static void log_script_err(request_rec *r, apr_file_t *script_err)
+static apr_status_t log_script_err(request_rec *r, apr_file_t *script_err)
 {
     char argsbuffer[HUGE_STRING_LEN];
     char *newline;
+    apr_status_t rv;
 
-    while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
-                         script_err) == APR_SUCCESS) {
+    while ((rv = apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+                               script_err)) == APR_SUCCESS) {
         newline = strchr(argsbuffer, '\n');
         if (newline) {
             *newline = '\0';
@@ -205,6 +207,8 @@ static void log_script_err(request_rec *r, apr_file_t *script_err)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, 
                       "%s", argsbuffer);            
     }
+
+    return rv;
 }
 
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
@@ -539,6 +543,172 @@ static void discard_script_output(apr_bucket_brigade *bb)
     }
 }
 
+#if APR_FILES_AS_SOCKETS
+
+/* A CGI bucket type is needed to catch any output to stderr from the
+ * script; see PR 22030. */
+static const apr_bucket_type_t bucket_type_cgi;
+
+struct cgi_bucket_data {
+    apr_pollset_t *pollset;
+    request_rec *r;
+};
+
+/* Create a CGI bucket using pipes from script stdout 'out'
+ * and stderr 'err', for request 'r'. */
+static apr_bucket *cgi_bucket_create(request_rec *r,
+                                     apr_file_t *out, apr_file_t *err,
+                                     apr_bucket_alloc_t *list)
+{
+    apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
+    apr_status_t rv;
+    apr_pollfd_t fd;
+    struct cgi_bucket_data *data = apr_palloc(r->pool, sizeof *data);
+    
+    APR_BUCKET_INIT(b);
+    b->free = apr_bucket_free;
+    b->list = list;
+    b->type = &bucket_type_cgi;
+    b->length = (apr_size_t)(-1);
+    b->start = -1;
+
+    /* Create the pollset */
+    rv = apr_pollset_create(&data->pollset, 2, r->pool, 0);
+    AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+
+    fd.desc_type = APR_POLL_FILE;
+    fd.reqevents = APR_POLLIN;
+    fd.p = r->pool;
+    fd.desc.f = out; /* script's stdout */
+    fd.client_data = (void *)1;
+    rv = apr_pollset_add(data->pollset, &fd);
+    AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+    
+    fd.desc.f = err; /* script's stderr */
+    fd.client_data = (void *)2;
+    rv = apr_pollset_add(data->pollset, &fd);
+    AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+    
+    data->r = r;
+    b->data = data;
+    return b;
+}
+
+/* Create a duplicate CGI bucket using given bucket data */
+static apr_bucket *cgi_bucket_dup(struct cgi_bucket_data *data,
+                                  apr_bucket_alloc_t *list)
+{
+    apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
+    APR_BUCKET_INIT(b);
+    b->free = apr_bucket_free;
+    b->list = list;
+    b->type = &bucket_type_cgi;
+    b->length = (apr_size_t)(-1);
+    b->start = -1;
+    b->data = data;
+    return b;
+}
+
+/* Handle stdout from CGI child.  Duplicate of logic from the _read
+ * method of the real APR pipe bucket implementation. */
+static apr_status_t cgi_read_stdout(apr_bucket *a, apr_file_t *out,
+                                    const char **str, apr_size_t *len)
+{
+    char *buf;
+    apr_status_t rv;
+
+    *str = NULL;
+    *len = APR_BUCKET_BUFF_SIZE;
+    buf = apr_bucket_alloc(*len, a->list); /* XXX: check for failure? */
+
+    rv = apr_file_read(out, buf, len);
+
+    if (rv != APR_SUCCESS && rv != APR_EOF) {
+        apr_bucket_free(buf);
+        return rv;
+    }
+
+    if (*len > 0) {
+        struct cgi_bucket_data *data = a->data;
+        apr_bucket_heap *h;
+
+        /* Change the current bucket to refer to what we read */
+        a = apr_bucket_heap_make(a, buf, *len, apr_bucket_free);
+        h = a->data;
+        h->alloc_len = APR_BUCKET_BUFF_SIZE; /* note the real buffer size */
+        *str = buf;
+        APR_BUCKET_INSERT_AFTER(a, cgi_bucket_dup(data, a->list));
+    }
+    else {
+        apr_bucket_free(buf);
+        a = apr_bucket_immortal_make(a, "", 0);
+        *str = a->data;
+    }
+    return rv;
+}
+
+/* Read method of CGI bucket: polls on stderr and stdout of the child,
+ * sending any stderr output immediately away to the error log. */
+static apr_status_t cgi_bucket_read(apr_bucket *b, const char **str,
+                                    apr_size_t *len, apr_read_type_e block)
+{
+    struct cgi_bucket_data *data = b->data;
+    apr_interval_time_t timeout;
+    apr_status_t rv;
+    int gotdata = 0;
+
+    timeout = block == APR_NONBLOCK_READ ? 0 : data->r->server->timeout;
+
+    do {
+        const apr_pollfd_t *results;
+        apr_int32_t num;
+
+        rv = apr_pollset_poll(data->pollset, timeout, &num, &results);
+        if (APR_STATUS_IS_TIMEUP(rv)) {
+            return timeout == 0 ? APR_EAGAIN : rv;
+        }
+        else if (APR_STATUS_IS_EINTR(rv)) {
+            continue;
+        }
+        else if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, data->r,
+                          "poll failed waiting for CGI child");
+            return rv;
+        }
+        
+        for (; num; num--, results++) {
+            if (results[0].client_data == (void *)1) {
+                /* stdout */
+                rv = cgi_read_stdout(b, results[0].desc.f, str, len);
+                if (APR_STATUS_IS_EOF(rv)) {
+                    rv = APR_SUCCESS;
+                }
+                gotdata = 1;
+            } else {
+                /* stderr */
+                apr_status_t rv2 = log_script_err(data->r, results[0].desc.f);
+                if (APR_STATUS_IS_EOF(rv2)) {
+                    apr_pollset_remove(data->pollset, &results[0]);
+                }
+            }
+        }
+
+    } while (!gotdata);
+
+    return rv;
+}
+
+static const apr_bucket_type_t bucket_type_cgi = {
+    "CGI", 5, APR_BUCKET_DATA,
+    apr_bucket_destroy_noop,
+    cgi_bucket_read,
+    apr_bucket_setaside_notimpl,
+    apr_bucket_split_notimpl,
+    apr_bucket_copy_notimpl
+};
+
+#endif
+
 static int cgi_handler(request_rec *r)
 {
     int nph;
@@ -556,6 +726,7 @@ static int cgi_handler(request_rec *r)
     cgi_server_conf *conf;
     apr_status_t rv;
     cgi_exec_info_t e_info;
+    conn_rec *c = r->connection;
 
     if(strcmp(r->handler, CGI_MAGIC_TYPE) && strcmp(r->handler, "cgi-script"))
         return DECLINED;
@@ -637,7 +808,7 @@ static int cgi_handler(request_rec *r)
     /* Transfer any put/post args, CERN style...
      * Note that we already ignore SIGPIPE in the core server.
      */
-    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    bb = apr_brigade_create(r->pool, c->bucket_alloc);
     seen_eos = 0;
     child_stopped_reading = 0;
     if (conf->logname) {
@@ -710,17 +881,27 @@ static int cgi_handler(request_rec *r)
     apr_file_flush(script_out);
     apr_file_close(script_out);
 
+    AP_DEBUG_ASSERT(script_in != NULL);
+
+    apr_brigade_cleanup(bb);
+
+#if APR_FILES_AS_SOCKETS
+    apr_file_pipe_timeout_set(script_in, 0);
+    apr_file_pipe_timeout_set(script_err, 0);
+    
+    b = cgi_bucket_create(r, script_in, script_err, c->bucket_alloc);
+#else
+    b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
+#endif
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+    b = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+
     /* Handle script return... */
-    if (script_in && !nph) {
-        conn_rec *c = r->connection;
+    if (!nph) {
         const char *location;
         char sbuf[MAX_STRING_LEN];
         int ret;
-
-        b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
 
         if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) {
             return log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
@@ -731,6 +912,7 @@ static int cgi_handler(request_rec *r)
         if (location && location[0] == '/' && r->status == 200) {
             discard_script_output(bb);
             apr_brigade_destroy(bb);
+            apr_file_pipe_timeout_set(script_err, r->server->timeout);
             log_script_err(r, script_err);
             /* This redirect needs to be a GET no matter what the original
              * method was.
@@ -757,22 +939,8 @@ static int cgi_handler(request_rec *r)
         }
 
         rv = ap_pass_brigade(r->output_filters, bb);
-
-        /* don't soak up script output if errors occurred
-         * writing it out...  otherwise, we prolong the
-         * life of the script when the connection drops
-         * or we stopped sending output for some other
-         * reason
-         */
-        if (rv == APR_SUCCESS && !r->connection->aborted) {
-            log_script_err(r, script_err);
-        }
-
-        apr_file_close(script_err);
     }
-
-    if (script_in && nph) {
-        conn_rec *c = r->connection;
+    else /* nph */ {
         struct ap_filter_t *cur;
         
         /* get rid of all filters up through protocol...  since we
@@ -786,13 +954,19 @@ static int cgi_handler(request_rec *r)
         }
         r->output_filters = r->proto_output_filters = cur;
 
-        bb = apr_brigade_create(r->pool, c->bucket_alloc);
-        b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_eos_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-        ap_pass_brigade(r->output_filters, bb);
+        rv = ap_pass_brigade(r->output_filters, bb);
     }
+
+    /* don't soak up script output if errors occurred writing it
+     * out...  otherwise, we prolong the life of the script when the
+     * connection drops or we stopped sending output for some other
+     * reason */
+    if (rv == APR_SUCCESS && !r->connection->aborted) {
+        apr_file_pipe_timeout_set(script_err, r->server->timeout);
+        log_script_err(r, script_err);
+    }
+    
+    apr_file_close(script_err);
 
     return OK;                      /* NOT r->status, even if it has changed. */
 }

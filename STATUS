@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/15 17:56:15 $]
+Last modified at [$Date: 2004/06/16 08:39:59 $]
 
 Release:
 
@@ -105,12 +105,6 @@ PATCHES TO BACKPORT FROM 2.1
        instead of db3. Fixed complaints about unpackaged files.
        build/rpm/httpd.spec.in: r1.5
        +1: minfrin, nd
-
-    *) mod_cgi: Handle stderr output during script execution
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_cgi.c?r1=1.160&r2=1.163
-       PR: 22030, 18348
-       +1: jorton, trawick, jjclar
-       +1: nd (concept)
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 

@@ -1,5 +1,10 @@
 Changes with Apache 2.0.50
 
+  *) mod_cgi: Handle output on stderr during script execution on Unix
+     platforms; preventing deadlock when stderr output fills pipe buffer.
+     Also fixes case where stderr from nph- scripts could be lost.
+     PR 22030, 18348.  [Joe Orton, Jeff Trawick]
+
   *) mod_alias now emits a warning if it detects overlapping *Alias*
      directives.  [André Malo]
 
