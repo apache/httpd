@@ -1000,24 +1000,26 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
-    int no_detach, debug;
+    int no_detach, debug, foreground;
     apr_status_t rv;
 
     debug = ap_exists_config_define("DEBUG");
 
-    if (debug)
-        no_detach = one_process = 1;
+    if (debug) {
+        foreground = one_process = 1;
+    }
     else
     {
         one_process = ap_exists_config_define("ONE_PROCESS");
         no_detach = ap_exists_config_define("NO_DETACH");
+        foreground = ap_exists_config_define("FOREGROUND");
     }
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
         is_graceful = 0;
         
-        if (!one_process) {
+        if (!one_process && !foreground) {
             rv = apr_proc_detach(no_detach ? APR_PROC_DETACH_FOREGROUND
                                            : APR_PROC_DETACH_DAEMONIZE);
             if (rv != APR_SUCCESS) {

@@ -1454,7 +1454,7 @@ static int perchild_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
 static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
-    int no_detach, debug;
+    int no_detach, debug, foreground;
     ap_directive_t *pdir;
     int i;
     int tmp_server_limit = DEFAULT_SERVER_LIMIT;
@@ -1464,18 +1464,19 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
     debug = ap_exists_config_define("DEBUG");
 
     if (debug) {
-        no_detach = one_process = 1;
+        foreground = one_process = 1;
     }
     else {
         one_process = ap_exists_config_define("ONE_PROCESS");
         no_detach = ap_exists_config_define("NO_DETACH");
+        foreground = ap_exists_config_define("FOREGROUND");
     }
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
         is_graceful = 0;
 
-        if (!one_process) {
+        if (!one_process && !foreground) {
             rv = apr_proc_detach(no_detach ? APR_PROC_DETACH_FOREGROUND
                                            : APR_PROC_DETACH_DAEMONIZE);
             if (rv != APR_SUCCESS) {

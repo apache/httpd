@@ -1,8 +1,9 @@
 Changes with Apache 2.0.35
 
-  *) worker and prefork MPMs: Add -DFOREGROUND switch to cause the
-     Apache parent process to run in the foreground (similar to -DNO_DETACH
-     except that it doesn't switch session ids).  [Jeff Trawick]
+  *) worker, prefork, perchild, beos MPMs: Add -DFOREGROUND switch to 
+     cause the Apache parent process to run in the foreground (similar to
+     -DNO_DETACH except that it doesn't switch session ids).  
+     [Jeff Trawick]
 
   *) Added support for Posix semaphore mutex locking (AcceptMutex posixsem)
      for those platforms that support it. If using the default
