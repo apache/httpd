@@ -472,8 +472,6 @@ static const char *filter_protocol(cmd_parms *cmd, void *CFG, const char *fname,
 static const char *filter_declare(cmd_parms *cmd, void *CFG, const char *fname,
                                   const char *place)
 {
-    const char *eq;
-    char *tmpname = "";
     mod_filter_cfg *cfg = (mod_filter_cfg *)CFG;
     ap_filter_rec_t *filter;
 
@@ -506,12 +504,15 @@ static const char *filter_declare(cmd_parms *cmd, void *CFG, const char *fname,
 
 static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
 {
+    mod_filter_cfg *cfg = CFG;
     int flags;
     ap_filter_provider_t *provider;
     const char *rxend;
     const char *c;
     char *str;
     const char *eq;
+    ap_filter_rec_t* frec;
+    ap_filter_rec_t* provider_frec;
 
     /* insist on exactly four arguments */
     const char *fname = ap_getword_conf(cmd->pool, &args) ;
@@ -524,13 +525,9 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
     }
 
     /* fname has been declared with DeclareFilter, so we can look it up */
-    mod_filter_cfg *cfg = CFG;
-    ap_filter_rec_t *frec = apr_hash_get(cfg->live_filters, fname,
-                                         APR_HASH_KEY_STRING);
-    /* if provider has been registered, we can look it up */
-    ap_filter_rec_t *provider_frec = ap_get_output_filter_handle(pname);
-    /* or if provider is mod_filter itself, we can also look it up */
+    frec = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING);
 
+    /* or if provider is mod_filter itself, we can also look it up */
     if (!frec) {
         c = filter_declare(cmd, CFG, fname, NULL);
         if ( c ) {
@@ -539,15 +536,17 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
         frec = apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING);
     }
 
+    if (!frec) {
+        return apr_psprintf(cmd->pool, "Undeclared smart filter %s", fname);
+    }
+
+    /* if provider has been registered, we can look it up */
+    provider_frec = ap_get_output_filter_handle(pname);
     if (!provider_frec) {
         provider_frec = apr_hash_get(cfg->live_filters, pname,
                                      APR_HASH_KEY_STRING);
     }
-
-    if (!frec) {
-        return apr_psprintf(cmd->pool, "Undeclared smart filter %s", fname);
-    }
-    else if (!provider_frec) {
+    if (!provider_frec) {
         return apr_psprintf(cmd->pool, "Unknown filter provider %s", pname);
     }
 
