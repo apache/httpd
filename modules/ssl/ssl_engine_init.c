@@ -917,7 +917,7 @@ static void ssl_init_proxy_certs(server_rec *s,
     }
 
     if (pkp->cert_path) {
-        SSL_X509_INFO_load_file(ptemp, sk, pkp->cert_path);
+        SSL_X509_INFO_load_path(ptemp, sk, pkp->cert_path);
     }
 
     if ((ncerts = sk_X509_INFO_num(sk)) > 0) {
