@@ -37,6 +37,6 @@ extern int ap_os_is_path_absolute(const char *file);
  * to use request_rec here... */
 struct request_rec;
 extern int ap_checkconv(struct request_rec *r);
-extern pid_t os_fork(void);
+extern pid_t os_fork(const char *user);
 
 #endif /*! APACHE_OS_H*/
