@@ -5,9 +5,6 @@ Changes with Apache 2.1.0-dev
   *) WIN64: API changes to clean up Windows 64bit compile warnings
      [Allan Edwards]
 
-  *) mod_ldap: Fix format strings to use %APR_PID_T_FMT instead of %d.
-     [Jeff Trawick]
-
   *) mod_rewrite: Removed the MaxRedirects option in favor of the
      core LimitInternalRecursion directive.  [André Malo]
 
@@ -417,6 +414,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.53
+
+  *) mod_ldap: Fix format strings to use %APR_PID_T_FMT instead of %d.
+     [Jeff Trawick]
 
   *) mod_cache: CacheDisable will only disable the URLs it was meant to 
      disable, not all caching. PR 31128.
