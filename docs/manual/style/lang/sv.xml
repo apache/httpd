@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- Swedish -->
+<messages>
+ <message name="seealso">Se även</message>
+ <message name="description">Beskrivning</message>
+ <message name="apachemodule">Apache Modul</message>
+ <message name="status">Status</message>
+ <message name="moduleidentifier">Module Identifier</message>
+ <message name="compatibility">Compatibility</message>
+ <message name="syntax">Syntax</message>
+ <message name="default">Default</message>
+ <message name="context">Context</message>
+ <message name="override">Override</message>
+ <message name="status">Status</message>
+ <message name="module">Modul</message>
+ <message name="nodirective">This module provides no directives.</message>
+ <message name="apachedocalt">[APACHE DOKUMENTATION]</message>
+ <message name="apachehttpserver">Apache HTTP Server Version 2.0</message>
+ <message name="index">Index</message>
+ <message name="home">Hem</message>
+ <message name="directives">Directives</message>
+ <message name="directive">Directive</message>
+</messages>

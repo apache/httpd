@@ -1,0 +1,57 @@
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * manual.css
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+@import url(manual-sbar-right-100pc.css);
+
+html {
+    font-size: 15px;
+}
+
+h1 {
+    font-size: 22px;
+}
+
+h2 {
+    font-size: 18px;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+/* titles for 
+ * examples, notes and warnings
+ */
+div.example h3,
+div.note h3,
+div.warning h3,
+div.example pre,
+div.example code,
+div.note pre,
+div.warning pre {
+    font-size: 15px;
+}
+
+div#page-header p.apache {
+    font-size: 16px;
+}
+
+div#page-header p.menu,
+div#path,
+div#footer,
+div#quickview li {
+    font-size: 13px;
+}
+
+div#quickview {
+    top: 5.2em;
+    margin-top: 40px;
+}
+
+div#quickview h3 {
+    font-size: 15px;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * -> The End <-
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
