@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Correct ISAPIReadAheadBuffer to default to 49152, per mod_isapi docs.
+     [André Malo, Astrid Keßler <kess@kess-net.de>]
+
   *) Fix Segfault in mod_cache. [Kris Verbeeck <Kris.Verbeeck@ubizen.com>]
 
   *) Fix a null pointer dereference in the merge_env_dir_configs

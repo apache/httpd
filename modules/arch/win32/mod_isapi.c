@@ -209,7 +209,7 @@ static const command_rec isapi_cmds[] = {
     AP_INIT_TAKE1("ISAPIReadAheadBuffer", ap_set_int_slot,
         (void *)APR_OFFSETOF(isapi_dir_conf, read_ahead_buflen), 
         OR_FILEINFO, "Maximum client request body to initially pass to the"
-                     " ISAPI handler (default: 48192)"),
+                     " ISAPI handler (default: 49152)"),
     AP_INIT_FLAG("ISAPILogNotSupported", ap_set_flag_slot,
         (void *)APR_OFFSETOF(isapi_dir_conf, log_unsupported), 
         OR_FILEINFO, "Log requests not supported by the ISAPI server"
@@ -1362,7 +1362,7 @@ apr_status_t isapi_handler (request_rec *r)
     
     /* Fixup defaults for dconf */
     cid->dconf.read_ahead_buflen = (dconf->read_ahead_buflen == ISAPI_UNDEF)
-                                     ? 48192 : dconf->read_ahead_buflen;
+                                     ? 49152 : dconf->read_ahead_buflen;
     cid->dconf.log_unsupported   = (dconf->log_unsupported == ISAPI_UNDEF)
                                      ? 0 : dconf->log_unsupported;
     cid->dconf.log_to_errlog     = (dconf->log_to_errlog == ISAPI_UNDEF)
