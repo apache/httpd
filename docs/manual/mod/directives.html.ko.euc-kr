@@ -35,7 +35,7 @@
       각 지시어를 요약하여 설명한 <a href="quickreference.html">지시어 빠른참조</a>도 있다.
     </p>
   
-<p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#G">&nbsp;G&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#K">&nbsp;K&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#O">&nbsp;O&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#T">&nbsp;T&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
+<p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#G">&nbsp;G&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#K">&nbsp;K&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#O">&nbsp;O&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#T">&nbsp;T&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
 </div>
 <div id="directive-list"><ul>
 <li><a href="mpm_common.html#acceptmutex" id="A" name="A">AcceptMutex</a></li>
@@ -203,6 +203,7 @@
 <li><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL</a></li>
 <li><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL</a></li>
+<li><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
 <li><a href="mod_ldap.html#ldaptrustedca">LDAPTrustedCA</a></li>
 <li><a href="mod_ldap.html#ldaptrustedcatype">LDAPTrustedCAType</a></li>
@@ -379,6 +380,7 @@
 <li><a href="core.html#virtualhost">&lt;VirtualHost&gt;</a></li>
 <li><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</a></li>
 <li><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
+<li><a href="mpm_winnt.html#win32disableacceptex" id="W" name="W">Win32DisableAcceptEx</a></li>
 <li><a href="mod_include.html#xbithack" id="X" name="X">XBitHack</a></li>
 </ul></div>
 <div class="bottomlang">
@@ -388,6 +390,6 @@
 <a href="../ko/mod/directives.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/mod/directives.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
 </body></html>
