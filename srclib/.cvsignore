@@ -2,3 +2,4 @@ Makefile
 pth
 .deps
 openssl
+zlib
