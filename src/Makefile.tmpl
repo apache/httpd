@@ -27,8 +27,6 @@ all: @@Configuration@@ $(TARGET)
 	@false
 
 $(TARGET):  subdirs modules.o
-	rm -f buildmark.c
-	echo 'const char SERVER_BUILT[] = "'`date`'";' > buildmark.c
 	$(CC) -c $(CFLAGS) buildmark.c
 	$(CC) $(CFLAGS) $(LDFLAGS)  -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 

@@ -6,7 +6,6 @@ Makefile
 *.plg
 ApacheD
 ApacheR
-buildmark.c
 Configuration
 Configuration.default
 Configuration.lint
