@@ -1041,7 +1041,7 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     if ((buffer[0] == '#') && (buffer[1] == '!')) {
         /* Assuming file is a script since it starts with a shebang */
         fileType = eFileTypeSCRIPT;
-        for (i = 2; i < sizeof(buffer); i++) {
+        for (i = 2; i < (sizeof(buffer) - 1); i++) {
             if ((buffer[i] == '\r')
                 || (buffer[i] == '\n')) {
                 break;
