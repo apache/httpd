@@ -1,5 +1,9 @@
 Changes with Apache 2.0.45
 
+  *) Fix suexec compile error under SUNOS4, where strerror() doesn't
+     exist. PR 5913, 9977.
+     [Jonathan W Miner <Jonathan.W.Miner@lmco.com>]
+
   *) Fix If header parsing when a non-mod_dav lock token is passed to it.
      PR 16452.  [Justin Erenkrantz]
 
