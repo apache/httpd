@@ -1560,7 +1560,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
 die_now:
     if (shutdown_pending) 
     {
-        int timeout = 5000;  /* Timeout is milliseconds */
+        int timeout = 30000;  /* Timeout is milliseconds */
 
         /* This shutdown is only marginally graceful. We will give the 
          * child a bit of time to exit gracefully. If the time expires,
