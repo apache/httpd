@@ -490,9 +490,6 @@ void ap_log_pid(ap_pool_t *p, const char *fname)
     ap_finfo_t finfo;
     static pid_t saved_pid = -1;
     pid_t mypid;
-#ifndef WIN32
-    mode_t u;
-#endif
 
     if (!fname) 
 	return;
@@ -514,21 +511,14 @@ void ap_log_pid(ap_pool_t *p, const char *fname)
 			       );
     }
 
-#ifndef WIN32
-    u = ap_set_default_fperms(022);
-    (void) ap_set_default_fperms(u | 022);
-#endif
     if (ap_open(&pid_file, fname, APR_WRITE | APR_CREATE | APR_TRUNCATE,
-                APR_OS_DEFAULT, p) != APR_SUCCESS) {
+                APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, p) != APR_SUCCESS) {
 	perror("fopen");
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                      "%s: could not log pid to file %s",
 		     ap_server_argv0, fname);
         exit(1);
     }
-#ifndef WIN32
-    (void) ap_set_default_fperms(u);
-#endif
     ap_fprintf(pid_file, "%ld\n", (long)mypid);
     ap_close(pid_file);
     saved_pid = mypid;
