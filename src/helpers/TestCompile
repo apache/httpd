@@ -99,7 +99,7 @@ case "$1" in
 	cat <<EOF >testfunc.c
 int main(void) {
     $2();
-    return(0)
+    return(0);
 }
 EOF
 	;;
