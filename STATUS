@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/08/05 15:04:38 $]
+  Last modified at [$Date: 1999/08/05 18:42:20 $]
 
 Release:
 
@@ -93,6 +93,12 @@ Documentation that needs writing:
 
 
 Available Patches:
+
+    * Paul Reder's patch to fix Allow/Deny (.htaccess parsing) in
+      regex <Directory*> processing.
+	Message-ID: <37A88E34.FD09C658@raleigh.ibm.com>
+	PR: 3019, 3454
+	Status: 
 
     * David Harris' patch to add a function to report on the number
       of bytes in a pool that are actually used.
