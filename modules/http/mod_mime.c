@@ -169,7 +169,7 @@ static void overlay_extension_mappings(apr_pool_t *p,
                                        apr_hash_t *overlay, apr_hash_t *base)
 {
     apr_hash_index_t *index;
-    for (index = apr_hash_first(overlay); index;
+    for (index = apr_hash_first(p, overlay); index;
          index = apr_hash_next(index)) {
         char *key;
         apr_ssize_t klen;
