@@ -1,5 +1,10 @@
 Changes with Apache 2.0.14-dev
 
+  *) Modify mod_include to send blocks of data no larger than 9k.
+     Without this, mod_include will wait until the whole file is parsed,
+     or the first tag is found to send any data to the client.
+     [Paul J. Reder <rederpj@raleigh.ibm.com>]
+
   *) Fix mod_info, so that <Directory> and <Location> directives are
      not displayed twice when displaying the current configuration.
      [Ryan Morgan <rmorgan@covalent.net>]
