@@ -249,7 +249,7 @@ EOF
     else
       apache_need_shared=yes
       libname="mod_$1.la"
-      shobjects=`echo $objects | sed 's/\.lo/.slo/'`
+      shobjects=`echo $objects | sed 's/\.lo/.slo/g'`
       modpath_shared="$modpath_shared $libname"
       cat >>$modpath_current/modules.mk<<EOF
 $libname: $shobjects
