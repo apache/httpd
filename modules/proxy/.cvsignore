@@ -11,3 +11,5 @@ Makefile
 *.dll
 *.def
 *.mak
+modules.mk
+.deps
