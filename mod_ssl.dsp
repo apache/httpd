@@ -164,6 +164,10 @@ SOURCE=.\ssl_scache_shmcb.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ssl_scache_dc.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\ssl_util.c
 # End Source File
 # Begin Source File
