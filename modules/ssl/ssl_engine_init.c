@@ -307,6 +307,12 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 }
 #endif
 
+#if SSL_LIBRARY_VERSION >= 0x00907000
+#define SSL_UCP_CAST(ucp) (const unsigned char **)ucp
+#else
+#define SSL_UCP_CAST(ucp) ucp
+#endif
+
 /*
  * Handle the Temporary RSA Keys and DH Params
  */
@@ -383,11 +389,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tTmpKeys, "RSA:512")) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_RSA512] = 
-#if SSL_LIBRARY_VERSION >= 0x00907000
-                 (void *)d2i_RSAPrivateKey(NULL, (const unsigned char **)&ucp, asn1->nData)) == NULL) {
-#else
-                 (void *)d2i_RSAPrivateKey(NULL, &ucp, asn1->nData)) == NULL) {
-#endif
+                 (void *)d2i_RSAPrivateKey(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR, "Init: Failed to load temporary 512 bit RSA private key");
                 ssl_die();
             }
@@ -397,11 +399,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tTmpKeys, "RSA:1024")) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_RSA1024] = 
-#if SSL_LIBRARY_VERSION >= 0x00907000
-                 (void *)d2i_RSAPrivateKey(NULL, (const unsigned char **)&ucp, asn1->nData)) == NULL) {
-#else
-                 (void *)d2i_RSAPrivateKey(NULL, &ucp, asn1->nData)) == NULL) {
-#endif
+                 (void *)d2i_RSAPrivateKey(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR, "Init: Failed to load temporary 1024 bit RSA private key");
                 ssl_die();
             }
@@ -413,11 +411,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tTmpKeys, "DH:512")) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_DH512] = 
-#if SSL_LIBRARY_VERSION >= 0x00907000
-                 (void *)d2i_DHparams(NULL, (const unsigned char **)&ucp, asn1->nData)) == NULL) {
-#else
-                 (void *)d2i_DHparams(NULL, &ucp, asn1->nData)) == NULL) {
-#endif
+                 (void *)d2i_DHparams(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR, "Init: Failed to load temporary 512 bit DH parameters");
                 ssl_die();
             }
@@ -427,11 +421,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         if ((asn1 = (ssl_asn1_t *)ssl_ds_table_get(mc->tTmpKeys, "DH:1024")) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_DH1024] = 
-#if SSL_LIBRARY_VERSION >= 0x00907000
-                 (void *)d2i_DHparams(NULL, (const unsigned char **)&ucp, asn1->nData)) == NULL) {
-#else
-                 (void *)d2i_DHparams(NULL, &ucp, asn1->nData)) == NULL) {
-#endif
+                 (void *)d2i_DHparams(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
                 ssl_log(s, SSL_LOG_ERROR, "Init: Failed to load temporary 1024 bit DH parameters");
                 ssl_die();
             }
