@@ -940,7 +940,7 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		break;
 	    }
 
-	    if (prefix_char != NUL && s != S_NULL & s != char_buf) {
+	    if (prefix_char != NUL && s != S_NULL && s != char_buf) {
 		*--s = prefix_char;
 		s_len++;
 	    }
