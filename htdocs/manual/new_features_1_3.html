@@ -31,34 +31,45 @@ enhancements, <a href="http://www.apache.org/dist/">Apache
 <ul>
 
 <li><b><a href="nt.html">Support for Windows NT/95</a></b>
-[Documentation to be written]
-<P>
+[Documentation to be written]<br>
 Apache now supports the Windows NT and Windows 95 operating systems,
 as well as the Unix systems supported in previos releases. Although the
 Windows version of Apache may not be perform as well as on the Unix
 systems for which Apache was originally written, the ability to run on
 Windows gives Apache the ability to run on a large number of web
 servers it was not previously able to.
-</P>
 
 <li><b><a href="mod/mod_alias.html">Regular Expression support for Alias
 and Redirect</a></b>
-<p>
+<br>
 New <code><a href="mod/mod_alias.html#aliasmatch">AliasMatch</a></code>,
 <code><a
 href="mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code>, and
 <code><a
 href="mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>
 directives allow for the use of regular expression matching.
-<p>Additionally, new
+Additionally, new
 <code><a href="mod_core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>,
 <code><a href="mod_core.html#locationmatch">&lt;LocationMatch&gt;</a></code>,
 and <code><a href="mod_core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
-sections provide a new syntax for regular expression sectioning.</p>
+sections provide a new syntax for regular expression sectioning.
 
-</LI>
+<li><strong><a href="mod/mod_mime_magic.html">New "Magic" MIME-typing
+    module</a></strong><br>
+    A new module, the optional <code>mod_mime_magic</code>, has been
+    added. It uses "magic numbers" and other hints from a file's contents
+    to figure out what the contents are. It then uses this information to
+    set the file's media type, if it cannot be determined by the file's
+    extension.
+
+<li><strong>Directory indexing modules split</strong><br>
+    The <code>mod_dir</code> module has been split in two, with
+    <a href="mod/mod_dir.html">mod_dir</a> handling directory index
+    files, and <a href="mod/mod_autoindex.html">mod_autoindex</a>
+    creating directory listings.
+
  <LI><STRONG>Support for Directory Icon Sizing</STRONG>
-  <P>
+  <BR>
   The
   <A
    HREF="mod/mod_autoindex.html"
@@ -75,8 +86,6 @@ sections provide a new syntax for regular expression sectioning.</p>
   directive has two new keywords which allow you to control whether
   pre-sized <SAMP>IMG</SAMP> tags are used.  This can substantially
   speed up the display of large directory listings.
-  </P>
- </LI>
 
 <li><strong><a href="mod/core.html#accessfilename">AccessFileName
 Enhancement</a></strong><br>
@@ -85,7 +94,18 @@ filename. This lets sites serving pages from network file systems and
 more than one Apache web server, configure access based on the server
 through which shared pages are being served.
 
-
+<li><strong>HostNameLookups now defaults to "Off"</strong><br>
+    The <a href="mod/core.html#hostnamelookups">HostNameLookups</a>
+    directive now defaults to "Off". This means that, unless explictly
+    turned on, the server will not resolve IP addresses into names. This
+    was done to spare the Internet from unneccessary DNS traffic.
+    
+<li><strong>New child_init function for module API</strong><br>
+A new phase for Apache's API is called once per "heavy-weight process,"
+before any requests are handled. This allows the module to set up
+anything that need to be done once per processes. For example,
+connections to databases.
+    
 </ul>
 
 <!--#include virtual="footer.html" -->
