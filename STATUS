@@ -180,6 +180,9 @@ Needs patch:
 
     * proxy security fixes from 1.2.5 need to be brought forward
 
+    * DoS created by the lame hostname lookup code in check_fulluri, which
+	should be part of the proxy and not in the core
+
 Closed issues:
 
     * Removal of inetd mode
