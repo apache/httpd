@@ -87,8 +87,6 @@
 Windows einsetzen</a></li>
 <li><a href="platform/win_compiling.html">Kompilieren des Apache für
 Microsoft Windows</a></li>
-<li><a href="platform/win_service.html">Apache für Windows als Dienst
-betreiben</a></li>
 <li><a href="platform/netware.html">Apache unter Novell NetWare einsetzen</a></li>
 <li><a href="platform/perf-hp.html">Einen Hochleistungs-Web-Server auf
 HPUX betreiben</a></li>
