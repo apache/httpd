@@ -2538,7 +2538,7 @@ later</td></tr>
       #!C:/Perl/bin/perl.exe
     </code></p></div>
 
-    <p>or, if perl is in the <code>PATH</code>, simply:</p>
+    <p>or, if <code>perl</code> is in the <code>PATH</code>, simply:</p>
 
     <div class="example"><p><code>
       #!perl
@@ -2553,7 +2553,7 @@ later</td></tr>
     registry keys cannot be found, Apache falls back to the behavior of the
     <code>Script</code> option.</p>
 
-    <div class="warning"><h3>Security</h3> 
+    <div class="warning"><h3>Security</h3>
     <p>Be careful when using <code>ScriptInterpreterSource
     Registry</code> with <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>'ed directories, because
     Apache will try to execute <strong>every</strong> file within this
@@ -3149,7 +3149,7 @@ hostname or IP address</td></tr>
 <ul>
 <li><a href="../vhosts/">Apache Virtual Host documentation</a></li>
 <li><a href="../dns-caveats.html">Issues Regarding DNS and
-     Apache</a></li>
+    Apache</a></li>
 <li><a href="../bind.html">Setting
     which addresses and ports Apache uses</a></li>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;

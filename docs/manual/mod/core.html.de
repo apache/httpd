@@ -2682,7 +2682,7 @@ Die Option <code>Registry-Strict</code> ist verfügbar seit Apache
       #!C:/Perl/bin/perl.exe
     </code></p></div>
 
-    <p>oder, wenn perl im Pfad (Umgebungsvariable <code>PATH</code>) liegt,
+    <p>oder, wenn <code>perl</code> im Pfad (Umgebungsvariable <code>PATH</code>) liegt,
       einfach:</p>
 
     <div class="example"><p><code>
