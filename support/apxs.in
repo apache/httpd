@@ -469,8 +469,10 @@ if ($opt_i or $opt_e) {
         }
         my $t = $f;
         $t =~ s|^.+/([^/]+)$|$1|;
+        $t =~ s|\.la$|\.so|;
         if ($opt_i) {
-	    push(@cmds, "$prefix/build/libtool --mode=install cp $f $CFG_LIBEXECDIR/$t");
+	    push(@cmds, "$prefix/build/instdso.sh SH_LIBTOOL='" .
+                 "$prefix/build/libtool' $f $CFG_LIBEXECDIR");
 	    push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
         }
 
