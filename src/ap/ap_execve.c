@@ -126,8 +126,10 @@ int ap_execle(const char *filename, const char *argv0, ...)
     }
     va_end(adummy);
 
-    if ((argv = (char **) malloc((argc + 2) * sizeof(*argv))) == NULL)
+    if ((argv = (char **) malloc((argc + 2) * sizeof(*argv))) == NULL) {
+	fprintf(stderr, "Ouch!  Out of memory in ap_execle()!\n");
 	return -1;
+    }
 
     /* Pass two --- copy the argument strings into the result space */
     va_start(adummy, argv0);
@@ -222,8 +224,10 @@ int ap_execve(const char *filename, const char *argv[],
 	else {
 	    int i = count_args(argv) + 1;   /* +1 for leading SHELL_PATH */
 
-	    if ((script_argv = malloc(sizeof(*script_argv) * i)) == NULL)
+	    if ((script_argv = malloc(sizeof(*script_argv) * i)) == NULL) {
+		fprintf(stderr, "Ouch!  Out of memory in ap_execve()!\n");
 		return -1;
+	    }
 
 	    script_argv[0] = SHELL_PATH;
 
@@ -345,6 +349,10 @@ static const char **hashbang(const char *filename, char **argv)
 
 	    newargv = (char **) malloc((p - lbuf + 1)
                       + (i + sargc + 1) * sizeof(*newargv));
+	    if (newargv == NULL) {
+		fprintf(stderr, "Ouch!  Out of memory in hashbang()!\n");
+		return NULL;
+	    }
 	    ws = &((char *) newargv)[(i + sargc + 1) * sizeof(*newargv)];
 
 	    /* Copy entries to allocated memory */
