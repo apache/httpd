@@ -246,7 +246,7 @@ static int fixup_dir(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_fixups(fixup_dir,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_fixups(fixup_dir,NULL,NULL,APR_HOOK_LAST);
 }
 
 module AP_MODULE_DECLARE_DATA dir_module = {
