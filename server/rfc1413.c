@@ -83,6 +83,7 @@
 #include "apr_network_io.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_inherit.h"
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
@@ -140,7 +141,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
 
     if ((rv = apr_socket_create(newsock, 
                                 localsa->sa.sin.sin_family, /* has to match */
-                                SOCK_STREAM, conn->pool)) != APR_SUCCESS) {
+                                SOCK_STREAM, APR_NO_INHERIT, conn->pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: error creating query socket");
         return rv;
