@@ -652,7 +652,7 @@ request_rec *read_request (conn_rec *conn)
 
     /* Get the request... */
     
-    hard_timeout ("read", r);
+    keepalive_timeout ("read", r);
     if (!read_request_line (r)) return NULL;
     if (!r->assbackwards) get_mime_headers (r);
 

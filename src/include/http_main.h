@@ -86,6 +86,7 @@
  */
 
 void hard_timeout (char *, request_rec *);
+void keepalive_timeout (char *, request_rec *);
 void soft_timeout (char *, request_rec *);
 void kill_timeout (request_rec *);     
 void reset_timeout (request_rec *);

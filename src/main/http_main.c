@@ -453,7 +453,7 @@ void unblock_alarms() {
     }
 }
 
-void hard_timeout (char *name, request_rec *r)
+void keepalive_timeout (char *name, request_rec *r)
 {
     timeout_req = r;
     timeout_name = name;
@@ -463,6 +463,15 @@ void hard_timeout (char *name, request_rec *r)
        alarm (r->server->keep_alive_timeout);
     else
        alarm (r->server->timeout);
+}
+
+void hard_timeout (char *name, request_rec *r)
+{
+    timeout_req = r;
+    timeout_name = name;
+    
+    signal(SIGALRM,(void (*)())timeout);
+    alarm (r->server->timeout);
 }
 
 void soft_timeout (char *name, request_rec *r)
@@ -941,22 +950,28 @@ void reclaim_child_processes ()
     }
 }
 
-#ifdef BROKEN_WAIT
+#if defined(BROKEN_WAIT) || defined(NEED_WAITPID)
 /*
 Some systems appear to fail to deliver dead children to wait() at times.
-This sorts them out.
+This sorts them out. In fact, this may have been caused by a race condition
+in wait_or_timeout(). But this routine is still useful for systems with no
+waitpid().
 */
-void reap_children()
+int reap_children()
     {
     int status,n;
+    int ret=0;
 
     for(n=0 ; n < HARD_SERVER_LIMIT ; ++n)
 	if(scoreboard_image->servers[n].status != SERVER_DEAD
 	   && waitpid(scoreboard_image->servers[n].pid,&status,WNOHANG) == -1
 	   && errno == ECHILD)
 	    {
+	    sync_scoreboard_image();
 	    update_child_status(n,SERVER_DEAD,NULL);
+	    ret=1;
 	    }
+    return ret;
     }
 #endif
 
@@ -968,6 +983,7 @@ void reap_children()
 
 static int wait_or_timeout(int *status)
     {
+#ifndef NEED_WAITPID
     int ret;
 
     ret=waitpid(-1,status,WNOHANG);
@@ -977,6 +993,11 @@ static int wait_or_timeout(int *status)
 	return -1;
 	}
     return ret;
+#else
+    if(!reap_children())
+	sleep(1);
+    return -1;
+#endif
     }
 
 #else
