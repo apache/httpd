@@ -9,7 +9,7 @@ html: $(htmlfiles)
 
 # Xalan-C users use this:
 #%.html : %.xml
-#	xsl-c -v -OUT $@ -IN ./manual.xsl 
+#	xsl-c -HTML -OUT $@ -IN ./manual.xsl 
 
 # Xalan-C++ users use this:
 %.html : %.xml
