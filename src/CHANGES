@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Add DSO support for DGUX 4.x using gcc. Tested on x86 platforms.
+     [Randy Terbush <randy@covalent.net>]
+ 
   *) Add the new mass-vhost module (mod_vhost_alias.c) developed and
      used by Demon Internet, LTD. [Tony Finch <fanf@demon.net>]
 

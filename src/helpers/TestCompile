@@ -77,7 +77,7 @@ case "$1" in
 	if [ "x$2" = "x" ]; then
 	    exit
 	fi
-	TLIB="-l$2"
+	TLIB="-l$2 $TLIB"
 	if [ "x$VERBOSE" = "xyes" ]; then
 	    ERRDIR=""
 	else

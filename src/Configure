@@ -1190,6 +1190,14 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    SHCORE_IMPLIB='ApacheCoreOS2.a'
 	    OS_MODULE_INCLUDE='Makefile.OS2'
 	    ;;
+	*-dgux)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+	    esac
+	    DEF_SHARED_CORE=yes
+	    LDFLAGS_SHLIB="-G"
+	    LDFLAGS_SHLIB_EXPORT=""
+            ;;
 	*)
 	    ##  ok, no known explict support for shared objects
 	    ##  on this platform, but we give not up immediately.
@@ -1358,11 +1366,12 @@ case "$PLAT" in
     *-dg-dgux*)
 	# R4.11MU02 requires -lsocket -lnsl ... no idea if it's earlier or
 	# later than what we already knew about.  PR#732
-	if ./helpers/TestCompile lib socket; then
-	    LIBS="$LIBS -lsocket"
-	fi
 	if ./helpers/TestCompile lib nsl; then
 	    LIBS="$LIBS -lnsl"
+	    TLIB='-lnsl'
+	fi
+	if TLIB=$TLIB ./helpers/TestCompile lib socket; then
+	    LIBS="-lsocket $LIBS"
 	fi
 	;;
 esac
