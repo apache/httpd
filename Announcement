@@ -118,7 +118,7 @@
    New features that relate to specific platforms:
 
      * Linux 2.4+: If Apache is started as root and you code
-       CoreDumpDirectory, coredumps are enabled via the prctl() syscall.
+       CoreDumpDirectory, core dumps are enabled via the prctl() syscall.
 
    New features that relate to all platforms:
 
@@ -151,3 +151,4 @@
 
      * UseCanonicalName off was ignoring the client provided
        port information.
+
