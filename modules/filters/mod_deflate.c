@@ -149,17 +149,17 @@ static void putLong(char *string, unsigned long x)
 
 /* Inputs a string and returns a long.
  */
-static unsigned long getLong(char *string)
+static unsigned long getLong(unsigned char *string)
 {
     int n = 3;
     unsigned long x = 0;
 
     while (n) {
-        x |= (unsigned long)((unsigned char)string[n--]) & 0xff;
+        x |= (unsigned long)(string[n--]) & 0xff;
         x <<= 8;
     }
 
-    x |= (unsigned long)((unsigned char)string[0]) & 0xff;
+    x |= (unsigned long)(string[0]) & 0xff;
     return x;
 }
 
