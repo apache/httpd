@@ -248,6 +248,7 @@ is available only in Apache 2.0</compatibility>
     are supported in <var>value</var>:</p>
 
     <table border="1">
+    <columnspec><column width=".25"/><column width=".75"/></columnspec>
     <tr><td><code>%t</code></td>
         <td>The time the request was received in Universal Coordinated Time
         since the epoch (Jan. 1, 1970) measured in microseconds. The value

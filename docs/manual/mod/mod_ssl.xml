@@ -49,6 +49,8 @@ href="../ssl/ssl_compat.html">Compatibility</a> chapter for details on the
 compatibility variables.</p>
 
 <table border="1">
+<columnspec><column width=".3"/><column width=".2"/><column width=".5"/>
+</columnspec>
 <tr>
  <th>Variable Name:</th>
  <th>Value Type:</th>
@@ -87,10 +89,10 @@ compatibility variables.</p>
 <tr><td><code>SSL_SERVER_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of server's certificate</td></tr>
 <tr><td><code>SSL_SERVER_CERT</code></td>               <td>string</td>    <td>PEM-encoded server certificate</td></tr>
-<tr><td colspan="3">[ where <em>x509</em> is a component of a X.509 DN:
-  <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]</td></tr>
 </table>
 </section>
+<p>[ where <em>x509</em> is a component of a X.509 DN:
+  <code>C,ST,L,O,OU,CN,T,I,G,S,D,UID,Email</code> ]</p>
 
 <section id="logformats"><title>Custom Log Formats</title>
 
@@ -548,6 +550,7 @@ specify the preference and order for the ciphers (see <a href="#table1">Table
 1</a>).</p>
 
 <table border="1">
+<columnspec><column width=".5"/><column width=".5"/></columnspec>
 <tr><th>Tag</th> <th>Description</th></tr>
 <tr><td colspan="2"><em>Key Exchange Algorithm:</em></td></tr>
 <tr><td><code>kRSA</code></td>   <td>RSA key exchange</td></tr>
@@ -627,6 +630,9 @@ href="#table2">Table 2</a>.</p>
 SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
 </example>
 <table border="1">
+<columnspec><column width=".3"/><column width=".1"/><column width=".13"/>
+<column width=".1"/><column width=".13"/><column width=".1"/>
+<column width=".13"/></columnspec>
 <tr><th>Cipher-Tag</th> <th>Protocol</th> <th>Key Ex.</th> <th>Auth.</th> <th>Enc.</th> <th>MAC</th> <th>Type</th> </tr>
 <tr><td colspan="7"><em>RSA Ciphers:</em></td></tr>
 <tr><td><code>DES-CBC3-SHA</code></td> <td>SSLv3</td> <td>RSA</td> <td>RSA</td> <td>3DES(168)</td> <td>SHA1</td> <td></td> </tr>
