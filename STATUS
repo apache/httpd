@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/24 00:53:29 $]
+Last modified at [$Date: 2002/11/24 08:19:13 $]
 
 Release:
 
@@ -73,7 +73,7 @@ CURRENT VOTES:
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
-       R-T-C:   trawick, wrowe
+       R-T-C:   trawick, wrowe, jerenkrantz
        Abstain: 
        C-T-R:   BrianP, aaron
 
