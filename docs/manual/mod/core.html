@@ -1314,21 +1314,23 @@ and parse those as configuration files.
 1.1 and later.<P>
 
 <p>The Keep-Alive extension to HTTP/1.0 and the persistent connection
-feature of <CODE>HTTP/1.1</CODE> provide long-lived HTTP sessions
-which allow multiple requests to be sent over the same TCP connection.
-In some cases this been shown to result in an almost 50% speedup in
-latency times for HTML documents with many images.</p>
+feature of HTTP/1.1 provide long-lived HTTP sessions which allow
+multiple requests to be sent over the same TCP connection.  In some
+cases this has been shown to result in an almost 50% speedup in
+latency times for HTML documents with many images.  To enable
+Keep-Alive connections in Apache 1.2 and later, set <code>KeepAlive
+On</code>.</p>
 
-<p>In order for Keep-Alive support to be used:
-<ul>
-<li>Keep-Alive support must be enabled by setting this directive
-to <code>On</code>.</li>
-<li>The client must support Keep-Alive requests.  Most current
-clients do support Keep-Alive requests.</li>
-<li>The length of the file must be known in advance.  This means that most 
-CGI scripts, server-parsed pages (SSI), and server-generated directory 
-listings, will not use the Keep-Alive protocol.</li>
-</ul>
+<p>For HTTP/1.0 clients, Keep-Alive connections will only be used if
+they are specifically requested by a client.  In addition, a
+Keep-Alive connection with an HTTP/1.0 client can only be used when
+the length of the content is known in advance.  This implies that
+dynamic content such as CGI output, SSI pages, and server-generated
+directory listings will generally not use Keep-Alive connections to
+HTTP/1.0 clients.  For HTTP/1.1 clients, persistent connections are
+the default unless otherwise specified.  Chunked encoding will be used
+in order to send content of unknown length over persistent
+connections.</p>
 
 <p>See also  <A
 HREF="#maxkeepaliverequests">MaxKeepAliveRequests</A>.</P>
