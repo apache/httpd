@@ -568,6 +568,7 @@ API_EXPORT(const char *) get_remote_logname(request_rec *r)
 #define  NOT_IN_VIRTUALHOST     0x01U /* <Virtualhost> */
 #define  NOT_IN_LIMIT           0x02U /* <Limit> */
 #define  NOT_IN_DIR_LOC_FILE    0x04U /* <Directory>/<Location>/<Files>*/
+#define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE)
 
 
 static const char *check_cmd_context(cmd_parms *cmd, unsigned forbidden)
@@ -969,7 +970,7 @@ const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 
     void *new_file_conf = create_per_dir_config (cmd->pool);
 
-    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) return err;
 
     if (endp) *endp = '\0';
@@ -1069,7 +1070,7 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     char *endp = strrchr (arg, '>');
     pool *p = cmd->pool, *ptemp = cmd->temp_pool;
 
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     if (endp) *endp = '\0';
@@ -1108,7 +1109,7 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
 
 const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
 {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     if (add_named_module (arg))
@@ -1118,7 +1119,7 @@ const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
 
 const char *clear_module_list_command (cmd_parms *cmd, void *dummy)
 {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     clear_module_list ();
@@ -1141,7 +1142,7 @@ const char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
 
 const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
 {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     if (!strcasecmp (arg, "inetd")) standalone = 0;
@@ -1161,7 +1162,7 @@ const char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
 
 const char *set_send_buffer_size (cmd_parms *cmd, void *dummy, char *arg) {
     int s = atoi (arg);
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     if (s < 512 && s != 0) {
@@ -1228,7 +1229,7 @@ const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 }
 
 const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     if (!is_directory (arg)) return "ServerRoot must be a valid directory";
@@ -1276,7 +1277,7 @@ const char *set_keep_alive_max (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     if (cmd->server->is_virtual)
@@ -1286,7 +1287,7 @@ const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     scoreboard_fname = pstrdup (cmd->pool, arg);
@@ -1294,7 +1295,7 @@ const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     lock_fname = pstrdup (cmd->pool, arg);
@@ -1302,7 +1303,7 @@ const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) return err;
 
     d->do_rfc1413 = arg != 0;
@@ -1311,7 +1312,7 @@ const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
 
 const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, char *arg)
 {
-    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) return err;
 
     if (!strcasecmp (arg, "on")) {
@@ -1336,7 +1337,7 @@ const char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) return err;
 
     d->content_md5 = arg != 0;
@@ -1344,7 +1345,7 @@ const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
 }
 
 const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     daemons_to_start = atoi (arg);
@@ -1352,7 +1353,7 @@ const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     daemons_min_free = atoi (arg);
@@ -1367,7 +1368,7 @@ const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     daemons_max_free = atoi (arg);
@@ -1375,7 +1376,7 @@ const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     daemons_limit = atoi (arg);
@@ -1394,7 +1395,7 @@ const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     max_requests_per_child = atoi (arg);
@@ -1402,7 +1403,7 @@ const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_threads (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     threads_per_child = atoi (arg);
@@ -1410,7 +1411,7 @@ const char *set_threads (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 const char *set_excess_requests (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     excess_requests_per_child = atoi (arg);
@@ -1506,7 +1507,7 @@ const char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg, c
 #endif
 
 const char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     bind_address.s_addr = get_virthost_addr (arg, NULL);
@@ -1519,7 +1520,7 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     char *ports;
     unsigned short port;
 
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     ports=strchr(ips, ':');
@@ -1552,7 +1553,7 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 const char *set_listenbacklog (cmd_parms *cmd, void *dummy, char *arg) {
     int b;
 
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     b = atoi (arg);
@@ -1563,7 +1564,7 @@ const char *set_listenbacklog (cmd_parms *cmd, void *dummy, char *arg) {
 
 const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) {
     struct stat finfo;
-    const char *err = check_cmd_context(cmd, NOT_IN_VIRTUALHOST|NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) return err;
 
     if ((stat(arg, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {

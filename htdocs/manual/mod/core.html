@@ -279,7 +279,7 @@ re-populated using the <A HREF="#addmodule">AddModule</A> directive.<p><hr>
 <!--%plaintext &lt;?INDEX {\tt ContentDigest} directive&gt; -->
 <strong>Syntax:</strong> ContentDigest <em>on|off</em><br>
 <strong>Default:</strong> <code>ContentDigest off</code><br>
-<strong>Context:</strong> any<br>
+<strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Override:</strong> AuthConfig<br>
 <strong>Status:</strong> experimental<p>
 <strong>Compatibility:</strong> ContentDigest is only available in Apache 1.1 and later<p>
@@ -689,7 +689,7 @@ considerations.<p><hr>
 <!--%plaintext &lt;?INDEX {\tt HostNameLookups} directive&gt; -->
 <strong>Syntax:</strong> HostNameLookups <em>on | off | double</em><br>
 <strong>Default:</strong> <code>HostNameLookups off</code><br>
-<strong>Context:</strong> server config, virtual host<br>
+<strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Status:</strong> core<br>
 <strong>Compatibility:</strong> <code>double</code> available only in Apache
 1.3 and above.<br>
@@ -729,7 +729,7 @@ from logged IP addresses offline.<p><hr>
 <!--%plaintext &lt;?INDEX {\tt IdentityCheck} directive&gt; -->
 <strong>Syntax:</strong> IdentityCheck <em>boolean</em><br>
 <strong>Default:</strong> <code>IdentityCheck off</code><br>
-<strong>Context:</strong> server config, virtual host<br>
+<strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
 <strong>Status:</strong> core<p>
 
 This directive enables RFC1413-compliant logging of the remote user name
