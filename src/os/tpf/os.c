@@ -68,12 +68,13 @@
 #include "http_log.h"
 #include "http_conf_globals.h"
 #ifdef __PIPE_
-#include "ipc.h"
-#include "shm.h"
+#include <ipc.h>
+#include <shm.h>
 static TPF_FD_LIST *tpf_fds = NULL;
 #endif
 
 void *tpf_shm_static_ptr = NULL;
+unsigned short zinet_model;
 
 static FILE *sock_fp;
 
@@ -133,7 +134,7 @@ int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts, struc
     int no_writes = 0;
     int no_excepts = 0;
     int timeout = 0;
-    int rv;
+    int rv = 0;
     
     if(maxfds) {
         if(tv)
@@ -145,7 +146,29 @@ int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts, struc
         sockets[0] = 0;
         
     ap_check_signals();
-    rv = select(sockets, no_reads, no_writes, no_excepts, timeout);
+    if ((no_reads + no_writes + no_excepts == 0) &&
+        (tv) && (tv->tv_sec + tv->tv_usec != 0)) {
+        /* TPF's select immediately returns if the sum of
+           no_reads, no_writes, and no_excepts is zero.
+           This means that the select calls in http_main.c
+           for shutdown don't actually wait while killing children.
+           The following code makes TPF's select work a little closer
+           to everyone else's select:
+        */
+#ifndef NO_SAWNC
+        struct ev0bk evnblock;
+
+        timeout = tv->tv_sec;
+        if (tv->tv_usec) {
+            timeout++; /* round up to seconds (like TPF's select does) */
+        }
+        evnblock.evnpstinf.evnbkc1 = 1; /* nbr of posts needed */
+        evntc(&evnblock, EVENT_CNT, 'N', timeout, EVNTC_1052);
+        tpf_sawnc(&evnblock, EVENT_CNT);
+#endif
+    } else {
+        rv = select(sockets, no_reads, no_writes, no_excepts, timeout);
+    }
     ap_check_signals();
     
     return rv;
@@ -352,10 +375,10 @@ pid_t os_fork(server_rec *s, int slot)
         ap_log_error(APLOG_MARK, APLOG_CRIT, s,
         "unable to replace stdout with sock device driver");
     input_parms.generation = ap_my_generation;
-#ifdef SCOREBOARD_FILE
-    input_parms.scoreboard_fd = scoreboard_fd;
-#else /* must be USE_TPF_SCOREBOARD or USE_SHMGET_SCOREBOARD */
+#if defined(USE_TPF_SCOREBOARD) || defined(USE_SHMGET_SCOREBOARD)
     input_parms.scoreboard_heap = ap_scoreboard_image;
+#else
+    input_parms.scoreboard_fd = scoreboard_fd;
 #endif
 
     lr = ap_listeners;
@@ -379,18 +402,69 @@ pid_t os_fork(server_rec *s, int slot)
     return tpf_fork(&fork_input);
 }
 
-int os_check_server(char *server) {
-    #ifndef USE_TPF_DAEMON
-    int rv;
-    int *current_acn;
-    if((rv = inetd_getServerStatus(server)) == INETD_SERVER_STATUS_INACTIVE)
-        return 1;
-    else {
-        current_acn = (int *)cinfc_fast(CINFC_CMMACNUM);
-        if(ecbp2()->ce2acn != *current_acn)
-            return 1;
+void ap_tpf_zinet_checks(int standalone,
+                        const char *servername,
+                        server_rec *s) {
+
+    INETD_IDCT_ENTRY_PTR idct;
+
+    /* explicitly disallow "ServerType inetd" on TPF */
+    if (!standalone) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, s,
+                     TPF_SERVERTYPE_MSG);
+        exit(1); /* abort start-up of server */
     }
-    #endif
+
+    /* figure out zinet model for our server from the idct slot */
+    idct = inetd_getServer(servername);
+    if (idct) {
+        zinet_model = idct->model;
+        free(idct);
+    } else {
+        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, s,
+                     TPF_UNABLE_TO_DETERMINE_ZINET_MODEL);
+        exit(1); /* abort start-up of server */
+    }
+
+    /* check for valid zinet models */
+    if (zinet_model != INETD_IDCF_MODEL_DAEMON &&
+        zinet_model != INETD_IDCF_MODEL_NOLISTEN) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, s,
+                     TPF_STANDALONE_CONFLICT_MSG);
+        exit(1); /* abort start-up of server */
+    }
+
+#ifdef TPF_NOLISTEN_WARNING
+/* nag about switching to DAEMON model */
+    if (zinet_model == INETD_IDCF_MODEL_NOLISTEN) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, s,
+                     TPF_NOLISTEN_WARNING);
+    }
+#endif
+
+}
+
+int os_check_server(char *server) {
+    int *current_acn;
+
+    if (zinet_model == INETD_IDCF_MODEL_NOLISTEN) {
+        /* if NOLISTEN model, check with ZINET for status */
+        if (inetd_getServerStatus(server) == INETD_SERVER_STATUS_INACTIVE) {
+            return 1;
+        }
+        /* and check that program activation number hasn't changed */
+        current_acn = (int *)cinfc_fast(CINFC_CMMACNUM);
+        if (ecbp2()->ce2acn != *current_acn) {
+            return 1;
+        }
+
+    } else {
+        /* if DAEMON model, just make sure parent is still around */
+        if (getppid() == 1) {
+            return 1;
+        }
+    }
+
     return 0;
 }
 
@@ -662,4 +736,26 @@ int ap_check_shm_space(struct pool *a, int size)
     }
     else
          return (0);
+}
+
+/*
+   This function serves as an interim killpg for Apache shutdown purposes.
+   TPF won't have an actual killpg for a very long time, if ever.
+   (And kill with a negative pid doesn't work on TPF either.)
+*/
+int killpg(pid_t pgrp, int sig)
+{
+    int i;
+
+    ap_sync_scoreboard_image();
+
+    for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
+        int pid = ap_scoreboard_image->parent[i].pid;
+        /* the pgrp check is so that we don't kill ourself: */
+        if (pid && pid != pgrp) {
+            kill(pid, sig);
+        }
+    }
+
+    return(0);
 }

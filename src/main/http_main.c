@@ -3665,8 +3665,8 @@ static void show_compile_settings(void)
 #ifdef USE_TPF_SCOREBOARD
     printf(" -D USE_TPF_SCOREBOARD\n");
 #endif
-#ifdef USE_TPF_DAEMON
-    printf(" -D USE_TPF_DAEMON\n");
+#ifdef NO_SAWNC
+    printf(" -D NO_SAWNC\n");
 #endif
 #ifdef USE_OS2_SCOREBOARD
     printf(" -D USE_OS2_SCOREBOARD\n");
@@ -5006,13 +5006,14 @@ int REALMAIN(int argc, char *argv[])
 	STANDALONE_MAIN(argc, argv);
     }
 #else
+    if (!tpf_child) {
+        memcpy(tpf_server_name, input_parms.parent.servname,
+               INETD_SERVNAME_LENGTH);
+        tpf_server_name[INETD_SERVNAME_LENGTH + 1] = '\0';
+        ap_open_logs(server_conf, pconf);
+        ap_tpf_zinet_checks(ap_standalone, tpf_server_name, server_conf);
+    }
     if (ap_standalone) {
-        if(!tpf_child) {
-            memcpy(tpf_server_name, input_parms.parent.servname,
-                   INETD_SERVNAME_LENGTH);
-            tpf_server_name[INETD_SERVNAME_LENGTH+1] = '\0';
-            ap_open_logs(server_conf, pconf);
-        }
         ap_set_version();
         ap_init_modules(pconf, server_conf);
         version_locked++;
@@ -5071,12 +5072,7 @@ int REALMAIN(int argc, char *argv[])
 	    exit(0);
 	}
 
-#ifdef TPF
-/* TPF's Internet Daemon passes the incoming socket nbr (inetd mode only) */
-    sock_in = sock_out = input_parms.parent.socket;
-/* TPF also needs a signal set for alarm in inetd mode */
-    signal(SIGALRM, alrm_handler);
-#elif defined(MPE)
+#ifdef MPE
 /* HP MPE 5.5 inetd only passes the incoming socket as stdin (fd 0), whereas
    HPUX inetd passes the incoming socket as stdin (fd 0) and stdout (fd 1).
    Go figure.  SR 5003355016 has been submitted to request that the existing

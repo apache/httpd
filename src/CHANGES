@@ -1,5 +1,7 @@
 Changes with Apache 1.3.18
 
+  *) TPF startup/shutdown fixes. [David McCreedy <McCreedy@us.ibm.com>]
+
   *) Correct a typo in httpd.conf.
      [Kunihiro Tanaka <tanaka@apache.or.jp>] PR#7154 
 

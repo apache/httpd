@@ -11,7 +11,7 @@
 #endif
 
 /*
- * This file in included in all Apache source code. It contains definitions
+ * This file is included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),
  * and prototypes of OS specific functions defined in os.c or os-inline.c
  */
@@ -124,8 +124,12 @@ extern int tpf_child;
 
 struct server_rec;
 pid_t os_fork(struct server_rec *s, int slot);
+void ap_tpf_zinet_checks(int standalone,
+                         const char *servername,
+                         struct server_rec *s);
 int os_check_server(char *server);
 char *getpass(const char *prompt);
+int killpg(pid_t pgrp, int sig);
 extern char *ap_server_argv0;
 extern int scoreboard_fd;
 #include <signal.h>
@@ -135,4 +139,28 @@ extern int scoreboard_fd;
 #ifdef NSIG
 #undef NSIG
 #endif
+
+/* various #defines for ServerType/ZINET model checks: */
+
+#define TPF_SERVERTYPE_MSG \
+        "ServerType inetd is not supported on TPF" \
+        " -- Apache startup aborted"
+
+#ifdef INETD_IDCF_MODEL_DAEMON
+#define TPF_STANDALONE_CONFLICT_MSG \
+        "ServerType standalone requires ZINET model DAEMON or NOLISTEN" \
+        " -- Apache startup aborted"
+#define TPF_NOLISTEN_WARNING \
+        "ZINET model DAEMON is preferred over model NOLISTEN"
+#else
+#define INETD_IDCF_MODEL_DAEMON -1
+#define TPF_STANDALONE_CONFLICT_MSG \
+        "ServerType standalone requires ZINET model NOLISTEN" \
+        " -- Apache startup aborted"
+#endif
+
+#define TPF_UNABLE_TO_DETERMINE_ZINET_MODEL \
+        "Unable to determine ZINET model: inetd_getServer call failed" \
+        " -- Apache startup aborted"
+
 #endif /*! APACHE_OS_H*/

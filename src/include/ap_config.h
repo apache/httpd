@@ -948,7 +948,6 @@ typedef int rlim_t;
 #define NEED_STRDUP
 #define NO_DBM_REWRITEMAP
 #define NO_GETTIMEOFDAY
-#define NO_KILLPG
 #define NO_LINGCLOSE
 #define NO_MMAP
 #define NO_OTHER_CHILD
@@ -959,11 +958,10 @@ typedef int rlim_t;
 #define NO_TIMES
 #define NO_USE_SIGACTION
 #define USE_LONGJMP
-/*#define USE_SHMGET_SCOREBOARD*/
+#define USE_SHMGET_SCOREBOARD
+/*#define USE_TPF_SCOREBOARD*/
 #define USE_TPF_ACCEPT
 #define USE_TPF_CORE_SERIALIZED_ACCEPT
-/*#define USE_TPF_DAEMON*/
-#define USE_TPF_SCOREBOARD
 #define USE_TPF_SELECT
 #define S_IREAD S_IRUSR
 #define S_IWRITE S_IWUSR
