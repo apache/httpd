@@ -124,7 +124,9 @@ void ap_reclaim_child_processes(int terminate);
  * @param ret The process id of the process that died
  * @param p The pool to allocate out of
  */
+#ifdef AP_MPM_WANT_WAIT_OR_TIMEOUT
 void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
+#endif
 
 /**
  * Log why a child died to the error log, if the child died without the
@@ -132,7 +134,9 @@ void ap_wait_or_timeout(apr_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
  * @param pid The child that has died
  * @param status The status returned from ap_wait_or_timeout
  */
+#ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
 void ap_process_child_status(apr_proc_t *pid, apr_wait_t status);
+#endif
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 /**
@@ -154,6 +158,7 @@ void ap_sock_disable_nagle(apr_socket_t *s);
  * @deffunc uid_t ap_uname2id(const char *name)
  */
 AP_DECLARE(uid_t) ap_uname2id(const char *name);
+
 /**
  * Convert a group name to a numeric ID
  * @param name The name to convert

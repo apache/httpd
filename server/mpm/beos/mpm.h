@@ -68,6 +68,8 @@
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->servers[0][i].tid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 
+#define AP_MPM_WANT_WAIT_OR_TIMEOUT
+#define AP_MPM_WANT_PROCESS_CHILD_STATUS
 #define AP_MPM_WANT_SET_PIDFILE
 #define AP_MPM_WANT_SET_SCOREBOARD
 #define AP_MPM_WANT_SET_MAX_REQUESTS
