@@ -40,6 +40,9 @@ install-conf:
 			< $$i > $(sysconfdir)/$$i; \
 		chmod 0644 $(sysconfdir)/$$i; \
 		file=`echo $$i|sed s/-dist//`; \
+		if [ "$$file" = "httpd.conf" ]; then \
+			file=`echo $$file|sed s/.*.conf/$(PROGRAM_NAME).conf/`; \
+		fi; \
 		if test "$$file" != "$$i" && test ! -f $(sysconfdir)/$$file; then \
 			$(INSTALL_DATA) $(sysconfdir)/$$i $(sysconfdir)/$$file; \
 		fi; \
