@@ -115,11 +115,11 @@ int main(int argc, char *argv[])
          *
          * Rem please keep in-sync with apr's list in win32/filesys.c
          */
-        if (strchr("&;`'\"|*?~<>^()[]{}$\\\n\r%", c)) {
+        if (c && strchr("&;`'\"|*?~<>^()[]{}$\\\n\r%", c)) {
             flags |= T_ESCAPE_SHELL_CMD;
         }
 #else
-        if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
+        if (c && strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
             flags |= T_ESCAPE_SHELL_CMD;
         }
 #endif
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
         }
 
         /* these are the "tspecials" from RFC2068 */
-        if (apr_iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c)) {
+        if (c && (apr_iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c))) {
             flags |= T_HTTP_TOKEN_STOP;
         }
 
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
          * backslashes (because we use backslash for escaping)
          * and 8-bit chars with the high bit set
          */
-        if (!apr_isprint(c) || c == '"' || c == '\\' || apr_iscntrl(c)) {
+        if (c && (!apr_isprint(c) || c == '"' || c == '\\' || apr_iscntrl(c))) {
             flags |= T_ESCAPE_LOGITEM;
         }
 
