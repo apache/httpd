@@ -59,7 +59,7 @@
 #ifndef _MOD_CGI_H
 #define _MOD_CGI_H 1
 
-#include "../filters/mod_include.h"
+#include "mod_include.h"
 
 typedef enum {RUN_AS_SSI, RUN_AS_CGI} prog_types;
 
