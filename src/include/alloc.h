@@ -94,7 +94,6 @@ API_EXPORT(void) destroy_pool(pool *);
  * destroyed before the parent pool
  */
 #ifndef POOL_DEBUG
-/* could be defined when we're using HIDE */
 #ifdef pool_join
 #undef pool_join
 #endif

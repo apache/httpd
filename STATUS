@@ -76,8 +76,6 @@ Committed Code Changes:
     * Ralf's mod_rewrite meta-construct expansion inconsistency fix
     * Martin's new URI parsing stuff (the source module main/util_uri.c)
     * New `%a' construct for LogFormat and CustomLog. PR#1885
-    * Ralf's `Rule HIDE' feature for hiding the symbol namespace
-      -- under debate
     * Make \\ behave as expected.
     * Fix for "poly" directive in image maps. PR#1771
     * Reduce memory usage, and speed up ServerAlias support. PR#1531
@@ -86,8 +84,6 @@ Committed Code Changes:
     * Dean's new mod_test_util_uri.c 
     * back out USE_PTHREAD_SERIALIZED_ACCEPT for solaris
     * Ken's abstraction of SERVER_{BUILT,VERSION}
-    * Ken's fix for os/unix/os.h and the new -DHIDE functionality
-      -- needs to be undone when HIDE is backed out
     * Ralf's Config File Line Continuation
     * Ralf's Reanimation of DBM support for RewriteMap in mod_rewrite PR#1696
     * Ralf's fix for the `<VirtualHost> w/o mod_rewrite' situation. PR#1790
@@ -117,8 +113,6 @@ Committed Code Changes:
     * Marc's mod_proxy was not clearing the Proxy-Connection header
     * Dean's API_EXPORT and CORE_EXPORT cleanup for core functions
     * Ralf's new ApacheBench support program (src/support/ab.c)
-    * Ken's change HIDE default to "yes", always include hide.h
-      -- under debate
     * Ralf's major Configure cleanup
     * Ralf's additional manual pages for the support programs
     * Ben Hyde's Configure check for unknown command switch
@@ -127,8 +121,6 @@ Committed Code Changes:
     * Ralf's mod_proxy fix to use FTP SIZE response for Content-Length, PR#1183
     * Ralf's change to make the shared object compilation command more portable
     * Dean's protect against FD_SETSIZE mismatches
-    * Ralf's fallback stategy because of HIDE for loading shared object modules
-      -- does this need to be revisited due to HIDE rollback?
     * Martin's fix to allow %2F chars in proxy requests and in the uri query
       part
     * fix to mark listening sockets for closure in the parent after a SIGHUP 
@@ -219,10 +211,6 @@ Open issues:
 
       NOTES:
        - Marc: this is the wrong time for such a big change
-       - Ralf: Yes, I personally also would like to keep HIDE, but
-               now because it's vetoed, it's better to rename the
-               source instead of just having the
-               namespace-conflicts again.
 
     * What prefixes to use for the renaming:
 

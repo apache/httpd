@@ -146,11 +146,6 @@ Changes with Apache 1.3b6
      %2f in them (occurs quite often in
      http://.../cgi-bin/...?http%3A%2F%2F... references) [Martin Kraemer]
 
-  *) Finally fix the shared object loading by using a fallback strategy to
-     overcome the HIDE feature problematic without loosing special cases. Also
-     a huge comment was added to mod_so.c to make the situation more clear
-     for the future. [Ralf S. Engelschall]
-
   *) Protect against FD_SETSIZE mismatches.  [Dean Gaudet]
 
   *) Make the shared object compilation command more portable by avoiding
@@ -193,12 +188,6 @@ Changes with Apache 1.3b6
      verbose than GNU make), same style to comments in the Configure script,
      added Apache license header, fixed a few bugs, etc. [Ralf S. Engelschall]
      
-  *) The default for the HIDE rule is now "yes" to aid portability, and
-     include/hide.h is always included.  It doesn't do anything if the
-     rule is "no" but the dependencies don't change now regardless.
-     Previously, a "make depend" would result in different dependencies
-     according to how the rule was set.  [Ken Coar]
-
   *) Add the new ApacheBench program "ab" to src/support/: This is derived
      from the ZeusBench benchmarking program and can be used to determine the
      response performance of an Apache installation. This version is
@@ -420,10 +409,6 @@ Changes with Apache 1.3b6
      [Konstantin Morshnev <moko@design.ru>] PR#1771
 
   *) Make \\ behave as expected.  [Ronald.Tschalaer@psi.ch]
-
-  *) Add `Rule HIDE' to Configuration to hide the Apache symbol
-     namespace from conflicting with third-party libraries some
-     modules force to be linked with Apache. [Ralf S. Engelschall]
 
   *) Add the `%a' construct to LogFormat and CustomLog to log the client IP
      address. [Todd Eigenschink <eigenstr@mixi.net>, PR#1885]

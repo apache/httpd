@@ -202,7 +202,6 @@ DEP_CPP_GEN_T=\
 	"..\include\ap.h"\
 	"..\include\buff.h"\
 	"..\include\conf.h"\
-	"..\include\hide.h"\
 	"..\include\hsregex.h"\
 	"..\include\httpd.h"\
 	"..\include\util_uri.h"\
@@ -220,7 +219,6 @@ DEP_CPP_GEN_T=\
 	"..\include\ap.h"\
 	"..\include\buff.h"\
 	"..\include\conf.h"\
-	"..\include\hide.h"\
 	"..\include\hsregex.h"\
 	"..\include\httpd.h"\
 	"..\include\util_uri.h"\

@@ -206,7 +206,6 @@ DEP_CPP_MOD_P=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -237,7 +236,6 @@ DEP_CPP_MOD_P=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -265,7 +263,6 @@ DEP_CPP_PROXY=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -300,7 +297,6 @@ DEP_CPP_PROXY=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -331,7 +327,6 @@ DEP_CPP_PROXY_=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -362,7 +357,6 @@ DEP_CPP_PROXY_=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -390,7 +384,6 @@ DEP_CPP_PROXY_F=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -421,7 +414,6 @@ DEP_CPP_PROXY_F=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_main.h"\
@@ -448,7 +440,6 @@ DEP_CPP_PROXY_H=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
@@ -481,7 +472,6 @@ DEP_CPP_PROXY_H=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
@@ -511,7 +501,6 @@ DEP_CPP_PROXY_U=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -544,7 +533,6 @@ DEP_CPP_PROXY_U=\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
 	"..\..\include\explain.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\

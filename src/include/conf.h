@@ -873,14 +873,6 @@ typedef int rlim_t;
 #include <regex.h>
 #endif
 
-/* We always include the name-concealer file, even if stealth-mode
- * is off.  This keeps the dependencies the same regardless of the
- * setting of the HIDE rule.  hide.h either does its thing or not
- * internally depending on the rule, so it's safe to include under
- * all circumstances.
- */
-#include "hide.h"
-
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #ifdef SUNOS4

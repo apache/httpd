@@ -20,9 +20,6 @@ apapi.h.mk ......... Creates apapi.h file from rename.cf and ID file
 If we ever get around to doing this, here's the procedure
 ---------------------------------------------------------
 
-    - completely remove HIDE stuff from
-         src/Configure, include/*, APACI, etc.
-
     - tag the source tree
       $ cd apache-1.3
       $ cvs tag PRE_AP_PREFIX_RENAME .

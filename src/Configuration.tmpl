@@ -89,7 +89,7 @@ EXTRA_INCLUDES=
 # functions. The format is: Rule RULE=value
 #
 # At present, only the following RULES are known: WANTHSREGEX, SOCKS4,
-# STATUS, IRIXNIS, IRIXN32, PARANOID, and HIDE.
+# STATUS, IRIXNIS, IRIXN32 and PARANOID.
 #
 # For all Rules, if set to "yes", then Configure knows we want that
 # capability and does what is required to add it in. If set to "default"
@@ -124,18 +124,12 @@ EXTRA_INCLUDES=
 #  is performing this function. If PARANOID is set to yes, it will
 #  actually print-out the code that the modules execute
 #
-# HIDE:
-#  This has no run-time penalty, but helps keep the Apache
-#  namespace from colliding with that used by other libraries
-#  pulled in by modules. 
-#
 
 Rule STATUS=yes
 Rule SOCKS4=no
 Rule IRIXNIS=no
 Rule IRIXN32=yes
 Rule PARANOID=no
-Rule HIDE=yes
 
 # The following rules should be set automatically by Configure. However, if
 # they are not set by Configure (because we don't know the correct value for

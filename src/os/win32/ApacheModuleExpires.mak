@@ -185,7 +185,6 @@ DEP_CPP_MOD_E=\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\
@@ -213,7 +212,6 @@ DEP_CPP_MOD_E=\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_log.h"\

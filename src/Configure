@@ -232,7 +232,6 @@ RULE_SOCKS4=`./helpers/CutRule SOCKS4 $file`
 RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 RULE_IRIXN32=`./helpers/CutRule IRIXN32 $file`
 RULE_PARANOID=`./helpers/CutRule PARANOID $file`
-RULE_HIDE=`./helpers/CutRule HIDE $file`
 
 ####################################################################
 ## Preset some "constants";
@@ -1145,13 +1144,6 @@ if [ "$RULE_WANTHSREGEX" = "yes" ]; then
     REGLIB="regex/libregex.a"
     SUBDIRS="$SUBDIRS regex"
     CFLAGS="$CFLAGS -DUSE_HSREGEX"
-fi
-
-####################################################################
-## Now the definition of HIDE if needed/wanted.
-##
-if [ "$RULE_HIDE" = "yes" ]; then
-    CFLAGS="$CFLAGS -DHIDE"
 fi
 
 ####################################################################

@@ -402,10 +402,6 @@ SOURCE=.\include\util_uri.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\include\hide.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\main\test_char.h
 # End Source File
 # Begin Source File

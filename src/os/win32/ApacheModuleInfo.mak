@@ -180,7 +180,6 @@ DEP_CPP_MOD_I=\
 	"..\..\include\ap.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\conf.h"\
-	"..\..\include\hide.h"\
 	"..\..\include\hsregex.h"\
 	"..\..\include\http_conf_globals.h"\
 	"..\..\include\http_config.h"\

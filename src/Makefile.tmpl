@@ -63,31 +63,14 @@ depend:
 	    ( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' depend ) || exit 1; \
 	done
 
-# We really don't expect end users to use this rule. It builds a
-# httpd binary with all modules built in and then updates the
-# $(INCDIR)/hide.h file according to the exported symbols of this
-# binary. So run this target once after a new function was added
-# to the source. But never trust this operation. You really
-# have to review the changes manually afterwards.
-updatehide:
-	cat Configuration.tmpl |\
-        sed -e 's/^#*[ 	]*\(AddModule\)/\1/g' |\
-        sed -e 's/^\(AddModule.*auth_db.*\)/# \1/g' \
-        >Configuration.for-hide
-	./Configure -file Configuration.for-hide
-	$(MAKE) clean httpd
-	./helpers/UpdateHide httpd $(INCDIR)/hide.h `helpers/GuessOS`
-	$(MAKE) clean
-	rm -f Configuration.for-hide
-
 #Dependencies
 
 $(OBJS): Makefile
 
 # DO NOT REMOVE
-buildmark.o: buildmark.c include/conf.h os/unix/os.h include/hide.h \
+buildmark.o: buildmark.c include/conf.h os/unix/os.h \
  include/hsregex.h include/httpd.h include/alloc.h include/buff.h \
  include/ap.h include/util_uri.h
 modules.o: modules.c include/httpd.h include/conf.h os/unix/os.h \
- include/hide.h include/hsregex.h include/alloc.h include/buff.h \
+ include/hsregex.h include/alloc.h include/buff.h \
  include/ap.h include/util_uri.h include/http_config.h
