@@ -224,14 +224,14 @@ static void push_item(apr_array_header_t *arr, char *type, const char *to,
     }
 
     p->type = type;
-    p->data = data ? apr_pstrdup(arr->cont, data) : NULL;
-    p->apply_path = apr_pstrcat(arr->cont, path, "*", NULL);
+    p->data = data ? apr_pstrdup(arr->pool, data) : NULL;
+    p->apply_path = apr_pstrcat(arr->pool, path, "*", NULL);
 
     if ((type == BY_PATH) && (!ap_is_matchexp(to))) {
-	p->apply_to = apr_pstrcat(arr->cont, "*", to, NULL);
+	p->apply_to = apr_pstrcat(arr->pool, "*", to, NULL);
     }
     else if (to) {
-	p->apply_to = apr_pstrdup(arr->cont, to);
+	p->apply_to = apr_pstrdup(arr->pool, to);
     }
     else {
 	p->apply_to = NULL;
@@ -325,13 +325,13 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
 			     || apr_is_fnmatch(to));
     if (desc_entry->wildcards) {
 	prefix = desc_entry->full_path ? "*/" : "*";
-	desc_entry->pattern = apr_pstrcat(dcfg->desc_list->cont,
+	desc_entry->pattern = apr_pstrcat(dcfg->desc_list->pool,
 					 prefix, to, "*", NULL);
     }
     else {
-	desc_entry->pattern = apr_pstrdup(dcfg->desc_list->cont, to);
+	desc_entry->pattern = apr_pstrdup(dcfg->desc_list->pool, to);
     }
-    desc_entry->description = apr_pstrdup(dcfg->desc_list->cont, desc);
+    desc_entry->description = apr_pstrdup(dcfg->desc_list->pool, desc);
     return NULL;
 }
 
