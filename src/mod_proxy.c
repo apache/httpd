@@ -1821,10 +1821,13 @@ cache_update(struct cache_req *c, array_header *resp_hdrs,
     buff[35] = ' ';
 
 /* open temporary file */
-    c->tempfile = pstrdup(r->pool, c->filename);
+#define TMPFILESTR	"/#tmpXXXXXX"
+    c->tempfile=palloc(r->pool,strlen(c->filename)+sizeof TMPFILESTR-1);
+    strcpy(c->tempfile,c->filename);
     p = strrchr(c->tempfile, '/');
     if (p == NULL) return DECLINED;
-    strcpy(p, "/#tmpXXXXXX");
+    strcpy(p, TMPFILESTR);
+#undef TMPFILESTR
     p = mktemp(c->tempfile);
     if (p == NULL) return DECLINED;
 
