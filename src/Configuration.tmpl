@@ -85,8 +85,8 @@ EXTRA_LIBS=
 # For Linux -m486 ONLY IF YOU HAVE 486 BINARY SUPPORT IN KERNEL
 #AUX_CFLAGS= -DLINUX
 # For A/UX
-#AUX_CFLAGS= -DAUX -D_POSIX_SOURCE
-#AUX_LIBS= -lposix -lbsd -s
+AUX_CFLAGS= -DAUX -D_POSIX_SOURCE
+AUX_LIBS= -lposix -lbsd -s
 # For SCO ODT 3
 # libcrypt_i available from sosco.sco.com, files /SLS/lng225b.Z and
 # /SLS/lng225b.ltr.Z
@@ -154,10 +154,10 @@ Module common_log_module   mod_log_common.o
 Module asis_module        mod_asis.o
 Module imap_module        mod_imap.o
 Module action_module      mod_actions.o
-Module proxy_module       mod_proxy.o
-Module cern_meta_module   mod_cern_meta.o
-Module env_module         mod_env.o
-Module anon_auth_module   mod_auth_anon.o
+#Module proxy_module       mod_proxy.o
+#Module cern_meta_module   mod_cern_meta.o
+#Module env_module         mod_env.o
+#Module anon_auth_module   mod_auth_anon.o
 
 # Optional authentication modules, which should only be
 # uncommented out if you have the neccessary system support.

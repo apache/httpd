@@ -3,7 +3,7 @@
 # Apache configuration script, first cut --- rst.
 # Dont like it?  Inspired to do something better?  Go for it.
 
-file=Configuration.tmpl
+file=Configuration
 tmpfile=htconf.$$
 
 if [ "x$1" = "x-file" ] ; then
