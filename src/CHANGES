@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Fix problems with handling of UNC names (e.g., \\host\path)
+     on Win32.  [Ken Parzygnat <kparz@us.ibm.com>]
+
   *) Rework os_canonical_*() on Win32 so it's simpler, more
      robust, and works.  [Ken Parzygnat <kparz@us.ibm.com>]
      PR#2555, 2915, 3064, 3232

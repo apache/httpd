@@ -180,6 +180,7 @@ static int get_path_info(request_rec *r)
     int rv;
 #ifdef WIN32
     char buf[5];
+    BOOL bStripSlash=TRUE;
 #endif
 
     if (r->finfo.st_mode) {
@@ -198,12 +199,33 @@ static int get_path_info(request_rec *r)
 	path=buf;
 	end=buf+4;
     }
+
+    /* If UNC name == //machine/share/, do not 
+     * advance over the trailing slash.  Any other
+     * UNC name is OK to strip the slash.
+     */
+    cp = end;
+    if (strlen(path) > 2 && path[0] == '/' && path[1] == '/' && 
+        path[2] != '/' && cp[-1] == '/') {
+        char *p;
+        int iCount=0;
+        p = path;
+        while (p = strchr(p,'/')) {
+            p++;
+            iCount++;
+        }
+    
+        if (iCount == 4)
+            bStripSlash = FALSE;
+    }
+
+    if (bStripSlash)
 #endif
-
-    /* Advance over trailing slashes ... NOT part of filename */
-
-    for (cp = end; cp > path && cp[-1] == '/'; --cp)
-        continue;
+        /* Advance over trailing slashes ... NOT part of filename 
+         * if file is not a UNC name (Win32 only).
+         */
+        for (cp = end; cp > path && cp[-1] == '/'; --cp)
+            continue;
 
 
     while (cp > path) {

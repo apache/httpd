@@ -424,6 +424,13 @@ API_EXPORT(void) ap_no2slash(char *name)
     char *d, *s;
 
     s = d = name;
+
+#ifdef WIN32
+    /* Check for UNC names.  Leave leading two slashes. */
+    if (s[0] == '/' && s[1] == '/')
+        *d++ = *s++;
+#endif
+
     while (*s) {
 	if ((*d++ = *s) == '/') {
 	    do {
