@@ -28,22 +28,21 @@
     major overhaul for Apache v2.0. The protocol support was upgraded to
     <code>HTTP/1.1</code>, and filter support was enabled.</p>
 
-    <p>During the overhaul process the <module>mod_proxy</module> has been
-    splitted into several module files. The accompanying modules distributed
-    with the httpd are <module>mod_proxy_http</module>,
+    <p>During the overhaul process, <module>mod_proxy</module> features
+    have been split into several module files: <module>mod_proxy_http</module>,
     <module>mod_proxy_ftp</module> and <module>mod_proxy_connect</module>.
-    Thus if you want to use one or more of the particular proxy functions you
-    have to load <module>mod_proxy</module> <em>and</em> the appropriate
+    Thus, if you want to use one or more of the particular proxy functions,
+    load <module>mod_proxy</module> <em>and</em> the appropriate
     module(s) into the server (either statically or dynamically via the
     <directive module="mod_so">LoadModule</directive> directive).</p>
 
     <p>Please note that the <strong>caching</strong> function present in <module
     >mod_proxy</module> up to Apache v1.3.x has been <strong>removed</strong>
-    from <module>mod_proxy</module> and will be incorporated into a new module,
-    <module>mod_cache</module>. In other words: the Apache 2.0.x-Proxy doesn't 
-    cache at all - all caching functionality has been moved into
+    from <module>mod_proxy</module> and incorporated into a new module,
+    <module>mod_cache</module>. In other words, the Apache 2.0.x proxy doesn't 
+    cache - all caching functionality has been moved into
     <module>mod_cache</module>, which is capable of caching any content, not
-    only content from proxy.</p>
+    just content from the proxy.</p>
 
     <p>If you need to use SSL when contacting remote servers, have a look at the
     <code>SSLProxy*</code> directives in <module>mod_ssl</module>.</p>
