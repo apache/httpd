@@ -252,7 +252,7 @@ dnl ## APRVARS before Apache generates it's Makefiles and the related files.
 dnl ## This allows APR to detect libraries like dl and tell Apache that it
 dnl ## needs to include or not include them.
 APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --disable-shared")
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --disable-shared")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --with-expat=../expat-lite --disable-shared")
 APR_SUBDIR_CONFIG(srclib/pcre)
 . ./srclib/apr/APRVARS
 
