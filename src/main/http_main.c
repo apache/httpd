@@ -534,7 +534,7 @@ static void setup_shared_mem(void)
 	perror("shmctl");
 	fprintf(stderr, "httpd: Could not delete segment #%d\n", shmid);
 	sprintf(errstr, "could not remove shared memory segment #%d", shmid);
-	log_error(errstr, server_conf);
+	log_unixerr("shmctl","IPC_RMID",errstr, server_conf);
     }
     if (scoreboard_image == BADSHMAT)	/* now bailout */
 	exit(1);
@@ -919,7 +919,7 @@ static void set_group_privs()
       uid_t uid=atoi(&user_name[1]);
 
       if ((ent = getpwuid(uid)) == NULL) {
-	 log_error("couldn't determine user name from uid", server_conf);
+	 log_unixerr("getpwuid",NULL,"couldn't determine user name from uid", server_conf);
 	 exit(1);
       }
       
@@ -1131,7 +1131,7 @@ void child_main(int child_num_arg)
 		memcpy(&fds, &listenfds, sizeof(fd_set));
 		csd = select(listenmaxfd+1, &fds, NULL, NULL, NULL);
 		if (csd == -1 && errno != EINTR)
-		    log_error("select error", server_conf);
+		    log_unixerr("select",NULL,"select error", server_conf);
 		if (csd <= 0) continue;
 		for (sd=listenmaxfd; sd >= 0; sd--)
 		    if (FD_ISSET(sd, &fds)) break;
@@ -1146,7 +1146,7 @@ void child_main(int child_num_arg)
 	} else
 	    while ((csd=accept(sd, &sa_client, &clen)) == -1) 
 		if (errno != EINTR) 
-		    log_error("socket error: accept failed", server_conf);
+		    log_unixerr("accept",NULL,"socket error: accept failed", server_conf);
 
 	accept_mutex_off(); /* unlock after "accept" */
 
