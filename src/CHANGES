@@ -1,5 +1,8 @@
 Changes with Apache 1.3.7
 
+  *) Fix special RewriteCond "-s" pattern matching.
+     [Bob Finch <bob@nas.com>]
+
   *) Fix value quoting in src/Configure script for ap_config_auto.h 
      [Paul Sutton <paul@awe.com>]
 

@@ -2175,7 +2175,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
             }
         }
     }
-    else if (strcmp(p->pattern, "-s ") == 0) {
+    else if (strcmp(p->pattern, "-s") == 0) {
         if (stat(input, &sb) == 0) {
             if (S_ISREG(sb.st_mode) && sb.st_size > 0) {
                 rc = 1;
