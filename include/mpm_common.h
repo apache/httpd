@@ -76,6 +76,8 @@
 #include <netinet/tcp.h>    /* for TCP_NODELAY */
 #endif
 
+#include "mpm.h" /* for AP_MPM_NEEDS_RECLAIM_CHILD_PROCESSES setting */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
