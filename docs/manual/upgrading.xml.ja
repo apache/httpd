@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <title>1.3 から 2.0 へのアップグレード</title>
 
@@ -119,7 +119,7 @@
       <code>RefererLog</code> ディレクティブ、
       <code>RefererIgnore</code> ディレクティブを提供していた
       mod_log_agent と mod_log_referer モジュールは削除されました。
-      Agent ログと refere ログは mod_log_config の
+      Agent ログと refere ログは <directive>mod_log_config</directive> の
       <directive module="mod_log_config">CustomLog</directive>
       ディレクティブにより実現可能です。</li>
 
@@ -144,11 +144,12 @@
       <code>httpd</code> のコマンドラインオプション <code>-S</code> は
       <code>-t -D DUMP_VHOSTS</code> に置き換えられました。</li>
 
-      <li>Apache 1.3 で実験的なモジュールだった mod_auth_digest は
+      <li>Apache 1.3 で実験的なモジュールだった
+      <directive>mod_auth_digest</directive> は
       標準モジュールになりました。</li>
 
-      <li>Apache 1.3 で実験的なモジュールだった mod_mmap_static は
-      mod_file_cache で置き換えられました。</li>
+      <li>Apache 1.3 で実験的なモジュールだった <code>mod_mmap_static</code> は
+      <module>mod_file_cache</module> で置き換えられました。</li>
 
       <li>Apache の配布は独立した <code>src</code> ディレクトリが
       なくなるように、完全に再構成されました。その代わりに、
