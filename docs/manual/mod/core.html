@@ -100,8 +100,6 @@
 
       <li><a href="#options">Options</a></li>
 
-      <li><a href="#port">Port</a></li>
-
       <li><a href="#require">Require</a></li>
 
       <li><a href="#rlimitcpu">RLimitCPU</a></li>
@@ -1907,72 +1905,6 @@
     <code>All</code>.</p>
     <hr />
 
-    <h2><a id="port" name="port">Port directive</a></h2>
-    <!--%plaintext &lt;?INDEX {\tt Port} directive&gt; -->
-    <a href="directive-dict.html#Syntax"
-    rel="Help"><strong>Syntax:</strong></a> Port
-    <em>number</em><br />
-     <a href="directive-dict.html#Default"
-    rel="Help"><strong>Default:</strong></a> <code>Port
-    80</code><br />
-     <a href="directive-dict.html#Context"
-    rel="Help"><strong>Context:</strong></a> server config<br />
-     <a href="directive-dict.html#Status"
-    rel="Help"><strong>Status:</strong></a> core 
-
-    <p><em>Number</em> is a number from 0 to 65535; some port
-    numbers (especially below 1024) are reserved for particular
-    protocols. See <code>/etc/services</code> for a list of some
-    defined ports; the standard port for the http protocol is
-    80.</p>
-
-    <p>The Port directive has two behaviors, the first of which is
-    necessary for NCSA backwards compatibility (and which is
-    confusing in the context of Apache).</p>
-
-    <ul>
-      <li>In the absence of any <a
-      href="mpm_common.html#listen">Listen</a> directives
-      specifying a port number, a Port directive given in the "main
-      server" (<em>i.e.</em>, outside any <a
-      href="#virtualhost">&lt;VirtualHost&gt;</a> section) sets the
-      network port on which the server listens. If there are any
-      Listen directives specifying <code>:number</code> then Port
-      has no effect on what address the server listens at.</li>
-
-      <li>The Port directive sets the <code>SERVER_PORT</code>
-      environment variable (for <a href="mod_cgi.html">CGI</a> and
-      <a href="mod_include.html">SSI</a>), and is used when the
-      server must generate a URL that refers to itself (for example
-      when creating an external redirect to itself). This behaviour
-      is modified by <a
-      href="#usecanonicalname">UseCanonicalName</a>.</li>
-    </ul>
-    The primary behavior of Port should be considered to be similar
-    to that of the <a href="#servername">ServerName</a> directive.
-    The ServerName and Port together specify what you consider to
-    be the <em>canonical</em> address of the server. (See also <a
-    href="#usecanonicalname">UseCanonicalName</a>.) 
-
-    <p>Port 80 is one of Unix's special ports. All ports numbered
-    below 1024 are reserved for system use, <em>i.e.</em>, regular
-    (non-root) users cannot make use of them; instead they can only
-    use higher port numbers. To use port 80, you must start the
-    server from the root account. After binding to the port and
-    before accepting requests, Apache will change to a low
-    privileged user as set by the <a
-    href="mpm_common.html#user">User directive</a>.</p>
-
-    <p>If you cannot use port 80, choose any other unused port.
-    Non-root users will have to choose a port number higher than
-    1023, such as 8000.</p>
-
-    <p>SECURITY: if you do start the server as root, be sure not to
-    set <a href="mpm_common.html#user">User</a> to root. If you run
-    the server as root whilst handling connections, your site may
-    be open to a major security attack.</p>
-    <hr />
-
     <h2><a id="require" name="require">Require directive</a></h2>
     <!--%plaintext &lt;?INDEX {\tt Require} directive&gt; -->
     <a href="directive-dict.html#Syntax"
@@ -2274,7 +2206,7 @@
     <!--%plaintext &lt;?INDEX {\tt ServerName} directive&gt; -->
     <a href="directive-dict.html#Syntax"
     rel="Help"><strong>Syntax:</strong></a> ServerName
-    <em>fully-qualified-domain-name</em> <br />
+    <em>fully-qualified-domain-name:port</em> <br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Context:</strong></a> server config, virtual
     host<br />
@@ -2288,7 +2220,7 @@
     return the preferred hostname. For example:</p>
 
     <blockquote>
-      <code>ServerName www.example.com</code>
+      <code>ServerName www.example.com:80</code>
     </blockquote>
     would be used if the canonical (main) name of the actual
     machine were <code>simple.example.com</code>. 
@@ -2299,6 +2231,12 @@
     href="#virtualhost"><code>&lt;VirtualHost&gt;</code></a>
     section specifies what hostname must appear in the request's
     <code>Host:</code> header to match this virtual host.</p>
+
+    <p>This directive now takes allows a port to be added to the
+    server name.  This allows an admin to assign the canonical
+    port at the same time that the canonical name is assigned.
+    The Port directive, which used to perform this role, has also
+    been removed, easing configuration for all users. 
 
     <p><strong>See Also</strong>:<br />
      <a href="../dns-caveats.html">DNS Issues</a><br />

@@ -208,9 +208,10 @@
 
     <p>The Listen directive instructs Apache to listen to only
     specific IP addresses or ports; by default it responds to
-    requests on all IP interfaces, but only on the port given by
-    the <code><a href="core.html#port">Port</a></code>
-    directive.</p>
+    requests on all IP interfaces. The Listen directive is now
+    a required directive. If it is not in the config file, the
+    server will fail to start. This is a change from previous
+    versions of Apache.
 
     <p>The Listen directive tells the server to accept incoming
     requests on the specified port or address-and-port combination.

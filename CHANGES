@@ -1,5 +1,16 @@
 Changes with Apache 2.0.26-dev
 
+  *) Remove the Port directive.  In it's place, the Listen directive
+     is now a required directive, which tells Apache what port to
+     listen on.  The ServerName directive has also been extended
+     to accept an optional port.  If the port is specified to the
+     ServerName, the server will report that port whenever it
+     reports the port that it is listening on.  This change was
+     made to ease configuration errors that stem from having a Port
+     directive, and a Listen directive.  In that situation, the server
+     would only listen to the port specified by the Listen command,
+     which caused a lot of confusion to users.  [Ryan Bloom]
+
   *) Added mod_mime_magic, mod_unique_id and mod_vhost_alias to the Win32
      build, as loadable modules.  [William Rowe]
 
