@@ -1,4 +1,8 @@
 Changes with Apache 2.0.30-dev
+  *) Prevent mod_proxy from truncating one character off the
+     end of the status line returned from the proxied server.
+     [Adam Sussman, Bill Stoddard]
+
   *) Eliminate loop in ap_proxy_string_read().
      [Adam Sussman, Bill Stoddard]
 
