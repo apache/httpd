@@ -378,8 +378,6 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
     if (child_num < 0)
 	return -1;
 
-    ap_check_signals();
-
     ss = &ap_scoreboard_image->servers[child_num];
     old_status = ss->status;
     ss->status = status;
