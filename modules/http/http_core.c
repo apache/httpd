@@ -2040,6 +2040,70 @@ static const char *set_bs2000_account(cmd_parms *cmd, void *dummy, char *name)
  * string.
  */
 
+static char *server_version = NULL;
+static int version_locked = 0; 
+static enum server_token_type ap_server_tokens = SrvTk_FULL;
+
+static ap_status_t reset_version(void *dummy)
+{
+    version_locked = 0;
+    ap_server_tokens = SrvTk_FULL;
+    server_version = NULL;
+}
+
+API_EXPORT(const char *) ap_get_server_version(void)
+{
+    return (server_version ? server_version : AP_SERVER_BASEVERSION);
+}
+
+API_EXPORT(void) ap_add_version_component(ap_pool_t *pconf, const char *component)
+{
+    if (! version_locked) {
+        /*
+         * If the version string is null, register our cleanup to reset the
+         * pointer on pool destruction. We also know that, if NULL,
+         * we are adding the original SERVER_BASEVERSION string.
+         */
+        if (server_version == NULL) {
+            ap_register_cleanup(pconf, NULL, reset_version,
+                                ap_null_cleanup);
+            server_version = ap_pstrdup(pconf, component);
+        }
+        else {
+            /*
+             * Tack the given component identifier to the end of
+             * the existing string.
+             */
+            server_version = ap_pstrcat(pconf, server_version, " ",
+                                        component, NULL);
+        }
+    }
+}
+
+/*
+ * This routine adds the real server base identity to the version string,
+ * and then locks out changes until the next reconfig.
+ */
+static void ap_set_version(ap_pool_t *pconf)
+{
+    if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
+        ap_add_version_component(pconf, AP_SERVER_BASEPRODUCT);
+    }
+    else if (ap_server_tokens == SrvTk_MIN) {
+        ap_add_version_component(pconf, AP_SERVER_BASEVERSION);
+    }
+    else {
+        ap_add_version_component(pconf, AP_SERVER_BASEVERSION " (" PLATFORM ")");
+    }
+    /*
+     * Lock the server_version string if we're not displaying
+     * the full set of tokens
+     */
+    if (ap_server_tokens != SrvTk_FULL) {
+        version_locked++;
+    }
+}
+
 static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -2047,18 +2111,18 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    /* TODO: reimplement the server token stuff. */
-#if 0
     if (!strcasecmp(arg, "OS")) {
         ap_server_tokens = SrvTk_OS;
     }
     else if (!strcasecmp(arg, "Min") || !strcasecmp(arg, "Minimal")) {
         ap_server_tokens = SrvTk_MIN;
     }
+    else if (!strcasecmp(arg, "Prod") || !strcasecmp(arg, "ProductOnly")) {
+        ap_server_tokens = SrvTk_PRODUCT_ONLY;
+    }
     else {
         ap_server_tokens = SrvTk_FULL;
     }
-#endif
     return NULL;
 }
 
@@ -2532,6 +2596,11 @@ static const handler_rec core_handlers[] = {
 { NULL, NULL }
 };
 
+static void core_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
+{
+    ap_set_version(pconf);
+}
+
 static void core_open_logs(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
 {
     ap_open_logs(s, pconf);
@@ -2545,6 +2614,7 @@ static unsigned short core_port(const request_rec *r)
 
 static void register_hooks(void)
 {
+    ap_hook_post_config(core_post_config,NULL,NULL,AP_HOOK_REALLY_FIRST);
     ap_hook_translate_name(core_translate,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
 			       AP_HOOK_REALLY_LAST);
