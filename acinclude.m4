@@ -177,6 +177,24 @@ unsigned long foo = INADDR_NONE;
   fi
 ])
 
+AC_DEFUN(APACHE_CHECK_SIGWAIT_ONE_ARG,[
+  AC_CACHE_CHECK(whether sigwait takes one argument,ac_cv_sigwait_one_arg,[
+  AC_TRY_COMPILE([
+#include <signal.h>
+],[
+  sigset_t set;
+
+  sigwait(&set);
+],[
+  ac_cv_sigwait_one_arg=yes
+],[
+  ac_cv_sigwait_one_arg=no
+])])
+  if test "$ac_cv_sigwait_one_arg" = "yes"; then
+    AC_DEFINE(SIGWAIT_TAKES_ONE_ARG,1,[ ])
+  fi
+])
+
 AC_DEFUN(APACHE_CHECK_SHM_RW,[
   AC_CACHE_CHECK([whether system defines SHM_R,SHM_W],ac_cv_shm_rw,[
   AC_TRY_COMPILE([

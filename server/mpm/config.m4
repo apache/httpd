@@ -29,6 +29,7 @@ if test "$apache_cv_mpm" = "mpmt_pthread" -o "$apache_cv_mpm" = "dexter"; then
   fi
 fi
 
+APACHE_CHECK_SIGWAIT_ONE_ARG
 APACHE_CHECK_SHM_RW
 
 APACHE_FAST_OUTPUT(modules/mpm/Makefile)
