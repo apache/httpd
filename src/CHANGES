@@ -1,4 +1,7 @@
 Changes with Apache 1.3b3
+
+  *) A sed command in the Configure script pushed the edge of POSIXness,
+     breaking on some systems.  [Bhaba R.Misra <system@vt.edu>] PR#1368
   
   *) Solaris >= 2.5 was totally broken due to a mess up using pthread
      mutexes.  [Roy Fielding, Dean Gaudet]

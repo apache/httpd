@@ -1063,7 +1063,7 @@ EOF
 	    # it's responsible for the rest of its Makefile
 	    :
 	else
-	    basedir=`echo $moddir | sed 's/^[^/]*\///g'`
+	    basedir=`echo $moddir | sed 's@^[^/]*/@@g'`
 	    awk >> $moddir/Makefile < $tmpfile '
 		BEGIN {
 		    printf "OBJS="
