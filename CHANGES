@@ -1,5 +1,14 @@
 Changes with Apache 2.0.18-dev
 
+  *) Create Files, and thus MMAPs, out of the request pool, not the
+     connection pool.  This solves a small resource leak that had us
+     not closing files until a connection was closed.  In order to do
+     this, at the end of the core_output_filter, we loop through the
+     brigade and convert any data we have into a single HEAP bucket
+     that we know will survive clearing the request_rec.
+     [Ryan Bloom, Justin Erenkrantz <jerenkrantz@ebuilt.com>,
+      Cliff Woolley]
+
   *) Completely revamp configure so that it preserves the standard make
      variables CPPFLAGS, CFLAGS, CXXFLAGS, LDFLAGS and LIBS by moving
      the configure additions to EXTRA_* variables.  Also, allow the user
