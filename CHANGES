@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cgi: Handle output on stderr during script execution on Unix
+     platforms; preventing deadlock when stderr output fills pipe buffer.
+     PR 22030.  [Joe Orton, Jeff Trawick]
+
   *) mod_deflate: New option for DEFLATE output file (force-gzip),
      new output filter 'INFLATE' for uncompressing responses.
      [Nick Kew <Nick at WebThing dot com>, Ian Holsman]
