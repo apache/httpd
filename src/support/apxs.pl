@@ -599,11 +599,11 @@ module MODULE_VAR_EXPORT %NAME%_module = {
     NULL,                  /* [#1] URI to filename translation    */
     NULL,                  /* [#4] validate user id from request  */
     NULL,                  /* [#5] check if the user is ok _here_ */
-    NULL,                  /* [#2] check access by host address   */
+    NULL,                  /* [#3] check access by host address   */
     NULL,                  /* [#6] determine MIME type            */
     NULL,                  /* [#7] pre-run fixups                 */
     NULL,                  /* [#9] log a transaction              */
-    NULL,                  /* [#3] header parser                  */
+    NULL,                  /* [#2] header parser                  */
     NULL,                  /* child_init                          */
     NULL,                  /* child_exit                          */
     NULL                   /* [#0] post read-request              */

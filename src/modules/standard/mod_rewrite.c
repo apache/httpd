@@ -192,11 +192,11 @@ module MODULE_VAR_EXPORT rewrite_module = {
    hook_uri2file,               /* [#1] URI to filename translation    */
    NULL,                        /* [#4] validate user id from request  */
    NULL,                        /* [#5] check if the user is ok _here_ */
-   NULL,                        /* [#2] check access by host address   */
+   NULL,                        /* [#3] check access by host address   */
    hook_mimetype,               /* [#6] determine MIME type            */
    hook_fixup,                  /* [#7] pre-run fixups                 */
    NULL,                        /* [#9] log a transaction              */
-   NULL,                        /* [#3] header parser                  */
+   NULL,                        /* [#2] header parser                  */
    init_child,                  /* child_init                          */
    NULL,                        /* child_exit                          */
    NULL                         /* [#0] post read-request              */
