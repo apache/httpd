@@ -143,7 +143,7 @@ testfunc:
 EOF
 
 # Now run that Makefile
-eval "$MAKE $TARGET >/dev/null $ERRDIR"
+eval "make $TARGET >/dev/null $ERRDIR"
 
 # And see if dummy exists and is executable, if so, then we
 # assume the condition we are testing for is good
