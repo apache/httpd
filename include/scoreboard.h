@@ -100,7 +100,8 @@ extern "C" {
 #define SERVER_GRACEFUL 8	/* server is gracefully finishing request */
 #define SERVER_ACCEPTING 9	/* thread is accepting connections */
 #define SERVER_QUEUEING	10      /* thread is putting connection on the queue */
-#define SERVER_NUM_STATUS 11	/* number of status settings */
+#define SERVER_IDLE_KILL 11     /* Server is cleaning up idle children. */
+#define SERVER_NUM_STATUS 12	/* number of status settings */
 
 /* A "virtual time" is simply a counter that indicates that a child is
  * making progress.  The parent checks up on each child, and when they have
@@ -148,6 +149,10 @@ typedef enum {
     SB_NOT_SHARED = 2
 } ap_scoreboard_e;
 
+#define SB_WORKING  0  /* The server is busy and the child is useful. */
+#define SB_IDLE_DIE 1  /* The server is idle and the child is superfluous. */
+                       /*   The child should check for this and exit gracefully. */
+
 /* stuff which is thread/process specific */
 typedef struct {
 #ifdef OPTIMIZE_TIMEOUTS
@@ -165,6 +170,7 @@ typedef struct {
     unsigned long my_bytes_served;
     unsigned long conn_bytes;
     unsigned short conn_count;
+    unsigned short life_status;    /* Either SB_WORKING or SB_IDLE_DIE */
     apr_time_t start_time;
     apr_time_t stop_time;
 #ifdef HAVE_TIMES
