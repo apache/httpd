@@ -1291,7 +1291,7 @@ static void child_main()
     child_handles = (thread) alloca(nthreads * sizeof(int));
     for (i = 0; i < nthreads; i++) {
         child_handles[i] = (thread) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
-                                                   NULL, 0, &tid);
+                                                   (void *) i, 0, &tid);
     }
 
     /* Begin accepting connections */
