@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: http_core.c,v 1.36 1996/10/14 00:18:46 jim Exp $ */
-
 #define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
@@ -380,7 +378,7 @@ get_remote_logname(request_rec *r)
  * commands, but most of the old srm.conf is in the the modules.
  */
 
-char *set_access_name (cmd_parms *cmd, void *dummy, char *arg)
+const char *set_access_name (cmd_parms *cmd, void *dummy, char *arg)
 {
     void *sconf = cmd->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
@@ -389,7 +387,7 @@ char *set_access_name (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
+const char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
 {
     void *sconf = cmd->server->module_config;
     core_server_config *conf = get_module_config (sconf, &core_module);
@@ -404,7 +402,8 @@ char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-char *set_error_document (cmd_parms *cmd, core_dir_config *conf, char *line)
+const char *set_error_document (cmd_parms *cmd, core_dir_config *conf,
+				char *line)
 {
     int error_number, index_number;
     char *w;
@@ -413,7 +412,7 @@ char *set_error_document (cmd_parms *cmd, core_dir_config *conf, char *line)
      * convert it into an array index
      */
   
-    w = getword_conf (cmd->pool, &line);
+    w = getword_conf_nc (cmd->pool, &line);
     error_number = atoi(w);
     index_number = index_of_response(error_number);
   
@@ -440,7 +439,7 @@ char *set_error_document (cmd_parms *cmd, core_dir_config *conf, char *line)
  * discards as harmless.  Cheesy, but it works.
  */
 
-char *set_override (cmd_parms *cmd, core_dir_config *d, char *l)
+const char *set_override (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
     char *w;
   
@@ -468,7 +467,7 @@ char *set_override (cmd_parms *cmd, core_dir_config *d, char *l)
     return NULL;
 }
 
-char *set_options (cmd_parms *cmd, core_dir_config *d, char *l)
+const char *set_options (cmd_parms *cmd, core_dir_config *d, const char *l)
 {
     d->opts = OPT_NONE;
     while(l[0]) {
@@ -500,7 +499,7 @@ char *set_options (cmd_parms *cmd, core_dir_config *d, char *l)
     return NULL;
 }
 
-char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
+const char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
 {
     require_line *r;
   
@@ -513,9 +512,9 @@ char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-char *limit (cmd_parms *cmd, void *dummy, char *arg)
+const char *limit (cmd_parms *cmd, void *dummy, const char *arg)
 {
-    char *limited_methods = getword(cmd->pool,&arg,'>');
+    const char *limited_methods = getword(cmd->pool,&arg,'>');
     int limited = 0;
   
     if (cmd->limited > 0) return "Can't nest <Limit> sections";
@@ -535,7 +534,7 @@ char *limit (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-char *endlimit (cmd_parms *cmd, void *dummy, void *dummy2)
+const char *endlimit (cmd_parms *cmd, void *dummy, void *dummy2)
 {
     if (cmd->limited == -1) return "</Limit> unexpected";
     
@@ -543,15 +542,16 @@ char *endlimit (cmd_parms *cmd, void *dummy, void *dummy2)
     return NULL;
 }
 
-static char *end_dir_magic = "</Directory> outside of any <Directory> section";
+static const char end_dir_magic[] = "</Directory> outside of any <Directory> section";
 
-char *end_dirsection (cmd_parms *cmd, void *dummy) {
+const char *end_dirsection (cmd_parms *cmd, void *dummy) {
     return end_dir_magic;
 }
 
-char *dirsection (cmd_parms *cmd, void *dummy, char *arg)
+const char *dirsection (cmd_parms *cmd, void *dummy, const char *arg)
 {
-    char *errmsg, *endp = strrchr (arg, '>');
+    const char *errmsg;
+    char *endp = strrchr (arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
@@ -585,15 +585,16 @@ char *dirsection (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static char *end_url_magic = "</Location> outside of any <Location> section";
+static const char end_url_magic[] = "</Location> outside of any <Location> section";
 
-char *end_urlsection (cmd_parms *cmd, void *dummy) {
+const char *end_urlsection (cmd_parms *cmd, void *dummy) {
     return end_url_magic;
 }
 
-char *urlsection (cmd_parms *cmd, void *dummy, char *arg)
+const char *urlsection (cmd_parms *cmd, void *dummy, const char *arg)
 {
-    char *errmsg, *endp = strrchr (arg, '>');
+    const char *errmsg;
+    char *endp = strrchr (arg, '>');
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
@@ -631,13 +632,14 @@ char *urlsection (cmd_parms *cmd, void *dummy, char *arg)
 
 static char *end_file_magic = "</Files> outside of any <Files> section";
 
-char *end_filesection (cmd_parms *cmd, void *dummy) {
+const char *end_filesection (cmd_parms *cmd, void *dummy) {
     return end_file_magic;
 }
 
-char *filesection (cmd_parms *cmd, core_dir_config *c, char *arg)
+const char *filesection (cmd_parms *cmd, core_dir_config *c, const char *arg)
 {
-    char *errmsg, *endp = strrchr (arg, '>');
+    const char *errmsg;
+    char *endp = strrchr (arg, '>');
     char *old_path = cmd->path;
     core_dir_config *conf;
     regex_t *r = NULL;
@@ -673,11 +675,11 @@ char *filesection (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-char *end_ifmod (cmd_parms *cmd, void *dummy) {
+const char *end_ifmod (cmd_parms *cmd, void *dummy) {
     return NULL;
 }
 
-char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
+const char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 {
     char *endp = strrchr (arg, '>');
     char l[MAX_STRING_LEN];
@@ -707,17 +709,18 @@ char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
 
-char *end_virthost_magic = "</Virtualhost> out of place";
+const char end_virthost_magic[] = "</Virtualhost> out of place";
 
-char *end_virtualhost_section (cmd_parms *cmd, void *dummy)
+const char *end_virtualhost_section (cmd_parms *cmd, void *dummy)
 {
     return end_virthost_magic;
 }
 
-char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
+const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
 {
     server_rec *main_server = cmd->server, *s;
-    char *errmsg, *endp = strrchr (arg, '>');
+    const char *errmsg;
+    char *endp = strrchr (arg, '>');
     pool *p = cmd->pool, *ptemp = cmd->temp_pool;
 
     if (endp) *endp = '\0';
@@ -748,7 +751,7 @@ char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     return errmsg;
 }
 
-char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
+const char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
 {
     /* This one's pretty generic... */
   
@@ -759,7 +762,7 @@ char *set_server_string_slot (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-char *server_type (cmd_parms *cmd, void *dummy, char *arg)
+const char *server_type (cmd_parms *cmd, void *dummy, char *arg)
 {
     if (!strcasecmp (arg, "inetd")) standalone = 0;
     else if (!strcasecmp (arg, "standalone")) standalone = 1;
@@ -768,12 +771,12 @@ char *server_type (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
+const char *server_port (cmd_parms *cmd, void *dummy, char *arg) {
     cmd->server->port = atoi (arg);
     return NULL;
 }
 
-char *set_user (cmd_parms *cmd, void *dummy, char *arg)
+const char *set_user (cmd_parms *cmd, void *dummy, char *arg)
 {
     uid_t uid;
     
@@ -789,7 +792,7 @@ char *set_user (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-char *set_group (cmd_parms *cmd, void *dummy, char *arg)
+const char *set_group (cmd_parms *cmd, void *dummy, char *arg)
 {
     gid_t gid;
     
@@ -803,64 +806,65 @@ char *set_group (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_server_root (cmd_parms *cmd, void *dummy, char *arg) {
     if (!is_directory (arg)) return "ServerRoot must be a valid directory";
     strcpy (server_root, arg);
     return NULL;
 }
 
-char *set_timeout (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_timeout (cmd_parms *cmd, void *dummy, char *arg) {
     cmd->server->timeout = atoi (arg);
     return NULL;
 }
 
-char *set_keep_alive_timeout (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_keep_alive_timeout (cmd_parms *cmd, void *dummy, char *arg) {
     cmd->server->keep_alive_timeout = atoi (arg);
     return NULL;
 }
 
-char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_keep_alive (cmd_parms *cmd, void *dummy, char *arg) {
     cmd->server->keep_alive = atoi (arg);
     return NULL;
 }
 
-char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_pidfile (cmd_parms *cmd, void *dummy, char *arg) {
     pid_fname = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
-char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
     scoreboard_fname = pstrdup (cmd->pool, arg);
     return NULL;
 }
 
-char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
+const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
     d->do_rfc1413 = arg;
     return NULL;
 }
 
-char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, int arg) {
+const char *set_hostname_lookups (cmd_parms *cmd, core_dir_config *d, int arg)
+{
     d->hostname_lookups = arg;
     return NULL;
 }
 
-char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_serverpath (cmd_parms *cmd, void *dummy, char *arg) {
     cmd->server->path = pstrdup (cmd->pool, arg);
     cmd->server->pathlen = strlen (arg);
     return NULL;
 }
 
-char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
+const char *set_content_md5 (cmd_parms *cmd, core_dir_config *d, int arg) {
     d->content_md5 = arg;
     return NULL;
 }
 
-char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_daemons_to_start (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_to_start = atoi (arg);
     return NULL;
 }
 
-char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_min_free = atoi (arg);
     if (daemons_min_free <= 0) {
        fprintf(stderr, "WARNING: detected MinSpareServers set to non-positive.\n");
@@ -872,12 +876,12 @@ char *set_min_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_max_free_servers (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_max_free = atoi (arg);
     return NULL;
 }
 
-char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
     daemons_limit = atoi (arg);
     if (daemons_limit > HARD_SERVER_LIMIT) {
        fprintf(stderr, "WARNING: Compile-time limit of %d servers\n",
@@ -889,13 +893,13 @@ char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
     max_requests_per_child = atoi (arg);
     return NULL;
 }
 
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC)
-static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, char *arg,
+static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 		       int type)
 {
     char *str;
@@ -942,7 +946,8 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, char *arg,
 }
 #endif
 
-static char *no_set_limit (cmd_parms *cmd, core_dir_config *conf, char *arg)
+static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
+				 char *arg)
 {
     log_printf(cmd->server, "%s not supported on this platform",
 	       cmd->cmd->name);
@@ -950,7 +955,7 @@ static char *no_set_limit (cmd_parms *cmd, core_dir_config *conf, char *arg)
 }
 
 #ifdef RLIMIT_CPU
-char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)
+const char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
     set_rlimit(cmd,&conf->limit_cpu,arg,RLIMIT_CPU);
     return NULL;
@@ -958,7 +963,7 @@ char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)
 #endif
 
 #if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
-char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg)
+const char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
 #ifdef RLIMIT_DATA
     set_rlimit(cmd,&conf->limit_mem,arg,RLIMIT_DATA);
@@ -970,19 +975,19 @@ char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg)
 #endif
 
 #ifdef RLIMIT_NPROC
-char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg)
+const char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg)
 {
     set_rlimit(cmd,&conf->limit_nproc,arg,RLIMIT_NPROC);
     return NULL;
 }
 #endif
 
-char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
     bind_address.s_addr = get_virthost_addr (arg, NULL);
     return NULL;
 }
 
-char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
+const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
     char *ports;

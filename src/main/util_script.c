@@ -50,9 +50,6 @@
  *
  */
 
-/* $Id: util_script.c,v 1.22 1996/08/20 20:18:13 akosut Exp $ */
-
-
 #define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
@@ -473,7 +470,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 
         if (!strncmp("/~",r->uri,2)) {
             r->uri += 2;
-            if ((pw = getpwnam (getword (r->pool, &r->uri, '/'))) == NULL) {
+            if ((pw = getpwnam (getword_nc (r->pool, &r->uri, '/'))) == NULL) {
 		log_unixerr("getpwnam", NULL, "invalid username", r->server);
 		return;
 	    }

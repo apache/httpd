@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.c,v 1.26 1996/10/09 15:23:08 mjc Exp $ */
+/* $Id: http_config.c,v 1.27 1996/10/20 18:03:29 ben Exp $ */
 
 /*
  * http_config.c: once was auxillary functions for reading httpd's config
@@ -398,9 +398,11 @@ void setup_prelinked_modules ()
  * invoking the function...
  */
 
-char *invoke_cmd(command_rec *cmd, cmd_parms *parms, void *mconfig, char *args)
+const char *invoke_cmd(const command_rec *cmd, cmd_parms *parms, void *mconfig,
+		 const char *args)
 {
-    char *w, *w2, *w3, *errmsg;
+    char *w, *w2, *w3;
+    const char *errmsg;
 
     if ((parms->override & cmd->req_override) == 0)
         return pstrcat (parms->pool, cmd->name, " not allowed here", NULL);
@@ -540,7 +542,7 @@ char *invoke_cmd(command_rec *cmd, cmd_parms *parms, void *mconfig, char *args)
     }
 }
 
-command_rec *find_command (char *name, command_rec *cmds)
+const command_rec *find_command (const char *name, const command_rec *cmds)
 {
     while (cmds->name) 
         if (!strcasecmp (name, cmds->name))
@@ -551,9 +553,9 @@ command_rec *find_command (char *name, command_rec *cmds)
     return NULL;
 }
     
-command_rec *find_command_in_modules (char *cmd_name, module **mod)
+const command_rec *find_command_in_modules (const char *cmd_name, module **mod)
 {
-   command_rec *cmdp;
+   const command_rec *cmdp;
    module *modp;
 
    for (modp = *mod; modp; modp = modp->next) 
@@ -565,10 +567,10 @@ command_rec *find_command_in_modules (char *cmd_name, module **mod)
    return NULL;
 }
 
-char *handle_command (cmd_parms *parms, void *config, char *l)
+const char *handle_command (cmd_parms *parms, void *config, const char *l)
 {
-    char *args, *cmd_name, *retval;
-    command_rec *cmd;
+    const char *args, *cmd_name, *retval;
+    const command_rec *cmd;
     module *mod = top_module;
 
     ++parms->config_line;
@@ -606,12 +608,12 @@ char *handle_command (cmd_parms *parms, void *config, char *l)
     return retval;
 }
 
-char *srm_command_loop (cmd_parms *parms, void *config)
+const char *srm_command_loop (cmd_parms *parms, void *config)
 {
     char l[MAX_STRING_LEN];
     
     while (!(cfg_getline (l, MAX_STRING_LEN, parms->infile))) {
-	char *errmsg = handle_command (parms, config, l);
+	const char *errmsg = handle_command (parms, config, l);
 	if (errmsg) return errmsg;
     }
 
@@ -622,7 +624,7 @@ char *srm_command_loop (cmd_parms *parms, void *config)
  * Generic command functions...
  */
 
-char *set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg)
+const char *set_string_slot (cmd_parms *cmd, char *struct_ptr, char *arg)
 {
     /* This one's pretty generic... */
   
@@ -652,7 +654,7 @@ char *server_root_relative (pool *p, char *file)
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
 {
     FILE *cfg;
-    char *errmsg;
+    const char *errmsg;
     cmd_parms parms;
     
     fname = server_root_relative (p, fname);
@@ -693,7 +695,7 @@ int parse_htaccess(void **result, request_rec *r, int override,
 {
     FILE *f;
     cmd_parms parms;
-    char *errmsg;
+    const char *errmsg;
     const struct htaccess_result *cache;
     struct htaccess_result *new;
     void *dc;
@@ -818,7 +820,7 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr)
     if (t != NULL) *t = ':';
 }
 
-server_rec *init_virtual_host (pool *p, char *hostname)
+server_rec *init_virtual_host (pool *p, const char *hostname)
 {
     server_rec *s = (server_rec *)pcalloc (p, sizeof (server_rec));
     server_addr_rec **addrs;

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_browser.c,v 1.4 1996/10/05 13:26:51 ben Exp $ */
-
 /*
  * mod_browser.c
  * Set environment variables based on browser support.
@@ -93,7 +91,8 @@ void *merge_browser_config (pool *p, void *basev, void *overridesv)
     return a;
 }
 
-char *add_browser(cmd_parms *cmd, void *dummy, char *name, char *feature)
+const char *add_browser(cmd_parms *cmd, void *dummy, char *name,
+			const char *feature)
 {
     browser_server_config_rec *sconf =
       get_module_config (cmd->server->module_config, &browser_module);

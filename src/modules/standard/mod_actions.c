@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_actions.c,v 1.6 1996/08/20 11:50:55 paul Exp $ */
-
 /*
  * mod_actions.c: executes scripts based on MIME type
  *
@@ -119,14 +117,15 @@ void *merge_action_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-char *add_action(cmd_parms *cmd, action_dir_config *m, char *type, char *script)
+const char *add_action(cmd_parms *cmd, action_dir_config *m, char *type,
+		       char *script)
 {
     table_set (m->action_types, type, script);
     return NULL;
 }
 
-char *set_script (cmd_parms *cmd, action_dir_config *m, char *method,
-		  char *script)
+const char *set_script (cmd_parms *cmd, action_dir_config *m, char *method,
+			char *script)
 {
     if (!strcmp(method, "GET"))
         m->get = pstrdup(cmd->pool, script);

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_negotiation.c,v 1.19 1996/09/28 02:30:56 brian Exp $ */
-
 /*
  * mod_negotiation.c: keeps track of MIME types the client is willing to
  * accept, and contains code to handle type arbitration.
@@ -106,7 +104,7 @@ void *merge_neg_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-char *set_language_priority (cmd_parms *cmd, void *n, char *lang)
+const char *set_language_priority (cmd_parms *cmd, void *n, char *lang)
 {
     array_header *arr = ((neg_dir_config *) n)->language_priority;
     char **langp = (char **) push_array (arr);
@@ -115,7 +113,7 @@ char *set_language_priority (cmd_parms *cmd, void *n, char *lang)
     return NULL;
 }
 
-char *cache_negotiated_docs (cmd_parms *cmd, void *dummy, char *dummy2)
+const char *cache_negotiated_docs (cmd_parms *cmd, void *dummy, char *dummy2)
 {
     void *server_conf = cmd->server->module_config;
     

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_auth.c,v 1.6 1996/10/08 22:19:22 brian Exp $ */
-
 /*
  * http_auth: authentication
  * 
@@ -79,7 +77,7 @@ void *create_auth_dir_config (pool *p, char *d)
     return pcalloc (p, sizeof(auth_config_rec));
 }
 
-char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t)
+const char *set_auth_slot (cmd_parms *cmd, void *offset, char *f, char *t)
 {
     if (t && strcmp(t, "standard"))
         return pstrcat(cmd->pool, "Invalid auth file type: ",  t, NULL);
@@ -101,7 +99,7 @@ char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 {
     FILE *f;
     char l[MAX_STRING_LEN];
-    char *rpw, *w;
+    const char *rpw, *w;
 
     if(!(f=pfopen(r->pool, auth_pwfile, "r"))) {
         log_reason ("Could not open password file", auth_pwfile, r);
@@ -126,7 +124,7 @@ table *groups_for_user (pool *p, char *user, char *grpfile) {
     table *grps = make_table (p, 15);
     pool *sp;
     char l[MAX_STRING_LEN];
-    char *group_name, *ll, *w;
+    const char *group_name, *ll, *w;
 
     if(!(f=pfopen(p, grpfile, "r")))
         return NULL;
@@ -206,7 +204,7 @@ int check_user_access (request_rec *r) {
     int m = r->method_number;
     int method_restricted = 0;
     register int x;
-    char *t, *w;
+    const char *t, *w;
     table *grpstatus;
     array_header *reqs_arr = requires (r);
     require_line *reqs;

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_dir.c,v 1.13 1996/10/08 22:34:29 brian Exp $ */
-
 /*
  * http_dir.c: Handles the on-the-fly html index generation
  * 
@@ -126,7 +124,7 @@ void push_item(array_header *arr, char *type, char *to, char *path, char *data)
         p->apply_to = NULL;
 }
 
-char *add_alt(cmd_parms *cmd, void *d, char *alt, char *to)
+const char *add_alt(cmd_parms *cmd, void *d, char *alt, char *to)
 {
     if (cmd->info == BY_PATH)
         if(!strcmp(to,"**DIRECTORY**"))
@@ -136,12 +134,12 @@ char *add_alt(cmd_parms *cmd, void *d, char *alt, char *to)
     return NULL;
 }
 
-char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
+const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
 {
     char *iconbak = pstrdup (cmd->pool, icon);
 
     if(icon[0] == '(') {
-        char *alt = getword (cmd->pool, &iconbak, ',');
+        char *alt = getword_nc (cmd->pool, &iconbak, ',');
         iconbak[strlen(iconbak) - 1] = '\0'; /* Lose closing paren */
         add_alt(cmd, d, &alt[1], to);
     }
@@ -154,40 +152,40 @@ char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
     return NULL;
 }
 
-char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
+const char *add_desc(cmd_parms *cmd, void *d, char *desc, char *to)
 {
     push_item(((dir_config_rec *)d)->desc_list, cmd->info, to, cmd->path,desc);
     return NULL;
 }
 
-char *add_ignore(cmd_parms *cmd, void *d, char *ext) {
+const char *add_ignore(cmd_parms *cmd, void *d, char *ext) {
     push_item(((dir_config_rec *)d)->ign_list, 0, ext, cmd->path, NULL);
     return NULL;
 }
 
-char *add_header(cmd_parms *cmd, void *d, char *name) {
+const char *add_header(cmd_parms *cmd, void *d, char *name) {
     push_item(((dir_config_rec *)d)->hdr_list, 0, NULL, cmd->path, name);
     return NULL;
 }
 
-char *add_readme(cmd_parms *cmd, void *d, char *name) {
+const char *add_readme(cmd_parms *cmd, void *d, char *name) {
     push_item(((dir_config_rec *)d)->rdme_list, 0, NULL, cmd->path, name);
     return NULL;
 }
 
 
-char *add_opts_int(cmd_parms *cmd, void *d, int opts) {
+const char *add_opts_int(cmd_parms *cmd, void *d, int opts) {
     push_item(((dir_config_rec *)d)->opts_list, (char*)opts, NULL,
 	      cmd->path, NULL);
     return NULL;
 }
 
-char *fancy_indexing (cmd_parms *cmd, void *d, int arg)
+const char *fancy_indexing (cmd_parms *cmd, void *d, int arg)
 {
     return add_opts_int (cmd, d, arg? FANCY_INDEXING : 0);
 }
 
-char *add_opts(cmd_parms *cmd, void *d, char *optstr) {
+const char *add_opts(cmd_parms *cmd, void *d, const char *optstr) {
     char *w;
     int opts = 0;
 
@@ -768,7 +766,7 @@ int handle_dir (request_rec *r)
 {
     dir_config_rec *d =
       (dir_config_rec *)get_module_config (r->per_dir_config, &dir_module);
-    char *names_ptr = d->index_names ? d->index_names : DEFAULT_INDEX;
+    const char *names_ptr = d->index_names ? d->index_names : DEFAULT_INDEX;
     int allow_opts = allow_options (r);
 
     if (r->uri[0] == '\0' || r->uri[strlen(r->uri)-1] != '/') {

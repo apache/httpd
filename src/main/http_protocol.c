@@ -240,6 +240,7 @@ int set_byterange (request_rec *r)
 int each_byterange (request_rec *r, long *offset, long *length) {
     long range_start, range_end;
     char *range;
+    const char *rp;
 
     if (!*r->range) {
 	if (r->byterange > 1)
@@ -247,7 +248,7 @@ int each_byterange (request_rec *r, long *offset, long *length) {
 	return 0;
     }
 
-    range = getword(r->pool, &r->range, ',');
+    range = getword_nc(r->pool, &r->range, ',');
     if (!parse_byterange(range, r->clength, &range_start, &range_end))
 	return each_byterange(r, offset, length);	/* Skip this one */
 
@@ -396,7 +397,7 @@ getline(char *s, int n, BUFF *in)
     return s;
 }
 
-void parse_uri (request_rec *r, char *uri)
+void parse_uri (request_rec *r, const char *uri)
 {
     const char *s;
 
@@ -412,12 +413,12 @@ void parse_uri (request_rec *r, char *uri)
     if (*s == ':' && s != uri)
     {
 	r->proxyreq = 1;
-	r->uri = uri;
+	r->uri = pstrdup(r->pool, uri);
 	r->args = NULL;
     }
     else if (r->method && !strcmp(r->method, "TRACE")) {
 	r->proxyreq = 0;
-	r->uri = uri;
+	r->uri = pstrdup(r->pool, uri);
 	r->args = NULL;
     }
     else {
@@ -434,7 +435,7 @@ void parse_uri (request_rec *r, char *uri)
 };
 #endif
 
-	if (*uri) r->args= uri;
+	if (*uri) r->args= pstrdup(r->pool, uri);
 	else r->args = NULL;
     }
 }
@@ -452,7 +453,7 @@ char *check_fulluri (request_rec *r, char *uri) {
   name[i] = '\0';
 
   /* Find the port */
-  host = getword(r->pool, &name, ':');
+  host = getword_nc(r->pool, &name, ':');
   if (*name) port = atoi(name);
   else port = 80;
 
@@ -564,8 +565,9 @@ void get_mime_headers(request_rec *r)
 }
 
 static void check_hostalias (request_rec *r) {
-  char *host = getword(r->pool, &r->hostname, ':');	/* Get rid of port */
-  int port = (*r->hostname) ? atoi(r->hostname) : 80;
+  const char *hostname=r->hostname;
+  char *host = getword(r->pool, &hostname, ':');	/* Get rid of port */
+  int port = (*hostname) ? atoi(hostname) : 80;
   server_rec *s;
   int l;
 
@@ -580,7 +582,7 @@ static void check_hostalias (request_rec *r) {
   r->hostname = host;
 
   for (s = r->server->next; s; s = s->next) {
-    char *names = s->names;
+    const char *names = s->names;
     
     if ((!strcasecmp(host, s->server_hostname)) && (port == s->port)) {
       r->server = r->connection->server = s;
@@ -700,7 +702,7 @@ request_rec *read_request (conn_rec *conn)
  * *someone* has to set the protocol-specific fields...
  */
 
-void set_sub_req_protocol (request_rec *rnew, request_rec *r)
+void set_sub_req_protocol (request_rec *rnew, const request_rec *r)
 {
     rnew->assbackwards = 1;	/* Don't send headers from this. */
     rnew->no_local_copy = 1;	/* Don't try to send USE_LOCAL_COPY for a
@@ -717,7 +719,7 @@ void set_sub_req_protocol (request_rec *rnew, request_rec *r)
     rnew->err_headers_out = make_table (rnew->pool, 5);
     rnew->notes = make_table (rnew->pool, 5);
     
-    rnew->main = r;
+    rnew->main = (request_rec *)r;
 }
 
 void finalize_sub_req_protocol (request_rec *sub)
@@ -757,7 +759,7 @@ void note_digest_auth_failure(request_rec *r)
 
 int get_basic_auth_pw (request_rec *r, char **pw)
 {
-    char *auth_line = table_get (r->headers_in, "Authorization");
+    const char *auth_line = table_get (r->headers_in, "Authorization");
     char *t;
     
     if(!(t = auth_type(r)) || strcasecmp(t, "Basic"))

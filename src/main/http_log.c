@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_log.c,v 1.7 1996/09/23 14:07:09 jim Exp $ */
+/* $Id: http_log.c,v 1.8 1996/10/20 18:03:31 ben Exp $ */
 
 /*
  * http_log.c: Dealing with the logs and errors
@@ -184,7 +184,7 @@ log_printf(const server_rec *s, const char *fmt, ...)
     fflush(s->error_log);
 }
 
-void log_reason(char *reason, char *file, request_rec *r) {
+void log_reason(const char *reason, const char *file, request_rec *r) {
     fprintf (r->server->error_log,
 	     "[%s] access to %s failed for %s, reason: %s\n",
 	     get_time(), file,

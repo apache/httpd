@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_log.h,v 1.3 1996/08/20 11:50:46 paul Exp $ */
+/* $Id: http_log.h,v 1.4 1996/10/20 18:03:31 ben Exp $ */
 
 void open_logs (server_rec *, pool *p);
 void error_log2stderr (server_rec *);     
@@ -60,5 +60,5 @@ void log_error(char *err, server_rec *s);
 extern void log_unixerr(const char *routine, const char *file,
 			const char *msg, server_rec *s);
 void log_printf(const server_rec *s, const char *fmt, ...);
-void log_reason(char *reason, char *fname, request_rec *r);
+void log_reason(const char *reason, const char *fname, request_rec *r);
 

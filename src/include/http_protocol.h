@@ -175,9 +175,9 @@ int get_basic_auth_pw (request_rec *r, char **pw);
  * Also, a wrapup function to keep the internal accounting straight.
  */
 
-void set_sub_req_protocol (request_rec *rnew, request_rec *r);
+void set_sub_req_protocol (request_rec *rnew, const request_rec *r);
 void finalize_sub_req_protocol (request_rec *sub_r);
 
 /* This is also useful for putting sub_reqs and internal_redirects together */
 
-void parse_uri (request_rec *r, char *uri);     
+void parse_uri (request_rec *r, const char *uri);     

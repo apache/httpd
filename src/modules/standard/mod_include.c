@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_include.c,v 1.14 1996/08/20 11:51:12 paul Exp $ */
-
 /*
  * http_include.c: Handles the server-parsed HTML documents
  * 
@@ -1644,7 +1642,7 @@ void *create_includes_dir_config (pool *p, char *dummy)
     return result;
 }
 
-char *set_xbithack (cmd_parms *cmd, void *xbp, char *arg)
+const char *set_xbithack (cmd_parms *cmd, void *xbp, char *arg)
 {
    enum xbithack *state = (enum xbithack *)xbp;
 

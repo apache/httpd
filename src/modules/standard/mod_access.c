@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_access.c,v 1.6 1996/10/08 20:34:07 brian Exp $  */
-
 /*
  * Security options etc.
  * 
@@ -95,7 +93,7 @@ void *create_access_dir_config (pool *p, char *dummy)
     return (void *)conf;
 }
 
-char *order (cmd_parms *cmd, void *dv, char *arg)
+const char *order (cmd_parms *cmd, void *dv, char *arg)
 {
     access_dir_conf *d = (access_dir_conf *)dv;
     int i, order;
@@ -112,7 +110,7 @@ char *order (cmd_parms *cmd, void *dv, char *arg)
     return NULL;
 }
 
-char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
+const char *allow_cmd (cmd_parms *cmd, void *dv, char *from, char *where)
 {
     access_dir_conf *d = (access_dir_conf *)dv;
     allowdeny *a;

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.h,v 1.4 1996/08/20 11:50:52 paul Exp $ */
+/* $Id: http_request.h,v 1.5 1996/10/20 18:03:32 ben Exp $ */
 
 /* http_request.c is the code which handles the main line of request
  * processing, once a request has been read in (finding the right per-
@@ -72,7 +72,7 @@
  * about which was allocated in its pool elsewhere before doing this.
  */
 
-request_rec *sub_req_lookup_uri (char *new_file, request_rec *r);
+request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r);
 request_rec *sub_req_lookup_file (char *new_file, request_rec *r);
 int run_sub_req (request_rec *r);
 void destroy_sub_req (request_rec *r);

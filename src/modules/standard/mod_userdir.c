@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_userdir.c,v 1.8 1996/08/20 11:51:20 paul Exp $ */
-
 /*
  * mod_userdir... implement the UserDir command.  Broken away from the
  * Alias stuff for a couple of good and not-so-good reasons:
@@ -94,7 +92,7 @@ void *create_userdir_config (pool *dummy, server_rec *s) {
     return (void*)DEFAULT_USER_DIR; 
 }
 
-char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
+const char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
 {
     void *server_conf = cmd->server->module_config;
     
@@ -111,9 +109,10 @@ command_rec userdir_cmds[] = {
 int translate_userdir (request_rec *r)
 {
     void *server_conf = r->server->module_config;
-    char *userdirs = (char *)get_module_config(server_conf, &userdir_module);
+    const char *userdirs = (char *)get_module_config(server_conf,
+						     &userdir_module);
     char *name = r->uri;
-    char *w, *dname, *redirect;
+    const char *w, *dname, *redirect;
     char *x = NULL;
 
     if (userdirs == NULL || !strcasecmp(userdirs, "disabled") ||
@@ -122,7 +121,7 @@ int translate_userdir (request_rec *r)
     }
 
     while (*userdirs) {
-      char *userdir = getword_conf (r->pool, &userdirs);
+      const char *userdir = getword_conf (r->pool, &userdirs);
       char *filename = NULL;
 
       dname = name + 2;

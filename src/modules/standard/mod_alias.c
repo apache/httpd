@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_alias.c,v 1.7 1996/08/20 11:50:56 paul Exp $ */
+/* $Id: mod_alias.c,v 1.8 1996/10/20 18:03:33 ben Exp $ */
 
 /*
  * http_alias.c: Stuff for dealing with directory aliases
@@ -117,7 +117,8 @@ void *merge_alias_dir_config (pool *p, void *basev, void *overridesv)
     a->redirects = append_arrays (p, overrides->redirects, base->redirects);
     return a;
 }
-char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
+
+const char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
 {
     server_rec *s = cmd->server;
     alias_server_conf *conf =
@@ -130,7 +131,8 @@ char *add_alias(cmd_parms *cmd, void *dummy, char *f, char *r)
     return NULL;
 }
 
-char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *f, char *url)
+const char *add_redirect(cmd_parms *cmd, alias_dir_conf *dirconf, char *f,
+			 char *url)
 {
     alias_entry *new;
     server_rec *s = cmd->server;

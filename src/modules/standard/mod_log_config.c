@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_log_config.c,v 1.13 1996/09/26 12:04:00 mjc Exp $  */
-
 /*
  * This is module implements the TransferLog directive (same as the
  * common log module), and additional directives, LogFormat and CustomLog.
@@ -374,7 +372,7 @@ struct log_item_list  *find_log_func (char k)
     return NULL;
 }
 
-char *log_format_substring (pool *p, char *start, char *end)
+char *log_format_substring (pool *p, const char *start, const char *end)
 {
     char *res = palloc (p, end - start + 1);
     strncpy (res, start, end - start);
@@ -382,9 +380,9 @@ char *log_format_substring (pool *p, char *start, char *end)
     return res;
 }
 
-char *parse_log_misc_string (pool *p, log_format_item *it, char **sa)
+char *parse_log_misc_string (pool *p, log_format_item *it, const char **sa)
 {
-    char *s = *sa;
+    const char *s = *sa;
     
     it->func = constant_item;
     it->conditions = NULL;
@@ -396,9 +394,9 @@ char *parse_log_misc_string (pool *p, log_format_item *it, char **sa)
     return NULL;
 }
 
-char *parse_log_item (pool *p, log_format_item *it, char **sa)
+char *parse_log_item (pool *p, log_format_item *it, const char **sa)
 {
-    char *s = *sa;
+    const char *s = *sa;
     if (*s != '%') return parse_log_misc_string (p, it, sa);
 
     ++s;
@@ -463,7 +461,7 @@ char *parse_log_item (pool *p, log_format_item *it, char **sa)
     return "Ran off end of LogFormat parsing args to some directive";
 }
 
-array_header *parse_log_string (pool *p, char *s, char **err)
+array_header *parse_log_string (pool *p, const char *s, const char **err)
 {
     array_header *a = make_array (p, 30, sizeof (log_format_item));
     char *res;
@@ -616,9 +614,9 @@ void *merge_config_log_state (pool *p, void *basev, void *addv)
     return add;
 }
 
-char *log_format (cmd_parms *cmd, void *dummy, char *arg)
+const char *log_format (cmd_parms *cmd, void *dummy, char *arg)
 {
-    char *err_string = NULL;
+    const char *err_string = NULL;
     multi_log_state *mls = get_module_config (cmd->server->module_config,
 					       &config_log_module);
   
@@ -626,9 +624,9 @@ char *log_format (cmd_parms *cmd, void *dummy, char *arg)
     return err_string;
 }
 
-char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn, char *fmt)
+const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn, char *fmt)
 {
-    char *err_string = NULL;
+    const char *err_string = NULL;
     multi_log_state *mls = get_module_config (cmd->server->module_config,
 					      &config_log_module);
     config_log_state *cls;
@@ -644,12 +642,12 @@ char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn, char *fmt)
     return err_string;
 }
 
-char *set_transfer_log(cmd_parms *cmd, void *dummy, char *fn)
+const char *set_transfer_log(cmd_parms *cmd, void *dummy, char *fn)
 {
     return add_custom_log(cmd, dummy, fn, NULL);
 }
 
-char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
+const char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
 {
     return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t");
 }
@@ -717,7 +715,7 @@ config_log_state *open_multi_logs (server_rec *s, pool *p)
     multi_log_state *mls = get_module_config(s->module_config,
                                              &config_log_module);
     config_log_state *clsarray;
-    char *dummy;
+    const char *dummy;
 
     if (!mls->default_format)
       mls->default_format = parse_log_string (p, DEFAULT_LOG_FORMAT, &dummy);

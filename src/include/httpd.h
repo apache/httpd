@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: httpd.h,v 1.55 1996/10/16 23:24:32 fielding Exp $ */
-
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
  */
@@ -601,12 +599,16 @@ char *get_time();
 char *ht_time (pool *p, time_t t, const char *fmt, int gmt);     
 char *gm_timestr_822(pool *p, time_t t);
      
-/* String handling */     
+/* String handling. The *_nc variants allow you to use non-const char **s as
+arguments (unfortunately C won't automatically convert a char ** to a const
+char **) */     
      
-char *getword(pool *p, char **line, char stop);
+char *getword(pool *p, const char **line, char stop);
+char *getword_nc(pool *p, char **line, char stop);
 char *getword_white(pool *p, char **line);
 char *getword_nulls (pool *p, char **line, char stop);
-char *getword_conf (pool *p, char **line);      
+char *getword_conf (pool *p, const char **line);      
+char *getword_conf_nc (pool *p, char **line);      
 
 char *get_token (pool *p, char **accept_line, int accept_white);
 int find_token (pool *p, const char *line, const char *tok);

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_cgi.c,v 1.19 1996/10/08 21:47:00 brian Exp $ */
-
 /*
  * http_script: keeps all script-related ramblings together.
  * 
@@ -119,7 +117,7 @@ void *merge_cgi_config (pool *p, void *basev, void *overridesv)
     return overrides->logname ? overrides : base;
 }
 
-char *set_scriptlog (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_scriptlog (cmd_parms *cmd, void *dummy, char *arg) {
     server_rec *s = cmd->server;
     cgi_server_conf *conf = 
       (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);
@@ -128,7 +126,7 @@ char *set_scriptlog (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-char *set_scriptlog_length (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_scriptlog_length (cmd_parms *cmd, void *dummy, char *arg) {
     server_rec *s = cmd->server;
     cgi_server_conf *conf = 
       (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);
@@ -137,7 +135,7 @@ char *set_scriptlog_length (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
-char *set_scriptlog_buffer (cmd_parms *cmd, void *dummy, char *arg) {
+const char *set_scriptlog_buffer (cmd_parms *cmd, void *dummy, char *arg) {
     server_rec *s = cmd->server;
     cgi_server_conf *conf = 
       (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);

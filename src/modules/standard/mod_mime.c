@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_mime.c,v 1.11 1996/08/20 11:51:16 paul Exp $ */
-
 /*
  * http_mime.c: Sends/gets MIME headers for requests
  * 
@@ -114,28 +112,31 @@ void *merge_mime_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct, char *ext)
+const char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct, char *ext)
 {
     if (*ext == '.') ++ext;
     table_set (m->forced_types, ext, ct);
     return NULL;
 }
 
-char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc, char *ext)
+const char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc,
+			 char *ext)
 {
     if (*ext == '.') ++ext;
     table_set (m->encoding_types, ext, enc);
     return NULL;
 }
 
-char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang, char *ext)
+const char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang,
+			 char *ext)
 {
     if (*ext == '.') ++ext;
     table_set (m->language_types, ext, lang);
     return NULL;
 }
 
-char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr, char *ext)
+const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
+			char *ext)
 {
     if (*ext == '.') ++ext;
     table_set (m->handlers, ext, hdlr);
@@ -146,7 +147,7 @@ char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr, char *ext)
  * the name of its config file, so...
  */
 
-char *set_types_config (cmd_parms *cmd, void *dummy, char *arg)
+const char *set_types_config (cmd_parms *cmd, void *dummy, char *arg)
 {
     set_module_config (cmd->server->module_config, &mime_module,
 		       pstrdup (cmd->pool, arg));
@@ -202,7 +203,7 @@ void init_mime (server_rec *s, pool *p)
         hash_buckets[x] = make_table (p, 10);
 
     while(!(cfg_getline(l,MAX_STRING_LEN,f))) {
-        char *ll = l, *ct;
+        const char *ll = l, *ct;
       
         if(l[0] == '#') continue;
         ct = getword_conf (p, &ll);
@@ -218,7 +219,7 @@ void init_mime (server_rec *s, pool *p)
 
 int find_ct(request_rec *r)
 {
-    char *fn = strrchr(r->filename, '/');
+    const char *fn = strrchr(r->filename, '/');
     mime_dir_config *conf =
       (mime_dir_config *)get_module_config(r->per_dir_config, &mime_module);
     char *ext, *type, *orighandler = r->handler;

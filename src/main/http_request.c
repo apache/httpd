@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.22 1996/10/19 15:17:06 ben Exp $ */
+/* $Id: http_request.c,v 1.23 1996/10/20 18:03:32 ben Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -507,7 +507,7 @@ int file_walk (request_rec *r)
  * structure...
  */
 
-request_rec *make_sub_request (request_rec *r)
+request_rec *make_sub_request (const request_rec *r)
 {
     pool *rrp = make_sub_pool (r->pool);
     request_rec *rr = pcalloc (rrp, sizeof (request_rec));
@@ -556,7 +556,7 @@ request_rec *sub_req_lookup_simple (char *new_file, request_rec *r)
 
 static int some_auth_required (request_rec *r);
 
-request_rec *sub_req_lookup_uri (char *new_file, request_rec *r)
+request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
 {
     request_rec *rnew;
     int res;

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.h,v 1.16 1996/10/18 19:23:15 ben Exp $ */
+/* $Id: http_config.h,v 1.17 1996/10/20 18:03:30 ben Exp $ */
 
 /*
  * The central data structures around here...
@@ -79,7 +79,7 @@ enum cmd_how {
 
 typedef struct command_struct {
   char *name;			/* Name of this command */
-  char *(*func)();		/* Function invoked */
+  const char *(*func)();	/* Function invoked */
   void *cmd_data;		/* Extra data, for functions which
 				 * implement multiple commands...
 				 */
@@ -149,7 +149,7 @@ typedef struct {
     char *path;			/* If configuring for a directory,
 				 * pathname of that directory.
 				 */
-    command_rec *cmd;		/* configuration command */
+    const command_rec *cmd;	/* configuration command */
 } cmd_parms;
 
 /* This structure records the existence of handlers in a module... */
@@ -239,7 +239,7 @@ void set_module_config (void *conf_vector, module *m, void *val);
      
 /* Generic command handling function... */
 
-char *set_string_slot (cmd_parms *, char *, char *);
+const char *set_string_slot (cmd_parms *, char *, char *);
 
 /* For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise
@@ -270,9 +270,9 @@ void *merge_per_dir_configs (pool *p, void *base, void *new);
 
 int parse_htaccess(void **result, request_rec *r, int override,
 		   char *path, char *file);
-char *srm_command_loop (cmd_parms *parms, void *config);
+const char *srm_command_loop (cmd_parms *parms, void *config);
 
-server_rec *init_virtual_host (pool *p, char *hostname);
+server_rec *init_virtual_host (pool *p, const char *hostname);
 int is_virtual_server (server_rec *);
 void process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
 

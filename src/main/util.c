@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: util.c,v 1.25 1996/10/19 16:08:58 ben Exp $ */
-
 /*
  * str.c: string utility things
  * 
@@ -375,7 +373,12 @@ void chdir_file(const char *file) {
     ((char *)file)[i] = '/';
 }
 
-char *getword(pool* atrans, char **line, char stop) {
+char *getword_nc(pool* atrans, char **line, char stop)
+    {
+    return getword(atrans,(const char **)line,stop);
+    }
+
+char *getword(pool* atrans, const char **line, char stop) {
     int pos = ind(*line, stop);
     char *res;
 
@@ -467,8 +470,13 @@ static char *substring_conf (pool *p, const char *start, int len, char quote)
     return result;
 }
 
-char *getword_conf(pool* p, char **line) {
-    char *str = *line, *strend, *res;
+char *getword_conf_nc(pool* p, char **line) {
+    return getword_conf(p,(const char **)line);
+}
+
+char *getword_conf(pool* p, const char **line) {
+    const char *str = *line, *strend;
+    char *res;
     char quote;
 
     while (*str && isspace (*str))

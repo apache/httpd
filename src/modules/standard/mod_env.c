@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_env.c,v 1.5 1996/10/18 21:12:52 ben Exp $ */
-
 /*
  * mod_env.c
  * version 0.0.5
@@ -127,7 +125,7 @@ void *merge_env_server_configs (pool *p, void *basev, void *addv)
     table_entry *elts;
 
     int i;
-    char *uenv, *unset;
+    const char *uenv, *unset;
 
       /* 
        * new_table = copy_table( p, base->vars );
@@ -161,7 +159,8 @@ void *merge_env_server_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-char *add_env_module_vars_passed (cmd_parms *cmd, char *struct_ptr, char *arg)
+const char *add_env_module_vars_passed (cmd_parms *cmd, char *struct_ptr,
+				  const char *arg)
 {
     env_server_config_rec *sconf =
       get_module_config (cmd->server->module_config, &env_module);
@@ -180,7 +179,8 @@ char *add_env_module_vars_passed (cmd_parms *cmd, char *struct_ptr, char *arg)
     return NULL;
 }
 
-char *add_env_module_vars_set (cmd_parms *cmd, char *struct_ptr, char *arg)
+const char *add_env_module_vars_set (cmd_parms *cmd, char *struct_ptr,
+				     const char *arg)
 {
     env_server_config_rec *sconf =
       get_module_config (cmd->server->module_config, &env_module);
@@ -205,7 +205,8 @@ char *add_env_module_vars_set (cmd_parms *cmd, char *struct_ptr, char *arg)
     return NULL;
 }
 
-char *add_env_module_vars_unset (cmd_parms *cmd, char *struct_ptr, char *arg)
+const char *add_env_module_vars_unset (cmd_parms *cmd, char *struct_ptr,
+				       char *arg)
 {
     env_server_config_rec *sconf =
       get_module_config (cmd->server->module_config, &env_module);
