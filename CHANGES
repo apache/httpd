@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Add support for command-line option "-t -DDUMP_CERTS" which
+     will dump the filenames of all configured SSL certificates to stdout.
+     [Joe Orton]
+
   *) mod_disk_cache: Remove a bunch of non-implemented garbage collection
      and cache size directives that are now available through htcacheclean.
      [Justin Erenkrantz]
@@ -11,11 +15,10 @@ Changes with Apache 2.1.0-dev
 
   *) mod_authnz_ldap: Added the directive "Requires ldap-filter" that
      allows the module to authorize a user based on a complex LDAP
-     search filter.
-     [Brad Nicholes]
+     search filter.  [Brad Nicholes]
 
   *) mod_usertrack: Run the fixups hook before other modules.
-     PR 29755. [Paul Querna]
+     PR 29755.  [Paul Querna]
 
   *) mod_authnz_ldap: Added the directive "Requires ldap-attribute" that
      allows the module to only authorize a user if the attribute value
