@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/24 09:31:52 $]
+Last modified at [$Date: 2004/08/24 13:38:54 $]
 
 Release:
 
@@ -90,6 +90,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_autoindex: Don't truncate directory listing when a stat call fails.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/generators/mod_autoindex.c?r1=1.132&r2=1.133
+       PR: 17357
        +1: jorton
 
     *) unixd_accept: Eliminate now-unnecessary apr_os_sock_get() call.
