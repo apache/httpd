@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.4 -->
 
 <directiveindex>
   <title>ディレクティブ一覧</title>
@@ -15,5 +15,18 @@
       rel="Glossary">用語集</a> も用意されています。
     </p>
   </summary>
+
+  <letters>
+    <letter>A</letter> <letter>B</letter> <letter>C</letter>
+    <letter>D</letter> <letter>E</letter> <letter>F</letter>
+    <letter>G</letter> <letter>H</letter> <letter>I</letter>
+    <letter>J</letter> <letter>K</letter> <letter>L</letter>
+    <letter>M</letter> <letter>N</letter> <letter>O</letter>
+    <letter>P</letter> <letter>Q</letter> <letter>R</letter>
+    <letter>S</letter> <letter>T</letter> <letter>U</letter>
+    <letter>V</letter> <letter>W</letter> <letter>X</letter>
+    <letter>Y</letter> <letter>Z</letter>
+  </letters>
+
   &allmodules;
 </directiveindex>

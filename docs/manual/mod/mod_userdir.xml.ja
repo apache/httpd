@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.8 -->
+<!-- English revision: 1.9 -->
 <modulesynopsis>
 
 <name>mod_userdir</name>
@@ -19,6 +19,8 @@
 
 <seealso><a href="../urlmapping.html">URL から
 ファイルシステムへのマッピング</a></seealso>
+<seealso><a href="../howto/public_html.html">public_html
+チュートリアル</a></seealso>
 
 <directivesynopsis>
 
@@ -119,6 +121,9 @@ UserDir disabled user4 user5 user6
 </example>
 
 </usage>
+
+<seealso><a href="../howto/public_html.html">public_html
+チュートリアル</a></seealso>
 
 </directivesynopsis>
 </modulesynopsis>

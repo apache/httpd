@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.16 -->
+<!-- English revision: 1.17 -->
 
 <name>mpm_common</name>
 <description>二つ以上のマルチプロセッシングモジュール (MPM)
@@ -554,9 +554,8 @@
 <description>設定可能な子プロセス毎のスレッド数の上限を
 設定します</description>
 <syntax>ThreadLimit <em>number</em></syntax>
-<default>ThreadLimit 64</default>
 <contextlist><context>サーバ設定ファイル</context></contextlist>
-<modulelist><module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module><module>worker</module></modulelist>
 
 <usage>
     <p>このディレクティブは
@@ -576,14 +575,16 @@
     <directive>ThreadLimit</directive> が
     <directive module="mpm_common">ThreadsPerChild</directive>
     の両方がシステムの扱える範囲を超えている場合は、
-    Apache は起動しないか、起動したとしても不安定になるでしょう。</p>
+    Apache は起動しないか、起動したとしても不安定になるでしょう。
+    このディレクティブの値は今使用している Apache の <directive
+    module="mpm_common">ThreadsPerChild</directive> の予想上限値を
+    超えた値には設定しないでください。
+    </p>
 
-    <p>このディレクティブは
-    <directive module="mpm_common">ThreadsPerChild</directive>
-    を 64 よりも大きな値に設定する必要がある場合にのみ使用してください。
-    このディレクティブの値は、希望の
-    <directive module="mpm_common">ThreadsPerChild</directive>
-    よりも大きな値に設定しないでください。</p>
+    <p><directive>ThreadLimit</directive> のデフォルト値は
+    <module>worker</module> のときは 64 で、<module>mpm_winnt</module> のときは
+    1920 です。</p>
+
 </usage>
 </directivesynopsis>
 
