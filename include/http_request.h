@@ -200,6 +200,16 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r);
 AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *r);
 
 /**
+ * Redirect the current request to a sub_req, merging the pools
+ * @param sub_req A subrequest created from this request
+ * @param r The current request
+ * @deffunc void ap_internal_fast_redirect(request_rec *sub_req, request_rec *r)
+ * @tip the sub_req's pool will be merged into r's pool, be very careful
+ * not to destroy this subrequest, it will be destroyed with the main request!
+ */
+AP_DECLARE(void) ap_internal_fast_redirect(request_rec *sub_req, request_rec *r))
+
+/**
  * Can be used within any handler to determine if any authentication
  * is required for the current request
  * @param r The current request

@@ -556,6 +556,33 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     return new;
 }
 
+AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r))
+{
+    /* We need to tell POOL_DEBUG that we're guaranteeing that rr->pool
+     * will exist as long as r->pool.  Otherwise we run into troubles because
+     * some values in this request will be allocated in r->pool, and others in
+     * rr->pool.
+     */
+    apr_pool_join(r->pool, rr->pool);
+    r->mtime = 0; /* reset etag info for subrequest */
+    r->filename = rr->filename;
+    r->handler = rr->handler;
+    r->content_type = rr->content_type;
+    r->content_encoding = rr->content_encoding;
+    r->content_languages = rr->content_languages;
+    r->content_language = rr->content_language;
+    r->finfo = rr->finfo;
+    r->per_dir_config = rr->per_dir_config;
+    /* copy output headers from subrequest, but leave negotiation headers */
+    r->notes = apr_table_overlay(r->pool, rr->notes, r->notes);
+    r->headers_out = apr_table_overlay(r->pool, rr->headers_out,
+                                    r->headers_out);
+    r->err_headers_out = apr_table_overlay(r->pool, rr->err_headers_out,
+                                        r->err_headers_out);
+    r->subprocess_env = apr_table_overlay(r->pool, rr->subprocess_env,
+                                       r->subprocess_env);
+}
+
 AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);

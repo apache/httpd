@@ -911,6 +911,7 @@ static int read_types_multi(negotiation_state *neg)
     struct var_rec mime_info;
     struct accept_rec accept_info;
     void *new_var;
+    int anymatch = 0;
 
     clean_var_rec(&mime_info);
 
@@ -947,12 +948,22 @@ static int read_types_multi(negotiation_state *neg)
             continue;
         }
 
+        /* Ok, something's here.  Maybe nothing useful.  Remember that
+         * we tried, if we completely fail, so we can reject the request!
+         */
+        anymatch = 1;
+
         /* Yep.  See if it's something which we have access to, and 
          * which has a known type and encoding (as opposed to something
          * which we'll be slapping default_type on later).
          */
 
         sub_req = ap_sub_req_lookup_dirent(&dirent, r, NULL);
+
+        /* BLECH --- don't multi-resolve non-ordinary files */
+
+        if (sub_req->finfo.filetype != APR_REG)
+            continue;
 
         /* If it has a handler, we'll pretend it's a CGI script,
          * since that's a good indication of the sort of thing it
@@ -2689,43 +2700,16 @@ static int handle_multi(request_rec *r)
         }
     }
 
-    /* BLECH --- don't multi-resolve non-ordinary files */
+    /* now do a "fast redirect" ... promotes the sub_req into the main req */
+    ap_internal_fast_redirect(sub_req, r);
 
-    if (sub_req->finfo.filetype != APR_REG) {
-        res = HTTP_NOT_FOUND;
-        goto return_from_multi;
-    }
-
-    /* Otherwise, use it. */
-
-    /* now do a "fast redirect" ... promote the sub_req into the main req */
-    /* We need to tell POOL_DEBUG that we're guaranteeing that sub_req->pool
-     * will exist as long as r->pool.  Otherwise we run into troubles because
-     * some values in this request will be allocated in r->pool, and others in
-     * sub_req->pool.
+    /* clean up all but our favorite variant, since that sub_req
+     * is now merged into the main request!
      */
-    apr_pool_join(r->pool, sub_req->pool);
-    r->mtime = 0; /* reset etag info for subrequest */
-    r->filename = sub_req->filename;
-    r->handler = sub_req->handler;
-    r->content_type = sub_req->content_type;
-    r->content_encoding = sub_req->content_encoding;
-    r->content_languages = sub_req->content_languages;
-    r->content_language = sub_req->content_language;
-    r->finfo = sub_req->finfo;
-    r->per_dir_config = sub_req->per_dir_config;
-    /* copy output headers from subrequest, but leave negotiation headers */
-    r->notes = apr_table_overlay(r->pool, sub_req->notes, r->notes);
-    r->headers_out = apr_table_overlay(r->pool, sub_req->headers_out,
-                                    r->headers_out);
-    r->err_headers_out = apr_table_overlay(r->pool, sub_req->err_headers_out,
-                                        r->err_headers_out);
-    r->subprocess_env = apr_table_overlay(r->pool, sub_req->subprocess_env,
-                                       r->subprocess_env);
     avail_recs = (var_rec *) neg->avail_vars->elts;
     for (j = 0; j < neg->avail_vars->nelts; ++j) {
         var_rec *variant = &avail_recs[j];
-        if (variant != best && variant->sub_req) {
+        if (variant != best && variant->rr) {
             ap_destroy_sub_req(variant->sub_req);
         }
     }
