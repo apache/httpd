@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/04/19 00:30:42 $
+Last modified: $Date: 2003/04/23 15:26:33 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -8,6 +8,11 @@ Project, please see http://httpd.apache.org/docs-project/
 
 Decisions pending
 =================
+
+  - Backport removal of SSI from docs directory in default config
+    docs/conf/httpd-std.conf.in rev 1.36
+    docs/conf/httpd-win.conf rev 1.82
+    +1: slive
 
   -Comment out .gz etc. AddEncoding lines in our default configuration.
     docs/conf/httpd-std.conf.in rev 1.32
@@ -197,7 +202,5 @@ programs/footer.html
 programs/header.html
 programs/htdigest.html
 programs/htpasswd.html
-programs/logresolve.html
 programs/other.html
-programs/rotatelogs.html
 programs/suexec.html
