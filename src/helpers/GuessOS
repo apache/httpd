@@ -61,7 +61,7 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     AIX:*)
-	echo "${MACHINE}-ibm-aix"; exit 0
+	echo "${MACHINE}-ibm-aix${VERSION}.${RELEASE}"; exit 0
 	;;
 
     dgux:*)
