@@ -332,6 +332,9 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
     /* This filter is done once it has served up its content */
     ap_remove_output_filter(f);
+
+    ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, r->server,
+            "cached version of %s being served", r->uri);
     return ap_pass_brigade(f->next, bb);
 }
 
