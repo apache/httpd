@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/13 10:01:35 $]
+Last modified at [$Date: 2003/07/13 20:18:53 $]
 
 Release:
 
@@ -247,6 +247,20 @@ PATCHES TO PORT FROM 2.1
              much more likely to be caused by an ab bug instead of by a
              user setup error (ulimit) or system resource shortage...
              is an error message better than a coredump in that case?
+
+    * mime.types: update to include IANA and W3C types.  Also switches
+      the handling of .xml from text/xml to application/xml (per RFCs),
+      adds extensions for commonly used *+xml and calendar types, and
+      lists image/x-icon ico.
+        docs/conf/mime.types: r1.18 + r1.19
+      +1: fielding
+
+    * httpd-std.conf: Try to be clearer in describing the connection
+      between AddType and AddEncoding for defining the meaning of
+      compressed file extensions.  Follows mime.types change above.
+        docs/conf/httpd-std.conf.in: r1.47
+        docs/conf/httpd-win.conf:    r1.93
+      +1: fielding
 
 CURRENT RELEASE NOTES:
 
