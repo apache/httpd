@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/23 21:35:08 $]
+Last modified at [$Date: 2002/05/24 20:03:50 $]
 
 Release:
 
@@ -51,8 +51,6 @@ CURRENT RELEASE NOTES:
       with the aim of releasing by Friday, May 31, and volunteers to RM.
 
 RELEASE SHOWSTOPPERS:
-
-    * Worker MPM deadlocks
 
     * for 2.0.37: decide if the MMN bump was warranted
 
