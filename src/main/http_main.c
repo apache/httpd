@@ -1819,6 +1819,8 @@ static int make_sock(pool *pconf, const struct sockaddr_in *server)
         exit(1);
     }
 
+    s = ap_slack(s, AP_SLACK_HIGH);
+
     note_cleanups_for_socket(pconf, s); /* arrange to close on exec or restart */
     
 #ifndef MPE
