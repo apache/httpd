@@ -843,7 +843,6 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_pool_t *p;
     const char *expect;
     int access_status;
-    core_request_config *req_cfg;
 
     apr_pool_create(&p, conn->pool);
     r = apr_pcalloc(p, sizeof(request_rec));
@@ -866,10 +865,7 @@ request_rec *ap_read_request(conn_rec *conn)
     r->notes           = apr_table_make(r->pool, 5);
 
     r->request_config  = ap_create_request_config(r->pool);
-    req_cfg = apr_pcalloc(r->pool, sizeof(core_request_config));
-    req_cfg->bb = apr_brigade_create(r->pool);
-    ap_set_module_config(r->request_config, &core_module, req_cfg);
-                    
+    ap_run_create_request(r);
     r->per_dir_config  = r->server->lookup_defaults;
 
     r->sent_bodyct     = 0;                      /* bytect isn't for body */

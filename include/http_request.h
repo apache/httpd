@@ -248,6 +248,14 @@ AP_DECLARE(void) ap_die(int type, request_rec *r);
  */
 
 /**
+ * Gives modules a chance to create their request_config entry when the
+ * request is created.
+ * @param r The current request
+ * @ingroup hooks
+ */
+AP_DECLARE_HOOK(void,create_request,(request_rec *r))
+
+/**
  * This hook allow modules an opportunity to translate the URI into an
  * actual filename.  If no modules do anything special, the server's default
  * rules will be followed.
