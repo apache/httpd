@@ -762,12 +762,12 @@ rvputs(request_rec *r, ...)
 	i = bwrite(fb, x, j);
 	if (i != j)
 	{
-	    va_end(v);
+	    va_end(args);
 	    return -1;
 	}
 	k += i;
     }
-    va_end(v);
+    va_end(args);
 
     return k;
 }
