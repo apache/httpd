@@ -127,9 +127,7 @@
               </tr>
 
               <tr>
-                <td>Modules <a href="mod/index-bytype.html">par
-                type</a> ou <a href="mod/">par ordre
-                alphab&eacute;tique</a> </td>
+                <td><a href="mod/">Modules</a> </td>
               </tr>
 
               <tr>
