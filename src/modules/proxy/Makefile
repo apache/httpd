@@ -66,7 +66,7 @@ proxy_util.c
 
 OBJS=$(PROXYSRC:.c=.o)
 
-default:	force $(LIB)
+all:	$(LIB)
 
 .c.a:
 	$(MAKE) $(CFLAGS) $<
