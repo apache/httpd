@@ -21,7 +21,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 ##############################################################################
-# $Id: build2.mk,v 1.1 2000/01/11 13:10:58 sascha Exp $
+# $Id: build2.mk,v 1.2 2000/01/16 17:18:13 sascha Exp $
 
 include generated_lists
 
@@ -37,17 +37,19 @@ APACHE_TARGETS = $(TOUCH_FILES) $(LT_TARGETS) configure $(config_h_in)
 
 APR_TARGETS = $(apr_configure) $(apr_config_h_in)
 
-targets = .deps $(APACHE_TARGETS) $(APR_TARGETS)
+targets = .deps aclocal.m4 $(APACHE_TARGETS) $(APR_TARGETS)
 
 all: $(targets)
 
 .deps:
 	touch $@
 
-aclocal.m4: configure.in acinclude.m4
+libtool_m4 = $(libtool_prefix)/share/aclocal/libtool.m4
+	
+aclocal.m4: acinclude.m4 $(libtool_m4)
 	@echo rebuilding $@
-	aclocal
-
+	@cat acinclude.m4 $(libtool_m4) > $@
+	
 $(LT_TARGETS):
 	libtoolize $(AMFLAGS) --force
 	
