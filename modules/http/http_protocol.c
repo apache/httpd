@@ -1032,6 +1032,12 @@ static void basic_http_header_check(request_rec *r,
         r->status_line = status_lines[ap_index_of_response(r->status)];
     }
 
+    /* Note that we must downgrade before checking for force responses. */
+    if (r->proto_num > HTTP_VERSION(1,0)
+        && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
+        r->proto_num = HTTP_VERSION(1,0);
+    }
+
     /* kludge around broken browsers when indicated by force-response-1.0
      */
     if (r->proto_num == HTTP_VERSION(1,0)
@@ -1043,10 +1049,6 @@ static void basic_http_header_check(request_rec *r,
         *protocol = AP_SERVER_PROTOCOL;
     }
 
-    if (r->proto_num > HTTP_VERSION(1,0)
-        && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
-        r->proto_num = HTTP_VERSION(1,0);
-    }
 }
 
 /* fill "bb" with a barebones/initial HTTP response header */
