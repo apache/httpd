@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/14 21:55:37 $]
+Last modified at [$Date: 2004/01/19 18:07:39 $]
 
 Release:
 
@@ -111,12 +111,6 @@ PATCHES TO BACKPORT FROM 2.1
       +1: jorton
         nd asks: Should we make it runtime configurable either to 400, drop the
                  fragment or just treat it as part of the filename?
-
-    * Move SSLRandomSeed out of the <IfDefine SSL> container to support
-      starting without SSL on platforms with no /dev/random equivalent
-      but a statically compiled-in mod_ssl.  PR: 25867
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/docs/conf/ssl-std.conf.in?r1=1.4&r2=1.5
-      +1: erikabele, nd, trawick
 
     * Fix segfault in mod_mem_cache cache_insert() due to cache size
       becoming negative.  PR: 21285, 21287
