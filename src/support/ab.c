@@ -950,7 +950,7 @@ static void close_connection(struct connection * c)
 	/* save out time */
 	if (done < requests) {
 	    struct data s;
-	    if ((done) && (!(done % heartbeatres))) {
+	    if ((done) && (heartbeatres) && (!(done % heartbeatres))) {
 		fprintf(stderr, "Completed %d requests\n", done);
 		fflush(stderr);
 	    }
@@ -1129,7 +1129,7 @@ static void read_connection(struct connection * c)
 	}
 	if (done < requests) {
 	    struct data s;
-	    if ((done) && (!(done % heartbeatres))) {
+	    if ((done) && (heartbeatres) && (!(done % heartbeatres))) {
 		fprintf(stderr, "Completed %d requests\n", done);
 		fflush(stderr);
 	    }
@@ -1323,14 +1323,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.50 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.51 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.50 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.51 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
