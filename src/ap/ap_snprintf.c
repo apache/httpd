@@ -73,6 +73,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#ifdef WIN32
+#include <float.h>
+#endif
 
 typedef enum {
     NO = 0, YES = 1

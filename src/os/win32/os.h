@@ -207,6 +207,10 @@ API_EXPORT(const char *) ap_os_dso_error(void);
 /* Other ap_os_ routines not used by this platform */
 #define ap_os_kill(pid, sig)                kill(pid, sig)
 
+/* Some Win32isms */
+#define isnan(n) _isnan(n)
+#define isinf(n) (!_finite(n))
+
 #endif /* WIN32 */
 
 #endif   /* ! APACHE_OS_H */
