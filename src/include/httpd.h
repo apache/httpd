@@ -110,6 +110,11 @@ extern "C" {
 /* Default administrator's address */
 #define DEFAULT_ADMIN "[no address given]"
 
+/* The target name of the installed Apache */
+#ifndef TARGET
+#define TARGET "httpd"
+#endif
+
 /* 
  * --------- You shouldn't have to edit anything below this line ----------
  *

@@ -1,4 +1,11 @@
 Changes with Apache 1.3.4
+  *) Fix TARGET configuration when configuring and installing using
+     APACI configure. TARGET now defines the basename of the configuration
+     file, startup script, manual page, etc. log_error_core() now reports
+     the server binary name given by argv[0]. TARGET can now also be defined
+     with --target=TARGET parameter passed to APACI configure.
+     [Ralf Engelschall, Randy Terbush]
+
   *) mod_include.c:handle_perl() now properly tests for OPT_INCNOEXEC
      rather than OPT_INCLUDES [Rainer Schoepf <schoepf@uni-mainz.de>]
 

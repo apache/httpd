@@ -58,6 +58,7 @@
 /* Cache and garbage collection routines for Apache proxy */
 
 #include "mod_proxy.h"
+#include "http_conf_globals.h"
 #include "http_log.h"
 #include "http_main.h"
 #include "util_date.h"
@@ -227,19 +228,22 @@ static void detached_proxy_garbage_coll(request_rec *r)
 #ifndef NO_SETSID
 		    if ((pgrp = setsid()) == -1) {
 			perror("setsid");
-			fprintf(stderr, "httpd: setsid failed\n");
+			fprintf(stderr, "%s: setsid failed\n",
+				ap_server_argv0);
 			exit(1);
 		    }
 #elif defined(NEXT) || defined(NEWSOS)
 		    if (setpgrp(0, getpid()) == -1 || (pgrp = getpgrp(0)) == -1) {
 			perror("setpgrp");
-			fprintf(stderr, "httpd: setpgrp or getpgrp failed\n");
+			fprintf(stderr, "%S: setpgrp or getpgrp failed\n",
+				ap_server_argv0);
 			exit(1);
 		    }
 #else
 		    if ((pgrp = setpgrp(getpid(), 0)) == -1) {
 			perror("setpgrp");
-			fprintf(stderr, "httpd: setpgrp failed\n");
+			fprintf(stderr, "%s: setpgrp failed\n",
+				ap_server_argv0);
 			exit(1);
 		    }
 #endif

@@ -250,7 +250,7 @@ static void init_mime(server_rec *s, pool *p)
 
     if (!(f = ap_pcfg_openfile(p, types_confname))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, s,
-		     "httpd: could not open mime types log file %s.", types_confname);
+		     "could not open mime types log file %s.", types_confname);
         exit(1);
     }
 

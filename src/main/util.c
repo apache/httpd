@@ -1535,7 +1535,7 @@ API_EXPORT(uid_t) ap_uname2id(const char *name)
 	return (atoi(&name[1]));
 
     if (!(ent = getpwnam(name))) {
-	fprintf(stderr, "httpd: bad user name %s\n", name);
+	fprintf(stderr, "%s: bad user name %s\n", ap_server_argv0, name);
 	exit(1);
     }
     return (ent->pw_uid);
@@ -1553,7 +1553,7 @@ API_EXPORT(gid_t) ap_gname2id(const char *name)
 	return (atoi(&name[1]));
 
     if (!(ent = getgrnam(name))) {
-	fprintf(stderr, "httpd: bad group name %s\n", name);
+	fprintf(stderr, "%s: bad group name %s\n", ap_server_argv0, name);
 	exit(1);
     }
     return (ent->gr_gid);
@@ -1644,7 +1644,8 @@ char *ap_get_local_host(pool *a)
     }
     str[MAXHOSTNAMELEN] = '\0';
     if ((!(p = gethostbyname(str))) || (!(server_hostname = find_fqdn(a, p)))) {
-	fprintf(stderr, "httpd: cannot determine local host name.\n");
+	fprintf(stderr, "%s: cannot determine local host name.\n",
+		ap_server_argv0);
 	fprintf(stderr, "Use the ServerName directive to set it manually.\n");
 	exit(1);
     }

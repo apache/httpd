@@ -539,8 +539,8 @@ API_EXPORT(void) ap_add_module(module *m)
      */
 
     if (m->version != MODULE_MAGIC_NUMBER_MAJOR) {
-	fprintf(stderr, "httpd: module \"%s\" is not compatible with this "
-		"version of Apache.\n", m->name);
+	fprintf(stderr, "%s: module \"%s\" is not compatible with this "
+		"version of Apache.\n", ap_server_argv0, m->name);
 	fprintf(stderr, "Please contact the vendor for the correct version.\n");
 	exit(1);
     }
@@ -554,8 +554,8 @@ API_EXPORT(void) ap_add_module(module *m)
 	dynamic_modules++;
 
 	if (dynamic_modules > DYNAMIC_MODULE_LIMIT) {
-	    fprintf(stderr, "httpd: module \"%s\" could not be loaded, because"
-		    " the dynamic\n", m->name);
+	    fprintf(stderr, "%s: module \"%s\" could not be loaded, because"
+		    " the dynamic\n", ap_server_argv0, m->name);
 	    fprintf(stderr, "module limit was reached. Please increase "
 		    "DYNAMIC_MODULE_LIMIT and recompile.\n");
 	    exit(1);
@@ -1179,8 +1179,8 @@ void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp
 
     if (!(parms.config_file = ap_pcfg_openfile(p,fname))) {
 	perror("fopen");
-	fprintf(stderr, "httpd: could not open document config file %s\n",
-		fname);
+	fprintf(stderr, "%s: could not open document config file %s\n",
+		ap_server_argv0, fname);
 	exit(1);
     }
 

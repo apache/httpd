@@ -30,6 +30,7 @@ ab: ab.o
 
 apxs: apxs.pl
 	sed <apxs.pl >apxs \
+	    -e 's%@TARGET@%$(TARGET)%g' \
 	    -e 's%@CC@%$(CC)%g' \
 	    -e 's%@CFLAGS@%$(CFLAGS)%g' \
 	    -e 's%@CFLAGS_SHLIB@%$(CFLAGS_SHLIB)%g' \

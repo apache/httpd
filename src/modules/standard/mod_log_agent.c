@@ -126,7 +126,7 @@ static void open_agent_log(server_rec *s, pool *p)
     else if (*cls->fname != '\0') {
         if ((cls->agent_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s,
-                         "httpd: could not open agent log file %s.", fname);
+                         "could not open agent log file %s.", fname);
             exit(1);
         }
     }

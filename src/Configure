@@ -254,7 +254,6 @@ fi
 DBM_LIB="-ldbm"
 DB_LIB="-ldb"
 SHELL="/bin/sh"
-TARGET="httpd"
 SUBTARGET="target_static"
 SHLIB_SUFFIX_NAME=""
 SHLIB_SUFFIX_LIST=""
@@ -888,6 +887,7 @@ esac
 ##
 TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TRANLIB=`egrep '^RANLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+TTARGET=`egrep '^TARGET=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 
 ####################################################################
 ## Check for user provided flags for shared object support
@@ -896,6 +896,20 @@ TLD_SHLIB=`egrep '^LD_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TLDFLAGS_SHLIB=`egrep '^LDFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TLDFLAGS_SHLIB_EXPORT=`egrep '^LDFLAGS_SHLIB_EXPORT=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+
+####################################################################
+## Handle TARGET name
+##
+if [ "x$TTARGET" = "x" ]; then
+    TARGET=httpd
+    echo "TARGET=$TARGET" >> Makefile.config
+else
+    TARGET=$TTARGET
+fi
+if [ "x$TARGET" != "xhttpd" ]; then
+    echo " + using custom target name: $TARGET"
+    CFLAGS="$CFLAGS -DTARGET=\\\"$TARGET\\\""
+fi
 
 ####################################################################
 ## We adjust now CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT as
@@ -1710,7 +1724,6 @@ echo "" >>Makefile
 ####################################################################
 ## Now add the target for the main Makefile
 ##
-echo "TARGET=$TARGET" >> Makefile
 echo "SUBDIRS=$SUBDIRS" >> Makefile
 echo "SUBTARGET=$SUBTARGET" >> Makefile
 echo "SHLIB_SUFFIX_NAME=$SHLIB_SUFFIX_NAME" >> Makefile

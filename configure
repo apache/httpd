@@ -164,6 +164,11 @@ fi
 ##  determine default parameters
 ##
 
+#   target name
+if [ ".$TARGET" = . ]; then
+    TARGET=httpd
+fi
+
 #   default paths
 prefix='/usr/local/apache'
 exec_prefix='$prefix'
@@ -285,7 +290,7 @@ if [ ".$help" = .no ]; then
     echo "##" >>$configstatus
     echo "" >>$configstatus
     for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
-               LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB; do
+               LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB TARGET; do
         eval "val=\"\$$var\""
         if [ ".$val" != . ]; then
             echo "$var=$val" |\
@@ -394,6 +399,7 @@ do
             echo " --layout               print installation layout (check and debug)"
             echo ""
             echo "Installation layout options:"
+	    echo " --target=TARGET        install server executable and associated files using basename TARGET"
             echo " --prefix=PREFIX        install architecture-independent files in PREFIX"
             echo " --exec-prefix=EPREFIX  install architecture-dependent files in EPREFIX"
             echo " --bindir=DIR           install user     executables in DIR  [EPREFIX/bin]"
@@ -440,6 +446,9 @@ do
         --layout)
             layout=1
             ;;
+	--target=*)
+	    TARGET="$apc_optarg"
+	    ;;
         --prefix=*)
             prefix="$apc_optarg"
             ;;
@@ -907,13 +916,13 @@ if [ ".$layout" = .1 ]; then
     echo "Compilation paths:"
     echo "           HTTPD_ROOT: $prefix"
     echo "      SHARED_CORE_DIR: $libexecdir"
-    echo "       DEFAULT_PIDLOG: ${runtimedir_relative}httpd.pid"
-    echo "   DEFAULT_SCOREBOARD: ${runtimedir_relative}httpd.scoreboard"
-    echo "     DEFAULT_LOCKFILE: ${runtimedir_relative}httpd.lock"
+    echo "       DEFAULT_PIDLOG: ${runtimedir_relative}${TARGET}.pid"
+    echo "   DEFAULT_SCOREBOARD: ${runtimedir_relative}${TARGET}.scoreboard"
+    echo "     DEFAULT_LOCKFILE: ${runtimedir_relative}${TARGET}.lock"
     echo "      DEFAULT_XFERLOG: ${logfiledir_relative}access_log"
     echo "     DEFAULT_ERRORLOG: ${logfiledir_relative}error_log"
     echo "    TYPES_CONFIG_FILE: ${sysconfdir_relative}mime.types"
-    echo "   SERVER_CONFIG_FILE: ${sysconfdir_relative}httpd.conf"
+    echo "   SERVER_CONFIG_FILE: ${sysconfdir_relative}${TARGET}.conf"
     echo "   ACCESS_CONFIG_FILE: ${sysconfdir_relative}access.conf"
     echo " RESOURCE_CONFIG_FILE: ${sysconfdir_relative}srm.conf"
     echo ""
@@ -944,6 +953,7 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@SRC@%$src%g" \
 -e "s%@MKF@%$mkf%g" \
 -e "s%@AUX@%$aux%g" \
+-e "s%@TARGET@%$TARGET%g" \
 -e "s%@prefix@%$prefix%g" \
 -e "s%@exec_prefix@%$exec_prefix%g" \
 -e "s%@bindir@%$bindir%g" \
@@ -986,13 +996,13 @@ echo "## WITHOUT DISTURBING THE KNOWN MAKE BUILD PROCESS DISPLAY" >>$src/apaci
 echo "echo '-DHTTPD_ROOT=\"$prefix\"'" >>$src/apaci
 echo "echo '-DSUEXEC_BIN=\"$sbindir/suexec\"'" >>$src/apaci
 echo "echo '-DSHARED_CORE_DIR=\"$libexecdir\"'" >>$src/apaci
-echo "echo '-DDEFAULT_PIDLOG=\"${runtimedir_relative}httpd.pid\"'" >>$src/apaci
-echo "echo '-DDEFAULT_SCOREBOARD=\"${runtimedir_relative}httpd.scoreboard\"'" >>$src/apaci
-echo "echo '-DDEFAULT_LOCKFILE=\"${runtimedir_relative}httpd.lock\"'" >>$src/apaci
+echo "echo '-DDEFAULT_PIDLOG=\"${runtimedir_relative}${TARGET}.pid\"'" >>$src/apaci
+echo "echo '-DDEFAULT_SCOREBOARD=\"${runtimedir_relative}${TARGET}.scoreboard\"'" >>$src/apaci
+echo "echo '-DDEFAULT_LOCKFILE=\"${runtimedir_relative}${TARGET}.lock\"'" >>$src/apaci
 echo "echo '-DDEFAULT_XFERLOG=\"${logfiledir_relative}access_log\"'" >>$src/apaci
 echo "echo '-DDEFAULT_ERRORLOG=\"${logfiledir_relative}error_log\"'" >>$src/apaci
 echo "echo '-DTYPES_CONFIG_FILE=\"${sysconfdir_relative}mime.types\"'" >>$src/apaci
-echo "echo '-DSERVER_CONFIG_FILE=\"${sysconfdir_relative}httpd.conf\"'" >>$src/apaci
+echo "echo '-DSERVER_CONFIG_FILE=\"${sysconfdir_relative}${TARGET}.conf\"'" >>$src/apaci
 echo "echo '-DACCESS_CONFIG_FILE=\"${sysconfdir_relative}access.conf\"'" >>$src/apaci
 echo "echo '-DRESOURCE_CONFIG_FILE=\"${sysconfdir_relative}srm.conf\"'" >>$src/apaci
 chmod a+x $src/apaci
@@ -1010,7 +1020,7 @@ touch $sedsubst
 #   generate settings from imported environment variables
 OIFS="$IFS" IFS="$DIFS"
 for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
-           LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS; do
+           LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS TARGET; do
     eval "val=\"\$$var\"";
     if [ ".$val" != . ]; then
         case $var in 

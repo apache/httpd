@@ -30,24 +30,24 @@ target_static: subdirs modules.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
 	      -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
 
-target_shared: libhttpd.ep
+target_shared: lib$(TARGET).ep
 	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
 	      -o $(TARGET) -DSHARED_CORE_BOOTSTRAP main/http_main.c
 
-libhttpd.ep: libhttpd.$(SHLIB_SUFFIX_NAME)
+lib$(TARGET).ep: lib$(TARGET).$(SHLIB_SUFFIX_NAME)
 	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
-	      -o libhttpd.ep -DSHARED_CORE_TIESTATIC main/http_main.c \
-		  -L. -lhttpd $(LIBS)
+	      -o lib$(TARGET).ep -DSHARED_CORE_TIESTATIC main/http_main.c \
+		  -L. -l$(TARGET) $(LIBS)
 
-libhttpd.$(SHLIB_SUFFIX_NAME): subdirs modules.o
+lib$(TARGET).$(SHLIB_SUFFIX_NAME): subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
-	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o libhttpd.$(SHLIB_SUFFIX_NAME) buildmark.o $(OBJS) $(REGLIB)
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o lib$(TARGET).$(SHLIB_SUFFIX_NAME) buildmark.o $(OBJS) $(REGLIB)
 	@if [ ".$(SHLIB_SUFFIX_LIST)" != . ]; then \
-		rm -f libhttpd.$(SHLIB_SUFFIX_NAME).*; \
+		rm -f lib$(TARGET).$(SHLIB_SUFFIX_NAME).*; \
 		for suffix in $(SHLIB_SUFFIX_LIST) ""; do \
 			[ ".$$suffix" = . ] && continue; \
-		    echo "ln libhttpd.$(SHLIB_SUFFIX_NAME) libhttpd.$(SHLIB_SUFFIX_NAME).$$suffix"; \
-		    ln libhttpd.$(SHLIB_SUFFIX_NAME) libhttpd.$(SHLIB_SUFFIX_NAME).$$suffix; \
+		    echo "ln lib$(TARGET).$(SHLIB_SUFFIX_NAME) lib$(TARGET).$(SHLIB_SUFFIX_NAME).$$suffix"; \
+		    ln lib$(TARGET).$(SHLIB_SUFFIX_NAME) lib$(TARGET).$(SHLIB_SUFFIX_NAME).$$suffix; \
 		done; \
 	fi
 
@@ -66,7 +66,7 @@ support-dir:
 	echo "<=== $(SDP)support"
 
 clean:
-	-rm -f $(TARGET) libhttpd.* *.o
+	-rm -f $(TARGET) lib$(TARGET).* *.o
 	@for i in $(SUBDIRS); do \
 		echo "===> $(SDP)$$i"; \
 		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
@@ -74,7 +74,7 @@ clean:
 	done
 
 distclean:
-	-rm -f $(TARGET) libhttpd.* *.o
+	-rm -f $(TARGET) lib$(TARGET).* *.o
 	@for i in $(SUBDIRS); do \
 		echo "===> $(SDP)$$i"; \
 		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \

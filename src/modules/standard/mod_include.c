@@ -833,7 +833,7 @@ static int include_cmd_child(void *arg, child_info *pinfo)
     fprintf(dbg, "Exec failed\n");
 #endif
     ap_snprintf(err_string, sizeof(err_string),
-                "httpd: exec of %s failed, reason: %s (errno = %d)\n",
+                "exec of %s failed, reason: %s (errno = %d)\n",
                 SHELL_PATH, strerror(errno), errno);
     write(STDERR_FILENO, err_string, strlen(err_string));
     exit(0);
@@ -954,8 +954,8 @@ static int handle_perl(FILE *in, request_rec *r, const char *error)
 
     if (ap_allow_options(r) & OPT_INCNOEXEC) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-                    "httpd: #perl SSI disallowed by IncludesNoExec in %s",
-                    r->filename);
+		      "#perl SSI disallowed by IncludesNoExec in %s",
+		      r->filename);
         return DECLINED;
     }
     while (1) {
@@ -2204,8 +2204,8 @@ static void send_parsed_content(FILE *f, request_rec *r)
             if (!strcmp(directive, "exec")) {
                 if (noexec) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-                                "httpd: exec used but not allowed in %s",
-                                r->filename);
+				  "exec used but not allowed in %s",
+				  r->filename);
                     if (printing) {
                         ap_rputs(error, r);
                     }
@@ -2243,9 +2243,9 @@ static void send_parsed_content(FILE *f, request_rec *r)
 #endif
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-                            "httpd: unknown directive \"%s\" "
-                            "in parsed doc %s",
-                            directive, r->filename);
+			      "unknown directive \"%s\" "
+			      "in parsed doc %s",
+			      directive, r->filename);
                 if (printing) {
                     ap_rputs(error, r);
                 }
@@ -2253,8 +2253,8 @@ static void send_parsed_content(FILE *f, request_rec *r)
             }
             if (ret) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-                            "httpd: premature EOF in parsed file %s",
-                            r->filename);
+			      "premature EOF in parsed file %s",
+			      r->filename);
                 return;
             }
         }

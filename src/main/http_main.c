@@ -1612,13 +1612,16 @@ static void setup_shared_mem(pool *p)
 
     m = (caddr_t) create_shared_heap("\\SHAREMEM\\SCOREBOARD", SCOREBOARD_SIZE);
     if (m == 0) {
-	fprintf(stderr, "httpd: Could not create OS/2 Shared memory pool.\n");
+	fprintf(stderr, "%s: Could not create OS/2 Shared memory pool.\n",
+		ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 
     rc = _uopen((Heap_t) m);
     if (rc != 0) {
-	fprintf(stderr, "httpd: Could not uopen() newly created OS/2 Shared memory pool.\n");
+	fprintf(stderr,
+		"%s: Could not uopen() newly created OS/2 Shared memory pool.\n",
+		ap_server_argv0);
     }
     ap_scoreboard_image = (scoreboard *) m;
     ap_scoreboard_image->global.exit_generation = 0;
@@ -1631,7 +1634,8 @@ static void reopen_scoreboard(pool *p)
 
     m = (caddr_t) get_shared_heap("\\SHAREMEM\\SCOREBOARD");
     if (m == 0) {
-	fprintf(stderr, "httpd: Could not find existing OS/2 Shared memory pool.\n");
+	fprintf(stderr, "%s: Could not find existing OS/2 Shared memory pool.\n",
+		ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 
@@ -1677,23 +1681,30 @@ static void cleanup_shared_mem(void *d)
 
 static void setup_shared_mem(pool *p)
 {
+    char buf[512];
     caddr_t m;
     int fd;
 
     fd = shm_open(ap_scoreboard_fname, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
     if (fd == -1) {
-	perror("httpd: could not open(create) scoreboard");
+	ap_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
+		    ap_server_argv0);
+	perror(buf);
 	exit(APEXIT_INIT);
     }
     if (ltrunc(fd, (off_t) SCOREBOARD_SIZE, SEEK_SET) == -1) {
-	perror("httpd: could not ltrunc scoreboard");
+	ap_snprintf(buf, sizeof(buf), "%s: could not ltrunc scoreboard",
+		    ap_server_argv0);
+	perror(buf);
 	shm_unlink(ap_scoreboard_fname);
 	exit(APEXIT_INIT);
     }
     if ((m = (caddr_t) mmap((caddr_t) 0,
 			    (size_t) SCOREBOARD_SIZE, PROT_READ | PROT_WRITE,
 			    MAP_SHARED, fd, (off_t) 0)) == (caddr_t) - 1) {
-	perror("httpd: cannot mmap scoreboard");
+	ap_snprintf(buf, sizeof(buf), "%s: cannot mmap scoreboard",
+		    ap_server_argv0);
+	perror(buf);
 	shm_unlink(ap_scoreboard_fname);
 	exit(APEXIT_INIT);
     }
@@ -1738,14 +1749,14 @@ static void setup_shared_mem(pool *p)
 	int fd = mkstemp(mfile);
 	if (fd == -1) {
 	    perror("open");
-	    fprintf(stderr, "httpd: Could not open %s\n", mfile);
+	    fprintf(stderr, "%s: Could not open %s\n", ap_server_argv0, mfile);
 	    exit(APEXIT_INIT);
 	}
 	m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
 		PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	if (m == (caddr_t) - 1) {
 	    perror("mmap");
-	    fprintf(stderr, "httpd: Could not mmap %s\n", mfile);
+	    fprintf(stderr, "%s: Could not mmap %s\n", ap_server_argv0, mfile);
 	    exit(APEXIT_INIT);
 	}
 	close(fd);
@@ -1757,7 +1768,7 @@ static void setup_shared_mem(pool *p)
 #endif
     if (m == (caddr_t) - 1) {
 	perror("mmap");
-	fprintf(stderr, "httpd: Could not mmap memory\n");
+	fprintf(stderr, "%s: Could not mmap memory\n", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 #else
@@ -1767,14 +1778,14 @@ static void setup_shared_mem(pool *p)
     fd = open("/dev/zero", O_RDWR);
     if (fd == -1) {
 	perror("open");
-	fprintf(stderr, "httpd: Could not open /dev/zero\n");
+	fprintf(stderr, "%s: Could not open /dev/zero\n", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
     m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (m == (caddr_t) - 1) {
 	perror("mmap");
-	fprintf(stderr, "httpd: Could not mmap /dev/zero\n");
+	fprintf(stderr, "%s: Could not mmap /dev/zero\n", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
     close(fd);
@@ -1802,8 +1813,9 @@ static void setup_shared_mem(pool *p)
 #ifdef LINUX
 	if (errno == ENOSYS) {
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, server_conf,
-		    "httpd: Your kernel was built without CONFIG_SYSVIPC\n"
-		    "httpd: please consult the Apache FAQ for details");
+			 "Your kernel was built without CONFIG_SYSVIPC\n"
+			 "%s: Please consult the Apache FAQ for details",
+			 ap_server_argv0);
 	}
 #endif
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
@@ -2789,7 +2801,7 @@ static void detach(void)
 	exit(0);
     else if (x == -1) {
 	perror("fork");
-	fprintf(stderr, "httpd: unable to fork new process\n");
+	fprintf(stderr, "%s: unable to fork new process\n", ap_server_argv0);
 	exit(1);
     }
     RAISE_SIGSTOP(DETACH);
@@ -2797,13 +2809,13 @@ static void detach(void)
 #ifndef NO_SETSID
     if ((pgrp = setsid()) == -1) {
 	perror("setsid");
-	fprintf(stderr, "httpd: setsid failed\n");
+	fprintf(stderr, "%s: setsid failed\n", ap_server_argv0);
 	exit(1);
     }
 #elif defined(NEXT) || defined(NEWSOS)
     if (setpgrp(0, getpid()) == -1 || (pgrp = getpgrp(0)) == -1) {
 	perror("setpgrp");
-	fprintf(stderr, "httpd: setpgrp or getpgrp failed\n");
+	fprintf(stderr, "%s: setpgrp or getpgrp failed\n", ap_server_argv0);
 	exit(1);
     }
 #elif defined(OS2) || defined(TPF)
@@ -2815,15 +2827,15 @@ static void detach(void)
 #else
     if ((pgrp = setpgrp(getpid(), 0)) == -1) {
 	perror("setpgrp");
-	fprintf(stderr, "httpd: setpgrp failed\n");
+	fprintf(stderr, "%s: setpgrp failed\n", ap_server_argv0);
 	exit(1);
     }
 #endif
 
     /* close out the standard file descriptors */
     if (freopen("/dev/null", "r", stdin) == NULL) {
-	fprintf(stderr, "httpd: unable to replace stdin with /dev/null: %s\n",
-		strerror(errno));
+	fprintf(stderr, "%s: unable to replace stdin with /dev/null: %s\n",
+		ap_server_argv0, strerror(errno));
 	/* continue anyhow -- note we can't close out descriptor 0 because we
 	 * have nothing to replace it with, and if we didn't have a descriptor
 	 * 0 the next file would be created with that value ... leading to
@@ -2831,8 +2843,8 @@ static void detach(void)
 	 */
     }
     if (freopen("/dev/null", "w", stdout) == NULL) {
-	fprintf(stderr, "httpd: unable to replace stdout with /dev/null: %s\n",
-		strerror(errno));
+	fprintf(stderr, "%s: unable to replace stdout with /dev/null: %s\n",
+		ap_server_argv0, strerror(errno));
     }
     /* stderr is a tricky one, we really want it to be the error_log,
      * but we haven't opened that yet.  So leave it alone for now and it'll
@@ -4157,27 +4169,27 @@ static void process_child_status(int pid, ap_wait_t status)
 #ifdef WCOREDUMP
 	    if (WCOREDUMP(status)) {
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-		    server_conf,
-		    "httpd: child pid %d exit signal %s (%d), "
-		    "possible coredump in %s",
-		    pid, (WTERMSIG(status) >= NumSIG) ? "" : 
-		    SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
-		    ap_coredump_dir);
+			     server_conf,
+			     "child pid %d exit signal %s (%d), "
+			     "possible coredump in %s",
+			     pid, (WTERMSIG(status) >= NumSIG) ? "" : 
+			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status),
+			     ap_coredump_dir);
 	    }
 	    else {
 #endif
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-		    server_conf,
-		    "httpd: child pid %d exit signal %s (%d)",
-		    pid, SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
+			     server_conf,
+			     "child pid %d exit signal %s (%d)", pid,
+			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
 #ifdef WCOREDUMP
 	    }
 #endif
 #else
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-		server_conf,
-		"httpd: child pid %d exit signal %d",
-		pid, WTERMSIG(status));
+			 server_conf,
+			 "child pid %d exit signal %d",
+			 pid, WTERMSIG(status));
 #endif
 	}
     }
@@ -4363,12 +4375,12 @@ static void standalone_main(int argc, char **argv)
 		if ( pidfile != NULL && unlink(pidfile) == 0)
 		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
 				 server_conf,
-				 "httpd: removed PID file %s (pid=%ld)",
+				 "removed PID file %s (pid=%ld)",
 				 pidfile, (long)getpid());
 	    }
 
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, server_conf,
-			"httpd: caught SIGTERM, shutting down");
+			"caught SIGTERM, shutting down");
 	    clean_parent_exit(0);
 	}
 
@@ -4440,7 +4452,8 @@ int REALMAIN(int argc, char *argv[])
     int configtestonly = 0;
     int sock_in;
     int sock_out;
-
+    char *s;
+    
 #ifdef SecureWare
     if (set_auth_parameters(argc, argv) < 0)
 	perror("set_auth_parameters");
@@ -4459,7 +4472,13 @@ int REALMAIN(int argc, char *argv[])
 
     common_init();
     
-    ap_server_argv0 = argv[0];
+    if ((s = strrchr(argv[0], '/')) != NULL) {
+	ap_server_argv0 = ++s;
+    }
+    else {
+	ap_server_argv0 = argv[0];
+    }
+    
     ap_cpystrn(ap_server_root, HTTPD_ROOT, sizeof(ap_server_root));
     ap_cpystrn(ap_server_confname, SERVER_CONFIG_FILE, sizeof(ap_server_confname));
 
@@ -5717,7 +5736,7 @@ die_now:
 	if ( pidfile != NULL && unlink(pidfile) == 0)
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
 			 server_conf,
-			 "httpd: removed PID file %s (pid=%ld)",
+			 "removed PID file %s (pid=%ld)",
 			 pidfile, (long)getpid());
     }
 
@@ -5795,10 +5814,16 @@ int REALMAIN(int argc, char *argv[])
     int install = 0;
     int configtestonly = 0;
     char *signal_to_send = NULL;
+    char *s;
     
     common_init();
 
-    ap_server_argv0 = argv[0];
+    if ((s = strrchr(argv[0], '/')) != NULL) {
+	ap_server_argv0 = ++s;
+    }
+    else {
+	ap_server_argv0 = argv[0];
+    }
 
     /* Get the serverroot from the registry, if it exists. This can be
      * overridden by a command line -d argument.
@@ -6005,7 +6030,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifndef SHARED_CORE_EXECUTABLE_PROGRAM
-#define SHARED_CORE_EXECUTABLE_PROGRAM "libhttpd.ep"
+#define SHARED_CORE_EXECUTABLE_PROGRAM "lib" TARGET ".ep"
 #endif
 
 extern char *optarg;
@@ -6086,8 +6111,8 @@ int main(int argc, char *argv[], char *envp[])
      */
     if (execve(prog, argv, envp) == -1) {
 	fprintf(stderr, 
-		"httpd: Unable to exec Shared Core Executable Program `%s'\n",
-		prog);
+		"%s: Unable to exec Shared Core Executable Program `%s'\n",
+		ap_server_argv0, prog);
 	return 1;
     }
     else
