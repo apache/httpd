@@ -72,7 +72,7 @@ AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(process_connection)
 )
 
-AP_IMPLEMENT_HOOK_VOID(pre_connection,(conn_rec *c),(c))
+AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 
 /*
