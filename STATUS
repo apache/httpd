@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/20 00:07:54 $]
+Last modified at [$Date: 2003/06/20 00:11:41 $]
 
 Release:
 
@@ -211,7 +211,7 @@ PATCHES TO PORT FROM 2.1
     * mod_dav: backport the "streamy" PROPFIND response.
         modules/dav/main/mod_dav.c r1.94 r1.95 r1.96
         modules/dav/main/mod_dav.h 1.67
-        +1: striker
+        +1: striker, gstein
 
     * winnt MPM: fix some invalid ap_log_error() invocations
         server/mpm/winnt/child.c 1.15
