@@ -39,7 +39,8 @@ static int process_echo_connection(conn_rec *c)
     for( ; ; )
 	{
 	int w;
-	int r=ap_bread(c->client,buf,sizeof buf);
+	int r;
+        (void) ap_bread(c->client,buf,sizeof buf,&r);
 	if(r <= 0)
 	    break;
 	w=ap_bwrite(c->client,buf,r);
