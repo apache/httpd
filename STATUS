@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/23 17:27:20 $]
+Last modified at [$Date: 2004/09/23 17:33:39 $]
 
 Release:
 
@@ -82,7 +82,7 @@ PATCHES TO BACKPORT FROM 2.1
          mod_mem_cache.c?r1=1.116&r2=1.117
          mod_disk_cache.c?r1=1.60&r2=1.61
          cache_storage.c?r1=1.36&r2=1.37
-       +1: stoddard, jerenkrantz
+       +1: stoddard, jerenkrantz, clar
 
     *) Fix mod_disk_cache race conditions in storing the response body.
        modules/experimental/mod_disk_cache.c: 1.61
