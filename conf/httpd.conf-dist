@@ -696,12 +696,11 @@ ServerSignature On
     AddLanguage sv .se
     AddLanguage cz .cz
     AddLanguage ru .ru
-    AddCharset CP-1251      .cp-1251
-    AddCharset CP-866       .cp-866
+    AddCharset WINDOWS-1251 .cp-1251
+    AddCharset CP866        .cp866
     AddCharset ISO-8859-5   .iso-ru
     AddCharset KOI8-R       .koi8-r
-    AddCharset UTF-16       .ucs2
-#   AddCharset UCS-2        .ucs2
+    AddCharset UCS-2        .ucs2
     AddCharset UCS-4        .ucs4
     AddCharset UTF-8        .utf8
 
