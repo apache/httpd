@@ -1,5 +1,10 @@
 Changes with Apache 1.3b1
 
+  *) mod_include now uses symbolic names to check for request success
+     and return HTTP errors, and correctly handles all types of
+     redirections (previously it only did temporary redirect correctly).
+     [Ken Coar, Roy Fielding]
+
   *) mod_userdir was modifying r->finfo in cases where it wasn't setting
      r->filename.  Since those two are meant to be in sync with each other
      this is a bug.  ["Paul B. Henson" <henson@intranet.csupomona.edu>]
