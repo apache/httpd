@@ -127,15 +127,17 @@ define(APACHE_CHECK_THREADS, [dnl
       LDFLAGS="$test_ldflag $ldflags_orig"
       THREAD_TEST()
       if test "$apache_threads_working" = "yes"; then
-        break
+        break 2
       fi
     done
-    if test "$apache_threads_working" = "yes"; then
-      threads_result="Updating CFLAGS and LDFLAGS"
-      break
-    fi
-      threads_result="Threads not found"
   done
+  if test "$apache_threads_working" = "yes"; then
+    threads_result="POSIX Threads found"
+  else
+    CFLAGS="$cflags_orig"
+    LDFLAGS="$ldflags_orig"
+    threads_result="POSIX Threads not found"
+  fi
 ] )
 
 dnl
