@@ -2846,7 +2846,7 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig, char *word1)
 static const char *set_authnonce (cmd_parms *cmd, void *mconfig, char *word1)
 {
     core_dir_config *aconfig = (core_dir_config *)mconfig;
-    int i;
+    size_t i;
 
     aconfig->ap_auth_nonce = ap_escape_quotes(cmd->pool, word1);
 
