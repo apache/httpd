@@ -3683,9 +3683,9 @@ static int default_handler(request_rec *r)
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
         /* For platforms where the size of the file may be larger than
-         * that which can be stored in a single bucket (whether the
+         * that which can be stored in a single bucket (where the
          * length field is an apr_size_t), split it into several
-         * buckets */
+         * buckets: */
         if (sizeof(apr_off_t) > sizeof(apr_size_t) 
             && r->finfo.size > AP_MAX_SENDFILE) {
             apr_off_t fsize = r->finfo.size;
