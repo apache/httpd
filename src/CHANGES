@@ -1,5 +1,11 @@
 Changes with Apache 1.3b7
 
+  *) WIN32: Check for buffer overflows in ap_os_canonical_filename.
+     [Ben Laurie]
+
+  *) WIN32: Don't force ISAPI headers to finish with \n.
+     [Jim Patterson <Jim.Patterson@Cognos.COM>, Ben Laurie] PR#2060
+
   *) When opening "configuration" files (like httpd.conf, htaccess
      and htpasswd), Apache will not allow them to be non-/dev/null
      device files. This closes a DoS hole. At the same time,
