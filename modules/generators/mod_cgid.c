@@ -1187,7 +1187,17 @@ static apr_status_t dead_yet(pid_t pid, apr_interval_time_t max_wait)
     apr_interval_time_t total = 0;
 
     do {
+#ifdef _AIX
+        /* On AIX, for processes like mod_cgid's script children where
+         * SIGCHLD is ignored, kill(pid,0) returns success for up to
+         * one second after the script child exits, based on when a
+         * daemon runs to clean up unnecessary process table entries.
+         * getpgid() can report the proper info (-1/ESRCH) immediately.
+         */
+        if (getpgid(pid) < 0) {
+#else
         if (kill(pid, 0) < 0) {
+#endif
             return APR_SUCCESS;
         }
         apr_sleep(interval);
