@@ -437,9 +437,6 @@ if ($opt_c) {
         $opt .= " -l$opt_l";
     }
 
-    # special DSO settings on a few platforms
-    $opt .= " $config_vars{'SH_LDFLAGS'}";
-
     push(@cmds, "$prefix/build/libtool --silent --mode=link $CFG_CC -o $dso_file -rpath $CFG_LIBEXECDIR -module -avoid-version $opt $lo");
 
     #   execute the commands
