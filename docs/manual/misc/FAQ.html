@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.104 $ ($Date: 1998/01/26 16:53:48 $)
+  $Revision: 1.105 $ ($Date: 1998/02/05 09:58:38 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -141,6 +141,9 @@
    </LI>
    <LI><A HREF="#errordoc401">Why doesn't my <CODE>ErrorDocument
     401</CODE> work?</A>
+   </LI>
+   <LI><A HREF="#errordocssi">How can I use <CODE>ErrorDocument</CODE>
+   and SSI to simplify customized error messages?</A>
    </LI>
    <LI><A HREF="#setgid">Why do I get &quot;<SAMP>setgid: Invalid
     argument</SAMP>&quot; at startup?</A>
@@ -1082,6 +1085,19 @@
    HREF="../mod/core.html#errordocument"
   ><SAMP>ErrorDocument</SAMP></A>
   documentation for details.  This was incorrectly documented in the past.
+  </P>
+  <HR>
+ </LI>
+ <LI><A NAME="errordocssi">
+      <STRONG>How can I use <CODE>ErrorDocument</CODE>
+   and SSI to simplify customized error messages?</STRONG>
+     </A>
+  <P>
+  Have a look at <A HREF="custom_errordocs.html">this document</A>.
+  It shows in example form how you can a combination of XSSI and
+  negotiation to tailor a set of <CODE>ErrorDocument</CODE>s to your
+  personal taste, and returning different internationalized error
+  responses based on the client's native language.
   </P>
   <HR>
  </LI>
