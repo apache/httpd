@@ -137,20 +137,17 @@ MaxKeepAliveRequests 100
 
 KeepAliveTimeout 15
 
-# Server-pool size regulation. Apache excutes as multiple servers (this
-# allows for some fault tolerance - if a server dies, another one takes
-# its place), each of which are multithreaded and can serve multiple
-# requests.
-
-# Start up 3 servers (in case one dies, another can take its place, while
-# a new one is spawned
-StartServers 3
+# Apache always creates one child process to handle requests. If it
+# dies another child process is created automatically. Within the
+# child process multiple threads handle incoming requests. The next two
+# directives determine the behaviour of the threads and processes.
 
 # Don't force a server to exit after it has served some number of requests.
 # If you do want server's to exit after they have run for a long time (to
 # help the system clean up after the process), please set this to a pretty
 # large number - like 10,000. What this will do, is, each child server will
 # exit after serving 10,000 requests, and another server will take its place.
+
 MaxRequestsPerChild 0
 
 # Number of concurrent threads at a time (set the value to more or less
