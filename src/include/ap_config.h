@@ -64,7 +64,7 @@
 /* Define one of these according to your system. */
 #if defined(SUNOS4)
 #define HAVE_GMTOFF
-#define HAVE_RESOURCE
+#define HAVE_SYS_RESOURCE_H
 #undef NO_KILLPG
 #undef NO_SETSID
 char *crypt(char *pw, char *salt);
@@ -72,12 +72,13 @@ char *crypt(char *pw, char *salt);
 #define HAVE_MMAP
 #include <sys/time.h>     
 #define NEED_STRERROR
+typedef int rlim_t;
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
-#define HAVE_RESOURCE
+#define HAVE_SYS_RESOURCE_H
 #define bzero(a,b) memset(a,0,b)
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
 #define JMP_BUF sigjmp_buf
@@ -97,7 +98,7 @@ char *crypt(char *pw, char *salt);
 #define BROKEN_WAIT
 
 #elif defined(HPUX) || defined(HPUX10)
-#define HAVE_RESOURCE
+#define HAVE_SYS_RESOURCE_H
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
@@ -217,7 +218,7 @@ typedef int pid_t;
 #define HAVE_SYS_SELECT_H
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
-#define NEED_SYS_RESOURCE_H
+#define HAVE_SYS_RESOURCE_H
 #define SecureWare
 
 /* Although SCO 5 defines these in <strings.h> (note the "s") they don't have
@@ -270,10 +271,12 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #define USE_FCNTL_SERIALIZED_ACCEPT
 
 #elif defined(__NetBSD__)
+#define HAVE_SYS_RESOURCE_H
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
+typedef quad_t rlim_t;
 
 #elif defined(UTS21)
 #undef HAVE_GMTOFF
@@ -293,11 +296,13 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #define timezone	_bky_timezone
 
 #elif defined(__FreeBSD__) || defined(__bsdi__)
+#define HAVE_SYS_RESOURCE_H
 #define HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+typedef quad_t rlim_t;
 
 #elif defined(QNX)
 #undef NO_KILLPG
@@ -341,11 +346,11 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #endif
 
 /* Do we have sys/resource.h; assume that BSD does. */
-#ifndef HAVE_RESOURCE
+#ifndef HAVE_SYS_RESOURCE_H
 #ifdef BSD
-#define HAVE_RESOURCE
+#define HAVE_SYS_RESOURCE_H
 #endif
-#endif /* HAVE_RESOURCE */
+#endif /* HAVE_SYS_RESOURCE_H */
 
 /*
  * The particular directory style your system supports. If you have dirent.h
@@ -392,7 +397,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #endif
 #include "regex/regex.h"
 
-#ifdef HAVE_RESOURCE
+#ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #ifdef SUNOS4
 int getrlimit( int, struct rlimit *);

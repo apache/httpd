@@ -108,9 +108,6 @@ array_header *requires (request_rec *);
 
 #ifdef CORE_PRIVATE
 
-#ifdef NEED_SYS_RESOURCE_H
- #include <sys/resource.h>
-#endif
 /*
  * Core is also unlike other modules in being implemented in more than
  * one file... so, data structures are declared here, even though most of

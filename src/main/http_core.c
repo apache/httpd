@@ -1021,7 +1021,7 @@ command_rec core_cmds[] = {
 { "MaxClients", set_server_limit, NULL, RSRC_CONF, TAKE1, NULL },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1, NULL },
 { "RLimitCPU",
-#ifdef RMLIMIT_CPU
+#ifdef RLIMIT_CPU
  set_limit_cpu, (void*)XtOffsetOf(core_dir_config, limit_cpu),
 #else
  no_set_limit, NULL,
