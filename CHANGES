@@ -1,5 +1,10 @@
 Changes with Apache 2.0.40
 
+  *) When deciding on the default address family for listening sockets, 
+     make sure we can actually bind to an AF_INET6 socket before
+     deciding that we should default to AF_INET6.  This fixes a startup
+     problem on certain levels of OpenUNIX.  PR 10235.  [Jeff Trawick]
+
   *) Replace usage of atol() to parse strings when we might want a
      larger-than-long value with apr_atoll(), which returns long long.
      This allows HTTPD to deal with larger files correctly.
