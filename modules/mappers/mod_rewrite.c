@@ -1484,8 +1484,8 @@ static int hook_fixup(request_rec *r)
 
     if (r->filename == NULL) {
         r->filename = apr_pstrdup(r->pool, r->uri);
-        rewritelog((r, 2, "init rewrite engine with requested uri %s",
-                    r->filename));
+        rewritelog(r, 2, "init rewrite engine with requested uri %s",
+                   r->filename);
     }
 
     /*
