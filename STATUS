@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/02 14:50:35 $]
+Last modified at [$Date: 2003/12/02 15:32:47 $]
 
 Release:
 
@@ -73,6 +73,21 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * mod_dav: Return a WWW-Auth header for MOVE/COPY requests where
+      the destination resource gives a 401.
+      http://cvs.apache.org/viewcvs/httpd-2.0/modules/dav/main/mod_dav.c.diff?r1=1.100&r2=1.101
+      PR: 15571
+      +1: jorton
+
+    * mod_dav_fs: Fix for dropping custom namespaces
+      http://cvs.apache.org/viewcvs/httpd-2.0/modules/dav/fs/dbm.c.diff?r1=1.28&r2=1.29
+      PR: 11637
+      +1: jorton
+
+    * prefork: Fix slow graceful restarts on some platforms.
+      http://cvs.apache.org/viewcvs/httpd-2.0/server/mpm/prefork/prefork.c.diff?r1=1.279&r2=1.280
+      +1: jorton
 
     * Make Win32 MPM honor MaxMemFree for transaction pools
       server/mpm/winnt/child.c: r1.17
