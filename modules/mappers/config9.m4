@@ -17,6 +17,13 @@ APACHE_MODULE(rewrite, regex URL translation, , , most, [
   APR_ADDTO(CFLAGS,-DNO_DBM_REWRITEMAP)
 ])
 
+dnl mod_so should only be built as a static DSO
+if test "$enable_so" = "yes"; then
+    enable_so="static"
+elif test "$enable_so" = "shared"; then
+    AC_MSG_ERROR([mod_so can not be built as a shared DSO])
+fi
+
 ap_old_cppflags=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include -I$abs_builddir/srclib/apr/include"
 AC_TRY_COMPILE([#include <apr.h>], [
@@ -24,7 +31,7 @@ AC_TRY_COMPILE([#include <apr.h>], [
 #error You need APR DSO support to use mod_so. 
 #endif
 ], ap_enable_so="static", [
-if test "$enable_so" = "yes" -o "$enable_so" = "static" -o "$enable_so" = "shared"; then
+if test "$enable_so" = "static"; then
     AC_MSG_ERROR([mod_so has been requested but cannot be built on your system])
 else
     ap_enable_so="no"
