@@ -249,7 +249,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	apr_cpystrn(cpw,pw,sizeof(cpw));
 	break;
 
-#ifndef WIN32
+#if !(defined(WIN32) || defined(NETWARE))
     case ALG_CRYPT:
     default:
         (void) srand((int) time((time_t *) NULL));
@@ -286,12 +286,12 @@ static int usage(void)
     fprintf(stderr, " -c  Create a new file.\n");
     fprintf(stderr, " -n  Don't update file; display results on stdout.\n");
     fprintf(stderr, " -m  Force MD5 encryption of the password"
-#if defined(WIN32) || defined(TPF)
+#if defined(WIN32) || defined(TPF) || defined(NETWARE)
 	" (default)"
 #endif
 	".\n");
     fprintf(stderr, " -d  Force CRYPT encryption of the password"
-#if (!(defined(WIN32) || defined(TPF)))
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
 	    " (default)"
 #endif
 	    ".\n");
@@ -300,7 +300,7 @@ static int usage(void)
     fprintf(stderr, " -b  Use the password from the command line rather "
 	    "than prompting for it.\n");
     fprintf(stderr,
-	    "On Windows and TPF systems the '-m' flag is used by default.\n");
+	    "On Windows, NetWare and TPF systems the '-m' flag is used by default.\n");
     fprintf(stderr,
 	    "On all other systems, the '-p' flag will probably not work.\n");
     return ERR_SYNTAX;
@@ -372,6 +372,14 @@ static void copy_file(FILE *target, FILE *source)
     }
 }
 
+#ifdef NETWARE
+void nwTerminate()
+{
+    pressanykey();
+    apr_terminate();
+}
+#endif
+
 /*
  * Let's do it.  We end up doing a lot of file opening and closing,
  * but what do we care?  This application isn't run constantly.
@@ -400,7 +408,11 @@ int main(int argc, char *argv[])
 #endif
 
     apr_initialize();
+#ifdef NETWARE
+    atexit(nwTerminate);
+#else
     atexit(apr_terminate);
+#endif
     apr_pool_create(&pool, NULL);
 
 #if APR_CHARSET_EBCDIC
@@ -430,7 +442,7 @@ int main(int argc, char *argv[])
      * we parse the command line.
      */
     if (argc < 3) {
-	return usage();
+        return usage();
     }
 
     /*
@@ -514,14 +526,14 @@ int main(int argc, char *argv[])
 	strcpy(password, argv[i + 2]);
     }
 
-#ifdef WIN32
+#if defined(WIN32) || defined(NETWARE)
     if (alg == ALG_CRYPT) {
 	alg = ALG_APMD5;
-	fprintf(stderr, "Automatically using MD5 format on Windows.\n");
+	fprintf(stderr, "Automatically using MD5 format.\n");
     }
 #endif
 
-#if (!(defined(WIN32) || defined(TPF)))
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     if (alg == ALG_PLAIN) {
 	fprintf(stderr,"Warning: storing passwords as plain text might "
 		"just not work on this platform.\n");

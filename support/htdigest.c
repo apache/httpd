@@ -208,6 +208,9 @@ static void interrupted(void)
 
 static void terminate(void)
 {
+#ifdef NETWARE
+    pressanykey();
+#endif
     apr_terminate();
 }
 
