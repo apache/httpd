@@ -84,7 +84,7 @@
 #define MAP_FILE_MAGIC_TYPE "application/x-type-map"
 
 /* Commands --- configuring document caching on a per (virtual?)
- * server basis... 
+ * server basis...
  */
 
 typedef struct {
@@ -92,7 +92,7 @@ typedef struct {
     apr_array_header_t *language_priority;
 } neg_dir_config;
 
-/* forcelangpriority flags 
+/* forcelangpriority flags
  */
 #define FLP_UNDEF    0    /* Same as FLP_DEFAULT, but base overrides */
 #define FLP_NONE     1    /* Return 406, HTTP_NOT_ACCEPTABLE */
@@ -105,7 +105,8 @@ module AP_MODULE_DECLARE_DATA negotiation_module;
 
 static void *create_neg_dir_config(apr_pool_t *p, char *dummy)
 {
-    neg_dir_config *new = (neg_dir_config *) apr_palloc(p, sizeof(neg_dir_config));
+    neg_dir_config *new = (neg_dir_config *) apr_palloc(p,
+                                                        sizeof(neg_dir_config));
 
     new->forcelangpriority = FLP_UNDEF;
     new->language_priority = NULL;
@@ -116,20 +117,21 @@ static void *merge_neg_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
     neg_dir_config *base = (neg_dir_config *) basev;
     neg_dir_config *add = (neg_dir_config *) addv;
-    neg_dir_config *new = (neg_dir_config *) apr_palloc(p, sizeof(neg_dir_config));
+    neg_dir_config *new = (neg_dir_config *) apr_palloc(p,
+                                                        sizeof(neg_dir_config));
 
     /* give priority to the config in the subdirectory */
     new->forcelangpriority = (add->forcelangpriority != FLP_UNDEF)
-				? add->forcelangpriority 
-				: base->forcelangpriority;
-    new->language_priority = add->language_priority 
-				? add->language_priority 
+                                ? add->forcelangpriority
+                                : base->forcelangpriority;
+    new->language_priority = add->language_priority
+                                ? add->language_priority
                                 : base->language_priority;
     return new;
 }
 
 static const char *set_language_priority(cmd_parms *cmd, void *n_,
-					 const char *lang)
+                                         const char *lang)
 {
     neg_dir_config *n = n_;
     const char **langp;
@@ -145,27 +147,30 @@ static const char *set_language_priority(cmd_parms *cmd, void *n_,
 static const char *set_force_priority(cmd_parms *cmd, void *n_, const char *w)
 {
     neg_dir_config *n = n_;
-  
+
     if (!strcasecmp(w, "None")) {
         if (n->forcelangpriority & ~FLP_NONE) {
-	    return "Cannot combine ForceLanguagePriority options with None";
+            return "Cannot combine ForceLanguagePriority options with None";
         }
-	n->forcelangpriority = FLP_NONE;
+        n->forcelangpriority = FLP_NONE;
     }
     else if (!strcasecmp(w, "Prefer")) {
         if (n->forcelangpriority & FLP_NONE) {
-	    return "Cannot combine ForceLanguagePriority options None and Prefer";
+            return "Cannot combine ForceLanguagePriority options None and "
+                   "Prefer";
         }
         n->forcelangpriority |= FLP_PREFER;
     }
     else if (!strcasecmp(w, "Fallback")) {
         if (n->forcelangpriority & FLP_NONE) {
-	    return "Cannot combine ForceLanguagePriority options None and Fallback";
+            return "Cannot combine ForceLanguagePriority options None and "
+                   "Fallback";
         }
         n->forcelangpriority |= FLP_FALLBACK;
     }
     else {
-	return apr_pstrcat(cmd->pool, "Invalid ForceLanguagePriority option ", w, NULL);
+        return apr_pstrcat(cmd->pool, "Invalid ForceLanguagePriority option ",
+                           w, NULL);
     }
 
     return NULL;
@@ -174,24 +179,28 @@ static const char *set_force_priority(cmd_parms *cmd, void *n_, const char *w)
 static const char *cache_negotiated_docs(cmd_parms *cmd, void *dummy,
                                          int arg)
 {
-    ap_set_module_config(cmd->server->module_config, &negotiation_module, 
+    ap_set_module_config(cmd->server->module_config, &negotiation_module,
                          (arg ? "Cache" : NULL));
     return NULL;
 }
 
 static int do_cache_negotiated_docs(server_rec *s)
 {
-    return (ap_get_module_config(s->module_config, &negotiation_module) != NULL);
+    return (ap_get_module_config(s->module_config,
+                                 &negotiation_module) != NULL);
 }
 
 static const command_rec negotiation_cmds[] =
 {
-    AP_INIT_FLAG("CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF, 
+    AP_INIT_FLAG("CacheNegotiatedDocs", cache_negotiated_docs, NULL, RSRC_CONF,
                  "Either 'on' or 'off' (default)"),
-    AP_INIT_ITERATE("LanguagePriority", set_language_priority, NULL, OR_FILEINFO, 
+    AP_INIT_ITERATE("LanguagePriority", set_language_priority, NULL,
+                    OR_FILEINFO,
                     "space-delimited list of MIME language abbreviations"),
-    AP_INIT_ITERATE("ForceLanguagePriority", set_force_priority, NULL, OR_FILEINFO,
-                    "Force LanguagePriority elections, either None, or Fallback and/or Prefer"),
+    AP_INIT_ITERATE("ForceLanguagePriority", set_force_priority, NULL,
+                    OR_FILEINFO,
+                    "Force LanguagePriority elections, either None, or "
+                    "Fallback and/or Prefer"),
     {NULL}
 };
 
@@ -233,7 +242,7 @@ typedef struct var_rec {
     const char *file_name;      /* Set to 'this' (for map file body content) */
     apr_off_t body;             /* Only for map file body content */
     const char *content_encoding;
-    apr_array_header_t *content_languages;   /* list of languages for this variant */
+    apr_array_header_t *content_languages; /* list of lang. for this variant */
     const char *content_charset;
     const char *description;
 
@@ -482,7 +491,8 @@ static const char *get_entry(apr_pool_t *p, accept_rec *result,
  * where charset is only valid in Accept.
  */
 
-static apr_array_header_t *do_header_line(apr_pool_t *p, const char *accept_line)
+static apr_array_header_t *do_header_line(apr_pool_t *p,
+                                          const char *accept_line)
 {
     apr_array_header_t *accept_recs;
 
@@ -504,7 +514,8 @@ static apr_array_header_t *do_header_line(apr_pool_t *p, const char *accept_line
  * return an array containing the languages of this variant
  */
 
-static apr_array_header_t *do_languages_line(apr_pool_t *p, const char **lang_line)
+static apr_array_header_t *do_languages_line(apr_pool_t *p,
+                                             const char **lang_line)
 {
     apr_array_header_t *lang_recs = apr_array_make(p, 2, sizeof(char *));
 
@@ -564,7 +575,7 @@ static negotiation_state *parse_accept_headers(request_rec *r)
     new->accept_charsets =
         do_header_line(r->pool, apr_table_get(hdrs, "Accept-Charset"));
 
-    /* This is possibly overkill for some servers, heck, we have 
+    /* This is possibly overkill for some servers, heck, we have
      * only 33 index.html variants in docs/docroot (today).
      * Make this configurable?
      */
@@ -578,7 +589,7 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
 {
     const char *negotiate = apr_table_get(r->headers_in, "Negotiate");
     char *tok;
-    
+
     /* First, default to no TCN, no Alternates, and the original Apache
      * negotiation algorithm with fiddles for broken browser configs.
      *
@@ -603,7 +614,7 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
          * ignore the negotiate header when its contents are exactly "trans".
          * If future versions of Lynx ever need to say 'negotiate: trans',
          * they can send the equivalent 'negotiate: trans, trans' instead
-         * to avoid triggering the workaround below. 
+         * to avoid triggering the workaround below.
          */
         const char *ua = apr_table_get(r->headers_in, "User-Agent");
 
@@ -641,21 +652,21 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
                  * to use the Apache algorithm
                  */
                 neg->may_choose = 1;
-                
+
                 /* We disable header fiddles on the assumption that a
                  * client sending Negotiate knows how to send correct
                  * headers which don't need fiddling.
                  */
-                neg->dont_fiddle_headers = 1; 
+                neg->dont_fiddle_headers = 1;
             }
         }
     }
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
             "dont_fiddle_headers=%d use_rvsa=%d ua_supports_trans=%d "
             "send_alternates=%d, may_choose=%d",
-            neg->dont_fiddle_headers, neg->use_rvsa,  
+            neg->dont_fiddle_headers, neg->use_rvsa,
             neg->ua_supports_trans, neg->send_alternates, neg->may_choose);
 #endif
 
@@ -667,7 +678,7 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
  * dramatically prefer CGI scripts in cases where that's appropriate,
  * e.g., POST or when URI includes query args or extra path info).
  */
-static void maybe_add_default_accepts(negotiation_state *neg, 
+static void maybe_add_default_accepts(negotiation_state *neg,
                                       int prefer_scripts)
 {
     accept_rec *new_accept;
@@ -676,11 +687,11 @@ static void maybe_add_default_accepts(negotiation_state *neg,
         neg->accepts = apr_array_make(neg->pool, 4, sizeof(accept_rec));
 
         new_accept = (accept_rec *) apr_array_push(neg->accepts);
-        
+
         new_accept->name = "*/*";
         new_accept->quality = 1.0f;
         new_accept->level = 0.0f;
-    }    
+    }
 
     new_accept = (accept_rec *) apr_array_push(neg->accepts);
 
@@ -759,7 +770,7 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
 
             while (c != '\n' && apr_isspace(c)) {
                 if(apr_file_getc(&c, map) != APR_SUCCESS)
-		    break;
+                    break;
             }
 
             apr_file_ungetc(c, map);
@@ -770,7 +781,9 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
 
             /* Continuation */
 
-            while (cp < buf_end - 2 && (apr_file_getc(&c, map)) != APR_EOF && c != '\n') {
+            while (   cp < buf_end - 2
+                   && (apr_file_getc(&c, map)) != APR_EOF
+                   && c != '\n') {
                 *cp++ = c;
             }
 
@@ -789,7 +802,7 @@ static enum header_state get_header_line(char *buffer, int len, apr_file_t *map)
     return header_seen;
 }
 
-static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag, 
+static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag,
                           apr_file_t *map)
 {
     char *endbody;
@@ -800,8 +813,8 @@ static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag,
     taglen = strlen(tag);
     *len -= taglen;
 
-    /* We are at the first character following a body:tag\n entry 
-     * Suck in the body, then backspace to the first char after the 
+    /* We are at the first character following a body:tag\n entry
+     * Suck in the body, then backspace to the first char after the
      * closing tag entry.  If we fail to read, find the tag or back
      * up then we have a hosed file, so give up already
      */
@@ -882,7 +895,7 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
 
     if (!*cp) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Syntax error in type map, no ':' in %s for header %s", 
+                      "Syntax error in type map, no ':' in %s for header %s",
                       r->filename, header);
         return NULL;
     }
@@ -901,7 +914,8 @@ static char *lcase_header_name_return_body(char *header, request_rec *r)
     return cp;
 }
 
-static int read_type_map(apr_file_t **map, negotiation_state *neg, request_rec *rr)
+static int read_type_map(apr_file_t **map, negotiation_state *neg,
+                         request_rec *rr)
 {
     request_rec *r = neg->r;
     apr_file_t *map_ = NULL;
@@ -978,12 +992,12 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg, request_rec *
                 char *tag = apr_pstrdup(neg->pool, body);
                 char *eol = strchr(tag, '\0');
                 apr_size_t len = MAX_STRING_LEN;
-                while (--eol >= tag && apr_isspace(*eol)) 
+                while (--eol >= tag && apr_isspace(*eol))
                     *eol = '\0';
                 if ((mime_info.body = get_body(buffer, &len, tag, *map)) < 0) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "Syntax error in type map, no end tag '%s'"
-                                  "found in %s for Body: content.", 
+                                  "found in %s for Body: content.",
                                   tag, r->filename);
                      break;
                 }
@@ -1033,7 +1047,7 @@ static int variantsortf(var_rec *a, var_rec *b) {
 /*****************************************************************
  *
  * Same as read_type_map, except we use a filtered directory listing
- * as the map...  
+ * as the map...
  */
 
 static int read_types_multi(negotiation_state *neg)
@@ -1052,7 +1066,7 @@ static int read_types_multi(negotiation_state *neg)
 
     clean_var_rec(&mime_info);
 
-    if (r->proxyreq || !r->filename 
+    if (r->proxyreq || !r->filename
                     || !ap_os_is_path_absolute(neg->pool, r->filename)) {
         return DECLINED;
     }
@@ -1064,7 +1078,8 @@ static int read_types_multi(negotiation_state *neg)
     ++filp;
     prefix_len = strlen(filp);
 
-    if ((status = apr_dir_open(&dirp, neg->dir_name, neg->pool)) != APR_SUCCESS) {
+    if ((status = apr_dir_open(&dirp, neg->dir_name,
+                               neg->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;
@@ -1073,7 +1088,7 @@ static int read_types_multi(negotiation_state *neg)
     while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
         apr_array_header_t *exception_list;
         request_rec *sub_req;
-        
+
         /* Do we have a match? */
 #ifdef CASE_BLIND_FILESYSTEM
         if (strncasecmp(dirent.name, filp, prefix_len)) {
@@ -1103,13 +1118,14 @@ static int read_types_multi(negotiation_state *neg)
          */
         anymatch = 1;
 
-        /* See if it's something which we have access to, and which 
+        /* See if it's something which we have access to, and which
          * has a known type and encoding (as opposed to something
          * which we'll be slapping default_type on later).
          */
-        sub_req = ap_sub_req_lookup_dirent(&dirent, r, AP_SUBREQ_MERGE_ARGS, NULL);
+        sub_req = ap_sub_req_lookup_dirent(&dirent, r, AP_SUBREQ_MERGE_ARGS,
+                                           NULL);
 
-        /* Double check, we still don't multi-resolve non-ordinary files 
+        /* Double check, we still don't multi-resolve non-ordinary files
          */
         if (sub_req->finfo.filetype != APR_REG)
             continue;
@@ -1122,17 +1138,17 @@ static int read_types_multi(negotiation_state *neg)
             ap_set_content_type(sub_req, CGI_MAGIC_TYPE);
         }
 
-        /* 
+        /*
          * mod_mime will _always_ provide us the base name in the
          * ap-mime-exception-list, if it processed anything.  If
          * this list is empty, give up immediately, there was
          * nothing interesting.  For example, looking at the files
          * readme.txt and readme.foo, we will throw away .foo if
-         * it's an insignificant file (e.g. did not identify a 
+         * it's an insignificant file (e.g. did not identify a
          * language, charset, encoding, content type or handler,)
          */
-        exception_list = 
-            (apr_array_header_t *)apr_table_get(sub_req->notes, 
+        exception_list =
+            (apr_array_header_t *)apr_table_get(sub_req->notes,
                                                 "ap-mime-exceptions-list");
 
         if (!exception_list) {
@@ -1156,16 +1172,16 @@ static int read_types_multi(negotiation_state *neg)
                     segend = strchr(segstart, '\0');
                 saveend = *segend;
                 *segend = '\0';
-                    
+
 #ifdef CASE_BLIND_FILESYSTEM
                 if (strcasecmp(segstart, *cur_except) == 0) {
 #else
                 if (strcmp(segstart, *cur_except) == 0) {
 #endif
                     --nexcept;
-                    ++cur_except;                    
-                }         
-                
+                    ++cur_except;
+                }
+
                 if (!saveend)
                     break;
 
@@ -1181,9 +1197,9 @@ static int read_types_multi(negotiation_state *neg)
             }
         }
 
-        /* 
+        /*
          * ###: be warned, the _default_ content type is already
-         * picked up here!  If we failed the subrequest, or don't 
+         * picked up here!  If we failed the subrequest, or don't
          * know what we are serving, then continue.
          */
         if (sub_req->status != HTTP_OK || (!sub_req->content_type)) {
@@ -1236,9 +1252,9 @@ static int read_types_multi(negotiation_state *neg)
      * request must die.
      */
     if (anymatch && !neg->avail_vars->nelts) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-		      "Negotiation: discovered file(s) matching request: %s"
-                      " (None could be negotiated).", 
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Negotiation: discovered file(s) matching request: %s"
+                      " (None could be negotiated).",
                       r->filename);
         return HTTP_NOT_FOUND;
     }
@@ -1252,7 +1268,7 @@ static int read_types_multi(negotiation_state *neg)
      * that the negotiation result will be consistent over filesystem
      * backup/restores and over all mirror sites.
      */
-       
+
     qsort((void *) neg->avail_vars->elts, neg->avail_vars->nelts,
           sizeof(var_rec), (int (*)(const void *, const void *)) variantsortf);
 
@@ -1262,7 +1278,7 @@ static int read_types_multi(negotiation_state *neg)
 
 /*****************************************************************
  * And now for the code you've been waiting for... actually
- * finding a match to the client's requirements.  
+ * finding a match to the client's requirements.
  */
 
 /* Matching MIME types ... the star/star and foo/star commenting conventions
@@ -1272,7 +1288,7 @@ static int read_types_multi(negotiation_state *neg)
  *
  * Note also that if we get an exact match on the media type, we update
  * level_matched for use in level_cmp below...
- * 
+ *
  * We also give a value for mime_stars, which is used later. It should
  * be 1 for star/star, 2 for type/star and 3 for type/subtype.
  */
@@ -1349,7 +1365,7 @@ static int level_cmp(var_rec *var1, var_rec *var2)
     /* The result of the above if statements is that, if we get to
      * here, both variants have the same mime_type or both are
      * pseudo-html.
-     */    
+     */
 
     /* Take highest level that matched, if either did match. */
 
@@ -1390,7 +1406,7 @@ static int level_cmp(var_rec *var1, var_rec *var2)
  * algorithm, lang_index is never used.
  *
  * set_language_quality() calls find_lang_index() and find_default_index()
- * to set lang_index.  
+ * to set lang_index.
  */
 
 static int find_lang_index(apr_array_header_t *accept_langs, char *lang)
@@ -1426,7 +1442,7 @@ static int find_lang_index(apr_array_header_t *accept_langs, char *lang)
  * with no language type in set_language_quality().
  *
  * Note that if using the RVSA/1.0 algorithm, we don't use this
- * fiddle.  
+ * fiddle.
  */
 
 static void set_default_lang_quality(negotiation_state *neg)
@@ -1530,12 +1546,12 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
                 bestthistag = NULL;
                 longest_lang_range_len = 0;
                 alen = 0;
-                
+
                 /* lang is the variant's language-tag, which is the one
                  * we are allowed to use the prefix of in HTTP/1.1
                  */
                 lang = ((char **) (variant->content_languages->elts))[j];
-                
+
                 /* now find the best (i.e. longest) matching
                  * Accept-Language header language. We put the best match
                  * for this tag in bestthistag. We cannot update the
@@ -1559,24 +1575,24 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
                      * '-' characters in a tag or range, currently only
                      * tags with zero or one '-' characters are defined
                      * for general use (see rfc1766).
-                     *  
+                     *
                      * We only use language range in the Accept-Language
                      * header the best match for the variant language tag
                      * if it is longer than the previous best match.
                      */
-                    
+
                     alen = strlen(accs[i].name);
-                    
+
                     if ((strlen(lang) >= alen) &&
                         !strncmp(lang, accs[i].name, alen) &&
                         ((lang[alen] == 0) || (lang[alen] == '-')) ) {
-                        
+
                         if (alen > longest_lang_range_len) {
                             longest_lang_range_len = alen;
                             bestthistag = &accs[i];
                         }
                     }
-                    
+
                     if (!bestthistag && !neg->dont_fiddle_headers) {
                         /* The next bit is a fiddle. Some browsers might
                          * be configured to send more specific language
@@ -1610,15 +1626,15 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
                     (bestthistag && bestthistag->quality > best->quality)) {
                     best = bestthistag;
                 }
-                
+
                 /* See if the tag matches on a * in the Accept-Language
-                 * header. If so, record this fact for later use 
+                 * header. If so, record this fact for later use
                  */
                 if (!bestthistag && star) {
                     any_match_on_star = 1;
                 }
             }
-            
+
             /* If one of the language tags of the variant matched on *, we
              * need to see if its q is better than that of any non-* match
              * on any other tag of the variant.  If so the * match takes
@@ -1630,32 +1646,32 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
                 best = star;
                 variant->definite = 0;
             }
-            
+
             variant->lang_quality = best ? best->quality : fiddle_q;
         }
     }
 
     /* Handle the ForceDefaultLanguage overrides, based on the best match
-     * to LanguagePriority order.  The best match is the lowest index of 
+     * to LanguagePriority order.  The best match is the lowest index of
      * any LanguagePriority match.
      */
-    if (((forcepriority & FLP_PREFER) 
+    if (((forcepriority & FLP_PREFER)
              && (variant->lang_index < 0))
      || ((forcepriority & FLP_FALLBACK)
-             && !variant->lang_quality)) 
+             && !variant->lang_quality))
     {
         int bestidx = -1;
         int j;
 
-        for (j = 0; j < variant->content_languages->nelts; ++j) 
+        for (j = 0; j < variant->content_languages->nelts; ++j)
         {
             /* lang is the variant's language-tag, which is the one
              * we are allowed to use the prefix of in HTTP/1.1
              */
             char *lang = ((char **) (variant->content_languages->elts))[j];
             int idx = -1;
-        
-            /* If we wish to fallback or 
+
+            /* If we wish to fallback or
              * we use our own LanguagePriority index.
              */
             idx = find_lang_index(neg->conf->language_priority, lang);
@@ -1691,7 +1707,8 @@ static apr_off_t find_content_length(negotiation_state *neg, var_rec *variant)
     apr_finfo_t statb;
 
     if (variant->bytes < 0) {
-        if (variant->sub_req && (variant->sub_req->finfo.valid & APR_FINFO_SIZE)) {
+        if (   variant->sub_req
+            && (variant->sub_req->finfo.valid & APR_FINFO_SIZE)) {
             variant->bytes = variant->sub_req->finfo.size;
         }
         else {
@@ -1722,7 +1739,7 @@ static void set_accept_quality(negotiation_state *neg, var_rec *variant)
     int q_definite = 1;
 
     /* if no Accept: header, leave quality alone (will
-     * remain at the default value of 1) 
+     * remain at the default value of 1)
      *
      * XXX: This if is currently never true because of the effect of
      * maybe_add_default_accepts().
@@ -1818,7 +1835,7 @@ static void set_charset_quality(negotiation_state *neg, var_rec *variant)
         /* if not a text / * type, leave quality alone */
         if (!(!strncmp(variant->mime_type, "text/", 5)
               || !strcmp(variant->mime_type, INCLUDES_MAGIC_TYPE)
-              || !strcmp(variant->mime_type, INCLUDES_MAGIC_TYPE3) 
+              || !strcmp(variant->mime_type, INCLUDES_MAGIC_TYPE3)
               ))
             return;
 
@@ -1882,7 +1899,7 @@ static int is_identity_encoding(const char *enc)
  * The rules for encoding are that if the user-agent does not supply
  * any Accept-Encoding header, then all encodings are allowed but a
  * variant with no encoding should be preferred.
- * If there is an empty Accept-Encoding header, then no encodings are 
+ * If there is an empty Accept-Encoding header, then no encodings are
  * acceptable. If there is a non-empty Accept-Encoding header, then
  * any of the listed encodings are acceptable, as well as no encoding
  * unless the "identity" encoding is specifically excluded.
@@ -1951,8 +1968,8 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
     variant->encoding_quality = value_if_not_found;
 }
 
-/************************************************************* 
- * Possible results of the variant selection algorithm 
+/*************************************************************
+ * Possible results of the variant selection algorithm
  */
 enum algorithm_results {
     alg_choice = 1,              /* choose variant */
@@ -1992,7 +2009,7 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
      */
     if (variant->encoding_quality == 0.0f)
         return 0;
-    
+
     q = variant->mime_type_quality *
         variant->source_quality *
         variant->charset_quality *
@@ -2008,10 +2025,10 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
     */
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
            "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
            "mimeq=%1.3f langq=%1.3f charq=%1.3f encq=%1.3f "
-           "q=%1.5f definite=%d",            
+           "q=%1.5f definite=%d",
             (variant->file_name ? variant->file_name : ""),
             (variant->mime_type ? variant->mime_type : ""),
             (variant->content_languages
@@ -2046,7 +2063,7 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
 }
 
 /* Negotiation algorithm as used by previous versions of Apache
- * (just about). 
+ * (just about).
  */
 
 static int is_variant_better(negotiation_state *neg, var_rec *variant,
@@ -2079,7 +2096,7 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
      */
 
 #ifdef NEG_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
            "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
            "mimeq=%1.3f langq=%1.3f langidx=%d charq=%1.3f encq=%1.3f ",
             (variant->file_name ? variant->file_name : ""),
@@ -2224,7 +2241,7 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
     set_default_lang_quality(neg);
 
     /*
-     * Find the 'best' variant 
+     * Find the 'best' variant
      * We run the loop possibly twice: if "prefer-language"
      * environment variable is set but we did not find an appropriate
      * best variant. In that case forget the preferred language and
@@ -2249,7 +2266,7 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
              * Accept... headers, and store in the variant.  This also
              * prepares for sending an Alternates header etc so we need to
              * do it even if we do not actually plan to find a best
-             * variant.  
+             * variant.
              */
             set_accept_quality(neg, variant);
             set_language_quality(neg, variant);
@@ -2257,7 +2274,7 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
             set_charset_quality(neg, variant);
 
             /* Only do variant selection if we may actually choose a
-             * variant for the client 
+             * variant for the client
              */
             if (neg->may_choose) {
 
@@ -2267,7 +2284,7 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
                  * server-driven algorithms are possible, and could be
                  * implemented here.
                  */
-     
+
                 if (neg->use_rvsa) {
                     if (is_variant_better_rvsa(neg, variant, best, &bestq)) {
                         best = variant;
@@ -2293,7 +2310,7 @@ static int best_match(negotiation_state *neg, var_rec **pbest)
         }
         else {
             /* calculate result for Apache negotiation algorithm */
-            algorithm_result = bestq > 0 ? alg_choice : alg_list;        
+            algorithm_result = bestq > 0 ? alg_choice : alg_list;
         }
 
         /* run the loop again, if the "prefer-language" got no clear result */
@@ -2391,7 +2408,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         }
         else {
             if (!vary_by_type &&
-                strcmp(sample_type ? sample_type : "", 
+                strcmp(sample_type ? sample_type : "",
                        variant->mime_type ? variant->mime_type : "")) {
                 vary_by_type = 1;
             }
@@ -2402,13 +2419,13 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
                 vary_by_charset = 1;
             }
             if (!vary_by_language &&
-                strcmp(sample_language ? sample_language : "", 
+                strcmp(sample_language ? sample_language : "",
                        lang ? lang : "")) {
                 vary_by_language = 1;
             }
             if (!vary_by_encoding &&
                 strcmp(sample_encoding ? sample_encoding : "",
-                       variant->content_encoding ? 
+                       variant->content_encoding ?
                        variant->content_encoding : "")) {
                 vary_by_encoding = 1;
             }
@@ -2471,7 +2488,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
          * return the length of the script, not the output it
          * produces, so we check for the presence of a handler and if
          * there is one we don't add a length.
-         * 
+         *
          * XXX: TODO: This check does not detect a CGI script if we
          * get the variant from a type map.  This needs to be fixed
          * (without breaking things if the type map specifies a
@@ -2486,7 +2503,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
             *((const char **) apr_array_push(arr)) = lenstr;
             *((const char **) apr_array_push(arr)) = "}";
         }
-      
+
         *((const char **) apr_array_push(arr)) = "}";
         *((const char **) apr_array_push(arr)) = ", "; /* trimmed below */
     }
@@ -2495,7 +2512,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         arr->nelts--;                                 /* remove last comma */
         apr_table_mergen(hdrs, "Alternates",
                         apr_array_pstrcat(r->pool, arr, '\0'));
-    } 
+    }
 
     if (neg->is_transparent || vary_by_type || vary_by_language ||
         vary_by_language || vary_by_charset || vary_by_encoding) {
@@ -2538,7 +2555,9 @@ static char *make_variant_list(request_rec *r, negotiation_state *neg)
         var_rec *variant = &((var_rec *) neg->avail_vars->elts)[i];
         const char *filename = variant->file_name ? variant->file_name : "";
         apr_array_header_t *languages = variant->content_languages;
-        const char *description = variant->description ? variant->description : "";
+        const char *description = variant->description
+                                    ? variant->description
+                                    : "";
 
         /* The format isn't very neat, and it would be nice to make
          * the tags human readable (eg replace 'language en' with 'English').
@@ -2605,7 +2624,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
         sub_req = ap_sub_req_lookup_file(variant->file_name, r, NULL);
         status = sub_req->status;
 
-        if (status != HTTP_OK && 
+        if (status != HTTP_OK &&
             !apr_table_get(sub_req->err_headers_out, "TCN")) {
             ap_destroy_sub_req(sub_req);
             return status;
@@ -2621,7 +2640,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
      * some extra headers. First, ensure that the chosen
      * variant did or will not itself engage in transparent negotiation.
      * If not, set the appropriate headers, and fall through to
-     * the normal variant handling 
+     * the normal variant handling
      */
 
     /* This catches the error that a transparent type map selects a
@@ -2692,7 +2711,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
         apr_table_setn(r->err_headers_out, "Vary", sub_vary);
         apr_table_unset(sub_req->err_headers_out, "Vary");
     }
-    
+
     apr_table_setn(r->err_headers_out, "Content-Location",
                   apr_pstrdup(r->pool, variant->file_name));
 
@@ -2708,8 +2727,8 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
  * Executive...
  */
 
-static int do_negotiation(request_rec *r, negotiation_state *neg, 
-                          var_rec **bestp, int prefer_scripts) 
+static int do_negotiation(request_rec *r, negotiation_state *neg,
+                          var_rec **bestp, int prefer_scripts)
 {
     var_rec *avail_recs = (var_rec *) neg->avail_vars->elts;
     int alg_result;              /* result of variant selection algorithm */
@@ -2724,7 +2743,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
         /* maybe this should be configurable, see also the comment
          * about recursive type maps in setup_choice_response()
          */
-        neg->is_transparent = 1;       
+        neg->is_transparent = 1;
 
         /* We can't be transparent if we are a map file in the middle
          * of the request URI.
@@ -2738,13 +2757,13 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
             /* We can't be transparent, because of internal
              * assumptions in best_match(), if there is a
              * non-neighboring variant.  We can have a non-neighboring
-             * variant when processing a type map.  
+             * variant when processing a type map.
              */
             if (ap_strchr_c(variant->file_name, '/'))
                 neg->is_transparent = 0;
 
             /* We can't be transparent, because of the behavior
-             * of variant typemap bodies.  
+             * of variant typemap bodies.
              */
             if (variant->body) {
                 neg->is_transparent = 0;
@@ -2772,12 +2791,12 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
         /* send a list response or HTTP_NOT_ACCEPTABLE error response  */
 
         neg->send_alternates = 1; /* always include Alternates header */
-        set_neg_headers(r, neg, alg_result); 
+        set_neg_headers(r, neg, alg_result);
         store_variant_list(r, neg);
 
         if (neg->is_transparent && neg->ua_supports_trans) {
             /* XXX todo: expires? cachability? */
-            
+
             /* Some HTTP/1.0 clients are known to choke when they get
              * a 300 (multiple choices) response without a Location
              * header.  However the 300 code response we are are about
@@ -2791,7 +2810,7 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
              */
             return HTTP_MULTIPLE_CHOICES;
         }
-        
+
         if (!*bestp) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "no acceptable variant: %s", r->filename);
@@ -2844,9 +2863,9 @@ static int do_negotiation(request_rec *r, negotiation_state *neg,
      *      Manual setting of cache-control/expires always overrides this
      *      automated kluge, on purpose.
      */
-    
+
     if ((!do_cache_negotiated_docs(r->server)
-         && (r->proto_num < HTTP_VERSION(1,1)))        
+         && (r->proto_num < HTTP_VERSION(1,1)))
          && neg->count_multiviews_variants != 1) {
         r->no_cache = 1;
     }
@@ -2863,7 +2882,7 @@ static int handle_map_file(request_rec *r)
     char *udir;
 
     if(strcmp(r->handler,MAP_FILE_MAGIC_TYPE) && strcmp(r->handler,"type-map"))
-	return DECLINED;
+        return DECLINED;
 
     neg = parse_accept_headers(r);
     if ((res = read_type_map(&map, neg, r))) {
@@ -2879,8 +2898,10 @@ static int handle_map_file(request_rec *r)
         apr_bucket_brigade *bb;
         apr_bucket *e;
 
-        ap_allow_standard_methods(r, REPLACE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
-        /*if (r->method_number == M_OPTIONS) {
+        ap_allow_standard_methods(r, REPLACE_ALLOW, M_GET, M_OPTIONS,
+                                  M_POST, -1);
+        /* XXX: ?
+         * if (r->method_number == M_OPTIONS) {
          *    return ap_send_http_options(r);
          *}
          */
@@ -2931,7 +2952,7 @@ static int handle_map_file(request_rec *r)
             return res;
         }
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
-        e = apr_bucket_file_create(map, best->body, 
+        e = apr_bucket_file_create(map, best->body,
                                    (apr_size_t)best->bytes, r->pool,
                                    c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
@@ -3013,7 +3034,7 @@ static int handle_multi(request_rec *r)
      * the most recent, but that could confuse the proxies.
      */
     r->mtime = 0;
-    
+
     /* clean up all but our favorite variant, since that sub_req
      * is now merged into the main request!
      */
@@ -3027,7 +3048,7 @@ static int handle_multi(request_rec *r)
     return OK;
 }
 
-/********************************************************************** 
+/**********************************************************************
  * There is a problem with content-encoding, as some clients send and
  * expect an x- token (e.g. x-gzip) while others expect the plain token
  * (i.e. gzip). To try and deal with this as best as possible we do
