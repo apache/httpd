@@ -1,5 +1,10 @@
 Changes with Apache 1.3.4
 
+  *) Moved the MODULE_MAGIC_COOKIE from before the versions and
+     filename to the end of the STANDARD_MODULE_STUFF.  Its
+     presence at the beginning prevented reporting of the filename
+     for modules compiled before 1 January 1999.  [Ken Coar]
+
   *) SECURITY: ap_os_is_filename_valid() has been added to Win32
      to detect and prevent access to special DOS device file names.
      [Paul Sutton, Ken Parzygnat]
