@@ -92,11 +92,12 @@ typedef struct {
     apr_array_header_t *language_priority;
 } neg_dir_config;
 
-#define FLP_UNDEF   0    /* Same as FLP_NONE, but base overrides */
-#define FLP_NONE    1    /* Return 406, HTTP_NOT_ACCEPTABLE */
-#define FLP_PREFIX  2    /* Try xx(-.*) from language_priority */
-#define FLP_ANY     4    /* Try anything in language_priority */
-                         /* If both, tries FLP_PREFIX then FLP_ANY */
+/* forcelangpriority flags 
+ */
+#define FLP_UNDEF    0    /* Same as FLP_NONE, but base overrides */
+#define FLP_NONE     1    /* Return 406, HTTP_NOT_ACCEPTABLE */
+#define FLP_PREFER   2    /* Use language_priority rather than MC */
+#define FLP_FALLBACK 4    /* Use language_priority rather than NA */
 
 module AP_MODULE_DECLARE_DATA negotiation_module;
 
@@ -123,10 +124,11 @@ static void *merge_neg_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *set_language_priority(cmd_parms *cmd, void *n,
+static const char *set_language_priority(cmd_parms *cmd, void *n_,
 					 const char *lang)
 {
-    apr_array_header_t *arr = ((neg_dir_config *) n)->language_priority;
+    neg_dir_config *n = n_;
+    apr_array_header_t *arr = n->language_priority;
     const char **langp = (const char **) apr_array_push(arr);
 
     *langp = lang;
@@ -138,19 +140,25 @@ static const char *set_force_priority(cmd_parms *cmd, void *n_, const char *w)
     neg_dir_config *n = n_;
   
     if (!strcasecmp(w, "None")) {
+        if (n->forcelangpriority & ~FLP_NONE) {
+	    return "Cannot combine ForceLanguagePriority options with None";
+        }
 	n->forcelangpriority = FLP_NONE;
     }
-    else if (!strcasecmp(w, "Prefix")) {
-        n->forcelangpriority = FLP_PREFIX;
+    else if (!strcasecmp(w, "Prefer")) {
+        if (n->forcelangpriority & FLP_NONE) {
+	    return "Cannot combine ForceLanguagePriority options None and Prefer";
+        }
+        n->forcelangpriority |= FLP_PREFER;
     }
-    else if (!strcasecmp(w, "Any")) {
-        n->forcelangpriority = FLP_ANY;
-    }
-    else if (!strcasecmp(w, "Full")) {
-	n->forcelangpriority = FLP_PREFIX | FLP_ANY;
+    else if (!strcasecmp(w, "Fallback")) {
+        if (n->forcelangpriority & FLP_NONE) {
+	    return "Cannot combine ForceLanguagePriority options None and Fallback";
+        }
+        n->forcelangpriority |= FLP_FALLBACK;
     }
     else {
-	return apr_pstrcat(cmd->pool, "Illegal ForceLanguagePriority option ", w, NULL);
+	return apr_pstrcat(cmd->pool, "Invalid ForceLanguagePriority option ", w, NULL);
     }
 
     return NULL;
@@ -175,8 +183,8 @@ static const command_rec negotiation_cmds[] =
                  "Either 'on' or 'off' (default)"),
     AP_INIT_ITERATE("LanguagePriority", set_language_priority, NULL, OR_FILEINFO, 
                     "space-delimited list of MIME language abbreviations"),
-    AP_INIT_TAKE1("ForceLanguagePriority", set_force_priority, NULL, OR_FILEINFO,
-                  "One of 'none', 'prefix', 'any', or 'full'"),
+    AP_INIT_ITERATE("ForceLanguagePriority", set_force_priority, NULL, OR_FILEINFO,
+                    "Force LanguagePriority elections, either None, or Fallback and/or Prefer"),
     {NULL}
 };
 
@@ -240,7 +248,7 @@ typedef struct var_rec {
     /* Now some special values */
     float level;                /* Auxiliary to content-type... */
     apr_off_t bytes;            /* content length, if known */
-    int lang_index;             /* pre HTTP/1.1 language priority stuff */
+    int lang_index;             /* Index into LanguagePriority list */
     int is_pseudo_html;         /* text/html, *or* the INCLUDES_MAGIC_TYPEs */
 
     /* Above are all written-once properties of the variant.  The
@@ -259,6 +267,7 @@ typedef struct var_rec {
 typedef struct {
     apr_pool_t *pool;
     request_rec *r;
+    neg_dir_config *conf;
     char *dir_name;
     int accept_q;               /* 1 if an Accept item has a q= param */
     float default_lang_quality; /* fiddle lang q for variants with no lang */
@@ -523,6 +532,9 @@ static negotiation_state *parse_accept_headers(request_rec *r)
 
     new->pool = r->pool;
     new->r = r;
+    new->conf = (neg_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                       &negotiation_module);
+
     new->dir_name = ap_make_dirstr_parent(r->pool, r->filename);
 
     new->accepts = do_header_line(r->pool, apr_table_get(hdrs, "Accept"));
@@ -1339,7 +1351,7 @@ static int level_cmp(var_rec *var1, var_rec *var2)
  * variant record:
  *    language_quality  - the 'q' value of the 'best' matching language
  *                        from Accept-Language: header (HTTP/1.1)
- *    lang_index    -     Pre HTTP/1.1 language priority, using
+ *    lang_index    -     Non-negotiated language priority, using
  *                        position of language on the Accept-Language:
  *                        header, if present, else LanguagePriority
  *                        directive order.
@@ -1373,40 +1385,11 @@ static int find_lang_index(apr_array_header_t *accept_langs, char *lang)
     return -1;
 }
 
-/* This function returns the priority of a given language
- * according to LanguagePriority.  It is used in case of a tie
- * between several languages.
- */
-
-static int find_default_index(neg_dir_config *conf, char *lang)
-{
-    apr_array_header_t *arr;
-    int nelts;
-    char **elts;
-    int i;
-
-    if (!lang) {
-        return -1;
-    }
-
-    arr = conf->language_priority;
-    nelts = arr->nelts;
-    elts = (char **) arr->elts;
-
-    for (i = 0; i < nelts; ++i) {
-        if (!strcasecmp(elts[i], lang)) {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
 /* set_default_lang_quality() sets the quality we apply to variants
  * which have no language assigned to them. If none of the variants
  * have a language, we are not negotiating on language, so all are
  * acceptable, and we set the default q value to 1.0. However if
- * some of the variants have languages, we set this default to 0.001.
+ * some of the variants have languages, we set this default to 0.0001.
  * The value of this default will be applied to all variants with
  * no explicit language -- which will have the effect of making them
  * acceptable, but only if no variants with an explicit language
@@ -1427,7 +1410,7 @@ static void set_default_lang_quality(negotiation_state *neg)
             var_rec *variant = &avail_recs[j];
             if (variant->content_languages &&
                 variant->content_languages->nelts) {
-                neg->default_lang_quality = 0.001f;
+                neg->default_lang_quality = 0.0001f;
                 return;
             }
         }
@@ -1437,7 +1420,7 @@ static void set_default_lang_quality(negotiation_state *neg)
 }
 
 /* Set the language_quality value in the variant record. Also
- * assigns lang_index for back-compat. 
+ * assigns lang_index for ForceLanguagePriority.
  *
  * To find the language_quality value, we look for the 'q' value
  * of the 'best' matching language on the Accept-Language
@@ -1469,9 +1452,6 @@ static void set_default_lang_quality(negotiation_state *neg)
 
 static void set_language_quality(negotiation_state *neg, var_rec *variant)
 {
-    char *firstlang;
-    int idx;
-
     if (!variant->content_languages || !variant->content_languages->nelts) {
         /* This variant has no content-language, so use the default
          * quality factor for variants with no content-language
@@ -1621,27 +1601,51 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
         }
     }
 
-    /* Now set the old lang_index field. Since this is old 
-     * stuff anyway, don't bother with handling multiple languages
-     * per variant, just use the first one assigned to it 
+    /* Handle the ForceDefaultLanguage overrides, based on the best match
+     * to LanguagePriority order.  The best match is the lowest index of 
+     * any LanguagePriority match.
      */
-    idx = 0;
-    if (variant->content_languages && variant->content_languages->nelts) {
-        firstlang = ((char **) variant->content_languages->elts)[0];
-    }
-    else {
-        firstlang = "";
-    }
-    if (!neg->accept_langs) {   /* Client doesn't care */
-        idx = find_default_index((neg_dir_config *) ap_get_module_config(
-                                  neg->r->per_dir_config, &negotiation_module),
-                                 firstlang);
-    }
-    else {                      /* Client has Accept-Language */
-        idx = find_lang_index(neg->accept_langs, firstlang);
-    }
-    variant->lang_index = idx;
+    if (((neg->conf->forcelangpriority & FLP_PREFER) 
+             && (variant->lang_index < 0))
+     || ((neg->conf->forcelangpriority & FLP_FALLBACK)
+             && !variant->lang_quality)) 
+    {
+        int bestidx = -1;
+        int j;
 
+        for (j = 0; j < variant->content_languages->nelts; ++j) 
+        {
+            /* lang is the variant's language-tag, which is the one
+             * we are allowed to use the prefix of in HTTP/1.1
+             */
+            char *lang = ((char **) (variant->content_languages->elts))[j];
+            size_t alen = strlen(lang);
+            int idx = -1;
+        
+            /* If we wish to fallback or 
+             * we use our own LanguagePriority index.
+             */
+            idx = find_lang_index(neg->conf->language_priority, lang);
+            if ((idx >= 0) && ((bestidx == -1) || (idx < bestidx))) {
+                bestidx = idx;
+            }
+        }
+
+        if (bestidx >= 0) {
+            if (variant->lang_quality) {
+                if (neg->conf->forcelangpriority & FLP_PREFER) {
+                    variant->lang_index = bestidx;
+                }
+            }
+            else {
+                if (neg->conf->forcelangpriority & FLP_FALLBACK) {
+                    variant->lang_index = bestidx;
+                    variant->lang_quality = .0001f;
+                    variant->definite = 0;
+                }
+            }
+        }
+    }
     return;
 }
 
