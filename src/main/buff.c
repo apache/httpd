@@ -173,13 +173,11 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
 			if(err == WSAEWOULDBLOCK) {
 			    
 			    retry=1;
-#ifdef NETWARE
                             ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
                                          "select claimed we could write, but in fact we couldn't.");
+#ifdef NETWARE
                             ThreadSwitchWithDelay();
 #else
-                            ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
-                                         "select claimed we could write, but in fact we couldn't. This is a bug in Windows.");
 			    Sleep(100);
 #endif
 			}
