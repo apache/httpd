@@ -73,6 +73,52 @@ static unsigned char hex2c(const char* p) {
 }
 #endif
 
+static const char *set_worker_param(proxy_worker *worker,
+                                    const char *key,
+                                    const char *val)
+{
+
+    int ival;
+    if (!strcasecmp(key, "loadfactor")) {
+        worker->lbfactor = atoi(val);
+        if (worker->lbfactor < 1 || worker->lbfactor > 100)
+            return "loadfactor must be number between 1..100";
+    }
+    else if (!strcasecmp(key, "retry")) {
+        ival = atoi(val);
+        if (ival < 1)
+            return "retry must be al least one second";
+        worker->retry = apr_time_from_sec(ival);
+    }
+    else if (!strcasecmp(key, "ttl")) {
+        ival = atoi(val);
+        if (ival < 1)
+            return "ttl must be al least one second";
+        worker->ttl = apr_time_from_sec(ival);
+    }
+    else if (!strcasecmp(key, "min")) {
+        ival = atoi(val);
+        if (ival < 0)
+            return "min must be a positive number";
+        worker->min = ival;
+    }
+    else if (!strcasecmp(key, "max")) {
+        ival = atoi(val);
+        if (ival < 0)
+            return "max must be a positive number";
+        worker->hmax = ival;
+    }
+    /* XXX: More inteligent naming needed */
+    else if (!strcasecmp(key, "smax")) {
+        ival = atoi(val);
+        if (ival < 0)
+            return "smax must be a positive number";
+        worker->smax = ival;
+    }
+
+    return NULL;
+}
+
 static int alias_match(const char *uri, const char *alias_fakename)
 {
     const char *end_fakename = alias_fakename + strlen(alias_fakename);
@@ -1080,17 +1126,9 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
     for (i = 0; i < arr->nelts; i++) {
-        if (!strcasecmp(elts[i].key, "loadfactor")) {
-            worker->lbfactor = atoi(elts[i].val);
-            if (worker->lbfactor < 1 || worker->lbfactor > 100)
-                return "BalancerMember: loadfactor must be number between 1..100";
-        }
-        else if (!strcasecmp(elts[i].key, "retry")) {
-            int sec = atoi(elts[i].val);
-            if (sec < 0)
-                return "BalancerMember: retry must be positive number";
-            worker->retry = apr_time_from_sec(sec);
-        }
+        const char *err = set_worker_param(worker, elts[i].key, elts[i].val);
+        if (err)
+            return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL);
     }
     /* Try to find the balancer */
     balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, name); 
