@@ -967,6 +967,9 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
     SSLModConfigRec *mc = myModConfig(s);
     mc->pid = getpid(); /* only call getpid() once per-process */
 
+    /* XXX: there should be an ap_srand() function */
+    srand((unsigned int)time(NULL));
+
      /* open the mutex lockfile */
      ssl_mutex_reinit(s, p);
      return;
