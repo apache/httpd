@@ -67,6 +67,7 @@ extern "C" {
  * See PORTING for a listing of what they mean
  */
 
+#include "conf_auto.h"
 
 /* Have to include sys/stat.h before ../os/win32/os.h so we can override
 stat() properly */
@@ -88,7 +89,6 @@ stat() properly */
 /* Define one of these according to your system. */
 #if defined(MINT)
 typedef int rlim_t;
-#define HAVE_SYS_RESOURCE_H 1
 #define JMP_BUF sigjmp_buf
 #define NO_LONG_DOUBLE
 #define USE_FLOCK_SERIALIZED_ACCEPT
@@ -123,7 +123,6 @@ extern char *inet_ntoa();
 
 #elif defined(SUNOS4)
 #define HAVE_GMTOFF 1
-#define HAVE_SYS_RESOURCE_H 1
 #undef NO_KILLPG
 #undef NO_SETSID
 char *crypt(const char *pw, const char *salt);
@@ -144,8 +143,6 @@ typedef int rlim_t;
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
-#define HAVE_SYS_RESOURCE_H 1
-#define HAVE_DLFCN_H 1
 #define bzero(a,b) memset(a,0,b)
 #if !defined(USE_SYSVSEM_SERIALIZED_ACCEPT) && \
     !defined(USE_PTHREAD_SERIALIZED_ACCEPT)
@@ -155,7 +152,6 @@ typedef int rlim_t;
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H 1
 int gethostname(char *name, int namelen);
 #define HAVE_SYSLOG 1
 #define SYS_SIGLIST _sys_siglist
@@ -173,15 +169,11 @@ int gethostname(char *name, int namelen);
 #define USE_SHMGET_SCOREBOARD
 #define HAVE_MMAP 1
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H 1
-#define HAVE_DLFCN_H 1
 #define NO_LONG_DOUBLE
-#define HAVE_BSTRING_H 1
 #define NO_LINGCLOSE
 #define HAVE_SYSLOG 1
 
 #elif defined(HIUX)
-#define HAVE_SYS_RESOURCE_H 1
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
@@ -194,7 +186,6 @@ int gethostname(char *name, int namelen);
 #define HAVE_SYSLOG 1
 
 #elif defined(HPUX) || defined(HPUX10)
-#define HAVE_SYS_RESOURCE_H 1
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
@@ -218,9 +209,6 @@ typedef int rlim_t;
 #define USE_SHMGET_SCOREBOARD
 #undef  HAVE_GMTOFF
 #define HAVE_RESOURCE
-#define HAVE_CRYPT_H
-#undef  HAVE_SYS_SELECT_H
-#define HAVE_SYS_RESOURCE_H
 #define USE_FCNTL_SERIALIZED_ACCEPT
 /* feeling brave?  want to try using POSIX mutexes? */
 /* #define HAVE_MMAP */
@@ -235,7 +223,6 @@ typedef int rlim_t;
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
-#define HAVE_SYS_SELECT_H 1
 #ifndef __ps2__
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
@@ -277,7 +264,6 @@ typedef int rlim_t;
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H 1
 #define NO_LONG_DOUBLE
 #define HAVE_SYSLOG 1
 #define USE_FLOCK_SERIALIZED_ACCEPT
@@ -290,7 +276,6 @@ typedef int rlim_t;
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H 1
 #define NO_LONG_DOUBLE
 #define HAVE_SYSLOG 1
 typedef int rlim_t;
@@ -309,7 +294,6 @@ typedef unsigned short mode_t;
 #define NO_SETSID
 #define NEED_STRDUP
 #define NO_LINGCLOSE
-#define NO_UNISTD_H
 #undef _POSIX_SOURCE
 #ifndef FD_CLOEXEC
 #define FD_CLOEXEC 1
@@ -368,7 +352,6 @@ typedef int pid_t;
 #define HAVE_SYSLOG 1
 
 #elif defined(LINUX)
-#define HAVE_DLFCN_H 1
 
 #if LINUX > 1
 #include <features.h>
@@ -402,7 +385,6 @@ typedef int pid_t;
 #define USE_SHMGET_SCOREBOARD
 #define HAVE_MMAP 1
 #define USE_MMAP_FILES
-#define HAVE_SYS_RESOURCE_H 1
 
 /* glibc 2.1 and later finally define rlim_t */
 #if !defined(__GLIBC__) || __GLIBC__ < 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ < 1)
@@ -436,12 +418,10 @@ typedef int rlim_t;
 
 #elif defined(SCO5)
 
-#define HAVE_SYS_SELECT_H 1
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_SYS_RESOURCE_H 1
 #define SecureWare
 #define HAVE_SYSLOG 1
 
@@ -527,9 +507,6 @@ extern char *crypt();
 #define USE_MMAP_FILES
 #define HAVE_SHMGET 1
 #undef USE_SHMGET_SCOREBOARD	/* force use of mmap() scoreboard */
-#define HAVE_CRYPT_H 1
-#define HAVE_SYS_SELECT_H 1
-#define HAVE_SYS_RESOURCE_H 1
 #include <sys/time.h>
 #if UW >= 200
 #define _POSIX_SOURCE
@@ -551,7 +528,6 @@ extern char *crypt();
 #define HAVE_SYSLOG 1
 
 #elif defined(__NetBSD__) || defined(__OpenBSD__) || defined(NETBSD)
-#define HAVE_SYS_RESOURCE_H 1
 #define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #undef NO_SETSID
@@ -601,8 +577,6 @@ extern char *crypt();
 #if defined(__FreeBSD__)
 #include <osreldate.h>
 #endif
-#define HAVE_DLFCN_H 1
-#define HAVE_SYS_RESOURCE_H 1
 #define HAVE_GMTOFF 1
 #undef NO_KILLPG
 #undef NO_SETSID
@@ -638,7 +612,6 @@ int initgroups(char *, int);
 #define NEED_INITGROUPS
 #define NEED_SELECT_H
 #define NEED_PROCESS_H
-#define HAVE_SYS_SELECT_H 1
 #include <unix.h>
 #define HAVE_MMAP 1
 #define USE_POSIX_SCOREBOARD
@@ -651,13 +624,9 @@ int initgroups(char *, int);
 #define HAVE_RESOURCE 1
 #undef USE_MMAP_SCOREBOARD
 #undef USE_SHMGET_SCOREBOARD
-#undef HAVE_CRYPT_H
-#undef HAVE_SYS_SELECT_H
-#define HAVE_SYS_RESOURCE_H 1
 #undef USE_FCNTL_SERIALIZED_ACCEPT
 #undef USE_FLOCK_SERIALIZED_ACCEPT
 #define USE_LONGJMP
-#undef NO_UNISTD_H
 #undef NO_KILLPG
 #undef NO_SETSID
 #undef NO_USE_SIGACTION
@@ -679,7 +648,6 @@ typedef int rlim_t;
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
-#define HAVE_CRYPT_H 1
 #define HAVE_SYSLOG 1
 
 #elif defined(__EMX__)
@@ -696,7 +664,6 @@ typedef int rlim_t;
 #define MAXSOCKETS 4096
 #define USE_OS2_SCOREBOARD
 #define NO_RELIABLE_PIPED_LOGS
-#define HAVE_SYS_SELECT_H 1
 
 #elif defined(__MACHTEN__)
 typedef int rlim_t;
@@ -744,7 +711,6 @@ typedef int rlim_t;
 #define HAVE_SYSLOG 1
 
 #elif defined(NEWSOS)
-#define HAVE_SYS_RESOURCE_H 1
 #define HAVE_SHMGET 1
 #define USE_SHMGET_SCOREBOARD
 #define USE_LONGJMP
@@ -848,13 +814,6 @@ typedef int rlim_t;
 #define USE_GNU_INLINE
 #define ENUM_BITFIELD(e,n,w)  e n : w
 #endif
-
-/* Do we have sys/resource.h; assume that BSD does. */
-#ifndef HAVE_SYS_RESOURCE_H
-#ifdef BSD
-#define HAVE_SYS_RESOURCE_H 1
-#endif
-#endif /* HAVE_SYS_RESOURCE_H */
 
 /*
  * The particular directory style your system supports. If you have dirent.h
@@ -964,7 +923,7 @@ int setrlimit(int, struct rlimit *);
 #define LOGNAME_MAX 25
 #endif
 
-#ifndef NO_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 

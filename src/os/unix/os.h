@@ -58,6 +58,8 @@
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
+#include "conf.h"
+
 #define PLATFORM "Unix"
 
 /*
@@ -86,18 +88,6 @@ extern int ap_os_is_path_absolute(const char *f);
  *  Apache modules under run-time via 
  *  dynamic shared object (DSO) mechanism
  */
-
-#if defined(HPUX) || defined(HPUX10)
-#define HAVE_DL_H 1
-#endif
-
-#if defined(LINUX) || defined(__FreeBSD__) ||\
-    defined(__OpenBSD__) || defined(__NetBSD__) || \
-    defined(SOLARIS2) || defined(__bsdi__) || \
-    defined(IRIX) || defined(SVR4) || defined(OSF1) ||\
-    defined(SCO5)
-#define HAVE_DLFCN_H 1
-#endif
 
 #ifdef HAVE_DL_H
 #include <dl.h>

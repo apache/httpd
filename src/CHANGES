@@ -1,5 +1,14 @@
 Changes with Apache 1.3.1
 
+  *) Autogenerate some HAVE_XXXXX_H defines in conf_auto.h (determined via
+     TestCompile) instead of defining them manually in conf.h based on less
+     accurate platform definitions. This way we no longer have to fiddle with
+     OS-type and/or OS-version identifiers to discover whether a system header
+     file exists or not. Instead we now directly check for the existence of
+     those esoteric ones. 
+     [Ralf S. Engelschall] PR#2093, PR#2361, PR#2377, PR#2434,
+                           PR#2524, PR#2525, PR#2533, PR#2569
+
   *) mod_setenvif (BrowserMatch* and friends) will now match a missing
      field with "^$".  [Ken Coar]
 

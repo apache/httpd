@@ -1203,6 +1203,36 @@ case "$PLAT" in
 	;;
 esac
 
+####################################################################
+## Now check for existance of non-standard system header files
+##
+echo " + checking for system header files"
+
+CONF_AUTO_H="include/conf_auto.h"
+CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h"
+
+echo "/* Automatically generated file - DO NOT EDIT */" >$CONF_AUTO_H
+echo "#ifndef APACHE_CONF_AUTO_H" >>$CONF_AUTO_H
+echo "#define APACHE_CONF_AUTO_H 1" >>$CONF_AUTO_H
+echo "" >>$CONF_AUTO_H
+for header in $CHECK_FOR_HEADERS; do
+    echo "/* <$header> */" >>$CONF_AUTO_H
+    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr 'a-z' 'A-Z'`"
+    if ./helpers/TestCompile header $header; then
+        eval "HAVE_${name}=1"
+        echo "#ifndef HAVE_${name}" >>$CONF_AUTO_H
+        echo "#define HAVE_${name} 1" >>$CONF_AUTO_H
+        echo "#endif" >>$CONF_AUTO_H
+    else
+        eval "HAVE_${name}=0"
+        echo "#ifdef HAVE_${name}" >>$CONF_AUTO_H
+        echo "#undef HAVE_${name}" >>$CONF_AUTO_H
+        echo "#endif" >>$CONF_AUTO_H
+    fi
+    echo "" >>$CONF_AUTO_H
+done
+echo "#endif /* APACHE_CONF_AUTO_H */" >>$CONF_AUTO_H
+
 # SOCKS4 support:
 # We assume that if they are using SOCKS4, then they've
 # adjusted EXTRA_LIBS and/or EXTRA_LDFLAGS as required,
@@ -1240,6 +1270,16 @@ if [ "$RULE_SOCKS5" = "yes" ]; then
             ;;
     esac
 fi
+
+# AIX 4.x support:
+# Processor Binding
+case "$PLAT" in
+    *-ibm-aix*)
+        if [ ".$HAVE_SYS_PROCESSOR_H" = .1 ]; then
+            CFLAGS="$CFLAGS -DAIX_BIND_PROCESSOR"
+        fi
+        ;;
+esac
 
 ####################################################################
 ## Find out what modules we want and try and configure things for them
