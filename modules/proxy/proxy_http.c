@@ -449,7 +449,15 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         origin->keepalive = 0;
     }
 
-    buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
+    if ( apr_table_get(r->subprocess_env,"force-proxy-request-1.0")) {
+        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
+    } else {
+        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
+    }
+    if ( apr_table_get(r->subprocess_env,"proxy-nokeepalive")) {
+        apr_table_unset(r->headers_in, "Connection");
+        origin->keepalive = 0;
+    }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
