@@ -616,8 +616,7 @@ API_EXPORT(int) ap_scan_script_header_err(request_rec *r, FILE *f,
 
 static int getsfunc_BUFF(char *w, int len, void *fb)
 {
-    ap_ssize_t n;       /* Ignored */
-    return ap_bgets(w, len, (BUFF *) fb, &n) == APR_SUCCESS;
+    return ap_bgets(w, len, (BUFF *) fb) > 0;
 }
 
 API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *fb,
