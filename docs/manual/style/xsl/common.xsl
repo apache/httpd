@@ -506,7 +506,18 @@
             <!-- apply bare text only, if it's not only \s or empty -->
             <xsl:if test="not(normalize-space($content) = '')">
                 <p><code>
-                    <xsl:copy-of select="$content" />
+                    <!-- same as $content above. xsl:copy-of seems to make -->
+                    <!-- thread problems with xalan-j ... -->
+                    <xsl:apply-templates
+                        select="preceding-sibling::node()[
+                                    count(preceding-sibling::*[
+                                        contains($blocks,
+                                                 concat(' ', local-name(),
+                                                        ' '))])
+                                    &gt;= $bb]" />
+
+                    <xsl:apply-templates
+                        select="self::node()[not($is-block-node)]" />
                 </code></p>
             </xsl:if>
 
