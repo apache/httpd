@@ -1,9 +1,13 @@
 Changes with Apache 1.2
-  
+
   *) Fix problem with scripts not receiving a SIGPIPE when client drops
      the connection (e.g., when user presses Stop).  Apache will now stop
      trying to send a message body immediately after an error from write.
      [Roy Fielding and Nathan Kurz] PR#335
+
+  *) Rearrange Configuration.tmpl so that mod_rewrite has higher priority
+     than mod_alias, and mod_alias has higher priority than mod_proxy.
+     [Sameer Parekh]
 
   *) Fix graceful restart on architectures not using scoreboard files
      (it is still broken on scoreboard-file architectures).
@@ -32,7 +36,7 @@ Changes with Apache 1.2
      [Roy Fielding] PR#339, 367, 354, 453
 
   *) Fix IRIX warning about bzero undefined. [Marc Slemko]
-  
+
   *) Fix problem with <Directory proxy:...>. [Martin Kraemer] PR#271
 
   *) Corrected spelling of "authoritative".  AuthDBAuthoratative became
@@ -62,15 +66,15 @@ Changes with Apache 1.2
 
   *) Configure would create a broken Makefile if the configuration file
      contained a commented-out Rule.  [Roy Fielding]
-  
+
   *) Promote per_dir_config and subprocess_env from the subrequest to the
      main request in mod_negotiation.  In particular this fixes a bug
      where <Files> sections wouldn't properly apply to negotiated content.
      [Dean Gaudet]
-  
+
   *) Fix a potential deadlock in mod_cgi script_err handling.
      [Ralf S. Engelschall]
-  
+
   *) rotatelogs zero-pads the logfile names to improve alphabetic sorting.
      [Mitchell Blank Jr]
 
@@ -90,7 +94,7 @@ Changes with Apache 1.2
      request.  [Dean Gaudet]
 
   *) Configure was finding non-modules on EXTRA_LIBS. [Frank Cringle] PR#380
-  
+
   *) Use /bin/sh5 on ultrix.  [P. Alejandro Lopez-Valencia] PR#369
 
   *) Add UnixWare compile/install instructions.  [Chuck Murcko]
@@ -312,7 +316,7 @@ Changes with Apache 1.2b7
 
   *) more proxy FTP bug fixes:
      - Changed send_dir() to remove user/passwd from displayed URL.
-     - Changed login error messages to be more descriptive. 
+     - Changed login error messages to be more descriptive.
      - remove setting of SO_DEBUG socket option
      - Make ftp_getrc() more lenient about multiline responses,
        specifically, 230 responses which don't have continuation 230-
@@ -336,7 +340,7 @@ Changes with Apache 1.2b7
   *) Reduced the default timeout from 1200 seconds to 300, and the
      one in the sample configfile from 400 to 300.  [Marc Slemko]
 
-  *) Stop vbprintf from crashing if given a NULL string pointer; 
+  *) Stop vbprintf from crashing if given a NULL string pointer;
      print (null) instead.  [Ken Coar]
 
   *) Don't disable Nagle algorithm if system doesn't have TCP_NODELAY.
@@ -386,7 +390,7 @@ Changes with Apache 1.2b7
      [Randy Terbush and Roy Fielding]
 
   *) Fixed handling of unsigned ints in ap_snprintf() on some chips such
-     as the DEC Alpha which is 64-bit but uses 32-bit ints. 
+     as the DEC Alpha which is 64-bit but uses 32-bit ints.
      [Dean Gaudet and Ken Coar]
 
   *) Return a 302 response code to the client when sending a redirect
@@ -471,7 +475,7 @@ Changes with Apache 1.2b5
 
   *) Portability Fix: IRIX complained with 'make clean' about *pure* (removed)
      [Jim Jagielski]
-     
+
   *) Migration from sprintf() to snprintf() to avoid buffer
      overflows. [Marc Slemko]
 
@@ -548,11 +552,11 @@ Changes with Apache 1.2b5
      server config files. [Alexei Kosut]
 
   *) Fix bug with ServerPath that could cause certain files to be not
-     found by the server. [Alexei Kosut] 
+     found by the server. [Alexei Kosut]
 
   *) Fix handling of ErrorDocument so that it doesn't remove a trailing
      double-quote from text and so that it properly checks for unsupported
-     status codes using the new index_of_response interface. [Roy Fielding] 
+     status codes using the new index_of_response interface. [Roy Fielding]
 
   *) Multiple fixes to the lingering_close code in order to avoid being
      interrupted by a stray timeout, to avoid lingering on a connection
@@ -577,7 +581,7 @@ Changes with Apache 1.2b5
   *) Fixed bug in bcwrite regarding failure to account for partial writes.
      Avoided calling bflush() when the client is pipelining requests.
      Removed unnecessary flushes from http_protocol. [Dean Gaudet]
- 
+
   *) Added description of "." mode in server-status [Jim Jagielski]
 
 
@@ -681,7 +685,7 @@ Changes with Apache 1.2b3:
      in mod_log_config so that it outputs the original status. [Rob Hartill]
 
 Changes with Apache 1.2b2:
-  
+
   *) Update set_signals() to use sigaction() for setting handlers.
      This appears to fix a re-entrant problem in the seg_fault()
      bus_error() handlers. [Randy Terbush]
@@ -699,7 +703,7 @@ Changes with Apache 1.2b2:
         4) Some code cleanup and clarification
 
   *) mod_include.c bugfixes:
-	1) Fixed an ommission that caused include variables to not 
+	1) Fixed an ommission that caused include variables to not
 	   be parsed in config errmsg directives [Howard Fear]
 	2) Remove HAVE_POSIX_REGEX cruft [Alexei Kosut]
 	3) Patch to fix compiler warnings [perrot@lal.in2p3.fr]
@@ -733,8 +737,8 @@ Changes with Apache 1.2b2:
 
   *) Replaced use of index() in mod_expires.c with more appropriate
      and portable isdigit() test.  [Ben Laurie]
-  
-  *) Updated Configure for ... 
+
+  *) Updated Configure for ...
 	OS/2	      (DEF_WANTHSREGEX=yes, other code changes)
         *-dg-dgux*    (bad pattern match)
         QNX           (DEF_WANTHSREGEX=yes)
@@ -746,7 +750,7 @@ Changes with Apache 1.2b2:
   *) In helpers/CutRule, replaced "cut" invocation with "awk" invocation
      for better portability. [Jim Jagielski]
 
-  *) Updated helpers/GuessOS for ... 
+  *) Updated helpers/GuessOS for ...
         SCO 5            (recognize minor releases)
         SCO Unixware     (braindamaged uname, whatever-whatever-unixware2)
 	SCO UnixWare 2.1.1	(requires a separate set of #defines in conf.h)
@@ -793,7 +797,7 @@ Changes with Apache 1.1.0:
   *) Bugs which were fixed:
         a) yet more mod_proxy bugs [Ben Laurie]
         b) CGI works again with inetd [Alexei Kosut]
-	c) Leading colons were stripped from passwords [osm@interguide.com] 
+	c) Leading colons were stripped from passwords [osm@interguide.com]
 	d) Another fix to multi-method Limit problem [jk@tools.de]
 
 Changes with Apache 1.1b4:
@@ -825,10 +829,10 @@ Changes with Apache 1.1b3:
 
   *) Much of cgi-bin and all of cgi-src has been removed, due to
      various security holes found and that we could no longer support
-     them.  
+     them.
 
-  *) The "Set-Cookie" header is now special-cased to not merge multiple 
-     instances, since certain popular browsers can not handle multiple 
+  *) The "Set-Cookie" header is now special-cased to not merge multiple
+     instances, since certain popular browsers can not handle multiple
      Set-Cookie instructions in a single header. [Paul Sutton]
 
   *) rprintf() added to buffer code, occurrences of sprintf removed.
@@ -843,7 +847,7 @@ Changes with Apache 1.1b3:
   *) mod_imap fixups, in particular Location: headers are now complete
      URL's.
 
-  *) New "info" module which reports on installed module set through a 
+  *) New "info" module which reports on installed module set through a
      special URL, a la mod_status.
 
   *) "ServerPath" directive added - allows for graceful transition
@@ -857,7 +861,7 @@ Changes with Apache 1.1b3:
 
   *) htdigest utility included for use with digest authentication
      module.
- 
+
   *) mod_negotiation: Accept values with wildcards to be treated with
      less priority than those without wildcards at the same quality
      value. [Alexei Kosut]
@@ -925,13 +929,13 @@ Changes with Apache 1.0.3:
 
 Changes with Apache 1.0.2
 
-  *) patch to get Apache compiled on UnixWare 2.x, recommended as 
+  *) patch to get Apache compiled on UnixWare 2.x, recommended as
      a temporary measure, pending rewrite of rfc931.c. [Chuck Murcko]
 
   *) Fix get_basic_auth_pw() to set the auth_type of the request.
      [David Robinson]
 
-  *) past changes to http_config.c to only use the 
+  *) past changes to http_config.c to only use the
      setrlimit function on systems defining RLIMIT_NOFILE
      broke the feature on SUNOS4. Now defines HAVE_RESOURCE
      for SUNOS and prototypes the needed functions.
@@ -960,7 +964,7 @@ Changes with Apache 1.0.1
      initgroups() would fail, and it was consuming a file descriptor.
      [Ben Laurie]
 
-  *) On heavily loaded servers it was possible for the scoreboard to get 
+  *) On heavily loaded servers it was possible for the scoreboard to get
      out of sync with reality, as a result of a race condition.
      The observed symptoms are far more Apaches running than should
      be, and heavy system loads, generally followed by catastrophic
@@ -1049,7 +1053,7 @@ Changes with Apache 0.8.15
 
   *) Fixed potential FILE* leak in http_main.c [Ben Laurie]
 
-  *) Unblock alarms on error return from spawn_child() [David Robinson]  
+  *) Unblock alarms on error return from spawn_child() [David Robinson]
 
   *) Sample Config files have extra note for SCO users [Ben Laurie]
 
@@ -1159,38 +1163,38 @@ Changes with Apache 0.8.11
   *) Wildcard <Directory> specifications work.  [Robert Thau]
 
   *) Doesn't loop for buggy CGI on Solaris [Cliff Skolnick]
-  
+
   *) Symlink checks (FollowSymLinks off, or SymLinkIfOwnerMatch) always check
      the file being requested itself, in addition to the directories leading
      up to it. [Robert Thau]
-  
+
   *) Logs access failures due to symlink checks or invalid client address
      in the error log [Roy Fielding, Robert Thau]
-  
+
   *) Symlink checks deal correctly with systems where lstat of
      "/path/to/some/link/" follows the link.  [Thau, Fielding]
 
   *) Doesn't reset DirectoryIndex to 'index.html' when
      other directory options are set in a .htaccess file.  [Robert Thau]
-  
+
   *) Clarified init code and nuked bogus warning in mod_access.c
      [Florent Guillaume]
-  
+
   *) Corrected several directives in sample srm.conf
      --- includes corrections to directory indexing icon-related directives
      (using unknown.gif rather than unknown.xbm as the DefaultIcon, doing
      icons for encodings right, and turning on AddEncoding by default).
      [Roy Fielding]
-  
+
   *) Corrected descriptions of args to AddIcon and AddAlt in command table
      [James Cloos]
-  
+
   *) INSTALL & README mention "contributed modules" directory [Brian
      Behlendorf]
-  
+
   *) Fixed English in the license language...  "for for" --> "for".
      [Roy Fielding]
-  
+
   *) Fixed ScriptAlias/Alias interaction by moving ScriptAlias handling to
      mod_alias.c, merging it almost completely with handling of Alias, and
      adding a 'notes' field to the request_rec which allows the CGI module
@@ -1198,7 +1202,7 @@ Changes with Apache 0.8.11
      ScriptAlias (which it needs to know for back-compatibility, as the old
      NCSA code did not check Options ExecCGI in ScriptAlias directories).
      [Robert Thau]
-  
+
 
 Changes with Apache 0.8.10
 
@@ -1244,7 +1248,7 @@ Changes with Apache 0.8.9
   *) If client didn't submit any Accept-encodings, ignore encodings in
      content negotiation.  (NB this will all have to be reworked anyway
      for the new HTTP draft).  [Florent Guillaume]
-     
+
   *) Don't dump core when trying to log timed-out requests [Jim Jaglieski]
 
   *) Really honor CacheNegotiatedDocs [Florent Guillaume]
@@ -1332,9 +1336,9 @@ Changes with Apache 0.8.5
      It's Netscape's bug --- for some reason they expect a request with
      If-modified-since: to not function as a conditional GET if it also
      comes with Pragma: no-cache, which is way out of line with the HTTP
-     spec (according to Roy Fielding, the redactor).  
+     spec (according to Roy Fielding, the redactor).
 
-  *) Added parameter to set maximum number of server processes.  
+  *) Added parameter to set maximum number of server processes.
 
   *) Added patches to make it work on A/UX.  A/UX is *weird*.  [Eric Hagberg]
 
@@ -1413,7 +1417,7 @@ Changes with Apache 0.8.2
 
   *) Added AddLanuage code [Florent Guillaume]
 
-  *) Don't say "access forbidden" when a CGI script is not found.  [Mark Cox] 
+  *) Don't say "access forbidden" when a CGI script is not found.  [Mark Cox]
 
   *) All sorts of problems when MultiViews finds a directory.  It would
      be nice if mod_dir.c was robust enough to handle that, but for now,
@@ -1422,7 +1426,7 @@ Changes with Apache 0.8.2
   *) Wait for all children on restart, to make sure that the old socket
      is gone and we can reopen it.  [reported by Randy Terbush]
 
-  *) Imagemap module is enabled in default Configuration 
+  *) Imagemap module is enabled in default Configuration
 
   *) RefererLog and UserAgentLog modules properly default the logfile
      [Randy Terbush]
@@ -1483,7 +1487,7 @@ Changes with Apache 0.8.0 (nee Shambhala 0.6.2):
      impose any significant overhead, even after I forced it to put the
      scoreboard file on a normal filesystem (which might have more
      overhead than tmpfs).  [Robert Thau]
-   
+
   *) Set HTTP_FOO variables for SSI <!--#exec cmd-->s, not just CGI scripts.
      [Cliff Skolnick]
 
@@ -1506,7 +1510,7 @@ Changes with Apache 0.8.0 (nee Shambhala 0.6.2):
 
   *) Incidental code cleanups in http_main.c --- stop dragging
      sa_client around; just declare it where used.  [Robert Thau]
-  
+
   *) Another acc-related fix.  (It doesn't like const char
      in some places...). [Mark Cox]
 
@@ -1522,7 +1526,7 @@ Changes with 0.6.1
      believe it or not, he has an actual site with a ScriptAlias and
      a Redirect declared for the *exact same directory*.  Even *my*
      compatibility fetish wouldn't motivate me to fix this if the fix
-     required any effort, but it doesn't, so what the hey. 
+     required any effort, but it doesn't, so what the hey.
 
   *) Fixed to properly default several server_rec fields for virtual
      servers from the corresponding fields in the main server_rec.
