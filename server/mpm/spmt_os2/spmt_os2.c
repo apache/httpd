@@ -1545,6 +1545,5 @@ module AP_MODULE_DECLARE_DATA mpm_spmt_os2_module = {
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     spmt_os2_cmds,		/* command apr_table_t */
-    NULL,			/* handlers */
     spmt_os2_hooks,		/* register_hooks */
 };
