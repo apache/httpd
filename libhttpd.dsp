@@ -116,7 +116,7 @@ SOURCE=.\server\connection.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\http_conf_globals.h
+SOURCE=.\server\core.c
 # End Source File
 # Begin Source File
 
@@ -136,10 +136,6 @@ SOURCE=.\include\http_main.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\http_vhost.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\httpd.h
 # End Source File
 # Begin Source File
@@ -156,7 +152,19 @@ SOURCE=.\os\win32\os.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\protocol.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\request.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\scoreboard.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\scoreboard.h
 # End Source File
 # Begin Source File
 
@@ -226,6 +234,10 @@ SOURCE=.\modules\http\http_request.c
 # Begin Source File
 
 SOURCE=.\include\http_request.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_vhost.h
 # End Source File
 # End Group
 # Begin Group "modules"
@@ -317,19 +329,7 @@ SOURCE=.\modules\mappers\mod_userdir.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\server\core.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\server\error_bucket.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\protocol.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\request.c
 # End Source File
 # Begin Source File
 
