@@ -38,6 +38,7 @@ always available.
 <LI><A HREF="#errorlog">ErrorLog</A>
 <LI><A HREF="#files">&lt;Files&gt;</A>
 <LI><A HREF="#filesmatch">&lt;FilesMatch&gt;</A>
+<LI><a href="#forcetype">ForceType</a>
 <LI><A HREF="#hostnamelookups">HostNameLookups</A>
 <LI><A HREF="#identitycheck">IdentityCheck</A>
 <LI><A HREF="#ifdefine">&lt;IfDefine&gt;</A>
@@ -72,6 +73,7 @@ always available.
 <LI><A HREF="#serverroot">ServerRoot</A>
 <LI><A HREF="#serversignature">ServerSignature</A>
 <LI><A HREF="#servertokens">ServerTokens</A>
+<LI><a href="#sethandler">SetHandler</a>
 <LI><A HREF="#setinputfilter">SetInputFilter</A>
 <LI><A HREF="#setoutputfilter">SetOutputFilter</A>
 <LI><A HREF="#timeout">TimeOut</A>
@@ -223,12 +225,15 @@ Allow use of the authorization directives
 <DD>
 <!--%plaintext &lt;?INDEX {\tt FileInfo} override&gt; -->
 Allow use of the directives controlling document types
-(<A HREF="mod_mime.html#addencoding">AddEncoding</A>,
-<A HREF="mod_mime.html#addlanguage">AddLanguage</A>,
-<A HREF="mod_mime.html#addtype">AddType</A>,
-<A HREF="#defaulttype">DefaultType</A>,
+(<A HREF="#defaulttype">DefaultType</A>,
 <A HREF="#errordocument">ErrorDocument</A>,
-<A HREF="mod_negotiation.html#languagepriority">LanguagePriority</A>, <EM>etc.</EM>).
+<A href="#forcetype">ForceType</A>,
+<A HREF="mod_negotiation.html#languagepriority">LanguagePriority</A>,
+<A href="#sethandler">SetHandler</A>,
+<A HREF="#setinputfilter">SetInputFilter</A>,
+<A HREF="#setoutputfilter">SetOutputFilter</A>,
+and <A HREF="mod_mime.html">mod_mime Add* and Remove* directives</A>,
+<EM>etc.</EM>).
 <DT>Indexes
 <DD>
 <!--%plaintext &lt;?INDEX {\tt Indexes} override&gt; -->
@@ -425,7 +430,14 @@ the event of an unknown type it uses the <CODE>DefaultType</CODE>. For
 example:
 <BLOCKQUOTE><CODE>DefaultType image/gif</CODE></BLOCKQUOTE>
 would be appropriate for a directory which contained many gif images
-with filenames missing the .gif extension.<P><HR>
+with filenames missing the .gif extension.
+
+<P>Note that unlike <A HREF="#forcetype">ForceType</A>, this directive 
+is only provides the default mime-type.  All other mime-type definitions,
+including filename extensions, that might identify the media type will
+override this default.</P>
+
+<HR>
 
 <H2><A NAME="directory">&lt;Directory&gt; directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt Directory} section directive&gt; -->
@@ -849,6 +861,45 @@ does. However, it accepts a regular expression. For example:</P>
 <STRONG>See also</STRONG>: <A HREF="../sections.html">How Directory,
 Location and Files sections work</A> for an explanation of how these
 different sections are combined when a request is received
+
+<HR>
+
+<h2><a name="forcetype">ForceType</a> directive</h2>
+
+<a
+ href="directive-dict.html#Syntax"
+ rel="Help"
+><strong>Syntax:</strong></a> ForceType <em>mime-type</em><br>
+<a
+ href="directive-dict.html#Context"
+ rel="Help"
+><strong>Context:</strong></a> directory, .htaccess<br>
+<a
+ href="directive-dict.html#Status"
+ rel="Help"
+><strong>Status:</strong></a> Base<br>
+<a
+ href="directive-dict.html#Module"
+ rel="Help"
+><strong>Module:</strong></a> core<br>
+<a
+ href="directive-dict.html#Compatibility"
+ rel="Help"
+><strong>Compatibility:</strong></a> ForceType was introduced in mod_mime
+with Apache 1.1, and moved to the core in Apache 2.0.<P>
+
+<P>When placed into an <code>.htaccess</code> file or a
+<code>&lt;Directory&gt;</code>, or <code>&lt;Location&gt;</code> or
+or <code>&lt;Files&gt;</code> section, this directive forces all matching 
+files to be served with the content type identification given by 
+<em>mime-type</em>. For example, if you had a directory full of GIF 
+files, but did not want to label them all with ".gif", you might want to use:
+<pre>
+    ForceType image/gif
+</pre>
+<P>Note that unlike <A HREF="#defaulttype">DefaultType</A>, this directive 
+overrides all mime-type associations, including filename extensions, that 
+might identify the media type.</P>
 
 <HR>
 
@@ -2438,12 +2489,58 @@ disabled on a virtualhost-by-virtualhost basis.
 
 <HR>
 
+<h2><a name="sethandler">SetHandler</a> directive</h2>
+
+<a
+ href="directive-dict.html#Syntax"
+ rel="Help"
+><strong>Syntax:</strong></a> SetHandler <em>handler-name</em><br>
+<a
+ href="directive-dict.html#Context"
+ rel="Help"
+><strong>Context:</strong></a> directory, files, location, .htaccess<br>
+<a
+ href="directive-dict.html#Status"
+ rel="Help"
+><strong>Status:</strong></a> Base<br>
+<a
+ href="directive-dict.html#Module"
+ rel="Help"
+><strong>Module:</strong></a> core<br>
+<a
+ href="directive-dict.html#Compatibility"
+ rel="Help"
+><strong>Compatibility:</strong></a> SetHandler was introduced in mod_mime 
+with Apache 1.1, and moved into the core with Apache 2.0<P>
+
+<P>When placed into an <code>.htaccess</code> file or a
+<code>&lt;Directory&gt;</code> or <code>&lt;Location&gt;</code> section,
+this directive forces all matching files to be parsed through the
+<a href="../handler.html">handler</a>
+given by <em>handler-name</em>. For example, if you had a
+directory you wanted to be parsed entirely as imagemap rule files,
+regardless of extension, you might put the following into an
+<code>.htaccess</code> file in that directory:
+<pre>
+    SetHandler imap-file
+</pre>
+
+<P>Another example: if you wanted to have the server display a status
+report whenever a URL of <code>http://servername/status</code> was
+called, you might put the following into access.conf:
+<pre>
+    &lt;Location /status&gt;
+    SetHandler server-status
+    &lt;/Location&gt;
+</pre>
+
+<HR>
+
 <H2><A NAME="setinputfilter">SetInputFilter directive</A></H2>
 <P><A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> SetInputFilter <EM>filter</EM> 
-[<EM>filter</EM>] ...<BR>
+><STRONG>Syntax:</STRONG></A> SetInputFilter <EM>filter</EM>[<EM>;filter</EM>...]<BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -2451,18 +2548,20 @@ disabled on a virtualhost-by-virtualhost basis.
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> directory<BR>
+><STRONG>Context:</STRONG></A> directory, files, location, .htaccess<BR>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
 ><STRONG>Status:</STRONG></A> core</P>
 
-<p>The <code>SetInputFilter</code> directive sets the filters
-which will process client requests when they are received by the
-server.</p>
+<p>The <code>SetInputFilter</code> directive sets the filter or filters
+which will process client requests and POST input when they are received 
+by the server.  This is in addition to any filters defined elsewhere, 
+including the <a href="mod_mime.html#addinputfilter">AddInputFilter</a> 
+directive.</p>
 
-<p>The order of the arguments determines the order in which the
-filters will process the content.</p>
+<p>If more than one filter is specified, they must be seperated by
+semicolons in the order in which they should process the content.</p>
 
 <p>See also the <a href="../filter.html">Filters</a> documentation.</p>
 
@@ -2481,7 +2580,7 @@ filters will process the content.</p>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> directory<BR>
+><STRONG>Context:</STRONG></A> directory, files, location, .htaccess<BR>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
@@ -2489,7 +2588,11 @@ filters will process the content.</p>
 
 <P>The <code>SetOutputFilter</code> directive sets the filters which
 will process responses from the server before they are sent to the
-client.  For example, the following configuration will process
+client.  This is in addition to any filters defined elsewhere, 
+including the <a href="mod_mime.html#addoutputfilter">AddOutputFilter</a> 
+directive.</p>
+
+For example, the following configuration will process
 all files in the <code>/www/data/</code> directory for 
 server-side includes.</P>
 
@@ -2499,8 +2602,8 @@ server-side includes.</P>
 &lt;/Directory&gt;
 </CODE></BLOCKQUOTE>
 
-<p>The order of the arguments determines the order in which the
-filters will process the content.</p>
+<p>If more than one filter is specified, they must be seperated by
+semicolons in the order in which they should process the content.</p>
 
 <p>See also the <a href="../filter.html">Filters</a> documentation.</p>
 
