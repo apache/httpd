@@ -62,13 +62,13 @@
  * Detects when the fd_queue_t is full. This utility function is expected
  * to be called from within critical sections, and is not threadsafe.
  */
-#define ap_queue_full(queue) ((queue)->tail == (queue)->bounds)
+#define ap_queue_full(queue) ((queue)->nelts == (queue)->bounds)
 
 /**
  * Detects when the fd_queue_t is empty. This utility function is expected
  * to be called from within critical sections, and is not threadsafe.
  */
-#define ap_queue_empty(queue) ((queue)->tail == 0)
+#define ap_queue_empty(queue) ((queue)->nelts == 0)
 
 /**
  * Callback routine that is called to destroy this
@@ -107,9 +107,10 @@ apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
         return rv;
     }
 
-    queue->tail = 0;
+    queue->head = queue->tail = 0;
     queue->data = apr_palloc(a, queue_capacity * sizeof(fd_queue_elem_t));
     queue->bounds = queue_capacity;
+    queue->nelts = 0;
 
     /* Set all the sockets in the queue to NULL */
     for (i = 0; i < queue_capacity; ++i)
@@ -146,9 +147,11 @@ apr_status_t ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p,
         apr_thread_cond_wait(queue->not_full, queue->one_big_mutex);
     }
 
-    elem = &queue->data[queue->tail++];
+    elem = &queue->data[queue->tail];
+    queue->tail = (queue->tail + 1) % queue->bounds;
     elem->sd = sd;
     elem->p = p;
+    queue->nelts++;
 
     if (queue->num_recycled != 0) {
         *recycled_pool = queue->recycled_pools[--queue->num_recycled];
@@ -209,15 +212,17 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p,
             }
         }
     } 
-    
-    elem = &queue->data[--queue->tail];
+
+    elem = &queue->data[queue->head];
+    queue->head = (queue->head + 1) % queue->bounds;
     *sd = elem->sd;
     *p = elem->p;
     elem->sd = NULL;
     elem->p = NULL;
+    queue->nelts--;
 
     /* signal not_full if we were full before this pop */
-    if (queue->tail == queue->bounds - 1) {
+    if (queue->nelts == queue->bounds - 1) {
         apr_thread_cond_signal(queue->not_full);
     }
 
