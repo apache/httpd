@@ -1,0 +1,215 @@
+.TH ab 1 "October 1999"
+.\" Copyright (c) 1998-1999 The Apache Group. All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer. 
+.\"
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in
+.\"    the documentation and/or other materials provided with the
+.\"    distribution.
+.\"
+.\" 3. All advertising materials mentioning features or use of this
+.\"    software must display the following acknowledgment:
+.\"    "This product includes software developed by the Apache Group
+.\"    for use in the Apache HTTP server project (http://www.apache.org/)."
+.\"
+.\" 4. The names "Apache Server" and "Apache Group" must not be used to
+.\"    endorse or promote products derived from this software without
+.\"    prior written permission.
+.\"
+.\" 5. Products derived from this software may not be called "Apache"
+.\"    nor may "Apache" appear in their names without prior written
+.\"    permission of the Apache Group.
+.\"
+.\" 6. Redistributions of any form whatsoever must retain the following
+.\"    acknowledgment:
+.\"    "This product includes software developed by the Apache Group
+.\"    for use in the Apache HTTP server project (http://www.apache.org/)."
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+.\" EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+.\" PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+.\" ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+.\" SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+.\" NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+.\" LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+.\" STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+.\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+.\" OF THE POSSIBILITY OF SUCH DAMAGE.
+.\" ====================================================================
+.\"
+.\" This software consists of voluntary contributions made by many
+.\" individuals on behalf of the Apache Group and was originally based
+.\" on public domain software written at the National Center for
+.\" Supercomputing Applications, University of Illinois, Urbana-Champaign.
+.\" For more information on the Apache Group and the Apache HTTP server
+.\" project, please see <http://www.apache.org/>.
+.SH NAME
+ab \- Apache HTTP server benchmarking tool
+.SH SYNOPSIS
+.B ab 
+[
+.B \-k
+] [
+.B \-i
+] [
+.BI \-n " requests"
+] [
+.BI \-t " timelimit"
+] [
+.BI \-c " concurrency"
+] [
+.BI \-p " POST file"
+] [
+.BI \-A " Authenticate username:password"
+] [
+.BI \-P " Proxy Authenticate username:password"
+] [
+.BI \-H " Custom header"
+] [
+.BI \-C " Cookie name=value"
+] [
+.BI \-T " content-type"
+] [
+.BI \-v " verbosity"
+]
+] [
+.BI \-w " output HTML"
+]
+] [
+.BI \-x " <table> attributes"
+]
+] [
+.BI \-y " <tr> attributes"
+]
+] [
+.BI \-z " <td> attributes"
+]
+.I [http://]hostname[:port]/path 
+
+.B ab
+[
+.B \-V
+] [
+.B \-h 
+]
+.PP
+.SH DESCRIPTION
+.B ab
+is a tool for benchmarking the performance of your Apache HyperText Transfer
+Protocol (HTTP) server.  It does this by giving you an indication of how
+many requests per second your Apache installation can serve.
+.PP
+.SH OPTIONS
+.TP 12
+.B \-k 
+Enable the HTTP KeepAlive feature; that is, perform multiple requests
+within one HTTP session. Default is no KeepAlive.
+.TP 12
+.B \-i
+Use an HTTP 'HEAD' instead of the GET method. Cannot be mixed with POST.
+.TP 12
+.BI \-n " requests"
+The number of requests to perform for the benchmarking session.  The
+default is to perform just one single request, which will not give
+representative benchmarking results.
+.TP 12
+.BI \-t " timelimit"
+The number of seconds to spend benchmarking. Using this option automatically
+set the number of requests for the benchmarking session to 50000.
+Use this to benchmark the server for a fixed period of time.  By
+default, there is no timelimit. 
+.TP 12
+.BI \-c " concurrency"
+The number of simultaneous requests to perform. The default is to
+perform one HTTP request at at time, that is, no concurrency.
+
+.TP 12
+.BI \-p " POST file"
+A file containing data that the program will send to the Apache server in
+any HTTP POST requests.
+
+.TP 12
+.BI \-A " Authorization username:password"
+Supply Basic Authentication credentials to the server. The username
+and password are separated by a single ':', and sent as uuencoded data.
+The string is sent regardless of whether the server needs it; that is,
+has sent a 401 Authentication needed.
+
+.TP 12
+.BI \-p " Proxy-Authorization username:password"
+Supply Basic Authentication credentials to a proxy en-route. The username
+and password are separated by a single ':', and sent as uuencoded data.
+The string is sent regardless of whether the proxy needs it; that is,
+has sent a 407 Proxy authentication needed.
+
+.TP 12
+.BI \-C " Cookie name=value"
+Add a 'Cookie:' line to the request. The argument is typically
+a 'name=value' pair. This option may be repeated.
+
+.TP 12
+.BI \-p " Header string"
+Append extra headers to the request. The argument is typically in the form
+of a valid header line, usually a colon separated field value pair, for
+example, 'Accept-Encoding: zip/zop;8bit'.
+
+.TP 12
+.BI \-T " content-type"
+The content-type header to use for POST data.
+
+.TP 12
+.B \-v 
+Sets the verbosity level.  Level 4 and above prints information on headers,
+level 3 and above prints response codes (for example, 404, 200), and level 2
+and above prints warnings and informational messages.
+
+.TP 12
+.BI \-w
+Print out results in HTML tables.  The default table is two columns wide,
+with a white background.
+.TP 12
+.BI \-x " attributes"
+The string to use as attributes for <table>.  Attributes are inserted
+<table 
+.B here
+>
+.TP 12
+.BI \-y " attributes"
+The string to use as attributes for <tr>.
+.TP 12
+.BI \-z " attributes"
+The string to use as attributes for <td>.
+.TP 12
+.B \-V
+Display the version number and exit.
+.TP 12
+.B \-h 
+Display usage information.
+.PD
+.SH BUGS
+There are various statically declared buffers of fixed length. Combined
+with inefficient parsing of the command line arguments, the response headers
+from the server, and other external inputs, these buffers might overflow.
+.P
+.B Ab
+does not implement HTTP/1.x fully; instead, it only accepts
+some 'expected' forms of responses.
+.P
+The rather heavy use of 
+.BR strstr(3)
+by the program may skew performance results, since it uses significant
+CPU resources.  Make sure that performance limits are not hit by
+.B ab
+before your server's limit is reached.
+
+.SH SEE ALSO
+.BR httpd(8)
+.

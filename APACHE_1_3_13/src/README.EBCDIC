@@ -1,0 +1,99 @@
+			    README.EBCDIC
+
+This version of Apache comes with a first-cut (working, but not
+fully tested) port to a mainframe machine which uses the EBCDIC
+character set as its native codeset (It is the SIEMENS family 
+of mainframes running the BS2000 operating system. This
+mainframe OS nowadays features a SVR4-like POSIX subsystem).
+
+The port was started initially to
+- prove the feasibility
+- find a "worthy and capable" successor for the CERN daemon (which
+  was ported a couple of years ago), and to
+- prove that Apache's preforking process model can on this platform
+  easily outperform the accept-fork-serve model used by CERN by a
+  factor of 5 or more.
+
+This document serves as a rationale to describe some of the design
+decisions of the port to this machine.
+
+* The relevant changes in the source are #ifdef'ed into two
+  categories:
+  #ifdef CHARSET_EBCDIC     Code which is needed for any EBCDIC
+			    based machine
+  #ifdef _OSD_POSIX         Code which is needed for the BS2000
+			    SIEMENS mainframe platform only.
+
+* The possibility to translate between ASCII and EBCDIC at the
+  socket level (on BS2000 POSIX, there is a socket option which
+  supports this) was intentionally not chosen, because the byte
+  stream at the HTTP protocol level consists of a mixture of
+  protocol related strings and non-protocol related raw file data.
+  HTTP protocol strings are always encoded in ASCII (the GET
+  request, any Header: lines, the chunking information etc.) whereas
+  the file transfer parts (i.e., GIF images, CGI output etc.) should
+  usually be just "passed thru" by the server. This separation
+  between "protocol string" and "raw data" is reflected in the
+  server code by functions like bgets() or rvputs() for strings, and
+  functions like bwrite() for binary data. A global translation of
+  everything would therefore be inadequate.
+  (In the case of text files of course, provisions must be made so
+  that the documents are always served in ASCII format)
+
+* This port therefore features a built-in protocol level conversion
+  for the server-internal strings (which the compiler translated to
+  EBCDIC strings) and server-generated documents. This presumes that
+  hard coded ASCII escapes \012 and \015 will not exist in the server
+  code; rather coders will use the CRLF, CR, and LF macros.
+
+* By examining the call hierarchy for the BUFF management routines,
+  I added an "ebcdic/ascii conversion layer" which would be crossed
+  on every puts/write/get/gets, and a conversion flag which allowed
+  switching of the conversions on-the-fly. So it is now possible to
+  read the header lines of a CGI-script output in EBCDIC format, and
+  then find out that the remainder of the script's output is in
+  ASCII (like in the output of a WWW Counter program). Likewise, the
+  server always generates its header lines in EBCDIC (and with ASCII
+  conversion enabled) and determines, based on the type of document
+  being served, whether the document body (except for the chunking
+  information, of course) is in ASCII already or is converted from
+  EBCDIC.
+
+* For Text documents (MIME types text/plain, text/html etc.), an
+  implicit translation to ASCII can be used, or (if the users prefer
+  to store some documents in raw ASCII form for faster serving) can
+  be served without conversion.
+  Example:
+      to serve files with the suffix .ahtml as a raw ASCII text/html
+      document (and suffix .ascii as ASCII text/plain), use the
+      directives:
+    AddType  text/x-ascii-html  .ahtml
+    AddType  text/x-ascii-plain .ascii
+  Similarly, any text/XXXX MIME type can be served as "raw ASCII" by
+  configuring a MIME type "text/x-ascii-XXXX" for it using AddType.
+
+* Non-text documents are always served "binary" without conversion.
+  This seems to be the most sensible choice for, .e.g., GIF/ZIP/AU
+  file types. This of course requires the user to copy them to the
+  mainframe host using the "rcp -b" binary switch.
+
+* Server parsed files are always assumed to be in native (i.e.,
+  EBCDIC) format as used on the machine, and are converted after
+  processing.
+
+* For CGI output, the CGI script determines whether a conversion is
+  needed or not: by setting the appropriate Content-Type, text files
+  can be converted, or GIF output can be passed through unmodified.
+  An example for the latter case is the wwwcount program which we ported
+  as well.
+
+Notes:
+    To use the mod_auth_db functionality, you will need a working libdb.a.
+On the system where I did the port none was available, so I ported the
+standard db-1.85.14 with little problems. Note however that you will need
+a working perl5 as well if you want to use Apache's dbmmanage script to
+maintain db user databases.
+
+See also the ebcdic.html document which is part of the apache documentation.
+
+			    Martin Kraemer, 1-Oct-1998
