@@ -55,6 +55,7 @@
  *
  */
 
+/* TODO - put timeouts back in */
 /*
  * rfc1413() speaks a common subset of the RFC 1413, AUTH, TAP and IDENT
  * protocols. The code queries an RFC 1413 etc. compatible daemon on a remote
@@ -77,7 +78,7 @@
 
 /* Rewritten by David Robinson */
 
-#include "httpd.h"		/* for server_rec, conn_rec, ap_longjmp, etc. */
+#include "httpd.h"		/* for server_rec, conn_rec, etc. */
 #include "http_log.h"		/* for aplog_error */
 #include "rfc1413.h"
 #include "http_main.h"		/* set_callback_and_alarm */
@@ -98,8 +99,6 @@
 #define FROM_UNKNOWN  "unknown"
 
 int ap_rfc1413_timeout = RFC1413_TIMEOUT;	/* Global so it can be changed */
-
-static JMP_BUF timebuf;
 
 /* bind_connect - bind both ends of a socket */
 /* Ambarish fix this. Very broken */
@@ -230,14 +229,8 @@ char *ap_rfc1413(conn_rec *conn, server_rec *srv)
 	conn->remote_logname = result;
     }
 
-    /*
-     * Set up a timer so we won't get stuck while waiting for the server.
-     */
-    if (ap_setjmp(timebuf) == 0) {
-
-	if (get_rfc1413(sock, conn->local_ip, conn->remote_ip, user, srv) >= 0)
-	    result = user;
-    }
+    if (get_rfc1413(sock, conn->local_ip, conn->remote_ip, user, srv) >= 0)
+        result = user;
     ap_close_socket(sock);
     conn->remote_logname = result;
 
