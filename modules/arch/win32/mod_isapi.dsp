@@ -110,7 +110,7 @@ SOURCE=..\..\..\build\win32\win32ver.awk
 InputPath=..\..\..\build\win32\win32ver.awk
 
 ".\mod_isapi.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../../build/win32/win32ver.awk mod_isapi  "isapi_module for Apache" ../../../include/ap_release.h > .\mod_isapi.rc
+	awk -f ../../../build/win32/win32ver.awk mod_isapi.so "isapi_module for Apache" ../../../include/ap_release.h > .\mod_isapi.rc
 
 # End Custom Build
 
@@ -121,7 +121,7 @@ InputPath=..\..\..\build\win32\win32ver.awk
 InputPath=..\..\..\build\win32\win32ver.awk
 
 ".\mod_isapi.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../../build/win32/win32ver.awk mod_isapi  "isapi_module for Apache" ../../../include/ap_release.h > .\mod_isapi.rc
+	awk -f ../../../build/win32/win32ver.awk mod_isapi.so "isapi_module for Apache" ../../../include/ap_release.h > .\mod_isapi.rc
 
 # End Custom Build
 

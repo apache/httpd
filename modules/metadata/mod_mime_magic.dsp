@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_mime_magic.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_mime_magic  "mime_magic_module for Apache" ../../include/ap_release.h  > .\mod_mime_magic.rc
+	awk -f ../../build/win32/win32ver.awk mod_mime_magic.so "mime_magic_module for Apache" ../../include/ap_release.h  > .\mod_mime_magic.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_mime_magic.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_mime_magic  "mime_magic_module for Apache" ../../include/ap_release.h  > .\mod_mime_magic.rc
+	awk -f ../../build/win32/win32ver.awk mod_mime_magic.so "mime_magic_module for Apache" ../../include/ap_release.h  > .\mod_mime_magic.rc
 
 # End Custom Build
 

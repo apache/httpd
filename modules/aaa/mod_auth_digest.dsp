@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_auth_digest.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_auth_digest  "auth_digest_module for Apache" ../../include/ap_release.h > .\mod_auth_digest.rc
+	awk -f ../../build/win32/win32ver.awk mod_auth_digest.so "auth_digest_module for Apache" ../../include/ap_release.h > .\mod_auth_digest.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_auth_digest.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_auth_digest  "auth_digest_module for Apache" ../../include/ap_release.h > .\mod_auth_digest.rc
+	awk -f ../../build/win32/win32ver.awk mod_auth_digest.so "auth_digest_module for Apache" ../../include/ap_release.h > .\mod_auth_digest.rc
 
 # End Custom Build
 

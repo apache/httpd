@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_negotiation.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_negotiation  "negotiation_module for Apache" ../../include/ap_release.h > .\mod_negotiation.rc
+	awk -f ../../build/win32/win32ver.awk mod_negotiation.so "negotiation_module for Apache" ../../include/ap_release.h > .\mod_negotiation.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_negotiation.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_negotiation  "negotiation_module for Apache" ../../include/ap_release.h > .\mod_negotiation.rc
+	awk -f ../../build/win32/win32ver.awk mod_negotiation.so "negotiation_module for Apache" ../../include/ap_release.h > .\mod_negotiation.rc
 
 # End Custom Build
 

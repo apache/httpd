@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_unique_id.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_unique_id  "unique_id_module for Apache" ../../include/ap_release.h  > .\mod_unique_id.rc
+	awk -f ../../build/win32/win32ver.awk mod_unique_id.so "unique_id_module for Apache" ../../include/ap_release.h  > .\mod_unique_id.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_unique_id.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_unique_id  "unique_id_module for Apache" ../../include/ap_release.h  > .\mod_unique_id.rc
+	awk -f ../../build/win32/win32ver.awk mod_unique_id.so "unique_id_module for Apache" ../../include/ap_release.h  > .\mod_unique_id.rc
 
 # End Custom Build
 

@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_usertrack.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_usertrack  "usertrack_module for Apache" ../../include/ap_release.h  > .\mod_usertrack.rc
+	awk -f ../../build/win32/win32ver.awk mod_usertrack.so "usertrack_module for Apache" ../../include/ap_release.h  > .\mod_usertrack.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_usertrack.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_usertrack  "usertrack_module for Apache" ../../include/ap_release.h  > .\mod_usertrack.rc
+	awk -f ../../build/win32/win32ver.awk mod_usertrack.so "usertrack_module for Apache" ../../include/ap_release.h  > .\mod_usertrack.rc
 
 # End Custom Build
 

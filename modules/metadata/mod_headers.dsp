@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_headers.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_headers  "headers_module for Apache" ../../include/ap_release.h > .\mod_headers.rc
+	awk -f ../../build/win32/win32ver.awk mod_headers.so "headers_module for Apache" ../../include/ap_release.h > .\mod_headers.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_headers.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_headers  "headers_module for Apache" ../../include/ap_release.h  > .\mod_headers.rc
+	awk -f ../../build/win32/win32ver.awk mod_headers.so "headers_module for Apache" ../../include/ap_release.h  > .\mod_headers.rc
 
 # End Custom Build
 

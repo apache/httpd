@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_info.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_info  "info_module for Apache" ../../include/ap_release.h > .\mod_info.rc
+	awk -f ../../build/win32/win32ver.awk mod_info.so "info_module for Apache" ../../include/ap_release.h > .\mod_info.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_info.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_info  "info_module for Apache" ../../include/ap_release.h > .\mod_info.rc
+	awk -f ../../build/win32/win32ver.awk mod_info.so "info_module for Apache" ../../include/ap_release.h > .\mod_info.rc
 
 # End Custom Build
 

@@ -114,7 +114,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_proxy_http.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_proxy_http  "proxy_http_module for Apache" ../../include/ap_release.h > .\mod_proxy_http.rc
+	awk -f ../../build/win32/win32ver.awk mod_proxy_http.so "proxy_http_module for Apache" ../../include/ap_release.h > .\mod_proxy_http.rc
 
 # End Custom Build
 
@@ -125,7 +125,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_proxy_http.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_proxy_http  "proxy_http_module for Apache" ../../include/ap_release.h > .\mod_proxy_http.rc
+	awk -f ../../build/win32/win32ver.awk mod_proxy_http.so "proxy_http_module for Apache" ../../include/ap_release.h > .\mod_proxy_http.rc
 
 # End Custom Build
 

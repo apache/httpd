@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_env.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_env  "env_module for Apache" ../../include/ap_release.h  > .\mod_env.rc
+	awk -f ../../build/win32/win32ver.awk mod_env.so "env_module for Apache" ../../include/ap_release.h  > .\mod_env.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_env.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_env  "env_module for Apache" ../../include/ap_release.h  > .\mod_env.rc
+	awk -f ../../build/win32/win32ver.awk mod_env.so "env_module for Apache" ../../include/ap_release.h  > .\mod_env.rc
 
 # End Custom Build
 

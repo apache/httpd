@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_log_config.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_log_config  "log_config_module for Apache" ../../include/ap_release.h > .\mod_log_config.rc
+	awk -f ../../build/win32/win32ver.awk mod_log_config.so "log_config_module for Apache" ../../include/ap_release.h > .\mod_log_config.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_log_config.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_log_config  "log_config_module for Apache" ../../include/ap_release.h > .\mod_log_config.rc
+	awk -f ../../build/win32/win32ver.awk mod_log_config.so "log_config_module for Apache" ../../include/ap_release.h > .\mod_log_config.rc
 
 # End Custom Build
 

@@ -130,7 +130,7 @@ SOURCE=..\..\..\build\win32\win32ver.awk
 InputPath=..\..\..\build\win32\win32ver.awk
 
 ".\mod_dav_fs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../../build/win32/win32ver.awk mod_dav_fs  "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
+	awk -f ../../../build/win32/win32ver.awk mod_dav_fs.so "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
 
 # End Custom Build
 
@@ -141,7 +141,7 @@ InputPath=..\..\..\build\win32\win32ver.awk
 InputPath=..\..\..\build\win32\win32ver.awk
 
 ".\mod_dav_fs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../../build/win32/win32ver.awk mod_dav_fs  "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
+	awk -f ../../../build/win32/win32ver.awk mod_dav_fs.so "dav_fs_module for Apache" ../../../include/ap_release.h > .\mod_dav_fs.rc
 
 # End Custom Build
 
