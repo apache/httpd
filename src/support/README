@@ -4,6 +4,16 @@ ab
 	ABuse your server with this benchmarker. Rudimentary
 	command line testing tool.
 
+	To compile with SSL support; specify the compile
+	time flag 'USE_SSL'. E.g. during configure do:
+	
+	CFLAGS="-I/usr/local/ssl/include -DUSE_SSL " \
+		LIBS="-L/usr/local/ssl/lib -lssl -lcrypt" 
+		./configure ...
+
+	SSL support is even more rudimentary and experimental
+	than ab itself :-).
+
 apachectl
 	Apache run-time Control script. To facilitate the
 	administrator and/or your rc.d scripts to control the 

@@ -63,7 +63,15 @@ ab \- Apache HTTP server benchmarking tool
 [
 .B \-k
 ] [
+.B \-e
+] [
+.B \-q
+] [
+.B \-S
+] [
 .B \-i
+] [
+.B \-s
 ] [
 .BI \-n " requests"
 ] [
@@ -74,6 +82,8 @@ ab \- Apache HTTP server benchmarking tool
 .BI \-p " POST file"
 ] [
 .BI \-A " Authenticate username:password"
+] [
+.BI \-X " proxy [ :port ]"
 ] [
 .BI \-P " Proxy Authenticate username:password"
 ] [
@@ -89,6 +99,12 @@ ab \- Apache HTTP server benchmarking tool
 .BI \-w " output HTML"
 ]
 ] [
+.BI \-g " output GNUPLOT"
+]
+] [
+.BI \-e " output CSV"
+]
+] [
 .BI \-x " <table> attributes"
 ]
 ] [
@@ -97,7 +113,7 @@ ab \- Apache HTTP server benchmarking tool
 ] [
 .BI \-z " <td> attributes"
 ]
-.I [http://]hostname[:port]/path 
+.I [http[s]://]hostname[:port]/path 
 
 .B ab
 [
@@ -118,6 +134,28 @@ many requests per second your Apache installation can serve.
 Enable the HTTP KeepAlive feature; that is, perform multiple requests
 within one HTTP session. Default is no KeepAlive.
 .TP 12
+.B \-d
+Do not display the "percentage served within XX [ms] table". (legacy
+support).
+.TP 12
+.B \-S
+Do not display the median and standard deviation values, nor display
+the warning/error messages when the average and median are more than
+one or two times the standard deviation apart. And default to the 
+min/avg/max values. (legacy support).
+.TP 12
+.B \-s
+When compiled in (bb -h will show you) use the SSL protected
+.B https
+rather than the 
+.B http
+protocol. This feature is experimental and
+.B very
+rudimentary. You propably do not want to use it.
+.TP 12
+.B \-k 
+Enable the HTTP KeepAlive feature; that is, perform multiple requests
+within one HTTP session. Default is no KeepAlive.
 .B \-i
 Use an HTTP 'HEAD' instead of the GET method. Cannot be mixed with POST.
 .TP 12
@@ -149,7 +187,11 @@ The string is sent regardless of whether the server needs it; that is,
 has sent a 401 Authentication needed.
 
 .TP 12
-.BI \-p " Proxy-Authorization username:password"
+.BI \-X " proxy[:port]"
+Route all requests through the proxy (at optional port).
+
+.TP 12
+.BI \-P " Proxy-Authorization username:password"
 Supply Basic Authentication credentials to a proxy en-route. The username
 and password are separated by a single ':', and sent as uuencoded data.
 The string is sent regardless of whether the proxy needs it; that is,
@@ -169,6 +211,30 @@ example, 'Accept-Encoding: zip/zop;8bit'.
 .TP 12
 .BI \-T " content-type"
 The content-type header to use for POST data.
+
+.TP 12
+.BI \-g " gnuplot file"
+Write all measured values out as a 'gnuplot' or TSV (Tab separate values)
+file. This file can easily be imported into packages like Gnuplot, IDL, Mathematica,
+Igor or even Excell. The labels are on the first line of the file. 
+
+.TP 12
+.BI \-q
+When processing more than 150 requsts; 
+.B ab
+outputs a progress count on 
+.B stderr
+every 10% or 100 requests or so. The 
+.B -q
+flag qill suppress these messages.
+
+.TP 12
+.BI \-e " CSV file"
+Write a Comma separated value (CSV) file which contains for each
+percentage (from 1% to 100%) the time (in milli seconds) it took
+to serve that percentage of the requests. This is usually more
+usefull than the 'gnuplot' file; as the results are already
+'binned'.
 
 .TP 12
 .B \-v 
@@ -214,6 +280,19 @@ by the program may skew performance results, since it uses significant
 CPU resources.  Make sure that performance limits are not hit by
 .B ab
 before your server's limit is reached.
+.P
+The HTML output is not as complete as the text output.
+.P
+Up to version 1.3d
+.B ab
+has propably reported values way to low for most measurements;
+as a single timeout (which is usually in the order of seconds)
+will shift several thousands of milli-second responses by a
+considerable factor. This was further componded by a serious
+interger overrun which would for realistic run's (i.e. those
+longer than a few minutes) produce believable but totally 
+bogus results. Thanks to Sander Temme <sander@covalent.net>
+for solving this riddle.
 
 .SH SEE ALSO
 .BR httpd(8)
