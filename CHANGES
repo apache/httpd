@@ -1,5 +1,10 @@
 Changes with Apache 2.0.25-dev
 
+  *) Move the installed /manual directory out of the /htdocs/ tree, so
+     that it can be kept more independently from the remaining document
+     root. The "Alias /manual ..." already allowed for easy projection
+     into existing private document trees. [Martin Kraemer]
+
   *) Add specified user attributes to the environment when using
      mod_auth_ldap. This allows you to use mod_include to embed specified
      user attributes in a page like so:
