@@ -1,10 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 106090:106849 (outdated) -->
+<!-- English Revision: 106849 -->
 
 <!--
- Copyright 2004 The Apache Software Foundation
+ Copyright 2004-2005 The Apache Software Foundation or it licensors,
+                     as applicable.
+
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -30,7 +32,7 @@
     funcionar m&#225;s de un sitio web (tales como
     <code>www.company1.com</code> y <code>www.company2.com</code>) en
     una sola m&#225;quina. Los sitios web virtuales pueden estar "<a
-    href="ip-based.html">basados en su direcci&#243;n IP</a>", lo que
+    href="ip-based.html">basados en direcciones IP</a>", lo que
     significa que cada sitio web tiene una direcci&#243;n IP diferente, o
     "<a href="name-based.html">basados en nombres diferentes</a>", lo
     que significa que con una sola direcci&#243;n IP est&#225;n funcionando
@@ -45,7 +47,7 @@
     hosting virtual se llama algunas veces <em>basada en host</em> o
     <em>hosting virtual no basado en IP</em>.</p>
 
-    <p>M&#225;s abajo se muestra un listado de documentos que explican con
+    <p>M&#225;s abajo se muestra un listado de documentos que explican en
     detalle c&#243;mo funciona el hosting virtual en las versiones de
     Apache 1.3 y posteriores.</p>
 
@@ -67,12 +69,14 @@ host virtual</a></seealso>
       nombres</a> (M&#225;s de un sitio web con una sola direcci&#243;n IP)</li>
       <li><a href="ip-based.html">Hosting virtual basado en IPs</a>
       (Una direcci&#243;n IP para cada sitio web)</li>
-      <li><a href="examples.html">Ejemplos de hosting virtual para
-      configuraciones t&#237;picas</a></li>
-      <li><a href="fd-limits.html"> L#237;mites en los descriptores de ficheros</a> (o,
-      <em>demasiados ficheros log</em>)</li>
-      <li><a href="mass.html">Configuraci&#243;n din&#225;mica de Hosting virtual masivo</a></li>   
-      <li><a href="details.html">Discusi&#243;n en profundidad sobre proceso de selecci&#243;n de host virtual</a></li>
+      <li><a href="examples.html">Ejemplos t&#237;picos de
+      configuraci&#243;n para usar hosting virtual</a></li>
+      <li><a href="fd-limits.html">L#237;mites a los descriptores de
+      ficheros</a> (o, <em>demasiados ficheros de registro</em>)</li>
+      <li><a href="mass.html">Configuraci&#243;n din&#225;mica de
+      Hosting virtual masivo</a></li>
+      <li><a href="details.html">Discusi&#243;n en profundidad sobre el
+      proceso de selecci&#243;n de hosting virtual</a></li>
     </ul>
 
 </section>
@@ -88,22 +92,23 @@ host virtual</a></seealso>
       <li><directive module="core">ServerPath</directive></li>
     </ul>
 
-    <p>Si est&#225; tratando de solucionar problemas con su configuraci&#243;n de
-    hosting virtual, puede que le sea de utilidad usar la opci&#243;n de
-    l&#237;nea de comandos de Apache <code>-S</code>. Es decir, el
-    siguiente comando:</p>
+    <p>Si est&#225; tratando de solucionar problemas de
+    configuraci&#243;n de su hosting virtual, puede que le sea de
+    utilidad usar la opci&#243;n de l&#237;nea de comandos de Apache
+    <code>-S</code>. Es decir, el siguiente comando:</p>
 
     <example>
     /usr/local/apache2/bin/httpd -S
     </example>
 
-    <p>Este comando le devolver&#225; una descripci&#243;n de como Apache
-    analiza y entiende el fichero de configuraci&#243;n. Para descubrir si
-    tiene errores de configuraci&#243;n, es conveniente que examine con
-    atenci&#243;n las direcciones IP y los nombres de servidor que est&#225;
-    usando. (Consulte <a href="../programs/httpd.html">la
-    documentaci&#243;n del programa httpd</a> para obtener informaci&#243;n
-    sobre otras opciones de l&#237;nea de comandos)</p>
+    <p>Este comando le devolver&#225; una descripci&#243;n de
+    c&#243;mo Apache analiza e interpreta el fichero de
+    configuraci&#243;n. Para saber si contiene errores de
+    configuraci&#243;n, es conveniente que examine con atenci&#243;n
+    las direcciones IP y los nombres de servidor que est&#225;
+    usando. (Consulte la documentaci&#243;n sobre el programa
+    <program>httpd</program> para obtener informaci&#243;n sobre otras
+    opciones de l&#237;nea de comandos)</p>
 
 </section>
 </manualpage>
