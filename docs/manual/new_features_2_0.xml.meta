@@ -8,7 +8,7 @@
   <variants>
     <variant>de</variant>
     <variant>en</variant>
-    <variant htmlonly="yes">fr</variant>
+    <variant>fr</variant>
     <variant>ja</variant>
     <variant>ko</variant>
     <variant outdated="yes">ru</variant>
