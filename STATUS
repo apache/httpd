@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/03 04:23:19 $]
+Last modified at [$Date: 2002/02/03 16:26:01 $]
 
 Release:
 
@@ -154,16 +154,15 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       -1:  Justin, Ian
         
     * If the parent process dies, should the remaining child processes
-      "gracefully" self-terminate.
-        Message-ID: <3C58232C.FE91F19F@Golux.Com>
+      "gracefully" self-terminate. Or maybe we should make it a runtime
+      option, or have a concept of 2 parent processes (one being a 
+      "hot spare").
+      See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
-      +1:  Jim, Justin, Ken
-       0:  Aaron says "Some admins want it, some don't. Let's just make
-                       it an option. Not 'SuicidalParentlessChildren'. ;)"
-      -1:  BrianP (but +0 if it's a configurable option like Aaron
-           has suggested), Ian, Cliff (why is the parent dying?  let's fix
-           the bug(s) rather than patching around it)
-	   BillS
+      Self-destruct: Justin, Ken
+      Not self-destruct: BrianP, Ian, Cliff, BillS
+      Make it runtime configurable: Jim
+      Have 2 parents: Jim
 
     * Make some modifications to the scoreboard creation routines,
       prefer anonymous shared memory, and allow a configuration
