@@ -100,7 +100,7 @@
       language alternative (content negotiation).</li>
 
       <li>By setting the <directive
-      module="mod_negotiation.html">LanguagePriority</directive>
+      module="mod_negotiation">LanguagePriority</directive>
       directive we define a set of default fallback languages in
       the situation where the client's browser did not express any
       preference at all.</li>

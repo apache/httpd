@@ -385,7 +385,7 @@
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_digest.html">mod_digest</a></code></td>
+        <td><code>mod_digest</code></td>
         <td class="centered">+</td>
         <td />
       </tr>
@@ -445,7 +445,7 @@
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_log_agent.html">mod_log_agent</a></code></td>
+        <td><code>mod_log_agent</code></td>
         <td class="centered">+</td>
         <td />
       </tr>
@@ -457,7 +457,7 @@
       </tr>
 
       <tr>
-        <td><code class="module"><a href="../mod/mod_log_referer.html">mod_log_referer</a></code></td>
+        <td><code>mod_log_referer</code></td>
         <td class="centered">+</td>
         <td />
       </tr>

@@ -111,7 +111,7 @@
       enable the language selection of the most appropriate
       language alternative (content negotiation).</li>
 
-      <li>By setting the <code class="directive"><a href="../mod/mod_negotiation.html.html#languagepriority">LanguagePriority</a></code>
+      <li>By setting the <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
       directive we define a set of default fallback languages in
       the situation where the client's browser did not express any
       preference at all.</li>
