@@ -56,11 +56,17 @@ a:active {
     background-color: #f0f0f0;
 }
 
-/* sidebar */
+/* hover on non-white backgrounds */
+div.note a:hover,
+div.note a:active,
+div.example a:hover,
+div.example a:active,
+div.warning a:hover,
+div.warning a:active,
 div#quickview a:hover,
 div#quickview a:active {
     background-color: #fff;
-    color: #0073c7; /* prevent validator warning */
+    color: #0073c7;
 }
 
 /* code.module [links]    */
@@ -82,6 +88,19 @@ code.module a:active {
     background-color: #f0f0f0;
 }
 
+/* hover on non-white backgrounds */
+div.note code.module a:hover,
+div.note code.module a:active,
+div.example code.module a:hover,
+div.example code.module a:active,
+div.warning code.module a:hover,
+div.warning code.module a:active,
+div#quickview code.module a:hover,
+div#quickview code.module a:active {
+    background-color: #fff;
+    color: #8b4513;
+}
+
 /* code.directive [links] */
 /* ====================== */
 code.directive,
@@ -99,6 +118,19 @@ code.directive a:hover,
 code.directive a:active {
     color: #287f00;
     background-color: #f0f0f0;
+}
+
+/* hover on non-white backgrounds */
+div.note code.directive a:hover,
+div.note code.directive a:active,
+div.example code.directive a:hover,
+div.example code.directive a:active,
+div.warning code.directive a:hover,
+div.warning code.directive a:active,
+div#quickview code.directive a:hover,
+div#quickview code.directive a:active {
+    background-color: #fff;
+    color: #287f00;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
