@@ -56,7 +56,6 @@
 #define UTIL_XML_H
 
 #include "apr_xml.h"
-#include "apu_compat.h"
 
 #include "httpd.h"
 
