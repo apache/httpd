@@ -139,6 +139,7 @@ API_EXPORT(int) ap_base64decode(char *bufplain, const char *bufcoded)
     for (i = 0; i < len; i++)
 	bufplain[i] = os_toebcdic[bufplain[i]];
 #endif				/* CHARSET_EBCDIC */
+    bufplain[len] = '\0';
     return len;
 }
 
@@ -186,7 +187,6 @@ API_EXPORT(int) ap_base64decode_binary(unsigned char *bufplain,
 	    (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
     }
 
-    *(bufout++) = '\0';
     nbytesdecoded -= (4 - nprbytes) & 3;
     return nbytesdecoded;
 }
