@@ -743,7 +743,7 @@ API_EXPORT(const char *) ap_os_dso_error(void)
      */
     
     nErrorCode = GetLastError();
-    len = ap_snprintf(errstr, sizeof(errstr) - len, "(%d) ", nErrorCode);
+    len = ap_snprintf(errstr, sizeof(errstr), "(%d) ", nErrorCode);
 
     len += FormatMessage( 
             FORMAT_MESSAGE_FROM_SYSTEM,
