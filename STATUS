@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/22 19:05:05 $]
+Last modified at [$Date: 2003/07/23 05:28:54 $]
 
 Release:
 
@@ -299,6 +299,14 @@ PATCHES TO PORT FROM 2.1
     * ab: reject overlong credentials from command line (2.0 + 1.3)
         support/ab.c: r1.127
       +1: nd
+
+    * mod_deflate: Don't attempt to hold all of the response until we're done. 
+        modules/filters/mod_deflate.c: r1.35
+      jerenkrantz says: Ben Collins-Sussman confirms this fixes a problem
+                        with Subversion when mod_deflate is used where it'd
+                        hold on to the entire response until EOS.  That's bad.
+      +1: jerenkrantz
+
 
 CURRENT RELEASE NOTES:
 
