@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) htdigest and htpasswd needed slight tweaks to work on OS/2 and WIN32.
+     [Brian Havard]
+
   *) The NeXT cc (which is gcc hacked up) doesn't appear to support some
      gcc functionality.  Work around it.
      [Keith Severson <keith@sssd.navy.mil>] PR#1613
