@@ -145,17 +145,6 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
     if (ap_status_drops_connection(r->status)) {
         r->connection->keepalive = 0;
     }
-    else if ((r->status != HTTP_NOT_MODIFIED) &&
-             (r->status != HTTP_NO_CONTENT) &&
-             r->connection && (r->connection->keepalive != -1)) {
-        /* If the discard returns AP_FILTER_ERROR, it means that we went
-         * recursive on ourselves and we should abort.
-         */
-        int errstatus = ap_discard_request_body(r);
-        if (errstatus == AP_FILTER_ERROR) {
-            return;
-        }
-    }
 
     /*
      * Two types of custom redirects --- plain text, and URLs. Plain text has
