@@ -274,6 +274,9 @@ Win32 specific issues:
 
  Help:
 
+    * numerous uses of strcpy and strcat have potential for buffer
+      overflow, someone should rewrite or verify they're safe
+
     * process/thread model
 	- need dynamic thread creation/destruction, similar to 
 	  Unix process model
