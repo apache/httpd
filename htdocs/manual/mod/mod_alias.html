@@ -248,7 +248,7 @@ and if it matches, the server will substitute any parenthesized
 matches into the given string and use it as a filename. For example,
 to activate the standard <code>/cgi-bin</code>, one might use:
 <pre>
-    ScriptAlias ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
 </pre>
 </p>
 
