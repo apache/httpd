@@ -188,6 +188,13 @@ Rule WANTHSREGEX=default
 # is and the more memory it will take, so if you are unlikely to use the
 # functionality of a particular module you might wish to leave it out.
 
+## mod_mmap_static is an experimental module, you almost certainly
+## don't need it.  It can make some webservers faster.  No further
+## documentation is provided here because you'd be foolish
+## to use mod_mmap_static without reading the full documentation.
+
+# AddModule modules/experimental/mod_mmap_static.o
+
 ##
 ## Config manipulation modules
 ##
@@ -364,13 +371,6 @@ AddModule modules/standard/mod_auth.o
 ## Don't change this entry to a 'SharedModule' variant (Bootstrapping!)
 
 # AddModule modules/standard/mod_so.o
-
-## mod_mmap_static is an experimental module, you almost certainly
-## don't need it.  It can make some webservers faster.  No further
-## documentation is provided here because you'd be foolish
-## to use mod_mmap_static without reading the full documentation.
-
-# AddModule modules/experimental/mod_mmap_static.o
 
 ## mod_setenvif lets you set environment variables based on the HTTP header
 ## fields in the request; this is useful for conditional HTML, for example.
