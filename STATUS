@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/28 23:16:57 $]
+Last modified at [$Date: 2002/05/29 11:41:10 $]
 
 Release:
 
@@ -111,6 +111,12 @@ RELEASE SHOWSTOPPERS:
       Message-ID: <m3n0ukxsmr.fsf@rdu88-251-253.nc.rr.com>
 
 CURRENT VOTES:
+
+    * apachectl should revert to just being an init script and
+      httpd.sh should be the wrapper for httpd which sources envvars
+      and allows any options to be passed through
+
+      +1:  trawick
 
     * Should we always build [support*] binaries statically unless otherwise
       indicated?
