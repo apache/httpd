@@ -2,7 +2,7 @@
 
 BEGIN {
     
-    A["ServerRoot"] = "SYS:\APACHE2"
+    A["ServerRoot"] = "SYS:/APACHE2"
     A["Port"] = "80"
     
 }
@@ -35,9 +35,7 @@ BEGIN {
 
 match ($0,/@@.*@@/) {
     s=substr($0,RSTART+2,RLENGTH-4)
-#    substr($0,RSTART,RLENGTH) = A[s]
     sub(/@@.*@@/,A[s],$0)
-#    print
 }
 
 
