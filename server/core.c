@@ -1235,7 +1235,7 @@ static const char *set_allow_opts(cmd_parms *cmd, allow_options_t *opts,
     char *w, *p = (char *) l;
     char *tok_state;
 
-    while (w = apr_strtok(p, ",", &tok_state)) {
+    while ((w = apr_strtok(p, ",", &tok_state)) != NULL) {
 
         if (first) {
             p = NULL;
