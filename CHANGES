@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) complain via error_log when mod_include's INCLUDES filter is
+     enabled, but the relevant Options flag allowing the filter to run
+     for the specific resource wasn't set, so that the filter won't
+     silently get skipped. [Stas Bekman]
+
   *) Clean up httpd -V output: Instead of displaying the MPM source
      directory, display the MPM name and some MPM properties.
      [Geoffrey Young <geoff apache.org>]
