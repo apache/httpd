@@ -648,8 +648,15 @@ static void * worker_thread(apr_thread_t *thd, void * dummy)
     apr_pool_destroy(tpool);
     ap_update_child_status(process_slot, thread_slot, (dying) ? SERVER_DEAD : SERVER_GRACEFUL,
         (request_rec *) NULL);
-    dying = 1;
     apr_lock_acquire(worker_thread_count_mutex);
+    if (!dying) {
+        /* this is the first thread to exit */
+        if (ap_my_pid == ap_scoreboard_image->parent[process_slot].pid) {
+            /* tell the parent that it may use this scoreboard slot */
+            ap_scoreboard_image->parent[process_slot].quiescing = 1;
+        }   
+        dying = 1;
+    }
     worker_thread_count--;
     if (worker_thread_count == 0) {
         /* All the threads have exited, now finish the shutdown process
@@ -900,6 +907,7 @@ static int make_child(server_rec *s, int slot)
         clean_child_exit(0);
     }
     /* else */
+    ap_scoreboard_image->parent[slot].quiescing = 0;
     ap_scoreboard_image->parent[slot].pid = pid;
     return 0;
 }
@@ -961,6 +969,7 @@ static void perform_idle_server_maintenance(void)
     int i, j;
     int idle_thread_count;
     worker_score *ws;
+    process_score *ps;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
@@ -985,6 +994,7 @@ static void perform_idle_server_maintenance(void)
 
 	if (i >= ap_max_daemons_limit && free_length == idle_spawn_rate)
 	    break;
+        ps = &ap_scoreboard_image->parent[i];
 	for (j = 0; j < ap_threads_per_child; j++) {
             ws = &ap_scoreboard_image->servers[i][j];
 	    status = ws->status;
@@ -998,11 +1008,19 @@ static void perform_idle_server_maintenance(void)
 	     * So we hopefully won't need to fork more if we count it.
 	     * This depends on the ordering of SERVER_READY and SERVER_STARTING.
 	     */
-	    if (status <= SERVER_READY && status != SERVER_DEAD) {
+	    if (status <= SERVER_READY && status != SERVER_DEAD &&
+                    ps->generation == ap_my_generation && 
+                 /* XXX the following shouldn't be necessary if we clean up 
+                  *     properly after seg faults, but we're not yet    GLA 
+                  */     
+                    ps->pid != 0) {
 	        ++idle_thread_count;
 	    }
 	}
-	if (any_dead_threads && free_length < idle_spawn_rate) {
+        /* XXX any_dead_threads may not be needed any more GLA */
+        if (any_dead_threads && free_length < idle_spawn_rate 
+                && (!ps->pid               /* no process in the slot */
+                    || ps->quiescing)) {   /* or at least one is going away */
 	    free_slots[free_length] = i;
 	    ++free_length;
 	}
@@ -1083,6 +1101,8 @@ static void server_main_loop(int remaining_children_to_start)
                 for (i = 0; i < ap_threads_per_child; i++)
                     ap_update_child_status(child_slot, i, SERVER_DEAD, (request_rec *) NULL);
                 
+                ap_scoreboard_image->parent[child_slot].pid = 0;
+                ap_scoreboard_image->parent[child_slot].quiescing = 0;
 		if (remaining_children_to_start
 		    && child_slot < ap_daemons_limit) {
 		    /* we're still doing a 1-for-1 replacement of dead

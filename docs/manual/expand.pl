@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/usr/bin/perl
 
 # This is a very simple Perl script to expand server-side includes
 # in the directory it is run, and direct subdirectories. It will
