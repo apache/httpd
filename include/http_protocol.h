@@ -145,10 +145,10 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error);
  * Set the content length for this request
  * @param r The current request
  * @param length The new content length
- * @return Always 0, can be safely ignored
- * @deffunc int ap_set_content_length(request_rec *r, long length)
+ * @deffunc void ap_set_content_length(request_rec *r, apr_off_t length)
  */
-AP_DECLARE(int) ap_set_content_length(request_rec *r, long length);
+AP_DECLARE(void) ap_set_content_length(request_rec *r, apr_off_t length);
+
 /**
  * Set the keepalive status for this request
  * @param r The current request
@@ -156,6 +156,7 @@ AP_DECLARE(int) ap_set_content_length(request_rec *r, long length);
  * @deffunc int ap_set_keepalive(request_rec *r)
  */
 AP_DECLARE(int) ap_set_keepalive(request_rec *r);
+
 /**
  * Return the latest rational time from a request/mtime pair.  Mtime is 
  * returned unless it's in the future, in which case we return the current time.
@@ -165,6 +166,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r);
  * @deffunc apr_time_t ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  */
 AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
+
 /**
  * Construct an entity tag from the resource information.  If it's a real
  * file, build in some of the file characteristics.
@@ -175,18 +177,21 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
  * @deffunc char *ap_make_etag(request_rec *r, int force_weak)
  */ 
 AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak);
+
 /**
  * Set the E-tag outgoing header
  * @param The current request
  * @deffunc void ap_set_etag(request_rec *r)
  */
 AP_DECLARE(void) ap_set_etag(request_rec *r);
+
 /**
  * Set the last modified time for the file being sent
  * @param r The current request
  * @deffunc void ap_set_last_modified(request_rec *r)
  */
 AP_DECLARE(void) ap_set_last_modified(request_rec *r);
+
 /**
  * Implements condition GET rules for HTTP/1.1 specification.  This function
  * inspects the client headers and determines if the response fulfills 
@@ -220,6 +225,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r);
  */
 AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                    apr_size_t length, apr_size_t *nbytes);
+
 /**
  * Send an MMAP'ed file to the client
  * @param mm The MMAP'ed file to send
