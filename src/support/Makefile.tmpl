@@ -11,7 +11,7 @@ LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
 .c.o: 
 	$(CC) -c $(CFLAGS) $(INCLUDES) $<
 
-TARGETS=htpasswd htdigest httpd_monitor rotatelogs logresolve
+TARGETS=htpasswd htdigest rotatelogs logresolve
 
 all: $(TARGETS)
 
@@ -20,9 +20,6 @@ htpasswd: htpasswd.c
 
 htdigest: htdigest.c
 	$(CC) $(CFLAGS) htdigest.c -o htdigest $(LIBS)
-
-httpd_monitor: httpd_monitor.c
-	$(CC) $(INCLUDES) $(CFLAGS) httpd_monitor.c -o httpd_monitor
 
 rotatelogs: rotatelogs.c
 	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.c -o rotatelogs
