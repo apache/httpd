@@ -63,9 +63,6 @@
 #include <stdio.h>
 #endif
 
-/* we need some of the portability definitions... for strchr */
-#include "httpd.h"
-
 /* A bunch of functions in util.c scan strings looking for certain characters.
  * To make that more efficient we encode a lookup table.
  */
