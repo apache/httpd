@@ -239,7 +239,6 @@ int add_cern_meta_data(request_rec *r)
     char *last_slash;
     char *real_file;
     char *scrap_book;
-    struct stat meta_stat;
     FILE *f;   
     cern_meta_config *cmc ;
     int rv;
@@ -292,6 +291,9 @@ int add_cern_meta_data(request_rec *r)
 
     f = pfopen (r->pool, metafilename, "r");
     if (f == NULL) {
+	if (errno == ENOENT) {
+	    return DECLINED;
+	}
         log_reason("meta file permissions deny server access", metafilename, r);
         return FORBIDDEN;
     };
