@@ -116,6 +116,7 @@
 #include "apr_thread_mutex.h"
 #endif
 #include "apr_optional.h"
+#include "apr_dbm.h"
 #include "ap_config.h"
 
     /* Include from the Apache server ... */
@@ -134,28 +135,6 @@
 #define VARY_KEY "rewrite-Vary"
 #define VARY_KEY_THIS "rewrite-Vary-this"
 
-    /* The NDBM support:
-     * We support only NDBM files.
-     * But we have to stat the file for the mtime,
-     * so we also need to know the file extension
-     */
-#ifndef NO_DBM_REWRITEMAP
-#if defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
-    && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
-#include <db1/ndbm.h>
-#else
-#include <ndbm.h>
-#endif
-#if defined(DBM_SUFFIX)
-#define NDBM_FILE_SUFFIX DBM_SUFFIX
-#elif defined(__FreeBSD__) || (defined(DB_LOCK) && defined(DB_SHMEM))
-#define NDBM_FILE_SUFFIX ".db"
-#else
-#define NDBM_FILE_SUFFIX ".pag"
-#endif
-#endif
-
-
 /*
 **
 **  Some defines
@@ -164,10 +143,6 @@
 
 #define ENVVAR_SCRIPT_URL "SCRIPT_URL"
 #define ENVVAR_SCRIPT_URI "SCRIPT_URI"
-
-#ifndef SUPPORT_DBM_REWRITEMAP
-#define SUPPORT_DBM_REWRITEMAP 0
-#endif
 
 #define REWRITE_FORCED_MIMETYPE_NOTEVAR "rewrite-forced-mimetype"
 

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Change mod_rewrite to use apr-util's dbm support for dbm rewrite
+     maps.  PR 10644  [Jeff Trawick]
+
   *) Fixed mod_rewrite's RewriteMap prg: support so that request/response
      pairs will no longer get out of sync with each other.  PR 9534
      [Cliff Woolley]
