@@ -144,6 +144,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
     apr_pollfd_t *pollset;
     int num_listeners;
     TID server_maint_tid;
+    void *sb_mem;
 
     /* Stop Ctrl-C/Ctrl-Break signals going to child processes */
     DosSetSignalExceptionFocus(0, &ulTimes);
@@ -164,7 +165,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
     }
 
     /* Gain access to the scoreboard. */
-    rc = DosGetNamedSharedMem((PPVOID)&ap_scoreboard_image, ap_scoreboard_fname,
+    rc = DosGetNamedSharedMem(&sb_mem, ap_scoreboard_fname,
                               PAG_READ|PAG_WRITE);
 
     if (rc) {
@@ -172,6 +173,9 @@ void ap_mpm_child_main(apr_pool_t *pconf)
                      "scoreboard not readable in child, exiting");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
+
+    ap_calc_scoreboard_size();
+    ap_init_scoreboard(sb_mem);
 
     /* Gain access to the accpet mutex */
     rc = DosOpenMutexSem(NULL, &ap_mpm_accept_mutex);

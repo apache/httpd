@@ -298,7 +298,7 @@ static char master_main()
     /* Allocate shared memory for scoreboard */
     if (ap_scoreboard_image == NULL) {
         void *sb_mem;
-        rc = DosAllocSharedMem((PPVOID)&sbmem, ap_scoreboard_fname,
+        rc = DosAllocSharedMem(&sb_mem, ap_scoreboard_fname,
                                ap_calc_scoreboard_size(),
                                PAG_COMMIT|PAG_READ|PAG_WRITE);
 
