@@ -287,7 +287,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                             (BUILTIN_DIALOG_RETRIES-nPassPhraseRetry) == 1 ? "y" : "ies");
                     nPassPhraseRetry++;
                     if (nPassPhraseRetry > BUILTIN_DIALOG_BACKOFF)
-                        sleep((nPassPhraseRetry-BUILTIN_DIALOG_BACKOFF)*5);
+                        apr_sleep((nPassPhraseRetry-BUILTIN_DIALOG_BACKOFF)*5*APR_USEC_PER_SEC);
                     continue;
                 }
 
