@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Reject a blank UserDir directive since it is ambiguous.  PR 8472.
+     [Justin Erenkrantz]
+
   *) Make mod_mime use case-insensitive matching when examining
      extensions on all platforms.  PR 8223.  [Justin Erenkrantz]
 
