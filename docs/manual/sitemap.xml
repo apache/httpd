@@ -120,6 +120,7 @@ Server on HPUX</page>
 <page href="misc/known_client_problems.html">Known Client Problems</page>
 <page href="misc/descriptors.html">Descriptors and Apache</page>
 <page href="cgi_path.html">PATH_INFO Changes in the CGI Environment</page>
+<page href="misc/relevant_standards.html">Relevant Standards</page>
 </category>
 
 <category id="modules">
