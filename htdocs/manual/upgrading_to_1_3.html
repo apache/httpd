@@ -189,15 +189,13 @@ changes in third party modules not maintained by Apache.
    (because of cross-object usage) but should be (e.g.,
    <CODE>new_connection</CODE>).  For backward source compatibility with
    Apache 1.2 a new header file named <CODE>compat.h</CODE> was created which
-   provides defines for the old symbol names and should be used by third-party
-   module authors.
+   provides defines for the old symbol names.
+   You'll either have to <CODE>#include compat.h</CODE> or update the API
+   symbols you use.
   </LI>
   <LI>
    Be sure and examine the <A HREF="sourcereorg.html">source code
    reorganization page</A> to see whether any item there affects you.
-   If anything, the symbol renaming (prepending of <CODE>ap_</CODE>)
-   will probably have an impact, as you'll either have to 
-   <CODE>#include compat.h</CODE> or update the API symbols you use.
   </LI>
 
   <LI>Use of <SAMP>SERVER_VERSION</SAMP> definition.  If third-party
