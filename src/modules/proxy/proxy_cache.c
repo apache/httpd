@@ -476,7 +476,7 @@ static int rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
 int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		      struct cache_req **cr)
 {
-    char hashfile[66], *imstr, *pragma, *p, *auth;
+    char hashfile[66], *imstr, *pragma, *auth;
     struct cache_req *c;
     time_t now;
     BUFF *cachefp;
@@ -499,7 +499,7 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	imstr = proxy_date_canon(r->pool, imstr);
 	c->ims = parseHTTPdate(imstr);
 	if (c->ims == BAD_DATE)	/* bad or out of range date; remove it */
-	    table_set(r->headers_in, "If-Modified-Since", NULL);
+	    table_unset(r->headers_in, "If-Modified-Since");
     }
 
 /* find the filename for this cache entry */
@@ -563,9 +563,11 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		/* CHECKME: surely this was wrong? (Ben)
 		   p = table_get(r->headers_in, "Expires");
 		 */
-		p = table_get(c->hdrs, "Expires");
-		if (p != NULL)
-		    table_set(r->headers_out, "Expires", p);
+		struct hdr_entry *q;
+
+		q = proxy_get_header(c->hdrs, "Expires");
+		if (q != NULL && q->value != NULL)
+		    table_set(r->headers_out, "Expires", q->value);
 	    }
 	    pclosef(r->pool, cachefp->fd);
 	    Explain0("Use local copy, cached file hasn't changed");
