@@ -545,7 +545,8 @@ IndexIgnore README .htaccess *~
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> '+/-' syntax and merging of multiple
  <SAMP>IndexOptions</SAMP> directives is only available with
- Apache 1.3.3 and later
+ Apache 1.3.3 and later; the <samp>FoldersFirst</samp> option is only
+ available with Apache 1.3.10 and later
 <P>
 
 The IndexOptions directive specifies the behavior of the directory indexing.
@@ -564,6 +565,21 @@ This turns on fancy indexing of directories.
  is combined with any <SAMP>IndexOptions</SAMP> directive already
  specified for the current scope.</STRONG>
 </BLOCKQUOTE>
+<dt><a name="indexoptions:foldersfirst">FoldersFirst
+ (<i>Apache 1.3.10 and later</i>)</a></dt>
+<dd>
+If this option is enabled, subdirectories in a FancyIndexed listing
+will <i>always</i> appear first, followed by normal files in the
+directory.  The listing is basically broken into two components,
+the files and the subdirectories, and each is sorted separately and
+then displayed subdirectories-first.  For instance, if the sort order
+is descending by name, and <samp>FoldersFirst</samp> is enabled,
+subdirectory <samp>Zed</samp> will be listed before subdirectory
+<samp>Beta</samp>, which will be listed before normal files
+<samp>Gamma</samp> and <samp>Alpha</samp>.
+<b>This option only has an effect if
+<a href="#indexoptions:fancyindexing"><samp>FancyIndexing</samp></a>
+is also enabled.</b></dd>
 <DT><A NAME="indexoptions:iconheight">IconHeight[=pixels] (<EM>Apache 1.3 and later</EM>)</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt IconHeight} index option&gt; -->
@@ -648,14 +664,14 @@ directive in recent (post-1.3.0) versions of Apache.
 The default is that no options are enabled. If multiple IndexOptions
 could apply to a directory, then the most specific one is taken complete;
 the options are not merged. For example:
-<BLOCKQUOTE><CODE>
-&lt;Directory /web/docs&gt; <BR>
-IndexOptions FancyIndexing <BR>
-&lt;/Directory&gt;<BR>
-&lt;Directory /web/docs/spec&gt; <BR>
-IndexOptions ScanHTMLTitles <BR>
+<BLOCKQUOTE><pre>
+&lt;Directory /web/docs&gt;
+    IndexOptions FancyIndexing
 &lt;/Directory&gt;
-</CODE></BLOCKQUOTE>
+&lt;Directory /web/docs/spec&gt;
+    IndexOptions ScanHTMLTitles
+&lt;/Directory&gt;
+</pre></BLOCKQUOTE>
 then only <CODE>ScanHTMLTitles</CODE> will be set for the /web/docs/spec
 directory.
 </P>
