@@ -317,7 +317,6 @@ static int ap_listen_open(process_rec *process, apr_port_t port)
         apr_socket_close(lr->sd);
         lr->active = 0;
         next = lr->next;
-        /*free(lr);*/
     }
     old_listeners = NULL;
 
