@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/13 18:33:18 $]
+Last modified at [$Date: 2003/01/13 19:41:16 $]
 
 Release:
 
@@ -71,6 +71,11 @@ PATCHES TO PORT FROM 2.1
       +1: stoddard, striker, jim
       -1: brianp (we need a more robust solution than what's in 2.1 right now),
           jerenkrantz (should be fixed, but I don't have time to do this)
+
+    * Fix mod_ext_filter to properly NULL-terminate an array of args
+      for some forms of ExtFilterDefine.  PR 15491.  This is r1.2 of
+      modules/filters/mod_ext_filter.c.
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
