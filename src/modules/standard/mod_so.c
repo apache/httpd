@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1995-1997 The Apache Group.  All rights reserved.
+ * Copyright (c) 1995-1998 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -51,7 +51,58 @@
  *
  */
 
-/* How to create .so files on various platforms:
+/* 
+ * This module is used to load Apache modules at runtime. This means
+ * that the server functionality can be extended without recompiling
+ * and even without taking the server down at all!
+ *
+ * To use, you'll first need to build your module as a shared library, then
+ * update your configuration (httpd.conf) to get the Apache core to
+ * load the module at start-up.
+ *
+ * The easiest way to build a module as a shared library is to use the
+ * "SharedModule" command in the Configuration file, instead of AddModule.
+ * You should also change the file extension from .o to .so. So, for example,
+ * to build the status module as a shared library edit Configuration
+ * and change
+ *   AddModule    modules/standard/mod_status.o
+ * to
+ *   SharedModule modules/standard/mod_status.so
+ *
+ * Run Configure and make. Now Apache's httpd will _not_ include
+ * mod_status. Instead a shared library called mod_status.so will be
+ * build, in the modules/standard directory. You can build any or all
+ * modules as shared libraries like this.
+ *
+ * To use the shared module, move the .so file(s) into an appropriate
+ * directory. You might like to create a directory called "modules" under
+ * you server root for this (e.g. /usr/local/httpd/modules). 
+ *
+ * Then edit your conf/httpd.conf file, and add LoadModule lines. For
+ * example
+ *   LoadModule  status_module   modules/mod_status.so
+ *
+ * The first argument is the module's structure name (look at the
+ * end of the module source to find this). The second option is
+ * the path to the module file, relative to the server root.
+ * Put these directives right at the top of your httpd.conf file.
+ *
+ * Now you can start Apache. A message will be logged at "debug" level
+ * to your error_log to confirm that the module(s) are loaded (use
+ * "LogLevel debug" directive to get these log messages).
+ *
+ * If you edit the LoadModule directives while the server is live you
+ * can get Apache to re-load the modules by sending it a HUP or USR1
+ * signal as normal. You can use this to dynamically change the 
+ * capability of your server without bringing it down.
+ *
+ * Apache's Configure currently only creates shared modules on
+ * Linux 2 and FreeBSD systems. 
+ */
+
+/* More details about shared libraries:
+ *
+ * How to create .so files on various platforms:
 
    FreeBSD:
       "gcc -fpic" to compile
@@ -120,36 +171,63 @@ int dlclose (void *);
 #define RTLD_LAZY 1
 #endif
 
-/*
- * The hard part of implementing LoadModule is deciding what to do about
- * rereading the config files.  This proof-of-concept implementation takes the 
- * cheap way out:  we only actually load the modules the first time through.
- */
-
-static int been_there_done_that = 0; /* Loaded the modules yet? */
 static int have_symbol_table = 0;
 
 #ifndef NO_DLOPEN
+
+/* This is the cleanup for a loaded DLL. It unloads the module.
+ * This is called as a cleanup function.
+ */
+
+void unload_module(module *modp)
+{
+    char mod_name[50];		/* Um, no pool, so make this static */
+
+    /* Take a copy of the module name so we can report that it has been
+     * unloaded (since modp itself will have been unloaded). */
+    strncpy(mod_name, modp->name, 49);
+    mod_name[49] = '\0';
+
+    remove_module(modp);
+
+    /* The Linux manpage doesn't give any way to check the success of
+     * dlclose() */
+    dlclose(modp->dynamic_load_handle);
+
+    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
+		"unloaded module %s", mod_name);
+}
+
+/* unload_file is the cleanup routine for files loaded by
+ * load_file(). Unfortunately we don't keep a record of the filename
+ * that was loaded, so we can't report the unload for debug purposes
+ * or include the filename in error message.
+ */
+
+void unload_file(void *handle)
+{
+    /* The Linux manpage doesn't give any way to check the success of
+     * dlclose() */
+    dlclose(handle);
+}
+
+/* load_module is called for the directive LoadModule 
+ */
+
 static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char *filename)
 {
     void *modhandle;
     module *modp;
     const char *szModuleFile=server_root_relative(cmd->pool, filename);
 
-    if (been_there_done_that) return NULL;
-    
     if (!(modhandle = dlopen(szModuleFile, RTLD_NOW)))
       {
 	const char *my_error = dlerror();
 	return pstrcat (cmd->pool, "Cannot load ", szModuleFile,
-			" into server: ", my_error, ":",  dlerror(),
+			" into server: ", my_error,
 			NULL);
       }
  
-    /* If I knew what the correct cast is here, I'd be happy. But 
-     * I don't. So I'll use (void *). It works.
-     */
-
     aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
 		"loaded module %s", modname);
 
@@ -162,7 +240,16 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
 			" in file ", filename, ":", dlerror(), NULL);
     }
 	
+    modp->dynamic_load_handle = modhandle;
+
     add_module (modp);
+
+    /* Register a cleanup in the config pool (normally pconf). When
+     * we do a restart (or shutdown) this cleanup will cause the
+     * DLL to be unloaded.
+     */
+    register_cleanup(cmd->pool, modp, 
+		     (void (*)(void*))unload_module, null_cleanup);
 
     /* Alethea Patch (rws,djw2) - need to run configuration functions
        in new modules */
@@ -175,41 +262,45 @@ static const char *load_module (cmd_parms *cmd, void *dummy, char *modname, char
       ((void**)cmd->server->lookup_defaults)[modp->module_index]=
 	(*modp->create_dir_config)(cmd->pool, NULL);
 
-
     return NULL;
 }
 
+/* load_file implements the LoadFile directive.
+ */
+
 static const char *load_file (cmd_parms *cmd, void *dummy, char *filename)
 {
-   if (been_there_done_that) return NULL;
+    void *handle;
+    char *file;
+
+    file = server_root_relative(cmd->pool, filename);
     
-	if (!dlopen(server_root_relative(cmd->pool, filename), 1))
-		return pstrcat (cmd->pool, "Cannot load ", filename, " into server", NULL);
- 
-	return NULL;
+    if (!(handle = dlopen(file, 1))) {
+	const char *my_error = dlerror();
+	return pstrcat (cmd->pool, "Cannot load ", filename, 
+			" into server:", my_error, NULL);
+    }
+    
+    aplog_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL,
+		"loaded file %s", filename);
+
+    register_cleanup(cmd->pool, handle, unload_file, null_cleanup);
+
+    return NULL;
 }
 #else
 static const char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
-  if(!been_there_done_that)
-    fprintf(stderr, "WARNING: LoadFile not supported\n");
+  fprintf(stderr, "WARNING: LoadFile not supported\n");
   return NULL;
 }
 
 static const char *load_module(cmd_parms *cmd, void *dummy, char *modname, char *filename)
 {
-  if(!been_there_done_that)
-    fprintf(stderr, "WARNING: LoadModule not supported\n");
+  fprintf(stderr, "WARNING: LoadModule not supported\n");
   return NULL;
 }
 #endif
-
-static void check_loaded_modules (server_rec *dummy, pool *p)
-{
-    if (been_there_done_that) return;
-
-    been_there_done_that = 1;
-}
 
 command_rec so_cmds[] = {
 { "LoadModule", load_module, NULL, RSRC_CONF, TAKE2,
@@ -221,7 +312,7 @@ command_rec so_cmds[] = {
 
 module so_module = {
    STANDARD_MODULE_STUFF,
-   check_loaded_modules,	/* initializer */
+   NULL,			/* initializer */
    NULL,			/* create per-dir config */
    NULL,			/* merge per-dir config */
    NULL,			/* server config */
@@ -236,5 +327,3 @@ module so_module = {
    NULL,			/* logger */
    NULL				/* header parser */
 };
-
-
