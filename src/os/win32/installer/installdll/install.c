@@ -4,6 +4,7 @@
  * 26/06/97 PCS 1.000 Initial version
  * 22/02/98 PCS 1.001 Used the excellent NTemacs to apply proper formating
  * 04/05/98 PCS 1.002 Copy conf files to *.conf.default, then to *.conf
+ * 16/02/99 PCS 1.003 Add logging to "install.log" in the installed directory
  */
 
 #include <windows.h>
@@ -11,9 +12,55 @@
 #include <string.h>
 #include <stdio.h>
 #include <direct.h>
+#include <time.h>
 
 /* Global to store the instance handle */
 HINSTANCE hInstance = NULL;
+
+static char *szLogFilename = NULL;
+static FILE *fpLog = NULL;
+
+void OpenLog(char *dir, char *fn)
+{
+    szLogFilename = malloc(strlen(dir) + 1 + strlen(fn) + 1);
+    sprintf(szLogFilename, "%s/%s", dir, fn);
+
+    fpLog = fopen(szLogFilename, "a+");
+}
+
+void LogMessage(char *fmt, ...)
+{
+    char buf[4000];
+    va_list ap;
+    struct tm *tms;
+    time_t nowtime;
+    int bufsize = 4000;
+    char *bp = buf;
+    int rc;
+
+    if (!fpLog) {
+	return;
+    }
+
+    nowtime = time(NULL);
+    tms = localtime(&nowtime);
+    rc = strftime(buf, 4000, "%c", tms);
+    bp += rc;
+    *bp++ = ' ';
+
+    va_start(ap, fmt);
+    wvsprintf(bp, fmt, ap);
+    va_end(ap);
+
+    fprintf(fpLog, "%s\n", buf);
+}
+
+void CloseLog(void)
+{
+    if (fpLog) {
+	fclose(fpLog);
+    }
+}
 
 /*
  * MessageBox_error() is a helper function to display an error in a 
@@ -35,6 +82,7 @@ int MessageBox_error(HWND hWnd, int opt, char *title,
 {
     char buf[4000];
     va_list ap;
+    char *p;
 
     va_start(ap, fmt);
     wvsprintf(buf, fmt, ap);
@@ -58,6 +106,14 @@ int MessageBox_error(HWND hWnd, int opt, char *title,
 	*p = '\0';
 	strcat(buf, ")");
     }
+
+    for (p = buf; *p; p++) {
+	if (*p == '\n' || *p == '\r') {
+	    *p = ' ';
+	}
+    }
+
+    LogMessage("MSG %s", buf);
 
     return MessageBox(hWnd, buf, title, mb_opt);
 }
@@ -348,8 +404,11 @@ int WINAPI ExpandConfFile(HWND hwnd, LPSTR szInst, LPSTR szinFile, LPSTR szoutFi
     fclose(infp);
     fclose(outfp);
 
+    LogMessage("COPY: expanded %s to %s", inFile, outFile);
+
     if (options & OPT_DELETESOURCE) {
 	unlink(inFile);
+        LogMessage("COPY: deleted file %s", inFile);
     }
 
     return 0;
@@ -375,6 +434,9 @@ int FillInReplaceTable(HWND hwnd, REPLACETABLE table, char *szInst)
 #endif
 	    for (p = item->value; *p; p++)
 	        if (*p == '\\') *p = '/';
+
+	    LogMessage("FillInReplaceTable tmpl=%s value=%s", item->tmpl, item->value);
+
 	    continue;
 	}
 #if NEED_FQDN
@@ -477,10 +539,21 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
     ACTIONITEM *pactionItem;
     int end = 0;
 
+    OpenLog(szInst, "install.log");
+    LogMessage("installdll started: src=%s support=%s inst=%s",
+		szSrcDir, szSupport, szInst);
+
     FillInReplaceTable(hwnd, replaceHttpd, szInst);
 
     pactionItem = actionTable;
     while (!end) {
+
+	LogMessage("command=%d in=%s out=%s options=%d",
+		   pactionItem->command,
+		   pactionItem->in ? pactionItem->in : "NULL",
+		   pactionItem->out ? pactionItem->out : "NULL",
+		   pactionItem->options);
+
 	switch(pactionItem->command) {
 	case CMD_END:
 	    end = 1;
@@ -506,6 +579,7 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
 		    inFile);
 		return 0;
 	    }
+	    LogMessage("RM: deleted file %s", inFile);
 	    break;
 	}
 	case CMD_RMDIR: {
@@ -519,6 +593,7 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
 		    inFile);
 		return 0;
 	    }
+	    LogMessage("RMDIR: deleted directory %s", inFile);
 	    break;
 	}
 	default:
@@ -531,6 +606,10 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
 	}
 	pactionItem++;
     }
+
+    LogMessage("install finished OK");
+    CloseLog();
+
     return 1;
 }
 
