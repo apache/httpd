@@ -2407,7 +2407,6 @@ static void prefork_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t
 
 static void prefork_hooks(void)
 {
-    ap_hook_pre_config(prefork_pre_config,NULL,NULL,HOOK_MIDDLE);
     INIT_SIGLIST();
 #ifdef AUX3
     (void) set42sig();
@@ -2595,7 +2594,8 @@ LISTEN_COMMANDS
 };
 
 module MODULE_VAR_EXPORT mpm_prefork_module = {
-    STANDARD20_MODULE_STUFF,
+    MPM20_MODULE_STUFF,
+    prefork_pre_config,         /* run hook before the configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */

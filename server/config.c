@@ -85,15 +85,12 @@
 
 HOOK_STRUCT(
 	    HOOK_LINK(header_parser)
-	    HOOK_LINK(pre_config)
 	    HOOK_LINK(post_config)
 	    HOOK_LINK(open_logs)
 	    HOOK_LINK(child_init)
 )
 
 IMPLEMENT_HOOK_RUN_ALL(int,header_parser,(request_rec *r),(r),OK,DECLINED)
-IMPLEMENT_HOOK_VOID(pre_config,(ap_context_t *pconf,ap_context_t *plog,ap_context_t *ptemp),
-		    (pconf,plog,ptemp))
 IMPLEMENT_HOOK_VOID(post_config,
 		    (ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s),
 		    (pconf,plog,ptemp,s))
@@ -1309,6 +1306,17 @@ void ap_single_module_configure(ap_context_t *p, server_rec *s, module *m)
     if (m->create_dir_config)
         ap_set_module_config(s->lookup_defaults, m,
                              (*m->create_dir_config)(p, NULL));
+}
+
+void run_pre_config(ap_context_t *p, ap_context_t *plog,
+                       ap_context_t *ptemp, server_rec *s)
+{
+    module *m;
+
+    for (m = top_module; m; m = m->next)
+        if (m->pre_config)
+            (*m->pre_config) (p, plog, ptemp, s);
+    init_handlers(p);
 }
 
 void ap_post_config_hook(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s)

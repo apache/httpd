@@ -210,7 +210,7 @@ typedef struct module_struct {
                                  * It's mainly important for the DSO facility
                                  * (see also mod_so).
                                  */
-
+    void *(*pre_config) (ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *s);
     void *(*create_dir_config) (ap_context_t *p, char *dir);
     void *(*merge_dir_config) (ap_context_t *p, void *base_conf, void *new_conf);
     void *(*create_server_config) (ap_context_t *p, server_rec *s);
@@ -249,6 +249,15 @@ typedef struct module_struct {
 #define STANDARD_MODULE_STUFF	this_module_needs_to_be_ported_to_apache_2_0
 
 #define STANDARD20_MODULE_STUFF	MODULE_MAGIC_NUMBER_MAJOR, \
+				MODULE_MAGIC_NUMBER_MINOR, \
+				-1, \
+				__FILE__, \
+				NULL, \
+				NULL, \
+				MODULE_MAGIC_COOKIE, \
+                                NULL
+
+#define MPM20_MODULE_STUFF	MODULE_MAGIC_NUMBER_MAJOR, \
 				MODULE_MAGIC_NUMBER_MINOR, \
 				-1, \
 				__FILE__, \
@@ -368,7 +377,6 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
 
   /* Hooks */
 DECLARE_HOOK(int,header_parser,(request_rec *))
-DECLARE_HOOK(void,pre_config,(ap_context_t *pconf,ap_context_t *plog,ap_context_t *ptemp))
 DECLARE_HOOK(void,post_config,
 	     (ap_context_t *pconf,ap_context_t *plog,ap_context_t *ptemp,server_rec *s))
 DECLARE_HOOK(void,open_logs,

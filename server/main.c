@@ -275,10 +275,6 @@ static void usage(process_rec *process)
     destroy_and_exit_process(process, 1);
 }
 
-
-
-
-
 ap_context_t *g_pHookPool;
 
 #ifdef WIN32
@@ -368,7 +364,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
        for example, to settle down. */
 
     ap_server_root = def_server_root;
-    ap_run_pre_config(pconf, plog, ptemp);
+    run_pre_config(pconf, plog, ptemp, server_conf);
     server_conf = ap_read_config(process, ptemp, confname);
     if (configtestonly) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
@@ -387,7 +383,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	}
 	ap_create_context(&ptemp, pconf);
 	ap_server_root = def_server_root;
-	ap_run_pre_config(pconf, plog, ptemp);
+	run_pre_config(pconf, plog, ptemp, server_conf);
 	server_conf = ap_read_config(process, ptemp, confname);
 	ap_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
