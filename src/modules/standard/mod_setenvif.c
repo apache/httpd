@@ -146,35 +146,27 @@ static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
     return a;
 }
 
-static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
+/* any non-NULL magic constant will do... used to indicate if REG_ICASE should be
+ * used */
+#define ICASE_MAGIC	((void *)(&setenvif_module))
+
+static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
+    char *fname, const char *args)
 {
-    char *fname;
     char *regex;
     const char *feature;
-    const char *cmdline = args;
     sei_cfg_rec *sconf = get_module_config(cmd->server->module_config,
                                            &setenvif_module);
     sei_entry *new, *entries = (sei_entry *) sconf->conditionals->elts;
     char *var;
     int i;
-    int cflags = (int) (long) cmd->info;
-    char *error;
     int beenhere = 0;
 
-    /*
-     * Pull in the invariant pieces from the command line.
-     */
-    fname = getword_conf(cmd->pool, &cmdline);
-    if (!*fname) {
-        error = pstrcat(cmd->pool, "Missing header-field name for ",
-                        cmd->cmd->name, NULL);
-        return error;
-    }
-    regex = getword_conf(cmd->pool, &cmdline);
+    /* get regex */
+    regex = getword_conf(cmd->pool, &args);
     if (!*regex) {
-        error = pstrcat(cmd->pool, "Missing regular expression for ",
+        return pstrcat(cmd->pool, "Missing regular expression for ",
                         cmd->cmd->name, NULL);
-        return error;
     }
 
     /*
@@ -195,17 +187,17 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
     new->name = fname;
     new->regex = regex;
     new->preg = pregcomp(cmd->pool, regex,
-                         (REG_EXTENDED | REG_NOSUB | cflags));
+                         (REG_EXTENDED | REG_NOSUB
+			 | (cmd->info == ICASE_MAGIC ? REG_ICASE : 0)));
     if (new->preg == NULL) {
-        error = pstrcat(cmd->pool, cmd->cmd->name,
+        return pstrcat(cmd->pool, cmd->cmd->name,
                         " regex could not be compiled.", NULL);
-        return error;
     }
     new->features = make_table(cmd->pool, 5);
 
 gotit:
     for( ; ; ) {
-	feature = getword_conf(cmd->pool, &cmdline);
+	feature = getword_conf(cmd->pool, &args);
 	if(!*feature)
 	    break;
         beenhere++;
@@ -223,12 +215,24 @@ gotit:
     }
 
     if (!beenhere) {
-        error = pstrcat(cmd->pool, "Missing envariable expression for ",
+        return pstrcat(cmd->pool, "Missing envariable expression for ",
                         cmd->cmd->name, NULL);
-        return error;
     }
 
     return NULL;
+}
+
+static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
+{
+    char *fname;
+
+    /* get header name */
+    fname = getword_conf(cmd->pool, &args);
+    if (!*fname) {
+        return pstrcat(cmd->pool, "Missing header-field name for ",
+                        cmd->cmd->name, NULL);
+    }
+    return add_setenvif_core(cmd, mconfig, fname, args);
 }
 
 /*
@@ -236,25 +240,21 @@ gotit:
  * and feeds them, with the appropriate embellishments, to the general-purpose
  * command handler.
  */
-static const char *add_browser(cmd_parms *cmd, void *mconfig, char *word1,
-                               char *word2)
+static const char *add_browser(cmd_parms *cmd, void *mconfig, const char *args)
 {
-    const char *match_command;
-
-    match_command = pstrcat(cmd->pool, "User-Agent ", word1, " ", word2, NULL);
-    return add_setenvif(cmd, mconfig, match_command);
+    return add_setenvif_core(cmd, mconfig, "User-Agent", args);
 }
 
 static command_rec setenvif_module_cmds[] =
 {
-    {"SetEnvIf", add_setenvif, (void *) 0,
+    {"SetEnvIf", add_setenvif, NULL,
      RSRC_CONF, RAW_ARGS, "A header-name, regex and a list of variables."},
-    {"SetEnvIfNoCase", add_setenvif, (void *) REG_ICASE,
+    {"SetEnvIfNoCase", add_setenvif, ICASE_MAGIC,
      RSRC_CONF, RAW_ARGS, "a header-name, regex and a list of variables."},
-    {"BrowserMatch", add_browser, (void *) 0,
-     RSRC_CONF, ITERATE2, "A browser regex and a list of variables."},
-    {"BrowserMatchNoCase", add_browser, (void *) REG_ICASE,
-     RSRC_CONF, ITERATE2, "A browser regex and a list of variables."},
+    {"BrowserMatch", add_browser, NULL,
+     RSRC_CONF, RAW_ARGS, "A browser regex and a list of variables."},
+    {"BrowserMatchNoCase", add_browser, ICASE_MAGIC,
+     RSRC_CONF, RAW_ARGS, "A browser regex and a list of variables."},
     {NULL},
 };
 

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) The mod_setenvif BrowserMatch backwards compatibility command did not
+     work properly with spaces in the regex.  [Ronald Tschalaer] PR#1825
+
   *) Add new RewriteMap types: First, `rnd' which is equivalent to the `txt'
      type but with a special post-processing for the looked-up value: It
      parses it into alternatives according to `|' chars and then only one
