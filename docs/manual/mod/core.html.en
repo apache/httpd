@@ -998,8 +998,8 @@ in case of an error</td></tr>
 </table>
     <p>The <code class="directive">ErrorLog</code> directive sets the name of
     the file to which the server will log any errors it encounters. If
-    the <var>file-path</var> is not absolute (in general: does not begin
-    with a slash (/)) then it is assumed to be relative to the <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
+    the <var>file-path</var> is not absolute then it is assumed to be 
+    relative to the <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
 
     <div class="example"><h3>Example</h3><p><code>
     ErrorLog /var/log/httpd/error_log
@@ -1418,9 +1418,8 @@ the server configuration files</td></tr>
     files in a directory that can cause <code>httpd</code> to
     fail.</p>
 
-    <p>The file path specified may be an absolute path (i.e.
-    starting with a slash), or may be relative to the
-    <code class="directive"><a href="#serverroot">ServerRoot</a></code> directory.</p>
+    <p>The file path specified may be an absolute path, or may be relative 
+    to the <code class="directive"><a href="#serverroot">ServerRoot</a></code> directory.</p>
 
     <p>Examples:</p>
 
@@ -2308,7 +2307,6 @@ directory</td></tr>
     <code>Includes</code> are set for the <code>/web/docs/spec</code>
     directory.</p>
 
-
     <div class="note"><h3>Note</h3>
       <p>Using <code>-IncludesNOEXEC</code> or
       <code>-Includes</code> disables server-side includes completely
@@ -2697,7 +2695,7 @@ itself</td></tr>
 <h3>See also</h3>
 <ul>
 <li><a href="../dns-caveats.html">Issues Regarding DNS and
-Apache</a></li>
+    Apache</a></li>
 <li><a href="../vhosts/">Apache virtual host
     documentation</a></li>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>

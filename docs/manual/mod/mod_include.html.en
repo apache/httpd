@@ -165,7 +165,7 @@ Server Error Messages</a></li>
       <dt><code>errmsg</code></dt>
       <dd>The value is a message that is sent back to the
       client if an error occurs while parsing the
-      document.</dd>
+      document. This overrides any <code class="directive"><a href="#ssierrormsg">SSIErrorMsg</a></code> directives.</dd>
 
       <dt><code>sizefmt</code></dt>
       <dd>The value sets the format to be used which displaying
@@ -569,6 +569,10 @@ Server Error Messages</a></li>
       &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
       &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
     </code></p></div>
+
+    <p>The boolean operators <code>&amp;&amp;</code> and <code>||</code>
+    share the same priority. So if you want to bind such an operator more
+    tightly, you should use parentheses.</p>
 
     <p>Anything that's not recognized as a variable or an operator
     is treated as a string. Strings can also be quoted:
