@@ -143,7 +143,7 @@ static void cache_pq_bubble_up(cache_pqueue_t *q, apr_ssize_t i)
     q->set(moving_node, i);
 }
 
-static apr_ssize_t minchild(cache_pqueue_t *q, apr_ssize_t i)
+static apr_ssize_t maxchild(cache_pqueue_t *q, apr_ssize_t i)
 {
     apr_ssize_t child_node = left(i);
 
@@ -165,7 +165,7 @@ static void cache_pq_percolate_down(cache_pqueue_t *q, apr_ssize_t i)
     void *moving_node = q->d[i];
     long moving_pri = q->pri(moving_node);
 
-    while ((child_node = minchild(q, i)) &&
+    while ((child_node = maxchild(q, i)) &&
            (moving_pri < q->pri(q->d[child_node])))
     {
         q->d[i] = q->d[child_node];
@@ -300,13 +300,13 @@ void cache_pq_dump(cache_pqueue_t *q,
 {
     int i;
 
-    fprintf(stdout,"posn\tleft\tright\tparent\tminchild\t...\n");
+    fprintf(stdout,"posn\tleft\tright\tparent\tmaxchild\t...\n");
     for (i = 1; i < q->size ;i++) {
         fprintf(stdout,
                 "%d\t%d\t%d\t%d\t%" APR_SSIZE_T_FMT "\t",
                 i,
                 left(i), right(i), parent(i),
-                minchild(q, i));
+                maxchild(q, i));
         print(out, q->d[i]);
     }
 }
