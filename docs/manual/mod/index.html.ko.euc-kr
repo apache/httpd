@@ -92,6 +92,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>"마지막 슬래쉬" 리다이렉션을 제공하고 디렉토리
 index 파일을 서비스한다</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
+<dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>프로토콜 모듈을 설명하기위한 간단한 echo 서버</dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI 스크립트나 SSI 페이지에 전달할 환경변수를
 수정한다</dd>

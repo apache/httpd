@@ -97,6 +97,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>「最後のスラッシュ」のリダイレクトと、ディレクトリの
 インデックスファイルを扱う機能を提供する</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
+<dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>プロトコルモジュールの概要を示すための単純なエコーサーバ
 </dd>
 <dt><a href="mod_env.html">mod_env</a></dt><dd>CGI スクリプト及び SSI

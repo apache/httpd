@@ -186,6 +186,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_deflate.html">Módulo Apache mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">Módulo Apache mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Módulo Apache mod_disk_cache</a></li>
+<li><a href="mod/mod_dumpio.html">Módulo Apache mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">Módulo Apache mod_echo</a></li>
 <li><a href="mod/mod_env.html">Módulo Apache mod_env</a></li>
 <li><a href="mod/mod_example.html">Módulo Apache mod_example</a></li>

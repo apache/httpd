@@ -187,6 +187,7 @@
 <li><a href="mod/mod_deflate.html">아파치 모듈 mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">아파치 모듈 mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">아파치 모듈 mod_disk_cache</a></li>
+<li><a href="mod/mod_dumpio.html">아파치 모듈 mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">아파치 모듈 mod_echo</a></li>
 <li><a href="mod/mod_env.html">아파치 모듈 mod_env</a></li>
 <li><a href="mod/mod_example.html">아파치 모듈 mod_example</a></li>
