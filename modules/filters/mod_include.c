@@ -1158,7 +1158,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 {
     parse_node_t *new, *root = NULL, *current = NULL;
     request_rec *r = ctx->intern->r;
-    const char *buffer, *error = "Invalid expression \"%s\" in file %s";
+    const char *error = "Invalid expression \"%s\" in file %s";
     const char *parse = expr;
     int was_unmatched = 0;
     unsigned regex = 0;
@@ -1352,10 +1352,9 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
     while (current) {
         switch (current->token.type) {
         case TOKEN_STRING:
-            buffer = ap_ssi_parse_string(ctx, current->token.value, NULL, 0,
-                                         SSI_EXPAND_DROP_NAME);
-
-            current->token.value = buffer;
+            current->token.value =
+                ap_ssi_parse_string(ctx, current->token.value, NULL, 0,
+                                    SSI_EXPAND_DROP_NAME);
             current->value = !!*current->token.value;
             break;
 
@@ -1372,11 +1371,9 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             if (!current->right->done) {
                 switch (current->right->token.type) {
                 case TOKEN_STRING:
-                    buffer = ap_ssi_parse_string(ctx,
-                                                 current->right->token.value,
-                                                 NULL, 0, SSI_EXPAND_DROP_NAME);
-
-                    current->right->token.value = buffer;
+                    current->right->token.value =
+                        ap_ssi_parse_string(ctx, current->right->token.value,
+                                            NULL, 0, SSI_EXPAND_DROP_NAME);
                     current->right->value = !!*current->right->token.value;
                     DEBUG_DUMP_EVAL(ctx, current->right);
                     current->right->done = 1;
@@ -1398,12 +1395,9 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 if (!current->left->done) {
                     switch (current->left->token.type) {
                     case TOKEN_STRING:
-                        buffer = ap_ssi_parse_string(ctx,
-                                                     current->left->token.value,
-                                                     NULL, 0,
-                                                     SSI_EXPAND_DROP_NAME);
-
-                        current->left->token.value = buffer;
+                        current->left->token.value =
+                            ap_ssi_parse_string(ctx, current->left->token.value,
+                                                NULL, 0, SSI_EXPAND_DROP_NAME);
                         current->left->value = !!*current->left->token.value;
                         DEBUG_DUMP_EVAL(ctx, current->left);
                         current->left->done = 1;
@@ -1438,14 +1432,12 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 *was_error = 1;
                 return 0;
             }
-            buffer = ap_ssi_parse_string(ctx, current->left->token.value,
-                                         NULL, 0, SSI_EXPAND_DROP_NAME);
-
-            current->left->token.value = buffer;
-            buffer = ap_ssi_parse_string(ctx, current->right->token.value,
-                                         NULL, 0, SSI_EXPAND_DROP_NAME);
-
-            current->right->token.value = buffer;
+            current->left->token.value =
+                ap_ssi_parse_string(ctx, current->left->token.value, NULL, 0,
+                                    SSI_EXPAND_DROP_NAME);
+            current->right->token.value =
+                ap_ssi_parse_string(ctx, current->right->token.value, NULL, 0,
+                                    SSI_EXPAND_DROP_NAME);
 
             if (current->right->token.type == TOKEN_RE) {
                 current->value = re_check(ctx, current->left->token.value,
@@ -1475,13 +1467,13 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                 *was_error = 1;
                 return 0;
             }
-            buffer = ap_ssi_parse_string(ctx, current->left->token.value, NULL,
-                                         0, SSI_EXPAND_DROP_NAME);
 
-            current->left->token.value = buffer;
-            buffer = ap_ssi_parse_string(ctx, current->right->token.value, NULL,
-                                         0, SSI_EXPAND_DROP_NAME);
-            current->right->token.value = buffer;
+            current->left->token.value =
+                ap_ssi_parse_string(ctx, current->left->token.value, NULL, 0,
+                                    SSI_EXPAND_DROP_NAME);
+            current->right->token.value =
+                ap_ssi_parse_string(ctx, current->right->token.value, NULL, 0,
+                                    SSI_EXPAND_DROP_NAME);
 
             current->value = strcmp(current->left->token.value,
                                     current->right->token.value);
