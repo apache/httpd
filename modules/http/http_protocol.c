@@ -1863,6 +1863,7 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
+        ap_add_filter("CHUNK", NULL, r);
     }
 
     if (r->byterange > 1)
@@ -1920,30 +1921,7 @@ API_EXPORT(void) ap_finalize_request_protocol(request_rec *r)
 {
     /* tell the filter chain there is no more content coming */
     end_output_stream(r);
-
-    if (r->chunked && !r->connection->aborted) {
-#ifdef APACHE_XLATE
-	AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
-                                       ap_hdrs_to_ascii);
-#endif
-        /*
-         * Turn off chunked encoding --- we can only do this once.
-         */
-        r->chunked = 0;
-        ap_bsetflag(r->connection->client, B_CHUNK, 0);
-
-        (void) checked_bputs("0" CRLF, r);
-
-        /* If we had footer "headers", we'd send them now */
-        /* ### these need to be added to allow message digests */
-
-        (void) checked_bputs(CRLF, r);
-
-#ifdef APACHE_XLATE
-	AP_POP_OUTPUTCONVERSION_STATE(r->connection->client);
-#endif /*APACHE_XLATE*/
     }
-}
 
 /* Here we deal with getting the request message body from the client.
  * Whether or not the request contains a body is signaled by the presence

@@ -2915,6 +2915,54 @@ static int default_handler(request_rec *r)
     return OK;
 }
 
+/* This is an incredibly stupid chunking filter.  This will need to be somewhat
+ * smart about when it actually sends the data, but this implements some sort
+ * of chunking for right now.
+ */
+static int chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
+{
+    ap_bucket *dptr = b->head;
+    int len = 0;
+    int tempint = 0;
+    char lenstr[6];
+    int hit_eos = 0;
+
+    while (dptr) {
+        if (dptr->type == AP_BUCKET_EOS) {
+            hit_eos = 1;
+        } 
+        else {
+            len += dptr->length;
+        }
+        dptr = dptr->next;
+    }
+
+    apr_snprintf(lenstr, 6, "%x\r\n", len);
+    dptr = ap_bucket_transient_create(lenstr, 4, &tempint);
+    b->head->prev = dptr;
+    dptr->next = b->head;
+    b->head = dptr;
+    dptr = ap_bucket_heap_create("\r\n", 2, &tempint);
+    if (hit_eos) {
+        b->tail->prev->next = dptr;
+        dptr->prev = b->tail->prev;
+        b->tail->prev = dptr;
+        dptr->next = b->tail;
+    }
+    else {
+        ap_brigade_append_buckets(b, dptr);
+    }
+
+    if (hit_eos && len != 0) {
+        apr_snprintf(lenstr, 6, "0\r\n\r\n");
+        dptr = ap_bucket_transient_create(lenstr, 5, &tempint);
+        ap_brigade_append_buckets(b, dptr);
+    }
+        
+
+    return ap_pass_brigade(f->next, b);
+}
+
 /* Default filter.  This filter should almost always be used.  It's only job
  * is to send the headers if they haven't already been sent, and then send
  * the actual data.  To send the data, we create an iovec out of the bucket
@@ -3019,9 +3067,9 @@ static void register_hooks(void)
     /* define the CORE filter, then register a hook to insert it at
      * request-processing time.
      */
+    ap_hook_insert_filter(core_register_filter, NULL, NULL, AP_HOOK_MIDDLE);
     ap_register_filter("CORE", core_filter, AP_FTYPE_CONNECTION);
-    ap_hook_insert_filter(core_register_filter, NULL, NULL,
-                          AP_HOOK_REALLY_LAST);
+    ap_register_filter("CHUNK", chunk_filter, AP_FTYPE_CONNECTION);
 }
 
 API_VAR_EXPORT module core_module = {
