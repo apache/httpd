@@ -76,6 +76,7 @@
 #include "mpm_winnt.h"
 #include "mpm_common.h"
 #include <malloc.h>
+#include "apr_atomic.h"
 
 /* Limit on the threads per process.  Clients will be locked out if more than
  * this  * HARD_SERVER_LIMIT are needed.
@@ -281,7 +282,7 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
 
         context->accept_socket = INVALID_SOCKET;
         context->ba = apr_bucket_alloc_create(pchild);
-        num_completion_contexts++;
+        apr_atomic_inc(&num_completion_contexts);
     }
 
     return context;
@@ -1068,10 +1069,10 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
     mpm_recycle_completion_context(context);
 
-    g_blocked_threads++;        
+    apr_atomic_inc(&g_blocked_threads);
     while (1) {
         if (workers_may_exit) {
-            g_blocked_threads--;
+            apr_atomic_dec(&g_blocked_threads);
             return NULL;
         }
         rc = GetQueuedCompletionStatus(ThreadDispatchIOCP, &BytesRead, &CompKey,
@@ -1088,16 +1089,15 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
             context = CONTAINING_RECORD(pol, COMP_CONTEXT, Overlapped);
             break;
         case IOCP_SHUTDOWN:
-            g_blocked_threads--;
+            apr_atomic_dec(&g_blocked_threads);
             return NULL;
         default:
-            g_blocked_threads--;
+            apr_atomic_dec(&g_blocked_threads);
             return NULL;
         }
         break;
     }
-
-    g_blocked_threads--;    
+    apr_atomic_dec(&g_blocked_threads);
 
     return context;
 }
