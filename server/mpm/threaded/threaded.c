@@ -1067,6 +1067,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     pconf = _pconf;
     ap_server_conf = s;
+
     rv = apr_file_pipe_create(&pipe_of_death_in, &pipe_of_death_out, pconf);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv,
@@ -1081,7 +1082,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                      "apr_file_pipe_timeout_set (pipe_of_death)");
         exit(1);
     }
-    ap_server_conf = s;
+
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
         /* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
