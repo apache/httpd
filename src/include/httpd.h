@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: httpd.h,v 1.47 1996/08/20 11:50:52 paul Exp $ */
+/* $Id: httpd.h,v 1.48 1996/08/24 16:33:29 ben Exp $ */
 
 /*
  * httpd.h: header for simple (ha! not anymore) http daemon
@@ -525,7 +525,7 @@ struct server_rec {
     char *path;			/* Pathname for ServerPath */
     int pathlen;		/* Length of path */
 
-    char *names;		/* Wildcarded names for HostAlias servers */
+    char *names;		/* Wildcarded names for ServerAlias servers */
 
     uid_t server_uid;		/* effective user id when calling exec wrapper */
     gid_t server_gid;		/* effective group id when calling exec wrapper */
