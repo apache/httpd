@@ -134,9 +134,9 @@ void cgi_child (void *child_stuff)
     chdir_file (r->filename);
     error_log2stderr (r->server);
 
-    #ifndef __EMX__
+#ifndef __EMX__
     if (nph) client_to_stdout (r->connection);
-    #endif    
+#endif    
     
     /* Transumute outselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
