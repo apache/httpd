@@ -788,16 +788,16 @@ static int create_child_socket(int child_num, ap_pool_t *p)
 
     omask = umask(0077); /* so that only Apache can use socket */
     rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
-    umask(omask); /* can't fail, so can't clobber -1 */
+    umask(omask); /* can't fail, so can't clobber errno */
     if (rc < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, -1, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
                      "Couldn't bind unix domain socket %s",
                      socket_name);
         return -1;
     }
 
     if (listen(sd, DEFAULT_PERCHILD_LISTENBACKLOG) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, -1, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
                      "Couldn't listen on unix domain socket");
         return -1;
     }
