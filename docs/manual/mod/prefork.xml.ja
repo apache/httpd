@@ -4,7 +4,7 @@
 <modulesynopsis>
 <!-- English revision: 1.5 -->
 <name>prefork</name>
-<description>スレッドを使わず、先行して fork を行なうウェブサーバを実装しています
+<description>スレッドを使わず、先行して fork を行なうウェブサーバを実装
 </description>
 <status>MPM</status>
 <sourcefile>prefork.c</sourcefile>

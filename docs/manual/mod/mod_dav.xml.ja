@@ -6,7 +6,7 @@
 
 <name>mod_dav</name> 
 <description>分散オーサリングとバージョン管理
-(<a href="http://www.webdav.org/">WebDAV</a>) 機能です</description>
+(<a href="http://www.webdav.org/">WebDAV</a>) 機能</description>
 <status>Extension</status>
 <sourcefile>mod_dav.c</sourcefile>
 <identifier>dav_module</identifier>
