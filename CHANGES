@@ -1,5 +1,9 @@
 Changes with Apache 2.0.27-dev
 
+  *) Exit when we can't listen on any of the configured ports.  This
+     is the same behavior as 1.3, and it avoids having the MPMs to
+     deal with bogus ap_listen_rec structures.  [Jeff Trawick]
+
   *) Cleanup the proxy code that creates a request to the origin
      server.  This change adds an optional hook, which allows modules
      to gain control while the request is created if the proxy module
