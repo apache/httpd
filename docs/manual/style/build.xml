@@ -1,0 +1,29 @@
+<project name="manual" default="xslt" basedir=".">
+
+    <!-- Initialization properties -->
+    <path id="classpath">
+        <fileset dir="./lib">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+
+<!-- This target is for output of HTML pages via XSLT -->
+  <!-- Requires JAXP/1.1 (all three JARs) or Xerces+Xalan -->
+  <target name="xslt"
+   description="Render HTML Pages via XSLT">
+
+    <!-- Transform the modules directory -->
+    <style   basedir="../mod/"
+             destdir="../mod/"
+           extension=".html"
+               style="./manual.xsl"
+            excludes="empty.xml"
+            includes="*.xml">
+      <param name="relative-path" expression="."/>
+    </style>
+  </target>
+
+
+
+</project>
