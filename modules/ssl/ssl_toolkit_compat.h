@@ -51,6 +51,9 @@
 
 #else /* RSA sslc */
 
+/* sslc does not support this function, OpenSSL has since 9.5.1 */
+#define RAND_status() 1
+
 #ifndef STACK_OF
 #define STACK_OF(type) STACK
 #endif
@@ -117,8 +120,5 @@
 #define modssl_set_verify(ssl, verify, cb) \
     SSL_set_verify(ssl, verify, cb)
 #endif
-
-/* sslc does not support this function, OpenSSL has since 9.5.1 */
-#define RAND_status() 1
 
 #endif /* SSL_TOOLKIT_COMPAT_H */
