@@ -1078,13 +1078,17 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     return NULL;
 }
 
+#if APR_HAS_THREADS
 static apr_status_t conn_pool_cleanup(void *theworker)
 {
     proxy_worker *worker = (proxy_worker *)theworker;
-    /* Set the connection pool to NULL */
-    worker->cp = NULL;
+    if (worker->cp->res) {
+        worker->cp->pool = NULL;
+        apr_reslist_destroy(worker->cp->res);
+    }
     return APR_SUCCESS;
 }
+#endif
 
 static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
 {
@@ -1103,10 +1107,6 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     cp = (proxy_conn_pool *)apr_pcalloc(p, sizeof(proxy_conn_pool));
     cp->pool = pool;    
     worker->cp = cp;
-    apr_pool_cleanup_register(p, (void *)worker,
-                              conn_pool_cleanup,
-                              apr_pool_cleanup_null);      
-
 }
 
 PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
@@ -1358,10 +1358,10 @@ static apr_status_t connection_destructor(void *resource, void *params,
                                           apr_pool_t *pool)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)resource;
-    
-    if (conn->pool)
+
+    /* Destroy the pool only if not called from reslist_destroy */    
+    if (conn->worker->cp->pool)
         apr_pool_destroy(conn->pool);
-    conn->pool = NULL;
 
     return APR_SUCCESS;
 }
@@ -1406,6 +1406,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
                                 worker->hmax, worker->ttl,
                                 connection_constructor, connection_destructor,
                                 s, worker->cp->pool);
+
+        apr_pool_cleanup_register(worker->cp->pool, (void *)worker,
+                                  conn_pool_cleanup,
+                                  apr_pool_cleanup_null);
+
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "proxy: initialized worker for (%s) min=%d max=%d smax=%d",
                       worker->hostname, worker->min, worker->hmax, worker->smax);
