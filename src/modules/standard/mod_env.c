@@ -103,8 +103,12 @@
 #include "httpd.h"
 #include "http_config.h"
 
+#ifdef WIN32
+__declspec(dllimport) char **environ;
+#else
 #include <unistd.h>
 extern char **environ;
+#endif
 
 /*
  * Server-wide config info for this module
