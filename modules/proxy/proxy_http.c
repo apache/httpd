@@ -292,7 +292,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
      */
     /* see memory note above */
     if (backend->connection) {
-        client_socket = ap_get_module_config(backend->connection->conn_config, &core_module);;
+        client_socket = ap_get_module_config(backend->connection->conn_config, &core_module);
         if ((backend->connection->id == c->id) &&
             (backend->port == p_conn->port) &&
             (backend->hostname) &&
