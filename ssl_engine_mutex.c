@@ -69,8 +69,8 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE) 
         return TRUE;
 
-    if (apr_lock_create(&mc->pMutex, APR_MUTEX, APR_LOCKALL, APR_LOCK_DEFAULT,
-                        mc->szMutexFile, p) != APR_SUCCESS) {
+    if (apr_global_mutex_create(&mc->pMutex, mc->szMutexFile,
+                                APR_LOCK_DEFAULT, p) != APR_SUCCESS) {
         ssl_log(s, SSL_LOG_ERROR,
                    "Cannot create SSLMutex file `%s'",
                     mc->szMutexFile);
@@ -86,7 +86,8 @@ int ssl_mutex_reinit(server_rec *s, apr_pool_t *p)
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
 
-    if (apr_lock_child_init(&mc->pMutex, mc->szMutexFile, p) != APR_SUCCESS)
+    if (apr_global_mutex_child_init(&mc->pMutex,
+                                    mc->szMutexFile, p) != APR_SUCCESS)
         return FALSE;
     return TRUE;
 }
@@ -97,7 +98,7 @@ int ssl_mutex_on(server_rec *s)
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
-    if (apr_lock_acquire(mc->pMutex) != APR_SUCCESS) {
+    if (apr_global_mutex_lock(mc->pMutex) != APR_SUCCESS) {
         ssl_log(s, SSL_LOG_WARN, "Failed to acquire global mutex lock");
         return FALSE;
     }
@@ -110,7 +111,7 @@ int ssl_mutex_off(server_rec *s)
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
-    if (apr_lock_release(mc->pMutex) != APR_SUCCESS) {
+    if (apr_global_mutex_unlock(mc->pMutex) != APR_SUCCESS) {
         ssl_log(s, SSL_LOG_WARN, "Failed to release global mutex lock");
         return FALSE;
     }
