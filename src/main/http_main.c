@@ -1351,7 +1351,7 @@ static void usage(char *bin)
 #ifdef WIN32
     fprintf(stderr, "Usage: %s [-D name] [-d directory] [-f file] [-n service]\n", bin);
     fprintf(stderr, "       %s [-C \"directive\"] [-c \"directive\"] [-k signal]\n", pad);
-    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T] [-F]\n", pad);
+    fprintf(stderr, "       %s [-v] [-V] [-h] [-l] [-L] [-S] [-t] [-T]\n", pad);
 #else /* !WIN32 */
 #ifdef SHARED_CORE
     fprintf(stderr, "Usage: %s [-R directory] [-D name] [-d directory] [-f file]\n", bin);
@@ -1382,7 +1382,9 @@ static void usage(char *bin)
 #endif
     fprintf(stderr, "  -t               : run syntax check for config files (with docroot check)\n");
     fprintf(stderr, "  -T               : run syntax check for config files (without docroot check)\n");
+#ifndef WIN32
     fprintf(stderr, "  -F               : run main process in foreground, for process supervisors\n");
+#endif
 #ifdef WIN32
     fprintf(stderr, "  -n name          : name the Apache service for -k options below;\n");
     fprintf(stderr, "  -k stop|shutdown : tell running Apache to shutdown\n");
@@ -7256,7 +7258,7 @@ int REALMAIN(int argc, char *argv[])
         reparsed = 1;
     }
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:fF:vVlLz:Z:wiuStThk:n:W:")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:wiuStThk:n:W:")) != -1) {
 #else /* !WIN32 */
     while ((c = getopt(argc, argv, "D:C:c:Xd:fF:vVlLesStTh")) != -1) {
 #endif
@@ -7380,9 +7382,11 @@ int REALMAIN(int argc, char *argv[])
                     && ap_server_root[strlen(ap_server_root) - 1] == '/')
                 ap_server_root[strlen(ap_server_root) - 1] = '\0';
 	    break;
+#ifndef WIN32
 	case 'F':
 	    do_detach = 0;
 	    break;
+#endif
 	case 'f':
             ap_cpystrn(ap_server_confname,
                        ap_os_canonical_filename(pcommands, optarg),
