@@ -644,7 +644,7 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
     /* Get a noncommented line */
 
     do {
-        if (ap_gets(map, buffer, MAX_STRING_LEN) != APR_SUCCESS) {
+        if (ap_fgets(map, buffer, MAX_STRING_LEN) != APR_SUCCESS) {
             return header_eof;
         }
     } while (buffer[0] == '#');
