@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_env.c,v 1.4 1996/10/18 19:20:04 ben Exp $ */
+/* $Id: mod_env.c,v 1.5 1996/10/18 21:12:52 ben Exp $ */
 
 /*
  * mod_env.c
@@ -127,7 +127,7 @@ void *merge_env_server_configs (pool *p, void *basev, void *addv)
     table_entry *elts;
 
     int i;
-    char *uenv, *copy;
+    char *uenv, *unset;
 
       /* 
        * new_table = copy_table( p, base->vars );
@@ -147,11 +147,11 @@ void *merge_env_server_configs (pool *p, void *basev, void *addv)
 	table_set( new_table, elts[i].key, elts[i].val ); 
     }
 
-    copy = pstrdup( p, add->unsetenv );
-    uenv = getword_conf( p, &copy );
+    unset = add->unsetenv;
+    uenv = getword_conf( p, &unset );
     while ( uenv[0] != '\0' ) {
 	table_unset( new_table, uenv );
-	uenv = getword_conf( p, &copy );
+	uenv = getword_conf( p, &unset );
     }
 
     new->vars = new_table;
