@@ -512,23 +512,38 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
     if (add->opts & NO_OPTIONS) {
 	/*
 	 * If the current directory says 'no options' then we also
-	 * clear any incremental mods from being inheritable.
+	 * clear any incremental mods from being inheritable further down.
 	 */
 	new->opts = NO_OPTIONS;
 	new->incremented_opts = 0;
 	new->decremented_opts = 0;
     }
     else {
-	new->incremented_opts = (base->incremented_opts 
-				 | add->incremented_opts)
-	                        & ~add->decremented_opts;
-	new->decremented_opts = (base->decremented_opts
-				 | add->decremented_opts);
 	/*
-	 * We've got some local settings, so make sure we don't inadvertently
-	 * inherit an IndexOptions None from above.
+	 * If there were any non-incremental options selected for
+	 * this directory, they dominate and we don't inherit *anything.*
+	 * Contrariwise, we *do* inherit if the only settings here are
+	 * incremental ones.
 	 */
-	new->opts = ((base->opts | add->opts) & ~NO_OPTIONS);
+	if (add->opts == 0) {
+	    new->incremented_opts = (base->incremented_opts 
+				     | add->incremented_opts)
+		                    & ~add->decremented_opts;
+	    new->decremented_opts = (base->decremented_opts
+				     | add->decremented_opts);
+	    /*
+	     * We may have incremental settings, so make sure we don't
+	     * inadvertently inherit an IndexOptions None from above.
+	     */
+	    new->opts = (base->opts & ~NO_OPTIONS);
+	}
+	else {
+	    /*
+	     * There are local non-incremental settings, which clear
+	     * all inheritance from above.  They *are* the new base settings.
+	     */
+	    new->opts = add->opts;;
+	}
 	/*
 	 * We're guaranteed that there'll be no overlap between
 	 * the add-options and the remove-options.
