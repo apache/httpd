@@ -460,7 +460,7 @@ static int timedif(struct timeval a, struct timeval b)
 
 /* calculate and output results */
 
-int compradre(struct data * a, struct data * b)
+static int compradre(struct data * a, struct data * b)
 {
     if ((a->ctime) < (b->ctime))
 	return -1;
@@ -469,7 +469,7 @@ int compradre(struct data * a, struct data * b)
     return 0;
 }
 
-int comprando(struct data * a, struct data * b)
+static int comprando(struct data * a, struct data * b)
 {
     if ((a->time) < (b->time))
 	return -1;
@@ -478,7 +478,7 @@ int comprando(struct data * a, struct data * b)
     return 0;
 }
 
-int compri(struct data * a, struct data * b)
+static int compri(struct data * a, struct data * b)
 {
     int p = a->time - a->ctime;
     int q = b->time - b->ctime;
@@ -489,7 +489,7 @@ int compri(struct data * a, struct data * b)
     return 0;
 }
 
-int compwait(struct data * a, struct data * b)
+static int compwait(struct data * a, struct data * b)
 {
     if ((a->waittime) < (b->waittime))
 	return -1;
@@ -1166,28 +1166,6 @@ static void read_connection(struct connection * c)
 
 /* --------------------------------------------------------- */
 
-/* Catch SIGPIPE signals */
-
-void pipehandler(int signal)
-{
-    int i;			/* loop variable */
-
-    printf("Caught broken pipe signal after %ld requests. ", done);
-
-    /* This means one of my connections is broken, but which one? */
-    /* The safe route: close all our connections. */
-    for (i = 0; i < concurrency; i++)
-	close_connection(&con[i]);
-
-    /* And start them back up */
-    for (i = 0; i < concurrency; i++)
-	start_connect(&con[i]);
-
-    printf("Continuing...\n");
-}
-
-/* --------------------------------------------------------- */
-
 /* run the tests */
 
 static void test(void)
@@ -1356,14 +1334,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.55 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.56 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Group, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.55 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.56 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Group, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1682,7 +1660,7 @@ int main(int argc, char **argv)
 	exit(1);
     }
 #endif
-    signal(SIGPIPE, SIG_IGN);	/* Ignore writes to connections that
+    signal(SIGPIPE, SIG_IGN);           /* Ignore writes to connections that
 					 * have been closed at the other end.
 					 * These writes are dealt with in the
 					 * s_write() function. */
