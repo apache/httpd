@@ -1,14 +1,10 @@
  (MODCACHE)
  ap_cache_request_is_conditional,
- ap_cache_get_cachetype,
+ ap_cache_get_providers,
  ap_cache_liststr,
  ap_cache_tokstr,
  ap_cache_hex2usec,
  ap_cache_usec2hex,
  ap_cache_cacheable_hdrs_out,
- generate_name,
- cache_hook_create_entity,
- cache_hook_open_entity,
- cache_hook_remove_url
-
+ generate_name
 
