@@ -345,10 +345,11 @@ static char *ap_gcvt(double number, int ndigit, char *buf, boolean_e altform)
  * which is a pointer to the END of the buffer + 1 (i.e. if the buffer
  * is declared as buf[ 100 ], buf_end should be &buf[ 100 ])
  *
- * Note: we have 2 versions. One is used when we need to use quads (conv_10),
- * the other isn't (conv_10_l). We're assuming the latter is faster.
+ * Note: we have 2 versions. One is used when we need to use quads
+ * (conv_10_quad), the other when we don't (conv_10). We're assuming the
+ * latter is faster.
  */
-static char *conv_10_l(register wide_int num, register bool_int is_unsigned,
+static char *conv_10(register wide_int num, register bool_int is_unsigned,
 		     register bool_int *is_negative, char *buf_end,
 		     register int *len)
 {
@@ -395,7 +396,7 @@ static char *conv_10_l(register wide_int num, register bool_int is_unsigned,
     return (p);
 }
 
-static char *conv_10(register widest_int num, register bool_int is_unsigned,
+static char *conv_10_quad(register widest_int num, register bool_int is_unsigned,
 		     register bool_int *is_negative, char *buf_end,
 		     register int *len)
 {
@@ -407,7 +408,7 @@ static char *conv_10(register widest_int num, register bool_int is_unsigned,
      * then we know we aren't using quads, so use the faster function
      */
     if (num <= ULONG_MAX)
-    	return(conv_10_l( (wide_int)num, is_unsigned, is_negative,
+    	return(conv_10( (wide_int)num, is_unsigned, is_negative,
 	       buf_end, len));
 
     if (is_unsigned) {
@@ -459,13 +460,13 @@ static char *conv_in_addr(struct in_addr *ia, char *buf_end, int *len)
     bool_int is_negative;
     int sub_len;
 
-    p = conv_10_l((addr & 0x000000FF)      , TRUE, &is_negative, p, &sub_len);
+    p = conv_10((addr & 0x000000FF)      , TRUE, &is_negative, p, &sub_len);
     *--p = '.';
-    p = conv_10_l((addr & 0x0000FF00) >>  8, TRUE, &is_negative, p, &sub_len);
+    p = conv_10((addr & 0x0000FF00) >>  8, TRUE, &is_negative, p, &sub_len);
     *--p = '.';
-    p = conv_10_l((addr & 0x00FF0000) >> 16, TRUE, &is_negative, p, &sub_len);
+    p = conv_10((addr & 0x00FF0000) >> 16, TRUE, &is_negative, p, &sub_len);
     *--p = '.';
-    p = conv_10_l((addr & 0xFF000000) >> 24, TRUE, &is_negative, p, &sub_len);
+    p = conv_10((addr & 0xFF000000) >> 24, TRUE, &is_negative, p, &sub_len);
 
     *len = buf_end - p;
     return (p);
@@ -479,7 +480,7 @@ static char *conv_sockaddr_in(struct sockaddr_in *si, char *buf_end, int *len)
     bool_int is_negative;
     int sub_len;
 
-    p = conv_10_l(ntohs(si->sin_port), TRUE, &is_negative, p, &sub_len);
+    p = conv_10(ntohs(si->sin_port), TRUE, &is_negative, p, &sub_len);
     *--p = ':';
     p = conv_in_addr(&si->sin_addr, p, &sub_len);
 
@@ -556,7 +557,7 @@ static char *conv_fp(register char format, register double num,
 	*s++ = format;		/* either e or E */
 	decimal_point--;
 	if (decimal_point != 0) {
-	    p = conv_10_l((wide_int) decimal_point, FALSE, &exponent_is_negative,
+	    p = conv_10((wide_int) decimal_point, FALSE, &exponent_is_negative,
 			&temp[EXPONENT_LENGTH], &t_len);
 	    *s++ = exponent_is_negative ? '-' : '+';
 
@@ -593,7 +594,7 @@ static char *conv_fp(register char format, register double num,
  * As with conv_10, we have a faster version which is used when
  * the number isn't quad size.
  */
-static char *conv_p2_l(register u_wide_int num, register int nbits,
+static char *conv_p2(register u_wide_int num, register int nbits,
 		     char format, char *buf_end, register int *len)
 {
     register int mask = (1 << nbits) - 1;
@@ -612,7 +613,7 @@ static char *conv_p2_l(register u_wide_int num, register int nbits,
     return (p);
 }
 
-static char *conv_p2(register u_widest_int num, register int nbits,
+static char *conv_p2_quad(register u_widest_int num, register int nbits,
 		     char format, char *buf_end, register int *len)
 {
     register int mask = (1 << nbits) - 1;
@@ -622,7 +623,7 @@ static char *conv_p2(register u_widest_int num, register int nbits,
     register const char *digits = (format == 'X') ? upper_digits : low_digits;
 
     if (num <= ULONG_MAX)
-    	return(conv_p2_l( (u_wide_int)num, nbits, format, buf_end, len));
+    	return(conv_p2( (u_wide_int)num, nbits, format, buf_end, len));
 
     do {
 	*--p = digits[num & mask];
@@ -659,8 +660,10 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
     char prefix_char;
 
     double fp_num;
-    widest_int i_num = (widest_int) 0;
-    u_widest_int ui_num;
+    widest_int i_quad = (widest_int) 0;
+    u_widest_int ui_quad;
+    wide_int i_num = (wide_int) 0;
+    u_wide_int ui_num;
 
     char num_buf[NUM_BUF_SIZE];
     char char_buf[2];		/* for printing %% and %<unknown> */
@@ -799,31 +802,41 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 	     */
 	    switch (*fmt) {
 	    case 'u':
-	    	if (var_type == IS_QUAD)
-		    i_num = va_arg(ap, u_widest_int);
-		else if (var_type == IS_LONG)
-		    i_num = (widest_int) va_arg(ap, u_wide_int);
-		else if (var_type == IS_SHORT)
-		    i_num = (widest_int) (unsigned short) va_arg(ap, unsigned int);
-		else
-		    i_num = (widest_int) va_arg(ap, unsigned int);
-		s = conv_10(i_num, 1, &is_negative,
+	    	if (var_type == IS_QUAD) {
+		    i_quad = va_arg(ap, u_widest_int);
+		    s = conv_10_quad(i_quad, 1, &is_negative,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
+		}
+		else {
+		    if (var_type == IS_LONG)
+			i_num = (wide_int) va_arg(ap, u_wide_int);
+		    else if (var_type == IS_SHORT)
+			i_num = (wide_int) (unsigned short) va_arg(ap, unsigned int);
+		    else
+			i_num = (wide_int) va_arg(ap, unsigned int);
+		    s = conv_10(i_num, 1, &is_negative,
+			    &num_buf[NUM_BUF_SIZE], &s_len);
+		}
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
 		break;
 
 	    case 'd':
 	    case 'i':
-	    	if (var_type == IS_QUAD)
-		    i_num = va_arg(ap, widest_int);
-		else if (var_type == IS_LONG)
-		    i_num = (widest_int) va_arg(ap, wide_int);
-		else if (var_type == IS_SHORT)
-		    i_num = (widest_int) (short) va_arg(ap, int);
-		else
-		    i_num = (widest_int) va_arg(ap, int);
-		s = conv_10(i_num, 0, &is_negative,
+	    	if (var_type == IS_QUAD) {
+		    i_quad = va_arg(ap, widest_int);
+		    s = conv_10_quad(i_quad, 0, &is_negative,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
+		}
+		else {
+		    if (var_type == IS_LONG)
+			i_num = (wide_int) va_arg(ap, wide_int);
+		    else if (var_type == IS_SHORT)
+			i_num = (wide_int) (short) va_arg(ap, int);
+		    else
+			i_num = (wide_int) va_arg(ap, int);
+		    s = conv_10(i_num, 0, &is_negative,
+			    &num_buf[NUM_BUF_SIZE], &s_len);
+		}
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
 
 		if (is_negative)
@@ -836,16 +849,21 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 
 	    case 'o':
-		if (var_type == IS_QUAD)
-		    ui_num = va_arg(ap, u_widest_int);
-		else if (var_type == IS_LONG)
-		    ui_num = (u_widest_int) va_arg(ap, u_wide_int);
-		else if (var_type == IS_SHORT)
-		    ui_num = (u_widest_int) (unsigned short) va_arg(ap, unsigned int);
-		else
-		    ui_num = (u_widest_int) va_arg(ap, unsigned int);
-		s = conv_p2(ui_num, 3, *fmt,
+		if (var_type == IS_QUAD) {
+		    ui_quad = va_arg(ap, u_widest_int);
+		    s = conv_p2_quad(ui_quad, 3, *fmt,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
+		}
+		else {
+		    if (var_type == IS_LONG)
+			ui_num = (u_wide_int) va_arg(ap, u_wide_int);
+		    else if (var_type == IS_SHORT)
+			ui_num = (u_wide_int) (unsigned short) va_arg(ap, unsigned int);
+		    else
+			ui_num = (u_wide_int) va_arg(ap, unsigned int);
+		    s = conv_p2(ui_num, 3, *fmt,
+			    &num_buf[NUM_BUF_SIZE], &s_len);
+		}
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
 		if (alternate_form && *s != '0') {
 		    *--s = '0';
@@ -856,16 +874,21 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 	    case 'x':
 	    case 'X':
-		if (var_type == IS_QUAD)
-		    ui_num = va_arg(ap, u_widest_int);
-		else if (var_type == IS_LONG)
-		    ui_num = (u_widest_int) va_arg(ap, u_wide_int);
-		else if (var_type == IS_SHORT)
-		    ui_num = (u_widest_int) (unsigned short) va_arg(ap, unsigned int);
-		else
-		    ui_num = (u_widest_int) va_arg(ap, unsigned int);
-		s = conv_p2(ui_num, 4, *fmt,
+		if (var_type == IS_QUAD) {
+		    ui_quad = va_arg(ap, u_widest_int);
+		    s = conv_p2_quad(ui_quad, 4, *fmt,
 			    &num_buf[NUM_BUF_SIZE], &s_len);
+		}
+		else {
+		    if (var_type == IS_LONG)
+			ui_num = (u_wide_int) va_arg(ap, u_wide_int);
+		    else if (var_type == IS_SHORT)
+			ui_num = (u_wide_int) (unsigned short) va_arg(ap, unsigned int);
+		    else
+			ui_num = (u_wide_int) va_arg(ap, unsigned int);
+		    s = conv_p2(ui_num, 4, *fmt,
+			    &num_buf[NUM_BUF_SIZE], &s_len);
+		}
 		FIX_PRECISION(adjust_precision, precision, s, s_len);
 		if (alternate_form && i_num != 0) {
 		    *--s = *fmt;	/* 'x' or 'X' */
@@ -975,14 +998,22 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 		     * If the pointer size is equal to or smaller than the size
 		     * of the largest unsigned int, we convert the pointer to a
 		     * hex number, otherwise we print "%p" to indicate that we
-		     * don't handle "%p".
+		     * don't handle "%p". Note that depending on the
+		     * sizes of the various pointers and u_wide_int
+		     * and u_widest_int, gcc will warn about the
+		     * assignments, but we are actually OK.
 		     */
 		case 'p':
-		    ui_num = (u_widest_int) va_arg(ap, void *);
-
-		    if (sizeof(char *) <= sizeof(u_widest_int))
-				s = conv_p2(ui_num, 4, 'x',
-					    &num_buf[NUM_BUF_SIZE], &s_len);
+		    if (sizeof(char *) <= sizeof(u_wide_int)) {
+		    	ui_num = (u_wide_int) va_arg(ap, void *);
+			s = conv_p2(ui_num, 4, 'x',
+				&num_buf[NUM_BUF_SIZE], &s_len);
+		    }
+		    else if (sizeof(char *) <= sizeof(u_widest_int)) {
+		    	ui_quad = (u_widest_int) va_arg(ap, void *);
+			s = conv_p2_quad(ui_quad, 4, 'x',
+				&num_buf[NUM_BUF_SIZE], &s_len);
+		    }
 		    else {
 			s = "%p";
 			s_len = 2;
