@@ -1508,7 +1508,7 @@ static void mpmt_pthread_pre_config(pool *pconf, pool *plog, pool *ptemp)
 {
     static int restart_num = 0;
 
-    one_process = getenv("ONE_PROCESS");
+    one_process = !!getenv("ONE_PROCESS");
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {
