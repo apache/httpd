@@ -1,5 +1,8 @@
 Changes with Apache 1.2b9
 
+  *) Reset the MODULE_MAGIC_NUMBER to account for the unsigned port
+     changes and in anticipation of 1.2 final release.  [Roy Fielding]
+
   *) Fix problem with scripts not receiving a SIGPIPE when client drops
      the connection (e.g., when user presses Stop).  Apache will now stop
      trying to send a message body immediately after an error from write.
@@ -7,7 +10,7 @@ Changes with Apache 1.2b9
 
   *) Rearrange Configuration.tmpl so that mod_rewrite has higher priority
      than mod_alias, and mod_alias has higher priority than mod_proxy;
-     rearranged all modules to enhance understanding of their purpose
+     rearranged other modules to enhance understanding of their purpose
      and relative order (and maybe even reduce some overhead).
      [Roy Fielding and Sameer Parekh]
 
