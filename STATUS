@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/03 19:46:18 $]
+Last modified at [$Date: 2004/06/03 23:49:47 $]
 
 Release:
 
@@ -167,7 +167,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_headers: Allow conditional RequestHeader directives. PR 27951
          modules/metadata/mod_headers.c: r1.52
-       +1: nd, trawick
+       +1: nd, trawick, bnicholes
 
     *) Allow URLs for ServerAdmin. PR 28174.
          server/core.c: r1.274
@@ -217,7 +217,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_alias: Emit a warning if an alias overlaps another
           modules/mappers/mod_alias.c: r1.45, 1.46, 1.47, 1.48, 1.55
-      +1: nd
+      +1: nd, bnicholes
 
     *) Fixed mean and median calculations in ab, also changed where time values
        are set for start and connect when doing keep alive benchmarking.
