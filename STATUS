@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/15 10:31:16 $]
+Last modified at [$Date: 2004/09/15 10:47:56 $]
 
 Release:
 
@@ -72,10 +72,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
-
-    *) ap_rgetline_core correctness fix.
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.151&r2=1.152
-       +1: jorton, jerenkrantz, trawick
 
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
        (2.0 + 1.3)
