@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
 <name>mod_status</name>
+<description>Provides information on server activity and
+performance</description>
 <status>Base</status>
-<identifier>status_module</identifier>
 <sourcefile>mod_status.c</sourcefile>
-<compatibility>Available in Apache 1.1 and later</compatibility>
+<identifier>status_module</identifier>
 
-<description>This module provides information on server activity and
-performance.</description>
 
 <summary>
 
@@ -53,17 +53,17 @@ performance.</description>
       <li>The current hosts and requests being processed (*)</li>
     </ul>
 
-    A compile-time option must be used to display the details
+    <p>A compile-time option must be used to display the details
     marked "(*)" as the instrumentation required for obtaining
-    these statistics does not exist within standard Apache. 
+    these statistics does not exist within standard Apache.</p>
 </summary>
 
 <section>
     <title>Enabling Status Support</title>
 
-    To enable status reports only for browsers from the foo.com
+    <p>To enable status reports only for browsers from the foo.com
     domain add this code to your <code>httpd.conf</code>
-    configuration file 
+    configuration file</p>
 <example>
     &lt;Location /server-status&gt;<br />
     SetHandler server-status<br />
@@ -87,22 +87,22 @@ performance.</description>
 <section>
 
     <title>Automatic Updates</title>
-    You can get the status page to update itself automatically if
+    <p>You can get the status page to update itself automatically if
     you have a browser that supports "refresh". Access the page
     <code>http://your.server.name/server-status?refresh=N</code> to
-    refresh the page every N seconds. 
+    refresh the page every N seconds.</p>
 
 </section>
 
 <section>
 
     <title>Machine Readable Status File</title>
-    A machine-readable version of the status file is available by
+    <p>A machine-readable version of the status file is available by
     accessing the page
     <code>http://your.server.name/server-status?auto</code>. This
     is useful when automatically run, see the Perl program in the
     <code>/support</code> directory of Apache,
-    <code>log_server_status</code>. 
+    <code>log_server_status</code>.</p>
 
     <note>
       <strong>It should be noted that if <module>mod_status</module> is

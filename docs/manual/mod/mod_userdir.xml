@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
 <name>mod_userdir</name>
+<description>Provides for user-specific
+directories</description>
 <status>Base</status>
-<description>This module provides for user-specific
-directories.</description>
-<identifier>userdir_module</identifier>
 <sourcefile>mod_userdir.c</sourcefile>
+<identifier>userdir_module</identifier>
 
 <summary>
 </summary>
@@ -21,7 +22,7 @@ for a particular user are received, denoted by requests containing
 <em>~username</em>, such as 
 <em>http://server.example.com/~bob/</em></description>
 <syntax>UserDir <em>directory-filename</em></syntax>
-<default>UserDir <em>public_html</em></default>
+<default>UserDir public_html</default>
 <contextlist><context>server config</context> <context>virtual
 host</context></contextlist>
 <compatibility>All forms except the <code>UserDir public_html</code>
