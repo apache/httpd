@@ -125,7 +125,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
 
     conf = (core_dir_config *)apr_pcalloc(a, sizeof(core_dir_config));
     
-    /* conf->r and conf->d[_*] are initialized in */
+    /* conf->r and conf->d[_*] are initialized by dirsection() or left NULL */
 
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
@@ -173,18 +173,12 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     core_dir_config *new = (core_dir_config *)newv;
     core_dir_config *conf;
     int i;
-  
+
+    /* Create this conf by duplicating the base, replacing elements
+     * (or creating copies for merging) where new-> values exist.
+     */
     conf = (core_dir_config *)apr_palloc(a, sizeof(core_dir_config));
     memcpy((char *)conf, (const char *)base, sizeof(core_dir_config));
-    if (base->response_code_strings) {
-	conf->response_code_strings =
-	    apr_palloc(a, sizeof(*conf->response_code_strings)
-		      * RESPONSE_CODES);
-	memcpy(conf->response_code_strings, base->response_code_strings,
-	       sizeof(*conf->response_code_strings) * RESPONSE_CODES);
-    }
-    else
-        conf->response_code_strings = NULL;
 
     conf->d = new->d;
     conf->d_is_fnmatch = new->d_is_fnmatch;
@@ -222,29 +216,35 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (new->ap_auth_type) {
         conf->ap_auth_type = new->ap_auth_type;
     }
+
     if (new->ap_auth_name) {
         conf->ap_auth_name = new->ap_auth_name;
     }
+
     if (new->ap_requires) {
         conf->ap_requires = new->ap_requires;
     }
 
-    if (new->response_code_strings) {
-	if (conf->response_code_strings == NULL) {
-	    conf->response_code_strings = apr_palloc(a,
-		sizeof(*conf->response_code_strings) * RESPONSE_CODES);
-	    memcpy(conf->response_code_strings, new->response_code_strings,
-		   sizeof(*conf->response_code_strings) * RESPONSE_CODES);
-	}
-	else {
-	    for (i = 0; i < RESPONSE_CODES; ++i) {
-	        if (new->response_code_strings[i] != NULL) {
-		    conf->response_code_strings[i]
-		        = new->response_code_strings[i];
-		}
+    if (conf->response_code_strings == NULL) {
+	conf->response_code_strings = new->response_code_strings;
+    }
+    else (new->response_code_strings != NULL) {
+        /* If we merge, the merge-result must have it's own array 
+         */
+	conf->response_code_strings = apr_palloc(a,
+	    sizeof(*conf->response_code_strings) * RESPONSE_CODES);
+	memcpy(conf->response_code_strings, base->response_code_strings,
+	       sizeof(*conf->response_code_strings) * RESPONSE_CODES);
+	for (i = 0; i < RESPONSE_CODES; ++i) {
+	    if (new->response_code_strings[i] != NULL) {
+		conf->response_code_strings[i]
+		    = new->response_code_strings[i];
 	    }
 	}
     }
+    /* Otherwise we simply use the base->response_code_strings array
+     */
+
     if (new->hostname_lookups != HOSTNAME_LOOKUP_UNSET) {
 	conf->hostname_lookups = new->hostname_lookups;
     }
@@ -283,7 +283,16 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     else
         conf->limit_xml_body = base->limit_xml_body;
 
-    conf->sec_file = apr_array_append(a, base->sec_file, new->sec_file);
+    if (!conf->sec_file) {
+        conf->sec_file = new->sec_file;
+    }
+    else if (new->sec_file)
+        /* If we merge, the merge-result must have it's own array 
+         */
+        conf->sec_file = apr_array_append(a, base->sec_file, new->sec_file);
+    }
+    /* Otherwise we simply use the base->sec_file array
+     */
 
     if (new->satisfy != SATISFY_NOSPEC) {
         conf->satisfy = new->satisfy;
@@ -295,9 +304,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (new->add_default_charset != ADD_DEFAULT_CHARSET_UNSET) {
 	conf->add_default_charset = new->add_default_charset;
-	if (new->add_default_charset_name) {
-	    conf->add_default_charset_name = new->add_default_charset_name;
-	}
+	conf->add_default_charset_name = new->add_default_charset_name;
     }
 
     /* Overriding all negotiation 
@@ -305,15 +312,19 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     if (new->mime_type) {
         conf->mime_type = new->mime_type;
     }
+
     if (new->handler) {
         conf->handler = new->handler;
     }
+
     if (new->output_filters) {
         conf->output_filters = new->output_filters;
     }
+
     if (new->input_filters) {
         conf->input_filters = new->input_filters;
     }
+
     return (void*)conf;
 }
 
