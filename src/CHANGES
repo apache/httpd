@@ -1,5 +1,19 @@
 Changes with Apache 1.3b7
 
+  *) Cleanup of the `configure --shadow' process:
+     - make sure the configure script creates its temporary files in the
+       shadow tree to avoid conflicts with parallel configure runs
+     - removed unnecessary option "-r" from "rm" call for Makefiles
+     - make sure the configure scripts creates the shadow-wrapper Makefile
+       only when no shadow trees already exists
+     - make sure "make distclean" removes the shadow-wrapper Makefile but only
+       when no more shadow trees exists
+     - overhauled mkshadow.sh script: now its more IFS-safe and approx. twice
+       as fast (in the past it needed 70sec, now it runs just 38sec)
+     - make sure CVS does not complain about the created files
+       Makefille.<gnutriple> and directories src.<gnutriple>
+     [Ralf S. Engelschall]
+
   *) Added the AddVersionComponent and AddVersionPlatform core directives.
      The first allows the addition of arbitrary text to the Server-Version
      response header field value, augmenting the SERVER_SUBVERSION define in

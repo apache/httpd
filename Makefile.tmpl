@@ -453,5 +453,9 @@ distclean-support:
 
 distclean-shadow:
 	$(RM) -r $(SRC)
-	$(RM) -r $(MKF)
+	$(RM) $(MKF)
+	-@if [ ".`ls $(TOP)/src.* 2>/dev/null`" = . ]; then \
+		echo "$(RM) Makefile"; \
+		$(RM) Makefile; \
+	fi
 

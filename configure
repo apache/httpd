@@ -73,7 +73,6 @@ top=.
 mkf=Makefile
 src=src
 aux=src/helpers
-
 sedsubst=src/.apaci.sedsubst
 addconf=src/.apaci.addconf
 
@@ -265,34 +264,42 @@ do
         --shadow)
             #   determine GNU platform triple
             gnutriple=`$aux/GuessOS | awk '{ printf("%s",$1); }' | sed -e 's:/:-:g'`
-            #   create Makefile wrapper
-            if [ .$quiet = .no ]; then
-                echo " + creating Makefile (shadow wrapper)"
+            #   create Makefile wrapper (the first time only)
+            if [ ".`ls $top/src.* 2>/dev/null`" = . ]; then
+                if [ .$quiet = .no ]; then
+                    echo " + creating Makefile (shadow wrapper)"
+                fi
+                echo "##" > Makefile
+                echo "##  Apache Makefile (shadow wrapper)" >> Makefile
+                echo "##" >> Makefile
+                echo "" >> Makefile
+                echo "GNUTRIPLE=\`$aux/GuessOS | awk '{ printf(\"%s\",\$\$1); }' | sed -e 's:/:-:g'\`" >> Makefile
+                echo "" >> Makefile
+                echo "all build install install-quiet clean distclean:" >> Makefile
+                echo "	@\$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
+                echo "" >> Makefile
             fi
-            echo "##" > Makefile
-            echo "##  Apache Makefile (shadow wrapper)" >> Makefile
-            echo "##" >> Makefile
-            echo "" >> Makefile
-            echo "GNUTRIPLE=\`$aux/GuessOS | awk '{ printf(\"%s\",\$\$1); }' | sed -e 's:/:-:g'\`" >> Makefile
-            echo "" >> Makefile
-            echo "all build install install-quiet clean distclean:" >> Makefile
-            echo "	@\$(MAKE) -f Makefile.\$(GNUTRIPLE) \$(MFLAGS) \$@" >> Makefile
-            echo "" >> Makefile
             #   set shadow paths
             shadowmkf="Makefile.$gnutriple"
             shadowsrc="src.$gnutriple"
             shadowaux="src.$gnutriple/helpers"
+            shadowsedsubst="src.$gnutriple/.apaci.sedsubst"
+            shadowaddconf="src.$gnutriple/.apaci.addconf"
             #   (re)create shadow tree
             if [ .$quiet = .no ]; then
                 echo " + create shadow tree ($shadowsrc)"
             fi
             rm -rf $shadowsrc
-            mkdir $shadowsrc
             $aux/mkshadow.sh $src $shadowsrc
             #   delegate us to the shadow paths
             mkf=$shadowmkf
             src=$shadowsrc
             aux=$shadowaux
+            sedsubst=$shadowsedsubst
+            rm -f $addconf 2>/dev/null
+            addconf=$shadowaddconf
+            rm -f $addconf 2>/dev/null
+            touch $addconf
             ;;
         --help | -h | -help )
             echo "Usage: configure [options]"

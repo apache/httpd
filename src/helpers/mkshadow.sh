@@ -7,19 +7,40 @@
 ##  Apache's Autoconf-style Interface (APACI) 
 ##
 
+#   default IFS
+DIFS=' 	
+'
+
+#   source and destination directory
 src=`echo $1 | sed -e 's:/$::'`
 dst=`echo $2 | sed -e 's:/$::'`
-aux=$3
 
-#   create directory tree
+#   determine if source is an absolute path
+case $src in
+    /* ) srcisabs=1 ;;
+     * ) srcisabs=0 ;;
+esac
+
+#   determine reverse directory to directory
+case $dst in
+    /* ) dstrevdir='' ;;
+     * ) dstrevdir="`$src/helpers/fp2rp $dst`/" ;;
+esac
+
+#   create directory tree at destination
+if [ ! -d $dst ]; then
+    mkdir $dst
+fi
 DIRS="`cd $src
        find . -type d -print |\
        sed -e '/\/CVS/d' \
            -e '/^\.$/d' \
-           -e 's/^\.\///'`"
+           -e 's:^\./::'`"
+OIFS="$IFS" IFS="$DIFS"
 for dir in $DIRS; do
     mkdir $dst/$dir
 done
+IFS="$OIFS"
 
 #   fill directory tree with symlinks to files
 FILES="`cd $src
@@ -31,34 +52,32 @@ FILES="`cd $src
             -e '/\.cvsignore$/d' \
             -e '/\/CVS/d' \
             -e '/\.indent\.pro$/d' \
+            -e '/\.apaci.*/d' \
             -e '/Makefile$/d' \
             -e '/\/\.#/d' \
             -e '/\.orig$/d' \
             -e 's/^\.\///'`"
+OIFS="$IFS" IFS="$DIFS"
 for file in $FILES; do
      basename=`echo $file | sed -e 's:^.*/::'`
      dir=`echo $file | sed -e 's:[^/]*$::' -e 's:/$::' -e 's:$:/:' -e 's:^/$::'`
      from="$src/$file"
      to="$dst/$dir$basename"
-     case $from in
-         /* ) ;;
-          * ) 
-             if [ ".$dir" != . ]; then
-                 subdir=`echo $dir | sed -e 's:/$::'`
-                 revdir=`$src/helpers/fp2rp $subdir`
-                 from="$revdir/$from"
-             fi
-             ;;
-     esac
-     case $dst in
-         /* ) ;;
-          * ) 
-             subdir=`echo $dst | sed -e 's:/$::'`
-             revdir=`$src/helpers/fp2rp $subdir`
-             from="$revdir/$from"
-             ;;
-     esac
+     if [ $srcisabs = 0 -a ".$dir" != . ]; then
+         subdir=`echo $dir | sed -e 's:/$::'`
+         #   (inlined fp2rp)
+         revdir=''
+         OIFS2="$IFS"; IFS='/'
+         for pe in $subdir; do
+             revdir="../$revdir"
+         done
+         IFS="$OIFS2"
+         #   finalize from
+         from="$revdir$from"
+     fi
+     from="$dstrevdir$from"
      echo "    $to"
      ln -s $from $to
 done
+IFS="$OIFS"
 
