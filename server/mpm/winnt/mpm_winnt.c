@@ -778,9 +778,6 @@ static void winnt_accept(void *listen_socket)
          */
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_CONNECTION_ACCEPTED,
                                    &pCompContext->Overlapped);
-
-        if (shutdown_in_progress)
-            break;
     }
 }
 static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
