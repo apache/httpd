@@ -79,7 +79,7 @@ compatibility variables.</p>
 
 <p>When <module>mod_ssl</module> is built into Apache or at least
 loaded (under DSO situation) additional functions exist for the <a
-href="../mod_log_config.html#formats">Custom Log Format</a> of 
+href="mod_log_config.html#formats">Custom Log Format</a> of 
 <module>mod_log_config</module>. First there is an
 additional ``<code>%{</code><em>varname</em><code>}x</code>''
 eXtension format function which can be used to expand any variables

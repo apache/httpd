@@ -41,15 +41,15 @@
     <directive module="core">Options</directive> directive for
     more details.</p>
 
-    <p>If the <directive module="autoindex">FancyIndexing</directive>
-    option is given with the <directive module="autoindex"
-    >IndexOptions</directive> directive,
+    <p>If the <code><a href="#indexoptions:fancyindexing"
+    >FancyIndexing</a></code> option is given with the <directive
+    module="mod_autoindex">IndexOptions</directive> directive,
     the column headers are links that control the order of the
     display. If you select a header link, the listing will be
     regenerated, sorted by the values in that column. Selecting the
     same header repeatedly toggles between ascending and descending
     order. These column header links are suppressed with
-    <directive module="autoindex">IndexOptions</directive> directive's
+    <directive module="mod_autoindex">IndexOptions</directive> directive's
     <code>SuppressColumnSorting</code> option.</p>
 
     <p>Note that when the display is sorted by "Size", it's the

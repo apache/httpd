@@ -91,12 +91,12 @@ existing HTML documents.</p>
     directives would be executed.</p>
 
     <p>The other method is to use the <directive 
-    module="mod_includes">XBitHack</directive> directive:</p>
+    module="mod_include">XBitHack</directive> directive:</p>
 <example>
         XBitHack on
 </example>
 
-    <p><directive module="mod_includes">XBitHack</directive>
+    <p><directive module="mod_include">XBitHack</directive>
     tells Apache to parse files for SSI
     directives if they have the execute bit set. So, to add SSI
     directives to an existing page, rather than having to change
@@ -111,7 +111,7 @@ existing HTML documents.</p>
     <code>.html</code> files for SSI, so that you don't have to
     mess with <code>.shtml</code> file names. These folks have
     perhaps not heard about <directive 
-    module="mod_includes">XBitHack</directive>. The thing to
+    module="mod_include">XBitHack</directive>. The thing to
     keep in mind is that, by doing this, you're requiring that
     Apache read through every single file that it sends out to
     clients, even if they don't contain any SSI directives. This
