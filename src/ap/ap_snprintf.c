@@ -582,12 +582,13 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
     char num_buf[NUM_BUF_SIZE];
     char char_buf[2];		/* for printing %% and %<unknown> */
 
+    enum {
+    	IS_QUAD, IS_LONG, IS_SHORT, IS_INT
+    } var_type;
+
     /*
      * Flag variables
      */
-    boolean_e is_short;
-    boolean_e is_long;
-    boolean_e is_quad;
     boolean_e alternate_form;
     boolean_e print_sign;
     boolean_e print_blank;
@@ -686,27 +687,19 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 	     * Modifier check
 	     */
 	    if (*fmt == 'q') {
-		is_quad = YES;
-		is_long = NO;
-		is_short = NO;
+		var_type = IS_QUAD;
 		fmt++;
 	    }
 	    else if (*fmt == 'l') {
-		is_quad = NO;
-		is_long = YES;
-		is_short = NO;
+		var_type = IS_LONG;
 		fmt++;
 	    }
 	    else if (*fmt == 'h') {
-		is_quad = NO;
-		is_long = NO;
-		is_short = YES;
+		var_type = IS_SHORT;
 		fmt++;
 	    }
 	    else {
-		is_quad = NO;
-		is_long = NO;
-		is_short = NO;
+		var_type = IS_INT;
 	    }
 
 	    /*
@@ -722,11 +715,11 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 	     */
 	    switch (*fmt) {
 	    case 'u':
-	    	if (is_quad)
+	    	if (var_type == IS_QUAD)
 		    i_num = va_arg(ap, u_widest_int);
-		else if (is_long)
+		else if (var_type == IS_LONG)
 		    i_num = (widest_int) va_arg(ap, u_wide_int);
-		else if (is_short)
+		else if (var_type == IS_SHORT)
 		    i_num = (widest_int) (unsigned short) va_arg(ap, unsigned int);
 		else
 		    i_num = (widest_int) va_arg(ap, unsigned int);
@@ -737,11 +730,11 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 	    case 'd':
 	    case 'i':
-	    	if (is_quad)
+	    	if (var_type == IS_QUAD)
 		    i_num = va_arg(ap, widest_int);
-		else if (is_long)
+		else if (var_type == IS_LONG)
 		    i_num = (widest_int) va_arg(ap, wide_int);
-		else if (is_short)
+		else if (var_type == IS_SHORT)
 		    i_num = (widest_int) (short) va_arg(ap, int);
 		else
 		    i_num = (widest_int) va_arg(ap, int);
@@ -759,11 +752,11 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 
 	    case 'o':
-		if (is_quad)
+		if (var_type == IS_QUAD)
 		    ui_num = va_arg(ap, u_widest_int);
-		else if (is_long)
+		else if (var_type == IS_LONG)
 		    ui_num = (u_widest_int) va_arg(ap, u_wide_int);
-		else if (is_short)
+		else if (var_type == IS_SHORT)
 		    ui_num = (u_widest_int) (unsigned short) va_arg(ap, unsigned int);
 		else
 		    ui_num = (u_widest_int) va_arg(ap, unsigned int);
@@ -779,11 +772,11 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 	    case 'x':
 	    case 'X':
-		if (is_quad)
+		if (var_type == IS_QUAD)
 		    ui_num = va_arg(ap, u_widest_int);
-		else if (is_long)
+		else if (var_type == IS_LONG)
 		    ui_num = (u_widest_int) va_arg(ap, u_wide_int);
-		else if (is_short)
+		else if (var_type == IS_SHORT)
 		    ui_num = (u_widest_int) (unsigned short) va_arg(ap, unsigned int);
 		else
 		    ui_num = (u_widest_int) va_arg(ap, unsigned int);
@@ -878,11 +871,11 @@ API_EXPORT(int) ap_vformatter(int (*flush_func)(ap_vformatter_buff *),
 
 
 	    case 'n':
-	    	if (is_quad)
+	    	if (var_type == IS_QUAD)
 		    *(va_arg(ap, widest_int *)) = cc;
-		else if (is_long)
+		else if (var_type == IS_LONG)
 		    *(va_arg(ap, long *)) = cc;
-		else if (is_short)
+		else if (var_type == IS_SHORT)
 		    *(va_arg(ap, short *)) = cc;
 		else
 		    *(va_arg(ap, int *)) = cc;
