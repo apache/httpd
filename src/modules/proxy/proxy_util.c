@@ -1273,6 +1273,7 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
 	value = "";
     if (!parm->req->assbackwards)
 	ap_rvputs(parm->req, key, ": ", value, CRLF, NULL);
+    ap_table_add(parm->req->headers_out, key, value);
     if (parm->cache != NULL && parm->cache->fp != NULL &&
 	ap_bvputs(parm->cache->fp, key, ": ", value, CRLF, NULL) == -1) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, parm->cache->req,
