@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_ssl: Fix a problem setting variables that represent the
+     client certificate chain.  PR 21397  [Jeff Trawick]
+
   *) Remember an authenticated user during internal redirects if the
      redirection target is not access protected and pass it
      to scripts using the REDIRECT_REMOTE_USER environment variable.
