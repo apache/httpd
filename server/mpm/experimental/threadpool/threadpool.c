@@ -361,6 +361,7 @@ static apr_status_t worker_stack_pop(worker_stack *stack,
     if ((rv = apr_thread_mutex_lock(stack->mutex)) != APR_SUCCESS) {
         return rv;
     }
+    AP_DEBUG_ASSERT(stack->nelts >= 0);
     while ((stack->nelts == 0) && (!stack->terminated)) {
         rv = apr_thread_cond_wait(stack->cond, stack->mutex);
         if (rv != APR_SUCCESS) {
@@ -385,7 +386,7 @@ static apr_status_t worker_stack_pop(worker_stack *stack,
     return APR_SUCCESS;
 }
 
-static apr_status_t worker_stack_interrupt_all(worker_stack *stack)
+static apr_status_t worker_stack_terminate(worker_stack *stack)
 {
     apr_status_t rv;
     worker_wakeup_info *worker;
@@ -394,6 +395,10 @@ static apr_status_t worker_stack_interrupt_all(worker_stack *stack)
         return rv;
     }
     stack->terminated = 1;
+    /* Wake up the listener thread. Although there will never be
+     * more than one thread blocking on this condition, broadcast
+     * just in case. */
+    apr_thread_cond_broadcast(stack->cond);
     while (stack->nelts) {
         worker = stack->stack[--stack->nelts];
         apr_thread_mutex_lock(worker->mutex);
@@ -472,7 +477,7 @@ static void signal_threads(int mode)
      */
     if (mode == ST_UNGRACEFUL) {
         workers_may_exit = 1;
-        worker_stack_interrupt_all(idle_worker_stack);
+        worker_stack_terminate(idle_worker_stack);
     }
 }
 
@@ -994,7 +999,6 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     }
 
     workers_may_exit = 1;
-    worker_stack_interrupt_all(idle_worker_stack);
     if (worker) {
         apr_thread_mutex_lock(worker->mutex);
         worker->state = WORKER_TERMINATED;
@@ -1006,6 +1010,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
         apr_thread_cond_signal(worker->cond);
         apr_thread_mutex_unlock(worker->mutex);
     }
+    worker_stack_terminate(idle_worker_stack);
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
 
