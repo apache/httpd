@@ -2514,10 +2514,6 @@ static int includes_filter(ap_filter_t *f, ap_bucket_brigade *b)
      * expect to be signal-ready to SIGALRM.  There is no clean way to
      * fix this, except to put alarm support into BUFF. -djg
      */
-#ifdef CHARSET_EBCDIC
-    /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */
-    ap_bsetopt(r->connection->client, BO_WXLATE, &ap_hdrs_to_ascii);
-#endif
 
     send_parsed_content(&b, r, f);
     ap_pass_brigade(f->next, b);

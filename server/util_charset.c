@@ -75,8 +75,8 @@
  * the source code.
  *
  * For an ASCII machine, these remain NULL so that when they are stored
- * in the BUFF via ap_bsetop(BO_WXLATE or BO_RXLATE) it ensures that no
- * translation is performed.
+ * in the BUFF via ap_bsetop(BO_RXLATE) it ensures that no translation is 
+ * performed.
  */
  
 apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
@@ -101,22 +101,14 @@ API_EXPORT(apr_status_t) ap_set_content_xlate(request_rec *r, int output,
 {
     apr_status_t rv;
 
-    if (output) {
-        r->rrx->to_net = xlate;
-        if (xlate) {
-            apr_xlate_get_sb(r->rrx->to_net, &r->rrx->to_net_sb);
-        }
-        rv = ap_bsetopt(r->connection->client, BO_WXLATE, &xlate);
-    }
-    else {
-        r->rrx->from_net = xlate;
-        rv = ap_bsetopt(r->connection->client, BO_RXLATE, &xlate);
-    }
+    ap_assert(output == 0);
+
+    r->rrx->from_net = xlate;
+    rv = ap_bsetopt(r->connection->client, BO_RXLATE, &xlate);
 
     if (rv) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "BO_%sXLATE failed",
-                      output ? "W" : "R");
+                      "BO_RXLATE failed");
     }
 
     return rv;
