@@ -9,6 +9,7 @@ Release:
 
            Current test status:
            o FreeBSD 2.2.6 ...................... Ok (Ralf S. Engelschall)
+           o FreeBSD 2.2.7 ...................... Ok (Jim Jagielski)
            o Debian GNU/Linux 1.3 ............... Ok (Ralf S. Engelschall)
            o HPUX 10.20 ......................... Ok (Ralf S. Engelschall)
            o AIX 4.1.5 .......................... Ok (Jens-Uwe Mager)
@@ -20,6 +21,7 @@ Release:
            o OS\2 ............................... Ok (Brian Havard)
            o Windows NT (general)................ Ok (Bill Stoddard)
            o Netwinder .......................... Fails (Rasmus Lerdorf)
+	   o A/UX 3.1.1 ......................... Ok (Jim Jagielski)
 
     1.3.1: Tagged and rolled on July 19. Announced and released.
 
@@ -33,6 +35,9 @@ RELEASE SHOWSTOPPERS:
       get rid of glibc2 problems (and FreeBSD ports problems in case the DB2.x
       package is installed)
       Status: Under construction by Dan Jacobowitz <drow@false.org>
+      Jim: We need to make sure that db2 is backwards compatible with
+           db1 or else make sure that people know to update their DB
+	   files (or are we calling db2 files different names?)
 
 WIN32 1.3.2 RELEASE SHOWSTOPPERS:
 
