@@ -744,7 +744,7 @@ PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *con
     /* send body */
     if (!r->header_only) {
 	const char *buf;
-	apr_size_t remain;
+	apr_size_t readbytes;
 
 	/* if chunked - insert DECHUNK filter */
 	if (ap_proxy_liststr((buf = apr_table_get(r->headers_out, "Transfer-Encoding")), "chunked")) {
@@ -754,12 +754,12 @@ PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *con
 		apr_table_set(r->headers_out, "Transfer-Encoding", buf);
 	    }
 	    ap_add_input_filter("DECHUNK", NULL, rp, origin);
-	    remain = -1;
+	    readbytes = -1;
 	}
 
 	/* if content length - set the length to read */
 	else if ((buf = apr_table_get(r->headers_out, "Content-Length"))) {
-	    remain = atol(buf);
+	    readbytes = atol(buf);
 	}
 
 	/* no chunked / no length therefore read till EOF and cancel keepalive */
@@ -769,14 +769,14 @@ PROXY_DECLARE (int) ap_proxy_http_handler(request_rec *r, proxy_server_conf *con
 
 	/* if keepalive cancelled, read to EOF */
 	if (close) {
-	    remain = -1;
+	    readbytes = -1;
 	}
 
 	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		     "proxy: start body send");
 
 	/* read the body, pass it to the output filters */
-	while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING, &remain) == APR_SUCCESS) {
+	while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING, &readbytes) == APR_SUCCESS) {
 	    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
 		e = apr_bucket_flush_create();
 		APR_BRIGADE_INSERT_TAIL(bb, e);
