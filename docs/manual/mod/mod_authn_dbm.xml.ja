@@ -72,20 +72,20 @@
     無視します。</p>
 
     <note type="warning"><title>セキュリティ</title>
-    <p><directive>AuthDBMUserFile </directive> は、
-       ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
-        保護しようとしているディレクトリ以下には
-        <strong>置かないで下さい</strong>。
-        そうしないとクライアントが <directive>AuthUserFile</directive> を
-        ダウンロードできてしまいます。</p>
+      <p><directive>AuthDBMUserFile </directive> は、
+      ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
+      保護しようとしているディレクトリ以下には
+      <strong>置かないで下さい</strong>。
+      そうしないとクライアントが <directive>AuthUserFile</directive> を
+      ダウンロードできてしまいます。</p>
     </note>
 
     <p>重要な互換性に関する注意: apache module の <code>dbmopen</code> の実装は
-    文字列が NULL で終わっていることに依存するのではなく、DB データストラクチャ
-    のハッシュ値の文字列を読み取ります。Netscape ウェブサーバなど、
+    文字列が NULL で終わっていることに依存するのではなく、DBM データストラクチャ
+    のハッシュ値の文字列の長さを読み取ります。Netscape ウェブサーバなど、
     アプリケーションの中には文字列が NULL で終わっていることに依存している
     ものがあります。ですから、異なるアプリケーション間での DBM ファイルの
-    使用に問題がある場合は、これが問題になっている可能性があります。</p>
+    使用に問題がある場合は、これが原因になっている可能性があります。</p>
 
     <p>Apache には <a href="../programs/dbmmanage.html">dbmmanage</a> という
     perl スクリプトが含まれています。このプログラムを使ってこの
