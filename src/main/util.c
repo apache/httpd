@@ -1618,52 +1618,6 @@ char *
 }
 #endif
 
-#ifndef NO_SLACK
-int ap_slack(int fd, int line)
-{
-#if !defined(F_DUPFD)
-    return fd;
-#else
-    static int low_warned;
-    int new_fd;
-
-#ifdef HIGH_SLACK_LINE
-    if (line == AP_SLACK_HIGH && fd < HIGH_SLACK_LINE) {
-	new_fd = fcntl(fd, F_DUPFD, HIGH_SLACK_LINE);
-	if (new_fd != -1) {
-	    close(fd);
-	    return new_fd;
-	}
-    }
-#endif
-    /* otherwise just assume line == AP_SLACK_LOW */
-    if (fd >= LOW_SLACK_LINE) {
-	return fd;
-    }
-    new_fd = fcntl(fd, F_DUPFD, LOW_SLACK_LINE);
-    if (new_fd == -1) {
-	if (!low_warned) {
-	    /* Give them a warning here, because we really can't predict
-	     * how libraries and such are going to fail.  If we can't
-	     * do this F_DUPFD there's a good chance that apache has too
-	     * few descriptors available to it.  Note we don't warn on
-	     * the high line, because if it fails we'll eventually try
-	     * the low line...
-	     */
-	    aplog_error(APLOG_MARK, APLOG_ERR, NULL,
-		"unable to open a file descriptor above %u, "
-		"you may need to increase the number of descriptors",
-		LOW_SLACK_LINE);
-	    low_warned = 1;
-	}
-	return fd;
-    }
-    close(fd);
-    return new_fd;
-#endif
-}
-#endif /* NO_SLACK */
-
 #if defined(NEED_DIFFTIME)
 double difftime(time_t time1, time_t time0)
 {
