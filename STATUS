@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/19 01:39:15 $]
+Last modified at [$Date: 2003/05/19 02:25:18 $]
 
 Release:
 
@@ -133,10 +133,6 @@ PATCHES TO PORT FROM 2.1
       modules/dav/main/util.c: r1.45
       [ This one is under review.  Don't merge.  ]
       +1:
-
-    * Fix mod_rewrite's handling of absolute URIs. (2.0 + 1.3)
-      modules/mappers/mod_rewrite.c: r1.146
-      +1: nd, jerenkrantz, brianp
 
     * mod_negotiation: parse quality values independent from
       the current locale and level values as integers. PR 17564.

@@ -1103,7 +1103,6 @@ static int hook_uri2file(request_rec *r)
     const char *thisurl;
     char buf[512];
     char docroot[512];
-    char *cp, *cp2;
     const char *ccp;
     unsigned int port;
     int rulestatus;
@@ -1190,6 +1189,7 @@ static int hook_uri2file(request_rec *r)
      */
     rulestatus = apply_rewrite_list(r, conf->rewriterules, NULL);
     if (rulestatus) {
+        unsigned skip;
 
         if (strlen(r->filename) > 6 &&
             strncmp(r->filename, "proxy:", 6) == 0) {
@@ -1227,40 +1227,21 @@ static int hook_uri2file(request_rec *r)
                        r->filename);
             return OK;
         }
-        else if (is_absolute_uri(r->filename)) {
+        else if ((skip = is_absolute_uri(r->filename)) > 0) {
             /* it was finally rewritten to a remote URL */
 
-            /* skip 'scheme:' */
-            for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
-                ;
-            /* skip '://' */
-            cp += 3;
-            /* skip host part */
-            for ( ; *cp != '/' && *cp != '\0'; cp++)
-                ;
-            if (*cp != '\0') {
-                if (rulestatus != ACTION_NOESCAPE) {
-                    rewritelog(r, 1, "escaping %s for redirect", r->filename);
-                    cp2 = ap_escape_uri(r->pool, cp);
-                }
-                else {
-                    cp2 = apr_pstrdup(r->pool, cp);
-                }
-                *cp = '\0';
-                r->filename = apr_pstrcat(r->pool, r->filename, cp2, NULL);
+            if (rulestatus != ACTION_NOESCAPE) {
+                rewritelog(r, 1, "escaping %s for redirect", r->filename);
+                r->filename = escape_absolute_uri(r->pool, r->filename, skip);
             }
 
             /* append the QUERY_STRING part */
-            if (r->args != NULL) {
-                char *args;
-                if (rulestatus == ACTION_NOESCAPE) {
-                    args = r->args;
-                }
-                else {
-                    args = ap_escape_uri(r->pool, r->args);
-                }
+            if (r->args) {
                 r->filename = apr_pstrcat(r->pool, r->filename, "?",
-                                          args, NULL);
+                                          (rulestatus == ACTION_NOESCAPE)
+                                            ? r->args
+                                            : ap_escape_uri(r->pool, r->args),
+                                          NULL);
             }
 
             /* determine HTTP redirect response code */
@@ -1472,6 +1453,7 @@ static int hook_fixup(request_rec *r)
      */
     rulestatus = apply_rewrite_list(r, dconf->rewriterules, dconf->directory);
     if (rulestatus) {
+        unsigned skip;
 
         if (strlen(r->filename) > 6 &&
             strncmp(r->filename, "proxy:", 6) == 0) {
@@ -1495,7 +1477,7 @@ static int hook_fixup(request_rec *r)
                        "%s [OK]", dconf->directory, r->filename);
             return OK;
         }
-        else if (is_absolute_uri(r->filename)) {
+        else if ((skip = is_absolute_uri(r->filename)) > 0) {
             /* it was finally rewritten to a remote URL */
 
             /* because we are in a per-dir context
@@ -1503,11 +1485,9 @@ static int hook_fixup(request_rec *r)
              * if there is a base-URL available
              */
             if (dconf->baseurl != NULL) {
-                /* skip 'scheme:' */
-                for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
-                    ;
-                /* skip '://' */
-                cp += 3;
+                /* skip 'scheme://' */
+                cp = r->filename + skip;
+
                 if ((cp = ap_strchr(cp, '/')) != NULL && *(++cp)) {
                     rewritelog(r, 2,
                                "[per-dir %s] trying to replace "
@@ -1550,39 +1530,19 @@ static int hook_fixup(request_rec *r)
             }
 
             /* now prepare the redirect... */
-
-            /* skip 'scheme:' */
-            for (cp = r->filename; *cp != ':' && *cp != '\0'; cp++)
-                ;
-            /* skip '://' */
-            cp += 3;
-            /* skip host part */
-            for ( ; *cp != '/' && *cp != '\0'; cp++)
-                ;
-            if (*cp != '\0') {
-                if (rulestatus != ACTION_NOESCAPE) {
-                    rewritelog(r, 1, "[per-dir %s] escaping %s for redirect",
-                               dconf->directory, r->filename);
-                    cp2 = ap_escape_uri(r->pool, cp);
-                }
-                else {
-                    cp2 = apr_pstrdup(r->pool, cp);
-                }
-                *cp = '\0';
-                r->filename = apr_pstrcat(r->pool, r->filename, cp2, NULL);
+            if (rulestatus != ACTION_NOESCAPE) {
+                rewritelog(r, 1, "[per-dir %s] escaping %s for redirect",
+                           dconf->directory, r->filename);
+                r->filename = escape_absolute_uri(r->pool, r->filename, skip);
             }
 
             /* append the QUERY_STRING part */
-            if (r->args != NULL) {
-                char *args;
-                if (rulestatus == ACTION_NOESCAPE) {
-                    args = r->args;
-                }
-                else {
-                    args = ap_escape_uri(r->pool, r->args);
-                }
+            if (r->args) {
                 r->filename = apr_pstrcat(r->pool, r->filename, "?",
-                                          args, NULL);
+                                          (rulestatus == ACTION_NOESCAPE)
+                                            ? r->args
+                                            : ap_escape_uri(r->pool, r->args),
+                                          NULL);
             }
 
             /* determine HTTP redirect response code */
@@ -2624,6 +2584,16 @@ static void splitout_queryargs(request_rec *r, int qsappend)
     char *q;
     char *olduri;
 
+    /* don't touch, unless it's an http or mailto URL.
+     * See RFC 1738 and RFC 2368.
+     */
+    if (   is_absolute_uri(r->filename)
+        && strncasecmp(r->filename, "http", 4)
+        && strncasecmp(r->filename, "mailto", 6)) {
+        r->args = NULL; /* forget the query that's still flying around */
+        return;
+    }
+
     q = strchr(r->filename, '?');
     if (q != NULL) {
         olduri = apr_pstrdup(r->pool, r->filename);
@@ -2647,6 +2617,7 @@ static void splitout_queryargs(request_rec *r, int qsappend)
                        r->filename, r->args);
         }
     }
+
     return;
 }
 
@@ -2772,27 +2743,147 @@ static void fully_qualify_uri(request_rec *r)
 }
 
 
-/*
-**
-**  return non-zero if the URI is absolute (includes a scheme etc.)
-**
-*/
-
-static int is_absolute_uri(char *uri)
+/* return number of chars of the scheme (incl. '://')
+ * if the URI is absolute (includes a scheme etc.)
+ * otherwise 0.
+ *
+ * NOTE: If you add new schemes here, please have a
+ *       look at escape_absolute_uri and splitout_queryargs.
+ *       Not every scheme takes query strings and some schemes
+ *       may be handled in a special way.
+ *
+ * XXX: we should consider a scheme registry, perhaps with
+ *      appropriate escape callbacks to allow other modules
+ *      to extend mod_rewrite at runtime.
+ */
+static unsigned is_absolute_uri(char *uri)
 {
-    int i = strlen(uri);
-    if (   (i > 7 && strncasecmp(uri, "http://",   7) == 0)
-        || (i > 8 && strncasecmp(uri, "https://",  8) == 0)
-        || (i > 9 && strncasecmp(uri, "gopher://", 9) == 0)
-        || (i > 6 && strncasecmp(uri, "ftp://",    6) == 0)
-        || (i > 5 && strncasecmp(uri, "ldap:",     5) == 0)
-        || (i > 5 && strncasecmp(uri, "news:",     5) == 0)
-        || (i > 7 && strncasecmp(uri, "mailto:",   7) == 0) ) {
-        return 1;
-    }
-    else {
+    /* fast exit */
+    if (*uri == '/' || strlen(uri) <= 5) {
         return 0;
     }
+
+    switch (*uri++) {
+    case 'f':
+    case 'F':
+        if (!strncasecmp(uri, "tp://", 5)) {        /* ftp://    */
+            return 6;
+        }
+        break;
+
+    case 'g':
+    case 'G':
+        if (!strncasecmp(uri, "opher://", 8)) {     /* gopher:// */
+            return 9;
+        }
+        break;
+
+    case 'h':
+    case 'H':
+        if (!strncasecmp(uri, "ttp://", 6)) {       /* http://   */
+            return 7;
+        }
+        else if (!strncasecmp(uri, "ttps://", 7)) { /* https://  */
+            return 8;
+        }
+        break;
+
+    case 'l':
+    case 'L':
+        if (!strncasecmp(uri, "dap://", 6)) {       /* ldap://   */
+            return 7;
+        }
+        break;
+
+    case 'm':
+    case 'M':
+        if (!strncasecmp(uri, "ailto:", 6)) {       /* mailto:   */
+            return 7;
+        }
+        break;
+
+    case 'n':
+    case 'N':
+        if (!strncasecmp(uri, "ews:", 4)) {         /* news:     */
+            return 5;
+        }
+        else if (!strncasecmp(uri, "ntp://", 6)) {  /* nntp://   */
+            return 7;
+        }
+        break;
+    }
+
+    return 0;
+}
+
+
+/* escape absolute uri, which may or may not be path oriented.
+ * So let's handle them differently.
+ */
+static char *escape_absolute_uri(apr_pool_t *p, char *uri, unsigned scheme)
+{
+    char *cp;
+
+    /* be safe.
+     * NULL should indicate elsewhere, that something's wrong
+     */
+    if (!scheme || strlen(uri) < scheme) {
+        return NULL;
+    }
+
+    cp = uri + scheme;
+
+    /* scheme with authority part? */
+    if (cp[-1] == '/') {
+        /* skip host part */
+        while (*cp && *cp != '/') {
+            ++cp;
+        }
+
+        /* nothing after the hostpart. ready! */
+        if (!*cp || !*++cp) {
+            return apr_pstrdup(p, uri);
+        }
+
+        /* remember the hostname stuff */
+        scheme = cp - uri;
+
+        /* special thing for ldap.
+         * The parts are separated by question marks. From RFC 2255:
+         *     ldapurl = scheme "://" [hostport] ["/"
+         *               [dn ["?" [attributes] ["?" [scope]
+         *               ["?" [filter] ["?" extensions]]]]]]
+         */
+        if (!strncasecmp(uri, "ldap", 4)) {
+            char *token[5];
+            int c = 0;
+
+            token[0] = cp = apr_pstrdup(p, cp);
+            while (*cp && c < 5) {
+                if (*cp == '?') {
+                    token[++c] = cp + 1;
+                    *cp = '\0';
+                }
+                ++cp;
+            }
+
+            return apr_pstrcat(p, apr_pstrndup(p, uri, scheme),
+                                          ap_escape_uri(p, token[0]),
+                               (c >= 1) ? "?" : NULL,
+                               (c >= 1) ? ap_escape_uri(p, token[1]) : NULL,
+                               (c >= 2) ? "?" : NULL,
+                               (c >= 2) ? ap_escape_uri(p, token[2]) : NULL,
+                               (c >= 3) ? "?" : NULL,
+                               (c >= 3) ? ap_escape_uri(p, token[3]) : NULL,
+                               (c >= 4) ? "?" : NULL,
+                               (c >= 4) ? ap_escape_uri(p, token[4]) : NULL,
+                               NULL);
+        }
+    }
+
+    /* Nothing special here. Apply normal escaping. */
+    return apr_pstrcat(p, apr_pstrndup(p, uri, scheme),
+                       ap_escape_uri(p, cp), NULL);
 }
 
 
