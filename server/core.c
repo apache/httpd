@@ -2965,7 +2965,7 @@ static int default_handler(request_rec *r)
         return HTTP_METHOD_NOT_ALLOWED;
     }
 	
-    if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->connection->pool)) != APR_SUCCESS) {
+    if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		     "file permissions deny server access: %s", r->filename);
         return HTTP_FORBIDDEN;
@@ -3134,15 +3134,32 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         if ((!fd && !more && 
              (nbytes < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(e))
             || (APR_BUCKET_IS_EOS(e) && c->keepalive)) {
-                
             /* NEVER save an EOS in here.  If we are saving a brigade with 
              * an EOS bucket, then we are doing keepalive connections, and 
              * we want to process to second request fully.
              */
             if (APR_BUCKET_IS_EOS(e)) {
-                apr_bucket_delete(e);
+                apr_bucket *bucket = NULL;
+                /* If we are in here, then this request is a keepalive.  We
+                 * need to be certain that any data in a bucket is valid
+                 * after the request_pool is cleared.
+                 */ 
+                if (ctx->b == NULL) {
+                    ctx->b = apr_brigade_create(f->c->pool);
+                }
+
+                APR_BRIGADE_FOREACH(bucket, b) {
+                    const char *str;
+                    apr_size_t n;
+
+                    rv = apr_bucket_read(bucket, &str, &n, APR_BLOCK_READ);
+                    apr_brigade_write(ctx->b, NULL, NULL, str, n);
+                }
+                apr_brigade_destroy(b);
             }
-            ap_save_brigade(f, &ctx->b, &b);
+            else {
+                ap_save_brigade(f, &ctx->b, &b);
+            }
             return APR_SUCCESS;
         }
 
