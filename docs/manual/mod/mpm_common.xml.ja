@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 101820 (outdated: 105989) -->
+<!-- English Revision: 105989 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -127,6 +127,31 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
       <directive>CoreDumpDirectory</directive> $B$rL@<(E*$K@_Dj$7$?$H$-$K(B
       $B8B$j$^$9!#(B</p>
     </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>EnableExceptionHook</name>
+<description>$B%/%i%C%7%e$N8e$KNc30%O%s%I%i$r<B9T$9$k%U%C%/$rM-8z$K$9$k(B</description>
+<syntax>EnableExceptionHook On|Off</syntax>
+<default>EnableExceptionHook Off</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module>
+<module>worker</module></modulelist>
+<compatibility>2.0.49 $B0J9_(B</compatibility>
+
+<usage>
+    <p>$B0BA4>e$NM}M3$+$i!"(B<code>--enable-exception-hook</code> configure
+    $B%*%W%7%g%s$rM-8z$K$7$?>l9g$K$N$_!"$3$N%G%#%l%/%F%#%V$rMxMQ$G$-$^$9!#(B
+    $B30It%b%8%e!<%k$r%W%i%0%$%s$7$F!";R$,%/%i%C%7%e$7$?8e$K2?$+<B9T$G$-$k$h$&$J(B
+    $B%U%C%/$rM-8z$K$7$^$9!#(B</p>
+    
+    <p>$B$3$N$h$&$J30It%b%8%e!<%k$O!"4{$KFs$DB8:_$7$F$$$F!"(B
+    <code>mod_whatkilledus</code> $B$H(B <code>mod_backtrace</code>
+    $B$,$3$N%U%C%/$r3hMQ$7$^$9!#$3$l$i$N>\:Y$K$D$$$F$O(B Jeff Trawick 
+    $B$5$s$N(B <a href="http://www.apache.org/~trawick/exception_hook.html"
+    >EnableExceptionHook site</a> $B$r;2>H$7$F$/$@$5$$!#(B</p>
 </usage>
 </directivesynopsis>
 
@@ -688,7 +713,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B$h$m$$$bBg$-$JCM$K@_Dj$9$kI,MW$,$"$k$H$-$K$N$_;HMQ$7$F$/$@$5$$!#(B</p>
 
     <note><title>$BCm0U(B</title>
-      <p><code>ServerLimit 20000</code> $B$H$$$&@)8BIU$-$G%3%s%Q%$%k$5$l$F$$$^$9!#(B
+      <p><code>ServerLimit 20000</code> $B$H$$$&@)8BIU$-$G%3%s%Q%$%k$5$l$F$$$^$9(B
+      (<module>prefork</module> MPM $B$G$O(B <code>200000</code>) $B!#(B
       $B$3$l$O%9%Z%k%_%9$K$h$C$F8m$C$F9s$$>u67$K$J$k$N$r!"(B
       $B2sHr$9$k$?$a$N=hCV$G$9!#(B</p>
     </note>
@@ -824,6 +850,52 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <p><module>mpm_winnt</module>$B$G$N(B <directive>ThreadsPerChild</directive>
     $B$N%G%U%)%k%HCM$O(B <code>64</code> $B$G!"B>$N>l9g$O(B
     <code>25</code> $B$G$9!#(B</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ThreadStackSize</name>
+<description>$B%/%i%$%"%s%H$N%3%M%/%7%g%s$r<u$1;}$D%9%l%C%I$,;HMQ$9$k(B
+$B%9%?%C%/$N%P%$%H?t(B</description> 
+<syntax>ThreadStackSize <var>size</var></syntax>
+<default>NetWare $B$G$O(B 65536$B!#B>$N(B OS $B$G$O0c$C$?CM(B</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>perchild</module>
+<module>threadpool</module><module>worker</module>
+</modulelist>
+<compatibility>2.1 $B0J9_(B</compatibility>
+
+<usage>
+    <p>$B%/%i%$%"%s%H%3%M%/%7%g%s$r<u$1;}$A!"%3%M%/%7%g%s=hM}$KI,MW$J%b%8%e!<%k$N(B
+    $B8F$S=P$7$r9T$J$C$F$$$k%9%l%C%I$N!"(B($B<+F0JQ?tMQ$N(B) $B%9%?%C%/%5%$%:$O(B
+    <directive>ThreadStackSize</directive> $B%G%#%l%/%F%#%V$G;XDj$7$^$9!#(B
+    $BBgDq$N>l9g(B OS $B$N;XDj$7$F$$$k%9%?%C%/%5%$%:$N%G%U%)%k%HCM$O(B
+    $BE,@Z$J$b$N$G$9$,!"D4@0$,I,MW$K$J$k>l9g$b$"$j$^$9(B:</p>
+
+    <ul>
+      <li>$B%9%l%C%I%9%?%C%/%5%$%:$N%G%U%)%k%HCM$,Hf3SE*>.$5$/@_Dj$5$l$F$$$k(B
+      $B%W%i%C%H%[!<%`(B ($BNc$($P(B HP-UX) $B$G$O!"<+F0JQ?tMQ$NNN0h$GBg$-$JMFNL$r(B
+      $B;HMQ$9$k%5!<%I%Q!<%F%#@=%b%8%e!<%k$N$?$a$K(B Apache $B$,%/%i%C%7%e$9$k(B
+      $B>l9g$b$"$j$^$9!#$=$N%b%8%e!<%k$OB>$N%W%i%C%H%[!<%`$G$O(B
+      $B%9%?%C%/%5%$%:$,Bg$-$$$?$a$K!"2wD4$KF0:n$9$k$+$b$7$l$^$;$s!#(B
+      $B$3$N%?%$%W$N%/%i%C%7%e$O!"(B<directive>ThreadStackSize</directive>
+      $B$G(B OS $B$N%G%U%)%k%HCM$h$jBg$-$JCM$r;XDj$9$k$3$H$G2r7h$7$^$9!#(B
+      $B%5!<%I%Q!<%F%#@=%b%8%e!<%k$G$3$N=hCV$,I,MW$G$"$k$H5-:\$5$l$F$$$k(B
+      $B>l9g$+!"(BApache $B$N=PNO$9$k%a%C%;!<%8$G%9%l%C%I%9%?%C%/%5%$%:$,(B
+      $B>.$5$9$.$k$H;XE&$5$l$F$$$k>l9g$K$N$_!"$3$ND4@0$r$7$F$/$@$5$$!#(B</li>
+
+      <li>$B%G%U%)%k%H%9%l%C%I%9%?%C%/%5%$%:$,!"(BWeb $B%5!<%PMQES$KI,MW$JNL$h$j$b(B
+      $BL@$i$+$KBg$-$9$.$k>l9g!"(B<directive>ThreadStackSize</directive> 
+      $B$r(B OS $B$N%G%U%)%k%HCM$h$j$b>.$5$JCM$K$9$k$3$H$G!";R%W%m%;%9$"$?$j$N(B
+      $B%9%l%C%I?t$r$h$jB?$/;}$?$;$i$l$k$h$&$K$J$j$^$9!#(B
+      $B$3$N%?%$%W$ND4@0$O!"%F%9%H4D6-$G%&%'%V%5!<%P$r40A4$K(B
+      $B%F%9%H$G$-$k>l9g$K8B$C$F9T$J$&$Y$-$G$9!#(B
+      $B$^$l$KB??t$N%9%?%C%/$,MW5a$5$l$k%j%/%(%9%H$r<u$1$k$3$H$,$"$k$+$b(B
+      $B$7$l$J$$$+$i$G$9!#(B
+      Web $B%5!<%P$N@_Dj$rJQ99$9$k$H!"8=:_$N(B <directive>ThreadStackSize</directive> 
+      $B$N@_Dj$,<h$j>C$5$l$k>l9g$,$"$j$^$9!#(B</li>
+    </ul>
 </usage>
 </directivesynopsis>
 
