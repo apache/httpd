@@ -307,9 +307,9 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
             arg = (const char**)apr_array_push(args);
             if (*ch == '%') {
                 char *repl = apr_pstrdup(p, cgiprg);
+                *arg = repl;
                 while ((repl = strchr(repl, '/')))
                     *repl++ = '\\';
-                *arg = repl;
             }
             else
                 *arg = cgiprg;
@@ -323,9 +323,9 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp, const c
             arg = (const char**)apr_array_push(args);
             if (*(ch + 1) == '%') {
                 char *repl = apr_pstrdup(p, cgiprg);
+                *arg = repl;
                 while ((repl = strchr(repl, '/')))
                     *repl++ = '\\';
-                *arg = repl;
             }
             else
                 *arg = cgiprg;
