@@ -169,12 +169,15 @@ case "$PLAT" in
 	CFLAGS="$CFLAGS -DHPUX10"
 	# if we're using the HPUX compiler, add a few flags.
 	if [ "$CC" = "cc" ]; then
-	    CFLAGS="$CFLAGS -Ae"
+	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
 	fi
 	;;
     *-hp-hpux*)
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
+	if [ "$CC" = "cc" ]; then
+	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
+	fi
 	;;
     *-sgi-irix64)
 # Note: We'd like to see patches to compile 64-bit, but for now...
