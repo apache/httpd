@@ -93,6 +93,7 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_dav.html" id="D" name="D">mod_dav</a></dt><dd>Distributed Authoring and Versioning
 (<a href="http://www.webdav.org/">WebDAV</a>) 기능</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>을 위한 파일시스템 제공자</dd>
+<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>내용을 클라이언트로 보내기 전에 압축한다</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>"마지막 슬래쉬" 리다이렉션을 제공하고 디렉토리
 index 파일을 서비스한다</dd>

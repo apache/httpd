@@ -181,6 +181,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_charset_lite.html">Apache Module mod_charset_lite</a></li>
 <li><a href="mod/mod_dav.html">Apache Module mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache Module mod_dav_fs</a></li>
+<li><a href="mod/mod_dav_lock.html">Apache Module mod_dav_lock</a></li>
 <li><a href="mod/mod_deflate.html">Apache Module mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">Apache Module mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Apache Module mod_disk_cache</a></li>
