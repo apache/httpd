@@ -269,7 +269,7 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el  *c, char *url,
     clear_connection(r->pool, r->headers_in);    /* Strip connection-based headers */
 
     f = ap_bcreate(p, B_RDWR);
-    ap_bpush_iol(f, unix_attach_socket(sock));
+    ap_bpush_iol(f, ap_iol_attach_socket(sock));
 
     ap_bvputs(f, r->method, " ", proxyhost ? url : urlptr, " HTTP/1.0" CRLF,
               NULL);

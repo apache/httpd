@@ -589,7 +589,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
     }
 
     f = ap_bcreate(p, B_RDWR);
-    ap_bpush_iol(f, unix_attach_socket(sock));
+    ap_bpush_iol(f, ap_iol_attach_socket(sock));
 /* shouldn't we implement telnet control options here? */
 
 #ifdef CHARSET_EBCDIC
@@ -1146,11 +1146,11 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
             }
         }
         data = ap_bcreate(p, B_RDWR);
-        ap_bpush_iol(f, unix_attach_socket(csd));
+        ap_bpush_iol(f, ap_iol_attach_socket(csd));
     }
     else {
         data = ap_bcreate(p, B_RDWR);
-        ap_bpush_iol(data, unix_attach_socket(dsock));
+        ap_bpush_iol(data, ap_iol_attach_socket(dsock));
     }
 
 /* send response */

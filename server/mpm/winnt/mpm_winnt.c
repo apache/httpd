@@ -1085,7 +1085,7 @@ static void worker_main(int child_num)
         sock_disable_nagle(context->accept_socket);
         ap_put_os_sock(&context->sock, &context->accept_socket, context->ptrans);
 
-        iol = win32_attach_socket(context->ptrans, context->sock);
+        iol = ap_iol_attach_socket(context->sock);
         if (iol == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, server_conf,
                          "worker_main: attach_socket() failed. Continuing...");

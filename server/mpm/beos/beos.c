@@ -393,7 +393,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num)
 	    return;
     }
     
-    iol = beos_attach_socket(sock);
+    iol = ap_iol_attach_socket(sock);
     if (iol == NULL) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
           "error attaching to socket");

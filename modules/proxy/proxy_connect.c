@@ -211,7 +211,7 @@ int ap_proxy_connect_handler(request_rec *r, ap_cache_el  *c, char *url,
     }
 
     sock_buff = ap_bcreate(r->pool, B_RDWR);
-    ap_bpush_iol(sock_buff, unix_attach_socket(sock));
+    ap_bpush_iol(sock_buff, ap_iol_attach_socket(sock));
 
     if(ap_setup_poll(&pollfd, 2, r->pool) != APR_SUCCESS)
     {
