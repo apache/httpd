@@ -45,7 +45,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Servicio no disponible&excl;"
+--><!--#set var="TITLE" value="&iexcl;Servicio no disponible!"
 --><!--#include virtual="include/top.html" -->
 
 	El servidor no puede atender su solicitud por

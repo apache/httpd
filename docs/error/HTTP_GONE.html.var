@@ -81,7 +81,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Recurso no disponible&excl;"
+--><!--#set var="TITLE" value="&iexcl;Recurso no disponible!"
 --><!--#include virtual="include/top.html" -->
 
 	Los recursos solicitados ya no est&aacute;n disponibles en

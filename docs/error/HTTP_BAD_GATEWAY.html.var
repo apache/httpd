@@ -56,7 +56,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Puerta de enlace err&oacute;nea&excl;"
+--><!--#set var="TITLE" value="&iexcl;Puerta de enlace err&oacute;nea!"
 --><!--#include virtual="include/top.html" -->
 
 	El servidor origen recibi&oacute; informaci&oacute;n 
