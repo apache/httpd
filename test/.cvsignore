@@ -9,3 +9,8 @@ zb
 test-writev
 test_date
 test_select
+.libs
+.deps
+*.lo
+Makefile
+dbu
