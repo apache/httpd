@@ -183,6 +183,8 @@ static apr_thread_mutex_t *worker_thread_count_mutex;
 static int request_count;
 
 /*  Structure used to register/deregister a console handler with the OS */
+static int InstallConsoleHandler(void);
+static void RemoveConsoleHandler(void);
 static int CommandLineInterpreter(scr_t screenID, const char *commandLine);
 static  CommandParser_t ConsoleHandler = {0, NULL, 0};
 #define HANDLEDCOMMAND  0
@@ -270,7 +272,7 @@ ap_generation_t volatile ap_my_generation=0;
 
 static void mpm_term(void)
 {
-    UnRegisterConsoleCommand(&ConsoleHandler);
+    RemoveConsoleHandler();
     wait_to_finish = 0;
 }
 
@@ -319,7 +321,7 @@ int nlmUnloadSignaled()
         NXThreadYield();
     }
 */
-    return 0;
+    return 1;
 }
 
 /*****************************************************************
