@@ -213,7 +213,7 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
 
       Allow use of the authorization directives (<code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
       <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
-      <code class="directive"><a href="../mod/mod_authn_file.html#authgroupfile">AuthGroupFile</a></code>,
+      <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>,
       <code class="directive"><a href="#authname">AuthName</a></code>, 
       <code class="directive"><a href="#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="#require">Require</a></code>, <em>etc.</em>).</dd>
 
@@ -238,7 +238,7 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
       <dt>Limit</dt>
 
       <dd>
-      Allow use of the directives controlling host access (<code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_access.html#order">Order</a></code>).</dd>
+      Allow use of the directives controlling host access (<code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code>).</dd>
 
       <dt>Options</dt>
 
@@ -267,8 +267,8 @@ authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <code class="directive">AuthName</code> takes a single argument; if the
     realm name contains spaces, it must be enclosed in quotation
     marks.  It must be accompanied by <code class="directive"><a href="#authtype">AuthType</a></code> and <code class="directive"><a href="#require">Require</a></code> directives, and directives such
-    as <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code> and
-    <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> to
+    as <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> and
+    <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> to
     work.</p>
 
    <p>For example:</p>
@@ -292,8 +292,8 @@ authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     currently implemented. 
 
      It must be accompanied by <code class="directive"><a href="#authname">AuthName</a></code> and <code class="directive"><a href="#require">Require</a></code> directives, and directives such
-     as <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code> and
-     <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> to
+     as <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> and
+     <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> to
      work.</p>
 <h3>See also</h3><ul><li><a href="../howto/auth.html">Authentication, Authorization,
 and Access Control</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
@@ -829,7 +829,7 @@ MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     address. (In "tcpwrappers" terminology this is called
     <code>PARANOID</code>.)</p>
 
-    <p>Regardless of the setting, when <code class="module"><a href="../mod/mod_access.html">mod_access</a></code> is
+    <p>Regardless of the setting, when <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> is
     used for controlling access by hostname, a double reverse lookup
     will be performed.  This is necessary for security. Note that the
     result of this double-reverse isn't generally available unless you
@@ -1753,8 +1753,8 @@ a resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p><code class="directive">Require</code> must be accompanied by
     <code class="directive"><a href="#authname">AuthName</a></code> and <code class="directive"><a href="#authtype">AuthType</a></code> directives, and directives such
-    as <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code>
-    and <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> (to
+    as <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
+    and <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> (to
     define users and groups) in order to work correctly. Example:</p>
 
     <div class="example"><p><code>
@@ -1772,7 +1772,7 @@ a resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     place the <code class="directive">Require</code> statement into a
     <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>
     section.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#satisfy">Satisfy</a></code></li><li><code class="module"><a href="../mod/mod_access.html">mod_access</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+<h3>See also</h3><ul><li><code class="directive"><a href="#satisfy">Satisfy</a></code></li><li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Limits the CPU consumption of processes launched
 by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>RLimitCPU <var>number</var>|max [<var>number</var>|max]</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
@@ -1865,7 +1865,7 @@ user authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>core</td></tr></table>
-    <p>Access policy if both <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#require">Require</a></code> used. The parameter can be
+    <p>Access policy if both <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="#require">Require</a></code> used. The parameter can be
     either <var>all</var> or <var>any</var>. This directive is only
     useful if access to a particular area is being restricted by both
     username/password <em>and</em> client host address. In this case
@@ -1888,7 +1888,7 @@ user authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
       Satisfy any
     </code></p></div>
    
-<h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code></li><li><code class="directive"><a href="#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+<h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code></li><li><code class="directive"><a href="#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Technique for locating the interpreter for CGI 
 scripts</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>ScriptInterpreterSource registry|script</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 

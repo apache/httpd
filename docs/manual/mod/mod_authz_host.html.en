@@ -11,10 +11,13 @@ address)</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>authz_host_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
                   </a></th><td>mod_authz_host.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
                   </a></th><td>Available in Apache 2.0.44 and later</td></tr></table><h3>Summary</h3>
-    <p>The directives provided by mod_authz_host are used in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, and <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections as well as
-    <code><a href="core.html#accessfilename">.htaccess</a></code>
-    files to control access to particular parts of the server. Access
-    can be controlled based on the client hostname, IP address, or
+    <p>The directives provided by <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> are
+    used in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, and
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections
+    as well as <code><a href="core.html#accessfilename">.htaccess</a>
+    </code> files to control access to particular parts of the server.
+    Access can be controlled based on the client hostname, IP address, or
     other characteristics of the client request, as captured in <a href="../env.html">environment variables</a>. The <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> directives are used to
     specify which clients are or are not allowed access to the server,
     while the <code class="directive"><a href="#order">Order</a></code>

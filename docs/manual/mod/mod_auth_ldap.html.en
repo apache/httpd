@@ -63,19 +63,14 @@ for HTTP Basic authentication.</td></tr><tr><th><a href="module-dict.html#Status
 
         <ul>
           <li><a href="#reqvaliduser">require valid-user</a></li>
-
           <li><a href="#requser">require user</a></li>
-
           <li><a href="#reqgroup">require group</a></li>
-
           <li><a href="#reqdn">require dn</a></li>
         </ul>
       </li>
 
       <li><a href="#examples">Examples</a></li>
-
       <li><a href="#usingtls">Using TLS</a></li>
-
       <li><a href="#usingssl">Using SSL</a></li>
 
       <li>
@@ -84,7 +79,6 @@ for HTTP Basic authentication.</td></tr><tr><th><a href="module-dict.html#Status
 
         <ul>
           <li><a href="#howitworks">How It Works</a></li>
-
           <li><a href="#fpcaveats">Caveats</a></li>
         </ul>
       </li>
@@ -428,7 +422,8 @@ require valid-user
     FrontPage with mod_auth_ldap</a></h2>
 
     <p>Normally, FrontPage uses FrontPage-web-specific user/group
-    files (i.e., the <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> module) to handle all
+    files (i.e., the <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> and
+    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> modules) to handle all
     authentication. Unfortunately, it is not possible to just
     change to LDAP authentication by adding the proper directives,
     because it will break the <em>Permissions</em> forms in
@@ -475,8 +470,8 @@ AuthLDAPFrontPageHack  on
     <ul>
       <li>When choosing the LDAP URL, the attribute to use for
       authentication should be something that will also be valid
-      for putting into a <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> user file. The user ID is
-      ideal for this.</li>
+      for putting into a <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> user file.
+      The user ID is ideal for this.</li>
 
       <li>When adding users via FrontPage, FrontPage administrators
       should choose usernames that already exist in the LDAP
@@ -486,15 +481,18 @@ AuthLDAPFrontPageHack  on
       LDAP database, and not against the password in the local user
       file. This could cause confusion for web administrators.</li>
 
-      <li>Apache must be compiled with <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> in order to
+      
+      <li>Apache must be compiled with <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>,
+      <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> and
+      <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> in order to
       use FrontPage support. This is because Apache will still use
-      the <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> group file for determine the extent of a
+      the <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> group file for determine the extent of a
       user's access to the FrontPage web.</li>
 
       <li>The directives must be put in the <code>.htaccess</code>
       files. Attempting to put them inside <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> directives won't work. This
       is because <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> has to be able to grab
-      the <code class="directive"><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a></code>
+      the <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
       directive that is found in FrontPage <code>.htaccess</code>
       files so that it knows where to look for the valid user list. If
       the <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> directives aren't in the same
