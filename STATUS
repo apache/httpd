@@ -90,6 +90,10 @@ Committed Code Changes:
 
 Available Patches:
 
+    * Martin's [PATCH] Improve implementation of -c/-C directive reading (take 2)
+	<19980117135342.51384@deejai.mch.sni.de>
+	Status: Martin +1, Doug +1
+
     * John Van Essen <jve@gamers.org>'s fix for mod_autoindex <PRE>
       misplacement.
 	<34C0805F.1CBE0DDA@Golux.Com>
