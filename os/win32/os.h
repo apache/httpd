@@ -197,8 +197,6 @@ int os_strftime(char *, size_t , const char *, const struct tm *);
 #define MULTI_TIMEOUT (1)
 #define MULTI_ERR (2)
 
-typedef void mutex;
-typedef void semaphore;
 typedef void thread;
 typedef void event;
 
@@ -207,17 +205,5 @@ int kill_thread(thread *thread_id);
 int await_thread(thread *thread_id, int sec_to_wait);
 void exit_thread(int status);
 void free_thread(thread *thread_id);
-
-semaphore *create_semaphore(int initial);
-int acquire_semaphore(semaphore *semaphore_id);
-int release_semaphore(semaphore *semaphore_id);
-void destroy_semaphore(semaphore *semaphore_id);
-
-event *create_event(int manual, int initial, char *name);
-event *open_event(char *name);
-int acquire_event(event *event_id);
-int set_event(event *event_id);
-int reset_event(event *event_id);
-void destroy_event(event *event_id);
 
 #endif   /* ! APACHE_OS_H */
