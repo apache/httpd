@@ -86,7 +86,7 @@
      </xsl:if>
 
      <xsl:text>
-\medskip\textbf{</xsl:text>
+\smallskip\textbf{</xsl:text>
      <xsl:value-of select="$messages/message [@name='directives']" />
      <xsl:text>}
 </xsl:text>
