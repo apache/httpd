@@ -856,7 +856,7 @@ static char *
     err = proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
     if (err != NULL)
-	aplog_error(APLOG_MARK, APLOG_ERR, r->server, err);
+	aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server, err);
 
     r->hostname = host;
 
