@@ -86,12 +86,10 @@ API_EXPORT(char *)ap_os_case_canonical_filename(apr_pool_t *pPool, const char *s
     rc = DosQueryPathInfo(buf, FIL_QUERYFULLNAME, buf2, HUGE_STRING_LEN);
 
     if (rc) {
-        if ( rc != ERROR_INVALID_NAME ) {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL, "OS/2 error %d for file %s", rc, szFile);
-            return apr_pstrdup(pPool, "");
-        } else {
-            return apr_pstrdup(pPool, szFile);
+        if (rc != ERROR_INVALID_NAME) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_OS2_STATUS(rc), NULL, "for file [%s]", szFile);
         }
+        apr_cpystrn(buf2, buf, sizeof(buf2));
     }
 
 /* Switch backslashes to forward */
@@ -151,7 +149,24 @@ char *ap_os_systemcase_canonical_filename(apr_pool_t *pPool, const char *szFile)
 
 char *ap_os_canonical_filename(apr_pool_t *pPool, const char *szFile)
 {
-    char *szCanonicalFile = ap_os_systemcase_canonical_filename(pPool, szFile);
+    char *szCanonicalFile;
+    const unsigned char *pos = szFile;
+
+    /* Find any 8 bit characters */
+    while (*pos && *pos < 128) {
+        pos++;
+    }
+
+    /* Only use the very expensive ap_os_systemcase_canonical_filename() if
+     * the file name contains non-english characters as they are the only type
+     * that can't be made canonical with a simple strlwr() 
+     */
+    if (*pos < 128) {
+        szCanonicalFile = ap_os_case_canonical_filename(pPool, szFile);
+    } else {
+        szCanonicalFile = ap_os_systemcase_canonical_filename(pPool, szFile);
+    }
+
     strlwr(szCanonicalFile);
     return szCanonicalFile;
 }
