@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/11/14 19:20:54 $
+Last modified: $Date: 2002/11/21 17:55:51 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -75,6 +75,12 @@ Things That Need Fixing
 
 - API documentation
     Status: Ben Laurie has written some hooks documentation
+
+- Several features in Apache require write-access to the filesystem.
+    Examples: CacheRoot, DavLockDB, ScriptLog
+    We should treat the things consistently in the docs, and perhaps
+    suggest the use of directory like /usr/local/apache2/var/ that is
+    httpd-writable.
 
 - Translations
     There are several efforts underway to translate the documentation
