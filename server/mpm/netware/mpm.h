@@ -31,6 +31,7 @@
 */
 #define AP_MPM_WANT_SET_MAX_REQUESTS
 #define AP_MPM_WANT_SET_MAX_MEM_FREE
+#define AP_MPM_WANT_SET_STACKSIZE
 #define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
 /*#define AP_MPM_WANT_SET_COREDUMPDIR
   #define AP_MPM_WANT_SET_ACCEPT_LOCK_MECH 
@@ -40,7 +41,6 @@
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 
 extern int ap_threads_per_child;
-extern int ap_thread_stack_size;
 extern int ap_max_workers_limit;
 extern server_rec *ap_server_conf;
 

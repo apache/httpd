@@ -106,7 +106,6 @@
 /* config globals */
 
 int ap_threads_per_child=0;         /* Worker threads per child */
-int ap_thread_stack_size=65536;
 static int ap_threads_to_start=0;
 static int ap_threads_min_free=0;
 static int ap_threads_max_free=0;
@@ -527,7 +526,7 @@ static int make_child(server_rec *s, int slot)
     ap_update_child_status_from_indexes(0, slot, WORKER_STARTING, 
                                         (request_rec *) NULL);
 
-    if (ctx = NXContextAlloc((void (*)(void *)) worker_main, (void*)slot, NX_PRIO_MED, ap_thread_stack_size, NX_CTX_NORMAL, &err)) {
+    if (ctx = NXContextAlloc((void (*)(void *)) worker_main, (void*)slot, NX_PRIO_MED, ap_thread_stacksize, NX_CTX_NORMAL, &err)) {
         char threadName[32];
 
         sprintf (threadName, "Apache_Worker %d", slot);
@@ -980,6 +979,7 @@ static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_threads_limit = HARD_THREAD_LIMIT;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
+    ap_thread_stacksize = DEFAULT_THREAD_STACKSIZE;
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
 	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
@@ -1258,21 +1258,7 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     return NULL;
 }
 
-static const char *set_thread_stacksize(cmd_parms *cmd, void *dummy, 
-                                        const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-    
-    ap_thread_stack_size = atoi(arg);
-    return NULL;
-}
-
 static const command_rec netware_mpm_cmds[] = {
-AP_INIT_TAKE1("ThreadStackSize", set_thread_stacksize, NULL, RSRC_CONF,
-              "Stack size each created thread will use."),
 LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartThreads", set_threads_to_start, NULL, RSRC_CONF,
               "Number of worker threads launched at server startup"),
