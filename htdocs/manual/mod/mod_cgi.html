@@ -45,6 +45,42 @@ specification, with the following provisos:
 </dl>
 <P>
 
+<h2>Directives</h2>
+<ul>
+<li><A HREF="#scriptlog">ScriptLog</A>
+<li><A HREF="#scriptloglength">ScriptLogLength</A>
+<li><A HREF="#scriptlogbuff">ScriptLogBuffer</A>
+</ul>
+
+<A NAME="scriptlog"><H2>ScriptLog</H2></A>
+
+<STRONG>Syntax:</STRONG> ScriptLog <EM>filename</EM><BR>
+<STRONG>Context:</STRONG> server config, virtualhost<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_cgi<BR>
+<STRONG>Compatibility:</STRONG> ScriptLog is only available in 1.2 and
+later.<P>
+
+<A NAME="scriptloglength"><H2>ScriptLogLength</H2></A>
+
+<STRONG>Syntax:</STRONG> ScriptLogLength <EM>size-bytes</EM><BR>
+<STRONG>Context:</STRONG> server config, virtualhost<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_cgi<BR>
+<STRONG>Default:</STRONG> ScriptLogLength 10385760<BR>
+<STRONG>Compatibility:</STRONG> ScriptLogLength is only available in 1.2 and
+later.<P>
+
+<A NAME="scriptlogbuff"><H2>ScriptLogBuffer</H2></A>
+<STRONG>Syntax:</STRONG> ScriptLogBuffer <EM>size-bytes</EM><BR>
+<STRONG>Context:</STRONG> server config, virtualhost<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_cgi<BR>
+<STRONG>Default:</STRONG> ScriptLogBuffer 1024<BR>
+<STRONG>Compatibility:</STRONG> ScriptLogBuffer is only available in 1.2 and
+later.<P>
+
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
