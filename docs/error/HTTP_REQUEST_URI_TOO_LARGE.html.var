@@ -42,7 +42,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;Direcci&oacute;n suministrada demasiado larga&excl;"
+--><!--#set var="TITLE" value="&iexcl;Direcci&oacute;n suministrada demasiado larga!"
 --><!--#include virtual="include/top.html" -->
 
 	Su solicitud no puede procesarse debido a que la

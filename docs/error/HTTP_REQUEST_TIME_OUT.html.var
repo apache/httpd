@@ -42,7 +42,7 @@ Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
---><!--#set var="TITLE" value="&iexcl;La solicitud ha excedido el tiempo de espera permitido&excl;"
+--><!--#set var="TITLE" value="&iexcl;La solicitud ha excedido el tiempo de espera permitido!"
 --><!--#include virtual="include/top.html" -->
 
 	El servidor ha cerrado la conexi&oacute;n de red 

@@ -42,7 +42,8 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;Content-Length err&oacute;neo&excl;"
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="&iexcl;Content-Length err&oacute;neo!"
 --><!--#include virtual="include/top.html" -->
 
     Una solicitud con el m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" --> 
