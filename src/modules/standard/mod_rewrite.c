@@ -1131,13 +1131,19 @@ static int hook_uri2file(request_rec *r)
             return OK;
         }
         else if (  (strlen(r->filename) > 7 &&
-                    strncasecmp(r->filename, "http://", 7) == 0)
+                    strncasecmp(r->filename, "http://",   7) == 0)
                 || (strlen(r->filename) > 8 &&
-                    strncasecmp(r->filename, "https://", 8) == 0)
+                    strncasecmp(r->filename, "https://",  8) == 0)
                 || (strlen(r->filename) > 9 &&
                     strncasecmp(r->filename, "gopher://", 9) == 0)
                 || (strlen(r->filename) > 6 &&
-                    strncasecmp(r->filename, "ftp://", 6) == 0)    ) {
+                    strncasecmp(r->filename, "ftp://",    6) == 0)
+                || (strlen(r->filename) > 5 &&
+                    strncasecmp(r->filename, "ldap:",     5) == 0)
+                || (strlen(r->filename) > 5 &&
+                    strncasecmp(r->filename, "news:",     5) == 0)
+                || (strlen(r->filename) > 7 &&
+                    strncasecmp(r->filename, "mailto:",   7) == 0)) {
             /* it was finally rewritten to a remote URL */
 
             /* skip 'scheme:' */
@@ -1391,13 +1397,19 @@ static int hook_fixup(request_rec *r)
             return OK;
         }
         else if (  (strlen(r->filename) > 7 &&
-                    strncmp(r->filename, "http://", 7) == 0)
+                    strncasecmp(r->filename, "http://",   7) == 0)
                 || (strlen(r->filename) > 8 &&
-                    strncmp(r->filename, "https://", 8) == 0)
+                    strncasecmp(r->filename, "https://",  8) == 0)
                 || (strlen(r->filename) > 9 &&
-                    strncmp(r->filename, "gopher://", 9) == 0)
+                    strncasecmp(r->filename, "gopher://", 9) == 0)
                 || (strlen(r->filename) > 6 &&
-                    strncmp(r->filename, "ftp://", 6) == 0)    ) {
+                    strncasecmp(r->filename, "ftp://",    6) == 0)
+                || (strlen(r->filename) > 5 &&
+                    strncasecmp(r->filename, "ldap:",     5) == 0)
+                || (strlen(r->filename) > 5 &&
+                    strncasecmp(r->filename, "news:",     5) == 0)
+                || (strlen(r->filename) > 7 &&
+                    strncasecmp(r->filename, "mailto:",   7) == 0)) {
             /* it was finally rewritten to a remote URL */
 
             /* because we are in a per-dir context
@@ -2005,10 +2017,13 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     i = strlen(r->filename);
     if (   prefixstrip
         && !(   r->filename[0] == '/'
-             || (   (i > 7 && strncasecmp(r->filename, "http://", 7) == 0)
-                 || (i > 8 && strncasecmp(r->filename, "https://", 8) == 0)
+             || (   (i > 7 && strncasecmp(r->filename, "http://",   7) == 0)
+                 || (i > 8 && strncasecmp(r->filename, "https://",  8) == 0)
                  || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
-                 || (i > 6 && strncasecmp(r->filename, "ftp://", 6) == 0)))) {
+                 || (i > 6 && strncasecmp(r->filename, "ftp://",    6) == 0)
+                 || (i > 5 && strncasecmp(r->filename, "ldap:",     5) == 0)
+                 || (i > 5 && strncasecmp(r->filename, "news:",     5) == 0)
+                 || (i > 7 && strncasecmp(r->filename, "mailto:",   7) == 0)))) {
         rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
                    perdir, r->filename, perdir, r->filename);
         r->filename = ap_pstrcat(r->pool, perdir, r->filename, NULL);
@@ -2073,10 +2088,13 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  directly force an external HTTP redirect.
      */
     i = strlen(r->filename);
-    if (   (i > 7 && strncasecmp(r->filename, "http://", 7)   == 0)
-        || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
+    if (   (i > 7 && strncasecmp(r->filename, "http://",   7) == 0)
+        || (i > 8 && strncasecmp(r->filename, "https://",  8) == 0)
         || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
-        || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0)) {
+        || (i > 6 && strncasecmp(r->filename, "ftp://",    6) == 0)
+        || (i > 5 && strncasecmp(r->filename, "ldap:",     5) == 0)
+        || (i > 5 && strncasecmp(r->filename, "news:",     5) == 0)
+        || (i > 7 && strncasecmp(r->filename, "mailto:",   7) == 0) ) {
         if (perdir == NULL) {
             rewritelog(r, 2,
                        "implicitly forcing redirect (rc=%d) with %s",
@@ -2433,10 +2451,13 @@ static void fully_qualify_uri(request_rec *r)
     int port;
 
     i = strlen(r->filename);
-    if (!(   (i > 7 && strncasecmp(r->filename, "http://", 7)   == 0)
-          || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
+    if (!(   (i > 7 && strncasecmp(r->filename, "http://",   7) == 0)
+          || (i > 8 && strncasecmp(r->filename, "https://",  8) == 0)
           || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
-          || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0))) {
+          || (i > 6 && strncasecmp(r->filename, "ftp://",    6) == 0)
+          || (i > 5 && strncasecmp(r->filename, "ldap:",     5) == 0)
+          || (i > 5 && strncasecmp(r->filename, "news:",     5) == 0)
+          || (i > 7 && strncasecmp(r->filename, "mailto:",   7) == 0))) {
 
         thisserver = ap_get_server_name(r);
         port = ap_get_server_port(r);
