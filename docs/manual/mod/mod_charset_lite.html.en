@@ -82,7 +82,7 @@
 <div class="example"><h3>Example</h3><p><code>
     &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;<br />
     CharsetSourceEnc  UTF-16BE<br />
-    CharsetDefault    ISO8859-1<br />
+    CharsetDefault    ISO-8859-1<br />
     &lt;/Directory&gt;
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CharsetOptions" id="CharsetOptions">CharsetOptions</a> <a name="charsetoptions" id="charsetoptions">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
@@ -136,10 +136,10 @@ NoImplicitAdd</code></td></tr><tr><th><a href="directive-dict.html#Context">Cont
     APR. Generally, this means that it must be supported by
     iconv.</p>
     
-<div class="example"><h3>example</h3><p><code>
+<div class="example"><h3>Example</h3><p><code>
     &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;<br />
     CharsetSourceEnc  UTF-16BE<br />
-    CharsetDefault    ISO8859-1<br />
+    CharsetDefault    ISO-8859-1<br />
     &lt;/Directory&gt;
 </code></p></div>
     <p>The character set names in this example work with the iconv

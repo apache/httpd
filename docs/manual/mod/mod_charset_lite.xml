@@ -88,10 +88,10 @@
     APR. Generally, this means that it must be supported by
     iconv.</p>
     
-<example><title>example</title>
+<example><title>Example</title>
     &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;<br />
     CharsetSourceEnc  UTF-16BE<br />
-    CharsetDefault    ISO8859-1<br />
+    CharsetDefault    ISO-8859-1<br />
     &lt;/Directory&gt;
 </example>
     <p>The character set names in this example work with the iconv
@@ -122,7 +122,7 @@
 <example><title>Example</title>
     &lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;<br />
     CharsetSourceEnc  UTF-16BE<br />
-    CharsetDefault    ISO8859-1<br />
+    CharsetDefault    ISO-8859-1<br />
     &lt;/Directory&gt;
 </example>
 </usage>

@@ -35,13 +35,13 @@
     following columns:</p>
 
     <table border="1">
-      <tr valign="top">
+      <tr>
         <th>Column</th>
 
         <th>Description</th>
       </tr>
 
-      <tr valign="top">
+      <tr>
         <td>1</td>
 
         <td>byte number to begin checking from<br />
@@ -49,7 +49,7 @@
         line</td>
       </tr>
 
-      <tr valign="top">
+      <tr>
         <td>2</td>
 
         <td>
@@ -126,19 +126,19 @@
         </td>
       </tr>
 
-      <tr valign="top">
+      <tr>
         <td>3</td>
 
         <td>contents of data to match</td>
       </tr>
 
-      <tr valign="top">
+      <tr>
         <td>4</td>
 
         <td>MIME type if matched</td>
       </tr>
 
-      <tr valign="top">
+      <tr>
         <td>5</td>
 
         <td>MIME encoding if matched (optional)</td>
