@@ -261,7 +261,7 @@ static int ap_proxy_ajp_process_response(apr_pool_t * p, request_rec *r,
     if (status != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error reading headers from remote "
-                      "server %s:%d",
+                      "server %pI:%d",
                       backend->worker->cp->addr,
                       backend->worker->hostname);
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
