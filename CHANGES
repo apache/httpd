@@ -2,7 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) Added the WindowsSocketsWorkaroud directive for Windows NT/2000/XP
+  *) Restore the ability of htdigest.exe to create files that contain
+     more than one user. PR 12910.  [André Malo]
+
+  *) Added the WindowsSocketsWorkaround directive for Windows NT/2000/XP
      to work around problems with certain VPN and Firewall products that 
      have buggy AcceptEx implementations.
      [Allan Edwards w/ suggestions from Bill Stoddard & Bill Rowe]
