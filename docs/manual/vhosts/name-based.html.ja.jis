@@ -9,7 +9,14 @@
   <!-- English revision: 1.17 -->
   <body bgcolor="#ffffff" text="#000000" link="#0000ff"
   vlink="#000080" alink="#ff0000">
-    <!--#include virtual="header.html" -->
+        <div align="center">
+      <img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+
+      <h3>Apache HTTP Server Version 2.0</h3>
+    </div>
+
+
+
 
     <p>この文書では名前ベースのバーチャルホストをどんなとき、
     またどうやって使うのかということを説明します。</p>
@@ -223,6 +230,11 @@
     作成したページが見えるということを保証します。</p>
 
     <p>参考: <a href="examples.html#serverpath">ServerPath 設定例</a></p>
-    <!--#include virtual="footer.html" -->
+        <hr />
+
+    <h3 align="center">Apache HTTP Server Version 2.0</h3>
+    <a href="./"><img src="../images/index.gif" alt="Index" /></a>
+    <a href="../"><img src="../images/home.gif" alt="Home" /></a>
+
   </body>
 </html>

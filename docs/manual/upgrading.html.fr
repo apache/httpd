@@ -14,7 +14,14 @@
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
   vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+        <div align="center">
+      <img src="images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+
+      <h3>Apache HTTP Server Version 2.0</h3>
+    </div>
+
+
+
 
     <h1 align="center">Mise &agrave; de la version 1.3 &agrave; la
     version 2.0</h1>
@@ -145,7 +152,13 @@
     <strong>ne fonctionneront pas</strong> sur Apache 2.0 sans
     modifications. Plus de d&eacute;tails sont fournis dans la <a
     href="developer/">documentation du d&eacute;veloppeur</a>.</p>
-    <!--#include virtual="footer.html" -->
+        <hr />
+
+    <h3 align="center">Apache HTTP Server Version 2.0</h3>
+    <a href="./"><img src="images/index.gif" alt="Index" /></a>
+
+
+
   </body>
 </html>
 

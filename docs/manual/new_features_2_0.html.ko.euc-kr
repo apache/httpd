@@ -12,7 +12,14 @@
 
   <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
   vlink="#000080" alink="#FF0000">
-    <!--#include virtual="header.html" -->
+        <div align="center">
+      <img src="images/sub.gif" alt="[APACHE DOCUMENTATION]" /> 
+
+      <h3>Apache HTTP Server Version 2.0</h3>
+    </div>
+
+
+
 
     <h1 align="center">Apache 2.0의 새로운 기능 개요</h1>
 
@@ -174,7 +181,13 @@
 
 
     </dl>
-    <!--#include virtual="footer.html" -->
+        <hr />
+
+    <h3 align="center">Apache HTTP Server Version 2.0</h3>
+    <a href="./"><img src="images/index.gif" alt="Index" /></a>
+
+
+
   </body>
 </html>
 
