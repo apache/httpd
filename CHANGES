@@ -1,5 +1,13 @@
 Changes with Apache 2.0.17-dev
 
+  *) Changes required to make prefork clean up idle children properly.
+     There was a window during which a starting worker deadlocks when
+     an idle cleanup arrives before it completes init. Apache then keeps
+     trying to cleanup the same deadlocked worker forever (until higher
+     pids come along, but it still will never reduce below the deadlocked
+     pid). Thus the number of children would not reduce to the correct
+     idle level. [Paul J. Reder]
+
 Changes with Apache 2.0.16
 
   *) Change the default installation directory to /usr/local/apache2,
