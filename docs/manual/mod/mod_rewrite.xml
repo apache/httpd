@@ -1287,11 +1287,10 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       following dedicated book on this topic:</p>
 
       <p class="indent">
-        <em>Mastering Regular Expressions</em><br />
+        <em>Mastering Regular Expressions, 2nd Edition</em><br />
          Jeffrey E.F. Friedl<br />
-         Nutshell Handbook Series<br />
-         O'Reilly &amp; Associates, Inc. 1997<br />
-         ISBN 1-56592-257-3<br />
+         O'Reilly &amp; Associates, Inc. 2002<br />
+         ISBN 0-596-00289-0<br />
       </p>
 
       <p>Additionally in mod_rewrite the NOT character
