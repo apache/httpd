@@ -1468,6 +1468,12 @@ int rflush (request_rec *r) {
     return bflush(r->connection->client);
 }
 
+static void send_header(request_rec *r, char *hdr)
+{
+    char *val = table_get(r->headers_out, hdr);
+    if (val) bvputs(r->connection->client, hdr, ": ", val, "\015\012", NULL);
+}
+
 void send_error_response (request_rec *r, int recursive_error)
 {
     conn_rec *c = r->connection;
@@ -1480,20 +1486,35 @@ void send_error_response (request_rec *r, int recursive_error)
 	int i;
 	table *err_hdrs_arr = r->err_headers_out;
 	table_entry *err_hdrs = (table_entry *)err_hdrs_arr->elts;
+	table *hdrs_arr = r->headers_out;
+	table_entry *hdrs = (table_entry *)hdrs_arr->elts;
   
         basic_http_header (r);
 	
-	/* For conditional get's which didn't send anything, *don't*
-	 * send a bogus content-type, or any body --- but must still
-	 * terminate header.
+	/* For non-error statuses (2xx and 3xx), send out all the normal
+	 * headers unless it is a 304. Don't send a Location unless its
+	 * a redirect status (3xx).
 	 */
+
+	if ((is_HTTP_SUCCESS(status) || is_HTTP_REDIRECT(status)) &&
+	    status != HTTP_NOT_MODIFIED) {
+	    for (i = 0; i < hdrs_arr->nelts; ++i) {
+		if (!hdrs[i].key) continue;
+		if (!strcasecmp(hdrs[i].key, "Location") &&
+		    !is_HTTP_REDIRECT(status))
+		    continue;
+		bvputs(c->client, hdrs[i].key, ": ", hdrs[i].val,
+		       "\015\012", NULL);
+	    }
+	}
 	
-	if (status == USE_LOCAL_COPY) {
-	    char *etag = table_get(r->headers_out, "ETag");
-	    char *cloc = table_get(r->headers_out, "Content-Location");
-	    if (etag) bvputs(c->client, "ETag: ", etag, "\015\012", NULL);
-	    if (cloc) bvputs(c->client, "Content-Location: ", cloc,
-			     "\015\012", NULL);
+	if (status == HTTP_NOT_MODIFIED) {
+	    send_header(r, "ETag");
+	    send_header(r, "Content-Location");
+	    send_header(r, "Expires");
+	    send_header(r, "Cache-Control");
+	    send_header(r, "Vary");
+	    send_header(r, "Warning");
 	    set_keepalive(r);
 	    bputs("\015\012", c->client);
 	    return;
@@ -1505,9 +1526,6 @@ void send_error_response (request_rec *r, int recursive_error)
 	 * section, so for now, we don't use it.
 	 */
 	bputs("Connection: close\015\012", c->client);
-	
-	if (location && is_HTTP_REDIRECT(status))
-	    bvputs(c->client, "Location: ", location, "\015\012", NULL);
 
 	if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
 	    bvputs(c->client, "Allow: ", make_allow(r), "\015\012", NULL);

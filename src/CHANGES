@@ -7,10 +7,13 @@ Changes with Apache 1.2b7
      This fixes a problem introduced in 1.2b5 with clients that send
      an extra CRLF after a POST request. [Dean Gaudet]
 
-  *) Fix mod_rewrite bug which truncated the rewritten URL [Marc Slemko]
+  *) Fixed mod_rewrite bug which truncated the rewritten URL [Marc Slemko]
 
-  *) Fix mod_info output corruption bug introduced by buffer overflow
+  *) Fixed mod_info output corruption bug introduced by buffer overflow
      fixes. [Dean Gaudet]
+
+  *) Fixed http_protocol to correctly output all HTTP/1.1 headers, including
+     for the special case of a 304 response.  [Paul Sutton]
 
 Changes with Apache 1.2b6
 
