@@ -822,7 +822,7 @@ RewriteLog "/usr/local/var/apache/logs/rewrite.log"
               </a></th><td>Sets the verbosity of the log file used by the rewrite
 engine</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>RewriteLogLevel <em>Level</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>RerwiteLogLevel 0</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RewriteLogLevel 0</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_rewrite</td></tr></table>
