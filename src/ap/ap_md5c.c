@@ -193,6 +193,7 @@ API_EXPORT(void) ap_MD5Update(AP_MD5_CTX * context, const unsigned char *input,
     partLen = 64 - idx;
 
     /* Transform as many times as possible. */
+#ifndef CHARSET_EBCDIC
     if (inputLen >= partLen) {
 	memcpy(&context->buffer[idx], input, partLen);
 	MD5Transform(context->state, context->buffer);
@@ -207,6 +208,25 @@ API_EXPORT(void) ap_MD5Update(AP_MD5_CTX * context, const unsigned char *input,
 
     /* Buffer remaining input */
     memcpy(&context->buffer[idx], &input[i], inputLen - i);
+#else /*CHARSET_EBCDIC*/
+    if (inputLen >= partLen) {
+	ebcdic2ascii(&context->buffer[idx], input, partLen);
+	MD5Transform(context->state, context->buffer);
+
+	for (i = partLen; i + 63 < inputLen; i += 64) {
+	    unsigned char inp_tmp[64];
+	    ebcdic2ascii(inp_tmp, &input[i], 64);
+	    MD5Transform(context->state, inp_tmp);
+	}
+
+	idx = 0;
+    }
+    else
+	i = 0;
+
+    /* Buffer remaining input */
+    ebcdic2ascii(&context->buffer[idx], &input[i], inputLen - i);
+#endif /*CHARSET_EBCDIC*/
 }
 
 /* MD5 finalization. Ends an MD5 message-digest operation, writing the
