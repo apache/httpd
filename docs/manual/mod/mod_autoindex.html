@@ -509,7 +509,7 @@ IndexIgnore README .htaccess *~
 The IndexOptions directive specifies the behavior of the directory indexing.
 <EM>Option</EM> can be one of
 <DL>
-<DT>FancyIndexing
+<DT><A NAME="indexoptions:fancyindexing">FancyIndexing</A>
 <DD><!--%plaintext &lt;?INDEX {\tt FancyIndexing} index option&gt; -->
 This turns on fancy indexing of directories.
 <BLOCKQUOTE>
@@ -522,7 +522,7 @@ This turns on fancy indexing of directories.
  is combined with any <SAMP>IndexOptions</SAMP> directive already
  specified for the current scope.</STRONG>
 </BLOCKQUOTE>
-<DT>IconHeight[=pixels] (<EM>Apache 1.3 and later</EM>)
+<DT><A NAME="indexoptions:iconheight">IconHeight[=pixels] (<EM>Apache 1.3 and later</EM>)</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt IconHeight} index option&gt; -->
 Presence of this option, when used with IconWidth, will cause the server
@@ -532,12 +532,12 @@ precalculate the page layout without having to wait until all the
 images have been loaded.  If no value is given for the option, it
 defaults to the standard height of the icons supplied with the Apache
 software.
-<DT>IconsAreLinks
+<DT><A NAME="indexoptions:iconsarelinks">IconsAreLinks</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt IconsAreLinks} index option&gt; -->
 This makes the icons part of the anchor for the filename, for
 fancy indexing.
-<DT>IconWidth[=pixels] (<EM>Apache 1.3 and later</EM>)
+<DT><A NAME="indexoptions:iconwidth">IconWidth[=pixels] (<EM>Apache 1.3 and later</EM>)</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt IconWidth} index option&gt; -->
 Presence of this option, when used with IconHeight, will cause the server
@@ -547,19 +547,19 @@ precalculate the page layout without having to wait until all the
 images have been loaded.  If no value is given for the option, it
 defaults to the standard width of the icons supplied with the Apache
 software.
-<DT>NameWidth=[<EM>n</EM> | *] (<EM>Apache 1.3.2 and later</EM>)
+<DT><A NAME="indexoptions:namewidth">NameWidth=[<EM>n</EM> | *] (<EM>Apache 1.3.2 and later</EM>)</A>
 <DD>
 The NameWidth keyword allows you to specify the width of the
 filename column in bytes.  If the keyword value is '<SAMP>*</SAMP>',
 then the column is automatically sized to the length of the longest
 filename in the display.
-<DT>ScanHTMLTitles
+<DT><A NAME="indexoptions:scanhtmltitles">ScanHTMLTitles</A>
 <DD><!--%plaintext &lt;?INDEX {\tt ScanHTMLTitles} index option&gt; -->
 This enables the extraction of the title from HTML documents for fancy
 indexing. If the file does not have a description given by
 <A HREF="#adddescription">AddDescription</A> then httpd will read the
 document for the value of the TITLE tag.  This is CPU and disk intensive.
-<DT>SuppressColumnSorting
+<DT><A NAME="indexoptions:suppresscolumnsorting">SuppressColumnSorting</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt SuppressColumnSorting} index option&gt; -->
 If specified, Apache will not make the column headings in a FancyIndexed
@@ -567,11 +567,11 @@ directory listing into links for sorting.  The default behaviour is
 for them to be links; selecting the column heading will sort the directory
 listing by the values in that column.
 <STRONG>Only available in Apache 1.3 and later.</STRONG>
-<DT>SuppressDescription
+<DT><A NAME="indexoptions:suppressdescription">SuppressDescription</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt SuppressDescription} index option&gt; -->
 This will suppress the file description in fancy indexing listings.
-<DT>SuppressHTMLPreamble
+<DT><A NAME="indexoptions:suppresshtmlpreamble">SuppressHTMLPreamble</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt SuppressHTMLPreamble} index option&gt; -->
 If the directory actually contains a file specified by the
@@ -584,12 +584,12 @@ cetera</EM>).  The SuppressHTMLPreamble option disables this behaviour,
 causing the module to start the display with the header file contents.
 The header file must contain appropriate HTML instructions in this case.
 If there is no header file, the preamble is generated as usual.
-<DT>SuppressLastModified
+<DT><A NAME="indexoptions:suppresslastmodified">SuppressLastModified</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt SuppressLastModified} index option&gt; -->
 This will suppress the display of the last modification date, in fancy
 indexing listings.
-<DT>SuppressSize
+<DT><A NAME="indexoptions:suppresssize">SuppressSize</A>
 <DD>
 <!--%plaintext &lt;?INDEX {\tt SuppressSize} index option&gt; -->
 This will suppress the file size in fancy indexing listings.
