@@ -1,5 +1,16 @@
 Changes with Apache 1.3.28
 
+  *) Correction to mod_negotation for Win32, OS2, Netware etc, where
+     case insensitive requests such as the HEADER or README search
+     from autoindex would fail to match HEADER.html (because the
+     system internally looked for the case-sensitive header.* pattern.)
+     PR 7300 [William Rowe]
+
+  *) Correction to mod_autoindex so that only text/* files (perfering
+     /html, then /plain, then some other flavor) can be recovered
+     from a multiview-based HEADER or README subrequest.
+     [William Rowe]
+
   *) Improvements to mod_usertrack that allows for a regular (verbose)
      as well as "compact" version of the tracking cookie (the new
      'CookieFormat' directive), and the ability to prepend a string
