@@ -32,9 +32,6 @@ Changes with Apache 2.1.0-dev
   *) Fix a compile failure with recent OpenSSL and picky compilers
      (e.g., OpenSSL 0.9.7a and xlc_r on AIX).  [Jeff Trawick]
 
-  *) Do not bypass output filters when redirecting subrequests internally.
-     PR 17629.  [André Malo]
-
   *) OpenSSL headers should be included as "openssl/ssl.h", and not rely on
      the INCLUDE path to be defined properly.
      PR 11310. [Geoff Thrope <geoff@geoffthorpe.net>]

@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/21 16:21:19 $]
+Last modified at [$Date: 2003/05/29 15:07:11 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -103,6 +103,18 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Filter stacks and subrequests, redirects and fast redirects.
+      There's at least one PR that suffers from the current unclean behaviour
+      (which lets the server send garbage): PR 17629
+      nd says: Every subrequest should get its own filter stack with the
+               subreq_core filter as bottom-most. That filter does two things:
+                 - swallow EOS buckets
+                 - redirect the data stream to the upper request's (rr->main)
+                   filter chain directly after the subrequest's starting
+                   point.
+               Once we have a clean solution, we can try to optimize
+               it, so that the server won't be slow down too much.
 
     * RFC 2616 violations.
       Closed PRs: 15857.
