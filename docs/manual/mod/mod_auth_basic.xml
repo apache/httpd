@@ -27,7 +27,6 @@
 <syntax>AuthBasicProvider <em>provider-name</em></syntax>
 <contextlist>
   <context>directory</context>
-  <context>location</context>
   <context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
