@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/13 22:08:16 $]
+Last modified at [$Date: 2003/06/15 05:44:09 $]
 
 Release:
 
@@ -63,6 +63,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    * core_output_filter: don't split the brigade after a FLUSH bucket
+      if it's the last bucket.  This prevents creating unneccessary empty
+      brigades which may not be destroyed until the end of a keepalive
+      connection.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c.diff?r1=1.237&r2=1.238
+      +1: brianp
+
     * Win32: Whack the fully qualified names that appear in the log when
       loglevel debug is being used.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/log.c.diff?r1=1.133&r2=1.134
