@@ -34,7 +34,7 @@ EXPORT_DIRS = $(top_srcdir)/include $(top_srcdir)/os/$(OS_DIR) $(APR_INCLUDEDIR)
 
 delete-exports: export_files
 	@if test -f exports.c; then \
-	    files=`cat $<`; \
+	    files=`cat $?`; \
 	    headers="`find $$files -newer exports.c`"; \
 	    if test -n "$$headers"; then \
 	        echo Found newer headers. Will rebuild exports.c.; \
@@ -49,15 +49,15 @@ export_files:
 	for dir in $(EXPORT_DIRS); do \
 	    find $$dir -maxdepth 1 -type f -name '*.h' >> $$tmp; \
 	done; \
-	cat $$tmp | sort | uniq > $@; \
+	sort -u $$tmp > $@; \
 	rm -f $$tmp
 
 # full path required to keep BSD make happy
 $(top_builddir)/server/exports.c: export_files
-	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat $<` > $@
+	$(AWK) -f $(top_srcdir)/build/make_exports.awk `cat $?` > $@
 
 export_vars.h: export_files
-	$(AWK) -f $(top_srcdir)/build/make_var_export.awk `cat $<` > $@
+	$(AWK) -f $(top_srcdir)/build/make_var_export.awk `cat $?` > $@
 
 # wtf does this have to be explicit????
 exports.lo: exports.c
