@@ -93,7 +93,27 @@ PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
 	i += ch - ('a' - 10);
     return i;
 #else /*APR_CHARSET_EBCDIC*/
-    return (1 == sscanf(x, "%2x", &i)) ? os_toebcdic[i&0xFF] : 0;
+    /* we assume that the hex value refers to an ASCII character
+     * so convert to EBCDIC so that it makes sense locally;
+     *
+     * example:
+     *
+     * client specifies %20 in URL to refer to a space char;
+     * at this point we're called with EBCDIC "20"; after turning
+     * EBCDIC "20" into binary 0x20, we then need to assume that 0x20
+     * represents an ASCII char and convert 0x20 to EBCDIC, yielding
+     * 0x40
+     */
+    char buf[1];
+
+    if (1 == sscanf(x, "%2x", &i)) {
+        buf[0] = i & 0xFF;
+        ap_xlate_proto_from_ascii(buf, 1);
+        return buf[0];
+    }
+    else {
+        return 0;
+    }
 #endif /*APR_CHARSET_EBCDIC*/
 }
 
@@ -116,10 +136,16 @@ PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x)
 	x[2] = '0' + i;
 #else /*APR_CHARSET_EBCDIC*/
     static const char ntoa[] = { "0123456789ABCDEF" };
+    char buf[1];
+
     ch &= 0xFF;
+
+    buf[0] = ch;
+    ap_xlate_proto_to_ascii(buf, 1);
+
     x[0] = '%';
-    x[1] = ntoa[(os_toascii[ch]>>4)&0x0F];
-    x[2] = ntoa[os_toascii[ch]&0x0F];
+    x[1] = ntoa[(buf[0] >> 4) & 0x0F];
+    x[2] = ntoa[buf[0] & 0x0F];
     x[3] = '\0';
 #endif /*APR_CHARSET_EBCDIC*/
 }
