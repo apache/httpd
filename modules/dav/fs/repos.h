@@ -91,6 +91,12 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
 				dav_db **pdb);
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
 			    const char **state1, const char **state2);
+dav_error * dav_dbm_delete(dav_db *db, apr_datum_t key);
+dav_error * dav_dbm_store(dav_db *db, apr_datum_t key, apr_datum_t value);
+dav_error * dav_dbm_fetch(dav_db *db, apr_datum_t key, apr_datum_t *pvalue);
+void dav_dbm_freedatum(dav_db *db, apr_datum_t data);
+int dav_dbm_exists(dav_db *db, apr_datum_t key);
+void dav_dbm_close(dav_db *db);
 
 /* where is the lock database located? */
 const char *dav_get_lockdb_path(const request_rec *r);
