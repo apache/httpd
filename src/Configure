@@ -744,6 +744,13 @@ case "$PLAT" in
 esac
 
 ####################################################################
+## set this if we haven't
+##
+if [ ".${MAKE}" = . ]; then
+    MAKE='make'; export MAKE
+fi
+
+####################################################################
 ## Show user what OS we came up with
 ##
 echo " + configured for $OS platform"
@@ -1725,7 +1732,7 @@ echo "" >> Makefile
 ## it uses ugly looking built-in directory walk messages
 ## while we are already using our own messages
 ##
-if [ "x`make -v 2>/dev/null | grep 'GNU Make'`" = "x" ]; then
+if [ "x`${MAKE} -v 2>/dev/null | grep 'GNU Make'`" = "x" ]; then
 	MFLAGS_STATIC=
 else
 	MFLAGS_STATIC=--no-print-directory
