@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/01 15:07:49 $]
+Last modified at [$Date: 2004/10/01 15:16:49 $]
 
 Release:
 
@@ -101,11 +101,11 @@ PATCHES TO BACKPORT FROM 2.1
        teaching mod_cache's cache_select_url and cache_save_filter how to deal with
        this corner case.
         modules/experimental/cache_storage.c?r1=1.39&r2=1.40
-	modules/experimental/cache_util.c?r1=1.34&r2=1.35
-	modules/experimental/mod_cache.c?r1=1.91&r2=1.92
-	modules/experimental/mod_cache.h?r1=1.50&r2=1.51
-	modules/experimental/mod_disk_cache.c?r1=1.64&r2=1.65
-	modules/experimental/mod_mem_cache.c?r1=1.117&r2=1.118
+        modules/experimental/cache_util.c?r1=1.34&r2=1.35
+        modules/experimental/mod_cache.c?r1=1.91&r2=1.92
+        modules/experimental/mod_cache.h?r1=1.50&r2=1.51
+        modules/experimental/mod_disk_cache.c?r1=1.64&r2=1.65
+        modules/experimental/mod_mem_cache.c?r1=1.117&r2=1.118
        +1: stoddard
 
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
