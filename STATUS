@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/26 17:46:54 $]
+Last modified at [$Date: 2004/08/26 18:04:19 $]
 
 Release:
 
@@ -149,14 +149,6 @@ PATCHES TO BACKPORT FROM 2.1
        directive. PR 28553.
          modules/mappers/mod_actions.c: r1.32, r1.34
        +1: nd
-
-    *) Allocate buffer memory from the temp_pool rather than the stack to
-       avoid over-running a fixed length stack while evaluating nested
-       include directives.
-         server/config.c: r1.180
-       +1: bnicholes, nd
-       nd: oops... This already went into the include recursion stopper
-           backport. Any objections? ;-)
 
     *) allow symlinks on directories to be processed by Include directives
        and stop possible recursion by a counter. PR 28492
