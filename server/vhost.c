@@ -860,7 +860,7 @@ static void check_hostalias(request_rec *r)
     name_chain *src;
 
     last_s = NULL;
-    apr_get_local_port(&port, r->connection->client_socket);
+    apr_get_port(&port, APR_LOCAL, r->connection->client_socket);
 
     /* Recall that the name_chain is a list of server_addr_recs, some of
      * whose ports may not match.  Also each server may appear more than
@@ -915,7 +915,7 @@ static void check_serverpath(request_rec *r)
     server_rec *last_s;
     name_chain *src;
     apr_port_t port;
-    apr_get_local_port(&port, r->connection->client_socket);
+    apr_get_port(&port, APR_LOCAL, r->connection->client_socket);
    
     /*
      * This is in conjunction with the ServerPath code in http_core, so we
@@ -976,7 +976,7 @@ void ap_update_vhost_given_ip(conn_rec *conn)
 {
     ipaddr_chain *trav;
     apr_port_t port;
-    apr_get_local_port(&port, conn->client_socket);
+    apr_get_port(&port, APR_LOCAL, conn->client_socket);
 
     /* scan the hash apr_table_t for an exact match first */
     trav = find_ipaddr(&conn->local_addr.sin_addr, port);

@@ -129,7 +129,7 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
      * addresses from the query socket.
      */
 
-    apr_set_local_port(sock, ANY_PORT);
+    apr_set_port(sock, APR_LOCAL, ANY_PORT);
     apr_set_local_ipaddr(sock, local_ip);
 
     if ((status = apr_bind(sock)) != APR_SUCCESS) {
@@ -142,13 +142,13 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
  * errors from connect usually imply the remote machine doesn't support
  * the service
  */
-    apr_set_remote_port(sock, RFC1413_PORT);
+    apr_set_port(sock, APR_REMOTE, RFC1413_PORT);
     apr_set_remote_ipaddr(sock, rmt_ip);
                     
     if (apr_connect(sock, NULL) != APR_SUCCESS)
         return -1;
-    apr_get_local_port(&sav_our_port, sock);
-    apr_get_remote_port(&sav_rmt_port, sock);
+    apr_get_port(&sav_our_port, APR_LOCAL, sock);
+    apr_get_port(&sav_rmt_port, APR_REMOTE, sock);
 
 /* send the data */
     buflen = apr_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", sav_rmt_port,

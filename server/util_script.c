@@ -257,7 +257,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_table_addn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
     apr_table_addn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    apr_get_remote_port(&rport, c->client_socket);
+    apr_get_port(&rport, APR_REMOTE, c->client_socket);
     apr_table_addn(e, "REMOTE_PORT", apr_psprintf(r->pool, "%d", rport));
 
     if (r->user) {
