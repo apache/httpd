@@ -352,7 +352,8 @@ struct module_struct {
     /** The handle for the DSO.  Internal use only */
     void *dynamic_load_handle;
 
-    /** A pointer to the next module in the list; */
+    /** A pointer to the next module in the list
+     *  @defvar module_struct *next */
     struct module_struct *next;
 
     /** Magic Cookie to identify a module structure;  It's mainly 
@@ -445,11 +446,25 @@ struct module_struct {
 				NULL, \
 				MODULE_MAGIC_COOKIE
 
-/* Generic accessors for other modules to get at their own module-specific
+/**
+ * Generic accessors for other modules to get at their own module-specific
  * data
+ * @param conf_vector The vector in which the modules configuration is stored.
+ *        usually r->per_dir_config or s->module_config
+ * @param m The module to get the data for.
+ * @return The module-specific data
+ * @deffunc void *ap_get_module_config(void *conf_vector, module *m)
  */
-
 API_EXPORT(void *) ap_get_module_config(void *conf_vector, module *m);
+/**
+ * Generic accessors for other modules to set at their own module-specific
+ * data
+ * @param conf_vector The vector in which the modules configuration is stored.
+ *        usually r->per_dir_config or s->module_config
+ * @param m The module to set the data for.
+ * @param val The module-specific data to set
+ * @deffunc void ap_set_module_config(void *conf_vector, module *m, void *val)
+ */
 API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val);
 
 #define ap_get_module_config(v,m)	\
@@ -457,67 +472,234 @@ API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val);
 #define ap_set_module_config(v,m,val)	\
     ((((void **)(v))[(m)->module_index]) = (val))
 
-/* Generic command handling function... */
-
+/**
+ * Generic command handling function for strings
+ * @param cmd The command parameters for this directive
+ * @param struct_ptr pointer into a given type
+ * @param arg The argument to the directive
+ * @return An error string or NULL on success
+ * @deffunc const char *ap_set_string_slot(cmd_parms *cmd, void *struct_ptr, const char *arg)
+ */
 API_EXPORT_NONSTD(const char *) ap_set_string_slot(cmd_parms *, void *,
 						   const char *);
+/**
+ * Generic command handling function for strings, always sets the value
+ * to a lowercase string
+ * @param cmd The command parameters for this directive
+ * @param struct_ptr pointer into a given type
+ * @param arg The argument to the directive
+ * @return An error string or NULL on success
+ * @deffunc const char *ap_set_string_slot_lower(cmd_parms *cmd, void *struct_ptr, const char *arg)
+ */
 API_EXPORT_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *, 
 							 void *, const char *);
+/**
+ * Generic command handling function for flags
+ * @param cmd The command parameters for this directive
+ * @param struct_ptr pointer into a given type
+ * @param arg The argument to the directive (either 1 or 0)
+ * @return An error string or NULL on success
+ * @deffunc const char *ap_set_flag_slot(cmd_parms *cmd, void *struct_ptr, int arg)
+ */
 API_EXPORT_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, void *, int);
+/**
+ * Generic command handling function for files
+ * @param cmd The command parameters for this directive
+ * @param struct_ptr pointer into a given type
+ * @param arg The argument to the directive
+ * @return An error string or NULL on success
+ * @deffunc const char *ap_set_file_slot(cmd_parms *cmd, char *struct_ptr, const char *arg)
+ */
 API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, const char *);
 
-/* For modules which need to read config files, open logs, etc. ...
+/**
+ * For modules which need to read config files, open logs, etc. ...
  * this returns the fname argument if it begins with '/'; otherwise
  * it relativizes it wrt server_root.
+ * @param p pool to allocate data out of
+ * @param fname The file name
+ * @deffunc const char *ap_server_root_relative(ap_pool_t *p, const char *fname)
  */
-
 API_EXPORT(const char *) ap_server_root_relative(ap_pool_t *p, const char *fname);
 
 /* Finally, the hook for dynamically loading modules in... */
 
+/**
+ * Add a module to the server
+ * @param the module structure of the module to add
+ * @deffunc void ap_add_module(module *m)
+ */
 API_EXPORT(void) ap_add_module(module *m);
+/**
+ * Remove a module from the server.  There are some caveats:
+ * when the module is removed, its slot is lost so all the current
+ * per-dir and per-server configurations are invalid. So we should
+ * only ever call this function when you are invalidating almost
+ * all our current data. I.e. when doing a restart.
+ * @param the module structure of the module to remove
+ * @deffunc void ap_remove_module(module *m)
+ */
 API_EXPORT(void) ap_remove_module(module *m);
+/**
+ * Add a module to the chained modules list and the list of loaded modules
+ * @param the module structure of the module to add
+ * @deffunc void ap_add_loaded_module(module *m)
+ */
 API_EXPORT(void) ap_add_loaded_module(module *mod);
+/**
+ * Remove a module fromthe chained modules list and the list of loaded modules
+ * @param the module structure of the module to remove
+ * @deffunc void ap_remove_loaded_module(module *m)
+ */
 API_EXPORT(void) ap_remove_loaded_module(module *mod);
+/**
+ * Add a module to the list of loaded module based on the name of the
+ * module
+ * @param name The name of the module
+ * @return 1 on success, 0 on failure
+ * @deffunc int ap_add_named_module(const char *name)
+ */
 API_EXPORT(int) ap_add_named_module(const char *name);
+/**
+ * Clear all of the modules from the loaded module list 
+ * @deffunc void ap_add_named_module(void)
+ */
 API_EXPORT(void) ap_clear_module_list(void);
+/**
+ * Find the name of the specified module
+ * @param m The module to get the name for
+ * @return the name of the module
+ * deffunc const char * ap_find_module_name(module *m)
+ */
 API_EXPORT(const char *) ap_find_module_name(module *m);
+/**
+ * Find a module based on the name of the module
+ * @param name the name of the module
+ * @return the module structure if found, NULL otherwise
+ * @deffunc module *ap_find_linked_module(const char *name)
+ */
 API_EXPORT(module *) ap_find_linked_module(const char *name);
 
-/* Open a configfile_t as FILE, return open configfile_t struct pointer */
+/**
+ * Open a configfile_t as ap_file_t
+ * @param ret_cfg open configfile_t struct pointer
+ * @param p The pool to allocate the structure out of
+ * @param name the name of the file to open
+ * @deffunc ap_status_t ap_pcfg_openfile(configfile_t **ret_cfg, ap_pool_t *p, const char *name)
+ */
 API_EXPORT(ap_status_t) ap_pcfg_openfile(configfile_t **, ap_pool_t *p, const char *name);
 
-/* Allocate a configfile_t handle with user defined functions and params */
+/**
+ * Allocate a configfile_t handle with user defined functions and params 
+ * @param p The pool to allocate out of
+ * @param descr The name of the file
+ * @param param The argument passed to getch/getstr/close
+ * @param getc_func The getch function
+ * @param gets_func The getstr function
+ * @param close_func The close function
+ * @deffunc configfile_t *ap_pcfg_open_custom(ap_pool_t *p, const char *descr, void *param, int(*getc_func)(void*), void *(*gets_func) (void *buf, size_t bufsiz, void *param), int(*close_func)(void *param))
+ */
 API_EXPORT(configfile_t *) ap_pcfg_open_custom(ap_pool_t *p, const char *descr,
     void *param,
     int(*getc_func)(void*),
     void *(*gets_func) (void *buf, size_t bufsiz, void *param),
     int(*close_func)(void *param));
 
-/* Read one line from open configfile_t, strip LF, increase line number */
+/**
+ * Read one line from open configfile_t, strip LF, increase line number
+ * @param buf place to store the line read
+ * @param bufsize size of the buffer
+ * @param cfp File to read from
+ * @return 1 on success, 0 on failure
+ * @deffunc int ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
+ */
 API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
 
-/* Read one char from open configfile_t, increase line number upon LF */
+/**
+ * Read one char from open configfile_t, increase line number upon LF 
+ * @param The file to read from
+ * @return the character read
+ * @deffunc int ap_cfg_getc(configfile_t *cfp)
+ */
 API_EXPORT(int) ap_cfg_getc(configfile_t *cfp);
 
-/* Detach from open configfile_t, calling the close handler */
+/**
+ * Detach from open configfile_t, calling the close handler
+ * @param cfp The file to close
+ * @return 1 on sucess, 0 on failure
+ * @deffunc int ap_cfg_closefile(configfile_t *cfp)
+ */
 API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp);
 
-/* for implementing subconfigs and customized config files */
+/**
+ * Read all data between the current <foo> and the matching </foo>.  All
+ * of this data is forgotten immediately.  
+ * @param cmd The cmd_parms to pass to the directives inside the container
+ * @param directive The directive name to read until
+ * @retrn Error string on failure, NULL on success
+ * @deffunc const char *ap_soak_end_container(cmd_parms *cmd, char *directive)
+ */
 API_EXPORT(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
+
+/**
+ * Read all data between the current <foo> and the matching </foo> and build
+ * a config tree out of it
+ * @param p pool to allocate out of
+ * @param temp_pool Temporary pool to allocate out of
+ * @param parms The cmd_parms to pass to all directives read
+ * @param current The current node in the tree
+ * @param curr_parent The current parent node
+ * @param orig_directive The directive to read until hit.
+ * @return Error string on failure, NULL on success
+ * @deffunc char *ap_build_cont_config(ap_pool_t *p, ap_pool_t *temp_pool, cmd_parms *parms, ap_directive_t **current, ap_directive_t **curr_parent, char *orig_directive)
+*/
 const char * ap_build_cont_config(ap_pool_t *p, ap_pool_t *temp_pool,
                                         cmd_parms *parms,
                                         ap_directive_t **current,
                                         ap_directive_t **curr_parent,
                                         char *orig_directive);
+
+/**
+ * Build a config tree from a config file
+ * @param parms The cmd_parms to pass to all of the directives in the file
+ * @param conf_pool The pconf pool
+ * @param temp_pool The temporary pool
+ * @param conftree Place to store the root node of the config tree
+ * @return Error string on erro, NULL otherwise
+ * @deffunc const char *ap_build_config(cmd_parms *parms, ap_pool_t *conf_pool, ap_pool_t *temp_pool, ap_directive_t **conftree)
+ */
 API_EXPORT(const char *) ap_build_config(cmd_parms *parms,
 					 ap_pool_t *conf_pool,
 					 ap_pool_t *temp_pool,
 					 ap_directive_t **conftree);
+
+/**
+ * Walk a config tree and setup the server's internal structures
+ * @param conftree The config tree to walk
+ * @param parms The cmd_parms to pass to all functions
+ * @param config The parms context
+ * @return Error string on error, NULL otherwise
+ * @deffunc const char *ap_walk_config(ap_directive_t *conftree, cmd_parms *parms, void *config)
+ */
 API_EXPORT(const char *) ap_walk_config(ap_directive_t *conftree,
 					cmd_parms *parms, void *config);
 
-/* ap_check_cmd_context() definitions: */
+/**
+ * ap_check_cmd_context() definitions: 
+ * @param cmd The cmd_context to check
+ * @param forbidden Where the command is forbidden.  One of:
+ * <PRE>
+ *                NOT_IN_VIRTUALHOST
+ *                NOT_IN_LIMIT
+ *                NOT_IN_DIRECTORY
+ *                NOT_IN_LOCATION
+ *                NOT_IN_FILES
+ *                NOT_IN_DIR_LOC_FILE
+ *                GLOBAL_ONLY
+ * </PRE>
+ * @return Error string on error, NULL on success
+ * @deffunc const char *ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden)
+ */
 API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
 
 /* ap_check_cmd_context():              Forbidden in: */
@@ -532,20 +714,56 @@ API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden
 
 #ifdef CORE_PRIVATE
 
+/**
+ * The topmost module in the list
+ * @defvar module *top_module
+ */
 extern API_VAR_EXPORT module *top_module;
 
+/**
+ * Array of all statically linked modules
+ * @defvar module *ap_prelinked_modules[]
+ */
 extern API_VAR_EXPORT module *ap_prelinked_modules[];
+/**
+ * Array of all preloaded modules
+ * @defvar module *ap_preloaded_modules[]
+ */
 extern API_VAR_EXPORT module *ap_preloaded_modules[];
+/**
+ * Array of all loaded modules
+ * @defvar module **ap_loaded_modules
+ */
 extern API_VAR_EXPORT module **ap_loaded_modules;
 
 /* For mod_so.c... */
-
+/** Run a single module's two create_config hooks
+ *  @param p the pool to allocate out of
+ *  @param s The server to configure for.
+ *  @param m The module to configure
+ */
 void ap_single_module_configure(ap_pool_t *p, server_rec *s, module *m);
 
 /* For http_main.c... */
-
+/**
+ * Add all of the prelinked modules into the loaded module list
+ * @param process The process that is currently running the server
+ * @deffunc void ap_setup_prelinked_modules(process_rec *process)
+ */
 API_EXPORT(void) ap_setup_prelinked_modules(process_rec *process);
+
+/**
+ *Show the preloaded configuration directives, the help string explaining
+ * the directive arguments, in what module they are handled, and in
+ * what parts of the configuration they are allowed.  Used for httpd -h.
+ * @deffunc void ap_show_directives(void)
+ */
 API_EXPORT(void) ap_show_directives(void);
+
+/** 
+ * Show the preloaded module names.  Used for httpd -l. 
+ * @deffunc void ap_show_modules(void)
+ */
 API_EXPORT(void) ap_show_modules(void);
 API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree);
 API_EXPORT(void) ap_pre_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
