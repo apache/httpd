@@ -145,7 +145,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 
     access_status = ap_run_quick_handler(r);
     if (access_status != DECLINED) {
-        if ( access_status == OK )  {
+        if (access_status == OK)  {
             if (!r->main)
                 return DONE;
             else
