@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/01 15:12:43 $]
+Last modified at [$Date: 2003/11/01 15:54:15 $]
 
 Release:
 
@@ -279,12 +279,12 @@ PATCHES TO BACKPORT FROM 2.1
     * Tag the pools created for requests and subrequests.
         server/request.c r1.129
         server/protocol.c r1.137
-      +1: trawick, striker
-       0: nd
+      +1: trawick, striker, nd
          nd: I'm not really sure, what is it good for. What is it good for? ;-)
          trawick: It is a minor debug aid.  If you're debugging/tracing some
            apr operation or other utility routine, it is nice to display/trace
            the pool tag and know whether or not it is the [sub-]request pool.
+	 nd: ok, convinced.
 
     * mod_status: Report total CPU time accurately when using a
       threaded MPM.  PR: 23795
