@@ -2871,6 +2871,8 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         apr_bucket *e;
         apr_bucket_brigade *newbb;
 
+        AP_DEBUG_ASSERT(*readbytes > 0);
+        
         if (APR_BRIGADE_EMPTY(ctx->b))
             return APR_EOF;
 
@@ -2936,6 +2938,11 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         APR_BUCKET_REMOVE(e);
         APR_BRIGADE_INSERT_TAIL(b, e);
         *readbytes += len;
+        /* We didn't find an APR_ASCII_LF within the predefined maximum
+         * line length. */
+        if (*readbytes >= HUGE_STRING_LEN) {
+            break;
+        }
     }
 
     return APR_SUCCESS;
