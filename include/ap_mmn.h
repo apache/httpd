@@ -114,7 +114,6 @@
 #define MODULE_MAGIC_NUMBER_MAJOR 20020529
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
-#define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
@@ -124,7 +123,7 @@
  * For example, suppose you wish to use the apr_table_overlap
  *    function.  You can do this:
  * 
- * #if MODULE_MAGIC_AT_LEAST(19980812,2)
+ * #if AP_MODULE_MAGIC_AT_LEAST(19980812,2)
  *     ... use apr_table_overlap()
  * #else
  *     ... alternative code which doesn't use apr_table_overlap()
@@ -132,11 +131,15 @@
  * </pre>
  * @param major The major module magic number
  * @param minor The minor module magic number
- * @deffunc MODULE_MAGIC_AT_LEAST(int major, int minor)
+ * @deffunc AP_MODULE_MAGIC_AT_LEAST(int major, int minor)
  */
-#define MODULE_MAGIC_AT_LEAST(major,minor)		\
-    ((major) > MODULE_MAGIC_NUMBER_MAJOR 		\
+#define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\
+    ((major) < MODULE_MAGIC_NUMBER_MAJOR 		\
 	|| ((major) == MODULE_MAGIC_NUMBER_MAJOR 	\
-	    && (minor) >= MODULE_MAGIC_NUMBER_MINOR))
+	    && (minor) <= MODULE_MAGIC_NUMBER_MINOR))
+
+/** @deprecated present for backwards compatibility */
+#define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR
+#define MODULE_MAGIC_AT_LEAST old_broken_macro_we_hope_you_are_not_using
 
 #endif /* !APACHE_AP_MMN_H */
