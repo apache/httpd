@@ -64,6 +64,11 @@ all that is needed is to make sure that the name
 <SAMP>www.domain.tld</SAMP> is an alias (CNAME) pointing to the IP address
 <SAMP>111.22.33.44</SAMP></P>
 
+<p>Note: When you specify an IP address in a <code>NameVirtualHost</code>
+directive then requests to that IP address will only ever be served
+by matching &lt;VirtualHost&gt;s.  The "main server" will <b>never</b>
+be served from the specified IP address.
+
 <P>Additionally, many servers may wish to be accessible by more than
 one name. For example, the example server might want to be accessible
 as <CODE>domain.tld</CODE>, or <CODE>www2.domain.tld</CODE>, assuming
