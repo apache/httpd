@@ -81,27 +81,6 @@ Available Patches:
 	Message-ID: <19980611171746.A23845@engelschall.com>
 	Status: Ralf +1, Lars +1
 
-    * Bill Stoddard's [PATCH] PR2356 - SSI exec 
-      This is an update of a patch I sent in earlier.  There are 13 new
-      lines of code to detect and handle shellcmd.  COMMAND.COM is used
-      to exec the script on Win95, CMD.EXE on NT.
-	Message-ID: <5040300017947935000002L052*@MHS> 
-	Status: Ken +1 (on concept), Lars +1 (on concept),
-	        Martin +1 (on concept; is the OS/2 exec code similar enough
-		           to share parts of it?)
-
-    * Filenames containing whitespace characters caused problems for directives
-      Bill Stoddard <wgstodda@us.ibm.com>
-	Message-ID: <3591353E.A5D07487@us.ibm.com>
-
-    * Bill Stoddard's patch to make some structural changes to ap_call_exec to
-      make it more readable and friendly to a couple of patches that will
-      follow (capability to query the Win32 registry for interpreter name
-      and a fix for mod_include exec=cmd processing). This patch does not
-      change the function of ap_call_exec.
-	Message-ID: <5040300017289790000002L002*@MHS>
-	Status: Ken +1 (on concept), Lars +1 (on concept)
-
     * Configure tweaks to support building outside the source tree, and 
       add more customizeability for installation layout, by 
       Wilfredo Sanchez <wsanchez@apple.com>
