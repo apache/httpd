@@ -37,7 +37,7 @@
        http://www.apache.org/dist/apache-1.3b6/htdocs/manual/windows
        http://www.apache.org/dist/apache-1.3b6/README.NT
    - Ported to BS2000/OSD, a mainframe OS with EBCDIC charset 
-       http://www.apache.org/dist/apache-1.3b6/src/README.EBCDIC
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/ebcdic
    + Apache Autoconf-style Interface (APACI) for out-of-the-box installation
        http://www.apache.org/dist/apache-1.3b6/README.configure
        http://www.apache.org/dist/apache-1.3b6/INSTALL
@@ -49,7 +49,7 @@
    + Additional support tools: apachectl, ab (ApacheBench), dbmmanage
        http://www.apache.org/dist/apache-1.3b6/src/support/
    + Enhanced configuration support: Include and Line-Continuation
-       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1.3
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1_3
    - New `Magic' MIME-typing module for content type guessing 
        http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_mime_magic
    - Regular Expression support for Alias and Redirect directives
@@ -63,11 +63,11 @@
    - Improved HTTP/1.1-style Virtual Host support
        http://www.apache.org/dist/apache-1.3b6/htdocs/manual/vhost/index
    - Less Buffering of CGI Script Output (makes nph- obsolete)
-       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1.3
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1_3
    + Various Proxy Enhancements (NoProxy, ProxyDomain, ProxyPassReverse)
        http://www.apache.org/dist/apache-1.3b6/htdocs/manual/mod/mod_proxy
    - Various internal performance improvements
-       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1.3
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1_3
    - Various fixes to the hostname DNS lookup handling
        http://www.apache.org/dist/apache-1.3b6/htdocs/mod/core#hostnamelookups
    - Various Directory Indexing enhancements
@@ -82,5 +82,5 @@
    + Big Symbol Renaming to avoid symbol clashes with third-party code
        http://www.apache.org/dist/apache-1.3b6/htdocs/manual/sourcereorg
    - API Additions
-       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1.3
+       http://www.apache.org/dist/apache-1.3b6/htdocs/manual/new_features_1_3
   
