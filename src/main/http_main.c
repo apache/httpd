@@ -2509,7 +2509,7 @@ static void reclaim_child_processes(int terminate)
 	    waitret = waitpid(ocr->pid, &status, WNOHANG);
 	    if (waitret == ocr->pid) {
 		ocr->pid = -1;
-		(*ocr->maintenance) (OC_REASON_DEATH, ocr->data, (ap_wait_t)status);
+		(*ocr->maintenance) (OC_REASON_RESTART, ocr->data, (ap_wait_t)status);
 	    }
 	    else if (waitret == 0) {
 		(*ocr->maintenance) (OC_REASON_RESTART, ocr->data, (ap_wait_t)-1);
