@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/15 14:32:05 $]
+  Last modified at [$Date: 2002/05/15 14:36:06 $]
 
 Release:
 
@@ -96,26 +96,11 @@ Available Patches (Most likely, will be ported to 2.0 as appropriate):
 	Message-ID: <384AA242.B93F8B5@rsbx.net>
 	Status: Martin +1(concept)
 
-    * Jayaram's patch (10/27/99) for changes to mod_autoindex
- 
-	Problem 1:
-	------------------------
-	AddIcon (<alttext>,<icon>) ^^DIRECTORY^^ 
-	and 
-	AddIcon (<alttext>,<icon>) ^^BLANKICON^^ 
-	should be able to set the alternate text and icon file for any
-	directory/blankicon in a directory listing. This was not happening
-	because the alternate text for ^^DIRECTORY^^ and ^^BLANKICON^^ were
-	hardcoded to  "DIR" and "   " respectively.
-	  Status: resolved in Apache 2.0
-
-	Problem 2:
-	-------------------------
-	IndexIgnore <file-extension> should hide the files with this file-
-	extension in directory listings. This was NOT happening because the 
-	total filename was being compared with the file-extension.
-
-	Status: Martin +1(untested), Ken +1(untested)
+    * Jayaram's patch (10/27/99) for bugfix to mod_autoindex
+      IndexIgnore <file-extension> should hide the files with this file-
+      extension in directory listings. This was NOT happening because the 
+      total filename was being compared with the file-extension.
+      Status: Martin +1(untested), Ken +1(untested)
        
     * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
       to refer to URIs for non-static resources.
