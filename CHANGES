@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_info: Rewrote config tree walk using a recursive function.
+     Added ?config option. Added printout of config filename and line numbers.
+     [Rici Lake <rici ricilake.net>, Paul Querna]
+
   *) mod_proxy: Fix type error that prevents proxy-sendchunks from working.
      [Justin Erenkrantz]
 
