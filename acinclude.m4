@@ -176,7 +176,7 @@ AC_DEFUN(APACHE_MODPATH_ADD,[
       modpath_static="$modpath_static $libname"
       cat >>$modpath_current/modules.mk<<EOF
 $libname: $objects
-	\$(MOD_LINK) $objects
+	\$(MOD_LINK) $objects $5
 EOF
     else
       apache_need_shared=yes
@@ -268,7 +268,10 @@ AC_DEFUN(APACHE_MODULE,[
       fi
       shared="";;
     esac
-    APACHE_MODPATH_ADD($1, $shared, $3)
+    define([modprefix], [MOD_]translit($1, [a-z-], [A-Z_]))
+    APACHE_MODPATH_ADD($1, $shared, $3,, [\$(]modprefix[_LDADD)])
+    APACHE_SUBST(modprefix[_LDADD])
+    undefine([modprefix])
   fi
 ])dnl
 
@@ -462,13 +465,13 @@ if test "x$ap_ssltk_configured" = "x"; then
       APR_ADDTO(LDFLAGS, ["$ap_platform_runtime_link_flag$ap_ssltk_lib"])
     fi
   fi
-  dnl (d) add "-lssl -lcrypto" OR "-lsslc" to LIBS because restoring LIBS
-  dnl after AC_CHECK_LIB() obliterates any flags AC_CHECK_LIB() added.
+  # Put SSL libraries in SSL_LIBS.
   if test "$ap_ssltk_type" = "openssl"; then
-    APR_ADDTO(LIBS, [-lssl -lcrypto])
+    APR_SETVAR(SSL_LIBS, [-lssl -lcrypto])
   else
-    APR_ADDTO(LIBS, [-lsslc])
+    APR_SETVAR(SSL_LIBS, [-lsslc])
   fi
+  APACHE_SUBST(SSL_LIBS)
 fi
 ])
 
