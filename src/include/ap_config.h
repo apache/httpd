@@ -827,6 +827,11 @@ typedef int rlim_t;
 #define NO_KILLPG
 #define NEED_INITGROUPS
 
+#elif defined(_CX_SX)
+#define JMP_BUF sigjmp_buf
+#include <sys/types.h>
+#include <sys/time.h>
+
 #elif defined(WIN32)
 
 /* All windows stuff is now in os/win32/os.h */

@@ -717,6 +717,13 @@ case "$PLAT" in
         DEF_WANTHSREGEX=yes
         LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
         ;;
+    m88k-*-CX/SX|CYBER)
+        OS='Cyberguard CX/SX'
+        CFLAGS="$CFLAGS -D_CX_SX -Xa"
+        DEF_WANTHSREGEX=yes
+        CC='cc'
+        RANLIB='true'
+        ;;
     *) # default: Catch systems we don't know about
         OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"
