@@ -1,0 +1,168 @@
+
+                   Apache HTTP Server 1.3.31 freigegeben
+
+   Wir, die Apache Software Foundation und das Apache HTTP Server Projekt, 
+   freuen uns, die Freigabe der Version 1.3.31 des Apache HTTP Servers 
+   ("Apache") bekannt zu geben. Diese Ankündigung führt die wesentlichen 
+   Änderungen von 1.3.31 gegenüber 1.3.29 auf (die Version 1.3.30 wurde nicht
+   freigegeben). Die Ankündigung ist auch in englischer Sprache sowie
+   spanischer und japanischer Übersetzung unter
+
+        http://www.apache.org/dist/httpd/Announcement.html
+        http://www.apache.org/dist/httpd/Announcement.html.es
+        http://www.apache.org/dist/httpd/Announcement.html.ja
+
+   verfügbar.
+
+   Diese Version des Apache ist vornehmlich ein Bug-Fix- und Sicherheits-
+   Update. Eine kurze Zusammenfassung der Bug-Fixes ist am Ende des Dokumentes
+   aufgeführt. Die vollständige Liste der Änderungen ist in der CHANGES-
+   Datei zu finden. Apache 1.3.31 behebt insbesondere 4 mögliche
+   Sicherheitslücken:
+
+     o CAN-2003-0987 (cve.mitre.org)
+       Im mod_digest wird der vom Client verwendete "Nonce"-Wert nun
+       verifiziert, ob er mit dem vom Server erzeugten korrespondiert.
+       Dieses Problem betrifft nicht das mod_auth_digest-Modul.
+
+     o CAN-2003-0020 (cve.mitre.org)
+       Daten beliebiger Herkunft werden maskiert, bevor sie ins
+       Fehlerprotokoll geschrieben werden.
+
+     o CAN-2004-0174 (cve.mitre.org)
+       Korrektur von "verhungernden" lauschenden Sockets, wo eine
+       kurzlebige Verbindung an einem selten verbundenen, lauschenden Socket
+       einen Kindprozess veranlasst, den Accept-Mutex nicht freizugeben und
+       neue Verbindungen solange zu blockieren, bis eine weitere Verbindung
+       auf dem selten verbundenen Socket eintrifft. Dieses Problem betrifft
+       nur bestimmte Plattformen, wie Solaris, AIX und IRIX. Linux ist nicht
+       betroffen.
+     
+     o CAN-2003-0993 (cve.mitre.org) 
+       Korrektur des Parsers für Allow-/Deny-Regeln, die IP-Adressen ohne
+       Angabe einer Netmask verwenden. Das Problem ist lediglich auf
+       Big-Endian-64-bit-Plattformen bekannt.
+     
+   Wir betrachten den Apache 1.3.31 als die beste verfügbare Version des
+   Apache 1.3 und wir empfehlen Benutzern älterer Versionen, insbesondere
+   der Familien 1.1.x und 1.2.x, umgehend die Aufrüstung. Für die 1.2.x-
+   Familie werden keine weiteren Releases mehr erstellt.
+
+   Apache 1.3.31 steht unter folgender Adresse zum Download bereit:
+
+       http://httpd.apache.org/download.cgi
+
+   Dieser Service nutzt das Mirror-Netzwerk, welches unter folgender
+   Adresse aufgeführt wird:
+
+       http://www.apache.org/mirrors/
+
+   Eine vollständige Auflistung aller bisherigen Änderungen finden Sie in
+   der Datei CHANGES_1.3.
+
+   Seit Apache 1.3.12 enthalten Binärdistributionen alle Apache-Standard-
+   module als Shared Objects (sofern es von der Plattform unterstützt
+   wird) sowie den kompletten Quelltext. Die Installation kann auf einfache
+   Weise mit dem beigefügten Installationsskript durchgeführt werden.
+   Eine vollständige Erläuterung finden Sie in den Dateien README.bindist
+   und INSTALL.bindist. Beachten Sie bitte, dass die Binärdistributionen
+   auf freiwilliger Basis angeboten werden und aktuelle Distributionen
+   nicht immer für spezielle Plattformen verfügbar sind.
+   Win32-Binärdistributionen basieren auf der Microsoft-Installer-
+   Technologie (.MSI). Obwohl die Entwickler diese Installationsmethode
+   fortlaufend stabilisieren, sollten Fragen dazu an die Newsgroup
+   news:comp.infosystems.www.servers.ms-windows gerichtet werden.
+
+   Eine Übersicht der seit 1.2 eingeführten neuen Features finden Sie unter
+
+   http://httpd.apache.org/docs/new_features_1_3.html
+
+   Ganz allgemein bietet der Apache 1.3 wesentliche Verbesserungen gegenüber
+   der Version 1.2, einschliesslich besserer Performance, Zuverlässigkeit
+   und Unterstützung von mehr Plattformen, darunter Windows NT und 2000 (die
+   unter die Bezeichnung "Win32" fallen), OS2, Netware und Plattformen mit
+   TPF-Thread-Unterstützung.
+
+   Apache ist der am häufigsten verwendete Webserver des bekannten
+   Universums. Mehr als die Hälfte aller Server im Internet laufen mit dem
+   Apache oder einem seiner Derivate.
+
+   WICHTIGER HINWEIS FÜR APACHE-NUTZER: Der Apache 1.3 wurde für
+   Unix-Systeme entwickelt. Obwohl die Portierungen auf nicht-Unix-
+   Plattformen (wie zum Beispiel Win32, Netware oder OS2) von akzeptabler
+   Qualität sind, ist der Apache 1.3 nicht für diese Plattformen optimiert.
+   Sicherheits-, Stabilitäts- und Performanceprobleme zu diesen nicht-Unix-
+   Portierungen betreffen aufgrund der Unix-Herkunft der Software im
+   Allgemeinen nicht die Unix-Version.
+
+   Der Apache 2.0 wurde durch die Einführung der Apache Portability Library
+   und der MPM-Module von Anfang an für mehrere Betriebssysteme konstruiert.
+   Nutzer von nicht-Unix-Plattformen sind dringend angehalten, aufgrund der
+   besseren Performance, Stabilität und Sicherheit auf den Apache 2.0 zu
+   wechseln.
+
+               Wesentliche Änderungen des Apache 1.3.31
+
+   Sicherheitslücken
+
+     o CAN-2003-0987 (cve.mitre.org)
+       Im mod_digest wird der vom Client verwendete "Nonce"-Wert nun
+       verifiziert, ob er mit dem vom Server erzeugten korrespondiert.
+       Dieses Problem betrifft nicht das mod_auth_digest-Modul.
+
+     o CAN-2003-0020 (cve.mitre.org)
+       Daten beliebiger Herkunft werden maskiert, bevor sie ins
+       Fehlerprotokoll geschrieben werden.
+
+     o CAN-2004-0174 (cve.mitre.org)
+       Korrektur von "verhungernden" lauschenden Sockets, wo eine
+       kurzlebige Verbindung an einem selten verbundenen, lauschenden Socket
+       einen Kindprozess veranlaßt, den Accept-Mutex festzuhalten und neue
+       Verbindungen solange zu blockieren, bis eine weitere Verbindung auf
+       auf dem selten verbundenen Socket eintrifft.
+     
+     o CAN-2003-0993 (cve.mitre.org) 
+       Korrektur des Parsers für Allow-/Deny-Regeln, die IP-Adressen ohne
+       Angabe einer Netmask verwenden. Das Problem ist lediglich auf
+       Big-Endian-64-bit-Plattformen bekannt.
+
+Neuerungen
+
+    Neue Funktionen, die sich auf bestimmte Plattformen beziehen:
+
+     * Linux 2.4+: Wenn der Apache als root startet und CoreDumpDirectory
+       gesetzt ist, sind Speicherauszüge mittels des Systemaufrufes
+       prctl() aktiviert.
+
+    Neue Funktionen für alle Plattformen:
+
+     * neue Zusatzmodule: mod_whatkilledus und mod_backtrace (experimentell)
+       zur Auswertung von Diagnosedaten nach dem Absturz eines Kindprozesses.
+
+     * Hinzufügen eines Hooks für schwere Ausnahmefehler zur Verwendung von 
+       Diagnosemodulen nach einem Absturz.
+
+     * Neues Modul zur forensischen Protokollierung (mod_log_forensic)
+
+     * '%X' wird von der Direktive LogFormat jetzt als Alias für '%c'
+       akzeptiert. Das ermöglicht nun auch mit mod_ssl die Protokollierung des
+       Verbindungsstatus.
+            
+   Behobene Fehler
+
+    Die folgenden nennenswerten Fehler wurden im Apache 1.3.29 (oder
+    früher) gefunden und im Apache 1.3.31 behoben:
+
+     * Korrektur von Speicherkorruptionen bei der Funktion
+       ap_custom_response(). Die per-dir-Grunkonfiguration würde später auf
+       Daten des Request-Pools zeigen, die für verschiedene Zwecke bei
+       verschiedenen Anfragen wieder benutzt würden.
+
+     * mod_usertrack überprüft nicht länger den Cookie2-Header auf den 
+       Cookienamen. Es überschreibt auch keine anderen Cookies mehr.
+
+     * Korrektur eines Fehlers, der einen Speicherauszug verursachte, wenn
+       CookieTracking ohne direkte Angabe eines Cookienamens verwendet wurde.
+
+     * UseCanonicalName off hatte den vom Client übermittelten Port ignoriert.
+

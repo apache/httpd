@@ -1,0 +1,122 @@
+
+                   Apache HTTP Server 1.3.32 Released
+
+   The Apache Software Foundation and The Apache HTTP Server Project are
+   pleased to announce the release of version 1.3.31 of the Apache HTTP
+   Server ("Apache").  This Announcement notes the significant changes
+   in 1.3.32 as compared to 1.3.31.  The Announcement is also available
+   in German, Spanish and Japanese from:
+
+        http://www.apache.org/dist/httpd/Announcement.html.de
+        http://www.apache.org/dist/httpd/Announcement.html.es
+        http://www.apache.org/dist/httpd/Announcement.html.ja
+
+   This version of Apache is principally a bug and security fix release.
+   A partial summary of the bug fixes is given at the end of this document.
+   A full listing of changes can be found in the CHANGES file.  Of
+   particular note is that 1.3.32 addresses and fixes 1 potential
+   security issue:
+
+     o CAN-2004-0492 (cve.mitre.org)
+       Reject responses from a remote server if sent an invalid
+       (negative) Content-Length.
+
+   We consider Apache 1.3.32 to be the best version of Apache 1.3 available
+   and we strongly recommend that users of older versions, especially of
+   the 1.1.x and 1.2.x family, upgrade as soon as possible.  No further
+   releases will be made in the 1.2.x family.
+
+   Apache 1.3.32 is available for download from:
+   
+       http://httpd.apache.org/download.cgi
+
+   This service utilizes the network of mirrors listed at:
+
+       http://www.apache.org/mirrors/
+
+   Please consult the CHANGES_1.3 file for a full list of changes.
+
+   As of Apache 1.3.12 binary distributions contain all standard Apache
+   modules as shared objects (if supported by the platform) and include
+   full source code.  Installation is easily done by executing the
+   included install script.  See the README.bindist and INSTALL.bindist
+   files for a complete explanation.  Please note that the binary
+   distributions are only provided for your convenience and current
+   distributions for specific platforms are not always available.  Win32
+   binary distributions are based on the Microsoft Installer (.MSI)
+   technology.  While development continues to make this installation method
+   more robust, questions should be directed to the
+   news:comp.infosystems.www.servers.ms-windows newsgroup.
+
+   For an overview of new features introduced after 1.2 please see
+   
+   http://httpd.apache.org/docs/new_features_1_3.html
+
+   In general, Apache 1.3 offers several substantial improvements over
+   version 1.2, including better performance, reliability and a wider
+   range of supported platforms, including Windows NT and 2000 (which
+   fall under the "Win32" label), OS2, Netware, and TPF threaded
+   platforms.
+
+   Apache is the most popular web server in the known universe; over half
+   of the servers on the Internet are running Apache or one of its
+   variants.
+
+   IMPORTANT NOTE FOR APACHE USERS:   Apache 1.3 was designed for Unix OS
+   variants.  While the ports to non-Unix platforms (such as Win32, Netware
+   or OS2) are of an acceptable quality, Apache 1.3 is not optimized for
+   these platforms.  Security, stability, or performance issues on these
+   non-Unix ports do not generally apply to the Unix version, due to
+   software's Unix origin.
+
+   Apache 2.0 has been structured for multiple operating systems from its 
+   inception, by introducing the Apache Portability Library and MPM modules.
+   Users on non-Unix platforms are strongly encouraged to move up to 
+   Apache 2.0 for better performance, stability and security on their
+   platforms.
+
+                     Apache 1.3.32 Major changes
+
+  Security vulnerabilities
+
+     * CAN-2004-0492 (cve.mitre.org)
+       Reject responses from a remote server if sent an invalid
+       (negative) Content-Length.
+
+  New features
+
+   New features that relate to specific platforms:
+
+     * Win32: Improve error reporting after a failed attempt to spawn a 
+       piped log process or rewrite map process.
+
+   New features that relate to all platforms:
+
+     * Added new compile-time flag: UCN_OFF_HONOR_PHYSICAL_PORT.
+       It controls how UseCanonicalName Off determines the port value if
+       the client doesn't provide one in the Host header. If defined during
+       compilation, UseCanonicalName Off will use the physical port number
+       to generate the canonical name. If not defined, it tries the current
+       Port value followed by the default port for the current scheme.
+
+  Bugs fixed
+
+   The following noteworthy bugs were found in Apache 1.3.31 (or earlier)
+   and have been fixed in Apache 1.3.32:
+
+     * mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
+                                                                                
+     * mod_rewrite: Fix 0 bytes write into random memory position.
+       PR 31036.
+
+     * mod_digest: Fix nonce string calculation since 1.3.31 which
+       would force re-authentication for every connection if
+       AuthDigestRealmSeed was not configured.  PR 30920.
+
+     * Fix trivial bug in mod_log_forensic that caused the child
+       to seg fault when certain invalid requests were fired at it with
+       forensic logging is enabled.  PR 29313.
+
+     * No longer breaks mod_dav, frontpage and others.  Repair a patch
+       in 1.3.31 which prevented discarding the request body for requests
+       that will be keptalive but are not currently keptalive. PR 29237.
