@@ -3712,9 +3712,9 @@ static int dav_method_update(request_rec *r)
 
     if (err != NULL) {
         err = dav_push_error(r->pool, err->status, 0,
-                             ap_psprintf(r->pool,
-                                         "Could not UPDATE %s.",
-                                         ap_escape_html(r->pool, r->uri)),
+                             apr_psprintf(r->pool,
+                                          "Could not UPDATE %s.",
+                                          ap_escape_html(r->pool, r->uri)),
                              err);
         return dav_handle_err(r, err, multi_response);
     }
