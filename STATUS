@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/18 03:30:38 $]
+Last modified at [$Date: 2002/01/19 01:56:07 $]
 
 Release:
 
@@ -122,6 +122,8 @@ RELEASE SHOWSTOPPERS:
       running apachectl because we set the appropriate environment
       variable, but ab, htpasswd, etc. don't know how to pick up apr,
       apr-util, etc.
+
+    * mod_cgid leaks pipe descriptors, apparently for every request.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
