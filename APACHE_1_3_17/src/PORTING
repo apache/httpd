@@ -1,0 +1,381 @@
+The Semi-Official Guide to Porting Apache
+
+-------------
+Introduction:
+-------------
+Apache has been ported to a wide variety of platforms, from multiple
+UNIX variants to OS/2. Starting with v1.3, it will even run under
+Windows95 and Windows NT. Nonetheless, there are most likely a few
+platforms out there that currently are not "officially" supported under
+Apache. Porting Apache to these platforms can be quite simple
+depending on the "genericness" of the OS. This document will provide
+some basic guidelines to help the potential porter.
+
+-------------
+Requirements:
+-------------
+One of the basic requirements for a potential Apache platform is
+a robust TCP/IP implementation. Just about any UNIX out there
+nowadays, even some ancient ones, have a TCP/IP stack that will
+work. In particular, the UNIX should provide for sockets and the
+basic controlling functions for them (like accept(), bind(), etc).
+
+The source for Apache is written in ANSI-C, so an ANSI-C compiler
+is required. However, Apache does not use or require ANSI-only
+functions or options (eg: the "%n" parameter in the scanf()
+family) as much as possible to ease portability. Generally,
+an ANSI-C compiler (eg: gcc) even without a full-blown ANSI
+C library is usually sufficient.
+
+At present, the Apache source is not compatible with C++.
+
+-------------------
+The Starting Point:
+-------------------
+The first thing to look at is the output of the ./helpers/GuessOS
+script. This is a simple script that attempts to determine the
+platform and OS you are running on. The output of this script
+is used by Configure to set some basic compilation parameters.
+
+The output of ./helpers/GuessOS was designed to be GNU 'config.guess'
+compatible (from GNU/autoconf). The format of the output string
+is:
+
+   machine-vendor-OS
+
+This string is returned to the main Configure script as the
+shell variable $PLAT. If Configure is not "aware" of that platform
+(or cannot correctly parse it), it will complain and die. We realize
+that this may not be the best solution; the intent is to get as
+much feedback as possible.
+
+----------------------
+Configure cannot Grok:
+----------------------
+If this happens to you, then it means that Configure doesn't know
+how to configure and compile Apache for your OS. It will still try
+nonetheless, but at this point, all bets are off.
+
+The best solution if this happens to you is to make Apache aware
+of your OS.  The first course of action is the easiest:  Look in
+Configure and see if there are any OSs which are similar to yours.
+
+For example, let's say that your OS is similar to HP-UX, but that
+GuessOS returns "foobar-intel-hubble". You would then edit
+Configure as follows:
+
+    *-hp-hpux*|*-*-hubble)
+	OS='HP-UX'
+	CFLAGS="$CFLAGS -DHPUX"
+	;;
+
+The '|*-*-hubble' was added to the switch statement for HP-UX.
+
+Another fix may involve editing the GuessOS helper script. Let's
+say, for example, that your system is SysV4-based, but that
+GuessOS does not return that info. You could then add a switch
+to the script that does something like:
+
+	*WeirdSystem*)
+	    echo "${MACHINE}-whatever-sysv4"; exit 0
+	    ;;
+
+In this case, we force GuessOS to return a string that includes
+the "sysv4" cookie for Configure to recognize.
+
+Unfortunately, unless you are running a very generic BSD or SysV
+system, no "supported" OS will be close enough in all aspects to
+allow for a clear (and possibly workable) build of Apache. If this
+is the case, you will need to port Apache to your OS.
+
+-------------------
+Porting for Apache:
+-------------------
+When all else fails, it's time to hack some code. The source itself
+is generic enough that most ports are incredibly easy. No matter
+what, however, there are 2 source files that need to be updated
+for the port:
+
+   ./Configure
+   ./include/ap_config.h
+
+Configure:
+==========
+Configure concerns itself with determining the OS-type for the
+build and setting up a few Makefile variables for the build. The
+most important are 'OS' and 'CFLAGS'. For example, when Configure
+determines a build for A/UX, it runs the following lines:
+
+  case "$PLAT" in
+    *-apple-aux3*)
+	OS='A/UX 3.1.x'
+	CFLAGS="$CFLAGS -DAUX -D_POSIX_SOURCE"
+	LIBS="$LIBS -lposix -lbsd"
+	LDFLAGS="$LDFLAGS -s"
+	DEF_WANTHSREGEX=no
+	;;
+
+The 'OS' variable is used to define the system Apache is being built
+for. You will also note that 'CFLAGS' defines "-DAUX". In this case,
+'AUX' is a magic cookie used by the Apache code (mainly ap_config.h [see
+below]) to handle OS-specific code. Each code that has and requires
+such OS-specific code will require a unique "system cookie" defined
+in 'CFLAGS'. You will also note that Configure also goes ahead and
+predefines the LIBS and LDFLAGS Makefile variables.
+
+DEF_WANTHSREGEX indicates the "default" setting of the WANTHSREGEX rule.
+If left undefined it'll default to yes.  Yes means the src/regex/
+directory, containing Henry Spencer's regex library will be used rather
+than any system supplied regex.  It's been our experience that system
+supplied regex libraries are generally buggy, and should be avoided.
+
+ap_config.h:
+=======
+The Apache code, specifically in ap_config.h, uses a variety of #defines to
+control how the code is compiled and what options are available for each
+supported OS. One of the hardest parts about the porting process is
+determining which of the following are applicable for your system and
+setup. This time using the example of AIX, we see:
+
+   #elif defined(AIX)
+   #undef HAVE_GMTOFF
+   #undef NO_KILLPG
+   #undef NO_SETSID
+   #define HAVE_SYS_SELECT_H
+   #define JMP_BUF sigjmp_buf
+   #define HAVE_MMAP
+   #define USE_MMAP_SCOREBOARD
+   typedef int rlim_t;
+
+The above lines describe which functions,  capabilities and specifics
+are required for Apache to build and run under IBM AIX (the #undefs
+are not strictly required, but are a Good Idea anyway).
+
+The following several lines provide a list and short description
+of these #defines. By correctly #defining the ones you need in ap_config.h
+(wrapped by the above mentioned "system cookie"), you can fine tune the
+build for your OS.
+
+--
+
+ NEED_*:
+  If the particular OS doesn't supply the specified function, we use the
+  Apache-supplied version (in util.c). 
+
+    NEED_STRERROR:
+    NEED_STRDUP:
+    NEED_STRCASECMP:
+    NEED_STRNCASECMP:
+    NEED_INITGROUPS:
+    NEED_WAITPID:
+    NEED_STRERROR:
+--
+
+ HAVE_*:
+  Does this OS have/support this capability?
+
+    HAVE_MMAP:
+      The OS has a working mmap() implementation
+
+    HAVE_SHMGET:
+      The OS has a working shmget() (SystemV shared memory) implementation
+
+    HAVE_GMTOFF:
+      Define if the OS's tm struct has the tm_gmtoff element
+
+    HAVE_CRYPT_H:
+      Defined if the OS has the <crypt.h> header file. This is set
+      automatically during the Configure process and stored in the
+      src/include/ap_config_auto.h header file.
+
+    HAVE_SYS_SELECT_H:
+      Defined if the OS has the <sys/select.h> header file. This is
+      set automatically during the Configure process and stored in the
+      src/include/ap_config_auto.h header file.
+
+    HAVE_SYS_RESOURCE_H:
+      Defined if the OS has and supports the getrlimit/setrlimit
+      family. Apache uses this to determine if RLIMIT_CPU|VMEM|DATA|RLIMIT
+      is found and used. This also assumes that the getrlimit()/setrlimit()
+      functions are available as well. This is set automatically during the
+      Configure process and stored in the src/include/ap_config_auto.h header
+      file.
+
+    HAVE_SYS_PARAM_H:
+      Defined if the OS has the <sys/param.h> header file. This is
+      set automatically during the Configure process and stored in the
+      src/include/ap_config_auto.h header file.
+
+--
+
+ USE_*:
+  These #defines are used for functions and ability that aren't exactly
+  required but should be used.
+
+     USE_MMAP_SCOREBOARD:
+      Define if the OS supports the BSD mmap() call. This is used by various
+      OSs to allow the scoreboard file to be held in shared mmapped-memory
+      instead of a real file.  Note that this is only used to determine
+      if mmap should be used for shared memory. If HAVE_MMAP is not
+      #defined, this will automatically be unset.
+
+     USE_SHMGET_SCOREBOARD:
+      Define if the OS has the SysV-based shmget() family of shared-memory
+      functions. Used to allow the scoreboard to live in a shared-memory
+      slot instead of a real file. If HAVE_SHMGET is not #defined,
+      this will automatically be unset.
+
+     <<NOTE: If neither USE_MMAP_SCOREBOARD or USE_SHMGET_SCOREBOARD
+	     is defined, a file-based scoreboard will be used and
+	     SCOREBOARD_FILE will automatically be defined >>
+
+     USE_POSIX_SCOREBOARD:
+      Defined on QNX currently where the shared memory scoreboard follows
+      the POSIX 1003.4 spec.
+    
+     USE_OS2_SCOREBOARD:
+      Defined on OS2, uses OS2 primitives to construct shared memory for
+      the scoreboard.
+
+     USE_LONGJMP:
+      Define to use the longjmp() call instead of siglongjmp()
+      (as well as setjmp() instead of sigsetjmp()).
+
+     USE_MMAP_FILES:
+      Enable the use of mmap() for sending static files. If HAVE_MMAP
+      is not #defined, this will automatically be unset.
+
+ USE_*_SERIALIZED_ACCEPT:
+  See htdocs/manual/misc/perf-tuning.html for an in-depth discussion of
+  why these are required.  These are choices for implementing a semaphore
+  between children entering accept().  A complete port should define one
+  of these, many may work and it's worthwhile timing them.  Without these
+  the server will not implement multiple Listen directives reliably.
+
+     USE_FCNTL_SERIALIZED_ACCEPT:
+      Use fcntl() to implement the semaphore.
+
+     USE_FLOCK_SERIALIZED_ACCEPT:
+      Use flock() to implement the semaphore (fcntl() is expensive on
+      some OSs, esp.  when using NFS).
+
+     USE_USLOCK_SERIALIZED_ACCEPT:
+      Probably IRIX only: use uslock() to serialize, which is far faster
+      on multiprocessor boxes (and far slower on uniprocessor, yay).
+
+     USE_SYSVSEM_SERIALIZED_ACCEPT:
+      Use System V semaphores to implement the semaphore.  These are
+      problematic in that they won't be cleaned up if apache is kill -9d,
+      and there's the potential of a CGI causing a denial of service
+      attack if it's running as the same uid as apache (i.e. suexec
+      is recommended on public servers).  But they can be faster than
+      either of fcntl() or flock() on some systems.
+
+     USE_PTHREAD_SERIALIZED_ACCEPT:
+      Use POSIX mutexes to implement the semaphore.
+
+     << NOTE: If none of the above USE_*SERIALIZED_ACCEPTs are
+	      defined, NO_SERIALIZED_ACCEPT will automatically
+	      be defined if MULTITHREAD is not defined >>
+
+     SINGLE_LISTEN_UNSERIALIZED_ACCEPT:
+      It's safe to unserialize single-socket accept().
+
+--
+
+  NO_*:
+   These are defined if the OS does NOT have the specified function or if
+   we should not use it.
+
+      NO_SHMGET:
+       Do not use shmget() (SystemV shared memory) at all.
+
+      NO_MMAP:
+       Do not use mmap() at all.
+
+      NO_UNISTD_H:
+
+      NO_KILLPG:
+
+      NO_SETSID:
+
+      NO_USE_SIGACTION:
+       Do not use the sigaction() call, even if we have it.
+
+      NO_LINGCLOSE:
+       Do not use Apache's soft, "lingering" close feature to
+       terminate connections. If you find that your server crashes
+       due to being choked by too many FIN_WAIT_2 network states, 
+       some reports indicate that #define'ing this will help.
+
+      NO_SLACK:
+       Do not use the "slack" fd feature which requires a working fcntl
+       F_DUPFD.
+
+      NO_GETTIMEOFDAY:
+       OS does not have the gettimeofday() function (which is
+       BSDish).
+
+      NO_TIMES:
+       OS does not have the times() function.
+
+      NO_OTHER_CHILD:
+       Do not implement the register_other_child API, usually because
+       certain system calls aren't available.
+
+      NO_RELIABLE_PIPED_LOGS:
+       Do not use reliable piped logs, which happen to also require
+       the register_other_child API.  The reliable piped log code
+       requires another child spawning interface which hasn't been
+       generalised yet.
+
+--
+
+  MISC #DEFINES:
+   Various other #defines used in the code.
+
+      MULTITHREAD:
+       Defined if the OS is multi-threaded. Valid only on
+       Win32 at present.
+
+      JMP_BUF:
+       The variable-type for siglongjmp() or longjmp() call.
+
+      MOVEBREAK:
+       Amount to move sbrk() breakpoint, if required, before attaching
+       shared-memory segment.
+
+      NET_SIZE_T:
+       Some functions such as accept(), getsockname(), getpeername() take
+       an int *len on some architectures and a size_t *len on others.
+       If left undefined apache will default it to int.  See
+       include/ap_config.h for a description of NET_SIZE_T.
+
+      NEED_HASHBANG_EMUL:
+       The execve()/etc. functions on this platform do not deal with #!,
+       so it must be emulated by Apache.
+
+      SYS_SIGLIST
+       Should be defined to point to a const char * const * array of
+       signal descriptions.  This is frequently sys_siglist or
+       _sys_siglist, defined in <signals.h>
+
+      ap_wait_t
+       The type used for wait()/waitpid()/... status parameter.  Usually
+       int.
+
+-----------
+Conclusion:
+-----------
+The above hints, and a good understanding of your OS and Apache, will
+go a LONG way in helping you get Apache built and running on your
+OS. If you have a port, PLEASE send Email to 'Apache@Apache.Org',
+or log a suggestion report at <http://bugs.apache.org/>, with
+the patches so that we may add them to the official version.
+If you hit a rough spot in the porting process, you can also try
+sending Email to that address as well and, if you are lucky, someone
+will respond. Another good source is the 'comp.infosystems.www.servers.unix'
+Usenet group as well.
+
+Good luck and happy porting!
+

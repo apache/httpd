@@ -1,0 +1,9 @@
+#!/bin/sh
+echo " Setting TPF/c89 environment variables"
+export _C89_CCMODE=1
+# replace the following with the location of your TPF include files
+export _C89_INCDIRS="/u/tpf41/currentmaint/include /u/tpf41/currentmaint/include/oco" 
+export TPF=YES
+export _C89_INCLIBS=""
+export _C89_CSYSLIB=""
+echo "Done"
