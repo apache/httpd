@@ -188,7 +188,7 @@ labeled as HTTPD_ROOT.
 Apache is configured by files in the <SAMP>conf</SAMP>
 directory. These are the same as files used to configure the Unix
 version, but there are a few different directives for Apache on
-NetWare. See the <A HREF="./">Apache documentation</A> for all the
+NetWare. See the <A HREF="../">Apache documentation</A> for all the
 available directives.
 
 <P>
@@ -232,14 +232,14 @@ The main differences in Apache for NetWare are:
       without recompiling the server. If Apache is compiled normally, it
       will install a number of optional modules in the
       <CODE>\Apache\modules</CODE> directory. To activate these, or other
-      modules, the new <A HREF="mod/mod_so.html#loadmodule">LoadModule</A>
+      modules, the new <A HREF="../mod/mod_so.html#loadmodule">LoadModule</A>
       directive must be used. For example, to active the status module,
       use the following (in addition to the status-activating directives
       in <CODE>access.conf</CODE>):</P>
 <PRE>
     LoadModule status_module modules/status
 </PRE>
-      <P>Information on <A HREF="mod/mod_so.html#creating">creating loadable
+      <P>Information on <A HREF="../mod/mod_so.html#creating">creating loadable
          modules</A> is also available.</P>
 </UL>
 
@@ -259,15 +259,15 @@ The main differences in Apache for NetWare are:
 
 <P>All major pieces of Apache may be built using the ApacheNW.mcp project
    file. This includes modules such as status, info, and proxy. In addition,
-   the following project files have been provided as well:
+   the following project files have been provided as well:</p>
+
 <PRE>   
        /apache-1.3/src/support/htpasswd.mcp.gz
        /apache-1.3/src/support/htdigest.mcp.gz
 </PRE>
 
-</P>
-<CODE>htpasswd.mcp.gz</CODE> and <CODE>htdigest.mcp.gz</CODE> will also need
-to be unzipped before they can be used with MetroWerks CodeWarrior.
+<p><CODE>htpasswd.mcp.gz</CODE> and <CODE>htdigest.mcp.gz</CODE> will also need
+to be unzipped before they can be used with MetroWerks CodeWarrior.</p>
 
 <P>Once Apache has been compiled, it needs to be installed in its server
    root directory. The default is the <CODE>sys:/Apache</CODE>
@@ -277,7 +277,7 @@ Before running the server you must fill out the conf directory.
 Copy the *.conf-dist-nw from the distribution conf directory
 and rename *.conf.  Edit the ServerRoot entries to your
 actual server root (for example "sys:/apache").  Copy over
-the conf/magic and conf/mime.types files as well.
+the conf/magic and conf/mime.types files as well.</p>
 
 <!--#include virtual="footer.html" -->
 </BODY>

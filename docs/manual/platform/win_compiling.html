@@ -42,8 +42,8 @@
    information in the resulting files, making it easier to find bugs and
    track down problems.</P>
 
-<P>Apache can also be compiled using VC++'s Visual Studio development
-   environment. To simplify this process, a Visual Studio workspace,
+<P>Apache can also be compiled using VC++'s VisualStudio development
+   environment. To simplify this process, a VisualStudio workspace,
    Apache.dsw, is provided.  This workspace exposes
    the entire list of working .dsp projects that are required for the
    complete Apache binary release.  It includes dependencies between
@@ -83,8 +83,8 @@
    <LI><CODE>Apache.dsp <EM>requires ApacheCore and aprlibdll</EM></CODE>
 </OL>
 
-   In addition, the <CODE>os\win32</CODE> subdirectory contains
-   project files for the optional modules.
+   <p>In addition, the <CODE>os\win32</CODE> subdirectory contains
+   project files for the optional modules.</p>
 
 <OL>
   <LI><CODE>os\win32\ApacheModuleAuthAnon.dsp</CODE>
@@ -101,7 +101,7 @@
   <LI><CODE>modules\proxy\ApacheModuleProxy.dsp</CODE>
 </OL>
 
-   The <CODE>support\</CODE> folder contains project files for additional
+   <p>The <CODE>support\</CODE> folder contains project files for additional
    programs that are not part of the apache runtime, but are used by
    the administrator to test Apache and maintain password and log files.</P>
 
@@ -118,7 +118,7 @@
    directory, on the current hard drive. </P>
 
 <P>To build and install all the files into the desired folder <EM>dir</EM>
-   automatically, use one the following nmake commands:
+   automatically, use one the following nmake commands:</p>
 
 <UL>
   <LI><CODE>nmake /f Makefile.win installr INSTDIR=<EM>dir</EM></CODE>
@@ -127,7 +127,7 @@
       (for debug build)
 </UL>
 
-   The <EM>dir</EM> argument to INSTDIR gives the installation directory; it 
+   <p>The <EM>dir</EM> argument to INSTDIR gives the installation directory; it 
    can be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.</P>
 
 <P>This will install the following:</P>
@@ -167,7 +167,7 @@
    reviewer's time.  Therefore, you cannot rely on the NMAKE commands 
    above to build revised .dsp project files unless you then export
    all .mak files yourself from the project.  This is unnecessary if 
-   you build from withing the Microsoft DeveloperStudio environment.</P>   
+   you build from within the Microsoft DeveloperStudio environment.</P>   
 
 <P>Before running the server you must fill out the conf directory.
    Copy the *.conf-dist-win from the distribution conf directory

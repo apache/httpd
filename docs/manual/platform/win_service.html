@@ -62,7 +62,7 @@
    details in the Windows NT Event Log.</STRONG></P>
 
 <P>After starting Apache as a service (or if you have trouble starting it) 
-   you can test it using the same <A HREF="windows.html#test">procedure</a>
+   you can test it using the same <A HREF="windows.html#cmdline">procedure</a>
    as for running in a console window.  Remember to use the command:</P>
 
 <PRE>
@@ -168,8 +168,8 @@
 
 <P><STRONG>NEVER grant network privilages to the SYSTEM account!</STRONG>
    Create a new user account instead, grant the appropriate privilages to
-   that user, and use the the 'Log On As:' option.  Select the Start Menu ->
-   Settings -> Control Panel -> Services -> apache service ... and click 
+   that user, and use the the 'Log On As:' option.  Select the Start Menu -&gt;
+   Settings -&gt; Control Panel -&gt; Services -&gt; apache service ... and click 
    the "Startup" button to access this setting.</P>
 
 <BLOCKQUOTE>
@@ -213,7 +213,7 @@
    a service with no problems.</P>
 <P><STRONG>Note: error code 2186</STRONG> is a good indication that you need 
    to review the 'Log On As' configuration, since the server can't access a 
-   required network resource.</STRONG></P>
+   required network resource.</P>
 
 
 <H2><A NAME="trouble">Troubleshooting Apache for Windows as a Service</A></H2>
@@ -227,7 +227,7 @@
 </PRE>
 <P>You will get this error if there is any problem starting Apache. In order to see
    what is causing the problem you should follow the instructions
-   for <a href="windows.html#test">Testing Apache at the Command Prompt</a>.</P>
+   for <a href="windows.html#cmdline">Running Apache for Windows from the Command Line</a>.</P>
 
 <P>Also, Apache 1.3.13 now records startup errors in the Application Event Log
    under Windows NT/2000, if Apache is run as a service.  Run the Event Viewer
@@ -288,19 +288,19 @@ For details on controlling Apache service from the command line, please refer to
    reliability or future support. Proceed at your own risk!</P>
 
 <P>Once you have confirmed that Apache runs correctly at the
-   <a href="windows.html#test">Command Prompt</a> you can install, control
+   <a href="windows.html#cmdline">Command Prompt</a> you can install, control
    and uninstall it with the same commands as the Windows NT/2000 version.</P>
 
 <P>There are, however, significant differences that you should note:</P>
 
 <P>Apache will attempt to start and if successful it will run in the 
-   background.  If you run the command 
+   background.  If you run the command</p>
 
 <PRE>
    Apache -n "service name" -k start
 </PRE>
 
-   via a shortcut on your desktop, for example, then if the service starts 
+   <p>via a shortcut on your desktop, for example, then if the service starts 
    successfully a console window will flash up but immediately disappears.
    If Apache detects any errors  on startup such as a incorrect entries in the
    httpd.conf file, then the console window will remain visible. This will 
