@@ -216,7 +216,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
          * on Unix, thanks to the magic of fork().
          */
         while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, errno, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, 
                           "%s", argsbuffer);            
         }
 #else
@@ -319,13 +319,8 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     /* Transumute ourselves into the script.
      * NB only ISINDEX scripts get decoded arguments.
      */
-    ap_cleanup_for_exec();
-
     if ((ap_createprocattr_init(&procattr, p) != APR_SUCCESS) ||
-        (ap_setprocattr_io(procattr,
-                           script_in  ? 1 : 0,
-                           script_out ? 1 : 0,
-                           script_err ? 1 : 0)            != APR_SUCCESS) ||
+        (ap_setprocattr_io(procattr, 1, 1, 1) != APR_SUCCESS) ||
         (ap_setprocattr_dir(procattr, ap_make_dirstr_parent(r->pool, r->filename))        != APR_SUCCESS) ||
         (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
@@ -350,32 +345,29 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_get_os_proc(&fred, procnew);
             ap_note_subprocess(p, fred, kill_after_timeout);
 #endif
-            if (script_in) {
-                ap_get_childout(&file, procnew);
-                iol = ap_create_file_iol(file);
-                if (!iol)
-                    return APR_EBADF;
-                *script_in = ap_bcreate(p, B_RD);
-                ap_bpush_iol(*script_in, iol);
-            }
+            /* Fill in BUFF structure for parents pipe to child's stdout */
+            ap_get_childout(&file, procnew);
+            iol = ap_create_file_iol(file);
+            if (!iol)
+                return APR_EBADF;
+            *script_in = ap_bcreate(p, B_RD);
+            ap_bpush_iol(*script_in, iol);
 
-            if (script_out) {
-                ap_get_childin(&file, procnew);
-                iol = ap_create_file_iol(file);
-                if (!iol)
-                    return APR_EBADF;
-                *script_out = ap_bcreate(p, B_WR);
-                ap_bpush_iol(*script_out, iol);
-            }
+            /* Fill in BUFF structure for parents pipe to child's stdin */
+            ap_get_childin(&file, procnew);
+            iol = ap_create_file_iol(file);
+            if (!iol)
+                return APR_EBADF;
+            *script_out = ap_bcreate(p, B_WR);
+            ap_bpush_iol(*script_out, iol);
 
-            if (script_err) {
-                ap_get_childerr(&file, procnew);
-                iol = ap_create_file_iol(file);
-                if (!iol)
-                    return APR_EBADF;
-                *script_err = ap_bcreate(p, B_RD);
-                ap_bpush_iol(*script_err, iol);
-            }
+            /* Fill in BUFF structure for parents pipe to child's stderr */
+            ap_get_childerr(&file, procnew);
+            iol = ap_create_file_iol(file);
+            if (!iol)
+                return APR_EBADF;
+            *script_err = ap_bcreate(p, B_RD);
+            ap_bpush_iol(*script_err, iol);
         }
     }
     ap_unblock_alarms();
@@ -424,7 +416,7 @@ static ap_status_t build_command_line(char **c, request_rec *r, ap_context_t *p)
     fileType = ap_get_win32_interpreter(r, &interpreter);
 
     if (fileType == eFileTypeUNKNOWN) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, errno, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, r,
                       "%s is not executable; ensure interpreted scripts have "
                       "\"#!\" first line", 
                       r->filename);
@@ -454,7 +446,7 @@ static int cgi_handler(request_rec *r)
     char *command;
     char *argv = NULL;
 
-    BUFF *script_out, *script_in, *script_err;
+    BUFF *script_out = NULL, *script_in = NULL, *script_err = NULL;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp(r->protocol, "INCLUDED");
     void *sconf = r->server->module_config;
