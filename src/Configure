@@ -57,6 +57,12 @@ awk >modules.c <$tmpfile '\
          } \
 	 print "  NULL"; \
          print "};"; \
+         print "char *module_names[] = {"; \
+         for (i = n-1; i > -1; --i) { \
+             printf "  \"%s\",\n", modules[i]; \
+         } \
+       print "  NULL"; \
+         print "};"; \
    }'
 
 awk >Makefile <$tmpfile '\
