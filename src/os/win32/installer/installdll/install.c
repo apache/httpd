@@ -9,8 +9,7 @@
 
 #define VERSION ( "1.003 " __DATE__ " " __TIME__ )
 
-#include <windows.h>
-#include <winsock.h>
+#include <winsock2.h>
 #include <string.h>
 #include <stdio.h>
 #include <direct.h>
@@ -23,19 +22,13 @@
 #undef strftime
 #endif
 
+#define AP_WIN32ERROR 1
+
 /* Global to store the instance handle */
 HINSTANCE hInstance = NULL;
 
 static char *szLogFilename = NULL;
 static FILE *fpLog = NULL;
-
-void OpenLog(char *dir, char *fn)
-{
-    szLogFilename = malloc(strlen(dir) + 1 + strlen(fn) + 1);
-    sprintf(szLogFilename, "%s/%s", dir, fn);
-
-    fpLog = fopen(szLogFilename, "a+");
-}
 
 void LogMessage(char *fmt, ...)
 {
@@ -70,13 +63,6 @@ void LogMessage(char *fmt, ...)
     fprintf(fpLog, "%s\n", buf);
 }
 
-void CloseLog(void)
-{
-    if (fpLog) {
-	fclose(fpLog);
-    }
-}
-
 /*
  * MessageBox_error() is a helper function to display an error in a 
  * message box, optionally including a Win32 error message. If
@@ -86,8 +72,6 @@ void CloseLog(void)
  * and replacement arguments. The hWnd, title and mb_opt fields are 
  * passed on to the Win32 MessageBox() call.
  */
-
-#define AP_WIN32ERROR 1
 
 int MessageBox_error(HWND hWnd, int opt, char *title, 
 		     int mb_opt, char *fmt, ...)
@@ -160,6 +144,29 @@ int MessageBox_error(HWND hWnd, int opt, char *title,
     LogMessage("MSG %s", buf);
 
     return MessageBox(hWnd, buf, title, mb_opt);
+}
+
+int OpenLog(HWND hwnd, char *dir, char *fn)
+{
+    szLogFilename = malloc(strlen(dir) + 1 + strlen(fn) + 1);
+    sprintf(szLogFilename, "%s\\%s", dir, fn);
+
+    if ((fpLog = fopen(szLogFilename, "a+")) == NULL) {
+	MessageBox_error(hwnd, 
+			 AP_WIN32ERROR,
+			 "Installation Problem",
+			 MB_OK | MB_ICONSTOP,
+			 "Cannot open log file %s", szLogFilename);
+	return -1;
+    }
+    return 0;
+}
+
+void CloseLog(void)
+{
+    if (fpLog) {
+	fclose(fpLog);
+    }
 }
 
 /*
@@ -558,14 +565,6 @@ ACTIONITEM actionTable[] = {
     { CMD_COPY, ".tmp\\highperformance.conf-dist", "conf\\highperformance.conf-dist", 
 	OPT_EXPAND|OPT_OVERWRITE|OPT_DELETESOURCE },
 
-    /* Move the default htdocs files into place, provided they don't already
-     * exist.
-     */
-    { CMD_COPY, ".tmp\\index.html", "htdocs\\index.html", OPT_DELETESOURCE|OPT_SILENT },
-    { CMD_RM, ".tmp\\index.html", NULL, OPT_SILENT },
-    { CMD_COPY, ".tmp\\apache_pb.gif", "htdocs\\apache_pb.gif", OPT_DELETESOURCE|OPT_SILENT },
-    { CMD_RM, ".tmp\\apache_pb.gif", NULL, OPT_SILENT },
-
     { CMD_RMDIR, ".tmp", NULL },
 
     { CMD_END, NULL, NULL, OPT_NONE }
@@ -583,7 +582,7 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
     ACTIONITEM *pactionItem;
     int end = 0;
 
-    OpenLog(szInst, "install.log");
+    OpenLog(hwnd, szInst, "install.log");
     LogMessage("STARTED %s", VERSION);
     LogMessage("src=%s support=%s inst=%s",
 		szSrcDir, szSupport, szInst);
@@ -593,7 +592,7 @@ CHAR WINAPI BeforeExit(HWND hwnd, LPSTR szSrcDir, LPSTR szSupport, LPSTR szInst,
     pactionItem = actionTable;
     while (!end) {
 
-	LogMessage("command=%d in=%s out=%s options=%d",
+	LogMessage("command=%d 1in=%s out=%s options=%d",
 		   pactionItem->command,
 		   pactionItem->in ? pactionItem->in : "NULL",
 		   pactionItem->out ? pactionItem->out : "NULL",
