@@ -286,7 +286,7 @@ API_EXPORT(void) ap_pclosedir(pool *p, DIR * d);
 /* ... even child processes (which we may want to wait for,
  * or to kill outright, on unexpected termination).
  *
- * spawn_child is a utility routine which handles an awful lot of
+ * ap_spawn_child is a utility routine which handles an awful lot of
  * the rigamarole associated with spawning a child --- it arranges
  * for pipes to the child's stdin and stdout, if desired (if not,
  * set the associated args to NULL).  It takes as args a function
@@ -304,11 +304,10 @@ enum kill_conditions {
 typedef struct child_info child_info;
 API_EXPORT(void) ap_note_subprocess(pool *a, int pid,
 				    enum kill_conditions how);
-API_EXPORT(int) ap_spawn_child_err(pool *, int (*)(void *, child_info *),
+API_EXPORT(int) ap_spawn_child(pool *, int (*)(void *, child_info *),
 				   void *, enum kill_conditions,
 				   FILE **pipe_in, FILE **pipe_out,
 				   FILE **pipe_err);
-#define spawn_child(p,f,v,k,in,out) ap_spawn_child_err(p,f,v,k,in,out,NULL)
 
 /* magic numbers --- min free bytes to consider a free pool block useable,
  * and the min amount to allocate if we have to go to malloc() */

@@ -363,8 +363,8 @@ extern "C" {
 #define show_modules                   ap_show_modules
 #define soft_timeout                   ap_soft_timeout
 #define some_auth_required             ap_some_auth_required
-#define spawn_child_err                ap_spawn_child_err
-#define spawn_child_err_buff           ap_spawn_child_err_buff
+#define spawn_child_err                ap_spawn_child
+#define spawn_child_err_buff           ap_bspawn_child
 #define srm_command_loop               ap_srm_command_loop
 #define standalone                     ap_standalone
 #define start_restart                  ap_start_restart
@@ -404,6 +404,11 @@ extern "C" {
 #define util_uri_init                  ap_util_uri_init
 #define uudecode                       ap_uudecode
 #define vbprintf                       ap_vbprintf
+
+/* 
+ *  Macros for routines whose arguments have changed over time.
+ */
+#define spawn_child(p,f,v,k,in,out) ap_spawn_child(p,f,v,k,in,out,NULL)
 
 #ifdef __cplusplus
 }

@@ -821,8 +821,8 @@ static int include_cmd(char *s, request_rec *r)
     arg.r = r;
     arg.s = s;
 
-    if (!ap_spawn_child_err_buff(r->pool, include_cmd_child, &arg,
-                     kill_after_timeout, NULL, &script_in, NULL)) {
+    if (!ap_bspawn_child(r->pool, include_cmd_child, &arg,
+			 kill_after_timeout, NULL, &script_in, NULL)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		     "couldn't spawn include command");
         return -1;

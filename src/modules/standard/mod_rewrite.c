@@ -3155,9 +3155,9 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
             continue;
         fpin  = NULL;
         fpout = NULL;
-        rc = ap_spawn_child_err(p, rewritemap_program_child,
-                                (void *)map->datafile, kill_after_timeout,
-                                &fpin, &fpout, &fperr);
+        rc = ap_spawn_child(p, rewritemap_program_child,
+			    (void *)map->datafile, kill_after_timeout,
+			    &fpin, &fpout, &fperr);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
             perror("ap_spawn_child");
             fprintf(stderr, "mod_rewrite: "

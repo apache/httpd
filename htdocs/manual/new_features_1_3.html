@@ -419,7 +419,7 @@ MIME-typing</A></STRONG>
     coming from the client).
 
 <DT><STRONG><CODE>kill_only_once</CODE></STRONG>
-<DD>An option to <CODE>spawn_child</CODE> functions which prevents Apache
+<DD>An option to <CODE>ap_spawn_child</CODE> functions which prevents Apache
     from aggressively trying to kill off the child.
 
 <DT><STRONG><CODE>alloc debugging code</CODE></STRONG>
@@ -453,11 +453,16 @@ MIME-typing</A></STRONG>
     <A HREF="mod/core.html#usecanonicalname">UseCanonicalName</A> directive
     when retrieving the server name and port for a request.
 
-<DT><STRONG>Change to prototype for <CODE>ap_spawn_child_err_buff</CODE> and
+<DT><STRONG>Change to prototype for <CODE>ap_bspawn_child</CODE> and
     <CODE>ap_call_exec</CODE></STRONG>
 <DD>Added a <CODE>child_info *</CODE> to <CODE>spawn</CODE> function 
-    (as passed to <CODE>ap_spawn_child_err_buff</CODE>) and to 
+    (as passed to <CODE>ap_bspawn_child</CODE>) and to 
     <CODE>ap_call_exec</CODE> to allow children to work correctly on Win32.
+    We also cleaned up the nomenclature a bit, replacing
+    <CODE>spawn_child_err</CODE> with simply
+    <CODE>ap_spawn_child</CODE> and <CODE>spawn_child_err_buff</CODE>
+    with simply <CODE>ap_bspawn_child</CODE>.
+
 </DL>
 
 <P><HR>

@@ -188,9 +188,9 @@ static void open_error_log (server_rec *s, pool *p)
     if (*s->error_fname == '|') {
 	FILE *dummy;
 
-	if (!spawn_child (p, error_log_child, (void *)(s->error_fname+1),
-			  kill_after_timeout, &dummy, NULL)) {
-	    perror ("spawn_child");
+	if (!ap_spawn_child(p, error_log_child, (void *)(s->error_fname+1),
+			    kill_after_timeout, &dummy, NULL, NULL)) {
+	    perror ("ap_spawn_child");
 	    fprintf (stderr, "Couldn't fork child for ErrorLog process\n");
 	    exit (1);
 	}
@@ -652,9 +652,9 @@ API_EXPORT(piped_log *) ap_open_piped_log (pool *p, const char *program)
     piped_log *pl;
     FILE *dummy;
 
-    if (!spawn_child (p, piped_log_child, (void *)program,
-		kill_after_timeout, &dummy, NULL)) {
-	perror ("spawn_child");
+    if (!ap_spawn_child(p, piped_log_child, (void *)program,
+			kill_after_timeout, &dummy, NULL, NULL)) {
+	perror ("ap_spawn_child");
 	fprintf (stderr, "Couldn't fork child for piped log process\n");
 	exit (1);
     }

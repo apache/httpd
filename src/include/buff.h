@@ -217,7 +217,7 @@ struct child_info {
     int dummy;
 #endif
 };
-API_EXPORT(int) ap_spawn_child_err_buff(pool *, int (*)(void *, child_info *), void *,
+API_EXPORT(int) ap_bspawn_child(pool *, int (*)(void *, child_info *), void *,
 					enum kill_conditions, BUFF **pipe_in, BUFF **pipe_out,
 					BUFF **pipe_err);
 

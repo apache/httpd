@@ -1806,9 +1806,9 @@ API_EXPORT(void) ap_note_subprocess(pool *a, int pid, enum kill_conditions how)
 #define BINMODE
 #endif
 
-static int spawn_child_err_core(pool *p, int (*func) (void *, child_info *),
-				void *data,enum kill_conditions kill_how,
-				int *pipe_in, int *pipe_out, int *pipe_err)
+static int spawn_child_core(pool *p, int (*func) (void *, child_info *),
+			    void *data,enum kill_conditions kill_how,
+			    int *pipe_in, int *pipe_out, int *pipe_err)
 {
     int pid;
     int in_fds[2];
@@ -1993,20 +1993,20 @@ static int spawn_child_err_core(pool *p, int (*func) (void *, child_info *),
 }
 
 
-API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *, child_info *),
-				   void *data, enum kill_conditions kill_how,
-				   FILE **pipe_in, FILE **pipe_out,
-				   FILE **pipe_err)
+API_EXPORT(int) ap_spawn_child(pool *p, int (*func) (void *, child_info *),
+			       void *data, enum kill_conditions kill_how,
+			       FILE **pipe_in, FILE **pipe_out,
+			       FILE **pipe_err)
 {
     int fd_in, fd_out, fd_err;
     int pid, save_errno;
 
     ap_block_alarms();
 
-    pid = spawn_child_err_core(p, func, data, kill_how,
-			       pipe_in ? &fd_in : NULL,
-			       pipe_out ? &fd_out : NULL,
-			       pipe_err ? &fd_err : NULL);
+    pid = spawn_child_core(p, func, data, kill_how,
+			   pipe_in ? &fd_in : NULL,
+			   pipe_out ? &fd_out : NULL,
+			   pipe_err ? &fd_err : NULL);
 
     if (pid == 0) {
 	save_errno = errno;
@@ -2043,9 +2043,9 @@ API_EXPORT(int) ap_spawn_child_err(pool *p, int (*func) (void *, child_info *),
     return pid;
 }
 
-API_EXPORT(int) ap_spawn_child_err_buff(pool *p, int (*func) (void *, child_info *), void *data,
-					enum kill_conditions kill_how,
-					BUFF **pipe_in, BUFF **pipe_out, BUFF **pipe_err)
+API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), void *data,
+				enum kill_conditions kill_how,
+				BUFF **pipe_in, BUFF **pipe_out, BUFF **pipe_err)
 {
 #ifdef WIN32
     SECURITY_ATTRIBUTES sa = {0};  
@@ -2180,10 +2180,10 @@ API_EXPORT(int) ap_spawn_child_err_buff(pool *p, int (*func) (void *, child_info
 
     ap_block_alarms();
 
-    pid = spawn_child_err_core(p, func, data, kill_how,
-			       pipe_in ? &fd_in : NULL,
-			       pipe_out ? &fd_out : NULL,
-			       pipe_err ? &fd_err : NULL);
+    pid = spawn_child_core(p, func, data, kill_how,
+			   pipe_in ? &fd_in : NULL,
+			   pipe_out ? &fd_out : NULL,
+			   pipe_err ? &fd_err : NULL);
 
     if (pid == 0) {
 	save_errno = errno;

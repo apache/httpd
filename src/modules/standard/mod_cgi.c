@@ -428,10 +428,9 @@ static int cgi_handler(request_rec *r)
      * waiting for free_proc_chain to cleanup in the middle of an
      * SSI request -djg
      */
-    if (!ap_spawn_child_err_buff(r->main ? r->main->pool : r->pool, cgi_child,
-			         (void *) &cld,
-			         kill_after_timeout,
-			         &script_out, &script_in, &script_err)) {
+    if (!ap_bspawn_child(r->main ? r->main->pool : r->pool, cgi_child,
+			 (void *) &cld, kill_after_timeout,
+			 &script_out, &script_in, &script_err)) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    "couldn't spawn child process: %s", r->filename);
 	return SERVER_ERROR;

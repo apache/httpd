@@ -2183,8 +2183,8 @@ static int uncompress(request_rec *r, int method, const unsigned char *old,
      */
     sub_pool = ap_make_sub_pool(r->pool);
 
-    if (!ap_spawn_child_err_buff(sub_pool, uncompress_child, &parm, kill_always,
-		     &bin, &bout, NULL)) {
+    if (!ap_bspawn_child(sub_pool, uncompress_child, &parm, kill_always,
+			 &bin, &bout, NULL)) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, r->server,
 		    MODNAME ": couldn't spawn uncompress process: %s", r->uri);
 	return -1;
