@@ -1,8 +1,13 @@
 Changes with Apache 2.0.20-dev
 
-Changes with Apache 2.0.19
   *) Fix seg fault on Windows when serving files cached with mod_file_cache.
-     [Bill Stoddrd]
+     [Bill Stoddard]
+
+  *) Fix a bug in the threaded MPM that would cause it to kill off all
+     workers immediately after starting if the number of workers started
+     was above a certain threshhold.  [Ryan Bloom, Bill Stoddard]
+
+Changes with Apache 2.0.19
 
   *) Fix problem with threaded MPM.  The problem was that if each child
      process was busy serving a single long-lived request and the server
