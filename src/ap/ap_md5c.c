@@ -601,7 +601,11 @@ API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash)
 	 * It's not our algorithm, so feed it to crypt() if possible.
 	 */
 #ifdef WIN32
-	return "crypt() unavailable on Win32, cannot validate password";
+	/*
+	 * On Windows, the only alternative to our MD5 algorithm is plain
+	 * text.
+	 */
+	ap_cpystrn(sample, passwd, sizeof(sample) - 1);
 #else
 	crypt_pw = crypt(passwd, hash);
 	ap_cpystrn(sample, crypt_pw, sizeof(sample) - 1);
