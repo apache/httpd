@@ -1084,7 +1084,6 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
 {
     int error_number, index_number, idx500;
     enum { MSG, LOCAL_PATH, REMOTE_PATH } what = MSG;
-    char *w;
                 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     if (err != NULL) {
