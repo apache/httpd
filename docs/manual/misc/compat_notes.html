@@ -118,6 +118,11 @@ it added one automatically if the .asis file contained a Location header.
 
   <LI>Apache does not permit commas delimiting the methods in &lt;Limit&gt;.
 
+  <LI>Apache's <CODE>&lt;VirtualHost&gt;</CODE> treats all addresses as
+  "optional" (i.e. the server should continue booting if it can't resolve
+  the address).  Whereas in NCSA the default is to fail booting unless
+  an added <code>optional</code> keyword is included.
+
 </OL>
 
 More to come when we notice them....
