@@ -469,7 +469,8 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
     if (((level & APLOG_LEVELMASK) <= APLOG_WARNING)
 	&& (ap_table_get(r->notes, "error-notes") == NULL)) {
 	ap_table_setn(r->notes, "error-notes",
-		      ap_pvsprintf(r->pool, fmt, args));
+		      ap_escape_html(r->pool, ap_pvsprintf(r->pool, fmt, 
+		      args)));
     }
     va_end(args);
 }

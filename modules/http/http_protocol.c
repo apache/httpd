@@ -90,6 +90,43 @@ HOOK_STRUCT(
   } while (0)
 
 
+/*
+ * Builds the content-type that should be sent to the client from the
+ * content-type specified.  The following rules are followed:
+ *    - if type is NULL, type is set to ap_default_type(r)
+ *    - if charset adding is disabled, stop processing and return type.
+ *    - then, if there are no parameters on type, add the default charset
+ *    - return type
+ */
+static const char *make_content_type(request_rec *r, const char *type) {
+    char *needcset[] = {
+	"text/plain",
+	"text/html",
+	NULL };
+    char **pcset;
+    core_dir_config *conf = (core_dir_config *)ap_get_module_config(
+	r->per_dir_config, &core_module);
+    if (!type) type = ap_default_type(r);
+    if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) return type;
+
+    if (ap_strcasestr(type, "charset=") != NULL) {
+	/* already has parameter, do nothing */
+	/* XXX we don't check the validity */
+	;
+    } else {
+    	/* see if it makes sense to add the charset. At present,
+	 * we only add it if the Content-type is one of needcset[]
+	 */
+	for (pcset = needcset; *pcset ; pcset++)
+	    if (ap_strcasestr(type, *pcset) != NULL) {
+		type = ap_pstrcat(r->pool, type, "; charset=", 
+		    conf->add_default_charset_name, NULL);
+		break;
+	    }
+    }
+    return type;
+}
+
 static int parse_byterange(char *range, long clength, long *start, long *end)
 {
     char *dash = strchr(range, '-');
@@ -240,7 +277,7 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
                                   length);
 
     if (r->byterange > 1) {
-        const char *ct = r->content_type ? r->content_type : ap_default_type(r);
+        const char *ct = make_content_type(r, r->content_type);
         char ts[MAX_STRING_LEN];
 
         ap_snprintf(ts, sizeof(ts), "%ld-%ld/%ld", range_start, range_end,
@@ -897,7 +934,7 @@ static void get_mime_headers(request_rec *r)
             r->status = HTTP_BAD_REQUEST;
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Size of a request header field exceeds server limit.<P>\n"
-                "<PRE>\n", field, "</PRE>\n", NULL));
+                "<PRE>\n", ap_escape_html(r->pool, field), "</PRE>\n", NULL));
             return;
         }
         copy = ap_palloc(r->pool, len + 1);
@@ -907,7 +944,7 @@ static void get_mime_headers(request_rec *r)
             r->status = HTTP_BAD_REQUEST;       /* or abort the bad request */
             ap_table_setn(r->notes, "error-notes", ap_pstrcat(r->pool,
                 "Request header field is missing colon separator.<P>\n"
-                "<PRE>\n", copy, "</PRE>\n", NULL));
+                "<PRE>\n", ap_escape_html(r->pool, copy), "</PRE>\n", NULL));
             return;
         }
 
@@ -1604,10 +1641,8 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
         ap_table_setn(r->headers_out, "Content-Type",
                   ap_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
                           "byteranges; boundary=", r->boundary, NULL));
-    else if (r->content_type)
-        ap_table_setn(r->headers_out, "Content-Type", r->content_type);
-    else
-        ap_table_setn(r->headers_out, "Content-Type", ap_default_type(r));
+    else ap_table_setn(r->headers_out, "Content-Type", make_content_type(r, 
+	r->content_type));
 
     if (r->content_encoding)
         ap_table_setn(r->headers_out, "Content-Encoding", r->content_encoding);
@@ -2493,7 +2528,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
         r->content_languages = NULL;
         r->content_encoding = NULL;
         r->clength = 0;
-        r->content_type = "text/html";
+        r->content_type = "text/html; charset=iso-8859-1";
 
         if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
             ap_table_setn(r->headers_out, "Allow", make_allow(r));
