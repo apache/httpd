@@ -1,0 +1,25 @@
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH1) $(EXTRA_INCLUDES)
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
+INCDIR=../main
+
+LIB=libap.a
+
+OBJS=ap_signal.o
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
+
+all: $(LIB)
+
+clean:
+	rm -f *.o *.a
+
+$(OBJS): Makefile
+
+$(LIB): $(OBJS)
+	ar cr $(LIB) $(OBJS)
+
+# dependencies
+ap_signal.o: $(INCDIR)/httpd.h

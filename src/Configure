@@ -26,7 +26,7 @@ tmpfile=htconf.$$
 tmpfile2=$tmpfile.2
 tmpfile3=$tmpfile.3
 awkfile=$tmpfile.4
-SUBDIRS='$(OSDIR) main modules'
+SUBDIRS='$(OSDIR) main ap modules'
 
 ####################################################################
 ## Now handle any arguments, which, for now, is -file
@@ -1031,7 +1031,7 @@ sed -e "s#@@Configuration@@#$file#" "Makefile.tmpl" >>Makefile
 #
 # directories to create makefiles in
 #
-MAKEDIRS="support main regex $OSDIR"
+MAKEDIRS="support main ap regex $OSDIR"
 for dir in $MAKEDIRS ; do
 	echo Creating Makefile in $dir
 	cat Makefile.config $dir/Makefile.tmpl > $dir/Makefile

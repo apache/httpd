@@ -469,6 +469,19 @@ Allows additional information to be listed along with a specified module.
   module has also been modified to display years using four digits in
   FancyIndexed directory listings.
  </LI>
+
+ <LI><STRONG><SAMP>ap_*()</SAMP> Routines Moving to a Separate Library</STRONG>
+  <BR>
+  There are a number of functions and routines that have been developed
+  for the Apache project that supplement or supersede library routines
+  that differ from one operating system to another.  While most of these
+  are used only by the Apache server itself, some are referenced by
+  supporting applications (such as <SAMP>htdigest</SAMP>), and these
+  other applications would fail to build because the routines were built
+  only into the server.  These routines are now being migrated to a
+  separate subdirectory and library so they can be used by other
+  applications than just the server.
+ </LI>
 </ul>
 
 <!--#include virtual="footer.html" -->

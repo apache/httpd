@@ -1,5 +1,9 @@
 Changes with Apache 1.3b3
 
+  *) Start separating the ap_*() routines into their own library, so they
+     can be used by items in src/support among other things.  PR#512, 905,
+     1252, 1308 [Ken Coar]
+
   *) Give a more informative error when no AuthType is set.
      [Lars Eilebrecht]
 

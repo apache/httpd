@@ -714,28 +714,6 @@ static APACHE_TLS int volatile alarms_blocked = 0;
 static APACHE_TLS int volatile alarm_pending = 0;
 static APACHE_TLS int volatile exit_after_unblock = 0;
 
-#ifndef NO_USE_SIGACTION
-/*
- * Replace standard signal() with the more reliable sigaction equivalent
- * from W. Richard Stevens' "Advanced Programming in the UNIX Environment"
- * (the version that does not automatically restart system calls).
- */
-Sigfunc *signal(int signo, Sigfunc * func)
-{
-    struct sigaction act, oact;
-
-    act.sa_handler = func;
-    sigemptyset(&act.sa_mask);
-    act.sa_flags = 0;
-#ifdef  SA_INTERRUPT		/* SunOS */
-    act.sa_flags |= SA_INTERRUPT;
-#endif
-    if (sigaction(signo, &act, &oact) < 0)
-	return SIG_ERR;
-    return oact.sa_handler;
-}
-#endif
-
 /* a clean exit from a child with proper cleanup */
 static void __attribute__((noreturn)) clean_child_exit(int code)
 {

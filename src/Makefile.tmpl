@@ -12,7 +12,8 @@ OBJS= \
   modules.o \
   $(MODULES) \
   main/libmain.a \
-  $(OSDIR)/libos.a
+  $(OSDIR)/libos.a \
+  ap/libap.a
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<

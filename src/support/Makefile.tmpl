@@ -4,9 +4,9 @@
 # by the configure script to make the actual Makefile.
 
 CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
-LIBS=$(EXTRA_LIBS) $(LIBS1)
+LIBS=$(EXTRA_LIBS) $(LIBS1) -lap
 INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH1) $(EXTRA_INCLUDES)
-LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS) -L../ap
 
 .c.o: 
 	$(CC) -c $(CFLAGS) $(INCLUDES) $<
@@ -16,16 +16,16 @@ TARGETS=htpasswd htdigest rotatelogs logresolve
 all: $(TARGETS)
 
 htpasswd: htpasswd.o
-	$(CC) $(CFLAGS) htpasswd.o -o htpasswd $(LIBS)
+	$(CC) $(CFLAGS) htpasswd.o -o htpasswd $(LDFLAGS) $(LIBS)
 
 htdigest: htdigest.o
-	$(CC) $(CFLAGS) htdigest.o -o htdigest $(LIBS)
+	$(CC) $(CFLAGS) htdigest.o -o htdigest $(LDFLAGS) $(LIBS)
 
 rotatelogs: rotatelogs.o
 	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.o -o rotatelogs
 
 logresolve: logresolve.o
-	$(CC) $(INCLUDES) $(CFLAGS) logresolve.o -o logresolve $(LIBS)
+	$(CC) $(INCLUDES) $(CFLAGS) logresolve.o -o logresolve $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f $(TARGETS) *.o
