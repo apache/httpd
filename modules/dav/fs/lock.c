@@ -67,8 +67,8 @@
 #include "httpd.h"
 #include "http_log.h"
 
-#include "../main/mod_dav.h"
-#include "../main/dav_opaquelock.h"
+#include "mod_dav.h"
+#include "dav_opaquelock.h"
 #include "repos.h"
 
 
