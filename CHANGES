@@ -1,5 +1,10 @@
 Changes with Apache 2.0.37
 
+  *) Add "-k start|startssl|restart|graceful|stop" support to httpd
+     for the Unix MPMs.  These have semantics very similar to the
+     old apachectl commands of the same name.
+     [Justin Erenkrantz, Jeff Trawick]
+
   *) Make sure that the runtime dir is created by make install.
      PR 9233.  [Jeff Trawick]
 
