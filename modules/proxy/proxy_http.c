@@ -812,7 +812,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 apr_off_t readbytes;
                 apr_bucket *e;
                 rp->headers_in = r->headers_out;
-                readbytes = 8192;
+                readbytes = AP_IOBUFSIZE;
                 while (ap_get_brigade(rp->input_filters, 
                                        bb, 
                                       AP_MODE_NONBLOCKING, 
@@ -837,7 +837,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         break;
                     }
                     apr_brigade_cleanup(bb);
-                    readbytes = 8192;
+                    readbytes = AP_IOBUFSIZE;
                 }
             }
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
