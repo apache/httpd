@@ -1050,7 +1050,9 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
   */
 #ifdef AP_DEBUG
 
+#undef strchr
 # define strchr(s, c)	ap_strchr(s,c)
+#undef strrchr
 # define strrchr(s, c)  ap_strrchr(s,c)
 
 char *ap_strchr(char *s, int c);
