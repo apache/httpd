@@ -143,6 +143,7 @@ typedef struct digest_header_struct {
     const char           *username;
           char           *nonce;
     const char           *uri;
+    const char           *method;
     const char           *digest;
     const char           *algorithm;
     const char           *cnonce;
@@ -959,6 +960,7 @@ static int parse_hdr_and_update_nc(request_rec *r)
     resp->raw_request_uri = r->unparsed_uri;
     resp->psd_request_uri = &r->parsed_uri;
     resp->needed_auth = 0;
+    resp->method = r->method;
     ap_set_module_config(r->request_config, &auth_digest_module, resp);
 
     res = get_digest_rec(r, resp);
@@ -1419,7 +1421,7 @@ static const char *old_digest(const request_rec *r,
 {
     const char *ha2;
 
-    ha2 = ap_md5(r->pool, (unsigned char *)apr_pstrcat(r->pool, r->method, ":",
+    ha2 = ap_md5(r->pool, (unsigned char *)apr_pstrcat(r->pool, resp->method, ":",
                                                        resp->uri, NULL));
     return ap_md5(r->pool,
                   (unsigned char *)apr_pstrcat(r->pool, ha1, ":", resp->nonce,
@@ -1444,12 +1446,12 @@ static const char *new_digest(const request_rec *r,
     }
 
     if (resp->message_qop && !strcasecmp(resp->message_qop, "auth-int")) {
-        a2 = apr_pstrcat(r->pool, r->method, ":", resp->uri, ":",
+        a2 = apr_pstrcat(r->pool, resp->method, ":", resp->uri, ":",
                          ap_md5(r->pool, (const unsigned char*) ""), NULL);
                          /* TBD */
     }
     else {
-        a2 = apr_pstrcat(r->pool, r->method, ":", resp->uri, NULL);
+        a2 = apr_pstrcat(r->pool, resp->method, ":", resp->uri, NULL);
     }
     ha2 = ap_md5(r->pool, (const unsigned char *)a2);
 

@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/21 18:30:11 $]
+Last modified at [$Date: 2004/02/24 09:16:59 $]
 
 Release:
 
@@ -241,11 +241,6 @@ PATCHES TO BACKPORT FROM 2.1
 	  wouldn't be listening on any port so it wouldn't matter anyway.
          nd replies: But if it can't be 0 the alternatives thereafter make no
            sense anymore, right?
-
-    * mod_auth_digest: Allow sub-requests with different methods than the
-      original request.  PR 25040.
-        modules/aaa/mod_auth_digest.c: r1.82
-      +1: jerenkrantz, nd, trawick, striker
 
     * Fix corruption of buffered logs with threaded MPMs.  PR 25520.
         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.108&r2=1.109

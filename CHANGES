@@ -1,5 +1,9 @@
 Changes with Apache 2.0.49
 
+  *) Allow mod_auth_digest to work with sub-requests with different
+     methods than the original request.  PR 25040.
+     [Josh Dady <jpd indecisive.com>]
+
   *) fix "Expected </Foo>> but saw </Foo>" errors in nested,
      argumentless containers.
      ["Philippe M. Chiasson" <gozer cpan.org>]
