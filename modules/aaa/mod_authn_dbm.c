@@ -189,10 +189,49 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
     return AUTH_GRANTED;
 }
 
+static authn_status get_dbm_realm_hash(request_rec *r, const char *user,
+                                       const char *realm, char **rethash)
+{
+    authn_dbm_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                      &authn_dbm_module);
+    apr_datum_t dbm_hd;
+    apr_status_t rv;
+    char *dbm_hash = NULL;
+    char *colon_hash;
+
+    rv = fetch_dbm(conf->dbmtype, conf->pwfile,
+                   apr_pstrcat(r->pool, user, ":", realm, NULL),
+                   &dbm_hd, r->pool);
+
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "Could not open dbm (type %s) hash file: %s",
+                      conf->dbmtype, conf->pwfile);
+        return AUTH_GENERAL_ERROR;
+    }
+
+    if (dbm_hd.dptr) {
+        dbm_hash = apr_pstrmemdup(r->pool, dbm_hd.dptr, dbm_hd.dsize);
+    }
+
+    if (!dbm_hash) {
+        return AUTH_USER_NOT_FOUND;
+    }
+
+    colon_hash = strchr(dbm_hash, ':');
+    if (colon_hash) {
+        *colon_hash = '\0';
+    }
+
+    *rethash = dbm_hash;
+
+    return AUTH_USER_FOUND;
+}
+
 static const authn_provider authn_dbm_provider =
 {
     &check_dbm_pw,
-    NULL,               /* No realm support yet. */
+    &get_dbm_realm_hash
 };
 
 static void register_hooks(apr_pool_t *p)
