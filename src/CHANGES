@@ -102,6 +102,10 @@ Changes with Apache 1.2b5
   *) Fixed initialization of parameter structure for sigaction.
      [mgyger@itr.ch, Adrian Filipi-Martin]
 
+  *) Fixed reinitializing the parameters before each call to accept and
+     select, and removed potential for infinite loop in accept.
+     [Roy Fielding, after useful PR from adrian@virginia.edu]
+
 Changes with Apache 1.2b4:
 
   *) Fix possible race condition in accept_mutex_init() that

@@ -1576,7 +1576,6 @@ void child_main(int child_num_arg)
 	    exit(0);
 	}
 
-	clen=sizeof(sa_client);
 	(void)update_child_status (child_num, SERVER_READY, (request_rec*)NULL);
 	
 	accept_mutex_on();  /* Lock around "accept", if necessary */
@@ -1592,7 +1591,7 @@ void child_main(int child_num_arg)
 #else
                 csd = select(listenmaxfd+1, &fds, NULL, NULL, NULL);
 #endif
-		if (csd == -1 && errno != EINTR)
+		if (csd < 0 && errno != EINTR)
 		    log_unixerr("select",NULL,"select error", server_conf);
 
 		/*fprintf(stderr,"%d check(2a) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
@@ -1604,41 +1603,44 @@ void child_main(int child_num_arg)
 		    if (FD_ISSET(sd, &fds)) break;
 		if (sd < 0) continue;
 
-		clen=sizeof(sa_client);
-		do csd=accept(sd, &sa_client, &clen);
-		while (csd == -1 && errno == EINTR);
-		if (csd != -1) break;
+                do {
+                    clen = sizeof(sa_client);
+                    csd  = accept(sd, &sa_client, &clen);
+                } while (csd < 0 && errno == EINTR);
+                if (csd < 0) break;
 		log_unixerr("accept", "(client socket)", NULL, server_conf);
 	    }
-	} else
-	    {
+	}
+	else {
 	    fd_set fds;
 
-	    memset(&fds,0,sizeof fds);
-	    FD_SET(sd,&fds);
-	    
-	    do
+	    do {
+                FD_ZERO(&fds);
+                FD_SET(sd,&fds);
 #ifdef HPUX
 		csd = select(sd+1, (int*)&fds, NULL, NULL, NULL);
 #else
 		csd = select(sd+1, &fds, NULL, NULL, NULL);
 #endif
-	    while(csd < 0 && errno == EINTR);
+            } while (csd < 0 && errno == EINTR);
 
-	    if(csd < 0)
-		{
+            if (csd < 0) {
 		log_unixerr("select","(listen)",NULL,server_conf);
 		exit(0);
-		}
+            }
 	    /*fprintf(stderr,"%d check(2a) %d %d\n",getpid(),scoreboard_image->global.exit_generation,generation);*/
 	    sync_scoreboard_image();
 	    if(scoreboard_image->global.exit_generation >= generation)
 		exit(0);
 
-	    while ((csd=accept(sd, &sa_client, &clen)) == -1) 
-		if (errno != EINTR) 
-		    log_unixerr("accept",NULL,"socket error: accept failed", server_conf);
-	    }
+            do {
+                clen = sizeof(sa_client);
+                csd  = accept(sd, &sa_client, &clen);
+            } while (csd < 0 && errno == EINTR);
+            if (csd < 0)
+                log_unixerr("accept", NULL, "socket error: accept failed",
+                            server_conf);
+	}
 
 	accept_mutex_off(); /* unlock after "accept" */
 
