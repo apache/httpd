@@ -913,12 +913,12 @@ API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r)
 		ap_auth_name(r), r->request_time));
 }
 
-API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, char **pw)
+API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 {
     const char *auth_line = ap_table_get(r->headers_in,
                                       r->proxyreq ? "Proxy-Authorization"
                                                   : "Authorization");
-    char *t;
+    const char *t;
 
     if (!(t = ap_auth_type(r)) || strcasecmp(t, "Basic"))
         return DECLINED;
@@ -947,7 +947,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, char **pw)
      * because it has the lifetime of the connection.  The other allocations
      * are temporary and can be tossed away any time.
      */
-    r->connection->user = ap_getword_nulls_nc (r->connection->pool, &t, ':');
+    r->connection->user = ap_getword_nulls (r->connection->pool, &t, ':');
     r->connection->ap_auth_type = "Basic";
 
     *pw = t;

@@ -400,7 +400,7 @@ API_EXPORT(int) ap_allow_overrides (request_rec *r)
     return conf->override; 
 } 
 
-API_EXPORT(char *) ap_auth_type (request_rec *r)
+API_EXPORT(const char *) ap_auth_type (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module); 
@@ -408,7 +408,7 @@ API_EXPORT(char *) ap_auth_type (request_rec *r)
     return conf->ap_auth_type;
 }
 
-API_EXPORT(char *) ap_auth_name (request_rec *r)
+API_EXPORT(const char *) ap_auth_name (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module); 
@@ -416,7 +416,7 @@ API_EXPORT(char *) ap_auth_name (request_rec *r)
     return conf->ap_auth_name;
 }
 
-API_EXPORT(char *) ap_default_type (request_rec *r)
+API_EXPORT(const char *) ap_default_type (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module); 
@@ -424,7 +424,7 @@ API_EXPORT(char *) ap_default_type (request_rec *r)
     return conf->ap_default_type ? conf->ap_default_type : DEFAULT_CONTENT_TYPE;
 }
 
-API_EXPORT(char *) ap_document_root (request_rec *r) /* Don't use this!!! */
+API_EXPORT(const char *) ap_document_root (request_rec *r) /* Don't use this!!! */
 {
     core_server_config *conf = 
       (core_server_config *)ap_get_module_config(r->server->module_config,
@@ -433,7 +433,7 @@ API_EXPORT(char *) ap_document_root (request_rec *r) /* Don't use this!!! */
     return conf->ap_document_root;
 }
 
-API_EXPORT(array_header *) ap_requires (request_rec *r)
+API_EXPORT(const array_header *) ap_requires (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module); 

@@ -97,8 +97,8 @@ extern "C" {
 
 API_EXPORT(int) ap_allow_options (request_rec *);
 API_EXPORT(int) ap_allow_overrides (request_rec *);
-API_EXPORT(char *) ap_default_type (request_rec *);     
-API_EXPORT(char *) ap_document_root (request_rec *); /* Don't use this!  If your request went
+API_EXPORT(const char *) ap_default_type (request_rec *);     
+API_EXPORT(const char *) ap_document_root (request_rec *); /* Don't use this!  If your request went
 				      * through a Userdir, or something like
 				      * that, it'll screw you.  But it's
 				      * back-compatible...
@@ -125,10 +125,10 @@ typedef struct {
     char *requirement;
 } require_line;
      
-API_EXPORT(char *) ap_auth_type (request_rec *);
-API_EXPORT(char *) ap_auth_name (request_rec *);     
+API_EXPORT(const char *) ap_auth_type (request_rec *);
+API_EXPORT(const char *) ap_auth_name (request_rec *);     
 API_EXPORT(int) ap_satisfies (request_rec *r);
-API_EXPORT(array_header *) ap_requires (request_rec *);    
+API_EXPORT(const array_header *) ap_requires (request_rec *);    
 
 #ifdef CORE_PRIVATE
 

@@ -994,7 +994,7 @@ API_EXPORT(int) ap_some_auth_required(request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
 
-    array_header *reqs_arr = ap_requires(r);
+    const array_header *reqs_arr = ap_requires(r);
     require_line *reqs;
     int i;
 

@@ -1001,6 +1001,7 @@ static int hook_uri2file(request_rec *r)
     char buf[512];
     char docroot[512];
     char *cp, *cp2;
+    const char *ccp;
     struct stat finfo;
     unsigned int port;
     int n;
@@ -1228,8 +1229,8 @@ static int hook_uri2file(request_rec *r)
              */
             n = prefix_stat(r->filename, &finfo);
             if (n == 0) {
-                if ((cp = ap_document_root(r)) != NULL) {
-                    l = ap_cpystrn(docroot, cp, sizeof(docroot)) - docroot;
+                if ((ccp = ap_document_root(r)) != NULL) {
+                    l = ap_cpystrn(docroot, ccp, sizeof(docroot)) - docroot;
 
                     /* always NOT have a trailing slash */
                     if (docroot[l-1] == '/') {
@@ -1302,6 +1303,7 @@ static int hook_fixup(request_rec *r)
     rewrite_perdir_conf *dconf;
     char *cp;
     char *cp2;
+    const char *ccp;
     char *prefix;
     int l;
     int n;
@@ -1519,8 +1521,8 @@ static int hook_fixup(request_rec *r)
                  * for this webserver and only try to remove the
                  * document_root if it is prefix
                  */
-                if ((cp = ap_document_root(r)) != NULL) {
-                    prefix = ap_pstrdup(r->pool, cp);
+                if ((ccp = ap_document_root(r)) != NULL) {
+                    prefix = ap_pstrdup(r->pool, ccp);
                     /* always NOT have a trailing slash */
                     l = strlen(prefix);
                     if (prefix[l-1] == '/') {

@@ -195,7 +195,7 @@ API_EXPORT(int) ap_each_byterange(request_rec *r, long *offset, long *length);
 API_EXPORT(void) ap_note_auth_failure(request_rec *r);
 API_EXPORT(void) ap_note_basic_auth_failure(request_rec *r);
 API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r);
-API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, char **pw);
+API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
 
 /*
  * Setting up the protocol fields for subsidiary requests...

@@ -240,7 +240,7 @@ static int check_user_access(request_rec *r)
     register int x;
     const char *t, *w;
     table *grpstatus;
-    array_header *reqs_arr = ap_requires(r);
+    const array_header *reqs_arr = ap_requires(r);
     require_line *reqs;
 
     /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive, 

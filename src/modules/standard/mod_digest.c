@@ -141,7 +141,8 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
                                     : "Authorization");
     int l;
     int s, vk = 0, vv = 0;
-    char *t, *key, *value;
+    const char *t;
+    char *key, *value;
 
     if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest"))
 	return DECLINED;
@@ -320,7 +321,7 @@ static int digest_check_auth(request_rec *r)
     register int x;
     const char *t;
     char *w;
-    array_header *reqs_arr;
+    const array_header *reqs_arr;
     require_line *reqs;
 
     if (!(t = ap_auth_type(r)) || strcasecmp(t, "Digest"))
