@@ -28,7 +28,7 @@
 <!-- Process an entire document into an HTML page                         -->
 <!-- ==================================================================== -->
 <xsl:template match="faq">
-<html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
+<html xml:lang="{$doclang}" lang="{$doclang}">
     <xsl:call-template name="head"/>&lf;
 
     <body id="manual-page">
@@ -71,8 +71,8 @@
                                 <img src="{$path}/images/down.gif" alt="" />
                                 <xsl:text> </xsl:text>
                                 <a href="#topics">
-                                    <xsl:value-of select="$messages/message
-                                                          [@name='topics']" />
+                                    <xsl:value-of select="$message
+                                                          [@id='topics']" />
                                 </a>
                             </li>&lf;
 
@@ -85,7 +85,7 @@
                     <xsl:if test="seealso">
                         <h3>
                             <xsl:value-of
-                                select="$messages/message[@name='seealso']" />
+                                select="$message[@id='seealso']" />
                         </h3>
 
                         <ul class="seealso">
@@ -122,7 +122,7 @@
     <!-- Section heading -->
     <h2>
         <a name="topics" id="topics">
-            <xsl:value-of select="$messages/message[@name='topics']" />
+            <xsl:value-of select="$message[@id='topics']" />
         </a>
     </h2>&lf;
 

@@ -28,7 +28,7 @@
 <!-- Process an entire document into an HTML page                         -->
 <!-- ==================================================================== -->
 <xsl:template match="manualpage">
-<html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
+<html xml:lang="{$doclang}" lang="{$doclang}">
     <xsl:call-template name="head" />&lf;
 
     <body id="manual-page">
@@ -61,7 +61,7 @@
                     <xsl:if test="seealso">
                         <h3>
                             <xsl:value-of
-                                select="$messages/message[@name='seealso']" />
+                                select="$message[@id='seealso']" />
                         </h3>
                         <ul class="seealso">
                         <xsl:for-each select="seealso">

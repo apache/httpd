@@ -28,7 +28,7 @@
 <!-- Builds the directive quickreference page                             -->
 <!-- ==================================================================== -->
 <xsl:template match="quickreference">
-<html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
+<html xml:lang="{$doclang}" lang="{$doclang}">
     <xsl:call-template name="head"/>&lf;
 
     <body id="directive-index">&lf;

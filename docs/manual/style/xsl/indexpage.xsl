@@ -47,7 +47,7 @@
 <!-- Process an entire document into an HTML page                         -->
 <!-- ==================================================================== -->
 <xsl:template match="/indexpage">
-<html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
+<html xml:lang="{$doclang}" lang="{$doclang}">
     <xsl:call-template name="head"/>&lf;
 
     <body id="index-page">&lf;
@@ -160,13 +160,13 @@
     <!-- with all of the words -->
     <input type="text" value="" name="as_q" />
     <xsl:text> </xsl:text>
-    <input type="submit" value="{$messages/message[@name='search']}" />
+    <input type="submit" value="{$message[@id='search']}" />
 
     <!-- the specified number of results -->
     <input type="hidden" name="num" value="10" />
 
     <!-- the current displayed language -->
-    <input type="hidden" name="hl" value="{$messages/@lang}" />
+    <input type="hidden" name="hl" value="{$doclang}" />
 
     <!-- the current document encoding for input (?) -->
     <input type="hidden" name="ie" value="{$output-encoding}" />
