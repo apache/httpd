@@ -81,6 +81,7 @@ extern char *inet_ntoa();
 #undef NO_KILLPG
 #undef NO_SETSID
 char *crypt(const char *pw, const char *salt);
+char *mktemp(char *template);
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #include <sys/time.h>     

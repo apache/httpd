@@ -1,5 +1,11 @@
 Changes with Apache 1.2b10
 
+  *) Added prototype for mktemp() for SUNOS4 [Marc Slemko]
+
+  *) In mod_proxy.c, check return values for proxy_host2addr() when reading
+     config, in case the hostent struct returned is trash.
+     [Chuck Murcko] PR #491
+
   *) Fixed a showstopper CGI problem in 1.2b9.  This change caused the rev
      to 1.2b10, 1.2b9 was never announced.  [Marc Slemko]
 
