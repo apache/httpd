@@ -154,6 +154,7 @@ static int ap_threads_to_start=0;
 static int ap_threads_min_free=0;
 static int ap_threads_max_free=0;
 static int ap_threads_limit=0;
+static int mpm_state = AP_MPMQ_STARTING;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -267,6 +268,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             return APR_SUCCESS;
         case AP_MPMQ_MAX_DAEMONS:
             *result = 1;
+            return APR_SUCCESS;
+        case AP_MPMQ_MPM_STATE:
+            *result = mpm_state;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
@@ -946,6 +950,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #endif
     show_server_data();
 
+    mpm_state = AP_MPMQ_RUNNING;
     while (!restart_pending && !shutdown_pending) {
         perform_idle_server_maintenance(pconf);
         if (show_settings)
@@ -953,6 +958,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         apr_thread_yield();
         apr_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
     }
+    mpm_state = AP_MPMQ_STOPPING;
 
 
     /* Shutdown the listen sockets so that we don't get stuck in a blocking call. 
@@ -997,6 +1003,8 @@ static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
 {
     int debug;
     char *addrname = NULL;
+
+    mpm_state = AP_MPMQ_STARTING;
 
     debug = ap_exists_config_define("DEBUG");
 
