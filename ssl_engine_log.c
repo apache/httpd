@@ -162,20 +162,6 @@ static char *ssl_log_annotation(char *error)
     return errstr;
 }
 
-BOOL ssl_log_applies(server_rec *s, int level)
-{
-    SSLSrvConfigRec *sc;
-
-    sc = mySrvConfig(s);
-    if (   sc->fileLogFile == NULL
-        && !(level & SSL_LOG_ERROR))
-        return FALSE;
-    if (   level > sc->nLogLevel
-        && !(level & SSL_LOG_ERROR))
-        return FALSE;
-    return TRUE;
-}
-
 void ssl_log(server_rec *s, int level, const char *msg, ...)
 {
     char tstr[80];
