@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.8.2.4 -->
+<!-- English revision: 1.8.2.9 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -47,16 +47,13 @@
   und Ports</a></seealso>
 
 <section id="how-it-works"><title>Arbeitsweise</title>
-    <p>Jeder Prozess besitzt eine feste Anzahl von Threads. Um die Last
-    zu bew&auml;ltigen, passt sich der Server an, indem er die
-    Anzahl der Prozesse erh&ouml;ht oder verringert.</p>
-
-    <p>Ein einzelner Steuerprozess ist f&uuml;r den Start der
-    Kindprozesse verantwortlich. Jeder Kindprozess erstellt eine
-    feste Anzahl von Threads, wie durch die <directive
+    <p>Ein einzelner Steuerprozess (der Elternprozess) ist f&uuml;r den
+    Start der Kindprozesse verantwortlich. Jeder Kindprozess erstellt eine
+    feste Anzahl von Server-Threads, wie durch die <directive
     module="mpm_common">ThreadsPerChild</directive>-Direktive
-    angegeben. Der einzelne Thread lauscht dann auf Verbindungen und
-    bedient sie, sobald sie eintreffen.</p>
+    angegeben, sowie einen "Listener-Thread", der auf Verbindungen wartet und
+    diese an einen Server-Thread zur Bearbeitung weiterreicht, sobald sie
+    eintreffen.</p>
 
     <p>Der Apache versucht immer, einen Vorrat von <dfn>freien</dfn> oder
     unbesch&auml;ftigten Threads zu verwalten, die zur Bedienung
@@ -75,24 +72,51 @@
     maximale Anzahl Clients, die gleichzeitig bedient werden kann (d.h.
     die maximale Gesamtzahl der Threads in allen Prozessen), wird mit der
     Direktive <directive module="mpm_common">MaxClients</directive>
-    festgelegt, w&auml;hrend die maximale Anzahl Prozesse, die gestartet
-    werden kann, von der Direktive <directive
-    module="mpm_common">ServerLimit</directive> bestimmt wird. <directive
-    module="mpm_common">ServerLimit</directive> multipliziert mit <directive
-    module="mpm_common">ThreadsPerChild</directive> muss gr&ouml;&szlig;er
-    oder gleich <directive module="mpm_common">MaxClients</directive>
-    sein.</p>
+    festgelegt. Die maximale Anzahl der aktiven Kindprozesse ergibt sich aus
+    <directive module="mpm_common">MaxClients</directive> dividiert durch
+    <directive module="mpm_common">ThreadsPerChild</directive>.</p>
+
+    <p>Zwei Direktiven legen harte Limits f&uuml;r die Anzahl der aktiven
+    Kindprozesse fest und k&ouml;nnen nur ge&auml;ndert werden, indem der Server
+    komplett gestoppt und dann wieder neu gestartet wird. <directive
+    module="mpm_common">ServerLimit</directive> stellt die obere Grenze f&uuml;r
+    die Anzahl der aktiven Kindprozesse dar und muss gr&ouml;&szlig;er oder
+    gleich dem Quotienten aus <directive
+    module="mpm_common">MaxClients</directive> und <directive
+    module="mpm_common">ThreadsPerChild</directive> sein. <directive
+    module="mpm_common">ThreadLimit</directive> ist die obere Grenze f&uuml;r
+    die Anzahl der Server-Threads und muss gr&ouml;&szlig;er oder gleich
+    <directive module="mpm_common">ThreadsPerChild</directive> sein. Sofern f&uuml;r
+    diese Direktiven keine Voreinstellungen verwendet werden, sollten sie vor
+    allen anderen <module>worker</module>-Direktiven platziert werden.</p>
+
+    <p>Neben den normalen aktiven Kindprozessen gibt es m&ouml;glicherweise noch
+    zus&auml;tzliche Kindprozesse, welche gerade beendet werden, wo allerdings
+    zumindest noch ein Server-Thread eine existierende Verbindung bearbeitet.
+    Obwohl die tats&auml;chlich zu erwartende Anzahl deutlich kleiner ist,
+    k&ouml;nnen bis zu <directive module="mpm_common">MaxClients</directive>
+    solcher Prozesse auftreten. Dieses Verhalten k&ouml;nnen Sie vermeiden,
+    indem Sie die Terminierung einzelner Kindprozesse wie folgt abschalten:</p>
+
+    <ul>
+       <li>setzen Sie den Wert von <directive module="mpm_common"
+       >MaxRequestsPerChild</directive> auf Null</li>
+
+       <li>setzen Sie den Wert von <directive module="mpm_common"
+       >MaxSpareThreads</directive> auf den gleichen Wert wie <directive
+       module="mpm_common">MaxClients</directive></li>
+    </ul>
 
     <p>Eine typische Konfiguration der Prozess-Thread-Steuerung f&uuml;r
     das MPM <module>worker</module> k&ouml;nnte wie folgt aussehen:</p>
 
     <example>
+      ServerLimit         16<br />
       StartServers         2<br />
       MaxClients         150<br />
       MinSpareThreads     25<br />
       MaxSpareThreads     75<br />
-      ThreadsPerChild     25<br />
-      ServerLimit         16
+      ThreadsPerChild     25
     </example>
 
     <p>W&auml;hrend der Elternprozess unter Unix normalerweise als

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.8.2.2 -->
+<!-- English revision: 1.8.2.6 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -129,7 +129,7 @@
 <name>MaxSpareServers</name>
 <description>Maximale Anzahl der unbesch&auml;ftigten Kindprozesse des
   Servers</description>
-<syntax>MaxSpareServers <var>Anzahl</var><br /></syntax>
+<syntax>MaxSpareServers <var>Anzahl</var></syntax>
 <default>MaxSpareServers 10</default>
 <contextlist><context>server config</context></contextlist>
 

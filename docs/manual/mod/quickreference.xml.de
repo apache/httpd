@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.de"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.4.2.2 -->
+<!-- English revision: 1.4.2.5 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -43,6 +43,7 @@
 
   <legend>
     <table>
+      <columnspec><column width=".1"/><column width=".2"/></columnspec>
       <tr><th>s</th><td>Serverkonfiguration</td></tr>
       <tr><th>v</th><td>Virtual&#160;Host</td></tr>
       <tr><th>d</th><td>Verzeichnis</td></tr>
@@ -50,6 +51,7 @@
     </table>
 
     <table>
+      <columnspec><column width=".1"/><column width=".2"/></columnspec>
       <tr><th>C</th><td>Core</td></tr>
       <tr><th>M</th><td>MPM</td></tr>
       <tr><th>B</th><td>Basis</td></tr>

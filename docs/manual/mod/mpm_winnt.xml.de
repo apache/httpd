@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.4.2.7 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -40,6 +40,8 @@
 <directivesynopsis location="mpm_common"><name>PidFile</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English revision: 1.46.2.27 -->
+<!-- English revision: 1.46.2.32 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -870,6 +870,9 @@ Dateien an den Client auszuliefern</description>
     module="core">DocumentRoot</directive> (z.B. NFS oder SMB) ist der
     Kernel m&ouml;glicherweise nicht in der Lage, die Netzwerkdatei
     &uuml;ber seinen eigenen Cache zu bedienen.</li>
+    <li>Unter Linux l&ouml;st die Verwendung von <code>sendfile</code>
+    in Verbindung mit bestimmten Netzwerkkarten und IPv6
+    TCP-Checksummenfehler aus.</li>
     </ul>
 
     <p>Bei Serverkonfigurationen, die f&uuml;r dieses Problam
@@ -1685,9 +1688,7 @@ HTTP-Request-Body</description>
 <usage>
     <p>Die Direktive gibt die Anzahl der <var>Bytes</var> zwischen 0
     (unbegrenzt) und 2147483647 (2GB) an, die im Request-Body (Datenteil der
-    Anfrage) erlaubt sind. Die Voreinstellung wird durch die Konstante
-    <code>DEFAULT_LIMIT_REQUEST_BODY</code> (<code>0</code> bei der
-    Auslieferung) zur Kompilierungszeit gesetzt.</p>
+    Anfrage) erlaubt sind.</p>
 
     <p>Die Direktive <directive>LimitRequestBody</directive> erlaubt es dem
     Benutzer, die Gr&ouml;&szlig;e des HTTP-Request-Bodys in dem Kontext zu
