@@ -126,9 +126,9 @@ void ap_reclaim_child_processes(int terminate)
             switch (tries) {
             case 1:     /*  16ms */
             case 2:     /*  82ms */
-                break;
             case 3:     /* 344ms */
             case 4:     /*  16ms */
+                break;
             case 5:     /*  82ms */
             case 6:     /* 344ms */
             case 7:     /* 1.4sec */

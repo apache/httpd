@@ -121,7 +121,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
  * predicate indicating if a graceful stop has been requested ...
  * used by the connection loop 
  * @return 1 if a graceful stop has been requested, 0 otherwise
- * @deffunc int ap_graceful_stop_signalled*void)
+ * @deffunc int ap_graceful_stop_signalled(*void)
  */
 AP_DECLARE(int) ap_graceful_stop_signalled(void);
 

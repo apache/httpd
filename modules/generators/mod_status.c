@@ -466,6 +466,7 @@ static int status_handler(request_rec *r)
 	ap_rputs("\"<B><code>D</code></B>\" DNS Lookup,<BR>\n", r);
 	ap_rputs("\"<B><code>L</code></B>\" Logging, \n", r);
 	ap_rputs("\"<B><code>G</code></B>\" Gracefully finishing, \n", r);
+        ap_rputs("\"<B><code>I</code></B>\" Idle cleanup of worker, \n", r);
 	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
 	ap_rputs("<P>\n", r);
 	if (!ap_extended_status) {
@@ -764,6 +765,7 @@ static void status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serv
     status_flags[SERVER_BUSY_LOG] = 'L';
     status_flags[SERVER_BUSY_DNS] = 'D';
     status_flags[SERVER_GRACEFUL] = 'G';
+    status_flags[SERVER_IDLE_KILL] = 'I';
 }
 
 static void register_hooks(apr_pool_t *p)

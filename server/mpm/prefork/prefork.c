@@ -232,6 +232,7 @@ static void clean_child_exit(int code)
     if (pchild) {
 	apr_pool_destroy(pchild);
     }
+    ap_scoreboard_image->servers[my_child_num][0].life_status = SB_WORKING;
     chdir_for_gprof();
     exit(code);
 }
@@ -360,20 +361,18 @@ static void sig_coredump(int sig)
  * Connection structures and accounting...
  */
 
-static void just_die(int sig)
+static void please_die_gracefully(int sig)
 {
-    clean_child_exit(0);
-}
-
-static int volatile deferred_die;
-static int volatile usr1_just_die;
-
-static void usr1_handler(int sig)
-{
-    if (usr1_just_die) {
-	just_die(sig);
+    /* clean_child_exit(0); */
+    ap_scoreboard_image->servers[my_child_num][0].life_status = SB_IDLE_DIE;
+    if (sig == SIGHUP) {
+        (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num),
+                                      SERVER_GRACEFUL, (request_rec *) NULL);
     }
-    deferred_die = 1;
+    else {
+        (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num),
+                                      SERVER_IDLE_KILL, (request_rec *) NULL);
+    }
 }
 
 /* volatile just in case */
@@ -520,15 +519,15 @@ static apr_socket_t *csd;
 static int requests_this_child;
 static fd_set main_fds;
 
+#define I_AM_TO_SHUTDOWN()                                                   \
+(ap_scoreboard_image->servers[my_child_num][0].life_status != SB_WORKING)
+   
 int ap_graceful_stop_signalled(void)
 {
-    ap_sync_scoreboard_image();
-    if (deferred_die ||
-	ap_scoreboard_image->global.running_generation != ap_my_generation) {
-	return 1;
-    }
+    /* not ever called anymore... */
     return 0;
 }
+
 
 static void child_main(int child_num_arg)
 {
@@ -540,9 +539,9 @@ static void child_main(int child_num_arg)
     apr_status_t stat = APR_EINIT;
     int sockdes;
 
+    my_child_num = child_num_arg;
     ap_my_pid = getpid();
     csd = NULL;
-    my_child_num = child_num_arg;
     requests_this_child = 0;
     last_lr = NULL;
 
@@ -565,16 +564,16 @@ static void child_main(int child_num_arg)
 
     (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num), SERVER_READY, (request_rec *) NULL);
 
-    apr_signal(SIGHUP, just_die);
-    apr_signal(SIGTERM, just_die);
+    apr_signal(SIGHUP, please_die_gracefully);
+    apr_signal(SIGTERM, please_die_gracefully);
 
-    while (!ap_graceful_stop_signalled()) {
+    ap_sync_scoreboard_image();
+    while (!I_AM_TO_SHUTDOWN()) {
 
 	/* Prepare to receive a SIGWINCH due to graceful restart so that
 	 * we can exit cleanly.
 	 */
-	usr1_just_die = 1;
-	apr_signal(SIGWINCH, usr1_handler);
+	apr_signal(SIGWINCH, please_die_gracefully);
 
 	/*
 	 * (Re)initialize this child to a pre-connection state.
@@ -654,9 +653,9 @@ static void child_main(int child_num_arg)
 	    /* if we accept() something we don't want to die, so we have to
 	     * defer the exit
 	     */
-	    usr1_just_die = 0;
 	    for (;;) {
-		if (deferred_die) {
+                ap_sync_scoreboard_image();
+		if (I_AM_TO_SHUTDOWN()) {
 		    /* we didn't get a socket, and we were told to die */
 		    clean_child_exit(0);
 		}
@@ -763,10 +762,10 @@ static void child_main(int child_num_arg)
 		}
 	    }
 
-	    if (ap_graceful_stop_signalled()) {
+            ap_sync_scoreboard_image();
+	    if (I_AM_TO_SHUTDOWN()) {
 		clean_child_exit(0);
 	    }
-	    usr1_just_die = 1;
 	}
 
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
@@ -791,12 +790,15 @@ static void child_main(int child_num_arg)
                          "(currently %d)", 
                          sockdes, FD_SETSIZE);
 	    apr_socket_close(csd);
+            ap_sync_scoreboard_image();
 	    continue;
         }
 
 #ifdef TPF
-	if (sockdes == 0)                   /* 0 is invalid socket for TPF */
-	    continue;
+	if (sockdes == 0) {                  /* 0 is invalid socket for TPF */
+	    ap_sync_scoreboard_image();
+            continue;
+        }
 #endif
 
 	ap_sock_disable_nagle(csd);
@@ -807,6 +809,8 @@ static void child_main(int child_num_arg)
             ap_process_connection(current_conn);
             ap_lingering_close(current_conn);
         }
+        
+        ap_sync_scoreboard_image();
     }
     clean_child_exit(0);
 }
@@ -821,12 +825,13 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (one_process) {
-	apr_signal(SIGHUP, just_die);
-	apr_signal(SIGINT, just_die);
+	apr_signal(SIGHUP, please_die_gracefully);
+	apr_signal(SIGINT, please_die_gracefully);
 #ifdef SIGQUIT
 	apr_signal(SIGQUIT, SIG_DFL);
 #endif
-	apr_signal(SIGTERM, just_die);
+	apr_signal(SIGTERM, please_die_gracefully);
+        ap_scoreboard_image->servers[slot][0].life_status = SB_WORKING;
 	child_main(slot);
     }
 
@@ -870,13 +875,14 @@ static int make_child(server_rec *s, int slot)
 	}
 #endif
 	RAISE_SIGSTOP(MAKE_CHILD);
-	/* Disable the restart signal handlers and enable the just_die stuff.
+	/* Disable the restart signal handlers and enable the please_die_gracefully stuff.
 	 * Note that since restart() just notes that a restart has been
 	 * requested there's no race condition here.
 	 */
-	apr_signal(SIGHUP, just_die);
-	apr_signal(SIGWINCH, just_die);
-	apr_signal(SIGTERM, just_die);
+	apr_signal(SIGHUP, please_die_gracefully);
+	apr_signal(SIGWINCH, please_die_gracefully);
+	apr_signal(SIGTERM, please_die_gracefully);
+        ap_scoreboard_image->servers[slot][0].life_status = SB_WORKING;
 	child_main(slot);
     }
 
@@ -1066,6 +1072,7 @@ static int setup_listeners(server_rec *s)
 
 int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
+    int index;
     int remaining_children_to_start;
 
     pconf = _pconf;
@@ -1236,11 +1243,12 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ++ap_my_generation;
     ap_scoreboard_image->global.running_generation = ap_my_generation;
     update_scoreboard_global();
+    
+    for (index = 0; index < ap_daemons_limit; ++index) {
+        ap_scoreboard_image->servers[index][0].life_status = SB_IDLE_DIE;
+    }
 
     if (is_graceful) {
-#ifndef SCOREBOARD_FILE
-	int i;
-#endif
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
 
@@ -1255,9 +1263,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	    * corruption too easily.
 	    */
 	ap_sync_scoreboard_image();
-	for (i = 0; i < ap_daemons_limit; ++i) {
-	    if (ap_scoreboard_image->servers[i][0].status != SERVER_DEAD) {
-		ap_scoreboard_image->servers[i][0].status = SERVER_GRACEFUL;
+	for (index = 0; index < ap_daemons_limit; ++index) {
+	    if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
+		ap_scoreboard_image->servers[index][0].status = SERVER_GRACEFUL;
 	    }
 	}
 #endif
