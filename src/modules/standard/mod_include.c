@@ -97,6 +97,12 @@
 #define SIZEFMT_KMG 1
 
 
+static ap_inline void safe_copy(char *dest, const char *src, size_t max_len)
+{
+    strncpy(dest, src, max_len - 1);
+    dest[max_len - 1] = '\0';
+}
+
 /* ------------------------ Environment function -------------------------- */
 
 static void add_include_vars(request_rec *r, char *timefmt)
@@ -196,7 +202,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
    c = (char)i; \
  }
 
-static int find_string(FILE *in, char *str, request_rec *r, int printing)
+static int find_string(FILE *in, const char *str, request_rec *r, int printing)
 {
     int x, l = strlen(str), p;
     char outbuf[OUTBUFSIZE];
@@ -261,8 +267,8 @@ static void decodehtml(char *s)
 {
     int val, i, j;
     char *p = s;
-    char *ents;
-    static char *entlist[MAXENTLEN + 1] =
+    const char *ents;
+    static const char * const entlist[MAXENTLEN + 1] =
     {
         NULL,                   /* 0 */
         NULL,                   /* 1 */
@@ -344,9 +350,9 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
 static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
 {
     char *t = tag, *tag_val, c, term;
-    int n;
 
-    n = 0;
+    /* makes code below a little less cluttered */
+    --tagbuf_len;
 
     do {                        /* skip whitespace */
         GET_CHAR(in, c, NULL, p);
@@ -360,8 +366,7 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
                 GET_CHAR(in, c, NULL, p);
             } while (isspace(c));
             if (c == '>') {
-                strncpy(tag, "done", tagbuf_len - 1);
-                tag[tagbuf_len - 1] = '\0';
+                safe_copy(tag, "done", tagbuf_len);
                 return tag;
             }
         }
@@ -370,8 +375,8 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
 
     /* find end of tag name */
     while (1) {
-        if (++n == tagbuf_len) {
-            t[tagbuf_len - 1] = '\0';
+        if (t - tag == tagbuf_len) {
+            *t = '\0';
             return NULL;
         }
         if (c == '=' || isspace(c)) {
@@ -404,8 +409,8 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
     term = c;
     while (1) {
         GET_CHAR(in, c, NULL, p);
-        if (++n == tagbuf_len) {
-            t[tagbuf_len - 1] = '\0';
+        if (t - tag == tagbuf_len) {
+            *t = '\0';
             return NULL;
         }
 /* Want to accept \" as a valid character within a string. */
@@ -428,9 +433,13 @@ static char *get_tag(pool *p, FILE *in, char *tag, int tagbuf_len, int dodecode)
     return pstrdup(p, tag_val);
 }
 
-static int get_directive(FILE *in, char *d, pool *p)
+static int get_directive(FILE *in, char *dest, size_t len, pool *p)
 {
+    char *d = dest;
     char c;
+
+    /* make room for nul terminator */
+    --len;
 
     /* skip initial whitespace */
     while (1) {
@@ -441,6 +450,9 @@ static int get_directive(FILE *in, char *d, pool *p)
     }
     /* now get directive */
     while (1) {
+	if (d - dest == len) {
+	    return 1;
+	}
         *d++ = tolower(c);
         GET_CHAR(in, c, 1, p);
         if (isspace(c)) {
@@ -454,16 +466,24 @@ static int get_directive(FILE *in, char *d, pool *p)
 /*
  * Do variable substitution on strings
  */
-static void parse_string(request_rec *r, char *in, char *out, int length,
-                         int leave_name)
+static void parse_string(request_rec *r, const char *in, char *out,
+			size_t length, int leave_name)
 {
     char ch;
     char *next = out;
-    int numchars = 0;
+    char *end_out;
+
+    /* leave room for nul terminator */
+    end_out = out + length - 1;
 
     while ((ch = *in++) != '\0') {
         switch (ch) {
         case '\\':
+	    if (next == end_out) {
+		/* truncated */
+		*next = '\0';
+		return;
+	    }
             if (*in == '$') {
                 *next++ = *in++;
             }
@@ -473,76 +493,66 @@ static void parse_string(request_rec *r, char *in, char *out, int length,
             break;
         case '$':
             {
-                char var[MAX_STRING_LEN];
-                char vtext[MAX_STRING_LEN];
-                char *val;
-                int braces = 0;
-                int vlen, vtlen;
-                /* 
-                 * Keep the $ and { around because we do no substitution
-                 * if the variable isn't found
-                 */
-                vlen = vtlen = 0;
-                vtext[vtlen++] = ch;
-                if (*in == '{') {
-                    braces = 1;
-                    vtext[vtlen++] = *in++;
-                }
-                while (*in != '\0') {
-                    if (vlen == (MAX_STRING_LEN - 1)) {
-                        continue;
-                    }
-                    if (braces == 1) {
-                        if (*in == '}') {
-                            break;
-                        }
-                    }
-                    else if (!(isalpha((int) *in) || (*in == '_') ||
-                               isdigit((int) *in))) {
-                        break;
-                    }
-                    if (vtlen < (MAX_STRING_LEN - 1)) {
-                        vtext[vtlen++] = *in;
-                    }
-                    var[vlen++] = *in++;
-                }
-                var[vlen] = vtext[vtlen] = '\0';
-                if (braces == 1) {
-                    if (*in != '}') {
+		char var[MAX_STRING_LEN];
+		const char *start_of_var_name;
+		const char *end_of_var_name;	/* end of var name + 1 */
+		const char *expansion;
+		const char *val;
+		size_t l;
+
+		/* guess that the expansion won't happen */
+		expansion = in - 1;
+		if (*in == '{') {
+		    ++in;
+		    start_of_var_name = in;
+		    in = strchr(in, '}');
+		    if (in == NULL) {
                         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
-				    r->server, "Invalid variable \"%s%s\"",
-				    vtext, in);
+				    r->server, "Missing '}' on variable \"%s\"",
+				    expansion);
                         *next = '\0';
                         return;
                     }
-                    else {
-                        in++;
-                    }
-                }
+		    end_of_var_name = in;
+		    ++in;
+		}
+		else {
+		    start_of_var_name = in;
+		    while (isalnum(*in) || *in == '_') {
+			++in;
+		    }
+		    end_of_var_name = in;
+		}
+		/* what a pain, too bad there's no table_getn where you can
+		 * pass a non-nul terminated string */
+		l = end_of_var_name - start_of_var_name;
+		l = (l > sizeof(var) - 1) ? (sizeof(var) - 1) : l;
+		memcpy(var, start_of_var_name, l);
+		var[l] = '\0';
 
-                val = (char *) NULL;
-                if (var[0] == '\0') {
-                    val = &vtext[0];
-                }
-                else {
-                    val = table_get(r->subprocess_env, &var[0]);
-                    if (!val && leave_name) {
-                        val = &vtext[0];
-                    }
-                }
-                while ((val != (char *) NULL) && (*val != '\0')) {
-                    *next++ = *val++;
-                    if (++numchars == (length - 1)) {
-                        break;
-                    }
-                }
+		val = table_get(r->subprocess_env, var);
+		if (val) {
+		    expansion = val;
+		    l = strlen(expansion);
+		}
+		else if (leave_name) {
+		    l = in - expansion;
+		}
+		else {
+		    break;	/* no expansion to be done */
+		}
+		l = (l > end_out - next) ? (end_out - next) : l;
+		memcpy(next, expansion, l);
+		next += l;
                 break;
             }
         default:
+	    if (next == end_out) {
+		/* truncated */
+		*next = '\0';
+		return;
+	    }
             *next++ = ch;
-            break;
-        }
-        if (++numchars == (length - 1)) {
             break;
         }
     }
@@ -596,26 +606,48 @@ static int include_cgi(char *s, request_rec *r)
     return 0;
 }
 
-static int handle_include(FILE *in, request_rec *r, char *error, int noexec)
+/* ensure that path is relative, and does not contain ".." elements
+ * ensentially ensure that it does not match the regex:
+ * (^/|(^|/)\.\.(/|$))
+ * XXX: this needs os abstraction... consider c:..\foo in win32
+ */
+static int is_only_below(const char *path)
+{
+    if (path[0] == '/') {
+	return 0;
+    }
+    if (path[0] == '.' && path[1] == '.'
+	&& (path[2] == '\0' || path[2] == '/')) {
+	return 0;
+    }
+    while (*path) {
+	if (*path == '/' && path[1] == '.' && path[2] == '.'
+	    && (path[3] == '\0' || path[3] == '/')) {
+	    return 0;
+	}
+	++path;
+    }
+    return 1;
+}
+
+static int handle_include(FILE *in, request_rec *r, const char *error, int noexec)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
     char *tag_val;
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
             return 1;
         }
         if (!strcmp(tag, "file") || !strcmp(tag, "virtual")) {
             request_rec *rr = NULL;
             char *error_fmt = NULL;
 
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
+            parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (tag[0] == 'f') {
                 /* be safe; only files in this directory or below allowed */
-                char tmp[MAX_STRING_LEN + 2];
-                ap_snprintf(tmp, sizeof(tmp), "/%s/", parsed_string);
-                if (parsed_string[0] == '/' || strstr(tmp, "/../") != NULL) {
+		if (!is_only_below(parsed_string)) {
                     error_fmt = "unable to include file \"%s\" "
                         "in parsed file %s";
                 }
@@ -775,7 +807,7 @@ static int include_cmd(char *s, request_rec *r)
 }
 
 
-static int handle_exec(FILE *in, request_rec *r, char *error)
+static int handle_exec(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -783,11 +815,11 @@ static int handle_exec(FILE *in, request_rec *r, char *error)
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
             return 1;
         }
         if (!strcmp(tag, "cmd")) {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 1);
+            parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 1);
             if (include_cmd(parsed_string, r) == -1) {
                 aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                             "execution failure for parameter \"%s\" "
@@ -799,7 +831,7 @@ static int handle_exec(FILE *in, request_rec *r, char *error)
             chdir_file(r->filename);
         }
         else if (!strcmp(tag, "cgi")) {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
+            parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (include_cgi(parsed_string, r) == -1) {
                 aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
                             "invalid CGI ref \"%s\" in %s", tag_val, file);
@@ -821,13 +853,13 @@ static int handle_exec(FILE *in, request_rec *r, char *error)
 
 }
 
-static int handle_echo(FILE *in, request_rec *r, char *error)
+static int handle_echo(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
             return 1;
         }
         if (!strcmp(tag, "var")) {
@@ -853,7 +885,7 @@ static int handle_echo(FILE *in, request_rec *r, char *error)
 }
 
 #ifdef USE_PERL_SSI
-static int handle_perl(FILE *in, request_rec *r, char *error)
+static int handle_perl(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -867,7 +899,7 @@ static int handle_perl(FILE *in, request_rec *r, char *error)
         return DECLINED;
     }
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
             break;
         }
         if (strnEQ(tag, "sub", 3)) {
@@ -898,27 +930,23 @@ static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
     table *env = r->subprocess_env;
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0))) {
+        if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 0))) {
             return 1;
         }
         if (!strcmp(tag, "errmsg")) {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            strncpy(error, parsed_string, MAX_STRING_LEN - 1);
-            error[MAX_STRING_LEN - 1] = '\0';
+            parse_string(r, tag_val, error, MAX_STRING_LEN, 0);
         }
         else if (!strcmp(tag, "timefmt")) {
             time_t date = r->request_time;
 
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
-            strncpy(tf, parsed_string, MAX_STRING_LEN - 1);
-            tf[MAX_STRING_LEN - 1] = '\0';
+            parse_string(r, tag_val, tf, MAX_STRING_LEN, 0);
             table_set(env, "DATE_LOCAL", ht_time(r->pool, date, tf, 0));
             table_set(env, "DATE_GMT", ht_time(r->pool, date, tf, 1));
             table_set(env, "LAST_MODIFIED",
                       ht_time(r->pool, r->finfo.st_mtime, tf, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
+            parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             decodehtml(parsed_string);
             if (!strcmp(parsed_string, "bytes")) {
                 *sizefmt = SIZEFMT_BYTES;
@@ -940,15 +968,14 @@ static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
 }
 
 
-static int find_file(request_rec *r, char *directive, char *tag,
-                     char *tag_val, struct stat *finfo, char *error)
+static int find_file(request_rec *r, const char *directive, const char *tag,
+                     char *tag_val, struct stat *finfo, const char *error)
 {
-    char *dir = "./";
     char *to_send;
 
     if (!strcmp(tag, "file")) {
         getparents(tag_val);    /* get rid of any nasties */
-        to_send = make_full_path(r->pool, dir, tag_val);
+        to_send = make_full_path(r->pool, "./", tag_val);
         if (stat(to_send, finfo) == -1) {
             aplog_error(APLOG_MARK, APLOG_ERR, r->server,
                         "unable to get information about \"%s\" "
@@ -988,7 +1015,7 @@ static int find_file(request_rec *r, char *directive, char *tag,
 }
 
 
-static int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt)
+static int handle_fsize(FILE *in, request_rec *r, const char *error, int sizefmt)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -996,14 +1023,14 @@ static int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt)
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
             return 1;
         }
         else if (!strcmp(tag, "done")) {
             return 0;
         }
         else {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
+            parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (!find_file(r, "fsize", tag, parsed_string, &finfo, error)) {
                 if (sizefmt == SIZEFMT_KMG) {
                     send_size(finfo.st_size, r);
@@ -1029,7 +1056,7 @@ static int handle_fsize(FILE *in, request_rec *r, char *error, int sizefmt)
     }
 }
 
-static int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
+static int handle_flastmod(FILE *in, request_rec *r, const char *error, const char *tf)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
@@ -1037,14 +1064,14 @@ static int handle_flastmod(FILE *in, request_rec *r, char *error, char *tf)
     char parsed_string[MAX_STRING_LEN];
 
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
             return 1;
         }
         else if (!strcmp(tag, "done")) {
             return 0;
         }
         else {
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
+            parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             if (!find_file(r, "flastmod", tag, parsed_string, &finfo, error)) {
                 rputs(ht_time(r->pool, finfo.st_mtime, tf, 0), r);
             }
@@ -1079,7 +1106,10 @@ struct token {
     char value[MAX_STRING_LEN];
 };
 
-static char *get_ptoken(request_rec *r, char *string, struct token *token)
+/* there is an implicit assumption here that string is at most MAX_STRING_LEN-1
+ * characters long...
+ */
+static const char *get_ptoken(request_rec *r, const char *string, struct token *token)
 {
     char ch;
     int next = 0;
@@ -1235,14 +1265,17 @@ static char *get_ptoken(request_rec *r, char *string, struct token *token)
  * cases.  And, without rewriting this completely, the easiest way
  * is to just branch to the return code which cleans it up.
  */
-static int parse_expr(request_rec *r, char *expr, char *error)
+/* there is an implicit assumption here that expr is at most MAX_STRING_LEN-1
+ * characters long...
+ */
+static int parse_expr(request_rec *r, const char *expr, const char *error)
 {
     struct parse_node {
         struct parse_node *left, *right, *parent;
         struct token token;
         int value, done;
     }         *root, *current, *new;
-    char *parse;
+    const char *parse;
     char buffer[MAX_STRING_LEN];
     pool *expr_pool;
     int retval = 0;
@@ -1251,23 +1284,12 @@ static int parse_expr(request_rec *r, char *expr, char *error)
         return (0);
     }
     root = current = (struct parse_node *) NULL;
-    if ((expr_pool = make_sub_pool(r->pool)) == (pool *) NULL) {
-        aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "out of memory processing file %s", r->filename);
-        rputs(error, r);
-        return (0);
-    }
+    expr_pool = make_sub_pool(r->pool);
 
     /* Create Parse Tree */
     while (1) {
         new = (struct parse_node *) palloc(expr_pool,
                                            sizeof(struct parse_node));
-        if (new == (struct parse_node *) NULL) {
-            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                        "out of memory processing file %s", r->filename);
-            rputs(error, r);
-            goto RETURN;
-        }
         new->parent = new->left = new->right = (struct parse_node *) NULL;
         new->done = 0;
         if ((parse = get_ptoken(r, parse, &new->token)) == (char *) NULL) {
@@ -1287,10 +1309,13 @@ static int parse_expr(request_rec *r, char *expr, char *error)
             case token_string:
                 if (current->token.value[0] != '\0') {
                     strncat(current->token.value, " ",
-                         MAX_STRING_LEN - strlen(current->token.value) - 1);
+                         sizeof(current->token.value)
+			    - strlen(current->token.value) - 1);
                 }
                 strncat(current->token.value, new->token.value,
-                        MAX_STRING_LEN - strlen(current->token.value) - 1);
+                         sizeof(current->token.value)
+			    - strlen(current->token.value) - 1);
+		current->token.value[sizeof(current->token.value) - 1] = '\0';
                 break;
             case token_eq:
             case token_ne:
@@ -1548,9 +1573,8 @@ static int parse_expr(request_rec *r, char *expr, char *error)
 #ifdef DEBUG_INCLUDE
             rputs("     Evaluate string\n", r);
 #endif
-            parse_string(r, current->token.value, buffer, MAX_STRING_LEN, 0);
-            strncpy(current->token.value, buffer, MAX_STRING_LEN - 1);
-            current->token.value[MAX_STRING_LEN - 1] = '\0';
+            parse_string(r, current->token.value, buffer, sizeof(buffer), 0);
+	    safe_copy(current->token.value, buffer, sizeof(current->token.value));
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
             current = current->parent;
@@ -1573,10 +1597,9 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                 switch (current->left->token.type) {
                 case token_string:
                     parse_string(r, current->left->token.value,
-                                 buffer, MAX_STRING_LEN, 0);
-                    strncpy(current->left->token.value, buffer,
-                            MAX_STRING_LEN - 1);
-                    current->left->token.value[MAX_STRING_LEN - 1] = '\0';
+                                 buffer, sizeof(buffer), 0);
+                    safe_copy(current->left->token.value, buffer,
+                            sizeof(current->left->token.value));
 		    current->left->value = (current->left->token.value[0] != '\0');
                     current->left->done = 1;
                     break;
@@ -1589,10 +1612,9 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                 switch (current->right->token.type) {
                 case token_string:
                     parse_string(r, current->right->token.value,
-                                 buffer, MAX_STRING_LEN, 0);
-                    strncpy(current->right->token.value, buffer,
-                            MAX_STRING_LEN - 1);
-                    current->right->token.value[MAX_STRING_LEN - 1] = '\0';
+                                 buffer, sizeof(buffer), 0);
+                    safe_copy(current->right->token.value, buffer,
+                            sizeof(current->right->token.value));
 		    current->right->value = (current->right->token.value[0] != '\0');
                     current->right->done = 1;
                     break;
@@ -1637,13 +1659,13 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                 goto RETURN;
             }
             parse_string(r, current->left->token.value,
-                         buffer, MAX_STRING_LEN, 0);
-            strncpy(current->left->token.value, buffer, MAX_STRING_LEN - 1);
-            current->left->token.value[MAX_STRING_LEN - 1] = '\0';
+                         buffer, sizeof(buffer), 0);
+            safe_copy(current->left->token.value, buffer,
+			sizeof(current->left->token.value));
             parse_string(r, current->right->token.value,
-                         buffer, MAX_STRING_LEN, 0);
-            strncpy(current->right->token.value, buffer, MAX_STRING_LEN - 1);
-            current->right->token.value[MAX_STRING_LEN - 1] = '\0';
+                         buffer, sizeof(buffer), 0);
+            safe_copy(current->right->token.value, buffer,
+			sizeof(current->right->token.value));
             if (current->right->token.value[0] == '/') {
                 int len;
                 len = strlen(current->right->token.value);
@@ -1702,11 +1724,13 @@ static int parse_expr(request_rec *r, char *expr, char *error)
                 goto RETURN;
             }
             parse_string(r, current->left->token.value,
-                         buffer, MAX_STRING_LEN, 0);
-            strncpy(current->left->token.value, buffer, MAX_STRING_LEN - 1);
+                         buffer, sizeof(buffer), 0);
+            safe_copy(current->left->token.value, buffer,
+			sizeof(current->left->token.value));
             parse_string(r, current->right->token.value,
-                         buffer, MAX_STRING_LEN, 0);
-            strncpy(current->right->token.value, buffer, MAX_STRING_LEN - 1);
+                         buffer, sizeof(buffer), 0);
+            safe_copy(current->right->token.value, buffer,
+			sizeof(current->right->token.value));
 #ifdef DEBUG_INCLUDE
             rvputs(r, "     Compare (", current->left->token.value,
                    ") with (", current->right->token.value, ")\n", NULL);
@@ -1803,19 +1827,27 @@ static int parse_expr(request_rec *r, char *expr, char *error)
     return (retval);
 }
 
-static int handle_if(FILE *in, request_rec *r, char *error,
+static int handle_if(FILE *in, request_rec *r, const char *error,
                      int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
-    char *tag_val = '\0';
-    char *expr = '\0';
+    char *tag_val;
+    char *expr;
 
+    expr = NULL;
     while (1) {
-        tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0);
+        tag_val = get_tag(r->pool, in, tag, sizeof(tag), 0);
         if (*tag == '\0') {
             return 1;
         }
         else if (!strcmp(tag, "done")) {
+	    if (expr == NULL) {
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+			    "missing expr in if statement: %s",
+			    r->filename);
+		rputs(error, r);
+		return 1;
+	    }
             *printing = *conditional_status = parse_expr(r, expr, error);
 #ifdef DEBUG_INCLUDE
             rvputs(r, "**** if conditional_status=\"",
@@ -1838,15 +1870,16 @@ static int handle_if(FILE *in, request_rec *r, char *error,
     }
 }
 
-static int handle_elif(FILE *in, request_rec *r, char *error,
+static int handle_elif(FILE *in, request_rec *r, const char *error,
                        int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
-    char *tag_val = '\0';
-    char *expr = '\0';
+    char *tag_val;
+    char *expr;
 
+    expr = NULL;
     while (1) {
-        tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 0);
+        tag_val = get_tag(r->pool, in, tag, sizeof(tag), 0);
         if (*tag == '\0') {
             return 1;
         }
@@ -1859,6 +1892,13 @@ static int handle_elif(FILE *in, request_rec *r, char *error,
                 *printing = 0;
                 return (0);
             }
+	    if (expr == NULL) {
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+			    "missing expr in elif statement: %s",
+			    r->filename);
+		rputs(error, r);
+		return 1;
+	    }
             *printing = *conditional_status = parse_expr(r, expr, error);
 #ifdef DEBUG_INCLUDE
             rvputs(r, "**** elif conditional_status=\"",
@@ -1881,13 +1921,13 @@ static int handle_elif(FILE *in, request_rec *r, char *error,
     }
 }
 
-static int handle_else(FILE *in, request_rec *r, char *error,
+static int handle_else(FILE *in, request_rec *r, const char *error,
                        int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
 
-    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+    if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
         return 1;
     }
     else if (!strcmp(tag, "done")) {
@@ -1901,7 +1941,8 @@ static int handle_else(FILE *in, request_rec *r, char *error,
     }
     else {
         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "else directive does not take tags");
+                    "else directive does not take tags in %s",
+		    r->filename);
         if (*printing) {
             rputs(error, r);
         }
@@ -1909,13 +1950,13 @@ static int handle_else(FILE *in, request_rec *r, char *error,
     }
 }
 
-static int handle_endif(FILE *in, request_rec *r, char *error,
+static int handle_endif(FILE *in, request_rec *r, const char *error,
                         int *conditional_status, int *printing)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
 
-    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+    if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
         return 1;
     }
     else if (!strcmp(tag, "done")) {
@@ -1929,13 +1970,14 @@ static int handle_endif(FILE *in, request_rec *r, char *error,
     }
     else {
         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "endif directive does not take tags");
+                    "endif directive does not take tags in %s",
+		    r->filename);
         rputs(error, r);
         return -1;
     }
 }
 
-static int handle_set(FILE *in, request_rec *r, char *error)
+static int handle_set(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char parsed_string[MAX_STRING_LEN];
@@ -1944,7 +1986,7 @@ static int handle_set(FILE *in, request_rec *r, char *error)
 
     var = (char *) NULL;
     while (1) {
-        if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+        if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
             return 1;
         }
         else if (!strcmp(tag, "done")) {
@@ -1956,30 +1998,31 @@ static int handle_set(FILE *in, request_rec *r, char *error)
         else if (!strcmp(tag, "value")) {
             if (var == (char *) NULL) {
                 aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                            "variable must precede value in set directive");
+                            "variable must precede value in set directive in %s",
+			    r->filename);
                 rputs(error, r);
                 return -1;
             }
-            parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
+            parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
             table_set(r->subprocess_env, var, parsed_string);
         }
         else {
             aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                        "Invalid tag for set directive");
+                        "Invalid tag for set directive in %s", r->filename);
             rputs(error, r);
             return -1;
         }
     }
 }
 
-static int handle_printenv(FILE *in, request_rec *r, char *error)
+static int handle_printenv(FILE *in, request_rec *r, const char *error)
 {
     char tag[MAX_STRING_LEN];
     char *tag_val;
     table_entry *elts = (table_entry *) r->subprocess_env->elts;
     int i;
 
-    if (!(tag_val = get_tag(r->pool, in, tag, MAX_STRING_LEN, 1))) {
+    if (!(tag_val = get_tag(r->pool, in, tag, sizeof(tag), 1))) {
         return 1;
     }
     else if (!strcmp(tag, "done")) {
@@ -1990,7 +2033,8 @@ static int handle_printenv(FILE *in, request_rec *r, char *error)
     }
     else {
         aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
-                    "printenv directive does not take tags");
+                    "printenv directive does not take tags in %s",
+		    r->filename);
         rputs(error, r);
         return -1;
     }
@@ -2012,10 +2056,8 @@ static void send_parsed_content(FILE *f, request_rec *r)
     int printing;
     int conditional_status;
 
-    strncpy(error, DEFAULT_ERROR_MSG, sizeof(error) - 1);
-    error[sizeof(error) - 1] = '\0';
-    strncpy(timefmt, DEFAULT_TIME_FORMAT, sizeof(timefmt) - 1);
-    timefmt[sizeof(timefmt) - 1] = '\0';
+    safe_copy(error, DEFAULT_ERROR_MSG, sizeof(error));
+    safe_copy(timefmt, DEFAULT_TIME_FORMAT, sizeof(timefmt));
     sizefmt = SIZEFMT_KMG;
 
 /*  Turn printing on */
@@ -2034,7 +2076,11 @@ static void send_parsed_content(FILE *f, request_rec *r)
 
     while (1) {
         if (!find_string(f, STARTING_SEQUENCE, r, printing)) {
-            if (get_directive(f, directive, r->pool)) {
+            if (get_directive(f, directive, sizeof(directive), r->pool)) {
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+			    "mod_include: error reading directive in %s",
+			    r->filename);
+		rputs(error, r);
                 return;
             }
             if (!strcmp(directive, "if")) {
