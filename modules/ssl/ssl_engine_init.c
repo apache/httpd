@@ -365,6 +365,34 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 }
 #endif
 
+static void ssl_init_check_server(server_rec *s,
+                                  apr_pool_t *p,
+                                  apr_pool_t *ptemp,
+                                  SSLSrvConfigRec *sc)
+{
+    /*
+     * check for important parameters and the
+     * possibility that the user forgot to set them.
+     */
+    if (!sc->szPublicCertFiles[0]) {
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "No SSL Certificate set [hint: SSLCertificateFile]");
+        ssl_die();
+    }
+
+    /*
+     *  Check for problematic re-initializations
+     */
+    if (sc->pPublicCert[SSL_AIDX_RSA] ||
+        sc->pPublicCert[SSL_AIDX_DSA])
+    {
+        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
+                "Illegal attempt to re-initialise SSL for server "
+                "(theoretically shouldn't happen!)");
+        ssl_die();
+    }
+}
+
 static SSL_CTX *ssl_init_ctx(server_rec *s,
                              apr_pool_t *p,
                              apr_pool_t *ptemp,
@@ -652,27 +680,7 @@ void ssl_init_ConfigureServer(server_rec *s,
     int is_ca, pathlen;
     int i;
 
-    /*
-     * Now check for important parameters and the
-     * possibility that the user forgot to set them.
-     */
-    if (!sc->szPublicCertFiles[0]) {
-        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
-                "No SSL Certificate set [hint: SSLCertificateFile]");
-        ssl_die();
-    }
-
-    /*
-     *  Check for problematic re-initializations
-     */
-    if (sc->pPublicCert[SSL_AIDX_RSA] ||
-        sc->pPublicCert[SSL_AIDX_DSA])
-    {
-        ssl_log(s, SSL_LOG_ERROR|SSL_INIT,
-                "Illegal attempt to re-initialise SSL for server "
-                "(theoretically shouldn't happen!)");
-        ssl_die();
-    }
+    ssl_init_check_server(s, p, ptemp, sc);
 
     ctx = ssl_init_ctx(s, p, ptemp, sc);
 
