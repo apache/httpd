@@ -445,7 +445,6 @@ const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd,
     }
     else if ((arglen > 5) && strEQn(arg, "exec:", 5)) {
         sc->server->pphrase_dialog_type  = SSL_PPTYPE_FILTER;
-        /* ### This is broken, exec: may contain args, no? */
         sc->server->pphrase_dialog_path =
             ap_server_root_relative(cmd->pool, arg+5);
         if (!sc->server->pphrase_dialog_path) {
