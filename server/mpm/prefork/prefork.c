@@ -2061,6 +2061,7 @@ static void child_main(int child_num_arg)
     struct sockaddr sa_client;
     ap_listen_rec *lr;
     ap_listen_rec *last_lr;
+    ap_listen_rec *first_lr;
     pool *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
@@ -2160,7 +2161,8 @@ static void child_main(int child_num_arg)
 		else {
 		    lr = last_lr->next;
 		}
-		while (lr != last_lr) {
+		first_lr=lr;
+		do {
 		    if (!lr) {
 			lr = ap_listeners;
 		    }
@@ -2168,6 +2170,7 @@ static void child_main(int child_num_arg)
 			goto got_listener;
 		    lr = lr->next;
 		}
+		while (lr != first_lr);
 		continue;
 	got_listener:
 		last_lr = lr;
