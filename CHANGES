@@ -1,5 +1,11 @@
 Changes with Apache 2.0.26-dev
 
+  *) Some initial support for the cygwin platform [prefork only].
+     This is not to be confused with support for the WinNT/Win32
+     platform, which is the recommended configuration for native
+     Win32 users.  The cygwin platform support is recommended for
+     cygwin platform users. [Stipe Tolj <tolj@wapme-systems.de>]
+
   *) Changed syntax of Set{Input|Output}Filter.  The list of filters
      must be semicolon delimited (if more than one filter is given.)
      The Set{Input|Output}Filter directive now overrides a parent

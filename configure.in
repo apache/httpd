@@ -157,6 +157,10 @@ case $host in
       dnl  This is a hack -- we should be using AC_TRY_RUN instead
       ap_platform_runtime_link_flag="-R"
       ;;
+  *cygwin*)
+      APR_SETVAR(APACHE_MPM, [prefork])
+      APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
+      ;;
 esac
 
 dnl
