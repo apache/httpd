@@ -984,12 +984,12 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
 #endif
 
 #ifdef _OSD_POSIX
-extern const char *os_set_authfile(pool *p, const char *filename);
+extern const char *os_set_account(pool *p, const char *account);
 extern int os_init_job_environment(server_rec *s, const char *user_name);
 #endif /* _OSD_POSIX */
 
 char *ap_get_local_host(pool *);
-unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
+unsigned long ap_get_virthost_addr(const char *hostname, unsigned short *port);
 
 extern API_VAR_EXPORT time_t ap_restart_time;
 

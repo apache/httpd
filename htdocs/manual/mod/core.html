@@ -28,7 +28,7 @@ always available.
 <LI><A HREF="#authname">AuthName</A>
 <LI><A HREF="#authtype">AuthType</A>
 <LI><A HREF="#bindaddress">BindAddress</A>
-<LI><A HREF="#bs2000authfile">BS2000AuthFile</A>
+<LI><A HREF="#bs2000account">BS2000Account</A>
 <LI><A HREF="#clearmodulelist">ClearModuleList</A>
 <LI><A HREF="#contentdigest">ContentDigest</A>
 <LI><A HREF="#coredumpdirectory">CoreDumpDirectory</A>
@@ -363,12 +363,12 @@ HREF="#virtualhost">&lt;VirtualHost&gt;</A></CODE> sections.
 
 <HR>
 
-<H2><A NAME="bs2000authfile">BS2000AuthFile directive</A></H2>
-<!--%plaintext &lt;?INDEX {\tt BS2000AuthFile} directive&gt; -->
+<H2><A NAME="bs2000account">BS2000Account directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt BS2000Account} directive&gt; -->
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> BS2000AuthFile <EM>authfile</EM><BR>
+><STRONG>Syntax:</STRONG></A> BS2000Account <EM>account</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -384,20 +384,18 @@ HREF="#virtualhost">&lt;VirtualHost&gt;</A></CODE> sections.
 <A
  HREF="directive-dict.html#Compatibility"
  REL="Help"
-><STRONG>Compatibility:</STRONG></A> BS2000AuthFile is only available for
+><STRONG>Compatibility:</STRONG></A> BS2000Account is only available for
 BS2000 machines, as of Apache 1.3 and later.<P>
 
-The <CODE>BS2000AuthFile</CODE> directive is available for BS2000 hosts
-only. It must be used to define the password file which is used to
-change the BS2000 task environment of the server to the non-privileged
-account specified by the <A HREF="#user">User</A> directive. This is
-required in the BS2000 POSIX subsystem (by performing a sub-LOGON) to
-prevent CGI scripts from accessing resources of the privileged account
-which started the server, usually <SAMP>TSOS</SAMP>.<BR>
-Note that the specified <EM>authfile</EM> must be owned by the super
-user and must not be readable or writable by anyone else, otherwise
-Apache will refuse to start and exit with an error message.<BR>
-Only one <CODE>BS2000AuthFile</CODE> directive can be used. <P>
+The <CODE>BS2000Account</CODE> directive is available for BS2000 hosts
+only. It must be used to define the account number for the non-privileged
+apache server user (which was configured using the
+<A HREF="#user">User</A> directive).
+This is required by the BS2000 POSIX subsystem (to change the underlying
+BS2000 task environment by performing a sub-LOGON) to prevent CGI scripts
+from accessing resources of the privileged account which started the
+server, usually <SAMP>SYSROOT</SAMP>.<BR>
+Only one <CODE>BS2000Account</CODE> directive can be used. <P>
 
 <P><STRONG>See Also:</STRONG>
 <A HREF="../ebcdic.html">Apache EBCDIC port</A></P>

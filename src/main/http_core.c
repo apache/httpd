@@ -2302,14 +2302,14 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig, char *word1)
 }
 
 #ifdef _OSD_POSIX /* BS2000 Logon Passwd file */
-static const char *set_bs2000_authfile(cmd_parms *cmd, void *dummy, char *name)
+static const char *set_bs2000_account(cmd_parms *cmd, void *dummy, char *name)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    return os_set_authfile(cmd->pool, name);
+    return os_set_account(cmd->pool, name);
 }
 #endif /*_OSD_POSIX*/
 
@@ -2624,8 +2624,8 @@ static const command_rec core_cmds[] = {
 { "NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF, TAKE1,
   "A numeric IP address:port, or the name of a host" },
 #ifdef _OSD_POSIX
-{ "BS2000AuthFile", set_bs2000_authfile, NULL, RSRC_CONF, TAKE1,
-  "Name of server User's bs2000 logon password file (read-protected)" },
+{ "BS2000Account", set_bs2000_account, NULL, RSRC_CONF, TAKE1,
+  "Name of server User's bs2000 logon account name" },
 #endif
 { "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },

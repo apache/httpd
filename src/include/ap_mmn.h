@@ -177,10 +177,11 @@
  *                        request_rec* instead of pool*
  *                        (for implementing better error reporting).
  * 19980906 (1.3.2-dev) - added ap_md5_binary()
+ * 19980917 (1.3.2-dev) - bs2000: changed os_set_authfile() to os_set_account()
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19980906
+#define MODULE_MAGIC_NUMBER_MAJOR 19980917
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) BS2000 platform only: get rid of the nasty BS2000AuthFile.
+     You now must define a BS2000Account name for the server User.
+     This has fewer security implications than the old approach.
+     [Martin Kraemer]
+
   *) Fix SHARED_CORE feature for HPUX platform: We now use extension `.sl'
      instead of `.so' and `SHLIB_PATH' instead of `LD_LIBRARY_PATH' on this
      platform to make the braindead HPUX linker happy. Notice, for the module
