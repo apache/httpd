@@ -507,7 +507,7 @@ static const char *log_request_time(request_rec *r, char *a)
 #else
         apr_time_t request_time = r->request_time;
 #endif
-        unsigned i = request_time / APR_USEC_PER_SEC;
+        unsigned i = (unsigned)(request_time / APR_USEC_PER_SEC);
         i &= TIME_CACHE_MASK;
         memcpy(cached_time, &(request_time_cache[i]), sizeof(*cached_time));
         if ((request_time != cached_time->t) ||
