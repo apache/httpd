@@ -206,7 +206,7 @@ case "$PLAT" in
 	OS='HI-UX'
 	CFLAGS="$CFLAGS -DHIUX"
 	# if we're using the HIUX compiler, add a few flags.
-	if [ ! "$CC" -o "$CC" = "cc" ]; then
+	if [ "$CC" = "cc" ]; then
 	    CFLAGS="$CFLAGS -Aa -D_HIUX_SOURCE"
 	fi
 	;;
@@ -214,14 +214,14 @@ case "$PLAT" in
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
 	# if we're using the HPUX compiler, add a few flags.
-	if [ ! "$CC" -o "$CC" = "cc" ]; then
+	if [ "$CC" = "cc" ]; then
 	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
 	fi
 	;;
     *-hp-hpux*)
 	OS='HP-UX'
 	CFLAGS="$CFLAGS -DHPUX"
-	if [ ! "$CC" -o "$CC" = "cc" ]; then
+	if [ "$CC" = "cc" ]; then
 	    CFLAGS="$CFLAGS -Aa -D_HPUX_SOURCE"
 	fi
 	;;
