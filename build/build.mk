@@ -62,15 +62,25 @@ STAMP = buildmk.stamp
 
 all: $(STAMP) generated_lists
 	@if [ ! -d srclib/apr -o ! -f srclib/apr/apr_common.m4 ]; then \
-	    echo "APR not found."; \
-	    echo "Please check-out a working version of APR, the anonymous"; \
-	    echo "CVS root is :pserver:anoncvs@www.apache.org:/home/cvspublic"; \
+	    echo "" ; \
+	    echo "You don't have a srclib/apr/ subdirectory.  Please get one:" ; \
+	    echo "" ; \
+	    echo "   cd srclib" ; \
+	    echo "   cvs -d :pserver:anoncvs@apache.org:/home/cvspublic login" ; \
+	    echo "      (password 'anoncvs')" ; \
+	    echo "   cvs -d :pserver:anoncvs@apache.org:/home/cvspublic co apr" ; \
+	    echo "" ; \
 	    exit 1; \
 	fi
 	@if [ ! -d srclib/apr-util -o ! -f srclib/apr-util/Makefile.in ]; then \
-	    echo "APR-util not found."; \
-	    echo "Please check-out a working version of APR-util, the anonymous"; \
-	    echo "CVS root is :pserver:anoncvs@www.apache.org:/home/cvspublic"; \
+	    echo "" ; \
+	    echo "You don't have a srclib/apr-util/ subdirectory.  Please get one:" ; \
+	    echo "" ; \
+	    echo "   cd srclib" ; \
+	    echo "   cvs -d :pserver:anoncvs@apache.org:/home/cvspublic login" ; \
+	    echo "      (password 'anoncvs')" ; \
+	    echo "   cvs -d :pserver:anoncvs@apache.org:/home/cvspublic co apr-util" ; \
+	    echo "" ; \
 	    exit 1; \
 	fi
 	@$(MAKE) AMFLAGS=$(AMFLAGS) -s -f build/build2.mk
