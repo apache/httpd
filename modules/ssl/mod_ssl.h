@@ -713,6 +713,8 @@ ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table,
 void ssl_asn1_table_unset(apr_hash_t *table,
                           const char *key);
 
+const char *ssl_asn1_keystr(int keytype);
+
 const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
                                   const char *id,
                                   int keytype);
