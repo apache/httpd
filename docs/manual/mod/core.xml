@@ -1691,21 +1691,18 @@ client</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>This directive specifies the number of <var>bytes</var> from 0
-    to the value of the compile-time constant
-    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (8190 as
-    distributed) that will be allowed in an HTTP request
-    header.</p>
+    <p>This directive specifies the number of <var>bytes</var>
+    that will be allowed in an HTTP request header.</p>
 
     <p>The <directive>LimitRequestFieldSize</directive> directive
-    allows the server administrator to reduce the limit on the allowed
-    size of an HTTP request header field below the normal input buffer
-    size compiled with the server. A server needs this value to be
-    large enough to hold any one header field from a normal client
-    request. The size of a normal request header field will vary
-    greatly among different client implementations, often depending
-    upon the extent to which a user has configured their browser to
-    support detailed content negotiation.</p>
+    allows the server administrator to reduce or increase the limit 
+    on the allowed size of an HTTP request header field. A server
+    needs this value to be large enough to hold any one header field 
+    from a normal client request. The size of a normal request header 
+    field will vary greatly among different client implementations, 
+    often depending upon the extent to which a user has configured
+    their browser to support detailed content negotiation. SPENGO
+    authentication headers can be up to 12392 bytes.</p>
 
     <p>This directive gives the server administrator greater
     control over abnormal client request behavior, which may be
@@ -1732,15 +1729,12 @@ from the client</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>This directive sets the number of <var>bytes</var> from 0 to
-    the value of the compile-time constant
-    <code>DEFAULT_LIMIT_REQUEST_LINE</code> (8190 as distributed)
-    that will be allowed on the HTTP request-line.</p>
+    <p>This directive sets the number of <var>bytes</var> that will be 
+    allowed on the HTTP request-line.</p>
 
     <p>The <directive>LimitRequestLine</directive> directive allows
-    the server administrator to reduce the limit on the allowed size
-    of a client's HTTP request-line below the normal input buffer size
-    compiled with the server. Since the request-line consists of the
+    the server administrator to reduce or increase the limit on the allowed size
+    of a client's HTTP request-line. Since the request-line consists of the
     HTTP method, URI, and protocol version, the
     <directive>LimitRequestLine</directive> directive places a
     restriction on the length of a request-URI allowed for a request
