@@ -1153,6 +1153,13 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
             i++;
         }
 
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
+                     "Invoking CGI Command '%s'", pCommand);
+        for (i = 0; env[i]; ++i) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r->server,
+                         "  CGI env[%d] = '%s'", i, env[i]);
+        }
+
         if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 
                           0,
                           pEnvBlock,
