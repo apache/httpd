@@ -3670,6 +3670,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
     core_net_rec *net = f->ctx;
     core_output_filter_ctx_t *ctx = net->out_ctx;
     apr_read_type_e eblock = APR_NONBLOCK_READ;
+    apr_pool_t *input_pool = b->p;
 
     if (ctx == NULL) {
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
@@ -3924,7 +3925,10 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                     }
                 }
             }
-            ap_save_brigade(f, &ctx->b, &b, c->pool);
+            if (!ctx->deferred_write_pool) {
+                apr_pool_create(&ctx->deferred_write_pool, c->pool);
+            }
+            ap_save_brigade(f, &ctx->b, &b, ctx->deferred_write_pool);
 
             return APR_SUCCESS;
         }
@@ -3995,6 +3999,30 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
 
         apr_brigade_destroy(b);
+        
+        /* drive cleanups for resources which were set aside 
+         * this may occur before or after termination of the request which
+         * created the resource
+         */
+        if (ctx->deferred_write_pool) {
+            if (more && more->p == ctx->deferred_write_pool) {
+                /* "more" belongs to the deferred_write_pool,
+                 * which is about to be cleared.
+                 */
+                if (APR_BRIGADE_EMPTY(more)) {
+                    more = NULL;
+                }
+                else {
+                    /* uh oh... change more's lifetime 
+                     * to the input brigade's lifetime 
+                     */
+                    apr_bucket_brigade *tmp_more = more;
+                    more = NULL;
+                    ap_save_brigade(f, &more, &tmp_more, input_pool);
+                }
+            }
+            apr_pool_clear(ctx->deferred_write_pool);  
+        }
 
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
