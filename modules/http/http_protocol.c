@@ -2056,9 +2056,6 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
     return total_bytes_sent;
 }
 
-
-/* TODO: reimplement ap_send_fb */
-#if 0
 /*
  * Send the body of a response to the client.
  */
@@ -2071,82 +2068,46 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
-    register int n, w, o, len, fd;
-    struct pollfd fds;
+    long zero_timeout = 0;
+    int n, w, rc, o;
 
-    if (length == 0)
+    if (length == 0) {
         return 0;
-
-    /* Make fb unbuffered and non-blocking */
-    ap_bsetflag(fb, B_RD, 0);
-    fd = ap_bfileno(fb, B_RD);
-    ap_bnonblock(fd);
-#ifdef CHECK_FD_SETSIZE
-    if (fd >= FD_SETSIZE) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
-	    "send body: filedescriptor (%u) larger than FD_SETSIZE (%u) "
-	    "found, you probably need to rebuild Apache with a "
-	    "larger FD_SETSIZE", fd, FD_SETSIZE);
-	return 0;
     }
-#endif
 
-    fds.fd = fd;
-    fds.events = POLLIN;
+    /* This function tries to as much as possible through non-blocking
+     * reads so that it can do writes while waiting for the CGI to
+     * produce more data. This way, the CGI's output gets to the client
+     * as soon as possible */
 
+    ap_bsetopt(fb, BO_TIMEOUT, &zero_timeout);
     while (!ap_is_aborted(r->connection)) {
-#ifdef NDELAY_PIPE_RETURNS_ZERO
-	/* Contributed by dwd@bell-labs.com for UTS 2.1.2, where the fcntl */
-	/*   O_NDELAY flag causes read to return 0 when there's nothing */
-	/*   available when reading from a pipe.  That makes it tricky */
-	/*   to detect end-of-file :-(.  This stupid bug is even documented */
-	/*   in the read(2) man page where it says that everything but */
-	/*   pipes return -1 and EAGAIN.  That makes it a feature, right? */
-	int afterselect = 0;
-#endif
-        if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
-            len = length - total_bytes_sent;
-        else
-            len = IOBUFSIZE;
-
-        do {
-            n = ap_bread(fb, buf, len);
-#ifdef NDELAY_PIPE_RETURNS_ZERO
-	    if ((n > 0) || (n == 0 && afterselect))
-		break;
-#else
-            if (n >= 0)
+        n = ap_bread(fb, buf, sizeof(buf));
+        if (n <= 0) {
+            if (n == 0) {
+                (void) ap_rflush(r);
                 break;
-#endif
-            if (ap_is_aborted(r->connection))
-                break;
-            if (n < 0 && errno != EAGAIN /* ZZZ rethink for threaded impl */)
-                break;
-
-            /* we need to block, so flush the output first */
-            if (ap_bflush(r->connection->client) < 0) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
-                    "client stopped connection before send body completed");
-                ap_bsetflag(r->connection->client, B_EOUT, 1);
+            }
+            if (n == -1 && errno != EAGAIN) {
                 r->connection->aborted = 1;
                 break;
             }
-            /*
-             * we don't care what poll says, we might as well loop back
-             * around and try another read
-             */
-	    /* use AP funcs */
-            poll(&fds, 1, -1);
-#ifdef NDELAY_PIPE_RETURNS_ZERO
-	    afterselect = 1;
-#endif
-        } while (!ap_is_aborted(r->connection));
+            /* next read will block, so flush the client now */
+            rc = ap_bflush(r->connection->client);
 
-        if (n < 1 || ap_is_aborted(r->connection)) {
-            break;
+            ap_bsetopt(fb, BO_TIMEOUT, &r->server->timeout);
+            n = ap_bread(fb, buf, sizeof(buf));
+            if (n <= 0) {
+                if (n == 0) {
+                    (void) ap_rflush(r);
+                }
+                r->connection->aborted = 1;
+                break;
+            }
+            ap_bsetopt(fb, BO_TIMEOUT, &zero_timeout);
         }
+        
         o = 0;
-
         while (n && !ap_is_aborted(r->connection)) {
             w = ap_bwrite(r->connection->client, &buf[o], n);
             if (w > 0) {
@@ -2157,7 +2118,7 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
             else if (w < 0) {
                 if (!ap_is_aborted(r->connection)) {
                     ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
-                       "client stopped connection before send body completed");
+                        "client stopped connection before rflush completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
                 }
@@ -2165,13 +2126,9 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
             }
         }
     }
-
     SET_BYTES_SENT(r);
     return total_bytes_sent;
 }
-#endif
-
-
 
 /* The code writes MMAP_SEGMENT_SIZE bytes at a time.  This is due to Apache's
  * timeout model, which is a timeout per-write rather than a time for the
@@ -2378,7 +2335,7 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
 API_EXPORT(int) ap_rflush(request_rec *r)
 {
     if (ap_bflush(r->connection->client) < 0) {
-        if (!r->connection->aborted) {
+        if (!ap_is_aborted(r->connection)) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, r,
                 "client stopped connection before rflush completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
