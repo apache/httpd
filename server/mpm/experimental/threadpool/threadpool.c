@@ -69,6 +69,7 @@
 #include "apr_file_io.h"
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
+#include "apr_poll.h"
 #include "apr_thread_mutex.h"
 #include "apr_thread_cond.h"
 #include "apr_proc_mutex.h"
@@ -913,7 +914,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 apr_status_t ret;
                 apr_int16_t event;
 
-                ret = apr_poll(pollset, &n, -1);
+                ret = apr_poll(pollset, num_listensocks, &n, -1);
                 if (ret != APR_SUCCESS) {
                     if (APR_STATUS_IS_EINTR(ret)) {
                         continue;

@@ -87,6 +87,7 @@
 #include "mpm.h"
 #include "mpm_default.h"
 #include "apr_thread_mutex.h"
+#include "apr_poll.h"
 
 extern int _kset_fd_limit_(int num);
 
@@ -421,7 +422,7 @@ static int32 worker_thread(void * dummy)
             apr_int16_t event;
             apr_status_t ret;
 
-            ret = apr_poll(pollset, &srv, -1);
+            ret = apr_poll(pollset, num_listening_sockets, &srv, -1);
 
             if (ret != APR_SUCCESS) {
                 if (APR_STATUS_IS_EINTR(ret)) {

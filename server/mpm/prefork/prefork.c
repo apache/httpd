@@ -89,6 +89,7 @@
 #include "mpm_common.h"
 #include "ap_listen.h"
 #include "ap_mmn.h"
+#include "apr_poll.h"
 
 #ifdef HAVE_BSTRING_H
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
@@ -631,7 +632,7 @@ static void child_main(int child_num_arg)
                 apr_int16_t event;
                 apr_int32_t n;
 
-                ret = apr_poll(pollset, &n, -1);
+                ret = apr_poll(pollset, num_listensocks, &n, -1);
                 if (ret != APR_SUCCESS) {
                     if (APR_STATUS_IS_EINTR(ret)) {
                         continue;

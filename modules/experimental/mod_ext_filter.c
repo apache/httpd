@@ -71,6 +71,7 @@
 #include "apr_strings.h"
 #include "apr_hash.h"
 #include "apr_lib.h"
+#include "apr_poll.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -627,9 +628,8 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
 #if APR_FILES_AS_SOCKETS
                 int num_events;
                 
-                rv = apr_poll(ctx->pollset,
-                              &num_events,
-                              f->r->server->timeout);
+                rv = apr_poll(ctx->pollset, 2,
+                              &num_events, f->r->server->timeout);
                 if (rv || dc->debug >= DBGLVL_GORY) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
                                   rv, f->r, "apr_poll()");

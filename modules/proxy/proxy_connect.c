@@ -61,6 +61,7 @@
 #define CORE_PRIVATE
 
 #include "mod_proxy.h"
+#include "apr_poll.h"
 
 module AP_MODULE_DECLARE_DATA proxy_connect_module;
 
@@ -320,7 +321,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
 /*	ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "proxy: CONNECT: going to sleep (poll)");*/
-        if ((rv = apr_poll(pollfd, &pollcnt, -1)) != APR_SUCCESS)
+        if ((rv = apr_poll(pollfd, 2, &pollcnt, -1)) != APR_SUCCESS)
         {
 	    apr_socket_close(sock);
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "proxy: CONNECT: error apr_poll()");
