@@ -369,7 +369,7 @@ modified?</a></h3>
     <p>Now that we have variables, and are able to set and compare
     their values, we can use them to express conditionals. This
     lets SSI be a tiny programming language of sorts.
-    <code>mod_include</code> provides an <code>if</code>,
+    <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> provides an <code>if</code>,
     <code>elif</code>, <code>else</code>, <code>endif</code>
     structure for building conditional statements. This allows you
     to effectively generate multiple logical pages out of one
@@ -387,7 +387,7 @@ modified?</a></h3>
     comparison - either comparing values to one another, or testing
     the ``truth'' of a particular value. (A given string is true if
     it is nonempty.) For a full list of the comparison operators
-    available to you, see the <code>mod_include</code>
+    available to you, see the <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>
     documentation. Here are some examples of how one might use this
     construct.</p>
 
