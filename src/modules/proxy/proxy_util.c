@@ -539,6 +539,12 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
                             n = -1;
                         }
                     }
+                    else if (remaining < 0) {
+                        n = -1;
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, r,
+                                      "proxy: remote protocol error, invalid chunk size");
+
+                    }
                 }
             }
 

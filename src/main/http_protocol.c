@@ -2045,20 +2045,33 @@ API_EXPORT(int) ap_should_client_block(request_rec *r)
 API_EXPORT(long) ap_get_chunk_size(char *b)
 {
     long chunksize = 0;
+    long chunkbits = sizeof(long) * 8;
 
-    while (ap_isxdigit(*b)) {
+    /* Skip leading zeros */
+    while (*b == '0') {
+        ++b;
+    }
+
+    while (ap_isxdigit(*b) && (chunkbits > 0)) {
         int xvalue = 0;
 
-	/* This works even on EBCDIC. */
-        if (*b >= '0' && *b <= '9')
+        if (*b >= '0' && *b <= '9') {
             xvalue = *b - '0';
-        else if (*b >= 'A' && *b <= 'F')
+        }
+        else if (*b >= 'A' && *b <= 'F') {
             xvalue = *b - 'A' + 0xa;
-        else if (*b >= 'a' && *b <= 'f')
+        }
+        else if (*b >= 'a' && *b <= 'f') {
             xvalue = *b - 'a' + 0xa;
+        }
 
         chunksize = (chunksize << 4) | xvalue;
+        chunkbits -= 4;
         ++b;
+    }
+    if (ap_isxdigit(*b) && (chunkbits <= 0)) {
+        /* overflow */
+        return -1;
     }
 
     return chunksize;
@@ -2143,6 +2156,10 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
                 return 0;
             }
             r->remaining = -1;  /* Indicate footers in-progress */
+        }
+        else if (len_to_read < 0) {
+            r->connection->keepalive = -1;
+            return -1;
         }
         else {
             r->remaining = len_to_read;
