@@ -219,7 +219,7 @@ static ap_fileperms_t xfer_perms = APR_OS_DEFAULT;
  */
 
 typedef struct {
-    char *default_format_string;
+    const char *default_format_string;
     ap_array_header_t *default_format;
     ap_array_header_t *config_logs;
     ap_array_header_t *server_config_logs;
@@ -236,8 +236,8 @@ typedef struct {
  */
 
 typedef struct {
-    char *fname;
-    char *format_string;
+    const char *fname;
+    const char *format_string;
     ap_array_header_t *format;
     ap_file_t *log_fd;
     char *condition_var;
@@ -917,8 +917,8 @@ static void *merge_config_log_state(ap_pool_t *p, void *basev, void *addv)
 /*
  * Set the default logfile format, or define a nickname for a format string.
  */
-static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
-                              char *name)
+static const char *log_format(cmd_parms *cmd, void *dummy, const char *fmt,
+                              const char *name)
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
@@ -943,8 +943,8 @@ static const char *log_format(cmd_parms *cmd, void *dummy, char *fmt,
 }
 
 
-static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
-                                  char *fmt, char *envclause)
+static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
+                                  const char *fmt, const char *envclause)
 {
     const char *err_string = NULL;
     multi_log_state *mls = ap_get_module_config(cmd->server->module_config,
@@ -977,27 +977,28 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, char *fn,
     return err_string;
 }
 
-static const char *set_transfer_log(cmd_parms *cmd, void *dummy, char *fn)
+static const char *set_transfer_log(cmd_parms *cmd, void *dummy,
+				    const char *fn)
 {
     return add_custom_log(cmd, dummy, fn, NULL, NULL);
 }
 
-static const char *set_cookie_log(cmd_parms *cmd, void *dummy, char *fn)
+static const char *set_cookie_log(cmd_parms *cmd, void *dummy, const char *fn)
 {
     return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t", NULL);
 }
 
 static const command_rec config_log_cmds[] =
 {
-    {"CustomLog", add_custom_log, NULL, RSRC_CONF, TAKE23,
+AP_INIT_TAKE23("CustomLog", add_custom_log, NULL, RSRC_CONF,
      "a file name, a custom log format string or format name, "
-     "and an optional \"env=\" clause (see docs)"},
-    {"TransferLog", set_transfer_log, NULL, RSRC_CONF, TAKE1,
-     "the filename of the access log"},
-    {"LogFormat", log_format, NULL, RSRC_CONF, TAKE12,
-     "a log format string (see docs) and an optional format name"},
-    {"CookieLog", set_cookie_log, NULL, RSRC_CONF, TAKE1,
-     "the filename of the cookie log"},
+     "and an optional \"env=\" clause (see docs)"),
+AP_INIT_TAKE1("TransferLog", set_transfer_log, NULL, RSRC_CONF,
+     "the filename of the access log"),
+AP_INIT_TAKE12("LogFormat", log_format, NULL, RSRC_CONF,
+     "a log format string (see docs) and an optional format name"),
+AP_INIT_TAKE1("CookieLog", set_cookie_log, NULL, RSRC_CONF,
+     "the filename of the cookie log"),
     {NULL}
 };
 

@@ -109,7 +109,7 @@
 
 typedef struct {
     ap_table_t *vars;
-    char *unsetenv;
+    const char *unsetenv;
     int vars_present;
 } env_dir_config_rec;
 
@@ -172,10 +172,10 @@ static void *merge_env_dir_configs(ap_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_env_module_vars_passed(cmd_parms *cmd,
-					      env_dir_config_rec *sconf,
+static const char *add_env_module_vars_passed(cmd_parms *cmd, void *sconf_,
                                               const char *arg)
 {
+    env_dir_config_rec *sconf=sconf_;
     ap_table_t *vars = sconf->vars;
     char *env_var;
     char *name_ptr;
@@ -191,10 +191,10 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd,
     return NULL;
 }
 
-static const char *add_env_module_vars_set(cmd_parms *cmd,
-					   env_dir_config_rec *sconf,
+static const char *add_env_module_vars_set(cmd_parms *cmd, void *sconf_,
                                            const char *arg)
 {
+    env_dir_config_rec *sconf=sconf_;
     ap_table_t *vars = sconf->vars;
     char *name, *value;
 
@@ -216,10 +216,11 @@ static const char *add_env_module_vars_set(cmd_parms *cmd,
     return NULL;
 }
 
-static const char *add_env_module_vars_unset(cmd_parms *cmd,
-					     env_dir_config_rec *sconf,
-                                             char *arg)
+static const char *add_env_module_vars_unset(cmd_parms *cmd, void *sconf_,
+                                             const char *arg)
 {
+    env_dir_config_rec *sconf=sconf_;
+
     sconf->unsetenv = sconf->unsetenv ?
         ap_pstrcat(cmd->pool, sconf->unsetenv, " ", arg, NULL) :
          arg;
@@ -228,12 +229,12 @@ static const char *add_env_module_vars_unset(cmd_parms *cmd,
 
 static const command_rec env_module_cmds[] =
 {
-    {"PassEnv", add_env_module_vars_passed, NULL,
-     OR_FILEINFO, RAW_ARGS, "a list of environment variables to pass to CGI."},
-    {"SetEnv", add_env_module_vars_set, NULL,
-     OR_FILEINFO, RAW_ARGS, "an environment variable name and a value to pass to CGI."},
-    {"UnsetEnv", add_env_module_vars_unset, NULL,
-     OR_FILEINFO, RAW_ARGS, "a list of variables to remove from the CGI environment."},
+AP_INIT_RAW_ARGS("PassEnv", add_env_module_vars_passed, NULL,
+     OR_FILEINFO, "a list of environment variables to pass to CGI."),
+AP_INIT_RAW_ARGS("SetEnv", add_env_module_vars_set, NULL,
+     OR_FILEINFO, "an environment variable name and a value to pass to CGI."),
+AP_INIT_RAW_ARGS("UnsetEnv", add_env_module_vars_unset, NULL,
+     OR_FILEINFO, "a list of variables to remove from the CGI environment."),
     {NULL},
 };
 
