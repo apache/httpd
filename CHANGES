@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_cgid: fix a hash table corruption problem which could
+     result in the wrong script being cleaned up at the end of a
+     request.  [Jeff Trawick]
+
   *) Log an error when requests for URIs which fail to map to a valid 
      filesystem name are rejected with 403.  [Jeff Trawick]
 
