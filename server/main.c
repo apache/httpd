@@ -717,16 +717,6 @@ int main(int argc, const char * const argv[])
     return 0; /* Termination 'ok' */
 }
 
-/* force Expat to be linked into the server executable */
-#if defined(USE_EXPAT) && !defined(SHARED_CORE_BOOTSTRAP)
-#include "xmlparse.h"
-const XML_LChar *suck_in_expat(void);
-const XML_LChar *suck_in_expat(void)
-{
-    return XML_ErrorString(XML_ERROR_NONE);
-}
-#endif /* USE_EXPAT */
-
 #ifndef SHARED_CORE_BOOTSTRAP
 /*
  * Force apr_password_validate() into the image so that modules like
