@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/05 21:02:04 $]
+Last modified at [$Date: 2004/08/10 08:41:15 $]
 
 Release:
 
@@ -138,11 +138,11 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_dir: Backport DirectorySlash directive to work around problems
        with <Location>-SetHandler combinations and trailing slash redirects.
          modules/mappers/mod_dir.c: r1.48
-       +1: nd, jerenkrantz
+       +1: nd, jerenkrantz, trawick
 
     *) mod_dir: Allow proxied DirectoryIndexes. PR 14648, 15112, 29961
          modules/mappers/mod_dir.c: r1.44
-       +1: nd, jerenkrantz
+       +1: nd, jerenkrantz, trawick
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
@@ -184,7 +184,7 @@ PATCHES TO BACKPORT FROM 2.1
        PR 28370.
          server/core.c: r1.275
          os/netware/pre_nw.h: r1.7
-       +1: nd, bnicholes
+       +1: nd, bnicholes, trawick
 
     *) mod_headers: Regression from 1.3: There's no ErrorHeader directive.
        Since this was always a misnomer, it was dropped in 2.1 and
@@ -292,7 +292,7 @@ PATCHES TO BACKPORT FROM 2.1
     * Extend the SetEnvIf directive to capture subexpressions of the
       matched value.
         modules/metadata/mod_setenvif.c r1.42, r1.43
-      +1: nd, rederpj
+      +1: nd, rederpj, trawick
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
