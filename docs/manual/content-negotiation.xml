@@ -634,6 +634,15 @@ factors to 5 decimal places before choosing the best variant.</p>
     negotiation. This directive can be given in the server config or
     virtual host, and takes no arguments. It has no effect on requests
     from HTTP/1.1 clients.</p>
+
+    <p>For HTTP/1.1 clients, Apache sends a <code>Vary</code> HTTP
+    response header to indicate the negotiation dimensions for the
+    response.  Caches can use this information to determine whether a
+    subsequent request can be served from the local copy.  To
+    encourage a cache to use the local copy regardless of the
+    negotiation dimensions, set the <code>force-no-vary</code> <a
+    href="env.html#special">environment variable</a>.</p>
+
 </section>
 
 <section id="more"><title>More Information</title>
