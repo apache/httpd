@@ -1,6 +1,6 @@
 Changes with Apache 1.3.7
  
-  *) Better GCC detection for Solaris 2 where the `cc' 
+  *) Better GCC detection for DSO flags under Solaris 2 where the `cc' 
      command potentially _is_ GCC. [Ralf S. Engelschall]
 
   *) Fix apxs build issues on AIX 
