@@ -72,6 +72,11 @@
 #endif
 
 ap_listen_rec *ap_listeners;
+#if APR_HAVE_IPV6
+static int default_family = APR_UNSPEC;
+#else
+static int default_family = APR_INET;
+#endif
 static ap_listen_rec *old_listeners;
 static int ap_listenbacklog;
 static int send_buffer_size;
@@ -169,6 +174,29 @@ static apr_status_t close_listeners_on_exec(void *v)
 }
 
 
+static void find_default_family(apr_pool_t *p)
+{
+#if APR_HAVE_IPV6
+    /* We know the platform supports IPv6, but this particular
+     * system may not have IPv6 enabled.  See if we can get an
+     * AF_INET6 socket.
+     */
+    if (default_family == APR_UNSPEC) {
+        apr_socket_t *tmp_sock;
+
+        if (apr_create_socket(&tmp_sock, APR_INET6, SOCK_STREAM, 
+                              p) == APR_SUCCESS) {
+            apr_close_socket(tmp_sock);
+            default_family = APR_INET6;
+        }
+        else {
+            default_family = APR_INET;
+        }
+    }
+#endif
+}
+
+
 static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
 {
     ap_listen_rec **walk;
@@ -178,26 +206,20 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     apr_port_t oldport;
     apr_sockaddr_t *sa;
 
-    if (!addr) {
-        /* XXX not valid for IPv6 if we can get an IPv6 socket when the
-         *     config doesn't specify an interface address
-         *
-         *     We need to look at the configuration to see which mode we're
-         *     in: 
-         *     a) get IPv6 if we can but fall back to IPv4
-         *        => leave addr NULL so the logic below calls apr_create_socket()
-         *           first
-         *     b) get IPv4
-         *        => set addr to 0.0.0.0
-         *     c) get IPv6
-         *        => set addr to ::
-         *
-         *     Alternative: earlier in initialization, if we start up in fall-
-         *     back-to-IPv4 mode, go ahead and see if we can get an IPv6 socket;
-         *     if not, set mode to get-IPv4; then, we have fewer cases to handle
-         *     here (and probably elsewhere)
-         */
-        addr = APR_ANYADDR;
+    if (!addr) { /* don't bind to specific interface */
+        find_default_family(process->pool);
+        switch(default_family) {
+        case APR_INET:
+            addr = "0.0.0.0";
+            break;
+#if APR_HAVE_IPV6
+        case APR_INET6:
+            addr = "::";
+            break;
+#endif
+        default:
+            ap_assert(1 != 1); /* should not occur */
+        }
     }
 
     /* see if we've got an old listener for this address:port */
@@ -218,32 +240,17 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     /* this has to survive restarts */
     new = apr_palloc(process->pool, sizeof(ap_listen_rec));
     new->active = 0;
-    if (addr) {
-        /* binding to specific interface; let apr_getaddrinfo() figure out
-         * what address family is appropriate;
-         */
-        if ((status = apr_getaddrinfo(&new->bind_addr, addr, APR_UNSPEC, port, 0, 
-                                      process->pool)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
-			 "alloc_listener: failed to set up sockaddr for %s", addr);
-            return;
-        }
-        if ((status = apr_create_socket(&new->sd, new->bind_addr->sa.sin.sin_family, 
-                                        SOCK_STREAM, process->pool)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
-                         "alloc_listener: failed to get a socket for %s", addr);
-            return;
-        }
+    if ((status = apr_getaddrinfo(&new->bind_addr, addr, APR_UNSPEC, port, 0, 
+                                  process->pool)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
+                     "alloc_listener: failed to set up sockaddr for %s", addr);
+        return;
     }
-    else { /* XXX See big XXX above in this function. */
-        if ((status = apr_create_socket(&new->sd, APR_INET,
-                                        SOCK_STREAM, process->pool)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
-                         "alloc_listener: failed to get a socket for INADDR_ANY");
-            return;
-        }
-        apr_get_sockaddr(&new->bind_addr, APR_LOCAL, new->sd);
-        apr_set_port(new->bind_addr, port);
+    if ((status = apr_create_socket(&new->sd, new->bind_addr->sa.sin.sin_family, 
+                                    SOCK_STREAM, process->pool)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, status, NULL,
+                     "alloc_listener: failed to get a socket for %s", addr);
+        return;
     }
     new->next = ap_listeners;
     ap_listeners = new;
