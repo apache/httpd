@@ -509,7 +509,7 @@ static void ssl_init_verify(server_rec *s,
 
         if (sk_X509_NAME_num(ca_list) == 0) {
             ssl_log(s, SSL_LOG_WARN,
-                    "Init: Ops, you want to request client authentication, "
+                    "Init: Oops, you want to request client authentication, "
                     "but no CAs are known for verification!? "
                     "[Hint: SSLCACertificate*]");
         }
@@ -690,7 +690,7 @@ void ssl_init_ConfigureServer(server_rec *s,
 
     if (!ok) {
         ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) Ops, no RSA or DSA server certificate found?!",
+                "Init: (%s) Oops, no RSA or DSA server certificate found?!",
                 vhost_id);
         ssl_log(s, SSL_LOG_ERROR,
                 "Init: (%s) You have to perform a *full* server restart "
@@ -810,7 +810,7 @@ void ssl_init_ConfigureServer(server_rec *s,
 
     if (!ok) {
         ssl_log(s, SSL_LOG_ERROR,
-                "Init: (%s) Ops, no RSA or DSA server private key found?!",
+                "Init: (%s) Oops, no RSA or DSA server private key found?!",
                 vhost_id);
         ssl_die();
     }
