@@ -1983,7 +1983,7 @@ Changes with Apache 2.0.16
      to make results more true to what is measured. The upshot of this it
      turns out that 'ab' has often underreported the true performance of
      apache. Often by a order of magnitude :-) See talk/paper of Sander 
-     Temme <sctemme@covalent.net> at April ApacheCon 2001 for details.
+     Temme at April ApacheCon 2001 for details.
      [Dirk-Willem van Gulik]
 
   *) Clean up mod_cgid's temporary request pool.  Besides fixing a
