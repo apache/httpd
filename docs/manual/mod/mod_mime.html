@@ -20,22 +20,44 @@ compiled in by default. It provides for determining the types of files
 from the filename.
 
 <h2>Summary</h2>
-This module is used to determine the mime types of documents. Some mime
-types indicate special processing to be performed by the server, otherwise
-the type is returned to the client so that the browser can deal with
-the document appropriately.<p>
 
-The filename of a document is treated as being composed of a basename followed
-by some extensions, in the following order:
-<blockquote><em>base.type.language.enc</em></blockquote>
-The <em>type</em> extension sets the type of the document; types are defined
-in the <A HREF="#typesconfig">TypesConfig</A> file and by the
-<A HREF="#addtype">AddType</A> directive. The <em>language</em> extension
-sets the language of the document, as defined by the
-<A HREF="#addlanguage">AddLanguage</A> directive. Finally, the
-<em>enc</em> directive sets the encoding of the document, as defined by
-the <A HREF="#addencoding">AddEncoding</A> directive.
+This module is used to determine various bits of "meta information"
+about documents. This information relates to the content of the
+document and is returned to the browser or used in content-negotiation
+within the server. In addition, a "handler" can be set for a document,
+which determines how the document will be processed within the server.
 
+<P>
+
+The directives <A HREF="#addencoding">AddEncoding</A>, <A
+HREF="#addhandler">AddHandler</A>, <A
+HREF="#addlanguage">AddLanguage</A> and <A HREF="#addtype">AddType</A>
+are all used to map file extensions onto the meta-information for that
+file.  Respectively they set the content-encoding, handler,
+content-language and mime-type (content-type) of documents.  The
+directive <A HREF="#typesconfig">TypesConfig</A> is used to specify a
+file which also maps extensions onto mime types. The directives <A
+HREF="#forcetype">ForceType</A> and <A
+HREF="#sethandler">SetHandler</A> are used to associated all the files
+in a given location (e.g. a particular directory) onto a particular
+mime type or handler.
+
+<P>
+
+Files can have more than one extension, and the order of the
+extensions is normally irrelevant. For example, if the file
+<CODE>welcome.html.fr</CODE> maps onto content type text/html and
+language French then the file <CODE>welcome.fr.html</CODE> will map
+onto exactly the same information. The only exception to this is if an
+extension is given which Apache does not know how to handle. In this
+case it will "forget" about any information it obtained from
+extensions to the left of the unknown extension. So, for example, if
+the extensions fr and html are mapped to the appropriate language and
+type but extension xxx is not assigned to anything, then the file
+<CODE>welcome.fr.xxx.html</CODE> will be associated with content-type
+text/html but <i>no</i> language.
+
+<P>
 
 <h2> Directives</h2>
 <ul>
