@@ -212,16 +212,15 @@ Listen [<EM>IP address</EM>:]<EM>port number</EM><BR>
 ><STRONG>Module:</STRONG></A> dexter, mpmt_pthread, perchild, prefork, mpm_winnt</p>
 
 
-<P>The Listen directive instructs Apache to listen to more than one IP
-address or port; by default it responds to requests on all IP
+<P>The Listen directive instructs Apache to listen to only specific IP
+addresses or ports; by default it responds to requests on all IP
 interfaces, but only on the port given by the <CODE><A
-HREF="#port">Port</A></CODE> directive.</P>
+HREF="core.html#port">Port</A></CODE> directive.</P>
 
-<TT>Listen</TT> can be used instead of <TT><A
-HREF="#bindaddress">BindAddress</A></TT> and <TT>Port</TT>. It tells
+<p>The Listen directive tells
 the server to accept incoming requests on the specified port or
-address-and-port combination. If the first format is used, with a port
-number only, the server listens to the given port on all interfaces,
+address-and-port combination. If only a port number is specified,
+the server listens to the given port on all interfaces,
 instead of the port given by the <TT>Port</TT> directive. If an IP
 address is given as well as a port, the server will listen on the
 given port and interface.  <P>
