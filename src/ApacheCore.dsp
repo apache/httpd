@@ -110,10 +110,6 @@ SOURCE=.\buildmark.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\fnmatch.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\os\win32\getopt.c
 # End Source File
 # Begin Source File
@@ -282,6 +278,10 @@ SOURCE=.\include\ap.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\ap_md5.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\buff.h
 # End Source File
 # Begin Source File
@@ -339,10 +339,6 @@ SOURCE=.\include\http_vhost.h
 # Begin Source File
 
 SOURCE=.\include\httpd.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_md5.h
 # End Source File
 # Begin Source File
 

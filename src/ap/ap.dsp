@@ -83,6 +83,10 @@ SOURCE=.\ap_cpystrn.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ap_fnmatch.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\ap_signal.c
 # End Source File
 # Begin Source File
