@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
-<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml"> ]
->
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.12 $ -->
+<!-- $Revision: 1.13 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -38,6 +36,4 @@
       summary form.
     </p>
   </summary>
-
-  &allmodules;
 </directiveindex>

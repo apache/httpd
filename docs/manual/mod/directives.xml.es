@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
-<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml.es"> ]
->
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1.12  -->
+<!-- English Revision: 1.13  -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -39,7 +37,5 @@
       directiva de forma resumida.
     </p>
   </summary>
-
-  &allmodules;
 </directiveindex>
 

@@ -35,7 +35,7 @@
         <xsl:call-template name="top"/>
 
         <xsl:variable name="directives"
-            select="document(modulefilelist/modulefile)
+            select="document(document($allmodules)/modulefilelist/modulefile)
                         /modulesynopsis[status!='Obsolete']
                         /directivesynopsis[not(@location)]" />
 
