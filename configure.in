@@ -191,7 +191,7 @@ dnl ## Check for typedefs, structures, and compiler characteristics.
 
 AC_C_CONST
 if test "$ac_cv_prog_gcc" = "yes"; then
-  APR_ADDTO(CPPFLAGS,-DAP_HAVE_DESIGNATED_INITIALIZER)
+  APR_ADDTO(NOTEST_CPPFLAGS,-DAP_HAVE_DESIGNATED_INITIALIZER)
 fi
 
 dnl ## Check for library functions
