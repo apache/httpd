@@ -527,7 +527,7 @@ static void thread_main(void *thread_num_arg)
     /* needs to be done before we switch UIDs so we have permissions */
     SAFE_ACCEPT(accept_mutex_child_init(pchild));
 
-    ap_child_init_hook(pchild, ap_server_conf);
+    ap_run_child_init(pchild, ap_server_conf);
 
     (void) ap_update_child_status(0, THREAD_GLOBAL(thread_num), SERVER_READY, (request_rec *) NULL);
     

@@ -550,7 +550,7 @@ static void child_main(int child_num_arg)
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    ap_child_init_hook(pchild, ap_server_conf);
+    ap_run_child_init(pchild, ap_server_conf);
 
     (void) ap_update_child_status(AP_CHILD_THREAD_FROM_ID(my_child_num), SERVER_READY, (request_rec *) NULL);
 

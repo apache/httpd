@@ -394,7 +394,7 @@ int main(int argc, const char * const argv[])
     }
     apr_pool_clear(plog);
     ap_run_open_logs(pconf, plog, ptemp, server_conf);
-    ap_post_config_hook(pconf, plog, ptemp, server_conf);
+    ap_run_post_config(pconf, plog, ptemp, server_conf);
     apr_pool_destroy(ptemp);
 
     for (;;) {
@@ -420,7 +420,7 @@ int main(int argc, const char * const argv[])
         apr_sort_hooks();
 	apr_pool_clear(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
-	ap_post_config_hook(pconf, plog, ptemp, server_conf);
+	ap_run_post_config(pconf, plog, ptemp, server_conf);
 	apr_pool_destroy(ptemp);
 
 	ap_run_optional_fn_retrieve();

@@ -1624,19 +1624,6 @@ AP_DECLARE(void) ap_run_rewrite_args(process_rec *process)
             (*m->rewrite_args) (process);
 }
 
-AP_DECLARE(void) ap_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
-{
-    ap_run_post_config(pconf,plog,ptemp,s); 
-}
-
-void ap_child_init_hook(apr_pool_t *pchild, server_rec *s)
-{
-    /* TODO: uh this seems ugly, is there a better way? */
-    /*ap_child_init_alloc();    PUT THIS BACK IN XXXXX */
-
-    ap_run_child_init(pchild,s);
-}
-
 /********************************************************************
  * Configuration directives are restricted in terms of where they may
  * appear in the main configuration files and/or .htaccess files according
