@@ -5259,6 +5259,7 @@ int REALMAIN(int argc, char *argv[])
 	    ap_cpystrn(ap_server_confname, ap_os_canonical_filename(pconf, optarg), sizeof(ap_server_confname));
 	    break;
 	case 'v':
+	    ap_set_version();
 	    printf("Server version: %s\n", ap_get_server_version());
 	    printf("Server built:   %s\n", ap_get_server_built());
 	    exit(0);
@@ -5279,14 +5280,6 @@ int REALMAIN(int argc, char *argv[])
 	}
     }
 
-#ifdef __EMX__
-    printf("%s \n", ap_get_server_version());
-#endif
-#ifdef WIN32
-    if (!child) {
-	printf("%s \n", ap_get_server_version());
-    }
-#endif
     if (!child && run_as_service) {
 	service_cd();
     }
@@ -5298,6 +5291,15 @@ int REALMAIN(int argc, char *argv[])
     ap_set_version();
     ap_open_logs(server_conf, pconf);
     set_group_privs();
+
+#ifdef __EMX__
+    printf("%s \n", ap_get_server_version());
+#endif
+#ifdef WIN32
+    if (!child) {
+	printf("%s \n", ap_get_server_version());
+    }
+#endif
 
     if (one_process && !exit_event)
 	exit_event = create_event(0, 0, NULL);
