@@ -1,9 +1,13 @@
 #ifndef __pre_nw__
 #define __pre_nw__
 
-#pragma precompile_target "precomp.mch"
-#define NETWARE
+#include <stdint.h>
 
+#ifndef __GNUC__
+#pragma precompile_target "precomp.mch"
+#endif
+
+#define NETWARE
 
 #define N_PLAT_NLM
 
@@ -21,16 +25,14 @@
 
 /* if we have wchar_t enabled in C++, predefine this type to avoid
    a conflict in Novell's header files */
+#ifndef __GNUC__
 #if (__option(cplusplus) && __option(wchar_type))
 #define _WCHAR_T
+#endif
 #endif
 
 /* C9X defintion used by MSL C++ library */
 #define DECIMAL_DIG 17
-
-/* define long long typedefs for Watcom compatiblity */
-typedef long long int64_t;
-typedef unsigned long long uint64_t;
 
 /* some code may want to use the MS convention for long long */
 #ifndef __int64
