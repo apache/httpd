@@ -55,8 +55,9 @@
   modifications by Spyglass Inc., Carnegie Mellon University, and
   Bell Communications Research, Inc (Bellcore).
 
-  This package contains software written and copyrighted by Henry
-  Spencer.  Please see the file called src/regex/COPYRIGHT. 
+  This package contains a modified version of software written and
+  copyrighted by Henry Spencer.  Please see the file called 
+  src/regex/COPYRIGHT. 
 
   The NT port was started with code provided to the Apache Group
   by Ambarish Malpani of ValiCert, Inc. (http://www.valicert.com/).
