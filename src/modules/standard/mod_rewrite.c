@@ -163,32 +163,6 @@
 **
 */
 
-    /* the main config structure */
-module rewrite_module = {
-   STANDARD_MODULE_STUFF, 
-
-   init_module,                 /* module initializer */
-
-   config_perdir_create,        /* create per-dir    config structures */
-   config_perdir_merge,         /* merge  per-dir    config structures */
-   config_server_create,        /* create per-server config structures */
-   config_server_merge,         /* merge  per-server config structures */
-   command_table,               /* table of config file commands */
-
-   handler_table,               /* [#7] table of MIME-typed-dispatched request action handlers */
-
-   hook_uri2file,               /* [#1] URI to filename translation */
-
-   NULL,                        /* [#3] check_user_id: get and validate user id from the HTTP request */
-   NULL,                        /* [#4] check_auth:    check if the user is ok _here_ */
-   NULL,                        /* [#2] check_access:  check access by host address, etc. */
-
-   hook_mimetype,               /* [#5] determine MIME type */
-
-   hook_fixup,                  /* [#6] pre-run fixups */
-   NULL                         /* [#8] log a transaction */
-};
-
     /* the table of commands we provide */
 static command_rec command_table[] = {
     { "RewriteEngine",   cmd_rewriteengine,   NULL, OR_FILEINFO, FLAG, 
@@ -214,6 +188,32 @@ static command_rec command_table[] = {
 static handler_rec handler_table[] = {
     { "redirect-handler", handler_redirect },
     { NULL }
+};
+
+    /* the main config structure */
+module rewrite_module = {
+   STANDARD_MODULE_STUFF, 
+
+   init_module,                 /* module initializer */
+
+   config_perdir_create,        /* create per-dir    config structures */
+   config_perdir_merge,         /* merge  per-dir    config structures */
+   config_server_create,        /* create per-server config structures */
+   config_server_merge,         /* merge  per-server config structures */
+   command_table,               /* table of config file commands */
+
+   handler_table,               /* [#7] table of MIME-typed-dispatched request action handlers */
+
+   hook_uri2file,               /* [#1] URI to filename translation */
+
+   NULL,                        /* [#3] check_user_id: get and validate user id from the HTTP request */
+   NULL,                        /* [#4] check_auth:    check if the user is ok _here_ */
+   NULL,                        /* [#2] check_access:  check access by host address, etc. */
+
+   hook_mimetype,               /* [#5] determine MIME type */
+
+   hook_fixup,                  /* [#6] pre-run fixups */
+   NULL                         /* [#8] log a transaction */
 };
 
     /* the common cache */

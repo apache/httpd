@@ -419,7 +419,7 @@ bskiplf(BUFF *fb)
 
     for (;;)
     {
-	x = memchr(fb->inptr, '\012', fb->incnt);
+	x = (unsigned char *)memchr(fb->inptr, '\012', fb->incnt);
 	if (x != NULL)
 	{
 	    x++;

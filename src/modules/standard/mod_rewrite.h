@@ -280,8 +280,6 @@ typedef struct cache {
 
     /* static config */
 extern module rewrite_module;
-static command_rec command_table[];
-static handler_rec handler_table[];
 extern cache *cachep;
 
     /* config structure handling */
