@@ -2,6 +2,8 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add a build script to create a solaris package. [Graham Leggett]
+
   *) ap_http_scheme() replaced with ap_http_method() - this function
      returns the scheme (http v.s. https).
      [William Rowe]
