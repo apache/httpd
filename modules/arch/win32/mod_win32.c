@@ -439,6 +439,23 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                 || !strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
         interpreter = "";
     }
+    if (!interpreter && ext 
+          && (d->script_interpreter_source 
+                     == INTERPRETER_SOURCE_REGISTRY
+           || d->script_interpreter_source 
+                     == INTERPRETER_SOURCE_REGISTRY_STRICT)) {
+         /* Check the registry */
+        int strict = (d->script_interpreter_source 
+                      == INTERPRETER_SOURCE_REGISTRY_STRICT);
+        interpreter = get_interpreter_from_win32_registry(r->pool, ext,
+                                                          strict);
+        if (!interpreter) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
+                 strict ? "No ExecCGI verb found for files of type '%s'."
+                        : "No ExecCGI or Open verb found for files of type '%s'.", 
+                 ext);
+        }
+    }
     if (!interpreter) {
         apr_status_t rv;
         char buffer[1024];
@@ -487,21 +504,6 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                     interpreter = "";
                 }
             }
-        }
-    }
-    if (!interpreter && ext &&
-        (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY
-         || d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY_STRICT)) {
-         /* Check the registry */
-        int strict = (d->script_interpreter_source 
-                      == INTERPRETER_SOURCE_REGISTRY_STRICT);
-        interpreter = get_interpreter_from_win32_registry(r->pool, ext,
-                                                          strict);
-        if (!interpreter) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r->server,
-                 strict ? "No ExecCGI verb found for files of type '%s'."
-                        : "No ExecCGI or Open verb found for files of type '%s'.", 
-                 ext);
         }
     }
     if (!interpreter) {
