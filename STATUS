@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/10 17:52:29 $]
+Last modified at [$Date: 2004/04/10 18:51:50 $]
 
 Release:
 
@@ -96,14 +96,16 @@ PATCHES TO BACKPORT FROM 2.1
     *) Enable special ErrorDocument value 'default' which restores the
        canned server response for the scope of the directive
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.270&r2=1.271
-       +1: geoff
+         plus inheritance fix:
+         http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.272&r2=1.273
+       +1: nd (geoff)
 
     *) Nested <IfDefine> blocks will cause ap_build_cont_config()
        to be called recursively. Allocate the temporary 8k 
        string buffer from the temp_pool rather than the stack to 
        avoid over-running a fixed length stack.
          server/config.c: r1.174
-       +1: bnicholes
+       +1: bnicholes, nd
 
     *) Fix segfault in mod_expires. PR 28047
          modules/metadata/mod_expires.c: r1.54
@@ -191,7 +193,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) mod_dav: Fix a 2617 compliance issue
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/util.c?r1=1.53&r2=1.54
-       +1: jorton
+       +1: jorton, nd
 
     *) Issue a 413 not a 400 if client exceeds configured LimitXMLRequestBody
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/util_xml.c?r1=1.28&r2=1.29
@@ -200,10 +202,11 @@ PATCHES TO BACKPORT FROM 2.1
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
        +1: jorton
+         nd asks: Sure, you want to drop the return code of ap_pass_brigade?
 
     *) mod_dav_fs: Better ENOSPC handling and a remove a write(,,0) call:
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/fs/repos.c?r1=1.77&r2=1.79
-       +1: jorton
+       +1: jorton, nd
 
     *) Allow Satisfy directives to be influenced by <Limit>.
        PR: 14726
@@ -258,8 +261,7 @@ PATCHES TO BACKPORT FROM 2.1
     * Extend the SetEnvIf directive to capture subexpressions of the
       matched value.
         modules/metadata/mod_setenvif.c r1.42, r1.43
-      +1: nd, rederpj (shouldn't it also include r1.43?)
-        nd: hell, yeah.
+      +1: nd, rederpj
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
