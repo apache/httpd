@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/17 02:57:21 $]
+Last modified at [$Date: 2003/04/17 03:01:54 $]
 
 Release:
 
@@ -222,13 +222,6 @@ PATCHES TO PORT FROM 2.1
       modules/ssl/mod_ssl.h r1.130
       modules/experimenal/mod_auth_ldap.c r1.15
       +1: trawick, wrowe, jerenkrantz
-
-      modules/aaa/mod_authn_default.c r1.6
-      +1: trawick, wrowe
-      -1: jerenkrantz
-
-      jerenkrantz says: Um, like mod_authn_default.c doesn't exist in 2.0.
-                        Not sure if its counterpart in 2.0 needs it.  Jeff?
 
     * Enable coredumps on Linux 2.4+ if CoreDumpDirectory is coded
       os/unix/unixd.c                 r1.57
