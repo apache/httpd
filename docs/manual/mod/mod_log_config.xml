@@ -76,10 +76,10 @@
         <td>Local IP-address</td></tr>
 
     <tr><td><code>%...B</code></td>
-        <td>Bytes sent, excluding HTTP headers.</td></tr>
+        <td>Size of response in bytes, excluding HTTP headers.</td></tr>
 
     <tr><td><code>%...b</code></td>
-        <td>Bytes sent, excluding HTTP headers. In CLF format, <em>i.e.</em>
+        <td>Size of response in bytes, excluding HTTP headers. In CLF format, <em>i.e.</em>
         a '<code>-</code>' rather than a 0 when no bytes are sent.</td></tr>
 
     <tr><td><code>%...{<var>Foobar</var>}C</code></td>
@@ -236,6 +236,14 @@
     rule are <code>"</code> and <code>\</code> which are escaped by prepending
     a backslash, and all whitespace characters which are written in their
     C-style notation (<code>\n</code>, <code>\t</code> etc).</p>
+
+    <p>Note that in httpd 2.0, unlike 1.3, the <code>%b</code> and
+    <code>%B</code> format strings do not represent the number of
+    bytes sent to the client, but simply the size in bytes of the HTTP
+    response (which will differ, for instance, if the connection is
+    aborted, or if SSL is used).  The <code>%O</code> format provided
+    by <module>mod_logio</module> will log the actual number of bytes
+    sent over the network.</p>
 
     <p>Some commonly used log format strings are:</p>
 
