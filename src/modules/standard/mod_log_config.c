@@ -401,6 +401,9 @@ static char *log_request_duration(request_rec *r, char *a)
     return pstrdup(r->pool, duration);
 }
 
+/* These next two routines use the canonical name:port so that log
+ * parsers don't need to duplicate all the vhost parsing crud.
+ */
 static char *log_virtual_host(request_rec *r, char *a)
 {
     return pstrdup(r->pool, r->server->server_hostname);
