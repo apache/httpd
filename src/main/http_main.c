@@ -3306,7 +3306,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	close(s);
 #endif
 	ap_unblock_alarms();
-	return -1;
+	exit(1);
     }
 #endif /*_OSD_POSIX*/
     one = 1;
@@ -3321,7 +3321,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif
 
 	ap_unblock_alarms();
-	return -1;
+	exit(1);
     }
 #endif
 
@@ -3418,7 +3418,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #else
 	close(s);
 #endif
-	return -1;
+	exit(1);
     }
 #endif
 
@@ -3505,16 +3505,14 @@ static void setup_listeners(pool *p)
     for (;;) {
 	fd = find_listener(lr);
 	if (fd < 0) {
-        fd = make_sock(p, &lr->local_addr);
+	    fd = make_sock(p, &lr->local_addr);
 	}
 	else {
 	    ap_note_cleanups_for_socket(p, fd);
 	}
-	if (fd >= 0) {
-	    FD_SET(fd, &listenfds);
-	    if (fd > listenmaxfd)
-		listenmaxfd = fd;
-	}
+	FD_SET(fd, &listenfds);
+	if (fd > listenmaxfd)
+	    listenmaxfd = fd;
 	lr->fd = fd;
 	if (lr->next == NULL)
 	    break;
