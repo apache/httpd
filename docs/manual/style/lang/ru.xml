@@ -87,4 +87,8 @@
  <!-- footer line -->
  <message name="licensed">Licensed under the</message>
  <message name="langavail">Available Languages</message>
+
+ <!-- not up to date -->
+ <message name="outofdate">This translation may be out of date. Check the
+ English version for recent changes.</message>
 </messages>
