@@ -297,6 +297,15 @@ th {
     font-weight: bold;
 }
 
+tr.odd { /* for large tables alternating colors */
+    background-color: #f2f2f2;
+}
+
+tr.odd a:hover,
+tr.odd a:active {
+      background-color: #fff;
+}
+
 /* bordered table cells   */
 /* ====================== */
 
@@ -315,11 +324,20 @@ table table.bordered th {
     border: 1px solid #aaa;
 }
 
-/* mod/dir. overview table  */
-/* ======================== */
+/* mod/dir. overview table and quick reference  */
+/* ============================================ */
 table.module th,
 table.directive th {
     white-space: nowrap;
+}
+
+.qref {
+     border-collapse: collapse;
+     width: 100%;
+}
+
+.qref th {
+      background-color: #eee;
 }
 
 /* related modules & dir. */
