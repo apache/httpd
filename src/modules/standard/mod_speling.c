@@ -85,31 +85,64 @@
 
 MODULE_VAR_EXPORT module speling_module;
 
+typedef struct {
+    int enabled;
+} spconfig;
+
 /*
- * We use the "unconventional" mod_userdir approach here. And heck,
- * here it's just one int!
+ * Create a configuration specific to this module for a server or directory
+ * location, and fill it with the default settings.
+ *
+ * The API says that in the absence of a merge function, the record for the
+ * closest ancestor is used exclusively.  That's what we want, so we don't
+ * bother to have such a function.
  */
 
-static void *create_speling_config(pool *dummy, server_rec *s)
+static void *mkconfig(pool *p)
 {
-    return (void *) 0;
+    spconfig *cfg = ap_pcalloc(p, sizeof(spconfig));
+
+    cfg->enabled = 0;
+    return cfg;
 }
 
-static const char *set_speling(cmd_parms *cmd, void *dummy, int arg)
+/*
+ * Respond to a callback to create configuration record for a server or
+ * vhost environment.
+ */
+static void *create_mconfig_for_server(pool *p, server_rec *s)
 {
-    void *server_conf = cmd->server->module_config;
+    return mkconfig(p);
+}
 
-    /* any non-NULL pointer means speling is enabled */
-    ap_set_module_config(server_conf, &speling_module,
-			 arg ? (void *) &speling_module : NULL);
+/*
+ * Respond to a callback to create a config record for a specific directory.
+ */
+static void *create_mconfig_for_directory(pool *p, char *dir)
+{
+    return mkconfig(p);
+}
+
+/*
+ * Handler for the CheckSpelling directive, which is FLAG.
+ */
+static const char *set_speling(cmd_parms *cmd, void *mconfig, int arg)
+{
+    spconfig *cfg = (spconfig *) mconfig;
+
+    cfg->enabled = arg;
     return NULL;
 }
 
+/*
+ * Define the directives specific to this module.  This structure is referenced
+ * later by the 'module' structure.
+ */
 static const command_rec speling_cmds[] =
 {
-    {"CheckSpelling", set_speling, NULL, RSRC_CONF, FLAG,
-     "whether or not to fix miscapitalized/misspelled requests"},
-    {NULL}
+    { "CheckSpelling", set_speling, NULL, OR_OPTIONS, FLAG,
+      "whether or not to fix miscapitalized/misspelled requests" },
+    { NULL }
 };
 
 typedef enum {
@@ -481,9 +514,9 @@ module MODULE_VAR_EXPORT speling_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */
-    NULL,                       /* create per-dir config */
+    create_mconfig_for_directory,  /* create per-dir config */
     NULL,                       /* merge per-dir config */
-    create_speling_config,      /* server config */
+    create_mconfig_for_server,  /* server config */
     NULL,                       /* merge server config */
     speling_cmds,               /* command table */
     NULL,                       /* handlers */

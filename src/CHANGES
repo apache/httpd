@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Enhance mod_spelling so that CheckSpelling can be used in
+     <Directory> containers and .htaccess files.  [Ken Coar]
+
   *) API: new ap_custom_response() function for hooking into the
      ErrorDocument mechanism at runtime [Doug MacEachern]
 
