@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.4 -->
+<modulesynopsis metafile="mod_echo.xml.meta">
+
+<name>mod_echo</name>
+<description>프로토콜 모듈을 설명하기위한 간단한 echo 서버</description>
+<status>Experimental</status>
+<sourcefile>mod_echo.c</sourcefile>
+<identifier>echo_module</identifier>
+<compatibility>Apache 2.0 이후부터</compatibility>
+
+<summary>
+    <p>이 모듈은 프로토콜 모듈의 개념을 설명하기위한 예제이다.
+    이 모듈은 간단한 echo 서버를 구현한다. 이 서버로 telnet하여
+    무언가를 입력하면, 서버는 입력한 내용이 그대로 반환한다.</p>
+</summary>
+
+<directivesynopsis>
+
+<name>ProtocolEcho</name>
+<description>echo 서버를 키고 끈다</description>
+<syntax>ProtocolEcho On|Off</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>ProtocolEcho는 2.0 이후에만 있다.</compatibility>
+
+<usage>
+    <p><directive>ProtocolEcho</directive> 지시어는 echo 서버를
+    키고 끈다.</p>
+
+    <example><title>예제</title>
+      ProtocolEcho On
+    </example>
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+

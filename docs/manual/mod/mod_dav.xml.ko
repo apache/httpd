@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English revision: 1.8 -->
+<modulesynopsis metafile="mod_dav.xml.meta">
+
+<name>mod_dav</name> 
+<description>Distributed Authoring and Versioning
+(<a href="http://www.webdav.org/">WebDAV</a>) 기능</description>
+<status>Extension</status>
+<sourcefile>mod_dav.c</sourcefile>
+<identifier>dav_module</identifier>
+
+<summary>
+    <p>이 모듈은 아파치에 <a href="http://www.webdav.org">WebDAV</a>
+    ('Web-based Distributed Authoring and Versioning') class 1과
+    class 2 기능을 추가한다. WebDAV는 원격 웹서버의 자원과
+    콜렉션(collection)을 <transnote>콜렉션은 파일시스템의 디렉토리와
+    같은 개념이다</transnote> 만들고, 옮기고, 복사하고, 지울
+    수 있도록 HTTP 프로토콜을 확장한 것이다.</p>
+</summary>
+<seealso><directive module="mod_dav_fs">DavLockDB</directive></seealso>
+<seealso><directive module="core">LimitXMLRequestBody</directive></seealso>
+<seealso><a href="http://www.webdav.org">WebDAV 정보</a></seealso>
+
+<section id="example"><title>WebDAV 사용하기</title>
+    <p><module>mod_dav</module>를 사용하려면 <code>httpd.conf</code>
+    파일에 아래과 같이 추가한다:</p>
+
+    <example>Dav On</example>
+
+    <p>그러면 <module>mod_dav_fs</module> 모듈이 구현하는 DAV
+    파일시스템 제공자(provider)를 사용한다. 그러므로 이 모듈도
+    서버에 같이 컴파일되있거나 <directive
+    module="mod_so">LoadModule</directive> 지시어로 실행중에
+    읽어들여야 한다.</p>
+    
+    <p>또, DAV 잠금(lock) 데이터베이스의 위치를 <code>httpd.conf</code>
+    파일의 전역 부분에 <directive
+    module="mod_dav_fs">DavLockDB</directive> 지시어를 사용하여
+    지정해야 한다:</p>
+
+    <example>
+      DavLockDB /usr/local/apache2/var/DavLock
+    </example>
+
+    <p>아파치를 실행하는 <directive
+    module="mpm_common">User</directive>와 <directive
+    module="mpm_common" >Group</directive>은 잠금 데이터베이스가
+    있는 디렉토리에 쓰기 권한을 가져야 한다.</p>
+
+    <p>DAV를 사용하는 위치에 접근을 제한하기위해 <directive
+    module="core" type="section">Location</directive> 지시어
+    안에 <directive module="core" type="section">Limit</directive>
+    지시어를 사용할 수 있다. DAV 클라이언트가 한번의 요청에
+    보낼 수 있는 최대 바이트수를 제한하려면 <directive
+    module="core">LimitXMLRequestBody</directive> 지시어를 사용한다.
+    "일반적인" <directive module="core">LimitRequestBody</directive>
+    지시어는 DAV 요청과 관계없다.</p>
+
+    <example><title>전체 예제</title>
+      DavLockDB /usr/local/apache2/var/DavLock<br />
+      <br />
+       &lt;Location /foo&gt;<br />
+       <indent>
+         Dav On<br />
+         <br />
+         AuthType Basic<br />
+         AuthName DAV<br />
+         AuthUserFile user.passwd<br />
+         <br />
+         &lt;LimitExcept GET OPTIONS&gt;<br />
+         <indent>
+           require user admin<br />
+         </indent>
+         &lt;/LimitExcept&gt;<br />
+       </indent>
+       &lt;/Location&gt;<br />
+    </example>
+
+   <p><module>mod_dav</module>는 Greg Stein이 만든 <a
+   href="http://www.webdav.org/mod_dav/">Apache 1.3용 mod_dav</a>를
+   기반으로 만들었다. 모듈에 대한 더 자세한 정보는 그 사이트를
+   참고하라.</p>
+</section>
+
+<section id="security"><title>보안 문제</title>
+
+    <p>DAV를 사용하면 원격 클라이언트가 서버의 파일을 조작할
+    수 있기때문에, <module>mod_dav</module>를 사용하기 전에
+    서버가 안전한지 특별히 관심을 가져야 한다.</p>
+
+    <p>서버에서 DAV가 가능한 위치는 인증으로 보호해야 한다.
+    HTTP Basic Authentication는 추천하지 않는다. 최소한
+    <module>mod_auth_digest</module> 모듈이 제공하는 HTTP Digest
+    Authentication을 사용해야 한다. 거의 모든 WebDAV 클라이언트는
+    이 인증 방식을 지원한다. 아니면 <a href="../ssl/">SSL</a>
+    연결에서 Basic Authentication을 사용할 수도 있다.</p>
+
+    <p><module>mod_dav</module>가 파일을 조작하려면, 아파치를
+    실행하는 <directive module="mpm_common">User</directive>와
+    <directive module="mpm_common">Group</directive>은 해당
+    디렉토리와 파일에 쓰기 권한을 가져야 한다. 또, 새로 생성한
+    파일은 <directive module="mpm_common">User</directive>와
+    <directive module="mpm_common">Group</directive>이 소유하게
+    된다. 그래서 아무나 이 계정에 접근할 수 없도록 하라. DAV
+    저장소는 아파치만 접근할 수 있다고 가정한다. 아파치를 통하지않고
+    (예를 들어 FTP나 파일시스템 도구를 사용하여) 파일을 수정함을
+    허용하면 안된다.</p>
+
+    <p><module>mod_dav</module>는 여러 서비스거부 공격의 대상이
+    될 수 있다. <directive
+    module="core">LimitXMLRequestBody</directive> 지시어를
+    사용하여 큰 DAV 요청을 읽을때 메모리량을 제한할 수 있다.
+    <directive module="mod_dav">DavDepthInfinity</directive>
+    지시어를 사용하여 많은 메모리를 소모하기위한 매우 큰 저장소의
+    <code>PROPFIND</code> 요청을 막을 수 있다. 단순히 클라이언트가
+    여러 큰 파일들로 디스크공간을 채우는 서비스거부 공격도 가능하다.
+    아파치에서 이를 막을 직접적인 방법은 없다. 그러므로 신뢰하지않는
+    사용자에게 DAV 접근을 허용하지 않도록하라.</p>
+</section>
+
+<section id="complex"><title>복잡한 설정</title>
+
+    <p>일반적인 질문중 하나는 (PHP 스크립트, CGI 스크립트 등)
+    동적파일 작업을 위해 <module>mod_dav</module>를 사용하는
+    방법이다. 이는 <code>GET</code> 요청이 파일 내용을 다운로드하지
+    않고 항상 스크립트를 실행하므로 어렵다. 해결방법중 하나는
+    내용에 두개의 URL을 대응하는 것이다. 한 URL은 스크립트를
+    실행하고, 다른 URL로는 파일을 다운로드하여 DAV로 작업할
+    수 있다.</p>
+
+<example>
+Alias /phparea /home/gstein/php_files<br />
+Alias /php-source /home/gstein/php_files<br />
+&lt;Location /php-source&gt;
+<indent>
+    DAV On<br />
+    ForceType text/plain<br />
+</indent>
+&lt;/Location&gt;
+</example>
+
+    <p>이 설정에서 <code>http://example.com/phparea</code>는
+    PHP 스크립트의 결과를 보여주고,
+    <code>http://example.com/php-source</code>로는 DAV 클라이언트에서
+    스크립트를 수정할 수 있다.</p>
+</section>
+
+<directivesynopsis>
+<name>Dav</name>
+<description>WebDAV HTTP 메써드를 시작한다</description>
+<syntax>Dav On|Off|<var>provider-name</var></syntax>
+<default>Dav Off</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>지정한 위치에서 WebDAV HTTP 메써드를 사용하려면
+    <directive>Dav</directive> 지시어를 사용한다:</p>
+
+    <example>
+      &lt;Location /foo&gt;<br />
+      <indent>
+        Dav On<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <p><code>On</code> 값은 실제로 <module>mod_dav_fs</module>
+    모듈이 제공하는 기본 제공자인 <code>filesystem</code>의
+    별칭이다. 어떤 위치에서 DAV를 시작하면 하위공간에서 DAV를
+    사용안하도록 설정할 수 <em>없음을</em> 주의하라. 완전한
+    설정예는 <a href="#example">위의 절</a>을 참고하라.</p>
+
+    <note type="warning">
+      서버를 안전하게 구성할때까지 WebDAV을 사용하지 마라. 그렇지
+      않으면 누구라도 서버를 통해 파일을 분배할 수 있게 된다.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavMinTimeout</name>
+<description>서버가 DAV 자원에 대해 유지할 잠금의 최소시간</description>
+<syntax>DavMinTimeout <var>seconds</var></syntax>
+<default>DavMinTimeout 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>클라이언트가 DAV 자원에 잠금(lock)을 요청할때 서버가
+    알아서 잠금을 제거할 수 있는 시간을 같이 알려줄 수 있다. 이 값은
+    단지 요청일뿐이며, 서버는 클라이언트가 요청한 값을 무시하고
+    클라이언트에게 임의의 시간을 알려줄 수 있다.</p>
+
+    <p><directive>DavMinTimeout</directive> 지시어는 클라이언트에게
+    보낼 최소 잠금 시간을 (초단위) 지정한다. Microsoft Web Folders는
+    기본값으로 120 초를 사용한다. <directive>DavMinTimeout</directive>에
+    (600 초와 같이) 더 높은 값을 사용하면 클라이언트가 네트웍
+    지연때문에 잠금을 잃게되는 경우를 줄일 수 있다.</p>
+
+    <example><title>예제</title>
+      &lt;Location /MSWord&gt;<br />
+      <indent>
+        DavMinTimeout 600<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+</usage>     
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DavDepthInfinity</name>
+<description>PROPFIND의 Depth: Infinity 요청을 허가한다</description>
+<syntax>DavDepthInfinity on|off</syntax>
+<default>DavDepthInfinity off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p><directive>DavDepthInfinity</directive> 지시어를 사용하면
+    'Depth: Infinity' 헤더를 가진 <code>PROPFIND</code> 요청을
+    허가한다. 이런 요청을 사용하여 서비스거부 공격이 가능하기
+    때문에 기본적으로 허용하지 않는다.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
+
