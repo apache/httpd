@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/06 12:42:36 $]
+Last modified at [$Date: 2002/05/06 15:31:40 $]
 
 Release:
 
@@ -53,6 +53,8 @@ RELEASE SHOWSTOPPERS:
 
     * for 2.0.37: decide if the MMN bump was warranted
 
+    * Move mod_deflate out of experimental
+
 CURRENT VOTES:
 
     * Should we always build [support*] binaries statically unless otherwise
@@ -84,6 +86,8 @@ CURRENT VOTES:
       -1:   Aaron (premature decision, needs more discussion and bug fixes)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+    * Get mod_cache/mod_mem_cache out of experimental (still some
+      work items left to complete)
 
     * The 2.0.36 worker MPM graceless shutdown changes work but are
       a bit clunky on some platforms; eg, on Linux, the loop to
@@ -122,9 +126,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Rewrite core_output_filter. It is nearly impossible to support
       it with predictable results as it is implemented now.
-
-    * Convert all instances of the old apr_lock_t type to the new
-      types.
 
     * With AP_MODE_EXHAUSTIVE in the core, it is finally clear to me
       how the Perchild MPM should be re-written.  It hasn't worked
