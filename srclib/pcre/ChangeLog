@@ -1,7 +1,867 @@
 ChangeLog for PCRE
 ------------------
 
-Version 3.0 02-Jan-02
+Version 5.0 13-Sep-04
+---------------------
+
+ 1. Internal change: literal characters are no longer packed up into items
+    containing multiple characters in a single byte-string. Each character
+    is now matched using a separate opcode. However, there may be more than one
+    byte in the character in UTF-8 mode.
+
+ 2. The pcre_callout_block structure has two new fields: pattern_position and
+    next_item_length. These contain the offset in the pattern to the next match
+    item, and its length, respectively.
+
+ 3. The PCRE_AUTO_CALLOUT option for pcre_compile() requests the automatic
+    insertion of callouts before each pattern item. Added the /C option to
+    pcretest to make use of this.
+
+ 4. On the advice of a Windows user, the lines
+
+      #if defined(_WIN32) || defined(WIN32)
+      _setmode( _fileno( stdout ), 0x8000 );
+      #endif  /* defined(_WIN32) || defined(WIN32) */
+
+    have been added to the source of pcretest. This apparently does useful
+    magic in relation to line terminators.
+
+ 5. Changed "r" and "w" in the calls to fopen() in pcretest to "rb" and "wb"
+    for the benefit of those environments where the "b" makes a difference.
+
+ 6. The icc compiler has the same options as gcc, but "configure" doesn't seem
+    to know about it. I have put a hack into configure.in that adds in code
+    to set GCC=yes if CC=icc. This seems to end up at a point in the
+    generated configure script that is early enough to affect the setting of
+    compiler options, which is what is needed, but I have no means of testing
+    whether it really works. (The user who reported this had patched the
+    generated configure script, which of course I cannot do.)
+
+    LATER: After change 22 below (new libtool files), the configure script
+    seems to know about icc (and also ecc). Therefore, I have commented out
+    this hack in configure.in.
+
+ 7. Added support for pkg-config (2 patches were sent in).
+
+ 8. Negated POSIX character classes that used a combination of internal tables
+    were completely broken. These were [[:^alpha:]], [[:^alnum:]], and
+    [[:^ascii]]. Typically, they would match almost any characters. The other
+    POSIX classes were not broken in this way.
+
+ 9. Matching the pattern "\b.*?" against "ab cd", starting at offset 1, failed
+    to find the match, as PCRE was deluded into thinking that the match had to
+    start at the start point or following a newline. The same bug applied to
+    patterns with negative forward assertions or any backward assertions
+    preceding ".*" at the start, unless the pattern required a fixed first
+    character. This was a failing pattern: "(?!.bcd).*". The bug is now fixed.
+
+10. In UTF-8 mode, when moving forwards in the subject after a failed match
+    starting at the last subject character, bytes beyond the end of the subject
+    string were read.
+
+11. Renamed the variable "class" as "classbits" to make life easier for C++
+    users. (Previously there was a macro definition, but it apparently wasn't
+    enough.)
+
+12. Added the new field "tables" to the extra data so that tables can be passed
+    in at exec time, or the internal tables can be re-selected. This allows
+    a compiled regex to be saved and re-used at a later time by a different
+    program that might have everything at different addresses.
+
+13. Modified the pcre-config script so that, when run on Solaris, it shows a
+    -R library as well as a -L library.
+
+14. The debugging options of pcretest (-d on the command line or D on a
+    pattern) showed incorrect output for anything following an extended class
+    that contained multibyte characters and which was followed by a quantifier.
+
+15. Added optional support for general category Unicode character properties
+    via the \p, \P, and \X escapes. Unicode property support implies UTF-8
+    support. It adds about 90K to the size of the library. The meanings of the
+    inbuilt class escapes such as \d and \s have NOT been changed.
+
+16. Updated pcredemo.c to include calls to free() to release the memory for the
+    compiled pattern.
+
+17. The generated file chartables.c was being created in the source directory
+    instead of in the building directory. This caused the build to fail if the
+    source directory was different from the building directory, and was
+    read-only.
+
+18. Added some sample Win commands from Mark Tetrode into the NON-UNIX-USE
+    file. No doubt somebody will tell me if they don't make sense... Also added
+    Dan Mooney's comments about building on OpenVMS.
+
+19. Added support for partial matching via the PCRE_PARTIAL option for
+    pcre_exec() and the \P data escape in pcretest.
+
+20. Extended pcretest with 3 new pattern features:
+
+    (i)   A pattern option of the form ">rest-of-line" causes pcretest to
+          write the compiled pattern to the file whose name is "rest-of-line".
+          This is a straight binary dump of the data, with the saved pointer to
+          the character tables forced to be NULL. The study data, if any, is
+          written too. After writing, pcretest reads a new pattern.
+
+    (ii)  If, instead of a pattern, "<rest-of-line" is given, pcretest reads a
+          compiled pattern from the given file. There must not be any
+          occurrences of "<" in the file name (pretty unlikely); if there are,
+          pcretest will instead treat the initial "<" as a pattern delimiter.
+          After reading in the pattern, pcretest goes on to read data lines as
+          usual.
+
+    (iii) The F pattern option causes pcretest to flip the bytes in the 32-bit
+          and 16-bit fields in a compiled pattern, to simulate a pattern that
+          was compiled on a host of opposite endianness.
+
+21. The pcre-exec() function can now cope with patterns that were compiled on
+    hosts of opposite endianness, with this restriction:
+
+      As for any compiled expression that is saved and used later, the tables
+      pointer field cannot be preserved; the extra_data field in the arguments
+      to pcre_exec() should be used to pass in a tables address if a value
+      other than the default internal tables were used at compile time.
+
+22. Calling pcre_exec() with a negative value of the "ovecsize" parameter is
+    now diagnosed as an error. Previously, most of the time, a negative number
+    would have been treated as zero, but if in addition "ovector" was passed as
+    NULL, a crash could occur.
+
+23. Updated the files ltmain.sh, config.sub, config.guess, and aclocal.m4 with
+    new versions from the libtool 1.5 distribution (the last one is a copy of
+    a file called libtool.m4). This seems to have fixed the need to patch
+    "configure" to support Darwin 1.3 (which I used to do). However, I still
+    had to patch ltmain.sh to ensure that ${SED} is set (it isn't on my
+    workstation).
+
+24. Changed the PCRE licence to be the more standard "BSD" licence.
+
+
+Version 4.5 01-Dec-03
+---------------------
+
+ 1. There has been some re-arrangement of the code for the match() function so
+    that it can be compiled in a version that does not call itself recursively.
+    Instead, it keeps those local variables that need separate instances for
+    each "recursion" in a frame on the heap, and gets/frees frames whenever it
+    needs to "recurse". Keeping track of where control must go is done by means
+    of setjmp/longjmp. The whole thing is implemented by a set of macros that
+    hide most of the details from the main code, and operates only if
+    NO_RECURSE is defined while compiling pcre.c. If PCRE is built using the
+    "configure" mechanism, "--disable-stack-for-recursion" turns on this way of
+    operating.
+
+    To make it easier for callers to provide specially tailored get/free
+    functions for this usage, two new functions, pcre_stack_malloc, and
+    pcre_stack_free, are used. They are always called in strict stacking order,
+    and the size of block requested is always the same.
+
+    The PCRE_CONFIG_STACKRECURSE info parameter can be used to find out whether
+    PCRE has been compiled to use the stack or the heap for recursion. The
+    -C option of pcretest uses this to show which version is compiled.
+
+    A new data escape \S, is added to pcretest; it causes the amounts of store
+    obtained and freed by both kinds of malloc/free at match time to be added
+    to the output.
+
+ 2. Changed the locale test to use "fr_FR" instead of "fr" because that's
+    what's available on my current Linux desktop machine.
+
+ 3. When matching a UTF-8 string, the test for a valid string at the start has
+    been extended. If start_offset is not zero, PCRE now checks that it points
+    to a byte that is the start of a UTF-8 character. If not, it returns
+    PCRE_ERROR_BADUTF8_OFFSET (-11). Note: the whole string is still checked;
+    this is necessary because there may be backward assertions in the pattern.
+    When matching the same subject several times, it may save resources to use
+    PCRE_NO_UTF8_CHECK on all but the first call if the string is long.
+
+ 4. The code for checking the validity of UTF-8 strings has been tightened so
+    that it rejects (a) strings containing 0xfe or 0xff bytes and (b) strings
+    containing "overlong sequences".
+
+ 5. Fixed a bug (appearing twice) that I could not find any way of exploiting!
+    I had written "if ((digitab[*p++] && chtab_digit) == 0)" where the "&&"
+    should have been "&", but it just so happened that all the cases this let
+    through by mistake were picked up later in the function.
+
+ 6. I had used a variable called "isblank" - this is a C99 function, causing
+    some compilers to warn. To avoid this, I renamed it (as "blankclass").
+
+ 7. Cosmetic: (a) only output another newline at the end of pcretest if it is
+    prompting; (b) run "./pcretest /dev/null" at the start of the test script
+    so the version is shown; (c) stop "make test" echoing "./RunTest".
+
+ 8. Added patches from David Burgess to enable PCRE to run on EBCDIC systems.
+
+ 9. The prototype for memmove() for systems that don't have it was using
+    size_t, but the inclusion of the header that defines size_t was later. I've
+    moved the #includes for the C headers earlier to avoid this.
+
+10. Added some adjustments to the code to make it easier to compiler on certain
+    special systems:
+
+      (a) Some "const" qualifiers were missing.
+      (b) Added the macro EXPORT before all exported functions; by default this
+          is defined to be empty.
+      (c) Changed the dftables auxiliary program (that builds chartables.c) so
+          that it reads its output file name as an argument instead of writing
+          to the standard output and assuming this can be redirected.
+
+11. In UTF-8 mode, if a recursive reference (e.g. (?1)) followed a character
+    class containing characters with values greater than 255, PCRE compilation
+    went into a loop.
+
+12. A recursive reference to a subpattern that was within another subpattern
+    that had a minimum quantifier of zero caused PCRE to crash. For example,
+    (x(y(?2))z)? provoked this bug with a subject that got as far as the
+    recursion. If the recursively-called subpattern itself had a zero repeat,
+    that was OK.
+
+13. In pcretest, the buffer for reading a data line was set at 30K, but the
+    buffer into which it was copied (for escape processing) was still set at
+    1024, so long lines caused crashes.
+
+14. A pattern such as /[ab]{1,3}+/ failed to compile, giving the error
+    "internal error: code overflow...". This applied to any character class
+    that was followed by a possessive quantifier.
+
+15. Modified the Makefile to add libpcre.la as a prerequisite for
+    libpcreposix.la because I was told this is needed for a parallel build to
+    work.
+
+16. If a pattern that contained .* following optional items at the start was
+    studied, the wrong optimizing data was generated, leading to matching
+    errors. For example, studying /[ab]*.*c/ concluded, erroneously, that any
+    matching string must start with a or b or c. The correct conclusion for
+    this pattern is that a match can start with any character.
+
+
+Version 4.4 13-Aug-03
+---------------------
+
+ 1. In UTF-8 mode, a character class containing characters with values between
+    127 and 255 was not handled correctly if the compiled pattern was studied.
+    In fixing this, I have also improved the studying algorithm for such
+    classes (slightly).
+
+ 2. Three internal functions had redundant arguments passed to them. Removal
+    might give a very teeny performance improvement.
+
+ 3. Documentation bug: the value of the capture_top field in a callout is *one
+    more than* the number of the hightest numbered captured substring.
+
+ 4. The Makefile linked pcretest and pcregrep with -lpcre, which could result
+    in incorrectly linking with a previously installed version. They now link
+    explicitly with libpcre.la.
+
+ 5. configure.in no longer needs to recognize Cygwin specially.
+
+ 6. A problem in pcre.in for Windows platforms is fixed.
+
+ 7. If a pattern was successfully studied, and the -d (or /D) flag was given to
+    pcretest, it used to include the size of the study block as part of its
+    output. Unfortunately, the structure contains a field that has a different
+    size on different hardware architectures. This meant that the tests that
+    showed this size failed. As the block is currently always of a fixed size,
+    this information isn't actually particularly useful in pcretest output, so
+    I have just removed it.
+
+ 8. Three pre-processor statements accidentally did not start in column 1.
+    Sadly, there are *still* compilers around that complain, even though
+    standard C has not required this for well over a decade. Sigh.
+
+ 9. In pcretest, the code for checking callouts passed small integers in the
+    callout_data field, which is a void * field. However, some picky compilers
+    complained about the casts involved for this on 64-bit systems. Now
+    pcretest passes the address of the small integer instead, which should get
+    rid of the warnings.
+
+10. By default, when in UTF-8 mode, PCRE now checks for valid UTF-8 strings at
+    both compile and run time, and gives an error if an invalid UTF-8 sequence
+    is found. There is a option for disabling this check in cases where the
+    string is known to be correct and/or the maximum performance is wanted.
+
+11. In response to a bug report, I changed one line in Makefile.in from
+
+        -Wl,--out-implib,.libs/lib@WIN_PREFIX@pcreposix.dll.a \
+    to
+        -Wl,--out-implib,.libs/@WIN_PREFIX@libpcreposix.dll.a \
+
+    to look similar to other lines, but I have no way of telling whether this
+    is the right thing to do, as I do not use Windows. No doubt I'll get told
+    if it's wrong...
+
+
+Version 4.3 21-May-03
+---------------------
+
+1. Two instances of @WIN_PREFIX@ omitted from the Windows targets in the
+   Makefile.
+
+2. Some refactoring to improve the quality of the code:
+
+   (i)   The utf8_table... variables are now declared "const".
+
+   (ii)  The code for \cx, which used the "case flipping" table to upper case
+         lower case letters, now just substracts 32. This is ASCII-specific,
+         but the whole concept of \cx is ASCII-specific, so it seems
+         reasonable.
+
+   (iii) PCRE was using its character types table to recognize decimal and
+         hexadecimal digits in the pattern. This is silly, because it handles
+         only 0-9, a-f, and A-F, but the character types table is locale-
+         specific, which means strange things might happen. A private
+         table is now used for this - though it costs 256 bytes, a table is
+         much faster than multiple explicit tests. Of course, the standard
+         character types table is still used for matching digits in subject
+         strings against \d.
+
+   (iv)  Strictly, the identifier ESC_t is reserved by POSIX (all identifiers
+         ending in _t are). So I've renamed it as ESC_tee.
+
+3. The first argument for regexec() in the POSIX wrapper should have been
+   defined as "const".
+
+4. Changed pcretest to use malloc() for its buffers so that they can be
+   Electric Fenced for debugging.
+
+5. There were several places in the code where, in UTF-8 mode, PCRE would try
+   to read one or more bytes before the start of the subject string. Often this
+   had no effect on PCRE's behaviour, but in some circumstances it could
+   provoke a segmentation fault.
+
+6. A lookbehind at the start of a pattern in UTF-8 mode could also cause PCRE
+   to try to read one or more bytes before the start of the subject string.
+
+7. A lookbehind in a pattern matched in non-UTF-8 mode on a PCRE compiled with
+   UTF-8 support could misbehave in various ways if the subject string
+   contained bytes with the 0x80 bit set and the 0x40 bit unset in a lookbehind
+   area. (PCRE was not checking for the UTF-8 mode flag, and trying to move
+   back over UTF-8 characters.)
+
+
+Version 4.2 14-Apr-03
+---------------------
+
+1. Typo "#if SUPPORT_UTF8" instead of "#ifdef SUPPORT_UTF8" fixed.
+
+2. Changes to the building process, supplied by Ronald Landheer-Cieslak
+     [ON_WINDOWS]: new variable, "#" on non-Windows platforms
+     [NOT_ON_WINDOWS]: new variable, "#" on Windows platforms
+     [WIN_PREFIX]: new variable, "cyg" for Cygwin
+     * Makefile.in: use autoconf substitution for OBJEXT, EXEEXT, BUILD_OBJEXT
+       and BUILD_EXEEXT
+     Note: automatic setting of the BUILD variables is not yet working
+     set CPPFLAGS and BUILD_CPPFLAGS (but don't use yet) - should be used at
+       compile-time but not at link-time
+     [LINK]: use for linking executables only
+     make different versions for Windows and non-Windows
+     [LINKLIB]: new variable, copy of UNIX-style LINK, used for linking
+       libraries
+     [LINK_FOR_BUILD]: new variable
+     [OBJEXT]: use throughout
+     [EXEEXT]: use throughout
+     <winshared>: new target
+     <wininstall>: new target
+     <dftables.o>: use native compiler
+     <dftables>: use native linker
+     <install>: handle Windows platform correctly
+     <clean>: ditto
+     <check>: ditto
+     copy DLL to top builddir before testing
+
+   As part of these changes, -no-undefined was removed again. This was reported
+   to give trouble on HP-UX 11.0, so getting rid of it seems like a good idea
+   in any case.
+
+3. Some tidies to get rid of compiler warnings:
+
+   . In the match_data structure, match_limit was an unsigned long int, whereas
+     match_call_count was an int. I've made them both unsigned long ints.
+
+   . In pcretest the fact that a const uschar * doesn't automatically cast to
+     a void * provoked a warning.
+
+   . Turning on some more compiler warnings threw up some "shadow" variables
+     and a few more missing casts.
+
+4. If PCRE was complied with UTF-8 support, but called without the PCRE_UTF8
+   option, a class that contained a single character with a value between 128
+   and 255 (e.g. /[\xFF]/) caused PCRE to crash.
+
+5. If PCRE was compiled with UTF-8 support, but called without the PCRE_UTF8
+   option, a class that contained several characters, but with at least one
+   whose value was between 128 and 255 caused PCRE to crash.
+
+
+Version 4.1 12-Mar-03
+---------------------
+
+1. Compiling with gcc -pedantic found a couple of places where casts were
+needed, and a string in dftables.c that was longer than standard compilers are
+required to support.
+
+2. Compiling with Sun's compiler found a few more places where the code could
+be tidied up in order to avoid warnings.
+
+3. The variables for cross-compiling were called HOST_CC and HOST_CFLAGS; the
+first of these names is deprecated in the latest Autoconf in favour of the name
+CC_FOR_BUILD, because "host" is typically used to mean the system on which the
+compiled code will be run. I can't find a reference for HOST_CFLAGS, but by
+analogy I have changed it to CFLAGS_FOR_BUILD.
+
+4. Added -no-undefined to the linking command in the Makefile, because this is
+apparently helpful for Windows. To make it work, also added "-L. -lpcre" to the
+linking step for the pcreposix library.
+
+5. PCRE was failing to diagnose the case of two named groups with the same
+name.
+
+6. A problem with one of PCRE's optimizations was discovered. PCRE remembers a
+literal character that is needed in the subject for a match, and scans along to
+ensure that it is present before embarking on the full matching process. This
+saves time in cases of nested unlimited repeats that are never going to match.
+Problem: the scan can take a lot of time if the subject is very long (e.g.
+megabytes), thus penalizing straightforward matches. It is now done only if the
+amount of subject to be scanned is less than 1000 bytes.
+
+7. A lesser problem with the same optimization is that it was recording the
+first character of an anchored pattern as "needed", thus provoking a search
+right along the subject, even when the first match of the pattern was going to
+fail. The "needed" character is now not set for anchored patterns, unless it
+follows something in the pattern that is of non-fixed length. Thus, it still
+fulfils its original purpose of finding quick non-matches in cases of nested
+unlimited repeats, but isn't used for simple anchored patterns such as /^abc/.
+
+
+Version 4.0 17-Feb-03
+---------------------
+
+1. If a comment in an extended regex that started immediately after a meta-item
+extended to the end of string, PCRE compiled incorrect data. This could lead to
+all kinds of weird effects. Example: /#/ was bad; /()#/ was bad; /a#/ was not.
+
+2. Moved to autoconf 2.53 and libtool 1.4.2.
+
+3. Perl 5.8 no longer needs "use utf8" for doing UTF-8 things. Consequently,
+the special perltest8 script is no longer needed - all the tests can be run
+from a single perltest script.
+
+4. From 5.004, Perl has not included the VT character (0x0b) in the set defined
+by \s. It has now been removed in PCRE. This means it isn't recognized as
+whitespace in /x regexes too, which is the same as Perl. Note that the POSIX
+class [:space:] *does* include VT, thereby creating a mess.
+
+5. Added the class [:blank:] (a GNU extension from Perl 5.8) to match only
+space and tab.
+
+6. Perl 5.005 was a long time ago. It's time to amalgamate the tests that use
+its new features into the main test script, reducing the number of scripts.
+
+7. Perl 5.8 has changed the meaning of patterns like /a(?i)b/. Earlier versions
+were backward compatible, and made the (?i) apply to the whole pattern, as if
+/i were given. Now it behaves more logically, and applies the option setting
+only to what follows. PCRE has been changed to follow suit. However, if it
+finds options settings right at the start of the pattern, it extracts them into
+the global options, as before. Thus, they show up in the info data.
+
+8. Added support for the \Q...\E escape sequence. Characters in between are
+treated as literals. This is slightly different from Perl in that $ and @ are
+also handled as literals inside the quotes. In Perl, they will cause variable
+interpolation. Note the following examples:
+
+    Pattern            PCRE matches      Perl matches
+
+    \Qabc$xyz\E        abc$xyz           abc followed by the contents of $xyz
+    \Qabc\$xyz\E       abc\$xyz          abc\$xyz
+    \Qabc\E\$\Qxyz\E   abc$xyz           abc$xyz
+
+For compatibility with Perl, \Q...\E sequences are recognized inside character
+classes as well as outside them.
+
+9. Re-organized 3 code statements in pcretest to avoid "overflow in
+floating-point constant arithmetic" warnings from a Microsoft compiler. Added a
+(size_t) cast to one statement in pcretest and one in pcreposix to avoid
+signed/unsigned warnings.
+
+10. SunOS4 doesn't have strtoul(). This was used only for unpicking the -o
+option for pcretest, so I've replaced it by a simple function that does just
+that job.
+
+11. pcregrep was ending with code 0 instead of 2 for the commands "pcregrep" or
+"pcregrep -".
+
+12. Added "possessive quantifiers" ?+, *+, ++, and {,}+ which come from Sun's
+Java package. This provides some syntactic sugar for simple cases of what my
+documentation calls "once-only subpatterns". A pattern such as x*+ is the same
+as (?>x*). In other words, if what is inside (?>...) is just a single repeated
+item, you can use this simplified notation. Note that only makes sense with
+greedy quantifiers. Consequently, the use of the possessive quantifier forces
+greediness, whatever the setting of the PCRE_UNGREEDY option.
+
+13. A change of greediness default within a pattern was not taking effect at
+the current level for patterns like /(b+(?U)a+)/. It did apply to parenthesized
+subpatterns that followed. Patterns like /b+(?U)a+/ worked because the option
+was abstracted outside.
+
+14. PCRE now supports the \G assertion. It is true when the current matching
+position is at the start point of the match. This differs from \A when the
+starting offset is non-zero. Used with the /g option of pcretest (or similar
+code), it works in the same way as it does for Perl's /g option. If all
+alternatives of a regex begin with \G, the expression is anchored to the start
+match position, and the "anchored" flag is set in the compiled expression.
+
+15. Some bugs concerning the handling of certain option changes within patterns
+have been fixed. These applied to options other than (?ims). For example,
+"a(?x: b c )d" did not match "XabcdY" but did match "Xa b c dY". It should have
+been the other way round. Some of this was related to change 7 above.
+
+16. PCRE now gives errors for /[.x.]/ and /[=x=]/ as unsupported POSIX
+features, as Perl does. Previously, PCRE gave the warnings only for /[[.x.]]/
+and /[[=x=]]/. PCRE now also gives an error for /[:name:]/ because it supports
+POSIX classes only within a class (e.g. /[[:alpha:]]/).
+
+17. Added support for Perl's \C escape. This matches one byte, even in UTF8
+mode. Unlike ".", it always matches newline, whatever the setting of
+PCRE_DOTALL. However, PCRE does not permit \C to appear in lookbehind
+assertions. Perl allows it, but it doesn't (in general) work because it can't
+calculate the length of the lookbehind. At least, that's the case for Perl
+5.8.0 - I've been told they are going to document that it doesn't work in
+future.
+
+18. Added an error diagnosis for escapes that PCRE does not support: these are
+\L, \l, \N, \P, \p, \U, \u, and \X.
+
+19. Although correctly diagnosing a missing ']' in a character class, PCRE was
+reading past the end of the pattern in cases such as /[abcd/.
+
+20. PCRE was getting more memory than necessary for patterns with classes that
+contained both POSIX named classes and other characters, e.g. /[[:space:]abc/.
+
+21. Added some code, conditional on #ifdef VPCOMPAT, to make life easier for
+compiling PCRE for use with Virtual Pascal.
+
+22. Small fix to the Makefile to make it work properly if the build is done
+outside the source tree.
+
+23. Added a new extension: a condition to go with recursion. If a conditional
+subpattern starts with (?(R) the "true" branch is used if recursion has
+happened, whereas the "false" branch is used only at the top level.
+
+24. When there was a very long string of literal characters (over 255 bytes
+without UTF support, over 250 bytes with UTF support), the computation of how
+much memory was required could be incorrect, leading to segfaults or other
+strange effects.
+
+25. PCRE was incorrectly assuming anchoring (either to start of subject or to
+start of line for a non-DOTALL pattern) when a pattern started with (.*) and
+there was a subsequent back reference to those brackets. This meant that, for
+example, /(.*)\d+\1/ failed to match "abc123bc". Unfortunately, it isn't
+possible to check for precisely this case. All we can do is abandon the
+optimization if .* occurs inside capturing brackets when there are any back
+references whatsoever. (See below for a better fix that came later.)
+
+26. The handling of the optimization for finding the first character of a
+non-anchored pattern, and for finding a character that is required later in the
+match were failing in some cases. This didn't break the matching; it just
+failed to optimize when it could. The way this is done has been re-implemented.
+
+27. Fixed typo in error message for invalid (?R item (it said "(?p").
+
+28. Added a new feature that provides some of the functionality that Perl
+provides with (?{...}). The facility is termed a "callout". The way it is done
+in PCRE is for the caller to provide an optional function, by setting
+pcre_callout to its entry point. Like pcre_malloc and pcre_free, this is a
+global variable. By default it is unset, which disables all calling out. To get
+the function called, the regex must include (?C) at appropriate points. This
+is, in fact, equivalent to (?C0), and any number <= 255 may be given with (?C).
+This provides a means of identifying different callout points. When PCRE
+reaches such a point in the regex, if pcre_callout has been set, the external
+function is called. It is provided with data in a structure called
+pcre_callout_block, which is defined in pcre.h. If the function returns 0,
+matching continues; if it returns a non-zero value, the match at the current
+point fails. However, backtracking will occur if possible. [This was changed
+later and other features added - see item 49 below.]
+
+29. pcretest is upgraded to test the callout functionality. It provides a
+callout function that displays information. By default, it shows the start of
+the match and the current position in the text. There are some new data escapes
+to vary what happens:
+
+    \C+         in addition, show current contents of captured substrings
+    \C-         do not supply a callout function
+    \C!n        return 1 when callout number n is reached
+    \C!n!m      return 1 when callout number n is reached for the mth time
+
+30. If pcregrep was called with the -l option and just a single file name, it
+output "<stdin>" if a match was found, instead of the file name.
+
+31. Improve the efficiency of the POSIX API to PCRE. If the number of capturing
+slots is less than POSIX_MALLOC_THRESHOLD, use a block on the stack to pass to
+pcre_exec(). This saves a malloc/free per call. The default value of
+POSIX_MALLOC_THRESHOLD is 10; it can be changed by --with-posix-malloc-threshold
+when configuring.
+
+32. The default maximum size of a compiled pattern is 64K. There have been a
+few cases of people hitting this limit. The code now uses macros to handle the
+storing of links as offsets within the compiled pattern. It defaults to 2-byte
+links, but this can be changed to 3 or 4 bytes by --with-link-size when
+configuring. Tests 2 and 5 work only with 2-byte links because they output
+debugging information about compiled patterns.
+
+33. Internal code re-arrangements:
+
+(a) Moved the debugging function for printing out a compiled regex into
+    its own source file (printint.c) and used #include to pull it into
+    pcretest.c and, when DEBUG is defined, into pcre.c, instead of having two
+    separate copies.
+
+(b) Defined the list of op-code names for debugging as a macro in
+    internal.h so that it is next to the definition of the opcodes.
+
+(c) Defined a table of op-code lengths for simpler skipping along compiled
+    code. This is again a macro in internal.h so that it is next to the
+    definition of the opcodes.
+
+34. Added support for recursive calls to individual subpatterns, along the
+lines of Robin Houston's patch (but implemented somewhat differently).
+
+35. Further mods to the Makefile to help Win32. Also, added code to pcregrep to
+allow it to read and process whole directories in Win32. This code was
+contributed by Lionel Fourquaux; it has not been tested by me.
+
+36. Added support for named subpatterns. The Python syntax (?P<name>...) is
+used to name a group. Names consist of alphanumerics and underscores, and must
+be unique. Back references use the syntax (?P=name) and recursive calls use
+(?P>name) which is a PCRE extension to the Python extension. Groups still have
+numbers. The function pcre_fullinfo() can be used after compilation to extract
+a name/number map. There are three relevant calls:
+
+  PCRE_INFO_NAMEENTRYSIZE        yields the size of each entry in the map
+  PCRE_INFO_NAMECOUNT            yields the number of entries
+  PCRE_INFO_NAMETABLE            yields a pointer to the map.
+
+The map is a vector of fixed-size entries. The size of each entry depends on
+the length of the longest name used. The first two bytes of each entry are the
+group number, most significant byte first. There follows the corresponding
+name, zero terminated. The names are in alphabetical order.
+
+37. Make the maximum literal string in the compiled code 250 for the non-UTF-8
+case instead of 255. Making it the same both with and without UTF-8 support
+means that the same test output works with both.
+
+38. There was a case of malloc(0) in the POSIX testing code in pcretest. Avoid
+calling malloc() with a zero argument.
+
+39. Change 25 above had to resort to a heavy-handed test for the .* anchoring
+optimization. I've improved things by keeping a bitmap of backreferences with
+numbers 1-31 so that if .* occurs inside capturing brackets that are not in
+fact referenced, the optimization can be applied. It is unlikely that a
+relevant occurrence of .* (i.e. one which might indicate anchoring or forcing
+the match to follow \n) will appear inside brackets with a number greater than
+31, but if it does, any back reference > 31 suppresses the optimization.
+
+40. Added a new compile-time option PCRE_NO_AUTO_CAPTURE. This has the effect
+of disabling numbered capturing parentheses. Any opening parenthesis that is
+not followed by ? behaves as if it were followed by ?: but named parentheses
+can still be used for capturing (and they will acquire numbers in the usual
+way).
+
+41. Redesigned the return codes from the match() function into yes/no/error so
+that errors can be passed back from deep inside the nested calls. A malloc
+failure while inside a recursive subpattern call now causes the
+PCRE_ERROR_NOMEMORY return instead of quietly going wrong.
+
+42. It is now possible to set a limit on the number of times the match()
+function is called in a call to pcre_exec(). This facility makes it possible to
+limit the amount of recursion and backtracking, though not in a directly
+obvious way, because the match() function is used in a number of different
+circumstances. The count starts from zero for each position in the subject
+string (for non-anchored patterns). The default limit is, for compatibility, a
+large number, namely 10 000 000. You can change this in two ways:
+
+(a) When configuring PCRE before making, you can use --with-match-limit=n
+    to set a default value for the compiled library.
+
+(b) For each call to pcre_exec(), you can pass a pcre_extra block in which
+    a different value is set. See 45 below.
+
+If the limit is exceeded, pcre_exec() returns PCRE_ERROR_MATCHLIMIT.
+
+43. Added a new function pcre_config(int, void *) to enable run-time extraction
+of things that can be changed at compile time. The first argument specifies
+what is wanted and the second points to where the information is to be placed.
+The current list of available information is:
+
+  PCRE_CONFIG_UTF8
+
+The output is an integer that is set to one if UTF-8 support is available;
+otherwise it is set to zero.
+
+  PCRE_CONFIG_NEWLINE
+
+The output is an integer that it set to the value of the code that is used for
+newline. It is either LF (10) or CR (13).
+
+  PCRE_CONFIG_LINK_SIZE
+
+The output is an integer that contains the number of bytes used for internal
+linkage in compiled expressions. The value is 2, 3, or 4. See item 32 above.
+
+  PCRE_CONFIG_POSIX_MALLOC_THRESHOLD
+
+The output is an integer that contains the threshold above which the POSIX
+interface uses malloc() for output vectors. See item 31 above.
+
+  PCRE_CONFIG_MATCH_LIMIT
+
+The output is an unsigned integer that contains the default limit of the number
+of match() calls in a pcre_exec() execution. See 42 above.
+
+44. pcretest has been upgraded by the addition of the -C option. This causes it
+to extract all the available output from the new pcre_config() function, and to
+output it. The program then exits immediately.
+
+45. A need has arisen to pass over additional data with calls to pcre_exec() in
+order to support additional features. One way would have been to define
+pcre_exec2() (for example) with extra arguments, but this would not have been
+extensible, and would also have required all calls to the original function to
+be mapped to the new one. Instead, I have chosen to extend the mechanism that
+is used for passing in "extra" data from pcre_study().
+
+The pcre_extra structure is now exposed and defined in pcre.h. It currently
+contains the following fields:
+
+  flags         a bitmap indicating which of the following fields are set
+  study_data    opaque data from pcre_study()
+  match_limit   a way of specifying a limit on match() calls for a specific
+                  call to pcre_exec()
+  callout_data  data for callouts (see 49 below)
+
+The flag bits are also defined in pcre.h, and are
+
+  PCRE_EXTRA_STUDY_DATA
+  PCRE_EXTRA_MATCH_LIMIT
+  PCRE_EXTRA_CALLOUT_DATA
+
+The pcre_study() function now returns one of these new pcre_extra blocks, with
+the actual study data pointed to by the study_data field, and the
+PCRE_EXTRA_STUDY_DATA flag set. This can be passed directly to pcre_exec() as
+before. That is, this change is entirely upwards-compatible and requires no
+change to existing code.
+
+If you want to pass in additional data to pcre_exec(), you can either place it
+in a pcre_extra block provided by pcre_study(), or create your own pcre_extra
+block.
+
+46. pcretest has been extended to test the PCRE_EXTRA_MATCH_LIMIT feature. If a
+data string contains the escape sequence \M, pcretest calls pcre_exec() several
+times with different match limits, until it finds the minimum value needed for
+pcre_exec() to complete. The value is then output. This can be instructive; for
+most simple matches the number is quite small, but for pathological cases it
+gets very large very quickly.
+
+47. There's a new option for pcre_fullinfo() called PCRE_INFO_STUDYSIZE. It
+returns the size of the data block pointed to by the study_data field in a
+pcre_extra block, that is, the value that was passed as the argument to
+pcre_malloc() when PCRE was getting memory in which to place the information
+created by pcre_study(). The fourth argument should point to a size_t variable.
+pcretest has been extended so that this information is shown after a successful
+pcre_study() call when information about the compiled regex is being displayed.
+
+48. Cosmetic change to Makefile: there's no need to have / after $(DESTDIR)
+because what follows is always an absolute path. (Later: it turns out that this
+is more than cosmetic for MinGW, because it doesn't like empty path
+components.)
+
+49. Some changes have been made to the callout feature (see 28 above):
+
+(i)  A callout function now has three choices for what it returns:
+
+       0  =>  success, carry on matching
+     > 0  =>  failure at this point, but backtrack if possible
+     < 0  =>  serious error, return this value from pcre_exec()
+
+     Negative values should normally be chosen from the set of PCRE_ERROR_xxx
+     values. In particular, returning PCRE_ERROR_NOMATCH forces a standard
+     "match failed" error. The error number PCRE_ERROR_CALLOUT is reserved for
+     use by callout functions. It will never be used by PCRE itself.
+
+(ii) The pcre_extra structure (see 45 above) has a void * field called
+     callout_data, with corresponding flag bit PCRE_EXTRA_CALLOUT_DATA. The
+     pcre_callout_block structure has a field of the same name. The contents of
+     the field passed in the pcre_extra structure are passed to the callout
+     function in the corresponding field in the callout block. This makes it
+     easier to use the same callout-containing regex from multiple threads. For
+     testing, the pcretest program has a new data escape
+
+       \C*n        pass the number n (may be negative) as callout_data
+
+     If the callout function in pcretest receives a non-zero value as
+     callout_data, it returns that value.
+
+50. Makefile wasn't handling CFLAGS properly when compiling dftables. Also,
+there were some redundant $(CFLAGS) in commands that are now specified as
+$(LINK), which already includes $(CFLAGS).
+
+51. Extensions to UTF-8 support are listed below. These all apply when (a) PCRE
+has been compiled with UTF-8 support *and* pcre_compile() has been compiled
+with the PCRE_UTF8 flag. Patterns that are compiled without that flag assume
+one-byte characters throughout. Note that case-insensitive matching applies
+only to characters whose values are less than 256. PCRE doesn't support the
+notion of cases for higher-valued characters.
+
+(i)   A character class whose characters are all within 0-255 is handled as
+      a bit map, and the map is inverted for negative classes. Previously, a
+      character > 255 always failed to match such a class; however it should
+      match if the class was a negative one (e.g. [^ab]). This has been fixed.
+
+(ii)  A negated character class with a single character < 255 is coded as
+      "not this character" (OP_NOT). This wasn't working properly when the test
+      character was multibyte, either singly or repeated.
+
+(iii) Repeats of multibyte characters are now handled correctly in UTF-8
+      mode, for example: \x{100}{2,3}.
+
+(iv)  The character escapes \b, \B, \d, \D, \s, \S, \w, and \W (either
+      singly or repeated) now correctly test multibyte characters. However,
+      PCRE doesn't recognize any characters with values greater than 255 as
+      digits, spaces, or word characters. Such characters always match \D, \S,
+      and \W, and never match \d, \s, or \w.
+
+(v)   Classes may now contain characters and character ranges with values
+      greater than 255. For example: [ab\x{100}-\x{400}].
+
+(vi)  pcregrep now has a --utf-8 option (synonym -u) which makes it call
+      PCRE in UTF-8 mode.
+
+52. The info request value PCRE_INFO_FIRSTCHAR has been renamed
+PCRE_INFO_FIRSTBYTE because it is a byte value. However, the old name is
+retained for backwards compatibility. (Note that LASTLITERAL is also a byte
+value.)
+
+53. The single man page has become too large. I have therefore split it up into
+a number of separate man pages. These also give rise to individual HTML pages;
+these are now put in a separate directory, and there is an index.html page that
+lists them all. Some hyperlinking between the pages has been installed.
+
+54. Added convenience functions for handling named capturing parentheses.
+
+55. Unknown escapes inside character classes (e.g. [\M]) and escapes that
+aren't interpreted therein (e.g. [\C]) are literals in Perl. This is now also
+true in PCRE, except when the PCRE_EXTENDED option is set, in which case they
+are faulted.
+
+56. Introduced HOST_CC and HOST_CFLAGS which can be set in the environment when
+calling configure. These values are used when compiling the dftables.c program
+which is run to generate the source of the default character tables. They
+default to the values of CC and CFLAGS. If you are cross-compiling PCRE,
+you will need to set these values.
+
+57. Updated the building process for Windows DLL, as provided by Fred Cox.
+
+
+Version 3.9 02-Jan-02
 ---------------------
 
 1. A bit of extraneous text had somehow crept into the pcregrep documentation.

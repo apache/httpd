@@ -8,29 +8,35 @@ and semantics are as close as possible to those of the Perl 5 language.
 
 Written by: Philip Hazel <ph10@cam.ac.uk>
 
-           Copyright (c) 1997-2001 University of Cambridge
+           Copyright (c) 1997-2003 University of Cambridge
 
 -----------------------------------------------------------------------------
-Permission is granted to anyone to use this software for any purpose on any
-computer system, and to redistribute it freely, subject to the following
-restrictions:
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
-1. This software is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
 
-2. The origin of this software must not be misrepresented, either by
-   explicit claim or by omission.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
 
-3. Altered versions must be plainly marked as such, and must not be
-   misrepresented as being the original software.
+    * Neither the name of the University of Cambridge nor the names of its
+      contributors may be used to endorse or promote products derived from
+      this software without specific prior written permission.
 
-4. If PCRE is embedded in any software that is released under the GNU
-   General Purpose Licence (GPL), then the terms of that licence shall
-   supersede any condition above with which it is incompatible.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
 -----------------------------------------------------------------------------
-
-See the file Tech.Notes for some information on the internals.
 */
 
 
@@ -82,7 +88,9 @@ for (i = 0; i < 256; i++) *p++ = tolower(i);
 for (i = 0; i < 256; i++) *p++ = islower(i)? toupper(i) : tolower(i);
 
 /* Then the character class tables. Don't try to be clever and save effort
-on exclusive ones - in some locales things may be different. */
+on exclusive ones - in some locales things may be different. Note that the
+table for "space" includes everything "isspace" gives, including VT in the
+default locale. This makes it work for the POSIX class [:space:]. */
 
 memset(p, 0, cbit_length);
 for (i = 0; i < 256; i++)
@@ -112,19 +120,25 @@ for (i = 0; i < 256; i++)
   }
 p += cbit_length;
 
-/* Finally, the character type table */
+/* Finally, the character type table. In this, we exclude VT from the white
+space chars, because Perl doesn't recognize it as such for \s and for comments
+within regexes. */
 
 for (i = 0; i < 256; i++)
   {
   int x = 0;
-  if (isspace(i)) x += ctype_space;
+  if (i != 0x0b && isspace(i)) x += ctype_space;
   if (isalpha(i)) x += ctype_letter;
   if (isdigit(i)) x += ctype_digit;
   if (isxdigit(i)) x += ctype_xdigit;
   if (isalnum(i) || i == '_') x += ctype_word;
-  if (strchr("*+?{^.$|()[", i) != 0) x += ctype_meta;
-  *p++ = x;
-  }
+
+  /* Note: strchr includes the terminating zero in the characters it considers.
+  In this instance, that is ok because we want binary zero to be flagged as a
+  meta-character, which in this sense is any character that terminates a run
+  of data characters. */
+
+  if (strchr("*+?{^.$|()[", i) != 0) x += ctype_meta; *p++ = x; }
 
 return yield;
 }

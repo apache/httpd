@@ -2,6 +2,8 @@ Changes with Apache 2.1.2-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Upgraded PCRE to version 5.0. [Brian Pane]
+  
   *) mod_cgid: Catch configuration problem where two web server instances
      share same ServerRoot but admin forgot to use ScriptSock.
      [Jeff Trawick]

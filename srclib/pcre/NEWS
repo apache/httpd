@@ -1,6 +1,122 @@
 News about PCRE releases
 ------------------------
 
+Release 5.0 13-Sep-04
+---------------------
+
+The licence under which PCRE is released has been changed to the more
+conventional "BSD" licence.
+
+In the code, some bugs have been fixed, and there are also some major changes
+in this release (which is why I've increased the number to 5.0). Some changes
+are internal rearrangements, and some provide a number of new facilities. The
+new features are:
+
+1. There's an "automatic callout" feature that inserts callouts before every
+   item in the regex, and there's a new callout field that gives the position
+   in the pattern - useful for debugging and tracing.
+
+2. The extra_data structure can now be used to pass in a set of character
+   tables at exec time. This is useful if compiled regex are saved and re-used
+   at a later time when the tables may not be at the same address. If the
+   default internal tables are used, the pointer saved with the compiled
+   pattern is now set to NULL, which means that you don't need to do anything
+   special unless you are using custom tables.
+
+3. It is possible, with some restrictions on the content of the regex, to
+   request "partial" matching. A special return code is given if all of the
+   subject string matched part of the regex. This could be useful for testing
+   an input field as it is being typed.
+
+4. There is now some optional support for Unicode character properties, which
+   means that the patterns items such as \p{Lu} and \X can now be used. Only
+   the general category properties are supported. If PCRE is compiled with this
+   support, an additional 90K data structure is include, which increases the
+   size of the library dramatically.
+
+5. There is support for saving compiled patterns and re-using them later.
+
+6. There is support for running regular expressions that were compiled on a
+   different host with the opposite endianness.
+
+7. The pcretest program has been extended to accommodate the new features.
+
+The main internal rearrangement is that sequences of literal characters are no
+longer handled as strings. Instead, each character is handled on its own. This
+makes some UTF-8 handling easier, and makes the support of partial matching
+possible. Compiled patterns containing long literal strings will be larger as a
+result of this change; I hope that performance will not be much affected.
+
+
+Release 4.5 01-Dec-03
+---------------------
+
+Again mainly a bug-fix and tidying release, with only a couple of new features:
+
+1. It's possible now to compile PCRE so that it does not use recursive
+function calls when matching. Instead it gets memory from the heap. This slows
+things down, but may be necessary on systems with limited stacks.
+
+2. UTF-8 string checking has been tightened to reject overlong sequences and to
+check that a starting offset points to the start of a character. Failure of the
+latter returns a new error code: PCRE_ERROR_BADUTF8_OFFSET.
+
+3. PCRE can now be compiled for systems that use EBCDIC code.
+
+
+Release 4.4 21-Aug-03
+---------------------
+
+This is mainly a bug-fix and tidying release. The only new feature is that PCRE
+checks UTF-8 strings for validity by default. There is an option to suppress
+this, just in case anybody wants that teeny extra bit of performance.
+
+
+Releases 4.1 - 4.3
+------------------
+
+Sorry, I forgot about updating the NEWS file for these releases. Please take a
+look at ChangeLog.
+
+
+Release 4.0 17-Feb-03
+---------------------
+
+There have been a lot of changes for the 4.0 release, adding additional
+functionality and mending bugs. Below is a list of the highlights of the new
+functionality. For full details of these features, please consult the
+documentation. For a complete list of changes, see the ChangeLog file.
+
+1. Support for Perl's \Q...\E escapes.
+
+2. "Possessive quantifiers" ?+, *+, ++, and {,}+ which come from Sun's Java
+package. They provide some syntactic sugar for simple cases of "atomic
+grouping".
+
+3. Support for the \G assertion. It is true when the current matching position
+is at the start point of the match.
+
+4. A new feature that provides some of the functionality that Perl provides
+with (?{...}). The facility is termed a "callout". The way it is done in PCRE
+is for the caller to provide an optional function, by setting pcre_callout to
+its entry point. To get the function called, the regex must include (?C) at
+appropriate points.
+
+5. Support for recursive calls to individual subpatterns. This makes it really
+easy to get totally confused.
+
+6. Support for named subpatterns. The Python syntax (?P<name>...) is used to
+name a group.
+
+7. Several extensions to UTF-8 support; it is now fairly complete. There is an
+option for pcregrep to make it operate in UTF-8 mode.
+
+8. The single man page has been split into a number of separate man pages.
+These also give rise to individual HTML pages which are put in a separate
+directory. There is an index.html page that lists them all. Some hyperlinking
+between the pages has been installed.
+
+
 Release 3.5 15-Aug-01
 ---------------------
 

@@ -1,0 +1,111 @@
+<html>
+<head>
+<title>pcrepartial specification</title>
+</head>
+<body bgcolor="#FFFFFF" text="#00005A" link="#0066FF" alink="#3399FF" vlink="#2222BB">
+<h1>pcrepartial man page</h1>
+<p>
+Return to the <a href="index.html">PCRE index page</a>.
+</p>
+<p>
+This page is part of the PCRE HTML documentation. It was generated automatically
+from the original man page. If there is any nonsense in it, please consult the
+man page, in case the conversion went wrong.
+<br>
+<ul>
+<li><a name="TOC1" href="#SEC1">PARTIAL MATCHING IN PCRE</a>
+<li><a name="TOC2" href="#SEC2">RESTRICTED PATTERNS FOR PCRE_PARTIAL</a>
+<li><a name="TOC3" href="#SEC3">EXAMPLE OF PARTIAL MATCHING USING PCRETEST</a>
+</ul>
+<br><a name="SEC1" href="#TOC1">PARTIAL MATCHING IN PCRE</a><br>
+<P>
+In normal use of PCRE, if the subject string that is passed to
+<b>pcre_exec()</b> matches as far as it goes, but is too short to match the
+entire pattern, PCRE_ERROR_NOMATCH is returned. There are circumstances where
+it might be helpful to distinguish this case from other cases in which there is
+no match.
+</P>
+<P>
+Consider, for example, an application where a human is required to type in data
+for a field with specific formatting requirements. An example might be a date
+in the form <i>ddmmmyy</i>, defined by this pattern:
+<pre>
+  ^\d?\d(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\d\d$
+</pre>
+If the application sees the user's keystrokes one by one, and can check that
+what has been typed so far is potentially valid, it is able to raise an error
+as soon as a mistake is made, possibly beeping and not reflecting the
+character that has been typed. This immediate feedback is likely to be a better
+user interface than a check that is delayed until the entire string has been
+entered.
+</P>
+<P>
+PCRE supports the concept of partial matching by means of the PCRE_PARTIAL
+option, which can be set when calling <b>pcre_exec()</b>. When this is done, the
+return code PCRE_ERROR_NOMATCH is converted into PCRE_ERROR_PARTIAL if at any
+time during the matching process the entire subject string matched part of the
+pattern. No captured data is set when this occurs.
+</P>
+<P>
+Using PCRE_PARTIAL disables one of PCRE's optimizations. PCRE remembers the
+last literal byte in a pattern, and abandons matching immediately if such a
+byte is not present in the subject string. This optimization cannot be used
+for a subject string that might match only partially.
+</P>
+<br><a name="SEC2" href="#TOC1">RESTRICTED PATTERNS FOR PCRE_PARTIAL</a><br>
+<P>
+Because of the way certain internal optimizations are implemented in PCRE, the
+PCRE_PARTIAL option cannot be used with all patterns. Repeated single
+characters such as
+<pre>
+  a{2,4}
+</pre>
+and repeated single metasequences such as
+<pre>
+  \d+
+</pre>
+are not permitted if the maximum number of occurrences is greater than one.
+Optional items such as \d? (where the maximum is one) are permitted.
+Quantifiers with any values are permitted after parentheses, so the invalid
+examples above can be coded thus:
+<pre>
+  (a){2,4}
+  (\d)+
+</pre>
+These constructions run more slowly, but for the kinds of application that are
+envisaged for this facility, this is not felt to be a major restriction.
+</P>
+<P>
+If PCRE_PARTIAL is set for a pattern that does not conform to the restrictions,
+<b>pcre_exec()</b> returns the error code PCRE_ERROR_BADPARTIAL (-13).
+</P>
+<br><a name="SEC3" href="#TOC1">EXAMPLE OF PARTIAL MATCHING USING PCRETEST</a><br>
+<P>
+If the escape sequence \P is present in a <b>pcretest</b> data line, the
+PCRE_PARTIAL flag is used for the match. Here is a run of <b>pcretest</b> that
+uses the date example quoted above:
+<pre>
+    re&#62; /^\d?\d(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\d\d$/
+  data&#62; 25jun04\P
+   0: 25jun04
+   1: jun
+  data&#62; 25dec3\P
+  Partial match
+  data&#62; 3ju\P
+  Partial match
+  data&#62; 3juj\P
+  No match
+  data&#62; j\P
+  No match
+</pre>
+The first data string is matched completely, so <b>pcretest</b> shows the
+matched substrings. The remaining four strings do not match the complete
+pattern, but the first two are partial matches.
+</P>
+<P>
+Last updated: 08 September 2004
+<br>
+Copyright &copy; 1997-2004 University of Cambridge.
+<p>
+Return to the <a href="index.html">PCRE index page</a>.
+</p>

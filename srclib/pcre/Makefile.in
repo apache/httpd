@@ -15,6 +15,6 @@ dftables: dftables.lo
 	$(LINK) $(EXTRA_LDFLAGS) dftables.lo $(EXTRA_LIBS)
 
 $(srcdir)/chartables.c: dftables
-	./dftables > $@
+	./dftables $@
 
 pcre.lo: $(srcdir)/chartables.c
