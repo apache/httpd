@@ -71,35 +71,17 @@
    If TESTING is set, then garbage collection doesn't delete ... probably a good
    idea when hacking.
 
-   This code is still experimental!
+   This code is once again experimental!
 
    Things to do:
 
-   1. Make it garbage collect in the background, not while someone is waiting for
-   a response!
+   1. Make it completely work (for FTP too)
 
-   2. Check the logic thoroughly.
+   2. HTTP/1.1
 
-   3. Empty directories are only removed the next time round (but this does avoid
-   two passes). Consider doing them the first time round.
+   3. Cache issues
 
-   Ben Laurie <ben@algroup.co.uk> 30 Mar 96
-
-   More things to do:
-
-   0. Code cleanup (ongoing)
-
-   1. add 230 response output for ftp now that it works
-
-   2. Make the ftp proxy transparent, also same with (future) gopher & wais
-
-   3. Use protocol handler struct a la Apache module handlers (Dirk van Gulik)
-
-   4. Use a cache expiry database for more efficient GC (Jeremy Wohl)
-
-   5. Bulletproof GC against SIGALRM
-
-   Chuck Murcko <chuck@topsail.org> 15 April 1997
+   Chuck Murcko <chuck@topsail.org> 02-06-01
 
  */
 
@@ -109,8 +91,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_protocol.h"
-#include "ap_cache.h"
-#include "buff.h"
+#include "proxy_cache.h"
 
 #include "apr_compat.h"
 #include "apr_strings.h"
@@ -256,7 +237,6 @@ char *ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
 const char *ap_proxy_date_canon(apr_pool_t *p, const char *x);
 apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_rec *c);
-long int ap_proxy_send_fb(proxy_completion *, BUFF *f, request_rec *r, ap_cache_el *c);
 void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *hdrs);
 int ap_proxy_liststr(const char *list, const char *val);
 void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);

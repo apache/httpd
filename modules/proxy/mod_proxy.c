@@ -225,8 +225,10 @@ static int proxy_fixup(request_rec *r)
 /* canonicalise each specific scheme */
     if (strncasecmp(url, "http:", 5) == 0)
 	return ap_proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
+#if FTP
     else if (strncasecmp(url, "ftp:", 4) == 0)
 	return ap_proxy_ftp_canon(r, url + 4);
+#endif
 
     p = strchr(url, ':');
     if (p == NULL || p == url)
@@ -394,8 +396,10 @@ static int proxy_handler(request_rec *r)
 	return ap_proxy_connect_handler(r, url, NULL, 0);
     if (strcasecmp(scheme, "http") == 0)
 	return ap_proxy_http_handler(r, url, NULL, 0);
+#if FTP
     if (strcasecmp(scheme, "ftp") == 0)
 	return ap_proxy_ftp_handler(r, NULL, url);
+#endif
     else
 	return HTTP_FORBIDDEN;
 }
@@ -709,12 +713,6 @@ static const char*
     return NULL;    
 }
 
-static const handler_rec proxy_handlers[] =
-{
-    {"proxy-server", proxy_handler},
-    {NULL}
-};
-
 static const command_rec proxy_cmds[] =
 {
     AP_INIT_FLAG("ProxyRequests", set_proxy_req, NULL, RSRC_CONF,
@@ -746,11 +744,13 @@ static const command_rec proxy_cmds[] =
 
 static void register_hooks(apr_pool_t *p)
 {
-    /* [2] filename-to-URI translation */
+    /* handler */
+    ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
+    /* filename-to-URI translation */
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
-    /* [8] fixups */
+    /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
-    /* [1] post read_request handling */
+    /* post read_request handling */
     ap_hook_post_read_request(proxy_detect, NULL, NULL, APR_HOOK_FIRST);
 }
 
@@ -762,6 +762,5 @@ module AP_MODULE_DECLARE_DATA proxy_module =
     create_proxy_config,	/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     proxy_cmds,			/* command table */
-    proxy_handlers,		/* handlers */
     register_hooks
 };

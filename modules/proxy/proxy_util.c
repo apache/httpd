@@ -464,6 +464,7 @@ apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, conn_
     return resp_hdrs;
 }
 
+#if 0
 long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r, ap_cache_el *c)
 {
     int  ok;
@@ -479,14 +480,12 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
     total_bytes_rcvd = 0;
     if (c) ap_cache_el_data(c, &cachefp);
 
-#if 0
 #if APR_CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
     ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     if (c != NULL && c->fp != NULL)
 		ap_bsetflag(c->fp, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     ap_bsetflag(con->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
-#endif
 #endif
 
     /* Since we are reading from one buffer and writing to another,
@@ -572,6 +571,7 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
 
     return total_bytes_rcvd;
 }
+#endif /* 0, ap_proxy_send_fb */
 
 /*
  * Sends response line and headers.  Uses the client fd and the 
