@@ -664,7 +664,7 @@ static void read_connection(struct connection * c)
 	s = strstr(c->cbuff, "\r\n\r\n");
 	/*
 	 * this next line is so that we talk to NCSA 1.5 which blatantly
-	 * breaks the http specifaction
+	 * breaks the http specification
 	 */
 	if (!s) {
 	    s = strstr(c->cbuff, "\n\n");
