@@ -139,7 +139,7 @@ static void clear_connection (table *headers)
  */
 int
 proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
-	     const char *proxyhost, int proxyport)
+	     const char *proxyhost, unsigned short proxyport)
 {
     char *p;
     const char *err, *desthost;
@@ -154,7 +154,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     char buffer[HUGE_STRING_LEN];
     pool *pool=r->pool;
     const long int zero=0L;
-    int destport = 0;
+    unsigned short destport = 0;
     char *destportstr = NULL;
     char *urlptr = NULL;
 

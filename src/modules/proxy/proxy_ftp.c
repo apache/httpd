@@ -249,13 +249,14 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
     char urlptr[HUGE_STRING_LEN];
     long total_bytes_sent;
     register int n, o, w;
+    unsigned l;
     conn_rec *con = r->connection;
 
     tempurl = pstrdup(r->pool, url);
-    if ((n = strcspn(tempurl, "@")) != strlen(tempurl))	/* hide user/passwd */
+    if ((l = strcspn(tempurl, "@")) != strlen(tempurl))	/* hide user/passwd */
     {
-	memmove(tempurl + (n - 5), tempurl, 6);
-	tempurl += n - 5;	/* leave room for ftp:// */
+	memmove(tempurl + (l - 5), tempurl, 6);
+	tempurl += l - 5;	/* leave room for ftp:// */
     }
 
     n = decodeenc(tempurl);
@@ -393,7 +394,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 {
     char *host, *path, *p, *user, *password, *parms;
     const char *err;
-    int port, userlen, i, j, len, sock, dsock, rc, nocache;
+    int userlen, i, j, len, sock, dsock, rc, nocache;
     int passlen = 0;
     int csd = 0;
     struct sockaddr_in server;
@@ -417,7 +418,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 /* stuff for PASV mode */
     unsigned int presult, h0, h1, h2, h3, p0, p1;
     unsigned int paddr;
-    unsigned short pport;
+    unsigned short pport, port;
     struct sockaddr_in data_addr;
     int pasvmode = 0;
     char pasv[64];
