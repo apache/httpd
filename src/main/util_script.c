@@ -238,8 +238,11 @@ int scan_script_header(request_rec *r, FILE *f)
             sscanf(l, "%d", &r->status);
             r->status_line = pstrdup(r->pool, l);
         }
-        else {
+        else if(!strcasecmp(w,"Location")) {
 	    table_merge (r->headers_out, w, l);
+        }   
+        else {
+	    table_merge (r->err_headers_out, w, l);
         }
     }
 }
