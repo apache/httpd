@@ -654,6 +654,9 @@ static apr_status_t receive_from_other_child(void **csd, ap_listen_rec *lr,
     int ret, dp;
     apr_os_sock_t sd;
 
+    ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, ptrans,
+                 "trying to receive request from other child");
+
     apr_os_sock_get(&sd, lr->sd);
 
     iov.iov_base = sockname;
@@ -708,7 +711,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
 
     apr_poll_setup(&pollset, num_listensocks, tpool);
     for(lr = ap_listeners; lr != NULL; lr = lr->next) {
-        apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
+        apr_poll_socket_add(pollset, lr->sd, APR_POLLIN | APR_POLLOUT);
     }
 
     while (!workers_may_exit) {
@@ -773,7 +776,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                 }
                 /* XXX: Should we check for POLLERR? */
                 apr_poll_revents_get(&event, lr->sd, pollset);
-                if (event & APR_POLLIN) {
+                if (event & (APR_POLLIN | APR_POLLOUT)) {
                     last_lr = lr;
                     goto got_fd;
                 }
@@ -937,6 +940,24 @@ static int check_signal(int signum)
     }
     return 0;
 }                                                                               
+
+typedef struct perchild_header {
+    char *headers;
+    apr_pool_t *p;
+} perchild_header;
+
+/* Send a single HTTP header field to the client.  Note that this function
+ * is used in calls to table_do(), so their interfaces are co-dependent.
+ * In other words, don't change this one without checking table_do in alloc.c.
+ * It returns true unless there was a write error of some kind.
+ */
+static int perchild_header_field(perchild_header *h,
+                             const char *fieldname, const char *fieldval)
+{
+    apr_pstrcat(h->p, h->headers, fieldname, ": ", fieldval, CRLF); 
+    return 1;
+}
+
 
 static void child_main(int child_num_arg)
 {
@@ -1298,7 +1319,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     lr->next->next = NULL;
     num_listensocks++;
 
-
     set_signals();
 
     /* If we're doing a graceful_restart then we're going to see a lot
@@ -1554,7 +1574,11 @@ static int pass_request(request_rec *r)
     char request_body[HUGE_STRING_LEN];
     apr_off_t len = 0;
     apr_size_t l = 0;
+    perchild_header h;
 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
+                 "passing request to another child.  Vhost: %s, child %d",
+                 apr_table_get(r->headers_in, "Host"), child_num);
     ap_get_brigade(r->input_filters, bb, AP_MODE_EXHAUSTIVE, APR_NONBLOCK_READ,
                    len);
     if (apr_brigade_flatten(bb, request_body, &l) != APR_SUCCESS) {
@@ -1563,8 +1587,8 @@ static int pass_request(request_rec *r)
 
     apr_os_sock_get(&sfd, thesock);
 
-    iov.iov_base = NULL;
-    iov.iov_len = 0;
+    iov.iov_base = "FOOBAR";
+    iov.iov_len = 1;
 
     msg.msg_name = NULL;
     msg.msg_namelen = 0;
@@ -1587,21 +1611,13 @@ static int pass_request(request_rec *r)
         return -1;
     }
 
+    h.p = r->pool;
+    h.headers = apr_pstrdup(h.p, r->the_request);
+    apr_table_do((int (*) (void *, const char *, const char *))
+                 perchild_header_field, (void *) &h, r->headers_in, NULL);
+
+    write(sconf->sd2, h.headers, strlen(h.headers));
     write(sconf->sd2, request_body, len);
-
-    /* ### this "read one line" doesn't seem right... shouldn't we be
-       ### reading large chunks of data or something?
-    */
-    while (ap_get_brigade(r->input_filters, bb, AP_MODE_GETLINE, 
-                          APR_NONBLOCK_READ, 0) == APR_SUCCESS) {
-        apr_bucket *e;
-        APR_BRIGADE_FOREACH(e, bb) {
-            const char *str;
-
-            apr_bucket_read(e, &str, &l, APR_NONBLOCK_READ);
-            write(sconf->sd2, str, l);
-        }
-    }
 
     apr_pool_destroy(r->pool);
     return 1;
@@ -1672,10 +1688,17 @@ static int perchild_post_read(request_rec *r)
         return OK;
     }
     else {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
+                     "Determining if request should be passed. "
+                     "Child Num: %d, SD: %d, sd from table: %d, hostname from server: %s", child_num, 
+                     sconf->sd, child_info_table[child_num].sd, 
+                     r->server->server_hostname);
         /* sconf is the server config for this vhost, so if our socket
          * is not the same that was set in the config, then the request
          * needs to be passed to another child. */
         if (sconf->sd != child_info_table[child_num].sd) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf, 
+                         "Passing request.");
             if (pass_request(r) == -1) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                              ap_server_conf, "Could not pass request to proper "
@@ -1879,6 +1902,10 @@ static const char *assign_childuid(cmd_parms *cmd, void *dummy, const char *uid,
         if (u == child_info_table[i].uid && g == child_info_table[i].gid) {
             child_info_table[i].sd = sconf->sd;
             matching++;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server, 
+                         "filling out child_info_table; UID: %d, GID: %d, "
+                         "SD: %d, Child Num: %d", child_info_table[i].uid, 
+                         child_info_table[i].gid, sconf->sd, i);
         }
     }
 
