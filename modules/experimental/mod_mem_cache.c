@@ -450,25 +450,19 @@ static int remove_url(const char *type, const char *key)
     obj = (cache_object_t *) apr_hash_get(sconf->cacheht, 
                                           key, 
                                           APR_HASH_KEY_STRING);
+    if (obj) {
+        apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
+        cleanup_cache_object(obj);
+    }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
+
     }
 
     if (!obj) {
         return DECLINED;
     }
-
-    /* Found it. Now take it out of the cache and free it. */
-    if (sconf->lock) {
-        apr_thread_mutex_lock(sconf->lock);
-    }
-    apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
-    if (sconf->lock) {
-        apr_thread_mutex_unlock(sconf->lock);
-    }
-
-    cleanup_cache_object(obj);
-
+    
     return OK;
 }
 
