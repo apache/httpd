@@ -1035,11 +1035,6 @@ static int make_child(server_rec *s, int slot)
    
 static void wake_up_and_die(void) 
 {
-    int i;
-    char char_of_death = '!';
-    apr_size_t one = 1;
-    apr_status_t rv;
-    
     ap_mpm_pod_killpg(pod, ap_daemons_limit);
 }
 
@@ -1083,8 +1078,6 @@ static void perform_idle_server_maintenance(void)
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
     int total_non_dead;
-    apr_size_t one = 1;
-    apr_status_t rv;
 
     /* initialize the free_list */
     free_length = 0;
