@@ -305,35 +305,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         }
     }
 
-    /* We now go backwards over any CR (if present) or white spaces.
-     *
-     * Trim any extra trailing spaces or tabs except for the first
-     * space or tab at the beginning of a blank string.  This makes
-     * it much easier to check field values for exact matches, and
-     * saves memory as well.  Terminate string at end of line.
-     */
-    pos = last_char;
-    if (pos > *s && *(pos - 1) == APR_ASCII_CR) {
-        --pos;
+    /* Now NUL-terminate the string at the end of the line; 
+     * if the last-but-one character is a CR, terminate there */
+    if (last_char > *s && last_char[-1] == APR_ASCII_CR) {
+        last_char--;
     }
-
-    /* Trim any extra trailing spaces or tabs except for the first
-     * space or tab at the beginning of a blank string.  This makes
-     * it much easier to check field values for exact matches, and
-     * saves memory as well.
-     */
-    while (pos > ((*s) + 1)
-           && (*(pos - 1) == APR_ASCII_BLANK || *(pos - 1) == APR_ASCII_TAB)) {
-        --pos;
-    }
-
-    /* Since we want to remove the LF from the line, we'll go ahead
-     * and set this last character to be the term NULL and reset
-     * bytes_handled accordingly.
-     */
-    *pos = '\0';
-    last_char = pos;
-    bytes_handled = pos - *s;
+    *last_char = '\0';
+    bytes_handled = last_char - *s;
 
     /* If we're folding, we have more work to do.
      *
@@ -750,7 +728,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 last_len += len;
                 folded = 1;
             }
-            else {
+            else /* not a continuation line */ {
 
                 if (r->server->limit_req_fields
                     && (++fields_read > r->server->limit_req_fields)) {
@@ -773,29 +751,26 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                                "</pre>\n", NULL));
                     return;
                 }
+                
+                tmp_field = value - 1; /* last character of field-name */
 
-                *value = '\0';
-                tmp_field = value;  /* used to trim the whitespace between key
-                                     * token and separator
-                                     */
-                ++value;
+                *value++ = '\0'; /* NUL-terminate at colon */
+
                 while (*value == ' ' || *value == '\t') {
                     ++value;            /* Skip to start of value   */
                 }
 
-                /* This check is to avoid any invalid memory reference while
-                 * traversing backwards in the key. To avoid a case where
-                 * the header starts with ':' (or with just some white
-                 * space and the ':') followed by the value
-                 */
-                if (tmp_field > last_field) {
-                    --tmp_field;
-                    while ((tmp_field > last_field) &&
-                           (*tmp_field == ' ' || *tmp_field == '\t')) {
-                        --tmp_field;   /* Removing LWS between key and ':' */
-                    }
-                    ++tmp_field;
-                    *tmp_field = '\0';
+                /* Strip LWS after field-name: */
+                while (tmp_field > last_field 
+                       && (*tmp_field == ' ' || *tmp_field == '\t')) {
+                    *tmp_field-- = '\0';
+                }
+                
+                /* Strip LWS after field-value: */
+                tmp_field = last_field + last_len - 1;
+                while (tmp_field > value
+                       && (*tmp_field == ' ' || *tmp_field == '\t')) {
+                    *tmp_field-- = '\0';
                 }
 
                 apr_table_addn(r->headers_in, last_field, value);
