@@ -600,7 +600,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c)
                          (c->len * c->cache_completion < total_bytes_rcvd);
 
                     if (! ok) {
-                        ap_pclosef(c->req->pool, c->fp->fd);
+                        ap_pclosef(c->req->pool, ap_bfileno(c->fp, B_WR));
                         c->fp = NULL;
                         unlink(c->tempfile);
 			c = NULL;
@@ -831,7 +831,7 @@ cache_req *ap_proxy_cache_error(cache_req *c)
 {
     if (c != NULL) {
 	if (c->fp != NULL) {
-	    ap_pclosef(c->req->pool, c->fp->fd);
+	    ap_pclosef(c->req->pool, ap_bfileno(c->fp, B_WR));
 	    c->fp = NULL;
 	}
 	if (c->tempfile) unlink(c->tempfile);

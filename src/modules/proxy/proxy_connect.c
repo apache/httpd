@@ -241,11 +241,11 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
     while (1) {			/* Infinite loop until error (one side closes the connection) */
 	FD_ZERO(&fds);
 	FD_SET(sock, &fds);
-	FD_SET(r->connection->client->fd, &fds);
+	FD_SET(ap_bfileno(r->connection->client, B_WR), &fds);
 
 	Explain0("Going to sleep (select)");
-	i = ap_select((r->connection->client->fd > sock ?
-		       r->connection->client->fd + 1 :
+	i = ap_select((ap_bfileno(r->connection->client, B_WR) > sock ?
+		       ap_bfileno(r->connection->client, B_WR) + 1 :
 		       sock + 1), &fds, NULL, NULL, NULL);
 	Explain1("Woke from select(), i=%d", i);
 
@@ -255,16 +255,16 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 		if ((nbytes = read(sock, buffer, HUGE_STRING_LEN)) != 0) {
 		    if (nbytes == -1)
 			break;
-		    if (write(r->connection->client->fd, buffer, nbytes) == EOF)
+		    if (write(ap_bfileno(r->connection->client, B_WR), buffer, nbytes) == EOF)
 			break;
 		    Explain1("Wrote %d bytes to client", nbytes);
 		}
 		else
 		    break;
 	    }
-	    else if (FD_ISSET(r->connection->client->fd, &fds)) {
+	    else if (FD_ISSET(ap_bfileno(r->connection->client, B_WR), &fds)) {
 		Explain0("client->fd was set");
-		if ((nbytes = read(r->connection->client->fd, buffer,
+		if ((nbytes = read(ap_bfileno(r->connection->client, B_WR), buffer,
 				   HUGE_STRING_LEN)) != 0) {
 		    if (nbytes == -1)
 			break;

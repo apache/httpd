@@ -728,7 +728,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
 			 "proxy: bad (short?) cache file: %s", c->filename);
 	if (i != 1) {
-	    ap_pclosef(r->pool, cachefp->fd);
+	    ap_pclosef(r->pool, ap_bfileno(cachefp, B_WR));
 	    cachefp = NULL;
 	}
     }
@@ -754,7 +754,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 		if ((q = ap_table_get(c->hdrs, "Expires")) != NULL)
 		    ap_table_set(r->headers_out, "Expires", q);
 	    }
-	    ap_pclosef(r->pool, cachefp->fd);
+	    ap_pclosef(r->pool, ap_bfileno(cachefp, B_WR));
 	    Explain0("Use local copy, cached file hasn't changed");
 	    return HTTP_NOT_MODIFIED;
 	}
@@ -772,7 +772,7 @@ int ap_proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
 	r->sent_bodyct = 1;
 	if (!r->header_only)
 	    ap_proxy_send_fb(cachefp, r, NULL);
-	ap_pclosef(r->pool, cachefp->fd);
+	ap_pclosef(r->pool, ap_bfileno(cachefp, B_WR));
 	return OK;
     }
 
@@ -876,7 +876,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 	Explain1("Response is not cacheable, unlinking %s", c->filename);
 /* close the file */
 	if (c->fp != NULL) {
-	    ap_pclosef(r->pool, c->fp->fd);
+	    ap_pclosef(r->pool, ap_bfileno(c->fp, B_WR));
 	    c->fp = NULL;
 	}
 /* delete the previously cached file */
@@ -973,17 +973,17 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 /* set any changed headers somehow */
 /* update dates and version, but not content-length */
 	    if (lmod != c->lmod || expc != c->expire || date != c->date) {
-		off_t curpos = lseek(c->fp->fd, 0, SEEK_SET);
+		off_t curpos = lseek(ap_bfileno(c->fp, B_WR), 0, SEEK_SET);
 		if (curpos == -1)
 		    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 				 "proxy: error seeking on cache file %s",
 				 c->filename);
-		else if (write(c->fp->fd, buff, 35) == -1)
+		else if (write(ap_bfileno(c->fp, B_WR), buff, 35) == -1)
 		    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 				 "proxy: error updating cache file %s",
 				 c->filename);
 	    }
-	    ap_pclosef(r->pool, c->fp->fd);
+	    ap_pclosef(r->pool, ap_bfileno(c->fp, B_WR));
 	    Explain0("Remote document not modified, use local copy");
 	    /* CHECKME: Is this right? Shouldn't we check IMS again here? */
 	    return HTTP_NOT_MODIFIED;
@@ -1005,25 +1005,24 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 /* set any changed headers somehow */
 /* update dates and version, but not content-length */
 	    if (lmod != c->lmod || expc != c->expire || date != c->date) {
-		off_t curpos = lseek(c->fp->fd, 0, SEEK_SET);
+		off_t curpos = lseek(ap_bfileno(c->fp, B_WR), 0, SEEK_SET);
 
 		if (curpos == -1)
 		    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 				 "proxy: error seeking on cache file %s",
 				 c->filename);
-		else if (write(c->fp->fd, buff, 35) == -1)
+		else if (write(ap_bfileno(c->fp, B_WR), buff, 35) == -1)
 		    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 				 "proxy: error updating cache file %s",
 				 c->filename);
 	    }
-	    ap_pclosef(r->pool, c->fp->fd);
+	    ap_pclosef(r->pool, ap_bfileno(c->fp, B_WR));
 	    return OK;
 	}
     }
 /* new or modified file */
     if (c->fp != NULL) {
-	ap_pclosef(r->pool, c->fp->fd);
-	c->fp->fd = -1;
+	ap_pclosef(r->pool, ap_bfileno(c->fp, B_WR));
     }
     c->version = 0;
     ap_proxy_sec2hex(0, buff + 27);
@@ -1057,7 +1056,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
     if (ap_bvputs(c->fp, buff, "X-URL: ", c->url, "\n", NULL) == -1) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
 		     "proxy: error writing cache file(%s)", c->tempfile);
-	ap_pclosef(r->pool, c->fp->fd);
+	ap_pclosef(r->pool, ap_bfileno(c->fp, B_WR));
 	unlink(c->tempfile);
 	c->fp = NULL;
     }
@@ -1082,7 +1081,7 @@ void ap_proxy_cache_tidy(cache_req *c)
     if (c->len != -1) {
 /* file lengths don't match; don't cache it */
 	if (bc != c->len) {
-	    ap_pclosef(c->req->pool, c->fp->fd);	/* no need to flush */
+	    ap_pclosef(c->req->pool, ap_bfileno(c->fp, B_WR));	/* no need to flush */
 	    unlink(c->tempfile);
 	    return;
 	}
@@ -1102,11 +1101,11 @@ void ap_proxy_cache_tidy(cache_req *c)
 	c->len = bc;
 	ap_bflush(c->fp);
 	ap_proxy_sec2hex(c->len, buff);
-	curpos = lseek(c->fp->fd, 36, SEEK_SET);
+	curpos = lseek(ap_bfileno(c->fp, B_WR), 36, SEEK_SET);
 	if (curpos == -1)
 	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
 			 "proxy: error seeking on cache file %s", c->tempfile);
-	else if (write(c->fp->fd, buff, 8) == -1)
+	else if (write(ap_bfileno(c->fp, B_WR), buff, 8) == -1)
 	    ap_log_error(APLOG_MARK, APLOG_ERR, s,
 			 "proxy: error updating cache file %s", c->tempfile);
     }
@@ -1115,12 +1114,12 @@ void ap_proxy_cache_tidy(cache_req *c)
 	ap_log_error(APLOG_MARK, APLOG_ERR, s,
 		     "proxy: error writing to cache file %s",
 		     c->tempfile);
-	ap_pclosef(c->req->pool, c->fp->fd);
+	ap_pclosef(c->req->pool, ap_bfileno(c->fp, B_WR));
 	unlink(c->tempfile);
 	return;
     }
 
-    if (ap_pclosef(c->req->pool, c->fp->fd) == -1) {
+    if (ap_pclosef(c->req->pool, ap_bfileno(c->fp, B_WR)) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, s,
 		     "proxy: error closing cache file %s", c->tempfile);
 	unlink(c->tempfile);
