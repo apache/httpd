@@ -56,6 +56,7 @@
 #include "mod_proxy.h"
 #include "http_log.h"
 #include "http_main.h"
+#include "http_core.h"
 #include "util_date.h"
 
 /*
@@ -112,6 +113,28 @@ int proxy_http_canon(request_rec *r, char *url, const char *scheme, int def_port
     r->filename = pstrcat(r->pool, "proxy:", scheme, "://", host, sport, "/",
 		   path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;
+}
+ 
+static char *proxy_location_reverse_map(request_rec *r, char *url)
+{
+    void *sconf;
+    proxy_server_conf *conf;
+    struct proxy_alias *ent;
+    int i, l1, l2;
+    char *u;
+
+    sconf = r->server->module_config;
+    conf = (proxy_server_conf *)get_module_config(sconf, &proxy_module);
+    l1 = strlen(url);
+    ent = (struct proxy_alias *)conf->raliases->elts;
+    for (i = 0; i < conf->raliases->nelts; i++) {
+        l2 = strlen(ent[i].real);
+        if (l1 >= l2 && strncmp(ent[i].real, url, l2) == 0) {
+            u = pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
+            return construct_url(r->pool, u, r);
+        }
+    }
+    return url;
 }
 
 /* Clear all connection-based headers from the incoming headers table */
@@ -365,6 +388,9 @@ int proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 	    strcasecmp(strp, "Last-Modified") == 0 ||
 	    strcasecmp(strp, "Expires") == 0)
 	    hdr[i].value = proxy_date_canon(p, hdr[i].value);
+	if (strcasecmp(strp, "Location") == 0 ||
+	    strcasecmp(strp, "URI") == 0)
+	    hdr[i].value = proxy_location_reverse_map(r, hdr[i].value);
     }
 
 /* check if NoCache directive on this host */

@@ -553,6 +553,15 @@ Allows additional information to be listed along with a specified module.
   off</SAMP> Apache will use the hostname and port supplied by the client,
   if available.
  </LI>
+
+ <LI><STRONG>New <SAMP><A HREF="mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</A></SAMP> directive</STRONG>
+  <BR>
+  This directive was added in addition to the <SAMP>ProxyPass</SAMP>
+  directive. It lets Apache adjust the URL in the <TT>Location</TT> header on
+  HTTP redirect responses. For instance this is essential when Apache is used
+  as a reverse proxy to avoid by-passing the reverse proxy because of HTTP
+  redirects on the backend servers which stay behind the reverse proxy.
+ </LI>
 </UL>
 
 <!--#include virtual="footer.html" -->

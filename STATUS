@@ -34,10 +34,6 @@ Available Patches:
       <199802121518.QAA27349@en1.engelschall.com>
       Status: Ralf +1
 
-    * Ralf's [PATCH] Apache as a Reverse Proxy
-      <199802121503.QAA25633@en1.engelschall.com>
-      Status: Ralf +1, Martin +1
-
 Concepts:
 
     * Dean's [PRE-PATCH] expanding ap_snprintf()

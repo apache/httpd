@@ -197,6 +197,7 @@ typedef struct {
     struct cache_conf cache;	/* cache configuration */
     array_header *proxies;
     array_header *aliases;
+    array_header *raliases;
     array_header *noproxies;
     array_header *dirconn;
     array_header *nocaches;

@@ -1,5 +1,12 @@
 Changes with Apache 1.3b6
 
+  *) Add a new directive to mod_proxy similar to ProxyPass: `ProxyPassReverse'.
+     This directive lets Apache adjust the URL in Location-headers on HTTP
+     redirect responses sent by the remote server. This way the virtually
+     mapped area is no longer left on redirects and thus by-passed which is
+     especially essential when running Apache as a reverse proxy.  
+     [Ralf S. Engelschall]
+
   *) Hide Proxy-Authorization from CGI/SSI/etc just like Authorization is
      hidden. [Alvaro Martinez Echevarria]
 

@@ -379,6 +379,7 @@ static void *
 
     ps->proxies = make_array(p, 10, sizeof(struct proxy_remote));
     ps->aliases = make_array(p, 10, sizeof(struct proxy_alias));
+    ps->raliases = make_array(p, 10, sizeof(struct proxy_alias));
     ps->noproxies = make_array(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = make_array(p, 10, sizeof(struct dirconn_entry));
     ps->nocaches = make_array(p, 10, sizeof(struct nocache_entry));
@@ -449,6 +450,21 @@ static const char *
     struct proxy_alias *new;
 
     new = push_array(conf->aliases);
+    new->fake = f;
+    new->real = r;
+    return NULL;
+}
+
+static const char *
+    add_pass_reverse(cmd_parms *cmd, void *dummy, char *f, char *r)
+{
+    server_rec *s = cmd->server;
+    proxy_server_conf *conf;
+    struct proxy_alias *new;
+
+    conf = (proxy_server_conf *)get_module_config(s->module_config, 
+                                                  &proxy_module);
+    new = push_array(conf->raliases);
     new->fake = f;
     new->real = r;
     return NULL;
@@ -727,6 +743,8 @@ static command_rec proxy_cmds[] =
      "a scheme, partial URL or '*' and a proxy server"},
     {"ProxyPass", add_pass, NULL, RSRC_CONF, TAKE2,
      "a virtual path and a URL"},
+    {"ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF, TAKE2,
+     "a virtual path and a URL for reverse proxy behaviour"},
     {"ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF, ITERATE,
    "A list of names, hosts or domains to which the proxy will not connect"},
     {"NoProxy", set_proxy_dirconn, NULL, RSRC_CONF, ITERATE,
