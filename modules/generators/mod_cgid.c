@@ -443,7 +443,7 @@ static int cgid_server(void *data)
         request_rec *r; 
         apr_procattr_t *procattr = NULL;
         apr_proc_t *procnew = NULL;
-        apr_file_t *inout = NULL;
+        apr_file_t *inout;
 
 
         len = sizeof(unix_addr);
@@ -743,7 +743,7 @@ static int cgid_handler(request_rec *r)
     int sd;
     char **env; 
     struct sockaddr_un unix_addr;
-    apr_file_t *tempsock = NULL;
+    apr_file_t *tempsock;
     apr_size_t nbytes;
 
     if(strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
