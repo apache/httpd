@@ -97,7 +97,7 @@
         For more in-depth information about DSO support in Apache 1.3 please
         read the document htdocs/manual/dso.html carefully. Especially the
         section entitled "Advantages & Disadvantages" because using the DSO
-        mechanism can have strange side-effects if you are not carefully. BE
+        mechanism can have strange side-effects if you are not careful. BE
         WARNED!
 
   3. Configuring the source tree
