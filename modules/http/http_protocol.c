@@ -2763,11 +2763,6 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
     b = ap_bucket_create_file(fd, offset, len);
     AP_BRIGADE_INSERT_TAIL(bb, b);
 
-    /* Hummm, is this the right place to insert eos? */
-#if 0
-    b = ap_bucket_create_eos();
-    AP_BRIGADE_INSERT_TAIL(bb, b);
-#endif
     rv = ap_pass_brigade(r->output_filters, bb);
     if (rv != APR_SUCCESS) {
         *nbytes = 0; /* no way to tell how many were actually sent */
