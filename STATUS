@@ -451,6 +451,8 @@ Open issues:
       but now using aplog_error() they're without the client address, and
       that sucks
     - bump mmn and make it official (wanna make sure the api is right first)
+      - actually no it's not the right api -- it involves an extra copy of
+        everything... I'll whip up a more efficient api tomorrow
 
 Win32 specific issues:
 
