@@ -770,7 +770,6 @@ SUBDIRS="$OSDIR $SUBDIRS"
 echo >>Makefile.config "OSDIR=\$(SRCDIR)/$OSDIR"
 echo >>Makefile.config "INCDIR=\$(SRCDIR)/include"
 echo >>Makefile.config "INCLUDES0=-I\$(OSDIR) -I\$(INCDIR)"
-echo >>Makefile.config "INCLUDES1=$INCLUDES"
 echo >>Makefile.config "SHELL=$SHELL"
 
 ####################################################################
@@ -1760,12 +1759,13 @@ fi
 ## for $LIBS at this point. This implies that anything below
 ## can only alter $LIBS
 ##
-echo "CFLAGS1=$CFLAGS">> Makefile.config
-echo "LIBS_SHLIB=$LIBS_SHLIB">> Makefile.config
-echo "LDFLAGS1=$LDFLAGS">> Makefile.config
-echo "MFLAGS_STATIC=$MFLAGS_STATIC">> Makefile.config
-echo "REGLIB=$REGLIB">> Makefile.config
-echo "RANLIB=$RANLIB">> Makefile.config
+echo "CFLAGS1=$CFLAGS" >>Makefile.config
+echo "INCLUDES1=$INCLUDES" >>Makefile.config
+echo "LIBS_SHLIB=$LIBS_SHLIB" >>Makefile.config
+echo "LDFLAGS1=$LDFLAGS" >>Makefile.config
+echo "MFLAGS_STATIC=$MFLAGS_STATIC" >>Makefile.config
+echo "REGLIB=$REGLIB" >>Makefile.config
+echo "RANLIB=$RANLIB" >>Makefile.config
 
 ####################################################################
 ## Some OS-related stuff for the DSO mechanism:
