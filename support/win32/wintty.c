@@ -110,8 +110,8 @@ int main(int argc, char** argv)
 {
     char str[1024], *contitle;
     HANDLE hproc, thread;
-    HANDLE hwinsta, hsavewinsta;
-    HANDLE hdesk, hsavedesk;
+    HANDLE hwinsta = NULL, hsavewinsta;
+    HANDLE hdesk = NULL, hsavedesk = NULL;
     HANDLE conin, conout;
     HANDLE hstdin, hstdout, hstderr, hdup;
     feedback_args_t feed;
