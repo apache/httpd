@@ -89,7 +89,7 @@ fi
 
 #  Check if we need to add an executable extension (such as ".exe") 
 #  on specific OS to src and dst
-if [ -f "$src.exe" ]; then
+if [ -f "$src.exe" ] && [ ! -f "$src" ]; then
   ext=".exe"
 fi
 src="$src$ext"
