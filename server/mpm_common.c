@@ -347,7 +347,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
 
     *pod = apr_palloc(p, sizeof(**pod));
     rv = apr_file_pipe_create(&((*pod)->pod_in), &((*pod)->pod_out), p);
-    apr_file_pipe_timeout_set((*pod)->pod_out, 0);
+    apr_file_pipe_timeout_set((*pod)->pod_in, 0);
     (*pod)->p = p;
     return rv;
 }
@@ -358,7 +358,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_check(ap_pod_t *pod)
     apr_size_t len = 1;
     apr_status_t rv;
 
-    rv = apr_file_read(pod->pod_out, &c, &len);
+    rv = apr_file_read(pod->pod_in, &c, &len);
 
     if ((rv == APR_SUCCESS) && (len == 1)) {
         return APR_SUCCESS;
@@ -394,7 +394,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod)
     apr_size_t one = 1;
 
     do {
-        rv = apr_file_write(pod->pod_in, &char_of_death, &one);
+        rv = apr_file_write(pod->pod_out, &char_of_death, &one);
     } while (APR_STATUS_IS_EINTR(rv));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
