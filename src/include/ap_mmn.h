@@ -60,8 +60,17 @@
 
 /*
  * MODULE_MAGIC_NUMBER_MAJOR
- * major API changes that could cause compatibility problems for older modules
+ * Major API changes that could cause compatibility problems for older modules
+ * such as structure size changes.  No binary compatibility is possible across
+ * a change in the major version.
  *
+ * MODULE_MAGIC_NUMBER_MINOR
+ * Minor API changes that do not cause binary compatibility problems.
+ *
+ * See the MODULE_MAGIC_AT_LEAST macro below for an example.
+ */
+
+/*
  * 19950525		- original value
  * 19960512 (1.1b2)	- updated, 1.1, version.
  * 19960526 (1.1b3)	- get_token(), table_unset(), pstrndup()
@@ -148,24 +157,36 @@
  *			  3. ap_config.h -> ap_config_auto.h - now merged
  *			  4. compat.h    -> ap_compat.h
  *			  5. apctype.h   -> ap_ctype.h
+ * 19980806 (1.3.2-dev) - add ap_log_rerror()
  * 19980811 (1.3.2-dev)	- added limit_req_line, limit_req_fieldsize, and
  *			  limit_req_fields to server_rec.
  *			  added limit_req_body to core_dir_config and
  *			  ap_get_limit_req_body() to get its value.
- * 19980812 (1.3.1-dev)	- split of MODULE_MAGIC_NUMBER
- */
-
-/*
- * MODULE_MAGIC_NUMBER_MINOR
- * minor API changes that won't cause compatibility problems for older modules
- *
- * 00000001	- Add ap_log_rerror()
+ * 19980812 (1.3.2-dev)	- split off MODULE_MAGIC_NUMBER
+ * 19980812.2           - add ap_overlap_tables()
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19980812
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 00000001
+#define MODULE_MAGIC_NUMBER_MINOR 2
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
+
+/* Useful for testing for features. */
+#define MODULE_MAGIC_AT_LEAST(major,minor)		\
+    ((major) > MODULE_MAGIC_NUMBER_MAJOR 		\
+	|| ((major) == MODULE_MAGIC_NUMBER_MAJOR 	\
+	    && (minor) >= MODULE_MAGIC_NUMBER_MINOR))
+
+/* For example, suppose you wish to use the ap_overlap_tables
+   function.  You can do this:
+
+#if MODULE_MAGIC_AT_LEAST(19980812,2)
+    ... use ap_overlap_tables()
+#else
+    ... alternative code which doesn't use ap_overlap_tables()
+#endif
+
+*/
 
 #endif /* !APACHE_AP_MMN_H */
