@@ -26,7 +26,6 @@ CFG=ApacheCore - Win32 Debug
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
-RSC=rc.exe
 
 !IF  "$(CFG)" == "ApacheCore - Win32 Release"
 
@@ -40,10 +39,11 @@ RSC=rc.exe
 # PROP Output_Dir "LibR"
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
+# ADD BASE CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -64,10 +64,11 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "LibD"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\os\win32" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I ".\include" /I ".\srclib\apr\include" /I ".\srclib\apr-util\include" /I ".\srclib\sdbm" /I ".\os\win32" /I ".\server\mpm\winnt" /I ".\srclib\expat-lite" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -117,35 +118,6 @@ SOURCE=.\os\win32\os.h
 # Begin Group "Generated Files"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=".\srclib\apr-util\apu_private.hw"
-
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-# Begin Custom Build
-InputPath=".\srclib\apr-util\apu_private.hw"
-
-".\srclib\apr-util\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy .\srclib\apr-util\apu_private.hw .\srclib\apr-util\apu_private.h >nul 
-	echo Created apr-util apu_private.h from apu_private.hw 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
-
-# Begin Custom Build
-InputPath=".\srclib\apr-util\apu_private.hw"
-
-".\srclib\apr-util\apu_private.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy .\srclib\apr-util\apu_private.hw .\srclib\apr-util\apu_private.h >nul 
-	echo Created apr-util apu_private.h from apu_private.hw 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
 # Begin Source File
 
 SOURCE=.\server\gen_test_char.exe
@@ -218,15 +190,15 @@ SOURCE=.\server\uri_delims.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\server\http_config.c
+SOURCE=.\server\config.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\connection.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\include\http_config.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\http_connection.c
 # End Source File
 # Begin Source File
 
@@ -239,10 +211,6 @@ SOURCE=.\server\http_core.c
 # Begin Source File
 
 SOURCE=.\include\http_core.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\http_log.c
 # End Source File
 # Begin Source File
 
@@ -275,6 +243,10 @@ SOURCE=.\include\http_vhost.h
 # Begin Source File
 
 SOURCE=.\include\httpd.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\log.c
 # End Source File
 # Begin Source File
 
