@@ -1,11 +1,10 @@
 #include <windows.h>
-#include <assert.h>
 #include <sys/stat.h>
 #include <stdarg.h>
 
 #include "httpd.h"
 
-static void sub_canonical_filename(char *szCanon, const char *szFile)
+static void sub_canonical_filename(char *szCanon, unsigned nCanon, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     int n;
@@ -14,8 +13,8 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
     HANDLE h;
 
     n = GetFullPathName(szFile, sizeof buf, buf, &szFilePart);
-    assert(n);
-    assert(n < sizeof buf);
+    ap_assert(n);
+    ap_assert(n < sizeof buf);
 
     /* If we have \\machine\share, convert to \\machine\share\ */
     if (buf[0] == '\\' && buf[1] == '\\') {
@@ -34,16 +33,17 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
     }
 
     if (szFilePart < buf+3) {
+	ap_assert(strlen(buf) < nCanon);
         strcpy(szCanon, buf);
 	if(szCanon[0] != '\\') { /* a \ at the start means it is UNC, otherwise it is x: */
-	    assert(isalpha(szCanon[0]));
-	    assert(szCanon[1] == ':');
+	    ap_assert(isalpha(szCanon[0]));
+	    ap_assert(szCanon[1] == ':');
 	    szCanon[2] = '/';
 	}
 	else {
 	    char *s;
 
-	    assert(szCanon[1] == '\\');
+	    ap_assert(szCanon[1] == '\\');
 	    for(s=szCanon ; *s ; ++s)
 		if(*s == '\\')
 		    *s='/';
@@ -52,22 +52,27 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
     }
     if (szFilePart != buf+3) {
         char b2[_MAX_PATH];
-        assert(szFilePart > buf+3);
+        ap_assert(szFilePart > buf+3);
 
         szFilePart[-1]='\0';
-        sub_canonical_filename(b2, buf);
+        sub_canonical_filename(b2, sizeof b2, buf);
 
+	ap_assert(strlen(b2)+1 < nCanon);
         strcpy(szCanon, b2);
         strcat(szCanon, "/");
     }
     else {
+	ap_assert(strlen(buf) < nCanon);
         strcpy(szCanon, buf);
         szCanon[2] = '/';
         szCanon[3] = '\0';
     }
-    if (h == INVALID_HANDLE_VALUE)
+    if (h == INVALID_HANDLE_VALUE) {
+	ap_assert(strlen(szCanon)+strlen(szFilePart) < nCanon);
         strcat(szCanon, szFilePart);
+    }
     else {
+	ap_assert(strlen(szCanon)+strlen(d.cFileName) < nCanon);
         strlwr(d.cFileName);
         strcat(szCanon, d.cFileName);
     }
@@ -83,16 +88,19 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
     char b2[HUGE_STRING_LEN];
     char *s;
 
+    ap_assert(strlen(szFile) < sizeof b2);
     strcpy(b2,szFile);
     for(s=b2 ; *s ; ++s)
 	if(*s == '/')
 	    *s='\\';
 
-    sub_canonical_filename(buf, b2);
+    sub_canonical_filename(buf, sizeof buf, b2);
     buf[0]=tolower(buf[0]);
 
-    if (*szFile && szFile[strlen(szFile)-1] == '/' && buf[strlen(buf)-1] != '/')
+    if (*szFile && szFile[strlen(szFile)-1] == '/' && buf[strlen(buf)-1] != '/') {
+	ap_assert(strlen(buf)+1 < sizeof buf);
         strcat(buf, "/");
+    }
 
     return ap_pstrdup(pPool, buf);
 }
