@@ -614,7 +614,7 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 		ic = find_ipaddr(sar->host_addr);
 
 		if (!ic) {
-		    unsigned bucket = hash_inaddr(sar->host_addr->sa.sin.sin_addr.s_addr);
+		    unsigned bucket = hash_addr(sar->host_addr);
 
 		    ic = new_ipaddr_chain(p, s, sar);
 		    ic->next = *iphash_table_tail[bucket];
