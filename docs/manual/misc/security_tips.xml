@@ -124,7 +124,7 @@
     <a href="http://cgiwrap.unixtools.org/">CGIWrap</a>.</p>
     
   </section>
-  
+
   <section id="nsaliasedcgi">
   
     <title>Non Script Aliased CGI</title>
@@ -155,6 +155,21 @@
     <p>Most sites choose this option over the non script aliased CGI 
     approach.</p>
     
+  </section>
+
+   <section id="dynamic">
+
+  <title>Other sources of dynamic content</title>
+
+  <p>
+  Embedded scripting options which run as part of the server itself,
+  such as mod_php, mod_perl, mod_tcl, and mod_python, run under the
+  identify of the server itself, (see the <directive 
+  module="mpm_common">User</directive> directive) and therefore
+  scripts executed by these engines potentially can access anything the
+  server user can. some scripting engines may provide restrictions, but
+  it is better to be safe and assume not.</p>
+
   </section>
   
   <section id="systemsettings">
