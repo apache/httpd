@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/29 17:22:50 $]
+Last modified at [$Date: 2004/10/01 14:54:55 $]
 
 Release:
 
@@ -86,7 +86,7 @@ PATCHES TO BACKPORT FROM 2.1
        +1: jorton
 
     *) Fix mod_disk_cache race conditions in storing the response body.
-       modules/experimental/mod_disk_cache.c: 1.61
+       modules/experimental/mod_disk_cache.c?r1=1.61&r2=1.62
        +1: jerenkrantz, stoddard
 
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
