@@ -3063,7 +3063,8 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
     }
 
     /* We have nothing more to send, stop now. */
-    if (APR_BUCKET_IS_EOS(dptr)) {
+    if (dptr != APR_BRIGADE_SENTINEL(*bb) &&
+        APR_BUCKET_IS_EOS(dptr)) {
         /* We might have something saved that we never completed, but send
          * down unparsed.  This allows for <!-- at the end of files to be
          * sent correctly. */

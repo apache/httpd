@@ -1,5 +1,7 @@
 Changes with Apache 2.0.31-dev
 
+  *) Fix a segfault in mod_include.  [Justin Erenkrantz, Jeff Trawick]
+
   *) Cause Win32 to capture all child-worker process errors in
      Apache to the main server error log, until the child can
      open its own error logs.  [William Rowe]
