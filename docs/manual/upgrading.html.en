@@ -108,12 +108,6 @@ parent process with <code>WINCH</code> rather than
 which was used for printing the virtual host configuration has
 been replaced by <code>-t -D DUMP_VHOSTS</code>.</li>
 
-<li>The <code>httpd</code> command line option <code>-X</code> has
-been removed.  Most MPMs allow the same functionality to be requested
-by using the <code>-D ONE_PROCESS</code> command line
-option.  In addition, a <code>-D NO_DETACH</code> command line
-option is available.</li>
-
 <li>The module mod_auth_digest, which was experimental in Apache 1.3
 is now a standard module.</li>
 

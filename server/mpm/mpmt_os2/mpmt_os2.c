@@ -483,7 +483,8 @@ int ap_graceful_stop_signalled(void)
 
 static void mpmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    one_process = !!ap_exists_config_define("ONE_PROCESS");
+    one_process = ap_exists_config_define("ONE_PROCESS") || 
+                  ap_exists_config_define("DEBUG");
     is_graceful = 0;
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;

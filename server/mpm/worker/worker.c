@@ -1438,10 +1438,17 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 static void worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
-    int no_detach = 0;
+    int no_detach, debug;
 
-    one_process = !!ap_exists_config_define("ONE_PROCESS");
-    no_detach = !!ap_exists_config_define("NO_DETACH");
+    debug = ap_exists_config_define("DEBUG");
+
+    if (debug)
+        no_detach = one_process = 1;
+    else
+    {
+        one_process = ap_exists_config_define("ONE_PROCESS");
+        no_detach = ap_exists_config_define("NO_DETACH");
+    }
 
     /* sigh, want this only the second time around */
     if (restart_num++ == 1) {

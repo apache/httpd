@@ -1835,7 +1835,8 @@ static void winnt_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
      */
     apr_status_t rv;
 
-    if (ap_exists_config_define("ONE_PROCESS"))
+    if (ap_exists_config_define("ONE_PROCESS") ||
+        ap_exists_config_define("DEBUG"))
         one_process = -1;
 
     if (!strcasecmp(signal_arg, "runservice")
