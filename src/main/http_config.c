@@ -920,7 +920,7 @@ API_EXPORT_NONSTD(const char *) set_flag_slot(cmd_parms *cmd,
     return NULL;
 }
 
-const char *set_file_slot(cmd_parms *cmd, char *struct_ptr, char *arg)
+API_EXPORT_NONSTD(const char *) set_file_slot(cmd_parms *cmd, char *struct_ptr, char *arg)
 {
     /* Prepend server_root to relative arg.
        This allows .htaccess to be independent of server_root,
