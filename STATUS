@@ -97,7 +97,7 @@ PATCHES TO BACKPORT FROM TRUNK:
     *) htdigest: Fix permissions of created files
        http://svn.apache.org/viewcvs.cgi?rev=155681&view=rev
        PR: 33765
-       +1: jorton
+       +1: jorton, trawick
 
     *) mod_ssl: Set r->user from SSLUsername earlier so that it's
        actually useful.
