@@ -2493,34 +2493,37 @@ static void fully_qualify_uri(request_rec *r)
 static void expand_backref_inbuffer(pool *p, char *buf, int nbuf,
                                     backrefinfo *bri, char c)
 {
-    int i;
+    register int i;
 
-    if (bri->nsub < 1) {
-        return;
-    }
-
-    if (c != '$') {
-        /* safe existing $N backrefs and replace <c>N with $N backrefs */
-        for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
-            if (buf[i] == '$' && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
-                buf[i++] = '\001';
-            }
-            else if (buf[i] == c && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
-                buf[i++] = '$';
-            }
+    /* protect existing $N and & backrefs and replace <c>N with $N backrefs */
+    for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
+        if (buf[i] == '\\' && (buf[i+1] != '\0' && i < (nbuf-1))) {
+            i++; /* protect next */
+        }
+        else if (buf[i] == '&') {
+            buf[i] = '\001';
+        }
+        else if (c != '$' && buf[i] == '$' && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
+            buf[i] = '\002';
+            i++; /* speedup */
+        }
+        else if (buf[i] == c && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
+            buf[i] = '$';
+            i++; /* speedup */
         }
     }
 
-    /* now apply the pregsub() function */
+    /* now apply the standard regex substitution function */
     ap_cpystrn(buf, ap_pregsub(p, buf, bri->source,
                                bri->nsub+0, bri->regmatch), nbuf);
 
-    if (c != '$') {
-        /* restore the original $N backrefs */
-        for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
-            if (buf[i] == '\001' && (buf[i+1] >= '0' && buf[i+1] <= '9')) {
-                buf[i++] = '$';
-            }
+    /* restore the original $N and & backrefs */
+    for (i = 0; buf[i] != '\0' && i < nbuf; i++) {
+        if (buf[i] == '\001') {
+            buf[i] = '&';
+        }
+        else if (buf[i] == '\002') {
+            buf[i] = '$';
         }
     }
 }

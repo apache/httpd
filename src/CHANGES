@@ -1,5 +1,15 @@
 Changes with Apache 1.3.10
 
+  *) Overhauled mod_rewrite's general substitution function
+     (expand_backref_inbuffer): 1. The `$0' backreference is now officially
+     allowed and documented and references the while pattern space; 2. the
+     ampersamp (&) backreference (which is equal to $0) is no longer expanded,
+     because it was never documented and only leads to confusion with
+     QUERY_STRINGS; 3. backslashes (\) are honored correctly, that is `\$N'
+     now really forces the dollar to be an ordinary character and $N is
+     not expanded. 
+     [Ralf S. Engelschall] PR#4766 PR#4161
+
   *) Make sure mod_rewrite escapes QUERY_STRINGS on redirects.
      [Klaus Johannes Rusch <KlausRusch@atmedia.net>] PR#4734
 
