@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 20:28:16 $]
+Last modified at [$Date: 2003/05/16 13:30:29 $]
 
 Release:
 
@@ -106,7 +106,7 @@ PATCHES TO PORT FROM 2.1
        <http://test.perlig.de/manual/>, done with mod_rewrite, waiting for
        mod_negotiation enhancement ;-))
       modules/mappers/mod_negotiation.c r1.110,r1.115
-      +1: nd
+      +1: nd, trawick
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
@@ -167,25 +167,14 @@ PATCHES TO PORT FROM 2.1
       +1: wrowe, jim
       +1: trawick, if the patch is really 
           http://www.apache.org/~trawick/20030501.ssl.compat.patch
-          the latest patch in the thread you mention won't apply
-          because of a #include change that went to STABLE later (sorry);
-          that is resolved in the patch, and ssl_toolkit_compat.h
-          r1.32 is in it too...  the more extensive change of "const
-          SSL*" vs. "SSL*" led to new issues which
-          ssl_toolkit_compat.h r1.32 resolves for me on AIX and RH 8.
-
-    * mod_ssl compile failure (or maybe warning, depending on
-      compiler) with 0.9.7a and later
-      modules/ssl/mod_ssl.h r1.129
-      modules/ssl/ssl_engine_kernel.c r1.88
-      tried with 0.9.7a on AIX and 0.9.5a on Linux.)
-      +1: trawick, wrowe (including the other patches above), jim
-      trawick: this is a small fix for compatibility with the latest 
-               version of the crypto library that almost all of our
-               users build with; I hope folks who perhaps are not
-               interested in wrowe's extensive compatibility cleanup
-               (above) will look at this independently
-      DELETE ME when the SSLC 2.3 compatibility entry above is removed
+          why do I complicate matters?
+          1) the latest patch in the thread you mention won't apply
+          2) the SSLC compatibility stuff reintroduced some
+             const-ness problems (breakage on picky compilers,
+             warnings with gcc), so my patch includes
+             ssl_toolkit_compat.h r1.32, which resolves the issue for 
+             me on AIX (tested with various levels of OpenSSL and a picky
+             compiler) and RH 8.
 
     * Ensure that ssl-std.conf is generated at configure time, and switch
       to using the expanded config variables to work the same as 
@@ -195,7 +184,7 @@ PATCHES TO PORT FROM 2.1
       configure.in: r1.250
       docs/conf/ssl-std.conf.in: r1.1
       +1: thommay, jerenkrantz
-       0: nd
+       0: nd, trawick
           nd: The runtime files (e.g. cache) should be in runtimedir, since the
               logfilefir should not be writable for the httpd user.
 	  
@@ -210,6 +199,9 @@ PATCHES TO PORT FROM 2.1
               it's not his first one, he probably doesn't care about - IMHO :)
               An appropriate change-log entry should warn the rest of the
               people, shouldn't it?
+
+          trawick: existing configs shouldn't be overwritten, new configs
+              should default to our best available recommendation
 
     * ssl session caching(shmht) : Fix a SEGV problem with SHMHT session
       caching. PR 17864.
