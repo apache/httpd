@@ -525,34 +525,67 @@ operations</td></tr>
 This configures the SSL engine's semaphore (aka. lock) which is used for mutual
 exclusion of operations which have to be done in a synchronized way between the
 pre-forked Apache server processes. This directive can only be used in the
-global server context because it's only useful to have one global mutex.</p>
+global server context because it's only useful to have one global mutex.
+This directive is designed to closely match the
+<a href="http://httpd.apache.org/docs-2.0/mod/mpm_common.html#acceptmutex">AcceptMutex</a> directive</p>
 <p>
 The following Mutex <em>types</em> are available:</p>
 <ul>
-<li><code>none</code>
+<li><code>none | no</code>
     <p>
     This is the default where no Mutex is used at all. Use it at your own
     risk. But because currently the Mutex is mainly used for synchronizing
     write access to the SSL Session Cache you can live without it as long
     as you accept a sometimes garbled Session Cache. So it's not recommended
     to leave this the default. Instead configure a real Mutex.</p></li>
-<li><code>file:/path/to/mutex</code>
+<li><code>posixsem</code>
     <p>
-    This is the portable and (under Unix) always provided Mutex variant where
-    a physical (lock-)file is used as the Mutex. Always use a local disk
-    filesystem for <code>/path/to/mutex</code> and never a file residing on a
-    NFS- or AFS-filesystem. Note: Internally, the Process ID (PID) of the
+    This is an elegant Mutex variant where a Posix Semaphore is used when possible.
+    It is only available when the underlying platform
+    and APR supports it.</p></li>
+<li><code>sysvsem</code>
+    <p>
+    This is a somewhat elegant Mutex variant where a SystemV IPC Semaphore is used when
+    possible. It is possible to "leak" SysV semaphores if processes crash before
+    the semaphore is removed. It is only available when the underlying platform
+    and APR supports it.</p></li>
+<li><code>sem</code>
+    <p>
+    This directive tells the SSL Module to pick the "best" semaphore implementation
+    available to it, choosing between Posix and SystemV IPC, in that order. It is only
+    available when the underlying platform and APR supports at least one of the 2.</p></li>
+<li><code>pthread</code>
+    <p>
+    This directive tells the SSL Module to use Posix thread mutexes. It is only available
+    if the underlying platform and APR supports it.</p></li>
+<li><code>fcntl:/path/to/mutex</code>
+    <p>
+    This is a portable Mutex variant where a physical (lock-)file and the <code>fcntl()</code>
+    fucntion are used as the Mutex.
+    Always use a local disk filesystem for <code>/path/to/mutex</code> and never a file
+    residing on a NFS- or AFS-filesystem. It is only available when the underlying platform
+    and APR supports it. Note: Internally, the Process ID (PID) of the
     Apache parent process is automatically appended to
     <code>/path/to/mutex</code> to make it unique, so you don't have to worry
     about conflicts yourself. Notice that this type of mutex is not available
     under the Win32 environment. There you <em>have</em> to use the semaphore
     mutex.</p></li>
-<li><code>sem</code>
+<li><code>flock:/path/to/mutex</code>
     <p>
-    This is the most elegant but also most non-portable Mutex variant where a
-    SysV IPC Semaphore (under Unix) and a Windows Mutex (under Win32) is used
-    when possible. It is only available when the underlying platform
-    supports it.</p></li>
+    This is similar to the <code>fcntl:/path/to/mutex</code> method with the
+    exception that the <code>flock()</code> function is used to provide file
+    locking. It is only available when the underlying platform
+    and APR supports it.</p></li>
+<li><code>file:/path/to/mutex</code>
+    <p>
+    This directive tells the SSL Module to pick the "best" file locking implementation
+    available to it, choosing between <code>fcntl</code> and <code>flock</code>,
+    in that order. It is only available when the underlying platform and APR supports
+    at least one of the 2.</p></li>
+<li><code>default | yes</code>
+    <p>
+    This directive tells the SSL Module to pick the default locking implementation
+    as determined by the platform and APR.</p></li>
 </ul>
 <div class="example"><h3>Example</h3><p><code>
 SSLMutex file:/usr/local/apache/logs/ssl_mutex

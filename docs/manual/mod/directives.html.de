@@ -92,7 +92,6 @@
 <li><a href="mod_auth_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><a href="mod_auth_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
 <li><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
-<li><a href="mod_auth_ldap.html#authldapstarttls">AuthLDAPStartTLS</a></li>
 <li><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="core.html#authname">AuthName</a></li>
 <li><a href="core.html#authtype">AuthType</a></li>
@@ -146,6 +145,7 @@
 <li><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></li>
 <li><a href="core.html#defaulttype">DefaultType</a></li>
 <li><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize</a></li>
+<li><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
 <li><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel</a></li>
 <li><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize</a></li>
@@ -195,10 +195,11 @@
 <li><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority</a></li>
 <li><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL</a></li>
-<li><a href="mod_ldap.html#ldapcertdbpath">LDAPCertDBPath</a></li>
 <li><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
+<li><a href="mod_ldap.html#ldaptrustedca">LDAPTrustedCA</a></li>
+<li><a href="mod_ldap.html#ldaptrustedcatype">LDAPTrustedCAType</a></li>
 <li><a href="core.html#limit">&lt;Limit&gt;</a></li>
 <li><a href="core.html#limitexcept">&lt;LimitExcept&gt;</a></li>
 <li><a href="core.html#limitrequestbody">LimitRequestBody</a></li>
@@ -242,6 +243,7 @@
 <li><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost</a></li>
 <li><a href="mod_proxy.html#noproxy">NoProxy</a></li>
 <li><a href="perchild.html#numservers">NumServers</a></li>
+<li><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
 <li><a href="mod_access.html#order">Order</a></li>
 <li><a href="mod_env.html#passenv" id="P" name="P">PassEnv</a></li>
@@ -299,6 +301,7 @@
 <li><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
 <li><a href="mod_cgid.html#scriptsock">ScriptSock</a></li>
+<li><a href="mod_nw_ssl.html#securelisten">SecureListen</a></li>
 <li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><a href="core.html#serveradmin">ServerAdmin</a></li>
 <li><a href="core.html#serveralias">ServerAlias</a></li>
