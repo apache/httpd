@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) PORT: With OpenBSD 3.1 and up, allow modules to work on their
+     ELF-based architectures. [Brad <brad@openbsd.org>]
+
   *) Add X-Forwarded-Host and X-Forwarded-Server to X-Forwarded-For
      to the proxy. [Thomas Eibner <thomas@stderr.net>]
 

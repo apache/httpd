@@ -1130,6 +1130,9 @@ if [ "x$using_shlib" = "x1" ] ; then
 		*)
 		   LD_SHLIB="gcc"
 		   LDFLAGS_SHLIB="-shared \$(CFLAGS_SHLIB)"
+		   if [ "x`echo __ELF__ | $CC -E - | grep __ELF__`" = "x" ]; then
+		     LDFLAGS_SHLIB_EXPORT="-Wl,-E"
+		   fi
 		;;
 	    esac
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
