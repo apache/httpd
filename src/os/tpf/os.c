@@ -55,12 +55,13 @@ int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts,
     int no_reads = 0;
     int no_writes = 0;
     int no_excepts = 0;
-    int timeout = 0;
+    int timeout_seconds = 0;
+    int timeout_millisec = 0;
     int rv = 0;
     
     if(maxfds) {
         if(tv)
-            timeout = tv->tv_sec * 1000 + tv->tv_usec;
+            timeout_millisec = tv->tv_sec * 1000 + tv->tv_usec;
         sockets[0] = maxfds-1;
         no_reads++;
     }
@@ -78,24 +79,28 @@ int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts,
 #ifdef TPF_HAVE_SAWNC
         struct ev0bk evnblock;
 #endif
-        timeout = tv->tv_sec;
+        /* event processing uses seconds, select uses milliseconds */
+        timeout_seconds = tv->tv_sec;
         if (tv->tv_usec) {
-            timeout++; /* round up to seconds (like TPF's select does) */
+            timeout_seconds++;  /* round up to seconds (like TPF's select does) */
         }
-        if (timeout > 0) { /* paranoid check for valid timeout */
+        if (timeout_seconds > 0) { /* paranoid check for valid timeout */
 #ifdef TPF_HAVE_SAWNC
             evnblock.evnpstinf.evnbkc1 = 1; /* nbr of posts needed */
-            evntc(&evnblock, EVENT_CNT, 'N', timeout, EVNTC_1052);
+            evntc(&evnblock, EVENT_CNT, 'N', timeout_seconds, EVNTC_1052);
             tpf_sawnc(&evnblock, EVENT_CNT);
 #else
-            sleep(timeout);
+            sleep(timeout_seconds);
 #endif
         }
     } else {
-        if (timeout < 0) { /* paranoid check for valid timeout */
-            timeout = 0;
+        if (timeout_millisec < 0) { /* paranoid check for valid timeout */
+            timeout_millisec = 0;
         }
-        rv = select(sockets, no_reads, no_writes, no_excepts, timeout);
+        if (timeout_millisec != 0)
+            timeout_millisec += 1000;
+ 
+        rv = select(sockets, no_reads, no_writes, no_excepts, timeout_millisec);
     }
     ap_check_signals();
     
