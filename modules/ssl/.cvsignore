@@ -3,6 +3,7 @@
 Makefile
 modules.mk
 *.lo
+*.slo
 *.la
 Debug
 Release
