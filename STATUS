@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/07 23:30:17 $]
+Last modified at [$Date: 2002/05/16 03:58:59 $]
 
 Release:
 
@@ -79,10 +79,9 @@ CURRENT VOTES:
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Ian, Cliff, BillS
-      +0:   BrianP (mutex contention is looking better with the
+      +0:   BrianP, Aaron (mutex contention is looking better with the
             latest code, let's continue tuning and testing)
       -0:   Lars
-      -1:   Aaron (premature decision, needs more discussion and bug fixes)
 
     * Change the default config so that we add a ServerToken Minimal
       to the config. Possibly go one step further and add a option
