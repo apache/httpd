@@ -4,11 +4,28 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_cache - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_cache</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Content cache keyed to URIs.</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Experimental</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>cache_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_cache.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_cache - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_cache</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Content cache keyed to URIs.</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_cache.c</td></tr></table>
+<h3>Summary</h3>
+
     <div class="warning">
       This module is experimental. Documentation is still under development...
     </div>
@@ -34,7 +51,10 @@
 
     <p>Content is stored in and retrieved from the cache using URI based keys. Content with
     access protection is not cached.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedisable">CacheDisable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheenable">CacheEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheforcecompletion">CacheForceCompletion</a></li>
@@ -42,10 +62,19 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cachemaxstreamingbuffer">CacheMaxStreamingBuffer</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li><li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Sample Configuration</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="related" id="related">Related Modules and Directives</a></h2>
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcinterval">CacheGcInterval</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachetimemargin">CacheTimeMargin</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcdaily">CacheGcDaily</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcunused">CacheGcUnused</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcclean">CacheGcClean</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li></ul></td></tr></table>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Sample Configuration</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">Related Modules and Directives</a></h2>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcinterval">CacheGcInterval</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachetimemargin">CacheTimeMargin</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcdaily">CacheGcDaily</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcunused">CacheGcUnused</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcclean">CacheGcClean</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
     <div class="example"><h3>Sample httpd.conf</h3><p><code>
       #<br />
       # Sample Cache Configuration<br />
@@ -78,13 +107,17 @@
       </span>
       &lt;/IfModule&gt;
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a name="cachedefaultexpire" id="cachedefaultexpire">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The default duration to cache a document when no expiry date is specified.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheDefaultExpire <var>seconds</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>CacheDefaultExpire 3600 (one hour)</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a name="cachedefaultexpire" id="cachedefaultexpire">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The default duration to cache a document when no expiry date is specified.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDefaultExpire <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDefaultExpire 3600 (one hour)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
     <p>The <code class="directive">CacheDefaultExpire</code> directive specifies a default time,
     in seconds, to cache a document if neither an expiry date nor last-modified date are provided
     with the document. The value specified with the <code class="directive">CacheMaxExpire</code>
@@ -93,12 +126,17 @@
     <div class="example"><p><code>
       CacheDefaultExpire 86400
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheDisable" id="CacheDisable">CacheDisable</a> <a name="cachedisable" id="cachedisable">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Disable caching of specified URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheDisable <var> url-string</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheDisable" id="CacheDisable">CacheDisable</a> <a name="cachedisable" id="cachedisable">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disable caching of specified URLs</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDisable <var> url-string</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
     <p>The <code class="directive">CacheDisable</code> directive instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to <em>not</em> cache urls at or below
     <var>url-string</var>.</p>
@@ -106,13 +144,18 @@
     <div class="example"><h3>Example</h3><p><code>
       CacheDisable /local_files
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheEnable" id="CacheEnable">CacheEnable</a> <a name="cacheenable" id="cacheenable">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Enable caching of specified URLs using a specified storage
-manager</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheEnable <var>cache_type</var> <var>url-string</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheEnable" id="CacheEnable">CacheEnable</a> <a name="cacheenable" id="cacheenable">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable caching of specified URLs using a specified storage
+manager</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheEnable <var>cache_type</var> <var>url-string</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
     <p>The <code class="directive">CacheEnable</code> directive instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to cache urls at or below
     <var>url-string</var>. The cache storage manager is specified with the
@@ -137,14 +180,19 @@ manager</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
       CacheEnable  fd    /images<br />
       CacheEnable  disk  /<br />
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheForceCompletion" id="CacheForceCompletion">CacheForceCompletion</a> <a name="cacheforcecompletion" id="cacheforcecompletion">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Percentage of document served, after which the server
-will complete caching the file even if the request is cancelled.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheForceCompletion <var>Percentage</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>CacheForceCompletion 60</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheForceCompletion" id="CacheForceCompletion">CacheForceCompletion</a> <a name="cacheforcecompletion" id="cacheforcecompletion">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Percentage of document served, after which the server
+will complete caching the file even if the request is cancelled.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheForceCompletion <var>Percentage</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheForceCompletion 60</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
     <p>Ordinarily, if a request is cancelled while the response is being
     cached and delivered to the client the processing of the response will
     stop and the cache entry will be removed. The
@@ -165,14 +213,19 @@ will complete caching the file even if the request is cancelled.</td></tr><tr><t
     <div class="warning"><h3>Note:</h3>
       This feature is currently <em>not</em> implemented.
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Ignore the fact that the client requested the content not be
-cached.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheIgnoreCacheControl On|Off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>CacheIgnoreCacheControl Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore the fact that the client requested the content not be
+cached.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheIgnoreCacheControl On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheIgnoreCacheControl Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
     <p>Ordinarily, documents with no-cache or no-store header values will not be stored in the cache.
     The <code class="directive">CacheIgnoreCacheControl</code> directive allows this behavior to be overridden.
     <code class="directive">CacheIgnoreCacheControl</code> On tells the server to attempt to cache the document
@@ -182,14 +235,19 @@ cached.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><p><code>
       CacheIgnoreCacheControl On
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheIgnoreNoLastMod" id="CacheIgnoreNoLastMod">CacheIgnoreNoLastMod</a> <a name="cacheignorenolastmod" id="cacheignorenolastmod">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Ignore the fact that a response has no Last Modified
-header.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheIgnoreNoLastMod" id="CacheIgnoreNoLastMod">CacheIgnoreNoLastMod</a> <a name="cacheignorenolastmod" id="cacheignorenolastmod">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore the fact that a response has no Last Modified
+header.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
     <p>Ordinarily, documents without a last-modified date are not cached.
     Under some circumstances the last-modified date is removed (during
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> processing for example) or not provided
@@ -204,14 +262,19 @@ header.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><p><code>
       CacheIgnoreNoLastMod On
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The factor used to compute an expiry date based on the
-LastModified date.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheLastModifiedFactor <var>float</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The factor used to compute an expiry date based on the
+LastModified date.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheLastModifiedFactor <var>float</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
     <p>In the event that a document does not provide an expiry date but does
     provide a last-modified date, an expiry date can be calculated based on
     the time since the document was last modified. The
@@ -234,13 +297,18 @@ LastModified date.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><p><code>
       CacheLastModifiedFactor 0.5
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a name="cachemaxexpire" id="cachemaxexpire">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The maximum time in seconds to cache a document</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>CacheMaxExpire 86400 (one day)</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a name="cachemaxexpire" id="cachemaxexpire">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum time in seconds to cache a document</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMaxExpire 86400 (one day)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
     <p>The <code class="directive">CacheMaxExpire</code> directive specifies the maximum number of
     seconds for which cachable HTTP documents will be retained without checking the origin
     server. Thus, documents will be out of date at most this number of seconds. This maximum
@@ -249,40 +317,10 @@ LastModified date.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><p><code>
       CacheMaxExpire 604800
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheMaxStreamingBuffer" id="CacheMaxStreamingBuffer">CacheMaxStreamingBuffer</a> <a name="cachemaxstreamingbuffer" id="cachemaxstreamingbuffer">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Maximum amount of a streamed response to buffer in memory
-before declaring the response uncacheable</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>CacheMaxStreamingBuffer <var>size_in_bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>CacheMaxStreamingBuffer 0</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_cache</td></tr></table>
-    <p>The <code class="directive">CacheMaxStreamingBuffer</code> directive
-    specifies the maximum number of bytes of a streamed response to
-    buffer before deciding that the response is too big to cache.
-    A streamed response is one in which the entire content is not
-    immediately available and in which the <code>Content-Length</code>
-    may not be known. Sources of streaming responses include proxied
-    responses and the output of CGI scripts. By default, a streamed
-    response will <em>not</em> be cached unless it has a
-    <code>Content-Length</code> header. The reason for this is to
-    avoid using a large amount of memory to buffer a partial response
-    that might end up being too large to fit in the cache.
-    The <code class="directive">CacheMaxStreamingBuffer</code> directive allows
-    buffering of streamed responses that don't contain a
-    <code>Content-Length</code> up to the specified maximum amount of
-    space. If the maximum buffer space is reached, the buffered
-    content is discarded and the attempt to cache is abandoned.</p>
 
-    <div class="note"><h3>Note:</h3>
-      <p>Using a nonzero value for <code class="directive">CacheMaxStreamingBuffer</code> will not delay the transmission
-      of the response to the client.  As soon as <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
-      copies a block of streamed content into a buffer, it sends the block
-      on to the next output filter for delivery to the client.</p>
-    </div>
-
-    <div class="example"><p><code>
-      # Enable caching of streamed responses up to 64KB:<br />
-      CacheMaxStreamingBuffer 65536
-    </code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>SSL/TLS Strong Encryption: FAQ - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: FAQ</h1>
+      -->
+<title>SSL/TLS Strong Encryption: FAQ - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: FAQ</h1>
 <blockquote>
 <p>The wise man doesn't give the right answers,
 he poses the right questions.</p>
@@ -20,7 +32,17 @@ to avoid answering the same questions over and over.</p>
 <p>Please read this chapter at least once when installing mod_ssl or at least
 search for your problem here before submitting a problem report to the
 author.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#about">About The Module</a></li><li><img alt="" src="../images/down.gif" /> <a href="#installation">About Installation</a></li><li><img alt="" src="../images/down.gif" /> <a href="#aboutconfig">About Configuration</a></li><li><img alt="" src="../images/down.gif" /> <a href="#aboutcerts">About Certificates</a></li><li><img alt="" src="../images/down.gif" /> <a href="#aboutssl">About SSL Protocol</a></li><li><img alt="" src="../images/down.gif" /> <a href="#support">About Support</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="about" id="about">About The Module</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#about">About The Module</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#installation">About Installation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#aboutconfig">About Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#aboutcerts">About Certificates</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#aboutssl">About SSL Protocol</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#support">About Support</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="about" id="about">About The Module</a></h2>
 <ul>
 <li><a href="#history">What is the history of mod_ssl?</a></li>
 <li><a href="#y2k">mod_ssl and Year 2000?</a></li>
@@ -105,25 +127,15 @@ author.</p>
     of the Wassenaar Agreement and its <q>List of Dual Use Goods and
     Technologies And Munitions List</q>.</p>
 
-    
-    <p>Additionally the Wassenaar Agreement itself has no direct consequence for
-    exporting cryptography software. What is actually allowed or forbidden to
-    be exported from the countries has still to be defined in the local laws
-    of each country. And at least according to official press releases from
-    the German BMWi (see <a href="http://www.bmwi.de/presse/1998/1208prm2.html">here</a>) and the
-    Switzerland Bawi (see <a href="http://jya.com/wass-ch.htm">here</a>) there
-    will be no forthcoming export restriction for free cryptography software
-    for their countries. Remember that mod_ssl is created in Germany and
-    distributed from Switzerland.</p>
-    
     <p>So, mod_ssl and OpenSSL are not affected by the Wassenaar Agreement.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="installation" id="installation">About Installation</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="installation" id="installation">About Installation</a></h2>
 <ul>
 <li><a href="#coredump">Core dumps for HTTPS requests?</a></li>
 <li><a href="#mutex">Permission problem on SSLMutex</a></li>
 <li><a href="#mm">Shared memory and process size?</a></li>
-<li><a href="#mmpath">Shared memory and pathname?</a></li>
 <li><a href="#entropy">PRNG and not enough entropy?</a></li>
 </ul>
 
@@ -162,16 +174,6 @@ author.</p>
     instance and not once per Apache server process.</p>
 
 
-<h3><a name="mmpath" id="mmpath">Apache creates files in a directory declared by the internal
-EAPI_MM_CORE_PATH define. Is there a way to override the path using a
-configuration directive?</a></h3>
-<p>No, there is not configuration directive, because for technical
-    bootstrapping reasons, a directive not possible at all. Instead
-    use ``<code>CFLAGS='-DEAPI_MM_CORE_PATH="/path/to/wherever/"'
-    ./configure ...</code>'' when building Apache or use option
-    <code>-d</code> when starting <code>httpd</code>.</p>
-
-
 <h3><a name="entropy" id="entropy">When I fire up the server, mod_ssl stops with the error
 "Failed to generate temporary 512 bit RSA private key", why?</a></h3>
 <p>Cryptographic software needs a source of unpredictable data
@@ -186,7 +188,9 @@ configuration directive?</a></h3>
     entropy to the PRNG to work correctly.  For this one has to use the
     <code>SSLRandomSeed</code> directives.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="aboutconfig" id="aboutconfig">About Configuration</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="aboutconfig" id="aboutconfig">About Configuration</a></h2>
 <ul>
 <li><a href="#parallel">HTTP and HTTPS with a single server?</a></li>
 <li><a href="#ports">Where is the HTTPS port?</a></li>
@@ -232,7 +236,7 @@ configuration directive?</a></h3>
     SSL handshake. For a more general command line client which directly
     understands both the HTTP and HTTPS scheme, can perform GET and POST
     methods, can use a proxy, supports byte ranges, etc. you should have a
-    look at nifty <a href="http://curl.haxx.nu/">cURL</a>
+    look at nifty <a href="http://curl.haxx.se/">cURL</a>
     tool. With it you can directly check if your Apache is running fine on
     Port 80 and 443 as following:</p>
     
@@ -284,7 +288,9 @@ HTTPS?</a></h3>
     <p>This rewrite ruleset lets you use hyperlinks of the form
     <code>&lt;a href="document.html:SSL"&gt;</code></p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="aboutcerts" id="aboutcerts">About Certificates</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="aboutcerts" id="aboutcerts">About Certificates</a></h2>
 <ul>
 <li><a href="#keyscerts">What are Keys, CSRs and Certs?</a></li>
 <li><a href="#startup">Difference on startup?</a></li>
@@ -625,7 +631,7 @@ SSLeay version 0.8 to 0.9?</a></h3>
     that file to the <code>SSLCertificateFile</code> directive.
     Remember that you need to give the key file in as well (see
     <code>SSLCertificateKeyFile</code> directive). For a better
-    CA-related overview on SSL certificate fiddling you can look at <a href="http://www.thawte.com/certs/server/keygen/mod_ssl.html">Thawte's mod_ssl instructions</a>.</p>
+    CA-related overview on SSL certificate fiddling you can look at <a href="http://www.thawte.com/html/SUPPORT/server/softwaredocs/modssl.html">Thawte's mod_ssl instructions</a>.</p>
 
 
 <h3><a name="sgc" id="sgc">Can I use the Server Gated Cryptography (SGC) facility (aka Verisign Global
@@ -648,7 +654,9 @@ browsers complain that they cannot verify the server certificate?</a></h3>
     makes sure the intermediate CA certificate is send to the browser
     and this way fills the gap in the certificate chain.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="aboutssl" id="aboutssl">About SSL Protocol</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="aboutssl" id="aboutssl">About SSL Protocol</a></h2>
 <ul>
 <li><a href="#random">Random SSL errors under heavy load?</a></li>
 <li><a href="#load">Why has the server a higher load?</a></li>
@@ -657,6 +665,8 @@ browsers complain that they cannot verify the server certificate?</a></h3>
 <li><a href="#adh">How to use Anonymous-DH ciphers</a></li>
 <li><a href="#sharedciphers">Why do I get 'no shared ciphers'?</a></li>
 <li><a href="#vhosts">HTTPS and name-based vhosts</a></li>
+<li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual
+Hosting to identify different SSL virtual hosts?</a></li>
 <li><a href="#lockicon">The lock icon in Netscape locks very late</a></li>
 <li><a href="#msie">Why do I get I/O errors with MSIE clients?</a></li>
 <li><a href="#nn">Why do I get I/O errors with NS clients?</a></li>
@@ -746,6 +756,41 @@ I try to connect to my freshly installed server?</a></h3>
     handshake phase. Bingo!</p>
 
 
+<h3><a name="vhosts2" id="vhosts2">Why is it not possible to use Name-Based
+Virtual Hosting to identify different SSL virtual hosts?</a></h3>
+    <p>Name-Based Virtual Hosting is a very popular method of identifying
+    different virtual hosts. It allows you to use the same IP address and
+    the same port number for many different sites. When people move on to
+    SSL, it seems natural to assume that the same method can be used to have
+    lots of different SSL virtual hosts on the same server.</p>
+
+    <p>It comes as rather a shock to learn that it is impossible.</p> 
+
+    <p>The reason is that the SSL protocol is a separate layer which
+    encapsulates the HTTP protocol. So the problem is that the SSL session
+    is a separate transaction that takes place before the HTTP session even
+    starts. Therefore all the server receives is an SSL request on IP
+    address X and port Y (usually 443). Since the SSL request does not
+    contain any Host: field, the server has no way to decide which SSL
+    virtual host to use. Usually, it will just use the first one it finds
+    that matches the port and IP address.</p> 
+
+    <p>You can, of course, use Name-Based Virtual Hosting to identify many
+    non-SSL virtual hosts (all on port 80, for example) and then you can
+    have no more than 1 SSL virtual host (on port 443). But if you do this,
+    you must make sure to put the non-SSL port number on the NameVirtualHost
+    directive, e.g.</p> 
+
+    <div class="example"><p><code>
+      NameVirtualHost 192.168.1.1:80
+    </code></p></div>
+    
+    <p>Other workaround solutions are: </p>
+
+    <p>Use separate IP addresses for different SSL hosts. 
+    Use different port numbers for different SSL hosts.</p> 
+
+
 <h3><a name="lockicon" id="lockicon">When I use Basic Authentication over HTTPS the lock icon in Netscape browsers
 still shows the unlocked state when the dialog pops up. Does this mean the
 username/password is still transmitted unencrypted?</a></h3>
@@ -829,7 +874,9 @@ server" What's the reason?</a></h3>
     implementation is correct, so when you encounter I/O errors with Netscape
     Navigator it is most of the time caused by the configured certificates.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="support" id="support">About Support</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="support" id="support">About Support</a></h2>
 <ul>
 <li><a href="#resources">Resources in case of problems?</a></li>
 <li><a href="#contact">Support in case of problems?</a></li>
@@ -965,4 +1012,8 @@ server" What's the reason?</a></h3>
     </li>
     </ol>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

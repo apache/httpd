@@ -4,13 +4,36 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Terms Used to Describe Modules - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Terms Used to Describe Modules</h1>
+      -->
+<title>Terms Used to Describe Modules - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Terms Used to Describe Modules</h1>
    <p>This document describes the terms that are used to describe
     each Apache <a href="./">module</a>.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">Description</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Status">Status</a></li><li><img alt="" src="../images/down.gif" /> <a href="#SourceFile">Source File</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ModuleIdentifier">Module Identifier</a></li><li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">Compatibility</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Description" id="Description">Description</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">Description</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Status">Status</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#SourceFile">Source File</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ModuleIdentifier">Module Identifier</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">Compatibility</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Description" id="Description">Description</a></h2>
 
 <p>A brief description of the purpose of the module.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Status" id="Status">Status</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Status" id="Status">Status</a></h2>
 
     <p>This indicates how tightly bound into the Apache Web server
     the module is; in other words, you may need to recompile the
@@ -53,22 +76,32 @@
       status. We are not responsible for, nor do we support such
       modules.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="SourceFile" id="SourceFile">Source File</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="SourceFile" id="SourceFile">Source File</a></h2>
 
     <p>This quite simply lists the name of the source file which
     contains the code for the module. This is also the name used by
     the <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
     directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="ModuleIdentifier" id="ModuleIdentifier">Module Identifier</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ModuleIdentifier" id="ModuleIdentifier">Module Identifier</a></h2>
 
     <p>This is a string which identifies the module for use in the
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive when
     dynamically loading modules. In particular, it is the name of
     the external variable of type module in the source file.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="Compatibility" id="Compatibility">Compatibility</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Compatibility" id="Compatibility">Compatibility</a></h2>
 
     <p>If the module was not part of the original Apache version 2
     distribution, the version in which it was introduced should be
     listed here.  In addition, if the module is limited to
     particular platforms, the details will be listed here.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

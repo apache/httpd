@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage>
 <relativepath href="."/>
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.2 -->
 
   <title>Apache の起動</title>
 
@@ -19,6 +19,10 @@
     デーモンとして実行されます。この文書ではどのように
     <code>httpd</code> を起動するかについて記述しています。</p>
 </summary>
+
+<seealso><a href="stopping.html">停止と再起動</a></seealso>
+<seealso><a href="programs/httpd.html">httpd</a></seealso>
+<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
 
 <section id="startup"><title>Apache の起動方法</title>
 
@@ -36,6 +40,19 @@
     これは選択した<a 
     href="mpm.html">マルチプロセッシングモジュール</a>で制御されます。</p>
 
+    <p>推奨の <code>httpd</code> 実行プログラムの起動方法は、
+    <a href="programs/apachectl.html">apachectl</a>
+    制御スクリプトを使用する方法です。このスクリプトは、<code>httpd</code> 
+    がオペレーティングシステム上で正常に動作するように必要な環境変数を
+    適切に設定して、<code>httpd</code> バイナリを起動します。
+    <code>apachectl</code> はどんなコマンドライン引数も通過させますので、
+    <code>httpd</code> のどのコマンドラインオプションも
+    <code>apchectl</code> のオプションとして使用できます。
+    また、<code>apchectl</code> スクリプトを直接編集し、
+    スクリプト先頭付近の <code>HTTPD</code> 変数を変更することで、
+    <code>httpd</code> バイナリの正しい位置を指定したり、<em>常に</em>
+    付加させるコマンドライン引数を指定したりすることができます。</p>
+
     <p><code>httpd</code> が起動されてまず最初にすることは、
     <a href="configuring.html">設定ファイル</a>
     <code>httpd.conf</code> の位置を特定して読み込むことです。
@@ -43,15 +60,8 @@
     <code>-f</code> コマンドラインオプションを使って
     位置を指定することもできます。例えば次のようにです。</p>
 
-<example>/usr/local/apache/bin/httpd -f
+<example>/usr/local/apache2/bin/apachectl -f
       /usr/local/apache/conf/httpd.conf</example>
-
-    <p><code>httpd</code> のバイナリを直接起動する代わりに、
-    <a href="programs/apachectl.html">apachectl</a>
-    というシェルスクリプトが提供されています。
-    <code>apachectl start</code> や <code>apachectl stop</code>
-    といった簡単なコマンドで、
-    デーモンプロセスを制御するのに使えます。</p>
 
     <p>スタートアップが万事上手くいったら、サーバはターミナルから
     切り離されて、コマンドプロンプトが即座に戻ってくるでしょう。
@@ -89,15 +99,21 @@
 
     <p>システムがリブートした後でも
     サーバが実行され続けるようにしたい場合は、
-    <code>httpd</code> か <code>apachectl</code>
+    <code>apachectl</code>
     を呼び出すものをシステムスタートアップファイル
     (通常 <code>rc.local</code> や <code>rc.N</code>
     内のファイル) に追加しなければなりません。
     この方法では Apache を root 権限で起動します。
     これをする前に、セキュリティやアクセス制限が
-    適切に設定されていていることを確認してください。
-    <code>apachectl</code> スクリプトは通常は、 init 
-    スクリプトとして直接リンクできるように設計されていますが、
+    適切に設定されていていることを確認してください。</p>
+
+    <p><code>apachectl</code> スクリプトは通常は、標準的な SysV init 
+    スクリプトとして動作するように設計されています。
+    <code>start</code>, <code>restart</code>, <code>stop</code>
+    といった引数をとって、<code>httpd</code> 
+    への適切なシグナルに変換します。
+    ですから、通常は単に適切な init ディレクトリ内から
+    <code>apachectl</code> へリンクすることができます。しかし、
     念のためシステムの要求に合致していることを確認してください。</p>
 </section>
 

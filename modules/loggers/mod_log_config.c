@@ -699,6 +699,15 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
     ++s;
     it->condition_sense = 0;
     it->conditions = NULL;
+
+    if (*s == '%') {
+        it->arg = "%";
+        it->func = constant_item;
+        *sa = ++s;
+    
+        return NULL;
+    }
+
     it->want_orig = -1;
     it->arg = "";               /* For safety's sake... */
 

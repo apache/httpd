@@ -6,17 +6,25 @@
 # This script falls under the Apache License.
 # See http://www.apache.org/docs/LICENSE
 
-OS=`./srclib/apr/build/config.guess`
-BUILD_DIR="`pwd`/bindist"
-DEFAULT_DIR="/usr/local/apache2"
-APDIR=`pwd`
-APDIR=`basename $APDIR`
+OS=`./build/config.guess`
+PRINTPATH="build/PrintPath"
 APFULLDIR=`pwd`
+BUILD_DIR="$APFULLDIR/bindist"
+DEFAULT_DIR="/usr/local/apache2"
+APDIR="$APFULLDIR"
+APDIR=`basename $APDIR`
 CONFIGPARAM="--enable-layout=Apache --prefix=$BUILD_DIR --enable-mods-shared=most --with-expat=$APFULLDIR/srclib/apr-util/xml/expat --enable-static-support"
-VER=`echo $APDIR |sed s/httpd-//`
-TAR="`srclib/apr/build/PrintPath tar`"
-GTAR="`srclib/apr/build/PrintPath gtar`"
-GZIP="`srclib/apr/build/PrintPath gzip`"
+VER=`echo $APDIR | sed s/httpd-//`
+TAR="`$PRINTPATH tar`"
+GZIP="`$PRINTPATH gzip`"
+COMPRESS="`$PRINTPATH compress`"
+MD5="`$PRINTPATH md5`"
+if [ x$MD5 = x ]; then
+  OPENSSL="`$PRINTPATH openssl`"
+  if [ x$OPENSSL != x ]; then
+    MD5="$OPENSSL md5"
+  fi
+fi
 
 if [ x$1 != x ]; then
   USER=$1
@@ -24,8 +32,7 @@ else
   USER="`build/buildinfo.sh -n %u@%h%d`"
 fi
 
-if [ ! -f ./ABOUT_APACHE ]
-then
+if [ ! -f ./ABOUT_APACHE ]; then
   echo "ERROR: The current directory contains no valid Apache distribution."
   echo "Please change the directory to the top level directory of a freshly"
   echo "unpacked Apache 2.0 source distribution and re-execute the script"
@@ -33,8 +40,7 @@ then
   exit 1;
 fi
 
-if [ -d ./CVS ]
-then
+if [ -d ./CVS ]; then
   echo "ERROR: The current directory is a CVS checkout of Apache."
   echo "Only a standard Apache 2.0 source distribution should be used to"
   echo "create a binary distribution."
@@ -60,8 +66,7 @@ echo "Platform is \"$OS\"..."
   echo "[EOF]" \
 ) 2>&1 | tee build.log
 
-if [ ! -f ./bindist/bin/httpd ]
-then
+if [ ! -f ./bindist/bin/httpd ]; then
   echo "ERROR: Failed to build Apache. See \"build.log\" for details."
   exit 1;
 fi
@@ -144,41 +149,45 @@ done
 
 echo "Creating distribution archive and readme file..."
  
-if [ ".`grep -i error build.log > /dev/null`" != . ]
-then
+if [ ".`grep -i error build.log > /dev/null`" != . ]; then
   echo "ERROR: Failed to build Apache. See \"build.log\" for details."
   exit 1;
 else
-  if [ "x$GTAR" != "x" ]
-  then
-    $GTAR -zcf ../httpd-$VER-$OS.tar.gz -C .. httpd-$VER
-  else
-    if [ "x$TAR" != "x" ]
-    then
-      case "x$OS" in
-        x*os390*) $TAR -cfU ../httpd-$VER-$OS.tar -C .. httpd-$VER;;
-	    *) (cd .. && $TAR -cf httpd-$VER-$OS.tar httpd-$VER);;
-      esac
-      if [ "x$GZIP" != "x" ]
-      then
-        $GZIP ../httpd-$VER-$OS.tar
-      fi
+  if [ "x$TAR" != "x" ]; then
+    case "x$OS" in
+      x*os390*) $TAR -cfU ../httpd-$VER-$OS.tar -C .. httpd-$VER;;
+      *) (cd .. && $TAR -cf httpd-$VER-$OS.tar httpd-$VER);;
+    esac
+    if [ "x$GZIP" != "x" ]; then
+      $GZIP -9 ../httpd-$VER-$OS.tar
+      ARCHIVE=../httpd-$VER-$OS.tar.gz
+    elif [ "x$COMPRESS" != "x" ]; then
+      $COMPRESS ../httpd-$VER-$OS.tar
+      ARCHIVE=../httpd-$VER-$OS.tar.Z
     else
-      echo "ERROR: Could not find a 'tar' program!"
-      echo "       Please execute the following commands manually:"
-      echo "         tar -cf ../httpd-$VER-$OS.tar ."
-      echo "         gzip ../httpd-$VER-$OS.tar"
+      echo "WARNING: Could not find a 'gzip' program!"
+      echo "       tar archive is not compressed."
+      ARCHIVE=../httpd-$VER-$OS.tar
     fi
+  else
+    echo "ERROR: Could not find a 'tar' program!"
+    echo "       Please execute the following commands manually:"
+    echo "         tar -cf ../httpd-$VER-$OS.tar ."
+    echo "         gzip -9 ../httpd-$VER-$OS.tar"
   fi
 
-  if [ -f ../httpd-$VER-$OS.tar.gz ] && [ -f ../httpd-$VER-$OS.README ]
-  then
+  if [ "x$MD5" != "x" ]; then
+    $MD5 $ARCHIVE > $ARCHIVE.md5
+  fi
+
+  if [ -f $ARCHIVE ] && [ -f ../httpd-$VER-$OS.README ]; then
     echo "Ready."
-    echo "You can find the binary archive (httpd-$VER-$OS.tar.gz)"
+    echo "You can find the binary archive ($ARCHIVE)"
     echo "and the readme file (httpd-$VER-$OS.README) in the"
     echo "parent directory."
     exit 0;
   else
+    echo "ERROR: Archive or README is missing."
     exit 1;
   fi
 fi

@@ -70,6 +70,7 @@
 
 <category id="howto">
 <title>Guides, Tutorials, and HowTos</title>
+<page separate="yes" href="howto/">Overview</page>
 <page href="howto/auth.html">Authentication</page>
 <page href="howto/cgi.html">Dynamic Content with CGI</page>
 <page href="howto/ssi.html">Introduction to Server Side Includes</page>
@@ -80,12 +81,11 @@
 
 <category id="platform">
 <title>Platform-specific Notes</title>
+<page separate="yes" href="platform/">Overview</page>
 <page href="platform/windows.html">Using Apache with Microsoft
 Windows</page>
 <page href="platform/win_compiling.html">Compiling Apache for
 Microsoft Windows</page>
-<page href="platform/win_service.html">Running Apache for Windows as
-a Service</page>
 <page href="platform/netware.html">Using Apache with Novell NetWare</page>
 <page href="platform/perf-hp.html">Running a High-Performance Web
 Server on HPUX</page>
@@ -128,14 +128,11 @@ Server on HPUX</page>
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>
   <modulefile>mod_asis.xml</modulefile>
-  <modulefile>mod_auth_basic.xml</modulefile>
+  <modulefile>mod_access.xml</modulefile>
+  <modulefile>mod_auth.xml</modulefile>
+  <modulefile>mod_auth_anon.xml</modulefile>
+  <modulefile>mod_auth_dbm.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
-  <modulefile>mod_authn_anon.xml</modulefile>
-  <modulefile>mod_authn_dbm.xml</modulefile>
-  <modulefile>mod_authn_file.xml</modulefile>
-  <modulefile>mod_authz_dbm.xml</modulefile>
-  <modulefile>mod_authz_groupfile.xml</modulefile>
-  <modulefile>mod_authz_host.xml</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_autoindex.xml</modulefile>
   <modulefile>mod_cache.xml</modulefile>
@@ -167,6 +164,9 @@ Server on HPUX</page>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
   <modulefile>mod_proxy.xml</modulefile>
+  <modulefile>mod_proxy_connect.xml</modulefile>
+  <modulefile>mod_proxy_ftp.xml</modulefile>
+  <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
   <modulefile>mod_setenvif.xml</modulefile>
   <modulefile>mod_so.xml</modulefile>
@@ -178,18 +178,17 @@ Server on HPUX</page>
   <modulefile>mod_userdir.xml</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
+
   <modulefile>mpm_common.xml</modulefile>
+  <modulefile>beos.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpm_winnt.xml</modulefile>
+  <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
   <modulefile>worker.xml</modulefile>
-
-  <modulefile>obs_mod_access.xml</modulefile>
-  <modulefile>obs_mod_auth.xml</modulefile>
-  <modulefile>obs_mod_auth_anon.xml</modulefile>
-  <modulefile>obs_mod_auth_dbm.xml</modulefile>
-  <modulefile>obs_mod_auth_digest.xml</modulefile>
+  <modulefile>leader.xml</modulefile>
+  <modulefile>threadpool.xml</modulefile>
 </modulefilelist>
 </category>
 

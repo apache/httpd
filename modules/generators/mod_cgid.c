@@ -204,13 +204,13 @@ typedef struct {
     apr_size_t mod_userdir_user_len;
 } cgid_req_t;
 
-/* If a request includes query info in the URL (stuff after "?"), and
- * the query info does not contain "=" (indicative of a FORM submission),
- * then this routine is called to create the argument list to be passed
+/* This routine is called to create the argument list to be passed
  * to the CGI script.  When suexec is enabled, the suexec path, user, and
  * group are the first three arguments to be passed; if not, all three
  * must be NULL.  The query info is split into separate arguments, where
  * "+" is the separator between keyword arguments.
+ *
+ * Do not process the args if they containing an '=' assignment.
  */
 static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
                           char *av0, const char *args)
@@ -220,11 +220,16 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
     char *w;
     int idx = 0;
 
-    /* count the number of keywords */
-
-    for (x = 0, numwords = 1; args[x]; x++) {
-        if (args[x] == '+') {
-            ++numwords;
+    if (ap_strchr_c(args, '=')) {
+        numwords = 0;
+    }
+    else {
+        /* count the number of keywords */
+        
+        for (x = 0, numwords = 1; args[x]; x++) {
+            if (args[x] == '+') {
+                ++numwords;
+            }
         }
     }
 

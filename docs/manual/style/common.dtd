@@ -1,17 +1,32 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 
-<!ENTITY nbsp "&#160;">
+<!-- Character mnemonic entities -->
+
+<!ENTITY % HTMLlat1 PUBLIC
+   "-//W3C//ENTITIES Latin 1 for XHTML//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml-lat1.ent">
+%HTMLlat1;
+
+<!ENTITY % HTMLsymbol PUBLIC
+   "-//W3C//ENTITIES Symbols for XHTML//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent">
+%HTMLsymbol;
+
+<!ENTITY % HTMLspecial PUBLIC
+   "-//W3C//ENTITIES Special for XHTML//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent">
+%HTMLspecial;
+
+<!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module | img
-| cite | q | dfn | var">
+| cite | q | dfn | var | transnote">
 
 <!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre
 | blockquote">
 
 <!ENTITY % Block "(%blocktags;)*">
-
 <!ENTITY % Inline "(#PCDATA | %inlinetags;)*">
-
 <!ENTITY % BlockOrInline "(#PCDATA | %inlinetags; | %blocktags;)*">
 
 <!ELEMENT title %Inline;>
@@ -62,6 +77,9 @@
 <!ELEMENT dfn %Inline;>
 
 <!ELEMENT var %Inline;>
+
+<!-- translators note -->
+<!ELEMENT transnote %Inline;>
 
 <!ELEMENT a %Inline;>
 <!ATTLIST a  href CDATA #IMPLIED
@@ -124,4 +142,5 @@
   height      CDATA   #IMPLIED
   width       CDATA   #IMPLIED >
 
-<!ELEMENT blockquote %BlockOrInline;>
+<!ELEMENT blockquote %Block;>
+<!ATTLIST blockquote cite CDATA #IMPLIED >

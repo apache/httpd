@@ -8,9 +8,11 @@
 
 <summary>
     <p>On Windows, Apache is normally run as a service on Windows
-    NT, or as a console application on Windows 95. For details, see
-    <a href="platform/windows.html#run">running Apache for
-    Windows</a>.</p>
+    NT, 2000 and XP, or as a console application on Windows 9x and
+    ME. For details, see <a
+    href="platform/windows.html#winsvc">Running Apache as a Service</a>
+    and <a href="platform/windows.xml#wincons">Running Apache as a
+    Console Application</a>.</p>
 
     <p>On Unix, the <a href="programs/httpd.html">httpd</a> program
     is run as a daemon that executes continuously in the
@@ -18,7 +20,7 @@
     to invoke <code>httpd</code>.</p>
 </summary>
 
-<seealso><a href="stopping.html">Stopping Apache</a></seealso>
+<seealso><a href="stopping.html">Stopping and Restarting</a></seealso>
 <seealso><a href="programs/httpd.html">httpd</a></seealso>
 <seealso><a href="programs/apachectl.html">apachectl</a></seealso>
 

@@ -157,7 +157,7 @@ parts of the server?</title>
     <p>The key is to check for various ingredients of the client certficate.
     Usually this means to check the whole or part of the Distinguished
     Name (DN) of the Subject. For this two methods exists: The <module
-    >mod_auth_basic</module> based variant and the <directive
+    >mod_auth</module> based variant and the <directive
     module="mod_ssl">SSLRequire</directive> variant. The first method is
     good when the clients are of totally different type, i.e. when their
     DNs have no common fields (usually the organisation, etc.). In this

@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_auth_dbm</name>
+<description>Provides for user authentication using DBM
+    files</description>
+<status>Extension</status>
+<sourcefile>mod_auth_dbm.c</sourcefile>
+<identifier>auth_dbm_module</identifier>
+<compatibility>Available only in versions prior to 2.1</compatibility>
+
+<summary>
+    <p>This module provides for HTTP Basic Authentication, where
+    the usernames and passwords are stored in DBM type database
+    files. It is an alternative to the plain text password files
+    provided by <module>mod_auth</module>.</p>
+</summary>
+
+<seealso><directive module="core">AuthName</directive></seealso>
+<seealso><directive module="core">AuthType</directive></seealso>
+<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="core">Satisfy</directive></seealso>
+
+<directivesynopsis>
+<name>AuthDBMGroupFile</name>
+<description>Sets the name of the database file containing the list
+of user groups for authentication</description>
+<syntax>AuthDBMGroupFile <var>file-path</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthDBMGroupFile</directive> directive sets the
+    name of a DBM file containing the list of user groups for user
+    authentication. <var>File-path</var> is the absolute path to the
+    group file.</p>
+
+    <p>The group file is keyed on the username. The value for a
+    user is a comma-separated list of the groups to which the users
+    belongs. There must be no whitespace within the value, and it
+    must never contain any colons.</p>
+
+    <p>Security: make sure that the
+    <directive>AuthDBMGroupFile</directive> is stored outside the
+    document tree of the web-server; do <em>not</em> put it in the
+    directory that it protects. Otherwise, clients will be able to
+    download the <directive>AuthDBMGroupFile</directive> unless
+    otherwise protected.</p>
+
+    <p>Combining Group and Password DBM files: In some cases it is
+    easier to manage a single database which contains both the
+    password and group details for each user. This simplifies any
+    support programs that need to be written: they now only have to
+    deal with writing to and locking a single DBM file. This can be
+    accomplished by first setting the group and password files to
+    point to the same DBM:</p>
+
+    <example>
+      AuthDBMGroupFile /www/userbase<br />
+      AuthDBMUserFile /www/userbase
+    </example>
+
+    <p>The key for the single DBM is the username. The value consists
+    of</p>
+
+    <example>
+      <var>Unix Crypt-ed Password</var>:<var>List of Groups</var>[:(ignored)]
+    </example>
+
+    <p>The password section contains the encrypted password as before.
+    This is followed by a colon and the comma separated list of groups.
+    Other data may optionally be left in the DBM file after another colon;
+    it is ignored by the authentication module. This is what
+    www.telescope.org uses for its combined password and group database.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDBMUserFile</name>
+<description>Sets thename of a database file containing the list of users and
+passwords for authentication</description>
+<syntax>AuthDBMUserFile <var>file-path</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>The <directive>AuthDBMUserFile</directive> directive sets the
+    name of a DBM file containing the list of users and passwords for
+    user authentication. <var>File-path</var> is the absolute path to
+    the user file.</p>
+
+    <p>The user file is keyed on the username. The value for a user is
+    the encrypted password, optionally followed by a colon and arbitrary
+    data. The colon and the data following it will be ignored by the
+    server.</p>
+
+    <note type="warning"><title>Security:</title>
+      <p>Make sure that the <directive>AuthDBMUserFile</directive> is stored
+      outside the document tree of the web-server; do <em>not</em> put it in
+      the directory that it protects. Otherwise, clients will be able to
+      download the <directive>AuthDBMUserFile</directive>.</p>
+    </note>
+
+    <p>Important compatibility note: The implementation of
+    "dbmopen" in the apache modules reads the string length of the
+    hashed values from the DBM data structures, rather than relying
+    upon the string being NULL-appended. Some applications, such as
+    the Netscape web server, rely upon the string being
+    NULL-appended, so if you are having trouble using DBM files
+    interchangeably between applications this may be a part of the
+    problem.</p>
+
+    <p>A perl script called
+    <a href="../programs/dbmmanage.html">dbmmanage</a> is included with
+    Apache. This program can be used to create and update DBM
+    format password files for use with this module.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDBMType</name>
+<description>Sets the type of database file that is used to
+store passwords</description>
+<syntax>AuthDBMType default|SDBM|GDBM|NDBM|DB</syntax>
+<default>AuthDBMType default</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Available in version 2.0.30 and later.</compatibility>
+
+<usage>
+    <p>Sets the type of database file that is used to store the passwords.
+    The default database type is determined at compile time.  The
+    availability of other types of database files also depends on
+    <a href="../install.html#dbm">compile-time settings</a>.</p>
+
+    <p>It is crucial that whatever program you use to create your password
+    files is configured to use the same type of database.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDBMAuthoritative</name>
+<description>Sets whether authentication and authorization will be
+passwed on to lower level modules</description>
+<syntax>AuthDBMAuthoritative On|Off</syntax>
+<default>AuthDBMAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Setting the <directive>AuthDBMAuthoritative</directive>
+    directive explicitly to <code>Off</code> allows for both
+    authentication and authorization to be passed on to lower level
+    modules (as defined in the <code>modules.c</code> files) if there
+    is <strong>no userID</strong> or <strong>rule</strong> matching the
+    supplied userID. If there is a userID and/or rule specified; the
+    usual password and access checks will be applied and a failure will
+    give an "Authentication Required" reply.</p>
+
+    <p>So if a userID appears in the database of more than one module;
+    or if a valid <directive module="core">Require</directive>
+    directive applies to more than one module; then the first module
+    will verify the credentials; and no access is passed on;
+    regardless of the <directive>AuthDBMAuthoritative</directive>
+    setting.</p>
+
+    <p>A common use for this is in conjunction with one of the
+    basic auth modules; such as <module>mod_auth</module>. Whereas this
+    DBM module supplies the bulk of the user credential checking; a
+    few (administrator) related accesses fall through to a lower
+    level with a well protected <code>.htpasswd</code> file.</p>
+
+    <p>By default, control is not passed on and an unknown userID
+    or rule will result in an "Authentication Required" reply. Not
+    setting it thus keeps the system secure and forces an NCSA
+    compliant behaviour.</p>
+
+    <note type="warning"><title>Security:</title>
+      <p>Do consider the implications of allowing a user to allow
+      fall-through in his <code>.htaccess</code> file; and verify that this
+      is really what you want; Generally it is easier to just secure
+      a single <code>.htpasswd</code> file, than it is to secure a
+      database which might have more access interfaces.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

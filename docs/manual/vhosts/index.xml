@@ -33,9 +33,14 @@
 
 </summary>
 
-<seealso>
-    <module>mod_vhost_alias</module>
-</seealso>
+<seealso><module>mod_vhost_alias</module></seealso>
+<seealso><a href="name-based.html">Name-based virtual
+hosts</a></seealso>
+<seealso><a href="ip-based.html">IP-based virtual hosts</a></seealso>
+<seealso><a href="examples.html">Virtual host examples</a></seealso>
+<seealso><a href="fd-limits.html">File descriptor limits</a></seealso>
+<seealso><a href="mass.html">Mass virtual hosting</a></seealso>
+<seealso><a href="details.html">Detalis of host matching</a></seealso>
 
 <section id="support"><title>Virtual Host Support</title>
 
@@ -68,11 +73,11 @@
     </ul>
 
     <p>If you are trying to debug your virtual host configuration, you
-    may find the Apache <code>-t -D DUMP_VHOSTS</code> command line switch
+    may find the Apache <code>-S</code> command line switch
     useful. That is, type the following command:</p>
 
     <example>
-    /usr/local/apache/bin/httpd -t -D DUMP_VHOSTS
+    /usr/local/apache2/bin/httpd -S
     </example>
 
     <p>This command will dump out a description of how Apache parsed

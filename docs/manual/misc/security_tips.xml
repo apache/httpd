@@ -13,6 +13,28 @@
     Some of the suggestions will be general, others specific to Apache.</p>
   </summary>
   
+  <section id="uptodate"><title>Keep up to Date</title>
+
+    <p>The Apache HTTP Server has a good record for security and a
+    developer community highly concerned about security issues.  But
+    it is inevitable that some problems -- small or large -- will be
+    discovered in software after it is released.  For this reason, it
+    is crucial to keep aware of updates to the software.  If you have
+    obtained your version of the HTTP Server directly from Apache, we
+    highly recommend you subscribe to the <a
+    href="http://httpd.apache.org/lists.html#http-announce">Apache
+    HTTP Server Announcements List</a> where you can keep informed of
+    new releases and security updates.  Similar services are available
+    from most third-party distributors of Apache software.</p>
+
+    <p>Of course, most times that a web server is compromised, it is
+    not because of problems in the HTTP Server code.  Rather, it comes
+    from problems in add-on code, CGI scripts, or the underlying
+    Operating System.  You must therefore stay aware of problems and
+    updates with all the software on your system.</p>
+
+  </section>
+
   <section id="serverroot">
   
     <title>Permissions on ServerRoot Directories</title>
@@ -98,7 +120,7 @@
     programs from SSI pages. To do this replace <code>Includes</code>
     with <code>IncludesNOEXEC</code> in the <directive
     module="core">Options</directive> directive.  Note that users may 
-    still use &gt;--#include virtual="..." --&lt; to execute CGI scripts if 
+    still use &lt;--#include virtual="..." --&gt; to execute CGI scripts if 
     these scripts are in directories desginated by a <directive
     module="mod_alias">ScriptAlias</directive> directive.</p>
     
@@ -131,7 +153,7 @@
     <title>Non Script Aliased CGI</title>
     
     <p>Allowing users to execute CGI scripts in any directory should only be 
-    considered if;</p>
+    considered if:</p>
     
     <ul>
       <li>You trust your users not to write scripts which will deliberately 

@@ -441,8 +441,7 @@ require valid-user
     FrontPage with mod_auth_ldap</title>
 
     <p>Normally, FrontPage uses FrontPage-web-specific user/group
-    files (i.e., the <module>mod_authn_file</module> and
-    <module>mod_authz_groupfile</module> modules) to handle all
+    files (i.e., the <module>mod_auth</module> module) to handle all
     authentication. Unfortunately, it is not possible to just
     change to LDAP authentication by adding the proper directives,
     because it will break the <em>Permissions</em> forms in
@@ -491,7 +490,7 @@ AuthLDAPFrontPageHack  on
     <ul>
       <li>When choosing the LDAP URL, the attribute to use for
       authentication should be something that will also be valid
-      for putting into a <module>mod_authn_file</module> user file.
+      for putting into a <module>mod_auth</module> user file.
       The user ID is ideal for this.</li>
 
       <li>When adding users via FrontPage, FrontPage administrators
@@ -503,11 +502,9 @@ AuthLDAPFrontPageHack  on
       file. This could cause confusion for web administrators.</li>
 
       <!-- XXX is that true? was mod_auth before the aaa change -->
-      <li>Apache must be compiled with <module>mod_auth_basic</module>,
-      <module>mod_authn_file</module> and
-      <module>mod_authz_groupfile</module> in order to
+      <li>Apache must be compiled with <module>mod_auth</module> in order to
       use FrontPage support. This is because Apache will still use
-      the <module>mod_authz_groupfile</module> group file for determine the extent of a
+      the <module>mod_auth</module> group file for determine the extent of a
       user's access to the FrontPage web.</li>
 
       <li>The directives must be put in the <code>.htaccess</code>
@@ -515,7 +512,7 @@ AuthLDAPFrontPageHack  on
       type="section">Location</directive> or <directive module="core"
       type="section">Directory</directive> directives won't work. This
       is because <module>mod_auth_ldap</module> has to be able to grab
-      the <directive module="mod_authn_file">AuthUserFile</directive>
+      the <directive module="mod_auth">AuthUserFile</directive>
       directive that is found in FrontPage <code>.htaccess</code>
       files so that it knows where to look for the valid user list. If
       the <module>mod_auth_ldap</module> directives aren't in the same
@@ -713,7 +710,7 @@ environment variable</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthLDAPStartTLS directive</name>
+<name>AuthLDAPStartTLS</name>
 <description>Use a secure TLS connection to the LDAP server</description>
 <syntax>AuthLDAPStartTLS on|off</syntax>
 <default>AuthLDAPStartTLS off</default>

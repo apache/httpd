@@ -10,11 +10,12 @@
 
   <summary>
 
-    <note type="warning"><strong>Warning:</strong>
-    This document has not been fully updated
-    to take into account changes made in the 2.0 version of the
-    Apache HTTP Server. Some of the information may still be
-    relevant, but please use it with care.</note>
+    <note type="warning"><title>Warning:</title>
+      <p>This document has not been fully updated
+      to take into account changes made in the 2.0 version of the
+      Apache HTTP Server. Some of the information may still be
+      relevant, but please use it with care.</p>
+    </note>
 
     <p>Orignally written by Dean Gaudet.</p>
 
@@ -106,7 +107,7 @@
 
     <section>
 
-      <title><code>HostnameLookups</code></title>
+      <title>HostnameLookups</title>
 
       <p>Prior to Apache 1.3, <directive module="core"
       >HostnameLookups</directive> defaulted to <code>On</code>.
@@ -126,12 +127,14 @@
       matching the criteria. Here's an example which disables lookups
       except for <code>.html</code> and <code>.cgi</code> files:</p>
 
-<example><pre>
-HostnameLookups off
-&lt;Files ~ "\.(html|cgi)$"&gt;
-    HostnameLookups on
-&lt;/Files&gt;
-</pre></example>
+      <example>
+        HostnameLookups off<br />
+        &lt;Files ~ "\.(html|cgi)$"&gt;<br />
+        <indent>
+          HostnameLookups on<br />
+        </indent>
+        &lt;/Files&gt;
+      </example>
 
       <p>But even still, if you just need DNS names in some CGIs you
       could consider doing the <code>gethostbyname</code> call in the
@@ -151,7 +154,7 @@ HostnameLookups off
 
     <section>
 
-      <title><code>FollowSymLinks</code> and <code>SymLinksIfOwnerMatch</code></title>
+      <title>FollowSymLinks and SymLinksIfOwnerMatch</title>
 
       <p>Wherever in your URL-space you do not have an <code>Options
       FollowSymLinks</code>, or you do have an <code>Options
@@ -159,12 +162,14 @@ HostnameLookups off
       system calls to check up on symlinks. One extra call per
       filename component. For example, if you had:</p>
 
-<example><pre>
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
-    Options SymLinksIfOwnerMatch
-&lt;/Directory&gt;
-</pre></example>
+      <example>
+        DocumentRoot /www/htdocs<br />
+        &lt;Directory /&gt;<br />
+        <indent>
+          Options SymLinksIfOwnerMatch<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
 
       <p>and a request is made for the URI <code>/index.html</code>.
       Then Apache will perform <code>lstat(2)</code> on
@@ -174,15 +179,20 @@ DocumentRoot /www/htdocs
       every single request. If you really desire the symlinks
       security checking you can do something like this:</p>
 
-<example><pre>
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
-    Options FollowSymLinks
-&lt;/Directory&gt;
-&lt;Directory /www/htdocs&gt;
-    Options -FollowSymLinks +SymLinksIfOwnerMatch
-&lt;/Directory&gt;
-</pre></example>
+      <example>
+        DocumentRoot /www/htdocs<br />
+        &lt;Directory /&gt;<br />
+        <indent>
+          Options FollowSymLinks<br />
+        </indent>
+        &lt;/Directory&gt;<br />
+        <br />
+        &lt;Directory /www/htdocs&gt;<br />
+        <indent>
+          Options -FollowSymLinks +SymLinksIfOwnerMatch<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
 
       <p>This at least avoids the extra checks for the
       <directive module="core">DocumentRoot</directive> path.
@@ -197,19 +207,21 @@ DocumentRoot /www/htdocs
 
     <section>
 
-      <title><code>AllowOverride</code></title>
+      <title>AllowOverride</title>
 
       <p>Wherever in your URL-space you allow overrides (typically
       <code>.htaccess</code> files) Apache will attempt to open
       <code>.htaccess</code> for each filename component. For
       example,</p>
 
-<example><pre>
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
-    AllowOverride all
-&lt;/Directory&gt;
-</pre></example>
+      <example>
+        DocumentRoot /www/htdocs<br />
+        &lt;Directory /&gt;<br />
+        <indent>
+          AllowOverride all<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
 
       <p>and a request is made for the URI <code>/index.html</code>.
       Then Apache will attempt to open <code>/.htaccess</code>,
@@ -231,15 +243,15 @@ DocumentRoot /www/htdocs
       penalties. There's one case where you can speed up the server.
       Instead of using a wildcard such as:</p>
 
-<example><pre>
-DirectoryIndex index
-</pre></example>
+      <example>
+        DirectoryIndex index
+      </example>
 
-    <p>Use a complete list of options:</p>
+      <p>Use a complete list of options:</p>
 
-<example><pre>
-DirectoryIndex index.cgi index.pl index.shtml index.html
-</pre></example>
+      <example>
+        DirectoryIndex index.cgi index.pl index.shtml index.html
+      </example>
 
       <p>where you list the most common choice first.</p>
 
@@ -392,6 +404,44 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
 
     <section>
 
+      <title>Choosing an MPM</title>
+
+      <p>Apache 2.x supports pluggable concurrency models, called
+      <a href="../mpm.html">Multi-Processing Modules</a> (MPMs).
+      When building Apache, you must choose an MPM to use.  There
+      are platform-specific MPMs for some platforms:
+      <module>beos</module>, <module>mpm_netware</module>,
+      <module>mpmt_os2</module>, and <module>mpm_winnt</module>.  For
+      general Unix-type systems, there are several MPMs from which
+      to choose.  The choice of MPM can affect the speed and scalability
+      of the httpd:</p>
+
+      <ul>
+
+        <li>The <module>worker</module> MPM uses multiple child
+        processes with many threads each.  Each thread handles
+        one connection at a time.  Worker generally is a good
+        choice for high-traffic servers because it has a smaller
+        memory footprint than the prefork MPM.</li>
+
+        <li>The <module>prefork</module> MPM uses multiple child
+        processes with one thread each.  Each process handles
+        one connection at a time.  On many systems, prefork is
+        comparable in speed to worker, but it uses more memory.
+        Prefork's threadless design has advantages over worker
+        in some situations: it can be used with non-thread-safe
+        third-party modules, and it is easier to debug on platforms
+        with poor thread debugging support.</li>
+
+      </ul>
+
+      <p>For more information on these and other MPMs, please
+      see the MPM <a href="../mpm.html">documentation</a>.</p>
+
+    </section>
+
+    <section>
+
       <title>mod_status and ExtendedStatus On</title>
 
       <p>If you include <module>mod_status</module> and you also set
@@ -423,29 +473,39 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       do not match the code, they're contrived for pedagogical
       purposes):</p>
 
-<example><pre>
-    for (;;) {
-    for (;;) {
-        fd_set accept_fds;
-
-        FD_ZERO (&amp;accept_fds);
-        for (i = first_socket; i &lt;= last_socket; ++i) {
-        FD_SET (i, &amp;accept_fds);
+      <example>
+        for (;;) {<br />
+        <indent>
+          for (;;) {<br />
+          <indent>
+            fd_set accept_fds;<br />
+            <br />
+            FD_ZERO (&amp;accept_fds);<br />
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            <indent>
+              FD_SET (i, &amp;accept_fds);<br />
+            </indent>
+            }<br />
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
+            if (rc &lt; 1) continue;<br />
+            new_connection = -1;<br />
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            <indent>
+              if (FD_ISSET (i, &amp;accept_fds)) {<br />
+              <indent>
+                new_connection = accept (i, NULL, NULL);<br />
+                if (new_connection != -1) break;<br />
+              </indent>
+              }<br />
+            </indent>
+            }<br />
+            if (new_connection != -1) break;<br />
+          </indent>
+          }<br />
+          process the new_connection;<br />
+        </indent>
         }
-        rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
-        if (rc &lt; 1) continue;
-        new_connection = -1;
-        for (i = first_socket; i &lt;= last_socket; ++i) {
-        if (FD_ISSET (i, &amp;accept_fds)) {
-            new_connection = accept (i, NULL, NULL);
-            if (new_connection != -1) break;
-        }
-        }
-        if (new_connection != -1) break;
-    }
-    process the new_connection;
-    }
-</pre></example>
+      </example>
 
       <p>But this naive implementation has a serious starvation problem.
       Recall that multiple children execute this loop at the same
@@ -484,31 +544,41 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       entry into the inner loop. The loop looks like this
       (differences highlighted):</p>
 
-<example><pre>
-    for (;;) {
-    <strong>accept_mutex_on ();</strong>
-    for (;;) {
-        fd_set accept_fds;
-
-        FD_ZERO (&amp;accept_fds);
-        for (i = first_socket; i &lt;= last_socket; ++i) {
-        FD_SET (i, &amp;accept_fds);
+      <example>
+        for (;;) {<br />
+        <indent>
+          <strong>accept_mutex_on ();</strong><br />
+          for (;;) {<br />
+          <indent>
+            fd_set accept_fds;<br />
+            <br />
+            FD_ZERO (&amp;accept_fds);<br />
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            <indent>
+              FD_SET (i, &amp;accept_fds);<br />
+            </indent>
+            }<br />
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
+            if (rc &lt; 1) continue;<br />
+            new_connection = -1;<br />
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            <indent>
+              if (FD_ISSET (i, &amp;accept_fds)) {<br />
+              <indent>
+                new_connection = accept (i, NULL, NULL);<br />
+                if (new_connection != -1) break;<br />
+              </indent>
+              }<br />
+            </indent>
+            }<br />
+            if (new_connection != -1) break;<br />
+          </indent>
+          }<br />
+          <strong>accept_mutex_off ();</strong><br />
+          process the new_connection;<br />
+        </indent>
         }
-        rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
-        if (rc &lt; 1) continue;
-        new_connection = -1;
-        for (i = first_socket; i &lt;= last_socket; ++i) {
-        if (FD_ISSET (i, &amp;accept_fds)) {
-            new_connection = accept (i, NULL, NULL);
-            if (new_connection != -1) break;
-        }
-        }
-        if (new_connection != -1) break;
-    }
-    <strong>accept_mutex_off ();</strong>
-    process the new_connection;
-    }
-</pre></example>
+      </example>
 
       <p><a id="serialize" name="serialize">The functions</a>
       <code>accept_mutex_on</code> and <code>accept_mutex_off</code>
@@ -681,31 +751,39 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       <code>http_main.c</code>). The function looks roughly like
       this:</p>
 
-<example><pre>
-    void lingering_close (int s)
-    {
-    char junk_buffer[2048];
-
-    /* shutdown the sending side */
-    shutdown (s, 1);
-
-    signal (SIGALRM, lingering_death);
-    alarm (30);
-
-    for (;;) {
-        select (s for reading, 2 second timeout);
-        if (error) break;
-        if (s is ready for reading) {
-        if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
-            break;
+      <example>
+        void lingering_close (int s)<br />
+        {<br />
+        <indent>
+          char junk_buffer[2048];<br />
+          <br />
+          /* shutdown the sending side */<br />
+          shutdown (s, 1);<br />
+          <br />
+          signal (SIGALRM, lingering_death);<br />
+          alarm (30);<br />
+          <br />
+          for (;;) {<br />
+          <indent>
+            select (s for reading, 2 second timeout);<br />
+            if (error) break;<br />
+            if (s is ready for reading) {<br />
+            <indent>
+              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br />
+              <indent>
+                break;<br />
+              </indent>
+              }<br />
+              /* just toss away whatever is here */<br />
+            </indent>
+            }<br />
+          </indent>
+          }<br />
+          <br />
+          close (s);<br />
+        </indent>
         }
-        /* just toss away whatever is here */
-        }
-    }
-
-    close (s);
-    }
-</pre></example>
+      </example>
 
       <p>This naturally adds some expense at the end of a connection,
       but it is required for a reliable implementation. As HTTP/1.1
@@ -752,7 +830,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
 
     <section>
 
-      <title><code>DYNAMIC_MODULE_LIMIT</code></title>
+      <title>DYNAMIC_MODULE_LIMIT</title>
 
       <p>If you have no intention of using dynamically loaded modules
       (you probably don't if you're reading this and tuning your
@@ -773,7 +851,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     on Solaris 8. This trace was collected using:</p>
 
     <example>
-      truss -l -p <em>httpd_child_pid</em>.
+      truss -l -p <var>httpd_child_pid</var>.
     </example>
 
     <p>The <code>-l</code> option tells truss to log the ID of the
@@ -789,10 +867,10 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     with content negotiation look wildly different (and quite ugly
     in some cases).</p>
 
-<example><pre>
-/67:    accept(3, 0x00200BEC, 0x00200C0C, 1) (sleeping...)
-/67:    accept(3, 0x00200BEC, 0x00200C0C, 1)            = 9
-</pre></example>
+    <example>
+<pre>/67:    accept(3, 0x00200BEC, 0x00200C0C, 1) (sleeping...)
+/67:    accept(3, 0x00200BEC, 0x00200C0C, 1)            = 9</pre>
+    </example>
 
     <p>In this trace, the listener thread is running within LWP #67.</p>
 
@@ -800,18 +878,18 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     particular platform, the worker MPM uses an unserialized accept by
     default unless it is listening on multiple ports.</note>
 
-<example><pre>
-/65:    lwp_park(0x00000000, 0)                         = 0
-/67:    lwp_unpark(65, 1)                               = 0
-</pre></example>
+    <example>
+<pre>/65:    lwp_park(0x00000000, 0)                         = 0
+/67:    lwp_unpark(65, 1)                               = 0</pre>
+    </example>
 
     <p>Upon accepting the connection, the listener thread wakes up
     a worker thread to do the request processing. In this trace,
     the worker thread that handles the request is mapped to LWP #65.</p>
 
-<example><pre>
-/65:    getsockname(9, 0x00200BA4, 0x00200BC4, 1)       = 0
-</pre></example>
+    <example>
+<pre>/65:    getsockname(9, 0x00200BA4, 0x00200BC4, 1)       = 0</pre>
+    </example>
 
     <p>In order to implement virtual hosts, Apache needs to know
     the local socket address used to accept the connection. It
@@ -821,10 +899,10 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     are used which do not have wildcard addresses). But
     no effort has yet been made to do these optimizations. </p>
 
-<example><pre>
-/65:    brk(0x002170E8)                                 = 0
-/65:    brk(0x002190E8)                                 = 0
-</pre></example>
+    <example>
+<pre>/65:    brk(0x002170E8)                                 = 0
+/65:    brk(0x002190E8)                                 = 0</pre>
+    </example>
 
     <p>The <code>brk(2)</code> calls allocate memory from the heap.
     It is rare to see these in a system call trace, because the httpd
@@ -834,31 +912,31 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     call <code>malloc(3)</code> to get the blocks of raw memory
     with which to create the custom memory allocators.</p>
 
-<example><pre>
-/65:    fcntl(9, F_GETFL, 0x00000000)                   = 2
+    <example>
+<pre>/65:    fcntl(9, F_GETFL, 0x00000000)                   = 2
 /65:    fstat64(9, 0xFAF7B818)                          = 0
 /65:    getsockopt(9, 65535, 8192, 0xFAF7B918, 0xFAF7B910, 2190656) = 0
 /65:    fstat64(9, 0xFAF7B818)                          = 0
 /65:    getsockopt(9, 65535, 8192, 0xFAF7B918, 0xFAF7B914, 2190656) = 0
 /65:    setsockopt(9, 65535, 8192, 0xFAF7B918, 4, 2190656) = 0
-/65:    fcntl(9, F_SETFL, 0x00000082)                   = 0
-</pre></example>
+/65:    fcntl(9, F_SETFL, 0x00000082)                   = 0</pre>
+    </example>
 
     <p>Next, the worker thread puts the connection to the client (file
     descriptor 9) in non-blocking mode. The <code>setsockopt(2)</code>
     and <code>getsockopt(2)</code> calls are a side-effect of how
     Solaris's libc handles <code>fcntl(2)</code> on sockets.</p>
 
-<example><pre>
-/65:    read(9, " G E T   / 1 0 k . h t m".., 8000)     = 97
-</pre></example>
+    <example>
+<pre>/65:    read(9, " G E T   / 1 0 k . h t m".., 8000)     = 97</pre>
+    </example>
 
     <p>The worker thread reads the request from the client.</p>
 
-<example><pre>
-/65:    stat("/var/httpd/apache/httpd-8999/htdocs/10k.html", 0xFAF7B978) = 0
-/65:    open("/var/httpd/apache/httpd-8999/htdocs/10k.html", O_RDONLY) = 10
-</pre></example>
+    <example>
+<pre>/65:    stat("/var/httpd/apache/httpd-8999/htdocs/10k.html", 0xFAF7B978) = 0
+/65:    open("/var/httpd/apache/httpd-8999/htdocs/10k.html", O_RDONLY) = 10</pre>
+    </example>
 
     <p>This httpd has been configured with <code>Options FollowSymLinks</code>
     and <code>AllowOverride None</code>.  Thus it doesn't need to
@@ -867,9 +945,9 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     It simply calls <code>stat(2)</code> to verify that the file:
     1) exists, and 2) is a regular file, not a directory.</p>
 
-<example><pre>
-/65:    sendfilev(0, 9, 0x00200F90, 2, 0xFAF7B53C)      = 10269
-</pre></example>
+    <example>
+<pre>/65:    sendfilev(0, 9, 0x00200F90, 2, 0xFAF7B53C)      = 10269</pre>
+    </example>
 
     <p>In this example, the httpd is able to send the HTTP response
     header and the requested file with a single <code>sendfilev(2)</code>
@@ -878,9 +956,9 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     <code>writev(2)</code> call to send the headers before calling
     <code>sendfile(2)</code>.</p>
 
-<example><pre>
-/65:    write(4, " 1 2 7 . 0 . 0 . 1   -  ".., 78)      = 78
-</pre></example>
+    <example>
+<pre>/65:    write(4, " 1 2 7 . 0 . 0 . 1   -  ".., 78)      = 78</pre>
+    </example>
 
     <p>This <code>write(2)</code> call records the request in the
     access log. Note that one thing missing from this trace is a
@@ -890,26 +968,26 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     optimized implementation that doesn't require as much overhead
     as a typical system call.</p>
 
-<example><pre>
-/65:    shutdown(9, 1, 1)                               = 0
+    <example>
+<pre>/65:    shutdown(9, 1, 1)                               = 0
 /65:    poll(0xFAF7B980, 1, 2000)                       = 1
 /65:    read(9, 0xFAF7BC20, 512)                        = 0
-/65:    close(9)                                        = 0
-</pre></example>
+/65:    close(9)                                        = 0</pre>
+    </example>
 
     <p>The worker thread does a lingering close of the connection.</p>
 
-<example><pre>
-/65:    close(10)                                       = 0
-/65:    lwp_park(0x00000000, 0)         (sleeping...)
-</pre></example>
+    <example>
+<pre>/65:    close(10)                                       = 0
+/65:    lwp_park(0x00000000, 0)         (sleeping...)</pre>
+    </example>
 
     <p>Finally the worker thread closes the file that it has just delivered
     and blocks until the listener assigns it another connection.</p>
 
-<example><pre>
-/67:    accept(3, 0x001FEB74, 0x001FEB94, 1) (sleeping...)
-</pre></example>
+    <example>
+<pre>/67:    accept(3, 0x001FEB74, 0x001FEB94, 1) (sleeping...)</pre>
+    </example>
 
     <p>Meanwhile, the listener thread is able to accept another connection
     as soon as it has dispatched this connection to a worker thread (subject

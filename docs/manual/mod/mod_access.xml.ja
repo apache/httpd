@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis>
+<!-- English revision: 1.7.2.1 -->
+
+<name>mod_access</name> 
+<description>クライアントのホスト名、IP アドレス、その他のクライアント
+のリクエストの特徴に基づいたアクセス制御機能を提供する</description>
+
+<status>Base</status>
+<sourcefile>mod_access.c</sourcefile>
+<identifier>access_module</identifier>
+<compatibility>2.1 より前のバージョンのみで使用可能</compatibility>
+
+<summary>
+    <p><module>mod_access</module> により提供されるディレクティブはサーバの特定の部分への
+    アクセスを制御するために <directive module="core" type="section"
+    >Directory</directive>, <directive module="core"
+    type="section">Files</directive>, <directive module="core"
+    type="section">Location</directive>
+    と <code><a href="core.html#accessfilename">.htaccess</a
+    ></code> ファイルで使用されます。クライアントのホスト名、IP
+    アドレスや <a href="../env.html">環境変数</a
+    >として取得された、その他のリクエストの特徴に基づいて
+    アクセス制御を行なうことができます。<directive
+    module="mod_access">Allow</directive> と
+    <directive module="mod_access">Deny</directive> ディレクティブは
+    どのようなクライアントにアクセスを
+    許可する、しないかを指定するために使用されます。一方、
+    <directive module="mod_access">Order</directive> ディレクティブは
+    デフォルトのアクセス状態と、
+    <directive module="mod_access">Allow</directive> ディレクティブと
+    <directive module="mod_access">Deny</directive>
+    ディレクティブとのお互いへの影響の仕方を設定します。
+    </p>
+
+    <p>ホストによるアクセス制限とパスワードによる認証を同時に
+    行なうことが可能です。その場合、その二つの制限の関係を指定するために
+    <directive module="core">Satisfy</directive>
+    ディレクティブを使用します。</p>
+
+    <p>一般的には、アクセス制限ディレクティブはすべてのアクセスメソッド
+    (<code>GET</code>, <code>PUT</code>, <code>POST</code> など)
+    に適用されます。そして、ほとんどの場合これが望ましい動作です。
+    しかし、<directive module="core" type="section">Limit</directive>
+    セクションの中にディレクティブを書くことで、
+    一部のメソッドにのみ制限をかけることもできます。</p>
+</summary>
+
+<seealso><directive module="core">Satisfy</directive></seealso>
+<seealso><directive module="core">Require</directive></seealso>
+
+<directivesynopsis>
+<name>Allow</name>
+<description>サーバのある領域にアクセスできるホストを制御する</description>
+<syntax> Allow from
+    all|<var>host</var>|env=<var>env-variable</var>
+    [<var>host</var>|env=<var>env-variable</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+
+    <p><directive>Allow</directive> ディレクティブはどのホストが
+    サーバのある領域をアクセスできるかに影響を与えます。
+    アクセスはホスト名、IP アドレス、IP アドレスの範囲や、
+    環境変数として取得された、その他のクライアントのリクエストの
+    特徴によって制御することができます。</p> 
+
+    <p>このディレクティブの最初の引数は常に <code>from</code> です。
+    それに続く引数は三つの違った形式があります。<code>Allow from
+    all</code> が指定されていれば、すべてのホストにアクセスを許可し、
+    アクセス制限は下で説明されているように、
+    <directive module="mod_access">Deny</directive>
+    ディレクティブと <directive module="mod_access">Order</directive>
+    ディレクティブの設定で決まります。
+    特定のホストやホスト群にのみサーバへのアクセスを許可するためには、
+    以下のどれかの形式で <var>host</var> を指定することができます:</p>
+
+    <dl>
+      <dt>ドメイン名 (の一部)</dt>
+
+      <dd>例: <code>Allow from apache.org</code><br />
+      この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
+      各部分が完全に合うものだけに適用されますので、上の例は
+      <code>foo.apache.org</code> にはマッチしますが、
+      <code>fooapache.org</code> にはマッチしません。
+      この設定をすると、サーバは
+      <directive module="core">HostnameLookups</directive>
+      の設定に関わらず、クライアントの IP アドレスに対して
+      DNS の逆引きを行ないます。</dd>
+
+      <dt>完全な IP アドレス</dt>
+
+      <dd>例: <code>Allow from 10.1.2.3</code><br />
+      アクセスを許可する IP アドレスです。</dd>
+
+      <dt>IP アドレスの一部</dt>
+
+      <dd>例: <code>Allow from 10.1</code><br />
+      サブネットの制限用の、IP
+      アドレスの最初の一つから三つまでのバイトです。</dd>
+
+      <dt>ネットワーク/ネットマスク の対</dt>
+
+      <dd>例: <code>Allow from 10.1.0.0/255.255.0.0</code><br />
+      ネットワーク a.b.c.d とネットマスク w.x.y.z です。
+      より細粒度のサブネット制限用です。</dd>
+
+      <dt>ネットワーク/nnn CIDR 指定</dt>
+
+      <dd>例: <code>Allow from 10.1.0.0/16</code><br />
+      ネットマスクが nnn の上位ビットが 1
+      となっているものからなること以外は前のものと同じです。</dd>
+    </dl>
+
+    <p>注: 最後の三つの例はまったく同じホストに合います。</p>
+
+
+    <p>IPv6 アドレスと IPv6 のサブネットは以下のように指定できます:</p>
+
+    <example>
+       Allow from fe80::a00:20ff:fea7:ccea<br />
+       Allow from fe80::a00:20ff:fea7:ccea/10
+    </example>
+
+    <p><directive>Allow</directive> ディレクティブの引数の三つ目の形式は、
+    <a href="../env.html">環境変数</a>
+    の存在によりアクセスの制御を行なえるようにするものです。
+    <code>Allow from env=<var>env-variable</var></code>
+    が指定されていると、環境変数 <var>env-variable</var>
+    が存在した場合にリクエストはアクセスを許可されます。サーバは
+    <module>mod_setenvif</module>
+    のディレクティブにより、クライアントのリクエスト
+    の特徴に基づいて柔軟に環境変数を設定する機能を提供します。
+    ですから、このディレクティブはクライアントの
+    <code>User-Agent</code> (ブラウザの種類)、<code>Referer</code>
+    や他の HTTP リクエストのヘッダフィールドなどに基づいて
+    アクセス許可をするために使うことができます。
+    </p>
+
+    <example><title>例:</title>
+      SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
+      &lt;Directory /docroot&gt;<br />
+      <indent>
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from env=let_me_in<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>この場合、user-agent の文字列が <code>KnockKnock/2.0</code>
+    で始まるブラウザのみがアクセスを許可され、
+    他のものはアクセスを拒否されます。</p>
+
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>Deny</name>
+
+<description>サーバがアクセスを拒否するホストを制御する</description>
+
+<syntax> Deny from
+    all|<var>host</var>|env=<var>env-variable</var>
+    [<var>host</var>|env=<var>env-variable</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+    <p>このディレクティブはホスト名、IP
+    アドレス、環境変数に基づいてサーバへのアクセスを制限します。
+    <directive>Deny</directive> ディレクティブの引数は <directive
+    module="mod_access">Allow</directive>
+    ディレクティブとまったく同じです。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Order</name>
+<description>デフォルトのアクセス可能な状態と、<directive>Allow</directive> と
+<directive>Deny</directive> が評価される順番を制御する</description>
+
+<syntax> Order <var>ordering</var></syntax>
+<default>Order Deny,Allow</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+
+    <p><directive>Order</directive> ディレクティブはデフォルトのアクセスの状態と
+    <directive module="mod_access">Allow</directive> ディレクティブと
+    <directive module="mod_access">Deny</directive>
+    ディレクティブが評価される順番を制御します。
+    <var>Ordering</var> は以下のどれかです。</p>
+
+    <dl>
+      <dt>Deny,Allow</dt>
+
+      <dd><directive module="mod_access">Deny</directive> ディレクティブが
+      <directive module="mod_access">Allow</directive>
+      ディレクティブの前に評価されます。
+      アクセスはデフォルトで許可されます。<directive
+      module="mod_access">Deny</directive>
+      ディレクティブに合わないか、<directive module="mod_access">Allow</directive>
+      ディレクティブに合うクライアントはアクセスを許可されます。</dd>
+
+      <dt>Allow,Deny</dt>
+
+      <dd><directive module="mod_access">Allow</directive>
+      ディレクティブが <directive
+      module="mod_access">Deny</directive>
+      ディレクティブの前に評価されます。
+      アクセスはデフォルトで拒否されます。<directive
+      module="mod_access">Allow</directive>
+      ディレクティブに合わないか、<directive module="mod_access">Deny</directive>
+      ディレクティブに合うクライアントはアクセスを拒否されます。
+      </dd>
+
+      <dt>Mutual-failure</dt>
+
+      <dd><directive module="mod_access">Allow</directive> のリストに現れて、
+      <directive module="mod_access">Deny</directive>
+      のリストに現れないホストのみがアクセスを許可されます。
+      この順番付けは <code>Order Allow,Deny</code> と同じ効果を持ち、
+      その設定の方が好ましいために非推奨となっています。</dd>
+    </dl>
+
+    <p>キーワードはコンマで分離することだけが可能です。
+    間に空白があってはいけません。どの場合でも、<directive
+    module="mod_access">Allow</directive> と
+    <directive module="mod_access">Deny</directive> 文は
+    全て評価されるということに注意してください。
+    </p>
+
+    <p>以下の例では、apache.org
+    ドメインのすべてのホストはアクセスを許可されます。
+    他のすべてのホストはアクセスを拒否されます。</p>
+
+    <example>
+      Order Deny,Allow<br />
+      Deny from all<br />
+      Allow from apache.org
+    </example>
+
+    <p>次の例では、foo.apache.org サブドメインにあるホスト以外の、
+    apache.org ドメインのすべてのホストがアクセスを許可されます。
+    apache.org
+    ドメインでないホストは、デフォルトの状態がアクセス拒否のため、
+    サーバへのアクセスを拒否されます。</p>
+
+    <example>
+      Order Allow,Deny<br />
+      Allow from apache.org<br />
+      Deny from foo.apache.org
+    </example>
+
+    <p>一方、上の例の <directive>Order</directive> が <code>Deny,Allow</code>
+    に変わっていれば、すべのホストにアクセスが許可されます。
+    これは、設定ファイル中の実際の順番に関わらず、
+    <code>Allow from apache.org</code> が最後に評価されて、
+    <code>Deny from foo.apache.org</code> を上書きするからです。
+    <code>apache.org</code>
+    ドメインにないホストも、デフォルトの状態が <var>allow</var>
+    に変化するために、アクセスを許可されます。
+    </p>
+
+    <p><directive>Order</directive>
+    ディレクティブはデフォルトのアクセスの状態に影響を与えるので、
+    <directive module="mod_access">Allow</directive> ディレクティブと
+    <directive module="mod_access">Deny</directive>
+    ディレクティブが無くても、サーバのアクセスに影響を与えることができます。
+    たとえば、</p>
+
+    <example>
+      &lt;Directory /www&gt;<br />
+      <indent>
+        Order Allow,Deny<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>はデフォルトのアクセス状態が <var>deny</var> になるため、
+    <code>/www</code> ディレクトリへのすべてのアクセスを拒否します。
+    </p>
+
+    <p><directive>Order</directive>
+    ディレクティブはサーバの設定処理の各段階でだけ
+    アクセスディレクティブの処理の順番を変更します。これは、たとえば、
+    <directive>Order</directive> ディレクティブの設定に関わらず、
+    <directive module="core" type="section">Location</directive> セクションの
+    <directive module="mod_access">Allow</directive> ディレクティブや
+    <directive module="mod_access">Deny</directive> ディレクティブは、
+    <directive module="core" type="sectino">Directory</directive> セクションや
+    <code>.htaccess</code> ファイルの <directive
+    module="mod_access">Allow</directive>
+    ディレクティブや <directive module="mod_access">Deny</directive>
+    ディレクティブよりも常に後に評価されるということを意味します。
+    設定セクションのマージの詳細については、
+    <a href="../sections.html">Directory,Location, Files
+    セクションの動作方法</a> を参照してください。</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.2.2.2 -->
 <manualpage>
 <relativepath href="."/>
 
@@ -15,8 +15,17 @@
     にシグナルを送る</a>もご覧下さい。</p>
 </summary>
 
+<seealso><a href="programs/httpd.html">httpd</a></seealso>
+<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+
 <section id="introduction"><title>イントロダクション</title>
-    <p>たくさんの実行形式 <code>httpd</code> がシステム上で
+
+    <p>Apache を停止したり再起動したりするためには、実行されている
+    <code>httpd</code> プロセスにシグナルを送る必要があります。
+    シグナルを送るには二つの方法があります。
+    一つ目はプロセスに直接シグナルを送る unix の <code>kill</code>
+    コマンドを使用する方法です。
+    システムを見ればたくさんの <code>httpd</code> が
     実行されているのに気が付くでしょうが、シグナルを送るのは
     親プロセスだけで、それ以外の個々のプロセスには
     シグナルを送らないで下さい。その親プロセスの pid は
@@ -30,31 +39,37 @@
     <p>親プロセスにシグナルを送るには、
     次のようなコマンドを発行して下さい:</p>
 
-<example>kill -TERM `cat /usr/local/apache/logs/httpd.pid`</example>
+<example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
 
-    <p>これの実行状況は次のコマンドで読むことができます:</p>
+    <p><code>httpd</code> プロセスにシグナルを送る 2 番目の方法は
+    <code>-k</code> というコマンドライン引数を使用することです。
+    下で説明されているように、<code>stop</code>, <code>restart</code>,
+    <code>graceful</code> を指定できます。
+    これらは <a href="programs/httpd.html">httpd</a> の引数ですが、
+    制御用のスクリプト <a href="programs/apachectl.html">apachectl</a> を
+    使うことをお薦めします。<a
+    href="programs/apachectl.html">apachectl</a> はそれらの引数をそのまま
+    <code>httpd</code> に渡します。</p>
 
-<example>tail -f /usr/local/apache/logs/error_log</example>
+    <p><code>httpd</code> にシグナルを送った後、
+    実行状況を次のコマンドで読むことができます:</p>
+
+<example>tail -f /usr/local/apache2/logs/error_log</example>
     <p>ここに挙げた例は、各自の
     <directive module="core">ServerRoot</directive>
     と
     <directive module="mpm_common">PidFile</directive>
     の設定に適合するように適宜修正して下さい。</p>
-
-    <p><a href="programs/apachectl.html">apachectl</a>
-    と呼ばれるシェルスクリプトで、Apache にシグナルを送る手順を
-    自動化することができます。このスクリプトの詳細に関しては、
-    <a href="invoking.html">Apache の起動</a>の文書をご覧下さい。</p>
 </section>
 
 <section id="term"><title>急な停止</title>
 
 <dl><dt>シグナル: TERM</dt>
-<dd><code>apachectl stop</code></dd>
+<dd><code>apachectl -k stop</code></dd>
 </dl>
 
-    <p><code>TERM</code> シグナルを親プロセスに送ると、
-    即座に子プロセス全てを kill しようとします。
+    <p><code>TERM</code> あるいは <code>stop</code> 
+    シグナルを親プロセスに送ると、即座に子プロセス全てを kill しようとします。
     子プロセスを完全に kill し終わるまでに数秒かかるかもしれません。
     その後、親プロセス自身が終了します。
     処理中のリクエストは全て停止され、もはやリクエストに対する
@@ -64,27 +79,27 @@
 <section id="graceful"><title>緩やかな再起動</title>
 
 <dl><dt>シグナル: USR1</dt>
-<dd><code>apachectl graceful</code></dd>
+<dd><code>apachectl -k graceful</code></dd>
 </dl>
 
-    <p>親プロセスは <code>USR1</code> シグナルを受け取ると、
-    子プロセスに現在のリクエストの処理の後に終了する
+    <p>親プロセスは <code>USR1</code> あるいは <code>graceful</code>
+    シグナルを受け取ると、子プロセスに現在のリクエストの処理の後に終了する
     (あるいは何もしていなければすぐに終了する)
     ように<em>助言</em>します。
     親プロセスは設定ファイルを再読込して、ログファイルを開き直します。
     子プロセスが徐々になくなるに従って、
     新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
     そして、これらが新たなリクエストに即座に応答し始めます。</p>
-    <note>特定のプラットホームでは USR1 を緩やかな再起動のために
+    <note>特定のプラットホームでは <code>USR1</code> を緩やかな再起動のために
     使うことができませんが、代わりのシグナル
-    (例えば WINCH) が使用できるでしょう。
+    (例えば <code>WINCH</code>) が使用できるでしょう。
     <code>apachectl graceful</code>
     というコマンドはプラットホームに合ったシグナルを送ります。</note>
 
     <p>このコードは常に
     MPM のプロセス制御ディレクティブの設定を重視しますので、
     クライアントのリクエストを扱うプロセスとスレッドの数を再起動の処理中も
-    適切な値に維持されます。。また、次のようにして
+    適切な値に維持されます。また、次のようにして
     <directive module="mpm_common">StartServers</directive>
     を守ります:
     少なくとも 1 秒後に <directive
@@ -131,10 +146,10 @@
     (<a href="programs/httpd.html">httpd</a> をご覧下さい)
     を使って検証することができます。
     設定ファイルの意味的な内容を構文と同様に検証したい場合は、
-    非 root ユーザで httpd を起動しようとすればわかります。
+    非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
     root でないため
-    (もしくは httpd が既に必要なポートにバインドしているため)
+    (もしくは <code>httpd</code> が既に必要なポートにバインドしているため)
     に失敗するでしょう。
     これ以外の理由で起動に失敗したのであれば、
     それは設定ファイルのエラーで、
@@ -144,10 +159,10 @@
 <section id="hup"><title>急な再起動</title>
 
 <dl><dt>シグナル: HUP</dt>
-<dd><code>apachectl restart</code></dd>
+<dd><code>apachectl -k restart</code></dd>
 </dl>
 
-    <p><code>HUP</code> シグナルを親プロセスに送ると、
+    <p><code>HUP</code> あるいは <code>restart</code> シグナルを親プロセスに送ると、
     <code>TERM</code> と同様に子プロセスを kill しますが、
     親プロセスは終了しません。
     設定ファイルを再読込して、ログファイル全てを開き直します。

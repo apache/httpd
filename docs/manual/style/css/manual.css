@@ -30,6 +30,12 @@ q, em, var {
     font-style: italic;
 }
 
+span.transnote {
+    background-color: inherit;
+    color: #888;
+    font-size:90%;
+}
+
 /* fixup IE & Opera
  * otherwise they forget to inherit
  * the computed font-size value
@@ -471,6 +477,10 @@ ol li {
 
 ol.up-A {
     list-style-type: upper-alpha;
+}
+
+dd.separate {
+    margin-bottom: 2em;
 }
 
 li.separate {

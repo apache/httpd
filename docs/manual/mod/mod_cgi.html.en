@@ -4,11 +4,28 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_cgi - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_cgi</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Execution of CGI scripts</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>cgi_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_cgi.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_cgi - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_cgi</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Execution of CGI scripts</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>cgi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_cgi.c</td></tr></table>
+<h3>Summary</h3>
+
     
 
     <p>Any file that has the mime type
@@ -35,10 +52,29 @@
     <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> should be used in place of
     this module. At the user level, the two modules are essentially
     identical.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#scriptlog">ScriptLog</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#scriptlog">ScriptLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptloglength">ScriptLogLength</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#env">CGI Environment variables</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">CGI Debugging</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><a href="../suexec.html">Running CGI programs under different user IDs</a></li><li><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Specification</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="env" id="env">CGI Environment variables</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#env">CGI Environment variables</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">CGI Debugging</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
+<li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li>
+<li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
+<li><a href="../suexec.html">Running CGI programs under different user IDs</a></li>
+<li><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Specification</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="env" id="env">CGI Environment variables</a></h2>
     <p>The server will set the CGI environment variables as described
     in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
     specification</a>, with the following provisions:</p>
@@ -73,7 +109,9 @@
       <dd>This will only be set if the CGI script is subject to
       authentication.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cgi-debug" id="cgi-debug">CGI Debugging</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cgi-debug" id="cgi-debug">CGI Debugging</a></h2>
     <p>Debugging CGI scripts has traditionally been difficult, mainly
     because it has not been possible to study the output (standard
     output and error) for scripts which are failing to run
@@ -118,12 +156,16 @@
       <p>(The %stdout and %stderr parts may be missing if the script did
       not output anything on standard output or standard error).</p>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Location of the CGI script error logfile</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptLog <var>file-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the CGI script error logfile</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
     <p>The <code class="directive">ScriptLog</code> directive sets the CGI
     script error logfile. If no <code class="directive">ScriptLog</code> is given,
     no error log is created. If given, any CGI errors are logged into the
@@ -149,26 +191,36 @@
     continuously on running servers. It is not optimized for speed
     or efficiency, and may have security problems if used in a
     manner other than that for which it was designed.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Maximum amount of PUT or POST requests that will be recorded
-in the scriptlog</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptLogBuffer <var>bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>ScriptLogBuffer 1024</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of PUT or POST requests that will be recorded
+in the scriptlog</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScriptLogBuffer <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
     <p>The size of any PUT or POST entity body that is logged to
     the file is limited, to prevent the log file growing too big
     too quickly if large bodies are being received. By default, up
     to 1024 bytes are logged, but this can be changed with this
     directive.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Size limit of the CGI script logfile</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>ScriptLogLength 10385760</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size limit of the CGI script logfile</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
+</table>
     <p><code class="directive">ScriptLogLength</code> can be used to limit the
     size of the CGI script logfile. Since the logfile logs a lot of
     information per CGI error (all request headers, all script output)
@@ -176,4 +228,10 @@ in the scriptlog</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     growth, this directive can be used to set an maximum file-size for
     the CGI logfile. If the file exceeds this size, no more
     information will be written to it.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -4,12 +4,34 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Configuration Sections - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Configuration Sections</h1> <p>Directives in the <a href="configuring.html">configuration files</a> may apply to the
+      -->
+<title>Configuration Sections - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Configuration Sections</h1> <p>Directives in the <a href="configuring.html">configuration files</a> may apply to the
 entire server, or they may be restricted to apply only to particular
 directories, files, hosts, or URLs.  This document describes how to
 use configuration section containers or <code>.htaccess</code> files
 to change the scope of other configuration directives.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#types">Types of Configuration Section Containers</a></li><li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Filesystem and Webspace</a></li><li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Virtual Hosts</a></li><li><img alt="" src="./images/down.gif" /> <a href="#proxy">Proxy</a></li><li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">What Directives are Allowed?</a></li><li><img alt="" src="./images/down.gif" /> <a href="#mergin">How the sections are merged</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="types" id="types">Types of Configuration Section Containers</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#types">Types of Configuration Section Containers</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Filesystem and Webspace</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Virtual Hosts</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#proxy">Proxy</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">What Directives are Allowed?</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#mergin">How the sections are merged</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="types" id="types">Types of Configuration Section Containers</a></h2>
 
 <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -59,7 +81,9 @@ and <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;<
 can apply negative conditions by preceding their test with "!".
 Also, these sections can be nested to achieve more complex
 restrictions.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="file-and-web" id="file-and-web">Filesystem and Webspace</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="file-and-web" id="file-and-web">Filesystem and Webspace</a></h2>
 
 <p>The most commonly used configuration section containers are the
 ones that change the configuration of particular places in the
@@ -246,14 +270,18 @@ rule.  Putting configuration restrictions in a <code>&lt;Location
 to all requests regardless of the specific URL.</p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a></h2>
 
 <p>The <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 container encloses directives that apply to specific hosts.
 This is useful when serving multiple hosts from the same machine
 with a different configuration for each.  For more information,
 see the <a href="vhosts/">Virtual Host Documentation</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="proxy" id="proxy">Proxy</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="proxy" id="proxy">Proxy</a></h2>
 
 <p>The <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
 and <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
@@ -269,7 +297,9 @@ Order allow,deny<br />
 Deny from all<br />
 &lt;/Proxy&gt;
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="whatwhere" id="whatwhere">What Directives are Allowed?</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="whatwhere" id="whatwhere">What Directives are Allowed?</a></h2>
 
 <p>To find out what directives are allowed in what types of
 configuration sections, check the <a href="mod/directive-dict.html#Context">Context</a> of the directive.
@@ -299,7 +329,9 @@ be used in <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;
 and <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
 sections.</li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="mergin" id="mergin">How the sections are merged</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mergin" id="mergin">How the sections are merged</a></h2>
 
 <p>The configuration sections are applied in a very particular order.
 Since this can have important effects on how configuration directives
@@ -403,4 +435,8 @@ Deny from badguy.example.com<br />
 
 
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>

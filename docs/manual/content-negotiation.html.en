@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Content Negotiation - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Content Negotiation</h1>
+      -->
+<title>Content Negotiation - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Content Negotiation</h1>
 
     <p>Apache's supports content negotiation as described in
     the HTTP/1.1 specification. It can choose the best
@@ -17,9 +29,21 @@
     <p>Content negotiation is provided by the
     <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> module.
     which is compiled in by default.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">About Content Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Negotiation in Apache</a></li><li><img alt="" src="./images/down.gif" /> <a href="#methods">The Negotiation Methods</a></li><li><img alt="" src="./images/down.gif" /> <a href="#better">Fiddling with Quality
-    Values</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extensions">Extensions to Transparent Content
-Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming">Note on hyperlinks and naming conventions</a></li><li><img alt="" src="./images/down.gif" /> <a href="#caching">Note on Caching</a></li><li><img alt="" src="./images/down.gif" /> <a href="#more">More Information</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="about" id="about">About Content Negotiation</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">About Content Negotiation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Negotiation in Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#methods">The Negotiation Methods</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#better">Fiddling with Quality
+    Values</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#extensions">Extensions to Transparent Content
+Negotiation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#naming">Note on hyperlinks and naming conventions</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#caching">Note on Caching</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#more">More Information</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="about" id="about">About Content Negotiation</a></h2>
 
     <p>A resource may be available in several different
     representations. For example, it might be available in
@@ -71,7 +95,9 @@ Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming"
     representations is termed a <strong>variant</strong>. The ways
     in which the variants for a negotiable resource vary are called
     the <strong>dimensions</strong> of negotiation.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="negotiation" id="negotiation">Negotiation in Apache</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="negotiation" id="negotiation">Negotiation in Apache</a></h2>
 
     <p>In order to negotiate a resource, the server needs to be
     given information about each of the variants. This is done in
@@ -163,7 +189,7 @@ Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming"
     <p><code>MultiViews</code> is a per-directory option, meaning it
     can be set with an <code class="directive"><a href="./mod/core.html#options">Options</a></code>
     directive within a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> section in
-    <code>access.conf</code>, or (if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is properly set) in
+    <code>httpd.conf</code>, or (if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is properly set) in
     <code>.htaccess</code> files. Note that <code>Options All</code>
     does not set <code>MultiViews</code>; you have to ask for it by
     name.</p>
@@ -195,7 +221,9 @@ Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming"
     directive determines whether handlers, filters, and other
     extension types can participate in MultiViews negotiation.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="methods" id="methods">The Negotiation Methods</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="methods" id="methods">The Negotiation Methods</a></h2>
 
     <p>After Apache has obtained a list of the variants for a given
     resource, either from a type-map file or from the filenames in
@@ -357,7 +385,9 @@ Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming"
       dimensions of variance.</li>
     </ol>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="better" id="better">Fiddling with Quality
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="better" id="better">Fiddling with Quality
     Values</a></h2>
 
     <p>Apache sometimes changes the quality values from what would
@@ -453,7 +483,9 @@ Negotiation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#naming"
     specification and to work effectively with properly configured
     clients.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="extensions" id="extensions">Extensions to Transparent Content
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="extensions" id="extensions">Extensions to Transparent Content
 Negotiation</a></h2> 
 
 <p>Apache extends the transparent content negotiation protocol (RFC
@@ -465,7 +497,9 @@ to use them as candidate variants whenever their encodings are
 acceptable according to the Accept-Encoding request header. The
 RVSA/1.0 implementation does not round computed quality factors to 5
 decimal places before choosing the best variant.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="naming" id="naming">Note on hyperlinks and naming conventions</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="naming" id="naming">Note on hyperlinks and naming conventions</a></h2>
 
     <p>If you are using language negotiation you can choose between
     different naming conventions, because files can have more than
@@ -572,7 +606,9 @@ decimal places before choosing the best variant.</p>
     extension (including an encoding extension if there is one)
     must be on the right hand side of the MIME-type extension
     (<em>e.g.</em>, <code>foo.html.en</code>).</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="caching" id="caching">Note on Caching</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="caching" id="caching">Note on Caching</a></h2>
 
     <p>When a cache stores a representation, it associates it with
     the request URL. The next time that URL is requested, the cache
@@ -591,10 +627,16 @@ decimal places before choosing the best variant.</p>
     negotiation. This directive can be given in the server config or
     virtual host, and takes no arguments. It has no effect on requests
     from HTTP/1.1 clients.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="more" id="more">More Information</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="more" id="more">More Information</a></h2>
 
     <p>For more information about content negotiation, see Alan
     J. Flavell's <a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
     Negotiation Notes</a>.  But note that this document may not be
     updated to include changes in Apache 2.0.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>

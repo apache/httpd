@@ -4,14 +4,35 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Upgrade von 1.3 auf 2.0 - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Upgrade von 1.3 auf 2.0</h1>
+      -->
+<title>Upgrade von 1.3 auf 2.0 - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Upgrade von 1.3 auf 2.0</h1>
     <p>Dieses Dokument dient der Unterstützung beim Upgrade. Es
     enthält die entscheidenden Informationen für bisherige
     Apache-Nutzer. Diese sind als kurze Anmerkungen
     gedacht. Weitere Informationen finden Sie entweder unter
     <a href="new_features_2_0.html">Neue Funktionen</a> oder in
     den <code>src/CHANGES</code>-Dateien.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Änderungen der Konfiguration bei der Kompilierung</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">Änderungen der Laufzeit-Konfiguration</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">Sonstige Änderungen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">Module von Drittanbietern</a></li></ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="new_features_2_0.html">Neue Funktionen in Version 2.0</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">Änderungen der Konfiguration bei der Kompilierung</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Änderungen der Konfiguration bei der Kompilierung</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#run-time">Änderungen der Laufzeit-Konfiguration</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#misc">Sonstige Änderungen</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#third-party">Module von Drittanbietern</a></li>
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="new_features_2_0.html">Übersicht der neuen Funktionen
+in Apache 2.0</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compile-time" id="compile-time">Änderungen der Konfiguration bei der Kompilierung</a></h2>
     
 
     <ul>
@@ -26,7 +47,9 @@
       Request-Verarbeitung im Apache 2.0 in die <a href="mpm.html">
       Multi-Processing-Module</a> (MPMs) verschoben.</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="run-time" id="run-time">Änderungen der Laufzeit-Konfiguration</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="run-time" id="run-time">Änderungen der Laufzeit-Konfiguration</a></h2>
     
 
     <ul>
@@ -133,16 +156,20 @@
       <li>Die Direktive <code>FancyIndexing</code> wurde entfernt.
       Die gleiche Funktionalität ist nun mit der Option
       <code>FancyIndexing</code> der Direktive <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code> verfügbar.</li>
+
+      <li>Die von <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> bereitgestellte
+      Content-Negotiation-Technik MultiViews führt nun eine strengere
+      Dateierkennung durch. Es wird ausschließlich unter den
+      <em>aushandelbaren</em> Dateien gewählt. Das bisherige Verhalten
+      kann jedoch mit der Direktive <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> wiederhergestellt
+      werden.</li>
      </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="misc" id="misc">Sonstige Änderungen</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="misc" id="misc">Sonstige Änderungen</a></h2>
     
 
     <ul>
-      <li>Die <code>httpd</code>-Kommandozeilenoption
-      <code>-S</code>, die dazu verwendet wurde, die
-      Virtual-Host-Konfiguration auszugeben, wurde durch
-      <code>-t -D DUMP_VHOSTS</code> ersetzt.</li>
-
       <li>Das Modul <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code>, das im Apache 1.3
       experimentellen Status hatte, ist nun ein Standardmodul.</li>
 
@@ -155,11 +182,17 @@
       Distribution angeordnet. Installationen des kompilierten Servers
       sollten in ein separates Verzeichnis erfolgen.</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="third-party" id="third-party">Module von Drittanbietern</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="third-party" id="third-party">Module von Drittanbietern</a></h2>
     
 
     <p>An der API des Apache 2.0 wurden umfassende Änderungen
     vorgenommen. Bestehende Module, die für die Apache 1.3 API
     entwickelt wurden, werden <strong>nicht</strong> ohne Modifikationen mit
     der Version 2.0 des Apache zusammenarbeiten. Details sind in der <a href="developer/">Dokumentation für Entwickler</a> beschrieben.</p>
-  </div></div><div id="footer"><p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>
+</body></html>

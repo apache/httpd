@@ -1,25 +1,24 @@
-<!--#if expr="! $CONTENT_LANGUAGE" -->
-<!--#set var="CONTENT_LANGUAGE" value="en" -->
-<!--#endif -->
-<!--#if expr="! $CHARACTER_ENCODING" -->
-<!--#set var="CHARACTER_ENCODING" value="ISO-8859-1" -->
-<!--#endif -->
-<?xml version="1.0" encoding="<!--#echo encoding="none" var="CHARACTER_ENCODING" -->"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<!--#echo encoding="none" var="CONTENT_LANGUAGE" -->">
+<!--#if expr="! $CONTENT_LANGUAGE"
+--><!--#set var="CONTENT_LANGUAGE" value="en"
+--><!--#endif
+--><!--#if expr="! $CHARACTER_ENCODING"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-1"
+--><!--#endif
+--><?xml version="1.0" encoding="<!--#echo var="CHARACTER_ENCODING" -->"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="<!--#echo var="CONTENT_LANGUAGE" -->" xml:lang="<!--#echo var="CONTENT_LANGUAGE" -->">
 <head>
 <title><!--#echo var="TITLE" --></title>
-<link rev="made" href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->" />
-<style type="text/css">
-<!--
-body { color: #000000; background-color: #FFFFFF; }
-a:link { color: #0000CC; }
--->
-</style>
+<link rev="made" href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->" />
+<style type="text/css"><!--/*--><![CDATA[/*><!--*/ 
+    body { color: #000000; background-color: #FFFFFF; }
+    a:link { color: #0000CC; }
+    p, address {margin-left: 3em;}
+    span {font-size: smaller;}
+/*]]>*/--></style>
 </head>
 
 <body>
 <h1><!--#echo encoding="none" var="TITLE" --></h1>
-<dl>
-<dd>
+<p>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English revision: 1.12.2.5 -->
+
+<sitemap>
+  <relativepath href="."/>
+
+  <title>Seitenindex</title>
+
+<summary>
+<p>Diese Seite verzeichnet die zur Zeit verf&#252;gbaren Dokumente der
+<a href="./">Dokumentation zum Apache HTTP Server Version 2.0</a>.</p>
+</summary>
+
+<category id="release">
+<title>Hinweise zur Version</title>
+<page href="upgrading.html">Upgrade von 1.3 auf 2.0</page>
+<page href="new_features_2_0.html">Neue Funktionen in Version 2.0</page>
+</category>
+
+<category id="using">
+<title>Bedienung des Apache HTTP Servers</title>
+<page href="install.html">Kompilieren und Installieren</page>
+<page href="invoking.html">Apache starten</page>
+<page href="stopping.html">Beenden und Neustarten des Servers</page>
+<page href="configuring.html">Konfigurationsdateien</page>
+<page href="sections.html">Konfigurationsabschnitte</page>
+<page href="server-wide.html">Serverweite Konfiguration</page>
+<page href="logs.html">Log-Dateien</page>
+<page href="urlmapping.html">URLs auf das Dateisystem abbilden</page>
+<page href="misc/security_tips.html">Tipps zur Sicherheit</page>
+<page href="dso.html">Dynamic Shared Object (DSO)</page>
+<page href="content-negotiation.html">Content Negotiation</page>
+<page href="custom-error.html">Individuelle Fehlermeldungen</page>
+<page href="bind.html">Bestimmen der vom Apache verwendeten Adressen und Ports</page>
+<page href="mpm.html">Multi-Processing-Module (MPMs)</page>
+<page href="env.html">Umgebungsvariablen</page>
+<page href="handler.html">Handler</page>
+<page href="filter.html">Filter</page>
+<page href="suexec.html">suEXEC Unterst&#252;tzung</page>
+<page href="misc/perf-tuning.html">Performance-Hinweise</page>
+<page href="misc/rewriteguide.html">Einf&#252;hrung in die URL-Manipulation</page>
+</category>
+
+<category id="vhosts">
+<title>Virtual-Host-Dokumentation des Apache</title>
+<page separate="yes" href="vhosts/">&#220;bersicht</page>
+<page href="vhosts/name-based.html">Namensbasierte Virtual Hosts</page>
+<page href="vhosts/ip-based.html">IP-basierte Virtual Hosts</page>
+<page href="vhosts/mass.html">Dynamisch konfiguriertes Massen-Virtual-Hosting</page>
+<page href="vhosts/examples.html">Virtual-Host-Beispiele</page>
+<page href="vhosts/details.html">Tiefergehende Er&#246;rterung des Virtual-Hosts-Matchings</page>
+<page href="vhosts/fd-limits.html">Datei-Deskriptor-Begrenzungen</page>
+<page href="dns-caveats.html">Probleme bez&#252;glich DNS und Apache</page>
+</category>
+
+<category id="faq">
+<title>H&#228;ufig gestellte Fragen (FAQ)</title>
+<page separate="yes" href="faq/">&#220;bersicht</page>
+<page href="faq/support.html">Support</page>
+</category>
+
+<category id="ssl">
+<title>SSL/TLS-Verschl&#252;sselung des Apache</title>
+<page separate="yes" href="ssl/">&#220;bersicht</page>
+<page href="ssl/ssl_intro.html">SSL/TLS-Verschl&#252;sselung: Einf&#252;hrung</page>
+<page href="ssl/ssl_compat.html">SSL/TLS-Verschl&#252;sselung: Kompatibilit&#228;t</page>
+<page href="ssl/ssl_howto.html">SSL/TLS-Verschl&#252;sselung: Praxis</page>
+<page href="ssl/ssl_faq.html">SSL/TLS-Verschl&#252;sselung: FAQ</page>
+</category>
+
+<category id="howto">
+<title>Praxis / Anleitungen</title>
+<page separate="yes" href="howto/">&#220;bersicht</page>
+<page href="howto/auth.html">Authentisierung, Autorisierung und Zugriffskontrolle</page>
+<page href="howto/cgi.html">Dynamische Inhalte mit CGI</page>
+<page href="howto/ssi.html">Einf&#252;hrung in Server Side Includes</page>
+<page href="howto/htaccess.html">.htaccess-Dateien</page>
+<page href="howto/public_html.html">Web-Verzeichnisse f&#252;r Benutzer</page>
+<page href="misc/tutorials.html">Apache-Tutorials</page>
+</category>
+
+<category id="platform">
+<title>Plattform-spezifische Anmerkungen</title>
+<page separate="yes" href="platform/">&#220;bersicht</page>
+<page href="platform/windows.html">Apache unter Microsoft
+Windows einsetzen</page>
+<page href="platform/win_compiling.html">Kompilieren des Apache f&#252;r
+Microsoft Windows</page>
+<page href="platform/netware.html">Apache unter Novell NetWare einsetzen</page>
+<page href="platform/perf-hp.html">Einen Hochleistungs-Web-Server auf
+HPUX betreiben</page>
+<page href="platform/ebcdic.html">Die Apache EBCDIC-Portierung</page>
+</category>
+
+<category id="programs">
+<title>Apache HTTP Server und Hilfsprogramme</title>
+<page separate="yes" href="programs/">&#220;bersicht</page>
+<page href="programs/httpd.html">httpd</page>
+<page href="programs/ab.html">ab</page>
+<page href="programs/apachectl.html">apachectl</page>
+<page href="programs/apxs.html">apxs</page>
+<page href="programs/dbmmanage.html">dbmmanage</page>
+<page href="programs/htdigest.html">htdigest</page>
+<page href="programs/htpasswd.html">htpasswd</page>
+<page href="programs/logresolve.html">logresolve</page>
+<page href="programs/rotatelogs.html">rotatelogs</page>
+<page href="programs/suexec.html">suexec</page>
+<page href="programs/other.html">Sonstige Programme</page>
+</category>
+
+<category id="misc">
+<title>Weitere Apache-Dokumentationen</title>
+<page separate="yes" href="misc/">&#220;bersicht</page>
+<page href="misc/custom_errordocs.html">International angepa&#223;te Server-Fehlermeldungen</page>
+<page href="misc/fin_wait_2.html">Verbindungen im FIN_WAIT_2 und Apache</page>
+<page href="misc/known_client_problems.html">Bekannte Client-Probleme</page>
+<page href="misc/descriptors.html">Deskriptoren und Apache</page>
+<page href="cgi_path.html">PATH_INFO-&#196;nderungen in der CGI-Umgebung</page>
+</category>
+
+<category id="modules">
+<title>Apache-Module</title>
+<page href="mod/">Modul-Index</page>
+<page href="mod/directives.html">Direktiven-Index</page>
+<page href="mod/quickreference.html">Kurzreferenz der Direktiven</page>
+<modulefilelist>
+  <modulefile>core.xml</modulefile>
+  <modulefile>mod_actions.xml</modulefile>
+  <modulefile>mod_alias.xml</modulefile>
+  <modulefile>mod_asis.xml</modulefile>
+  <modulefile>mod_access.xml</modulefile>
+  <modulefile>mod_auth.xml</modulefile>
+  <modulefile>mod_auth_anon.xml</modulefile>
+  <modulefile>mod_auth_dbm.xml</modulefile>
+  <modulefile>mod_auth_digest.xml</modulefile>
+  <modulefile>mod_auth_ldap.xml</modulefile>
+  <modulefile>mod_autoindex.xml</modulefile>
+  <modulefile>mod_cache.xml</modulefile>
+  <modulefile>mod_cern_meta.xml</modulefile>
+  <modulefile>mod_cgi.xml</modulefile>
+  <modulefile>mod_cgid.xml</modulefile>
+  <modulefile>mod_charset_lite.xml</modulefile>
+  <modulefile>mod_dav.xml</modulefile>
+  <modulefile>mod_dav_fs.xml</modulefile>
+  <modulefile>mod_deflate.xml</modulefile>
+  <modulefile>mod_dir.xml</modulefile>
+  <modulefile>mod_disk_cache.xml</modulefile>
+  <modulefile>mod_echo.xml</modulefile>
+  <modulefile>mod_env.xml</modulefile>
+  <modulefile>mod_example.xml</modulefile>
+  <modulefile>mod_expires.xml</modulefile>
+  <modulefile>mod_ext_filter.xml</modulefile>
+  <modulefile>mod_file_cache.xml</modulefile>
+  <modulefile>mod_headers.xml</modulefile>
+  <modulefile>mod_imap.xml</modulefile>
+  <modulefile>mod_include.xml</modulefile>
+  <modulefile>mod_info.xml</modulefile>
+  <modulefile>mod_isapi.xml</modulefile>
+  <modulefile>mod_ldap.xml</modulefile>
+  <modulefile>mod_log_config.xml</modulefile>
+  <modulefile>mod_logio.xml</modulefile>
+  <modulefile>mod_mem_cache.xml</modulefile>
+  <modulefile>mod_mime.xml</modulefile>
+  <modulefile>mod_mime_magic.xml</modulefile>
+  <modulefile>mod_negotiation.xml</modulefile>
+  <modulefile>mod_proxy.xml</modulefile>
+  <modulefile>mod_proxy_connect.xml</modulefile>
+  <modulefile>mod_proxy_ftp.xml</modulefile>
+  <modulefile>mod_proxy_http.xml</modulefile>
+  <modulefile>mod_rewrite.xml</modulefile>
+  <modulefile>mod_setenvif.xml</modulefile>
+  <modulefile>mod_so.xml</modulefile>
+  <modulefile>mod_ssl.xml</modulefile>
+  <modulefile>mod_speling.xml</modulefile>
+  <modulefile>mod_status.xml</modulefile>
+  <modulefile>mod_suexec.xml</modulefile>
+  <modulefile>mod_unique_id.xml</modulefile>
+  <modulefile>mod_userdir.xml</modulefile>
+  <modulefile>mod_usertrack.xml</modulefile>
+  <modulefile>mod_vhost_alias.xml</modulefile>
+
+  <modulefile>mpm_common.xml</modulefile>
+  <modulefile>beos.xml</modulefile>
+  <modulefile>mpm_netware.xml</modulefile>
+  <modulefile>mpm_winnt.xml</modulefile>
+  <modulefile>mpmt_os2.xml</modulefile>
+  <modulefile>perchild.xml</modulefile>
+  <modulefile>prefork.xml</modulefile>
+  <modulefile>worker.xml</modulefile>
+  <modulefile>leader.xml</modulefile>
+  <modulefile>threadpool.xml</modulefile>
+</modulefilelist>
+</category>
+
+<category id="developer">
+<title>Dokumentation f&#252;r Entwickler</title>
+<page separate="yes" href="developer/">&#220;bersicht</page>
+<page href="developer/API.html">Anmerkungen zur Apache-API</page>
+<page href="developer/debugging.html">Debuggen der Speicher-Belegung in der APR </page>
+<page href="developer/documenting.html">Apache 2.0 dokumentieren</page>
+<page href="developer/hooks.html">Hook-Funktionen des Apache 2.0 </page>
+<page href="developer/layeredio.html">Gestaffelte E/A des Apache 2.0</page>
+<page href="developer/modules.html">Module von Apache 1.3 nach Apache 2.0 konvertieren</page>
+<page href="developer/request.html">Verarbeitung der Anfragen im Apache 2.0</page>
+<page href="developer/filters.html">Wie Filter im Apache 2.0 arbeiten</page>
+</category>
+
+<category id="descriptive">
+<title>Beschreibende Informationen</title>
+<page href="mod/module-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Modulen</page>
+<page href="mod/directive-dict.html">Erkl&#228;rung der Fachbegriffe zu Apache-Direktiven</page>
+<page href="glossary.html">Glossar</page>
+<page>Seitenindex (dieses Dokument)</page>
+</category>
+
+</sitemap>

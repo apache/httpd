@@ -4,7 +4,20 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Directive Index - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="directive-index"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="preamble"><h1>Directive Index</h1>
+      -->
+<title>Directive Index - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="directive-index"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="preamble"><h1>Directive Index</h1>
+
     <p>
       Each Apache directive available in the standard Apache
       distribution is listed here. They are described using a
@@ -17,8 +30,11 @@
       is also available giving details about each directive in a
       summary form.
     </p>
-  <p class="letters"><a href="#A"> A </a> | <a href="#B"> B </a> | <a href="#C"> C </a> | <a href="#D"> D </a> | <a href="#E"> E </a> | <a href="#F"> F </a> | <a href="#G"> G </a> | <a href="#H"> H </a> | <a href="#I"> I </a> | <a href="#K"> K </a> | <a href="#L"> L </a> | <a href="#M"> M </a> | <a href="#N"> N </a> | <a href="#O"> O </a> | <a href="#P"> P </a> | <a href="#R"> R </a> | <a href="#S"> S </a> | <a href="#T"> T </a> | <a href="#U"> U </a> | <a href="#V"> V </a> | <a href="#X"> X </a></p>
-</div><div id="directive-list"><ul><li><a href="prefork.html#acceptmutex" id="A" name="A">AcceptMutex</a></li>
+  
+<p class="letters"><a href="#A"> A </a> | <a href="#B"> B </a> | <a href="#C"> C </a> | <a href="#D"> D </a> | <a href="#E"> E </a> | <a href="#F"> F </a> | <a href="#G"> G </a> | <a href="#H"> H </a> | <a href="#I"> I </a> | <a href="#K"> K </a> | <a href="#L"> L </a> | <a href="#M"> M </a> | <a href="#N"> N </a> | <a href="#O"> O </a> | <a href="#P"> P </a> | <a href="#R"> R </a> | <a href="#S"> S </a> | <a href="#T"> T </a> | <a href="#U"> U </a> | <a href="#V"> V </a> | <a href="#X"> X </a></p>
+</div>
+<div id="directive-list"><ul>
+<li><a href="mpm_common.html#acceptmutex" id="A" name="A">AcceptMutex</a></li>
 <li><a href="core.html#acceptpathinfo">AcceptPathInfo</a></li>
 <li><a href="core.html#accessfilename">AccessFileName</a></li>
 <li><a href="mod_actions.html#action">Action</a></li>
@@ -41,21 +57,21 @@
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
-<li><a href="mod_authz_host.html#allow">Allow</a></li>
+<li><a href="mod_access.html#allow">Allow</a></li>
 <li><a href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowoverride">AllowOverride</a></li>
-<li><a href="mod_authn_anon.html#anonymous">Anonymous</a></li>
-<li><a href="mod_authn_anon.html#anonymous_authoritative">Anonymous_Authoritative</a></li>
-<li><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail</a></li>
-<li><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></li>
-<li><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID</a></li>
-<li><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
-<li><a href="perchild.html#assignuserid">AssignUserId</a></li>
-<li><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative</a></li>
-<li><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></li>
-<li><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
-<li><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType</a></li>
-<li><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>
+<li><a href="mod_auth_anon.html#anonymous">Anonymous</a></li>
+<li><a href="mod_auth_anon.html#anonymous_authoritative">Anonymous_Authoritative</a></li>
+<li><a href="mod_auth_anon.html#anonymous_logemail">Anonymous_LogEmail</a></li>
+<li><a href="mod_auth_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></li>
+<li><a href="mod_auth_anon.html#anonymous_nouserid">Anonymous_NoUserID</a></li>
+<li><a href="mod_auth_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
+<li><a href="perchild.html#assignuserid">AssignUserID</a></li>
+<li><a href="mod_auth.html#authauthoritative">AuthAuthoritative</a></li>
+<li><a href="mod_auth_dbm.html#authdbmauthoritative">AuthDBMAuthoritative</a></li>
+<li><a href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
+<li><a href="mod_auth_dbm.html#authdbmtype">AuthDBMType</a></li>
+<li><a href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>
 <li><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm</a></li>
 <li><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain</a></li>
 <li><a href="mod_auth_digest.html#authdigestfile">AuthDigestFile</a></li>
@@ -64,7 +80,8 @@
 <li><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat</a></li>
 <li><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
 <li><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></li>
-<li><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></li>
+<li><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize</a></li>
+<li><a href="mod_auth.html#authgroupfile">AuthGroupFile</a></li>
 <li><a href="mod_auth_ldap.html#authldapauthoritative">AuthLDAPAuthoritative</a></li>
 <li><a href="mod_auth_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><a href="mod_auth_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></li>
@@ -75,16 +92,14 @@
 <li><a href="mod_auth_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><a href="mod_auth_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
 <li><a href="mod_auth_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
-<li><a href="mod_auth_ldap.html#authldapstarttls directive">AuthLDAPStartTLS directive</a></li>
+<li><a href="mod_auth_ldap.html#authldapstarttls">AuthLDAPStartTLS</a></li>
 <li><a href="mod_auth_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="core.html#authname">AuthName</a></li>
 <li><a href="core.html#authtype">AuthType</a></li>
-<li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
-<li><a href="mod_authz_dbm.html#authzdbmauthoritative">AuthzDBMAuthoritative</a></li>
-<li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
-<li><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
+<li><a href="mod_auth.html#authuserfile">AuthUserFile</a></li>
 <li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
+<li><a href="mpm_common.html#bs2000account">BS2000Account</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
 <li><a href="mod_disk_cache.html#cachedirlength">CacheDirLength</a></li>
 <li><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></li>
@@ -103,7 +118,6 @@
 <li><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire</a></li>
 <li><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></li>
-<li><a href="mod_cache.html#cachemaxstreamingbuffer">CacheMaxStreamingBuffer</a></li>
 <li><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></li>
 <li><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
 <li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
@@ -114,7 +128,7 @@
 <li><a href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
 <li><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc</a></li>
 <li><a href="mod_speling.html#checkspelling">CheckSpelling</a></li>
-<li><a href="perchild.html#childperuserid">ChildPerUserId</a></li>
+<li><a href="perchild.html#childperuserid">ChildPerUserID</a></li>
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
 <li><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
@@ -135,7 +149,7 @@
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
 <li><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel</a></li>
 <li><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize</a></li>
-<li><a href="mod_authz_host.html#deny">Deny</a></li>
+<li><a href="mod_access.html#deny">Deny</a></li>
 <li><a href="core.html#directory">&lt;Directory&gt;</a></li>
 <li><a href="mod_dir.html#directoryindex">DirectoryIndex</a></li>
 <li><a href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
@@ -205,12 +219,14 @@
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
 <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+<li><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread</a></li>
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
-<li><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
+<li><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
 <li><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
 <li><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
+<li><a href="mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></li>
 <li><a href="mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></li>
 <li><a href="mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
 <li><a href="mod_mem_cache.html#mcachesize">MCacheSize</a></li>
@@ -225,9 +241,9 @@
 <li><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></li>
 <li><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost</a></li>
 <li><a href="mod_proxy.html#noproxy">NoProxy</a></li>
-<li><a href="mpm_common.html#numservers">NumServers</a></li>
+<li><a href="perchild.html#numservers">NumServers</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
-<li><a href="mod_authz_host.html#order">Order</a></li>
+<li><a href="mod_access.html#order">Order</a></li>
 <li><a href="mod_env.html#passenv" id="P" name="P">PassEnv</a></li>
 <li><a href="mpm_common.html#pidfile">PidFile</a></li>
 <li><a href="mod_echo.html#protocolecho">ProtocolEcho</a></li>
@@ -353,4 +369,8 @@
 <li><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</a></li>
 <li><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
 <li><a href="mod_include.html#xbithack" id="X" name="X">XBitHack</a></li>
-</ul></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</ul></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -4,21 +4,53 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_deflate - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_deflate</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Compress content before it is delivered to the
-client</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>deflate_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_deflate.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_deflate - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_deflate</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Compress content before it is delivered to the
+client</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>deflate_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_deflate.c</td></tr></table>
+<h3>Summary</h3>
+
     <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module provides
     the <code>DEFLATE</code> output filter that allows output from
     your server to be compressed before being sent to the client over
     the network.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#deflatebuffersize">DeflateBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatefilternote">DeflateFilterNote</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatememlevel">DeflateMemLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#deflatewindowsize">DeflateWindowSize</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#recommended">Recommended Configuration</a></li><li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Compression</a></li><li><img alt="" src="../images/down.gif" /> <a href="#proxies">Dealing with proxy servers</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../filter.html">The filter documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="recommended" id="recommended">Recommended Configuration</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#recommended">Recommended Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Compression</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxies">Dealing with proxy servers</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="../filter.html">The filter documentation</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="recommended" id="recommended">Recommended Configuration</a></h2>
     <p>This is a sample configuration for the impatient. But please take
     the time and read the sections below for a detailed description!</p>
 
@@ -53,7 +85,9 @@ client</td></tr><tr><th><a href="module-dict.html#Status">Status:
       &lt;/Location&gt;
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="enable" id="enable">Enabling Compression</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">Enabling Compression</a></h2>
 
     <h3><a name="output" id="output">Output Compression</a></h3>
       <p>Compression is implemented by the <code>DEFLATE</code>
@@ -147,7 +181,9 @@ client</td></tr><tr><th><a href="module-dict.html#Status">Status:
         the decompressed data stream.</p>
       </div>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="proxies" id="proxies">Dealing with proxy servers</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="proxies" id="proxies">Dealing with proxy servers</a></h2>
 
     <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module sends a <code>Vary:
     Accept-Encoding</code> HTTP response header to alert proxies that
@@ -156,7 +192,7 @@ client</td></tr><tr><th><a href="module-dict.html#Status">Status:
     prevents compressed content from being sent to a client that will
     not understand it.</p>
 
-    <p>If you use some special exclusions dependant
+    <p>If you use some special exclusions dependent
     on, for example, the <code>User-Agent</code> header, you must 
     manually configure an addition to the <code>Vary</code> header
     to alert proxies of the additional restrictions.  For example,
@@ -175,22 +211,31 @@ client</td></tr><tr><th><a href="module-dict.html#Status">Status:
     <div class="example"><h3>Example</h3><p><code>
       Header set Vary *
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Fragment size to be compressed at one time by zlib</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>DeflateBufferSize 8096</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_deflate</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fragment size to be compressed at one time by zlib</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DeflateBufferSize 8096</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
+</table>
     <p>The <code class="directive">DeflateBufferSize</code> directive specifies
     the size in bytes of the fragments that zlib should compress at one
     time.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Places the compression ratio in a note for logging</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DeflateFilterNote <var>notename</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_deflate</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Places the compression ratio in a note for logging</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateFilterNote <var>notename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
+</table>
     <p>The <code class="directive">DeflateFilterNote</code> directive
     specifies that a note about compression ratios should be attached
     to the request. The name of the note is the value specified for
@@ -203,24 +248,44 @@ client</td></tr><tr><th><a href="module-dict.html#Status">Status:
       LogFormat '"%r" %b (%{ratio}n) "%{User-agent}i"' deflate<br />
       CustomLog logs/deflate_log deflate
     </code></p></div>
-<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>How much memory should be used by zlib for compression</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>DeflateMemLevel 9</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_deflate</td></tr></table>
+
+<h3>See also</h3>
+<ul>
+<li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How much memory should be used by zlib for compression</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DeflateMemLevel 9</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
+</table>
     <p>The <code class="directive">DeflateMemLevel</code> directive specifies
     how much memory should be used by zlib for compression
     (a value between 1 and 9).</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Zlib compression window size</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>DeflateWindowSize 15</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_deflate</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Zlib compression window size</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DeflateWindowSize 15</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
+</table>
     <p>The <code class="directive">DeflateWindowSize</code> directive specifies the
     zlib compression window size (a value between 1 and 15). Generally, the
     higher the window size, the higher can the compression ratio be expected.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

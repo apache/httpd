@@ -4,10 +4,30 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Apache IP-based Virtual Host Support - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>Apache IP-based Virtual Host Support</h1></div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">System requirements</a></li><li><img alt="" src="../images/down.gif" /> <a href="#howto">How to set up Apache</a></li><li><img alt="" src="../images/down.gif" /> <a href="#multiple">Setting up multiple daemons</a></li><li><img alt="" src="../images/down.gif" /> <a href="#single">Setting up a single daemon
-	with virtual hosts</a></li></ul><h3>See also</h3><ul class="seealso"><li>
+      -->
+<title>Apache IP-based Virtual Host Support - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>Apache IP-based Virtual Host Support</h1></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">System requirements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#howto">How to set up Apache</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#multiple">Setting up multiple daemons</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#single">Setting up a single daemon
+	with virtual hosts</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li>
 <a href="name-based.html">Name-based Virtual Hosts Support</a>
-</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="requirements" id="requirements">System requirements</a></h2>
+</li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requirements" id="requirements">System requirements</a></h2>
 
     <p>As the term <cite>IP-based</cite> indicates, the server
     <strong>must have a different IP address for each IP-based
@@ -18,7 +38,9 @@
     frequently called "ip aliases", and the "ifconfig" command is
     most commonly used to set them up).</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="howto" id="howto">How to set up Apache</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="howto" id="howto">How to set up Apache</a></h2>
 
     <p>There are two ways of configuring apache to support multiple
     hosts. Either by running a separate httpd daemon for each
@@ -54,7 +76,9 @@
       significant.</li>
     </ul>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="multiple" id="multiple">Setting up multiple daemons</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multiple" id="multiple">Setting up multiple daemons</a></h2>
 
     <p>Create a separate httpd installation for each virtual host. For
     each installation, use the <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> directive in the
@@ -68,7 +92,9 @@
     <p>It is recommended that you use an IP address instead of a
     hostname (see <a href="../dns-caveats.html">DNS caveats</a>).</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="single" id="single">Setting up a single daemon
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="single" id="single">Setting up a single daemon
 	with virtual hosts</a></h2>
 
     <p>For this case, a single httpd will service requests for the
@@ -116,4 +142,8 @@
     directory where they are written. See the <a href="../misc/security_tips.html">security tips</a> document
     for details.</p>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

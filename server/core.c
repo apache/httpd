@@ -1635,8 +1635,9 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
         /*
          * Ensure that the pathname is canonical, and append the trailing /
          */
-        if (apr_filepath_merge(&newpath, NULL, cmd->path,
-                               APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS) {
+        apr_status_t rv = apr_filepath_merge(&newpath, NULL, cmd->path,
+                                             APR_FILEPATH_TRUENAME, cmd->pool);
+        if (rv != APR_SUCCESS && rv != APR_EPATHWILD) {
             return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
                                "\"> path is invalid.", NULL);
         }
@@ -2191,7 +2192,7 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
 {
     ap_directive_t *conftree = NULL;
     const char* conffile = ap_server_root_relative(cmd->pool, name);
-    
+
     if (!conffile) {
         return apr_pstrcat(cmd->pool, "Invalid Include path ", 
                            name, NULL);
@@ -3670,6 +3671,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
     core_net_rec *net = f->ctx;
     core_output_filter_ctx_t *ctx = net->out_ctx;
     apr_read_type_e eblock = APR_NONBLOCK_READ;
+    apr_pool_t *input_pool = b->p;
 
     if (ctx == NULL) {
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
@@ -3924,7 +3926,10 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                     }
                 }
             }
-            ap_save_brigade(f, &ctx->b, &b, c->pool);
+            if (!ctx->deferred_write_pool) {
+                apr_pool_create(&ctx->deferred_write_pool, c->pool);
+            }
+            ap_save_brigade(f, &ctx->b, &b, ctx->deferred_write_pool);
 
             return APR_SUCCESS;
         }
@@ -3995,6 +4000,30 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
 
         apr_brigade_destroy(b);
+        
+        /* drive cleanups for resources which were set aside 
+         * this may occur before or after termination of the request which
+         * created the resource
+         */
+        if (ctx->deferred_write_pool) {
+            if (more && more->p == ctx->deferred_write_pool) {
+                /* "more" belongs to the deferred_write_pool,
+                 * which is about to be cleared.
+                 */
+                if (APR_BRIGADE_EMPTY(more)) {
+                    more = NULL;
+                }
+                else {
+                    /* uh oh... change more's lifetime 
+                     * to the input brigade's lifetime 
+                     */
+                    apr_bucket_brigade *tmp_more = more;
+                    more = NULL;
+                    ap_save_brigade(f, &more, &tmp_more, input_pool);
+                }
+            }
+            apr_pool_clear(ctx->deferred_write_pool);  
+        }
 
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,

@@ -114,7 +114,6 @@ static void ssl_init_SSLLibrary(server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                  "Init: Initializing %s library", SSL_LIBRARY_NAME);
 
-    CRYPTO_malloc_init();
     SSL_load_error_strings();
     SSL_library_init();
 }
@@ -1143,7 +1142,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
     if (ca_path) {
         apr_dir_t *dir;
         apr_finfo_t direntry;
-        apr_int32_t finfo_flags = APR_FINFO_MIN|APR_FINFO_NAME;
+        apr_int32_t finfo_flags = APR_FINFO_TYPE|APR_FINFO_NAME;
         apr_status_t rv;
 
         if ((rv = apr_dir_open(&dir, ca_path, ptemp)) != APR_SUCCESS) {

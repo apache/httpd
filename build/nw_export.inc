@@ -47,4 +47,3 @@
 #include "util_xml.h"
 
 #include "mod_core.h"
-#include "mod_auth.h"

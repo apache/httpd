@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.6 -->
 
 <manualpage>
   <relativepath href="."/>
@@ -440,23 +440,8 @@
     プログラムは普通 root として実行されることを意味します。
     ですから、プログラムを簡単で安全に保つことが非常に重要です。</p>
 
-    <p>パイプ経由のログを使う簡単な例は:</p>
-
-    <example>
-      # compressed logs<br />
-      CustomLog "|/usr/bin/gzip -c &gt;&gt;
-      /var/log/access_log.gz" common<br />
-      # almost-real-time name resolution<br />
-      CustomLog "|/usr/local/apache/bin/logresolve &gt;&gt;
-      /var/log/access_log" common
-    </example>
-
-    <p>パイプの先で呼ばれるコマンド全体が引用符で囲まれていることに注目して
-    ください。この例はアクセスログを使っていますが、エラーログにも同じ技術を
-    使うことができます。</p>
-
-    <p>パイプ経由のログの重要な利用法は、ログの交替をサーバの再起動なしで
-    するものです。Apache HTTP サーバにはこのための  <a
+    <p>パイプ経由のログの重要な利用法は、サーバの再起動なしでログの交替を
+    することです。Apache HTTP サーバにはこのための  <a
     href="programs/rotatelogs.html">rotatelogs</a> と呼ばれる簡単な
     プログラムが付属しています。たとえば、24 時間毎にログを交替させるには、
     以下のものを使うことができます:</p>
@@ -465,6 +450,10 @@
       CustomLog "|/usr/local/apache/bin/rotatelogs
       /var/log/access_log 86400" common
     </example>
+
+    <p>パイプの先で呼ばれるコマンド全体が引用符で囲まれていることに注目して
+    ください。この例はアクセスログを使っていますが、エラーログにも同じ技術を
+    使うことができます。</p>
 
     <p>似ているけれど、よりずっと柔軟な
     <a href="http://www.cronolog.org/">cronolog</a> というログ交替用の

@@ -334,7 +334,7 @@ DocumentRoot "@exp_htdocsdir@"
 #
 # Possible values for the Options directive are "None", "All",
 # or any combination of:
-#   Indexes Includes FollowSymLinks SymLinksifOwnerMatch ExecCGI Multiviews
+#   Indexes Includes FollowSymLinks SymLinksifOwnerMatch ExecCGI MultiViews
 #
 # Note that "MultiViews" must be named *explicitly* --- "Options All"
 # doesn't give it to you.

@@ -28,9 +28,11 @@ APACHE_MODULE(mem_cache, memory caching module, $mem_cache_objs, , no)
 APACHE_MODULE(example, example and demo module, , , no)
 APACHE_MODULE(case_filter, example uppercase conversion filter, , , no)
 APACHE_MODULE(case_filter_in, example uppercase conversion input filter, , , no)
-APACHE_MODULE(auth_ldap, LDAP based authentication, , , no)
 
 ldap_objects="util_ldap.lo util_ldap_cache.lo util_ldap_cache_mgr.lo"
 APACHE_MODULE(ldap, LDAP caching and connection pooling services, $ldap_objects, , no)
+
+auth_ldap_objects="mod_auth_ldap.lo"
+APACHE_MODULE(auth_ldap, LDAP based authentication, $auth_ldap_objects, , no)
 
 APACHE_MODPATH_FINISH

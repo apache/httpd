@@ -1,6 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English revision: 1.4.2.1 -->
+
 <manualpage>
 <relativepath href="."/>
 
@@ -11,7 +13,7 @@
      des Apache HTTP Servers 2.0 gegen&#252;ber der Version 1.3.</p>
 </summary>
 
-<seealso><a href="upgrading.html">Upgrade auf Apache 2.0</a></seealso>
+<seealso><a href="upgrading.html">Upgrade von 1.3 auf 2.0</a></seealso>
 
   <section id="core">
     <title>Core-Erweiterungen</title>

@@ -44,6 +44,11 @@ endif
 # LDAPSDK = C:/novell/ndk/cldapsdk
 # endif
 
+# This is a placeholder
+# ifndef ZLIBSDK
+# ZLIBSDK = C:/novell/ndk/zlibsdk
+# endif
+
 ifndef METROWERKS
 METROWERKS = C:\Program Files\Metrowerks\CodeWarrior
 endif
@@ -117,6 +122,9 @@ INCDIRS 	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include
 ifneq "$(LDAPSDK)" ""
 INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
 endif
+ifneq "$(ZLIBSDK)" ""
+INCDIRS := $(INCDIRS);$(ZLIBSDK)
+endif
 
 DEFINES		= -DNETWARE
 
@@ -139,9 +147,9 @@ PLIB3S	= $(METROWERKS)\Novell Support\Metrowerks Support\Libraries\MSL C++\MWCPP
 # -align 4              align on 4 byte bounderies
 # -w nocmdline          disable command-line driver/parser warnings
 # -proc PII             generate code base on Pentium II instruction set
-# -inst mmx             use MMX extensions
+# -inst mmx             use MMX extensions (not used)
 
-CFLAGS = -c -nosyspath -Cpp_exceptions off -RTTI off -align 4 -w nocmdline -proc PII -inst mmx
+CFLAGS = -c -nosyspath -Cpp_exceptions off -RTTI off -align 4 -w nocmdline -proc PII
 
 # -g                    generate debugging information
 # -O0                   level 0 optimizations
@@ -190,11 +198,16 @@ ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
 INCDIRS := $(NOVELLLIBC)\include\winsock\IPV6;$(INCDIRS)
 
-ifneq "$(IPV6)" "SET"
+ifneq "$(findstring IPV6,$(OBJDIR))" "IPV6"
 OBJDIR := $(OBJDIR)_IPV6
+endif
+        
+ifneq "$(findstring IPV6,$(INSTALL))" "IPV6"
 INSTALL := $(INSTALL)_IPV6
+endif        
+
+ifneq "$(findstring IPV6,$(INSTDIRS))" "IPV6"
 INSTDIRS := $(INSTDIRS)_IPV6
-IPV6=SET
 endif
 
 endif

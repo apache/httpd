@@ -14,8 +14,6 @@ dnl #
 dnl # Include our own M4 macros along with those for APR and libtool
 dnl #
 sinclude(srclib/apr/build/apr_common.m4)
-sinclude(srclib/apr/build/apr_network.m4)
-sinclude(srclib/apr/build/apr_threads.m4)
 sinclude(srclib/apr/build/find_apr.m4)
 sinclude(srclib/apr-util/build/find_apu.m4)
 sinclude(acinclude.m4)
@@ -63,7 +61,7 @@ orig_prefix="$prefix"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
-APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr")
+APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1)
 
 if test "$apr_found" = "no"; then
   AC_MSG_ERROR([APR not found.  Please read the documentation.])
@@ -82,10 +80,11 @@ APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apr_config --includes`)
 SHLIBPATH_VAR=`$apr_config --shlib-path-var`
 APR_BINDIR=`$apr_config --bindir`
+APR_INCLUDEDIR=`$apr_config --includes | sed 's|^.*-I\([[^ ]]*apr[[^ ]]*\).*$|\1|'`
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util")
+APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 1)
 
 if test "$apu_found" = "no"; then
   AC_MSG_ERROR([APR-util not found.  Please read the documentation.])
@@ -101,6 +100,7 @@ fi
 APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
 APR_ADDTO(INCLUDES, `$apu_config --includes`)
 APU_BINDIR=`$apu_config --bindir`
+APU_INCLUDEDIR=`$apu_config --includes | sed 's|^ *-I\([[^ ]]*apr[[^ ]]*\).*$|\1|'`
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 

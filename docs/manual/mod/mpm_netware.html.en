@@ -4,12 +4,29 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mpm_netware - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mpm_netware</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Multi-Processing Module implementing an exclusively threaded web
-    server optimized for Novell NetWare</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>MPM</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>mpm_netware_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mpm_netware.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mpm_netware - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache MPM netware</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Multi-Processing Module implementing an exclusively threaded web
+    server optimized for Novell NetWare</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>mpm_netware_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mpm_netware.c</td></tr></table>
+<h3>Summary</h3>
+
     <p>This Multi-Processing Module (MPM) implements an exclusively
     threaded web server that has been optimized for Novell
     NetWare.</p>
@@ -29,12 +46,9 @@
     regulate how the main thread creates worker threads to serve
     requests. In general, Apache is very self-regulating, so most
     sites do not need to adjust these directives from their default
-    values. Sites which need to serve more than 250 simultaneous
-    requests may need to increase <code class="directive">MaxThreads</code>, while
-    sites with limited memory may need to decrease
-    <code class="directive">MaxThreads</code> to keep the server from thrashing
-    (spawning and terminating idle threads). More information about
-    tuning process creation is provided in the <a href="../misc/perf-tuning.html">performance hints</a>
+    values. Sites with limited memory may need to decrease <code class="directive"><a href="#maxthreads">MaxThreads</a></code> to keep the server from
+    thrashing (spawning and terminating idle threads). More information
+    about tuning process creation is provided in the <a href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>
 
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
@@ -42,7 +56,10 @@
     ones and launching new ones. On the NetWare OS it is highly
     recommended that this directive remain set to 0. This allows worker
     threads to continue servicing requests indefinitely.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
@@ -52,25 +69,51 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../bind.html">Setting which addresses and
+</ul>
+<h3>See also</h3>
+<ul class="seealso">
+<li><a href="../bind.html">Setting which addresses and
     ports Apache uses</a>
-</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxThreads" id="MaxThreads">MaxThreads</a> <a name="maxthreads" id="maxthreads">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>MaxThreads <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>MaxThreads 250</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mpm_netware</td></tr></table>
-<p>The MaxThreads directive sets the desired maximum
-    number worker threads allowable.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ThreadStackSize <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>ThreadStackSize 65536</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mpm_netware</td></tr></table>
+</li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxThreads" id="MaxThreads">MaxThreads</a> <a name="maxthreads" id="maxthreads">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the maximum number of worker threads</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MaxThreads <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxThreads 2048</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mpm_netware</td></tr>
+</table>
+    <p>The <code class="directive">MaxThreads</code> directive sets the desired
+    maximum number worker threads allowable. The default value is
+    also the compiled in hard limit. Therefore it can only be lowered,
+    for example:</p>
+
+    <div class="example"><p><code>
+      MaxThreads 512
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a name="threadstacksize" id="threadstacksize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine the stack size for each thread</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ThreadStackSize <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ThreadStackSize 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mpm_netware</td></tr>
+</table>
     <p>This directive tells the server what stack size to use for
     each of the running threads. If you ever get a stack overflow
     you will need to bump this number to a higher setting.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

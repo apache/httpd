@@ -12,13 +12,26 @@
     <html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
       <xsl:call-template name="head"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <body id="directive-index">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <xsl:call-template name="top"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
         <div id="preamble">
           <h1>
             <xsl:value-of select="title"/>
           </h1>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
           <xsl:apply-templates select="summary" />
         </div> <!-- /preamble -->
@@ -36,8 +49,12 @@
               <xsl:with-param name="directives" select="$directives"/>
             </xsl:call-template>
           </xsl:variable>
-          
+
           <table id="legend">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             <tr>
               <td class="letters"><span>
                 <xsl:call-template name="letter-bar">
@@ -53,16 +70,27 @@
                 <xsl:apply-templates select="legend/table[position()=1]"/>
               </td>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               <td>
                 <xsl:apply-templates select="legend/table[position()=2]"/>
               </td>
             </tr>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           </table>
 
 <xsl:text>
 </xsl:text> <!-- insert a line break -->
 
           <table class="qref">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             <xsl:call-template name="reference-of-letter">
               <xsl:with-param name="letters-todo" select="$start-letters"/>
               <xsl:with-param name="offset" select="number(0)"/>
@@ -72,10 +100,17 @@
 
         </div> <!-- /directive-ref -->
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <xsl:call-template name="bottom"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       </body>
     </html>
-  </xsl:template> 
+  </xsl:template>
 
 
   <!--                                                     -->
@@ -110,8 +145,20 @@
         </td>
 
         <td>
-          <xsl:value-of select="substring(substring-after(concat(default,' '),name),1,20)"/>
-          <xsl:if test="string-length(substring-after(concat(default,' '),name)) &gt; 20">
+          <xsl:variable name="default">
+            <xsl:choose>
+              <xsl:when test="count(default[count(br) &gt; 0]) &gt; 0">
+                <xsl:value-of select="default/child::node()[count(preceding-sibling::*) = 0]"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="default"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+
+          <xsl:value-of select="substring(substring-after(concat($default,' '),name),1,20)"/>
+          <xsl:if test="string-length(substring-after(concat($default,' '),name)) &gt; 20
+                     or count(default[count(br) &gt; 0]) &gt; 0">
             <xsl:text> +</xsl:text>
           </xsl:if>
         </td>

@@ -1,12 +1,12 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="&Uuml;bergebene Daten zu gro&szlig;!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="&Uuml;bergebene Daten zu gro&szlig;!"
+--><!--#include virtual="include/top.html" -->
 
     Die bei der Anfrage &uuml;bermittelten Daten sind f&uuml;r
-    die <!--#echo var="REDIRECT_REQUEST_METHOD"-->-Methode
+    die <!--#echo var="REDIRECT_REQUEST_METHOD" -->-Methode
     nicht erlaubt oder die Datenmenge hat das Maximum &uuml;berschritten.
 
 <!--#include virtual="include/bottom.html" -->
@@ -15,10 +15,10 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Request entity too large!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Request entity too large!"
+--><!--#include virtual="include/top.html" -->
 
-    The <!--#echo var="REDIRECT_REQUEST_METHOD"-->
+    The <!--#echo var="REDIRECT_REQUEST_METHOD" -->
     method does not allow the data transmitted, or the data volume
     exceeds the capacity limit.
 
@@ -28,12 +28,12 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Request entity too large!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Request entity too large!"
+--><!--#include virtual="include/top.html" -->
 
 	Los recursos establecidos no permiten peticiones con
-	el <!--#echo var="REDIRECT_REQUEST_METHOD"--> m&eacute;todo 
+	el <!--#echo var="REDIRECT_REQUEST_METHOD" --> m&eacute;todo 
 	suministrado por su solicitud, o, la cantidad de datos 
 	provistos exceden los l&iacute;mites de capacidad.
 
@@ -43,11 +43,11 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Volume de la demande trop grand!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Volume de la demande trop grand!"
+--><!--#include virtual="include/top.html" -->
 
-    La m&eacute;thode <!--#echo var="REDIRECT_REQUEST_METHOD"--> 
+    La m&eacute;thode <!--#echo var="REDIRECT_REQUEST_METHOD" -->
     n'autorise pas le transfert de ces donn&eacute;es ou bien le volume
     des donn&eacute;es exc&egrave;de la limite de capacit&eacute;.
 
@@ -57,12 +57,12 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Volume van gevraagde entiteit te groot!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Volume van gevraagde entiteit te groot!"
+--><!--#include virtual="include/top.html" -->
 
-  Het <!--#echo var="REDIRECT_REQUEST_METHOD"--> type methode laat niet toe data
-  te versturen of het datavolume is groter dan maximaal toegelaten.
+  Het <!--#echo var="REDIRECT_REQUEST_METHOD" --> type methode laat niet toe
+  data te versturen of het datavolume is groter dan maximaal toegelaten.
 
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
@@ -70,12 +70,13 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="F&ouml;r stor enhet vid f&ouml;rfr&aring;gan!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="F&ouml;r stor enhet vid f&ouml;rfr&aring;gan!"
+--><!--#include virtual="include/top.html" -->
 
-    <!--#echo var="REDIRECT_REQUEST_METHOD"--> metoden till&aring;ter
-    inte den skickade datan eller s&aring; &ouml;verskrider datavolymen kapacitetsniv&aring;n.
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> metoden till&aring;ter
+    inte den skickade datan eller s&aring; &ouml;verskrider datavolymen
+    kapacitetsniv&aring;n.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--
@@ -83,12 +84,12 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="Richiesta troppo grande!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Richiesta troppo grande!"
+--><!--#include virtual="include/top.html" -->
 
-    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD"-->
-    non consente di trasferire dati, oppure la quantit&agrave; di dati 
+    Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    non consente di trasferire dati, oppure la quantit&agrave; di dati
     richiesti &egrave; eccessiva.
 
 <!--#include virtual="include/bottom.html" -->
@@ -97,12 +98,14 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Volume da dados muito grande!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Volume da dados muito grande!"
+--><!--#include virtual="include/top.html" -->
 
-    O m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD"-->
+    O m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
     n&atilde;o permite a transmiss&atilde;o dos dados,
     ou o volume de dados excede a capacidade limite.
   
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+

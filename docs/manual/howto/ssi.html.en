@@ -4,10 +4,35 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Apache Tutorial: Introduction to Server Side Includes - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: Introduction to Server Side Includes</h1>
+      -->
+<title>Apache Tutorial: Introduction to Server Side Includes - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache Tutorial: Introduction to Server Side Includes</h1>
 <p>Server-side includes provide a means to add dynamic content to
 existing HTML documents.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Introduction</a></li><li><img alt="" src="../images/down.gif" /> <a href="#what">What are SSI?</a></li><li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configuring your server to permit SSI</a></li><li><img alt="" src="../images/down.gif" /> <a href="#basic">Basic SSI directives</a></li><li><img alt="" src="../images/down.gif" /> <a href="#additionalexamples">Additional examples</a></li><li><img alt="" src="../images/down.gif" /> <a href="#config">What else can I config?</a></li><li><img alt="" src="../images/down.gif" /> <a href="#exec">Executing commands</a></li><li><img alt="" src="../images/down.gif" /> <a href="#advanced">Advanced SSI techniques</a></li><li><img alt="" src="../images/down.gif" /> <a href="#conclusion">Conclusion</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="related" id="related">Introduction</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Introduction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#what">What are SSI?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configuring your server to permit SSI</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#basic">Basic SSI directives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#additionalexamples">Additional examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#config">What else can I config?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#exec">Executing commands</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#advanced">Advanced SSI techniques</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#conclusion">Conclusion</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">Introduction</a></h2>
  <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
 
     <p>This article deals with Server Side Includes, usually called
@@ -19,7 +44,9 @@ existing HTML documents.</p>
     the somewhat more advanced things that can be done with SSI,
     such as conditional statements in your SSI directives.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="what" id="what">What are SSI?</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="what" id="what">What are SSI?</a></h2>
 
     <p>SSI (Server Side Includes) are directives that are placed in
     HTML pages, and evaluated on the server while the pages are
@@ -35,7 +62,9 @@ existing HTML documents.</p>
     But if a majority of your page is being generated at the time
     that it is served, you need to look for some other
     solution.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="configuring" id="configuring">Configuring your server to permit SSI</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configuring" id="configuring">Configuring your server to permit SSI</a></h2>
 
 
     <p>To permit SSI on your server, you must have the following
@@ -114,7 +143,9 @@ existing HTML documents.</p>
       time on your files, thereby letting browsers and proxies
       know that it is acceptable to cache them.</li>
     </ol>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="basic" id="basic">Basic SSI directives</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="basic" id="basic">Basic SSI directives</a></h2>
 
     <p>SSI directives have the following syntax:</p>
 <div class="example"><p><code>
@@ -175,7 +206,9 @@ existing HTML documents.</p>
 </code></p></div>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="additionalexamples" id="additionalexamples">Additional examples</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="additionalexamples" id="additionalexamples">Additional examples</a></h2>
 
 
     <p>Following are some specific examples of things you can do in
@@ -211,7 +244,7 @@ modified?</a></h3>
     syntax is the same.</p>
 
 
-<h3><a name="footer" id="footer">Including a standard footer</a></h3>
+<h3><a name="standard-footer" id="standard-footer">Including a standard footer</a></h3>
 
 
     <p>If you are managing any site that is more than a few pages,
@@ -243,7 +276,9 @@ modified?</a></h3>
     include another file, and so on.</p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="config" id="config">What else can I config?</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="config" id="config">What else can I config?</a></h2>
 
 
     <p>In addition to being able to <code>config</code> the time
@@ -271,7 +306,9 @@ modified?</a></h3>
     can specify <code>bytes</code> for a full count in bytes, or
     <code>abbrev</code> for an abbreviated number in Kb or Mb, as
     appropriate.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="exec" id="exec">Executing commands</a></h2>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="exec" id="exec">Executing commands</a></h2>
     
 
     <p>I expect that I'll have an article some time in the coming
@@ -307,7 +344,9 @@ modified?</a></h3>
     feature disabled. You can allow SSI, but not the
     <code>exec</code> feature, with the <code>IncludesNOEXEC</code>
     argument to the <code>Options</code> directive.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="advanced" id="advanced">Advanced SSI techniques</a></h2>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="advanced" id="advanced">Advanced SSI techniques</a></h2>
 
 
     <p>In addition to spitting out content, Apache SSI gives you
@@ -423,10 +462,16 @@ modified?</a></h3>
     this functionality can let you do some pretty involved dynamic
     stuff without ever resorting to CGI.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
 
     <p>SSI is certainly not a replacement for CGI, or other
     technologies used for generating dynamic web pages. But it is a
     great way to add small amounts of dynamic content to pages,
     without doing a lot of extra work.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

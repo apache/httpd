@@ -4,17 +4,38 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Starting Apache - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Starting Apache</h1>
+      -->
+<title>Starting Apache - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Starting Apache</h1>
     <p>On Windows, Apache is normally run as a service on Windows
-    NT, or as a console application on Windows 95. For details, see
-    <a href="platform/windows.html#run">running Apache for
-    Windows</a>.</p>
+    NT, 2000 and XP, or as a console application on Windows 9x and
+    ME. For details, see <a href="platform/windows.html#winsvc">Running Apache as a Service</a>
+    and <a href="platform/windows.xml#wincons">Running Apache as a
+    Console Application</a>.</p>
 
     <p>On Unix, the <a href="programs/httpd.html">httpd</a> program
     is run as a daemon that executes continuously in the
     background to handle requests.  This document describes how
     to invoke <code>httpd</code>.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">How Apache Starts</a></li><li><img alt="" src="./images/down.gif" /> <a href="#errors">Errors During Start-up</a></li><li><img alt="" src="./images/down.gif" /> <a href="#boot">Starting at Boot-Time</a></li><li><img alt="" src="./images/down.gif" /> <a href="#info">Additional Information</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="stopping.html">Stopping Apache</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="startup" id="startup">How Apache Starts</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">How Apache Starts</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#errors">Errors During Start-up</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#boot">Starting at Boot-Time</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#info">Additional Information</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="stopping.html">Stopping and Restarting</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="startup" id="startup">How Apache Starts</a></h2>
 
     <p>If the <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     specified in the configuration file is default of 80 (or any other
@@ -57,7 +78,9 @@
     the test page in the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> directory
     and the local copy of the documentation linked from that
     page.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="errors" id="errors">Errors During Start-up</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="errors" id="errors">Errors During Start-up</a></h2>
 
     <p>If Apache suffers a fatal problem during startup, it will
     write a message describing the problem either to the console or
@@ -77,7 +100,9 @@
 
     <p>For further trouble-shooting instructions, consult the
     Apache <a href="faq/">FAQ</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="boot" id="boot">Starting at Boot-Time</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="boot" id="boot">Starting at Boot-Time</a></h2>
 
     <p>If you want your server to continue running after a system
     reboot, you should add a call to <code>apachectl</code> to your
@@ -93,7 +118,9 @@
     <code>httpd</code>.  So you can often simply link
     <code>apachectl</code> into the appropriate init directory. But be
     sure to check the exact requirements of your system.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="info" id="info">Additional Information</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="info" id="info">Additional Information</a></h2>
 
     <p>Additional information about the command-line options of <a href="programs/httpd.html">httpd</a> and <a href="programs/apachectl.html">apachectl</a> as well as other
     support programs included with the server is available on the
@@ -101,4 +128,8 @@
     There is also documentation on all the <a href="mod/">modules</a> included with the Apache distribution
     and the <a href="mod/directives.html">directives</a> that they
     provide.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>

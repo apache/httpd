@@ -1,5 +1,64 @@
 Changes with Apache 2.0.44
 
+  *) mod_autoindex: Bring forward the IndexOptions IgnoreCase option
+     from Apache 1.3.  PR 14276
+     [David Shane Holden <dpejesh@yahoo.com>, William Rowe]
+
+  *) mod_mime: Workaround to prevent a segfault if r->filename=NULL
+     [Brian Pane]
+ 
+  *) Reorder the definitions for mod_ldap and mod_auth_ldap within
+     config.m4 to make sure the parent mod_ldap is defined first.
+     This ensures that mod_ldap comes before mod_auth_ldap in the
+     httpd.conf file, which is necessary for mod_auth_ldap to load.
+     PR 14256  [Graham Leggett]
+
+  *) Fix the building of cgi command lines when the query string
+     contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
+     Jeff Trawick]
+
+  *) Rename CacheMaxStreamingBuffer to MCacheMaxStreamingBuffer. Move
+     implementation of MCacheMaxStreamingBuffer from mod_cache to
+     mod_mem_cache. MCacheMaxStreamingBuffer now defaults to the
+     lesser of 100,000 bytes or MCacheMaxCacheObjectSize. This should 
+     eliminate the need for explicitly coding MCacheMaxStreamingBuffer
+     in most configurations. [Bill Stoddard]
+
+  *) Replace APU_HAS_LDAPSSL_CLIENT_INIT with APU_HAS_LDAP_NETSCAPE_SSL
+     as set by apr-util in util_ldap.c. This should allow mod_ldap
+     to work with the Netscape/Mozilla LDAP library. [Øyvin Sømme
+     <somme@oslo.westerngeco.slb.com>, Graham Leggett]
+
+  *) Fix critical bug in new --enable-v4-mapped configure option
+     implementation which broke IPv4 listening sockets on some
+     systems.  [hiroyuki hanai <hanai@imgsrc.co.jp>]
+
+  *) mod_setenvif: Fix BrowserMatchNoCase support for non-regex
+     patterns [André Malo <nd@perlig.de>]
+
+  *) Add version string to provider API.  [Justin Erenkrantz]
+ 
+  *) mod_negotiation: Set the appropriate mime response headers
+     (Content-Type, charset, Content-Language and Content-Encoding)
+     for negotated type-map "Body:" responses (such as the error
+     pages.)  [André Malo <nd@perlig.de>]
+
+  *) mod_log_config: Allow '%%' escaping in CustomLog format
+     strings to insert a literal, single '%'.
+     [André Malo <nd@perlig.de>]
+
+  *) mod_autoindex: AddDescription directives for directories
+     now work as in Apache 1.3, where no trailing '/' is
+     specified on the directory name.  Previously, the trailing
+     '/' *had* to be specified, which was incompatible with
+     Apache 1.3.  PR 7990  [Jeff Trawick]
+
+  *) Fix for PR 14556. The expiry calculations in mod_cache were
+     trying to perform "now + ((date - lastmod) * factor)" where
+     date == lastmod resulting in "now + 0". The code now follows
+     the else path (using the default expiration) if date is
+     equal to lastmod. [rx@armstrike.com (Sergey), Paul J. Reder]
+
   *) Use AP_DECLARE in the debug versions of ap_strXXX in case the
      default calling convention is not the same as the one used by
      AP_DECLARE.  [Juan Rivera <Juan.Rivera@citrix.com>]
@@ -167,9 +226,6 @@ Changes with Apache 2.0.44
 
   *) Add ap_register_provider/ap_lookup_provider API.
      [John K. Sterling <john@sterls.com>, Justin Erenkrantz]
-
-  *) Rewrite of aaa modules to an authn/authz model.
-     [Dirk-Willem van Gulik, Justin Erenkrantz]
 
 Changes with Apache 2.0.43
 
@@ -364,6 +420,13 @@ Changes with Apache 2.0.41
      aside a small file for potential concatenation with the next
      response on the connection, set aside the file descriptor rather
      than copying the file into the heap.  [Brian Pane]
+
+  *) Modified version check on openssl so that it finds the executable
+     first and then performs a check of the version, only warning the
+     user if they chose, or we selected, an old version of OpenSSL.
+     This change also allows the code to work for non-openssl libraries
+     selected via the --with-ssl=dir option, which can override the
+     automated library check in any case.  [Roy Fielding]
 
 Changes with Apache 2.0.40
 

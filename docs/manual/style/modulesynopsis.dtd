@@ -30,7 +30,7 @@ usage?, seealso*)>
 
 <!ELEMENT syntax %Inline;>
 
-<!ELEMENT default (#PCDATA)>
+<!ELEMENT default (#PCDATA | br)*>
 
 <!ELEMENT contextlist (context+)+>
 
@@ -41,7 +41,7 @@ usage?, seealso*)>
 <!ELEMENT usage %Block;>
 
 <!-- Used in index.xml -->
-<!ELEMENT moduleindex (title | summary | sitemap)+>
+<!ELEMENT moduleindex (title, summary, seealso*, sitemap)>
 
 <!-- Used in directive.xml -->
 <!ELEMENT directiveindex (title | summary | sitemap)+>

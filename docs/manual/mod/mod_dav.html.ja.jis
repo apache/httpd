@@ -4,15 +4,32 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_dav - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mod_dav</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>分散オーサリングとバージョン管理
-(<a href="http://www.webdav.org/">WebDAV</a>) 機能</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:
-                  </a></th><td>dav_module</td></tr><tr><th><a href="module-dict.html#SourceFile">ソースファイル:
-                  </a></th><td>mod_dav.c</td></tr></table><h3>概要</h3>
+      -->
+<title>mod_dav - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_dav</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>分散オーサリングとバージョン管理
+(<a href="http://www.webdav.org/">WebDAV</a>) 機能</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>dav_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_dav.c</td></tr></table>
+<h3>概要</h3>
+
     <p>このモジュールはクラス 1 とクラス 2 の
     <a href="http://www.webdav.org">WebDAV</a>
-    ('ウェブベースの分散オーサリングとバージョン管理')
+    ('ウェブベースの分散オーサリングとバージョン管理')
     機能を Apache に提供します。
     この HTTP プロトコルの拡張により、リモートのウェブサーバ上にある
     リソースやコレクションを
@@ -25,24 +42,33 @@
 
     <p>同時に <code>httpd.conf</code> ファイルの
     グローバルセクションに次を加えることによって、
-    DAV ロックデータベースのために使う
+    DAV ロックデータベースのために使う
     正当なファイル名を指定します:</p>
 
-<div class="example"><p><code>DavLockDB /tmp/DavLock&#160;&#160;&#160;&#160;
+<div class="example"><p><code>DavLockDB /tmp/DavLock????
       <em>(ウェブサーバの書き込めるファイル名で、
-      拡張子のないもの)</em>
+      拡張子のないもの)</em>
 </code></p></div>
-</div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
-</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>WebDAV HTTP メソッドを有効にします</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>Dav on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>Dav off</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_dav</td></tr></table>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Dav" id="Dav">Dav</a> <a name="dav" id="dav">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>WebDAV HTTP メソッドを有効にします</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Dav on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>Dav off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dav</td></tr>
+</table>
     <p>与えられたコンテナで WebDAV HTTP メソッドが使えるようにするには、
     <code class="directive">Dav</code> ディレクティブを使います。
     DAV を有効にした場所へのアクセスを制限するためには、
@@ -61,30 +87,40 @@
          AuthName DAV<br />
          AuthUserFile user.passwd<br />
         <br />
-         &#160;&#160;&lt;LimitExcept GET HEAD OPTIONS&gt;<br />
-         &#160;&#160;require user admin<br />
-         &#160;&#160;&lt;/LimitExcept&gt;<br />
+         ??&lt;LimitExcept GET HEAD OPTIONS&gt;<br />
+         ??require user admin<br />
+         ??&lt;/LimitExcept&gt;<br />
          &lt;/Location&gt;<br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>PROPFIND, Depth: Infinity リクエストを許可します</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>DavDepthInfinity on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>DavDepthInfinity off</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_dav</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavDepthInfinity" id="DavDepthInfinity">DavDepthInfinity</a> <a name="davdepthinfinity" id="davdepthinfinity">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>PROPFIND, Depth: Infinity リクエストを許可します</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DavDepthInfinity on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DavDepthInfinity off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dav</td></tr>
+</table>
     <p>'Depth: Infinity' を含んでいる
-    PROPFIND リクエストを処理できるようにするには、
+    PROPFIND リクエストを処理できるようにするには、
     <code class="directive">DavDepthInfinity</code>
     ディレクティブを使います。このタイプのリクエストは
     denial-of-service アタックとなりうるので、
     デフォルトでは許可されていません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>DAV ロックデータベースの位置です</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>DavLockDB <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_dav</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>DAV ロックデータベースの位置です</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DavLockDB <em>file-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dav</td></tr>
+</table>
     <p>ロックデータベースへのフルパスを、拡張子を除いた形で
     指定するには、<code class="directive">DavLockDB</code>
     を使います。デフォルトの
@@ -97,14 +133,19 @@
 <div class="example"><h3>例</h3><p><code>
 DavLockDB /tmp/DavLock
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>サーバが DAV リソースのロックを維持する最小時間です。
-</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>DavMinTimeout <em>seconds</em></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>DavMinTimeout 0</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>ディレクトリ</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td>mod_dav</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavMinTimeout" id="DavMinTimeout">DavMinTimeout</a> <a name="davmintimeout" id="davmintimeout">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバが DAV リソースのロックを維持する最小時間です。
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DavMinTimeout <em>seconds</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DavMinTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dav</td></tr>
+</table>
     <p>クライアントが DAV リソースロックを要求した場合、
     ロックがサーバによって自動的に解除されるまでの時間を
     同時に指定することができます。この値は単なるリクエストであって、
@@ -124,4 +165,10 @@ DavLockDB /tmp/DavLock
          DavMinTimeout 600<br />
          &lt;/Location&gt;<br />
 </code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

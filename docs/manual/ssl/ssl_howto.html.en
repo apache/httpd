@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>SSL/TLS Strong Encryption: How-To - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: How-To</h1>
+      -->
+<title>SSL/TLS Strong Encryption: How-To - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: How-To</h1>
 <blockquote>
 <p>The solution of this problem is trivial
 and is left as an exercise for the reader.</p>
@@ -19,7 +31,13 @@ instructions on how to solve such typical situations. Treat is as a first
 step to find out the final solution, but always try to understand the 
 stuff before you use it. Nothing is worse than using a security solution
 without knowing its restrictions and coherences.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Cipher Suites and Enforced Strong Security</a></li><li><img alt="" src="../images/down.gif" /> <a href="#accesscontrol">Client Authentication and Access Control</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="ciphersuites" id="ciphersuites">Cipher Suites and Enforced Strong Security</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Cipher Suites and Enforced Strong Security</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#accesscontrol">Client Authentication and Access Control</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ciphersuites" id="ciphersuites">Cipher Suites and Enforced Strong Security</a></h2>
 
 <ul>
 <li><a href="#realssl">SSLv2 only server</a></li>
@@ -96,7 +114,9 @@ URL?</a></h3>
       &lt;/Location&gt;
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="accesscontrol" id="accesscontrol">Client Authentication and Access Control</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="accesscontrol" id="accesscontrol">Client Authentication and Access Control</a></h2>
 
 <ul>
 <li><a href="#allclients">simple certificate-based client authentication</a></li>
@@ -147,7 +167,7 @@ parts of the server?</a></h3>
 
     <p>The key is to check for various ingredients of the client certficate.
     Usually this means to check the whole or part of the Distinguished
-    Name (DN) of the Subject. For this two methods exists: The <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> based variant and the <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code> variant. The first method is
+    Name (DN) of the Subject. For this two methods exists: The <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> based variant and the <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code> variant. The first method is
     good when the clients are of totally different type, i.e. when their
     DNs have no common fields (usually the organisation, etc.). In this
     case you've to establish a password database containing <em>all</em>
@@ -249,4 +269,8 @@ AuthUserFile         conf/protected.passwd
 Require              valid-user
 &lt;/Directory&gt;</pre></div>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

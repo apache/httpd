@@ -40,7 +40,7 @@
   <xsl:include href="synopsis.xsl"/>
   <xsl:include href="sitemap.xsl"/>
   <xsl:include href="quickreference.xsl"/>
-  
+
   <!-- make sure, we set relative anchors
        only, if we're actually transforming
        a modulefile (see <directive>) -->
@@ -66,6 +66,9 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </xsl:comment>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <title>
         <xsl:choose>
           <xsl:when test="name">
@@ -80,15 +83,30 @@
         <xsl:text> </xsl:text>
         <xsl:value-of select="$messages/message[@name='apachetitle']"/>
       </title>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <link title="Main stylesheet"  type="text/css" media="all" rel="stylesheet"
              href="{$path}/style/css/manual.css" />
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <link title="No Sidebar - Default font size" type="text/css" media="all"
-             rel="alternate stylesheet" 
+             rel="alternate stylesheet"
              href="{$path}/style/css/manual-loose-100pc.css"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <link type="text/css" media="print"
              rel="stylesheet"
              href="{$path}/style/css/manual-print.css"/>
-      
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
     </head>
   </xsl:template>
@@ -100,14 +118,27 @@
   <!--                                                            -->
   <xsl:template name="top">
     <div id="page-header">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <xsl:call-template name="super-menu" />
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
       <p class="apache">
         <xsl:value-of select="$messages/message[@name='apachehttpserver']"/>
       </p>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <img src="{$path}/images/feather.gif" alt="" />
     </div> <!-- /page-header -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
     <div class="up">
       <a href="./">
@@ -118,35 +149,41 @@
       </a>
     </div>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     <div id="path">
 
-          <a href="http://www.apache.org/">
-            <xsl:value-of select="$messages/message[@name='apache']"/>
-          </a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="http://httpd.apache.org/">
-            <xsl:value-of select="$messages/message[@name='http-server']"/>
-          </a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="http://httpd.apache.org/docs-project/">
-            <xsl:value-of select="$messages/message[@name='documentation']"/>
-          </a>
-          <xsl:text> &gt; </xsl:text>
-          <a href="{$path}/">
-            <xsl:value-of select="$messages/message[@name='version']"/>
-          </a>
-          <xsl:if test="../modulesynopsis or ../directiveindex or ../quickreference">
-            <xsl:text> &gt; </xsl:text>
-            <a href="./">
-              <xsl:value-of select="$messages/message[@name='modules']"/>
-            </a>
-          </xsl:if>
-          <xsl:if test="parentdocument/text()">
-            <xsl:text> &gt; </xsl:text>
-            <a href="{parentdocument/@href}">
-              <xsl:value-of select="parentdocument"/>
-            </a>
-          </xsl:if>
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
+      <a href="http://www.apache.org/">
+        <xsl:value-of select="$messages/message[@name='apache']"/>
+      </a>
+      <xsl:text> &gt; </xsl:text>
+      <a href="http://httpd.apache.org/">
+        <xsl:value-of select="$messages/message[@name='http-server']"/>
+      </a>
+      <xsl:text> &gt; </xsl:text>
+      <a href="http://httpd.apache.org/docs-project/">
+        <xsl:value-of select="$messages/message[@name='documentation']"/>
+      </a>
+      <xsl:text> &gt; </xsl:text>
+      <a href="{$path}/">
+        <xsl:value-of select="$messages/message[@name='version']"/>
+      </a>
+      <xsl:if test="../modulesynopsis or ../directiveindex or ../quickreference">
+        <xsl:text> &gt; </xsl:text>
+        <a href="./">
+          <xsl:value-of select="$messages/message[@name='modules']"/>
+        </a>
+      </xsl:if>
+      <xsl:if test="parentdocument/text()">
+        <xsl:text> &gt; </xsl:text>
+        <a href="{parentdocument/@href}">
+          <xsl:value-of select="parentdocument"/>
+        </a>
+      </xsl:if>
     </div> <!-- /path -->
   </xsl:template>
   <!-- /top -->
@@ -157,12 +194,19 @@
   <!--                                                            -->
   <xsl:template name="bottom">
     <div id="footer">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <p class="apache">
         <xsl:value-of select="$messages/message[@name='maintainedby']"/>
         <xsl:text> </xsl:text>
         <a href="http://httpd.apache.org/docs-project/"
           >Apache HTTP Server Documentation Project</a>
       </p>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
       <xsl:call-template name="super-menu"/>
 
@@ -178,7 +222,13 @@
 
     <xsl:call-template name="toplink"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     <div class="section">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
       <!-- Section heading -->
       <h2>
@@ -218,7 +268,7 @@
         <xsl:apply-templates select="title" mode="print"/>
       </xsl:if>
     </h3>
-    
+
     <!-- Section body -->
     <xsl:apply-templates/>
 
@@ -243,7 +293,7 @@
         <xsl:apply-templates select="title" mode="print"/>
       </xsl:if>
     </h4>
-    
+
     <!-- Section body -->
     <xsl:apply-templates/>
 
@@ -292,6 +342,10 @@
           <xsl:apply-templates select="title" mode="print"/>
         </a>
       </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     </xsl:if>
 
     <xsl:if test="not(@id)">
@@ -310,6 +364,10 @@
         </xsl:if>
         -->
       </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     </xsl:if>
 
   </xsl:template>
@@ -321,27 +379,25 @@
   <!--                                                            -->
   <xsl:template name="super-menu">
     <p class="menu">
-
-          <a href="{$path}/mod/">
-            <xsl:value-of select="$messages/message[@name='modules']"/>
-          </a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/mod/directives.html">
-            <xsl:value-of select="$messages/message[@name='directives']"/>
-          </a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/faq/">
-            <xsl:value-of select="$messages/message[@name='faq']"/>
-          </a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/glossary.html">
-            <xsl:value-of select="$messages/message[@name='glossary']"/>
-          </a>
-          <xsl:text> | </xsl:text>
-          <a href="{$path}/sitemap.html">
-            <xsl:value-of select="$messages/message[@name='sitemap']"/>
-          </a>
-
+      <a href="{$path}/mod/">
+        <xsl:value-of select="$messages/message[@name='modules']"/>
+      </a>
+      <xsl:text> | </xsl:text>
+      <a href="{$path}/mod/directives.html">
+        <xsl:value-of select="$messages/message[@name='directives']"/>
+      </a>
+      <xsl:text> | </xsl:text>
+      <a href="{$path}/faq/">
+        <xsl:value-of select="$messages/message[@name='faq']"/>
+      </a>
+      <xsl:text> | </xsl:text>
+      <a href="{$path}/glossary.html">
+        <xsl:value-of select="$messages/message[@name='glossary']"/>
+      </a>
+      <xsl:text> | </xsl:text>
+      <a href="{$path}/sitemap.html">
+        <xsl:value-of select="$messages/message[@name='sitemap']"/>
+      </a>
     </p>
   </xsl:template>
   <!-- /super-menu -->
@@ -370,7 +426,7 @@
              <xsl:apply-templates select="preceding-sibling::node()[count(preceding-sibling::*[contains($blocks,concat(' ',local-name(),' '))]) &gt;= $bb]"/>
              <xsl:apply-templates select="self::node()[not($is-block-node)]"/>
            </xsl:variable>
-           
+
            <!-- apply bare text only, if it's not only \s or empty -->
            <xsl:if test="normalize-space($content) != ''">
              <p><code>
@@ -380,7 +436,7 @@
 
            <xsl:apply-templates select="self::node()[$is-block-node]"/>
          </xsl:if>
-         
+
        </xsl:for-each>
        <!-- /node() -->
 
@@ -396,7 +452,7 @@
     <h3>
         <xsl:apply-templates/>
     </h3>
-  </xsl:template> 
+  </xsl:template>
 
   <xsl:template match="example/title">
     <!-- don't print twice -->
@@ -411,7 +467,7 @@
     <span class="indent">
       <xsl:apply-templates/>
     </span>
-  </xsl:template> 
+  </xsl:template>
   <!-- /indent -->
 
 
@@ -428,7 +484,7 @@
 
       <xsl:apply-templates/>
     </div>
-  </xsl:template>  
+  </xsl:template>
   <!-- /note -->
 
 
@@ -439,14 +495,14 @@
     <h3>
       <xsl:apply-templates/>
     </h3>
-  </xsl:template> 
+  </xsl:template>
   <!-- /note/title -->
 
 
   <!--                                                    -->
   <!-- <directive>                                        -->
   <!-- Inserts link to another directive, which might be  -->
-  <!-- in another module. References are converted into   --> 
+  <!-- in another module. References are converted into   -->
   <!-- lower case.                                        -->
   <!--                                                    -->
   <xsl:template match="directive" name="directive">
@@ -503,7 +559,7 @@
         <xsl:value-of select="."/>
       </a>
     </code>
-  </xsl:template> 
+  </xsl:template>
   <!-- /module -->
 
 
@@ -598,7 +654,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </table>
-    
+
   </xsl:template>
   <!-- /table -->
 
@@ -624,7 +680,7 @@
   <!--                                                    -->
   <xsl:template match="summary">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /summary -->
 
 
@@ -634,7 +690,7 @@
   <!--                                                    -->
   <xsl:template match="description">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /description -->
 
 
@@ -644,7 +700,7 @@
   <!--                                                    -->
   <xsl:template match="hint">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /description -->
 
 
@@ -654,7 +710,7 @@
   <!--                                                    -->
   <xsl:template match="usage">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /usage -->
 
 
@@ -664,8 +720,17 @@
   <!--                                                    -->
   <xsl:template match="syntax">
     <xsl:apply-templates/>
-  </xsl:template> 
+  </xsl:template>
   <!-- /syntax -->
+
+  <!--                                                    -->
+  <!-- <default>                                          -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
+  <xsl:template match="default">
+    <xsl:apply-templates/>
+  </xsl:template>
+  <!-- /default -->
 
 
   <!--                                                    -->
@@ -675,8 +740,23 @@
     <div class="top">
       <a href="#page-header"><img src="{$path}/images/up.gif" alt="top" /></a>
     </div>
-  </xsl:template> 
+  </xsl:template>
   <!-- /toplink -->
+
+
+  <!--                                                    -->
+  <!-- <transnote>                                        -->
+  <!--                                                    -->
+  <xsl:template match="transnote">
+    <span class="transnote">
+      <xsl:text>(</xsl:text><em>
+      <xsl:value-of select="$messages/message[@name='transnote']"/>
+      </em><xsl:text> </xsl:text>
+      <xsl:apply-templates/>
+      <xsl:text>)</xsl:text>
+    </span>
+  </xsl:template>
+  <!-- /note/title -->
 
 
   <!--                                                    -->
@@ -736,7 +816,7 @@
     </xsl:call-template>
 
   </xsl:template>
-  
+
   <xsl:template name="_squeeze-letters">
   <xsl:param name="letters"/>
   <xsl:param name="lastletter"/>
@@ -746,7 +826,7 @@
     <xsl:if test="$lastletter != $current">
       <xsl:value-of select="$current"/>
     </xsl:if>
-    
+
     <xsl:if test="string-length($letters) &gt; 1">
       <xsl:call-template name="_squeeze-letters">
         <xsl:with-param name="letters" select="substring($letters,2)"/>
@@ -754,5 +834,25 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
+
+
+  <xsl:template name="module-translatename">
+  <xsl:param name="name"/>
+
+    <xsl:variable name="sname" select="translate($name,$lowercase,$uppercase)"/>
+
+    <xsl:choose>
+      <xsl:when test="starts-with($sname,'MOD_') or starts-with($sname,'MPM_')">
+        <xsl:value-of select="substring($name, 5)"/>
+      </xsl:when>
+      <xsl:when test="starts-with($sname,'MPMT_')">
+        <xsl:value-of select="substring($name, 6)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$name"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <!-- /module-translatename -->
 
 </xsl:stylesheet>

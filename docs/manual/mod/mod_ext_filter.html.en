@@ -4,26 +4,37 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_ext_filter - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_ext_filter</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Pass the response body through an external program before
-delivery to the client</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>ext_filter_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_ext_filter.c</td></tr></table><h3>Summary</h3>
-    <p>This is an <strong>experimental</strong> module and should
-    be used with care. Test your <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>
-    configuration carefully to ensure that it performs the desired
-    function. You may wish to review <a href="../filter.html">
-    this information</a> for background on the Apache filtering 
-    model.</p>
+      -->
+<title>mod_ext_filter - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_ext_filter</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Pass the response body through an external program before
+delivery to the client</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>ext_filter_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_ext_filter.c</td></tr></table>
+<h3>Summary</h3>
 
     <p><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> presents a simple and familiar
-    programming model for filters. With this module, a program
-    which reads from stdin and writes to stdout (i.e., a Unix-style
-    filter command) can be a filter for Apache. This filtering
-    mechanism is much slower than using a filter which is specially
-    written for the Apache API and runs inside of the Apache server
-    process, but it does have the following benefits:</p>
+    programming model for <a href="../filter.html">filters</a>. With
+    this module, a program which reads from stdin and writes to stdout
+    (i.e., a Unix-style filter command) can be a filter for
+    Apache. This filtering mechanism is much slower than using a
+    filter which is specially written for the Apache API and runs
+    inside of the Apache server process, but it does have the
+    following benefits:</p>
 
     <ul>
       <li>the programming model is much simpler</li>
@@ -39,9 +50,23 @@ delivery to the client</td></tr><tr><th><a href="module-dict.html#Status">Status
     <p>Even when the performance characteristics are not suitable
     for production use, <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> can be used as
     a prototype environment for filters.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#extfilterdefine">ExtFilterDefine</a></li>
+
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#extfilterdefine">ExtFilterDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#extfilteroptions">ExtFilterOptions</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../filter.html">The filter documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="examples" id="examples">Examples</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="../filter.html">Filters</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
 
     <h3>Generating HTML from some other type of response</h3>
       <div class="example"><p><code>
@@ -191,12 +216,16 @@ delivery to the client</td></tr><tr><th><a href="module-dict.html#Status">Status
         close(SAVE);
       </code></p></div>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine" id="extfilterdefine">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Define an external filter</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_ext_filter</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtFilterDefine" id="ExtFilterDefine">ExtFilterDefine</a> <a name="extfilterdefine" id="extfilterdefine">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define an external filter</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ExtFilterDefine <var>filtername</var> <var>parameters</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ext_filter</td></tr>
+</table>
     <p>The <code class="directive">ExtFilterDefine</code> directive defines the
     characteristics of an external filter, including the program to
     run and its arguments.</p>
@@ -279,13 +308,18 @@ delivery to the client</td></tr><tr><th><a href="module-dict.html#Status">Status
       <dd>This parameter specifies the name of an environment variable
       which must be set, or the filter will be disabled.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Configure mod_ext_filter options</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_ext_filter</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtFilterOptions" id="ExtFilterOptions">ExtFilterOptions</a> <a name="extfilteroptions" id="extfilteroptions">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure mod_ext_filter options</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ExtFilterOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ExtFilterOptions DebugLevel=0 NoLogStderr</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ext_filter</td></tr>
+</table>
     <p>The <code class="directive">ExtFilterOptions</code> directive specifies
     special processing options for <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>.
     <var>Option</var> can be one of</p>
@@ -323,4 +357,10 @@ delivery to the client</td></tr><tr><th><a href="module-dict.html#Status">Status
     <p>Messages written to the filter's standard error will be stored
     in the Apache error log. No debug messages will be generated by
     <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>. </p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

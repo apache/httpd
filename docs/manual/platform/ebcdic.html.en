@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>The Apache EBCDIC Port - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>The Apache EBCDIC Port</h1>
+      -->
+<title>The Apache EBCDIC Port - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>The Apache EBCDIC Port</h1>
 
     <div class="warning"><strong>Warning:</strong> This document
     has not been updated to take into account changes made in
@@ -12,7 +24,18 @@
     information may still be relevant, but please use it with care.
     </div>
 
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#overview">Overview of the Apache EBCDIC Port</a></li><li><img alt="" src="../images/down.gif" /> <a href="#design">Design Goals</a></li><li><img alt="" src="../images/down.gif" /> <a href="#technical">Technical Solution</a></li><li><img alt="" src="../images/down.gif" /> <a href="#porting">Porting Notes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#document">Document Storage Notes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#modules">Apache Modules' Status</a></li><li><img alt="" src="../images/down.gif" /> <a href="#third-party">Third Party Modules' Status</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">Overview of the Apache EBCDIC Port</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#overview">Overview of the Apache EBCDIC Port</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#design">Design Goals</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#technical">Technical Solution</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#porting">Porting Notes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#document">Document Storage Notes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#modules">Apache Modules' Status</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#third-party">Third Party Modules' Status</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="overview" id="overview">Overview of the Apache EBCDIC Port</a></h2>
 
     
 
@@ -42,7 +65,9 @@
     <p>This document serves as a rationale to describe some of the
     design decisions of the port to this machine.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="design" id="design">Design Goals</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="design" id="design">Design Goals</a></h2>
 
     
 
@@ -60,7 +85,9 @@
     might solve the problem by defining an "ebcdic-handler" for all
     documents which must be converted.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="technical" id="technical">Technical Solution</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="technical" id="technical">Technical Solution</a></h2>
 
     
 
@@ -91,7 +118,9 @@
       the response body may contain text or a binary file)</li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="porting" id="porting">Porting Notes</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="porting" id="porting">Porting Notes</a></h2>
 
     
 
@@ -230,7 +259,9 @@
 
     </ol>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="document" id="document">Document Storage Notes</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="document" id="document">Document Storage Notes</a></h2>
 
     
 
@@ -274,7 +305,9 @@
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="modules" id="modules">Apache Modules' Status</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="modules" id="modules">Apache Modules' Status</a></h2>
 
     
 
@@ -496,7 +529,9 @@
       </tr>
     </table>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="third-party" id="third-party">Third Party Modules' Status</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="third-party" id="third-party">Third Party Modules' Status</a></h2>
 
     
 
@@ -534,4 +569,8 @@
       </tr>
     </table>
 
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -1,19 +1,14 @@
-</dd></dl><dl><dd>
+</p>
+<p>
 <!--#include virtual="../contact.html.var" -->
-</dd></dl>
+</p>
 
 <h2>Error <!--#echo encoding="none" var="REDIRECT_STATUS" --></h2>
-<dl>
-<dd>
 <address>
-  <a href="/"><!--#echo encoding="none" var="SERVER_NAME" --></a>
-  <br />
+  <a href="/"><!--#echo var="SERVER_NAME" --></a><br />
   <!--#config timefmt="%c" -->
-  <small><!--#echo encoding="none" var="DATE_LOCAL" --></small>
-  <br />
-  <small><!--#echo encoding="none" var="SERVER_SOFTWARE" --></small>
+  <span><!--#echo var="DATE_LOCAL" --><br />
+  <!--#echo var="SERVER_SOFTWARE" --></span>
 </address>
-</dd>
-</dl>
 </body>
 </html>

@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Log Files - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Log Files</h1>
+      -->
+<title>Log Files - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Log Files</h1>
     <p>In order to effectively manage a web server, it is necessary
     to get feedback about the activity and performance of the
     server as well as any problems that may be occuring. The Apache
@@ -12,7 +24,18 @@
     capabilities. This document describes how to configure its
     logging capabilities, and how to understand what the logs
     contain.</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">Security Warning</a></li><li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Error Log</a></li><li><img alt="" src="./images/down.gif" /> <a href="#accesslog">Access Log</a></li><li><img alt="" src="./images/down.gif" /> <a href="#rotation">Log Rotation</a></li><li><img alt="" src="./images/down.gif" /> <a href="#piped">Piped Logs</a></li><li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Virtual Hosts</a></li><li><img alt="" src="./images/down.gif" /> <a href="#other">Other Log Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="security" id="security">Security Warning</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">Security Warning</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Error Log</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#accesslog">Access Log</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#rotation">Log Rotation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#piped">Piped Logs</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Virtual Hosts</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#other">Other Log Files</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Security Warning</a></h2>
     
     
     <p>Anyone who can write to the directory where Apache is
@@ -28,7 +51,9 @@
     possible for malicious clients to insert control-characters in
     the log files, so care must be taken in dealing with raw
     logs.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="errorlog" id="errorlog">Error Log</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="errorlog" id="errorlog">Error Log</a></h2>
     
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
@@ -92,7 +117,9 @@
     <div class="example"><p><code>
       tail -f error_log
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="accesslog" id="accesslog">Access Log</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="accesslog" id="accesslog">Access Log</a></h2>
     
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
@@ -376,7 +403,9 @@
       easier to simply post-process the log files to remove requests
       that you do not want to consider.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="rotation" id="rotation">Log Rotation</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rotation" id="rotation">Log Rotation</a></h2>
     
     
     <p>On even a moderately busy server, the quantity of
@@ -409,7 +438,9 @@
 
     <p>Another way to perform log rotation is using <a href="#piped">piped logs</a> as discussed in the next
     section.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="piped" id="piped">Piped Logs</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="piped" id="piped">Piped Logs</a></h2>
     
     
     <p>Apache httpd is capable of writing error and access log
@@ -429,22 +460,6 @@
     that piped log programs usually run as root. It is therefore
     very important to keep the programs simple and secure.</p>
 
-    <p>Some simple examples using piped logs:</p>
-
-    <div class="example"><p><code>
-      # compressed logs<br />
-      CustomLog "|/usr/bin/gzip -c &gt;&gt;
-      /var/log/access_log.gz" common<br />
-      # almost-real-time name resolution<br />
-      CustomLog "|/usr/local/apache/bin/logresolve &gt;&gt;
-      /var/log/access_log" common
-    </code></p></div>
-
-    <p>Notice that quotes are used to enclose the entire command
-    that will be called for the pipe. Although these examples are
-    for the access log, the same technique can be used for the
-    error log.</p>
-
     <p>One important use of piped logs is to allow log rotation
     without having to restart the server. The Apache HTTP Server
     includes a simple program called <a href="programs/rotatelogs.html">rotatelogs</a> for this
@@ -456,14 +471,21 @@
       /var/log/access_log 86400" common
     </code></p></div>
     
-    <p>A similar, but much more flexible log rotation program
+    <p>Notice that quotes are used to enclose the entire command
+    that will be called for the pipe. Although these examples are
+    for the access log, the same technique can be used for the
+    error log.</p>
+
+    <p>A similar but much more flexible log rotation program
     called <a href="http://www.cronolog.org/">cronolog</a>
     is available at an external site.</p>
 
     <p>As with conditional logging, piped logs are a very powerful
     tool, but they should not be used where a simpler solution like
     off-line post-processing is available.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a></h2>
     
     
     <p>When running a server with many <a href="vhosts/">virtual
@@ -505,7 +527,9 @@
     host that is serving the request. Then a program like <a href="programs/other.html">split-logfile</a> can be used to
     post-process the access log in order to split it into one file
     per virtual host.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="other" id="other">Other Log Files</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="other" id="other">Other Log Files</a></h2>
     
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
@@ -542,4 +566,8 @@
       the rewriting engine transforms requests. The level of detail
       is controlled by the <code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code> directive.</p>
     
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>

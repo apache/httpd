@@ -363,25 +363,6 @@ static walk_cache_t *prep_walk_cache(apr_size_t t, request_rec *r)
  * they change, all the way down.
  */
 
-/*
- * We don't want people able to serve up pipes, or unix sockets, or other
- * scary things.  Note that symlink tests are performed later.
- */
-static int check_safe_file(request_rec *r)
-{
-
-    if (r->finfo.filetype == 0      /* doesn't exist */
-        || r->finfo.filetype == APR_DIR
-        || r->finfo.filetype == APR_REG
-        || r->finfo.filetype == APR_LNK) {
-        return OK;
-    }
-
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                  "object is not a file, directory or symlink: %s",
-                  r->filename);
-    return HTTP_FORBIDDEN;
-}
 
 /*
  * resolve_symlink must _always_ be called on an APR_LNK file type!
@@ -577,7 +558,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * with APR_ENOENT, knowing that the path is good.
      */
     if (!r->finfo.filetype || r->finfo.filetype == APR_LNK) {
-        apr_stat(&r->finfo, r->filename, APR_FINFO_MIN, r->pool);
+        rv = apr_stat(&r->finfo, r->filename, APR_FINFO_MIN, r->pool);
 
         /* some OSs will return APR_SUCCESS/APR_REG if we stat
          * a regular file but we have '/' at the end of the name;
@@ -586,11 +567,14 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          *
          * handle it the same everywhere by simulating a failure
          * if it looks like a directory but really isn't
+         *
+         * Also reset if the stat failed, just for safety.
          */
-        if (r->finfo.filetype &&
-            r->finfo.filetype != APR_DIR &&
-            r->filename[strlen(r->filename) - 1] == '/') {
-            r->finfo.filetype = 0; /* forget what we learned */
+        if ((rv != APR_SUCCESS) ||
+            (r->finfo.filetype &&
+             (r->finfo.filetype != APR_DIR) &&
+             (r->filename[strlen(r->filename) - 1] == '/'))) {
+             r->finfo.filetype = 0; /* forget what we learned */
         }
     }
 
@@ -1018,11 +1002,6 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 return r->status = HTTP_FORBIDDEN;
             }
 
-            if ((res = check_safe_file(r))) {
-                r->status = res;
-                return res;
-            }
-
             /* Fix up the path now if we have a name, and they don't agree
              */
             if ((thisinfo.valid & APR_FINFO_NAME)
@@ -1045,21 +1024,22 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                                   r->filename);
                     return r->status = res;
                 }
+            }
 
-                /* Ok, we are done with the link's info, test the real target
+            /* Ok, we are done with the link's info, test the real target
+             */
+            if (thisinfo.filetype == APR_REG || 
+                thisinfo.filetype == APR_NOFILE) {
+                /* That was fun, nothing left for us here
                  */
-                if (thisinfo.filetype == APR_REG) {
-                    /* That was fun, nothing left for us here
-                     */
-                    break;
-                }
-                else if (thisinfo.filetype != APR_DIR) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "symlink doesn't point to a file or "
-                                  "directory: %s",
-                                  r->filename);
-                    return r->status = HTTP_FORBIDDEN;
-                }
+                break;
+            }
+            else if (thisinfo.filetype != APR_DIR) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Forbidden: %s doesn't point to "
+                              "a file or directory",
+                              r->filename);
+                return r->status = HTTP_FORBIDDEN;
             }
 
             ++seg;

@@ -118,14 +118,16 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     }
 
 #if APR_HAVE_IPV6
-    stat = apr_socket_opt_set(s, APR_IPV6_V6ONLY, v6only_setting);
-    if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-                      "make_sock: for address %pI, apr_socket_opt_set: "
-                      "(IPV6_V6ONLY)",
-                      server->bind_addr);
-        apr_socket_close(s);
-        return stat;
+    if (server->bind_addr->family == APR_INET6) {
+        stat = apr_socket_opt_set(s, APR_IPV6_V6ONLY, v6only_setting);
+        if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
+            ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
+                          "make_sock: for address %pI, apr_socket_opt_set: "
+                          "(IPV6_V6ONLY)",
+                          server->bind_addr);
+            apr_socket_close(s);
+            return stat;
+        }
     }
 #endif
 

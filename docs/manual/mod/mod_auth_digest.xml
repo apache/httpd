@@ -2,6 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <modulesynopsis>
+
 <name>mod_auth_digest</name>
 <description>User authentication using MD5
     Digest Authentication.</description>
@@ -10,7 +11,7 @@
 <identifier>auth_digest_module</identifier>
 
 <summary>
-    <p>This module implements HTTP Digest Authentication.  However, it
+    <p>This module implements HTTP Digest Authentication. However, it
     has not been extensively tested and is therefore marked
     experimental.</p>
 </summary>
@@ -20,46 +21,54 @@
 <seealso><directive module="core">Require</directive></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
 
-<section><title>Using Digest Authentication</title>
+<section id="using"><title>Using Digest Authentication</title>
 
     <p>Using MD5 Digest authentication is very simple. Simply set
-    up authentication normally, using "AuthType Digest" and
-    "AuthDigestFile" instead of the normal "AuthType Basic" and
-    "AuthUserFile"; also, replace any "AuthGroupFile" with
-    "AuthDigestGroupFile". Then add a "AuthDigestDomain" directive
-    containing at least the root URI(s) for this protection space.
-    Example:</p>
-<example>
-  &lt;Location /private/&gt;<br />
-  AuthType Digest<br />
-  AuthName "private area"<br />
-  AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
-  AuthDigestFile /web/auth/.digest_pw<br />
-  Require valid-user<br />
-  &lt;/Location&gt;
-</example>
+    up authentication normally, using <code>AuthType Digest</code> and
+    <directive module="mod_auth_digest">AuthDigestFile</directive> instead
+    of the normal <code>AuthType Basic</code> and <directive
+    module="mod_auth">AuthUserFile</directive>; also, replace any <directive
+    module="mod_auth">AuthGroupFile</directive> with <directive
+    module="mod_auth_digest">AuthDigestGroupFile</directive>. Then add a
+    <directive module="mod_auth_digest">AuthDigestDomain</directive> directive
+    containing at least the root URI(s) for this protection space.</p>
 
-<note><title>Note</title> 
-    
+    <p>Appropriate user (text) files can be created using the
+    <a href="../programs/htdigest.html">htdigest</a> tool.</p>
+
+    <example><title>Example:</title>
+      &lt;Location /private/&gt;<br />
+      <indent>
+        AuthType Digest<br />
+        AuthName "private area"<br />
+        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
+        AuthDigestFile /web/auth/.digest_pw<br />
+        Require valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <note><title>Note</title> 
     <p>Digest authentication provides a more secure password system
     than Basic authentication, but only works with supporting
-    browsers. As of July 2002, the major browsers that support digest
+    browsers. As of November 2002, the major browsers that support digest
     authentication are <a href="http://www.opera.com/">Opera</a>, <a
     href="http://www.microsoft.com/windows/ie/">MS Internet
     Explorer</a> (fails when used with a query string), <a
-    href="http://www.w3.org/Amaya/">Amaya</a> and <a
-    href="http://www.mozilla.org">Mozilla</a>.  Since digest
-    authentication is not as widely implemented as basic
-    authentication, you should use it only in controlled settings.</p>
-
-</note>
+    href="http://www.w3.org/Amaya/">Amaya</a>, <a
+    href="http://www.mozilla.org">Mozilla</a> and <a
+    href="http://channels.netscape.com/ns/browsers/download.jsp"
+    >Netscape</a> since version 7. Since digest authentication is not
+    as widely implemented as basic authentication, you should use it only
+    in controlled environments.</p>
+    </note>
 </section>
 
 <directivesynopsis>
 <name>AuthDigestFile</name>
 <description>Location of the text file containing the list
 of users and encoded passwords for digest authentication</description>
-<syntax>AuthDigestFile <em>file-path</em></syntax>
+<syntax>AuthDigestFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -67,13 +76,13 @@ of users and encoded passwords for digest authentication</description>
 <usage>
     <p>The <directive>AuthDigestFile</directive> directive sets the
     name of a textual file containing the list of users and encoded
-    passwords for digest authentication. <em>File-path</em> is the
+    passwords for digest authentication. <var>File-path</var> is the
     absolute path to the user file.</p>
 
     <p>The digest file uses a special format. Files in this format
     can be created using the <a
     href="../programs/htdigest.html">htdigest</a> utility found in
-    the support/ subdirectory of the Apache distribution.</p>
+    the <code>support/</code> subdirectory of the Apache distribution.</p>
 </usage>
 </directivesynopsis>
 
@@ -81,7 +90,7 @@ of users and encoded passwords for digest authentication</description>
 <name>AuthDigestGroupFile</name>
 <description>Name of the text file containing the list of groups
 for digest authentication</description>
-<syntax>AuthDigestGroupFile <em>file-path</em></syntax>
+<syntax>AuthDigestGroupFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -89,22 +98,24 @@ for digest authentication</description>
 <usage>
     <p>The <directive>AuthDigestGroupFile</directive> directive sets
     the name of a textual file containing the list of groups and their
-    members (user names). <em>File-path</em> is the absolute path to
+    members (user names). <var>File-path</var> is the absolute path to
     the group file.</p>
 
     <p>Each line of the group file contains a groupname followed by
     a colon, followed by the member usernames separated by spaces.
     Example:</p>
 
-<example>mygroup: bob joe anne</example>
+    <example>mygroup: bob joe anne</example>
 
     <p>Note that searching large text files is <em>very</em>
     inefficient.</p>
 
-    <p>Security: make sure that the AuthGroupFile is stored outside
-    the document tree of the web-server; do <em>not</em> put it in
-    the directory that it protects. Otherwise, clients will be able
-    to download the AuthGroupFile.</p>
+    <note type="warning"><title>Security:</title>
+    <p>Make sure that the <directive>AuthGroupFile</directive> is stored
+    outside the document tree of the web-server; do <em>not</em> put it in
+    the directory that it protects. Otherwise, clients may be able
+    to download the <directive>AuthGroupFile</directive>.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -120,25 +131,26 @@ authentication</description>
 
 <usage>
     <p>The <directive>AuthDigestQop</directive> directive determines
-    the quality-of-protection to use. <em>auth</em> will only do
-    authentication (username/password); <em>auth-int</em> is
+    the quality-of-protection to use. <code>auth</code> will only do
+    authentication (username/password); <code>auth-int</code> is
     authentication plus integrity checking (an MD5 hash of the entity
-    is also computed and checked); <em>none</em> will cause the module
+    is also computed and checked); <code>none</code> will cause the module
     to use the old RFC-2069 digest algorithm (which does not include
-    integrity checking). Both <em>auth</em> and <em>auth-int</em> may
+    integrity checking). Both <code>auth</code> and <code>auth-int</code> may
     be specified, in which the case the browser will choose which of
-    these to use. <em>none</em> should only be used if the browser for
+    these to use. <code>none</code> should only be used if the browser for
     some reason does not like the challenge it receives otherwise.</p>
 
-    <p><strong><em>auth-int</em> is not implemented
-    yet</strong>.</p>
+    <note>
+      <code>auth-int</code> is not implemented yet.
+    </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDigestNonceLifetime</name>
 <description>How long the server nonce is valid</description>
-<syntax>AuthDigestNonceLifetime <em>seconds</em></syntax>
+<syntax>AuthDigestNonceLifetime <var>seconds</var></syntax>
 <default>AuthDigestNonceLifetime 300</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -148,11 +160,11 @@ authentication</description>
     <p>The <directive>AuthDigestNonceLifetime</directive> directive
     controls how long the server nonce is valid. When the client
     contacts the server using an expired nonce the server will send
-    back a 401 with <code>stale=true</code>. If <em>seconds</em> is
+    back a 401 with <code>stale=true</code>. If <var>seconds</var> is
     greater than 0 then it specifies the amount of time for which the
     nonce is valid; this should probably never be set to less than 10
-    seconds. If <em>seconds</em> is less than 0 then the nonce never
-    expires. <!-- Not implemented yet If <EM>seconds</EM> is 0 then
+    seconds. If <var>seconds</var> is less than 0 then the nonce never
+    expires. <!-- Not implemented yet: If <var>seconds</var> is 0 then
     the nonce may be used exactly once by the client. Note that while
     one-time-nonces provide higher security against replay attacks,
     they also have significant performance implications, as the
@@ -172,17 +184,15 @@ authentication</description>
 <directivesynopsis>
 <name>AuthDigestNonceFormat</name>
 <description>Determines how the nonce is generated</description>
-<syntax>AuthDigestNonceFormat <em>format</em></syntax>
+<syntax>AuthDigestNonceFormat <var>format</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><strong>Not implemented yet.</strong> <!--
-            <P>The AuthDigestNonceFormat directive determines how the nonce is
-            generated.
-            -->
-    </p>
+    <note>Not implemented yet.</note>
+    <!-- The AuthDigestNonceFormat directive determines how the nonce is
+    generated. -->
 </usage>
 </directivesynopsis>
 
@@ -195,19 +205,21 @@ server</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><strong>Not implemented yet.</strong> <!--
-            <P>The AuthDigestNcCheck directive enables or disables the checking of the
-            nonce-count sent by the server.
+    <note>
+      Not implemented yet.
+    </note>
+    <!--
+    <p>The AuthDigestNcCheck directive enables or disables the checking of the
+    nonce-count sent by the server.</p>
 
-            <P>While recommended from a security standpoint, turning this directive
-            On has one important performance implication. To check the nonce-count
-            *all* requests (which have an Authorization header, irrespective of
-            whether they require digest authentication) must be serialized through
-            a critical section. If the server is handling a large number of
-            requests which contain the Authorization header then this may noticeably
-            impact performance.
-            -->
-    </p>
+    <p>While recommended from a security standpoint, turning this directive
+    On has one important performance implication. To check the nonce-count
+    *all* requests (which have an Authorization header, irrespective of
+    whether they require digest authentication) must be serialized through
+    a critical section. If the server is handling a large number of
+    requests which contain the Authorization header then this may noticeably
+    impact performance.</p>
+     -->
 </usage>
 </directivesynopsis>
 
@@ -226,12 +238,14 @@ response hases in digest authentication</description>
     selects the algorithm used to calculate the challenge and response
     hashes.</p>
 
-    <p><strong><em>MD5-sess</em> is not correctly implemented
-    yet</strong>. <!--
-            <P>To use <EM>MD5-sess</EM> you must first code up the
-            <VAR>get_userpw_hash()</VAR> function in <VAR>mod_auth_digest.c</VAR> .
-            -->
-    </p>
+    <note>
+      <code>MD5-sess</code> is not correctly implemented yet.
+    </note>
+    <!--
+    <p>To use <code>MD5-sess</code> you must first code up the
+    <code>get_userpw_hash()</code> function in
+    <code>mod_auth_digest.c</code>.</p>
+    -->
 </usage>
 </directivesynopsis>
 
@@ -239,7 +253,7 @@ response hases in digest authentication</description>
 <name>AuthDigestDomain</name>
 <description>URIs that are in the same protection space for digest
 authentication</description>
-<syntax>AuthDigestDomain <em>URI</em> [<em>URI</em>] ...</syntax>
+<syntax>AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -247,28 +261,57 @@ authentication</description>
 <usage>
     <p>The <directive>AuthDigestDomain</directive> directive allows
     you to specify one or more URIs which are in the same protection
-    space (i.e. use the same realm and username/password info). The
-    specified URIs are prefixes, i.e. the client will assume that all
-    URIs "below" these are also protected by the same
-    username/password. The URIs may be either absolute URIs
-    (i.e. inluding a scheme, host, port, etc) or relative URIs.</p>
+    space (<em>i.e.</em> use the same realm and username/password info).
+    The specified URIs are prefixes, <em>i.e.</em> the client will assume
+    that all URIs "below" these are also protected by the same
+    username/password. The URIs may be either absolute URIs (<em>i.e.</em>
+    inluding a scheme, host, port, etc) or relative URIs.</p>
 
     <p>This directive <em>should</em> always be specified and
     contain at least the (set of) root URI(s) for this space.
     Omitting to do so will cause the client to send the
     Authorization header for <em>every request</em> sent to this
     server. Apart from increasing the size of the request, it may
-    also have a detrimental effect on performance if
-    "AuthDigestNcCheck" is on.</p>
+    also have a detrimental effect on performance if <directive
+    module="mod_auth_digest">AuthDigestNcCheck</directive> is on.</p>
 
     <p>The URIs specified can also point to different servers, in
     which case clients (which understand this) will then share
     username/password info across multiple servers without
-    prompting the user each time. </p>
+    prompting the user each time.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestShmemSize</name>
+<description>The amount of shared memory to allocate for keeping track
+of clients</description>
+<syntax>AuthDigestShmemSize <var>size</var></syntax>
+<default>AuthDigestShmemSize 1000</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>AuthDigestShmemSize</directive> directive defines
+    the amount of shared memory, that will be allocated at the server
+    startup for keeping track of clients. Note that the shared memory
+    segment cannot be set less than the space that is neccessary for
+    tracking at least <em>one</em> client. This value is dependant on your
+    system. If you want to find out the exact value, you may simply
+    set <directive>AuthDigestShmemSize</directive> to the value of
+    <code>0</code> and read the error message after trying to start the
+    server.</p>
+
+    <p>The <var>size</var> is normally expressed in Bytes, but you
+    may let the number follow a <code>K</code> or an <code>M</code> to
+    express your value as KBytes or MBytes. For example, the following
+    directives are all equivalent:</p>
+
+    <example>
+      AuthDigestShmemSize 1048576<br />
+      AuthDigestShmemSize 1024K<br />
+      AuthDigestShmemSize 1M
+    </example>
 </usage>
 </directivesynopsis>
 
 </modulesynopsis>
-
-
-

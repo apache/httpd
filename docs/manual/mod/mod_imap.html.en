@@ -4,11 +4,28 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_imap - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_imap</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Server-side imagemap processing</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>imap_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_imap.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_imap - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_imap</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Server-side imagemap processing</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>imap_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_imap.c</td></tr></table>
+<h3>Summary</h3>
+
     <p>This module processes <code>.map</code> files, thereby
     replacing the functionality of the <code>imagemap</code> CGI
     program. Any directory or document type configured to use the
@@ -28,10 +45,23 @@
 
     <p>However, we are trying to phase out "magic MIME types" so we
     are deprecating this method.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#imapbase">ImapBase</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#imapbase">ImapBase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#imapdefault">ImapDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#imapmenu">ImapMenu</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#features">New Features</a></li><li><img alt="" src="../images/down.gif" /> <a href="#imapfile">Imagemap File</a></li><li><img alt="" src="../images/down.gif" /> <a href="#example">Example Mapfile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#referencing">Referencing your mapfile</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="features" id="features">New Features</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#features">New Features</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#imapfile">Imagemap File</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Example Mapfile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#referencing">Referencing your mapfile</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="features" id="features">New Features</a></h2>
 
     <p>The imagemap module adds some new features that were not
     possible with previously distributed imagemap programs.</p>
@@ -48,7 +78,9 @@
 
       <li>Configurable generation of imagemap menus.</li>
     </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="imapfile" id="imapfile">Imagemap File</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="imapfile" id="imapfile">Imagemap File</a></h2>
 
     <p>The lines in the imagemap files can have one of several
     formats:</p>
@@ -211,7 +243,9 @@
       </dl>
 
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="example" id="example">Example Mapfile</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">Example Mapfile</a></h2>
 
     <div class="example"><p><code>
       #Comments are printed in a 'formatted' or 'semiformatted' menu.<br />
@@ -226,7 +260,9 @@
       rect mailto:nate@tripod.com 100,150 200,0 "Bugs?"<br />
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="referencing" id="referencing">Referencing your mapfile</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="referencing" id="referencing">Referencing your mapfile</a></h2>
 
     <div class="example"><h3>HTML example</h3><p><code>
       &lt;a href="/maps/imagemap1.map"&gt;<br />
@@ -244,28 +280,41 @@
       &lt;/a&gt;
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Default base for imagemap files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>ImapBase http://servername/</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_imap</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default base for imagemap files</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapBase http://servername/</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imap</td></tr>
+</table>
     <p>The <code class="directive">ImapBase</code> directive sets the default
     <code>base</code> used in the imagemap files. Its value is
     overridden by a <code>base</code> directive within the imagemap
     file. If not present, the <code>base</code> defaults to
     <code>http://<var>servername</var>/</code>.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Default action when an imagemap is called with coordinates
-that are not explicitly mapped</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ImapDefault error|nocontent|map|referer|<var>URL</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>ImapDefault nocontent</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_imap</td></tr></table>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Default action when an imagemap is called with coordinates
+that are not explicitly mapped</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ImapDefault error|nocontent|map|referer|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ImapDefault nocontent</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imap</td></tr>
+</table>
     <p>The <code class="directive">ImapDefault</code> directive sets the default
     <code>default</code> used in the imagemap files. Its value is
     overridden by a <code>default</code> directive within the
@@ -273,14 +322,19 @@ that are not explicitly mapped</td></tr><tr><th><a href="directive-dict.html#Syn
     is <code>nocontent</code>, which means that a <code>204 No
     Content</code> is sent to the client. In this case, the client
     should continue to display the original page.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Action if no coordinates are given when calling
-an imagemap</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_imap</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action if no coordinates are given when calling
+an imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imap</td></tr>
+</table>
     <p>The <code class="directive">ImapMenu</code> directive determines the
     action taken if an imagemap file is called without valid
     coordinates.</p>
@@ -312,4 +366,10 @@ an imagemap</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
       of your menus, but requires you to treat your map files as
       HTML instead of plaintext.</dd>
     </dl>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English revision: 1.2.2.1 -->
+<manualpage>
+<relativepath href="."/>
+
+  <title>Apache starten</title>
+
+<summary>
+    <p>Unter Windows l&#228;uft der Apache &#252;blicherweise als Dienst
+    (Windows NT, 2000 und XP) oder als Konsolenanwendung (Windows 9x und
+    ME). F&#252;r Einzelheiten lesen Sie bitte <a
+    href="platform/windows.html#winsvc">Apache als Dienst betreiben</a>
+    und <a href="platform/windows.xml#wincons"
+    >Apache als Konsolenanwendung betreiben</a>.</p>
+
+    <p>Unter Unix wird das <a
+    href="programs/httpd.html">httpd</a>-Programm als Daemon ausgef&#252;hrt,
+    der im Hintergrund fortlaufend aktiv ist, um Anfragen zu bearbeiten.
+    Dieses Dokument beschreibt, wie <code>httpd</code> aufgerufen wird.</p>
+</summary>
+
+<seealso><a href="stopping.html">Beenden und Neustarten</a></seealso>
+<seealso><a href="programs/httpd.html">httpd</a></seealso>
+<seealso><a href="programs/apachectl.html">apachectl</a></seealso>
+
+<section id="startup"><title>Wie der Apache startet</title>
+
+    <p>Wenn die in der Konfigurationsdatei angegebene <directive
+    module="mpm_common">Listen</directive>-Anweisung auf die Voreinstellung
+    von 80 gesetzt ist (oder einen anderen Port unterhalb von 1024), dann
+    m&#252;ssen Sie root-Berechtigung besitzen, um den Apache starten
+    zu k&#246;nnen. Nur dann kann er sich an diesen privilegierten
+    Port binden. Sobald der Server gestartet ist und einige vorbereitende
+    Aktionen wie das &#214;ffnen seiner Log-Dateien ausgef&#252;hrt hat,
+    startet er mehrere <em>Kind</em>-Prozesse, welche die Arbeit erledigen:
+    das Lauschen auf und Beantworten von Anfragen von Clients. Der
+    Haupt-<code>httpd</code>-Prozess l&#228;uft unter dem Benutzer root
+    weiter, die Kind-Prozesse jedoch werden unter weniger privilegierten
+    Benutzerkennungen ausgef&#252;hrt. Dies wird von dem ausgew&#228;hlten
+    <a href="mpm.html">Multi-Processing-Modul</a> gesteuert.</p>
+
+    <p>Die Verwendung des Steuerskripts <a
+    href="programs/apachectl.html">apachectl</a> ist die empfohlene Methode,
+    das <code>httpd</code>-Programm zu starten. Dieses Skript setzt
+    verschiedene Umgebungsvariablen, die f&#252;r die korrekte Funktion von
+    <code>httpd</code> unter einigen Betriebssystemen notwendig sind, und
+    startet dann das <code>httpd</code>-Programm. <code>apachectl</code>
+    reicht alle Kommandozeilenargumente durch, so dass alle
+    <code>httpd</code>-Optionen auch mit <code>apachectl</code>
+    verwendet werden k&#246;nnen. Um den korrekten Ablageort des
+    <code>httpd</code>-Programms sowie einige Kommandozeilenargumente
+    anzugeben, die Sie <em>immer</em> verwenden m&#246;chten, k&#246;nnen
+    Sie auch das Skript <code>apachectl</code> direkt editieren und die
+    Variable <code>HTTPD</code> am Anfang &#228;ndern.</p>
+
+    <p>Das Erste was <code>httpd</code> macht, wenn es startet, ist das
+    Suchen und Einlesen der <a
+    href="configuring.html">Konfigurationsdatei</a> <code>httpd.conf</code>.
+    Der Ablageort dieser Datei wird zur Kompilierungszeit festgelegt. Es ist
+    aber m&#246;glich, den Ablageort zur Laufzeit anzugeben, indem die
+    Kommandozeilenoption <code>-f</code> wie folgt verwendet wird:</p>
+
+    <example>/usr/local/apache2/bin/apachectl -f
+      /usr/local/apache/conf/httpd.conf</example>
+
+    <p>Wenn w&#228;hrend des Starts alles gutgeht, trennt sich der Server
+    vom Terminal ab und die Eingabeaufforderung erscheint gleich darauf
+    wieder. Dies zeigt an, dass der Server hochgefahren ist und l&#228;uft.
+    Sie k&#246;nnen nun Ihren Browser benutzen, um Verbindung zum Server
+    aufzunehmen und sich die Testseite im <directive
+    module="core">DocumentRoot</directive>-Verzeichnis anzusehen wie auch
+    die lokale Kopie der Dokumentation, die von dieser Seite aus verlinkt
+    ist.</p>
+</section>
+
+<section id="errors"><title>Fehler w&#228;hrend des Hochfahrens</title>
+
+    <p>Wenn der Apache w&#228;hrend des Hochfahrens einen schweren Fehler
+    feststellt, schreibt er entweder eine Nachricht, die das Problem
+    n&#228;her schildert, auf die Konsole oder ins <directive
+    module="core">ErrorLog</directive>, bevor er sich selbst beendet.
+    Eine der h&#228;ufigsten Fehlermeldungen ist "<code>Unable
+    to bind to Port ...</code>" <transnote>"Kann nicht an Port ...
+    binden"</transnote>. Diese Meldung wird &#252;blicherweise verursacht:</p>
+
+    <ul>
+      <li>entweder durch den Versuch, den Server an einem privilegierten
+      Port zu starten, w&#228;hrend man nicht als Benutzer root angemeldet
+      ist,</li>
+
+      <li>oder durch den Versuch, den Server zu starten, wenn bereits eine
+      andere Instanz des Apache oder ein anderer Webserver an den gleichen
+      Port gebunden ist.</li>
+    </ul>
+
+    <p>F&#252;r weitere Anleitungen zur Fehlerbehebung lesen Sie bitte die
+    Apache-<a href="faq/">FAQ</a>.</p>
+</section>
+
+<section id="boot"><title>Beim Bootvorgang starten</title>
+
+    <p>Wenn Sie m&#246;chten, dass Ihr Server direkt nach einem
+    System-Neustart weiterl&#228;uft, sollten Sie einen Aufruf von
+    <code>apachectl</code> zu den Startdateien Ihres Systems hinzuf&#252;gen
+    (&#252;blicherweise <code>rc.local</code> oder eine Datei in einem
+    <code>rc.N</code>-Verzeichnis). Dies startet den Apache als root.
+    Stellen Sie zuvor jedoch sicher, dass Ihr Server hinsichtlich
+    Sicherheit und Zugriffsbeschr&#228;nkungen richtig konfiguriert ist.</p>
+
+    <p>Das <code>apachectl</code>-Skript ist daf&#252;r ausgelegt, wie ein
+    Standard-SysV-init-Skript zu arbeiten. Es akzeptiert die Argumente
+    <code>start</code>, <code>restart</code> und <code>stop</code>
+    und &#252;bersetzt sie in die entsprechenden Signale f&#252;r
+    <code>httpd</code>. Daher k&#246;nnen Sie oftmals
+    einfach <code>apachectl</code> in das entsprechende init-Verzeichnis
+    linken. &#220;berpr&#252;fen Sie bitte auf jeden Fall die genauen
+    Anforderungen Ihres Systems.</p>
+</section>
+
+<section id="info"><title>Weitere Informationen</title>
+
+    <p>Weitere Informationen &#252;ber Kommandozeilenoptionen von <a
+    href="programs/httpd.html">httpd</a> und <a
+    href="programs/apachectl.html">apachectl</a> sowie anderen
+    Hilfsprogrammen, die dem Server beigef&#252;gt sind, sind auf der
+    Seite <a href="programs/">Server und Hilfsprogramme</a>
+    verf&#252;gbar. Es existiert au&#223;erdem eine Dokumentation
+    aller in der Apache-Distribution enthaltenen <a
+    href="mod/">Module</a> und der von ihnen bereitgestellten
+    <a href="mod/directives.html">Direktiven</a>.</p>
+</section>
+
+</manualpage>

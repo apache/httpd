@@ -4,11 +4,35 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Stopping and Restarting - Apache HTTP Server</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Stopping and Restarting</h1>
+      -->
+<title>Stopping and Restarting - Apache HTTP Server</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Stopping and Restarting</h1>
     <p>This document covers stopping and restarting Apache on
-    Unix-like systems. Windows users should see <a href="platform/windows.html#signal">Signaling Apache when
-    running</a>.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li><li><img alt="" src="./images/down.gif" /> <a href="#term">Stop Now</a></li><li><img alt="" src="./images/down.gif" /> <a href="#graceful">Graceful Restart</a></li><li><img alt="" src="./images/down.gif" /> <a href="#hup">Restart Now</a></li><li><img alt="" src="./images/down.gif" /> <a href="#race">Appendix: signals and race conditions</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="introduction" id="introduction">Introduction</a></h2>
+    Unix-like systems. Windows NT, 2000 and XP users should see
+    <a href="platform/windows.html#winsvc">Running Apache as a
+    Service</a> and Windows 9x and ME users should see <a href="platform/windows.html#wincons">Running Apache as a
+    Console Application</a> for information on how to control
+    Apache on those platforms.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#term">Stop Now</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#graceful">Graceful Restart</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#hup">Restart Now</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#race">Appendix: signals and race conditions</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
 
     <p>In order to stop or restart Apache, you must send a signal to
     the running <code>httpd</code> processes.  There are two ways to
@@ -28,8 +52,9 @@
 <div class="example"><p><code>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</code></p></div>
 
     <p>The second method of signaling the <code>httpd</code> processes
-    is to use the <code>-k</code> command line options: stop, restart,
-    and graceful, as described below.  These are arguments to the <a href="programs/httpd.html">httpd</a> binary, but we recommend that
+    is to use the <code>-k</code> command line options: <code>stop</code>,
+    <code>restart</code>, and <code>graceful</code>,
+    as described below.  These are arguments to the <a href="programs/httpd.html">httpd</a> binary, but we recommend that
     you send them using the <a href="programs/apachectl.html">apachectl</a> control script, which
     will pass them through to <code>httpd</code>.</p>
 
@@ -39,7 +64,9 @@
 <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
 
     <p>Modify those examples to match your <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code> and <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> settings.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="term" id="term">Stop Now</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="term" id="term">Stop Now</a></h2>
 
 <dl><dt>Signal: TERM</dt>
 <dd><code>apachectl -k stop</code></dd>
@@ -50,7 +77,9 @@
     children. It may take it several seconds to complete killing off
     its children.  Then the parent itself exits. Any requests in
     progress are terminated, and no further requests are served.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="graceful" id="graceful">Graceful Restart</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="graceful" id="graceful">Graceful Restart</a></h2>
 
 <dl><dt>Signal: USR1</dt>
 <dd><code>apachectl -k graceful</code></dd>
@@ -64,10 +93,10 @@
     it with a child from the new <em>generation</em> of the
     configuration, which begins serving new requests immediately.</p>
 
-    <div class="note">On certain platforms that do not allow USR1 to be used for a
-    graceful restart, an alternative signal may be used (such as
-    WINCH). The command <code>apachectl graceful</code> will send the
-    right signal for your platform.</div>
+    <div class="note">On certain platforms that do not allow <code>USR1</code> to
+    be used for a graceful restart, an alternative signal may be used (such
+    as <code>WINCH</code>). The command <code>apachectl graceful</code>
+    will send the right signal for your platform.</div>
 
     <p>This code is designed to always respect the process control
     directive of the MPMs, so the number of processes and threads
@@ -78,7 +107,7 @@
     been created, then create enough to pick up the slack. Hence the
     code tries to maintain both the number of children appropriate for
     the current load on the server, and respect your wishes with the
-    StartServers parameter.</p>
+    <code class="directive">StartServers</code> parameter.</p>
 
     <p>Users of the <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
     will notice that the server statistics are <strong>not</strong>
@@ -115,13 +144,15 @@
     command line argument (see <a href="programs/httpd.html">httpd</a>). This still will not
     guarantee that the server will restart correctly. To check the
     semantics of the configuration files as well as the syntax, you
-    can try starting httpd as a non-root user. If there are no
+    can try starting <code>httpd</code> as a non-root user. If there are no
     errors it will attempt to open its sockets and logs and fail
-    because it's not root (or because the currently running httpd
+    because it's not root (or because the currently running <code>httpd</code>
     already has those ports bound). If it fails for any other
     reason then it's probably a config file error and the error
     should be fixed before issuing the graceful restart.</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="hup" id="hup">Restart Now</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="hup" id="hup">Restart Now</a></h2>
 
 <dl><dt>Signal: HUP</dt>
 <dd><code>apachectl -k restart</code></dd>
@@ -140,7 +171,9 @@
 <div class="note">If your configuration file has errors in it when you issue a
 restart then your parent will not restart, it will exit with an
 error. See above for a method of avoiding this.</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="race" id="race">Appendix: signals and race conditions</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="race" id="race">Appendix: signals and race conditions</a></h2>
 
     <p>Prior to Apache 1.2b9 there were several <em>race
     conditions</em> involving the restart and die signals (a simple
@@ -173,4 +206,8 @@ error. See above for a method of avoiding this.</div>
     -- in a test case the server was restarted twenty times per
     second and clients successfully browsed the site without
     getting broken images or empty documents. </p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>

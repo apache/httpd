@@ -205,7 +205,7 @@ LDAP_DECLARE(void) util_ldap_connection_close(util_ldap_connection_t *ldc)
  * with the pool cleanup function - causing the LDAP connections to be
  * shut down cleanly on graceful restart.
  */
-apr_status_t util_ldap_connection_destroy(void *param)
+LDAP_DECLARE_NONSTD(apr_status_t) util_ldap_connection_destroy(void *param)
 {
     util_ldap_connection_t *ldc = param;
 
@@ -1011,7 +1011,7 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy, co
     return NULL;
 }
 
-#ifdef APU_HAS_LDAPSSL_CLIENT_INIT
+#ifdef APU_HAS_LDAP_NETSCAPE_SSL
 static const char *util_ldap_set_certdbpath(cmd_parms *cmd, void *dummy, const char *path)
 {
     util_ldap_state_t *st = 
@@ -1092,7 +1092,7 @@ command_rec util_ldap_cmds[] = {
                   "Sets the maximum time (in seconds) that an item is cached in the LDAP "
                   "operation cache. Zero means no limit. Defaults to 600 seconds (10 minutes)."),
 
-#ifdef APU_HAS_LDAPSSL_CLIENT_INIT
+#ifdef APU_HAS_LDAP_NETSCAPE_SSL
     AP_INIT_TAKE1("LDAPCertDBPath", util_ldap_set_certdbpath, NULL, RSRC_CONF,
                   "Specifies the file containing Certificate Authority certificates "
                   "for validating secure LDAP server certificates. This file must be the "

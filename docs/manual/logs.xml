@@ -474,22 +474,6 @@
     that piped log programs usually run as root. It is therefore
     very important to keep the programs simple and secure.</p>
 
-    <p>Some simple examples using piped logs:</p>
-
-    <example>
-      # compressed logs<br />
-      CustomLog "|/usr/bin/gzip -c &gt;&gt;
-      /var/log/access_log.gz" common<br />
-      # almost-real-time name resolution<br />
-      CustomLog "|/usr/local/apache/bin/logresolve &gt;&gt;
-      /var/log/access_log" common
-    </example>
-
-    <p>Notice that quotes are used to enclose the entire command
-    that will be called for the pipe. Although these examples are
-    for the access log, the same technique can be used for the
-    error log.</p>
-
     <p>One important use of piped logs is to allow log rotation
     without having to restart the server. The Apache HTTP Server
     includes a simple program called <a
@@ -502,7 +486,12 @@
       /var/log/access_log 86400" common
     </example>
     
-    <p>A similar, but much more flexible log rotation program
+    <p>Notice that quotes are used to enclose the entire command
+    that will be called for the pipe. Although these examples are
+    for the access log, the same technique can be used for the
+    error log.</p>
+
+    <p>A similar but much more flexible log rotation program
     called <a href="http://www.cronolog.org/">cronolog</a>
     is available at an external site.</p>
 

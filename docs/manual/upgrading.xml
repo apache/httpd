@@ -14,7 +14,8 @@
   href="new_features_2_0.html">New Features</a> document, or in
   the <code>src/CHANGES</code> file.</p>
 </summary>
-<seealso><a href="new_features_2_0.html">New Features in 2.0</a></seealso>
+<seealso><a href="new_features_2_0.html">Overview of new features in
+Apache 2.0</a></seealso>
 
   <section id="compile-time">
     <title>Compile-Time Configuration Changes</title>
@@ -157,11 +158,6 @@
     <title>Misc Changes</title>
 
     <ul>
-      <li>The <code>httpd</code> command line option
-      <code>-S</code> which was used for printing the virtual host
-      configuration has been replaced by <code>-t -D
-      DUMP_VHOSTS</code>.</li>
-
       <li>The module <module>mod_auth_digest</module>, which was
       experimental in Apache 1.3, is now a standard module.</li>
 

@@ -33,7 +33,6 @@ XINCDIRS	+= \
 			$(AP_WORK)/srclib/apr/include \
 			$(AP_WORK)/srclib/apr-util/include \
 			$(AP_WORK)/srclib/apr \
-			$(AP_WORK)/srclib/zlib \
 			$(EOLIST)
 
 #
@@ -265,10 +264,11 @@ install :: nlms FORCE
 # Any specialized rules here
 #
 
-$(OBJDIR)/%.o: ../../srclib/zlib/%.c $(OBJDIR)\cc.opt
+ifneq "$(ZLIBSDK)" ""
+$(OBJDIR)/%.o: $(ZLIBSDK)/%.c $(OBJDIR)\cc.opt
 	@echo Compiling $<
-	$(CC) ..\..\srclib\zlib\$(<F) -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
-
+	$(CC) $(ZLIBSDK)\$(<F) -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+endif
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined

@@ -67,12 +67,14 @@
  * @param pool The pool to create any storage from
  * @param provider_group The group to store the provider in
  * @param provider_name The name for this provider
+ * @param provider_version The version for this provider
  * @param provider Opaque structure for this provider
  * @return APR_SUCCESS if all went well
  */
 AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
                                               const char *provider_group,
                                               const char *provider_name,
+                                              const char *provider_version,
                                               const void *provider);
 
 /**
@@ -80,9 +82,11 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
  * provider pool.
  * @param provider_group The group to look for this provider in
  * @param provider_name The name for the provider
+ * @param provider_version The version for the provider
  * @return provider pointer to provider if found, NULL otherwise
  */
 AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
-                                      const char *provider_name);
+                                      const char *provider_name,
+                                      const char *provider_version);
 
 #endif

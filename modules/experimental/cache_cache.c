@@ -101,6 +101,7 @@ CACHE_DECLARE(void) cache_insert(cache_cache_t* c, void *entry)
             ((c->current_size + c->size_entry(entry)) > c->max_size)) {
 
         ejected = cache_pq_pop(c->pq);
+        /* FIX: If ejected is NULL, we'll segfault here */
         priority = c->get_pri(ejected);
 
         if (c->queue_clock < priority)

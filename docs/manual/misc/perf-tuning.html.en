@@ -4,13 +4,26 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Apache Performance Notes - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache Performance Notes</h1>
+      -->
+<title>Apache Performance Notes - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache Performance Notes</h1>
 
-    <div class="warning"><strong>Warning:</strong>
-    This document has not been fully updated
-    to take into account changes made in the 2.0 version of the
-    Apache HTTP Server. Some of the information may still be
-    relevant, but please use it with care.</div>
+    <div class="warning"><h3>Warning:</h3>
+      <p>This document has not been fully updated
+      to take into account changes made in the 2.0 version of the
+      Apache HTTP Server. Some of the information may still be
+      relevant, but please use it with care.</p>
+    </div>
 
     <p>Orignally written by Dean Gaudet.</p>
 
@@ -31,7 +44,15 @@
     of the capabilities of the hardware and OS, while others allow
     the administrator to trade functionality for speed.</p>
 
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">Hardware and Operating System Issues</a></li><li><img alt="" src="../images/down.gif" /> <a href="#runtime">Run-Time Configuration Issues</a></li><li><img alt="" src="../images/down.gif" /> <a href="#compiletime">Compile-Time Configuration Issues</a></li><li><img alt="" src="../images/down.gif" /> <a href="#trace">Appendix: Detailed Analysis of a Trace</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="hardware" id="hardware">Hardware and Operating System Issues</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">Hardware and Operating System Issues</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#runtime">Run-Time Configuration Issues</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#compiletime">Compile-Time Configuration Issues</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#trace">Appendix: Detailed Analysis of a Trace</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="hardware" id="hardware">Hardware and Operating System Issues</a></h2>
 
     
 
@@ -71,13 +92,15 @@
       </li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="runtime" id="runtime">Run-Time Configuration Issues</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="runtime" id="runtime">Run-Time Configuration Issues</a></h2>
 
     
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="../mod/mpm_common.html">mpm_common</a></code></li><li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code></li><li><code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code></li><li><code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code></li><li><code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code></li><li><code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code></li><li><code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li></ul></td></tr></table>
 
-    <h3><code>HostnameLookups</code></h3>
+    <h3>HostnameLookups</h3>
 
       
 
@@ -98,12 +121,14 @@
       matching the criteria. Here's an example which disables lookups
       except for <code>.html</code> and <code>.cgi</code> files:</p>
 
-<div class="example"><pre>
-HostnameLookups off
-&lt;Files ~ "\.(html|cgi)$"&gt;
-    HostnameLookups on
-&lt;/Files&gt;
-</pre></div>
+      <div class="example"><p><code>
+        HostnameLookups off<br />
+        &lt;Files ~ "\.(html|cgi)$"&gt;<br />
+        <span class="indent">
+          HostnameLookups on<br />
+        </span>
+        &lt;/Files&gt;
+      </code></p></div>
 
       <p>But even still, if you just need DNS names in some CGIs you
       could consider doing the <code>gethostbyname</code> call in the
@@ -120,7 +145,7 @@ HostnameLookups off
 
     
 
-    <h3><code>FollowSymLinks</code> and <code>SymLinksIfOwnerMatch</code></h3>
+    <h3>FollowSymLinks and SymLinksIfOwnerMatch</h3>
 
       
 
@@ -130,12 +155,14 @@ HostnameLookups off
       system calls to check up on symlinks. One extra call per
       filename component. For example, if you had:</p>
 
-<div class="example"><pre>
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
-    Options SymLinksIfOwnerMatch
-&lt;/Directory&gt;
-</pre></div>
+      <div class="example"><p><code>
+        DocumentRoot /www/htdocs<br />
+        &lt;Directory /&gt;<br />
+        <span class="indent">
+          Options SymLinksIfOwnerMatch<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
 
       <p>and a request is made for the URI <code>/index.html</code>.
       Then Apache will perform <code>lstat(2)</code> on
@@ -145,15 +172,20 @@ DocumentRoot /www/htdocs
       every single request. If you really desire the symlinks
       security checking you can do something like this:</p>
 
-<div class="example"><pre>
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
-    Options FollowSymLinks
-&lt;/Directory&gt;
-&lt;Directory /www/htdocs&gt;
-    Options -FollowSymLinks +SymLinksIfOwnerMatch
-&lt;/Directory&gt;
-</pre></div>
+      <div class="example"><p><code>
+        DocumentRoot /www/htdocs<br />
+        &lt;Directory /&gt;<br />
+        <span class="indent">
+          Options FollowSymLinks<br />
+        </span>
+        &lt;/Directory&gt;<br />
+        <br />
+        &lt;Directory /www/htdocs&gt;<br />
+        <span class="indent">
+          Options -FollowSymLinks +SymLinksIfOwnerMatch<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
 
       <p>This at least avoids the extra checks for the
       <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> path.
@@ -166,7 +198,7 @@ DocumentRoot /www/htdocs
 
     
 
-    <h3><code>AllowOverride</code></h3>
+    <h3>AllowOverride</h3>
 
       
 
@@ -175,12 +207,14 @@ DocumentRoot /www/htdocs
       <code>.htaccess</code> for each filename component. For
       example,</p>
 
-<div class="example"><pre>
-DocumentRoot /www/htdocs
-&lt;Directory /&gt;
-    AllowOverride all
-&lt;/Directory&gt;
-</pre></div>
+      <div class="example"><p><code>
+        DocumentRoot /www/htdocs<br />
+        &lt;Directory /&gt;<br />
+        <span class="indent">
+          AllowOverride all<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
 
       <p>and a request is made for the URI <code>/index.html</code>.
       Then Apache will attempt to open <code>/.htaccess</code>,
@@ -202,15 +236,15 @@ DocumentRoot /www/htdocs
       penalties. There's one case where you can speed up the server.
       Instead of using a wildcard such as:</p>
 
-<div class="example"><pre>
-DirectoryIndex index
-</pre></div>
+      <div class="example"><p><code>
+        DirectoryIndex index
+      </code></p></div>
 
-    <p>Use a complete list of options:</p>
+      <p>Use a complete list of options:</p>
 
-<div class="example"><pre>
-DirectoryIndex index.cgi index.pl index.shtml index.html
-</pre></div>
+      <div class="example"><p><code>
+        DirectoryIndex index.cgi index.pl index.shtml index.html
+      </code></p></div>
 
       <p>where you list the most common choice first.</p>
 
@@ -346,7 +380,47 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="compiletime" id="compiletime">Compile-Time Configuration Issues</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compiletime" id="compiletime">Compile-Time Configuration Issues</a></h2>
+
+    
+
+    <h3>Choosing an MPM</h3>
+
+      
+
+      <p>Apache 2.x supports pluggable concurrency models, called
+      <a href="../mpm.html">Multi-Processing Modules</a> (MPMs).
+      When building Apache, you must choose an MPM to use.  There
+      are platform-specific MPMs for some platforms:
+      <code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>,
+      <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, and <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>.  For
+      general Unix-type systems, there are several MPMs from which
+      to choose.  The choice of MPM can affect the speed and scalability
+      of the httpd:</p>
+
+      <ul>
+
+        <li>The <code class="module"><a href="../mod/worker.html">worker</a></code> MPM uses multiple child
+        processes with many threads each.  Each thread handles
+        one connection at a time.  Worker generally is a good
+        choice for high-traffic servers because it has a smaller
+        memory footprint than the prefork MPM.</li>
+
+        <li>The <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM uses multiple child
+        processes with one thread each.  Each process handles
+        one connection at a time.  On many systems, prefork is
+        comparable in speed to worker, but it uses more memory.
+        Prefork's threadless design has advantages over worker
+        in some situations: it can be used with non-thread-safe
+        third-party modules, and it is easier to debug on platforms
+        with poor thread debugging support.</li>
+
+      </ul>
+
+      <p>For more information on these and other MPMs, please
+      see the MPM <a href="../mpm.html">documentation</a>.</p>
 
     
 
@@ -382,29 +456,39 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       do not match the code, they're contrived for pedagogical
       purposes):</p>
 
-<div class="example"><pre>
-    for (;;) {
-    for (;;) {
-        fd_set accept_fds;
-
-        FD_ZERO (&amp;accept_fds);
-        for (i = first_socket; i &lt;= last_socket; ++i) {
-        FD_SET (i, &amp;accept_fds);
+      <div class="example"><p><code>
+        for (;;) {<br />
+        <span class="indent">
+          for (;;) {<br />
+          <span class="indent">
+            fd_set accept_fds;<br />
+            <br />
+            FD_ZERO (&amp;accept_fds);<br />
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            <span class="indent">
+              FD_SET (i, &amp;accept_fds);<br />
+            </span>
+            }<br />
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
+            if (rc &lt; 1) continue;<br />
+            new_connection = -1;<br />
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            <span class="indent">
+              if (FD_ISSET (i, &amp;accept_fds)) {<br />
+              <span class="indent">
+                new_connection = accept (i, NULL, NULL);<br />
+                if (new_connection != -1) break;<br />
+              </span>
+              }<br />
+            </span>
+            }<br />
+            if (new_connection != -1) break;<br />
+          </span>
+          }<br />
+          process the new_connection;<br />
+        </span>
         }
-        rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
-        if (rc &lt; 1) continue;
-        new_connection = -1;
-        for (i = first_socket; i &lt;= last_socket; ++i) {
-        if (FD_ISSET (i, &amp;accept_fds)) {
-            new_connection = accept (i, NULL, NULL);
-            if (new_connection != -1) break;
-        }
-        }
-        if (new_connection != -1) break;
-    }
-    process the new_connection;
-    }
-</pre></div>
+      </code></p></div>
 
       <p>But this naive implementation has a serious starvation problem.
       Recall that multiple children execute this loop at the same
@@ -442,31 +526,41 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       entry into the inner loop. The loop looks like this
       (differences highlighted):</p>
 
-<div class="example"><pre>
-    for (;;) {
-    <strong>accept_mutex_on ();</strong>
-    for (;;) {
-        fd_set accept_fds;
-
-        FD_ZERO (&amp;accept_fds);
-        for (i = first_socket; i &lt;= last_socket; ++i) {
-        FD_SET (i, &amp;accept_fds);
+      <div class="example"><p><code>
+        for (;;) {<br />
+        <span class="indent">
+          <strong>accept_mutex_on ();</strong><br />
+          for (;;) {<br />
+          <span class="indent">
+            fd_set accept_fds;<br />
+            <br />
+            FD_ZERO (&amp;accept_fds);<br />
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            <span class="indent">
+              FD_SET (i, &amp;accept_fds);<br />
+            </span>
+            }<br />
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
+            if (rc &lt; 1) continue;<br />
+            new_connection = -1;<br />
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            <span class="indent">
+              if (FD_ISSET (i, &amp;accept_fds)) {<br />
+              <span class="indent">
+                new_connection = accept (i, NULL, NULL);<br />
+                if (new_connection != -1) break;<br />
+              </span>
+              }<br />
+            </span>
+            }<br />
+            if (new_connection != -1) break;<br />
+          </span>
+          }<br />
+          <strong>accept_mutex_off ();</strong><br />
+          process the new_connection;<br />
+        </span>
         }
-        rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
-        if (rc &lt; 1) continue;
-        new_connection = -1;
-        for (i = first_socket; i &lt;= last_socket; ++i) {
-        if (FD_ISSET (i, &amp;accept_fds)) {
-            new_connection = accept (i, NULL, NULL);
-            if (new_connection != -1) break;
-        }
-        }
-        if (new_connection != -1) break;
-    }
-    <strong>accept_mutex_off ();</strong>
-    process the new_connection;
-    }
-</pre></div>
+      </code></p></div>
 
       <p><a id="serialize" name="serialize">The functions</a>
       <code>accept_mutex_on</code> and <code>accept_mutex_off</code>
@@ -636,31 +730,39 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
       <code>http_main.c</code>). The function looks roughly like
       this:</p>
 
-<div class="example"><pre>
-    void lingering_close (int s)
-    {
-    char junk_buffer[2048];
-
-    /* shutdown the sending side */
-    shutdown (s, 1);
-
-    signal (SIGALRM, lingering_death);
-    alarm (30);
-
-    for (;;) {
-        select (s for reading, 2 second timeout);
-        if (error) break;
-        if (s is ready for reading) {
-        if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
-            break;
+      <div class="example"><p><code>
+        void lingering_close (int s)<br />
+        {<br />
+        <span class="indent">
+          char junk_buffer[2048];<br />
+          <br />
+          /* shutdown the sending side */<br />
+          shutdown (s, 1);<br />
+          <br />
+          signal (SIGALRM, lingering_death);<br />
+          alarm (30);<br />
+          <br />
+          for (;;) {<br />
+          <span class="indent">
+            select (s for reading, 2 second timeout);<br />
+            if (error) break;<br />
+            if (s is ready for reading) {<br />
+            <span class="indent">
+              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br />
+              <span class="indent">
+                break;<br />
+              </span>
+              }<br />
+              /* just toss away whatever is here */<br />
+            </span>
+            }<br />
+          </span>
+          }<br />
+          <br />
+          close (s);<br />
+        </span>
         }
-        /* just toss away whatever is here */
-        }
-    }
-
-    close (s);
-    }
-</pre></div>
+      </code></p></div>
 
       <p>This naturally adds some expense at the end of a connection,
       but it is required for a reliable implementation. As HTTP/1.1
@@ -704,7 +806,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
 
     
 
-    <h3><code>DYNAMIC_MODULE_LIMIT</code></h3>
+    <h3>DYNAMIC_MODULE_LIMIT</h3>
 
       
 
@@ -717,7 +819,9 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="trace" id="trace">Appendix: Detailed Analysis of a Trace</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="trace" id="trace">Appendix: Detailed Analysis of a Trace</a></h2>
 
     
 
@@ -725,7 +829,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     on Solaris 8. This trace was collected using:</p>
 
     <div class="example"><p><code>
-      truss -l -p <em>httpd_child_pid</em>.
+      truss -l -p <var>httpd_child_pid</var>.
     </code></p></div>
 
     <p>The <code>-l</code> option tells truss to log the ID of the
@@ -741,10 +845,8 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     with content negotiation look wildly different (and quite ugly
     in some cases).</p>
 
-<div class="example"><pre>
-/67:    accept(3, 0x00200BEC, 0x00200C0C, 1) (sleeping...)
-/67:    accept(3, 0x00200BEC, 0x00200C0C, 1)            = 9
-</pre></div>
+    <div class="example"><pre>/67:    accept(3, 0x00200BEC, 0x00200C0C, 1) (sleeping...)
+/67:    accept(3, 0x00200BEC, 0x00200C0C, 1)            = 9</pre></div>
 
     <p>In this trace, the listener thread is running within LWP #67.</p>
 
@@ -752,18 +854,14 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     particular platform, the worker MPM uses an unserialized accept by
     default unless it is listening on multiple ports.</div>
 
-<div class="example"><pre>
-/65:    lwp_park(0x00000000, 0)                         = 0
-/67:    lwp_unpark(65, 1)                               = 0
-</pre></div>
+    <div class="example"><pre>/65:    lwp_park(0x00000000, 0)                         = 0
+/67:    lwp_unpark(65, 1)                               = 0</pre></div>
 
     <p>Upon accepting the connection, the listener thread wakes up
     a worker thread to do the request processing. In this trace,
     the worker thread that handles the request is mapped to LWP #65.</p>
 
-<div class="example"><pre>
-/65:    getsockname(9, 0x00200BA4, 0x00200BC4, 1)       = 0
-</pre></div>
+    <div class="example"><pre>/65:    getsockname(9, 0x00200BA4, 0x00200BC4, 1)       = 0</pre></div>
 
     <p>In order to implement virtual hosts, Apache needs to know
     the local socket address used to accept the connection. It
@@ -773,10 +871,8 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     are used which do not have wildcard addresses). But
     no effort has yet been made to do these optimizations. </p>
 
-<div class="example"><pre>
-/65:    brk(0x002170E8)                                 = 0
-/65:    brk(0x002190E8)                                 = 0
-</pre></div>
+    <div class="example"><pre>/65:    brk(0x002170E8)                                 = 0
+/65:    brk(0x002190E8)                                 = 0</pre></div>
 
     <p>The <code>brk(2)</code> calls allocate memory from the heap.
     It is rare to see these in a system call trace, because the httpd
@@ -786,31 +882,25 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     call <code>malloc(3)</code> to get the blocks of raw memory
     with which to create the custom memory allocators.</p>
 
-<div class="example"><pre>
-/65:    fcntl(9, F_GETFL, 0x00000000)                   = 2
+    <div class="example"><pre>/65:    fcntl(9, F_GETFL, 0x00000000)                   = 2
 /65:    fstat64(9, 0xFAF7B818)                          = 0
 /65:    getsockopt(9, 65535, 8192, 0xFAF7B918, 0xFAF7B910, 2190656) = 0
 /65:    fstat64(9, 0xFAF7B818)                          = 0
 /65:    getsockopt(9, 65535, 8192, 0xFAF7B918, 0xFAF7B914, 2190656) = 0
 /65:    setsockopt(9, 65535, 8192, 0xFAF7B918, 4, 2190656) = 0
-/65:    fcntl(9, F_SETFL, 0x00000082)                   = 0
-</pre></div>
+/65:    fcntl(9, F_SETFL, 0x00000082)                   = 0</pre></div>
 
     <p>Next, the worker thread puts the connection to the client (file
     descriptor 9) in non-blocking mode. The <code>setsockopt(2)</code>
     and <code>getsockopt(2)</code> calls are a side-effect of how
     Solaris's libc handles <code>fcntl(2)</code> on sockets.</p>
 
-<div class="example"><pre>
-/65:    read(9, " G E T   / 1 0 k . h t m".., 8000)     = 97
-</pre></div>
+    <div class="example"><pre>/65:    read(9, " G E T   / 1 0 k . h t m".., 8000)     = 97</pre></div>
 
     <p>The worker thread reads the request from the client.</p>
 
-<div class="example"><pre>
-/65:    stat("/var/httpd/apache/httpd-8999/htdocs/10k.html", 0xFAF7B978) = 0
-/65:    open("/var/httpd/apache/httpd-8999/htdocs/10k.html", O_RDONLY) = 10
-</pre></div>
+    <div class="example"><pre>/65:    stat("/var/httpd/apache/httpd-8999/htdocs/10k.html", 0xFAF7B978) = 0
+/65:    open("/var/httpd/apache/httpd-8999/htdocs/10k.html", O_RDONLY) = 10</pre></div>
 
     <p>This httpd has been configured with <code>Options FollowSymLinks</code>
     and <code>AllowOverride None</code>.  Thus it doesn't need to
@@ -819,9 +909,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     It simply calls <code>stat(2)</code> to verify that the file:
     1) exists, and 2) is a regular file, not a directory.</p>
 
-<div class="example"><pre>
-/65:    sendfilev(0, 9, 0x00200F90, 2, 0xFAF7B53C)      = 10269
-</pre></div>
+    <div class="example"><pre>/65:    sendfilev(0, 9, 0x00200F90, 2, 0xFAF7B53C)      = 10269</pre></div>
 
     <p>In this example, the httpd is able to send the HTTP response
     header and the requested file with a single <code>sendfilev(2)</code>
@@ -830,9 +918,7 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     <code>writev(2)</code> call to send the headers before calling
     <code>sendfile(2)</code>.</p>
 
-<div class="example"><pre>
-/65:    write(4, " 1 2 7 . 0 . 0 . 1   -  ".., 78)      = 78
-</pre></div>
+    <div class="example"><pre>/65:    write(4, " 1 2 7 . 0 . 0 . 1   -  ".., 78)      = 78</pre></div>
 
     <p>This <code>write(2)</code> call records the request in the
     access log. Note that one thing missing from this trace is a
@@ -842,26 +928,20 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     optimized implementation that doesn't require as much overhead
     as a typical system call.</p>
 
-<div class="example"><pre>
-/65:    shutdown(9, 1, 1)                               = 0
+    <div class="example"><pre>/65:    shutdown(9, 1, 1)                               = 0
 /65:    poll(0xFAF7B980, 1, 2000)                       = 1
 /65:    read(9, 0xFAF7BC20, 512)                        = 0
-/65:    close(9)                                        = 0
-</pre></div>
+/65:    close(9)                                        = 0</pre></div>
 
     <p>The worker thread does a lingering close of the connection.</p>
 
-<div class="example"><pre>
-/65:    close(10)                                       = 0
-/65:    lwp_park(0x00000000, 0)         (sleeping...)
-</pre></div>
+    <div class="example"><pre>/65:    close(10)                                       = 0
+/65:    lwp_park(0x00000000, 0)         (sleeping...)</pre></div>
 
     <p>Finally the worker thread closes the file that it has just delivered
     and blocks until the listener assigns it another connection.</p>
 
-<div class="example"><pre>
-/67:    accept(3, 0x001FEB74, 0x001FEB94, 1) (sleeping...)
-</pre></div>
+    <div class="example"><pre>/67:    accept(3, 0x001FEB74, 0x001FEB94, 1) (sleeping...)</pre></div>
 
     <p>Meanwhile, the listener thread is able to accept another connection
     as soon as it has dispatched this connection to a worker thread (subject
@@ -871,4 +951,8 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
     high load conditions) occur in parallel with the worker thread's handling
     of the just-accepted connection.</p>
 
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

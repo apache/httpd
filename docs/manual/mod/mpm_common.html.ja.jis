@@ -4,10 +4,29 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mpm_common - Apache HTTP サーバ</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div><div id="page-content"><div id="preamble"><h1>Apache モジュール mpm_common</h1><table class="module"><tr><th><a href="module-dict.html#Description">説明:
-                  </a></th><td>二つ以上のマルチプロセッシングモジュール (MPM)
-で実装されているディレクティブのコレクション</td></tr><tr><th><a href="module-dict.html#Status">ステータス:
-                  </a></th><td>MPM</td></tr></table></div><div id="quickview"><h3 class="directives">ディレクティブ</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
+      -->
+<title>mpm_common - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.0</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mpm_common</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>二つ以上のマルチプロセッシングモジュール (MPM)
+で実装されているディレクティブのコレクション</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>MPM</td></tr></table>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
@@ -28,28 +47,39 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
-</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>Apache がコアダンプする前に移動を試みるディレクトリ
-</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>CoreDumpDirectory <var>directory</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>デフォルトの設定は説明文を読んでください</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr></table>
+</ul>
+</div>
 
-    <p>Apache がコアダンプする前に移動を試みるディレクトリを制御します。
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Apache がコアダンプする前に移動を試みるディレクトリ
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CoreDumpDirectory <var>directory</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>デフォルトの設定は説明文を読んでください</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
+
+    <p>Apache がコアダンプする前に移動を試みるディレクトリを制御します。
     デフォルト値は <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
     ディレクトリですが、このディレクトリはサーバの実行されているユーザ権限で
     書き込み可能であるべきではないので、通常はコアダンプは書き込まれません。
-    デバッグのためにコアダンプが必要であれば、
+    デバッグのためにコアダンプが必要であれば、
     このディレクティブを使って他の位置にコアダンプを書き出すようにできます。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>リクエストに応答する際に所属するグループ</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>Group <var>unix-group</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>Group #-1</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答する際に所属するグループ</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Group <var>unix-group</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>Group #-1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+</table>
     <p><code class="directive">Group</code> ディレクティブで、
     リクエストに応答する際に所属しておくグループを設定します。
     このディレクティブを使用するためには、スタンドアロン型の
@@ -83,18 +113,23 @@
     セキュリティ: セキュリティ上の注意点に関しては、
     <code class="directive"><a href="#user">User</a></code>
     をご覧下さい。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Listen" id="Listen">Listen</a> <a name="listen" id="listen">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>サーバが listen するIP アドレスとポート番号</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Listen" id="Listen">Listen</a> <a name="listen" id="listen">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバが listen するIP アドレスとポート番号</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
     <p><code class="directive">Listen</code> ディレクティブは Apache
     が特定の IP アドレスやポート番号だけを listen するように指定します。
     デフォルトでは全ての IP インターフェースのリクエストに応答します。
     Listen ディレクティブは現在では必須のディレクティブとなりました。
     もし設定ファイルになければ、サーバは起動に失敗します。
-    これは以前のバージョンの Apache から変更のあった部分です。</p>
+    これは以前のバージョンの Apache から変更のあった部分です。</p>
 
     <p>Listen ディレクティブでは、特定のポートあるいは
     アドレスとポートの組み合わせから入ってくるリクエストに対して
@@ -132,14 +167,24 @@
     <div class="example"><p><code>
        Listen [fe80::a00:20ff:fea7:ccea]:80
     </code></p></div>
-<h3>参照</h3><ul><li><a href="../dns-caveats.html">DNS の問題</a></li><li><a href="../bind.html">Apache
-    が使用するアドレスとポートの設定</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a> <a name="listenbacklog" id="listenbacklog">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>保留状態のコネクションのキューの最大長</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>ListenBacklog <var>backlog</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>ListenBacklog 511</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr></table>
+
+<h3>参照</h3>
+<ul>
+<li><a href="../dns-caveats.html">DNS の問題</a></li>
+<li><a href="../bind.html">Apache
+    が使用するアドレスとポートの設定</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a> <a name="listenbacklog" id="listenbacklog">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>保留状態のコネクションのキューの最大長</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ListenBacklog <var>backlog</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ListenBacklog 511</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
     <p>保留状態のコネクションのキューの最大長です。
     一般的には調整する必要はありませんし、調整は望ましくありません。
     しかし、TCP SYN フラッドアタックの状況下におかれる場合に、
@@ -152,13 +197,18 @@
     バックログとして指定されている値ちょうどまで使っているわけではなく、
     設定されている値に基づいて (通常は設定値よりも大きな値を)
     使っていることに注意してください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LockFile" id="LockFile">LockFile</a> <a name="lockfile" id="lockfile">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>受付を直列化するためのロックファイルの位置</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>LockFile <var>filename</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>LockFile logs/accept.lock</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LockFile" id="LockFile">LockFile</a> <a name="lockfile" id="lockfile">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>受付を直列化するためのロックファイルの位置</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LockFile <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LockFile logs/accept.lock</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+</table>
     <p>USE_FCNTL_SERIALIZED_ACCEPT または USE_FLOCK_SERIALIZED_ACCEPT
     のいずれかを使って Apache をコンパイルした際に使用することになる、
     ロックファイルのパスを <code class="directive">LockFile</code>
@@ -177,13 +227,18 @@
     ロックファイルの作成自体を妨害することによって、
     誰でもサービス拒否アタックを引き起こすことができるからです。</p>
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>リクエストに応答するために作成される
-子プロセスの最大個数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>MaxClients <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答するために作成される
+子プロセスの最大個数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxClients <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+</table>
     <p><code class="directive">MaxClients</code> ディレクティブは、
     応答することのできる同時リクエスト数を設定します。
     <code class="directive">MaxClients</code> 制限数を越えるコネクションは通常、
@@ -209,23 +264,33 @@
     を 16 プロセス以上必要な値まで増加させたい場合は、
     <code class="directive"><a href="#serverlimit">ServerLimit</a></code>
     も増加させる必要があります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a name="maxmemfree" id="maxmemfree">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>主メモリアロケータが free() を呼ばずに保持し続けられるメモリの
-最大量</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>MaxMemFree <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a name="maxmemfree" id="maxmemfree">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>主メモリアロケータが free() を呼ばずに保持し続けられるメモリの
+最大量</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxMemFree <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code></td></tr>
+</table>
     <p><code class="directive">MaxMemFree</code> ディレクティブは free() を呼ばずに
     主アロケータが保持できる空のメモリの最大値をキロバイト単位で設定します。
     設定されていないか、零に設定されているときは、無制限になります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxRequestsPerChild" id="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild" id="maxrequestsperchild">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>個々の子サーバが稼働中に扱うリクエスト数の上限</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>MaxRequestsPerChild <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>MaxRequestsPerChild 10000</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxRequestsPerChild" id="MaxRequestsPerChild">MaxRequestsPerChild</a> <a name="maxrequestsperchild" id="maxrequestsperchild">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>個々の子サーバが稼働中に扱うリクエスト数の上限</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxRequestsPerChild <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MaxRequestsPerChild 10000</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
     <p><code class="directive">MaxRequestsPerChild</code> ディレクティブは、
     個々の子サーバプロセスが扱うことのできるリクエストの制限数を
     設定します。<code class="directive">MaxRequestsPerChild</code>
@@ -250,12 +315,17 @@
     実効的には、一つの子プロセスあたりの<em>コネクション</em>数を
     制限するように挙動が変化します。</p>
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads" id="maxsparethreads">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>アイドルスレッドの最大数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>MaxSpareThreads <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a> <a name="maxsparethreads" id="maxsparethreads">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイドルスレッドの最大数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxSpareThreads <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
     <p>アイドルなスレッドの最大数です。異なる MPM ではそれぞれ、
     このディレクティブは異なる取り扱われ方をされます。</p>
 
@@ -276,26 +346,41 @@
     この MPM はシングルプロセスで実行されますので、
     スペアスレッド数もサーバ全体で勘定します。</p>
 
-<h3>参照</h3><ul><li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li><li><code class="directive"><a href="#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxThreadsPerChild" id="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild" id="maxthreadsperchild">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>子プロセス毎のスレッド数の最大数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>MaxThreadsPerChild <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>MaxThreadsPerChild 64</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr></table>
+
+<h3>参照</h3>
+<ul>
+<li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li>
+<li><code class="directive"><a href="#startservers">StartServers</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxThreadsPerChild" id="MaxThreadsPerChild">MaxThreadsPerChild</a> <a name="maxthreadsperchild" id="maxthreadsperchild">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>子プロセス毎のスレッド数の最大数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MaxThreadsPerChild <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MaxThreadsPerChild 64</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr>
+</table>
     <p>子プロセス毎に含まれるスレッド数の最大値です。
     子プロセス毎にスレッド数変化する MPM では、
     このディレクティブは、子プロセス内に生成されるスレッド数の
     最大値を設定します。デフォルト値よりも大きい値にするのであれば、
     コンパイル時に定義された <code>HARD_THREAD_LIMIT</code>
     を変更して、サーバを再コンパイルする必要があります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads" id="minsparethreads">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>リクエストに応答することのできる
-アイドルスレッド数の最小数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>MinSpareServers <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a> <a name="minsparethreads" id="minsparethreads">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答することのできる
+アイドルスレッド数の最小数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MinSpareServers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
     <p>リクエストに応答するスレッド数の最小値です。
     異なる MPM ではそれぞれ、
     このディレクティブは異なる取り扱われ方をします。</p>
@@ -317,25 +402,40 @@
     デフォルトは <code>MinSpareThreads 10</code> で、
     シングルプロセス MPM ですので、サーバ全体で管理されます。</p>
 
-<h3>参照</h3><ul><li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li><li><code class="directive"><a href="#startservers">StartServers</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="NumServers" id="NumServers">NumServers</a> <a name="numservers" id="numservers">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>同時に起動している子プロセスの総数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>NumServers <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>NumServers 2</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr></table>
+
+<h3>参照</h3>
+<ul>
+<li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li>
+<li><code class="directive"><a href="#startservers">StartServers</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="NumServers" id="NumServers">NumServers</a> <a name="numservers" id="numservers">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>同時に起動している子プロセスの総数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>NumServers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>NumServers 2</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr>
+</table>
     <p>同時に起動している子プロセスの数です。
     このディレクティブを使用する MPM は動的に新しい子プロセスを
     生成することは行わないので、サイト全体に来るリクエスト全てを
     十分扱える程度に大きな数に設定しておく必要があります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="PidFile" id="PidFile">PidFile</a> <a name="pidfile" id="pidfile">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>デーモンのプロセス ID
-をサーバが記録するためのファイル</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>PidFile <var>filename</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>PidFile logs/httpd.pid</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PidFile" id="PidFile">PidFile</a> <a name="pidfile" id="pidfile">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>デーモンのプロセス ID
+をサーバが記録するためのファイル</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>PidFile <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>PidFile logs/httpd.pid</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
     <p><code class="directive">PidFile</code> ディレクティブで、
     デーモンのプロセス ID をサーバが記録するファイルを設定します。
     もしファイル名がスラッシュ (/) で始まらない場合は、
@@ -347,7 +447,7 @@
     </code></p></div>
 
     <p>サーバが <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>
-    や TransferLog を閉じて開き直したり、設定ファイルを
+    や TransferLog を閉じて開き直したり、設定ファイルを
     再読込したりさせるために、サーバにシグナルを送ることができると
     便利なことがあります。
     これは SIGHUP (kill -1) シグナルを PidFile
@@ -356,14 +456,19 @@
     <p>PidFile には、ログファイルの設置位置や
     <a href="../misc/security_tips.html#serverroot">セキュリティ</a>
     と全く同じ注意点があります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile" id="scoreboardfile">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>子プロセスと連携するためのデータを保存する
-ファイルの位置</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>ScoreBoardFile <var>file-path</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>ScoreBoardFile logs/apache_status</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile" id="scoreboardfile">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>子プロセスと連携するためのデータを保存する
+ファイルの位置</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScoreBoardFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ScoreBoardFile logs/apache_status</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+</table>
     <p>Apache は親プロセスと子プロセス間の通信にスコアボードを用います。
     この通信機能にファイルを必要とするアーキテクチャもあります。
     ファイルが指定されていなければ、Apache はまずメモリ上
@@ -384,23 +489,37 @@
     しかし、ログファイルの設置位置や
     <a href="../misc/security_tips.html">セキュリティ</a>
     と同様の注意点があるので、注意してください。</p>
-<h3>参照</h3><ul><li><a href="../stopping.html">Apache の停止と再起動</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize" id="sendbuffersize">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>TCP バッファサイズ</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>SendBufferSize <var>bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr></table>
+
+<h3>参照</h3>
+<ul>
+<li><a href="../stopping.html">Apache の停止と再起動</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a> <a name="sendbuffersize" id="sendbuffersize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>TCP バッファサイズ</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SendBufferSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
     <p>サーバは TCP バッファサイズを指定されたバイト数に設定します。
     高速で高レイテンシな環境で
     (<em>例</em> 100ms 程度、大陸横断高速通信路など)
     古い一般的な OS のデフォルト値を増やすのに非常に便利です。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerLimit" id="ServerLimit">ServerLimit</a> <a name="serverlimit" id="serverlimit">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>設定可能なサーバプロセス数の上限</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>ServerLimit <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>ServerLimit 256 (prefork), ServerLimit 16 (worker)</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ServerLimit" id="ServerLimit">ServerLimit</a> <a name="serverlimit" id="serverlimit">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>設定可能なサーバプロセス数の上限</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerLimit <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ServerLimit 256 (prefork), ServerLimit 16 (worker)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+</table>
     <p><code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM の場合は、このディレクティブは
     Apache プロセス稼働中における
     <code class="directive"><a href="#maxclients">MaxClients</a></code>
@@ -439,23 +558,38 @@
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     とくらべて、必要となるサーバプロセス数以上に大きな値を
     設定することは避けてください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="StartServers" id="StartServers">StartServers</a> <a name="startservers" id="startservers">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>起動時に生成される子サーバプロセスの数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>StartServers <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>StartServers 5</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="StartServers" id="StartServers">StartServers</a> <a name="startservers" id="startservers">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>起動時に生成される子サーバプロセスの数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>StartServers <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>StartServers 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
     <p><code class="directive">StartServers</code> ディレクティブは、
     起動時に生成される子サーバプロセスの数を設定します。
     プロセス数は負荷に応じて動的に制御されますので、
     通常はこの値を調整する理由はあまりないでしょう。</p>
-<h3>参照</h3><ul><li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li><li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="StartThreads" id="StartThreads">StartThreads</a> <a name="startthreads" id="startthreads">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>起動時に生成されるスレッドの数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>StartThreads <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr></table>
+
+<h3>参照</h3>
+<ul>
+<li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li>
+<li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="StartThreads" id="StartThreads">StartThreads</a> <a name="startthreads" id="startthreads">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>起動時に生成されるスレッドの数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>StartThreads <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr>
+</table>
     <p>起動時に生成されるスレッドの数です。
     スレッド数は負荷に応じて動的に制御されますので、
     通常はこの値を調整する理由はあまりないでしょう。</p>
@@ -469,13 +603,18 @@
     この場合プロセスは一つしかないので、
     起動時にリクエストに応答するスレッドの総数となります。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a> <a name="threadlimit" id="threadlimit">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>設定可能な子プロセス毎のスレッド数の上限を
-設定します</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>ThreadLimit <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a> <a name="threadlimit" id="threadlimit">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>設定可能な子プロセス毎のスレッド数の上限を
+設定します</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ThreadLimit <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
     <p>このディレクティブは
     Apache プロセス稼働中における
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
@@ -502,13 +641,18 @@
     <code class="module"><a href="../mod/worker.html">worker</a></code> のときは 64 で、<code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> のときは
     1920 です。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild" id="threadsperchild">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>子プロセスそれぞれに生成されるスレッド数</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>ThreadsPerChild <var>number</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>ThreadsPerChild 50</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild" id="threadsperchild">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>子プロセスそれぞれに生成されるスレッド数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ThreadsPerChild <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ThreadsPerChild 50</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+</table>
     <p>このディレクティブは、それぞれの子プロセスで生成される
     スレッド数を設定します。
     子プロセスは開始時にこれらのスレッドを生成して、
@@ -519,13 +663,18 @@
     子プロセスが複数あるような MPM を利用しているのであれば、
     サーバの通常負荷を十分扱える程度に、
     スレッド総数が多くなければなりません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">ディレクティブ</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">説明: 
-              </a></th><td>リクエストに応答する際に用いるユーザ ID</td></tr><tr><th><a href="directive-dict.html#Syntax">構文:
-              </a></th><td><code>User <var>unix-userid</var></code></td></tr><tr><th><a href="directive-dict.html#Default">デフォルト: 
-              </a></th><td><code>User #-1</code></td></tr><tr><th><a href="directive-dict.html#Context">コンテキスト:
-              </a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr><tr><th><a href="directive-dict.html#Status">ステータス:
-              </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">モジュール:
-              </a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答する際に用いるユーザ ID</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>User <var>unix-userid</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>User #-1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
+</table>
     <p><code class="directive">User</code> ディレクティブは
     サーバがリクエストに応答する際に用いるユーザ ID を設定します。
     このディレクティブを使用するためには、スタンドアロン型の
@@ -572,4 +721,10 @@
 <code class="directive">User</code>
 (や <code class="directive"><a href="#group">Group</a></code>)
 を <code>root</code> に設定しないでください。</p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

@@ -156,7 +156,6 @@ TARGET_nlm = \
 	$(OBJDIR)/mod_cach.nlm \
 	$(OBJDIR)/mem_cach.nlm \
 	$(OBJDIR)/dsk_cach.nlm \
-	$(OBJDIR)/extfiltr.nlm \
 	$(EOLIST)
 	
 # If LDAPSDK has been defined then build the auth_ldap module

@@ -238,7 +238,7 @@
     <code>strftime</code> で検索してみてください。文法は同じです。</p>
 </section>
 
-<section id="footer">
+<section id="standard-footer">
 <title>標準のフッタを挿入する</title>
 
     <p>もし数ページを超えるページを持つサイトを管理しているならば、

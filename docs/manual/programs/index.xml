@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<manualpage>
+<relativepath href=".."/>
+<parentdocument href="../"/>
+
+  <title>Server and Supporting Programs</title>
+
+<summary>
+    <p>This page documents all the executable programs included
+    with the Apache HTTP Server.</p>
+</summary>
+
+<section id="index"><title>Index</title>
+
+    <dl>
+      <dt><a href="httpd.html">httpd</a></dt>
+
+      <dd>Apache hypertext transfer protocol server</dd>
+
+      <dt><a href="apachectl.html">apachectl</a></dt>
+
+      <dd>Apache HTTP server control interface</dd>
+
+      <dt><a href="ab.html">ab</a></dt>
+
+      <dd>Apache HTTP server benchmarking tool</dd>
+
+      <dt><a href="apxs.html">apxs</a></dt>
+
+      <dd>APache eXtenSion tool</dd>
+
+      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+
+      <dd>Create and update user authentication files in DBM format
+      for basic authentication</dd>
+
+      <dt><a href="htdigest.html">htdigest</a></dt>
+
+      <dd>Create and update user authentication files for digest
+      authentication</dd>
+
+      <dt><a href="htpasswd.html">htpasswd</a></dt>
+
+      <dd>Create and update user authentication files for basic
+      authentication</dd>
+
+      <dt><a href="logresolve.html">logresolve</a></dt>
+
+      <dd>Resolve hostnames for IP-addresses in Apache
+      logfiles</dd>
+
+      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+
+      <dd>Rotate Apache logs without having to kill the server</dd>
+
+      <dt><a href="suexec.html">suexec</a></dt>
+
+      <dd>Switch User For Exec</dd>
+
+      <dt><a href="other.html">Other Programs</a></dt>
+    </dl>
+</section>
+
+</manualpage>

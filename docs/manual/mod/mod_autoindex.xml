@@ -328,7 +328,7 @@ icon selected by MIME content-type</description>
 <name>AddIconByEncoding</name>
 <description>Icon to display next to files selected by MIME 
 content-encoding</description>
-<syntax>AddIconByEncoding <var>icon MIME-encoding</var>
+<syntax>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -592,6 +592,14 @@ indexing</description>
       loaded. If no value is given for the option, it defaults to
       the standard width of the icons supplied with the Apache
       software.</dd>
+
+      <dt><a name="indexoptions:ignorecase"
+               id="indexoptions:ignorecase">IgnoreCase</a></dt>
+
+      <dd>If this option is enabled, names are sorted in a case-insensitive 
+      manner.  For instance, if the sort order is ascending by name, and 
+      IgnoreCase is enabled, file Zeta  will be listed after file alfa 
+      (Note: file GAMMA will always be listed before file gamma). </dd>
 
       <dt><a name="indexoptions:ignoreclient"
                id="indexoptions:ignoreclient">IgnoreClient</a></dt>

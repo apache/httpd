@@ -4,7 +4,19 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Using Apache With Novell NetWare - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache With Novell NetWare</h1>
+      -->
+<title>Using Apache With Novell NetWare - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache With Novell NetWare</h1>
 
     <p>This document explains how to install, configure and run
     Apache 2.0 under Novell NetWare 5.1 and above. If you find any bugs,
@@ -27,7 +39,17 @@
     bugs), see the section on <a href="#comp">Compiling Apache for
     NetWare</a> below.</p>
 
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">Requirements</a></li><li><img alt="" src="../images/down.gif" /> <a href="#down">Downloading Apache for NetWare</a></li><li><img alt="" src="../images/down.gif" /> <a href="#inst">Installing Apache for NetWare</a></li><li><img alt="" src="../images/down.gif" /> <a href="#run">Running Apache for NetWare</a></li><li><img alt="" src="../images/down.gif" /> <a href="#use">Configuring Apache for NetWare</a></li><li><img alt="" src="../images/down.gif" /> <a href="#comp">Compiling Apache for NetWare</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="req" id="req">Requirements</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">Requirements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#down">Downloading Apache for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#inst">Installing Apache for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#run">Running Apache for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#use">Configuring Apache for NetWare</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#comp">Compiling Apache for NetWare</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="req" id="req">Requirements</a></h2>
 
     
 
@@ -41,7 +63,9 @@
 
     <p>NetWare service packs are available <a href="http://support.novell.com/misc/patlst.htm#nw">here</a>.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="down" id="down">Downloading Apache for NetWare</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="down" id="down">Downloading Apache for NetWare</a></h2>
 
     
 
@@ -51,7 +75,9 @@
     beta-test releases, together with details of mirror web and
     anonymous ftp sites.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="inst" id="inst">Installing Apache for NetWare</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="inst" id="inst">Installing Apache for NetWare</a></h2>
 
     
 
@@ -131,7 +157,9 @@
 
     <p>Apache may be installed to other volumes besides the default <code>SYS</code> volume.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="run" id="run">Running Apache for NetWare</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="run" id="run">Running Apache for NetWare</a></h2>
 
     
 
@@ -257,7 +285,9 @@
       web server.</dd>
     </dl>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="use" id="use">Configuring Apache for NetWare</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="use" id="use">Configuring Apache for NetWare</a></h2>
 
     
 
@@ -348,7 +378,9 @@
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="comp" id="comp">Compiling Apache for NetWare</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="comp" id="comp">Compiling Apache for NetWare</a></h2>
 
     
 
@@ -580,4 +612,8 @@
 
     
 
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

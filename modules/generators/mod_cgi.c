@@ -514,7 +514,6 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
 
     if (e_info->process_cgi) {
         *cmd = r->filename;
-        args = r->args;
         /* Do not process r->args if they contain an '=' assignment 
          */
         if (r->args && r->args[0] && !ap_strchr_c(r->args, '=')) {

@@ -11,9 +11,14 @@
  <!-- Used for the moduleindex -->
  <message name="corefeatures">Kernfunktionen und Multi-Processing-Module</message>
  <message name="othermodules">Andere Module</message>
+ <message name="obsoletemodules">Veraltete Module</message>
 
- <!-- Title for modulesynopsis -->
- <message name="apachemodule">Apache-Module</message>
+ <!-- Used for the modulesynopsis and sitemap -->
+ <message name="obsoleteapachemodule">Veraltetes Apache-Modul</message>
+ <message name="apachemodule">Apache-Modul</message>
+ <message name="apachecore">Apache-Kernfunktionen</message>
+ <message name="apachempmcommon">Allgemeine Direktiven der Apache-MPMs</message>
+ <message name="apachempm">Apache-MPM</message>
 
  <!-- Used in description box for modulesynopsis -->
  <message name="description">Beschreibung</message>
@@ -36,13 +41,26 @@
  <message name="status">Status</message>
  <message name="module">Modul</message>
 
+ <!-- Used in directive context lists -->
+ <message name="serverconfig">Serverkonfiguration</message>
+ <message name="virtualhost">Virtual Host</message>
+ <message name="directory">Verzeichnis</message>
+ <message name="htaccess">.htaccess</message>
+
  <!-- Used for directive lists -->
  <message name="directives">Direktiven</message>
- <message name="directive">Direktive</message>
+ <!-- the optional attribute replace-space-with takes a string.
+      if present, the space between <directive name> and 'Directive'
+      in directivesynopsis headings will be replaced by the given string.
+      (see de.xml for an example) -->
+ <message name="directive" replace-space-with="-">Direktive</message>
  <message name="nodirectives">Dieses Modul enth&#228;lt keine Direktiven.</message>
 
  <!-- Used in summaries -->
  <message name="summary">Zusammenfassung</message>
+
+ <!-- Used for translation notes -->
+ <message name="transnote">Anm.d.&#220;.:</message>
 
  <!-- Used in headers and footers -->
  <message name="apachetitle">- Apache HTTP Server</message>

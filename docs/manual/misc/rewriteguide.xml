@@ -2062,7 +2062,7 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
           instance a authentication which checks for a set of
           explicitly configured users. Only these should receive
           access and without explicit prompting (which would occur
-          when using the Basic Auth via <module>mod_auth_basic</module>).</p>
+          when using the Basic Auth via <module>mod_auth</module>).</p>
         </dd>
 
         <dt>Solution:</dt>

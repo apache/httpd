@@ -73,10 +73,10 @@ information displayed by the server-info handler</description>
     the module <var>module-name</var>. Example:</p>
 
     <example>
-      AddModuleInfo mod_authn_file.c 'See &lt;a \<br />
+      AddModuleInfo mod_auth.c 'See &lt;a \<br />
       <indent>
-      href="http://www.apache.org/docs-2.0/mod/mod_authn_file.html"&gt;\<br />
-      http://www.apache.org/docs-2.0/mod/mod_authn_file.html&lt;/a&gt;'
+        href="http://www.apache.org/docs-2.0/mod/mod_auth.html"&gt;\<br />
+        http://www.apache.org/docs-2.0/mod/mod_auth.html&lt;/a&gt;'
       </indent>
     </example>
 </usage>

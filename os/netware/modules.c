@@ -12,7 +12,8 @@ extern module mpm_netware_module;
 extern module http_module;
 extern module so_module;
 extern module mime_module;
-extern module authz_host_module;
+extern module access_module;
+extern module auth_module;
 extern module negotiation_module;
 extern module include_module;
 extern module autoindex_module;
@@ -35,7 +36,8 @@ module *ap_prelinked_modules[] = {
   &http_module,
   &so_module,
   &mime_module,
-  &authz_host_module,
+  &access_module,
+  &auth_module,
   &negotiation_module,
   &include_module,
   &autoindex_module,
@@ -60,7 +62,8 @@ module *ap_preloaded_modules[] = {
   &http_module,
   &so_module,
   &mime_module,
-  &authz_host_module,
+  &access_module,
+  &auth_module,
   &negotiation_module,
   &include_module,
   &autoindex_module,

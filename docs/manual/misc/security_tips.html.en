@@ -4,10 +4,57 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Security Tips - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Security Tips</h1>
+      -->
+<title>Security Tips - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Security Tips</h1>
     <p>Some hints and tips on security issues in setting up a web server. 
     Some of the suggestions will be general, others specific to Apache.</p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#serverroot">Permissions on ServerRoot Directories</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI in General</a></li><li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi">Non Script Aliased CGI</a></li><li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi">Script Aliased CGI</a></li><li><img alt="" src="../images/down.gif" /> <a href="#dynamic">Other sources of dynamic content</a></li><li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Protecting System Settings</a></li><li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Protect Server Files by Default</a></li><li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">Watching Your Logs</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="serverroot" id="serverroot">Permissions on ServerRoot Directories</a></h2>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Keep up to Date</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#serverroot">Permissions on ServerRoot Directories</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI in General</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi">Non Script Aliased CGI</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi">Script Aliased CGI</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dynamic">Other sources of dynamic content</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Protecting System Settings</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Protect Server Files by Default</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">Watching Your Logs</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="uptodate" id="uptodate">Keep up to Date</a></h2>
+
+    <p>The Apache HTTP Server has a good record for security and a
+    developer community highly concerned about security issues.  But
+    it is inevitable that some problems -- small or large -- will be
+    discovered in software after it is released.  For this reason, it
+    is crucial to keep aware of updates to the software.  If you have
+    obtained your version of the HTTP Server directly from Apache, we
+    highly recommend you subscribe to the <a href="http://httpd.apache.org/lists.html#http-announce">Apache
+    HTTP Server Announcements List</a> where you can keep informed of
+    new releases and security updates.  Similar services are available
+    from most third-party distributors of Apache software.</p>
+
+    <p>Of course, most times that a web server is compromised, it is
+    not because of problems in the HTTP Server code.  Rather, it comes
+    from problems in add-on code, CGI scripts, or the underlying
+    Operating System.  You must therefore stay aware of problems and
+    updates with all the software on your system.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="serverroot" id="serverroot">Permissions on ServerRoot Directories</a></h2>
   
     
     
@@ -54,7 +101,9 @@
     themselves are writeable (by a non-root user), then someone may be 
     able to overwrite the log itself with bogus data.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="ssi" id="ssi">Server Side Includes</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ssi" id="ssi">Server Side Includes</a></h2>
   
     
     
@@ -88,10 +137,12 @@
     <p>Another solution is to disable the ability to run scripts and 
     programs from SSI pages. To do this replace <code>Includes</code>
     with <code>IncludesNOEXEC</code> in the <code class="directive"><a href="../mod/core.html#options">Options</a></code> directive.  Note that users may 
-    still use &gt;--#include virtual="..." --&lt; to execute CGI scripts if 
+    still use &lt;--#include virtual="..." --&gt; to execute CGI scripts if 
     these scripts are in directories desginated by a <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> directive.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cgi" id="cgi">CGI in General</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cgi" id="cgi">CGI in General</a></h2>
   
     
     
@@ -111,12 +162,14 @@
     popular way of doing this is with 
     <a href="http://cgiwrap.unixtools.org/">CGIWrap</a>.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="nsaliasedcgi" id="nsaliasedcgi">Non Script Aliased CGI</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="nsaliasedcgi" id="nsaliasedcgi">Non Script Aliased CGI</a></h2>
   
     
     
     <p>Allowing users to execute CGI scripts in any directory should only be 
-    considered if;</p>
+    considered if:</p>
     
     <ul>
       <li>You trust your users not to write scripts which will deliberately 
@@ -126,7 +179,9 @@
       <li>You have no users, and nobody ever visits your server.</li>
     </ul>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="saliasedcgi" id="saliasedcgi">Script Aliased CGI</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="saliasedcgi" id="saliasedcgi">Script Aliased CGI</a></h2>
   
     
     
@@ -139,7 +194,9 @@
     <p>Most sites choose this option over the non script aliased CGI 
     approach.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="dynamic" id="dynamic">Other sources of dynamic content</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dynamic" id="dynamic">Other sources of dynamic content</a></h2>
 
   
 
@@ -151,7 +208,9 @@
   server user can. Some scripting engines may provide restrictions, but
   it is better to be safe and assume not.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="systemsettings" id="systemsettings">Protecting System Settings</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="systemsettings" id="systemsettings">Protecting System Settings</a></h2>
   
     
     
@@ -170,7 +229,9 @@
     <p>This prevents the use of <code>.htaccess</code> files in all 
     directories apart from those specifically enabled.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="protectserverfiles" id="protectserverfiles">Protect Server Files by Default</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="protectserverfiles" id="protectserverfiles">Protect Server Files by Default</a></h2>
   
     
     
@@ -226,7 +287,9 @@
       UserDir disabled root
     </code></p></div>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="watchyourlogs" id="watchyourlogs">Watching Your Logs</a></h2>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="watchyourlogs" id="watchyourlogs">Watching Your Logs</a></h2>
   
     
     
@@ -272,4 +335,8 @@
       &lt;Files&gt;
     </code></p></div>
     
-  </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+  </div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

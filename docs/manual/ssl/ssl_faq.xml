@@ -117,18 +117,6 @@ author.</p>
     of the Wassenaar Agreement and its <q>List of Dual Use Goods and
     Technologies And Munitions List</q>.</p>
 
-    
-    <p>Additionally the Wassenaar Agreement itself has no direct consequence for
-    exporting cryptography software. What is actually allowed or forbidden to
-    be exported from the countries has still to be defined in the local laws
-    of each country. And at least according to official press releases from
-    the German BMWi (see <a
-    href="http://www.bmwi.de/presse/1998/1208prm2.html">here</a>) and the
-    Switzerland Bawi (see <a href="http://jya.com/wass-ch.htm">here</a>) there
-    will be no forthcoming export restriction for free cryptography software
-    for their countries. Remember that mod_ssl is created in Germany and
-    distributed from Switzerland.</p>
-    
     <p>So, mod_ssl and OpenSSL are not affected by the Wassenaar Agreement.</p>
 </section>
 </section>
@@ -139,7 +127,6 @@ author.</p>
 <li><a href="#coredump">Core dumps for HTTPS requests?</a></li>
 <li><a href="#mutex">Permission problem on SSLMutex</a></li>
 <li><a href="#mm">Shared memory and process size?</a></li>
-<li><a href="#mmpath">Shared memory and pathname?</a></li>
 <li><a href="#entropy">PRNG and not enough entropy?</a></li>
 </ul>
 
@@ -176,16 +163,6 @@ author.</p>
     course. Instead the additional memory consumption is shared by
     all processes, i.e. the 1.5MB are allocated only once per Apache
     instance and not once per Apache server process.</p>
-</section>
-
-<section id="mmpath"><title>Apache creates files in a directory declared by the internal
-EAPI_MM_CORE_PATH define. Is there a way to override the path using a
-configuration directive?</title>
-<p>No, there is not configuration directive, because for technical
-    bootstrapping reasons, a directive not possible at all. Instead
-    use ``<code>CFLAGS='-DEAPI_MM_CORE_PATH="/path/to/wherever/"'
-    ./configure ...</code>'' when building Apache or use option
-    <code>-d</code> when starting <code>httpd</code>.</p>
 </section>
 
 <section id="entropy"><title>When I fire up the server, mod_ssl stops with the error
@@ -251,7 +228,7 @@ configuration directive?</title>
     SSL handshake. For a more general command line client which directly
     understands both the HTTP and HTTPS scheme, can perform GET and POST
     methods, can use a proxy, supports byte ranges, etc. you should have a
-    look at nifty <a href="http://curl.haxx.nu/">cURL</a>
+    look at nifty <a href="http://curl.haxx.se/">cURL</a>
     tool. With it you can directly check if your Apache is running fine on
     Port 80 and 443 as following:</p>
     
@@ -648,7 +625,7 @@ SSLeay version 0.8 to 0.9?</title>
     Remember that you need to give the key file in as well (see
     <code>SSLCertificateKeyFile</code> directive). For a better
     CA-related overview on SSL certificate fiddling you can look at <a
-    href="http://www.thawte.com/certs/server/keygen/mod_ssl.html">Thawte's mod_ssl instructions</a>.</p>
+    href="http://www.thawte.com/html/SUPPORT/server/softwaredocs/modssl.html">Thawte's mod_ssl instructions</a>.</p>
 </section>
 
 <section id="sgc"><title>Can I use the Server Gated Cryptography (SGC) facility (aka Verisign Global
@@ -683,6 +660,8 @@ browsers complain that they cannot verify the server certificate?</title>
 <li><a href="#adh">How to use Anonymous-DH ciphers</a></li>
 <li><a href="#sharedciphers">Why do I get 'no shared ciphers'?</a></li>
 <li><a href="#vhosts">HTTPS and name-based vhosts</a></li>
+<li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual
+Hosting to identify different SSL virtual hosts?</a></li>
 <li><a href="#lockicon">The lock icon in Netscape locks very late</a></li>
 <li><a href="#msie">Why do I get I/O errors with MSIE clients?</a></li>
 <li><a href="#nn">Why do I get I/O errors with NS clients?</a></li>
@@ -770,6 +749,41 @@ I try to connect to my freshly installed server?</title>
     HTTP request header has to be read. This cannot be done before the SSL
     handshake is finished. But the information is already needed at the SSL
     handshake phase. Bingo!</p>
+</section>
+
+<section id="vhosts2"><title>Why is it not possible to use Name-Based
+Virtual Hosting to identify different SSL virtual hosts?</title>
+    <p>Name-Based Virtual Hosting is a very popular method of identifying
+    different virtual hosts. It allows you to use the same IP address and
+    the same port number for many different sites. When people move on to
+    SSL, it seems natural to assume that the same method can be used to have
+    lots of different SSL virtual hosts on the same server.</p>
+
+    <p>It comes as rather a shock to learn that it is impossible.</p> 
+
+    <p>The reason is that the SSL protocol is a separate layer which
+    encapsulates the HTTP protocol. So the problem is that the SSL session
+    is a separate transaction that takes place before the HTTP session even
+    starts. Therefore all the server receives is an SSL request on IP
+    address X and port Y (usually 443). Since the SSL request does not
+    contain any Host: field, the server has no way to decide which SSL
+    virtual host to use. Usually, it will just use the first one it finds
+    that matches the port and IP address.</p> 
+
+    <p>You can, of course, use Name-Based Virtual Hosting to identify many
+    non-SSL virtual hosts (all on port 80, for example) and then you can
+    have no more than 1 SSL virtual host (on port 443). But if you do this,
+    you must make sure to put the non-SSL port number on the NameVirtualHost
+    directive, e.g.</p> 
+
+    <example>
+      NameVirtualHost 192.168.1.1:80
+    </example>
+    
+    <p>Other workaround solutions are: </p>
+
+    <p>Use separate IP addresses for different SSL hosts. 
+    Use different port numbers for different SSL hosts.</p> 
 </section>
 
 <section id="lockicon"><title>When I use Basic Authentication over HTTPS the lock icon in Netscape browsers

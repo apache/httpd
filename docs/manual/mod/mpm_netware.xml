@@ -29,12 +29,10 @@
     regulate how the main thread creates worker threads to serve
     requests. In general, Apache is very self-regulating, so most
     sites do not need to adjust these directives from their default
-    values. Sites which need to serve more than 250 simultaneous
-    requests may need to increase <directive>MaxThreads</directive>, while
-    sites with limited memory may need to decrease
-    <directive>MaxThreads</directive> to keep the server from thrashing
-    (spawning and terminating idle threads). More information about
-    tuning process creation is provided in the <a
+    values. Sites with limited memory may need to decrease <directive
+    module="mpm_netware">MaxThreads</directive> to keep the server from
+    thrashing (spawning and terminating idle threads). More information
+    about tuning process creation is provided in the <a
     href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>
 
@@ -58,33 +56,35 @@
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MinSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartThreads</name>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>MaxThreads</name>
+<description>Set the maximum number of worker threads</description>
 <syntax>MaxThreads <var>number</var></syntax>
-<default>MaxThreads 250</default>
+<default>MaxThreads 2048</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-<p>The MaxThreads directive sets the desired maximum
-    number worker threads allowable.</p>
+    <p>The <directive>MaxThreads</directive> directive sets the desired
+    maximum number worker threads allowable. The default value is
+    also the compiled in hard limit. Therefore it can only be lowered,
+    for example:</p>
+
+    <example>
+      MaxThreads 512
+    </example>
 </usage>
-</directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>MaxSpareThreads</name>
-</directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>MinSpareThreads</name>
-</directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>StartThreads</name>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ThreadStackSize</name>
+<description>Determine the stack size for each thread</description>
 <syntax>ThreadStackSize <var>number</var></syntax>
 <default>ThreadStackSize 65536</default>
 <contextlist><context>server config</context></contextlist>

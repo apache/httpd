@@ -4,13 +4,30 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_autoindex - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_autoindex</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Generates directory indexes,
+      -->
+<title>mod_autoindex - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_autoindex</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Generates directory indexes,
     automatically, similar to the Unix <code>ls</code> command or the
-    Win32 <code>dir</code> shell command</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>autoindex_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_autoindex.c</td></tr></table><h3>Summary</h3> 
+    Win32 <code>dir</code> shell command</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>autoindex_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_autoindex.c</td></tr></table>
+<h3>Summary</h3>
+ 
       <p>The index of a directory can come from one of two
       sources:</p>
 
@@ -51,7 +68,10 @@
     displayed value - so a 1010-byte file will always be displayed
     before a 1011-byte file (if in ascending order) even though
     they both are shown as "1K".</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#addalt">AddAlt</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#addalt">AddAlt</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addaltbyencoding">AddAltByEncoding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addaltbytype">AddAltByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddescription">AddDescription</a></li>
@@ -64,7 +84,14 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#indexoptions">IndexOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexorderdefault">IndexOrderDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#query">Autoindex Request Query Arguments</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="query" id="query">Autoindex Request Query Arguments</a></h2>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#query">Autoindex Request Query Arguments</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="query" id="query">Autoindex Request Query Arguments</a></h2>
     
 
     <p>Apache 2.0.23 reorganized the Query Arguments for Column
@@ -163,14 +190,18 @@
       &lt;/form&gt;
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Alternate text to display for a file, instead of an
-icon selected by filename</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Alternate text to display for a file, instead of an
+icon selected by filename</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p><code class="directive">AddAlt</code> provides the alternate text to
     display for a file, instead of an icon, for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <var>File</var> is a file extension, partial filename, wild-card
@@ -184,15 +215,20 @@ icon selected by filename</td></tr><tr><th><a href="directive-dict.html#Syntax">
       AddAlt "PDF file" *.pdf<br />
       AddAlt Compressed *.gz *.zip *.Z
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Alternate text to display for a file instead of an icon
-selected by MIME-encoding</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
-[<var>MIME-encoding</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Alternate text to display for a file instead of an icon
+selected by MIME-encoding</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
+[<var>MIME-encoding</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p><code class="directive">AddAltByEncoding</code> provides the alternate
     text to display for a file, instead of an icon, for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <var>MIME-encoding</var> is a valid content-encoding, such as
@@ -204,15 +240,20 @@ selected by MIME-encoding</td></tr><tr><th><a href="directive-dict.html#Syntax">
     <div class="example"><h3>Example</h3><p><code>
       AddAltByEncoding gzip x-gzip
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Alternate text to display for a file, instead of an
-icon selected by MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AddAltByType <var>string</var> <var>MIME-type</var>
-[<var>MIME-type</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Alternate text to display for a file, instead of an
+icon selected by MIME content-type</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddAltByType <var>string</var> <var>MIME-type</var>
+[<var>MIME-type</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p><code class="directive">AddAltByType</code> sets the alternate text to
     display for a file, instead of an icon, for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <var>MIME-type</var> is a valid content-type, such as
@@ -224,13 +265,18 @@ icon selected by MIME content-type</td></tr><tr><th><a href="directive-dict.html
     <div class="example"><h3>Example</h3><p><code>
       AddAltByType 'plain text' text/plain
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Description to display for a file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AddDescription <var>string file</var> [<var>file</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Description to display for a file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddDescription <var>string file</var> [<var>file</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>This sets the description to display for a file, for
     <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <var>File</var> is a file extension, partial filename, wild-card
@@ -258,14 +304,19 @@ icon selected by MIME content-type</td></tr><tr><th><a href="directive-dict.html
       element (such as cutting off the end of a bolded phrase), the
       results may affect the rest of the directory listing.</p>
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Icon to display for a file selected by name</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
-...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icon to display for a file selected by name</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
+...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>This sets the icon to display next to a file ending in
     <var>name</var> for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>. <var>Icon</var> is either a (%-escaped)
     relative URL to the icon, or of the format <code>
@@ -286,15 +337,20 @@ icon selected by MIME content-type</td></tr><tr><th><a href="directive-dict.html
     <p><code class="directive"><a href="#addiconbytype">AddIconByType</a></code>
     should be used in preference to <code class="directive">AddIcon</code>,
     when possible.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Icon to display next to files selected by MIME 
-content-encoding</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AddIconByEncoding <var>icon MIME-encoding</var>
-[<var>MIME-encoding</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icon to display next to files selected by MIME 
+content-encoding</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
+[<var>MIME-encoding</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>This sets the icon to display next to files with <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <var>Icon</var> is either a (%-escaped) relative URL to the icon,
     or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
@@ -307,15 +363,20 @@ content-encoding</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><h3>Example</h3><p><code>
       AddIconByEncoding /icons/compress.xbm x-compress
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Icon to display next to files selected by MIME 
-content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AddIconByType <var>icon</var> <var>MIME-type</var>
-[<var>MIME-type</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icon to display next to files selected by MIME 
+content-type</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddIconByType <var>icon</var> <var>MIME-type</var>
+[<var>MIME-type</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>This sets the icon to display next to files of type
     <var>MIME-type</var> for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <var>Icon</var> is either a (%-escaped) relative URL to the icon,
@@ -329,14 +390,19 @@ content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><h3>Example</h3><p><code>
       AddIconByType (IMG,/icons/image.xbm) image/*
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Icon to display for files when no specific icon is
-configured</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>DefaultIcon <var>url-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icon to display for files when no specific icon is
+configured</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DefaultIcon <var>url-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>The <code class="directive">DefaultIcon</code> directive sets the icon
     to display for files when no specific icon is known, for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
     <var>Url-path</var> is a (%-escaped) relative URL to the icon.</p>
@@ -344,14 +410,19 @@ configured</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><h3>Example</h3><p><code>
       DefaultIcon /icon/unknown.xbm
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Name of the file that will be inserted at the top
-of the index listing</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>HeaderName <var>filename</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the file that will be inserted at the top
+of the index listing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>HeaderName <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>The <code class="directive">HeaderName</code> directive sets the name
     of the file that will be inserted at the top of the index
     listing. <var>Filename</var> is the name of the file to include.</p>
@@ -396,14 +467,19 @@ of the index listing</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
     then you will probably want to set <a href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>, so that these tags are not
     repeated.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Adds to the list of files to hide when listing 
-a directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>IndexIgnore <var>file</var> [<var>file</var>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds to the list of files to hide when listing 
+a directory</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexIgnore <var>file</var> [<var>file</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>The <code class="directive">IndexIgnore</code> directive adds to the
     list of files to hide when listing a directory. <var>File</var> is a
     file extension, partial filename, wildcard expression or full
@@ -415,15 +491,20 @@ a directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><p><code>
       IndexIgnore README .htaccess *~
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Various configuration settings for directory 
-indexing</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
-...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Various configuration settings for directory 
+indexing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
+...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>The <code class="directive">IndexOptions</code> directive specifies the
     behavior of the directory indexing. <var>Option</var> can be one
     of</p>
@@ -503,6 +584,13 @@ indexing</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
       loaded. If no value is given for the option, it defaults to
       the standard width of the icons supplied with the Apache
       software.</dd>
+
+      <dt><a name="indexoptions:ignorecase" id="indexoptions:ignorecase">IgnoreCase</a></dt>
+
+      <dd>If this option is enabled, names are sorted in a case-insensitive 
+      manner.  For instance, if the sort order is ascending by name, and 
+      IgnoreCase is enabled, file Zeta  will be listed after file alfa 
+      (Note: file GAMMA will always be listed before file gamma). </dd>
 
       <dt><a name="indexoptions:ignoreclient" id="indexoptions:ignoreclient">IgnoreClient</a></dt>
 
@@ -693,15 +781,20 @@ indexing</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
      keywords without any <code>+</code> or <code>-</code> prefixes.</p>
    </dd>
    </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Sets the default ordering of the directory index</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>IndexOrderDefault Ascending|Descending
-Name|Date|Size|Description</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the default ordering of the directory index</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexOrderDefault Ascending|Descending
+Name|Date|Size|Description</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>The <code class="directive">IndexOrderDefault</code> directive is used
     in combination with the <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code> index option. By default, fancyindexed
     directory listings are displayed in ascending order by filename; the
@@ -720,14 +813,19 @@ Name|Date|Size|Description</code></td></tr><tr><th><a href="directive-dict.html#
     particular order by combining this directive with the <code><a href="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></code> index option; this will prevent
     the client from requesting the directory listing in a different
     order.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Name of the file that will be inserted at the end
-of the index listing</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ReadmeName <var>filename</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_autoindex</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the file that will be inserted at the end
+of the index listing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ReadmeName <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
     <p>The <code class="directive">ReadmeName</code> directive sets the name
     of the file that will be appended to the end of the index
     listing. <var>Filename</var> is the name of the file to include, and
@@ -746,4 +844,10 @@ of the index listing</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
 
     <p>See also <code class="directive"><a href="#headername">HeaderName</a></code>, where this behavior is described in greater
     detail.</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

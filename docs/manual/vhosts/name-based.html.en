@@ -4,11 +4,30 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Name-based Virtual Host Support - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>Name-based Virtual Host Support</h1>
+      -->
+<title>Name-based Virtual Host Support - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>Name-based Virtual Host Support</h1>
 
 	<p>This document describes when and how to use name-based virtual hosts.</p>
 
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">Name-based vs. IP-based Virtual Hosts</a></li><li><img alt="" src="../images/down.gif" /> <a href="#using">Using Name-based Virtual Hosts</a></li><li><img alt="" src="../images/down.gif" /> <a href="#compat">Compatibility with Older Browsers</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="ip-based.html">IP-based Virtual Host Support</a></li><li><a href="details.html">An In-Depth Discussion of Virtual Host Matching</a></li><li><a href="mass.html">Dynamically configured mass virtual hosting</a></li><li><a href="examples.html">Virtual Host examples for common setups</a></li><li><a href="examples.html#serverpath">ServerPath configuration example</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="namevip" id="namevip">Name-based vs. IP-based Virtual Hosts</a></h2>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">Name-based vs. IP-based Virtual Hosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#using">Using Name-based Virtual Hosts</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#compat">Compatibility with Older Browsers</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="ip-based.html">IP-based Virtual Host Support</a></li><li><a href="details.html">An In-Depth Discussion of Virtual Host Matching</a></li><li><a href="mass.html">Dynamically configured mass virtual hosting</a></li><li><a href="examples.html">Virtual Host examples for common setups</a></li><li><a href="examples.html#serverpath">ServerPath configuration example</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="namevip" id="namevip">Name-based vs. IP-based Virtual Hosts</a></h2>
 
 	<p>IP-based virtual hosts use the IP address of the connection to
 	determine the correct virtual host to serve.  Therefore you need to
@@ -43,7 +62,9 @@
 		they are on separate IP addresses.</li>
 	</ul>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="using" id="using">Using Name-based Virtual Hosts</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="using" id="using">Using Name-based Virtual Hosts</a></h2>
 
 <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code></li></ul></td></tr></table>
 
@@ -158,7 +179,9 @@
 	<code>&lt;VirtualHost&gt;</code> container and list it first in the
 	configuration file.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="compat" id="compat">Compatibility with Older Browsers</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compat" id="compat">Compatibility with Older Browsers</a></h2>
 
     <p>As mentioned earlier, there are some clients
     who do not send the required data for the name-based virtual
@@ -212,4 +235,8 @@
     guidelines will, for the most part, ensure that your pages will
     work with all browsers, new and old.</p>
 
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div></div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

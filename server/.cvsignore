@@ -5,6 +5,7 @@ Makefile
 *.la
 test_char.h
 gen_test_char
+export_files
 exports.c
 export_vars.h
 Debug

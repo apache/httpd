@@ -10,75 +10,75 @@
 <identifier>mem_cache_module</identifier>
 
 <summary>
-
-<note type="warning">
-This module is experimental. Documentation is still under development...
-</note>
-    <p><module>mod_mem_cache</module> implements a memory based storage manager. 
-    <module>mod_mem_cache</module> can be configured to operate in two modes:
-    caching open file descriptors or caching objects in heap storage.
-    <module>mod_mem_cache</module> is most useful when used to cache locally
-    generated content or to cache backend server content for
-    <module>mod_proxy</module> configured for
-    <directive module="mod_proxy">ProxyPass</directive> (aka <dfn>reverse proxy</dfn>)</p>
-
-    <p>Content is stored in and retrieved from the cache using URI based keys. Content with
-    access protection is not cached.</p>
-
-    <note><title>Note:</title>
-      <p><module>mod_mem_cache</module> requires the services of <module>mod_cache</module>.</p>
+    <note type="warning">
+      This module is experimental. Documentation is still under
+      development...
     </note>
+
+    <p>This module <em>requires</em> the service of <module
+    >mod_cache</module>. It acts as a support module for <module
+    >mod_cache</module> and provides a memory based storage manager.
+    <module>mod_mem_cache</module> can be configured to operate in two
+    modes: caching open file descriptors or caching objects in heap storage.
+    <module>mod_mem_cache</module> is most useful when used to cache locally
+    generated content or to cache backend server content for <module
+    >mod_proxy</module> configured for <directive module="mod_proxy"
+    >ProxyPass</directive> (aka <dfn>reverse proxy</dfn>).</p>
+
+    <p>Content is stored in and retrieved from the cache using URI based
+    keys. Content with access protection is not cached.</p>
 </summary>
+<seealso><module>mod_cache</module></seealso>
+<seealso><module>mod_disk_cache</module></seealso>
 
 <directivesynopsis>
 <name>MCacheSize</name>
-<description>The maximum amount of memory used by the cache in KBytes</description>
+<description>The maximum amount of memory used by the cache in
+KBytes</description>
 <syntax>MCacheSize <var>KBytes</var></syntax>
 <default>MCacheSize 100</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The <directive>MCacheSize</directive> directive sets the maximum amount of memory
-    to be used by the cache, in KBytes (1024-byte units). If a new object needs to be
-    inserted in the cache and the size of the object is greater than the 
-    remaining memory, objects will be removed until the new object can be cached. 
-    The object to be removed is selected using the algorithm specified by
-    <directive>MCacheRemovalAlgorithm</directive>.</p>
+    <p>The <directive>MCacheSize</directive> directive sets the maximum
+    amount of memory to be used by the cache, in KBytes (1024-byte units).
+    If a new object needs to be inserted in the cache and the size of the
+    object is greater than the remaining memory, objects will be removed
+    until the new object can be cached. The object to be removed is
+    selected using the algorithm specified by <directive
+    module="mod_mem_cache">MCacheRemovalAlgorithm</directive>.</p>
 
-    <note type="warning"><title>Note:</title>
-      The <directive>MCacheSize</directive> value must be greater than the value
-      specified by the <directive>MCacheMaxObjectSize</directive> directive.
-    </note>
-
-    <example>
-      MCacheSize  700000<br />
+    <example><title>Example</title>
+      MCacheSize 700000
     </example>
+
+    <note><title>Note</title>
+      <p>The <directive>MCacheSize</directive> value must be greater than
+      the value specified by the <directive module="mod_mem_cache"
+      >MCacheMaxObjectSize</directive> directive.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MCacheMaxObjectCount</name>
-<description>The maximum number of objects allowed to be placed in the cache</description>
+<description>The maximum number of objects allowed to be placed in the
+cache</description>
 <syntax>MCacheMaxObjectCount <var>value</var></syntax>
 <default>MCacheMaxObjectCount 1009</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The <directive>MCacheMaxObjectCount</directive> directive sets the maximum
-    number of objects to be cached. If a new object needs to be inserted in the cache
-    and the maximum number of objects has been reached, an object will be removed
-    to allow the new object to be cached. The object to be removed is selected using
-    the algorithm specified by <directive>MCacheRemovalAlgorithm</directive>.</p>
+    <p>The <directive>MCacheMaxObjectCount</directive> directive sets the
+    maximum number of objects to be cached. The value is used to create the
+    open hash table. If a new object needs to be inserted in the cache and
+    the maximum number of objects has been reached, an object will be
+    removed to allow the new object to be cached. The object to be removed
+    is selected using the algorithm specified by <directive
+    module="mod_mem_cache">MCacheRemovalAlgorithm</directive>.</p>
 
-    <note><title>Note:</title>
-      The value of <directive>MCacheMaxObjectCount</directive> is used to create
-      the open hash table.
-    </note>
-
-    <example>
-      MCacheMaxObjectCount  13001<br />
+    <example><title>Example</title>
+      MCacheMaxObjectCount 13001
     </example>
 </usage>
 </directivesynopsis>
@@ -89,15 +89,15 @@ This module is experimental. Documentation is still under development...
 cache</description>
 <syntax>MCacheMinObjectSize <var>bytes</var></syntax>
 <default>MCacheMinObjectSize 0</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The <directive>MCacheMinObjectSize</directive> directive sets the minimum
-    size in bytes of a document for it to be considered cacheable.</p>
+    <p>The <directive>MCacheMinObjectSize</directive> directive sets the
+    minimum size in bytes of a document for it to be considered
+    cacheable.</p>
 
-    <example>
-      MCacheMinObjectSize  10000<br />
+    <example><title>Example</title>
+      MCacheMinObjectSize 10000
     </example>
 </usage>
 </directivesynopsis>
@@ -108,22 +108,22 @@ cache</description>
 cache</description>
 <syntax>MCacheMaxObjectSize <var>bytes</var></syntax>
 <default>MCacheMaxObjectSize 10000</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The <directive>MCacheMaxObjectSize</directive> directive sets the maximum
-    allowable size, in bytes, of a document for it to be considered cacheable.</p>
+    <p>The <directive>MCacheMaxObjectSize</directive> directive sets the
+    maximum allowable size, in bytes, of a document for it to be considered
+    cacheable.</p>
 
-    <note type="warning"><title>Note:</title>
-      The value of <directive>MCacheMaxObjectSize</directive> must be greater
-      than the value specified by the <directive>MCacheMinObjectSize</directive>
-      directive.
-    </note>
-
-    <example>
-      MCacheMaxObjectSize  6400000<br />
+    <example><title>Example</title>
+      MCacheMaxObjectSize 6400000
     </example>
+
+    <note><title>Note</title>
+      <p>The value of <directive>MCacheMaxObjectSize</directive> must be
+      greater than the value specified by the <directive
+      module="mod_mem_cache">MCacheMinObjectSize</directive> directive.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -131,24 +131,71 @@ cache</description>
 <name>MCacheRemovalAlgorithm</name>
 <description>The algorithm used to select documents for removal from the
 cache</description>
-<syntax>MCacheRemovalAlgorithm <code>LRU|GDSF</code></syntax>
+<syntax>MCacheRemovalAlgorithm LRU|GDSF</syntax>
 <default>MCacheRemovalAlgorithm GDSF</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>The <directive>MCacheRemovalAlgorithm</directive> directive specifies
     the algorithm used to select documents for removal from the cache.
-    Two choices are available:<br />
-    <code>LRU</code> (Least Recently Used): <code>LRU</code> removes the
-    documents that have not been accessed for the longest time.<br />
-    <code>GDSF</code> (GreadyDual-Size): <code>GDSF</code> assigns a priority
-    to cached documents based on the cost of a cache miss and the size of
-    the document. Documents with the lowest priority are removed first.</p>
+    Two choices are available:</p>
+
+    <dl>
+      <dt><code>LRU</code> (Least Recently Used)</dt>
+      <dd><code>LRU</code> removes the documents that have not been accessed
+      for the longest time.</dd>
+
+      <dt><code>GDSF</code> (GreadyDual-Size)</dt>
+      <dd><code>GDSF</code> assigns a priority to cached documents based
+      on the cost of a cache miss and the size of the document. Documents
+      with the lowest priority are removed first.</dd>
+    </dl>
+
+    <example><title>Example</title>
+      MCacheRemovalAlgorithm GDSF<br />
+      MCacheRemovalAlgorithm LRU
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMaxStreamingBuffer</name>
+<description>Maximum amount of a streamed response to buffer in memory
+before declaring the response uncacheable</description>
+<syntax>MCacheMaxStreamingBuffer <var>size_in_bytes</var></syntax>
+<default>MCacheMaxStreamingBuffer the smaller of 100000 or MCacheMaxObjectSize</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>MCacheMaxStreamingBuffer</directive> directive
+    specifies the maximum number of bytes of a streamed response to
+    buffer before deciding that the response is too big to cache.
+    A streamed response is one in which the entire content is not
+    immediately available and in which the <code>Content-Length</code>
+    may not be known. Sources of streaming responses include proxied
+    responses and the output of CGI scripts. By default, a streamed
+    response will <em>not</em> be cached unless it has a
+    <code>Content-Length</code> header. The reason for this is to
+    avoid using a large amount of memory to buffer a partial response
+    that might end up being too large to fit in the cache.
+    The <directive>MCacheMaxStreamingBuffer</directive> directive allows
+    buffering of streamed responses that don't contain a
+    <code>Content-Length</code> up to the specified maximum amount of
+    space. If the maximum buffer space is reached, the buffered
+    content is discarded and the attempt to cache is abandoned.</p>
+
+    <note><title>Note:</title>
+      <p>Using a nonzero value for <directive>MCacheMaxStreamingBuffer</directive> 
+      will not delay the transmission of the response to the client.
+      As soon as <module>mod_mem_cache</module> copies a block of streamed
+      content into a buffer, it sends the block on to the next output
+      filter for delivery to the client.</p>
+    </note>
 
     <example>
-       MCacheRemovalAlgorithm  GDSF<br />
-       MCacheRemovalAlgorithm  LRU<br />
+      # Enable caching of streamed responses up to 64KB:<br />
+      MCacheMaxStreamingBuffer 65536
     </example>
 </usage>
 </directivesynopsis>

@@ -119,7 +119,7 @@ NLM_NAME		= Apache2
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache Web Server $(VERSION_STR)
+NLM_DESCRIPTION		= Apache Web Server $(VERSION_STR)
 
 #
 # This is used by the '-threadname' directive.  If left blank,
@@ -194,10 +194,11 @@ FILES_nlm_objs = \
 	$(OBJDIR)/listen.o \
 	$(OBJDIR)/log.o \
 	$(OBJDIR)/main.o \
-	$(OBJDIR)/mod_authz_host.o \
+	$(OBJDIR)/mod_access.o \
 	$(OBJDIR)/mod_actions.o \
 	$(OBJDIR)/mod_alias.o \
 	$(OBJDIR)/mod_asis.o \
+	$(OBJDIR)/mod_auth.o \
 	$(OBJDIR)/mod_autoindex.o \
 	$(OBJDIR)/mod_cgi.o \
 	$(OBJDIR)/mod_dir.o \

@@ -4,130 +4,229 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_mem_cache - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_mem_cache</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Content cache keyed to URIs</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Experimental</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>mem_cache_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_mem_cache.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_mem_cache - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_mem_cache</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Content cache keyed to URIs</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>mem_cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_mem_cache.c</td></tr></table>
+<h3>Summary</h3>
 
-<div class="warning">
-This module is experimental. Documentation is still under development...
-</div>
-    <p><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> implements a memory based storage manager. 
-    <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> can be configured to operate in two modes:
-    caching open file descriptors or caching objects in heap storage.
-    <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> is most useful when used to cache locally
-    generated content or to cache backend server content for
-    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> configured for
-    <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> (aka <dfn>reverse proxy</dfn>)</p>
-
-    <p>Content is stored in and retrieved from the cache using URI based keys. Content with
-    access protection is not cached.</p>
-
-    <div class="note"><h3>Note:</h3>
-      <p><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> requires the services of <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+    <div class="warning">
+      This module is experimental. Documentation is still under
+      development...
     </div>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
+
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. It acts as a support module for <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> and provides a memory based storage manager.
+    <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> can be configured to operate in two
+    modes: caching open file descriptors or caching objects in heap storage.
+    <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> is most useful when used to cache locally
+    generated content or to cache backend server content for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> configured for <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> (aka <dfn>reverse proxy</dfn>).</p>
+
+    <p>Content is stored in and retrieved from the cache using URI based
+    keys. Content with access protection is not cached.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mcacheminobjectsize">MCacheMinObjectSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mcachesize">MCacheSize</a></li>
-</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheMaxObjectCount" id="MCacheMaxObjectCount">MCacheMaxObjectCount</a> <a name="mcachemaxobjectcount" id="mcachemaxobjectcount">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The maximum number of objects allowed to be placed in the cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>MCacheMaxObjectCount <var>value</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>MCacheMaxObjectCount 1009</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_mem_cache</td></tr></table>
-    <p>The <code class="directive">MCacheMaxObjectCount</code> directive sets the maximum
-    number of objects to be cached. If a new object needs to be inserted in the cache
-    and the maximum number of objects has been reached, an object will be removed
-    to allow the new object to be cached. The object to be removed is selected using
-    the algorithm specified by <code class="directive">MCacheRemovalAlgorithm</code>.</p>
+</ul>
+<h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
+<li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMaxObjectCount" id="MCacheMaxObjectCount">MCacheMaxObjectCount</a> <a name="mcachemaxobjectcount" id="mcachemaxobjectcount">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum number of objects allowed to be placed in the
+cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MCacheMaxObjectCount <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheMaxObjectCount 1009</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p>The <code class="directive">MCacheMaxObjectCount</code> directive sets the
+    maximum number of objects to be cached. The value is used to create the
+    open hash table. If a new object needs to be inserted in the cache and
+    the maximum number of objects has been reached, an object will be
+    removed to allow the new object to be cached. The object to be removed
+    is selected using the algorithm specified by <code class="directive"><a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code>.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      MCacheMaxObjectCount 13001
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMaxObjectSize" id="MCacheMaxObjectSize">MCacheMaxObjectSize</a> <a name="mcachemaxobjectsize" id="mcachemaxobjectsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum size (in bytes) of a document allowed in the
+cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MCacheMaxObjectSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheMaxObjectSize 10000</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p>The <code class="directive">MCacheMaxObjectSize</code> directive sets the
+    maximum allowable size, in bytes, of a document for it to be considered
+    cacheable.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      MCacheMaxObjectSize 6400000
+    </code></p></div>
+
+    <div class="note"><h3>Note</h3>
+      <p>The value of <code class="directive">MCacheMaxObjectSize</code> must be
+      greater than the value specified by the <code class="directive"><a href="#mcacheminobjectsize">MCacheMinObjectSize</a></code> directive.</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMaxStreamingBuffer" id="MCacheMaxStreamingBuffer">MCacheMaxStreamingBuffer</a> <a name="mcachemaxstreamingbuffer" id="mcachemaxstreamingbuffer">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum amount of a streamed response to buffer in memory
+before declaring the response uncacheable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MCacheMaxStreamingBuffer <var>size_in_bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheMaxStreamingBuffer the smaller of 100000 or MCacheMaxObjectSize</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p>The <code class="directive">MCacheMaxStreamingBuffer</code> directive
+    specifies the maximum number of bytes of a streamed response to
+    buffer before deciding that the response is too big to cache.
+    A streamed response is one in which the entire content is not
+    immediately available and in which the <code>Content-Length</code>
+    may not be known. Sources of streaming responses include proxied
+    responses and the output of CGI scripts. By default, a streamed
+    response will <em>not</em> be cached unless it has a
+    <code>Content-Length</code> header. The reason for this is to
+    avoid using a large amount of memory to buffer a partial response
+    that might end up being too large to fit in the cache.
+    The <code class="directive">MCacheMaxStreamingBuffer</code> directive allows
+    buffering of streamed responses that don't contain a
+    <code>Content-Length</code> up to the specified maximum amount of
+    space. If the maximum buffer space is reached, the buffered
+    content is discarded and the attempt to cache is abandoned.</p>
 
     <div class="note"><h3>Note:</h3>
-      The value of <code class="directive">MCacheMaxObjectCount</code> is used to create
-      the open hash table.
+      <p>Using a nonzero value for <code class="directive">MCacheMaxStreamingBuffer</code> 
+      will not delay the transmission of the response to the client.
+      As soon as <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> copies a block of streamed
+      content into a buffer, it sends the block on to the next output
+      filter for delivery to the client.</p>
     </div>
 
     <div class="example"><p><code>
-      MCacheMaxObjectCount  13001<br />
+      # Enable caching of streamed responses up to 64KB:<br />
+      MCacheMaxStreamingBuffer 65536
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheMaxObjectSize" id="MCacheMaxObjectSize">MCacheMaxObjectSize</a> <a name="mcachemaxobjectsize" id="mcachemaxobjectsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The maximum size (in bytes) of a document allowed in the
-cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>MCacheMaxObjectSize <var>bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>MCacheMaxObjectSize 10000</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_mem_cache</td></tr></table>
-    <p>The <code class="directive">MCacheMaxObjectSize</code> directive sets the maximum
-    allowable size, in bytes, of a document for it to be considered cacheable.</p>
 
-    <div class="warning"><h3>Note:</h3>
-      The value of <code class="directive">MCacheMaxObjectSize</code> must be greater
-      than the value specified by the <code class="directive">MCacheMinObjectSize</code>
-      directive.
-    </div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMinObjectSize" id="MCacheMinObjectSize">MCacheMinObjectSize</a> <a name="mcacheminobjectsize" id="mcacheminobjectsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum size (in bytes) of a document to be allowed in the
+cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MCacheMinObjectSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheMinObjectSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p>The <code class="directive">MCacheMinObjectSize</code> directive sets the
+    minimum size in bytes of a document for it to be considered
+    cacheable.</p>
 
-    <div class="example"><p><code>
-      MCacheMaxObjectSize  6400000<br />
+    <div class="example"><h3>Example</h3><p><code>
+      MCacheMinObjectSize 10000
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheMinObjectSize" id="MCacheMinObjectSize">MCacheMinObjectSize</a> <a name="mcacheminobjectsize" id="mcacheminobjectsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The minimum size (in bytes) of a document to be allowed in the
-cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>MCacheMinObjectSize <var>bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>MCacheMinObjectSize 0</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_mem_cache</td></tr></table>
-    <p>The <code class="directive">MCacheMinObjectSize</code> directive sets the minimum
-    size in bytes of a document for it to be considered cacheable.</p>
 
-    <div class="example"><p><code>
-      MCacheMinObjectSize  10000<br />
-    </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheRemovalAlgorithm" id="MCacheRemovalAlgorithm">MCacheRemovalAlgorithm</a> <a name="mcacheremovalalgorithm" id="mcacheremovalalgorithm">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The algorithm used to select documents for removal from the
-cache</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>MCacheRemovalAlgorithm <code>LRU|GDSF</code></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>MCacheRemovalAlgorithm GDSF</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_mem_cache</td></tr></table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheRemovalAlgorithm" id="MCacheRemovalAlgorithm">MCacheRemovalAlgorithm</a> <a name="mcacheremovalalgorithm" id="mcacheremovalalgorithm">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The algorithm used to select documents for removal from the
+cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MCacheRemovalAlgorithm LRU|GDSF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheRemovalAlgorithm GDSF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mem_cache</td></tr>
+</table>
     <p>The <code class="directive">MCacheRemovalAlgorithm</code> directive specifies
     the algorithm used to select documents for removal from the cache.
-    Two choices are available:<br />
-    <code>LRU</code> (Least Recently Used): <code>LRU</code> removes the
-    documents that have not been accessed for the longest time.<br />
-    <code>GDSF</code> (GreadyDual-Size): <code>GDSF</code> assigns a priority
-    to cached documents based on the cost of a cache miss and the size of
-    the document. Documents with the lowest priority are removed first.</p>
+    Two choices are available:</p>
 
-    <div class="example"><p><code>
-       MCacheRemovalAlgorithm  GDSF<br />
-       MCacheRemovalAlgorithm  LRU<br />
+    <dl>
+      <dt><code>LRU</code> (Least Recently Used)</dt>
+      <dd><code>LRU</code> removes the documents that have not been accessed
+      for the longest time.</dd>
+
+      <dt><code>GDSF</code> (GreadyDual-Size)</dt>
+      <dd><code>GDSF</code> assigns a priority to cached documents based
+      on the cost of a cache miss and the size of the document. Documents
+      with the lowest priority are removed first.</dd>
+    </dl>
+
+    <div class="example"><h3>Example</h3><p><code>
+      MCacheRemovalAlgorithm GDSF<br />
+      MCacheRemovalAlgorithm LRU
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MCacheSize" id="MCacheSize">MCacheSize</a> <a name="mcachesize" id="mcachesize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The maximum amount of memory used by the cache in KBytes</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>MCacheSize <var>KBytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
-              </a></th><td><code>MCacheSize 100</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_mem_cache</td></tr></table>
-    <p>The <code class="directive">MCacheSize</code> directive sets the maximum amount of memory
-    to be used by the cache, in KBytes (1024-byte units). If a new object needs to be
-    inserted in the cache and the size of the object is greater than the 
-    remaining memory, objects will be removed until the new object can be cached. 
-    The object to be removed is selected using the algorithm specified by
-    <code class="directive">MCacheRemovalAlgorithm</code>.</p>
 
-    <div class="warning"><h3>Note:</h3>
-      The <code class="directive">MCacheSize</code> value must be greater than the value
-      specified by the <code class="directive">MCacheMaxObjectSize</code> directive.
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheSize" id="MCacheSize">MCacheSize</a> <a name="mcachesize" id="mcachesize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum amount of memory used by the cache in
+KBytes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MCacheSize <var>KBytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheSize 100</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p>The <code class="directive">MCacheSize</code> directive sets the maximum
+    amount of memory to be used by the cache, in KBytes (1024-byte units).
+    If a new object needs to be inserted in the cache and the size of the
+    object is greater than the remaining memory, objects will be removed
+    until the new object can be cached. The object to be removed is
+    selected using the algorithm specified by <code class="directive"><a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code>.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      MCacheSize 700000
+    </code></p></div>
+
+    <div class="note"><h3>Note</h3>
+      <p>The <code class="directive">MCacheSize</code> value must be greater than
+      the value specified by the <code class="directive"><a href="#mcachemaxobjectsize">MCacheMaxObjectSize</a></code> directive.</p>
     </div>
 
-    <div class="example"><p><code>
-      MCacheSize  700000<br />
-    </code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

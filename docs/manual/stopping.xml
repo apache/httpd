@@ -8,9 +8,12 @@
 
 <summary>
     <p>This document covers stopping and restarting Apache on
-    Unix-like systems. Windows users should see <a
-    href="platform/windows.html#signal">Signaling Apache when
-    running</a>.</p>
+    Unix-like systems. Windows NT, 2000 and XP users should see
+    <a href="platform/windows.html#winsvc">Running Apache as a
+    Service</a> and Windows 9x and ME users should see <a
+    href="platform/windows.html#wincons">Running Apache as a
+    Console Application</a> for information on how to control
+    Apache on those platforms.</p>
 </summary>
 
 <seealso><a href="programs/httpd.html">httpd</a></seealso>
@@ -37,8 +40,9 @@
 <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
 
     <p>The second method of signaling the <code>httpd</code> processes
-    is to use the <code>-k</code> command line options: stop, restart,
-    and graceful, as described below.  These are arguments to the <a
+    is to use the <code>-k</code> command line options: <code>stop</code>,
+    <code>restart</code>, and <code>graceful</code>,
+    as described below.  These are arguments to the <a
     href="programs/httpd.html">httpd</a> binary, but we recommend that
     you send them using the <a
     href="programs/apachectl.html">apachectl</a> control script, which
@@ -81,10 +85,10 @@
     it with a child from the new <em>generation</em> of the
     configuration, which begins serving new requests immediately.</p>
 
-    <note>On certain platforms that do not allow USR1 to be used for a
-    graceful restart, an alternative signal may be used (such as
-    WINCH). The command <code>apachectl graceful</code> will send the
-    right signal for your platform.</note>
+    <note>On certain platforms that do not allow <code>USR1</code> to
+    be used for a graceful restart, an alternative signal may be used (such
+    as <code>WINCH</code>). The command <code>apachectl graceful</code>
+    will send the right signal for your platform.</note>
 
     <p>This code is designed to always respect the process control
     directive of the MPMs, so the number of processes and threads
@@ -96,7 +100,7 @@
     been created, then create enough to pick up the slack. Hence the
     code tries to maintain both the number of children appropriate for
     the current load on the server, and respect your wishes with the
-    StartServers parameter.</p>
+    <directive>StartServers</directive> parameter.</p>
 
     <p>Users of the <module>mod_status</module>
     will notice that the server statistics are <strong>not</strong>
@@ -134,9 +138,9 @@
     href="programs/httpd.html">httpd</a>). This still will not
     guarantee that the server will restart correctly. To check the
     semantics of the configuration files as well as the syntax, you
-    can try starting httpd as a non-root user. If there are no
+    can try starting <code>httpd</code> as a non-root user. If there are no
     errors it will attempt to open its sockets and logs and fail
-    because it's not root (or because the currently running httpd
+    because it's not root (or because the currently running <code>httpd</code>
     already has those ports bound). If it fails for any other
     reason then it's probably a config file error and the error
     should be fixed before issuing the graceful restart.</note>

@@ -4,12 +4,29 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_alias - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_alias</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
-                  </a></th><td>Provides for mapping different parts of the host
-    filesystem in the document tree and for URL redirection</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>alias_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
-                  </a></th><td>mod_alias.c</td></tr></table><h3>Summary</h3>
+      -->
+<title>mod_alias - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_alias</h1>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides for mapping different parts of the host
+    filesystem in the document tree and for URL redirection</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>alias_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_alias.c</td></tr></table>
+<h3>Summary</h3>
+
     <p>The directives contained in this module allow for manipulation
     and control of URLs as requests arrive at the server. The
     <code class="directive"><a href="#alias">Alias</a></code> and <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> directives are used to
@@ -23,7 +40,10 @@
     directives are used to instruct clients to make a new request with
     a different URL. They are often used when a resource has moved to
     a new location.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li>
@@ -31,13 +51,23 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li><li><a href="../urlmapping.html">Mapping URLs to the filesystem</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Maps URLs to filesystem locations</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>Alias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_alias</td></tr></table>
+</ul>
+<h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
+<li><a href="../urlmapping.html">Mapping URLs to the filesystem</a></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps URLs to filesystem locations</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Alias <var>URL-path</var>
+<var>file-path</var>|<var>directory-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+</table>
 
     <p>The <code class="directive">Alias</code> directive allows documents to
     be stored in the local filesystem other than under the 
@@ -66,14 +96,19 @@
     sections are run through once before aliases are performed, so
     they will apply.)</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Maps URLs to filesystem locations using regular 
-expressions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>AliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_alias</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps URLs to filesystem locations using regular 
+expressions</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AliasMatch <var>regex</var>
+<var>file-path</var>|<var>directory-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+</table>
     <p>This directive is equivalent to <code class="directive"><a href="#alias">Alias</a></code>, but makes use of standard
     regular expressions, instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path, and
@@ -85,15 +120,20 @@ expressions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><p><code>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Sends an external redirect asking the client to fetch
-a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>Redirect [<var>status</var>] <var>URL-path</var>
-<var>URL</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_alias</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sends an external redirect asking the client to fetch
+a different URL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Redirect [<var>status</var>] <var>URL-path</var>
+<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+</table>
     <p>The Redirect directive maps an old URL into a new one. The
     new URL is returned to the client which attempts to fetch it
     again with the new address. <var>URL-path</var> a (%-decoded)
@@ -156,15 +196,20 @@ sections.</p></div>
       Redirect 303 /three http://example.com/other
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Sends an external redirect based on a regular expression match 
-of the current URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>RedirectMatch [<var>status</var>] <var>regex</var>
-<var>URL</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_alias</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sends an external redirect based on a regular expression match 
+of the current URL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RedirectMatch [<var>status</var>] <var>regex</var>
+<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+</table>
     <p>This directive is equivalent to <code class="directive"><a href="#redirect">Redirect</a></code>, but makes use of standard
     regular expressions, instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path, and
@@ -176,36 +221,51 @@ of the current URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><p><code>
       RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Sends an external permanent redirect asking the client to fetch
-a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>RedirectPermanent <var>URL-path</var> <var>URL</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_alias</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sends an external permanent redirect asking the client to fetch
+a different URL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RedirectPermanent <var>URL-path</var> <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+</table>
     <p>This directive makes the client know that the Redirect is
     permanent (status 301). Exactly equivalent to <code>Redirect
     permanent</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Sends an external temporary redirect asking the client to fetch
-a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>RedirectTemp <var>URL-path</var> <var>URL</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
-              </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_alias</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sends an external temporary redirect asking the client to fetch
+a different URL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RedirectTemp <var>URL-path</var> <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+</table>
     <p>This directive makes the client know that the Redirect is
     only temporary (status 302). Exactly equivalent to
     <code>Redirect temp</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Maps a URL to a filesystem location and designates the
-target as a CGI script</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptAlias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_alias</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps a URL to a filesystem location and designates the
+target as a CGI script</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScriptAlias <var>URL-path</var>
+<var>file-path</var>|<var>directory-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+</table>
     <p>The <code class="directive">ScriptAlias</code> directive has the same
     behavior as the <code class="directive"><a href="#alias">Alias</a></code>
     directive, except that in addition it marks the target directory
@@ -220,14 +280,19 @@ target as a CGI script</td></tr><tr><th><a href="directive-dict.html#Syntax">Syn
 
     <p>A request for <code>http://myserver/cgi-bin/foo</code> would cause the
     server to run the script <code>/web/cgi-bin/foo</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Maps a URL to a filesystem location using a regular expression
-and designates the target as a CGI script</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptAliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
-              </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
-              </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>mod_alias</td></tr></table>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps a URL to a filesystem location using a regular expression
+and designates the target as a CGI script</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ScriptAliasMatch <var>regex</var>
+<var>file-path</var>|<var>directory-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+</table>
     <p>This directive is equivalent to <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>, but makes use of standard
     regular expressions, instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path,
@@ -239,4 +304,10 @@ and designates the target as a CGI script</td></tr><tr><th><a href="directive-di
     <div class="example"><p><code>
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
     </code></p></div>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+
+</div>
+</div>
+<div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>

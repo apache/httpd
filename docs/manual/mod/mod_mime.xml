@@ -21,7 +21,7 @@
     negotiation, so the user's preferences are respected when
     choosing one of several possible files to serve. See
     <module>mod_negotiation</module> for more information
-    about content negotiation. </p>
+    about <a href="../content-negotiation.html">content negotiation</a>.</p>
 
     <p>The directives <directive
     module="mod_mime">AddCharset</directive>, <directive
@@ -70,9 +70,8 @@
     their last modified date) to ensure that all visitors are
     receive the corrected content headers.</p>
 </summary>
-
-    <seealso><directive
-    module="mod_mime_magic">MimeMagicFile</directive></seealso>
+<seealso><directive
+module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
 <seealso><directive module="core">DefaultType</directive></seealso>
@@ -80,37 +79,34 @@
 <seealso><directive module="core">SetInputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
 
-
-<section id="multipleext">
-<title>Files with Multiple Extensions</title>
-
+<section id="multipleext"><title>Files with Multiple Extensions</title>
     <p>Files can have more than one extension, and the order of the
     extensions is <em>normally</em> irrelevant. For example, if the
     file <code>welcome.html.fr</code> maps onto content type
-    text/html and language French then the file <code>welcome.fr.html</code> 
-    will map onto exactly the same information.  If more than one 
-    extension is given which maps onto the same
+    <code>text/html</code> and language French then the file
+    <code>welcome.fr.html</code> will map onto exactly the same information.
+    If more than one extension is given which maps onto the same
     type of meta-information, then the one to the right will be
-    used. For example, if ".gif" maps to the MIME-type image/gif
-    and ".html" maps to the MIME-type text/html, then the file
-    <code>welcome.gif.html</code> will be associated with the
-    MIME-type "text/html".</p>
+    used. For example, if <code>.gif</code> maps to the MIME-type
+    <code>image/gif</code> and <code>.html</code> maps to the MIME-type
+    <code>text/html</code>, then the file <code>welcome.gif.html</code>
+    will be associated with the MIME-type <code>text/html</code>.</p>
 
     <p>Care should be taken when a file with multiple extensions
     gets associated with both a MIME-type and a handler. This will
     usually result in the request being by the module associated
     with the handler. For example, if the <code>.imap</code>
-    extension is mapped to the handler "imap-file" (from mod_imap)
-    and the <code>.html</code> extension is mapped to the MIME-type
-    "text/html", then the file <code>world.imap.html</code> will be
-    associated with both the "imap-file" handler and "text/html"
-    MIME-type. When it is processed, the "imap-file" handler will
-    be used, and so it will be treated as a mod_imap imagemap
+    extension is mapped to the handler <code>imap-file</code> (from
+    <module>mod_imap</module>) and the <code>.html</code> extension is
+    mapped to the MIME-type <code>text/html</code>, then the file
+    <code>world.imap.html</code> will be associated with both the
+    <code>imap-file</code> handler and <code>text/html</code> MIME-type.
+    When it is processed, the <code>imap-file</code> handler will be used,
+    and so it will be treated as a <module>mod_imap</module> imagemap
     file.</p>
 </section>
 
 <section id="contentencoding"><title>Content encoding</title>
-
     <p>A file of a particular MIME type can additionally be encoded a
     particular way to simplify transmission over the Internet.
     While this usually will refer to compression, such as
@@ -119,18 +115,18 @@
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
-    <p>The MIME RFC puts it this way:</p>
+    <p>The <a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1
+    RFC</a>, section 14.11 puts it this way:</p>
 
-    <note>
-      The Content-Encoding entity-header field is used as a
-      modifier to the media-type. When present, its value indicates
-      what additional content coding has been applied to the
-      resource, and thus what decoding mechanism must be applied in
-      order to obtain the media-type referenced by the Content-Type
-      header field. The Content-Encoding is primarily used to allow
-      a document to be compressed without losing the identity of
-      its underlying media type.
-    </note>
+    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+      <p>The Content-Encoding entity-header field is used as a modifier to
+      the media-type. When present, its value indicates what additional
+      content codings have been applied to the entity-body, and thus what
+      decoding mechanisms must be applied in order to obtain the media-type
+      referenced by the Content-Type header field. Content-Encoding is
+      primarily used to allow a document to be compressed without losing
+      the identity of its underlying media type.</p>
+    </blockquote>
 
     <p>By using more than one file extension (see <a
     href="#multipleext">section above about multiple file
@@ -146,18 +142,14 @@
     <code>Resume.doc.zip</code>would be known to be a pkzip'ed Word
     document.</p>
 
-    <p>Apache send a <code>Content-encoding</code> header with the
+    <p>Apache sends a <code>Content-encoding</code> header with the
     resource, in order to tell the client browser about the
     encoding method.</p>
 
     <example>Content-encoding: pkzip</example>
-
 </section>
 
-<section id="charset-lang">
-
-<title>Character sets and languages</title>
-
+<section id="charset-lang"><title>Character sets and languages</title>
     <p>In addition to file type and the file encoding,
     another important piece of information is what language a
     particular document is in, and in what character set the file
@@ -171,7 +163,7 @@
     <module>mod_negotiation</module>) to determine
     which document to give to the client, when there are
     alternative documents in more than one character set, language, 
-    encoding or mime type.  All filename extensions associations
+    encoding or mime type. All filename extensions associations
     created with <directive module="mod_mime">AddCharset</directive>,
     <directive module="mod_mime">AddEncoding</directive>, <directive
     module="mod_mime">AddLanguage</directive> and <directive
@@ -185,118 +177,99 @@
     from matching by using the <directive module="mod_mime"
     >MultiviewsMatch</directive> directive.</p>
 
-<section>
-<title>Charset</title>
+    <section id="charset"><title>Charset</title>
+      <p>To convey this further information, Apache optionally sends
+      a <code>Content-Language</code> header, to specify the language
+      that the document is in, and can append additional information
+      onto the <code>Content-Type</code> header to indicate the
+      particular character set that should be used to correctly
+      render the information.</p>
 
-    <p>To convey this further information, Apache optionally sends
-    a <code>Content-Language</code> header, to specify the language
-    that the document is in, and can append additional information
-    onto the <code>Content-Type</code> header to indicate the
-    particular character set that should be used to correctly
-    render the information.</p>
+      <example>
+        Content-Language: en, fr<br />
+	Content-Type: text/plain; charset=ISO-8859-1
+      </example>
 
-<example>
-Content-Language: en, fr<br />
-Content-Type: text/plain; charset=ISO-8859-2
-</example>
-
-    <p>The language specification is the two-letter abbreviation
-    for the language. The <code>charset</code> is the name of the
-    particular character set which should be used.</p>
+      <p>The language specification is the two-letter abbreviation
+      for the language. The <code>charset</code> is the name of the
+      particular character set which should be used.</p>
+    </section>
 </section>
-</section>
-
 
 <directivesynopsis>
 <name>AddCharset</name>
-<description>Maps the given filename extensions
-    to the specified content charset</description>
-<syntax>AddCharset <em>charset extension</em> 
-[<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<description>Maps the given filename extensions to the specified content
+charset</description>
+<syntax>AddCharset <var>charset</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>AddCharset is only available in Apache 
-1.3.10 and later</compatibility>
 
 <usage>
-    
-    <p>The AddCharset directive maps the given filename extensions
-    to the specified content charset. <em>charset</em> is the MIME
-    charset parameter of filenames containing <em>extension</em>.
-    This mapping is added to any already in force, overriding any
-    mappings that already exist for the same <em>extension</em>.</p>
+    <p>The <directive>AddCharset</directive> directive maps the given
+    filename extensions to the specified content charset. <var>charset</var>
+    is the MIME charset parameter of filenames containing
+    <var>extension</var>. This mapping is added to any already in force,
+    overriding any mappings that already exist for the same
+    <var>extension</var>.</p>
 
-    <p>Example:</p>
-<example>
-    AddLanguage ja .ja<br />
-    AddCharset EUC-JP .euc<br />
-    AddCharset ISO-2022-JP .jis<br />
-    AddCharset SHIFT_JIS .sjis
-</example>
+    <example><title>Example</title>
+      AddLanguage ja .ja<br />
+      AddCharset EUC-JP .euc<br />
+      AddCharset ISO-2022-JP .jis<br />
+      AddCharset SHIFT_JIS .sjis
+    </example>
 
     <p>Then the document <code>xxxx.ja.jis</code> will be treated
-    as being a Japanese document whose charset is ISO-2022-JP (as
-    will the document <code>xxxx.jis.ja</code>). The AddCharset
-    directive is useful for both to inform the client about the
-    character encoding of the document so that the document can be
-    interpreted and displayed appropriately, and for <a
+    as being a Japanese document whose charset is <code>ISO-2022-JP</code>
+    (as will the document <code>xxxx.jis.ja</code>). The
+    <directive>AddCharset</directive> directive is useful for both to
+    inform the client about the character encoding of the document so that
+    the document can be interpreted and displayed appropriately, and for <a
     href="../content-negotiation.html">content negotiation</a>,
     where the server returns one from several documents based on
     the client's charset preference.</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
-
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddEncoding</name>
-<description>Maps the given filename extensions
-    to the specified encoding type</description>
-<syntax>AddEncoding
-    <em>MIME-enc extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<description>Maps the given filename extensions to the specified encoding
+type</description>
+<syntax>AddEncoding <var>MIME-enc</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
-
 <usage>
+    <p>The <directive>AddEncoding</directive> directive maps the given
+    filename extensions to the specified encoding type. <var>MIME-enc</var>
+    is the MIME encoding to use for documents containing the
+    <var>extension</var>. This mapping is added to any already in force,
+    overriding any mappings that already exist for the same
+    <var>extension</var>.</p>
 
-    <p>The AddEncoding directive maps the given filename extensions
-    to the specified encoding type. <em>MIME-enc</em> is the MIME
-    encoding to use for documents containing the
-    <em>extension</em>. This mapping is added to any already in
-    force, overriding any mappings that already exist for the same
-    <em>extension</em>. Example:</p>
-
-    <example>
+    <example><title>Example</title>
       AddEncoding x-gzip .gz<br />
       AddEncoding x-compress .Z
     </example>
 
-    <p>This will cause filenames containing the .gz extension to be
-    marked as encoded using the x-gzip encoding, and filenames
-    containing the .Z extension to be marked as encoded with
-    x-compress. </p>
+    <p>This will cause filenames containing the <code>.gz</code> extension
+    to be marked as encoded using the <code>x-gzip</code> encoding, and
+    filenames containing the <code>.Z</code> extension to be marked as
+    encoded with <code>x-compress</code>.</p>
 
-    <p>Old clients expect <code>x-gzip</code> and
-    <code>x-compress</code>, however the standard dictates that
-    they're equivalent to <code>gzip</code> and
-    <code>compress</code> respectively. Apache does content
-    encoding comparisons by ignoring any leading <code>x-</code>.
+    <p>Old clients expect <code>x-gzip</code> and <code>x-compress</code>,
+    however the standard dictates that they're equivalent to
+    <code>gzip</code> and <code>compress</code> respectively. Apache does
+    content encoding comparisons by ignoring any leading <code>x-</code>.
     When responding with an encoding Apache will use whatever form
     (<em>i.e.</em>, <code>x-foo</code> or <code>foo</code>) the
     client requested. If the client didn't specifically request a
@@ -307,182 +280,149 @@ Content-Type: text/plain; charset=ISO-8859-2
     recent encodings, such as <code>deflate</code> should be
     specified without the <code>x-</code>.</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddHandler</name>
-<description>Maps the filename extensions
-to the specified handler</description>
-<syntax>AddHandler
-    <em>handler-name extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<description>Maps the filename extensions to the specified
+handler</description>
+<syntax>AddHandler <var>handler-name</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-<p>Files having the name <em>extension</em> will be served by the
-specified <a href="../handler.html">handler-name</a>.  This mapping is
-added to any already in force, overriding any mappings that already
-exist for the same <em>extension</em>. For example, to activate CGI
-scripts with the file extension "<code>.cgi</code>", you might
-use:</p>
+    <p>Files having the name <var>extension</var> will be served by the
+    specified <var><a href="../handler.html">handler-name</a></var>. This
+    mapping is added to any already in force, overriding any mappings that
+    already exist for the same <var>extension</var>. For example, to
+    activate CGI scripts with the file extension <code>.cgi</code>, you
+    might use:</p>
 
-<example>
-    AddHandler cgi-script .cgi
-</example>
+    <example>
+      AddHandler cgi-script .cgi
+    </example>
 
-    <p>Once that has been put into your srm.conf or httpd.conf
-    file, any file containing the "<code>.cgi</code>" extension
-    will be treated as a CGI program.</p>
+    <p>Once that has been put into your httpd.conf file, any file containing
+    the <code>.cgi</code> extension will be treated as a CGI program.</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddInputFilter</name>
-<description>Maps filename extensions
-    to the filters that will process
-    client requests</description>
-<syntax>AddInputFilter
-    <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>AddInputFilter
-    is only available in Apache 2.0.26 and later.</compatibility>
+<description>Maps filename extensions to the filters that will process
+client requests</description>
+<syntax>AddInputFilter <var>filter</var>[;<var>filter</var>...]
+<var>extension</var> [<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>AddInputFilter is only available in Apache 2.0.26 and
+later.</compatibility>
 
 <usage>
-
-    <p>AddInputFilter maps the filename extensions <em>extension</em>
-    to the <a href="../filter.html">filters</a> which will process
-    client requests and POST input when they are received by the
-    server. This is in addition to any filters defined elsewhere,
-    including the <a
-    href="core.html#setinputfilter">SetInputFilter</a> directive.
-    This mapping is merged over any already in force, overriding any
-    mappings that already exist for the same <em>extension</em>.</p>
+    <p><directive>AddInputFilter</directive> maps the filename extension
+    <var>extension</var> to the <a href="../filter.html">filters</a> which
+    will process client requests and POST input when they are received by
+    the server. This is in addition to any filters defined elsewhere,
+    including the <directive module="core">SetInputFilter</directive>
+    directive. This mapping is merged over any already in force, overriding
+    any mappings that already exist for the same <var>extension</var>.</p>
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
-    content. Both the filter and <em>extension</em> arguments are
+    content. Both the filter and <var>extension</var> arguments are
     case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
-
 </usage>
-
 </directivesynopsis>
-
 
 <directivesynopsis>
 <name>AddLanguage</name>
-<description>Maps the given filename extension
-to the specified content language</description>
-<syntax>AddLanguage
-    <em>MIME-lang extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<description>Maps the given filename extension to the specified content
+language</description>
+<syntax>AddLanguage <var>MIME-lang</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
+    <p>The <directive>AddLanguage</directive> directive maps the given
+    filename extension to the specified content language.
+    <var>MIME-lang</var> is the MIME language of filenames containing
+    <var>extension</var>. This mapping is added to any already in force,
+    overriding any mappings that already exist for the same
+    <var>extension</var>.</p>
 
-    <p>The AddLanguage directive maps the given filename extension
-    to the specified content language. <em>MIME-lang</em> is the
-    MIME language of filenames containing <em>extension</em>. This
-    mapping is added to any already in force, overriding any
-    mappings that already exist for the same
-    <em>extension</em>.</p>
-
-    <p>Example:</p>
-
-    <example>
+    <example><title>Example</title>
       AddEncoding x-compress .Z<br />
-       AddLanguage en .en<br />
-       AddLanguage fr .fr
+      AddLanguage en .en<br />
+      AddLanguage fr .fr
     </example>
 
     <p>Then the document <code>xxxx.en.Z</code> will be treated as
     being a compressed English document (as will the document
     <code>xxxx.Z.en</code>). Although the content language is
     reported to the client, the browser is unlikely to use this
-    information. The AddLanguage directive is more useful for <a
-    href="../content-negotiation.html">content negotiation</a>,
-    where the server returns one from several documents based on
-    the client's language preference.</p>
+    information. The <directive>AddLanguage</directive> directive is
+    more useful for <a href="../content-negotiation.html">content
+    negotiation</a>, where the server returns one from several documents
+    based on the client's language preference.</p>
 
     <p>If multiple language assignments are made for the same
     extension, the last one encountered is the one that is used.
     That is, for the case of:</p>
 
-<example>
-    AddLanguage en .en<br />
-    AddLanguage en-uk .en<br />
-    AddLanguage en-us .en
-</example>
+    <example>
+      AddLanguage en .en<br />
+      AddLanguage en-uk .en<br />
+      AddLanguage en-us .en
+    </example>
 
-    <p>documents with the extension "<code>.en</code>" would be
-    treated as being "<code>en-us</code>".</p>
+    <p>documents with the extension <code>.en</code> would be treated as
+    being <code>en-us</code>.</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddOutputFilter</name>
-<description>Maps filename
-extensions to the filters that will process
+<description>Maps filename extensions to the filters that will process
 responses from the server</description>
-<syntax>AddOutputFilter
-    <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<override></override>
-<compatibility>AddOutputFilter
-    is only available in Apache 2.0.26 and later.</compatibility>
+<syntax>AddOutputFilter <var>filter</var>[;<var>filter</var>...]
+<var>extension</var> [<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>AddOutputFilter is only available in Apache 2.0.26 and
+later.</compatibility>
 
 <usage>
-
     <p>The <directive>AddOutputFilter</directive> directive maps the
-    filename extensions <em>extension</em> to the <a
+    filename extension <var>extension</var> to the <a
     href="../filter.html">filters</a> which will process responses
-    from the server before they are sent to the client.  This is in
-    addition to any filters defined elsewhere, including the
-    <directive module="core">SetOutputFilter</directive>
-    directive. This mapping is merged over any already in force,
-    overriding any mappings that already exist for the same
-    <em>extension</em>.</p>
+    from the server before they are sent to the client. This is in
+    addition to any filters defined elsewhere, including <directive
+    module="core">SetOutputFilter</directive> and <directive module="core"
+    >AddOutputFilterByType</directive> directive. This mapping is merged
+    over any already in force, overriding any mappings that already exist
+    for the same <var>extension</var>.</p>
 
     <p>For example, the following configuration will process all
-    .shtml files for server-side includes and will then compress
-    the output using <module>mod_deflate</module>.</p>
-     
+    <code>.shtml</code> files for server-side includes and will then
+    compress the output using <module>mod_deflate</module>.</p>
 
     <example>
       AddOutputFilter INCLUDES;DEFLATE shtml
@@ -490,53 +430,44 @@ responses from the server</description>
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
-    content. Both the filter and <em>extension</em> arguments are
-    case-insensitive, and the extension may be specified with or
+    content. Both the <var>filter</var> and <var>extension</var> arguments
+    are case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
-
 </usage>
-
 <seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddType</name>
-<description>Maps the given filename extensions
-onto the specified content type</description>
-<syntax>AddType <em>MIME-type
-    extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<description>Maps the given filename extensions onto the specified content
+type</description>
+<syntax>AddType <var>MIME-type</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-
-    <p>The AddType directive maps the given filename extensions onto
-    the specified content type. <em>MIME-type</em> is the MIME type to
-    use for filenames containing <em>extension</em>. This mapping is
-    added to any already in force, overriding any mappings that
-    already exist for the same <em>extension</em>.  This directive can
+    <p>The <directive>AddType</directive> directive maps the given filename
+    extensions onto the specified content type. <var>MIME-type</var> is the
+    MIME type to use for filenames containing <var>extension</var>. This
+    mapping is added to any already in force, overriding any mappings that
+    already exist for the same <var>extension</var>. This directive can
     be used to add mappings not listed in the MIME types file (see the
-    <directive module="mod_mime">TypesConfig</directive>
-    directive).</p>
+    <directive module="mod_mime">TypesConfig</directive> directive).</p>
     
-    <p>Example:</p>
-
-    <example>
+    <example><title>Example</title>
       AddType image/gif .gif
     </example>
 
-    <note>It is recommended that new MIME types be added using the
-    AddType directive rather than changing the 
-    <directive>TypesConfig</directive> file. </note>
+    <note>
+      It is recommended that new MIME types be added using the
+      <directive>AddType</directive> directive rather than changing the 
+      <directive module="mod_mime">TypesConfig</directive> file.
+    </note>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-
 </usage>
 <seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
@@ -544,117 +475,108 @@ onto the specified content type</description>
 
 <directivesynopsis>
 <name>MultiviewsMatch</name>
-<description>The types of files that will be included when 
-searching for a matching file with MultiViews</description>
-<syntax>MultiviewsMatch
-    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></syntax>
+<description>The types of files that will be included when searching for
+a matching file with MultiViews</description>
+<syntax>MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
+[Handlers|Filters]</syntax>
 <default>MultiviewsMatch NegotiatedOnly</default>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Available 
-    in Apache 2.0.26 and later.</compatibility>
+<compatibility>Available in Apache 2.0.26 and later.</compatibility>
 
 <usage>
+    <p><directive>MultiviewsMatch</directive> permits three different
+    behaviors for <a href="mod_negotiation.html">mod_negotiation</a>'s
+    Multiviews feature.  Multiviews allows a request for a file,
+    <em>e.g.</em> <code>index.html</code>, to match any negotiated
+    extensions following the base request, <em>e.g.</em>
+    <code>index.html.en</code>, <code>index.html.fr</code>, or
+    <code>index.html.gz</code>.</p>
 
-    <p>MultiviewsMatch permits three different behaviors for
-    <a href="mod_negotiation.html">mod_negotiation</a>'s Multiviews 
-    feature.  Multiviews allows a request for a file, e.g. index.html,
-    to match any negotiated extensions following the base request,
-    e.g. index.html.en, index.html.fr, or index.html.gz.</p>
-
-    <p>The NegotiatedOnly option provides that every extension following
-    the base name must correlate to a recognized mod_mime extension for
-    content negotation, e.g. Charset, Content-Type, Language, or 
-    Encoding.  This is the strictest implementation with the fewest
-    unexpected side effects, and is the default behavior.</p>
+    <p>The <code>NegotiatedOnly</code> option provides that every extension
+    following the base name must correlate to a recognized
+    <module>mod_mime</module> extension for content negotation, <em>e.g.</em>
+    Charset, Content-Type, Language, or Encoding.  This is the strictest
+    implementation with the fewest unexpected side effects, and is the
+    default behavior.</p>
 
     <p>To include extensions associated with Handlers and/or Filters,
-    set the MultiviewsMatch directive to either Handlers, Filters, or
-    both option keywords.  If all other factors are equal, the smallest
-    file will be served, e.g. in deciding between index.html.cgi of 500
-    characters and index.html.pl of 1000 bytes, the .cgi file would win
-    in this example.  Users of .asis files might prefer to use the
-    Handler option, if .asis files are associated with the asis-handler.</p>
+    set the <directive>MultiviewsMatch</directive> directive to either
+    <code>Handlers</code>, <code>Filters</code>, or both option keywords.
+    If all other factors are equal, the smallest file will be served,
+    <em>e.g.</em> in deciding between <code>index.html.cgi</code> of 500
+    bytes and <code>index.html.pl</code> of 1000 bytes, the <code>.cgi</code>
+    file would win in this example. Users of <code>.asis</code> files
+    might prefer to use the Handler option, if <code>.asis</code> files are
+    associated with the <code>asis-handler</code>.</p>
 
-    <p>You may finally allow Any extensions to match, even if mod_mime 
-    doesn't recognize the extension.  This was the behavior in Apache 1.3,
-    and can cause unpredicatable results, such as serving .old or .bak
-    files the webmaster never expected to be served.</p>
+    <p>You may finally allow <code>Any</code> extensions to match, even if
+    <module>mod_mime</module> doesn't recognize the extension. This was the
+    behavior in Apache 1.3, and can cause unpredicatable results, such as
+    serving .old or .bak files the webmaster never expected to be served.</p>
 
     <p>For example, the following configuration will allow handlers
     and filters to participate in Multviews, but will exclude unknown
     files:</p>
-<example>
-MultiviewsMatch Handlers Filters
-</example>
 
+    <example>
+      MultiviewsMatch Handlers Filters
+    </example>
 </usage>
 <seealso><directive module="core">Options</directive></seealso>
+<seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DefaultLanguage</name>
-<description>Sets all files in the given scope to the 
-specified language</description>
-<syntax>DefaultLanguage
-    <em>MIME-lang</em></syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<description>Sets all files in the given scope to the specified
+language</description>
+<syntax>DefaultLanguage <var>MIME-lang</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>DefaultLanguage
-    is only available in Apache 1.3.4 and later.</compatibility>
 
 <usage>
+    <p>The <directive>DefaultLanguage</directive> directive tells Apache
+    that all files in the directive's scope (<em>e.g.</em>, all files
+    covered by the current <directive module="core" type="section"
+    >Directory</directive> container) that don't have an explicit language
+    extension (such as <code>.fr</code> or <code>.de</code> as configured
+    by <directive module="mod_mime">AddLanguage</directive>) should be
+    considered to be in the specified <var>MIME-lang</var> language. This
+    allows entire directories to be marked as containing Dutch content, for
+    instance, without having to rename each file. Note that unlike using
+    extensions to specify languages, <directive>DefaultLanguage</directive>
+    can only specify a single language.</p>
 
-    <p>The DefaultLanguage directive tells Apache that all files in
-    the directive's scope (<em>e.g.</em>, all files covered by the
-    current <code>&lt;Directory&gt;</code> container) that don't
-    have an explicit language extension (such as <code>.fr</code>
-    or <code>.de</code> as configured by <code>AddLanguage</code>)
-    should be considered to be in the specified <em>MIME-lang</em>
-    language. This allows entire directories to be marked as
-    containing Dutch content, for instance, without having to
-    rename each file. Note that unlike using extensions to specify
-    languages, <code>DefaultLanguage</code> can only specify a
-    single language.</p>
-
-    <p>If no <code>DefaultLanguage</code> directive is in force,
+    <p>If no <directive>DefaultLanguage</directive> directive is in force,
     and a file does not have any language extensions as configured
-    by <code>AddLanguage</code>, then that file will be considered
-    to have no language attribute.</p>
+    by <directive module="mod_mime">AddLanguage</directive>, then that file
+    will be considered to have no language attribute.</p>
 
-<example><title>Example</title>
-DefaultLanguage en
-</example>
-
+    <example><title>Example</title>
+      DefaultLanguage en
+    </example>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ModMimeUsePathInfo</name>
-<description>Tells mod_mime to treat path_info components as part of the filename</description>
+<description>Tells <module>mod_mime</module> to treat <code>path_info</code>
+components as part of the filename</description>
 <syntax>ModMimeUsePathInfo On|Off</syntax>
-<contextlist>
-<context>directory</context>
-</contextlist>
+<default>ModMimeUsePathInfo Off</default>
+<contextlist><context>directory</context></contextlist>
 <compatibility>Available in Apache 2.0.41 and later</compatibility>
 
 <usage>
     <p>The <directive>ModMimeUsePathInfo</directive> directive is used to
-    combine the filename with the path_info URL component to apply
-    <module>mod_mime</module>'s directives to the request.  The default
-    value is <code>Off</code> - therefore, the path_info component is
-    ignored.</p>
+    combine the filename with the <code>path_info</code> URL component to
+    apply <module>mod_mime</module>'s directives to the request. The default
+    value is <code>Off</code> - therefore, the <code>path_info</code>
+    component is ignored.</p>
 
     <p>This directive is recommended when you have a virtual filesystem.</p>
 
@@ -664,43 +586,41 @@ DefaultLanguage en
 
     <p>If you have a request for <code>/bar/foo.shtml</code> where
     <code>/bar</code> is a Location and <directive
-    >ModMimeUsePathInfo</directive> is on, <module>mod_mime</module> will
-    treat the incoming request as <code>/bar/foo.shtml</code> and
-    directives like <code>AddOutputFilter INCLUDES .shtml</code> will add
-    the INCLUDES filter to the request. If <directive
-    >ModMimeUsePathInfo</directive> is not set, the INCLUDES filter will
-    not be added.</p>
+    >ModMimeUsePathInfo</directive> is <code>On</code>,
+    <module>mod_mime</module> will treat the incoming request as
+    <code>/bar/foo.shtml</code> and directives like <code>AddOutputFilter
+    INCLUDES .shtml</code> will add the <code>INCLUDES</code> filter to the
+    request. If <directive>ModMimeUsePathInfo</directive> is not set, the
+    <code>INCLUDES</code> filter will not be added.</p>
 </usage>
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveCharset</name>
 <description>Removes any character set associations for a set of file
 extensions</description>
-<syntax>RemoveCharset
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>RemoveCharset is
-    only available in Apache 2.0.24 and later.</compatibility>
+<syntax>RemoveCharset <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>RemoveCharset is only available in Apache 2.0.24 and
+later.</compatibility>
 
 <usage>
-    <p>The <code>RemoveCharset</code> directive removes any
+    <p>The <directive>RemoveCharset</directive> directive removes any
     character set associations for files with the given extensions.
     This allows <code>.htaccess</code> files in subdirectories to
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-<example><title>Example</title>
-RemoveCharset .html .shtml
-</example>
-
+    <example><title>Example</title>
+      RemoveCharset .html .shtml
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -708,116 +628,101 @@ RemoveCharset .html .shtml
 <name>RemoveEncoding</name>
 <description>Removes any content encoding associations for a set of file
 extensions</description>
-<syntax>RemoveEncoding
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>RemoveEncoding
-    is only available in Apache 1.3.13 and later.</compatibility>
+<syntax>RemoveEncoding <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
-
-    <p>The <code>RemoveEncoding</code> directive removes any
+    <p>The <directive>RemoveEncoding</directive> directive removes any
     encoding associations for files with the given extensions. This
     allows <code>.htaccess</code> files in subdirectories to undo
     any associations inherited from parent directories or the
     server config files. An example of its use might be:</p>
 
-
-<example><title>/foo/.htaccess:</title>
-<pre>
-AddEncoding x-gzip .gz
-AddType text/plain .asc
-&lt;Files *.gz.asc&gt;
-  RemoveEncoding .gz
-&lt;/Files&gt;
-</pre></example>
+    <example><title>/foo/.htaccess:</title>
+      AddEncoding x-gzip .gz<br />
+      AddType text/plain .asc<br />
+      &lt;Files *.gz.asc&gt;<br />
+      <indent>
+        RemoveEncoding .gz<br />
+      </indent>
+      &lt;/Files&gt;
+    </example>
 
     <p>This will cause <code>foo.gz</code> to be marked as being
     encoded with the gzip method, but <code>foo.gz.asc</code> as an
     unencoded plaintext file.</p>
 
-    <p><strong>Note:</strong>RemoveEncoding directives are processed
-    <em>after</em> any AddEncoding directives, so it is possible they
-    may undo the effects of the latter if both occur within the
-    same directory configuration.</p>
+    <note><title>Note</title>
+      <p><directive>RemoveEncoding</directive> directives are processed
+      <em>after</em> any <directive module="mod_mime">AddEncoding</directive>
+      directives, so it is possible they may undo the effects of the latter
+      if both occur within the same directory configuration.</p>
+    </note>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 </usage>
 </directivesynopsis>
-
 
 <directivesynopsis>
 <name>RemoveHandler</name>
 <description>Removes any handler associations for a set of file
 extensions</description>
-<syntax>RemoveHandler
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>RemoveHandler is
-    only available in Apache 1.3.4 and later.</compatibility>
+<syntax>RemoveHandler <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
-
-    <p>The <code>RemoveHandler</code> directive removes any handler
-    associations for files with the given extensions. This allows
+    <p>The <directive>RemoveHandler</directive> directive removes any
+    handler associations for files with the given extensions. This allows
     <code>.htaccess</code> files in subdirectories to undo any
     associations inherited from parent directories or the server
     config files. An example of its use might be:</p>
 
-<example><title>/foo/.htaccess:</title>
-AddHandler server-parsed .html
-</example>
+    <example><title>/foo/.htaccess:</title>
+      AddHandler server-parsed .html
+    </example>
 
-<example><title>/foo/bar/.htaccess:</title>
-RemoveHandler .html
-</example>
+    <example><title>/foo/bar/.htaccess:</title>
+      RemoveHandler .html
+    </example>
 
     <p>This has the effect of returning <code>.html</code> files in
     the <code>/foo/bar</code> directory to being treated as normal
-    files, rather than as candidates for parsing (see the <a
-    href="mod_include.html"><code>mod_include</code></a>
-    module).</p>
+    files, rather than as candidates for parsing (see the <module
+    >mod_include</module> module).</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 </usage>
 </directivesynopsis>
-
 
 <directivesynopsis>
 <name>RemoveInputFilter</name>
 <description>Removes any input filter associations for a set of file
 extensions</description>
-<syntax>RemoveInputFilter
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>RemoveInputFilter is only available in Apache 
-2.0.26 and later.</compatibility>
+<syntax>RemoveInputFilter <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>RemoveInputFilter is only available in Apache 2.0.26 and
+later.</compatibility>
 
 <usage>   
-
-    <p>The <code>RemoveInputFilter</code> directive removes any
+    <p>The <directive>RemoveInputFilter</directive> directive removes any
     input filter associations for files with the given extensions.
     This allows <code>.htaccess</code> files in subdirectories to
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-
 </usage>
 </directivesynopsis>
 
@@ -825,26 +730,22 @@ extensions</description>
 <name>RemoveLanguage</name>
 <description>Removes any language associations for a set of file
 extensions</description>
-<syntax>RemoveLanguage
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>RemoveLanguage
-    is only available in Apache 2.0.24 and later.</compatibility>
-
+<syntax>RemoveLanguage <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>RemoveLanguage is only available in Apache 2.0.24 and
+later.</compatibility>
 
 <usage>
-
-    <p>The <code>RemoveLanguage</code> directive removes any
+    <p>The <directive>RemoveLanguage</directive> directive removes any
     language associations for files with the given extensions. This
     allows <code>.htaccess</code> files in subdirectories to undo
     any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 </usage>
 </directivesynopsis>
@@ -853,127 +754,115 @@ extensions</description>
 <name>RemoveOutputFilter</name>
 <description>Removes any output filter associations for a set of file
 extensions</description>
-<syntax>RemoveOutputFilter
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<override></override>
-<compatibility>RemoveOutputFilter is only available in Apache 
-2.0.26 and later.</compatibility>
+<syntax>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>RemoveOutputFilter is only available in Apache 2.0.26 and
+later.</compatibility>
 
 <usage>    
-
-    <p>The <code>RemoveOutputFilter</code> directive removes any
+    <p>The <directive>RemoveOutputFilter</directive> directive removes any
     output filter associations for files with the given extensions.
     This allows <code>.htaccess</code> files in subdirectories to
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
     <example><title>Example</title>
-    RemoveOutputFilter shtml
+      RemoveOutputFilter shtml
     </example>
 </usage>
-
 <seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
 </directivesynopsis>
-
 
 <directivesynopsis>
 <name>RemoveType</name>
 <description>Removes any content type associations for a set of file
 extensions</description>
-<syntax>RemoveType
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<override></override>
-<compatibility>RemoveType is
-    only available in Apache 1.3.13 and later.</compatibility>
+<syntax>RemoveType <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
-    <p>The <directive>RemoveType</directive> directive removes any MIME type
-    associations for files with the given extensions. This allows
+    <p>The <directive>RemoveType</directive> directive removes any MIME
+    type associations for files with the given extensions. This allows
     <code>.htaccess</code> files in subdirectories to undo any
     associations inherited from parent directories or the server
     config files. An example of its use might be:</p>
 
-<example><title>/foo/.htaccess:</title>
-RemoveType .cgi
-</example>
+    <example><title>/foo/.htaccess:</title>
+      RemoveType .cgi
+    </example>
 
     <p>This will remove any special handling of <code>.cgi</code>
     files in the <code>/foo/</code> directory and any beneath it,
-    causing the files to be treated as being of the <a
-    href="core.html#defaulttype">default type</a>.</p>
+    causing the files to be treated as being of the <directive
+    module="core">DefaultType</directive>.</p>
 
-    <note><strong>Note:</strong><directive>RemoveType</directive> directives
-    are processed <em>after</em> any <directive>AddType</directive>
-    directives, so it is possible they may undo the effects of the
-    latter if both occur within the same directory
-    configuration.</note>
+    <note><title>Note</title>
+      <p><directive>RemoveType</directive> directives are processed
+      <em>after</em> any <directive module="mod_mime">AddType</directive>
+      directives, so it is possible they may undo the effects of the
+      latter if both occur within the same directory configuration.</p>
+    </note>
 
-    <p>The <em>extension</em> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>TypesConfig</name>
-<description>The location of the mime.types file</description>
-<syntax>TypesConfig <em>file-path</em></syntax>
+<description>The location of the <code>mime.types</code> file</description>
+<syntax>TypesConfig <var>file-path</var></syntax>
 <default>TypesConfig conf/mime.types</default>
-<contextlist>
-<context>server config</context>
-</contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
-
-    <p>The TypesConfig directive sets the location of the MIME types
-    configuration file. <em>Filename</em> is relative to the <a
-    href="core.html#serverroot">ServerRoot</a>. This file sets the
-    default list of mappings from filename extensions to content
-    types. Most administrators use the provided
-    <code>mime.types</code> file, which associates common filename
-    extensions with IANA registered content types. The current list is
-    maintained at
-    <code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>. This
-    simplifies the <code>httpd.conf</code> file by providing the
+    <p>The <directive>TypesConfig</directive> directive sets the location
+    of the MIME types configuration file. <var>File-path</var> is relative
+    to the <directive module="core">ServerRoot</directive>. This file sets
+    the default list of mappings from filename extensions to content
+    types. Most administrators use the provided <code>mime.types</code>
+    file, which associates common filename extensions with IANA registered
+    content types. The current list is maintained at <a href=
+    "http://www.isi.edu/in-notes/iana/assignments/media-types/media-types"
+    >http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</a>.
+    This simplifies the <code>httpd.conf</code> file by providing the
     majority of media-type definitions, and may be overridden by
     <directive module="mod_mime">AddType</directive> directives as
-    needed.  You should not edit the <code>mime.types</code> file,
-    because it may be replaced when you upgrade your server.</p>
-   
+    needed. You should not edit the <code>mime.types</code> file, because
+    it may be replaced when you upgrade your server.</p>
+
     <p>The file contains lines in the format of the arguments to
     an <directive module="mod_mime">AddType</directive> directive:</p>
 
     <example>
-      MIME-type extension extension ...
+      <var>MIME-type</var> [<var>extension</var>] ...
     </example>
 
-    <p>
-    The case of the extension does not matter. Blank lines, and lines
-    beginning with a hash character (`#') are ignored. </p>
+    <p>The case of the extension does not matter. Blank lines, and lines
+    beginning with a hash character (<code>#</code>) are ignored.</p>
 
-    <note>Please do not send requests to the Apache HTTP Server Project
-    to add any new entries in the distributed mime.types file
-    unless (1) they are already registered with IANA, and (2) they
-    use widely accepted, non-conflicting filename extensions across
-    platforms. category/x-subtype requests will be automatically
-    rejected, as will any new two-letter extensions as they will
-    likely conflict later with the already crowded language and
-    character set namespace.</note>
-
+    <note>
+      Please do <strong>not</strong> send requests to the Apache HTTP
+      Server Project to add any new entries in the distributed
+      <code>mime.types</code> file unless (1) they are already
+      registered with IANA, and (2) they use widely accepted,
+      non-conflicting filename extensions across platforms.
+      <code>category/x-subtype</code> requests will be automatically
+      rejected, as will any new two-letter extensions as they will
+      likely conflict later with the already crowded language and
+      character set namespace.
+    </note>
 </usage>
 <seealso><module>mod_mime_magic</module></seealso>
 </directivesynopsis>
-</modulesynopsis>
 
+</modulesynopsis>
