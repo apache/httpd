@@ -241,7 +241,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     disable Base modules with the
     <code>--disable-<var>module</var></code> option.  Be careful when
     using these options, since <code>configure</code> cannot warn you
-    if the module you specify does not exit; it will simply ignore the
+    if the module you specify does not exist; it will simply ignore the
     option.</p>
 
     <p>In addition, it is sometimes necessary to provide the
