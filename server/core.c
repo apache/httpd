@@ -133,10 +133,19 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
         conf->d = apr_pstrcat(a, dir, "/", NULL);
     }
     conf->d_is_fnmatch = conf->d ? (apr_is_fnmatch(conf->d) != 0) : 0;
+
     /* On all platforms, "/" is (at minimum) a faux root */
     conf->d_is_absolute = conf->d ? (ap_os_is_path_absolute(a, conf->d) 
                                       || (strcmp(conf->d, "/") == 0)) : 0;
-    conf->d_components = conf->d ? ap_count_dirs(conf->d) : 0;
+
+    /* Make this explicit - the "/" root has 0 elements, that is, we
+     * will always merge it, and it will always sort and merge first.
+     * All others are sorted and tested by the number of slashes.
+     */
+    if (!conf->d || strcmp(conf->d, "/") == 0)
+        conf->d_components = 0;
+    else
+        conf->d_components = ap_count_dirs(conf->d);
 
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
@@ -1552,6 +1561,13 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     arg=apr_pstrndup(cmd->pool, arg, endp-arg);
 
+    if (!arg) {
+        if (thiscmd->cmd_data)
+            return "<DirectoryMatch > block must specify a path";
+        else
+            return "<Directory > block must specify a path";
+    }
+
     cmd->path = ap_getword_conf(cmd->pool, &arg);
     cmd->override = OR_ALL|ACCESS_CONF;
 
@@ -1560,27 +1576,22 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     }
     else if (!strcmp(cmd->path, "~")) {
 	cmd->path = ap_getword_conf(cmd->pool, &arg);
+        if (!cmd->path) {
+            return "<Directory ~ > block must specify a path";
 	r = ap_pregcomp(cmd->pool, cmd->path, REG_EXTENDED|USE_ICASE);
     }
-#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
     else if (strcmp(cmd->path, "/") == 0) {
-        /* Treat 'default' path / as an inalienable root */
+        /* Treat 'default' path "/" as the inalienable root */
         cmd->path = apr_pstrdup(cmd->pool, cmd->path);
     }
-#endif
-#if defined(HAVE_UNC_PATHS)
-    else if (strcmp(cmd->path, "//") == 0) {
-        /* Treat UNC path // as an inalienable root */
-        cmd->path = apr_pstrdup(cmd->pool, cmd->path);
-    }
-#endif
     else {
         char *newpath;
 	/* Ensure that the pathname is canonical */
         if (apr_filepath_merge(&newpath, NULL, cmd->path, 
-                               APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS)
-    	    return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
-			       "\"> is invalid.", NULL);
+                               APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS) {
+            return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
+                               "\"> path is invalid.", NULL);
+        }
         cmd->path = newpath;
     }
 

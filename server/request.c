@@ -391,9 +391,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
     int res;
     unsigned i, num_dirs;
     int j, test_filename_len;
-#if defined(HAVE_UNC_PATHS) || defined(NETWARE)
     unsigned iStart = 1;
-#endif
     ap_conf_vector_t *entry_config;
     ap_conf_vector_t *this_conf;
     core_dir_config *entry_core;
@@ -555,27 +553,11 @@ AP_DECLARE(int) directory_walk(request_rec *r)
         iStart = 2;
 #endif
 
-#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
-    /* Should match <Directory> sections starting from '/', not 'e:/' 
-     * (for example).  WIN32/OS2/NETWARE do not have a single root directory,
-     * they have one for each filesystem.  Traditionally, Apache has treated 
-     * <Directory /> permissions as the base for the whole server, and this 
-     * tradition should probably be preserved. 
-     *
-     * NOTE: MUST SYNC WITH ap_make_dirstr_prefix() CHANGE IN src/main/util.c
+    /* i keeps track of how many segments we are testing
+     * j keeps track of which section we're on, see core_reorder_directories 
      */
-    if (test_filename[0] == '/')
-        i = 1;
-    else
-        i = 0;
-#else
-    /* Normal File Systems are rooted at / */
-    i = 1;
-#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
-
-    /* j keeps track of which section we're on, see core_reorder_directories */
     j = 0;
-    for (; i <= num_dirs; ++i) {
+    for (i = 1; i <= num_dirs; ++i) {
         int overrides_here;
         core_dir_config *core_dir = ap_get_module_config(per_dir_defaults,
                                                          &core_module);
@@ -591,11 +573,8 @@ AP_DECLARE(int) directory_walk(request_rec *r)
          * permissions appropriate to the *parent* directory...
          */
 
-#if defined(HAVE_UNC_PATHS) || defined(NETWARE)
-        /* Test only legal names against the real filesystem */
-        if (i >= iStart)
-#endif
-        if ((res = check_symlinks(test_dirname, core_dir->opts, r->pool))) {
+        /* Test only real names (after the root) against the real filesystem */
+        if ((i > iStart) && (res = check_symlinks(test_dirname, core_dir->opts, r->pool))) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                         "Symbolic link not allowed: %s", test_dirname);
             return res;
@@ -613,22 +592,19 @@ AP_DECLARE(int) directory_walk(request_rec *r)
             entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
-            if (entry_core->r
-		|| !entry_core->d_is_absolute
-#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
-    /* To account for the top-level "/" directory when i == 0 
-     * XXX: The net test may be wrong... may fail ap_os_is_path_absolute
-     */
-                || (entry_core->d_components > 1
-                    && entry_core->d_components > i)
-#else
-                || entry_core->d_components > i
-#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
-                )
+            if (entry_core->r || !entry_core->d_is_absolute
+                || entry_core->d_components > i)
                 break;
 
             this_conf = NULL;
-            if (entry_core->d_is_fnmatch) {
+            /* We will always add in '0' element components, e.g. plain old
+             * <Directory >, and <Directory "/"> is classified as zero 
+             * so that Win32/Netware/OS2 etc all pick that up.
+             */
+            if (!entry_core->d_components) {
+                this_conf = entry_config;
+            }
+            else if (entry_core->d_is_fnmatch) {
                 if (!apr_fnmatch(entry_dir, test_dirname, FNM_PATHNAME)) {
                     this_conf = entry_config;
                 }
@@ -643,25 +619,13 @@ AP_DECLARE(int) directory_walk(request_rec *r)
                 core_dir = ap_get_module_config(per_dir_defaults,
                                                 &core_module);
             }
-#if defined(HAVE_DRIVE_LETTERS) || defined(NETWARE)
-            /* So that other top-level directory sections (e.g. "e:/") aren't
-             * skipped when i == 0
-             * XXX: I don't get you here, Tim... That's a level 1 section, but
-             *      we are at level 0. Did you mean fast-forward to the next?
-             */
-            else if (!i)
-                break;
-#endif /* def HAVE_DRIVE_LETTERS || NETWARE */
         }
         overrides_here = core_dir->override;
 
         /* If .htaccess files are enabled, check for one. */
 
-#if defined(HAVE_UNC_PATHS) || defined(NETWARE)
         /* Test only legal names against the real filesystem */
-        if (i >= iStart)
-#endif
-        if (overrides_here) {
+        if ((i >= iStart) && overrides_here) {
             ap_conf_vector_t *htaccess_conf = NULL;
 
             res = ap_parse_htaccess(&htaccess_conf, r, overrides_here,
@@ -791,18 +755,17 @@ AP_DECLARE(int) directory_walk(request_rec *r)
         buf = apr_palloc(r->pool, buflen);
         strcpy (buf, r->filename);
         r->filename = buf;
+        r->finfo.valid = APR_FINFO_TYPE;
+        r->finfo.filetype = APR_DIR; /* It's the root, of course it's a dir */
     }
     else {
-        return HTTP_FORBIDDEN;
-    }
-    r->finfo.valid = APR_FINFO_TYPE;
-    r->finfo.filetype = APR_DIR; /* It's the root, of course it's a dir */
-
-    /* Fake filenames (i.e. proxy:) only match Directory sections.
-     */
-    if (rv == APR_EBADPATH)
-    {
         const char *entry_dir;
+
+        /* Fake filenames (i.e. proxy:) only match Directory sections.
+         */
+        if (rv != APR_EBADPATH)
+            return HTTP_FORBIDDEN;
+        }
 
         for (sec = 0; sec < num_sec; ++sec) {
 
@@ -842,7 +805,7 @@ AP_DECLARE(int) directory_walk(request_rec *r)
      * sec keeps track of which section we're on, since sections are
      *     ordered by number of segments. See core_reorder_directories 
      */
-    seg = 1; 
+    seg = ap_count_dirs(r->filename);
     sec = 0;
     do {
         int overrides_here;
@@ -851,40 +814,43 @@ AP_DECLARE(int) directory_walk(request_rec *r)
         
         /* We have no trailing slash, but we sure would appreciate one...
          */
-        if (seg > 1)
+        if (!sec && r->filename[strlen(r->filename)-1] != '/')
             strcat(r->filename, "/");
 
         /* Begin *this* level by looking for matching <Directory> sections
          * from the server config.
          */
         for (; sec < num_sec; ++sec) {
-            char *entry_dir;
+            const char *entry_dir;
 
             entry_config = sec_ent[sec];
             entry_core = ap_get_module_config(entry_config, &core_module);
             entry_dir = entry_core->d;
 
-            /* No more possible matches? */
+            /* No more possible matches for this many segments? 
+             * We are done when we find relative/regex/longer components.
+             */
             if (entry_core->r || !entry_core->d_is_absolute
                               || entry_core->d_components > seg)
                 break;
 
-            this_conf = NULL;
-            if (entry_core->d_is_fnmatch) {
-                if (!apr_fnmatch(entry_dir, r->filename, FNM_PATHNAME)) {
-                    this_conf = entry_config;
-                }
+            /* We will never skip '0' element components, e.g. plain old
+             * <Directory >, and <Directory "/"> are classified as zero 
+             * so that Win32/Netware/OS2 etc all pick them up.
+             * Otherwise, skip over the mismatches.
+             */
+            if (entry_core->d_components
+                  && (entry_core->d_is_fnmatch
+                        ? (apr_fnmatch(entry_dir, r->filename, FNM_PATHNAME) != APR_SUCCESS)
+                        : (strcmp(r->filename, entry_dir) != 0)) {
+                continue;
             }
-            else if (!strcmp(r->filename, entry_dir))
-                this_conf = entry_config;
 
-            if (this_conf) {
-                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                            per_dir_defaults,
-                                                            this_conf);
-                core_dir = ap_get_module_config(per_dir_defaults,
+            per_dir_defaults = ap_merge_per_dir_configs(r->pool,
+                                                        per_dir_defaults,
+                                                        entry_config);
+            core_dir = ap_get_module_config(per_dir_defaults,
                                                 &core_module);
-            }
         }
         overrides_here = core_dir->override;
 
