@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/06 15:31:40 $]
+Last modified at [$Date: 2002/05/06 16:14:39 $]
 
 Release:
 
@@ -395,6 +395,9 @@ EXPERIMENTAL MODULES:
       See RFC2616 section 14.9.1
 
     * mod_cache: CacheEnable/CacheDisable should accept regular expressions.
+
+    * mod_cache: Fix dependency on ATOMIC operators. Need
+      APR_HAS_ATOMIC_* feature macros.
 
     * mod_disk_cache: Implement garbage collection
 
