@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.ja"> ]
 >
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.12.2.5 -->
+<!-- English revision: 1.12.2.12 -->
 
 <sitemap metafile="sitemap.xml.meta">
 
@@ -12,15 +12,14 @@
 <summary>
 <p>このページは現時点で利用可能な
 <a href="./">Apache HTTP サーババージョン 2.0 のドキュメンテーション</a>
-の一覧です。
-</p>
+の一覧です。</p>
 </summary>
 
 <category id="release">
 <title>リリースのメモ</title>
 <page href="upgrading.html">1.3 から 2.0 へのアップグレード</page>
 <page href="new_features_2_0.html">Apache 2.0 の新機能</page>
-<page href="license.html">Apache のライセンス</page>
+<page href="license.html">Apache License</page>
 </category>
 
 <category id="using">
@@ -61,7 +60,8 @@
 
 <category id="faq">
 <title>Apache サーバのよくある質問</title>
-<page separate="yes" href="faq/">概略</page>
+<page href="faq/">概略</page>
+<page separate="yes" href="faq/all_in_one.html">1 ページ版</page>
 <page href="faq/support.html">サポート</page>
 </category>
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.4 -->
+<!-- English revision: 1.1.2.4 -->
 
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Apache HTTP サーバ バージョン 2.1 ドキュメント</title>
+<title>Apache HTTP サーバ バージョン 2.0 ドキュメント</title>
 
 <category id="release"><title>リリースノート</title>
     <page href="new_features_2_0.html">Apache 2.0 の新機能</page>

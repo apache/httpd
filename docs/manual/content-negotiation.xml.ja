@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="content-negotiation.xml.meta">
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.1.2.5 -->
 
 <title>コンテントネゴシエーション</title>
 
@@ -178,10 +178,11 @@
 <section id="multiviews"><title>Multiviews</title>
 
     <p><code>MultiViews</code> はディレクトリ毎のオプションで、
+    <code>httpd.conf</code>ファイルの
     <directive module="core" type="section">Directory</directive>, 
     <directive module="core" type="section">Location</directive>, 
     <directive module="core" type="section">Files</directive>
-    や、(<directive module="core">AllowOverride</directive>
+    セクション中や、(<directive module="core">AllowOverride</directive>
     が適切な値に 設定されていると) <code>.htaccess</code>
     ファイルで <directive module="core">Options</directive>
     ディレクティブによって設定することができます。

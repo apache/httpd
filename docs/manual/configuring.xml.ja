@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="configuring.xml.meta">
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.5.2.2 -->
 
   <title>設定ファイル</title>
 

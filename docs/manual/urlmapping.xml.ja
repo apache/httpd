@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.3.2.4 -->
 
 <manualpage metafile="urlmapping.xml.meta">
 
@@ -177,11 +177,11 @@
 <example>RedirectMatch permanent ^/$
       http://www.example.com/startpage.html</example>
 
-    <p>あるいは、一時的にサイトのすべてのページを一つのページへリダイレクトする
-    ときは、以下を使います:</p>
+    <p>あるいは、一時的にサイトのすべてのページを他のサイトの特定の
+    ページへリダイレクトするときは、以下を使います:</p>
 
 <example>RedirectMatch temp .*
-      http://www.example.com/startpage.html</example>
+      http://othersite.example.com/startpage.html</example>
 </section>
 
 <section id="proxy"><title>リバースプロキシ</title>

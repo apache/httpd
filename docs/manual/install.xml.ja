@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="install.xml.meta">
-<!-- English revision: 1.11.2.3 -->
+<!-- English revision: 1.11.2.7 -->
 
   <title>コンパイルとインストール</title>
 
@@ -25,8 +25,8 @@
 
 </summary>
 
-<seealso><a href="invoking.html">Apache の起動</a></seealso>
-<seealso><a href="stopping.html">停止と再起動</a></seealso>
+<seealso><a href="invoking.html">Apacheの起動</a></seealso>
+<seealso><a href="stopping.html">Apacheの停止と再起動</a></seealso>
 
 <section id="overview"><title>概要 (せっかちな人向け)</title>
 
@@ -139,10 +139,11 @@
 
 <section id="download"><title>ダウンロード</title>
 
-    <p>Apache はいくつかのミラーのリストがある <a
-    href="http://httpd.apache.org/download.cgi">Apache HTTP
-    サーバダウンロードサイト</a>でダウンロードできます。
-    そこには、リリースされた最新の安定版があります。</p>
+    <p>Apache は <a
+    href="http://www.apache.org/dist/httpd/">Apache Software
+    Foundation ダウンロードサイト</a>からダウンロードできますし、
+    同じ場所に幾つかのミラーサイトもリストしています。
+    ここから最新の安定版が手に入ります。</p>
 
     <p>ダウンロード後、特にミラーサイトを使った場合は、
     ダウンロードしたものが Apache HTTP 
@@ -150,8 +151,8 @@
     検証することが重要です。これはダウンロードした tarball の PGP 署名を
     テストすることによって検証します。
     これは二つの段階があります。
-    まず <a href="http://www.apache.org/dist/httpd/"><code>KEYS</code></a>
-    ファイルも Apache 配布サイト
+    まず <a href="http://www.apache.org/dist/httpd/KEYS"><code>KEYS</code></a>
+    ファイルを <a href="http://www.apache.org/dist/httpd/">Apache 配布サイト</a>
     からダウンロードしてください。(<code>KEYS</code> ファイル自体が
     改竄されていないことを確実にするために、以前の Apache 
     配布から取り出したファイルを使ったり、
@@ -169,9 +170,9 @@
     PGP 署名は必ず <a
     href="http://httpd.apache.org/download.cgi">メインの Apache
     ウェブサイト</a>から取得してください。
-    署名ファイルへのリンクは対応するダウンロードリンクの次にあり、
+    署名ファイルへのリンクは対応するダウンロードリンクの隣にあり、また
     <a href="http://www.apache.org/dist/httpd/">Apache
-    配布サイト</a>の特定のディレクトリにもあるかもしれません。
+    配布サイト</a>の特定のディレクトリで見つけることもできるでしょう。
     署名ファイルの名前は、ソースファイルの tarball と同じ名前に
     <code>.asc</code> を付加したものになっています。
     以下のコマンド (やっぱり pgp のバージョンに依存) のどれか一つで、
@@ -493,6 +494,13 @@
 
       <dd>MPM モジュール <em>NAME</em> を選択します。</dd>
     </dl>
+
+    <p><var>mpm_name</var> という MPM を有効にするには次のようにします。</p>
+
+<example>
+     ./configure --with-mpm=<var>mpm_name</var>
+</example>
+
 </section>
 
 <section id="dbm"><title>DBM</title>
@@ -571,7 +579,7 @@
 
     <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
     または、<a
-    href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>
+    href="http://httpd.apache.org/docs-2.1/">http://httpd.apache.org/docs-2.1/</a>
     にあるマニュアル最新版、<a
     href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </section>

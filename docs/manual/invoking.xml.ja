@@ -2,13 +2,13 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="invoking.xml.meta">
-<!-- English revision: 1.2.2.2 -->
+<!-- English revision: 1.2.2.5 -->
 
   <title>Apache の起動</title>
 
 <summary>
     <p>Windows 上では、Apache は通常は
-    Windows NT, 2000, XP ではサービスとして、Windows 95, ME 
+    Windows NT, 2000, XP ではサービスとして、Windows 9x, ME 
     ではコンソールアプリケーションとして実行されます。
     詳細に関しては、「<a href="platform/windows.html#winsvc">
     サービスとして実行する</a>」と「<a 

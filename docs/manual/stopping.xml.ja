@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.2.2.3 -->
+<!-- English revision: 1.2.2.6 -->
 <manualpage metafile="stopping.xml.meta">
 
   <title>停止と再起動</title>
 
 <summary>
     <p>この文書では Unix に類似したシステムでの
-    Apache の停止と再起動について扱っています。Windows で Apache を制御するための
-    情報として、Windows NT, 2000, XP の
-    ユーザは <a
-    href="platform/windows.html#winsvc">Apache をサービスとして実行する</a>を、
-    Windows 9x と ME のユーザは <a
-    href="platform/windows.html#wincons">Apache をコンソールアプリとして
-    実行する</a>を参照してください。</p>
+    Apache の停止と再起動について扱っています。
+    Windows NT, 2000, XP ユーザは<a
+    href="platform/windows.html#winsvc">サービスとして
+    Apache を実行する</a>で、Windows 9x, MEユーザは<a
+    href="platform/windows.html#wincons">コンソールアプリケーションとして
+    Apache を実行する</a>で、
+    これらのプラットホームでの使用方法をご覧下さい。</p>
 </summary>
 
 <seealso><a href="programs/httpd.html">httpd</a></seealso>
@@ -35,7 +35,9 @@
     に書かれています。これはつまり、親以外のプロセスに
     シグナルを送る必要すらない、ということです。
     親プロセスに送ることができる 3 種類のシグナルがあります:
-    <code>TERM</code>, <code>HUP</code>, <code>USR1</code>
+    <code><a href="#term">TERM</a></code>,
+    <code><a href="#hup">HUP</a></code>, 
+    <code><a href="#graceful">USR1</a></code>
     です。これらの説明については続きをご覧下さい。</p>
 
     <p>親プロセスにシグナルを送るには、
@@ -45,7 +47,7 @@
 
     <p><code>httpd</code> プロセスにシグナルを送る 2 番目の方法は
     <code>-k</code> というコマンドライン引数を使用することです。
-    下で説明されているように、<code>stop</code>, <code>restart</code>,
+    下で説明されているように、<code>stop</code>, <code>restart</code>, 
     <code>graceful</code> を指定できます。
     これらは <a href="programs/httpd.html">httpd</a> の引数ですが、
     制御用のスクリプト <a href="programs/apachectl.html">apachectl</a> を
@@ -92,16 +94,17 @@
     子プロセスが徐々になくなるに従って、
     新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
     そして、これらが新たなリクエストに即座に応答し始めます。</p>
-    <note>特定のプラットホームでは <code>USR1</code> を緩やかな再起動のために
-    使うことができませんが、代わりのシグナル
-    (例えば <code>WINCH</code>) が使用できるでしょう。
+
+    <note>特定のプラットホームでは <code>USR1</code>
+    を緩やかな再起動のために使うことができませんが、代わりのシグナル
+    (例えば WINCH) が使用できるでしょう。
     <code>apachectl graceful</code>
     というコマンドはプラットホームに合ったシグナルを送ります。</note>
 
     <p>このコードは常に
     MPM のプロセス制御ディレクティブの設定を重視しますので、
     クライアントのリクエストを扱うプロセスとスレッドの数を再起動の処理中も
-    適切な値に維持されます。また、次のようにして
+    適切な値に維持されます。。また、次のようにして
     <directive module="mpm_common">StartServers</directive>
     を守ります:
     少なくとも 1 秒後に <directive
@@ -151,7 +154,8 @@
     非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
     root でないため
-    (もしくは <code>httpd</code> が既に必要なポートにバインドしているため)
+    (もしくは実行中の <code>httpd</code>
+    が既に必要なポートにバインドしているため)
     に失敗するでしょう。
     これ以外の理由で起動に失敗したのであれば、
     それは設定ファイルのエラーで、
