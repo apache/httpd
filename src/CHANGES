@@ -1,4 +1,8 @@
 Changes with Apache 1.3.10
+  
+  *) Fixed QUERY_STRING handling for `RewriteRule ... [P]'
+     in per-directory context.
+     [Martin Zeh <martin.zeh@sat1.de>] PR#5073
 
   *) Overhauled mod_rewrite's general substitution function
      (expand_backref_inbuffer): 1. The `$0' backreference is now officially

@@ -1381,9 +1381,7 @@ static int hook_fixup(request_rec *r)
              * (r->path_info was already appended by the
              * rewriting engine because of the per-dir context!)
              */
-            if (r->args != NULL
-                && r->uri == r->unparsed_uri) {
-                /* see proxy_http:proxy_http_canon() */
+            if (r->args != NULL) {
                 r->filename = ap_pstrcat(r->pool, r->filename,
                                          "?", r->args, NULL);
             }
