@@ -1,7 +1,7 @@
 # Extra rules for making DLLs for OS/2
 
 define mkdll
-$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $* $(<:%.c=%.o) $(LIBS_SHLIB) $(<:%.o=%.def) && \
+$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $* $(<:%.c=%.o) $(LIBS_SHLIB) $(LIBS1) $(<:%.o=%.def) && \
 emxbind -b -q -s -h0 -d$(<:%.o=%.def) $* && \
 rm $*
 endef
@@ -111,3 +111,5 @@ userdir.dll: mod_userdir.o mod_userdir.def
 usertrac.dll: mod_usertrack.o mod_usertrack.def
 	$(mkdll)
 
+vhost_al.dll: mod_vhost_alias.o mod_vhost_alias.def
+	$(mkdll)
