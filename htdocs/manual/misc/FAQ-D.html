@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.4 $ ($Date: 1999/09/17 17:31:37 $)
+  $Revision: 1.5 $ ($Date: 1999/12/10 14:56:26 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -356,7 +356,15 @@
   </dl>
   <p>
   in the file.  Correct it if there one there with wrong information, or
-  add one if you don't already have one.  Then try to start the server
+  add one if you don't already have one.
+  </p>
+  <p>
+  Also, make sure that your Windows system has DNS enabled.  See the TCP/IP
+  setup component of the Networking or Internet Options control panel.
+  </p>
+  <p>
+  After verifying that DNS is enabled and that you have a valid hostname
+  in your <samp>ServerName</samp> directive, try to start the server
   again.
   </p>
   <hr>
