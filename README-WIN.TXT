@@ -31,7 +31,7 @@
   -------
 
   Apache should never be used as a production server under any 
-  consumer operating system such as Windows 95, 98, or ME (Millenium 
+  consumer operating system such as Windows 95, 98, or ME (Millennium 
   Edition).  Only Windows NT 4.0 or 2000 should be considered, and only
   with appropriate NTFS file system and user security administration.
   Apache runs on these consumer Windows environments only to 
