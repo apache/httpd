@@ -622,7 +622,7 @@ BEGIN {
 	serverroot = ARGV[2];
 	delete ARGV[2];
 	gsub( /\\/, "/", serverroot );
-	"pwd" | getline root;
+	"cd" | getline root;
 	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
     }
     {
@@ -640,7 +640,7 @@ BEGIN {
 	serverroot = ARGV[2];
 	delete ARGV[2];
 	gsub( /\\/, "/", serverroot );
-	"pwd" | getline root;
+	"cd" | getline root;
 	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
     }
     {
