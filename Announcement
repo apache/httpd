@@ -82,6 +82,8 @@
      * Restore functionality broken by the mod_rewrite security fix:
        The mod_rewrite string arithmetic is corrected for rewrite map.
      * Some possible segfault conditions have been fixed.
+     * Under certain circumstances, Apache did not supply the
+       right response headers when requiring authentication.
        
    The main new features include:
      * New configuration error reporting if the UserDir argument is set
