@@ -978,6 +978,158 @@ API_EXPORT(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
     }
 }
 
+/* Find an HTTP header field list item, as separated by a comma.
+ * The return value is a pointer to the beginning of the non-empty list item
+ * within the original string (or NULL if there is none) and the address
+ * of field is shifted to the next non-comma, non-whitespace character.
+ * len is the length of the item excluding any beginning whitespace.
+ */
+API_EXPORT(const char *) ap_find_list_item(const char **field, int *len)
+{
+    const char *ptr = *field;
+    const char *token;
+    int in_qpair, in_qstr, in_com;
+
+    /* Find first non-comma, non-whitespace byte */
+
+    while (*ptr == ',' || ap_isspace(*ptr))
+        ++ptr;
+
+    token = ptr;
+
+    /* Find the end of this item, skipping over dead bits */
+
+    for (in_qpair = in_qstr = in_com = 0;
+         *ptr && (in_qpair || in_qstr || in_com || *ptr != ',');
+         ++ptr) {
+
+        if (in_qpair) {
+            in_qpair = 0;
+        }
+        else {
+            switch (*ptr) {
+                case '\\': in_qpair = 1;      /* quoted-pair         */
+                           break;
+                case '"' : if (!in_com)       /* quoted string delim */
+                               in_qstr = !in_qstr;
+                           break;
+                case '(' : if (!in_qstr)      /* comment (may nest)  */
+                               ++in_com;
+                           break;
+                case ')' : if (in_com)        /* end comment         */
+                               --in_com;
+                           break;
+                default  : break;
+            }
+        }
+    }
+
+    if ((*len = (ptr - token)) == 0) {
+        *field = ptr;
+        return NULL;
+    }
+
+    /* Advance field pointer to the next non-comma, non-white byte */
+
+    while (*ptr == ',' || ap_isspace(*ptr))
+	++ptr;
+
+    *field = ptr;
+    return token;
+}
+
+/* Retrieve an HTTP header field list item, as separated by a comma,
+ * while stripping insignificant whitespace/comments and lowercasing anything
+ * not in a quoted string.  The return value is a new string containing
+ * the converted list item (empty if it was all comments or NULL if none)
+ * and the address of field is shifted to the next non-comma, non-whitespace.
+ */
+API_EXPORT(char *) ap_get_list_item(pool *p, const char **field)
+{
+    const char *tok_start, *ptr;
+    char *token, *pos;
+    int addspace = 0, in_qpair = 0, in_qstr = 0, in_com = 0, tok_len = 0;
+
+    /* Find the beginning and maximum length of the list item so that
+     * we can allocate a buffer for the new string and reset the field.
+     */
+    if ((tok_start = ap_find_list_item(field, &tok_len)) == NULL) {
+        return NULL;
+    }
+    token = ap_palloc(p, tok_len + 1);
+
+    /* Scan the token again, but this time copy only the good bytes.
+     * We skip extra whitespace and any whitespace around a '=' or ';',
+     * strip comments, and lowercase normal characters not within a
+     * quoted-string or quoted-pair.  The result may be an empty string.
+     */
+    for (ptr = tok_start, pos = token;
+         *ptr && (in_qpair || in_qstr || in_com || *ptr != ',');
+         ++ptr) {
+
+        if (in_qpair) {
+            in_qpair = 0;
+            if (!in_com)
+                *pos++ = *ptr;
+        }
+        else {
+            switch (*ptr) {
+                case '\\': in_qpair = 1;
+                           if (in_com)
+                               break;
+                           if (addspace == 1)
+                               *pos++ = ' ';
+                           *pos++ = *ptr;
+                           addspace = 0;
+                           break;
+                case '"' : if (in_com)
+                               break;
+                           in_qstr = !in_qstr;
+                           if (addspace == 1)
+                               *pos++ = ' ';
+                           *pos++ = *ptr;
+                           addspace = 0;
+                           break;
+                case '(' : if (in_qstr)
+                               *pos++ = *ptr;
+                           else
+                               ++in_com;
+                           break;
+                case ')' : if (in_com)
+                               --in_com;
+                           else
+                               *pos++ = *ptr;
+                           break;
+                case ' ' :
+                case '\t': if (in_com || addspace)
+                               break;
+                           if (in_qstr)
+                               *pos++ = *ptr;
+                           else
+                               addspace = 1;
+                           break;
+                case '=' :
+                case ';' : if (in_com)
+                               break;
+                           if (!in_qstr)
+                               addspace = -1;
+                           *pos++ = *ptr;
+                           break;
+                default  : if (in_com)
+                               break;
+                           if (addspace == 1)
+                               *pos++ = ' ';
+                           *pos++ = in_qstr ? *ptr : ap_tolower(*ptr);
+                           addspace = 0;
+                           break;
+            }
+        }
+    }
+    *pos = '\0';
+
+    return token;
+}
+
 /* Retrieve a token, spacing over it and returning a pointer to
  * the first non-white byte afterwards.  Note that these tokens
  * are delimited by semis and commas; and can also be delimited

@@ -327,4 +327,6 @@ EXPORTS
 	ap_find_opaque_token   @320
 	ap_MD5Encode   @321
 	ap_validate_password   @322
+	ap_find_list_item   @323
+	ap_get_list_item   @324
 

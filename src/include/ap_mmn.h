@@ -203,13 +203,14 @@
  *                        scan_script_header -> ap_scan_script_header_err
  *                      - reordered entries in request_rec that were waiting
  *                        for a non-binary-compatible release.
- * 19990108-1           - add ap_find_opaque_token() for things like ETags
+ * 19990108.1           - add ap_find_opaque_token() for things like ETags
  *   (1.3.5-dev)          which can contain opaque quoted strings, and
  *                        ap_MD5Encode() for MD5 password handling.
- * 19990108-2           - add ap_validate_password() and change ap_MD5Encode()
+ * 19990108.2           - add ap_validate_password() and change ap_MD5Encode()
  *   (1.3.5-dev)          to use a stronger algorithm (which is incompatible
  *                        with the one introduced [but not released] with
  *                        19990108-1).
+ * 19990108.3           - add ap_find_list_item() and ap_get_list_item()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -217,7 +218,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990108
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

@@ -106,6 +106,7 @@ ap_find_command
 ap_find_command_in_modules
 ap_find_last_token
 ap_find_linked_module
+ap_find_list_item
 ap_find_module_name
 ap_find_opaque_token
 ap_find_path_info
@@ -117,6 +118,7 @@ ap_force_library_loading
 ap_get_basic_auth_pw
 ap_get_client_block
 ap_get_gmtoff
+ap_get_list_item
 ap_get_local_host
 ap_get_remote_host
 ap_get_remote_logname
