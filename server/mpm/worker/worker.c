@@ -113,8 +113,6 @@
  */
 
 int ap_threads_per_child=0;         /* Worker threads per child */
-static int ap_max_requests_per_child=0;
-static const char *ap_pid_fname=NULL;
 static int ap_daemons_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
