@@ -540,12 +540,10 @@ struct ap_method_list_t {
  *    REQUEST_NO_BODY          Send 413 error if message has any body
  *    REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
  *    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
- *    REQUEST_CHUNKED_PASS     Pass the chunks to me without removal.
  */
 #define REQUEST_NO_BODY          0
 #define REQUEST_CHUNKED_ERROR    1
 #define REQUEST_CHUNKED_DECHUNK  2
-#define REQUEST_CHUNKED_PASS     3
 
 /* Things which may vary per file-lookup WITHIN a request ---
  * e.g., state of MIME config.  Basically, the name of an object, info
