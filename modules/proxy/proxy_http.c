@@ -93,7 +93,7 @@ int ap_proxy_http_canon(request_rec *r, char *url)
     else {
 	return DECLINED;
     }
-    def_port = ap_default_port_for_scheme(scheme);
+    def_port = apr_uri_default_port_for_scheme(scheme);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
 		 "proxy: HTTP: canonicalising URL %s", url);
@@ -205,7 +205,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     char buffer[HUGE_STRING_LEN];
     char *buf;
     conn_rec *origin = NULL;
-    uri_components uri;
+    apr_uri_components uri;
     proxy_conn_rec *backend;
 
     /* Note: Memory pool allocation.
@@ -252,12 +252,12 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
      */
 
     /* we break the URL into host, port, uri */
-    if (HTTP_OK != ap_parse_uri_components(p, url, &uri)) {
+    if (HTTP_OK != ap_uri_parse_components(p, url, &uri)) {
 	return ap_proxyerror(r, HTTP_BAD_REQUEST,
 			     apr_pstrcat(p,"URI cannot be parsed: ", url, NULL));
     }
     if (!uri.port) {
-	uri.port = ap_default_port_for_scheme(uri.scheme);
+	uri.port = apr_uri_default_port_for_scheme(uri.scheme);
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,

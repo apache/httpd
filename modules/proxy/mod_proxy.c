@@ -244,14 +244,14 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
     /* Note that the domain name always starts with a dot */
     r->parsed_uri.hostname = apr_pstrcat(r->pool, r->parsed_uri.hostname,
 				     domain, NULL);
-    nuri = ap_unparse_uri_components(r->pool,
+    nuri = apr_uri_unparse_components(r->pool,
 				  &r->parsed_uri,
 				  UNP_REVEALPASSWORD);
 
     apr_table_set(r->headers_out, "Location", nuri);
     ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
 		"Domain missing: %s sent to %s%s%s", r->uri,
-		ap_unparse_uri_components(r->pool, &r->parsed_uri,
+		ap_uri_unparse_components(r->pool, &r->parsed_uri,
 		      UNP_OMITUSERINFO),
 		ref ? " from " : "", ref ? ref : "");
 
@@ -478,7 +478,7 @@ static const char *
     ap_str_tolower(p + 3);		/* lowercase hostname */
 
     if (port == -1) {
-	port = ap_default_port_for_scheme(scheme);
+	port = apr_uri_default_port_for_scheme(scheme);
     }
 
     new = apr_array_push(conf->proxies);

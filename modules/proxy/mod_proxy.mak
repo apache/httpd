@@ -257,11 +257,11 @@ DEP_CPP_MOD_P=\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_date.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
-	"..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\
@@ -303,11 +303,11 @@ DEP_CPP_PROXY=\
 	"..\..\include\pcreposix.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
-	"..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\
@@ -350,11 +350,11 @@ DEP_CPP_PROXY_=\
 	"..\..\include\pcreposix.h"\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
-	"..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\
@@ -399,11 +399,11 @@ DEP_CPP_PROXY_H=\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_date.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
-	"..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\
@@ -447,11 +447,11 @@ DEP_CPP_PROXY_U=\
 	"..\..\include\util_cfgtree.h"\
 	"..\..\include\util_date.h"\
 	"..\..\include\util_filter.h"\
-	"..\..\include\util_uri.h"\
 	"..\..\os\win32\os.h"\
-	"..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\srclib\apr-util\include\apr_buckets.h"\
+	"..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\srclib\apr\include\apr.h"\
 	"..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\srclib\apr\include\apr_dso.h"\
