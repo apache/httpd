@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/27 19:23:24 $]
+Last modified at [$Date: 2004/08/27 19:41:21 $]
 
 Release:
 
@@ -161,18 +161,6 @@ PATCHES TO BACKPORT FROM 2.1
        processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/loggers/mod_log_config.c?r1=1.118&r2=1.119
        +1: trawick, nd, jerenkrantz
-
-    *) mod_include: remove "recursive-include" check, it's no longer
-       necessary and forbids legal actions.
-          modules/filters/mod_include.c: r1.296
-       jerenkrantz: ISTR, we forbid recursive checks elsewhere, but I've
-                    completely forgotten where.
-        nd: we stop recursions in the core now (for subrequests and internal
-            redirects). Therefore the check here is no longer necessary.
-       jerenkrantz: Aha.  ap_is_recursion_limit_exceeded() is the function
-                    I was thinking of, but couldn't find.  (I was searching for
-                    'recursive' not 'recursion'.)
-       +1: nd, jerenkrantz, jorton
 
     *) mod_dav: Send an EOS at the end of the multistatus brigade.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/dav/main/mod_dav.c?r1=1.105&r2=1.106
