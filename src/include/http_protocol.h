@@ -148,7 +148,7 @@ API_EXPORT(int) rflush(request_rec *r);
  * (only use outside protocol.c is in getting them configured).
  */
 
-int index_of_response(int status);
+API_EXPORT(int) index_of_response(int status);
 
 /* Reading a block of data from the client connection (e.g., POST arg) */
 
