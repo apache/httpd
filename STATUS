@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/23 23:49:14 $]
+Last modified at [$Date: 2003/07/24 22:30:37 $]
 
 Release:
 
@@ -71,6 +71,7 @@ PATCHES TO PORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.153&r2=1.154
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.154&r2=1.155
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.156&r2=1.157
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.173&r2=1.174
       +1: rederpj, nd
 
     * Replace some of the mutex locking in the worker MPM with
