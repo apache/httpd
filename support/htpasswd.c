@@ -566,7 +566,7 @@ int main(int argc, const char * const argv[])
      * If we're not creating a new file, copy records from the existing
      * one to the temporary file until we find the specified user.
      */
-    if (existing_file) {
+    if (existing_file && !(mask & APHTP_NEWFILE)) {
         if (apr_file_open(&fpw, pwfilename, APR_READ | APR_BUFFERED,
                           APR_OS_DEFAULT, pool) != APR_SUCCESS) {
             apr_file_printf(errfile, "%s: unable to read file %s\n", 
