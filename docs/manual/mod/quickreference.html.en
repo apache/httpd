@@ -45,18 +45,18 @@ selected by MIME-encoding</td></tr>
 <tr><td><a href="mod_autoindex.html#addaltbytype">AddAltByType <var>string</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Alternate text to display for a file, instead of an
 icon selected by MIME content-type</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <em>charset extension</em> 
-[<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions
-    to the specified content charset</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <var>charset</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions to the specified content
+charset</td></tr>
 <tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>charset</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Default character set to be added for a
 response without an explicit character set</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string file</var> [<var>file</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Description to display for a file</td></tr>
-<tr><td><a href="mod_mime.html#addencoding">AddEncoding
-    <em>MIME-enc extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions
-    to the specified encoding type</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addhandler">AddHandler
-    <em>handler-name extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the filename extensions
-to the specified handler</td></tr>
+<tr><td><a href="mod_mime.html#addencoding">AddEncoding <var>MIME-enc</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions to the specified encoding
+type</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#addhandler">AddHandler <var>handler-name</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the filename extensions to the specified
+handler</td></tr>
 <tr><td><a href="mod_autoindex.html#addicon">AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
 ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icon to display for a file selected by name</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
@@ -65,26 +65,22 @@ content-encoding</td></tr>
 <tr><td><a href="mod_autoindex.html#addiconbytype">AddIconByType <var>icon</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icon to display next to files selected by MIME 
 content-type</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addinputfilter">AddInputFilter
-    <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps filename extensions
-    to the filters that will process
-    client requests</td></tr>
-<tr><td><a href="mod_mime.html#addlanguage">AddLanguage
-    <em>MIME-lang extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extension
-to the specified content language</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#addinputfilter">AddInputFilter <var>filter</var>[;<var>filter</var>...]
+<var>extension</var> [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps filename extensions to the filters that will process
+client requests</td></tr>
+<tr><td><a href="mod_mime.html#addlanguage">AddLanguage <var>MIME-lang</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extension to the specified content
+language</td></tr>
 <tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>module-name</var> <var>string</var></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adds additional information to the module
 information displayed by the server-info handler</td></tr>
-<tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter
-    <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps filename
-extensions to the filters that will process
+<tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter <var>filter</var>[;<var>filter</var>...]
+<var>extension</var> [<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps filename extensions to the filters that will process
 responses from the server</td></tr>
 <tr class="odd"><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...] <var>MIME-type</var>
 [<var>MIME-type</var>] ...</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">assigns an output filter to a particular MIME-type</td></tr>
-<tr><td><a href="mod_mime.html#addtype">AddType <em>MIME-type
-    extension</em> [<em>extension</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions
-onto the specified content type</td></tr>
+<tr><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
+type</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps URLs to filesystem locations</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
@@ -242,9 +238,8 @@ switch before dumping core</td></tr>
 a DAV resource</td></tr>
 <tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icon to display for files when no specific icon is
 configured</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage
-    <em>MIME-lang</em></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets all files in the given scope to the 
-specified language</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets all files in the given scope to the specified
+language</td></tr>
 <tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">MIME content-type that will be sent if the
 server cannot determine a type in any other way</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
@@ -410,10 +405,11 @@ using the specified magic file</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle threads available to handle request
 spikes</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells mod_mime to treat path_info components as part of the filename</td></tr>
-<tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch
-    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when 
-searching for a matching file with MultiViews</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> to treat <code>path_info</code>
+components as part of the filename</td></tr>
+<tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
+[Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when searching for
+a matching file with MultiViews</td></tr>
 <tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>addr</var>[:<var>port</var>]</a></td><td /><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Designates an IP address for name-virtual
 hosting</td></tr>
 <tr><td><a href="mod_proxy.html#noproxy">NoProxy <em>host</em> [<em>host</em>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected
@@ -470,26 +466,26 @@ of the current URL</td></tr>
 a different URL</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external temporary redirect asking the client to fetch
 a different URL</td></tr>
-<tr><td><a href="mod_mime.html#removecharset">RemoveCharset
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any character set associations for a set of file
+<tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
+...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any character set associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content encoding associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
+...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content encoding associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removehandler">RemoveHandler
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any handler associations for a set of file
+<tr><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
+...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any handler associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any input filter associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any input filter associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any language associations for a set of file
+<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
+...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any language associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any output filter associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td /><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any output filter associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removetype">RemoveType
-    <em>extension</em> [<em>extension</em>] ...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content type associations for a set of file
+<tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
+...</a></td><td /><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content type associations for a set of file
 extensions</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader set|append|add|unset <var>header</var>
 [<var>value</var>]</a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
@@ -633,7 +629,7 @@ per child process</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>number</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for
 certain events before failing a request</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specifly location of a log file</td></tr>
-<tr><td><a href="mod_mime.html#typesconfig">TypesConfig <em>file-path</em></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The location of the mime.types file</td></tr>
+<tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
 <tr class="odd"><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes variables from the environment</td></tr>
 <tr><td><a href="core.html#usecanonicalname">UseCanonicalName on|off|dns</a></td><td> on </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures how the server determines its own name and
