@@ -924,10 +924,6 @@ static void do_emit_plain(request_rec *r, FILE *f)
     ap_rputs("</PRE>\n", r);
 }
 
-/* See mod_include */
-#define SUB_REQ_STRING	"Sub request to mod_include"
-#define PARENT_STRING	"Parent request to mod_include"
-
 /*
  * Handle the preamble through the H1 tag line, inclusive.  Locate
  * the file with a subrequests.  Process text/html documents by actually
@@ -969,8 +965,6 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		if (! suppress_amble) {
 		    emit_preamble(r, title);
 		}
-		ap_table_add(r->notes, PARENT_STRING, "");
-		ap_table_add(rr->notes, SUB_REQ_STRING, "");
 		/*
 		 * If there's a problem running the subrequest, display the
 		 * preamble if we didn't do it before -- the header file
@@ -1045,8 +1039,6 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 	 */
 	if (rr->content_type != NULL) {
 	    if (!strcasecmp("text/html", rr->content_type)) {
-		ap_table_add(r->notes, PARENT_STRING, "");
-		ap_table_add(rr->notes, SUB_REQ_STRING, "");
 		if (ap_run_sub_req(rr) == OK) {
 		    /* worked... */
 		    suppress_sig = 1;
