@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/05 12:50:23 $]
+Last modified at [$Date: 2002/06/05 15:52:16 $]
 
 Release:
 
@@ -58,16 +58,6 @@ RELEASE SHOWSTOPPERS:
               Yes or no?
       Justin says: This is also related to the chunked input entry (see below).
       Message-ID: <3CFA9315.4030003@apache.org>
-
-    * Win32: httpd won't start.  There was a command line args problem
-      that got fixed, but now something else is wrong.
-      Status: one problem here might be a "" argument being returned from
-      the rewrite_args hook getting caught by Jeff's patch to check
-      args more strictly.
-      Message-ID: <5.1.0.14.2.20020525222410.02a629d0@pop3.rowe-clan.net>
-                  <00ca01c2033e$f1c54c10$a6271b09@sashimi>
-                  <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
-      Analysis:   <00fe01c20b46$4a441fb0$16381b09@sashimi>
 
     * CWD issues
       Message-ID: <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
