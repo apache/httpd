@@ -89,7 +89,6 @@ static apr_status_t ap_queue_destroy(void *data)
      * XXX: We should at least try to signal an error here, it is
      * indicative of a programmer error. -aaron */
     pthread_cond_destroy(&queue->not_empty);
-    pthread_cond_destroy(&queue->not_full);
     pthread_mutex_destroy(&queue->one_big_mutex);
 
     return FD_QUEUE_SUCCESS;
@@ -106,8 +105,6 @@ int ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
     if (pthread_mutex_init(&queue->one_big_mutex, NULL) != 0)
         return FD_QUEUE_FAILURE;
     if (pthread_cond_init(&queue->not_empty, NULL) != 0)
-        return FD_QUEUE_FAILURE;
-    if (pthread_cond_init(&queue->not_full, NULL) != 0)
         return FD_QUEUE_FAILURE;
 
     bounds = queue_capacity + 1;
@@ -136,9 +133,13 @@ int ap_queue_push(fd_queue_t *queue, apr_socket_t *sd, apr_pool_t *p)
         return FD_QUEUE_FAILURE;
     }
 
-    /* Keep waiting until we wake up and find that the queue is not full. */
-    while (ap_queue_full(queue)) {
-        pthread_cond_wait(&queue->not_full, &queue->one_big_mutex);
+    /* If the caller didn't allocate enough slots and tries to push
+     * too many, too bad. */
+    if (ap_queue_full(queue)) {
+        if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
+            return FD_QUEUE_FAILURE;
+        }
+        return FD_QUEUE_OVERFLOW;
     }
 
     queue->data[queue->tail].sd = sd;
@@ -187,9 +188,6 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
         queue->head = (queue->head + 1) % queue->bounds;
     }
     queue->blanks++;
-
-    /* we just consumed a slot, so we're no longer full */
-    pthread_cond_signal(&queue->not_full);
 
     if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
         return FD_QUEUE_FAILURE;

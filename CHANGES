@@ -1,5 +1,14 @@
 Changes with Apache 2.0.26-dev
 
+  *) Cleanup the worker MPM.  We no longer re-use transaction
+     pools.  This incurs less overhead than shuffling the pools
+     around so that they can be re-used.  Remove one of the
+     queue's condition variables.  We just redefined the API to
+     state that you can't try to add more stuff than you allocated
+     segments for.  [Aaron Bannert <aaron@clove.org>]
+
+  *) Fix SSL VPATH builds [Cody Sherr <csherr@covalent.net>]
+
   *) Fixed persistent connections when a request contains a body.
      [Greg Stein]
 

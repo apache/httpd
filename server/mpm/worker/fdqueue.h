@@ -72,6 +72,7 @@
 #define FD_QUEUE_FAILURE -1 /* Needs to be an invalid file descriptor because
                                of queue_pop semantics */
 #define FD_QUEUE_EINTR APR_EINTR
+#define FD_QUEUE_OVERFLOW -2
 
 struct fd_queue_elem_t {
     apr_socket_t      *sd;
@@ -87,7 +88,6 @@ struct fd_queue_t {
     int                blanks;
     pthread_mutex_t    one_big_mutex;
     pthread_cond_t     not_empty;
-    pthread_cond_t     not_full;
     int                cancel_state;
 };
 typedef struct fd_queue_t fd_queue_t;
