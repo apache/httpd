@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) WIN32: Check for binaries by looking for the executable header
+     instead of counting control characters.
+	 [Jim Patterson <Jim.Patterson@Cognos.COM>] PR#1340
+
   *) ap_snprintf() moved from main/util_snprintf.c to ap/ap_snprintf.c
      so the functionality is available to applications other than the
      server itself (like the src/support tools).  [Ken Coar]

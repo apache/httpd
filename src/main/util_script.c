@@ -728,23 +728,10 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 		memmove(interpreter+2,interpreter+i,strlen(interpreter+i)+1);
 	    }
 	    else {
-		/*
-		 * check and see how many control chars. On
-		 * that basis, I will classify it as a text
-		 * or binary file
-		 */
-		int ctrl = 0;
-
-		for (i = 0; i < sz; i++) {
-		    static char *spec = "\r\n\t";
-		    if (iscntrl(interpreter[i]) && !strchr(spec, interpreter[i]))
-			ctrl++;
-		}
-		if (ctrl > sz / 10)
-		    is_binary = 1;
-		else
-		    is_binary = 0;
-
+                        /* Check to see if it's a executable */
+                IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)interpreter;
+                if (hdr->e_magic == IMAGE_DOS_SIGNATURE && hdr->e_cblp < 512)
+                    is_binary = 1;
 	    }
 	}
 
