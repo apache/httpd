@@ -194,9 +194,18 @@ pid_t os_fork(void)
 {
     struct utsname os_version;
 
+    /*
+     * When we run as a normal user (and bypass setuid() and _rini()),
+     * we use the regular fork().
+     */
+    if (getuid() != 0) {
+	return fork();
+    }
+
     if (uname(&os_version) >= 0)
     {
-	/* Old versions (before XPG4 SPEC1170) don't work with Apache
+	/*
+	 * Old versions (before XPG4 SPEC1170) don't work with Apache
 	 * and they require a fork(), not a _rfork()
 	 */
 	if (strcmp(os_version.release, "01.0A") == 0 ||
