@@ -597,9 +597,13 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
         cl = apr_table_get(r->headers_out, "Content-Length");
     }
     if (cl) {
-        size = apr_atoi64(cl);
+        char *errp;
+        if (apr_strtoff(&size, cl, &errp, 10) || *errp || size < 0) {
+            cl = NULL; /* parse error, see next 'if' block */
+        }
     }
-    else {
+
+    if (!cl) {
         /* if we don't get the content-length, see if we have all the 
          * buckets and use their length to calculate the size 
          */
