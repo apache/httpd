@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/01 21:09:40 $]
+Last modified at [$Date: 2001/07/02 13:28:47 $]
 
 Release:
 
@@ -103,6 +103,26 @@ DAEDALUS 2.0 PROBLEMS:
 RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
+
+    * cgi on all platforms is broken.  Specifically, with the addition of 
+      filters, we have lost the ability to flush partially written buffers
+      received from CGI scripts to the network. Apache 1.3 does a 
+      non-blocking read on the pipe from the CGI. If bytes are present,
+      Apache 1.3 keeps reading until one of three conditions are
+      hit: 
+      1. output buffer fills up (Apache should flush to network)
+      2. receives an EOF on the pipe (ditto & cleanup)
+      3. receives EWOULDBLOCK on the non-blocking read
+      In case 3, Apache should flush the network buffer then do a
+      blocking read on the pipe. Apache 2.0 always does a blocking read
+      (in the content length filter), thus never gets the chance to
+      flush the network i/o buffer.
+      
+    * Rotatelogs on Windows sometimes is not terminated when Apache
+      goes down hard. When this occurs, Apache will not serve requests
+      after it is restarted. The problem is that the old rotatelogs
+      is holding the listening socket. netstat -an shows two listeners
+      on the webserver port.
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
