@@ -2,6 +2,9 @@ Changes with Apache 2.1.3
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
+     [Max Bowsher <maxb ukf.net>]
+
   *) mod_proxy: Fix ProxyRemoteMatch directive.  PR 33170.
      [Rici Lake <rici ricilake.net>]
 
