@@ -886,15 +886,23 @@ static const char *set_error_document(cmd_parms *cmd, core_dir_config *conf,
         return ap_pstrcat(cmd->pool, "Unsupported HTTP response code ",
 			  w, NULL);
     }
-                
-    /* Store it... */
 
-    if (conf->response_code_strings == NULL) {
-	conf->response_code_strings =
-	    ap_pcalloc(cmd->pool,
-		       sizeof(*conf->response_code_strings) * RESPONSE_CODES);
+    /* The entry should be ignored if it is a full URL for a 401 error */
+
+    if (error_number == 401 &&
+	line[0] != '/' && line[0] != '"') { /* Ignore it... */
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, NULL,
+		     "cannot use a full URL in a 401 ErrorDocument "
+		     "directive --- ignoring!");
     }
-    conf->response_code_strings[index_number] = ap_pstrdup(cmd->pool, line);
+    else { /* Store it... */
+    	if (conf->response_code_strings == NULL) {
+	    conf->response_code_strings =
+		ap_pcalloc(cmd->pool,
+			   sizeof(*conf->response_code_strings) * RESPONSE_CODES);
+        }
+        conf->response_code_strings[index_number] = ap_pstrdup(cmd->pool, line);
+    }   
 
     return NULL;
 }
