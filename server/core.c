@@ -3744,7 +3744,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                     if (rv != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_ERR, rv, c->base_server,
                                      "core_output_filter: Error reading from bucket.");
-                        return rv;
+                        return HTTP_INTERNAL_SERVER_ERROR;
                     }
 
                     apr_brigade_write(ctx->b, NULL, NULL, str, n);
@@ -3829,7 +3829,11 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 c->aborted = 1;
             }
 
-            return rv;
+            /* The client has aborted, but the request was successful. We
+             * will report success, and leave it to the access and error
+             * logs to note that the connection was aborted.
+             */
+            return APR_SUCCESS;
         }
 
         b = more;
