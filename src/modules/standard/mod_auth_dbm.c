@@ -197,8 +197,7 @@ int dbm_authenticate_basic_user (request_rec *r)
         ap_snprintf(errstr, sizeof(errstr), "DBM user %s not found", c->user);
 	log_reason (errstr, r->filename, r);
 	note_basic_auth_failure (r);
-	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
-                              AUTH_REQUIRED);
+	return AUTH_REQUIRED;
     }    
     /* Password is up to first : if exists */
     colon_pw = strchr(real_pw,':');
@@ -209,8 +208,7 @@ int dbm_authenticate_basic_user (request_rec *r)
 		"user %s: password mismatch",c->user);
 	log_reason (errstr, r->uri, r);
 	note_basic_auth_failure (r);
-	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
-                              AUTH_REQUIRED);
+	return AUTH_REQUIRED;
     }
     return OK;
 }
@@ -254,8 +252,7 @@ int dbm_check_auth(request_rec *r) {
 			user, sec->auth_dbmgrpfile);
 	       log_reason (errstr, r->filename, r);
 	       note_basic_auth_failure (r);
-	       return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
-                                     AUTH_REQUIRED);
+	       return AUTH_REQUIRED;
            }
            orig_groups = groups;
            while(t[0]) {
@@ -271,8 +268,7 @@ int dbm_check_auth(request_rec *r) {
 		"user %s not in right group",user);
 	   log_reason (errstr, r->filename, r);
            note_basic_auth_failure(r);
-	   return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : 
-                                 AUTH_REQUIRED);
+	   return AUTH_REQUIRED;
        }
     }
     

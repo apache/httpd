@@ -929,16 +929,14 @@ API_EXPORT(int) get_basic_auth_pw (request_rec *r, char **pw)
     
     if(!auth_line) {
         note_basic_auth_failure (r);
-	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : 
-	                      AUTH_REQUIRED);
+	return AUTH_REQUIRED;
     }
 
     if (strcmp(getword (r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
         log_reason ("client used wrong authentication scheme", r->uri, r);
         note_basic_auth_failure (r);
-	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : 
-	                      AUTH_REQUIRED);
+	return AUTH_REQUIRED;
     }
 
     t = uudecode (r->pool, auth_line);

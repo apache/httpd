@@ -203,16 +203,14 @@ int authenticate_basic_user (request_rec *r)
         ap_snprintf(errstr, sizeof(errstr), "user %s not found",c->user);
 	log_reason (errstr, r->uri, r);
 	note_basic_auth_failure (r);
-	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : 
-		              AUTH_REQUIRED);
+	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
     if(strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
         ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch",c->user);
 	log_reason (errstr, r->uri, r);
 	note_basic_auth_failure (r);
-	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
-		              AUTH_REQUIRED);
+	return AUTH_REQUIRED;
     }
     return OK;
 }
@@ -279,7 +277,7 @@ int check_user_access (request_rec *r) {
       return DECLINED;
 
     note_basic_auth_failure (r);
-    return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : AUTH_REQUIRED);
+    return AUTH_REQUIRED;
 }
 
 module MODULE_VAR_EXPORT auth_module = {

@@ -790,6 +790,10 @@ void die(int type, request_rec *r)
     char *custom_response = response_code_string(r, error_index);
     int recursive_error = 0;
 
+    if (r->status == AUTH_REQUIRED && r->proxyreq) {
+	r->status = HTTP_PROXY_AUTHENTICATION_REQUIRED;
+    }
+
     if (type == DONE) {
         finalize_request_protocol(r);
         return;

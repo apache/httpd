@@ -142,14 +142,14 @@ int get_digest_rec(request_rec *r, digest_header_rec *response) {
 
   if (!auth_line) {
     note_digest_auth_failure (r);
-    return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : AUTH_REQUIRED);
+    return AUTH_REQUIRED;
   }
 
   if (strcmp(getword (r->pool, &auth_line, ' '), "Digest")) {
     /* Client tried to authenticate using wrong auth scheme */
     log_reason ("client used wrong authentication scheme", r->uri, r);
     note_digest_auth_failure (r);
-    return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : AUTH_REQUIRED);
+    return AUTH_REQUIRED;
   }
 
   l = strlen(auth_line);
@@ -226,7 +226,7 @@ int get_digest_rec(request_rec *r, digest_header_rec *response) {
   if (!response->username || !response->realm || !response->nonce ||
       !response->requested_uri || !response->digest) {
     note_digest_auth_failure (r);
-    return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : AUTH_REQUIRED);
+    return AUTH_REQUIRED;
   }
 
   r->connection->user = response->username;
@@ -280,16 +280,14 @@ int authenticate_digest_user (request_rec *r)
         ap_snprintf(errstr, sizeof(errstr), "user %s not found",c->user);
 	log_reason (errstr, r->uri, r);
 	note_digest_auth_failure (r);
-	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
-                              AUTH_REQUIRED);
+	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
     if(strcmp(response->digest, find_digest(r, response, a1))) {
         ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch",c->user);
 	log_reason (errstr, r->uri, r);
 	note_digest_auth_failure (r);
-	return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED :
-                              AUTH_REQUIRED);
+	return AUTH_REQUIRED;
     }
     return OK;
 }
@@ -342,7 +340,7 @@ int digest_check_auth (request_rec *r) {
       return OK;
 
     note_digest_auth_failure(r);
-    return (r->proxyreq ? HTTP_PROXY_AUTHENTICATION_REQUIRED : AUTH_REQUIRED);
+    return AUTH_REQUIRED;
 }
 
 module MODULE_VAR_EXPORT digest_module = {
