@@ -1,9 +1,10 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/10 20:35:37 $]
+Last modified at [$Date: 2002/06/11 05:33:07 $]
 
 Release:
 
-    2.0.37  : in development.
+    2.0.38  : in development.
+    2.0.37  : tagged June 11, 2002.
     2.0.36  : released May 6, 2002 as GA.
     2.0.35  : released April 5, 2002 as GA.
     2.0.34  : tagged March 26, 2002.
@@ -47,17 +48,9 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 37 status:  TODAY IS THE DAY, Cliff hopes.  Can we get a resolution
-      on the 304 issue or at least agree to get no resolution, please??
 
 RELEASE SHOWSTOPPERS:
 
-    * Returning invalid 304 errors when filters are present.  [PR 9673]
-      Message-ID: <Pine.GSO.4.44.0206061713320.3848-100000@lab26.lacfas.hec.ca>
-      Status: We should set r->no_local_copy, but where can we set it?
-              We must set it before the handlers are run so that the
-              appropriate handler can call ap_meets_conditions() before
-              generating the data.
 
 CURRENT VOTES:
 
@@ -95,6 +88,13 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Returning invalid 304 errors when filters are present.  [PR 9673]
+      Message-ID: <Pine.GSO.4.44.0206061713320.3848-100000@lab26.lacfas.hec.ca>
+      Status: We should set r->no_local_copy, but where can we set it?
+              We must set it before the handlers are run so that the
+              appropriate handler can call ap_meets_conditions() before
+              generating the data.
 
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
