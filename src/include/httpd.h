@@ -564,6 +564,7 @@ struct request_rec {
 
   int sent_bodyct;		/* byte count in stream is for body */
   long bytes_sent;		/* body byte count, for easy access */
+  time_t mtime;                 /* Time the resource was last modified */
 
   /* HTTP/1.1 connection-level features */
 
