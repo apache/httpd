@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.49 1996/09/28 02:35:53 brian Exp $ */
+/* $Id: http_protocol.c,v 1.50 1996/09/28 02:42:46 brian Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -1253,6 +1253,12 @@ void send_error_response (request_rec *r, int recursive_error)
     int idx = index_of_response (status);
     char *location = table_get (r->headers_out, "Location");
 
+    /* If status code not found, use code 500.  */
+    if (idx == -1) {
+        status = SERVER_ERROR;
+        idx = index_of_response (SERVER_ERROR);
+    }
+
     if (!r->assbackwards) {
 	int i;
 	table *err_hdrs_arr = r->err_headers_out;
@@ -1329,7 +1335,7 @@ void send_error_response (request_rec *r, int recursive_error)
         bvputs(fd,"<HEAD><TITLE>", title, "</TITLE></HEAD>\n<BODY><H1>", title,
 	       "</H1>\n", NULL);
 	
-        switch (r->status) {
+        switch (status) {
 	case REDIRECT:
 	case MOVED:
 	    bvputs(fd, "The document has moved <A HREF=\"",
