@@ -57,7 +57,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
-#include "http_conf_globals.h"	/* server_argv0.  Sigh... */
+#include "http_conf_globals.h"  /* server_argv0.  Sigh... */
 #include <dld.h>
 
 /*
@@ -66,128 +66,138 @@
  * cheap way out:  we only actually load the modules the first time through.
  */
 
-static int been_there_done_that = 0; /* Loaded the modules yet? */
+static int been_there_done_that = 0;    /* Loaded the modules yet? */
 static int have_symbol_table = 0;
 
 static char *insure_dld_sane()
 {
     int errcode;
     char *bin_name;
-    
-    if (have_symbol_table) return NULL;
 
-    bin_name = dld_find_executable (server_argv0);
-    
-    if ((errcode = dld_init (bin_name))) {
-	dld_perror (server_argv0);
-	return "Cannot find server binary (needed for dynamic linking).";
+    if (have_symbol_table)
+        return NULL;
+
+    bin_name = dld_find_executable(server_argv0);
+
+    if ((errcode = dld_init(bin_name))) {
+        dld_perror(server_argv0);
+        return "Cannot find server binary (needed for dynamic linking).";
     }
 
     have_symbol_table = 1;
     return NULL;
 }
 
-static char *link_file (pool *p, char *filename)
+static char *link_file(pool *p, char *filename)
 {
     int errcode;
-    
-    filename = server_root_relative (p, filename);
-    if ((errcode = dld_link (filename))) {
-	dld_perror (server_argv0);
-	return pstrcat (p, "Cannot load ", filename, " into server", NULL);
+
+    filename = server_root_relative(p, filename);
+    if ((errcode = dld_link(filename))) {
+        dld_perror(server_argv0);
+        return pstrcat(p, "Cannot load ", filename, " into server", NULL);
     }
     return NULL;
 }
 
-static char *load_module (cmd_parms *cmd, void *dummy, char *modname, char *filename)
+static char *load_module(cmd_parms *cmd, void *dummy, char *modname, char *filename)
 {
     char *errname;
     module *modp;
 
-    if (been_there_done_that) return NULL;
-    
-    if ((errname = insure_dld_sane())) return errname;
-    if ((errname = link_file (cmd->pool, filename))) return errname;
-    if (!(modp = (module *)dld_get_symbol (modname))) {
-	return pstrcat (cmd->pool, "Can't find module ", modname,
-			           " in file ", filename, NULL);
+    if (been_there_done_that)
+        return NULL;
+
+    if ((errname = insure_dld_sane()))
+        return errname;
+    if ((errname = link_file(cmd->pool, filename)))
+             return errname;
+    if (!(modp = (module *) dld_get_symbol(modname))) {
+        return pstrcat(cmd->pool, "Can't find module ", modname,
+                       " in file ", filename, NULL);
     }
 
-    add_module (modp);
+    add_module(modp);
 
     /* Alethea Patch (rws,djw2) - need to run configuration functions
        in new modules */
 
     if (modp->create_server_config)
-      ((void**)cmd->server->module_config)[modp->module_index]=
-	(*modp->create_server_config)(cmd->pool, cmd->server);
+        ((void **) cmd->server->module_config)[modp->module_index] =
+            (*modp->create_server_config) (cmd->pool, cmd->server);
 
     if (modp->create_dir_config)
-      ((void**)cmd->server->lookup_defaults)[modp->module_index]=
-	(*modp->create_dir_config)(cmd->pool, NULL);
+        ((void **) cmd->server->lookup_defaults)[modp->module_index] =
+            (*modp->create_dir_config) (cmd->pool, NULL);
 
 
     return NULL;
 }
 
-static char *load_file (cmd_parms *cmd, void *dummy, char *filename)
+static char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
     char *errname;
-    
-    if (been_there_done_that) return NULL;
-    
-    if ((errname = insure_dld_sane())) return errname;
-    if ((errname = link_file (cmd->pool, filename))) return errname;
+
+    if (been_there_done_that)
+        return NULL;
+
+    if ((errname = insure_dld_sane()))
+        return errname;
+    if ((errname = link_file(cmd->pool, filename)))
+             return errname;
     return NULL;
 }
 
-static void check_loaded_modules (server_rec *dummy, pool *p)
+static void check_loaded_modules(server_rec *dummy, pool *p)
 {
-    if (been_there_done_that) return;
+    if (been_there_done_that)
+        return;
 
     if (dld_undefined_sym_count > 0) {
-	/* Screwup.  Do the best we can to inform the user, and exit */
-	char **bad_syms = dld_list_undefined_sym();
-	int i;
+        /* Screwup.  Do the best we can to inform the user, and exit */
+        char **bad_syms = dld_list_undefined_sym();
+        int i;
 
-	fprintf(stderr, "Dynamic linking error --- symbols left undefined.\n");
-	fprintf(stderr, "(It may help to relink libraries).\n");
-	fprintf(stderr, "Undefined symbols follow:\n");
-	
-	for (i = 0; i < dld_undefined_sym_count; ++i)
-	    fprintf (stderr, "%s\n", bad_syms[i]);
+        fprintf(stderr, "Dynamic linking error --- symbols left undefined.\n");
+        fprintf(stderr, "(It may help to relink libraries).\n");
+        fprintf(stderr, "Undefined symbols follow:\n");
 
-	exit (1);
+        for (i = 0; i < dld_undefined_sym_count; ++i)
+            fprintf(stderr, "%s\n", bad_syms[i]);
+
+        exit(1);
     }
-    
+
     been_there_done_that = 1;
 }
 
-static command_rec dld_cmds[] = {
-{ "LoadModule", load_module, NULL, RSRC_CONF, TAKE2,
-  "a module name, and the name of a file to load it from"},
-{ "LoadFile", load_file, NULL, RSRC_CONF, ITERATE,
-  "files or libraries to link into the server at runtime"},
-{ NULL }
+static command_rec dld_cmds[] =
+{
+    {"LoadModule", load_module, NULL, RSRC_CONF, TAKE2,
+     "a module name, and the name of a file to load it from"},
+    {"LoadFile", load_file, NULL, RSRC_CONF, ITERATE,
+     "files or libraries to link into the server at runtime"},
+    {NULL}
 };
 
-module dld_module = {
-   STANDARD_MODULE_STUFF,
-   check_loaded_modules,	/* initializer */
-   NULL,			/* create per-dir config */
-   NULL,			/* merge per-dir config */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   dld_cmds,			/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module dld_module =
+{
+    STANDARD_MODULE_STUFF,
+    check_loaded_modules,       /* initializer */
+    NULL,                       /* create per-dir config */
+    NULL,                       /* merge per-dir config */
+    NULL,                       /* server config */
+    NULL,                       /* merge server config */
+    dld_cmds,                   /* command table */
+    NULL,                       /* handlers */
+    NULL,                       /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    NULL,                       /* type_checker */
+    NULL,                       /* logger */
+    NULL,                       /* header parser */
+    NULL,                       /* child_init */
+    NULL,                       /* child_exit */
+    NULL                        /* post read-request */
 };

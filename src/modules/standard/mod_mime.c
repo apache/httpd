@@ -64,48 +64,48 @@
 #include "mod_mime.h"
 
 typedef struct {
-    table *forced_types;	/* Additional AddTyped stuff */
-    table *encoding_types;	/* Added with AddEncoding... */
-    table *language_types;	/* Added with AddLanguage... */
-    table *handlers;		/* Added with AddHandler...  */
+    table *forced_types;        /* Additional AddTyped stuff */
+    table *encoding_types;      /* Added with AddEncoding... */
+    table *language_types;      /* Added with AddLanguage... */
+    table *handlers;            /* Added with AddHandler...  */
 
-    char *type;			/* Type forced with ForceType  */
-    char *handler;		/* Handler forced with SetHandler */
+    char *type;                 /* Type forced with ForceType  */
+    char *handler;              /* Handler forced with SetHandler */
 } mime_dir_config;
 
 module MODULE_VAR_EXPORT mime_module;
 
-static void *create_mime_dir_config (pool *p, char *dummy)
+static void *create_mime_dir_config(pool *p, char *dummy)
 {
     mime_dir_config *new =
-      (mime_dir_config *) palloc (p, sizeof(mime_dir_config));
+    (mime_dir_config *) palloc(p, sizeof(mime_dir_config));
 
-    new->forced_types = make_table (p, 4);
-    new->encoding_types = make_table (p, 4);
-    new->language_types = make_table (p, 4);
-    new->handlers = make_table (p, 4);
+    new->forced_types = make_table(p, 4);
+    new->encoding_types = make_table(p, 4);
+    new->language_types = make_table(p, 4);
+    new->handlers = make_table(p, 4);
 
     new->type = NULL;
     new->handler = NULL;
-    
+
     return new;
 }
 
-static void *merge_mime_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
 {
-    mime_dir_config *base = (mime_dir_config *)basev;
-    mime_dir_config *add = (mime_dir_config *)addv;
+    mime_dir_config *base = (mime_dir_config *) basev;
+    mime_dir_config *add = (mime_dir_config *) addv;
     mime_dir_config *new =
-      (mime_dir_config *)palloc (p, sizeof(mime_dir_config));
+    (mime_dir_config *) palloc(p, sizeof(mime_dir_config));
 
-    new->forced_types = overlay_tables (p, add->forced_types,
-					base->forced_types);
-    new->encoding_types = overlay_tables (p, add->encoding_types,
-					  base->encoding_types);
-    new->language_types = overlay_tables (p, add->language_types,
-					  base->language_types);
-    new->handlers = overlay_tables (p, add->handlers,
-					  base->handlers);
+    new->forced_types = overlay_tables(p, add->forced_types,
+                                       base->forced_types);
+    new->encoding_types = overlay_tables(p, add->encoding_types,
+                                         base->encoding_types);
+    new->language_types = overlay_tables(p, add->language_types,
+                                         base->language_types);
+    new->handlers = overlay_tables(p, add->handlers,
+                                   base->handlers);
 
     new->type = add->type ? add->type : base->type;
     new->handler = add->handler ? add->handler : base->handler;
@@ -113,34 +113,38 @@ static void *merge_mime_dir_configs (pool *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct, char *ext)
+static const char *add_type(cmd_parms *cmd, mime_dir_config * m, char *ct, char *ext)
 {
-    if (*ext == '.') ++ext;
-    table_set (m->forced_types, ext, ct);
+    if (*ext == '.')
+        ++ext;
+    table_set(m->forced_types, ext, ct);
     return NULL;
 }
 
-static const char *add_encoding(cmd_parms *cmd, mime_dir_config *m, char *enc,
-			 char *ext)
+static const char *add_encoding(cmd_parms *cmd, mime_dir_config * m, char *enc,
+                                char *ext)
 {
-    if (*ext == '.') ++ext;
-    table_set (m->encoding_types, ext, enc);
+    if (*ext == '.')
+        ++ext;
+    table_set(m->encoding_types, ext, enc);
     return NULL;
 }
 
-static const char *add_language(cmd_parms *cmd, mime_dir_config *m, char *lang,
-			 char *ext)
+static const char *add_language(cmd_parms *cmd, mime_dir_config * m, char *lang,
+                                char *ext)
 {
-    if (*ext == '.') ++ext;
-    table_set (m->language_types, ext, lang);
+    if (*ext == '.')
+        ++ext;
+    table_set(m->language_types, ext, lang);
     return NULL;
 }
 
-static const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
-			char *ext)
+static const char *add_handler(cmd_parms *cmd, mime_dir_config * m, char *hdlr,
+                               char *ext)
 {
-    if (*ext == '.') ++ext;
-    table_set (m->handlers, ext, hdlr);
+    if (*ext == '.')
+        ++ext;
+    table_set(m->handlers, ext, hdlr);
     return NULL;
 }
 
@@ -148,29 +152,30 @@ static const char *add_handler(cmd_parms *cmd, mime_dir_config *m, char *hdlr,
  * the name of its config file, so...
  */
 
-static const char *set_types_config (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_types_config(cmd_parms *cmd, void *dummy, char *arg)
 {
-    set_module_config (cmd->server->module_config, &mime_module,
-		       pstrdup (cmd->pool, arg));
+    set_module_config(cmd->server->module_config, &mime_module,
+                      pstrdup(cmd->pool, arg));
     return NULL;
 }
 
-static command_rec mime_cmds[] = {
-{ "AddType", add_type, NULL, OR_FILEINFO, ITERATE2,
-    "a mime type followed by one or more file extensions" },
-{ "AddEncoding", add_encoding, NULL, OR_FILEINFO, ITERATE2,
-    "an encoding (e.g., gzip), followed by one or more file extensions" },
-{ "AddLanguage", add_language, NULL, OR_FILEINFO, ITERATE2,
-    "a language (e.g., fr), followed by one or more file extensions" },
-{ "AddHandler", add_handler, NULL, OR_FILEINFO, ITERATE2,
-    "a handler name followed by one or more file extensions" },
-{ "ForceType", set_string_slot, (void*)XtOffsetOf(mime_dir_config, type),
-    OR_FILEINFO, TAKE1, "a media type" },
-{ "SetHandler", set_string_slot, (void*)XtOffsetOf(mime_dir_config, handler),
-    OR_FILEINFO, TAKE1, "a handler name" },
-{ "TypesConfig", set_types_config, NULL, RSRC_CONF, TAKE1,
-    "the MIME types config file" },
-{ NULL }
+static command_rec mime_cmds[] =
+{
+    {"AddType", add_type, NULL, OR_FILEINFO, ITERATE2,
+     "a mime type followed by one or more file extensions"},
+    {"AddEncoding", add_encoding, NULL, OR_FILEINFO, ITERATE2,
+     "an encoding (e.g., gzip), followed by one or more file extensions"},
+    {"AddLanguage", add_language, NULL, OR_FILEINFO, ITERATE2,
+     "a language (e.g., fr), followed by one or more file extensions"},
+    {"AddHandler", add_handler, NULL, OR_FILEINFO, ITERATE2,
+     "a handler name followed by one or more file extensions"},
+  {"ForceType", set_string_slot, (void *) XtOffsetOf(mime_dir_config, type),
+   OR_FILEINFO, TAKE1, "a media type"},
+    {"SetHandler", set_string_slot, (void *) XtOffsetOf(mime_dir_config, handler),
+     OR_FILEINFO, TAKE1, "a handler name"},
+    {"TypesConfig", set_types_config, NULL, RSRC_CONF, TAKE1,
+     "the MIME types config file"},
+    {NULL}
 };
 
 /* Hash table  --- only one of these per daemon; virtual hosts can
@@ -182,37 +187,39 @@ static command_rec mime_cmds[] = {
 
 static table *hash_buckets[MIME_HASHSIZE];
 
-static void init_mime (server_rec *s, pool *p)
+static void init_mime(server_rec *s, pool *p)
 {
     FILE *f;
     char l[MAX_STRING_LEN];
     int x;
-    char *types_confname = get_module_config (s->module_config, &mime_module);
+    char *types_confname = get_module_config(s->module_config, &mime_module);
 
-    if (!types_confname) types_confname = TYPES_CONFIG_FILE;
+    if (!types_confname)
+        types_confname = TYPES_CONFIG_FILE;
 
-    types_confname = server_root_relative (p, types_confname);
+    types_confname = server_root_relative(p, types_confname);
 
-    if(!(f = fopen(types_confname,"r"))) {
+    if (!(f = fopen(types_confname, "r"))) {
         perror("fopen");
-        fprintf(stderr,"httpd: could not open mime types file %s\n",
+        fprintf(stderr, "httpd: could not open mime types file %s\n",
                 types_confname);
         exit(1);
     }
 
-    for(x=0;x<27;x++) 
-        hash_buckets[x] = make_table (p, 10);
+    for (x = 0; x < 27; x++)
+        hash_buckets[x] = make_table(p, 10);
 
-    while(!(cfg_getline(l,MAX_STRING_LEN,f))) {
+    while (!(cfg_getline(l, MAX_STRING_LEN, f))) {
         const char *ll = l, *ct;
-      
-        if(l[0] == '#') continue;
-        ct = getword_conf (p, &ll);
 
-        while(ll[0]) {
-            char *ext = getword_conf (p, &ll);
-	    str_tolower (ext);	/* ??? */
-	    table_set (hash_buckets[hash(ext[0])], ext, ct);
+        if (l[0] == '#')
+            continue;
+        ct = getword_conf(p, &ll);
+
+        while (ll[0]) {
+            char *ext = getword_conf(p, &ll);
+            str_tolower(ext);   /* ??? */
+            table_set(hash_buckets[hash(ext[0])], ext, ct);
         }
     }
     fclose(f);
@@ -223,73 +230,74 @@ static int find_ct(request_rec *r)
 {
     const char *fn = strrchr(r->filename, '/');
     mime_dir_config *conf =
-      (mime_dir_config *)get_module_config(r->per_dir_config, &mime_module);
+    (mime_dir_config *) get_module_config(r->per_dir_config, &mime_module);
     char *ext, *type, *orighandler = r->handler;
 
     if (S_ISDIR(r->finfo.st_mode)) {
         r->content_type = DIR_MAGIC_TYPE;
-	return OK;
+        return OK;
     }
 
     /* TM -- FIXME
-     * 
+
      * if r->filename does not contain a '/', the following passes a null
      * pointer to getword, causing a SEGV ..
      */
 
-    if(fn == NULL) fn = r->filename;
+    if (fn == NULL)
+        fn = r->filename;
 
     /* Parse filename extensions, which can be in any order */
     while ((ext = getword(r->pool, &fn, '.')) && *ext) {
-      int found = 0;
+        int found = 0;
 
-      /* Check for Content-Type */
-      if ((type = table_get (conf->forced_types, ext))
-	  || (type = table_get (hash_buckets[hash(*ext)], ext))) {
-          r->content_type = type;
-	  found = 1;
-      }
+        /* Check for Content-Type */
+        if ((type = table_get(conf->forced_types, ext))
+            || (type = table_get(hash_buckets[hash(*ext)], ext))) {
+            r->content_type = type;
+            found = 1;
+        }
 
-      /* Check for Content-Language */
-      if ((type = table_get (conf->language_types, ext))) {
-	  char **new;
+        /* Check for Content-Language */
+        if ((type = table_get(conf->language_types, ext))) {
+            char **new;
 
-	  r->content_language = type; /* back compat. only */
-	  if (!r->content_languages)
-	      r->content_languages = make_array (r->pool, 2, sizeof(char*));
-	  new = (char **)push_array (r->content_languages);
-	  *new = type;
-	  found = 1;
-      }
-	
-      /* Check for Content-Encoding */
-      if ((type = table_get (conf->encoding_types, ext))) {
-	  if (!r->content_encoding)
-	      r->content_encoding = type;
-	  else
-	      r->content_encoding = pstrcat(r->pool, r->content_encoding,
-					    ", ", type, NULL);
-	  found = 1;
-      }
+            r->content_language = type;         /* back compat. only */
+            if (!r->content_languages)
+                r->content_languages = make_array(r->pool, 2, sizeof(char *));
+            new = (char **) push_array(r->content_languages);
+            *new = type;
+            found = 1;
+        }
 
-      /* Check for a special handler, but not for proxy request */
-      if ((type = table_get (conf->handlers, ext)) && !r->proxyreq) {
-	  r->handler = type;
-	  found = 1;
-      }
+        /* Check for Content-Encoding */
+        if ((type = table_get(conf->encoding_types, ext))) {
+            if (!r->content_encoding)
+                r->content_encoding = type;
+            else
+                r->content_encoding = pstrcat(r->pool, r->content_encoding,
+                                              ", ", type, NULL);
+            found = 1;
+        }
 
-      /* This is to deal with cases such as foo.gif.bak, which we want
-       * to not have a type. So if we find an unknown extension, we
-       * zap the type/language/encoding and reset the handler
-       */
+        /* Check for a special handler, but not for proxy request */
+        if ((type = table_get(conf->handlers, ext)) && !r->proxyreq) {
+            r->handler = type;
+            found = 1;
+        }
 
-      if (!found) {
-	r->content_type = NULL;
-	r->content_language = NULL;
-	r->content_languages = NULL;
-	r->content_encoding = NULL;
-	r->handler = orighandler;
-      }
+        /* This is to deal with cases such as foo.gif.bak, which we want
+         * to not have a type. So if we find an unknown extension, we
+         * zap the type/language/encoding and reset the handler
+         */
+
+        if (!found) {
+            r->content_type = NULL;
+            r->content_language = NULL;
+            r->content_languages = NULL;
+            r->content_encoding = NULL;
+            r->handler = orighandler;
+        }
 
     }
 
@@ -300,32 +308,36 @@ static int find_ct(request_rec *r)
     if (conf->handler && strcmp(conf->handler, "none"))
         r->handler = pstrdup(r->pool, conf->handler);
 
-    if (!r->content_type) return DECLINED;
+    if (!r->content_type)
+        return DECLINED;
 
     return OK;
 }
 
 API_EXPORT(int) mime_find_ct(request_rec *r)
-    { return find_ct(r); }
+{
+    return find_ct(r);
+}
 
-module MODULE_VAR_EXPORT mime_module = {
-   STANDARD_MODULE_STUFF,
-   init_mime,			/* initializer */
-   create_mime_dir_config,
-   merge_mime_dir_configs,
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   mime_cmds,
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   find_ct,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT mime_module =
+{
+    STANDARD_MODULE_STUFF,
+    init_mime,                  /* initializer */
+    create_mime_dir_config,
+    merge_mime_dir_configs,
+    NULL,                       /* server config */
+    NULL,                       /* merge server config */
+    mime_cmds,
+    NULL,                       /* handlers */
+    NULL,                       /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    find_ct,                    /* type_checker */
+    NULL,                       /* fixups */
+    NULL,                       /* logger */
+    NULL,                       /* header parser */
+    NULL,                       /* child_init */
+    NULL,                       /* child_exit */
+    NULL                        /* post read-request */
 };
