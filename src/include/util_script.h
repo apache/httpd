@@ -59,7 +59,8 @@ char **create_argv_cmd(pool *p, char *av0, char *args, char *path);
 char **create_environment(pool *p, table *t);
 void add_cgi_vars(request_rec *r);
 void add_common_vars(request_rec *r);
-int scan_script_header(request_rec *r, FILE *f);
+#define scan_script_header(a1,a2) scan_script_header_err(a1,a2,NULL)
+int scan_script_header_err(request_rec *r, FILE *f, char *buffer);
 void send_size(size_t size, request_rec *r);
 void call_exec (request_rec *r, char *argv0, char **env, int shellcmd);
 

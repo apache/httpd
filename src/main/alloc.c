@@ -852,13 +852,14 @@ void note_subprocess (pool *a, int pid, enum kill_conditions how)
   a->subprocesses = new;
 }
 
-int spawn_child (pool *p, void (*func)(void *), void *data,
-		 enum kill_conditions kill_how,
-		 FILE **pipe_in, FILE **pipe_out)
+int spawn_child_err (pool *p, void (*func)(void *), void *data,
+		     enum kill_conditions kill_how,
+		     FILE **pipe_in, FILE **pipe_out, FILE **pipe_err)
 {
   int pid;
   int in_fds[2];
   int out_fds[2];
+  int err_fds[2];
 
   block_alarms();
   
@@ -876,12 +877,26 @@ int spawn_child (pool *p, void (*func)(void *), void *data,
     return 0;
   }
 
+  if (pipe_err && pipe (err_fds) < 0) {
+    if (pipe_in) {
+      close (in_fds[0]); close (in_fds[1]);
+    }
+    if (pipe_out) {
+      close (out_fds[0]); close (out_fds[1]);
+    }
+    unblock_alarms();
+    return 0;
+  }
+
   if ((pid = fork()) < 0) {
     if (pipe_in) {
       close (in_fds[0]); close (in_fds[1]);
     }
     if (pipe_out) {
       close (out_fds[0]); close (out_fds[1]);
+    }
+    if (pipe_err) {
+      close (err_fds[0]); close (err_fds[1]);
     }
     unblock_alarms();
     return 0;
@@ -900,6 +915,12 @@ int spawn_child (pool *p, void (*func)(void *), void *data,
       close (in_fds[1]);
       dup2 (in_fds[0], STDIN_FILENO);
       close (in_fds[0]);
+    }
+
+    if (pipe_err) {
+      close (err_fds[0]);
+      dup2 (err_fds[1], STDERR_FILENO);
+      close (err_fds[1]);
     }
 
     /* HP-UX SIGCHLD fix goes here, if someone will remind me what it is... */
@@ -935,6 +956,18 @@ int spawn_child (pool *p, void (*func)(void *), void *data,
 #endif
     
     if (*pipe_in) note_cleanups_for_file (p, *pipe_in);
+  }
+
+  if (pipe_err) {
+    close (err_fds[1]);
+#ifdef __EMX__
+    /* Need binary mode set for OS/2. */
+    *pipe_err = fdopen (err_fds[0], "rb");
+#else
+    *pipe_err = fdopen (err_fds[0], "r");
+#endif
+  
+    if (*pipe_err) note_cleanups_for_file (p, *pipe_err);
   }
 
   unblock_alarms();

@@ -51,7 +51,6 @@
  *
  */
 
-
 /*
  * http_script: keeps all script-related ramblings together.
  * 
@@ -74,6 +73,8 @@
 #include "http_log.h"
 #include "util_script.h"
 
+module cgi_module;
+
 /* KLUDGE --- for back-combatibility, we don't have to check ExecCGI
  * in ScriptAliased directories, which means we need to know if this
  * request came through ScriptAlias or not... so the Alias module
@@ -86,6 +87,178 @@ int is_scriptaliased (request_rec *r)
     return t && (!strcmp (t, "cgi-script"));
 }
 
+/* Configuration stuff */
+
+#define DEFAULT_LOGBYTES 10385760
+#define DEFAULT_BUFBYTES 1024
+
+typedef struct {
+    char *logname;
+    long logbytes;
+    int bufbytes;
+} cgi_server_conf;
+
+void *create_cgi_config (pool *p, server_rec *s)
+{
+    cgi_server_conf *c = 
+      (cgi_server_conf *)pcalloc (p, sizeof(cgi_server_conf));
+
+    c->logname = NULL;
+    c->logbytes = DEFAULT_LOGBYTES;
+    c->bufbytes = DEFAULT_BUFBYTES;
+
+    return c;
+}
+
+void *merge_cgi_config (pool *p, void *basev, void *overridesv)
+{
+    cgi_server_conf *base = (cgi_server_conf *)basev,
+      *overrides = (cgi_server_conf *)overrides;
+
+    return overrides->logname ? overrides : base;
+}
+
+char *set_scriptlog (cmd_parms *cmd, void *dummy, char *arg) {
+    server_rec *s = cmd->server;
+    cgi_server_conf *conf = 
+      (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);
+
+    conf->logname = arg;
+    return NULL;
+}
+
+char *set_scriptlog_length (cmd_parms *cmd, void *dummy, char *arg) {
+    server_rec *s = cmd->server;
+    cgi_server_conf *conf = 
+      (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);
+
+    conf->logbytes = atol (arg);
+    return NULL;
+}
+
+char *set_scriptlog_buffer (cmd_parms *cmd, void *dummy, char *arg) {
+    server_rec *s = cmd->server;
+    cgi_server_conf *conf = 
+      (cgi_server_conf *)get_module_config(s->module_config, &cgi_module);
+
+    conf->bufbytes = atoi (arg);
+    return NULL;
+}
+
+command_rec cgi_cmds[] = {
+{ "ScriptLog", set_scriptlog, NULL, RSRC_CONF, TAKE1,
+  "the name of a log for script debugging info"},
+{ "ScriptLogLength", set_scriptlog_length, NULL, RSRC_CONF, TAKE1,
+  "the maximum length (in bytes) of the script debug log"},
+{ "ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF, TAKE1,
+  "the maximum size (in bytes) to record of a POST request"},
+{ NULL}
+};
+
+int log_scripterror(request_rec *r, cgi_server_conf *conf, int ret,
+		    char *error)
+{
+    FILE *f;
+
+    log_reason(error, r->filename, r);
+
+    if (!conf->logname ||
+	((stat(server_root_relative(r->pool, conf->logname), &r->finfo) == 0)
+	&& (r->finfo.st_size > conf->logbytes)) ||
+	((f = pfopen(r->pool, server_root_relative(r->pool, conf->logname),
+		     "a")) == NULL)) {
+      return ret;
+    }
+
+    /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
+    fprintf(f, "%%%% [%s] %s %s%s%s %s\n", get_time(), r->method, r->uri,
+	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
+    /* "%% 500 /usr/local/etc/httpd/cgi-bin */
+    fprintf(f, "%%%% %d %s\n", ret, r->filename);
+
+    fprintf(f, "%%error\n%s\n", error);
+
+    pfclose(r->pool, f);
+    return ret;
+}
+
+int log_script(request_rec *r, cgi_server_conf *conf, int ret,
+	       char *dbuf, char *sbuf, FILE *script_in, FILE *script_err)
+{
+    table *hdrs_arr = r->headers_in;
+    table_entry *hdrs = (table_entry *)hdrs_arr->elts;
+    char argsbuffer[HUGE_STRING_LEN];
+    FILE *f;
+    int i;
+
+    if (!conf->logname ||
+	((stat(server_root_relative(r->pool, conf->logname), &r->finfo) == 0)
+	&& (r->finfo.st_size > conf->logbytes)) ||
+	((f = pfopen(r->pool, server_root_relative(r->pool, conf->logname),
+		     "a")) == NULL)) {
+      /* Soak up script output */
+      while (fgets(argsbuffer, MAX_STRING_LEN-1, script_in) != NULL)
+	continue;
+      while (fgets(argsbuffer, MAX_STRING_LEN-1, script_err) != NULL)
+	continue;
+      return ret;
+    }
+
+    /* "%% [Wed Jun 19 10:53:21 1996] GET /cgi-bin/printenv HTTP/1.0" */
+    fprintf(f, "%%%% [%s] %s %s%s%s %s\n", get_time(), r->method, r->uri,
+	    r->args ? "?" : "", r->args ? r->args : "", r->protocol);
+    /* "%% 500 /usr/local/etc/httpd/cgi-bin */
+    fprintf(f, "%%%% %d %s\n", ret, r->filename);
+
+    fputs("%request\n", f);
+    for (i = 0; i < hdrs_arr->nelts; ++i) {
+      if (!hdrs[i].key) continue;
+      fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
+    }
+    if ((r->method_number == M_POST || r->method_number == M_PUT)
+	&& *dbuf) {
+      fprintf(f, "\n%s\n", dbuf);
+    }
+
+    fputs("%response\n", f);
+    hdrs_arr = r->err_headers_out;
+    hdrs = (table_entry *)hdrs_arr->elts;
+
+    for (i = 0; i < hdrs_arr->nelts; ++i) {
+      if (!hdrs[i].key) continue;
+      fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
+    }
+
+    if (sbuf && *sbuf)
+      fprintf(f, "%s\n", sbuf);
+
+    *argsbuffer = '\0';
+    fgets(argsbuffer, HUGE_STRING_LEN-1, script_in);
+    if (*argsbuffer) {
+      fputs("%stdout\n", f);
+      fputs(argsbuffer, f);
+      while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL)
+	fputs(argsbuffer, f);
+      fputs("\n", f);
+    }
+
+    *argsbuffer = '\0';
+    fgets(argsbuffer, HUGE_STRING_LEN-1, script_err);
+    if (*argsbuffer) {
+      fputs("%stderr\n", f);
+      fputs(argsbuffer, f);
+      while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL)
+	fputs(argsbuffer, f);
+      fputs("\n", f);
+    }
+
+    pfclose(r->pool, script_in);
+    pfclose(r->pool, script_err);
+
+    pfclose(r->pool, f);
+    return ret;
+}
+
 /****************************************************************
  *
  * Actual CGI handling...
@@ -95,6 +268,7 @@ int is_scriptaliased (request_rec *r)
 struct cgi_child_stuff {
     request_rec *r;
     int nph;
+    int debug;
     char *argv0;
 };
 
@@ -132,7 +306,8 @@ void cgi_child (void *child_stuff)
 #endif
     
     chdir_file (r->filename);
-    error_log2stderr (r->server);
+    if (!cld->debug)
+      error_log2stderr (r->server);
 
 #ifndef __EMX__
     if (nph) client_to_stdout (r->connection);
@@ -165,11 +340,14 @@ void cgi_child (void *child_stuff)
 
 int cgi_handler (request_rec *r)
 {
-    int retval, nph;
-    char *argv0;
-    FILE *script_out, *script_in;
+    int retval, nph, dbpos = 0;
+    char *argv0, *dbuf = NULL;
+    FILE *script_out, *script_in, *script_err;
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp (r->protocol, "INCLUDED");
+    void *sconf = r->server->module_config;
+    cgi_server_conf *conf =
+	(cgi_server_conf *)get_module_config(sconf, &cgi_module);
 
     struct cgi_child_stuff cld;
 
@@ -185,33 +363,30 @@ int cgi_handler (request_rec *r)
     else argv0 = r->filename;
 
     nph = !(strncmp(argv0,"nph-",4));
+
+    if (!(allow_options (r) & OPT_EXECCGI) && !is_scriptaliased (r))
+	return log_scripterror(r, conf, FORBIDDEN,
+			       "Options ExecCGI is off in this directory");
+    if (nph && is_included)
+	return log_scripterror(r, conf, FORBIDDEN,
+			       "attempt to include NPH CGI script");
     
-    if (!(allow_options (r) & OPT_EXECCGI) && !is_scriptaliased (r)) {
-        log_reason("Options ExecCGI is off in this directory", r->filename, r);
-	return FORBIDDEN;
-    }
-    if (nph && is_included) {
-        log_reason("attempt to include NPH CGI script", r->filename, r);
-	return FORBIDDEN;
-    }
+    if (S_ISDIR(r->finfo.st_mode))
+	return log_scripterror(r, conf, FORBIDDEN,
+			       "attempt to invoke directory as script");
+    if (r->finfo.st_mode == 0)
+	return log_scripterror(r, conf, NOT_FOUND,
+			       "script not found or unable to stat");
+    if(!can_exec(&r->finfo))
+	return log_scripterror(r, conf, FORBIDDEN,
+			       "file permissions deny server execution");
     
-    if (S_ISDIR(r->finfo.st_mode)) {
-        log_reason("attempt to invoke directory as script", r->filename, r);
-	return FORBIDDEN;
-    }
-    if (r->finfo.st_mode == 0) {
-        log_reason("script not found or unable to stat", r->filename, r);
-	return NOT_FOUND;
-    }
-    if(!can_exec(&r->finfo)) {
-        log_reason("file permissions deny server execution", r->filename, r);
-        return FORBIDDEN;
-    }
     if ((retval = setup_client_block(r)))
 	return retval;
 
     add_common_vars (r);
     cld.argv0 = argv0; cld.r = r; cld.nph = nph;
+    cld.debug = conf->logname ? 1 : 0;
     
 #ifdef __EMX__
     if (should_client_block (r)) {
@@ -234,9 +409,10 @@ int cgi_handler (request_rec *r)
     }
     
 #else
-     if (!spawn_child (r->connection->pool, cgi_child, (void *)&cld,
-		       nph ? just_wait : kill_after_timeout, 
-		       &script_out, nph ? NULL : &script_in)) {
+    if (!spawn_child_err (r->connection->pool, cgi_child, (void *)&cld,
+			  nph ? just_wait : kill_after_timeout, 
+			  &script_out, nph ? NULL : &script_in,
+			  &script_err)) {
         log_reason ("couldn't spawn child process", r->filename, r);
         return SERVER_ERROR;
     }
@@ -254,14 +430,28 @@ int cgi_handler (request_rec *r)
 #ifndef __EMX__
      if (should_client_block(r)) {
         void (*handler)();
-	int len_read;
-	
+	int dbsize, len_read;
+
+	if (conf->logname) {
+	    dbuf = pcalloc(r->pool, conf->bufbytes+1);
+	    dbpos = 0;
+	}
+
         hard_timeout ("copy script args", r);
         handler = signal (SIGPIPE, SIG_IGN);
     
 	while ((len_read = read_client_block (r, argsbuffer, HUGE_STRING_LEN)))
+	{
 	    if (fwrite (argsbuffer, 1, len_read, script_out) == 0)
 		break;
+	    if (conf->logname) {
+		if ((dbpos + len_read) > conf->bufbytes)
+		    dbsize = conf->bufbytes - dbpos;
+		else dbsize = len_read;
+		strncpy(dbuf + dbpos, argsbuffer, dbsize);
+		dbpos += dbsize;
+	    }
+	}
 
 	fflush (script_out);
 	signal (SIGPIPE, handler);
@@ -274,20 +464,22 @@ int cgi_handler (request_rec *r)
     
     /* Handle script return... */
     if (script_in && !nph) {
-        char *location;
+        char *location, sbuf[MAX_STRING_LEN];
 	int ret;
       
-        if ((ret = scan_script_header(r, script_in)))
-	    return ret;
+        if ((ret = scan_script_header_err(r, script_in, sbuf)))
+	    return log_script(r, conf, ret, dbuf, sbuf, script_in, script_err);
 	
 	location = table_get (r->headers_out, "Location");
 
         if (location && location[0] == '/' && r->status == 200) {
 	  
-            /* Soak up all the script output */
+	    /* Soak up all the script output */
 	    hard_timeout ("read from script", r);
 	    while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL)
 	        continue;
+	    while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL)
+	      continue;
 	    kill_timeout (r);
 
 
@@ -310,8 +502,12 @@ int cgi_handler (request_rec *r)
 	hard_timeout ("send script output", r);
 	send_http_header(r);
         if(!r->header_only) send_fd (script_in, r);
+	/* Soak up stderr */
+	while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_err) != NULL)
+	  continue;
 	kill_timeout (r);
 	pfclose (r->connection->pool, script_in);
+	pfclose (r->connection->pool, script_err);
     }
 
 #ifdef __EMX__
@@ -336,11 +532,11 @@ module cgi_module = {
    NULL,			/* initializer */
    NULL,			/* dir config creater */
    NULL,			/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   NULL,			/* command table */
+   create_cgi_config,		/* server config */
+   merge_cgi_config,	       	/* merge server config */
+   cgi_cmds,			/* command table */
    cgi_handlers,		/* handlers */
-   NULL,			/* filename translation */
+   NULL,			/* filename translation */ 
    NULL,			/* check_user_id */
    NULL,			/* check auth */
    NULL,			/* check access */

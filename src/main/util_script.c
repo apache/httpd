@@ -244,11 +244,14 @@ void add_cgi_vars(request_rec *r)
     }
 }
 
-int scan_script_header(request_rec *r, FILE *f)
+int scan_script_header_err(request_rec *r, FILE *f, char *buffer)
 {
-    char w[MAX_STRING_LEN];
-    char *l;
+    char x[MAX_STRING_LEN];
+    char *w, *l;
     int p;
+
+    if (buffer) *buffer = '\0';
+    w = buffer ? buffer : x;
 
     hard_timeout ("read script header", r);
     
@@ -279,9 +282,11 @@ int scan_script_header(request_rec *r, FILE *f)
 	    char malformed[(sizeof MALFORMED_MESSAGE)+1+MALFORMED_HEADER_LENGTH_TO_SHOW];
             strcpy(malformed, MALFORMED_MESSAGE);
             strncat(malformed, w, MALFORMED_HEADER_LENGTH_TO_SHOW);
-            /* Soak up all the script output --- may save an outright kill */
-	    while (fgets(w, MAX_STRING_LEN-1, f) != NULL)
-	        continue;
+
+	    if (!buffer)
+	      /* Soak up all the script output --- may save an outright kill */
+	      while (fgets(w, MAX_STRING_LEN-1, f) != NULL)
+		continue;
 	    
 	    kill_timeout (r);
 	    log_reason (malformed, r->filename, r);

@@ -228,8 +228,11 @@ int pclosef(struct pool *, int fd);
      
 enum kill_conditions { kill_never, kill_always, kill_after_timeout, just_wait};
 
-int spawn_child (pool *, void (*)(void *), void *,
-		 enum kill_conditions, FILE **pipe_in, FILE **pipe_out);
+int spawn_child_err (pool *, void (*)(void *), void *,
+		 enum kill_conditions, FILE **pipe_in, FILE **pipe_out,
+                 FILE **pipe_err);
+#define spawn_child(p,f,v,k,in,out) spawn_child_err(p,f,v,k,in,out,NULL)
+
 #ifdef __EMX__
 int spawn_child_os2 (pool *, void (*)(void *), void *,
          enum kill_conditions, FILE **pipe_in, FILE **pipe_out, char *buffer, int lenp);
