@@ -1039,7 +1039,6 @@ static int hook_uri2file(request_rec *r)
     char docroot[512];
     char *cp, *cp2;
     const char *ccp;
-    struct stat finfo;
     unsigned int port;
     int rulestatus;
     int n;
@@ -1271,7 +1270,7 @@ static int hook_uri2file(request_rec *r)
              * because we only do stat() on the first directory
              * and this gets cached by the kernel for along time!
              */
-            n = prefix_stat(r->filename, &finfo);
+            n = prefix_stat(r->filename, r->pool);
             if (n == 0) {
                 if ((ccp = ap_document_root(r)) != NULL) {
                     l = ap_cpystrn(docroot, ccp, sizeof(docroot)) - docroot;
@@ -4164,24 +4163,68 @@ static int subreq_ok(request_rec *r)
 **
 */
 
-static int prefix_stat(const char *path, struct stat *sb)
+static int prefix_stat(const char *path, ap_pool *pool)
 {
-    char curpath[LONG_STRING_LEN];
-    char *cp;
+    const char *curpath = path;
+    char *root;
+    char *slash;
+    char *statpath;
+    struct stat sb;
 
-    ap_cpystrn(curpath, path, sizeof(curpath));
-    if (curpath[0] != '/') {
+    if (!ap_os_is_path_absolute(curpath)) {
         return 0;
     }
-    if ((cp = strchr(curpath+1, '/')) != NULL) {
-        *cp = '\0';
-    }
-    if (stat(curpath, sb) == 0) {
-        return 1;
+
+    /* need to be a bit tricky here.
+     * Actually we're looking for the first path segment ...
+     */
+    if (*curpath != '/') {
+        /* be safe: +1 = '\0'; +1 = possible additional '\0'
+         * from ap_make_dirstr_prefix
+         */
+        root = ap_palloc(pool, strlen(curpath) + 2);
+        slash = ap_make_dirstr_prefix(root, curpath, 1);
+        curpath += strlen(root);
     }
     else {
-        return 0;
+#if defined(HAVE_UNC_PATHS)
+    /* Check for UNC names. */
+        if (curpath[1] == '/') {
+            slash = strchr(curpath + 2, '/');
+
+            /* XXX not sure here. Be safe for now */
+            if (!slash) {
+                return 0;
+            }
+            root = ap_pstrndup(pool, curpath, slash - curpath + 1);
+            curpath += strlen(root);
+        }
+        else {
+#endif /* UNC */
+            root = "/";
+            ++curpath;
+#if defined(HAVE_UNC_PATHS)
+        }
+#endif
     }
+
+    /* let's recognize slashes only, the mod_rewrite semantics are opaque
+     * enough.
+     */
+    if ((slash = strchr(curpath, '/')) != NULL) {
+        statpath = ap_pstrcat(pool, root,
+                              ap_pstrndup(pool, curpath, slash - curpath),
+                              NULL);
+    }
+    else {
+        statpath = ap_pstrcat(pool, root, curpath, NULL);
+    }
+
+    if (stat(statpath, &sb) == 0) {
+        return 1;
+    }
+
+    return 0;
 }
 
 
