@@ -779,68 +779,52 @@ char *pstrcat(pool *a,...)
  */
 
 struct psprintf_data {
-    pool *p;
+    apapi_vformatter_buff vbuff;
 #ifdef ALLOC_USE_MALLOC
     char *base;
-    size_t len;
 #else
     union block_hdr *blok;
-    char *strp;
     int got_a_new_block;
 #endif
 };
 
-static int psprintf_write(void *vdata, const char *inp, size_t len)
+static int psprintf_flush(apapi_vformatter_buff *vbuff)
 {
+    struct psprintf_data *ps = (struct psprintf_data *)vbuff;
 #ifdef ALLOC_USE_MALLOC
-    struct psprintf_data *ps;
     int size;
     char *ptr;
 
-    ps = vdata;
-
-    size = ps->len + len + 1;
-    ptr = realloc(ps->base, size);
+    size = ps->vbuff.curpos - ps->base;
+    ptr = realloc(ps->base, 2*size);
     if (ptr == NULL) {
 	fputs("Ouch!  Out of memory!\n", stderr);
 	exit(1);
     }
     ps->base = ptr;
-    memcpy(ptr + ps->len, inp, len);
-    ps->len += len;
+    ps->vbuff.curpos = ptr + size;
+    ps->vbuff.endpos = ptr + 2*size - 1;
     return 0;
 #else
-    struct psprintf_data *ps;
     union block_hdr *blok;
     union block_hdr *nblok;
     size_t cur_len;
     char *strp;
 
-    ps = vdata;
-
-    /* does it fit in the current block? */
     blok = ps->blok;
-    strp = ps->strp;
-    if (strp + len + 1 < blok->h.endp) {
-	memcpy(strp, inp, len);
-	ps->strp = strp + len;
-	return 0;
-    }
-
+    strp = ps->vbuff.curpos;
     cur_len = strp - blok->h.first_avail;
 
     /* must try another blok */
     block_alarms();
     (void) acquire_mutex(alloc_mutex);
-    nblok = new_block((cur_len + len)*2);
+    nblok = new_block(2 * cur_len);
     (void) release_mutex(alloc_mutex);
     unblock_alarms();
-    strp = nblok->h.first_avail;
-    memcpy(strp, blok->h.first_avail, cur_len);
-    strp += cur_len;
-    memcpy(strp, inp, len);
-    strp += len;
-    ps->strp = strp;
+    memcpy(nblok->h.first_avail, strp, cur_len);
+    strp = nblok->h.first_avail + cur_len;
+    ps->vbuff.curpos = strp;
+    ps->vbuff.endpos = nblok->h.endp - 1;
 
     /* did we allocate the current blok? if so free it up */
     if (ps->got_a_new_block) {
@@ -865,16 +849,23 @@ API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
     void *ptr;
 
     block_alarms();
-    ps.p = p;
-    ps.base = NULL;
-    ps.len = CLICK_SZ;	/* need room at beginning for allocation_list */
-    apapi_vformatter(psprintf_write, &ps, fmt, ap);
-    ptr = ps.base;
-    if (ptr == NULL) {
-	unblock_alarms();
-	return pstrdup(p, "");
+    ps.base = malloc(512);
+    if (ps.base == NULL) {
+	fputs("Ouch!  Out of memory!\n", stderr);
+	exit(1);
     }
-    *((char *)ptr + ps.len) = '\0';	/* room was saved for this */
+    /* need room at beginning for allocation_list */
+    ps.vbuff.curpos = ps.base + CLICK_SZ;
+    ps.vbuff.endpos = ps.base + 511;
+    apapi_vformatter(psprintf_flush, &ps.vbuff, fmt, ap);
+    *ps.vbuff.curpos++ = '\0';
+    ptr = ps.base;
+    /* shrink */
+    ptr = realloc(ptr, ps.vbuff.curpos - ptr);
+    if (ptr == NULL) {
+	fputs("Ouch!  Out of memory!\n", stderr);
+	exit(1);
+    }
     *(void **)ptr = p->allocation_list;
     p->allocation_list = ptr;
     unblock_alarms();
@@ -884,14 +875,14 @@ API_EXPORT(char *) pvsprintf(pool *p, const char *fmt, va_list ap)
     char *strp;
     int size;
 
-    ps.p = p;
     ps.blok = p->last;
-    ps.strp = ps.blok->h.first_avail;
+    ps.vbuff.curpos = ps.blok->h.first_avail;
+    ps.vbuff.endpos = ps.blok->h.endp - 1;
     ps.got_a_new_block = 0;
 
-    apapi_vformatter(psprintf_write, &ps, fmt, ap);
+    apapi_vformatter(psprintf_flush, &ps.vbuff, fmt, ap);
 
-    strp = ps.strp;
+    strp = ps.vbuff.curpos;
     *strp++ = '\0';
 
     size = strp - ps.blok->h.first_avail;

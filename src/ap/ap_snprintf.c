@@ -266,10 +266,11 @@ typedef int bool_int;
 #define INS_CHAR(c, sp, bep, cc)				\
 	    {							\
 		if (sp == bep) {				\
-		    if (write_func(write_data, staging_buf, 	\
-			sizeof(staging_buf)) != 0)		\
+		    vbuff->curpos = sp;                         \
+		    if (flush_func(vbuff))			\
 			return -1;				\
-		    sp = staging_buf; 				\
+		    sp = vbuff->curpos;				\
+		    bep = vbuff->endpos;			\
 		} 						\
 		*sp++ = (c);					\
 		cc++; 						\
@@ -503,9 +504,8 @@ static char *conv_p2(register u_wide_int num, register int nbits,
 /*
  * Do format conversion placing the output in buffer
  */
-API_EXPORT(int) apapi_vformatter(
-    int (*write_func)(void *, const char *, size_t),
-    void *write_data, const char *fmt, va_list ap)
+API_EXPORT(int) apapi_vformatter(int (*flush_func)(apapi_vformatter_buff *),
+    apapi_vformatter_buff *vbuff, const char *fmt, va_list ap)
 {
     register char *sp;
     register char *bep;
@@ -531,8 +531,6 @@ API_EXPORT(int) apapi_vformatter(
     char num_buf[NUM_BUF_SIZE];
     char char_buf[2];		/* for printing %% and %<unknown> */
 
-    char staging_buf[MAX_STRING_LEN];
-
     /*
      * Flag variables
      */
@@ -544,8 +542,8 @@ API_EXPORT(int) apapi_vformatter(
     boolean_e adjust_width;
     bool_int is_negative;
 
-    sp = staging_buf;
-    bep = sp + sizeof(staging_buf);
+    sp = vbuff->curpos;
+    bep = vbuff->endpos;
 
     while (*fmt) {
 	if (*fmt != '%') {
@@ -875,33 +873,14 @@ API_EXPORT(int) apapi_vformatter(
 	}
 	fmt++;
     }
-    if (sp > staging_buf) {
-	if (write_func(write_data, staging_buf, sp - staging_buf) != 0) {
-	    return -1;
-	}
-    }
+    vbuff->curpos = sp;
     return cc;
 }
 
 
-struct snprintf_write_data {
-    char *strp;
-    char *end_buf;
-};
-
-static int snprintf_write(void *vdata, const char *inp, size_t len)
+static int snprintf_flush(apapi_vformatter_buff *vbuff)
 {
-    struct snprintf_write_data *wd;
-    size_t amt;
-
-    wd = vdata;
-    amt = wd->end_buf - wd->strp;
-    if (len > amt) {
-	len = amt;
-    }
-    memcpy(wd->strp, inp, len);
-    wd->strp += len;
-    return 0;
+    return -1;
 }
 
 
@@ -909,19 +888,19 @@ API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 {
     int cc;
     va_list ap;
-    struct snprintf_write_data wd;
+    apapi_vformatter_buff vbuff;
 
     if (len == 0)
 	return 0;
 
     /* save one byte for nul terminator */
-    wd.strp = buf;
-    wd.end_buf = buf + len - 1;
+    vbuff.curpos = buf;
+    vbuff.endpos = buf + len - 1;
     va_start(ap, format);
-    cc = apapi_vformatter(snprintf_write, &wd, format, ap);
-    *wd.strp = '\0';
+    cc = apapi_vformatter(snprintf_flush, &vbuff, format, ap);
     va_end(ap);
-    return (cc);
+    *vbuff.curpos = '\0';
+    return (cc == -1) ? len : cc;
 }
 
 
@@ -929,15 +908,15 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap)
 {
     int cc;
-    struct snprintf_write_data wd;
+    apapi_vformatter_buff vbuff;
 
     if (len == 0)
 	return 0;
 
     /* save one byte for nul terminator */
-    wd.strp = buf;
-    wd.end_buf = buf + len - 1;
-    cc = apapi_vformatter(snprintf_write, &wd, format, ap);
-    *wd.strp = '\0';
-    return (cc);
+    vbuff.curpos = buf;
+    vbuff.endpos = buf + len - 1;
+    cc = apapi_vformatter(snprintf_flush, &vbuff, format, ap);
+    *vbuff.curpos = '\0';
+    return (cc == -1) ? len : cc;
 }

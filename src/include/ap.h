@@ -80,21 +80,51 @@ int ap_execve(const char *, const char *argv[], const char *envp[]);
 /* apapi_vformatter() is a generic printf-style formatting routine
  * with some extensions.
  *
- * The write_func() is called when there is data available to be
- * output.  write_func() should return 0 when it wishes apapi_vformatter
- * to continue, and non-zero otherwise.  apapi_vformatter will stop
- * immediately and return -1 when a non-zero return from
- * write_func().
+ * The apapi_vformatter_buff has two elements curpos and endpos.
+ * curpos is where apapi_vformatter will write the next byte of output.
+ * It proceeds writing output to curpos, and updating curpos, until
+ * either the end of output is reached, or curpos == endpos (i.e. the
+ * buffer is full).
  *
- * If write_func() always returns 0 then apapi_vformatter will return
- * the number of characters written.
+ * If the end of output is reached, apapi_vformatter returns the
+ * number of bytes written.
+ *
+ * When the buffer is full, the flush_func is called.  The flush_func
+ * can return -1 to indicate that no further output should be attempted,
+ * and apapi_vformatter will return immediately with -1.  Otherwise
+ * the flush_func should flush the buffer in whatever manner is
+ * appropriate, re-initialize curpos and endpos, and return 0.
+ *
+ * Note that flush_func is only invoked as a result of attempting to
+ * write another byte at curpos when curpos == endpos.  So for
+ * example, it's possible when the output exactly matches the buffer
+ * space available that curpos == endpos will be true when
+ * apapi_vformatter returns.
  */
 
-API_EXPORT(int) apapi_vformatter(
-    int (*write_func)(void *write_data, const char *outp, size_t len),
-    void *write_data, const char *fmt, va_list ap);
+typedef struct {
+    char *curpos;
+    char *endpos;
+} apapi_vformatter_buff;
 
-/* These are snprintf implementations based on apapi_vformatter(). */
+API_EXPORT(int) apapi_vformatter(int (*flush_func)(apapi_vformatter_buff *),
+    apapi_vformatter_buff *, const char *fmt, va_list ap);
+
+/* These are snprintf implementations based on apapi_vformatter().
+ *
+ * Note that various standards and implementations disagree on the return
+ * value of snprintf, and side-effects due to %n in the formatting string.
+ * ap_snprintf behaves as follows:
+ *
+ * Process the format string until the entire string is exhausted, or
+ * the buffer fills.  If the buffer fills then stop processing immediately
+ * (so no further %n arguments are processed), and return the buffer
+ * length.  In all cases the buffer is NUL terminated.
+ *
+ * In no event does ap_snprintf return a negative number.  It's not possible
+ * to distinguish between an output which was truncated, and an output which
+ * exactly filled the buffer.
+ */
 API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 			    __attribute__((format(printf,3,4)));
 API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,

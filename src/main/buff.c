@@ -1445,11 +1445,24 @@ API_EXPORT(void) bonerror(BUFF *fb, void (*error) (BUFF *, int, void *),
     fb->error_data = data;
 }
 
-static int bprintf_write(void *vdata, const char *inp, size_t len)
+struct bprintf_data {
+    apapi_vformatter_buff vbuff;
+    BUFF *fb;
+};
+
+static int bprintf_flush(apapi_vformatter_buff *vbuff)
 {
-    if (bwrite(vdata, inp, len) != len) {
-	return -1;
+    struct bprintf_data *b = (struct bprintf_data *)vbuff;
+    BUFF *fb = b->fb;
+
+    fb->outcnt += b->vbuff.curpos - (char *)&fb->outbase[fb->outcnt];
+    if (fb->outcnt == fb->bufsiz) {
+	if (bflush(fb)) {
+	    return -1;
+	}
     }
+    vbuff->curpos = &fb->outbase[fb->outcnt];
+    vbuff->endpos = &fb->outbase[fb->bufsiz];
     return 0;
 }
 
@@ -1457,14 +1470,31 @@ API_EXPORT_NONSTD(int) bprintf(BUFF *fb, const char *fmt, ...)
 {
     va_list ap;
     int res;
+    struct bprintf_data b;
 
+    b.vbuff.curpos = &fb->outbase[fb->outcnt];
+    b.vbuff.endpos = &fb->outbase[fb->bufsiz];
+    b.fb = fb;
     va_start(ap, fmt);
-    res = apapi_vformatter(bprintf_write, fb, fmt, ap);
+    res = apapi_vformatter(bprintf_flush, &b.vbuff, fmt, ap);
     va_end(ap);
+    if (res != -1) {
+	fb->outcnt += b.vbuff.curpos - (char *)&fb->outbase[fb->outcnt];
+    }
     return res;
 }
 
 API_EXPORT(int) vbprintf(BUFF *fb, const char *fmt, va_list ap)
 {
-    return apapi_vformatter(bprintf_write, fb, fmt, ap);
+    struct bprintf_data b;
+    int res;
+
+    b.vbuff.curpos = &fb->outbase[fb->outcnt];
+    b.vbuff.endpos = &fb->outbase[fb->bufsiz];
+    b.fb = fb;
+    res = apapi_vformatter(bprintf_flush, &b.vbuff, fmt, ap);
+    if (res != -1) {
+	fb->outcnt += b.vbuff.curpos - (char *)&fb->outbase[fb->outcnt];
+    }
+    return res;
 }
