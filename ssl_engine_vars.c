@@ -130,6 +130,10 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             result = apr_psprintf(p, "%u", ap_get_server_port(r));
         else if (strcEQ(var, "SERVER_PROTOCOL"))
             result = r->protocol;
+        else if (strcEQ(var, "REMOTE_USER"))
+            result = r->user;
+        else if (strcEQ(var, "AUTH_TYPE"))
+            result = r->ap_auth_type;
     }
 
     /*
@@ -139,10 +143,6 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         SSLConnRec *sslconn = myConnConfig(c);
         if (strcEQ(var, "REMOTE_ADDR"))
             result = c->remote_ip;
-        else if (strcEQ(var, "REMOTE_USER"))
-            result = r->user;
-        else if (strcEQ(var, "AUTH_TYPE"))
-            result = r->ap_auth_type;
         else if (strlen(var) > 4 && strcEQn(var, "SSL_", 4) 
                  && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, c, var+4);
