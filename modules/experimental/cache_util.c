@@ -181,7 +181,7 @@ int ap_cache_liststr(const char *list, const char *key, char **val)
 /* return each comma separated token, one at a time */
 const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
 {
-    apr_off_t len, i;
+    apr_off_t len = 0, i;
     const char *s;
 
     s = ap_strchr_c(list, ',');
