@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Add X-Forwarded-Host and X-Forwarded-Server to X-Forwarded-For
+     to the proxy. [Thomas Eibner <thomas@stderr.net>]
+
   *) Fix a problem in mod_proxy: it would not set the number of bytes
      transferred, so other modules could not access the value from
      the request_rec->bytes_sent field.

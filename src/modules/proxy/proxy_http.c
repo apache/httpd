@@ -345,11 +345,31 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
             );
     }
 
-    /*
-     * Add X-Forwarded-For: so that the upstream has a chance to determine,
-     * where the original request came from.
+    /* the X-* headers are only added if we are a reverse
+     * proxy, otherwise we would be giving away private information.
      */
-    ap_table_mergen(req_hdrs, "X-Forwarded-For", r->connection->remote_ip);
+    if (r->proxyreq == PROXY_PASS) {
+        const char *buf;
+
+        /*
+         * Add X-Forwarded-For: so that the upstream has a chance to determine,
+         * where the original request came from.
+         */
+        ap_table_mergen(req_hdrs, "X-Forwarded-For", r->connection->remote_ip);
+
+        /* Add X-Forwarded-Host: so that upstream knows what the
+         * original request hostname was.
+         */
+        if ((buf = ap_table_get(r->headers_in, "Host"))) {
+            ap_table_mergen(req_hdrs, "X-Forwarded-Host", buf);
+        }
+
+        /* Add X-Forwarded-Server: so that upstream knows what the
+         * name of this proxy server is (if there are more than one)
+         * XXX: This duplicates Via: - do we strictly need it?
+         */
+        ap_table_mergen(req_hdrs, "X-Forwarded-Server", r->server->server_hostname);
+    } 
 
     /* we don't yet support keepalives - but we will soon, I promise! */
     ap_table_set(req_hdrs, "Connection", "close");
