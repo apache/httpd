@@ -292,8 +292,6 @@ apr_status_t util_ldap_cache_module_kill(void *data)
 
 apr_status_t util_ldap_cache_init(apr_pool_t *pool, apr_size_t reqsize)
 {
-    apr_anylock_t rmm_lock;
-
 #if APR_HAS_SHARED_MEMORY
     apr_status_t result;
 
@@ -303,7 +301,7 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, apr_size_t reqsize)
     }
 
     /* This will create a rmm "handler" to get into the shared memory area */
-    apr_rmm_init(&util_ldap_rmm, &rmm_lock, 
+    apr_rmm_init(&util_ldap_rmm, NULL,
 			(void *)apr_shm_baseaddr_get(util_ldap_shm), reqsize, pool);
 #endif
 
