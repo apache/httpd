@@ -106,6 +106,7 @@
 #define MULTITHREAD
 #define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
+#define HAVE_UNC_PATHS
 typedef int uid_t;
 typedef int gid_t;
 typedef int pid_t;
@@ -167,7 +168,7 @@ __inline int ap_os_is_path_absolute(const char *file)
   /* For now, just do the same check that http_request.c and mod_alias.c
    * do. 
    */
-  return file[0] == '/' || file[1] == ':';
+  return file && (file[0] == '/' || (file[1] == ':' && file[2] == '/'));
 }
 
 #define stat(f,ps)  os_stat(f,ps)

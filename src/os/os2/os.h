@@ -4,6 +4,7 @@
 #define PLATFORM "OS/2"
 #define HAVE_CANONICAL_FILENAME
 #define HAVE_DRIVE_LETTERS
+#define HAVE_UNC_PATHS
 
 /*
  * This file in included in all Apache source code. It contains definitions
