@@ -49,6 +49,21 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
     <a href="http://www.apache.org/dist/patches/apply_to_1.3b5/PR1889.patch">this
     patch</a> to fix the problem.  See
     <a href="http://bugs.apache.org/index/full/1889">PR#1889</a> for more details
+<LI><STRONG>Win32 only</STRONG> Use of #! at the start of a CGI script file
+    does not work unless the interpreter filename includes the
+    extension (e.g. use <SAMP>#!c:/bin/perl.exe</SAMP> instead of
+    <SAMP>#!c:/bin/perl</SAMP>).
+<LI><STRONG>NT only</STRONG> When installed as a service, Apache expects
+    to find its ServerRoot at \Apache on the system disk. See 
+    <A HREF="http://bugs.apache.org/index/full/1489">PR#1489</A>.
+<LI><STRONG>Win32 only</STRONG> The <CODE>Alias</CODE> directive does not
+    work if the target is a root directory, e.g. D:/. See 
+    <A HREF="http://bugs.apache.org/index/full/1558">PR#1558</A>.
+<LI><STRONG>Win32 only</STRONG> Repeated concurrent requests to a CGI
+    program can cause Apache to lock-up. See 
+    <A HREF="http://bugs.apache.org/index/full/1129">PR#1129</A> and
+    <A HREF="http://bugs.apache.org/index/full/1607">PR#1607</A>.
+
 </ol>
 
 <H2>Apache 1.3b3 Bugs</H2>
