@@ -17,7 +17,7 @@ PROGRAMS        = $(PROGRAM_NAME)
 TARGETS         = $(PROGRAMS) $(shared_build) $(other_targets)
 PHONY_TARGETS   = $(srcdir)/buildmark.c
 INSTALL_TARGETS = install-conf install-htdocs install-icons install-other \
-	install-cgi install-include install-suexec
+	install-cgi install-include install-suexec install-man
 
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
 	modules.c config.cache config.log config.status config_vars.mk
@@ -105,6 +105,14 @@ install-include:
 	@cp -p $(srcdir)/srclib/apr-util/include/*.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/*.h $(includedir)
 	@chmod 644 $(includedir)/*.h
+
+install-man:
+	@echo Installing man pages
+	@test -d $(mandir)      || $(MKINSTALLDIRS) $(mandir)
+	@test -d $(mandir)/man1 || $(MKINSTALLDIRS) $(mandir)/man1
+	@test -d $(mandir)/man8 || $(MKINSTALLDIRS) $(mandir)/man8
+	@cp -p docs/man/*.1 $(mandir)/man1
+	@cp -p docs/man/*.8 $(mandir)/man8
 
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \
