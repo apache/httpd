@@ -99,7 +99,7 @@
     manualdir:     /System/Library/Apache/Manual
     htdocsdir:     ${datadir}/Documents
     cgidir:        ${datadir}/CGI-Executables
-    includedir:    /System/Library/Frameworks/Apache.framework/Versions/1.3/Headers
+    includedir:    /System/Library/Frameworks/Apache.framework/Versions/2.0/Headers
     localstatedir: /var
     runtimedir:    ${prefix}/Logs
     logfiledir:    ${prefix}/Logs
