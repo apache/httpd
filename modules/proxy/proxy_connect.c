@@ -216,7 +216,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* create a new socket */
-    if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM,APR_NO_INHERIT, r->pool)) != APR_SUCCESS) {
+    if ((rv = apr_socket_create(&sock, APR_INET, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
             "proxy: error creating socket");
         return HTTP_INTERNAL_SERVER_ERROR;
