@@ -109,7 +109,7 @@
  * literal characters copied into the log files, and '%' directives as
  * follows:
  *
- * %...b:  bytes sent.
+ * %...b:  bytes sent, excluding HTTP headers.
  * %...f:  filename
  * %...h:  remote host
  * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
