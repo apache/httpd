@@ -523,10 +523,9 @@ int dav_unlock(request_rec *r, const dav_resource *resource,
     const dav_hooks_repository *repos_hooks = resource->hooks;
     dav_error *err;
 
-    /* If no locks provider, we shouldn't have been called */
+    /* If no locks provider, then there is nothing to unlock. */
     if (hooks == NULL) {
-	/* ### map result to something nice; log an error */
-	return HTTP_INTERNAL_SERVER_ERROR;
+        return OK;
     }
 
     /* 2518 requires the entire lock to be removed if resource/locktoken

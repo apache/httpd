@@ -1149,6 +1149,9 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
 	    ** We may have aborted the scan before seeing the locktoken.
 	    ** Rescan the If: header to see if we can find the locktoken
 	    ** somewhere.
+            **
+            ** Note that seen_locktoken == 0 implies lock_list != NULL
+            ** which implies locks_hooks != NULL.
 	    */
 	    if (dav_find_submitted_locktoken(if_header, lock_list,
 					     locks_hooks)) {
@@ -1363,11 +1366,6 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
 	        return err;
             }
             lock_db_opened_locally = 1;
-        }
-        else {
-            return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-				 "Resource validation failed because no "
-				 "lock hooks were found.");
         }
     }
 
