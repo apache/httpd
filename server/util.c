@@ -766,9 +766,8 @@ API_EXPORT(char *) ap_getword_conf(ap_pool_t *p, const char **line)
 /* Check a string for any ${ENV} environment variable
  * construct and replace each them by the value of
  * that environment variable, if it exists. If the
- * environment value does not exist, replace by an
- * empty string. Any unrecognized construct is not
- * replaced and silently ignored.
+ * environment value does not exist, leave the ${ENV}
+ * construct alone; it means something else.
  */
 API_EXPORT(char *) ap_resolve_env(ap_pool_t *p, const char * word)
 {
@@ -787,7 +786,12 @@ API_EXPORT(char *) ap_resolve_env(ap_pool_t *p, const char * word)
                        *e = '\0';
                        word = e + 1;
                        e = getenv(s+2);
-                       strcat(tmp,e ? e : "");
+                       if (e) {
+                           strcat(tmp,e);
+                       } else {
+                           strcat(tmp,s);
+                           strcat(tmp,"}");
+                       }
                } else {
                        /* ignore invalid strings */
                        word = s+1;
