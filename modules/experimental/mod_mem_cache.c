@@ -194,16 +194,23 @@ static apr_status_t decrement_refcount(void *arg)
     cache_object_t *obj = (cache_object_t *) arg;
 
     /* If obj->complete is not set, the cache update failed and the
-     * object needs to be removed from the cache.
+     * object needs to be removed from the cache then cleaned up.
      */
     if (!obj->complete) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         if (sconf->lock) {
             apr_thread_mutex_lock(sconf->lock);
         }
-        apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
-        sconf->object_cnt--;
-        sconf->cache_size -= mobj->m_len;
+        /* Remember, objects marked for cleanup are, by design, already
+         * removed from the cache. remove_url() could have already
+         * removed the object from the cache (and set obj->cleanup)
+         */
+        if (!obj->cleanup) {
+            apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+            sconf->object_cnt--;
+            sconf->cache_size -= mobj->m_len;
+            obj->cleanup = 1;
+        }
         if (sconf->lock) {
             apr_thread_mutex_unlock(sconf->lock);
         }
@@ -243,13 +250,17 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
         return APR_SUCCESS;
     }
 
-    /* Iterate over the cache and clean up each entry */
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    for (hi = apr_hash_first(NULL, co->cacheht); hi; hi=apr_hash_next(hi)) {
+    /* Iterate over the cache and clean up each entry */
+    while ((hi = apr_hash_first(NULL, co->cacheht)) != NULL) {
+        /* Fetch the object from the cache */
         apr_hash_this(hi, NULL, NULL, (void **)&obj);
         if (obj) {
+            /* Remove the object from the cache */
+            apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
+            /* Free the object if the recount == 0 */
 #ifdef USE_ATOMICS
             apr_atomic_inc(&obj->refcount);
             obj->cleanup = 1;
@@ -262,6 +273,7 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
             }
         }
     }
+
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
@@ -364,16 +376,13 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         return DECLINED;
     }
 
-    /* Reference mem_cache_object_t out of cache_object_t */
+    /* Finish initing the cache object */
+    obj->refcount = 1;
+    obj->complete = 0;
+    obj->cleanup = 0;
     obj->vobj = mobj;
     mobj->m_len = len;
     mobj->type = type_e;
-    obj->complete = 0;
-#ifdef USE_ATOMICS
-    apr_atomic_set(&obj->refcount, 1);
-#else
-    obj->refcount = 1;
-#endif
 
     /* Place the cache_object_t into the hash table.
      * Note: Perhaps we should wait to put the object in the
@@ -411,10 +420,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         return DECLINED;
     }
 
-    /* Set the cleanup flag and register the cleanup to cleanup
-     * the cache_object_t if the cache load is aborted.
-     */
-    obj->cleanup = 1;
     apr_pool_cleanup_register(r->pool, obj, decrement_refcount, 
                               apr_pool_cleanup_null);
 
@@ -496,23 +501,23 @@ static int remove_entity(cache_handle_t *h)
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
-    /* Set the cleanup flag. Object will be cleaned up (by decrement_refcount)
-     * when the refcount drops to zero.
+    /* If the object is not already marked for cleanup, remove
+     * it from the cache and mark it for cleanup. Remember,
+     * an object marked for cleanup is by design not in the
+     * hash table.
      */
-    obj->cleanup = 1;
-    obj = (cache_object_t *) apr_hash_get(sconf->cacheht, obj->key,
-                                          APR_HASH_KEY_STRING);
-    if (obj && obj->complete) {
+    if (!obj->cleanup) {
         mem_cache_object_t *mobj = (mem_cache_object_t *) obj->vobj;
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
+        obj->cleanup = 1;
     }
+
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
 
-    h->cache_obj = NULL;
     return OK;
 }
 static apr_status_t serialize_table(cache_header_tbl_t **obj, 
@@ -587,7 +592,15 @@ static int remove_url(const char *type, const char *key)
      * apr_hash function.
      */
 
-    /* First, find the object in the cache */
+    /* Order of the operations is important to avoid race conditions. 
+     * First, remove the object from the cache. Remember, all additions
+     * deletions from the cache are protected by sconf->lock.
+     * Increment the ref count on the object to indicate our thread
+     * is accessing the object. Then set the cleanup flag on the
+     * object. Remember, the cleanup flag is NEVER set on an
+     * object in the hash table.  If an object has the cleanup
+     * flag set, it is guaranteed to NOT be in the hash table.
+     */
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
@@ -598,18 +611,21 @@ static int remove_url(const char *type, const char *key)
         apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
-        /* Set cleanup to ensure decrement_refcount cleans up the obj if it 
-         * is still being referenced by another thread
-         */
-        obj->cleanup = 1;
+
 #ifdef USE_ATOMICS
-        /* Refcount increment MUST be made under protection of the lock */
+        /* Refcount increment in this case MUST be made under 
+         * protection of the lock 
+         */
         apr_atomic_inc(&obj->refcount);
 #else
         if (!obj->refcount) {
             cleanup_cache_object(obj);
+            obj = NULL;
         }
 #endif
+        if (obj) {
+            obj->cleanup = 1;
+        }
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
@@ -755,7 +771,9 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         }
         if (fd == 1 && !other && eos) {
             apr_file_t *tmpfile;
-            /* Open a new XTHREAD handle to the file */
+            /* Open a new XTHREAD handle to the file 
+             * XXX: Need to fetch the filename from the file bucket...
+             */
             rv = apr_file_open(&tmpfile, r->filename, 
                                APR_READ | APR_BINARY | APR_XTHREAD | APR_FILE_NOCLEANUP,
                                APR_OS_DEFAULT, r->pool);
@@ -764,14 +782,6 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             }
             apr_file_unset_inherit(tmpfile);
             apr_os_file_get(&(mobj->fd), tmpfile);
-
-            obj->cleanup = 0;
-#ifdef USE_ATOMICS
-            (void)apr_atomic_dec(&obj->refcount);
-#else
-            obj->refcount--;    /* Count should be 0 now */
-#endif
-            apr_pool_cleanup_kill(r->pool, obj, decrement_refcount);
 
             /* Open for business */
             obj->complete = 1;
@@ -810,14 +820,6 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         apr_size_t len;
 
         if (APR_BUCKET_IS_EOS(e)) {
-            obj->cleanup = 0;
-#ifdef USE_ATOMICS
-            (void)apr_atomic_dec(&obj->refcount);
-#else
-            obj->refcount--;    /* Count should be 0 now */
-#endif
-            apr_pool_cleanup_kill(r->pool, obj, decrement_refcount);
-
             /* Open for business */
             obj->complete = 1;
             break;
