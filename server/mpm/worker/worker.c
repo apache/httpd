@@ -991,7 +991,7 @@ static void create_listener_thread(thread_starter *ts)
          * XXX Jeff doesn't see how Apache is going to try to fork again since
          * the exit code is APEXIT_CHILDFATAL
          */
-        apr_sleep(10 * APR_USEC_PER_SEC);
+        apr_sleep(apr_time_from_sec(10));
         clean_child_exit(APEXIT_CHILDFATAL);
     }
     apr_os_thread_get(&listener_os_thread, ts->listener);
@@ -1072,7 +1072,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
                 /* In case system resources are maxxed out, we don't want
                    Apache running away with the CPU trying to fork over and
                    over and over again if we exit. */
-                apr_sleep(10 * APR_USEC_PER_SEC);
+                apr_sleep(apr_time_from_sec(10));
                 clean_child_exit(APEXIT_CHILDFATAL);
             }
             threads_created++;
@@ -1086,7 +1086,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
             break;
         }
         /* wait for previous generation to clean up an entry */
-        apr_sleep(1 * APR_USEC_PER_SEC);
+        apr_sleep(apr_time_from_sec(1));
         ++loops;
         if (loops % 120 == 0) { /* every couple of minutes */
             if (prev_threads_created == threads_created) {
@@ -1138,7 +1138,7 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads)
 #endif
                == 0) {
             /* listener not dead yet */
-            apr_sleep(APR_USEC_PER_SEC / 2);
+            apr_sleep(apr_time_make(0, 500000));
             wakeup_listener();
             ++iter;
         }
@@ -1265,7 +1265,7 @@ static void child_main(int child_num_arg)
         /* In case system resources are maxxed out, we don't want
            Apache running away with the CPU trying to fork over and
            over and over again if we exit. */
-        apr_sleep(10 * APR_USEC_PER_SEC);
+        apr_sleep(apr_time_from_sec(10));
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
@@ -1367,7 +1367,7 @@ static int make_child(server_rec *s, int slot)
         /* In case system resources are maxxed out, we don't want
            Apache running away with the CPU trying to fork over and
            over and over again. */
-        apr_sleep(10 * APR_USEC_PER_SEC);
+        apr_sleep(apr_time_from_sec(10));
 
         return -1;
     }
