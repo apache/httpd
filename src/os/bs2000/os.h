@@ -32,6 +32,7 @@ extern int ap_os_is_path_absolute(const char *file);
 /* Other ap_os_ routines not used by this platform */
 
 #define ap_os_is_filename_valid(f)          (1)
+#define ap_os_kill(pid, sig)                kill(pid, sig)
 
 /* Sorry if this is ugly, but the include order doesn't allow me
  * to use request_rec here... */

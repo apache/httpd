@@ -120,4 +120,7 @@ API_EXPORT(int) ap_os_is_filename_valid(const char *file);
 #define ap_os_dso_sym(h,s)  GetProcAddress(h,s)
 #define ap_os_dso_error()   ""	/* for now */
 
+/* Other ap_os_ routines not used by this platform */
+#define ap_os_kill(pid, sig)                kill(pid, sig)
+
 #endif   /* ! APACHE_OS_H */
