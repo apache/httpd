@@ -2069,6 +2069,17 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 				       sizeof(ss->request));
 	    }
 	    ss->vhostrec =  r->server;
+	} else if (status == SERVER_STARTING) {
+	    /* clean up the slot's vhostrec pointer (maybe re-used)
+	     * and mark the slot as belonging to a new generation.
+	     */
+	    ss->vhostrec = NULL;
+	    ap_scoreboard_image->parent[child_num].generation = ap_my_generation;
+#ifdef SCOREBOARD_FILE
+	    lseek(scoreboard_fd, XtOffsetOf(scoreboard, parent[child_num]), 0);
+	    force_write(scoreboard_fd, &ap_scoreboard_image->parent[child_num],
+		sizeof(parent_score));
+#endif
 	}
     }
     put_scoreboard_info(child_num, ss);
@@ -3917,15 +3928,6 @@ static int make_child(server_rec *s, int slot, time_t now)
     Explain1("Starting new child in slot %d", slot);
     (void) ap_update_child_status(slot, SERVER_STARTING, (request_rec *) NULL);
 
-    /* clean up the slot's vhostrec pointer now that it is being re-used,
-     * and mark the slot as beloging to a new generation.
-     */
-    /* XXX: there's still a race condition here for file-based scoreboards...
-     * but... like, do we really care to spend yet another write() operation
-     * here? -djg
-     */
-    ap_scoreboard_image->servers[slot].vhostrec = NULL;
-    ap_scoreboard_image->parent[slot].generation = ap_my_generation;
 
 #ifndef _OSD_POSIX
     if ((pid = fork()) == -1) {
