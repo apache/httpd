@@ -79,15 +79,11 @@ uses</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="how-it-works" id="how-it-works">How it Works</a></h2>
-    <p>Each process has a fixed
-    number of threads. The server adjusts to handle load by
-    increasing or decreasing the number of processes.</p>
-
-    <p>A single control process is responsible for launching child
-    processes. Each child process creates a fixed number of threads as
-    specified in the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> directive. The
-    individual threads then listen for connections and serve them when
-    they arrive.</p>
+    <p>A single control process (the parent) is responsible for launching 
+    child processes. Each child process creates a fixed number of server
+    threads as specified in the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> directive, as well
+    as a listener thread which listens for connections and passes them
+    to a server thread for processing when they arrive.</p>
 
     <p>Apache always tries to maintain a pool of <dfn>spare</dfn> or
     idle server threads, which stand ready to serve incoming
@@ -102,23 +98,55 @@ uses</a></li>
     these directives from their default values. The maximum number of
     clients that may be served simultaneously (i.e., the maximum total
     number of threads in all processes) is determined by the
-    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> directive,
-    while the maximum number of processes that can be launched is set
-    by the <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>
-    directive.  <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code>
-    multiplied by <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> must be greater
-    than or equal to <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code></p>
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> directive.
+    The maximum number of active child processes is determined by
+    the <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
+    directive divided by the <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    ThreadsPerChild</a></code> directive.</p>
+
+    <p>Two directives set hard limits on the number of active child
+    processes and the number of server threads in a child process,
+    and can only be changed by fully stopping the server and then 
+    starting it again.  <code class="directive"><a href="../mod/mpm_common.html#serverlimit&#10;    ">ServerLimit
+    </a></code> is a hard limit on the number of active child 
+    processes, and must be greater than or equal to the 
+    <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>
+    directive divided by the <code class="directive"><a href="../mod/mpm_common.html#&#10;    threadsperchild">
+    ThreadsPerChild</a></code> directive.  
+    <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> is a hard
+    limit of the number of server threads, and must be greater than
+    or equal to the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> directive.  If 
+    non-default values are specified for these directives, they 
+    should appear before other <code class="module"><a href="../mod/worker.html">worker</a></code> directives.</p>
+
+    <p>In addition to a the set of active child processes, there may 
+    be additional child processes which are terminating but where at
+    least one server thread is still handling an existing client
+    connection.  Up to <code class="directive"><a href="../mod/mpm_common.html#maxclient">MaxClient</a></code> terminating processes 
+    may be present, though the actual number can be expected to be 
+    much smaller.  This behavior can be avoided by disabling the 
+    termination of individual child processes, which is achieved by 
+    the following:</p>
+
+    <ul>
+      <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxrequestsperchild">
+      MaxRequestsPerChild</a></code> to zero</li>
+
+      <li>set the value of <code class="directive"><a href="../mod/mpm_common.html#&#10;      maxsparethreads">
+      MaxSpareThreads</a></code> to the same value as
+      <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code></li>
+    </ul>
 
     <p>A typical configuration of the process-thread controls in
     the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM could look as follows:</p>
 
     <div class="example"><p><code>
+      ServerLimit         16<br />
       StartServers         2<br />
       MaxClients         150<br />
       MinSpareThreads     25<br />
       MaxSpareThreads     75<br />
-      ThreadsPerChild     25<br />
-      ServerLimit         16
+      ThreadsPerChild     25
     </code></p></div>
 
     <p>While the parent process is usually started as <code>root</code>
