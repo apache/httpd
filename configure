@@ -335,7 +335,7 @@ case $PLATFORM in
 	iflags_core="${iflags_core} -S \"-S\""
 	iflags_dso="${iflags_dso} -S \"-S\""
 	;;
-    *-apple-macos*)
+    *-apple-darwin*)
 	default_layout="Mac OS X Server"
 	iflags_core="${iflags_core} -S \"-S\"" 
 	iflags_dso="${iflags_dso} -S \"-S\""

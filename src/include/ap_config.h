@@ -409,13 +409,9 @@ typedef int pid_t;
 #define DYLD_CANT_UNLOAD
 #endif
 
-#elif defined(MAC_OS) || defined(MAC_OS_X_SERVER) /* Mac OS (>= 10.0) and Mac OS X Server (<= 5.x) */
+#elif defined(DARWIN) /* Darwin (Mac OS) */
 #undef PLATFORM
-#ifdef MAC_OS_X_SERVER
-#define PLATFORM "Mac OS X Server"
-#else
-#define PLATFORM "Mac OS"
-#endif
+#define PLATFORM "Darwin"
 #define HAVE_DYLD
 #define HAVE_GMTOFF
 #define HAVE_MMAP
@@ -1031,12 +1027,12 @@ typedef int rlim_t;
 #define CORE_EXPORT_NONSTD	API_EXPORT_NONSTD
 #endif
 
-/* On Mac OS X Server, symbols that conflict with loaded dylibs
+/* On Darwin, symbols that conflict with loaded dylibs
  * (eg. System framework) need to be declared as private symbols with
  * __private_extern__.
  * For other systems, make that a no-op.
  */
-#if (defined(MAC_OS) || defined(MAC_OS_X_SERVER)) && defined(__DYNAMIC__)
+#if defined(DARWIN) && defined(__DYNAMIC__)
 #define ap_private_extern __private_extern__
 #else
 #define ap_private_extern

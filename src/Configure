@@ -497,12 +497,12 @@ case "$PLAT" in
 	;;
     *-apple-rhapsody*)
 	OS='Mac OS X Server'
-	CFLAGS="$CFLAGS -DMAC_OS_X_SERVER"
+	CFLAGS="$CFLAGS -DDARWIN -DMAC_OS_X_SERVER"
 	DEF_WANTHSREGEX=yes
 	;;
-    *-apple-macos*)
-	OS='Mac OS'
-	CFLAGS="$CFLAGS -DMAC_OS"
+    *-apple-darwin*)
+	OS='Darwin'
+	CFLAGS="$CFLAGS -DDARWIN"
 	DEF_WANTHSREGEX=yes
 	;;
     *-dec-osf*)
@@ -1095,7 +1095,7 @@ if [ "x$using_shlib" = "x1" ] ; then
  	    LDFLAGS_SHLIB_EXPORT=''
  	    SHLIB_SUFFIX_DEPTH=0
  	    ;;
-	*-apple-rhapsody* | *-apple-macos* )
+	*-apple-rhapsody* | *-apple-darwin* )
 	    LD_SHLIB="cc"
 	    CFLAGS_SHLIB=""
 	    LDFLAGS_SHLIB='$(EXTRA_LDFLAGS) -bundle -undefined suppress'
