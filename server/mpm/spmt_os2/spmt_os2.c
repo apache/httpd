@@ -1188,6 +1188,12 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     ap_server_conf = s;
     ap_log_pid(pconf, ap_pid_fname);
 
+    if ((status = ap_listen_open(s->process, s->port)) != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, status, s,
+		    "no listening sockets available, shutting down");
+	return -1;
+    }
+
     SAFE_ACCEPT(accept_mutex_init(pconf));
 
     if (!is_graceful) {
