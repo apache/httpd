@@ -868,7 +868,6 @@ void set_sub_req_protocol (request_rec *rnew, const request_rec *r)
     
     rnew->read_length = r->read_length;
     rnew->read_body   = REQUEST_NO_BODY;
-    rnew->begun_read_body = r->begun_read_body;
     
     rnew->main = (request_rec *)r;
 }
@@ -1346,7 +1345,7 @@ int setup_client_block (request_rec *r, int read_policy)
 
 int should_client_block (request_rec *r)
 {
-    if (r->begun_read_body || is_HTTP_ERROR(r->status))
+    if (r->read_length || is_HTTP_ERROR(r->status))
         return 0;
 
     if (!r->read_chunked && (r->remaining <= 0))
@@ -1397,8 +1396,6 @@ long get_client_block (request_rec *r, char *buffer, int bufsiz)
     int c;
     long len_read, len_to_read;
     long chunk_start = 0;
-
-    r->begun_read_body = 1;
 
     if (!r->read_chunked) {                 /* Content-length read */
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;

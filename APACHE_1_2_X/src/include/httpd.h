@@ -472,7 +472,6 @@ struct request_rec {
   long read_length;		/* bytes that have been read */
   int read_body;   		/* how the request body should be read */
   int read_chunked;		/* reading chunked transfer-coding */
-  int begun_read_body;   	/* false (0) until first get_client_block */
 
   /* MIME header environments, in and out.  Also, an array containing
    * environment variables to be passed to subprocesses, so people can

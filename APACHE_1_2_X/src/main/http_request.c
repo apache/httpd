@@ -1095,7 +1095,7 @@ request_rec *internal_internal_redirect (const char *new_uri, request_rec *r)
 				  */
     new->no_local_copy = r->no_local_copy;
 
-    new->begun_read_body = r->begun_read_body;  /* We can only read it once */
+    new->read_length = r->read_length;  /* We can only read it once */
 
     ap_snprintf (t, sizeof(t), "%d", r->status);
     table_set (new->subprocess_env, "REDIRECT_STATUS", pstrdup (r->pool, t));
