@@ -1,4 +1,4 @@
-# Makefile for Win32
+# Makefile for Windows NT
 # Note that this doesn't quite work... ApacheCore.dll doesn't depend on proxy.lib
 # or regex.lib. Nor can it, without some messing about - the debug and release
 # versions need different dependencies, and that isn't an option.
@@ -9,7 +9,8 @@
 
 
 _apacher:
-    cd regex & set CFG=regex - Win32 Release& nmake /nologo -f regex.mak
+	cd os\win32 & set CFG=ApacheOS - Win32 Release& nmake /nologo -f ApacheOS.mak
+	cd regex & set CFG=regex - Win32 Release& nmake /nologo -f regex.mak
 	cd . & set CFG=ApacheCore - Win32 Release& nmake /nologo -f ApacheCore.mak
 	cd . & set CFG=Apache - Win32 Release& nmake /nologo -f Apache.mak
 	cd os\win32 & set CFG=ApacheModuleStatus - Win32 Release& nmake /nologo -f ApacheModuleStatus.mak
@@ -24,7 +25,8 @@ _apacher:
 	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Release& nmake /nologo -f ApacheModuleProxy.mak
 
 _apached:
-    cd regex & set CFG=regex - Win32 Debug& nmake /nologo -f regex.mak
+	cd os\win32 & set CFG=ApacheOS - Win32 Debug& nmake /nologo -f ApacheOS.mak
+	cd regex & set CFG=regex - Win32 Debug& nmake /nologo -f regex.mak
 	cd . & set CFG=ApacheCore - Win32 Debug& nmake /nologo -f ApacheCore.mak
 	cd . & set CFG=Apache - Win32 Debug& nmake /nologo -f Apache.mak
 	cd os\win32 & set CFG=ApacheModuleStatus - Win32 Debug& nmake /nologo -f ApacheModuleStatus.mak
@@ -45,6 +47,7 @@ installr: _apacher
 	-mkdir \Apache\conf
 	copy ApacheR\Apache.exe \Apache
 	copy CoreR\ApacheCore.dll \Apache
+	copy os\win32\ApacheOSR\ApacheOS.dll \Apache
 	copy os\win32\ApacheModuleStatusR\ApacheModuleStatus.dll \Apache\modules
 #       copy os\win32\ApacheModuleInfoR\ApacheModuleInfo.dll \Apache\modules
 	copy os\win32\ApacheModuleAuthAnonR\ApacheModuleAuthAnon.dll \Apache\modules
@@ -62,6 +65,7 @@ installd: _apached
 	-mkdir \Apache\conf
 	copy ApacheD\Apache.exe \Apache
 	copy CoreD\ApacheCore.dll \Apache
+	copy os\win32\ApacheOSD\ApacheOS.dll \Apache
 	copy os\win32\ApacheModuleStatusD\ApacheModuleStatus.dll \Apache\modules
 #       copy os\win32\ApacheModuleInfoD\ApacheModuleInfo.dll \Apache\modules
 	copy os\win32\ApacheModuleAuthAnonD\ApacheModuleAuthAnon.dll \Apache\modules
@@ -73,7 +77,8 @@ installd: _apached
 	copy modules\proxy\Debug\ApacheModuleProxy.dll \Apache\modules
 
 cleanr:
-    cd regex & set CFG=regex - Win32 Release& nmake /nologo -f regex.mak clean
+	cd os\win32 & set CFG=ApacheOS - Win32 Release& nmake /nologo -f ApacheOS.mak clean
+	cd regex & set CFG=regex - Win32 Release& nmake /nologo -f regex.mak clean
 	cd . & set CFG=ApacheCore - Win32 Release& nmake /nologo -f ApacheCore.mak clean
 	cd . & set CFG=Apache - Win32 Release& nmake /nologo -f Apache.mak clean
 	cd os\win32 & set CFG=ApacheModuleStatus - Win32 Release& nmake /nologo -f ApacheModuleStatus.mak clean
@@ -87,7 +92,8 @@ cleanr:
 	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Release& nmake /nologo -f ApacheModuleProxy.mak clean
 
 cleand:
-    cd regex & set CFG=regex - Win32 Debug& nmake /nologo -f regex.mak clean
+	cd os\win32 & set CFG=ApacheOS - Win32 Debug& nmake /nologo -f ApacheOS.mak
+	cd regex & set CFG=regex - Win32 Debug& nmake /nologo -f regex.mak clean
 	cd . & set CFG=ApacheCore - Win32 Debug& nmake /nologo -f ApacheCore.mak clean
 	cd . & set CFG=Apache - Win32 Debug& nmake /nologo -f Apache.mak clean
 	cd os\win32 & set CFG=ApacheModuleStatus - Win32 Debug& nmake /nologo -f ApacheModuleStatus.mak clean
