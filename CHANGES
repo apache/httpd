@@ -1,5 +1,9 @@
 Changes with Apache 2.0.40
 
+  *) Fix mod_ext_filter to look in the main server for filter definitions
+     when running in a vhost if the filter definition is not found in
+     the vhost.  PR 10147  [Jeff Trawick]
+
   *) Support WinNT CGI invocation through ScriptInterpreterSource 
      'registry' for script interpreter paths and names with non-ascii
      characters in the executable filepath.  [William Rowe]
