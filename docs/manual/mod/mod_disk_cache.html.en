@@ -175,14 +175,19 @@ The <code class="directive">CacheGcUnused</code> directive is currently <em>not<
    CacheMinFileSize 64<br />
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>The directory to store cache files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>The directory root under which cache files are stored</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td><code>CacheRoot <em>directory</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>none</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_disk_cache</td></tr></table>
     <p>The <code class="directive">CacheRoot</code> directive defines the name of the directory
-    on the disk to contain cache files. What is happening if not set ?</p>
+    on the disk to contain cache files. If the mod_disk_cache module has been loaded
+    or compiled in to the Apache server, this directive <em>must</em> be defined. Failing to
+    provide a value for <code class="directive">CacheRoot</code> will result in a configuration
+    file processing error. The <code class="directive">CacheDirLevels</code> and
+    <code class="directive">CacheDirLength</code> directives define the structure of the directories
+    under the specified root directory.</p>
 
 <div class="example"><p><code>
   CacheRoot c:/cacheroot <br />
@@ -194,14 +199,14 @@ The <code class="directive">CacheGcUnused</code> directive is currently <em>not<
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Experimental</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_disk_cache</td></tr></table>
-    <p>The <code class="directive">MCacheSize</code> directive sets the desired disk space
+    <p>The <code class="directive">CacheSize</code> directive sets the desired disk space
     usage of the cache, in KBytes (1024-byte units). This directive does not put a 
     hard limit on the size of the cache. The garbage collector will delete files
     until the usage is at or below the settings. Always use a value that is lower
     than the available disk space.</p>
 
 <div class="example"><p><code>
-  MCacheSize  5000000 <br />
+  CacheSize  5000000 <br />
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CacheTimeMargin" id="CacheTimeMargin">CacheTimeMargin</a> <a name="cachetimemargin" id="cachetimemargin">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The minimum time margin to cache a document</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
