@@ -117,6 +117,11 @@
    **     Adopted SSL code by Madhu Mathihalli <madhusudan_mathihalli@hp.com>
    **     [PATCH] ab with SSL support  Posted Wed, 15 Aug 2001 20:55:06 GMT
    **     Introduces four 'if (int == value)' tests per non-ssl request.
+   **
+   ** Version 2.0.40-dev
+   **     Switched to the new abstract pollset API, allowing ab to
+   **     take advantage of future apr_pollset_t scalability improvements.
+   **     Contributed by Brian Pane, August 31, 2002
    **/
 
 /* Note: this version string should start with \d+[\d\.]* and be a valid
@@ -1767,14 +1772,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.118 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.119 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.118 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.119 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
