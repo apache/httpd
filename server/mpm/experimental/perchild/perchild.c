@@ -103,7 +103,6 @@
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <setjmp.h>
-#include <stropts.h>
 
 /*
  * Actual definitions of config globals
@@ -698,7 +697,7 @@ static void *worker_thread(void *arg)
 
                 cmsg = apr_palloc(ptrans, sizeof(*cmsg) + sizeof(sd));
                 cmsg->cmsg_len = sizeof(*cmsg) + sizeof(sd);
-                msg.msg_control = cmsg;
+                msg.msg_control = (caddr_t)cmsg;
                 msg.msg_controllen = cmsg->cmsg_len;
                 msg.msg_flags = 0;
                 
@@ -842,7 +841,6 @@ static void child_main(int child_num_arg)
     ap_listen_rec *lr;
     apr_status_t rv;
     apr_thread_t *thread;
-    apr_threadattr_t *thread_attr;
 
     my_pid = getpid();
     child_num = child_num_arg;
@@ -909,8 +907,7 @@ static void child_main(int child_num_arg)
 
     apr_threadattr_create(&worker_thread_attr, pchild);
     apr_threadattr_detach_set(worker_thread_attr);                                     
-
-    apr_create_signal_thread(&thread, thread_attr, check_signal, pchild);
+    apr_create_signal_thread(&thread, worker_thread_attr, check_signal, pchild);
 
     /* We are creating worker threads right now */
     for (i=0; i < threads_to_start; i++) {
@@ -1373,7 +1370,7 @@ static int pass_request(request_rec *r)
 
     memcpy(CMSG_DATA(cmsg), &sfd, sizeof(sfd));
 
-    msg.msg_control = cmsg;
+    msg.msg_control = (caddr_t)cmsg;
     msg.msg_controllen = cmsg->cmsg_len;
     msg.msg_flags=0;
 
