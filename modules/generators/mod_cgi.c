@@ -698,7 +698,7 @@ static int cgi_handler(request_rec *r)
      */
     if (ap_should_client_block(r)) {
         int len_read, dbsize;
-        apr_size_t bytes_written, bytes_to_write;
+        apr_size_t bytes_written;
         apr_status_t rv;
 
         if (conf->logname) {
@@ -721,15 +721,9 @@ static int cgi_handler(request_rec *r)
             /* Keep writing data to the child until done or too much time
              * elapses with no progress or an error occurs.
              */
-            bytes_written = 0;
-            do {
-                bytes_to_write = len_read - bytes_written;
-                rv = apr_file_write(script_out, argsbuffer + bytes_written, 
-                                    &bytes_to_write);
-                bytes_written += bytes_to_write;
-            } while (rv == APR_SUCCESS &&
-                     bytes_written < (apr_size_t)len_read);
-            if (rv != APR_SUCCESS || bytes_written < (apr_size_t)len_read) {
+            rv = apr_file_write_full(script_out, argsbuffer, len_read,
+                                     &bytes_written);
+            if (rv != APR_SUCCESS) {
                 /* silly script stopped reading, soak up remaining message */
                 while (ap_get_client_block(r, argsbuffer,
                                            HUGE_STRING_LEN) > 0) {
