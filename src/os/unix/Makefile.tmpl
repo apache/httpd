@@ -39,5 +39,7 @@ $(OBJS): Makefile
 
 # DO NOT REMOVE
 os-aix-dso.o: os-aix-dso.c
-os-inline.o: os-inline.c $(INCDIR)/conf.h $(OSDIR)/os.h
-os.o: os.c $(INCDIR)/conf.h $(OSDIR)/os.h os.h
+os-inline.o: os-inline.c $(INCDIR)/conf.h $(OSDIR)/os.h \
+ $(INCDIR)/apctype.h $(INCDIR)/hsregex.h
+os.o: os.c $(INCDIR)/conf.h $(OSDIR)/os.h \
+ $(INCDIR)/apctype.h $(INCDIR)/hsregex.h os.h
