@@ -188,7 +188,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         else if (strcEQ(var, "SERVER_SOFTWARE"))
             result = ap_get_server_version();
         else if (strcEQ(var, "API_VERSION")) {
-            result = apr_psprintf(p, "%d", MODULE_MAGIC_NUMBER);
+            result = apr_itoa(p, MODULE_MAGIC_NUMBER);
             resdup = FALSE;
         }
         else if (strcEQ(var, "TIME_YEAR")) {
@@ -559,11 +559,11 @@ static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var)
     else if (strcEQ(var, "_EXPORT"))
         result = (usekeysize < 56 ? "true" : "false");
     else if (strcEQ(var, "_USEKEYSIZE")) {
-        result = apr_psprintf(p, "%d", usekeysize);
+        result = apr_itoa(p, usekeysize);
         resdup = FALSE;
     }
     else if (strcEQ(var, "_ALGKEYSIZE")) {
-        result = apr_psprintf(p, "%d", algkeysize);
+        result = apr_itoa(p, algkeysize);
         resdup = FALSE;
     }
 
