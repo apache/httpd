@@ -1,9 +1,9 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/01/19 19:31:02 $]
+Last modified at [$Date: 2001/01/21 17:51:08 $]
 
 Release:
 
-    2.0b1   : Scheduled to release December 26, 2000
+    2.0b1   : Scheduled to release End of January, 2001
 	rbb volunteers to be RM
     2.0a9   : released December 12, 2000
     2.0a8   : released November 20, 2000
@@ -195,6 +195,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * toss the AddModule directive. we add all prelinked modules
       automatically, and the LoadModule directive now implies
       AddModule. so... there is no point to it any more.
+        RBB says:  We do not add all prelinked modules back after
+                   a clear module list.  If we remove AddModule, we
+                   also need to remove ClearModuleList, because
+                   it wouldn't make any sense.
 
 
 PRs that have been suspended forever waiting for someone to
