@@ -71,16 +71,18 @@
  * Pointed to by cache_object_t::vobj
  */
 typedef struct disk_cache_object {
-    const char *root;           /* the location of the cache directory */
-    char *tempfile;
+    const char *root;        /* the location of the cache directory */
+    char *tempfile;          /* temp file tohold the content */
+#if 0
     int dirlevels;              /* Number of levels of subdirectories */
-    int dirlength;              /* Length of subdirectory names */   
-
-    char *datafile;          /* where the data will go */
-    char *hdrsfile;          /* where the hdrs will go */
+    int dirlength;            /* Length of subdirectory names */   
+#endif
+    char *datafile;          /* name of file where the data will go */
+    char *hdrsfile;          /* name of file where the hdrs will go */
     char *name;
     int version;             /* update count of the file */
-    apr_file_t *fd;          /* pointer to apr_file_t structure for the data file  */
+    apr_file_t *fd;          /* data file */
+    apr_file_t *hfd;         /* headers file */
     apr_off_t file_size;    /*  File size of the cached data file  */    
 } disk_cache_object_t;
 
@@ -212,20 +214,14 @@ static apr_status_t file_cache_el_final(cache_handle_t *h, request_rec *r)
  * file for an ap_cache_el, this state information will be read 
  * and written transparent to clients of this module 
  */
-static int file_cache_read_mydata(apr_file_t *fd, cache_handle_t *h, 
-                                  request_rec *r)
+static int file_cache_read_mydata(apr_file_t *fd, cache_info *info, 
+                                  disk_cache_object_t *dobj)
 {
     apr_status_t rv;
-    char urlbuff[1034];
+    char urlbuff[1034]; /* XXX FIXME... THIS IS A POTENTIAL SECURITY HOLE */
     int urllen = sizeof(urlbuff);
     int offset=0;
     char * temp;
-    cache_info *info = &(h->cache_obj->info);
-    disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-    
-    if(!dobj->hdrsfile) {
-        return APR_NOTFOUND;
-    }
 
     /* read the data from the cache file */
     /* format
@@ -323,7 +319,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     cache_object_t *obj;
     disk_cache_object_t *dobj;
     apr_file_t *tmpfile;
-    cache_info *info;
 
     if (strcasecmp(type, "disk")) {
 	return DECLINED;
@@ -333,14 +328,11 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     obj = apr_pcalloc(r->pool, sizeof(*obj));
     obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(*dobj));
 
-    obj->key = apr_pcalloc(r->pool, (strlen(key) + 1));
-    strncpy(obj->key, key, strlen(key) + 1);
+    obj->key = apr_pstrdup(r->pool, key);
     obj->info.len = len;
     obj->complete = 0;   /* Cache object is not complete */
 
-    info = apr_pcalloc(r->pool, sizeof(cache_info));
-    dobj->name = (char *) key;
-    obj->info = *(info);
+    dobj->name = obj->key;
 
     /* open temporary file */
     dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
@@ -360,55 +352,72 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 
 static int open_entity(cache_handle_t *h, request_rec *r, const char *type, const char *key)
 {
+    apr_status_t rc;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
                                                  &disk_cache_module);
-    apr_status_t rc;
     char *data = data_file(r->pool, conf->dirlevels, conf->dirlength, 
                            conf->cache_root, key);
+    char *headers = header_file(r->pool, conf->dirlevels, conf->dirlength, 
+                                conf->cache_root, key);
     apr_file_t *fd;
+    apr_file_t *hfd;
     apr_finfo_t finfo;
     cache_object_t *obj;
     cache_info *info;
     disk_cache_object_t *dobj;
+
+    h->cache_obj = NULL;
 
     /* Look up entity keyed to 'url' */
     if (strcasecmp(type, "disk")) {
 	return DECLINED;
     }
 
-    obj = apr_pcalloc(r->pool, sizeof(cache_object_t));
+    /* Open the data file */
+    rc = apr_file_open(&fd, data, APR_READ|APR_BINARY, 0, r->pool);
+    if (rc != APR_SUCCESS) {
+        /* XXX: Log message */
+        return DECLINED;
+    }
+
+    /* Open the headers file */
+    rc = apr_file_open(&hfd, headers, APR_READ|APR_BINARY, 0, r->pool);
+    if (rc != APR_SUCCESS) {
+        /* XXX: Log message */
+        return DECLINED;
+    }
+
+    /* Create and init the cache object */
+    h->cache_obj = obj = apr_pcalloc(r->pool, sizeof(cache_object_t));
     obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(disk_cache_object_t));
+
     info = &(obj->info);
     obj->key = (char *) key;
+    dobj->name = (char *) key;
+    dobj->fd = fd;
+    dobj->hfd = hfd;
+    dobj->datafile = data;
+    dobj->hdrsfile = headers;
 
-    rc = apr_file_open(&fd, data, APR_WRITE | APR_READ | APR_BINARY, 0, r->pool);
+    rc = apr_file_info_get(&finfo, APR_FINFO_SIZE, fd);
     if (rc == APR_SUCCESS) {
-        dobj->name = (char *) key;
-        /* XXX log message */
-	dobj->fd = fd;
-	dobj->datafile = data;
-	dobj->hdrsfile = header_file(r->pool, conf->dirlevels, conf->dirlength, 
-                                     conf->cache_root, key);
-	rc = apr_file_info_get(&finfo, APR_FINFO_SIZE, fd);
-	if (rc == APR_SUCCESS)
-	    dobj->file_size = finfo.size;
+        dobj->file_size = finfo.size;
     }
-    else if(errno==APR_ENOENT) {
+    
+    /* Read the bytes to setup the cache_info fields */
+    rc = file_cache_read_mydata(hfd, info, dobj);
+    if (rc != APR_SUCCESS) {
         /* XXX log message */
-	return DECLINED;
-    }
-    else {
-        /* XXX log message */
-	return DECLINED;
+        return DECLINED;
     }
 
-    /* Initialize the cache_handle */
+    /* Initialize the cache_handle callback functions */
     h->read_body = &read_body;
     h->read_headers = &read_headers;
     h->write_body = &write_body;
     h->write_headers = &write_headers;
     h->remove_entity = &remove_entity;
-    h->cache_obj = obj;
+
     return OK;
 }
 
@@ -437,53 +446,29 @@ static int read_headers(cache_handle_t *h, request_rec *r)
 {
     apr_status_t rv;
     char *temp;
-    apr_file_t *fd = NULL;
     char urlbuff[1034];
     int urllen = sizeof(urlbuff);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
 
-    if(!r->headers_out)
-	r->headers_out = apr_table_make(r->pool, 20);
-
-    if(!dobj->fd) {
+    /* This case should not happen... */
+    if (!dobj->fd || !dobj->hfd) {
         /* XXX log message */
         return APR_NOTFOUND; 
     }
-    
-    if (!dobj->hdrsfile || (apr_file_open(&fd, dobj->hdrsfile, 
-                                         APR_READ | APR_BINARY,         /*  | APR_NONQSYS,  */
-                                         0, r->pool) != APR_SUCCESS))
-    {
-	/* Error. Figure out which message(s) to log. */
-	if(!dobj->hdrsfile) {
-            /* XXX log message */
-	    return APR_NOTFOUND;
-	}
-	else if(errno==APR_ENOENT) {
-            /* XXX log message */
-	}
-	else {
-            /* XXX log message */
-	}
-	return errno;
-    }
 
-    /* XXX log */
-    if((rv = file_cache_read_mydata(fd, h, r)) != APR_SUCCESS) {
-        /* XXX log message */
-        apr_file_close(fd);
-        return rv;
+    if(!r->headers_out) {
+        r->headers_out = apr_table_make(r->pool, 20);
     }
     
     /*
      * Call routine to read the header lines/status line 
      */
-    ap_scan_script_header_err(r, fd, NULL);
+    ap_scan_script_header_err(r, dobj->hfd, NULL);
  
     apr_table_setn(r->headers_out, "Content-Type", 
                    ap_make_content_type(r, r->content_type));
 
-    rv = apr_file_gets(&urlbuff[0], urllen, fd);           /* Read status  */
+    rv = apr_file_gets(&urlbuff[0], urllen, dobj->hfd);           /* Read status  */
     if (rv != APR_SUCCESS) {
         /* XXX log message */
 	return rv;
@@ -491,7 +476,7 @@ static int read_headers(cache_handle_t *h, request_rec *r)
 
     r->status = atoi(urlbuff);                           /* Save status line into request rec  */
 
-    rv = apr_file_gets(&urlbuff[0], urllen, fd);               /* Read status line */
+    rv = apr_file_gets(&urlbuff[0], urllen, dobj->hfd);               /* Read status line */
     if (rv != APR_SUCCESS) {
         /* XXX log message */
 	return rv;
@@ -502,7 +487,7 @@ static int read_headers(cache_handle_t *h, request_rec *r)
 
     r->status_line = apr_pstrdup(r->pool, urlbuff);            /* Save status line into request rec  */
 
-    apr_file_close(fd);
+    apr_file_close(dobj->hfd);
     return APR_SUCCESS;
 }
 
@@ -539,6 +524,10 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
                                          conf->cache_root,
                                          h->cache_obj->key);
         }
+        
+        /* This is flaky... we need to manage the cache_info differently */
+        h->cache_obj->info = *info;
+        
         /* Remove old file with the same name. If remove fails, then
          * perhaps we need to create the directory tree where we are
          * about to write the new headers file.
@@ -556,7 +545,10 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
             return rv;
         }
 
-	file_cache_write_mydata(hfd, h, r);
+        dobj->name = h->cache_obj->key;
+
+        file_cache_write_mydata(hfd, h, r);
+
         if (r->headers_out) {
             int i;
             apr_table_entry_t *elts = (apr_table_entry_t *) apr_table_elts(r->headers_out)->elts;
