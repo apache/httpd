@@ -1,3 +1,8 @@
+The following document was written by Robert S. Thau (rst@ai.mit.edu) on the
+release of Apache 1.0.  Some details may have changed since then regarding the
+functions and names of modules, but the basic ideas are still intact.
+ =================================================
+
 The basic idea of the new Apache release is to make a modular
 "tinkertoy" server, to which people can easily add code which is
 valuable to them (even if it isn't universally useful) without hairing
@@ -59,7 +64,7 @@ mod_mime.c --- deduction of MIME types and content-encodings from
   meta-information schemes can replace it, and still have content
   negotiation work.
 
-mod_common_log.c --- logging in common log format.
+mod_log_config.c --- logging in configurable or common log format.
 
 mod_auth.c --- HTTP authentication.  Defines the AuthUserFile and
   AuthGroupFile directives (other auth-related commands are handled by
@@ -163,7 +168,7 @@ of these #defines.
 --
 
  HAVE_*:
-  Does this OS have/support this capablity?
+  Does this OS have/support this capability?
 
     HAVE_GMTOFF:
       Define if the OS's tm struct has the tm_gmtoff element
