@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache modules</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Apache modules</H1>
+
+<P>
+Below is a list of all of the modules that come as part of the
+Apache distribution.  See also the complete alphabetical list of
+<A
+ HREF="directives.html"
+>all Apache directives</A>.
+</P>
+
+<DL>
+<DT><A HREF="core.html">Core</A>
+<DD>Core Apache features.
+<DT><A HREF="mod_access.html">mod_access</A>
+<DD>Host based access control.
+<DT><A HREF="mod_actions.html">mod_actions</A> Apache 1.1 and later.
+<DD>Filetype/method-based script execution
+<DT><A HREF="mod_alias.html">mod_alias</A>
+<DD>Aliases and redirects.
+<DT><A HREF="mod_asis.html">mod_asis</A>
+<DD>The .asis file handler.
+<DT><A HREF="mod_auth.html">mod_auth</A>
+<DD>User authentication using text files.
+<DT><A HREF="mod_auth_anon.html">mod_auth_anon</A>
+<DD>Anonymous user authentication, FTP-style.
+<DT><A HREF="mod_auth_db.html">mod_auth_db</A>
+<DD>User authentication using Berkeley DB files.
+<DT><A HREF="mod_auth_dbm.html">mod_auth_dbm</A>
+<DD>User authentication using DBM files.
+<DT><A HREF="mod_autoindex.html">mod_autoindex</A>
+<DD>Automatic directory listings.
+<DT><A HREF="mod_browser.html">mod_browser</A> Apache 1.2.* only
+<DD>Set environment variables based on User-Agent strings. Replaced by 
+ mod_setenvif in Apache 1.3 and up
+<DT><A HREF="mod_cern_meta.html">mod_cern_meta</A>
+<DD>Support for HTTP header metafiles.
+<DT><A HREF="mod_cgi.html">mod_cgi</A>
+<DD>Invoking CGI scripts.
+<DT><A HREF="mod_cookies.html">mod_cookies</A> up to Apache 1.1.1
+<DD>Support for Netscape-like cookies.  Replaced in Apache 1.2 by
+mod_usertrack
+<DT><A HREF="mod_digest.html">mod_digest</A>
+<DD>MD5 authentication
+<DT><A HREF="mod_dir.html">mod_dir</A>
+<DD>Basic directory handling.
+<DT><A HREF="mod_dld.html">mod_dld</A> Apache 1.2.* and earlier
+<DD>Start-time linking with the GNU libdld. Replaced in Apache 1.3 by mod_so
+<DT><A HREF="mod_dll.html">mod_dll</A> Apache 1.3b1 to 1.3b5 only
+<DD>Replaced in 1.3b6 by mod_so
+<DT><A HREF="mod_env.html">mod_env</A>
+<DD>Passing of environments to CGI scripts
+<DT><A HREF="mod_example.html">mod_example</A> Apache 1.2 and up
+<DD>Demonstrates Apache API
+<DT><A HREF="mod_expires.html">mod_expires</A> Apache 1.2 and up
+<DD>Apply Expires: headers to resources
+<DT><A HREF="mod_headers.html">mod_headers</A> Apache 1.2 and up
+<DD>Add arbitrary HTTP headers to resources
+<DT><A HREF="mod_imap.html">mod_imap</A>
+<DD>The imagemap file handler.
+<DT><A HREF="mod_include.html">mod_include</A>
+<DD>Server-parsed documents.
+<DT><A HREF="mod_info.html">mod_info</A>
+<DD>Server configuration information
+<DT><A HREF="mod_isapi.html">mod_isapi</A>
+<DD>Windows ISAPI Extension support
+<DT><A HREF="mod_log_agent.html">mod_log_agent</A>
+<DD>Logging of User Agents.
+<DT><A HREF="mod_log_common.html">mod_log_common</A> up to Apache 1.1.1
+<DD>Standard logging in the Common Logfile Format.  Replaced by the
+mod_log_config module in Apache 1.2 and up
+<DT><A HREF="mod_log_config.html">mod_log_config</A>
+<DD>User-configurable logging replacement for mod_log_common.
+<DT><A HREF="mod_log_referer.html">mod_log_referer</A>
+<DD>Logging of document references.
+<DT><A HREF="mod_mime.html">mod_mime</A>
+<DD>Determining document types using file extensions.
+<DT><A HREF="mod_mime_magic.html">mod_mime_magic</A>
+<DD>Determining document types using "magic numbers".
+<DT><A HREF="mod_mmap_static.html">mod_mmap_static</A>
+<DD>Mapping files into memory for faster serving.
+<DT><A HREF="mod_negotiation.html">mod_negotiation</A>
+<DD>Content negotiation.
+<DT><A HREF="mod_proxy.html">mod_proxy</A>
+<DD>Caching proxy abilities
+<DT><A HREF="mod_rewrite.html">mod_rewrite</A> Apache 1.2 and up
+<DD>Powerful URI-to-filename mapping using regular expressions
+<DT><A HREF="mod_setenvif.html">mod_setenvif</A> Apache 1.3 and up
+<DD>Set environment variables based on client information
+<DT><A HREF="mod_so.html">mod_so</A> Apache 1.3 and up
+<DD>Experimental support for loading modules (DLLs on Windows) at runtime
+<DT><A HREF="mod_speling.html">mod_speling</A> Apache 1.3 and up
+<DD>Automatically correct minor typos in URLs
+<DT><A HREF="mod_status.html">mod_status</A>
+<DD>Server status display
+<DT><A HREF="mod_userdir.html">mod_userdir</A>
+<DD>User home directories.
+<DT><A HREF="mod_unique_id.html">mod_unique_id</A> Apache 1.3 and up
+<DD>Generate unique request identifier for every request
+<DT><A HREF="mod_usertrack.html">mod_usertrack</A> Apache 1.2 and up
+<DD>User tracking using Cookies (replacement for mod_cookies.c)
+<DT><A HREF="mod_vhost_alias.html">mod_vhost_alias</A> Apache 1.3.7 and up
+<DD>Support for dynamically configured mass virtual hosting
+</DL>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD>
+<TITLE>New features with Apache 1.1</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Overview of new features</H1>
+
+<H2>API Changes</H2>
+
+A few changes to the Apache API were made for 1.1.  It is possible
+that some third-party modules will no longer work with 1.1, though
+we have made every effort to provide backwards-compatibility. If you
+encounter a module that does not work with 1.1, please <A
+HREF="http://www.apache.org/bug_report.html">let us know</A>.
+
+
+<H2>New Features with Apache 1.1</H2>
+<P>New features with this release, as extensions of the Apache
+functionality (see also more detailed <CODE>CHANGES</CODE> file in
+the source directory.)  Because the core code has changed so
+significantly, there are certain liberties that earlier versions of
+Apache (and the NCSA daemon) took that recent Apache versions are
+pickier about - please check the <A
+HREF="misc/compat_notes.html">compatibility notes</A> if you have any
+problems.</P>
+<HR>
+
+<P>In addition to a number of bug fixes and internal performance
+enhancements, <A HREF="http://www.apache.org/dist/">Apache
+1.1</A> has the following specific new user features:</P>
+
+<UL>
+
+<LI><STRONG><A HREF="keepalive.html">Support for Keep-Alive Persistent
+Connections</A></STRONG><BR> Apache now has (optional) support for persistent
+connections, as defined by the HTTP/1.1 draft. This protocol,
+supported by a number of current HTTP servers and browsers (including
+Netscape Navigator 2.0) has been shown to increase speed of document
+transfer by up to 50% in certain cases.
+
+<LI><STRONG><A HREF="vhosts/index.html">New non-IP Intensive VirtualHost
+Support</A></STRONG><BR>
+Apache's support for virtual hosts has been enhanced to be able to
+use information sent by some new Web browsers to determine the server
+being accessed, without requiring an additional IP address for each
+host.
+
+<LI><STRONG><A HREF="bind.html">Listen to Multiple Addresses and
+Ports</A></STRONG><BR>
+Using the new <CODE>Listen</CODE> directive, Apache can listen to more
+than one port and IP address, using the same configuration set.
+
+<LI><STRONG><A HREF="mod/mod_status.html">Status
+Module</A></STRONG><BR>
+Apache now contains a module that gives the web-master accurate,
+up-to-date information about the server's status and its resource
+consumption.  It also gives the current state of each server process
+including the current URL being processed.  For an example, check out
+<A HREF="http://www.apache.org/status">the status of the
+www.apache.org server</A>.
+
+<LI><STRONG><A HREF="mod/mod_info.html">Server Information Module</A></STRONG>
+This module gives a plethora of information about the other modules
+installed, their directives, and their configurations.  It is
+extremely helpful in debugging configuration problems.  For an
+example, check out <A
+HREF="http://www.apache.org/serv-info">information about the
+www.apache.org server</A>.
+
+<LI><STRONG><A HREF="mod/mod_proxy.html">Experimental Caching Proxy
+Server</A></STRONG><BR>
+Apache can now act as
+an HTTP proxy server, allowing clients behind firewalls to use the
+server to access the outside world. In addition, it can cache
+documents it proxies, speeding up access to frequently requested
+documents.
+
+<LI><STRONG><A HREF="location.html">URL-based Access Protection</A></STRONG>
+<BR>
+In addition to access checking and authorization by filename (with
+<CODE><A HREF="mod/core.html#directory">&lt;Directory&gt;</A></CODE>),
+the new <CODE>&lt;Location&gt;</CODE> directive allows protection by
+URL.
+
+<LI><STRONG><A HREF="mod/mod_actions.html">Filetype-based Script
+"Actions"</A></STRONG><BR>
+You can now run CGI scripts whenever a file of a certain type is
+requested. This makes it much easier to execute scripts that process
+files. In addition, you can use the new <A
+HREF="mod/mod_actions.html#script">Script</A> directive to enable scripts
+for files called with HTTP methods Apache does not natively support.
+
+<LI><STRONG><A HREF="handler.html">New "Handler" Directives</A></STRONG><BR>
+The new <CODE>AddHandler</CODE> and <CODE>SetHandler</CODE> directive
+allows "handlers" to be defined for filename extensions or
+directories. These handlers, which can either be built into Apache or
+added with the <A HREF="mod/mod_actions.html">Action</A> directive, extend
+Apache's range of usability, and almost entirely remove the "magic"
+media types.
+
+<LI><STRONG><A HREF="mod/mod_env.html">Customizable CGI Environment
+Variables</A></STRONG><BR>
+New <CODE>PassEnv</CODE> and <CODE>SetEnv</CODE> directives allow you to
+modify the environment variables passed to CGI scripts.
+
+<LI><STRONG><A HREF="mod/mod_cern_meta.html">CERN Metafile Support</A></STRONG>
+<BR>
+Now emulates the CERN httpd's support for metafiles containing additional
+HTTP headers to be supplied with a document.
+
+<LI><STRONG><A HREF="mod/mod_imap.html">Improved Imagemap Support</A></STRONG>
+<BR>
+The internal imagemap handling code has been rewritten and
+reorganized, adding new handling of default, base and relative URLs,
+and support for creating non-graphical menus for use with clients that
+do not support imagemaps.
+
+<LI><STRONG><A HREF="mod/mod_userdir.html">Improved UserDir
+Directive</A></STRONG>
+<BR>
+Now supports the ability to point user's files (as specified by URLs
+beginning with the "<CODE>~</CODE>" character) at directories other
+than those specified by the Unix password file.
+
+<LI><STRONG>Minimal DNS Now Runtime Option</STRONG><BR>
+New <CODE>HostnameLookups</CODE>
+server configuration directive can be used to turn <CODE>On</CODE> or
+<CODE>Off</CODE> DNS lookups. This supersedes the -DMINIMAL_DNS
+compile-time configuration option. This option can be set per-directory.
+
+<LI><STRONG>IdentityCheck Now Per-Directory  Option</STRONG>
+<BR>
+The <CODE>IdentityCheck</CODE> directive, which controls the use of
+ident to check the remote user name, can now be set per directory. The
+ident support is also RFC 1413-compliant.
+
+<LI><STRONG>Redirect Now Usable in <CODE>.htaccess</CODE> Files</STRONG>
+<BR>
+The <A HREF="mod/mod_alias.html#redirect"><CODE>Redirect</CODE></A>
+directive can now be used in <CODE>.htaccess</CODE> files when the
+<CODE>FileInfo</CODE> directive has been set on. This allows users to
+redirect parts of their directories without requiring CGI scripts
+
+<LI><STRONG>ErrorDocument Now Usable in <CODE>.htaccess</CODE> Files</STRONG>
+<BR>
+The <A HREF="custom-error.html"><CODE>ErrorDocument</CODE></A>
+directive can now be used in <CODE>.htaccess</CODE> files when the
+<CODE>FileInfo</CODE> directive has been set on. This allows users to
+have different error messages for different sections of a site.
+
+<LI><STRONG><CODE>ForceType</CODE> Directive</STRONG>
+<BR>
+This new directive, in <CODE>&lt;Directory&gt;</CODE> sections or
+.htaccess files, allows you to override the filename extensions and
+force a single content type. (<EM>e.g.</EM>, <CODE>ForceType
+application/octet-stream</CODE>)
+
+<LI><STRONG>File Owner Available to Included CGI Scripts</STRONG>
+<BR>
+Server-side includes that call CGI scripts will now set a
+<CODE>USER_NAME</CODE> environment variable that contains the owner of
+the file which included it.
+
+<LI><STRONG>Improved Icons</STRONG>
+<BR>
+Thanks to <A HREF="mailto:kevinh@eit.com">Kevin
+Hughes</A>, Apache's nifty color GIF icons for directory listings have
+been updated. In addition, the <A
+HREF="../apache_pb.gif">Powered by Apache</A>
+(<CODE>apache_pb.gif</CODE>) logo has been included.
+
+</UL>
+
+<HR>
+
+<H3>New Authentication Modules</H3>
+
+<P><STRONG>Note:</STRONG> These modules are not
+compiled into the server by default, as they require special support
+on the host system. They must be enabled specifically in the
+<CODE>Configuration</CODE> file.</P>
+
+<UL>
+
+<LI><STRONG><A HREF="mod/mod_auth_anon.html">Anonymous HTTP Logins</A></STRONG>
+<BR>
+New options allow you to allow, using Basic HTTP Authentication,
+anonymous logins, like those of FTP. This allows you to collect email
+addresses of people accessing your site.
+
+<LI><STRONG><A HREF="mod/mod_digest.html">Support for Digest
+Authentication</A></STRONG><BR>
+Apache now supports digest authentication using RSA MD5
+encryption. When used with a supporting web browser, this provides a
+more secure alternative to Basic authentication.
+
+<LI><STRONG><A HREF="mod/mod_auth_db.html">Support for Unix DB
+Authentication</A></STRONG> - <CODE>mod_auth_db.c</CODE><BR> In
+addition to <A HREF="mod/mod_auth_dbm.html">DBM</A> support, Apache now
+contains optional support for Berkeley DB databases.
+
+<LI><STRONG>mSQL Database
+Authentication</STRONG> - <CODE>mod_auth_msql.html</CODE> <BR>
+Support for the use of mSQL databases for user authentication via HTTP
+is now supported.
+
+</UL>
+
+<HR>
+
+<H3>OS/2 Support</H3>
+
+<P>Apache now includes support for OS/2, thanks to
+<A HREF="http://www.slink.com/ApacheOS2/">Softlink Services</A>.</P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
