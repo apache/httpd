@@ -992,7 +992,7 @@ PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
                                                              proxy_server_conf *conf,
                                                              const char *url)
 {
-    struct proxy_balancer *balancers;
+    struct proxy_balancer *balancer;
     char *c, *uri = apr_pstrdup(p, url);
     int i;
     
@@ -1002,10 +1002,11 @@ PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     /* remove path from uri */
     if ((c = strchr(c + 3, '/')))
         *c = '\0';
-    balancers = (struct proxy_balancer *)conf->balancers;
+    balancer = (struct proxy_balancer *)conf->balancers->elts;
     for (i = 0; i < conf->balancers->nelts; i++) {
-        if (strcasecmp(balancers[i].name, uri) == 0)
-            return &balancers[i];
+        if (strcasecmp(balancer->name, uri) == 0)
+            return balancer;
+        balancer++;
     }
     return NULL;
 }
@@ -1056,7 +1057,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
                                                   proxy_server_conf *conf,
                                                   const char *url)
 {
-    proxy_worker *workers;
+    proxy_worker *worker;
     char *c, *uri = apr_pstrdup(p, url);
     int i;
     
@@ -1066,10 +1067,11 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     /* remove path from uri */
     if ((c = strchr(c + 3, '/')))
         *c = '\0';
-    workers = (proxy_worker *)conf->workers;
+    worker = (proxy_worker *)conf->workers->elts;
     for (i = 0; i < conf->workers->nelts; i++) {
-        if (strcasecmp(workers[i].name, uri) == 0)
-            return &workers[i];
+        if (strcasecmp(worker->name, uri) == 0)
+            return worker;
+        worker++;
     }
     return NULL;
 }
@@ -1115,7 +1117,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     char *c, *q, *uri = apr_pstrdup(p, url);
     int port;
     
-    c = strchr(url, ':');   
+    c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return "Bad syntax for a remote proxy server";
     /* remove path from uri */
@@ -1133,7 +1135,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
         port = -1;
     ap_str_tolower(uri);
     *worker = apr_array_push(conf->workers);
-    (*worker)->name = apr_pstrdup(p, uri);
+    (*worker)->name = apr_pstrdup(p, url);
     *c = '\0';
     (*worker)->scheme = uri;
     if (port == -1)
