@@ -22,8 +22,6 @@
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
 <p>이 문서는 웹 서비스 일반에 대한, 특히 아파치와 관련된, 용어들을
 정의한다. 각 개념에 대한 자세한 정보는 링크를 참고하라.
@@ -36,11 +34,6 @@
 <h2><a name="definitions" id="definitions">정의</a></h2>
 
 <dl>
-<dt><a name="authentication">인증 (Authentication)</a></dt>
-<dd>서버, 클라이언트, 사용자 등 네트웍 실체에 대한
-확인.<br /> 참고: <a href="howto/auth.html">인증, 권한부여,
-접근제어</a></dd>
-
 <dt><a name="accesscontrol">접근제어 (Access Control)</a></dt>
 <dd>네트웍 영역에 대한 접근을 제한. 아파치에서는 보통 특정
 <em>URL</em>의 접근을 제한하기위해 사용한다.<br /> 참고: <a href="howto/auth.html">인증, 권한부여, 접근제어</a></dd>
@@ -57,19 +50,17 @@
 스크립트.<br /> 참고: <a href="programs/apxs.html">Manpage:
 apxs</a></dd>
 
+<dt><a name="authentication">인증 (Authentication)</a></dt>
+<dd>서버, 클라이언트, 사용자 등 네트웍 실체에 대한
+확인.<br /> 참고: <a href="howto/auth.html">인증, 권한부여,
+접근제어</a></dd>
+
 <dt><a name="certificate">인증서 (Certificate)</a></dt>
 <dd>서버나 클라이언트와 같은 네트웍 실체를 인증하는 자료.
     인증서에는 소유자 (subject라고 함), 서명 <a href="#certificationauthority">인증기관 (Certificate
     Authority)</a> (issuer라고 함), 소유자의 <a href="#publickey">공개키</a>, CA가 만든 서명 등에 대한
     X.509 정보가 있다. 네트웍 실체는 CA 인증서를 사용하여
     서명을 검사한다.<br />
-참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
-
-<dt><a name="certificationauthority">인증기관 (Certification
-Authority</a>, <a name="ca">CA)</a></dt> <dd>안전한 방법으로
-네트웍 실체에 대한 인증을 서명하는 신뢰하는 제삼자. 다른 네트웍
-실체들은 서명으로 CA가 인증서 소유자를 인증했는지 확인할 수
-있다.<br />
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="certificatsigningrequest">인증 서명 요청 (Certificate
@@ -80,6 +71,12 @@ Authority)</a>에 제출하여 CA <em>인증서 (Certificate)</em>의
 실제 인증서가 된다.<br />
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
+<dt><a name="certificationauthority">인증기관 (Certification
+Authority</a>, <a name="ca">CA)</a></dt> <dd>안전한 방법으로
+네트웍 실체에 대한 인증을 서명하는 신뢰하는 제삼자. 다른 네트웍
+실체들은 서명으로 CA가 인증서 소유자를 인증했는지 확인할 수
+있다.<br />
+참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="cipher">암호기 (Cipher)</a></dt> <dd>자료를
 암호화하는 알고리즘이나 시스템. 예를 들어, DES, IDEA, RC4 등이 있다.<br />
@@ -107,9 +104,9 @@ Directive)</a></dt>
 적어둔 텍스트파일.<br />
 참고: <a href="configuring.html">설정파일</a></dd>
 
-<dt><a name="connect">CONNECT</a></dt> <dd>HTTP를 통해
-자료흐름을 프록시하는 HTTP <a href="#method">메써드 (method)</a>.
-SSL 프로토콜 등 다른 프로토콜을 감싸기위해 사용한다.</dd>
+<dt><a name="connect">CONNECT</a></dt>
+<dd>HTTP를 통해 자료흐름을 프록시하는 HTTP <a href="#method">메써드
+(method)</a>. SSL 프로토콜 등 다른 프로토콜을 감싸기위해 사용한다.</dd>
 
 <dt><a name="context">사용장소 (Context)</a></dt> <dd><a href="#configurationfile">설정파일 (configuration file)</a>에서
 특정 <a href="#directive">지시어 (directive)</a>를 사용할 수
@@ -149,11 +146,12 @@ Object)</a> <a name="dso">(DSO)</a></dt> <dd> 아파치 httpd
     (Ciphertext)</em>을 무식한 방법(brute force)으로 풀 수 있다.<br />
 참고: <a href="ssl/">SSL/TLS 암호화 (SSL/TLS Encryption)</a></dd>
 
-<dt><a name="filter">필터 (Filter)</a></dt> <dd>서버가 보내거나
-받는 자료를 처리하는 과정. 입력필터는 클라이언트가 서버로 보내는
-자료를 처리하고, 출력필터는 서버가 클라이언트에게 보낼 문서를
-처리한다. 예를 들어, <code>INCLUDES</code> 출력필터는 문서의
-<a href="#ssi">Server Side Includes</a>를 처리한다. <br />
+<dt><a name="filter">필터 (Filter)</a></dt>
+<dd>서버가 보내거나 받는 자료를 처리하는 과정. 입력필터는
+클라이언트가 서버로 보내는 자료를 처리하고, 출력필터는 서버가
+클라이언트에게 보낼 문서를 처리한다. 예를 들어,
+<code>INCLUDES</code> 출력필터는 문서의 <a href="#ssi">Server
+Side Includes</a>를 처리한다.<br />
 참고: <a href="filter.html">필터</a></dd>
 
 <dt><a name="fully-qualifieddomain-name">완전한 도메인명
@@ -163,12 +161,12 @@ Object)</a> <a name="dso">(DSO)</a></dt> <dd> 아파치 httpd
 <code>example.com</code>이 도메인명일때,
 <code>www.example.com</code>은 완전한 도메인명이다.</dd>
 
-<dt><a name="handler">핸들러 (Handler)</a></dt> <dd>파일을
-요청할때 수행하는 작업에 대한 아파치 내부 표현. 일반적으로 파일은
-파일 종류에 따라 암묵적인 핸들러를 가진다. 보통 모든 파일은
-서버가 간단히 서비스하지만, 어떤 파일 종류는 따로
-"처리된다(handled)". 예를 들어, <code>cgi-script</code> 핸들러는
-<a href="#cgi">CGI</a>로 처리할 파일을 지정한다.<br />
+<dt><a name="handler">핸들러 (Handler)</a></dt>
+<dd>파일을 요청할때 수행하는 작업에 대한 아파치 내부 표현.
+일반적으로 파일은 파일 종류에 따라 암묵적인 핸들러를 가진다.
+보통 모든 파일은 서버가 간단히 서비스하지만, 어떤 파일 종류는
+따로 "처리된다(handled)". 예를 들어, <code>cgi-script</code>
+핸들러는 <a href="#cgi">CGI</a>로 처리할 파일을 지정한다.<br />
 참고: <a href="handler.html">아파치에서 핸들러 사용</a></dd>
 
 <dt><a name="header">헤더 (Header)</a></dt>
@@ -191,8 +189,8 @@ file)</a>. 기본적인 위치는
 참고: <a href="configuring.html">설정파일</a></dd>
 
 <dt><a name="hypertexttransferprotocol">HyperText Transfer
-Protocol</a> <a name="http">(HTTP)</a></dt> <dd>월드와이드웹에서
-사용하는 표준 전송 프로토콜. 아파치는
+Protocol</a> <a name="http">(HTTP)</a></dt>
+<dd>월드와이드웹에서 사용하는 표준 전송 프로토콜. 아파치는
 <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>에서
 정의한 HTTP/1.1이라는 프로토콜의 1.1 버전을 구현한다.</dd>
 
@@ -246,9 +244,9 @@ Protocol</a> <a name="http">(HTTP)</a></dt> <dd>월드와이드웹에서
 <dd>SSL/TLS를 위한 오픈소스 도구<br />
     참고 <a href="http://www.openssl.org/">http://www.openssl.org/</a></dd>
 
-<dt><a name="passphrase">Pass Phrase</a></dt> <dd>개인키 파일을
-보호하는 문구. 인증하지않은 사용자가 이 개인키 파일을
-사용하여 암호화하지 못하도록 한다. 보통 <a name="cipher">암호기
+<dt><a name="passphrase">Pass Phrase</a></dt>
+<dd>개인키 파일을 보호하는 문구. 인증하지않은 사용자가 이 개인키
+파일을 사용하여 암호화하지 못하도록 한다. 보통 <a name="cipher">암호기
 (Ciphers)</a>가 사용하는 비밀스런 암호/해독 키이다.<br /> 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="plaintext">평문 (Plaintext)</a></dt>
@@ -317,25 +315,27 @@ Cryptography)</a></dt>
 <dd><code>tar</code> 도구를 사용하여 파일들을 모은 묶음. 아파치는
 tar 파일을 압축하거나 pkzip으로 압축하여 배포된다.</dd>
 
-<dt><a name="transportlayersecurity">Transport Layer Security</a> <a name="tls">(TLS)</a></dt> <dd>인터넷기술 관련 국제표준화기구(Internet
-Engineering Task Force, IETF)가 TCP/IP 네트웍의 일반적인 통신
-인증과 암호화를 위해 만든 SSL의 후속 프로토콜. TLS 버전 1은
-SSL 버전 3과 거의 유사하다.<br />
+<dt><a name="transportlayersecurity">Transport Layer Security</a> <a name="tls">(TLS)</a></dt>
+<dd>인터넷기술 관련 국제표준화기구(Internet Engineering Task
+Force, IETF)가 TCP/IP 네트웍의 일반적인 통신 인증과 암호화를
+위해 만든 SSL의 후속 프로토콜. TLS 버전 1은 SSL 버전 3과 거의
+유사하다.<br />
 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 
 <dt><a name="uniformresourcelocator">Uniform Resource Locator</a>
-<a name="url">(URL)</a></dt> <dd>인터넷에 있는 자원의 이름/주소.
-정식으로는 <a href="#uniformresourceidentifier">Uniform Resource
-Identifier</a>라고 하는 것의 일상적인 비공식 용어다. 보통 URL은
+<a name="url">(URL)</a></dt>
+<dd>인터넷에 있는 자원의 이름/주소. 정식으로는 <a href="#uniformresourceidentifier">Uniform Resource
+Identifier</a>라고 하는 것의 일상적인 비공식 명칭이다. 보통 URL은
 <code>http</code>나 <code>https</code>같은 스킴(scheme), 호스트명,
 경로로 구성된다. 이 페이지의 URL은
 <code>http://httpd.apache.org/docs-2.1/glossary.html</code>이다.</dd>
 
 <dt><a name="uniformresourceidentifier">Uniform Resource Identifier</a>
-<a name="URI">(URI)</a></dt> <dd>추상적인 자원이나 실제 자원을
-지칭하기위한 간결한 문자열. 공식적으로 <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>에서 정의한다.
-월드와이드웹에서 사용하는 URI를 보통 <a href="#url">URL</a>이라고
-부른다.</dd>
+<a name="URI">(URI)</a></dt>
+<dd>추상적인 자원이나 실제 자원을 지칭하기위한 간결한 문자열.
+공식적으로 <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC
+2396</a>에서 정의한다. 월드와이드웹에서 사용하는 URI를 보통
+<a href="#url">URL</a>이라고 부른다.</dd>
 
 <dt><a name="virtualhosting">가상호스트 (Virtual Hosting)</a></dt>
 <dd>아파치 하나로 여러 웹사이트를 서비스하기. <em>IP 가상호스트</em>는
@@ -344,10 +344,10 @@ Identifier</a>라고 하는 것의 일상적인 비공식 용어다. 보통 URL은
 사이트를 서비스할 수 있다.<br />
 참고: <a href="vhosts/">아파치 가상호스트 문서</a></dd>
 
-<dt><a name="x.509">X.509</a></dt> <dd>국제전기통신연합(International
-Telecommunication Union, ITU-T)이 권장하는 인증서 양식. SSL/TLS
-인증에서 사용한다.<br /> 참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
-
+<dt><a name="x.509">X.509</a></dt>
+<dd>국제전기통신연합(International Telecommunication Union,
+ITU-T)이 권장하는 인증서 양식. SSL/TLS 인증에서 사용한다.<br />
+참고: <a href="ssl/">SSL/TLS 암호화</a></dd>
 </dl>
 </div></div>
 <div class="bottomlang">

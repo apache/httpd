@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.4 (outdated: 1.6) -->
+<!-- English Revision: 1.6 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -201,13 +201,13 @@
 
       <dt><code>-Wc,<var>compiler-flags</var></code></dt>
       <dd>이 옵션은 추가 옵션 <var>compiler-flags</var>를
-      컴파일 명령어로 전달한다. 컴파일러 특유의 옵션을 추가할때
-      사용한다.</dd>
+      <code>libtool --mode=compile</code> 명령어로 전달한다.
+      컴파일러 특유의 옵션을 추가할때 사용한다.</dd>
 
       <dt><code>-Wl,<var>linker-flags</var></code></dt>
       <dd>이 옵션은 추가 옵션 <var>linker-flags</var>를
-      링커 명령어로 전달한다. 링커 특유의 옵션을 추가할때
-      사용한다.</dd>
+      <code>libtool --mode=link</code> 명령어로 전달한다. 링커
+      특유의 옵션을 추가할때 사용한다.</dd>
       </dl>
     </section>
 
@@ -246,8 +246,8 @@
 
     <example>
       $ apxs -c mod_foo.c<br />
-      gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c<br />
-      ld -Bshareable -o mod_foo.so mod_foo.o<br />
+      /path/to/libtool --mode=compile gcc ... -c mod_foo.c<br />
+      /path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
       $ _
     </example>
 
@@ -258,10 +258,12 @@
     알맞게 수정하여 간단히 작업을 마친다. 다음 같이 실행한다:</p>
 
     <example>
-      $ apxs -i -a mod_foo.c<br />
-      cp mod_foo.so /path/to/apache/modules/mod_foo.so<br />
+      $ apxs -i -a mod_foo.la<br />
+      /path/to/instdso.sh mod_foo.la /path/to/apache/modules<br />
+      /path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+      ...
       chmod 755 /path/to/apache/modules/mod_foo.so<br />
-      [activating module `foo' in /path/to/apache/etc/httpd.conf]<br />
+      [/path/to/apache/conf/httpd.conf에서 `foo' 모듈을 활성화한다]<br />
       $ _
     </example>
 
@@ -285,7 +287,9 @@
       $ apxs -g -n foo<br />
       Creating [DIR]  foo<br />
       Creating [FILE] foo/Makefile<br />
+      Creating [FILE] foo/modules.mk<br />
       Creating [FILE] foo/mod_foo.c<br />
+      Creating [FILE] foo/.deps<br />
       $ _
     </example>
 
@@ -296,12 +300,14 @@
       $ cd foo<br />
       $ make all reload<br />
       apxs -c mod_foo.c<br />
-      gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c<br />
-      ld -Bshareable -o mod_foo.so mod_foo.o<br />
-      apxs -i -a -n "foo" mod_foo.so<br />
-      cp mod_foo.so /path/to/apache/modules/mod_foo.so<br />
+      /path/to/libtool --mode=compile gcc ... -c mod_foo.c<br />
+      /path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
+      apxs -i -a -n "foo" mod_foo.la<br />
+      /path/to/instdso.sh mod_foo.la /path/to/apache/modules<br />
+      /path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+      ...
       chmod 755 /path/to/apache/modules/mod_foo.so<br />
-      [activating module `foo' in /path/to/apache/etc/httpd.conf]<br />
+      [/path/to/apache/conf/httpd.conf에서 `foo' 모듈을 활성화한다]<br />
       apachectl restart<br />
       /path/to/apache/sbin/apachectl restart: httpd not running, trying to start<br />
       [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
@@ -309,20 +315,5 @@
       $ _
     </example>
 
-    <p>심지어 아파치 소스 밖에서 <code>apxs</code>를 사용하여
-    PHP3와 같이 복잡한 모듈을 컴파일할 수 있다:</p>
-
-    <example>
-      $ cd php3<br />
-      $ ./configure --with-shared-apache=../apache-1.3<br />
-      $ apxs -c -o libphp3.so mod_php3.c libmodphp3-so.a<br />
-      gcc -fpic -DSHARED_MODULE -I/tmp/apache/include  -c mod_php3.c<br />
-      ld -Bshareable -o libphp3.so mod_php3.o libmodphp3-so.a<br />
-      $ _
-    </example>
-
-    <p><code>apxs</code>는 자동으로 C 소스파일과 오브젝트파일을
-    구별한다. C 소스파일만 컴파일하고 나머지 오브젝트파일은
-    링크할때 사용한다.</p>
 </section>
 </manualpage>
