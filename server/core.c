@@ -2936,6 +2936,11 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         APR_BUCKET_REMOVE(e);
         APR_BRIGADE_INSERT_TAIL(b, e);
         *readbytes += len;
+        /* We didn't find an APR_ASCII_LF within the predefined maximum
+         * line length. */
+        if (len >= HUGE_STRING_LEN) {
+            return -1;
+        }
     }
 
     return APR_SUCCESS;
