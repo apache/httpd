@@ -100,7 +100,6 @@ static apr_status_t get_dbm_entry_as_str(request_rec *r, char *user,
 {
     apr_dbm_t *f;
     apr_datum_t d, q;
-    char *pw = NULL;
     apr_status_t retval;
     q.dptr = user;
 
