@@ -208,8 +208,15 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 	    table_set(e, "CONTENT_TYPE", hdrs[i].val);
 	else if (!strcasecmp(hdrs[i].key, "Content-length"))
 	    table_set(e, "CONTENT_LENGTH", hdrs[i].val);
+	/*
+	 * You really don't want to disable this check, since it leaves you
+	 * wide open to CGIs stealing passwords and people viewing them
+	 * in the environment with "ps -e".  But, if you must...
+	 */
+#ifndef SECURITY_HOLE_PASS_AUTHORIZATION
 	else if (!strcasecmp(hdrs[i].key, "Authorization"))
 	    continue;
+#endif
 	else
 	    table_set(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
     }

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) If you define SECURITY_HOLE_PASS_AUTHORIZATION then the Authorization
+     header will be passed to CGIs.  This is generally a security hole, so
+     it's not a default.  [Marc Slemko] PR#549
+
   *) Fix Y2K problem with date printing in suexec log.
      [Paul Eggert <eggert@twinsun.com>] PR#1343
   
