@@ -112,7 +112,7 @@ void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr)
 
         apr_hash_this(idx, &key, NULL, &val);
 
-        s = apr_psprintf(p, " xmlns:lp%d=\"%s\"", (int)val, key);
+        s = apr_psprintf(p, " xmlns:lp%d=\"%s\"", (int)val, (const char *)key);
         ap_text_append(p, phdr, s);
     }
 }
