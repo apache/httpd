@@ -1,3 +1,13 @@
+Changes with Apache 1.1.2:
+
+  *) Fix a buffer overflow problem in mod_cookies. Without these
+     changes, it is possible to gain unauthorized user privledges
+     on systems running with mod_cookies compiled into the server.
+
+  *) Fix another problem that could give a directory listing of
+     the document root if the request recieved is long enough to
+     force an error by the stat() function.
+
 Changes with Apache 1.1.1:
 
   *) Fixed bug where Redirect in .htaccess files would cause memory
