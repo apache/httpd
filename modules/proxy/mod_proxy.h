@@ -96,7 +96,7 @@ struct proxy_remote {
     const char *hostname;   /* the hostname of this proxy */
     apr_port_t  port;       /* the port for this proxy */
     regex_t *regexp;        /* compiled regex (if any) for the remote */
-    int use_regex;      /* simple boolean. True if we have a regex pattern */
+    int use_regex;          /* simple boolean. True if we have a regex pattern */
 };
 
 struct proxy_alias {
@@ -127,7 +127,7 @@ typedef struct {
     apr_array_header_t *workers;
     apr_array_header_t *balancers;
     const char *domain;     /* domain name to use in absence of a domain name in the request */
-    int req;            /* true if proxy requests are enabled */
+    int req;                /* true if proxy requests are enabled */
     char req_set;
     enum {
       via_off,
@@ -359,9 +359,9 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r);
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x);
 PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x);
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
-            int isenc);
+                                       int isenc);
 PROXY_DECLARE(char *)ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
-             char **passwordp, char **hostp, apr_port_t *port);
+                                           char **passwordp, char **hostp, apr_port_t *port);
 PROXY_DECLARE(const char *)ap_proxy_date_canon(apr_pool_t *p, const char *x);
 PROXY_DECLARE(int) ap_proxy_liststr(const char *list, const char *val);
 PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val);
