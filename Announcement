@@ -1,9 +1,10 @@
 
-                            Apache 1.3.15 Released
+                            Apache 1.3.16 Released
                                        
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.15 of the Apache HTTP
-   server.
+   pleased to announce the release of version 1.3.16 of the Apache HTTP
+   server. Version 1.3.15 was not released due to problems when
+   tagging the tree.
    
    This version of Apache is primarily a bug fix release, addressing
    some broken functionality present in the 1.3.14 release and
@@ -11,12 +12,12 @@
    improvements. A summary of the new features is given at the end of
    this document.
    
-   We consider Apache 1.3.15 to be the best version of Apache available
+   We consider Apache 1.3.16 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
    the 1.1.x and 1.2.x family, upgrade as soon as possible. No further
    releases will be made in the 1.2.x family.
    
-   Apache 1.3.15 is available for download from
+   Apache 1.3.16 is available for download from
    
      http://httpd.apache.org/dist/
      
@@ -59,7 +60,7 @@
    version, but is of acceptable quality. Any Win32 stability or security
    problems do not impact, in any way, Apache on other platforms.
    
-                          Apache 1.3.15 Major changes
+                          Apache 1.3.16 Major changes
                                        
    The bug fixes are:
      * Correct handling of request byte ranges as specified by RFC 2616.
