@@ -103,6 +103,22 @@ accepting requests on network sockets</td></tr>
     <p>If you want to find out the compile time chosen default
     for your system, you may set your <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> to <code>debug</code>. Then the default <code class="directive">AcceptMutex</code> will be written into the <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>.</p>
 
+  <div class="warning"><h3>Warning</h3>
+     <p>On most systems, when the <code>pthread</code> option
+     is selected, if a child process terminates abnormally
+     while holding the <code>AcceptCntl</code> mutex the
+     server will stop responding to requests. When this
+     occurs, the server will require a manual restart to
+     recover.</p>
+     <p>Solaris is a notable exception as it provides a
+     mechanism, used by Apache, which usually allows the
+     mutex to be recovered after a child process terminates
+     abnormally while holding a mutex.</p>
+     <p>If your system implements the
+     <code>pthread_mutexattr_setrobust_np()</code> function,
+     you may be able to use the <code>pthread</code> option safely.</p>
+  </div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">Directive</a></h2>
