@@ -8,7 +8,8 @@ Changes with Apache 1.3.23
      size, and mtimehave been used, but the inode factor broke
      caching for systems with content fan-out across multiple
      back-end servers.  Now the fields used in the construction
-     can be controlled by configuration directives.
+     can be controlled by configuration directives.  Minor MMN
+     bumped; MMN went from 19990320.10 to 19990320.11.
      [Ken Coar, from a patch by Phil Dietz]
 
   *) NetWare: Fixed the access forbidden problem when requesting an
