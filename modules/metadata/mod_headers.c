@@ -680,19 +680,20 @@ static const command_rec headers_cmds[] =
     {NULL}
 };
 
-static void register_format_tag_handler(apr_pool_t *p, char *tag, void *tag_handler, int def)
+static void register_format_tag_handler(const char *tag,
+                                        const void *tag_handler)
 {
-    const void *h = apr_palloc(p, sizeof(h));
-    h = tag_handler;
-    apr_hash_set(format_tag_hash, tag, 1, h);
+    apr_hash_set(format_tag_hash, tag, 1, tag_handler);
 }
+
 static int header_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     format_tag_hash = apr_hash_make(p);
-    register_format_tag_handler(p, "D", (void*) header_request_duration, 0);
-    register_format_tag_handler(p, "t", (void*) header_request_time, 0);
-    register_format_tag_handler(p, "e", (void*) header_request_env_var, 0);
-    register_format_tag_handler(p, "s", (void*) header_request_ssl_var, 0);
+    register_format_tag_handler("D", (const void *)header_request_duration);
+    register_format_tag_handler("t", (const void *)header_request_time);
+    register_format_tag_handler("e", (const void *)header_request_env_var);
+    register_format_tag_handler("s", (const void *)header_request_ssl_var);
+
     return OK;
 }
 
