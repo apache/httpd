@@ -2828,13 +2828,11 @@ static int handle_map_file(request_rec *r)
         return ap_pass_brigade(r->output_filters, bb);
     }
 
-    /* XXX This looks entirely bogus.  Why can't negotiated content
-     *     have additional path_info?  Just because I choose a given
-     *     script based on content type doesn't mean I don't want it
-     *     to run the same set of actions (think three languages of
-     *     viewcvs.cgi.xx, all serving the same repository.)
-     */
     if (r->path_info && *r->path_info) {
+        /* remove any path_info from the end of the uri before trying
+         * to change the filename.  r->path_info from the original
+         * request is passed along on the redirect.
+         */
         r->uri[ap_find_path_info(r->uri, r->path_info)] = '\0';
     }
     udir = ap_make_dirstr_parent(r->pool, r->uri);
@@ -2894,6 +2892,10 @@ static int handle_multi(request_rec *r)
         }
     }
 
+    /* preserve path info and query string from the original request */
+    sub_req->path_info = r->path_info;
+    sub_req->args = r->args;
+    
     /* now do a "fast redirect" ... promotes the sub_req into the main req */
     ap_internal_fast_redirect(sub_req, r);
 
