@@ -125,7 +125,7 @@
       an IP address) then you will pay for
       a double reverse DNS lookup (a reverse, followed by a forward
       to make sure that the reverse is not being spoofed). For best
-      performence, therefore, use IP addresses, rather than names, when
+      performance, therefore, use IP addresses, rather than names, when
       using these directives, if possible.</p>
 
       <p>Note that it's possible to scope the directives, such as
