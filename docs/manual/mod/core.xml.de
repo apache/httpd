@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 125277:151408 (outdated) -->
+<!-- English Revision: 154184 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -1794,21 +1794,19 @@ HTTP-Request-Headers</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Die Direktive gibt die Anzahl der <var>Bytes</var> zwischen 0
-    und dem Wert der zur Kompilierungszeit definierten Konstante
-    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (<code>8190</code> bei
-    der Auslieferung) an, die in einem HTTP-Header erlaubt sind.</p>
+  <p>Die Direktive gibt die Anzahl der <var>Bytes</var> an, die in einem
+    HTTP-Header erlaubt sind.</p>
 
     <p>Die Direktive <directive>LimitRequestFieldsize</directive> erlaubt es
     dem Serveradministrator, die maximale Gr&ouml;&szlig;e eines
-    HTTP-Request-Headers auf einen Wert unterhalb der normalen, im Server
-    einkompilierten Gr&ouml;&szlig;e des Eingabepuffers zu verringern.
-    F&uuml;r den Server muss der Wert gro&szlig; genug sein, um eine beliebige
-    Headerzeile einer normalen Client-Anfrage vorzuhalten. Die
-    Gr&ouml;&szlig;e variiert stark zwischen den verschiedenen
-    Client-Ausf&uuml;hrungen, oft abh&auml;ngig vom Ausma&szlig;, mit dem
-    der Anwender die genaue Content-Negotiation-Unterst&uuml;tzung seines
-    Browsers konfiguriert hat.</p>
+    HTTP-Request-Headers zu verringern oder erh&ouml;hen. F&uuml;r den Server
+    muss der Wert gro&szlig; genug sein, um eine beliebige Headerzeile einer
+    normalen Client-Anfrage vorzuhalten. Die Gr&ouml;&szlig;e variiert stark
+    zwischen den verschiedenen Client-Ausf&uuml;hrungen, oft abh&auml;ngig vom
+    Ausma&szlig;, mit dem der Anwender die genaue
+    Content-Negotiation-Unterst&uuml;tzung seines Browsers konfiguriert hat.
+    SPNEGO-Authentisierungs-Header k&ouml;nnen bis zu 12392 Bytes lang
+    sein.</p>
 
     <p>Die Direktive gibt dem Serveradministrator eine gr&ouml;&szlig;ere
     Kontrolle gegen&uuml;ber abnormalem Verhalten von Clients, was bei der
@@ -1835,15 +1833,12 @@ HTTP-Anfragezeile</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Die Direktive legt die Anzahl der <var>Bytes</var> zwischen 0 und
-    dem  Wert der zur Kompilierungszeit definierten Konstante
-    <code>DEFAULT_LIMIT_REQUEST_LINE</code> (<code>8190</code> bei der
-    Auslieferung) fest, die in der HTTP-Anfragezeile erlaubt sind.</p>
+  <p>Die Direktive legt die Anzahl der <var>Bytes</var> fest, die in der
+    HTTP-Anfragezeile erlaubt sind.</p>
 
     <p>Die Direktive <directive>LimitRequestLine</directive> erlaubt es dem
     Serveradministrator, die maximale Gr&ouml;&szlig;e der
-    HTTP-Anfragezeile auf einen Wert unterhalb der normalen, im Server
-    einkompilierten Gr&ouml;&szlig;e des Eingabepuffers zu verringern. Da
+    HTTP-Anfragezeile zu verringern oder erh&ouml;hen. Da
     die Anfragezeile aus der HTTP-Methode, der URI und der Protokollversion
     besteht, bedeutet die <directive>LimitRequestLine</directive>-Direktive
     eine Beschr&auml;nkung der L&auml;nge der f&uuml;r eine Anfrage an den
