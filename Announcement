@@ -1,21 +1,22 @@
 
-                            Apache 1.3.21 Released
+                            Apache 1.3.22 Released
 
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.21 of the Apache HTTP
-   server.
+   pleased to announce the release of version 1.3.22 of the Apache HTTP
+   server.  Apache version 1.3.21 was never released, this Announcment
+   details the cumulative changes in 1.3.21 and 1.3.22.
 
    This version of Apache is principally a security fix release which
    closes some problems where a directory listing could be obtained
    instead of the default index page. A summary of the bug fixs and major
    new features is given at the end of this document.
 
-   We consider Apache 1.3.21 to be the best version of Apache available
+   We consider Apache 1.3.22 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
    the 1.1.x and 1.2.x family, upgrade as soon as possible. No further
    releases will be made in the 1.2.x family.
 
-   Apache 1.3.21 is available for download from
+   Apache 1.3.22 is available for download from
    
        http://httpd.apache.org/dist/httpd/
 
@@ -67,7 +68,7 @@
    version, but is of acceptable quality. Win32 stability or security
    problems do not reflect on the Unix version.
 
-                          Apache 1.3.21 Major changes
+                     Apache 1.3.21 - 1.3.22 Major changes
 
   Security vulnerabilities
 
@@ -85,7 +86,7 @@
 
   New features
 
-   The main new features in 1.3.21 (compared to 1.3.20) are:
+   The main new features in 1.3.22 (compared to 1.3.20) are:
      * The user manual has been updated. As well as a number of small
        fixes these updates include new translations into French and
        Japanese, a guide to using Apache httpd on Cygwin, a lexicon of
@@ -149,7 +150,7 @@
   Bugs fixed
 
    The following bugs were found in Apache 1.3.20 and have been fixed in
-   Apache 1.3.21:
+   Apache 1.3.22:
      * Under certain circumstances a child may crash due to a bug in
        mod_include.  If a server uses an ErrorDocument for 404 (request
        not found) errors which points to a server-parsed HTML file which
