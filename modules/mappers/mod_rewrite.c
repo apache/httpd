@@ -3590,11 +3590,18 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     int i, rc;
     char *newuri = NULL;
     request_rec *r = ctx->r;
+    int is_proxyreq = 0;
 
     ctx->uri = r->filename;
 
     if (ctx->perdir) {
         apr_size_t dirlen = strlen(ctx->perdir);
+
+        /*
+         * Proxy request?
+         */
+        is_proxyreq = (   r->proxyreq && r->filename
+                       && !strncmp(r->filename, "proxy:", 6));
 
         /* Since we want to match against the (so called) full URL, we have
          * to re-add the PATH_INFO postfix
@@ -3608,7 +3615,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         /* Additionally we strip the physical path from the url to match
          * it independent from the underlaying filesystem.
          */
-        if (strlen(ctx->uri) >= dirlen &&
+        if (!is_proxyreq && strlen(ctx->uri) >= dirlen &&
             !strncmp(ctx->uri, ctx->perdir, dirlen)) {
 
             rewritelog((r, 3, ctx->perdir, "strip per-dir prefix: %s -> %s",
@@ -3721,7 +3728,8 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
      * (1) it's an absolute URL path and
      * (2) it's a full qualified URL
      */
-    if (ctx->perdir && *r->filename != '/' && !is_absolute_uri(r->filename)) {
+    if (   ctx->perdir && !is_proxyreq && *r->filename != '/'
+        && !is_absolute_uri(r->filename)) {
         rewritelog((r, 3, ctx->perdir, "add per-dir prefix: %s -> %s%s",
                     r->filename, ctx->perdir, r->filename));
 
@@ -4338,6 +4346,7 @@ static int hook_fixup(request_rec *r)
     int rulestatus;
     int n;
     char *ofilename;
+    int is_proxyreq;
 
     dconf = (rewrite_perdir_conf *)ap_get_module_config(r->per_dir_config,
                                                         &rewrite_module);
@@ -4354,15 +4363,23 @@ static int hook_fixup(request_rec *r)
     }
 
     /*
+     * Proxy request?
+     */
+    is_proxyreq = (   r->proxyreq && r->filename
+                   && !strncmp(r->filename, "proxy:", 6));
+
+    /*
      *  .htaccess file is called before really entering the directory, i.e.:
      *  URL: http://localhost/foo  and .htaccess is located in foo directory
      *  Ignore such attempts, since they may lead to undefined behaviour.
      */
-    l = strlen(dconf->directory) - 1;
-    if (r->filename && strlen(r->filename) == l &&
-        (dconf->directory)[l] == '/' &&
-        !strncmp(r->filename, dconf->directory, l)) {
-        return DECLINED;
+    if (!is_proxyreq) {
+        l = strlen(dconf->directory) - 1;
+        if (r->filename && strlen(r->filename) == l &&
+            (dconf->directory)[l] == '/' &&
+            !strncmp(r->filename, dconf->directory, l)) {
+            return DECLINED;
+        }
     }
 
     /*
