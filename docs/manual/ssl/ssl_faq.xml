@@ -625,7 +625,7 @@ SSLeay version 0.8 to 0.9?</title>
     Remember that you need to give the key file in as well (see
     <code>SSLCertificateKeyFile</code> directive). For a better
     CA-related overview on SSL certificate fiddling you can look at <a
-    href="http://www.thawte.com/certs/server/keygen/mod_ssl.html">Thawte's mod_ssl instructions</a>.</p>
+    href="http://www.thawte.com/html/SUPPORT/server/softwaredocs/modssl.html">Thawte's mod_ssl instructions</a>.</p>
 </section>
 
 <section id="sgc"><title>Can I use the Server Gated Cryptography (SGC) facility (aka Verisign Global
