@@ -1,4 +1,5 @@
 Makefile
+checkgid
 rotatelogs
 htpasswd
 htdigest
