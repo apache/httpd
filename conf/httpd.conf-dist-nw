@@ -480,13 +480,13 @@ ServerSignature On
         Allow from all
     </Directory>
 
-    # This Alias will project the on-line documentation tree into your
-    # logical DocumentRoot. Comment it if you don't want to provide access
-    # to the on-line docu for some reason.
+    # This Alias will project the on-line documentation tree under /manual/
+    # even if you change the DocumentRoot. Comment it if you don't want to 
+    # provide access to the on-line documentation.
     #
-    Alias /manual/ "sys:/apache/manual/"
+    Alias /manual/ "sys:/apache/htdocs/manual/"
 
-    <Directory "sys:/apache/manual">
+    <Directory "sys:/apache/htdocs/manual">
         Options Indexes FollowSymlinks MultiViews
         AllowOverride None
         Order allow,deny
