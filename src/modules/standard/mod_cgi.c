@@ -240,7 +240,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 	fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
     }
     if ((r->method_number == M_POST || r->method_number == M_PUT)
-	&& *dbuf) {
+	&& dbuf && *dbuf) {
 	fprintf(f, "\n%s\n", dbuf);
     }
 
