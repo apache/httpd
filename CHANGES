@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Cleanup the header handling a bit.  This uses the apr_brigade_*
+     functions for the buffering so that we don't need to compute
+     the length of the headers before we actually create the header
+     buffer.  [Ryan Bloom]
+
   *) Allow filters to buffer data using the ap_f* functions.  These have
      become macros that resolve directly to apr_brigade_*.  
      [Ryan Bloom]

@@ -1792,7 +1792,7 @@ AP_DECLARE(const char *) ap_get_status_line(int status)
 
 typedef struct header_struct {
     request_rec *r;
-    char *buf;
+    apr_bucket_brigade *bb;
 } header_struct;
 
 /* Send a single HTTP header field to the client.  Note that this function
@@ -1807,16 +1807,7 @@ static int form_header_field(header_struct *h,
 
     headfield = apr_pstrcat(h->r->pool, fieldname, ": ", fieldval, CRLF, NULL);
     ap_xlate_proto_to_ascii(headfield, strlen(headfield));
-    apr_cpystrn(h->buf, headfield, strlen(headfield) + 1);
-    h->buf += strlen(headfield);
-    return 1;
-}
-
-static int compute_header_len(apr_size_t *length, const char *fieldname, 
-                              const char *fieldval)
-{
-    /* The extra five are for ": " and CRLF, plus one for a '\0'. */
-    *length = *length + strlen(fieldname) + strlen(fieldval) + 6;
+    apr_brigade_write(h->bb, NULL, NULL, headfield, strlen(headfield));
     return 1;
 }
 
@@ -1844,7 +1835,7 @@ static void basic_http_header_check(request_rec *r,
     }
 }
 
-static void basic_http_header(request_rec *r, char *buf, const char *protocol)
+static void basic_http_header(request_rec *r, apr_bucket_brigade *bb, const char *protocol)
 {
     char *date = NULL;
     char *tmp;
@@ -1857,14 +1848,13 @@ static void basic_http_header(request_rec *r, char *buf, const char *protocol)
 
     tmp = apr_pstrcat(r->pool, protocol, " ", r->status_line, CRLF, NULL);
     ap_xlate_proto_to_ascii(tmp, strlen(tmp));
-    apr_cpystrn(buf, tmp, strlen(tmp) + 1);
-    buf += strlen(tmp);
+    apr_brigade_write(bb, NULL, NULL, tmp, strlen(tmp));
 
     date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     apr_rfc822_date(date, r->request_time);
 
     h.r = r;
-    h.buf = buf;
+    h.bb = bb;
     form_header_field(&h, "Date", date);
     form_header_field(&h, "Server", ap_get_server_version());
 
@@ -1872,12 +1862,12 @@ static void basic_http_header(request_rec *r, char *buf, const char *protocol)
     apr_table_unset(r->headers_out, "Server");
 }
 
-AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf)
+AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
 {
     const char *protocol;
 
     basic_http_header_check(r, &protocol);
-    basic_http_header(r, buf, protocol);
+    basic_http_header(r, bb, protocol);
 }
 
 /* Navigator versions 2.x, 3.x and 4.0 betas up to and including 4.0b2
@@ -1897,18 +1887,19 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, char *buf)
  * It is more expensive to check the User-Agent than it is to just add the
  * bytes, so we haven't used the BrowserMatch feature here.
  */
-static void terminate_header(char *buf)
+static void terminate_header(apr_bucket_brigade *bb)
 {
-    int len = strlen(buf);
-    char *headfield = buf + len;
     char *tmp = "X-Pad: avoid browser bug" CRLF;
+    char *crlf = CRLF;
+    apr_bucket *b = APR_BRIGADE_LAST(bb);
+    apr_bucket_shared *s = b->data;
 
-    if (len >= 255 && len <= 257) {
-        apr_cpystrn(headfield, tmp, strlen(tmp) + 1);
-        headfield += strlen(tmp);
+    if (s->end >= 255 && s->end <= 257) {
+        ap_xlate_proto_to_ascii(tmp, strlen(tmp));
+        apr_brigade_write(bb, NULL, NULL, tmp, strlen(tmp));
     }
-    apr_cpystrn(headfield, CRLF, strlen(CRLF) + 1);
-    ap_xlate_proto_to_ascii(buf + len, strlen(buf + len));
+    ap_xlate_proto_to_ascii(crlf, strlen(crlf));
+    apr_brigade_write(bb, NULL, NULL, crlf, strlen(crlf));
 }
 
 /*
@@ -2154,42 +2145,28 @@ AP_DECLARE(int) ap_send_http_trace(request_rec *r)
 
 int ap_send_http_options(request_rec *r)
 {
-    char *buff;
-    apr_bucket *b;
-    apr_bucket_brigade *bb;
-    apr_size_t len = 0;
+    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
     header_struct h;
 
     if (r->assbackwards)
         return DECLINED;
-
-    apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
-                 (void *) &len, r->headers_out, NULL);
     
-    /* Need to add a fudge factor so that the CRLF at the end of the headers
-     * and the basic http headers don't overflow this buffer.
-     */
-    len += strlen(ap_get_server_version()) + 100;
-    buff = apr_pcalloc(r->pool, len);
-    ap_basic_http_header(r, buff);
+    ap_basic_http_header(r, bb);
 
     apr_table_setn(r->headers_out, "Content-Length", "0");
     apr_table_setn(r->headers_out, "Allow", make_allow(r));
     ap_set_keepalive(r);
 
     h.r = r;
-    h.buf = buff;
+    h.bb = bb;
 
     apr_table_do((int (*) (void *, const char *, const char *)) form_header_field,
              (void *) &h, r->headers_out, NULL);
 
-    terminate_header(buff);
+    terminate_header(bb);
 
     r->bytes_sent = 0;
 
-    bb = apr_brigade_create(r->pool);
-    b = apr_bucket_pool_create(buff, strlen(buff), r->pool);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
     ap_pass_brigade(r->output_filters, bb);
 
     return OK;
@@ -2462,11 +2439,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
     int i;
     char *date = NULL;
     request_rec *r = f->r;
-    char *buff, *buff_start;
     const char *clheader;
     const char *protocol;
     apr_bucket *e;
-    apr_bucket_brigade *b2;
+    apr_bucket_brigade *b2 = apr_brigade_create(r->pool);
     apr_size_t len = 0;
     header_struct h;
     header_filter_ctx *ctx = f->ctx;
@@ -2581,32 +2557,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
-    if (r->status == HTTP_NOT_MODIFIED) {
-        apr_table_do((int (*)(void *, const char *, const char *)) compute_header_len,
-                    (void *) &len, r->headers_out,
-                    "Connection",
-                    "Keep-Alive",
-                    "ETag",
-                    "Content-Location",
-                    "Expires",
-                    "Cache-Control",
-                    "Vary",
-                    "Warning",
-                    "WWW-Authenticate",
-                    "Proxy-Authenticate",
-                    NULL);
-    }
-    else {
-        apr_table_do((int (*) (void *, const char *, const char *)) compute_header_len,
-                 (void *) &len, r->headers_out, NULL);
-    }
-    
-    buff_start = buff = apr_pcalloc(r->pool, len);
-    basic_http_header(r, buff, protocol);
-    buff += strlen(buff);
+    basic_http_header(r, b2, protocol);
 
     h.r = r;
-    h.buf = buff;
+    h.bb = b2;
 
     if (r->status == HTTP_NOT_MODIFIED) {
         apr_table_do((int (*)(void *, const char *, const char *)) form_header_field,
@@ -2628,13 +2582,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_b
 		 (void *) &h, r->headers_out, NULL);
     }
 
-    terminate_header(buff);
+    terminate_header(b2);
 
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
 
-    b2 = apr_brigade_create(r->pool);
-    e = apr_bucket_pool_create(buff_start, strlen(buff_start), r->pool);
-    APR_BRIGADE_INSERT_HEAD(b2, e);
     ap_pass_brigade(f->next, b2);
 
     if (r->header_only) {
