@@ -389,7 +389,7 @@ int ap_graceful_stop_signalled(void)
 static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, int my_thread_num)
 {
     conn_rec *current_conn;
-    long conn_id = my_child_num * HARD_THREAD_LIMIT + my_thread_num;
+    long conn_id = AP_ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int csd;
 
     (void) apr_get_os_sock(&csd, sock);
