@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/03/02 02:41:10 $
+Last modified: $Date: 2003/03/05 12:56:02 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -32,11 +32,15 @@ Decisions pending
       for this.)
     - Perhaps we can use the newly created Wiki for this. (SubWiki,
       with the possibility to get nice commit mails.)
-       * someone should try to convince me, what the heck is
-         so cool with wikis -- nd
-       * it lowers the entry barrier and therefore users are able to
-         contribute (handy for a FAQ, see PHP site) -- erik
-
+       nd: someone should try to convince me, what the heck is
+           so cool with wikis -- nd
+       erik: it lowers the entry barrier and therefore users are able to
+             contribute (handy for a FAQ, see PHP site)
+       nd: yes, good bad example. The PHP docs would mostly be
+           better without these comments. I don't want to censor
+           the entries, but also don't want to leave them without
+           control. IMHO it's better to incorporate changes into the
+           static docs. We need some better way of feedback, anyway.
 
 Things That Need Fixing
 =======================
@@ -52,6 +56,7 @@ Things That Need Fixing
     - "using apache" has been done, "compiling apache" is still open
     - hints on uninstalling apache (exit monitor, close directories,
       registry entries etc) (PR 10154)
+    - FAQ! UTF-8 config and URL encoding for non-ascii characters.
 
 - New Auth system
     - Much clean-up and enhancement of aaa howto
