@@ -572,18 +572,10 @@ BEGIN {
 		inst_exe="$(INSTDIR)\bin"                              \
 		inst_dll="$(INSTDIR)\bin"                              \
 		inst_so="$(INSTDIR)\modules"
-!IF "$(LONG)" == "Release"
-	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
-		_copybin src_exe=dbg src_dll=dbg src_so=dbg quiet="-"  \
-		inst_exe="$(INSTDIR)\symbols\exe"                      \
-		inst_dll="$(INSTDIR)\symbols\dll"                      \
-		inst_so="$(INSTDIR)\symbols\so" 
-!ENDIF
 	cd srclib\apr-iconv
 	$(MAKE) $(MAKEOPT) -f build\modules.mk.win install \
 		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=. \
-		INSTALL_DIR="$(INSTDIR)\bin\iconv" \
-		SYMBOLS_DIR="$(INSTDIR)\symbols"
+		INSTALL_DIR="$(INSTDIR)\bin\iconv"
 	cd ..\..
 	copy docs\cgi-examples\printenv "$(INSTDIR)\cgi-bin\printenv.pl" <.y
 	-awk -f <<script.awk "docs/cgi-examples/printenv" > "$(INSTDIR)\cgi-bin\printenv.pl"
@@ -609,12 +601,15 @@ BEGIN {
 	xcopy srclib\apr-util\include\*.h 		"$(INSTDIR)\include" /d < .a
 	xcopy include\*.h 				"$(INSTDIR)\include" /d < .a
 	copy srclib\apr\Lib$(SHORT)\apr.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\apr\Lib$(SHORT)\apr_src.pdb 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\Lib$(SHORT)\aprutil.lib 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\Lib$(SHORT)\aprutil_src.pdb "$(INSTDIR)\lib" <.y
 	copy srclib\pcre\Lib$(SHORT)\pcre.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\pcre\Lib$(SHORT)\pcre_src.pdb 	"$(INSTDIR)\lib" <.y
 	copy srclib\pcre\Lib$(SHORT)\pcreposix.lib 	"$(INSTDIR)\lib" <.y
-#       ### until we determine if it's safe to change expat>libexpat and xml>expat
-#       within our cvs tree... at least remain consistent to our naming conventions;
-	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib\expat.lib" <.y
+	copy srclib\pcre\Lib$(SHORT)\pcreposix_src.pdb 	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml_src.pdb "$(INSTDIR)\lib" <.y
 	copy srclib\apr\$(LONG)\libapr.lib 		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\$(LONG)\libapr.exp 		"$(INSTDIR)\lib" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv.lib 	"$(INSTDIR)\lib" <.y
