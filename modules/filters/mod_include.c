@@ -1144,13 +1144,26 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         DEBUG_DUMP_UNMATCHED(ctx, was_unmatched);
         DEBUG_DUMP_TOKEN(ctx, &new->token);
 
+        if (!current) {
+            switch (new->token.type) {
+            case TOKEN_STRING:
+            case TOKEN_RE:
+            case TOKEN_NOT:
+            case TOKEN_LBRACE:
+                root = current = new;
+                continue;
+
+            default:
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Invalid expression \"%s\" in file %s",
+                              expr, r->filename);
+                *was_error = 1;
+                return retval;
+            }
+        }
+
         switch (new->token.type) {
         case TOKEN_STRING:
-            if (!current) {
-                root = current = new;
-                break;
-            }
-
             switch (current->token.type) {
             case TOKEN_STRING:
                 current->token.value =
@@ -1176,11 +1189,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             break;
 
         case TOKEN_RE:
-            if (!current) {
-                root = current = new;
-                break;
-            }
-
             switch (current->token.type) {
             case TOKEN_EQ:
             case TOKEN_NE:
@@ -1204,13 +1212,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 
         case TOKEN_AND:
         case TOKEN_OR:
-            if (!current) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Invalid expression \"%s\" in file %s",
-                              expr, r->filename);
-                *was_error = 1;
-                return retval;
-            }
             /* Percolate upwards */
             while (current) {
                 switch (current->token.type) {
@@ -1247,11 +1248,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             break;
 
         case TOKEN_NOT:
-            if (!current) {
-                root = current = new;
-                break;
-            }
-
             switch (current->token.type) {
             case TOKEN_STRING:
             case TOKEN_RE:
@@ -1277,13 +1273,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
         case TOKEN_GT:
         case TOKEN_LE:
         case TOKEN_LT:
-            if (!current) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Invalid expression \"%s\" in file %s",
-                              expr, r->filename);
-                *was_error = 1;
-                return retval;
-            }
             /* Percolate upwards */
             while (current) {
                 switch (current->token.type) {
@@ -1341,11 +1330,6 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             break;
 
         case TOKEN_LBRACE:
-            if (!current) {
-                root = current = new;
-                break;
-            }
-
             switch (current->token.type) {
             case TOKEN_STRING:
             case TOKEN_RE:
