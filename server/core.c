@@ -4091,6 +4091,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             }
             if (!ctx->deferred_write_pool) {
                 apr_pool_create(&ctx->deferred_write_pool, c->pool);
+                apr_pool_tag(ctx->deferred_write_pool, "deferred_write");
             }
             ap_save_brigade(f, &ctx->b, &b, ctx->deferred_write_pool);
 
