@@ -20,6 +20,10 @@
 #include "util_filter.h"
 #include "util_script.h"
 
+#if APR_CHARSET_EBCDIC
+#include "util_charset.h"
+#endif
+
 #if APR_HAVE_UNISTD_H
 #include <unistd.h> /* needed for unlink/link */
 #endif
