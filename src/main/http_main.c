@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.73 1996/09/30 20:47:59 brian Exp $ */
+/* $Id: http_main.c,v 1.74 1996/10/01 00:12:26 fielding Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1886,7 +1886,8 @@ void show_directives()
     for(n=0 ; prelinked_modules[n] ; ++n)
 	for(pc=prelinked_modules[n]->cmds ; pc && pc->name ; ++pc)
 	    {
-	    printf("%s\t%s\t%s\t",pc->name,pc->errmsg,module_names[t-n-1]);
+	    printf("%s\t%s\t%s\t", pc->name, pc->errmsg ? pc->errmsg : "",
+	           module_names[t-n-1]);
 	    show_overrides(pc,prelinked_modules[n]);
 	    putchar('\n');
 	    }
