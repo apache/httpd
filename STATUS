@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/29 16:23:47 $]
+Last modified at [$Date: 2003/10/29 16:40:45 $]
 
 Release:
 
@@ -259,14 +259,14 @@ PATCHES TO BACKPORT FROM 2.1
     * Fix mod_info to use the real config file name, not the default
       config file name.
         modules/generators/mod_info.c r1.151
-      +1: trawick
+      +1: trawick, striker
 
     * Set the scoreboard state to indicate logging prior to running
       logging hooks so that server-status will show 'L' for hung
       loggers instead of 'W'.
         modules/http/http_request.c r1.159
         server/protocol.c r1.138
-      +1: trawick, stoddard
+      +1: trawick, stoddard, striker
 
     * When UseCanonicalName is set to OFF, allow ap_get_server_port to 
       check r->connection->local_addr->port before defaulting to 
@@ -277,7 +277,7 @@ PATCHES TO BACKPORT FROM 2.1
     * Tag the pools created for requests and subrequests.
         server/request.c r1.129
         server/protocol.c r1.137
-      +1: trawick
+      +1: trawick, striker
 
 CURRENT RELEASE NOTES:
 
