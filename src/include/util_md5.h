@@ -67,7 +67,11 @@ extern "C" {
 API_EXPORT(char *) ap_md5(pool *a, const unsigned char *string);
 API_EXPORT(char *) ap_md5_binary(pool *a, const unsigned char *buf, int len);
 API_EXPORT(char *) ap_md5contextTo64(pool *p, AP_MD5_CTX * context);
+#ifdef CHARSET_EBCDIC
+API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile, int convert);
+#else
 API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile);
+#endif /* CHARSET_EBCDIC */
 
 #ifdef __cplusplus
 }

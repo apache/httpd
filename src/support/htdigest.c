@@ -19,8 +19,13 @@
 #endif
 #include "ap_md5.h"
 
+#ifdef CHARSET_EBCDIC
+#define LF '\n'
+#define CR '\r'
+#else
 #define LF 10
 #define CR 13
+#endif /* CHARSET_EBCDIC */
 
 #define MAX_STRING_LEN 256
 

@@ -2962,6 +2962,9 @@ static int default_handler(request_rec *r)
 #ifdef USE_MMAP_FILES
     caddr_t mm;
 #endif
+#ifdef CHARSET_EBCDIC
+    int convert_flag;
+#endif
 
     /* This handler has no use for a request body (yet), but we still
      * need to read and discard it if the client sent one.
@@ -3044,22 +3047,27 @@ static int default_handler(request_rec *r)
 	ap_unblock_alarms();
 #endif
 
-	if (d->content_md5 & 1) {
-	    ap_table_setn(r->headers_out, "Content-MD5",
-			  ap_md5digest(r->pool, f));
-	}
-
-	rangestatus = ap_set_byterange(r);
 #ifdef CHARSET_EBCDIC
-	/* To make serving of "raw ASCII text" files easy (they serve faster 
+	/* To make serving of "raw ASCII text" files easy (they serve faster
 	 * since they don't have to be converted from EBCDIC), a new
 	 * "magic" type prefix was invented: text/x-ascii-{plain,html,...}
 	 * If we detect one of these content types here, we simply correct
 	 * the type to the real text/{plain,html,...} type. Otherwise, we
 	 * set a flag that translation is required later on.
 	 */
-        ap_checkconv(r);
-#endif /*CHARSET_EBCDIC*/
+	convert_flag = ap_checkconv(r);
+	if (d->content_md5 & 1) {
+	    ap_table_setn(r->headers_out, "Content-MD5",
+			  ap_md5digest(r->pool, f, convert_flag));
+	}
+#else
+	if (d->content_md5 & 1) {
+	    ap_table_setn(r->headers_out, "Content-MD5",
+			  ap_md5digest(r->pool, f));
+	}
+#endif /* CHARSET_EBCDIC */
+
+	rangestatus = ap_set_byterange(r);
 
 	ap_send_http_header(r);
 	

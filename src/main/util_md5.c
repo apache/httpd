@@ -187,6 +187,29 @@ API_EXPORT(char *) ap_md5contextTo64(pool *a, AP_MD5_CTX * context)
     return encodedDigest;
 }
 
+#ifdef CHARSET_EBCDIC
+
+API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile, int convert)
+{
+    AP_MD5_CTX context;
+    unsigned char buf[1000];
+    long length = 0;
+    int nbytes;
+
+    ap_MD5Init(&context);
+    while ((nbytes = fread(buf, 1, sizeof(buf), infile))) {
+      length += nbytes;
+        if (!convert) {
+            ascii2ebcdic(buf, buf, nbytes);
+        }
+      ap_MD5Update(&context, buf, nbytes);
+    }
+    rewind(infile);
+    return ap_md5contextTo64(p, &context);
+}
+
+#else
+
 API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile)
 {
     AP_MD5_CTX context;
@@ -202,3 +225,5 @@ API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile)
     rewind(infile);
     return ap_md5contextTo64(p, &context);
 }
+
+#endif /* CHARSET_EBCDIC */
