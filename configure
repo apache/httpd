@@ -96,7 +96,7 @@ esac
 ##
 ##  display version information
 ##
-if [ ".$quiet" = .no ]; then
+if [ "$quiet" = "no" ]; then
     APV=`cat $src/include/httpd.h |\
          grep "#define SERVER_BASEVERSION" |\
          sed -e 's/^[^"]*"//' -e 's/".*$//' -e 's/^Apache\///'`
@@ -119,7 +119,7 @@ fi
 ##
 PERL=no-perl-on-this-system
 perlpath="`$aux/PrintPath perl5 perl miniperl`"
-if [ "x$perlpath" != x ]; then
+if [ "$perlpath" != "" ]; then
     PERL="$perlpath"
 fi
 
@@ -131,9 +131,9 @@ fi
 ##
 SEO='' # CHANGE THIS VARIABLE HERE IF YOU HAVE PROBLEMS WITH ECHO!
 bytes=`echo $SEO '\1' | wc -c | awk '{ printf("%s", $1); }'`
-if [ ".$bytes" != .3 ]; then
+if [ "$bytes" != "3" ]; then
     bytes=`echo -E '\1' | wc -c | awk '{ printf("%s", $1); }'`
-    if [ ".$bytes" != .3 ]; then
+    if [ "$bytes" != "3" ]; then
         echo " + Warning: Your 'echo' command is slightly broken."
         echo " + It interprets escape sequences per default. We already"
         echo " + tried 'echo -E' but had no real success. If errors occur"
@@ -152,7 +152,7 @@ fi
 ##
 AWK=awk
 awkpath="`$aux/PrintPath nawk gawk awk`"
-if [ "x$awkpath" != x ]; then
+if [ "$awkpath" != "" ]; then
     AWK="$awkpath"
 fi
 
@@ -163,7 +163,7 @@ fi
 ##
 TAR=tar
 tarpath="`$aux/PrintPath gtar gnutar tar`"
-if [ "x$awkpath" != x ]; then
+if [ "$awkpath" != "" ]; then
     TAR="$tarpath"
 fi
 case "`$TAR --version 2>/dev/null`" in
@@ -245,7 +245,7 @@ for module in `egrep '^[# 	]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     eval "shared_$module=$share"
     modules="${modules}:$module"
     modulelist="${modulelist}:$module=$add"
-    if [ ".$share" = .yes ]; then
+    if [ "$share" = "yes" ]; then
         modulelist="${modulelist}*"
     fi
 done
@@ -258,7 +258,7 @@ modules=`echo $modules | sed -e 's/^://'`
 OIFS="$IFS" IFS="$DIFS"
 for var in CFLAGS LDFLAGS LIBS INCLUDES DEPS; do
     eval "val=\$EXTRA_$var"
-    if [ "x$val" != x ]; then
+    if [ "$val" != "" ]; then
         eval "$var=\$val"
         eval "EXTRA_$var=\"\"; export EXTRA_$var"
         echo " + Hint: please use $var instead of EXTRA_$var next time"
@@ -273,7 +273,7 @@ case "$*" in
     *--with-layout=* ) 
         ;;
     * ) 
-        if [ "x$*" = x ]; then
+        if [ "$*" = "" ]; then
             set -- '--with-layout=Apache'
         else
             set -- '--with-layout=Apache' "$@"
@@ -293,7 +293,7 @@ OIFS1="$IFS" IFS="$DIFS"
 for apc_option
 do
     #   if previous option needs an argument, assign it.
-    if [ "x$apc_prev" != x ]; then
+    if [ "$apc_prev" != "" ]; then
         eval "$apc_prev=\$apc_option"
         apc_prev=""
         continue
@@ -366,7 +366,7 @@ do
             exit 0
             ;;
         --with-layout=*|--compat)
-            if [ ".$apc_option" = ".--compat" ]; then
+            if [ "$apc_option" = "--compat" ]; then
                 apc_optarg="Apache"
             fi
             case $apc_optarg in
@@ -408,11 +408,11 @@ do
             done
             IFS="$OIFS"
             rm -f $pldconf 2>/dev/null
-            if [ ".$prefix" = .UNSET ]; then
+            if [ "$prefix" = "UNSET" ]; then
                 echo "configure:Error: Path layout definition not found or incorrect" 1>&2
                 exit 1
             fi
-            if [ ".$quiet" = .no ]; then
+            if [ "$quiet" = "no" ]; then
                 echo " + using installation path layout: $name ($file)"
             fi
             with_layout=1
@@ -433,7 +433,7 @@ OIFS1="$IFS" IFS="$DIFS"
 for apc_option
 do
     #   if previous option needs an argument, assign it.
-    if [ "x$apc_prev" != x ]; then
+    if [ "$apc_prev" != "" ]; then
         eval "$apc_prev=\$apc_option"
         apc_prev=""
         continue
@@ -461,7 +461,7 @@ do
             case "$apc_option" in
                 --shadow=*)
                     shadow="$apc_optarg"
-                    if [ .$quiet = .no ]; then
+                    if [ "$quiet" = "no" ]; then
                         echo " + creating external package shadow tree ($shadow)"
                     fi
                     rm -rf $shadow 2>/dev/null
@@ -469,7 +469,7 @@ do
                     for file in $mkf $sedsubst $addconf $tplconf $pldconf $configstatus; do
                         rm -f $shadow/$file 2>/dev/null
                     done
-                    if [ .$quiet = .no ]; then
+                    if [ "$quiet" = "no" ]; then
                         echo " + switching to external package shadow tree ($shadow)"
                     fi
                     cd $shadow
@@ -479,14 +479,14 @@ do
             gnutriple=`$aux/GuessOS | sed -e 's:/:-:g' | $AWK '{ printf("%s",$1); }'`
             #   create Makefile wrapper (the first time only)
             if [ ".`ls $top/src.* 2>/dev/null`" = . ]; then
-                if [ .$quiet = .no ]; then
+                if [ "$quiet" = "no" ]; then
                     echo " + creating Makefile (shadow wrapper)"
                 fi
                 echo "##" > Makefile
                 echo "##  Apache Makefile (shadow wrapper)" >> Makefile
                 echo "##" >> Makefile
                 echo "" >> Makefile
-                if [ "x$shadow" != x ]; then
+                if [ "$shadow" != "" ]; then
                     echo "SHADOW=$shadow" >> Makefile
                 else
                     echo "SHADOW=." >> Makefile
@@ -505,7 +505,7 @@ do
             shadowaddconf="src.$gnutriple/.apaci.addconf"
             shadowtplconf="src.$gnutriple/.apaci.tplconf"
             #   (re)create shadow tree
-            if [ .$quiet = .no ]; then
+            if [ "$quiet" = "no" ]; then
                 echo " + creating internal platform shadow tree ($shadowsrc)"
             fi
             rm -rf $shadowsrc
@@ -588,10 +588,10 @@ do
             fi
             modfilec=`echo $file | sed -e 's;^.*/;;'`
             modfileo=`echo $file | sed -e 's;^.*/;;' -e 's;\.c$;.o;'`
-            if [ ".$file" != ".$src/modules/extra/$modfilec" ]; then
+            if [ "$file" != "$src/modules/extra/$modfilec" ]; then
                 cp $file $src/modules/extra/$modfilec
             fi
-            if [ ".$addconf_created" = .0 ]; then
+            if [ "$addconf_created" = "0" ]; then
                 addconf_created=1
                 rm -f $addconf 2>/dev/null
                 touch $addconf 2>/dev/null
@@ -609,7 +609,7 @@ do
             eval "shared_$module=no"
             modules="${modules}:$module"
             modulelist="${modulelist}:$module=yes"
-            if [ ".$quiet" = .no ]; then
+            if [ "$quiet" = "no" ]; then
                 echo " + on-the-fly added and activated $module module (modules/extra/$modfileo)"
             fi
             ;;
@@ -622,7 +622,7 @@ do
                     ;;
             esac
             modfile=`echo $file | sed -e 's;^src/;;'`
-            if [ ".$addconf_created" = .0 ]; then
+            if [ "$addconf_created" = "0" ]; then
                 addconf_created=1
                 rm -f $addconf 2>/dev/null
                 touch $addconf 2>/dev/null
@@ -640,7 +640,7 @@ do
             eval "shared_$module=no"
             modules="${modules}:$module"
             modulelist="${modulelist}:$module=yes"
-            if [ ".$quiet" = .no ]; then
+            if [ "$quiet" = "no" ]; then
                 echo " + activated $module module ($modfile)"
             fi
             ;;
@@ -656,7 +656,7 @@ do
                     apc_optarg=`echo "$apc_optarg" | tr "A-Z" "a-z"`
                     apc_optarg_real=`echo "$apc_optarg" | tr "a-z" "A-Z"`
                     eval "exists=\$rule_${apc_optarg}" 
-                    if [ "x$exists" = x ]; then
+                    if [ "$exists" = "" ]; then
                         echo "configure:Error: No such rule named '${apc_optarg_real}'" 1>&2
                         exit 1
                     fi
@@ -686,7 +686,7 @@ do
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
-                           if [ "x$exists" = x ]; then
+                           if [ "$exists" = "" ]; then
                                echo "configure:Error: No such module named '${apc_optarg}'" 1>&2
                                exit 1
                            fi
@@ -708,7 +708,7 @@ do
                            OIFS="$IFS" IFS=':'
                            for module in $modules; do
                                eval "add=\$module_${module}" 
-                               if [ ".$add" = .no ]; then
+                               if [ "$add" = "no" ]; then
                                    eval "module_${module}=yes" 
                                    eval "shared_${module}=yes" 
                                fi
@@ -718,7 +718,7 @@ do
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
-                           if [ "x$exists" = x ]; then
+                           if [ "$exists" = "" ]; then
                                echo "configure:Error: No such module named '${apc_optarg}'" 1>&2
                                exit 1
                            fi
@@ -743,7 +743,7 @@ do
                     apc_optarg=`echo "$apc_optarg" | tr "A-Z" "a-z"`
                     apc_optarg_real=`echo "$apc_optarg" | tr "a-z" "A-Z"`
                     eval "exists=\$rule_${apc_optarg}" 
-                    if [ "x$exists" = x ]; then
+                    if [ "$exists" = "" ]; then
                         echo "configure:Error: No such rule named '${apc_optarg_real}'" 1>&2
                         exit 1
                     fi
@@ -760,7 +760,7 @@ do
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
-                           if [ "x$exists" = x ]; then
+                           if [ "$exists" = "" ]; then
                                echo "configure:Error: No such module named '${apc_optarg}'" 1>&2
                                exit 1
                            fi
@@ -779,7 +779,7 @@ do
                            ;;
                        * ) 
                            eval "exists=\$module_${apc_optarg}" 
-                           if [ "x$exists" = x ]; then
+                           if [ "$exists" = "" ]; then
                                echo "configure:Error: No such module named '${apc_optarg}'" 1>&2
                                exit 1
                            fi
@@ -797,7 +797,7 @@ do
                     BEGIN|END)
                         ;;
                     *)  eval "exists=\$module_${mod}" 
-                        if [ "x$exists" = x ]; then
+                        if [ "$exists" = "" ]; then
                             echo "configure:Error: No such module named '${mod}'" 1>&2
                             exit 1
                         fi
@@ -856,11 +856,11 @@ do
     esac
 done
 IFS="$OIFS1"
-if [ "x$apc_prev" != x ]; then
+if [ "$apc_prev" != "" ]; then
     echo "configure:Error: missing argument to --`echo $apc_prev | sed 's/_/-/g'`" 1>&2
     exit 1
 fi
-if [ ".$addconf_created" = .0 ]; then
+if [ "$addconf_created" = "0" ]; then
     rm -f $addconf 2>/dev/null
     touch $addconf 2>/dev/null
 fi
@@ -881,7 +881,7 @@ echo "" >>$configstatus
 for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
            LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS TARGET; do
     eval "val=\"\$$var\""
-    if [ "x$val" != x ]; then
+    if [ "$val" != "" ]; then
         echo "$var=$val" |\
         sed -e 's:\(["$\\]\):\\\1:g' \
             -e 's:\([A-Z]*=\):\1":' \
@@ -903,8 +903,8 @@ chmod a+x $configstatus
 ##
 ##  a few errors and warnings
 ##
-if [ ".$suexec" = .1 ]; then
-    if [ ".$suexec_ok" = .0 ]; then
+if [ "$suexec" = "1" ]; then
+    if [ "$suexec_ok" = "0" ]; then
         echo "configure:Error: You enabled the suEXEC feature via --enable-suexec but"
         echo "                 without explicitly configuring it via at least one"
         echo "                 --suexec-xxxxx option. Seems like you are still not"
@@ -917,8 +917,8 @@ if [ ".$suexec" = .1 ]; then
         echo " + root privileges for this, at the latest at the installation step." 1>&2
     fi
 fi
-if [ ".$PERL" = .no-perl-on-this-system ]; then
-    if [ .$quiet = .no ]; then
+if [ "$PERL" = "no-perl-on-this-system" ]; then
+    if [ "$quiet" = "no" ]; then
         echo " + Warning: no Perl interpreter available for support scripts."
         echo " + Perhaps you have to select one with --with-perl=FILE."
     fi
@@ -927,7 +927,7 @@ fi
 ##
 ##  target name
 ##
-if [ "x$TARGET" != x ]; then
+if [ "$TARGET" != "" ]; then
     thetarget=$TARGET
 else
     thetarget=httpd
@@ -949,7 +949,7 @@ for var in prefix exec_prefix bindir sbindir libexecdir mandir \
     #   add target suffix when requested
     if [ ".`echo $val | grep $thetarget`" = . ]; then
         eval "autosuffix=\$autosuffix_$var"
-        if [ ".$autosuffix" = .yes ]; then
+        if [ "$autosuffix" = "yes" ]; then
             eval "$var=\"\$$var/$thetarget\""
         fi
     fi
@@ -959,7 +959,7 @@ IFS="$OIFS"
 ##
 ##  determine special configurable Makefile targets
 ##
-if [ ".$support" = .1 ]; then
+if [ "$support" = "1" ]; then
     build_support='build-support'
     install_support='install-support'
     clean_support='clean-support'
@@ -978,7 +978,7 @@ conf_group="#-1"
 conf_port="80"
 conf_serveradmin="you@your.address"
 conf_servername="new.host.name"
-if [ ".$confadjust" = .1 ]; then
+if [ "$confadjust" = "1" ]; then
     if [ ".`egrep '^nobody:' /etc/group`" != . ]; then
         conf_group="nobody"
     else
@@ -1010,7 +1010,7 @@ libexecdir_relative=`echo $libexecdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/
 ##
 ##  check and debug
 ##
-if [ ".$show_layout" = .1 ]; then
+if [ "$show_layout" = "1" ]; then
     echo ""
     echo "Installation paths:"
     echo "               prefix: $prefix"
@@ -1040,7 +1040,7 @@ if [ ".$show_layout" = .1 ]; then
     echo "   ACCESS_CONFIG_FILE: ${sysconfdir_relative}access.conf"
     echo " RESOURCE_CONFIG_FILE: ${sysconfdir_relative}srm.conf"
     echo ""
-    if [ ".$suexec" = .1 ]; then
+    if [ "$suexec" = "1" ]; then
         echo "suEXEC setup:"
         echo "        suexec binary: $sbindir/suexec"
         echo "        document root: $suexec_docroot"
@@ -1058,7 +1058,7 @@ fi
 ##
 ##  create Makefile from Makefile.tmpl
 ##
-if [ .$quiet = .no ]; then
+if [ "$quiet" = "no" ]; then
     echo "Creating $mkf"
 fi
 sed <Makefile.tmpl >$mkf \
@@ -1126,7 +1126,7 @@ CFLAGS="$CFLAGS \\\`\$(SRCDIR)/apaci\\\`"
 ##
 ##  create $src/Configuration.apaci file
 ##
-if [ .$quiet = .no ]; then
+if [ "$quiet" = "no" ]; then
     echo "Creating Configuration.apaci in $src"
 fi
 rm -f $sedsubst 2>/dev/null
@@ -1137,7 +1137,7 @@ OIFS="$IFS" IFS="$DIFS"
 for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
            LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS TARGET; do
     eval "val=\"\$$var\"";
-    if [ "x$val" != x ]; then
+    if [ "$val" != "" ]; then
         case $var in 
             CFLAGS|LDFLAGS|LIBS|INCLUDES|DEPS) 
                 echo $SEO "s%^#*\\(EXTRA_$var=\\).*%\\1$val%g" >>$sedsubst
@@ -1176,19 +1176,19 @@ IFS="$OIFS"
 if [ $some_shares = 1 ]; then
     if [ $module_so = no ]; then
         module_so=yes
-        if [ .$quiet = .no ]; then
+        if [ "$quiet" = "no" ]; then
             echo " + enabling mod_so for DSO support"
         fi
     fi
 fi
-if [ ".$shared_so" = .yes ]; then
+if [ "$shared_so" = "yes" ]; then
     shared_so=no
     echo "configure:Error: Module mod_so cannot be made a DSO itself" 1>&2
     exit 1
 fi
 
 #   module permutation support
-if [ "x$permute" != x ]; then
+if [ "$permute" != "" ]; then
     sed -e '/## mod_mmap_static/,$d' <src/Configuration.tmpl >$tplconf
     OIFS="$IFS" IFS='
 '
@@ -1318,7 +1318,7 @@ rm -f $tplconf 2>/dev/null
 ##  create all other Makefiles by running the proprietary 
 ##  $src/Configure script with our custom Configuration.apaci file
 ##
-if [ .$quiet = .yes ]; then
+if [ "$quiet" = "yes" ]; then
     (cd $src; ./Configure -file Configuration.apaci >/dev/null);
 else
     (cd $src; ./Configure -file Configuration.apaci |\
@@ -1330,8 +1330,8 @@ fi
 ##
 ##  final hints
 ##
-if [ .$quiet = .no ]; then
-    if [ "x$shadow" != x ]; then
+if [ "$quiet" = "no" ]; then
+    if [ "$shadow" != "" ]; then
         echo "Hint: You now have to build inside $shadow."
         echo "This can be done either by running the canonical commands"
         echo "  \$ cd $shadow"
