@@ -269,7 +269,7 @@ static VOID ShowNotifyIcon(HWND hWnd, DWORD dwMessage)
     Shell_NotifyIcon(dwMessage, &nid);
 }
 
-void appendMenuItem(HMENU hMenu, UINT uMenuId, LPSTR szName, BOOL fDefault)
+void appendMenuItem(HMENU hMenu, UINT uMenuId, LPSTR szName, BOOL fDefault, BOOL fEnabled)
 {
     MENUITEMINFO mii;
     
@@ -282,11 +282,34 @@ void appendMenuItem(HMENU hMenu, UINT uMenuId, LPSTR szName, BOOL fDefault)
         mii.wID = uMenuId;
         if (fDefault)
             mii.fState = MFS_DEFAULT;
+        if (!fEnabled)
+            mii.fState |= MFS_DISABLED;
         mii.dwTypeData = szName;
     }
     else
         mii.fType = MFT_SEPARATOR;
     InsertMenuItem(hMenu, uMenuId, FALSE, &mii);
+}
+
+void appendServiceMenu(HMENU hMenu, UINT uMenuId, LPSTR szServiceName, BOOL fRunning)
+{
+    MENUITEMINFO mii;
+    HMENU        smh;    
+
+    smh = CreatePopupMenu();
+
+    appendMenuItem(smh,  IDM_SM_START + uMenuId, g_lpMsg[IDS_MSG_SSTART-IDS_MSG_FIRST], FALSE, !fRunning);
+    appendMenuItem(smh,  IDM_SM_STOP + uMenuId, g_lpMsg[IDS_MSG_SSTOP-IDS_MSG_FIRST], FALSE, fRunning);
+    appendMenuItem(smh,  IDM_SM_RESTART + uMenuId, g_lpMsg[IDS_MSG_SRESTART-IDS_MSG_FIRST], FALSE, fRunning);
+
+    ZeroMemory(&mii, sizeof(MENUITEMINFO));
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_ID | MIIM_TYPE | MIIM_STATE | MIIM_SUBMENU;
+    mii.fType = MFT_STRING;
+    mii.wID = uMenuId;
+    mii.dwTypeData = szServiceName;
+    mii.hSubMenu = smh;
+    InsertMenuItem(hMenu, IDM_SM_SERVICE + uMenuId, FALSE, &mii);
 }
 
 void ShowTryPopupMenu(HWND hWnd)
@@ -297,15 +320,39 @@ void ShowTryPopupMenu(HWND hWnd)
 
     if (hMenu)
     {
-        appendMenuItem(hMenu, IDM_RESTORE, g_lpMsg[IDS_MSG_MNUSHOW-IDS_MSG_FIRST], TRUE);
+        appendMenuItem(hMenu, IDM_RESTORE, g_lpMsg[IDS_MSG_MNUSHOW-IDS_MSG_FIRST], TRUE, TRUE);
         if (g_dwOSVersion >= OS_VERSION_WINNT)
-            appendMenuItem(hMenu, IDC_SMANAGER, g_lpMsg[IDS_MSG_MNUSERVICES-IDS_MSG_FIRST], FALSE);
-        appendMenuItem(hMenu, 0, "", FALSE);
-        appendMenuItem(hMenu, IDM_EXIT,  g_lpMsg[IDS_MSG_MNUEXIT-IDS_MSG_FIRST], FALSE);
+            appendMenuItem(hMenu, IDC_SMANAGER, g_lpMsg[IDS_MSG_MNUSERVICES-IDS_MSG_FIRST], FALSE, TRUE);
+        appendMenuItem(hMenu, 0, "", FALSE, TRUE);
+        appendMenuItem(hMenu, IDM_EXIT,  g_lpMsg[IDS_MSG_MNUEXIT-IDS_MSG_FIRST], FALSE, TRUE);
 
         GetCursorPos(&pt);
         SetForegroundWindow(NULL);
         TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x, pt.y, 0, hWnd, NULL);
+    }
+}
+
+void ShowTryServicesMenu(HWND hWnd)
+{
+    /* create services list popup menu and submenus */
+    HMENU hMenu = CreatePopupMenu();
+    POINT pt;
+    int i = 0;
+
+    if (hMenu)
+    {
+        while (g_stServices[i].szServiceName != NULL)
+        {   
+            appendServiceMenu(hMenu, i, g_stServices[i].szDisplayName,
+                              g_stServices[i].dwPid != 0);               
+            ++i;
+        }
+        if (i)
+        {
+            GetCursorPos(&pt);
+            SetForegroundWindow(NULL);
+            TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, pt.x, pt.y, 0, hWnd, NULL);
+        }
     }
 }
 
@@ -350,6 +397,9 @@ static void addListBoxItem(HWND hDlg, LPSTR lpStr, HBITMAP hBmp)
 static void addListBoxString(HWND hListBox, LPSTR lpStr)
 {
     static int nItems = 0;
+    if (!g_bDlgServiceOn)
+        return;
+
     ++nItems;
     if ( nItems > MAX_LOADSTRING)
     {
@@ -1138,51 +1188,57 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
             SetTimer(hWnd, WM_TIMER_RESCAN,  RESCAN_TIME, (TIMERPROC)WndProc);
             g_hwndServiceDlg = NULL;                      
             break;
-        case WM_TIMER_RESCAN:
-        {
-            int nPrev = 0, nNew = 0;
-            EnterCriticalSection(&g_stcSection);
-            if (FindRunningServices() || g_bRescanServices)
+        case WM_TIMER:
+            switch (wParam)
             {
-                ShowNotifyIcon(hWnd, NIM_MODIFY);
-                if (g_hwndServiceDlg)
-                    PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+                case WM_TIMER_RESCAN:
+                {
+                    int nPrev = 0, nNew = 0;
+                    OutputDebugString("Rescan");
+                    EnterCriticalSection(&g_stcSection);
+                    if (FindRunningServices() || g_bRescanServices)
+                    {
+                        ShowNotifyIcon(hWnd, NIM_MODIFY);
+                        if (g_hwndServiceDlg)
+                            PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+                    }
+                    /* check if services list changed */
+                    while (g_stServices[nPrev].szServiceName != NULL)
+                        ++nPrev;
+                    GetApacheServicesStatus();
+                    while (g_stServices[nNew].szServiceName != NULL)
+                        ++nNew;
+                    if (nPrev != nNew)
+                    {
+                        ShowNotifyIcon(hWnd, NIM_MODIFY);
+                        if (g_hwndServiceDlg)
+                            PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+                    }
+                    LeaveCriticalSection(&g_stcSection);
+                break;
+                }
+                case WM_TIMER_REFRESH:
+                {
+                    int nPrev = 0, nNew = 0;
+                    EnterCriticalSection(&g_stcSection);
+                    if (g_bRescanServices)
+                    {       
+                        GetApacheServicesStatus();
+                        ShowNotifyIcon(hWnd, NIM_MODIFY);
+                        if (g_hwndServiceDlg)
+                            PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+                    }
+                    else if (FindRunningServices())
+                    {
+                        ShowNotifyIcon(hWnd, NIM_MODIFY);
+                        if (g_hwndServiceDlg)
+                            PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
+                    }
+                    LeaveCriticalSection(&g_stcSection);
+                    break;
+                }
             }
-            /* check if services list changed */
-            while (g_stServices[nPrev].szServiceName != NULL)
-                ++nPrev;
-            GetApacheServicesStatus();
-            while (g_stServices[nNew].szServiceName != NULL)
-                ++nNew;
-            if (nPrev != nNew)
-            {
-                ShowNotifyIcon(hWnd, NIM_MODIFY);
-                if (g_hwndServiceDlg)
-                    PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
-            }
-            LeaveCriticalSection(&g_stcSection);
             break;
-        }
-        case WM_TIMER_REFRESH:
-        {
-            int nPrev = 0, nNew = 0;
-            EnterCriticalSection(&g_stcSection);
-            if (g_bRescanServices)
-            {
-                GetApacheServicesStatus();
-                ShowNotifyIcon(hWnd, NIM_MODIFY);
-                if (g_hwndServiceDlg)
-                    PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
-            }
-            else if (FindRunningServices())
-            {
-                ShowNotifyIcon(hWnd, NIM_MODIFY);
-                if (g_hwndServiceDlg)
-                    PostMessage(g_hwndServiceDlg, WM_UPDATEMESSAGE, 0, 0);
-            }
-            LeaveCriticalSection(&g_stcSection);
-            break;
-        }
         case WM_QUIT:
             ShowNotifyIcon(hWnd, NIM_DELETE);
             break;
@@ -1208,12 +1264,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                        SetFocus(g_hwndServiceDlg);
                    }
                 break;
+                case WM_LBUTTONUP:
+                    ShowTryServicesMenu(hWnd);
+                break;    
                 case WM_RBUTTONUP:
                     ShowTryPopupMenu(hWnd);
                 break;    
             }
             break;
         case WM_COMMAND:
+            if (LOWORD(wParam) & IDM_SM_START)
+            {
+                ApacheManageService(g_stServices[LOWORD(wParam) - IDM_SM_START].szServiceName,
+                                    g_stServices[LOWORD(wParam) - IDM_SM_START].szImagePath,
+                                    SERVICE_CONTROL_CONTINUE);                
+                return TRUE;
+            }
+            else if (LOWORD(wParam) & IDM_SM_STOP)
+            {
+                ApacheManageService(g_stServices[LOWORD(wParam) - IDM_SM_STOP].szServiceName,
+                                    g_stServices[LOWORD(wParam) - IDM_SM_STOP].szImagePath,
+                                    SERVICE_CONTROL_STOP);                
+                return TRUE;
+            }
+            else if (LOWORD(wParam) & IDM_SM_RESTART)
+            {
+                ApacheManageService(g_stServices[LOWORD(wParam) - IDM_SM_RESTART].szServiceName,
+                                    g_stServices[LOWORD(wParam) - IDM_SM_RESTART].szImagePath,
+                                    SERVICE_APACHE_RESTART);                
+                return TRUE;
+            }
             switch (LOWORD(wParam))
             {
                case IDM_RESTORE:

@@ -35,5 +35,13 @@
 #define IDS_MSG_SRVRESTART              269
 #define IDS_MSG_SRVRESTARTED            270
 #define IDS_MSG_SRVFAILED               271
-#define IDS_MSG_LAST                    271
+#define IDS_MSG_SSTART                  272
+#define IDS_MSG_SSTOP                   273
+#define IDS_MSG_SRESTART                274
+#define IDS_MSG_SERVICES                275
+#define IDS_MSG_LAST                    275
+#define IDM_SM_SERVICE                  0x1100
+#define IDM_SM_START                    0x1200
+#define IDM_SM_STOP                     0x1400
+#define IDM_SM_RESTART                  0x1800
 #define IDC_STATIC                      -1
