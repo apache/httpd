@@ -64,7 +64,7 @@
     в следующем примере</p>
 
 <example>/usr/local/apache2/bin/apachectl -f
-      /usr/local/apache/conf/httpd.conf</example>
+      /usr/local/apache2/conf/httpd.conf</example>
 
     <p>Если во время запуска не возникло никаких проблем, то сервер отсоединится
     от консоли и приглашение на ввод командной строки вернется к пользователю
