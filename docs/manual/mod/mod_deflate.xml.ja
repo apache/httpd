@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.8 -->
+<!-- English revision: 1.9 -->
 
 <name>mod_deflate</name>
 <description>クライアントへ送られる前にコンテンツを圧縮する</description>
@@ -43,14 +43,20 @@ SetOutputFilter DEFLATE
       SetOutputFilter DEFLATE<br />
 &lt;/Directory&gt;
 </example>
+
+    <p>HTML ファイルの圧縮についてですらも問題のあるブラウザに対しては、
+    <directive module="mod_setenvif">BrowserMatch</directive>
+    ディレクティブを使って特定のブラウザに対しては圧縮が行なわれないように
+    'no-gzip' ノートをセットすると良いでしょう。</p>
+
 </section>
 
 <directivesynopsis>
 <name>DeflateFilterNote</name>
 <description>ロギング用に圧縮比をメモに追加</description>
 <syntax>DeflateFilterNote <em>notename</em></syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p><directive>DeflateFilterNote</directive> ディレクティブは
@@ -64,8 +70,8 @@ SetOutputFilter DEFLATE
 <description>zlib が一度に圧縮する塊の大きさ</description>
 <syntax>DeflateBufferSize <em>value</em></syntax>
 <default>DeflateBufferSize 8096</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p><directive>DeflateBufferSize</directive> ディレクティブは
@@ -78,8 +84,8 @@ SetOutputFilter DEFLATE
 <description>Zlib の圧縮用ウィンドウの大きさ</description>
 <syntax>DeflateWindowSize <em>value</em></syntax>
 <default>DeflateWindowSize 15</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p><directive>DeflateWindowSize</directive> ディレクティブは
@@ -95,8 +101,8 @@ SetOutputFilter DEFLATE
 <description>zlib が圧縮に使うメモリのレベルを指定</description>
 <syntax>DeflateMemLevel <em>value</em></syntax>
 <default>DeflateMemLevel 9</default>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p><directive>DeflateMemLevel</directive> ディレクティブは
