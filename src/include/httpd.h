@@ -832,10 +832,10 @@ API_EXPORT(int) can_exec(const struct stat *);
 API_EXPORT(void) chdir_file(const char *file);
 
 #ifndef HAVE_CANONICAL_FILENAME
-#define os_canonical_filename(p,f)  pstrdup(p,f)
-#endif
-
+#define os_canonical_filename(p,f)  (f)
+#else
 API_EXPORT(char *)os_canonical_filename(pool *p,const char *file);
+#endif
      
 char *get_local_host(pool *);
 unsigned long get_virthost_addr (const char *hostname, unsigned short *port);

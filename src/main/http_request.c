@@ -261,7 +261,7 @@ int directory_walk (request_rec *r)
      * fake one. But don't run through the directory entries.
      */
 
-    if (test_filename == NULL) {
+    if (r->filename == NULL) {
         r->filename = pstrdup(r->pool, r->uri);
 	r->finfo.st_mode = 0;	/* Not really a file... */
         r->per_dir_config = per_dir_defaults;
