@@ -102,7 +102,7 @@ void *ap_os_dso_load(const char *path)
 {
 #if defined(HPUX) || defined(HPUX10) || defined(HPUX11)
     shl_t handle;
-    handle = shl_load(path, BIND_IMMEDIATE|BIND_VERBOSE|BIND_NOSTART, 0L);
+    handle = shl_load(path, BIND_IMMEDIATE|BIND_VERBOSE, 0L);
     return (void *)handle;
 
 #elif defined(HAVE_DYLD)

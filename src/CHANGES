@@ -1,5 +1,10 @@
 Changes with Apache 1.3.28
 
+  *) Removed BIND_NOSTART from HP/UX shl_load() logic for loadable
+     Apache modules, so that statics are initialized when the module
+     is loaded (especially critical for c++ modules on HPUX.)
+     [William Rowe, Noah Arliss <narliss@netegrity.com>]
+
   *) Win32 build system changes; always recompile buildmark.c (used for
      Apache -v 'server built' messages) even when Apache is built from
      within the IDE; build test_char.h and uri_delims.h from within the
