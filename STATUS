@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/27 06:03:13 $]
+Last modified at [$Date: 2001/12/27 06:08:12 $]
 
 Release:
 
@@ -298,6 +298,9 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                     a userlist via dbm, which has to remain readable between
                     builds/machines, etc.  The use-multiple database schema
                     for apr-util would let us do this with just apr, though."
+		Ian says:  "multi-dbm is in, but it still has ndbm support hardcoded
+		            is this still required? isn't ndbm supported via gdbm?"
+
 
     * Integrate mod_dav.
         Some additional items remaining:
