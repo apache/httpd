@@ -5,8 +5,8 @@
 <name>mod_autoindex</name>
 
 <description>Generates directory indexes,
-    automatically, similar to the Unix <em>ls</em> command or the
-    Win32 <em>dir</em> shell command</description>
+    automatically, similar to the Unix <code>ls</code> command or the
+    Win32 <code>dir</code> shell command</description>
 <status>Base</status>
 <sourcefile>mod_autoindex.c</sourcefile>
 <identifier>autoindex_module</identifier>
@@ -59,7 +59,8 @@
     they both are shown as "1K".</p>
 </summary>
 
-<section><title>Autoindex Request Query Arguments</title>
+<section id="query">
+    <title>Autoindex Request Query Arguments</title>
 
     <p>Apache 2.0.23 reorganized the Query Arguments for Column
     Sorting, and introduced an entire group of new query options.
@@ -81,16 +82,14 @@
       <li><code>C=S</code> sorts the directory by size, then file
       name</li>
 
-      <li><code>C=D</code> sorts the directory by description, then
-      file name<br />
-       &nbsp;</li>
+      <li class="separate"><code>C=D</code> sorts the directory by description, then
+      file name</li>
 
       <li><code>O=A</code> sorts the listing in Ascending
       Order</li>
 
-      <li><code>O=D</code> sorts the listing in Descending
-      Order<br />
-       &nbsp;</li>
+      <li class="separate"><code>O=D</code> sorts the listing in Descending
+      Order</li>
 
       <li><code>F=0</code> formats the listing as a simple list
       (not FancyIndexed)</li>
@@ -98,26 +97,25 @@
       <li><code>F=1</code> formats the listing as a FancyIndexed
       list</li>
 
-      <li><code>F=2</code> formats the listing as an HTMLTable
-      FancyIndexed list<br />
-       &nbsp;</li>
+      <li class="separate"><code>F=2</code> formats the listing as an
+      HTMLTable FancyIndexed list</li>
 
       <li><code>V=0</code> disables version sorting</li>
 
-      <li><code>V=1</code> enables version sorting<br />
-       &nbsp;</li>
+      <li class="separate"><code>V=1</code> enables version sorting</li>
 
-      <li><code>P=<em>pattern</em></code> lists only files matching
-      the given <em>pattern</em></li>
+      <li><code>P=<var>pattern</var></code> lists only files matching
+      the given <var>pattern</var></li>
     </ul>
 
     <p>Note that the 'P'attern query argument is tested
-    <em>after</em> the usual IndexIgnore directives are processed,
+    <em>after</em> the usual <directive module="mod_autoindex"
+    >IndexIgnore</directive> directives are processed,
     and all file names are still subjected to the same criteria as
     any other autoindex listing. The Query Arguments parser in
-    mod_autoindex will stop abruptly when an unrecognized option is
-    encountered. The Query Arguments must be well formed, according
-    to the table above.</p>
+    <module>mod_autoindex</module> will stop abruptly when an unrecognized
+    option is encountered. The Query Arguments must be well formed,
+    according to the table above.</p>
 
     <p>The simple example below, which can be clipped and saved in
     a header.html file, illustrates these query options. Note that
@@ -125,31 +123,41 @@
     to assure the arguments are all parsed before mod_autoindex
     encounters the X=Go input.</p>
 
-<example><pre>
-&lt;form action="" method="get"&gt;
-  Show me a &lt;select name="F"&gt;
-    &lt;option value="0"&gt; Plain list&lt;/option&gt;
-    &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;
-    &lt;option value="2"&gt; Table list&lt;/option&gt;
-  &lt;/select&gt;
-  Sorted by &lt;select name="C"&gt;
-    &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;
-    &lt;option value="M"&gt; Date Modified&lt;/option&gt;
-    &lt;option value="S"&gt; Size&lt;/option&gt;
-    &lt;option value="D"&gt; Description&lt;/option&gt;
-  &lt;/select&gt;
-  &lt;select name="O"&gt;
-    &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;
-    &lt;option value="D"&gt; Descending&lt;/option&gt;
-  &lt;/select&gt;
-  &lt;select name="V"&gt;
-    &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;
-    &lt;option value="1"&gt; in Version order&lt;/option&gt;
-  &lt;/select&gt;
-  Matching &lt;input type="text" name="P" value="*" /&gt;
-  &lt;input type="submit" name="X" value="Go" /&gt;
-&lt;/form&gt;
-</pre></example>
+    <example>
+      &lt;form action="" method="get"&gt;<br />
+      <indent>
+        Show me a &lt;select name="F"&gt;<br />
+        <indent>
+          &lt;option value="0"&gt; Plain list&lt;/option&gt;<br />
+          &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;<br />
+          &lt;option value="2"&gt; Table list&lt;/option&gt;<br />
+        </indent>
+        &lt;/select&gt;<br />
+        Sorted by &lt;select name="C"&gt;<br />
+        <indent>
+          &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;<br />
+          &lt;option value="M"&gt; Date Modified&lt;/option&gt;<br />
+          &lt;option value="S"&gt; Size&lt;/option&gt;<br />
+          &lt;option value="D"&gt; Description&lt;/option&gt;<br />
+        </indent>
+        &lt;/select&gt;<br />
+        &lt;select name="O"&gt;<br />
+        <indent>
+          &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;<br />
+          &lt;option value="D"&gt; Descending&lt;/option&gt;<br />
+        </indent>
+        &lt;/select&gt;<br />
+        &lt;select name="V"&gt;<br />
+        <indent>
+          &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;<br />
+          &lt;option value="1"&gt; in Version order&lt;/option&gt;<br />
+        </indent>
+        &lt;/select&gt;<br />
+        Matching &lt;input type="text" name="P" value="*" /&gt;<br />
+        &lt;input type="submit" name="X" value="Go" /&gt;<br />
+      </indent>
+      &lt;/form&gt;
+    </example>
 
 </section>
 
@@ -157,7 +165,7 @@
 <name>AddAlt</name>
 <description>Alternate text to display for a file, instead of an
 icon selected by filename</description>
-<syntax>AddAlt <em>string file</em> [<em>file</em>] ...</syntax>
+<syntax>AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -167,18 +175,17 @@ icon selected by filename</description>
     <p><directive>AddAlt</directive> provides the alternate text to
     display for a file, instead of an icon, for <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>File</em> is a file extension, partial filename, wild-card
+    <var>File</var> is a file extension, partial filename, wild-card
     expression or full filename for files to describe.
-    If <em>String</em> contains any whitespace, you have to enclose it
+    If <var>String</var> contains any whitespace, you have to enclose it
     in quotes (<code>"</code> or <code>'</code>). This alternate text
     is displayed if the client is image-incapable, has image loading
     disabled, or fails to retrieve the icon.</p>
 
-    <p>Examples:</p>
-<example>
-    AddAlt "PDF file" *.pdf<br />
-    AddAlt Compressed *.gz *.zip *.Z
-</example>
+    <example><title>Examples</title>
+      AddAlt "PDF file" *.pdf<br />
+      AddAlt Compressed *.gz *.zip *.Z
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -186,8 +193,8 @@ icon selected by filename</description>
 <name>AddAltByEncoding</name>
 <description>Alternate text to display for a file instead of an icon
 selected by MIME-encoding</description>
-<syntax>AddAltByEncoding <em>string MIME-encoding</em>
-[<em>MIME-encoding</em>] ...</syntax>
+<syntax>AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
+[<var>MIME-encoding</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -197,16 +204,15 @@ selected by MIME-encoding</description>
     <p><directive>AddAltByEncoding</directive> provides the alternate
     text to display for a file, instead of an icon, for <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>MIME-encoding</em> is a valid content-encoding, such as
-    <code>x-compress</code>. If <em>String</em> contains any whitespace,
+    <var>MIME-encoding</var> is a valid content-encoding, such as
+    <code>x-compress</code>. If <var>String</var> contains any whitespace,
     you have to enclose it in quotes (<code>"</code> or <code>'</code>).
     This alternate text is displayed if the client is image-incapable,
     has image loading disabled, or fails to retrieve the icon.</p>
 
-    <p>Example:</p>
-<example>
-    AddAltByEncoding gzip x-gzip
-</example>
+    <example><title>Example</title>
+      AddAltByEncoding gzip x-gzip
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -214,8 +220,8 @@ selected by MIME-encoding</description>
 <name>AddAltByType</name>
 <description>Alternate text to display for a file, instead of an
 icon selected by MIME content-type</description>
-<syntax>AddAltByType <em>string
-    MIME-type</em> [<em>MIME-type</em>] ...</syntax>
+<syntax>AddAltByType <var>string</var> <var>MIME-type</var>
+[<var>MIME-type</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -225,24 +231,22 @@ icon selected by MIME content-type</description>
     <p><directive>AddAltByType</directive> sets the alternate text to
     display for a file, instead of an icon, for <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>MIME-type</em> is a valid content-type, such as
-    <code>text/html</code>. If <em>String</em> contains any whitespace,
+    <var>MIME-type</var> is a valid content-type, such as
+    <code>text/html</code>. If <var>String</var> contains any whitespace,
     you have to enclose it in quotes (<code>"</code> or <code>'</code>).
     This alternate text is displayed if the client is image-incapable,
     has image loading disabled, or fails to retrieve the icon.</p>
 
-    <p>Example:</p>
-<example>
-    AddAltByType 'plain text' text/plain
-</example>
+    <example><title>Example</title>
+      AddAltByType 'plain text' text/plain
+    </example>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddDescription</name>
 <description>Description to display for a file</description>
-<syntax>AddDescription
-    <em>string file</em> [<em>file</em>] ...</syntax>
+<syntax>AddDescription <var>string file</var> [<var>file</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -250,46 +254,46 @@ icon selected by MIME content-type</description>
 
 <usage>
     <p>This sets the description to display for a file, for
-    <code><a
-    href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>File</em> is a file extension, partial filename, wild-card
+    <code><a href="#indexoptions:fancyindexing"
+    >FancyIndexing</a></code>.
+    <var>File</var> is a file extension, partial filename, wild-card
     expression or full filename for files to describe.
-    <em>String</em> is enclosed in double quotes (<code>"</code>).
-    Example:</p>
+    <var>String</var> is enclosed in double quotes (<code>"</code>).</p>
 
-<example>AddDescription "The planet Mars"
-      /web/pics/mars.gif</example>
+    <example><title>Example</title>
+      AddDescription "The planet Mars" /web/pics/mars.gif
+    </example>
 
     <p>The typical, default description field is 23 bytes wide. 6
-    more bytes are added by the
-    <code>IndexOptions&nbsp;SuppressIcon</code> option, 7 bytes are
-    added by the <code>IndexOptions&nbsp;SuppressSize</code>
-    option, and 19 bytes are added by the
-    <code>IndexOptions&nbsp;SuppressLastModified</code> option.
+    more bytes are added by the <code><a href="#indexoptions:suppressicon"
+    >IndexOptions SuppressIcon</a></code> option, 7 bytes are
+    added by the <code><a href="#indexoptions:suppresssize"
+    >IndexOptions SuppressSize</a></code> option, and 19 bytes are
+    added by the <code><a href="#indexoptions:suppresslastmodified"
+    >IndexOptions SuppressLastModified</a></code> option.
     Therefore, the widest default the description column is ever
     assigned is 55 bytes.</p>
 
-    <p>See the <a
-    href="#indexoptions:descriptionwidth">DescriptionWidth</a>
-    <directive module="mod_autoindex">IndexOptions</directive> keyword
-    for details on overriding the size of this column, or allowing
-    descriptions of unlimited length.</p>
+    <p>See the <a href="#indexoptions:descriptionwidth"
+    >DescriptionWidth</a> <directive module="mod_autoindex"
+    >IndexOptions</directive> keyword for details on overriding the size
+    of this column, or allowing descriptions of unlimited length.</p>
 
-<note><title>Caution</title> <p>Descriptive text defined with
-      <directive>AddDescription</directive> may contain HTML markup, such as
-      tags and character entities. If the width of the description
-      column should happen to truncate a tagged element (such as
-      cutting off the end of a bolded phrase), the results may
-      affect the rest of the directory listing.</p>
-</note>
+    <note><title>Caution</title>
+      <p>Descriptive text defined with <directive>AddDescription</directive>
+      may contain HTML markup, such as tags and character entities. If the
+      width of the description column should happen to truncate a tagged
+      element (such as cutting off the end of a bolded phrase), the
+      results may affect the rest of the directory listing.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddIcon</name>
 <description>Icon to display for a file selected by name</description>
-<syntax>AddIcon <em>icon
-    name</em> [<em>name</em>] ...</syntax>
+<syntax>AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
+...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -297,23 +301,22 @@ icon selected by MIME content-type</description>
 
 <usage>
     <p>This sets the icon to display next to a file ending in
-    <em>name</em> for <code><a
-    href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>Icon</em> is either a (%-escaped) relative URL to the icon,
-    or of the format (<em>alttext</em>,<em>url</em>) where
-    <em>alttext</em> is the text tag given for an icon for
-    non-graphical browsers.</p>
+    <var>name</var> for <code><a href="#indexoptions:fancyindexing"
+    >FancyIndexing</a></code>. <var>Icon</var> is either a (%-escaped)
+    relative URL to the icon, or of the format <code>
+    (<var>alttext</var>,<var>url</var>)</code> where <var>alttext</var>
+    is the text tag given for an icon for non-graphical browsers.</p>
 
-    <p><em>Name</em> is either ^^DIRECTORY^^ for directories,
-    ^^BLANKICON^^ for blank lines (to format the list correctly), a
-    file extension, a wildcard expression, a partial filename or a
-    complete filename. Examples:</p>
+    <p><var>Name</var> is either <code>^^DIRECTORY^^</code> for directories,
+    <code>^^BLANKICON^^</code> for blank lines (to format the list
+    correctly), a file extension, a wildcard expression, a partial
+    filename or a complete filename.</p>
 
-<example>
+    <example><title>Examples</title>
       AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
-       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
-       AddIcon /icons/backup.xbm *~
-</example>
+      AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
+      AddIcon /icons/backup.xbm *~
+    </example>
     
     <p><directive module="mod_autoindex">AddIconByType</directive>
     should be used in preference to <directive>AddIcon</directive>,
@@ -325,8 +328,8 @@ icon selected by MIME content-type</description>
 <name>AddIconByEncoding</name>
 <description>Icon to display next to files selected by MIME 
 content-encoding</description>
-<syntax>AddIconByEncoding
-    <em>icon MIME-encoding</em> [<em>MIME-encoding</em>] ...</syntax>
+<syntax>AddIconByEncoding <var>icon MIME-encoding</var>
+[<var>MIME-encoding</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -335,15 +338,17 @@ content-encoding</description>
 <usage>
     <p>This sets the icon to display next to files with <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>Icon</em> is either a (%-escaped) relative URL to the icon,
-    or of the format (<em>alttext</em>,<em>url</em>) where
-    <em>alttext</em> is the text tag given for an icon for
+    <var>Icon</var> is either a (%-escaped) relative URL to the icon,
+    or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
+    where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
 
-    <p><em>Mime-encoding</em> is a wildcard expression matching
-    required the content-encoding. Examples:</p>
+    <p><var>MIME-encoding</var> is a wildcard expression matching
+    required the content-encoding.</p>
 
-<example>AddIconByEncoding /icons/compress.xbm x-compress</example>
+    <example><title>Example</title>
+      AddIconByEncoding /icons/compress.xbm x-compress
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -351,8 +356,8 @@ content-encoding</description>
 <name>AddIconByType</name>
 <description>Icon to display next to files selected by MIME 
 content-type</description>
-<syntax>AddIconByType
-    <em>icon MIME-type</em> [<em>MIME-type</em>] ...</syntax>
+<syntax>AddIconByType <var>icon</var> <var>MIME-type</var>
+[<var>MIME-type</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -360,17 +365,19 @@ content-type</description>
 
 <usage>
     <p>This sets the icon to display next to files of type
-    <em>MIME-type</em> for <code><a
+    <var>MIME-type</var> for <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>Icon</em> is either a (%-escaped) relative URL to the icon,
-    or of the format (<em>alttext</em>,<em>url</em>) where
-    <em>alttext</em> is the text tag given for an icon for
+    <var>Icon</var> is either a (%-escaped) relative URL to the icon,
+    or of the format <code>(<var>alttext</var>,<var>url</var>)</code>
+    where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
 
-    <p><em>Mime-type</em> is a wildcard expression matching
-    required the mime types. Examples:</p>
+    <p><var>MIME-type</var> is a wildcard expression matching
+    required the mime types.</p>
 
-<example>AddIconByType (IMG,/icons/image.xbm) image/*</example>
+    <example><title>Example</title>
+      AddIconByType (IMG,/icons/image.xbm) image/*
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -378,7 +385,7 @@ content-type</description>
 <name>DefaultIcon</name>
 <description>Icon to display for files when no specific icon is
 configured</description>
-<syntax>DefaultIcon <em>url-path</em></syntax>
+<syntax>DefaultIcon <var>url-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -388,9 +395,11 @@ configured</description>
     <p>The <directive>DefaultIcon</directive> directive sets the icon
     to display for files when no specific icon is known, for <code><a
     href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>Url-path</em> is a (%-escaped) relative URL to the icon.
-    Examples:</p>
-<example>DefaultIcon /icon/unknown.xbm</example>
+    <var>Url-path</var> is a (%-escaped) relative URL to the icon.</p>
+
+    <example><title>Example</title>
+      DefaultIcon /icon/unknown.xbm
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -398,7 +407,7 @@ configured</description>
 <name>HeaderName</name>
 <description>Name of the file that will be inserted at the top
 of the index listing</description>
-<syntax>HeaderName <em>filename</em></syntax>
+<syntax>HeaderName <var>filename</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -407,47 +416,48 @@ of the index listing</description>
 <usage>
     <p>The <directive>HeaderName</directive> directive sets the name
     of the file that will be inserted at the top of the index
-    listing. <em>Filename</em> is the name of the file to include.</p>
+    listing. <var>Filename</var> is the name of the file to include.</p>
 
     <example><title>Example</title>
-    HeaderName HEADER.html
+      HeaderName HEADER.html
     </example>
 
-<note>
+    <note>
       <p>Both HeaderName and <directive
       module="mod_autoindex">ReadmeName</directive> now treat
-      <em>Filename</em> as a URI path relative to the one used to
-      access the directory being indexed. If <em>Filename</em> begins
+      <var>Filename</var> as a URI path relative to the one used to
+      access the directory being indexed. If <var>Filename</var> begins
       with a slash, it will be taken to be relative to the <directive
       module="core">DocumentRoot</directive>.</p>
 
       <example><title>Example</title>
-      HeaderName /include/HEADER.html
+        HeaderName /include/HEADER.html
       </example>
       
-      <p><em>Filename</em> must
-      resolve to a document with a major content type of
-      "<code>text/*</code>" (<em>e.g.</em>, <code>text/html</code>,
-      <code>text/plain</code>, <em>etc.</em>). This means that
-      <em>filename</em> may refer to a CGI script if the script's
+      <p><var>Filename</var> must resolve to a document with a major
+      content type of <code>text/*</code> (<em>e.g.</em>,
+      <code>text/html</code>, <code>text/plain</code>, etc.). This means
+      that <var>filename</var> may refer to a CGI script if the script's
       actual file type (as opposed to its output) is marked as
       <code>text/html</code> such as with a directive like:</p>
-<example>
-    AddType text/html .cgi
-</example>
+
+      <example>
+        AddType text/html .cgi
+      </example>
+
       <p><a href="../content-negotiation.html">Content negotiation</a>
       will be performed if <directive module="core">Options</directive>
-      <code>MultiViews</code> is in effect. If <em>filename</em> resolves
+      <code>MultiViews</code> is in effect. If <var>filename</var> resolves
       to a static <code>text/html</code> document (not a CGI script) and
       either one of the <directive module="core">options</directive>
       <code>Includes</code> or <code>IncludesNOEXEC</code> is enabled,
       the file will be processed for server-side includes (see the
       <module>mod_include</module> documentation).</p>
-</note>
+    </note>
 
     <p>If the file specified by <directive>HeaderName</directive> contains
-    the beginnings of an HTML document (&lt;HTML&gt;, &lt;HEAD&gt;,
-    etc) then you will probably want to set <a
+    the beginnings of an HTML document (&lt;html&gt;, &lt;head&gt;, etc.)
+    then you will probably want to set <a
     href="#indexoptions:suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>, so that these tags are not
     repeated.</p>
@@ -458,7 +468,7 @@ of the index listing</description>
 <name>IndexIgnore</name>
 <description>Adds to the list of files to hide when listing 
 a directory</description>
-<syntax>IndexIgnore <em>file</em> [<em>file</em>] ...</syntax>
+<syntax>IndexIgnore <var>file</var> [<var>file</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -466,14 +476,16 @@ a directory</description>
 
 <usage>
     <p>The <directive>IndexIgnore</directive> directive adds to the
-    list of files to hide when listing a directory. <em>File</em> is a
+    list of files to hide when listing a directory. <var>File</var> is a
     file extension, partial filename, wildcard expression or full
     filename for files to ignore. Multiple IndexIgnore directives add
     to the list, rather than the replacing the list of ignored
-    files. By default, the list contains
-    `<code>.</code>'. Example:</p>
+    files. By default, the list contains <code>.</code> (the current
+    directory).</p>
 
-<example>IndexIgnore README .htaccess *~</example>
+    <example>
+      IndexIgnore README .htaccess *~
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -481,7 +493,8 @@ a directory</description>
 <name>IndexOptions</name>
 <description>Various configuration settings for directory 
 indexing</description>
-<syntax>IndexOptions  [+|-]<em>option</em> [[+|-]<em>option</em>] ...</syntax>
+<syntax>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
+...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -489,23 +502,24 @@ indexing</description>
 
 <usage>
     <p>The <directive>IndexOptions</directive> directive specifies the
-    behavior of the directory indexing. <em>Option</em> can be one
+    behavior of the directory indexing. <var>Option</var> can be one
     of</p>
 
     <dl>
-      <dt><a
-      name="indexoptions:descriptionwidth">DescriptionWidth=[<em>n</em>
-      | *] (<em>Apache 1.3.10 or 2.0.23 and later</em>)</a></dt>
+      <dt><a name="indexoptions:descriptionwidth"
+               id="indexoptions:descriptionwidth"
+      >DescriptionWidth=[<var>n</var> | *]</a> (<em>Apache 2.0.23 and
+      later</em>)</dt>
 
       <dd>The <code>DescriptionWidth</code> keyword allows you to
       specify the width of the description column in
       characters.</dd>
 
       <dd><code>-DescriptionWidth</code> (or unset) allows
-      mod_autoindex to calculate the best width.</dd>
+      <module>mod_autoindex</module> to calculate the best width.</dd>
 
-      <dd><code>DescriptionWidth=n</code> fixes the column width to
-      n bytes wide.</dd>
+      <dd><code>DescriptionWidth=<var>n</var></code> fixes the column width to
+      <var>n</var> bytes wide.</dd>
 
       <dd><code>DescriptionWidth=*</code> grows the column to the
       width necessary to accommodate the longest description
@@ -515,15 +529,14 @@ indexing</description>
       module="mod_autoindex">AddDescription</directive> for dangers
       inherent in truncating descriptions.</strong></dd>
 
-      <dt><a 
-      name="indexoptions:fancyindexing">FancyIndexing</a></dt>
+      <dt><a name="indexoptions:fancyindexing"
+               id="indexoptions:fancyindexing">FancyIndexing</a></dt>
 
-      <dd>
-      This turns on fancy indexing of directories.</dd>
+      <dd>This turns on fancy indexing of directories.</dd>
 
-      <dt><a 
-      name="indexoptions:foldersfirst">FoldersFirst (<em>Apache
-      1.3.10 or 2.0.23 and later</em>)</a></dt>
+      <dt><a name="indexoptions:foldersfirst"
+               id="indexoptions:foldersfirst">FoldersFirst</a> (<em>Apache
+      2.0.23 and later</em>)</dt>
 
       <dd>If this option is enabled, subdirectory listings will
       <em>always</em> appear first, followed by normal files in the
@@ -535,97 +548,89 @@ indexing</description>
       <code>Zed</code> will be listed before subdirectory
       <code>Beta</code>, which will be listed before normal files
       <code>Gamma</code> and <code>Alpha</code>. <strong>This option
-      only has an effect if <a
-      href="#indexoptions:fancyindexing"><code>FancyIndexing</code></a>
-      is also enabled.</strong></dd>
+      only has an effect if <a href="#indexoptions:fancyindexing"
+      ><code>FancyIndexing</code></a> is also enabled.</strong></dd>
 
-      <dt><a 
-      name="indexoptions:htmltable">HTMLTable</a> <em>(Experimental,
-      Apache 2.0.23 and later)</em></dt>
+      <dt><a name="indexoptions:htmltable"
+               id="indexoptions:htmltable">HTMLTable</a> (<em>Experimental,
+      Apache 2.0.23 and later</em>)</dt>
 
-      <dd>
-      This experimental option with FancyIndexing constructs a
+      <dd>This experimental option with FancyIndexing constructs a
       simple table for the fancy directory listing. Note this will
       confuse older browsers. It is particularly necessary if file
       names or description text will alternate between
       left-to-right and right-to-left reading order, as can happen
       on WinNT or other utf-8 enabled platforms.</dd>
 
-      <dt><a 
-      name="indexoptions:iconsarelinks">IconsAreLinks</a></dt>
+      <dt><a name="indexoptions:iconsarelinks"
+               id="indexoptions:iconsarelinks">IconsAreLinks</a></dt>
 
-      <dd>
-      This makes the icons part of the anchor for the filename, for
+      <dd>This makes the icons part of the anchor for the filename, for
       fancy indexing.</dd>
 
-      <dt><a 
-      name="indexoptions:iconheight">IconHeight[=pixels]
-      (<em>Apache 1.3 and later</em>)</a></dt>
+      <dt><a name="indexoptions:iconheight"
+               id="indexoptions:iconheight">IconHeight[=<var
+               >pixels</var>]</a></dt>
 
-      <dd>
-      Presence of this option, when used with IconWidth, will cause
-      the server to include <code>HEIGHT</code> and
-      <code>WIDTH</code> attributes in the <code>IMG</code> tag for
-      the file icon. This allows browser to precalculate the page
-      layout without having to wait until all the images have been
-      loaded. If no value is given for the option, it defaults to
-      the standard height of the icons supplied with the Apache
+      <dd>Presence of this option, when used with IconWidth, will cause
+      the server to include <code>height</code> and <code>width</code>
+      attributes in the <code>img</code> tag for the file icon. This allows
+      browser to precalculate the page layout without having to wait until
+      all the images have been loaded. If no value is given for the option,
+      it defaults to the standard height of the icons supplied with the Apache
       software.</dd>
 
-      <dt><a 
-      name="indexoptions:iconwidth">IconWidth[=pixels] (<em>Apache
-      1.3 and later</em>)</a></dt>
+      <dt><a name="indexoptions:iconwidth"
+               id="indexoptions:iconwidth">IconWidth[=<var
+               >pixels</var>]</a></dt>
 
-      <dd>
-      Presence of this option, when used with IconHeight, will
-      cause the server to include <code>HEIGHT</code> and
-      <code>WIDTH</code> attributes in the <code>IMG</code> tag for
+      <dd>Presence of this option, when used with <code>IconHeight</code>,
+      will cause the server to include <code>height</code> and
+      <code>width</code> attributes in the <code>img</code> tag for
       the file icon. This allows browser to precalculate the page
       layout without having to wait until all the images have been
       loaded. If no value is given for the option, it defaults to
       the standard width of the icons supplied with the Apache
       software.</dd>
 
-      <dt><a 
-      name="indexoptions:ignoreclient">IgnoreClient</a></dt>
+      <dt><a name="indexoptions:ignoreclient"
+               id="indexoptions:ignoreclient">IgnoreClient</a></dt>
 
-      <dd>
-      This option causes mod_autoindex to ignore all query
-      variables from the client, including sort order (implies
-      <code><a
-      href="#indexoptions:suppresscolumnsorting">SuppressColumnSorting</a></code>.)</dd>
+      <dd>This option causes <module>mod_autoindex</module> to ignore all
+      query variables from the client, including sort order (implies
+      <code><a href="#indexoptions:suppresscolumnsorting"
+      >SuppressColumnSorting</a></code>.)</dd>
 
-      <dt><a 
-      name="indexoptions:namewidth">NameWidth=[<em>n</em> | *]
-      (<em>Apache 1.3.2 and later</em>)</a></dt>
+      <dt><a name="indexoptions:namewidth"
+               id="indexoptions:namewidth">NameWidth=[<var>n</var>
+               | *]</a></dt>
 
-      <dd>The NameWidth keyword allows you to specify the width of
-      the filename column in bytes.</dd>
+      <dd>The <code>NameWidth</code> keyword allows you to specify the width
+      of the filename column in bytes.</dd>
 
-      <dd><code>-NameWidth</code> (or unset) allows mod_autoindex
-      to calculate the best width.</dd>
+      <dd><code>-NameWidth</code> (or unset) allows <module
+      >mod_autoindex</module> to calculate the best width.</dd>
 
-      <dd><code>NameWidth=n</code> fixes the column width to n
-      bytes wide.</dd>
+      <dd><code>NameWidth=<var>n</var></code> fixes the column width to
+      <var>n</var> bytes wide.</dd>
 
-      <dd><code>NameWidth=*</code> grows the column to the
-      necessary width.</dd>
+      <dd><code>NameWidth=*</code> grows the column to the necessary
+      width.</dd>
 
-      <dt><a       name="indexoptions:scanhtmltitles">ScanHTMLTitles</a></dt>
+      <dt><a name="indexoptions:scanhtmltitles"
+               id="indexoptions:scanhtmltitles">ScanHTMLTitles</a></dt>
 
-      <dd>
-      This enables the extraction of the title from HTML documents
+      <dd>This enables the extraction of the title from HTML documents
       for fancy indexing. If the file does not have a description
-      given by <a href="#adddescription">AddDescription</a> then
-      httpd will read the document for the value of the TITLE tag.
-      This is CPU and disk intensive.</dd>
+      given by <directive module="mod_autoindex">AddDescription</directive>
+      then httpd will read the document for the value of the
+      <code>title</code> element. This is CPU and disk intensive.</dd>
 
-      <dt><a 
-      name="indexoptions:suppresscolumnsorting">SuppressColumnSorting</a>
-      (<em>Apache 1.3 and later</em>)</dt>
+      <dt><a name="indexoptions:suppresscolumnsorting"
+               id="indexoptions:suppresscolumnsorting"
+               >SuppressColumnSorting</a></dt>
 
-      <dd>
-      If specified, Apache will not make the column headings in a
+      <dd>If specified, Apache will not make the column headings in a
       FancyIndexed directory listing into links for sorting. The
       default behavior is for them to be links; selecting the
       column heading will sort the directory listing by the values
@@ -635,84 +640,79 @@ indexing</description>
       href="#indexoptions:ignoreclient">IndexOptions
       IgnoreClient</a> in Apache 2.0.23.</dd>
 
-      <dt><a 
-      name="indexoptions:suppressdescription">SuppressDescription</a></dt>
+      <dt><a name="indexoptions:suppressdescription"
+               id="indexoptions:suppressdescription"
+               >SuppressDescription</a></dt>
 
-      <dd>
-      This will suppress the file description in fancy indexing
+      <dd>This will suppress the file description in fancy indexing
       listings. By default, no file descriptions are defined, and
       so the use of this option will regain 23 characters of screen
-      space to use for something else. See <a
-      href="#adddescription"><code>AddDescription</code></a> for
-      information about setting the file description. See also the
-      <a
-      href="#indexoptions:descriptionwidth"><code>DescriptionWidth</code></a>
-      index option to limit the size of the description
-      column.</dd>
+      space to use for something else. See <directive module="mod_autoindex"
+      >AddDescription</directive> for information about setting the file
+      description. See also the <code><a
+      href="#indexoptions:descriptionwidth">DescriptionWidth</a></code>
+      index option to limit the size of the description column.</dd>
 
-      <dt><a 
-      name="indexoptions:suppresshtmlpreamble">SuppressHTMLPreamble</a>
-      (<em>Apache 1.3 and later</em>)</dt>
+      <dt><a name="indexoptions:suppresshtmlpreamble"
+               id="indexoptions:suppresshtmlpreamble"
+               >SuppressHTMLPreamble</a></dt>
 
-      <dd>
-      If the directory actually contains a file specified by the
+      <dd>If the directory actually contains a file specified by the
       <directive module="mod_autoindex">HeaderName</directive>
       directive, the module usually includes the contents of the file
-      after a standard HTML preamble (&lt;HTML&gt;, &lt;HEAD&gt;,
-      <em>et cetera</em>). The SuppressHTMLPreamble option disables
-      this behaviour, causing the module to start the display with the
-      header file contents. The header file must contain appropriate
-      HTML instructions in this case. If there is no header file, the
-      preamble is generated as usual.</dd>
+      after a standard HTML preamble (<code>&lt;html&gt;</code>,
+      <code>&lt;head&gt;</code>, <em>et cetera</em>). The
+      <code>SuppressHTMLPreamble</code> option disables this behaviour,
+      causing the module to start the display with the header file
+      contents. The header file must contain appropriate HTML instructions
+      in this case. If there is no header file, the preamble is generated
+      as usual.</dd>
 
-      <dt><a 
-      name="indexoptions:suppressicon">SuppressIcon</a> (<em>Apache
+      <dt><a name="indexoptions:suppressicon"
+               id="indexoptions:suppressicon">SuppressIcon</a> (<em>Apache
       2.0.23 and later</em>)</dt>
 
-      <dd>
-      This will suppress the icon in fancy indexing listings.
-      Combining both <em>SuppressIcon</em> and
-      <em>SuppressRules</em> yields proper HTML 3.2 output, which
-      by the final specification prohibits IMG and HR tags from the
-      PRE block (used to format FancyIndexed listings.)</dd>
+      <dd>This will suppress the icon in fancy indexing listings.
+      Combining both <code>SuppressIcon</code> and
+      <code>SuppressRules</code> yields proper HTML 3.2 output, which
+      by the final specification prohibits <code>img</code> and
+      <code>hr</code> elements from the <code>pre</code> block (used to
+      format FancyIndexed listings.)</dd>
 
-      <dt><a 
-      name="indexoptions:suppresslastmodified">SuppressLastModified</a></dt>
+      <dt><a name="indexoptions:suppresslastmodified"
+               id="indexoptions:suppresslastmodified"
+               >SuppressLastModified</a></dt>
 
-      <dd>
-      This will suppress the display of the last modification date,
+      <dd>This will suppress the display of the last modification date,
       in fancy indexing listings.</dd>
 
-      <dt><a 
-      name="indexoptions:suppressrules">SuppressRules</a>
+      <dt><a name="indexoptions:suppressrules"
+               id="indexoptions:suppressrules">SuppressRules</a>
       (<em>Apache 2.0.23 and later</em>)</dt>
 
-      <dd>
-      This will suppress the horizontal rule lines (HR tags) in
-      directory listings. Combining both <em>SuppressIcon</em> and
-      <em>SuppressRules</em> yeilds proper HTML 3.2 output, which
-      by the final specification prohibits IMG and HR tags from the
-      PRE block (used to format FancyIndexed listings.)</dd>
+      <dd>This will suppress the horizontal rule lines (<code>hr</code>
+      elements) in directory listings. Combining both <code>SuppressIcon</code> and
+      <code>SuppressRules</code> yields proper HTML 3.2 output, which
+      by the final specification prohibits <code>img</code> and
+      <code>hr</code> elements from the <code>pre</code> block (used to
+      format FancyIndexed listings.)</dd>
 
-      <dt><a 
-      name="indexoptions:suppresssize">SuppressSize</a></dt>
+      <dt><a name="indexoptions:suppresssize"
+               id="indexoptions:suppresssize">SuppressSize</a></dt>
 
-      <dd>
-      This will suppress the file size in fancy indexing
-      listings.</dd>
+      <dd>This will suppress the file size in fancy indexing listings.</dd>
 
-      <dt><a 
-      name="indexoptions:trackmodified">TrackModified (<em>Apache
-      1.3.15 or 2.0.23 and later</em>)</a></dt>
+      <dt><a name="indexoptions:trackmodified"
+               id="indexoptions:trackmodified">TrackModified</a> (<em>Apache
+      2.0.23 and later</em>)</dt>
 
-      <dd>
-      This returns the Last-Modified and ETag values for the listed
+      <dd>This returns the Last-Modified and ETag values for the listed
       directory in the HTTP header. It is only valid if the
       operating system and file system return appropriate stat()
       results. Some Unix systems do so, as do OS2's JFS and Win32's
       NTFS volumes. OS2 and Win32 FAT volumes, for example, do not.
       Once this feature is enabled, the client or proxy can track
-      changes to the list of files when they perform a HEAD
+      changes to the list of files when they perform a <code>HEAD</code>
       request. Note some operating systems correctly track new and
       removed files, but do not track changes for sizes or dates of
       the files within the directory. <strong>Changes to the size
@@ -720,88 +720,100 @@ indexing</description>
       Last-Modified header on all Unix platforms.</strong> If this
       is a concern, leave this option disabled.</dd>
 
-      <dt><a 
-      name="indexoptions:versionsort">VersionSort (<em>Apache 2.0a3
-      and later</em>)</a></dt>
+      <dt><a name="indexoptions:versionsort"
+               id="indexoptions:versionsort">VersionSort</a>
+      (<em>Apache 2.0a3 and later</em>)</dt>
 
-      <dd>
-        The VersionSort keyword causes files containing version
-        numbers to sort in a natural way. Strings are sorted as
-        usual, except that substrings of digits in the name and
-        description are compared according to their numeric value.
-        For example: 
+      <dd>The <code>VersionSort</code> keyword causes files containing
+      version numbers to sort in a natural way. Strings are sorted as
+      usual, except that substrings of digits in the name and
+      description are compared according to their numeric value.
 
-<example>
-foo-1.7<br />
-foo-1.7.2<br />
-foo-1.7.12<br />
-foo-1.8.2<br />
-foo-1.8.2a<br />
-foo-1.12<br />
-</example>
-        If the number starts with a zero, then it is considered to
-        be a fraction: 
+      <example><title>Example:</title>
+        foo-1.7<br />
+        foo-1.7.2<br />
+        foo-1.7.12<br />
+        foo-1.8.2<br />
+        foo-1.8.2a<br />
+        foo-1.12
+      </example>
 
-<example>
-foo-1.001<br />
-foo-1.002<br />
-foo-1.030<br />
-foo-1.04
-</example>
-      </dd>
+      <p>If the number starts with a zero, then it is considered to
+      be a fraction:</p>
 
-      <dd>
-        <strong>Incremental IndexOptions</strong>
-      </dd>
-
-      <dd>
-        Apache 1.3.3 introduced some significant changes in the
-        handling of <directive>IndexOptions</directive> directives. In
-        particular,<br />
-        <br />
-         
-
-        <ul>
-          <li>Multiple <directive>IndexOptions</directive> directives for a
-          single directory are now merged together. The result of
-          the example above will now be the equivalent of
-          <code>IndexOptions&nbsp;FancyIndexing&nbsp;ScanHTMLTitles</code>.</li>
-
-          <li>The addition of the incremental syntax
-          (<em>i.e.</em>, prefixing keywords with '+' or '-').</li>
-        </ul>
-        <br />
-         Whenever a '+' or '-' prefixed keyword is encountered, it
-        is applied to the current <directive>IndexOptions</directive>
-        settings (which may have been inherited from an upper-level
-        directory). However, whenever an unprefixed keyword is
-        processed, it clears all inherited options and any
-        incremental settings encountered so far. Consider the
-        following example: 
-
-<example>IndexOptions +ScanHTMLTitles -IconsAreLinks
-          FancyIndexing<br />
-           IndexOptions +SuppressSize<br />
-</example>
-        The net effect is equivalent to
-        <code>IndexOptions&nbsp;FancyIndexing&nbsp;+SuppressSize</code>,
-        because the unprefixed <code>FancyIndexing</code> discarded
-        the incremental keywords before it, but allowed them to
-        start accumulating again afterward.<br />
-        <br />
-         To unconditionally set the <directive>IndexOptions</directive> for a
-        particular directory, clearing the inherited settings,
-        specify keywords without any '+' or '-' prefixes.
+      <example>
+        foo-1.001<br />
+        foo-1.002<br />
+        foo-1.030<br />
+        foo-1.04
+      </example>
       </dd>
     </dl>
+
+   <!--
+     XXX: we should consider to allow sections inside <usage> 
+     this would require some xslt changes...
+   -->
+   <dl><dt>Incremental IndexOptions</dt>
+   <dd>
+     <p>Apache 1.3.3 introduced some significant changes in the
+     handling of <directive>IndexOptions</directive> directives. In
+     particular:</p>
+
+     <ul>
+     <li>Multiple <directive>IndexOptions</directive> directives for a
+     single directory are now merged together. The result of:
+
+     <example>
+       &lt;Directory /foo&gt;
+       <indent>
+         IndexOptions HTMLTable<br />
+         IndexOptions SuppressColumnsorting
+       </indent>
+       &lt;/Directory&gt;
+     </example>
+
+     <p>will be the equivalent of</p>
+
+     <example>
+       IndexOptions HTMLTable SuppressColumnsorting
+     </example>
+     </li>
+
+     <li>The addition of the incremental syntax (<em>i.e.</em>, prefixing
+     keywords with <code>+</code> or <code>-</code>).</li>
+     </ul>
+
+     <p>Whenever a '+' or '-' prefixed keyword is encountered, it
+     is applied to the current <directive>IndexOptions</directive>
+     settings (which may have been inherited from an upper-level
+     directory). However, whenever an unprefixed keyword is processed, it
+     clears all inherited options and any incremental settings encountered
+     so far. Consider the following example:</p>
+
+     <example>
+       IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
+       IndexOptions +SuppressSize
+     </example>
+
+     <p>The net effect is equivalent to <code>IndexOptions FancyIndexing
+     +SuppressSize</code>, because the unprefixed <code>FancyIndexing</code>
+     discarded the incremental keywords before it, but allowed them to
+     start accumulating again afterward.</p>
+
+     <p>To unconditionally set the <directive>IndexOptions</directive> for
+     a particular directory, clearing the inherited settings, specify
+     keywords without any <code>+</code> or <code>-</code> prefixes.</p>
+   </dd>
+   </dl>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>IndexOrderDefault</name>
 <description>Sets the default ordering of the directory index</description>
-<syntax>IndexOrderDefault
-Ascending|Descending Name|Date|Size|Description</syntax>
+<syntax>IndexOrderDefault Ascending|Descending
+Name|Date|Size|Description</syntax>
 <default>IndexOrderDefault Ascending Name</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -810,12 +822,11 @@ Ascending|Descending Name|Date|Size|Description</syntax>
 
 <usage>
     <p>The <directive>IndexOrderDefault</directive> directive is used
-    in combination with the <a
-    href="#indexoptions:fancyindexing"><code>FancyIndexing</code></a>
-    index option. By default, fancyindexed directory listings are
-    displayed in ascending order by filename; the
-    <directive>IndexOrderDefault</directive> allows you to change this initial
-    display order.</p>
+    in combination with the <code><a href="#indexoptions:fancyindexing"
+    >FancyIndexing</a></code> index option. By default, fancyindexed
+    directory listings are displayed in ascending order by filename; the
+    <directive>IndexOrderDefault</directive> allows you to change this
+    initial display order.</p>
 
     <p><directive>IndexOrderDefault</directive> takes two
     arguments. The first must be either <code>Ascending</code> or
@@ -826,10 +837,11 @@ Ascending|Descending Name|Date|Size|Description</syntax>
     <em>always</em> the ascending filename.</p>
 
     <p>You can force a directory listing to only be displayed in a
-    particular order by combining this directive with the <a
-    href="#indexoptions:suppresscolumnsorting"><code>SuppressColumnSorting</code></a>
-    index option; this will prevent the client from requesting the
-    directory listing in a different order.</p>
+    particular order by combining this directive with the <code><a
+    href="#indexoptions:suppresscolumnsorting"
+    >SuppressColumnSorting</a></code> index option; this will prevent
+    the client from requesting the directory listing in a different
+    order.</p>
 </usage>
 </directivesynopsis>
 
@@ -837,7 +849,7 @@ Ascending|Descending Name|Date|Size|Description</syntax>
 <name>ReadmeName</name>
 <description>Name of the file that will be inserted at the end
 of the index listing</description>
-<syntax>ReadmeName <em>filename</em></syntax>
+<syntax>ReadmeName <var>filename</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -846,23 +858,23 @@ of the index listing</description>
 <usage>
     <p>The <directive>ReadmeName</directive> directive sets the name
     of the file that will be appended to the end of the index
-    listing. <em>Filename</em> is the name of the file to include, and
+    listing. <var>Filename</var> is the name of the file to include, and
     is taken to be relative to the location being indexed. If
-    <em>Filename</em> begins with a slash, it will be taken to be
+    <var>Filename</var> begins with a slash, it will be taken to be
     relative to the <directive module="core">DocumentRoot</directive>.
     </p>
 
     <example><title>Example</title>
-    ReadmeName FOOTER.html
+      ReadmeName FOOTER.html
     </example>
 
     <example><title>Example 2</title>
-    ReadmeName /include/FOOTER.html
+      ReadmeName /include/FOOTER.html
     </example>
 
-    <p>See also <directive
-    module="mod_autoindex">HeaderName</directive>, where this behavior
-    is described in greater detail.</p>
+    <p>See also <directive module="mod_autoindex"
+    >HeaderName</directive>, where this behavior is described in greater
+    detail.</p>
 </usage>
 </directivesynopsis>
 
