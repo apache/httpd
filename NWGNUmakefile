@@ -220,7 +220,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/protocol.o \
 	$(OBJDIR)/provider.o \
 	$(OBJDIR)/request.o \
-	$(OBJDIR)/rfc1413.o \
 	$(OBJDIR)/scoreboard.o \
 	$(OBJDIR)/util.o \
 	$(OBJDIR)/util_cfgtree.o \
