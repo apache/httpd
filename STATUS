@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/11 21:12:39 $]
+Last modified at [$Date: 2003/11/20 16:12:28 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -14,7 +14,12 @@ on related projects:
 
 Contributors looking for a mission:
 
-    * just do an egrep on "TODO" or "XXX" and see what's there
+    * just do an egrep on "TODO" or "XXX" in the source.
+
+    * Review the "PatchAvailable" bugs in the bug database.
+      Append a comment saying "Reviewed and tested".
+
+    * Open bugs in the bug database.
 
 
 CURRENT RELEASE NOTES:
@@ -109,6 +114,9 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * Patches submitted to the bug database:
+      http://nagoya.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2.0&keywords=PatchAvailable
 
     * Filter stacks and subrequests, redirects and fast redirects.
       There's at least one PR that suffers from the current unclean behaviour
