@@ -104,7 +104,7 @@ DEFS = -I. -I$(srcdir) -I$(top_srcdir)/modules/mpm/$(MPM_NAME)
 all: all-recursive
 install: install-recursive
 
-# if we are doing a distclean or clean, we actually want to hit every 
+# if we are doing a distclean, we actually want to hit every 
 # directory that has ever been configured.  To do this, we just do a quick
 # find for all the leftover Makefiles, and then run make distclean in those
 # directories.
@@ -121,7 +121,7 @@ distclean-recursive clean-recursive depend-recursive all-recursive install-recur
 	done; \
 	if test "$$otarget" = "all" && test -z '$(targets)'; then ok=yes; fi;\
 	if test "$$ok" != "yes"; then $(MAKE) "$$otarget-p" || exit 1; fi; \
-	if test "$$otarget" = "distclean" || test "$$otarget" = "clean"; then\
+	if test "$$otarget" = "distclean" ; then\
 		for d in `find . -name Makefile`; do \
 			i=`dirname "$$d"`; \
 			target="$$otarget"; \
