@@ -703,7 +703,7 @@ static void charset_register_hooks(void)
 {
     ap_hook_fixups(find_code_page, NULL, NULL, AP_HOOK_MIDDLE);
     ap_hook_insert_filter(xlate_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);
-    ap_register_filter(XLATEOUT_FILTER_NAME, xlate_filter, AP_FTYPE_CONTENT);
+    ap_register_output_filter(XLATEOUT_FILTER_NAME, xlate_filter, AP_FTYPE_CONTENT);
 }
 
 module charset_lite_module =
