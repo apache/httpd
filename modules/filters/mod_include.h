@@ -200,13 +200,13 @@ typedef int (*include_handler)(include_ctx_t *ctx, apr_bucket_brigade **bb,
 APR_DECLARE_OPTIONAL_FN(void, ap_ssi_get_tag_and_value, (include_ctx_t *ctx,
                                                         char **tag,
                                                         char **tag_val,
-                                                        int dodecode))
+                                                        int dodecode));
 APR_DECLARE_OPTIONAL_FN(void, ap_ssi_parse_string, (request_rec *r,
                                                     const char *in,
                                                     char *out,
                                                     size_t length,
-                                                    int leave_name))
+                                                    int leave_name));
 APR_DECLARE_OPTIONAL_FN(void, ap_register_include_handler, (char *tag,
-                                                         include_handler func))
+                                                         include_handler func));
 
 #endif /* MOD_INCLUDE */
