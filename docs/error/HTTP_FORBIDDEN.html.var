@@ -4,7 +4,7 @@ Body:----------de--
 <!--#set var="TITLE" value="Zugriff verweigert!" -->
 <!--#include virtual="include/top.html" -->
 
-  <!--#if expr="$REDIRECT_URL = //$/" -->
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
     Der Zugriff auf das angeforderte Verzeichnis ist nicht möglich.
     Entweder ist kein Index-Dokument vorhanden oder das Verzeichnis
@@ -26,7 +26,7 @@ Content-type: text/html
 Body:----------en--
 <!--#set var="TITLE" value="Access forbidden!" -->
 <!--#include virtual="include/top.html" -->
-<!--#if expr="$REDIRECT_URL = //$/" -->
+<!--#if expr="$REDIRECT_URL = /\/$/" -->
 
    You don't have permission to access the requested directory.
    There is either no index document or the directory is read-protected.
@@ -47,7 +47,7 @@ Body:----------es--
 <!--#set var="TITLE" value="Access forbidden!" -->
 <!--#include virtual="include/top.html" -->
 
-  <!--#if expr="$REDIRECT_URL = //$/" -->
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
         Usted no tiene permiso para accesar a la direcci&oacute;n
         solicitada. Existe la posibilidad de que el directorio
@@ -70,7 +70,7 @@ Content-type: text/html
 Body:----------fr--
 <!--#set var="TITLE" value="Acc&egrave;s interdit!" -->
 <!--#include virtual="include/top.html" -->
-<!--#if expr="$REDIRECT_URL = //$/" -->
+<!--#if expr="$REDIRECT_URL = /\/$/" -->
 Vous n'avez pas le droit d'acc&eacute;der au r&eacute;pertoire
 demand&eacute;. Soit il n'y a pas de document index soit le r&eacute;pertoire
 est prot&eacute;g&eacute;.
