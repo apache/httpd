@@ -6,10 +6,12 @@ AC_ARG_WITH(mpm,
     apache_cv_mpm=$withval
     AC_MSG_RESULT($apache_cv_mpm)
   else
-    AC_MSG_ERROR(An MPM must be specified)
+    apache_cv_mpm="mpmt_pthread"
+    AC_MSG_RESULT(No MPM specified.  Using pthread)
   fi
 ],[
-  AC_MSG_ERROR(An MPM must be specified)
+  apache_cv_mpm="mpmt_pthread"
+  AC_MSG_RESULT(No MPM specified.  Using pthread)
 ])
 
 APACHE_OUTPUT(modules/mpm/Makefile)
