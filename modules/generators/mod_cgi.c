@@ -301,7 +301,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
 {
     char **env;
     ap_procattr_t *procattr;
-    ap_proc_t procnew;
+    ap_proc_t *procnew = ap_pcalloc(p, sizeof(*procnew));
     ap_status_t rc = APR_SUCCESS;
     ap_file_t *file = NULL;
     ap_iol *iol;
@@ -347,7 +347,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
 		      "couldn't set child process attributes: %s", r->filename);
     }
     else {
-        rc = ap_create_process(&procnew, command, argv, env, procattr, p);
+        rc = ap_create_process(procnew, command, argv, env, procattr, p);
     
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
@@ -355,10 +355,10 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
                         "couldn't create child process: %d: %s", rc, r->filename);
         }
         else {
-            ap_note_subprocess(p, &procnew, kill_after_timeout);
+            ap_note_subprocess(p, procnew, kill_after_timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stdout */
-            file = procnew.out;
+            file = procnew->out;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
@@ -367,7 +367,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_bsetopt(*script_in, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stdin */
-            file = procnew.in;
+            file = procnew->in;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
@@ -376,7 +376,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
             ap_bsetopt(*script_out, BO_TIMEOUT, &r->server->timeout);
 
             /* Fill in BUFF structure for parents pipe to child's stderr */
-            file = procnew.err;
+            file = procnew->err;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
