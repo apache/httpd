@@ -1209,67 +1209,6 @@ API_EXPORT(int) ap_find_token(pool *p, const char *line, const char *tok)
     }
 }
 
-/*
- * Find opaque HTTP tokens, which have no internal semantics and end
- * at the first unquoted ',' or ' '.
- */
-API_EXPORT(int) ap_find_opaque_token(pool *p, const char *line,
-				     const char *tok)
-{
-    const unsigned char *start_token;
-    const unsigned char *s;
-    char stop_quote = '\0';
-
-    if (!line) {
-	return 0;
-    }
-
-    s = (const unsigned char *)line;
-    for (;;) {
-	/* 
-	 * Find start of token, skip all stop characters, note NUL
-	 * isn't a token stop, so we don't need to test for it
-	 */
-	while (TEST_CHAR(*s, T_HTTP_OPAQUETOKEN_STOP)) {
-	    ++s;
-	}
-	if (!*s) {
-	    return 0;
-	}
-	start_token = s;
-	/* 
-	 * Find end of the token 
-	 */
-	while (*s) {
-	    /*
-	     * If we see the beginning of a quoted string ("foo" or <foo>),
-	     * mark the end character so we know when to stop skipping.
-	     */
-	    if (!stop_quote && ((*s == '"') || (*s == '<'))) {
-		stop_quote = (*s == '"') ? '"' : '>';
-	    }
-	    else if (*s == stop_quote) {
-		stop_quote = '\0';
-	    }
-	    /*
-	     * If we're not inside a quoted string, check to see if we're
-	     * at the end of the token.
-	     */
-	    else if (!stop_quote && TEST_CHAR(*s, T_HTTP_OPAQUETOKEN_STOP)) {
-		break;
-	    }
-	    ++s;
-	}
-	if (!strncmp((const char *)start_token, (const char *)tok,
-		     s - start_token)) {
-	    return 1;
-	}
-	if (!*s) {
-	    return 0;
-	}
-    }
-}
-
 
 API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok)
 {

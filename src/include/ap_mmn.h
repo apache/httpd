@@ -203,13 +203,10 @@
  *                        scan_script_header -> ap_scan_script_header_err
  *                      - reordered entries in request_rec that were waiting
  *                        for a non-binary-compatible release.
- * 19990108.1           - add ap_find_opaque_token() for things like ETags
- *   (1.3.5-dev)          which can contain opaque quoted strings, and
- *                        ap_MD5Encode() for MD5 password handling.
+ *          (1.3.5-dev)
+ * 19990108.1           - add ap_MD5Encode() for MD5 password handling.
  * 19990108.2           - add ap_validate_password() and change ap_MD5Encode()
- *   (1.3.5-dev)          to use a stronger algorithm (which is incompatible
- *                        with the one introduced [but not released] with
- *                        19990108-1).
+ *                        to use a stronger algorithm.
  * 19990108.3           - add ap_find_list_item() and ap_get_list_item()
  */
 

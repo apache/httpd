@@ -404,8 +404,7 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
      */
     if ((if_match = ap_table_get(r->headers_in, "If-Match")) != NULL) {
         if ((etag == NULL) ||
-            ((if_match[0] != '*')
-	     && !ap_find_opaque_token(r->pool, if_match, etag))) {
+            ((if_match[0] != '*') && !ap_find_token(r->pool, if_match, etag))) {
             return HTTP_PRECONDITION_FAILED;
         }
     }
@@ -438,8 +437,7 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
         int rstatus;
 
         if ((if_nonematch[0] == '*')
-            || ((etag != NULL)
-		&& ap_find_opaque_token(r->pool, if_nonematch, etag))) {
+            || ((etag != NULL) && ap_find_token(r->pool, if_nonematch, etag))) {
             rstatus = (r->method_number == M_GET) ? HTTP_NOT_MODIFIED
                                                   : HTTP_PRECONDITION_FAILED;
             return rstatus;

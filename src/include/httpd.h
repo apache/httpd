@@ -936,8 +936,6 @@ API_EXPORT(const char *) ap_find_list_item(const char **field, int *len);
 API_EXPORT(char *) ap_get_list_item(pool *p, const char **field);
 API_EXPORT(char *) ap_get_token(pool *p, const char **accept_line, int accept_white);
 API_EXPORT(int) ap_find_token(pool *p, const char *line, const char *tok);
-API_EXPORT(int) ap_find_opaque_token(pool *p, const char *line,
-				     const char *tok);
 API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok);
 
 API_EXPORT(int) ap_is_url(const char *u);

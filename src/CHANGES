@@ -65,9 +65,6 @@ Changes with Apache 1.3.5
      the NDBM library looks like Berkeley-DB based.
      [Ralf S. Engelschall] PR#3773
 
-  *) Fix checking of ETags and other opaque 'tokens' by adding
-     ap_find_opaque_token().  PR#2065, 3657 [Ken Coar]
-
   *) Add ability to handle DES or MD5 authentication passwords.
      [Ryan Bloom <rbb@Raleigh.IBM.Com>]
 
