@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/12 17:38:39 $]
+Last modified at [$Date: 2004/04/12 21:17:42 $]
 
 Release:
 
@@ -142,16 +142,6 @@ PATCHES TO BACKPORT FROM 2.1
     *) Check to make sure that if auth_ldap is loaded, mod_ldap is 
        also loaded. 
          modules/experimental/mod_auth_ldap.c: r1.22
-       +1: bnicholes, minfrin, trawick
-       
-    *) util_ldap_connection_find() locks each cached connection while 
-       testing to see if it matches the specified criteria.  But then 
-       it forgets to unlock the connection if it doesn't match. This 
-       results in all of the connections eventually being locked and 
-       mod_ldap having to create additional connections to handle new
-       requests. This patch unlocks the connection if it doesn't meet
-       the connection criteria.
-         modules/experimental/util_ldap.c: r1.23
        +1: bnicholes, minfrin, trawick
        
     *) Update the ldc->binddn and ldc->bindpw associated with the LDAP 
