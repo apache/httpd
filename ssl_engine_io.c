@@ -174,24 +174,9 @@ static apr_status_t churn_output(SSLFilterRec *pRec)
 					    pRec->pOutputFilter->c->pool);
 		APR_BRIGADE_INSERT_TAIL(pbbOutput,pbkt);
 		done=1;
-                /*      } else if(n == 0) {
-                        apr_bucket *pbktEOS=apr_bucket_create_eos();
-                        APR_BRIGADE_INSERT_TAIL(pbbOutput,pbktEOS);*/
 	    }
             assert (n > 0); /* XXX => Check if required */
-#if 0 /* XXX */ 
-            else if (n == 0)
-                done = 1;
-            else
-                 assert (n > 0);
-#endif
 	}
-#if 0 /* XXX */
-        else
-        {
-            done = 1;
-        }
-#endif
     } while(done);
     
     /* XXX: check for errors */
