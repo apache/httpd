@@ -402,7 +402,9 @@ extern char *crypt();
 #endif
 #define bzero(a,b) memset(a,0,b)
 /* A lot of SVR4 systems need this */
+#ifndef USE_SYSVSEM_SERIALIZED_ACCEPT
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#endif
 #define HAVE_SYSLOG
 #define NET_SIZE_T size_t
 #define HAVE_SHMGET
