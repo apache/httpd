@@ -1,13 +1,18 @@
 APACHE 2.1+ ROADMAP:
 
-Last modified at [$Date: 2001/11/28 06:34:32 $]
+Last modified at [$Date: 2001/11/28 07:09:58 $]
 
 DEFERRRED FOR APACHE 2.1
 
     * Source code should follow style guidelines.
       OK, we all agree pretty code is good.  Probably best to clean this
       up by hand immediately upon branching a 2.1 tree.
-      Justin's voulenteered to hand-edit the entire source tree ;)
+      Status: Justin volunteers to hand-edit the entire source tree ;)
+
+      Justin says:
+        Recall when the release plan for 2.0 was written:
+            Absolute Enforcement of an "Apache Style" for code.
+        Watch this slip into 3.0.
 
     * revamp the input filter syntax to provide for ordering of
       filters created with the Set{Input|Output}Filter and the
