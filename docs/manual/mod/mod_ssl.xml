@@ -348,8 +348,7 @@ The following two storage <em>type</em>s are currently supported:</p>
     in size) inside a shared memory segment in RAM (established via
     <code>/path/to/datafile</code>) to synchronize the local OpenSSL memory
     caches of the server processes. This storage type is not available on all
-    platforms. See the mod_ssl <code>INSTALL</code> document for details on
-    how to build Apache+EAPI with shared memory support.</p></li>
+    platforms.</p></li>
 </ul>
 <example><title>Examples</title>
 SSLSessionCache dbm:/usr/local/apache/logs/ssl_gcache_data<br />
