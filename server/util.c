@@ -259,8 +259,13 @@ AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir)
 {
     const char *newpath;
     const char *ourdir = dir;
-    if (apr_filepath_root(&newpath, &dir, 0, p) != APR_SUCCESS
-            || strncmp(newpath, ourdir, strlen(newpath)) != 0) {
+    apr_status_t rv = apr_filepath_root(&newpath, &dir, 0, p);
+
+    if (rv == APR_EABSOLUTE) {
+        return 1;
+    }
+
+    if (rv != APR_SUCCESS || strncmp(newpath, ourdir, strlen(newpath)) != 0) {
         return 0;
     }
     return 1;
