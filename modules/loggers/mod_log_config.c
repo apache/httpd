@@ -236,7 +236,7 @@ static apr_hash_t *log_hash;
  * vhost has no logs defined, we can use the main server's logs instead.
  *
  * So, for the main server, config_logs contains a list of the log files
- * and server_config_logs in empty. For a vhost, server_config_logs
+ * and server_config_logs is empty. For a vhost, server_config_logs
  * points to the same array as config_logs in the main server, and
  * config_logs points to the array of logs defined inside this vhost,
  * which might be empty.
@@ -1025,7 +1025,10 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     if (!data) {
         apr_pool_userdata_set((const void *)1, userdata_key,
                          apr_pool_cleanup_null, s->process->pool);
-        return cls;
+        /* If logging for the first time after a restart, keep going. */
+        if (!ap_my_generation) {
+            return cls;
+        }
     }
 
     if (cls->log_fd != NULL) {

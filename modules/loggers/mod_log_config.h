@@ -58,6 +58,7 @@
 
 #include "apr_optional.h"
 #include "httpd.h"
+#include "scoreboard.h"
 
 #ifndef _MOD_LOG_CONFIG_H
 #define _MOD_LOG_CONFIG_H 1
