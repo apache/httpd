@@ -1,5 +1,9 @@
 Changes with Apache 2.0.27-dev
 
+  *) Add the support/checkgid helper app, which checks the run-time
+     validity of group identifiers usable in the Group directive.
+     [Ken Coar]
+
   *) Various --enable-so options have been fixed: --enable-so is
      treated as "static"; explicit --enable-so=shared issues an error;
      and explicit --enable-so fails with error on systems without
