@@ -1,5 +1,11 @@
 Changes with Apache 2.0.47
 
+  *) SECURITY [CAN-2003-0192]: Fixed a bug whereby certain sequences
+     of per-directory renegotiations and the SSLCipherSuite directive
+     being used to upgrade from a weak ciphersuite to a strong one
+     could result in the weak ciphersuite being used in place of the
+     strong one.  [Ben Laurie]
+
   *) SECURITY [CAN-2003-0253]: Fixed a bug in prefork MPM causing
      temporary denial of service when accept() on a rarely accessed port
      returns certain errors.  Reported by Saheed Akhtar
