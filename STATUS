@@ -62,6 +62,7 @@ Committed Code Changes:
     * Ken's [PATCH] for PR#1195 (" in realm names)
     * Jim's [PATCH] ap_cpystrn() function (replace strncpy) Take II
     * Dean's [PATCH] 1.3: "DoS" attack
+    * Paul/Ben's [PATCH] 1.3: spaces in NT spawn* arguments
 
 Available Patches:
 
@@ -97,10 +98,6 @@ Available Patches:
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
 	Status: Dean +1, Martin +1, Alexei -1 (shared lib concerns)
-
-    * Paul's [PATCH] NT: spaces in argv[]
-	<Pine.LNX.3.96.971115170823.1397D-100000@ecstasy.localnet>
-	Status: Paul +1, Ben +1
 
     * Roy's [PATCH] protocol/1399: failing to read body
 	<9711141029.aa01965@paris.ics.uci.edu>
