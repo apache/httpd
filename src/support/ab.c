@@ -660,7 +660,6 @@ int main(int argc, char **argv)
         case 'c':
             concurrency = atoi(optarg);
             break;
-            break;
         case 't':
             tlimit = atoi(optarg);
             requests = MAX_REQUESTS;    /* need to size data array on something */
