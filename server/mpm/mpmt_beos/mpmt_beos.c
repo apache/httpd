@@ -77,6 +77,7 @@
 #include "poll.h"
 #include "mpm_common.h"
 #include "mpm.h"
+#include <unistd.h>
 
 /*
  * Actual definitions of config globals
@@ -392,6 +393,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, in
                                          conn_id);
 
     ap_process_connection(current_conn);
+    ap_lingering_close(current_conn);
 }
 
 static int32 worker_thread(void * dummy)
@@ -400,13 +402,11 @@ static int32 worker_thread(void * dummy)
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
     ap_pool_t *tpool = ti->tpool;
-    struct sockaddr sa_client;
     ap_socket_t *csd = NULL;
     ap_pool_t *ptrans;		/* Pool for per-transaction stuff */
     ap_socket_t *sd = NULL;
     int srv;
     int curr_pollfd, last_pollfd = 0;
-    int thesock;
     sigset_t sig_mask;
     
     free(ti);
@@ -501,7 +501,6 @@ static int32 child_main(void * data)
     thread_id thread;
     int i;
     int my_child_num = child_num_arg;
-    proc_info *my_info = NULL;
     ap_listen_rec *lr;
     struct sigaction sa;
     int32 msg;
@@ -544,7 +543,7 @@ static int32 child_main(void * data)
     }
 
     for (i=0; i < ap_threads_per_child; i++) {
-        my_info = (proc_info *)malloc(sizeof(proc_info));
+        proc_info *my_info = (proc_info *)malloc(sizeof(proc_info));
         if (my_info == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
 		         "malloc: out of memory");
@@ -554,9 +553,8 @@ static int32 child_main(void * data)
         my_info->tid = i;
         my_info->sd = 0;
         ap_create_pool(&my_info->tpool, pchild);
-	
-        /* We are creating threads right now */
 
+        /* We are creating threads right now */
         if ((thread = spawn_thread(worker_thread, "httpd_worker_thread",
 	      B_NORMAL_PRIORITY, my_info)) < B_NO_ERROR) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
@@ -648,13 +646,11 @@ static int hold_off_on_exponential_spawning;
 
 static void perform_idle_server_maintenance(void)
 {
-    int i, j;
-    int idle_thread_count;
+    int i;
     time_t now = 0;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
-    int total_non_dead;
 
     /* initialize the free_list */
     free_length = 0;
@@ -741,7 +737,7 @@ static void server_main_loop(int remaining_children_to_start)
 		    * child.
 		    */
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, ap_server_conf,
-			    "long lost child came home! (pid %d)", pid.pid);
+			    "long lost child came home! (pid %ld)", pid.pid);
 	    }
 	    /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a
@@ -871,8 +867,8 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     }
 
     if (is_graceful) {
-	int i, j;
-        char char_of_death = '!';
+	int i;
+    char char_of_death = '!';
 
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, ap_server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
@@ -1098,7 +1094,7 @@ static const char *set_maintain_connection_status(cmd_parms *cmd,
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
 {
-    ap_file_t finfo;
+    ap_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
