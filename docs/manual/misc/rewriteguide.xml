@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.4.2.10 $ -->
+<!-- $Revision: 1.4.2.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -34,8 +34,8 @@
     <p>This document supplements the <module>mod_rewrite</module>
     <a href="../mod/mod_rewrite.html">reference documentation</a>.
     It describes how one can use Apache's <module>mod_rewrite</module>
-    to solve typical URL-based problems webmasters are usually confronted
-    with in practice. I give detailed descriptions on how to
+    to solve typical URL-based problems with which webmasters are
+    commonony confronted. We give detailed descriptions on how to
     solve each problem by configuring URL rewriting rulesets.</p>
 
   </summary>
@@ -46,8 +46,8 @@
 
     <p>The Apache module <module>mod_rewrite</module> is a killer
     one, i.e. it is a really sophisticated module which provides
-    a powerful way to do URL manipulations. With it you can nearly
-    do all types of URL manipulations you ever dreamed about.
+    a powerful way to do URL manipulations. With it you can do nearly 
+    all types of URL manipulations you ever dreamed about.
     The price you have to pay is to accept complexity, because
     <module>mod_rewrite</module>'s major drawback is that it is
     not easy to understand and use for the beginner. And even
@@ -68,7 +68,7 @@
     <title>Practical Solutions</title>
 
     <p>Here come a lot of practical solutions I've either invented
-    myself or collected from other peoples solutions in the past.
+    myself or collected from other people's solutions in the past.
     Feel free to learn the black magic of URL rewriting from
     these examples.</p>
 
