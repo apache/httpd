@@ -2298,77 +2298,91 @@ static apr_status_t rewritelock_remove(void *data)
 
 /*
  * own command line parser for RewriteRule and RewriteCond,
- * which doesn't have the '\\' problem
+ * which doesn't have the '\\' problem.
+ * (returns true on error)
+ *
+ * XXX: what an inclined parser. Seems we have to leave it so
+ *      for backwards compat. *sigh*
  */
 static int parseargline(char *str, char **a1, char **a2, char **a3)
 {
-    char *cp;
-    int isquoted;
+    char quote;
 
-#define SKIP_WHITESPACE(cp) \
-    for ( ; *cp == ' ' || *cp == '\t'; ) { \
-        cp++; \
-    };
-
-#define CHECK_QUOTATION(cp,isquoted) \
-    isquoted = 0; \
-    if (*cp == '"') { \
-        isquoted = 1; \
-        cp++; \
+    while (apr_isspace(*str)) {
+        ++str;
     }
 
-#define DETERMINE_NEXTSTRING(cp,isquoted) \
-    for ( ; *cp != '\0'; cp++) { \
-        if (   (isquoted    && (*cp     == ' ' || *cp     == '\t')) \
-            || (*cp == '\\' && (*(cp+1) == ' ' || *(cp+1) == '\t'))) { \
-            cp++; \
-            continue; \
-        } \
-        if (   (!isquoted && (*cp == ' ' || *cp == '\t')) \
-            || (isquoted  && *cp == '"')                  ) { \
-            break; \
-        } \
+    /*
+     * determine first argument
+     */
+    quote = (*str == '"' || *str == '\'') ? *str++ : '\0';
+    *a1 = str;
+
+    for (; *str; ++str) {
+        if ((apr_isspace(*str) && !quote) || (*str == quote)) {
+            break;
+        }
+        if (*str == '\\' && apr_isspace(str[1])) {
+            ++str;
+            continue;
+        }
     }
 
-    cp = str;
-    SKIP_WHITESPACE(cp);
-
-    /*  determine first argument */
-    CHECK_QUOTATION(cp, isquoted);
-    *a1 = cp;
-    DETERMINE_NEXTSTRING(cp, isquoted);
-    if (*cp == '\0') {
+    if (!*str) {
         return 1;
     }
-    *cp++ = '\0';
+    *str++ = '\0';
 
-    SKIP_WHITESPACE(cp);
-
-    /*  determine second argument */
-    CHECK_QUOTATION(cp, isquoted);
-    *a2 = cp;
-    DETERMINE_NEXTSTRING(cp, isquoted);
-    if (*cp == '\0') {
-        *cp++ = '\0';
-        *a3 = NULL;
-        return 0;
-    }
-    *cp++ = '\0';
-
-    SKIP_WHITESPACE(cp);
-
-    /* again check if there are only two arguments */
-    if (*cp == '\0') {
-        *cp++ = '\0';
-        *a3 = NULL;
-        return 0;
+    while (apr_isspace(*str)) {
+        ++str;
     }
 
-    /*  determine second argument */
-    CHECK_QUOTATION(cp, isquoted);
-    *a3 = cp;
-    DETERMINE_NEXTSTRING(cp, isquoted);
-    *cp = '\0';
+    /*
+     * determine second argument
+     */
+    quote = (*str == '"' || *str == '\'') ? *str++ : '\0';
+    *a2 = str;
+
+    for (; *str; ++str) {
+        if ((apr_isspace(*str) && !quote) || (*str == quote)) {
+            break;
+        }
+        if (*str == '\\' && apr_isspace(str[1])) {
+            ++str;
+            continue;
+        }
+    }
+
+    if (!*str) {
+        *a3 = NULL; /* 3rd argument is optional */
+        return 0;
+    }
+    *str++ = '\0';
+
+    while (apr_isspace(*str)) {
+        ++str;
+    }
+
+    if (!*str) {
+        *a3 = NULL; /* 3rd argument is still optional */
+        return 0;
+    }
+
+    /*
+     * determine third argument
+     */
+    quote = (*str == '"' || *str == '\'') ? *str++ : '\0';
+    *a3 = str;
+    for (; *str; ++str) {
+        if ((apr_isspace(*str) && !quote) || (*str == quote)) {
+            break;
+        }
+        if (*str == '\\' && apr_isspace(str[1])) {
+            ++str;
+            continue;
+        }
+    }
+    *str = '\0';
 
     return 0;
 }
