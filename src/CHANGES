@@ -1,5 +1,9 @@
 Changes with Apache 1.3.10
 
+  *) Reverse a patch which broke HPUX shared builds. Basically
+     we comment out the SHLIB_SUFFIX_NAME=sl line in Configure.
+     [Ryan Bloom]
+
   *) Added the mod_rewrite `URL Rewriting Guide' to the online
      documentation (htdocs/manual/misc/rewriteguide.html). This paper
      provides a large collection of practical solutions to URL based
