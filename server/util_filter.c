@@ -85,10 +85,10 @@ static apr_status_t filter_cleanup(void *ctx)
     return APR_SUCCESS;
 }
 
-static void ap_register_filter(const char *name,
-                        ap_filter_func filter_func,
-                        ap_filter_type ftype,
-                        ap_filter_rec_t *reg_filter_list)
+static void register_filter(const char *name,
+                            ap_filter_func filter_func,
+                            ap_filter_type ftype,
+                            ap_filter_rec_t **reg_filter_list)
 {
     ap_filter_rec_t *frec = apr_palloc(FILTER_POOL, sizeof(*frec));
 
@@ -96,26 +96,26 @@ static void ap_register_filter(const char *name,
     frec->filter_func = filter_func;
     frec->ftype = ftype;
 
-    frec->next = reg_filter_list;
-    reg_filter_list = frec;
+    frec->next = *reg_filter_list;
+    *reg_filter_list = frec;
 
     apr_register_cleanup(FILTER_POOL, NULL, filter_cleanup, apr_null_cleanup);
 }
 
 API_EXPORT(void) ap_register_input_filter(const char *name,
-                                    ap_filter_func filter_func,
-                                    ap_filter_type ftype)
+                                          ap_filter_func filter_func,
+                                          ap_filter_type ftype)
 {
-    ap_register_filter(name, filter_func, ftype, 
-                       registered_input_filters);
+    register_filter(name, filter_func, ftype, 
+                    &registered_input_filters);
 }                                                                    
 
 API_EXPORT(void) ap_register_output_filter(const char *name,
-                                    ap_filter_func filter_func,
-                                    ap_filter_type ftype)
+                                           ap_filter_func filter_func,
+                                           ap_filter_type ftype)
 {
-    ap_register_filter(name, filter_func, ftype, 
-                       registered_output_filters);
+    register_filter(name, filter_func, ftype, 
+                    &registered_output_filters);
 }
 
 API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r)

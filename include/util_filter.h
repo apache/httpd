@@ -113,8 +113,9 @@ typedef struct ap_filter_t ap_filter_t;
  * receiving its own per-install context pointer.
  *
  * Callbacks are associated with a filter definition, which is specified
- * by name. See ap_register_filter() for setting the association between
- * a name for a filter and its associated callback (and other information).
+ * by name. See ap_register_input_filter() and ap_register_output_filter()
+ * for setting the association between a name for a filter and its 
+ * associated callback (and other information).
  *
  * The *bucket structure (and all those referenced by ->next and ->prev)
  * should be considered "const". The filter is allowed to modify the
@@ -241,11 +242,12 @@ struct ap_filter_t {
 API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade *bucket);
 
 /*
- * ap_register_filter():
+ * ap_register_input_filter():
  *
- * This function is used to register a filter with the system. After this
- * registration is performed, then a filter may be added into the filter
- * chain by using ap_add_filter() and simply specifying the name.
+ * This function is used to register an input filter with the system. 
+ * After this registration is performed, then a filter may be added 
+ * into the filter chain by using ap_add_filter() and simply specifying 
+ * the name.
  *
  * The filter's callback and type should be passed.
  */
@@ -260,6 +262,16 @@ API_EXPORT(apr_status_t) ap_pass_brigade(ap_filter_t *filter, ap_bucket_brigade 
 API_EXPORT(void) ap_register_input_filter(const char *name,
                                           ap_filter_func filter_func,
                                           ap_filter_type ftype);
+/*
+ * ap_register_output_filter():
+ *
+ * This function is used to register an output filter with the system. 
+ * After this registration is performed, then a filter may be added 
+ * into the filter chain by using ap_add_filter() and simply specifying 
+ * the name.
+ *
+ * The filter's callback and type should be passed.
+ */
 /**
  * Register an output filter for later use.  This allows modules to name their 
  * filter functions for later addition to a specific request
