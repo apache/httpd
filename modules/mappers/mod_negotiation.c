@@ -1067,6 +1067,18 @@ static int read_types_multi(negotiation_state *neg)
 
     apr_dir_close(dirp);
 
+    /* We found some file names that matched.  None could be served.
+     * Rather than fall out to autoindex or some other mapper, this
+     * request must die.
+     */
+    if (anymatch && !neg->avail_vars->nelts) {
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+		      "Negotiation: discovered file(s) matching request: %s"
+                      " all containing unrecognized extension(s): ", 
+                      r->filename);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
     set_vlist_validator(r, r);
 
     /* Sort the variants into a canonical order.  The negotiation
