@@ -50,9 +50,11 @@
       If one thread calls a low-level function that sets errno and then another thread checks it, we
       are bleeding error numbers from one thread into another.  To solve this, make sure your module
       or library defines _REENTRANT or is compiled with -D_REENTRANT.  This will make errno a per-thread
-      variable and should hopefully be transparent to the code.  It does this by doing something like this:
+      variable and should hopefully be transparent to the code.  It does this by doing something like this:</p>
+
 <pre>#define errno (*(__errno_location()))</pre>
-      which means that accessing errno will call __errno_location() which is provided by the libc.  Setting
+
+      <p>which means that accessing errno will call __errno_location() which is provided by the libc.  Setting
       _REENTRANT also forces redefinition of some other functions to their *_r equivalents and sometimes
       changes the common getc/putc macros into safer function calls.  Check your libc documentation for
       specifics.  Instead of, or in addition to _REENTRANT the symbols that may affect this are 
