@@ -265,17 +265,17 @@ static int status_handler(request_rec *r)
 	    if ((loc = strstr(r->args, options[i].form_data_str)) != NULL) {
 		switch (options[i].id) {
 		case STAT_OPT_REFRESH:
-			if (*(loc + strlen(options[i].form_data_str)) == '=')
+		    if (*(loc + strlen(options[i].form_data_str)) == '=')
 			table_set(r->headers_out, options[i].hdr_out_str,
 				  loc + strlen(options[i].hdr_out_str) + 1);
 		    else
 			table_set(r->headers_out, options[i].hdr_out_str, "1");
 		    break;
 		case STAT_OPT_NOTABLE:
-			no_table_report = 1;
+		    no_table_report = 1;
 		    break;
 		case STAT_OPT_AUTO:
-			r->content_type = "text/plain";
+		    r->content_type = "text/plain";
 		    short_report = 1;
 		    break;
 		}
@@ -483,34 +483,34 @@ static int status_handler(request_rec *r)
 
 		    switch (score_record.status) {
 		    case SERVER_READY:
-			    rputs("Ready", r);
+			rputs("Ready", r);
 			break;
 		    case SERVER_STARTING:
-			    rputs("Starting", r);
+			rputs("Starting", r);
 			break;
 		    case SERVER_BUSY_READ:
-			    rputs("<b>Read</b>", r);
+			rputs("<b>Read</b>", r);
 			break;
 		    case SERVER_BUSY_WRITE:
-			    rputs("<b>Write</b>", r);
+			rputs("<b>Write</b>", r);
 			break;
 		    case SERVER_BUSY_KEEPALIVE:
-			    rputs("<b>Keepalive</b>", r);
+			rputs("<b>Keepalive</b>", r);
 			break;
 		    case SERVER_BUSY_LOG:
-			    rputs("<b>Logging</b>", r);
+			rputs("<b>Logging</b>", r);
 			break;
 		    case SERVER_BUSY_DNS:
-			    rputs("<b>DNS lookup</b>", r);
+			rputs("<b>DNS lookup</b>", r);
 			break;
 		    case SERVER_DEAD:
-			    rputs("Dead", r);
+			rputs("Dead", r);
 			break;
 		    case SERVER_GRACEFUL:
-			    rputs("Graceful", r);
+			rputs("Graceful", r);
 			break;
-			default:
-			    rputs("?STATE?", r);
+		    default:
+			rputs("?STATE?", r);
 			break;
 		    }
 #ifdef NO_TIMES
@@ -550,34 +550,34 @@ static int status_handler(request_rec *r)
 
 		    switch (score_record.status) {
 		    case SERVER_READY:
-			    rputs("<td>_", r);
+			rputs("<td>_", r);
 			break;
 		    case SERVER_STARTING:
-			    rputs("<td><b>S</b>", r);
+			rputs("<td><b>S</b>", r);
 			break;
 		    case SERVER_BUSY_READ:
-			    rputs("<td><b>R</b>", r);
+			rputs("<td><b>R</b>", r);
 			break;
 		    case SERVER_BUSY_WRITE:
-			    rputs("<td><b>W</b>", r);
+			rputs("<td><b>W</b>", r);
 			break;
 		    case SERVER_BUSY_KEEPALIVE:
-			    rputs("<td><b>K</b>", r);
+			rputs("<td><b>K</b>", r);
 			break;
 		    case SERVER_BUSY_LOG:
-			    rputs("<td><b>L</b>", r);
+			rputs("<td><b>L</b>", r);
 			break;
 		    case SERVER_BUSY_DNS:
-			    rputs("<td><b>D</b>", r);
+			rputs("<td><b>D</b>", r);
 			break;
 		    case SERVER_DEAD:
-			    rputs("<td>.", r);
+			rputs("<td>.", r);
 			break;
 		    case SERVER_GRACEFUL:
-			    rputs("<td>G", r);
+			rputs("<td>G", r);
 			break;
-			default:
-			    rputs("<td>?", r);
+		    default:
+			rputs("<td>?", r);
 			break;
 		    }
 #ifdef NO_TIMES
