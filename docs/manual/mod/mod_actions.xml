@@ -15,7 +15,7 @@ media type or request method.</description>
 <summary>
     <p>This module has two directives. The <directive
     module="mod_actions">Action</directive> directive lets you run CGI
-    scripts whenever a file of a certain type is requested. The
+    scripts whenever a file of a certain MIME content type is requested. The
     <directive module="mod_actions">Script</directive> directive lets
     you run CGI scripts whenever a particular method is used in a
     request. This makes it much easier to execute scripts that process
@@ -54,7 +54,7 @@ introduced in Apache 2.1</compatibility>
     passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
     <example><title>Examples</title>
-      # Requests for files of a particular type:<br />
+      # Requests for files of a particular MIME content type:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
       # Files of a particular file extension<br />
