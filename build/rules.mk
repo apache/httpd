@@ -21,7 +21,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 ##############################################################################
-# $Id: rules.mk,v 1.2 2000/02/16 00:55:51 rbb Exp $ 
+# $Id: rules.mk,v 1.3 2000/02/17 22:32:29 rbb Exp $ 
 #
 
 include $(DEPTH)/config_vars.mk
@@ -31,7 +31,7 @@ SHLIB_SUFFIX = so
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS)
 CCLD = $(CC)
-LINK = $(LIBTOOL) --mode=link $(CCLD) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(LTFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@
 mkinstalldirs = $(abs_srcdir)/helpers/mkdir.sh
 INSTALL = $(abs_srcdir)/helpers/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644

@@ -51,5 +51,10 @@ APACHE_CHECK_STANDARD_MODULE(setenvif, , yes)
 APACHE_CHECK_STANDARD_MODULE(echo, , yes)
 
 APACHE_MODPATH_FINISH
+
+if test "$sharedobjs" = "yes"; then
+    LIBS="$LIBS -ldl"
+    LTFLAGS="$LTFLAGS -export-dynamic"
+fi
     
 APACHE_SUBST(STANDARD_LIBS)
