@@ -110,8 +110,10 @@ void make_cookie(request_rec *r)
     struct timeval tv;
     char new_cookie[100];	/* blurgh */
     char *dot;
-    const char *rname = get_remote_host(r->connection, r->per_dir_config,
-				  REMOTE_NAME);
+    const char *rname = pstrdup(r->pool, 
+				get_remote_host(r->connection, r->per_dir_config,
+						REMOTE_NAME));
+    
     struct timezone tz = { 0 , 0 };
 
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */
