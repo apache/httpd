@@ -303,7 +303,7 @@ void cache_pq_dump(cache_pqueue_t *q,
     fprintf(stdout,"posn\tleft\tright\tparent\tminchild\t...\n");
     for (i = 1; i < q->size ;i++) {
         fprintf(stdout,
-                "%d\t%d\t%d\t%d\t%d\t",
+                "%d\t%d\t%d\t%d\t%" APR_SSIZE_T_FMT "\t",
                 i,
                 left(i), right(i), parent(i),
                 minchild(q, i));
