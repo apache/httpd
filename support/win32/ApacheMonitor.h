@@ -1,4 +1,4 @@
-#define IDD_DLGSERVICES		        101
+#define IDD_DLGSERVICES                 101
 #define IDS_APMONITORTITLE              102
 #define IDS_APMONITORCLASS              103
 #define IDM_RESTORE                     104
@@ -18,6 +18,10 @@
 #define IDC_SRESTART                    118
 #define IDC_SEXIT                       119
 #define IDC_SMANAGER                    120
+#define IDD_DLGCONNECT                  121
+#define IDC_LREMOTE                     122
+#define IDC_COMPUTER                    123
+#define IDC_SCONNECT                    124
 #define IDS_MSG_FIRST                   256
 #define IDS_MSG_APPRUNNING              256
 #define IDS_MSG_ERROR                   257
@@ -39,7 +43,9 @@
 #define IDS_MSG_SSTOP                   273
 #define IDS_MSG_SRESTART                274
 #define IDS_MSG_SERVICES                275
-#define IDS_MSG_LAST                    275
+#define IDS_MSG_CONNECT                 276
+#define IDS_MSG_ECONNECT                277
+#define IDS_MSG_LAST                    277
 #define IDM_SM_SERVICE                  0x1100
 #define IDM_SM_START                    0x1200
 #define IDM_SM_STOP                     0x1400
