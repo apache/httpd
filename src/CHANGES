@@ -1,5 +1,9 @@
 Changes with Apache 1.3.29
 
+  *) Fixed mod_usertrack to not get false positive matches on the
+     user-tracking cookie's name.  PR 16661.
+     [Manni Wood <manniwood@planet-save.com>]
+
   *) Enabled RFC1413 ident functionality for both Win32 and
      NetWare platforms.  This also included an alternate thread safe
      implementation of the socket timout functionality when querying
