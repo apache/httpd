@@ -214,7 +214,7 @@ EXPORTS
 	ap_rwrite   @207
 	ap_satisfies   @208
 	ap_scan_script_header_err   @209
-	ap_scan_script_header_err_buff   @210
+
 	ap_scan_script_header_err_core   @211
 	ap_scan_script_header_err_strs   @212
 
