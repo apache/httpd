@@ -603,6 +603,7 @@ typedef quad_t rlim_t;
 #endif
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define HAVE_SYSLOG 1
+#define SYS_SIGLIST sys_siglist
 
 #elif defined(QNX)
 #ifndef crypt
