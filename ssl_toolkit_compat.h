@@ -101,8 +101,6 @@
 #define modssl_set_verify(ssl, verify, cb) \
     SSL_set_verify(ssl, verify)
 
-#else /* SSLC 1.x */
-
 #define NO_SSL_X509V3_H
 
 #endif
