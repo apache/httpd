@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/15 18:11:14 $]
+Last modified at [$Date: 2003/05/16 16:45:23 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -111,6 +111,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                 16138, 16139, 16140, 16142, 16518, 16520, 16521, 
       jerenkrantz says: need to decide how many we need to backport and/or
                         if these rise to showstopper status.
+      wrowe suggests: it would be nice to see "MUST" v.s. "SHOULD" v.s. "MAY"
+                      out of this list, without reviewing them individually.
 
     * There is a bug in how we sort some hooks, at least the pre-config
       hook.  The first time we call the hooks, they are in the correct 
