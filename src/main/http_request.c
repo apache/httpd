@@ -368,13 +368,13 @@ int directory_walk (request_rec *r)
 	    else if (!strcmp (this_dir, entry_dir))
 	        this_conf = entry_config;
 
-          if (this_conf)
-          {
-              per_dir_defaults =
-                  merge_per_dir_configs (r->pool, per_dir_defaults, this_conf);
-              core_dir =(core_dir_config *)get_module_config(per_dir_defaults,
-							   &core_module);
-          }
+	    if (this_conf) {
+	        per_dir_defaults =
+	           merge_per_dir_configs (r->pool, per_dir_defaults, this_conf);
+	        core_dir =(core_dir_config *)get_module_config(per_dir_defaults,
+	           &core_module);
+	    }
+
 	}
 
 	overrides_here = core_dir->override;
