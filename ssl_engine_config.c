@@ -510,7 +510,7 @@ const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd,
     return NULL;
 }
 
-#ifdef HAVE_ENGINE_INIT
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
 const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
                                     void *dcfg,
                                     const char *arg)
@@ -518,7 +518,7 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
     SSLModConfigRec *mc = myModConfig(cmd->server);
     const char *err;
     ENGINE *e;
-#if SSL_LIBRARY_VERSION >= 0x00907000
+#ifdef HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     static int loaded_engines = FALSE;
 
     /* early loading to make sure the engines are already 
