@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 3.0.5 (16-Apr-1997)
+**  URL Rewriting Module, Version 3.0.6 (15-Jun-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -780,6 +780,10 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg, char
     else if (   strcasecmp(key, "gone") == 0
              || strcasecmp(key, "G") == 0   ) {
         cfg->flags |= RULEFLAG_GONE;
+    }
+    else if (   strcasecmp(key, "qsappend") == 0
+             || strcasecmp(key, "QSA") == 0   ) {
+        cfg->flags |= RULEFLAG_QSAPPEND;
     }
     else {
         return pstrcat(p, "RewriteRule: unknown flag '", key, "'\n", NULL);
@@ -1561,6 +1565,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
             }
             rewritelog(r, 2, "[per-dir %s] redirect %s -> %s", perdir, r->filename, newuri);
             r->filename = pstrdup(r->pool, newuri);
+            r->status = p->forced_responsecode;
             return 1;
         }
 
@@ -1604,7 +1609,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
         reduce_uri(r);
 
         /* split out on-the-fly generated QUERY_STRING '....?xxxxx&xxxx...' */
-        splitout_queryargs(r);
+        splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
 
         /* if a MIME-type should be later forced for this URL, then remember this */
         if (p->forced_mimetype != NULL) {
@@ -1790,7 +1795,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
 **
 */
 
-static void splitout_queryargs(request_rec *r)
+static void splitout_queryargs(request_rec *r, int qsappend)
 {
     char *q;
     char *olduri;
@@ -1799,7 +1804,10 @@ static void splitout_queryargs(request_rec *r)
     if (q != NULL) {
         olduri = pstrdup(r->pool, r->filename);
         *q++ = '\0';
-        r->args = pstrcat(r->pool, q, "&", r->args, NULL);
+        if (qsappend)
+            r->args = pstrcat(r->pool, q, "&", r->args, NULL);
+        else
+            r->args = pstrdup(r->pool, q);
         if (r->args[strlen(r->args)-1] == '&')
             r->args[strlen(r->args)-1] = '\0';
         rewritelog(r, 3, "split uri=%s -> uri=%s, args=%s", olduri, r->filename, r->args);
