@@ -71,7 +71,6 @@
  */
 
 #include "apr_strings.h"
-#include "apr_md5.h"            /* for apr_password_validate */
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -107,19 +106,29 @@ static const command_rec authn_default_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authn_default_module;
 
-static int authenticate_basic_user(request_rec *r)
+static int authenticate_no_user(request_rec *r)
 {
     authn_default_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &authn_default_module);
-    const char *sent_pw;
-    int res;
 
-    if ((res = ap_get_basic_auth_pw(r, &sent_pw))) {
-       	return res;
+    const char *type;
+
+    if (!(type = ap_auth_type(r))) {
+	return DECLINED;
+    }
+
+    /* fill in the r->user field */
+    if (!strcasecmp(type, "Basic")) {
+        char *sent_pw;
+        int res;
+
+        if ((res = ap_get_basic_auth_pw(r, &sent_pw)) != OK) {
+            return res;
+        }
     }
 
     if (conf->authoritative == 0) {
-	    return DECLINED;
+	return DECLINED;
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -127,13 +136,13 @@ static int authenticate_basic_user(request_rec *r)
                   "not configured",
                   r->uri, r->user ? r->user : "<null>");
 
-    ap_note_basic_auth_failure(r);
+    ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
 }
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(authenticate_basic_user,NULL,NULL,APR_HOOK_LAST);
+    ap_hook_check_user_id(authenticate_no_user,NULL,NULL,APR_HOOK_LAST);
 }
 
 module AP_MODULE_DECLARE_DATA authn_default_module =
