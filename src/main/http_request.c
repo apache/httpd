@@ -286,7 +286,6 @@ int directory_walk(request_rec *r)
         return OK;
     }
 
-    r->filename   = os_canonical_filename(r->pool, r->filename);
     test_filename = pstrdup(r->pool, r->filename);
 
     /*
@@ -337,6 +336,7 @@ int directory_walk(request_rec *r)
         return OK;
     }
 
+    r->filename   = os_canonical_filename(r->pool, r->filename);
     no2slash(test_filename);
     num_dirs = count_dirs(test_filename);
 
