@@ -277,6 +277,6 @@ int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, reques
 int ap_proxy_garbage_init(server_rec *, apr_pool_t *);
 /* This function is called by ap_table_do() for all header lines */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
-unsigned ap_proxy_bputs2(const char *data, BUFF *client, ap_cache_el *cache);
+unsigned ap_proxy_bputs2(const char *data, apr_socket_t *client, ap_cache_el *cache);
 
 #endif /*MOD_PROXY_H*/

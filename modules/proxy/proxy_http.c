@@ -455,11 +455,15 @@ int ap_proxy_http_handler(request_rec *r, ap_cache_el *c, char *url,
     if (!r->assbackwards)
 	ap_rputs(CRLF, r);
 
+/* We don't set byte count this way anymore.  I think this can be removed
+ * cleanly now.
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
+*/
     r->sent_bodyct = 1;
 /* Is it an HTTP/0.9 response? If so, send the extra data */
     if (backasswards) {
-	ap_bwrite(r->connection->client, buffer, len, &cntr);
+        cntr = len;
+	apr_send(r->connection->client_socket, buffer, &cntr);
         cntr = len;
         if (cachefp && apr_write(cachefp, buffer, &cntr) != APR_SUCCESS) {
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
