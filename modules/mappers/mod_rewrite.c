@@ -455,8 +455,9 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
     }
     else if (strncmp(a2, "prg:", 4) == 0) {
         newmap->type = MAPTYPE_PRG;
-        newmap->datafile = a2+4;
-        newmap->checkfile = NULL;
+        apr_tokenize_to_argv(a2 + 4, &newmap->argv, cmd->pool);
+        newmap->checkfile = newmap->argv[0];
+
     }
     else if (strncmp(a2, "int:", 4) == 0) {
         newmap->type      = MAPTYPE_INT;
@@ -3404,7 +3405,7 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         }
         fpin  = NULL;
         fpout = NULL;
-        rc = rewritemap_program_child(p, map->datafile,
+        rc = rewritemap_program_child(p, map->argv[0], map->argv,
                                      &fpout, &fpin, &fperr);
         if (rc != APR_SUCCESS || fpin == NULL || fpout == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
@@ -3420,7 +3421,8 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
 }
 
 /* child process code */
-static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname,
+static apr_status_t rewritemap_program_child(apr_pool_t *p, 
+                                             const char *progname, char **argv,
                                              apr_file_t **fpout, apr_file_t **fpin,
                                              apr_file_t **fperr)
 {
@@ -3428,9 +3430,6 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
     apr_finfo_t st;
-    char **argv;
-
-    rc = apr_tokenize_to_argv(progname, &argv, p);
 
     if (((rc = apr_stat(&st, argv[0], APR_FINFO_MIN, p)) != APR_SUCCESS) ||
         ((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
