@@ -421,7 +421,7 @@ extern "C" {
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/1.3.10-dev"	/* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/1.3.10"	/* SEE COMMENTS ABOVE */
 #define SERVER_VERSION  SERVER_BASEVERSION
 enum server_token_type {
     SrvTk_MIN,		/* eg: Apache/1.3.0 */
@@ -437,7 +437,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * Always increases along the same track as the source branch.
  * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
  */
-#define APACHE_RELEASE 10310000
+#define APACHE_RELEASE 10310100
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #ifndef SERVER_SUPPORT
