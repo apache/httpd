@@ -86,6 +86,7 @@ SHLIBPATH_VAR=`$apr_config --shlib-path-var`
 APR_BINDIR=`$apr_config --bindir`
 APR_INCLUDEDIR=`$apr_config --includedir`
 APR_VERSION=`$apr_config --version`
+APR_CONFIG="$APR_BINDIR/apr-`echo ${APR_VERSION} | sed 's,\..*,,'`-config"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
@@ -109,6 +110,7 @@ APR_ADDTO(INCLUDES, `$apu_config --includes`)
 APU_BINDIR=`$apu_config --bindir`
 APU_INCLUDEDIR=`$apu_config --includedir`
 APU_VERSION=`$apu_config --version`
+APU_CONFIG="$APU_BINDIR/apu-`echo ${APU_VERSION} | sed 's,\..*,,'`-config"
 
 dnl In case we picked up CC and CPP from APR, get that info into the
 dnl config cache so that PCRE uses it.  Otherwise, CC and CPP used for
