@@ -105,7 +105,7 @@ MIME タイプによって選択</td></tr>
 <tr class="odd"><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...] <var>MIME-type</var>
 [<var>MIME-type</var>] ...</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">MIME-type に出力フィルタを割り当てる</td></tr>
 <tr><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL をファイルシステムの位置にマップする</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
@@ -494,7 +494,7 @@ header for proxied requests</td></tr>
 ...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのハンドラを
 解除する</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
+...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
 <tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
 ...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル拡張子に関連付けられた言語を解除する</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]

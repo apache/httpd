@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1.10 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -20,7 +21,6 @@
 
 <manualpage metafile="ssi.xml.meta">
 <parentdocument href="./">How-To / チュートリアル</parentdocument>
-<!-- English revision: 1.8 -->
 
 <title>Apache チュートリアル: Server Side Includes 入門</title>
 
