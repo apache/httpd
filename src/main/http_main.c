@@ -883,6 +883,7 @@ static void usage(char *bin)
 #ifdef SHARED_CORE
     fprintf(stderr, "  -L directory     : specify an alternate location for shared object files\n");
 #endif
+    fprintf(stderr, "  -D name          : define a name for use in <IfDefine name> directives\n");
     fprintf(stderr, "  -d directory     : specify an alternate initial ServerRoot\n");
     fprintf(stderr, "  -f file          : specify an alternate ServerConfigFile\n");
     fprintf(stderr, "  -C \"directive\"   : process directive before reading config files\n");
