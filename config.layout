@@ -1,0 +1,39 @@
+##
+##  config.layout -- APACI Pre-defined Installation Path Layouts
+##  (selectable with APACI's --with-layout=ID option)
+##
+
+#   Classical Apache path layout
+<Layout Apache>
+    prefix:        /usr/local/apache
+    exec_prefix:   $prefix
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/bin
+    libexecdir:    $exec_prefix/libexec
+    mandir:        $prefix/man
+    sysconfdir:    $prefix/conf
+    datadir:       $prefix
+    includedir:    $prefix/include
+    localstatedir: $prefix
+    runtimedir:    $localstatedir/logs
+    logfiledir:    $localstatedir/logs
+    proxycachedir: $localstatedir/proxy
+</Layout>
+
+#   GNU standards conforming path layout
+<Layout GNU>
+    prefix:        /usr/local
+    exec_prefix:   $prefix
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/sbin
+    libexecdir:    $exec_prefix/libexec
+    mandir:        $prefix/man
+    sysconfdir:    $prefix/etc
+    datadir:       $prefix/share
+    includedir:    $prefix/include
+    localstatedir: $prefix/var
+    runtimedir:    $localstatedir/run
+    logfiledir:    $localstatedir/log
+    proxycachedir: $localstatedir/proxy
+</Layout>
+

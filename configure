@@ -76,6 +76,8 @@ aux=src/helpers
 sedsubst=src/.apaci.sedsubst
 addconf=src/.apaci.addconf
 tplconf=src/.apaci.tplconf
+pldconf=src/.apaci.pldconf
+configlayout=config.layout
 configstatus=config.status
 
 ##
@@ -170,19 +172,7 @@ if [ ".$TARGET" = . ]; then
 fi
 
 #   default paths
-prefix='/usr/local/apache'
-exec_prefix='$prefix'
-bindir='$exec_prefix/bin'
-sbindir='$exec_prefix/sbin'
-libexecdir='$exec_prefix/libexec'
-mandir='$prefix/man'
-sysconfdir='$prefix/etc'
-datadir='$prefix/share'
-includedir='$prefix/include'
-localstatedir='$prefix/var'
-runtimedir='$localstatedir/run'
-logfiledir='$localstatedir/log'
-proxycachedir='$localstatedir/proxy'
+prefix=UNSET
 
 #   customization flags for
 #   automatic "apache" suffix 
@@ -191,8 +181,9 @@ customized_datadir=0
 customized_localstatedir=0
 customized_includedir=0
 
-#   check and debug
-layout=0
+#   layout configuration
+with_layout=0
+show_layout=0
 
 #   suexec defaults
 suexec=0
@@ -396,24 +387,26 @@ do
             echo ""
             echo "Stand-alone options:"
             echo " --help, -h             print this message"
-            echo " --layout               print installation layout (check and debug)"
+            echo " --show-layout          print installation path layout (check and debug)"
+            echo " --layout               backward compat use --show-layout"
             echo ""
             echo "Installation layout options:"
-	    echo " --target=TARGET        install server executable and associated files using basename TARGET"
+            echo " --with-layout=[F:]ID   use installation path layout ID (from file F)"
+            echo " --target=TARGET        install server executable and associated files using basename TARGET"
             echo " --prefix=PREFIX        install architecture-independent files in PREFIX"
             echo " --exec-prefix=EPREFIX  install architecture-dependent files in EPREFIX"
-            echo " --bindir=DIR           install user     executables in DIR  [EPREFIX/bin]"
-            echo " --sbindir=DIR          install sysadmin executables in DIR  [EPREFIX/sbin]"
-            echo " --libexecdir=DIR       install program  executables in DIR  [EPREFIX/libexec]"
-            echo " --mandir=DIR           install manual pages in DIR          [PREFIX/man]"
-            echo " --sysconfdir=DIR       install configuration files in DIR   [PREFIX/etc]"
-            echo " --datadir=DIR          install read-only  data files in DIR [PREFIX/share]"
-            echo " --includedir=DIR       install includes files in DIR        [PREFIX/include]"
-            echo " --localstatedir=DIR    install modifiable data files in DIR [PREFIX/var]"
-            echo " --runtimedir=DIR       install runtime data in DIR          [PREFIX/var/run]"
-            echo " --logfiledir=DIR       install logfile data in DIR          [PREFIX/var/log]"
-            echo " --proxycachedir=DIR    install proxy cache data in DIR      [PREFIX/var/proxy]"
-            echo " --compat               install with old Apache 1.2 installation paths"
+            echo " --bindir=DIR           install user     executables in DIR"
+            echo " --sbindir=DIR          install sysadmin executables in DIR"
+            echo " --libexecdir=DIR       install program  executables in DIR"
+            echo " --mandir=DIR           install manual pages in DIR"
+            echo " --sysconfdir=DIR       install configuration files in DIR"
+            echo " --datadir=DIR          install read-only  data files in DIR"
+            echo " --includedir=DIR       install includes files in DIR"
+            echo " --localstatedir=DIR    install modifiable data files in DIR"
+            echo " --runtimedir=DIR       install runtime data in DIR"
+            echo " --logfiledir=DIR       install logfile data in DIR"
+            echo " --proxycachedir=DIR    install proxy cache data in DIR"
+            echo " --compat               backward compat use --with-layout=Apache"
             echo ""
             echo "Configuration options:"
             echo " --enable-rule=NAME     enable  a particular Rule named 'NAME'"
@@ -443,12 +436,48 @@ do
             echo ""
             exit 0
             ;;
-        --layout)
-            layout=1
+        --with-layout=*|--compat)
+            case $apc_optarg in
+                *:* ) 
+                    file=`echo $apc_optarg | sed -e 's/:.*//'`
+                    name=`echo $apc_optarg | sed -e 's/.*://'`
+                    ;;
+                * ) 
+		    if [ ".$apc_option" = ".--compat" ]; then
+			name=Apache
+		    else
+			name=$apc_optarg
+		    fi
+		    file=$configlayout
+                    ;;
+            esac
+            if [ ! -f "$file" ]; then
+                echo "configure:Error: Path layout definition file $file not found" 1>&2
+                exit 1
+            fi
+            sed -e "1,/[ 	]*<[Ll]ayout[ 	]*$name[ 	]*>[ 	]*/d" \
+                -e '/[ 	]*<\/Layout>[ 	]*/,$d' \
+				-e "s/^[ 	]*//g" \
+				-e "s/:[ 	]*/=\'/g" \
+				-e "s/[ 	]*$/'/g" \
+                $file >$pldconf
+            . $pldconf
+            rm -f $pldconf 2>/dev/null
+            if [ ".$prefix" = .UNSET ]; then
+                echo "configure:Error: Path layout definition not found or incorrect" 1>&2
+                exit 1
+            fi
+            if [ ".$quiet" = .no ]; then
+                echo " + using installation path layout: $name ($file)"
+            fi
+            with_layout=1
             ;;
-	--target=*)
-	    TARGET="$apc_optarg"
-	    ;;
+        --layout|--show-layout)
+            show_layout=1
+            ;;
+        --target=*)
+            TARGET="$apc_optarg"
+            ;;
         --prefix=*)
             prefix="$apc_optarg"
             ;;
@@ -491,24 +520,6 @@ do
             ;;
         --proxycachedir=*) 
             proxycachedir="$apc_optarg" 
-            ;;
-        --compat) 
-            exec_prefix='$prefix'
-            bindir='$exec_prefix/bin'
-            sbindir='$exec_prefix/bin'
-            libexecdir='$exec_prefix/libexec'
-            mandir='$prefix/man'
-            sysconfdir='$prefix/conf'
-            datadir='$prefix'
-            includedir='$prefix/include'
-            localstatedir='$prefix'
-            runtimedir='$localstatedir/logs'
-            logfiledir='$localstatedir/logs'
-            proxycachedir='$localstatedir/proxy'
-            customized_sysconfdir=1
-            customized_datadir=1
-            customized_localstatedir=1
-            customized_includedir=1
             ;;
         --add-module=*) 
             file="$apc_optarg"
@@ -798,6 +809,12 @@ if [ ".$suexec" = .1 ]; then
         exit 1
     fi
 fi
+if [ ".$with_layout" = .0 ]; then
+    echo "configure:Error: Please select an installation path layout with"
+    echo "                 the --with-layout=[FILE:]ID option. Use 'Apache' or"
+    echo "                 'GNU' for ID to select the two predefined layouts."
+    exit 1
+fi
 
 ##
 ##  a few warnings
@@ -896,7 +913,7 @@ libexecdir_relative=`echo $libexecdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/
 ##
 ##  check and debug
 ##
-if [ ".$layout" = .1 ]; then
+if [ ".$show_layout" = .1 ]; then
     echo ""
     echo "Installation paths:"
     echo "               prefix: $prefix"
