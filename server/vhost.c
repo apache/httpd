@@ -744,21 +744,15 @@ static void fix_hostname(request_rec *r)
      * already; otherwise, further validation is needed 
      */
     if (r->hostname[0] != '[') {
-        dst = host;
-        while (*dst) {
-            if (!apr_isalnum(*dst) && *dst != '-') {
-                if (*dst == '.') {
-                    dst++;
-                    if (*dst == '.')
-                        goto bad;
-                    else
-                        continue;
-                }
-                goto bad;
-            }
-            else {
-                dst++;
-            }
+        for (dst = host; *dst; dst++) {
+	    if (*dst == '.') {
+		dst++;
+		if (*dst == '.')
+		    goto bad;
+	    }
+	    else if (*dst == '/' || *dst == '\\') {
+		goto bad;
+	    }
         }
         /* strip trailing gubbins */
         if (dst > host && dst[-1] == '.') {
