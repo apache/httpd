@@ -742,6 +742,7 @@ typedef struct http_filter_ctx {
         BODY_LENGTH,
         BODY_CHUNK
     } state;
+    int eos_sent;
 } http_ctx_t;
 
 /* This is the HTTP_INPUT filter for HTTP requests and responses from 
@@ -769,6 +770,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->state = BODY_NONE;
         ctx->remaining = 0;
         ctx->limit_used = 0;
+        ctx->eos_sent = 0;
 
         /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter. 
@@ -817,6 +819,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 APR_BRIGADE_INSERT_TAIL(bb, e);
                 e = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
+                ctx->eos_sent = 1;
                 return ap_pass_brigade(f->r->output_filters, bb);
             }
         }
@@ -835,6 +838,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         if (ctx->state == BODY_NONE && f->r->proxyreq != PROXYREQ_RESPONSE) {
             e = apr_bucket_eos_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(b, e);
+            ctx->eos_sent = 1;
             return APR_SUCCESS;
         }
 
@@ -886,6 +890,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 APR_BRIGADE_INSERT_TAIL(bb, e);
                 e = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
+                ctx->eos_sent = 1;
                 return ap_pass_brigade(f->r->output_filters, bb);
             }
 
@@ -895,23 +900,26 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 ap_get_mime_headers(f->r);
                 e = apr_bucket_eos_create(f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(b, e);
+                ctx->eos_sent = 1;
                 return APR_SUCCESS;
             }
         } 
     }
 
+    if (ctx->eos_sent) {
+        e = apr_bucket_eos_create(f->c->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(b, e);
+        return APR_SUCCESS;
+    }
+        
     if (!ctx->remaining) {
         switch (ctx->state) {
         case BODY_NONE:
-            if (f->r->proxyreq != PROXYREQ_RESPONSE) {
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(b, e);
-                return APR_SUCCESS;
-            }
             break;
         case BODY_LENGTH:
             e = apr_bucket_eos_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(b, e);
+            ctx->eos_sent = 1;
             return APR_SUCCESS;
         case BODY_CHUNK:
             {
@@ -950,6 +958,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     APR_BRIGADE_INSERT_TAIL(bb, e);
                     e = apr_bucket_eos_create(f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(bb, e);
+                    ctx->eos_sent = 1;
                     return ap_pass_brigade(f->r->output_filters, bb);
                 }
 
@@ -959,6 +968,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     ap_get_mime_headers(f->r);
                     e = apr_bucket_eos_create(f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(b, e);
+                    ctx->eos_sent = 1;
                     return APR_SUCCESS;
                 }
             }
@@ -1010,6 +1020,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             APR_BRIGADE_INSERT_TAIL(bb, e);
             e = apr_bucket_eos_create(f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
+            ctx->eos_sent = 1;
             return ap_pass_brigade(f->r->output_filters, bb);
         }
     }
