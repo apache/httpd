@@ -770,6 +770,9 @@ API_EXPORT(request_rec *) ap_sub_req_method_uri(const char *method,
     rnew->htaccess       = r->htaccess;
     rnew->per_dir_config = r->server->lookup_defaults;
 
+    /* start with the same set of output filters */
+    rnew->filters = r->filters;
+
     ap_set_sub_req_protocol(rnew, r);
 
     /* would be nicer to pass "method" to ap_set_sub_req_protocol */
@@ -857,6 +860,9 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     rnew->request_config = ap_create_request_config(rnew->pool);
     rnew->htaccess       = r->htaccess;
     rnew->chunked        = r->chunked;
+
+    /* start with the same set of output filters */
+    rnew->filters = r->filters;
 
     ap_set_sub_req_protocol(rnew, r);
     fdir = ap_make_dirstr_parent(rnew->pool, r->filename);
@@ -961,16 +967,22 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
 API_EXPORT(int) ap_run_sub_req(request_rec *r)
 {
-#ifndef APACHE_XLATE
-    int retval = ap_invoke_handler(r);
-#else /*APACHE_XLATE*/
-    /* Save the output conversion setting of the caller across subrequests */
     int retval;
-    ap_xlate_t *saved_xlate;
 
-    ap_bgetopt(r->connection->client, BO_WXLATE, &saved_xlate);
-    retval  = ap_invoke_handler(r);
-    ap_bsetopt(r->connection->client, BO_WXLATE, &saved_xlate);
+    /* see comments in process_request_internal() */
+    ap_run_insert_filter(r);
+
+#ifndef APACHE_XLATE
+    retval = ap_invoke_handler(r);
+#else /*APACHE_XLATE*/
+    {
+        /* Save the output conversion setting across subrequests */
+        ap_xlate_t *saved_xlate;
+
+        ap_bgetopt(r->connection->client, BO_WXLATE, &saved_xlate);
+        retval  = ap_invoke_handler(r);
+        ap_bsetopt(r->connection->client, BO_WXLATE, &saved_xlate);
+    }
 #endif /*APACHE_XLATE*/
     ap_finalize_sub_req_protocol(r);
     return retval;
