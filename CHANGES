@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) Fix streaming output from an nph- CGI script.  CGI:IRC now
+     works.  PR 8482  [Jeff Trawick]
+
   *) More accurate logging of bytes sent in mod_logio when
      the client terminates the connection before the response
      is completely sent  [Bojan Smojver <bojan@rexursive.com>]
