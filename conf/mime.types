@@ -70,7 +70,7 @@ multipart/appledouble
 multipart/digest
 multipart/mixed
 multipart/parallel
-text/html                      html
+text/html                      html htm
 text/plain                     txt
 text/richtext                  rtx             
 text/tab-separated-values      tsv             
