@@ -117,7 +117,9 @@
  * literal characters copied into the log files, and '%' directives as
  * follows:
  *
- * %...b:  bytes sent, excluding HTTP headers.
+ * %...B:  bytes sent, excluding HTTP headers.
+ * %...b:  bytes sent, excluding HTTP headers in CLF format, i.e. a '-'
+ *         when no bytes where sent (rather than a '0'.
  * %...{FOOBAR}e:  The contents of the environment variable FOOBAR
  * %...f:  filename
  * %...h:  remote host
@@ -141,6 +143,8 @@
  * %...U:  the URL path requested.
  * %...v:  the configured name of the server (i.e. which virtual host?)
  * %...V:  the server name according to the UseCanonicalName setting
+ * %...m:  the request method
+ * %...h:  the request protocol
  *
  * The '...' can be nothing at all (e.g. "%h %u %r %s %b"), or it can
  * indicate conditions for inclusion of the item (which will cause it
@@ -334,12 +338,20 @@ static const char *log_request_uri(request_rec *r, char *a)
 {
     return r->uri;
 }
+static const char *log_request_method(request_rec *r, char *a)
+{
+    return r->method;
+}
+static const char *log_request_protocol(request_rec *r, char *a)
+{
+    return r->protocol;
+}
 static const char *log_status(request_rec *r, char *a)
 {
     return pfmt(r->pool, r->status);
 }
 
-static const char *log_bytes_sent(request_rec *r, char *a)
+static const char *clf_log_bytes_sent(request_rec *r, char *a)
 {
     if (!r->sent_bodyct) {
         return "-";
@@ -350,6 +362,19 @@ static const char *log_bytes_sent(request_rec *r, char *a)
 	return ap_psprintf(r->pool, "%ld", bs);
     }
 }
+
+static const char *log_bytes_sent(request_rec *r, char *a)
+{
+    if (!r->sent_bodyct) {
+        return "0";
+    }
+    else {
+        long int bs;
+        ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
+	return ap_psprintf(r->pool, "%ld", bs);
+    }
+}
+
 
 static const char *log_header_in(request_rec *r, char *a)
 {
@@ -480,7 +505,10 @@ static struct log_item_list {
         's', log_status, 1
     },
     {
-        'b', log_bytes_sent, 0
+        'b', clf_log_bytes_sent, 0
+    },
+    {
+        'B', log_bytes_sent, 0
     },
     {
         'i', log_header_in, 0
@@ -505,6 +533,12 @@ static struct log_item_list {
     },
     {
         'P', log_child_pid, 0
+    },
+    {
+        'H', log_request_protocol, 0
+    },
+    {
+        'm', log_request_method, 0
     },
     {
         '\0'
