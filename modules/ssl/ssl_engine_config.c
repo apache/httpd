@@ -373,7 +373,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
     const char *err;
     SSLModConfigRec *mc = myModConfig(cmd->server);
     /* Split arg_ into meth and file */
-    char *meth = apr_pstrdup(cmd->server->process->pool, arg_);
+    char *meth = apr_pstrdup(cmd->temp_pool, arg_);
     char *file = strchr(meth, ':');
     if (file) {
         *(file++) = '\0';
@@ -423,7 +423,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
 #if APR_HAS_POSIXSEM_SERIALIZE
     else if (!strcasecmp(meth, "posixsem")) {
         mc->nMutexMech = APR_LOCK_POSIXSEM;
-        mc->szMutexFile = file;
+        mc->szMutexFile = apr_pstrdup(cmd->server->process->pool, file);
         file = NULL;
     }
 #endif
@@ -451,7 +451,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
         /* Posix/SysV semaphores aren't file based, use the literal name 
          * if provided and fall back on APR's default if not.
          */
-        mc->szMutexFile = file;
+        mc->szMutexFile = apr_pstrdup(cmd->server->process->pool, file);
         file = NULL;
     }
 #endif
@@ -465,7 +465,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
      * are looking to use
      */
     if (file) {
-        mc->szMutexFile = ap_server_root_relative(cmd->pool, file);
+        mc->szMutexFile = ap_server_root_relative(cmd->server->process->pool, file);
         if (!mc->szMutexFile) {
             return apr_pstrcat(cmd->pool, "Invalid SSLMutex ", meth, 
                                ": filepath ", file, NULL);
