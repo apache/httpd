@@ -64,6 +64,7 @@
 #include "http_core.h"		/* for get_remote_host */ 
 #include "http_connection.h"
 #include "apr_portable.h"
+#include "apr_thread_proc.h"
 #include "apr_getopt.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
@@ -1554,32 +1555,48 @@ static int send_listeners_to_child(apr_pool_t *p, DWORD dwProcessId, HANDLE hPip
 static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_event, 
                           DWORD *child_pid)
 {
-    int rv;
-    char buf[1024];
-    char *pCommand;
+    apr_pool_t *ptemp;
+    char *cmd;
+    HANDLE hExitEvent;
+    HANDLE hPipeWrite;
+#ifdef CP
     char *pEnvVar;
     char *pEnvBlock;
     int i;
     int iEnvBlockLen;
+    int rv;
+    char buf[1024];
     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
     PROCESS_INFORMATION pi;   /* filled in on call to CreateProcess */
     HANDLE hDup;
     HANDLE hPipeRead;
-    HANDLE hPipeWrite;
     HANDLE hNullOutput;
     HANDLE hShareError;
-    HANDLE hExitEvent;
     HANDLE hCurrentProcess = GetCurrentProcess();
     SECURITY_ATTRIBUTES sa;
-
     sa.nLength = sizeof(sa);
     sa.bInheritHandle = TRUE;
     sa.lpSecurityDescriptor = NULL;
+#else
+    apr_status_t rv;
+    apr_procattr_t *attr;
+    apr_file_t *child_out;
+    apr_file_t *child_err;
+    apr_proc_t new_child;
+    /* These NEVER change for the lifetime of this parent 
+     */
+    static char **args = NULL;
+    static char **env = NULL;
+    static char pidbuf[28];
+    char *cwd;
+#endif
+    apr_pool_sub_make(&ptemp, p, NULL);
 
     /* Build the command line. Should look something like this:
      * C:/apache/bin/apache.exe -f ap_server_confname 
      * First, get the path to the executable...
      */
+#ifdef CP
     rv = GetModuleFileName(NULL, buf, sizeof(buf));
     if (rv == sizeof(buf)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, ERROR_BAD_PATHNAME, ap_server_conf,
@@ -1592,11 +1609,46 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     }
 
     /* Build the command line */
-    pCommand = apr_psprintf(p, "\"%s\"", buf);  
+    cmd = apr_psprintf(ptemp, "\"%s\"", buf);  
     for (i = 1; i < ap_server_conf->process->argc; i++) {
-        pCommand = apr_pstrcat(p, pCommand, " \"", ap_server_conf->process->argv[i], "\"", NULL);
+        cmd = apr_pstrcat(ptemp, cmd, " \"", ap_server_conf->process->argv[i], "\"", NULL);
+    }
+#else
+    apr_procattr_create(&attr, ptemp);
+    apr_procattr_cmdtype_set(attr, APR_PROGRAM);
+    apr_procattr_detach_set(attr, 1);
+    if (((rv = apr_filepath_get(&cwd, 0, ptemp)) != APR_SUCCESS)
+           || ((rv = apr_procattr_dir_set(attr, cwd)) != APR_SUCCESS)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Parent: Failed to get the current path");
     }
 
+    if (!args) {
+        /* Build the args array, only once since it won't change 
+         * for the lifetime of this parent process.
+         */
+        if ((rv = ap_os_proc_filepath(&cmd, ptemp))
+                != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, ERROR_BAD_PATHNAME, ap_server_conf,
+                         "Parent: Failed to get full path of %s", 
+                         ap_server_conf->process->argv[0]);
+            apr_pool_destroy(ptemp);
+            return -1;
+        }
+        
+        args = malloc((ap_server_conf->process->argc + 1) * sizeof (char*));
+        memcpy(args + 1, ap_server_conf->process->argv + 1, 
+               (ap_server_conf->process->argc - 1) * sizeof (char*));
+        args[0] = malloc(strlen(cmd) + 1);
+        strcpy(args[0], cmd);
+        args[ap_server_conf->process->argc] = NULL;
+    }
+    else {
+        cmd = args[0];
+    }
+#endif
+
+#ifdef CP
     /* Create a pipe to send socket info to the child */
     if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
@@ -1663,21 +1715,65 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     else {
         hShareError = GetStdHandle(STD_ERROR_HANDLE);
     }
+#else
+    /* Create a pipe to send handles to the child */
+    if ((rv = apr_procattr_io_set(attr, APR_FULL_BLOCK, 
+                                  APR_NO_PIPE, APR_NO_PIPE)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                        "Parent: Unable to create child stdin pipe.\n");
+        apr_pool_destroy(ptemp);
+        return -1;
+    }
+
+    /* Open a null handle to soak info from the child */
+    if (((rv = apr_file_open(&child_out, "NUL", APR_READ | APR_WRITE, 
+                             APR_OS_DEFAULT, ptemp)) != APR_SUCCESS)
+        || ((rv = apr_procattr_child_out_set(attr, child_out, NULL)) 
+                != APR_SUCCESS)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                        "Parent: Unable to connect child stdout to NUL.\n");
+        apr_pool_destroy(ptemp);
+        return -1;
+    }
+
+    /* Connect the child's initial stderr to our main server error log 
+     * or share our own stderr handle.
+     */
+    if (ap_server_conf->error_log) {
+        child_err = ap_server_conf->error_log;
+    }
+    else {
+        rv = apr_file_open_stderr(&child_err, ptemp);
+    }
+    if (((rv) != APR_SUCCESS)
+            || ((rv = apr_procattr_child_out_set(attr, child_err, NULL))
+                    != APR_SUCCESS)) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                        "Parent: Unable to connect child stderr to log.\n");
+        apr_pool_destroy(ptemp);
+        return -1;
+    }
+#endif
 
     /* Create the child_exit_event */
     hExitEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!hExitEvent) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Could not create exit event for child process");
+#ifdef CP
         CloseHandle(hPipeWrite);
         CloseHandle(hPipeRead);
         CloseHandle(hNullOutput);
         if (GetStdHandle(STD_ERROR_HANDLE) != hShareError) {
             CloseHandle(hShareError);
         }
+#else
+        apr_pool_destroy(ptemp);
+#endif
         return -1;
     }
-    
+
+#ifdef CP
     /*
      * Build the environment
      * Win32's CreateProcess call requires that the environment
@@ -1701,7 +1797,25 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         i++;
     }
     pEnvVar = '\0';
+#else
+    if (!env) 
+    {
+        /* Build the env array, only once since it won't change 
+         * for the lifetime of this parent process.
+         */
+        int envc;
+        for (envc = 0; _environ[envc]; ++envc) {
+            ;
+        }
+        env = malloc((envc + 2) * sizeof (char*));
+        memcpy(env, _environ, envc * sizeof (char*));
+        apr_snprintf(pidbuf, sizeof(pidbuf), "AP_PARENT_PID=%i", parent_pid);
+        env[envc] = pidbuf;
+        env[envc + 1] = NULL;
+    }
+#endif
 
+#ifdef CP
     /* Give the read end of the pipe (hPipeRead) to the child as stdin. The 
      * parent will write the socket data to the child on this pipe.
      */
@@ -1742,7 +1856,19 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         CloseHandle(pi.hProcess);
         return -1;
     }
+#else
+    rv = apr_proc_create(&new_child, cmd, args, env, attr, ptemp);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                     "Parent: Failed to create the child process.");
+        apr_pool_destroy(ptemp);
+        CloseHandle(hExitEvent);
+        CloseHandle(new_child.hproc);
+        return -1;
+    }
+#endif
 
+#ifdef CP
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", pi.dwProcessId);
 
@@ -1787,6 +1913,53 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     *child_proc = pi.hProcess;
     *child_exit_event = hExitEvent;
     *child_pid = pi.dwProcessId;
+#else
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+                 "Parent: Created child process %d", new_child.pid);
+
+    /* Temporary until send_handles and send_listeners accept an apr_file_t */
+    apr_os_file_get(&hPipeWrite, new_child.in);
+
+    if (send_handles_to_child(p, hExitEvent, new_child.hproc, hPipeWrite)) {
+        /*
+         * This error is fatal, mop up the child and move on
+         * We toggle the child's exit event to cause this child 
+         * to quit even as it is attempting to start.
+         */
+        SetEvent(hExitEvent);
+        apr_pool_destroy(ptemp);
+        CloseHandle(hExitEvent);
+        CloseHandle(new_child.hproc);
+        return -1;
+    }
+
+    /* Important:
+     * Give the child process a chance to run before dup'ing the sockets.
+     * We have already set the listening sockets noninheritable, but if 
+     * WSADuplicateSocket runs before the child process initializes
+     * the listeners will be inherited anyway.
+     *
+     * XXX: This is badness; needs some mutex interlocking
+     */
+    Sleep(1000);
+
+    if (send_listeners_to_child(p, new_child.pid, hPipeWrite)) {
+        /*
+         * This error is fatal, mop up the child and move on
+         * We toggle the child's exit event to cause this child 
+         * to quit even as it is attempting to start.
+         */
+        SetEvent(hExitEvent);
+        apr_pool_destroy(ptemp);
+        CloseHandle(hExitEvent);
+        CloseHandle(new_child.hproc);
+        return -1;
+    }
+
+    *child_exit_event = hExitEvent;
+    *child_proc = new_child.hproc;
+    *child_pid = new_child.pid;
+#endif
 
     return 0;
 }
