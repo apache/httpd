@@ -68,7 +68,10 @@
  *
  */
 
+#include "apr.h"
 #include "ap_config.h"
+#include "suexec.h"
+
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -81,8 +84,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-
-#include "suexec.h"
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>
