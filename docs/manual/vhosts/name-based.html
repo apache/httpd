@@ -21,48 +21,52 @@
 
 <H2>Name-based vs. IP-based virtual hosts</H2>
 
-<P>While the approach with IP-based virtual hosts works very well,
-it is not the most elegant solution, because a dedicated IP address
-is needed for every virtual host and it is hard to implement on some
-machines. The <CODE>HTTP/1.1</CODE> protocol contains a method for the
-server to identify what name it is being addressed as. Apache 1.1 and
-later support this approach as well as the traditional
-IP-address-per-hostname method.</P>
+<P>Early versions of HTTP (like many other protocols, e.g. FTP)
+required a different IP address for each virtual host on the server.
+On some platforms this can limit the number of virtual hosts you can
+run, and because there are concerns about the availability of IP
+addresses it is strongly discouraged by the registraries (ARIN, RIPE,
+and APNIC).</P>
 
-<P>The benefits of using the new name-based virtual host support is a
-practically unlimited number of servers, ease of configuration and use, and
-requires no additional hardware or software. 
-The main disadvantage is that the client must support this part of the
-protocol. The latest versions of most browsers do, but there are still
-old browsers in use who do not. This can cause problems, although a possible
+<P>The <CODE>HTTP/1.1</CODE> protocol, and a common extension to
+<CODE>HTTP/1.0</CODE>, includes a method for the server to identify
+what name it is being addressed as. Apache 1.1 and later support this
+approach as well as the old IP-address-per-hostname method.</P>
+
+<P>The benefits of using the name-based virtual hosts is a practically
+unlimited number of servers, ease of configuration and use, and
+requires no additional hardware or software. The main disadvantage is
+that the client must support this part of the protocol. Almost all
+browsers do, but there are still tiny numbers of very old browsers in
+use which do not. This can cause problems, although a possible
 solution is addressed below.</P>
 
-<H2>Using non-IP Virtual Hosts</H2>
+<H2>Using name-based virtual hosts</H2>
 
-<P>Using the new virtual hosts is quite easy, and superficially looks
+<P>Using name-based virtual hosts is quite easy, and superficially looks
 like the old method. The notable difference between IP-based and
 name-based virtual host configuration is the
 <A HREF="../mod/core.html#namevirtualhost"><CODE>NameVirtualHost</CODE></A>
 directive which specifies an IP address that should be used as a
-target for name-based virtual hosts.</P>
+target for name-based virtual hosts, or the wildcard <CODE>*</CODE> to
+indicate that the server only does name-based virtual hosting (no
+IP-based virtual hosting).</P>
 
 <P>For example, suppose that both <SAMP>www.domain.tld</SAMP> and
-<SAMP>www.otherdomain.tld</SAMP> point at the IP address
-<SAMP>111.22.33.44</SAMP>.  Then you simply add to one of the Apache
-configuration files (most likely <CODE>httpd.conf</CODE> or
-<CODE>srm.conf</CODE>) code similar to the following:</P>
-
-
+<SAMP>www.otherdomain.tld</SAMP> point at the IP address of your
+server. Then you simply add to one of the Apache configuration files
+(most likely <CODE>httpd.conf</CODE> or <CODE>srm.conf</CODE>) code
+similar to the following:</P>
 
 <PRE>
-    NameVirtualHost 111.22.33.44
+    NameVirtualHost *
 
-    &lt;VirtualHost 111.22.33.44&gt;
+    &lt;VirtualHost *&gt;
     ServerName www.domain.tld
     DocumentRoot /www/domain
     &lt;/VirtualHost&gt;
 
-    &lt;VirtualHost 111.22.33.44&gt;
+    &lt;VirtualHost *&gt;
     ServerName www.otherdomain.tld
     DocumentRoot /www/otherdomain
     &lt;/VirtualHost&gt;
@@ -72,12 +76,13 @@ configuration files (most likely <CODE>httpd.conf</CODE> or
 into the <CODE>&lt;VirtualHost&gt;</CODE> section. To make this work,
 all that is needed is to make sure that the names
 <SAMP>www.domain.tld</SAMP> and <SAMP>www.otherdomain.tld</SAMP>
-are pointing to the IP address <SAMP>111.22.33.44</SAMP></P>
+are pointing to the right IP address.
 
 <P>Note: When you specify an IP address in a <CODE>NameVirtualHost</CODE>
 directive then requests to that IP address will only ever be served
 by matching &lt;VirtualHost&gt;s.  The "main server" will
 <STRONG>never</STRONG> be served from the specified IP address.
+If you specify a wildcard then the "main server" isn't used at all.
 If you start to use virtual hosts you should stop using the "main server"
 as an independent server and rather use it as a place for
 configuration directives that are common for all your virtual hosts.
