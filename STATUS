@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/11 01:47:43 $]
+Last modified at [$Date: 2003/10/11 21:10:46 $]
 
 Release:
 
@@ -61,7 +61,7 @@ Contributors looking for a mission:
 
 RELEASE SHOWSTOPPERS:
 
-PATCHES TO PORT FROM 2.1
+PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
