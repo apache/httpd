@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/01 18:06:43 $]
+Last modified at [$Date: 2004/03/01 22:01:48 $]
 
 Release:
 
@@ -79,6 +79,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) core, protocol: Remove compile-time length limit on request strings. Length is
+       now enforced solely with the LimitRequestLine config directive.
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.263&r2=1.264
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.145&r2=1.146
+      +1:  rederpj
 
     * Win32 mpm: Fix broken find_ready_listener in Win32DisableAcceptEx path
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/child.c?r1=1.29&r2=1.30
