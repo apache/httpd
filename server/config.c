@@ -258,7 +258,7 @@ AP_CORE_DECLARE(ap_conf_vector_t*) ap_merge_per_dir_configs(apr_pool_t *p,
 	merger_func df = modp->merge_dir_config;
 	int i = modp->module_index;
 
-	if (df && new_vector[i])
+	if (df && new_vector[i] && base_vector[i])
 	    conf_vector[i] = (*df) (p, base_vector[i], new_vector[i]);
 	else
 	    conf_vector[i] = new_vector[i] ? new_vector[i] : base_vector[i];
