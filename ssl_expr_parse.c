@@ -818,9 +818,9 @@ case 23:
 case 24:
 #line 148 "ssl_expr_parse.y"
 { 
-                regex_t *regex;
+                ap_regex_t *regex;
                 if ((regex = ap_pregcomp(ssl_expr_info.pool, ssl_expr_yyvsp[0].cpVal, 
-                                         REG_EXTENDED|REG_NOSUB)) == NULL) {
+                                         AP_REG_EXTENDED|AP_REG_NOSUB)) == NULL) {
                     ssl_expr_error = "Failed to compile regular expression";
                     YYERROR;
                     regex = NULL;
@@ -831,9 +831,9 @@ case 24:
 case 25:
 #line 158 "ssl_expr_parse.y"
 {
-                regex_t *regex;
+                ap_regex_t *regex;
                 if ((regex = ap_pregcomp(ssl_expr_info.pool, ssl_expr_yyvsp[0].cpVal, 
-                                         REG_EXTENDED|REG_NOSUB|REG_ICASE)) == NULL) {
+                                         AP_REG_EXTENDED|AP_REG_NOSUB|AP_REG_ICASE)) == NULL) {
                     ssl_expr_error = "Failed to compile regular expression";
                     YYERROR;
                     regex = NULL;
