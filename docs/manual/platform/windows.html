@@ -35,9 +35,8 @@
   <LI><A HREF="#run">Running Apache for Windows</A>
   <LI><A HREF="#use">Using Apache for Windows</A>
   <LI><A HREF="#cmdline">Running Apache for Windows from the Command Line</A>
-  <LI><A HREF="#service">Running Apache for Windows as a Service</A>
-  <LI><A HREF="#signal">Signalling Console Apache when running</A>
-  <LI><A HREF="#signalsrv">Signalling Service Apache when running</A>
+  <LI><A HREF="win_service.html">Running Apache for Windows as a Service</A>
+  <LI><A HREF="win_service.html#signal">Controlling Apache as a Service</A>
   <LI><A HREF="win_compiling.html">Compiling Apache for Microsoft Windows</A>
 </UL>
 
@@ -140,12 +139,12 @@
 There are two ways you can run Apache:
 
 <UL>
- <LI>As a <A HREF="#service">"service"</A> (available on Windows NT/2000 only).
+ <LI>As a <A HREF="win_service.html#service">"service"</A> (available on 
+    Windows NT/2000, and experimentally on Windows 95, 98 or ME).
     This is the best option if you want Apache to automatically start when you 
     machine boots, and to keep Apache running when you log-off.
- <LI>From a <A HREF="#cmdline">console window</A>. This is the only option
-    available for Windows 95/98 users, and MUST be used by Windows NT/2000
-    users before to attempting to run as a service.
+ <LI>From a <A HREF="#cmdline">console window</A>. This MUST be used by any
+    administrator to test before to attempting to run as a service.
 </UL>
 
 <P>To run Apache from a console window, select the "Start Apache as
@@ -287,7 +286,7 @@ There are two ways you can run Apache:
       use the following (in addition to the status-activating directives
       in <CODE>access.conf</CODE>):</P>
 <PRE>
-    LoadModule status_module modules/ApacheModuleStatus.dll
+    LoadModule status_module modules/mod_status.so
 </PRE>
       <P>Information on <A HREF="../mod/mod_so.html#creating">creating loadable
          modules</A> is also available.</P>
