@@ -992,12 +992,13 @@ static void child_main(int child_num_arg)
     /*stuff to do before we switch id's, so we have permissions.*/
     reopen_scoreboard(pchild);
 
+    SAFE_ACCEPT(intra_mutex_init(pchild, 1));
+    SAFE_ACCEPT(accept_mutex_child_init(pchild));
+
     if (unixd_setup_child()) {
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    SAFE_ACCEPT(intra_mutex_init(pchild, 1));
-    SAFE_ACCEPT(accept_mutex_child_init(pchild));
     ap_child_init_hook(pchild, server_conf);
 
     /*done with init critical section */
