@@ -125,8 +125,8 @@ typedef int rlim_t;
 #define HAVE_SYS_RESOURCE_H
 #define bzero(a,b) memset(a,0,b)
 #if !defined(USE_SYSVSEM_SERIALIZED_ACCEPT) && \
-    !defined(USE_PTHREAD_SERIALIZED_ACCEPT)
-#define USE_FCNTL_SERIALIZED_ACCEPT
+    !defined(USE_FCNTL_SERIALIZED_ACCEPT)
+#define USE_PTHREAD_SERIALIZED_ACCEPT
 #endif
 #define NEED_UNION_SEMUN
 #define HAVE_MMAP

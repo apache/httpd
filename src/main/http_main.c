@@ -333,18 +333,33 @@ static void accept_mutex_off()
 #elif defined (USE_PTHREAD_SERIALIZED_ACCEPT)
 
 /* This code probably only works on Solaris ... but it works really fast
- * on Solaris
+ * on Solaris.  Note that pthread mutexes are *NOT* released when a task
+ * dies ... the task has to free it itself.  So we block signals and
+ * try to be nice about releasing the mutex.
  */
 
 #include <pthread.h>
 
-static pthread_mutex_t *accept_mutex;
+static pthread_mutex_t *accept_mutex = (void *)(caddr_t) -1;
+static int have_accept_mutex;
+static sigset_t accept_block_mask;
+static sigset_t accept_previous_mask;
+
+static void accept_mutex_child_cleanup(void *data)
+{
+    if (accept_mutex != (void *)(caddr_t)-1
+	&& have_accept_mutex) {
+	pthread_mutex_unlock(accept_mutex);
+    }
+}
 
 static void accept_mutex_cleanup(void)
 {
-    if (munmap((caddr_t) accept_mutex, sizeof(*accept_mutex))) {
+    if (accept_mutex != (void *)(caddr_t)-1
+	&& munmap((caddr_t) accept_mutex, sizeof(*accept_mutex))) {
 	perror("munmap");
     }
+    accept_mutex = (void *)(caddr_t)-1;
 }
 
 static void accept_mutex_init(pool *p)
@@ -376,14 +391,25 @@ static void accept_mutex_init(pool *p)
 	perror("pthread_mutex_init");
 	exit(1);
     }
+    sigfillset(&accept_block_mask);
+    sigdelset(&accept_block_mask, SIGHUP);
+    sigdelset(&accept_block_mask, SIGTERM);
+    sigdelset(&accept_block_mask, SIGUSR1);
+    register_cleanup(pconf, NULL, accept_mutex_child_cleanup,
+	accept_mutex_child_cleanup);
 }
 
 static void accept_mutex_on()
 {
+    if (sigprocmask(SIG_BLOCK, &accept_block_mask, &accept_previous_mask)) {
+	perror("sigprocmask(SIG_BLOCK)");
+	exit (1);
+    }
     if (pthread_mutex_lock(accept_mutex)) {
 	perror("pthread_mutex_lock");
 	exit(1);
     }
+    have_accept_mutex = 1;
 }
 
 static void accept_mutex_off()
@@ -391,6 +417,24 @@ static void accept_mutex_off()
     if (pthread_mutex_unlock(accept_mutex)) {
 	perror("pthread_mutex_unlock");
 	exit(1);
+    }
+    /* There is a slight race condition right here... if we were to die right
+     * now, we'd do another pthread_mutex_unlock.  Now, doing that would let
+     * another process into the mutex.  pthread mutexes are designed to be
+     * fast, as such they don't have protection for things like testing if the
+     * thread owning a mutex is actually unlocking it (or even any way of
+     * testing who owns the mutex).
+     *
+     * If we were to unset have_accept_mutex prior to releasing the mutex
+     * then the race could result in the server unable to serve hits.  Doing
+     * it this way means that the server can continue, but an additional
+     * child might be in the critical section ... at least it's still serving
+     * hits.
+     */
+    have_accept_mutex = 0;
+    if (sigprocmask(SIG_SETMASK, &accept_previous_mask, NULL)) {
+	perror("sigprocmask(SIG_SETMASK)");
+	exit (1);
     }
 }
 

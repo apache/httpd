@@ -1,10 +1,7 @@
 Changes with Apache 1.3b3
-
-  *) Restored USE_FCNTL_SERIALIZED_ACCEPT as the default for Solaris2,
-     since the PTHREAD mechanism was losing locks on Solaris 2.5.0.
-     You can now set -DUSE_SYSVSEM_SERIALIZED_ACCEPT or
-     -DUSE_PTHREAD_SERIALIZED_ACCEPT in Configuration if you want to
-     test the other two methods.  [Roy Fielding]
+  
+  *) Solaris >= 2.5 was totally broken due to a mess up using pthread
+     mutexes.  [Roy Fielding, Dean Gaudet]
 
   *) OS/2 Port updated; it should be possible to build OS/2 from the same
      sources as Unix now.  [Brian Havard <brianh@kheldar.apana.org.au>]
