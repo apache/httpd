@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 106803 -->
+<!-- English Revision: 106808 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -322,15 +322,16 @@ ablegt</description>
       Listen [fe80::a00:20ff:fea7:ccea]:80
     </example>
 
-    <note type="warning"><title>Fehlerm&ouml;glichkeit</title>
-      Mehrere <code>Listen</code>-Direktiven f&uuml;r gleiche IP-Adresse und
-      Port f&uuml;hren zur Fehlermeldung "Address already in use"
-      <transnote>Adresse schon in Benutzung</transnote>.
+    <note><title>Fehlerm&ouml;glichkeit</title>
+      Mehrere <directive>Listen</directive>-Direktiven f&uuml;r gleiche
+      IP-Adresse und Port f&uuml;hren zur Fehlermeldung
+      <code>Address already in use</code> <transnote>Adresse schon in
+      Benutzung</transnote>.
     </note>
 </usage>
 <seealso><a href="../dns-caveats.html">DNS-Probleme</a></seealso>
 <seealso><a href="../bind.html">Bestimmen, welche Adressen und Ports der
-Apache verwendet</a></seealso>
+    Apache verwendet</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 106803 -->
+<!-- English Revision: 106807 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -2835,9 +2835,9 @@ wird</description>
     Verzeichnis, in dem der Server installiert ist. &Uuml;blicherweise
     enth&auml;lt es die Unterverzeichnisse <code>conf/</code> und
     <code>logs/</code>. Relative Pfadangaben anderer Direktiven (wie z.B.
-    <directive module="core">Include</directive> oder <directive module="so"
-    >LoadModule</directive>) werden relativ zu diesem Verzeichnis
-    betrachtet.</p>
+    <directive module="core">Include</directive> oder <directive
+    module="mod_so">LoadModule</directive>) werden relativ zu diesem
+    Verzeichnis betrachtet.</p>
 
     <example><title>Beispiel</title>
       ServerRoot /home/httpd
