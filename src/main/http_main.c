@@ -3634,8 +3634,8 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif /* TPF */
 #endif
 
-#ifndef _OSD_POSIX
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
+#ifndef _OSD_POSIX
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
 #ifdef BEOS
@@ -3645,8 +3645,8 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif
 	ap_unblock_alarms();
 	exit(1);
-    }
 #endif /*_OSD_POSIX*/
+    }
     one = 1;
 #if defined(SO_KEEPALIVE) && !defined(MPE)
     if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (char *) &one, sizeof(int)) < 0) {
