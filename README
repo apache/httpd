@@ -79,9 +79,10 @@
   modifications by Spyglass Inc., Carnegie Mellon University, and
   Bell Communications Research, Inc (Bellcore).
 
-  This package contains software written by Philip Hazel and copyrighted by 
-  the University of Cambridge.  Please see the file called 
-  srclib/pcre/COPYING. 
+  Regular expression support is provided by the PCRE library package,
+  which is open source software, copyright by the University of Cambridge
+  and authored by Philip Hazel.  The original software is available from
+     ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
 
   Apache 2.0 relies heavily on the use of autoconf and libtool to provide
   a build environment.
