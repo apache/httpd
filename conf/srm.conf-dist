@@ -98,10 +98,10 @@ AccessFileName .htaccess
 # .htaccess files.  If you change the AccessFileName directive above,
 # be sure to make the corresponding changes here.
 
-<FilesMatch "^\.htaccess$">
+<Files .htaccess>
     Order allow,deny
     Deny from all
-</FilesMatch>
+</Files>
 
 # TypesConfig describes where the mime.types file (or equivalent) is
 # to be found.
