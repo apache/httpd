@@ -366,7 +366,9 @@
 #define APACHE_RELEASE 1030000
 
 #define SERVER_PROTOCOL "HTTP/1.1"
+#ifndef SERVER_SUPPORT
 #define SERVER_SUPPORT "http://www.apache.org/"
+#endif
 
 #define DECLINED -1		/* Module declines to handle */
 #define DONE -2                 /* Module has served the response completely 

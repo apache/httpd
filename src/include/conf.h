@@ -162,9 +162,13 @@ typedef int rlim_t;
 #ifndef __ps2__
 #define HAVE_MMAP
 #define USE_MMAP_FILES
+#ifndef DEFAULT_GROUP
 #define DEFAULT_GROUP "nobody"
 #endif
+#endif
+#ifndef DEFAULT_USER
 #define DEFAULT_USER "nobody"
+#endif
 #ifdef NEED_RLIM_T
 typedef int rlim_t;
 #endif
@@ -401,8 +405,12 @@ extern char *crypt();
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
+#ifndef DEFAULT_USER
 #define DEFAULT_USER "nobody"
+#endif
+#ifndef DEFAULT_GROUP
 #define DEFAULT_GROUP "nogroup"
+#endif
 
 #elif defined(UTS21)
 #undef HAVE_GMTOFF
@@ -431,8 +439,12 @@ extern char *crypt();
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define USE_MMAP_FILES
+#ifndef DEFAULT_USER
 #define DEFAULT_USER "nobody"
+#endif
+#ifndef DEFAULT_GROUP
 #define DEFAULT_GROUP "nogroup"
+#endif
 #if defined(__bsdi__) || \
 (defined(__FreeBSD_version) && (__FreeBSD_version < 220000))
 typedef quad_t rlim_t;
