@@ -2,9 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) mod_deflate: Don't attempt to hold all of the response until we're
-     done.  [Justin Erenkrantz]
-
   *) mod_ssl: Fix segfaults after renegotiation failure. PR 21370
      [Hartmut Keil <Hartmut.Keil@adnovum.ch>]
 
@@ -39,9 +36,6 @@ Changes with Apache 2.1.0-dev
 
   *) mod_actions: Propagate the handler name to the action script via
      the REDIRECT_HANDLER environment variable.  [André Malo]
-
-  *) mod_ext_filter: Set additional environment variables for use by
-     the external filter.  PR 20944.  [Andrew Ho, Jeff Trawick]
 
   *) mod_actions: Introduce the "virtual" modifier to the Action directive,
      which allows the use of handlers for virtual locations. PR 8431.
@@ -193,6 +187,19 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) mod_deflate: Don't attempt to hold all of the response until we're
+     done.  [Justin Erenkrantz]
+
+  *) Assure that we block properly when reading input bodies with SSL.
+     PR 19242.  [David Deaves <David.Deaves@dd.id.au>, William Rowe]
+
+  *) Update mime.types to include latest IANA and W3C types.  [Roy Fielding]
+
+  *) mod_ext_filter: Set additional environment variables for use by
+     the external filter.  PR 20944.  [Andrew Ho, Jeff Trawick]
+
+  *) Fix buildconf errors when libtool version changes.  [Jeff Trawick]
 
   *) Remember an authenticated user during internal redirects if the
      redirection target is not access protected and pass it
