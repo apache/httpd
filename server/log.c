@@ -174,6 +174,13 @@ static const TRANS priorities[] = {
     {NULL,	-1},
 };
 
+static apr_file_t *stderr_log;
+
+void ap_open_stderr_log(apr_pool_t *p)
+{
+    apr_open_stderr(&stderr_log, p);
+}
+
 static int log_child(apr_pool_t *p, const char *progname,
                      apr_file_t **fpin)
 {
@@ -346,7 +353,7 @@ static void log_error_core(const char *file, int line, int level,
 	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
 	    ((level & APLOG_LEVELMASK) > DEFAULT_LOGLEVEL))
 	    return;
-	apr_open_stderr(&logf, pool);
+        logf = stderr_log;
     }
     else if (s->error_log) {
 	/*

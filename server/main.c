@@ -214,12 +214,17 @@ static process_rec *create_process(int argc, const char * const *argv)
 
     stat = apr_create_pool(&cntx, NULL);
     if (stat != APR_SUCCESS) {
+        /* XXX From the time that we took away the NULL pool->malloc mapping
+         *     we have been unable to log here without segfaulting.
+         */
         ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
                      "apr_create_pool() failed to create "
                      "initial context");
         apr_terminate();
         exit(1);
     }
+
+    ap_open_stderr_log(cntx);
 
     process = apr_palloc(cntx, sizeof(process_rec));
     process->pool = cntx;

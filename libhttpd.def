@@ -418,3 +418,4 @@ EXPORTS
        ap_xml_insert_uri
 
        ap_os_create_privileged_process
+       ap_open_stderr_log
