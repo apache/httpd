@@ -4068,6 +4068,15 @@ static int dav_method_make_activity(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
 
+    /* the provider must say whether the resource can be created as
+       an activity, i.e. whether the location is ok.  */
+    if (vsn_hooks->can_be_activity != NULL
+        && !(*vsn_hooks->can_be_activity)(resource)) {
+      err = dav_new_error(r->pool, HTTP_FORBIDDEN, 0,
+                          "<DAV:activity-location-ok/>");
+      return dav_handle_err(r, err, NULL);
+    }
+
     /* ### what about locking? */
 
     /* attempt to create the activity */
