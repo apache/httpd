@@ -3115,7 +3115,7 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         return APR_SUCCESS;
     }
     /* read up to the amount they specified. */
-    if (mode == AP_MODE_READBYTES) {
+    if (mode == AP_MODE_READBYTES || mode == AP_MODE_SPECULATIVE) {
         apr_off_t total;
         apr_bucket *e;
         apr_bucket_brigade *newbb;
@@ -3142,7 +3142,21 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         /* Must do split before CONCAT */
         newbb = apr_brigade_split(ctx->b, e);
-        APR_BRIGADE_CONCAT(b, ctx->b);
+
+        if (mode == AP_MODE_READBYTES) {
+            APR_BRIGADE_CONCAT(b, ctx->b);
+        }
+        else if (mode == AP_MODE_SPECULATIVE) {
+            apr_bucket *copy_bucket;
+            APR_BRIGADE_FOREACH(e, ctx->b) {
+                rv = apr_bucket_copy(e, &copy_bucket);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
+                APR_BRIGADE_INSERT_TAIL(b, copy_bucket);
+            }
+        }
+
         /* Take what was originally there and place it back on ctx->b */
         APR_BRIGADE_CONCAT(ctx->b, newbb);
 
