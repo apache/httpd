@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/04/17 16:50:00 $]
+  Last modified at [$Date: 2000/05/10 21:00:24 $]
 
 Release:
 
@@ -95,10 +95,6 @@ Available Patches:
 
 	Status: Martin +1(untested), Ken +1(untested)
        
-    * JJ Keijser's patch (99/10/06) to enable mod_info on Win32
-	PR#: PR2415, PR1442
-	Status: 
-
     * JJ Keijser's patch (99/10/06) to: 
 	- Run Apache as a service on Win95 (PR2208)
 	- Making sure that Apache is shut down when the system is shutdown. 
@@ -163,10 +159,6 @@ Available Patches:
 		compile successfully on pre-IPv6-SVR4,
 		and possibly others), Jim -1 (not for 1.3.10)
 		Greg -0 for 1.3 series.
-
-    * Jim Patterson's patch to make mod_info work on Win32
-        Message-ID: PR#1442
-        Status: Lars +1 (on concept), Ken +1 (concept)
 
     * Peter Greis' new '%m' CustomLog option: the time taken to serve the
       request, in milli-seconds.
@@ -388,9 +380,10 @@ Open issues:
       the filename (think win32, or samba-mounted filesystems).  There are
       several PR's to this and I don't see for security reasons why we can't
       accomodate it, though it does add complexity to suexec.c.
+      Accepting quoted executable names solves that issue.
       PR #1120
       Brian: +1
-
+      
 Win32 specific issues:
 
  Important
@@ -403,7 +396,7 @@ Win32 specific issues:
     * Ben's ASP work... All agree it sounds cool.
 
     * DDA's adding a tray application to the Windoze version for ease of
-      status/management.
+      status/management.  (PR3594, PR4873)
 	<01BCDB29.2C04DEB0@caravan.individual.com>
 	<01BCDB2A.F8C09010@caravan.individual.com>
 	Status: Ken +1, Sameer +1, Martin +1, Ben +1 (as long as
@@ -425,9 +418,6 @@ Win32 specific issues:
       proceeding with CGI I/O processing.
 
     * should trap ^C when running not-as-service and do proper shutdown
-
-    * should have a pretty little icon for Apache on Win32
-      (Resolved?! there's a tiny feather icon now!?!)
 
     * proxy module doesn't load on Win95.  Why?  Good question.  PR#1462.
       David Whitmarsh <david.whitmarsh@dial.pipex.com> says it's because
@@ -509,7 +499,6 @@ Win32 specific issues:
 	- mod_auth_db.c  (do we want to even try this?  We should have some
           db of some sort... what else can we pick from under win32?)
 	- mod_auth_dbm.c
-	- mod_info.c (PR#1442 re exporting symbols for it...)
 	- mod_log_agent.c
 	- mod_log_referer.c
 	- mod_mime_magic.c (needs access to mod_mime API stage...)
