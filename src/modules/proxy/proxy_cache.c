@@ -781,17 +781,13 @@ proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
 #define TMPFILESTR	"/tmpXXXXXX"
     if (conf->cache.root == NULL)
         return DECLINED;
-    c->tempfile=palloc(r->pool,strlen(conf->cache.root)+sizeof TMPFILESTR);
+    c->tempfile=palloc(r->pool,strlen(conf->cache.root)+sizeof(TMPFILESTR));
     strcpy(c->tempfile,conf->cache.root);
-    /*
-    p = strrchr(c->tempfile, '/');
-    if (p == NULL) return DECLINED;
-    strcpy(p, TMPFILESTR);
-    */
     strcat(c->tempfile,TMPFILESTR);
 #undef TMPFILESTR
     p = mktemp(c->tempfile);
-    if (p == NULL) return DECLINED;
+    if (p == NULL)
+        return DECLINED;
 
     Explain1("Create temporary file %s",c->tempfile);
 
