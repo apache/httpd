@@ -54,7 +54,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-#ifndef NEXT
+#ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
 

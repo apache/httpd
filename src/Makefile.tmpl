@@ -10,7 +10,8 @@ LFLAGS=$(LFLAGS1) $(EXTRA_LFLAGS)
 
 OBJS= alloc.o http_main.o http_core.o http_config.o http_request.o \
   http_log.o http_protocol.o rfc1413.o util.o util_script.o modules.o buff.o\
-  md5c.o util_md5.o explain.o http_bprintf.o util_date.o $(MODULES)
+  md5c.o util_md5.o explain.o http_bprintf.o util_date.o util_snprintf.o\
+  $(MODULES)
 
 .c.o:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
@@ -121,6 +122,7 @@ util_md5.o: httpd.h util_md5.h
 util_script.o: httpd.h http_config.h http_conf_globals.h http_main.h \
                http_log.h http_protocol.h http_core.h http_request.h \
                util_script.h
+util_snprintf.o: httpd.h
 
 httpd.h: conf.h alloc.h buff.h
 util_md5.h: md5.h

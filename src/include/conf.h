@@ -170,6 +170,7 @@ typedef unsigned short mode_t;
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_STRDUP
+#define NO_UNISTD_H
 #undef _POSIX_SOURCE
 #ifndef FD_CLOEXEC
 #define FD_CLOEXEC 1
