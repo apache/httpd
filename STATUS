@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/27 17:50:43 $]
+Last modified at [$Date: 2003/02/18 21:06:15 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -470,7 +470,7 @@ EXPERIMENTAL MODULES:
 
     mod_auth_ldap/util_ldap:
     
-    * implement cross-platform/cross-library TLS support
+    * Backport cross-platform/cross-library TLS support to 2.0 tree
     
     * General stabilization and testing
     
