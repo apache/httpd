@@ -17,7 +17,7 @@
       implicit filename pattern match, and choose from amongst the
       results.</li>
     </ul>
-<h2>Directives</h2><ul><li><a href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li><li><a href="#forcelanguagepriority">ForceLanguagePriority</a></li><li><a href="#languagepriority">LanguagePriority</a></li></ul><p><strong>See also </strong></p><ul><li><a href="mod_mime.html#defaultlanguage" class="directive"><code class="directive">DefaultLanguage</code></a></li><li><a href="mod_mime.html#addencoding" class="directive"><code class="directive">AddEncoding</code></a></li><li><a href="mod_mime.html#addlanguage" class="directive"><code class="directive">AddLanguage</code></a></li><li><a href="mod_mime.html#addtype" class="directive"><code class="directive">AddType</code></a></li></ul><h2>Type maps</h2>
+<h2>Directives</h2><ul><li><a href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li><li><a href="#forcelanguagepriority">ForceLanguagePriority</a></li><li><a href="#languagepriority">LanguagePriority</a></li></ul><p><strong>See also </strong></p><ul><li><a href="mod_mime.html#defaultlanguage" class="directive"><code class="directive">DefaultLanguage</code></a></li><li><a href="mod_mime.html#addencoding" class="directive"><code class="directive">AddEncoding</code></a></li><li><a href="mod_mime.html#addlanguage" class="directive"><code class="directive">AddLanguage</code></a></li><li><a href="mod_mime.html#addtype" class="directive"><code class="directive">AddType</code></a></li><li><a href="mod_mime.html#multiviewsmatch" class="directive"><code class="directive">MultiViewsMatch</code></a></li></ul><h2><a name="typemaps">Type maps</a></h2>
     <p>A type map has the same format as RFC822 mail headers. It
     contains document descriptions separated by blank lines, with
     lines beginning with a hash character ('#') treated as
@@ -80,15 +80,38 @@
         </dl>
         Example: 
 
-        <blockquote>
-          <code>Content-Type: image/jpeg; qs=0.8</code>
-        </blockquote>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>Content-Type: image/jpeg; qs=0.8</code></td></tr></table></blockquote>
       </dd>
 
       <dt>URI:</dt>
 
-      <dd>The path to the file containing this variant, relative to
-      the map file.</dd>
+      <dd>uri of the file containing the variant (of the given
+      media type, encoded with the given content encoding). These
+      are interpreted as URLs relative to the map file; they must
+      be on the same server (!), and they must refer to files to
+      which the client would be granted access if they were to be
+      requested directly.</dd>
+
+      <dt>Body:</dt>
+   
+      <dd><p>New in Apache 2.0, the actual content of the resource may
+      be included in the type-map file using the Body header.  This
+      header must contain a string that designates a delimiter for
+      the body content.  Then all following lines in the type map
+      file will be considered part of the resource body until the
+      delimiter string is found.</p>
+
+      <p>Example:</p>
+<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
+Body:----xyz----<br>
+&lt;html&gt;<br>
+&lt;body&gt;<br>
+&lt;p&gt;Content of the page.&lt;/p&gt;<br>
+&lt;/body&gt;<br>
+&lt;/html&gt;<br>
+----xyz----
+</code></td></tr></table></blockquote>
+      </dd>
     </dl>
 <h2>MultiViews</h2>
 
