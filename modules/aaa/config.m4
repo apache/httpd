@@ -54,14 +54,17 @@ APACHE_CHECK_STANDARD_MODULE(unique_id, per-request unique ids, , no)
 APACHE_CHECK_STANDARD_MODULE(setenvif, basing ENV vars on headers, , yes)
 APACHE_CHECK_STANDARD_MODULE(echo, ECHO server, , yes)
 
+LTFLAGS="$LTFLAGS -export-dynamic"
+
 PLAT=`$ac_config_guess`
 PLAT=`$ac_config_sub $PLAT`
 case "$PLAT" in
     *-ibm-os390)
         ;;
+    *-freebsd*)
+        ;;
     *)
         LIBS="$LIBS -ldl"
-        LTFLAGS="$LTFLAGS -export-dynamic"
         ;;
 esac
 
