@@ -1,5 +1,11 @@
 Changes with Apache 1.3.27
 
+  *) Included the patch submitted by Sander van Zoest (#12712) which
+     prevents just 'anything' being sucked in when doing gobbeling in
+     complete directories - such as editor backup files and other
+     cruft. This patch allows us to tailor/control this properly by
+     allowing simple wildcards such as *.conf. [Dirk-Willem van Gulik]
+
   *) Add the new directive 'ShmemUIDisUser'. By default, Apache
      will no longer set the uid/gid of SysV shared memory scoreboard
      to User/Group, and it will therefore stay the uid/gid of
