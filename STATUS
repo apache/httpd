@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/02 22:07:35 $]
+Last modified at [$Date: 2001/04/03 00:27:08 $]
 
 Release:
 
@@ -23,13 +23,6 @@ DAEDALUS 2.0 PROBLEMS:
 RELEASE SHOWSTOPPERS:
 
     WARNING: ALWAYS check srclib/apr/STATUS and srclib/apr-util/STATUS
-
-    * Generic Hooks are absolutely wrong in linkage, they are declared as
-      exported from APU, but actually exported from modules.  This needs
-      heavy fixup, which Bill will do on the plane tommorow.  The actual
-      'Apache' declaration is in Apache's files, with the 'explicit linkage'
-      flavor in apr-util.  (Unless you folks will finally buckle and accept
-      the linkspec in hook declarations.  I'm not holding my breath.)
 
     * Root all file systems with <Directory /> for WIN32/OS2/NW permissions 
         Status: patch brought forward from 1.3.14

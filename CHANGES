@@ -1,5 +1,8 @@
 Changes with Apache 2.0.16-dev
 
+  *) Make generic hooks to work, with mod_generic_hook_import/export
+     experimental modules.  [Ben Laurie, Will Rowe]
+
   *) Fix segfaults for configuration file syntax errors such as
      "<Directory>" followed by "</Directory" and
      "<Directory>" followed by "</Directoryz>".  [Jeff Trawick]

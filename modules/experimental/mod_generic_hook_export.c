@@ -57,8 +57,8 @@
 #include "mod_generic_hook_export.h"
 #include "http_protocol.h"
 
-AP_IMPLEMENT_GENERIC_HOOK_RUN_ALL(int,generic_hook_test,(const char *szStr),
-				  (szStr),OK,DECLINED)
+APR_IMPLEMENT_GENERIC_HOOK_RUN_ALL(ap,AP_MODULE,int,generic_hook_test,(const char *szStr),
+				   (szStr),OK,DECLINED)
 
 static int ExportLogTransaction(request_rec *r)
 {
