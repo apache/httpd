@@ -15,9 +15,8 @@
 <!--#include virtual="header.html" -->
 <h1 align="center">Mapping URLs to Filesystem Locations</h1>
 
-<p>This document explains the method in which Apache determines
-what filesystem location to serve a file from based on the
-URL of a request.</p>
+<p>This document explains how Apache determines the filesystem
+location from which to serve a file using the URL of a request.</p>
 
 <ul>
 <li><a href="#documentroot">DocumentRoot</a></li>
@@ -63,7 +62,7 @@ URL of a request.</p>
 
 <p>In deciding what file to serve for a given request, Apache's
 default behavior is to take the URL-Path for the request (the part of
-the URL following the first single slash) and add it to the end of the
+the URL following the hostname and port) and add it to the end of the
 <a href="mod/core.html#documentroot">DocumentRoot</a> specified in
 your configuration files.  Therefore, the files and directories
 underneath the <code>DocumentRoot</code> make up the basic document
@@ -80,22 +79,21 @@ content based on the requested IP address or hostname.</p>
 <h2><a name="outside">Files Outside the DocumentRoot</a></h2>
 
 <p>There are frequently circumstances where it is necessary to allow
-web access to parts of the filesystem which are not strictly
-underneath the <a href="mod/core.html#documentroot">DocumentRoot</a>.
-Apache offers several different ways to accomplish this.  On Unix
-systems, symbolic links can be used to bring other parts of the
-filesystem under the <code>DocumentRoot</code>.  For security reasons,
-symbolic links will only be followed if the <a
-href="mod/core.html#options">Options</a> setting for the relevant
-directory includes <code>FollowSymLinks</code> or
-<code>SymLinksIfOwnerMatch</code>.</p>
+web access to parts of the filesystem that are not strictly underneath
+the <a href="mod/core.html#documentroot">DocumentRoot</a>.  Apache
+offers several different ways to accomplish this.  On Unix systems,
+symbolic links can bring other parts of the filesystem under the
+<code>DocumentRoot</code>.  For security reasons, Apache will follow
+symbolic links only if the <a href="mod/core.html#options">Options</a>
+setting for the relevant directory includes
+<code>FollowSymLinks</code> or <code>SymLinksIfOwnerMatch</code>.</p>
 
 <p>Alternatively, the <a href="mod/mod_alias.html#alias">Alias</a>
-directive can be used to map any part of the filesystem into the web
+directive will map any part of the filesystem into the web
 space.  For example, with</p>
 
 <blockquote><code>Alias /docs /var/web/
-</blockquote></code> 
+</code></blockquote>
 
 <p>the URL <code>http://www.example.com/docs/dir/file.html</code> will
 be served from <code>/var/web/dir/file.html</code>.  The <a
@@ -103,10 +101,10 @@ href="mod/mod_alias.html#scriptalias">ScriptAlias</a> directive works
 the same way, with the additional effect that all content located at
 the target path is treated as CGI scripts.</p>
 
-<p>For situations where additional flexibility is required, the <a
-href="mod/mod_alias.html#aliasmatch">AliasMatch</a> and <a
+<p>For situations where you require additional flexibility, you can
+use the <a href="mod/mod_alias.html#aliasmatch">AliasMatch</a> and <a
 href="mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a>
-directives can do powerful <a
+directives to do powerful <a
 href="misc/FAQ.html#regex">regular-expression</a> based matching and
 substitution.  For example,</p>
 
@@ -128,19 +126,19 @@ accessed using URLs such as the following.</p>
 
 <blockquote><code>http://www.example.com/~user/file.html</code></blockquote>
 
-<p>For security reasons, it would be inappropriate to give direct
+<p>For security reasons, it is inappropriate to give direct
 access to a user's home directory from the web.  Therefore, the <a
-href="mod/mod_userdir.html#userdir">UserDir</a> directive is used to
-specify a directory underneath the user's home directory where web
-files will be located.  Using the default setting of <code>Userdir
-public_html</code>, the above URL would look for a file at a directory
-like <code>/home/user/public_html/file.html</code> where the
-</code>/home/user/</code> is the user's home directory as specified in
+href="mod/mod_userdir.html#userdir">UserDir</a> directive
+specifies a directory underneath the user's home directory where web
+files are located.  Using the default setting of <code>Userdir
+public_html</code>, the above URL maps to a file at a directory
+like <code>/home/user/public_html/file.html</code> where
+<code>/home/user/</code> is the user's home directory as specified in
 <code>/etc/passwd</code>.</p>
 
 <p>There are also several other forms of the <code>Userdir</code>
-directive which can be used on systems where <code>/etc/passwd</code>
-cannot be used to find the location of the home directory.</p>
+directive which you can use on systems where <code>/etc/passwd</code>
+does not contain the location of the home directory.</p>
 
 <p>Some people find the "~" symbol (which is often encoded on the web
 as <code>%7e</code>) to be awkward and prefer to use an alternate
@@ -150,8 +148,8 @@ structured in a regular way, then it is possible to use the <a
 href="mod/mod_alias.html#aliasmatch">AliasMatch</a> directive to
 achieve the desired effect.  For example, to make
 <code>http://www.example.com/upages/user/file.html</code> map to
-<code>/home/user/public_html/file.html</code>, the following
-<code>AliasMatch</code> directive can be used.</p>
+<code>/home/user/public_html/file.html</code>, use the following
+<code>AliasMatch</code> directive:</p>
 
 <blockquote><code>
 AliasMatch  ^/upages/([^/]*)/?(.*) /home/$1/public_html/$2 
@@ -159,41 +157,38 @@ AliasMatch  ^/upages/([^/]*)/?(.*) /home/$1/public_html/$2
 
 <h2><a name="redirect">URL Redirection</a></h2>
 
-<p>The configuration directives discussed in the above sections are
-used to tell Apache to get content from a specific place in the
-filesystem and return it to the client.  Sometimes, it is desirable
-instead to inform the client that the content being requested is
-located at an different URL, and instruct the client to make a new
-request with the new URL.  This is referred to as <em>redirection</em>
-and is implemented by the <a
-href="mod/mod_alias.html#redirect">Redirect</a> directive.  For example,
-if the contents of the directory <code>/foo/</code> under the
-<code>DocumentRoot</code> have been moved to the new directory
-<code>/bar/</code>, clients can instructed to request the content at
-the new location as follows.</p>
+<p>The configuration directives discussed in the above sections tell
+Apache to get content from a specific place in the filesystem and
+return it to the client.  Sometimes, it is desirable instead to inform
+the client that the requested content is located at a different
+URL, and instruct the client to make a new request with the new URL.
+This is called <em>redirection</em> and is implemented by the
+<a href="mod/mod_alias.html#redirect">Redirect</a> directive.  For
+example, if the contents of the directory <code>/foo/</code> under the
+<code>DocumentRoot</code> are moved to the new directory
+<code>/bar/</code>, you can instruct clients to request the content at
+the new location as follows:</p>
 
 <blockquote><code>Redirect permanent
 /foo/ http://www.example.com/bar/</code></blockquote>
 
 <p>This will redirect any URL-Path starting in <code>/foo/</code> to
 the same URL path on the <code>www.example.com</code> server with
-<code>/bar/</code> substituted for <code>/foo/</code>.  Note that
-clients can be redirected to any server, not only the origin
-server.</p>
+<code>/bar/</code> substituted for <code>/foo/</code>.  You can
+redirect clients to any server, not only the origin server.</p>
 
 <p>Apache also provides a <a
 href="mod/mod_alias.html#redirectmatch">RedirectMatch</a> directive
-which can be used for more complicated rewriting problems.  For
-example, to redirect requests for the site home page to a different
-site, but leave all other requests alone, the following configuration
-can be used.</p>
+for more complicated rewriting problems.  For example, to redirect
+requests for the site home page to a different site, but leave all
+other requests alone, use the following configuration:</p>
 
 <blockquote><code>
 RedirectMatch permanent ^/$ http://www.example.com/startpage.html
 </code></blockquote>
 
 <p>Alternatively, to temporarily redirect all pages on a site to one
-particular page, the following configuration is useful.</p>
+particular page, use the following:</p>
 
 <blockquote><code>
 RedirectMatch temp .* http://www.example.com/startpage.html
@@ -203,7 +198,7 @@ RedirectMatch temp .* http://www.example.com/startpage.html
 
 <p>When even more powerful substitution is required, the rewriting
 engine provided by <a href="mod/mod_rewrite.html">mod_rewrite</a> can
-be useful.  The directives provided by this module can use
+be useful.  The directives provided by this module use
 characteristics of the request such as browser type or source IP
 address in deciding from where to serve content.  In addition,
 mod_rewrite can use external database files or programs to determine
@@ -223,7 +218,7 @@ to work, even though the resource is at a new location.</p>
 
 <p>Another common cause of "File Not Found" errors is accidental
 mistyping of URLs, either directly in the browser, or in HTML links.
-Apache provides the module <a href="mod/mod_speling">mod_speling</a>
+Apache provides the module <a href="mod/mod_speling.html">mod_speling</a>
 (sic) to help with this problem.  When this module is activated, it
 will intercept "File Not Found" errors and look for a resource with a
 similar filename.  If one such file is found, mod_speling will send an
@@ -232,12 +227,12 @@ several "close" files are found, a list of available alternatives will
 be presented to the client.</p>
 
 <p>An especially useful feature of mod_speling, is that it will
-compare filenames without respect to case.  This can be useful for
-systems where users are unaware of the case-sensitive nature of URLs
-and the unix filesystem.  However, using mod_speling for anything more
-than the occasional URL correction can lead to additional load on the
-server, since each "incorrect" request is followed by a URL
-redirection and a new request from the client.</p>
+compare filenames without respect to case.  This can help systems
+where users are unaware of the case-sensitive nature of URLs and the
+unix filesystem.  But using mod_speling for anything more than the
+occasional URL correction can place additional load on the server,
+since each "incorrect" request is followed by a URL redirection and a
+new request from the client.</p>
 
 <p>If all attempts to locate the content fail, Apache returns an error
 page with HTTP status code 404 (file not found).  The appearance of
