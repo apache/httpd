@@ -72,7 +72,8 @@ Changes with Apache 1.2b3:
      using the -make flag. [Rob Hartill]
 
   *) Fix coredump triggered when sending a SIGHUP to the server caused
-     by a dereference of an unitialized pointer in the listen_rec.
+     by an assertion failure, in turn caused by an uninitialised field in a
+     listen_rec.
      [Ben Laurie]
 
   *) Add FILEPATH_INFO variable to CGI environment, which is equal to

@@ -60,6 +60,7 @@
 #include "http_core.h"		/* For document_root.  Sigh... */
 #include "http_request.h"       /* for sub_req_lookup_uri() */
 #include "util_script.h"
+#include <assert.h>
 
 /*
  * Various utility functions which are common to a whole lot of
@@ -96,6 +97,7 @@ char **create_argv(request_rec *r, char *av0, ...)
 	
 	while ((t = strtok(NULL, "+")) != NULL) {
 	    unescape_url(t);
+	    assert(idx < APACHE_ARG_MAX);
 	    av[idx] = escape_shell_cmd(r->pool, t);
 	    av[idx] = t;
 	    idx++;
