@@ -106,7 +106,7 @@ SOURCE=.\build\win32\win32ver.awk
 InputPath=.\build\win32\win32ver.awk
 
 ".\build\win32\Apache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ./build/win32/win32ver.awk Apache "Apache HTTP Server"  ./include/ap_release.h icon=apache.ico > .\build\win32\Apache.rc
+	awk -f ./build/win32/win32ver.awk Apache.exe "Apache HTTP Server"  ./include/ap_release.h icon=apache.ico > .\build\win32\Apache.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=.\build\win32\win32ver.awk
 InputPath=.\build\win32\win32ver.awk
 
 ".\build\win32\Apache.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ./build/win32/win32ver.awk Apache "Apache HTTP Server"  ./include/ap_release.h icon=apache.ico > .\build\win32\Apache.rc
+	awk -f ./build/win32/win32ver.awk Apache.exe "Apache HTTP Server"  ./include/ap_release.h icon=apache.ico > .\build\win32\Apache.rc
 
 # End Custom Build
 

@@ -101,7 +101,7 @@ SOURCE=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\logresolve.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk logresolve "logresolve Utility"  ../include/ap_release.h > .\logresolve.rc
+	awk -f ../build/win32/win32ver.awk logresolve.exe "logresolve Utility"  ../include/ap_release.h > .\logresolve.rc
 
 # End Custom Build
 
@@ -112,7 +112,7 @@ InputPath=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\logresolve.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk logresolve "logresolve Utility"  ../include/ap_release.h > .\logresolve.rc
+	awk -f ../build/win32/win32ver.awk logresolve.exe "logresolve Utility"  ../include/ap_release.h > .\logresolve.rc
 
 # End Custom Build
 

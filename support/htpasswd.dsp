@@ -101,7 +101,7 @@ SOURCE=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\htpasswd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk htpasswd "htpasswd Utility"  ../include/ap_release.h > .\htpasswd.rc
+	awk -f ../build/win32/win32ver.awk htpasswd.exe "htpasswd Utility"  ../include/ap_release.h > .\htpasswd.rc
 
 # End Custom Build
 
@@ -112,7 +112,7 @@ InputPath=..\build\win32\win32ver.awk
 InputPath=..\build\win32\win32ver.awk
 
 ".\htpasswd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk htpasswd "htpasswd Utility"  ../include/ap_release.h > .\htpasswd.rc
+	awk -f ../build/win32/win32ver.awk htpasswd.exe "htpasswd Utility"  ../include/ap_release.h > .\htpasswd.rc
 
 # End Custom Build
 

@@ -155,7 +155,7 @@ InputPath=..\..\build\win32\win32ver.awk
 	echo  * DO NOT EDIT! >> ApacheMonitorVer.rc 
 	echo  */ >> ApacheMonitorVer.rc 
 	type ApacheMonitor.rc >> ApacheMonitorVer.rc 
-	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h >> ApacheMonitorVer.rc 
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor.exe "Apache HTTP Server Monitor" ../../include/ap_release.h >> ApacheMonitorVer.rc 
 	
 # End Custom Build
 
@@ -171,7 +171,7 @@ InputPath=..\..\build\win32\win32ver.awk
 	echo  * DO NOT EDIT! >> ApacheMonitorVer.rc 
 	echo  */ >> ApacheMonitorVer.rc 
 	type ApacheMonitor.rc >> ApacheMonitorVer.rc 
-	awk -f ../../build/win32/win32ver.awk ApacheMonitor  "Apache HTTP Server Monitor" ../../include/ap_release.h >> ApacheMonitorVer.rc 
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor.exe "Apache HTTP Server Monitor" ../../include/ap_release.h >> ApacheMonitorVer.rc 
 	
 # End Custom Build
 
