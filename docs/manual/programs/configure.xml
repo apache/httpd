@@ -29,10 +29,10 @@
     particular platform. Various options allow the compilation of a
     server corresponding to your personal requirements.</p>
 
-    <p>This script, included in the root directory of the distribution,
-    is for compilation on Unix and Unix-like systems only. For other
-    platforms, see the <a href="../platform/">platform</a>
-    documentation.</p>
+    <p>This script, included in the root directory of the source
+    distribution, is for compilation on Unix and Unix-like systems
+    only. For other platforms, see the <a
+    href="../platform/">platform</a> documentation.</p> 
 </summary>
 
 <seealso><a href="../install.html">Compiling and Installing</a></seealso>
@@ -797,10 +797,12 @@
 
       <dt><code>--enable-suexec</code></dt>
       <dd>Use this option to enable <code><a
-            href="suexec.html">suexec</a></code>, which allows you to set uid
-        and gid for spawned processes. Further options to configure
-        <code>suexec</code> are described <a href="#suexec">below</a>.</dd>
-    </dl>
+        href="suexec.html">suexec</a></code>, which allows you to set
+        uid and gid for spawned processes. <strong>Do not use this
+        option unless you understand all the security implications of
+        running a suid binary on your server.</strong> Further options
+        to configure <code>suexec</code> are described <a
+        href="#suexec">below</a>.</dd> </dl>
 
     <p>It is possible to create a statically linked binary of a single
       support program by using the following options:</p>
