@@ -17,7 +17,7 @@ PROGRAMS        = $(PROGRAM_NAME)
 TARGETS         = $(PROGRAMS) $(shared_build) $(other_targets)
 PHONY_TARGETS   = $(srcdir)/buildmark.c
 INSTALL_TARGETS = install-conf install-htdocs install-icons install-other \
-	install-cgi install-include install-suexec install-man
+	install-cgi install-include install-suexec install-man install-build
 
 DISTCLEAN_TARGETS  = include/ap_config_auto.h include/ap_config_path.h \
 	modules.c config.cache config.log config.status config_vars.mk
@@ -46,6 +46,13 @@ install-conf:
 			$(INSTALL_DATA) $(sysconfdir)/$$i $(sysconfdir)/$$file; \
 		fi; \
 	done
+
+install-build:
+	@echo Installing build system files 
+	@test -d $(installbuilddir) || $(MKINSTALLDIRS) $(installbuilddir) 
+	@cp config_vars.mk $(installbuilddir); \
+	cd build; \
+	cp *.mk $(installbuilddir);
 
 htdocs-srcdir = docs/docroot
 
