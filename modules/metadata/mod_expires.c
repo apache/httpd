@@ -500,7 +500,7 @@ static int add_expires(request_rec *r)
 
     expires = base + additional;
     apr_table_mergen(r->headers_out, "Cache-Control",
-		    apr_psprintf(r->pool, "max-age=%qd",
+		    apr_psprintf(r->pool, "max-age=%" APR_TIME_T_FMT,
                                  apr_time_sec(expires - r->request_time)));
     timestr = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
     apr_rfc822_date(timestr, expires);

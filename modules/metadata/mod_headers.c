@@ -182,11 +182,12 @@ static const char *constant_item(request_rec *r, char *stuff)
 }
 static const char *header_request_duration(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "D=%qd", (apr_time_now() - r->request_time)); 
+    return apr_psprintf(r->pool, "D=%" APR_TIME_T_FMT, 
+                        (apr_time_now() - r->request_time)); 
 }
 static const char *header_request_time(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "t=%qd", r->request_time);
+    return apr_psprintf(r->pool, "t=%" APR_TIME_T_FMT, r->request_time);
 }
 static const char *header_request_env_var(request_rec *r, char *a)
 {
