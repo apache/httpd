@@ -4466,28 +4466,28 @@ static int dav_handler(request_rec *r)
      * These are the HTTP-defined methods that we handle directly.
      */
     r->allowed = 0
-        | (1 << M_GET)
-	| (1 << M_PUT)
-	| (1 << M_DELETE)
-	| (1 << M_OPTIONS)
-	| (1 << M_INVALID);
+        | (AP_METHOD_BIT << M_GET)
+	| (AP_METHOD_BIT << M_PUT)
+	| (AP_METHOD_BIT << M_DELETE)
+	| (AP_METHOD_BIT << M_OPTIONS)
+	| (AP_METHOD_BIT << M_INVALID);
     /*
      * These are the DAV methods we handle.
      */
     r->allowed |= 0
-	| (1 << M_COPY)
-	| (1 << M_LOCK)
-	| (1 << M_UNLOCK)
-	| (1 << M_MKCOL)
-	| (1 << M_MOVE)
-	| (1 << M_PROPFIND)
-	| (1 << M_PROPPATCH);
+	| (AP_METHOD_BIT << M_COPY)
+	| (AP_METHOD_BIT << M_LOCK)
+	| (AP_METHOD_BIT << M_UNLOCK)
+	| (AP_METHOD_BIT << M_MKCOL)
+	| (AP_METHOD_BIT << M_MOVE)
+	| (AP_METHOD_BIT << M_PROPFIND)
+	| (AP_METHOD_BIT << M_PROPPATCH);
     /*
      * These are methods that we don't handle directly, but let the
      * server's default handler do for us as our agent.
      */
     r->allowed |= 0
-	| (1 << M_POST);
+	| (AP_METHOD_BIT << M_POST);
  
     /* ### hrm. if we return HTTP_METHOD_NOT_ALLOWED, then an Allow header
      * ### is sent; it will need the other allowed states; since the default

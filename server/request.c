@@ -1280,7 +1280,7 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r)
     reqs = (require_line *) reqs_arr->elts;
  
     for (i = 0; i < reqs_arr->nelts; ++i)
-        if (reqs[i].method_mask & (1 << r->method_number))
+        if (reqs[i].method_mask & (AP_METHOD_BIT << r->method_number))
             return 1;
  
     return 0;

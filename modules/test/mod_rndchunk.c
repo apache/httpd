@@ -100,7 +100,7 @@ static int send_rndchunk(request_rec *r)
     char buf[MAX_SEGMENT + 1];
     unsigned int len;
 
-    r->allowed |= (1 << M_GET);
+    r->allowed |= (AP_METHOD_BIT << M_GET);
     if (r->method_number != M_GET)
 	return DECLINED;
 

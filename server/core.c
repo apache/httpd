@@ -1490,7 +1490,7 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dumm
              */
             methnum = ap_method_register(cmd->pool, method);
         }
-        limited |= (1 << methnum);
+        limited |= (AP_METHOD_BIT << methnum);
     }
 
     /* Killing two features with one function,

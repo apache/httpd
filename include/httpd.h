@@ -503,6 +503,12 @@ AP_DECLARE(const char *) ap_get_server_built(void);
  */
 #define METHODS     64
 
+/**
+ * The method mask bit to shift for anding with a bitmask.
+ */
+#define AP_METHOD_BIT (apr_int64_t)1
+
+
 typedef struct ap_method_list_t ap_method_list_t;
 /**
  * Structure for handling HTTP methods.  Methods known to the server are

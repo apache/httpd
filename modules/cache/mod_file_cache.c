@@ -387,7 +387,7 @@ static int file_cache_handler(request_rec *r)
     }
 
     /* note that we would handle GET on this resource */
-    r->allowed |= (1 << M_GET);
+    r->allowed |= (AP_METHOD_BIT << M_GET);
 
     /* This handler has no use for a request body (yet), but we still
      * need to read and discard it if the client sent one.

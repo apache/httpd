@@ -172,7 +172,7 @@ static int action_handler(request_rec *r)
     /* Set allowed stuff */
     for (i = 0; i < METHODS; ++i) {
         if (conf->scripted[i])
-            r->allowed |= (1 << i);
+            r->allowed |= (AP_METHOD_BIT << i);
     }
 
     /* First, check for the method-handling scripts */

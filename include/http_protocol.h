@@ -246,7 +246,7 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
  * @param methname The name of the new method to register.
  * @return         Ab int value representing an offset into a bitmask.
  */
-AP_DECLARE(int) ap_method_register(apr_pool_t *p, char *methname);
+AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname);
 
 /**
  * Initialize the method_registry and allocate memory for it.
@@ -259,7 +259,8 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p);
  * This is a convenience macro to ease with checking a mask
  * against a method name.
  */
-#define AP_METHOD_CHECK_ALLOWED(mask, methname) ((mask) & (1 << ap_method_number_of((methname))))
+#define AP_METHOD_CHECK_ALLOWED(mask, methname) \
+    ((mask) & (AP_METHOD_BIT << ap_method_number_of((methname))))
 
 /**
  * Create a new method list with the specified number of preallocated

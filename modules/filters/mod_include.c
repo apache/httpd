@@ -2680,7 +2680,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
     if (!(ap_allow_options(r) & OPT_INCLUDES)) {
         return ap_pass_brigade(f->next, b);
     }
-    r->allowed |= (1 << M_GET);
+    r->allowed |= (AP_METHOD_BIT << M_GET);
     if (r->method_number != M_GET) {
         return ap_pass_brigade(f->next, b);
     }

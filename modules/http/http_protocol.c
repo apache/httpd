@@ -328,7 +328,7 @@ AP_DECLARE(void) ap_method_registry_init(apr_pool_t *p)
 			      apr_pool_cleanup_null);
 }
 
-AP_DECLARE(int) ap_method_register(apr_pool_t *p, char *methname)
+AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
 {
     int *newmethnum;
 
@@ -985,23 +985,23 @@ static char *make_allow(request_rec *r)
 
     mask = r->allowed_methods->method_mask;
     list = apr_pstrcat(r->pool,
-		       (mask & (1 << M_GET))	   ? ", GET, HEAD" : "",
-		       (mask & (1 << M_POST))	   ? ", POST"      : "",
-		       (mask & (1 << M_PUT))	   ? ", PUT"       : "",
-		       (mask & (1 << M_DELETE))	   ? ", DELETE"    : "",
-		       (mask & (1 << M_CONNECT))   ? ", CONNECT"   : "",
-		       (mask & (1 << M_OPTIONS))   ? ", OPTIONS"   : "",
-		       (mask & (1 << M_PATCH))	   ? ", PATCH"     : "",
-		       (mask & (1 << M_PROPFIND))  ? ", PROPFIND"  : "",
-		       (mask & (1 << M_PROPPATCH)) ? ", PROPPATCH" : "",
-		       (mask & (1 << M_MKCOL))	   ? ", MKCOL"     : "",
-		       (mask & (1 << M_COPY))	   ? ", COPY"      : "",
-		       (mask & (1 << M_MOVE))	   ? ", MOVE"      : "",
-		       (mask & (1 << M_LOCK))	   ? ", LOCK"      : "",
-		       (mask & (1 << M_UNLOCK))	   ? ", UNLOCK"    : "",
+		       (mask & (AP_METHOD_BIT << M_GET))	   ? ", GET, HEAD" : "",
+		       (mask & (AP_METHOD_BIT << M_POST))	   ? ", POST"      : "",
+		       (mask & (AP_METHOD_BIT << M_PUT))	   ? ", PUT"       : "",
+		       (mask & (AP_METHOD_BIT << M_DELETE))	   ? ", DELETE"    : "",
+		       (mask & (AP_METHOD_BIT << M_CONNECT))   ? ", CONNECT"   : "",
+		       (mask & (AP_METHOD_BIT << M_OPTIONS))   ? ", OPTIONS"   : "",
+		       (mask & (AP_METHOD_BIT << M_PATCH))	   ? ", PATCH"     : "",
+		       (mask & (AP_METHOD_BIT << M_PROPFIND))  ? ", PROPFIND"  : "",
+		       (mask & (AP_METHOD_BIT << M_PROPPATCH)) ? ", PROPPATCH" : "",
+		       (mask & (AP_METHOD_BIT << M_MKCOL))	   ? ", MKCOL"     : "",
+		       (mask & (AP_METHOD_BIT << M_COPY))	   ? ", COPY"      : "",
+		       (mask & (AP_METHOD_BIT << M_MOVE))	   ? ", MOVE"      : "",
+		       (mask & (AP_METHOD_BIT << M_LOCK))	   ? ", LOCK"      : "",
+		       (mask & (AP_METHOD_BIT << M_UNLOCK))	   ? ", UNLOCK"    : "",
 		       ", TRACE",
 		       NULL);
-    if ((mask & (1 << M_INVALID))
+    if ((mask & (AP_METHOD_BIT << M_INVALID))
 	&& (r->allowed_methods->method_list != NULL)
 	&& (r->allowed_methods->method_list->nelts != 0)) {
 	int i;
@@ -2089,7 +2089,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
      */
     methnum = ap_method_number_of(method);
     if (methnum != M_INVALID) {
-        return !!(l->method_mask & (1 << methnum));
+        return !!(l->method_mask & (AP_METHOD_BIT << methnum));
     }
     /*
      * Otherwise, see if the method name is in the array or string names
@@ -2121,7 +2121,7 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
      * bitmask.
      */
     methnum = ap_method_number_of(method);
-    l->method_mask |= (1 << methnum);
+    l->method_mask |= (AP_METHOD_BIT << methnum);
     if (methnum != M_INVALID) {
         return;
     }
@@ -2154,7 +2154,7 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
      * by a module, use the bitmask.
      */
     methnum = ap_method_number_of(method);
-    l->method_mask |= ~(1 << methnum);
+    l->method_mask |= ~(AP_METHOD_BIT << methnum);
     if (methnum != M_INVALID) {
         return;
     }

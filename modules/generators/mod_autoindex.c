@@ -1994,7 +1994,7 @@ static int handle_autoindex(request_rec *r)
     d = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config,
 						      &autoindex_module);
 
-    r->allowed |= (1 << M_GET);
+    r->allowed |= (AP_METHOD_BIT << M_GET);
     if (r->method_number != M_GET) {
 	return DECLINED;
     }
