@@ -8,6 +8,6 @@
   <variants>
     <variant>de</variant>
     <variant>en</variant>
-    <variant outdated="yes">ko</variant>
+    <variant>ko</variant>
   </variants>
 </metafile>

@@ -22,8 +22,6 @@
 <a href="./ja/sections.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sections.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
  <p><a href="configuring.html">설정파일</a>에 있는
 지시어는 서버 전체에 적용되거나, 특정 디렉토리, 파일, 호스트,
 URL에만 적용될 수 있다. 이 문서는 다른 지시어의 적용범위를
@@ -292,7 +290,7 @@ Deny from all<br />
 <a href="mod/directive-dict.html#Context">사용장소</a>를 확인하라.
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>에서
 사용가능한 지시어는 <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>, <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code> 섹션에서도 사용가능하다.
-그러나, 예외가 있다.</p>
+그러나, 예외가 있다:</p>
 
 <ul>
 <li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> 지시어는
@@ -319,9 +317,10 @@ Deny from all<br />
     <p>결합하는 순서는:</p>
 
     <ol>
-      <li> (정규표현식을 사용하지않는) <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>와 .htaccess는 동시에
-      일어난다 (경우에 따라 .htaccess이 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>를 무시하도록 설정할
-      수 있다)</li>
+      <li> (정규표현식을 사용하지않는) <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>와 <code>.htaccess</code>는
+      동시에 일어난다 (경우에 따라 <code>.htaccess</code>이
+      <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>를
+      무시하도록 설정할 수 있다)</li>
 
       <li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code> (그리고
       <code>&lt;Directory ~&gt;</code>)</li>
@@ -344,6 +343,9 @@ Deny from all<br />
     <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 섹션 안에 포함된 섹션은
     가상호스트 정의 밖에 있는 해당 섹션 <em>이후에</em> 적용된다.
     그래서 가상호스트 안에서 주서버의 설정사항을 수정할 수 있다.</p>
+
+    <p><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>가 요청 서비스할때, <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> 섹션의
+    처리순서는 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> 섹션과 같다.</p>
 
     <p>다음에 나오는 섹션은 이전 섹션의 결과를 수정한다.</p>
 

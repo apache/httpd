@@ -22,8 +22,6 @@
 <a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
- English version for recent changes.</div>
 
     <p>이 문서는 아파치 <a href="directives.html">설정
     지시어</a>를 설명하는데 사용한 용어들을 설명한다.</p>
@@ -151,10 +149,8 @@
 
       <dt>디렉토리 (directory)</dt>
 
-      <dd>지시어가 <a href="../sections.html">어떻게 Directory,
-      Location, Files 섹션이 동작하나</a>에 설명한 제약을 따르며,
-      서버 설정파일의 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>,
-      <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>에서
+      <dd>지시어가 <a href="../sections.html">섹션 설정</a>에
+      설명한 제약을 따르며, 서버 설정파일의 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>에서
       사용할 수 있음을 뜻한다.</dd>
 
       <dt>.htaccess</dt>
