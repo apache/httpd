@@ -122,16 +122,18 @@ Define export types. API_EXPORT_NONSTD is a nasty hack to avoid having to declar
 every configuration function as __stdcall.
 */
 
-#if 0 /* Handled by APR... */
-#ifdef SHARED_MODULE
-# define API_VAR_EXPORT		__declspec(dllimport)
-# define API_EXPORT(type)    __declspec(dllimport) type __stdcall
-# define API_EXPORT_NONSTD(type)    __declspec(dllimport) type
+#if defined(API_EXPORT_SYMBOLS)
+#define API_VAR_EXPORT		__declspec(dllexport)
+#define API_EXPORT(type)        __declspec(dllexport) type __stdcall
+#define API_EXPORT_NONSTD(type) __declspec(dllexport) type
+#elif defined(API_STATIC)
+#define API_VAR_EXPORT		
+#define API_EXPORT(type)        type __stdcall
+#define API_EXPORT_NONSTD(type) type
 #else
-# define API_VAR_EXPORT		__declspec(dllexport)
-# define API_EXPORT(type)    __declspec(dllexport) type __stdcall
-# define API_EXPORT_NONSTD(type)    __declspec(dllexport) type
-#endif
+#define API_VAR_EXPORT		__declspec(dllimport)
+#define API_EXPORT(type)        __declspec(dllimport) type __stdcall
+#define API_EXPORT_NONSTD(type) __declspec(dllimport) type
 #endif
 
 #define MODULE_VAR_EXPORT   __declspec(dllexport)
@@ -177,8 +179,8 @@ __inline int ap_os_is_path_absolute(const char *file)
 API_EXPORT(char *) ap_os_canonical_filename(ap_pool_t *p, const char *file);
 API_EXPORT(char *) ap_os_case_canonical_filename(ap_pool_t *pPool, const char *szFile);
 API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool, const char *szFile);
-int ap_os_is_filename_valid(const char *file);
-int os_strftime(char *, size_t , const char *, const struct tm *);
+API_EXPORT(int) ap_os_is_filename_valid(const char *file);
+API_EXPORT(int) os_strftime(char *, size_t , const char *, const struct tm *);
 
 #define ap_os_dso_error()   ""	/* for now */
 /* Other ap_os_ routines not used by this platform */
