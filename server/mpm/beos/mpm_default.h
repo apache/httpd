@@ -59,30 +59,30 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
+/* we use the child (c) as zero in our code... */
+#define AP_ID_FROM_CHILD_THREAD(c, t)     t
+/* as the child is always zero, just return the id... */
+#define AP_CHILD_THREAD_FROM_ID(i)        0 , i
 
-#define AP_ID_FROM_CHILD_THREAD(c, t)    ((c * HARD_THREAD_LIMIT) + t)
-#define AP_CHILD_THREAD_FROM_ID(i)       (0),(i)
-
-/* Number of servers to spawn off by default --- also, if fewer than
+/* Number of threads to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
  */
-#ifndef DEFAULT_START_DAEMON
-#define DEFAULT_START_DAEMON 5
+#ifndef DEFAULT_START_THREADS
+#define DEFAULT_START_THREADS 25
 #endif
-#define DEFAULT_START_THREADS 20
 
-/* Maximum number of *free* server processes --- more than this, and
+/* Maximum number of *free* threads --- more than this, and
  * they will die off.
  */
 
-#ifndef DEFAULT_MAX_FREE_DAEMON
-#define DEFAULT_MAX_FREE_DAEMON 10
+#ifndef DEFAULT_MAX_FREE_THREADS
+#define DEFAULT_MAX_FREE_THREADS 50
 #endif
 
 /* Minimum --- fewer than this, and more will be created */
 
-#ifndef DEFAULT_MIN_FREE_DAEMON
-#define DEFAULT_MIN_FREE_DAEMON 5
+#ifndef DEFAULT_MIN_FREE_THREADS
+#define DEFAULT_MIN_FREE_THREADS 5
 #endif
 
 /* Limit on the total --- clients will be locked out if more servers than
@@ -96,13 +96,9 @@
  * enough that we can read the whole thing without worrying too much about
  * the overhead.
  */
- 
-#ifdef NO_THREADS
-#define HARD_SERVER_LIMIT 256
-#endif
-#ifndef HARD_SERVER_LIMIT
-#define HARD_SERVER_LIMIT 64 
-#endif
+
+/* we only ever have 1 main process running... */ 
+#define HARD_SERVER_LIMIT 1
 
 /* Limit on the threads per process.  Clients will be locked out if more than
  * this  * HARD_SERVER_LIMIT are needed.
@@ -115,7 +111,7 @@
 #define HARD_THREAD_LIMIT 1
 #endif
 #ifndef HARD_THREAD_LIMIT
-#define HARD_THREAD_LIMIT 64 
+#define HARD_THREAD_LIMIT 50 
 #endif
 
 #ifdef NO_THREADS

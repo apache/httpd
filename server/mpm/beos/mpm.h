@@ -60,14 +60,14 @@
 #define APACHE_MPM_BEOS_H
 
 #define BEOS_MPM
+#include "scoreboard.h"
 
 #define MPM_NEEDS_RECLAIM_CHILD_PROCESSES 1
 #define MPM_SYNC_CHILD_TABLE()
-#define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
+#define MPM_CHILD_PID(i) (ap_scoreboard_image->servers[0][i].tid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 
 extern int ap_max_child_assigned;
-#include "scoreboard.h"
 
 extern server_rec *ap_server_conf;
 extern char ap_coredump_dir[MAX_STRING_LEN];
