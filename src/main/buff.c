@@ -239,7 +239,8 @@ end_chunk( BUFF *fb )
     }
 
     /* we know this will fit because of how we wrote it in start_chunk() */
-    i = ap_snprintf( &fb->outbase[fb->outchunk], fb->outchunk_header_size,
+    i = ap_snprintf( (char *)&fb->outbase[fb->outchunk],
+	fb->outchunk_header_size,
 	"%x", fb->outcnt - fb->outchunk - fb->outchunk_header_size );
 
     /* we may have to tack some trailing spaces onto the number we just wrote
