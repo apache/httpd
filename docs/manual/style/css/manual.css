@@ -26,6 +26,10 @@ strong {
     font-weight: bold;
 }
 
+q, em, var {
+    font-style: italic;
+}
+
 /* fixup IE & Opera
  * otherwise they forget to inherit
  * the computed font-size value
@@ -59,6 +63,8 @@ a:active {
 /* hover on non-white backgrounds */
 tr.odd a:hover,
 tr.odd a:active,
+tr.header a:hover,
+tr.header a:active,
 div.note a:hover,
 div.note a:active,
 div.example a:hover,
@@ -93,6 +99,8 @@ code.module a:active {
 /* hover on non-white backgrounds */
 tr.odd code.module a:hover,
 tr.odd code.module a:active,
+tr.header code.module a:hover,
+tr.header code.module a:active,
 div.note code.module a:hover,
 div.note code.module a:active,
 div.example code.module a:hover,
@@ -127,6 +135,8 @@ code.directive a:active {
 /* hover on non-white backgrounds */
 tr.odd code.directive a:hover,
 tr.odd code.directive a:active,
+tr.header code.directive a:hover,
+tr.header code.directive a:active,
 div.note code.directive a:hover,
 div.note code.directive a:active,
 div.example code.directive a:hover,
@@ -185,7 +195,7 @@ h2 a:active {
     text-decoration: none;
 }
 
-/* h3                     */
+/* h3, h4                 */
 /* ====================== */
 h3 {
     background-color: inherit;
@@ -197,8 +207,18 @@ h3 {
     padding: 0;
 }
 
+h4 {
+    background-color: inherit;
+    color: #036;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 1.3em 0 0.2em 0;
+    padding: 0;
+}
+
 /* margin adjustment */
-h3 + * {
+h3 + *, h4 + * {
     margin-top: 0;
 }
 
@@ -233,7 +253,10 @@ div#quickview h3.directives {
 /* take care of <a name>s inside */
 h3 a,
 h3 a:hover,
-h3 a:active {
+h3 a:active,
+h4 a,
+h4 a:hover,
+h4 a:active {
     color: inherit;
     background-color: inherit;
     text-decoration: none;
@@ -305,6 +328,12 @@ th {
 
 tr.odd { /* for large tables alternating colors */
     background-color: #f2f2f2;
+}
+
+tr.header, tr.header th {
+    background-color: #e2e2e2;
+    border-top: 1px solid #aaa;
+    border-bottom: 1px solid #aaa;
 }
 
 /* bordered table cells   */

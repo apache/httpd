@@ -74,17 +74,20 @@
                 bgcolor     CDATA  #IMPLIED
                 cellspacing CDATA  #IMPLIED
                 cellpadding CDATA  #IMPLIED
-                border      CDATA  #IMPLIED >
+                border      CDATA  #IMPLIED
+                style       CDATA  #IMPLIED>
 
 <!ELEMENT tr (th | td)+>
 <!ATTLIST tr valign CDATA #IMPLIED >
 
 <!ELEMENT th %BlockOrInline;>
+<!ATTLIST th  colspan  CDATA  #IMPLIED
+              rowspan  CDATA  #IMPLIED
+              class    CDATA  #IMPLIED >
 
 <!ELEMENT td %BlockOrInline;>
 <!ATTLIST td  colspan  CDATA  #IMPLIED
               rowspan  CDATA  #IMPLIED
-              bgcolor  CDATA  #IMPLIED
               class    CDATA  #IMPLIED >
 
 <!ELEMENT ul (li+)>
