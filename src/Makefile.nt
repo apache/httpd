@@ -34,7 +34,7 @@ apached:
 	cd nt & set CFG=ApacheModuleUserTrack - Win32 Debug& nmake /nologo -f ApacheModuleUserTrack.mak
 	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Debug& nmake /nologo -f ApacheModuleProxy.mak
 
-installr: release
+installr: apacher
 	-mkdir \Apache
 	-mkdir \Apache\modules
 	-mkdir \Apache\logs
@@ -51,7 +51,7 @@ installr: release
 	copy nt\ApacheModuleUserTrackR\ApacheModuleUserTrack.dll \Apache\modules
 	copy modules\proxy\Release\ApacheModuleProxy.dll \Apache\modules
 
-installd: debug
+installd: apached
 	-mkdir \Apache
 	-mkdir \Apache\modules
 	-mkdir \Apache\logs
