@@ -1,5 +1,12 @@
 Changes with Apache 1.3b6
   
+  *) src/include/ap_config.h now wraps it's #define's with #ifndef/#endif's
+     to allow for modules to overrule them and to reduce redefinition
+     warnings [Jim Jagielski]
+
+  *) [PORT] For A/UX change the OS-#define for -DAUX to -DAUX3.
+     [Jim Jagielski]
+
   *) Making the hard-coded cross-module function call mime_find_ct() (from
      mod_proxy to mod_mime) obsolete by making sure the API hook for MIME type
      checking is really called even for proxy requests except for URLs with
