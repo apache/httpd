@@ -226,23 +226,6 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r);
 API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t offset, 
                                    apr_size_t length, apr_size_t *nbytes);
 /**
- * Send the body of a response to the client
- * @param f The BUFF structure associated with a client
- * @param r The current request
- * @return The number of bytes sent
- * @deffunc long ap_send_fb(BUFF *f, request_rec *r)
- */
-API_EXPORT(long) ap_send_fb(BUFF *f, request_rec *r);
-/**
- * Send a specified number of bytes from the body of the response to the client
- * @param f the BUFF structure associated with a client
- * @param r The current request
- * @param length The number of bytes to send
- * @return The number of bytes sent
- * @deffunc long ap_send_fb_length(BUFF *f, request_rec *r, long length)
- */
-API_EXPORT(long) ap_send_fb_length(BUFF *f, request_rec *r, long length);
-/**
  * Send an MMAP'ed file to the client
  * @param mm The MMAP'ed file to send
  * @param r The current request
