@@ -253,7 +253,7 @@ static int ftp_getrc_msg(conn_rec *c, apr_bucket_brigade *bb, char *msgbuf, int 
  * all in good time...! :)
  */
 
-apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb, ap_input_mode_t mode)
+apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     conn_rec *c = f->r->connection;
     apr_pool_t *p = f->r->pool;

@@ -56,6 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#define CORE_PRIVATE
+
 #include "mod_proxy.h"
 
 /*
@@ -717,10 +719,9 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
     ap_hook_translate_name(proxy_trans, NULL, NULL, APR_HOOK_FIRST);
-#ifdef FTP_FILTER
     /* filters */
     ap_register_output_filter("PROXY_SEND_DIR", ap_proxy_send_dir_filter, AP_FTYPE_CONNECTION);
-#endif
+    ap_register_output_filter("PROXY_NULL", ap_proxy_null_filter, AP_FTYPE_NETWORK);
     /* fixups */
     ap_hook_fixups(proxy_fixup, NULL, NULL, APR_HOOK_FIRST);
     /* post read_request handling */

@@ -58,6 +58,8 @@
 
 /* CONNECT method for Apache proxy */
 
+#define CORE_PRIVATE
+
 #include "mod_proxy.h"
 
 #if 0
@@ -102,6 +104,11 @@ allowed_port(proxy_server_conf *conf, int port)
     return 0;
 }
 
+/* a NULL filter for the connect tunnel */
+apr_status_t ap_proxy_null_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+{
+    return APR_SUCCESS;
+}
 
 int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyname, int proxyport)
@@ -254,14 +261,14 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
      * Send the HTTP/1.1 CONNECT request to the remote server
      */
 
-    /* XXXX FIXME: we are acting as a tunnel - the output filter stack should ideally
+    /* we are acting as a tunnel - the output filter stack should
      * be completely empty, because when we are done here we are done completely.
-     * Is there such a thing as a NULL filter?
+     * We add the NULL filter to the stack to do this...
      */
-/*    r->output_filters = NULL;
- *    r->connection->output_filters = NULL;
- *   ap_add_output_filter("NULL", NULL, r, r->connection);
- */
+    r->output_filters = NULL;
+    r->connection->output_filters = NULL;
+    ap_add_output_filter("PROXY_NULL", NULL, r, r->connection);
+
 
     /* If we are connecting through a remote proxy, we need to pass
      * the CONNECT request on to it.
