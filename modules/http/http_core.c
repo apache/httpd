@@ -78,10 +78,10 @@
 #include "mod_core.h"
 
 /* Handles for core filters */
-ap_filter_rec_t *ap_http_input_filter_handle;
-ap_filter_rec_t *ap_http_header_filter_handle;
-ap_filter_rec_t *ap_chunk_filter_handle;
-ap_filter_rec_t *ap_byterange_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
 					  const char *arg)
