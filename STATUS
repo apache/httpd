@@ -65,6 +65,7 @@ Committed Code Changes:
     * Paul/Ben's [PATCH] 1.3: spaces in NT spawn* arguments
     * Dean's [PATCH] mod_info minor cleanups (take 2)
     * Dean's [PATCH] mod_status cleanups
+    * [PATCH] mod_digest/1599: proxy authentication using the digest auth scheme never succeeds (fwd)
 
 Available Patches:
 
@@ -72,11 +73,6 @@ Available Patches:
 	<34AA4B95.36726117@Golux.Com>
 	Status: Ken +1, Jim +1
 	Gregory Lundberg says it's legally invalid
-
-    * [PATCH] mod_digest/1599: proxy authentication using the digest auth
-      scheme never succeeds (fwd)
-	<Pine.LNX.3.95dg3.971225184830.17380C-100000@twinlark.arctic.org>
-	Status: Dean +1, Jim +1
 
     * Martin's [PATCH] 36kB: Make apache compile & run on an EBCDIC mainframe
 	<19971217184646.62136@deejai.mch.sni.de>

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b4
 
+  *) mod_digest didn't properly deal with proxy authentication.  It
+     also lacked a case-insensitive comparision of the "Digest"
+     token.  [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>] PR#1599
+
   *) A few cleanups in mod_status for efficiency.  [Dean Gaudet]
 
   *) A few cleanups in mod_info to make it thread-safe, and remove an

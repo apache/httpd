@@ -132,7 +132,9 @@ char *get_hash(request_rec *r, char *user, char *auth_pwfile)
 
 int get_digest_rec(request_rec *r, digest_header_rec * response)
 {
-    const char *auth_line = table_get(r->headers_in, "Authorization");
+    const char *auth_line = table_get(r->headers_in,
+                                    r->proxyreq ? "Proxy-Authorization"
+                                    : "Authorization");
     int l;
     int s = 0, vk = 0, vv = 0;
     char *t, *key, *value;
@@ -151,7 +153,7 @@ int get_digest_rec(request_rec *r, digest_header_rec * response)
 	return AUTH_REQUIRED;
     }
 
-    if (strcmp(getword(r->pool, &auth_line, ' '), "Digest")) {
+    if (strcasecmp(getword(r->pool, &auth_line, ' '), "Digest")) {
 	/* Client tried to authenticate using wrong auth scheme */
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "client used wrong authentication scheme: %s", r->uri);
