@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/29 13:41:28 $]
+Last modified at [$Date: 2004/03/29 21:41:13 $]
 
 Release:
 
@@ -72,8 +72,12 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
-    * Backport mod_log_forensic.
-      +1: ben, stoddard
+    *) (re-)add support for RewriteRules in <Proxy> containers. PR 27985
+         modules/mappers/mod_rewrite.c: r1.254
+       +1: nd
+
+    *) Backport mod_log_forensic.
+       +1: ben, stoddard, nd
 
     *) mod_include: remove "recursive-include" check, it's no longer
        necessary and forbids legal actions.
@@ -99,7 +103,7 @@ PATCHES TO BACKPORT FROM 2.1
        is set in r->subprocess_env allow mismatched query strings to pass.
        PR: 27758
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/aaa/mod_auth_digest.c?r1=1.86&r2=1.87
-       +1: geoff
+       +1: geoff, nd
 
     *) mod_dav: Fix a problem that could cause crashes when manipulating 
        locks on some platforms. (especially Sparc!!!)
@@ -118,7 +122,7 @@ PATCHES TO BACKPORT FROM 2.1
 	the apr_temp_dir_get() call.  Also some other misc cleanup of
 	the code
        support/htdigest.c: r1.41, r1.42, r1.43, r1.44, r1.45
-       +1: bnicholes, jjclar
+       +1: bnicholes, jjclar, nd
 
     *) Use apr_temp_dir_get for htpasswd
        support/htpasswd.c: 1.75
@@ -286,15 +290,15 @@ PATCHES TO BACKPORT FROM 2.1
     * logresolve: Allow size of log line buffer to be overridden at
       build time (MAXLINE).  PR 27793.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/logresolve.c?r1=1.22&r2=1.23
-      +1: trawick, stoddard
+      +1: trawick, stoddard, nd
 
     * core_output_filter: tag the deferred write_pool
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.269&r2=1.270
-      +1: trawick, stoddard
+      +1: trawick, stoddard, nd
 
     * Don't include newlines in strings passed to ap_log_error.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/main.c?r1=1.155&r2=1.156
-      +1: trawick, geoff
+      +1: trawick, geoff, nd
 
 CURRENT RELEASE NOTES:
 
