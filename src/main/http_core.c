@@ -848,7 +848,6 @@ static char* get_interpreter_from_win32_registry(pool *p, const char* ext)
 }
 
 API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r, 
-                                                  char*  ext, 
                                                   char** interpreter )
 {
     HANDLE hFile;
@@ -856,50 +855,68 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
     BOOLEAN bResult;
     char buffer[1024];
     core_dir_config *d;
-    file_type_e fileType = FileTypeUNKNOWN;
     int i;
+    file_type_e fileType = eFileTypeUNKNOWN;
+    char *ext = NULL;
+    char *exename = NULL;
 
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config, 
                                                 &core_module);
 
-    if (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY) {
-        /* 
-         * Check the registry
-         */
+    /* Find the file extension */
+    exename = strrchr(r->filename, '/');
+    if (!exename) {
+        exename = strrchr(r->filename, '\\');
+    }
+    if (!exename) {
+        exename = r->filename;
+    }
+    else {
+        exename++;
+    }
+    ext = strrchr(exename, '.');
+
+    if (ext && (!strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
+        return eFileTypeEXE32;
+    }
+
+    /* If the file has an extension and it is not .com and not .exe and
+     * we've been instructed to search the registry, then do it!
+     */
+    if (ext && strcasecmp(ext,".exe") && strcasecmp(ext,".com") &&
+        d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY) {
+         /* Check the registry */
         *interpreter = get_interpreter_from_win32_registry(r->pool, ext);
         if (*interpreter)
-            return FileTypeSCRIPT;
+            return eFileTypeSCRIPT;
         else {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
              "ScriptInterpreterSource config directive set to \"registry\".\n\t"
              "Registry was searched but interpreter not found. Trying the shebang line.");
         }
-    }
+    }        
 
-    /* 
-     * Look for a #! line in the script
-     */
+    /* Need to peek into the file figure out what it really is... */
     hFile = CreateFile(r->filename, GENERIC_READ, FILE_SHARE_READ, NULL,
                        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-
     if (hFile == INVALID_HANDLE_VALUE) {
-        return FileTypeUNKNOWN;
+        return eFileTypeUNKNOWN;
     }
-
     bResult = ReadFile(hFile, (void*) &buffer, sizeof(buffer) - 1, 
                        &nBytesRead, NULL);
     if (!bResult || (nBytesRead == 0)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                       "ReadFile(%s) failed", r->filename);
         CloseHandle(hFile);
-        return (FileTypeUNKNOWN);
+        return eFileTypeUNKNOWN;
     }
     CloseHandle(hFile);
-    
     buffer[nBytesRead] = '\0';
-    
+
+    /* Script or executable, that is the question... */
     if ((buffer[0] == '#') && (buffer[1] == '!')) {
-        fileType = FileTypeSCRIPT;
+        /* Assuming file is a script since it starts with a shebang */
+        fileType = eFileTypeSCRIPT;
         for (i = 2; i < sizeof(buffer); i++) {
             if ((buffer[i] == '\r')
                 || (buffer[i] == '\n')) {
@@ -907,16 +924,21 @@ API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r,
             }
         }
         buffer[i] = '\0';
-        for (i = 2; buffer[i] == ' '; ++i)
+        for (i = 2; buffer[i] == ' ' ; ++i)
             ;
         *interpreter = ap_pstrdup(r->pool, buffer + i ); 
     }
     else {
-        /* Check to see if it's a executable */
-        IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)buffer;
-        if (hdr->e_magic == IMAGE_DOS_SIGNATURE && hdr->e_cblp < 512) {
-            fileType = FileTypeEXE;
+        /* Not a script, is it an executable? */
+        IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)buffer;    
+        if ((nBytesRead >= sizeof(IMAGE_DOS_HEADER)) && (hdr->e_magic == IMAGE_DOS_SIGNATURE)) {
+            if (hdr->e_lfarlc < 0x40)
+                fileType = eFileTypeEXE16;
+            else
+                fileType = eFileTypeEXE32;
         }
+        else
+            fileType = eFileTypeUNKNOWN;
     }
 
     return fileType;

@@ -825,34 +825,10 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
         pid = -1;
 
         if (!shellcmd) {
-            /* Find the file name */
-            exename = strrchr(r->filename, '/');
-            if (!exename) {
-                exename = strrchr(r->filename, '\\');
-            }
-            if (!exename) {
-                exename = r->filename;
-            }
-            else {
-                exename++;
-            }
 
-            ext = strrchr(exename, '.');
-            if ((ext) && (!strcasecmp(ext,".bat") ||
-                          !strcasecmp(ext,".cmd"))) {
-                fileType = FileTypeEXE;
-            }
-            else if ((ext) && (!strcasecmp(ext,".exe") ||
-                               !strcasecmp(ext,".com"))) {
-                /* 16 bit or 32 bit? */
-                fileType = FileTypeEXE;
-            }
-            else {
-                /* Maybe a script or maybe a binary.. */
-                fileType = ap_get_win32_interpreter(r, ext, &interpreter);
-            }
+            fileType = ap_get_win32_interpreter(r, &interpreter);
 
-            if (fileType == FileTypeUNKNOWN) {
+            if (fileType == eFileTypeUNKNOWN) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
                               "%s is not executable; ensure interpreted scripts have "
                               "\"#!\" first line", 
@@ -969,13 +945,24 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
         if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, pEnvBlock,
                           ap_make_dirstr_parent(r->pool, r->filename),
                           &si, &pi)) {
-            pid = pi.dwProcessId;
-            /*
-             * We must close the handles to the new process and its main thread
-             * to prevent handle and memory leaks.
-             */ 
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
+            if (fileType == eFileTypeEXE16) {
+                /* Hack to get 16-bit CGI's working. It works for all the 
+                 * standard modules shipped with Apache. pi.dwProcessId is 0 
+                 * for 16-bit CGIs and all the Unix specific code that calls 
+                 * ap_call_exec interprets this as a failure case. And we can't 
+                 * use -1 either because it is mapped to 0 by the caller.
+                 */
+                pid = -2;
+            }
+            else {
+                pid = pi.dwProcessId;
+                /*
+                 * We must close the handles to the new process and its main thread
+                 * to prevent handle and memory leaks.
+                 */ 
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+            }
         }
         return (pid);
     }
