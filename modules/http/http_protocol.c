@@ -3432,8 +3432,8 @@ static void reset_filters(request_rec *r)
             continue;
         }
         else {
-            f = f->next;
             ap_remove_output_filter(f);
+            f = f->next;
         }
     }
 }
