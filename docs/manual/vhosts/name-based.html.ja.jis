@@ -187,7 +187,7 @@
     <strong>リストの最初にあるバーチャルホスト</strong> が使われます。</p>
 
     <p>結果として、リストの最初のバーチャルホストが <em>デフォルト</em> の
-    バーチャルホストになります。IP アドレスが <code class="directive">NameVirtualHost</code>
+    バーチャルホストになります。IP アドレスが <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>
     ディレクティブにマッチした場合は、<em>メインのサーバ</em> の
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> 
     は<strong>決して使われません</strong>

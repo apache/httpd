@@ -198,7 +198,7 @@
 
     <p>結果として、リストの最初のバーチャルホストが <em>デフォルト</em> の
     バーチャルホストになります。IP アドレスが <directive 
-    modoule="core">NameVirtualHost</directive>
+    module="core">NameVirtualHost</directive>
     ディレクティブにマッチした場合は、<em>メインのサーバ</em> の
     <directive module="core">DocumentRoot</directive> 
     は<strong>決して使われません</strong>
