@@ -46,9 +46,9 @@
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Synopsis</a></h2>
 
-     <p><code><strong>rotatelogs </strong><var>logfile</var>
-     [<var>rotationtime </var>[<var>offset</var>]] |
-     [<var>filesize</var>M]</code></p>
+     <p><code><strong>rotatelogs</strong> <var>logfile</var>
+     [ <var>rotationtime</var> [ <var>offset</var> ]] |
+     [ <var>filesize</var>M ]</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="options" id="options">Options</a></h2>

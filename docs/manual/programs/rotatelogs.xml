@@ -31,9 +31,9 @@
 
 <section id="synopsis"><title>Synopsis</title>
 
-     <p><code><strong>rotatelogs </strong><var>logfile</var>
-     [<var>rotationtime </var>[<var>offset</var>]] |
-     [<var>filesize</var>M]</code></p>
+     <p><code><strong>rotatelogs</strong> <var>logfile</var>
+     [ <var>rotationtime</var> [ <var>offset</var> ]] |
+     [ <var>filesize</var>M ]</code></p>
 </section>
 
 <section id="options"><title>Options</title>
