@@ -1,4 +1,9 @@
 Changes with Apache 2.0.34-dev
+  *) Add accessor function to set r->content_type. From now on,
+     ap_rset_content_type() should be used to set r->content_type.
+     This change is required to properly implement the 
+     AddOutputFilterByType configuration directive.
+     [Bill Stoddard, Sander Striker, Ryan Bloom]
 
   *) Add new M_FOO symbols for the WebDAV/DeltaV methods specified by
      RFC 3253. Improved the method name/number mapping functions.

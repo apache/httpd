@@ -2550,6 +2550,43 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
 
     return NULL;
 }
+/* 
+ * Insert filters requested by the AddOutputFiltersByType 
+ * configuration directive. We cannot add filters based 
+ * on content-type until after the handler has started 
+ * to run. Only then do we reliabily know the content-type.
+ */
+void ap_add_output_filters_by_type(request_rec *r)
+{
+    core_dir_config *conf;
+    const char *ctype, *ctypes;
+
+    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                   &core_module);
+
+    /* We can't do anything with proxy requests, no content-types or if
+     * we don't have a filter configured.
+     */
+    if (r->proxyreq != PROXYREQ_NONE || !r->content_type ||
+        !conf->ct_output_filters) {
+        return;
+    }
+
+    ctypes = r->content_type;
+
+    /* We must be able to handle decorated content-types.  */
+    while (*ctypes && (ctype = ap_getword(r->pool, &ctypes, ';'))) {
+        ap_filter_rec_t *ct_filter;
+        ct_filter = apr_hash_get(conf->ct_output_filters, ctype,
+                                 APR_HASH_KEY_STRING);
+        while (ct_filter) {
+            ap_add_output_filter(ct_filter->name, NULL, r, r->connection);
+            ct_filter = ct_filter->next;
+        }
+    }
+
+    return;
+}
 
 static apr_status_t writev_it_all(apr_socket_t *s,
                                   struct iovec *vec, int nvec,
@@ -3058,7 +3095,7 @@ static int core_override_type(request_rec *r)
     /* Check for overrides with ForceType / SetHandler
      */
     if (conf->mime_type && strcmp(conf->mime_type, "none"))
-        r->content_type = conf->mime_type;
+        ap_rset_content_type((char*) conf->mime_type, r);
 
     if (conf->handler && strcmp(conf->handler, "none"))
         r->handler = conf->handler;
@@ -3081,37 +3118,7 @@ static int core_override_type(request_rec *r)
     return OK;
 }
 
-static int core_filters_type(request_rec *r)
-{
-    core_dir_config *conf;
-    const char *ctype, *ctypes;
 
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    /* We can't do anything with proxy requests, no content-types or if
-     * we don't have a filter configured.
-     */
-    if (r->proxyreq != PROXYREQ_NONE || !r->content_type ||
-        !conf->ct_output_filters) {
-        return OK;
-    }
-
-    ctypes = r->content_type;
-
-    /* We must be able to handle decorated content-types.  */
-    while (*ctypes && (ctype = ap_getword(r->pool, &ctypes, ';'))) {
-        ap_filter_rec_t *ct_filter;
-        ct_filter = apr_hash_get(conf->ct_output_filters, ctype,
-                                 APR_HASH_KEY_STRING);
-        while (ct_filter) {
-            ap_add_output_filter(ct_filter->name, NULL, r, r->connection);
-            ct_filter = ct_filter->next;
-        }
-    }
-
-    return OK;
-}
 
 static int default_handler(request_rec *r)
 {
@@ -4019,7 +4026,6 @@ static void register_hooks(apr_pool_t *p)
     /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_fixups(core_override_type,NULL,NULL,APR_HOOK_REALLY_FIRST);
-    ap_hook_fixups(core_filters_type,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(proxy, create_req, core_create_proxy_req, NULL, NULL,
