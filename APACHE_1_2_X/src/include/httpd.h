@@ -266,7 +266,7 @@
 /* Numeric release version identifier: major minor bugfix betaseq
  * Always increases along the same track as the source branch.
  */
-#define APACHE_RELEASE 1020201
+#define APACHE_RELEASE 1020299
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #define SERVER_SUPPORT "http://www.apache.org/"
