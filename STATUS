@@ -259,6 +259,7 @@ Open issues:
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
+	Dean +1
 
     * Release builds: Should we provide Configuration or not?
       Should we 'make all suexec' in src/support?
@@ -277,6 +278,7 @@ Open issues:
 	Issues: Underscores: Should I try prepending, appending, and
 	 ignoring? -> Alexei says look at Java
 	 Location? os/unix ??
+	Dean +1
 
     * 206 vs. 200 issue on Content-Length
 	See <Pine.BSF.3.95q.971102000930.5555B-100000@valis.worldgate.com>
