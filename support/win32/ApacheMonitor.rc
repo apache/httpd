@@ -4,44 +4,13 @@ IDI_APSRVMON            ICON    DISCARDABLE     "ApacheMonitor.ico"
 IDI_ICOSTOP             ICON    DISCARDABLE     "apstop.ico"
 IDI_ICORUN              ICON    DISCARDABLE     "aprun.ico"
 
-VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,1,1
- PRODUCTVERSION 1,0,1,1
- FILEFLAGSMASK 0x3fL
- FILEFLAGS 0x0L
- FILEOS 0x40004L
- FILETYPE 0x1L
- FILESUBTYPE 0x0L
-BEGIN
-    BLOCK "StringFileInfo"
-    BEGIN
-        BLOCK "000004b0"
-        BEGIN
-            VALUE "Comments", "Contributed by Mladen Turk <mturk@mappingsoft.com>\0"
-            VALUE "CompanyName", "Apache Software Foundation.\0"
-            VALUE "FileDescription", "Apache service monitor\0"
-            VALUE "FileVersion", "1.1\0"
-            VALUE "InternalName", "apsrvmon\0"
-            VALUE "LegalCopyright", "Copyright © 2001 The Apache Software Foundation.\0"
-            VALUE "LegalTrademarks", "This software consists of voluntary contributions made by many individuals on behalf of the Apache Software Foundation.  For more information on the Apache Software Foundation, please see <http://www.apache.org/>\0"
-            VALUE "OriginalFilename", "apsrvmon.exe\0"
-            VALUE "PrivateBuild", "\0"
-            VALUE "ProductName", "Apache service monitor\0"
-            VALUE "ProductVersion", "1.1\0"
-            VALUE "SpecialBuild", "\0"
-        END
-    END
-    BLOCK "VarFileInfo"
-    BEGIN
-        VALUE "Translation", 0x0, 1200
-    END
-END
+#include "ApacheMonitor.ver"
 
 IDD_DLGSERVICES DIALOGEX 0, 0, 350, 174
 STYLE DS_MODALFRAME | DS_SETFOREGROUND | WS_MINIMIZEBOX | WS_VISIBLE | 
     WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_CONTROLPARENT
-CAPTION "Apache service monitor"
+CAPTION "Apache Service Monitor"
 FONT 8, "MS Sans Serif"
 BEGIN
     DEFPUSHBUTTON   "&OK",IDOK,298,49,50,14
@@ -65,7 +34,7 @@ IDB_BMPHEADER           BITMAP  DISCARDABLE     "apache_header.bmp"
 
 STRINGTABLE DISCARDABLE 
 BEGIN
-    IDS_APMONITORTITLE      "Apache service monitor"
+    IDS_APMONITORTITLE      "Apache Service Monitor"
     IDS_APMONITORCLASS      "ApacheServiceMonitorClass"
 END
 
