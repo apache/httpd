@@ -83,9 +83,7 @@ how they are used by the Apache HTTP Server.</p>
     <p>MPMs must be chosen during configuration, and compiled into
     the server. Compilers are capable of optimizing a lot of
     functions if threads are used, but only if they know that
-    threads are being used. Because some MPMs use threads on Unix
-    and others don't, Apache will always perform better if the MPM
-    is chosen at configuration time and built into Apache.</p>
+    threads are being used.</p>
 
     <p>To actually choose the desired MPM, use the argument
       <code>--with-mpm=<em>NAME</em></code> with the
