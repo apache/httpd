@@ -255,11 +255,19 @@ static apr_proc_mutex_t *accept_mutex;
 #define LISTENER_SIGNAL     SIGHUP
 
 
+/* Possible states of a worker thread. */
+typedef enum {
+    WORKER_IDLE,
+    WORKER_BUSY,
+    WORKER_TERMINATED
+} worker_state_e;
+
 /* Structure used to wake up an idle worker thread
  */
 typedef struct {
     apr_pool_t *pool;
     apr_socket_t *csd;
+    worker_state_e state;
     apr_thread_cond_t *cond;
     apr_thread_mutex_t *mutex;
 } worker_wakeup_info;
@@ -301,6 +309,8 @@ static apr_status_t worker_stack_wait(worker_stack *stack,
 {
     apr_status_t rv;
 
+    wakeup->state = WORKER_IDLE;
+    
     if ((rv = apr_thread_mutex_lock(stack->mutex)) != APR_SUCCESS) {
         return rv;
     }
@@ -329,10 +339,16 @@ static apr_status_t worker_stack_wait(worker_stack *stack,
     /* At this point we've already added this worker to the stack, now
      * we just wait until the listener has accept()ed a connection
      * for us. */
-    /* FIXME: We must own the wakeup->mutex before calling cond_wait(),
-     * and then keep calling cond_wait() until some signal is met. */
-    if ((rv = apr_thread_cond_wait(wakeup->cond, wakeup->mutex)) !=
-        APR_SUCCESS) {
+    if ((rv = apr_thread_mutex_lock(wakeup->mutex)) != APR_SUCCESS) {
+        return rv;
+    }
+    while (wakeup->state == WORKER_IDLE) {
+        if ((rv = apr_thread_cond_wait(wakeup->cond, wakeup->mutex)) !=
+            APR_SUCCESS) {
+            return rv;
+        }
+    }
+    if ((rv = apr_thread_mutex_unlock(wakeup->mutex)) != APR_SUCCESS) {
         return rv;
     }
     return APR_SUCCESS;
@@ -380,10 +396,11 @@ static apr_status_t worker_stack_interrupt_all(worker_stack *stack)
     stack->terminated = 1;
     while (stack->nelts) {
         worker = stack->stack[--stack->nelts];
-        worker->csd = 0;
         apr_thread_mutex_lock(worker->mutex);
-        apr_thread_mutex_unlock(worker->mutex);
+        worker->csd = 0;
+        worker->state = WORKER_TERMINATED;
         apr_thread_cond_signal(worker->cond);
+        apr_thread_mutex_unlock(worker->mutex);
     }
     if ((rv = apr_thread_mutex_unlock(stack->mutex)) != APR_SUCCESS) {
         return rv;
@@ -862,6 +879,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             }
             ptrans = worker->pool;
         }
+        AP_DEBUG_ASSERT(worker->state == WORKER_IDLE);
 
         if ((rv = SAFE_ACCEPT(apr_proc_mutex_lock(accept_mutex)))
             != APR_SUCCESS) {
@@ -952,6 +970,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 /* Wake up the sleeping worker. */
                 apr_thread_mutex_lock(worker->mutex);
                 worker->csd = (apr_socket_t *)csd;
+                worker->state = WORKER_BUSY;
                 /* Posix allows us to signal this condition without
                  * owning the associated mutex, but in that case it can
                  * not guarantee predictable scheduling. See
@@ -978,6 +997,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     worker_stack_interrupt_all(idle_worker_stack);
     if (worker) {
         apr_thread_mutex_lock(worker->mutex);
+        worker->state = WORKER_TERMINATED;
         /* Posix allows us to signal this condition without
          * owning the associated mutex, but in that case it can
          * not guarantee predictable scheduling. See
@@ -1045,7 +1065,6 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
         signal_threads(ST_GRACEFUL);
         apr_thread_exit(thd, rv);
     }
-    apr_thread_mutex_lock(wakeup->mutex);
 
     while (!workers_may_exit) {
         ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_READY, NULL);
@@ -1058,6 +1077,10 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
                          "worker_stack_wait failed");
             break; /* Treat all other errors as fatal. */
         }
+        else if (wakeup->state == WORKER_TERMINATED) {
+            break; /* They told us to quit. */
+        }
+        AP_DEBUG_ASSERT(wakeup->state != WORKER_IDLE);
         process_socket(ptrans, wakeup->csd,
                        process_slot, thread_slot, bucket_alloc);
         requests_this_child--; /* FIXME: should be synchronized - aaron */
