@@ -78,7 +78,7 @@ ServerRoot "@@ServerRoot@@"
 # identification number when it starts.
 #
 <IfModule !mpm_netware.c>
-PidFile @rel_logfiledir@/httpd.pid
+PidFile @rel_runtimedir@/httpd.pid
 </IfModule>
 
 #
