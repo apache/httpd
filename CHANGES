@@ -65,6 +65,10 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) Fix mod_ldap to open an existing shared memory file should one
+     already exist. PR 12757. [Scooter Morris <scooter@gene.com>, 
+     Graham Leggett]
+
   *) Fix the ulimit command used by apachectl on Tru64.  PR 13609.
      [Joseph Senulis <Joseph.Senulis@dnr.state.wi.us>, Jeff Trawick]
 
