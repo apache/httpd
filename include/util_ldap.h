@@ -91,38 +91,38 @@ typedef enum {
 /* Structure representing an LDAP connection */
 typedef struct util_ldap_connection_t {
     LDAP *ldap;
-    apr_pool_t *pool;			/* Pool from which this connection is created */
-    apr_thread_mutex_t *lock;			/* Lock to indicate this connection is in use */
-    int bound;				/* Flag to indicate whether this connection is bound yet */
+    apr_pool_t *pool;                   /* Pool from which this connection is created */
+    apr_thread_mutex_t *lock;           /* Lock to indicate this connection is in use */
+    int bound;                          /* Flag to indicate whether this connection is bound yet */
 
-    const char *host;				/* Name of the LDAP server (or space separated list) */
-    int port;				/* Port of the LDAP server */
-    deref_options deref;		/* how to handle alias dereferening */
+    const char *host;                   /* Name of the LDAP server (or space separated list) */
+    int port;                           /* Port of the LDAP server */
+    deref_options deref;                /* how to handle alias dereferening */
 
-    const char *binddn;	                /* DN to bind to server (can be NULL) */
-    const char *bindpw;	                /* Password to bind to server (can be NULL) */
+    const char *binddn;                 /* DN to bind to server (can be NULL) */
+    const char *bindpw;                 /* Password to bind to server (can be NULL) */
 
-    int netscapessl;			/* True if use Netscape SSL connection */
-    const char *certtdb;			/* Path to Netscape CA database */
+    int netscapessl;                    /* True if use Netscape SSL connection */
+    const char *certtdb;                /* Path to Netscape CA database */
 
-    int starttls;                 	/* True if StartTLS is enabled */
-    int withtls;			/* True if StartTLS on this connection */
+    int starttls;                       /* True if StartTLS is enabled */
+    int withtls;                        /* True if StartTLS on this connection */
 
-    const char *reason;			/* Reason for an error failure */
+    const char *reason;                 /* Reason for an error failure */
 
     struct util_ldap_connection_t *next;
 } util_ldap_connection_t;
 
 /* LDAP cache state information */ 
 typedef struct util_ldap_state_t {
-    apr_pool_t *pool;		/* pool from which this state is allocated */
-    apr_thread_mutex_t *mutex;		/* mutex lock for the connection list */
+    apr_pool_t *pool;           /* pool from which this state is allocated */
+    apr_thread_mutex_t *mutex;          /* mutex lock for the connection list */
 
-    apr_size_t cache_bytes;	/* Size (in bytes) of shared memory cache */
-    long search_cache_ttl;	/* TTL for search cache */
-    long search_cache_size;	/* Size (in entries) of search cache */
-    long compare_cache_ttl;	/* TTL for compare cache */
-    long compare_cache_size;	/* Size (in entries) of compare cache */
+    apr_size_t cache_bytes;     /* Size (in bytes) of shared memory cache */
+    long search_cache_ttl;      /* TTL for search cache */
+    long search_cache_size;     /* Size (in entries) of search cache */
+    long compare_cache_ttl;     /* TTL for compare cache */
+    long compare_cache_size;    /* Size (in entries) of compare cache */
 
     struct util_ldap_connection_t *connections;
 #ifdef APU_HAS_LDAP_NETSCAPE_SSL
