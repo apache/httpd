@@ -1,5 +1,8 @@
 Changes with Apache 1.3a2
 
+  *) PORT: Timings show that on Linux 2.0.30 flock is slightly cheaper than
+     fcntl file locking.  So use flock for the mutexes. [Dean Gaudet]
+
   *) Fix another long-standing bug in sub_req_lookup_file where it would
      happily skip past access checks on subdirectories looked up with
      relative paths.  (It's used by mod_dir, mod_negotiation,
