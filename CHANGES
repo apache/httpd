@@ -64,9 +64,6 @@ Changes with Apache 2.1.0-dev
      There was some confusion between local paths and URL paths.
      PR 12902.  [André Malo]
 
-  *) Keep the subrequest filter in place when a subrequest is 
-     redirected.  PR 15423.  [Jeff Trawick]
-
   *) Return 413 if chunk-ext-header is too long rather than reading from
      the truncated line.  PR 15857.  [Justin Erenkrantz]
 
@@ -158,6 +155,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Keep the subrequest filter in place when a subrequest is 
+     redirected.  PR 15423.  [Jeff Trawick]
 
   *) you can now specify the compression level for mod_deflate. 
      [Ian Holsman, Stephen Pierzchala <stephen@pierzchala.com>, 
