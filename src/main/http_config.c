@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_config.c,v 1.22 1996/08/24 14:36:13 ben Exp $ */
+/* $Id: http_config.c,v 1.23 1996/09/23 03:01:03 brian Exp $ */
 
 /*
  * http_config.c: once was auxillary functions for reading httpd's config
@@ -756,7 +756,6 @@ static void get_addresses (pool *p, char *w, server_addr_rec ***paddr)
 server_rec *init_virtual_host (pool *p, char *hostname)
 {
     server_rec *s = (server_rec *)pcalloc (p, sizeof (server_rec));
-    char *t;
     server_addr_rec **addrs;
 
 #ifdef RLIMIT_NOFILE
