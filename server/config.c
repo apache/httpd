@@ -77,7 +77,7 @@
 #include "http_core.h"
 #include "http_log.h"		/* for errors in parse_htaccess */
 #include "http_request.h"	/* for default_handler (see invoke_handler) */
-#include "http_conf_globals.h"	/* Sigh... */
+#include "http_main.h"
 #include "http_vhost.h"
 #include "explain.h"
 
@@ -1086,7 +1086,7 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_pt
 static cmd_parms default_parms =
 {NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
-API_EXPORT(char *) ap_server_root_relative(pool *p, char *file)
+API_EXPORT(const char *) ap_server_root_relative(pool *p, const char *file)
 {
     if(ap_os_is_path_absolute(file))
 	return file;
@@ -1163,7 +1163,7 @@ static void process_command_config(server_rec *s, array_header *arr, pool *p,
     ap_cfg_closefile(parms.config_file);
 }
 
-void ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp)
+void ap_process_resource_config(server_rec *s, const char *fname, pool *p, pool *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
@@ -1305,6 +1305,7 @@ CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
     }
 #endif
 
+    /* TODO: this crap belongs in http_core */
     s->server_admin = NULL;
     s->server_hostname = NULL;
     s->error_fname = NULL;
@@ -1327,8 +1328,10 @@ CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
     s->module_config = create_empty_config(p);
     s->lookup_defaults = ap_create_per_dir_config(p);
 
+#if 0
     s->server_uid = ap_user_id;
     s->server_gid = ap_group_id;
+#endif
 
     s->limit_req_line = main_server->limit_req_line;
     s->limit_req_fieldsize = main_server->limit_req_fieldsize;
@@ -1373,9 +1376,6 @@ static void fixup_virtual_hosts(pool *p, server_rec *main_server)
 	if (virt->keep_alive_max == -1)
 	    virt->keep_alive_max = main_server->keep_alive_max;
 
-	if (virt->send_buffer_size == 0)
-	    virt->send_buffer_size = main_server->send_buffer_size;
-
 	/* XXX: this is really something that should be dealt with by a
 	 * post-config api phase */
 	ap_core_reorder_directories(p, virt);
@@ -1390,29 +1390,8 @@ static void fixup_virtual_hosts(pool *p, server_rec *main_server)
 
 static void init_config_globals(pool *p)
 {
-    /* ServerRoot, server_confname set in httpd.c */
-
-    ap_standalone = 1;
-    ap_user_name = DEFAULT_USER;
-    ap_user_id = ap_uname2id(DEFAULT_USER);
-    ap_group_id = ap_gname2id(DEFAULT_GROUP);
-    ap_daemons_to_start = DEFAULT_START_DAEMON;
-    ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
-    ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
-    ap_daemons_limit = HARD_SERVER_LIMIT;
-    ap_pid_fname = DEFAULT_PIDLOG;
-    ap_scoreboard_fname = DEFAULT_SCOREBOARD;
-    ap_lock_fname = DEFAULT_LOCKFILE;
-    ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-    ap_bind_address.s_addr = htonl(INADDR_ANY);
-    ap_listeners = NULL;
-    ap_listenbacklog = DEFAULT_LISTENBACKLOG;
-    ap_extended_status = 0;
-
     /* Global virtual host hash bucket pointers.  Init to null. */
     ap_init_vhost_config(p);
-
-    ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
 static server_rec *init_server_config(pool *p)
@@ -1449,26 +1428,7 @@ static server_rec *init_server_config(pool *p)
 }
 
 
-static void default_listeners(pool *p, server_rec *s)
-{
-    listen_rec *new;
-
-    if (ap_listeners != NULL) {
-	return;
-    }
-    /* allocate a default listener */
-    new = ap_pcalloc(p, sizeof(listen_rec));
-    new->local_addr.sin_family = AF_INET;
-    new->local_addr.sin_addr = ap_bind_address;
-    new->local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
-    new->fd = -1;
-    new->used = 0;
-    new->next = NULL;
-    ap_listeners = new;
-}
-
-
-server_rec *ap_read_config(pool *p, pool *ptemp, char *confname)
+server_rec *ap_read_config(pool *p, pool *ptemp, const char *confname)
 {
     server_rec *s = init_server_config(p);
 
@@ -1485,7 +1445,6 @@ server_rec *ap_read_config(pool *p, pool *ptemp, char *confname)
     process_command_config(s, ap_server_post_read_config, p, ptemp);
 
     fixup_virtual_hosts(p, s);
-    default_listeners(p, s);
     ap_fini_vhost_config(p, s);
 
     return s;

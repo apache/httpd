@@ -61,14 +61,13 @@
 #include "http_core.h"
 #include "http_protocol.h"	/* For index_of_response().  Grump. */
 #include "http_request.h"
-#include "http_conf_globals.h"
 #include "http_vhost.h"
 #include "http_main.h"		/* For the default_handler below... */
 #include "http_log.h"
 #include "rfc1413.h"
 #include "util_md5.h"
-#include "scoreboard.h"
 #include "fnmatch.h"
+#include "http_connection.h"
 
 #ifdef USE_MMAP_FILES
 #include <sys/mman.h>
@@ -135,16 +134,6 @@ static void *create_core_dir_config(pool *a, char *dir)
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2; /* set bit 1 to indicate default */
     conf->satisfy = SATISFY_NOSPEC;
-
-#ifdef RLIMIT_CPU
-    conf->limit_cpu = NULL;
-#endif
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-    conf->limit_mem = NULL;
-#endif
-#ifdef RLIMIT_NPROC
-    conf->limit_nproc = NULL;
-#endif
 
     conf->limit_req_body = 0;
     conf->sec = ap_make_array(a, 2, sizeof(void *));
@@ -245,22 +234,6 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
     if (new->use_canonical_name != USE_CANONICAL_NAME_UNSET) {
 	conf->use_canonical_name = new->use_canonical_name;
     }
-
-#ifdef RLIMIT_CPU
-    if (new->limit_cpu) {
-        conf->limit_cpu = new->limit_cpu;
-    }
-#endif
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
-    if (new->limit_mem) {
-        conf->limit_mem = new->limit_mem;
-    }
-#endif
-#ifdef RLIMIT_NPROC    
-    if (new->limit_nproc) {
-        conf->limit_nproc = new->limit_nproc;
-    }
-#endif
 
     if (new->limit_req_body) {
         conf->limit_req_body = new->limit_req_body;
@@ -578,7 +551,6 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
     struct in_addr *iaddr;
     struct hostent *hptr;
     int hostname_lookups;
-    int old_stat = SERVER_DEAD;	/* we shouldn't ever be in this state */
 
     /* If we haven't checked the host name, and we want to */
     if (dir_config) {
@@ -598,8 +570,7 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	&& conn->remote_host == NULL
 	&& (type == REMOTE_DOUBLE_REV
 	    || hostname_lookups != HOSTNAME_LOOKUP_OFF)) {
-	old_stat = ap_update_child_status(conn->child_num, SERVER_BUSY_DNS,
-					  (request_rec*)NULL);
+	/* ZZZ change to AP functions. */
 	iaddr = &(conn->remote_addr.sin_addr);
 	hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
 	if (hptr != NULL) {
@@ -623,10 +594,6 @@ API_EXPORT(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 	if (conn->double_reverse == -1) {
 	    return NULL;
 	}
-    }
-    if (old_stat != SERVER_DEAD) {
-	(void)ap_update_child_status(conn->child_num, old_stat,
-				     (request_rec*)NULL);
     }
 
 /*
@@ -695,9 +662,6 @@ API_EXPORT(const char *) ap_get_server_name(request_rec *r)
         if (conn->local_host == NULL) {
 	    struct in_addr *iaddr;
 	    struct hostent *hptr;
-            int old_stat;
-	    old_stat = ap_update_child_status(conn->child_num,
-					      SERVER_BUSY_DNS, r);
 	    iaddr = &(conn->local_addr.sin_addr);
 	    hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr),
 				 AF_INET);
@@ -710,7 +674,6 @@ API_EXPORT(const char *) ap_get_server_name(request_rec *r)
 	        conn->local_host = ap_pstrdup(conn->pool,
 					      r->server->server_hostname);
 	    }
-	    (void) ap_update_child_status(conn->child_num, old_stat, r);
 	}
 	return conn->local_host;
     }
@@ -1047,7 +1010,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
     }
 
     arg = ap_os_canonical_filename(cmd->pool, arg);
-    if (ap_configtestonly && ap_docrootcheck && !ap_is_directory(arg)) {
+    if (/* TODO: ap_configtestonly && ap_docrootcheck && */ !ap_is_directory(arg)) {
 	if (cmd->server->is_virtual) {
 	    fprintf(stderr, "Warning: DocumentRoot [%s] does not exist\n",
 		    arg);
@@ -1832,26 +1795,6 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *server_type(cmd_parms *cmd, void *dummy, char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (!strcasecmp(arg, "inetd")) {
-        ap_standalone = 0;
-    }
-    else if (!strcasecmp(arg, "standalone")) {
-        ap_standalone = 1;
-    }
-    else {
-        return "ServerType must be either 'inetd' or 'standalone'";
-    }
-
-    return NULL;
-}
-
 static const char *server_port(cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
@@ -1893,93 +1836,6 @@ static const char *set_signature_flag(cmd_parms *cmd, core_dir_config *d,
     return NULL;
 }
 
-static const char *set_send_buffer_size(cmd_parms *cmd, void *dummy, char *arg)
-{
-    int s = atoi(arg);
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (s < 512 && s != 0) {
-        return "SendBufferSize must be >= 512 bytes, or 0 for system default.";
-    }
-    cmd->server->send_buffer_size = s;
-    return NULL;
-}
-
-static const char *set_user(cmd_parms *cmd, void *dummy, char *arg)
-{
-#ifdef WIN32
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, cmd->server,
-		 "User directive has no affect on Win32");
-    cmd->server->server_uid = ap_user_id = 1;
-#else
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (!cmd->server->is_virtual) {
-	ap_user_name = arg;
-	cmd->server->server_uid = ap_user_id = ap_uname2id(arg);
-    }
-    else {
-        if (ap_suexec_enabled) {
-	    cmd->server->server_uid = ap_uname2id(arg);
-	}
-	else {
-	    cmd->server->server_uid = ap_user_id;
-	    fprintf(stderr,
-		    "Warning: User directive in <VirtualHost> "
-		    "requires SUEXEC wrapper.\n");
-	}
-    }
-#if !defined (BIG_SECURITY_HOLE) && !defined (OS2)
-    if (cmd->server->server_uid == 0) {
-	fprintf(stderr,
-		"Error:\tApache has not been designed to serve pages while\n"
-		"\trunning as root.  There are known race conditions that\n"
-		"\twill allow any local user to read any file on the system.\n"
-		"\tIf you still desire to serve pages as root then\n"
-		"\tadd -DBIG_SECURITY_HOLE to the EXTRA_CFLAGS line in your\n"
-		"\tsrc/Configuration file and rebuild the server.  It is\n"
-		"\tstrongly suggested that you instead modify the User\n"
-		"\tdirective in your httpd.conf file to list a non-root\n"
-		"\tuser.\n");
-	exit (1);
-    }
-#endif
-#endif /* WIN32 */
-
-    return NULL;
-}
-
-static const char *set_group(cmd_parms *cmd, void *dummy, char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (!cmd->server->is_virtual) {
-	cmd->server->server_gid = ap_group_id = ap_gname2id(arg);
-    }
-    else {
-        if (ap_suexec_enabled) {
-	    cmd->server->server_gid = ap_gname2id(arg);
-	}
-	else {
-	    cmd->server->server_gid = ap_group_id;
-	    fprintf(stderr,
-		    "Warning: Group directive in <VirtualHost> requires "
-		    "SUEXEC wrapper.\n");
-	}
-    }
-
-    return NULL;
-}
-
 static const char *set_server_root(cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1993,8 +1849,7 @@ static const char *set_server_root(cmd_parms *cmd, void *dummy, char *arg)
     if (!ap_is_directory(arg)) {
         return "ServerRoot must be a valid directory";
     }
-    ap_cpystrn(ap_server_root, arg,
-	       sizeof(ap_server_root));
+    ap_server_root = arg;
     return NULL;
 }
 
@@ -2048,42 +1903,6 @@ static const char *set_keep_alive_max(cmd_parms *cmd, void *dummy, char *arg)
     }
 
     cmd->server->keep_alive_max = atoi(arg);
-    return NULL;
-}
-
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (cmd->server->is_virtual) {
-	return "PidFile directive not allowed in <VirtualHost>";
-    }
-    ap_pid_fname = arg;
-    return NULL;
-}
-
-static const char *set_scoreboard(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_scoreboard_fname = arg;
-    return NULL;
-}
-
-static const char *set_lockfile(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_lock_fname = arg;
     return NULL;
 }
 
@@ -2167,314 +1986,12 @@ static const char *set_use_canonical_name(cmd_parms *cmd, core_dir_config *d,
     return NULL;
 }
 
-static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, char *arg) 
-{
-#ifdef WIN32
-    fprintf(stderr, "WARNING: StartServers has no effect on Win32\n");
-#else
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_daemons_to_start = atoi(arg);
-#endif
-    return NULL;
-}
-
-static const char *set_min_free_servers(cmd_parms *cmd, void *dummy, char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_daemons_min_free = atoi(arg);
-    if (ap_daemons_min_free <= 0) {
-       fprintf(stderr, "WARNING: detected MinSpareServers set to non-positive.\n");
-       fprintf(stderr, "Resetting to 1 to avoid almost certain Apache failure.\n");
-       fprintf(stderr, "Please read the documentation.\n");
-       ap_daemons_min_free = 1;
-    }
-       
-    return NULL;
-}
-
-static const char *set_max_free_servers(cmd_parms *cmd, void *dummy, char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_daemons_max_free = atoi(arg);
-    return NULL;
-}
-
-static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_daemons_limit = atoi(arg);
-    if (ap_daemons_limit > HARD_SERVER_LIMIT) {
-       fprintf(stderr, "WARNING: MaxClients of %d exceeds compile time limit "
-           "of %d servers,\n", ap_daemons_limit, HARD_SERVER_LIMIT);
-       fprintf(stderr, " lowering MaxClients to %d.  To increase, please "
-           "see the\n", HARD_SERVER_LIMIT);
-       fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
-       ap_daemons_limit = HARD_SERVER_LIMIT;
-    } 
-    else if (ap_daemons_limit < 1) {
-	fprintf(stderr, "WARNING: Require MaxClients > 0, setting to 1\n");
-	ap_daemons_limit = 1;
-    }
-    return NULL;
-}
-
-static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_max_requests_per_child = atoi(arg);
-    return NULL;
-}
-
-static const char *set_threads(cmd_parms *cmd, void *dummy, char *arg) {
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_threads_per_child = atoi(arg);
-    if (ap_threads_per_child > HARD_SERVER_LIMIT) {
-        fprintf(stderr, "WARNING: ThreadsPerChild of %d exceeds compile time limit "
-                "of %d threads,\n", ap_threads_per_child, HARD_SERVER_LIMIT);
-        fprintf(stderr, " lowering ThreadsPerChild to %d.  To increase, please "
-                "see the\n", HARD_SERVER_LIMIT);
-        fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
-        ap_threads_per_child = HARD_SERVER_LIMIT;
-    } 
-    else if (ap_threads_per_child < 1) {
-	fprintf(stderr, "WARNING: Require ThreadsPerChild > 0, setting to 1\n");
-	ap_threads_per_child = 1;
-    }
-
-    return NULL;
-}
-
-static const char *set_excess_requests(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_excess_requests_per_child = atoi(arg);
-    return NULL;
-}
-
-
-#if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
-static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
-                       const char * arg2, int type)
-{
-    char *str;
-    struct rlimit *limit;
-    /* If your platform doesn't define rlim_t then typedef it in ap_config.h */
-    rlim_t cur = 0;
-    rlim_t max = 0;
-
-    *plimit = (struct rlimit *)ap_pcalloc(cmd->pool, sizeof(**plimit));
-    limit = *plimit;
-    if ((getrlimit(type, limit)) != 0)	{
-	*plimit = NULL;
-	ap_log_error(APLOG_MARK, APLOG_ERR, cmd->server,
-		     "%s: getrlimit failed", cmd->cmd->name);
-	return;
-    }
-
-    if ((str = ap_getword_conf(cmd->pool, &arg))) {
-	if (!strcasecmp(str, "max")) {
-	    cur = limit->rlim_max;
-	}
-	else {
-	    cur = atol(str);
-	}
-    }
-    else {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
-		     "Invalid parameters for %s", cmd->cmd->name);
-	return;
-    }
-    
-    if (arg2 && (str = ap_getword_conf(cmd->pool, &arg2))) {
-	max = atol(str);
-    }
-
-    /* if we aren't running as root, cannot increase max */
-    if (geteuid()) {
-	limit->rlim_cur = cur;
-	if (max) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
-			 "Must be uid 0 to raise maximum %s", cmd->cmd->name);
-	}
-    }
-    else {
-        if (cur) {
-	    limit->rlim_cur = cur;
-	}
-        if (max) {
-	    limit->rlim_max = max;
-	}
-    }
-}
-#endif
-
-#if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)) || !defined (RLIMIT_NPROC)
-static const char *no_set_limit(cmd_parms *cmd, core_dir_config *conf,
-				char *arg, char *arg2)
-{
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, cmd->server,
-		"%s not supported on this platform", cmd->cmd->name);
-    return NULL;
-}
-#endif
-
-#ifdef RLIMIT_CPU
-static const char *set_limit_cpu(cmd_parms *cmd, core_dir_config *conf, 
-				 char *arg, char *arg2)
-{
-    set_rlimit(cmd, &conf->limit_cpu, arg, arg2, RLIMIT_CPU);
-    return NULL;
-}
-#endif
-
-#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)
-static const char *set_limit_mem(cmd_parms *cmd, core_dir_config *conf, 
-				 char *arg, char * arg2)
-{
-#if defined(RLIMIT_AS)
-    set_rlimit(cmd, &conf->limit_mem, arg, arg2 ,RLIMIT_AS);
-#elif defined(RLIMIT_DATA)
-    set_rlimit(cmd, &conf->limit_mem, arg, arg2, RLIMIT_DATA);
-#elif defined(RLIMIT_VMEM)
-    set_rlimit(cmd, &conf->limit_mem, arg, arg2, RLIMIT_VMEM);
-#endif
-    return NULL;
-}
-#endif
-
-#ifdef RLIMIT_NPROC
-static const char *set_limit_nproc(cmd_parms *cmd, core_dir_config *conf,  
-				   char *arg, char * arg2)
-{
-    set_rlimit(cmd, &conf->limit_nproc, arg, arg2, RLIMIT_NPROC);
-    return NULL;
-}
-#endif
-
-static const char *set_bind_address(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_bind_address.s_addr = ap_get_virthost_addr(arg, NULL);
-    return NULL;
-}
-
-static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
-{
-    listen_rec *new;
-    char *ports;
-    unsigned short port;
-
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ports = strchr(ips, ':');
-    if (ports != NULL) {
-	if (ports == ips) {
-	    return "Missing IP address";
-	}
-	else if (ports[1] == '\0') {
-	    return "Address must end in :<port-number>";
-	}
-	*(ports++) = '\0';
-    }
-    else {
-	ports = ips;
-    }
-
-    new=ap_pcalloc(cmd->pool, sizeof(listen_rec));
-    new->local_addr.sin_family = AF_INET;
-    if (ports == ips) { /* no address */
-	new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    }
-    else {
-	new->local_addr.sin_addr.s_addr = ap_get_virthost_addr(ips, NULL);
-    }
-    port = atoi(ports);
-    if (!port) {
-	return "Port must be numeric";
-    }
-    new->local_addr.sin_port = htons(port);
-    new->fd = -1;
-    new->used = 0;
-    new->next = ap_listeners;
-    ap_listeners = new;
-    return NULL;
-}
-
-static const char *set_listenbacklog(cmd_parms *cmd, void *dummy, char *arg) 
-{
-    int b;
-
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    b = atoi(arg);
-    if (b < 1) {
-        return "ListenBacklog must be > 0";
-    }
-    ap_listenbacklog = b;
-    return NULL;
-}
-
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
-{
-    struct stat finfo;
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    arg = ap_server_root_relative(cmd->pool, arg);
-    if ((stat(arg, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {
-	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", arg, 
-			  " does not exist or is not a directory", NULL);
-    }
-    ap_cpystrn(ap_coredump_dir, arg, sizeof(ap_coredump_dir));
-    return NULL;
-}
 
 static const char *include_config (cmd_parms *cmd, void *dummy, char *name)
 {
-    name = ap_server_root_relative(cmd->pool, name);
-    
-    ap_process_resource_config(cmd->server, name, cmd->pool, cmd->temp_pool);
-
+    ap_process_resource_config(cmd->server,
+	ap_server_root_relative(cmd->pool, name),
+	cmd->pool, cmd->temp_pool);
     return NULL;
 }
 
@@ -2590,6 +2107,8 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
+    /* TODO: re-implement the server token stuff. */
+#if 0
     if (!strcasecmp(arg, "OS")) {
         ap_server_tokens = SrvTk_OS;
     }
@@ -2599,6 +2118,7 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
     else {
         ap_server_tokens = SrvTk_FULL;
     }
+#endif
     return NULL;
 }
 
@@ -2791,16 +2311,10 @@ static const command_rec core_cmds[] = {
 
 /* Old server config file commands */
 
-{ "ServerType", server_type, NULL, RSRC_CONF, TAKE1,
-  "'inetd' or 'standalone'"},
 { "Port", server_port, NULL, RSRC_CONF, TAKE1, "A TCP port number"},
 { "HostnameLookups", set_hostname_lookups, NULL, ACCESS_CONF|RSRC_CONF, TAKE1,
   "\"on\" to enable, \"off\" to disable reverse DNS lookups, or \"double\" to "
   "enable double-reverse DNS lookups" },
-{ "User", set_user, NULL, RSRC_CONF, TAKE1,
-  "Effective user id for this server"},
-{ "Group", set_group, NULL, RSRC_CONF, TAKE1,
-  "Effective group id for this server"},
 { "ServerAdmin", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, server_admin), RSRC_CONF, TAKE1,
   "The email address of the server administrator" },
@@ -2814,12 +2328,6 @@ static const command_rec core_cmds[] = {
 { "ErrorLog", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, error_fname), RSRC_CONF, TAKE1,
   "The filename of the error log" },
-{ "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
-    "A file for logging the server process ID"},
-{ "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF, TAKE1,
-    "A file for Apache to maintain runtime process management information"},
-{ "LockFile", set_lockfile, NULL, RSRC_CONF, TAKE1,
-    "The lockfile used when Apache needs to lock the accept() call"},
 { "AccessConfig", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, access_confname), RSRC_CONF, TAKE1,
   "The filename of the access config file" },
@@ -2844,60 +2352,15 @@ static const command_rec core_cmds[] = {
 { "UseCanonicalName", set_use_canonical_name, NULL,
   RSRC_CONF, TAKE1,
   "How to work out the ServerName : Port when constructing URLs" },
-{ "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1,
-  "Number of child processes launched at server startup" },
-{ "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF, TAKE1,
-  "Minimum number of idle children, to handle request spikes" },
-{ "MaxSpareServers", set_max_free_servers, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of idle children" },
-{ "MaxServers", set_max_free_servers, NULL, RSRC_CONF, TAKE1,
-  "Deprecated equivalent to MaxSpareServers" },
-{ "ServersSafetyLimit", set_server_limit, NULL, RSRC_CONF, TAKE1,
-  "Deprecated equivalent to MaxClients" },
-{ "MaxClients", set_server_limit, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of children alive at the same time" },
-{ "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of requests a particular child serves before dying." },
-{ "RLimitCPU",
-#ifdef RLIMIT_CPU
-  set_limit_cpu, (void*)XtOffsetOf(core_dir_config, limit_cpu),
-#else
-  no_set_limit, NULL,
-#endif
-  OR_ALL, TAKE12, "Soft/hard limits for max CPU usage in seconds" },
-{ "RLimitMEM",
-#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined (RLIMIT_AS)
-  set_limit_mem, (void*)XtOffsetOf(core_dir_config, limit_mem),
-#else
-  no_set_limit, NULL,
-#endif
-  OR_ALL, TAKE12, "Soft/hard limits for max memory usage per process" },
-{ "RLimitNPROC",
-#ifdef RLIMIT_NPROC
-  set_limit_nproc, (void*)XtOffsetOf(core_dir_config, limit_nproc),
-#else
-  no_set_limit, NULL,
-#endif
-   OR_ALL, TAKE12, "soft/hard limits for max number of processes per uid" },
-{ "BindAddress", set_bind_address, NULL, RSRC_CONF, TAKE1,
-  "'*', a numeric IP address, or the name of a host with a unique IP address"},
-{ "Listen", set_listener, NULL, RSRC_CONF, TAKE1,
-  "A port number or a numeric IP address and a port number"},
-{ "SendBufferSize", set_send_buffer_size, NULL, RSRC_CONF, TAKE1,
-  "Send buffer size in bytes"},
+/* TODOC: MaxServers is deprecated */
+/* TODOC: ServersSafetyLimit is deprecated */
+/* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
+/* TODOC: BindAddress deprecated */
 { "AddModule", add_module_command, NULL, RSRC_CONF, ITERATE,
   "The name of a module" },
 { "ClearModuleList", clear_module_list_command, NULL, RSRC_CONF, NO_ARGS, 
   NULL },
-{ "ThreadsPerChild", set_threads, NULL, RSRC_CONF, TAKE1,
-  "Number of threads a child creates" },
-{ "ExcessRequestsPerChild", set_excess_requests, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of requests a particular child serves after it is ready "
-  "to die." },
-{ "ListenBacklog", set_listenbacklog, NULL, RSRC_CONF, TAKE1,
-  "Maximum length of the queue of pending connections, as used by listen(2)" },
-{ "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
-  "The location of the directory Apache changes to before dumping core" },
+/* TODO: ListenBacklog in MPM */
 { "Include", include_config, NULL, (RSRC_CONF | ACCESS_CONF), TAKE1,
   "Name of the config file to be included" },
 { "LogLevel", set_loglevel, NULL, RSRC_CONF, TAKE1,
@@ -3007,7 +2470,7 @@ static int default_handler(request_rec *r)
     core_dir_config *d =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
     int rangestatus, errstatus;
-    FILE *f;
+    APRFile fd;         /*  Abstract out File descriptors. */
 #ifdef USE_MMAP_FILES
     caddr_t mm;
 #endif

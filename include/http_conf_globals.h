@@ -62,58 +62,21 @@
 extern "C" {
 #endif
 
-/* 
- * Process config --- what the process ITSELF is doing
- */
+/* TODO: this file should be deleted after the other todos are dealt with */
 
-extern int ap_standalone;
-extern int ap_configtestonly;
-extern int ap_docrootcheck;
-extern uid_t ap_user_id;
-extern char *ap_user_name;
-extern gid_t ap_group_id;
-#ifdef MULTIPLE_GROUPS
-extern gid_t group_id_list[NGROUPS_MAX];
-#endif
-extern int ap_max_requests_per_child;
-extern int ap_threads_per_child;
-extern int ap_excess_requests_per_child;
-extern struct in_addr ap_bind_address;
-extern listen_rec *ap_listeners;
-extern int ap_daemons_to_start;
-extern int ap_daemons_min_free;
-extern int ap_daemons_max_free;
-extern int ap_daemons_limit;
-extern MODULE_VAR_EXPORT int ap_suexec_enabled;
-extern int ap_listenbacklog;
-extern int ap_dump_settings;
-extern API_VAR_EXPORT int ap_extended_status;
+/* TODO: extern MODULE_VAR_EXPORT int ap_suexec_enabled; */
+#define ap_suexec_enabled (0)
+/* TODO: extern API_VAR_EXPORT int ap_extended_status; */
 
-extern char *ap_pid_fname;
-extern char *ap_scoreboard_fname;
-extern char *ap_lock_fname;
-extern MODULE_VAR_EXPORT char *ap_server_argv0;
-
-extern enum server_token_type ap_server_tokens;
-
-/* Trying to allocate these in the config pool gets us into some *nasty*
- * chicken-and-egg problems in http_main.c --- where do you stick them
- * when pconf gets cleared?  Better to just allocate a little space
- * statically...
- */
-
-extern API_VAR_EXPORT char ap_server_root[MAX_STRING_LEN];
-extern char ap_server_confname[MAX_STRING_LEN];
-
-/* for -C, -c and -D switches */
-extern array_header *ap_server_pre_read_config;
-extern array_header *ap_server_post_read_config;
-extern array_header *ap_server_config_defines;
+/* TODO: extern enum server_token_type ap_server_tokens; */
 
 /* We want this to have the least chance of being corrupted if there
  * is some memory corruption, so we allocate it statically.
  */
-extern char ap_coredump_dir[MAX_STRING_LEN];
+/* TODO: extern char ap_coredump_dir[MAX_STRING_LEN]; */
+
+/* TODO: extern int ap_configtestonly;  ... although it pains me because this breaks an abstraction */
+/* TODO: extern int ap_docrootcheck; */
 
 #ifdef __cplusplus
 }

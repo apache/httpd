@@ -74,7 +74,6 @@
                                  * support code... */
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include <stdarg.h>
-#include "http_conf_globals.h"
 
 #define SET_BYTES_SENT(r) \
   do { if (r->sent_bodyct) \
@@ -668,7 +667,8 @@ static int getline(char *s, int n, BUFF *in, int fold)
     pos = s;
 
     do {
-        retval = ap_bgets(pos, n, in);     /* retval == -1 if error, 0 if EOF */
+        retval = ap_bgets(pos, n, in);
+       /* retval == -1 if error, 0 if EOF */
 
         if (retval <= 0)
             return ((retval < 0) && (total == 0)) ? -1 : total;
@@ -703,7 +703,7 @@ static int getline(char *s, int n, BUFF *in, int fold)
          * the next line begins with a continuation character.
          */
     } while (fold && (retval != 1) && (n > 1)
-                  && (ap_blookc(&next, in) == 1)
+                  && (next = ap_blookc(in))
                   && ((next == ' ') || (next == '\t')));
 
     return total;
@@ -909,14 +909,13 @@ request_rec *ap_read_request(conn_rec *conn)
     r = ap_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
     r->connection      = conn;
-    conn->server       = conn->base_server;
-    r->server          = conn->server;
+    r->server          = conn->base_server;
 
     conn->keptalive    = conn->keepalive == 1;
     conn->keepalive    = 0;
 
-    conn->user         = NULL;
-    conn->ap_auth_type    = NULL;
+    r->user            = NULL;
+    r->ap_auth_type    = NULL;
 
     r->headers_in      = ap_make_table(r->pool, 50);
     r->subprocess_env  = ap_make_table(r->pool, 50);
@@ -939,13 +938,14 @@ request_rec *ap_read_request(conn_rec *conn)
     ap_bsetflag(r->connection->client, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 1);
 #endif
 
+    ap_bsetopt(conn->client, BO_TIMEOUT,
+        conn->keptalive
+            ? &r->server->keep_alive_timeout
+            : &r->server->timeout);
+
     /* Get the request... */
-
-    ap_keepalive_timeout("read request line", r);
     if (!read_request_line(r)) {
-        ap_kill_timeout(r);
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
-
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: URI too long");
             ap_send_error_response(r, 0);
@@ -954,10 +954,12 @@ request_rec *ap_read_request(conn_rec *conn)
         }
         return NULL;
     }
+    if (r->connection->keptalive) {
+        ap_bsetopt(r->connection->client, BO_TIMEOUT,
+            &r->server->timeout);
+    }
     if (!r->assbackwards) {
-        ap_hard_timeout("read request headers", r);
         get_mime_headers(r);
-        ap_kill_timeout(r);
         if (r->status != HTTP_REQUEST_TIME_OUT) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                          "request failed: error reading the headers");
@@ -967,8 +969,6 @@ request_rec *ap_read_request(conn_rec *conn)
         }
     }
     else {
-        ap_kill_timeout(r);
-
         if (r->header_only) {
             /*
              * Client asked for headers only with HTTP/0.9, which doesn't send
@@ -1157,8 +1157,8 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
      * because it has the lifetime of the connection.  The other allocations
      * are temporary and can be tossed away any time.
      */
-    r->connection->user = ap_getword_nulls (r->connection->pool, &t, ':');
-    r->connection->ap_auth_type = "Basic";
+    r->user = ap_getword_nulls (r->pool, &t, ':');
+    r->ap_auth_type = "Basic";
 
     *pw = t;
 

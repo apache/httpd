@@ -58,11 +58,10 @@
 #define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
-#include "http_conf_globals.h"
 #include "http_main.h"
 #include "http_log.h"
+#include "http_core.h"
 #include "http_protocol.h"
-#include "http_core.h"		/* For document_root.  Sigh... */
 #include "http_request.h"	/* for sub_req_lookup_uri() */
 #include "util_script.h"
 #include "util_date.h"		/* For parseHTTPdate() */
@@ -285,11 +284,11 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     ap_table_addn(e, "REMOTE_PORT",
 		  ap_psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
 
-    if (c->user) {
-	ap_table_addn(e, "REMOTE_USER", c->user);
+    if (r->user) {
+	ap_table_addn(e, "REMOTE_USER", r->user);
     }
-    if (c->ap_auth_type) {
-	ap_table_addn(e, "AUTH_TYPE", c->ap_auth_type);
+    if (r->ap_auth_type) {
+	ap_table_addn(e, "AUTH_TYPE", r->ap_auth_type);
     }
     rem_logname = ap_get_remote_logname(r);
     if (rem_logname) {
