@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/02/22 01:28:51 $]
+Last modified at [$Date: 2001/03/03 01:07:00 $]
 
 Release:
 
@@ -92,6 +92,14 @@ RELEASE SHOWSTOPPERS:
 
     * ap_vrprintf() needs to handle more than 4K
         Status: Greg volunteers
+
+    * mod_dir should normally redirect ALL directory requests which do
+      not include a trailing slash on the URI. However, if a "notes"
+      flag is set (say, via BrowserMatch), this behavior will be
+      disabled for non-GET requests.
+        Status: Greg volunteers
+        MsgId: <20010227104646.E2297@lyra.org>
+        MsgId: <3A9C0097.9C83F07C@Golux.Com>
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
