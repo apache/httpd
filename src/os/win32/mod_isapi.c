@@ -172,7 +172,7 @@ int isapi_handler (request_rec *r) {
 
     /* Run GetExtensionVersion() */
 
-    if ((*isapi_version)(pVer) != TRUE) {
+    if (!(*isapi_version)(pVer)) {
 	ap_log_rerror(APLOG_MARK, APLOG_ALERT, r,
 		    "ISAPI GetExtensionVersion() failed: %s", r->filename);
 	FreeLibrary(isapi_handle);
