@@ -150,7 +150,12 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     SunOS:5.*)
-	SOLVER=`echo ${RELEASE}|sed -e 's/^5.//'`
+	SOLVER=`echo ${RELEASE}|awk -F. '{
+	    if (NF < 3)
+		printf "2%s0\n",$2
+	    else
+	    	printf "2%s%s\n",$2,$3
+	}'`
 	echo "${MACHINE}-sun-solaris2.${SOLVER}"; exit 0
 	;;
 

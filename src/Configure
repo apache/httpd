@@ -386,26 +386,20 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lmalloc -lprot"
 	DEF_WANTHSREGEX=no
 	;;
-    *-solaris2.[0123]*)
-	OS='Solaris 2.[0123]'
-	CFLAGS="$CFLAGS -DSOLARIS2 -DSOLARIS_PRE24"
-	LIBS="$LIBS -lsocket -lnsl"
-	DBM_LIB=""
-	DEF_WANTHSREGEX=yes
-	;;
-    *-solaris2.[45]*)
-	OS='Solaris 2.[45]'
-	CFLAGS="$CFLAGS -DSOLARIS2 -DSOLARIS_PRE26"
-	LIBS="$LIBS -lsocket -lnsl"
-	DBM_LIB=""
-	DEF_WANTHSREGEX=no
-	;;
     *-solaris2*)
-	OS='Solaris 2'
-	CFLAGS="$CFLAGS -DSOLARIS2"
+    	SOLVER=`echo $PLAT | sed -e 's/^.*solaris2.//'`
+	OS="Solaris $SOLVER"
+	CFLAGS="$CFLAGS -DSOLARIS2=$SOLVER"
 	LIBS="$LIBS -lsocket -lnsl"
 	DBM_LIB=""
-	DEF_WANTHSREGEX=no
+	case "$SOLVER" in
+	    2[0123]*)
+		DEF_WANTHSREGEX=yes
+		;;
+	    *)
+		DEF_WANTHSREGEX=no
+		;;
+	esac
 	;;
     *-sunos4*)
 	OS='SunOS 4'
