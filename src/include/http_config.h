@@ -190,6 +190,9 @@ typedef struct module_struct {
 				 * check that module is compatible with this
 				 * version of the server.
 				 */
+    int minor_version;          /* API minor version. Provides API feature
+                                 * milestones. Not checked during module init
+				 */
     int module_index;		/* Index to this modules structures in
 				 * config vectors.
 				 */
@@ -269,14 +272,21 @@ typedef struct module_struct {
 } module;
 
 /* Initializer for the first few module slots, which are only
- * really set up once we start running.  Note that the first word
- * is a version check; this should allow us to deal with changes to
- * the API (the server can detect an old-format module, and either
- * handle it back-compatibly, or at least signal an error).
+ * really set up once we start running.  Note that the first two slots
+ * provide a version check; this should allow us to deal with changes to
+ * the API. The major number should reflect changes to the API handler table
+ * itself or removal of functionality. The minor number should reflect
+ * additions of functionality to the existing API. (the server can detect
+ * an old-format module, and either handle it back-compatibly, or at least
+ * signal an error). See src/include/ap_mmn.h for MMN version history.
  */
 
-#define MODULE_MAGIC_NUMBER 19980811
-#define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, -1, __FILE__, NULL, NULL
+#define STANDARD_MODULE_STUFF	MODULE_MAGIC_NUMBER_MAJOR, \
+				MODULE_MAGIC_NUMBER_MINOR, \
+				-1, \
+				__FILE__, \
+				NULL, \
+				NULL
 
 /* Generic accessors for other modules to get at their own module-specific
  * data

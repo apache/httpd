@@ -72,6 +72,7 @@ extern "C" {
 #include "alloc.h"
 #include "buff.h"
 #include "ap.h"
+#include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ macros */
 
 /* ----------------------------- config dir ------------------------------ */
 
