@@ -2,23 +2,23 @@
 trap 'rm -f $tmpfile $tmpfile2 $tmpfile3; exit' 0 1 2 3 15
 
 # Apache configuration script, first cut --- rst.
-# Dont like it?  Inspired to do something better?  Go for it.
+# Don't like it?  Inspired to do something better?  Go for it.
 
 # second cut --- jmj
 # At this point we change what Configuration contains. It maintain
 # contains comments, specific compiler flags, a list of included
 # modules and "rules". These rules are used to allow Configure to
-# be totally configured from Configuration
+# be totally configured from Configuration.
 #
 # Uses 4 supplemental scripts located in ./helpers:
 #	CutRule: Determines the value for a specified Rule
 #	GuessOS: Uses uname to determine OS/platform
 #	PrintPath: generic "type" or "whence" replacement
 #	TestCompile: Can check for libs and if $(CC) is ANSI
-#	 (ie: a simple "sanity check")
+#	 (i.e., a simple "sanity check")
 #
 ####################################################################
-## Setup some defaults
+## Set up some defaults
 ##
 file=Configuration
 tmpfile=htconf.$$
