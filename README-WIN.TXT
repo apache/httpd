@@ -1,3 +1,14 @@
+NOTE - About this File
+ ======================
+
+This file contains development information on Apache for Windows, not all
+of which is relevant to the current version. For information on
+installation and use of Apache for Windows, please see
+http://www.apache.org/docs/windows.html, also available as
+htdocs/manual/windows.html with this distribution.
+
+Alexei Kosut <akosut@apache.org> - July 21, 1997
+
 Integration with official Apache sources
  ========================================
 

@@ -74,9 +74,9 @@
  * Compiling a module as a DLL (using Microsoft Visual C++):
  *
  * 1. Add the following to the module source file's module record
- *    defenition: __declspec(dllexport). i.e. if you have
+ *    definition: MODULE_VAR_EXPORT. i.e. if you have
  *    "module foo_module;", replace it with
- *    "module __declspec(dllexport) foo_module;". If your module is to be
+ *    "module MODULE+VAR_EXPORT foo_module;". If your module is to be
  *    compiled with both Windows and Unix, you may wish to use an #ifdef
  *    WIN32
  *
@@ -85,8 +85,8 @@
  *    as a DLL.
  *
  * 2. Create a DLL file with just the module source file (and any associated
- *    files). Be sure to link it against the libapache.lib created when
- *    compiling libapache.dll. You may also have to tweak the settings to
+ *    files). Be sure to link it against the ApacheCore.lib created when
+ *    compiling ApacheCore.dll. You may also have to tweak the settings to
  *    find all of the Apache includes files correctly. After creating the
  *    DLL, follow the above instructions to load it into Apache.
  */

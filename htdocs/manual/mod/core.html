@@ -72,6 +72,7 @@ always available.
 <li><A HREF="#serverroot">ServerRoot</A>
 <li><A HREF="#servertype">ServerType</A>
 <li><A HREF="#startservers">StartServers</A>
+<li><A HREF="#threadsperchild">ThreadsPerChild</a>
 <li><A HREF="#timeout">TimeOut</A>
 <li><A HREF="#user">User</A>
 <li><A HREF="#virtualhost">&lt;VirtualHost&gt;</A>
@@ -1391,8 +1392,31 @@ The StartServers directive sets the number of child server processes created
 on startup. As the number of processes is dynamically controlled depending
 on the load, there is usually little reason to adjust this parameter.<p>
 
+<p>When running with Microsoft Windows, this directive sets the total
+   number of child processes running. Since the Windows version of Apache
+   is multithreaded, one processes handles all the requests. The rest are
+   held in reserve until the main processes dies.
+
 See also <A HREF="#minspareservers">MinSpareServers</A> and
 <A HREF="#maxspareservers">MaxSpareServers</A>.<p><hr>
+
+<h2><A name="threadsperchild">ThreadsPerChild</A></h2>
+<strong>Syntax:</strong> ThreadsPerChild <em>number</em><br>
+<strong>Default:</strong> <code>ThreadsPerChild 50</code><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> core (Windows)<br>
+<strong>Compatbility:</strong> Available only with Apache 1.3 and later
+with Windows
+
+<p>This directive tells the server how many threads it should use. This
+   is the maximum number of connections the server can handle at once; be
+   sure and set this number high enough for your site if you get a lot of
+   hits.
+
+<p>See also <A HREF="#startservers">StartServers</A> and <A
+   HREF="#maxrequestsperchild">MaxRequestsPerChild</A>.</p>
+
+<hr>
 
 <h2><A name="timeout">TimeOut directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt TimeOut} directive&gt; -->
