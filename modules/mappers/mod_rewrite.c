@@ -1874,7 +1874,7 @@ static char *lookup_variable(request_rec *r, char *var)
  * Bracketed expression handling
  * s points after the opening bracket
  */
-static char *find_closing_curly(char *s)
+static APR_INLINE char *find_closing_curly(char *s)
 {
     unsigned depth;
 
@@ -1890,7 +1890,7 @@ static char *find_closing_curly(char *s)
     return NULL;
 }
 
-static char *find_char_in_curlies(char *s, int c)
+static APR_INLINE char *find_char_in_curlies(char *s, int c)
 {
     unsigned depth;
 
@@ -3216,7 +3216,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
  */
 
 /* Lexicographic Compare */
-static int compare_lexicography(char *cpNum1, char *cpNum2)
+static APR_INLINE int compare_lexicography(char *cpNum1, char *cpNum2)
 {
     int i;
     int n1, n2;
