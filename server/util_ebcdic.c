@@ -58,7 +58,7 @@
 
 #include "ap_config.h"
 
-#ifdef AP_CHARSET_EBCDIC
+#if APR_CHARSET_EBCDIC
 
 #include "apr_strings.h"
 #include "httpd.h"
@@ -141,4 +141,4 @@ void ap_xlate_proto_from_ascii(char *buffer, apr_size_t len)
                           buffer, &outbytes_left);
 }
 
-#endif /* AP_CHARSET_EBCDIC */
+#endif /* APR_CHARSET_EBCDIC */

@@ -72,7 +72,7 @@ extern "C" {
  * @package Utilities for EBCDIC conversion
  */
 
-#ifdef AP_CHARSET_EBCDIC
+#if APR_CHARSET_EBCDIC
 
 /**
  * Setup all of the global translation handlers
@@ -100,11 +100,11 @@ void ap_xlate_proto_from_ascii(char *buffer, apr_size_t len);
 }
 #endif
 
-#else   /* AP_CHARSET_EBCDIC */
+#else   /* APR_CHARSET_EBCDIC */
 
 #define ap_xlate_proto_to_ascii(x,y)          /* NOOP */
 #define ap_xlate_proto_from_ascii(x,y)        /* NOOP */
 
-#endif  /* AP_CHARSET_EBCDIC */
+#endif  /* APR_CHARSET_EBCDIC */
     
 #endif  /* !APACHE_UTIL_EBCDIC_H */

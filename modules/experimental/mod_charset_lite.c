@@ -291,7 +291,7 @@ static int find_code_page(request_rec *r)
  */
              
     if (strncasecmp(mime_type, "text/", 5) &&
-#ifdef AP_CHARSET_EBCDIC
+#if APR_CHARSET_EBCDIC
         /* On an EBCDIC machine, be willing to translate mod_autoindex-
          * generated output.  Otherwise, it doesn't look too cool.
          *

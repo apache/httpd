@@ -56,8 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifdef AP_CHARSET_EBCDIC
 #include "ap_config.h"
+#if APR_CHARSET_EBCDIC
 #include "ebcdic.h"
 /*
 This code does basic character mapping for IBM's TPF operating system.
@@ -217,5 +217,5 @@ ascii2ebcdic(void *dest, const void *srce, size_t count)
                 *udest++ = os_toebcdic[*usrce++];
     }
 }
-#endif /*AP_CHARSET_EBCDIC*/
+#endif /*APR_CHARSET_EBCDIC*/
  

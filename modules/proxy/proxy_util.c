@@ -78,7 +78,7 @@ int ap_proxy_hex2c(const char *x)
 {
     int i, ch;
 
-#ifndef AP_CHARSET_EBCDIC
+#if !APR_CHARSET_EBCDIC
     ch = x[0];
     if (apr_isdigit(ch))
 	i = ch - '0';
@@ -96,14 +96,14 @@ int ap_proxy_hex2c(const char *x)
     else
 	i += ch - ('a' - 10);
     return i;
-#else /*AP_CHARSET_EBCDIC*/
+#else /*APR_CHARSET_EBCDIC*/
     return (1 == sscanf(x, "%2x", &i)) ? os_toebcdic[i&0xFF] : 0;
-#endif /*AP_CHARSET_EBCDIC*/
+#endif /*APR_CHARSET_EBCDIC*/
 }
 
 void ap_proxy_c2hex(int ch, char *x)
 {
-#ifndef AP_CHARSET_EBCDIC
+#if !APR_CHARSET_EBCDIC
     int i;
 
     x[0] = '%';
@@ -118,14 +118,14 @@ void ap_proxy_c2hex(int ch, char *x)
 	x[2] = ('A' - 10) + i;
     else
 	x[2] = '0' + i;
-#else /*AP_CHARSET_EBCDIC*/
+#else /*APR_CHARSET_EBCDIC*/
     static const char ntoa[] = { "0123456789ABCDEF" };
     ch &= 0xFF;
     x[0] = '%';
     x[1] = ntoa[(os_toascii[ch]>>4)&0x0F];
     x[2] = ntoa[os_toascii[ch]&0x0F];
     x[3] = '\0';
-#endif /*AP_CHARSET_EBCDIC*/
+#endif /*APR_CHARSET_EBCDIC*/
 }
 
 /*
@@ -480,7 +480,7 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
     if (c) ap_cache_el_data(c, &cachefp);
 
 #if 0
-#ifdef AP_CHARSET_EBCDIC
+#if APR_CHARSET_EBCDIC
     /* The cache copy is ASCII, not EBCDIC, even for text/html) */
     ap_bsetflag(f, B_ASCII2EBCDIC|B_EBCDIC2ASCII, 0);
     if (c != NULL && c->fp != NULL)

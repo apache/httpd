@@ -142,11 +142,11 @@ enum enctype {
 #define HDR_APP (0)		/* append header, for proxy_add_header() */
 #define HDR_REP (1)		/* replace header, for proxy_add_header() */
 
-#ifdef AP_CHARSET_EBCDIC
+#if APR_CHARSET_EBCDIC
 #define CRLF   "\r\n"
-#else /*AP_CHARSET_EBCDIC*/
+#else /*APR_CHARSET_EBCDIC*/
 #define CRLF   "\015\012"
-#endif /*AP_CHARSET_EBCDIC*/
+#endif /*APR_CHARSET_EBCDIC*/
 
 #define	DEFAULT_FTP_DATA_PORT	20
 #define	DEFAULT_FTP_PORT	21
