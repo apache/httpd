@@ -1,5 +1,7 @@
 Changes with Apache 2.0.29-dev
 
+  *) Add Debian layout.  [Daniel Stone <daniel@sfarc.net>]
+
   *) If shared modules are requested and mod_so is not available,
      produce a fatal config-time error.  [Justin Erenkrantz]
 
