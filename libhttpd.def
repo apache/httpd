@@ -430,6 +430,10 @@ EXPORTS
        ap_xml_quote_string @454
        ap_xml_quote_elem   @455
        ap_xml_insert_uri   @456
-	
-	
-        
+;
+; buckets
+       ap_bucket_create_transient @460
+       ap_bucket_split_shared @461
+       ap_bucket_make_shared  @462
+       ap_bucket_destroy_shared @463
+       
