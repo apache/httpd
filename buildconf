@@ -1,5 +1,8 @@
 #!/bin/sh
 
+BUILD_BASE=`pwd`
+export BUILD_BASE
+
 if [ "x$@" = "x" ]; then
 	${MAKE:-make} -f build/build.mk
 else

@@ -60,7 +60,7 @@
 # The build environment was provided by Sascha Schumann.
 #
 
-include generated_lists
+include $(BUILD_BASE)/generated_lists
 
 TOUCH_FILES = mkinstalldirs install-sh missing
 
