@@ -57,7 +57,7 @@ EXTRA_INCLUDES=
 # functions. The format is: Rule RULE=value
 #
 # At present, only the following RULES are known: WANTHSREGEX, SOCKS4,
-# STATUS, and IRIXNIS.
+# STATUS, IRIXNIS and IRIXN32
 #
 # For all Rules, if set to "yes", then Configure knows we want that
 # capability and does what is required to add it in. If set to "default"
@@ -80,10 +80,15 @@ EXTRA_INCLUDES=
 #  SGI IRIX. If you are, and you are using NIS, you should set this
 #  to 'yes'
 #
+# IRIXN32:
+#  If you are running a version of IRIX and Configure detects
+#  n32 libraries, it will use those instead of the o32 ones.
+#
 
 Rule STATUS=yes
 Rule SOCKS4=no
 Rule IRIXNIS=no
+Rule IRIXN32=yes
 
 # The following rules should be set automatically by Configure. However, if
 # they are not set by Configure (because we don't know the correct value for

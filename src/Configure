@@ -165,6 +165,7 @@ RULE_WANTHSREGEX=`./helpers/CutRule WANTHSREGEX $file`
 RULE_STATUS=`./helpers/CutRule STATUS $file`
 RULE_SOCKS4=`./helpers/CutRule SOCKS4 $file`
 RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
+RULE_IRIXN32=`./helpers/CutRule IRIXN32 $file`
 
 ####################################################################
 # Preset some "constants"; can be overridden on a per-platform basis below.
@@ -268,16 +269,24 @@ case "$PLAT" in
 	fi
 	;;
     *-sgi-irix32)
-	CFLAGS="$CFLAGS -n32"
-	LDFLAGS="$LDFLAGS -n32"
 	DEF_WANTHSREGEX=yes
 	DBM_LIB=""
-	CFLAGS="$CFLAGS -DIRIX"
-	if [ "$RULE_IRIXNIS" = "yes" ]; then
-	    OS='SGI IRIX-32 w/NIS'
+	if [ "$RULE_IRIXN32" = "yes" ]; then
+	    CFLAGS="$CFLAGS -n32"
+	    LDFLAGS="$LDFLAGS -n32"
+	    if [ "$RULE_IRIXNIS" = "yes" ]; then
+		OS='SGI IRIX-32 w/NIS'
+	    else
+		OS='SGI IRIX-32'
+	    fi
 	else
-	    OS='SGI IRIX-32'
+	    if [ "$RULE_IRIXNIS" = "yes" ]; then
+		OS='SGI IRIX w/NIS'
+	    else
+		OS='SGI IRIX'
+	    fi
 	fi
+	CFLAGS="$CFLAGS -DIRIX"
 	;;
     *-sgi-irix)
 	DEF_WANTHSREGEX=yes
