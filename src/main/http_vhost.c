@@ -662,6 +662,7 @@ static void fix_hostname(request_rec *r)
     char *host = ap_palloc(r->pool, strlen(r->hostname) + 1);
     const char *src;
     char *dst;
+    char *port_str;
 
     /* check and copy the host part */
     src = r->hostname;
@@ -679,6 +680,7 @@ static void fix_hostname(request_rec *r)
 	    goto bad;
 	}
         if (*src == ':') {
+            port_str = src + 1;
             /* check the port part */
             while (*++src) {
                 if (!ap_isdigit(*src)) {
@@ -687,8 +689,12 @@ static void fix_hostname(request_rec *r)
             }
             if (src[-1] == ':')
                 goto bad;
-            else
+            else {
+                /* a known "good" port value */
+                r->parsed_uri.port_str = ap_pstrdup(r->pool, port_str);
+                r->parsed_uri.port = atoi(r->parsed_uri.port_str);
                 break;
+            }
         }
 	*dst++ = *src++;
     }
