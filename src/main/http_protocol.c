@@ -441,17 +441,18 @@ void finalize_sub_req_protocol (request_rec *sub)
 void note_auth_failure(request_rec *r)
 {
     if (!strcasecmp(auth_type(r), "Basic"))
-      return note_basic_auth_failure(r);
+      note_basic_auth_failure(r);
     else if(!strcasecmp(auth_type(r), "Digest"))
-      return note_digest_auth_failure(r);
+      note_digest_auth_failure(r);
 }
 
 void note_basic_auth_failure(request_rec *r)
 {
     if (strcasecmp(auth_type(r), "Basic"))
-      return note_auth_failure(r);
-    table_set (r->err_headers_out, "WWW-Authenticate",
-	       pstrcat(r->pool, "Basic realm=\"", auth_name(r), "\"", NULL));
+      note_auth_failure(r);
+    else
+      table_set (r->err_headers_out, "WWW-Authenticate",
+		 pstrcat(r->pool, "Basic realm=\"", auth_name(r), "\"", NULL));
 }
 
 void note_digest_auth_failure(request_rec *r)
