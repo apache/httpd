@@ -373,14 +373,3 @@ Usenet group as well.
 
 Good luck and happy porting!
 
-
-----------------------------
-Appendix: OS-Specific Notes:
-----------------------------
-A/UX:
-  Don't even try with cc. Instead, use gcc-2.7.2 and the libUTIL.a
-  function library, both of which are available on jagubox.gsfc.nasa.gov.
-  libUTIL.a includes many basic functions that Apache (and other software)
-  requires as well as fixed versions of functions in libc.a. Contact
-  Jim Jagielski (jim@apache.org) if you need a precompiled build for
-  A/UX 3.1.x.
