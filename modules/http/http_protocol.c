@@ -1081,7 +1081,6 @@ AP_DECLARE(int) ap_send_http_trace(request_rec *r)
         return rv;
 
     r->content_type = "message/http";
-    ap_send_http_header(r);
 
     /* Now we recreate the request, and echo it back */
 
@@ -1199,10 +1198,6 @@ static void fixup_vary(request_rec *r)
 	apr_table_setn(r->headers_out, "Vary",
 		       apr_array_pstrcat(r->pool, varies, ','));
     }
-}
-
-AP_DECLARE(void) ap_send_http_header(request_rec *r)
-{
 }
 
 typedef struct header_filter_cts {
@@ -1944,7 +1939,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
     }
 
     if (status == HTTP_NO_CONTENT) {
-        ap_send_http_header(r);
         ap_finalize_request_protocol(r);
         return;
     }
@@ -1980,8 +1974,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
             || (status == HTTP_NOT_IMPLEMENTED)) {
             apr_table_setn(r->headers_out, "Allow", make_allow(r));
         }
-
-        ap_send_http_header(r);
 
         if (r->header_only) {
             ap_finalize_request_protocol(r);

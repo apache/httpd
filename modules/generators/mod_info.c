@@ -285,7 +285,6 @@ static int display_info(request_rec *r)
 	return DECLINED;
 
     r->content_type = "text/html";
-    ap_send_http_header(r);
     if (r->header_only) {
         return 0;
     }

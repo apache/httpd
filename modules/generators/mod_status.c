@@ -309,8 +309,6 @@ static int status_handler(request_rec *r)
 	}
     }
 
-    ap_send_http_header(r);
-
     if (r->header_only)
 	return 0;
 

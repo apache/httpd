@@ -83,19 +83,12 @@ char *ap_response_code_string(request_rec *r, int error_index);
  * @param r The current request
  * @param bb The brigade to add the header to.
  * @warning Modules should be very careful about using this, and should
- *          prefer ap_send_http_header().  Much of the HTTP/1.1 implementation
- *          correctness depends on code in ap_send_http_header().
+ *          the default behavior.  Much of the HTTP/1.1 implementation
+ *          correctness depends on the full headers.
  * @deffunc void ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
  */
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
  
-/**
- * Send the Status-Line and header fields for HTTP response
- * @param r The current request
- * @deffunc void ap_send_http_header(request_rec *r)
- */
-AP_DECLARE(void) ap_send_http_header(request_rec *r);
-
 AP_DECLARE(int) ap_send_http_trace(request_rec *r);
 int ap_send_http_options(request_rec *r);
 

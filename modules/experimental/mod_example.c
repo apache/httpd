@@ -514,7 +514,6 @@ static int example_handler(request_rec *r)
      * is broken.
      */
     r->content_type = "text/html";
-    ap_send_http_header(r);
     /*
      * If we're only supposed to send header information (HEAD request), we're
      * already there.

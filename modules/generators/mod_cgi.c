@@ -767,7 +767,6 @@ static int cgi_handler(request_rec *r)
 	    return HTTP_MOVED_TEMPORARILY;
 	}
 
-	ap_send_http_header(r);
 	if (!r->header_only) {
             bb = apr_brigade_create(r->pool);
 	    b = apr_bucket_pipe_create(script_in);
