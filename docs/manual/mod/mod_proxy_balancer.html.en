@@ -80,95 +80,52 @@ load balancing </td></tr>
 
     <p>If some workers are disabled, the others will
     still be scheduled correctly.</p>
+    <div class="example"><pre>
+for each worker in workers
+    worker lbstatus += worker lbfactor
+    total factor    += worker lbfactor
+    if worker lbstatus &gt; candidate lbstatus
+       candidate = worker
 
+candidate lbstatus -= total factor
+
+    </pre></div>
     <p>If a balancer is configured as follows:</p>
     
-    <table><tr><th>worker</th>
-        <th class="data">a</th>
-        <th class="data">b</th>
-        <th class="data">c</th>
-        <th class="data">d</th></tr>
-<tr><th>lbfactor</th>
-        <td class="data">25</td>
-        <td class="data">25</td>
-        <td class="data">25</td>
-        <td class="data">25</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">0</td>
-        <td class="data">0</td>
-        <td class="data">0</td>
-        <td class="data">0</td></tr>
-</table>
+    <pre><code>
+    worker     a    b    c    d
+    lbfactor  25   25   25   25
+    lbstatus   0    0    0    0
+    </code></pre>
 
     <p>And <var>b</var> gets disabled, the following schedule is produced:</p>
-
-    <table><tr><th>worker</th>
-        <th class="data">a</th>
-        <th class="data">b</th>
-        <th class="data">c</th>
-        <th class="data">d</th></tr>
-<tr><th>lbstatus</th>
-        <td class="data">-50</td>
-        <td class="data">0</td>
-        <td class="data">25</td>
-        <td class="data">25</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">-25</td>
-        <td class="data">0</td>
-        <td class="data">-25</td>
-        <td class="data">50</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">0</td>
-        <td class="data">0</td>
-        <td class="data">0</td>
-        <td class="data">0</td></tr>
-<tr><td class="data" colspan="5">(repeat)</td></tr>
-</table>
-
+    <pre><code>
+    lbstatus <strong>-50</strong>    0   25   25
+    lbstatus -25    0  <strong>-25</strong>   50
+    lbstatus   0    0    0    <strong>0</strong>
+    (repeat)
+    </code></pre>
     <p>That is it schedules: a c d a c d a c d ...</p>
     <p>The following asymmetric configuration works as one would expect:</p>
+    <pre><code>
+    worker     a    b
+    lbfactor  70   30
 
-    <table><tr><th>worker</th>
-        <th class="data">a</th>
-        <th class="data">b</th></tr>
-<tr><th>lbfactor</th>
-        <td class="data">70</td>
-        <td class="data">30</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">-30</td>
-        <td class="data">30</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">40</td>
-        <td class="data">-40</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">10</td>
-        <td class="data">-10</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">-20</td>
-        <td class="data">20</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">-50</td>
-        <td class="data">50</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">20</td>
-        <td class="data">-20</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">-10</td>
-        <td class="data">10</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">-40</td>
-        <td class="data">40</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">30</td>
-        <td class="data">-30</td></tr>
-<tr><th>lbstatus</th>
-        <td class="data">0</td>
-        <td class="data">0</td></tr>
-<tr><td class="data" colspan="3">(repeat)</td></tr>
-</table>
+    lbstatus <strong>-30</strong>   30
+    lbstatus  40  <strong>-40</strong>
+    lbstatus  <strong>10</strong>  -10
+    lbstatus <strong>-20</strong>   20
+    lbstatus <strong>-50</strong>   50
+    lbstatus  20  <strong>-20</strong>
+    lbstatus <strong>-10</strong>   10
+    lbstatus <strong>-40</strong>   40
+    lbstatus  30  <strong>-30</strong>
+    lbasatus   <strong>0</strong>    0
+    (repeat)
+    </code></pre>
 
-    <p>That is after 10 schedules, the schedule repeats and 7 a are selected
-    with 3 b interspersed.</p>
+    <p>That is after 10 schedules, the schedule repeats and 7 <var>a</var>
+    are selected with 3 <var>b</var> interspersed.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Enabling Balancer Manager Support</a></h2>
