@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.17 $ -->
+<!-- $Revision: 1.18 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -41,7 +41,7 @@ configuration</description>
     </example>
 
     <p>Once configured, the server information is obtained by
-    accessing <code>http://your.host.dom/server-info</code></p>
+    accessing <code>http://your.host.example.com/server-info</code></p>
 </summary>
 
 <section id="security"><title>Security Issues</title>
@@ -64,11 +64,11 @@ configuration</description>
       &lt;Location /server-info&gt;<br />
       <indent>
         SetHandler server-info<br />
-        Order allow,deny
-        # Allow access from server itself
-        Allow from 127.0.0.1
-        # Additionally, allow access from local workstation
-        Allow from 192.168.1.17
+        Order allow,deny<br />
+        # Allow access from server itself<br />
+        Allow from 127.0.0.1<br />
+        # Additionally, allow access from local workstation<br />
+        Allow from 192.168.1.17<br />
       </indent>
       &lt;/Location&gt;
     </example>
@@ -83,7 +83,7 @@ configuration</description>
     
     <p>Other views of the configuration information are available by
     appending a query to the <code>server-info</code> request. For
-    example, <code>http://your.host.dom/server-info?config</code>
+    example, <code>http://your.host.example.com/server-info?config</code>
     will show all configuration directives.</p>
     
     <dl>
