@@ -840,7 +840,8 @@ case "$PLAT" in
 	OSDIR="os/cygwin"
 	CFLAGS="$CFLAGS -DCYGWIN"
 	DEF_WANTHSREGEX=yes
-	LIBS="$LIBS -lcrypt"
+	DBM_LIB="-lgdbm"
+	LIBS="$LIBS -lcrypt $DBM_LIB"
 	;;
     *) # default: Catch systems we don't know about
 	OS='Unknown and unsupported OS'

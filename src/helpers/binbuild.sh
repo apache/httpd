@@ -9,6 +9,8 @@
 OS=`src/helpers/GuessOS`
 case "x$OS" in
   x*390*) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most";;
+  *cygwin*) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most \
+                         --enable-rule=SHARED_CORE --libexecdir=bin";;
       *) CONFIGPARAM="--with-layout=BinaryDistribution --enable-module=most --enable-shared=max";;
 esac
 APDIR=`pwd`

@@ -4429,6 +4429,20 @@ static int idle_spawn_rate = 1;
 #endif
 static int hold_off_on_exponential_spawning;
 
+/*
+ * Define the signal that is used to kill off children if idle_count
+ * is greater then ap_daemons_max_free. Usually we will use SIGUSR1
+ * to gracefully shutdown, but unfortunatly some OS will need other 
+ * signals to ensure that the child process is terminated and the 
+ * scoreboard pool is not growing to infinity. This effect has been
+ * seen at least on Cygwin 1.x. -- Stipe Tolj <tolj@wapme-systems.de>
+ */
+#if defined(CYGWIN)
+#define SIG_IDLE_KILL SIGKILL
+#else
+#define SIG_IDLE_KILL SIGUSR1
+#endif
+
 static void perform_idle_server_maintenance(void)
 {
     int i;
@@ -4508,9 +4522,10 @@ static void perform_idle_server_maintenance(void)
     if (idle_count > ap_daemons_max_free) {
 	/* kill off one child... we use SIGUSR1 because that'll cause it to
 	 * shut down gracefully, in case it happened to pick up a request
-	 * while we were counting
+	 * while we were counting. Use the define SIG_IDLE_KILL to reflect
+	 * which signal should be used on the specific OS.
 	 */
-	kill(ap_scoreboard_image->parent[to_kill].pid, SIGUSR1);
+	kill(ap_scoreboard_image->parent[to_kill].pid, SIG_IDLE_KILL);
 	idle_spawn_rate = 1;
     }
     else if (idle_count < ap_daemons_min_free) {

@@ -955,6 +955,12 @@ typedef int rlim_t;
 #define JMP_BUF jmp_buf
 #define NO_KILLPG
 #define USE_LONGJMP
+#define GDBM_STATIC
+#define HAVE_MMAP 1
+#define USE_MMAP_SCOREBOARD
+#define USE_MMAP_FILES
+#define HAVE_SYSLOG 1
+
 
 #else
 /* Unknown system - Edit these to match */

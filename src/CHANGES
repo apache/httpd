@@ -1,4 +1,9 @@
 Changes with Apache 1.3.21
+
+  *) (Cygwin only) Fix problems with signals sent to child processes;
+     Improve auto-configuration for Cygwin.
+     [Stipe Tolj <tolj@wapme-systems.de>]
+
   *) Added Mod_Vhost_Alias to the project file so that it builds as an
      external module (VHOST.NLM). 
      [Brad Nicholes <BNICHOLES@novell.com>]
