@@ -25,6 +25,7 @@ customized international server error responses</H1>
  <LI><A HREF="#headfoot">The common header and footer files</A>
  <LI><A HREF="#createdocs">Creating ErrorDocuments in different languages</A>
  <LI><A HREF="#fallback">The fallback language</A>
+ <LI><A HREF="#proxy">Customizing Proxy Error Messages</A>
  <LI><A HREF="#listings">HTML listing of the discussed example</A>
 </UL>
 <HR>
@@ -130,11 +131,11 @@ of as much server support as we can get:
      a .htaccess file in the /errordocs directory: a minor speed 
      optimization.
 </OL>
-The resulting <SAMP>httpd.conf</SAMP> configuration would the look
-similar to this: <SMALL>(Note that you can defrine your own error
+The resulting <SAMP>httpd.conf</SAMP> configuration would then look
+similar to this: <SMALL>(Note that you can define your own error
 messages using this method for only part of the document tree,
 e.g., a /~user/ subtree. In this case, the configuration could as well
-be put into the .htaccess file at the root of the subtree. In this case,
+be put into the .htaccess file at the root of the subtree, and
 the &lt;Directory&gt; and &lt;/Directory&gt; directives -but not
 the contained directives- must be omitted.)</SMALL>
 <PRE>
@@ -177,10 +178,10 @@ the configured error documents):
  <LI>No file errordocs/403 should exist. Otherwise, it would be found and
      served (with the DefaultType, usually text/plain), all negotiation
      would be bypassed.
- <LI>For each language for which we have a translation (note that this need not
-     be the same set of languages for each error code - you can get by
-     with a single language version until you actually <EM>have</EM>
-     translated versions), a document
+ <LI>For each language for which we have an internationalized version
+     (note that this need not be the same set of languages for each
+     error code - you can get by with a single language version until
+     you actually <EM>have</EM> translated versions), a document
      <SAMP>errordocs/403.shtml.<EM>lang</EM></SAMP> is created and
      filled with the error text in that language (<A HREF="#createdocs">see
      below</A>).
@@ -222,7 +223,7 @@ plus a symlink for the default language.<P>
 <CODE>foot.shtml.fr</CODE>,<BR>
 <CODE>foot.shtml.de</CODE>,<BR>
 <CODE>foot.shtml</CODE> symlink to <CODE>foot.shtml.en</CODE><P>
-Both files are then simply included into the error document by using the
+Both files are included into the error document by using the
 directives <CODE>&lt;!--#include virtual="head" --&gt;</CODE>
 and        <CODE>&lt;!--#include virtual="foot" --&gt;</CODE>
 respectively: the rest of the magic occurs in mod_negotiation and
@@ -280,6 +281,45 @@ A simple shell script to do it (execute within the errordocs/ dir):
 
 <P>
 </P>
+
+<H2><A NAME="proxy">Customizing Proxy Error Messages</A></H2>
+
+<P>
+ As of Apache-1.3, it is possible to use the <CODE>ErrorDocument</CODE>
+ mechanism for proxy error messages as well (previous versions always
+ returned fixed predefined error messages).
+</P>
+<P>
+ Most proxy errors return an error code of [500 Internal Server Error].
+ To find out whether a particular error document was invoked on behalf
+ of a proxy error or because of some other server error, and what the reason
+ for the failure was, you can check the contents of the new
+ <CODE>ERROR_NOTES</CODE> CGI environment variable:
+ if invoked for a proxy error, this variable will contain the actual proxy
+ error message text in HTML form.
+</P>
+<P>
+ The following excerpt demonstrates how to exploit the <CODE>ERROR_NOTES</CODE>
+ variable within an error document:
+</P>
+<PRE>
+ &lt;!--#if expr="\"$REDIRECT_ERROR_NOTES\" = \"\"" --&gt;
+  &lt;p&gt;
+   The server encountered an unexpected condition
+   which prevented it from fulfilling the request. 
+  &lt;/p&gt;
+  &lt;p&gt;
+   &lt;A HREF="mailto:&lt;!--#echo var="SERVER_ADMIN" --&gt;"
+    SUBJECT="Error message [&lt;!--#echo var="REDIRECT_STATUS" --&gt;] &lt;!--#echo var="title" --&gt; for &lt;!--#echo var="REQUEST_URI" --&gt;"&gt;
+   Please forward this error screen to &lt;!--#echo var="SERVER_NAME" --&gt;'s
+   WebMaster&lt;/A&gt;; it includes useful debugging information about
+   the Request which caused the error.
+   &lt;pre&gt;&lt;!--#printenv --&gt;&lt;/pre&gt;
+  &lt;/p&gt;
+ &lt;!--#else --&gt;
+  &lt;!--#echo var="REDIRECT_ERROR_NOTES" --&gt;
+ &lt;!--#endif --&gt;
+</PRE>
 
 <H2><A NAME="listings">HTML listing of the discussed example</A></H2>
 
@@ -383,12 +423,9 @@ for browser types which support animated GIFs).
 <H3>More welcome!</H3>
 
 If you have tips to contribute, send mail to <A
-HREF="mailto:Martin.Kraemer@Mch.SNI.De">Martin.Kraemer@Mch.SNI.De</A>
+HREF="mailto:martin@apache.org">martin@apache.org</A>
 
-<HR>
-
-<A HREF="./"><IMG SRC="../images/index.gif" ALT="Index"></A>
-<A HREF="../"><IMG SRC="../images/home.gif" ALT="Home"></A>
-
-</BODY></HTML>
+  <!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
 
