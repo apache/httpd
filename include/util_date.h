@@ -68,7 +68,6 @@ extern "C" {
  */
 
 #include "apr_time.h"
-#include "ap.h"
 
 #define BAD_DATE (ap_time_t)0
 
