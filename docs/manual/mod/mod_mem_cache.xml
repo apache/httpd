@@ -23,16 +23,10 @@
 
 <name>mod_mem_cache</name>
 <description>Content cache keyed to URIs</description>
-<status>Experimental</status>
 <sourcefile>mod_mem_cache.c</sourcefile>
 <identifier>mem_cache_module</identifier>
 
 <summary>
-    <note type="warning">
-      This module is experimental. Documentation is still under
-      development...
-    </note>
-
     <p>This module <em>requires</em> the service of <module
     >mod_cache</module>. It acts as a support module for <module
     >mod_cache</module> and provides a memory based storage manager.

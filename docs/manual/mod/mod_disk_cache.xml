@@ -23,18 +23,13 @@
 
 <name>mod_disk_cache</name>
 <description>Content cache storage manager keyed to URIs</description>
-<status>Experimental</status>
 <sourcefile>mod_disk_cache.c</sourcefile>
 <identifier>disk_cache_module</identifier>
 
 <summary>
-    <note type="warning">
-      This module is experimental. Documentation is still under development...
-    </note>
-
     <p><module>mod_disk_cache</module> implements a disk based storage
-    manager. It is primarily of use in conjunction with
-    <module>mod_proxy</module>.</p>
+    manager. It is primarily of use in conjunction
+    <module>mod_cache</module>.</p>
 
     <p>Content is stored in and retrieved from the cache using URI based
     keys. Content with access protection is not cached.</p>
