@@ -180,7 +180,7 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
 	fmt = tf;
     }
     else {
-        apr_explode_localtime(&xt, t);
+        apr_time_exp_lt(&xt, t);
     }
 
     /* check return code? */

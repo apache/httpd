@@ -133,7 +133,7 @@ static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
                 return apr_time_exp_gmt(xt, t);
             }
             else {
-                return apr_explode_localtime(xt, t);
+                return apr_time_exp_lt(xt, t);
             }
         }
         else {
@@ -148,7 +148,7 @@ static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
             r = apr_time_exp_gmt(xt, t);
         }
         else {
-            r = apr_explode_localtime(xt, t);
+            r = apr_time_exp_lt(xt, t);
         }
         if (!APR_STATUS_IS_SUCCESS(r)) {
             return r;
@@ -177,7 +177,7 @@ AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_time_exp_t * tm,
 AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t)
 {
     /* ### This code is a clone of apr_ctime(), except that it
-     * uses ap_explode_recent_localtime() instead of apr_explode_localtime().
+     * uses ap_explode_recent_localtime() instead of apr_time_exp_lt().
      */
     apr_time_exp_t xt;
     const char *s;
