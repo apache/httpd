@@ -127,11 +127,7 @@ pid_t os_fork(server_rec *s, int slot)
         ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s,
         "unable to replace stdout with sock device driver");
     input_parms.generation = ap_my_generation;
-#ifdef SCOREBOARD_FILE
-    input_parms.scoreboard_fd = scoreboard_fd;
-#else /* must be USE_TPF_SCOREBOARD or USE_SHMGET_SCOREBOARD */
     input_parms.scoreboard_heap = ap_scoreboard_image;
-#endif
 
     lr = ap_listeners;
     count = 0;

@@ -317,7 +317,6 @@ int reap_children(int *exitcode, apr_exit_why_e *status)
     int n, pid;
 
     for (n = 0; n < ap_max_daemons_limit; ++n) {
-        ap_sync_scoreboard_image();
 	if (ap_scoreboard_image->servers[n][0].status != SERVER_DEAD &&
 		kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
 	    ap_update_child_status_from_indexes(n, 0, SERVER_DEAD, NULL);
@@ -563,8 +562,6 @@ static void child_main(int child_num_arg)
 
     (void) ap_update_child_status(sbh, SERVER_READY, (request_rec *) NULL);
 
-    ap_sync_scoreboard_image();
-
     /* Set up the pollfd array */
     listensocks = apr_pcalloc(pchild,
                             sizeof(*listensocks) * (num_listensocks));
@@ -651,7 +648,6 @@ static void child_main(int child_num_arg)
 	 * defer the exit
 	 */
 	for (;;) {
-            ap_sync_scoreboard_image();
             status = listensocks[offset].accept_func(&csd, 
                                        &listensocks[offset], ptrans);
 
@@ -691,7 +687,6 @@ static void child_main(int child_num_arg)
              */
             die_now = 1;
         }
-        ap_sync_scoreboard_image();
     }
     clean_child_exit(0);
 }
@@ -771,11 +766,6 @@ static int make_child(server_rec *s, int slot)
     }
 
     ap_scoreboard_image->parent[slot].pid = pid;
-#ifdef SCOREBOARD_FILE
-    lseek(scoreboard_fd, APR_XtOffsetOf(scoreboard, parent[slot]), 0);
-    force_write(scoreboard_fd, &ap_scoreboard_image->parent[slot],
-		sizeof(process_score));
-#endif
 
     return 0;
 }
@@ -829,7 +819,6 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     last_non_dead = -1;
     total_non_dead = 0;
 
-    ap_sync_scoreboard_image();
     for (i = 0; i < ap_daemons_limit; ++i) {
 	int status;
 
@@ -982,14 +971,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * cleared scoreboard
          */
         ap_scoreboard_image->global->running_generation = ap_my_generation;
-        update_scoreboard_global();
     }
-#ifdef SCOREBOARD_FILE
-    else {
-	ap_scoreboard_fname = ap_server_root_relative(pconf, ap_scoreboard_fname);
-	ap_note_cleanups_for_fd(pconf, scoreboard_fd);
-    }
-#endif
 
     set_signals();
 
@@ -1053,7 +1035,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             }
 
 	    /* non-fatal death... note that it's gone in the scoreboard. */
-	    ap_sync_scoreboard_image();
 	    child_slot = find_child_by_pid(&pid);
 	    if (child_slot >= 0) {
 		(void) ap_update_child_status_from_indexes(child_slot, 0, SERVER_DEAD,
@@ -1154,7 +1135,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      */
     ++ap_my_generation;
     ap_scoreboard_image->global->running_generation = ap_my_generation;
-    update_scoreboard_global();
     
     if (is_graceful) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
@@ -1163,19 +1143,16 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	/* kill off the idle ones */
         ap_mpm_pod_killpg(pod, ap_daemons_limit);
 
-#ifndef SCOREBOARD_FILE
 	/* This is mostly for debugging... so that we know what is still
-	    * gracefully dealing with existing request.  But we can't really
-	    * do it if we're in a SCOREBOARD_FILE because it'll cause
-	    * corruption too easily.
+	    * gracefully dealing with existing request.  This will break
+	    * in a very nasty way if we ever have the scoreboard totally
+	    * file-based (no shared memory)
 	    */
-	ap_sync_scoreboard_image();
 	for (index = 0; index < ap_daemons_limit; ++index) {
 	    if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
 		ap_scoreboard_image->servers[index][0].status = SERVER_GRACEFUL;
 	    }
 	}
-#endif
     }
     else {
 	/* Kill 'em off */

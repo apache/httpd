@@ -1,5 +1,10 @@
 Changes with Apache 2.0.35
 
+  *) The old, legacy (and unused) code in which the scoreboard was totally
+     and completely contained in a file (SCOREBOARD_FILE) has been
+     removed. This does not affect scoreboards which are *mapped* to
+     files using named-shared-memory. [Jim Jagielski]
+
   *) Change bucket brigades API to allow a "bucket allocator" to be
      passed in at certain points.  This allows us to implement freelists
      so that we can stop using malloc/free so frequently.
