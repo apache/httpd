@@ -313,6 +313,8 @@ extern "C" {
 #ifndef HARD_SERVER_LIMIT
 #ifdef WIN32
 #define HARD_SERVER_LIMIT 1024
+#elif defined(NETWARE)
+#define HARD_SERVER_LIMIT 2048
 #else
 #define HARD_SERVER_LIMIT 256
 #endif
