@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.86 $ -->
+<!-- $Revision: 1.87 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -1287,12 +1287,14 @@ if a test is true at startup</description>
 <name>IfModule</name>
 <description>Encloses directives that are processed conditional on the
 presence or absence of a specific module</description>
-<syntax>&lt;IfModule [!]<var>module-name</var>&gt; ...
+<syntax>&lt;IfModule [!]<var>module-file</var>|<var>module-identifier</var>&gt; ...
     &lt;/IfModule&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>Module identifiers are available in version 2.1 and
+later.</compatibility>
 
 <usage>
     <p>The <code>&lt;IfModule <var>test</var>&gt;...&lt;/IfModule&gt;</code>
@@ -1306,23 +1308,24 @@ presence or absence of a specific module</description>
     >IfModule</directive> section directive can be one of two forms:</p>
 
     <ul>
-      <li><var>module name</var></li>
+      <li><var>module</var></li>
 
-      <li>!<var>module name</var></li>
+      <li>!<var>module</var></li>
     </ul>
 
     <p>In the former case, the directives between the start and end
-    markers are only processed if the module named <var>module
-    name</var> is included in Apache -- either compiled in or
+    markers are only processed if the module named <var>module</var>
+    is included in Apache -- either compiled in or
     dynamically loaded using <directive module="mod_so"
     >LoadModule</directive>. The second format reverses the test,
-    and only processes the directives if <var>module name</var> is
+    and only processes the directives if <var>module</var> is
     <strong>not</strong> included.</p>
 
-    <p>The <var>module name</var> argument is the file name of the
-    module, at the time it was compiled.  For example,
-    <code>mod_rewrite.c</code>.  If a module consists of several
-    source files, use the name of the file containing the string
+    <p>The <var>module</var> argument can be either the module identifier or
+    the file name of the module, at the time it was compiled.  For example,
+    <code>rewrite_module</code> is the identifier and
+    <code>mod_rewrite.c</code> is the file name. If a module consists of
+    several source files, use the name of the file containing the string
     <code>STANDARD20_MODULE_STUFF</code>.</p>
 
     <p><directive type="section">IfModule</directive> sections are
