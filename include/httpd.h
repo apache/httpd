@@ -1697,6 +1697,13 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r);
   */
 #include <string.h>
 
+AP_DECLARE(char *) ap_strchr(char *s, int c);
+AP_DECLARE(const char *) ap_strchr_c(const char *s, int c);
+AP_DECLARE(char *) ap_strrchr(char *s, int c);
+AP_DECLARE(const char *) ap_strrchr_c(const char *s, int c);
+AP_DECLARE(char *) ap_strstr(char *s, const char *c);
+AP_DECLARE(const char *) ap_strstr_c(const char *s, const char *c);
+
 #ifdef AP_DEBUG
 
 #undef strchr
@@ -1705,13 +1712,6 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r);
 # define strrchr(s, c)  ap_strrchr(s,c)
 #undef strstr
 # define strstr(s, c)  ap_strstr(s,c)
-
-AP_DECLARE(char *) ap_strchr(char *s, int c);
-AP_DECLARE(const char *) ap_strchr_c(const char *s, int c);
-AP_DECLARE(char *) ap_strrchr(char *s, int c);
-AP_DECLARE(const char *) ap_strrchr_c(const char *s, int c);
-AP_DECLARE(char *) ap_strstr(char *s, const char *c);
-AP_DECLARE(const char *) ap_strstr_c(const char *s, const char *c);
 
 #else
 
