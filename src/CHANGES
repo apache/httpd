@@ -1,5 +1,9 @@
 Changes with Apache 1.3a2
 
+  *) If no TransferLog is given explicitly, decline
+     to log.  This supports coexistence with other logging modules,
+     such as the custom one that UUNET uses. [David J. MacKenzie]
+
   *) Check for titles in server-parsed HTML files.
      Ignore leading newlines and returns in titles.  The old behavior
      of replacing a newline after <title> with a space causes the

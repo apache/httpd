@@ -51,6 +51,9 @@
  */
 
 /*
+ * Modified by djm@va.pubnix.com:
+ * If no TransferLog is given explicitly, decline to log.
+ *
  * This is module implements the TransferLog directive (same as the
  * common log module), and additional directives, LogFormat and CustomLog.
  *
@@ -532,6 +535,10 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     int len = 0;
     array_header *format;
 
+    if (cls->fname == NULL) {
+      return DECLINED;
+    }
+
     format = cls->format ? cls->format : default_format;
 
     strsa= make_array(r->pool, format->nelts,sizeof(char*));
@@ -703,6 +710,10 @@ static config_log_state *open_config_log (server_rec *s, pool *p,
 				   config_log_state *cls,
 				   array_header *default_format) {
     if (cls->log_fd > 0) return cls; /* virtual config shared w/main server */
+
+    if (cls->fname == NULL) {
+	  return cls;		/* Leave it NULL to decline.  */
+    }
 
     if (*cls->fname == '|') {
         FILE *dummy;
