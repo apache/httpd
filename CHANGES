@@ -1,5 +1,10 @@
 Changes with Apache 2.0.32-dev
 
+  *) suexec: Allow HTTPS and SSL_* environment variables to be passed
+     through to CGI scripts. PR 9163
+     [Brian Reid <breid@customlogic.com>, 
+      Zvi Har'El <rl@math.technion.ac.il>]
+
   *) binbuild.sh: Make sure that we use the expat from our source
      tree so that there aren't any surprises on the target machine.
      [Jeff Trawick]

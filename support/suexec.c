@@ -136,6 +136,7 @@ char *safe_env_lst[] =
     "DOCUMENT_URI",
     "FILEPATH_INFO",
     "GATEWAY_INTERFACE",
+    "HTTPS",
     "LAST_MODIFIED",
     "PATH_INFO",
     "PATH_TRANSLATED",
@@ -227,7 +228,7 @@ static void clean_env(void)
     cidx++;
 
     for (ep = environ; *ep && cidx < AP_ENVBUF-1; ep++) {
-        if (!strncmp(*ep, "HTTP_", 5)) {
+        if (!strncmp(*ep, "HTTP_", 5) || !strncmp(*ep, "SSL_", 4)) {
             cleanenv[cidx] = *ep;
             cidx++;
         }
