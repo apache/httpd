@@ -405,7 +405,7 @@ int main(int argc, const char * const argv[])
     module **mod;
     const char *optarg;
 
-    AP_MONCONTROL(0); /* turn of profiling of startup */
+    AP_MONCONTROL(0); /* turn off profiling of startup */
 
     apr_app_initialize(&argc, &argv, NULL);
 
