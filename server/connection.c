@@ -284,12 +284,12 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
 
     conn->pool = p;
     conn->local_addr = *saddr;
-    apr_get_local_ipaddr(&conn->local_ip, inout);
+    apr_get_ipaddr(&conn->local_ip, APR_LOCAL, inout);
     conn->base_server = server;
     conn->client_socket = inout;
 
     conn->remote_addr = *remaddr;
-    apr_get_remote_ipaddr(&conn->remote_ip, inout);   
+    apr_get_ipaddr(&conn->remote_ip, APR_REMOTE, inout);   
     conn->id = id;
 
     return conn;
