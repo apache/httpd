@@ -7,6 +7,11 @@ Changes with Apache 1.2b7
      This fixes a problem introduced in 1.2b5 with clients that send
      an extra CRLF after a POST request. [Dean Gaudet]
 
+  *) Fix mod_rewrite bug which truncated the rewritten URL [Marc Slemko]
+
+  *) Fix mod_info output corruption bug introduced by buffer overflow
+     fixes. [Dean Gaudet]
+
 Changes with Apache 1.2b6
 
   *) Allow whitespace in imagemap mapfile coordinates. [Marc Slemko]
@@ -35,7 +40,7 @@ Changes with Apache 1.2b5
      [Jim Jagielski]
      
   *) Migration from sprintf() to snprintf() to avoid buffer
-     overflows. [Marc Slemco]
+     overflows. [Marc Slemko]
 
   *) Provide portable snprintf() implementation (ap_snprintf)
      as well as *cvt family. [Jim Jagielski]
