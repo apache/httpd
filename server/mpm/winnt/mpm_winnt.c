@@ -1240,7 +1240,6 @@ static void child_main()
     /* Set up the scoreboard. The scoreboard in this MPM only applies to the
      * child process and is not shared across processes
      */
-    ap_restart_time = apr_now();
     ap_create_scoreboard(pconf, SB_NOT_SHARED);
 
     /* This is the child process or we are running in single process

@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Make the server status page show the correct restart time, and
+     thus the proper uptime. [Ryan Bloom]
+
   *) Move the CGI creation logic from mod_include to mod_cgi(d).  This
      should reduce the amount of duplicate code that is required to
      create CGI processes.

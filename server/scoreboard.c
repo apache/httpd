@@ -185,6 +185,7 @@ AP_DECLARE(void) ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     }
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
     ap_scoreboard_image->global.running_generation = running_gen;
+    ap_restart_time = apr_now();
     apr_register_cleanup(p, NULL, ap_cleanup_scoreboard, apr_null_cleanup);
 }
 

@@ -91,7 +91,6 @@ static int ap_daemons_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
 static int ap_daemons_limit=0;
-static apr_time_t ap_restart_time=0;
 AP_DECLARE_DATA int ap_extended_status = 0;
 static int workers_may_exit = 0;
 static int requests_this_child;
@@ -808,9 +807,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_reclaim_child_processes(1);		/* Start with SIGTERM */
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, ap_server_conf,
 		    "SIGHUP received.  Attempting to restart");
-    }
-    if (!is_graceful) {
-        ap_restart_time = apr_now();
     }
     delete_port(port_of_death);
     return 0;
