@@ -293,7 +293,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 
-%doc ABOUT_APACHE README CHANGES LICENSE
+%doc ABOUT_APACHE README CHANGES LICENSE NOTICE
 
 %dir %{_sysconfdir}/httpd
 %{_sysconfdir}/httpd/modules

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) Add the NOTICE file to the rpm spec file in compliance with the
+     Apache v2.0 license. [Graham Leggett]
+ 
   *) RPM spec file changes: changed default dependancy to link to db4
      instead of db3. Fixed complaints about unpackaged files.
      [Graham Leggett]
