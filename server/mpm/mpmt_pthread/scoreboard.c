@@ -56,6 +56,7 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#include "apr_strings.h"
 #include "apr_portable.h"
 #include "ap_config.h"
 #include "httpd.h"
