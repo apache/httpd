@@ -246,15 +246,31 @@ typedef dav_hooks_propdb dav_hooks_db;
 ** The base protocol defines only file and collection resources.
 ** The versioning protocol defines several additional resource types
 ** to represent artifacts of a version control system.
+**
+** This enumeration identifies the type of URL used to identify the
+** resource. Since the same resource may have more than one type of
+** URL which can identify it, dav_resource_type cannot be used
+** alone to determine the type of the resource; attributes of the
+** dav_resource object must also be consulted.
 */
 typedef enum {
-    DAV_RESOURCE_TYPE_REGULAR,      /* file or collection, working resource
-				       or revision */
-    DAV_RESOURCE_TYPE_REVISION,     /* explicit revision-id */
-    DAV_RESOURCE_TYPE_HISTORY,      /* explicit history-id */
-    DAV_RESOURCE_TYPE_WORKSPACE,    /* workspace */
-    DAV_RESOURCE_TYPE_ACTIVITY,     /* activity */
-    DAV_RESOURCE_TYPE_CONFIGURATION /* configuration */
+    DAV_RESOURCE_TYPE_UNKNOWN,
+
+    DAV_RESOURCE_TYPE_REGULAR,      /* file or collection; could be
+                                     * unversioned or version selector */
+
+    DAV_RESOURCE_TYPE_VERSION,      /* version URL */
+
+    DAV_RESOURCE_TYPE_HISTORY,      /* version history URL */
+
+    DAV_RESOURCE_TYPE_WORKING,      /* working resource URL */
+
+    DAV_RESOURCE_TYPE_WORKSPACE,    /* workspace URL */
+
+    DAV_RESOURCE_TYPE_ACTIVITY,     /* activity URL */
+
+    DAV_RESOURCE_TYPE_BASELINE      /* baseline URL */
+
 } dav_resource_type;
 
 /*
@@ -271,14 +287,23 @@ typedef struct dav_resource {
     dav_resource_type type;
 
     int exists;		/* 0 => null resource */
-    int collection;	/* 0 => file (if type == DAV_RESOURCE_TYPE_REGULAR) */
-    int versioned;	/* 0 => unversioned */
-    int working;	/* 0 => revision (if versioned) */
-    int baselined;	/* 0 => not baselined */
+
+    int collection;	/* 0 => file; can be 1 for
+                         * REGULAR, VERSION, and WORKING resources,
+                         * and is always 1 for WORKSPACE */
+
+    int versioned;	/* 0 => unversioned; can be 1 for
+                         * REGULAR and WORKSPACE resources,
+                         * and is always 1 for VERSION, WORKING,
+                         * and BASELINE */
+
+    int working;	/* 0 => not checked out; can be 1 for
+                         * REGULAR, WORKSPACE, and BASELINE,
+                         * and is always 1 for WORKING */
 
     const char *uri;	/* the URI for this resource */
 
-    dav_resource_private *info;
+    dav_resource_private *info;         /* repository provider's private info */
 
     const dav_hooks_repository *hooks;	/* hooks used for this resource */
 
@@ -852,9 +877,10 @@ int dav_get_resource_state(request_rec *r, const dav_resource *resource);
  */
 struct dav_hooks_locks
 {
-    /* Return the supportedlock property for this provider */
-    /* ### maybe this should take a resource argument? */
-    const char * (*get_supportedlock)(void);
+    /* Return the supportedlock property for a resource */
+    const char * (*get_supportedlock)(
+        const dav_resource *resource
+    );
 
     /* Parse a lock token URI, returning a lock token object allocated
      * in the given pool.
@@ -1254,8 +1280,11 @@ struct dav_hooks_repository
      *
      * The root_dir is the root of the directory for which this repository
      * is configured.
-     * The workspace is the value of any Target-Selector header, or NULL
+     * The workspace is the value of any Workspace header, or NULL
      * if there is none.
+     * The target is either a label, or a version URI, or NULL. If there
+     * is a target, then is_label specifies whether the target is a label
+     * or a URI.
      *
      * The provider may associate the request storage pool with the resource,
      * to use in other operations on that resource.
@@ -1263,7 +1292,9 @@ struct dav_hooks_repository
     dav_resource * (*get_resource)(
         request_rec *r,
         const char *root_dir,
-        const char *workspace
+        const char *workspace,
+	const char *target,
+        int is_label
     );
 
     /* Get a resource descriptor for the parent of the given resource.
@@ -1387,7 +1418,7 @@ struct dav_hooks_repository
      * is a collection.
      */
     dav_error * (*create_collection)(
-        apr_pool_t *p, dav_resource *resource
+        dav_resource *resource
     );
 
     /* Copy one resource to another. The destination must not exist.
@@ -1453,18 +1484,53 @@ struct dav_hooks_repository
 ** VERSIONING FUNCTIONS
 */
 
-/* dav_get_target_selector:
+
+/* dav_get_workspace:
  *
- * If a DAV:version element is provided, then it is assumed to provide the
- * target version. If no element is provided (version==NULL), then the
+ * Returns the value of any Workspace header in a request
+ * (used by versioning clients)
+ */
+int dav_get_workspace(request_rec *r, const char **workspace);
+
+/*
+ * dav_get_target_selector
+ *
+ * If a DAV:version or DAV:label-name element is provided,
+ * then it is assumed to provide the target version.
+ * If no element is provided (version==NULL), then the
  * request headers are examined for a Target-Selector header.
  *
- * The target version, if any, is then returned.
+ * The target version, if any, is then returned. If the version
+ * was specified by a label, then *is_label is set to 1.
+ * Otherwise, the target is a version URI.
  *
  * (used by versioning clients)
  */
-const char *dav_get_target_selector(request_rec *r,
-                                    const ap_xml_elem *version);
+int dav_get_target_selector(request_rec *r,
+                            const ap_xml_elem *version,
+                            const char **target,
+                            int *is_label);
+
+/* dav_add_vary_header
+ *
+ * If there were any headers in the request which require a Vary header
+ * in the response, add it.
+ */
+void dav_add_vary_header(request_rec *in_req,
+			 request_rec *out_req,
+			 const dav_resource *resource);
+
+/*
+** This structure is used to record what auto-versioning operations
+** were done to make a resource writable, so that they can be undone
+** at the end of a request.
+*/
+typedef struct {
+    int resource_created;               /* 0 => resource existed previously */
+    int resource_checkedout;            /* 0 => resource was checked out */
+    int parent_checkedout;              /* 0 => parent was checked out */
+    dav_resource *parent_resource;      /* parent resource, if it was needed */
+} dav_auto_version_info;
 
 /* Ensure that a resource is writable. If there is no versioning
  * provider, then this is essentially a no-op. Versioning repositories
@@ -1477,21 +1543,14 @@ const char *dav_get_target_selector(request_rec *r,
  * child does not exist, then a new versioned resource is created and
  * checked out.
  *
- * The parent_resource and parent_was_writable arguments are optional
- * (i.e. they may be NULL). If parent_only is set, then the
- * resource_existed and resource_was_writable arguments are ignored.
- *
- * The previous states of the resources are returned, so they can be
- * restored after the operation completes (see
- * dav_revert_resource_writability())
+ * The dav_auto_version_info structure is filled in with enough information
+ * to restore both parent and child resources to the state they were in
+ * before the auto-versioning operations occurred.
  */
 dav_error *dav_ensure_resource_writable(request_rec *r,
 					dav_resource *resource,
                                         int parent_only,
-					dav_resource **parent_resource,
-					int *resource_existed,
-					int *resource_was_writable,
-					int *parent_was_writable);
+                                        dav_auto_version_info *av_info);
 
 /* Revert the writability of resources back to what they were
  * before they were modified. If undo == 0, then the resource
@@ -1499,25 +1558,24 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
  * If undo != 0, then resource modifications are discarded
  * (i.e. they are unchecked out).
  *
- * The resource and parent_resource arguments are optional
- * (i.e. they may be NULL).
+ * The resource argument may be NULL if only the parent resource
+ * was made writable (i.e. the parent_only was != 0 in the
+ * dav_ensure_resource_writable call).
  */
-dav_error *dav_revert_resource_writability(request_rec *r,
-					   dav_resource *resource,
-					   dav_resource *parent_resource,
-					   int undo,
-					   int resource_existed,
-					   int resource_was_writable,
-					   int parent_was_writable);
+dav_error *dav_revert_resource_writability(
+    request_rec *r,
+    dav_resource *resource,
+    int undo,
+    const dav_auto_version_info *av_info);
 
 /*
 ** This structure is used to describe available reports
 **
-** "namespace" should be valid XML and URL-quoted. mod_dav will place
+** "nmspace" should be valid XML and URL-quoted. mod_dav will place
 ** double-quotes around it and use it in an xmlns declaration.
 */
 typedef struct {
-    const char *namespace;      /* namespace of the XML report element */
+    const char *nmspace;        /* namespace of the XML report element */
     const char *name;           /* element name for the XML report */
 } dav_report_elem;
 
@@ -1538,9 +1596,15 @@ struct dav_hooks_vsn
     /* Checkout a resource. If successful, the resource
      * object state is updated appropriately.
      *
-     * The location of the working resource should be returned in *location.
+     * If the working resource has a different URL from the
+     * target resource, a dav_resource descriptor is returned
+     * for the new working resource. Otherwise, the original
+     * resource descriptor will refer to the working resource.
+     * The working_resource argument can be NULL if the caller
+     * is not interested in the working resource.
      */
-    dav_error * (*checkout)(dav_resource *resource, const char **location);
+    dav_error * (*checkout)(dav_resource *resource,
+                            dav_resource **working_resource);
 
     /* Uncheckout a resource. If successful, the resource
      * object state is updated appropriately.
@@ -1548,9 +1612,13 @@ struct dav_hooks_vsn
     dav_error * (*uncheckout)(dav_resource *resource);
 
     /* Checkin a working resource. If successful, the resource
-     * object state is updated appropriately.
+     * object state is updated appropriately, and the
+     * version_resource descriptor will refer to the new version.
+     * The version_resource argument can be NULL if the caller
+     * is not interested in the new version resource.
      */
-    dav_error * (*checkin)(dav_resource *resource);
+    dav_error * (*checkin)(dav_resource *resource,
+                           dav_resource **version_resource);
 
     /* Determine whether a non-versioned (or non-existent) resource
      * is versionable. Returns != 0 if resource can be versioned.

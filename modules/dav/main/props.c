@@ -431,6 +431,8 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
     case DAV_PROPID_CORE_resourcetype:
         switch (propdb->resource->type) {
         case DAV_RESOURCE_TYPE_REGULAR:
+        case DAV_RESOURCE_TYPE_VERSION:
+        case DAV_RESOURCE_TYPE_WORKING:
             if (propdb->resource->collection) {
 	        value = "<D:collection/>";
             }
@@ -441,22 +443,19 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 	    }
             break;
         case DAV_RESOURCE_TYPE_HISTORY:
-	    value = "<D:history/>";
+	    value = "<D:version-history/>";
             break;
         case DAV_RESOURCE_TYPE_WORKSPACE:
-	    value = "<D:workspace/>";
+	    value = "<D:collection/>";
             break;
         case DAV_RESOURCE_TYPE_ACTIVITY:
 	    value = "<D:activity/>";
             break;
-        case DAV_RESOURCE_TYPE_CONFIGURATION:
-	    value = "<D:configuration/>";
+        case DAV_RESOURCE_TYPE_BASELINE:
+	    value = "<D:baseline/>";
             break;
-	case DAV_RESOURCE_TYPE_REVISION:
-	    value = "<D:revision/>";
-	    break;
 
-	default:
+        default:
 	    /* ### bad juju */
 	    break;
         }
@@ -496,7 +495,7 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 
     case DAV_PROPID_CORE_supportedlock:
         if (propdb->lockdb != NULL) {
-	    value = (*propdb->lockdb->hooks->get_supportedlock)();
+	    value = (*propdb->lockdb->hooks->get_supportedlock)(propdb->resource);
         }
 	break;
 

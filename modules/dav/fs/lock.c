@@ -777,7 +777,7 @@ static dav_error * dav_fs_resolve(dav_lockdb *lockdb,
 **    properties. I think we save more returning a static string than
 **    constructing it every time, though it might look cleaner.
 */
-static const char *dav_fs_get_supportedlock(void)
+static const char *dav_fs_get_supportedlock(const dav_resource *resource)
 {
     static const char supported[] = DEBUG_CR
 	"<D:lockentry>" DEBUG_CR

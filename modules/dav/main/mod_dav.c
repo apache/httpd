@@ -541,12 +541,8 @@ static int dav_created(request_rec *r, const char *locn, const char *what,
     /* Per HTTP/1.1, S10.2.2: add a Location header to contain the
      * URI that was created. */
 
-    /* ### locn does not contain an absoluteURI. S14.30 states that
-     * ### the Location header requires an absoluteURI. where to get it? */
-    /* ### disable until we get the right value */
-#if 0
-    apr_table_setn(r->headers_out, "Location", locn);
-#endif
+    /* Convert locn to an absolute URI, and return in Location header */
+    apr_table_setn(r->headers_out, "Location", ap_construct_url(r->pool, locn, r));
 
     /* ### insert an ETag header? see HTTP/1.1 S10.2.2 */
 
@@ -604,13 +600,21 @@ static int dav_get_overwrite(request_rec *r)
     return -1;
 }
 
-/* resolve a request URI to a resource descriptor */
-static int dav_get_resource(request_rec *r, const char *target,
-                            dav_resource **res_p)
+/* resolve a request URI to a resource descriptor.
+ * If target_allowed != 0, then allow the request target to be overridden
+ * by either a DAV:version or DAV:label-name element (passed as
+ * the target argument), or any Target-Selector header in the request.
+ */
+static int dav_get_resource(request_rec *r, int target_allowed,
+                            ap_xml_elem *target, dav_resource **res_p)
 {
     void *data;
     dav_dir_conf *conf;
     const dav_hooks_repository *repos_hooks;
+    const char *workspace = NULL;
+    const char *target_selector = NULL;
+    int is_label = 0;
+    int result;
 
     /* go look for the resource if it isn't already present */
     (void) apr_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
@@ -624,7 +628,21 @@ static int dav_get_resource(request_rec *r, const char *target,
     /* assert: provider != NULL */
     repos_hooks = dav_lookup_repository(conf->provider);
 
-    *res_p = (*repos_hooks->get_resource)(r, conf->dir, target);
+    /* get any workspace header */
+    if ((result = dav_get_workspace(r, &workspace)) != OK)
+        return result;
+
+    /* if the request target can be overridden, get any target selector */
+    if (target_allowed) {
+        if ((result = dav_get_target_selector(r, target,
+                                              &target_selector,
+                                              &is_label)) != OK)
+	    return result;
+    }
+
+    /* resolve the resource */
+    *res_p = (*repos_hooks->get_resource)(r, conf->dir, workspace,
+                                          target_selector, is_label);
     if (*res_p == NULL) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -632,6 +650,12 @@ static int dav_get_resource(request_rec *r, const char *target,
 
     (void) apr_set_userdata(*res_p, DAV_KEY_RESOURCE, apr_null_cleanup,
                             r->pool);
+
+    /* ### hmm. this doesn't feel like the right place or thing to do */
+    /* if there were any input headers requiring a Vary header in the response,
+     * add it now */
+    dav_add_vary_header(r, r, *res_p);
+
     return OK;
 }
 
@@ -709,10 +733,10 @@ static int available_report(request_rec *r, const dav_resource *resource)
              "<D:available-report/>" DEBUG_CR,
              r);
 
-    for (; reports->namespace != NULL; ++reports) {
+    for (; reports->nmspace != NULL; ++reports) {
         /* Note: we presume reports->namespace is propertly XML/URL quoted */
         ap_rprintf(r, "<%s xmlns=\"%s\"/>" DEBUG_CR,
-                   reports->name, reports->namespace);
+                   reports->name, reports->nmspace);
     }
 
     ap_rputs("</D:report-set>" DEBUG_CR, r);
@@ -731,7 +755,7 @@ static int dav_method_get(request_rec *r)
      * visible to Apache. We will fetch the resource from the repository,
      * then create a subrequest for Apache to handle.
      */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -741,7 +765,9 @@ static int dav_method_get(request_rec *r)
 
     /* Check resource type */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR &&
-        resource->type != DAV_RESOURCE_TYPE_REVISION) {
+        resource->type != DAV_RESOURCE_TYPE_VERSION &&
+        resource->type != DAV_RESOURCE_TYPE_WORKING)
+    {
         return dav_error_response(r, HTTP_CONFLICT,
                                   "Cannot GET this type of resource.");
     }
@@ -924,7 +950,7 @@ static int dav_method_post(request_rec *r)
     int result;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
     if (result != OK) {
         return result;
     }
@@ -944,15 +970,12 @@ static int dav_method_put(request_rec *r)
 {
     dav_resource *resource;
     int resource_state;
-    dav_resource *resource_parent;
+    dav_auto_version_info av_info;
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
     const char *body;
     dav_error *err;
     dav_error *err2;
     int result;
-    int resource_existed = 0;
-    int resource_was_writable = 0;
-    int parent_was_writable = 0;
     dav_stream_mode mode;
     dav_stream *stream;
     dav_response *multi_response;
@@ -965,7 +988,7 @@ static int dav_method_put(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
     if (result != OK) {
         return result;
     }
@@ -1007,10 +1030,7 @@ static int dav_method_put(request_rec *r)
     /* make sure the resource can be modified (if versioning repository) */
     if ((err = dav_ensure_resource_writable(r, resource,
 					    0 /* not parent_only */,
-					    &resource_parent,
-					    &resource_existed,
-					    &resource_was_writable,
-					    &parent_was_writable)) != NULL) {
+					    &av_info)) != NULL) {
 	/* ### add a higher-level description? */
 	return dav_handle_err(r, err, NULL);
     }
@@ -1093,11 +1113,8 @@ static int dav_method_put(request_rec *r)
     }
 
     /* restore modifiability of resources back to what they were */
-    err2 = dav_revert_resource_writability(r, resource, resource_parent,
-					   err != NULL /* undo if error */,
-					   resource_existed,
-					   resource_was_writable,
-					   parent_was_writable);
+    err2 = dav_revert_resource_writability(r, resource, err != NULL /* undo if error */,
+                                           &av_info);
 
     /* check for errors now */
     if (err != NULL) {
@@ -1148,7 +1165,7 @@ static int dav_method_put(request_rec *r)
     /* NOTE: WebDAV spec, S8.7.1 states properties should be unaffected */
 
     /* return an appropriate response (HTTP_CREATED or HTTP_NO_CONTENT) */
-    return dav_created(r, NULL, "Resource", resource_existed);
+    return dav_created(r, NULL, "Resource", !av_info.resource_created);
 }
 
 /* ### move this to dav_util? */
@@ -1173,14 +1190,12 @@ void dav_add_response(dav_walker_ctx *ctx, const char *href, int status,
 static int dav_method_delete(request_rec *r)
 {
     dav_resource *resource;
-    dav_resource *resource_parent = NULL;
+    dav_auto_version_info av_info;
     dav_error *err;
     dav_error *err2;
     dav_response *multi_response;
-    const char *body;
     int result;
     int depth;
-    int parent_was_writable = 0;
 
     /* We don't use the request body right now, so torch it. */
     if ((result = ap_discard_request_body(r)) != OK) {
@@ -1188,7 +1203,7 @@ static int dav_method_delete(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -1212,16 +1227,6 @@ static int dav_method_delete(request_rec *r)
 	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "Depth of \"1\" is not allowed for DELETE.");
 	return HTTP_BAD_REQUEST;
-    }
-
-    /* Check for valid resource type */
-    /* ### allow DAV_RESOURCE_TYPE_REVISION with All-Bindings header */
-    if (resource->type != DAV_RESOURCE_TYPE_REGULAR &&
-        resource->type != DAV_RESOURCE_TYPE_WORKSPACE) {
-        body = apr_psprintf(r->pool,
-                           "Cannot delete resource %s.",
-                           ap_escape_html(r->pool, r->uri));
-	return dav_error_response(r, HTTP_CONFLICT, body);
     }
 
     /*
@@ -1254,9 +1259,7 @@ static int dav_method_delete(request_rec *r)
 
     /* if versioned resource, make sure parent is checked out */
     if ((err = dav_ensure_resource_writable(r, resource, 1 /* parent_only */,
-					    &resource_parent,
-					    NULL, NULL,
-					    &parent_was_writable)) != NULL) {
+					    &av_info)) != NULL) {
 	/* ### add a higher-level description? */
 	return dav_handle_err(r, err, NULL);
     }
@@ -1265,9 +1268,8 @@ static int dav_method_delete(request_rec *r)
     err = (*resource->hooks->remove_resource)(resource, &multi_response);
 
     /* restore writability of parent back to what it was */
-    err2 = dav_revert_resource_writability(r, NULL, resource_parent,
-					   err != NULL /* undo if error */,
-					   0, 0, parent_was_writable);
+    err2 = dav_revert_resource_writability(r, NULL, err != NULL /* undo if error */,
+					   &av_info);
 
     /* check for errors now */
     if (err != NULL) {
@@ -1316,7 +1318,7 @@ static int dav_method_options(request_rec *r)
     ap_set_content_length(r, 0);
 
     /* resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -1523,7 +1525,7 @@ static int dav_method_propfind(request_rec *r)
     dav_walker_ctx ctx = { 0 };
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -1787,7 +1789,7 @@ static int dav_method_proppatch(request_rec *r)
     dav_prop_ctx *ctx;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -1969,13 +1971,12 @@ static int dav_method_mkcol(request_rec *r)
 {
     dav_resource *resource;
     int resource_state;
-    dav_resource *resource_parent;
+    dav_auto_version_info av_info;
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
     dav_error *err;
     dav_error *err2;
     int result;
     dav_dir_conf *conf;
-    int parent_was_writable = 0;
     dav_response *multi_status;
 
     /* handle the request body */
@@ -1988,7 +1989,7 @@ static int dav_method_mkcol(request_rec *r)
 						 &dav_module);
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -2023,21 +2024,18 @@ static int dav_method_mkcol(request_rec *r)
 
     /* if versioned resource, make sure parent is checked out */
     if ((err = dav_ensure_resource_writable(r, resource, 1 /* parent_only */,
-					    &resource_parent,
-					    NULL, NULL,
-					    &parent_was_writable)) != NULL) {
+					    &av_info)) != NULL) {
 	/* ### add a higher-level description? */
 	return dav_handle_err(r, err, NULL);
     }
 
     /* try to create the collection */
     resource->collection = 1;
-    err = (*resource->hooks->create_collection)(r->pool, resource);
+    err = (*resource->hooks->create_collection)(resource);
 
     /* restore modifiability of parent back to what it was */
-    err2 = dav_revert_resource_writability(r, NULL, resource_parent,
-					  err != NULL /* undo if error */,
-					  0, 0, parent_was_writable);
+    err2 = dav_revert_resource_writability(r, NULL, err != NULL /* undo if error */,
+					   &av_info);
 
     /* check for errors now */
     if (err != NULL) {
@@ -2091,9 +2089,9 @@ static int dav_method_mkcol(request_rec *r)
 static int dav_method_copymove(request_rec *r, int is_move)
 {
     dav_resource *resource;
-    dav_resource *resource_parent = NULL;
+    dav_auto_version_info src_av_info;
     dav_resource *resnew;
-    dav_resource *resnew_parent = NULL;
+    dav_auto_version_info dst_av_info;
     const char *body;
     const char *dest;
     dav_error *err;
@@ -2107,12 +2105,10 @@ static int dav_method_copymove(request_rec *r, int is_move)
     int result;
     dav_lockdb *lockdb;
     int replaced;
-    int src_parent_was_writable = 0;
-    int dst_parent_was_writable = 0;
     int resource_state;
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, !is_move /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -2166,7 +2162,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* Resolve destination resource */
-    result = dav_get_resource(lookup.rnew, NULL, &resnew);
+    result = dav_get_resource(lookup.rnew, 0 /*target_allowed*/, NULL, &resnew);
     if (result != OK)
         return result;
 
@@ -2332,11 +2328,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
 
     /* if this is a move, then the source parent collection will be modified */
     if (is_move) {
-        if ((err = dav_ensure_resource_writable(r, resource,
-						1 /* parent_only */,
-						&resource_parent,
-						NULL, NULL,
-						&src_parent_was_writable)) != NULL) {
+        if ((err = dav_ensure_resource_writable(r, resource, 1 /* parent_only */,
+						&src_av_info)) != NULL) {
 	    if (lockdb != NULL)
 		(*lockdb->hooks->close_lockdb)(lockdb);
 
@@ -2347,17 +2340,13 @@ static int dav_method_copymove(request_rec *r, int is_move)
 
     /* prepare the destination collection for modification */
     if ((err = dav_ensure_resource_writable(r, resnew, 1 /* parent_only */,
-					    &resnew_parent,
-					    NULL, NULL,
-					    &dst_parent_was_writable)) != NULL) {
+					    &dst_av_info)) != NULL) {
         /* could not make destination writable:
 	 * if move, restore state of source parent
 	 */
         if (is_move) {
-            (void) dav_revert_resource_writability(r, NULL, resource_parent,
-						   1 /* undo */,
-						   0, 0,
-						   src_parent_was_writable);
+            (void) dav_revert_resource_writability(r, NULL, 1 /* undo */,
+						   &src_av_info);
         }
 
 	if (lockdb != NULL)
@@ -2369,12 +2358,14 @@ static int dav_method_copymove(request_rec *r, int is_move)
 
     /* If source and destination parents are the same, then
      * use the same object, so status updates to one are reflected
-     * in the other.
+     * in the other, when reverting their writable states.
      */
-    if (resource_parent != NULL
-        && (*resource_parent->hooks->is_same_resource)(resource_parent,
-                                                       resnew_parent))
-        resnew_parent = resource_parent;
+    if (src_av_info.parent_resource != NULL
+        && (*src_av_info.parent_resource->hooks->is_same_resource)
+            (src_av_info.parent_resource, dst_av_info.parent_resource)) {
+
+        dst_av_info.parent_resource = src_av_info.parent_resource;
+    }
 
     /* New resource will be same kind as source */
     resnew->collection = resource->collection;
@@ -2397,14 +2388,12 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* restore parent collection states */
-    err2 = dav_revert_resource_writability(r, NULL, resnew_parent,
-					   err != NULL /* undo if error */,
-					   0, 0, dst_parent_was_writable);
+    err2 = dav_revert_resource_writability(r, NULL, err != NULL /* undo if error */,
+					   &dst_av_info);
 
     if (is_move) {
-        err3 = dav_revert_resource_writability(r, NULL, resource_parent,
-					       err != NULL /* undo if error */,
-					       0, 0, src_parent_was_writable);
+        err3 = dav_revert_resource_writability(r, NULL, err != NULL /* undo if error */,
+					       &src_av_info);
     }
     else
 	err3 = NULL;
@@ -2497,8 +2486,12 @@ static int dav_method_lock(request_rec *r)
 	return HTTP_BAD_REQUEST;
     }
 
-    /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    /* Ask repository module to resolve the resource.
+     * DeltaV says result of target selector is undefined,
+     * so allow it, and let provider reject the lock attempt
+     * on a version if it wants to.
+     */
+    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -2680,8 +2673,12 @@ static int dav_method_unlock(request_rec *r)
 	return dav_handle_err(r, err, NULL);
     }
 
-    /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    /* Ask repository module to resolve the resource.
+     * DeltaV says result of target selector is undefined,
+     * so allow it, and let provider reject the unlock attempt
+     * on a version if it wants to.
+     */
+    result = dav_get_resource(r, 1 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
 
@@ -2732,12 +2729,12 @@ static int dav_method_vsn_control(request_rec *r)
 static int dav_method_checkout(request_rec *r)
 {
     dav_resource *resource;
+    dav_resource *working_resource;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
     int result;
     ap_xml_doc *doc;
-    const char *target;
-    const char *location;
+    ap_xml_elem *target = NULL;
 
     /* If no versioning provider, decline the request */
     if (vsn_hooks == NULL)
@@ -2755,15 +2752,12 @@ static int dav_method_checkout(request_rec *r)
             return HTTP_BAD_REQUEST;
         }
 
-        target = dav_get_target_selector(r, dav_find_child(doc->root,
-                                                           "version"));
-    }
-    else {
-        target = dav_get_target_selector(r, NULL);
+        if ((target = dav_find_child(doc->root, "version")) == NULL)
+            target = dav_find_child(doc->root, "label-name");
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, target, &resource);
+    result = dav_get_resource(r, 1 /*target_allowed*/, target, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -2792,7 +2786,7 @@ static int dav_method_checkout(request_rec *r)
     /* ### do lock checks, once behavior is defined */
 
     /* Do the checkout */
-    if ((err = (*vsn_hooks->checkout)(resource, &location)) != NULL) {
+    if ((err = (*vsn_hooks->checkout)(resource, &working_resource)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
 			     apr_psprintf(r->pool,
 					 "Could not CHECKOUT resource %s.",
@@ -2801,10 +2795,9 @@ static int dav_method_checkout(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
 
-    /* set the Location and Cache-Control headers, per the spec */
-    apr_table_setn(r->headers_out, "Location", location);
+    /* set the Cache-Control headers, per the spec */
     apr_table_setn(r->headers_out, "Cache-Control", "no-cache");
-    return dav_created(r, location, "Working resource", 0);
+    return dav_created(r, working_resource->uri, "Working resource", 0);
 }
 
 /* handle the UNCHECKOUT method */
@@ -2824,7 +2817,7 @@ static int dav_method_uncheckout(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 0 /*target_allowed*/, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -2873,6 +2866,7 @@ static int dav_method_uncheckout(request_rec *r)
 static int dav_method_checkin(request_rec *r)
 {
     dav_resource *resource;
+    dav_resource *new_version;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     dav_error *err;
     int result;
@@ -2886,7 +2880,7 @@ static int dav_method_checkin(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    result = dav_get_resource(r, 0 /* target_allowed */, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
@@ -2915,7 +2909,7 @@ static int dav_method_checkin(request_rec *r)
     /* ### do lock checks, once behavior is defined */
 
     /* Do the checkin */
-    if ((err = (*vsn_hooks->checkin)(resource)) != NULL) {
+    if ((err = (*vsn_hooks->checkin)(resource, &new_version)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
 			     apr_psprintf(r->pool,
 					 "Could not CHECKIN resource %s.",
@@ -2924,11 +2918,7 @@ static int dav_method_checkin(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
 
-    /* no body */
-    ap_set_content_length(r, 0);
-    ap_send_http_header(r);
-
-    return DONE;
+    return dav_created(r, new_version->uri, "Version", 0);
 }
 
 static int dav_method_set_target(request_rec *r)
@@ -2948,6 +2938,7 @@ static int dav_method_report(request_rec *r)
     dav_resource *resource;
     const dav_hooks_vsn *vsn_hooks = DAV_GET_HOOKS_VSN(r);
     int result;
+    int target_allowed;
     ap_xml_doc *doc;
 
     /* If no versioning provider, decline the request */
@@ -2964,7 +2955,9 @@ static int dav_method_report(request_rec *r)
     }
 
     /* Ask repository module to resolve the resource */
-    result = dav_get_resource(r, NULL, &resource);
+    /* ### need to compute target_allowed based on report type */
+    target_allowed = 0;
+    result = dav_get_resource(r, target_allowed, NULL, &resource);
     if (result != OK)
         return result;
     if (!resource->exists) {
