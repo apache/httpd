@@ -55,7 +55,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 lib\apr\Release\aprlib.lib  regex\release\regex.lib ap\Release\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /machine:I386
+# ADD LINK32 lib\apr\Release\aprlib.lib regex\release\regex.lib ap\Release\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /machine:I386
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
@@ -82,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 lib\apr\debug\aprlib.lib regex\debug\regex.lib  ap\Debug\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /debug /machine:I386
+# ADD LINK32 lib\apr\debug\aprlib.lib regex\debug\regex.lib ap\Debug\ap.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /debug /machine:I386
 # SUBTRACT LINK32 /map
 
 !ENDIF 
@@ -240,6 +240,10 @@ SOURCE=.\main\util.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\main\util_cfgtree.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\util_date.c
 # End Source File
 # Begin Source File
@@ -373,6 +377,10 @@ SOURCE=.\include\rfc1413.h
 # Begin Source File
 
 SOURCE=.\os\win32\service.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_cfgtree.h
 # End Source File
 # Begin Source File
 
