@@ -1,7 +1,7 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
 <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=ibm866">
+   <meta http-equiv="Content-Type" content="text/html; charset=cp866">
    <meta name="GENERATOR" content="Mozilla/4.72 [koi8-r] (X11; U; Linux 2.2.12-20smp i686) [Netscape]">
    <title>Тестовая страница установки Apache</title>
 <!-- Белый фон, ссылки: синие (непосещённые), тёмно-фиолетовые (посещённые), красные (посещённые) -->

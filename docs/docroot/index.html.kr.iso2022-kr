@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//KR">
 <HTML>
  <HEAD>
- <META http-equiv="Content-Type" content="text/html; charset=eucKR">
+ <META http-equiv="Content-Type" content="text/html; charset=ISO-2022-KR">
   <TITLE>아파치 설치를 위한 테스트페이지</TITLE>
  </HEAD>
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -15,7 +15,7 @@
 
 
 <P>
-현재화면이 잘 보이신다면 이 시스템에 <A HREF="http://httpd.apache.org/">Apache 웹서버</A>  소프트웨어의 설치가 성공적으로 끝났다는걸 의미합니다. 여러분은 아마 곧 이 페이지를 지우고 디렉토리에 새로운 내용을 추가할 것입니다.
+현재화면이 잘 보이신다면 이 시스템에 <A HREF="http://www.apache.org/foundation/preFAQ.html">Apache 웹서버</A>  소프트웨어의 설치가 성공적으로 끝났다는걸 의미합니다. 여러분은 아마 곧 이 페이지를 지우고 디렉토리에 새로운 내용을 추가할 것입니다.
 
 <P><HR WIDTH="50%" SIZE="8">
 
