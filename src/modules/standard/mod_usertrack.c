@@ -185,7 +185,7 @@ static char * make_cookie_id(char * buffer, int bufsize, request_rec *r,
      * was started. It should be relatively unique.
      */
 
-    clocktime = (long) GetTickCount());
+    clocktime = (long) GetTickCount();
 
 #else
     gettimeofday(&tv, &tz);
