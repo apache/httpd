@@ -214,6 +214,7 @@ AC_DEFUN(APACHE_MODPATH_INIT,[
 ])dnl
 dnl
 AC_DEFUN(APACHE_MODPATH_FINISH,[
+  echo "DISTCLEAN_TARGETS = modules.mk" >> $modpath_current/modules.mk
   echo "static = $modpath_static" >> $modpath_current/modules.mk
   echo "shared = $modpath_shared" >> $modpath_current/modules.mk
   if test ! -z "$modpath_static" -o ! -z "$modpath_shared"; then
