@@ -15,7 +15,8 @@ Changes with Apache 1.3b6
   *) Previously Apache would permit </Files> to end <FilesMatch> (and
      similary for Location and Directory), now this is diagnosed as an
      error.  Improve error messages for mismatched sections (<Files>,
-     <FilesMatch>, <Directory>, <DirectoryMatch>, ...).  [Dean Gaudet]
+     <FilesMatch>, <Directory>, <DirectoryMatch>, ...).
+     [Dean Gaudet, Martin Kraemer]
 
   *) <Files> is not permitted within <Location> (because of the
      semantic ordering).  [Dean Gaudet] PR#379
