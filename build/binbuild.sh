@@ -229,7 +229,7 @@ cp README.bindist ../apache_$VER-$OS.README
   echo " " && \
   echo "echo \"Ready.\"" && \
   echo "echo \" +--------------------------------------------------------+\"" && \
-  echo "echo \" | You now have successfully installed the Apache $VER   |\"" && \
+  echo "echo \" | You now have successfully installed the Apache $VER  |\"" && \
   echo "echo \" | HTTP server. To verify that Apache actually works      |\"" && \
   echo "echo \" | correctly you should first check the (initially        |\"" && \
   echo "echo \" | created or preserved) configuration files:             |\"" && \
