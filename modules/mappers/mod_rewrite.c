@@ -4252,8 +4252,8 @@ static int subreq_ok(request_rec *r)
 static int prefix_stat(const char *path, apr_pool_t *pool)
 {
     const char *curpath = path;
-    char *root;
-    char *slash;
+    const char *root;
+    const char *slash;
     char *statpath;
     apr_status_t rv;
 
@@ -4266,7 +4266,7 @@ static int prefix_stat(const char *path, apr_pool_t *pool)
     /* let's recognize slashes only, the mod_rewrite semantics are opaque
      * enough.
      */
-    if ((slash = ap_strchr(curpath, '/')) != NULL) {
+    if ((slash = ap_strchr_c(curpath, '/')) != NULL) {
         rv = apr_filepath_merge(&statpath, root,
                                 apr_pstrndup(pool, curpath,
                                              (apr_size_t)(slash - curpath)),
