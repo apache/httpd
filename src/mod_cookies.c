@@ -52,23 +52,35 @@
  */
 
 
-/* Netscape Cookies Fixup
+/* Client-Side State (Cookies) Fixup Module
  *
- * This is a module for Shambhala for handling Netscape cookies.
+ * This is a module for Apache for tracking users paths through a site 
+ * using the Client-Side State (Cookie) protocol developed by Netscape.  
+ * It is known to work on Netscape browsers, Microsoft Internet 
+ * Explorer and others currently being developed.
  *
- * On each request look for a Cookie: header.
- * If we don't find one then send a Set-Cookie: header out with the request
- * Future requests from the same client should keep the same Cookie line.
- * Using the cookie log you can track the path a user takes through your
- * files.
+ * Function:
+ *
+ *   On each Web request we look for a Cookie: header
+ *   If we don't find one then the user hasn't been to this site this session
+ *       so send a Set-Cookie: header out with the request
+ *   Future requests from the same client should keep the same Cookie line.
  *
  * The cookie and request are logged to a file.  Use the directive
- * "CookieLog somefilename" in one of the config files to enable.
+ * "CookieLog somefilename" in one of the config files to enable the Cookie
+ * module.
  *
- * Netscape 1.0+ is the only known browser to support cookies.  This
- * code is lazy and doesn't bother creating cookies for other browsers.
+ * Bugs:
+ * 
+ *   This code is lazy and doesn't bother creating cookies for browsers other
+ *       than those that report to be "Mozilla". It saves time on requests.
+ *   This code doesn't log the initial transaction (the one that created
+ *       the cookie to start with).
  *
- * Mark Cox, mark@telescope.org, 6 July 95
+ * Mark Cox, mark@ukweb.com, 6 July 95
+ *
+ * 6.12.95 MJC Now be more friendly.  Allow our cookies to overlap with
+ * others the site may be using.  Use a more descriptive cookie name.
  */
 
 #include "httpd.h"
@@ -81,6 +93,8 @@ module cookies_module;
 /* Now we have to generate something that is going to be
  * pretty unique.  We can base it on the pid, time, hostip */
 
+#define COOKIE_NAME "Apache="
+
 void make_cookie(request_rec *r)
 {
     struct timeval tv;
@@ -92,8 +106,8 @@ void make_cookie(request_rec *r)
 
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */
     gettimeofday(&tv, &tz);
-    sprintf(new_cookie,"s=%s%d%ld%d; path=/",
-        rname,
+    sprintf(new_cookie,"%s%s%d%ld%d; path=/",
+        COOKIE_NAME, rname,
         (int)getpid(),  
         (long)tv.tv_sec, (int)tv.tv_usec/1000 );
 
@@ -110,7 +124,8 @@ int spot_cookie(request_rec *r)
     if (strncmp(agent,"Mozilla",7))   /* Don't bother creating a cookie */
         return DECLINED;              /* unless browser is Netscape fudge */
     if ((cookie = table_get (r->headers_in, "Cookie")))
-        return DECLINED;              /* Theres already a cookie, no new one */
+        if (strstr(cookie,COOKIE_NAME))
+            return DECLINED;          /* Theres already a cookie, no new one */
     make_cookie(r);
     return OK;                        /* We set our cookie */
 }
@@ -184,7 +199,8 @@ int cookie_log_transaction(request_rec *orig)
     struct tm *t;
     char tstr[MAX_STRING_LEN],sign;
     request_rec *r;
-    char *cookie;
+    char *cookie,*cookiebuf,*cookieend;
+    char *value;
 
     for (r = orig; r->next; r = r->next)
         continue;
@@ -193,8 +209,14 @@ int cookie_log_transaction(request_rec *orig)
 
     if (!(cookie = table_get (r->headers_in, "Cookie")))
         return DECLINED;    /* Theres no cookie, don't bother logging */
-    if (strncmp(cookie,"s=",2)) /* Only log cookies we generated! */
+    value=strstr(cookie,COOKIE_NAME);
+    if (!value) /* Only log cookies we generated! */
         return DECLINED;
+    value+=strlen(COOKIE_NAME);
+    cookiebuf=pstrdup( r->pool, value );
+    cookieend=strchr(cookiebuf,';');
+    if (cookieend) *cookieend='\0';	/* Ignore anything after a ; */
+
     t = get_gmtoff(&timz);
     sign = (timz < 0 ? '-' : '+');
     if(timz < 0) 
@@ -207,8 +229,7 @@ int cookie_log_transaction(request_rec *orig)
 	sprintf(&tstr[strlen(tstr)], "%c%02ld%02ld] -\n", sign, timz/3600,
 		timz%3600);
 
-/* ignore s= on cookie */
-    str = pstrcat(orig->pool, cookie + 2, " \"", orig->the_request, tstr, NULL);
+    str = pstrcat(orig->pool, cookiebuf, " \"", orig->the_request, tstr, NULL);
     
     write(cls->log_fd, str, strlen(str));
 

@@ -1,3 +1,8 @@
+  *) Long overdue revamp of the Cookies module to stop Apache cookies
+     colliding with other cookies a site may be using [Mark Cox]
+
+  *) Clean up strings.h warning for SGI [Mark Cox]
+
   *) Add HAVE_MMAP to SCO 5.
 
   *) SCO 5 reportedly (by Jay Thorne <jay@result.com>) requires
