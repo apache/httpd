@@ -9,13 +9,13 @@
   <summary>
     <p>Configuring Apache to listen on specific addresses and ports.</p>
   </summary>
-  
+
   <seealso><a href="vhosts/">Virtual Hosts</a></seealso>
   <seealso><a href="dns-caveats.html">DNS Issues</a></seealso>
 
   <section id="overview">
     <title>Overview</title>
-    
+
     <related>
       <modulelist>
         <module>core</module>
@@ -26,8 +26,8 @@
         <directive module="mpm_common">Listen</directive>
       </directivelist>
     </related>
-    
-    
+
+
     <p>When Apache starts, it binds to some port and address on
     the local machine and waits for incoming requests. By default,
     it listens to all addresses on the machine.  However, it needs to
