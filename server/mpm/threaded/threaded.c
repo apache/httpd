@@ -586,8 +586,8 @@ static void child_main(int child_num_arg)
 {
     sigset_t sig_mask;
     int signal_received;
-    pthread_t thread;
-    pthread_attr_t thread_attr;
+    apr_thread_t *thread;
+    apr_threadattr_t *thread_attr;
     int i;
     int my_child_num = child_num_arg;
     proc_info *my_info = NULL;
@@ -651,16 +651,9 @@ static void child_main(int child_num_arg)
                     NULL, pchild);
     apr_lock_create(&pipe_of_death_mutex, APR_MUTEX, APR_INTRAPROCESS, 
                     NULL, pchild);
-    pthread_attr_init(&thread_attr);
-#ifdef PTHREAD_ATTR_SETDETACHSTATE_ARG2_ADDR
-    {
-        int on = 1;
+    apr_threadattr_create(&thread_attr, pchild);
+    apr_threadattr_detach_set(thread_attr);
 
-        pthread_attr_setdetachstate(&thread_attr, &on);
-    }
-#else
-    pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-#endif
     for (i=0; i < ap_threads_per_child; i++) {
 
 	my_info = (proc_info *)malloc(sizeof(proc_info));
@@ -677,31 +670,19 @@ static void child_main(int child_num_arg)
 	/* We are creating threads right now */
 	(void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
 				      (request_rec *) NULL);
-#ifndef NO_THREADS
-	if ((rv = pthread_create(&thread, &thread_attr, worker_thread, my_info))) {
-#ifdef PTHREAD_SETS_ERRNO
-            rv = errno;
-#endif
+	if ((rv = apr_thread_create(&thread, thread_attr, worker_thread, my_info, pchild))) {
 	    ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
-			 "pthread_create: unable to create worker thread");
+			 "apr_thread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
                Apache running away with the CPU trying to fork over and
                over and over again if we exit. */
             sleep(10);
 	    clean_child_exit(APEXIT_CHILDFATAL);
 	}
-#else
-	worker_thread(my_info);
-	/* The SIGTERM shouldn't let us reach this point, but just in case... */
-	clean_child_exit(APEXIT_OK);
-#endif
-
 	/* We let each thread update it's own scoreboard entry.  This is done
 	 * because it let's us deal with tid better.
 	 */
     }
-
-    pthread_attr_destroy(&thread_attr);
 
     /* This thread will be the one responsible for handling signals */
     sigemptyset(&sig_mask);

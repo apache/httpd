@@ -1,5 +1,8 @@
 Changes with Apache 2.0.12-dev
 
+  *) Make the threaded MPM use APR threads instead of pthreads.
+     [Ryan Bloom]
+
   *) Get mod_tls to the point where it actually appears to work in all cases.
      [Ben Laurie]
 
