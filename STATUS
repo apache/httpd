@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/06 07:43:39 $]
+Last modified at [$Date: 2002/05/06 09:21:41 $]
 
 Release:
 
@@ -47,16 +47,11 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 36 status:
+    * 36 status: scheduled for release on Monday, May 6, 2002
 
 RELEASE SHOWSTOPPERS:
 
-    * worker MPM segfaults because the apr_bucket_alloc_t is cleaned
-      up twice.
-
-    * The atomics code produces binaries that are not forward compatible
-      on Solaris (eg. Solaris 5.6 binaries can fail on older hardware
-      running on Solaris 7). (See APR's STATUS file.)
+    * for 2.0.37: decide if the MMN bump was warranted
 
 CURRENT VOTES:
 
@@ -90,12 +85,10 @@ CURRENT VOTES:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
-    * The worker MPM needs to be able to gracelessly kill off its
-      children. The current proposal would have the worker keep
-      track of all currently accepted socket descriptors, and to
-      close them all as soon as the listener thread receives the
-      signal to shutdown.
-      Status: Aaron volunteers
+    * The 2.0.36 worker MPM graceless shutdown changes work but are
+      a bit clunky on some platforms; eg, on Linux, the loop to
+      join each worker thread seems to hang, and the parent ends up
+      killing off the child with SIGKILL.  But at least it shuts down.
 
     * --enable-mods-shared="foo1 foo2" is busted on Darwin.  Pier
         posted a patch (Message-ID: <B8DBBE8D.575A%pier@betaversion.org>).
