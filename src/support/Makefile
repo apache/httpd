@@ -52,10 +52,10 @@ unescape: unescape.c
 
 inc2shtml: inc2shtml.c
 	$(CC) $(CFLAGS) inc2shtml.c -o inc2shtml
-	
+
 httpd_monitor: httpd_monitor.c
 	$(CC) $(INCLUDES) $(CFLAGS) httpd_monitor.c -o httpd_monitor
-	
+
 clean:
 	rm -f htpasswd unescape inc2shtml httpd_monitor
 
