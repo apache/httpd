@@ -64,7 +64,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "http_config.h"
-#include "http_core.h"		/* for get_remote_host */
+#include "http_core.h"             /* for get_remote_host */
 #include "http_connection.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
@@ -127,10 +127,10 @@ int hold_screen_on_exit = 0; /* Indicates whether the screen should be held open
 static fd_set listenfds;
 static int listenmaxfd;
 
-static apr_pool_t *pconf;		/* Pool for config stuff */
-static apr_pool_t *pmain;		/* Pool for httpd child stuff */
+static apr_pool_t *pconf;               /* Pool for config stuff */
+static apr_pool_t *pmain;               /* Pool for httpd child stuff */
 
-static pid_t ap_my_pid;	/* it seems silly to call getpid all the time */
+static pid_t ap_my_pid;  /* it seems silly to call getpid all the time */
 static char *ap_my_addrspace = NULL;
 
 static int die_now = 0;
@@ -247,11 +247,11 @@ static void mpm_term(void)
 static void sig_term(int sig)
 {
     if (shutdown_pending == 1) {
-	    /* Um, is this _probably_ not an error, if the user has
-	     * tried to do a shutdown twice quickly, so we won't
-	     * worry about reporting it.
-	     */
-	    return;
+        /* Um, is this _probably_ not an error, if the user has
+         * tried to do a shutdown twice quickly, so we won't
+         * worry about reporting it.
+         */
+        return;
     }
     shutdown_pending = 1;
 
@@ -375,7 +375,7 @@ void worker_main(void *arg)
         for (;;) {
             if (shutdown_pending || restart_pending || (ap_scoreboard_image->servers[0][my_worker_num].status == WORKER_IDLE_KILL)) {
                 DBPRINT1 ("\nThread slot %d is shutting down\n", my_worker_num);
-             	 clean_child_exit(0, my_worker_num, ptrans, bucket_alloc);
+                clean_child_exit(0, my_worker_num, ptrans, bucket_alloc);
             }
 
             /* Check the listen queue on all sockets for requests */
@@ -449,7 +449,7 @@ void worker_main(void *arg)
                     avg_retries += (MAX_WB_RETRIES-wouldblock_retry);
                 }
 #endif
-                break;		/* We have a socket ready for reading */
+                break;       /* We have a socket ready for reading */
             }
             else {
 #ifdef DBINFO_ON
@@ -583,7 +583,7 @@ static void startup_workers(int number_to_start)
  */
 static int idle_spawn_rate = 1;
 #ifndef MAX_SPAWN_RATE
-#define MAX_SPAWN_RATE	(64)
+#define MAX_SPAWN_RATE (64)
 #endif
 static int hold_off_on_exponential_spawning;
 
@@ -891,15 +891,15 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-		"%s configured -- resuming normal operations",
-		ap_get_server_version());
+            "%s configured -- resuming normal operations",
+            ap_get_server_version());
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
-		"Server built: %s", ap_get_server_built());
+            "Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-		"AcceptMutex: %s (default: %s)",
-		apr_proc_mutex_name(accept_mutex),
-		apr_proc_mutex_defname());
+            "AcceptMutex: %s (default: %s)",
+            apr_proc_mutex_name(accept_mutex),
+            apr_proc_mutex_defname());
 #endif
     show_server_data();
 
@@ -937,8 +937,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ++ap_my_generation;
         ap_scoreboard_image->global->running_generation = ap_my_generation;
 
-    	ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-		    "Graceful restart requested, doing restart");
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                "Graceful restart requested, doing restart");
 
         /* Wait for all of the threads to terminate before initiating the restart */
         while (worker_thread_count > 0) {
@@ -978,7 +978,7 @@ static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_extended_status = 0;
     ap_thread_stacksize = DEFAULT_THREAD_STACKSIZE;
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+    ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
 
     return OK;
@@ -1045,9 +1045,9 @@ void netware_rewrite_args(process_rec *process)
                         renamescreen(opt_arg);
                     }
                     break;
-				case 'E':
-					/* Don't need to hold the screen open if the output is going to a file */
-					hold_screen_on_exit = -1;
+                case 'E':
+                    /* Don't need to hold the screen open if the output is going to a file */
+                    hold_screen_on_exit = -1;
                 default:
                     *(const char **)apr_array_push(mpm_new_argv) =
                         apr_pstrdup(process->pool, optbuf);
@@ -1142,7 +1142,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
             printf("\tDIRECTIVES - Show directives\n");
             printf("\tHELP       - Display this help information\n");
             printf("\tMODULES    - Show a list of the loaded modules\n");
-            printf("\tRESTART    - Reread the configurtion file and restart Apache\n");
+            printf("\tRESTART    - Reread the configuration file and restart Apache\n");
             printf("\tSETTINGS   - Show current thread status\n");
             printf("\tSHUTDOWN   - Shutdown Apache\n");
             printf("\tVERSION    - Display the server version information\n");
