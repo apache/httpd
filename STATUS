@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/20 23:27:52 $]
+Last modified at [$Date: 2003/11/21 03:51:32 $]
 
 Release:
 
@@ -357,6 +357,10 @@ PATCHES TO BACKPORT FROM 2.1
                    have already tested the patch successfully)
 	  bnicholes (looks good on Netware but then NetWare does not
 	             use shared memory.)
+
+    * Fix display of empty variables via mod_include.  PR 24734.
+        modules/metadata/mod_env.c r1.31
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
