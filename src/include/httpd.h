@@ -69,6 +69,9 @@
 #ifdef __EMX__
 /* Set default for OS/2 file system */ 
 #define HTTPD_ROOT "/os2httpd"
+#elif defined(WIN32)
+/* Set default for Windows file system */
+#define HTTPD_ROOT "/apache"
 #else
 #define HTTPD_ROOT "/usr/local/etc/httpd"
 #endif
