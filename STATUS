@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2003/10/30 19:22:58 $]
+  Last modified at [$Date: 2003/11/07 04:12:55 $]
 
 Release:
 
@@ -258,7 +258,7 @@ Binaries (1.3.29):
  mips-siemens-reliantunix5.4   yes     Martin Kraemer
  mips-unknown-linux            no      Lars Eilebrecht
  netware                       yes     Brad Nicholes <bnicholes@novell.com>
- OS/2                          no      Brian Havard
+ OS/2                          yes     Brian Havard
  OS/390-09.00-02               no                     
  powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
  powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
