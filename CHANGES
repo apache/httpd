@@ -13,7 +13,7 @@ Changes with Apache 2.1.0-dev
 
   *) Fix the handling of URIs containing %2F when AllowEncodedSlashes
      is enabled.  Previously, such urls would still be rejected with
-     404.  [Jeff Trawick]
+     404.  [Jeff Trawick, Bill Stoddard]
 
   *) mod_rewrite: Fix query string handling for proxied URLs. PR 14518.
      [michael teitler <michael.teitler cetelem.fr>,
