@@ -20,9 +20,9 @@ rm -f $tmpfile
 modname=''
 ext=`echo $modfile | sed 's/^.*\.//'`
 modbase=`echo $modfile | sed 's/\.[^.]*$//'`
-if [ x$ext = x$modfile ]; then ext=o; modbase=$modfile; modfile=$modbase.o; fi
-if [ x$ext = x ] ; then ext=o; modbase=$modfile; fi
-if [ x$ext = xc ] ; then ext=o; fi
+if [ "$ext" = "$modfile" ]; then ext=o; modbase=$modfile; modfile=$modbase.o; fi
+if [ "$ext" = "" ] ; then ext=o; modbase=$modfile; fi
+if [ "$ext" = "c" ] ; then ext=o; fi
 if [ -r $modbase.module ] ; then
     cat $modbase.module >$tmpfile
 else
@@ -39,7 +39,7 @@ fi
 if [ -r $tmpfile ] ; then
     modname=`grep "Name:" $tmpfile | sed 's/^.*Name:[ 	]*//'`
 fi
-if [ "x$modname" = "x" ] ; then
+if [ "$modname" = "" ] ; then
     modname=`echo $modbase | sed 's/^.*\///' | \
         sed 's/^mod_//' | sed 's/^lib//' | sed 's/$/_module/'`
 fi

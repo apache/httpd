@@ -37,7 +37,7 @@ esac
 
 #   determine reverse directory for destination directory
 dstrevdir=''
-if [ $oneisabs = 0 ]; then
+if [ "$oneisabs" = "0" ]; then
     #   (inlined fp2rp)
     OIFS2="$IFS"; IFS='/'
     for pe in $dst; do
@@ -88,8 +88,8 @@ for file in $FILES; do
      dir=`echo $file | sed -e 's:[^/]*$::' -e 's:/$::' -e 's:$:/:' -e 's:^/$::'`
      from="$src/$file"
      to="$dst/$dir$basename"
-     if [ $oneisabs = 0 ]; then
-         if [ ".$dir" != . ]; then
+     if [ "$oneisabs" = "0" ]; then
+         if [ "$dir" != "" ]; then
              subdir=`echo $dir | sed -e 's:/$::'`
              #   (inlined fp2rp)
              revdir=''

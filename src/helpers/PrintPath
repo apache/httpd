@@ -49,7 +49,7 @@ done
 # if test/[] knows about -x, which is the prefered flag.
 ##
 
-if [ "x$os" = "xOS/2" ]
+if [ "$os" = "OS/2" ]
 then
     ext=".exe"
     pathname=`echo -E $pathname |

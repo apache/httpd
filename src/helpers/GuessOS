@@ -22,7 +22,7 @@ VERSION=`(uname -v) 2>/dev/null` || VERSION="unknown"
 #
 # We need to work around FreeBSD 1.1.5.1 
 XREL=`uname -X 2>/dev/null | grep "^Release" | awk '{print $3}'`
-if [ "x$XREL" != "x" ]; then
+if [ "$XREL" != "" ]; then
     if [ -f /etc/kconfig ]; then
 	case "$XREL" in
 	    4.0|4.1)
@@ -38,9 +38,9 @@ if [ "x$XREL" != "x" ]; then
 		echo "whatever-whatever-sco5"; exit 0
 		;;
 	    4.2MP)
-		if [ "x$VERSION" = "x2.1.1" ]; then
+		if [ "$VERSION" = "2.1.1" ]; then
 		    echo "${MACHINE}-whatever-unixware211"; exit 0
-		elif [ "x$VERSION" = "x2.1.2" ]; then
+		elif [ "$VERSION" = "2.1.2" ]; then
 		    echo "${MACHINE}-whatever-unixware212"; exit 0
 		else
 		    echo "${MACHINE}-whatever-unixware2"; exit 0

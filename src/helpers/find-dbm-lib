@@ -4,7 +4,7 @@
 # we'd end up having to do the work twice... and we'd end up putting
 # two -ldbm -ldbm into the LIBS variable.
 
-if [ "x$found_dbm" = "x" ]; then
+if [ "$found_dbm" = "" ]; then
     if ./helpers/TestCompile func dbm_open; then
 	found_dbm=1
     else

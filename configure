@@ -1157,7 +1157,7 @@ for rule in $rules; do
     name="`echo $rule | tr "a-z" "A-Z"`"
     eval "val=\$rule_$rule"
     echo $SEO "s%^\\(Rule $name=\\).*%\\1$val%g" >>$sedsubst
-    if [ $verbose = yes ]; then
+    if [ "$verbose" = "yes" ]; then
         echo " + Rule $name=$val"
     fi
 done
@@ -1168,13 +1168,13 @@ some_shares=0
 OIFS="$IFS" IFS=':'
 for module in $modules; do
     eval "share=\$shared_$module"
-    if [ $share = yes ]; then
+    if [ "$share" = "yes" ]; then
         some_shares=1
     fi
 done
 IFS="$OIFS"
-if [ $some_shares = 1 ]; then
-    if [ $module_so = no ]; then
+if [ "$some_shares" = "1" ]; then
+    if [ "$module_so" = "no" ]; then
         module_so=yes
         if [ "$quiet" = "no" ]; then
             echo " + enabling mod_so for DSO support"
@@ -1263,7 +1263,7 @@ fi
 OIFS="$IFS" IFS=':'
 for module in $modules; do
     eval "add=\$module_$module"
-    if [ $add = yes ]; then
+    if [ "$add" = "yes" ]; then
         echo $SEO "s%^.*\\(AddModule.*[_b/]$module\\..*\\)%\\1%g" >>$sedsubst
         echo $SEO "s%^.*\\(SharedModule.*[_b/]$module\\..*\\)%\\1%g" >>$sedsubst
         m="yes [static]"
@@ -1273,11 +1273,11 @@ for module in $modules; do
         m=no
     fi
     eval "share=\$shared_$module"
-    if [ $share = yes ]; then
+    if [ "$share" = "yes" ]; then
         echo $SEO "s%^\\(.*\\)AddModule\\(.*[_b/]$module\\.\\)[oam].*\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
         m="yes [shared]"
     fi
-    if [ $verbose = yes ]; then
+    if [ "$verbose" = "yes" ]; then
         echo " + Module $module: $m"
     fi
 done
