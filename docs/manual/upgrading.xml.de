@@ -23,8 +23,8 @@
       <code>libtool</code>-System zur <a
       href="install.html">Konfiguration des
       Erstellungsverfahrens</a>. Die Verwendung dieses Systems ist
-      &#228;hnlich, aber nicht identisch dem APACI-System des Apache 1.3.
-      </li>
+      &#228;hnlich, aber nicht identisch nit dem APACI-System des
+	  Apache 1.3.</li>
 
       <li>Zus&#228;tzlich zu der &#252;blichen Auswahl von Modulen, die
       kompiliert werden sollen, wurde der Hauptteil der
@@ -49,7 +49,7 @@
       umgearbeitet, um es auf den Stand von HTTP/1.1 zu bringen. Eine
       der bedeutendsten &#196;nderungen ist die Platzierung der
       Proxy-Zugriffskontrolle innerhalb eines &lt;Proxy&gt;-Blocks,
-      statt innherhalb eines &lt;Directory proxy:&gt;-Blocks.</li>
+      statt innerhalb eines &lt;Directory proxy:&gt;-Blocks.</li>
 
       <li>Die Behandlung von PATH_INFO (hinter dem tats&#228;chlichen
       Dateinamen angef&#252;gte Pfadangaben) wurde f&#252;r einige Module
@@ -76,7 +76,7 @@
         Die <directive module="core">ErrorDocument</directive>-Direktive
         verwendet kein Anf&#252;hrungszeichen mehr am Anfang des
         Arguments, um eine
-        Textnachricht anzuzeigen. Statt dessen sollten Sie die
+        Textnachricht anzuzeigen. Stattdessen sollten Sie die
         Nachricht in doppelte Anf&#252;hrungszeichen einschlie&#223;en.
         Zum Beispiel sollten existierende Angaben wie
 
@@ -133,7 +133,7 @@
       <code>RefererIgnore</code> bereitgestellt hatten, wurden entfernt.
       Durch Verwendung der Direktive <directive
       module="mod_log_config">CustomLog</directive> aus mod_log_config
-      sind die Agent- und Refererlogs auch weiterhin verf&#252;gbar .</li>
+      sind die Agent- und Refererlogs auch weiterhin verf&#252;gbar.</li>
 
       <li>Die Direktiven <code>AddModule</code> und
       <code>ClearModuleList</code> sind entfallen.
@@ -166,7 +166,7 @@
       Status hatte, wurde durch das Modul mod_file_cache ersetzt.</li>
 
       <li>Die Distribution wurde komplett reorganisiert und enth&#228;lt kein
-      unabh&#228;ngiges <code>src</code>-Verzeichnis mehr. Statt dessen wurden
+      unabh&#228;ngiges <code>src</code>-Verzeichnis mehr. Stattdessen wurden
       die Quellcodes logisch unterhalb des Hauptverzeichnisses der
       Distribution angeordnet. Installationen des kompilierten Servers
       sollten in ein separates Verzeichnis erfolgen.</li>
