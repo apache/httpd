@@ -315,8 +315,8 @@ zuordnen</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a>-<a name="allowencodedslashes" id="allowencodedslashes">Direktive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Legt fest, ob kodierte Pfadtrennzeichen durchgereicht werden
-dürfen</td></tr>
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Legt fest, ob kodierte Pfadtrennzeichen in URLs durchgereicht
+werden dürfen</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowEncodedSlashes On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>AllowEncodedSlashes Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
@@ -334,7 +334,7 @@ dürfen</td></tr>
     vor allem in Verbindung mit <code>PATH_INFO</code> hilfreich.</p>
 
     <div class="note"><h3>Anmerkung</h3>
-      <p>Das Erlauben von Schrägstrichen impliziert <em>nicht</em> die 
+      <p>Das Erlauben von Schrägstrichen impliziert <em>nicht</em> deren 
       <em>Dekodierung</em>. Vorkommen von <code>%2F</code> oder <code>%5C</code>
       (<em>nur</em> auf entsprechenden Systemen) werden unverändert in der
       ansonsten dekodierten URL belassen.</p>
