@@ -1,5 +1,5 @@
 # Microsoft Developer Studio Project File - Name="InstallBin" - Package Owner=<4>
-# Microsoft Developer Studio Generated Build File, Format Version 5.00
+# Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) External Target" 0x0106
@@ -22,6 +22,7 @@ CFG=InstallBin - Win32 Debug
 !MESSAGE 
 
 # Begin Project
+# PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 
@@ -57,7 +58,7 @@ CFG=InstallBin - Win32 Debug
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
-# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\test\Apache2.0.33" SHORT=D LONG=Debug _install"
+# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" SHORT=D LONG=Debug _install"
 # PROP Rebuild_Opt ""
 # PROP Target_File "\Apache2\bin\Apache.exe"
 # PROP Bsc_Name ""
