@@ -1,6 +1,6 @@
 Release
 Debug
-ApacheMonitorVer.h
+ApacheMonitorVer.rc
 wintty.rc
 *.plg
 *.aps
