@@ -3538,7 +3538,7 @@ static void show_compile_settings(void)
 #ifdef SUEXEC_BIN
     printf(" -D SUEXEC_BIN=\"" SUEXEC_BIN "\"\n");
 #endif
-#ifdef SHARED_CORE_DIR
+#if defined(SHARED_CORE) && defined(SHARED_CORE_DIR)
     printf(" -D SHARED_CORE_DIR=\"" SHARED_CORE_DIR "\"\n");
 #endif
 #ifdef DEFAULT_PIDLOG
