@@ -21,8 +21,8 @@ struct cache_cache_t  {
     long            queue_clock;
     cache_hash_t   *ht;
     cache_pqueue_t *pq;
-    cache_pqueue_set_priority* set_pri;
-    cache_pqueue_get_priority* get_pri;
+    cache_pqueue_set_priority set_pri;
+    cache_pqueue_get_priority get_pri;
     cache_cache_inc_frequency *inc_entry;
     cache_cache_get_size *size_entry;
     cache_cache_get_key *key_entry;
@@ -31,8 +31,8 @@ struct cache_cache_t  {
 
 CACHE_DECLARE(cache_cache_t *)cache_init(int max_entries,
                                          apr_size_t max_size,
-                                         cache_pqueue_get_priority *get_pri,
-                                         cache_pqueue_set_priority *set_pri,
+                                         cache_pqueue_get_priority get_pri,
+                                         cache_pqueue_set_priority set_pri,
                                          cache_pqueue_getpos get_pos,
                                          cache_pqueue_setpos set_pos,
                                          cache_cache_inc_frequency *inc_entry,
