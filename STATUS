@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/07 18:22:59 $]
+Last modified at [$Date: 2002/05/07 19:21:49 $]
 
 Release:
 
@@ -88,6 +88,19 @@ CURRENT VOTES:
       to the config. Possibly go one step further and add a option
       to just report '2.0' instead of '2.0.x'
       +1:   IanH, BrianP
+      -1: Greg
+         I use the default response all the time to verify that a
+	 module is present and at the proper version. This information
+	 is also very handy for the module surveys, to determine what
+	 modules are out there and in prevalent use (see
+	 securityspace.com; frickin' JServ is still increasing in
+	 numbers!). Security conscious people can change this on their
+	 own, when required. Removing the information doesn't remove
+	 any future vulnerabilities. Assuming that a vulnerability
+	 occurred, I highly doubt that somebody would actually bother
+	 to *test* the version reported in the response before
+	 attempting to use the vulnerability, so trying to hide the
+	 information isn't all that useful.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Get mod_cache/mod_mem_cache out of experimental (still some
