@@ -3834,7 +3834,7 @@ static int default_handler(request_rec *r)
         return METHOD_NOT_ALLOWED;
     }
 	
-#if defined(OS2) || defined(WIN32) || defined(NETWARE)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE) || defined(CYGWIN)
     /* Need binary mode for OS/2 */
     f = ap_pfopen(r->pool, r->filename, "rb");
 #else

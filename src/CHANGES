@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Fixed sending of binary files under Cygwin.  PR 9185.
+     [Cliff Woolley]
+
   *) Added Cygwin directory layout to config.layout file.
      [Stipe Tolj, <tolj@wapme-systems.de>]
 
