@@ -1190,6 +1190,16 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         /* Is it an HTTP/0.9 response? If so, send the extra data */
         if (backasswards) {
             apr_ssize_t cntr = len;
+            /*@@@FIXME:
+             * At this point in response processing of a 0.9 response,
+             * we don't know yet whether data is binary or not.
+             * mod_charset_lite will get control later on, so it cannot
+             * decide on the conversion of this buffer full of data.
+             * However, chances are that we are not really talking to an
+             * HTTP/0.9 server, but to some different protocol, therefore
+             * the best guess IMHO is to always treat the buffer as "text/*":
+             */
+            ap_xlate_proto_to_ascii(buffer, len);
             e = apr_bucket_heap_create(buffer, cntr, NULL, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
