@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 04:04:29 $]
+Last modified at [$Date: 2003/03/07 13:46:02 $]
 
 Release:
 
@@ -58,9 +58,7 @@ Contributors looking for a mission:
 
 RELEASE SHOWSTOPPERS:
 
-    * Some have reported sed bogosity in ./configure ... we need to discover
-      what is going on here (may be related to recent apr/apr-util out-of-tree
-      patches on the apr side of the world.)
+
 
 PATCHES TO PORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
@@ -214,15 +212,13 @@ PATCHES TO PORT FROM 2.1
     * Restore the ability of htdigest.exe to create files that contain
       more than one user. PR 12910.
       support/htdigest.c: r1.35
-      +1: nd
+      +1: nd, wrowe
 
     * Allow builds to work with out of tree apr and apr-util
       buildconf: r1.30
       configure.in: r1.239, r1.240
-      +1: thommay, striker, ianh
-      +0: wrowe 
-         wrowe: we should first address Trawick's observation about bogus
-           autoconf code that digs into srclib/apr[-urtil]
+      +1: thommay, striker, ianh 
+          wrowe (but we must add server/mpm/config.m4 r1.47 to that list)
 
     * New Directive for mod_deflate (compressionlevel), and change to default
       compression level
