@@ -229,7 +229,7 @@ void ap_process_child_status(apr_proc_t *pid, apr_wait_t status)
         switch (WTERMSIG(status)) {
         case SIGTERM:
         case SIGHUP:
-        case SIGUSR1:
+        case SIGWINCH:
         case SIGKILL:
             break;
         default:

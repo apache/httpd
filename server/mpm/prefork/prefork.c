@@ -157,7 +157,7 @@ static int maintain_connection_status = 1;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
- * to deal with MaxClients changes across SIGUSR1 restarts.  We use this
+ * to deal with MaxClients changes across SIGWINCH restarts.  We use this
  * value to optimize routines that have to scan the entire scoreboard.
  */
 int ap_max_daemons_limit = -1;
@@ -635,7 +635,7 @@ static void restart(int sig)
 	return;
     }
     restart_pending = 1;
-    if ((is_graceful = (sig == SIGUSR1))) {
+    if ((is_graceful = (sig == SIGWINCH))) {
         apr_kill_cleanup(pconf, NULL, cleanup_shared_mem);
     }
 }
@@ -698,14 +698,14 @@ static void set_signals(void)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGPIPE)");
 #endif
 
-    /* we want to ignore HUPs and USR1 while we're busy processing one */
+    /* we want to ignore HUPs and WINCH while we're busy processing one */
     sigaddset(&sa.sa_mask, SIGHUP);
-    sigaddset(&sa.sa_mask, SIGUSR1);
+    sigaddset(&sa.sa_mask, SIGWINCH);
     sa.sa_handler = restart;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
-    if (sigaction(SIGUSR1, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGUSR1)");
+    if (sigaction(SIGWINCH, &sa, NULL) < 0)
+	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGWINCH)");
 #else
     if (!one_process) {
 	apr_signal(SIGSEGV, sig_coredump);
@@ -733,9 +733,9 @@ static void set_signals(void)
 #ifdef SIGHUP
     apr_signal(SIGHUP, restart);
 #endif /* SIGHUP */
-#ifdef SIGUSR1
-    apr_signal(SIGUSR1, restart);
-#endif /* SIGUSR1 */
+#ifdef SIGWINCH
+    apr_signal(SIGWINCH, restart);
+#endif /* SIGWINCH */
 #ifdef SIGPIPE
     apr_signal(SIGPIPE, SIG_IGN);
 #endif /* SIGPIPE */
@@ -812,11 +812,11 @@ static void child_main(int child_num_arg)
 
     while (!ap_graceful_stop_signalled()) {
 
-	/* Prepare to receive a SIGUSR1 due to graceful restart so that
+	/* Prepare to receive a SIGWINCH due to graceful restart so that
 	 * we can exit cleanly.
 	 */
 	usr1_just_die = 1;
-	apr_signal(SIGUSR1, usr1_handler);
+	apr_signal(SIGWINCH, usr1_handler);
 
 	/*
 	 * (Re)initialize this child to a pre-connection state.
@@ -1018,7 +1018,7 @@ static void child_main(int child_num_arg)
 	 * the signal to ignore because we don't want to disturb any
 	 * third party code.
 	 */
-	apr_signal(SIGUSR1, SIG_IGN);
+	apr_signal(SIGWINCH, SIG_IGN);
 	/*
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
@@ -1118,7 +1118,7 @@ static int make_child(server_rec *s, int slot, time_t now)
 	 * requested there's no race condition here.
 	 */
 	apr_signal(SIGHUP, just_die);
-	apr_signal(SIGUSR1, just_die);
+	apr_signal(SIGWINCH, just_die);
 	apr_signal(SIGTERM, just_die);
 	child_main(slot);
     }
@@ -1223,11 +1223,11 @@ static void perform_idle_server_maintenance(void)
     }
     ap_max_daemons_limit = last_non_dead + 1;
     if (idle_count > ap_daemons_max_free) {
-	/* kill off one child... we use SIGUSR1 because that'll cause it to
+	/* kill off one child... we use SIGWINCH because that'll cause it to
 	 * shut down gracefully, in case it happened to pick up a request
 	 * while we were counting
 	 */
-	kill(ap_scoreboard_image->parent[to_kill].pid, SIGUSR1);
+	kill(ap_scoreboard_image->parent[to_kill].pid, SIGWINCH);
 	idle_spawn_rate = 1;
     }
     else if (idle_count < ap_daemons_min_free) {
@@ -1359,7 +1359,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     /* If we're doing a graceful_restart then we're going to see a lot
 	* of children exiting immediately when we get into the main loop
-	* below (because we just sent them SIGUSR1).  This happens pretty
+	* below (because we just sent them SIGWINCH).  This happens pretty
 	* rapidly... and for each one that exits we'll start a new one until
 	* we reach at least daemons_min_free.  But we may be permitted to
 	* start more than that, so we'll just keep track of how many we're
@@ -1486,7 +1486,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     /* we've been told to restart */
     apr_signal(SIGHUP, SIG_IGN);
-    apr_signal(SIGUSR1, SIG_IGN);
+    apr_signal(SIGWINCH, SIG_IGN);
     if (one_process) {
 	/* not worth thinking about */
 	return 1;
@@ -1505,11 +1505,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 	int i;
 #endif
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
-		    "SIGUSR1 received.  Doing graceful restart");
+		    "SIGWINCH received.  Doing graceful restart");
 
 	/* kill off the idle ones */
-	if (unixd_killpg(getpgrp(), SIGUSR1) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGUSR1");
+	if (unixd_killpg(getpgrp(), SIGWINCH) < 0) {
+	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGWINCH");
 	}
 #ifndef SCOREBOARD_FILE
 	/* This is mostly for debugging... so that we know what is still

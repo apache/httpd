@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Change the Prefork MPM to use SIGWINCH instead of SIGUSR1 for graceful
+     restarts.  [Ryan Bloom]
+
   *) Modify the apr_stat/lstat/getfileinfo calls within apache to use
      the most optimal APR_FINFO_wanted bits.  This spares Win32 from
      performing very expensive owner, group and permission lookups
