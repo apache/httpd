@@ -118,7 +118,7 @@ typedef struct {
     apr_size_t max_cache_object_size;   /* in bytes */
     apr_size_t max_cache_size;          /* in bytes */
     apr_size_t max_object_cnt;
-    cache_pqueue_set_priority *cache_remove_algorithm;
+    cache_pqueue_set_priority cache_remove_algorithm;
 
 } mem_cache_conf;
 static mem_cache_conf *sconf;
