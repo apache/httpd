@@ -82,7 +82,7 @@ typedef struct cache_hash_entry_t cache_hash_entry_t;
 
 struct cache_hash_entry_t {
     cache_hash_entry_t	*next;
-    int			 hash;
+    unsigned int	 hash;
     const void		*key;
     apr_ssize_t		 klen;
     const void		*val;
@@ -203,7 +203,7 @@ static cache_hash_entry_t **find_entry(cache_hash_t *ht,
 {
     cache_hash_entry_t **hep, *he;
     const unsigned char *p;
-    int hash;
+    unsigned int hash;
     apr_ssize_t i;
 
     /*
@@ -257,7 +257,7 @@ static cache_hash_entry_t **find_entry(cache_hash_t *ht,
     }
     
     /* scan linked list */
-    for (hep = &ht->array[hash & ht->max], he = *hep;
+    for (hep = &ht->array[hash % ht->max], he = *hep;
 	 he;
 	 hep = &he->next, he = *hep) {
 	if (he->hash == hash &&
