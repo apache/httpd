@@ -261,6 +261,7 @@ sub get_vars {
             my $val = exists $config_vars{$arg}
                 ? $config_vars{$arg}
                 : $config_vars{lc $arg};
+            $val =~ s/[()]//g;
             $result .= eval qq("$val");
             $result .= ";;";
             $ok = 1;
