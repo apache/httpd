@@ -309,7 +309,7 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
             return APR_SUCCESS;
         }
         if (rv == SSL_ERROR_WANT_READ) {
-            apr_off_t tempread = 1024;
+            apr_off_t tempread = AP_IOBUFSIZE;
             return churn_input(pRec, eMode, &tempread);
         }
         return rv;
@@ -331,7 +331,7 @@ static apr_status_t churn_input(SSLFilterRec *pRec, ap_input_mode_t eMode,
     }
 
     if (n < 0 && errno == EINTR && APR_BRIGADE_EMPTY(ctx->b)) {
-        apr_off_t tempread = 1024;
+        apr_off_t tempread = AP_IOBUFSIZE;
         return churn_input(pRec, eMode, &tempread);
     }
 
@@ -462,10 +462,9 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
         return APR_SUCCESS;
     }
    
-    /* Readbytes == 0 implies we only want a LF line. 
-     * 1024 seems like a good number for now. */
+    /* Readbytes == 0 implies we only want a LF line. */
     if (APR_BRIGADE_EMPTY(ctx->b)) {
-        tempread = 1024; 
+        tempread = AP_IOBUFSIZE;
         rv = churn_input(ctx, mode, &tempread);
         if (rv != APR_SUCCESS)
             return rv;
@@ -505,7 +504,7 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
 
         /* Hey, we're about to be starved - go fetch more data. */
         if (APR_BRIGADE_EMPTY(ctx->b)) {
-            tempread = 1024;
+            tempread = AP_IOBUFSIZE;
             ret = churn_input(ctx, mode, &tempread);
             if (ret != APR_SUCCESS)
 	            return ret;
