@@ -35,7 +35,7 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
     fi
   fi
   if test "$enable_deflate" != "no"; then
-    ap_save_includes=$INCLUDE
+    ap_save_includes=$INCLUDES
     ap_save_ldflags=$LDFLAGS
     ap_save_libs=$LIBS
     ap_save_cppflags=$CPPFLAGS
