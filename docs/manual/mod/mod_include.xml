@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
 <name>mod_include</name>
+<description>Server-parsed html documents (Server Side Includes)</description>
 <status>Base</status>
+<sourcefile>mod_include.c</sourcefile>
 <identifier>include_module</identifier>
-<source>mod_include.c</source>
-<compatibility></compatibility>
-<description>This module provides for server-parsed html
-documents.</description>
 
 <summary>
 
@@ -19,12 +18,10 @@ documents.</description>
     inclusion other files or programs, as well as the setting and
     printing of environment variables.</p>
 
-    <seealso><strong>See also</strong>:
-    <directive module="core">Options</directive>,
-    <directive module="core">SetOutputFilter</directive>
-    and <directive module="core">AcceptPathInfo</directive>.</seealso>
-
 </summary>
+    <seealso><directive module="core">Options</directive></seealso>
+    <seealso><directive module="core">SetOutputFilter</directive></seealso>
+    <seealso><directive module="core">AcceptPathInfo</directive></seealso>
 
 <section id="enabling">
     <title>Enabling Server-Side Includes</title>
@@ -59,9 +56,9 @@ documents.</description>
     <code>text/x-server-parsed-html3</code> (and the resulting
     output will have the mime type <code>text/html</code>).</p>
 
-    <seealso>For more information, see our <a
+    <p>For more information, see our <a
     href="../howto/ssi.html">Tutorial on Server Side
-    Includes</a>.</seealso>
+    Includes</a>.</p>
 </section>
 
 <section id="basic">
@@ -76,7 +73,7 @@ documents.</description>
 
     <p>The value will often be enclosed in double quotes; many
     commands only allow a single attribute-value pair. Note that
-    the comment terminator (<samp>--&gt;</samp>) should be preceded
+    the comment terminator (<code>--&gt;</code>) should be preceded
     by whitespace to ensure that it isn't considered part of an SSI
     token. </p>
 
@@ -111,7 +108,7 @@ documents.</description>
         </dl>
       </dd>
 
-      <dt><strong><a id="echo" name="echo">echo</a></strong></dt>
+      <dt><strong><a name="echo">echo</a></strong></dt>
 
       <dd>
         <p>This command prints one of the <a href="#includevars">include
@@ -369,10 +366,10 @@ documents.</description>
 <section id="includevars">
     <title>Include Variables</title>
 
-    In addition to the variables in the standard CGI environment,
+    <p>In addition to the variables in the standard CGI environment,
     these are available for the <code>echo</code> command, for
     <code>if</code> and <code>elif</code>, and to any program
-    invoked by the document. 
+    invoked by the document.</p>
 
     <dl>
       <dt>DATE_GMT</dt>
@@ -406,9 +403,9 @@ documents.</description>
 
     <p>Variable substitution is done within quoted strings in most
     cases where they may reasonably occur as an argument to an SSI
-    directive. This includes the <samp>config</samp>,
-    <samp>exec</samp>, <samp>flastmod</samp>, <samp>fsize</samp>,
-    <samp>include</samp>, and <samp>set</samp> directives, as well
+    directive. This includes the <code>config</code>,
+    <code>exec</code>, <code>flastmod</code>, <code>fsize</code>,
+    <code>include</code>, and <code>set</code> directives, as well
     as the arguments to conditional operators. You can insert a
     literal dollar sign into the string using backslash
     quoting:</p>
@@ -426,10 +423,10 @@ documents.</description>
     &lt;!--#set var="Zed" value="${REMOTE_HOST}_${REQUEST_METHOD}" --&gt;
 </example>
 
-    <p>This will result in the <samp>Zed</samp> variable being set
-    to "<samp>X_Y</samp>" if <samp>REMOTE_HOST</samp> is
-    "<samp>X</samp>" and <samp>REQUEST_METHOD</samp> is
-    "<samp>Y</samp>".</p>
+    <p>This will result in the <code>Zed</code> variable being set
+    to "<code>X_Y</code>" if <code>REMOTE_HOST</code> is
+    "<code>X</code>" and <code>REQUEST_METHOD</code> is
+    "<code>Y</code>".</p>
 
     <p>EXAMPLE: the below example will print "in foo" if the
     DOCUMENT_URI is /foo/file.html, "in bar" if it is
@@ -446,11 +443,11 @@ documents.</description>
 </example>
 </section>
 
-<section>
-    <title id="flowctrl">Flow Control Elements</title>
+<section id="flowctrl">
+    <title>Flow Control Elements</title>
 
-    These are available in Apache 1.2 and above. The basic flow
-    control elements are: 
+    <p>These are available in Apache 1.2 and above. The basic flow
+    control elements are:</p>
 
 <example>
     &lt;!--#if expr="<em>test_condition</em>" --&gt;<br />
@@ -492,7 +489,7 @@ documents.</description>
       <dd>Compare string1 with string 2. If string2 has the form
       <em>/string/</em> then it is compared as a regular
       expression. Regular expressions have the same syntax as those
-      found in the Unix <samp>egrep</samp> command.</dd>
+      found in the Unix <code>egrep</code> command.</dd>
 
       <dt>( <em>test_condition</em> )</dt>
 
@@ -540,11 +537,13 @@ documents.</description>
 <section>
     <title>Using Server Side Includes for ErrorDocuments</title>
 
-    There is <a href="../misc/custom_errordocs.html">a document</a>
+    <p>There is <a href="../misc/custom_errordocs.html">a document</a>
     which describes how to use the features of mod_include to offer
-    internationalized customized server error documents. 
+    internationalized customized server error documents.</p>
 
-    <h2>PATH_INFO with Server Side Includes</h2>
+</section>
+
+<section><title>PATH_INFO with Server Side Includes</title>
 
     <p>Files processed for server-side includes no longer accept
     requests with PATH_INFO (trailing pathname information) by
@@ -570,9 +569,10 @@ include command.</description>
     <p>This directive changes the string that mod_include looks for 
     to mark the end of a include command.</p>
 
-    <seealso>See also: <directive>SSIStartTag</directive>.</seealso>
 </usage>
+<seealso><directive>SSIStartTag</directive></seealso>
 </directivesynopsis>
+
 <directivesynopsis>
 <name>SSIUndefinedEcho</name>
 <description>Changes the string that mod_include displays when
@@ -587,7 +587,7 @@ a variable isn't set.</description>
 
 <usage>
     <p>This directive changes the string that mod_include displays
-    when a variable is not set and &quot;echoed&quot; 
+    when a variable is not set and &quot;echoed&quot;.</p>
 </usage>
 </directivesynopsis>
 
@@ -641,9 +641,8 @@ include element</syntax>
     output of a file each processing different commands (possibly at
     different times).</p> 
 
-    <seealso>See also: <directive>SSIEndTag</directive></seealso>
-
 </usage>
+<seealso><directive>SSIEndTag</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -673,6 +672,8 @@ displayed</description>
 
 <directivesynopsis>
 <name>XBitHack</name>
+<description>Parse SSI directives in files with the execute 
+bit set</description>
 <syntax>XBitHack on|off|full</syntax>
 <default>XBitHack off</default>
 <contextlist>
@@ -683,8 +684,6 @@ displayed</description>
 </contextlist>
 <override>Options</override>
 <compatibility></compatibility>
-<description>Parse SSI directives in files with the execute 
-bit set</description>
 
 <usage>
     <p>The XBitHack directives controls the parsing of ordinary

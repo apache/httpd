@@ -4,14 +4,13 @@
 <modulesynopsis>
 
 <name>mod_mime</name>
-<description>This module associates the request filename's extensions
+<description>Associates the request filename's extensions
     (e.g. .html) with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
-    encoding.)
-</description>
+    encoding)</description>
+<status>Base</status>
 <sourcefile>mod_mime.c</sourcefile>
 <identifier>mime_module</identifier>
-<status>Base</status>
 
 <summary>
     <p>This module is used to associate various bits of "meta
@@ -90,8 +89,8 @@
     <seealso>See also: <directive
     module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
-<section>
-<title id="multipleext">Files with Multiple Extensions</title>
+<section id="multipleext">
+<title>Files with Multiple Extensions</title>
 
     <p>Files can have more than one extension, and the order of the
     extensions is <em>normally</em> irrelevant. For example, if the
@@ -118,13 +117,13 @@
     file.</p>
 </section>
 
-<section><title id="contentencoding">Content encoding</title>
+<section id="contentencoding"><title>Content encoding</title>
 
     <p>A file of a particular MIME type can additionally be encoded a
     particular way to simplify transmission over the Internet.
     While this usually will refer to compression, such as
-    <samp>gzip</samp>, it can also refer to encryption, such a
-    <samp>pgp</samp> or to an encoding such as UUencoding, which is
+    <code>gzip</code>, it can also refer to encryption, such a
+    <code>pgp</code> or to an encoding such as UUencoding, which is
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
@@ -149,13 +148,13 @@
 
     <p>For example, you may have a file which is a Microsoft Word
     document, which is pkzipped to reduce its size. If the
-    <samp>.doc</samp> extension is associated with the Microsoft
-    Word file type, and the <samp>.zip</samp> extension is
+    <code>.doc</code> extension is associated with the Microsoft
+    Word file type, and the <code>.zip</code> extension is
     associated with the pkzip file encoding, then the file
-    <samp>Resume.doc.zip</samp>would be known to be a pkzip'ed Word
+    <code>Resume.doc.zip</code>would be known to be a pkzip'ed Word
     document.</p>
 
-    <p>Apache send a <samp>Content-encoding</samp> header with the
+    <p>Apache send a <code>Content-encoding</code> header with the
     resource, in order to tell the client browser about the
     encoding method.</p>
 
@@ -194,9 +193,9 @@
 <title>Charset</title>
 
     <p>To convey this further information, Apache optionally sends
-    a <samp>Content-Language</samp> header, to specify the language
+    a <code>Content-Language</code> header, to specify the language
     that the document is in, and can append additional information
-    onto the <samp>Content-Type</samp> header to indicate the
+    onto the <code>Content-Type</code> header to indicate the
     particular character set that should be used to correctly
     render the information.</p>
 
@@ -206,7 +205,7 @@ Content-Type: text/plain; charset=ISO-8859-2
 </example>
 
     <p>The language specification is the two-letter abbreviation
-    for the language. The <samp>charset</samp> is the name of the
+    for the language. The <code>charset</code> is the name of the
     particular character set which should be used.</p>
 </section>
 </section>
@@ -214,6 +213,8 @@ Content-Type: text/plain; charset=ISO-8859-2
 
 <directivesynopsis>
 <name>AddCharset</name>
+<description>Maps the given filename extensions
+    to the specified content charset</description>
 <syntax>AddCharset <em>charset extension</em> 
 [<em>extension</em>] ...</syntax>
 <default>None</default>
@@ -226,16 +227,14 @@ Content-Type: text/plain; charset=ISO-8859-2
 <override>FileInfo</override>
 <compatibility>AddCharset is only available in Apache 
 1.3.10 and later</compatibility>
-<description>Maps the given filename extensions
-    to the specified content charset</description>
 
 <usage>
     
     <p>The AddCharset directive maps the given filename extensions
-    to the specified content charset. <i>charset</i> is the MIME
-    charset parameter of filenames containing <i>extension</i>.
+    to the specified content charset. <em>charset</em> is the MIME
+    charset parameter of filenames containing <em>extension</em>.
     This mapping is added to any already in force, overriding any
-    mappings that already exist for the same <i>extension</i>.</p>
+    mappings that already exist for the same <em>extension</em>.</p>
 
     <p>Example:</p>
 <example>
@@ -258,15 +257,15 @@ Content-Type: text/plain; charset=ISO-8859-2
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-    <seealso><strong>See also</strong>:
-    <module>mod_negotiation</module></seealso>
-
 </usage>
+<seealso><module>mod_negotiation</module></seealso>
 
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddEncoding</name>
+<description>Maps the given filename extensions
+    to the specified encoding type</description>
 <syntax>AddEncoding
     <em>MIME-enc extension</em> [<em>extension</em>] ...</syntax>
 <default>None</default>
@@ -275,10 +274,9 @@ Content-Type: text/plain; charset=ISO-8859-2
 <context>virtual host</context>
 <context>directory</context>
 <context>.htaccess</context>
-<override>FileInfo</override>
 </contextlist>
-<description>Maps the given filename extensions
-    to the specified encoding type</description>
+<override>FileInfo</override>
+
 
 <usage>
 
@@ -317,13 +315,16 @@ Content-Type: text/plain; charset=ISO-8859-2
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-    <seealso><strong>See also</strong>: <a href="#multipleext">Files with
-    multiple extensions</a></seealso>
 </usage>
+<seealso><a href="#multipleext">Files with
+    multiple extensions</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddHandler</name>
+<description>AddHandler maps the filename extensions
+to the <a href="../handler.html">handler</a> 
+<em>handler-name</em></description>
 <syntax>AddHandler
     <em>handler-name extension</em> [<em>extension</em>] ...</syntax>
 <default>None</default>
@@ -335,9 +336,6 @@ Content-Type: text/plain; charset=ISO-8859-2
 </contextlist>
 <override>FileInfo</override>
 <compatibility></compatibility>
-<description>AddHandler maps the filename extensions <em>extension</em>
-to the <a href="../handler.html">handler</a> <em>handler-name</em>.
-</description>
 
 <usage>
 <p>This mapping is added to any already in
@@ -356,13 +354,16 @@ to the <a href="../handler.html">handler</a> <em>handler-name</em>.
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-    <seealso><strong>See also</strong>: <a href="#multipleext">Files with
-    multiple extensions</a></seealso>
 </usage>
+ <seealso><a href="#multipleext">Files with
+    multiple extensions</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddInputFilter</name>
+<description>Maps the filename extensions
+    to the filter or filters which will process
+    client requests</description>
 <syntax>AddInputFilter
     <em>filter</em>[<em>;filter</em>...] extension
     [<em>extension</em> ...]</syntax>
@@ -375,10 +376,6 @@ to the <a href="../handler.html">handler</a> <em>handler-name</em>.
 </contextlist>
 <compatibility>AddInputFilter
     is only available in Apache 2.0.26 and later.</compatibility>
-<description>Maps the filename extensions
-    <em>extension</em> to the filter or filters which will process
-    client requests and POST input when they are received by the
-    server.</description>
 
 <usage>
 
@@ -398,15 +395,17 @@ to the <a href="../handler.html">handler</a> <em>handler-name</em>.
     case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
 
-    <seealso>See also the <a href="../filter.html">Filters</a>
-    documentation.</seealso>
 </usage>
+<seealso><a href="../filter.html">Filters</a>
+    documentation.</seealso>
 
 </directivesynopsis>
 
 
 <directivesynopsis>
 <name>AddLanguage</name>
+<description>Maps the given filename extension
+to the specified content language</description>
 <syntax>AddLanguage
     <em>MIME-lang extension</em> [<em>extension</em>] ...</syntax>
 <default>None</default>
@@ -417,8 +416,6 @@ to the <a href="../handler.html">handler</a> <em>handler-name</em>.
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<description>maps the given filename extension
-to the specified content language.</description>
 
 <usage>
 
@@ -462,13 +459,17 @@ to the specified content language.</description>
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-    <seealso><strong>See also</strong>: <a href="#multipleext">Files with
-    multiple extensions</a>, <module>mod_negotiation</module></seealso>
 </usage>
+<seealso><a href="#multipleext">Files with
+    multiple extensions</a></seealso>
+<seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddOutputFilter</name>
+<description>maps the filename
+extensions to the filters that will process
+responses from the server</description>
 <syntax>AddOutputFilter
     <em>filter</em>[<em>;filter</em>...] extension
     [<em>extension</em> ...]</syntax>
@@ -482,10 +483,6 @@ to the specified content language.</description>
 <override></override>
 <compatibility>AddOutputFilter
     is only available in Apache 2.0.26 and later.</compatibility>
-<description>maps the filename
-extensions <em>extension</em> to the filters which will process
-responses from the server before they are sent to the 
-client.</description>
 
 <usage>
 
@@ -512,14 +509,15 @@ client.</description>
     case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
 
-    <seealso>See also the <a href="../filter.html">Filters</a>
-    documentation.</seealso>
-
 </usage>
+<seealso><a href="../filter.html">Filters</a> documentation</seealso>
+
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddType</name>
+<description>Maps the given filename extensions
+onto the specified content type</description>
 <syntax>AddType <em>MIME-type
     extension</em> [<em>extension</em>] ...</syntax>
 <default>None</default>
@@ -530,8 +528,6 @@ client.</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<description>maps the given filename extensions
-onto the specified content type.</description>
 
 <usage>
 
@@ -560,9 +556,9 @@ onto the specified content type.</description>
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-    <seealso><strong>See also</strong>: <a href="#multipleext">Files with
-    multiple extensions</a></seealso>
 </usage>
+<seealso><a href="#multipleext">Files with
+    multiple extensions</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -611,6 +607,8 @@ onto the specified content type.</description>
 
 <directivesynopsis>
 <name>DefaultLanguage</name>
+<description>Sets all files in the given scope to the 
+specified language</description>
 <syntax>DefaultLanguage
     <em>MIME-lang</em></syntax>
 <default>None</default>
@@ -623,31 +621,30 @@ onto the specified content type.</description>
 <override>FileInfo</override>
 <compatibility>DefaultLanguage
     is only available in Apache 1.3.4 and later.</compatibility>
-<description>Sets all files in the given scope to the 
-specified language</description>
 
 <usage>
 
     <p>The DefaultLanguage directive tells Apache that all files in
     the directive's scope (<em>e.g.</em>, all files covered by the
     current <code>&lt;Directory&gt;</code> container) that don't
-    have an explicit language extension (such as <samp>.fr</samp>
-    or <samp>.de</samp> as configured by <samp>AddLanguage</samp>)
+    have an explicit language extension (such as <code>.fr</code>
+    or <code>.de</code> as configured by <code>AddLanguage</code>)
     should be considered to be in the specified <em>MIME-lang</em>
     language. This allows entire directories to be marked as
     containing Dutch content, for instance, without having to
     rename each file. Note that unlike using extensions to specify
-    languages, <samp>DefaultLanguage</samp> can only specify a
+    languages, <code>DefaultLanguage</code> can only specify a
     single language.</p>
 
-    <p>If no <samp>DefaultLanguage</samp> directive is in force,
+    <p>If no <code>DefaultLanguage</code> directive is in force,
     and a file does not have any language extensions as configured
-    by <samp>AddLanguage</samp>, then that file will be considered
+    by <code>AddLanguage</code>, then that file will be considered
     to have no language attribute.</p>
 
-    <seealso><strong>See also</strong>: <a href="#multipleext">Files with
-    multiple extensions</a>, <module>mod_negotiation</module></seealso>
 </usage>
+<seealso><a href="#multipleext">Files with
+    multiple extensions</a></seealso>
+<seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 
@@ -664,7 +661,7 @@ specified language</description>
     only available in Apache 2.0.24 and later.</compatibility>
 
 <usage>
-    <p>The <samp>RemoveCharset</samp> directive removes any
+    <p>The <code>RemoveCharset</code> directive removes any
     character set associations for files with the given extensions.
     This allows <code>.htaccess</code> files in subdirectories to
     undo any associations inherited from parent directories or the
@@ -689,7 +686,7 @@ specified language</description>
 
 <usage>
 
-    <p>The <samp>RemoveEncoding</samp> directive removes any
+    <p>The <code>RemoveEncoding</code> directive removes any
     encoding associations for files with the given extensions. This
     allows <code>.htaccess</code> files in subdirectories to undo
     any associations inherited from parent directories or the
@@ -712,8 +709,8 @@ specified language</description>
     encoded with the gzip method, but <code>foo.gz.asc</code> as an
     unencoded plaintext file.</p>
 
-    <p><b>Note:</b>RemoveEncoding directives are processed
-    <i>after</i> any AddEncoding directives, so it is possible they
+    <p><strong>Note:</strong>RemoveEncoding directives are processed
+    <em>after</em> any AddEncoding directives, so it is possible they
     may undo the effects of the latter if both occur within the
     same directory configuration.</p>
 
@@ -737,7 +734,7 @@ specified language</description>
 
 <usage>
 
-    <p>The <samp>RemoveHandler</samp> directive removes any handler
+    <p>The <code>RemoveHandler</code> directive removes any handler
     associations for files with the given extensions. This allows
     <code>.htaccess</code> files in subdirectories to undo any
     associations inherited from parent directories or the server
@@ -755,10 +752,10 @@ specified language</description>
     </dl>
 </example>
 
-    <p>This has the effect of returning <samp>.html</samp> files in
-    the <samp>/foo/bar</samp> directory to being treated as normal
+    <p>This has the effect of returning <code>.html</code> files in
+    the <code>/foo/bar</code> directory to being treated as normal
     files, rather than as candidates for parsing (see the <a
-    href="mod_include.html"><samp>mod_include</samp></a>
+    href="mod_include.html"><code>mod_include</code></a>
     module).</p>
 
     <p>The <em>extension</em> argument is case-insensitive, and can
@@ -781,7 +778,7 @@ specified language</description>
 
 <usage>   
 
-    <p>The <samp>RemoveInputFilter</samp> directive removes any
+    <p>The <code>RemoveInputFilter</code> directive removes any
     input filter associations for files with the given extensions.
     This allows <code>.htaccess</code> files in subdirectories to
     undo any associations inherited from parent directories or the
@@ -807,7 +804,7 @@ specified language</description>
 
 <usage>
 
-    <p>The <samp>RemoveLanguage</samp> directive removes any
+    <p>The <code>RemoveLanguage</code> directive removes any
     language associations for files with the given extensions. This
     allows <code>.htaccess</code> files in subdirectories to undo
     any associations inherited from parent directories or the
@@ -833,7 +830,7 @@ specified language</description>
 
 <usage>    
 
-    <p>The <samp>RemoveOutputFilter</samp> directive removes any
+    <p>The <code>RemoveOutputFilter</code> directive removes any
     output filter associations for files with the given extensions.
     This allows <code>.htaccess</code> files in subdirectories to
     undo any associations inherited from parent directories or the
@@ -878,10 +875,11 @@ specified language</description>
     causing the files to be treated as being of the <a
     href="core.html#defaulttype">default type</a>.</p>
 
-    <note><b>Note:</b><module>RemoveType</module> directives are processed
-    <i>after</i> any <module>AddType</module> directives, so it is
-    possible they may undo the effects of the latter if both occur
-    within the same directory configuration.</note>
+    <note><strong>Note:</strong><module>RemoveType</module> directives
+    are processed <em>after</em> any <module>AddType</module>
+    directives, so it is possible they may undo the effects of the
+    latter if both occur within the same directory
+    configuration.</note>
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
