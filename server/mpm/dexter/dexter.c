@@ -168,10 +168,9 @@ static pthread_mutex_t idle_thread_count_mutex;
 #define SAFE_ACCEPT(stmt) APR_SUCCESS
 #else
 #define SAFE_ACCEPT(stmt) (stmt)
-static apr_lock_t *process_accept_mutex;
+static apr_lock_t *accept_mutex;
 #endif /* NO_SERIALIZED_ACCEPT */
 static const char *lock_fname;
-static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 AP_DECLARE(int) ap_get_max_daemons(void)
 {
@@ -516,7 +515,7 @@ static void *worker_thread(void *arg)
     for(n=0 ; n <= num_listenfds ; ++n)
         apr_add_poll_socket(pollset, listenfds[n], APR_POLLIN);
 
-    while (!workers_may_exit) {
+    while (1) {
         workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
         if (workers_may_exit) break;
         if (!thread_just_started) {
@@ -533,12 +532,7 @@ static void *worker_thread(void *arg)
         else {
             thread_just_started = 0;
         }
-        pthread_mutex_lock(&thread_accept_mutex);
-        if (workers_may_exit) {
-            pthread_mutex_unlock(&thread_accept_mutex);
-            break;
-        }
-        if ((rv = SAFE_ACCEPT(apr_lock(process_accept_mutex)))
+        if ((rv = SAFE_ACCEPT(apr_lock(accept_mutex)))
             != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                          "apr_lock failed. Attempting to shutdown "
@@ -599,14 +593,13 @@ static void *worker_thread(void *arg)
                 csd = NULL;
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf, "apr_accept");
             }
-            if ((rv = SAFE_ACCEPT(apr_unlock(process_accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_unlock(accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                              "apr_unlock failed. Attempting to shutdown "
                              "process gracefully.");
                 workers_may_exit = 1;
             }
-            pthread_mutex_unlock(&thread_accept_mutex);
 	    pthread_mutex_lock(&idle_thread_count_mutex);
             if (idle_thread_count > min_spare_threads) {
                 idle_thread_count--;
@@ -622,14 +615,13 @@ static void *worker_thread(void *arg)
                 requests_this_child--;
             }
 	} else {
-            if ((rv = SAFE_ACCEPT(apr_unlock(process_accept_mutex)))
+            if ((rv = SAFE_ACCEPT(apr_unlock(accept_mutex)))
                 != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
                              "apr_unlock failed. Attempting to shutdown "
                              "process gracefully.");
                 workers_may_exit = 1;
             }
-            pthread_mutex_unlock(&thread_accept_mutex);
 	    pthread_mutex_lock(&idle_thread_count_mutex);
             idle_thread_count--;
             pthread_mutex_unlock(&idle_thread_count_mutex);
@@ -668,7 +660,7 @@ static void child_main(int child_num_arg)
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
-    rv = SAFE_ACCEPT(apr_child_init_lock(&process_accept_mutex, lock_fname,
+    rv = SAFE_ACCEPT(apr_child_init_lock(&accept_mutex, lock_fname,
                                         pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
@@ -1007,8 +999,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     lock_fname = apr_psprintf(_pconf, "%s.%u",
                              ap_server_root_relative(_pconf, lock_fname),
                              my_pid);
-    rv = SAFE_ACCEPT(apr_create_lock(&process_accept_mutex, APR_MUTEX,
-                                    APR_CROSS_PROCESS, lock_fname, _pconf));
+    rv = SAFE_ACCEPT(apr_create_lock(&accept_mutex, APR_MUTEX,
+                                    APR_LOCKALL, lock_fname, _pconf));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create cross-process lock");
