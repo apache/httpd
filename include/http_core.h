@@ -558,6 +558,15 @@ AP_CORE_DECLARE(void) ap_add_per_url_conf(server_rec *s, void *url_config);
 AP_CORE_DECLARE(void) ap_add_file_conf(core_dir_config *conf, void *url_config);
 AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy, const char *arg);
 
+/* Core filters; not exported. */
+int ap_net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                       ap_input_mode_t mode, apr_read_type_e block,
+                       apr_off_t readbytes);
+int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                         ap_input_mode_t mode, apr_read_type_e block,
+                         apr_off_t readbytes);
+apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b);
+
 #endif /* CORE_PRIVATE */
 
 
