@@ -92,7 +92,9 @@ typedef enum {
 typedef struct util_ldap_connection_t {
     LDAP *ldap;
     apr_pool_t *pool;                   /* Pool from which this connection is created */
+#if APR_HAS_THREADS
     apr_thread_mutex_t *lock;           /* Lock to indicate this connection is in use */
+#endif
     int bound;                          /* Flag to indicate whether this connection is bound yet */
 
     const char *host;                   /* Name of the LDAP server (or space separated list) */
@@ -116,7 +118,9 @@ typedef struct util_ldap_connection_t {
 /* LDAP cache state information */ 
 typedef struct util_ldap_state_t {
     apr_pool_t *pool;           /* pool from which this state is allocated */
+#if APR_HAS_THREADS
     apr_thread_mutex_t *mutex;          /* mutex lock for the connection list */
+#endif
 
     apr_size_t cache_bytes;     /* Size (in bytes) of shared memory cache */
     long search_cache_ttl;      /* TTL for search cache */
