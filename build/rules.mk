@@ -125,6 +125,7 @@ SHLIB_SUFFIX = so
 
 
 all: all-recursive
+shared-modules: shared-modules-recursive
 install: install-recursive
 
 
@@ -169,8 +170,37 @@ distclean-recursive clean-recursive depend-recursive all-recursive install-recur
 		done; \
 	fi
 
+shared-modules-recursive:
+	@if test `pwd` = "$(top_builddir)"; then \
+		$(PRE_SHARED_CMDS) ; \
+	fi; \
+	list='$(SUBDIRS)'; for i in $$list; do \
+		target="shared-modules"; \
+		if test "$$i" = "."; then \
+			ok = yes; \
+			target="shared-modules-p"; \
+		fi; \
+		if test "$$i" != "srclib"; then \
+			(cd $$i && $(MAKE) $$target) || exit 1; \
+		fi; \
+	done; \
+	if test -e 'modules.mk'; then \
+		if test -n '$(shared_targets)'; then \
+			echo "Building shared modules: $(shared_targets)"; \
+			if test -z '$(shared_targets)'; then ok=yes; fi; \
+			if test "$$ok" != "yes"; then \
+				$(MAKE) "shared-modules-p" || exit 1; \
+			fi; \
+		fi; \
+	fi; \
+	if test `pwd` = "$(top_builddir)"; then \
+		$(POST_SHARED_CMDS) ; \
+	fi
+
 all-p: $(targets)
-install-p: $(targets) $(install_targets)
+shared-modules-p: $(shared_targets)
+
+install-p: $(targets) $(shared_targets) $(install_targets)
 	@if test -n '$(PROGRAMS)'; then \
 		test -d $(bindir) || $(MKINSTALLDIRS) $(bindir); \
 		for i in $(PROGRAMS) ""; do \

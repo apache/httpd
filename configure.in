@@ -190,6 +190,9 @@ if test -z "$LIBTOOL"; then
   APACHE_LIBTOOL_SILENT
 fi
 
+PRE_SHARED_CMDS='echo ""'
+POST_SHARED_CMDS='echo ""'
+
 if test "$apache_need_shared" = "yes"; then
   $SHELL $ac_aux_dir/ltconfig --output=shlibtool --disable-static --srcdir=$ac_aux_dir --cache-file=./config.cache $ac_aux_dir/ltmain.sh
   case $PLATFORM in
@@ -197,11 +200,21 @@ if test "$apache_need_shared" = "yes"; then
       HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_srcdir/support/httpd.exp"
       SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_srcdir/support/httpd.exp"
       ;;
+    *beos)
+      SH_LDFLAGS='$(top_builddir)/_APP_'
+      PRE_SHARED_CMDS='ln -s $(top_builddir)/httpd $(top_builddir)/_APP_'
+      POST_SHARED_CMDS='rm $(top_builddir)/_APP_'
+      ;;
     *os390)
       CFLAGS="$CFLAGS -Wc,DLL,EXPORTALL"
       ;;
   esac
+  shared_build="shared-modules"
 fi
+
+APACHE_SUBST(PRE_SHARED_CMDS)
+APACHE_SUBST(POST_SHARED_CMDS)
+APACHE_SUBST(shared_build)
 
 AC_ARG_WITH(program-name,
 [  --with-program-name     alternate executable name],[
