@@ -47,6 +47,7 @@ Committed:
     * Mark Bixby's [PORT] MPE porting patch
     * Dean's [PATCH] Re: problem with a .gif and v2.1.4
     * Dean's [PATCH] util_date.c needless reinitialization
+    * Martin's [PATCH] Gimme a break! (missing break;s in mod_include)
 
 Available:
 
@@ -56,11 +57,11 @@ Available:
 
     * Dean's [PATCH] Re: [BUGFIXES] Wrong GID for PID file and UMASK for logs
 	<Pine.LNX.3.95dg3.971216000231.213J-100000@twinlark.arctic.org>
-	Status: Dean +1
+	Status: Dean +1, Martin +1
 
     * Dean's [PATCH] two bugs in mod_autoindex
 	<Pine.LNX.3.95dg3.971218120427.6996O-100000@twinlark.arctic.org>
-	Status: Dean +1, Randy +1
+	Status: Dean +1, Randy +1, Martin +1
 
     * Dean's [PATCH] fix Rasmus' chunking error
 	<Pine.LNX.3.95dg3.971220143033.544I-100000@twinlark.arctic.org>
@@ -77,10 +78,6 @@ Available:
     * Martin's [PATCH] 36kB: Make apache compile & run on an EBCDIC mainframe
 	<19971217184646.62136@deejai.mch.sni.de>
 	Status: Martin +1, Dean +1
-
-    * Martin's [PATCH] Gimme a break!
-	<19971217170852.51979@deejai.mch.sni.de>
-	Status: Martin +1, Jim +1, Dean +1
 
     * Ben Hyde's [PATCH] Serialize the update to pool.sub_* in destroy_pool
       (take 2)

@@ -1098,6 +1098,7 @@ static char *get_ptoken(request_rec *r, char *string, struct token *token)
         return (char *) NULL;
     }
 
+    token->type = token_string; /* the default type */
     switch (ch) {
     case '(':
         token->type = token_lbrace;
@@ -1126,11 +1127,13 @@ static char *get_ptoken(request_rec *r, char *string, struct token *token)
             token->type = token_or;
             return (string + 1);
         }
+        break;
     case '&':
         if (*string == '&') {
             token->type = token_and;
             return (string + 1);
         }
+        break;
     case '>':
         if (*string == '=') {
             token->type = token_ge;
@@ -1192,10 +1195,12 @@ static char *get_ptoken(request_rec *r, char *string, struct token *token)
                 if (*(string + 1) == '|') {
                     goto TOKEN_DONE;
                 }
+                break;
             case '&':
                 if (*(string + 1) == '&') {
                     goto TOKEN_DONE;
                 }
+                break;
             case '<':
                 goto TOKEN_DONE;
             case '>':
@@ -1957,6 +1962,12 @@ static int handle_set(FILE *in, request_rec *r, char *error)
             }
             parse_string(r, tag_val, parsed_string, MAX_STRING_LEN, 0);
             table_set(r->subprocess_env, var, parsed_string);
+        }
+        else {
+            aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
+                        "Invalid tag for set directive");
+            rputs(error, r);
+            return -1;
         }
     }
 }
