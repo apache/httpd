@@ -424,14 +424,21 @@ API_EXPORT(int) count_dirs(const char *path) {
 }
 
 
-API_EXPORT(void) chdir_file(const char *file) {
-    int i;
+API_EXPORT(void) chdir_file(const char *file)
+{
+    const char *x;
+    char buf[HUGE_STRING_LEN];
 
-    if((i = rind(file,'/')) == -1)
-        return;
-    ((char *)file)[i] = '\0';
-    chdir(file);
-    ((char *)file)[i] = '/';
+    x = strrchr (file, '/');
+    if (x == NULL) {
+	chdir (file);
+    } else if (x - file < sizeof(buf)-1) {
+	memcpy (buf, file, x - file);
+	buf[x - file] = '\0';
+	chdir (buf);
+    }
+    /* XXX: well, this is a silly function, no method of reporting an
+     * error... ah well. */
 }
 
 API_EXPORT(char *) getword_nc(pool* atrans, char **line, char stop)
