@@ -655,7 +655,7 @@ static const char *ssl_var_log_handler_c(request_rec *r, char *a)
     SSLConnRec *sslconn = myConnConfig(r->connection);
     char *result;
 
-    if (sslconn->ssl == NULL)
+    if (sslconn == NULL || sslconn->ssl == NULL)
         return NULL;
     result = NULL;
     if (strEQ(a, "version"))
