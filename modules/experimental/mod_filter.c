@@ -170,8 +170,18 @@ static ap_out_filter_func filter_lookup(request_rec *r, ap_filter_rec_t *filter)
                     match = 0;
                 }
                 break;
+            case INT_LE:
+                if (atoi(str) <= provider->match.number) {
+                    match = 0;
+                }
+                break;
             case INT_GT:
                 if (atoi(str) > provider->match.number) {
+                    match = 0;
+                }
+                break;
+            case INT_GE:
+                if (atoi(str) >= provider->match.number) {
                     match = 0;
                 }
                 break;
@@ -486,11 +496,23 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
 
         switch (*match++) {
         case '<':
-            provider->match_type = INT_LT;
+            if (*match == '=') {
+                provider->match_type = INT_LE;
+                ++match;
+            }
+            else {
+                provider->match_type = INT_LT;
+            }
             provider->match.number = atoi(match);
             break;
         case '>':
-            provider->match_type = INT_GT;
+            if (*match == '=') {
+                provider->match_type = INT_GE;
+                ++match;
+            }
+            else {
+                provider->match_type = INT_GT;
+            }
             provider->match.number = atoi(match);
             break;
         case '=':
