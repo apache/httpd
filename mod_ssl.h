@@ -192,7 +192,7 @@
 
 #define myConnConfig(c) \
 (SSLConnRec *)ap_get_module_config(c->conn_config, &ssl_module)
-#define myCtxConfig(sslconn) (sslconn->is_proxy ? sc->proxy : sc->server)
+#define myCtxConfig(sslconn, sc) (sslconn->is_proxy ? sc->proxy : sc->server)
 #define myConnConfigSet(c, val) \
 ap_set_module_config(c->conn_config, &ssl_module, val)
 #define mySrvConfig(srv) (SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module)
