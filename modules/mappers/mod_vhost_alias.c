@@ -466,7 +466,7 @@ static int mva_translate(request_rec *r)
 static void register_hooks(void)
 {
     ap_hook_translate_name(mva_translate, NULL, NULL, AP_HOOK_MIDDLE);
-};
+}
 
 module AP_MODULE_DECLARE_DATA vhost_alias_module =
 {
