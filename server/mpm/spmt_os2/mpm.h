@@ -71,6 +71,7 @@
 #define AP_MPM_WANT_SET_MAX_REQUESTS
 #define AP_MPM_WANT_SET_COREDUMPDIR
 #define AP_MPM_WANT_PROCESS_CHILD_STATUS
+#define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
 
 extern server_rec *ap_server_conf;
 extern int ap_threads_per_child;

@@ -677,9 +677,6 @@ static void thread_main(void *thread_num_arg)
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
 	 */
-
-	ap_sock_disable_nagle(csd);
-
 	current_conn = ap_run_create_connection(ptrans, csd,
                                          THREAD_GLOBAL(thread_num));
 

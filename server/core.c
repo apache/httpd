@@ -3281,6 +3281,10 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, apr_socket_t *csd,
 {
     core_net_rec *net = apr_palloc(ptrans, sizeof(*net));
 
+#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
+    ap_sock_disable_nagle(csd);
+#endif
+
     net->in_ctx = NULL;
     net->out_ctx = NULL;
     net->c = ap_core_new_connection(ptrans, ap_server_conf, csd,
