@@ -91,6 +91,15 @@
 /* We use the exact same header file as the original */
 #include <HttpExt.h>
 
+#if !defined(HSE_REQ_MAP_URL_TO_PATH_EX) \
+ || !defined(HSE_REQ_SEND_RESPONSE_HEADER_EX)
+#pragma message("WARNING: This build of Apache is missing the recent changes")
+#pragma message("in the Microsoft Win32 Platform SDK; some mod_isapi features")
+#pragma message("will be disabled.  To obtain the latest Platform SDK files,")
+#pragma message("please refer to:")
+#pragma message("http://msdn.microsoft.com/downloads/sdks/platform/platform.asp")
+#endif
+
 /* TODO: Unknown errors that must be researched for correct codes */
 
 #define TODO_ERROR 1
@@ -980,6 +989,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
 
+#ifdef HSE_REQ_MAP_URL_TO_PATH_EX
     case 1012: /* HSE_REQ_MAP_URL_TO_PATH_EX */
     {
         /* Map a URL to a filename */
@@ -1048,6 +1058,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
                       | (subreq->finfo.protection & APR_UEXECUTE ? 0x204 : 0);
         return TRUE;
     }
+#endif
 
     case 1014: /* HSE_REQ_ABORTIVE_CLOSE */
         if (cid->sconf->LogNotSupported)
@@ -1066,6 +1077,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         SetLastError(ERROR_INVALID_PARAMETER);
         return FALSE;
 
+#ifdef HSE_REQ_SEND_RESPONSE_HEADER_EX
     case 1016: /* HSE_REQ_SEND_RESPONSE_HEADER_EX  Added in ISAPI 4.0 */
     {
         LPHSE_SEND_HEADER_EX_INFO shi
@@ -1094,6 +1106,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
         return TRUE;
 
     }
+#endif
 
     case 1017: /* HSE_REQ_CLOSE_CONNECTION  Added after ISAPI 4.0 */
         if (cid->sconf->LogNotSupported)
