@@ -788,7 +788,7 @@ SSLProxyEngine on<br>
                   </a></td><td>Extension</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:
                   </a></td><td>mod_ssl</td></tr></table></td></tr></table>
 <p>
-This directive sets the directory where you keep the certificates of
+This directive sets the all-in-one file where you keep the certificates of
 Certification Authorities (CAs) whose proxy client certificates are used for
 authentication of the proxy server to remote servers.
 </p>
