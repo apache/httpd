@@ -40,6 +40,13 @@
   <xsl:include href="synopsis.xsl"/>
   <xsl:include href="sitemap.xsl"/>
   <xsl:include href="quickreference.xsl"/>
+  
+  <!-- make sure, we set relative anchors
+       only, if we're actually transforming
+       a modulefile (see <directive>) -->
+  <xsl:variable name="in-modulesynopsis">
+    <xsl:if test="/modulesynopsis">1</xsl:if>
+  </xsl:variable>
 
   <!--                                                            -->
   <!--    Utility templates for constructing pages                -->
@@ -441,7 +448,7 @@
         <xsl:variable name="lowerdirective" select="translate(., $uppercase, $lowercase)"/>
 
         <xsl:choose>
-          <xsl:when test="@module = /modulesynopsis/name">
+          <xsl:when test="$in-modulesynopsis = '1' and @module = /modulesynopsis/name">
             <a href="#{$lowerdirective}">
               <xsl:if test="@type='section'">&lt;</xsl:if>
               <xsl:value-of select="."/>
