@@ -303,7 +303,7 @@ static int cgi_child(void *child_stuff)
     RAISE_SIGSTOP(CGI_CHILD);
 #ifdef DEBUG_CGI
     fprintf(dbg, "Attempting to exec %s as %sCGI child (argv0 = %s)\n",
-	    r->filename, nph ? "NPH " : "", argv0);
+	    r->filename, cld->nph ? "NPH " : "", argv0);
 #endif
 
     ap_add_cgi_vars(r);

@@ -64,6 +64,7 @@ Committed Code Changes:
     * Dynamic Shared Object (DSO) support for OpenBSD 2.x
     * Ralf's enhanced "make install" carefulness for mime.types+magic files
     * Ralf's paranoia-fixes for the IFS-handling in `configure'
+    * Fix for the DEBUG_CGI (#ifdef'ed) situation in mod_cgi.c, PR#2114
 
 Available Patches:
 

@@ -1,5 +1,7 @@
 Changes with Apache 1.3b7
 
+  *) Fix DEBUG_CGI situation in mod_cgi.c [David MacKenzie] PR#2114
+
   *) Make sure the input field separator (IFS) shell variable is explicitly
      initialized correctly before _every_ `for' loop and also restored after
      the loops. [Ralf S. Engelschall]
