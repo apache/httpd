@@ -210,6 +210,11 @@ DirectoryIndex index.cgi index.pl index.shtml index.html
 
 where you list the most common choice first.
 
+<p>Also note that explicitly creating a <code>type-map</code> file
+provides better performance than using <code>MultiViews</code>, as the
+necessary information can be determined by reading this single file,
+rather than having to scan the directory for files.</p>
+
 <H4>Process Creation</H4>
 
 <P>Prior to Apache 1.3 the <CODE>MinSpareServers</CODE>,
