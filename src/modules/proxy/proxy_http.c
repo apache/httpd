@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: proxy_http.c,v 1.1 1996/10/01 07:11:45 chuck Exp $ */
+/* $Id: proxy_http.c,v 1.2 1996/10/08 22:49:29 chuck Exp $ */
 
 /* HTTP routines for Apache proxy */
 
@@ -212,7 +212,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     if (should_client_block(r))
     {
-	while ((i = read_client_block (r, buffer, HUGE_STRING_LEN)))
+	while ((i = get_client_block (r, buffer, HUGE_STRING_LEN)))
             bwrite(f, buffer, i);
     }
     bflush(f);
