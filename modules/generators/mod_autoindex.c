@@ -1361,7 +1361,7 @@ static void output_directories(struct ent **ar, int n,
             emit_link(r, "Description", K_DESC, keyid, direction,
                       static_columns);
 	}
-	ap_rputs("\n<hr />\n", r);
+	ap_rputs("<hr />", r);
     }
     else {
 	ap_rputs("<ul>", r);
@@ -1459,7 +1459,7 @@ static void output_directories(struct ent **ar, int n,
 	ap_rputc('\n', r);
     }
     if (autoindex_opts & FANCY_INDEXING) {
-	ap_rputs("</pre>", r);
+	ap_rputs("<hr /></pre>", r);
     }
     else {
 	ap_rputs("</ul>", r);
@@ -1645,9 +1645,6 @@ static int index_directory(request_rec *r,
 		       direction);
     apr_dir_close(thedir);
 
-    if (autoindex_opts & FANCY_INDEXING) {
-	ap_rputs("<hr />\n", r);
-    }
     emit_tail(r, find_readme(autoindex_conf, r),
 	      autoindex_opts & SUPPRESS_PREAMBLE);
 
