@@ -1030,8 +1030,57 @@ void reclaim_child_processes ()
     for (i = 0; i < HARD_SERVER_LIMIT; ++i) {
 	int pid = scoreboard_image->servers[i].pid;
 
-	if (pid != my_pid && pid != 0)
-	    waitpid (scoreboard_image->servers[i].pid, &status, 0);
+	if (pid != my_pid && pid != 0) { 
+	    int waitret = 0,
+		tries = 1;
+
+	    while (waitret == 0 && tries <= 4) {
+		long int waittime = 4096; /* in usecs */
+		struct timeval tv;
+	    
+		/* don't want to hold up progress any more than 
+		 * necessary, so keep checking to see if the child
+		 * has exited with an exponential backoff.
+		 * Currently set for a maximum wait of a bit over
+		 * four seconds.
+		 */
+		while (((waitret = waitpid(pid, &status, WNOHANG)) == 0) &&
+			 waittime < 3000000) {
+		       tv.tv_sec = waittime / 1000000;
+		       tv.tv_usec = waittime % 1000000;
+		       waittime = waittime * 2;
+		       select(0, NULL, NULL, NULL, &tv);
+		}
+		if (waitret == 0) {
+		    switch (tries) {
+		    case 1:
+			/* perhaps it missed the SIGHUP, lets try again */
+			log_printf(server_conf, "child process %d did not exit, sending another SIGHUP", pid);
+			kill(pid, SIGHUP);
+			break;
+		    case 2:
+			/* ok, now it's being annoying */
+			log_printf(server_conf, "child process %d still did not exit, sending a SIGTERM", pid);
+			kill(pid, SIGTERM);
+			break;
+		    case 3:
+			/* die child scum */
+			log_printf(server_conf, "child process %d still did not exit, sending a SIGKILL", pid);
+			kill(pid, SIGKILL);
+			break;
+		    case 4:
+			/* gave it our best shot, but alas...  If this really 
+			 * is a child we are trying to kill and it really hasn't
+			 * exited, we will likely fail to bind to the port
+			 * after the restart.
+			 */
+			log_printf(server_conf, "could not make child process %d exit, attempting to continue anyway", pid);
+			break;
+		    }
+		}
+		tries++;
+	    }
+	}
     }
 }
 
