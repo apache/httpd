@@ -844,8 +844,8 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
 	return NULL;
     }
 
-    rv = apr_file_info_get(&finfo, APR_FINFO_NORM, file);
-    if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
+    rv = apr_file_info_get(&finfo, APR_FINFO_SIZE, file);
+    if (rv != APR_SUCCESS) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			    apr_psprintf(p,
 					"Opened but could not stat file %s",
