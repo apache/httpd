@@ -185,7 +185,7 @@ static int error_log_child(void *cmd, child_info *pinfo)
 
 static void open_error_log(server_rec *s, pool *p)
 {
-    char *fname;
+    const char *fname;
 
     if (*s->error_fname == '|') {
 	FILE *dummy;
@@ -231,6 +231,7 @@ static void open_error_log(server_rec *s, pool *p)
 #endif
     else {
 	fname = ap_server_root_relative(p, s->error_fname);
+	/*  Change to AP funcs. */
         if (!(s->error_log = ap_pfopen(p, fname, "a"))) {
             perror("fopen");
             fprintf(stderr, "%s: could not open error log file %s.\n",
@@ -296,6 +297,7 @@ static void log_error_core(const char *file, int line, int level,
 {
     char errstr[MAX_STRING_LEN];
     size_t len;
+    /* change to AP errno funcs. */
     int save_errno = errno;
     FILE *logf;
 
@@ -390,6 +392,7 @@ static void log_error_core(const char *file, int line, int level,
 	&& !(level & APLOG_WIN32ERROR)
 #endif
 	) {
+      /* ZZZ use AP funcs to set the errno and the error string. */
 	len += ap_snprintf(errstr + len, sizeof(errstr) - len,
 		"(%d)%s: ", save_errno, strerror(save_errno));
     }
@@ -442,6 +445,8 @@ static void log_error_core(const char *file, int line, int level,
 
     /* NULL if we are logging to syslog */
     if (logf) {
+      /* ZZZ let's just use AP funcs to Write to the error log.  If failure,
+	 can we output a message to the console??? */
 	fputs(errstr, logf);
 	fputc('\n', logf);
 	fflush(logf);
@@ -488,7 +493,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
     va_end(args);
 }
 
-void ap_log_pid(pool *p, char *fname)
+void ap_log_pid(pool *p, const char *fname)
 {
     FILE *pid_file;
     struct stat finfo;
@@ -501,7 +506,7 @@ void ap_log_pid(pool *p, char *fname)
     fname = ap_server_root_relative(p, fname);
     mypid = getpid();
     if (mypid != saved_pid && stat(fname, &finfo) == 0) {
-      /* USR1 and HUP call this on each restart.
+      /* WINCH and HUP call this on each restart.
        * Only warn on first time through for this pid.
        *
        * XXX: Could just write first time through too, although
@@ -557,6 +562,7 @@ API_EXPORT(void) ap_log_reason(const char *reason, const char *file, request_rec
 
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 {
+  /* Use AP funcs to output message and abort program.  */
     fprintf(stderr, "[%s] file %s, line %d, assertion \"%s\" failed\n",
 	    ap_get_time(), szFile, nLine, szExp);
 #ifndef WIN32

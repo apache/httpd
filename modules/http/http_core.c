@@ -517,6 +517,8 @@ char *ap_response_code_string(request_rec *r, int error_index)
 
 
 /* Code from Harald Hanche-Olsen <hanche@imf.unit.no> */
+/* ZZZ let's pass the buffer and the host entry so we don't have to allocate
+   another stack frame. */
 static ap_inline void do_double_reverse (conn_rec *conn)
 {
     struct hostent *hptr;
@@ -530,8 +532,8 @@ static ap_inline void do_double_reverse (conn_rec *conn)
 	conn->double_reverse = -1;
 	return;
     }
-    hptr = gethostbyname(conn->remote_host);
-    if (hptr) {
+    hptr = gethostbyname(conn->remote_host);   /*ZZZ change to AP func */
+    if (hptr) {          /*ZZZ enumerate through host entries */
 	char **haddr;
 
 	for (haddr = hptr->h_addr_list; *haddr; haddr++) {
@@ -2503,7 +2505,7 @@ static int default_handler(request_rec *r)
     if (r->method_number == M_PUT) {
         return METHOD_NOT_ALLOWED;
     }
-
+    /* ZZZ can we store if the file exists or not? */
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
 		      "File does not exist: %s",r->path_info ?

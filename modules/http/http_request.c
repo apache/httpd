@@ -115,6 +115,8 @@ IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,(request_rec *r),(r),DECLINED)
  */
 static int check_safe_file(request_rec *r)
 {
+
+  /* ZZZ change to AP defines */
     if (r->finfo.st_mode == 0         /* doesn't exist */
         || S_ISDIR(r->finfo.st_mode)
         || S_ISREG(r->finfo.st_mode)
@@ -287,6 +289,9 @@ static int get_path_info(request_rec *r)
 	 * even if they returned an error.
 	 */
 	r->finfo.st_mode = 0;
+
+	/* ZZZ Let's throw some AP Errno checking in here and get rid of the
+	   #defines. */
 #if defined(ENOENT) && defined(ENOTDIR)
         if (errno == ENOENT || errno == ENOTDIR) {
             last_cp = cp;
@@ -298,7 +303,7 @@ static int get_path_info(request_rec *r)
                 --cp;
         }
         else {
-#if defined(EACCES)
+#if defined(EACCES)      /* ZZZ again, AP error checking. */
             if (errno != EACCES)
 #endif
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
@@ -437,7 +442,8 @@ static int directory_walk(request_rec *r)
     if (test_filename[test_filename_len - 1] == '/')
         --num_dirs;
 
-    if (S_ISDIR(r->finfo.st_mode))
+    if (S_ISDIR(r->finfo.st_mode))     /* zzz use AP funcs and defines to make
+					  this quicker */
         ++num_dirs;
 
     /*
@@ -572,7 +578,7 @@ static int directory_walk(request_rec *r)
      * S_ISDIR test.  But if you accessed /symlink/index.html, for example,
      * you would *not* get the 403.
      */
-    if (!S_ISDIR(r->finfo.st_mode)
+    if (!S_ISDIR(r->finfo.st_mode)   /* ZZZ use AP funcs and defines */
         && (res = check_symlinks(r->filename, ap_allow_options(r)))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
                     "Symbolic link not allowed: %s", r->filename);
@@ -858,6 +864,8 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         rnew->uri = ap_make_full_path(rnew->pool, udir, new_file);
         rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
         ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+
+	/* ZZZ use AP funcs to get File Info */
         if (stat(rnew->filename, &rnew->finfo) < 0) {
             rnew->finfo.st_mode = 0;
         }
@@ -873,7 +881,8 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * no matter what, if it's a subdirectory, we need to re-run
          * directory_walk
          */
-        if (S_ISDIR(rnew->finfo.st_mode)) {
+	/* ZZZ use AP funcs and defines for this. */
+        if (S_ISDIR(rnew->finfo.st_mode)) {  
             res = directory_walk(rnew);
             if (!res) {
                 res = file_walk(rnew);
