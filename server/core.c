@@ -183,7 +183,9 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 	memcpy(conf->response_code_strings, base->response_code_strings,
 	       sizeof(*conf->response_code_strings) * RESPONSE_CODES);
     }
-    
+    else
+        base->response_code_strings = NULL;
+
     conf->d = new->d;
     conf->d_is_fnmatch = new->d_is_fnmatch;
     conf->d_components = new->d_components;
