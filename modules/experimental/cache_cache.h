@@ -102,8 +102,8 @@ typedef void cache_cache_free(void *a);
  */
 CACHE_DECLARE(cache_cache_t *)cache_init(int max_entries, 
                                          apr_size_t max_size,
-                                         cache_pqueue_get_priority *get_pri,
-                                         cache_pqueue_set_priority *set_pri,
+                                         cache_pqueue_get_priority get_pri,
+                                         cache_pqueue_set_priority set_pri,
                                          cache_pqueue_getpos get_pos,
                                          cache_pqueue_setpos set_pos,
                                          cache_cache_inc_frequency *inc_entry,
