@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:153116 (outdated) -->
+<!-- English Revision: 153116 -->
 
 <!--
- Copyright 2005 The Apache Software Foundation or its licensors,
-                as applicable.
+ Copyright 2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -65,6 +65,7 @@
 <seealso><module>mod_proxy_http</module></seealso>
 <seealso><module>mod_proxy_ftp</module></seealso>
 <seealso><module>mod_proxy_connect</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
     <section id="forwardreverse"><title>フォワードプロキシとリバースプロキシ</title>
