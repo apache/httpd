@@ -1057,25 +1057,6 @@ if [ "x$using_shlib" = "x1" ] ; then
 fi
 
 ####################################################################
-## Set the value of the shared libary flags, if they aren't explicitly
-## set in the configuration file
-##
-if [ "x$using_shlib" = "x1" ] ; then
-    if [ "x$TCFLAGS_SHLIB" = "x" ]; then
-        echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
-    fi
-    if [ "x$TLD_SHLIB" = "x" ]; then
-        echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config
-    fi
-    if [ "x$TLDFLAGS_SHLIB" = "x" ]; then
-        echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
-    fi
-    if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
-        echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
-    fi
-fi
-
-####################################################################
 ## Now we do some OS specific adjustments... for some OSs, we need
 ## to adjust CFLAGS and/or OPTIM depending on which compiler we
 ## are going to use. This is easy, since this can be gleamed from
@@ -1401,7 +1382,7 @@ if [ "x$using_shlib" = "x1" ] ; then
         RULE_SHARED_CORE=$DEF_SHARED_CORE
     fi
     if [ ".$RULE_SHARED_CORE" = .yes ]; then
-    echo " + enabling generation of Apache core as DSO"
+        echo " + enabling generation of Apache core as DSO"
         #    shuffle compiler flags from shlib variant to standard
         CFLAGS="$CFLAGS $CFLAGS_SHLIB"
         CFLAGS_SHLIB=""
@@ -1410,7 +1391,7 @@ if [ "x$using_shlib" = "x1" ] ; then
         #    select the special subtarget for shared core generation
         SUBTARGET=target_shared
         #    determine additional suffixes for libhttpd.so
-        V=1 R=3 P=0
+        V=1 R=3 P=2
         if [ ".$SHLIB_SUFFIX_DEPTH" = .0 ]; then
             SHLIB_SUFFIX_LIST=""
         fi
@@ -1426,6 +1407,25 @@ if [ "x$using_shlib" = "x1" ] ; then
         if [ ".$SHLIB_SUFFIX_DEPTH" = .all ]; then
             SHLIB_SUFFIX_LIST="$V $V.$R $V.$R.$P"
         fi
+    fi
+fi
+
+####################################################################
+## Set the value of the shared libary flags, if they aren't explicitly
+## set in the configuration file
+##
+if [ "x$using_shlib" = "x1" ] ; then
+    if [ "x$TCFLAGS_SHLIB" = "x" ]; then
+        echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
+    fi
+    if [ "x$TLD_SHLIB" = "x" ]; then
+        echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config
+    fi
+    if [ "x$TLDFLAGS_SHLIB" = "x" ]; then
+        echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
+    fi
+    if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
+        echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
     fi
 fi
 

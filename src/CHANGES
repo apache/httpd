@@ -1,5 +1,10 @@
 Changes with Apache 1.3.2
 
+  *) Fix SHARED_CORE rule: The CFLAGS_SHLIB variable is no longer doubled
+     (compilers complained) and the .so.V.R.P filename extension was adjusted
+     to correctly reflect the 1.3.2 version.
+     [Ralf S. Engelschall] PR#2644
+
   *) SECURITY: Plug "..." and other canonicalization holes under OS/2.
      [Brian Havard]
   
