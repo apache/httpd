@@ -71,7 +71,7 @@ APACHE_COMPILE = $(COMPILE) -c $< && touch $@
 APACHE_SH_COMPILE = $(SHLIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(CFLAGS) $(EXTRA_CFLAGS) -c $< && touch $@
 SHLINK = $(SHLIBTOOL) --mode=link $(CCLD) $(CFLAGS) $(EXTRA_CFLAGS) $(LDFLAGS) -o $@
 
-DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir) -I$(top_builddir)
+DEFS = -DHAVE_CONFIG_H -I. -I$(srcdir)
 
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s .y .l .slo
@@ -131,7 +131,8 @@ install-p: $(targets) $(install_targets)
 distclean-p depend-p clean-p:
 
 depend: depend-recursive
-	test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(INCLUDES) $(EXTRA_INCLUDES) *.c > .deps
+	gcc -MM $(INCLUDES) $(EXTRA_INCLUDES) $(DEFS) $(CPPFLAGS) $(srcdir)/*.c > $(builddir)/.deps
+#	test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(INCLUDES) $(EXTRA_INCLUDES) *.c > .deps
 
 clean: clean-recursive clean-x
 
@@ -143,7 +144,7 @@ distclean: distclean-recursive clean-x
 	rm -f config.cache config.log config.status config_vars.mk libtool \
 	stamp-h Makefile shlibtool .deps $(DISTCLEANFILES)
 
-include $(srcdir)/.deps
+include $(builddir)/.deps
 
 .PHONY: all-recursive clean-recursive install-recursive \
 $(install_targets) install all clean depend depend-recursive shared \
