@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/10/05 20:38:15 $
+Last modified: $Date: 2002/10/05 23:03:58 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -149,7 +149,6 @@ The following files need to be converted to XML as described at
 http://httpd.apache.org/docs-project/docsformat.html
 
 index.html.en                      # leave in html?
-cgi_path.html.en
 howto/auth.html.en
 misc/custom_errordocs.html         # obsolete?
 misc/descriptors.html              # obsolete?
