@@ -201,7 +201,7 @@ then
 else
   if [ "x$GTAR" != "x" ]
   then
-    $GTAR -zcf ../apache_$VER-$OS.tar.gz -C .. --owner=root --group=root apache_$VER
+    $GTAR -zcf ../apache_$VER-$OS.tar.gz -C .. apache_$VER
   else
     if [ "x$TAR" != "x" ]
     then
