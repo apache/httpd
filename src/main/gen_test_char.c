@@ -8,6 +8,7 @@
 #define T_ESCAPE_PATH_SEGMENT	(0x02)
 #define T_OS_ESCAPE_PATH	(0x04)
 #define T_HTTP_TOKEN_STOP	(0x08)
+#define T_HTTP_OPAQUETOKEN_STOP	(0x10)
 
 int main(int argc, char *argv[])
 {
@@ -20,13 +21,15 @@ int main(int argc, char *argv[])
 "#define T_ESCAPE_PATH_SEGMENT	(%u)\n"
 "#define T_OS_ESCAPE_PATH	(%u)\n"
 "#define T_HTTP_TOKEN_STOP	(%u)\n"
+"#define T_HTTP_OPAQUETOKEN_STOP	(%u)\n"
 "\n"
 "static const unsigned char test_char_table[256] = {\n"
 "    0,",
 	T_ESCAPE_SHELL_CMD,
 	T_ESCAPE_PATH_SEGMENT,
 	T_OS_ESCAPE_PATH,
-	T_HTTP_TOKEN_STOP);
+	T_HTTP_TOKEN_STOP,
+	T_HTTP_OPAQUETOKEN_STOP);
 
     /* we explicitly dealt with NUL above
      * in case some strchr() do bogosity with it */
@@ -52,6 +55,11 @@ int main(int argc, char *argv[])
 	/* these are the "tspecials" from RFC2068 */
 	if (ap_iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c)) {
 	    flags |= T_HTTP_TOKEN_STOP;
+	}
+
+	/* some tokens (like etags) are opaque strings; stop at the end */
+	if (ap_iscntrl(c) || strchr(" ,", c)) {
+	    flags |= T_HTTP_OPAQUETOKEN_STOP;
 	}
 	printf("%u%c", flags, (c < 255) ? ',' : ' ');
 

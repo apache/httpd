@@ -203,6 +203,8 @@
  *                        scan_script_header -> ap_scan_script_header_err
  *                      - reordered entries in request_rec that were waiting
  *                        for a non-binary-compatible release.
+ * 19990108-1           - add ap_find_opaque_token() for things like ETags
+ *   (1.3.5-dev)          which can contain opaque quoted strings
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -210,7 +212,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990108
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

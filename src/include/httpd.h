@@ -936,6 +936,8 @@ API_EXPORT(char *) ap_getword_conf_nc(pool *p, char **line);
 
 API_EXPORT(char *) ap_get_token(pool *p, const char **accept_line, int accept_white);
 API_EXPORT(int) ap_find_token(pool *p, const char *line, const char *tok);
+API_EXPORT(int) ap_find_opaque_token(pool *p, const char *line,
+				     const char *tok);
 API_EXPORT(int) ap_find_last_token(pool *p, const char *line, const char *tok);
 
 API_EXPORT(int) ap_is_url(const char *u);
