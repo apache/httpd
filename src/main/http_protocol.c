@@ -625,8 +625,8 @@ void parse_uri(request_rec *r, const char *uri)
 
 const char *check_fulluri(request_rec *r, const char *uri)
 {
-    char *name, *host, *proto;
-    int i, plen;
+    char *host, *proto, *slash, *colon;
+    int plen;
     unsigned port;
 
     /* This routine parses full URLs, if they match the server */
@@ -635,18 +635,29 @@ const char *check_fulluri(request_rec *r, const char *uri)
     
     if (strncasecmp(uri, proto, plen) || strncasecmp(uri + plen, "://", 3))
         return uri;
-    name = pstrdup(r->pool, uri + plen);
+    host = pstrdup(r->pool, uri + plen + 3);
 
     /* Find the hostname, assuming a valid request */
-    i = ind(name, '/');
-    name[i] = '\0';
+    slash = strchr(host, '/');
+    if (slash) {
+        *slash = 0;
+    }
+    else {
+        slash = host + strlen(host);
+    }
 
     /* Find the port */
-    host = getword_nc(r->pool, &name, ':');
-    if (*name)
-        port = atoi(name);
-    else
+    colon = strchr(host, ':');
+    if (colon) {
+        *colon = '\0';
+        port = atoi(colon+1);
+        if (port == 0) {
+            return uri;
+        }
+    }
+    else {
         port = default_port(r);
+    }
 
     /* Make sure ports patch */
     if (port != r->server->port)
@@ -654,7 +665,7 @@ const char *check_fulluri(request_rec *r, const char *uri)
 
     /* Save it for later use */
     r->hostname = pstrdup(r->pool, host);
-    r->hostlen = plen + 3 + i;
+    r->hostlen = plen + 3 + slash - host;
 
     /* The easy cases first */
     if (!strcasecmp(host, r->server->server_hostname)) {
