@@ -1113,7 +1113,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
 	/* give the children the signal to die */
         for (i = 0; i < ap_daemons_limit;) {
-            if ((rv = apr_file_write(pipe_of_death_in, &char_of_death, &one)) != APR_SUCCESS) {
+            if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
                 if (APR_STATUS_IS_EINTR(rv)) continue;
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf, "write pipe_of_death");
             }
