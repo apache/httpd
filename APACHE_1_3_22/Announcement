@@ -1,0 +1,204 @@
+
+                            Apache 1.3.22 Released
+
+   The Apache Software Foundation and The Apache Server Project are
+   pleased to announce the release of version 1.3.22 of the Apache HTTP
+   server.  Apache version 1.3.21 was never released; this Announcement
+   details the cumulative changes in 1.3.21 and 1.3.22.
+
+   This version of Apache is principally a security fix release which
+   closes some problems where a directory listing could be obtained
+   instead of the default index page. A summary of the bug fixs and major
+   new features is given at the end of this document.
+
+   We consider Apache 1.3.22 to be the best version of Apache available
+   and we strongly recommend that users of older versions, especially of
+   the 1.1.x and 1.2.x family, upgrade as soon as possible. No further
+   releases will be made in the 1.2.x family.
+
+   Apache 1.3.22 is available for download from
+   
+       http://httpd.apache.org/dist/httpd/
+
+   Please see the CHANGES_1.3 file in the same directory for a full list
+   of changes.
+
+   Binary distributions are available from
+
+       http://httpd.apache.org/dist/httpd/binaries/
+
+   The source and binary distributions are also available via any of the
+   mirrors listed at
+
+       http://www.apache.org/mirrors/
+
+   As of Apache 1.3.17, Win32 binary distributions are now based on the
+   Microsoft Installer (.MSI) technology. This change occured in order to
+   resolve the many problems WinME and Win2K users experienced with the
+   older InstallShield-based installer.exe file.  While development
+   continues to make this new installation method more robust, questions
+   should be directed at the news:comp.infosystems.www.servers.ms-windows
+   newsgroup.
+
+   As of Apache 1.3.12 binary distributions contain all standard Apache
+   modules as shared objects (if supported by the platform) and include
+   full source code.  Installation is easily done by executing the
+   included install script.  See the README.bindist and INSTALL.bindist
+   files for a complete explanation.  Please note that the binary
+   distributions are only provided for your convenience and current
+   distributions for specific platforms are not always available.
+
+   For an overview of new features introduced after 1.2 please see
+   
+   http://httpd.apache.org/docs/new_features_1_3.html
+
+   In general, Apache 1.3 offers several substantial improvements over
+   version 1.2, including better performance, reliability and a wider
+   range of supported platforms, including Windows NT and 2000 (which
+   fall under the "Win32" label), OS2, Netware, and TPE threaded
+   platforms.
+
+   Apache is the most popular web server in the known universe; over half
+   of the servers on the Internet are running Apache or one of its
+   variants.
+
+   IMPORTANT NOTE FOR WIN32 USERS: Over the years, many users have come
+   to trust Apache as a secure and stable server. It must be realized
+   that the current Win32 code has not yet reached the levels of the Unix
+   version, but is of acceptable quality. Win32 stability or security
+   problems do not reflect on the Unix version.
+
+                     Apache 1.3.20 - 1.3.22 Major changes
+
+  Security vulnerabilities
+
+     * A vulnerability was found in the Win32 port of Apache 1.3.20.  A
+       client submitting a very long URI could cause a directory listing
+       to be returned rather than the default index page. A 403 Forbidden
+       will now be returned.  CAN-2001-0729
+     * A vulnerability was found in the split-logfile support program. A
+       request with a specially crafted Host: header could allow any file
+       with a .log extension on the system to be written to. PR#7848
+       CAN-2001-0730
+     * A vulnerability was found when Multiviews are used to negotiate
+       the directory index. In some configurations, requesting a URI with
+       a QUERY_STRING of M=D could return a directory listing rather than
+       the expected index page.  CAN-2001-0731
+
+     The security issues above have been assigned standardized names, CAN- 
+     by the Common Vulnerabilities and Exposures project (cve.mitre.org)
+
+  New features
+
+   The main new features in 1.3.22 (compared to 1.3.20) are:
+     * The user manual has been updated. As well as a number of small
+       fixes these updates include new translations into French and
+       Japanese, a guide to using Apache httpd on Cygwin, a lexicon of
+       Apache error messages, updated TPF documentation, and a
+       comprehensive guide to using log files
+     * The user manual can now be moved out of the htdocs DocumentRoot
+       during installation by invoking configure with the --manualdir=
+       switch, to allow separation of on-line docs from regular contents.
+     * The supplied icons are now also distributed in PNG format
+     * A significant overhaul to the Apache Bench program, ab has taken
+       place, as first reported in April. The new Apache Bench includes
+       fixes, additional statistics, csv and gnuplot output, and some
+       SSL support
+     * New directives have been added to the mod_usertrack module, The
+       first, CookieDomain, can be used to customise the Domain
+       attribute.  The patch to add the CookieDomain directive was first
+       submitted over two years ago. Historically mod_usertrack has used
+       the obsolete Netscape cookie syntax. The new CookieStyle directive
+       allows use of the RFC2109 or RFC2965 syntax instead. PR#5023,
+       PR#5920, PR#6140.
+     * The server will now display a warning if line-end comments (#) are
+       found in the configuration file. Not all directives are able to
+       handle comments on the same line
+     * A new directive, AcceptMutex, allows run-time configuration of the
+       mutex type used for accept serialization, currently a compile-time
+       only setting in 1.3. Since different types of mutex have different
+       performance characteristics on different platforms, this directive
+       will allow administrators to tune their Apache server more easily.
+       The current list of possible methods is: uslock, pthread, sysvsem,
+       fcntl, flock, os2sem, tpfcore, none. Not all platforms support all
+       methods
+     * mod_auth has been enhanced to allow access to a document to be
+       controlled based on the owner of the file being served. Require
+       file-owner will only allow files to be served where the
+       authenticated username matches the user that owns the document.
+       Require file-group works in a similar way checking that the group
+       matches
+
+   New features that relate to specific platforms:
+     * A new directive, AcceptFilter, has been added to control BSD
+       accept filters at run-time.  This should make it easier to move
+       server binaries across different BSD machines without requiring
+       recompilation.  Support for accept filters was first added to
+       version 1.3.14, the functionality can postpone the requirement for
+       a child process to handle a new connection until an HTTP request
+       has arrived, therefore increasing the number of connections that a
+       given number of child processes can handle
+     * On Win32 mod_unique_id, mod_mime_magic, and the mod_vhost_alias
+       modules are now enabled
+     * The Cygwin port includes a number of fixes and updates.  Cygwin 
+       support was first introduced in version 1.3.20
+     * On Windows 2000, the service display names can now be modified 
+       by the user (use the service control panel applet)
+     * On Win32 a new option -W can be used to set up a dependency on
+       another service, see win_service.html
+     * The server will now take advantage of recent improvements to the
+       TPF operating system which include an enhanced system fork and
+       exec, updates to allow non-blocking file descriptors, and an
+       update to shutdown processing
+
+  Bugs fixed
+
+   The following bugs were found in Apache 1.3.20 and have been fixed in
+   Apache 1.3.22:
+     * Under certain circumstances a child may crash due to a bug in
+       mod_include.  If a server uses an ErrorDocument for 404 (request
+       not found) errors which points to a server-parsed HTML file which
+       uses a <!--#include  virtual="file" --> section, then a request
+       containing %2f will result in a segfault. The segfault is harmless
+       and does not cause a security problem, but is being triggered by
+       the recent IIS worm
+     * The Multiviews functionality has been fixed to prevent
+       mod_negotiation from serving any multiview variant that contains
+       unknown filename extensions. PR#8130
+     * Apache will prefer installed version of the Expat library over the
+       bundled version. This fixes conflicts when multiple copies of the
+       Expat library get loaded (notably when using mod_perl and
+       XML::Parsers::Expat)
+     * UnsetEnv now works from the main body of a configuration file.
+       PR#8254
+     * When used as a reverse proxy any headers set by other modules
+       (such as mod_usertrack or mod_securid) now get passed on to the
+       back-end server. PR#6055
+     * Server response headers can now be logged via the proxy. PR#7461
+     * mod_proxy will now pay attention to HTTP headers that specify the
+       request is not to be cached. PR#5668
+     * When a client making a request via mod_proxy died unexpectedly,
+       mod_proxy did not close its connection. PR#8090
+     * The CacheForceCompletion directive has been fixed PR#7383,
+       PR#8067, PR#6585
+     * A memory leak has been fixed in the mod_mime_magic module
+     * A Satisfy All option has been added to the default container
+       designed to stop access to .htaccess files.  Without this
+       directive, these files could still be fetched if they were within
+       the scope of a Satisfy Any directive.
+
+   The following bugs relate to specific platforms:
+     * A number of fixes for NetWare have been added. These include:
+       enabling long file names in htpasswd and htdigest, protection
+       against ill behaved modules, better handling of abnormal
+       shutdowns, dealing with the limited stack space during server side
+       includes, and recognising special filenames such as proxy:http://
+       correctly
+     * A shutdown hang could occur on Solaris when using lots of piped
+       TransferLogs and at least one piped ErrorLog
+     * On EBCDIC platforms a bug in the proxy module stopped SSL proxying
+       working
+     * On Win32, mod_unique_id did not guarantee a unique ID due to
+       threading
+     * The Win32 Makefiles are now 100% compatible with the Microsoft
+       Visual C++ compiler versions 5,6,7

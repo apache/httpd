@@ -1,0 +1,31 @@
+#!perl
+
+# Create a Configuration.lint with every Module except for the modules
+# specified in the 'isbad' subroutine.
+
+sub isbad
+{
+    local($module) = @_;
+    return 1 if $module =~ /mod_dld/;
+    return 1 if $module =~ /mod_dld/;
+    return 1 if $module =~ /mod_auth_msql/;
+    return 1 if $module =~ /mod_example/;
+
+    return 0;
+}
+
+open(TMPL, "Configuration.tmpl") || die "can't open Configuration.tmpl: $!";
+open(LINT, ">Configuration.lint") || die "can't write Configuration.link: $!";
+
+while(<TMPL>)
+{
+    next if /^$/;
+    print LINT if /^[^#]/;
+    if(/^# AddModule\s+(.*)$/)
+    {
+	   $module = $1;
+	   print LINT "AddModule $module\n" if ! &isbad($module);
+    }
+}
+close(TMPL);
+close(LINT);
