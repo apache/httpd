@@ -24,8 +24,6 @@
 <p><span>Available Languages: </span><a href="../en/mod/mod_log_forensic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_log_forensic.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバに送られたリクエストの forensic ロギング</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>log_forensic_module</td></tr>
@@ -139,7 +137,7 @@
       指定できます。
 
       <div class="warning"><h3>セキュリティ:</h3>
-      <p>プログラムを使う場合、そのプログラムは httpd を起動したユーザで
+      <p>プログラムを使う場合、そのプログラムは <code class="program"><a href="../programs/httpd.html">httpd</a></code> を起動したユーザで
       実行されます。つまり、サーバが root で実行された場合は root で
       実行されるということです。プログラムが安全であるか、より権限の少ない
       ユーザに切り替えるようになっていることを確かめてください。</p>

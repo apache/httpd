@@ -22,8 +22,6 @@
 <a href="../ja/howto/auth.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>「認証」とは、誰かが自分は誰であるかを主張した場合に、
     それを確認するための全過程を指します。「承認」とは、
@@ -107,7 +105,7 @@
     <code>/usr/local/apache/passwd</code>
     などに置いた方が良いでしょう。</p>
 
-    <p>ファイルを作るためには、Apache 付属の <a href="../programs/htpasswd.html">htpasswd</a> 
+    <p>ファイルを作るためには、Apache 付属の <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> 
     を使います。このコマンドは Apache をどこにインストールしようとも、
     インストールディレクトリの <code>bin</code> 
     ディレクトリ以下に置かれます。ファイルを作るには、次のように
@@ -117,7 +115,7 @@
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
     </code></p></div>
 
-    <p><code>htpasswd</code> は、パスワードを要求し、その後
+    <p><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> は、パスワードを要求し、その後
     確認のためにもう一度入力するように要求してきます。</p>
 
     <div class="example"><p><code>
@@ -127,7 +125,7 @@
       Adding password for user rbowen
     </code></p></div>
 
-    <p>もし <code>htpasswd</code> がパスの中に入っていない場合は、
+    <p>もし <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> がパスの中に入っていない場合は、
     もちろん、実行するためにプログラムまでのフルパスを
     タイプする必要があります。私のサーバであれば、
     <code>/usr/local/apache/bin/htpasswd</code>
@@ -188,7 +186,7 @@
     クライアントは再びパスワードを尋ねる必要があります。</p>
 
     <p><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
-    ディレクティブは <code>htpasswd</code> で作った
+    ディレクティブは <code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code> で作った
     パスワードファイルへのパスを設定します。
     ユーザ数が多い場合は、リクエスト毎のユーザの認証のための
     プレーンテキストの探索が非常に遅くなることがあります。
@@ -196,7 +194,7 @@
     保管することもできます。
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> モジュールが
     <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>
-    ディレクティブを提供します。これらのファイルは <a href="../programs/dbmmanage.html">dbmmanage</a>
+    ディレクティブを提供します。これらのファイルは <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code>
     プログラムで作成したり操作したりできます。
     <a href="http://modules.apache.org/">Apache 
     モジュールデータベース</a>中にあるサードパーティー製の

@@ -22,8 +22,6 @@
 <a href="./ja/suexec.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p><strong>suEXEC</strong>
     機能により、Apache ユーザは Web サーバを実行しているユーザ ID とは
@@ -455,7 +453,7 @@
     </p>
 
     <p><strong>安全なパーミッションを設定する</strong><br />
-    suEXEC ラッパーは、<code>--with-suexec-caller</code> configure 
+    suEXEC ラッパーは、<code>--with-suexec-caller</code> <code class="program"><a href="./programs/configure.html">configure</a></code> 
     オプションで指定した正しいユーザで起動されていることを確認しますが、
     システム上でこのチェックが行なわれる前に、
     suEXEC が呼ぶシステムやライブラリが脆弱である可能性は残ります。対抗策として、
@@ -471,7 +469,7 @@
     Group webgroup<br />
 </code></p></div>
 
-    <p><code>suexec</code> が "/usr/local/apache2/sbin/suexec" 
+    <p><code class="program"><a href="./programs/suexec.html">suexec</a></code> が "/usr/local/apache2/sbin/suexec" 
     にインストールされていた場合、次のように設定する必要があります。</p>
 
 <div class="example"><p><code>
@@ -495,7 +493,7 @@
     エラーログに以下のメッセージが出力されます。</p>
 
 <div class="example"><p><code>
-    [notice] suEXEC mechanism enabled (wrapper: <em>/path/to/suexec</em>)
+    [notice] suEXEC mechanism enabled (wrapper: <var>/path/to/suexec</var>)
 </code></p></div>
 
     <p>サーバ起動時にこのメッセージが出ない場合、

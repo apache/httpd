@@ -24,8 +24,6 @@
 <a href="./ja/stopping.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>この文書では Unix に類似したシステムでの
     Apache の停止と再起動について扱っています。
@@ -39,17 +37,17 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">緩やかな再起動</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">急な再起動</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#race">付録: シグナルと競合状態</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+</ul><h3>参照</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">イントロダクション</a></h2>
 
     <p>Apache を停止したり再起動したりするためには、実行されている
-    <code>httpd</code> プロセスにシグナルを送る必要があります。
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code> プロセスにシグナルを送る必要があります。
     シグナルを送るには二つの方法があります。
     一つ目はプロセスに直接シグナルを送る unix の <code>kill</code>
     コマンドを使用する方法です。
-    システムを見ればたくさんの <code>httpd</code> が
+    システムを見ればたくさんの <code class="program"><a href="./programs/httpd.html">httpd</a></code> が
     実行されているのに気が付くでしょうが、シグナルを送るのは
     親プロセスだけで、それ以外の個々のプロセスには
     シグナルを送らないで下さい。その親プロセスの pid は
@@ -67,16 +65,15 @@
 
 <div class="example"><p><code>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</code></p></div>
 
-    <p><code>httpd</code> プロセスにシグナルを送る 2 番目の方法は
+    <p><code class="program"><a href="./programs/httpd.html">httpd</a></code> プロセスにシグナルを送る 2 番目の方法は
     <code>-k</code> というコマンドライン引数を使用することです。
     下で説明されているように、<code>stop</code>, <code>restart</code>, 
     <code>graceful</code> を指定できます。
-    これらは <a href="programs/httpd.html">httpd</a> の引数ですが、
-    制御用のスクリプト <a href="programs/apachectl.html">apachectl</a> を
-    使うことをお薦めします。<a href="programs/apachectl.html">apachectl</a> はそれらの引数をそのまま
-    <code>httpd</code> に渡します。</p>
+    これらは <code class="program"><a href="./programs/httpd.html">httpd</a></code> の引数ですが、
+    制御用のスクリプト <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> はそれらの引数をそのまま
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code> に渡します。</p>
 
-    <p><code>httpd</code> にシグナルを送った後、
+    <p><code class="program"><a href="./programs/httpd.html">httpd</a></code> にシグナルを送った後、
     実行状況を次のコマンドで読むことができます:</p>
 
 <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
@@ -167,13 +164,13 @@
     -- サーバは listen するポートにバインドできないかもしれません。
     再起動する前に、設定ファイルの構文を <code>-t</code>
     コマンドライン引数
-    (<a href="programs/httpd.html">httpd</a> をご覧下さい)
+    (<code class="program"><a href="./programs/httpd.html">httpd</a></code> をご覧下さい)
     を使って検証することができます。
     設定ファイルの意味的な内容を構文と同様に検証したい場合は、
-    非 root ユーザで <code>httpd</code> を起動しようとすればわかります。
+    非 root ユーザで <code class="program"><a href="./programs/httpd.html">httpd</a></code> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
     root でないため
-    (もしくは実行中の <code>httpd</code>
+    (もしくは実行中の <code class="program"><a href="./programs/httpd.html">httpd</a></code>
     が既に必要なポートにバインドしているため)
     に失敗するでしょう。
     これ以外の理由で起動に失敗したのであれば、

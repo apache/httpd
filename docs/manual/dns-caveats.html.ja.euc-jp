@@ -22,8 +22,6 @@
 <a href="./ja/dns-caveats.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>本文書の内容は次の一言に尽きます。「Apache が設定ファイルを読み込むときに
     DNS を使用する必要がないようにして下さい」。Apache が設定ファイルを
@@ -145,7 +143,7 @@
     
 
     <p>Apache 1.1 での <a href="vhost/name-based.html">名前ベースのバーチャルホストのサポート</a> 追加の際に、
-    Apache は httpd の実行されているホストの IP
+    Apache は <code class="program"><a href="./programs/httpd.html">httpd</a></code> の実行されているホストの IP
     アドレスを知る必要が出てきました。このアドレスを得るために、
     (もしあれば) グローバルな
     <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> を使用するか、

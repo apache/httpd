@@ -23,8 +23,6 @@
 <a href="./ja/mpm.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 <p>この文書ではマルチプロセッシングモジュールがどのようなもので、
 Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
@@ -100,7 +98,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
     Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
     常により良いパフォーマンスを発揮します。</p>
 
-    <p>望みの MPM を実際に選ぶためには、./configure スクリプトで
+    <p>望みの MPM を実際に選ぶためには、<code class="program"><a href="./programs/configure.html">configure</a></code> スクリプトで
     --with-mpm= <em>NAME</em> 引数を用いてください。
     <em>NAME</em> は望みの MPM の名前です。</p>
 
