@@ -4,11 +4,11 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>core - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module core</h1><table class="module"><tr><th>Description:
-                </th><td>Core Apache HTTP Server features that are always
+      --><title>core - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module core</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
+                  </a></th><td>Core Apache HTTP Server features that are always
 available</td></tr><tr><th><a href="module-dict.html#Status">Status:
-                  </a></th><td>Core</td></tr></table></div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li><li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li><li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authname">AuthName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authtype">AuthType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li><li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li><li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#directory">&lt;Directory&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li><li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li><li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li><li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li><li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li><li><img alt="" src="../images/down.gif" /> <a href="#identitycheck">IdentityCheck</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li><li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li><li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitexcept">&lt;LimitExcept&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitrequestbody">LimitRequestBody</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfields">LimitRequestFields</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfieldsize">LimitRequestFieldSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitrequestline">LimitRequestLine</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitxmlrequestbody">LimitXMLRequestBody</a></li><li><img alt="" src="../images/down.gif" /> <a href="#location">&lt;Location&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li><li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li><li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li><li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li><li><img alt="" src="../images/down.gif" /> <a href="#satisfy">Satisfy</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serveradmin">ServerAdmin</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serveralias">ServerAlias</a></li><li><img alt="" src="../images/down.gif" /> <a href="#servername">ServerName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverpath">ServerPath</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverroot">ServerRoot</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serversignature">ServerSignature</a></li><li><img alt="" src="../images/down.gif" /> <a href="#servertokens">ServerTokens</a></li><li><img alt="" src="../images/down.gif" /> <a href="#sethandler">SetHandler</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li><li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Resources accept trailing pathname information</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+                  </a></th><td>Core</td></tr></table></div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li><li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li><li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authname">AuthName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authtype">AuthType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li><li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li><li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#directory">&lt;Directory&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li><li><img alt="" src="../images/down.gif" /> <a href="#enablemmap">EnableMMAP</a></li><li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li><li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li><li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li><li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li><li><img alt="" src="../images/down.gif" /> <a href="#identitycheck">IdentityCheck</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li><li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li><li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitexcept">&lt;LimitExcept&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitrequestbody">LimitRequestBody</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfields">LimitRequestFields</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitrequestfieldsize">LimitRequestFieldSize</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitrequestline">LimitRequestLine</a></li><li><img alt="" src="../images/down.gif" /> <a href="#limitxmlrequestbody">LimitXMLRequestBody</a></li><li><img alt="" src="../images/down.gif" /> <a href="#location">&lt;Location&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li><li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li><li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li><li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li><li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li><li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li><li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li><li><img alt="" src="../images/down.gif" /> <a href="#satisfy">Satisfy</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serveradmin">ServerAdmin</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serveralias">ServerAlias</a></li><li><img alt="" src="../images/down.gif" /> <a href="#servername">ServerName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverpath">ServerPath</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serverroot">ServerRoot</a></li><li><img alt="" src="../images/down.gif" /> <a href="#serversignature">ServerSignature</a></li><li><img alt="" src="../images/down.gif" /> <a href="#servertokens">ServerTokens</a></li><li><img alt="" src="../images/down.gif" /> <a href="#sethandler">SetHandler</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setinputfilter">SetInputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li><li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li><li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Resources accept trailing pathname information</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AcceptPathInfo On|Off|Default</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AcceptPathInfo Default</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -66,8 +66,8 @@ available</td></tr><tr><th><a href="module-dict.html#Status">Status:
     AcceptPathInfo on<br />
 &lt;/Files&gt;
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Name of the distributed configuration file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Name of the distributed configuration file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AccessFileName <em>filename</em> [<em>filename</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AccessFileName .htaccess</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -94,8 +94,8 @@ AccessFileName .acl
   AllowOverride None<br />
 &lt;/Directory&gt;
 </code></p></div>
-<h3>See also</h3><ul><li><code class="directive"><a href="#allowoverride">AllowOverride</a></code></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Default character set to be added for a
+<h3>See also</h3><ul><li><code class="directive"><a href="#allowoverride">AllowOverride</a></code></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Default character set to be added for a
 response without an explicit character set</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddDefaultCharset On|Off|<em>charset</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AddDefaultCharset Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -118,8 +118,8 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
 <div class="example"><p><code>
     AddDefaultCharset utf-8
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Types of directives that are allowed in
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Types of directives that are allowed in
 .htaccess files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AllowOverride All|None|<em>directive-type</em> 
 [<em>directive-type</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
@@ -188,8 +188,8 @@ response without an explicit character set</td></tr><tr><th><a href="directive-d
     <p>Example:</p>
 
     <div class="example"><p><code>AllowOverride AuthConfig Indexes</code></p></div>
-<h3>See also</h3><ul><li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthName" id="AuthName">AuthName</a> <a name="authname" id="authname">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Authorization realm for use in HTTP
+<h3>See also</h3><ul><li><code class="directive"><a href="#accessfilename">AccessFileName</a></code></li><li><a href="../configuring.html">Configuration Files</a></li><li><a href="../howto/htaccess.html">.htaccess Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthName" id="AuthName">AuthName</a> <a name="authname" id="authname">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Authorization realm for use in HTTP
 authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthName <em>auth-domain</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -213,8 +213,8 @@ authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>The string provided for the <code>AuthRealm</code> is what will
     appear in the password dialog provided by most browsers.</p>
 <h3>See also</h3><ul><li><a href="../howto/auth.html">Authentication, Authorization, and 
-    Access Control</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthType" id="AuthType">AuthType</a> <a name="authtype" id="authtype">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Type of user authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+    Access Control</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthType" id="AuthType">AuthType</a> <a name="authtype" id="authtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Type of user authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthType Basic|Digest</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -229,8 +229,8 @@ authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
      <code class="directive"><a href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a></code> to
      work.</p>
 <h3>See also</h3><ul><li><a href="../howto/auth.html">Authentication, Authorization,
-and Access Control</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Technique for locating the interpreter for CGI 
+and Access Control</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Technique for locating the interpreter for CGI 
 scripts</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>CGIMapExtension cgi-path .extension</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>None</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -242,8 +242,8 @@ scripts</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>This directive is used to control how Apache finds the
     interpreter used to run CGI scripts. For example, setting <code>CGIMapExtension sys:\foo.nlm .foo</code> will
     cause all CGI script files with a .foo extension to be passed to the FOO interpreter.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Enables the generation of Content-MD5 HTTP Response
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ContentDigest" id="ContentDigest">ContentDigest</a> <a name="contentdigest" id="contentdigest">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Enables the generation of Content-MD5 HTTP Response
 headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ContentDigest on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ContentDigest off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -276,8 +276,8 @@ headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     by the core, and not by any module. For example, SSI documents,
     output from CGI scripts, and byte range responses do not have
     this header.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>MIME content-type that will be sent if the
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>MIME content-type that will be sent if the
 server cannot determine a type in any other way</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>DefaultType <em>MIME-type</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DefaultType text/plain</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -303,8 +303,8 @@ server cannot determine a type in any other way</td></tr><tr><th><a href="direct
     provides the default mime-type. All other mime-type definitions,
     including filename extensions, that might identify the media type
     will override this default.</p> 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Enclose a group of directives that apply only to the
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Enclose a group of directives that apply only to the
 named file-system directory and sub-directories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;Directory <em>directory-path</em>&gt;
 ... &lt;/Directory&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -415,8 +415,8 @@ such as via different symbolic links.</p>
 <h3>See also</h3><ul><li><a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
-    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Enclose a group of directives that apply only to 
+    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Enclose a group of directives that apply only to 
 file-system directories that match a regular expression and their
 subdirectories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;Directory <em>regex</em>&gt;
@@ -439,8 +439,8 @@ subdirectories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 a description of how regular expressions are mixed in with normal
 <code>&lt;Directory&gt;</code>s</li><li><a href="../sections.html">How Directory, Location and Files sections
 work</a> for an explanation of how these different sections are
-combined when a request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Directory that forms the main document tree visible
+combined when a request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Directory that forms the main document tree visible
 from the web</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>DocumentRoot <em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DocumentRoot /usr/local/apache/htdocs</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -461,8 +461,8 @@ from the web</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>The <code class="directive">DocumentRoot</code> should be specified without
     a trailing slash.</p>
 <h3>See also</h3><ul><li><a href="../urlmapping.html">Mapping URLs to Filesystem
-Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Use memory-mapping to read files during delivery</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Use memory-mapping to read files during delivery</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>EnableMMAP on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>EnableMMAP on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -495,8 +495,8 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
 <div class="example"><p><code>
    EnableMMAP off
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>What the server will return to the client
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>What the server will return to the client
 in case of an error</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ErrorDocument <em>error-code document</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -566,8 +566,8 @@ in case of an error</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
     <p>Prior to version 2.0, messages were indicated by prefixing
     them with a single unmatched double quote character.</p>
 <h3>See also</h3><ul><li><a href="../custom-error.html">documentation of
-    customizable responses</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Location where the server will log errors</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+    customizable responses</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Location where the server will log errors</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td> ErrorLog <em>file-path</em>|syslog[:<em>facility</em>]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ErrorLog logs/error_log (Unix)
 ErrorLog logs/error.log (Windows and OS/2)</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -592,8 +592,8 @@ ErrorLog logs/error.log (Windows and OS/2)</code></td></tr><tr><th><a href="dire
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#loglevel">LogLevel</a></code></li><li><a href="../logs.html">Apache Log Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>File attributes used to create the ETag
+<h3>See also</h3><ul><li><code class="directive"><a href="#loglevel">LogLevel</a></code></li><li><a href="../logs.html">Apache Log Files</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>File attributes used to create the ETag
 HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>FileETag <em>component</em> ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>FileETag INode MTime Size</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -640,8 +640,8 @@ HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Synta
     any sub-subdirectories that don't override it) will be equivalent to
     '<code>FileETag MTime Size</code>'.
     </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Contains directives that apply to matched
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Contains directives that apply to matched
 filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;Files <em>filename</em>&gt; ... &lt;/Files&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -681,8 +681,8 @@ filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
-    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Contains directives that apply to regular-expression matched
+    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Contains directives that apply to regular-expression matched
 filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;FilesMatch <em>regex</em>&gt; ... &lt;/FilesMatch&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -700,8 +700,8 @@ filenames</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
-    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Forces all matching files to be served with the specified
+    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Forces all matching files to be served with the specified
 MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ForceType <em>mime-type</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -725,8 +725,8 @@ MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>Note that unlike <code class="directive"><a href="#defaulttype">DefaultType</a></code>,
     this directive overrides all mime-type associations, including
     filename extensions, that might identify the media type.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Enables DNS lookups on client IP addresses</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Enables DNS lookups on client IP addresses</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>HostnameLookups on|off|double</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>HostnameLookups off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -760,8 +760,8 @@ MIME content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     amounts of time. The utility <a href="../programs/logresolve.html">logresolve</a>, provided in
     the <em>/support</em> directory, can be used to look up host
     names from logged IP addresses offline.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IdentityCheck" id="IdentityCheck">IdentityCheck</a> <a name="identitycheck" id="identitycheck">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Enables logging of the RFC1413 identity of the remote 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IdentityCheck" id="IdentityCheck">IdentityCheck</a> <a name="identitycheck" id="identitycheck">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Enables logging of the RFC1413 identity of the remote 
 user</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>IdentityCheck on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>IdentityCheck off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -782,8 +782,8 @@ user</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     possibly fail and add 30 seconds of latency to each hit. So in
     general this is not very useful on public servers accessible
     from the Internet.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Encloses directives that will be processed only
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Encloses directives that will be processed only
 if a test is true at startup</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;IfDefine [!]<em>parameter-name</em>&gt; <em>...</em>
     &lt;/IfDefine&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -831,8 +831,8 @@ if a test is true at startup</td></tr><tr><th><a href="directive-dict.html#Synta
   &lt;/IfDefine&gt;
 </pre></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Encloses directives that are processed conditional on the
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Encloses directives that are processed conditional on the
 presence of absence of a specific module</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;IfModule [!]<em>module-name</em>&gt; <em>...</em>
     &lt;/IfModule&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -870,8 +870,8 @@ presence of absence of a specific module</td></tr><tr><th><a href="directive-dic
     <p><code class="directive">&lt;IfModule&gt;</code> sections are
     nest-able, which can be used to implement simple multiple-module
     tests.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Includes other configuration files from within
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Includes other configuration files from within
 the server configuration files</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>Include <em>file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -922,8 +922,8 @@ the server configuration files</td></tr><tr><th><a href="directive-dict.html#Syn
 
      <p>This will help in verifying that you are getting only the files
      that you intended as part of your configuration.</p>
-<h3>See also</h3><ul><li><a href="../programs/apachectl.html">apachectl</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Enables HTTP persistent connections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+<h3>See also</h3><ul><li><a href="../programs/apachectl.html">apachectl</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Enables HTTP persistent connections</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>KeepAlive on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>KeepAlive On</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -948,8 +948,8 @@ the server configuration files</td></tr><tr><th><a href="directive-dict.html#Syn
     unless otherwise specified. If the client requests it, chunked
     encoding will be used in order to send content of unknown
     length over persistent connections.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Amount of time the server will wait for subsequent
+<h3>See also</h3><ul><li><code class="directive"><a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>KeepAliveTimeout <em>seconds</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>KeepAliveTimeout 15</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -965,8 +965,8 @@ requests on a persistent connection</td></tr><tr><th><a href="directive-dict.htm
     may cause performance problems in heavily loaded servers. The
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Restrict enclosed access controls to only certain HTTP
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Restrict enclosed access controls to only certain HTTP
 methods</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;Limit <em>method</em> [<em>method</em>] ... &gt; ...
     &lt;/Limit&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -998,8 +998,8 @@ methods</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     MKCOL, COPY, MOVE, LOCK, and UNLOCK. <strong>The method name is
     case-sensitive.</strong> If GET is used it will also restrict
     HEAD requests.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Restrict access controls to all HTTP methods
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Restrict access controls to all HTTP methods
 except the named ones</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;LimitExcept <em>method</em> [<em>method</em>] ... &gt; ...
     &lt;/LimitExcept&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1023,8 +1023,8 @@ except the named ones</td></tr><tr><th><a href="directive-dict.html#Syntax">Synt
     &lt;LimitExcept&gt;
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Restricts the total size of the HTTP request body sent
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Restricts the total size of the HTTP request body sent
 from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>LimitRequestBody <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitRequestBody 0</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1064,8 +1064,8 @@ from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     LimitRequestBody 102400
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Limits the number of HTTP request header fields that 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Limits the number of HTTP request header fields that 
 will be accepted from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>LimitRequestFields <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitRequestFields 100</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1101,8 +1101,8 @@ will be accepted from the client</td></tr><tr><th><a href="directive-dict.html#S
     LimitRequestFields 50
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Limits the size of the HTTP request header allowed from the
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Limits the size of the HTTP request header allowed from the
 client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>LimitRequestFieldsize <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitRequestFieldsize 8190</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1138,8 +1138,8 @@ client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="note">Under normal conditions, the value should not be changed from
     the default.</div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Limit the size of the HTTP request line that will be accepted
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Limit the size of the HTTP request line that will be accepted
 from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>LimitRequestLine <em>bytes</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitRequestLine 8190</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1174,8 +1174,8 @@ from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <div class="note">Under normal conditions, the value should not be changed from
     the default.</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Limits the size of an XML-based request body</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Limits the size of an XML-based request body</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>LimitXMLRequestBody <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LimitXMLRequestBody 1000000</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -1191,8 +1191,8 @@ from the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     LimitXMLRequestBody 0
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Applies the enclosed directives only to matching
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Applies the enclosed directives only to matching
 URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;Location
     URL-path|URL&gt; ... &lt;/Location&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1268,8 +1268,8 @@ request is to <code>/abc//def</code> then it will match.</p>
 <h3>See also</h3><ul><li><a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
-    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Applies the enclosed directives only to regular-expression 
+    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Applies the enclosed directives only to regular-expression 
 matching URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;LocationMatch
     <em>regex</em>&gt; ... &lt;/Location&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1290,8 +1290,8 @@ matching URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><a href="../sections.html">How
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
-    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Controls the verbosity of the ErrorLog</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+    request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Controls the verbosity of the ErrorLog</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>LogLevel <em>level</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>LogLevel warn</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1392,8 +1392,8 @@ matching URLs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <div class="example"><p><code>LogLevel notice</code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Number of requests allowed on a persistent 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Number of requests allowed on a persistent 
 connection</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>MaxKeepAliveRequests <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>MaxKeepAliveRequests 100</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1410,8 +1410,8 @@ connection</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>For example:</p>
 
     <div class="example"><p><code>MaxKeepAliveRequests 500</code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Designates an IP address for name-virtual
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Designates an IP address for name-virtual
 hosting</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>NameVirtualHost <em>addr</em>[:<em>port</em>]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1469,8 +1469,8 @@ NameVirtualHost 1.2.3.4<br />
 </div>
 
 <h3>See also</h3><ul><li>See also: <a href="../vhosts/">Virtual Hosts
-documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Configures what features are available in a particular
+documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Configures what features are available in a particular
 directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>Options
     [+|-]<em>option</em> [[+|-]<em>option</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
@@ -1586,8 +1586,8 @@ directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>The default in the absence of any other settings is
     <code>All</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Selects which authenticated users can access
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Selects which authenticated users can access
 a resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>Require <em>entity-name</em> [<em>entity-name</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -1640,8 +1640,8 @@ a resource</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     place the <code class="directive">Require</code> statement into a
     <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>
     section.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#satisfy">Satisfy</a></code></li><li><code class="module"><a href="../mod/mod_access.html">mod_access</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Limits the CPU consumption of processes launched
+<h3>See also</h3><ul><li><code class="directive"><a href="#satisfy">Satisfy</a></code></li><li><code class="module"><a href="../mod/mod_access.html">mod_access</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Limits the CPU consumption of processes launched
 by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RLimitCPU <em>number</em>|max [<em>number</em>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Unset; uses operating system defaults</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1666,8 +1666,8 @@ by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>CPU resource limits are expressed in seconds per
     process.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="#rlimitnproc">RLimitNPROC</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Limits the memory consumption of processes launched
+<h3>See also</h3><ul><li><code class="directive"><a href="#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="#rlimitnproc">RLimitNPROC</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Limits the memory consumption of processes launched
 by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RLimitMEM <em>number</em>|max [<em>number</em>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Unset; uses operating system defaults</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1692,8 +1692,8 @@ by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>Memory resource limits are expressed in bytes per
     process.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="#rlimitnproc">RLimitNPROC</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Limits the number of processes that can be launched by 
+<h3>See also</h3><ul><li><code class="directive"><a href="#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="#rlimitnproc">RLimitNPROC</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Limits the number of processes that can be launched by 
 processes launched by Apache children</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RLimitNPROC <em>number</em>|max [<em>number</em>|max]</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Unset; uses operating system defaults</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1724,8 +1724,8 @@ processes launched by Apache children</td></tr><tr><th><a href="directive-dict.h
     create. Evidence of this situation will be indicated by
     <strong><em>cannot fork</em></strong> messages in the
     error_log.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="#rlimitcpu">RLimitCPU</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Interaction between host-level access control and 
+<h3>See also</h3><ul><li><code class="directive"><a href="#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="#rlimitcpu">RLimitCPU</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Interaction between host-level access control and 
 user authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>Satisfy any|all</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Satisfy all</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1756,8 +1756,8 @@ user authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax
     Satisfy any
     </code></p></div>
    
-<h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code></li><li><code class="directive"><a href="#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Technique for locating the interpreter for CGI 
+<h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code></li><li><code class="directive"><a href="#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Technique for locating the interpreter for CGI 
 scripts</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ScriptInterpreterSource registry|script</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ScriptInterpreterSource script</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -1772,8 +1772,8 @@ scripts</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     script. Setting <code>ScriptInterpreterSource registry</code> will
     cause the Windows Registry to be searched using the script file
     extension (e.g., .pl) as a search key.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Email address that the server includes in error
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Email address that the server includes in error
 messages sent to the client</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ServerAdmin <em>email-address</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1788,8 +1788,8 @@ messages sent to the client</td></tr><tr><th><a href="directive-dict.html#Syntax
 <div class="example"><p><code>ServerAdmin www-admin@foo.bar.com</code></p></div>
     <p>as users do not always mention that they are talking about the
     server!</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Alternate names for a host used when matching requests
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Alternate names for a host used when matching requests
 to name-virtual hosts</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ServerAlias <em>hostname</em> [<em>hostname</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1805,8 +1805,8 @@ to name-virtual hosts</td></tr><tr><th><a href="directive-dict.html#Syntax">Synt
     ...<br />
     &lt;/VirtualHost&gt;
 </code></p></div>
-<h3>See also</h3><ul><li><a href="../vhosts/">Apache Virtual Host documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Hostname and port that the server uses to identify
+<h3>See also</h3><ul><li><a href="../vhosts/">Apache Virtual Host documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Hostname and port that the server uses to identify
 itself</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ServerName <em>fully-qualified-domain-name[:port]</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1846,8 +1846,8 @@ itself</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     specified port, or to the port number given in the client's request.
     </p>
 <h3>See also</h3><ul><li><a href="../dns-caveats.html">DNS Issues</a></li><li><a href="../vhosts/">Apache virtual host
-    documentation</a></li><li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="#serveralias">ServerAlias</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Legacy URL pathname for a name-virtual host that
+    documentation</a></li><li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="#serveralias">ServerAlias</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Legacy URL pathname for a name-virtual host that
 is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ServerPath <em>URL-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1855,8 +1855,8 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
               </a></th><td>core</td></tr></table>
     <p>The <code class="directive">ServerPath</code> directive sets the legacy
     URL pathname for a host, for use with <a href="../vhosts/">name-based virtual hosts</a>.</p>
-<h3>See also</h3><ul><li><a href="../vhosts/">Apache Virtual Host documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Base directory for the server installation</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+<h3>See also</h3><ul><li><a href="../vhosts/">Apache Virtual Host documentation</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Base directory for the server installation</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ServerRoot <em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ServerRoot /usr/local/apache</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1875,8 +1875,8 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
 <h3>See also</h3><ul><li><a href="../invoking.html">the <code>-d</code>
     option to <code>httpd</code></a></li><li><a href="../misc/security_tips.html#serverroot">the
     security tips</a> for information on how to properly set
-    permissions on the ServerRoot</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a name="serversignature" id="serversignature">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Configures the footer on server-generated documents</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+    permissions on the ServerRoot</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a name="serversignature" id="serversignature">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Configures the footer on server-generated documents</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ServerSignature On|Off|EMail</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ServerSignature Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -1897,8 +1897,8 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
     and the <code>EMail</code> setting additionally creates a
     "mailto:" reference to the <code class="directive"><a href="#serveradmin">ServerAdmin</a></code> of the referenced
     document.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#servertokens">ServerTokens</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Configures the Server HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+<h3>See also</h3><ul><li><code class="directive"><a href="#servertokens">ServerTokens</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Configures the Server HTTP response header</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ServerTokens Major|Minor|Minimal|ProductOnly|OS|Full</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ServerTokens Full</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -1943,8 +1943,8 @@ is accessed by an incompatible browser</td></tr><tr><th><a href="directive-dict.
 
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#serversignature">ServerSignature</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Forces all matching files to be processed by a
+<h3>See also</h3><ul><li><code class="directive"><a href="#serversignature">ServerSignature</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Forces all matching files to be processed by a
 handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>SetHandler <em>handler-name</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -1975,8 +1975,8 @@ handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     &lt;/Location&gt;
 </code></p></div>
 
-<h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets the filters that will process client requests and POST
+<h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets the filters that will process client requests and POST
 input</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>SetInputFilter <em>filter</em>[<em>;filter</em>...]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -1993,8 +1993,8 @@ input</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
     content.</p>
-<h3>See also</h3><ul><li><a href="../filter.html">Filters</a> documentation</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets the filters that will process responses from the
+<h3>See also</h3><ul><li><a href="../filter.html">Filters</a> documentation</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets the filters that will process responses from the
 server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>SetOutputFilter <em>filter</em>[<em>;filter</em>...]</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -2020,8 +2020,8 @@ server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
     content.</p>
-<h3>See also</h3><ul><li><a href="../filter.html">Filters</a> documentation</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Amount of time the server will wait for
+<h3>See also</h3><ul><li><a href="../filter.html">Filters</a> documentation</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Amount of time the server will wait for
 certain events before failing a request</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>TimeOut <em>number</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>TimeOut 300</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -2048,8 +2048,8 @@ certain events before failing a request</td></tr><tr><th><a href="directive-dict
     necessary in most situations. It is not set any lower by
     default because there may still be odd places in the code where
     the timer is not reset when a packet is sent. </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Configures how the server determines its own name and
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Configures how the server determines its own name and
 port</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>UseCanonicalName on|off|dns</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>UseCanonicalName on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -2100,8 +2100,8 @@ port</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     they want as a hostname. But if the CGI is only using
     <code>SERVER_NAME</code> to construct self-referential URLs
     then it should be just fine.</p>
-<h3>See also</h3><ul><li><code class="directive"><a href="#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Contains directives that apply only to a specific
+<h3>See also</h3><ul><li><code class="directive"><a href="#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Contains directives that apply only to a specific
 hostname or IP address</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>&lt;VirtualHost
     <em>addr</em>[:<em>port</em>] [<em>addr</em>[:<em>port</em>]]

@@ -4,11 +4,12 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_auth_ldap - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_auth_ldap</h1><table class="module"><tr><th>Description:
-                </th><td>Allows an LDAP directory to be used to store the database
+      --><title>mod_auth_ldap - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_auth_ldap</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
+                  </a></th><td>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>experimental</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>auth_ldap_module</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
+                  </a></th><td>auth_ldap_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
+                  </a></th><td>mod_auth_ldap.c</td></tr><tr><th><a href="module-dict.html#Compatibility">Compatibility:
                   </a></th><td>Available in version 2.0.41 and later</td></tr></table><h3>Summary</h3>
     <p><code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> supports the following features:</p>
 
@@ -491,8 +492,8 @@ AuthLDAPFrontPageHack  on
       and won't be able to find the FrontPage-managed user file.</li>
     </ul>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPAuthoritative" id="AuthLDAPAuthoritative">AuthLDAPAuthoritative</a> <a name="authldapauthoritative" id="authldapauthoritative">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPAuthoritative" id="AuthLDAPAuthoritative">AuthLDAPAuthoritative</a> <a name="authldapauthoritative" id="authldapauthoritative">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPAuthoritative on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPAuthoritative on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -504,8 +505,8 @@ AuthLDAPFrontPageHack  on
     authentication with this module fail. Control is only passed on
     to lower modules if there is no DN or rule that matches the
     supplied user name (as passed by the client).</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPBindDN <em>distinguished-name</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -514,8 +515,8 @@ AuthLDAPFrontPageHack  on
     <p>An optional DN used to bind to the server when searching for
     entries. If not provided, <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> will use
     an anonymous bind.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPBindPassword" id="AuthLDAPBindPassword">AuthLDAPBindPassword</a> <a name="authldapbindpassword" id="authldapbindpassword">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPBindPassword" id="AuthLDAPBindPassword">AuthLDAPBindPassword</a> <a name="authldapbindpassword" id="authldapbindpassword">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPBindPassword <em>password</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -525,8 +526,8 @@ AuthLDAPFrontPageHack  on
     that the bind password is probably sensitive data, and should be
     properly protected. You should only use the <code class="directive"><a href="#authldapbinddn">AuthLDAPBindDN</a></code> and <code class="directive"><a href="#authldapbindpassword">AuthLDAPBindPassword</a></code> if you
     absolutely need them to search the directory.</p> 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPCompareDNOnServer" id="AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a> <a name="authldapcomparednonserver" id="authldapcomparednonserver">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPCompareDNOnServer" id="AuthLDAPCompareDNOnServer">AuthLDAPCompareDNOnServer</a> <a name="authldapcomparednonserver" id="authldapcomparednonserver">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPCompareDNOnServer on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPCompareDNOnServer on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -543,8 +544,8 @@ AuthLDAPFrontPageHack  on
     is possible to get false negatives with this approach, but it is
     much faster. Note the <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> cache can speed up
     DN comparison in most situations.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPDereferenceAliases" id="AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</a> <a name="authldapdereferencealiases" id="authldapdereferencealiases">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPDereferenceAliases" id="AuthLDAPDereferenceAliases">AuthLDAPDereferenceAliases</a> <a name="authldapdereferencealiases" id="authldapdereferencealiases">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPDereferenceAliases never|searching|finding|always</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPDereferenceAliases Always</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -554,8 +555,8 @@ AuthLDAPFrontPageHack  on
     <p>This directive specifies when <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> will
     de-reference aliases during LDAP operations. The default is
     <code>always</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPEnabled" id="AuthLDAPEnabled">AuthLDAPEnabled</a> <a name="authldapenabled" id="authldapenabled">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPEnabled" id="AuthLDAPEnabled">AuthLDAPEnabled</a> <a name="authldapenabled" id="authldapenabled">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td> AuthLDAPEnabled on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPEnabled on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -567,8 +568,8 @@ AuthLDAPFrontPageHack  on
     useful if you have <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> enabled at or
     near the top of your tree, but want to disable it completely in
     certain locations.</p> 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPFrontPageHack" id="AuthLDAPFrontPageHack">AuthLDAPFrontPageHack</a> <a name="authldapfrontpagehack" id="authldapfrontpagehack">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPFrontPageHack" id="AuthLDAPFrontPageHack">AuthLDAPFrontPageHack</a> <a name="authldapfrontpagehack" id="authldapfrontpagehack">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPFrontPageHack on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPFronPageHack off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -577,8 +578,8 @@ AuthLDAPFrontPageHack  on
               </a></th><td>mod_auth_ldap</td></tr></table>
     <p>See the section on <a href="#frontpage">using Microsoft
     FrontPage</a> with <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPGroupAttribute" id="AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a> <a name="authldapgroupattribute" id="authldapgroupattribute">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPGroupAttribute" id="AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a> <a name="authldapgroupattribute" id="authldapgroupattribute">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPGroupAttribute <em>attribute</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -589,8 +590,8 @@ AuthLDAPFrontPageHack  on
     specifying this directive multiple times. If not specified,
     then <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> uses the <code>member</code> and
     <code>uniquemember</code> attributes.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPGroupAttributeIsDN" id="AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</a> <a name="authldapgroupattributeisdn" id="authldapgroupattributeisdn">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPGroupAttributeIsDN" id="AuthLDAPGroupAttributeIsDN">AuthLDAPGroupAttributeIsDN</a> <a name="authldapgroupattributeisdn" id="authldapgroupattributeisdn">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPGroupAttributeIsDN on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPGroupAttributeIsDN on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -607,8 +608,8 @@ AuthLDAPFrontPageHack  on
     <code>cn=Babs Jenson, o=Airius</code> as a member. If this
     directive is not set, then <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> will
     check if the group has <code>bjenson</code> as a member.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPRemoteUserIsDN" id="AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</a> <a name="authldapremoteuserisdn" id="authldapremoteuserisdn">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPRemoteUserIsDN" id="AuthLDAPRemoteUserIsDN">AuthLDAPRemoteUserIsDN</a> <a name="authldapremoteuserisdn" id="authldapremoteuserisdn">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPRemoteUserIsDN on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPUserIsDN off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -620,8 +621,8 @@ AuthLDAPFrontPageHack  on
     distinguished name of the authenticated user, rather than just
     the username that was passed by the client. It is turned off by
     default.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPStartTLS directive" id="AuthLDAPStartTLS directive">AuthLDAPStartTLS directive</a> <a name="authldapstarttls directive" id="authldapstarttls directive">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPStartTLS directive" id="AuthLDAPStartTLS directive">AuthLDAPStartTLS directive</a> <a name="authldapstarttls directive" id="authldapstarttls directive">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPStartTLS on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthLDAPStartTLS off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -632,8 +633,8 @@ AuthLDAPFrontPageHack  on
     <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> will start a secure TLS session
     after connecting to the LDAP server. This requires your LDAP
     server to support TLS.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a> <a name="authldapurl" id="authldapurl">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthLDAPUrl" id="AuthLDAPUrl">AuthLDAPUrl</a> <a name="authldapurl" id="authldapurl">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthLDAPUrl <em>url</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:

@@ -4,11 +4,12 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_setenvif - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_setenvif</h1><table class="module"><tr><th>Description:
-                </th><td>Allows the setting of environment variables based
+      --><title>mod_setenvif - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_setenvif</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
+                  </a></th><td>Allows the setting of environment variables based
 on characteristics of the request</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>setenvif_module</td></tr></table><h3>Summary</h3>
+                  </a></th><td>setenvif_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
+                  </a></th><td>mod_setenvif.c</td></tr></table><h3>Summary</h3>
 
     <p>The <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> module allows you to set
     environment variables according to whether different aspects of
@@ -25,8 +26,8 @@ on characteristics of the request</td></tr><tr><th><a href="module-dict.html#Sta
   BrowserMatch ^Mozilla netscape<br />
   BrowserMatch MSIE !netscape<br />
 </code></p></div>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setenvif">SetEnvIf</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../env.html">Environment Variables in Apache</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets environment variables conditional on HTTP User-Agent
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setenvif">SetEnvIf</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../env.html">Environment Variables in Apache</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets environment variables conditional on HTTP User-Agent
 </td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
 [[!]<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -50,8 +51,8 @@ on characteristics of the request</td></tr><tr><th><a href="module-dict.html#Sta
     BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
     BrowserMatch MSIE !javascript<br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase" id="browsermatchnocase">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets environment variables conditional on User-Agent without
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase" id="browsermatchnocase">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets environment variables conditional on User-Agent without
 respect to case</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -80,8 +81,8 @@ respect to case</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
    BrowserMatchNoCase Robot is_a_robot<br />
    SetEnvIfNoCase User-Agent Robot is_a_robot<br />
 </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a> <a name="setenvif" id="setenvif">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets environment variables based on attributes of the request
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a> <a name="setenvif" id="setenvif">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets environment variables based on attributes of the request
 </td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
@@ -186,8 +187,8 @@ of</p>
     set [a-z].</p>
 <h3>See also</h3><ul><li><a href="../env.html">Environment Variables in Apache</a>,
 for additional examples.
-</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets environment variables based on attributes of the request
+</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets environment variables based on attributes of the request
 without respect to case</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>SetEnvIfNoCase <em>attribute regex 
         [!]env-variable</em>[=<em>value</em>]

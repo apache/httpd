@@ -4,13 +4,14 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_mime - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_mime</h1><table class="module"><tr><th>Description:
-                </th><td>Associates the requested filename's extensions
+      --><title>mod_mime - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_mime</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
+                  </a></th><td>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
     encoding)</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Base</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>mime_module</td></tr></table><h3>Summary</h3>
+                  </a></th><td>mime_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
+                  </a></th><td>mod_mime.c</td></tr></table><h3>Summary</h3>
     <p>This module is used to associate various bits of "meta
     information" with files by their filename extensions. This
     information relates the filename of the document to it's
@@ -163,8 +164,8 @@ Content-Type: text/plain; charset=ISO-8859-2
     for the language. The <code>charset</code> is the name of the
     particular character set which should be used.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Maps the given filename extensions
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Maps the given filename extensions
     to the specified content charset</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddCharset <em>charset extension</em> 
 [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -201,8 +202,8 @@ Content-Type: text/plain; charset=ISO-8859-2
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a name="addencoding" id="addencoding">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Maps the given filename extensions
+<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a name="addencoding" id="addencoding">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Maps the given filename extensions
     to the specified encoding type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddEncoding
     <em>MIME-enc extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -246,8 +247,8 @@ Content-Type: text/plain; charset=ISO-8859-2
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddHandler" id="AddHandler">AddHandler</a> <a name="addhandler" id="addhandler">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Maps the filename extensions
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddHandler" id="AddHandler">AddHandler</a> <a name="addhandler" id="addhandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Maps the filename extensions
 to the specified handler</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddHandler
     <em>handler-name extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -273,8 +274,8 @@ use:</p>
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-<h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a name="addinputfilter" id="addinputfilter">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Maps filename extensions
+<h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a name="addinputfilter" id="addinputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Maps filename extensions
     to the filters that will process
     client requests</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddInputFilter
@@ -300,8 +301,8 @@ use:</p>
     case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Maps the given filename extension
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Maps the given filename extension
 to the specified content language</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddLanguage
     <em>MIME-lang extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -349,8 +350,8 @@ to the specified content language</td></tr><tr><th><a href="directive-dict.html#
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter" id="addoutputfilter">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>maps the filename
+<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter" id="addoutputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>maps the filename
 extensions to the filters that will process
 responses from the server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddOutputFilter
@@ -387,8 +388,8 @@ responses from the server</td></tr><tr><th><a href="directive-dict.html#Syntax">
     case-insensitive, and the extension may be specified with or
     without a leading dot.</p>
 
-<h3>See also</h3><ul><li><code class="directive"><a href="#removeoutputfilter">RemoveOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Maps the given filename extensions
+<h3>See also</h3><ul><li><code class="directive"><a href="#removeoutputfilter">RemoveOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Maps the given filename extensions
 onto the specified content type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AddType <em>MIME-type
     extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -419,8 +420,8 @@ onto the specified content type</td></tr><tr><th><a href="directive-dict.html#Sy
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-<h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage" id="defaultlanguage">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets all files in the given scope to the 
+<h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code></li><li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage" id="defaultlanguage">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets all files in the given scope to the 
 specified language</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>DefaultLanguage
     <em>MIME-lang</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -452,8 +453,8 @@ specified language</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 DefaultLanguage en
 </code></p></div>
 
-<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The types of files that will be included when 
+<h3>See also</h3><ul><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The types of files that will be included when 
 searching for a matching file with MultiViews</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>MultiviewsMatch
     <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -496,8 +497,8 @@ searching for a matching file with MultiViews</td></tr><tr><th><a href="directiv
 MultiviewsMatch Handlers Filters
 </code></p></div>
 
-<h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Removes any character set associations for a set of file
+<h3>See also</h3><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Removes any character set associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveCharset
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -519,8 +520,8 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 RemoveCharset .html .shtml
 </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding" id="removeencoding">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Removes any content encoding associations for a set of file
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding" id="removeencoding">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Removes any content encoding associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveEncoding
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -556,8 +557,8 @@ AddType text/plain .asc
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a name="removehandler" id="removehandler">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Removes any handler associations for a set of file
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a name="removehandler" id="removehandler">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Removes any handler associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveHandler
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -588,8 +589,8 @@ RemoveHandler .html
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Removes any input filter associations for a set of file
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Removes any input filter associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveInputFilter
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -608,8 +609,8 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Removes any language associations for a set of file
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Removes any language associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveLanguage
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -627,8 +628,8 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter" id="removeoutputfilter">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Removes any output filter associations for a set of file
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter" id="removeoutputfilter">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Removes any output filter associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveOutputFilter
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -651,8 +652,8 @@ extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     <div class="example"><h3>Example</h3><p><code>
     RemoveOutputFilter shtml
     </code></p></div>
-<h3>See also</h3><ul><li><code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveType" id="RemoveType">RemoveType</a> <a name="removetype" id="removetype">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Removes any content type associations for a set of file
+<h3>See also</h3><ul><li><code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RemoveType" id="RemoveType">RemoveType</a> <a name="removetype" id="removetype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Removes any content type associations for a set of file
 extensions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>RemoveType
     <em>extension</em> [<em>extension</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -684,8 +685,8 @@ RemoveType .cgi
 
     <p>The <em>extension</em> argument is case-insensitive, and can
     be specified with or without a leading dot.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>The location of the mime.types file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>The location of the mime.types file</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>TypesConfig <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>TypesConfig conf/mime.types</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:

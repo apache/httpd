@@ -4,17 +4,18 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>mod_auth_dbm - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_auth_dbm</h1><table class="module"><tr><th>Description:
-                </th><td>Provides for user authentication using DBM
+      --><title>mod_auth_dbm - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Modules</a></div><div id="page-content"><div id="preamble"><h1>Apache Module mod_auth_dbm</h1><table class="module"><tr><th><a href="module-dict.html#Description">Description:
+                  </a></th><td>Provides for user authentication using DBM
     files</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Extension</td></tr><tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:
-                  </a></th><td>auth_dbm_module</td></tr></table><h3>Summary</h3>
+                  </a></th><td>auth_dbm_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
+                  </a></th><td>mod_auth_dbm.c</td></tr></table><h3>Summary</h3>
     <p>This module provides for HTTP Basic Authentication, where
     the usernames and passwords are stored in DBM type database
     files. It is an alternative to the plain text password files
     provided by <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdbmauthoritative">AuthDBMAuthoritative</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmgroupfile">AuthDBMGroupFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmtype">AuthDBMType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmuserfile">AuthDBMUserFile</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMAuthoritative" id="AuthDBMAuthoritative">AuthDBMAuthoritative</a> <a name="authdbmauthoritative" id="authdbmauthoritative">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets whether authentication and authorization will be
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdbmauthoritative">AuthDBMAuthoritative</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmgroupfile">AuthDBMGroupFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmtype">AuthDBMType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmuserfile">AuthDBMUserFile</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMAuthoritative" id="AuthDBMAuthoritative">AuthDBMAuthoritative</a> <a name="authdbmauthoritative" id="authdbmauthoritative">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets whether authentication and authorization will be
 passwed on to lower level modules</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthDBMAuthoritative on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthDBMAuthoritative on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -58,8 +59,8 @@ new module ordering techniques in Apache 2.0</div>
     is really what you want; Generally it is easier to just secure
     a single .htpasswd file, than it is to secure a database which
     might have more access interfaces.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets the name of the database file containing the list
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets the name of the database file containing the list
 of user groups for authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthDBMGroupFile <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
@@ -108,8 +109,8 @@ AuthDBMUserFile /www/userbase
     DBM file after another colon; it is ignored by the authentication
     module. This is what www.telescope.org uses for its combined
     password and group database.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets the type of database file that is used to
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets the type of database file that is used to
 store passwords</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthDBMType default|SDBM|GDBM|NDBM|DB</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthDBMType default</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
@@ -126,8 +127,8 @@ availability of other types of database files also depends on
 
 <p>It is crucial that whatever program you use to create your password
 files is configured to use the same type of database.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">Directive</a></h2><table class="directive"><tr><th>Description: 
-            </th><td>Sets thename of a database file containing the list of users and
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+              </a></th><td>Sets thename of a database file containing the list of users and
 passwords for authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>AuthDBMUserFile <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
