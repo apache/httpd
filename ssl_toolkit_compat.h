@@ -105,6 +105,12 @@
 
 #define modssl_set_cipher_list SSL_set_cipher_list
 
+#define EVP_PKEY_reference_inc(pkey) \
+   CRYPTO_add(&((pkey)->references), +1, CRYPTO_LOCK_X509_PKEY)
+
+#define X509_reference_inc(cert) \
+   CRYPTO_add(&((cert)->references), +1, CRYPTO_LOCK_X509)
+
 #define HAVE_SSL_RAND_EGD /* since 9.5.1 */
 
 #define HAVE_SSL_X509V3_EXT_d2i

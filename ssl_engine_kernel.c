@@ -1578,9 +1578,9 @@ static void modssl_proxy_info_log(server_rec *s,
  */
 #define modssl_set_cert_info(info, cert, pkey) \
     *cert = info->x509; \
+    X509_reference_inc(*cert); \
     *pkey = info->x_pkey->dec_pkey; \
-    CRYPTO_add(&((*cert)->references), +1, CRYPTO_LOCK_X509_PKEY); \
-    CRYPTO_add(&((*pkey)->references), +1, CRYPTO_LOCK_X509_PKEY)
+    EVP_PKEY_reference_inc(*pkey)
 
 int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey) 
 {
