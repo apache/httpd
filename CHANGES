@@ -22,11 +22,6 @@ Changes with Apache 2.1.0-dev
   *) mod_ssl: Add SSL_CLIENT_V_REMAIN variable, representing the
      number of days until the client cert expires.  [Joe Orton]
 
-  *) SECURITY: CAN-2004-0751 (cve.mitre.org)
-     mod_ssl: Fix a segfault in the SSL input filter which could be
-     triggered if using "speculative" mode, for instance by a 
-     proxy request to an SSL server.  PR 30134  [Joe Orton]
-
   *) Add test_config hook, run only if httpd is invoked using -t.
      [Joe Orton]
 
@@ -147,11 +142,6 @@ Changes with Apache 2.1.0-dev
 
   *) mod_headers: Allow 'echo' also for ErrorHeaders.  [André Malo]
 
-  *) mod_cgi: Handle output on stderr during script execution on Unix
-     platforms; preventing deadlock when stderr output fills pipe buffer.
-     Also fixes case where stderr from nph- scripts could be lost.
-     PR 22030, 18348.  [Joe Orton, Jeff Trawick]
-
   *) mod_deflate: New option for DEFLATE output file (force-gzip),
      new output filter 'INFLATE' for uncompressing responses.
      [Nick Kew <Nick at WebThing dot com>, Ian Holsman]
@@ -179,9 +169,6 @@ Changes with Apache 2.1.0-dev
      stack size for threads which handle client connections.  Required 
      for some third-party modules on platforms with small default 
      thread stack size.  [Jeff Trawick]
-
-  *) mod_rewrite: Support for recognizing SSL variables in RewriteCond
-     using the new "SSL:" format.  [Joe Orton, Madhusudan Mathihalli]
 
   *) minor mod_auth_basic and mod_auth_digest sync.  mod_auth_basic
      now populates r->user with the (possibly unauthenticated) user,
@@ -408,6 +395,19 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) SECURITY: CAN-2004-0751 (cve.mitre.org)
+     mod_ssl: Fix a segfault in the SSL input filter which could be
+     triggered if using "speculative" mode, for instance by a 
+     proxy request to an SSL server.  PR 30134.  [Joe Orton]
+
+  *) mod_rewrite: Add %{SSL:...} and %{HTTPS} variable lookups.
+     PR 30464.  [Joe Orton, Madhusudan Mathihalli]
+
+  *) mod_ssl: Add new 'ssl_is_https' optional function.  [Joe Orton]
+
+  *) Prevent CGI script output which includes a Content-Range header
+     from being passed through the byterange filter.  [Joe Orton]
 
   *) Satisfy directives now can be influenced by a surrounding <Limit>
      container.  PR 14726.  [André Malo]
