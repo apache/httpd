@@ -58,19 +58,14 @@ for HTTP Basic authentication.</description>
 
         <ul>
           <li><a href="#reqvaliduser">require valid-user</a></li>
-
           <li><a href="#requser">require user</a></li>
-
           <li><a href="#reqgroup">require group</a></li>
-
           <li><a href="#reqdn">require dn</a></li>
         </ul>
       </li>
 
       <li><a href="#examples">Examples</a></li>
-
       <li><a href="#usingtls">Using TLS</a></li>
-
       <li><a href="#usingssl">Using SSL</a></li>
 
       <li>
@@ -79,7 +74,6 @@ for HTTP Basic authentication.</description>
 
         <ul>
           <li><a href="#howitworks">How It Works</a></li>
-
           <li><a href="#fpcaveats">Caveats</a></li>
         </ul>
       </li>
@@ -447,7 +441,8 @@ require valid-user
     FrontPage with mod_auth_ldap</title>
 
     <p>Normally, FrontPage uses FrontPage-web-specific user/group
-    files (i.e., the <module>mod_auth</module> module) to handle all
+    files (i.e., the <module>mod_authn_file</module> and
+    <module>mod_authz_groupfile</module> modules) to handle all
     authentication. Unfortunately, it is not possible to just
     change to LDAP authentication by adding the proper directives,
     because it will break the <em>Permissions</em> forms in
@@ -496,8 +491,8 @@ AuthLDAPFrontPageHack  on
     <ul>
       <li>When choosing the LDAP URL, the attribute to use for
       authentication should be something that will also be valid
-      for putting into a <module>mod_auth</module> user file. The user ID is
-      ideal for this.</li>
+      for putting into a <module>mod_authn_file</module> user file.
+      The user ID is ideal for this.</li>
 
       <li>When adding users via FrontPage, FrontPage administrators
       should choose usernames that already exist in the LDAP
@@ -507,9 +502,12 @@ AuthLDAPFrontPageHack  on
       LDAP database, and not against the password in the local user
       file. This could cause confusion for web administrators.</li>
 
-      <li>Apache must be compiled with <module>mod_auth</module> in order to
+      <!-- XXX is that true? was mod_auth before the aaa change -->
+      <li>Apache must be compiled with <module>mod_auth_basic</module>,
+      <module>mod_authn_file</module> and
+      <module>mod_authz_groupfile</module> in order to
       use FrontPage support. This is because Apache will still use
-      the <module>mod_auth</module> group file for determine the extent of a
+      the <module>mod_authz_groupfile</module> group file for determine the extent of a
       user's access to the FrontPage web.</li>
 
       <li>The directives must be put in the <code>.htaccess</code>
@@ -517,7 +515,7 @@ AuthLDAPFrontPageHack  on
       type="section">Location</directive> or <directive module="core"
       type="section">Directory</directive> directives won't work. This
       is because <module>mod_auth_ldap</module> has to be able to grab
-      the <directive module="mod_auth">AuthUserFile</directive>
+      the <directive module="mod_authn_file">AuthUserFile</directive>
       directive that is found in FrontPage <code>.htaccess</code>
       files so that it knows where to look for the valid user list. If
       the <module>mod_auth_ldap</module> directives aren't in the same

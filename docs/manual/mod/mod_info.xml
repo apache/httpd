@@ -25,7 +25,7 @@ SetHandler server-info<br />
     <p>You may wish to add a 
     <directive module="core">&lt;Limit&gt;</directive> 
     clause inside the 
-    <directive module="core">&lt;location&gt;</directive>
+    <directive module="core">&lt;Location&gt;</directive>
     directive to limit access to your server configuration 
     information.</p>
 
@@ -74,9 +74,11 @@ host</context></contextlist>
     the module <em>module-name</em>. Example:</p>
 
 <example>
-AddModuleInfo mod_authn_file.c 'See &lt;A \<br />
-  HREF="http://www.apache.org/docs-2.0/mod/mod_authn_file.html"&gt;\<br />
-  http://www.apache.org/docs-2.0/mod/mod_authn_file.html&lt;/A&gt;'
+  AddModuleInfo mod_authn_file.c 'See &lt;a \<br />
+  <indent>
+    href="http://www.apache.org/docs-2.0/mod/mod_authn_file.html"&gt;\<br />
+    http://www.apache.org/docs-2.0/mod/mod_authn_file.html&lt;/a&gt;'
+  </indent>
 </example>
 </usage>
 
