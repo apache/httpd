@@ -662,7 +662,7 @@ static void fix_hostname(request_rec *r)
     char *host = ap_palloc(r->pool, strlen(r->hostname) + 1);
     const char *src;
     char *dst;
-    char *port_str;
+    const char *port_str;
 
     /* check and copy the host part */
     src = r->hostname;
