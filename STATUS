@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 15:04:12 $]
+Last modified at [$Date: 2002/02/01 16:53:07 $]
 
 Release:
 
@@ -52,7 +52,8 @@ RELEASE SHOWSTOPPERS:
                   a 0 status on startup failure, whether it spawns
                   or not, before doing any work.  A script will
                   incorrectly think it successfully daemonised."
-        Not a showstopper: trawick, stoddard, Jim
+        Showstopper: Ken
+        Not a showstopper: trawick, stoddard, Jim, Justin
 
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
