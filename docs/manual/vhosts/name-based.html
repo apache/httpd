@@ -107,15 +107,18 @@ For example, if local users are
 familiar with typing "www" or "www.foobar" then you will need to add
 <CODE>ServerAlias www www.foobar</CODE>.  It isn't possible for the
 server to know what domain the client uses for their name resolution
-because the client doesn't provide that information in the request.</P>
+because the client doesn't provide that information in the request.
+The <CODE>ServerAlias</CODE> directive is generally a way to have different
+hostnames pointing to the same virtual host.
+</P>
 
 <H2>Compatibility with Older Browsers</H2>
 
 <P>As mentioned earlier, there are still some clients in use who
 do not send the required data for the name-based virtual hosts to work
 properly. These clients will always be sent the pages from the
-<CITE>primary</CITE> name-based virtual host (the first virtual host
-appearing in the configuration file for a specific IP address).</P>
+first virtual host listed for that IP address (the
+<CITE>primary</CITE> name-based virtual host).</P>
 
 <P>There is a possible workaround with the
 <A HREF="../mod/core.html#serverpath"><CODE>ServerPath</CODE></A>
