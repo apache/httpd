@@ -172,12 +172,12 @@ int sendwithtimeout(int sock, const char *buf, int len, int flags)
 			    
 			    retry=1;
 #ifdef NETWARE
-                ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
-				    "select claimed we could write, but in fact we couldn't.");
-				ThreadSwitchWithDelay();
+                            ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
+                                         "select claimed we could write, but in fact we couldn't.");
+                            ThreadSwitchWithDelay();
 #else
-                ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
-				    "select claimed we could write, but in fact we couldn't. This is a bug in Windows.");
+                            ap_log_error(APLOG_MARK,APLOG_DEBUG,NULL,
+                                         "select claimed we could write, but in fact we couldn't. This is a bug in Windows.");
 			    Sleep(100);
 #endif
 			}
@@ -250,8 +250,10 @@ static int ap_read(BUFF *fb, void *buf, int nbyte)
     
 #ifdef WIN32
     if (fb->hFH != INVALID_HANDLE_VALUE) {
-        if (!ReadFile(fb->hFH,buf,nbyte,&rv,NULL))
+        if (!ReadFile(fb->hFH,buf,nbyte,&rv,NULL)) {
+            errno = GetLastError();
             rv = -1;
+        }
     }
     else
 #endif
@@ -274,9 +276,9 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 	rv = ap_read(fb, buf, nbyte);
 #elif defined (BEOS)
     if (fb->flags & B_SOCKET) {
-    rv = recv(fb->fd_in, buf, nbyte, 0);
+        rv = recv(fb->fd_in, buf, nbyte, 0);
     } else
-    rv = ap_read(fb,buf,nbyte);
+        rv = ap_read(fb,buf,nbyte);
 #elif defined(TPF)
     fd_set fds;
     struct timeval tv;
@@ -293,7 +295,7 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
             rv = ap_read(fb, buf, nbyte);
     }
     else
-    rv = ap_read(fb, buf, nbyte);
+        rv = ap_read(fb, buf, nbyte);
 #else
     rv = ap_read(fb, buf, nbyte);
 #endif /* WIN32 */
@@ -307,8 +309,10 @@ static int ap_write(BUFF *fb, const void *buf, int nbyte)
     
 #ifdef WIN32
     if (fb->hFH != INVALID_HANDLE_VALUE) {
-        if (!WriteFile(fb->hFH,buf,nbyte,&rv,NULL))
-          rv = -1;
+        if (!WriteFile(fb->hFH,buf,nbyte,&rv,NULL)) {
+            errno = GetLastError();
+            rv = -1;
+        }
     }
     else
 #endif
@@ -335,9 +339,9 @@ static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
 	rv = ap_write(fb, buf, nbyte);
 #elif defined(BEOS)
     if(fb->flags & B_SOCKET) {
-    rv = send(fb->fd, buf, nbyte, 0);
+        rv = send(fb->fd, buf, nbyte, 0);
     } else 
-    rv = ap_write(fb, buf,nbyte);
+        rv = ap_write(fb, buf,nbyte);
 #else
     rv = ap_write(fb, buf, nbyte);
 #endif /* WIN32 */
@@ -1457,8 +1461,8 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
     }
 #ifndef NETWARE
     else if (fb->hFH != INVALID_HANDLE_VALUE) {
-	    rc2 = ap_pcloseh(fb->pool, fb->hFH);
-	    rc3 = 0;
+        rc2 = ap_pcloseh(fb->pool, fb->hFH);
+        rc3 = 0;
     }
 #endif
     else {
