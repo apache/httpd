@@ -11,6 +11,9 @@
     <html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
       <xsl:call-template name="head"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <body id="module-index">
         <xsl:call-template name="top"/>  
 
@@ -19,6 +22,9 @@
             <xsl:value-of select="title"/>
           </h1>
           
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <xsl:apply-templates select="summary" />
         </div>
 

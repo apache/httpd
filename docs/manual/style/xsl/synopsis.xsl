@@ -12,10 +12,24 @@
     <html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
       <xsl:call-template name="head"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <body>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <xsl:call-template name="top"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <div id="page-content">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <div id="preamble">
             <h1>
               <xsl:if test="status='Obsolete'">
@@ -28,12 +42,16 @@
               <xsl:value-of select="name"/>
             </h1>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             <!-- Description and module-headers -->
             <table class="module">
               <tr>
                 <th>
                   <a href="module-dict.html#Description">
-                    <xsl:value-of select="$messages/message[@name='description']"/>:
+                    <xsl:value-of select="$messages/message[@name='description']"/>
+                    <xsl:text>:</xsl:text>
                   </a>
                 </th>
                 <td>
@@ -41,10 +59,14 @@
                 </td>
               </tr>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               <tr>
                 <th>
                   <a href="module-dict.html#Status">
-                    <xsl:value-of select="$messages/message[@name='status']"/>:
+                    <xsl:value-of select="$messages/message[@name='status']"/>
+                    <xsl:text>:</xsl:text>
                   </a>
                 </th>
                 <td>
@@ -62,10 +84,15 @@
               </tr>
 
               <xsl:if test="identifier">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               <tr>
                 <th>
                   <a href="module-dict.html#ModuleIdentifier">
-                    <xsl:value-of select="$messages/message[@name='moduleidentifier']"/>:
+                    <xsl:value-of select="$messages/message[@name='moduleidentifier']"/>
+                    <xsl:text>:</xsl:text>
                   </a> 
                 </th>
                 <td>
@@ -75,10 +102,15 @@
               </xsl:if>
 
               <xsl:if test="sourcefile">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               <tr>
                 <th>
                   <a href="module-dict.html#SourceFile">
-                    <xsl:value-of select="$messages/message[@name='sourcefile']"/>:
+                    <xsl:value-of select="$messages/message[@name='sourcefile']"/>
+                    <xsl:text>:</xsl:text>
                   </a> 
                 </th>
                 <td>
@@ -88,10 +120,15 @@
               </xsl:if>
 
               <xsl:if test="compatibility">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               <tr>
                 <th>
                   <a href="module-dict.html#Compatibility">
-                    <xsl:value-of select="$messages/message[@name='compatibility']"/>:
+                    <xsl:value-of select="$messages/message[@name='compatibility']"/>
+                    <xsl:text>:</xsl:text>
                   </a>
                 </th>
                 <td>
@@ -101,15 +138,24 @@
               </xsl:if>
             </table>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             <!-- Summary of module features/usage (1 to 3 paragraphs, optional) -->
             <xsl:if test="summary">
               <h3>
                 <xsl:value-of select="$messages/message[@name='summary']"/>
               </h3>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               <xsl:apply-templates select="summary"/>
             </xsl:if>
           </div> <!-- /preamble -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
           <div id="quickview">
 
@@ -119,8 +165,15 @@
               <xsl:value-of select="$messages/message[@name='directives']"/>
             </h3>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             <xsl:if test="directivesynopsis">
               <ul id="toc">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                 <xsl:for-each select="directivesynopsis">
                   <xsl:sort select="name"/>
                   <xsl:variable name="lowername" select="translate(name, $uppercase, $lowercase)"/>
@@ -160,19 +213,35 @@
                   </xsl:if>
                 </xsl:for-each>
               </ul> <!-- /toc -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             </xsl:if>
 
             <xsl:if test="not(directivesynopsis)">
               <p>
                 <xsl:value-of select="$messages/message[@name='nodirectives']"/>
               </p>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             </xsl:if>
 
             <xsl:if test="section">
               <h3>
                 <xsl:value-of select="$messages/message[@name='topics']"/>
               </h3>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               <ul id="topics">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                 <xsl:apply-templates select="section" mode="index"/>
               </ul>
             </xsl:if>
@@ -182,19 +251,36 @@
                   <xsl:value-of select="$messages/message[@name='seealso']"/>
               </h3>
             
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               <ul class="seealso">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                 <xsl:for-each select="seealso">
                   <li>
                     <xsl:apply-templates/>
                   </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                 </xsl:for-each>
               </ul>
             </xsl:if>
 
           </div> <!-- /quickview -->
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <!-- Sections of documentation about the module as a whole -->
           <xsl:apply-templates select="section"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
           <!-- Directive documentation -->
           <xsl:apply-templates select="directivesynopsis">
@@ -203,7 +289,14 @@
 
         </div> <!-- /page-content -->
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <xsl:call-template name="bottom"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       </body>
     </html>
   </xsl:template>
@@ -226,6 +319,9 @@
 
       <xsl:call-template name="toplink"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <div class="directive-section">
         <xsl:variable name="lowername" select="translate(name, $uppercase, $lowercase)"/>
 
@@ -243,12 +339,20 @@
           </a>
         </h2>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <!-- Directive header -->
         <table class="directive">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <tr>
             <th>
               <a href="directive-dict.html#Description">
-                <xsl:value-of select="$messages/message[@name='description']"/>: 
+                <xsl:value-of select="$messages/message[@name='description']"/>
+                <xsl:text>:</xsl:text>
               </a>
             </th>
             <td>
@@ -256,10 +360,14 @@
             </td>
           </tr>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <tr>
             <th>
               <a href="directive-dict.html#Syntax">
-                <xsl:value-of select="$messages/message[@name='syntax']"/>:
+                <xsl:value-of select="$messages/message[@name='syntax']"/>
+                <xsl:text>:</xsl:text>
               </a> 
             </th>
             <td>
@@ -270,10 +378,15 @@
           </tr>
 
           <xsl:if test="default">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <tr>
             <th>
               <a href="directive-dict.html#Default">
-                <xsl:value-of select="$messages/message[@name='default']"/>: 
+                <xsl:value-of select="$messages/message[@name='default']"/>
+                <xsl:text>:</xsl:text>
               </a> 
             </th>
             <td>
@@ -284,10 +397,14 @@
           </tr>
           </xsl:if>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <tr>
             <th>
               <a href="directive-dict.html#Context">
-                <xsl:value-of select="$messages/message[@name='context']"/>:
+                <xsl:value-of select="$messages/message[@name='context']"/>
+                <xsl:text>:</xsl:text>
               </a> 
             </th>
             <td>
@@ -296,10 +413,15 @@
           </tr>
 
           <xsl:if test="override">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <tr>
             <th>
               <a href="directive-dict.html#Override">
-                <xsl:value-of select="$messages/message[@name='override']"/>:
+                <xsl:value-of select="$messages/message[@name='override']"/>
+                <xsl:text>:</xsl:text>
               </a> 
             </th>
             <td>
@@ -308,10 +430,14 @@
           </tr>
           </xsl:if>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <tr>
             <th>
               <a href="directive-dict.html#Status">
-                <xsl:value-of select="$messages/message[@name='status']"/>:
+                <xsl:value-of select="$messages/message[@name='status']"/>
+                <xsl:text>:</xsl:text>
               </a> 
             </th>
             <td>
@@ -319,10 +445,14 @@
             </td>
           </tr>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <tr>
             <th>
               <a href="directive-dict.html#Module">
-                <xsl:value-of select="$messages/message[@name='module']"/>:
+                <xsl:value-of select="$messages/message[@name='module']"/>
+                <xsl:text>:</xsl:text>
               </a> 
             </th>
             <td>
@@ -337,10 +467,15 @@
           </tr>
 
           <xsl:if test="compatibility">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <tr>
             <th>
               <a href="directive-dict.html#Compatibility">
-                <xsl:value-of select="$messages/message[@name='compatibility']"/>:
+                <xsl:value-of select="$messages/message[@name='compatibility']"/>
+                <xsl:text>:</xsl:text>
               </a> 
             </th>
             <td>
@@ -348,25 +483,51 @@
             </td>
           </tr>
           </xsl:if>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         </table>
 
         <xsl:apply-templates select="usage"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
         <xsl:if test="seealso">
           <h3>
             <xsl:value-of select="$messages/message[@name='seealso']"/>
           </h3>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <ul>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             <xsl:for-each select="seealso">
               <li>
                 <xsl:apply-templates/>
               </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             </xsl:for-each>
           </ul>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         </xsl:if>
 
       </div> <!-- /directive-section -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
     </xsl:if>
   </xsl:template>
   <!-- /directivesynopsis -->

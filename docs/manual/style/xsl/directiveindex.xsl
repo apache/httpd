@@ -12,6 +12,9 @@
     <html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
       <xsl:call-template name="head"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <body id="directive-index">
         <xsl:call-template name="top"/>
 
@@ -29,7 +32,13 @@
             <xsl:value-of select="title"/>
           </h1>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <xsl:apply-templates select="summary" />
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
           <!-- letter line -->
           <p class="letters">
@@ -45,8 +54,15 @@
 
         </div> <!-- /preamble -->
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <div id="directive-list">
           <ul>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             <xsl:call-template name="dindex-of-letter">
               <xsl:with-param name="letters-todo" select="$start-letters"/>
               <xsl:with-param name="directives" select="$directives"/>
@@ -54,7 +70,14 @@
           </ul>
         </div> <!-- /directive-list -->
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <xsl:call-template name="bottom"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       </body>
     </html>
   </xsl:template>

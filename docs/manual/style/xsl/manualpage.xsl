@@ -12,6 +12,9 @@
     <html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
       <xsl:call-template name="head"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <body id="manual-page">
         <xsl:call-template name="top"/>          
 
@@ -24,6 +27,9 @@
             <xsl:apply-templates select="summary"/>
           </div> <!-- /preamble -->
           
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <xsl:if test="count(section) > 1 or seealso">
             <div id="quickview">
               <xsl:if test="count(section) > 1">
@@ -46,12 +52,23 @@
               </xsl:if>
 
 	    </div> <!-- /quickview -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           </xsl:if>
 
           <xsl:apply-templates select="section"/>
         </div> <!-- /page-content -->
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <xsl:call-template name="bottom"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       </body>
     </html>
   </xsl:template>

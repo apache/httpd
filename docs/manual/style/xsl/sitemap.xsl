@@ -16,8 +16,18 @@
     <html xml:lang="{$messages/@lang}" lang="{$messages/@lang}">
       <xsl:call-template name="head"/>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       <body id="manual-page">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <xsl:call-template name="top"/>          
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
 
         <div id="page-content">
           <div id="preamble">        
@@ -25,15 +35,25 @@
               <xsl:value-of select="title"/>
             </h1>
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
             <xsl:apply-templates select="summary"/>
           </div> <!-- /preamble -->
           
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           <xsl:if test="count(category) > 1 or seealso">
             <div id="quickview">
               <xsl:if test="count(category) > 1">
 
                 <!-- category index -->
                 <ul id="toc">
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                   <xsl:for-each select="category">
                     <xsl:if test="@id">
                       <li>
@@ -43,6 +63,10 @@
                           <xsl:apply-templates select="title" mode="print"/>
                         </a>
                       </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                     </xsl:if>
 
                     <xsl:if test="not(@id)">
@@ -51,31 +75,65 @@
                         <xsl:text> </xsl:text>
                         <xsl:apply-templates select="title" mode="print"/>
                       </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                     </xsl:if>
                   </xsl:for-each>
                 </ul>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               </xsl:if>
 
               <xsl:if test="seealso">
                 <h3>
                   <xsl:value-of select="$messages/message[@name='seealso']"/>
                 </h3>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                 <ul class="seealso">
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                   <xsl:for-each select="seealso">
                     <li>
                       <xsl:apply-templates/>
                     </li>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
                   </xsl:for-each>
                 </ul>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
               </xsl:if>
 
 	    </div> <!-- /quickview -->
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
           </xsl:if>
 
           <xsl:apply-templates select="category"/>
         </div> <!-- /page-content -->
 
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
         <xsl:call-template name="bottom"/>
+
+<xsl:text>
+</xsl:text> <!-- insert line break -->
+
       </body>
     </html>
   </xsl:template>
