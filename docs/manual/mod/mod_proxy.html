@@ -83,6 +83,8 @@ into a new module, mod_cache.
 <LI><A HREF="#noproxy">NoProxy</A>
 <LI><A HREF="#proxydomain">ProxyDomain</A>
 <LI><A HREF="#proxyvia">ProxyVia</A>
+<LI><A HREF="#proxyhttpoverridereturnederrors">ProxyHTTPOverrideReturnedErrors</A>
+
 </UL>
 
 <H2><A NAME="configs">Common configuration topics</A></H2>
@@ -861,6 +863,46 @@ additionally have the Apache server version shown as a <SAMP>Via:</SAMP> comment
 <LI>If set to <EM>block</EM>, every proxy request will have all its
 <SAMP>Via:</SAMP> header lines removed. No new <SAMP>Via:</SAMP> header will be generated.
 </UL>
+
+<hr>
+
+<H2><A NAME="proxyhttpoverridereturnederrors">ProxyHTTPOverrideReturnedErrors</A> directive</H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ProxyHTTPOverrideReturnedErrors<EM>on</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <EM>off</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_proxy<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ProxyHTTPOverrideReturnedErrors
+Apache 2.0 and later.<P>
+
+This directive is usefull for reverse-proxy setups, where you wan't to 
+have a common look and feel on the error pages seen by the end user. 
+This also allows for included files (via mod_include's SSI) to get
+the error code and act accordingly. (default behavior would display
+the error page of the proxied server, turning this on shows the SSI
+Error message )
 
 <P>
 
