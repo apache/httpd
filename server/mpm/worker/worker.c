@@ -823,7 +823,17 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
     my_info->pid = my_child_num;
     my_info->tid = i;
     my_info->sd = 0;
-    apr_thread_create(&listener, thread_attr, listener_thread, my_info, pchild);
+    rv = apr_thread_create(&listener, thread_attr, listener_thread,
+                           my_info, pchild);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
+                     "apr_thread_create: unable to create worker thread");
+        /* In case system resources are maxxed out, we don't want
+         * Apache running away with the CPU trying to fork over and
+         * over and over again if we exit. */
+        sleep(10);
+        clean_child_exit(APEXIT_CHILDFATAL);
+    }
     while (1) {
         /* ap_threads_per_child does not include the listener thread */
         for (i = 0; i < ap_threads_per_child; i++) {
@@ -833,7 +843,7 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
                 continue;
             }
 
-               my_info = (proc_info *)malloc(sizeof(proc_info));
+            my_info = (proc_info *)malloc(sizeof(proc_info));
             if (my_info == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, errno, ap_server_conf,
                              "malloc: out of memory");
@@ -843,15 +853,17 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
             my_info->tid = i;
             my_info->sd = 0;
         
-              /* We are creating threads right now */
-            ap_update_child_status_from_indexes(my_child_num, i, SERVER_STARTING, NULL);
+            /* We are creating threads right now */
+            ap_update_child_status_from_indexes(my_child_num, i,
+                                                SERVER_STARTING, NULL);
             /* We let each thread update its own scoreboard entry.  This is
              * done because it lets us deal with tid better.
              */
-            if ((rv = apr_thread_create(&threads[i], thread_attr, 
-                                        worker_thread, my_info, pchild))) {
+            rv = apr_thread_create(&threads[i], thread_attr, 
+                                   worker_thread, my_info, pchild);
+            if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
-                           "apr_thread_create: unable to create worker thread");
+                    "apr_thread_create: unable to create worker thread");
                 /* In case system resources are maxxed out, we don't want
                    Apache running away with the CPU trying to fork over and
                    over and over again if we exit. */
@@ -954,8 +966,10 @@ static void child_main(int child_num_arg)
     ts->child_num_arg = child_num_arg;
     ts->threadattr = thread_attr;
 
-    if ((rv = apr_thread_create(&start_thread_id, thread_attr, start_threads, 
-                                ts, pchild))) {
+    
+    rv = apr_thread_create(&start_thread_id, thread_attr, start_threads,
+                           ts, pchild);
+    if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
                      "apr_thread_create: unable to create worker thread");
         /* In case system resources are maxxed out, we don't want
