@@ -785,6 +785,9 @@ static void fix_hostname(request_rec *r)
             else if (*dst == '/' || *dst == '\\') {
                 goto bad;
             }
+            else if (apr_isalpha(*dst)) {
+                *dst = apr_tolower(*dst);
+            }
         }
         /* strip trailing gubbins */
         if (dst > host && dst[-1] == '.') {
