@@ -105,9 +105,8 @@ int ap_proxy_connect_handler(request_rec *r, char *url,
     apr_pool_t *p = r->pool;
     apr_socket_t *sock;
     apr_status_t err, rv;
+    apr_size_t i, o, nbytes;
     char buffer[HUGE_STRING_LEN];
-    int i, o;
-    apr_size_t nbytes;
 
     apr_pollfd_t *pollfd;
     apr_int32_t pollcnt;
