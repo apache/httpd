@@ -346,7 +346,6 @@ do
             customized_includedir=1
             ;;
         --compat) 
-            prefix='/usr/local/apache'
             exec_prefix='$prefix'
             bindir='$exec_prefix/bin'
             sbindir='$exec_prefix/bin'

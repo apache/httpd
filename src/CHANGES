@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Because /usr/local/apache is the default prefix the ``configure
+     --compat'' option no longer has to set prefix, again. This way the
+     --compat option honors a leading --prefix option. [Lars Eilebrecht]
+
   *) PORT: Cast the first argument of dlopen() in ap_os_dso_load()
      to `char *' under OSF1 and FreeBSD 2.x where it is defined this way
      to avoid "discard const" warnings. [Ralf S. Engelschall]
