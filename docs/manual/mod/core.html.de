@@ -30,6 +30,7 @@ Servers</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authname">AuthName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authtype">AuthType</a></li>
@@ -309,6 +310,39 @@ zuordnen</td></tr>
 <li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li>
 <li><code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code></li>
 <li><a href="../filter.html">Filter</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a>-<a name="allowencodedslashes" id="allowencodedslashes">Direktive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Legt fest, ob kodierte Pfadtrennzeichen durchgereicht werden
+dürfen</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowEncodedSlashes On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>AllowEncodedSlashes Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Apache 2.0.46</td></tr>
+</table>
+    <p>Die <code class="directive">AllowEncodedSlashes</code>-Direktive erlaubt die
+    Verwendung von URLs, welche kodierte Pfadtrennzeichen (<code>%2F</code>
+    für <code>/</code> und auf entsprechenden Systemen zusätzlich
+    <code>%5C</code> für <code>\</code>) enthalten. Normalerweise werden
+    derartige URLs mit einem 404-Fehler (Nicht gefunden) abgewiesen.</p>
+
+    <p><code class="directive">AllowEncodedSlashes</code> <code>On</code> ist
+    vor allem in Verbindung mit <code>PATH_INFO</code> hilfreich.</p>
+
+    <div class="note"><h3>Anmerkung</h3>
+      <p>Das Erlauben von Schrägstrichen impliziert <em>nicht</em> die 
+      <em>Dekodierung</em>. Vorkommen von <code>%2F</code> oder <code>%5C</code>
+      (<em>nur</em> auf entsprechenden Systemen) werden unverändert in der
+      ansonsten dekodierten URL belassen.</p>
+    </div>
+
+<h3>Siehe auch</h3>
+<ul>
+<li><code class="directive"><a href="#acceptpathinfo">AcceptPathInfo</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

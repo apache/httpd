@@ -299,7 +299,7 @@ response without an explicit character set</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine whether encoded path separators in URLs are allowed to
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines, whether encoded path separators in URLs are allowed to
 be passed through</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowEncodedSlashes On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowEncodedSlashes Off</code></td></tr>
