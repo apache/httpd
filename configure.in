@@ -34,10 +34,6 @@ dnl
 dnl ## Preload our OS configuration
 APR_PRELOAD
 
-dnl ## Run configure for packages Apache uses
-APACHE_RUN_SUBDIR_CONFIG_NOW(lib/apr)
-. ./lib/apr/APRVARS
-
 dnl ## Check for programs
 
 AC_PROG_AWK
@@ -158,6 +154,16 @@ AC_ARG_WITH(program-name,
 
 APACHE_FAST_OUTPUT(Makefile ap/Makefile lib/Makefile main/Makefile)
 APACHE_FAST_OUTPUT(modules/Makefile os/Makefile support/Makefile lib/pcre/Makefile)
+
+dnl ## Run configure for packages Apache uses
+dnl ## This has been placed at this location for a reason.  This allows
+dnl ## Apache to set some variable that APR needs (like whether to enable
+dnl ## or disable threads), while still allowing APR to run and generate
+dnl ## APRVARS before Apache generates it's Makefiles and the related files.
+dnl ## This allows APR to detect libraries like dl and tell Apache that it
+dnl ## needs to include or not include them.
+APACHE_RUN_SUBDIR_CONFIG_NOW(lib/apr)
+. ./lib/apr/APRVARS
 
 APACHE_GEN_CONFIG_VARS
 
