@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Add the ability to do POST requests to the ab benchmarking tool.
+     [Kurt Sussman <kls@best.com>] PR#2871
+
   *) Bump up MAX_ENV_FLAGS in mod_rewrite.h from the too conservatice limit of
      5 to 10 because there are some users out there who always have 5 to 8
      variables in one RewriteRule and had to patch mod_rewrite.h for every

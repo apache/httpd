@@ -79,20 +79,39 @@
 **      Michael Campanella <campanella@stevms.enet.dec.com>
 **    - Enhanced by Dean Gaudet <dgaudet@apache.org>, November 1997
 **    - Cleaned up by Ralf S. Engelschall <rse@apache.org>, March 1998 
+**    - POST and verbosity by Kurt Sussman <kls@merlot.com>, August 1998 
 **
 */
 
-#define VERSION "1.1"
+#define VERSION "1.2"
 
 /*  -------------------------------------------------------------------- */
 
 /* affects include files on Solaris */
 #define BSD_COMP
 
+/* allow compilation outside an Apache build tree */
+#ifdef NO_APACHE_INCLUDES
+#include <sys/time.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <errno.h>
+#include <sys/ioctl.h>
+#include <string.h>
+
+#define ap_select	select
+#else /* (!)NO_APACHE_INCLUDES */
 #include "ap_config.h"
 #include <fcntl.h>
 #include <sys/time.h>
-
+#endif /* NO_APACHE_INCLUDES */
 /* ------------------- DEFINITIONS -------------------------- */
 
 /* maximum number of requests on a time limited test */
@@ -129,6 +148,8 @@ struct data {
 
 /* --------------------- GLOBALS ---------------------------- */
 
+int verbosity = 0;              /* no verbosity by default */
+int posting = 0;                /* GET by default */
 int requests = 1;               /* Number of requests to make */
 int concurrency = 1;            /* Number of multiple requests to make */
 int tlimit = 0;                 /* time limit in cs */
@@ -136,17 +157,23 @@ int keepalive = 0;              /* try and do keepalive connections */
 char servername[1024];          /* name that server reports */
 char hostname[1024];            /* host name */
 char path[1024];                /* path name */
+char postfile[1024];            /* name of file containing post data */
+char* postdata;                 /* *buffer containing data from postfile */
+int postlen = 0;                /* length of data to be POSTed */
+char content_type[1024];        /* content type to put in POST header */
 int port = 80;                  /* port number */
 
 int doclen = 0;                 /* the length the document should be */
 int totalread = 0;              /* total number of bytes read */
 int totalbread = 0;             /* totoal amount of entity body read */
+int totalposted = 0;            /* total number of bytes posted, inc. headers */
 int done = 0;                   /* number of requests we have done */
 int doneka = 0;                 /* number of keep alive connections done */
 int good = 0, bad = 0;          /* number of good and bad requests */
 
 /* store error cases */
 int err_length = 0, err_conn = 0, err_except = 0;
+int err_response = 0;
 
 struct timeval start, endtime;
 
@@ -155,7 +182,7 @@ char request[512];
 int reqlen;
 
 /* one global throw-away buffer to read stuff into */
-char buffer[4096];
+char buffer[8192];
 
 struct connection *con;         /* connection array */
 struct data *stats;             /* date for each request */
@@ -169,7 +196,12 @@ struct sockaddr_in server;      /* server addr structure */
 
 static void err(char *s)
 {
-    perror(s);
+    if (errno) {
+    	perror(s);
+    }
+    else {
+	printf("%s", s);
+    }
     exit(errno);
 }
 
@@ -181,7 +213,13 @@ static void err(char *s)
 static void write_request(struct connection *c)
 {
     gettimeofday(&c->connect, 0);
+    /* XXX: this could use writev for posting -- more efficient -djg */
     write(c->fd, request, reqlen);
+    if (posting) {
+        write(c->fd,postdata, postlen);
+        totalposted += (reqlen + postlen); 
+    }
+
     c->state = STATE_READ;
     FD_SET(c->fd, &readbits);
     FD_CLR(c->fd, &writebits);
@@ -214,7 +252,7 @@ static int timedif(struct timeval a, struct timeval b)
 
 /* --------------------------------------------------------- */
 
-/* calculate and output results and exit */
+/* calculate and output results */
 
 static void output_results(void)
 {
@@ -239,16 +277,26 @@ static void output_results(void)
     if (bad)
         printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
                err_conn, err_length, err_except);
+    if (err_response)
+        printf("Non-2xx responses:      %d\n", err_response);
     if (keepalive)
         printf("Keep-Alive requests:    %d\n", doneka);
     printf("Total transferred:      %d bytes\n", totalread);
+    if (posting)
+        printf("Total POSTed:           %d\n", totalposted);
     printf("HTML transferred:       %d bytes\n", totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
         printf("Requests per second:    %.2f\n", 1000 * (float) (done) / timetaken);
-        printf("Transfer rate:          %.2f kb/s\n",
+        printf("Transfer rate:          %.2f kb/s received\n",
                (float) (totalread) / timetaken);
+        if (posting) {
+            printf("                        %.2f kb/s sent\n", 
+       		    (float)(totalposted)/timetaken);
+            printf("                        %.2f kb/s total\n", 
+           	    (float)(totalread + totalposted)/timetaken);
+        }
     }
 
     {
@@ -268,12 +316,13 @@ static void output_results(void)
             total += s.time;
         }
         printf("\nConnnection Times (ms)\n");
-        printf("           min   avg   max\n");
-        printf("Connect: %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
-        printf("Total:   %5d %5d %5d\n", mintot, total / requests, maxtot);
+        printf("              min   avg   max\n");
+        printf("Connect:    %5d %5d %5d\n", mincon, totalcon / requests, maxcon);
+        printf("Processing: %5d %5d %5d\n", 
+            mintot - mincon, (total/requests) - (totalcon/requests),
+            maxtot - maxcon);
+        printf("Total:      %5d %5d %5d\n", mintot, total / requests, maxtot);
     }
-
-    exit(0);
 }
 
 /* --------------------------------------------------------- */
@@ -305,8 +354,7 @@ static void start_connect(struct connection *c)
             close(c->fd);
             err_conn++;
             if (bad++ > 10) {
-                printf("\nTest aborted after 10 failures\n\n");
-                exit(1);
+                err("\nTest aborted after 10 failures\n\n");
             }
             start_connect(c);
         }
@@ -323,7 +371,7 @@ static void start_connect(struct connection *c)
 static void close_connection(struct connection *c)
 {
     if (c->read == 0 && c->keepalive) {
-        /* server has legitiamately shut down an idle keep alive request */
+        /* server has legitimately shut down an idle keep alive request */
         good--;                 /* connection never happend */
     }
     else {
@@ -363,6 +411,8 @@ static void close_connection(struct connection *c)
 static void read_connection(struct connection *c)
 {
     int r;
+    char *part;
+    char respcode[4];  /* 3 digits and null */
 
     r = read(c->fd, buffer, sizeof(buffer));
     if (r == 0 || (r < 0 && errno != EAGAIN)) {
@@ -390,6 +440,9 @@ static void read_connection(struct connection *c)
         c->cbx += tocopy;
         space -= tocopy;
         c->cbuff[c->cbx] = 0;   /* terminate for benefit of strstr */
+	if (verbosity >= 4) {
+	    printf("LOG: header received:\n%s\n", c->cbuff);
+	}
         s = strstr(c->cbuff, "\r\n\r\n");
         /* this next line is so that we talk to NCSA 1.5 which blatantly breaks 
            the http specifaction */
@@ -406,8 +459,7 @@ static void read_connection(struct connection *c)
                 /* header is in invalid or too big - close connection */
                 close(c->fd);
                 if (bad++ > 10) {
-                    printf("\nTest aborted after 10 failures\n\n");
-                    exit(1);
+                    err("\nTest aborted after 10 failures\n\n");
                 }
                 FD_CLR(c->fd, &writebits);
                 start_connect(c);
@@ -428,6 +480,23 @@ static void read_connection(struct connection *c)
                 *q = 0;
             }
 
+	    /* FIXME: this parsing isn't even remotely HTTP compliant...
+	     * but in the interest of speed it doesn't totally have to be,
+	     * it just needs to be extended to handle whatever servers
+	     * folks want to test against. -djg */
+
+            /* check response code */
+            part = strstr(c->cbuff, "HTTP");                /* really HTTP/1.x_ */
+            strncpy(respcode, (part+strlen("HTTP/1.x_")), 3);
+	    respcode[3] = '\0';
+            if (respcode[0] != '2') {
+                err_response++;
+                if (verbosity >= 2) printf ("WARNING: Response code not 2xx (%s)\n", respcode);
+            }
+	    else if (verbosity >= 3) {
+                printf("LOG: Response code = %s\n", respcode);
+            }
+
             c->gotheader = 1;
             *s = 0;             /* terminate at end of header */
             if (keepalive &&
@@ -435,8 +504,7 @@ static void read_connection(struct connection *c)
                  || strstr(c->cbuff, "keep-alive"))) {  /* for benefit of MSIIS */
                 char *cl;
                 cl = strstr(c->cbuff, "Content-Length:");
-                /* for cacky servers like NCSA which break the spec and send a 
-                   lower case 'l' */
+                /* handle NCSA, which sends Content-length: */
                 if (!cl)
                     cl = strstr(c->cbuff, "Content-length:");
                 if (cl) {
@@ -503,7 +571,7 @@ static void test(void)
         struct hostent *he;
         he = gethostbyname(hostname);
         if (!he)
-            err("gethostbyname");
+            err("bad hostname");
         server.sin_family = he->h_addrtype;
         server.sin_port = htons(port);
         server.sin_addr.s_addr = ((unsigned long *) (he->h_addr_list[0]))[0];
@@ -518,7 +586,8 @@ static void test(void)
     FD_ZERO(&writebits);
 
     /* setup request */
-    sprintf(request, "GET %s HTTP/1.0\r\n"
+    if (!posting) {
+	sprintf(request, "GET %s HTTP/1.0\r\n"
                      "User-Agent: ApacheBench/%s\r\n"
                      "%s"
                      "Host: %s\r\n"
@@ -528,6 +597,24 @@ static void test(void)
                      VERSION,
                      keepalive ? "Connection: Keep-Alive\r\n" : "", 
                      hostname);
+    }
+    else {
+	sprintf(request, "POST %s HTTP/1.0\r\n"
+                     "User-Agent: ApacheBench/%s\r\n"
+                     "%s"
+                     "Host: %s\r\n"
+                     "Accept: */*\r\n"
+                     "Content-length: %d\r\n"
+                     "Content-type: %s\r\n"
+                     "\r\n", 
+                     path, 
+                     VERSION,
+                     keepalive ? "Connection: Keep-Alive\r\n" : "", 
+                     hostname, postlen, 
+                     (content_type) ? content_type : "text/plain");
+    }
+
+    if (verbosity >= 2) printf("INFO: POST header == \n---\n%s\n---\n", request);
 
     reqlen = strlen(request);
 
@@ -553,7 +640,6 @@ static void test(void)
         gettimeofday(&now, 0);
         if (tlimit && timedif(now, start) > (tlimit * 1000)) {
             requests = done;    /* so stats are correct */
-            output_results();
         }
 
         /* Timeout of 30 seconds. */
@@ -561,8 +647,7 @@ static void test(void)
         timeout.tv_usec = 0;
         n = ap_select(FD_SETSIZE, &sel_read, &sel_write, &sel_except, &timeout);
         if (!n) {
-            printf("\nServer timed out\n\n");
-            exit(1);
+            err("\nServer timed out\n\n");
         }
         if (n < 1)
             err("select");
@@ -580,9 +665,8 @@ static void test(void)
             if (FD_ISSET(s, &sel_write))
                 write_request(&con[i]);
         }
-        if (done >= requests)
-            output_results();
     }
+    output_results();
 }
 
 /* ------------------------------------------------------- */
@@ -604,8 +688,11 @@ static void usage(char *progname)
     fprintf(stderr, "    -n requests     Number of requests to perform\n");
     fprintf(stderr, "    -c concurrency  Number of multiple requests to make\n");
     fprintf(stderr, "    -t timelimit    Seconds to max. wait for responses\n");
+    fprintf(stderr, "    -p postfile     File containg data to POST\n");
+    fprintf(stderr, "    -T content-type Content-type header for POSTing\n");
+    fprintf(stderr, "    -v verbosity    How much troubleshooting info to print\n");
+    fprintf(stderr, "    -V              Print version number and exit\n");
     fprintf(stderr, "    -k              Use HTTP KeepAlive feature\n");
-    fprintf(stderr, "    -v              Display version and copyright information\n");
     fprintf(stderr, "    -h              Display usage information (this message)\n");
     exit(EINVAL);
 }
@@ -640,21 +727,50 @@ static int parse_url(char *url)
 
 /* ------------------------------------------------------- */
 
+/* read data to POST from file, save contents and length */
+
+int open_postfile(char *pfile)
+{
+    int postfd, status;
+    struct stat postfilestat;
+
+    if ((postfd = open(pfile, O_RDONLY)) == -1) {
+        printf("Invalid postfile name (%s)\n", pfile);
+        return errno;
+    }
+    if ((status = fstat(postfd, &postfilestat)) == -1) {
+        perror("Can\'t stat postfile\n");
+        return status;
+    }
+    postdata = malloc(postfilestat.st_size);
+    if (!postdata) {
+        printf("Can\'t alloc postfile buffer\n");
+        return ENOMEM;
+    }
+    if (read(postfd, postdata, postfilestat.st_size) != postfilestat.st_size) {
+        printf("error reading postfilen");
+        return EIO;
+    }
+    postlen = postfilestat.st_size;
+    return 0;
+}
+
+/* ------------------------------------------------------- */
+
 extern char *optarg;
 extern int optind, opterr, optopt;
 
 /* sort out command-line args and call test */
 int main(int argc, char **argv)
 {
-    int c;
+    int c, r;
     optind = 1;
-    while ((c = getopt(argc, argv, "n:c:t:kvh")) > 0) {
+    while ((c = getopt(argc, argv, "n:c:t:T:p:v:kVh")) > 0) {
         switch (c) {
         case 'n':
             requests = atoi(optarg);
             if (!requests) {
-                printf("Invalid number of requests\n");
-                exit(1);
+                err("Invalid number of requests\n");
             }
             break;
         case 'k':
@@ -663,11 +779,25 @@ int main(int argc, char **argv)
         case 'c':
             concurrency = atoi(optarg);
             break;
+        case 'p':
+            if (0 == (r = open_postfile(optarg))) {
+                posting = 1;
+            }
+	    else if (postdata) {
+                exit(r);
+	    }
+            break;
+        case 'v':
+            verbosity = atoi(optarg);
+            break;
         case 't':
             tlimit = atoi(optarg);
             requests = MAX_REQUESTS;    /* need to size data array on something */
             break;
-        case 'v':
+        case 'T':
+            strcpy(content_type, optarg);
+            break;
+        case 'V':
             copyright();
             exit(0);
             break;
@@ -692,6 +822,7 @@ int main(int argc, char **argv)
 
     copyright();
     test();
+
     exit(0);
 }
 
