@@ -2,12 +2,86 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mpm_common.xml.meta">
-<!-- English revision: 1.21 -->
+<!-- English revision: 1.31 -->
 
 <name>mpm_common</name>
 <description>二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</description>
 <status>MPM</status>
+
+<directivesynopsis>
+<name>AcceptMutex</name>
+<description>複数の子プロセスがネットワークソケットでリクエストを
+accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
+使う方法</description>
+<syntax>AcceptMutex default|<var>method</var></syntax>
+<default>AcceptMutex default</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+
+<usage>
+    <p><directive>AcceptMutex</directive> ディレクティブは、
+    ネットワークソケットのリクエストを accept しようとしている複数の子プロセスを
+    Apache が直列化するために使う方法を設定します。
+    Apache 2.0 以前は、このメソッドはコンパイル時にのみ選択できました。
+    最適な方法は、アーキテクチャやプラットホームに大きく依存します。
+    詳細に関しては、<a 
+    href="../misc/perf-tuning.html">性能のチューニング</a>
+    ドキュメントをご覧下さい。</p>
+
+    <p>このディレクティブが <code>Default</code>
+    に設定されていれば、コンパイル時に選択されたデフォルト値が使われます。
+    他の使用可能なメソッドの一覧は下にあります。
+    全てのメソッドが全てのプラットホームで使用可能であるわけではない、
+    ということに注意してください。
+    使用可能でないメソッドが指定された場合は、
+    使用可能なメソッドの一覧を含んだメッセージが
+    エラーログに出力されます。</p>
+
+    <dl>
+      <dt><code>flock</code></dt>
+      <dd><directive module="mpm_common">LockFile</directive>
+      ディレクティブで定義したファイルのロックに、
+      <code>flock(2)</code> システムコールを使います。</dd>
+
+      <dt><code>fcntl</code></dt>
+      <dd><directive module="mpm_common">LockFile</directive>
+      ディレクティブで定義したファイルのロックに、
+      <code>fcntl(2)</code> システムコールを使います。</dd>
+
+      <dt><code>posixsem</code></dt>
+      <dd>排他処理の実装に POSIX 互換セマフォを使用します</dd>
+
+      <dt><code>pthread</code></dt>
+      <dd>POSIX Threads (PThreads) 規格で実装されている
+      POSIX 排他処理を使います。</dd>
+
+      <dt><code>sysvsem</code></dt>
+      <dd>排他処理の実装に SySV 形式のセマフォを使います。</dd>
+    </dl>
+
+    <p>コンパイル時にシステムのデフォルトに選ばれたものが何かを見たい場合は、
+    <directive module="core">LogLevel</directive> を <code>debug</code>
+    に設定するとよいでしょう。デフォルトの <directive>AcceptMutex</directive>
+    が <directive module="core">ErrorLog</directive> に書き込まれます。</p>
+
+  <note type="warning"><title>警告</title>
+     <p>ほとんどのシステムにおいては、<code>pthread</code> オプションが
+     選ばれていると、子プロセスが <code>ApacheCntl</code> mutex を
+     保持しているときに異常終了した場合、サーバはリクエストへの応答を
+     停止してしまいます。これが発生した場合は、サーバを復旧させるためには
+     手動で再起動させる必要があります。</p>
+
+     <p>Solaris は例外で、Apache も使用している、子プロセスが mutex を
+     保持して異常終了した後に mutex を復旧させるための機構を提供をしています。</p>
+     <p>御使用のシステムが <code>pthread_mutexattr_setrobust_np()</code> 関数を
+     実装している場合は、<code>pthread</code> オプションを安全に使用できる
+     可能性があります。</p>
+  </note>
+</usage>
+</directivesynopsis>
 
 <directivesynopsis>
 <name>CoreDumpDirectory</name>
@@ -16,18 +90,26 @@
 <syntax>CoreDumpDirectory <var>directory</var></syntax>
 <default>デフォルトの設定は説明文を読んでください</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module><module>mpm_winnt</module>
-</modulelist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-
     <p>Apache がコアダンプする前に移動を試みるディレクトリを制御します。
     デフォルト値は <directive module="core">ServerRoot</directive>
     ディレクトリですが、このディレクトリはサーバの実行されているユーザ権限で
     書き込み可能であるべきではないので、通常はコアダンプは書き込まれません。
     デバッグのためにコアダンプが必要であれば、
     このディレクティブを使って他の位置にコアダンプを書き出すようにできます。</p>
+
+    <note><title>Linux でのコアダンプ</title>
+      <p>Apache が root として起動されて、別のユーザの権限に以降した場合は
+      Linux のカーネルはディレクトリがプロセスの権限で書き込み可能な場合でさえも
+      コアダンプを<em>無効</em>にします。Apache (2.0.46 以降) は
+      Linux 2.4 以降ではコアダンプを行なうように再指定しますが、それは
+      <directive>CoreDumpDirectory</directive> を明示的に設定したときに
+      限ります。</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -36,46 +118,56 @@
 <description>リクエストに応答する際に所属するグループ</description>
 <syntax>Group <var>unix-group</var></syntax>
 <default>Group #-1</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-</contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module></modulelist>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+<compatibility>Apache 2.0 以降で、グローバル設定でのみ有効です。</compatibility>
 
 <usage>
     <p><directive>Group</directive> ディレクティブで、
     リクエストに応答する際に所属しておくグループを設定します。
-    このディレクティブを使用するためには、スタンドアロン型の
-    サーバは最初に root 権限で起動されている必要があります。
+    このディレクティブを使用するためには、
+    サーバは最初に <code>root</code> 権限で起動されている必要があります。
+    非 root ユーザでサーバを起動した場合は、指定したグループに変化できずに、
+    結果的に起動したユーザの属するグループで実行されることになります。
     <var>unix-group</var> は次のうちのいずれかです:</p>
 
     <dl>
       <dt>グループ名</dt>
+      <dd>グループを名前で参照します</dd>
 
-      <dd>グループを名前で参照します。</dd>
-
-      <dt># に続いてグループ番号</dt>
-
-      <dd>グループを番号で参照します。</dd>
+      <dt><code>#</code> に続いてグループ番号</dt>
+      <dd>グループをを番号で参照します。</dd>
     </dl>
+
+    <example><title>例</title>
+      Group www-group
+    </example>
+
     <p>サーバを実行するために特定の新しいグループを設定することを
     お薦めします。<code>nobody</code> を使用する管理者もいますが、
-    これは常に可能であったり望ましい訳ではありません。</p>
+    可能であったり望ましい訳では必ずしもありません。</p>
 
-    <example>Group www-group</example>
+    <note type="warning"><title>セキュリティ</title>
+      <p>正確にどんなことをやっているのか、その危険性を知らないで、
+      <directive>Group</directive> (や <directive
+      module="mpm_common">User</directive>) を
+      <code>root</code> に 設定しないでください。</p>
+    </note>
 
-    <p>注意: サーバ開始を非 root ユーザで行った場合は、
-    指定されたグループに変わることができなくて、代わりに
-    起動を行ったユーザの所属するグループとして実行され続けます。</p>
-
-    <p>特記事項: このディレクティブを &lt;VirtualHost&gt;
+    <p>特記事項: このディレクティブを
+    <directive module="core" type="section">VirtualHost</directive>
     で使用することはサポートされなくなりました。Apache 2.0 で
-    <a href="../suexec.html">suEXEC ラッパー</a>を実現したい場合は、
+    <a href="../suexec.html">suexec</a> を設定したい場合は、
     <directive module="mod_suexec">SuexecUserGroup</directive>
-    を使用してください。
-    セキュリティ: セキュリティ上の注意点に関しては、
-    <directive module="mpm_common">User</directive>
-    をご覧下さい。</p>
+    を使用してください。</p>
+
+    <note><title>注意</title>
+      <p><directive>Group</directive> ディレクティブは
+      <module>beos</module> と <module>mpmt_os2</module> MPM
+      にも存在しますが、実質的に無効で、互換性のためだけに存在します。</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -85,15 +177,15 @@
 をサーバが記録するためのファイル</description>
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module><module>mpm_winnt</module>
-</modulelist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_winnt</module><module>mpmt_os2</module>
+<module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
     <p><directive>PidFile</directive> ディレクティブで、
     デーモンのプロセス ID をサーバが記録するファイルを設定します。
-    もしファイル名がスラッシュ (/) で始まらない場合は、
+    ファイル名が絶対パスでない場合は、
     <directive module="core">ServerRoot</directive>
     からの相対的なものとして扱われます。</p>
 
@@ -102,15 +194,23 @@
     </example>
 
     <p>サーバが <directive module="core">ErrorLog</directive>
-    や TransferLog を閉じて開き直したり、設定ファイルを
+    や <directive module="mod_log_config">TransferLog</directive>
+    を閉じて開き直したり、設定ファイルを
     再読込したりさせるために、サーバにシグナルを送ることができると
     便利なことがあります。
-    これは SIGHUP (kill -1) シグナルを PidFile
+    これは SIGHUP (kill -1) シグナルを <directive>PidFile</directive>
     に書かれているプロセス ID に送ることでできます。</p>
 
-    <p>PidFile には、ログファイルの設置位置や
+    <p><directive>PidFile</directive> には、ログファイルの設置位置や
     <a href="../misc/security_tips.html#serverroot">セキュリティ</a>
     と全く同じ注意点があります。</p>
+
+    <note><title>注意</title>
+      <p>Apache 2 では、
+      <a href="../programs/apachectl.html">apachectl</a>
+      スクリプトのみを使用してサーバの (再) 起動や停止を
+      行なうことを推奨しています。</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -119,19 +219,23 @@
 <description>サーバが listen するIP アドレスとポート番号</description>
 <syntax>Listen [<var>IP-address</var>:]<var>portnumber</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module><module>mpm_winnt</module>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
+<compatibility>Apache 2.0 から必要なディレクティブ</compatibility>
 
 <usage>
     <p><directive>Listen</directive> ディレクティブは Apache
     が特定の IP アドレスやポート番号だけを listen するように指定します。
     デフォルトでは全ての IP インターフェースのリクエストに応答します。
-    Listen ディレクティブは現在では必須のディレクティブとなりました。
+    <directive>Listen</directive> ディレクティブは
+    現在は必須のディレクティブとなりました。
     もし設定ファイルになければ、サーバは起動に失敗します。
     これは以前のバージョンの Apache から変更のあった部分です。</p>
 
-    <p>Listen ディレクティブでは、特定のポートあるいは
+    <p><directive>Listen</directive> ディレクティブでは、特定のポートあるいは
     アドレスとポートの組み合わせから入ってくるリクエストに対して
     応答するように指定します。
     もしポート番号だけが指定された場合は、サーバは全インターフェースの
@@ -141,7 +245,7 @@
     します。</p>
 
     <p>複数のアドレスとポートに対して listen するように、
-    複数の Listen ディレクティブを使うこともできます。
+    複数の <directive>Listen</directive> ディレクティブを使うこともできます。
     サーバは列挙されたアドレスとポート全てからのリクエストに対して
     応答します。</p>
 
@@ -171,7 +275,7 @@
 
 <seealso><a href="../dns-caveats.html">DNS の問題</a></seealso>
 <seealso><a href="../bind.html">Apache
-    が使用するアドレスとポートの設定</a></seealso>
+が使用するアドレスとポートの設定</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -180,9 +284,10 @@
 <syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module><module>mpm_winnt</module>
-</modulelist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
     <p>保留状態のコネクションのキューの最大長です。
@@ -206,29 +311,31 @@
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module></modulelist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
 
 <usage>
-    <p>USE_FCNTL_SERIALIZED_ACCEPT または USE_FLOCK_SERIALIZED_ACCEPT
-    のいずれかを使って Apache をコンパイルした際に使用することになる、
-    ロックファイルのパスを <directive>LockFile</directive>
-    は設定します。
-    このディレクティブは通常はデフォルト値のままにしておくべきです。
-    これを変更する際の主な理由は、<code>logs</code>
-    ディレクトリが NFS マウントされたものであるという理由です。
-    <strong>ロックファイルはローカルディスクに保存しなければならない
-    からです。</strong>
-    メインサーバプロセスの PID が自動的にファイル名に付加されます。</p>
+    <p><directive module="mpm_common">AcceptMutex</directive>
+    が <code>fcntl</code> や <code>flock</code>
+    に設定されて使用されている場合に、使用されるロックファイルへのパスを
+    <directive>LockFile</directive> ディレクティブで設定します。
+    このディレクティブは通常はそのままにしておきます。
+    主に <code>logs</code> ディレクトリが NFS
+    でマウントされている場合などに値を変えます。
+    なぜなら<strong>ロックファイルはローカルディスクに
+    保存されなければならない</strong>からです。
+    メインサーバプロセスの PID がファイル名に自動的に付加されます。</p>
 
-    <note type="warning"><title>セキュリティ:</title>
-    <p><code>/var/tmp</code>
-    といった、誰でも書き込めるディレクトリにファイルを
-    置かない方がよいです。なぜなら、サーバが起動時に作成する
-    ロックファイルの作成自体を妨害することによって、
-    誰でもサービス拒否アタックを引き起こすことができるからです。</p>
+    <note type="warning"><title>セキュリティ</title>
+      <p><code>/var/tmp</code>
+      といった、誰でも書き込めるディレクトリにファイルを
+      <em>置かない</em>方がよいです。なぜなら、サーバが起動時に作成する
+      ロックファイルの作成自体を妨害することによって、
+      誰でもサービス拒否アタックを引き起こすことができるからです。</p>
     </note>
 </usage>
+<seealso><directive module="mpm_common">AcceptMutex</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -236,8 +343,10 @@
 <description>リクエストに応答するために作成される
 子プロセスの最大個数</description>
 <syntax>MaxClients <var>number</var></syntax>
+<default>詳細は使用法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>prefork</module>
+<modulelist><module>beos</module><module>leader</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -249,20 +358,24 @@
     他のリクエストの最後まで達して子プロセスが空くと、
     次のコネクションに応答します。</p>
 
-    <p>スレッドを用いないサーバ (すなわち <module>prefork</module>)
+    <p>スレッドを用いないサーバ (<em>すなわち</em> <module>prefork</module>)
     では、<directive>MaxClients</directive>
     は、リクエストに応答するために起動される
     子プロセスの最大数となります。
-    デフォルト値は 256 で、これを増加させたい場合は、
+    デフォルト値は <code>256</code> で、これを増加させたい場合は、
     <directive module="mpm_common">ServerLimit</directive>
     の値も増加させる必要があります。</p>
 
-    <p>スレッドを用いるサーバ (すなわち <module>worker</module>)
+    <p>スレッドを用いるサーバや、ハイブリッドサーバ (<em>すなわち</em>
+    <module>beos</module> <module>worker</module>)
     では、<directive>MaxClients</directive> 
     は、クライアントに応答できるスレッドの総数を制限します。
-    デフォルト値は
-    <directive module="mpm_common">ThreadsPerChild</directive>
-    を 16 倍した値になります。<directive>MaxClients</directive>
+    <module>beos</module> でのデフォルト値は <code>50</code> です。
+    ハイブリッド MPM でのデフォルト値は 16
+    <directive module="mpm_common">ServerLimit</directive>
+    の <code>25</code> 倍 (<directive
+    module="mpm_common">ThreadsPerChild</directive>) です。
+    <directive>MaxClients</directive>
     を 16 プロセス以上必要な値まで増加させたい場合は、
     <directive module="mpm_common">ServerLimit</directive>
     も増加させる必要があります。</p>
@@ -271,16 +384,18 @@
 
 <directivesynopsis>
 <name>MaxMemFree</name>
-<description>主メモリアロケータが free() を呼ばずに保持し続けられるメモリの
-最大量</description>
-<syntax>MaxMemFree <var>number</var></syntax>
+<description><code>free()</code> が呼ばれない限り、
+主メモリアロケータが保持し続けられるメモリの最大量</description>
+<syntax>MaxMemFree <var>KBytes</var></syntax>
+<default>MaxMemFree 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>prefork</module>
-<module>mpm_netware</module>
-</modulelist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p><directive>MaxMemFree</directive> ディレクティブは free() を呼ばずに
+    <p><directive>MaxMemFree</directive> ディレクティブは
+    <code>free()</code> が呼ばれない限り、
     主アロケータが保持できる空のメモリの最大値をキロバイト単位で設定します。
     設定されていないか、零に設定されているときは、無制限になります。</p>
 </usage>
@@ -292,17 +407,23 @@
 <syntax>MaxRequestsPerChild <var>number</var></syntax>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module><module>mpm_winnt</module>
-</modulelist>
+<modulelist><module>leader</module><module>mpm_netware</module>
+<module>mpm_winnt</module><module>mpmt_os2</module>
+<module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
     <p><directive>MaxRequestsPerChild</directive> ディレクティブは、
     個々の子サーバプロセスが扱うことのできるリクエストの制限数を
     設定します。<directive>MaxRequestsPerChild</directive>
     個のリクエストの後に、子プロセスは終了します。
-    <directive>MaxRequestsPerChild</directive> が 0
+    <directive>MaxRequestsPerChild</directive> が <code>0</code>
     に設定されている場合は、プロセスは期限切れにより終了することはありません。</p>
+
+    <note><title>その他のデフォルト値</title>
+      <p><module>mpm_netware</module> と <module>mpm_winnt</module>
+      でのデフォルト値は <code>0</code> です。</p>
+    </note>
 
     <p><directive>MaxRequestsPerChild</directive>
     を非ゼロに制限することには、二つの利点があります:</p>
@@ -315,11 +436,11 @@
       サーバ負荷が下がった時にプロセス数を少なくすることができる</li>
     </ul>
 
-    <note><title>注意:</title>
-    <p><em>KeepAlive</em> リクエストの場合は、
-    一つ目のリクエストだけがこの制限に該当します。
-    実効的には、一つの子プロセスあたりの<em>コネクション</em>数を
-    制限するように挙動が変化します。</p>
+    <note><title>注</title>
+      <p><directive module="core">KeepAlive</directive> リクエストの場合は、
+      一つ目のリクエストだけがこの制限に該当します。
+      実効的には、一つの子プロセスあたりの<em>コネクション</em>数を
+      制限するように挙動が変化します。</p>
     </note>
 </usage>
 </directivesynopsis>
@@ -328,9 +449,11 @@
 <name>MaxSpareThreads</name>
 <description>アイドルスレッドの最大数</description>
 <syntax>MaxSpareThreads <var>number</var></syntax>
+<default>詳細は使用法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module>
-<module>perchild</module><module>worker</module>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+<module>perchild</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -343,8 +466,9 @@
     子プロセスにアイドルスレッドが多すぎる場合は、
     サーバはその子プロセスに含まれるスレッドを終了し始めます。</p>
 
-    <p><module>worker</module> では、
-    デフォルトは <code>MaxSpareThreads 500</code> です。
+    <p><module>worker</module>, <module>leader</module>,
+    <module>threadpool</module> では、
+    デフォルトは <code>MaxSpareThreads 250</code> です。
     この MPM はアイドルスレッド数をサーバ全体で監視します。
     サーバでアイドルスレッド数が多すぎる場合は、
     この数字よりも少ない数になるまで子プロセスを終了します。</p>
@@ -354,28 +478,35 @@
     この MPM はシングルプロセスで実行されますので、
     スペアスレッド数もサーバ全体で勘定します。</p>
 
+    <p><module>beos</module> と <module>mpmt_os2</module> は
+    <module>mpm_netware</module> と似た挙動をします。
+    <module>beos</module> でのデフォルト値は <code>MaxSpareThreads 50</code>
+    です。<module>mpmt_os2</module> でのデフォルト値は <code>10</code>
+    です。</p>
+
+    <note><title>制限事項</title>
+      <p><directive>MaxSpareThreads</directive> の取る値には制限があります。
+      Apache は次の規則に従って自動的に補正します。</p>
+      <ul>
+        <li><module>perchild</module> では、
+        <directive>MaxSpareThreads</directive> が
+        <directive module="mpm_common">ThreadLimit</directive>
+        と等しいかそれ以下である必要があります。</li>
+
+        <li><module>mpm_netware</module> は
+        <directive module="mpm_common">MinSpareThreads</directive>
+        よりも大きい必要があります。</li>
+
+        <li><module>leader</module>, <module>threadpool</module>, 
+        <module>worker</module> では、
+        <directive module="mpm_common">MinSpareThreads</directive> と
+        <directive module="mpm_common">ThreadsPerChild</directive>
+        で決まる総和と等しいか大きい必要があります。</li>
+      </ul>
+    </note>
 </usage>
 <seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>MaxThreadsPerChild</name>
-<description>子プロセス毎のスレッド数の最大数</description>
-<syntax>MaxThreadsPerChild <var>number</var></syntax>
-<default>MaxThreadsPerChild 64</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-</modulelist>
-
-<usage>
-    <p>子プロセス毎に含まれるスレッド数の最大値です。
-    子プロセス毎にスレッド数変化する MPM では、
-    このディレクティブは、子プロセス内に生成されるスレッド数の
-    最大値を設定します。デフォルト値よりも大きい値にするのであれば、
-    コンパイル時に定義された <code>HARD_THREAD_LIMIT</code>
-    を変更して、サーバを再コンパイルする必要があります。</p>
-</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -383,9 +514,11 @@
 <description>リクエストに応答することのできる
 アイドルスレッド数の最小数</description>
 <syntax>MinSpareServers <var>number</var></syntax>
+<default>詳細は使用方法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module>
-<module>perchild</module><module>worker</module>      
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpmt_os2</module>
+<module>perchild</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -397,10 +530,15 @@
     デフォルトは <code>MinSpareThreads 5</code> で、
     アイドルスレッド数を子プロセス毎に監視します。
     もし子プロセスに十分な数のスレッドがなければ、
-    サーバはその子プロセスに新しいスレッドを作り始めます。</p>
+    サーバはその子プロセスに新しいスレッドを作り始めます。
+    ですから、<directive module="perchild">NumServers</directive>
+    を 10 に、<directive>MinSpareThreads</directive> を
+    5 にした場合は、最小でも 50 のアイドルスレッドが
+    システム上にあることになります。</p>
 
-    <p><module>worker</module> では、
-    デフォルトは <code>MinSpareThreads 250</code> で、
+    <p><module>worker</module>, <module>leader</module>,
+    <module>threadpool</module> では、
+    デフォルトは <code>MinSpareThreads 75</code> で、
     アイドルスレッド数をサーバ全体で監視します。
     もしサーバに十分な数のアイドルスレッドがなければ、
     アイドルスレッド数がこの数よりも大きくなるまで
@@ -410,25 +548,14 @@
     デフォルトは <code>MinSpareThreads 10</code> で、
     シングルプロセス MPM ですので、サーバ全体で管理されます。</p>
 
+    <p><module>beos</module> と <module>mpmt_os2</module> は、
+    <module>mpm_netware</module>によく似ています。
+    <module>beos</module> でのデフォルトは <code>MinSpareThreads 1</code>
+    です。<module>mpmt_os2</module> でのデフォルトは
+    <code>5</code> です。</p>
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>NumServers</name>
-<description>同時に起動している子プロセスの総数</description>
-<syntax>NumServers <var>number</var></syntax>
-<default>NumServers 2</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>perchild</module></modulelist>
-
-<usage>
-    <p>同時に起動している子プロセスの数です。
-    このディレクティブを使用する MPM は動的に新しい子プロセスを
-    生成することは行わないので、サイト全体に来るリクエスト全てを
-    十分扱える程度に大きな数に設定しておく必要があります。</p>
-</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -438,8 +565,9 @@
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module></modulelist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
     <p>Apache は親プロセスと子プロセス間の通信にスコアボードを用います。
@@ -463,24 +591,27 @@
     <a href="../misc/security_tips.html">セキュリティ</a>
     と同様の注意点があるので、注意してください。</p>
 </usage>
-<seealso><a
-    href="../stopping.html">Apache の停止と再起動</a></seealso>
+<seealso><a href="../stopping.html">Apache の停止と再起動</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SendBufferSize</name>
 <description>TCP バッファサイズ</description>
 <syntax>SendBufferSize <var>bytes</var></syntax>
+<default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module><module>mpm_winnt</module>
-</modulelist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
     <p>サーバは TCP バッファサイズを指定されたバイト数に設定します。
     高速で高レイテンシな環境で
     (<em>例</em> 100ms 程度、大陸横断高速通信路など)
     古い一般的な OS のデフォルト値を増やすのに非常に便利です。</p>
+
+    <p><code>0</code>にした場合、OS のデフォルト値が使用されます。</p>
 </usage>
 </directivesynopsis>
 
@@ -488,9 +619,10 @@
 <name>ServerLimit</name>
 <description>設定可能なサーバプロセス数の上限</description>
 <syntax>ServerLimit <var>number</var></syntax>
-<default>ServerLimit 256 (prefork), ServerLimit 16 (worker)</default>
+<default>詳細は使用法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>prefork</module>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -519,46 +651,66 @@
 
     <p><module>prefork</module> MPM では、
     <directive module="mpm_common">MaxClients</directive>
-    を 256 よりも大きな値に設定する必要がある時にだけ使用してください。
+    を 256 (デフォルト) よりも大きな値に設定する必要がある時にだけ使用してください。
     希望の <directive module="mpm_common">MaxClients</directive>
     数とくらべて、必要以上に大きな値を指定することは避けてください。</p>
 
-    <p><module>worker</module> MPM では、
+    <p><module>worker</module>, <module>leader</module>, 
+    <module>threadpool</module> MPM では、
     <directive module="mpm_common">MaxClients</directive> と
     <directive module="mpm_common">ThreadsPerChild</directive>
-    の設定で 16 サーバプロセス以上必要になる場合にのみ使用してください。
-    希望の
+    の設定で 16 サーバプロセス (デフォルト) 
+    以上必要になる場合にのみ使用してください。希望の
     <directive module="mpm_common">MaxClients </directive> と
     <directive module="mpm_common">ThreadsPerChild</directive>
     とくらべて、必要となるサーバプロセス数以上に大きな値を
     設定することは避けてください。</p>
+
+    <p><module>perchild</module> MPM では、
+    <directive module="perchild">NumServers</directive> を 8 (デフォルト)
+    よろいも大きな値に設定する必要があるときにのみ使用してください。</p>
+
+    <note><title>注意</title>
+      <p><code>ServerLimit 20000</code> という制限付きでコンパイルされています。
+      これはスペルミスによって誤って酷い状況になるのを、
+      回避するための処置です。</p>
+    </note>
 </usage>
+<seealso><a href="../stopping.html">Apache の停止と再起動</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>StartServers</name>
 <description>起動時に生成される子サーバプロセスの数</description>
 <syntax>StartServers <var>number</var></syntax>
-<default>StartServers 5</default>
+<default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module></modulelist>
+<modulelist><module>leader</module><module>mpmt_os2</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
 
 <usage>
     <p><directive>StartServers</directive> ディレクティブは、
     起動時に生成される子サーバプロセスの数を設定します。
     プロセス数は負荷に応じて動的に制御されますので、
     通常はこの値を調整する理由はあまりないでしょう。</p>
+
+    <p>デフォルト値は MPM ごとに異なります。
+    <module>leader</module>, <module>threadpool</module>, 
+    <module>worker</module> は <code>StartServers 3</code> です。
+    <module>prefork</module> は <code>5</code> で、
+    <module>mpmt_os2</module> は <code>2</code> です。</p>
 </usage>
-<seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
-<seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>StartThreads</name>
 <description>起動時に生成されるスレッドの数</description>
 <syntax>StartThreads <var>number</var></syntax>
+<default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>perchild</module></modulelist>
+<modulelist><module>beos</module><module>mpm_netware</module>
+<module>perchild</module></modulelist>
 
 <usage>
     <p>起動時に生成されるスレッドの数です。
@@ -574,6 +726,9 @@
     この場合プロセスは一つしかないので、
     起動時にリクエストに応答するスレッドの総数となります。</p>
 
+    <p><module>beos</module> でのデフォルトは <code>StartThreads
+    10</code> です。
+    また、起動時に生成されるスレッドの総数にも反映されます。</p>
 </usage>
 </directivesynopsis>
 
@@ -582,8 +737,13 @@
 <description>設定可能な子プロセス毎のスレッド数の上限を
 設定します</description>
 <syntax>ThreadLimit <var>number</var></syntax>
+<default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_winnt</module><module>worker</module></modulelist>
+<modulelist><module>leader</module><module>mpm_winnt</module>
+<module>perchild</module><module>threadpool</module><module>worker</module>
+</modulelist>
+<compatibility>Apache 2.0.41 とそれ以降の <module>mpm_winnt</module> 
+で利用可能</compatibility>
 
 <usage>
     <p>このディレクティブは
@@ -610,9 +770,16 @@
     </p>
 
     <p><directive>ThreadLimit</directive> のデフォルト値は
-    <module>worker</module> のときは 64 で、<module>mpm_winnt</module> のときは
-    1920 です。</p>
+    <module>mpm_winnt</module> のときは 1920 で、
+    他の場合は 64 です。</p>
 
+    <note><title>注意</title>
+      <p><code>ThreadLimit 20000</code> (<module>mpm_winnt</module>
+      の場合は <code>ThreadLimit 15000</code> )
+      という制限付きでコンパイルされています。
+      これはスペルミスによって誤って酷い状況になるのを、
+      回避するための処置です。</p>
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -620,10 +787,10 @@
 <name>ThreadsPerChild</name>
 <description>子プロセスそれぞれに生成されるスレッド数</description>
 <syntax>ThreadsPerChild <var>number</var></syntax>
-<default>ThreadsPerChild 50</default>
+<default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>worker</module><module>mpm_winnt</module>
-</modulelist>
+<modulelist><module>leader</module><module>mpm_winnt</module>
+<module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
     <p>このディレクティブは、それぞれの子プロセスで生成される
@@ -635,7 +802,11 @@
     大きくなければなりません。<module>worker</module> のような、
     子プロセスが複数あるような MPM を利用しているのであれば、
     サーバの通常負荷を十分扱える程度に、
-    スレッド総数が多くなければなりません。</p>
+    <em>スレッド総数</em>が多くなければなりません。</p>
+
+    <p><module>mpm_winnt</module>での <directive>ThreadsPerChild</directive>
+    のデフォルト値は <code>64</code> で、他の場合は
+    <code>25</code> です。</p>
 </usage>
 </directivesynopsis>
 
@@ -644,32 +815,36 @@
 <description>リクエストに応答する際に用いるユーザ ID</description>
 <syntax>User <var>unix-userid</var></syntax>
 <default>User #-1</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-</contextlist>
-<modulelist><module>worker</module><module>perchild</module>
-<module>prefork</module></modulelist>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>leader</module><module>perchild</module>
+<module>prefork</module><module>threadpool</module><module>worker</module>
+</modulelist>
+<compatibility>Apache 2.0 以降で、グローバル設定でのみ有効です。
+</compatibility>
 
 <usage>
     <p><directive>User</directive> ディレクティブは
     サーバがリクエストに応答する際に用いるユーザ ID を設定します。
     このディレクティブを使用するためには、スタンドアロン型の
     サーバは最初に root 権限で起動されている必要があります。
-    <var>unix-userid</var> は次のどちらかです:</p>
+    非 root ユーザでサーバを起動した場合は、
+    権限の低いユーザへと変わることができず、
+    結局元のユーザのプロセスとして実行され続けます。
+    <code>root</code> で起動した場合に親プロセスが root
+    として実行されているのは正常な動作です。
+    <var>Unix-userid</var> は次のどれかです。</p>
 
     <dl>
       <dt>ユーザ名</dt>
-
       <dd>ユーザを名前で参照します。</dd>
 
       <dt># に続いてユーザ番号</dt>
-
       <dd>ユーザを番号で参照します。</dd>
     </dl>
 
     <p>このユーザは、外部に見せるように意図していないファイルに、
     アクセス可能になってしまうような権限を持つべきではないですし、
-    同様に httpd リクエストに対して応答するように意図していない
+    同様に HTTP リクエストに対して応答するように意図していない
     実行コードを、実行できるような権限を持つべきではないです。
     サーバを実行するために特定の新しいユーザとグループを
     設定することをお薦めいたします。
@@ -678,25 +853,33 @@
     なぜなら <code>nobody</code> ユーザは、システムで
     他の役割を担っているかも知れないからです。</p>
 
-    <p>注意: 非 root ユーザでサーバを起動した場合は、
-    より低い権限のユーザに変わることに失敗して、
-    代わりに起動を行ったユーザ権限のまま実行され続けるでしょう。
-    root 権限で開始した場合親プロセスが root
-    権限で実行され続けますが、これは正常です。</p>
+    <note type="warning"><title>セキュリティ</title>
+      <p>正確にどんなことをやっているのか、その危険性を知らないで、
+      <directive>User</directive> (や <directive
+      module="mpm_common">Group</directive>) を <code>root</code> に
+      設定しないでください。</p>
+    </note>
+
+    <p><module>perchild</module> MPM では、異なるユーザ ID
+    で複数のバーチャルホストを動かすことを目的としていますが、
+    <directive>User</directive> は、主サーバのユーザ ID 
+    と、<directive module="perchild">AssignUserID</directive>
+    ディレクティブを持たない <directive type="section"
+    module="core">VirtualHost</directive> セクションへの
+    フォールバックとを定義することになります。</p>
 
     <p>特記事項: このディレクティブを
     <directive module="core" type="section">VirtualHost</directive>
     で使用することはサポートされなくなりました。
-    <a href="mod_suexec.html">suexec</a> 向けにサーバを設定するのであれば、
+    <a href="../suexec.html">suexec</a> 向けにサーバを設定するのであれば、
     <directive module="mod_suexec">SuexecUserGroup</directive>
     を使用してください。</p>
 
-<note><title>セキュリティ</title>
-<p>自分が何をやっているのか正確に把握していない、
-そしてその危険性を把握していないのであれば、
-<directive>User</directive>
-(や <directive module="mpm_common">Group</directive>)
-を <code>root</code> に設定しないでください。</p></note>
+    <note><title>注意</title>
+      <p><directive>User</directive> ディレクティブは
+      <module>beos</module> と <module>mpmt_os2</module> MPM
+      にも存在しますが、実質的に無効で、互換性のためだけに存在します。</p>
+    </note>
 </usage>
 </directivesynopsis>
 
