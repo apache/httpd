@@ -1,5 +1,9 @@
 Changes with Apache 2.0.45
 
+  *) Fix a nasty segfault in mmap_bucket_setaside() caused by passing
+     an incompatible pointer type to mmap_bucket_destroy(void*).
+     [Gerard Eviston <geviston@bigpond.net.au>]
+
   *) Enable the -n name parameter on NetWare to allow the
      administrator to rename the Apache console screen
      [Brad Nicholes]
