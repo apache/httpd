@@ -50,7 +50,7 @@ In this way, clients do not need to wait for a new child processes to
 be forked before their requests can be served.</p>
 
 <p>The <code>StartServers</code>, <code>MinSpareServers</code>,
-<code>MaxSpareServers</code>, and <code>MaxServers</code> regulate how
+<code>MaxSpareServers</code>, and <code>MaxClients</code> regulate how
 the parent process creates children to serve requests.  In general,
 Apache is very self-regulating, so most sites do not need to adjust
 these directives from their default values.  Sites which need to serve
