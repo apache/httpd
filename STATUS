@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/27 08:24:42 $]
+Last modified at [$Date: 2002/02/27 12:25:55 $]
 
 Release:
 
@@ -83,6 +83,15 @@ FINAL RELEASE SHOWSTOPPERS:
     * Graceful restart is broken in the worker MPM.
         Message-ID: <m3g03tnrkv.fsf@rdu163-40-092.nc.rr.com>
       Justin asks: "Is this fixed?  I can't reproduce now."
+      Jeff: Here are some problems that remain now that the segfault
+      is fixed:
+      1) accept mutex gets cleaned up before children are gone; with
+         some types (sysvsem), this causes immediate failure in a
+         thread blocked in the accept mutex; that thread will exit(),
+         presumably taking with it any active connections owned by other
+         threads in the process
+      2) even without accept mutex (1 listening socket), I see some
+         evidence of a child exiting prematurely (dropped connections)
 
     * Address popular PRs
         * Win32 doesn't install as service correctly [9863, 9914, 9961]
