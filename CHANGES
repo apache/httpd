@@ -5,9 +5,6 @@ Changes with Apache 2.1.0-dev
   *) Fixed file extensions for real media files and removed rpm extension
      from mime.types. PR 26079.  [Allan Sandfeld <kde carewolf.com>]
 
-  *) worker MPM: fix stack overlay bug that could cause the parent
-     process to crash.  [Jeff Trawick]
-
   *) Unix MPMs: Stop dropping connections when the file descriptor
      is at least FD_SETSIZE.  [Jeff Trawick]
 
@@ -289,6 +286,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) worker MPM: fix stack overlay bug that could cause the parent
+     process to crash.  [Jeff Trawick]
 
   *) Win32: Add Win32DisableAcceptEx directive. This Windows
      NT/2000/CP directive is useful to work around bugs in some 
