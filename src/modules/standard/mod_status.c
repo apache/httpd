@@ -399,7 +399,6 @@ int status_handler (request_rec *r)
     else {
 	rputs("</PRE>\n",r);
 	rputs("Scoreboard Key: <br>\n",r);
-	rputs("\"<B><code>.</code></B>\" Previously used slot, currently Dead, \n",r);
 	rputs("\"<B><code>_</code></B>\" Waiting for Connection, \n",r);
 	rputs("\"<B><code>S</code></B>\" Starting up, \n",r);
 	rputs("\"<B><code>R</code></B>\" Reading Request,<BR>\n",r);
@@ -407,6 +406,7 @@ int status_handler (request_rec *r)
 	rputs("\"<B><code>K</code></B>\" Keepalive (read), \n",r);
 	rputs("\"<B><code>D</code></B>\" DNS Lookup, \n",r);
 	rputs("\"<B><code>L</code></B>\" Logging<p>\n",r);
+	rputs("\"<B><code>.</code></B>\" Open slot with no current process, \n",r);
     }
 
 #if defined(STATUS)
