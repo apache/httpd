@@ -44,7 +44,13 @@ daemon does not detach from the terminal or fork any children. Do <em>NOT</em>
 use this mode to provide ordinary web service.
 
 <dt><code>-v</code>
-<dd>Print the version of httpd, and then exit.
+<dd>Print the version of httpd and its build date, and then exit.
+
+<dt><a name="version"><code>-V</code></a>
+<dd>Print the base version of httpd, its sub-version if defined, its
+build date, and a list of compile time settings which influence the
+behavior and performance of the apache server (e.g., <SAMP>-D USE_MMAP_FILES</SAMP>),
+then exit.
 
 <dt><a name="help"><code>-h</code></a>
 <dd>Give a list of directives together with expected arguments and
