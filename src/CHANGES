@@ -1,5 +1,8 @@
 Changes with Apache 1.2b3:
 
+  *) Collapse multiple slashes in path URLs to properly apply
+     handlers defined by <Location>. [Alexei Kosut]
+
   *) Define a sane set of DEFAULT_USER and DEFAULT_GROUP values for AIX.
 
   *) Improve the accuracy of request duration timings by setting

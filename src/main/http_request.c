@@ -381,6 +381,12 @@ int location_walk (request_rec *r)
     int len, num_url = url_array->nelts;
     char *test_location = pstrdup (r->pool, r->uri);
 
+    /* Collapse multiple slashes, if it's a path URL (we don't want to
+     * do anything to <Location http://...> or such).
+     */
+    if (test_location[0] == '/')
+	no2slash (test_location);
+
     /* Go through the location entries, and check for matches. */
 
     if (num_url) {
@@ -439,6 +445,9 @@ int file_walk (request_rec *r)
     core_dir_config **file = (core_dir_config **)file_array->elts;
     int len, num_files = file_array->nelts;
     char *test_file = pstrdup (r->pool, r->filename);
+
+    /* Collapse multiple slashes */
+    no2slash (test_file);
 
     /* Go through the file entries, and check for matches. */
 
