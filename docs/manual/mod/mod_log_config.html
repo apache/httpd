@@ -2,7 +2,7 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_log_config- Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_log_config</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Logging of the requests made to the server</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>log_config_module</td></tr></table></td></tr></table><h2>Summary</h2>
+        --><title>mod_log_config- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_log_config</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Logging of the requests made to the server</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>log_config_module</td></tr></table></td></tr></table><h2>Summary</h2>
 
     <p>This module provides for flexible logging of client
     requests. Logs are written in a customizable format, and may be
@@ -124,8 +124,8 @@ be in strftime(3) format. (potentially localized)</td></tr>
 <tr><td>%...X:</td>          
 <td>Connection status when response is completed.
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-'X' = connection aborted before the response completed.<br/>
-'+' = connection may be kept alive after the response is sent.<br/>
+'X' = connection aborted before the response completed.<br>
+'+' = connection may be kept alive after the response is sent.<br>
 '-' = connection will be closed after the response is sent.
 </code></td></tr></table></blockquote>
 <blockquote><table><tr><td bgcolor="#e0e5f5">(This directive was %...c in late versions of Apache 1.3, but
@@ -190,18 +190,18 @@ this conflicted with the historical ssl %...{var}c syntax.)</td></tr></table></b
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
 
-    <hr/><h2><a name="CookieLog">CookieLog</a> <a name="cookielog">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets filename for the logging of cookies</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>CookieLog <em>filename</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual
-host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_log_config</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>Only available in Apache 1.2 and above</td></tr></table></td></tr></table>
+    <hr/><h2><a name="CookieLog">CookieLog</a> <a name="cookielog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets filename for the logging of cookies</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CookieLog <em>filename</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual
+host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_log_config</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Only available in Apache 1.2 and above</td></tr></table></td></tr></table>
 
     <p>The <code class="directive">CookieLog</code> directive sets the 
     filename for logging of cookies. The filename is relative to the
-    <a class="directive" href="core.html#serverroot"><code class="directive">serverroot</code></a>. This directive is
+    <a href="core.html#serverroot" class="directive"><code class="directive">serverroot</code></a>. This directive is
     included only for compatibility with <code><a href="mod_cookies.html">mod_cookies</a></code>,
     and is deprecated.</p>
-<hr/><h2><a name="CustomLog">CustomLog</a> <a name="customlog">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets filename and format of log file</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>CustomLog 
+<hr/><h2><a name="CustomLog">CustomLog</a> <a name="customlog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Sets filename and format of log file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CustomLog 
     <em>file</em>|<em>pipe</em> <em>format</em>|<em>nickname</em>
-    [env=[!]<em>environment-variable</em>]</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual
-host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_log_config</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>Nickname only available in Apache 1.3 or later.
+    [env=[!]<em>environment-variable</em>]</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual
+host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_log_config</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Nickname only available in Apache 1.3 or later.
 Conditional logging available in 1.3.5 or later.</td></tr></table></td></tr></table>
     <p>The <code class="directive">CustomLog</code> directive is used to
     log requests to the server. A log format is specified, and the
@@ -237,12 +237,12 @@ Conditional logging available in 1.3.5 or later.</td></tr></table></td></tr></ta
     exactly the same effect:</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-     # CustomLog with format nickname<br/>
-     LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br/>
-     CustomLog logs/access_log common<br/>
-<br/>
-     # CustomLog with explicit format string<br/>
-     CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"<br/>
+     # CustomLog with format nickname<br>
+     LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br>
+     CustomLog logs/access_log common<br>
+<br>
+     # CustomLog with explicit format string<br>
+     CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"<br>
 </code></td></tr></table></blockquote>
 
     <p>The third argument is optional and allows the decision on
@@ -261,13 +261,13 @@ Conditional logging available in 1.3.5 or later.</td></tr></table></td></tr></ta
     log, you can use:</p>
     
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-    SetEnvIf Request_URI \.gif$ gif-image<br/>
-    CustomLog gif-requests.log common env=gif-image<br/>
+    SetEnvIf Request_URI \.gif$ gif-image<br>
+    CustomLog gif-requests.log common env=gif-image<br>
     CustomLog nongif-requests.log common env=!gif-image
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="LogFormat">LogFormat</a> <a name="logformat">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Describes a format for use in a log file</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>LogFormat
-    <em>format</em>|<em>nickname</em> [<em>nickname</em>]</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual
-host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_log_config</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>Nickname only available in Apache 1.3 or later.
+<hr/><h2><a name="LogFormat">LogFormat</a> <a name="logformat">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Describes a format for use in a log file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>LogFormat
+    <em>format</em>|<em>nickname</em> [<em>nickname</em>]</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual
+host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_log_config</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Nickname only available in Apache 1.3 or later.
 </td></tr></table></td></tr></table>
     <p>This directive specifies the format of the access log
     file.</p>
@@ -301,8 +301,8 @@ host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:<
     <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b"
     vhost_common</code></td></tr></table></blockquote>
 
-<hr/><h2><a name="TransferLog">TransferLog</a> <a name="transferlog">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Specifly location of a log file</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>TransferLog <em>file</em>|<em>pipe</em></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual
-host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_log_config</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td/></tr></table></td></tr></table>
+<hr/><h2><a name="TransferLog">TransferLog</a> <a name="transferlog">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Specifly location of a log file</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>TransferLog <em>file</em>|<em>pipe</em></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual
+host</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_log_config</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td/></tr></table></td></tr></table>
 
     <p>This directive has exactly the same arguments and effect as
     the <code class="directive">CustomLog</code> directive, with the
@@ -315,7 +315,7 @@ host</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:<
 
     <p>Example:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-   LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br/>
+   LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br>
    TransferLog logs/access_log
 </code></td></tr></table></blockquote>
 

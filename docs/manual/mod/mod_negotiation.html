@@ -2,7 +2,7 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_negotiation- Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_negotiation</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Provides for <a href="../content-negotiation.html">content negotiation</a></td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>negotiation_module</td></tr></table></td></tr></table><h2>Summary</h2>
+        --><title>mod_negotiation- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_negotiation</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Provides for <a href="../content-negotiation.html">content negotiation</a></td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>negotiation_module</td></tr></table></td></tr></table><h2>Summary</h2>
     <p>Content negotiation, or more accurately content selection, is
     the selection of the document that best matches the clients
     capabilities, from one of several available documents. There
@@ -13,11 +13,11 @@
       <code>type-map</code>) which explicitly lists the files
       containing the variants.</li>
 
-      <li>A MultiViews search (enabled by the MultiViews <a class="directive" href="core.html#options"><code class="directive">Options</code></a>, where the server does an
+      <li>A MultiViews search (enabled by the MultiViews <a href="core.html#options" class="directive"><code class="directive">Options</code></a>, where the server does an
       implicit filename pattern match, and choose from amongst the
       results.</li>
     </ul>
-<h2>Directives</h2><ul><li><a href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li><li><a href="#forcelanguagepriority">ForceLanguagePriority</a></li><li><a href="#languagepriority">LanguagePriority</a></li></ul><p><strong>See also </strong></p><ul><li><a class="directive" href="mod_mime.html#defaultlanguage"><code class="directive">DefaultLanguage</code></a></li><li><a class="directive" href="mod_mime.html#addencoding"><code class="directive">AddEncoding</code></a></li><li><a class="directive" href="mod_mime.html#addlanguage"><code class="directive">AddLanguage</code></a></li><li><a class="directive" href="mod_mime.html#addtype"><code class="directive">AddType</code></a></li></ul><h2>Type maps</h2>
+<h2>Directives</h2><ul><li><a href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li><li><a href="#forcelanguagepriority">ForceLanguagePriority</a></li><li><a href="#languagepriority">LanguagePriority</a></li></ul><p><strong>See also </strong></p><ul><li><a href="mod_mime.html#defaultlanguage" class="directive"><code class="directive">DefaultLanguage</code></a></li><li><a href="mod_mime.html#addencoding" class="directive"><code class="directive">AddEncoding</code></a></li><li><a href="mod_mime.html#addlanguage" class="directive"><code class="directive">AddLanguage</code></a></li><li><a href="mod_mime.html#addtype" class="directive"><code class="directive">AddType</code></a></li></ul><h2>Type maps</h2>
     <p>A type map has the same format as RFC822 mail headers. It
     contains document descriptions separated by blank lines, with
     lines beginning with a hash character ('#') treated as
@@ -33,7 +33,7 @@
       <dt>Content-Encoding:</dt>
 
       <dd>The encoding of the file. Apache only recognizes
-      encodings that are defined by an <a class="directive" href="mod_mime.html#addencoding"><code class="directive">AddEncoding</code></a> directive.
+      encodings that are defined by an <a href="mod_mime.html#addencoding" class="directive"><code class="directive">AddEncoding</code></a> directive.
       This normally includes the encodings <code>x-compress</code>
       for compress'd files, and <code>x-gzip</code> for gzip'd
       files. The <code>x-</code> prefix is ignored for encoding
@@ -92,7 +92,7 @@
     </dl>
 <h2>MultiViews</h2>
 
-    <p>A MultiViews search is enabled by the MultiViews <a class="directive" href="core.html#options"><code class="directive">Options</code></a>. If the server receives a
+    <p>A MultiViews search is enabled by the MultiViews <a href="core.html#options" class="directive"><code class="directive">Options</code></a>. If the server receives a
     request for <code>/some/dir/foo</code> and
     <code>/some/dir/foo</code> does <em>not</em> exist, then the
     server reads the directory looking for all files named
@@ -101,8 +101,8 @@
     content-encodings it would have if the client had asked for one
     of them by name. It then chooses the best match to the client's
     requirements, and returns that document.</p>
-<hr/><h2><a name="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Allows content-negotiated documents to be 
-cached by proxy servers</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>CacheNegotiatedDocs on|off</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>CacheNegotiatedDocs off</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_negotiation</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>The syntax changed in version 2.0.</td></tr></table></td></tr></table>
+<hr/><h2><a name="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Allows content-negotiated documents to be 
+cached by proxy servers</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CacheNegotiatedDocs on|off</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>CacheNegotiatedDocs off</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_negotiation</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>The syntax changed in version 2.0.</td></tr></table></td></tr></table>
     <p>If set, this directive allows content-negotiated documents
     to be cached by proxy servers. This could mean that clients
     behind those proxys could retrieve versions of the documents
@@ -118,10 +118,10 @@ cached by proxy servers</td></tr><tr><td><a class="help" href="directive-dict.ht
     <code class="directive">CacheNegotiatedDocs</code> did not take an
     argument; it was turned on by the presence of the directive by
     itself.</p>
-<hr/><h2><a name="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Action to take if a single acceptable document is not 
-found</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</td></tr><tr><td><a class="help" href="directive-dict.html#Default">Default:</a></td><td><code>ForceLanguagePriority None</code></td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_negotiation</td></tr><tr><td valign="top" align="left"><a class="help" href="directive-dict.html#Compatibility">Compatibility:</a></td><td>Available in version 2.0.30 and later</td></tr></table></td></tr></table>
+<hr/><h2><a name="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>Action to take if a single acceptable document is not 
+found</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</td></tr><tr><td><a href="directive-dict.html#Default" class="help">Default:</a></td><td><code>ForceLanguagePriority None</code></td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_negotiation</td></tr><tr><td align="left" valign="top"><a href="directive-dict.html#Compatibility" class="help">Compatibility:</a></td><td>Available in version 2.0.30 and later</td></tr></table></td></tr></table>
     <p>The <code class="directive">ForceLanguagePriority</code> directive uses
-    the given <a class="directive" href="#languagepriority"><code class="directive">LanguagePriority</code></a> to satisfy
+    the given <a href="#languagepriority" class="directive"><code class="directive">LanguagePriority</code></a> to satisfy
     negotation where the server could otherwise not return a single
     matching document.</p>
 
@@ -134,7 +134,7 @@ found</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:
     variant, en, will be served.</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      LanguagePriority en fr de<br/>
+      LanguagePriority en fr de<br>
       ForceLanguagePriority Prefer
 </code></td></tr></table></blockquote>
 
@@ -147,7 +147,7 @@ found</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:
     served.</p>
 
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-      LanguagePriority en fr de<br/>
+      LanguagePriority en fr de<br>
       ForceLanguagePriority Fallback
 </code></td></tr></table></blockquote>
 
@@ -156,8 +156,8 @@ found</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:
     that one variant is acceptable, or first available document will be
     served if none of the variants matched the client's acceptable list of
     languages.</p>
-<hr/><h2><a name="LanguagePriority">LanguagePriority</a> <a name="languagepriority">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>The precendence of language variants for cases where
-the client does not express a preference</td></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a class="help" href="directive-dict.html#Override">Override:</a></td><td>FileInfo</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Base</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_negotiation</td></tr></table></td></tr></table>
+<hr/><h2><a name="LanguagePriority">LanguagePriority</a> <a name="languagepriority">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td>The precendence of language variants for cases where
+the client does not express a preference</td></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td><a href="directive-dict.html#Override" class="help">Override:</a></td><td>FileInfo</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_negotiation</td></tr></table></td></tr></table>
     <p>The <code class="directive">LanguagePriority</code> sets the precedence
     of language variants for the case where the client does not
     express a preference, when handling a MultiViews request. The list
@@ -172,7 +172,7 @@ the client does not express a preference</td></tr><tr><td><a class="help" href="
     then <code>foo.html.fr</code> would be returned.</p>
 
     <p>Note that this directive only has an effect if a 'best'
-    language cannot be determined by any other means or the <a class="directive" href="#forcelanguagepriority"><code class="directive">ForceLanguagePriority</code></a> directive
+    language cannot be determined by any other means or the <a href="#forcelanguagepriority" class="directive"><code class="directive">ForceLanguagePriority</code></a> directive
     is not <code>None</code>. Correctly implemented HTTP/1.1 requests
     will mean this directive has no effect.</p>
 <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>

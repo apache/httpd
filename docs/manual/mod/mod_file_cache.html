@@ -2,7 +2,7 @@
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 This file is generated from xml source: DO NOT EDIT
           XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-        --><title>mod_file_cache- Apache HTTP Server</title><link rel="stylesheet" type="text/css" href="../style/manual.css"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_file_cache</h1><table bgcolor="#cccccc" cellpadding="0" cellspacing="1"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Caches a static list of files in memory</td></tr><tr><td><a class="help" href="module-dict.html#Status">Status:</a></td><td>Experimental</td></tr><tr><td><a class="help" href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></td><td>file_cache_module</td></tr></table></td></tr></table><h2>Summary</h2>
+        --><title>mod_file_cache- Apache HTTP Server</title><link href="../style/manual.css" type="text/css" rel="stylesheet"/></head><body><blockquote><div align="center"><img src="../images/sub.gif" alt="[APACHE DOCUMENTATION]"/><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Apache Module mod_file_cache</h1><table cellspacing="1" cellpadding="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td valign="top"><span class="help">Description:</span></td><td>Caches a static list of files in memory</td></tr><tr><td><a href="module-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="module-dict.html#ModuleIdentifier" class="help">Module&nbsp;Identifier:</a></td><td>file_cache_module</td></tr></table></td></tr></table><h2>Summary</h2>
 
 <blockquote><table><tr><td bgcolor="#ffe5f5">
 This module should be used with care. You can easily
@@ -31,11 +31,11 @@ This module should be used with care. You can easily
 <h2>Directives</h2><ul><li><a href="#cachefile">CacheFile</a></li><li><a href="#mmapfile">MMapFile</a></li></ul><h2>Using mod_file_cache</h2>
 
     <p><code><a href="mod_file_cache.html">mod_file_cache</a></code> caches a list of statically
-    configured files via <a class="directive" href="#mmapfile"><code class="directive">MMapFile</code></a> or <a class="directive" href="#cachefile"><code class="directive">CacheFile</code></a> directives in the
+    configured files via <a href="#mmapfile" class="directive"><code class="directive">MMapFile</code></a> or <a href="#cachefile" class="directive"><code class="directive">CacheFile</code></a> directives in the
     main server configuration.</p>
 
     <p>Not all platforms support both directives. For example, Apache
-    on Windows does not currently support the <a class="directive" href="#mmapstatic"><code class="directive">MMapStatic</code></a> directive, while
+    on Windows does not currently support the <a href="#mmapstatic" class="directive"><code class="directive">MMapStatic</code></a> directive, while
     other platforms, like AIX, support both. You will receive an error
     message in the server error log if you attempt to use an
     unsupported directive. If given an unsupported directive, the
@@ -45,7 +45,7 @@ This module should be used with care. You can easily
 
 <h3>MmapFile Directive</h3>
 
-    <p>The <a class="directive" href="#mmapfile"><code class="directive">MmapFile</code></a>
+    <p>The <a href="#mmapfile" class="directive"><code class="directive">MmapFile</code></a>
     directive of <code><a href="mod_file_cache.html">mod_file_cache</a></code> maps a list of
     statically configured files into memory through the system call
     <code>mmap()</code>. This system call is available on most modern
@@ -70,7 +70,7 @@ This module should be used with care. You can easily
 
 <h3>CacheFile Directive</h3>
 
-    <p>The <a class="directive" href="#cachefile"><code class="directive">CacheFile</code></a>
+    <p>The <a href="#cachefile" class="directive"><code class="directive">CacheFile</code></a>
     directive of <code><a href="mod_file_cache.html">mod_file_cache</a></code> opens an active
     <em>handle</em> or <em>file descriptor</em> to the file (or files)
     listed in the configuration directive and places these open file
@@ -95,16 +95,16 @@ This module should be used with care. You can easily
 <blockquote><table><tr><td bgcolor="#e0e5f5"><p align="center"><strong>Note</strong></p> Don't bother asking for a for a
     directive which recursively caches all the files in a
     directory. Try this instead... See the 
-    <a class="directive" href="core.html#include"><code class="directive">Include</code></a> directive, and consider
+    <a href="core.html#include" class="directive"><code class="directive">Include</code></a> directive, and consider
     this command:
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-  find /www/htdocs -type f -print \ <br/>
+  find /www/htdocs -type f -print \ <br>
   | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
 </code></td></tr></table></blockquote>
 </td></tr></table></blockquote>
 
-<hr/><h2><a name="CacheFile">CacheFile</a> <a name="cachefile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>CacheFile
-    <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Experimental</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table>
+<hr/><h2><a name="CacheFile">CacheFile</a> <a name="cachefile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>CacheFile
+    <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table>
     <p>The <code class="directive">CacheFile</code> directive opens handles to
     one or more files (given as whitespace separated arguments) and
     places these handles into the cache at server startup
@@ -124,7 +124,7 @@ This module should be used with care. You can easily
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
   CacheFile /usr/local/apache/htdocs/index.html
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="MMapFile">MMapFile</a> <a name="mmapfile">Directive</a></h2><table bgcolor="#cccccc" border="0" cellspacing="0" cellpadding="1"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a class="help" href="directive-dict.html#Syntax">Syntax:</a></td><td>MMapFile <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><td><a class="help" href="directive-dict.html#Context">Context:</a></td><td>server config</td></tr><tr><td><a class="help" href="directive-dict.html#Status">Status:</a></td><td>Experimental</td></tr><tr><td><a class="help" href="directive-dict.html#Module">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table>
+<hr/><h2><a name="MMapFile">MMapFile</a> <a name="mmapfile">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td><strong>Description: </strong></td><td/></tr><tr><td><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>MMapFile <em>file-path</em> [<em>file-path</em>] ...</td></tr><tr><td><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config</td></tr><tr><td><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Experimental</td></tr><tr><td><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_file_cache</td></tr></table></td></tr></table>
     <p>The <code class="directive">MMapFile</code> directive maps one or more files
     (given as whitespace separated arguments) into memory at server
     startup time. They are automatically unmapped on a server
