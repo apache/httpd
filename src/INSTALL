@@ -11,7 +11,7 @@ configuration script.
 
 To do this:
 
-1) Edit the file "Configuration".  This contains the per-machine
+1) Edit the file "Configuration.tmpl".  This contains the per-machine
    config settings of the Makefile, and also an additional section at
    the bottom which lists the modules which have been compiled in, and
    also names the files containing them.  You will need to:
@@ -30,7 +30,7 @@ To do this:
 2) Run the "Configure" script:
 
       % Configure
-      Using 'Configuration' as config file
+      Using 'Configuration.tmpl' as config file
       %
 
    This generates new versions of the Makefile and of modules.c.  (If

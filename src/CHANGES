@@ -1,3 +1,6 @@
+  *) Edit Configure and INSTALL to reflect the change from Configuration
+     to Configuration.tmpl. [Jim Jagielski]
+
   *) If there was no default MIME type defined, Apache sent Content-type:
      without a newline, thus swallowing the next header. Changed to send no
      Content-type: at all. [Ben Laurie]
@@ -22,6 +25,11 @@
      ignore Configuration, Makefile and modules.c. [Ben Laurie]
 
 Changes with Apache 1.1b0
+
+  *) Use shmget() (and family) for shared memory for the scoreboard
+     for SysV-based systems; basically A/UX and IRIX. Allow for
+     memory break-point (brk(0)) to be moved if need be before
+     attaching the mem segment. [Jim Jagielski]
 
   *) Use mmap() to allocated shared memory for the scoreboard on
      Solaris, SunOS, Digital UNIX, BSDI and HP/UX. It should work on

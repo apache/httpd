@@ -3,14 +3,14 @@
 # Apache configuration script, first cut --- rst.
 # Dont like it?  Inspired to do something better?  Go for it.
 
-file=Configuration
+file=Configuration.tmpl
 tmpfile=htconf.$$
 
 if [ "x$1" = "x-file" ] ; then
   echo "Using alternate config file $2"
   file=$2 
 else
-  echo "Using 'Configuration' as config file"
+  echo "Using \'$file\' as config file"
 fi
 
 # First, strip comments and blank lines...
