@@ -1370,6 +1370,10 @@ main(int argc, char *argv[])
 {
     int c;
 
+#ifdef AUX
+    (void)set42sig();
+#endif
+
 #ifdef SecureWare
     if(set_auth_parameters(argc,argv) < 0)
     	perror("set_auth_parameters");
