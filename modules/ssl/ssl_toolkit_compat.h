@@ -66,7 +66,7 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
-#ifdef SSL_EXPERIMENTAL_ENGINE
+#ifdef HAVE_ENGINE_INIT
 #include <openssl/engine.h>
 #endif
 
