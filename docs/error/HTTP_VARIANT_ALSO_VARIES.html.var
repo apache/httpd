@@ -1,0 +1,51 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Variante ebenfalls veränderlich!" -->
+<!--#include virtual="include/top.html" -->
+
+    Ein Zugriff auf das angeforderte Objekt bzw. einer
+    Variante dieses Objektes ist nicht möglich, da es ebenfalls
+    ein variables Objekt darstellt.
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Variant also varies!" -->
+<!--#include virtual="include/top.html" -->
+
+    A variant for the requested entity
+    is itself a negotiable resource.
+    Access not possible.
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Variant also varies!" -->
+<!--#include virtual="include/top.html" -->
+
+	No es posible tener acceso debido a que
+	una variante de la solicitud es por si 
+	misma un recurso negociable.
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="La variante varie elle-m&ecirc;me!" -->
+<!--#include virtual="include/top.html" -->
+
+    Une variante pour l'entit&eacute; requise
+    est elle-m&ecirc;me une ressource n&eacute;gociable.
+    L'acc&egrave;s est impossible.
+
+<!--#include virtual="include/bottom.html" -->  
+----------fr--

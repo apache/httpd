@@ -1,0 +1,48 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Übergebener URI zu groß!" -->
+<!--#include virtual="include/top.html" -->
+
+    Der bei der Anfrage übermittelnde URI überschreitet
+    die maximale Länge.
+    Die Anfrage kann nicht ausgeführt werden.
+    
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Submitted URI too large!" -->
+<!--#include virtual="include/top.html" -->
+
+   The length of the requested URL exceeds the capacity limit for this server.
+   The request cannot be processed.
+   
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Submitted URI too large!" -->
+<!--#include virtual="include/top.html" -->
+
+	Su solicitud no puede procesarse debido a que la
+	longitud del URL excede la capacidad limite del 
+	servidor. 
+    
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="L'URI demandee est trop longue!" -->
+<!--#include virtual="include/top.html" -->
+
+La longueur de l'URL demand&eacute;e exc&egrave;de la limite de capacit&egrave; pour ce serveur. Nous ne pouvons donner suite &agrave; votre requ&ecirc;te.
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--

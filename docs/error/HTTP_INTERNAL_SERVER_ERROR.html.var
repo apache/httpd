@@ -1,0 +1,86 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Serverfehler!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Dir Proxy-Anfrage konnte nicht ausgeführt werden.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Fehlermeldung:
+    <BR><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+
+  <!--#else -->
+
+    Die Anfrage kann nicht beantwortet werden, da im Server
+    ein interner Fehler aufgetreten ist.
+    Der Server ist entweder überlastet oder ein Fehler in
+    einem CGI-Script ist aufgetreten.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Server error!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+  <!--#else -->
+
+    The server encountered an internal error and was 
+    unable to complete your request. The server is either
+    overloaded or there was an error in a CGI script.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Server error!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+  <!--#else -->
+
+	El servidor encontro un error interno y fue
+	imposible completar su solicitud. 
+	Existe tambien la posibilidad de que el servidor 
+	este sobrecargado	o de alg&uacute;n error en un 
+	programa de CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="Erreur du serveur!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+  <!--#else -->
+
+    Le serveur a &egrave;t&eacute; victime d'une erreur interne et n'a pas &eacute;t&eacute;
+    capable de faire aboutir votre requ&ecirc;te. Soit le server est surcharg&eacute;
+    soit il s'agit d'une erreur dans le script CGI.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->   
+----------fr--
