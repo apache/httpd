@@ -644,7 +644,6 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
     SSLFilterRec *filter_ctx = f->ctx;
 
     if (f->c->aborted) {
-        /* XXX: This works in 2.0.43, but this will change soon */
         apr_brigade_cleanup(bb);
         return APR_ECONNABORTED;
     }
