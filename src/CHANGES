@@ -1,4 +1,8 @@
 Changes with Apache 1.3.23
+
+  *) Revert mod_negotation's handling of path_info and query_args
+     to the 1.3.20 behavior.  PR: 8628, 8582, 8538  [William Rowe]
+
   *) Modify buff.h and buff.c to enable modules to intercept the
      output byte stream for dynamic page caching. A pointer to a 
      'filter callback' function is added to the end of buff.h. 
