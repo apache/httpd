@@ -320,6 +320,8 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     /* Reference mem_cache_object_t out of cache_object_t */
     obj->vobj = mobj;
     mobj->m_len = len;
+    obj->complete = 0;
+    obj->refcount = 1;
 
     /* Place the cache_object_t into the hash table.
      * Note: Perhaps we should wait to put the object in the
@@ -343,14 +345,6 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
         sconf->object_cnt++;
         sconf->cache_size += len;
-        /* Call a cleanup at the end of the request to garbage collect
-         * a partially completed (aborted) cache update.
-         */
-        obj->complete = 0;
-        obj->refcount = 1;
-        obj->cleanup = 1;
-        apr_pool_cleanup_register(r->pool, obj, decrement_refcount, 
-                                  apr_pool_cleanup_null);
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
@@ -364,6 +358,13 @@ static int create_entity(cache_handle_t *h, request_rec *r,
         cleanup_cache_object(obj);
         return DECLINED;
     }
+
+    /* Set the cleanup flag and register the cleanup to cleanup
+     * the cache_object_t if the cache load is aborted.
+     */
+    obj->cleanup = 1;
+    apr_pool_cleanup_register(r->pool, obj, decrement_refcount, 
+                              apr_pool_cleanup_null);
 
     /* Populate the cache handle */
     h->cache_obj = obj;
@@ -434,10 +435,8 @@ static int remove_entity(cache_handle_t *h)
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
-        if (obj->refcount) {
-            obj->cleanup = 1;
-        }
-        else {
+        obj->cleanup = 1;
+        if (!obj->refcount) {
             cleanup_cache_object(obj);
         }
         h->cache_obj = NULL;
@@ -531,10 +530,8 @@ static int remove_url(const char *type, const char *key)
         apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
-        if (obj->refcount) {
-            obj->cleanup = 1;
-        }
-        else {
+        obj->cleanup = 1;
+        if (!obj->refcount) {
             cleanup_cache_object(obj);
         }
     }
