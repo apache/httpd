@@ -345,6 +345,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
     char *cp = NULL;
     conn_rec *c = (conn_rec*)SSL_get_app_data (pRec->pssl);
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    long verify_result;
 
     if (!SSL_is_init_finished(pRec->pssl))
     {
@@ -445,14 +446,37 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
         /*
          * Check for failed client authentication
          */
-        if (SSL_get_verify_result(pRec->pssl) != X509_V_OK ||
+        verify_result = SSL_get_verify_result(pRec->pssl);
+
+        if (verify_result != X509_V_OK ||
             ((cp = (char *)apr_table_get(c->notes,
                                          "ssl::verify::error")) != NULL))
         {
-            ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "SSL client authentication failed: %s",
-                    cp != NULL ? cp : "unknown reason");
-            return ssl_abort(pRec, c);
+            if (ssl_verify_error_is_optional(verify_result) &&
+                (sc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA))
+            {
+                /* leaving this log message as an error for the moment,
+                 * according to the mod_ssl docs:
+                 * "level optional_no_ca is actually against the idea
+                 *  of authentication (but can be used to establish 
+                 * SSL test pages, etc.)"
+                 * optional_no_ca doesn't appear to work as advertised
+                 * in 1.x
+                 */
+                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                        "SSL client authentication failed, "
+                        "accepting certificate based on "
+                        "\"SSLVerifyClient optional_no_ca\" configuration");
+
+            }
+            else {
+                const char *verror =
+                    X509_verify_cert_error_string(verify_result);
+                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                        "SSL client authentication failed: %s",
+                        cp ? cp : verror ? verror : "unknown");
+                return ssl_abort(pRec, c);
+            }
         }
 
         /*
