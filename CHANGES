@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) When SuExec is specified, we need to add it to the list of
+     targets to be built.  If we don't, then any changes to the
+     configuration won't affect SuExec, unless 'make suexec' is
+     specifically run.  [Ryan Bloom]
+
   *) Cleaned out open_file from mod_file_cache, as apr now accepts
      the APR_XTHREAD argument to open a file for consumption by
      parallel threads on win32.  [William Rowe]

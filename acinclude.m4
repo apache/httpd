@@ -64,6 +64,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(includedir)
   APACHE_SUBST(iconsdir)
   APACHE_SUBST(sysconfdir)
+  APACHE_SUBST(other_targets)
   APACHE_SUBST(progname)
   APACHE_SUBST(prefix)
   APACHE_SUBST(AWK)
