@@ -151,8 +151,8 @@ static ap_pool_t *thread_pool_parent; /* Parent of per-thread pools */
 static pthread_mutex_t thread_pool_parent_mutex;
 
 static int child_num;
-static int my_pid; /* Linux getpid() doesn't work except in main thread. Use
-                      this instead */
+static unsigned int my_pid; /* Linux getpid() doesn't work except in 
+                      main thread. Use this instead */
 /* Keep track of the number of worker threads currently active */
 static int worker_thread_count;
 static pthread_mutex_t worker_thread_count_mutex;
@@ -1087,7 +1087,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
-    lock_fname = ap_psprintf(_pconf, "%s.%lu",
+    lock_fname = ap_psprintf(_pconf, "%s.%u",
                              ap_server_root_relative(_pconf, lock_fname),
                              my_pid);
     rv = SAFE_ACCEPT(ap_create_lock(&process_accept_mutex, APR_MUTEX,

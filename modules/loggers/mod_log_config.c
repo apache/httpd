@@ -432,7 +432,7 @@ static const char *log_request_time(request_rec *r, char *a)
 
 static const char *log_request_duration(request_rec *r, char *a)
 {
-    return ap_psprintf(r->pool, "%ld", (ap_now() - r->request_time) / AP_USEC_PER_SEC);
+    return ap_psprintf(r->pool, "%lld", (ap_now() - r->request_time) / AP_USEC_PER_SEC);
 }
 
 /* These next two routines use the canonical name:port so that log

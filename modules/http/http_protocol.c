@@ -302,7 +302,7 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
         long tlength = 0;
 
         r->byterange = 2;
-        r->boundary = ap_psprintf(r->pool, "%lx%lx",
+        r->boundary = ap_psprintf(r->pool, "%llx%lx",
 				r->request_time, (long) getpid());
         while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
         ap_table_setn(r->headers_out, "Content-Length",
@@ -1309,7 +1309,7 @@ API_EXPORT(void) ap_note_digest_auth_failure(request_rec *r)
 {
     ap_table_setn(r->err_headers_out,
 	    r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
-	    ap_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%lu\"",
+	    ap_psprintf(r->pool, "Digest realm=\"%s\", nonce=\"%llx\"",
 		ap_auth_name(r), r->request_time));
 }
 
