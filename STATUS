@@ -117,6 +117,14 @@ Committed Code Changes:
     * Dean's changes to scoreboard defs which helps gcc generate better code.
     * Ralf's fix for QUERY_STRING and the proxy pass-through of mod_rewrite
     * Fix for symlink check in mod_rewrite's ``RewriteCond ... -l'', PR#2010
+    * Fix: SIGXCPU and SIGXFSZ are now reset to SIG_DFL at boot-time
+    * Dean's remove of HAVE_SNPRINTF
+    * Dean's mutation of ap_snprintf() code into apapi_vformatter()
+    * Lars' fix for "Options +Includes" and "+IncludesNoExec" merging
+    * Jim's fix for inconsistent usage of TCC and CC in Configure
+    * Jim's fix for IRIX which needs the -n32 flag iff using 'cc', PR#1901
+    * Jim's add of the SCO_SV port. PR#1962
+    * Dean's floating point ap_snprintf code wasn't threadsafe.
 
 Available Patches:
 
