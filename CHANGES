@@ -1,5 +1,8 @@
 Changes with Apache 2.0.15-dev
 
+  *) Bring forward the --suexec-umask option which allows the
+     builder to preset the umask for suexec processes.  [Ken Coar]
+
   *) Add a -V flag to suexec, which causes it to display the
      compile-time settings with which it was built.  (Only
      usable by root or the AP_HTTPD_USER username.)  [Ken Coar]
