@@ -15,7 +15,7 @@ PROGRAM_DEPENDENCIES = \
   main/libmain.la \
   $(OS_DIR)/libos.la \
   ap/libap.la \
-  lib/apr/libapr.a \
+  lib/apr/$(LIBPRE)apr.a \
   $(REGEX_LIB)
 
 PROGRAMS        = $(PROGRAM_NAME)
