@@ -275,6 +275,21 @@ extern "C" {
 #define DOCTYPE_HTML_4_0F "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
                           "DTD HTML 4.0 Frameset//EN\"\n" \
                           "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
+/** XHTML 1.0 Strict Doctype */
+#define DOCTYPE_XHTML_1_0S "<!DOCTYPE html PUBLIC \"-//W3C//" \
+                           "DTD XHTML 1.0 Strict//EN\"\n" \
+                           "\"http://www.w3.org/TR/xhtml1/DTD/" \
+                           "xhtml1-strict.dtd\">\n"
+/** XHTML 1.0 Transitional Doctype */
+#define DOCTYPE_XHTML_1_0T "<!DOCTYPE html PUBLIC \"-//W3C//" \
+                           "DTD XHTML 1.0 Transitional//EN\"\n" \
+                           "\"http://www.w3.org/TR/xhtml1/DTD/" \
+                           "xhtml1-transitional.dtd\">\n"
+/** XHTML 1.0 Frameset Doctype */
+#define DOCTYPE_XHTML_1_0F "<!DOCTYPE html PUBLIC \"-//W3C//" \
+                           "DTD XHTML 1.0 Frameset//EN\"\n" \
+                           "\"http://www.w3.org/TR/xhtml1/DTD/" \
+                           "xhtml1-frameset.dtd\">"
 
 /** Internal representation for a HTTP protocol number, e.g., HTTP/1.1 */
 

@@ -111,6 +111,7 @@ module AP_MODULE_DECLARE_DATA autoindex_module;
 #define TABLE_INDEXING      (1 << 14)
 #define IGNORE_CLIENT       (1 << 15)
 #define IGNORE_CASE         (1 << 16)
+#define EMIT_XHTML          (1 << 17)
 
 #define K_NOADJUST 0
 #define K_ADJUST 1
@@ -190,9 +191,9 @@ static char c_by_encoding, c_by_type, c_by_path;
  * We include the DOCTYPE because we may be using features therefrom (i.e.,
  * HEIGHT and WIDTH attributes on the icons if we're FancyIndexing).
  */
-static void emit_preamble(request_rec *r, char *title)
+static void emit_preamble(request_rec *r, int xhtml, const char *title)
 {
-    ap_rvputs(r, DOCTYPE_HTML_3_2,
+    ap_rvputs(r, xhtml ? DOCTYPE_XHTML_1_0T : DOCTYPE_HTML_3_2,
               "<html>\n <head>\n  <title>Index of ", title,
               "</title>\n </head>\n <body>\n", NULL);
 }
@@ -410,6 +411,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
         }
         else if (!strcasecmp(w, "VersionSort")) {
             option = VERSION_SORT;
+        }
+        else if (!strcasecmp(w, "XHTML")) {
+            option = EMIT_XHTML;
         }
         else if (!strcasecmp(w, "None")) {
             if (action != '\0') {
@@ -989,7 +993,7 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
  * oh well.
  */
 static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
-                      char *title)
+                      int emit_xhtml, char *title)
 {
     apr_table_t *hdrs = r->headers_in;
     apr_file_t *f = NULL;
@@ -1032,7 +1036,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
                 emit_H1 = 0;
 
                 if (! suppress_amble) {
-                    emit_preamble(r, title);
+                    emit_preamble(r, emit_xhtml, title);
                 }
                 /* This is a hack, but I can't find any better way to do this.
                  * The problem is that we have already created the sub-request,
@@ -1070,7 +1074,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
                  */
                 if (apr_file_open(&f, rr->filename, APR_READ,
                                   APR_OS_DEFAULT, r->pool) == APR_SUCCESS) {
-                    emit_preamble(r, title);
+                    emit_preamble(r, emit_xhtml, title);
                     emit_amble = 0;
                     do_emit_plain(r, f);
                     apr_file_close(f);
@@ -1092,7 +1096,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
     }
 
     if (emit_amble) {
-        emit_preamble(r, title);
+        emit_preamble(r, emit_xhtml, title);
     }
     if (emit_H1) {
         ap_rvputs(r, "<h1>Index of ", title, "</h1>\n", NULL);
@@ -1545,7 +1549,11 @@ static void output_directories(struct ent **ar, int n,
                 if (d->icon_height) {
                     ap_rprintf(r, " height=\"%d\"", d->icon_height);
                 }
-                ap_rputs(" /></th>", r);
+
+                if (autoindex_opts & EMIT_XHTML) {
+                    ap_rputs(" /", r);
+                }
+                ap_rputs("></th>", r);
             }
             else {
                 ap_rputs("&nbsp;</th>", r);
@@ -1577,7 +1585,8 @@ static void output_directories(struct ent **ar, int n,
         if (!(autoindex_opts & SUPPRESS_RULES)) {
             breakrow = apr_psprintf(r->pool,
                                     "<tr><th colspan=\"%d\">"
-                                    "<hr /></th></tr>\n", cols);
+                                    "<hr%s></th></tr>\n", cols,
+                                    (autoindex_opts & EMIT_XHTML) ? " /" : "");
         }
         ap_rvputs(r, "</th></tr>", breakrow, NULL);
     }
@@ -1593,7 +1602,11 @@ static void output_directories(struct ent **ar, int n,
                 if (d->icon_height) {
                     ap_rprintf(r, " height=\"%d\"", d->icon_height);
                 }
-                ap_rputs(" /> ", r);
+
+                if (autoindex_opts & EMIT_XHTML) {
+                    ap_rputs(" /", r);
+                }
+                ap_rputs("> ", r);
             }
             else {
                 ap_rputs("      ", r);
@@ -1621,7 +1634,11 @@ static void output_directories(struct ent **ar, int n,
                       colargs, static_columns);
         }
         if (!(autoindex_opts & SUPPRESS_RULES)) {
-            ap_rputs("<hr />", r);
+            ap_rputs("<hr", r);
+            if (autoindex_opts & EMIT_XHTML) {
+                ap_rputs(" /", r);
+            }
+            ap_rputs(">", r);
         }
         else {
             ap_rputc('\n', r);
@@ -1667,7 +1684,11 @@ static void output_directories(struct ent **ar, int n,
                     if (d->icon_height) {
                         ap_rprintf(r, " height=\"%d\"", d->icon_height);
                     }
-                    ap_rputs(" />", r);
+
+                    if (autoindex_opts & EMIT_XHTML) {
+                        ap_rputs(" /", r);
+                    }
+                    ap_rputs(">", r);
                 }
                 else {
                     ap_rputs("&nbsp;", r);
@@ -1753,7 +1774,11 @@ static void output_directories(struct ent **ar, int n,
                     if (d->icon_height) {
                         ap_rprintf(r, " height=\"%d\"", d->icon_height);
                     }
-                    ap_rputs(" />", r);
+
+                    if (autoindex_opts & EMIT_XHTML) {
+                        ap_rputs(" /", r);
+                    }
+                    ap_rputs(">", r);
                 }
                 else {
                     ap_rputs("     ", r);
@@ -1820,7 +1845,11 @@ static void output_directories(struct ent **ar, int n,
     }
     else if (autoindex_opts & FANCY_INDEXING) {
         if (!(autoindex_opts & SUPPRESS_RULES)) {
-            ap_rputs("<hr /></pre>\n", r);
+            ap_rputs("<hr", r);
+            if (autoindex_opts & EMIT_XHTML) {
+                ap_rputs(" /", r);
+            }
+            ap_rputs("></pre>\n", r);
         }
         else {
             ap_rputs("</pre>\n", r);
@@ -2111,7 +2140,8 @@ static int index_directory(request_rec *r,
     }
 
     emit_head(r, find_header(autoindex_conf, r),
-              autoindex_opts & SUPPRESS_PREAMBLE, title_name);
+              autoindex_opts & SUPPRESS_PREAMBLE,
+              autoindex_opts & EMIT_XHTML, title_name);
 
     /*
      * Since we don't know how many dir. entries there are, put them into a

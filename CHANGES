@@ -2,6 +2,12 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_autoindex: Add 'XHTML' option in order to allow switching between
+     HTML 3.2 and XHTML 1.0 output. PR 23747.  [André Malo]
+
+  *) Add XHTML Document Type Definitions to httpd.h (minor MMN bump).
+     [André Malo]
+
   *) mod_setenvif: Fix the regex optimizer, which under circumstances
      treated the supplied regex as literal string. PR 24219.
      [André Malo]
