@@ -2212,7 +2212,8 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
 
     if (ap_bputc(c, r->connection->client) < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO,
+                ap_berror(r->connection->client), r,
                 "client stopped connection before rputc completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2233,7 +2234,8 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
     rcode = ap_bputs(str, r->connection->client);
     if (rcode < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO,
+                ap_berror(r->connection->client), r,
                 "client stopped connection before rputs completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2277,7 +2279,8 @@ API_EXPORT(int) ap_vrprintf(request_rec *r, const char *fmt, va_list ap)
 
     if (n < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO,
+                ap_berror(r->connection->client), r,
                 "client stopped connection before vrprintf completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2302,7 +2305,8 @@ API_EXPORT(int) ap_rprintf(request_rec *r, const char *fmt,...)
 
     if (n < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO,
+                ap_berror(r->connection->client), r,
                 "client stopped connection before rprintf completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2360,7 +2364,6 @@ API_EXPORT(int) ap_rflush(request_rec *r)
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
         }
-        errno = rv;
         return EOF;
     }
     return 0;
