@@ -13,6 +13,10 @@ Changes with Apache 1.3.4
      was changed to show more information about the suEXEC setup.
      [Lars Eilebrecht] PR#3316, 3357, 3361
 
+  *) Added the last two WebDAV status codes of 424 (Failed Dependency)
+     and 507 (Insufficient Storage) for use by third-party modules.
+     [Roy Fielding]
+
   *) Enabled all of the WebDAV method names for use by third-party
      modules, Limit, and Script directives.  That includes PATCH,
      PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK, and UNLOCK.

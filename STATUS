@@ -125,8 +125,6 @@ In progress:
 
 Needs patch:
 
-    * Roy: Need to add updated WebDAV status codes from latest draft.
-
     * Ralf: mod_so doesn't correctly initialise modules. For instance
       the handlers of mod_perl are not initialised. 
       An ap_init_modules() could be done from mod_so but this is too much.

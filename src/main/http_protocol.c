@@ -1154,7 +1154,8 @@ static char *status_lines[] = {
     "421 unused",
     "422 Unprocessable Entity",
     "423 Locked",
-#define LEVEL_500 43
+    "424 Failed Dependency",
+#define LEVEL_500 44
     "500 Internal Server Error",
     "501 Method Not Implemented",
     "502 Bad Gateway",
@@ -1162,7 +1163,7 @@ static char *status_lines[] = {
     "504 Gateway Time-out",
     "505 HTTP Version Not Supported",
     "506 Variant Also Negotiates"
-    "507 unused",
+    "507 Insufficient Storage"
     "508 unused",
     "509 unused",
     "510 Not Extended",
@@ -2425,6 +2426,18 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	    ap_bputs("The requested resource is currently locked.\n"
 	             "The lock must be released or proper identification\n"
 	             "given before the method can be applied.\n", fd);
+	    break;
+	case HTTP_FAILED_DEPENDENCY:
+	    ap_bputs("The method could not be performed on the resource\n"
+	             "because the requested action depended on another\n"
+	             "action and that other action failed.\n", fd);
+	    break;
+	case HTTP_INSUFFICIENT_STORAGE:
+	    ap_bputs("The method could not be performed on the resource\n"
+	             "because the server is unable to store the\n"
+	             "representation needed to successfully complete the\n"
+	             "request.  There is insufficient free space left in\n"
+	             "your storage allocation.\n", fd);
 	    break;
 	case HTTP_SERVICE_UNAVAILABLE:
 	    ap_bputs("The server is temporarily unable to service your\n"
