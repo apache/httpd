@@ -1366,58 +1366,15 @@ static apr_status_t connection_destructor(void *resource, void *params,
     return APR_SUCCESS;
 }
 
-/* Destroy the connection */
-PROXY_DECLARE(apr_status_t) ap_proxy_destroy_connection(proxy_conn_rec *conn)
-{
-    return connection_destructor(conn, NULL, NULL);
-}
-
-/* Destroy the connection */
+/* Close the connection 
+ * The proxy_conn_rec from now on can not be used
+ */
 PROXY_DECLARE(apr_status_t) ap_proxy_close_connection(proxy_conn_rec *conn)
 {
-    apr_status_t rv = APR_EOF;
-    /* Close the socket */
-    if (conn->sock)
-        rv = apr_socket_close(conn->sock);
-    conn->sock = NULL;
-    return rv;
+    if (conn->worker && conn->worker->cp)
+        conn->worker->cp->conn = NULL;
+    return connection_destructor(conn, NULL, NULL);
 }
-
-/* low level connection acquire/release functions
- * they are hiding apr_reslist for nothreaded or prefork servers.
- */
-static apr_status_t acquire_connection_low(proxy_conn_rec **conn, proxy_worker *worker)
-{
-    apr_status_t rv;
-#if APR_HAS_THREADS
-    if (worker->hmax) {
-        rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
-    }
-    else
-#endif
-    {
-        *conn = worker->cp->conn;
-        worker->cp->conn = NULL;
-        rv = APR_SUCCESS;
-    }
-    return rv;
-}
-
-static apr_status_t release_connection_low(proxy_conn_rec *conn, proxy_worker *worker)
-{
-    apr_status_t rv = APR_SUCCESS;
-#if APR_HAS_THREADS
-    if (worker->hmax) {
-        rv = apr_reslist_release(worker->cp->res, (void *)conn);
-    }
-    else
-#endif
-    {
-        worker->cp->conn = conn;
-    }
-    return rv;
-}
-
 
 static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
 {
@@ -1443,6 +1400,68 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
         rv = APR_SUCCESS;
     }
     return rv;
+}
+
+PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
+                                               proxy_conn_rec **conn,
+                                               proxy_worker *worker,
+                                               server_rec *s)
+{
+    apr_status_t rv;
+#if APR_HAS_THREADS
+    if (worker->hmax) {
+        rv = apr_reslist_acquire(worker->cp->res, (void **)conn);
+    }
+    else
+#endif
+    {
+        /* create the new connection if the previous was destroyed */
+        if (!worker->cp->conn)
+            connection_constructor((void **)conn, s, worker->cp->pool);
+        else {
+            *conn = worker->cp->conn;
+            worker->cp->conn = NULL;
+        }
+        rv = APR_SUCCESS;
+    }
+
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "proxy: %s: failed to acquire connection for (%s)",
+                     proxy_function, worker->hostname);
+        return DECLINED;
+    }
+    return OK;
+}
+
+PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
+                                               proxy_conn_rec *conn,
+                                               server_rec *s)
+{
+    apr_status_t rv = APR_SUCCESS;
+    proxy_worker *worker = conn->worker;
+
+    if (!worker) {
+        /* something bad happened. Obviously bug.
+         * for now make a core dump.
+         */
+    }
+#if APR_HAS_THREADS
+    if (worker->hmax) {
+        rv = apr_reslist_release(worker->cp->res, (void *)conn);
+    }
+    else
+#endif
+    {
+        worker->cp->conn = conn;
+    }
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "proxy: %s: failed to acquire connection for (%s)",
+                     proxy_function, conn->hostname);
+        return DECLINED;
+    }
+    return OK;
 }
 
 PROXY_DECLARE(apr_status_t)
@@ -1554,7 +1573,6 @@ static int is_socket_connected(apr_socket_t *sock)
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
                                             proxy_worker *worker,
-                                            proxy_server_conf *conf,
                                             server_rec *s)
 {
     apr_status_t rv;
@@ -1592,9 +1610,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         }
 
 #if !defined(TPF) && !defined(BEOS)
-        if (conf->recv_buffer_size > 0 &&
+        if (worker->recv_buffer_size > 0 &&
             (rv = apr_socket_opt_set(newsock, APR_SO_RCVBUF,
-                                     conf->recv_buffer_size))) {
+                                     worker->recv_buffer_size))) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "apr_socket_opt_set(SO_RCVBUF): Failed to set "
                          "ProxyReceiveBufferSize, using default");
@@ -1637,21 +1655,15 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             continue;
         }
         
-        conn->sock     = newsock;
-        conn->worker   = worker;
-        /* XXX: the hostname will go from proxy_conn_rec
-         * keep for now.
-         * We will 'optimize' later, both code and unneeded data
-         */
-        conn->hostname = worker->hostname;
-        connected      = 1;
+        conn->sock   = newsock;
+        conn->worker = worker;
+        connected    = 1;
     }
     return connected ? OK : DECLINED;
 }
 
 PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               proxy_conn_rec *conn,
-                                              proxy_server_conf *conf,
                                               conn_rec *c,
                                               server_rec *s)
 {
