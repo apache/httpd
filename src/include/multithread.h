@@ -48,8 +48,8 @@ void destroy_event(event *event_id);
 #define APACHE_TLS
 /* Only define the ones actually used, for now */
 #define create_mutex(name)	NULL
-#define acquire_mutex(mutex_id)	MULTI_OK
-#define release_mutex(mutex_id)	MULTI_OK
+#define acquire_mutex(mutex_id)	{}
+#define release_mutex(mutex_id)	{}
 
 
 #endif /* ndef MULTITHREAD */
