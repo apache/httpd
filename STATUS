@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/13 16:44:42 $]
+  Last modified at [$Date: 1999/12/16 00:31:45 $]
 
 Release:
 
@@ -115,11 +115,15 @@ Available Patches:
 
     * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
 	Message-ID: <19990414134729.A93825@engelschall.com>
-	Status: Jim -1 (alternatives?), Mark +1, Dean +1, BenH +1,
+	Status: Mark +1, Dean +1, BenH +1,
 		Randy +1 (please choose name other than "hook")
                 Doug +1 on concept (untested), Lars +1 on concept,
-		Martin +1 (untested), Ken -1 for 1.3.7 (too controversial,
-		esp. w/KEAPI offered as well), Fred +1
+		Martin +1 (untested), Fred +1,
+		Jim ---0 (I really don't think it makes sense to
+		add this right now. If we do, then we want a "long"
+		beta period so that other packages that need to
+		patch the official source code have plenty of time
+		to make the required changes)
 
     * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
       (PR#2598)
