@@ -102,13 +102,16 @@ int gethostname(char *name, int namelen);
 
 #elif defined(IRIX)
 #undef HAVE_GMTOFF
-#undef NO_KILLPG
+/* IRIX has killpg, but it's only in _BSD_COMPAT, so don't use it in case
+ * there's some weird conflict with non-BSD signals */
+#define NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
+#define HAVE_BSTRING_H
 
 #elif defined(HIUX)
 #define HAVE_SYS_RESOURCE_H
