@@ -1,4 +1,4 @@
-$Id: CHANGES,v 1.54 1996/08/20 10:38:01 paul Exp $
+$Id: CHANGES,v 1.55 1996/08/20 11:00:58 ben Exp $
 
 Changes with Apache 1.2b1:
 
@@ -49,7 +49,7 @@ Changes with Apache 1.2b1:
       changed #tmpXXXX to tmpXXXX in temp file template, for broken link/unlink
       changed Expire to Expires in cache_update()
       added appropriate #defines for Next compile
-      added $Id: CHANGES,v 1.54 1996/08/20 10:38:01 paul Exp $ for RCS/CVS [Chuck Murcko]
+      added Id: for RCS/CVS [Chuck Murcko]
 
   *) Fix ErrorDocument handling.  When ErrorDocument failed it used to 
      display filename instead of error message. [Paul Sutton]
