@@ -1132,7 +1132,7 @@ doContent(XML_Parser parser,
 				next - enc->minBytesPerChar);
 	if (!name)
 	  return XML_ERROR_NO_MEMORY;
-	entity = (ENTITY *)lookup(&dtd.generalEntities, name, 0);
+	entity = (ENTITY *)hashTableLookup(&dtd.generalEntities, name, 0);
 	poolDiscard(&dtd.pool);
 	if (!entity) {
 	  if (dtd.complete || dtd.standalone)
@@ -1496,12 +1496,12 @@ static enum XML_Error storeAtts(XML_Parser parser, const ENCODING *enc,
   const XML_Char *localPart;
 
   if (tagNamePtr) {
-    elementType = (ELEMENT_TYPE *)lookup(&dtd.elementTypes, tagNamePtr->str, 0);
+    elementType = (ELEMENT_TYPE *)hashTableLookup(&dtd.elementTypes, tagNamePtr->str, 0);
     if (!elementType) {
       tagNamePtr->str = poolCopyString(&dtd.pool, tagNamePtr->str);
       if (!tagNamePtr->str)
 	return XML_ERROR_NO_MEMORY;
-      elementType = (ELEMENT_TYPE *)lookup(&dtd.elementTypes, tagNamePtr->str, sizeof(ELEMENT_TYPE));
+      elementType = (ELEMENT_TYPE *)hashTableLookup(&dtd.elementTypes, tagNamePtr->str, sizeof(ELEMENT_TYPE));
       if (!elementType)
         return XML_ERROR_NO_MEMORY;
       if (ns && !setElementTypePrefix(parser, elementType))
@@ -1613,7 +1613,7 @@ static enum XML_Error storeAtts(XML_Parser parser, const ENCODING *enc,
       if (appAtts[i][-1] == 2) {
         ATTRIBUTE_ID *id;
         ((XML_Char *)(appAtts[i]))[-1] = 0;
-	id = (ATTRIBUTE_ID *)lookup(&dtd.attributeIds, appAtts[i], 0);
+	id = (ATTRIBUTE_ID *)hashTableLookup(&dtd.attributeIds, appAtts[i], 0);
 	if (id->prefix->binding) {
 	  int j;
 	  const BINDING *b = id->prefix->binding;
@@ -2037,7 +2037,7 @@ prologProcessor(XML_Parser parser,
 	const XML_Char *name = poolStoreString(&dtd.pool, encoding, s, next);
 	if (!name)
 	  return XML_ERROR_NO_MEMORY;
-	declElementType = (ELEMENT_TYPE *)lookup(&dtd.elementTypes, name, sizeof(ELEMENT_TYPE));
+	declElementType = (ELEMENT_TYPE *)hashTableLookup(&dtd.elementTypes, name, sizeof(ELEMENT_TYPE));
 	if (!declElementType)
 	  return XML_ERROR_NO_MEMORY;
 	if (declElementType->name != name)
@@ -2129,7 +2129,7 @@ prologProcessor(XML_Parser parser,
 	if (!name)
 	  return XML_ERROR_NO_MEMORY;
 	if (dtd.complete) {
-	  declEntity = (ENTITY *)lookup(&dtd.generalEntities, name, sizeof(ENTITY));
+	  declEntity = (ENTITY *)hashTableLookup(&dtd.generalEntities, name, sizeof(ENTITY));
 	  if (!declEntity)
 	    return XML_ERROR_NO_MEMORY;
 	  if (declEntity->name != name) {
@@ -2411,7 +2411,6 @@ appendAttributeValue(XML_Parser parser, const ENCODING *enc, int isCdata,
       if (!poolAppend(pool, enc, ptr, next))
 	return XML_ERROR_NO_MEMORY;
       break;
-      break;
     case XML_TOK_TRAILING_CR:
       next = ptr + enc->minBytesPerChar;
       /* fall through */
@@ -2439,7 +2438,7 @@ appendAttributeValue(XML_Parser parser, const ENCODING *enc, int isCdata,
 			       next - enc->minBytesPerChar);
 	if (!name)
 	  return XML_ERROR_NO_MEMORY;
-	entity = (ENTITY *)lookup(&dtd.generalEntities, name, 0);
+	entity = (ENTITY *)hashTableLookup(&dtd.generalEntities, name, 0);
 	poolDiscard(&temp2Pool);
 	if (!entity) {
 	  if (dtd.complete) {
@@ -2696,7 +2695,7 @@ static int setElementTypePrefix(XML_Parser parser, ELEMENT_TYPE *elementType)
       }
       if (!poolAppendChar(&dtd.pool, XML_T('\0')))
 	return 0;
-      prefix = (PREFIX *)lookup(&dtd.prefixes, poolStart(&dtd.pool), sizeof(PREFIX));
+      prefix = (PREFIX *)hashTableLookup(&dtd.prefixes, poolStart(&dtd.pool), sizeof(PREFIX));
       if (!prefix)
 	return 0;
       if (prefix->name == poolStart(&dtd.pool))
@@ -2721,7 +2720,7 @@ getAttributeId(XML_Parser parser, const ENCODING *enc, const char *start, const 
   if (!name)
     return 0;
   ++name;
-  id = (ATTRIBUTE_ID *)lookup(&dtd.attributeIds, name, sizeof(ATTRIBUTE_ID));
+  id = (ATTRIBUTE_ID *)hashTableLookup(&dtd.attributeIds, name, sizeof(ATTRIBUTE_ID));
   if (!id)
     return 0;
   if (id->name != name)
@@ -2739,7 +2738,7 @@ getAttributeId(XML_Parser parser, const ENCODING *enc, const char *start, const 
       if (name[5] == '\0')
 	id->prefix = &dtd.defaultPrefix;
       else
-	id->prefix = (PREFIX *)lookup(&dtd.prefixes, name + 6, sizeof(PREFIX));
+	id->prefix = (PREFIX *)hashTableLookup(&dtd.prefixes, name + 6, sizeof(PREFIX));
       id->xmlns = 1;
     }
     else {
@@ -2753,7 +2752,7 @@ getAttributeId(XML_Parser parser, const ENCODING *enc, const char *start, const 
 	  }
 	  if (!poolAppendChar(&dtd.pool, XML_T('\0')))
 	    return 0;
-	  id->prefix = (PREFIX *)lookup(&dtd.prefixes, poolStart(&dtd.pool), sizeof(PREFIX));
+	  id->prefix = (PREFIX *)hashTableLookup(&dtd.prefixes, poolStart(&dtd.pool), sizeof(PREFIX));
 	  if (id->prefix->name == poolStart(&dtd.pool))
 	    poolFinish(&dtd.pool);
 	  else
@@ -2846,7 +2845,7 @@ int setContext(XML_Parser parser, const XML_Char *context)
       ENTITY *e;
       if (!poolAppendChar(&tempPool, XML_T('\0')))
 	return 0;
-      e = (ENTITY *)lookup(&dtd.generalEntities, poolStart(&tempPool), 0);
+      e = (ENTITY *)hashTableLookup(&dtd.generalEntities, poolStart(&tempPool), 0);
       if (e)
 	e->open = 1;
       if (*s != XML_T('\0'))
@@ -2861,7 +2860,7 @@ int setContext(XML_Parser parser, const XML_Char *context)
       else {
 	if (!poolAppendChar(&tempPool, XML_T('\0')))
 	  return 0;
-	prefix = (PREFIX *)lookup(&dtd.prefixes, poolStart(&tempPool), sizeof(PREFIX));
+	prefix = (PREFIX *)hashTableLookup(&dtd.prefixes, poolStart(&tempPool), sizeof(PREFIX));
 	if (!prefix)
 	  return 0;
         if (prefix->name == poolStart(&tempPool))
@@ -2971,7 +2970,7 @@ static int dtdCopy(DTD *newDtd, const DTD *oldDtd)
     name = poolCopyString(&(newDtd->pool), oldP->name);
     if (!name)
       return 0;
-    if (!lookup(&(newDtd->prefixes), name, sizeof(PREFIX)))
+    if (!hashTableLookup(&(newDtd->prefixes), name, sizeof(PREFIX)))
       return 0;
   }
 
@@ -2993,7 +2992,7 @@ static int dtdCopy(DTD *newDtd, const DTD *oldDtd)
     if (!name)
       return 0;
     ++name;
-    newA = (ATTRIBUTE_ID *)lookup(&(newDtd->attributeIds), name, sizeof(ATTRIBUTE_ID));
+    newA = (ATTRIBUTE_ID *)hashTableLookup(&(newDtd->attributeIds), name, sizeof(ATTRIBUTE_ID));
     if (!newA)
       return 0;
     newA->maybeTokenized = oldA->maybeTokenized;
@@ -3002,7 +3001,7 @@ static int dtdCopy(DTD *newDtd, const DTD *oldDtd)
       if (oldA->prefix == &oldDtd->defaultPrefix)
 	newA->prefix = &newDtd->defaultPrefix;
       else
-	newA->prefix = (PREFIX *)lookup(&(newDtd->prefixes), oldA->prefix->name, 0);
+	newA->prefix = (PREFIX *)hashTableLookup(&(newDtd->prefixes), oldA->prefix->name, 0);
     }
   }
 
@@ -3020,7 +3019,7 @@ static int dtdCopy(DTD *newDtd, const DTD *oldDtd)
     name = poolCopyString(&(newDtd->pool), oldE->name);
     if (!name)
       return 0;
-    newE = (ELEMENT_TYPE *)lookup(&(newDtd->elementTypes), name, sizeof(ELEMENT_TYPE));
+    newE = (ELEMENT_TYPE *)hashTableLookup(&(newDtd->elementTypes), name, sizeof(ELEMENT_TYPE));
     if (!newE)
       return 0;
     if (oldE->nDefaultAtts) {
@@ -3030,9 +3029,9 @@ static int dtdCopy(DTD *newDtd, const DTD *oldDtd)
     }
     newE->allocDefaultAtts = newE->nDefaultAtts = oldE->nDefaultAtts;
     if (oldE->prefix)
-      newE->prefix = (PREFIX *)lookup(&(newDtd->prefixes), oldE->prefix->name, 0);
+      newE->prefix = (PREFIX *)hashTableLookup(&(newDtd->prefixes), oldE->prefix->name, 0);
     for (i = 0; i < newE->nDefaultAtts; i++) {
-      newE->defaultAtts[i].id = (ATTRIBUTE_ID *)lookup(&(newDtd->attributeIds), oldE->defaultAtts[i].id->name, 0);
+      newE->defaultAtts[i].id = (ATTRIBUTE_ID *)hashTableLookup(&(newDtd->attributeIds), oldE->defaultAtts[i].id->name, 0);
       newE->defaultAtts[i].isCdata = oldE->defaultAtts[i].isCdata;
       if (oldE->defaultAtts[i].value) {
 	newE->defaultAtts[i].value = poolCopyString(&(newDtd->pool), oldE->defaultAtts[i].value);
@@ -3057,7 +3056,7 @@ static int dtdCopy(DTD *newDtd, const DTD *oldDtd)
     name = poolCopyString(&(newDtd->pool), oldE->name);
     if (!name)
       return 0;
-    newE = (ENTITY *)lookup(&(newDtd->generalEntities), name, sizeof(ENTITY));
+    newE = (ENTITY *)hashTableLookup(&(newDtd->generalEntities), name, sizeof(ENTITY));
     if (!newE)
       return 0;
     if (oldE->systemId) {

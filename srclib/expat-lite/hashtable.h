@@ -56,7 +56,7 @@ typedef struct {
   size_t usedLim;
 } HASH_TABLE;
 
-NAMED *lookup(HASH_TABLE *table, KEY name, size_t createSize);
+NAMED *hashTableLookup(HASH_TABLE *table, KEY name, size_t createSize);
 void hashTableInit(HASH_TABLE *);
 void hashTableDestroy(HASH_TABLE *);
 

@@ -930,7 +930,7 @@ int parsePseudoAttribute(const ENCODING *enc,
 			 const char **nextTokPtr)
 {
   int c;
-  char open;
+  char openchar;
   if (ptr == end) {
     *namePtr = 0;
     return 1;
@@ -981,12 +981,12 @@ int parsePseudoAttribute(const ENCODING *enc,
     *nextTokPtr = ptr;
     return 0;
   }
-  open = c;
+  openchar = c;
   ptr += enc->minBytesPerChar;
   *valPtr = ptr;
   for (;; ptr += enc->minBytesPerChar) {
     c = toAscii(enc, ptr, end);
-    if (c == open)
+    if (c == openchar)
       break;
     if (!('a' <= c && c <= 'z')
 	&& !('A' <= c && c <= 'Z')
