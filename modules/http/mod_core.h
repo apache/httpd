@@ -95,7 +95,7 @@ void ap_finalize_sub_req_protocol(request_rec *sub_r);
 
 
 /* Send the response to special method requests */
-int ap_send_http_trace(request_rec *r);
+AP_DECLARE(int) ap_send_http_trace(request_rec *r);
 int ap_send_http_options(request_rec *r);
 
 
