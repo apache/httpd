@@ -2046,7 +2046,8 @@ static char *do_expand(char *input, rewrite_ctx *ctx)
         if (current->len) {
             current->next = (spc < SMALL_EXPANSION)
                             ? &(sresult[spc++])
-                            : (result_list *)apr_palloc(pool, sizeof(result_list));
+                            : (result_list *)apr_palloc(pool,
+                                                        sizeof(result_list));
             current = current->next;
             current->next = NULL;
             current->len = 0;
@@ -2173,7 +2174,8 @@ static char *do_expand(char *input, rewrite_ctx *ctx)
             if (current->len) {
                 current->next = (spc < SMALL_EXPANSION)
                                 ? &(sresult[spc++])
-                                : (result_list *)apr_palloc(pool, sizeof(result_list));
+                                : (result_list *)apr_palloc(pool,
+                                                           sizeof(result_list));
                 current = current->next;
                 current->next = NULL;
             }
@@ -3373,7 +3375,8 @@ static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 
     case CONDPAT_FILE_LINK:
 #if !defined(OS2)
-        if (   apr_stat(&sb, input, APR_FINFO_MIN | APR_FINFO_LINK, r->pool) == APR_SUCCESS
+        if (   apr_stat(&sb, input, APR_FINFO_MIN | APR_FINFO_LINK,
+                        r->pool) == APR_SUCCESS
             && sb.filetype == APR_LNK) {
             rc = 1;
         }
