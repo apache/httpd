@@ -73,6 +73,44 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * Randy's [PATCH] APACI configure changes
+      This is the original patch which tries to provide the new default path
+      layout, the single config installation, the APACI top-level Makefile
+      generation and the TARGET name.
+      Status: Ralf -0 (with a tendency to -1)
+              [actually: path layout:        +0 (too less generic)
+                         single config:      +1 (all ok)
+                         top-level Makefile: -0 (too problematic)
+                         TARGET name:        +0 (too incomplete)]
+
+    * Ralf's [PATCH] Configuration (1/4): Path Layout
+      This patch makes the Apache Classic Path Layout the default and provides
+      a general way (--with-layout) to specificy the layout. GNU layout is
+      predefined, more custom layout can be added easily through external
+      files.
+      Status: Ralf +1
+
+    * Ralf's [PATCH] Configuration (2/4): Single Config
+      This patch is extracted from Randys patch and makes sure that the
+      access.conf and srm.conf (dummy) files are no longer installed.
+      Status: Ralf +1
+
+    * Ralf's [PATCH] Configuration (3/4): APACI Makefile for src/Configure
+      This patch is a possible alternative answer to Randys attemp to create
+      an APACI top-level Makefile from within src/Configure. Because Randys
+      attemp is against the APACI intenations. Of course, this patch is
+      against the src/Configure intentations, so even the author dislikes it.
+      But the author thinks at least this is better than doing
+      mass-exportation of variables and code movements.
+      Status: Ralf -0, Jim -1
+
+    * Ralf's [PATCH] Configuration (4/4): TARGET name
+      This patch tries to complete Randys initial work to make the TARGET
+      variable more generic and more generally applicable. With it one can
+      change "httpd" to "apache" or to whatever for the particular
+      installation.
+      Status: Ralf +1
+
     * Paul's [PATCH] adding a DefaultLanguage directive
       This patch implements a DefaultLanguage directive. It sets the
       language to apply to files with no explicit language set via
