@@ -202,7 +202,7 @@ typedef u_long  n_long;
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
-#define waitpid(a,b,c) wait4(a,(union wait *)b,c,NULL)
+#define waitpid(a,b,c) wait4((a) == -1 ? 0 : (a),(union wait *)(b),c,NULL)
 typedef int pid_t;
 #define JMP_BUF jmp_buf
 #define NO_USE_SIGACTION
