@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/08 19:57:29 $]
+Last modified at [$Date: 2004/03/08 23:34:48 $]
 
 Release:
 
@@ -83,30 +83,13 @@ PATCHES TO BACKPORT FROM 2.1
           modules/ssl/ssl_engine_io.c: r1.102
           modules/ssl/ssl_engine_kernel.c: r1.83, r1.105
           modules/ssl/ssl_util.c: r1.36
-	  modules/ssl/ssl_private.h: r1.2
+          modules/ssl/ssl_private.h: r1.2
        +1: bnicholes
-    
-    *) core, protocol: Remove compile-time length limit on request strings. Length is
-       now enforced solely with the LimitRequestLine config directive.
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.263&r2=1.264
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.145&r2=1.146
-      +1:  rederpj, jerenkrantz, trawick
-
-    * Win32 mpm: Fix broken find_ready_listener in Win32DisableAcceptEx path
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/mpm/winnt/child.c?r1=1.29&r2=1.30
-      +1: stoddard, trawick, ake
 
     * mod_setenvif: remove support for remote_user variable which never
       worked at all. PR 25725 (2.0 + 1.3)
         modules/metadata/mod_setenvif.c: r1.50
       +1: nd
-
-    * Fix file extensions for real media files and removed rpm extension
-      from mime.types. PR 26079. (2.0 + 1.3)
-        docs/conf/mime.types: r1.23, r1.24
-      jerenkrantz: Why is rm not application/vnd.rn-realmedia as in PR 26079?
-      nd: good question. I'd guess I was tired :-). Fixed in 1.24.
-      +1: nd, trawick, jerenkrantz
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
@@ -178,19 +161,6 @@ PATCHES TO BACKPORT FROM 2.1
       +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
                  shows breakage on Solaris which can't -lcrypto -lssl without
                  the extra pkgconfig/openssl.pc Libs: * foo }
-
-    * piped log programs respawning after Apache is stopped. PR 24805
-      bogus "piped log program '(null)' failed" messages during
-      restart. PR 21648.  Two people have tested a similar log.c patch
-      and the worker.c patch and given feedback in PR 24805.
-        server/log.c r1.137
-        Possible PREREQ: ap_mpm_query(mpm-state) support in BeOS and OS/2 MPMs
-        (If an MPM is used that doesn't support the query, a complaint
-        will be written to the error log when a piped log program
-        terminates, and it won't get restarted.)
-        +1: trawick, jerenkrantz, nd
-      Backport even with missing OS/2 and BeOS support:
-        +1: trawick, jerenkrantz
 
     * ab: catch out of memory (reasoning report ID 29)
         support/ab.c: r1.125
