@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.91 $ ($Date: 1997/10/25 22:35:10 $)
+  $Revision: 1.92 $ ($Date: 1997/11/01 04:45:51 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -168,7 +168,7 @@
     reset by peer</SAMP>&quot; in my error log?</A>
    </LI>
    <LI><A HREF="#nph-scripts">How can I get my script's output without
-    Apache buffering it?</A>
+    Apache buffering it?  Why doesn't my server push work?</A>
    </LI>
    <LI><A HREF="#linuxiovec">Why do I get complaints about redefinition
     of &quot;<CODE>struct iovec</CODE>&quot; when compiling under Linux?</A>
@@ -1253,14 +1253,14 @@
  </LI>
  <LI><A NAME="nph-scripts">
       <STRONG>How can I get my script's output without Apache buffering
-      it?</STRONG>
+      it?  Why doesn't my server push work?</STRONG>
      </A>
   <P>
   In order to improve network performance, Apache buffers script output
   into relatively large chunks.  If you have a script that sends
-  information in bursts (such as partial-done messages in a multi-commit
-  database transaction, perhaps), the client will not necessarily get
-  the output as the script is generating it.
+  information in bursts (eg. as partial-done messages in a multi-commit
+  database transaction or any type of server push), the client will 
+  not necessarily get the output as the script is generating it.
   </P>
   <P>
   To avoid this, Apache recognizes scripts whose names begin with
@@ -1306,6 +1306,10 @@
   </P>
   <P>
   and then follow with your normal non-<SAMP>nph</SAMP> headers.
+  </P>
+  <P>Note that in version 1.3, all CGI scripts will be unbuffered
+  so the only difference between nph scripts and normal scripts is
+  that nph scripts require the full HTTP headers to be sent.
   </P>
   <HR>
  </LI>
