@@ -10,6 +10,7 @@
 #define OPTERRARG (3)
 
 char *optarg;
+int optreset = 0;
 int optind = 1;
 int opterr = 1;
 int optopt;
@@ -51,6 +52,8 @@ getopt(int argc, char* const *argv, const char *optstr)
 
     char *cp;
 
+    if (optreset)
+        optreset = optchr = dash = 0;
     if(optind >= argc)
         return(EOF);
     if(!dash && (argv[optind][0] !=  '-'))

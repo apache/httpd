@@ -2,6 +2,7 @@
 #define GETOPT_H
 
 extern char *optarg;
+extern int optreset;
 extern int optind;
 extern int opterr;
 extern int optopt;
