@@ -115,7 +115,38 @@ static const char *set_worker_param(proxy_worker *worker,
             return "smax must be a positive number";
         worker->smax = ival;
     }
+    else {
+        return "unknown parameter";
+    }
+    return NULL;
+}
 
+static const char *set_balancer_param(struct proxy_balancer *balancer,
+                                      const char *key,
+                                      const char *val)
+{
+
+    int ival;
+    if (!strcasecmp(key, "stickysession")) {
+        balancer->sticky = val;
+    }
+    else if (!strcasecmp(key, "nofailover")) {
+        if (!strcasecmp(val, "on"))
+            balancer->sticky_force = 1;
+        else if (!strcasecmp(val, "off"))
+            balancer->sticky_force = 0;
+        else
+            return "failover must be On|Off";
+    }
+    else if (!strcasecmp(key, "timeout")) {
+        ival = atoi(val);
+        if (ival < 1)
+            return "timeout must be al least one second";
+        balancer->timeout = apr_time_from_sec(ival);
+    }
+    else {
+        return "unknown parameter";
+    }
     return NULL;
 }
 
@@ -786,8 +817,17 @@ static const char *
     if (strncasecmp(r, "balancer:", 9) == 0) {
         struct proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
-
+            const char *err = ap_proxy_add_balancer(&balancer,
+                                                    cmd->pool,
+                                                    conf, r);
+            if (err)
+                return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL);
         }        
+        for (i = 0; i < arr->nelts; i++) {
+            const char *err = set_balancer_param(balancer, elts[i].key, elts[i].val);
+            if (err)
+                return apr_pstrcat(cmd->temp_pool, "ProxyPass: ", err, NULL);
+        }
     }
     else {
         proxy_worker *worker = ap_proxy_get_worker(cmd->pool, conf, r);
@@ -1177,22 +1217,11 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     /* Try to find the balancer */
     balancer = ap_proxy_get_balancer(cmd->temp_pool, conf, name); 
     if (!balancer) {
-        apr_status_t rc = 0;
-#if DEBUGGING
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "Creating new balancer %s", path);
-#endif
-        balancer = (struct proxy_balancer *)apr_pcalloc(cmd->pool, sizeof(struct proxy_balancer));
-        balancer->name = path;
-        balancer->workers = apr_array_make(cmd->pool, 5, sizeof(proxy_runtime_worker));
-        /* XXX Is this a right place to create mutex */
-#if APR_HAS_THREADS
-        if ((rc = apr_thread_mutex_create(&(balancer->mutex),
-            APR_THREAD_MUTEX_DEFAULT, cmd->pool)) != APR_SUCCESS) {
-            /* XXX: Do we need to log something here */
-            return "BalancerMember: system error. Can not create thread mutex";
-        }
-#endif
+        const char *err = ap_proxy_add_balancer(&balancer,
+                                                cmd->pool,
+                                                conf, path);
+        if (err)
+            return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL);
     }
     /* Add the worker to the load balancer */
     ap_proxy_add_worker_to_balancer(balancer, worker);
@@ -1424,6 +1453,48 @@ PROXY_DECLARE(struct proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
         if (strcasecmp(balancers[i].name, uri) == 0)
             return &balancers[i];
     }
+    return NULL;
+}
+
+PROXY_DECLARE(const char *) ap_proxy_add_balancer(struct proxy_balancer **balancer,
+                                                  apr_pool_t *p,
+                                                  proxy_server_conf *conf,
+                                                  const char *url)
+{
+    char *c, *q, *uri = apr_pstrdup(p, url);
+    int port;
+    apr_status_t rc = 0;
+
+    c = strchr(url, ':');   
+    if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
+       return "Bad syntax for a remote proxy server";
+    /* remove path from uri */
+    if ((q = strchr(c + 3, '/')))
+        *q = '\0';
+
+    q = strchr(c + 3, ':');
+    if (q != NULL) {
+        if (sscanf(q + 1, "%u", &port) != 1 || port > 65535) {
+            return "Bad syntax for a remote proxy server (bad port number)";
+        }
+        *q = '\0';
+    }
+    else
+        port = -1;
+    ap_str_tolower(uri);
+    *balancer = apr_array_push(conf->balancers);
+    (*balancer)->name = apr_pstrdup(p, uri);
+    *c = '\0';
+    (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_runtime_worker));
+    /* XXX Is this a right place to create mutex */
+#if APR_HAS_THREADS
+    if ((rc = apr_thread_mutex_create(&((*balancer)->mutex),
+                APR_THREAD_MUTEX_DEFAULT, p)) != APR_SUCCESS) {
+            /* XXX: Do we need to log something here */
+            return "can not create thread mutex";
+    }
+#endif
+    
     return NULL;
 }
 
