@@ -1711,9 +1711,6 @@ static const char *set_max_clients (cmd_parms *cmd, void *dummy,
                     ap_daemons_limit);
        max_clients = ap_daemons_limit * ap_threads_per_child; 
     }
-    /* XXX
-     * ap_daemons_limit can reach server_limit * ap_threads_per_child, right?
-     */
     if (ap_daemons_limit > server_limit) {
        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
                     "WARNING: MaxClients of %d would require %d servers,",
