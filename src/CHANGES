@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) M_INVALID needed a value within the scope of METHODS so that unknown
+     methods can be access controlled.  [Roy Fielding] PR#3821
+
   *) Added PassAllEnv; makes server's entire environment available
      to CGIs and SSIs executed within directive's scope.  [Ken Coar]
 

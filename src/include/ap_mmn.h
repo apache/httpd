@@ -213,14 +213,15 @@
  *                        definition of method in request_rec.
  * 19990108.6           - SIGPIPE is now ignored by the core server.
  * 19990108.7           - ap_isxdigit added
+ * 19990320             - METHODS and M_INVALID symbol values modified
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19990108
+#define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 7                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

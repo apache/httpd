@@ -555,9 +555,9 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define M_MOVE      12
 #define M_LOCK      13
 #define M_UNLOCK    14
+#define M_INVALID   15
 
-#define METHODS     15
-#define M_INVALID   31
+#define METHODS     16
 
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
