@@ -59,6 +59,9 @@
 #include "apr_strings.h"
 #include "apr_thread_proc.h"    /* for RLIMIT stuff */
 
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
