@@ -981,6 +981,7 @@ char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 {
     listen_rec *new;
     char *ports;
+    int port;
 
     if (cmd->server->is_virtual) return "Listen not allowed in <VirtualHost>";
     ports=strchr(ips, ':');
@@ -999,7 +1000,10 @@ char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
 	new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     else
 	new->local_addr.sin_addr.s_addr = get_virthost_addr(ips, NULL);
-    new->local_addr.sin_port = htons(atoi(ports));
+    port=atoi(ports);
+    if(!port)
+	return "Port must be numeric";
+    new->local_addr.sin_port = htons(port);
     new->fd = -1;
     new->next = listeners;
     listeners = new;
