@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/30 21:11:26 $]
+Last modified at [$Date: 2000/07/01 14:24:47 $]
 
 Release:
 
@@ -134,15 +134,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Integrate mod_dav.
         Message-id: <20000625173247.M29590@lyra.org>
-        Status: in process.
+        Status: in process. (it compiles/links, but doesn't work yet)
         - APR does not provide a couple needed things: chmod()
           and ap_finfo_t.st_dev.
-	- expat-lite needs to be brought up to parity with the 1.3
-	  vsn and inserted into the config/build process
-	- SDBM needs to go into the config/build process
-	- fix up include dirs to pick up expat-lite, sdbm, dav/main
-	- APR-ization to the dav/fs/ stuff
+	- APR-ization of the dav/fs/ stuff
 	- case_preserved_filename stuff
+        - turn dav/fs/ into a true module; remove existing config hackery
 
     * ap_core_translate() and its use by mod_mmap_static are a bit wonky.
       The function should probably be exposed as a utility function (such
