@@ -375,7 +375,6 @@ apr_create_pipe
 apr_create_pool
 apr_create_process
 apr_create_socket
-apr_create_tcp_socket
 apr_create_thread
 apr_create_thread_private
 apr_create_threadattr
