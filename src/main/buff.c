@@ -82,11 +82,7 @@
 #define CHUNK_HEADER_SIZE (5)
 #endif
 
-#ifdef CHARSET_EBCDIC
 #define ascii_CRLF "\015\012" /* A CRLF which won't pass the conversion machinery */
-#else
-#define ascii_CRLF CRLF
-#endif
 
 /* bwrite()s of greater than this size can result in a large_write() call,
  * which can result in a writev().  It's a little more work to set up the
