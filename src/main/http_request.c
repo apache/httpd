@@ -749,7 +749,9 @@ void process_request_internal (request_rec *r)
 
 void process_request (request_rec *r)
 {
+#ifdef STATUS
     int old_stat;
+#endif /* STATUS */
     process_request_internal (r);
 #ifdef STATUS
     old_stat = update_child_status (r->connection->child_num, SERVER_BUSY_LOG,
