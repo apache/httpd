@@ -4,13 +4,20 @@
 
 #include "httpd.h"
 
-static void sub_canonical_filename(char *szCanon, unsigned nCanon, const char *szFile)
+/* Returns TRUE if the path is real, FALSE if it is PATH_INFO */
+static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     int n;
     char *szFilePart;
+    char *s;
+    int nSlashes;
     WIN32_FIND_DATA d;
     HANDLE h;
+
+    s=strrchr(szFile,'\\');
+    for(nSlashes=0 ; s > szFile && s[-1] == '\\' ; ++nSlashes,--s)
+	;
 
     n = GetFullPathName(szFile, sizeof buf, buf, &szFilePart);
     ap_assert(n);
@@ -68,13 +75,17 @@ static void sub_canonical_filename(char *szCanon, unsigned nCanon, const char *s
         szCanon[3] = '\0';
     }
     if (h == INVALID_HANDLE_VALUE) {
-	ap_assert(strlen(szCanon)+strlen(szFilePart) < nCanon);
+	ap_assert(strlen(szCanon)+strlen(szFilePart)+nSlashes < nCanon);
+	for(n=0 ; n < nSlashes ; ++n)
+	    strcat(szCanon, "/");
         strcat(szCanon, szFilePart);
+	return FALSE;
     }
     else {
 	ap_assert(strlen(szCanon)+strlen(d.cFileName) < nCanon);
         strlwr(d.cFileName);
         strcat(szCanon, d.cFileName);
+	return TRUE;
     }
 }
 
@@ -86,35 +97,41 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     char b2[HUGE_STRING_LEN];
-    char *s,*d;
+    const char *s;
+    char *d;
+    int nSlashes;
 
     ap_assert(strlen(szFile) < sizeof b2);
-    strcpy(b2,szFile);
-    for(s=b2 ; *s ; ++s)
-	if(*s == '/')
-	    *s='\\';
 
     /* Eliminate directories consisting of three or more dots.
        These act like ".." but are not detected by other machinery.
+       Also get rid of trailing .s on any path component, which are ignored by the filesystem.
+       Simultaneously, rewrite / to \.
        This is a bit of a kludge - Ben.
     */
-    for(d=s=b2 ; (*d=*s) ; ++d,++s)
-	if(!strncmp(s,"\\...",3))
-	    {
-	    int n=strspn(s+1,".");
-	    if(s[n+1] != '\\')
-		continue;
-	    s+=n;
-	    --d;
+    for(s=szFile,d=b2 ; (*d=*s) ; ++d,++s) {
+	if(*s == '/')
+	    *d='\\';
+	if(*s == '.' && (s[1] == '/' || s[1] == '\\' || !s[1])) {
+	    while(*d == '.')
+		--d;
+	    if(*d == '\\')
+		--d;
 	    }
+	}
+    // Finally, a trailing slash(es) screws thing, so blow them away
+    for(nSlashes=0 ; d > b2 && d[-1] == '\\' ; --d,++nSlashes)
+	;
+    *d='\0';
 
-    sub_canonical_filename(buf, sizeof buf, b2);
+    if(sub_canonical_filename(buf, sizeof buf, b2) && nSlashes)
+	nSlashes=1;
+
     buf[0]=tolower(buf[0]);
 
-    if (*szFile && szFile[strlen(szFile)-1] == '/' && buf[strlen(buf)-1] != '/') {
-	ap_assert(strlen(buf)+1 < sizeof buf);
+    ap_assert(strlen(buf)+nSlashes < sizeof buf);
+    while(nSlashes--)
         strcat(buf, "/");
-    }
 
     return ap_pstrdup(pPool, buf);
 }
