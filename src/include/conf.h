@@ -89,6 +89,7 @@ char *mktemp(char *template);
 typedef int rlim_t;
 #define memmove(a,b,c) bcopy(b,a,c)
 #define NO_LINGCLOSE
+#define USE_FLOCK_SERIALIZED_ACCEPT
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF
@@ -329,6 +330,7 @@ extern char *crypt();
  */
 #define NO_LINGCLOSE
 #define NO_SLACK
+#define USE_FLOCK_SERIALIZED_ACCEPT
 
 #elif defined(SVR4)
 #define NO_KILLPG
@@ -411,6 +413,7 @@ extern char *crypt();
 (defined(__FreeBSD_version) && (__FreeBSD_version < 220000))
 typedef quad_t rlim_t;
 #endif
+#define USE_FLOCK_SERIALIZED_ACCEPT
 
 #elif defined(QNX)
 #ifndef crypt
