@@ -161,7 +161,7 @@ static int get_rfc1413(int sock, const struct sockaddr_in *our_sin,
     ebcdic2ascii(buffer, buffer, buflen);
 #endif
     i = 0;
-    while(i < strlen(buffer)) {
+    while(i < (int)strlen(buffer)) {
         int j;
 	j = write(sock, buffer+i, (strlen(buffer+i)));
 	if (j < 0 && errno != EINTR) {

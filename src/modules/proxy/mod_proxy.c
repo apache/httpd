@@ -441,7 +441,7 @@ static void *
     ps->cache.dirlevels_set = 0;
     ps->cache.dirlength = 1;
     ps->cache.dirlength_set = 0;
-    ps->cache.cache_completion = DEFAULT_CACHE_COMPLETION;
+    ps->cache.cache_completion = (float)DEFAULT_CACHE_COMPLETION;
     ps->cache.cache_completion_set = 0;
 
     return ps;

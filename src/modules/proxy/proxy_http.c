@@ -219,13 +219,13 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
     }
 
     if (proxyhost != NULL) {
-        server.sin_port = htons(proxyport);
+        server.sin_port = htons((unsigned short)proxyport);
         err = ap_proxy_host2addr(proxyhost, &server_hp);
         if (err != NULL)
             return DECLINED;    /* try another */
     }
     else {
-        server.sin_port = htons(destport);
+        server.sin_port = htons((unsigned short)destport);
         err = ap_proxy_host2addr(desthost, &server_hp);
         if (err != NULL)
             return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, err);

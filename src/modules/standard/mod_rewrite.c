@@ -2475,7 +2475,7 @@ static void reduce_uri(request_rec *r)
 
     cp = ap_http_method(r);
     l  = strlen(cp);
-    if (   strlen(r->filename) > l+3 
+    if (   (int)strlen(r->filename) > l+3 
         && strncasecmp(r->filename, cp, l) == 0
         && r->filename[l]   == ':'
         && r->filename[l+1] == '/'
@@ -3013,7 +3013,7 @@ static int rewrite_rand(int l, int h)
      * result. Doing an integer modulus would only use the lower-order bits
      * which may not be as uniformly random.
      */
-    return ((double)(rand() % RAND_MAX) / RAND_MAX) * (h - l + 1) + l;
+    return (int)((double)(rand() % RAND_MAX) / RAND_MAX) * (h - l + 1) + l;
 }
 
 static char *select_random_value_part(request_rec *r, char *value)

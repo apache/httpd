@@ -174,7 +174,8 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
             "CONNECT to %s on port %d", host, port);
     }
 
-    server.sin_port = (proxyport ? htons(proxyport) : htons(port));
+    /* Nasty cast to work around broken terniary expressions on MSVC */
+    server.sin_port = htons((unsigned short)(proxyport ? proxyport : port));
     err = ap_proxy_host2addr(proxyhost ? proxyhost : host, &server_hp);
 
     if (err != NULL)

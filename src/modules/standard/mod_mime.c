@@ -392,7 +392,7 @@ static char *zap_sp(char *s)
     return (s);
 }
 
-static int is_token(char c)
+static int is_token(int c)
 {
     int res;
 
@@ -401,7 +401,7 @@ static int is_token(char c)
     return res;
 }
 
-static int is_qtext(char c)
+static int is_qtext(int c)
 {
     int res;
 

@@ -410,12 +410,14 @@ static int status_handler(request_rec *r)
 			(float) count / (float) up_time);
 
 	    if (up_time > 0) {
-		format_byte_out(r, KBYTE * (float) kbcount / (float) up_time);
+		format_byte_out(r, (unsigned long) (KBYTE * (float) kbcount 
+                                                          / (float) up_time));
 		ap_rputs("/second - ", r);
 	    }
 
 	    if (count > 0) {
-		format_byte_out(r, KBYTE * (float) kbcount / (float) count);
+		format_byte_out(r, (unsigned long) (KBYTE * (float) kbcount 
+                                                          / (float) count));
 		ap_rputs("/request", r);
 	    }
 

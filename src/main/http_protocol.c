@@ -1061,7 +1061,7 @@ static void get_mime_headers(request_rec *r)
     char *value;
     char *copy;
     int len;
-    unsigned int fields_read = 0;
+    int fields_read = 0;
     table *tmp_headers;
 
     /* We'll use ap_overlap_tables later to merge these into r->headers_in. */
@@ -1968,7 +1968,8 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
     }
 
     max_body = ap_get_limit_req_body(r);
-    if (max_body && (r->remaining > max_body)) {
+    if (max_body && ((unsigned long)r->remaining > max_body)
+                 && (r->remaining >= 0)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
           "Request content-length of %s is larger than the configured "
           "limit of %lu", lenp, max_body);
@@ -2076,7 +2077,8 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
      * length requests and nobody cares if it goes over by one buffer.
      */
     max_body = ap_get_limit_req_body(r);
-    if (max_body && (r->read_length > max_body)) {
+    if (max_body && ((unsigned long) r->read_length > max_body)
+                 && (r->read_length >= 0)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
             "Chunked request body is larger than the configured limit of %lu",
             max_body);

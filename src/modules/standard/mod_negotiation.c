@@ -389,10 +389,10 @@ static const char *get_entry(pool *p, accept_rec *result,
 
         if (parm[0] == 'q'
             && (parm[1] == '\0' || (parm[1] == 's' && parm[2] == '\0'))) {
-            result->quality = atof(cp);
+            result->quality = (float)atof(cp);
         }
         else if (parm[0] == 'l' && !strcmp(&parm[1], "evel")) {
-            result->level = atof(cp);
+            result->level = (float)atof(cp);
         }
         else if (!strcmp(parm, "charset")) {
             result->charset = cp;
@@ -817,7 +817,7 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
                 has_content = 1;
             }
             else if (!strncmp(buffer, "content-length:", 15)) {
-                mime_info.bytes = atof(body);
+                mime_info.bytes = (float)atof(body);
                 has_content = 1;
             }
             else if (!strncmp(buffer, "content-language:", 17)) {
@@ -1373,7 +1373,7 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
             float fiddle_q = 0.0f;
             int any_match_on_star = 0;
             int i, j, alen, longest_lang_range_len;
-            
+
             for (j = 0; j < variant->content_languages->nelts; ++j) {
                 p = NULL;
                 bestthistag = NULL;
@@ -1416,7 +1416,7 @@ static void set_language_quality(negotiation_state *neg, var_rec *variant)
                     
                     alen = strlen(accs[i].name);
                     
-                    if ((strlen(lang) >= alen) &&
+                    if (((int)strlen(lang) >= alen) &&
                         !strncmp(lang, accs[i].name, alen) &&
                         ((lang[alen] == 0) || (lang[alen] == '-')) ) {
                         

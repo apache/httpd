@@ -483,7 +483,7 @@ API_EXPORT(int) ap_parse_hostinfo_components(pool *p, const char *hostinfo,
     ++s;
     uptr->port_str = ap_pstrdup(p, s);
     if (*s != '\0') {
-        uptr->port = strtol(uptr->port_str, &endstr, 10);
+        uptr->port = (unsigned short)strtol(uptr->port_str, &endstr, 10);
         if (*endstr == '\0') {
             return HTTP_OK;
         }

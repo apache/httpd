@@ -547,7 +547,7 @@ int ap_proxy_ftp_handler(request_rec *r, cache_req *c, char *url)
 
     memset(&server, 0, sizeof(struct sockaddr_in));
     server.sin_family = AF_INET;
-    server.sin_port = htons(port);
+    server.sin_port = htons((unsigned short)port);
     err = ap_proxy_host2addr(host, &server_hp);
     if (err != NULL)
         return ap_proxyerror(r, HTTP_INTERNAL_SERVER_ERROR, err);

@@ -1812,7 +1812,7 @@ static int mget(request_rec *r, union VALUETYPE *p, unsigned char *s,
 {
     long offset = m->offset;
 
-    if (offset + sizeof(union VALUETYPE) > nbytes)
+    if (offset + (long)sizeof(union VALUETYPE) > nbytes)
 	          return 0;
 
     memcpy(p, s + offset, sizeof(union VALUETYPE));
@@ -1834,7 +1834,7 @@ static int mget(request_rec *r, union VALUETYPE *p, unsigned char *s,
 	    break;
 	}
 
-	if (offset + sizeof(union VALUETYPE) > nbytes)
+	if (offset + (long)sizeof(union VALUETYPE) > nbytes)
 	              return 0;
 
 	memcpy(p, s + offset, sizeof(union VALUETYPE));

@@ -1566,7 +1566,9 @@ static void default_listeners(pool *p, server_rec *s)
     new = ap_pcalloc(p, sizeof(listen_rec));
     new->local_addr.sin_family = AF_INET;
     new->local_addr.sin_addr = ap_bind_address;
-    new->local_addr.sin_port = htons(s->port ? s->port : DEFAULT_HTTP_PORT);
+    /* Buck ugly cast to get around terniary op bug in some (MS) compilers */
+    new->local_addr.sin_port = htons((unsigned short)(s->port ? s->port 
+                                                        : DEFAULT_HTTP_PORT));
     new->fd = -1;
     new->used = 0;
     new->next = NULL;
