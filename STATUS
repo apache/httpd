@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/05/26 12:00:57 $]
+Last modified at [$Date: 2004/05/26 12:08:13 $]
 
 Release:
 
@@ -71,6 +71,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) Enable the option to support anonymous shared memory in mod_ldap.
+       This makes the cache work on Linux again.
+       modules/experimental/util_ldap.c r1.30
+       modules/experimental/util_ldap_cache.c r1.17
+       docs/manual/mod/mod_ldap.xml r1.12
+       +1 minfrin
 
     *) Allow LimitRequestBody to be reset to unlimited. PR 29106
          server/core.c: r1.279
