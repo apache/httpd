@@ -3496,6 +3496,12 @@ static void show_compile_settings(void)
 #ifdef USE_SHMGET_SCOREBOARD
     printf(" -D USE_SHMGET_SCOREBOARD\n");
 #endif
+#ifdef USE_TPF_SCOREBOARD
+    printf(" -D USE_TPF_SCOREBOARD\n");
+#endif
+#ifdef USE_TPF_DAEMON
+    printf(" -D USE_TPF_DAEMON\n");
+#endif
 #ifdef USE_OS2_SCOREBOARD
     printf(" -D USE_OS2_SCOREBOARD\n");
 #endif

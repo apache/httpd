@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Add some compile-time flags to the output when -V is used for TPF
+     [David McCreedy <McCreedy@us.ibm.com>]
+
   *) mod_auth_digest fixes:
      - Use unix-io instead of stdio to read /dev/random (fixes problems
        on FreeBSD)
