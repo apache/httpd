@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Get the Unix MPM's to do a graceful restart again.  If we are going
+     to register a cleanup with ap_cleanup_scoreboard, then we have to
+     kill the cleanup with the same function,  and that function can't be
+     static.  [Ryan Bloom]
+
   *) Install all required header files.  Without these, it was not
      possible to compile some modules outside of the server.
      [Ryan Bloom]

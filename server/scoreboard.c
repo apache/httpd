@@ -93,7 +93,7 @@ static apr_shmem_t *scoreboard_shm = NULL;
  * segment, etc.). Leave it as is now because it is being used
  * by various MPMs. 
  */
-apr_status_t ap_cleanup_shared_mem(void *d)
+static apr_status_t ap_cleanup_shared_mem(void *d)
 {
 #if APR_HAS_SHARED_MEMORY
     apr_shm_free(scoreboard_shm, ap_scoreboard_image);
@@ -142,7 +142,7 @@ AP_DECLARE(void) reopen_scoreboard(apr_pool_t *p)
 /* ap_cleanup_scoreboard
  * 
  */
-static apr_status_t ap_cleanup_scoreboard(void *d) {
+apr_status_t ap_cleanup_scoreboard(void *d) {
     if (ap_scoreboard_image == NULL)
         return APR_SUCCESS;
     if (ap_scoreboard_image->global.sb_type == SB_SHARED) {
