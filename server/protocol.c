@@ -86,6 +86,7 @@
 #include "http_vhost.h"
 #include "http_log.h"           /* For errors detected in basic auth common
                                  * support code... */
+#include "mod_core.h"
 #include "util_charset.h"
 #include "util_ebcdic.h"
 

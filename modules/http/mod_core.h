@@ -70,6 +70,12 @@ extern "C" {
  * @package mod_core private header file
  */
 
+/* Handles for core filters */
+extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
+extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
+extern AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
+extern AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
+
 /*
  * These (input) filters are internal to the mod_core operation.
  */

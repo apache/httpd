@@ -120,11 +120,11 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
  */
 
 /* Handles for core filters */
-ap_filter_rec_t *ap_subreq_core_filter_handle;
-ap_filter_rec_t *ap_core_output_filter_handle;
-ap_filter_rec_t *ap_content_length_filter_handle;
-ap_filter_rec_t *ap_net_time_filter_handle;
-ap_filter_rec_t *ap_core_input_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_subreq_core_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_net_time_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
 
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
