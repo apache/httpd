@@ -197,9 +197,9 @@ local-extraclean: local-distclean x-local-extraclean
 
 local-install: $(TARGETS) $(SHARED_TARGETS) $(INSTALL_TARGETS)
 	@if test -n '$(PROGRAMS)'; then \
-	    test -d $(sbindir) || $(MKINSTALLDIRS) $(sbindir); \
+	    test -d $(DESTDIR)$(sbindir) || $(MKINSTALLDIRS) $(DESTDIR)$(sbindir); \
 	    list='$(PROGRAMS)'; for i in $$list; do \
-	        $(INSTALL_PROGRAM) $$i $(sbindir); \
+	        $(INSTALL_PROGRAM) $$i $(DESTDIR)$(sbindir); \
 	    done; \
 	fi
 

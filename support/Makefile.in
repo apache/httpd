@@ -10,20 +10,20 @@ PROGRAM_DEPENDENCIES =
 include $(top_builddir)/build/rules.mk
 
 install:
-	@test -d $(bindir) || $(MKINSTALLDIRS) $(bindir)
-	@test -d $(sbindir) || $(MKINSTALLDIRS) $(sbindir)
-	@test -d $(libexecdir) || $(MKINSTALLDIRS) $(libexecdir)
-	@cp -p $(top_builddir)/server/httpd.exp $(libexecdir)
+	@test -d $(DESTDIR)$(bindir) || $(MKINSTALLDIRS) $(DESTDIR)$(bindir)
+	@test -d $(DESTDIR)$(sbindir) || $(MKINSTALLDIRS) $(DESTDIR)$(sbindir)
+	@test -d $(DESTDIR)$(libexecdir) || $(MKINSTALLDIRS) $(DESTDIR)$(libexecdir)
+	@cp -p $(top_builddir)/server/httpd.exp $(DESTDIR)$(libexecdir)
 	@for i in apxs apachectl dbmmanage; do \
 	    if test -f "$(builddir)/$$i"; then \
-	        cp -p $$i $(sbindir); \
-	        chmod 755 $(sbindir)/$$i; \
+	        cp -p $$i $(DESTDIR)$(sbindir); \
+	        chmod 755 $(DESTDIR)$(sbindir)/$$i; \
 	    fi ; \
 	done
 	@if test -f "$(builddir)/envvars-std"; then \
-	    cp -p envvars-std $(sbindir); \
-	    if test ! -f $(sbindir)/envvars; then \
-	        cp -p envvars-std $(sbindir)/envvars ; \
+	    cp -p envvars-std $(DESTDIR)$(sbindir); \
+	    if test ! -f $(DESTDIR)$(sbindir)/envvars; then \
+	        cp -p envvars-std $(DESTDIR)$(sbindir)/envvars ; \
 	    fi ; \
 	fi
 

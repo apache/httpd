@@ -1,5 +1,12 @@
 Changes with Apache 2.0.38
 
+  *) Allow 'make install DESTDIR=/path'.  This allows packagers to install
+     into a directory different from the one that was configured.  This 
+     also mirrors the root= feature from 1.3.  We cannot use prefix=,
+     because both APR and APR-util resolve their installation paths at 
+     configuration time.  This means that there is no variable prefix 
+     to replace.  [Andreas Hasenack <andreas@netbank.com.br>]
+
   *) AIX 4.3.2 and above: Define SINGLE_LISTEN_UNSERIALIZED_ACCEPT.
      These levels of AIX don't have a thundering herd problem with
      accept().  [Jeff Trawick]
