@@ -116,7 +116,7 @@ PATCHES TO BACKPORT FROM 2.1
        build now requires system installations of APR and APR-util.
        http://svn.apache.org/~minfrin/httpd-2.0.53-rpm.diff
        svn rev 122711
-       +1: minfrin
+       +1: minfrin, pquerna
        -0: jorton: users could rely on it working as-is; make it conditional?
        minfrin: The existing spec file in the tree does not work, so not
                 applying this patch means we have no RPMs at all.
@@ -239,6 +239,7 @@ PATCHES TO BACKPORT FROM 2.1
           modules/ssl/ssl_private.h: r1.2
        +1: bnicholes, wrowe                             
        -0: jerenkrantz (should wait for 2.2)
+       -0: pquerna (2.2)
        -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
 
     * Replace some of the mutex locking in the worker MPM with
@@ -370,11 +371,10 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_proxy: Fix ProxyRemoteMatch.  PR 33170.
       svn rev 151248
-      +1: jerenkrantz, trawick, fielding
+      +1: jerenkrantz, trawick, fielding, pquerna
 
     * Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
-      svn rev 151255
-      +1: jerenkrantz, trawick, fielding
+      +1: jerenkrantz, trawick, fielding, pquerna
 
 CURRENT RELEASE NOTES:
 
