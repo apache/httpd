@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/18 14:46:02 $]
+Last modified at [$Date: 2004/08/19 18:55:47 $]
 
 Release:
 
@@ -76,7 +76,7 @@ PATCHES TO BACKPORT FROM 2.1
     *) Fix mod_userdir vs mod_suexec identity hook ordering.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_userdir.c?r1=1.58&r2=1.59
        PR: 18156
-       +1: jorton, slive
+       +1: jorton, slive, nd
 
     *) [SECURITY] mod_ssl: Fix potential input filter segfaults in SPECULATIVE mode.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
@@ -96,11 +96,11 @@ PATCHES TO BACKPORT FROM 2.1
     *) apachectl: Fix a problem finding envvars if sbindir != bindir.
        PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apachectl.in?r1=1.22&r2=1.23
-       +1: trawick, jorton
+       +1: trawick, jorton, nd
 
     *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/suexec.c?r1=1.32&r2=1.33
-       +1: trawick, jorton, slive
+       +1: trawick, jorton, slive, nd
 
     *) Proposal: Several folks want to aggressively backport changes
        from mod_cache, mod_mem_cache and mod_file_cache from Apache
@@ -184,6 +184,7 @@ PATCHES TO BACKPORT FROM 2.1
          ssl_engine_kernel.c r1.107
          ssl_private.h r1.7
        +1: trawick, jorton
+        nd: Is it wise to backport XXX code into the stable?
 
     *) Prevent Win32 pool corruption at startup
          server/mpm/winnt/child.c: r1.36 
@@ -191,7 +192,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) WinNT MPM: Fix a broken log message at termination.  PR 28063.
          server/mpm/winnt/child.c: r1.37
-       +1: trawick
+       +1: trawick, nd
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
@@ -203,8 +204,10 @@ PATCHES TO BACKPORT FROM 2.1
        avoid over-running a fixed length stack while evaluating nested
        include directives.
          server/config.c: r1.180
-       +1: bnicholes	
-       
+       +1: bnicholes, nd
+       nd: oops... This already went into the include recursion stopper
+           backport. Any objections? ;-)
+
     *) allow symlinks on directories to be processed by Include directives
        and stop possible recursion by a counter. PR 28492
          server/config.c: r1.175
