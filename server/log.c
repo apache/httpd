@@ -609,7 +609,7 @@ static int piped_log_spawn(piped_log *pl)
 
         ap_tokenize_to_argv(pl->program, &args, pl->p);
         pname = ap_pstrdup(pl->p, args[0]);
-        procnew = (ap_proc_t *) ap_palloc(p, sizeof(*procnew));
+        procnew = (ap_proc_t *) ap_palloc(pl->p, sizeof(*procnew));
         rc = ap_create_process(procnew, pname, args, NULL, procattr, pl->p);
     
         if (rc == APR_SUCCESS) {            
