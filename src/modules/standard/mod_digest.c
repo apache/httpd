@@ -159,7 +159,7 @@ static int get_digest_rec(request_rec *r, digest_header_rec * response)
 	return AUTH_REQUIRED;
     }
 
-    if (strcasecmp(scheme=ap_getword(r->pool, &auth_line, ' '), "Digest")) {
+    if (strcasecmp(scheme = ap_getword_white(r->pool, &auth_line), "Digest")) {
 	/* Client tried to authenticate using wrong auth scheme */
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
 		    "client used wrong authentication scheme: %s for %s", 
@@ -345,7 +345,7 @@ static int digest_check_auth(request_rec *r)
 	method_restricted = 1;
 
 	t = reqs[x].requirement;
-	w = ap_getword(r->pool, &t, ' ');
+	w = ap_getword_white(r->pool, &t);
 	if (!strcmp(w, "valid-user"))
 	    return OK;
 	else if (!strcmp(w, "user")) {
