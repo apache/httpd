@@ -110,7 +110,7 @@ handler_rec asis_handlers[] = {
 { NULL }
 };
 
-module asis_module = {
+module MODULE_VAR_EXPORT asis_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    NULL,			/* create per-directory config structure */

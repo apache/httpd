@@ -849,8 +849,7 @@ API_EXPORT(char *) construct_server(pool *p, const char *hostname,
     }
 }
 
-API_EXPORT(char *)construct_url(pool *p, const char *uri,
-				const server_rec *s) {
+API_EXPORT(char *) construct_url(pool *p, const char *uri, const server_rec *s) {
     return pstrcat (p, "http://",
 		    construct_server(p, s->server_hostname, s->port),
 		    uri, NULL);

@@ -292,7 +292,7 @@ char *document_root (request_rec *r) /* Don't use this!!! */
     return conf->document_root;
 }
 
-array_header *requires (request_rec *r)
+API_EXPORT(array_header *) requires (request_rec *r)
 {
     core_dir_config *conf = 
       (core_dir_config *)get_module_config(r->per_dir_config, &core_module); 

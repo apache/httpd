@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
+#define API_EXPORT(type)    __declspec(dllexport) type __stdcall
+
 /* struct dirent - same as Unix */
 struct dirent {
     long d_ino;                    /* inode (always 1 in WIN32) */
@@ -27,6 +29,6 @@ typedef struct {
 } DIR;
 
 /* Function prototypes */
-DIR *opendir(const char *);
-struct dirent *readdir(DIR *);
-int closedir(DIR *);
+API_EXPORT(DIR *) opendir(const char *);
+API_EXPORT(struct dirent *) readdir(DIR *);
+API_EXPORT(int) closedir(DIR *);

@@ -17,7 +17,7 @@
  * The DIR typedef is not compatible with Unix.
  **********************************************************************/
 
-DIR *opendir(const char *dir)
+API_EXPORT(DIR *) opendir(const char *dir)
 {
     DIR *dp;
     char *filespec;
@@ -49,7 +49,7 @@ DIR *opendir(const char *dir)
     return dp;
 }
 
-struct dirent *readdir(DIR *dp)
+API_EXPORT(struct dirent *) readdir(DIR *dp)
 {
     if (!dp || dp->finished) return NULL;
 
@@ -69,7 +69,7 @@ struct dirent *readdir(DIR *dp)
     return &(dp->dent);
 }
 
-int closedir(DIR *dp)
+API_EXPORT(int) closedir(DIR *dp)
 {
     if (!dp) return 0;
     _findclose(dp->handle);

@@ -1525,7 +1525,7 @@ API_EXPORT(long) get_client_block (request_rec *r, char *buffer, int bufsiz)
     return (chunk_start + len_read);
 }
 
-API_EXPORT(long)send_fd(FILE *f, request_rec *r) {
+API_EXPORT(long) send_fd(FILE *f, request_rec *r) {
     return send_fd_length(f, r, -1);
 }
 

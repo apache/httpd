@@ -633,7 +633,7 @@ every configuration function as __stdcall.
 #define ap_snprintf     snprintf
 #define ap_vsnprintf    vsnprintf
 #else
-int ap_snprintf(char *buf, size_t len, const char *format,...);
+API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...);
 int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap);
 #endif
 

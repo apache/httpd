@@ -108,7 +108,7 @@ typedef struct {
 char *auth_type (request_rec *);
 char *auth_name (request_rec *);     
 API_EXPORT(int) satisfies (request_rec *r);
-array_header *requires (request_rec *);    
+API_EXPORT(array_header *) requires (request_rec *);    
 
 #ifdef CORE_PRIVATE
 

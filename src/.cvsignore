@@ -3,7 +3,9 @@ Makefile
 modules.c
 httpd
 Makefile.config
-apache.mdp
-apache.ncb
+*.mdp
+*.ncb
 Release
 Debug
+CoreD
+LaunchD

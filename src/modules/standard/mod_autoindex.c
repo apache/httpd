@@ -68,7 +68,7 @@
 #include "http_main.h"
 #include "util_script.h"
 
-module autoindex_module;
+module MODULE_VAR_EXPORT autoindex_module;
 
 /****************************************************************
  *
@@ -931,7 +931,7 @@ static handler_rec autoindex_handlers[] = {
 { NULL }
 };
 
-module autoindex_module = {
+module MODULE_VAR_EXPORT autoindex_module = {
    STANDARD_MODULE_STUFF,
    NULL,                        /* initializer */
    create_autoindex_config,     /* dir config creater */

@@ -111,7 +111,7 @@ command_rec auth_cmds[] = {
 { NULL }
 };
 
-module auth_module;
+module MODULE_VAR_EXPORT auth_module;
 
 char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 {
@@ -280,7 +280,7 @@ int check_user_access (request_rec *r) {
     return AUTH_REQUIRED;
 }
 
-module auth_module = {
+module MODULE_VAR_EXPORT auth_module = {
    STANDARD_MODULE_STUFF,
    NULL,			/* initializer */
    create_auth_dir_config,	/* dir config creater */
