@@ -1387,6 +1387,31 @@ extern double difftime(time_t time1, time_t time0);
 #define ap_wait_t int
 #endif
 
+/*
+ * Special Support for User-Space Threading Environments [rse, 12-Aug-1999]
+ */
+
+/* optionally make sure the Pthread environment is available in _EVERY_ source 
+   by including the Pthread header already in this header file. This is
+   important for portable user-space threading environments which can only use
+   soft syscall wrapping (i.e. ``#define read _pthread_read'', etc.) */
+#ifdef PTHREAD_EVERYWHERE
+#include <pthread.h>
+#endif
+
+/* support for forcing no serialized accept situation. This has to be
+   used by user-space threading environments, because mostly all (except for
+   USE_PTHREAD_SERIALIZED_ACCEPT, but this only works on a few platforms)
+   variants of the inter-process accept lock would suspend the whole process
+   and not just the acceptor thread. */
+#ifdef NO_SERIALIZED_ACCEPT
+#undef USE_FCNTL_SERIALIZED_ACCEPT
+#undef USE_FLOCK_SERIALIZED_ACCEPT
+#undef USE_USLOCK_SERIALIZED_ACCEPT
+#undef USE_SYSVSEM_SERIALIZED_ACCEPT
+#undef USE_PTHREAD_SERIALIZED_ACCEPT
+#endif
+
 #ifdef __cplusplus
 }
 #endif
