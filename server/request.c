@@ -1098,6 +1098,14 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     char *entry_uri;
     int j;
 
+    /* If the initial request creation logic failed to reset the
+     * per_dir_config, we will do so here.
+     * ### at this time, only subreq creation fails to do so.
+     */
+    if (!r->per_dir_config)
+        r->per_dir_config = r->server->lookup_defaults;
+    
+
     /* No tricks here, there are no <Locations > to parse in this vhost
      */
     if (!num_loc) {
@@ -1204,9 +1212,6 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     /* Merge our per_uri_defaults preconstruct onto the r->per_dir_configs,
      * and note the end result for later optimization.
      */
-    if (!r->per_dir_config)
-        r->per_dir_config = r->server->lookup_defaults;
-    
     if (per_uri_defaults)
         r->per_dir_config = ap_merge_per_dir_configs(r->pool,
                                                      r->per_dir_config,
