@@ -417,6 +417,10 @@ PATCHES TO BACKPORT FROM 2.1
       svn rev 151248
       +1: jerenkrantz
 
+    * Fix --with-apr=/usr and/or --with-apr-util=/usr.  PR 29740.
+      svn rev 151255
+      +1: jerenkrantz
+
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
