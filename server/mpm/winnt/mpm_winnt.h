@@ -59,7 +59,7 @@
 #ifndef APACHE_MPM_WINNT_H
 #define APACHE_MPM_WINNT_H
 
-#include "apr_listen.h"
+#include "ap_listen.h"
 
 /* From registry.c: */
 
