@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/10 23:05:51 $]
+Last modified at [$Date: 2002/01/11 04:03:41 $]
 
 Release:
 
@@ -100,6 +100,13 @@ RELEASE SHOWSTOPPERS:
       mod_cgid's daemon process stranded.  Either ap_create_scoreboard()
       needs to be called at a different time or the pre-mpm hook needs
       to be able to return an error code.
+
+    * The worker MPM on Solaris segfaults when it runs out of file
+      descriptors.  (This may affect other MPMs and/or platforms.)
+
+    * The worker MPM on AIX and Solaris (at least) segfaults when a
+      graceful restart is triggered and there are active connections.
+      It appears to be a pool lifetime problem.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Add a Logging Directive to exclude logging based on mime type.
