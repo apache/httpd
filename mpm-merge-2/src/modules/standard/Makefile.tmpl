@@ -1,0 +1,256 @@
+
+#Dependencies
+
+$(OBJS) $(OBJS_PIC): Makefile
+
+# DO NOT REMOVE
+mod_access.o: mod_access.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_request.h
+mod_actions.o: mod_actions.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_log.h $(INCDIR)/util_script.h
+mod_alias.o: mod_alias.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h
+mod_asis.o: mod_asis.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_log.h \
+ $(INCDIR)/util_script.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_request.h
+mod_auth.o: mod_auth.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_protocol.h
+mod_auth_anon.o: mod_auth_anon.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_request.h
+mod_auth_db.o: mod_auth_db.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_protocol.h
+mod_auth_dbm.o: mod_auth_dbm.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_protocol.h
+mod_autoindex.o: mod_autoindex.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_request.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h $(INCDIR)/util_script.h
+mod_cern_meta.o: mod_cern_meta.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/util_script.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_request.h
+mod_cgi.o: mod_cgi.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_log.h $(INCDIR)/util_script.h \
+ $(INCDIR)/http_conf_globals.h
+mod_digest.o: mod_digest.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/util_md5.h \
+ $(INCDIR)/ap_md5.h
+mod_dir.o: mod_dir.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_request.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h $(INCDIR)/util_script.h
+mod_env.o: mod_env.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h
+mod_expires.o: mod_expires.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_log.h
+mod_headers.o: mod_headers.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h
+mod_imap.o: mod_imap.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_log.h $(INCDIR)/util_script.h
+mod_include.o: mod_include.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h $(INCDIR)/util_script.h
+mod_info.o: mod_info.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_main.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/util_script.h $(INCDIR)/http_conf_globals.h
+mod_log_agent.o: mod_log_agent.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_log.h
+mod_log_config.o: mod_log_config.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h
+mod_log_referer.o: mod_log_referer.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_log.h
+mod_mime.o: mod_mime.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_log.h
+mod_mime_magic.o: mod_mime_magic.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_protocol.h
+mod_negotiation.o: mod_negotiation.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_request.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_log.h $(INCDIR)/util_script.h
+mod_rewrite.o: mod_rewrite.c mod_rewrite.h $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_request.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h \
+ $(INCDIR)/http_vhost.h
+mod_setenvif.o: mod_setenvif.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_log.h
+mod_so.o: mod_so.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h \
+ $(OSDIR)/os.h $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_log.h
+mod_speling.o: mod_speling.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_core.h \
+ $(INCDIR)/http_config.h $(INCDIR)/http_log.h
+mod_status.o: mod_status.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h $(INCDIR)/http_protocol.h \
+ $(INCDIR)/http_conf_globals.h $(INCDIR)/http_main.h \
+ $(INCDIR)/util_script.h $(INCDIR)/scoreboard.h \
+ $(INCDIR)/http_log.h
+mod_unique_id.o: mod_unique_id.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_log.h $(INCDIR)/multithread.h
+mod_userdir.o: mod_userdir.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h
+mod_usertrack.o: mod_usertrack.c $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_core.h

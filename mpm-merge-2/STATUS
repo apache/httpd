@@ -1,0 +1,505 @@
+  1.3 STATUS:
+  Last modified at [$Date: 1999/08/16 16:27:02 $]
+
+Release:
+
+    1.3.9-dev: COUNTDOWN restarted at 08/15 3:00pm PDT
+               Tarball planned for Monday morning unless problems found.
+               Votes for rolling: Ralf +1, Martin +1, Roy +1, Randy +1,
+	                          Jim +1
+
+    1.3.8: Not released.
+    1.3.7: Not released.
+    1.3.6. Tagged and rolled on Mar. 22. Released and announced on 24th.
+    1.3.5: Not released.
+    1.3.4: Tagged and rolled on Jan. 9.  Released on 11th, announced on 12th.
+    1.3.3: Tagged and rolled on Oct. 7.  Released on 9th, announced on 10th.
+    1.3.2: Tagged and rolled on Sep. 21. Announced and released on 23rd.
+    1.3.1: Tagged and rolled on July 19. Announced and released.
+    1.3.0: Tagged and rolled on June 1.  Announced and released on the 6th.
+           
+    2.0  : In pre-alpha development, see apache-2.0 and apache-apr repository
+
+RELEASE SHOWSTOPPERS:
+
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * HPUX binary build failure due to the fact that it is building
+      libstandard.a and adding .so objects to the libstandard.a starting
+      with mod_vhost_alias.so.
+        Message-ID: <001a01bee548$d0e30ee0$0502a8c0@covalent.net>
+	Status: Randy committed a temporary fix
+
+    * long pathnames with many components and no AllowOverride None
+      Workaround is to define <Directory /> with AllowOverride None,
+      which is something all sites should do in any case.
+	Status: Marc was looking at it.
+
+    * Ronald Tschalär's patch to mod_proxy to allow other modules to
+      set headers too (needed by mod_auth_digest)
+        Message-ID: <199907080712.JAA28269@chill.innovation.ch>
+        Status:
+
+Documentation that needs writing:
+
+
+Available Patches:
+
+    * David Harris's [patch] make does not propagate src/support errors
+        Message-ID: <001601bee6e4$788274a0$0500a8c0@delf>
+	Status:
+
+    * Paul Reder's patch to fix Allow/Deny (.htaccess parsing) in
+      regex <Directory*> processing.
+	Message-ID: <37A88E34.FD09C658@raleigh.ibm.com>
+	PR: 3019, 3454
+	Status: 
+
+    * David Harris' patch to add a function to report on the number
+      of bytes in a pool that are actually used.
+	Message-ID: <008e01bedead$781c9480$0500a8c0@delf>
+	Status:
+
+    * Stipe Tolj's Cygwin32 port
+	PR#: 2936
+        Status: Lars +1 (on concept), Martin +1 (on concept), Ken +1 (concept)
+
+    * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
+      to refer to URIs for non-static resources.
+	MID: <Pine.LNX.4.10.9906041415330.15776-100000@xiomara.msg.com.mx>
+	Status: Ken +1 (on concept), Lars +1 (on concept)
+
+    * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
+	Message-ID: <19990414134729.A93825@engelschall.com>
+	Status: Jim +1, Mark +1, Dean +1, BenH +1,
+		Randy +1 (please choose name other than "hook")
+                Doug +1 on concept (untested), Lars +1 on concept,
+		Martin +1 (untested), Ken -1 for 1.3.7 (too controversial,
+		esp. w/KEAPI offered as well)
+
+    * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
+      (PR#2598)
+	Message-ID: <199905170830.SAA31549@silk.apana.org.au>
+	Status: Lars +1 (on concept), Ken +1 (on concept)
+
+    * Aidan Cully's patch to allow assignment of 'ownership' of resources
+      to either the server UID or the file's owner.
+	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
+	Status: Ken +1, Dean +1, Randy +1, Lars +0, Jim +1
+
+    * Keith Wannamaker's NT multiple services patch
+	Message-ID: <85256730.0073D841.00@d54mta06.raleigh.ibm.com>
+	Status: Bill +1 (on concept), Lars +1 (on concept)
+
+    * Jun-ichiro itojun Hagino's [PATCH] IPv6 enable patch
+      ftp://ftp.kame.net/pub/kame/misc/apache-134-v6-19990118.diff.gz
+        Message-ID: <18586.916662926@coconut.itojun.org>
+        Status: Lars +1 (on concept), Dirkx +1 (tested),
+	        Martin +1 (on concept; the patch may need a little cleanup)
+
+    * Jim Patterson's patch to make mod_info work on Win32
+        Message-ID: PR#1442
+        Status: Lars +1 (on concept), Ken +1 (concept)
+
+    * Peter Greis' new '%m' CustomLog option: the time taken to serve the
+      request, in milli-seconds.
+        Message-ID: PR#2838
+        Status: Jim +0 (as is, the patch requires rework since it needs
+		to be aware of NO_GETTIMEOFDAY and NO_TIMES as well as
+		implement a times() alternative. Not only that, but with
+		extended_status, we calculate this anyway).
+
+    * Juan Gallego's patch to add CSH-style modifiers (:h, :r, :t, :e)
+      to mod_include's variable processing.
+	Mesage-ID: PR#3246, also available at
+		   <http://www.physics.mcgill.ca/~juan/mod_include.patch>
+	Status: Ken -0 for 1.3/+0 for 2.0, Lars -0 for 1.3
+ 
+    * Eric Prud'hommeaux's mod_dir mods for file-level access control.
+        Message-ID: <Pine.LNX.3.96.981111213739.1364E-200000@tux.w3.org>
+        Status: Jim -0 (The current behavior seems logical to me. If there
+		was more universal interest in changing it, then that would be
+		a different matter).
+
+    * Eric Prud'hommeaux's mods for practical negotiation with
+      file level access control.
+        Message-ID: <Pine.LNX.3.96.981110105230.10006B-200000@tux.w3.org>
+        Status: 
+
+    * Greg's XML Handling patch
+        Message-ID: <3764E070.381B1B8E@lyra.org>
+        Message-ID: <3760EC9C.1CB6398E@lyra.org>
+        Status: Greg +1, Martin +1 (on concept)
+
+In progress:
+
+    * Mark Bixby's freshening up the MPE/iX port (mostly APACI)
+	Message-ID: <199811162227.OAA18137@spock.dis.cccd.edu>
+        Status: Mark says: "...currently waiting for HP to fix two OS bugs.
+		A fix for siglongjmp() is available and has been tested
+		successfully by me, but has yet to be included in a
+		public patch.  The likely cause of the "EINTR from
+		fopen()" bug has been identified, but analysis on how
+		to fix it continues."
+
+    * Doug MacEachern's libapr - Generic Apache Request Library (Alpha)
+      This package contains modules for manipulating client request data
+      via the Apache API with Perl and C.
+        Status: http://www.pobox.com/~dougm/libapr-0.20_01.tar.gz
+
+    * David Harris' note of odd size memory allocations.  Dean notes
+      that this is due to BLOCK_MIN_ALLOC.  Should we reduce it to 1024?
+      Discussion in thread following message-ID below.
+	Message-ID: <00a001bedc00$fbc5af60$0500a8c0@delf>
+	Status: 
+
+Needs patch:
+
+    * MaxRequestsPerChild doesn't count requests, only the
+      number of connections processed.
+      We can either 'fix' it by renaming the directive to
+      MaxConnectionsPerChild or really fix it to actually count
+      the number of requests.
+      Lars: I think we should really fix.
+      Ken: Definitely fix this, otherwise a massive series of
+           requests on the same connection is possible, which
+           defeats the purpose.
+      Jim: The main idea behind this is to avoid problems with
+           memory leaks. So it really doesn't matter which we
+	   do, as long as there's a match between the directive
+	   and what it does. Since it's easier, I'd say just
+	   rename to MaxConnectionsPerChild but keep MaxRequestsPerChild
+	   as an "alias" to that (maybe print a short "MaxRequestsPerChild
+	   is depreciated" message when Apache starts).
+
+    * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
+      See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
+
+    * URI issues
+	- RFC2068 requires a server to recognize its own IP addr(s) in dot
+	notation, we do this fine if the user follows the dns-caveats
+	documentation... we should handle it in the case the user doesn't ever
+	supply a dot-notation address.
+
+    * Problems dealing with .-rooted domain names such as "twinlark." versus
+	"twinlark.arctic.org.".  See the thread containing
+	Message-ID: <19980203211817.06723@deejai.mch.sni.de> for more details.
+	In particular this affects the correctness of the proxy and the
+	vhost mechanism.
+
+    * proxy_*_canon routines use r->proxyreq incorrectly.  See
+	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
+
+    * work around a Navigator/Mozilla bug when mod_proxy is used
+      (broken images).
+	Message-ID: <XFMail.980802025055.sfx@unix-ag.org>
+        Status: Lars' patch was vetoed.  Roy and Dean think that it is
+                probably another buffer magic number error and should be
+                tested to find out and, if so, fixed like it was in core.
+		Dirkx: cannot reproduce this at all.
+
+    * ap_escape_html() always duplicates the string, even when there is
+      no change and the caller would be happy to use the original.
+      What is needed is a separate interface for "don't need a dup"
+      situations, like just about everywhere we use it in bvputs and
+      bputs calls.
+      dirkx: -1 (as some of the modules from modules.apache.org seem
+	(rightly?) to assume that they can modify the returned escaped
+	string whilst relying on the passed string not to be damaged.
+      Martin: +1 (a "separate interface" is like in the case of
+        ap_table_setn() complementing ap_table_set(). It would not
+	interfere with any existing code).
+
+    * Should we disallow requests with bogus characters in the method?
+      See <Pine.LNX.3.96dg4.990107093844.14158A-100000@twinlark.arctic.org>
+
+Open issues:
+
+    * Should we provide a way to force CustomError responses past IE's
+      'prettify-if-less-than-N-bytes' bogosity?
+
+    * there are still some PRs about inetd mode
+      Should we deprecate "ServerType inetd" if the next release is 1.4.0?
+        +1: Lars
+	-0: Martin (ISTR someone volunteered to "keep it working". I fear
+	    some exotic platforms may require it)
+
+    * general/3787: SERVER_PORT is always 80 if client comes to any port
+      => needs review by the protocol guys, I think.
+
+    * Paul would like to see a 'gdbm' option because he uses
+      it a lot.
+        +1: Greg (volunteers), Martin
+
+    * Many people have asked for a DBM to be distributed with Apache to
+      isolate it from platform inconsistencies. SDBM (used by mod_ssl,
+      mod_dav, Perl, and others) should fit the bill and is public domain.
+        +1: Greg (volunteers), Martin
+
+    * Maybe a http_paths.h file? See
+	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
+	+1: Brian, Paul, Ralf, Martin, Dirkx
+	+0: Jim (not for 1.3.0)
+
+    * Release builds: Should we provide Configuration or not?
+      Should we 'make all suexec' in src/support?
+	+1: Brian, Jim, Dirkx, Ken +1 (possible suexec path issue, though)
+
+    * root's environment is inherited by the Apache server. Jim & Ken
+      think we should recommend using 'env' to build the
+      appropriate environment. Marc and Alexei don't see any
+      big deal. Martin says that not every "env" has a -u flag. 
+
+    * Marc's socket options like source routing (kill them?)
+	Marc, Martin say Yes
+
+    * Ken's PR#1053: an error when accessing a negotiated document
+      explicitly names the variant selected.  Should it do so, or should
+      the original URI be referenced?
+        Martin: keep as is (helps identifying errors. IMO no privacy issue.)
+
+    * Proposed API Changes:
+
+	- r->content_language is for backwards compatibility... with modules
+	  that may not link any longer without some minor editing.  The new
+	  field is r->content_languages.  Heck it's not even mentioned in
+	  apache-devsite/mmn.txt when we got content_languages (note the s!).
+	  The proposal is to remove r->content_language:
+	    Status: Paul +1, Ralf +1, Ken +1, Martin +1, Dirkx +1 (I could
+		not find ANY module which uses it and which (still) compiles
+		after the config change.)
+
+	- child_exit() is redundant, it can be implemented via cleanups.  It is
+	  not "symmetric" in the sense that there is no exit API method to go
+	  along with the init() API method.  There is no need for an exit
+	  method, there are already modules using cleanups to perform this (see
+	  mod_mmap_static, and mod_php3 for example).  The proposal is to
+	  remove the child_exit() method and document cleanups as the method of
+	  handling this need.
+	    Status: Rasmus +1, Paul +1, Jim +1, 
+	            Martin +1, Ralf +1, Ken +1, 
+		    Dirkx +1 (with doc change)
+
+    * Should we re-enable nagle now that we're non-buffering CGIs?  See
+      various messages from Marc in March 98.
+  
+    * TZ should not be dealt with specially any longer now that we have
+      "PassEnv".  See
+      <Pine.LNX.3.96dg4.980309224241.11283X-100000@twinlark.arctic.org>
+       Jim: IMO it's too late in the game for this... I'm
+            sure this would cause some strange bug reports as
+	    people's cgi-scripts no longer work correctly
+	    ("It worked just fine before I upgraded to 1.3.0")
+	    unless we warn people in big nasty letters to add
+	    PassEnv TZ to their config files "just in case"
+	    and hope they do it :)
+       Dirkx: Is not this the same issue about maintaining your 'env' ?
+
+    * In ap_bclose() there's no test that (fb->fd != -1) -- so it's
+      possible that it'll do something completely bogus when it's 
+      used for read-only things. - Dean Gaudet
+
+    * Roy's HTTP/1.1 Wishlist items:
+        1) byte range error handling
+
+    * use of spawnvp in uncompress_child in mod_mime_magic - doesn't
+      use the new child_info structure, is this still safe?  Needs to be 
+      looked at.
+
+    * suexec doesn't understand argv parameters; e.g.
+
+        <!--#exec cmd="./ls -l" -->
+
+      fails even when "ls" is in the same directory because suexec is trying
+      to stat a file called "ls -l".  A patch for this is available at
+
+        http://www.xnet.com/~emarshal/suexec.diff
+
+      and it's not bad except that it doesn't handle programs with spaces in
+      the filename (think win32, or samba-mounted filesystems).  There are
+      several PR's to this and I don't see for security reasons why we can't
+      accomodate it, though it does add complexity to suexec.c.
+      PR #1120
+      Brian: +1
+
+Win32 specific issues:
+
+ Important
+
+    * fix O(n^2) attack in mod_isapi.c ... i.e. recopy the code from
+      scan_script_headers_err_core.
+
+ In progress:
+
+    * Ben's ASP work... All agree it sounds cool.
+
+    * DDA's adding a tray application to the Windoze version for ease of
+      status/management.
+	<01BCDB29.2C04DEB0@caravan.individual.com>
+	<01BCDB2A.F8C09010@caravan.individual.com>
+	Status: Ken +1, Sameer +1, Martin +1, Ben +1 (as long as
+		we get a single executable)
+	Paul: No like Win95 specific stuff
+	Ken: What's W95-specific about it?
+
+ Help:
+
+    * should trap ^C when running not-as-service and do proper shutdown
+
+    * should have a pretty little icon for Apache on Win32
+      (Resolved?! there's a tiny feather icon now!?!)
+
+    * proxy module doesn't load on Win95.  Why?  Good question.  PR#1462.
+      David Whitmarsh <david.whitmarsh@dial.pipex.com> says it's because
+      you can't dynamically load a DLL that uses declspec(thread).  He
+      supplied a patch.
+	MID: <36f6e9bb.16134842@smtp.dial.pipex.com>
+    
+    * Proxy cache garbage collection doesn't work. PR#1891
+
+    * chdir() for CGI scripts and mod_include #exec needs to be 
+      re-implemented now that CreateProcess is being used.
+
+    * process/thread model
+	- need dynamic thread creation/destruction, similar to 
+	  Unix process model
+	- can't use WaitForMultipleObjects in the same way we
+	  do now, since that has a limit of 64(!) objects.  Grr.
+	  PR#1665
+
+    * some errors printed by CGIs to stderr don't end up making it
+      to the server log unless an extra debugging message is added
+      after they run? (PR#1725 indicates this may not be just Win32)
+
+    * handle bugs that make it pop up errors on console, ie. segv 
+      equiv?  Can we do this?  Need to make it robust.
+
+    * install
+	- make installshield work
+	- config in cvs tree?
+	- install docs, etc.?
+	- location for install
+
+    * the mutex should be critical-regions, since the current design
+      is creating a mess of SO calls that are unnecessary
+
+    * we don't mmap on NT.  Use TransmitFile?
+
+    * CGIs
+	- docs on how they work w/scripts
+	- WTF is the buffering coming from?
+	    - we don't have a way to make non-blocking files on NT!
+
+    * performance
+
+    * documentation:
+	- running the server without admin
+	- how CGIs work
+	- update README.NT
+	- short/long name handling
+	- better status page on current state of NT for users
+
+    * http_main.c hell
+	- split into two files?
+
+    * who should run the service?  Who exactly is the "system account"?
+
+      docs say:
+
+      Localsystem is a very privileged account locally, so you shouldn't run
+      any shareware applications there. However, it has no network privileges
+      and cannot leave the machine via any NT-secured mechanism, including
+      file system, named pipes, DCOM, or secure RPC.
+
+      and:
+
+      A service that runs in the context of the LocalSystem account
+      inherits the security context of the SCM. It is not associated with
+      any logged-on user account and does not have credentials (domain
+      name, user name, and password) to be used for verification. This
+      has several implications: [... removed ...]
+
+
+      That _really_ sucks.  Can we recommend running Apache as some 
+      other user?
+
+    * modules that need to be made to work on win32
+        - mod_example isn't multithreadreded
+	- mod_unique_id (needs mt changes)
+	- mod_auth_db.c  (do we want to even try this?  We should have some
+          db of some sort... what else can we pick from under win32?)
+	- mod_auth_dbm.c
+	- mod_info.c (PR#1442 re exporting symbols for it...)
+	- mod_log_agent.c
+	- mod_log_referer.c
+	- mod_mime_magic.c (needs access to mod_mime API stage...)
+
+    * do something to disable bogus warnings
+
+    * rfc1413.c has static storage which won't work multithreaded
+
+    * mod_include --> exec cgi, exec cmd, etc. don't work right.
+      Looks like a code path that isn't run anywhere else that has
+      something not quite right...  A PR or two on it.
+
+    * signal type handling
+    	- how to rotate logs from command line?
+	  (Point people to Andrew Ford's cronolog because it's "better"
+	   than ours?)
+
+    * Currently if you double click on the conf files or the
+      log files you get a useless dialog offering the set of all
+      executables, usually after a very long pause.  Ought
+      to stuff .conf in the registry mapping it to text.
+
+    * apparently either "BrowserMatch" or the "nokeepalive" variable
+      cause instability - see PR#1729.
+
+
+Binaries (1.3.9):
+
+ Platform                      Avail.  Volunteer
+ ------------------------------------------------------------------------------
+ alpha-dec-osf3.0              no      Sameer Parekh
+ alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar
+ armv4l-whatever-linux2        no      Rasmus Lerdorf
+ hppa1.1-hp-hpux               no      Rob Hartill
+ i386-slackware-linux(a.out)   no      Sameer Parekh
+ i386-sun-solaris2.5           no      Sameer Parekh
+ i386-sun-solaris2.7           no      Cliff Skolnick
+ i386-unixware-svr4            no      Sameer Parekh
+ i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
+ i386-unknown-freebsd2.2.8     no      Jim Jagielski
+ i386-whatever-freebsd3.0      no      Ken Coar
+ i386-whatever-freebsd3.0      no      Dirk-Willem van Gulik
+ i686-pc-freebsd3.1            no      Ralf S. Engelschall
+ i586-unknown-linux2           no      Ralf S. Engelschall, Lars Eilebrecht
+ i686-unknown-linux2           no      Lars Eilebrecht
+ i686-whatever-linux2          no      Ken Coar
+ i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
+ i386-unknown-netBSD-1.2.1     N/A     Lars Eilebrecht
+ i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht
+ i386-unknown-sco3             no      Ben Laurie
+ i386-unknown-sco5             no      Ben Laurie
+ i386-sni-svr4                 no      Martin Kraemer
+ m68k-apple-aux3.1.1           no      Jim Jagielski
+ m88k-dg-dgux5.4R2.01          no      Sameer parekh
+ m88k-next-next                no      Rob Hartill
+ mips-sgi-irix5.3              no      Mark Imbrianco
+ mips-sgi-irix6.2              no      Lars Eilebrecht
+ mips-sgi-irix6.4              no      Lars Eilebrecht
+ mips-sni-svr4                 no      Martin Kraemer
+ OS/2                          no      Brian Havard
+ rs6000-ibm-aix3.2.5           no      Sameer Parekh
+ rs6000-ibm-aix4.1             no      Lars Eilebrecht
+ rs6000-ibm-aix4.2             no      Bill Stoddard
+ rs6000-ibm-aix4.3.2           no      Bill Stoddard
+ sparc-sun-solaris2.5          no      Lars Eilebrecht
+ sparc-sun-solaris2.6          no      Lars Eilebrecht
+ sparc-sun-solaris2.7          no      Cliff Skolnick
+ sparc-sun-sunos4.1.4          no      Lars Eilebrecht, Michael Douglass
+ sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
+ sparc-unknown-linux           no      Lars Eilebrecht
+ mips-dec-ultrix4.4            no      Sameer Parekh
+ mips-unknown-linux            no      Lars Eilebrecht
+
