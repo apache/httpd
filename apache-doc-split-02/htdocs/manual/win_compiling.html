@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Compiling Apache for Microsoft Windows</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+
+<H1 ALIGN="CENTER">Compiling Apache for Microsoft Windows</H1>
+
+<P>There are many important points before you begin compiling Apache.
+   See <A HREF="windows.html">Using Apache with Microsoft Windows</A>
+   before you begin.</P>
+
+<P>Compiling Apache requires Microsoft Visual C++ 5.0 or 6.0 to be properly
+   installed. It is easiest to compile with the command-line tools
+   (nmake, <EM>etc.</EM>..). Consult the VC++ manual to determine how 
+   to install them.  Be especially aware that the vcvars32.bat file
+   from the Program Files/DevStudio/VC/bin folder may be required to 
+   prepare the command-line environment for command-line builds!</P>
+
+<P>First, unpack the Apache distribution into an appropriate
+   directory. Open a command-line prompt, and change to the
+   <CODE>src</CODE> subdirectory of the Apache distribution.</P>
+
+<P>The master Apache makefile instructions are contained in the
+   <CODE>Makefile.win</CODE> file. To compile Apache on Windows NT, simply
+   use one of the following commands:
+<UL>
+<LI><CODE>nmake /f Makefile.win _apacher</CODE> (release build)
+<LI><CODE>nmake /f Makefile.win _apached</CODE> (debug build)
+</UL>
+
+<P>These will both compile Apache. The latter will include debugging
+   information in the resulting files, making it easier to find bugs and
+   track down problems.</P>
+
+<P>If you get an error such as "the name specified is not recognized..."
+   then you need to run vcvars32.bat first. Enter the following command;
+<PRE>
+  "c:\Program Files\DevStudio\VC\Bin\VCVARS32.BAT"
+</PRE>
+   (you will need to adjust this command so it matches the directory where 
+   your VC was installed.)  Then try the nmake command again.</P>
+
+<P>Apache can also be compiled using VC++'s Visual Studio development
+   environment.  To simplify this process, a Visual Studio workspace,
+   Apache.dsw, is provided in the <CODE>src</CODE> folder.  This workspace 
+   exposes the entire list of working .dsp projects that are required for the
+   complete Apache binary release.  It includes dependencies between
+   the projects to assure that they are built in the appropriate order.</P>
+
+<P>These .dsp project files are distributed in Visual C++ 6.0 format.  Visual
+   C++ 5.0 (97) will recognize them with the single exception of the /ZI flag,
+   which corresponds to the VC 5.0 /Zi flag for debugging symbols.  To quickly
+   prepare the .dsp files for the Visual Studio 5.0 (97), you can use the
+   perl scripts distributed in the <CODE>src\helpers</CODE> folder:
+<PRE>
+  cd src\helpers
+  cvstodsp5.pl
+</PRE>
+   This command assumes you have a Perl interpreter installed and registered
+   for files of type .pl.  The list of converted .dsp project files will
+   be displayed as they are converted.  If you contribute back a patch that
+   offers revised project files, please convert them back with the script
+   dsp5tocvs.pl, which puts the projects back to Visual Studio 6.0 format.</P>
+
+<P>The core .dsp projects that are build by Apache.dsw or makefile.win are:</P>
+
+ <OL>
+   <LI><CODE>os\win32\ApacheOS.dsp</CODE>
+   <LI><CODE>regex\regex.dsp</CODE>
+   <LI><CODE>ap\ap.dsp</CODE>
+   <LI><CODE>lib\expat-lite\xmltok.dsp</CODE>
+   <LI><CODE>lib\expat-lite\xmlparse.dsp <EM>requires xmltok</EM></CODE>
+   <LI><CODE>main\gen_uri_delims.dsp</CODE>
+   <LI><CODE>main\gen_test_char.dsp</CODE>
+   <LI><CODE>ApacheCore.dsp <EM>requires all of the above</EM></CODE>
+   <LI><CODE>Apache.dsp <EM>requires ApacheCore</EM></CODE>
+ </OL>
+
+<P>In addition, the <CODE>os\win32</CODE> subdirectory contains
+   project files for the optional modules, all of which require ApacheCore.</P>
+
+<OL>
+  <LI><CODE>os\win32\ApacheModuleAuthAnon.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleAuthDigest.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleCERNMeta.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleDigest.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleExpires.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleHeaders.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleInfo.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleRewrite.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleSpeling.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleStatus.dsp</CODE>
+  <LI><CODE>os\win32\ApacheModuleUserTrack.dsp</CODE>
+  <LI><CODE>modules\proxy\ApacheModuleProxy.dsp</CODE>
+</OL>
+
+   The <CODE>support\</CODE> folder contains project files for additional
+   programs that are not part of the Apache runtime, but are used by
+   the administrator to maintain password and log files.</P>
+
+<OL>
+  <LI><CODE>support\htdigest.dsp</CODE>
+  <LI><CODE>support\htpasswd.dsp</CODE>
+  <LI><CODE>support\logresolve.dsp</CODE>
+  <LI><CODE>support\rotatelogs.dsp</CODE>
+</OL>
+
+<P>Once Apache has been compiled, it needs to be installed in its server
+   root directory. The default is the <CODE>\Apache</CODE>
+   directory, on the current hard drive.</P>
+
+<P>To install the files into the <CODE>c:\ServerRoot</CODE> directory
+   automatically, use one the following nmake commands (see above):</P>
+
+<UL>
+<LI><CODE>nmake /f Makefile.win installr INSTDIR=<EM>c:\ServerRoot</EM></CODE>
+ (for release build)
+<LI><CODE>nmake /f Makefile.win installd INSTDIR=<EM>c:\ServerRoot</EM></CODE>
+ (for debug build)
+</UL>
+
+<P>The <EM>c:\ServerRoot</EM> argument to INSTDIR gives the installation 
+   directory (it can be omitted if Apache is to be installed into 
+   <SAMP>\Apache</SAMP>).</P>
+
+<P>This will install the following:</P>
+
+<UL>
+  <LI><CODE><EM>c:\ServerRoot</EM>\Apache.exe</CODE> - Apache executable
+  <LI><CODE><EM>c:\ServerRoot</EM>\ApacheCore.dll</CODE> - Main Apache 
+      shared library
+  <LI><CODE><EM>c:\ServerRoot</EM>\modules\ApacheModule*.dll</CODE> - 
+      Loadable Apache modules
+  <LI><CODE><EM>c:\ServerRoot</EM>\bin\*.exe</CODE> - Administrator support 
+      executables from support
+  <LI><CODE><EM>c:\ServerRoot</EM>\conf</CODE> - Empty configuration directory
+  <LI><CODE><EM>c:\ServerRoot</EM>\logs</CODE> - Empty logging directory
+</UL>
+
+<P>If you do not have nmake, or wish to install in a different directory,
+   be sure to use a similar naming scheme.</P>
+
+<P>To simplify the process, dependencies between all projects
+   are defined in the Microsoft VisualStudio workspace file:
+   
+<PRE>
+   src/Apache.dsw
+</PRE>
+   
+<P>This assures that lower-level sources are rebuilt from within
+   VisualStudio.  The top level project is InstallBin, which invokes 
+   Makefile.win to move the compiled executables and dlls.  You may 
+   personalize the INSTDIR= setting by changing the Settings for
+   InstallBin, Build command line entry under the General tab.
+   The default from within the InstallBin.dsp project is one level up
+   (..) from the src tree.</P>
+
+<P>Before running the server you must fill out the conf directory.  Copy the 
+   *.conf-dist-win from the distribution conf directory and rename them to 
+   *.conf.  You will need to copy over the conf/magic and conf/mime.types 
+   files as well. In order to serve documents you will need to create a 
+   htdocs\index.html or just copy over the standard Apache ones (This is a 
+   good idea as then you get the full Apache documentation on line).  If you 
+   have previously run Apache from the c:\ServerRoot directory then please make
+   sure you backup any files you wish to retain or only copy the files you want
+   replaced. The following commands will copy all the required files to your
+   c:\ServerRoot directory (***over-writing any that were there***);</P>
+
+<UL>
+<LI><CODE>copy ..\conf\*.conf-dist-win <EM>c:\ServerRoot</EM>\conf\*.conf</CODE>
+<LI><CODE>copy ..\conf\magic <EM>c:\ServerRoot</EM>\conf\</CODE>
+<LI><CODE>copy ..\conf\mime.types <EM>c:\ServerRoot</EM>\conf\</CODE>
+<LI><CODE>copy ..\htdocs\*.* <EM>c:\ServerRoot</EM>\htdocs\ /s</CODE>
+</UL>
+<P>(adjust these so <EM>c:\ServerRoot</EM> matches the INSTDIR used above.)</P>
+
+<P>Change the @@ServerRoot@@ entries in <EM>c:\ServerRoot</EM>\conf\httpd.conf 
+   to your actual server root (for example "<EM>c:/ServerRoot</EM>" Note: you 
+   must use forward slashes in Apache configuration files!)</P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

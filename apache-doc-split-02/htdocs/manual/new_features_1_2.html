@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD>
+<TITLE>New features with Apache 1.2</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Overview of new features</H1>
+
+<H2>API Changes</H2>
+
+<P>Some non-compatible changes were made to the Apache API in order to
+deal with HTTP/1.1 compatibility.  It is possible that some modules
+will no longer work (specifically, those that process input using the
+POST or PUT methods). If you encounter a module that does not work,
+please contact the author. A <A
+HREF="misc/client_block_api.html">programmer's note</A> on the subject is
+available.</P>
+
+<P>Additionally, some changes were made to the CGI environment that
+may cause some CGI scripts to work incorrectly. If you are
+experiencing trouble with a CGI that worked fine under Apache 1.1.1,
+please see <A HREF="cgi_path.html">our explanation of the changes.</A></P>
+
+<H2>New Features with Apache 1.2</H2>
+<P>New features with this release, as extensions of the Apache
+functionality. Because the core code has changed so
+significantly, there are certain liberties that earlier versions of
+Apache (and the NCSA daemon) took that recent Apache versions are
+pickier about - please check the <A
+HREF="misc/compat_notes.html">compatibility notes</A> if you have any
+problems.</P>
+<HR>
+
+<P>In addition to a number of bug fixes and internal performance
+enhancements, <A HREF="http://www.apache.org/dist/">Apache
+1.2</A> has the following specific new user features:</P>
+
+<UL>
+
+<!-- change the "name" to an "href" if/when there's such a document -->
+<LI><STRONG><A NAME="http11.html">HTTP/1.1 Compliance</A></STRONG>
+[Documentation to be written]<BR>
+Aside from the optional proxy module (which operates as HTTP/1.0),
+Apache is conditionally compliant with the HTTP/1.1 proposed standard,
+as approved by the IESG and the
+<A HREF="http://www.ics.uci.edu/pub/ietf/http/">IETF HTTP working group</A>.
+HTTP/1.1 provides a much-improved protocol, and
+should allow for greater performance and efficiency when transferring
+files. Apache does, however, still work great with HTTP/1.0 browsers.
+We are very close to being unconditionally compliant; if you note any
+deviance from the proposed standard, please report it as a bug.
+
+<LI><STRONG><A HREF="mod/mod_include.html">eXtended Server Side Includes
+(XSSI)</A></STRONG><BR>
+A new set of server-side include
+directives allows the user to better create WWW pages. This includes
+number of powerful new features, such as the ability to set variables
+and use conditional HTML.
+
+<LI><STRONG><A HREF="mod/core.html#files">File-based and Regex-enabled
+Directive Sections</A></STRONG><BR>
+The new
+<A HREF="mod/core.html#files"><CODE>&lt;Files&gt;</CODE></A>
+section allows directives to be enabled based on full filename, not just
+directory and URL. In
+addition, <CODE>&lt;Files&gt;</CODE> sections can appear in
+<CODE>.htaccess</CODE> files. <CODE>&lt;Files&gt;</CODE>, along with
+<A HREF="mod/core.html#directory"><CODE>&lt;Directory&gt;</CODE></A>
+ and <A HREF="mod/core.html#location"><CODE>&lt;Location&gt;</CODE></A>, can
+also now be based on regular expressions, not just simple prefix
+matching.
+
+<LI><STRONG><A HREF="mod/mod_browser.html">Browser-based Environment
+Variables</A></STRONG><BR>
+Environment variables can now be set based on the
+<CODE>User-Agent</CODE> string of the browser. Combined with <A
+HREF="mod/mod_include.html">XSSI</A>, this allows you to write browser-based
+conditional HTML documents.
+
+<LI><STRONG><A HREF="suexec.html">SetUID CGI Execution</A></STRONG><BR>
+    Apache now
+    supports the execution of CGI scripts as users other
+    than the server user. A number of security checks are built in
+    to try and make this as safe as possible.
+
+<LI><STRONG><A HREF="mod/mod_rewrite.html">URL Rewriting Module</A></STRONG>
+<BR>
+The optional <CODE>mod_rewrite</CODE> module is now included. This
+module can provide powerful URL mapping, using regular
+expressions. There's nothing this module can't do!
+
+<LI><STRONG><A HREF="mod/mod_log_config.html">Enhanced, Configurable
+Logging</A></STRONG><BR>
+The optional <CODE>mod_log_config</CODE> included with earlier
+versions of Apache is now standard, and has been enhanced to allow
+logging of much more detail about the transaction, and can be used to
+open <A HREF="multilogs.html">more than one log file</A> at once
+(each of which can have a different log format).  If you have Apache
+write any logs to a directory which is writable by anyone other than
+the user that starts the server, see the <A HREF="misc/security_tips.html">
+security tips</A> document to be sure you aren't putting the security
+of your server at risk.
+
+
+<LI><STRONG><A HREF="mod/mod_usertrack.html">User Tracking (Cookies)
+Revisions</A></STRONG><BR>
+The <CODE>mod_cookies</CODE> included with previous versions of Apache
+has been renamed <CODE>mod_usertrack</CODE>, to more accurately
+reflect its function (some people inadvertently thought it enabled
+cookie support in Apache, which is not true - Apache supports the use
+of cookies directly). It is also now possible to disable the
+generation of cookies, even when
+    the cookie module is compiled in. Also, an expiry time can be set
+    on the cookies.
+
+<LI><STRONG><A HREF="mod/core.html#virtualhost">&lt;VirtualHost&gt;
+Enhancements</A></STRONG><BR>
+    The &lt;VirtualHost&gt; directive can now take more than one IP
+    address or hostname. This lets a single vhost handles requests
+    for multiple IPs or hostnames. Also the special section
+    &lt;VirtualHost _default_&gt; can be used to handle requests normally
+    left for the main server configuration.
+
+<LI><STRONG><A HREF="mod/mod_cgi.html#cgi_debug">CGI Debugging
+Environment</A></STRONG><BR>
+<CODE>ScriptLog</CODE> allows you to now set up a log that records
+all input and output to failed CGI scripts. This includes environment
+variables, input headers, POST data, output, and more. This makes CGI
+scripts much easier to debug.
+
+<LI><STRONG><A HREF="mod/core.html#rlimit">Resource Limits for CGI
+Scripts</A></STRONG><BR>
+New directives allow the limiting of resources used by CGI scripts
+(<EM>e.g.</EM>, max CPU time). This is helpful in preventing 'runaway' CGI
+processes.
+
+<LI><STRONG><A HREF="mod/mod_alias.html">Redirect Directive Can Return
+Alternate Status</A></STRONG><BR>
+    The Redirect directive can return permanent or temporary redirects,
+    "Gone" or "See Other" HTTP status. For NCSA-compatibility,
+    RedirectTemp and RedirectPermanent are also implemented.
+
+<LI><STRONG><A HREF="install.html">Simplified Compilation</A></STRONG><BR>
+    The process of configuring Apache for compilation has been
+    simplified.
+
+<LI><STRONG><A HREF="mod/core.html#options">Add or Remove
+Options</A></STRONG><BR>
+    The <CODE>Options</CODE> directive can now add or remove options from
+    those currently in force, rather than always replacing them.
+
+<LI><STRONG><A HREF="invoking.html#help">Command-line Help</A></STRONG><BR>
+The <CODE>-h</CODE> command-line option now lists all the available
+directives.
+
+<LI><STRONG><A HREF="mod/mod_headers.html">Optional Headers Module to Set or
+Remove HTTP Headers</A></STRONG><BR>
+The optional <CODE>mod_headers</CODE> module can be used to set custom
+headers in the HTTP response. It can append to existing headers,
+replace them, or remove headers from the response.
+
+<LI><STRONG><A HREF="mod/core.html#ifmodule">Conditional Config
+Directives</A></STRONG><BR>
+A new <CODE>&lt;IfModule&gt;</CODE> section allows directives to be
+enabled only if a given module is loaded into the server.
+
+<LI><STRONG><A HREF="mod/core.html#satisfy">NCSA Satisfy authentication
+directive now implemented</A></STRONG><BR>
+<CODE>Satisfy</CODE> allows for more flexible access control
+configurations.
+
+<LI><STRONG>Better NCSA Compatibility</STRONG><BR>
+Apache directives are now more compatible with NCSA 1.5 to make
+moving between servers easier. In particular, Apache now implements the
+<A HREF="mod/core.html#satisfy"><CODE>Satisfy</CODE></A>,
+<A HREF="mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</A>,
+<A HREF="mod/mod_alias.html#redirectperm">RedirectPermanent</A> and
+<A HREF="mod/mod_alias.html#redirecttemp">RedirectTemp</A>,
+directives, and the following directives are now syntax-compatible with
+NCSA:
+<A HREF="mod/mod_auth.html#authuserfile">AuthUserFile</A>,
+<A HREF="mod/mod_auth.html#authgroupfile">AuthGroupFile</A>,
+<A HREF="mod/mod_digest.html#authdigestfile">AuthDigestFile</A>,
+<A HREF="mod/core.html#keepalive">KeepAlive</A> and
+<A HREF="mod/core.html#keepalivetimeout">KeepAliveTimeout</A>.
+
+<LI><STRONG><A HREF="mod/mod_proxy.html">Optional proxy module</A></STRONG><BR>
+An improved FTP, HTTP, and CONNECT mode SSL proxy is included with
+Apache 1.2. Some of the changes visible to users:
+        <DL><DL>
+        <DT>- Improved FTP proxy supporting PASV mode
+        <DT>- ProxyBlock directive for excluding sites to proxy
+        <DT>- NoCache * directive for disabling proxy caching
+        <DT>- Numerous bug fixes
+        </DL></DL>
+
+</UL>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

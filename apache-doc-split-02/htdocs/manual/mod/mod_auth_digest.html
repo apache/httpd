@@ -1,0 +1,416 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_auth_digest</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_auth_digest</H1>
+
+This module is contained in the <CODE>mod_auth_digest.c</CODE> file, and is
+not compiled in by default. It is only available in Apache 1.3.8 and
+later. It provides for user authentication using MD5 Digest
+Authentication.
+
+<P>Note this is an updated version of <A
+HREF="mod_digest.html">mod_digest</A>. However, it has not been
+extensively tested and is therefore marked experimental. If you use this
+module, you must make sure to <em>not</em> use mod_digest (because they
+share some of the same configuration directives).
+
+
+<MENU>
+<LI><A HREF="#authdigestfile">AuthDigestFile</A>
+<LI><A HREF="#authdigestgroupfile">AuthDigestGroupFile</A>
+<LI><A HREF="#authdigestqop">AuthDigestQop</A>
+<LI><A HREF="#authdigestnoncelifetime">AuthDigestNonceLifetime</A>
+<LI><A HREF="#authdigestnonceformat">AuthDigestNonceFormat</A>
+<LI><A HREF="#authdigestnccheck">AuthDigestNcCheck</A>
+<LI><A HREF="#authdigestalgorithm">AuthDigestAlgorithm</A>
+<LI><A HREF="#authdigestdomain">AuthDigestDomain</A>
+<LI><A HREF="#usingdigest">Using Digest Authentication</A>
+</MENU>
+<HR>
+
+
+<H2><A NAME="authdigestfile">AuthDigestFile</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDigestFile <EM>filename</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_digest<BR>
+
+<P>The AuthDigestFile directive sets the name of a textual file containing
+the list of users and encoded passwords for digest authentication.
+<EM>Filename</EM> is the absolute path to the user file.
+
+<P>The digest file uses a special format. Files in this format can be
+created using the "htdigest" utility found in the support/ subdirectory of
+the Apache distribution.
+
+<HR>
+
+<H2><A NAME="authdigestgroupfile">AuthDigestGroupFile</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDigestGroupFile <EM>filename</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_digest<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.8 and later
+
+<P>The AuthDigestGroupFile directive sets the name of a textual file
+containing the list of groups and their members (user names).
+<EM>Filename</EM> is the absolute path to the group file.
+
+<P>Each line of the group file contains a groupname followed by a colon,
+followed by the member usernames separated by spaces. Example:
+<BLOCKQUOTE><CODE>mygroup: bob joe anne</CODE></BLOCKQUOTE>
+Note that searching large text files is <EM>very</EM> inefficient.
+
+<P>Security: make sure that the AuthGroupFile is stored outside the
+document tree of the web-server; do <EM>not</EM> put it in the directory
+that it protects. Otherwise, clients will be able to download the
+AuthGroupFile.
+
+<HR>
+
+<H2><A NAME="authdigestqop">AuthDigestQop</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDigestQop <EM>none | 1*{ auth | auth-int }</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>AuthDigestQop auth</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_digest<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.8 and later
+
+<P>The AuthDigestQop directive determines the quality-of-protection to use.
+<EM>auth</EM> will only do authentication (username/password);
+<EM>auth-int</EM> is authentication plus integrity checking (an MD5 hash
+of the entity is also computed and checked); <EM>none</EM> will cause the
+module to use the old RFC-2069 digest algorithm (which does not include
+integrity checking). Both <EM>auth</em> and <EM>auth-int</EM> may be
+specified, in which the case the browser will choose which of these to
+use. <EM>none</EM> should only be used if the browser for some reason
+does not like the challenge it receives otherwise.
+
+<P><STRONG><EM>auth-int</EM> is not implemented yet</STRONG>.
+
+<HR>
+
+<H2><A NAME="authdigestnoncelifetime">AuthDigestNonceLifetime</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDigestNonceLifetime <EM>&lt;time&gt;</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>AuthDigestNonceLifetime 300</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_digest<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.8 and later
+
+<P>The AuthDigestNonceLifetime directive controls how long the server
+nonce is valid. When the client contacts the server using an expired
+nonce the server will send back a 401 with <code>stale=true</code>. If
+<EM>&lt;time&gt;</EM> is greater than 0 then it specifies the number of
+seconds the nonce is valid; this should probably never be set to less
+than 10 seconds. If <EM>&lt;time&gt;</EM> is less than 0 then the nonce
+never expires.
+
+<!-- Not implemented yet
+If <EM>&lt;time&gt;</EM> is 0 then the nonce may be used exactly once
+by the client. Note that while one-time-nonces provide higher security
+against replay attacks, they also have significant performance
+implications, as the browser cannot pipeline or multiple connections
+for the requests. Because browsers cannot easily detect that
+one-time-nonces are being used, this may lead to browsers trying to
+pipeline requests and receiving 401 responses for all but the first
+request, requiring the browser to resend the requests. Note also that
+the protection against reply attacks only makes sense for dynamically
+generated content and things like POST requests; for static content
+the attacker may already have the complete response, so one-time-nonces
+do not make sense here.
+-->
+
+<HR>
+<H2><A NAME="authdigestnonceformat">AuthDigestNonceFormat</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDigestNonceFormat <EM>???</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>AuthDigestNonceFormat ???</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_digest<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.8 and later
+
+<P><STRONG>Not implemented yet.</STRONG>
+<!--
+<P>The AuthDigestNonceFormat directive determines how the nonce is
+generated.
+-->
+
+<HR>
+<H2><A NAME="authdigestnccheck">AuthDigestNcCheck</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDigestNcCheck <EM>On/Off</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>AuthDigestNcCheck Off</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_digest<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.8 and later
+
+<P><STRONG>Not implemented yet.</STRONG>
+<!--
+<P>The AuthDigestNcCheck directive enables or disables the checking of the
+nonce-count sent by the server.
+
+<P>While recommended from a security standpoint, turning this directive
+On has one important performance implication. To check the nonce-count
+*all* requests (which have an Authorization header, irrespective of
+whether they require digest authentication) must be serialized through
+a critical section. If the server is handling a large number of
+requests which contain the Authorization header then this may noticeably
+impact performance.
+-->
+
+<HR>
+<H2><A NAME="authdigestalgorithm">AuthDigestAlgorithm</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDigestAlgorithm <EM>MD5 | MD5-sess</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>AuthDigestAlgorithm MD5</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_digest<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.8 and later
+
+<P>The AuthDigestAlgorithm directive selects the algorithm used to calculate
+the challenge and response hashes.
+
+<P><STRONG><EM>MD5-sess</EM> is not correctly implemented yet</STRONG>.
+<!--
+<P>To use <EM>MD5-sess</EM> you must first code up the
+<VAR>get_userpw_hash()</VAR> function in <VAR>mod_auth_digest.c</VAR> .
+-->
+
+<HR>
+<H2><A NAME="authdigestdomain">AuthDigestDomain</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AuthDigestDomain <EM>URI URI ...</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> AuthConfig<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_auth_digest<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.8 and later
+
+<P>The AuthDigestDomain directive allows you to specify one or more URIs
+which are in the same protection space (i.e. use the same realm and
+username/password info). The specified URIs are prefixes, i.e. the client
+will assume that all URIs "below" these are also protected by the same
+username/password. The URIs may be either absolute URIs (i.e. inluding a
+scheme, host, port, etc) or relative URIs.
+
+<P>This directive <em>should</em> always be specified and contain at least
+the (set of) root URI(s) for this space. Omitting to do so will cause the
+client to send the Authorization header for <em>every request</em> sent to
+this server. Apart from increasing the size of the request, it may also
+have a detrimental effect on performance if "AuthDigestNcCheck" is on.
+
+<P>The URIs specified can also point to different servers, in which case
+clients (which understand this) will then share username/password info
+across multiple servers without prompting the user each time.
+
+
+<HR>
+
+<H3><A NAME="usingdigest">Using Digest Authentication</A></H3>
+
+<P>Using MD5 Digest authentication is very simple. Simply set up
+authentication normally, using "AuthType Digest" and "AuthDigestFile"
+instead of the normal "AuthType Basic" and "AuthUserFile"; also,
+replace any "AuthGroupFile" with "AuthDigestGroupFile". Then add a
+"AuthDigestDomain" directive containing at least the root URI(s) for
+this protection space. Example:
+
+<PRE>
+  &lt;Location /private/&gt;
+  AuthType Digest
+  AuthName "private area"
+  AuthDigestDomain /private/ http://mirror.my.dom/private2/
+  AuthDigestFile /web/auth/.digest_pw
+  require valid-user
+  &lt;/Location&gt;
+</PRE>
+
+<P><strong>Note:</strong> MD5 authentication provides a more secure
+password system than Basic authentication, but only works with supporting
+browsers. As of this writing (July 1999), the only major browsers which
+support digest authentication are <A
+HREF="http://www.microsoft.com/windows/ie/">Internet Explorer 5.0</A> and
+<A HREF="http://www.w3.org/Amaya/">Amaya</A>. Therefore, we do not
+recommend using this feature on a large Internet site. However, for
+personal and intra-net use, where browser users can be controlled, it is
+ideal.
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
