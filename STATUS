@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/22 20:47:03 $]
+Last modified at [$Date: 2003/05/27 16:19:36 $]
 
 Release:
 
@@ -127,7 +127,7 @@ PATCHES TO PORT FROM 2.1
        <http://test.perlig.de/manual/>, done with mod_rewrite, waiting for
        mod_negotiation enhancement ;-))
       modules/mappers/mod_negotiation.c r1.110,r1.115
-      +1: nd, trawick
+      +1: nd, trawick, wrowe
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
