@@ -230,6 +230,34 @@ static const command_rec ssl_config_cmds[] = {
 /*
  *  the various processing hooks
  */
+static apr_status_t ssl_cleanup_pre_config(void *data)
+{
+    /*
+     * Try to kill the internals of the SSL library.
+     */
+#ifdef OPENSSL_VERSION_NUMBER
+#if OPENSSL_VERSION_NUMBER >= 0x00907001
+    /* Corresponds to OPENSSL_load_builtin_modules():
+     * XXX: borrowed from apps.h, but why not CONF_modules_free()
+     * which also invokes CONF_modules_finish()?
+     */
+    CONF_modules_unload(1);
+#endif
+#endif
+    /* Corresponds to SSL_library_init: */
+    EVP_cleanup();
+#if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
+    ENGINE_cleanup();
+#endif
+    CRYPTO_cleanup_all_ex_data();
+    ERR_remove_state(0);
+    ERR_free_strings();
+    /* 
+     * TODO: determine somewhere we can safely shove out diagnostics 
+     *       (when enabled) at this late stage in the game:
+     * CRYPTO_mem_leaks_fp(stderr);
+     */
+}
 
 static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
@@ -250,6 +278,12 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 #endif
 #endif
     SSL_load_error_strings();
+
+    /*
+     * Let us cleanup the ssl library when the module is unloaded
+     */
+    apr_pool_cleanup_register(pconf, NULL, ssl_cleanup_pre_config,
+                                           apr_pool_cleanup_null);
 
     /* Register us to handle mod_log_config %c/%x variables */
     ssl_var_log_config_register(pconf);

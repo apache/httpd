@@ -1251,13 +1251,6 @@ apr_status_t ssl_init_ModuleKill(void *data)
         ssl_init_ctx_cleanup_server(sc->server);
     }
 
-    /*
-     * Try to kill the internals of the SSL library.
-     */
-    ERR_free_strings();
-    ERR_remove_state(0);
-    EVP_cleanup();
-
     return APR_SUCCESS;
 }
 
