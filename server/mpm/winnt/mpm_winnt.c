@@ -886,6 +886,20 @@ static int create_acceptex_context(ap_context_t *_pconf, ap_listen_rec *lr)
                          "create_acceptex_context: AcceptEx failed. Process will exit.");
             return -1;
         }
+        
+        /* SO_UPDATE_ACCEPT_CONTEXT is a Microsoft-ism which is required
+         * if you want to use more than several key socket calls on a
+         * socket initialized via AcceptEx().  In particular, it is
+         * required for shutdown() to work.
+         */
+
+        if (setsockopt(context->accept_socket, SOL_SOCKET,
+                       SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd,
+                       sizeof(nsd))) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, WSAGetLastError(), server_conf,
+                         "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
+        }
+
     }
     lr->count++;
 
@@ -925,6 +939,20 @@ static ap_inline int reset_acceptex_context(PCOMP_CONTEXT context)
             ap_log_error(APLOG_MARK,APLOG_ERR, WSAGetLastError(), server_conf,
                          "reset_acceptex_context: AcceptEx failed. Leaving the process running.");
             return -1;
+        }
+        
+        /* SO_UPDATE_ACCEPT_CONTEXT is a Microsoft-ism which is required
+         * if you want to use more than several key socket calls on a
+         * socket initialized via AcceptEx().  In particular, it is
+         * required for shutdown() to work.
+         */
+
+        if (setsockopt(context->accept_socket, SOL_SOCKET,
+                       SO_UPDATE_ACCEPT_CONTEXT, (char *)&nsd,
+                       sizeof(nsd))) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(),
+                         server_conf,
+                         "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
         }
     }
 

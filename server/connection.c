@@ -75,9 +75,6 @@ HOOK_STRUCT(
 IMPLEMENT_HOOK_VOID(pre_connection,(conn_rec *c),(c))
 IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 
-/* TODO: reimplement the lingering close stuff */
-#define NO_LINGCLOSE
-
 /*
  * More machine-dependent networking gooo... on some systems,
  * you've got to be *really* sure that all the packets are acknowledged
@@ -126,70 +123,65 @@ static void sock_enable_linger(int s)
 
 #ifndef NO_LINGCLOSE
 
-/* Since many clients will abort a connection instead of closing it,
- * attempting to log an error message from this routine will only
- * confuse the webmaster.  There doesn't seem to be any portable way to
- * distinguish between a dropped connection and something that might be
- * worth logging.
+/* we now proceed to read from the client until we get EOF, or until
+ * MAX_SECS_TO_LINGER has passed.  the reasons for doing this are
+ * documented in a draft:
+ *
+ * http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt
+ *
+ * in a nutshell -- if we don't make this effort we risk causing
+ * TCP RST packets to be sent which can tear down a connection before
+ * all the response data has been sent to the client.
  */
-static void lingering_close(request_rec *r)     
+
+static void lingering_close(conn_rec *c)
 {
-  /*TODO remove the hardwired 512. This is an IO Buffer Size */
-    char dummybuf[512];    
-    struct pollfd pd;
-    int lsd;
-    int max_wait;
-
-    /* Prevent a slow-drip client from holding us here indefinitely */
-
-    max_wait = 30;
-    ap_bsetopt(r->connection->client, BO_TIMEOUT, &max_wait);
+    char dummybuf[512];
+    ap_time_t start;
+    ap_ssize_t nbytes;
+    ap_status_t rc;
+    int timeout;
 
     /* Send any leftover data to the client, but never try to again */
 
-    if (ap_bflush(r->connection->client) != APR_SUCCESS) {
-	ap_bclose(r->connection->client);
-	return;
-    }
-    ap_bsetflag(r->connection->client, B_EOUT, 1);
-
-    /* Close our half of the connection --- send the client a FIN */
-
-    lsd = r->connection->client->fd;
-
-    if ((shutdown(lsd, 1) != 0)  
-        || ap_is_aborted(r->connection)) {
-	ap_bclose(r->connection->client);
-	return;
+    if (ap_bflush(c->client) != APR_SUCCESS) {
+        ap_bclose(c->client);
+        return;
     }
 
-    /* Set up to wait for readable data on socket... */
-    pd.fd = lsd;
-    pd.events = POLLIN;
-
-    /* Wait for readable data or error condition on socket;
-     * slurp up any data that arrives...  We exit when we go for an
-     * interval of tv length without getting any more data, get an error
-     * from poll(), get an error or EOF on a read, or the timer expires.
+    /* Shut down the socket for write, which will send a FIN
+     * to the peer.
      */
-    /* We use a 2 second timeout because current (Feb 97) browsers
-     * fail to close a connection after the server closes it.  Thus,
-     * to avoid keeping the child busy, we are only lingering long enough
-     * for a client that is actively sending data on a connection.
-     * This should be sufficient unless the connection is massively
-     * losing packets, in which case we might have missed the RST anyway.
-     * These parameters are reset on each pass, since they might be
-     * changed by poll.
-     */
-    do {
-        pd.revents = 0;
-    } while ((poll(&pd, 1, 2) == 1)   
-             && read(lsd, dummybuf, sizeof(dummybuf)));
-      /* && (time() = epoch) < max_wait); */    
+    
+    if (ap_bshutdown(c->client, 1) != APR_SUCCESS
+        || ap_is_aborted(c)) {
+        ap_bclose(c->client);
+        return;
+    }
 
-    /* Should now have seen final ack.  Safe to finally kill socket */
-    ap_bclose(r->connection->client);
+    /* Read all data from the peer until we reach "end-of-file" (FIN
+     * from peer) or we've exceeded our overall timeout.
+     */
+    
+    start = ap_now();
+    timeout = MAX_SECS_TO_LINGER;
+    for (;;) {
+        ap_bsetopt(c->client, BO_TIMEOUT, &timeout);
+        rc = ap_bread(c->client, dummybuf, sizeof(dummybuf),
+                      &nbytes);
+        if (rc != APR_SUCCESS || nbytes == 0) break;
+
+        /* how much time has elapsed? */
+        timeout = (int)((ap_now() - start) / AP_USEC_PER_SEC);
+        if (timeout >= MAX_SECS_TO_LINGER) break;
+
+        /* figure out the new timeout */
+        timeout = MAX_SECS_TO_LINGER - timeout;
+    }
+
+    ap_bclose(c->client);
 }
+
 #endif /* ndef NO_LINGCLOSE */
 
 CORE_EXPORT(void) ap_process_connection(conn_rec *c)
@@ -209,12 +201,11 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 #ifdef NO_LINGCLOSE
     ap_bclose(c->client);	/* just close it */
 #else
-    if (r && r->connection
-	&& !r->connection->aborted
-	&& r->connection->client
-	&& (r->connection->client->fd >= 0)) {
+    if (!c->aborted
+	&& c->client
+	/* && (c->client->fd >= 0) */ ) {
 
-	lingering_close(r);
+	lingering_close(c);
     }
     else {
 	ap_bsetflag(c->client, B_EOUT, 1);
