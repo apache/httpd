@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.8 $ ($Date: 2001/01/28 00:19:28 $)
+  $Revision: 1.9 $ ($Date: 2001/02/28 03:36:00 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -213,12 +213,19 @@
       <STRONG>How can I rotate my log files?</STRONG>
      </A>
   <P>The simple answer: by piping the transfer log into an appropriate
-  log file rotation utility.</P> <P>The longer answer: In the
+  log file rotation utility.</P>
+
+  <P>The longer answer: In the
   src/support/ directory, you will find a utility called <a
   href="../programs/rotatelogs.html">rotatelogs</a> which can be used
-  like this:<PRE> TransferLog "|/path/to/rotatelogs
-  /path/to/logs/access_log 86400" </PRE> to enable daily rotation of
-  the log files.<BR> A more sophisticated solution of a logfile
+  like this:</p>
+
+  <PRE>TransferLog "|/path/to/rotatelogs
+  /path/to/logs/access_log 86400"</PRE>
+
+  <p>to enable daily rotation of
+  the log files.<BR>
+  A more sophisticated solution of a logfile
   rotation utility is available under the name <CODE>cronolog</CODE>
   from Andrew Ford's site at <A
   HREF="http://www.ford-mason.co.uk/resources/cronolog/"
@@ -226,10 +233,12 @@
   automatically create logfile subdirectories based on time and date,
   and can have a constant symlink point to the rotating logfiles. (As
   of version 1.6.1, cronolog is available under the <A
-  HREF="../LICENSE">Apache License</A>).  Use it like this:<PRE>
-  CustomLog "|/path/to/cronolog
+  HREF="../LICENSE">Apache License</A>).  Use it like this:</p>
+
+  <PRE>CustomLog "|/path/to/cronolog
   --symlink=/usr/local/apache/logs/access_log
-  /usr/local/apache/logs/%Y/%m/access_log" combined </PRE></P>
+  /usr/local/apache/logs/%Y/%m/access_log" combined </PRE>
+
   <HR>
  </LI>
  <LI><A NAME="conditional-logging">
@@ -245,7 +254,7 @@
   <A HREF="../mod/mod_setenvif.html#SetEnvIf"><CODE>SetEnvIf</CODE></A>
   directive to set an environment variable for certain requests and
   then using the conditional
-  <A HREF="../mod/mod_log_config.html#customlog-conditional"><CODE>CustomLog</CODE></A>
+  <A HREF="../mod/mod_log_config.html#customlogconditional"><CODE>CustomLog</CODE></A>
   syntax to prevent logging when the environment variable is set.
   </P>
   <HR>
