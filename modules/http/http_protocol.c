@@ -105,7 +105,6 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
     int ka_sent = 0;
     int wimpy = ap_find_token(r->pool,
                            apr_table_get(r->headers_out, "Connection"), "close");
-    ap_http_conn_rec *hconn = ap_get_module_config(r->connection->conn_config, &http_module);
     const char *conn = apr_table_get(r->headers_in, "Connection");
 
     /* The following convoluted conditional determines whether or not
@@ -147,7 +146,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         && r->server->keep_alive
 	&& (r->server->keep_alive_timeout > 0)
 	&& ((r->server->keep_alive_max == 0)
-	    || (r->server->keep_alive_max > hconn->keepalives))
+	    || (r->server->keep_alive_max > r->connection->keepalives))
 	&& !ap_status_drops_connection(r->status)
 	&& !wimpy
 	&& !ap_find_token(r->pool, conn, "close")
@@ -155,10 +154,10 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 	    || apr_table_get(r->headers_in, "Via"))
 	&& ((ka_sent = ap_find_token(r->pool, conn, "keep-alive"))
 	    || (r->proto_num >= HTTP_VERSION(1,1)))) {
-        int left = r->server->keep_alive_max - hconn->keepalives;
+        int left = r->server->keep_alive_max - r->connection->keepalives;
 
         r->connection->keepalive = 1;
-        hconn->keepalives++;
+        r->connection->keepalives++;
 
         /* If they sent a Keep-Alive token, send one back */
         if (ka_sent) {
