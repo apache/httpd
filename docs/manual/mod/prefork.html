@@ -80,6 +80,7 @@ Apache uses</a>.</p>
 
 <H2>Directives</H2>
 <UL>
+<li><a href="#acceptmutex">AcceptMutex</a>
 <li><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><a href="mpm_common.html#group">Group</a></li>
 <li><a href="mpm_common.html#pidfile">PidFile</a></li>
@@ -98,6 +99,62 @@ Apache uses</a>.</p>
 
 <p><hr>
 
+
+<H2><A NAME="AcceptMutex">AcceptMutex Directive</A></H2>
+<p><A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> AcceptMutex default|<EM>method</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <code>AcceptMutex default</code><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core</p>
+
+<p>The <code>AcceptMutex</code> directives sets the method that Apache
+uses to serialize multiple children accepting requests on network
+sockets. Prior to Apache 2.0, the method was selectable only at
+compile time. The optimal method to use is highly architecture and
+platform dependent.  For further details, see the <a
+href="../misc/perf-tuning.html">performance tuning</a>
+documentation.</p>
+
+<p>If this directive is set to <code>default</code>, then the
+compile-time selected default will be used.  Other possible
+methods are listed below.  Note that not all methods are available
+on all platforms.  If a method is specified which is not available,
+a message will be written to the error log listing the available
+methods.</p>
+
+<dl>
+
+<dt><code>flock</code></dt>
+<dd>uses the <code>flock(2)</code> system call to lock the
+file defined by the <a href="mpm_common.html#lockfile">LockFile</a>
+directive.</dd>
+
+<dt><code>fcntl</code></dt>
+<dd>uses the <code>fnctl(2)</code> system call to lock the
+file defined by the <a href="mpm_common.html#lockfile">LockFile</a>
+directive.</dd>
+
+<dt><code>sysvsem</code></dt>
+<dd>uses SySV-style semaphores to implement the mutex.</dd>
+
+<dt><code>proc_pthread</code></dt>
+<dd>uses POSIX mutexes as implemented by the POSIX Threads (PThreads)
+specification.</dd>
+
+</dl>
+
+<hr>
 
 <H2><A NAME="maxspareservers">MaxSpareServers directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
