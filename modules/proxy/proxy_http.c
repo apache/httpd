@@ -217,7 +217,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		 "proxy: connecting %s to %s:%d", url, uri.hostname, uri.port);
+		 "proxy: HTTP connecting %s to %s:%d", url, uri.hostname, uri.port);
 
     /* do a DNS lookup for the destination host */
     err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, p);
@@ -398,10 +398,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      */
 
     /* set up the connection filters */
-    ap_add_input_filter("HTTP_IN", NULL, NULL, origin);
-    ap_add_input_filter("CORE_IN", NULL, NULL, origin);
-    ap_add_output_filter("CORE", NULL, NULL, origin);
-
+    ap_proxy_pre_http_connection(origin);
 
     /* strip connection listed hop-by-hop headers from the request */
     /* even though in theory a connection: close coming from the client
@@ -558,7 +555,6 @@ int ap_proxy_http_handler(request_rec *r, char *url,
      * Get response from the remote server, and pass it up the
      * filter chain
      */
-
 
     rp = make_fake_req(origin, r);
 

@@ -156,7 +156,6 @@ struct proxy_alias {
 
 struct dirconn_entry {
     char *name;
-//    struct apr_sockaddr_t *addr;
     struct in_addr addr, mask;
     struct hostent *hostentry;
     int (*matcher) (struct dirconn_entry * This, request_rec *r);
@@ -236,10 +235,8 @@ char *ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
 const char *ap_proxy_date_canon(apr_pool_t *p, const char *x);
 apr_table_t *ap_proxy_read_headers(request_rec *r, request_rec *rp, char *buffer, int size, conn_rec *c);
-void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *hdrs);
 int ap_proxy_liststr(const char *list, const char *val);
 char *ap_proxy_removestr(apr_pool_t *pool, const char *list, const char *val);
-void ap_proxy_hash(const char *it, char *val, int ndepth, int nlength);
 int ap_proxy_hex2sec(const char *x);
 void ap_proxy_sec2hex(int t, char *y);
 const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);
@@ -249,8 +246,6 @@ int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, apr_sockaddr_t *uri_addr);
-apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r);
-/* This function is called by ap_table_do() for all header lines */
-int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
+int ap_proxy_pre_http_connection(conn_rec *c);
 
 #endif /*MOD_PROXY_H*/
