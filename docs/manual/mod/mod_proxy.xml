@@ -315,7 +315,7 @@ server:</p>
 <name>ProxyMatch</name>
 <description>Container for directives applied to regular-expression-matched 
 proxied resources</description>
-<syntax>&lt;Proxy <em>regex</em>&gt; ...&lt;/Proxy&gt;</syntax>
+<syntax>&lt;ProxyMatch <em>regex</em>&gt; ...&lt;/ProxyMatch&gt;</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
