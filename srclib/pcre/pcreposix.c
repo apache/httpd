@@ -231,7 +231,12 @@ int *ovector = NULL;
 if ((eflags & REG_NOTBOL) != 0) options |= PCRE_NOTBOL;
 if ((eflags & REG_NOTEOL) != 0) options |= PCRE_NOTEOL;
 
+#if 0
+/* This causes a memory segfault after locking the const, thread-shared *preg 
+ * generated at compile time, and is entirely unnecessary.
+ */
 preg->re_erroffset = (size_t)(-1);   /* Only has meaning after compile */
+#endif
 
 if (nmatch > 0)
   {
