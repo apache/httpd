@@ -15,7 +15,7 @@ reference documents on the server.
 <h2>Log file format</h2>
 The log file contains a separate line for each refer. Each line has the
 format
-<blockquote><em>uri</em> <code>-></code> <em>document</em></blockquote>
+<blockquote><em>uri</em> <code>-&gt;</code> <em>document</em></blockquote>
 where <em>uri</em> is the (%-escaped) URI for the document that references
 the one requested by the client, and <em>document</em> is the (%-decoded)
 local URL to the document being referred to.
@@ -29,7 +29,7 @@ local URL to the document being referred to.
 <hr>
 
 
-<A name="refererignore"><h2>RefererIgnore</h2></A>
+<h2><A name="refererignore">RefererIgnore</A></h2>
 <!--%plaintext &lt;?INDEX {\tt RefererIgnore} directive&gt; -->
 <strong>Syntax:</strong> RefererIgnore <em>string string ...</em><br>
 <Strong>Context:</strong> server config, virtual host<br>
@@ -45,7 +45,7 @@ This avoids logging references from www.ncsa.uiuc.edu.
 <p><hr>
 
 
-<A name="refererlog"><h2>RefererLog</h2></A>
+<h2><A name="refererlog">RefererLog</A></h2>
 <!--%plaintext &lt;?INDEX {\tt RefererLog} directive&gt; -->
 <strong>Syntax:</strong> RefererLog <em>file-pipe</em><br>
 <strong>Default:</strong> <code>RefererLog logs/referer_log</code><br>

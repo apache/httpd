@@ -11,7 +11,7 @@
 
 <p>As implemented in Apache 1.1.1 and earlier versions, the method
 Apache used to create PATH_INFO in the CGI environment was
-counterintiutive, and could result in crashes in certain cases. In
+counterintuitive, and could result in crashes in certain cases. In
 Apache 1.2 and beyond, this behavior has changed. Although this
 results in some compatibility problems with certain legacy CGI
 applications, the Apache 1.2 behavior is still compatible with the
@@ -45,10 +45,10 @@ client-modifiable, and setting PATH_INFO to it. To use the above
 example, PATH_INFO would be set to "<code>/script</code>", and
 SCRIPT_NAME to "<code>/cgi-ralph</code>". This makes sense and results
 in no server behavior problems. It also permits the script to be
-gauranteed that
+guaranteed that
 "<code>http://$SERVER_NAME:$SERVER_PORT$SCRIPT_NAME$PATH_INFO</code>"
-will always be an accessable URL that points to the current script,
-something which was not neccessarily true with previous versions of
+will always be an accessible URL that points to the current script,
+something which was not necessarily true with previous versions of
 Apache.
 
 <p>However, the "<code>/ralph</code>"
@@ -60,7 +60,7 @@ provide <a href="#compat">a workaround.</a>
 
 <h2><a name="compat">Compatibility with Previous Servers</a></h2>
 
-<p>It may be neccessary for a script that was designed for earlier
+<p>It may be necessary for a script that was designed for earlier
 versions of Apache or other servers to need the information that the
 old PATH_INFO variable provided. For this purpose, Apache 1.2 (1.2b3
 and later) sets an additional variable, FILEPATH_INFO. This
@@ -68,7 +68,7 @@ environment variable contains the value that PATH_INFO would have had
 with Apache 1.1.1.</p>
 
 <p>A script that wishes to work with both Apache 1.2 and earlier
-versions can simply test for the existance of FILEPATH_INFO, and use
+versions can simply test for the existence of FILEPATH_INFO, and use
 it if available. Otherwise, it can use PATH_INFO. For example, in
 Perl, one might use:
 <pre>

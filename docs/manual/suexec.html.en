@@ -24,7 +24,6 @@ Having said all that, enabling this feature is purposefully difficult with
 the intent that it will only be installed by users determined to use it and
 is not part of the normal install/compile process.<p>
 
-<ul>
 <h3>Configuring the suEXEC wrapper</h3>
 From the top-level of the Apache source tree, type:&nbsp;&nbsp;<b><code>cd support [ENTER]</code></b><p>
 Edit the <code>suexec.h</code> file and change the following macros to match your
@@ -93,12 +92,10 @@ commands.<p>
 <b><code>chmod 4711 /usr/local/etc/httpd/sbin/suexec [ENTER]</code></b><p>
 
 <i>Change the path to the suEXEC wrapper to match your system installation.</i>
-</ul>
 
 <hr>
 
-<a name="model"></a>
-<h3>Security Model of suEXEC</h3>
+<h3><a name="model">Security Model of suEXEC</a></h3>
 The <b>suEXEC</b> wrapper supplied with Apache performs the following security
 checks before it will execute any program passed to it for execution.
 <ol>
@@ -113,7 +110,7 @@ checks before it will execute any program passed to it for execution.
 <li>The command being executed <b>cannot be a <em>setuid</em> or <em>setgid</em> program</b>.
 <li>The target UID and GID <b>must be a valid user and group on this system</b>.
 <li>The target UID and GID to execute as, <b>must match the UID and GID of the directory</b>.
-<li>The target execution UID and GID <b>must not be the privledged ID 0</b>.
+<li>The target execution UID and GID <b>must not be the privileged ID 0</b>.
 </ol>
 If any of these issues are too restrictive, or do not seem restrictive enough, you are
 welcome to install your own version of the wrapper. We've given you the rope, now go

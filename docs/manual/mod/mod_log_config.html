@@ -90,7 +90,7 @@ zone = (`+' | `-') 4*digit</code></blockquote></dl>
 any headers.
 </dl>
 
-<A NAME="formats"><h3>Custom Log Formats</h3></A>
+<h3><A NAME="formats">Custom Log Formats</A></h3>
 
 The format argument to the <code>LogFormat</code> and
 <code>CustomLog</code> is a string. This string is logged to the log
@@ -111,7 +111,7 @@ by the values as follows:
 %...P:          The process ID of the child that serviced the request.
 %...r:          First line of request
 %...s:          Status.  For requests that got internally redirected, this
-                is status of the *original* request --- %...>s for the last.
+                is status of the *original* request --- %...&gt;s for the last.
 %...t:          Time, in common log format time format
 %...{format}t:  The time, in the form given by format, which should
                 be in strftime(3) format.
@@ -145,7 +145,7 @@ Note that the common log format is defined by the string <code>"%h %l
 extending for format if desired (e.g. to add extra fields at the end).
 NCSA's extended/combined log format would be <code>"%h %l %u %t \"%r\" %s %b \"%{Referer}i\" \"%{User-agent}i\""</code>.
 
-<h2>Using Multiple Log Files</h3>
+<h2>Using Multiple Log Files</h2>
 
 The <code>TransferLog</code> and <code>CustomLog</code> directives can
 be given more than once to log requests to multiple log files. Each
@@ -181,7 +181,7 @@ that starts the server.
 <hr>
 
 
-<A name="cookielog"><h2>CookieLog</h2></A>
+<h2><A name="cookielog">CookieLog</A></h2>
 <!--%plaintext &lt;?INDEX {\tt CookieLog} directive&gt; -->
 <strong>Syntax:</strong> CookieLog <em>filename</em><br>
 <Strong>Context:</strong> server config, virtual host<br>
@@ -195,7 +195,7 @@ only for compatibility with <a
 href="mod_cookies.html">mod_cookies</a>, and is deprecated.
 <p>
 
-<A NAME="customlog"><H2>CustomLog</H2></A>
+<H2><A NAME="customlog">CustomLog</A></H2>
 <STRONG>Syntax:</STRONG> CustomLog <em>file-pipe</em> <em>format</em><BR>
 <STRONG>Context:</STRONG> server config, virtual host<BR>
 <STRONG>Status:</STRONG> Base<BR>
@@ -212,7 +212,7 @@ the argument of the <tt>LogFormat</tt> directive. If the format
 includes any spaces (which it will do in almost all cases) it
 should be enclosed in double quotes.
 
-<A name="logformat"><h2>LogFormat</h2></A>
+<h2><A name="logformat">LogFormat</A></h2>
 <!--%plaintext &lt;?INDEX {\tt LogFormat} directive&gt; -->
 <strong>Syntax:</strong> LogFormat <em>string</em><br>
 <strong>Default:</strong> <code>LogFormat &quot;%h %l %u %t \&quot;%r\&quot;
@@ -225,7 +225,7 @@ This sets the format of the logfile.  See <A HREF="#formats">
 Custom Log Formats</A> for details on the format arguments.<p><hr>
 
 
-<A name="transferlog"><h2>TransferLog</h2></A>
+<h2><A name="transferlog">TransferLog</A></h2>
 <!--%plaintext &lt;?INDEX {\tt TransferLog} directive&gt; -->
 <strong>Syntax:</strong> TransferLog <em>file-pipe</em><br>
 <strong>Default:</strong> <code>TransferLog logs/transfer_log</code><br>

@@ -223,7 +223,7 @@ machine. <em>Saddr</em> can be
 <menu>
 <li>*
 <li>An IP address
-<li>A fully-qualified internet domain name
+<li>A fully-qualified Internet domain name
 </menu>
 If the value is *, then the server will listen for connections on
 every IP address, otherwise it will only listen on the IP address
@@ -549,7 +549,7 @@ Note that this can cause serious latency problems accessing your server
 since every request requires one of these lookups to be performed.  When
 firewalls are involved each lookup might possibly fail and add 30 seconds
 of latency to each hit.  So in general this is not very useful on public
-servers accessible from the internet.
+servers accessible from the Internet.
 <p><hr>
 
 <A NAME="ifmodule"><H2>&lt;IfModule&gt;</H2></A>
@@ -748,7 +748,7 @@ processes will be created.<p><hr>
 allowed per connection when <a href="#keepalive">KeepAlive</a> is
 on. If it is set to "<code>0</code>", unlimited requests will be
 allowed. We recommend that this setting be kept to a high value for
-maximum server peformance.
+maximum server performance.
 
 <A name="maxrequestsperchild"><h2>MaxRequestsPerChild directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt MaxRequestsPerChild} directive&gt; -->
@@ -924,7 +924,7 @@ The PidFile is subject to the same warnings about log file placement and
 for a list of some defined ports; the standard port for the http protocol
 is 80.<p>
 
-The Port directive has two behaviours, the first of which is necessary for
+The Port directive has two behaviors, the first of which is necessary for
 NCSA backwards compatibility (and which is confusing in the context of
 Apache).<p>
 
@@ -1092,7 +1092,7 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitcpu">RLimitCPU</A
 <A name="satisfy"><h2>Satisfy</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Satisfy} directive&gt; -->
 <strong>Syntax:</strong> Satisfy <em>'any' or 'all'</em><br>
-<strong>Default:</strong> Satisy all<br>
+<strong>Default:</strong> Satisfy all<br>
 <strong>Context:</strong> directory, .htaccess<br>
 <strong>Status:</strong> core<br>
 <strong>Compatibility:</strong> Satisfy is only available in Apache 1.2 and later<p>
@@ -1388,7 +1388,7 @@ command (if your OS supports it), or with kernel patches like <A
 HREF="../misc/vif-info.html">VIF</A> (for SunOS(TM) 4.1.x)).<p>
 
 The special name <code>_default_</code> can be specified in which case
-this virtual host will match any ip address that is not explicitly listed
+this virtual host will match any IP address that is not explicitly listed
 in another virtual host.  In the absence of any _default_ virtual host
 the "main" server config, consisting of all those definitions outside
 any VirtualHost section, is used when no match occurs.<p>

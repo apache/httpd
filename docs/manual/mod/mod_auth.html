@@ -83,7 +83,7 @@ See also <A HREF="core.html#authname">AuthName</A>,
 <strong>Module:</strong> mod_auth<p>
 
 Setting the AuthAuthoritative directive explicitly to <b>'off'</b>
-allows for both authentification and authorization to be passed on to
+allows for both authentication and authorization to be passed on to
 lower level modules (as defined in the <code>Configuration</code> and
 <code>modules.c</code> files) if there is <b>no userID</b> or
 <b>rule</b> matching the supplied userID. If there is a userID and/or
@@ -99,7 +99,7 @@ regardless of the AuthAuthoritative setting.
 
 <p>
 
-A common use for this is in conjection with one of the database
+A common use for this is in conjunction with one of the database
 modules; such as <a
 href="mod_auth_db.html"><code>mod_auth_db.c</code></a>, <a
 href="mod_auth_dbm.html"><code>mod_auth_dbm.c</code></a>, <a
@@ -111,7 +111,7 @@ well protected AuthUserFile.
 
 <p>
 
-<b>Default:</b> By default; control is not passed on; and an unkown
+<b>Default:</b> By default; control is not passed on; and an unknown
 userID or rule will result in an Authorization Required reply. Not
 setting it thus keeps the system secure; and forces an NSCA compliant
 behaviour.

@@ -75,7 +75,7 @@ BindAddress and Listen do not implement Virtual Hosts. They tell the
 main server what addresses and ports to listen to.  If no
 &lt;VirtualHost&gt; directives are used, the server will behave the
 same for all accepted requests. However, &lt;VirtualHost&gt; can be
-used to specify a different behavour for one or more of the addresses
+used to specify a different behavior for one or more of the addresses
 and ports. To implement a VirtualHost, the server must first be told
 to listen to the address and port to be used. Then a
 &lt;VirtualHost&gt; section should be created for a specified address
@@ -93,7 +93,6 @@ See also the documentation on
 <a href="dns-caveats.html">DNS Issues</a>
 and
 <a href="mod/core.html#virtualhost">&lt;VirtualHost&gt; section</a>.
-</ul>
 
 <!--#include virtual="footer.html" -->
 </BODY>
