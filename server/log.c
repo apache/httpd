@@ -156,60 +156,84 @@ static const TRANS priorities[] = {
     {NULL,	-1},
 };
 
-static int error_log_child(void *cmd, ap_child_info_t *pinfo)
+static int log_child(ap_context_t *p, const char *progname,
+                     ap_file_t **fpout, ap_file_t **fpin,
+                     ap_file_t **fperr)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will
      * be common for other foo-loggers to want this sort of thing...
      */
-    int child_pid = 0;
+    int rc = -1;
+    ap_procattr_t *procattr;
+    ap_proc_t *procnew;
+    ap_os_proc_t fred;
 
+    ap_block_alarms();
     ap_cleanup_for_exec();
+
 #ifdef SIGHUP
     /* No concept of a child process on Win32 */
     signal(SIGHUP, SIG_IGN);
 #endif /* ndef SIGHUP */
-#if defined(WIN32)
-    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-    return(child_pid);
-#elif defined(OS2)
-    /* For OS/2 we need to use a '/' and spawn the child rather than exec as
-     * we haven't forked */
-    child_pid = spawnl(P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-    return(child_pid);
-#else    
-    execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
-#endif    
-    exit(1);
-    /* NOT REACHED */
-    return(child_pid);
+
+    if ((ap_createprocattr_init(&procattr, p)          != APR_SUCCESS) ||
+        (ap_setprocattr_io(procattr,
+                           fpin  ? 1 : 0,
+                           fpout ? 1 : 0,
+                           fperr ? 1 : 0)              != APR_SUCCESS) ||
+        (ap_setprocattr_dir(procattr, progname)        != APR_SUCCESS)) {
+        /* Something bad happened, give up and go away. */
+        rc = -1;
+    }
+    else {
+        rc = ap_create_process(&procnew, p, progname, NULL, NULL, procattr);
+    
+        if (rc == APR_SUCCESS) {
+#ifndef WIN32
+            /* pjr - this is a cheap hack for now to get the basics working in
+             *       stages. ap_note_subprocess and free_proc need to be redone
+             *       to make use of ap_proc_t instead of pid.
+             */
+            ap_get_os_proc(procnew, &fred);
+            ap_note_subprocess(p, fred, kill_after_timeout);
+#endif
+            if (fpin) {
+                ap_get_childin(fpin, procnew);
+            }
+
+            if (fpout) {
+                ap_get_childout(fpout, procnew);
+            }
+
+            if (fperr) {
+                ap_get_childerr(fperr, procnew);
+            }
+        }
+    }
+
+    ap_unblock_alarms();
+
+    return(rc);
 }
 
 static void open_error_log(server_rec *s, ap_context_t *p)
 {
     const char *fname;
+    int rc;
 
     if (*s->error_fname == '|') {
-	FILE *dummy;
-        int dummyno;
-#ifdef TPF
-        TPF_FORK_CHILD cld;
-        cld.filename = s->error_fname+1;
-        cld.subprocess_env = NULL;
-        cld.prog_type = FORK_NAME;
-        if (!ap_spawn_child(p, NULL, &cld,
-                            kill_after_timeout, &dummy, NULL, NULL)) {
-#else
-	if (!ap_spawn_child(p, error_log_child, (void *)(s->error_fname+1),
-			    kill_after_timeout, &dummy, NULL, NULL)) {
-#endif /* TPF */
+	ap_file_t *dummy;
+
+        /* This starts a new process... */
+        rc = log_child (p, s->error_fname+1, NULL, &dummy, NULL);
+        if (rc != APR_SUCCESS) {
 	    perror("ap_spawn_child");
 	    fprintf(stderr, "Couldn't fork child for ErrorLog process\n");
 	    exit(1);
 	}
 
-        dummyno = fileno(dummy);
-	ap_put_os_file(&s->error_log, &dummyno, p);
+        s->error_log = dummy;
     }
 
 #ifdef HAVE_SYSLOG
@@ -276,8 +300,7 @@ void ap_open_logs(server_rec *s_main, ap_context_t *p)
     }
 
     for (virt = s_main->next; virt; virt = virt->next) {
-	if (virt->error_fname)
-	{
+	if (virt->error_fname) {
 	    for (q=s_main; q != virt; q = q->next)
 		if (q->error_fname != NULL &&
 		    strcmp(q->error_fname, virt->error_fname) == 0)
@@ -506,7 +529,7 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
 
 void ap_log_pid(ap_context_t *p, const char *fname)
 {
-    FILE *pid_file;
+    ap_file_t *pid_file;
     struct stat finfo;
     static pid_t saved_pid = -1;
     pid_t mypid;
@@ -531,14 +554,14 @@ void ap_log_pid(ap_context_t *p, const char *fname)
 			       );
     }
 
-    if(!(pid_file = fopen(fname, "w"))) {
+    if(ap_open(&pid_file, p, fname, APR_WRITE | APR_BUFFERED, APR_OS_DEFAULT) != APR_SUCCESS) {
 	perror("fopen");
         fprintf(stderr, "%s: could not log pid to file %s\n",
 		ap_server_argv0, fname);
         exit(1);
     }
-    fprintf(pid_file, "%ld\n", (long)mypid);
-    fclose(pid_file);
+    ap_fprintf(pid_file, "%ld\n", (long)mypid);
+    ap_close(pid_file);
     saved_pid = mypid;
 }
 
@@ -592,35 +615,42 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status);
 
 static int piped_log_spawn(piped_log *pl)
 {
-    int pid;
+    int rc;
+    ap_procattr_t *procattr;
+    ap_os_proc_t pid;
+    ap_proc_t *procnew;
 
-    pid = fork();
-    if (pid == 0) {
-	/* XXX: this needs porting to OS2 and WIN32 */
-	/* XXX: need to check what open fds the logger is actually passed,
-	 * XXX: and CGIs for that matter ... cleanup_for_exec *should*
-	 * XXX: close all the relevant stuff, but hey, it could be broken. */
-	RAISE_SIGSTOP(PIPED_LOG_SPAWN);
-	/* we're now in the child */
-	close(STDIN_FILENO);
-	dup2(pl->fds[0], STDIN_FILENO);
+    /* pjr - calls to block and unblock alarms weren't here before, was this */
+    /*       an oversight or intentional?                                    */
+/*  ap_block_alarms();   */
 
-	ap_cleanup_for_exec();
-	signal(SIGCHLD, SIG_DFL);	/* for HPUX */
-	signal(SIGHUP, SIG_IGN);
-	execl(SHELL_PATH, SHELL_PATH, "-c", pl->program, NULL);
+    ap_cleanup_for_exec();
+#ifdef SIGHUP
+    signal(SIGHUP, SIG_IGN);
+#endif
+    if ((ap_createprocattr_init(pl->p, &procattr)         != APR_SUCCESS) ||
+        (ap_setprocattr_dir(procattr, pl->program)        != APR_SUCCESS) ||
+        (ap_set_childin(procattr, pl->fds[0], pl->fds[1]) != APR_SUCCESS)) {
+        /* Something bad happened, give up and go away. */
 	fprintf(stderr,
 	    "piped_log_spawn: unable to exec %s -c '%s': %s\n",
 	    SHELL_PATH, pl->program, strerror (errno));
-	exit(1);
+        rc = -1;
     }
-    if (pid == -1) {
-	fprintf(stderr,
-	    "piped_log_spawn: unable to fork(): %s\n", strerror (errno));
-	return -1;
+    else {
+        rc = ap_create_process(pl->p, pl->program, NULL, NULL, procattr, &procnew);
+    
+        if (rc == APR_SUCCESS) {            /* pjr - This no longer happens inside the child, */
+            RAISE_SIGSTOP(PIPED_LOG_SPAWN); /*   I am assuming that if ap_create_process was  */
+                                            /*   successful that the child is running.        */
+            pl->pid = procnew;
+            ap_get_os_proc(&procnew, &pid);
+            ap_register_other_child(pid, piped_log_maintenance, pl, pl->fds[1]);
+        }
     }
-    pl->pid = pid;
-    ap_register_other_child(pid, piped_log_maintenance, pl, pl->fds[1]);
+    
+/*  ap_unblock_alarms(); */
+    
     return 0;
 }
 
@@ -632,13 +662,13 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
     switch (reason) {
     case OC_REASON_DEATH:
     case OC_REASON_LOST:
-	pl->pid = -1;
+	pl->pid = NULL;
 	ap_unregister_other_child(pl);
 	if (pl->program == NULL) {
 	    /* during a restart */
 	    break;
 	}
-	if (piped_log_spawn(pl) == -1) {
+	if (piped_log_spawn(pl) != APR_SUCCESS) {
 	    /* what can we do?  This could be the error log we're having
 	     * problems opening up... */
 	    fprintf(stderr,
@@ -648,15 +678,15 @@ static void piped_log_maintenance(int reason, void *data, ap_wait_t status)
 	break;
     
     case OC_REASON_UNWRITABLE:
-	if (pl->pid != -1) {
-	    kill(pl->pid, SIGTERM);
+	if (pl->pid != NULL) {
+	    ap_kill(pl->pid, SIGTERM);
 	}
 	break;
     
     case OC_REASON_RESTART:
 	pl->program = NULL;
-	if (pl->pid != -1) {
-	    kill(pl->pid, SIGTERM);
+	if (pl->pid != NULL) {
+	    ap_kill(pl->pid, SIGTERM);
 	}
 	break;
 
@@ -670,8 +700,8 @@ static void piped_log_cleanup(void *data)
 {
     piped_log *pl = data;
 
-    if (pl->pid != -1) {
-	kill(pl->pid, SIGTERM);
+    if (pl->pid != NULL) {
+	ap_kill(pl->pid, SIGTERM);
     }
     ap_unregister_other_child(pl);
     ap_close(pl->fds[0]);
@@ -695,7 +725,7 @@ API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
     pl = ap_palloc(p, sizeof (*pl));
     pl->p = p;
     pl->program = ap_pstrdup(p, program);
-    pl->pid = -1;
+    pl->pid = NULL;
     if (ap_create_pipe(p, &pl->fds[0], &pl->fds[1]) != APR_SUCCESS) {
 	int save_errno = errno;
 	errno = save_errno;
@@ -720,60 +750,22 @@ API_EXPORT(void) ap_close_piped_log(piped_log *pl)
 }
 
 #else
-static int piped_log_child(void *cmd, ap_child_info_t *pinfo)
-{
-    /* Child process code for 'TransferLog "|..."';
-     * may want a common framework for this, since I expect it will
-     * be common for other foo-loggers to want this sort of thing...
-     */
-    int child_pid = 1;
-
-    ap_cleanup_for_exec();
-#ifdef SIGHUP
-    signal(SIGHUP, SIG_IGN);
-#endif
-#if defined(WIN32)
-    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-    return(child_pid);
-#elif defined(OS2)
-    /* For OS/2 we need to use a '/' and spawn the child rather than exec as
-     * we haven't forked */
-    child_pid = spawnl(P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-    return(child_pid);
-#else
-    execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
-#endif
-    perror("exec");
-    fprintf(stderr, "Exec of shell for logging failed!!!\n");
-    return(child_pid);
-}
-
-
 API_EXPORT(piped_log *) ap_open_piped_log(ap_context_t *p, const char *program)
 {
     piped_log *pl;
-    FILE *dummy;
-    int dummyno;
-#ifdef TPF
-    TPF_FORK_CHILD cld;
-    cld.filename = (char *)program;
-    cld.subprocess_env = NULL;
-    cld.prog_type = FORK_NAME;
+    ap_file_t *dummy;
+    int rc;
 
-    if (!ap_spawn_child (p, NULL, &cld,
-      kill_after_timeout, &dummy, NULL, NULL)){
-#else
-    if (!ap_spawn_child(p, piped_log_child, (void *)program,
-			kill_after_timeout, &dummy, NULL, NULL)) {
-#endif /* TPF */
+    rc = log_child(p, program, NULL, &dummy, NULL);
+    if (rc != APR_SUCCESS) {
 	perror("ap_spawn_child");
 	fprintf(stderr, "Couldn't fork child for piped log process\n");
 	exit (1);
     }
+
     pl = ap_palloc(p, sizeof (*pl));
     pl->p = p;
-    dummyno = fileno(dummy);
-    ap_put_os_file(&pl->write_f, &dummyno, p);
+    pl->write_f = dummy;
 
     return pl;
 }
