@@ -450,7 +450,7 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
                      p_conn->addr, p_conn->name);
 
         /* set up the connection filters */
-        ap_run_install_transport_filters(*origin, p_conn->sock);
+        ap_run_pre_connection(*origin, p_conn->sock);
     }
     return OK;
 }

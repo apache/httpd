@@ -219,7 +219,7 @@ static int ssl_hook_pre_config(
     return OK;
 }
 
-static int ssl_hook_pre_connection(conn_rec *c)
+static int ssl_hook_pre_connection(conn_rec *c, void *csd)
 {
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;

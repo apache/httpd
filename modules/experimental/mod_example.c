@@ -1028,7 +1028,7 @@ static int x_quick_handler(request_rec *r)
  * server will still call any remaining modules with an handler for this
  * phase.
  */
-static int x_pre_connection(conn_rec *c)
+static int x_pre_connection(conn_rec *c, void *csd)
 {
     x_cfg *cfg;
 

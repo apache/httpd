@@ -1726,7 +1726,7 @@ static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b,
     return APR_SUCCESS;
 }
 
-static int perchild_pre_connection(conn_rec *c)
+static int perchild_pre_connection(conn_rec *c, void *csd)
 {
     ap_add_input_filter("PERCHILD_BUFFER", NULL, NULL, c);
     return OK;

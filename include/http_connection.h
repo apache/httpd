@@ -70,9 +70,12 @@ extern "C" {
  * This is the protocol module driver.  This calls all of the
  * pre-connection and connection hooks for all protocol modules.
  * @param c The connection on which the request is read
- * @deffunc void ap_process_connection(conn_rec *)
+ * @param csd The mechanism on which this connection is to be read.  
+ *            Most times this will be a socket, but it is up to the module
+ *            that accepts the request to determine the exact type.
+ * @deffunc void ap_process_connection(conn_rec *c, void *csd)
  */
-AP_CORE_DECLARE(void) ap_process_connection(conn_rec *, apr_socket_t *csd);
+AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd);
 
 AP_CORE_DECLARE(void) ap_flush_conn(conn_rec *c);
 
@@ -114,26 +117,17 @@ AP_DECLARE_HOOK(conn_rec *, create_connection,
                 (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh))
    
 /**
- * install_transport_filters is a RUN_FIRST hook used to install the bottom 
- * most input and output network transport filters (e.g., CORE_IN and CORE_OUT) 
- * used to interface to the network. This hook can access vhost configuration.
- *
- * @param c The socket to the client
- * @param csd Pointer to the client apr_socket_t struct.
- * @return OK or DECLINED
- * @deffunc int ap_run_install_transport_filters(conn_rec *c, apr_socket_t *csd)
- */
-AP_DECLARE_HOOK(int, install_transport_filters, (conn_rec *c, apr_socket_t *csd))
-
-/**
  * This hook gives protocol modules an opportunity to set everything up
  * before calling the protocol handler.  All pre-connection hooks are
  * run until one returns something other than ok or decline
  * @param c The connection on which the request has been received.
+ * @param csd The mechanism on which this connection is to be read.  
+ *            Most times this will be a socket, but it is up to the module
+ *            that accepts the request to determine the exact type.
  * @return OK or DECLINED
- * @deffunc int ap_run_pre_connection(conn_rec *c)
+ * @deffunc int ap_run_pre_connection(conn_rec *c, void *csd)
  */
-AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c))
+AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c, void *csd))
 
 /**
  * This hook implements different protocols.  After a connection has been
