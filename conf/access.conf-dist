@@ -53,6 +53,19 @@ allow from all
 
 </Directory>
 
-# You may place any other directories you wish to have access
-# information for after this one.
+# Allow server status reports, with the URL of http://servername/status
+# Change the ".nowhere.com" to match your domain to enable.
+
+<Location /status>
+SetHandler server-status
+
+<Limit GET>
+order deny,allow
+deny from all
+allow from .nowhere.com
+</Limit>
+</Location>
+
+# You may place any other directories or locations you wish to have
+# access information for after this one.
 

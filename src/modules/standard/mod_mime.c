@@ -69,6 +69,9 @@ typedef struct {
     table *encoding_types;	/* Added with AddEncoding... */
     table *language_types;	/* Added with AddLanguage... */
     table *handlers;		/* Added with AddHandler...  */
+
+    char *type;			/* Type forced with ForceType  */
+    char *handler;		/* Handler forced with SetHandler */
 } mime_dir_config;
 
 module mime_module;
@@ -82,6 +85,9 @@ void *create_mime_dir_config (pool *p, char *dummy)
     new->encoding_types = make_table (p, 4);
     new->language_types = make_table (p, 4);
     new->handlers = make_table (p, 4);
+
+    new->type = NULL;
+    new->handler = NULL;
     
     return new;
 }
@@ -101,6 +107,9 @@ void *merge_mime_dir_configs (pool *p, void *basev, void *addv)
 					  base->language_types);
     new->handlers = overlay_tables (p, add->handlers,
 					  base->handlers);
+
+    new->type = add->type ? add->type : base->type;
+    new->handler = add->handler ? add->handler : base->handler;
 
     return new;
 }
@@ -153,6 +162,10 @@ command_rec mime_cmds[] = {
     "a language (e.g., fr), followed by one or more file extensions" },
 { "AddHandler", add_handler, NULL, OR_FILEINFO, ITERATE2,
     "a handler name followed by one or more file extensions" },
+{ "ForceType", set_string_slot, (void*)XtOffsetOf(mime_dir_config, type),
+    OR_FILEINFO, TAKE1, "a media type" },
+{ "SetHandler", set_string_slot, (void*)XtOffsetOf(mime_dir_config, handler),
+    OR_FILEINFO, TAKE1, "a handler name" },
 { "TypesConfig", set_types_config, NULL, RSRC_CONF, TAKE1,
     "the MIME types config file" },
 { NULL }
@@ -260,6 +273,13 @@ int find_ct(request_rec *r)
       }
 
     }
+
+    /* Check for overrides with ForceType/SetHandler */
+
+    if (conf->type && strcmp(conf->type, "none"))
+        r->content_type = pstrdup(r->pool, conf->type);
+    if (conf->handler && strcmp(conf->handler, "none"))
+        r->handler = pstrdup(r->pool, conf->handler);
 
     return OK;
 }
