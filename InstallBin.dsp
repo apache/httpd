@@ -39,7 +39,7 @@ CFG=InstallBin - Win32 Debug
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
-# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" SHORT=R LONG=Release _tryssl _install"
+# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" SHORT=R LONG=Release _install"
 # PROP Rebuild_Opt ""
 # PROP Target_File "\Apache2\bin\Apache.exe"
 # PROP Bsc_Name "Browse\Apache.bsc"
@@ -58,7 +58,7 @@ CFG=InstallBin - Win32 Debug
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
-# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" SHORT=D LONG=Debug _tryssl _install"
+# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" SHORT=D LONG=Debug _install"
 # PROP Rebuild_Opt ""
 # PROP Target_File "\Apache2\bin\Apache.exe"
 # PROP Bsc_Name ""
