@@ -77,6 +77,7 @@ Committed Code Changes:
     * Ralf's fixes for compiler warnings under AIX 4.2 (NET_SIZE_T is size_t)
     * Ralf's DSO support for AIX
     * Ralf's DSO support for NetBSD, PR#2158
+    * Some optimization defines for NetBSD, PR#2165
 
 Available Patches:
 

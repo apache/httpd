@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) PORT: Some optimization defines for NetBSD
+     [Jaromir Dolecek <dolecek@ics.muni.cz>] PR#2165
+
   *) PORT: Dynamic Shared Object (DSO) support for NetBSD.
      [Jaromir Dolecek <dolecek@ics.muni.cz>, Ralf S. Engelschall] PR#2158
 

@@ -547,6 +547,11 @@ extern char *crypt();
 #endif
 #ifndef DEFAULT_GROUP
 #define DEFAULT_GROUP "nogroup"
+#define HAVE_SHMGET 1
+#define USE_SHMGET_SCOREBOARD
+#define HAVE_MMAP 1
+#define USE_MMAP_SCOREBOARD
+#define USE_MMAP_FILES
 #endif
 
 #elif defined(UTS21)
