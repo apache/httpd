@@ -1,5 +1,11 @@
 Changes with Apache 2.0.36
 
+  *) Introduced -E startup_logfile_name option to httpd to allow admins
+     to begin logging errors immediately.  This provides Win32 users 
+     an alternative to sending startup errors to the event viewer, and
+     allows other daemon tool authors an alternative to logging to stderr.
+     [William Rowe] 
+     
   *) Fix subreqs with non-defined Content-Types being served improperly.
      [Justin Erenkrantz]
 
