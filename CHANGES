@@ -1,6 +1,9 @@
 
 Changes with Apache 2.0.40
 
+  *) Fix a silly htpasswd.c logic error that incorrectly reported that
+     both -c and -n had been used.  PR 9989  [Cliff Woolley]
+
   *) Fixed a mod_include error case in which no HTTP response was sent
      to the client if an shtml document contained an unterminated SSI
      directive [Brian Pane]
