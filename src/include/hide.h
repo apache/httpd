@@ -129,8 +129,6 @@
 #define dir_module                     AP_dir_module
 #define dummy_mutex                    AP_dummy_mutex
 #define env_module                     AP_env_module
-#define example_cmds                   AP_example_cmds
-#define example_handlers               AP_example_handlers
 #define example_module                 AP_example_module
 #define expires_module                 AP_expires_module
 #define headers_module                 AP_headers_module
