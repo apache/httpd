@@ -82,11 +82,6 @@ application processes running between requests. So, unlike CGI, you do not have 
 a new process and doing application initialization (e.g. connecting to a database) each time somebody requests
 a document. The processes start up with the Web server and keep on running.
 
-<li><b><a href="mod/mod_headers.html">Optional Headers Module to Set or Remove HTTP Headers</a></b><br>
-The optional <code>mod_headers</code> header can be used to set custom
-headers in the HTTP response. It can append to existing headers,
-replace them, or remove headers from the response.
-
 <li><b><a href="mod/mod_log_config.html">Enhanced, Configurable
 Logging</a></b><br>
 The optional <code>mod_log_config</code> included with earlier
@@ -135,12 +130,18 @@ processes.
     The process of configuring Apache for compilation has been
     simplified.
 
+<li><b><a href="mod/core.html#options">Add or Remove Options</a></b><br>
+    The <code>Options</code>directive can now add or remove options from
+    those currently in force, rather than always replacing them.
+
 <li><b><a href="help.html">Command-line Help</a></b><br>
 The <code>-h</code> command-line option now lists all the available
 directives.
 
-<li><b><a href="mod/mod_headers.html">Optional headers module</a></b><br>
-An optional module is included which can set arbitrary headers in responses.
+<li><b><a href="mod/mod_headers.html">Optional Headers Module to Set or Remove HTTP Headers</a></b><br>
+The optional <code>mod_headers</code> module can be used to set custom
+headers in the HTTP response. It can append to existing headers,
+replace them, or remove headers from the response.
 
 <li><b><a href="mod/core.html#ifmodule">Conditional Config Directives</a></b><br>
 A new <code>&lt;IfModule&gt;</code> section allows directives to be
