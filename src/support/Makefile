@@ -12,6 +12,13 @@ CFLAGS= -g -Wall
 # For OS/2 port
 #EXTRA_LIBS= -llibufc -lsocket
 
+# If you turned on extra status logging with the -DSTATUS flag in the
+# Configuration file, you _must_ uncomment the following line for
+# httpd_monitor to work (remember that httpd_monitor only works if
+# you are using a scoreboard file -- on most systems the scoreboard
+# will be held in memory and httpd_monitor will not work)
+STATUS=-DSTATUS
+
 INCLUDES= -I../src -I../src/regex
 
 RM= /bin/rm -f
@@ -62,7 +69,7 @@ htdigest: htdigest.c
 	$(CC) $(CFLAGS) htdigest.c -o htdigest
 
 httpd_monitor: httpd_monitor.c
-	$(CC) $(INCLUDES) $(CFLAGS) httpd_monitor.c -o httpd_monitor
+	$(CC) $(INCLUDES) $(CFLAGS) $(STATUS) httpd_monitor.c -o httpd_monitor
 
 rotatelogs: rotatelogs.c
 	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.c -o rotatelogs

@@ -51,17 +51,22 @@
 
  * simple script to monitor the child Apache processes
  *   Usage:
- *      httpd_monitor -p pid_file -s sleep_time
- *                Will give you an update ever sleep_time seconds
- *                 using pid_file as the location of the PID file.
+ *      httpd_monitor [ -d serverdir | -f conffile ] [ -s sleep_time ]
+ *                -d/-f options specify server dir or config files, as per
+ *                      httpd.
+ *                -s specifies how long to pause between screen updates
  *                If you choose 0, it might chew up lots of CPU time.
  *
  * Output explanation..
  *
- *  s = sleeping but "ready to go" child
- *  R = active child
- *  _ = dead child (no longer needed)
- *  t = just starting
+ *  s = sleeping but "ready to go" child (this is '_' in mod_status)
+ *  R = active child - writing to client
+ *  W = active child - reading from client
+ *  K = active child - waiting for additional request on kept-alive connection
+ *  D = active child - doing DNS lookup
+ *  L = active child - logging
+ *  _ = dead child (no longer needed) (this is '.' in mod_status)
+ *  t = just starting (this is 'S' in mod_status)
  *
  *
  *  Jim Jagielski <jim@jaguNET.com>
@@ -71,6 +76,9 @@
  *
  *   v1.1:
  *    Minor fixes
+ *
+ *   v1.2:
+ *    Handles Apache 1.1.* scoreboard format (W/K/D/L states) -- PCS 09Jul96
  */
 
 #include <stdio.h>
@@ -80,11 +88,9 @@
 #include "../src/httpd.h"
 #include "../src/scoreboard.h"
 
-#define PIDFILE_OPT		"PidFile"
-#define	SCORE_OPT		"ScoreBoardFile"
 #define DEFAULT_SLEEPTIME	2
 #define ASIZE			1024
-#define MAX_PROC		40
+#define MAX_PROC		HARD_SERVER_LIMIT
 
 int
 main(argc, argv)
@@ -98,8 +104,8 @@ char **argv;
     char score_name[ASIZE];
     char tbuf[ASIZE];
     char *ptmp;
-    static char kid_stat[] = { '_', 's', 'R', 't' };
-    char achar;
+    static char kid_stat[] = { '_', 's', 'R', 't', 'W', 'K', 'L', 'D' };
+    int achar;
     long thepid;
     int score_fd;
     int sleep_time = DEFAULT_SLEEPTIME;
@@ -199,7 +205,8 @@ char **argv;
 	    achar = kid_stat[(int)scoreboard_image.status];
 	    if (scoreboard_image.pid != 0 && scoreboard_image.pid != thepid) {
 		total++;
-		if (achar == 'R')
+		if (scoreboard_image.status != SERVER_DEAD &&
+		    scoreboard_image.status != SERVER_READY)
 		    running++;
 		*ptmp = achar;
 		*++ptmp = '\0';
@@ -266,7 +273,6 @@ FILE *thefile;
      * ServerRoot line... if not, we bail out
      */
     if (!*sroot) {
-	perror("httpd_monitor");
 	fprintf(stderr, "Can't find ServerRoot!\n");
 	exit(1);
     }
