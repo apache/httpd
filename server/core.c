@@ -4044,7 +4044,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
 
 
-        /* Completed iterating over the brigades, now determine if we want
+        /* Completed iterating over the brigade, now determine if we want
          * to buffer the brigade or send the brigade out on the network.
          *
          * Save if we haven't accumulated enough bytes to send, and:
