@@ -85,6 +85,8 @@
 #include <sys/socket.h>
 #include <signal.h>
 
+extern int _kset_fd_limit_(int num);
+
 /*
  * Actual definitions of config globals
  */
@@ -303,11 +305,11 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num)
     
     if (csd >= FD_SETSIZE) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
-            "filedescriptor (%u) larger than FD_SETSIZE (%u) "
-            "found, you probably need to rebuild Apache with a "
-            "larger FD_SETSIZE", csd, FD_SETSIZE);
+                     "filedescriptor (%u) larger than FD_SETSIZE (%u) "
+                     "found, you probably need to rebuild Apache with a "
+                     "larger FD_SETSIZE", csd, FD_SETSIZE);
         apr_socket_close(sock);
-	    return;
+        return;
     }
 
     current_conn = ap_new_connection(p, ap_server_conf, sock, conn_id);
@@ -389,8 +391,8 @@ static int32 worker_thread(void * dummy)
 
                 if (event & APR_POLLIN){
                     apr_sockaddr_t *rec_sa;
-                    char *tmpbuf = apr_pcalloc(ptrans, sizeof(char) * 5);
                     apr_size_t len = 5;
+                    char *tmpbuf = apr_palloc(ptrans, sizeof(char) * 5);
                     apr_sockaddr_info_get(&rec_sa, "127.0.0.1", APR_UNSPEC, 7772, 0, ptrans);
                     
                     if ((ret = apr_recvfrom(rec_sa, listening_sockets[0], 0, tmpbuf, &len))
@@ -489,9 +491,10 @@ static int make_worker(server_rec *s, int slot)
     if (tid < B_NO_ERROR) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, s, 
             "spawn_thread: Unable to start a new thread");
-	    /* In case system resources are maxxed out, we don't want
-	     * Apache running away with the CPU trying to fork over and
-	     * over and over again. */
+        /* In case system resources are maxxed out, we don't want
+         * Apache running away with the CPU trying to fork over and
+         * over and over again. 
+         */
         (void) ap_update_child_status(0, slot, SERVER_DEAD, 
                                       (request_rec*)NULL);
         
@@ -540,7 +543,7 @@ static void perform_idle_server_maintenance(void)
     int i;
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
-    int last_non_dead;
+    int last_non_dead  = -1;
 
     /* initialize the free_list */
     free_length = 0;
@@ -702,6 +705,14 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_server_conf = s;
 
     ap_scoreboard_fname = DEFAULT_SCOREBOARD;
+
+    /* Increase the available pool of fd's.  This code from
+     * Joe Kloss <joek@be.com>
+     */
+    if( FD_SETSIZE > 128 && (i = _kset_fd_limit_( 128 )) < 0 ){
+        ap_log_error(APLOG_MARK, APLOG_ERR, i, s,
+            "could not set FD_SETSIZE (_kset_fd_limit_ failed)");
+    }
 
     /* BeOS R5 doesn't support pipes on select() calls, so we use a 
        UDP socket as these are supported in both R5 and BONE.  If we only cared
