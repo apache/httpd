@@ -38,10 +38,10 @@ Changes with Apache 1.3.26
 
 Changes with Apache 1.3.25
 
-  *) SECURITY: Code changes required to address and close the 
-     security issues in CAN-2002-0392 (cve.mitre.org) [CERT VU#944335].
-     To support this, we utilize the ANSI functionality of
-     strtol, and provide ap_strtol for completeness.
+  *) SECURITY: CAN-2002-0392 (cve.mitre.org) [CERT VU#944335]
+     Code changes required to address and close chunked 
+     encoding security issues.  To support this, we utilize the ANSI 
+     functionality of strtol, and provide ap_strtol for completeness.
      [Aaron Bannert, Justin Erenkrantz, Jim Jagielski, Brian Pane,
       William Rowe, Cliff Woolley]
      
@@ -533,16 +533,15 @@ Changes with Apache 1.3.21
      just happened to be  index.html.zh.Big5.
      [Bill Stoddard, Bill Rowe] PR #8130
 
-  *) SECURITY: Close autoindex /?M=D directory listing hole reported
+  *) SECURITY: CAN-2001-0731 (cve.mitre.org)
+     Close autoindex /?M=D directory listing hole reported
      in bugtraq id 3009.  In some configurations where multiviews and 
      indexes are enabled for a directory, requesting URI /?M=D could
      result in a directory listing being returned to the client rather
      than the negotiated index.html variant that was configured and
      expected.  The work around for this problem (for pre 1.3.21
      releases) is to disable Indexes or Multiviews in the affected
-     directories.  The Common Vulnerabilities and Exposures project
-     (cve.mitre.org) has assigned the name CAN-2001-0731 to this issue.
-     [Bill Stoddard, Bill Rowe]
+     directories.  [Bill Stoddard, Bill Rowe]
 
   *) Enabled Win32/OS2/Netware file paths (not / rooted, but c:/ rooted)
      as arguments for mod_vhost_alias'es directives.  [William Rowe]
@@ -556,15 +555,14 @@ Changes with Apache 1.3.21
   *) PORT: Some Cygwin changes, esp. improvements for dynamic loading,
      and cleanups. [Stipe Tolj <tolj@wapme-systems.de>]
 
-  *) Win32 SECURITY: The default installation could lead to mod_negotiation
+  *) Win32 SECURITY: CAN-2001-0729 (cve.mitre.org)
+     The default installation could lead to mod_negotiation
      and mod_dir/mod_autoindex displaying a directory listing instead of
      the index.html.* files, if a very long path was created artificially
      by using many slashes. Now a 403 FORBIDDEN is returned. This
      problem was similar to and in the same area as the problem
      reported and fixed by Martin Kraemer in 1.3.18, only the scope
-     is much narrower and is specific to Windows.  The Common 
-     Vulnerabilities and Exposures project (cve.mitre.org) has assigned the 
-     name CAN-2001-0729 to this issue.  [Bill Stoddard]
+     is much narrower and is specific to Windows.  [Bill Stoddard]
 
   *) Update the mime.types file to the registered media types as
      of 2001-09-25, and add xsl, so, dll extensions [Mark Cox]
@@ -647,13 +645,12 @@ Changes with Apache 1.3.21
      before contacting the next proxy, and was thus unusable for
      SSL proxying.  [Martin Kraemer]
 
-  *) SECURITY: Make support/split-logfile use the default log file if
+  *) SECURITY: CAN-2001-0730 (cve.mitre.org)
+     Make support/split-logfile use the default log file if
      "/" or "\" are present in the virtual host name.  This prevents
      the possible use of specially crafted virtual host names in
      some configurations to allow writing to any .log file on the
-     system.  The Common Vulnerabilities and Exposures project 
-     (cve.mitre.org) has assigned the name CAN-2001-0730 to this issue.
-     [Daniel Matuschek <daniel.matuschek@swisscom.com>,
+     system.  [Daniel Matuschek <daniel.matuschek@swisscom.com>,
      Marc Slemko] PR#7848
 
   *) Added a directive: "AcceptFilter <on|off>". To control BSD 
@@ -861,11 +858,11 @@ Changes with Apache 1.3.18 [not released]
   *) Apache on Win9x now ensures the service is stopped before removal.
      [William Rowe]
 
-  *) SECURITY: The default installation could lead to mod_negotiation
+  *) SECURITY: CAN-2001-0925 (cve.mitre.org)
+     The default installation could lead to mod_negotiation
      and mod_dir/mod_autoindex displaying a directory listing instead of
      the index.html.* files, if a very long path was created artificially
-     by using many slashes. Now a 403 FORBIDDEN is returned. CAN-2001-0925
-     (cve.mitre.org)
+     by using many slashes. Now a 403 FORBIDDEN is returned.
      [Martin Kraemer]
      
   *) Trailing slashes (if they exist) are now removed from ServerRoot,
@@ -1251,7 +1248,8 @@ Changes with Apache 1.3.13 [not released]
      for modules and executables dynamically linked to the core.
      [William Rowe; Jim Patterson <jim-patterson@ncf.ca>]
 
-  *) SECURITY: Prevent the source code for CGIs from being revealed when 
+  *) SECURITY: CAN-2000-1204 (cve.mitre.org)
+     Prevent the source code for CGIs from being revealed when 
      using mod_vhost_alias and the CGI directory is under the document root
      and a user makes a request like http://www.example.com//cgi-bin/cgi
      as reported in <news:960999105.344321@ernani.logica.co.uk>
@@ -1310,10 +1308,10 @@ Changes with Apache 1.3.13 [not released]
      <Directory> containers, and in .htaccess files when FileInfo
      overriding is allowed.  [Ken Coar] PR#3000
 
-  *) SECURITY: Fix Win32 bug when pathname length exactly equals MAX_PATH. 
+  *) SECURITY: CVE-2000-0505 (cve.mitre.org)
+     Fix Win32 bug when pathname length exactly equals MAX_PATH. 
      This bug caused directory index to be displayed rather than
-     returning an error. CVE-2000-0505 (cve.mitre.org)
-     [Allan Edwards <ake@raleigh.ibm.com>]
+     returning an error.   [Allan Edwards <ake@raleigh.ibm.com>]
 
   *) Correct mod_proxy Win95 dynamic link __declspec(thread) bug.
      David Whitmarsh <david.whitmarsh@dial.pipex.com> 
@@ -1546,11 +1544,11 @@ Changes with Apache 1.3.12
      the given character set on any document that does not have one
      explicitly specified in the headers.  [Marc Slemko, Jim Jagielski]
 
-  *) SECURITY:
+  *) SECURITY: CAN-2000-1205 (cve.mitre.org)
      Properly escape various messages output to the client from a number
      of modules and places in the core code.  [Marc Slemko]
 
-  *) SECURITY:
+  *) SECURITY: CAN-2000-1205 (cve.mitre.org)
      Change mod_actions, mod_autoindex, mod_expires, and mod_log_config to
      not consider any parameters such as charset when making decisions 
      based on content type.  This does remove some functionality for 
@@ -1560,7 +1558,7 @@ Changes with Apache 1.3.12
      want to set things on a per charset basis is necessary in the future.  
      [Marc Slemko]
 
-  *) SECURITY: 
+  *) SECURITY: CAN-2000-1205 (cve.mitre.org)
      mod_include now entity encodes output from "printenv" and "echo var"
      by default.  The encoding for "echo var" can be set to URL encoding
      or no encoding using the new "encoding" attribute to the echo tag.
@@ -1619,7 +1617,8 @@ Changes with Apache 1.3.10
   *) Add back support for UseCanonicalName in <Directory> containers
      [Manoj Kasichainula]
 
-  *) SECURITY: More rigorous checking of Host: headers to fix security 
+  *) SECURITY: CAN-2000-1206 (cve.mitre.org)
+     More rigorous checking of Host: headers to fix security 
      problems with mass name-based virtual hosting (whether using mod_rewrite
      or mod_vhost_alias).
      [Ben Hyde, Tony Finch]
