@@ -1,5 +1,9 @@
 Changes with Apache 2.0b1
 
+  *) Install all required header files.  Without these, it was not
+     possible to compile some modules outside of the server.
+     [Ryan Bloom]
+
   *) Fix the AliasMatch directive in Apache 2.0.  When we brought a patch
      forward from 1.3 to 2.0, we missed a single line, which broke regex
      aliases.  [Ryan Bloom]

@@ -105,12 +105,14 @@ install-include:
 	@if test -f $(srcdir)/os/$(OS_DIR)/os-inline.c; then \
             cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(includedir); \
         fi;
+	@cp -p $(srcdir)/server/mpm/$(MPM_NAME)/*.h $(includedir)
 	@cp -p $(srcdir)/modules/dav/main/mod_dav.h $(includedir)
 	@cp -p $(srcdir)/modules/filters/mod_include.h $(includedir)
 	@cp -p $(srcdir)/srclib/expat-lite/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/pcre/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/apr/include/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/apr-util/include/*.h $(includedir)
+	@cp -p $(srcdir)/os/$(OS_DIR)/*.h $(includedir)
 	@chmod 644 $(includedir)/*.h
 
 install-suexec:
