@@ -90,6 +90,10 @@
 #include "ap_md5.h"
 #include "ap_sha1.h"
 
+#ifdef HAVE_CRYPT_H
+#include <crypt.h>
+#endif
+
 #ifdef WIN32
 #include <conio.h>
 #include "../os/win32/getopt.h"
@@ -129,6 +133,8 @@ static char *tempfilename;
  */
 #ifdef L_tmpnam
 static char tname_buf[L_tmpnam];
+#else
+static char *tname_buf = NULL;
 #endif
 
 /*
@@ -527,12 +533,8 @@ int main(int argc, char *argv[])
      * to add or update.  Let's do it..
      */
     errno = 0;
-#ifdef L_tmpnam
     tempfilename = tmpnam(tname_buf);
-#else   /* def L_tmpnam */
-    tempfilename = tmpnam(NULL);
-#endif  /* def L_tmpnam */
-    if ((tempfilename == NULL) || (strlen(tempfilename) == 0)) {
+    if ((tempfilename == NULL) || (*tempfilename == '\0')) {
 	fprintf(stderr, "%s: unable to generate temporary filename\n",
 		argv[0]);
 	if (errno == 0) {
