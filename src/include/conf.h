@@ -93,6 +93,7 @@ typedef int rlim_t;
 #define NO_LINGCLOSE
 #define USE_FLOCK_SERIALIZED_ACCEPT
 #define NEED_DIFFTIME
+#define HAVE_SYSLOG
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF
@@ -109,6 +110,7 @@ typedef int rlim_t;
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 int gethostname(char *name, int namelen);
+#define HAVE_SYSLOG
 
 #elif defined(IRIX)
 #undef HAVE_GMTOFF
@@ -125,6 +127,7 @@ int gethostname(char *name, int namelen);
 #define NO_LONG_DOUBLE
 #define HAVE_BSTRING_H
 #define NO_LINGCLOSE
+#define HAVE_SYSLOG
 
 #elif defined(HIUX)
 #define HAVE_SYS_RESOURCE_H
@@ -137,6 +140,7 @@ int gethostname(char *name, int namelen);
 #define JMP_BUF sigjmp_buf
 #define HAVE_SHMGET
 #define SELECT_NEEDS_CAST
+#define HAVE_SYSLOG
 
 #elif defined(HPUX) || defined(HPUX10)
 #define HAVE_SYS_RESOURCE_H
@@ -148,6 +152,7 @@ int gethostname(char *name, int namelen);
 #endif
 #define JMP_BUF sigjmp_buf
 #define HAVE_SHMGET
+#define HAVE_SYSLOG
 #ifndef HPUX10
 #define SELECT_NEEDS_CAST
 typedef int rlim_t;
@@ -162,6 +167,7 @@ typedef int rlim_t;
 #ifndef __ps2__
 #define HAVE_MMAP
 #define USE_MMAP_FILES
+#define HAVE_SYSLOG
 #ifndef DEFAULT_GROUP
 #define DEFAULT_GROUP "nobody"
 #endif
@@ -184,6 +190,7 @@ typedef int rlim_t;
 #define const /* Not implemented */
 #endif
 #define JMP_BUF sigjmp_buf
+#define HAVE_SYSLOG
 
 #elif defined(OSF1)
 #define HAVE_GMTOFF
@@ -194,6 +201,7 @@ typedef int rlim_t;
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
+#define HAVE_SYSLOG
 
 #elif defined(PARAGON)
 #define HAVE_GMTOFF
@@ -204,6 +212,7 @@ typedef int rlim_t;
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
+#define HAVE_SYSLOG
 typedef int rlim_t;
 
 #elif defined(SEQUENT)
@@ -211,6 +220,7 @@ typedef int rlim_t;
 #undef NO_KILLPG
 #define NO_SETSID
 #define NEED_STRDUP
+#define HAVE_SYSLOG
 #define tolower(c) (isupper(c) ? tolower(c) : c)
 
 #elif defined(NEXT)
@@ -271,6 +281,7 @@ typedef int pid_t;
 #define JMP_BUF jmp_buf
 #define USE_LONGJMP
 #define NO_USE_SIGACTION
+#define HAVE_SYSLOG
 
 #elif defined(LINUX)
 #if LINUX > 1
@@ -295,6 +306,7 @@ typedef int rlim_t;
 #undef NEED_STRDUP
 #define JMP_BUF sigjmp_buf
 #include <sys/time.h>     
+#define HAVE_SYSLOG
 
 #elif defined(SCO)
 #undef HAVE_GMTOFF
@@ -305,6 +317,7 @@ typedef int rlim_t;
 #define JMP_BUF sigjmp_buf
 #define SIGURG SIGUSR1 /* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
 #include <sys/time.h>     
+#define HAVE_SYSLOG
 
 #elif defined(SCO5)
 
@@ -316,6 +329,7 @@ typedef int rlim_t;
 #define USE_MMAP_FILES
 #define HAVE_SYS_RESOURCE_H
 #define SecureWare
+#define HAVE_SYSLOG
 
 /* Although SCO 5 defines these in <strings.h> (note the "s") they don't have
 consts. Sigh. */
@@ -355,6 +369,7 @@ extern char *crypt();
 #define MOVEBREAK		0x4000000
 #define NO_LINGCLOSE
 #define NO_SLACK
+#define HAVE_SYSLOG
 
 #elif defined(SVR4)
 #define NO_KILLPG
@@ -368,6 +383,7 @@ extern char *crypt();
 #define JMP_BUF sigjmp_buf
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_SYSLOG
 
 #elif defined(UW)
 #define NO_LINGCLOSE
@@ -388,6 +404,7 @@ extern char *crypt();
 #include <sys/time.h>
 #define _POSIX_SOURCE
 #define NET_SIZE_T size_t
+#define HAVE_SYSLOG
 
 #elif defined(DGUX)
 #define NO_KILLPG
@@ -400,6 +417,7 @@ extern char *crypt();
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define ap_inet_addr inet_network
+#define HAVE_SYSLOG
 
 #elif defined(__NetBSD__) || defined(__OpenBSD__)
 #define HAVE_SYS_RESOURCE_H
@@ -407,6 +425,7 @@ extern char *crypt();
 #undef NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
+#define HAVE_SYSLOG
 #ifndef DEFAULT_USER
 #define DEFAULT_USER "nobody"
 #endif
@@ -422,6 +441,7 @@ extern char *crypt();
 #define STDIN_FILENO 0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
+#define HAVE_SYSLOG
 #define strftime(buf,bufsize,fmt,tm)    ascftime(buf,fmt,tm)
 #include <sys/types.h>
 
@@ -429,6 +449,7 @@ extern char *crypt();
 #undef HAVE_GMTOFF
 #undef NO_KILLPG
 #undef NO_SETSID
+#define HAVE_SYSLOG
 
 #elif defined(__FreeBSD__) || defined(__bsdi__)
 #if defined(__FreeBSD__)
@@ -452,6 +473,7 @@ extern char *crypt();
 typedef quad_t rlim_t;
 #endif
 #define USE_FLOCK_SERIALIZED_ACCEPT
+#define HAVE_SYSLOG
 
 #elif defined(QNX)
 #ifndef crypt
@@ -472,6 +494,7 @@ int initgroups (char *, int);
 #include <unix.h>
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
+#define HAVE_SYSLOG
 
 #elif defined(LYNXOS)
 #undef NO_KILLPG
@@ -480,6 +503,7 @@ int initgroups (char *, int);
 #define NEED_STRNCASECMP
 #define NEED_INITGROUPS
 #define JMP_BUF jmp_buf
+#define HAVE_SYSLOG
 
 #elif defined(UXPDS)
 #undef NEED_STRCASECMP
@@ -495,6 +519,7 @@ int initgroups (char *, int);
 #define HAVE_MMAP
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
+#define HAVE_SYSLOG
  
 #elif defined(__EMX__)
 /* Defines required for EMX OS/2 port. */
@@ -536,6 +561,7 @@ typedef int rlim_t;
 #undef NEED_STRDUP
 #define HAVE_MMAP
 #define USE_MMAP_FILES
+#define HAVE_SYSLOG
 
 #define NO_TIMEZONE
 #include <stdio.h>
@@ -551,6 +577,7 @@ typedef int rlim_t;
 #define SIGURG SIGUSR1
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
+#define HAVE_SYSLOG
 
 #elif defined(NEWSOS)
 #define HAVE_SYS_RESOURCE_H
@@ -560,6 +587,7 @@ typedef int rlim_t;
 #define NO_SETSID
 #define NO_USE_SIGACTION
 #define NEED_WAITPID
+#define HAVE_SYSLOG
 #include <sys/time.h>
 #include <stdlib.h>
 #include <sys/types.h>

@@ -66,7 +66,7 @@
 
 #include <stdarg.h>
 
-#ifdef USE_SYSLOG
+#ifdef HAVE_SYSLOG
 #include <syslog.h>
 
 static TRANS facilities[] = {
@@ -139,7 +139,9 @@ static int error_log_child (void *cmd)
 void open_error_log (server_rec *s, pool *p)
 {
     char *fname;
+#ifdef HAVE_SYSLOG
     register TRANS *fac;
+#endif
 
 
     if (*s->error_fname == '|') {
@@ -154,7 +156,7 @@ void open_error_log (server_rec *s, pool *p)
 
 	s->error_log = dummy;
     }
-#ifdef USE_SYSLOG
+#ifdef HAVE_SYSLOG
     else if (!strncasecmp(s->error_fname, "syslog", 6)) {
 	if ((fname = strchr(s->error_fname, ':'))) {
 	    fname++;
@@ -246,7 +248,7 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
 	vfprintf(s->error_log, fmt, args);
 	fflush(s->error_log);
     }
-#ifdef USE_SYSLOG
+#ifdef HAVE_SYSLOG
     else {
 	vsprintf(errstr + strlen(errstr), fmt, args);
 	syslog(level, "%s", errstr);
