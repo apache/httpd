@@ -98,7 +98,7 @@ NLM_NAME		= htdbm
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= HT Digest Utility for NetWare
+NLM_DESCRIPTION	= Apache HT Database Management Utility for NetWare
 
 #
 # This is used by the '-threadname' directive.  If left blank,

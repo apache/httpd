@@ -99,7 +99,7 @@ NLM_NAME		= authndbm
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Database Authentication Module
+NLM_DESCRIPTION	= Apache Database Authentication Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
