@@ -681,7 +681,7 @@ static void process_child_status(int pid, ap_wait_t status)
     }
 }
 
-static int setup_listeners(ap_context_t *p, server_rec *s)
+static int setup_listeners(server_rec *s)
 {
     ap_listen_rec *lr;
     int num_listeners = 0;
