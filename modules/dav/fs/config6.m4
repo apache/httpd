@@ -7,7 +7,7 @@ dav_fs_objects="mod_dav_fs.lo dbm.lo lock.lo repos.lo"
 if test "$enable_dav" = "no"; then
   dav_fs_enable=no
 else
-  dav_fs_enable=yes
+  dav_fs_enable="$enable_dav"
 fi
 
 APACHE_MODULE(dav_fs, DAV provider for the filesystem, $dav_fs_objects, , $dav_fs_enable)
