@@ -112,6 +112,8 @@
 #include "apr_shm.h"
 #include "apr_optional.h"
 
+#define MOD_SSL_VERSION AP_SERVER_BASEVERSION
+
 /* OpenSSL headers */
 #include <ssl.h>
 #include <err.h>
