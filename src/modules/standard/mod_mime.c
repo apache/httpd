@@ -233,13 +233,8 @@ static const command_rec mime_cmds[] =
  * get private versions through AddType...
  */
 
-/* MIME_HASHSIZE used to be 27 (26 chars and one "non-alpha" slot), but
- * with character sets like EBCDIC, this is insufficient because the
- * range 'a'...'z' is not contigous. Defining it as ('z'-'a'+2) is
- * equivalent to 27 in ASCII, and makes it work in EBCDIC.
- */
-#define MIME_HASHSIZE ('z'-'a'+2)
-#define hash(i) (ap_isalpha(i) ? (ap_tolower(i)) - 'a' : (MIME_HASHSIZE-1))
+#define MIME_HASHSIZE (32)
+#define hash(i) (ap_tolower(i) % MIME_HASHSIZE)
 
 static table *hash_buckets[MIME_HASHSIZE];
 
