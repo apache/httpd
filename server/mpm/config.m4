@@ -4,15 +4,9 @@ AC_ARG_WITH(mpm,
                MPM={dexter,mpmt_beos,mpmt_pthread,prefork,spmt_os2,perchild}],[
   APACHE_MPM=$withval
 ],[
-  APACHE_MPM=mpmt_pthread
-  PLAT=`$ac_config_guess`
-  PLAT=`$ac_config_sub $PLAT`
-  case "$PLAT" in
-    *beos*)
-      APACHE_MPM=mpmt_beos;;
-    *os2_emx*)
-      APACHE_MPM=spmt_os2;;
-  esac 
+  if test "x$APACHE_MPM" = "x"; then
+    APACHE_MPM=mpmt_pthread
+  fi
 ])
 AC_MSG_RESULT($APACHE_MPM)
 
