@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libspmt_os2.la
-LTLIBRARY_SOURCES = spmt_os2.c
-
-include $(top_srcdir)/build/ltlib.mk
