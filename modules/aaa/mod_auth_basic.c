@@ -288,12 +288,6 @@ static int authenticate_basic_user(request_rec *r)
         return return_code;
     }
 
-    /* Now that we are done, set the request_rec values so others will know
-     * who we are.
-     */
-    r->user = (char*)sent_user;
-    r->ap_auth_type = "Basic";
-
     return OK;
 }
 
