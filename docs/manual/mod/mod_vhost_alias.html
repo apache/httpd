@@ -23,13 +23,9 @@
 
 <P>
 This module is contained in the <CODE>mod_vhost_alias.c</CODE> file
-and is not compiled in by default. It should be mentioned near the
-start of the <CODE>Configuration</CODE> file so that it doesn't
-override the behaviour of other modules that do filename translation,
-<EM>e.g.</EM>, <A HREF="mod_userdir.html"><CODE>mod_userdir</CODE></A> and
-<A HREF="mod_alias.html"><CODE>mod_alias</CODE></A>. It provides
-support for <A HREF="../vhosts/mass.html">dynamically configured mass
-virtual hosting</A>.
+and is not compiled in by default. It provides support for
+<A HREF="../vhosts/mass.html">dynamically configured mass virtual
+hosting</A>.
 </P>
 
 <H2>Directory Name Interpolation</H2>
@@ -149,14 +145,14 @@ this module.
 
 <H2>Directives</H2>
 <UL>
-  <LI><A HREF="#VirtualDocumentRoot">VirtualDocumentRoot</A>
-  <LI><A HREF="#VirtualDocumentRootIP">VirtualDocumentRootIP</A>
-  <LI><A HREF="#VirtualScriptAlias">VirtualScriptAlias</A>
-  <LI><A HREF="#VirtualScriptAliasIP">VirtualScriptAliasIP</A>
+  <LI><A HREF="#virtualdocumentroot">VirtualDocumentRoot</A>
+  <LI><A HREF="#virtualdocumentrootip">VirtualDocumentRootIP</A>
+  <LI><A HREF="#virtualscriptalias">VirtualScriptAlias</A>
+  <LI><A HREF="#virtualscriptaliasip">VirtualScriptAliasIP</A>
 </UL>
 <HR>
 
-<H2><A NAME="VirtualDocumentRoot">VirtualDocumentRoot directive</A></H2>
+<H2><A NAME="virtualdocumentroot">VirtualDocumentRoot directive</A></H2>
 <P>
 <A
  HREF="directive-dict.html#Syntax"
@@ -191,11 +187,11 @@ as the root of the document tree in a similar manner to the
 directive's argument. If <EM>interpolated-directory</EM> is
 <CODE>none</CODE> then <CODE>VirtaulDocumentRoot</CODE> is turned off.
 This directive cannot be used in the same context as
-<A HREF="#VirtualDocumentRootIP"><CODE>VirtualDocumentRootIP</CODE></A>.
+<A HREF="#virtualdocumentrootip"><CODE>VirtualDocumentRootIP</CODE></A>.
 </P>
 <HR>
 
-<H2><A NAME="VirtualDocumentRootIP">VirtualDocumentRootIP directive</A></H2>
+<H2><A NAME="virtualdocumentrootip">VirtualDocumentRootIP directive</A></H2>
 <P>
 <A
  HREF="directive-dict.html#Syntax"
@@ -223,13 +219,13 @@ This directive cannot be used in the same context as
 ><STRONG>Compatibility:</STRONG></A> VirtualDocumentRootIP is only available in 1.3.7 and later.</P>
 <P>
 The <CODE>VirtualDocumentRootIP</CODE> directive is like the
-<A HREF="#VirtualDocumentRoot"><CODE>VirtualDocumentRoot</CODE></A> directive,
+<A HREF="#virtualdocumentroot"><CODE>VirtualDocumentRoot</CODE></A> directive,
 except that it uses the IP address of the server end of the connection
 instead of the server name.
 </P>
 <HR>
 
-<H2><A NAME="VirtualScriptAlias">VirtualScriptAlias directive</A></H2>
+<H2><A NAME="virtualscriptalias">VirtualScriptAlias directive</A></H2>
 <P>
 <A
  HREF="directive-dict.html#Syntax"
@@ -258,7 +254,7 @@ instead of the server name.
 <P>
 The <CODE>VirtualScriptAlias</CODE> directive allows you to determine
 where Apache will find CGI scripts in a similar manner to
-<A HREF="#VirtualDocumentRoot"><CODE>VirtualDocumentRoot</CODE></A>
+<A HREF="#virtualdocumentroot"><CODE>VirtualDocumentRoot</CODE></A>
 does for other documents. It matches requests for URIs starting
 <CODE>/cgi-bin/</CODE>, much like
 <CODE><A HREF="mod_alias.html#scriptalias">ScriptAlias</A> /cgi-bin/</CODE>
@@ -266,7 +262,7 @@ would.
 </P>
 <HR>
 
-<H2><A NAME="VirtualScriptAlias">VirtualScriptAliasIP directive</A></H2>
+<H2><A NAME="virtualscriptaliasip">VirtualScriptAliasIP directive</A></H2>
 <P>
 <A
  HREF="directive-dict.html#Syntax"
@@ -293,8 +289,8 @@ would.
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> VirtualScriptAliasIP is only available in 1.3.7 and later.</P>
 <P>
-The <CODE>VirtualScriptAliasIP</CODE> directibe is like the
-<A HREF="#VirtualScriptAlias"><CODE>VirtualScriptAlias</CODE></A> directive,
+The <CODE>VirtualScriptAliasIP</CODE> directive is like the
+<A HREF="#virtualscriptalias"><CODE>VirtualScriptAlias</CODE></A> directive,
 except that it uses the IP address of the server end of the connection
 instead of the server name.
 </P>
