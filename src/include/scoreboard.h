@@ -116,7 +116,7 @@ typedef struct
 
 API_EXPORT(void) sync_scoreboard_image(void);
 API_EXPORT(short_score) get_scoreboard_info(int x);
-API_EXPORT(int) exists_scoreboard_image ();
+API_EXPORT(int) exists_scoreboard_image (void);
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1

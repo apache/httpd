@@ -577,7 +577,7 @@ const char *require (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
-const char *limit (cmd_parms *cmd, void *dummy, const char *arg)
+const char *limit_section (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *limited_methods = getword(cmd->pool,&arg,'>');
     int limited = 0;
@@ -599,7 +599,7 @@ const char *limit (cmd_parms *cmd, void *dummy, const char *arg)
     return NULL;
 }
 
-const char *endlimit (cmd_parms *cmd, void *dummy, void *dummy2)
+const char *endlimit_section (cmd_parms *cmd, void *dummy, void *dummy2)
 {
     if (cmd->limited == -1) return "</Limit> unexpected";
     
@@ -1212,8 +1212,8 @@ command_rec core_cmds[] = {
 { "</VirtualHost>", end_virtualhost_section, NULL, RSRC_CONF, NO_ARGS, "Marks end of <Directory>" },
 { "<Files", filesection, NULL, OR_ALL, RAW_ARGS, "Container for directives affecting files matching specified patterns" },
 { "</Files>", end_filesection, NULL, OR_ALL, NO_ARGS, "Marks end of <Files>" },
-{ "<Limit", limit, NULL, OR_ALL, RAW_ARGS, "Container for authentication directives when accessed using specified HTTP methods" },
-{ "</Limit>", endlimit, NULL, OR_ALL, RAW_ARGS, "Marks end of <Limit>" },
+{ "<Limit", limit_section, NULL, OR_ALL, RAW_ARGS, "Container for authentication directives when accessed using specified HTTP methods" },
+{ "</Limit>", endlimit_section, NULL, OR_ALL, RAW_ARGS, "Marks end of <Limit>" },
 { "<IfModule", start_ifmod, NULL, OR_ALL, RAW_ARGS, "Container for directives based on existance of specified modules" },
 { "</IfModule>", end_ifmod, NULL, OR_ALL, NO_ARGS, "Marks end of <IfModule>" },
 { "<DirectoryMatch", dirsection, (void*)1, RSRC_CONF, RAW_ARGS, "Container for directives affecting resources located in the specified directories" },

@@ -714,7 +714,7 @@ static void output_directories(struct ent **ar, int n,
         clear_pool (scratch);
         
         if ((!strcmp(ar[x]->name, "../")) || (!strcmp(ar[x]->name, ".."))) {
-            char *t = make_full_path (scratch, name, "../");
+            t = make_full_path (scratch, name, "../");
             getparents(t);
             if (t[0] == '\0') t = "/";
             anchor = pstrcat (scratch, "<A HREF=\"",
@@ -770,10 +770,10 @@ static void output_directories(struct ent **ar, int n,
             rvputs(r, " ", anchor, t2, NULL);
             if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
                 if (ar[x]->lm != -1) {
-                    char time[MAX_STRING_LEN];
+                    char time_str[MAX_STRING_LEN];
                     struct tm *ts = localtime(&ar[x]->lm);
-                    strftime(time, MAX_STRING_LEN, "%d-%b-%y %H:%M  ", ts);
-                    rputs(time, r);
+                    strftime(time_str, MAX_STRING_LEN, "%d-%b-%y %H:%M  ", ts);
+                    rputs(time_str, r);
                 }
                 else {
                     rputs("                 ", r);

@@ -53,8 +53,8 @@
 void open_logs (server_rec *, pool *p);
 API_EXPORT(void) error_log2stderr (server_rec *);     
 
-void log_pid (pool *p, char *pid_fname);
-API_EXPORT(void) log_error(char *err, server_rec *s);
+void log_pid (pool *p, char *fname);
+API_EXPORT(void) log_error(const char *err, server_rec *s);
 API_EXPORT(void) log_unixerr(const char *routine, const char *file,
 			     const char *msg, server_rec *s);
 API_EXPORT(void) log_printf(const server_rec *s, const char *fmt, ...);

@@ -2343,7 +2343,7 @@ static int rewritelog_child(void *cmd)
 static void rewritelog(request_rec *r, int level, const char *text, ...)
 {
     rewrite_server_conf *conf;
-    conn_rec *connect;
+    conn_rec *conn;
     char *str1;
     char str2[512];
     char str3[1024];
@@ -2357,7 +2357,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     
     va_start(ap, text);
     conf = get_module_config(r->server->module_config, &rewrite_module);
-    connect = r->connection;
+    conn = r->connection;
 
     if (conf->rewritelogfp <0)
         return;
@@ -2369,22 +2369,22 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     if (level > conf->rewriteloglevel)
         return;
 
-    if (connect->user == NULL) {
+    if (conn->user == NULL) {
         ruser = "-";
     }
-    else if (strlen (connect->user) != 0) {
-        ruser = connect->user;
+    else if (strlen (conn->user) != 0) {
+        ruser = conn->user;
     }
     else {
         ruser = "\"\"";
     }
 
-    rhost = get_remote_host(connect, r->server->module_config, REMOTE_NAME);
+    rhost = get_remote_host(conn, r->server->module_config, REMOTE_NAME);
     if (rhost == NULL)
         rhost = "UNKNOWN-HOST";
 
     str1 = pstrcat(r->pool, rhost, " ",
-                            (connect->remote_logname != NULL ? connect->remote_logname : "-"), " ",
+                            (conn->remote_logname != NULL ? conn->remote_logname : "-"), " ",
                             ruser, NULL);
     ap_vsnprintf(str2, sizeof(str2), text, ap);
 
@@ -2822,18 +2822,18 @@ static cache *init_cache(pool *p)
     return c;
 }
 
-static void set_cache_string(cache *c, char *res, int mode, time_t time, char *key, char *value)
+static void set_cache_string(cache *c, char *res, int mode, time_t t, char *key, char *value)
 {
     cacheentry ce;
 
-    ce.time  = time;
+    ce.time  = t;
     ce.key   = key;
     ce.value = value;
     store_cache_string(c, res, &ce);
     return;
 }
 
-static char *get_cache_string(cache *c, char *res, int mode, time_t time, char *key)
+static char *get_cache_string(cache *c, char *res, int mode, time_t t, char *key)
 {
     cacheentry *ce;
 
@@ -2841,11 +2841,11 @@ static char *get_cache_string(cache *c, char *res, int mode, time_t time, char *
     if (ce == NULL)
         return NULL;
     if (mode & CACHEMODE_TS) {
-        if (time != ce->time)
+        if (t != ce->time)
             return NULL;
     }
     else if (mode & CACHEMODE_TTL) {
-        if (time > ce->time)
+        if (t > ce->time)
             return NULL;
     }
     return pstrdup(c->pool, ce->value);
@@ -3235,18 +3235,7 @@ static char **resolv_ipaddr_list(request_rec *r, char *name)
 
 static int is_proxy_available(server_rec *s)
 {
-    extern module *preloaded_modules[];
-    command_rec *c;
-    int n;
-    
-    for (n = 0; preloaded_modules[n] != NULL; n++) {
-        for (c = preloaded_modules[n]->cmds; c && c->name; ++c) {
-            if (strcmp(c->name, "ProxyRequests") == 0) {
-                return 1;
-            }
-        }
-    }
-    return 0;
+    return find_linked_module ("mod_proxy") != NULL;
 }
 
 

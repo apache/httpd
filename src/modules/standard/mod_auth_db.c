@@ -143,7 +143,7 @@ char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile) {
     q.size = strlen(q.data); 
     
     if(!(f=dbopen(auth_dbpwfile,O_RDONLY,0664,DB_HASH,NULL))) {
-        log_reason ("could not open db auth file", (char *) auth_dbpwfile, r);
+        log_reason ("could not open db auth file", auth_dbpwfile, r);
 	return NULL;
     }
 

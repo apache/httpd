@@ -80,7 +80,7 @@
 typedef struct pool pool;
 
 extern pool *permanent_pool;
-void init_alloc();		/* Set up everything */
+void init_alloc(void);		/* Set up everything */
 API_EXPORT(pool *) make_sub_pool (pool *);	/* All pools are subpools of permanent_pool */
 API_EXPORT(void) destroy_pool (pool *);
 
@@ -92,7 +92,7 @@ API_EXPORT(void) clear_pool (struct pool *);
  * buffers, *don't* wait for subprocesses, and *don't* free any memory.
  */
 
-API_EXPORT(void) cleanup_for_exec ();
+API_EXPORT(void) cleanup_for_exec (void);
 
 /* routines to allocate memory from an pool... */
 
@@ -203,8 +203,8 @@ API_EXPORT(void) run_cleanup (pool *p, void *data, void (*cleanup)(void *));
  * up with timeout handling in general...
  */
 
-API_EXPORT(void) block_alarms();
-API_EXPORT(void) unblock_alarms();
+API_EXPORT(void) block_alarms(void);
+API_EXPORT(void) unblock_alarms(void);
 
 /* Common cases which want utility support..
  * the note_cleanups_for_foo routines are for 
@@ -249,6 +249,7 @@ API_EXPORT(void) pclosedir (pool *p, DIR *d);
 enum kill_conditions { kill_never, kill_always, kill_after_timeout, just_wait,
     kill_only_once };
 
+API_EXPORT(void) note_subprocess (pool *a, int pid, enum kill_conditions how);
 API_EXPORT(int) spawn_child_err (pool *, int (*)(void *), void *,
 		 enum kill_conditions, FILE **pipe_in, FILE **pipe_out,
                  FILE **pipe_err);
@@ -263,4 +264,4 @@ API_EXPORT(int) spawn_child_err (pool *, int (*)(void *), void *,
 /* Finally, some accounting */
 
 API_EXPORT(long) bytes_in_pool(pool *p);
-API_EXPORT(long) bytes_in_free_blocks();
+API_EXPORT(long) bytes_in_free_blocks(void);

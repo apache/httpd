@@ -77,11 +77,6 @@
 #include "rfc1413.h"
 #include "http_main.h" /* set_callback_and_alarm */
 
-#if !defined(SCO) && !defined(WIN32)
-extern char *strchr();
-extern char *inet_ntoa();
-#endif
-
 /* Local stuff. */
 /* Semi-well-known port */
 #define	RFC1413_PORT	113

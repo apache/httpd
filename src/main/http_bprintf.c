@@ -65,7 +65,7 @@ API_EXPORT_NONSTD(int) vbprintf(BUFF *bp, const char *format, va_list arg)
     const char *f,*fStop,*percentPtr,*p;
     char *fmtBuffPtr, *buffPtr;
     int op, performedOp, sizeModifier, buffLen, specifierLength;
-    int fastPath, n, buffReqd, minWidth, precision, exp;
+    int fastPath, n, buffReqd, minWidth, precision, expon;
     int buffCount = 0;
     int auxBuffLen = 0;
     char *auxBuffPtr = NULL;
@@ -298,12 +298,12 @@ API_EXPORT_NONSTD(int) vbprintf(BUFF *bp, const char *format, va_list arg)
 			{
 		    case ' ':
 		        doubleArg = va_arg(arg, double);
-			frexp(doubleArg, &exp);
+			frexp(doubleArg, &expon);
 			break;
 
 		    case 'L':
 		        lDoubleArg = va_arg(arg, LONG_DOUBLE);
-			frexp(lDoubleArg, &exp);
+			frexp(lDoubleArg, &expon);
 			break;
 
 		    default:
@@ -311,7 +311,7 @@ API_EXPORT_NONSTD(int) vbprintf(BUFF *bp, const char *format, va_list arg)
                         }
 		    if(precision == -1)
 			precision = 6;
-		    buffReqd = precision + 3 + ((exp > 0) ? exp/3 : 0);
+		    buffReqd = precision + 3 + ((expon > 0) ? expon/3 : 0);
 		    break;
 	            
 		case 'e':

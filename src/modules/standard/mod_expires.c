@@ -234,7 +234,7 @@ const char *set_expiresactive (cmd_parms *cmd, expires_dir_config *dir_config, i
  * string.  If we return NULL then real_code contains code converted
  * to the cnnnn format.
  */
-char *check_code( pool *pool, const char *code, char **real_code )
+char *check_code( pool *p, const char *code, char **real_code )
 {
     char *word;
     char base = 'X';
@@ -246,7 +246,7 @@ char *check_code( pool *pool, const char *code, char **real_code )
     /* 0.0.4 compatibility?
      */
     if ( (code[0] == 'A') || (code[0] == 'M') ) {
-	*real_code = pstrdup( pool, code );
+	*real_code = pstrdup( p, code );
 	return NULL;
     };
 
@@ -255,22 +255,22 @@ char *check_code( pool *pool, const char *code, char **real_code )
 
     /* <base>
      */
-    word = getword_conf( pool, &code );
+    word = getword_conf( p, &code );
     if ( !strncasecmp( word, "now", 1 ) ||
 	 !strncasecmp( word, "access", 1 ) ) {
 	base = 'A';
     } else if ( !strncasecmp( word, "modification", 1 ) ) {
 	base = 'M';
     } else {
-	return pstrcat( pool, "bad expires code, unrecognised <base> '",
+	return pstrcat( p, "bad expires code, unrecognised <base> '",
 		word, "'", NULL);
     };
 
     /* [plus]
      */
-    word = getword_conf( pool, &code );
+    word = getword_conf( p, &code );
     if ( !strncasecmp( word, "plus", 1 ) ) {
-        word = getword_conf( pool, &code );
+        word = getword_conf( p, &code );
     };
 
     /* {<num> <type>}*
@@ -281,17 +281,17 @@ char *check_code( pool *pool, const char *code, char **real_code )
 	if (isdigit(word[0])) {
 	    num = atoi( word );
 	} else {
-            return pstrcat( pool, "bad expires code, numeric value expected <num> '",
+            return pstrcat( p, "bad expires code, numeric value expected <num> '",
 		word, "'", NULL);
 	};
 
 	/* <type>
 	 */
-	word = getword_conf( pool, &code );
+	word = getword_conf( p, &code );
 	if ( word[0] ) {
 	    /* do nothing */
 	} else {
-            return pstrcat( pool, "bad expires code, missing <type>", NULL);
+            return pstrcat( p, "bad expires code, missing <type>", NULL);
 	};
 
 	factor = 0;
@@ -310,7 +310,7 @@ char *check_code( pool *pool, const char *code, char **real_code )
 	} else if ( !strncasecmp( word, "seconds", 1 ) ) {
 		factor = 1;
 	} else {
-            return pstrcat( pool, "bad expires code, unrecognised <type>", 
+            return pstrcat( p, "bad expires code, unrecognised <type>", 
 		"'", word, "'", NULL);
 	};
 
@@ -318,11 +318,11 @@ char *check_code( pool *pool, const char *code, char **real_code )
 
 	/* next <num>
 	 */
-	word = getword_conf( pool, &code );
+	word = getword_conf( p, &code );
     };
 
     ap_snprintf(foo, sizeof(foo), "%c%d", base, modifier );
-    *real_code = pstrdup( pool, foo );
+    *real_code = pstrdup( p, foo );
 
     return NULL;
 }

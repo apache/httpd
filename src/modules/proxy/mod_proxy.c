@@ -299,17 +299,17 @@ proxy_handler(request_rec *r)
     /* we only know how to handle communication to a proxy via http */
     /*if (strcmp(scheme, "http") == 0)*/
     {
-	int i;
+	int ii;
 	struct dirconn_entry *list=(struct dirconn_entry*)conf->dirconn->elts;
 
 /*        if (*++p == '/' && *++p == '/')   */
 
-	for (direct_connect=i=0; i < conf->dirconn->nelts && !direct_connect; i++)
+	for (direct_connect=ii=0; ii < conf->dirconn->nelts && !direct_connect; ii++)
 	{
-	    direct_connect = list[i].matcher (&list[i], r);
+	    direct_connect = list[ii].matcher (&list[ii], r);
 	    /*log_error("URI and NoProxy:", r->server);*/
 	    /*log_error(r->uri, r->server);*/
-	    /*log_error(list[i].name, r->server);*/
+	    /*log_error(list[ii].name, r->server);*/
 	}
 #if DEBUGGING
 	{

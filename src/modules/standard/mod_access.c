@@ -97,16 +97,16 @@ void *create_access_dir_config (pool *p, char *dummy)
 const char *order (cmd_parms *cmd, void *dv, char *arg)
 {
     access_dir_conf *d = (access_dir_conf *)dv;
-    int i, order;
+    int i, o;
   
-    if (!strcasecmp (arg, "allow,deny")) order = ALLOW_THEN_DENY;
-    else if (!strcasecmp (arg, "deny,allow")) order = DENY_THEN_ALLOW;
-    else if (!strcasecmp (arg, "mutual-failure")) order = MUTUAL_FAILURE;
+    if (!strcasecmp (arg, "allow,deny")) o = ALLOW_THEN_DENY;
+    else if (!strcasecmp (arg, "deny,allow")) o = DENY_THEN_ALLOW;
+    else if (!strcasecmp (arg, "mutual-failure")) o = MUTUAL_FAILURE;
     else return "unknown order";
 
     for (i = 0; i < METHODS; ++i) 
         if (cmd->limited & (1 << i))
-	    d->order[i] = order;
+	    d->order[i] = o;
     
     return NULL;
 }

@@ -158,7 +158,7 @@ void log_pid(pool *p, char *pid_fname) {
     fclose(pid_file);
 }
 
-API_EXPORT(void) log_error(char *err, server_rec *s) {
+API_EXPORT(void) log_error(const char *err, server_rec *s) {
     fprintf(s->error_log, "[%s] %s\n",get_time(),err);
     fflush(s->error_log);
 }

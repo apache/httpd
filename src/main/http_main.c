@@ -274,7 +274,7 @@ accept_mutex_init(pool *p)
     unlink(lock_fname);
 }
 
-void accept_mutex_on()
+void accept_mutex_on(void)
 {
     int ret;
     
@@ -288,7 +288,7 @@ void accept_mutex_on()
     }
 }
 
-void accept_mutex_off()
+void accept_mutex_off(void)
 {
     if (fcntl (lock_fd, F_SETLKW, &unlock_it) < 0)
     {
@@ -320,7 +320,7 @@ accept_mutex_init(pool *p)
     unlink(lock_fname);
 }
 
-void accept_mutex_on()
+void accept_mutex_on(void)
 {
     int ret;
     
@@ -334,7 +334,7 @@ void accept_mutex_on()
     }
 }
 
-void accept_mutex_off()
+void accept_mutex_off(void)
 {
     if (flock (lock_fd, LOCK_UN) < 0)
     {
@@ -372,7 +372,7 @@ void usage(char *bin)
 
 static APACHE_TLS conn_rec * current_conn;
 static APACHE_TLS request_rec *timeout_req;
-static APACHE_TLS char *timeout_name = NULL;
+static APACHE_TLS const char *timeout_name = NULL;
 static APACHE_TLS int alarms_blocked = 0;
 static APACHE_TLS int alarm_pending = 0;
 
@@ -511,7 +511,7 @@ set_callback_and_alarm(void (*fn)(int), int x)
 
 
 int
-check_alarm()
+check_alarm(void)
 {
 #ifdef WIN32
     if(alarm_expiry_time)
@@ -658,7 +658,7 @@ static void lingerout(int sig)
     current_conn->aborted = 1;
 }
     
-static void linger_timeout ()
+static void linger_timeout (void)
 {
     timeout_name = "lingering close";
     
@@ -1039,7 +1039,7 @@ void reopen_scoreboard (pool *p)
 #endif
 }
 
-void cleanup_scoreboard ()
+void cleanup_scoreboard (void)
 {
 #ifdef SCOREBOARD_FILE
     unlink (scoreboard_fname);
@@ -1057,7 +1057,7 @@ void cleanup_scoreboard ()
  * anyway.
  */
 
-API_EXPORT(void) sync_scoreboard_image ()
+API_EXPORT(void) sync_scoreboard_image (void)
 {
 #ifdef SCOREBOARD_FILE
     lseek (scoreboard_fd, 0L, 0);
@@ -1067,7 +1067,7 @@ API_EXPORT(void) sync_scoreboard_image ()
 
 #endif /* MULTITHREAD */
 
-API_EXPORT(int) exists_scoreboard_image ()
+API_EXPORT(int) exists_scoreboard_image (void)
 {
     return (scoreboard_image ? 1 : 0);
 }
@@ -1133,7 +1133,7 @@ int update_child_status (int child_num, int status, request_rec *r)
     return old_status;
 }
 
-static void update_scoreboard_global()
+static void update_scoreboard_global(void)
 {
 #ifdef SCOREBOARD_FILE
     lseek(scoreboard_fd,
@@ -1225,7 +1225,7 @@ static int find_child_by_pid (int pid)
     return -1;
 }
 
-static void reclaim_child_processes ()
+static void reclaim_child_processes (void)
 {
 #ifndef MULTITHREAD
     int i, status;
@@ -1297,7 +1297,7 @@ This sorts them out. In fact, this may have been caused by a race condition
 in wait_or_timeout(). But this routine is still useful for systems with no
 waitpid().
 */
-int reap_children ()
+int reap_children (void)
 {
     int status, n;
     int ret = 0;
@@ -1320,7 +1320,7 @@ int reap_children ()
  * a while...
  */
 
-static int wait_or_timeout ()
+static int wait_or_timeout (void)
 {
 #ifdef WIN32
 #define MAXWAITOBJ MAXIMUM_WAIT_OBJECTS
@@ -1380,7 +1380,7 @@ static int wait_or_timeout ()
 }
 
 
-void sig_term() {
+void sig_term(int sig) {
     log_error("httpd: caught SIGTERM, shutting down", server_conf);
     cleanup_scoreboard();
 #ifdef SIGKILL
@@ -1390,7 +1390,7 @@ void sig_term() {
     exit(1);
 }
 
-void bus_error(void) {
+void bus_error(int sig) {
     char emsg[256];
 
     ap_snprintf
@@ -1406,7 +1406,7 @@ void bus_error(void) {
     exit(1);
 }
 
-void seg_fault() {
+void seg_fault(int sig) {
     char emsg[256];
 
     ap_snprintf
@@ -1422,14 +1422,14 @@ void seg_fault() {
     exit(1);
 }
 
-void just_die()			/* SIGHUP to child process??? */
+void just_die(int sig)			/* SIGHUP to child process??? */
 {
     exit (0);
 }
 
 static int deferred_die;
 
-static void deferred_die_handler ()
+static void deferred_die_handler (int sig)
 {
     deferred_die = 1;
 }
@@ -1450,7 +1450,7 @@ static void restart (int sig)
 }
 
 
-void set_signals()
+void set_signals(void)
 {
 #ifndef NO_USE_SIGACTION
     struct sigaction sa;
@@ -1459,39 +1459,39 @@ void set_signals()
     sa.sa_flags = 0;
 
     if (!one_process) {
-	sa.sa_handler = (void (*)())seg_fault;
+	sa.sa_handler = seg_fault;
 	if (sigaction (SIGSEGV, &sa, NULL) < 0)
 	    log_unixerr ("sigaction(SIGSEGV)", NULL, NULL, server_conf);
-	sa.sa_handler = (void (*)())bus_error;
+	sa.sa_handler = bus_error;
 	if (sigaction (SIGBUS, &sa, NULL) < 0)
 	    log_unixerr ("sigaction(SIGBUS)", NULL, NULL, server_conf);
     }
-    sa.sa_handler = (void (*)())sig_term;
+    sa.sa_handler = sig_term;
     if (sigaction (SIGTERM, &sa, NULL) < 0)
 	log_unixerr ("sigaction(SIGTERM)", NULL, NULL, server_conf);
 
     /* we want to ignore HUPs and USR1 while we're busy processing one */
     sigaddset (&sa.sa_mask, SIGHUP);
     sigaddset (&sa.sa_mask, SIGUSR1);
-    sa.sa_handler = (void (*)())restart;
+    sa.sa_handler = restart;
     if (sigaction (SIGHUP, &sa, NULL) < 0)
 	log_unixerr ("sigaction(SIGHUP)", NULL, NULL, server_conf);
     if (sigaction (SIGUSR1, &sa, NULL) < 0)
 	log_unixerr ("sigaction(SIGUSR1)", NULL, NULL, server_conf);
 #else
     if(!one_process) {
-	signal (SIGSEGV, (void (*)(int))seg_fault);
+	signal (SIGSEGV, seg_fault);
 #ifdef SIGBUS
-    	signal (SIGBUS, (void (*)(int))bus_error);
+    	signal (SIGBUS, bus_error);
 #endif /* SIGBUS */
     }
 
-    signal (SIGTERM, (void (*)(int))sig_term);
+    signal (SIGTERM, sig_term);
 #ifdef SIGHUP
-    signal (SIGHUP, (void (*)(int))restart);
+    signal (SIGHUP, restart);
 #endif /* SIGHUP */
 #ifdef SIGUSR1
-    signal (SIGUSR1, (void (*)(int))restart);
+    signal (SIGUSR1, restart);
 #endif /* SIGUSR1 */
 #endif
 }
@@ -1501,7 +1501,7 @@ void set_signals()
  * Here follows a long bunch of generic server bookkeeping stuff...
  */
 
-void detach()
+void detach(void)
 {
 #ifndef WIN32
     int x;
@@ -1558,7 +1558,7 @@ void detach()
  * with different sets of groups for each.
  */
   
-static void set_group_privs()
+static void set_group_privs(void)
 {
 #ifndef WIN32
   if(!geteuid()) {
@@ -1603,7 +1603,7 @@ static void set_group_privs()
 }
 
 /* check to see if we have the 'suexec' setuid wrapper installed */
-int init_suexec ()
+int init_suexec (void)
 {
 #ifndef WIN32
     struct stat wrapper;
@@ -1727,7 +1727,8 @@ void default_server_hostnames(server_rec *s)
 			no configured name, probably because they used
 			DNS in the VirtualHost statement.  It's disabled
 			anyhow by the host matching code.  -djg */
-		    s->server_hostname = "bogus_host_without_forward_dns";
+		    s->server_hostname = 
+			pstrdup (pconf, "bogus_host_without_forward_dns");
 		}
 	    } else if (has_default_vhost_addr) {
 		s->server_hostname = def_hostname;
@@ -1744,7 +1745,8 @@ void default_server_hostnames(server_rec *s)
 			    "for %s (check DNS)\n",
 			    inet_ntoa(s->addrs->host_addr));
 		    }
-		    s->server_hostname = "bogus_host_without_reverse_dns";
+		    s->server_hostname =
+			pstrdup (pconf, "bogus_host_without_reverse_dns");
 		}
 	    }
 	}
@@ -1808,7 +1810,7 @@ static void sock_bind (int s, const struct sockaddr_in *server)
 /* MPE requires CAP=PM and GETPRIVMODE to bind to ports less than 1024 */
     if (ntohs(server->sin_port) < 1024) GETPRIVMODE();
 #endif
-    if(bind(s, (struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
+    if(bind(s, (const struct sockaddr *)server,sizeof(struct sockaddr_in)) == -1)
     {
         perror("bind");
 #ifdef MPE
@@ -1827,7 +1829,7 @@ static void sock_bind (int s, const struct sockaddr_in *server)
 #endif
 }
 
-static int make_sock(pool *pconf, const struct sockaddr_in *server)
+static int make_sock(pool *p, const struct sockaddr_in *server)
 {
     int s;
     int one = 1;
@@ -1844,7 +1846,7 @@ static int make_sock(pool *pconf, const struct sockaddr_in *server)
 	
     s = ap_slack(s, AP_SLACK_HIGH);
 
-    note_cleanups_for_socket(pconf, s); /* arrange to close on exec or restart */
+    note_cleanups_for_socket(p, s); /* arrange to close on exec or restart */
     
 #ifndef MPE
 /* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
@@ -1952,7 +1954,7 @@ static int find_listener(listen_rec *lr)
 }
 
 
-static void close_unused_listeners()
+static void close_unused_listeners(void)
 {
     listen_rec *or, *next;
 
@@ -1967,7 +1969,7 @@ static void close_unused_listeners()
 
 
 /* open sockets, and turn the listeners list into a singly linked ring */
-static void setup_listeners(pool *pconf)
+static void setup_listeners(pool *p)
 {
     listen_rec *lr;
     int fd;
@@ -1978,7 +1980,7 @@ static void setup_listeners(pool *pconf)
     for(;;) {
 	fd = find_listener (lr);
 	if (fd < 0) {
-	    fd = make_sock (pconf, &lr->local_addr);
+	    fd = make_sock (p, &lr->local_addr);
 	}
 	FD_SET (fd, &listenfds);
 	if (fd > listenmaxfd) listenmaxfd = fd;
@@ -2016,7 +2018,7 @@ static inline listen_rec *find_ready_listener(fd_set *main_fds)
 static int s_iInitCount = 0;
 
 int
-AMCSocketInitialize()
+AMCSocketInitialize(void)
 {
 #ifdef WIN32
     int iVersionRequested;
@@ -2057,7 +2059,7 @@ AMCSocketInitialize()
 
 
 void
-AMCSocketCleanup()
+AMCSocketCleanup(void)
 {
 #ifdef WIN32
     if(--s_iInitCount == 0)
@@ -2135,7 +2137,7 @@ void child_main(int child_num_arg)
 	 * we can exit cleanly.  Since we're between connections right
 	 * now it's the right time to exit, but we might be blocked in a
 	 * system call when the graceful restart request is made. */
-	signal (SIGUSR1, (void (*)())just_die);
+	signal (SIGUSR1, just_die);
 
         /*
          * (Re)initialize this child to a pre-connection state.
@@ -2190,7 +2192,7 @@ void child_main(int child_num_arg)
 	     * defer the exit
 	     */
 	    deferred_die = 0;
-	    signal (SIGUSR1, (void (*)())deferred_die_handler);
+	    signal (SIGUSR1, deferred_die_handler);
             for (;;) {
                 clen = sizeof(sa_client);
                 csd  = accept(sd, &sa_client, &clen);
@@ -2216,7 +2218,7 @@ void child_main(int child_num_arg)
             }
 
 	    /* go around again, safe to die */
-	    signal (SIGUSR1, (void (*)())just_die);
+	    signal (SIGUSR1, just_die);
 	    if (deferred_die) {
 		/* ok maybe not, see ya later */
 		exit (0);
@@ -2321,7 +2323,7 @@ void child_main(int child_num_arg)
 	     * connections to close before receiving a response because
 	     * of network latencies and server timeouts.
 	     */
-	    signal (SIGUSR1, (void (*)())just_die);
+	    signal (SIGUSR1, just_die);
         }
 
         /*
@@ -2348,33 +2350,33 @@ void child_main(int child_num_arg)
     }    
 }
 
-static int make_child(server_rec *server_conf, int child_num)
+static int make_child(server_rec *s, int slot)
 {
     int pid;
 
-    if (child_num + 1 > max_daemons_limit) {
-	max_daemons_limit = child_num + 1;
+    if (slot + 1 > max_daemons_limit) {
+	max_daemons_limit = slot + 1;
     }
 
     if (one_process) {
-	signal (SIGHUP, (void (*)())just_die);
-	signal (SIGTERM, (void (*)())just_die);
-	child_main (child_num);
+	signal (SIGHUP, just_die);
+	signal (SIGTERM, just_die);
+	child_main (slot);
     }
 
     /* avoid starvation */
     head_listener = head_listener->next;
 
-    Explain1 ("Starting new child in slot %d", child_num);
-    (void)update_child_status (child_num, SERVER_STARTING, (request_rec *)NULL);
+    Explain1 ("Starting new child in slot %d", slot);
+    (void)update_child_status (slot, SERVER_STARTING, (request_rec *)NULL);
 
     if ((pid = fork()) == -1) {
-	log_unixerr("fork", NULL, "Unable to fork new process", server_conf);
+	log_unixerr("fork", NULL, "Unable to fork new process", s);
 
 	/* fork didn't succeed. Fix the scoreboard or else
 	 * it will say SERVER_STARTING forever and ever
 	 */
-	(void)update_child_status (child_num, SERVER_DEAD, (request_rec*)NULL);
+	(void)update_child_status (slot, SERVER_DEAD, (request_rec*)NULL);
 
 	/* In case system resources are maxxed out, we don't want
            Apache running away with the CPU trying to fork over and
@@ -2389,10 +2391,10 @@ static int make_child(server_rec *server_conf, int child_num)
 	 * Note that since restart() just notes that a restart has been
 	 * requested there's no race condition here.
 	 */
-	signal (SIGHUP, (void (*)())just_die);
-	signal (SIGUSR1, (void (*)())just_die);
-	signal (SIGTERM, (void (*)())just_die);
-	child_main (child_num);
+	signal (SIGHUP, just_die);
+	signal (SIGUSR1, just_die);
+	signal (SIGTERM, just_die);
+	child_main (slot);
     }
 
     /* If the parent proceeds with a restart before the child has written
@@ -2402,7 +2404,7 @@ static int make_child(server_rec *server_conf, int child_num)
      * to the same word.)
      * XXX: this needs to be sync'd to disk in the non shared memory stuff
      */
-    scoreboard_image->servers[child_num].pid = pid;
+    scoreboard_image->servers[slot].pid = pid;
 
     return 0;
 }
@@ -2425,7 +2427,7 @@ static void startup_children (int number_to_start)
 }
 
 
-static void perform_idle_server_maintenance ()
+static void perform_idle_server_maintenance (void)
 {
     int i;
     int to_kill;

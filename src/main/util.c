@@ -842,7 +842,7 @@ API_EXPORT(char *) construct_server(pool *p, const char *hostname,
 	/* Long enough, even if port > 16 bits for some reason */
   
     if (port == DEFAULT_PORT)
-	return (char *)hostname;
+	return pstrdup (p, hostname);
     else {
         ap_snprintf (portnum, sizeof(portnum), "%u", port);
 	return pstrcat (p, hostname, ":", portnum, NULL);
@@ -1310,7 +1310,7 @@ const int pr2six[256]={
 
 API_EXPORT(char *) uudecode(pool *p, const char *bufcoded) {
     int nbytesdecoded;
-    register unsigned char *bufin;
+    register const unsigned char *bufin;
     register char *bufplain;
     register unsigned char *bufout;
     register int nprbytes;
@@ -1322,15 +1322,15 @@ API_EXPORT(char *) uudecode(pool *p, const char *bufcoded) {
     /* Figure out how many characters are in the input buffer.
      * Allocate this many from the per-transaction pool for the result.
      */
-    bufin = (unsigned char *)bufcoded;
+    bufin = (const unsigned char *)bufcoded;
     while(pr2six[*(bufin++)] <= 63);
-    nprbytes = (char *)bufin - bufcoded - 1;
+    nprbytes = (bufin - (const unsigned char *)bufcoded) - 1;
     nbytesdecoded = ((nprbytes+3)/4) * 3;
 
     bufplain = palloc(p, nbytesdecoded + 1);
     bufout = (unsigned char *)bufplain;
     
-    bufin = (unsigned char *)bufcoded;
+    bufin = (const unsigned char *)bufcoded;
     
     while (nprbytes > 0) {
         *(bufout++) = 

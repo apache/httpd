@@ -75,7 +75,7 @@ union align
    */
   
   char *cp;
-  void (*f)();
+  void (*f)(void);
   long l;
   FILE *fp;
   double d;
@@ -292,7 +292,7 @@ API_EXPORT(struct pool *) make_sub_pool (struct pool *p)
   return new_pool;
 }
 
-void init_alloc()
+void init_alloc(void)
 {
     alloc_mutex = create_mutex(NULL);
     spawn_mutex = create_mutex(NULL);
@@ -336,7 +336,7 @@ API_EXPORT(void) destroy_pool (pool *a)
 API_EXPORT(long) bytes_in_pool (pool *p) {
     return bytes_in_block_list (p->first);
 }
-API_EXPORT(long) bytes_in_free_blocks () {
+API_EXPORT(long) bytes_in_free_blocks (void) {
     return bytes_in_block_list (block_freelist);
 }
 
@@ -791,7 +791,7 @@ static void cleanup_pool_for_exec (pool *p)
     cleanup_pool_for_exec (p);
 }
 
-API_EXPORT(void) cleanup_for_exec()
+API_EXPORT(void) cleanup_for_exec(void)
 {
 #ifndef WIN32
     /*
@@ -1047,7 +1047,7 @@ struct process_chain {
   struct process_chain *next;
 };
 
-void note_subprocess (pool *a, int pid, enum kill_conditions how)
+API_EXPORT(void) note_subprocess (pool *a, int pid, enum kill_conditions how)
 {
   struct process_chain *new =
     (struct process_chain *)palloc(a, sizeof(struct process_chain));

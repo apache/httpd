@@ -320,19 +320,6 @@ int display_info(request_rec *r) {
 	mod_info_config_lines *mod_info_cfg_httpd=NULL;
 	mod_info_config_lines *mod_info_cfg_srm=NULL;
 	mod_info_config_lines *mod_info_cfg_access=NULL;
-	extern int standalone;
-	extern uid_t user_id;
-	extern char *user_name;
-	extern gid_t group_id;
-	extern int max_requests_per_child;
-	extern char *pid_fname;
-	extern char *scoreboard_fname;
-	extern int daemons_to_start;
-	extern int daemons_min_free;
-	extern int daemons_max_free;
-	extern int daemons_limit;
-	extern char server_root[MAX_STRING_LEN];
-	extern char server_confname[MAX_STRING_LEN];
 
 	r->content_type = "text/html";		
 	send_http_header(r);

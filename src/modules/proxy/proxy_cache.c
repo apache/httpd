@@ -77,7 +77,8 @@ struct gc_ent
 static int
 gcdiff(const void *ap, const void *bp)
 {
-    const struct gc_ent *a=*(struct gc_ent **)ap, *b=*(struct gc_ent **)bp;
+    const struct gc_ent *a=*(const struct gc_ent * const *)ap;
+    const struct gc_ent *b=*(const struct gc_ent * const *)bp;
 
     if (a->expire > b->expire) return 1;
     else if (a->expire < b->expire) return -1;
@@ -381,9 +382,9 @@ static int sub_garbage_coll(request_rec *r,array_header *files,
  *        -1 on UNIX error
  */
 static int
-rdcache(pool *pool, BUFF *cachefp, struct cache_req *c)
+rdcache(pool *p, BUFF *cachefp, struct cache_req *c)
 {
-    char urlbuff[1034], *p;
+    char urlbuff[1034], *strp;
     int len;
 /* read the data from the cache file */
 /* format
@@ -420,12 +421,12 @@ rdcache(pool *pool, BUFF *cachefp, struct cache_req *c)
     if (len == 0 || urlbuff[len-1] != '\n') return 0;
     urlbuff[--len] = '\0';
 
-    c->resp_line = pstrdup(pool, urlbuff);
-    p = strchr(urlbuff, ' ');
-    if (p == NULL) return 0;
+    c->resp_line = pstrdup(p, urlbuff);
+    strp = strchr(urlbuff, ' ');
+    if (strp == NULL) return 0;
 
-    c->status = atoi(p);
-    c->hdrs = proxy_read_headers(pool, urlbuff, 1034, cachefp);
+    c->status = atoi(strp);
+    c->hdrs = proxy_read_headers(p, urlbuff, 1034, cachefp);
     if (c->hdrs == NULL) return -1;
     if (c->len != -1) /* add a content-length header */
     {
@@ -433,9 +434,9 @@ rdcache(pool *pool, BUFF *cachefp, struct cache_req *c)
 	q = proxy_get_header(c->hdrs, "Content-Length");
 	if (q == NULL)
 	{
-	    p = palloc(pool, 15);
-	    ap_snprintf(p, 15, "%u", c->len);
-	    proxy_add_header(c->hdrs, "Content-Length", p, HDR_REP);
+	    strp = palloc(p, 15);
+	    ap_snprintf(strp, 15, "%u", c->len);
+	    proxy_add_header(c->hdrs, "Content-Length", strp, HDR_REP);
 	}
     }
     return 1;

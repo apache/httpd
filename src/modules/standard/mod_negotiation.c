@@ -835,9 +835,9 @@ int read_types_multi (negotiation_state *neg)
  * be 1 for star/star, 2 for type/star and 3 for type/subtype.
  */
 
-int mime_match (accept_rec *accept, var_rec *avail)
+int mime_match (accept_rec *accept_r, var_rec *avail)
 {
-    char *accept_type = accept->type_name;
+    char *accept_type = accept_r->type_name;
     char *avail_type = avail->type_name;
     int len = strlen(accept_type);
   
@@ -856,7 +856,7 @@ int mime_match (accept_rec *accept, var_rec *avail)
 	     || (!strcmp (accept_type, "text/html")
 		 && (!strcmp(avail_type, INCLUDES_MAGIC_TYPE)
 		     || !strcmp(avail_type, INCLUDES_MAGIC_TYPE3)))) {
-	if (accept->level >= avail->level) {
+	if (accept_r->level >= avail->level) {
 	    avail->level_matched = avail->level;
 	    avail->mime_stars = 3;
 	    return 1;
@@ -1046,7 +1046,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
 {
     int i;
     int naccept = neg->accept_langs->nelts;
-    int index;
+    int idx;
     neg_dir_config *conf = NULL;
     char *firstlang;
 
@@ -1165,16 +1165,16 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
      * stuff anyway, don't both with handling multiple languages
      * per variant, just use the first one assigned to it
      */
-    index = 0;
+    idx = 0;
     if (variant->content_languages && variant->content_languages->nelts)
 	firstlang = ((char**)variant->content_languages->elts)[0];
     else
 	firstlang = "";
     if (naccept == 0)           /* Client doesn't care */
-        index = find_default_index (conf, firstlang);
+        idx = find_default_index (conf, firstlang);
     else                        /* Client has Accept-Language */
-        index = find_lang_index (neg->accept_langs, firstlang);
-    variant->lang_index = index;
+        idx = find_lang_index (neg->accept_langs, firstlang);
+    variant->lang_index = idx;
 
     return;             
 }

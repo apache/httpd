@@ -259,10 +259,10 @@ int proxy_hex2c(const char *x);
 void proxy_c2hex(int ch, char *x);
 char *proxy_canonenc(pool *p, const char *x, int len, enum enctype t,
     int isenc);
-char *proxy_canon_netloc(pool *pool, char **const urlp, char **userp,
+char *proxy_canon_netloc(pool *p, char **const urlp, char **userp,
     char **passwordp, char **hostp, int *port);
 char *proxy_date_canon(pool *p, char *x);
-array_header *proxy_read_headers(pool *pool, char *buffer, int size, BUFF *f);
+array_header *proxy_read_headers(pool *p, char *buffer, int size, BUFF *f);
 long int proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c);
 struct hdr_entry *proxy_get_header(array_header *hdrs_arr, const char *name);
 struct hdr_entry *proxy_add_header(array_header *hdrs_arr, char *field,

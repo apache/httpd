@@ -268,20 +268,23 @@ API_EXPORT(char *) server_root_relative (pool *p, char *fname);
 
 API_EXPORT(void) add_module (module *m);
 API_EXPORT(int) add_named_module (const char *name);
-API_EXPORT(void) clear_module_list ();
+API_EXPORT(void) clear_module_list (void);
 API_EXPORT(const char *) find_module_name (module *m);
 API_EXPORT(module *) find_linked_module (const char *name);
 
 #ifdef CORE_PRIVATE
+
+extern module *prelinked_modules[];
+extern module *preloaded_modules[];
 
 /* For http_main.c... */
 
 server_rec *read_config (pool *conf_pool, pool *temp_pool, char *config_name);
 void init_modules(pool *p, server_rec *s);
 void child_init_modules(pool *p, server_rec *s);
-void setup_prelinked_modules();
-void show_directives();
-void show_modules();
+void setup_prelinked_modules(void);
+void show_directives(void);
+void show_modules(void);
 
 /* For http_request.c... */
 

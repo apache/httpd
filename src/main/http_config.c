@@ -87,10 +87,9 @@ DEF_Explain
 static int total_modules = 0;
 module *top_module = NULL;
     
-typedef int (*handler)(request_rec *);
-typedef void *(*maker)(pool *);
-typedef void *(*dir_maker)(pool *, char *);
-typedef void *(*merger)(pool *, void *, void *);    
+typedef int (*handler_func)(request_rec *);
+typedef void *(*dir_maker_func)(pool *, char *);
+typedef void *(*merger_func)(pool *, void *, void *);    
 
 /* Dealing with config vectors.  These are associated with per-directory,
  * per-server, and per-request configuration, and have a void* pointer for
@@ -129,7 +128,7 @@ create_default_per_dir_config (pool *p)
    module *modp;
 
    for (modp = top_module; modp; modp = modp->next) {
-       dir_maker df = modp->create_dir_config;
+       dir_maker_func df = modp->create_dir_config;
 
        if (df) conf_vector[modp->module_index] = (*df)(p, NULL);
    }
@@ -146,7 +145,7 @@ merge_per_dir_configs (pool *p, void *base, void *new)
    module *modp;
 
    for (modp = top_module; modp; modp = modp->next) {
-       merger df = modp->merge_dir_config;
+       merger_func df = modp->merge_dir_config;
        int i = modp->module_index;
 
        if (df && new_vector[i])
@@ -183,7 +182,7 @@ void merge_server_configs (pool *p, void *base, void *virt)
     module *modp;
     
     for (modp = top_module; modp; modp = modp->next) {
-	merger df = modp->merge_server_config;
+	merger_func df = modp->merge_server_config;
 	int i = modp->module_index;
 
 	if (!virt_vector[i])
@@ -281,7 +280,7 @@ static struct {
  * logger function.  You go one-by-one from there until you hit a NULL.
  * This structure was designed to hopefully maximize cache-coolness.
  */
-static handler *method_ptrs;
+static handler_func *method_ptrs;
 
 /* routine to reconstruct all these shortcuts... called after every
  * add_module.
@@ -294,7 +293,7 @@ build_method_shortcuts (void)
     int how_many_ptrs;
     int i;
     int next_ptr;
-    handler fp;
+    handler_func fp;
 
     if (method_ptrs) {
 	/* free up any previous set of method_ptrs */
@@ -305,12 +304,12 @@ build_method_shortcuts (void)
     how_many_ptrs = 0;
     for (modp = top_module; modp; modp = modp->next) {
 	for (i = 0; i<NMETHODS; ++i) {
-	    if (*(handler *)(method_offsets[i] + (char *)modp)) {
+	    if (*(handler_func *)(method_offsets[i] + (char *)modp)) {
 		++how_many_ptrs;
 	    }
 	}
     }
-    method_ptrs = malloc ((how_many_ptrs+NMETHODS)*sizeof (handler));
+    method_ptrs = malloc ((how_many_ptrs+NMETHODS)*sizeof (handler_func));
     next_ptr = 0;
     for (i = 0; i<NMETHODS; ++i) {
 	/* XXX: This is an itsy bit presumptuous about the alignment
@@ -318,7 +317,7 @@ build_method_shortcuts (void)
 	 * ANSI says this has to be true... -djg */
 	((int *)&offsets_into_method_ptrs)[i] = next_ptr;
 	for (modp = top_module; modp; modp = modp->next) {
-	    fp = *(handler *)(method_offsets[i] + (char *)modp);
+	    fp = *(handler_func *)(method_offsets[i] + (char *)modp);
 	    if (fp) {
 		method_ptrs[next_ptr++] = fp;
 	    }
@@ -334,7 +333,7 @@ run_method (request_rec *r, int offset, int run_all)
     int i;
 
     for (i = offset; method_ptrs[i]; ++i ) {
-	handler mod_handler = method_ptrs[i];
+	handler_func mod_handler = method_ptrs[i];
 
 	if (mod_handler) {
            int result;
@@ -475,7 +474,6 @@ API_EXPORT(void) add_module (module *m)
 
 void setup_prelinked_modules ()
 {
-    extern module *prelinked_modules[], *preloaded_modules[];
     module **m;
 
     /* First, set all module indices, and init total_modules.  */
@@ -508,7 +506,6 @@ API_EXPORT(module *) find_linked_module (const char *name)
 /* Add a named module.  Returns 1 if module found, 0 otherwise.  */
 API_EXPORT(int) add_named_module (const char *name)
 {
-    extern module *preloaded_modules[];
     module *modp;
     int i = 0;
 
@@ -1300,7 +1297,6 @@ void show_overrides(command_rec *pc, module *pm)
  */
 void show_directives()
 {
-    extern module *preloaded_modules[];
     command_rec *pc;
     int n;
     
@@ -1317,7 +1313,6 @@ void show_directives()
 /* Show the preloaded module names.  Used for httpd -l. */
 void show_modules()
 {
-    extern module *preloaded_modules[];
     int n;
  
     printf ("Compiled-in modules:\n");

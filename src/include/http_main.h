@@ -91,8 +91,8 @@ API_EXPORT(void) soft_timeout (char *, request_rec *);
 API_EXPORT(void) kill_timeout (request_rec *);     
 API_EXPORT(void) reset_timeout (request_rec *);
 
-API_EXPORT(void) sync_scoreboard_image ();
+API_EXPORT(void) sync_scoreboard_image (void);
 int update_child_status (int child_num, int status, request_rec *r);
 void time_process_request (int child_num, int status);
 unsigned int set_callback_and_alarm(void (*fn)(int), int x);
-int check_alarm();
+int check_alarm(void);
