@@ -107,6 +107,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f, apr_buc
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, apr_bucket_brigade *b);
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *, 
                                                               apr_bucket_brigade *);
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(ap_filter_t *f, apr_bucket_brigade *b);
 
 /* Send the response to special method requests */
 
