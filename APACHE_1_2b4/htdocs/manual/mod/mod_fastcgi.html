@@ -1,0 +1,347 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+
+<!-- mod_fastcgi.html                                                     -->
+<!--	Documentation for the mod_fastcgi Apache module                   -->
+<!-- Copyright (c) 1996 Open Market, Inc.                                 -->
+<!-- See the file "LICENSE.TERMS" for information on usage and            -->
+<!-- redistribution of this file, and for a DISCLAIMER OF ALL WARRANTIES. -->
+
+<html>
+<head>
+<title>Apache module mod_fastcgi</title>
+</head>
+
+<body>
+<!--#include virtual="header.html" -->
+<h1>Module mod_fastcgi</h1>
+
+This module is contained in the <code>mod_fastcgi.c</code> file.  It
+provides a high-performance alternative to CGI for writing Web server
+applications in a variety of languages, including Perl, C, C++,
+Java, and Python.<p>
+
+Any request for a file with the MIME type
+<code>application/x-httpd-fcgi</code> will be processed by
+<code>mod_fastcgi</code>.  For the request to succeed, the server's
+configuration must have started the application (executable file)
+using the <code>AppClass</code> directive.
+
+<p>This module is included optionally in Apache 1.2 and later.
+
+<h2>Summary</h2>
+
+FastCGI is a high-performance alternative to CGI.
+FastCGI gets its speed by having
+the Web server keep the application processes running between requests. So,
+unlike CGI, you do not have the overhead of starting up a new process and
+doing application initialization (e.g. connecting
+to a database) each time somebody requests a document. The
+processes start up with the Web server and keep on running.<p>
+
+FastCGI applications communicate with a Web server using a simple
+communications protocol.  A single full-duplex connection communicates
+the environment variables and <code>stdin</code> data to the
+application, and <code>stdout</code> and <code>stderr</code> data to
+the Web server.<p>
+
+For more information on FastCGI, including freely available FastCGI
+server modules and application libraries, go to the <A
+HREF="http://www.fastcgi.com/">FastCGI home page
+(http://www.fastcgi.com/)</A>.<p>
+
+
+<h2>Directives</h2>
+
+<ul>
+  <li>
+    <a HREF="#AppClass">AppClass</a>
+  <li>
+    <a HREF="#FastCgiIpcDir">FastCgiIpcDir</a>
+</ul>
+<hr>
+
+
+<A name="AppClass"><h2>AppClass</h2></A>
+<strong>Syntax:</strong> AppClass exec-path
+                   <em>[-processes N] [-listen-queue-depth N] 
+	           [-restart-delay N] [-priority N] 
+                   [-initial-env name=value]<br></em>
+<strong>Context:</strong> srm.conf<br>
+<strong>Module:</strong> mod_fastcgi<p>
+
+The <code>AppClass</code> directive starts one or more FastCGI
+application processes, using the executable file
+<code>exec-path</code>.  <code>mod_fastcgi</code> will restart these
+processes should they die.<p>
+
+When a client requests the file <code>exec-path</code>,
+the request is handled first by the <code>mod_fastcgi</code> module.
+<code>mod_fastcgi</code> communicates the request to a process
+in the application class, which generates the response.
+<code>mod_fastcgi</code> relays this response back to the client.<p>
+
+The optional parameters to the <code>AppClass</code> directive
+are as follows:
+<ul>
+  <li>
+    <B>processes:</B> number of FastCGI processes that the Web server
+    will spawn, default 1.<p>
+
+  <li>
+    <B>listen-queue-depth:</B> depth of listen queue
+    shared by the processes, default 5.  A deeper listen queue
+    allows the server to cope with transient
+    load fluctuations without rejecting
+    requests; it does not increase throughput.  Adding extra processes
+    may increase throughput, depending upon the application and the
+    host.<p>
+
+  <li>
+    <B>restart-delay:</B> number of seconds between restarts of
+    processes in this class, default 5.  When the first process dies
+    it will be restarted immediately, but if a second process from
+    this class dies within <code>restart-delay</code> seconds, it will
+    not be restarted until <code>restart-delay</code> seconds have
+    passed since the previous restart.  This delay prevents a broken
+    application from soaking up too much of the system.  Default value
+    is 5 seconds.<p>
+
+  <li>
+    <B>priority:</B> priority of FastCGI application processes, as
+    defined by the <code>setpriority</code> system call.  The default
+    value is zero, i.e. same priority as the HTTP server.  Negative
+    values are not allowed.<p>
+
+  <li>
+    <B>initial-env:</B> a name-value pair in the initial environment
+    passed to the application processes.  The argument has the form
+    <code>name=value</code>, with no whitespace allowed.
+    You can add several name-value pairs to the initial environment
+    by using this option several times.  The default
+    initial environment is empty (no name-value pairs.)<p>
+</ul>
+<p>
+Errors possible in the <code>AppClass</code>
+directive include syntax errors, arguments out of range, and the file
+<code>exec-path</code> being non-existent or not executable.<p>
+
+
+<A name="FastCgiIpcDir"><h2>FastCgiIpcDir</h2></A>
+<strong>Syntax:</strong> FastCgiIpcDir dir-path<br>
+<strong>Context:</strong> srm.conf<br>
+<strong>Module:</strong> mod_fastcgi<p>
+
+The <code>FastCgiIpcDir</code> directive controls where
+<code>mod_fastcgi</code> creates Unix-domain sockets
+for communicating with the applications it manages.<p>
+
+By default, <code>mod_fastcgi</code> creates
+the sockets in <code>/tmp</code>.  The socket
+names have the form <code>OM_WS_n.pid</code> where <code>n</code> is a
+sequence number and <code>pid</code> is the process ID of the Apache
+parent process.  If your system runs a periodic job to delete files
+from <code>/tmp</code>, and it deletes these files, your Web
+server won't be able to communicate with its FastCGI applications.<p>
+
+To avoid this problem place a <code>FastCgiIpcDir</code> directive
+before the <code>AppClass</code> directives in your server
+configuration.  Specify a directory that's readable, writable,
+and searchable by the account you use for your Web server, but
+otherwise not accessible to anyone.<p>
+
+Note 1 below describes platform-specific problems
+in moving the sockets out of <code>/tmp</code>; please read it.<p>
+
+
+<hr>
+
+<h2>Important notes</h2>
+
+<ol>
+
+  <li>
+    On some platforms, Unix-domain sockets don't work when stored
+    in non-local file systems.  Digital UNIX 3.0 is known to have
+    this problem with NFS (fixed in Digital UNIX 3.2);
+    Solaris 2.5 is known to have this problem
+    with AFS.  If <code>/tmp</code> is part of a local
+    file system you'll avoid this problem by leaving the
+    listening sockets in <code>/tmp</code> rather than using the
+    <code>FastCgiIpcDir</code> directive to put them somewhere else.<p>
+
+  <li>
+    Error logging by the <code>mod_fastcgi</code> process manager
+    corrupts the error log on some platforms, due to a bug in the C
+    library function <code>fopen</code>.  For instance, SunOS 4.1.4
+    has the <code>fopen</code> bug and exhibits the error log
+    corruption problem.  A corrupted error log makes it difficult to
+    debug problems on your Web server.  You should apply the following
+    patch to Apache 1.1.1 in order to eliminate the possibility of
+    this problem:
+    <pre>
+% diff -c alloc.c alloc.c.orig
+*** alloc.c     Mon Sep 23 17:45:34 1996
+--- alloc.c.orig        Mon Sep 23 17:43:16 1996
+***************
+*** 765,784 ****
+  
+  FILE *pfopen(struct pool *a, char *name, char *mode)
+  {
+!   FILE *fd = NULL;
+  
+    block_alarms();
+!   if (*mode == 'a') {
+!     /* Work around faulty implementations of fopen */
+!     int baseFlag = (*(mode+1) == '+') ? O_RDWR : O_WRONLY;
+!     int desc = open(name, baseFlag | O_APPEND | O_CREAT,
+!             S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+!     if (desc &gt;= 0) {
+!       fd = fdopen(desc, mode);
+!     }
+!   } else {
+!     fd = fopen(name, mode);
+!   }
+    if (fd != NULL) note_cleanups_for_file (a, fd);
+    unblock_alarms();
+    return fd;
+--- 765,774 ----
+  
+  FILE *pfopen(struct pool *a, char *name, char *mode)
+  {
+!   FILE *fd;
+  
+    block_alarms();
+!   fd = fopen(name, mode);
+    if (fd != NULL) note_cleanups_for_file (a, fd);
+    unblock_alarms();
+    return fd;
+    </pre>
+
+  <li>
+    The <code>ScriptAlias</code> directive takes priority over the
+    <code>AddType</code> directive; a file located in a directory that
+    is the target of <code>ScriptAlias</code>directive has type
+    <code>application/x-httpd-cgi</code> and is handled by
+    <code>mod_cgi</code>.  So don't put FastCGI applications in your
+    <code>/cgi-bin/</code> directory -- they won't work properly!<p>
+
+  <li>
+    <code>mod_fastcgi</code> becomes confused if you put a slash
+    at the end of your <code>DocumentRoot</code>.  The symptom
+    is that the request handler won't find the applications that
+    you have defined using <code>AppClass</code>.<p>
+
+  <li>
+    <code>mod_fastcgi</code> does not know about environment
+    variables defined by the optional module <code>mod_env</code>.
+    Use the <code>-initial-env</code> option to
+    <code>AppClass</code>.<p>
+
+  <li>
+    <code>mod_fastcgi</code> does not implement TCP/IP
+    connections to FastCGI applications, only Unix Domain socket
+    connections.  To connect to remote FastCGI applications
+    run the <code>cgi-fcgi</code> program as a CGI script.
+    See the
+    <a href="http://www.fastcgi.com/kit/doc/cgi-fcgi.1"><code>cgi-fcgi</code>
+    manpage</a> for more information.<p>
+
+</ul>
+
+
+<h2>Example</h2>
+
+What follows is a minimal httpd.conf for Apache 1.1.1 and FastCGI
+Developer's Kit 1.5.  Use this configuration for initial testing
+with FastCGI.  When you've verified that this configuration works,
+you can merge the FastCGI-specific aspects of this configuration
+with your own configuration.<p>
+
+Directions:
+
+<ol>
+  <li>
+    Change <code>$APACHE</code> to the path name of the directory
+    containing your Apache 1.1.1 kit, i.e. the directory containing
+    the Apache 1.1.1 README.  For instance, you might change
+    <code>$APACHE</code> to <code>/udir/doe/apache_1.1.1</code>.<p>
+
+    Change <code>$FASTCGI</code> to the path name of the directory
+    containing your FastCGI Developer's Kit 1.5, i.e. the directory
+    containing the FastCGI Developer's Kit 1.5 README.  For instance,
+    you might change <code>$FASTCGI</code> to
+    <code>/udir/doe/fcgi-devel-kit</code>.<p>
+
+    Save the resulting file as <code>$APACHE/conf/httpd.conf</code>.<p>
+
+  <li>
+    Build Apache 1.1.1 with mod_fastcgi.  This creates the
+    <code>httpd</code> executable.<p>
+ 
+    Build the FastCGI Developer's Kit 1.5.  This creates the
+    <code>echo</code> executable that you are going to run as a
+    FastCGI application, and makes the <code>echo.fcg</code> link
+    to this application.  This link gives it a distinctive MIME type
+    so that <code>mod_fastcgi</code> will handle it.<p>
+
+  <li>
+    In a shell, cd to <code>$APACHE</code> and start httpd:
+    <pre>
+    % src/httpd -f $APACHE/conf/httpd.conf
+    </pre><p>
+
+  <li>
+    Use a browser to access the URL
+    <pre>
+    http://$YOUR_HOST:5556/examples/echo.fcg
+    </pre>
+    where <code>$YOUR_HOST</code> is the IP address of the host
+    running httpd.  Look for <code>STATE=TEXAS</code> in the
+    initial environment that <code>echo.fcg</code> displays.<p>
+</ol>
+
+<pre>
+# httpd.conf -- minimal for mod_fastcgi
+#
+# One config file is plenty
+ResourceConfig /dev/null
+AccessConfig   /dev/null
+
+# Not starting httpd as root, so Port must be larger than 1023
+Port 5556
+
+# Configure just one idle httpd child process, to simplify debugging
+StartServers    1
+MinSpareServers 1
+MaxSpareServers 1
+
+# Tell httpd where it should live, turn on access and error logging
+ServerRoot     $APACHE
+ErrorLog       logs/error.log
+TransferLog    logs/access.log
+ScoreBoardFile logs/httpd.scoreboard
+
+# Tell httpd where to get documents
+# XXX: No slash allowed at the end of DocumentRoot
+DocumentRoot $FASTCGI
+
+# Tell Apache that mod_fastcgi should handle files ending in .fcg
+AddType application/x-httpd-fcgi .fcg
+
+# This is how you'd place the Unix-domain socket files in the logs
+# directory (you'd probably want to create a subdirectory for them.)
+# Don't do this until you've verified that the server works with
+# the socket files stored locally, in /tmp.
+# FastCgiIpcDir $APACHE/logs
+
+# Start the echo.fcg application (echo.fcg is a sym-link to echo,
+# created by $FASTCGI/examples/Makefile.)
+AppClass $FASTCGI/examples/echo.fcg -initial-env STATE=TEXAS
+
+# End of httpd.conf
+</pre>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
