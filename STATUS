@@ -98,6 +98,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * Patches submitted to the bug database:
       http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2.0&keywords=PatchAvailable
 
+    * The Event MPM does not work on Solaris 10. Solaris 10 does support the 
+      Threadsafe Pollsets required by the Event MPM, but it does not support
+      multiple threads calling accept() at the same time.  The current 
+      structure of the Event MPM makes adding accept() locking difficult.
+
     * Filter stacks and subrequests, redirects and fast redirects.
       There's at least one PR that suffers from the current unclean behaviour
       (which lets the server send garbage): PR 17629
