@@ -94,7 +94,7 @@ int ap_checkconv(struct request_rec *r)
 		 strncasecmp(type, "message/", 8) == 0)) {
 	if (strncasecmp(type, ASCIITEXT_MAGIC_TYPE_PREFIX,
                         sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0){
-	    r->content_type = ap_pstrcat(r->pool, "text/",
+	    r->content_type = apr_pstrcat(r->pool, "text/",
                    type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1, NULL);
             if (r->method_number == M_PUT)
                    ap_bsetflag(r->connection->client, B_ASCII2EBCDIC, 0);
@@ -212,7 +212,7 @@ int execvp(const char *file, char *const argv[])
 
 
 
-int ap_tpf_spawn_child(ap_pool_t *p, int (*func) (void *, child_info *),
+int ap_tpf_spawn_child(apr_pool_t *p, int (*func) (void *, child_info *),
                        void *data, enum kill_conditions kill_how,
                        int *pipe_in, int *pipe_out, int *pipe_err,
                        int out_fds[], int in_fds[], int err_fds[])
@@ -223,7 +223,7 @@ int ap_tpf_spawn_child(ap_pool_t *p, int (*func) (void *, child_info *),
    int                      fd_flags_out, fd_flags_in, fd_flags_err;
    struct tpf_fork_input    fork_input;
    TPF_FORK_CHILD           *cld = (TPF_FORK_CHILD *) data;
-   ap_array_header_t             *env_arr = ap_table_elts ((array_header *) cld->subprocess_env);
+   apr_array_header_t             *env_arr = ap_table_elts ((array_header *) cld->subprocess_env);
    table_entry              *elts = (table_entry *) env_arr->elts;
 
 
@@ -323,7 +323,7 @@ int ap_tpf_spawn_child(ap_pool_t *p, int (*func) (void *, child_info *),
 
    if (pid) {
 
-       ap_note_subprocess(p, pid, kill_how);
+       apr_note_subprocess(p, pid, kill_how);
 
        if (pipe_out) {
           *pipe_out = out_fds[0];
@@ -396,7 +396,7 @@ int os_check_server(char *server) {
     return 0;
 }
 
-void os_note_additional_cleanups(ap_pool_t *p, int sd) {
+void os_note_additional_cleanups(apr_pool_t *p, int sd) {
     char sockfilename[50];
     /* write the socket to file so that TPF socket device driver will close socket in case
        we happen to abend. */

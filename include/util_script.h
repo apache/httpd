@@ -71,17 +71,17 @@ extern "C" {
 #endif
 #endif
 
-API_EXPORT(char **) ap_create_environment(ap_pool_t *p, ap_table_t *t);
+API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t);
 API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info);
 API_EXPORT(void) ap_add_cgi_vars(request_rec *r);
 API_EXPORT(void) ap_add_common_vars(request_rec *r);
-API_EXPORT(int) ap_scan_script_header_err(request_rec *r, ap_file_t *f, char *buffer);
+API_EXPORT(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f, char *buffer);
 API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *f,
                                                char *buffer);
 API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
-API_EXPORT(void) ap_send_size(ap_ssize_t size, request_rec *r);
+API_EXPORT(void) ap_send_size(apr_ssize_t size, request_rec *r);
 
 #ifdef __cplusplus
 }

@@ -240,7 +240,7 @@ typedef struct {
 struct dav_propdb {
     int version;		/* *minor* version of this db */
 
-    ap_pool_t *p;		/* the pool we should use */
+    apr_pool_t *p;		/* the pool we should use */
     request_rec *r;		/* the request record */
 
     dav_resource *resource;	/* the target resource */
@@ -252,7 +252,7 @@ struct dav_propdb {
     short ns_count;		/* number of entries in table */
     int ns_table_dirty;		/* ns_table was modified */
 
-    ap_array_header_t *ns_xlate;	/* translation of an elem->ns to URI */
+    apr_array_header_t *ns_xlate;	/* translation of an elem->ns to URI */
     int *ns_map;		/* map elem->ns to propdb ns values */
     int incomplete_map;		/* some mappings do not exist */
 
@@ -488,7 +488,7 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 						&propdb->wb_lock);
 
 		/* make a copy to isolate it from changes to wb_lock */
-		value = ap_pstrdup(propdb->p, propdb->wb_lock.buf);
+		value = apr_pstrdup(propdb->p, propdb->wb_lock.buf);
 	    }
         }
 	break;
@@ -515,7 +515,7 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 	if (propdb->subreq == NULL) {
 	    dav_do_prop_subreq(propdb);
 	}
-	if ((lang = ap_table_get(propdb->subreq->headers_out,
+	if ((lang = apr_table_get(propdb->subreq->headers_out,
 				 "Content-Language")) != NULL) {
 	    value = lang;
 	}
@@ -534,12 +534,12 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 
 	if (getvals && *value != '\0') {
 	    /* use D: prefix to refer to the DAV: namespace URI */
-	    s = ap_psprintf(propdb->p, "<D:%s>%s</D:%s>" DEBUG_CR,
+	    s = apr_psprintf(propdb->p, "<D:%s>%s</D:%s>" DEBUG_CR,
 			    name, value, name);
 	}
 	else {
 	    /* use D: prefix to refer to the DAV: namespace URI */
-	    s = ap_psprintf(propdb->p, "<D:%s/>" DEBUG_CR, name);
+	    s = apr_psprintf(propdb->p, "<D:%s/>" DEBUG_CR, name);
 	}
 	ap_text_append(propdb->p, phdr, s);
 
@@ -597,29 +597,29 @@ static void dav_append_prop(dav_propdb *propdb,
 	/* the property is an empty value */
 	if (*name == ':') {
 	    /* "no namespace" case */
-	    s = ap_psprintf(propdb->p, "<%s/>" DEBUG_CR, name+1);
+	    s = apr_psprintf(propdb->p, "<%s/>" DEBUG_CR, name+1);
 	}
 	else {
-	    s = ap_psprintf(propdb->p, "<ns%s/>" DEBUG_CR, name);
+	    s = apr_psprintf(propdb->p, "<ns%s/>" DEBUG_CR, name);
 	}
     }
     else if (*lang != '\0') {
 	if (*name == ':') {
 	    /* "no namespace" case */
-	    s = ap_psprintf(propdb->p, "<%s xml:lang=\"%s\">%s</%s>" DEBUG_CR,
+	    s = apr_psprintf(propdb->p, "<%s xml:lang=\"%s\">%s</%s>" DEBUG_CR,
 			    name+1, lang, value, name+1);
 	}
 	else {
-	    s = ap_psprintf(propdb->p, "<ns%s xml:lang=\"%s\">%s</ns%s>" DEBUG_CR,
+	    s = apr_psprintf(propdb->p, "<ns%s xml:lang=\"%s\">%s</ns%s>" DEBUG_CR,
 			    name, lang, value, name);
 	}
     }
     else if (*name == ':') {
 	/* "no namespace" case */
-	s = ap_psprintf(propdb->p, "<%s>%s</%s>" DEBUG_CR, name+1, value, name+1);
+	s = apr_psprintf(propdb->p, "<%s>%s</%s>" DEBUG_CR, name+1, value, name+1);
     }
     else {
-	s = ap_psprintf(propdb->p, "<ns%s>%s</ns%s>" DEBUG_CR, name, value, name);
+	s = apr_psprintf(propdb->p, "<ns%s>%s</ns%s>" DEBUG_CR, name, value, name);
     }
     ap_text_append(propdb->p, phdr, s);
 }
@@ -662,7 +662,7 @@ static void dav_prep_ns_map(dav_propdb *propdb, int add_ns)
 	}
     }
     else {
-	propdb->ns_map = ap_palloc(propdb->p, propdb->ns_xlate->nelts * sizeof(*propdb->ns_map));
+	propdb->ns_map = apr_palloc(propdb->p, propdb->ns_xlate->nelts * sizeof(*propdb->ns_map));
     }
 
     pmap = propdb->ns_map;
@@ -762,12 +762,12 @@ static int dav_find_dav_id(dav_propdb *propdb)
     return -1;
 }
 
-static void dav_insert_xmlns(ap_pool_t *p, const char *pre_prefix, int ns,
+static void dav_insert_xmlns(apr_pool_t *p, const char *pre_prefix, int ns,
 			     const char *ns_uri, ap_text_header *phdr)
 {
     const char *s;
 
-    s = ap_psprintf(p, " xmlns:%s%d=\"%s\"", pre_prefix, ns, ns_uri);
+    s = apr_psprintf(p, " xmlns:%s%d=\"%s\"", pre_prefix, ns, ns_uri);
     ap_text_append(p, phdr, s);
 }
 
@@ -789,7 +789,7 @@ static void dav_get_propdb_xmlns(dav_propdb *propdb, ap_text_header *phdr)
 
 /* add a namespace decl from one of the namespace tables */
 static void dav_add_marked_xmlns(dav_propdb *propdb, char *marks, int ns,
-				 ap_array_header_t *ns_table,
+				 apr_array_header_t *ns_table,
 				 const char *pre_prefix,
 				 ap_text_header *phdr)
 {
@@ -945,10 +945,10 @@ static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
 dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 			   dav_resource *resource,
 			   int ro,
-			   ap_array_header_t * ns_xlate,
+			   apr_array_header_t * ns_xlate,
 			   dav_propdb **p_propdb)
 {
-    dav_propdb *propdb = ap_pcalloc(r->pool, sizeof(*propdb));
+    dav_propdb *propdb = apr_pcalloc(r->pool, sizeof(*propdb));
     dav_error *err;
 
     *p_propdb = NULL;
@@ -1191,10 +1191,10 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
     /* ### the marks should be in a buffer! */
     /* allocate zeroed-memory for the marks. These marks indicate which
        input namespaces we've generated into the output xmlns buffer */
-    marks_input = ap_pcalloc(propdb->p, propdb->ns_xlate->nelts);
+    marks_input = apr_pcalloc(propdb->p, propdb->ns_xlate->nelts);
 
     /* same for the liveprops */
-    marks_liveprop = ap_pcalloc(propdb->p, dav_get_liveprop_ns_count() + 1);
+    marks_liveprop = apr_pcalloc(propdb->p, dav_get_liveprop_ns_count() + 1);
 
     for (elem = elem->first_child; elem; elem = elem->next) {
 	dav_datum key;
@@ -1213,7 +1213,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
 	}
 
 	if (elem->private == NULL) {
-	    elem->private = ap_pcalloc(propdb->p, sizeof(*priv));
+	    elem->private = apr_pcalloc(propdb->p, sizeof(*priv));
 	}
 	priv = elem->private;
 
@@ -1284,14 +1284,14 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, ap_xml_doc *doc)
 		     * elem has a prefix already (xml...:name) or the elem
 		     * simply has no namespace.
 		     */
-		    s = ap_psprintf(propdb->p, "<%s/>" DEBUG_CR, elem->name);
+		    s = apr_psprintf(propdb->p, "<%s/>" DEBUG_CR, elem->name);
 		}
 		else {
 		    /* ensure that an xmlns is generated for the
 		       input namespace */
 		    dav_add_marked_xmlns(propdb, marks_input, elem->ns,
 					 propdb->ns_xlate, "i", &hdr_ns);
-		    s = ap_psprintf(propdb->p, "<i%d:%s/>" DEBUG_CR,
+		    s = apr_psprintf(propdb->p, "<i%d:%s/>" DEBUG_CR,
 				    elem->ns, elem->name);
 		}
 		ap_text_append(propdb->p, &hdr_bad, s);
@@ -1347,7 +1347,7 @@ void dav_prop_validate(dav_prop_ctx *ctx)
     ap_xml_elem *prop = ctx->prop;
     dav_elem_private *priv;
 
-    priv = ctx->prop->private = ap_pcalloc(propdb->p, sizeof(*priv));
+    priv = ctx->prop->private = apr_pcalloc(propdb->p, sizeof(*priv));
 
     /*
     ** Check to see if this is a live property, and fill the fields
@@ -1437,7 +1437,7 @@ void dav_prop_exec(dav_prop_ctx *ctx)
     dav_rollback_item *rollback;
     dav_elem_private *priv = ctx->prop->private;
 
-    rollback = ap_pcalloc(propdb->p, sizeof(*rollback));
+    rollback = apr_pcalloc(propdb->p, sizeof(*rollback));
     ctx->rollback = rollback;
 
     if (ctx->is_liveprop) {

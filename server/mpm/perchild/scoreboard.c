@@ -86,40 +86,40 @@ static scoreboard *ap_scoreboard_image = NULL;
 #if APR_HAS_SHARED_MEMORY
 #include "apr_shmem.h"
 
-static ap_shmem_t *scoreboard_shm = NULL;
+static apr_shmem_t *scoreboard_shm = NULL;
 
-ap_status_t ap_cleanup_shared_mem(void *d)
+apr_status_t ap_cleanup_shared_mem(void *d)
 {
-    ap_shm_free(scoreboard_shm, ap_scoreboard_image);
+    apr_shm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
-    ap_shm_destroy(scoreboard_shm);
+    apr_shm_destroy(scoreboard_shm);
     return APR_SUCCESS;
 }
 
-static void setup_shared_mem(ap_pool_t *p)
+static void setup_shared_mem(apr_pool_t *p)
 {
     char buf[512];
     const char *fname;
 
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
-    if (ap_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + 40, fname, p) != APR_SUCCESS) {
-        ap_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
+    if (apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + 40, fname, p) != APR_SUCCESS) {
+        apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
                     ap_server_argv0);
         perror(buf);
         exit(APEXIT_INIT);
     }
-    ap_scoreboard_image = ap_shm_malloc(scoreboard_shm, SCOREBOARD_SIZE);
+    ap_scoreboard_image = apr_shm_malloc(scoreboard_shm, SCOREBOARD_SIZE);
     if (ap_scoreboard_image == NULL) {
-        ap_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
+        apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
                     ap_server_argv0);
         perror(buf);
-        ap_shm_destroy(scoreboard_shm);
+        apr_shm_destroy(scoreboard_shm);
         exit(APEXIT_INIT);
     }
-    ap_register_cleanup(p, NULL, ap_cleanup_shared_mem, ap_null_cleanup);
+    apr_register_cleanup(p, NULL, ap_cleanup_shared_mem, apr_null_cleanup);
 }
 
-void reinit_scoreboard(ap_pool_t *p)
+void reinit_scoreboard(apr_pool_t *p)
 {
     if (ap_scoreboard_image == NULL) {
         setup_shared_mem(p);
@@ -177,40 +177,40 @@ const char *ap_get_connection_status(long conn_id, const char *key)
     return NULL;
 }
 
-ap_array_header_t *ap_get_connections(ap_pool_t *p)
+apr_array_header_t *ap_get_connections(apr_pool_t *p)
 {
     int i;
-    ap_array_header_t *connection_list;
+    apr_array_header_t *connection_list;
     long *array_slot;
 
-    connection_list = ap_make_array(p, 0, sizeof(long));
+    connection_list = apr_make_array(p, 0, sizeof(long));
     /* We assume that there is a connection iff it has an entry in the status
      * table. Connections without any status sound problematic to me, so this
      * is probably for the best. - manoj */
     for (i = 0; i < ap_max_daemons_limit*HARD_THREAD_LIMIT; i++) {
 	if (ap_scoreboard_image->table[i][0].key[0] != '\0') {
-            array_slot = ap_push_array(connection_list);
+            array_slot = apr_push_array(connection_list);
             *array_slot = i;
         }
     }
     return connection_list;
 }
 
-ap_array_header_t *ap_get_connection_keys(ap_pool_t *p, long conn_id)
+apr_array_header_t *ap_get_connection_keys(apr_pool_t *p, long conn_id)
 {
     int i = 0;
     status_table_entry *ss;
-    ap_array_header_t *key_list;
+    apr_array_header_t *key_list;
     char **array_slot;
 
-    key_list = ap_make_array(p, 0, KEY_LENGTH * sizeof(char));
+    key_list = apr_make_array(p, 0, KEY_LENGTH * sizeof(char));
     while (i < STATUSES_PER_CONNECTION) {
         ss = &(ap_scoreboard_image->table[conn_id][i]);
         if (ss->key[0] == '\0') {
             break;
         }
-        array_slot = ap_push_array(key_list);
-        *array_slot = ap_pstrdup(p, ss->key);
+        array_slot = apr_push_array(key_list);
+        *array_slot = apr_pstrdup(p, ss->key);
         i++;
     }
     return key_list;
@@ -233,7 +233,7 @@ void ap_update_connection_status(long conn_id, const char *key,
             break;
         }
         if (0 == strcmp(ss->key, key)) {
-            ap_cpystrn(ss->value, value, VALUE_LENGTH);
+            apr_cpystrn(ss->value, value, VALUE_LENGTH);
             return;
         }
 	i++;
@@ -243,19 +243,19 @@ void ap_update_connection_status(long conn_id, const char *key,
         /* No room. Oh well, not much anyone can do about it. */
         return;
     }
-    ap_cpystrn(ss->key, key, KEY_LENGTH);
-    ap_cpystrn(ss->value, value, VALUE_LENGTH);
+    apr_cpystrn(ss->key, key, KEY_LENGTH);
+    apr_cpystrn(ss->value, value, VALUE_LENGTH);
     return;
 }
 
-ap_array_header_t *ap_get_status_table(ap_pool_t *p)
+apr_array_header_t *ap_get_status_table(apr_pool_t *p)
 {
     int i, j;
-    ap_array_header_t *server_status;
+    apr_array_header_t *server_status;
     ap_status_table_row_t *array_slot;
     status_table_entry *ss;
 
-    server_status = ap_make_array(p, 0, sizeof(ap_status_table_row_t));
+    server_status = apr_make_array(p, 0, sizeof(ap_status_table_row_t));
 
     /* Go ahead and return what's in the connection status table even if we
      * aren't maintaining it. We can at least look at what children from
@@ -264,14 +264,14 @@ ap_array_header_t *ap_get_status_table(ap_pool_t *p)
     for (i = 0; i < ap_max_daemons_limit*HARD_THREAD_LIMIT; i++) {
 	if (ap_scoreboard_image->table[i][0].key[0] == '\0')
 	    continue;
-        array_slot = ap_push_array(server_status);
-        array_slot->data = ap_make_table(p, 0);
+        array_slot = apr_push_array(server_status);
+        array_slot->data = apr_make_table(p, 0);
         array_slot->conn_id = i;
         
         for (j = 0; j < STATUSES_PER_CONNECTION; j++) {
 	    ss = &(ap_scoreboard_image->table[i][j]);
             if (ss->key[0] != '\0') {
-                ap_table_add(array_slot->data, ss->key, ss->value);
+                apr_table_add(array_slot->data, ss->key, ss->value);
             }
             else {
                 break;

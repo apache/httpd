@@ -206,7 +206,7 @@
 typedef struct {
     int active;
     char *expiresdefault;
-    ap_table_t *expiresbytype;
+    apr_table_t *expiresbytype;
 } expires_dir_config;
 
 /* from mod_dir, why is this alias used?
@@ -219,13 +219,13 @@ typedef struct {
 
 module MODULE_VAR_EXPORT expires_module;
 
-static void *create_dir_expires_config(ap_pool_t *p, char *dummy)
+static void *create_dir_expires_config(apr_pool_t *p, char *dummy)
 {
     expires_dir_config *new =
-    (expires_dir_config *) ap_pcalloc(p, sizeof(expires_dir_config));
+    (expires_dir_config *) apr_pcalloc(p, sizeof(expires_dir_config));
     new->active = ACTIVE_DONTCARE;
     new->expiresdefault = "";
-    new->expiresbytype = ap_make_table(p, 4);
+    new->expiresbytype = apr_make_table(p, 4);
     return (void *) new;
 }
 
@@ -245,7 +245,7 @@ static const char *set_expiresactive(cmd_parms *cmd, expires_dir_config * dir_co
  * string.  If we return NULL then real_code contains code converted
  * to the cnnnn format.
  */
-static char *check_code(ap_pool_t *p, const char *code, char **real_code)
+static char *check_code(apr_pool_t *p, const char *code, char **real_code)
 {
     char *word;
     char base = 'X';
@@ -274,7 +274,7 @@ static char *check_code(ap_pool_t *p, const char *code, char **real_code)
         base = 'M';
     }
     else {
-        return ap_pstrcat(p, "bad expires code, unrecognised <base> '",
+        return apr_pstrcat(p, "bad expires code, unrecognised <base> '",
                        word, "'", NULL);
     };
 
@@ -294,7 +294,7 @@ static char *check_code(ap_pool_t *p, const char *code, char **real_code)
             num = atoi(word);
         }
         else {
-            return ap_pstrcat(p, "bad expires code, numeric value expected <num> '",
+            return apr_pstrcat(p, "bad expires code, numeric value expected <num> '",
                            word, "'", NULL);
         };
 
@@ -305,7 +305,7 @@ static char *check_code(ap_pool_t *p, const char *code, char **real_code)
             /* do nothing */
         }
         else {
-            return ap_pstrcat(p, "bad expires code, missing <type>", NULL);
+            return apr_pstrcat(p, "bad expires code, missing <type>", NULL);
         };
 
         factor = 0;
@@ -331,7 +331,7 @@ static char *check_code(ap_pool_t *p, const char *code, char **real_code)
             factor = 1;
         }
         else {
-            return ap_pstrcat(p, "bad expires code, unrecognised <type>",
+            return apr_pstrcat(p, "bad expires code, unrecognised <type>",
                            "'", word, "'", NULL);
         };
 
@@ -342,7 +342,7 @@ static char *check_code(ap_pool_t *p, const char *code, char **real_code)
         word = ap_getword_conf(p, &code);
     };
 
-    *real_code = ap_psprintf(p, "%c%d", base, modifier);
+    *real_code = apr_psprintf(p, "%c%d", base, modifier);
 
     return NULL;
 }
@@ -352,10 +352,10 @@ static const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config * dir_co
     char *response, *real_code;
 
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
-        ap_table_setn(dir_config->expiresbytype, mime, real_code);
+        apr_table_setn(dir_config->expiresbytype, mime, real_code);
         return NULL;
     };
-    return ap_pstrcat(cmd->pool,
+    return apr_pstrcat(cmd->pool,
                  "'ExpiresByType ", mime, " ", code, "': ", response, NULL);
 }
 
@@ -367,7 +367,7 @@ static const char *set_expiresdefault(cmd_parms *cmd, expires_dir_config * dir_c
         dir_config->expiresdefault = real_code;
         return NULL;
     };
-    return ap_pstrcat(cmd->pool,
+    return apr_pstrcat(cmd->pool,
                    "'ExpiresDefault ", code, "': ", response, NULL);
 }
 
@@ -382,9 +382,9 @@ static const command_rec expires_cmds[] =
     {NULL}
 };
 
-static void *merge_expires_dir_configs(ap_pool_t *p, void *basev, void *addv)
+static void *merge_expires_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
-    expires_dir_config *new = (expires_dir_config *) ap_pcalloc(p, sizeof(expires_dir_config));
+    expires_dir_config *new = (expires_dir_config *) apr_pcalloc(p, sizeof(expires_dir_config));
     expires_dir_config *base = (expires_dir_config *) basev;
     expires_dir_config *add = (expires_dir_config *) addv;
 
@@ -399,7 +399,7 @@ static void *merge_expires_dir_configs(ap_pool_t *p, void *basev, void *addv)
         new->expiresdefault = add->expiresdefault;
     };
 
-    new->expiresbytype = ap_overlay_tables(p, add->expiresbytype,
+    new->expiresbytype = apr_overlay_tables(p, add->expiresbytype,
                                         base->expiresbytype);
     return new;
 }
@@ -408,9 +408,9 @@ static int add_expires(request_rec *r)
 {
     expires_dir_config *conf;
     char *code;
-    ap_time_t base;
-    ap_time_t additional;
-    ap_time_t expires;
+    apr_time_t base;
+    apr_time_t additional;
+    apr_time_t expires;
     char *timestr;
 
     if (ap_is_HTTP_ERROR(r->status))       /* Don't add Expires headers to errors */
@@ -443,7 +443,7 @@ static int add_expires(request_rec *r)
     if (r->content_type == NULL)
         code = NULL;
     else
-        code = (char *) ap_table_get(conf->expiresbytype, 
+        code = (char *) apr_table_get(conf->expiresbytype, 
 		ap_field_noparam(r->pool, r->content_type));
 
     if (code == NULL) {
@@ -484,13 +484,13 @@ static int add_expires(request_rec *r)
     };
 
     expires = base + additional;
-    ap_table_mergen(r->headers_out, "Cache-Control",
-		    ap_psprintf(r->pool, "max-age=%qd",
+    apr_table_mergen(r->headers_out, "Cache-Control",
+		    apr_psprintf(r->pool, "max-age=%qd",
 				(expires - r->request_time)
 				    / AP_USEC_PER_SEC));
-    timestr = ap_palloc(r->pool, AP_RFC822_DATE_LEN);
-    ap_rfc822_date(timestr, expires);
-    ap_table_setn(r->headers_out, "Expires", timestr);
+    timestr = apr_palloc(r->pool, AP_RFC822_DATE_LEN);
+    apr_rfc822_date(timestr, expires);
+    apr_table_setn(r->headers_out, "Expires", timestr);
     return OK;
 }
 
@@ -506,7 +506,7 @@ module MODULE_VAR_EXPORT expires_module =
     merge_expires_dir_configs,  /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
-    expires_cmds,               /* command ap_table_t */
+    expires_cmds,               /* command apr_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

@@ -65,9 +65,9 @@
 #include "http_core.h"
 #include "util_ebcdic.h"
 
-ap_status_t ap_init_ebcdic(ap_pool_t *pool)
+apr_status_t ap_init_ebcdic(apr_pool_t *pool)
 {
-    ap_status_t rv;
+    apr_status_t rv;
     char buf[80];
 
     rv = ap_xlate_open(&ap_hdrs_to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
@@ -125,11 +125,11 @@ ap_status_t ap_init_ebcdic(ap_pool_t *pool)
 #define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-" /* Text files whose content-type starts with this are passed thru unconverted */
 
 /* Check the Content-Type to decide if conversion is needed */
-ap_xlate_t *ap_checkconv(struct request_rec *r)
+apr_xlate_t *ap_checkconv(struct request_rec *r)
 {
     int convert_to_ascii;
     const char *type;
-    ap_xlate_t *zero = NULL;
+    apr_xlate_t *zero = NULL;
 
     /* To make serving of "raw ASCII text" files easy (they serve faster 
      * since they don't have to be converted from EBCDIC), a new
@@ -149,7 +149,7 @@ ap_xlate_t *ap_checkconv(struct request_rec *r)
 		 strncasecmp(type, "message/", 8) == 0)) {
 	if (strncasecmp(type, ASCIITEXT_MAGIC_TYPE_PREFIX,
 			sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
-	    r->content_type = ap_pstrcat(r->pool, "text/",
+	    r->content_type = apr_pstrcat(r->pool, "text/",
 					 type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1,
 					 NULL);
         else

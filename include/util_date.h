@@ -69,10 +69,10 @@ extern "C" {
 
 #include "apr_time.h"
 
-#define BAD_DATE (ap_time_t)0
+#define BAD_DATE (apr_time_t)0
 
 API_EXPORT(int) ap_checkmask(const char *data, const char *mask);
-API_EXPORT(ap_time_t) ap_parseHTTPdate(const char *date);
+API_EXPORT(apr_time_t) ap_parseHTTPdate(const char *date);
 
 #ifdef __cplusplus
 }

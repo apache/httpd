@@ -41,12 +41,12 @@ API_EXPORT(void) ap_log_error(const char *file, int line, int level,
 
 int main (void)
 {
-    ap_pool_t *p;
+    apr_pool_t *p;
     const char *field;
     char *newstr;
     char instr[512];
 
-    p = ap_init_alloc();
+    p = apr_init_alloc();
 
     while (gets(instr)) {
         printf("  [%s] ==\n", instr);

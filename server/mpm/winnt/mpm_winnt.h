@@ -59,24 +59,24 @@
 #ifndef APACHE_MPM_WINNT_H
 #define APACHE_MPM_WINNT_H
 
-#include "ap_listen.h"
+#include "apr_listen.h"
 
 /* From registry.c: */
 
-ap_status_t ap_registry_create_key(const char *key);
-ap_status_t ap_registry_delete_key(const char *key);
+apr_status_t ap_registry_create_key(const char *key);
+apr_status_t ap_registry_delete_key(const char *key);
 
-ap_status_t ap_registry_store_value(const char *key, const char *name, 
+apr_status_t ap_registry_store_value(const char *key, const char *name, 
                                     const char *value);
-ap_status_t ap_registry_get_value(ap_pool_t *p, const char *key, 
+apr_status_t ap_registry_get_value(apr_pool_t *p, const char *key, 
                                   const char *name, char **ppValue);
-ap_status_t ap_registry_store_array(ap_pool_t *p, const char *key, 
+apr_status_t ap_registry_store_array(apr_pool_t *p, const char *key, 
                                     const char *name, int nelts, 
                                     char const* const* elts);
-ap_status_t ap_registry_get_array(ap_pool_t *p, const char *key, 
+apr_status_t ap_registry_get_array(apr_pool_t *p, const char *key, 
                                   const char *name, 
-                                  ap_array_header_t **parray);
-ap_status_t ap_registry_delete_value(const char *key, const char *name);
+                                  apr_array_header_t **parray);
+apr_status_t ap_registry_delete_value(const char *key, const char *name);
 
 
 /* From service.c: */
@@ -91,20 +91,20 @@ ap_status_t ap_registry_delete_value(const char *key, const char *name);
 extern char *service_name;
 extern char *display_name;
 
-ap_status_t mpm_service_set_name(ap_pool_t *p, char *name);
-ap_status_t mpm_merge_service_args(ap_pool_t *p, ap_array_header_t *args, 
+apr_status_t mpm_service_set_name(apr_pool_t *p, char *name);
+apr_status_t mpm_merge_service_args(apr_pool_t *p, apr_array_header_t *args, 
                                    int fixed_args);
 
-ap_status_t mpm_service_to_start(void);
-ap_status_t mpm_service_started(void);
-ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc, 
+apr_status_t mpm_service_to_start(void);
+apr_status_t mpm_service_started(void);
+apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc, 
                                 char const* const* argv);
-ap_status_t mpm_service_uninstall(void);
+apr_status_t mpm_service_uninstall(void);
 
-ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc, 
+apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc, 
                               char const* const* argv);
 
-void mpm_signal_service(ap_pool_t *ptemp, int signal);
+void mpm_signal_service(apr_pool_t *ptemp, int signal);
 
 void mpm_service_stopping(void);
 
@@ -128,12 +128,12 @@ void signal_parent(int type);
 typedef struct CompContext {
     OVERLAPPED Overlapped;
     SOCKET accept_socket;
-    ap_socket_t *sock;
+    apr_socket_t *sock;
     ap_listen_rec *lr;
     BUFF *conn_io;
     char *recv_buf;
     int  recv_buf_size;
-    ap_pool_t *ptrans;
+    apr_pool_t *ptrans;
     struct sockaddr *sa_server;
     int sa_server_len;
     struct sockaddr *sa_client;

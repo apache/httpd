@@ -135,7 +135,7 @@ typedef struct dav_error {
     struct dav_error *prev;	/* previous error (in stack) */
 
     /* deferred computation of the description */
-    void (*compute_desc)(struct dav_error *err, ap_pool_t *p);
+    void (*compute_desc)(struct dav_error *err, apr_pool_t *p);
     int ctx_i;
     const char *ctx_s;
     void *ctx_p;
@@ -146,7 +146,7 @@ typedef struct dav_error {
 ** Create a new error structure. save_errno will be filled with the current
 ** errno value.
 */
-dav_error *dav_new_error(ap_pool_t *p, int status, int error_id, const char *desc);
+dav_error *dav_new_error(apr_pool_t *p, int status, int error_id, const char *desc);
 
 /*
 ** Push a new error description onto the stack of errors.
@@ -161,7 +161,7 @@ dav_error *dav_new_error(ap_pool_t *p, int status, int error_id, const char *des
 ** <error_id> can specify a new error_id since the topmost description has
 ** changed.
 */
-dav_error *dav_push_error(ap_pool_t *p, int status, int error_id, const char *desc,
+dav_error *dav_push_error(apr_pool_t *p, int status, int error_id, const char *desc,
 			  dav_error *prev);
 
 
@@ -304,31 +304,31 @@ typedef struct dav_locktoken dav_locktoken;
 /* buffer for reuse; can grow to accomodate needed size */
 typedef struct
 {
-    ap_size_t alloc_len;	/* how much has been allocated */
-    ap_size_t cur_len;		/* how much is currently being used */
+    apr_size_t alloc_len;	/* how much has been allocated */
+    apr_size_t cur_len;		/* how much is currently being used */
     char *buf;			/* buffer contents */
 } dav_buffer;
 #define DAV_BUFFER_MINSIZE	256	/* minimum size for buffer */
 #define DAV_BUFFER_PAD		64	/* amount of pad when growing */
 
 /* set the cur_len to the given size and ensure space is available */
-void dav_set_bufsize(ap_pool_t *p, dav_buffer *pbuf, ap_size_t size);
+void dav_set_bufsize(apr_pool_t *p, dav_buffer *pbuf, apr_size_t size);
 
 /* initialize a buffer and copy the specified (null-term'd) string into it */
-void dav_buffer_init(ap_pool_t *p, dav_buffer *pbuf, const char *str);
+void dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf, const char *str);
 
 /* check that the buffer can accomodate <extra_needed> more bytes */
-void dav_check_bufsize(ap_pool_t *p, dav_buffer *pbuf, ap_size_t extra_needed);
+void dav_check_bufsize(apr_pool_t *p, dav_buffer *pbuf, apr_size_t extra_needed);
 
 /* append a string to the end of the buffer, adjust length */
-void dav_buffer_append(ap_pool_t *p, dav_buffer *pbuf, const char *str);
+void dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, const char *str);
 
 /* place a string on the end of the buffer, do NOT adjust length */
-void dav_buffer_place(ap_pool_t *p, dav_buffer *pbuf, const char *str);
+void dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, const char *str);
 
 /* place some memory on the end of a buffer; do NOT adjust length */
-void dav_buffer_place_mem(ap_pool_t *p, dav_buffer *pbuf, const void *mem,
-                          ap_size_t amt, ap_size_t pad);
+void dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf, const void *mem,
+                          apr_size_t amt, apr_size_t pad);
 
 
 /* --------------------------------------------------------------------
@@ -393,7 +393,7 @@ AP_DECLARE_HOOK(const dav_hooks_locks *, get_lock_hooks, (request_rec *r))
 AP_DECLARE_HOOK(const dav_hooks_propdb *, get_propdb_hooks, (request_rec *r))
 AP_DECLARE_HOOK(const dav_hooks_vsn *, get_vsn_hooks, (request_rec *r))
 
-AP_DECLARE_HOOK(void, gather_propsets, (ap_array_header_t *uris))
+AP_DECLARE_HOOK(void, gather_propsets, (apr_array_header_t *uris))
 AP_DECLARE_HOOK(int, find_liveprop, (request_rec *r,
                                      const char *ns_uri, const char *name,
                                      const dav_hooks_liveprop **hooks))
@@ -411,10 +411,10 @@ const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
 
-void dav_register_liveprop_namespace(ap_pool_t *pool, const char *uri);
+void dav_register_liveprop_namespace(apr_pool_t *pool, const char *uri);
 int dav_get_liveprop_ns_index(const char *uri);
 int dav_get_liveprop_ns_count(void);
-void dav_add_all_liveprop_xmlns(ap_pool_t *p, ap_text_header *phdr);
+void dav_add_all_liveprop_xmlns(apr_pool_t *p, ap_text_header *phdr);
 
 
 /* ### deprecated */
@@ -472,7 +472,7 @@ typedef struct dav_if_state_list
 typedef struct dav_if_header
 {
     const char *uri;
-    ap_size_t uri_len;
+    apr_size_t uri_len;
     struct dav_if_state_list *state;
     struct dav_if_header *next;
 
@@ -670,13 +670,13 @@ typedef struct dav_db dav_db;
 typedef struct
 {
     char *dptr;
-    ap_size_t dsize;
+    apr_size_t dsize;
 } dav_datum;
 
 /* hook functions to enable pluggable databases */
 struct dav_hooks_propdb
 {
-    dav_error * (*open)(ap_pool_t *p, const dav_resource *resource, int ro,
+    dav_error * (*open)(apr_pool_t *p, const dav_resource *resource, int ro,
 			dav_db **pdb);
     void (*close)(dav_db *db);
 
@@ -860,7 +860,7 @@ struct dav_hooks_locks
      * in the given pool.
      */
     dav_error * (*parse_locktoken)(
-        ap_pool_t *p,
+        apr_pool_t *p,
         const char *char_token,
         dav_locktoken **locktoken_p
     );
@@ -871,7 +871,7 @@ struct dav_hooks_locks
      * Always returns non-NULL.
      */
     const char * (*format_locktoken)(
-        ap_pool_t *p,
+        apr_pool_t *p,
         const dav_locktoken *locktoken
     );
 
@@ -1064,7 +1064,7 @@ dav_error *dav_open_propdb(
     dav_lockdb *lockdb,
     dav_resource *resource,
     int ro,
-    ap_array_header_t *ns_xlate,
+    apr_array_header_t *ns_xlate,
     dav_propdb **propdb);
 
 void dav_close_propdb(dav_propdb *db);
@@ -1169,7 +1169,7 @@ typedef struct dav_walker_ctx
 #define DAV_CALLTYPE_LOCKNULL	3	/* called for a locknull resource */
 #define DAV_CALLTYPE_POSTFIX	4	/* postfix call for a collection */
 
-    ap_pool_t *pool;
+    apr_pool_t *pool;
 
     request_rec *r;			/* original request */
     dav_buffer uri;			/* current URI */
@@ -1330,7 +1330,7 @@ struct dav_hooks_repository
     ** on each call, until the EOF condition is met.
     */
     dav_error * (*read_stream)(dav_stream *stream,
-			       void *buf, ap_size_t *bufsize);
+			       void *buf, apr_size_t *bufsize);
 
     /*
     ** Write data to the stream.
@@ -1338,7 +1338,7 @@ struct dav_hooks_repository
     ** All of the bytes must be written, or an error should be returned.
     */
     dav_error * (*write_stream)(dav_stream *stream,
-				const void *buf, ap_size_t bufsize);
+				const void *buf, apr_size_t bufsize);
 
     /*
     ** Seek to an absolute position in the stream. This is used to support
@@ -1387,7 +1387,7 @@ struct dav_hooks_repository
      * is a collection.
      */
     dav_error * (*create_collection)(
-        ap_pool_t *p, dav_resource *resource
+        apr_pool_t *p, dav_resource *resource
     );
 
     /* Copy one resource to another. The destination must not exist.
@@ -1551,10 +1551,10 @@ struct dav_hooks_vsn
 */
 
 /* allow providers access to the per-directory parameters */
-ap_table_t *dav_get_dir_params(const request_rec *r);
+apr_table_t *dav_get_dir_params(const request_rec *r);
 
 /* fetch the "LimitXMLRequestBody" in force for this resource */
-ap_size_t dav_get_limit_xml_body(const request_rec *r);
+apr_size_t dav_get_limit_xml_body(const request_rec *r);
 
 typedef struct {
     int propid;				/* live property ID */

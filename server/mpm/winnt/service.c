@@ -512,7 +512,7 @@ long __stdcall service_stderr_thread(LPVOID hPipe)
  * primary server thread... so now we _really_ need a placeholder!
  * The winnt_rewrite_args has created and shared mpm_new_argv with us.
  */
-extern ap_array_header_t *mpm_new_argv;
+extern apr_array_header_t *mpm_new_argv;
 
 static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 {
@@ -592,7 +592,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     if (argc > 1) 
     {
         char **cmb_data;
-        cmb_data = ap_palloc(mpm_new_argv->cont, 
+        cmb_data = apr_palloc(mpm_new_argv->cont, 
                              (mpm_new_argv->nelts + argc - 1) * sizeof(char *));
 
         /* mpm_new_argv remains first (of lower significance) */
@@ -624,7 +624,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 
 DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 {
-    ap_status_t rv = APR_SUCCESS;
+    apr_status_t rv = APR_SUCCESS;
 
     SERVICE_TABLE_ENTRY dispatchTable[] =
     {
@@ -645,32 +645,32 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 }
 
 
-ap_status_t mpm_service_set_name(ap_pool_t *p, char *name)
+apr_status_t mpm_service_set_name(apr_pool_t *p, char *name)
 {
     char *key_name;
     
-    service_name = ap_palloc(p, strlen(name) + 1);
-    ap_collapse_spaces(service_name, name);
-    key_name = ap_psprintf(p, SERVICECONFIG, service_name);
+    service_name = apr_palloc(p, strlen(name) + 1);
+    apr_collapse_spaces(service_name, name);
+    key_name = apr_psprintf(p, SERVICECONFIG, service_name);
     if (ap_registry_get_value(p, key_name, "DisplayName", &display_name) == APR_SUCCESS)
         return APR_SUCCESS;
 
     /* Take the given literal name if there is no service entry */
-    display_name = ap_pstrdup(p, name);
+    display_name = apr_pstrdup(p, name);
     return APR_ENOFILE;
 }
 
 
-ap_status_t mpm_merge_service_args(ap_pool_t *p, 
-                                   ap_array_header_t *args, 
+apr_status_t mpm_merge_service_args(apr_pool_t *p, 
+                                   apr_array_header_t *args, 
                                    int fixed_args)
 {
-    ap_array_header_t *svc_args = NULL;
+    apr_array_header_t *svc_args = NULL;
     char conf_key[MAX_PATH];
     char **cmb_data;
-    ap_status_t rv;
+    apr_status_t rv;
 
-    ap_snprintf(conf_key, sizeof(conf_key), SERVICEPARAMS, service_name);
+    apr_snprintf(conf_key, sizeof(conf_key), SERVICEPARAMS, service_name);
     rv = ap_registry_get_array(p, conf_key, "ConfigArgs", &svc_args);
     if (rv != APR_SUCCESS) {
         // TODO: More message?
@@ -686,7 +686,7 @@ ap_status_t mpm_merge_service_args(ap_pool_t *p,
      * time to _prepend_ the default arguments for the server from 
      * the service's default arguments (all others override them)...
      */
-    cmb_data = ap_palloc(p, (args->nelts + svc_args->nelts) * sizeof(char *));
+    cmb_data = apr_palloc(p, (args->nelts + svc_args->nelts) * sizeof(char *));
 
     /* First three args (argv[0], -f, path) remain first */
     memcpy (cmb_data, args->elts, args->elt_size * fixed_args);
@@ -733,7 +733,7 @@ void service_stopped(void)
 }
 
 
-ap_status_t mpm_service_to_start(void)
+apr_status_t mpm_service_to_start(void)
 {
     HANDLE waitfor[2];
 
@@ -782,7 +782,7 @@ ap_status_t mpm_service_to_start(void)
 }
 
 
-ap_status_t mpm_service_started(void)
+apr_status_t mpm_service_started(void)
 {
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
@@ -803,19 +803,19 @@ void mpm_service_stopping(void)
 }
 
 
-ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc, 
+apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc, 
                                 char const* const* argv)
 {
     char key_name[MAX_PATH];
     char exe_path[MAX_PATH];
     char *launch_cmd;
-    ap_status_t(rv);
+    apr_status_t(rv);
     
     printf("Installing the %s service\n", display_name);
 
     if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
     {
-        ap_status_t rv = GetLastError();
+        apr_status_t rv = GetLastError();
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      "GetModuleFileName failed");
         return rv;
@@ -836,7 +836,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
             return (rv);
         }
 
-        launch_cmd = ap_psprintf(ptemp, "\"%s\" -k runservice", exe_path);
+        launch_cmd = apr_psprintf(ptemp, "\"%s\" -k runservice", exe_path);
 
         /* RPCSS is the Remote Procedure Call (RPC) Locator required for DCOM 
          * communication pipes.  I am far from convinced we should add this to
@@ -872,7 +872,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
     {
         /* Store the launch command in the registry */
-        launch_cmd = ap_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
+        launch_cmd = apr_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
                                  exe_path, service_name);
         rv = ap_registry_store_value(SERVICECONFIG9X, service_name, launch_cmd);
         if (rv != APR_SUCCESS) {
@@ -882,7 +882,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
             return (rv);
         }
 
-        ap_snprintf(key_name, sizeof(key_name), SERVICECONFIG, service_name);
+        apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, service_name);
         rv = ap_registry_store_value(key_name, "DisplayName", display_name);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
@@ -894,7 +894,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
 
     /* For both WinNT & Win9x store the service ConfigArgs in the registry...
      */
-    ap_snprintf(key_name, sizeof(key_name), SERVICEPARAMS, service_name);
+    apr_snprintf(key_name, sizeof(key_name), SERVICEPARAMS, service_name);
     rv = ap_registry_store_array(ptemp, key_name, "ConfigArgs", argc, argv);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
@@ -906,10 +906,10 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
 }
 
 
-ap_status_t mpm_service_uninstall(void)
+apr_status_t mpm_service_uninstall(void)
 {
     char key_name[MAX_PATH];
-    ap_status_t rv;
+    apr_status_t rv;
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
@@ -972,7 +972,7 @@ ap_status_t mpm_service_uninstall(void)
         }
         
         /* we blast Services/us, not just the Services/us/Parameters branch */
-        ap_snprintf(key_name, sizeof(key_name), SERVICECONFIG, service_name);
+        apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, service_name);
         if (ap_registry_delete_key(key_name)) 
         {
             rv = GetLastError();
@@ -1009,10 +1009,10 @@ static int signal_service_transition(SC_HANDLE schService, DWORD signal, DWORD p
 }
 
 
-ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc, 
+apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc, 
                               char const* const* argv)
 {
-    ap_status_t rv;
+    apr_status_t rv;
     
     printf("Starting the %s service\n", display_name);
 
@@ -1052,7 +1052,7 @@ ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc,
         }
         
         argc += 1;
-        start_argv = ap_palloc(ptemp, argc * sizeof(char**));
+        start_argv = apr_palloc(ptemp, argc * sizeof(char**));
         start_argv[0] = service_name;
         if (argc > 1)
             memcpy(start_argv + 1, argv, (argc - 1) * sizeof(char**));
@@ -1096,16 +1096,16 @@ ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc,
         
         if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
         {
-            ap_status_t rv = GetLastError();
+            apr_status_t rv = GetLastError();
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "GetModuleFileName failed");
             return rv;
         }
         
-        pCommand = ap_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
+        pCommand = apr_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
                                exe_path, service_name);  
         for (i = 0; i < argc; ++i) {
-            pCommand = ap_pstrcat(ptemp, pCommand, " \"", argv[i], "\"", NULL);
+            pCommand = apr_pstrcat(ptemp, pCommand, " \"", argv[i], "\"", NULL);
         }
         
         memset(&si, 0, sizeof(si));
@@ -1149,7 +1149,7 @@ ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc,
 
 /* signal is zero to stop, non-zero for restart */
 
-void mpm_signal_service(ap_pool_t *ptemp, int signal)
+void mpm_signal_service(apr_pool_t *ptemp, int signal)
 {
     int success = FALSE;
     
@@ -1239,7 +1239,7 @@ void mpm_signal_service(ap_pool_t *ptemp, int signal)
         printf("The %s service is %s.\n", display_name, 
                signal ? "restarting" : "stopping");
 
-        ap_snprintf(prefix, sizeof(prefix), "ap%ld", (long)service_pid);
+        apr_snprintf(prefix, sizeof(prefix), "ap%ld", (long)service_pid);
         setup_signal_names(prefix);
 
         if (!signal) 

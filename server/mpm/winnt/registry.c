@@ -97,7 +97,7 @@
  */
 #define return_error(rv) return (SetLastError(rv), rv);
 
-ap_status_t ap_registry_create_key(const char *key)
+apr_status_t ap_registry_create_key(const char *key)
 {
     HKEY hKey = HKEY_LOCAL_MACHINE;
     HKEY hKeyNext;
@@ -107,7 +107,7 @@ ap_status_t ap_registry_create_key(const char *key)
     DWORD result;
     int rv;
 
-    ap_cpystrn(keystr, key, sizeof(keystr) - 1);
+    apr_cpystrn(keystr, key, sizeof(keystr) - 1);
     	
     /* Walk the tree, creating at each stage if necessary */
     while (parsekey) {
@@ -141,15 +141,15 @@ ap_status_t ap_registry_create_key(const char *key)
     return_error(rv);
 }
 
-ap_status_t ap_registry_delete_key(const char *key)
+apr_status_t ap_registry_delete_key(const char *key)
 {
-    ap_status_t rv;
+    apr_status_t rv;
     HKEY hKey;
     int nSize = 0;
     char tempkey[MAX_PATH + 1];
     char *parsekey;
 
-    ap_cpystrn(tempkey, key, sizeof(parsekey) - 1);
+    apr_cpystrn(tempkey, key, sizeof(parsekey) - 1);
     parsekey = strrchr(tempkey, '\\');
     
     if (parsekey) {
@@ -184,9 +184,9 @@ ap_status_t ap_registry_delete_key(const char *key)
  * The return value is APR_SUCCESS, APR_ENOPATH, APR_NOTFOUND, or the OS error
  */
 
-ap_status_t ap_registry_get_value(ap_pool_t *p, const char *key, const char *name, char **ppValue)
+apr_status_t ap_registry_get_value(apr_pool_t *p, const char *key, const char *name, char **ppValue)
 {
-    ap_status_t rv;
+    apr_status_t rv;
     HKEY hKey;
     int nSize = 0;
 
@@ -216,7 +216,7 @@ ap_status_t ap_registry_get_value(ap_pool_t *p, const char *key, const char *nam
     if (rv != ERROR_SUCCESS)
 	return_error(rv);
 
-    *ppValue = ap_palloc(p, nSize);
+    *ppValue = apr_palloc(p, nSize);
     rv = RegQueryValueEx(hKey, 
 			 name,		/* key name */
 			 NULL,		/* reserved */
@@ -232,12 +232,12 @@ ap_status_t ap_registry_get_value(ap_pool_t *p, const char *key, const char *nam
     return_error(rv);
 }
 
-ap_status_t ap_registry_get_array(ap_pool_t *p, const char *key, const char *name, ap_array_header_t **parray)
+apr_status_t ap_registry_get_array(apr_pool_t *p, const char *key, const char *name, apr_array_header_t **parray)
 {
     char *pValue;
     char *tmp;
     char **newelem;
-    ap_status_t rv;
+    apr_status_t rv;
     HKEY hKey;
     int nSize = 0;
 
@@ -272,7 +272,7 @@ ap_status_t ap_registry_get_array(ap_pool_t *p, const char *key, const char *nam
     }
     else 
     {
-        pValue = ap_palloc(p, nSize);
+        pValue = apr_palloc(p, nSize);
         rv = RegQueryValueEx(hKey, 
 			     name,		/* key name */
 			     NULL,		/* reserved */
@@ -289,14 +289,14 @@ ap_status_t ap_registry_get_array(ap_pool_t *p, const char *key, const char *nam
             ++tmp;
         }
     
-        *parray = ap_make_array(p, nSize, sizeof(char *));
+        *parray = apr_make_array(p, nSize, sizeof(char *));
         tmp = pValue;
-        newelem = (char **) ap_push_array(*parray);
+        newelem = (char **) apr_push_array(*parray);
         *newelem = tmp;
         while (tmp[0] || tmp[1])
         {
             if (!tmp[0]) {
-                newelem = (char **) ap_push_array(*parray);
+                newelem = (char **) apr_push_array(*parray);
                 *newelem = tmp + 1;
             }
             ++tmp;
@@ -323,7 +323,7 @@ ap_status_t ap_registry_get_array(ap_pool_t *p, const char *key, const char *nam
  * logged via aplog_error().
  */
 
-ap_status_t ap_registry_store_value(const char *key, const char *name, const char *value)
+apr_status_t ap_registry_store_value(const char *key, const char *name, const char *value)
 {
     long rv;
     HKEY hKey;
@@ -375,7 +375,7 @@ ap_status_t ap_registry_store_value(const char *key, const char *name, const cha
     return_error(rv);
 }
 
-ap_status_t ap_registry_store_array(ap_pool_t *p, const char *key, const char *name, int nelts, char const* const* elts)
+apr_status_t ap_registry_store_array(apr_pool_t *p, const char *key, const char *name, int nelts, char const* const* elts)
 {
     int  bufsize, i;
     char *buf, *tmp;
@@ -416,7 +416,7 @@ ap_status_t ap_registry_store_array(ap_pool_t *p, const char *key, const char *n
     if (!nelts) 
         ++bufsize;
 
-    buf = ap_palloc(p, bufsize);
+    buf = apr_palloc(p, bufsize);
     tmp = buf;
     for (i = 0; i < nelts; ++i)
     {
@@ -450,9 +450,9 @@ ap_status_t ap_registry_store_array(ap_pool_t *p, const char *key, const char *n
 
 /* A key or value that does not exist is _not_ an error while deleting. */
 
-ap_status_t ap_registry_delete_value(const char *key, const char *name)
+apr_status_t ap_registry_delete_value(const char *key, const char *name)
 {
-    ap_status_t rv;
+    apr_status_t rv;
     HKEY hKey;
     
     rv = RegOpenKeyEx(HKEY_LOCAL_MACHINE,
@@ -483,9 +483,9 @@ ap_status_t ap_registry_delete_value(const char *key, const char *name)
  * dir will contain an empty string), or -1 if there was
  * an error getting the key.
  */
-ap_status_t ap_registry_get_server_root(ap_pool_t *p, char **buf)
+apr_status_t ap_registry_get_server_root(apr_pool_t *p, char **buf)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 
     rv = ap_registry_get_value(p, REGKEY, "ServerRoot", buf);
     if (rv) 
@@ -501,7 +501,7 @@ ap_status_t ap_registry_get_server_root(ap_pool_t *p, char **buf)
  * logged via aplog_error().
  */
 
-ap_status_t ap_registry_set_server_root(char *dir)
+apr_status_t ap_registry_set_server_root(char *dir)
 {
     return ap_registry_store_value(REGKEY, "ServerRoot", dir);
 }

@@ -352,7 +352,7 @@ int main(int argc, char *argv[])
 	{
 	case -1:	/* Error */
 	    log_err("failed to setup bs2000 environment for user %s: %s\n",
-		    target_uname, ap_strerror(errno, buf, sizeof(buf)));
+		    target_uname, apr_strerror(errno, buf, sizeof(buf)));
 	    exit(150);
 	case 0:	/* Child */
 	    break;
@@ -560,6 +560,6 @@ int main(int argc, char *argv[])
      * Oh well, log the failure and error out.
      */
     log_err("(%d)%s: exec failed (%s)\n", errno, 
-            ap_strerror(errno, buf, sizeof(buf)), cmd);
+            apr_strerror(errno, buf, sizeof(buf)), cmd);
     exit(255);
 }

@@ -92,10 +92,10 @@ extern "C" {
  */
 
 /* forward declare the filter type */
-typedef struct ap_filter_t ap_filter_t;
+typedef struct apr_filter_t apr_filter_t;
 
 /*
- * ap_filter_func:
+ * apr_filter_func:
  *
  * This function type is used for filter callbacks. It will be passed a
  * pointer to "this" filter, and a "bucket" containing the content to be
@@ -114,7 +114,7 @@ typedef struct ap_filter_t ap_filter_t;
  * next/prev to insert/remove/replace elements in the bucket list, but
  * the types and values of the individual buckets should not be altered.
  */
-typedef ap_status_t (*ap_filter_func)();
+typedef apr_status_t (*apr_filter_func)();
 
 /*
  * ap_filter_type:
@@ -146,7 +146,7 @@ typedef enum {
 } ap_filter_type;
 
 /*
- * ap_filter_t:
+ * apr_filter_t:
  *
  * This is the request-time context structure for an installed filter (in
  * the output filter chain). It provides the callback to use for filtering,
@@ -159,13 +159,13 @@ typedef enum {
  * the state directly with the request. A callback should not change any of
  * the other fields.
  */
-struct ap_filter_t {
-    ap_filter_func filter_func;
+struct apr_filter_t {
+    apr_filter_func filter_func;
 
     void *ctx;
 
     ap_filter_type ftype;
-    ap_filter_t *next;
+    apr_filter_t *next;
 };
 
 /*
@@ -178,7 +178,7 @@ struct ap_filter_t {
  * The filter's callback and type should be passed.
  */
 API_EXPORT(void) ap_register_filter(const char *name,
-                                    ap_filter_func filter_func,
+                                    apr_filter_func filter_func,
                                     ap_filter_type ftype);
 
 /*
@@ -198,9 +198,9 @@ API_EXPORT(void) ap_add_filter(const char *name, void *ctx, request_rec *r);
 
 /*
  * Things to do later:
- * Add parameters to ap_filter_func type.  Those parameters will be something
+ * Add parameters to apr_filter_func type.  Those parameters will be something
  *     like:
- *         (request_rec *r, ap_filter_t *filter, ap_data_list *the_data)
+ *         (request_rec *r, apr_filter_t *filter, ap_data_list *the_data)
  *      obviously, the request_rec is the current request, and the filter
  *      is the current filter stack.  The data_list is a bucket list or
  *      bucket_brigade, but I am trying to keep this patch neutral.  (If this

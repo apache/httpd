@@ -106,10 +106,10 @@
 
 module MODULE_VAR_EXPORT cgid_module; 
 
-static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server); 
+static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
 static int once_through = 0; 
 
-static ap_pool_t *pcgi; 
+static apr_pool_t *pcgi; 
 
 /* KLUDGE --- for back-combatibility, we don't have to check Execcgid 
  * in ScriptAliased directories, which means we need to know if this 
@@ -119,7 +119,7 @@ static ap_pool_t *pcgi;
 
 static int is_scriptaliased(request_rec *r) 
 { 
-    const char *t = ap_table_get(r->notes, "alias-forced-type"); 
+    const char *t = apr_table_get(r->notes, "alias-forced-type"); 
     return t && (!strcasecmp(t, "cgi-script")); 
 } 
 
@@ -165,7 +165,7 @@ typedef struct {
  * are handled in create_argv.
  *
  */
-static char **create_argv(ap_pool_t *p, char *path, char *user, char *group,
+static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
                           char *av0, const char *args)
 {
     int x, numwords;
@@ -184,7 +184,7 @@ static char **create_argv(ap_pool_t *p, char *path, char *user, char *group,
     if (numwords > APACHE_ARG_MAX - 5) {
         numwords = APACHE_ARG_MAX - 5;  /* Truncate args to prevent overrun */
     }
-    av = (char **) ap_palloc(p, (numwords + 5) * sizeof(char *));
+    av = (char **) apr_palloc(p, (numwords + 5) * sizeof(char *));
 
     if (path) {
         av[idx++] = path;
@@ -215,7 +215,7 @@ static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
      * put the error messages from the log_* functions. So, we use stderr,
      * since that is better than allowing errors to go unnoticed. 
      */
-    ap_put_os_file(&r->server->error_log, &errfileno, r->pool);
+    apr_put_os_file(&r->server->error_log, &errfileno, r->pool);
     /* TODO: reimplement suexec */
 #if 0
     if (ap_suexec_enabled
@@ -229,7 +229,7 @@ static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 
         if (!strncmp("/~", r->uri, 2)) {
             gid_t user_gid;
-            char *username = ap_pstrdup(r->pool, r->uri + 2);
+            char *username = apr_pstrdup(r->pool, r->uri + 2);
             char *pos = strchr(username, '/');
 
             if (pos) {
@@ -241,15 +241,15 @@ static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
                              "getpwnam: invalid username %s", username);
                 return (pid);
             }
-            execuser = ap_pstrcat(r->pool, "~", pw->pw_name, NULL);
+            execuser = apr_pstrcat(r->pool, "~", pw->pw_name, NULL);
             user_gid = pw->pw_gid;
 
             if ((gr = getgrgid(user_gid)) == NULL) {
-                if ((grpname = ap_palloc(r->pool, 16)) == NULL) {
+                if ((grpname = apr_palloc(r->pool, 16)) == NULL) {
                     return (pid);
                 }
                 else {
-                    ap_snprintf(grpname, 16, "%ld", (long) user_gid);
+                    apr_snprintf(grpname, 16, "%ld", (long) user_gid);
                 }
             }
             else {
@@ -263,7 +263,7 @@ static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
                              (long) r->server->server_uid);
                 return (pid);
             }
-            execuser = ap_pstrdup(r->pool, pw->pw_name);
+            execuser = apr_pstrdup(r->pool, pw->pw_name);
 
             if ((gr = getgrgid(r->server->server_gid)) == NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
@@ -321,12 +321,12 @@ static void cgid_maint(int reason, void *data, ap_wait_t status)
         case APR_OC_REASON_LOST:
             /* stop gap to make sure everything else works.  In the end,
              * we'll just restart the cgid server. */
-            ap_destroy_pool(pcgi);
+            apr_destroy_pool(pcgi);
             kill(getppid(), SIGWINCH);
             break;
         case APR_OC_REASON_RESTART:
         case APR_OC_REASON_UNREGISTER:
-            ap_destroy_pool(pcgi);
+            apr_destroy_pool(pcgi);
             kill(*sd, SIGHUP);
             break;
     }
@@ -341,11 +341,11 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
     core_dir_config *temp_core; 
     void **dconf; 
 
-    r->server = ap_pcalloc(r->pool, sizeof(server_rec)); 
+    r->server = apr_pcalloc(r->pool, sizeof(server_rec)); 
 
     read(fd, &j, sizeof(int)); 
     read(fd, &len, sizeof(int)); 
-    data = ap_pcalloc(r->pool, len + 1); /* get a cleared byte for final '\0' */
+    data = apr_pcalloc(r->pool, len + 1); /* get a cleared byte for final '\0' */
     i = read(fd, data, len); 
 
     r->filename = ap_getword(r->pool, (const char **)&data, '\n'); 
@@ -353,7 +353,7 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
 
     r->uri = ap_getword(r->pool, (const char **)&data, '\n'); 
     
-    environ = ap_pcalloc(r->pool, (j + 2) *sizeof(char *)); 
+    environ = apr_pcalloc(r->pool, (j + 2) *sizeof(char *)); 
     i = 0; 
     for (i = 0; i < j; i++) { 
         environ[i] = ap_getword(r->pool, (const char **)&data, '\n'); 
@@ -416,7 +416,7 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env)
     int i = 0; 
     char *data; 
 
-    data = ap_pstrcat(r->pool, r->filename, "\n", argv0, "\n", r->uri, "\n", 
+    data = apr_pstrcat(r->pool, r->filename, "\n", argv0, "\n", r->uri, "\n", 
                      NULL); 
 
     for (i =0; env[i]; i++) { 
@@ -429,9 +429,9 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env)
         }     
 
     for (i = 0; env[i]; i++) { 
-        data = ap_pstrcat(r->pool, data, env[i], "\n", NULL); 
+        data = apr_pstrcat(r->pool, data, env[i], "\n", NULL); 
     } 
-    data = ap_pstrcat(r->pool, data, r->args, NULL); 
+    data = apr_pstrcat(r->pool, data, r->args, NULL); 
     len = strlen(data); 
     if (write(fd, &len, sizeof(int)) < 0) { 
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r, 
@@ -497,11 +497,11 @@ static int cgid_server_child(int sd)
     char *argv0; 
     char *filename; 
     char **env; 
-    ap_pool_t *p; 
+    apr_pool_t *p; 
     request_rec *r; 
 
-    ap_create_pool(&p, pcgi); 
-    r = ap_pcalloc(p, sizeof(request_rec)); 
+    apr_create_pool(&p, pcgi); 
+    r = apr_pcalloc(p, sizeof(request_rec)); 
     r->pool = p; 
     dup2(sd, STDIN_FILENO); 
     dup2(sd, STDOUT_FILENO); 
@@ -521,7 +521,7 @@ static int cgid_server(void *data)
     cgid_server_conf *sconf = (cgid_server_conf *)ap_get_module_config( 
                        main_server->module_config, &cgid_module); 
 
-    ap_signal(SIGCHLD, SIG_IGN); 
+    apr_signal(SIGCHLD, SIG_IGN); 
     if (unlink(sconf->sockname) < 0 &&
         errno != ENOENT) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
@@ -588,7 +588,7 @@ static int cgid_server(void *data)
                 dup2(open(sconf->logname, O_WRONLY), STDERR_FILENO);
             }
             else {
-                ap_get_os_file(&errfile, main_server->error_log);
+                apr_get_os_file(&errfile, main_server->error_log);
                 dup2(errfile, STDERR_FILENO);
             }
             cgid_server_child(sd2); 
@@ -601,13 +601,13 @@ static int cgid_server(void *data)
     return -1; 
 } 
 
-static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server) 
+static void cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server) 
 { 
     pid_t pid; 
-    ap_proc_t *procnew;
+    apr_proc_t *procnew;
 
     if (once_through > 0) { 
-        ap_create_pool(&pcgi, p); 
+        apr_create_pool(&pcgi, p); 
 
         if ((pid = fork()) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
@@ -617,21 +617,21 @@ static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_re
             cgid_server(main_server);
             exit(-1);
         } 
-        procnew = ap_pcalloc(p, sizeof(*procnew));        
+        procnew = apr_pcalloc(p, sizeof(*procnew));        
         procnew->pid = pid;
         procnew->err = procnew->in = procnew->out = NULL;
-        ap_note_subprocess(p, procnew, kill_after_timeout);
+        apr_note_subprocess(p, procnew, kill_after_timeout);
 #if APR_HAS_OTHER_CHILD
-        ap_register_other_child(procnew, cgid_maint, NULL, NULL, p);
+        apr_register_other_child(procnew, cgid_maint, NULL, NULL, p);
 #endif
     } 
     else once_through++; 
 } 
 
-static void *create_cgid_config(ap_pool_t *p, server_rec *s) 
+static void *create_cgid_config(apr_pool_t *p, server_rec *s) 
 { 
     cgid_server_conf *c = 
-    (cgid_server_conf *) ap_pcalloc(p, sizeof(cgid_server_conf)); 
+    (cgid_server_conf *) apr_pcalloc(p, sizeof(cgid_server_conf)); 
 
     c->logname = NULL; 
     c->logbytes = DEFAULT_LOGBYTES; 
@@ -641,7 +641,7 @@ static void *create_cgid_config(ap_pool_t *p, server_rec *s)
     return c; 
 } 
 
-static void *merge_cgid_config(ap_pool_t *p, void *basev, void *overridesv) 
+static void *merge_cgid_config(apr_pool_t *p, void *basev, void *overridesv) 
 { 
     cgid_server_conf *base = (cgid_server_conf *) basev, *overrides = (cgid_server_conf *) overridesv; 
 
@@ -705,7 +705,7 @@ static const command_rec cgid_cmds[] =
 static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret, 
                            int show_errno, char *error) 
 { 
-    ap_file_t *f = NULL; 
+    apr_file_t *f = NULL; 
     struct stat finfo; 
     char time_str[AP_CTIME_LEN];
 
@@ -715,31 +715,31 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
     if (!conf->logname || 
         ((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0) 
          && (finfo.st_size > conf->logbytes)) || 
-         (ap_open(&f, ap_server_root_relative(r->pool, conf->logname),
+         (apr_open(&f, ap_server_root_relative(r->pool, conf->logname),
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         return ret; 
     } 
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */ 
-    ap_ctime(time_str, ap_now());
-    ap_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
+    apr_ctime(time_str, apr_now());
+    apr_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
             r->args ? "?" : "", r->args ? r->args : "", r->protocol); 
     /* "%% 500 /usr/local/apache/cgid-bin */ 
-    ap_fprintf(f, "%%%% %d %s\n", ret, r->filename); 
+    apr_fprintf(f, "%%%% %d %s\n", ret, r->filename); 
 
-    ap_fprintf(f, "%%error\n%s\n", error); 
+    apr_fprintf(f, "%%error\n%s\n", error); 
 
-    ap_close(f); 
+    apr_close(f); 
     return ret; 
 } 
 
 static int log_script(request_rec *r, cgid_server_conf * conf, int ret, 
                   char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err) 
 { 
-    ap_array_header_t *hdrs_arr = ap_table_elts(r->headers_in); 
-    ap_table_entry_t *hdrs = (ap_table_entry_t *) hdrs_arr->elts; 
+    apr_array_header_t *hdrs_arr = ap_table_elts(r->headers_in); 
+    apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts; 
     char argsbuffer[HUGE_STRING_LEN]; 
-    ap_file_t *f = NULL; 
+    apr_file_t *f = NULL; 
     int i; 
     struct stat finfo; 
     char time_str[AP_CTIME_LEN];
@@ -747,7 +747,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     if (!conf->logname || 
         ((stat(ap_server_root_relative(r->pool, conf->logname), &finfo) == 0) 
          && (finfo.st_size > conf->logbytes)) || 
-         (ap_open(&f, ap_server_root_relative(r->pool, conf->logname), 
+         (apr_open(&f, ap_server_root_relative(r->pool, conf->logname), 
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         /* Soak up script output */ 
         while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) 
@@ -760,51 +760,51 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     } 
 
     /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */ 
-    ap_ctime(time_str, ap_now());
-    ap_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
+    apr_ctime(time_str, apr_now());
+    apr_fprintf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
             r->args ? "?" : "", r->args ? r->args : "", r->protocol); 
     /* "%% 500 /usr/local/apache/cgid-bin" */ 
-    ap_fprintf(f, "%%%% %d %s\n", ret, r->filename); 
+    apr_fprintf(f, "%%%% %d %s\n", ret, r->filename); 
 
-    ap_puts("%request\n", f); 
+    apr_puts("%request\n", f); 
     for (i = 0; i < hdrs_arr->nelts; ++i) { 
         if (!hdrs[i].key) 
             continue; 
-        ap_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
+        apr_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
     } 
     if ((r->method_number == M_POST || r->method_number == M_PUT) 
         && *dbuf) { 
-        ap_fprintf(f, "\n%s\n", dbuf); 
+        apr_fprintf(f, "\n%s\n", dbuf); 
     } 
 
-    ap_puts("%response\n", f); 
+    apr_puts("%response\n", f); 
     hdrs_arr = ap_table_elts(r->err_headers_out); 
-    hdrs = (ap_table_entry_t *) hdrs_arr->elts; 
+    hdrs = (apr_table_entry_t *) hdrs_arr->elts; 
 
     for (i = 0; i < hdrs_arr->nelts; ++i) { 
         if (!hdrs[i].key) 
             continue; 
-        ap_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
+        apr_fprintf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
     } 
 
     if (sbuf && *sbuf) 
-        ap_fprintf(f, "%s\n", sbuf); 
+        apr_fprintf(f, "%s\n", sbuf); 
 
     if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) { 
-        ap_puts("%stdout\n", f); 
-        ap_puts(argsbuffer, f); 
+        apr_puts("%stdout\n", f); 
+        apr_puts(argsbuffer, f); 
         while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) 
-            ap_puts(argsbuffer, f); 
-        ap_puts("\n", f); 
+            apr_puts(argsbuffer, f); 
+        apr_puts("\n", f); 
     } 
 
     if (script_err) {
         if (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) { 
-            ap_puts("%stderr\n", f); 
-            ap_puts(argsbuffer, f); 
+            apr_puts("%stderr\n", f); 
+            apr_puts(argsbuffer, f); 
             while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) 
-                ap_puts(argsbuffer, f); 
-            ap_puts("\n", f); 
+                apr_puts(argsbuffer, f); 
+            apr_puts("\n", f); 
         } 
     }
 
@@ -813,7 +813,7 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
         ap_bclose(script_err); 
     }
 
-    ap_close(f); 
+    apr_close(f); 
     return ret; 
 } 
 
@@ -835,7 +835,7 @@ static int cgid_handler(request_rec *r)
     int sd;
     char **env; 
     struct sockaddr_un unix_addr;
-    ap_socket_t *tempsock = NULL;
+    apr_socket_t *tempsock = NULL;
     int nbytes;
     ap_iol *iol;
     script = ap_bcreate(r->pool, B_RDWR); 
@@ -872,7 +872,7 @@ static int cgid_handler(request_rec *r)
         struct stat statbuf; 
         char *newfile; 
 
-        newfile = ap_pstrcat(r->pool, r->filename, ".EXE", NULL); 
+        newfile = apr_pstrcat(r->pool, r->filename, ".EXE", NULL); 
 
         if ((stat(newfile, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) { 
             return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
@@ -915,7 +915,7 @@ static int cgid_handler(request_rec *r)
 
     send_req(sd, r, argv0, env); 
 
-    ap_put_os_sock(&tempsock, &sd, pcgi);
+    apr_put_os_sock(&tempsock, &sd, pcgi);
 
     iol = ap_iol_attach_socket(pcgi, tempsock);
 
@@ -937,7 +937,7 @@ static int cgid_handler(request_rec *r)
         int dbsize, len_read; 
 
         if (conf->logname) { 
-            dbuf = ap_pcalloc(r->pool, conf->bufbytes + 1); 
+            dbuf = apr_pcalloc(r->pool, conf->bufbytes + 1); 
             dbpos = 0; 
         } 
 
@@ -979,7 +979,7 @@ static int cgid_handler(request_rec *r)
             return log_script(r, conf, ret, dbuf, sbuf, script, NULL); 
         } 
 
-        location = ap_table_get(r->headers_out, "Location"); 
+        location = apr_table_get(r->headers_out, "Location"); 
 
         if (location && location[0] == '/' && r->status == 200) { 
 
@@ -990,14 +990,14 @@ static int cgid_handler(request_rec *r)
             /* This redirect needs to be a GET no matter what the original 
              * method was. 
              */ 
-            r->method = ap_pstrdup(r->pool, "GET"); 
+            r->method = apr_pstrdup(r->pool, "GET"); 
             r->method_number = M_GET; 
 
             /* We already read the message body (if any), so don't allow 
              * the redirected request to think it has one. We can ignore 
              * Transfer-Encoding, since we used REQUEST_CHUNKED_ERROR. 
              */ 
-            ap_table_unset(r->headers_in, "Content-Length"); 
+            apr_table_unset(r->headers_in, "Content-Length"); 
 
             ap_internal_redirect_handler(location, r); 
             return OK; 

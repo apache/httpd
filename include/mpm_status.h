@@ -64,7 +64,7 @@
 
 typedef struct {
     long conn_id;
-    ap_table_t *data;
+    apr_table_t *data;
 } ap_status_table_row_t;
 
 /**
@@ -81,7 +81,7 @@ API_EXPORT(const char *) ap_get_connection_status(long conn_id, const char *key)
  * Get an array of current connection IDs.
  *
  */
-API_EXPORT(ap_array_header_t *) ap_get_connections(ap_pool_t *p);
+API_EXPORT(apr_array_header_t *) ap_get_connections(apr_pool_t *p);
 
 /**
  * Get an array of keys from a given connection.
@@ -89,7 +89,7 @@ API_EXPORT(ap_array_header_t *) ap_get_connections(ap_pool_t *p);
  * conn_id = Connection ID
  *
  */
-API_EXPORT(ap_array_header_t *) ap_get_connection_keys(ap_pool_t *p,
+API_EXPORT(apr_array_header_t *) ap_get_connection_keys(apr_pool_t *p,
                                                        long conn_id);
 
 /**
@@ -122,7 +122,7 @@ API_EXPORT(void) ap_reset_connection_status(long conn_id);
  * p = context, generally of the request
  *
  */
-API_EXPORT(ap_array_header_t *) ap_get_status_table(ap_pool_t *p);
+API_EXPORT(apr_array_header_t *) ap_get_status_table(apr_pool_t *p);
 
 #endif /* APACHE_SERVER_STATS_H */
 

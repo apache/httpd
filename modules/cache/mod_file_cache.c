@@ -135,33 +135,33 @@ static int once_through = 0;
 
 typedef struct {
 #if APR_HAS_SENDFILE
-    ap_file_t *file;
+    apr_file_t *file;
 #endif
     char *filename;
-    ap_finfo_t finfo;
+    apr_finfo_t finfo;
     int is_mmapped;
 #if APR_HAS_MMAP
-    ap_mmap_t *mm;
+    apr_mmap_t *mm;
 #endif
 } a_file;
 
 typedef struct {
-    ap_array_header_t *files;
+    apr_array_header_t *files;
 } a_server_config;
 
 
-static void *create_server_config(ap_pool_t *p, server_rec *s)
+static void *create_server_config(apr_pool_t *p, server_rec *s)
 {
-    a_server_config *sconf = ap_palloc(p, sizeof(*sconf));
+    a_server_config *sconf = apr_palloc(p, sizeof(*sconf));
 
-    sconf->files = ap_make_array(p, 20, sizeof(a_file));
+    sconf->files = apr_make_array(p, 20, sizeof(a_file));
     return sconf;
 }
 
-static ap_status_t open_file(ap_file_t **file, const char *filename, int flg1, int flg2, 
-                             ap_pool_t *p)
+static apr_status_t open_file(apr_file_t **file, const char *filename, int flg1, int flg2, 
+                             apr_pool_t *p)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 #ifdef WIN32
     /* The Windows file needs to be opened for overlapped i/o, which APR doesn't
      * support.
@@ -175,20 +175,20 @@ static ap_status_t open_file(ap_file_t **file, const char *filename, int flg1, i
                        FILE_FLAG_OVERLAPPED | FILE_FLAG_SEQUENTIAL_SCAN, /* file attributes */
                        NULL);            /* handle to file with attributes to copy */
     if (hFile != INVALID_HANDLE_VALUE) {
-        rv = ap_put_os_file(file, &hFile, p);
+        rv = apr_put_os_file(file, &hFile, p);
     }
     else {
         rv = GetLastError();
         *file = NULL;
     }
 #else
-    rv = ap_open(file, filename, flg1, flg2, p);
+    rv = apr_open(file, filename, flg1, flg2, p);
 #endif
 
     return rv;
 }
 
-static ap_status_t cleanup_file_cache(void *sconfv)
+static apr_status_t cleanup_file_cache(void *sconfv)
 {
     a_server_config *sconf = sconfv;
     size_t n;
@@ -199,12 +199,12 @@ static ap_status_t cleanup_file_cache(void *sconfv)
     while(n) {
 #if APR_HAS_MMAP
         if (file->is_mmapped) { 
-	    ap_mmap_delete(file->mm);
+	    apr_mmap_delete(file->mm);
         } 
         else 
 #endif 
 #if APR_HAS_SENDFILE
-            ap_close(file->file); 
+            apr_close(file->file); 
 #endif
 	    ++file;
 	    --n;
@@ -219,12 +219,12 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
     a_server_config *sconf;
     a_file *new_file;
     a_file tmp;
-    ap_file_t *fd = NULL;
-    ap_status_t rc;
+    apr_file_t *fd = NULL;
+    apr_status_t rc;
 
     /* canonicalize the file name? */
     /* os_canonical... */
-    if (ap_stat(&tmp.finfo, filename, cmd->temp_pool) != APR_SUCCESS) { 
+    if (apr_stat(&tmp.finfo, filename, cmd->temp_pool) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "file_cache: unable to stat(%s), skipping", filename);
 	return NULL;
@@ -235,7 +235,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 	return NULL;
     }
 
-    /* Note: open_file should call ap_open for Unix and CreateFile for Windows.
+    /* Note: open_file should call apr_open for Unix and CreateFile for Windows.
      * The Windows file needs to be opened for async I/O to allow multiple threads
      * to serve it up at once.
      */
@@ -246,13 +246,13 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 	return NULL;
     }
     tmp.file = fd;
-    tmp.filename = ap_pstrdup(cmd->pool, filename);
+    tmp.filename = apr_pstrdup(cmd->pool, filename);
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
-    new_file = ap_push_array(sconf->files);
+    new_file = apr_push_array(sconf->files);
     *new_file = tmp;
     if (sconf->files->nelts == 1) {
 	/* first one, register the cleanup */
-	ap_register_cleanup(cmd->pool, sconf, cleanup_file_cache, ap_null_cleanup);
+	apr_register_cleanup(cmd->pool, sconf, cleanup_file_cache, apr_null_cleanup);
     }
 
     new_file->is_mmapped = FALSE;
@@ -272,9 +272,9 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     a_server_config *sconf;
     a_file *new_file;
     a_file tmp;
-    ap_file_t *fd = NULL;
+    apr_file_t *fd = NULL;
 
-    if (ap_stat(&tmp.finfo, filename, cmd->temp_pool) != APR_SUCCESS) { 
+    if (apr_stat(&tmp.finfo, filename, cmd->temp_pool) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);
 	return NULL;
@@ -284,28 +284,28 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
 	    "mod_file_cache: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
-    if (ap_open(&fd, filename, APR_READ, APR_OS_DEFAULT, cmd->temp_pool) 
+    if (apr_open(&fd, filename, APR_READ, APR_OS_DEFAULT, cmd->temp_pool) 
                 != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "mod_file_cache: unable to open(%s, O_RDONLY), skipping", filename);
 	return NULL;
     }
-    if (ap_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, cmd->pool) != APR_SUCCESS) { 
+    if (apr_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, cmd->pool) != APR_SUCCESS) { 
 	int save_errno = errno;
-	ap_close(fd);
+	apr_close(fd);
 	errno = save_errno;
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "mod_file_cache: unable to mmap %s, skipping", filename);
 	return NULL;
     }
-    ap_close(fd);
-    tmp.filename = ap_pstrdup(cmd->pool, filename);
+    apr_close(fd);
+    tmp.filename = apr_pstrdup(cmd->pool, filename);
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
-    new_file = ap_push_array(sconf->files);
+    new_file = apr_push_array(sconf->files);
     *new_file = tmp;
     if (sconf->files->nelts == 1) {
 	/* first one, register the cleanup */
-       ap_register_cleanup(cmd->pool, sconf, cleanup_file_cache, ap_null_cleanup); 
+       apr_register_cleanup(cmd->pool, sconf, cleanup_file_cache, apr_null_cleanup); 
     }
 
     new_file->is_mmapped = TRUE;
@@ -326,8 +326,8 @@ static int file_compare(const void *av, const void *bv)
     return strcmp(a->filename, b->filename);
 }
 
-static void file_cache_post_config(ap_pool_t *p, ap_pool_t *plog,
-                                   ap_pool_t *ptemp, server_rec *s)
+static void file_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
+                                   apr_pool_t *ptemp, server_rec *s)
 {
     a_server_config *sconf;
     a_file *elts;
@@ -391,8 +391,8 @@ static int mmap_handler(request_rec *r, a_file *file, int rangestatus)
         ap_send_mmap (file->mm, r, 0, file->finfo.size);
     }
     else {
-        ap_size_t length;
-        ap_off_t offset;
+        apr_size_t length;
+        apr_off_t offset;
         while (ap_each_byterange(r, &offset, &length)) {
             ap_send_mmap(file->mm, r, offset, length);
         }
@@ -404,9 +404,9 @@ static int mmap_handler(request_rec *r, a_file *file, int rangestatus)
 static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
 {
 #if APR_HAS_SENDFILE
-    ap_size_t length, nbytes;
-    ap_off_t offset = 0;
-    ap_status_t rv = APR_EINIT;
+    apr_size_t length, nbytes;
+    apr_off_t offset = 0;
+    apr_status_t rv = APR_EINIT;
 
     if (!rangestatus) {
         rv = ap_send_fd(file->file, r, 0, file->finfo.size, &nbytes);
@@ -430,12 +430,12 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
 {
 #if APR_HAS_SENDFILE
     long length;
-    ap_off_t offset = 0;
+    apr_off_t offset = 0;
     struct iovec iov;
-    ap_hdtr_t hdtr;
-    ap_hdtr_t *phdtr = &hdtr;
-    ap_status_t rv; 
-    ap_int32_t flags = 0;
+    apr_hdtr_t hdtr;
+    apr_hdtr_t *phdtr = &hdtr;
+    apr_status_t rv; 
+    apr_int32_t flags = 0;
 
     /* 
      * We want to send any data held in the client buffer on the
@@ -448,7 +448,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
     iov.iov_len =  r->connection->client->outcnt;
     r->connection->client->outcnt = 0;
 
-    /* initialize the ap_hdtr_t struct */
+    /* initialize the apr_hdtr_t struct */
     phdtr->headers = &iov;
     phdtr->numheaders = 1;
     phdtr->trailers = NULL;

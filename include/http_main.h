@@ -60,7 +60,7 @@
 #define APACHE_HTTP_MAIN_H
 
 /* AP_SERVER_BASEARGS is the command argument list parsed by http_main.c
- * in ap_getopt() format.  Use this for default'ing args that the MPM
+ * in apr_getopt() format.  Use this for default'ing args that the MPM
  * can safely ignore and pass on from its rewrite_args() handler.
  */
 #define AP_SERVER_BASEARGS "C:c:D:d:f:vVlLth?"
@@ -73,9 +73,9 @@ extern API_VAR_EXPORT const char *ap_server_argv0;
 extern API_VAR_EXPORT const char *ap_server_root;
 
 /* for -C, -c and -D switches */
-extern API_VAR_EXPORT ap_array_header_t *ap_server_pre_read_config;
-extern API_VAR_EXPORT ap_array_header_t *ap_server_post_read_config;
-extern API_VAR_EXPORT ap_array_header_t *ap_server_config_defines;
+extern API_VAR_EXPORT apr_array_header_t *ap_server_pre_read_config;
+extern API_VAR_EXPORT apr_array_header_t *ap_server_post_read_config;
+extern API_VAR_EXPORT apr_array_header_t *ap_server_config_defines;
 
 #ifdef __cplusplus
 }

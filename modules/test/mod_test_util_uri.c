@@ -67,7 +67,7 @@
  * SetHandler test-util-uri
  * </Location>
  *
- * Then make a request to /test-util-uri.  An html ap_table_t of errors will
+ * Then make a request to /test-util-uri.  An html apr_table_t of errors will
  * be output... and a total count of errors.
  */
 
@@ -139,7 +139,7 @@ static char *my_stpcpy(char *d, const char *s)
 static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row)
 {
     unsigned u;
-    ap_pool_t *sub;
+    apr_pool_t *sub;
     char *input_uri;
     char *strp;
     uri_components result;
@@ -149,7 +149,7 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 
     failures = 0;
 
-    input_uri = ap_palloc(r->pool,
+    input_uri = apr_palloc(r->pool,
 	strlen(pieces->scheme) + 3
 	+ strlen(pieces->user) + 1
 	+ strlen(pieces->password) + 1
@@ -207,7 +207,7 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	}
 	*strp = 0;
 
-	sub = ap_make_sub_pool(r->pool);
+	sub = apr_make_sub_pool(r->pool);
 	status = ap_parse_uri_components(sub, input_uri, &result);
 	if (status == HTTP_OK) {
 #define CHECK(f)							\
@@ -255,7 +255,7 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	    ap_rputs("</tr>\n", r);
 	    ++failures;
 	}
-	ap_destroy_pool(sub);
+	apr_destroy_pool(sub);
     }
     return failures;
 }
@@ -342,7 +342,7 @@ module test_util_uri_module = {
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    NULL,			/* command ap_table_t */
+    NULL,			/* command apr_table_t */
     test_util_uri_handlers,	/* handlers */
     NULL,                       /* filename translation */
     NULL,                       /* check_user_id */

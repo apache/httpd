@@ -198,15 +198,15 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
     }
     else {
         bufsize = sizeof(pwin);
-	if (ap_getpass("New password: ", pwin, &bufsize) != 0) {
-	    ap_snprintf(record, (rlen - 1), "password too long (>%d)",
+	if (apr_getpass("New password: ", pwin, &bufsize) != 0) {
+	    apr_snprintf(record, (rlen - 1), "password too long (>%d)",
 			sizeof(pwin) - 1);
 	    return ERR_OVERFLOW;
 	}
         bufsize = sizeof(pwv);
-	ap_getpass("Re-type new password: ", pwv, &bufsize);
+	apr_getpass("Re-type new password: ", pwv, &bufsize);
 	if (strcmp(pwin, pwv) != 0) {
-	    ap_cpystrn(record, "password verification error", (rlen - 1));
+	    apr_cpystrn(record, "password verification error", (rlen - 1));
 	    return ERR_PWMISMATCH;
 	}
 	pw = pwin;
@@ -224,13 +224,13 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
-	ap_MD5Encode((const char *)pw, (const char *)salt,
+	apr_MD5Encode((const char *)pw, (const char *)salt,
 		     cpw, sizeof(cpw));
 	break;
 
     case ALG_PLAIN:
 	/* XXX this len limitation is not in sync with any HTTPd len. */
-	ap_cpystrn(cpw,pw,sizeof(cpw));
+	apr_cpystrn(cpw,pw,sizeof(cpw));
 	break;
 
     case ALG_CRYPT:
@@ -239,7 +239,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
-	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
+	apr_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
 	break;
     }
     memset(pw, '\0', strlen(pw));
@@ -249,7 +249,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
      * hash, and delimiters.
      */
     if ((strlen(user) + 1 + strlen(cpw)) > (rlen - 1)) {
-	ap_cpystrn(record, "resultant record too long", (rlen - 1));
+	apr_cpystrn(record, "resultant record too long", (rlen - 1));
 	return ERR_OVERFLOW;
     }
     strcpy(record, user);
@@ -334,10 +334,10 @@ static int writable(char *fname)
  */
 static int exists(char *fname)
 {
-    ap_finfo_t sbuf;
+    apr_finfo_t sbuf;
     int check;
 
-    check = ap_stat(&sbuf, fname, NULL);
+    check = apr_stat(&sbuf, fname, NULL);
     return ((check == -1) && (errno == ENOENT)) ? 0 : 1;
 }
 
@@ -376,13 +376,13 @@ int main(int argc, char *argv[])
     int i;
     int args_left = 2;
 #ifdef CHARSET_EBCDIC
-    ap_pool_t *pool;
-    ap_status_t rv;
-    ap_xlate_t *to_ascii;
+    apr_pool_t *pool;
+    apr_status_t rv;
+    apr_xlate_t *to_ascii;
 
-    ap_initialize();
-    atexit(ap_terminate);
-    ap_create_pool(&pool, NULL);
+    apr_initialize();
+    atexit(apr_terminate);
+    apr_create_pool(&pool, NULL);
 
     rv = ap_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
     if (rv) {

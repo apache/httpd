@@ -66,10 +66,10 @@
 #include "http_protocol.h"
 
 
-dav_error *dav_new_error(ap_pool_t *p, int status, int error_id, const char *desc)
+dav_error *dav_new_error(apr_pool_t *p, int status, int error_id, const char *desc)
 {
     int save_errno = errno;
-    dav_error *err = ap_pcalloc(p, sizeof(*err));
+    dav_error *err = apr_pcalloc(p, sizeof(*err));
 
     /* DBG3("dav_new_error: %d %d %s", status, error_id, desc ? desc : "(no desc)"); */
 
@@ -81,10 +81,10 @@ dav_error *dav_new_error(ap_pool_t *p, int status, int error_id, const char *des
     return err;
 }
 
-dav_error *dav_push_error(ap_pool_t *p, int status, int error_id, const char *desc,
+dav_error *dav_push_error(apr_pool_t *p, int status, int error_id, const char *desc,
 			  dav_error *prev)
 {
-    dav_error *err = ap_pcalloc(p, sizeof(*err));
+    dav_error *err = apr_pcalloc(p, sizeof(*err));
 
     err->status = status;
     err->error_id = error_id;
@@ -94,20 +94,20 @@ dav_error *dav_push_error(ap_pool_t *p, int status, int error_id, const char *de
     return err;
 }
 
-void dav_check_bufsize(ap_pool_t * p, dav_buffer *pbuf, size_t extra_needed)
+void dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf, size_t extra_needed)
 {
     /* grow the buffer if necessary */
     if (pbuf->cur_len + extra_needed > pbuf->alloc_len) {
 	char *newbuf;
 
 	pbuf->alloc_len += extra_needed + DAV_BUFFER_PAD;
-	newbuf = ap_palloc(p, pbuf->alloc_len);
+	newbuf = apr_palloc(p, pbuf->alloc_len);
 	memcpy(newbuf, pbuf->buf, pbuf->cur_len);
 	pbuf->buf = newbuf;
     }
 }
 
-void dav_set_bufsize(ap_pool_t * p, dav_buffer *pbuf, size_t size)
+void dav_set_bufsize(apr_pool_t * p, dav_buffer *pbuf, size_t size)
 {
     /* NOTE: this does not retain prior contents */
 
@@ -121,21 +121,21 @@ void dav_set_bufsize(ap_pool_t * p, dav_buffer *pbuf, size_t size)
 	if (pbuf->alloc_len < DAV_BUFFER_MINSIZE)
 	    pbuf->alloc_len = DAV_BUFFER_MINSIZE;
 
-	pbuf->buf = ap_palloc(p, pbuf->alloc_len);
+	pbuf->buf = apr_palloc(p, pbuf->alloc_len);
     }
     pbuf->cur_len = size;
 }
 
 
 /* initialize a buffer and copy the specified (null-term'd) string into it */
-void dav_buffer_init(ap_pool_t *p, dav_buffer *pbuf, const char *str)
+void dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf, const char *str)
 {
     dav_set_bufsize(p, pbuf, strlen(str));
     memcpy(pbuf->buf, str, pbuf->cur_len + 1);
 }
 
 /* append a string to the end of the buffer, adjust length */
-void dav_buffer_append(ap_pool_t *p, dav_buffer *pbuf, const char *str)
+void dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, const char *str)
 {
     size_t len = strlen(str);
 
@@ -145,7 +145,7 @@ void dav_buffer_append(ap_pool_t *p, dav_buffer *pbuf, const char *str)
 }
 
 /* place a string on the end of the buffer, do NOT adjust length */
-void dav_buffer_place(ap_pool_t *p, dav_buffer *pbuf, const char *str)
+void dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, const char *str)
 {
     size_t len = strlen(str);
 
@@ -154,7 +154,7 @@ void dav_buffer_place(ap_pool_t *p, dav_buffer *pbuf, const char *str)
 }
 
 /* place some memory on the end of a buffer; do NOT adjust length */
-void dav_buffer_place_mem(ap_pool_t *p, dav_buffer *pbuf, const void *mem,
+void dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf, const void *mem,
                           size_t amt, size_t pad)
 {
     dav_check_bufsize(p, pbuf, amt + pad);
@@ -209,7 +209,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
     if (strcasecmp(comp.scheme, scheme) != 0 ||
 	comp.port != port) {
 	result.err.status = HTTP_BAD_GATEWAY;
-	result.err.desc = ap_psprintf(r->pool,
+	result.err.desc = apr_psprintf(r->pool,
 				      "Destination URI refers to different "
 				      "scheme or port (%s://hostname:%d)" 
                                       APR_EOL_STR "(want: %s://hostname:%d)",
@@ -242,7 +242,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r)
     */
     if (strrchr(comp.hostname, '.') == NULL &&
 	(domain = strchr(r->server->server_hostname, '.')) != NULL) {
-	comp.hostname = ap_pstrcat(r->pool, comp.hostname, domain, NULL);
+	comp.hostname = apr_pstrcat(r->pool, comp.hostname, domain, NULL);
     }
 
     /* now, if a hostname was provided, then verify that it represents the
@@ -313,8 +313,8 @@ time_t dav_get_timeout(request_rec *r)
 {
     time_t now, expires = DAV_TIMEOUT_INFINITE;
 
-    const char *timeout_const = ap_table_get(r->headers_in, "Timeout");
-    const char *timeout = ap_pstrdup(r->pool, timeout_const), *val;
+    const char *timeout_const = apr_table_get(r->headers_in, "Timeout");
+    const char *timeout = apr_pstrdup(r->pool, timeout_const), *val;
 
     if (timeout == NULL)
 	return DAV_TIMEOUT_INFINITE;
@@ -350,12 +350,12 @@ time_t dav_get_timeout(request_rec *r)
 
 /* add_if_resource returns a new if_header, linking it to next_ih.
  */
-static dav_if_header *dav_add_if_resource(ap_pool_t *p, dav_if_header *next_ih,
+static dav_if_header *dav_add_if_resource(apr_pool_t *p, dav_if_header *next_ih,
 					  const char *uri, size_t uri_len)
 {
     dav_if_header *ih;
 
-    if ((ih = ap_pcalloc(p, sizeof(*ih))) == NULL)
+    if ((ih = apr_pcalloc(p, sizeof(*ih))) == NULL)
 	return NULL;
 
     ih->uri = uri;
@@ -367,14 +367,14 @@ static dav_if_header *dav_add_if_resource(ap_pool_t *p, dav_if_header *next_ih,
 
 /* add_if_state adds a condition to an if_header.
  */
-static dav_error * dav_add_if_state(ap_pool_t *p, dav_if_header *ih,
+static dav_error * dav_add_if_state(apr_pool_t *p, dav_if_header *ih,
 				    const char *state_token,
 				    dav_if_state_type t, int condition,
 				    const dav_hooks_locks *locks_hooks)
 {
     dav_if_state_list *new_sl;
 
-    new_sl = ap_pcalloc(p, sizeof(*new_sl));
+    new_sl = apr_pcalloc(p, sizeof(*new_sl));
 
     new_sl->condition = condition;
     new_sl->type      = t;
@@ -444,7 +444,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
 	
     *p_ih = NULL;
 
-    if ((str = ap_pstrdup(r->pool, ap_table_get(r->headers_in, "If"))) == NULL)
+    if ((str = apr_pstrdup(r->pool, apr_table_get(r->headers_in, "If"))) == NULL)
 	return NULL;
 
     while (*str) {
@@ -556,7 +556,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
 		default:
 		    return dav_new_error(r->pool, HTTP_BAD_REQUEST,
 					 DAV_ERR_IF_UNK_CHAR,
-                                         ap_psprintf(r->pool,
+                                         apr_psprintf(r->pool,
                                                      "Invalid \"If:\" "
                                                      "header: Unexpected "
                                                      "character encountered "
@@ -575,7 +575,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
 	default:
 	    return dav_new_error(r->pool, HTTP_BAD_REQUEST,
 				 DAV_ERR_IF_UNK_CHAR,
-                                 ap_psprintf(r->pool,
+                                 apr_psprintf(r->pool,
                                              "Invalid \"If:\" header: "
                                              "Unexpected character "
                                              "encountered (0x%02x, '%c').",
@@ -634,7 +634,7 @@ static int dav_find_submitted_locktoken(const dav_if_header *if_header,
 /* dav_validate_resource_state:
  *    Returns NULL if path/uri meets if-header and lock requirements
  */
-static dav_error * dav_validate_resource_state(ap_pool_t *p,
+static dav_error * dav_validate_resource_state(apr_pool_t *p,
 					       const dav_resource *resource,
 					       dav_lockdb *lockdb,
 					       const dav_if_header *if_header,
@@ -981,7 +981,7 @@ static dav_error * dav_validate_resource_state(ap_pool_t *p,
                          strcmp(lock->auth_user, r->user))) {
                         const char *errmsg;
 
-                        errmsg = ap_pstrcat(p, "User \"",
+                        errmsg = apr_pstrcat(p, "User \"",
                                             r->user, 
                                             "\" submitted a locktoken created "
                                             "by user \"",
@@ -1118,7 +1118,7 @@ static dav_error * dav_validate_resource_state(ap_pool_t *p,
 	}
 
 	return dav_new_error(p, HTTP_PRECONDITION_FAILED, 0,
-			     ap_psprintf(p,
+			     apr_psprintf(p,
 					 "The precondition(s) specified by "
 					 "the \"If:\" header did not match "
 					 "this resource. At least one "
@@ -1267,12 +1267,12 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
     if (locktoken != NULL) {
 	dav_if_header *ifhdr_new;
 
-	ifhdr_new = ap_pcalloc(r->pool, sizeof(*ifhdr_new));
+	ifhdr_new = apr_pcalloc(r->pool, sizeof(*ifhdr_new));
 	ifhdr_new->uri = resource->uri;
 	ifhdr_new->uri_len = strlen(resource->uri);
 	ifhdr_new->dummy_header = 1;
 
-	ifhdr_new->state = ap_pcalloc(r->pool, sizeof(*ifhdr_new->state));
+	ifhdr_new->state = apr_pcalloc(r->pool, sizeof(*ifhdr_new->state));
 	ifhdr_new->state->type = dav_if_opaquelock;
 	ifhdr_new->state->condition = DAV_IF_COND_NORMAL;
 	ifhdr_new->state->locktoken = locktoken;
@@ -1353,7 +1353,7 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
 	    ** into a multistatus response.
 	    */
 	    if (err != NULL) {
-		new_response = ap_pcalloc(r->pool, sizeof(*new_response));
+		new_response = apr_pcalloc(r->pool, sizeof(*new_response));
 		
 		new_response->href = parent_resource->uri;
 		new_response->status = err->status;
@@ -1362,7 +1362,7 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
 		    "preventing the operation on the resource specified by "
 		    "the Request-URI.";
                 if (err->desc != NULL) {
-                    new_response->desc = ap_pstrcat(r->pool,
+                    new_response->desc = apr_pstrcat(r->pool,
                                                     new_response->desc,
                                                     " The error was: ",
                                                     err->desc, NULL);
@@ -1407,7 +1407,7 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
         ** For other methods, return a simple 424.
         */
         if ((flags & DAV_VALIDATE_ADD_LD) != 0) {
-            propstat = ap_pcalloc(r->pool, sizeof(*propstat));
+            propstat = apr_pcalloc(r->pool, sizeof(*propstat));
             propstat->text =
                 "<D:propstat>" DEBUG_CR
                 "<D:prop><D:lockdiscovery/></D:prop>" DEBUG_CR
@@ -1416,7 +1416,7 @@ dav_error * dav_validate_request(request_rec *r, dav_resource *resource,
         }
 
         /* create the 424 response */
-        new_response = ap_pcalloc(r->pool, sizeof(*new_response));
+        new_response = apr_pcalloc(r->pool, sizeof(*new_response));
         new_response->href = resource->uri;
         new_response->status = HTTP_FAILED_DEPENDENCY;
         new_response->propresult.propstats = propstat;
@@ -1460,7 +1460,7 @@ dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl)
 	while (if_state != NULL)	{
 	    if (if_state->condition == DAV_IF_COND_NORMAL
 	        && if_state->type == dav_if_opaquelock) {
-		lock_token = ap_pcalloc(r->pool, sizeof(dav_locktoken_list));
+		lock_token = apr_pcalloc(r->pool, sizeof(dav_locktoken_list));
 		lock_token->locktoken = if_state->locktoken;
 		lock_token->next = *ltl;
 		*ltl = lock_token;
@@ -1486,7 +1486,7 @@ dav_error * dav_get_locktoken_list(request_rec *r, dav_locktoken_list **ltl)
  */
 const char *dav_get_target_selector(request_rec *r)
 {
-    return ap_table_get(r->headers_in, "Target-Selector");
+    return apr_table_get(r->headers_in, "Target-Selector");
 }
 
 /* Ensure that a resource is writable. If there is no versioning
@@ -1542,7 +1542,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
     if (!resource->exists || parent_only) {
 	parent = (*resource->hooks->get_parent_resource)(resource);
         if (parent == NULL || !parent->exists) {
-	    body = ap_psprintf(r->pool,
+	    body = apr_psprintf(r->pool,
 			       "Missing one or more intermediate collections. "
 			       "Cannot create resource %s.",
 			       ap_escape_html(r->pool, resource->uri));
@@ -1577,7 +1577,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 	/* parent must be checked out */
 	if (!parent->working) {
 	    if ((err = (*vsn_hooks->checkout)(parent)) != NULL) {
-		body = ap_psprintf(r->pool,
+		body = apr_psprintf(r->pool,
 				   "Unable to checkout parent collection. "
 				   "Cannot create resource %s.",
 				   ap_escape_html(r->pool, resource->uri));
@@ -1588,7 +1588,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
 	/* if not just checking parent, create new child resource */
         if (!parent_only) {
 	    if ((err = (*vsn_hooks->mkresource)(resource)) != NULL) {
-	        body = ap_psprintf(r->pool,
+	        body = apr_psprintf(r->pool,
 			           "Unable to create versioned resource %s.",
 			           ap_escape_html(r->pool, resource->uri));
 	        return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
@@ -1608,7 +1608,7 @@ dav_error *dav_ensure_resource_writable(request_rec *r,
     /* if not just checking parent, make sure child resource is checked out */
     if (!parent_only && !resource->working) {
 	if ((err = (*vsn_hooks->checkout)(resource)) != NULL) {
-	    body = ap_psprintf(r->pool,
+	    body = apr_psprintf(r->pool,
 			       "Unable to checkout resource %s.",
 			       ap_escape_html(r->pool, resource->uri));
 	    return dav_push_error(r->pool, HTTP_CONFLICT, 0, body, err);
@@ -1649,7 +1649,7 @@ dav_error *dav_revert_resource_writability(request_rec *r,
                 err = (*vsn_hooks->checkin)(resource);
 
             if (err != NULL) {
-	        body = ap_psprintf(r->pool,
+	        body = apr_psprintf(r->pool,
 			           "Unable to %s resource %s.",
                                    undo ? "uncheckout" : "checkin",
 			           ap_escape_html(r->pool, resource->uri));
@@ -1664,7 +1664,7 @@ dav_error *dav_revert_resource_writability(request_rec *r,
 	    /* ### should we do anything with the response? */
             if ((err = (*resource->hooks->remove_resource)(resource,
 							   &response)) != NULL) {
-	        body = ap_psprintf(r->pool,
+	        body = apr_psprintf(r->pool,
 			           "Unable to undo creation of resource %s.",
 			           ap_escape_html(r->pool, resource->uri));
                 return dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -1682,7 +1682,7 @@ dav_error *dav_revert_resource_writability(request_rec *r,
 	    err = (*vsn_hooks->checkin)(parent_resource);
 
 	if (err != NULL) {
-	    body = ap_psprintf(r->pool,
+	    body = apr_psprintf(r->pool,
 			       "Unable to %s parent collection of %s.",
 			       undo ? "uncheckout" : "checkin",
 			       ap_escape_html(r->pool, resource->uri));

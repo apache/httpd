@@ -81,7 +81,7 @@ const char *dav_lock_get_activelock(request_rec *r, dav_lock *lock,
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
     int count = 0;
     dav_buffer work_buf = { 0 };
-    ap_pool_t *p = r->pool;
+    apr_pool_t *p = r->pool;
 
     /* If no locks or no lock provider, there are no locks */
     if (lock == NULL || hooks == NULL) {
@@ -197,7 +197,7 @@ dav_error * dav_lock_parse_lockinfo(request_rec *r,
 				    const ap_xml_doc *doc,
 				    dav_lock **lock_request)
 {
-    ap_pool_t *p = r->pool;
+    apr_pool_t *p = r->pool;
     dav_error *err;
     ap_xml_elem *child;
     dav_lock *lock;
@@ -262,7 +262,7 @@ dav_error * dav_lock_parse_lockinfo(request_rec *r,
 	}
 
 	return dav_new_error(p, HTTP_PRECONDITION_FAILED, 0,
-			     ap_psprintf(p,
+			     apr_psprintf(p,
 					 "The server cannot satisfy the "
 					 "LOCK request due to an unknown XML "
 					 "element (\"%s\") within the "
@@ -428,7 +428,7 @@ static dav_error * dav_unlock_walker(dav_walker_ctx *ctx, int calltype)
 ** namespace [repository] hierarchy. Note that some lock providers may be
 ** able to return this information with a traversal.
 */
-static dav_error * dav_get_direct_resource(ap_pool_t *p,
+static dav_error * dav_get_direct_resource(apr_pool_t *p,
 					   dav_lockdb *lockdb,
 					   const dav_locktoken *locktoken,
 					   const dav_resource *resource,

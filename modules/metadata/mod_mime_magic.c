@@ -96,7 +96,7 @@
  * modified from the free "file" command.
  * - all-in-one file for compilation convenience when moving from one
  *   version of Apache to the next.
- * - Memory allocation is done through the Apache API's ap_pool_t structure.
+ * - Memory allocation is done through the Apache API's apr_pool_t structure.
  * - All functions have had necessary Apache API request or server
  *   structures passed to them where necessary to call other Apache API
  *   routines.  (i.e. usually for logging, files, or memory allocation in
@@ -255,7 +255,7 @@ static int zmagic(request_rec *, unsigned char *, int);
 static int getvalue(server_rec *, struct magic *, char **);
 static int hextoint(int);
 static char *getstr(server_rec *, char *, char *, int, int *);
-static int parse(server_rec *, ap_pool_t *p, char *, int);
+static int parse(server_rec *, apr_pool_t *p, char *, int);
 
 static int match(request_rec *, unsigned char *, int);
 static int mget(request_rec *, union VALUETYPE *, unsigned char *,
@@ -278,7 +278,7 @@ static int fsmagic(request_rec *r, const char *fn);
  * make HOWMANY too high unless you have a very fast CPU.
  */
 
-/* these types are used to index the ap_table_t 'types': keep em in sync! */
+/* these types are used to index the apr_table_t 'types': keep em in sync! */
 /* HTML inserted in first because this is a web server module now */
 #define L_HTML    0		/* HTML */
 #define L_C       1		/* first and foremost on UNIX */
@@ -505,18 +505,18 @@ typedef struct {
 
 module mime_magic_module;
 
-static void *create_magic_server_config(ap_pool_t *p, server_rec *d)
+static void *create_magic_server_config(apr_pool_t *p, server_rec *d)
 {
     /* allocate the config - use pcalloc because it needs to be zeroed */
-    return ap_pcalloc(p, sizeof(magic_server_config_rec));
+    return apr_pcalloc(p, sizeof(magic_server_config_rec));
 }
 
-static void *merge_magic_server_config(ap_pool_t *p, void *basev, void *addv)
+static void *merge_magic_server_config(apr_pool_t *p, void *basev, void *addv)
 {
     magic_server_config_rec *base = (magic_server_config_rec *) basev;
     magic_server_config_rec *add = (magic_server_config_rec *) addv;
     magic_server_config_rec *new = (magic_server_config_rec *)
-			    ap_palloc(p, sizeof(magic_server_config_rec));
+			    apr_palloc(p, sizeof(magic_server_config_rec));
 
     new->magicfile = add->magicfile ? add->magicfile : base->magicfile;
     new->magic = NULL;
@@ -564,7 +564,7 @@ static const command_rec mime_magic_cmds[] =
 /* allocate a per-request structure and put it in the request record */
 static magic_req_rec *magic_set_config(request_rec *r)
 {
-    magic_req_rec *req_dat = (magic_req_rec *) ap_palloc(r->pool,
+    magic_req_rec *req_dat = (magic_req_rec *) apr_palloc(r->pool,
 						      sizeof(magic_req_rec));
 
     req_dat->head = req_dat->tail = (magic_rsl *) NULL;
@@ -591,7 +591,7 @@ static int magic_rsl_add(request_rec *r, char *str)
     }
 
     /* allocate the list entry */
-    rsl = (magic_rsl *) ap_palloc(r->pool, sizeof(magic_rsl));
+    rsl = (magic_rsl *) apr_palloc(r->pool, sizeof(magic_rsl));
 
     /* fill it */
     rsl->str = str;
@@ -625,7 +625,7 @@ static int magic_rsl_printf(request_rec *r, char *str,...)
 
     /* assemble the string into the buffer */
     va_start(ap, str);
-    ap_vsnprintf(buf, sizeof(buf), str, ap);
+    apr_vsnprintf(buf, sizeof(buf), str, ap);
     va_end(ap);
 
     /* add the buffer to the list */
@@ -655,7 +655,7 @@ static char *rsl_strdup(request_rec *r, int start_frag, int start_pos, int len)
 		    ap_get_module_config(r->request_config, &mime_magic_module);
 
     /* allocate the result string */
-    result = (char *) ap_palloc(r->pool, len + 1);
+    result = (char *) apr_palloc(r->pool, len + 1);
 
     /* loop through and collect the string */
     res_pos = 0;
@@ -854,7 +854,7 @@ static int magic_rsl_to_request(request_rec *r)
  */
 static int magic_process(request_rec *r)
 {
-    ap_file_t *fd = NULL;
+    apr_file_t *fd = NULL;
     unsigned char buf[HOWMANY + 1];	/* one extra for terminating '\0' */
     int nbytes = 0;		/* number of bytes read from a datafile */
     int result;
@@ -873,7 +873,7 @@ static int magic_process(request_rec *r)
 	return result;
     }
 
-    if (ap_open(&fd, r->filename, APR_READ, APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
+    if (apr_open(&fd, r->filename, APR_READ, APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
 	/* We can't open it, but we were able to stat it. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		    MODNAME ": can't read `%s'", r->filename);
@@ -885,7 +885,7 @@ static int magic_process(request_rec *r)
      * try looking at the first HOWMANY bytes
      */
     nbytes = sizeof(buf) - 1;
-    if ((result = ap_read(fd, (char *) buf, &nbytes)) != APR_SUCCESS) {
+    if ((result = apr_read(fd, (char *) buf, &nbytes)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, result, r,
 		    MODNAME ": read failed: %s", r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
@@ -898,7 +898,7 @@ static int magic_process(request_rec *r)
 	tryit(r, buf, nbytes, 1); 
     }
 
-    (void) ap_close(fd);
+    (void) apr_close(fd);
     (void) magic_rsl_putchar(r, '\n');
 
     return OK;
@@ -939,10 +939,10 @@ static void tryit(request_rec *r, unsigned char *buf, int nb, int checkzmagic)
  * apprentice - load configuration from the magic file r
  *  API request record
  */
-static int apprentice(server_rec *s, ap_pool_t *p)
+static int apprentice(server_rec *s, apr_pool_t *p)
 {
-    ap_file_t *f = NULL;
-    ap_status_t result;
+    apr_file_t *f = NULL;
+    apr_status_t result;
     char line[BUFSIZ + 1];
     int errs = 0;
     int lineno;
@@ -954,7 +954,7 @@ static int apprentice(server_rec *s, ap_pool_t *p)
 		    ap_get_module_config(s->module_config, &mime_magic_module);
 
     const char *fname = ap_server_root_relative(p, conf->magicfile);
-    result = ap_open(&f, fname, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
+    result = apr_open(&f, fname, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
     if (result != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
 		    MODNAME ": can't read magic file %s", fname);
@@ -965,7 +965,7 @@ static int apprentice(server_rec *s, ap_pool_t *p)
     conf->magic = conf->last = NULL;
 
     /* parse it */
-    for (lineno = 1; ap_fgets(line, BUFSIZ, f) == APR_SUCCESS; lineno++) {
+    for (lineno = 1; apr_fgets(line, BUFSIZ, f) == APR_SUCCESS; lineno++) {
 	int ws_offset;
 
 	/* delete newline */
@@ -998,7 +998,7 @@ static int apprentice(server_rec *s, ap_pool_t *p)
 	    ++errs;
     }
 
-    (void) ap_close(f);
+    (void) apr_close(f);
 
 #if MIME_MAGIC_DEBUG
     ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
@@ -1079,7 +1079,7 @@ static unsigned long signextend(server_rec *s, struct magic *m, unsigned long v)
 /*
  * parse one line from magic file, put into magic[index++] if valid
  */
-static int parse(server_rec *serv, ap_pool_t *p, char *l, int lineno)
+static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
 {
     struct magic *m;
     char *t, *s;
@@ -1087,7 +1087,7 @@ static int parse(server_rec *serv, ap_pool_t *p, char *l, int lineno)
 		    ap_get_module_config(serv->module_config, &mime_magic_module);
 
     /* allocate magic structure entry */
-    m = (struct magic *) ap_pcalloc(p, sizeof(struct magic));
+    m = (struct magic *) apr_pcalloc(p, sizeof(struct magic));
 
     /* append to linked list */
     m->next = NULL;
@@ -2139,25 +2139,25 @@ struct uncompress_parms {
     int method;
 };
 
-static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
+static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
                             BUFF **script_in)
 {
     int rc = 1;
     char *new_argv[4];
     char **env;
     request_rec *r = parm->r;
-    ap_pool_t *child_context = cntxt;
-    ap_procattr_t *procattr;
-    ap_proc_t *procnew;
+    apr_pool_t *child_context = cntxt;
+    apr_procattr_t *procattr;
+    apr_proc_t *procnew;
     ap_iol *iol;
 
     env = ap_create_environment(child_context, r->subprocess_env);
 
-    if ((ap_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
-        (ap_setprocattr_io(procattr, APR_FULL_BLOCK, 
+    if ((apr_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
+        (apr_setprocattr_io(procattr, APR_FULL_BLOCK, 
                            APR_FULL_BLOCK, APR_NO_PIPE)   != APR_SUCCESS) ||
-        (ap_setprocattr_dir(procattr, r->filename)        != APR_SUCCESS) ||
-        (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
+        (apr_setprocattr_dir(procattr, r->filename)        != APR_SUCCESS) ||
+        (apr_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_ENOPROC, r,
                "couldn't setup child process: %s", r->filename);
@@ -2172,8 +2172,8 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
             close(STDERR_FILENO);
         }
 
-        procnew = ap_pcalloc(child_context, sizeof(*procnew));
-        rc = ap_create_process(procnew, compr[parm->method].argv[0],
+        procnew = apr_pcalloc(child_context, sizeof(*procnew));
+        rc = apr_create_process(procnew, compr[parm->method].argv[0],
                                new_argv, env, procattr, child_context);
 
         if (rc != APR_SUCCESS) {
@@ -2183,7 +2183,7 @@ static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
                           compr[parm->method].argv[0]);
         }
         else {
-            ap_note_subprocess(child_context, procnew, kill_after_timeout);
+            apr_note_subprocess(child_context, procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
             iol = ap_create_file_iol(procnew->out);
             if (!iol)
@@ -2203,8 +2203,8 @@ static int uncompress(request_rec *r, int method,
 {
     struct uncompress_parms parm;
     BUFF *bout = NULL;
-    ap_pool_t *sub_context;
-    ap_status_t rv;
+    apr_pool_t *sub_context;
+    apr_status_t rv;
 
     parm.r = r;
     parm.method = method;
@@ -2213,7 +2213,7 @@ static int uncompress(request_rec *r, int method,
      * there are cases (i.e. generating directory indicies with mod_autoindex)
      * where we would end up with LOTS of zombies.
      */
-    if (ap_create_pool(&sub_context, r->pool) != APR_SUCCESS)
+    if (apr_create_pool(&sub_context, r->pool) != APR_SUCCESS)
         return -1;
 
     if ((rv = uncompress_child(&parm, sub_context, &bout)) != APR_SUCCESS) {
@@ -2222,15 +2222,15 @@ static int uncompress(request_rec *r, int method,
 	return -1;
     }
 
-    *newch = (unsigned char *) ap_palloc(r->pool, n);
+    *newch = (unsigned char *) apr_palloc(r->pool, n);
     rv = ap_bread(bout, *newch, n, &n);
     if (n == 0) {
-	ap_destroy_pool(sub_context);
+	apr_destroy_pool(sub_context);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 	    MODNAME ": read failed %s", r->filename);
 	return -1;
     }
-    ap_destroy_pool(sub_context);
+    apr_destroy_pool(sub_context);
     return n;
 }
 
@@ -2350,7 +2350,7 @@ static int revision_suffix(request_rec *r)
 
     /* perform sub-request for the file name without the suffix */
     result = 0;
-    sub_filename = ap_pstrndup(r->pool, r->filename, suffix_pos);
+    sub_filename = apr_pstrndup(r->pool, r->filename, suffix_pos);
 #if MIME_MAGIC_DEBUG
     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, r,
 		MODNAME ": subrequest lookup for %s", sub_filename);
@@ -2359,7 +2359,7 @@ static int revision_suffix(request_rec *r)
 
     /* extract content type/encoding/language from sub-request */
     if (sub->content_type) {
-	r->content_type = ap_pstrdup(r->pool, sub->content_type);
+	r->content_type = apr_pstrdup(r->pool, sub->content_type);
 #if MIME_MAGIC_DEBUG
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, r,
 		    MODNAME ": subrequest %s got %s",
@@ -2367,10 +2367,10 @@ static int revision_suffix(request_rec *r)
 #endif /* MIME_MAGIC_DEBUG */
 	if (sub->content_encoding)
 	    r->content_encoding =
-		ap_pstrdup(r->pool, sub->content_encoding);
+		apr_pstrdup(r->pool, sub->content_encoding);
 	if (sub->content_language)
 	    r->content_language =
-		ap_pstrdup(r->pool, sub->content_language);
+		apr_pstrdup(r->pool, sub->content_language);
 	result = 1;
     }
 
@@ -2383,7 +2383,7 @@ static int revision_suffix(request_rec *r)
 /*
  * initialize the module
  */
-static void magic_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server)
+static void magic_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
 {
     int result;
     magic_server_config_rec *conf;
@@ -2492,7 +2492,7 @@ module mime_magic_module =
     NULL,                      /* dir merger --- default is to override */
     create_magic_server_config,        /* server config */
     merge_magic_server_config, /* merge server config */
-    mime_magic_cmds,           /* command ap_table_t */
+    mime_magic_cmds,           /* command apr_table_t */
     NULL,                      /* handlers */
     register_hooks              /* register hooks */
 };

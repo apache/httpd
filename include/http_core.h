@@ -131,7 +131,7 @@ API_EXPORT(const char *) ap_get_remote_logname(request_rec *r);
 /* Used for constructing self-referencing URLs, and things like SERVER_PORT,
  * and SERVER_NAME.
  */
-API_EXPORT(char *) ap_construct_url(ap_pool_t *p, const char *uri, request_rec *r);
+API_EXPORT(char *) ap_construct_url(apr_pool_t *p, const char *uri, request_rec *r);
 API_EXPORT(const char *) ap_get_server_name(request_rec *r);
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
 API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
@@ -155,7 +155,7 @@ typedef struct {
 API_EXPORT(const char *) ap_auth_type (request_rec *);
 API_EXPORT(const char *) ap_auth_name (request_rec *);     
 API_EXPORT(int) ap_satisfies (request_rec *r);
-API_EXPORT(const ap_array_header_t *) ap_requires (request_rec *);    
+API_EXPORT(const apr_array_header_t *) ap_requires (request_rec *);    
 
 #ifdef WIN32
 /* 
@@ -218,7 +218,7 @@ typedef struct {
     int satisfy;
     char *ap_auth_type;
     char *ap_auth_name;
-    ap_array_header_t *ap_requires;
+    apr_array_header_t *ap_requires;
 
     /* Custom response config. These can contain text or a URL to redirect to.
      * if response_code_strings is NULL then there are none in the config,
@@ -279,7 +279,7 @@ typedef struct {
     int loglevel;
     
     /* Access control */
-    ap_array_header_t *sec;
+    apr_array_header_t *sec;
     regex_t *r;
 
 #ifdef WIN32
@@ -306,12 +306,12 @@ typedef struct {
     /* Access control */
 
     char *access_name;
-    ap_array_header_t *sec;
-    ap_array_header_t *sec_url;
+    apr_array_header_t *sec;
+    apr_array_header_t *sec_url;
 } core_server_config;
 
 /* for http_config.c */
-void ap_core_reorder_directories(ap_pool_t *, server_rec *);
+void ap_core_reorder_directories(apr_pool_t *, server_rec *);
 
 /* for mod_perl */
 CORE_EXPORT(void) ap_add_per_dir_conf (server_rec *s, void *dir_config);

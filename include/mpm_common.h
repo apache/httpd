@@ -79,8 +79,8 @@ extern "C" {
 #endif
         
 void ap_reclaim_child_processes(int terminate);
-void ap_wait_or_timeout(ap_wait_t *status, ap_proc_t *ret, ap_pool_t *p);
-void ap_process_child_status(ap_proc_t *pid, ap_wait_t status);
+void ap_wait_or_timeout(ap_wait_t *status, apr_proc_t *ret, apr_pool_t *p);
+void ap_process_child_status(apr_proc_t *pid, ap_wait_t status);
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 void ap_sock_disable_nagle(int s);
 #else

@@ -119,10 +119,10 @@ typedef struct {
     int auth_dbauthoritative;
 } db_auth_config_rec;
 
-static void *create_db_auth_dir_config(ap_pool_t *p, char *d)
+static void *create_db_auth_dir_config(apr_pool_t *p, char *d)
 {
     db_auth_config_rec *sec
-    = (db_auth_config_rec *) ap_pcalloc(p, sizeof(db_auth_config_rec));
+    = (db_auth_config_rec *) apr_pcalloc(p, sizeof(db_auth_config_rec));
     sec->auth_dbpwfile = NULL;
     sec->auth_dbgrpfile = NULL;
     sec->auth_dbauthoritative = 1;	/* fortress is secure by default */
@@ -242,7 +242,7 @@ static char *get_db_pw(request_rec *r, char *user, const char *auth_dbpwfile)
 #else
     if (!((f->get) (f, &q, &d, 0))) {
 #endif
-	pw = ap_palloc(r->pool, d.size + 1);
+	pw = apr_palloc(r->pool, d.size + 1);
 	strncpy(pw, d.data, d.size);
 	pw[d.size] = '\0';	/* Terminate the string */
     }
@@ -291,7 +291,7 @@ static int db_authenticate_basic_user(request_rec *r)
 						&auth_db_module);
     const char *sent_pw;
     char *real_pw, *colon_pw;
-    ap_status_t invalid_pw;
+    apr_status_t invalid_pw;
     int res;
 
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
@@ -317,7 +317,7 @@ static int db_authenticate_basic_user(request_rec *r)
 	*colon_pw = '\0';
     }
 
-    invalid_pw = ap_validate_password(sent_pw, real_pw);
+    invalid_pw = apr_validate_password(sent_pw, real_pw);
 
     if (invalid_pw != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -340,7 +340,7 @@ static int db_check_auth(request_rec *r)
     char *user = r->user;
     int m = r->method_number;
 
-    const ap_array_header_t *reqs_arr = ap_requires(r);
+    const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
 
     register int x;
@@ -406,7 +406,7 @@ module auth_db_module =
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    db_auth_cmds,		/* command ap_table_t */
+    db_auth_cmds,		/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

@@ -80,7 +80,7 @@ typedef struct
     ap_text *last;
 } ap_text_header;
 
-API_EXPORT(void) ap_text_append(ap_pool_t *p, ap_text_header *hdr,
+API_EXPORT(void) ap_text_append(apr_pool_t *p, ap_text_header *hdr,
                                 const char *text);
 
 
@@ -186,15 +186,15 @@ typedef struct ap_xml_elem
 typedef struct ap_xml_doc
 {
     ap_xml_elem *root;		/* root element */
-    ap_array_header_t *namespaces;	/* array of namespaces used */
+    apr_array_header_t *namespaces;	/* array of namespaces used */
 } ap_xml_doc;
 
 API_EXPORT(int) ap_xml_parse_input(request_rec *r, ap_xml_doc **pdoc);
 
 
 /* Converts an XML element tree to flat text */
-API_EXPORT(void) ap_xml_to_text(ap_pool_t *p, const ap_xml_elem *elem,
-				int style, ap_array_header_t *namespaces,
+API_EXPORT(void) ap_xml_to_text(apr_pool_t *p, const ap_xml_elem *elem,
+				int style, apr_array_header_t *namespaces,
 				int *ns_map, const char **pbuf, size_t *psize);
 
 /* style argument values: */
@@ -203,17 +203,17 @@ API_EXPORT(void) ap_xml_to_text(ap_pool_t *p, const ap_xml_elem *elem,
 #define AP_XML_X2T_LANG_INNER	2	/* xml:lang + inner contents */
 #define AP_XML_X2T_FULL_NS_LANG	3	/* FULL + ns defns + xml:lang */
 
-API_EXPORT(const char *) ap_xml_empty_elem(ap_pool_t *p,
+API_EXPORT(const char *) ap_xml_empty_elem(apr_pool_t *p,
                                            const ap_xml_elem *elem);
 
-API_EXPORT(const char *) ap_xml_quote_string(ap_pool_t *p, const char *s,
+API_EXPORT(const char *) ap_xml_quote_string(apr_pool_t *p, const char *s,
                                              int quotes);
-API_EXPORT(void) ap_xml_quote_elem(ap_pool_t *p, ap_xml_elem *elem);
+API_EXPORT(void) ap_xml_quote_elem(apr_pool_t *p, ap_xml_elem *elem);
 
 /* manage an array of unique URIs: ap_xml_insert_uri() and AP_XML_URI_ITEM() */
 
 /* return the URI's (existing) index, or insert it and return a new index */
-API_EXPORT(int) ap_xml_insert_uri(ap_array_header_t *uri_array,
+API_EXPORT(int) ap_xml_insert_uri(apr_array_header_t *uri_array,
                                   const char *uri);
 #define AP_XML_GET_URI_ITEM(ary, i)    (((const char * const *)(ary)->elts)[i])
 

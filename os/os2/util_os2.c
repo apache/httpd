@@ -69,7 +69,7 @@
 #include <string.h>
 
 
-API_EXPORT(char *)ap_os_case_canonical_filename(ap_pool_t *pPool, const char *szFile)
+API_EXPORT(char *)ap_os_case_canonical_filename(apr_pool_t *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     char buf2[HUGE_STRING_LEN];
@@ -88,9 +88,9 @@ API_EXPORT(char *)ap_os_case_canonical_filename(ap_pool_t *pPool, const char *sz
     if (rc) {
         if ( rc != ERROR_INVALID_NAME ) {
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL, "OS/2 error %d for file %s", rc, szFile);
-            return ap_pstrdup(pPool, "");
+            return apr_pstrdup(pPool, "");
         } else {
-            return ap_pstrdup(pPool, szFile);
+            return apr_pstrdup(pPool, szFile);
         }
     }
 
@@ -99,7 +99,7 @@ API_EXPORT(char *)ap_os_case_canonical_filename(ap_pool_t *pPool, const char *sz
         if (*pos == '\\')
             *pos = '/';
     
-    return ap_pstrdup(pPool, buf2);
+    return apr_pstrdup(pPool, buf2);
 }
 
 
@@ -119,7 +119,7 @@ static void fix_component(char *path, char *lastcomp)
 
 
 
-char *ap_os_systemcase_canonical_filename(ap_pool_t *pPool, const char *szFile)
+char *ap_os_systemcase_canonical_filename(apr_pool_t *pPool, const char *szFile)
 {
     char *szCanonicalFile = ap_os_case_canonical_filename(pPool, szFile);
     int startslash = 2, slashnum=0;
@@ -149,7 +149,7 @@ char *ap_os_systemcase_canonical_filename(ap_pool_t *pPool, const char *szFile)
 
 
 
-char *ap_os_canonical_filename(ap_pool_t *pPool, const char *szFile)
+char *ap_os_canonical_filename(apr_pool_t *pPool, const char *szFile)
 {
     char *szCanonicalFile = ap_os_systemcase_canonical_filename(pPool, szFile);
     strlwr(szCanonicalFile);

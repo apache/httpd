@@ -74,7 +74,7 @@ static void stats(FILE *output);
 #define MAXDNAME 256
 #endif
 
-/* number of buckets in cache hash ap_table_t */
+/* number of buckets in cache hash apr_table_t */
 #define BUCKETS 256
 
 #if defined(NEED_STRDUP)
@@ -289,7 +289,7 @@ int main (int argc, char *argv[])
     int i, check;
 
 #ifdef WIN32
-    /*  If we apr'ify this code, ap_create_pool/ap_destroy_pool
+    /*  If we apr'ify this code, apr_create_pool/apr_destroy_pool
      *  should perform the WSAStartup/WSACleanup for us. 
      */
     WSADATA wsaData;

@@ -82,51 +82,51 @@ typedef struct {
 } alias_entry;
 
 typedef struct {
-    ap_array_header_t *aliases;
-    ap_array_header_t *redirects;
+    apr_array_header_t *aliases;
+    apr_array_header_t *redirects;
 } alias_server_conf;
 
 typedef struct {
-    ap_array_header_t *redirects;
+    apr_array_header_t *redirects;
 } alias_dir_conf;
 
 module MODULE_VAR_EXPORT alias_module;
 
-static void *create_alias_config(ap_pool_t *p, server_rec *s)
+static void *create_alias_config(apr_pool_t *p, server_rec *s)
 {
     alias_server_conf *a =
-    (alias_server_conf *) ap_pcalloc(p, sizeof(alias_server_conf));
+    (alias_server_conf *) apr_pcalloc(p, sizeof(alias_server_conf));
 
-    a->aliases = ap_make_array(p, 20, sizeof(alias_entry));
-    a->redirects = ap_make_array(p, 20, sizeof(alias_entry));
+    a->aliases = apr_make_array(p, 20, sizeof(alias_entry));
+    a->redirects = apr_make_array(p, 20, sizeof(alias_entry));
     return a;
 }
 
-static void *create_alias_dir_config(ap_pool_t *p, char *d)
+static void *create_alias_dir_config(apr_pool_t *p, char *d)
 {
     alias_dir_conf *a =
-    (alias_dir_conf *) ap_pcalloc(p, sizeof(alias_dir_conf));
-    a->redirects = ap_make_array(p, 2, sizeof(alias_entry));
+    (alias_dir_conf *) apr_pcalloc(p, sizeof(alias_dir_conf));
+    a->redirects = apr_make_array(p, 2, sizeof(alias_entry));
     return a;
 }
 
-static void *merge_alias_config(ap_pool_t *p, void *basev, void *overridesv)
+static void *merge_alias_config(apr_pool_t *p, void *basev, void *overridesv)
 {
     alias_server_conf *a =
-    (alias_server_conf *) ap_pcalloc(p, sizeof(alias_server_conf));
+    (alias_server_conf *) apr_pcalloc(p, sizeof(alias_server_conf));
     alias_server_conf *base = (alias_server_conf *) basev, *overrides = (alias_server_conf *) overridesv;
 
-    a->aliases = ap_append_arrays(p, overrides->aliases, base->aliases);
-    a->redirects = ap_append_arrays(p, overrides->redirects, base->redirects);
+    a->aliases = apr_append_arrays(p, overrides->aliases, base->aliases);
+    a->redirects = apr_append_arrays(p, overrides->redirects, base->redirects);
     return a;
 }
 
-static void *merge_alias_dir_config(ap_pool_t *p, void *basev, void *overridesv)
+static void *merge_alias_dir_config(apr_pool_t *p, void *basev, void *overridesv)
 {
     alias_dir_conf *a =
-    (alias_dir_conf *) ap_pcalloc(p, sizeof(alias_dir_conf));
+    (alias_dir_conf *) apr_pcalloc(p, sizeof(alias_dir_conf));
     alias_dir_conf *base = (alias_dir_conf *) basev, *overrides = (alias_dir_conf *) overridesv;
-    a->redirects = ap_append_arrays(p, overrides->redirects, base->redirects);
+    a->redirects = apr_append_arrays(p, overrides->redirects, base->redirects);
     return a;
 }
 
@@ -137,7 +137,7 @@ static const char *add_alias_internal(cmd_parms *cmd, void *dummy,
     server_rec *s = cmd->server;
     alias_server_conf *conf =
     (alias_server_conf *) ap_get_module_config(s->module_config, &alias_module);
-    alias_entry *new = ap_push_array(conf->aliases);
+    alias_entry *new = apr_push_array(conf->aliases);
 
     /* XX r can NOT be relative to DocumentRoot here... compat bug. */
 
@@ -213,9 +213,9 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     }
 
     if (cmd->path)
-	new = ap_push_array(dirconf->redirects);
+	new = apr_push_array(dirconf->redirects);
     else
-	new = ap_push_array(serverconf->redirects);
+	new = apr_push_array(serverconf->redirects);
 
     new->fake = f;
     new->real = url;
@@ -309,7 +309,7 @@ static int alias_matches(const char *uri, const char *alias_fakename)
     return urip - uri;
 }
 
-static char *try_alias_list(request_rec *r, ap_array_header_t *aliases, int doesc, int *status)
+static char *try_alias_list(request_rec *r, apr_array_header_t *aliases, int doesc, int *status)
 {
     alias_entry *entries = (alias_entry *) aliases->elts;
     regmatch_t regm[10];
@@ -331,7 +331,7 @@ static char *try_alias_list(request_rec *r, ap_array_header_t *aliases, int does
 		}
 		else {
 		    /* need something non-null */
-		    found = ap_pstrdup(r->pool, "");
+		    found = apr_pstrdup(r->pool, "");
 		}
 	    }
 	}
@@ -343,17 +343,17 @@ static char *try_alias_list(request_rec *r, ap_array_header_t *aliases, int does
 		    char *escurl;
 		    escurl = ap_os_escape_path(r->pool, r->uri + l, 1);
 
-		    found = ap_pstrcat(r->pool, p->real, escurl, NULL);
+		    found = apr_pstrcat(r->pool, p->real, escurl, NULL);
 		}
 		else
-		    found = ap_pstrcat(r->pool, p->real, r->uri + l, NULL);
+		    found = apr_pstrcat(r->pool, p->real, r->uri + l, NULL);
 	    }
 	}
 
 	if (found) {
 	    if (p->handler) {	/* Set handler, and leave a note for mod_cgi */
 		r->handler = p->handler;
-		ap_table_setn(r->notes, "alias-forced-type", r->handler);
+		apr_table_setn(r->notes, "alias-forced-type", r->handler);
 	    }
 
 	    *status = p->redir_status;
@@ -381,9 +381,9 @@ static int translate_alias_redir(request_rec *r)
 	if (ap_is_HTTP_REDIRECT(status)) {
 	    /* include QUERY_STRING if any */
 	    if (r->args) {
-		ret = ap_pstrcat(r->pool, ret, "?", r->args, NULL);
+		ret = apr_pstrcat(r->pool, ret, "?", r->args, NULL);
 	    }
-	    ap_table_setn(r->headers_out, "Location", ret);
+	    apr_table_setn(r->headers_out, "Location", ret);
 	}
 	return status;
     }
@@ -408,7 +408,7 @@ static int fixup_redir(request_rec *r)
 
     if ((ret = try_alias_list(r, dirconf->redirects, 1, &status)) != NULL) {
 	if (ap_is_HTTP_REDIRECT(status))
-	    ap_table_setn(r->headers_out, "Location", ret);
+	    apr_table_setn(r->headers_out, "Location", ret);
 	return status;
     }
 
@@ -430,7 +430,7 @@ module MODULE_VAR_EXPORT alias_module =
     merge_alias_dir_config,	/* dir merger --- default is to override */
     create_alias_config,	/* server config */
     merge_alias_config,		/* merge server configs */
-    alias_cmds,			/* command ap_table_t */
+    alias_cmds,			/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

@@ -137,15 +137,15 @@ static void make_cookie(request_rec *r)
     dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
 
     /* XXX: hmm, this should really tie in with mod_unique_id */
-    ap_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%qd", rname, ap_now());
+    apr_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%qd", rname, apr_now());
 
     if (cls->expires) {
 	ap_exploded_time_t tms;
 
-	ap_explode_gmt(&tms, r->request_time + cls->expires * AP_USEC_PER_SEC);
+	apr_explode_gmt(&tms, r->request_time + cls->expires * AP_USEC_PER_SEC);
 
         /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
-        new_cookie = ap_psprintf(r->pool,
+        new_cookie = apr_psprintf(r->pool,
                 "%s=%s; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
                     dcfg->cookie_name, cookiebuf, ap_day_snames[tms.tm_wday],
                     tms.tm_mday, ap_month_snames[tms.tm_mon],
@@ -153,12 +153,12 @@ static void make_cookie(request_rec *r)
                     tms.tm_hour, tms.tm_min, tms.tm_sec);
     }
     else {
-	new_cookie = ap_psprintf(r->pool, "%s=%s; path=/",
+	new_cookie = apr_psprintf(r->pool, "%s=%s; path=/",
 				 dcfg->cookie_name, cookiebuf);
     }
 
-    ap_table_setn(r->headers_out, "Set-Cookie", new_cookie);
-    ap_table_setn(r->notes, "cookie", ap_pstrdup(r->pool, cookiebuf));   /* log first time */
+    apr_table_setn(r->headers_out, "Set-Cookie", new_cookie);
+    apr_table_setn(r->notes, "cookie", apr_pstrdup(r->pool, cookiebuf));   /* log first time */
     return;
 }
 
@@ -173,18 +173,18 @@ static int spot_cookie(request_rec *r)
         return DECLINED;
     }
 
-    if ((cookie = ap_table_get(r->headers_in, "Cookie")))
+    if ((cookie = apr_table_get(r->headers_in, "Cookie")))
         if ((value = strstr(cookie, dcfg->cookie_name))) {
             char *cookiebuf, *cookieend;
 
             value += strlen(dcfg->cookie_name) + 1;  /* Skip over the '=' */
-            cookiebuf = ap_pstrdup(r->pool, value);
+            cookiebuf = apr_pstrdup(r->pool, value);
             cookieend = strchr(cookiebuf, ';');
             if (cookieend)
                 *cookieend = '\0';      /* Ignore anything after a ; */
 
             /* Set the cookie in a note, for logging */
-            ap_table_setn(r->notes, "cookie", cookiebuf);
+            apr_table_setn(r->notes, "cookie", cookiebuf);
 
             return DECLINED;    /* There's already a cookie, no new one */
         }
@@ -192,21 +192,21 @@ static int spot_cookie(request_rec *r)
     return OK;                  /* We set our cookie */
 }
 
-static void *make_cookie_log_state(ap_pool_t *p, server_rec *s)
+static void *make_cookie_log_state(apr_pool_t *p, server_rec *s)
 {
     cookie_log_state *cls =
-    (cookie_log_state *) ap_palloc(p, sizeof(cookie_log_state));
+    (cookie_log_state *) apr_palloc(p, sizeof(cookie_log_state));
 
     cls->expires = 0;
 
     return (void *) cls;
 }
 
-static void *make_cookie_dir(ap_pool_t *p, char *d)
+static void *make_cookie_dir(apr_pool_t *p, char *d)
 {
     cookie_dir_rec *dcfg;
 
-    dcfg = (cookie_dir_rec *) ap_pcalloc(p, sizeof(cookie_dir_rec));
+    dcfg = (cookie_dir_rec *) apr_pcalloc(p, sizeof(cookie_dir_rec));
     dcfg->cookie_name = COOKIE_NAME;
     dcfg->enabled = 0;
     return dcfg;
@@ -291,7 +291,7 @@ static const char *set_cookie_name(cmd_parms *cmd, void *mconfig, char *name)
 {
     cookie_dir_rec *dcfg = (cookie_dir_rec *) mconfig;
 
-    dcfg->cookie_name = ap_pstrdup(cmd->pool, name);
+    dcfg->cookie_name = apr_pstrdup(cmd->pool, name);
     return NULL;
 }
 
@@ -314,7 +314,7 @@ module MODULE_VAR_EXPORT usertrack_module = {
     NULL,                       /* dir merger --- default is to override */
     make_cookie_log_state,      /* server config */
     NULL,                       /* merge server configs */
-    cookie_log_cmds,            /* command ap_table_t */
+    cookie_log_cmds,            /* command apr_table_t */
     NULL,                       /* handlers */
     register_hooks		/* register hooks */
 };

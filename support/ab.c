@@ -147,7 +147,7 @@
 #define CBUFFSIZE       2048
 
 struct connection {
-    ap_socket_t *aprsock;
+    apr_socket_t *aprsock;
     int state;
     int read;        		/* amount of bytes read */
     int bread;        		/* amount of body read */
@@ -157,7 +157,7 @@ struct connection {
     int keepalive;        	/* non-zero if a keep-alive request */
     int gotheader;        	/* non-zero if we have the entire header in
         			 * cbuff */
-    ap_time_t start, connect, done;
+    apr_time_t start, connect, done;
     int socknum;
 };
 
@@ -183,7 +183,7 @@ char hostname[1024];        	/* host name */
 char path[1024];        	/* path name */
 char postfile[1024];        	/* name of file containing post data */
 char *postdata;        		/* *buffer containing data from postfile */
-ap_ssize_t postlen = 0;        	/* length of data to be POSTed */
+apr_ssize_t postlen = 0;        	/* length of data to be POSTed */
 char content_type[1024];        /* content type to put in POST header */
 char cookie[1024],        	/* optional cookie line */
      auth[1024],        	/* optional (basic/uuencoded)
@@ -210,22 +210,22 @@ int good = 0, bad = 0;        	/* number of good and bad requests */
 int err_length = 0, err_conn = 0, err_except = 0;
 int err_response = 0;
 
-ap_time_t start, endtime;
+apr_time_t start, endtime;
 
 /* global request (and its length) */
 char request[512];
-ap_ssize_t reqlen;
+apr_ssize_t reqlen;
 
 /* one global throw-away buffer to read stuff into */
 char buffer[8192];
 
 struct connection *con;        	/* connection array */
 struct data *stats;        	/* date for each request */
-ap_pool_t *cntxt;
+apr_pool_t *cntxt;
 
-ap_pollfd_t *readbits;
+apr_pollfd_t *readbits;
 #ifdef NOT_ASCII
-ap_xlate_t *from_ascii, *to_ascii;
+apr_xlate_t *from_ascii, *to_ascii;
 #endif
 
 /* --------------------------------------------------------- */
@@ -240,13 +240,13 @@ static void err(char *s)
 
 /* simple little function to write an APR error string and exit */
 
-static void apr_err(char *s, ap_status_t rv)
+static void apr_err(char *s, apr_status_t rv)
 {
     char buf[120];
 
     fprintf(stderr,
             "%s: %s (%d)\n", 
-            s, ap_strerror(rv, buf, sizeof buf), rv);
+            s, apr_strerror(rv, buf, sizeof buf), rv);
     exit(rv);
 }
 
@@ -257,20 +257,20 @@ static void apr_err(char *s, ap_status_t rv)
 
 static void write_request(struct connection *c)
 {
-    ap_ssize_t len = reqlen;
-    c->connect = ap_now();
-    ap_setsocketopt(c->aprsock, APR_SO_TIMEOUT, 30 * AP_USEC_PER_SEC);
-    if (ap_send(c->aprsock, request, &reqlen) != APR_SUCCESS ||
+    apr_ssize_t len = reqlen;
+    c->connect = apr_now();
+    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, 30 * AP_USEC_PER_SEC);
+    if (apr_send(c->aprsock, request, &reqlen) != APR_SUCCESS ||
         reqlen != len) {
         printf("Send request failed!\n");
     }
     if (posting) {
-        ap_send(c->aprsock, postdata, &postlen);
+        apr_send(c->aprsock, postdata, &postlen);
         totalposted += (reqlen + postlen);
     }
 
     c->state = STATE_READ;
-    ap_add_poll_socket(readbits, c->aprsock, APR_POLLIN);
+    apr_add_poll_socket(readbits, c->aprsock, APR_POLLIN);
 }
 
 /* --------------------------------------------------------- */
@@ -281,7 +281,7 @@ static void output_results(void)
 {
     int timetaken;
 
-    endtime = ap_now();
+    endtime = apr_now();
     timetaken = (endtime - start) / 1000;
 
     printf("\r                                                                           \r");
@@ -358,7 +358,7 @@ static void output_html_results(void)
 {
     int timetaken;
 
-    endtime = ap_now();
+    endtime = apr_now();
     timetaken = (endtime - start) / 1000;
 
     printf("\n\n<table %s>\n", tablestring);
@@ -480,7 +480,7 @@ static void output_html_results(void)
 
 static void start_connect(struct connection *c)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 
     if(!(started < requests)) return;
 
@@ -490,27 +490,27 @@ static void start_connect(struct connection *c)
     c->cbx = 0;
     c->gotheader = 0;
 
-    if ((rv = ap_create_tcp_socket(&c->aprsock, cntxt)) != APR_SUCCESS) {
+    if ((rv = apr_create_tcp_socket(&c->aprsock, cntxt)) != APR_SUCCESS) {
         apr_err("Socket:", rv);
     }
-    if ((rv = ap_set_remote_port(c->aprsock, port)) != APR_SUCCESS) {
+    if ((rv = apr_set_remote_port(c->aprsock, port)) != APR_SUCCESS) {
         apr_err("Port:", rv);
     }
-    c->start = ap_now();
-    if ((rv = ap_connect(c->aprsock, hostname)) != APR_SUCCESS) {
-        if (ap_canonical_error(rv) == APR_EINPROGRESS) {
+    c->start = apr_now();
+    if ((rv = apr_connect(c->aprsock, hostname)) != APR_SUCCESS) {
+        if (apr_canonical_error(rv) == APR_EINPROGRESS) {
             c->state = STATE_CONNECTING;
-            ap_add_poll_socket(readbits, c->aprsock, APR_POLLOUT);
+            apr_add_poll_socket(readbits, c->aprsock, APR_POLLOUT);
             return;
         }
         else {
-            ap_remove_poll_socket(readbits, c->aprsock);
-            ap_close_socket(c->aprsock);
+            apr_remove_poll_socket(readbits, c->aprsock);
+            apr_close_socket(c->aprsock);
             err_conn++;
             if (bad++ > 10) {
                 fprintf(stderr,
                         "\nTest aborted after 10 failures\n\n");
-                apr_err("ap_connect()", rv);
+                apr_err("apr_connect()", rv);
             }
             start_connect(c);
             return;
@@ -544,7 +544,7 @@ static void close_connection(struct connection *c)
         /* save out time */
         if (done < requests) {
             struct data s;
-            c->done = ap_now();
+            c->done = apr_now();
             s.read  = c->read;
             s.ctime = (c->connect - c->start) / 1000;
             s.time  = (c->done - c->start) / 1000;
@@ -552,8 +552,8 @@ static void close_connection(struct connection *c)
         }
     }
 
-    ap_remove_poll_socket(readbits, c->aprsock);
-    ap_close_socket(c->aprsock);
+    apr_remove_poll_socket(readbits, c->aprsock);
+    apr_close_socket(c->aprsock);
 
     /* connect again */
     start_connect(c);
@@ -566,21 +566,21 @@ static void close_connection(struct connection *c)
 
 static void read_connection(struct connection *c)
 {
-    ap_ssize_t r;
-    ap_status_t status;
+    apr_ssize_t r;
+    apr_status_t status;
     char *part;
     char respcode[4];        	/* 3 digits and null */
 
     r = sizeof(buffer);
-    ap_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
-    status = ap_recv(c->aprsock, buffer, &r);
-    if (r == 0 || (status != 0 && ap_canonical_error(status) != APR_EAGAIN)) {
+    apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
+    status = apr_recv(c->aprsock, buffer, &r);
+    if (r == 0 || (status != 0 && apr_canonical_error(status) != APR_EAGAIN)) {
         good++;
         close_connection(c);
         return;
     }
 
-    if (ap_canonical_error(status) == APR_EAGAIN)
+    if (apr_canonical_error(status) == APR_EAGAIN)
         return;
 
     c->read += r;
@@ -592,7 +592,7 @@ static void read_connection(struct connection *c)
         int space = CBUFFSIZE - c->cbx - 1;  /* -1 to allow for 0 terminator */
         int tocopy = (space < r) ? space : r;
 #ifdef NOT_ASCII
-        ap_size_t inbytes_left = space, outbytes_left = space;
+        apr_size_t inbytes_left = space, outbytes_left = space;
 
         status = ap_xlate_conv_buffer(from_ascii, buffer, &inbytes_left,
                                       c->cbuff + c->cbx, &outbytes_left);
@@ -626,8 +626,8 @@ static void read_connection(struct connection *c)
             }
             else {
                 /* header is in invalid or too big - close connection */
-                ap_remove_poll_socket(readbits, c->aprsock);
-                ap_close_socket(c->aprsock);
+                apr_remove_poll_socket(readbits, c->aprsock);
+                apr_close_socket(c->aprsock);
                 err_response++;
                 if (bad++ > 10) {
                     err("\nTest aborted after 10 failures\n\n");
@@ -708,7 +708,7 @@ static void read_connection(struct connection *c)
         }
         if (done < requests) {
             struct data s;
-           c->done = ap_now();
+           c->done = apr_now();
             s.read = c->read;
            s.ctime = (c->connect - c->start) / 1000;
            s.time = (c->done - c->start) / 1000;
@@ -730,13 +730,13 @@ static void read_connection(struct connection *c)
 
 static void test(void)
 {
-    ap_time_t now;
-    ap_interval_time_t timeout;
-    ap_int16_t rv;
+    apr_time_t now;
+    apr_interval_time_t timeout;
+    apr_int16_t rv;
     int i;
-    ap_status_t status;
+    apr_status_t status;
 #ifdef NOT_ASCII
-    ap_size_t inbytes_left, outbytes_left;
+    apr_size_t inbytes_left, outbytes_left;
 #endif
 
     if (!use_html) {
@@ -744,13 +744,13 @@ static void test(void)
         fflush(stdout);
     }
 
-    now = ap_now();
+    now = apr_now();
 
     con = malloc(concurrency * sizeof(struct connection));
     memset(con, 0, concurrency * sizeof(struct connection));
 
     stats = malloc(requests * sizeof(struct data));
-    ap_setup_poll(&readbits, concurrency, cntxt);
+    apr_setup_poll(&readbits, concurrency, cntxt);
 
     /* setup request */
     if (!posting) {
@@ -801,7 +801,7 @@ static void test(void)
 #endif /*NOT_ASCII*/
 
     /* ok - lets start */
-    start = ap_now();
+    start = apr_now();
 
     /* initialise lots of requests */
     for (i = 0; i < concurrency; i++) {
@@ -810,11 +810,11 @@ static void test(void)
     }
 
     while (done < requests) {
-        ap_int32_t n;
-        ap_int32_t timed;
+        apr_int32_t n;
+        apr_int32_t timed;
 
         /* check for time limit expiry */
-        now = ap_now();
+        now = apr_now();
         timed = (now - start) / AP_USEC_PER_SEC;
         if (tlimit && timed > (tlimit * 1000)) {
             requests = done;   /* so stats are correct */
@@ -823,16 +823,16 @@ static void test(void)
         timeout = 30 * AP_USEC_PER_SEC;
 
         n = concurrency;
-        status = ap_poll(readbits, &n, timeout);
+        status = apr_poll(readbits, &n, timeout);
         if (status != APR_SUCCESS)
-            apr_err("ap_poll", status);
+            apr_err("apr_poll", status);
 
         if (!n) {
             err("\nServer timed out\n\n");
         }
 
         for (i = 0; i < concurrency; i++) {
-            ap_get_revents(&rv, con[i].aprsock, readbits);
+            apr_get_revents(&rv, con[i].aprsock, readbits);
 
             /* Note: APR_POLLHUP is set after FIN is received on some
              * systems, so treat that like APR_POLLIN so that we try
@@ -862,14 +862,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.20 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.21 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.20 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.21 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -939,17 +939,17 @@ static int parse_url(char *url)
 
 static int open_postfile(char *pfile)
 {
-    ap_file_t *postfd = NULL;
-    ap_finfo_t finfo;
-    ap_fileperms_t mode = APR_OS_DEFAULT;
-    ap_ssize_t length;
+    apr_file_t *postfd = NULL;
+    apr_finfo_t finfo;
+    apr_fileperms_t mode = APR_OS_DEFAULT;
+    apr_ssize_t length;
 
-    if (ap_open(&postfd, pfile, APR_READ, mode, cntxt) != APR_SUCCESS) {
+    if (apr_open(&postfd, pfile, APR_READ, mode, cntxt) != APR_SUCCESS) {
         printf("Invalid postfile name (%s)\n", pfile);
         return errno;
     }
 
-    ap_getfileinfo(&finfo, postfd);
+    apr_getfileinfo(&finfo, postfd);
     postlen = finfo.size;
     postdata = (char *)malloc(postlen);
     if (!postdata) {
@@ -957,7 +957,7 @@ static int open_postfile(char *pfile)
         return ENOMEM;
     }
     length = postlen;
-    if (ap_read(postfd, postdata, &length) != APR_SUCCESS &&
+    if (apr_read(postfd, postdata, &length) != APR_SUCCESS &&
         length != postlen) {
         printf("error reading postfilen");
         return EIO;
@@ -973,7 +973,7 @@ int main(int argc, char **argv)
     int c, r, l;
     char tmp[1024];
 #ifdef NOT_ASCII
-    ap_status_t status;
+    apr_status_t status;
 #endif
 
     /* table defaults  */
@@ -984,9 +984,9 @@ int main(int argc, char **argv)
     auth[0] = '\0';
     hdrs[0] = '\0';
 
-    ap_initialize();
-    atexit(ap_terminate);
-    ap_create_pool(&cntxt, NULL);
+    apr_initialize();
+    atexit(apr_terminate);
+    apr_create_pool(&cntxt, NULL);
 
 #ifdef NOT_ASCII
     status = ap_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
@@ -1007,7 +1007,7 @@ int main(int argc, char **argv)
 #endif
 
     ap_optind = 1;
-    while (ap_getopt(argc, argv, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:", &c, cntxt) == APR_SUCCESS) {
+    while (apr_getopt(argc, argv, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:", &c, cntxt) == APR_SUCCESS) {
         switch (c) {
         case 'n':
             requests = atoi(ap_optarg);

@@ -72,9 +72,9 @@ extern "C" {
 #include "mpm_default.h"	/* For HARD_.*_LIMIT */
 
 /* The generic shared memory chunk code */
-void reinit_scoreboard(ap_pool_t *p);
+void reinit_scoreboard(apr_pool_t *p);
 
-API_EXPORT(void) reopen_scoreboard(ap_pool_t *p);
+API_EXPORT(void) reopen_scoreboard(apr_pool_t *p);
 
 /* The stuff for Dexter's status table */
 
@@ -100,7 +100,7 @@ typedef struct {
 
 API_VAR_EXPORT extern const char *ap_scoreboard_fname;
 
-ap_status_t ap_cleanup_shared_mem(void *d);
+apr_status_t ap_cleanup_shared_mem(void *d);
 
 #ifdef __cplusplus
 }

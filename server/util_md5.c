@@ -92,7 +92,7 @@
 #include "util_md5.h"
 #include "util_ebcdic.h"
 
-API_EXPORT(char *) ap_md5_binary(ap_pool_t *p, const unsigned char *buf, int length)
+API_EXPORT(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int length)
 {
     const char *hex = "0123456789abcdef";
     ap_md5_ctx_t my_md5;
@@ -104,12 +104,12 @@ API_EXPORT(char *) ap_md5_binary(ap_pool_t *p, const unsigned char *buf, int len
      * Take the MD5 hash of the string argument.
      */
 
-    ap_MD5Init(&my_md5);
+    apr_MD5Init(&my_md5);
 #ifdef CHARSET_EBCDIC
     ap_MD5SetXlate(&my_md5, ap_hdrs_to_ascii);
 #endif
-    ap_MD5Update(&my_md5, buf, (unsigned int)length);
-    ap_MD5Final(hash, &my_md5);
+    apr_MD5Update(&my_md5, buf, (unsigned int)length);
+    apr_MD5Final(hash, &my_md5);
 
     for (i = 0, r = result; i < MD5_DIGESTSIZE; i++) {
 	*r++ = hex[hash[i] >> 4];
@@ -117,10 +117,10 @@ API_EXPORT(char *) ap_md5_binary(ap_pool_t *p, const unsigned char *buf, int len
     }
     *r = '\0';
 
-    return ap_pstrdup(p, result);
+    return apr_pstrdup(p, result);
 }
 
-API_EXPORT(char *) ap_md5(ap_pool_t *p, const unsigned char *string)
+API_EXPORT(char *) ap_md5(apr_pool_t *p, const unsigned char *string)
 {
     return ap_md5_binary(p, string, (int) strlen((char *)string));
 }
@@ -170,16 +170,16 @@ API_EXPORT(char *) ap_md5(ap_pool_t *p, const unsigned char *string)
 static char basis_64[] =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *a, ap_md5_ctx_t *context)
+API_EXPORT(char *) ap_md5contextTo64(apr_pool_t *a, ap_md5_ctx_t *context)
 {
     unsigned char digest[18];
     char *encodedDigest;
     int i;
     char *p;
 
-    encodedDigest = (char *) ap_pcalloc(a, 25 * sizeof(char));
+    encodedDigest = (char *) apr_pcalloc(a, 25 * sizeof(char));
 
-    ap_MD5Final(digest, context);
+    apr_MD5Final(digest, context);
     digest[sizeof(digest) - 1] = digest[sizeof(digest) - 2] = 0;
 
     p = encodedDigest;
@@ -197,45 +197,45 @@ API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *a, ap_md5_ctx_t *context)
 
 #ifdef APACHE_XLATE
 
-API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile,
-                                ap_xlate_t *xlate)
+API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
+                                apr_xlate_t *xlate)
 {
     ap_md5_ctx_t context;
     unsigned char buf[1000];
     long length = 0;
     int nbytes;
-    ap_off_t offset = 0L;
+    apr_off_t offset = 0L;
 
-    ap_MD5Init(&context);
+    apr_MD5Init(&context);
     if (xlate) {
         ap_MD5SetXlate(&context, xlate);
     }
     nbytes = sizeof(buf);
-    while (ap_read(infile, buf, &nbytes) == APR_SUCCESS) {
+    while (apr_read(infile, buf, &nbytes) == APR_SUCCESS) {
 	length += nbytes;
-	ap_MD5Update(&context, buf, nbytes);
+	apr_MD5Update(&context, buf, nbytes);
     }
-    ap_seek(infile, APR_SET, &offset);
+    apr_seek(infile, APR_SET, &offset);
     return ap_md5contextTo64(p, &context);
 }
 
 #else
 
-API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile)
+API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile)
 {
     ap_md5_ctx_t context;
     unsigned char buf[1000];
     long length = 0;
-    ap_ssize_t nbytes;
-    ap_off_t offset = 0L;
+    apr_ssize_t nbytes;
+    apr_off_t offset = 0L;
 
-    ap_MD5Init(&context);
+    apr_MD5Init(&context);
     nbytes = sizeof(buf);
-    while (ap_read(infile, buf, &nbytes) == APR_SUCCESS) {
+    while (apr_read(infile, buf, &nbytes) == APR_SUCCESS) {
 	length += nbytes;
-	ap_MD5Update(&context, buf, nbytes);
+	apr_MD5Update(&context, buf, nbytes);
     }
-    ap_seek(infile, APR_SET, &offset);
+    apr_seek(infile, APR_SET, &offset);
     return ap_md5contextTo64(p, &context);
 }
 

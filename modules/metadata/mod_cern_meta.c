@@ -175,10 +175,10 @@ typedef struct {
     char *metafiles;
 } cern_meta_dir_config;
 
-static void *create_cern_meta_dir_config(ap_pool_t *p, char *dummy)
+static void *create_cern_meta_dir_config(apr_pool_t *p, char *dummy)
 {
     cern_meta_dir_config *new =
-    (cern_meta_dir_config *) ap_palloc(p, sizeof(cern_meta_dir_config));
+    (cern_meta_dir_config *) apr_palloc(p, sizeof(cern_meta_dir_config));
 
     new->metadir = NULL;
     new->metasuffix = NULL;
@@ -187,12 +187,12 @@ static void *create_cern_meta_dir_config(ap_pool_t *p, char *dummy)
     return new;
 }
 
-static void *merge_cern_meta_dir_configs(ap_pool_t *p, void *basev, void *addv)
+static void *merge_cern_meta_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
     cern_meta_dir_config *base = (cern_meta_dir_config *) basev;
     cern_meta_dir_config *add = (cern_meta_dir_config *) addv;
     cern_meta_dir_config *new =
-    (cern_meta_dir_config *) ap_palloc(p, sizeof(cern_meta_dir_config));
+    (cern_meta_dir_config *) apr_palloc(p, sizeof(cern_meta_dir_config));
 
     new->metadir = add->metadir ? add->metadir : base->metadir;
     new->metasuffix = add->metasuffix ? add->metasuffix : base->metasuffix;
@@ -234,15 +234,15 @@ static const command_rec cern_meta_cmds[] =
 /* XXX: this is very similar to ap_scan_script_header_err_core...
  * are the differences deliberate, or just a result of bit rot?
  */
-static int scan_meta_file(request_rec *r, ap_file_t *f)
+static int scan_meta_file(request_rec *r, apr_file_t *f)
 {
     char w[MAX_STRING_LEN];
     char *l;
     int p;
-    ap_table_t *tmp_headers;
+    apr_table_t *tmp_headers;
 
-    tmp_headers = ap_make_table(r->pool, 5);
-    while (ap_fgets(w, MAX_STRING_LEN - 1, f) != APR_SUCCESS) {
+    tmp_headers = apr_make_table(r->pool, 5);
+    while (apr_fgets(w, MAX_STRING_LEN - 1, f) != APR_SUCCESS) {
 
 	/* Delete terminal (CR?)LF */
 
@@ -278,19 +278,19 @@ static int scan_meta_file(request_rec *r, ap_file_t *f)
 	    while (endp > l && ap_isspace(*endp))
 		*endp-- = '\0';
 
-	    tmp = ap_pstrdup(r->pool, l);
+	    tmp = apr_pstrdup(r->pool, l);
 	    ap_content_type_tolower(tmp);
 	    r->content_type = tmp;
 	}
 	else if (!strcasecmp(w, "Status")) {
 	    sscanf(l, "%d", &r->status);
-	    r->status_line = ap_pstrdup(r->pool, l);
+	    r->status_line = apr_pstrdup(r->pool, l);
 	}
 	else {
-	    ap_table_set(tmp_headers, w, l);
+	    apr_table_set(tmp_headers, w, l);
 	}
     }
-    ap_overlap_tables(r->headers_out, tmp_headers, AP_OVERLAP_TABLES_SET);
+    apr_overlap_tables(r->headers_out, tmp_headers, AP_OVERLAP_TABLES_SET);
     return OK;
 }
 
@@ -300,8 +300,8 @@ static int add_cern_meta_data(request_rec *r)
     char *last_slash;
     char *real_file;
     char *scrap_book;
-    ap_file_t *f = NULL;
-    ap_status_t retcode;
+    apr_file_t *f = NULL;
+    apr_status_t retcode;
     cern_meta_dir_config *dconf;
     int rv;
     request_rec *rr;
@@ -324,7 +324,7 @@ static int add_cern_meta_data(request_rec *r)
     };
 
     /* what directory is this file in? */
-    scrap_book = ap_pstrdup(r->pool, r->filename);
+    scrap_book = apr_pstrdup(r->pool, r->filename);
     /* skip leading slash, recovered in later processing */
     scrap_book++;
     last_slash = strrchr(scrap_book, '/');
@@ -342,7 +342,7 @@ static int add_cern_meta_data(request_rec *r)
 	return DECLINED;
     };
 
-    metafilename = ap_pstrcat(r->pool, "/", scrap_book, "/",
+    metafilename = apr_pstrcat(r->pool, "/", scrap_book, "/",
 			   dconf->metadir ? dconf->metadir : DEFAULT_METADIR,
 			   "/", real_file,
 		 dconf->metasuffix ? dconf->metasuffix : DEFAULT_METASUFFIX,
@@ -360,7 +360,7 @@ static int add_cern_meta_data(request_rec *r)
     }
     ap_destroy_sub_req(rr);
 
-    retcode = ap_open(&f, metafilename, APR_READ | APR_CREATE, APR_OS_DEFAULT, r->pool);
+    retcode = apr_open(&f, metafilename, APR_READ | APR_CREATE, APR_OS_DEFAULT, r->pool);
     if (retcode != APR_SUCCESS) {
 	if (errno == ENOENT) {
 	    return DECLINED;
@@ -372,7 +372,7 @@ static int add_cern_meta_data(request_rec *r)
 
     /* read the headers in */
     rv = scan_meta_file(r, f);
-    ap_close(f);
+    apr_close(f);
 
     return rv;
 }
@@ -387,7 +387,7 @@ module MODULE_VAR_EXPORT cern_meta_module =
     merge_cern_meta_dir_configs,/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server configs */
-    cern_meta_cmds,		/* command ap_table_t */
+    cern_meta_cmds,		/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

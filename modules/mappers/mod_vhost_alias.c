@@ -104,11 +104,11 @@ typedef struct mva_sconf_t {
     mva_mode_e cgi_root_mode;
 } mva_sconf_t;
 
-static void *mva_create_server_config(ap_pool_t *p, server_rec *s)
+static void *mva_create_server_config(apr_pool_t *p, server_rec *s)
 {
     mva_sconf_t *conf;
 
-    conf = (mva_sconf_t *) ap_pcalloc(p, sizeof(mva_sconf_t));
+    conf = (mva_sconf_t *) apr_pcalloc(p, sizeof(mva_sconf_t));
     conf->doc_root = NULL;
     conf->cgi_root = NULL;
     conf->doc_root_mode = VHOST_ALIAS_UNSET;
@@ -116,13 +116,13 @@ static void *mva_create_server_config(ap_pool_t *p, server_rec *s)
     return conf;
 }
 
-static void *mva_merge_server_config(ap_pool_t *p, void *parentv, void *childv)
+static void *mva_merge_server_config(apr_pool_t *p, void *parentv, void *childv)
 {
     mva_sconf_t *parent = (mva_sconf_t *) parentv;
     mva_sconf_t *child = (mva_sconf_t *) childv;
     mva_sconf_t *conf;
 
-    conf = (mva_sconf_t *) ap_pcalloc(p, sizeof(*conf));
+    conf = (mva_sconf_t *) apr_pcalloc(p, sizeof(*conf));
     if (child->doc_root_mode == VHOST_ALIAS_UNSET) {
 	conf->doc_root_mode = parent->doc_root_mode;
 	conf->doc_root = parent->doc_root;
@@ -272,10 +272,10 @@ static ap_inline void vhost_alias_checkspace(request_rec *r, char *buf,
     if (*pdest + size > buf + HUGE_STRING_LEN) {
 	**pdest = '\0';
 	if (r->filename) {
-	    r->filename = ap_pstrcat(r->pool, r->filename, buf, NULL);
+	    r->filename = apr_pstrcat(r->pool, r->filename, buf, NULL);
 	}
 	else {
-	    r->filename = ap_pstrdup(r->pool, buf);
+	    r->filename = apr_pstrdup(r->pool, buf);
 	}
 	*pdest = buf;
     }
@@ -333,7 +333,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 	    ++map;
 	    /* no. of decimal digits in a short plus one */
 	    vhost_alias_checkspace(r, buf, &dest, 7);
-	    dest += ap_snprintf(dest, 7, "%d", ap_get_server_port(r));
+	    dest += apr_snprintf(dest, 7, "%d", ap_get_server_port(r));
 	    continue;
 	}
 	/* deal with %-N+.-M+ -- syntax is already checked */
@@ -403,10 +403,10 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 	++uri;
     }
     if (r->filename) {
-	r->filename = ap_pstrcat(r->pool, r->filename, buf, uri, NULL);
+	r->filename = apr_pstrcat(r->pool, r->filename, buf, uri, NULL);
     }
     else {
-	r->filename = ap_pstrcat(r->pool, buf, uri, NULL);
+	r->filename = apr_pstrcat(r->pool, buf, uri, NULL);
     }
 }
 
@@ -452,7 +452,7 @@ static int mva_translate(request_rec *r)
     if (cgi) {
 	/* see is_scriptaliased() in mod_cgi */
 	r->handler = "cgi-script";
-	ap_table_setn(r->notes, "alias-forced-type", r->handler);
+	apr_table_setn(r->notes, "alias-forced-type", r->handler);
     }
 
     return OK;
@@ -470,7 +470,7 @@ module MODULE_VAR_EXPORT vhost_alias_module =
     NULL,			/* dir merger --- default is to override */
     mva_create_server_config,	/* server config */
     mva_merge_server_config,	/* merge server configs */
-    mva_commands,		/* command ap_table_t */
+    mva_commands,		/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks              /* register hooks */
 };

@@ -77,7 +77,7 @@ struct ap_listen_rec {
     /**
      * The actual socket 
      */
-    ap_socket_t *sd;
+    apr_socket_t *sd;
     /**
      * Is this socket currently active 
      */

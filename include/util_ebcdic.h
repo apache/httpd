@@ -68,9 +68,9 @@ extern "C" {
 #include "apr_xlate.h"
 #include "util_charset.h"
 
-ap_status_t ap_init_ebcdic(ap_pool_t *);
+apr_status_t ap_init_ebcdic(apr_pool_t *);
 
-ap_xlate_t *ap_checkconv(struct request_rec *);
+apr_xlate_t *ap_checkconv(struct request_rec *);
 
 #ifdef __cplusplus
 }

@@ -86,10 +86,10 @@ typedef struct auth_config_struct {
     int auth_authoritative;
 } auth_config_rec;
 
-static void *create_auth_dir_config(ap_pool_t *p, char *d)
+static void *create_auth_dir_config(apr_pool_t *p, char *d)
 {
     auth_config_rec *sec =
-    (auth_config_rec *) ap_pcalloc(p, sizeof(auth_config_rec));
+    (auth_config_rec *) apr_pcalloc(p, sizeof(auth_config_rec));
     sec->auth_pwfile = NULL;	/* just to illustrate the default really */
     sec->auth_grpfile = NULL;	/* unless you have a broken HP cc */
     sec->auth_authoritative = 1;	/* keep the fortress secure by default */
@@ -100,7 +100,7 @@ static const char *set_auth_slot(cmd_parms *cmd, void *offset, const char *f,
                                  const char *t)
 {
     if (t && strcmp(t, "standard"))
-	return ap_pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
+	return apr_pstrcat(cmd->pool, "Invalid auth file type: ", t, NULL);
 
     return ap_set_file_slot(cmd, offset, f);
 }
@@ -128,7 +128,7 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     configfile_t *f;
     char l[MAX_STRING_LEN];
     const char *rpw, *w;
-    ap_status_t status;
+    apr_status_t status;
 
     if ((status = ap_pcfg_openfile(&f, r->pool, auth_pwfile)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
@@ -150,14 +150,14 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     return NULL;
 }
 
-static ap_table_t *groups_for_user(ap_pool_t *p, char *user, char *grpfile)
+static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
 {
     configfile_t *f;
-    ap_table_t *grps = ap_make_table(p, 15);
-    ap_pool_t *sp;
+    apr_table_t *grps = apr_make_table(p, 15);
+    apr_pool_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
-    ap_status_t status;
+    apr_status_t status;
 
     if ((status = ap_pcfg_openfile(&f, p, grpfile)) != APR_SUCCESS) {
 /*add?	aplog_error(APLOG_MARK, APLOG_ERR, NULL,
@@ -165,26 +165,26 @@ static ap_table_t *groups_for_user(ap_pool_t *p, char *user, char *grpfile)
 	return NULL;
     }
 
-    ap_create_pool(&sp, p);
+    apr_create_pool(&sp, p);
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {
 	if ((l[0] == '#') || (!l[0]))
 	    continue;
 	ll = l;
-	ap_clear_pool(sp);
+	apr_clear_pool(sp);
 
 	group_name = ap_getword(sp, &ll, ':');
 
 	while (ll[0]) {
 	    w = ap_getword_conf(sp, &ll);
 	    if (!strcmp(w, user)) {
-		ap_table_setn(grps, ap_pstrdup(p, group_name), "in");
+		apr_table_setn(grps, apr_pstrdup(p, group_name), "in");
 		break;
 	    }
 	}
     }
     ap_cfg_closefile(f);
-    ap_destroy_pool(sp);
+    apr_destroy_pool(sp);
     return grps;
 }
 
@@ -208,7 +208,7 @@ static int authenticate_basic_user(request_rec *r)
     (auth_config_rec *) ap_get_module_config(r->per_dir_config, &auth_module);
     const char *sent_pw;
     char *real_pw;
-    ap_status_t invalid_pw;
+    apr_status_t invalid_pw;
     int res;
 
     if ((res = ap_get_basic_auth_pw(r, &sent_pw)))
@@ -225,7 +225,7 @@ static int authenticate_basic_user(request_rec *r)
 	ap_note_basic_auth_failure(r);
 	return HTTP_UNAUTHORIZED;
     }
-    invalid_pw = ap_validate_password(sent_pw, real_pw);
+    invalid_pw = apr_validate_password(sent_pw, real_pw);
     if (invalid_pw != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
 		      "user %s: authentication failure for \"%s\": "
@@ -248,8 +248,8 @@ static int check_user_access(request_rec *r)
     int method_restricted = 0;
     register int x;
     const char *t, *w;
-    ap_table_t *grpstatus;
-    const ap_array_header_t *reqs_arr = ap_requires(r);
+    apr_table_t *grpstatus;
+    const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs;
 
     /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive, 
@@ -288,7 +288,7 @@ static int check_user_access(request_rec *r)
 
 	    while (t[0]) {
 		w = ap_getword_conf(r->pool, &t);
-		if (ap_table_get(grpstatus, w))
+		if (apr_table_get(grpstatus, w))
 		    return OK;
 	    }
 	} else if (sec->auth_authoritative) {
@@ -331,7 +331,7 @@ module MODULE_VAR_EXPORT auth_module =
     NULL,			/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    auth_cmds,			/* command ap_table_t */
+    auth_cmds,			/* command apr_table_t */
     NULL,			/* handlers */
     register_hooks		/* register hooks */
 };

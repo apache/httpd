@@ -86,7 +86,7 @@ static BOOL OnlyDots(char *pString)
  * is present on the existing path.  This routine also
  * converts alias names to long names.
  */
-API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool, 
+API_EXPORT(char *) ap_os_systemcase_filename(apr_pool_t *pPool, 
                                              const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
@@ -98,10 +98,10 @@ API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool,
     WIN32_FIND_DATA wfd;
 
     if (!szFile || strlen(szFile) == 0 || strlen(szFile) >= sizeof(buf))
-        return ap_pstrdup(pPool, "");
+        return apr_pstrdup(pPool, "");
 
     buf[0] = '\0';
-    pInputName = ap_pstrdup(pPool, szFile);
+    pInputName = apr_pstrdup(pPool, szFile);
 
     /* First convert all slashes to \ so Win32 calls work OK */
     for (p = pInputName; *p; p++) {
@@ -199,14 +199,14 @@ API_EXPORT(char *) ap_os_systemcase_filename(ap_pool_t *pPool,
             *p = '/';
     }
 
-    return ap_pstrdup(pPool, buf);
+    return apr_pstrdup(pPool, buf);
 }
 
 
 /*  Perform canonicalization with the exception that the
  *  input case is preserved.
  */
-API_EXPORT(char *) ap_os_case_canonical_filename(ap_pool_t *pPool, 
+API_EXPORT(char *) ap_os_case_canonical_filename(apr_pool_t *pPool, 
                                                  const char *szFile)
 {
     char *pNewStr;
@@ -215,9 +215,9 @@ API_EXPORT(char *) ap_os_case_canonical_filename(ap_pool_t *pPool,
     char *q;
 
     if (szFile == NULL || strlen(szFile) == 0)
-        return ap_pstrdup(pPool, "");
+        return apr_pstrdup(pPool, "");
 
-    pNewStr = ap_pstrdup(pPool, szFile);
+    pNewStr = apr_pstrdup(pPool, szFile);
 
     /*  Change all '\' characters to '/' characters.
      *  While doing this, remove any trailing '.'.
@@ -315,7 +315,7 @@ API_EXPORT(char *) ap_os_case_canonical_filename(ap_pool_t *pPool,
 
             } while (p != NULL); 
 
-            pNewStr = ap_pstrdup(pPool, buf);
+            pNewStr = apr_pstrdup(pPool, buf);
         }
     }
 
@@ -325,7 +325,7 @@ API_EXPORT(char *) ap_os_case_canonical_filename(ap_pool_t *pPool,
 
 /*  Perform complete canonicalization.
  */
-API_EXPORT(char *) ap_os_canonical_filename(ap_pool_t *pPool, const char *szFile)
+API_EXPORT(char *) ap_os_canonical_filename(apr_pool_t *pPool, const char *szFile)
 {
     char *pNewName;
     pNewName = ap_os_case_canonical_filename(pPool, szFile);

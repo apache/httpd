@@ -119,7 +119,7 @@
 
 
 /* ack. forward declare. */
-static dav_error * dav_fs_remove_locknull_member(ap_pool_t *p,
+static dav_error * dav_fs_remove_locknull_member(apr_pool_t *p,
 						 const char *filename,
 						 dav_buffer *pbuf);
 
@@ -208,7 +208,7 @@ typedef struct dav_lock_indirect
 struct dav_lockdb_private
 {
     request_rec *r;			/* for accessing the uuid state */
-    ap_pool_t *pool;			/* a pool to use */
+    apr_pool_t *pool;			/* a pool to use */
     const char *lockdb_path;		/* where is the lock database? */
 
     int opened;				/* we opened the database */
@@ -246,7 +246,7 @@ static dav_lock *dav_fs_alloc_lock(dav_lockdb *lockdb, dav_datum key,
 {
     dav_lock_combined *comb;
 
-    comb = ap_pcalloc(lockdb->info->pool, sizeof(*comb));
+    comb = apr_pcalloc(lockdb->info->pool, sizeof(*comb));
     comb->pub.rectype = DAV_LOCKREC_DIRECT;
     comb->pub.info = &comb->priv;
     comb->priv.key = key;
@@ -269,7 +269,7 @@ static dav_lock *dav_fs_alloc_lock(dav_lockdb *lockdb, dav_datum key,
 ** Parse an opaquelocktoken URI into a locktoken.
 */
 static dav_error * dav_fs_parse_locktoken(
-    ap_pool_t *p,
+    apr_pool_t *p,
     const char *char_token,
     dav_locktoken **locktoken_p)
 {
@@ -283,7 +283,7 @@ static dav_error * dav_fs_parse_locktoken(
     }
     char_token += 16;
 
-    locktoken = ap_pcalloc(p, sizeof(*locktoken));
+    locktoken = apr_pcalloc(p, sizeof(*locktoken));
     if (dav_parse_opaquelocktoken(char_token, &locktoken->uuid)) {
 	return dav_new_error(p, HTTP_BAD_REQUEST, DAV_ERR_LOCK_PARSE_TOKEN,
 			     "The opaquelocktoken has an incorrect format "
@@ -300,11 +300,11 @@ static dav_error * dav_fs_parse_locktoken(
 ** Generate the URI for a locktoken
 */
 static const char *dav_fs_format_locktoken(
-    ap_pool_t *p,
+    apr_pool_t *p,
     const dav_locktoken *locktoken)
 {
     const char *uuid_token = dav_format_opaquelocktoken(p, &locktoken->uuid);
-    return ap_pstrcat(p, "opaquelocktoken:", uuid_token, NULL);
+    return apr_pstrcat(p, "opaquelocktoken:", uuid_token, NULL);
 }
 
 /*
@@ -362,7 +362,7 @@ static dav_error * dav_fs_open_lockdb(request_rec *r, int ro, int force,
 {
     dav_lockdb_combined *comb;
 
-    comb = ap_pcalloc(r->pool, sizeof(*comb));
+    comb = apr_pcalloc(r->pool, sizeof(*comb));
     comb->pub.hooks = &dav_hooks_locks_fs;
     comb->pub.ro = ro;
     comb->pub.info = &comb->priv;
@@ -405,7 +405,7 @@ static void dav_fs_close_lockdb(dav_lockdb *lockdb)
 **
 ** Given a pathname, build a DAV_TYPE_FNAME lock database key.
 */
-static dav_datum dav_fs_build_fname_key(ap_pool_t *p, const char *pathname)
+static dav_datum dav_fs_build_fname_key(apr_pool_t *p, const char *pathname)
 {
     dav_datum key;
 
@@ -414,7 +414,7 @@ static dav_datum dav_fs_build_fname_key(ap_pool_t *p, const char *pathname)
 
     /* size is TYPE + pathname + null */
     key.dsize = strlen(pathname) + 2;
-    key.dptr = ap_palloc(p, key.dsize);
+    key.dptr = apr_palloc(p, key.dsize);
     *key.dptr = DAV_TYPE_FNAME;
     memcpy(key.dptr + 1, pathname, key.dsize - 1);
     if (key.dptr[key.dsize - 2] == '/')
@@ -432,19 +432,19 @@ static dav_datum dav_fs_build_fname_key(ap_pool_t *p, const char *pathname)
 **    (non-Win32 and file exists ):
 **       dav_datum->dvalue = inode, dev_major, dev_minor
 */
-static dav_datum dav_fs_build_key(ap_pool_t *p, const dav_resource *resource)
+static dav_datum dav_fs_build_key(apr_pool_t *p, const dav_resource *resource)
 {
     const char *file = dav_fs_pathname(resource);
 #ifndef WIN32
     dav_datum key;
-    ap_finfo_t finfo;
+    apr_finfo_t finfo;
 
     /* ### use lstat() ?? */
-    if (ap_stat(&finfo, file, p) == 0) {
+    if (apr_stat(&finfo, file, p) == 0) {
 
 	/* ### can we use a buffer for this? */
 	key.dsize = 1 + sizeof(finfo.inode) + sizeof(finfo.device);
-	key.dptr = ap_palloc(p, key.dsize);
+	key.dptr = apr_palloc(p, key.dsize);
 	*key.dptr = DAV_TYPE_INODE;
 	memcpy(key.dptr + 1, &finfo.inode, sizeof(finfo.inode));
 	memcpy(key.dptr + 1 + sizeof(finfo.inode), &finfo.device,
@@ -514,9 +514,9 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, dav_datum key,
 	ip = ip->next;
     }
 
-    /* ### can this be ap_palloc() ? */
+    /* ### can this be apr_palloc() ? */
     /* ### hmmm.... investigate the use of a buffer here */
-    ptr = val.dptr = ap_pcalloc(lockdb->info->pool, val.dsize);
+    ptr = val.dptr = apr_pcalloc(lockdb->info->pool, val.dsize);
     dp  = direct;
     ip  = indirect;
 
@@ -585,7 +585,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 					   dav_lock_discovery **direct,
 					   dav_lock_indirect **indirect)
 {
-    ap_pool_t *p = lockdb->info->pool;
+    apr_pool_t *p = lockdb->info->pool;
     dav_error *err;
     size_t offset = 0;
     int need_save = DAV_FALSE;
@@ -622,17 +622,17 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 	case DAV_LOCK_DIRECT:
 	    /* Create and fill a dav_lock_discovery structure */
 
-	    dp = ap_pcalloc(p, sizeof(*dp));
+	    dp = apr_pcalloc(p, sizeof(*dp));
 	    memcpy(dp, val.dptr + offset, sizeof(dp->f));
 	    offset += sizeof(dp->f);
-            dp->locktoken = ap_palloc(p, sizeof(*dp->locktoken));
+            dp->locktoken = apr_palloc(p, sizeof(*dp->locktoken));
             memcpy(dp->locktoken, val.dptr + offset, sizeof(*dp->locktoken));
             offset += sizeof(*dp->locktoken);
 	    if (*(val.dptr + offset) == '\0') {
 		++offset;
 	    }
 	    else {
-		dp->owner = ap_pstrdup(p, val.dptr + offset);
+		dp->owner = apr_pstrdup(p, val.dptr + offset);
 		offset += strlen(dp->owner) + 1;
 	    }
 
@@ -640,7 +640,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
                 ++offset;
             } 
             else {
-                dp->auth_user = ap_pstrdup(p, val.dptr + offset);
+                dp->auth_user = apr_pstrdup(p, val.dptr + offset);
                 offset += strlen(dp->auth_user) + 1;
             }
 
@@ -654,10 +654,10 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 		/* Remove timed-out locknull fm .locknull list */
 		if (*key.dptr == DAV_TYPE_FNAME) {
 		    const char *fname = key.dptr + 1;
-		    ap_finfo_t finfo;
+		    apr_finfo_t finfo;
 
 		    /* if we don't see the file, then it's a locknull */
-		    if (ap_lstat(&finfo, fname, p) != 0) {
+		    if (apr_lstat(&finfo, fname, p) != 0) {
 			if ((err = dav_fs_remove_locknull_member(p, fname, &buf)) != NULL) {
                             /* ### push a higher-level description? */
                             return err;
@@ -670,15 +670,15 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 	case DAV_LOCK_INDIRECT:
 	    /* Create and fill a dav_lock_indirect structure */
 
-	    ip = ap_pcalloc(p, sizeof(*ip));
-            ip->locktoken = ap_palloc(p, sizeof(*ip->locktoken));
+	    ip = apr_pcalloc(p, sizeof(*ip));
+            ip->locktoken = apr_palloc(p, sizeof(*ip->locktoken));
 	    memcpy(ip->locktoken, val.dptr + offset, sizeof(*ip->locktoken));
 	    offset += sizeof(*ip->locktoken);
 	    memcpy(&ip->timeout, val.dptr + offset, sizeof(ip->timeout));
 	    offset += sizeof(ip->timeout);
 	    ip->key.dsize = *((int *) (val.dptr + offset));	/* length of datum */
 	    offset += sizeof(ip->key.dsize);
-	    ip->key.dptr = ap_palloc(p, ip->key.dsize); 
+	    ip->key.dptr = apr_palloc(p, ip->key.dsize); 
 	    memcpy(ip->key.dptr, val.dptr + offset, ip->key.dsize);
 	    offset += ip->key.dsize;
 
@@ -701,7 +701,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 	    return dav_new_error(p,
 				 HTTP_INTERNAL_SERVER_ERROR,
 				 DAV_ERR_LOCK_CORRUPT_DB,
-				 ap_psprintf(p,
+				 apr_psprintf(p,
 					     "The lock database was found to "
 					     "be corrupt. offset %i, c=%02x",
 					     offset, val.dptr[offset]));
@@ -805,13 +805,13 @@ static const char *dav_fs_get_supportedlock(void)
 ** dav_fs_load_locknull_list:  Returns a dav_buffer dump of the locknull file
 **    for the given directory.
 */
-static dav_error * dav_fs_load_locknull_list(ap_pool_t *p, const char *dirpath,
+static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
 					     dav_buffer *pbuf) 
 {
-    ap_finfo_t finfo;
-    ap_file_t *file = NULL;
+    apr_finfo_t finfo;
+    apr_file_t *file = NULL;
     dav_error *err = NULL;
-    ap_ssize_t amt;
+    apr_ssize_t amt;
 
     dav_buffer_init(p, pbuf, dirpath);
 
@@ -823,14 +823,14 @@ static dav_error * dav_fs_load_locknull_list(ap_pool_t *p, const char *dirpath,
     /* reset this in case we leave w/o reading into the buffer */
     pbuf->cur_len = 0;
 
-    if (ap_open(&file, pbuf->buf, APR_READ | APR_BINARY, APR_OS_DEFAULT,
+    if (apr_open(&file, pbuf->buf, APR_READ | APR_BINARY, APR_OS_DEFAULT,
                 p) != APR_SUCCESS) {
 	return NULL;
     }
 
-    if (ap_getfileinfo(&finfo, file) != APR_SUCCESS) {
+    if (apr_getfileinfo(&finfo, file) != APR_SUCCESS) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
-			    ap_psprintf(p,
+			    apr_psprintf(p,
 					"Opened but could not stat file %s",
 					pbuf->buf));
 	goto loaderror;
@@ -838,10 +838,10 @@ static dav_error * dav_fs_load_locknull_list(ap_pool_t *p, const char *dirpath,
 
     dav_set_bufsize(p, pbuf, finfo.size);
     amt = finfo.size;
-    if (ap_read(file, pbuf->buf, &amt) != APR_SUCCESS
+    if (apr_read(file, pbuf->buf, &amt) != APR_SUCCESS
         || amt != finfo.size) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
-			    ap_psprintf(p,
+			    apr_psprintf(p,
 					"Failure reading locknull file "
 					"for %s", dirpath));
 
@@ -851,7 +851,7 @@ static dav_error * dav_fs_load_locknull_list(ap_pool_t *p, const char *dirpath,
     }
 
   loaderror:
-    ap_close(file);
+    apr_close(file);
     return err;
 }
 
@@ -859,19 +859,19 @@ static dav_error * dav_fs_load_locknull_list(ap_pool_t *p, const char *dirpath,
 ** dav_fs_save_locknull_list:  Saves contents of pbuf into the
 **    locknull file for dirpath.
 */
-static dav_error * dav_fs_save_locknull_list(ap_pool_t *p, const char *dirpath,
+static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
 					     dav_buffer *pbuf)
 {
     const char *pathname;
-    ap_file_t *file = NULL;
+    apr_file_t *file = NULL;
     dav_error *err = NULL;
-    ap_ssize_t amt;
+    apr_ssize_t amt;
 
     if (pbuf->buf == NULL)
 	return NULL;
 
     dav_fs_ensure_state_dir(p, dirpath);
-    pathname = ap_pstrcat(p,
+    pathname = apr_pstrcat(p,
 			  dirpath,
 			  dirpath[strlen(dirpath) - 1] == '/' ? "" : "/",
 			  DAV_FS_STATE_DIR "/" DAV_FS_LOCK_NULL_FILE,
@@ -881,31 +881,31 @@ static dav_error * dav_fs_save_locknull_list(ap_pool_t *p, const char *dirpath,
 	/* delete the file if cur_len == 0 */
 	if (remove(pathname) != 0) {
 	    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
-				 ap_psprintf(p,
+				 apr_psprintf(p,
 					     "Error removing %s", pathname));
 	}
 	return NULL;
     }
 
-    if (ap_open(&file, pathname,
+    if (apr_open(&file, pathname,
                 APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BINARY,
                 APR_OS_DEFAULT, p) != APR_SUCCESS) {
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
-			     ap_psprintf(p,
+			     apr_psprintf(p,
 					 "Error opening %s for writing",
 					 pathname));
     }
 
     amt = pbuf->cur_len;
-    if (ap_write(file, pbuf->buf, &amt) != APR_SUCCESS
+    if (apr_write(file, pbuf->buf, &amt) != APR_SUCCESS
         || amt != pbuf->cur_len) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
-			    ap_psprintf(p,
+			    apr_psprintf(p,
 					"Error writing %i bytes to %s",
 					pbuf->cur_len, pathname));
     }
 
-    ap_close(file);
+    apr_close(file);
     return err;
 }
 
@@ -913,7 +913,7 @@ static dav_error * dav_fs_save_locknull_list(ap_pool_t *p, const char *dirpath,
 ** dav_fs_remove_locknull_member:  Removes filename from the locknull list
 **    for directory path.
 */
-static dav_error * dav_fs_remove_locknull_member(ap_pool_t *p,
+static dav_error * dav_fs_remove_locknull_member(apr_pool_t *p,
                                                  const char *filename,
 						 dav_buffer *pbuf)
 {
@@ -922,7 +922,7 @@ static dav_error * dav_fs_remove_locknull_member(ap_pool_t *p,
     size_t scanlen;
     char *scan;
     const char *scanend;
-    char *dirpath = ap_pstrdup(p, filename);
+    char *dirpath = apr_pstrdup(p, filename);
     char *fname = strrchr(dirpath, '/');
     int dirty = 0;
 
@@ -977,7 +977,7 @@ static dav_error * dav_fs_add_locknull_state(
     const dav_resource *resource)
 {
     dav_buffer buf = { 0 };
-    ap_pool_t *p = lockdb->info->pool;
+    apr_pool_t *p = lockdb->info->pool;
     const char *dirpath;
     const char *fname;
     dav_error *err;
@@ -1016,7 +1016,7 @@ static dav_error * dav_fs_remove_locknull_state(
 {
     dav_buffer buf = { 0 };
     dav_error *err;
-    ap_pool_t *p = lockdb->info->pool;
+    apr_pool_t *p = lockdb->info->pool;
     const char *pathname = dav_fs_pathname(resource);
 
     if ((err = dav_fs_remove_locknull_member(p, pathname, &buf)) != NULL) {
@@ -1080,7 +1080,7 @@ static dav_error * dav_fs_get_locks(dav_lockdb *lockdb,
 				    int calltype,
 				    dav_lock **locks)
 {
-    ap_pool_t *p = lockdb->info->pool;
+    apr_pool_t *p = lockdb->info->pool;
     dav_datum key;
     dav_error *err;
     dav_lock *lock = NULL;
@@ -1251,7 +1251,7 @@ static dav_error * dav_fs_append_locks(dav_lockdb *lockdb,
 				       int make_indirect,
 				       const dav_lock *lock)
 {
-    ap_pool_t *p = lockdb->info->pool;
+    apr_pool_t *p = lockdb->info->pool;
     dav_error *err;
     dav_lock_indirect *ip;
     dav_lock_discovery *dp;
@@ -1272,7 +1272,7 @@ static dav_error * dav_fs_append_locks(dav_lockdb *lockdb,
 	for (; lock != NULL; lock = lock->next) {
 
 	    /* ### this works for any <lock> rectype */
-	    dav_lock_indirect *newi = ap_pcalloc(p, sizeof(*newi));
+	    dav_lock_indirect *newi = apr_pcalloc(p, sizeof(*newi));
 
 	    /* ### shut off the const warning for now */
 	    newi->locktoken = (dav_locktoken *)lock->locktoken;
@@ -1287,7 +1287,7 @@ static dav_error * dav_fs_append_locks(dav_lockdb *lockdb,
 	    /* create and link in the right kind of lock */
 
 	    if (lock->rectype == DAV_LOCKREC_DIRECT) {
-		dav_lock_discovery *newd = ap_pcalloc(p, sizeof(*newd));
+		dav_lock_discovery *newd = apr_pcalloc(p, sizeof(*newd));
 
 		newd->f.scope = lock->scope;
 		newd->f.type = lock->type;
@@ -1303,7 +1303,7 @@ static dav_error * dav_fs_append_locks(dav_lockdb *lockdb,
 	    else {
 		/* DAV_LOCKREC_INDIRECT(_PARTIAL) */
 
-		dav_lock_indirect *newi = ap_pcalloc(p, sizeof(*newi));
+		dav_lock_indirect *newi = apr_pcalloc(p, sizeof(*newi));
 
 		/* ### shut off the const warning for now */
 		newi->locktoken = (dav_locktoken *)lock->locktoken;

@@ -157,7 +157,7 @@ static int proxy_detect(request_rec *r)
           r->parsed_uri.port_str ? r->parsed_uri.port : ap_default_port(r)))) {
         r->proxyreq = 1;
         r->uri = r->unparsed_uri;
-        r->filename = ap_pstrcat(r->pool, "proxy:", r->uri, NULL);
+        r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);
         r->handler = "proxy-server";
         }
     }
@@ -167,7 +167,7 @@ static int proxy_detect(request_rec *r)
          && r->parsed_uri.port_str) {
         r->proxyreq = 1;
         r->uri = r->unparsed_uri;
-        r->filename = ap_pstrcat(r->pool, "proxy:", r->uri, NULL);
+        r->filename = apr_pstrcat(r->pool, "proxy:", r->uri, NULL);
         r->handler = "proxy-server";
     }
     return DECLINED;
@@ -197,7 +197,7 @@ static int proxy_trans(request_rec *r)
         len = alias_match(r->uri, ent[i].fake);
         
         if (len > 0) {
-           r->filename = ap_pstrcat(r->pool, "proxy:", ent[i].real,
+           r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
                                  r->uri + len, NULL);
            r->handler = "proxy-server";
            r->proxyreq = 1;
@@ -256,17 +256,17 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
      || strcasecmp(r->parsed_uri.hostname, "localhost") == 0)
     return DECLINED;    /* host name has a dot already */
 
-    ref = ap_table_get(r->headers_in, "Referer");
+    ref = apr_table_get(r->headers_in, "Referer");
 
     /* Reassemble the request, but insert the domain after the host name */
     /* Note that the domain name always starts with a dot */
-    r->parsed_uri.hostname = ap_pstrcat(r->pool, r->parsed_uri.hostname,
+    r->parsed_uri.hostname = apr_pstrcat(r->pool, r->parsed_uri.hostname,
                      domain, NULL);
     nuri = ap_unparse_uri_components(r->pool,
                   &r->parsed_uri,
                   UNP_REVEALPASSWORD);
 
-    ap_table_set(r->headers_out, "Location", nuri);
+    apr_table_set(r->headers_out, "Location", nuri);
     ap_log_rerror(APLOG_MARK, APLOG_INFO|APLOG_NOERRNO, 0, r,
         "Domain missing: %s sent to %s%s%s", r->uri,
         ap_unparse_uri_components(r->pool, &r->parsed_uri,
@@ -285,7 +285,7 @@ static int proxy_handler(request_rec *r)
     void *sconf = r->server->module_config;
     proxy_server_conf *conf = (proxy_server_conf *)
         ap_get_module_config(sconf, &proxy_module);
-    ap_array_header_t *proxies = conf->proxies;
+    apr_array_header_t *proxies = conf->proxies;
     struct proxy_remote *ents = (struct proxy_remote *) proxies->elts;
     int i, rc;
     ap_cache_el *cr=NULL;
@@ -297,7 +297,7 @@ static int proxy_handler(request_rec *r)
         return DECLINED;
 
     if (r->method_number == M_TRACE && (maxfwd_str =
-      ap_table_get(r->headers_in, "Max-Forwards")) != NULL) {
+      apr_table_get(r->headers_in, "Max-Forwards")) != NULL) {
         int maxfwd = strtol(maxfwd_str, NULL, 10);
         if (maxfwd < 1) {
             int access_status;
@@ -308,8 +308,8 @@ static int proxy_handler(request_rec *r)
                 ap_finalize_request_protocol(r);
             return OK;
         }
-        ap_table_setn(r->headers_in, "Max-Forwards", 
-                      ap_psprintf(r->pool, "%d", (maxfwd > 0) ? maxfwd-1 : 0));
+        apr_table_setn(r->headers_in, "Max-Forwards", 
+                      apr_psprintf(r->pool, "%d", (maxfwd > 0) ? maxfwd-1 : 0));
     }
 
     if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
@@ -320,9 +320,9 @@ static int proxy_handler(request_rec *r)
     if (p == NULL)
         return HTTP_BAD_REQUEST;
 
-    pragma = ap_table_get(r->headers_in, "Pragma");
-    auth = ap_table_get(r->headers_in, "Authorization");
-    imstr = ap_table_get(r->headers_in, "If-Modified-Since");
+    pragma = apr_table_get(r->headers_in, "Pragma");
+    auth = apr_table_get(r->headers_in, "Authorization");
+    imstr = apr_table_get(r->headers_in, "If-Modified-Since");
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                  "Request for %s, pragma=%s, auth=%s, imstr=%s", url,
@@ -341,7 +341,7 @@ static int proxy_handler(request_rec *r)
             {
                 time_t ims = (time_t)ap_parseHTTPdate(ap_proxy_date_canon(r->pool, imstr));
                 if(ims == BAD_DATE)
-                    ap_table_unset(r->headers_in, "If-Modified-Since");
+                    apr_table_unset(r->headers_in, "If-Modified-Since");
                 else
                 {
                     /* ok we were asked to check, so let's do that */
@@ -353,7 +353,7 @@ static int proxy_handler(request_rec *r)
                         if(lm != BAD_DATE)
                         {
                             if(ims < lm)
-                                ap_table_set(r->headers_in,
+                                apr_table_set(r->headers_in,
                                   "If-Modified-Since", imstr);
                             else
                             {
@@ -379,7 +379,7 @@ static int proxy_handler(request_rec *r)
     }
 
     *p = '\0';
-    scheme = ap_pstrdup(r->pool, url);
+    scheme = apr_pstrdup(r->pool, url);
     *p = ':';
 
     /* Check URI's destination host against NoProxy hosts */
@@ -447,17 +447,17 @@ static int proxy_handler(request_rec *r)
 /* -------------------------------------------------------------- */
 /* Setup configurable data */
 
-static void *create_proxy_config(ap_pool_t *p, server_rec *s)
+static void *create_proxy_config(apr_pool_t *p, server_rec *s)
 {
-    proxy_server_conf *ps = ap_pcalloc(p, sizeof(proxy_server_conf));
+    proxy_server_conf *ps = apr_pcalloc(p, sizeof(proxy_server_conf));
 
-    ps->proxies = ap_make_array(p, 10, sizeof(struct proxy_remote));
-    ps->aliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
-    ps->raliases = ap_make_array(p, 10, sizeof(struct proxy_alias));
-    ps->noproxies = ap_make_array(p, 10, sizeof(struct noproxy_entry));
-    ps->dirconn = ap_make_array(p, 10, sizeof(struct dirconn_entry));
-    ps->nocaches = ap_make_array(p, 10, sizeof(struct nocache_entry));
-    ps->allowed_connect_ports = ap_make_array(p, 10, sizeof(int));
+    ps->proxies = apr_make_array(p, 10, sizeof(struct proxy_remote));
+    ps->aliases = apr_make_array(p, 10, sizeof(struct proxy_alias));
+    ps->raliases = apr_make_array(p, 10, sizeof(struct proxy_alias));
+    ps->noproxies = apr_make_array(p, 10, sizeof(struct noproxy_entry));
+    ps->dirconn = apr_make_array(p, 10, sizeof(struct dirconn_entry));
+    ps->nocaches = apr_make_array(p, 10, sizeof(struct nocache_entry));
+    ps->allowed_connect_ports = apr_make_array(p, 10, sizeof(int));
     ps->cache_completion = DEFAULT_CACHE_COMPLETION;
     ps->domain = NULL;
     ps->viaopt = via_off; /* initially backward compatible with 1.3.1 */
@@ -501,7 +501,7 @@ static const char *
     port = defports[i].port;
     }
 
-    new = ap_push_array(conf->proxies);
+    new = apr_push_array(conf->proxies);
     new->scheme = f;
     new->protocol = r;
     new->hostname = p + 3;
@@ -527,7 +527,7 @@ static const char *
     }
 
     if (!found) {
-        new = ap_push_array(psf->nocaches);
+        new = apr_push_array(psf->nocaches);
         new->name = arg;
         /* Don't do name lookups on things that aren't dotted */
         if (strchr(arg, '.') != NULL && ap_proxy_host2addr(new->name, &hp) == NULL)
@@ -547,7 +547,7 @@ static const char *
     (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_alias *new;
 
-    new = ap_push_array(conf->aliases);
+    new = apr_push_array(conf->aliases);
     new->fake = f;
     new->real = r;
     return NULL;
@@ -562,7 +562,7 @@ static const char *
 
     conf = (proxy_server_conf *)ap_get_module_config(s->module_config, 
                                                   &proxy_module);
-    new = ap_push_array(conf->raliases);
+    new = apr_push_array(conf->raliases);
     new->fake = f;
     new->real = r;
     return NULL;
@@ -586,7 +586,7 @@ static const char *set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
     }
 
     if (!found) {
-    new = ap_push_array(conf->noproxies);
+    new = apr_push_array(conf->noproxies);
     new->name = arg;
     /* Don't do name lookups on things that aren't dotted */
     if (strchr(arg, '.') != NULL && ap_proxy_host2addr(new->name, &hp) == NULL)
@@ -612,7 +612,7 @@ static const char *
     if (!ap_isdigit(arg[0]))
     return "AllowCONNECT: port number must be numeric";
 
-    New = ap_push_array(conf->allowed_connect_ports);
+    New = apr_push_array(conf->allowed_connect_ports);
     *New = atoi(arg);
     return NULL;
 }
@@ -638,7 +638,7 @@ static const char *
     }
 
     if (!found) {
-    New = ap_push_array(conf->dirconn);
+    New = apr_push_array(conf->dirconn);
     New->name = arg;
     New->hostentry = NULL;
 
@@ -802,7 +802,7 @@ module MODULE_VAR_EXPORT proxy_module =
     NULL,                  /* merge per-directory config structures */
     create_proxy_config,   /* create per-server config structure */
     NULL,                  /* merge per-server config structures */
-    proxy_cmds,            /* command ap_table_t */
+    proxy_cmds,            /* command apr_table_t */
     proxy_handlers,        /* handlers */
     register_hooks
 };

@@ -163,12 +163,12 @@ typedef struct autoindex_config_struct {
     int icon_height;
     char *default_order;
 
-    ap_array_header_t *icon_list;
-    ap_array_header_t *alt_list;
-    ap_array_header_t *desc_list;
-    ap_array_header_t *ign_list;
-    ap_array_header_t *hdr_list;
-    ap_array_header_t *rdme_list;
+    apr_array_header_t *icon_list;
+    apr_array_header_t *alt_list;
+    apr_array_header_t *desc_list;
+    apr_array_header_t *ign_list;
+    apr_array_header_t *hdr_list;
+    apr_array_header_t *rdme_list;
 
 } autoindex_config_rec;
 
@@ -209,10 +209,10 @@ static void emit_preamble(request_rec *r, char *title)
 	      "</TITLE>\n </HEAD>\n <BODY>\n", NULL);
 }
 
-static void push_item(ap_array_header_t *arr, char *type, const char *to,
+static void push_item(apr_array_header_t *arr, char *type, const char *to,
 		      const char *path, const char *data)
 {
-    struct item *p = (struct item *) ap_push_array(arr);
+    struct item *p = (struct item *) apr_push_array(arr);
 
     if (!to) {
 	to = "";
@@ -222,14 +222,14 @@ static void push_item(ap_array_header_t *arr, char *type, const char *to,
     }
 
     p->type = type;
-    p->data = data ? ap_pstrdup(arr->cont, data) : NULL;
-    p->apply_path = ap_pstrcat(arr->cont, path, "*", NULL);
+    p->data = data ? apr_pstrdup(arr->cont, data) : NULL;
+    p->apply_path = apr_pstrcat(arr->cont, path, "*", NULL);
 
     if ((type == BY_PATH) && (!ap_is_matchexp(to))) {
-	p->apply_to = ap_pstrcat(arr->cont, "*", to, NULL);
+	p->apply_to = apr_pstrcat(arr->cont, "*", to, NULL);
     }
     else if (to) {
-	p->apply_to = ap_pstrdup(arr->cont, to);
+	p->apply_to = apr_pstrdup(arr->cont, to);
     }
     else {
 	p->apply_to = NULL;
@@ -245,7 +245,7 @@ static const char *add_alt(cmd_parms *cmd, void *d, const char *alt,
 	}
     }
     if (cmd->info == BY_ENCODING) {
-        char *tmp = ap_pstrdup(cmd->pool, to);
+        char *tmp = apr_pstrdup(cmd->pool, to);
 	ap_str_tolower(tmp);
 	to = tmp;
     }
@@ -258,7 +258,7 @@ static const char *add_alt(cmd_parms *cmd, void *d, const char *alt,
 static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
 			    const char *to)
 {
-    char *iconbak = ap_pstrdup(cmd->pool, icon);
+    char *iconbak = apr_pstrdup(cmd->pool, icon);
 
     if (icon[0] == '(') {
 	char *alt;
@@ -277,7 +277,7 @@ static const char *add_icon(cmd_parms *cmd, void *d, const char *icon,
 	}
     }
     if (cmd->info == BY_ENCODING) {
-        char *tmp = ap_pstrdup(cmd->pool, to);
+        char *tmp = apr_pstrdup(cmd->pool, to);
 	ap_str_tolower(tmp);
 	to = tmp;
     }
@@ -316,20 +316,20 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
     ai_desc_t *desc_entry;
     char *prefix = "";
 
-    desc_entry = (ai_desc_t *) ap_push_array(dcfg->desc_list);
+    desc_entry = (ai_desc_t *) apr_push_array(dcfg->desc_list);
     desc_entry->full_path = (ap_strchr_c(to, '/') == NULL) ? 0 : 1;
     desc_entry->wildcards = (WILDCARDS_REQUIRED
 			     || desc_entry->full_path
-			     || ap_is_fnmatch(to));
+			     || apr_is_fnmatch(to));
     if (desc_entry->wildcards) {
 	prefix = desc_entry->full_path ? "*/" : "*";
-	desc_entry->pattern = ap_pstrcat(dcfg->desc_list->cont,
+	desc_entry->pattern = apr_pstrcat(dcfg->desc_list->cont,
 					 prefix, to, "*", NULL);
     }
     else {
-	desc_entry->pattern = ap_pstrdup(dcfg->desc_list->cont, to);
+	desc_entry->pattern = apr_pstrdup(dcfg->desc_list->cont, to);
     }
-    desc_entry->description = ap_pstrdup(dcfg->desc_list->cont, desc);
+    desc_entry->description = apr_pstrdup(dcfg->desc_list->cont, desc);
     return NULL;
 }
 
@@ -515,7 +515,7 @@ static const char *set_default_order(cmd_parms *cmd, void *m, const char *direct
     char temp[4];
     autoindex_config_rec *d_cfg = (autoindex_config_rec *) m;
 
-    ap_cpystrn(temp, "k=d", sizeof(temp));
+    apr_cpystrn(temp, "k=d", sizeof(temp));
     if (!strcasecmp(direction, "Ascending")) {
 	temp[2] = D_ASCENDING;
     }
@@ -544,10 +544,10 @@ static const char *set_default_order(cmd_parms *cmd, void *m, const char *direct
     }
 
     if (d_cfg->default_order == NULL) {
-	d_cfg->default_order = ap_palloc(cmd->pool, 4);
+	d_cfg->default_order = apr_palloc(cmd->pool, 4);
 	d_cfg->default_order[3] = '\0';
     }
-    ap_cpystrn(d_cfg->default_order, temp, sizeof(temp));
+    apr_cpystrn(d_cfg->default_order, temp, sizeof(temp));
     return NULL;
 }
 
@@ -587,21 +587,21 @@ static const command_rec autoindex_cmds[] =
     {NULL}
 };
 
-static void *create_autoindex_config(ap_pool_t *p, char *dummy)
+static void *create_autoindex_config(apr_pool_t *p, char *dummy)
 {
     autoindex_config_rec *new =
-    (autoindex_config_rec *) ap_pcalloc(p, sizeof(autoindex_config_rec));
+    (autoindex_config_rec *) apr_pcalloc(p, sizeof(autoindex_config_rec));
 
     new->icon_width = 0;
     new->icon_height = 0;
     new->name_width = DEFAULT_NAME_WIDTH;
     new->name_adjust = K_UNSET;
-    new->icon_list = ap_make_array(p, 4, sizeof(struct item));
-    new->alt_list = ap_make_array(p, 4, sizeof(struct item));
-    new->desc_list = ap_make_array(p, 4, sizeof(ai_desc_t));
-    new->ign_list = ap_make_array(p, 4, sizeof(struct item));
-    new->hdr_list = ap_make_array(p, 4, sizeof(struct item));
-    new->rdme_list = ap_make_array(p, 4, sizeof(struct item));
+    new->icon_list = apr_make_array(p, 4, sizeof(struct item));
+    new->alt_list = apr_make_array(p, 4, sizeof(struct item));
+    new->desc_list = apr_make_array(p, 4, sizeof(ai_desc_t));
+    new->ign_list = apr_make_array(p, 4, sizeof(struct item));
+    new->hdr_list = apr_make_array(p, 4, sizeof(struct item));
+    new->rdme_list = apr_make_array(p, 4, sizeof(struct item));
     new->opts = 0;
     new->incremented_opts = 0;
     new->decremented_opts = 0;
@@ -610,24 +610,24 @@ static void *create_autoindex_config(ap_pool_t *p, char *dummy)
     return (void *) new;
 }
 
-static void *merge_autoindex_configs(ap_pool_t *p, void *basev, void *addv)
+static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
 {
     autoindex_config_rec *new;
     autoindex_config_rec *base = (autoindex_config_rec *) basev;
     autoindex_config_rec *add = (autoindex_config_rec *) addv;
 
-    new = (autoindex_config_rec *) ap_pcalloc(p, sizeof(autoindex_config_rec));
+    new = (autoindex_config_rec *) apr_pcalloc(p, sizeof(autoindex_config_rec));
     new->default_icon = add->default_icon ? add->default_icon
                                           : base->default_icon;
     new->icon_height = add->icon_height ? add->icon_height : base->icon_height;
     new->icon_width = add->icon_width ? add->icon_width : base->icon_width;
 
-    new->alt_list = ap_append_arrays(p, add->alt_list, base->alt_list);
-    new->ign_list = ap_append_arrays(p, add->ign_list, base->ign_list);
-    new->hdr_list = ap_append_arrays(p, add->hdr_list, base->hdr_list);
-    new->desc_list = ap_append_arrays(p, add->desc_list, base->desc_list);
-    new->icon_list = ap_append_arrays(p, add->icon_list, base->icon_list);
-    new->rdme_list = ap_append_arrays(p, add->rdme_list, base->rdme_list);
+    new->alt_list = apr_append_arrays(p, add->alt_list, base->alt_list);
+    new->ign_list = apr_append_arrays(p, add->ign_list, base->ign_list);
+    new->hdr_list = apr_append_arrays(p, add->hdr_list, base->hdr_list);
+    new->desc_list = apr_append_arrays(p, add->desc_list, base->desc_list);
+    new->icon_list = apr_append_arrays(p, add->icon_list, base->icon_list);
+    new->rdme_list = apr_append_arrays(p, add->rdme_list, base->rdme_list);
     if (add->opts & NO_OPTIONS) {
 	/*
 	 * If the current directory says 'no options' then we also
@@ -702,13 +702,13 @@ struct ent {
     char *alt;
     char *desc;
     off_t size;
-    ap_time_t lm;
+    apr_time_t lm;
     struct ent *next;
     int ascending, version_sort;
     char key;
 };
 
-static char *find_item(request_rec *r, ap_array_header_t *list, int path_only)
+static char *find_item(request_rec *r, apr_array_header_t *list, int path_only)
 {
     const char *content_type = ap_field_noparam(r->pool, r->content_type);
     const char *content_encoding = r->content_encoding;
@@ -819,7 +819,7 @@ static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
 	 * wildcard checking if we must.
 	 */
 	if (tuple->wildcards) {
-	    found = (ap_fnmatch(tuple->pattern, filename, MATCH_FLAGS) == 0);
+	    found = (apr_fnmatch(tuple->pattern, filename, MATCH_FLAGS) == 0);
 	}
 	else {
 	    found = (ap_strstr_c(filename, tuple->pattern) != NULL);
@@ -833,7 +833,7 @@ static char *find_desc(autoindex_config_rec *dcfg, request_rec *r)
 
 static int ignore_entry(autoindex_config_rec *d, char *path)
 {
-    ap_array_header_t *list = d->ign_list;
+    apr_array_header_t *list = d->ign_list;
     struct item *items = (struct item *) list->elts;
     char *tt;
     int i;
@@ -908,18 +908,18 @@ static int ignore_entry(autoindex_config_rec *d, char *path)
 /*
  * emit a plain text file
  */
-static void do_emit_plain(request_rec *r, ap_file_t *f)
+static void do_emit_plain(request_rec *r, apr_file_t *f)
 {
     char buf[IOBUFSIZE + 1];
     int i, c, ch;
-    ap_ssize_t n;
-    ap_status_t stat;
+    apr_ssize_t n;
+    apr_status_t stat;
 
     ap_rputs("<PRE>\n", r);
-    while (!ap_eof(f)) {
+    while (!apr_eof(f)) {
 	do {
             n = sizeof(char) * IOBUFSIZE;
-	    stat = ap_read(f, buf, &n);
+	    stat = apr_read(f, buf, &n);
 	}
 	while (stat != APR_SUCCESS && stat == EINTR);
 	if (n == -1 || n == 0) {
@@ -963,7 +963,7 @@ static void do_emit_plain(request_rec *r, ap_file_t *f)
 static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		      char *title)
 {
-    ap_file_t *f = NULL;
+    apr_file_t *f = NULL;
     request_rec *rr = NULL;
     int emit_amble = 1;
     int emit_H1 = 1;
@@ -1011,12 +1011,12 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
 		 * the file's contents, any HTML header it had won't end up
 		 * where it belongs.
 		 */
-		if (ap_open(&f, rr->filename, APR_READ,
+		if (apr_open(&f, rr->filename, APR_READ,
                             APR_OS_DEFAULT, r->pool) == APR_SUCCESS) {
 		    emit_preamble(r, title);
 		    emit_amble = 0;
 		    do_emit_plain(r, f);
-		    ap_close(f);
+		    apr_close(f);
 		    emit_H1 = 0;
 		}
 	    }
@@ -1046,7 +1046,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
  */
 static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 {
-    ap_file_t *f = NULL;
+    apr_file_t *f = NULL;
     request_rec *rr = NULL;
     int suppress_post = 0;
     int suppress_sig = 0;
@@ -1079,10 +1079,10 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 		/*
 		 * If we can open the file, suppress the signature.
 		 */
-		if (ap_open(&f, rr->filename, APR_READ,
+		if (apr_open(&f, rr->filename, APR_READ,
                             APR_OS_DEFAULT, r->pool) == APR_SUCCESS) {
 		    do_emit_plain(r, f);
-		    ap_close(f);
+		    apr_close(f);
 		    suppress_sig = 1;
 		}
 	    }
@@ -1104,9 +1104,9 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
 static char *find_title(request_rec *r)
 {
     char titlebuf[MAX_STRING_LEN], *find = "<TITLE>";
-    ap_file_t *thefile = NULL;
+    apr_file_t *thefile = NULL;
     int x, y, p;
-    ap_ssize_t n;
+    apr_ssize_t n;
 
     if (r->status != HTTP_OK) {
 	return NULL;
@@ -1116,14 +1116,14 @@ static char *find_title(request_rec *r)
 			"text/html")
 	    || !strcmp(r->content_type, INCLUDES_MAGIC_TYPE))
 	&& !r->content_encoding) {
-        if (ap_open(&thefile, r->filename, APR_READ,
+        if (apr_open(&thefile, r->filename, APR_READ,
                     APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
 	    return NULL;
 	}
         n = sizeof(char) * (MAX_STRING_LEN - 1);
-	ap_read(thefile, titlebuf, &n);
+	apr_read(thefile, titlebuf, &n);
 	if (n <= 0) {
-	    ap_close(thefile);
+	    apr_close(thefile);
 	    return NULL;
 	}
 	titlebuf[n] = '\0';
@@ -1144,15 +1144,15 @@ static char *find_title(request_rec *r)
 			    }
 			}
 		    }
-		    ap_close(thefile);
-		    return ap_pstrdup(r->pool, &titlebuf[x]);
+		    apr_close(thefile);
+		    return apr_pstrdup(r->pool, &titlebuf[x]);
 		}
 	    }
 	    else {
 		p = 0;
 	    }
 	}
-	ap_close(thefile);
+	apr_close(thefile);
     }
     return NULL;
 }
@@ -1172,8 +1172,8 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
         return (NULL);
     }
 
-    p = (struct ent *) ap_pcalloc(r->pool, sizeof(struct ent));
-    p->name = ap_pstrdup(r->pool, name);
+    p = (struct ent *) apr_pcalloc(r->pool, sizeof(struct ent));
+    p->name = apr_pstrdup(r->pool, name);
     p->size = -1;
     p->icon = NULL;
     p->alt = NULL;
@@ -1196,7 +1196,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 		    p->alt = "DIR";
 		}
 		p->size = -1;
-		p->name = ap_pstrcat(r->pool, name, "/", NULL);
+		p->name = apr_pstrcat(r->pool, name, "/", NULL);
 	    }
 	    else {
 		p->icon = find_icon(d, rr, 0);
@@ -1208,7 +1208,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
 	p->desc = find_desc(d, rr);
 
 	if ((!p->desc) && (autoindex_opts & SCAN_HTML_TITLES)) {
-	    p->desc = ap_pstrdup(r->pool, find_title(rr));
+	    p->desc = apr_pstrdup(r->pool, find_title(rr));
 	}
 
 	ap_destroy_sub_req(rr);
@@ -1299,16 +1299,16 @@ static void output_directories(struct ent **ar, int n,
 			       int autoindex_opts, char keyid, char direction)
 {
     int x;
-    ap_size_t rv;
+    apr_size_t rv;
     char *name = r->uri;
     char *tp;
     int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
-    ap_pool_t *scratch;
+    apr_pool_t *scratch;
     int name_width;
     char *name_scratch;
     char *pad_scratch;
 
-    ap_create_pool(&scratch, r->pool);
+    apr_create_pool(&scratch, r->pool);
     if (name[0] == '\0') {
 	name = "/";
     }
@@ -1322,8 +1322,8 @@ static void output_directories(struct ent **ar, int n,
 	    }
 	}
     }
-    name_scratch = ap_palloc(r->pool, name_width + 1);
-    pad_scratch = ap_palloc(r->pool, name_width + 1);
+    name_scratch = apr_palloc(r->pool, name_width + 1);
+    pad_scratch = apr_palloc(r->pool, name_width + 1);
     memset(pad_scratch, ' ', name_width);
     pad_scratch[name_width] = '\0';
 
@@ -1372,7 +1372,7 @@ static void output_directories(struct ent **ar, int n,
 	char *anchor, *t, *t2;
 	int nwidth;
 
-	ap_clear_pool(scratch);
+	apr_clear_pool(scratch);
 
 	if (is_parent(ar[x]->name)) {
 	    t = ap_make_full_path(scratch, name, "../");
@@ -1431,8 +1431,8 @@ static void output_directories(struct ent **ar, int n,
 		if (ar[x]->lm != -1) {
 		    char time_str[MAX_STRING_LEN];
 		    ap_exploded_time_t ts;
-                    ap_explode_localtime(&ts, ar[x]->lm);
-		    ap_strftime(time_str, &rv, MAX_STRING_LEN, 
+                    apr_explode_localtime(&ts, ar[x]->lm);
+		    apr_strftime(time_str, &rv, MAX_STRING_LEN, 
                                 "%d-%b-%Y %H:%M  ", &ts);
 		    ap_rputs(time_str, r);
 		}
@@ -1519,7 +1519,7 @@ static int dsortf(struct ent **e1, struct ent **e2)
         break;
     case K_DESC:
 	if (c1->version_sort)
-	    result = ap_strnatcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
+	    result = apr_strnatcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
 	else
 	    result = strcmp(c1->desc ? c1->desc : "", c2->desc ? c2->desc : "");
         if (result) {
@@ -1528,7 +1528,7 @@ static int dsortf(struct ent **e1, struct ent **e2)
         break;
     }
     if (c1->version_sort)
-	return ap_strnatcmp(c1->name, c2->name);
+	return apr_strnatcmp(c1->name, c2->name);
     else
 	return strcmp(c1->name, c2->name);
 }
@@ -1541,8 +1541,8 @@ static int index_directory(request_rec *r,
     char *title_endp;
     char *name = r->filename;
 
-    ap_dir_t *d;
-    ap_status_t status;
+    apr_dir_t *d;
+    apr_status_t status;
     int num_ent = 0, x;
     struct ent *head, *p;
     struct ent **ar = NULL;
@@ -1551,7 +1551,7 @@ static int index_directory(request_rec *r,
     char keyid;
     char direction;
 
-    if ((status = ap_opendir(&d, name, r->pool)) != APR_SUCCESS) {
+    if ((status = apr_opendir(&d, name, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "Can't open directory for index: %s", r->filename);
 	return HTTP_FORBIDDEN;
@@ -1562,7 +1562,7 @@ static int index_directory(request_rec *r,
     ap_send_http_header(r);
 
     if (r->header_only) {
-	ap_closedir(d);
+	apr_closedir(d);
 	return 0;
     }
 
@@ -1614,9 +1614,9 @@ static int index_directory(request_rec *r,
      * linked list and then arrayificate them so qsort can use them. 
      */
     head = NULL;
-    while (ap_readdir(d) == APR_SUCCESS) {
+    while (apr_readdir(d) == APR_SUCCESS) {
         char *d_name;
-        ap_get_dir_filename(&d_name, d);
+        apr_get_dir_filename(&d_name, d);
 	p = make_autoindex_entry(d_name, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);
 	if (p != NULL) {
@@ -1626,7 +1626,7 @@ static int index_directory(request_rec *r,
 	}
     }
     if (num_ent > 0) {
-	ar = (struct ent **) ap_palloc(r->pool,
+	ar = (struct ent **) apr_palloc(r->pool,
 				       num_ent * sizeof(struct ent *));
 	p = head;
 	x = 0;
@@ -1640,7 +1640,7 @@ static int index_directory(request_rec *r,
     }
     output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts, keyid,
 		       direction);
-    ap_closedir(d);
+    apr_closedir(d);
 
     if (autoindex_opts & FANCY_INDEXING) {
 	ap_rputs("<HR>\n", r);
@@ -1675,7 +1675,7 @@ static int handle_autoindex(request_rec *r)
 	 */
 
 	if (r->filename[strlen(r->filename) - 1] != '/') {
-	    r->filename = ap_pstrcat(r->pool, r->filename, "/", NULL);
+	    r->filename = apr_pstrcat(r->pool, r->filename, "/", NULL);
 	}
 	return index_directory(r, d);
     }
@@ -1700,7 +1700,7 @@ module MODULE_VAR_EXPORT autoindex_module =
     merge_autoindex_configs,	/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    autoindex_cmds,		/* command ap_table_t */
+    autoindex_cmds,		/* command apr_table_t */
     autoindex_handlers,		/* handlers */
     NULL			/* register hooks */
 };

@@ -104,7 +104,7 @@
 #include "unixd.h"
 #include "mpm_common.h"
 #include "ap_iol.h"
-#include "ap_listen.h"
+#include "apr_listen.h"
 #include "ap_mmn.h"
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -138,7 +138,7 @@
 
 static int ap_max_requests_per_child=0;
 static const char *ap_pid_fname=NULL;
-static ap_lock_t *accept_lock;
+static apr_lock_t *accept_lock;
 static const char *ap_scoreboard_fname=NULL;
 static const char *ap_lock_fname;
 static int ap_daemons_to_start=0;
@@ -161,7 +161,7 @@ char ap_coredump_dir[MAX_STRING_LEN];
 
 /* *Non*-shared http_main globals... */
 
-static ap_socket_t *sd;
+static apr_socket_t *sd;
 static fd_set listenfds;
 static int listenmaxfd;
 
@@ -178,8 +178,8 @@ static int listenmaxfd;
 
 static int one_process = 0;
 
-static ap_pool_t *pconf;		/* Pool for config stuff */
-static ap_pool_t *pchild;		/* Pool for httpd child stuff */
+static apr_pool_t *pconf;		/* Pool for config stuff */
+static apr_pool_t *pchild;		/* Pool for httpd child stuff */
 
 int ap_my_pid;	/* it seems silly to call getpid all the time */
 #ifndef MULTITHREAD
@@ -212,7 +212,7 @@ static void chdir_for_gprof(void)
 	int len = strlen(sconf->gprof_dir) - 1;
 	if(*(dir + len) == '%') {
 	    dir[len] = '\0';
-	    ap_snprintf(buf, sizeof(buf), "%sgprof.%d", dir, (int)getpid());
+	    apr_snprintf(buf, sizeof(buf), "%sgprof.%d", dir, (int)getpid());
 	} 
 	dir = ap_server_root_relative(pconf, buf[0] ? buf : dir);
 	if(mkdir(dir, 0755) < 0 && errno != EEXIST) {
@@ -239,27 +239,27 @@ static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
     if (pchild) {
-	ap_destroy_pool(pchild);
+	apr_destroy_pool(pchild);
     }
     chdir_for_gprof();
     exit(code);
 }
 
-static void expand_lock_fname(ap_pool_t *p)
+static void expand_lock_fname(apr_pool_t *p)
 {
     /* XXXX possibly bogus cast */
-    ap_lock_fname = ap_psprintf(p, "%s.%lu",
+    ap_lock_fname = apr_psprintf(p, "%s.%lu",
 	ap_server_root_relative(p, ap_lock_fname), (unsigned long)getpid());
 }
 
 /* Initialize mutex lock.
  * Done by each child at its birth
  */
-static void accept_mutex_child_init(ap_pool_t *p)
+static void accept_mutex_child_init(apr_pool_t *p)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 
-    rv = ap_child_init_lock(&accept_lock, ap_lock_fname, p);
+    rv = apr_child_init_lock(&accept_lock, ap_lock_fname, p);
     if (rv) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, 
                      "couldn't do child init for accept mutex");
@@ -270,12 +270,12 @@ static void accept_mutex_child_init(ap_pool_t *p)
 /* Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(ap_pool_t *p)
+static void accept_mutex_init(apr_pool_t *p)
 {
-    ap_status_t rv;
+    apr_status_t rv;
 
     expand_lock_fname(p);
-    rv = ap_create_lock(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, ap_lock_fname, p);
+    rv = apr_create_lock(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, ap_lock_fname, p);
     if (rv) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't create accept mutex");
         exit(APEXIT_INIT);
@@ -284,13 +284,13 @@ static void accept_mutex_init(ap_pool_t *p)
 
 static void accept_mutex_on(void)
 {
-    ap_status_t rv = ap_lock(accept_lock);
+    apr_status_t rv = apr_lock(accept_lock);
     ap_assert(!rv);
 }
 
 static void accept_mutex_off(void)
 {
-    ap_status_t rv = ap_unlock(accept_lock);
+    apr_status_t rv = apr_unlock(accept_lock);
     ap_assert(!rv);
 }
 
@@ -308,48 +308,48 @@ static void accept_mutex_off(void)
 #if APR_HAS_SHARED_MEMORY
 #include "apr_shmem.h"
 
-static ap_shmem_t *scoreboard_shm = NULL;
+static apr_shmem_t *scoreboard_shm = NULL;
 
-static ap_status_t cleanup_shared_mem(void *d)
+static apr_status_t cleanup_shared_mem(void *d)
 {
-    ap_shm_free(scoreboard_shm, ap_scoreboard_image);
+    apr_shm_free(scoreboard_shm, ap_scoreboard_image);
     ap_scoreboard_image = NULL;
-    ap_shm_destroy(scoreboard_shm);
+    apr_shm_destroy(scoreboard_shm);
     return APR_SUCCESS;
 }
 
-static void setup_shared_mem(ap_pool_t *p)
+static void setup_shared_mem(apr_pool_t *p)
 {
     char buf[512];
     const char *fname;
 
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
-    if (ap_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + NEW_SCOREBOARD_SIZE + 40, fname, p) != APR_SUCCESS) {
-	ap_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
+    if (apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + NEW_SCOREBOARD_SIZE + 40, fname, p) != APR_SUCCESS) {
+	apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
 		    ap_server_argv0);
 	perror(buf);
 	exit(APEXIT_INIT);
     }
-    ap_scoreboard_image = ap_shm_malloc(scoreboard_shm, SCOREBOARD_SIZE); 
-    ap_new_scoreboard_image = ap_shm_malloc(scoreboard_shm, NEW_SCOREBOARD_SIZE); 
+    ap_scoreboard_image = apr_shm_malloc(scoreboard_shm, SCOREBOARD_SIZE); 
+    ap_new_scoreboard_image = apr_shm_malloc(scoreboard_shm, NEW_SCOREBOARD_SIZE); 
     if (ap_scoreboard_image == NULL) {
-	ap_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
+	apr_snprintf(buf, sizeof(buf), "%s: cannot allocate scoreboard",
 		    ap_server_argv0);
 	perror(buf);
-	ap_shm_destroy(scoreboard_shm);
+	apr_shm_destroy(scoreboard_shm);
 	exit(APEXIT_INIT);
     }
-    ap_register_cleanup(p, NULL, cleanup_shared_mem, ap_null_cleanup);
+    apr_register_cleanup(p, NULL, cleanup_shared_mem, apr_null_cleanup);
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-static void reopen_scoreboard(ap_pool_t *p)
+static void reopen_scoreboard(apr_pool_t *p)
 {
 }
 #endif
 
 /* Called by parent process */
-static void reinit_scoreboard(ap_pool_t *p)
+static void reinit_scoreboard(apr_pool_t *p)
 {
     int running_gen = 0;
     if (ap_scoreboard_image)
@@ -429,15 +429,15 @@ int ap_update_child_status(int child_num, int status, request_rec *r)
 	}
 	if (r) {
 	    conn_rec *c = r->connection;
-	    ap_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
+	    apr_cpystrn(ss->client, ap_get_remote_host(c, r->per_dir_config,
 				  REMOTE_NOLOOKUP), sizeof(ss->client));
 	    if (r->the_request == NULL) {
-		    ap_cpystrn(ss->request, "NULL", sizeof(ss->request));
+		    apr_cpystrn(ss->request, "NULL", sizeof(ss->request));
 	    } else if (r->parsed_uri.password == NULL) {
-		    ap_cpystrn(ss->request, r->the_request, sizeof(ss->request));
+		    apr_cpystrn(ss->request, r->the_request, sizeof(ss->request));
 	    } else {
 		/* Don't reveal the password in the server-status view */
-		    ap_cpystrn(ss->request, ap_pstrcat(r->pool, r->method, " ",
+		    apr_cpystrn(ss->request, apr_pstrcat(r->pool, r->method, " ",
 					       ap_unparse_uri_components(r->pool, &r->parsed_uri, UNP_OMITPASSWORD),
 					       r->assbackwards ? NULL : " ", r->protocol, NULL),
 				       sizeof(ss->request));
@@ -483,10 +483,10 @@ void ap_time_process_request(int child_num, int status)
     ss = &ap_scoreboard_image->servers[child_num];
 
     if (status == START_PREQUEST) {
-	ss->start_time = ap_now();
+	ss->start_time = apr_now();
     }
     else if (status == STOP_PREQUEST) {
-	ss->stop_time = ap_now();
+	ss->stop_time = apr_now();
     }
 
     put_scoreboard_info(child_num, ss);
@@ -518,7 +518,7 @@ static void increment_counts(int child_num, request_rec *r)
 }
 */
 
-static int find_child_by_pid(ap_proc_t *pid)
+static int find_child_by_pid(apr_proc_t *pid)
 {
     int i;
 
@@ -556,7 +556,7 @@ int reap_children(ap_wait_t *status)
 static void sig_coredump(int sig)
 {
     chdir(ap_coredump_dir);
-    ap_signal(sig, SIG_DFL);
+    apr_signal(sig, SIG_DFL);
     kill(getpid(), sig);
     /* At this point we've got sig blocked, because we're still inside
      * the signal handler.  When we leave the signal handler it will
@@ -613,7 +613,7 @@ static void restart(int sig)
     }
     restart_pending = 1;
     if ((is_graceful = (sig == SIGUSR1))) {
-        ap_kill_cleanup(pconf, NULL, cleanup_shared_mem);
+        apr_kill_cleanup(pconf, NULL, cleanup_shared_mem);
     }
 }
 
@@ -685,36 +685,36 @@ static void set_signals(void)
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGUSR1)");
 #else
     if (!one_process) {
-	ap_signal(SIGSEGV, sig_coredump);
+	apr_signal(SIGSEGV, sig_coredump);
 #ifdef SIGBUS
-	ap_signal(SIGBUS, sig_coredump);
+	apr_signal(SIGBUS, sig_coredump);
 #endif /* SIGBUS */
 #ifdef SIGABORT
-	ap_signal(SIGABORT, sig_coredump);
+	apr_signal(SIGABORT, sig_coredump);
 #endif /* SIGABORT */
 #ifdef SIGABRT
-	ap_signal(SIGABRT, sig_coredump);
+	apr_signal(SIGABRT, sig_coredump);
 #endif /* SIGABRT */
 #ifdef SIGILL
-	ap_signal(SIGILL, sig_coredump);
+	apr_signal(SIGILL, sig_coredump);
 #endif /* SIGILL */
 #ifdef SIGXCPU
-	ap_signal(SIGXCPU, SIG_DFL);
+	apr_signal(SIGXCPU, SIG_DFL);
 #endif /* SIGXCPU */
 #ifdef SIGXFSZ
-	ap_signal(SIGXFSZ, SIG_DFL);
+	apr_signal(SIGXFSZ, SIG_DFL);
 #endif /* SIGXFSZ */
     }
 
-    ap_signal(SIGTERM, sig_term);
+    apr_signal(SIGTERM, sig_term);
 #ifdef SIGHUP
-    ap_signal(SIGHUP, restart);
+    apr_signal(SIGHUP, restart);
 #endif /* SIGHUP */
 #ifdef SIGUSR1
-    ap_signal(SIGUSR1, restart);
+    apr_signal(SIGUSR1, restart);
 #endif /* SIGUSR1 */
 #ifdef SIGPIPE
-    ap_signal(SIGPIPE, SIG_IGN);
+    apr_signal(SIGPIPE, SIG_IGN);
 #endif /* SIGPIPE */
 
 #endif
@@ -727,7 +727,7 @@ static void set_signals(void)
  */
 
 static int srv;
-static ap_socket_t *csd;
+static apr_socket_t *csd;
 static int requests_this_child;
 static fd_set main_fds;
 
@@ -746,10 +746,10 @@ static void child_main(int child_num_arg)
     ap_listen_rec *lr;
     ap_listen_rec *last_lr;
     ap_listen_rec *first_lr;
-    ap_pool_t *ptrans;
+    apr_pool_t *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
-    ap_status_t stat = APR_EINIT;
+    apr_status_t stat = APR_EINIT;
     int sockdes;
 
     ap_my_pid = getpid();
@@ -761,9 +761,9 @@ static void child_main(int child_num_arg)
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    ap_create_pool(&pchild, pconf);
+    apr_create_pool(&pchild, pconf);
 
-    ap_create_pool(&ptrans, pchild);
+    apr_create_pool(&ptrans, pchild);
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild);
@@ -777,8 +777,8 @@ static void child_main(int child_num_arg)
 
     (void) ap_update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
 
-    ap_signal(SIGHUP, just_die);
-    ap_signal(SIGTERM, just_die);
+    apr_signal(SIGHUP, just_die);
+    apr_signal(SIGTERM, just_die);
 
 #ifdef OS2
 /* Stop Ctrl-C/Ctrl-Break signals going to child processes */
@@ -795,7 +795,7 @@ static void child_main(int child_num_arg)
 	 * we can exit cleanly.
 	 */
 	usr1_just_die = 1;
-	ap_signal(SIGUSR1, usr1_handler);
+	apr_signal(SIGUSR1, usr1_handler);
 
 	/*
 	 * (Re)initialize this child to a pre-connection state.
@@ -803,7 +803,7 @@ static void child_main(int child_num_arg)
 
 	current_conn = NULL;
 
-	ap_clear_pool(ptrans);
+	apr_clear_pool(ptrans);
 
 	if ((ap_max_requests_per_child > 0
 	     && requests_this_child++ >= ap_max_requests_per_child)) {
@@ -851,7 +851,7 @@ static void child_main(int child_num_arg)
 		}
 		first_lr=lr;
 		do {
-                    ap_get_os_sock(&sockdes, lr->sd);
+                    apr_get_os_sock(&sockdes, lr->sd);
 		    if (FD_ISSET(sockdes, &main_fds))
 			goto got_listener;
 		    lr = lr->next;
@@ -881,7 +881,7 @@ static void child_main(int child_num_arg)
 		    /* we didn't get a socket, and we were told to die */
 		    clean_child_exit(0);
 		}
-		stat = ap_accept(&csd, sd, ptrans);
+		stat = apr_accept(&csd, sd, ptrans);
 		if (stat == APR_SUCCESS || stat != APR_EINTR)
 		    break;
 	    }
@@ -961,7 +961,7 @@ static void child_main(int child_num_arg)
 		      * occur in mobile IP.
 		      */
 		    ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
-			"ap_accept: giving up.");
+			"apr_accept: giving up.");
 		    clean_child_exit(APEXIT_CHILDFATAL);
 #endif /*ENETDOWN*/
 
@@ -978,7 +978,7 @@ static void child_main(int child_num_arg)
 #else
 		default:
 		    ap_log_error(APLOG_MARK, APLOG_ERR, stat, ap_server_conf,
-				"ap_accept: (client socket)");
+				"apr_accept: (client socket)");
 		    clean_child_exit(1);
 #endif
 		}
@@ -997,13 +997,13 @@ static void child_main(int child_num_arg)
 	 * the signal to ignore because we don't want to disturb any
 	 * third party code.
 	 */
-	ap_signal(SIGUSR1, SIG_IGN);
+	apr_signal(SIGUSR1, SIG_IGN);
 	/*
 	 * We now have a connection, so set it up with the appropriate
 	 * socket options, file descriptors, and read/write buffers.
 	 */
 
-        ap_get_os_sock(&sockdes, csd);
+        apr_get_os_sock(&sockdes, csd);
 
         if (sockdes >= FD_SETSIZE) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
@@ -1011,7 +1011,7 @@ static void child_main(int child_num_arg)
                          "to rebuild Apache with a larger FD_SETSIZE "
                          "(currently %d)", 
                          sockdes, FD_SETSIZE);
-	    ap_close_socket(csd);
+	    apr_close_socket(csd);
 	    continue;
         }
 
@@ -1048,12 +1048,12 @@ static int make_child(server_rec *s, int slot, time_t now)
     }
 
     if (one_process) {
-	ap_signal(SIGHUP, just_die);
-	ap_signal(SIGINT, just_die);
+	apr_signal(SIGHUP, just_die);
+	apr_signal(SIGINT, just_die);
 #ifdef SIGQUIT
-	ap_signal(SIGQUIT, SIG_DFL);
+	apr_signal(SIGQUIT, SIG_DFL);
 #endif
-	ap_signal(SIGTERM, just_die);
+	apr_signal(SIGTERM, just_die);
 	child_main(slot);
     }
 
@@ -1101,9 +1101,9 @@ static int make_child(server_rec *s, int slot, time_t now)
 	 * Note that since restart() just notes that a restart has been
 	 * requested there's no race condition here.
 	 */
-	ap_signal(SIGHUP, just_die);
-	ap_signal(SIGUSR1, just_die);
-	ap_signal(SIGTERM, just_die);
+	apr_signal(SIGHUP, just_die);
+	apr_signal(SIGUSR1, just_die);
+	apr_signal(SIGTERM, just_die);
 	child_main(slot);
     }
 
@@ -1280,7 +1280,7 @@ static int setup_listeners(server_rec *s)
     listenmaxfd = -1;
     FD_ZERO(&listenfds);
     for (lr = ap_listeners; lr; lr = lr->next) {
-        ap_get_os_sock(&sockdes, lr->sd);
+        apr_get_os_sock(&sockdes, lr->sd);
 	FD_SET(sockdes, &listenfds);
 	if (sockdes > listenmaxfd) {
 	    listenmaxfd = sockdes;
@@ -1310,7 +1310,7 @@ void ap_reset_connection_status(long conn_id)
  * Executive routines.
  */
 
-int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
+int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
 
@@ -1374,7 +1374,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 	int child_slot;
 	ap_wait_t status;
         /* this is a memory leak, but I'll fix it later. */
-	ap_proc_t pid;
+	apr_proc_t pid;
 
         ap_wait_or_timeout(&status, &pid, pconf);
 
@@ -1401,7 +1401,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 		}
 #if APR_HAS_OTHER_CHILD
 	    }
-	    else if (ap_reap_other_child(&pid, status) == 0) {
+	    else if (apr_reap_other_child(&pid, status) == 0) {
 		/* handled */
 #endif
 	    }
@@ -1469,8 +1469,8 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     }
 
     /* we've been told to restart */
-    ap_signal(SIGHUP, SIG_IGN);
-    ap_signal(SIGUSR1, SIG_IGN);
+    apr_signal(SIGHUP, SIG_IGN);
+    apr_signal(SIGUSR1, SIG_IGN);
     if (one_process) {
 	/* not worth thinking about */
 	return 1;
@@ -1526,7 +1526,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     return 0;
 }
 
-static void prefork_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
+static void prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static int restart_num = 0;
     int no_detach = 0;
@@ -1539,7 +1539,7 @@ static void prefork_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
 	is_graceful = 0;
 
 	if (!one_process && !no_detach) {
-	    ap_detach();
+	    apr_detach();
 	}
 
 	ap_my_pid = getpid();
@@ -1557,7 +1557,7 @@ static void prefork_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
 
-    ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+    apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
 
 static void prefork_hooks(void)
@@ -1692,7 +1692,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg
 
 static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg) 
 {
-    ap_finfo_t finfo;
+    apr_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1700,12 +1700,12 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    if ((ap_stat(&finfo, fname, cmd->pool) != APR_SUCCESS) || 
+    if ((apr_stat(&finfo, fname, cmd->pool) != APR_SUCCESS) || 
         (finfo.filetype != APR_DIR)) {
-	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
+	return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);
     }
-    ap_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
+    apr_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
     return NULL;
 }
 
@@ -1730,40 +1730,40 @@ const char *ap_get_connection_status(long conn_id, const char *key)
     return NULL;
 }
 
-ap_array_header_t *ap_get_connections(ap_pool_t *p)
+apr_array_header_t *ap_get_connections(apr_pool_t *p)
 {
     int i;
-    ap_array_header_t *connection_list;
+    apr_array_header_t *connection_list;
     long *array_slot;
 
-    connection_list = ap_make_array(p, 0, sizeof(long));
+    connection_list = apr_make_array(p, 0, sizeof(long));
     /* We assume that there is a connection iff it has an entry in the status
      * table. Connections without any status sound problematic to me, so this
      * is probably for the best. - manoj */
     for (i = 0; i < ap_max_daemons_limit; i++) {
          if (ap_new_scoreboard_image->table[i][0].key[0] != '\0') {
-            array_slot = ap_push_array(connection_list);
+            array_slot = apr_push_array(connection_list);
             *array_slot = i;
         }
     }
     return connection_list;
 }
 
-ap_array_header_t *ap_get_connection_keys(ap_pool_t *p, long conn_id)
+apr_array_header_t *ap_get_connection_keys(apr_pool_t *p, long conn_id)
 {
     int i = 0;
     status_table_entry *ss;
-    ap_array_header_t *key_list;
+    apr_array_header_t *key_list;
     char **array_slot;
 
-    key_list = ap_make_array(p, 0, KEY_LENGTH * sizeof(char));
+    key_list = apr_make_array(p, 0, KEY_LENGTH * sizeof(char));
     while (i < STATUSES_PER_CONNECTION) {
         ss = &(ap_new_scoreboard_image->table[conn_id][i]);
         if (ss->key[0] == '\0') {
             break;
         }
-        array_slot = ap_push_array(key_list);
-        *array_slot = ap_pstrdup(p, ss->key);
+        array_slot = apr_push_array(key_list);
+        *array_slot = apr_pstrdup(p, ss->key);
         i++;
     }
     return key_list;
@@ -1786,7 +1786,7 @@ void ap_update_connection_status(long conn_id, const char *key,
             break;
         }
         if (0 == strcmp(ss->key, key)) {
-            ap_cpystrn(ss->value, value, VALUE_LENGTH);
+            apr_cpystrn(ss->value, value, VALUE_LENGTH);
             return;
         }
         i++;
@@ -1796,19 +1796,19 @@ void ap_update_connection_status(long conn_id, const char *key,
         /* No room. Oh well, not much anyone can do about it. */
         return;
     }
-    ap_cpystrn(ss->key, key, KEY_LENGTH);
-    ap_cpystrn(ss->value, value, VALUE_LENGTH);
+    apr_cpystrn(ss->key, key, KEY_LENGTH);
+    apr_cpystrn(ss->value, value, VALUE_LENGTH);
     return;
 }
 
-ap_array_header_t *ap_get_status_table(ap_pool_t *p)
+apr_array_header_t *ap_get_status_table(apr_pool_t *p)
 {
     int i, j;
-    ap_array_header_t *server_status;
+    apr_array_header_t *server_status;
     ap_status_table_row_t *array_slot;
     status_table_entry *ss;
 
-    server_status = ap_make_array(p, 0, sizeof(ap_status_table_row_t));
+    server_status = apr_make_array(p, 0, sizeof(ap_status_table_row_t));
 
     /* Go ahead and return what's in the connection status table even if we
      * aren't maintaining it. We can at least look at what children from
@@ -1817,14 +1817,14 @@ ap_array_header_t *ap_get_status_table(ap_pool_t *p)
     for (i = 0; i < ap_max_daemons_limit; i++) {
         if (ap_new_scoreboard_image->table[i][0].key[0] == '\0')
             continue;
-        array_slot = ap_push_array(server_status);
-        array_slot->data = ap_make_table(p, 0);
+        array_slot = apr_push_array(server_status);
+        array_slot->data = apr_make_table(p, 0);
         array_slot->conn_id = i;
 
         for (j = 0; j < STATUSES_PER_CONNECTION; j++) {
             ss = &(ap_new_scoreboard_image->table[i][j]);
             if (ss->key[0] != '\0') {
-                ap_table_add(array_slot->data, ss->key, ss->value);
+                apr_table_add(array_slot->data, ss->key, ss->value);
             }
             else {
                 break;
@@ -1865,7 +1865,7 @@ module MODULE_VAR_EXPORT mpm_prefork_module = {
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */
     NULL,			/* merge per-server config structures */
-    prefork_cmds,		/* command ap_table_t */
+    prefork_cmds,		/* command apr_table_t */
     NULL,			/* handlers */
     prefork_hooks,		/* register hooks */
 };

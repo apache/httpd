@@ -97,9 +97,9 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
-static char *http2env(ap_pool_t *a, char *w)
+static char *http2env(apr_pool_t *a, char *w)
 {
-    char *res = ap_pstrcat(a, "HTTP_", w, NULL);
+    char *res = apr_pstrcat(a, "HTTP_", w, NULL);
     char *cp = res;
 
     while (*++cp) {
@@ -114,27 +114,27 @@ static char *http2env(ap_pool_t *a, char *w)
     return res;
 }
 
-API_EXPORT(char **) ap_create_environment(ap_pool_t *p, ap_table_t *t)
+API_EXPORT(char **) ap_create_environment(apr_pool_t *p, apr_table_t *t)
 {
-    ap_array_header_t *env_arr = ap_table_elts(t);
-    ap_table_entry_t *elts = (ap_table_entry_t *) env_arr->elts;
-    char **env = (char **) ap_palloc(p, (env_arr->nelts + 2) * sizeof(char *));
+    apr_array_header_t *env_arr = ap_table_elts(t);
+    apr_table_entry_t *elts = (apr_table_entry_t *) env_arr->elts;
+    char **env = (char **) apr_palloc(p, (env_arr->nelts + 2) * sizeof(char *));
     int i, j;
     char *tz;
     char *whack;
 
     j = 0;
-    if (!ap_table_get(t, "TZ")) {
+    if (!apr_table_get(t, "TZ")) {
 	tz = getenv("TZ");
 	if (tz != NULL) {
-	    env[j++] = ap_pstrcat(p, "TZ=", tz, NULL);
+	    env[j++] = apr_pstrcat(p, "TZ=", tz, NULL);
 	}
     }
     for (i = 0; i < env_arr->nelts; ++i) {
         if (!elts[i].key) {
 	    continue;
 	}
-	env[j] = ap_pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
+	env[j] = apr_pstrcat(p, elts[i].key, "=", elts[i].val, NULL);
 	whack = env[j];
 	if (ap_isdigit(*whack)) {
 	    *whack++ = '_';
@@ -154,7 +154,7 @@ API_EXPORT(char **) ap_create_environment(ap_pool_t *p, ap_table_t *t)
 
 API_EXPORT(void) ap_add_common_vars(request_rec *r)
 {
-    ap_table_t *e;
+    apr_table_t *e;
     server_rec *s = r->server;
     conn_rec *c = r->connection;
     const char *rem_logname;
@@ -163,14 +163,14 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
     char *env_temp;
 #endif
     const char *host;
-    ap_array_header_t *hdrs_arr = ap_table_elts(r->headers_in);
-    ap_table_entry_t *hdrs = (ap_table_entry_t *) hdrs_arr->elts;
+    apr_array_header_t *hdrs_arr = ap_table_elts(r->headers_in);
+    apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
     int i;
 
-    /* use a temporary ap_table_t which we'll overlap onto
+    /* use a temporary apr_table_t which we'll overlap onto
      * r->subprocess_env later
      */
-    e = ap_make_table(r->pool, 25 + hdrs_arr->nelts);
+    e = apr_make_table(r->pool, 25 + hdrs_arr->nelts);
 
     /* First, add environment vars from headers... this is as per
      * CGI specs, though other sorts of scripting interfaces see
@@ -188,10 +188,10 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 	 */
 
 	if (!strcasecmp(hdrs[i].key, "Content-type")) {
-	    ap_table_addn(e, "CONTENT_TYPE", hdrs[i].val);
+	    apr_table_addn(e, "CONTENT_TYPE", hdrs[i].val);
 	}
 	else if (!strcasecmp(hdrs[i].key, "Content-length")) {
-	    ap_table_addn(e, "CONTENT_LENGTH", hdrs[i].val);
+	    apr_table_addn(e, "CONTENT_LENGTH", hdrs[i].val);
 	}
 	/*
 	 * You really don't want to disable this check, since it leaves you
@@ -205,83 +205,83 @@ API_EXPORT(void) ap_add_common_vars(request_rec *r)
 	}
 #endif
 	else {
-	    ap_table_addn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
+	    apr_table_addn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
 	}
     }
 
     if (!(env_path = getenv("PATH"))) {
 	env_path = DEFAULT_PATH;
     }
-    ap_table_addn(e, "PATH", ap_pstrdup(r->pool, env_path));
+    apr_table_addn(e, "PATH", apr_pstrdup(r->pool, env_path));
 
 #ifdef WIN32
     if (env_temp = getenv("SystemRoot")) {
-        ap_table_addn(e, "SystemRoot", env_temp);         
+        apr_table_addn(e, "SystemRoot", env_temp);         
     }
     if (env_temp = getenv("COMSPEC")) {
-        ap_table_addn(e, "COMSPEC", env_temp);            
+        apr_table_addn(e, "COMSPEC", env_temp);            
     }
     if (env_temp = getenv("WINDIR")) {
-        ap_table_addn(e, "WINDIR", env_temp);
+        apr_table_addn(e, "WINDIR", env_temp);
     }
 #endif
 
 #ifdef OS2
     if ((env_temp = getenv("COMSPEC")) != NULL) {
-        ap_table_addn(e, "COMSPEC", env_temp);            
+        apr_table_addn(e, "COMSPEC", env_temp);            
     }
     if ((env_temp = getenv("ETC")) != NULL) {
-        ap_table_addn(e, "ETC", env_temp);            
+        apr_table_addn(e, "ETC", env_temp);            
     }
     if ((env_temp = getenv("DPATH")) != NULL) {
-        ap_table_addn(e, "DPATH", env_temp);            
+        apr_table_addn(e, "DPATH", env_temp);            
     }
     if ((env_temp = getenv("PERLLIB_PREFIX")) != NULL) {
-        ap_table_addn(e, "PERLLIB_PREFIX", env_temp);            
+        apr_table_addn(e, "PERLLIB_PREFIX", env_temp);            
     }
 #endif
 
-    ap_table_addn(e, "SERVER_SIGNATURE", ap_psignature("", r));
-    ap_table_addn(e, "SERVER_SOFTWARE", ap_get_server_version());
-    ap_table_addn(e, "SERVER_NAME", ap_get_server_name(r));
-    ap_table_addn(e, "SERVER_ADDR", r->connection->local_ip);	/* Apache */
-    ap_table_addn(e, "SERVER_PORT",
-		  ap_psprintf(r->pool, "%u", ap_get_server_port(r)));
+    apr_table_addn(e, "SERVER_SIGNATURE", ap_psignature("", r));
+    apr_table_addn(e, "SERVER_SOFTWARE", ap_get_server_version());
+    apr_table_addn(e, "SERVER_NAME", ap_get_server_name(r));
+    apr_table_addn(e, "SERVER_ADDR", r->connection->local_ip);	/* Apache */
+    apr_table_addn(e, "SERVER_PORT",
+		  apr_psprintf(r->pool, "%u", ap_get_server_port(r)));
     host = ap_get_remote_host(c, r->per_dir_config, REMOTE_HOST);
     if (host) {
-	ap_table_addn(e, "REMOTE_HOST", host);
+	apr_table_addn(e, "REMOTE_HOST", host);
     }
-    ap_table_addn(e, "REMOTE_ADDR", c->remote_ip);
-    ap_table_addn(e, "DOCUMENT_ROOT", ap_document_root(r));	/* Apache */
-    ap_table_addn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
-    ap_table_addn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
+    apr_table_addn(e, "REMOTE_ADDR", c->remote_ip);
+    apr_table_addn(e, "DOCUMENT_ROOT", ap_document_root(r));	/* Apache */
+    apr_table_addn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
+    apr_table_addn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
-    ap_table_addn(e, "REMOTE_PORT",
-		  ap_psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
+    apr_table_addn(e, "REMOTE_PORT",
+		  apr_psprintf(r->pool, "%d", ntohs(c->remote_addr.sin_port)));
 
     if (r->user) {
-	ap_table_addn(e, "REMOTE_USER", r->user);
+	apr_table_addn(e, "REMOTE_USER", r->user);
     }
     if (r->ap_auth_type) {
-	ap_table_addn(e, "AUTH_TYPE", r->ap_auth_type);
+	apr_table_addn(e, "AUTH_TYPE", r->ap_auth_type);
     }
     rem_logname = ap_get_remote_logname(r);
     if (rem_logname) {
-	ap_table_addn(e, "REMOTE_IDENT", ap_pstrdup(r->pool, rem_logname));
+	apr_table_addn(e, "REMOTE_IDENT", apr_pstrdup(r->pool, rem_logname));
     }
 
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
         if (r->prev->args) {
-	    ap_table_addn(e, "REDIRECT_QUERY_STRING", r->prev->args);
+	    apr_table_addn(e, "REDIRECT_QUERY_STRING", r->prev->args);
 	}
 	if (r->prev->uri) {
-	    ap_table_addn(e, "REDIRECT_URL", r->prev->uri);
+	    apr_table_addn(e, "REDIRECT_URL", r->prev->uri);
 	}
     }
 
-    ap_overlap_tables(r->subprocess_env, e, AP_OVERLAP_TABLES_SET);
+    apr_overlap_tables(r->subprocess_env, e, AP_OVERLAP_TABLES_SET);
 }
 
 /* This "cute" little function comes about because the path info on
@@ -314,7 +314,7 @@ static char *original_uri(request_rec *r)
     char *first, *last;
 
     if (r->the_request == NULL) {
-	return (char *) ap_pcalloc(r->pool, 1);
+	return (char *) apr_pcalloc(r->pool, 1);
     }
 
     first = r->the_request;	/* use the request-line */
@@ -331,18 +331,18 @@ static char *original_uri(request_rec *r)
 	++last;			/* end at next whitespace */
     }
 
-    return ap_pstrndup(r->pool, first, last - first);
+    return apr_pstrndup(r->pool, first, last - first);
 }
 
 API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 {
-    ap_table_t *e = r->subprocess_env;
+    apr_table_t *e = r->subprocess_env;
 
-    ap_table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
-    ap_table_setn(e, "SERVER_PROTOCOL", r->protocol);
-    ap_table_setn(e, "REQUEST_METHOD", r->method);
-    ap_table_setn(e, "QUERY_STRING", r->args ? r->args : "");
-    ap_table_setn(e, "REQUEST_URI", original_uri(r));
+    apr_table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
+    apr_table_setn(e, "SERVER_PROTOCOL", r->protocol);
+    apr_table_setn(e, "REQUEST_METHOD", r->method);
+    apr_table_setn(e, "QUERY_STRING", r->args ? r->args : "");
+    apr_table_setn(e, "REQUEST_URI", original_uri(r));
 
     /* Note that the code below special-cases scripts run from includes,
      * because it "knows" that the sub_request has been hacked to have the
@@ -351,21 +351,21 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
      */
 
     if (!strcmp(r->protocol, "INCLUDED")) {
-	ap_table_setn(e, "SCRIPT_NAME", r->uri);
+	apr_table_setn(e, "SCRIPT_NAME", r->uri);
 	if (r->path_info && *r->path_info) {
-	    ap_table_setn(e, "PATH_INFO", r->path_info);
+	    apr_table_setn(e, "PATH_INFO", r->path_info);
 	}
     }
     else if (!r->path_info || !*r->path_info) {
-	ap_table_setn(e, "SCRIPT_NAME", r->uri);
+	apr_table_setn(e, "SCRIPT_NAME", r->uri);
     }
     else {
 	int path_info_start = ap_find_path_info(r->uri, r->path_info);
 
-	ap_table_setn(e, "SCRIPT_NAME",
-		      ap_pstrndup(r->pool, r->uri, path_info_start));
+	apr_table_setn(e, "SCRIPT_NAME",
+		      apr_pstrndup(r->pool, r->uri, path_info_start));
 
-	ap_table_setn(e, "PATH_INFO", r->path_info);
+	apr_table_setn(e, "PATH_INFO", r->path_info);
     }
 
     if (r->path_info && r->path_info[0]) {
@@ -382,14 +382,14 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 #ifdef WIN32
 	    char buffer[HUGE_STRING_LEN];
 #endif
-	    char *pt = ap_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
+	    char *pt = apr_pstrcat(r->pool, pa_req->filename, pa_req->path_info,
 				  NULL);
 #ifdef WIN32
 	    /* We need to make this a real Windows path name */
 	    GetFullPathName(pt, HUGE_STRING_LEN, buffer, NULL);
-	    ap_table_setn(e, "PATH_TRANSLATED", ap_pstrdup(r->pool, buffer));
+	    apr_table_setn(e, "PATH_TRANSLATED", apr_pstrdup(r->pool, buffer));
 #else
-	    ap_table_setn(e, "PATH_TRANSLATED", pt);
+	    apr_table_setn(e, "PATH_TRANSLATED", pt);
 #endif
 	}
 	ap_destroy_sub_req(pa_req);
@@ -399,7 +399,7 @@ API_EXPORT(void) ap_add_cgi_vars(request_rec *r)
 
 static int set_cookie_doo_doo(void *v, const char *key, const char *val)
 {
-    ap_table_addn(v, key, val);
+    apr_table_addn(v, key, val);
     return 1;
 }
 
@@ -411,8 +411,8 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     char *w, *l;
     int p;
     int cgi_status = HTTP_OK;
-    ap_table_t *merge;
-    ap_table_t *cookie_table;
+    apr_table_t *merge;
+    apr_table_t *cookie_table;
 
     if (buffer) {
 	*buffer = '\0';
@@ -420,7 +420,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     w = buffer ? buffer : x;
 
     /* temporary place to hold headers to merge in later */
-    merge = ap_make_table(r->pool, 10);
+    merge = apr_make_table(r->pool, 10);
 
     /* The HTTP specification says that it is legal to merge duplicate
      * headers into one.  Some browsers that support Cookies don't like
@@ -428,8 +428,8 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
      * separately.  Lets humour those browsers by not merging.
      * Oh what a pain it is.
      */
-    cookie_table = ap_make_table(r->pool, 2);
-    ap_table_do(set_cookie_doo_doo, cookie_table, r->err_headers_out, "Set-Cookie", NULL);
+    cookie_table = apr_make_table(r->pool, 2);
+    apr_table_do(set_cookie_doo_doo, cookie_table, r->err_headers_out, "Set-Cookie", NULL);
 
     while (1) {
 
@@ -473,12 +473,12 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
 		cond_status = ap_meets_conditions(r);
 	    }
-	    ap_overlap_tables(r->err_headers_out, merge,
+	    apr_overlap_tables(r->err_headers_out, merge,
 		AP_OVERLAP_TABLES_MERGE);
 	    if (!ap_is_empty_table(cookie_table)) {
 		/* the cookies have already been copied to the cookie_table */
-		ap_table_unset(r->err_headers_out, "Set-Cookie");
-		r->err_headers_out = ap_overlay_tables(r->pool,
+		apr_table_unset(r->err_headers_out, "Set-Cookie");
+		r->err_headers_out = apr_overlay_tables(r->pool,
 		    r->err_headers_out, cookie_table);
 	    }
 	    return cond_status;
@@ -493,7 +493,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	if (!(l = strchr(w, ':'))) {
 	    int maybeASCII = 0, maybeEBCDIC = 0;
 	    unsigned char *cp, native;
-            ap_size_t inbytes_left, outbytes_left;
+            apr_size_t inbytes_left, outbytes_left;
 
 	    for (cp = w; *cp != '\0'; ++cp) {
                 native = ap_xlate_conv_byte(ap_hdrs_from_ascii, *cp);
@@ -546,7 +546,7 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 		*endp-- = '\0';
 	    }
 
-	    tmp = ap_pstrdup(r->pool, l);
+	    tmp = apr_pstrdup(r->pool, l);
 	    ap_content_type_tolower(tmp);
 	    r->content_type = tmp;
 	}
@@ -556,16 +556,16 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	 */
 	else if (!strcasecmp(w, "Status")) {
 	    r->status = cgi_status = atoi(l);
-	    r->status_line = ap_pstrdup(r->pool, l);
+	    r->status_line = apr_pstrdup(r->pool, l);
 	}
 	else if (!strcasecmp(w, "Location")) {
-	    ap_table_set(r->headers_out, w, l);
+	    apr_table_set(r->headers_out, w, l);
 	}
 	else if (!strcasecmp(w, "Content-Length")) {
-	    ap_table_set(r->headers_out, w, l);
+	    apr_table_set(r->headers_out, w, l);
 	}
 	else if (!strcasecmp(w, "Transfer-Encoding")) {
-	    ap_table_set(r->headers_out, w, l);
+	    apr_table_set(r->headers_out, w, l);
 	}
 	/*
 	 * If the script gave us a Last-Modified header, we can't just
@@ -576,20 +576,20 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	    ap_set_last_modified(r);
 	}
 	else if (!strcasecmp(w, "Set-Cookie")) {
-	    ap_table_add(cookie_table, w, l);
+	    apr_table_add(cookie_table, w, l);
 	}
 	else {
-	    ap_table_add(merge, w, l);
+	    apr_table_add(merge, w, l);
 	}
     }
 }
 
 static int getsfunc_FILE(char *buf, int len, void *f)
 {
-    return ap_fgets(buf, len, (ap_file_t *) f) == APR_SUCCESS;
+    return apr_fgets(buf, len, (apr_file_t *) f) == APR_SUCCESS;
 }
 
-API_EXPORT(int) ap_scan_script_header_err(request_rec *r, ap_file_t *f,
+API_EXPORT(int) ap_scan_script_header_err(request_rec *r, apr_file_t *f,
 					  char *buffer)
 {
     return ap_scan_script_header_err_core(r, buffer, getsfunc_FILE, f);
@@ -607,10 +607,10 @@ API_EXPORT(int) ap_scan_script_header_err_buff(request_rec *r, BUFF *fb,
 }
 
 
-API_EXPORT(void) ap_send_size(ap_ssize_t size, request_rec *r)
+API_EXPORT(void) ap_send_size(apr_ssize_t size, request_rec *r)
 {
     /* XXX: this -1 thing is a gross hack */
-    if (size == (ap_ssize_t)-1) {
+    if (size == (apr_ssize_t)-1) {
 	ap_rputs("    -", r);
     }
     else if (!size) {

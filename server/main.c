@@ -191,8 +191,8 @@ static void show_compile_settings(void)
 
 static void destroy_and_exit_process(process_rec *process, int process_exit_value)
 {
-    ap_destroy_pool(process->pool); /* and destroy all descendent pools */
-    ap_terminate();
+    apr_destroy_pool(process->pool); /* and destroy all descendent pools */
+    apr_terminate();
     exit(process_exit_value);
 }
 
@@ -201,25 +201,25 @@ static process_rec *create_process(int argc, char *const *argv)
     process_rec *process;
     
     {
-	ap_pool_t *cntx;
-        ap_status_t stat;
+	apr_pool_t *cntx;
+        apr_status_t stat;
 
-	stat = ap_create_pool(&cntx, NULL);
+	stat = apr_create_pool(&cntx, NULL);
         if (stat != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
-                         "ap_create_pool() failed to create "
+                         "apr_create_pool() failed to create "
                          "initial context");
-            ap_terminate();
+            apr_terminate();
             exit(1);
         }
 
-	process = ap_palloc(cntx, sizeof(process_rec));
+	process = apr_palloc(cntx, sizeof(process_rec));
 	process->pool = cntx;
     }
-    ap_create_pool(&process->pconf, process->pool);
+    apr_create_pool(&process->pconf, process->pool);
     process->argc = argc;
     process->argv = argv;
-    process->short_name = ap_filename_of_pathname(argv[0]);
+    process->short_name = apr_filename_of_pathname(argv[0]);
     return process;
 }
 
@@ -282,15 +282,15 @@ int main(int argc, char *argv[])
     const char *def_server_root = HTTPD_ROOT;
     process_rec *process;
     server_rec *server_conf;
-    ap_pool_t *pglobal;
-    ap_pool_t *pconf;
-    ap_pool_t *plog; /* Pool of log streams, reset _after_ each read of conf */
-    ap_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
-    ap_pool_t *pcommands; /* Pool for -D, -C and -c switches */
+    apr_pool_t *pglobal;
+    apr_pool_t *pconf;
+    apr_pool_t *plog; /* Pool of log streams, reset _after_ each read of conf */
+    apr_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
+    apr_pool_t *pcommands; /* Pool for -D, -C and -c switches */
     module **mod;
     ap_directive_t *conftree = NULL;
 
-    ap_initialize();
+    apr_initialize();
     process = create_process(argc, (char *const *)argv);
     pglobal = process->pool;
     pconf = process->pconf;
@@ -306,35 +306,35 @@ int main(int argc, char *argv[])
 
     ap_setup_prelinked_modules(process);
 
-    ap_create_pool(&pcommands, pglobal);
-    ap_server_pre_read_config  = ap_make_array(pcommands, 1, sizeof(char *));
-    ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
-    ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
+    apr_create_pool(&pcommands, pglobal);
+    ap_server_pre_read_config  = apr_make_array(pcommands, 1, sizeof(char *));
+    ap_server_post_read_config = apr_make_array(pcommands, 1, sizeof(char *));
+    ap_server_config_defines   = apr_make_array(pcommands, 1, sizeof(char *));
 
     ap_run_rewrite_args(process);
 
     /* Maintain AP_SERVER_BASEARGS list in http_main.h to allow the MPM 
      * to safely pass on our args from its rewrite_args() handler.
      */
-    while (ap_getopt(process->argc, process->argv, 
+    while (apr_getopt(process->argc, process->argv, 
                      AP_SERVER_BASEARGS, &c, pcommands) 
             == APR_SUCCESS) {
         char **new;
         switch (c) {
  	case 'c':
-	    new = (char **)ap_push_array(ap_server_post_read_config);
-	    *new = ap_pstrdup(pcommands, ap_optarg);
+	    new = (char **)apr_push_array(ap_server_post_read_config);
+	    *new = apr_pstrdup(pcommands, ap_optarg);
 	    break;
 	case 'C':
-	    new = (char **)ap_push_array(ap_server_pre_read_config);
-	    *new = ap_pstrdup(pcommands, ap_optarg);
+	    new = (char **)apr_push_array(ap_server_pre_read_config);
+	    *new = apr_pstrdup(pcommands, ap_optarg);
 	    break;
 	case 'd':
 	    def_server_root = ap_optarg;
 	    break;
 	case 'D':
-	    new = (char **)ap_push_array(ap_server_config_defines);
-	    *new = ap_pstrdup(pcommands, ap_optarg);
+	    new = (char **)apr_push_array(ap_server_config_defines);
+	    *new = apr_pstrdup(pcommands, ap_optarg);
 	    break;
 	case 'f':
 	    confname = ap_optarg;
@@ -361,8 +361,8 @@ int main(int argc, char *argv[])
 	}
     }
 
-    ap_create_pool(&plog, pglobal);
-    ap_create_pool(&ptemp, pconf);
+    apr_create_pool(&plog, pglobal);
+    apr_create_pool(&ptemp, pconf);
 
     /* Note that we preflight the config file once
        before reading it _again_ in the main loop.
@@ -380,14 +380,14 @@ int main(int argc, char *argv[])
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, "Syntax OK\n");
 	destroy_and_exit_process(process, 0);
     }
-    ap_clear_pool(plog);
+    apr_clear_pool(plog);
     ap_run_open_logs(pconf, plog, ptemp, server_conf);
     ap_post_config_hook(pconf, plog, ptemp, server_conf);
-    ap_destroy_pool(ptemp);
+    apr_destroy_pool(ptemp);
 
     for (;;) {
 	ap_hook_deregister_all();
-	ap_clear_pool(pconf);
+	apr_clear_pool(pconf);
 	for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
 		ap_register_hooks(*mod);
 	}
@@ -396,7 +396,7 @@ int main(int argc, char *argv[])
          * memory.  rbb
          */
         conftree = NULL;
-	ap_create_pool(&ptemp, pconf);
+	apr_create_pool(&ptemp, pconf);
 	ap_server_root = def_server_root;
         server_conf = ap_read_config(process, ptemp, confname, &conftree);
 	ap_run_pre_config(pconf, plog, ptemp);
@@ -404,10 +404,10 @@ int main(int argc, char *argv[])
         ap_fixup_virtual_hosts(pconf, server_conf);
         ap_fini_vhost_config(pconf, server_conf);
         ap_sort_hooks();
-	ap_clear_pool(plog);
+	apr_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
-	ap_destroy_pool(ptemp);
+	apr_destroy_pool(ptemp);
 
 	if (ap_mpm_run(pconf, plog, server_conf)) break;
     }
@@ -427,13 +427,13 @@ const XML_LChar *suck_in_expat(void)
 
 #ifndef SHARED_CORE_BOOTSTRAP
 /*
- * Force ap_validate_password() into the image so that modules like
+ * Force apr_validate_password() into the image so that modules like
  * mod_auth can use it even if they're dynamically loaded.
  */
-void suck_in_ap_validate_password(void);
-void suck_in_ap_validate_password(void)
+void suck_in_apr_validate_password(void);
+void suck_in_apr_validate_password(void)
 {
-    ap_validate_password("a", "b");
+    apr_validate_password("a", "b");
 }
 #endif
 

@@ -108,7 +108,7 @@ typedef struct {
     int handle_get;		/* cached from repository hook structure */
     int allow_depthinfinity;
 
-    ap_table_t *d_params;	/* per-directory DAV config parameters */
+    apr_table_t *d_params;	/* per-directory DAV config parameters */
 
 } dav_dir_conf;
 
@@ -125,7 +125,7 @@ typedef struct {
 /* forward-declare for use in configuration lookup */
 extern module MODULE_VAR_EXPORT dav_module;
 
-static void dav_init_handler(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp,
+static void dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                              server_rec *s)
 {
     /* DBG0("dav_init_handler"); */
@@ -133,23 +133,23 @@ static void dav_init_handler(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp,
     ap_add_version_component(p, "DAV/" DAV_VERSION);
 }
 
-static void *dav_create_server_config(ap_pool_t *p, server_rec *s)
+static void *dav_create_server_config(apr_pool_t *p, server_rec *s)
 {
     dav_server_conf *newconf;
 
-    newconf = (dav_server_conf *) ap_pcalloc(p, sizeof(*newconf));
+    newconf = (dav_server_conf *) apr_pcalloc(p, sizeof(*newconf));
 
     dav_create_uuid_state(&newconf->st);
 
     return newconf;
 }
 
-static void *dav_merge_server_config(ap_pool_t *p, void *base, void *overrides)
+static void *dav_merge_server_config(apr_pool_t *p, void *base, void *overrides)
 {
     dav_server_conf *child = overrides;
     dav_server_conf *newconf;
 
-    newconf = (dav_server_conf *) ap_pcalloc(p, sizeof(*newconf));
+    newconf = (dav_server_conf *) apr_pcalloc(p, sizeof(*newconf));
 
     /* ### hmm. we should share the uuid state rather than copy it. if we
        ### do another merge, then we'll just get the old one, rather than
@@ -161,24 +161,24 @@ static void *dav_merge_server_config(ap_pool_t *p, void *base, void *overrides)
     return newconf;
 }
 
-static void *dav_create_dir_config(ap_pool_t *p, char *dir)
+static void *dav_create_dir_config(apr_pool_t *p, char *dir)
 {
     /* NOTE: dir==NULL creates the default per-dir config */
 
     dav_dir_conf *conf;
 
-    conf = (dav_dir_conf *) ap_pcalloc(p, sizeof(*conf));
-    conf->dir = ap_pstrdup(p, dir);
-    conf->d_params = ap_make_table(p, 1);
+    conf = (dav_dir_conf *) apr_pcalloc(p, sizeof(*conf));
+    conf->dir = apr_pstrdup(p, dir);
+    conf->d_params = apr_make_table(p, 1);
 
     return conf;
 }
 
-static void *dav_merge_dir_config(ap_pool_t *p, void *base, void *overrides)
+static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
 {
     dav_dir_conf *parent = base;
     dav_dir_conf *child = overrides;
-    dav_dir_conf *newconf = (dav_dir_conf *) ap_pcalloc(p, sizeof(*newconf));
+    dav_dir_conf *newconf = (dav_dir_conf *) apr_pcalloc(p, sizeof(*newconf));
 
     /* DBG3("dav_merge_dir_config: new=%08lx  base=%08lx  overrides=%08lx",
        (long)newconf, (long)base, (long)overrides); */
@@ -189,8 +189,8 @@ static void *dav_merge_dir_config(ap_pool_t *p, void *base, void *overrides)
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
                                                      allow_depthinfinity);
 
-    newconf->d_params = ap_copy_table(p, parent->d_params);
-    ap_overlap_tables(newconf->d_params, child->d_params,
+    newconf->d_params = apr_copy_table(p, parent->d_params);
+    apr_overlap_tables(newconf->d_params, child->d_params,
 		      AP_OVERLAP_TABLES_SET);
 
     return newconf;
@@ -205,7 +205,7 @@ uuid_state *dav_get_uuid_state(const request_rec *r)
     return &conf->st;
 }
 
-ap_table_t *dav_get_dir_params(const request_rec *r)
+apr_table_t *dav_get_dir_params(const request_rec *r)
 {
     dav_dir_conf *conf;
 
@@ -218,10 +218,10 @@ const dav_hooks_locks *dav_get_lock_hooks(request_rec *r)
     void *data;
     const dav_hooks_locks *hooks;
 
-    (void) ap_get_userdata(&data, DAV_KEY_LOCK_HOOKS, r->pool);
+    (void) apr_get_userdata(&data, DAV_KEY_LOCK_HOOKS, r->pool);
     if (data == NULL) {
         hooks = ap_run_get_lock_hooks(r);
-        (void) ap_set_userdata(hooks, DAV_KEY_LOCK_HOOKS, ap_null_cleanup,
+        (void) apr_set_userdata(hooks, DAV_KEY_LOCK_HOOKS, apr_null_cleanup,
                                r->pool);
     }
     else
@@ -234,10 +234,10 @@ const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r)
     void *data;
     const dav_hooks_db *hooks;
 
-    (void) ap_get_userdata(&data, DAV_KEY_PROPDB_HOOKS, r->pool);
+    (void) apr_get_userdata(&data, DAV_KEY_PROPDB_HOOKS, r->pool);
     if (data == NULL) {
         hooks = ap_run_get_propdb_hooks(r);
-        (void) ap_set_userdata(hooks, DAV_KEY_PROPDB_HOOKS, ap_null_cleanup,
+        (void) apr_set_userdata(hooks, DAV_KEY_PROPDB_HOOKS, apr_null_cleanup,
                                r->pool);
     }
     else
@@ -250,10 +250,10 @@ const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r)
     void *data;
     const dav_hooks_vsn *hooks;
 
-    (void) ap_get_userdata(&data, DAV_KEY_VSN_HOOKS, r->pool);
+    (void) apr_get_userdata(&data, DAV_KEY_VSN_HOOKS, r->pool);
     if (data == NULL) {
         hooks = ap_run_get_vsn_hooks(r);
-        (void) ap_set_userdata(hooks, DAV_KEY_VSN_HOOKS, ap_null_cleanup,
+        (void) apr_set_userdata(hooks, DAV_KEY_VSN_HOOKS, apr_null_cleanup,
                                r->pool);
     }
     else
@@ -313,7 +313,7 @@ static const char *dav_cmd_davparam(cmd_parms *cmd, void *config,
 {
     dav_dir_conf *conf = (dav_dir_conf *) config;
 
-    ap_table_set(conf->d_params, arg1, arg2);
+    apr_table_set(conf->d_params, arg1, arg2);
 
     return NULL;
 }
@@ -361,7 +361,7 @@ static int dav_error_response(request_rec *r, int status, const char *body)
 ** in a URI (to form a query section). We must explicitly handle it so that
 ** we can embed the URI into an XML document.
 */
-static const char *dav_xml_escape_uri(ap_pool_t *p, const char *uri)
+static const char *dav_xml_escape_uri(apr_pool_t *p, const char *uri)
 {
     const char *e_uri = ap_escape_uri(p, uri);
 
@@ -380,7 +380,7 @@ static const char *dav_xml_escape_uri(ap_pool_t *p, const char *uri)
 
 static void dav_send_multistatus(request_rec *r, int status,
                                  dav_response *first,
-				 ap_array_header_t *namespaces)
+				 apr_array_header_t *namespaces)
 {
     /* Set the correct status and Content-Type */
     r->status = status;
@@ -501,7 +501,7 @@ static int dav_handle_err(request_rec *r, dav_error *err,
 
     if (response == NULL) {
 	/* our error messages are safe; tell Apache this */
-	ap_table_setn(r->notes, "verbose-error-to", "*");
+	apr_table_setn(r->notes, "verbose-error-to", "*");
 	return err->status;
     }
 
@@ -537,14 +537,14 @@ static int dav_created(request_rec *r, request_rec *rnew,
      * ### the Location header requires an absoluteURI. where to get it? */
     /* ### disable until we get the right value */
 #if 0
-    ap_table_setn(r->headers_out, "Location", rnew->uri);
+    apr_table_setn(r->headers_out, "Location", rnew->uri);
 #endif
 
     /* ### insert an ETag header? see HTTP/1.1 S10.2.2 */
 
     /* Apache doesn't allow us to set a variable body for HTTP_CREATED, so
      * we must manufacture the entire response. */
-    body = ap_psprintf(r->pool, "%s %s has been created.",
+    body = apr_psprintf(r->pool, "%s %s has been created.",
 		       what,
 		       ap_escape_html(rnew->pool, rnew->uri));
     return dav_error_response(r, HTTP_CREATED, body);
@@ -553,7 +553,7 @@ static int dav_created(request_rec *r, request_rec *rnew,
 /* ### move to dav_util? */
 int dav_get_depth(request_rec *r, int def_depth)
 {
-    const char *depth = ap_table_get(r->headers_in, "Depth");
+    const char *depth = apr_table_get(r->headers_in, "Depth");
 
     if (depth == NULL) {
 	return def_depth;
@@ -577,7 +577,7 @@ int dav_get_depth(request_rec *r, int def_depth)
 
 static int dav_get_overwrite(request_rec *r)
 {
-    const char *overwrite = ap_table_get(r->headers_in, "Overwrite");
+    const char *overwrite = apr_table_get(r->headers_in, "Overwrite");
 
     if (overwrite == NULL) {
 	return 1;		/* default is "T" */
@@ -603,7 +603,7 @@ static int dav_get_resource(request_rec *r, dav_resource **res_p)
     void *data;
 
     /* go look for the resource if it isn't already present */
-    (void) ap_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
+    (void) apr_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
     if (data == NULL) {
         dav_dir_conf *conf;
         int rv;
@@ -619,7 +619,7 @@ static int dav_get_resource(request_rec *r, dav_resource **res_p)
         else if (rv != OK)
             return rv;
 
-        (void) ap_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
+        (void) apr_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
     }
 
     *res_p = data;
@@ -647,11 +647,11 @@ static int dav_parse_range(request_rec *r,
     char *dash;
     char *slash;
 
-    range_c = ap_table_get(r->headers_in, "content-range");
+    range_c = apr_table_get(r->headers_in, "content-range");
     if (range_c == NULL)
         return 0;
 
-    range = ap_pstrdup(r->pool, range_c);
+    range = apr_pstrdup(r->pool, range_c);
     if (strncasecmp(range, "bytes ", 6) != 0
         || (dash = ap_strchr(range, '-')) == NULL
         || (slash = ap_strchr(range, '/')) == NULL) {
@@ -783,9 +783,9 @@ static int dav_method_get(request_rec *r)
 
             /* prep the output */
             r->status = HTTP_PARTIAL_CONTENT;
-            ap_table_setn(r->headers_out,
+            apr_table_setn(r->headers_out,
                           "Content-Range",
-                          ap_psprintf(r->pool, "bytes %ld-%ld/*",
+                          apr_psprintf(r->pool, "bytes %ld-%ld/*",
                                       range_start, range_end));
             ap_set_content_length(r, range_end - range_start + 1);
         }
@@ -799,7 +799,7 @@ static int dav_method_get(request_rec *r)
                                                    &stream)) != NULL) {
 	    /* ### assuming FORBIDDEN is probably not quite right... */
 	    err = dav_push_error(r->pool, HTTP_FORBIDDEN, 0,
-				 ap_psprintf(r->pool,
+				 apr_psprintf(r->pool,
 					     "Unable to GET contents for %s.",
 					     ap_escape_html(r->pool, r->uri)),
 				 err);
@@ -818,7 +818,7 @@ static int dav_method_get(request_rec *r)
 	/* all set. send the headers now. */
 	ap_send_http_header(r);
 
-	buffer = ap_palloc(r->pool, DAV_READ_BLOCKSIZE);
+	buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
 	while (1) {
 	    size_t amt;
 
@@ -923,7 +923,7 @@ static int dav_method_put(request_rec *r)
 
     /* If not a file or collection resource, PUT not allowed */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
-        body = ap_psprintf(r->pool,
+        body = apr_psprintf(r->pool,
                            "Cannot create resource %s with PUT.",
                            ap_escape_html(r->pool, r->uri));
 	return dav_error_response(r, HTTP_CONFLICT, body);
@@ -979,7 +979,7 @@ static int dav_method_put(request_rec *r)
                                                &stream)) != NULL) {
 	/* ### assuming FORBIDDEN is probably not quite right... */
 	err = dav_push_error(r->pool, HTTP_FORBIDDEN, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Unable to PUT new contents for %s.",
 					 ap_escape_html(r->pool, r->uri)),
 			     err);
@@ -992,7 +992,7 @@ static int dav_method_put(request_rec *r)
 
     if (err == NULL) {
         if (ap_should_client_block(r)) {
-	    char *buffer = ap_palloc(r->pool, DAV_READ_BLOCKSIZE);
+	    char *buffer = apr_palloc(r->pool, DAV_READ_BLOCKSIZE);
 	    long len;
 
             /*
@@ -1109,8 +1109,8 @@ void dav_add_response(dav_walker_ctx *ctx, const char *href, int status,
     dav_response *resp;
 
     /* just drop some data into an dav_response */
-    resp = ap_pcalloc(ctx->pool, sizeof(*resp));
-    resp->href = ap_pstrdup(ctx->pool, href);
+    resp = apr_pcalloc(ctx->pool, sizeof(*resp));
+    resp->href = apr_pstrdup(ctx->pool, href);
     resp->status = status;
     if (propstats) {
 	resp->propresult = *propstats;
@@ -1169,7 +1169,7 @@ static int dav_method_delete(request_rec *r)
     /* ### allow DAV_RESOURCE_TYPE_REVISION with All-Bindings header */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR &&
         resource->type != DAV_RESOURCE_TYPE_WORKSPACE) {
-        body = ap_psprintf(r->pool,
+        body = apr_psprintf(r->pool,
                            "Cannot delete resource %s.",
                            ap_escape_html(r->pool, r->uri));
 	return dav_error_response(r, HTTP_CONFLICT, body);
@@ -1188,7 +1188,7 @@ static int dav_method_delete(request_rec *r)
 				    DAV_VALIDATE_PARENT
                                     | DAV_VALIDATE_USE_424, NULL)) != NULL) {
 	err = dav_push_error(r->pool, err->status, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not DELETE %s due to a failed "
 					 "precondition (e.g. locks).",
 					 ap_escape_html(r->pool, r->uri)),
@@ -1223,7 +1223,7 @@ static int dav_method_delete(request_rec *r)
     /* check for errors now */
     if (err != NULL) {
 	err = dav_push_error(r->pool, err->status, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not DELETE %s.",
 					 ap_escape_html(r->pool, r->uri)),
 			     err);
@@ -1255,7 +1255,7 @@ static int dav_method_options(request_rec *r)
     const char *dav_level;
     const char *vsn_level;
     int result;
-    ap_array_header_t *uri_ary;
+    apr_array_header_t *uri_ary;
     const char *uris;
 
     /* per HTTP/1.1 S9.2, we can discard this body */
@@ -1283,15 +1283,15 @@ static int dav_method_options(request_rec *r)
     }
 
     /* gather property set URIs from all the liveprop providers */
-    uri_ary = ap_make_array(r->pool, 5, sizeof(const char *));
+    uri_ary = apr_make_array(r->pool, 5, sizeof(const char *));
     ap_run_gather_propsets(uri_ary);
-    uris = ap_array_pstrcat(r->pool, uri_ary, ',');
+    uris = apr_array_pstrcat(r->pool, uri_ary, ',');
     if (*uris) {
-        dav_level = ap_pstrcat(r->pool, dav_level, ",", uris, NULL);
+        dav_level = apr_pstrcat(r->pool, dav_level, ",", uris, NULL);
     }
 
     /* this tells MSFT products to skip looking for FrontPage extensions */
-    ap_table_setn(r->headers_out, "MS-Author-Via", "DAV");
+    apr_table_setn(r->headers_out, "MS-Author-Via", "DAV");
 
     /*
     ** Three cases:  resource is null (3), is lock-null (7.4), or exists.
@@ -1308,7 +1308,7 @@ static int dav_method_options(request_rec *r)
     case DAV_RESOURCE_EXISTS:
 	/* resource exists */
 	if (resource->collection) {
-	    options = ap_pstrcat(r->pool,
+	    options = apr_pstrcat(r->pool,
 		"OPTIONS, "
 		"GET, HEAD, POST, DELETE, TRACE, "
 		"PROPFIND, PROPPATCH, COPY, MOVE",
@@ -1317,7 +1317,7 @@ static int dav_method_options(request_rec *r)
 	}
 	else {
 	    /* files also support PUT */
-	    options = ap_pstrcat(r->pool,
+	    options = apr_pstrcat(r->pool,
 		"OPTIONS, "
 		"GET, HEAD, POST, DELETE, TRACE, "
 		"PROPFIND, PROPPATCH, COPY, MOVE, PUT",
@@ -1328,14 +1328,14 @@ static int dav_method_options(request_rec *r)
 
     case DAV_RESOURCE_LOCK_NULL:
 	/* resource is lock-null. */
-	options = ap_pstrcat(r->pool, "OPTIONS, MKCOL, PUT, PROPFIND",
+	options = apr_pstrcat(r->pool, "OPTIONS, MKCOL, PUT, PROPFIND",
                              locks_hooks != NULL ? ", LOCK, UNLOCK" : "",
                              NULL);
 	break;
 
     case DAV_RESOURCE_NULL:
 	/* resource is null. */
-	options = ap_pstrcat(r->pool, "OPTIONS, MKCOL, PUT",
+	options = apr_pstrcat(r->pool, "OPTIONS, MKCOL, PUT",
                              locks_hooks != NULL ? ", LOCK" : "",
                              NULL);
 	break;
@@ -1365,14 +1365,14 @@ static int dav_method_options(request_rec *r)
             vsn_options = ", CHECKOUT";
 
         if (vsn_options != NULL)
-            options = ap_pstrcat(r->pool, options, vsn_options, NULL);
+            options = apr_pstrcat(r->pool, options, vsn_options, NULL);
     }
 
-    ap_table_setn(r->headers_out, "Allow", options);
-    ap_table_setn(r->headers_out, "DAV", dav_level);
+    apr_table_setn(r->headers_out, "Allow", options);
+    apr_table_setn(r->headers_out, "DAV", dav_level);
 
     if (vsn_level != NULL)
-        ap_table_setn(r->headers_out, "Versioning", vsn_level);
+        apr_table_setn(r->headers_out, "Versioning", vsn_level);
 
     /* ### this will send a Content-Type. the default OPTIONS does not. */
     ap_send_http_header(r);
@@ -1496,7 +1496,7 @@ static int dav_method_propfind(request_rec *r)
         /* default is to DISALLOW these requests */
 	if (conf->allow_depthinfinity != DAV_ENABLED_ON) {
             return dav_error_response(r, HTTP_FORBIDDEN,
-                                      ap_psprintf(r->pool,
+                                      apr_psprintf(r->pool,
                                                   "PROPFIND requests with a "
                                                   "Depth of \"infinity\" are "
                                                   "not allowed for %s.",
@@ -1593,8 +1593,8 @@ static int dav_method_propfind(request_rec *r)
     return DONE;
 }
 
-static ap_text * dav_failed_proppatch(ap_pool_t *p,
-                                       ap_array_header_t *prop_ctx)
+static ap_text * dav_failed_proppatch(apr_pool_t *p,
+                                       apr_array_header_t *prop_ctx)
 {
     ap_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
@@ -1634,7 +1634,7 @@ static ap_text * dav_failed_proppatch(ap_pool_t *p,
 	    }
 	}
 
-	s = ap_psprintf(p,
+	s = apr_psprintf(p,
 			"<D:status>"
 			"HTTP/1.1 %d (status)"
 			"</D:status>" DEBUG_CR,
@@ -1654,7 +1654,7 @@ static ap_text * dav_failed_proppatch(ap_pool_t *p,
     return hdr.first;
 }
 
-static ap_text * dav_success_proppatch(ap_pool_t *p, ap_array_header_t *prop_ctx)
+static ap_text * dav_success_proppatch(apr_pool_t *p, apr_array_header_t *prop_ctx)
 {
     ap_text_header hdr = { 0 };
     int i = prop_ctx->nelts;
@@ -1697,7 +1697,7 @@ static void dav_prop_log_errors(dav_prop_ctx *ctx)
 ** reverse order.
 */
 static int dav_process_ctx_list(void (*func)(dav_prop_ctx *ctx),
-				ap_array_header_t *ctx_list, int stop_on_error,
+				apr_array_header_t *ctx_list, int stop_on_error,
 				int reverse)
 {
     int i = ctx_list->nelts;
@@ -1734,7 +1734,7 @@ static int dav_method_proppatch(request_rec *r)
     int failure = 0;
     dav_response resp = { 0 };
     ap_text *propstat_text;
-    ap_array_header_t *ctx_list;
+    apr_array_header_t *ctx_list;
     dav_prop_ctx *ctx;
 
     /* Ask repository module to resolve the resource */
@@ -1770,7 +1770,7 @@ static int dav_method_proppatch(request_rec *r)
     if ((err = dav_open_propdb(r, NULL, resource, 0, doc->namespaces,
 			       &propdb)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not open the property "
 					 "database for %s.",
 					 ap_escape_html(r->pool, r->uri)),
@@ -1782,7 +1782,7 @@ static int dav_method_proppatch(request_rec *r)
     /* ### validate "live" properties */
 
     /* set up an array to hold property operation contexts */
-    ctx_list = ap_make_array(r->pool, 10, sizeof(dav_prop_ctx));
+    ctx_list = apr_make_array(r->pool, 10, sizeof(dav_prop_ctx));
 
     /* do a first pass to ensure that all "remove" properties exist */
     for (child = doc->root->first_child; child; child = child->next) {
@@ -1811,7 +1811,7 @@ static int dav_method_proppatch(request_rec *r)
 	for (one_prop = prop_group->first_child; one_prop;
 	     one_prop = one_prop->next) {
 
-	    ctx = (dav_prop_ctx *)ap_push_array(ctx_list);
+	    ctx = (dav_prop_ctx *)apr_push_array(ctx_list);
 	    ctx->propdb = propdb;
 	    ctx->operation = is_remove ? DAV_PROP_OP_DELETE : DAV_PROP_OP_SET;
 	    ctx->prop = one_prop;
@@ -1867,8 +1867,8 @@ static int process_mkcol_body(request_rec *r)
      * return HTTP_UNSUPPORTED_MEDIA_TYPE (while ap_setup_client_block
      * returns HTTP_REQUEST_ENTITY_TOO_LARGE). */
 
-    const char *tenc = ap_table_get(r->headers_in, "Transfer-Encoding");
-    const char *lenp = ap_table_get(r->headers_in, "Content-Length");
+    const char *tenc = apr_table_get(r->headers_in, "Transfer-Encoding");
+    const char *lenp = apr_table_get(r->headers_in, "Content-Length");
 
     /* make sure to set the Apache request fields properly. */
     r->read_body = REQUEST_NO_BODY;
@@ -2073,21 +2073,21 @@ static int dav_method_copymove(request_rec *r, int is_move)
 
     /* If not a file or collection resource, COPY/MOVE not allowed */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
-        body = ap_psprintf(r->pool,
+        body = apr_psprintf(r->pool,
                            "Cannot COPY/MOVE resource %s.",
                            ap_escape_html(r->pool, r->uri));
 	return dav_error_response(r, HTTP_METHOD_NOT_ALLOWED, body);
     }
 
     /* get the destination URI */
-    dest = ap_table_get(r->headers_in, "Destination");
+    dest = apr_table_get(r->headers_in, "Destination");
     if (dest == NULL) {
 	/* Look in headers provided by Netscape's Roaming Profiles */
-	const char *nscp_host = ap_table_get(r->headers_in, "Host");
-	const char *nscp_path = ap_table_get(r->headers_in, "New-uri");
+	const char *nscp_host = apr_table_get(r->headers_in, "Host");
+	const char *nscp_path = apr_table_get(r->headers_in, "New-uri");
 
 	if (nscp_host != NULL && nscp_path != NULL)
-	    dest = ap_psprintf(r->pool, "http://%s%s", nscp_host, nscp_path);
+	    dest = apr_psprintf(r->pool, "http://%s%s", nscp_host, nscp_path);
     }
     if (dest == NULL) {
 	/* This supplies additional information for the default message. */
@@ -2195,7 +2195,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
                                        | DAV_VALIDATE_USE_424,
                                        NULL)) != NULL) {
 	err = dav_push_error(r->pool, err->status, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not MOVE %s due to a failed "
 					 "precondition on the source "
 					 "(e.g. locks).",
@@ -2219,7 +2219,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
 				    DAV_VALIDATE_PARENT
                                     | DAV_VALIDATE_USE_424, NULL)) != NULL) {
 	err = dav_push_error(r->pool, err->status, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not MOVE/COPY %s due to a "
 					 "failed precondition on the "
 					 "destination (e.g. locks).",
@@ -2366,7 +2366,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
 	    (*lockdb->hooks->close_lockdb)(lockdb);
 
 	err = dav_push_error(r->pool, err->status, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not MOVE/COPY %s.",
 					 ap_escape_html(r->pool, r->uri)),
 			     err);
@@ -2470,7 +2470,7 @@ static int dav_method_lock(request_rec *r)
         }
         new_lock_request = 1;
 
-        lock->auth_user = ap_pstrdup(r->pool, r->user);
+        lock->auth_user = apr_pstrdup(r->pool, r->user);
     }
 
     resource_state = dav_get_resource_state(r, resource);
@@ -2490,7 +2490,7 @@ static int dav_method_lock(request_rec *r)
                                     | DAV_VALIDATE_ADD_LD,
                                     lockdb)) != OK) {
 	err = dav_push_error(r->pool, err->status, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not LOCK %s due to a failed "
 					 "precondition (e.g. other locks).",
 					 ap_escape_html(r->pool, r->uri)),
@@ -2511,7 +2511,7 @@ static int dav_method_lock(request_rec *r)
 
 	if ((err = dav_get_locktoken_list(r, &ltl)) != NULL) {
 	    err = dav_push_error(r->pool, err->status, 0,
-				 ap_psprintf(r->pool,
+				 apr_psprintf(r->pool,
 					     "The lock refresh for %s failed "
 					     "because no lock tokens were "
 					     "specified in an \"If:\" "
@@ -2546,11 +2546,11 @@ static int dav_method_lock(request_rec *r)
 	    goto error;
 	}
 
-        locktoken_txt = ap_pstrcat(r->pool, "<",
+        locktoken_txt = apr_pstrcat(r->pool, "<",
 				   (*locks_hooks->format_locktoken)(r->pool, lock->locktoken),
 				   ">", NULL);
 
-	ap_table_set(r->headers_out, "Lock-Token", locktoken_txt);
+	apr_table_set(r->headers_out, "Lock-Token", locktoken_txt);
     }
 
     (*locks_hooks->close_lockdb)(lockdb);
@@ -2600,13 +2600,13 @@ static int dav_method_unlock(request_rec *r)
     if (locks_hooks == NULL)
         return DECLINED;
 
-    if ((const_locktoken_txt = ap_table_get(r->headers_in, "Lock-Token")) == NULL) {
+    if ((const_locktoken_txt = apr_table_get(r->headers_in, "Lock-Token")) == NULL) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
 		      "Unlock failed (%s):  No Lock-Token specified in header", r->filename);
 	return HTTP_BAD_REQUEST;
     }
 
-    locktoken_txt = ap_pstrdup(r->pool, const_locktoken_txt);
+    locktoken_txt = apr_pstrdup(r->pool, const_locktoken_txt);
     if (locktoken_txt[0] != '<') {
 	/* ### should provide more specifics... */
 	return HTTP_BAD_REQUEST;
@@ -2622,7 +2622,7 @@ static int dav_method_unlock(request_rec *r)
     if ((err = (*locks_hooks->parse_locktoken)(r->pool, locktoken_txt,
 					       &locktoken)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_BAD_REQUEST, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "The UNLOCK on %s failed -- an "
 					 "invalid lock token was specified "
 					 "in the \"If:\" header.",
@@ -2735,7 +2735,7 @@ static int dav_method_checkout(request_rec *r)
     /* Do the checkout */
     if ((err = (*vsn_hooks->checkout)(resource)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not CHECKOUT resource %s.",
 					 ap_escape_html(r->pool, r->uri)),
 			     err);
@@ -2797,7 +2797,7 @@ static int dav_method_uncheckout(request_rec *r)
     /* Do the uncheckout */
     if ((err = (*vsn_hooks->uncheckout)(resource)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not UNCHECKOUT resource %s.",
 					 ap_escape_html(r->pool, r->uri)),
 			     err);
@@ -2859,7 +2859,7 @@ static int dav_method_checkin(request_rec *r)
     /* Do the checkin */
     if ((err = (*vsn_hooks->checkin)(resource)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
-			     ap_psprintf(r->pool,
+			     apr_psprintf(r->pool,
 					 "Could not CHECKIN resource %s.",
 					 ap_escape_html(r->pool, r->uri)),
 			     err);
@@ -3145,7 +3145,7 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_db *, get_propdb_hooks,
                             (request_rec *r), (r), NULL);
 AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_vsn *, get_vsn_hooks,
                             (request_rec *r), (r), NULL);
-AP_IMPLEMENT_HOOK_VOID(gather_propsets, (ap_array_header_t *uris), (uris))
+AP_IMPLEMENT_HOOK_VOID(gather_propsets, (apr_array_header_t *uris), (uris))
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, find_liveprop,
                             (request_rec *r,
                              const char *ns_uri, const char *name,

@@ -90,32 +90,32 @@
 #include "util_script.h"
 
 typedef struct {
-    ap_table_t *action_types;       /* Added with Action... */
+    apr_table_t *action_types;       /* Added with Action... */
     const char *scripted[METHODS];   /* Added with Script... */
 } action_dir_config;
 
 module action_module;
 
-static void *create_action_dir_config(ap_pool_t *p, char *dummy)
+static void *create_action_dir_config(apr_pool_t *p, char *dummy)
 {
     action_dir_config *new =
-    (action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
+    (action_dir_config *) apr_palloc(p, sizeof(action_dir_config));
 
-    new->action_types = ap_make_table(p, 4);
+    new->action_types = apr_make_table(p, 4);
     memset(new->scripted, 0, sizeof(new->scripted));
 
     return new;
 }
 
-static void *merge_action_dir_configs(ap_pool_t *p, void *basev, void *addv)
+static void *merge_action_dir_configs(apr_pool_t *p, void *basev, void *addv)
 {
     action_dir_config *base = (action_dir_config *) basev;
     action_dir_config *add = (action_dir_config *) addv;
-    action_dir_config *new = (action_dir_config *) ap_palloc(p,
+    action_dir_config *new = (action_dir_config *) apr_palloc(p,
                                   sizeof(action_dir_config));
     int i;
 
-    new->action_types = ap_overlay_tables(p, add->action_types,
+    new->action_types = apr_overlay_tables(p, add->action_types,
 				       base->action_types);
 
     for (i = 0; i < METHODS; ++i) {
@@ -129,7 +129,7 @@ static const char *add_action(cmd_parms *cmd, void *m_v,
                               const char *type, const char *script)
 {
     action_dir_config *m = (action_dir_config *)m_v;
-    ap_table_setn(m->action_types, type, script);
+    apr_table_setn(m->action_types, type, script);
     return NULL;
 }
 
@@ -190,7 +190,7 @@ static int action_handler(request_rec *r)
 	return DECLINED;
 
     /* Second, check for actions (which override the method scripts) */
-    if ((t = ap_table_get(conf->action_types,
+    if ((t = apr_table_get(conf->action_types,
 		       action ? action : ap_default_type(r)))) {
 	script = t;
 	if (r->finfo.protection == 0) {
@@ -203,7 +203,7 @@ static int action_handler(request_rec *r)
     if (script == NULL)
 	return DECLINED;
 
-    ap_internal_redirect_handler(ap_pstrcat(r->pool, script, ap_escape_uri(r->pool,
+    ap_internal_redirect_handler(apr_pstrcat(r->pool, script, ap_escape_uri(r->pool,
 			  r->uri), r->args ? "?" : NULL, r->args, NULL), r);
     return OK;
 }
@@ -221,7 +221,7 @@ module action_module =
     merge_action_dir_configs,	/* dir merger --- default is to override */
     NULL,			/* server config */
     NULL,			/* merge server config */
-    action_cmds,		/* command ap_table_t */
+    action_cmds,		/* command apr_table_t */
     action_handlers,		/* handlers */
     NULL			/* register hooks */
 };

@@ -73,14 +73,14 @@
 #include "repos.h"
 
 struct dav_db {
-    ap_pool_t *pool;
+    apr_pool_t *pool;
     SDBM *file;
 };
 
 #define D2G(d)	(*(sdbm_datum*)&(d))
 
 
-void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
+void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
 			    const char **state1, const char **state2)
 {
     char *work;
@@ -89,11 +89,11 @@ void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
     if (fname == NULL)
 	fname = DAV_FS_STATE_FILE_FOR_DIR;
 
-    fname = ap_pstrcat(p, fname, SDBM_DIRFEXT, NULL);
+    fname = apr_pstrcat(p, fname, SDBM_DIRFEXT, NULL);
 
     *state1 = fname;
 
-    work = ap_pstrdup(p, fname);
+    work = apr_pstrdup(p, fname);
 
     /* we know the extension is 4 characters -- len(DIRFEXT) */
     extension = strlen(work) - 4;
@@ -102,7 +102,7 @@ void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
 
 }
 
-static dav_error * dav_fs_dbm_error(dav_db *db, ap_pool_t *p)
+static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p)
 {
     int save_errno = errno;
     int errcode;
@@ -125,20 +125,20 @@ static dav_error * dav_fs_dbm_error(dav_db *db, ap_pool_t *p)
 
 /* ensure that our state subdirectory is present */
 /* ### does this belong here or in dav_fs_repos.c ?? */
-void dav_fs_ensure_state_dir(ap_pool_t * p, const char *dirname)
+void dav_fs_ensure_state_dir(apr_pool_t * p, const char *dirname)
 {
-    const char *pathname = ap_pstrcat(p, dirname, "/" DAV_FS_STATE_DIR, NULL);
+    const char *pathname = apr_pstrcat(p, dirname, "/" DAV_FS_STATE_DIR, NULL);
 
     /* ### do we need to deal with the umask? */
 
     /* just try to make it, ignoring any resulting errors */
-    (void) ap_make_dir(pathname, APR_OS_DEFAULT, p);
+    (void) apr_make_dir(pathname, APR_OS_DEFAULT, p);
 }
 
 /* dav_dbm_open_direct:  Opens a *dbm database specified by path.
  *    ro = boolean read-only flag.
  */
-dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
+dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
 				dav_db **pdb)
 {
     SDBM *file;
@@ -157,7 +157,7 @@ dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
     /* may be NULL if we tried to open a non-existent db as read-only */
     if (file != NULL) {
 	/* we have an open database... return it */
-	*pdb = ap_pcalloc(p, sizeof(**pdb));
+	*pdb = apr_pcalloc(p, sizeof(**pdb));
 	(*pdb)->pool = p;
 	(*pdb)->file = file;
     }
@@ -165,7 +165,7 @@ dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
     return NULL;
 }
 
-static dav_error * dav_dbm_open(ap_pool_t * p, const dav_resource *resource,
+static dav_error * dav_dbm_open(apr_pool_t * p, const dav_resource *resource,
                                 int ro, dav_db **pdb)
 {
     const char *dirpath;
@@ -181,7 +181,7 @@ static dav_error * dav_dbm_open(ap_pool_t * p, const dav_resource *resource,
         dav_fs_ensure_state_dir(p, dirpath);
     }
 
-    pathname = ap_pstrcat(p,
+    pathname = apr_pstrcat(p,
 			  dirpath,
 			  "/" DAV_FS_STATE_DIR "/",
 			  fname ? fname : DAV_FS_STATE_FILE_FOR_DIR,
@@ -212,7 +212,7 @@ static dav_error * dav_dbm_fetch(dav_db *db, dav_datum key, dav_datum *pvalue)
 
 static dav_error * dav_dbm_store(dav_db *db, dav_datum key, dav_datum value)
 {
-    ap_status_t status;
+    apr_status_t status;
 
     status = sdbm_store(db->file, D2G(key), D2G(value), SDBM_REPLACE);
 

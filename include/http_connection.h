@@ -76,7 +76,7 @@ extern "C" {
  * @param addr The server's local address
  * @param id ID of this connection; unique at any point in time.
  */
-conn_rec *ap_new_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
+conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *remaddr,
 			    const struct sockaddr_in *saddr, long id);
 
@@ -89,8 +89,8 @@ conn_rec *ap_new_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
  * @param conn_socket The socket we are creating the connection on.
  * @param id ID of this connection; unique at any point in time.
  */
-conn_rec *ap_new_apr_connection(ap_pool_t *p, server_rec *server, BUFF *inout,
-                                ap_socket_t *conn_socket, long id);
+conn_rec *ap_new_apr_connection(apr_pool_t *p, server_rec *server, BUFF *inout,
+                                apr_socket_t *conn_socket, long id);
 
 /**
  * This is the protocol module driver.  This calls all of the

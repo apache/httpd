@@ -113,22 +113,22 @@ typedef struct {
 
 typedef struct {
     int order[METHODS];
-    ap_array_header_t *allows;
-    ap_array_header_t *denys;
+    apr_array_header_t *allows;
+    apr_array_header_t *denys;
 } access_dir_conf;
 
 module MODULE_VAR_EXPORT access_module;
 
-static void *create_access_dir_config(ap_pool_t *p, char *dummy)
+static void *create_access_dir_config(apr_pool_t *p, char *dummy)
 {
     access_dir_conf *conf =
-    (access_dir_conf *) ap_pcalloc(p, sizeof(access_dir_conf));
+    (access_dir_conf *) apr_pcalloc(p, sizeof(access_dir_conf));
     int i;
 
     for (i = 0; i < METHODS; ++i)
 	conf->order[i] = DENY_THEN_ALLOW;
-    conf->allows = ap_make_array(p, 1, sizeof(allowdeny));
-    conf->denys = ap_make_array(p, 1, sizeof(allowdeny));
+    conf->allows = apr_make_array(p, 1, sizeof(allowdeny));
+    conf->denys = apr_make_array(p, 1, sizeof(allowdeny));
 
     return (void *) conf;
 }
@@ -167,12 +167,12 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     access_dir_conf *d = (access_dir_conf *) dv;
     allowdeny *a;
     char *s;
-    char *where = ap_pstrdup(cmd->pool, where_c);
+    char *where = apr_pstrdup(cmd->pool, where_c);
 
     if (strcasecmp(from, "from"))
 	return "allow and deny must be followed by 'from'";
 
-    a = (allowdeny *) ap_push_array(cmd->info ? d->allows : d->denys);
+    a = (allowdeny *) apr_push_array(cmd->info ? d->allows : d->denys);
     a->x.from = where;
     a->limited = cmd->limited;
 
@@ -311,7 +311,7 @@ static int in_domain(const char *domain, const char *what)
 	return 0;
 }
 
-static int find_allowdeny(request_rec *r, ap_array_header_t *a, int method)
+static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
 {
     allowdeny *ap = (allowdeny *) a->elts;
     int mmask = (1 << method);
@@ -325,7 +325,7 @@ static int find_allowdeny(request_rec *r, ap_array_header_t *a, int method)
 
 	switch (ap[i].type) {
 	case T_ENV:
-	    if (ap_table_get(r->subprocess_env, ap[i].x.from)) {
+	    if (apr_table_get(r->subprocess_env, ap[i].x.from)) {
 		return 1;
 	    }
 	    break;

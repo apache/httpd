@@ -137,7 +137,7 @@ void ap_proxy_c2hex(int ch, char *x)
  * those which must not be touched.
  */
 char *
-     ap_proxy_canonenc(ap_pool_t *p, const char *x, int len, enum enctype t, int isenc)
+     ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t, int isenc)
 {
     int i, j, ch;
     char *y;
@@ -169,7 +169,7 @@ char *
     else
     reserved = "";
 
-    y = ap_palloc(p, 3 * len + 1);
+    y = apr_palloc(p, 3 * len + 1);
 
     for (i = 0, j = 0; i < len; i++, j++) {
 /* always handle '/' first */
@@ -213,7 +213,7 @@ char *
  * Returns an error string.
  */
 char *
-     ap_proxy_canon_netloc(ap_pool_t *p, char **const urlp, char **userp,
+     ap_proxy_canon_netloc(apr_pool_t *p, char **const urlp, char **userp,
             char **passwordp, char **hostp, int *port)
 {
     int i;
@@ -311,7 +311,7 @@ static const char * const lwday[7] =
  * formatted, then it exits very quickly.
  */
 const char *
-     ap_proxy_date_canon(ap_pool_t *p, const char *x)
+     ap_proxy_date_canon(apr_pool_t *p, const char *x)
 {
     int wk, mday, year, hour, min, sec, mon;
     char *q, month[4], zone[4], week[4];
@@ -359,8 +359,8 @@ const char *
     if (mon == 12)
     return x;
 
-    q = ap_palloc(p, 30);
-    ap_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk], mday,
+    q = apr_palloc(p, 30);
+    apr_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", ap_day_snames[wk], mday,
         ap_month_snames[mon], year, hour, min, sec);
     return q;
 }
@@ -430,14 +430,14 @@ static int proxy_getline(char *s, int n, BUFF *in, int fold)
  * @@@: XXX: FIXME: currently the headers are passed thru un-merged. 
  * Is that okay, or should they be collapsed where possible?
  */
-ap_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
+apr_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f)
 {
-    ap_table_t *resp_hdrs;
+    apr_table_t *resp_hdrs;
     int len;
     char *value, *end;
     char field[MAX_STRING_LEN];
 
-    resp_hdrs = ap_make_table(r->pool, 20);
+    resp_hdrs = apr_make_table(r->pool, 20);
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -476,7 +476,7 @@ ap_table_t *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *
     for (end = &value[strlen(value)-1]; end > value && ap_isspace(*end); --end)
         *end = '\0';
 
-        ap_table_add(resp_hdrs, buffer, value);
+        apr_table_add(resp_hdrs, buffer, value);
 
     /* the header was too long; at the least we should skip extra data */
     if (len >= size - 1) { 
@@ -496,7 +496,7 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
     int  ok;
     char buf[IOBUFSIZE];
     long total_bytes_rcvd, in_buffer;
-    ap_ssize_t cntr;
+    apr_ssize_t cntr;
     register int n, o;
     conn_rec *con = r->connection;
     int alternate_timeouts = 1;    /* 1 if we alternate between soft & hard timeouts */
@@ -603,18 +603,18 @@ long int ap_proxy_send_fb(proxy_completion *completion, BUFF *f, request_rec *r,
  * 
  * A timeout should be set before calling this routine.
  */
-void ap_proxy_send_headers(request_rec *r, const char *respline, ap_table_t *t)
+void ap_proxy_send_headers(request_rec *r, const char *respline, apr_table_t *t)
 {
     int i;
     BUFF *fp = r->connection->client;
-    ap_table_entry_t *elts = (ap_table_entry_t *) ap_table_elts(t)->elts;
+    apr_table_entry_t *elts = (apr_table_entry_t *) ap_table_elts(t)->elts;
 
     ap_bvputs(fp, respline, CRLF, NULL);
 
     for (i = 0; i < ap_table_elts(t)->nelts; ++i) {
         if (elts[i].key != NULL) {
             ap_bvputs(fp, elts[i].key, ": ", elts[i].val, CRLF, NULL);
-            ap_table_addn(r->headers_out, elts[i].key, elts[i].val);
+            apr_table_addn(r->headers_out, elts[i].key, elts[i].val);
         }
     }
 
@@ -712,8 +712,8 @@ void ap_proxy_cache_error(ap_cache_el  **c)
 
 int ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
-    ap_table_setn(r->notes, "error-notes",
-          ap_pstrcat(r->pool, 
+    apr_table_setn(r->notes, "error-notes",
+          apr_pstrcat(r->pool, 
                  "The proxy server could not handle the request "
                  "<EM><A HREF=\"", ap_escape_uri(r->pool, r->uri),
                  "\">", ap_escape_html(r->pool, r->method),
@@ -724,9 +724,9 @@ int ap_proxyerror(request_rec *r, int statuscode, const char *message)
                  "</STRONG>", NULL));
 
     /* Allow "error-notes" string to be printed by ap_send_error_response() */
-    ap_table_setn(r->notes, "verbose-error-to", ap_pstrdup(r->pool, "*"));
+    apr_table_setn(r->notes, "verbose-error-to", apr_pstrdup(r->pool, "*"));
 
-    r->status_line = ap_psprintf(r->pool, "%3.3u Proxy Error", statuscode);
+    r->status_line = apr_psprintf(r->pool, "%3.3u Proxy Error", statuscode);
     return statuscode;
 }
 
@@ -784,7 +784,7 @@ static const char *
     || url[1] != '/' || url[2] != '/')
     return NULL;
 
-    url = ap_pstrdup(r->pool, &url[1]);    /* make it point to "//", which is what proxy_canon_netloc expects */
+    url = apr_pstrdup(r->pool, &url[1]);    /* make it point to "//", which is what proxy_canon_netloc expects */
 
     err = ap_proxy_canon_netloc(r->pool, &url, &user, &password, &host, &port);
 
@@ -798,7 +798,7 @@ static const char *
 }
 
 /* Return TRUE if addr represents an IP address (or an IP network address) */
-int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_pool_t *p)
+int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 {
     const char *addr = This->name;
     long ip_addr[4];
@@ -994,7 +994,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a domain name */
-int ap_proxy_is_domainname(struct dirconn_entry *This, ap_pool_t *p)
+int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p)
 {
     char *addr = This->name;
     int i;
@@ -1048,7 +1048,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr represents a host name */
-int ap_proxy_is_hostname(struct dirconn_entry *This, ap_pool_t *p)
+int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p)
 {
     struct hostent host;
     char *addr = This->name;
@@ -1115,7 +1115,7 @@ static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r)
 }
 
 /* Return TRUE if addr is to be matched as a word */
-int ap_proxy_is_word(struct dirconn_entry *This, ap_pool_t *p)
+int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p)
 {
     This->matcher = proxy_match_word;
     return 1;
@@ -1128,21 +1128,21 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
     return host != NULL && strstr(host, This->name) != NULL;
 }
 
-int ap_proxy_doconnect(ap_socket_t *sock, char *host, ap_uint32_t port, request_rec *r)
+int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r)
 {
     int i;
     for (i = 0; host[i] != '\0'; i++)
         if (!ap_isdigit(host[i]) && host[i] != '.')
             break;
 
-    ap_set_remote_port(sock, port);
+    apr_set_remote_port(sock, port);
     if (host[i] == '\0') {
-        ap_set_remote_ipaddr(sock, host);
+        apr_set_remote_ipaddr(sock, host);
         host = NULL;
     }
     for(;;)
     {
-        switch(ap_connect(sock, host))
+        switch(apr_connect(sock, host))
         {
         case APR_EINTR:
             continue;
@@ -1156,7 +1156,7 @@ int ap_proxy_doconnect(ap_socket_t *sock, char *host, ap_uint32_t port, request_
     return -1;
 }
 
-/* This function is called by ap_table_do() for all header lines */
+/* This function is called by apr_table_do() for all header lines */
 /* (from proxy_http.c and proxy_ftp.c) */
 /* It is passed a table_do_args struct pointer and a MIME field and value pair */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
@@ -1166,7 +1166,7 @@ int ap_proxy_send_hdr_line(void *p, const char *key, const char *value)
         return 1;
     if (!r->assbackwards)
         ap_rvputs(r, key, ": ", value, CRLF, NULL);
-    return 1; /* tell ap_table_do() to continue calling us for more headers */
+    return 1; /* tell apr_table_do() to continue calling us for more headers */
 }
 
 /* send a text line to one or two BUFF's; return line length */
@@ -1201,9 +1201,9 @@ int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
     return OK;
 }
 
-int ap_proxy_cache_should_cache(request_rec *r, ap_table_t *resp_hdrs, const int is_HTTP1)
+int ap_proxy_cache_should_cache(request_rec *r, apr_table_t *resp_hdrs, const int is_HTTP1)
 {
-    const char *expire = ap_table_get(resp_hdrs, "Expires");
+    const char *expire = apr_table_get(resp_hdrs, "Expires");
     time_t expc;
     if (expire != NULL)
         expc = ap_parseHTTPdate(expire);
@@ -1212,9 +1212,9 @@ int ap_proxy_cache_should_cache(request_rec *r, ap_table_t *resp_hdrs, const int
     if((r->status != HTTP_OK && r->status != HTTP_MOVED_PERMANENTLY && r->status != HTTP_NOT_MODIFIED) ||
        (r->status == HTTP_NOT_MODIFIED) ||
        r->header_only ||
-       ap_table_get(r->headers_in, "Authorization") != NULL ||
+       apr_table_get(r->headers_in, "Authorization") != NULL ||
        (expire != NULL && expc == BAD_DATE) ||
-       (r->status == HTTP_OK && !ap_table_get(resp_hdrs, "Last-Modified") && is_HTTP1))
+       (r->status == HTTP_OK && !apr_table_get(resp_hdrs, "Last-Modified") && is_HTTP1))
     {
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,
                      "proxy: Response is not cacheable: %s", r->unparsed_uri);
