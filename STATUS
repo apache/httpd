@@ -123,6 +123,7 @@ Open issues:
        o Jim's looked over the ap_snprintf() stuff (the changes that Dean
          did to make thread-safe) and they look fine.
        o Laura La Gassa's looked over ap_vformatter & other related code
+       o Martin did a "source review" as well.
        o Could still use 1 or 2 more sets of eyeballs.
 
     * Paul would like to see a 'gdbm' option because he uses
