@@ -370,8 +370,8 @@ more details.</dd>
   If this directive is eliminated since the Apache version 1 distribution,
   the directive or option that replaces the behavior should be cited here.
   In general, directives, features, and options are only deprecated to
-  minimize debugging of conflicting features, or features that can only
-  be supported in an alternate manner.
+  minimize debugging of conflicting features, or if the feature can only
+  continue to be supported in an alternate manner.
   </P>
 
 <!--#include virtual="footer.html" -->
