@@ -1,5 +1,10 @@
 Changes with Apache 1.3.25
 
+  *) Allow child processes sufficient time for cleanups but making
+     ap_select in reclaim_child_processes more "resistant" to
+     signal interupts. Bugz# 8176
+     [David Winterbourne <davidw@financenter.com>, Jim Jagielski]
+
   *) Recognize platform specific root directories (other than 
      leading slash) in mod_rewrite for filename rewrite rules.
      Bugz# 7492  [William Rowe]

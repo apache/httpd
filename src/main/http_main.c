@@ -2726,6 +2726,7 @@ static void reclaim_child_processes(int terminate)
     struct timeval tv;
     int waitret, tries;
     int not_dead_yet;
+    int ret;
 #ifndef NO_OTHER_CHILD
     other_child_rec *ocr, *nocr;
 #endif
@@ -2735,12 +2736,15 @@ static void reclaim_child_processes(int terminate)
     for (tries = terminate ? 4 : 1; tries <= 12; ++tries) {
 	/* don't want to hold up progress any more than 
 	 * necessary, but we need to allow children a few moments to exit.
-	 * Set delay with an exponential backoff.
+	 * Set delay with an exponential backoff. NOTE: if we get
+ 	 * interupted, we'll wait longer than expected...
 	 */
 	tv.tv_sec = waittime / 1000000;
 	tv.tv_usec = waittime % 1000000;
 	waittime = waittime * 4;
-	ap_select(0, NULL, NULL, NULL, &tv);
+	do {
+	    ret = ap_select(0, NULL, NULL, NULL, &tv);
+	} while (ret == -1 && errno == EINTR);
 
 	/* now see who is done */
 	not_dead_yet = 0;
