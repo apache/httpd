@@ -151,7 +151,7 @@ typedef struct digest_config_struct {
 
 #define NONCE_TIME_LEN  (((sizeof(apr_time_t)+2)/3)*4)
 #define NONCE_HASH_LEN  (2*APR_SHA1_DIGESTSIZE)
-#define NONCE_LEN       (NONCE_TIME_LEN + NONCE_HASH_LEN)
+#define NONCE_LEN       (int )(NONCE_TIME_LEN + NONCE_HASH_LEN)
 
 #define SECRET_LEN      20
 
