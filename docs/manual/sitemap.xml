@@ -59,8 +59,8 @@
 <category id="faq">
 <title>Apache Server Frequently Asked Questions</title>
 <page href="faq/">Overview</page>
-<page separate="yes" href="faq/all_in_one.html">All on One Page</page>
 <page href="faq/support.html">Support</page>
+<page href="faq/error.html">Error Messages</page>
 </category>
 
 <category id="ssl">
