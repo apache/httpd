@@ -4,8 +4,8 @@ Changes with Apache 1.3b4
      with custom compilation options in their Configuration should make
      appropriate changes:
 
-	SAFE_UNSERIALIZED_ACCEPT  ->   SINGLE_LISTEN_UNSERIALIZED_ACCEPT
-	HAVE_MMAP                 ->   USE_MMAP_SCOREBOARD
+        SAFE_UNSERIALIZED_ACCEPT  ->   SINGLE_LISTEN_UNSERIALIZED_ACCEPT
+        HAVE_MMAP                 ->   USE_MMAP_SCOREBOARD
         HAVE_SHMGET               ->   USE_SHMGET_SCOREBOARD
     
      [Jim Jagielski]
