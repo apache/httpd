@@ -65,6 +65,7 @@
 #include "http_connection.h"
 #include "apr_portable.h"
 #include "apr_getopt.h"
+#include "apr_strings.h"
 #include "ap_mpm.h"
 #include "ap_config.h"
 #include "ap_listen.h"
@@ -780,8 +781,8 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         context->sa_client = ap_palloc(context->ptrans, len);
         if ((getpeername(context->accept_socket,
                          context->sa_client, &len)) == SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, h_errno, server_conf, 
-                         "getpeername failed with error %d\n", WSAGetLastError());
+            ap_log_error(APLOG_MARK, APLOG_WARNING, WSAGetLastError(), server_conf, 
+                         "getpeername failed");
             memset(&context->sa_client, '\0', sizeof(context->sa_client));
         }
 
@@ -1510,7 +1511,7 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
     /* Create a pipe to send socket info to the child */
     if (!CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
-                     "Parent: Unable to create pipe to child process.\n");
+                     "Parent: Unable to create pipe to child process.");
         return -1;
     }
 

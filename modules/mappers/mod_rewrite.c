@@ -96,6 +96,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "mod_rewrite.h"
+#include "apr_strings.h"
 
 #if !defined(OS2) && !defined(WIN32)
 #include "unixd.h"
@@ -442,7 +443,7 @@ static const char *cmd_rewriteoptions_setoption(ap_pool_t *p, int *options,
     }
     else {
         return ap_pstrcat(p, "RewriteOptions: unknown option '",
-                          name, "'\n", NULL);
+                          name, "'", NULL);
     }
     return NULL;
 }
@@ -606,7 +607,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     /*  parse the argument line ourself */
     if (parseargline(str, &a1, &a2, &a3)) {
         return ap_pstrcat(cmd->pool, "RewriteCond: bad argument line '", str,
-                          "'\n", NULL);
+                          "'", NULL);
     }
 
     /*  arg1: the input string */
@@ -644,7 +645,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     if (rc) {
         return ap_pstrcat(cmd->pool,
                           "RewriteCond: cannot compile regular expression '",
-                          a2, "'\n", NULL);
+                          a2, "'", NULL);
     }
 
     newcond->pattern = ap_pstrdup(cmd->pool, cp);
@@ -717,7 +718,7 @@ static const char *cmd_rewritecond_setflag(ap_pool_t *p, rewritecond_entry *cfg,
         cfg->flags |= CONDFLAG_ORNEXT;
     }
     else {
-        return ap_pstrcat(p, "RewriteCond: unknown flag '", key, "'\n", NULL);
+        return ap_pstrcat(p, "RewriteCond: unknown flag '", key, "'", NULL);
     }
     return NULL;
 }
@@ -749,7 +750,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     /*  parse the argument line ourself */
     if (parseargline(str, &a1, &a2, &a3)) {
         return ap_pstrcat(cmd->pool, "RewriteRule: bad argument line '", str,
-                          "'\n", NULL);
+                          "'", NULL);
     }
 
     /* arg3: optional flags field */
@@ -780,7 +781,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     if ((regexp = ap_pregcomp(cmd->pool, cp, mode)) == NULL) {
         return ap_pstrcat(cmd->pool,
                           "RewriteRule: cannot compile regular expression '",
-                          a1, "'\n", NULL);
+                          a1, "'", NULL);
     }
     newrule->pattern = ap_pstrdup(cmd->pool, cp);
     newrule->regexp  = regexp;
@@ -952,7 +953,7 @@ static const char *cmd_rewriterule_setflag(ap_pool_t *p, rewriterule_entry *cfg,
         cfg->flags |= RULEFLAG_NOCASE;
     }
     else {
-        return ap_pstrcat(p, "RewriteRule: unknown flag '", key, "'\n", NULL);
+        return ap_pstrcat(p, "RewriteRule: unknown flag '", key, "'", NULL);
     }
     return NULL;
 }

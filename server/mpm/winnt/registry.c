@@ -76,6 +76,7 @@
 #include "httpd.h"
 #include "http_log.h"
 #include "mpm_winnt.h"
+#include "apr_strings.h"
 
 /* bet you are looking to change revisions to roll the tarball...
  * Guess what, you already did.  Revised May '00 to save you from 

@@ -133,6 +133,7 @@
 #include "http_log.h"
 #include "ap_config.h"
 #include "apr_dso.h"
+#include "apr_strings.h"
 
 module MODULE_VAR_EXPORT so_module;
 
@@ -257,7 +258,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
 
         return ap_pstrcat(cmd->pool, "Cannot load ", szModuleFile,
 			  " into server: ",
-			  ap_dso_error(modhandle, my_error, sizeof(my_error)),
+			  ap_strerror(status, my_error, sizeof(my_error)),
 			  NULL);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL,

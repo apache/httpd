@@ -58,6 +58,7 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "apr_strings.h"
 
 #include <stdarg.h>
 #include <time.h>

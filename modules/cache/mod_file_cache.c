@@ -128,6 +128,7 @@
 #include "http_request.h"
 #include "http_core.h"
 #include "apr_mmap.h"
+#include "apr_strings.h"
 
 module MODULE_VAR_EXPORT file_cache_module;
 static int once_through = 0;
