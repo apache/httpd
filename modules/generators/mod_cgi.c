@@ -621,9 +621,7 @@ static int cgi_handler(request_rec *r)
 	    ap_table_unset(r->headers_in, "Content-Length");
 
 	    ap_internal_redirect_handler(location, r);
-/*            r->content_type = NULL;*/
-            r->handler = NULL;
-	    return RERUN_HANDLERS;
+	    return OK;
 	}
 	else if (location && r->status == 200) {
 	    /* XX Note that if a script wants to produce its own Redirect
@@ -632,12 +630,12 @@ static int cgi_handler(request_rec *r)
 	    return REDIRECT;
 	}
 
-/*	ap_send_http_header(r);*/
+	ap_send_http_header(r);
 	if (!r->header_only) {
-            r->input = script_in;
+	    ap_send_fb(script_in, r);
 	}
-/*	ap_bclose(script_in);
-*/
+	ap_bclose(script_in);
+
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
 	    continue;
 	}
@@ -645,12 +643,10 @@ static int cgi_handler(request_rec *r)
     }
 
     if (script_in && nph) {
-        r->input = script_in;
+	ap_send_fb(script_in, r);
     }
 
-/*    r->content_type = NULL;*/
-    r->handler = NULL;
-    return RERUN_HANDLERS;	/* NOT r->status, even if it has changed. */
+    return OK;			/* NOT r->status, even if it has changed. */
 }
 
 static const handler_rec cgi_handlers[] =
