@@ -1057,7 +1057,7 @@ static void perform_idle_server_maintenance(void)
 	     * This depends on the ordering of SERVER_READY and SERVER_STARTING.
 	     */
 	    if (status <= SERVER_READY && status != SERVER_DEAD &&
-                    ps->generation == ap_my_generation && 
+                    !ps->quiescing &&
                  /* XXX the following shouldn't be necessary if we clean up 
                   *     properly after seg faults, but we're not yet    GLA 
                   */     
