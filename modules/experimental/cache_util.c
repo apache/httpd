@@ -65,7 +65,7 @@
 /* -------------------------------------------------------------- */
 
 /* return true if the request is conditional */
-int ap_cache_request_is_conditional(request_rec *r)
+CACHE_DECLARE(int) ap_cache_request_is_conditional(request_rec *r)
 {
     if (apr_table_get(r->headers_in, "If-Match") ||
         apr_table_get(r->headers_in, "If-None-Match") ||
@@ -79,7 +79,7 @@ int ap_cache_request_is_conditional(request_rec *r)
 
 
 /* remove other filters from filter stack */
-void ap_cache_reset_output_filters(request_rec *r)
+CACHE_DECLARE(void) ap_cache_reset_output_filters(request_rec *r)
 {
     ap_filter_t *f = r->output_filters;
 
@@ -97,9 +97,9 @@ void ap_cache_reset_output_filters(request_rec *r)
     }
 }
 
-const char *ap_cache_get_cachetype(request_rec *r, 
-                                   cache_server_conf *conf, 
-                                   const char *url)
+CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r, 
+                                                  cache_server_conf *conf, 
+                                                  const char *url)
 {
     const char *type = NULL;
     int i;
@@ -139,7 +139,7 @@ const char *ap_cache_get_cachetype(request_rec *r,
  * The return returns 1 if the token val is found in the list, or 0
  * otherwise.
  */
-int ap_cache_liststr(const char *list, const char *key, char **val)
+CACHE_DECLARE(int) ap_cache_liststr(const char *list, const char *key, char **val)
 {
     int len, i;
     char *p;
@@ -183,7 +183,7 @@ int ap_cache_liststr(const char *list, const char *key, char **val)
 }
 
 /* return each comma separated token, one at a time */
-const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
+CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
 {
     apr_size_t i;
     const char *s;
@@ -218,7 +218,7 @@ const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
 /*
  * Converts apr_time_t hex digits to a time integer
  */
-apr_time_t ap_cache_hex2msec(const char *x)
+CACHE_DECLARE(apr_time_t) ap_cache_hex2msec(const char *x)
 {
     int i, ch;
     apr_time_t j;
@@ -238,7 +238,7 @@ apr_time_t ap_cache_hex2msec(const char *x)
 /*
  * Converts a time integer to apr_time_t hex digits
  */
-void ap_cache_msec2hex(apr_time_t j, char *y)
+CACHE_DECLARE(void) ap_cache_msec2hex(apr_time_t j, char *y)
 {
     int i, ch;
 
@@ -295,7 +295,7 @@ static void cache_hash(const char *it, char *val, int ndepth, int nlength)
     val[i + 22 - k] = '\0';
 }
 
-char *generate_name(apr_pool_t *p, int dirlevels, int dirlength, const char *name)
+CACHE_DECLARE(char *)generate_name(apr_pool_t *p, int dirlevels, int dirlength, const char *name)
 {
     char hashfile[66];
     cache_hash(name, hashfile, dirlevels, dirlength);

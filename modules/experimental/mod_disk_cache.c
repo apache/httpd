@@ -151,7 +151,12 @@ static apr_status_t file_cache_el_final(cache_info *info, cache_handle_t *h, req
         else {
             /* XXX log */
         }
+#ifdef WIN32
+        /* XXX: win32 doesn't have a link */
+        if  (apr_file_copy(dobj->tempfile, info->datafile, APR_FILE_SOURCE_PERMS, r->pool) != APR_SUCCESS) {
+#else
         if (link(dobj->tempfile, info->datafile) == -1) {
+#endif
             /* XXX log */
         }
         else {
