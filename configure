@@ -904,7 +904,6 @@ do
             PERL="$apc_optarg"
             ;;
         --with-port=*)
-            echo "Using port $apc_optarg"
             port="$apc_optarg"
             ;;
         --without-support)
