@@ -129,6 +129,7 @@
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "util_script.h"
 
 #include <utime.h>
 
@@ -575,7 +576,7 @@ static int magic_rsl_add(request_rec *r, char *str)
 
     /* make sure we have a list to put it in */
     if (!req_dat) {
-	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r,
+	ap_log_rerror(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, APR_EINVAL, r,
 		    MODNAME ": request config should not be NULL");
 	if (!(req_dat = magic_set_config(r))) {
 	    /* failure */
@@ -847,7 +848,7 @@ static int magic_rsl_to_request(request_rec *r)
  */
 static int magic_process(request_rec *r)
 {
-    int fd = 0;
+    ap_file_t *fd = NULL;
     unsigned char buf[HOWMANY + 1];	/* one extra for terminating '\0' */
     int nbytes = 0;		/* number of bytes read from a datafile */
     int result;
@@ -866,7 +867,7 @@ static int magic_process(request_rec *r)
 	return result;
     }
 
-    if ((fd = ap_popenf(r->pool, r->filename, O_RDONLY, 0)) < 0) {
+    if (ap_open(&fd, r->filename, APR_READ, APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
 	/* We can't open it, but we were able to stat it. */
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
 		    MODNAME ": can't read `%s'", r->filename);
@@ -877,8 +878,9 @@ static int magic_process(request_rec *r)
     /*
      * try looking at the first HOWMANY bytes
      */
-    if ((nbytes = read(fd, (char *) buf, sizeof(buf) - 1)) == -1) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+    nbytes = sizeof(buf) - 1;
+    if ((result = ap_read(fd, (char *) buf, &nbytes)) != APR_SUCCESS) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, result, r,
 		    MODNAME ": read failed: %s", r->filename);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -890,7 +892,7 @@ static int magic_process(request_rec *r)
 	tryit(r, buf, nbytes, 1); 
     }
 
-    (void) ap_pclosef(r->pool, fd);
+    (void) ap_close(fd);
     (void) magic_rsl_putchar(r, '\n');
 
     return OK;
@@ -933,7 +935,8 @@ static void tryit(request_rec *r, unsigned char *buf, int nb, int checkzmagic)
  */
 static int apprentice(server_rec *s, ap_context_t *p)
 {
-    FILE *f;
+    ap_file_t *f;
+    ap_status_t result;
     char line[BUFSIZ + 1];
     int errs = 0;
     int lineno;
@@ -941,15 +944,13 @@ static int apprentice(server_rec *s, ap_context_t *p)
     int rule = 0;
     struct magic *m, *prevm;
 #endif
-    char *fname;
-
     magic_server_config_rec *conf = (magic_server_config_rec *)
 		    ap_get_module_config(s->module_config, &mime_magic_module);
 
-    fname = ap_server_root_relative(p, conf->magicfile);
-    f = ap_pfopen(p, fname, "r");
-    if (f == NULL) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, s,
+    const char *fname = ap_server_root_relative(p, conf->magicfile);
+    result = ap_open(&f, fname, APR_READ | APR_BUFFERED, APR_OS_DEFAULT, p);
+    if (result != APR_SUCCESS) {
+	ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
 		    MODNAME ": can't read magic file %s", fname);
 	return -1;
     }
@@ -958,7 +959,7 @@ static int apprentice(server_rec *s, ap_context_t *p)
     conf->magic = conf->last = NULL;
 
     /* parse it */
-    for (lineno = 1; fgets(line, BUFSIZ, f) != NULL; lineno++) {
+    for (lineno = 1; ap_fgets(line, BUFSIZ, f) == APR_SUCCESS; lineno++) {
 	int ws_offset;
 
 	/* delete newline */
@@ -991,31 +992,31 @@ static int apprentice(server_rec *s, ap_context_t *p)
 	    ++errs;
     }
 
-    (void) ap_pfclose(p, f);
+    (void) ap_close(f);
 
 #if MIME_MAGIC_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 		MODNAME ": apprentice conf=%x file=%s m=%s m->next=%s last=%s",
 		conf,
 		conf->magicfile ? conf->magicfile : "NULL",
 		conf->magic ? "set" : "NULL",
 		(conf->magic && conf->magic->next) ? "set" : "NULL",
 		conf->last ? "set" : "NULL");
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 		MODNAME ": apprentice read %d lines, %d rules, %d errors",
 		lineno, rule, errs);
 #endif
 
 #if MIME_MAGIC_DEBUG
     prevm = 0;
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 		MODNAME ": apprentice test");
     for (m = conf->magic; m; m = m->next) {
 	if (ap_isprint((((unsigned long) m) >> 24) & 255) &&
 	    ap_isprint((((unsigned long) m) >> 16) & 255) &&
 	    ap_isprint((((unsigned long) m) >> 8) & 255) &&
 	    ap_isprint(((unsigned long) m) & 255)) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 			MODNAME ": apprentice: POINTER CLOBBERED! "
 			"m=\"%c%c%c%c\" line=%d",
 			(((unsigned long) m) >> 24) & 255,
@@ -1062,7 +1063,7 @@ static unsigned long signextend(server_rec *s, struct magic *m, unsigned long v)
 	case STRING:
 	    break;
 	default:
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, s,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, s,
 			MODNAME ": can't happen: m->type=%d", m->type);
 	    return -1;
 	}
@@ -1110,7 +1111,7 @@ static int parse(server_rec *serv, ap_context_t *p, char *l, int lineno)
     /* get offset, then skip over it */
     m->offset = (int) strtol(l, &t, 0);
     if (l == t) {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, serv,
 		    MODNAME ": offset %s invalid", l);
     }
     l = t;
@@ -1133,7 +1134,7 @@ static int parse(server_rec *serv, ap_context_t *p, char *l, int lineno)
 		m->in.type = BYTE;
 		break;
 	    default:
-		ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+		ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, serv,
 			MODNAME ": indirect offset type %c invalid", *l);
 		break;
 	    }
@@ -1150,7 +1151,7 @@ static int parse(server_rec *serv, ap_context_t *p, char *l, int lineno)
 	else
 	    t = l;
 	if (*t++ != ')') {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, serv,
 			MODNAME ": missing ')' in indirect offset");
 	}
 	l = t;
@@ -1224,7 +1225,7 @@ static int parse(server_rec *serv, ap_context_t *p, char *l, int lineno)
 	l += NLEDATE;
     }
     else {
-	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+	ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, serv,
 		    MODNAME ": type %s invalid", l);
 	return -1;
     }
@@ -1287,7 +1288,7 @@ static int parse(server_rec *serv, ap_context_t *p, char *l, int lineno)
     m->desc[sizeof(m->desc) - 1] = '\0';
 
 #if MIME_MAGIC_DEBUG
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, serv,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, serv,
 		MODNAME ": parse line=%d m=%x next=%x cont=%d desc=%s",
 		lineno, m, m->next, m->cont_level, m->desc);
 #endif /* MIME_MAGIC_DEBUG */
@@ -1330,7 +1331,7 @@ static char *getstr(server_rec *serv, register char *s, register char *p,
 	if (ap_isspace((unsigned char) c))
 	    break;
 	if (p >= pmax) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, serv,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, 0, serv,
 			MODNAME ": string too long: %s", origs);
 	    break;
 	}
@@ -2142,37 +2143,83 @@ struct uncompress_parms {
     int method;
 };
 
-static int uncompress_child(void *data, child_info *pinfo)
+static int uncompress_child(struct uncompress_parms *parm, ap_context_t *cntxt,
+                            BUFF **script_in)
 {
-    struct uncompress_parms *parm = data;
-    int child_pid;
+    int rc = 1;
     char *new_argv[4];
+    char **env;
+    request_rec *r = parm->r;
+    ap_context_t *child_context = cntxt;
+    ap_procattr_t *procattr;
+    ap_proc_t *procnew = NULL;
+    ap_os_proc_t fred;
+    ap_file_t *file;
+    ap_iol *iol;
 
-    new_argv[0] = compr[parm->method].argv[0];
-    new_argv[1] = compr[parm->method].argv[1];
-    new_argv[2] = parm->r->filename;
-    new_argv[3] = NULL;
+    ap_block_alarms();
 
-    if (compr[parm->method].silent) {
-	close(STDERR_FILENO);
+    env = ap_create_environment(child_context, r->subprocess_env);
+
+    if ((ap_createprocattr_init(&procattr, child_context) != APR_SUCCESS) ||
+        (ap_setprocattr_io(procattr, 1, 1, 0)             != APR_SUCCESS) ||
+        (ap_setprocattr_dir(procattr, r->filename)        != APR_SUCCESS) ||
+        (ap_setprocattr_cmdtype(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
+        /* Something bad happened, tell the world. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_ENOPROC, r,
+               "couldn't setup child process: %s", r->filename);
     }
+    else {
+        new_argv[0] = compr[parm->method].argv[0];
+        new_argv[1] = compr[parm->method].argv[1];
+        new_argv[2] = r->filename;
+        new_argv[3] = NULL;
 
-    child_pid = ap_spawnvp(compr[parm->method].argv[0],
-			new_argv);
-    if (child_pid == -1)
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, parm->r,
-		MODNAME ": could not execute `%s'.",
-		compr[parm->method].argv[0]);
-    return (child_pid);
+        if (compr[parm->method].silent) {
+            close(STDERR_FILENO);
+        }
+
+        rc = ap_create_process(&procnew, compr[parm->method].argv[0],
+                               new_argv, env, procattr, child_context);
+
+        if (rc != APR_SUCCESS) {
+            /* Bad things happened. Everyone should have cleaned up. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_ENOPROC, r,
+                          MODNAME ": could not execute `%s'.",
+                          compr[parm->method].argv[0]);
+        }
+        else {
+#ifndef WIN32
+            /* pjr - this is a cheap hack for now to get the basics working in
+             *       stages. ap_note_subprocess and free_proc need to be redon
+
+             *       to make use of ap_proc_t instead of pid.
+             */
+            ap_get_os_proc(&fred, procnew);
+            ap_note_subprocess(child_context, fred, kill_after_timeout);
+#endif
+            /* Fill in BUFF structure for parents pipe to child's stdout */
+            ap_get_childout(&file, procnew);
+            iol = ap_create_file_iol(file);
+            if (!iol)
+                return APR_EBADF;
+            if (script_in) {
+                *script_in = ap_bcreate(child_context, B_RD);
+            }
+            ap_bpush_iol(*script_in, iol);
+        }
+    }
+    ap_unblock_alarms();
+
+    return (rc);
 }
-
 
 static int uncompress(request_rec *r, int method, 
 		      unsigned char **newch, int n)
 {
     struct uncompress_parms parm;
-    BUFF *bout;
-    ap_context_t *sub_pool;
+    BUFF *bout = NULL;
+    ap_context_t *sub_context;
     ap_status_t rv;
 
     parm.r = r;
@@ -2182,12 +2229,11 @@ static int uncompress(request_rec *r, int method,
      * there are cases (i.e. generating directory indicies with mod_autoindex)
      * where we would end up with LOTS of zombies.
      */
-    if (ap_create_context(&sub_pool, r->pool) != APR_SUCCESS)
-		return -1;
+    if (ap_create_context(&sub_context, r->pool) != APR_SUCCESS)
+        return -1;
 
-    if (!ap_bspawn_child(sub_pool, uncompress_child, &parm, kill_always,
-			 NULL, &bout, NULL)) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+    if ((rv = uncompress_child(&parm, sub_context, &bout)) != APR_SUCCESS) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 		    MODNAME ": couldn't spawn uncompress process: %s", r->uri);
 	return -1;
     }
@@ -2195,12 +2241,12 @@ static int uncompress(request_rec *r, int method,
     *newch = (unsigned char *) ap_palloc(r->pool, n);
     rv = ap_bread(bout, *newch, n, &n);
     if (n == 0) {
-	ap_destroy_pool(sub_pool);
+	ap_destroy_context(sub_context);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 	    MODNAME ": read failed %s", r->filename);
 	return -1;
     }
-    ap_destroy_pool(sub_pool);
+    ap_destroy_context(sub_context);
     return n;
 }
 
@@ -2353,8 +2399,7 @@ static int revision_suffix(request_rec *r)
 /*
  * initialize the module
  */
-
-static void magic_init(server_rec *main_server, ap_context_t *p)
+static void magic_init(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *main_server)
 {
     int result;
     magic_server_config_rec *conf;
@@ -2377,14 +2422,14 @@ static void magic_init(server_rec *main_server, ap_context_t *p)
 		return;
 #if MIME_MAGIC_DEBUG
 	    prevm = 0;
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 			MODNAME ": magic_init 1 test");
 	    for (m = conf->magic; m; m = m->next) {
 		if (ap_isprint((((unsigned long) m) >> 24) & 255) &&
 		    ap_isprint((((unsigned long) m) >> 16) & 255) &&
 		    ap_isprint((((unsigned long) m) >> 8) & 255) &&
 		    ap_isprint(((unsigned long) m) & 255)) {
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, s,
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO | APLOG_DEBUG, 0, s,
 				MODNAME ": magic_init 1: POINTER CLOBBERED! "
 				"m=\"%c%c%c%c\" line=%d",
 				(((unsigned long) m) >> 24) & 255,
@@ -2442,29 +2487,26 @@ static int magic_find_ct(request_rec *r)
     return magic_rsl_to_request(r);
 }
 
+static void register_hooks(void)
+{
+    ap_hook_type_checker(magic_find_ct, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_post_config(magic_init, NULL, NULL, HOOK_FIRST);
+}
+
 /*
  * Apache API module interface
  */
 
 module mime_magic_module =
 {
-    STANDARD_MODULE_STUFF,
-    magic_init,			/* initializer */
-    NULL,			/* dir config creator */
-    NULL,			/* dir merger --- default is to override */
-    create_magic_server_config,	/* server config */
-    merge_magic_server_config,	/* merge server config */
-    mime_magic_cmds,		/* command ap_table_t */
-    NULL,			/* handlers */
-    NULL,			/* filename translation */
-    NULL,			/* check_user_id */
-    NULL,			/* check auth */
-    NULL,			/* check access */
-    magic_find_ct,		/* type_checker */
-    NULL,			/* fixups */
-    NULL,			/* logger */
-    NULL,			/* header parser */
-    NULL,			/* child_init */
-    NULL,			/* child_exit */
-    NULL			/* post read-request */
+    STANDARD20_MODULE_STUFF,
+    NULL,                      /* dir config creator */
+    NULL,                      /* dir merger --- default is to override */
+    create_magic_server_config,        /* server config */
+    merge_magic_server_config, /* merge server config */
+    mime_magic_cmds,           /* command ap_table_t */
+    NULL,                      /* handlers */
+    register_hooks              /* register hooks */
 };
+
+
