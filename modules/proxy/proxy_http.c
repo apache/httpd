@@ -420,7 +420,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 {
     conn_rec *c = r->connection;
     char *buf;
-    apr_bucket *e, *last_header_bucket;
+    apr_bucket *e, *last_header_bucket = NULL;
     const apr_array_header_t *headers_in_array;
     const apr_table_entry_t *headers_in;
     int counter, seen_eos, send_chunks;
