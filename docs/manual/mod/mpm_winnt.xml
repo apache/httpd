@@ -55,4 +55,23 @@ NT.</description>
 <directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>Win32DisableAcceptEx</name>
+<description>This directive instructs the MPM to use accept() rather than AcceptEx() to accept network connections</description>
+<syntax>Win32DisableAcceptEx</syntax>
+<default>AcceptEx is enabled by default. Use this directive to disable use of AcceptEx</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>AcceptEx() is a Microsoft WinSock v2 API that provides
+    some performance improvements over the use of the BSD style
+    accept() API in certain circumstances. Some popular Windows
+    products, typically virus scanning or virtual private network
+    packages, have bugs that interfere with the proper operation of
+    AcceptEx(). If you encounter any of the conditions described
+    in the FAQ, you should use this directive to disable the use
+    of AcceptEx().</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
