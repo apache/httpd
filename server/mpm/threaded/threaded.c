@@ -73,6 +73,10 @@
 #include <sys/wait.h> 
 #endif
 
+#if !APR_HAVE_THREADS
+#error The threaded MPM requires APR threads, but they are unavailable.
+#endif
+
 #define CORE_PRIVATE 
  
 #include "ap_config.h"
