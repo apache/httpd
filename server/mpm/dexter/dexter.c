@@ -750,7 +750,7 @@ static void process_socket(ap_context_t *p, ap_socket_t *sock, long conn_id)
     }
     sock_disable_nagle(csd);
 
-    iol = unix_attach_socket(csd);
+    iol = unix_attach_socket(sock);
     if (iol == NULL) {
         if (errno == EBADF) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, NULL,
