@@ -220,6 +220,11 @@
 #define REWRITE_MAX_TXT_MAP_LINE 1024
 #endif
 
+/* max response length (incl.\n) in prg rewrite maps */
+#ifndef REWRITE_MAX_PRG_MAP_LINE
+#define REWRITE_MAX_PRG_MAP_LINE 2048
+#endif
+
 /*
  * +-------------------------------------------------------+
  * |                                                       |
@@ -1270,9 +1275,9 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file,
 static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
                                 apr_file_t *fpout, char *key)
 {
-    char buf[LONG_STRING_LEN];
+    char buf[REWRITE_MAX_PRG_MAP_LINE];
     char c;
-    int i;
+    apr_size_t i;
     apr_size_t nbytes;
     apr_status_t rv;
 
@@ -1291,7 +1296,6 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     }
 
     /* take the lock */
-
     if (rewrite_mapr_lock_acquire) {
         rv = apr_global_mutex_lock(rewrite_mapr_lock_acquire);
         if (rv != APR_SUCCESS) {
@@ -1322,7 +1326,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
     i = 0;
     nbytes = 1;
     apr_file_read(fpout, &c, &nbytes);
-    while (nbytes == 1 && (i < LONG_STRING_LEN-1)) {
+    while (nbytes == 1 && (i < REWRITE_MAX_PRG_MAP_LINE)) {
         if (c == '\n') {
             break;
         }
@@ -1330,7 +1334,6 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
 
         apr_file_read(fpout, &c, &nbytes);
     }
-    buf[i] = '\0';
 
     /* give the lock back */
     if (rewrite_mapr_lock_acquire) {
@@ -1343,12 +1346,11 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
         }
     }
 
-    if (strcasecmp(buf, "NULL") == 0) {
+    if (i == 4 && strncasecmp(buf, "NULL", 4) == 0) {
         return NULL;
     }
-    else {
-        return apr_pstrdup(r->pool, buf);
-    }
+
+    return apr_pstrmemdup(r->pool, buf, i);
 }
 
 /*
