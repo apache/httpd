@@ -1003,7 +1003,7 @@ static void perform_idle_server_maintenance(void)
     }
     ap_max_daemons_limit = last_non_dead + 1;
 
-    if (idle_thread_count > max_spare_threads) {
+    if (idle_thread_count > max_spare_threads * ap_max_daemons_limit) {
         /* Kill off one child */
         char char_of_death = '!';
         if ((rv = apr_file_write(pipe_of_death_out, &char_of_death, &one)) != APR_SUCCESS) {
@@ -1011,7 +1011,7 @@ static void perform_idle_server_maintenance(void)
         }
         idle_spawn_rate = 1;
     }
-    else if (idle_thread_count < min_spare_threads) {
+    else if (idle_thread_count < min_spare_threads * ap_max_daemons_limit) {
         /* terminate the free list */
         if (free_length == 0) {
 	    /* only report this condition once */
