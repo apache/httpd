@@ -1,5 +1,19 @@
 Changes with Apache 1.3.7
 
+  *) Be more smart in APACI's configure script when determining the UID/GID
+     for User/Group directives and use the determined UID/GID to initialize
+     the permissions on the proxycachedir.
+     [Dirk-Willem van Gulik, Ralf S. Engelschall]
+
+  *) Changed the forking-prior-to-cleanup in the proxy module to first
+     check wether it actually needs to collect garbage. This reduces 
+     the number of fork()s from one/request to just the odd one an hour.
+     [Dirk-Willem van Gulik]
+
+  *) Added proxy, auth and header support to src/support/ab.c. Added a
+     README file to src/support/
+     [Dirk-Willem van Gulik]
+
   *) Don't hard-code the path to AWK in --shadow bootstrapping Makefile.
      [Ralf S. Engelschall] PR#4050
 

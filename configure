@@ -1004,19 +1004,29 @@ fi
 
 ##
 ##  determine special configuration parameters
+## 
+##  The checks via /etc/passwd and /etc/group will obviously fail
+##  on platforms using NIS. But then you propably do not want a
+##  UID/GID as production oriented as a web server in NIS anyway.
 ##
+conf_user="nobody"
 conf_group="#-1"
 conf_port="80"
 conf_serveradmin="you@your.address"
 conf_servername="new.host.name"
 if [ "x$confadjust" = "x1" ]; then
-    if [ ".`egrep '^nobody:' /etc/group`" != . ]; then
-        conf_group="nobody"
-    else
-        if [ ".`egrep '^nogroup:' /etc/group`" != . ]; then
-            conf_group="nogroup"
+    for uid in nobody www daemon demon http httpd; do 
+        if [ "x`egrep \^${uid}: /etc/passwd`" != "x" ]; then
+            conf_user="$uid"
+            break
         fi
-    fi
+    done
+    for gid in nobody nogroup www daemon demon http httpd; do 
+        if [ "x`egrep \^${gid}: /etc/group`" != "x" ]; then
+            conf_group="$gid"
+            break
+        fi
+    done
     if [ ".`id | grep root`" = . ]; then
         conf_port="8080"
     fi
@@ -1122,6 +1132,7 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@suexec_uidmin@%$suexec_uidmin%g" \
 -e "s%@suexec_gidmin@%$suexec_gidmin%g" \
 -e "s%@suexec_safepath@%$suexec_safepath%g" \
+-e "s%@conf_user@%$conf_user%g" \
 -e "s%@conf_group@%$conf_group%g" \
 -e "s%@conf_port@%$conf_port%g" \
 -e "s%@conf_serveradmin@%$conf_serveradmin%g" \
