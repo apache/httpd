@@ -19,9 +19,9 @@ XINCDIRS	+= \
 			$(NWOS) \
 			$(AP_WORK)/include \
 			$(APR)/include \
-			$(APRUTIL)/../apr-util/include \
+			$(APRUTIL)/include \
 			$(APR)/misc/netware \
-			$(APR_WORK) \
+			$(APR) \
 			$(EOLIST)
 
 #
