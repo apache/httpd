@@ -21,6 +21,7 @@
  <message name="topics">Topics</message>
  <message name="status">Status</message>
  <message name="moduleidentifier">Module&nbsp;Identifier</message>
+ <message name="sourcefile">Source&nbsp;File</message>
  <message name="compatibility">Compatibility</message>
 
  <!-- Used in manualpage -->
