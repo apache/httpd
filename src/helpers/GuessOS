@@ -74,14 +74,7 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 
     HP-UX:*)
 	HPUXVER=`echo ${RELEASE}|sed -e 's/[^.]*.[0B]*//'`
-	case "$HPUXVER" in
-	    10.*)
-		echo "${MACHINE}-hp-hpux10."; exit 0
-		;;
-	    *)
-		echo "${MACHINE}-hp-hpux"; exit 0
-		;;
-	esac
+	echo "${MACHINE}-hp-hpux${HPUXVER}"; exit 0
 	;;
 
     IRIX:*)
@@ -157,7 +150,8 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     SunOS:5.*)
-	echo "${MACHINE}-sun-solaris2"; exit 0
+	SOLVER=`echo ${RELEASE}|sed -e 's/^5.//'`
+	echo "${MACHINE}-sun-solaris2.${SOLVER}"; exit 0
 	;;
 
     SunOS:*)
