@@ -279,7 +279,7 @@ static void make_cookie(request_rec *r)
         new_cookie = ap_pstrcat(r->pool, new_cookie, "; version=1", NULL);
     }
 
-    ap_table_setn(r->headers_out,
+    ap_table_addn(r->headers_out,
                   (dcfg->style == CT_COOKIE2 ? "Set-Cookie2" : "Set-Cookie"),
                   new_cookie);
     ap_table_setn(r->notes, "cookie", ap_pstrdup(r->pool, cookiebuf));   /* log first time */
