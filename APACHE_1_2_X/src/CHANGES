@@ -1,5 +1,10 @@
 Changes with Apache 1.2.2
 
+  *) Fixed improper vhost merging of <Location> and <Directory>: changed the
+     ordering of the arguments to append_arrays for the main server's before 
+     the vhost's.
+     [Dean Gaudet]
+
   *) Bugfix for case where multiple <Directory>s match and all are applied.
      [Dean Gaudet]
 
