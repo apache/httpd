@@ -139,6 +139,17 @@ API_EXPORT(int) ap_sendwithtimeout(int sock, const char *buf, int len, int flags
 
     tv.tv_sec = ap_check_alarm();
 
+    /* If ap_sendwithtimeout is called with an invalid timeout
+     * set a default timeout of 300 seconds. This hack is needed
+     * to emulate the non-blocking send() that was removed in 
+     * the previous patch to this function. Network servers
+     * should never make network i/o calls w/o setting a timeout.
+     * (doing otherwise opens a DoS attack exposure)
+     */
+    if (tv.tv_sec <= 0) {
+        tv.tv_sec = 300;
+    }
+
     rv = ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
     iostate = 0;
     if (rv) {
@@ -204,6 +215,17 @@ API_EXPORT(int) ap_recvwithtimeout(int sock, char *buf, int len, int flags)
     int retry;
 
     tv.tv_sec = ap_check_alarm();
+
+    /* If ap_recvwithtimeout is called with an invalid timeout
+     * set a default timeout of 300 seconds. This hack is needed
+     * to emulate the non-blocking recv() that was removed in 
+     * the previous patch to this function. Network servers
+     * should never make network i/o calls w/o setting a timeout.
+     * (doing otherwise opens a DoS attack exposure)
+     */
+    if (tv.tv_sec <= 0) {
+        tv.tv_sec = 300;
+    }
 
     rv = ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
     iostate = 0;
