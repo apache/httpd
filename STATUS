@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/03/25 19:19:44 $]
+Last modified at [$Date: 2001/04/02 22:07:35 $]
 
 Release:
 
@@ -17,11 +17,6 @@ Release:
 
 DAEDALUS 2.0 PROBLEMS:
 
-    * access log entries are sometimes split (multiple lines)
-      seems to be related to FrontPage and/or WebDAV enabled clients
-        Status:  Jeff and Greg have an assert trap ready which checks
-                 for multiple \n's in a log record
-                 
     * mod_cgid and suexec have a problem co-existing.  suexec sees a null
       command string sometimes.
 
