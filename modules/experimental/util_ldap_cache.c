@@ -122,10 +122,17 @@ void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
             newnode->vals = NULL;
         }
         if (!(newnode->username = util_ald_strdup(cache, node->username)) ||
-            !(newnode->dn = util_ald_strdup(cache, node->dn)) ||
-            !(newnode->bindpw = util_ald_strdup(cache, node->bindpw)) ) {
+            !(newnode->dn = util_ald_strdup(cache, node->dn)) ) {
             util_ldap_search_node_free(cache, newnode);
             return NULL;
+        }
+        if(node->bindpw) {
+            if(!(newnode->bindpw = util_ald_strdup(cache, node->bindpw))) {
+                util_ldap_search_node_free(cache, newnode);
+                return NULL;
+            }
+        } else {
+            newnode->bindpw = NULL;
         }
         newnode->lastbind = node->lastbind;
 

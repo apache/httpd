@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a potential segfault if the bind password in the LDAP cache
+     is NULL. PR 26686 [Jari Ahonen <jah@progress.com>]
+
   *) Quotes cannot be used around require group and require dn
      directives, update the documentation to reflect this. Also add
      quotes around the dn and group within debug messages, to make it
