@@ -74,6 +74,8 @@ PCRE_TARGETS = $(pcre_configure)
 
 targets = .deps aclocal.m4 $(APACHE_TARGETS) $(APR_TARGETS) $(PCRE_TARGETS)
 
+cross_compile_warning = "warning: AC_TRY_RUN called without default to allow cross compiling"
+
 all: $(targets)
 
 .deps:
@@ -93,7 +95,9 @@ $(config_h_in): configure
 # correctly otherwise (timestamps are not updated)
 	@echo rebuilding $@
 	@rm -f $@
-	autoheader
+	### the grep exits with (1), stopping the make... is there a way
+	### to preserve autoheader's exit across the grep?
+	-autoheader 2>&1 | grep -v $(cross_compile_warning)
 
 $(TOUCH_FILES):
 	touch $(TOUCH_FILES)
@@ -101,7 +105,9 @@ $(TOUCH_FILES):
 configure: aclocal.m4 configure.in $(config_m4_files)
 	@echo rebuilding $@
 	rm -f config.cache
-	autoconf
+	### the grep exits with (1), stopping the make... is there a way
+	### to preserve autoconf's exit across the grep?
+	-autoconf 2>&1 | grep -v $(cross_compile_warning)
 
 $(apr_private.h_in): $(apr_configure) lib/apr/acconfig.h
 	@echo rebuilding $@
