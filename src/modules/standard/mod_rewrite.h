@@ -349,13 +349,13 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key);
 
     /* rewriting logfile support */
 static void  open_rewritelog(server_rec *s, pool *p);
-static void  rewritelog_child(void *cmd);
+static int   rewritelog_child(void *cmd);
 static void  rewritelog(request_rec *r, int level, const char *text, ...);
 static char *current_logtime(request_rec *r);
 
     /* program map support */
 static void  run_rewritemap_programs(server_rec *s, pool *p);
-static void  rewritemap_program_child(void *cmd);
+static int   rewritemap_program_child(void *cmd);
 
     /* env variable support */
 static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);
