@@ -17,6 +17,13 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
     assert(n);
     assert(n < sizeof buf);
 
+    /* If we have \\machine\share, convert to \\machine\share\ */
+    if (buf[0] == '\\' && buf[1] == '\\') {
+	char *s=strchr(buf+2,'\\');
+	if(s && !strchr(s+1,'\\'))
+	    strcat(s+1,"\\");
+    }
+
     if (!strchr(buf, '*') && !strchr(buf, '?')) {
         h = FindFirstFile(buf, &d);
         if(h != INVALID_HANDLE_VALUE)
@@ -28,7 +35,19 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
 
     if (szFilePart < buf+3) {
         strcpy(szCanon, buf);
-        szCanon[2] = '/';
+	if(szCanon[0] != '\\') { /* a \ at the start means it is UNC, otherwise it is x: */
+	    assert(isalpha(szCanon[0]));
+	    assert(szCanon[1] == ':');
+	    szCanon[2] = '/';
+	}
+	else {
+	    char *s;
+
+	    assert(szCanon[1] == '\\');
+	    for(s=szCanon ; *s ; ++s)
+		if(*s == '\\')
+		    *s='/';
+	}
         return;
     }
     if (szFilePart != buf+3) {
@@ -54,11 +73,22 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
     }
 }
 
+/* UNC requires backslashes, hence the conversion before canonicalisation. Not sure how
+ * many backslashes (could be that \\machine\share\some/path/is/ok for example). For now, do
+ * them all.
+ */
 API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
+    char b2[HUGE_STRING_LEN];
+    char *s;
 
-    sub_canonical_filename(buf, szFile);
+    strcpy(b2,szFile);
+    for(s=b2 ; *s ; ++s)
+	if(*s == '/')
+	    *s='\\';
+
+    sub_canonical_filename(buf, b2);
     buf[0]=tolower(buf[0]);
 
     if (*szFile && szFile[strlen(szFile)-1] == '/' && buf[strlen(buf)-1] != '/')
@@ -68,13 +98,36 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 }
 
 /* Win95 doesn't like trailing /s. NT and Unix don't mind. This works 
- * around the problem
+ * around the problem.
+ * Errr... except if it is UNC and we are referring to the root of the UNC, we MUST have
+ * a trailing \ and we can't use /s. Jeez. Not sure if this refers to all UNCs or just roots,
+ * but I'm going to fix it for all cases for now. (Ben)
  */
 
 #undef stat
 API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
 {
     int n;
+
+    ap_assert(szPath[1] == ':' || szPath[1] == '/');	// we are dealing with either UNC or a drive
+
+    if(szPath[0] == '/') {
+	char buf[_MAX_PATH];
+	char *s;
+	int nSlashes=0;
+
+	ap_assert(strlen(szPath) < _MAX_PATH);
+	strcpy(buf,szPath);
+	for(s=buf ; *s ; ++s)
+	    if(*s == '/') {
+		*s='\\';
+		++nSlashes;
+	    }
+	if(nSlashes == 3)   /* then we need to add one more to get \\machine\share\ */
+	    *s++='\\';
+	*s='\0';
+	return stat(buf,pStat);
+    }
 
     n = strlen(szPath);
     if(szPath[n-1] == '\\' || szPath[n-1] == '/') {

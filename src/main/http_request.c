@@ -188,20 +188,20 @@ static int get_path_info(request_rec *r)
 
 #ifdef WIN32
     /* If the path is x:/, then convert it to x:/., coz that's what stat needs to work properly */
-    if(strlen(path) == 3)
-	{
+    if(strlen(path) == 3 && path[1] == ':') {
 	strcpy(buf,path);
 	buf[3]='.';
 	buf[4]='\0';
 	path=buf;
 	end=buf+4;
-	}
+    }
 #endif
 
     /* Advance over trailing slashes ... NOT part of filename */
 
     for (cp = end; cp > path && cp[-1] == '/'; --cp)
         continue;
+
 
     while (cp > path) {
 

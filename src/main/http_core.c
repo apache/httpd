@@ -710,6 +710,7 @@ static const char *set_document_root (cmd_parms *cmd, void *dummy, char *arg)
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) return err;
 
+    arg=ap_os_canonical_filename (cmd->pool, arg);
     if (!ap_is_directory (arg)) {
 	if (cmd->server->is_virtual) {
 	    fprintf (stderr, "Warning: DocumentRoot [%s] does not exist\n", arg);
