@@ -1612,11 +1612,11 @@ API_EXPORT(char *) uudecode(pool *p, const char *bufcoded)
 
     while (nprbytes > 0) {
 	*(bufout++) = os_toebcdic[
-	    (unsigned char) (pr2six[os_toascii[*bufin]] << 2 | pr2six[_toascii[bufin[1]]] >> 4)];
+	    (unsigned char) (pr2six[os_toascii[*bufin]] << 2 | pr2six[os_toascii[bufin[1]]] >> 4)];
 	*(bufout++) = os_toebcdic[
-	    (unsigned char) (pr2six[os_toascii[bufin[1]]] << 4 | pr2six[_toascii[bufin[2]]] >> 2)];
+	    (unsigned char) (pr2six[os_toascii[bufin[1]]] << 4 | pr2six[os_toascii[bufin[2]]] >> 2)];
 	*(bufout++) = os_toebcdic[
-	    (unsigned char) (pr2six[os_toascii[bufin[2]]] << 6 | pr2six[_toascii[bufin[3]]])];
+	    (unsigned char) (pr2six[os_toascii[bufin[2]]] << 6 | pr2six[os_toascii[bufin[3]]])];
 	bufin += 4;
 	nprbytes -= 4;
     }
