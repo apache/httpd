@@ -1,5 +1,11 @@
 Changes with Apache 2.0.37
 
+  *) 'SSLOptions +OptRengotiate' will use client cert in from the ssl
+     session cache when there is no cert chain in the cache.  prior to
+     the fix this situation would result in a FORBIDDEN response and
+     error message "Cannot find peer certificate chain"
+     [Doug MacEachern]
+
   *) ap_finalize_sub_req_protocol() shouldn't send an EOS bucket if
      one was already sent.  PR 9644  [Jeff Trawick]
 
