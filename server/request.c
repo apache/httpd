@@ -502,8 +502,13 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          * Otherwise (as is the case with most dir_merged/file_merged requests)
          * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
-        if (cache->per_dir_result == r->per_dir_config)
+        if (r->per_dir_config == cache->per_dir_result) {
             return OK;
+        }
+        if (r->per_dir_config == cache->dir_conf_merged) {
+            r->per_dir_config = cache->per_dir_result;
+            return OK;
+        }
         if (cache->walked->nelts)
             now_merged = ((walk_walked_t*)cache->walked->elts)
                                             [cache->walked->nelts - 1].merged;
@@ -914,6 +919,7 @@ minimerge2:
         cache->cached = ap_make_dirstr_parent(r->pool, r->filename);
 
     cache->dir_conf_tested = sec_ent;
+    cache->dir_conf_merged = r->per_dir_config;
 
     /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
      * and note the end result to (potentially) skip this step next time.
@@ -973,8 +979,13 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
          * Otherwise (as is the case with most dir_merged/file_merged requests)
          * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
-        if (cache->per_dir_result == r->per_dir_config)
+        if (r->per_dir_config == cache->per_dir_result) {
             return OK;
+        }
+        if (r->per_dir_config == cache->dir_conf_merged) {
+            r->per_dir_config = cache->per_dir_result;
+            return OK;
+        }
         if (cache->walked->nelts)
             now_merged = ((walk_walked_t*)cache->walked->elts)
                                             [cache->walked->nelts - 1].merged;
@@ -987,7 +998,6 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         int matches = cache->walked->nelts;
         walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
         cache->cached = entry_uri;
-        cache->dir_conf_tested = sec_ent;
 
         /* Go through the location entries, and check for matches.
          * We apply the directive sections in given order, we should
@@ -1051,6 +1061,9 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             cache->walked->nelts -= matches;
     }
 
+    cache->dir_conf_tested = sec_ent;
+    cache->dir_conf_merged = r->per_dir_config;
+
     /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
      * and note the end result to (potentially) skip this step next time.
      */
@@ -1113,8 +1126,13 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
          * Otherwise (as is the case with most dir_merged requests)
          * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
-        if (cache->per_dir_result == r->per_dir_config)
+        if (r->per_dir_config == cache->per_dir_result) {
             return OK;
+        }
+        if (r->per_dir_config == cache->dir_conf_merged) {
+            r->per_dir_config = cache->per_dir_result;
+            return OK;
+        }
         if (cache->walked->nelts)
             now_merged = ((walk_walked_t*)cache->walked->elts)
                                             [cache->walked->nelts - 1].merged;
@@ -1127,7 +1145,6 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         int matches = cache->walked->nelts;
         walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
         cache->cached = test_file;
-        cache->dir_conf_tested = sec_ent;
 
         /* Go through the location entries, and check for matches.
          * We apply the directive sections in given order, we should
@@ -1179,6 +1196,9 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         if (matches)
             cache->walked->nelts -= matches;
     }
+
+    cache->dir_conf_tested = sec_ent;
+    cache->dir_conf_merged = r->per_dir_config;
 
     /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
      * and note the end result to (potentially) skip this step next time.
