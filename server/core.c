@@ -3088,6 +3088,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                             while (temp != e) {
                                 apr_bucket *d;
                                 rv = apr_bucket_read(temp, &str, &n, APR_BLOCK_READ);
+                                nbytes -= n;
                                 apr_brigade_write(temp_brig, NULL, NULL, str, n);
                                 d = temp;
                                 temp = APR_BUCKET_NEXT(temp);
@@ -3098,6 +3099,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                             APR_BRIGADE_INSERT_HEAD(b, temp);
                             apr_brigade_destroy(temp_brig);
                             e = temp;
+                            last_e = e;
                             nvec = 0;
                             apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
                         }
