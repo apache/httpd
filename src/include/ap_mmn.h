@@ -228,7 +228,7 @@
  *                        ap_pbase64decode(), ap_pbase64encode()
  * 19990320.7           - add ap_strcasestr()
  * 19990320.8           - add request_rec.case_preserved_filename
- * 19990320.9           - renamed ap_alloc.h to ap_alloc.h
+ * 19990320.9           - renamed alloc.h to ap_alloc.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
