@@ -105,6 +105,7 @@
 
 #define IMAP_MENU_DEFAULT "formatted"
 #define IMAP_DEFAULT_DEFAULT "nocontent"
+#define IMAP_BASE_DEFAULT "map"
 
 #ifdef SUNOS4
 double strtod();   /* SunOS needed this */
@@ -158,8 +159,25 @@ command_rec imap_cmds[] = {
 
 int pointinrect(double point[2], double coords[MAXVERTS][2])
 {
-    return ((point[X] >= coords[0][X] && point[X] <= coords[1][X]) &&
-	    (point[Y] >= coords[0][Y] && point[Y] <= coords[1][Y]));
+    double max[2], min[2];
+    if (coords[0][X] > coords[1][X]) {
+        max[0] = coords[0][X];
+        min[0] = coords[1][X];
+    } else {
+        max[0] = coords[1][X];
+        min[0] = coords[0][X];
+    }
+
+    if (coords[0][Y] > coords[1][Y]) {
+        max[1] = coords[0][Y];
+        min[1] = coords[1][Y];
+    } else {
+        max[1] = coords[1][Y];
+        min[1] = coords[0][Y];
+    }
+
+    return ((point[X] >= min[0] && point[X] <= max[0]) &&
+	    (point[Y] >= min[1] && point[Y] <= max[1]));
 }
 
 int pointincircle(double point[2], double coords[MAXVERTS][2])
@@ -441,6 +459,7 @@ void imap_url(request_rec *r, char *base, char *value, char *url)
 	      if ((string_pos = strrchr(directory, '/')))
 		  *string_pos = '\0';
 	      clen = strlen (directory);
+	      if (clen == 0) break;
 	  }
 
 	  value += 2;      /* jump over the '..' that we found in the value */
@@ -606,12 +625,12 @@ int imap_handler(request_rec *r)
   char *imap_default = icr->imap_default ? 
     icr->imap_default : IMAP_DEFAULT_DEFAULT;
   char *imap_base = icr->imap_base ?
-    icr->imap_base : "";   /* "" gets treated as http://servername/ */
+    icr->imap_base : IMAP_BASE_DEFAULT;
 
   FILE *imap = pfopen(r->pool, r->filename, "r"); 
 
   if ( ! imap ) 
-    return SERVER_ERROR;
+    return NOT_FOUND;
 
   imap_url(r, NULL, imap_base, base);       /* set base according to default */
   imap_url(r, NULL, imap_default, mapdflt); /* and default to global default */
@@ -632,8 +651,6 @@ int imap_handler(request_rec *r)
   if (showmenu) {        /* send start of imagemap menu if we're going to */
     menu_header(r, imap_menu);
   }
-
-  imap_url(r, NULL, r->uri, base); /* Fake our base to allow relative URLs */
 
   while (!cfg_getline(input, LARGEBUF, imap)) {
     string_pos = input;   /* always start at the beginning of line */
