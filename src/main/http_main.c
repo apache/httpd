@@ -5654,8 +5654,6 @@ int master_main(int argc, char **argv)
     APD2("*** main process shutdown, processes=%d ***", current_live_processes);
 
 die_now:
-    CloseHandle(signal_restart_event);
-    CloseHandle(signal_shutdown_event);
 
     tmstart = time(NULL);
     while (current_live_processes && ((tmstart+60) > time(NULL))) {
@@ -5675,6 +5673,9 @@ die_now:
  	    "forcing termination of child #%d (handle %d)", i, process_handles[i]);
 	TerminateProcess((HANDLE) process_handles[i], 1);
     }
+
+    CloseHandle(signal_restart_event);
+    CloseHandle(signal_shutdown_event);
 
     /* cleanup pid file on normal shutdown */
     {
