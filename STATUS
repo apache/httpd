@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/18 22:05:54 $]
+Last modified at [$Date: 2003/12/23 14:59:25 $]
 
 Release:
 
@@ -61,6 +61,13 @@ Contributors looking for a mission:
     * just do an egrep on "TODO", "XXX" and see what's there
 
 RELEASE SHOWSTOPPERS:
+
+  PR 24469, broken reverse lookups with IPv4-mapped addrs on old OS X
+    The autoconf check added between 2.0.47 and 2.0.48 isn't
+    sufficient for catching the OS X problem, because building the
+    IPv4 numeric address string from IPv4-mapped address would work
+    but actually resolving the host would not.  To catch the check
+    via retcode, you have to specify the NI_NAMEREQD flag.
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
