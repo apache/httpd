@@ -1217,7 +1217,7 @@ or additionally to <code>SSLProxyMachineCertificatePath</code>.
 <p>
 Example:</p>
 <example>
-SSLProxyMachineCertificatePath /usr/local/apache2/conf/ssl.crt/
+SSLProxyMachineCertificateFile /usr/local/apache2/conf/ssl.crt/
 </example> 
 </usage> 
 </directivesynopsis>
