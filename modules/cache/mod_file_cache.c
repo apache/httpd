@@ -126,7 +126,7 @@
 #include "http_core.h"
 #include "apr_mmap.h"
 
-module MODULE_EXPORT_VAR file_cache_module;
+module MODULE_VAR_EXPORT file_cache_module;
 static ap_pool_t *context;
 static int once_through = 0;
 
@@ -359,7 +359,7 @@ static int file_cache_xlat(request_rec *r)
  * This is really broken on Windows. The call to get the core_module config
  * in core_translate_copy seg faults because 'core_module' is not exported 
  * properly and needs a thunk.
- * Will be fixed when we get API_EXPORT_VARS working correctly again    
+ * Will be fixed when we get API_VAR_EXPORTS working correctly again    
  */
     return DECLINED;
 #endif
@@ -523,7 +523,7 @@ static const handler_rec file_cache_handlers[] =
     { NULL }
 };
 
-module MODULE_EXPORT_VAR file_cache_module =
+module MODULE_VAR_EXPORT file_cache_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                     /* create per-directory config structure */

@@ -890,11 +890,11 @@ struct server_rec {
 #define API_EXPORT_NONSTD(type)    type
 #endif
 
-#ifndef MODULE_EXPORT_VAR
-#define MODULE_EXPORT_VAR
+#ifndef MODULE_VAR_EXPORT
+#define MODULE_VAR_EXPORT
 #endif
-#ifndef API_EXPORT_VAR
-#define API_EXPORT_VAR
+#ifndef API_VAR_EXPORT
+#define API_VAR_EXPORT
 #endif
 
 /* modules should not used functions marked CORE_EXPORT

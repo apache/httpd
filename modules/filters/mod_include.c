@@ -113,7 +113,7 @@
 #define RAW_ASCII_CHAR(ch)  (ch)
 #endif /*CHARSET_EBCDIC*/
 
-module MODULE_EXPORT_VAR includes_module;
+module MODULE_VAR_EXPORT includes_module;
 
 /* just need some arbitrary non-NULL pointer which can't also be a request_rec */
 #define NESTED_INCLUDE_MAGIC	(&includes_module)
@@ -2502,7 +2502,7 @@ static const handler_rec includes_handlers[] =
     {NULL}
 };
 
-module MODULE_EXPORT_VAR includes_module =
+module MODULE_VAR_EXPORT includes_module =
 {
     STANDARD20_MODULE_STUFF,
     create_includes_dir_config, /* dir config creater */

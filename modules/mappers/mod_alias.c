@@ -86,7 +86,7 @@ typedef struct {
     ap_array_header_t *redirects;
 } alias_dir_conf;
 
-module MODULE_EXPORT_VAR alias_module;
+module MODULE_VAR_EXPORT alias_module;
 
 static void *create_alias_config(ap_pool_t *p, server_rec *s)
 {
@@ -405,7 +405,7 @@ static void register_hooks(void)
     ap_hook_fixups(fixup_redir,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
-module MODULE_EXPORT_VAR alias_module =
+module MODULE_VAR_EXPORT alias_module =
 {
     STANDARD20_MODULE_STUFF,
     create_alias_dir_config,	/* dir config creater */

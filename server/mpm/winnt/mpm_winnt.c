@@ -106,7 +106,7 @@ HANDLE maintenance_event;
 ap_lock_t *start_mutex;
 DWORD my_pid;
 DWORD parent_pid;
-API_EXPORT_VAR ap_completion_t ap_mpm_init_complete = NULL;
+API_VAR_EXPORT ap_completion_t ap_mpm_init_complete = NULL;
 
 static ap_status_t socket_cleanup(void *sock)
 {
@@ -1967,7 +1967,7 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_EXPORT_VAR mpm_winnt_module = {
+module MODULE_VAR_EXPORT mpm_winnt_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook run before arguments are parsed */
     winnt_pre_config,           /* hook run before configuration is read */

@@ -2550,7 +2550,7 @@ static void register_hooks(void)
     ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
 }
 
-API_EXPORT_VAR module core_module = {
+API_VAR_EXPORT module core_module = {
     STANDARD20_MODULE_STUFF,
     create_core_dir_config,	/* create per-directory config structure */
     merge_core_dir_configs,	/* merge per-directory config structures */

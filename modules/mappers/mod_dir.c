@@ -70,7 +70,7 @@
 #include "http_main.h"
 #include "util_script.h"
 
-module MODULE_EXPORT_VAR dir_module;
+module MODULE_VAR_EXPORT dir_module;
 
 typedef struct dir_config_struct {
     ap_array_header_t *index_names;
@@ -224,7 +224,7 @@ static const handler_rec dir_handlers[] =
     {NULL}
 };
 
-module MODULE_EXPORT_VAR dir_module = {
+module MODULE_VAR_EXPORT dir_module = {
     STANDARD20_MODULE_STUFF,
     create_dir_config,		/* create per-directory config structure */
     merge_dir_configs,		/* merge per-directory config structures */

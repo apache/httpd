@@ -80,7 +80,7 @@
 #include "http_core.h"
 
 
-module MODULE_EXPORT_VAR vhost_alias_module;
+module MODULE_VAR_EXPORT vhost_alias_module;
 
 
 /*
@@ -463,7 +463,7 @@ static void register_hooks(void)
     ap_hook_translate_name(mva_translate, NULL, NULL, AP_HOOK_MIDDLE);
 };
 
-module MODULE_EXPORT_VAR vhost_alias_module =
+module MODULE_VAR_EXPORT vhost_alias_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,			/* dir config creater */

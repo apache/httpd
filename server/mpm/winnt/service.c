@@ -71,8 +71,8 @@
 #include "..\..\modules\mpm\winnt\winnt.h"
 
 typedef void (CALLBACK *ap_completion_t)();
-API_EXPORT_VAR ap_completion_t ap_mpm_init_complete;
-API_EXPORT_VAR char *ap_server_argv0;
+API_VAR_EXPORT ap_completion_t ap_mpm_init_complete;
+API_VAR_EXPORT char *ap_server_argv0;
 
 static struct
 {

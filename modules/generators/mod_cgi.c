@@ -86,7 +86,7 @@
 #include <string.h>
 #endif
 
-module MODULE_EXPORT_VAR cgi_module;
+module MODULE_VAR_EXPORT cgi_module;
 
 /* KLUDGE --- for back-combatibility, we don't have to check ExecCGI
  * in ScriptAliased directories, which means we need to know if this
@@ -657,7 +657,7 @@ static const handler_rec cgi_handlers[] =
     {NULL}
 };
 
-module MODULE_EXPORT_VAR cgi_module =
+module MODULE_VAR_EXPORT cgi_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,			/* dir config creater */

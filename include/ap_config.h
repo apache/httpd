@@ -61,30 +61,30 @@
  *
  *   API_EXPORT(type)        for functions bound in the apache core, except:
  *   API_EXPORT_NONSTD(type) for functions with var args (only as ...)
- *   API_EXPORT_VAR          for data residing in the core
- *   MODULE_EXPORT_VAR       is a hack that will need to go away
+ *   API_VAR_EXPORT          for data residing in the core
+ *   MODULE_VAR_EXPORT       is a hack that will need to go away
  */
 
 #if !defined(WIN32)
 #define API_EXPORT(type)        type
 #define API_EXPORT_NONSTD(type) type
-#define API_EXPORT_VAR
-#define MODULE_EXPORT_VAR
+#define API_VAR_EXPORT
+#define MODULE_VAR_EXPORT
 #elif defined(API_STATIC)
 #define API_EXPORT(type)        type __stdcall
 #define API_EXPORT_NONSTD(type) type
-#define API_EXPORT_VAR
-#define MODULE_EXPORT_VAR
+#define API_VAR_EXPORT
+#define MODULE_VAR_EXPORT
 #elif defined(API_EXPORT_SYMBOLS)
 #define API_EXPORT(type)        __declspec(dllexport) type __stdcall
 #define API_EXPORT_NONSTD(type) __declspec(dllexport) type
-#define API_EXPORT_VAR		__declspec(dllexport)
-#define MODULE_EXPORT_VAR       __declspec(dllexport)
+#define API_VAR_EXPORT		__declspec(dllexport)
+#define MODULE_VAR_EXPORT       __declspec(dllexport)
 #else
 #define API_EXPORT(type)        __declspec(dllimport) type __stdcall
 #define API_EXPORT_NONSTD(type) __declspec(dllimport) type
-#define API_EXPORT_VAR		__declspec(dllimport)
-#define MODULE_EXPORT_VAR       __declspec(dllexport)
+#define API_VAR_EXPORT		__declspec(dllimport)
+#define MODULE_VAR_EXPORT       __declspec(dllexport)
 #endif
 
 #ifdef __cplusplus

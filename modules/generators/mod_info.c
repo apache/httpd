@@ -103,7 +103,7 @@ typedef struct info_cfg_lines {
     struct info_cfg_lines *next;
 } info_cfg_lines;
 
-module MODULE_EXPORT_VAR info_module;
+module MODULE_VAR_EXPORT info_module;
 extern module *top_module;
 
 static void *create_info_config(ap_pool_t *p, server_rec *s)
@@ -661,7 +661,7 @@ static const handler_rec info_handlers[] =
     {NULL}
 };
 
-module MODULE_EXPORT_VAR info_module =
+module MODULE_VAR_EXPORT info_module =
 {
     STANDARD_MODULE_STUFF,
     NULL,                       /* initializer */

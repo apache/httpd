@@ -86,7 +86,7 @@ typedef struct {
     ap_array_header_t *language_priority;
 } neg_dir_config;
 
-module MODULE_EXPORT_VAR negotiation_module;
+module MODULE_VAR_EXPORT negotiation_module;
 
 static void *create_neg_dir_config(ap_pool_t *p, char *dummy)
 {
@@ -2743,7 +2743,7 @@ static void register_hooks(void)
     ap_hook_type_checker(handle_multi,NULL,NULL,AP_HOOK_FIRST);
 }
 
-module MODULE_EXPORT_VAR negotiation_module =
+module MODULE_VAR_EXPORT negotiation_module =
 {
     STANDARD20_MODULE_STUFF,
     create_neg_dir_config,      /* dir config creator */

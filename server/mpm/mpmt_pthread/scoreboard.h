@@ -240,9 +240,9 @@ void ap_time_process_request(int child_num, int thread_num, int status);
 
 
 
-API_EXPORT_VAR extern scoreboard *ap_scoreboard_image;
+API_VAR_EXPORT extern scoreboard *ap_scoreboard_image;
 
-API_EXPORT_VAR extern ap_generation_t volatile ap_my_generation;
+API_VAR_EXPORT extern ap_generation_t volatile ap_my_generation;
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1
