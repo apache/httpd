@@ -168,19 +168,25 @@ char *ap_os_canonical_filename(pool *pPool, const char *szFile)
     char *slash_test;
 	
     bslash2slash(pNewName);
-    if ((pNewName[0] == '/') && (strchr (pNewName, ':') == NULL))
-    {
-        char vol[256];
+    /* Don't try to canonicalize a filename that isn't even valid
+        This way we don't mess up proxy requests or other kinds
+        of special filenames.
+    */
+    if (ap_os_is_filename_valid(pNewName)) {
+        if ((pNewName[0] == '/') && (strchr (pNewName, ':') == NULL))
+        {
+            char vol[256];
 
-        _splitpath (ap_server_root, vol, NULL, NULL, NULL);
-        pNewName = ap_pstrcat (pPool, vol, pNewName, NULL);
-    }
-    if ((slash_test = strchr(pNewName, ':')) && (*(slash_test+1) != '/'))
-    {
-        char vol[_MAX_VOLUME+1];
+            _splitpath (ap_server_root, vol, NULL, NULL, NULL);
+            pNewName = ap_pstrcat (pPool, vol, pNewName, NULL);
+        }
+        if ((slash_test = strchr(pNewName, ':')) && (*(slash_test+1) != '/'))
+        {
+            char vol[_MAX_VOLUME+1];
         
-        _splitpath (pNewName, vol, NULL, NULL, NULL);
-        pNewName = ap_pstrcat (pPool, vol, "/", pNewName+strlen(vol), NULL);
+            _splitpath (pNewName, vol, NULL, NULL, NULL);
+            pNewName = ap_pstrcat (pPool, vol, "/", pNewName+strlen(vol), NULL);
+        }
     }
     strlwr(pNewName);
     return pNewName;

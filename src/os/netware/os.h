@@ -138,16 +138,23 @@ void clean_parent_exit(int code);
 
 inline int ap_os_is_path_absolute(const char *file)
 {
-    char *s = strchr (file, ':');
+    char *s = strstr (file, "://");
+
+    /* First make sure we aren't looking at a URL such as
+        a proxy:http://blah.
+    */
+    if (!s) {
+        s = strchr (file, ':');
     
-    if (s) {
-        if (strncmp(s, "://", 3) != 0)
-	    /* XXX: we assume that everything before the : is letters */
-            return 1;
-    }
-    else {
-        if (file[0] == '/')
-            return 1;
+        if (s) {
+            if (strncmp(s, "://", 3) != 0)
+	        /* XXX: we assume that everything before the : is letters */
+                return 1;
+        }
+        else {
+            if (file[0] == '/')
+                return 1;
+        }
     }
     	
     return 0;
