@@ -1,7 +1,7 @@
 
 SUBDIRS = srclib modules os server support
 
-PROGRAM_NAME         = $(progname) 
+PROGRAM_NAME         = $(progname)
 PROGRAM_SOURCES      = modules.c
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES = \
