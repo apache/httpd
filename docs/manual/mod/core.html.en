@@ -1481,12 +1481,13 @@ methods</td></tr>
 
     <p>The method names listed can be one or more of: <code>GET</code>,
     <code>POST</code>, <code>PUT</code>, <code>DELETE</code>,
-    <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>,
+    <code>CONNECT</code>, <code>OPTIONS</code>,
     <code>PATCH</code>, <code>PROPFIND</code>, <code>PROPPATCH</code>,
     <code>MKCOL</code>, <code>COPY</code>, <code>MOVE</code>,
     <code>LOCK</code>, and <code>UNLOCK</code>. <strong>The method name is
     case-sensitive.</strong> If <code>GET</code> is used it will also
-    restrict <code>HEAD</code> requests.</p>
+    restrict <code>HEAD</code> requests. The <code>TRACE</code> method
+    cannot be limited.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
