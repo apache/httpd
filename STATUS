@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/06/25 15:17:24 $]
+Last modified at [$Date: 2003/06/25 20:22:15 $]
 
 Release:
 
@@ -209,12 +209,6 @@ PATCHES TO PORT FROM 2.1
       +0: wrowe {Pending research into how to get AC to use -lsockets et. al.,
                  shows breakage on Solaris which can't -lcrypto -lssl without
                  the extra pkgconfig/openssl.pc Libs: * foo }
-
-    * mod_dav: backport the "streamy" PROPFIND response.
-        modules/dav/main/mod_dav.c r1.94 r1.95 r1.96
-        modules/dav/main/mod_dav.h 1.67
-        NOTE: the change passes the WebDAV tests run by 'litmus'
-        +1: striker, gstein, jerenkrantz
 
     * handle switching between libtools and unwritable ltconfig/ltmain.sh
         buildconf 1.36, 1.37
