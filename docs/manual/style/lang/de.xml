@@ -66,6 +66,7 @@
  <message name="apachetitle">- Apache HTTP Server</message>
  <message name="apachehttpserver">Apache HTTP Server Version 2.0</message>
  <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
+ <message name="search">Suchen</message> <!-- search button -->
  <message name="index">Index</message> <!-- deprecated -->
  <message name="home">Startseite</message> <!-- deprecated -->
 

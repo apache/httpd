@@ -142,7 +142,7 @@
   <!--                                                    -->
   <!-- category/page                                      -->
   <!--                                                    -->
-  <xsl:template match="category/page">
+  <xsl:template match="sitemap/category/page">
     <li>
       <xsl:if test="@separate='yes'">
         <xsl:attribute name="class">separate</xsl:attribute>
@@ -168,7 +168,7 @@
   <!--                                                            -->
   <!-- Process a sitemap category                                 -->
   <!--                                                            -->
-  <xsl:template match="category">
+  <xsl:template match="sitemap/category">
 
     <xsl:call-template name="toplink"/>
 
@@ -212,7 +212,7 @@
   <!-- category/modulefilelist                            -->
   <!-- insert module list into sitemap                    -->
   <!--                                                    -->
-  <xsl:template match="category/modulefilelist">
+  <xsl:template match="sitemap/category/modulefilelist">
 
     <!-- create our own translation list first -->
     <xsl:variable name="translist">
