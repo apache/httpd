@@ -1,7 +1,8 @@
 Changes with Apache 1.2b5
 
-  *) Update mod_fastcgi.c to version 1.4.3 as distributed by
-     Open Market.
+  *) Remove mod_fastcgi.c from the distribution. This module appears
+     to be maintained more through the Open Market channels and should
+     continue to be easily available at http://www.fastcgi.com/
 
   *) Fixed bug in modules/Makefile that wouldn't allow building in more
      than one subdirectory (or cleaning, either). [Jeremy Laidman]
