@@ -1249,7 +1249,7 @@ void send_error_response (request_rec *r, int recursive_error)
 #endif
 		    bputs("Connection: Keep-Alive\015\012", c->client);
 	    }
-	    else bputs("Connection: close", c->client);
+	    else bputs("Connection: close\015\012", c->client);
 	    bputs("\015\012", c->client);
 	    return;
 	}
