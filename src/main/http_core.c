@@ -94,6 +94,27 @@ void *create_core_dir_config (pool *a, char *dir)
     conf->hostname_lookups = 2;/* binary, but will use 2 as an "unset = on" */
     conf->do_rfc1413 = DEFAULT_RFC1413 | 2;  /* set bit 1 to indicate default */
 
+#ifdef RLIMIT_CPU
+    conf->limit_cpu = (struct rlimit *) pcalloc (a, sizeof (struct rlimit));
+    if ((getrlimit(RLIMIT_CPU, conf->limit_cpu)) != 0)
+	conf->limit_cpu = NULL;
+#endif
+#ifdef RLIMIT_DATA
+    conf->limit_mem = (struct rlimit *) pcalloc (a, sizeof (struct rlimit));
+    if ((getrlimit(RLIMIT_DATA, conf->limit_mem)) != 0)
+	conf->limit_mem = NULL;
+#endif
+#ifdef RLIMIT_VMEM
+    conf->limit_mem = (struct rlimit *) pcalloc (a, sizeof (struct rlimit));
+    if ((getrlimit(RLIMIT_VMEM, conf->limit_mem)) != 0)
+	conf->limit_mem = NULL;
+#endif
+#ifdef RLIMIT_NPROC
+    conf->limit_nproc = (struct rlimit *) pcalloc (a, sizeof (struct rlimit));
+    if ((getrlimit(RLIMIT_NPROC, conf->limit_nproc)) != 0)
+	conf->limit_nproc = NULL;
+#endif
+
     conf->sec = make_array (a, 2, sizeof(void *));
 
     return (void *)conf;
@@ -127,6 +148,16 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 	conf->hostname_lookups = new->hostname_lookups;
     if ((new->do_rfc1413 & 2) == 0) conf->do_rfc1413 = new->do_rfc1413;
     if ((new->content_md5 & 2) == 0) conf->content_md5 = new->content_md5;
+
+#ifdef RLIMIT_CPU
+    if (new->limit_cpu) conf->limit_cpu = new->limit_cpu;
+#endif
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
+    if (new->limit_mem) conf->limit_mem = new->limit_mem;
+#endif
+#ifdef RLIMIT_NPROC    
+    if (new->limit_nproc) conf->limit_nproc = new->limit_nproc;
+#endif
 
     conf->sec = append_arrays (a, base->sec, new->sec);
 
@@ -808,6 +839,120 @@ char *set_max_requests (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg)
+{
+#ifdef RLIMIT_CPU
+    char *str;
+    quad_t cur = 0;
+    quad_t max = 0;
+
+    if ((str = getword_conf(cmd->pool, &arg)))
+	if (!strcasecmp(str, "max"))
+	    cur = conf->limit_cpu->rlim_max;
+	else
+	    cur = atol(str);
+    else {
+	log_error("Invalid parameters for RLimitCPU", cmd->server);
+	return NULL;
+    }
+    
+    if ((str = getword_conf(cmd->pool, &arg)))
+	max = atol(str);
+
+    /* if we aren't running as root, cannot increase max */
+    if (geteuid()) {
+	conf->limit_cpu->rlim_cur = cur;
+	if (max)
+	    log_error("Must be uid 0 to raise maximum RLIMIT_CPU", cmd->server);
+    }
+    else {
+	if (cur)
+	    conf->limit_cpu->rlim_cur = cur;
+	if (max)
+	    conf->limit_cpu->rlim_max = max;
+    }
+#else
+    log_error("RLimitCPU not supported on this platform", cmd->server);
+#endif
+    return NULL;
+}
+
+char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg)
+{
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
+    char *str;
+    quad_t cur = 0;
+    quad_t max = 0;
+
+    if ((str = getword_conf(cmd->pool, &arg)))
+	if (!strcasecmp(str, "max"))
+	    cur = conf->limit_mem->rlim_max;
+	else
+	    cur = atol(str);
+    else {
+	log_error("Invalid parameters for RLimitMEM", cmd->server);
+	return NULL;
+    }
+    
+    if ((str = getword_conf(cmd->pool, &arg)))
+	max = atol(str);
+
+    /* if we aren't running as root, cannot increase max */
+    if (geteuid()) {
+	conf->limit_mem->rlim_cur = cur;
+	if (max)
+	    log_error("Must be uid 0 to change maximum RLIMIT_MEM", cmd->server);
+    }
+    else {
+	if (cur)
+	    conf->limit_mem->rlim_cur = cur;
+	if (max)
+	    conf->limit_mem->rlim_max = max;
+    }
+#else
+    log_error("RLimitMEM not supported on this platform", cmd->server);
+#endif
+    return NULL;
+}
+
+char *set_limit_nproc (cmd_parms *cmd, core_dir_config *conf, char *arg)
+{
+#ifdef RLIMIT_NPROC
+    char *str;
+    quad_t cur = 0;
+    quad_t max = 0;
+
+    if ((str = getword_conf(cmd->pool, &arg)))
+	if (!strcasecmp(str, "max"))
+	    cur = conf->limit_nproc->rlim_max;
+	else
+	    cur = atol(str);
+    else {
+	log_error("Invalid parameters for RLimitNPROC", cmd->server);
+	return NULL;
+    }
+    
+    if ((str = getword_conf(cmd->pool, &arg)))
+	max = atol(str);
+
+    /* if we aren't running as root, cannot increase max */
+    if (geteuid()) {
+	conf->limit_nproc->rlim_cur = cur;
+	if (max)
+	    log_error("Must be uid 0 to raise maximum RLIMIT_NPROC", cmd->server);
+    }
+    else {
+	if (cur)
+	    conf->limit_nproc->rlim_cur = cur;
+	if (max)
+	    conf->limit_nproc->rlim_max = max;
+    }
+#else
+    log_error("RLimitNPROC not supported on this platform", cmd->server);
+#endif
+    return NULL;
+}
+
 char *set_bind_address (cmd_parms *cmd, void *dummy, char *arg) {
     bind_address.s_addr = get_virthost_addr (arg, NULL);
     return NULL;
@@ -919,6 +1064,12 @@ command_rec core_cmds[] = {
 { "ServersSafetyLimit", set_server_limit, NULL, RSRC_CONF, TAKE1, NULL },
 { "MaxClients", set_server_limit, NULL, RSRC_CONF, TAKE1, NULL },
 { "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1, NULL },
+{ "RLimitCPU", set_limit_cpu, (void*)XtOffsetOf(core_dir_config, limit_cpu),
+      OR_ALL, RAW_ARGS, "soft/hard limits for max CPU usage in seconds" },
+{ "RLimitMEM", set_limit_mem, (void*)XtOffsetOf(core_dir_config, limit_mem),
+      OR_ALL, RAW_ARGS, "soft/hard limits for max memory usage per process" },
+{ "RLimitNPROC", set_limit_nproc, (void*)XtOffsetOf(core_dir_config, limit_nproc),
+      OR_ALL, RAW_ARGS, "soft/hard limits for max number of processes per uid" },
 { "BindAddress", set_bind_address, NULL, RSRC_CONF, TAKE1,
   "'*', a numeric IP address, or the name of a host with a unique IP address"},
 { "Listen", set_listener, NULL, RSRC_CONF, TAKE1,

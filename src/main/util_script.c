@@ -53,13 +53,17 @@
 
 
 
+#define CORE_PRIVATE
 #include "httpd.h"
+#include "http_config.h"
+#include "http_conf_globals.h"
 #include "http_main.h"
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_core.h"		/* For document_root.  Sigh... */
 #include "http_request.h"       /* for sub_req_lookup_uri() */
 #include "util_script.h"
+
 
 /*
  * Various utility functions which are common to a whole lot of
@@ -365,40 +369,34 @@ char **create_argv_cmd(pool *p, char *av0, char *args, char *path) {
 
 void call_exec (request_rec *r, char *argv0, char **env, int shellcmd) 
 {
+    char *execuser;
+
     
+    core_dir_config *conf = (core_dir_config *)pcalloc(r->pool, sizeof(core_dir_config));
+    
+    conf = (core_dir_config *)get_module_config(r->per_dir_config, &core_module);
+
 #ifdef RLIMIT_CPU
-    struct rlimit cpulim = { 9, 10 };
+    if (conf->limit_cpu != NULL)
+	if ((setrlimit (RLIMIT_CPU, conf->limit_cpu)) != 0)
+	    log_unixerr("setrlimit", NULL, "failed to set CPU usage limit", r->server);
 #endif
-
-#ifdef RLIMIT_DATA
-    struct rlimit datalim = { 2000000, 2500000 };
-#endif
-
 #ifdef RLIMIT_NPROC
-    struct rlimit proclim = { 20, 40 };
+    if (conf->limit_nproc != NULL)
+	if ((setrlimit (RLIMIT_NPROC, conf->limit_nproc)) != 0)
+	    log_unixerr("setrlimit", NULL, "failed to set process limit", r->server);
 #endif
-    
-#ifdef RLIMIT_VMEM
-    struct rlimit vmlim = { 2000000, 2500000 };
-#endif
-    
-#ifdef RLIMIT_CPU
-    setrlimit (RLIMIT_CPU, &cpulim);
-#endif
-
 #ifdef RLIMIT_DATA
-    setrlimit (RLIMIT_DATA, &datalim);
+    if (conf->limit_mem != NULL)
+	if ((setrlimit (RLIMIT_DATA, conf->limit_mem)) != 0)
+	    log_unixerr("setrlimit", NULL, "failed to set memory usage limit", r->server);
 #endif
-
-#ifdef RLIMIT_NPROC
-    setrlimit (RLIMIT_NPROC, &proclim);
-#endif
-    
 #ifdef RLIMIT_VMEM
-    setrlimit (RLIMIT_VMEM, &vmlim);
+    if (conf->limit_mem != NULL)
+	if ((setrlimit (RLIMIT_VMEM, conf->limit_mem)) != 0)
+	    log_unixerr("setrlimit", NULL, "failed to set memory usage limit", r->server);
 #endif
     
-
 #ifdef __EMX__    
     if ((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0)) {
 	int emxloop;
@@ -438,7 +436,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	    execv(r->filename, create_argv(r->pool, argv0, r->args));
     }
 #else
-
+    
     if (shellcmd) 
 	execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
 

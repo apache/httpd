@@ -152,6 +152,17 @@ typedef struct {
     int hostname_lookups;
     int do_rfc1413;   /* See if client is advertising a username? */
 
+    /* System Resource Control */
+#ifdef RLIMIT_CPU
+    struct rlimit *limit_cpu;
+#endif
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
+    struct rlimit *limit_mem;
+#endif
+#ifdef RLIMIT_NPROC    
+    struct rlimit *limit_nproc;
+#endif
+
     /* Access control */
     array_header *sec;
     regex_t *r;
