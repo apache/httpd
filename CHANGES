@@ -5,12 +5,12 @@ Changes with Apache 2.0.50
      that would be reused for different purposes on different requests.
      [Jeff Trawick, based on an old 1.3 patch submitted by Will Lowe]
 
-Changes with Apache 2.0.49
-
   *) Win32: Tweak worker thread accounting routines to eliminate
      server hang when number of Listen directives in httpd.conf
      is greater than or equal to the setting of ThreadsPerChild.
      [Bill Stoddard]
+
+Changes with Apache 2.0.49
 
   *) SECURITY: CAN-2004-0174 (cve.mitre.org)
      Fix starvation issue on listening sockets where a short-lived
