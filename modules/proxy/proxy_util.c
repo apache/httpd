@@ -1017,24 +1017,15 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
                                                   const char *url)
 {
     char *c, *q, *uri = apr_pstrdup(p, url);
-    int port;
     apr_status_t rc = 0;
 
     c = strchr(uri, ':');   
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
-       return "Bad syntax for a remote proxy server";
+       return "Bad syntax for a balancer name";
     /* remove path from uri */
     if ((q = strchr(c + 3, '/')))
         *q = '\0';
 
-    q = strchr(c + 3, ':');
-    if (q != NULL) {
-        if (sscanf(q + 1, "%u", &port) != 1 || port > 65535) {
-            return "Bad syntax for a remote proxy server (bad port number)";
-        }
-    }
-    else
-        port = -1;
     ap_str_tolower(uri);
     *balancer = apr_array_push(conf->balancers);
     (*balancer)->name = uri;
@@ -1189,7 +1180,10 @@ ap_proxy_add_worker_to_balancer(proxy_balancer *balancer, proxy_worker *worker)
                 workers[i].lbfactor -= median;
         }
     } 
-
+    for (i = 0; i < balancer->workers->nelts; i++) {
+        /* Update the status entires */
+        workers[i].lbstatus = workers[i].lbfactor;
+    }
 }
 
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
@@ -1421,6 +1415,7 @@ static apr_status_t init_conn_worker(proxy_worker *worker, server_rec *s)
         /* Set min to be lower then smax */
         if (worker->min > worker->smax)
             worker->min = worker->smax; 
+        worker->cp->nfree = worker->hmax;
     }
     else {
         /* This will supress the apr_reslist creation */
