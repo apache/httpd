@@ -140,6 +140,7 @@ char *safe_env_lst[] =
     "REDIRECT_STATUS",
     "REDIRECT_URL",
     "REQUEST_METHOD",
+    "REQUEST_URI",
     "SCRIPT_FILENAME",
     "SCRIPT_NAME",
     "SCRIPT_URI",
