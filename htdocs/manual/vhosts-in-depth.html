@@ -179,7 +179,7 @@ statement.
 <h3>Vhost Matching</h3>
 
 <p>
-The process by which vhost a request is for is as follows:
+The server determines which vhost to use for a request as follows:
 
 <p> <code>find_virtual_server</code>: When the connection is first made
 by the client, the local IP address (the IP address to which the client
@@ -278,7 +278,7 @@ the virtual hosts).
     <p>Consider the config file above with three vhosts A, B, C.  Suppose
     that B is a named-based vhost, and A and C are IP-based vhosts.  If
     a request comes in on B or C's address containing a header
-    &quot;<SAMP>Host: A<SAMP>&quot; then
+    &quot;<SAMP>Host: A</SAMP>&quot; then
     it will be served from A's config.  If a request comes in on A's
     address then it will always be served from A's config regardless of
     any Host: header.
@@ -353,18 +353,23 @@ Issues</a> page, here are some further tips:
 <li>Place all main_server definitions before any VirtualHost definitions.
 (This is to aid the readability of the configuration -- the post-config
 merging process makes it non-obvious that definitions mixed in around
-virtualhosts might affect all virtualhosts.)
+virtualhosts might affect all virtualhosts.)</p>
 
 <li>Arrange your VirtualHosts such
 that all name-based virtual hosts come first, followed by IP-based
-virtual hosts, followed by any <SAMP>_default_</SAMP> virtual host
+virtual hosts, followed by any <SAMP>_default_</SAMP> virtual host</p>
 
 <li>Avoid <code>ServerPaths</code> which are prefixes of other
 <code>ServerPaths</code>.  If you cannot avoid this then you have to
 ensure that the longer (more specific) prefix vhost appears earlier in
 the configuration file than the shorter (less specific) prefix
 (<EM>i.e.</EM>, &quot;ServerPath /abc&quot; should appear after
-&quot;ServerPath /abcdef&quot;). 
+&quot;ServerPath /abcdef&quot;). </p>
+
+<li>Do not use <i>port-based</i> vhosts in the same server as
+name-based vhosts.  A loose definition for port-based is a vhost which
+is determined by the port on the server (<em>i.e.</em> one server with
+ports 8000, 8080, and 80 all of which have different configurations).</p>
 
 </ul>
 
