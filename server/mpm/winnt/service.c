@@ -69,6 +69,7 @@
 #include "http_main.h"
 #include "service.h"
 #include "registry.h"
+#include "ap_mpm.h"
 
 static struct
 {
@@ -278,15 +279,16 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
     return(1);
 }
 
-void InstallService(char *service_name, char *conf)
+void InstallService(char *display_name, char *conf)
 {
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
 
     TCHAR szPath[512];
     TCHAR szQuotedPath[512];
+    char service_name[256];
 
-    printf("Installing the %s service to use %s\n", service_name, conf);
+    printf("Installing the %s service to use %s\n", display_name, conf);
 
     if (GetModuleFileName( NULL, szPath, 512 ) == 0)
     {
@@ -294,6 +296,9 @@ void InstallService(char *service_name, char *conf)
         "GetModuleFileName failed");
         return;
     }
+
+    /* Remove spaces from display name to create service name */
+    ap_collapse_spaces(service_name, display_name);
 
     ap_snprintf(szQuotedPath, 512, "\"%s\"", szPath);
 
@@ -307,18 +312,26 @@ void InstallService(char *service_name, char *conf)
                     "OpenSCManager failed");
     }
     else {
+    /* Added dependencies for the following: TCPIP, AFD
+     * AFD is the winsock handler, TCPIP is self evident
+     *
+     * RPCSS is the Remote Procedure Call (RPC) Locator
+     * required for DCOM communication.  I am far from
+     * convinced we should toggle this, but be warned that
+     * future apache modules or ISAPI dll's may depend on it.
+     */
         schService = CreateService(
             schSCManager,               // SCManager database
             service_name,               // name of service
-            service_name,               // name to display
+            display_name,               // name to display
             SERVICE_ALL_ACCESS,         // desired access
             SERVICE_WIN32_OWN_PROCESS,  // service type
-            SERVICE_AUTO_START,       // start type
+            SERVICE_AUTO_START,         // start type
             SERVICE_ERROR_NORMAL,       // error control type
             szQuotedPath,               // service's binary
             NULL,                       // no load ordering group
             NULL,                       // no tag identifier
-            NULL,       // dependencies
+            "Tcpip\0Afd\0",             // dependencies
             NULL,                       // LocalSystem account
             NULL);                      // no password
 
@@ -327,7 +340,7 @@ void InstallService(char *service_name, char *conf)
 
             /* Now store the server_root in the registry */
             if(!ap_registry_set_service_conf(conf, service_name))
-                printf("The %s service has been installed successfully.\n", service_name );
+                printf("The %s service has been installed successfully.\n", display_name);
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), NULL, 
@@ -339,12 +352,16 @@ void InstallService(char *service_name, char *conf)
 }
 
 
-void RemoveService(char *service_name)
+void RemoveService(char *display_name)
 {
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
+    char service_name[256];
 
-    printf("Removing the %s service\n", service_name);
+    printf("Removing the %s service\n", display_name);
+
+    /* Remove spaces from display name to create service name */
+    ap_collapse_spaces(service_name, display_name);
 
     schSCManager = OpenSCManager(
                         NULL,                   // machine (NULL == local)
@@ -372,7 +389,7 @@ void RemoveService(char *service_name)
 		ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), NULL,
                              "DeleteService failed");
             else
-                printf("The %s service has been removed successfully.\n", service_name );
+                printf("The %s service has been removed successfully.\n", display_name);
             CloseServiceHandle(schService);
         }
         /* SCM removes registry parameters  */
@@ -395,9 +412,13 @@ BOOL isProcessService() {
 /* Determine is service_name is a valid service
  */
 
-BOOL isValidService(char *service_name) {
+BOOL isValidService(char *display_name) {
     SC_HANDLE schSCM, schSVC;
+    char service_name[256];
     int Err;
+
+    /* Remove spaces from display name to create service name */
+    ap_collapse_spaces(service_name, display_name);
 
     if (!(schSCM = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), NULL,
@@ -419,9 +440,10 @@ BOOL isValidService(char *service_name) {
     return FALSE;
 }
 
-int send_signal_to_service(char *service_name, char *sig) {
+int send_signal_to_service(char *display_name, char *sig) {
     SC_HANDLE   schService;
     SC_HANDLE   schSCManager;
+    char service_name[256];
     int success = FALSE;
 
     enum                        { start,      restart,      stop, unknown } action;
@@ -437,6 +459,9 @@ int send_signal_to_service(char *service_name, char *sig) {
         printf("signal must be start, restart, or shutdown\n");
         return FALSE;
     }
+
+    /* Remove spaces from display name to create service name */
+    ap_collapse_spaces(service_name, display_name);
 
     schSCManager = OpenSCManager(
                         NULL,                   // machine (NULL == local)
@@ -461,11 +486,11 @@ int send_signal_to_service(char *service_name, char *sig) {
                              "QueryService failed");
             else {
                 if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED && action == stop)
-                    printf("The %s service is not started.\n", service_name);
+                    printf("The %s service is not started.\n", display_name);
                 else if (globdat.ssStatus.dwCurrentState == SERVICE_RUNNING && action == start)
-                    printf("The %s service has already been started.\n", service_name);
+                    printf("The %s service has already been started.\n", display_name);
                 else {
-                    printf("The %s service is %s.\n", service_name, participle[action]);
+                    printf("The %s service is %s.\n", display_name, participle[action]);
 
                     if (action == stop || action == restart)
                         success = ap_stop_service(schService);
@@ -473,9 +498,9 @@ int send_signal_to_service(char *service_name, char *sig) {
                         success = ap_start_service(schService);
                 
                     if( success )
-                        printf("The %s service has %s.\n", service_name, past[action]);
+                        printf("The %s service has %s.\n", display_name, past[action]);
                     else
-                        printf("Failed to %s the %s service.\n", sig, service_name );
+                        printf("Failed to %s the %s service.\n", sig, display_name);
                 }
 
                 CloseServiceHandle(schService);
