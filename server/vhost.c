@@ -420,6 +420,16 @@ static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
                         sa->ipaddr_len)) {
                 return trav;
             }
+#if APR_HAVE_IPV6
+            else if (cur->sa.sin.sin_family == AF_INET &&
+                     sa->sa.sin.sin_family == AF_INET6 &&
+                     IN6_IS_ADDR_V4MAPPED((struct in6_addr *)sa->ipaddr_ptr) &&
+                     !memcmp(&((struct in6_addr *)sa->ipaddr_ptr)->s6_addr[12],
+                             cur->ipaddr_ptr,
+                             4)) {
+                return trav;
+            }
+#endif
         }    
     }
     return NULL;
