@@ -53,9 +53,6 @@
  * For more information on the Apache Group and the Apache HTTP server
  * project, please see <http://www.apache.org/>.
  *
- * This code is based on, and used with the permission of, the
- * SIO stdio-replacement strx_* functions by Panos Tsirigotis
- * <panos@alumni.cs.colorado.edu> for xinetd.
  */
 
 #ifndef APACHE_APCTYPE_H
