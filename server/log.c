@@ -267,11 +267,11 @@ static void open_error_log(server_rec *s, apr_pool_t *p)
 #endif
     else {
 	fname = ap_server_root_relative(p, s->error_fname);
-	/*  Change to AP funcs. */
-        if (apr_open(&s->error_log, fname, APR_APPEND | 
-                    APR_READ | APR_WRITE | APR_CREATE, APR_OS_DEFAULT, p) != APR_SUCCESS) {
-            perror("fopen");
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        rc = apr_open(&s->error_log, fname, 
+                      APR_APPEND | APR_READ | APR_WRITE | APR_CREATE,
+                      APR_OS_DEFAULT, p);
+        if (rc != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL, 
                          "%s: could not open error log file %s.",
 		         ap_server_argv0, fname);
             exit(1);
