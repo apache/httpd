@@ -11,6 +11,39 @@
 #include "multithread.h"
 #include "service.h"
 
+/*
+ * ReportWin32Error() - map the last Win32 error onto a string
+ *
+ * This function can be called after a Win32 function has returned an error
+ * status. This function writes an error line to the file pointed to by
+ * fp (which could be stdout or stderr) consisting of the passed-in prefix
+ * string, a colon, and the system error text corresponding to the last
+ * Win32 function error.
+ *
+ * If the file pointer argument is NULL, nothing is logged.
+ */
+
+void ReportWin32Error(FILE *fp, char *prefix) {
+    LPVOID lpMsgBuf;
+
+    if (!fp) return;
+
+    FormatMessage( 
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL,
+        GetLastError(),
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+        (LPTSTR) &lpMsgBuf,
+        0,
+        NULL 
+    );
+
+    fprintf(fp, "%s: %s\n", prefix, lpMsgBuf);
+
+    // Free the buffer.
+    LocalFree( lpMsgBuf );
+}
+
 
 static struct
 {
@@ -116,8 +149,7 @@ void __stdcall service_main_fn(DWORD argc, char **argv)
     return;
 }
 
-void
-service_set_status(int status)
+void service_set_status(int status)
 {
     ReportStatusToSCMgr(status, NO_ERROR, 3000);
 }
@@ -166,7 +198,6 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
     }
 
     ReportStatusToSCMgr(state, NO_ERROR, 0);
-
 }
 
 
@@ -219,7 +250,7 @@ void InstallService()
 
     TCHAR szPath[512];
 
-    if ( GetModuleFileName( NULL, szPath, 512 ) == 0 )
+    if (GetModuleFileName( NULL, szPath, 512 ) == 0)
     {
         exit(1);
         return;
@@ -230,8 +261,10 @@ void InstallService()
                         NULL,                   // database (NULL == default)
                         SC_MANAGER_ALL_ACCESS   // access required
                         );
-    if ( schSCManager )
-    {
+   if (!schSCManager) {
+       ReportWin32Error(stderr, "Cannot open service manager");
+    }
+    else {
         schService = CreateService(
             schSCManager,               // SCManager database
             globdat.name,        // name of service
@@ -247,12 +280,11 @@ void InstallService()
             NULL,                       // LocalSystem account
             NULL);                      // no password
 
-        if ( schService )
-        {
+        if (schService) {
             CloseServiceHandle(schService);
         }
-        else
-        {
+        else {
+            ReportWin32Error(stderr, "Cannot create service");
         }
 
         CloseServiceHandle(schSCManager);
@@ -273,25 +305,28 @@ void RemoveService()
                         NULL,                   // database (NULL == default)
                         SC_MANAGER_ALL_ACCESS   // access required
                         );
-    if ( schSCManager )
-    {
+    if (!schSCManager) {
+        ReportWin32Error(stderr, "Cannot open service manager");
+    }
+    else {
         schService = OpenService(schSCManager, globdat.name, SERVICE_ALL_ACCESS);
 
-        /* try to stop the service */
-        if(ControlService(schService, SERVICE_CONTROL_STOP, &globdat.ssStatus))
-        {
-            Sleep(1000);
-            while(QueryServiceStatus(schService, &globdat.ssStatus))
-            {
-                if(globdat.ssStatus.dwCurrentState == SERVICE_STOP_PENDING)
-                    Sleep(1000);
-                else
-                    break;
-            }
+        if (schService == NULL) {
+            /* Could not open the service */
+            ReportWin32Error(stderr, "Error accessing service");
         }
+        else {
+            /* try to stop the service */
+            if (ControlService(schService, SERVICE_CONTROL_STOP, &globdat.ssStatus)) {
+                Sleep(1000);
+                while(QueryServiceStatus(schService, &globdat.ssStatus)) {
+                    if(globdat.ssStatus.dwCurrentState == SERVICE_STOP_PENDING)
+                        Sleep(1000);
+                    else
+                        break;
+                }
+            }
 
-        if (schService)
-        {
             // now remove the service
             DeleteService(schService);
             CloseServiceHandle(schService);
