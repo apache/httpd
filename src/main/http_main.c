@@ -6317,6 +6317,10 @@ int REALMAIN(int argc, char *argv[])
         clean_parent_exit(0);
     }
 
+    if (ap_dump_settings) {
+        clean_parent_exit(0);
+    }
+
     /* Treat -k start confpath as just -f confpath */
     if (signal_to_send && strcasecmp(signal_to_send, "start")) {
         send_signal(pconf, signal_to_send);
