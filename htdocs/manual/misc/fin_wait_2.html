@@ -74,8 +74,14 @@ The clients on which this problem has been verified to exist:<P>
 	<LI>Mozilla/2.02 (X11; I; FreeBSD 2.1.5-RELEASE i386)
 	<LI>Mozilla/3.01Gold (X11; I; SunOS 5.5 sun4m)
 	<LI>MSIE 3.01 on the Macintosh
-	<LI>MSIE 3.01 on Win95
+	<LI>MSIE 3.01 on Windows 95
 </UL><P>
+
+This does not appear to be a problem on:
+<UL>
+	<LI>Mozilla/3.01 (Win95; I)
+</UL>
+<P>
 
 It is expected that many other clients have the same problem. What a
 client <STRONG>should do</STRONG> is periodically check its open
@@ -169,18 +175,28 @@ The following systems are known to have a timeout:
 	    In later revisions, there is an explicit timer for
 	    connections in FIN_WAIT_2 that can be modified; contact HP
 	    support for details.
+	<LI><A HREF="http://www.sgi.com/">SGI IRIX</A> 5.3, 6.2 and 6.3
+	    (and a patch for 6.4 after release) will add a timeout for 
+	    connections in FIN_WAIT_2 in a forthcoming (as of 97/01) rollup
+	    patch.  Contact SGI for details.
+	<LI><A HREF="http://www.ncr.com/">NCR's MP RAS Unix</A> 2.xx and
+	    3.xx both have FIN_WAIT_2 timeouts.  In 2.xx it is non-tunable
+	    at 600 seconds, while in 3.xx it defaults to 600 seconds and
+	    is calculated based on the tunable "max keep alive probes" 
+	    (default of 8) multiplied by the "keep alive interval" (default
+	    75 seconds).
+	<LI><A HREF="http://www.sequent.com">Squent's ptx/TCP/IP for
+	    DYNIX/ptx</A> has had a FIN_WAIT_2 timeout since around
+	    release 4.1 in mid-1994.
 </UL>
 <P>
-The following systems are known to not have at timeout:
+The following systems are known to not have a timeout:
 <P>
 <UL>
 	<LI><A HREF="http://www.sun.com/">SunOS 4.x</A> does not and
 	    almost certainly never will have one because it as at the
 	    very end of its development cycle for Sun.  If you have kernel
 	    source should be easy to patch.
-	<LI><A HREF="http://www.sgi.com/">IRIX</A> does not have a
-	    timeout and, according to our information, has stated that
-	    they will not add one unless it is specified in the RFC.
 </UL>
 <P>
 There is a 
