@@ -718,8 +718,12 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     if (keyid == K_LAST_MOD) {
 	struct tm *ts = localtime(&p->lm);
 
-	p->lm_cmp = ap_palloc(r->pool, 15);
-	strftime(p->lm_cmp, 15, "%Y%m%d%H%M%S", ts);
+	if(ts) {
+	    p->lm_cmp = ap_palloc(r->pool, 15);
+	    strftime(p->lm_cmp, 15, "%Y%m%d%H%M%S", ts);
+	}
+	else
+	    p->lm_cmp=NULL;
     }
     return (p);
 }

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) WIN32: Clicking on "Last Modified" in a fancy index caused a crash. Fixed.
+     [Ben Laurie] PR#2238
+
   *) WIN32: CGIs could cause a hang (because of a deadlock in the standard C
      library), so CGI handling has been changed to use Win32 native handles
 	 instead of C file descriptors.
