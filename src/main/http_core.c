@@ -548,6 +548,7 @@ char *urlsection (cmd_parms *cmd, void *dummy, char *arg)
     cmd->override = OR_ALL|ACCESS_CONF;
 
     errmsg = srm_command_loop (cmd, new_url_conf);
+    if (errmsg != end_url_magic) return errmsg;
 
     conf = (core_dir_config *)get_module_config(new_url_conf, &core_module);
     conf->d = pstrdup(cmd->pool, cmd->path);	/* No mangling, please */
@@ -557,8 +558,7 @@ char *urlsection (cmd_parms *cmd, void *dummy, char *arg)
     cmd->path = old_path;
     cmd->override = old_overrides;
 
-    if (errmsg == end_url_magic) return NULL;
-    return errmsg;
+    return NULL;
 }
 
 /* httpd.conf commands... beginning with the <VirtualHost> business */
