@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Restore the ability to disable the use of AcceptEx on Win9x systems
+     automatically. PR 28529.  [André Malo]
+
   *) ap_set_sub_req_protocol and ap_finalize_sub_req_protocol are now
      exported on Win32 as well.  PR 28523.
      [Edward Rudd <eddie omegaware.com>, André Malo]
