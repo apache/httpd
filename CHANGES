@@ -2,10 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add version string to provider API.  [Justin Erenkrantz]
+
   *) Rewrite of aaa modules to an authn/authz model.
      [Dirk-Willem van Gulik, Justin Erenkrantz]
-
-
 
 Changes with Apache 2.0.44
 

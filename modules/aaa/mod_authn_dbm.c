@@ -191,7 +191,8 @@ static const authn_provider authn_dbm_provider =
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_provider(p, AUTHN_PROVIDER_GROUP, "dbm", &authn_dbm_provider);
+    ap_register_provider(p, AUTHN_PROVIDER_GROUP, "dbm", "0",
+                         &authn_dbm_provider);
 }
 
 module AP_MODULE_DECLARE_DATA authn_dbm_module =
