@@ -85,14 +85,14 @@ struct dav_db {
 
     /* when used as a property database: */
 
-    int version;		/* *minor* version of this db */
+    int version;                /* *minor* version of this db */
 
-    dav_buffer ns_table;	/* table of namespace URIs */
-    short ns_count;		/* number of entries in table */
-    int ns_table_dirty;		/* ns_table was modified */
+    dav_buffer ns_table;        /* table of namespace URIs */
+    short ns_count;             /* number of entries in table */
+    int ns_table_dirty;         /* ns_table was modified */
     apr_hash_t *uri_index;      /* map URIs to (1-based) table indices */
 
-    dav_buffer wb_key;		/* work buffer for dav_gdbm_key */
+    dav_buffer wb_key;          /* work buffer for dav_gdbm_key */
 
     apr_datum_t iter;           /* iteration key */
 };
@@ -106,10 +106,10 @@ struct dav_db {
  */
 
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
-			    const char **state1, const char **state2)
+                            const char **state1, const char **state2)
 {
     if (fname == NULL)
-	fname = DAV_FS_STATE_FILE_FOR_DIR;
+        fname = DAV_FS_STATE_FILE_FOR_DIR;
 
     apr_dbm_get_usednames(p, fname, state1, state2);
 }
@@ -159,7 +159,7 @@ void dav_fs_ensure_state_dir(apr_pool_t * p, const char *dirname)
  *    ro = boolean read-only flag.
  */
 dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
-				dav_db **pdb)
+                                dav_db **pdb)
 {
     apr_status_t status;
     apr_dbm_t *file;
@@ -173,17 +173,17 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
         && !ro) {
         /* ### do something with 'status' */
 
-	/* we can't continue if we couldn't open the file 
-	   and we need to write */
-	return dav_fs_dbm_error(NULL, p, status);
+        /* we can't continue if we couldn't open the file 
+           and we need to write */
+        return dav_fs_dbm_error(NULL, p, status);
     }
 
     /* may be NULL if we tried to open a non-existent db as read-only */
     if (file != NULL) {
-	/* we have an open database... return it */
-	*pdb = apr_pcalloc(p, sizeof(**pdb));
-	(*pdb)->pool = p;
-	(*pdb)->file = file;
+        /* we have an open database... return it */
+        *pdb = apr_pcalloc(p, sizeof(**pdb));
+        (*pdb)->pool = p;
+        (*pdb)->file = file;
     }
 
     return NULL;
@@ -202,15 +202,13 @@ static dav_error * dav_dbm_open(apr_pool_t * p, const dav_resource *resource,
 
     /* If not opening read-only, ensure the state dir exists */
     if (!ro) {
-	/* ### what are the perf implications of always checking this? */
+        /* ### what are the perf implications of always checking this? */
         dav_fs_ensure_state_dir(p, dirpath);
     }
 
-    pathname = apr_pstrcat(p,
-			  dirpath,
-			  "/" DAV_FS_STATE_DIR "/",
-			  fname ? fname : DAV_FS_STATE_FILE_FOR_DIR,
-			  NULL);
+    pathname = apr_pstrcat(p, dirpath, "/" DAV_FS_STATE_DIR "/",
+                              fname ? fname : DAV_FS_STATE_FILE_FOR_DIR,
+                              NULL);
 
     /* ### readers cannot open while a writer has this open; we should
        ### perform a few retries with random pauses. */
@@ -276,12 +274,12 @@ void dav_dbm_freedatum(dav_db *db, apr_datum_t data)
  */
 
 
-#define DAV_GDBM_NS_KEY		"METADATA"
-#define DAV_GDBM_NS_KEY_LEN	8
+#define DAV_GDBM_NS_KEY         "METADATA"
+#define DAV_GDBM_NS_KEY_LEN     8
 
 typedef struct {
     unsigned char major;
-#define DAV_DBVSN_MAJOR		4
+#define DAV_DBVSN_MAJOR         4
     /*
     ** V4 -- 0.9.9 ..
     **       Prior versions could have keys or values with invalid
@@ -306,7 +304,7 @@ typedef struct {
 
 
     unsigned char minor;
-#define DAV_DBVSN_MINOR		0
+#define DAV_DBVSN_MINOR         0
 
     short ns_count;
 
@@ -340,8 +338,8 @@ static apr_datum_t dav_build_key(dav_db *db, const dav_prop_name *name)
      * have the form "#:name".
      */
     if (*name->ns == '\0') {
-	nsbuf[0] = '\0';
-	l_ns = 0;
+        nsbuf[0] = '\0';
+        l_ns = 0;
     }
     else {
         int ns_id = (int)apr_hash_get(db->uri_index, name->ns,
@@ -370,8 +368,8 @@ static apr_datum_t dav_build_key(dav_db *db, const dav_prop_name *name)
 }
 
 static void dav_append_prop(apr_pool_t *pool,
-			    const char *name, const char *value,
-			    apr_text_header *phdr)
+                            const char *name, const char *value,
+                            apr_text_header *phdr)
 {
     const char *s;
     const char *lang = value;
@@ -380,32 +378,32 @@ static void dav_append_prop(apr_pool_t *pool,
     value += strlen(lang) + 1;
 
     if (*value == '\0') {
-	/* the property is an empty value */
-	if (*name == ':') {
-	    /* "no namespace" case */
-	    s = apr_psprintf(pool, "<%s/>" DEBUG_CR, name+1);
-	}
-	else {
-	    s = apr_psprintf(pool, "<ns%s/>" DEBUG_CR, name);
-	}
+        /* the property is an empty value */
+        if (*name == ':') {
+            /* "no namespace" case */
+            s = apr_psprintf(pool, "<%s/>" DEBUG_CR, name+1);
+        }
+        else {
+            s = apr_psprintf(pool, "<ns%s/>" DEBUG_CR, name);
+        }
     }
     else if (*lang != '\0') {
-	if (*name == ':') {
-	    /* "no namespace" case */
-	    s = apr_psprintf(pool, "<%s xml:lang=\"%s\">%s</%s>" DEBUG_CR,
-			    name+1, lang, value, name+1);
-	}
-	else {
-	    s = apr_psprintf(pool, "<ns%s xml:lang=\"%s\">%s</ns%s>" DEBUG_CR,
-			    name, lang, value, name);
-	}
+        if (*name == ':') {
+            /* "no namespace" case */
+            s = apr_psprintf(pool, "<%s xml:lang=\"%s\">%s</%s>" DEBUG_CR,
+                             name+1, lang, value, name+1);
+        }
+        else {
+            s = apr_psprintf(pool, "<ns%s xml:lang=\"%s\">%s</ns%s>" DEBUG_CR,
+                             name, lang, value, name);
+        }
     }
     else if (*name == ':') {
-	/* "no namespace" case */
-	s = apr_psprintf(pool, "<%s>%s</%s>" DEBUG_CR, name+1, value, name+1);
+        /* "no namespace" case */
+        s = apr_psprintf(pool, "<%s>%s</%s>" DEBUG_CR, name+1, value, name+1);
     }
     else {
-	s = apr_psprintf(pool, "<ns%s>%s</ns%s>" DEBUG_CR, name, value, name);
+        s = apr_psprintf(pool, "<ns%s>%s</ns%s>" DEBUG_CR, name, value, name);
     }
 
     apr_text_append(pool, phdr, s);
@@ -443,9 +441,9 @@ static dav_error * dav_propdb_open(apr_pool_t *pool,
     }
 
     if (value.dptr == NULL) {
-	dav_propdb_metadata m = {
-	    DAV_DBVSN_MAJOR, DAV_DBVSN_MINOR, 0
-	};
+        dav_propdb_metadata m = {
+            DAV_DBVSN_MAJOR, DAV_DBVSN_MINOR, 0
+        };
 
         /*
         ** If there is no METADATA key, then the database may be
@@ -462,33 +460,33 @@ static dav_error * dav_propdb_open(apr_pool_t *pool,
                                  DAV_ERR_PROP_BAD_MAJOR,
                                  "Prop database has the wrong major "
                                  "version number and cannot be used.");
-	}
+        }
 
-	/* initialize a new metadata structure */
-	dav_set_bufsize(pool, &db->ns_table, sizeof(m));
-	memcpy(db->ns_table.buf, &m, sizeof(m));
+        /* initialize a new metadata structure */
+        dav_set_bufsize(pool, &db->ns_table, sizeof(m));
+        memcpy(db->ns_table.buf, &m, sizeof(m));
     }
     else {
-	dav_propdb_metadata m;
+        dav_propdb_metadata m;
         int ns;
         const char *uri;
 
-	dav_set_bufsize(pool, &db->ns_table, value.dsize);
-	memcpy(db->ns_table.buf, value.dptr, value.dsize);
+        dav_set_bufsize(pool, &db->ns_table, value.dsize);
+        memcpy(db->ns_table.buf, value.dptr, value.dsize);
 
-	memcpy(&m, value.dptr, sizeof(m));
-	if (m.major != DAV_DBVSN_MAJOR) {
-	    dav_dbm_close(db);
+        memcpy(&m, value.dptr, sizeof(m));
+        if (m.major != DAV_DBVSN_MAJOR) {
+            dav_dbm_close(db);
 
-	    return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR,
-				 DAV_ERR_PROP_BAD_MAJOR,
-				 "Prop database has the wrong major "
-				 "version number and cannot be used.");
-	}
-	db->version = m.minor;
-	db->ns_count = ntohs(m.ns_count);
+            return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR,
+                                 DAV_ERR_PROP_BAD_MAJOR,
+                                 "Prop database has the wrong major "
+                                 "version number and cannot be used.");
+        }
+        db->version = m.minor;
+        db->ns_count = ntohs(m.ns_count);
 
-	dav_dbm_freedatum(db, value);
+        dav_dbm_freedatum(db, value);
 
         /* create db->uri_index */
         for (ns = 0, uri = db->ns_table.buf + sizeof(dav_propdb_metadata);
@@ -510,26 +508,26 @@ static void dav_propdb_close(dav_db *db)
 {
 
     if (db->ns_table_dirty) {
-	dav_propdb_metadata m;
-	apr_datum_t key;
-	apr_datum_t value;
-	dav_error *err;
+        dav_propdb_metadata m;
+        apr_datum_t key;
+        apr_datum_t value;
+        dav_error *err;
 
-	key.dptr = DAV_GDBM_NS_KEY;
-	key.dsize = DAV_GDBM_NS_KEY_LEN;
+        key.dptr = DAV_GDBM_NS_KEY;
+        key.dsize = DAV_GDBM_NS_KEY_LEN;
 
-	value.dptr = db->ns_table.buf;
-	value.dsize = db->ns_table.cur_len;
+        value.dptr = db->ns_table.buf;
+        value.dsize = db->ns_table.cur_len;
 
-	/* fill in the metadata that we store into the prop db. */
-	m.major = DAV_DBVSN_MAJOR;
-	m.minor = db->version;          /* ### keep current minor version? */
-	m.ns_count = htons(db->ns_count);
+        /* fill in the metadata that we store into the prop db. */
+        m.major = DAV_DBVSN_MAJOR;
+        m.minor = db->version;          /* ### keep current minor version? */
+        m.ns_count = htons(db->ns_count);
 
-	memcpy(db->ns_table.buf, &m, sizeof(m));
+        memcpy(db->ns_table.buf, &m, sizeof(m));
 
-	err = dav_dbm_store(db, key, value);
-	/* ### what to do with the error? */
+        err = dav_dbm_store(db, key, value);
+        /* ### what to do with the error? */
     }
 
     dav_dbm_close(db);

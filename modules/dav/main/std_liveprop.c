@@ -67,7 +67,7 @@ static const dav_hooks_liveprop dav_core_hooks_liveprop;
 static const char * const dav_core_namespace_uris[] =
 {
     "DAV:",
-    NULL	/* sentinel */
+    NULL        /* sentinel */
 };
 
 /*
@@ -83,7 +83,7 @@ static const dav_liveprop_spec dav_core_props[] =
     { 0, "resourcetype",         DAV_PROPID_resourcetype,         0 },
     { 0, "source",               DAV_PROPID_source,               1 },
 
-    { 0 }	/* sentinel */
+    { 0 }        /* sentinel */
 };
 
 static const dav_liveprop_group dav_core_liveprop_group =
@@ -109,33 +109,33 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
         switch (resource->type) {
         case DAV_RESOURCE_TYPE_VERSION:
             if (resource->baselined) {
-	        value = "<D:baseline/>";
+                value = "<D:baseline/>";
                 break;
             }
             /* fall through */
         case DAV_RESOURCE_TYPE_REGULAR:
         case DAV_RESOURCE_TYPE_WORKING:
             if (resource->collection) {
-	        value = "<D:collection/>";
+                value = "<D:collection/>";
             }
-	    else {
-		/* ### should we denote lock-null resources? */
+            else {
+                /* ### should we denote lock-null resources? */
 
-		value = "";	/* becomes: <D:resourcetype/> */
-	    }
+                value = "";        /* becomes: <D:resourcetype/> */
+            }
             break;
         case DAV_RESOURCE_TYPE_HISTORY:
-	    value = "<D:version-history/>";
+            value = "<D:version-history/>";
             break;
         case DAV_RESOURCE_TYPE_WORKSPACE:
-	    value = "<D:collection/>";
+            value = "<D:collection/>";
             break;
         case DAV_RESOURCE_TYPE_ACTIVITY:
-	    value = "<D:activity/>";
+            value = "<D:activity/>";
             break;
 
         default:
-	    /* ### bad juju */
+            /* ### bad juju */
             return DAV_PROP_INSERT_NOTDEF;
         }
         break;

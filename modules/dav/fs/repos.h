@@ -60,9 +60,9 @@
 #define _DAV_FS_REPOS_H_
 
 /* the subdirectory to hold all DAV-related information for a directory */
-#define DAV_FS_STATE_DIR		".DAV"
-#define DAV_FS_STATE_FILE_FOR_DIR	".state_for_dir"
-#define DAV_FS_LOCK_NULL_FILE	        ".locknull"
+#define DAV_FS_STATE_DIR                ".DAV"
+#define DAV_FS_STATE_FILE_FOR_DIR       ".state_for_dir"
+#define DAV_FS_LOCK_NULL_FILE           ".locknull"
 
 
 /* ensure that our state subdirectory is present */
@@ -88,9 +88,9 @@ dav_error * dav_fs_get_locknull_members(const dav_resource *resource,
 extern const dav_hooks_db dav_hooks_db_dbm;
 
 dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
-				dav_db **pdb);
+                                dav_db **pdb);
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
-			    const char **state1, const char **state2);
+                            const char **state1, const char **state2);
 dav_error * dav_dbm_delete(dav_db *db, apr_datum_t key);
 dav_error * dav_dbm_store(dav_db *db, apr_datum_t key, apr_datum_t value);
 dav_error * dav_dbm_fetch(dav_db *db, apr_datum_t key, apr_datum_t *pvalue);

@@ -201,25 +201,25 @@
 ** values for the response.
 ** (Handling the PUT would not be difficult, though)
 */
-#define DAV_DISABLE_WRITABLE_PROPS	1
+#define DAV_DISABLE_WRITABLE_PROPS     1
 
-#define DAV_EMPTY_VALUE		"\0"	/* TWO null terms */
+#define DAV_EMPTY_VALUE                "\0"    /* TWO null terms */
 
 struct dav_propdb {
-    apr_pool_t *p;		/* the pool we should use */
-    request_rec *r;		/* the request record */
+    apr_pool_t *p;                /* the pool we should use */
+    request_rec *r;               /* the request record */
 
-    const dav_resource *resource;	/* the target resource */
+    const dav_resource *resource; /* the target resource */
 
-    int deferred;		/* open of db has been deferred */
-    dav_db *db;			/* underlying database containing props */
+    int deferred;                 /* open of db has been deferred */
+    dav_db *db;                   /* underlying database containing props */
 
-    apr_array_header_t *ns_xlate;	/* translation of an elem->ns to URI */
-    dav_namespace_map *mapping;         /* namespace mapping */
+    apr_array_header_t *ns_xlate; /* translation of an elem->ns to URI */
+    dav_namespace_map *mapping;   /* namespace mapping */
 
-    dav_lockdb *lockdb;		/* the lock database */
+    dav_lockdb *lockdb;           /* the lock database */
 
-    dav_buffer wb_lock;		/* work buffer for lockdiscovery property */
+    dav_buffer wb_lock;           /* work buffer for lockdiscovery property */
 
     /* if we ever run a GET subreq, it will be stored here */
     request_rec *subreq;
@@ -237,7 +237,7 @@ static const char * const dav_core_props[] =
     "lockdiscovery",
     "supportedlock",
 
-    NULL	/* sentinel */
+    NULL        /* sentinel */
 };
 enum {
     DAV_PROPID_CORE_getcontenttype = DAV_PROPID_CORE,
@@ -270,8 +270,8 @@ static int dav_find_liveprop_provider(dav_propdb *propdb,
     *provider = NULL;
 
     if (ns_uri == NULL) {
-	/* policy: liveprop providers cannot define no-namespace properties */
-	return DAV_PROPID_CORE_UNKNOWN;
+        /* policy: liveprop providers cannot define no-namespace properties */
+        return DAV_PROPID_CORE_UNKNOWN;
     }
 
     /* check liveprop providers first, so they can define core properties */
@@ -283,12 +283,12 @@ static int dav_find_liveprop_provider(dav_propdb *propdb,
 
     /* check for core property */
     if (strcmp(ns_uri, "DAV:") == 0) {
-	const char * const *p = dav_core_props;
+        const char * const *p = dav_core_props;
 
-	for (propid = DAV_PROPID_CORE; *p != NULL; ++p, ++propid)
-	    if (strcmp(propname, *p) == 0) {
-		return propid;
-	    }
+        for (propid = DAV_PROPID_CORE; *p != NULL; ++p, ++propid)
+            if (strcmp(propname, *p) == 0) {
+                return propid;
+            }
     }
 
     /* no provider for this property */
@@ -333,21 +333,21 @@ static int dav_rw_liveprop(dav_propdb *propdb, dav_elem_private *priv)
     /* these are defined as read-only */
     if (propid == DAV_PROPID_CORE_lockdiscovery
 #if DAV_DISABLE_WRITABLE_PROPS
-	|| propid == DAV_PROPID_CORE_getcontenttype
-	|| propid == DAV_PROPID_CORE_getcontentlanguage
+        || propid == DAV_PROPID_CORE_getcontenttype
+        || propid == DAV_PROPID_CORE_getcontentlanguage
 #endif
-	|| propid == DAV_PROPID_CORE_supportedlock
+        || propid == DAV_PROPID_CORE_supportedlock
         ) {
 
-	return 0;
+        return 0;
     }
 
     /* these are defined as read/write */
     if (propid == DAV_PROPID_CORE_getcontenttype
-	|| propid == DAV_PROPID_CORE_getcontentlanguage
-	|| propid == DAV_PROPID_CORE_UNKNOWN) {
+        || propid == DAV_PROPID_CORE_getcontentlanguage
+        || propid == DAV_PROPID_CORE_UNKNOWN) {
 
-	return 1;
+        return 1;
     }
 
     /*
@@ -366,10 +366,10 @@ static void dav_do_prop_subreq(dav_propdb *propdb)
 }
 
 static dav_error * dav_insert_coreprop(dav_propdb *propdb,
-				       int propid, const char *name,
-				       dav_prop_insert what,
-				       apr_text_header *phdr,
-				       dav_prop_insert *inserted)
+                                       int propid, const char *name,
+                                       dav_prop_insert what,
+                                       apr_text_header *phdr,
+                                       dav_prop_insert *inserted)
 {
     const char *value = NULL;
     dav_error *err;
@@ -378,109 +378,109 @@ static dav_error * dav_insert_coreprop(dav_propdb *propdb,
 
     /* fast-path the common case */
     if (propid == DAV_PROPID_CORE_UNKNOWN)
-	return NULL;
+        return NULL;
 
     switch (propid) {
 
     case DAV_PROPID_CORE_lockdiscovery:
         if (propdb->lockdb != NULL) {
-	    dav_lock *locks;
+            dav_lock *locks;
 
-	    if ((err = dav_lock_query(propdb->lockdb, propdb->resource,
-				      &locks)) != NULL) {
-		return dav_push_error(propdb->p, err->status, 0,
-				      "DAV:lockdiscovery could not be "
-				      "determined due to a problem fetching "
-				      "the locks for this resource.",
-				      err);
-	    }
+            if ((err = dav_lock_query(propdb->lockdb, propdb->resource,
+                                      &locks)) != NULL) {
+                return dav_push_error(propdb->p, err->status, 0,
+                                      "DAV:lockdiscovery could not be "
+                                      "determined due to a problem fetching "
+                                      "the locks for this resource.",
+                                      err);
+            }
 
-	    /* fast-path the no-locks case */
-	    if (locks == NULL) {
-		value = "";
-	    }
-	    else {
-		/*
-		** This may modify the buffer. value may point to
-		** wb_lock.pbuf or a string constant.
-		*/
-		value = dav_lock_get_activelock(propdb->r, locks,
-						&propdb->wb_lock);
+            /* fast-path the no-locks case */
+            if (locks == NULL) {
+                value = "";
+            }
+            else {
+                /*
+                ** This may modify the buffer. value may point to
+                ** wb_lock.pbuf or a string constant.
+                */
+                value = dav_lock_get_activelock(propdb->r, locks,
+                                                &propdb->wb_lock);
 
-		/* make a copy to isolate it from changes to wb_lock */
-		value = apr_pstrdup(propdb->p, propdb->wb_lock.buf);
-	    }
+                /* make a copy to isolate it from changes to wb_lock */
+                value = apr_pstrdup(propdb->p, propdb->wb_lock.buf);
+            }
         }
-	break;
+        break;
 
     case DAV_PROPID_CORE_supportedlock:
         if (propdb->lockdb != NULL) {
-	    value = (*propdb->lockdb->hooks->get_supportedlock)(propdb->resource);
+            value = (*propdb->lockdb->hooks->get_supportedlock)(propdb->resource);
         }
-	break;
+        break;
 
     case DAV_PROPID_CORE_getcontenttype:
-	if (propdb->subreq == NULL) {
-	    dav_do_prop_subreq(propdb);
-	}
-	if (propdb->subreq->content_type != NULL) {
-	    value = propdb->subreq->content_type;
-	}
-	break;
+        if (propdb->subreq == NULL) {
+            dav_do_prop_subreq(propdb);
+        }
+        if (propdb->subreq->content_type != NULL) {
+            value = propdb->subreq->content_type;
+        }
+        break;
 
     case DAV_PROPID_CORE_getcontentlanguage:
     {
-	const char *lang;
+        const char *lang;
 
-	if (propdb->subreq == NULL) {
-	    dav_do_prop_subreq(propdb);
-	}
-	if ((lang = apr_table_get(propdb->subreq->headers_out,
-				 "Content-Language")) != NULL) {
-	    value = lang;
-	}
-	break;
+        if (propdb->subreq == NULL) {
+            dav_do_prop_subreq(propdb);
+        }
+        if ((lang = apr_table_get(propdb->subreq->headers_out,
+                                 "Content-Language")) != NULL) {
+            value = lang;
+        }
+        break;
     }
 
     default:
-	/* fall through to interpret as a dead property */
-	break;
+        /* fall through to interpret as a dead property */
+        break;
     }
 
     /* if something was supplied, then insert it */
     if (value != NULL) {
-	const char *s;
+        const char *s;
 
         if (what == DAV_PROP_INSERT_SUPPORTED) {
-	    /* use D: prefix to refer to the DAV: namespace URI,
+            /* use D: prefix to refer to the DAV: namespace URI,
              * and let the namespace attribute default to "DAV:"
              */
             s = apr_psprintf(propdb->p,
                             "<D:supported-live-property D:name=\"%s\"/>" DEBUG_CR,
                             name);
         }
-	else if (what == DAV_PROP_INSERT_VALUE && *value != '\0') {
-	    /* use D: prefix to refer to the DAV: namespace URI */
-	    s = apr_psprintf(propdb->p, "<D:%s>%s</D:%s>" DEBUG_CR,
-			    name, value, name);
-	}
-	else {
-	    /* use D: prefix to refer to the DAV: namespace URI */
-	    s = apr_psprintf(propdb->p, "<D:%s/>" DEBUG_CR, name);
-	}
-	apr_text_append(propdb->p, phdr, s);
+        else if (what == DAV_PROP_INSERT_VALUE && *value != '\0') {
+            /* use D: prefix to refer to the DAV: namespace URI */
+            s = apr_psprintf(propdb->p, "<D:%s>%s</D:%s>" DEBUG_CR,
+                            name, value, name);
+        }
+        else {
+            /* use D: prefix to refer to the DAV: namespace URI */
+            s = apr_psprintf(propdb->p, "<D:%s/>" DEBUG_CR, name);
+        }
+        apr_text_append(propdb->p, phdr, s);
 
-	*inserted = what;
+        *inserted = what;
     }
 
     return NULL;
 }
 
 static dav_error * dav_insert_liveprop(dav_propdb *propdb,
-				       const apr_xml_elem *elem,
-				       dav_prop_insert what,
-				       apr_text_header *phdr,
-				       dav_prop_insert *inserted)
+                                       const apr_xml_elem *elem,
+                                       dav_prop_insert what,
+                                       apr_text_header *phdr,
+                                       dav_prop_insert *inserted)
 {
     dav_elem_private *priv = elem->priv;
 
@@ -488,13 +488,13 @@ static dav_error * dav_insert_liveprop(dav_propdb *propdb,
 
     if (priv->provider == NULL) {
         /* this is a "core" property that we define */
-	return dav_insert_coreprop(propdb, priv->propid, elem->name,
-				   what, phdr, inserted);
+        return dav_insert_coreprop(propdb, priv->propid, elem->name,
+                                   what, phdr, inserted);
     }
 
     /* ask the provider (that defined this prop) to insert the prop */
     *inserted = (*priv->provider->insert_prop)(propdb->resource, priv->propid,
-					       what, phdr);
+                                               what, phdr);
 
     return NULL;
 }
@@ -518,7 +518,7 @@ static void dav_output_prop_name(apr_pool_t *pool,
 }
 
 static void dav_insert_xmlns(apr_pool_t *p, const char *pre_prefix, int ns,
-			     const char *ns_uri, apr_text_header *phdr)
+                             const char *ns_uri, apr_text_header *phdr)
 {
     const char *s;
 
@@ -535,12 +535,12 @@ static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
 
     /* ask the DB provider to open the thing */
     err = (*propdb->db_hooks->open)(propdb->p, propdb->resource, ro,
-				    &propdb->db);
+                                    &propdb->db);
     if (err != NULL) {
-	return dav_push_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR,
-			      DAV_ERR_PROP_OPENING,
-			      "Could not open the property database.",
-			      err);
+        return dav_push_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR,
+                              DAV_ERR_PROP_OPENING,
+                              "Could not open the property database.",
+                              err);
     }
 
     /*
@@ -553,10 +553,10 @@ static dav_error *dav_really_open_db(dav_propdb *propdb, int ro)
 }
 
 dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
-			   const dav_resource *resource,
-			   int ro,
-			   apr_array_header_t * ns_xlate,
-			   dav_propdb **p_propdb)
+                           const dav_resource *resource,
+                           int ro,
+                           apr_array_header_t * ns_xlate,
+                           dav_propdb **p_propdb)
 {
     dav_propdb *propdb = apr_pcalloc(r->pool, sizeof(*propdb));
 
@@ -564,9 +564,9 @@ dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 
 #if DAV_DEBUG
     if (resource->uri == NULL) {
-	return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-			     "INTERNAL DESIGN ERROR: resource must define "
-			     "its URI.");
+        return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                             "INTERNAL DESIGN ERROR: resource must define "
+                             "its URI.");
     }
 #endif
 
@@ -593,7 +593,7 @@ dav_error *dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 void dav_close_propdb(dav_propdb *propdb)
 {
     if (propdb->db == NULL)
-	return;
+        return;
 
     (*propdb->db_hooks->close)(propdb->db);
 }
@@ -631,15 +631,15 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
             (void) (*db_hooks->define_namespaces)(propdb->db, xi);
 
             /* get the first property name, beginning the scan */
-	    (void) (*db_hooks->first_name)(propdb->db, &name);
-	    while (name.ns != NULL) {
+            (void) (*db_hooks->first_name)(propdb->db, &name);
+            while (name.ns != NULL) {
 
-	        /*
-	        ** We also look for <DAV:getcontenttype> and
-	        ** <DAV:getcontentlanguage>. If they are not stored as dead
-	        ** properties, then we need to perform a subrequest to get
-	        ** their values (if any).
-	        */
+                /*
+                ** We also look for <DAV:getcontenttype> and
+                ** <DAV:getcontentlanguage>. If they are not stored as dead
+                ** properties, then we need to perform a subrequest to get
+                ** their values (if any).
+                */
                 if (*name.ns == 'D' && strcmp(name.ns, "DAV:") == 0
                     && *name.name == 'g') {
                     if (strcmp(name.name, "getcontenttype") == 0) {
@@ -648,30 +648,30 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
                     else if (strcmp(name.name, "getcontentlanguage") == 0) {
                         found_contentlang = 1;
                     }
-	        }
+                }
 
-	        if (what == DAV_PROP_INSERT_VALUE) {
+                if (what == DAV_PROP_INSERT_VALUE) {
                     dav_error *err;
                     int found;
 
                     if ((err = (*db_hooks->output_value)(propdb->db, &name,
                                                          xi, &hdr,
                                                          &found)) != NULL) {
-		        /* ### anything better to do? */
-		        /* ### probably should enter a 500 error */
-		        goto next_key;
+                        /* ### anything better to do? */
+                        /* ### probably should enter a 500 error */
+                        goto next_key;
                     }
                     /* assert: found == 1 */
-	        }
-	        else {
+                }
+                else {
                     /* the value was not requested, so just add an empty
                        tag specifying the property name. */
                     dav_output_prop_name(propdb->p, &name, xi, &hdr);
-	        }
+                }
 
-	      next_key:
-	        (void) (*db_hooks->next_name)(propdb->db, &name);
-	    }
+              next_key:
+                (void) (*db_hooks->next_name)(propdb->db, &name);
+            }
 
             /* all namespaces have been entered into xi. generate them into
                the output now. */
@@ -689,35 +689,35 @@ dav_get_props_result dav_get_allprops(dav_propdb *propdb, dav_prop_insert what)
     /* insert the standard properties */
     /* ### should be handling the return errors here */
     (void)dav_insert_coreprop(propdb,
-			      DAV_PROPID_CORE_supportedlock, "supportedlock",
-			      what, &hdr, &unused_inserted);
+                              DAV_PROPID_CORE_supportedlock, "supportedlock",
+                              what, &hdr, &unused_inserted);
     (void)dav_insert_coreprop(propdb,
-			      DAV_PROPID_CORE_lockdiscovery, "lockdiscovery",
-			      what, &hdr, &unused_inserted);
+                              DAV_PROPID_CORE_lockdiscovery, "lockdiscovery",
+                              what, &hdr, &unused_inserted);
 
     /* if we didn't find these, then do the whole subreq thing. */
     if (!found_contenttype) {
-	/* ### should be handling the return error here */
-	(void)dav_insert_coreprop(propdb,
-				  DAV_PROPID_CORE_getcontenttype,
-				  "getcontenttype",
-				  what, &hdr, &unused_inserted);
+        /* ### should be handling the return error here */
+        (void)dav_insert_coreprop(propdb,
+                                  DAV_PROPID_CORE_getcontenttype,
+                                  "getcontenttype",
+                                  what, &hdr, &unused_inserted);
     }
     if (!found_contentlang) {
-	/* ### should be handling the return error here */
-	(void)dav_insert_coreprop(propdb,
-				  DAV_PROPID_CORE_getcontentlanguage,
-				  "getcontentlanguage",
-				  what, &hdr, &unused_inserted);
+        /* ### should be handling the return error here */
+        (void)dav_insert_coreprop(propdb,
+                                  DAV_PROPID_CORE_getcontentlanguage,
+                                  "getcontentlanguage",
+                                  what, &hdr, &unused_inserted);
     }
 
     /* if not just reporting on supported live props,
      * terminate the result */
     if (what != DAV_PROP_INSERT_SUPPORTED) {
         apr_text_append(propdb->p, &hdr,
-	                "</D:prop>" DEBUG_CR
-	                "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
-	                "</D:propstat>" DEBUG_CR);
+                        "</D:prop>" DEBUG_CR
+                        "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
+                        "</D:propstat>" DEBUG_CR);
     }
 
     result.propstats = hdr.first;
@@ -743,8 +743,8 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
 
     /* we will ALWAYS provide a "good" result, even if it is EMPTY */
     apr_text_append(propdb->p, &hdr_good,
-		   "<D:propstat>" DEBUG_CR
-		   "<D:prop>" DEBUG_CR);
+                   "<D:propstat>" DEBUG_CR
+                   "<D:prop>" DEBUG_CR);
 
     /* ### the marks should be in a buffer! */
     /* allocate zeroed-memory for the marks. These marks indicate which
@@ -756,9 +756,9 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
     xi = dav_xmlns_create(propdb->p);
 
     for (elem = elem->first_child; elem; elem = elem->next) {
-	dav_elem_private *priv;
-	dav_error *err;
-	dav_prop_insert inserted;
+        dav_elem_private *priv;
+        dav_error *err;
+        dav_prop_insert inserted;
         dav_prop_name name;
 
         /*
@@ -766,36 +766,36 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
         ** the property, then try looking it up in the propdb.
         */
 
-	if (elem->priv == NULL) {
-	    elem->priv = apr_pcalloc(propdb->p, sizeof(*priv));
-	}
-	priv = elem->priv;
+        if (elem->priv == NULL) {
+            elem->priv = apr_pcalloc(propdb->p, sizeof(*priv));
+        }
+        priv = elem->priv;
 
-	/* cache the propid; dav_get_props() could be called many times */
-	if (priv->propid == 0)
-	    dav_find_liveprop(propdb, elem);
+        /* cache the propid; dav_get_props() could be called many times */
+        if (priv->propid == 0)
+            dav_find_liveprop(propdb, elem);
 
         if (priv->propid != DAV_PROPID_CORE_UNKNOWN) {
 
-	    /* insert the property. returns 1 if an insertion was done. */
-	    if ((err = dav_insert_liveprop(propdb, elem, DAV_PROP_INSERT_VALUE,
+            /* insert the property. returns 1 if an insertion was done. */
+            if ((err = dav_insert_liveprop(propdb, elem, DAV_PROP_INSERT_VALUE,
                                            &hdr_good, &inserted)) != NULL) {
-		/* ### need to propagate the error to the caller... */
-		/* ### skip it for now, as if nothing was inserted */
-	    }
-	    if (inserted == DAV_PROP_INSERT_VALUE) {
-		have_good = 1;
+                /* ### need to propagate the error to the caller... */
+                /* ### skip it for now, as if nothing was inserted */
+            }
+            if (inserted == DAV_PROP_INSERT_VALUE) {
+                have_good = 1;
 
-		/*
-		** Add the liveprop's namespace URIs. Note that provider==NULL
-		** for core properties.
-		*/
-		if (priv->provider != NULL) {
-		    const char * const * scan_ns_uri;
+                /*
+                ** Add the liveprop's namespace URIs. Note that provider==NULL
+                ** for core properties.
+                */
+                if (priv->provider != NULL) {
+                    const char * const * scan_ns_uri;
 
-		    for (scan_ns_uri = priv->provider->namespace_uris;
-			 *scan_ns_uri != NULL;
-			 ++scan_ns_uri) {
+                    for (scan_ns_uri = priv->provider->namespace_uris;
+                         *scan_ns_uri != NULL;
+                         ++scan_ns_uri) {
                         int ns;
 
                         ns = dav_get_liveprop_ns_index(*scan_ns_uri);
@@ -805,12 +805,12 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
 
                         dav_insert_xmlns(propdb->p, "lp", ns, *scan_ns_uri,
                                          &hdr_ns);
-		    }
-		}
+                    }
+                }
 
                 /* property added. move on to the next property. */
-		continue;
-	    }
+                continue;
+            }
             else if (inserted == DAV_PROP_INSERT_NOTDEF) {
                 /* nothing to do. fall thru to allow property to be handled
                    as a dead property */
@@ -827,7 +827,7 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
 #endif
         }
 
-	/* The property wasn't a live property, so look in the dead property
+        /* The property wasn't a live property, so look in the dead property
            database. */
 
         /* make sure propdb is really open */
@@ -880,9 +880,9 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
     }
 
     apr_text_append(propdb->p, &hdr_good,
-		    "</D:prop>" DEBUG_CR
-		    "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
-		    "</D:propstat>" DEBUG_CR);
+                    "</D:prop>" DEBUG_CR
+                    "<D:status>HTTP/1.1 200 OK</D:status>" DEBUG_CR
+                    "</D:propstat>" DEBUG_CR);
 
     /* default to start with the good */
     result.propstats = hdr_good.first;
@@ -890,19 +890,19 @@ dav_get_props_result dav_get_props(dav_propdb *propdb, apr_xml_doc *doc)
     /* we may not have any "bad" results */
     if (hdr_bad.first != NULL) {
         /* "close" the bad propstat */
-	apr_text_append(propdb->p, &hdr_bad,
+        apr_text_append(propdb->p, &hdr_bad,
                         "</D:prop>" DEBUG_CR
                         "<D:status>HTTP/1.1 404 Not Found</D:status>" DEBUG_CR
                         "</D:propstat>" DEBUG_CR);
 
-	/* if there are no good props, then just return the bad */
-	if (!have_good) {
-	    result.propstats = hdr_bad.first;
-	}
-	else {
-	    /* hook the bad propstat to the end of the good one */
-	    hdr_good.last->next = hdr_bad.first;
-	}
+        /* if there are no good props, then just return the bad */
+        if (!have_good) {
+            result.propstats = hdr_bad.first;
+        }
+        else {
+            /* hook the bad propstat to the end of the good one */
+            hdr_good.last->next = hdr_bad.first;
+        }
     }
 
     /* add in all the various namespaces, and return them */
@@ -930,7 +930,7 @@ void dav_get_liveprop_supported(dav_propdb *propdb,
                                 DAV_PROP_INSERT_SUPPORTED, body, &unused_inserted);
         }
         else {
-	    (*hooks->insert_prop)(propdb->resource, propid,
+            (*hooks->insert_prop)(propdb->resource, propid,
                                   DAV_PROP_INSERT_SUPPORTED, body);
         }
     }
@@ -952,34 +952,34 @@ void dav_prop_validate(dav_prop_ctx *ctx)
     ** be SET or DELETEd.
     */
     if (priv->propid == 0) {
-	dav_find_liveprop(propdb, prop);
+        dav_find_liveprop(propdb, prop);
 
-	/* it's a liveprop if a provider was found */
-	/* ### actually the "core" props should really be liveprops, but
-	   ### there is no "provider" for those and the r/w props are
-	   ### treated as dead props anyhow */
-	ctx->is_liveprop = priv->provider != NULL;
+        /* it's a liveprop if a provider was found */
+        /* ### actually the "core" props should really be liveprops, but
+           ### there is no "provider" for those and the r/w props are
+           ### treated as dead props anyhow */
+        ctx->is_liveprop = priv->provider != NULL;
     }
 
     if (!dav_rw_liveprop(propdb, priv)) {
-	ctx->err = dav_new_error(propdb->p, HTTP_CONFLICT,
-				 DAV_ERR_PROP_READONLY,
-				 "Property is read-only.");
-	return;
+        ctx->err = dav_new_error(propdb->p, HTTP_CONFLICT,
+                                 DAV_ERR_PROP_READONLY,
+                                 "Property is read-only.");
+        return;
     }
 
     if (ctx->is_liveprop) {
-	int defer_to_dead = 0;
+        int defer_to_dead = 0;
 
-	ctx->err = (*priv->provider->patch_validate)(propdb->resource,
-						     prop, ctx->operation,
-						     &ctx->liveprop_ctx,
-						     &defer_to_dead);
-	if (ctx->err != NULL || !defer_to_dead)
-	    return;
+        ctx->err = (*priv->provider->patch_validate)(propdb->resource,
+                                                     prop, ctx->operation,
+                                                     &ctx->liveprop_ctx,
+                                                     &defer_to_dead);
+        if (ctx->err != NULL || !defer_to_dead)
+            return;
 
-	/* clear is_liveprop -- act as a dead prop now */
-	ctx->is_liveprop = 0;
+        /* clear is_liveprop -- act as a dead prop now */
+        ctx->is_liveprop = 0;
     }
 
     /*
@@ -987,8 +987,8 @@ void dav_prop_validate(dav_prop_ctx *ctx)
     ** database. Make sure the thing is truly open (and writable).
     */
     if (propdb->deferred
-	&& (ctx->err = dav_really_open_db(propdb, 0 /* ro */)) != NULL) {
-	return;
+        && (ctx->err = dav_really_open_db(propdb, 0 /* ro */)) != NULL) {
+        return;
     }
 
     /*
@@ -998,32 +998,32 @@ void dav_prop_validate(dav_prop_ctx *ctx)
     **       did not exist.
     */
     if (propdb->db == NULL) {
-	ctx->err = dav_new_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR,
-				 DAV_ERR_PROP_NO_DATABASE,
-				 "Attempted to set/remove a property "
-				 "without a valid, open, read/write "
-				 "property database.");
-	return;
+        ctx->err = dav_new_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR,
+                                 DAV_ERR_PROP_NO_DATABASE,
+                                 "Attempted to set/remove a property "
+                                 "without a valid, open, read/write "
+                                 "property database.");
+        return;
     }
 
     if (ctx->operation == DAV_PROP_OP_SET) {
-	/*
-	** Prep the element => propdb namespace index mapping, inserting
-	** namespace URIs into the propdb that don't exist.
-	*/
+        /*
+        ** Prep the element => propdb namespace index mapping, inserting
+        ** namespace URIs into the propdb that don't exist.
+        */
         (void) (*propdb->db_hooks->map_namespaces)(propdb->db,
                                                    propdb->ns_xlate,
                                                    &propdb->mapping);
     }
     else if (ctx->operation == DAV_PROP_OP_DELETE) {
-	/*
-	** There are no checks to perform here. If a property exists, then
-	** we will delete it. If it does not exist, then it does not matter
-	** (see S12.13.1).
-	**
-	** Note that if a property does not exist, that does not rule out
-	** that a SET will occur during this PROPPATCH (thusly creating it).
-	*/
+        /*
+        ** There are no checks to perform here. If a property exists, then
+        ** we will delete it. If it does not exist, then it does not matter
+        ** (see S12.13.1).
+        **
+        ** Note that if a property does not exist, that does not rule out
+        ** that a SET will occur during this PROPPATCH (thusly creating it).
+        */
     }
 }
 
@@ -1036,10 +1036,10 @@ void dav_prop_exec(dav_prop_ctx *ctx)
     ctx->rollback = apr_pcalloc(propdb->p, sizeof(*ctx->rollback));
 
     if (ctx->is_liveprop) {
-	err = (*priv->provider->patch_exec)(propdb->resource,
-					    ctx->prop, ctx->operation,
-					    ctx->liveprop_ctx,
-					    &ctx->rollback->liveprop);
+        err = (*priv->provider->patch_exec)(propdb->resource,
+                                            ctx->prop, ctx->operation,
+                                            ctx->liveprop_ctx,
+                                            &ctx->rollback->liveprop);
     }
     else {
         dav_prop_name name;
@@ -1050,46 +1050,46 @@ void dav_prop_exec(dav_prop_ctx *ctx)
             name.ns = APR_XML_GET_URI_ITEM(propdb->ns_xlate, ctx->prop->ns);
         name.name = ctx->prop->name;
 
-	/* save the old value so that we can do a rollback. */
-	if ((err = (*propdb->db_hooks
+        /* save the old value so that we can do a rollback. */
+        if ((err = (*propdb->db_hooks
                     ->get_rollback)(propdb->db, &name,
                                     &ctx->rollback->deadprop)) != NULL)
-	    goto error;
+            goto error;
 
-	if (ctx->operation == DAV_PROP_OP_SET) {
+        if (ctx->operation == DAV_PROP_OP_SET) {
 
-	    /* Note: propdb->mapping was set in dav_prop_validate() */
+            /* Note: propdb->mapping was set in dav_prop_validate() */
             err = (*propdb->db_hooks->store)(propdb->db, &name, ctx->prop,
                                              propdb->mapping);
 
-	    /*
-	    ** If an error occurred, then assume that we didn't change the
-	    ** value. Remove the rollback item so that we don't try to set
-	    ** its value during the rollback.
-	    */
+            /*
+            ** If an error occurred, then assume that we didn't change the
+            ** value. Remove the rollback item so that we don't try to set
+            ** its value during the rollback.
+            */
             /* ### euh... where is the removal? */
-	}
-	else if (ctx->operation == DAV_PROP_OP_DELETE) {
+        }
+        else if (ctx->operation == DAV_PROP_OP_DELETE) {
 
-	    /*
-	    ** Delete the property. Ignore errors -- the property is there, or
-	    ** we are deleting it for a second time.
-	    */
-	    /* ### but what about other errors? */
-	    (void) (*propdb->db_hooks->remove)(propdb->db, &name);
-	}
+            /*
+            ** Delete the property. Ignore errors -- the property is there, or
+            ** we are deleting it for a second time.
+            */
+            /* ### but what about other errors? */
+            (void) (*propdb->db_hooks->remove)(propdb->db, &name);
+        }
     }
 
   error:
     /* push a more specific error here */
     if (err != NULL) {
-	/*
-	** Use HTTP_INTERNAL_SERVER_ERROR because we shouldn't have seen
-	** any errors at this point.
-	*/
-	ctx->err = dav_push_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR,
-				  DAV_ERR_PROP_EXEC,
-				  "Could not execute PROPPATCH.", err);
+        /*
+        ** Use HTTP_INTERNAL_SERVER_ERROR because we shouldn't have seen
+        ** any errors at this point.
+        */
+        ctx->err = dav_push_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR,
+                                  DAV_ERR_PROP_EXEC,
+                                  "Could not execute PROPPATCH.", err);
     }
 }
 
@@ -1103,10 +1103,10 @@ void dav_prop_commit(dav_prop_ctx *ctx)
     */
 
     if (ctx->is_liveprop) {
-	(*priv->provider->patch_commit)(ctx->propdb->resource,
-					ctx->operation,
-					ctx->liveprop_ctx,
-					ctx->rollback->liveprop);
+        (*priv->provider->patch_commit)(ctx->propdb->resource,
+                                        ctx->operation,
+                                        ctx->liveprop_ctx,
+                                        ctx->rollback->liveprop);
     }
 }
 
@@ -1117,7 +1117,7 @@ void dav_prop_rollback(dav_prop_ctx *ctx)
 
     /* do nothing if there is no rollback information. */
     if (ctx->rollback == NULL)
-	return;
+        return;
 
     /*
     ** ### if we have an error, and a rollback occurs, then the namespace
@@ -1126,10 +1126,10 @@ void dav_prop_rollback(dav_prop_ctx *ctx)
     */
 
     if (ctx->is_liveprop) {
-	err = (*priv->provider->patch_rollback)(ctx->propdb->resource,
-						ctx->operation,
-						ctx->liveprop_ctx,
-						ctx->rollback->liveprop);
+        err = (*priv->provider->patch_rollback)(ctx->propdb->resource,
+                                                ctx->operation,
+                                                ctx->liveprop_ctx,
+                                                ctx->rollback->liveprop);
     }
     else {
         err = (*ctx->propdb->db_hooks
@@ -1137,16 +1137,16 @@ void dav_prop_rollback(dav_prop_ctx *ctx)
     }
 
     if (err != NULL) {
-	if (ctx->err == NULL)
-	    ctx->err = err;
-	else {
-	    dav_error *scan = err;
+        if (ctx->err == NULL)
+            ctx->err = err;
+        else {
+            dav_error *scan = err;
 
-	    /* hook previous errors at the end of the rollback error */
-	    while (scan->prev != NULL)
-		scan = scan->prev;
-	    scan->prev = ctx->err;
-	    ctx->err = err;
-	}
+            /* hook previous errors at the end of the rollback error */
+            while (scan->prev != NULL)
+                scan = scan->prev;
+            scan->prev = ctx->err;
+            ctx->err = err;
+        }
     }
 }
