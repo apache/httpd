@@ -1077,7 +1077,7 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
  *
  * The proper procedure is this:
  *
- * 1. Call setup_client_block() near the beginning of the request
+ * 1. Call ap_setup_client_block() near the beginning of the request
  *    handler. This will set up all the necessary properties, and will
  *    return either OK, or an error code. If the latter, the module should
  *    return that error code. The second parameter selects the policy to
@@ -1091,19 +1091,17 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
  *    In order to use the last two options, the caller MUST provide a buffer
  *    large enough to hold a chunk-size line, including any extensions.
  *
- * 2. When you are ready to read a body (if any), call should_client_block().
+ * 2. When you are ready to read a body (if any), call ap_should_client_block().
  *    This will tell the module whether or not to read input. If it is 0,
  *    the module should assume that there is no message body to read.
- *    This step also sends a 100 Continue response to HTTP/1.1 clients,
- *    so should not be called until the module is *definitely* ready to
- *    read content. (otherwise, the point of the 100 response is defeated).
- *    Never call this function more than once.
  *
- * 3. Finally, call get_client_block in a loop. Pass it a buffer and its size.
+ * 3. Finally, call ap_get_client_block in a loop. Pass it a buffer and its size.
  *    It will put data into the buffer (not necessarily a full buffer), and
  *    return the length of the input block. When it is done reading, it will
  *    return 0 if EOF, or -1 if there was an error.
  *    If an error occurs on input, we force an end to keepalive.
+ *    
+ *    This step also sends a 100 Continue response to HTTP/1.1 clients if appropriate.
  */
 
 AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy)
