@@ -18,7 +18,7 @@ function (<code>read_client_block</code>) to get the data.
 <p>However, HTTP/1.1 requires several things of POST and PUT request
 handlers that did not fit into this module, and all existing modules
 have to be rewritten. The API calls for handling this have been
-furthur abstracted, so that future HTTP protocol changes can be
+further abstracted, so that future HTTP protocol changes can be
 accomplished while remaining backwards-compatible.</p>
 
 <hr>
@@ -33,7 +33,7 @@ accomplished while remaining backwards-compatible.</p>
 
 <ol>
 <li>Call <code>setup_client_block()</code> near the beginning of the request
-    handler. This will set up all the neccessary properties, and
+    handler. This will set up all the necessary properties, and
     will return either OK, or an error code. If the latter,
     the module should return that error code. The second parameter
     selects the policy to apply if the request message indicates a
@@ -63,7 +63,7 @@ accomplished while remaining backwards-compatible.</p>
 
 <li>Finally, call <code>get_client_block</code> in a loop. Pass it a
     buffer and its 
-    size. It will put data into the buffer (not neccessarily the full
+    size. It will put data into the buffer (not necessarily the full
     buffer, in the case of chunked inputs), and return the length of
     the input block. When it is done reading, it will
     return 0 if EOF, or -1 if there was an error.

@@ -46,7 +46,7 @@ of representations and they vary by language.
 As an example of a more complex request, this browser has been
 configured to accept French and English, but prefer French, and to
 accept various media types, preferring HTML over plain text or other
-text types, and prefering GIF or jpeg over other media types, but also
+text types, and preferring GIF or JPEG over other media types, but also
 allowing any other media type as a last resort:
 
 <pre>
@@ -154,7 +154,7 @@ The full list of headers recognized is:
        <code>image/gif</code>, <code>text/plain</code>, or
        <code>text/html;&nbsp;level=3</code>.
   <dt> <code>Content-language:</code>
-  <dd> The languages of the variant, specified as an internet standard
+  <dd> The languages of the variant, specified as an Internet standard
        language code (e.g., <code>en</code> for English,
        <code>kr</code> for Korean, etc.).
   <dt> <code>Content-encoding:</code>
@@ -223,15 +223,15 @@ either from a type-map file or from the filenames in the directory, it
 applies a algorithm to decide on the 'best' variant to return, if
 any. To do this it calculates a quality value for each variant in each
 of the dimensions of variance. It is not necessary to know any of the
-details of how negotaion actually takes place in order to use Apache's
-content negotation features. However the rest of this document
+details of how negotiation actually takes place in order to use Apache's
+content negotiation features. However the rest of this document
 explains in detail the algorithm used for those interested.  <p>
 
 In some circumstances, Apache can 'fiddle' the quality factor of a
-particular dimension to achive a better result. The ways Apache can
+particular dimension to achieve a better result. The ways Apache can
 fiddle quality factors is explained in more detail below.
 
-<h3>Dimensions of Negotation</h3>
+<h3>Dimensions of Negotiation</h3>
 
 <table>
 <tr><th>Dimension
@@ -241,7 +241,7 @@ fiddle quality factors is explained in more detail below.
 can have an associated quality factor. Variant description can also
 have a quality factor.
 <tr><td>Language
-<td>Browser indicates preferneces on Accept-Language: header. Each
+<td>Browser indicates preferences on Accept-Language: header. Each
 item
 can have a quality factor. Variants can be associated with none, one
 or more languages.
@@ -306,7 +306,7 @@ and go to stage 3.
 
 <li>The algorithm has now selected one 'best' variant, so return
   it as the response. The HTTP response header Vary is set to indicate the
-  dimensions of negotation (browsers and caches can use this
+  dimensions of negotiation (browsers and caches can use this
   information when caching the resource). End.
 
 <li>To get here means no variant was selected (because non are acceptable
@@ -364,7 +364,7 @@ no variant matches an explicitly listed type.
 
 If the Accept: header contains <i>no</i> q factors at all, Apache sets
 the q value of "*/*", if present, to 0.01 to emulate the desired
-behaviour. It also sets the q value of wildcards of the format
+behavior. It also sets the q value of wildcards of the format
 "type/*" to 0.02 (so these are preferred over matches against
 "*/*". If any media type on the Accept: header contains a q factor,
 these special values are <i>not</i> applied, so requests from browsers
@@ -405,7 +405,7 @@ only the first requested variant being cached, and subsequent cache
 hits could return the wrong response. To prevent this, 
 Apache normally marks all responses that are returned after content negotiation
 as non-cacheable by HTTP/1.0 clients. Apache also supports the HTTP/1.1 
-protocol features to allow cacheing of negotiated responses. <P>
+protocol features to allow caching of negotiated responses. <P>
 
 For requests which come from a HTTP/1.0 compliant client (either a
 browser or a cache), the directive <tt>CacheNegotiatedDocs</tt> can be

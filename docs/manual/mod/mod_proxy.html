@@ -181,7 +181,7 @@ usage is greater than that set by CacheSize.
 
 <A name="cachemaxexpire"><h2>CacheMaxExpire</h2></A>
 <strong>Syntax:</strong> CacheMaxExpire <em>&lt;time&gt;</em><br>
-<strong>Default:</strong> </code>CacheMaxExpire 24</code><br>
+<strong>Default:</strong> <code>CacheMaxExpire 24</code><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
@@ -195,7 +195,7 @@ was supplied with the document.
 
 <A name="cachelastmodifiedfactor"><h2>CacheLastModifiedFactor</h2></A>
 <strong>Syntax:</strong> CacheLastModifiedFactor <em>&lt;factor&gt;</em><br>
-<strong>Default:</strong> </code>CacheLastModifiedFactor 0.1</code><br>
+<strong>Default:</strong> <code>CacheLastModifiedFactor 0.1</code><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
@@ -215,7 +215,7 @@ then the latter takes precedence.
 
 <A name="cachedirlevels"><h2>CacheDirLevels</h2></A>
 <strong>Syntax:</strong> CacheDirLevels <em>&lt;levels&gt;</em><br>
-<strong>Default:</strong> </code>CacheDirLevels 3</code><br>
+<strong>Default:</strong> <code>CacheDirLevels 3</code><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
@@ -227,7 +227,7 @@ Cached data will be saved this many directory levels below CacheRoot.
 
 <A name="cachedirlength"><h2>CacheDirLength</h2></A>
 <strong>Syntax:</strong> CacheDirLength <em>&lt;length&gt;</em><br>
-<strong>Default:</strong> </code>CacheDirLength 1</code><br>
+<strong>Default:</strong> <code>CacheDirLength 1</code><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
@@ -238,7 +238,7 @@ CacheDirLength sets the number of characters in proxy cache subdirectory names.
 
 <A name="cachedefaultexpire"><h2>CacheDefaultExpire</h2></A>
 <strong>Syntax:</strong> CacheDefaultExpire <em>&lt;time&gt;</em><br>
-<strong>Default:</strong> </code>CacheDefaultExpire 1</code><br>
+<strong>Default:</strong> <code>CacheDefaultExpire 1</code><br>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_proxy<br>
@@ -294,7 +294,7 @@ disables caching completely.<p>
 <li><a href="#socks">Can I use the Apache proxy module with my SOCKS proxy?</a>
 </ul>
 
-<a name="access"><h2>Controlling access to your proxy</h2>
+<h2><a name="access">Controlling access to your proxy</a></h2>
 
 You can control who can access your proxy via the normal &lt;Directory&gt;
 control block using the following example:<p>
@@ -309,14 +309,14 @@ allow from [machines you'd like to allow by IP address or name]
 &lt;/Directory&gt;
 </pre><p>
 
-<a name="shortname"><h2>Using Netscape hostname shortcuts</h2>
+<h2><a name="shortname">Using Netscape hostname shortcuts</a></h2>
 
 There is an optional patch to the proxy module to allow Netscape-like
 hostname shortcuts to be used. It's available
 <a href="http://www.apache.org/dist/contrib/patches/1.2/netscapehost.patch">
 here</a>.<p>
 
-<a name="mimetypes"><h2>Why doesn't file type <i>xxx</i> download via FTP?</h2>
+<h2><a name="mimetypes">Why doesn't file type <i>xxx</i> download via FTP?</a></h2>
 
 You probably don't have that particular file type defined as
 <i>application/octet-stream</i> in your proxy's mime.types configuration
@@ -326,15 +326,15 @@ file. A useful line can be<p>
 application/octet-stream        bin dms lha lzh exe class tgz taz
 </pre>
 
-<a name="startup"><h2>Why does Apache start more slowly when using the
-	proxy module?</h2>
+<h2><a name="startup">Why does Apache start more slowly when using the
+	proxy module?</a></h2>
 
 If you're using the <code>ProxyBlock</code> or <code>NoCache</code>
 directives, hostnames' IP addresses are looked up and cached during
 startup for later match test. This may take a few seconds (or more)
 depending on the speed with which the hostname lookups occur.<p>
 
-<a name="socks"><h2>Can I use the Apache proxy module with my SOCKS proxy?</h2>
+<h2><a name="socks">Can I use the Apache proxy module with my SOCKS proxy?</a></h2>
 
 Yes. Just build Apache with the rule <code>SOCKS4=yes</code> in your
 <i>Configuration</i> file, and follow the instructions there. SOCKS5 

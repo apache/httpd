@@ -32,12 +32,20 @@ The defaults for each variable are:
 <PRE>
 MinSpareServers		5
 MaxSpareServers		10
-StartServers		10
+StartServers		5
 </PRE>
 
-There is a compile-time limit of 150 absolute maximum number of
-simultaneous children that will be allowed, which can be overruled by
-"MaxClients", though we don't recommend changing that number unless 
+There is an absolute maximum number of simultaneous children defined
+by a compile-time limit which defaults to 256 and a "MaxClients"
+directive which specifies the number of simultaneous children that
+will be allowed.  MaxClients can be adjusted up to the compile-time
+limit (HARD_SERVER_LIMIT, defined in httpd.h).  If you need more
+than 256 simultaneous children, you need to modify both HARD_SERVER_LIMIT
+and MaxClients.<P>
+
+In versions before 1.2, HARD_SERVER_LIMIT defaulted to 150.<P>
+
+We do not recommend changing either of these values unless:
 
 <OL>
 <LI>You know you have the server resources to handle more

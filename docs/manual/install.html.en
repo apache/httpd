@@ -9,7 +9,7 @@
 
 <H1>Compiling and Installing Apache 1.2</H1>
 
-If you wish to download and install an earlier version of Apache please
+<P>If you wish to download and install an earlier version of Apache please
 read <A HREF="install_1_1.html">Compiling and Installing Apache 1.1</A>.</P>
 
 UnixWare users will want to consult <A HREF="unixware.html">build notes</A>
@@ -162,7 +162,7 @@ location with the -f argument. For example:
 
 If all goes well this will return to the command prompt almost
 immediately.  This indicates that the server is now up and running. If
-anything goes wrong during the initiallisation of the server you will
+anything goes wrong during the initialization of the server you will
 see an error message on the screen. 
 
 If the server started ok, you can now use your browser to
