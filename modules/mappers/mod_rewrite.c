@@ -225,6 +225,10 @@
 #define REWRITE_MAX_PRG_MAP_LINE 2048
 #endif
 
+/* for better readbility */
+#define LEFT_CURLY  '{'
+#define RIGHT_CURLY '}'
+
 /*
  * +-------------------------------------------------------+
  * |                                                       |
@@ -1858,36 +1862,38 @@ static char *lookup_variable(request_rec *r, char *var)
  * Bracketed expression handling
  * s points after the opening bracket
  */
-static char *find_closing_bracket(char *s, int left, int right)
+static char *find_closing_curly(char *s)
 {
-    int depth;
+    unsigned depth;
 
     for (depth = 1; *s; ++s) {
-        if (*s == right && --depth == 0) {
+        if (*s == RIGHT_CURLY && --depth == 0) {
             return s;
         }
-        else if (*s == left) {
+        else if (*s == LEFT_CURLY) {
             ++depth;
         }
     }
+
     return NULL;
 }
 
-static char *find_char_in_brackets(char *s, int c, int left, int right)
+static char *find_char_in_curlies(char *s, int c)
 {
-    int depth;
+    unsigned depth;
 
     for (depth = 1; *s; ++s) {
         if (*s == c && depth == 1) {
             return s;
         }
-        else if (*s == right && --depth == 0) {
+        else if (*s == RIGHT_CURLY && --depth == 0) {
             return NULL;
         }
-        else if (*s == left) {
+        else if (*s == LEFT_CURLY) {
             ++depth;
         }
     }
+
     return NULL;
 }
 
@@ -1952,7 +1958,7 @@ static char *do_expand(request_rec *r, char *input,
         else if (p[1] == '{') {
             char *endp;
 
-            endp = find_closing_bracket(p+2, '{', '}');
+            endp = find_closing_curly(p+2);
             if (!endp) {
                 current->len = 2;
                 current->string = p;
@@ -1988,7 +1994,7 @@ static char *do_expand(request_rec *r, char *input,
                  * driven by the syntax of the nested curly brackets.
                  */
 
-                key = find_char_in_brackets(p+2, ':', '{', '}');
+                key = find_char_in_curlies(p+2, ':');
                 if (!key) {
                     current->len = 2;
                     current->string = p;
@@ -2001,7 +2007,7 @@ static char *do_expand(request_rec *r, char *input,
                     map = apr_pstrmemdup(r->pool, p+2, endp-p-2);
                     key = map + (key-p-2);
                     *key++ = '\0';
-                    dflt = find_char_in_brackets(key, '|', '{', '}');
+                    dflt = find_char_in_curlies(key, '|');
                     if (dflt) {
                         *dflt++ = '\0';
                     }
