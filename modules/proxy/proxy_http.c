@@ -250,7 +250,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     int counter, seen_eos, send_chunks;
     apr_status_t status;
     apr_bucket_brigade *header_brigade, *body_brigade, *input_brigade;
-    apr_off_t transfered = 0;
+    apr_off_t transferred = 0;
 
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
     body_brigade = apr_brigade_create(p, origin->bucket_alloc);
@@ -484,9 +484,9 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     e = apr_bucket_flush_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     
-    apr_brigade_length(header_brigade, 0, &transfered);
-    if (transfered != -1)
-        conn->worker->s->transfered += transfered;
+    apr_brigade_length(header_brigade, 0, &transferred);
+    if (transferred != -1)
+        conn->worker->s->transferred += transferred;
     if (send_chunks) {
         status = ap_pass_brigade(origin->output_filters, header_brigade);
 
@@ -634,9 +634,9 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                       conn->addr, conn->hostname);
         return status;
     }
-    apr_brigade_length(body_brigade, 0, &transfered);
-    if (transfered != -1)
-        conn->worker->s->transfered += transfered;
+    apr_brigade_length(body_brigade, 0, &transferred);
+    if (transferred != -1)
+        conn->worker->s->transferred += transferred;
 
     apr_brigade_cleanup(body_brigade);
     return APR_SUCCESS;

@@ -202,8 +202,8 @@ void output_results()
   if(bad) printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
 		 err_conn, err_length, err_except);
   if(keepalive) printf("Keep-Alive requests:    %d\n", doneka);
-  printf("Bytes transfered:       %d\n", totalread);
-  printf("HTML transfered:        %d\n", totalbread);
+  printf("Bytes transferred:      %d\n", totalread);
+  printf("HTML transferred:       %d\n", totalbread);
   
   /* avoid divide by zero */
   if(timetaken) {

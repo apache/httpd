@@ -256,7 +256,7 @@ URLs on the fly</td></tr>
       <code>%N</code> (see below). These are available for creating
       the strings <em>Substitution</em> and <em>TestString</em>.
       Figure 2 shows to which locations the back-references are
-      transfered for expansion.</p>
+      transferred for expansion.</p>
 
 <p class="figure">
       <img src="../images/mod_rewrite_fig2.gif" width="381" height="179" alt="[Needs graphics capability to display]" /><br />

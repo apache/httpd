@@ -669,7 +669,7 @@ static const command_rec digest_cmds[] =
 /*
  * client list code
  *
- * Each client is assigned a number, which is transfered in the opaque
+ * Each client is assigned a number, which is transferred in the opaque
  * field of the WWW-Authenticate and Authorization headers. The number
  * is just a simple counter which is incremented for each new client.
  * Clients can't forge this number because it is hashed up into the
