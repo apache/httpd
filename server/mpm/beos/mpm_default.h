@@ -68,33 +68,20 @@
  * this free when the caretaker checks, it will spawn more.
  */
 #ifndef DEFAULT_START_THREADS
-#define DEFAULT_START_THREADS 25
-#endif
-
-/* Maximum number of *free* threads --- more than this, and
- * they will die off.
- */
-
-#ifndef DEFAULT_MAX_FREE_THREADS
-#define DEFAULT_MAX_FREE_THREADS 50
-#endif
-
-/* Minimum --- fewer than this, and more will be created */
-
-#ifndef DEFAULT_MIN_FREE_THREADS
-#define DEFAULT_MIN_FREE_THREADS 5
+#define DEFAULT_START_THREADS 10
 #endif
 
 /* Limit on the total --- clients will be locked out if more servers than
  * this are needed.  It is intended solely to keep the server from crashing
  * when things get out of hand.
  *
- * We keep a hard maximum number of servers, for two reasons --- first off,
- * in case something goes seriously wrong, we want to stop the fork bomb
- * short of actually crashing the machine we're running on by filling some
- * kernel table.  Secondly, it keeps the size of the scoreboard file small
- * enough that we can read the whole thing without worrying too much about
- * the overhead.
+ * We keep a hard maximum number of servers, for two reasons:
+ * 1) in case something goes seriously wrong, we want to stop the server starting
+ *    threads ad infinitum and crashing the server (remember that BeOS has a 192
+ *    thread per team limit).
+ * 2) it keeps the size of the scoreboard file small
+ *    enough that we can read the whole thing without worrying too much about
+ *    the overhead.
  */
 
 /* we only ever have 1 main process running... */ 
@@ -115,13 +102,30 @@
 #endif
 
 #ifdef NO_THREADS
-#define DEFAULT_THREADS_PER_CHILD 1
+#define DEFAULT_THREADS 1
+#endif
+#ifndef DEFAULT_THREADS
+#define DEFAULT_THREADS 10
 #endif
 
-#ifndef DEFAULT_THREADS_PER_CHILD
-#define DEFAULT_THREADS_PER_CHILD 10
+/* The following 2 settings are used to control the number of threads
+ * we have available.  Normally the DEFAULT_MAX_FREE_THREADS is set
+ * to the same as the HARD_THREAD_LIMIT to avoid churning of starting
+ * new threads to replace threads killed off...
+ */
+
+/* Maximum number of *free* threads --- more than this, and
+ * they will die off.
+ */
+#ifndef DEFAULT_MAX_FREE_THREADS
+#define DEFAULT_MAX_FREE_THREADS HARD_THREAD_LIMIT
 #endif
 
+/* Minimum --- fewer than this, and more will be created */
+#ifndef DEFAULT_MIN_FREE_THREADS
+#define DEFAULT_MIN_FREE_THREADS 1
+#endif
+                   
 /* Where the main/parent process's pid is logged */
 #ifndef DEFAULT_PIDLOG
 #define DEFAULT_PIDLOG "logs/httpd.pid"
@@ -139,11 +143,11 @@
 #define SCOREBOARD_MAINTENANCE_INTERVAL 1000000
 #endif
 
-/* Number of requests to try to handle in a single process.  If <= 0,
+/* Number of requests to try to handle in a single process.  If == 0,
  * the children don't die off.
  */
-#ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
-#define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
+#ifndef DEFAULT_MAX_REQUESTS_PER_THREAD
+#define DEFAULT_MAX_REQUESTS_PER_THREAD 0
 #endif
 
 #endif /* AP_MPM_DEFAULT_H */
