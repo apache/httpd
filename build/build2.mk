@@ -117,7 +117,7 @@ $(apr_private.h_in): $(apr_configure) srclib/apr/acconfig.h
 
 $(aprutil_configure): srclib/apr-util/configure.in 
 	@echo rebuilding $@
-	(cd srclib/apr-util && ./buildconf.sh ../apr)
+	(cd srclib/apr-util && ./buildconf.sh)
 
 $(apr_configure): srclib/apr/aclocal.m4 srclib/apr/configure.in srclib/apr/apr_common.m4 srclib/apr/hints.m4
 	@echo rebuilding $@
