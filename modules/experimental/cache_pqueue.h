@@ -187,6 +187,14 @@ void cache_pq_dump(cache_pqueue_t *q,
                    FILE *out,
                    cache_pqueue_print_entry print);
 
+/**
+ * checks that the pq is in the right order, etc
+ * @internal
+ * debug function only
+ * @param q the queue
+ */
+int cache_pq_is_valid(cache_pqueue_t *q);
+
 #ifdef __cplusplus
 }
 #endif

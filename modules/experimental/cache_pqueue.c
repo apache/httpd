@@ -336,3 +336,19 @@ void cache_pq_print(cache_pqueue_t *q,
     }
     cache_pq_free(dup);
 }
+
+static int cache_pq_subtree_is_valid(cache_pqueue_t *q, int pos)
+{
+    if ((left(pos) <q->size &&(q->pri(q->d[pos]) < q->pri(q->d[left(pos)]))) ||
+        (right(pos)<q->size &&(q->pri(q->d[pos]) < q->pri(q->d[right(pos)]))))
+    {
+        return 0;
+    }
+    return ((left(pos)>=q->size ||(cache_pq_subtree_is_valid(q, left(pos)))) &&
+            (right(pos)>=q->size||(cache_pq_subtree_is_valid(q, right(pos)))));
+}
+
+int cache_pq_is_valid(cache_pqueue_t *q)
+{
+    return cache_pq_subtree_is_valid(q, 1);
+}
