@@ -239,7 +239,7 @@ void ap_open_logs (server_rec *s_main, pool *p)
     if (s_main->error_log) {
 	/* replace stderr with this new log */
 	fflush(stderr);
-	if (dup2(fileno(s_main->error_log), 2) == -1) {
+	if (dup2(fileno(s_main->error_log), STDERR_FILENO) == -1) {
 	    ap_log_error(APLOG_MARK, APLOG_CRIT, s_main,
 		"unable to replace stderr with error_log");
 	} else {
@@ -271,8 +271,9 @@ void ap_open_logs (server_rec *s_main, pool *p)
 }
 
 API_EXPORT(void) ap_error_log2stderr (server_rec *s) {
-    if(fileno(s->error_log) != STDERR_FILENO)
-        dup2(fileno(s->error_log),STDERR_FILENO);
+    if (   s->error_log != NULL
+        && fileno(s->error_log) != STDERR_FILENO)
+        dup2(fileno(s->error_log), STDERR_FILENO);
 }
 
 static void log_error_core (const char *file, int line, int level,

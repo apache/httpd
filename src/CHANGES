@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
 
+  *) Fix stderr redirection under syslog-based error logging situation.
+     [Youichirou Koga <y-koga@jp.FreeBSD.org>] PR#3095
+
   *) Document `ErrorLog syslog:facility' variant of error logging.
      [Youichirou Koga <y-koga@jp.FreeBSD.org>] PR#3096
 
