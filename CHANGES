@@ -1,5 +1,10 @@
 Changes with Apache 2.0.27-dev
 
+  *) Various --enable-so options have been fixed: --enable-so is
+     treated as "static"; explicit --enable-so=shared issues an error;
+     and explicit --enable-so fails with error on systems without
+     APR_HAS_DSO.  [Aaron Bannert]
+
   *) Fix a segfault in the core input filter when the client socket
      gets disconnected unexpectedly.  [Cliff Woolley]
 
