@@ -2231,7 +2231,8 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
         if (!r->main)
             ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
         r->sent_bodyct = 1;
-        return APR_SUCCESS;
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, b);
     }
 
     /*
