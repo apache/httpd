@@ -405,7 +405,7 @@ static int display_info(request_rec *r)
             ap_rprintf(r, "<dt><strong>Server Root:</strong> "
                         "<tt>%s</tt></dt>\n", ap_server_root);
             ap_rprintf(r, "<dt><strong>Config File:</strong> "
-		       "<tt>%s</tt></dt>\n", SERVER_CONFIG_FILE);
+		       "<tt>%s</tt></dt>\n", ap_conftree->filename);
             ap_rputs("</dl><hr />", r);
         }
         for (modp = ap_top_module; modp; modp = modp->next) {
