@@ -1,5 +1,8 @@
 Changes with Apache 1.3.28
 
+  *) Fix typo in suexec -V output. PR 9034.
+     [Youichirou Koga <y-koga@apache.or.jp>]
+
   *) Fix bug where 'Satisfy Any' without an AuthType resulted in an
      "Internal Server Error" response. PR 9076.  [André Malo]
 
