@@ -392,8 +392,11 @@ apr_status_t ap_proxy_http_create_connection(apr_pool_t *p, request_rec *r,
         backend->hostname = apr_pstrdup(c->pool, p_conn->name);
         backend->port = p_conn->port;
 
-        if (backend->is_ssl) {
-            ap_proxy_ssl_enable(backend->connection);
+        if (backend->is_ssl && !ap_proxy_ssl_enable(backend->connection)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0,
+                         r->server, "proxy: failed to enable ssl support "
+                         "for %pI (%s)", p_conn->addr, p_conn->name);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
