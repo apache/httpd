@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.19 $ ($Date: 1997/04/11 04:27:04 $)
+$Revision: 1.20 $ ($Date: 1997/04/12 03:40:38 $)
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
@@ -82,6 +82,7 @@ $Revision: 1.19 $ ($Date: 1997/04/11 04:27:04 $)
    <LI><A HREF="#passwdauth">Can I use my <SAMP>/etc/passwd</SAMP> file
     for Web page authentication?</A>
    </LI>
+   <LI><A HREF="#errordoc401"><SAMP>ErrorDocument 401</SAMP> does not work.</A>
   </OL>
  </LI>
 </UL>
@@ -692,6 +693,16 @@ $Revision: 1.19 $ ($Date: 1997/04/11 04:27:04 $)
   If you still want to do this in light of the above disadvantages, the
   method is left as an exercise for the reader.  It'll void your Apache
   warranty, though, and you'll lose all accumulated UNIX guru points.
+  </P>
+  <HR>
+ <LI><A NAME="errordoc401">
+      <STRONG><SAMP>ErrorDocument 401</SAMP> does not work.</STRONG>
+     </A>
+  <P>
+  You need to use it with a URL in the form "/foo/bar" and not one
+  with a method and hostname such as "http://host/foo/bar".  See the
+  <A HREF="../mod/core.html#errordocument">ErrorDocument</A> documentation
+  for details.  This was incorrectly documented in the past.
   </P>
   <HR>
  </LI>
