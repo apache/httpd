@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.9 -->
+<!-- English revision: 1.11 -->
 
 <name>mod_negotiation</name>
 <description><a href="../content-negotiation.html">コンテントネゴシエーション</a>
@@ -21,21 +21,19 @@
       ハンドラで扱われるファイル)。これは variants
       を含んでいるファイルを明示的に指定します。</li>
 
-      <li>MultiViews の探索 (MultiViews <directive
-      module="core">Option</directive> で使用するようになります)。
+      <li>MultiViews の探索 (<code>MultiViews</code> <directive
+      module="core">Option</directive> で有効になります)。
       サーバが暗黙の内にファイル名のパターンマッチを行ない、
       その結果から選択します。</li>
     </ul>
 </summary>
-
-<seealso><directive module="mod_mime">DefaultLanguage</directive></seealso>
-<seealso><directive module="mod_mime">AddEncoding</directive></seealso>
-<seealso><directive module="mod_mime">AddLanguage</directive></seealso>
-<seealso><directive module="mod_mime">AddType</directive></seealso>
-<seealso><directive module="mod_mime">MultiViewsMatch</directive></seealso>
+<seealso><directive module="core">Options</directive></seealso>
+<seealso><module>mod_mime</module></seealso>
+<seealso><a href="../content-negotiation.html">コンテントネゴシエーション</a></seealso>
+<seealso><a href="../env.html">環境変数</a></seealso>
 
 <section id="typemaps"><title>タイプマップ</title>
-    <p>タイプマップは RFC 822 のメールヘッダと同じ書式です。
+    <p>タイプマップは RFC 822 のメールヘッダに類似した書式です。
     ドキュメントの記述が空行で分離されて書かれていて、ハッシュ文字
     ('#') で始まる行はコメントとして扱われます。
     ドキュメントの説明は複数のヘッダレコードから構成されます。
@@ -47,7 +45,7 @@
     使用可能なヘッダは以下のとおりです:</p>
 
     <dl>
-      <dt>Content-Encoding:</dt>
+      <dt><code>Content-Encoding:</code></dt>
       <dd>ファイルのエンコーディング。Apache は <directive
       module="mod_mime">AddEncoding</directive> ディレクティブ
       で定義されたエンコーディングだけを認識します。通常 compress
@@ -56,84 +54,76 @@
       エンコーディングの比較をするときは、接頭辞 <code>x-</code>
       は無視されます。</dd>
 
+      <dt><code>Content-Language:</code></dt>
+      <dd>インターネット標準の言語タグ 
+      (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>)
+      で定義されている言語の種類。例えば、<code>en</code>
+      は英語を表します。
+      複数の言語が格納される場合はコンマで区切られます。</dd>
 
-    <dt>Content-Language:</dt>
+      <dt><code>Content-Length:</code></dt>
+      <dd>ファイルの長さ (バイト数)。
+      このヘッダがない場合、ファイルの実際の長さが使用されます。</dd>
 
-    <dd>インターネット標準の言語タグ (RFC 1766)
-    で定義されている言語の種類。例えば、<code>en</code>
-    は英語を表します。</dd>
-
-    <dt>Content-Length:</dt>
-
-    <dd>ファイルの長さ (バイト数)。
-    このヘッダがない場合、ファイルの実際の長さが使用されます。</dd>
-
-    <dt>Content-Type:</dt>
-
-    <dd>ドキュメントの MIME
+      <dt><code>Content-Type:</code></dt>
+      <dd>ドキュメントの MIME
       メディアタイプ、オプショナルなパラメータ付き。パラメータの構文は
       <code>name=value</code>
       で、メディアタイプや他のパラメータとはセミコロンで分離されます。
       共通のパラメータは以下のとおり:
 
-      <dl>
-        <dt>level</dt>
+        <dl>
+          <dt><code>level</code></dt>
+          <dd>メディアタイプのバージョンを示す整数。
+          <code>text/html</code> では 2 がデフォルトで、その他の場合は
+          0 がデフォルトです。</dd>
 
-        <dd>メディアタイプのバージョンを示す整数。
-        <code>text/html</code> では 2 がデフォルトで、その他の場合は
-        0 がデフォルトです。</dd>
+          <dt><code>qs</code></dt>
+          <dd>クライアントの能力に関係なく、variant
+          を他と比較したときの相対的な「品質」で、0.0 から 1.0
+          の範囲の浮動点小数。
+          例えば、写真を表現しようとしているときは普通は JPEG
+          ファイルの方が ASCII ファイルよりも高い品質になります。
+          しかし、リソースが ASCII アートで表現されているときは、ASCII
+          ファイルの方が JPEG
+          ファイルよりも高い品質になります。このように、<code>qs</code>
+          はリソース毎に特有の値を取ります。
+          </dd>
+        </dl>
 
-        <dt>qs</dt>
-
-        <dd>クライアントの能力に関係なく、variant
-        を他と比較したときの相対的な「品質」で、0.0 から 1.0
-        の範囲の浮動点小数。
-        例えば、写真を表現しようとしているときは普通は JPEG
-        ファイルの方が ASCII ファイルよりも高い品質になります。
-        しかし、リソースが ASCII アートで表現されているときは、ASCII
-        ファイルの方が JPEG
-        ファイルよりも高い品質になります。このように、qs
-        はリソース毎に特有の値を取ります。
-        </dd>
-      </dl>
-      例:
-
-<example>Content-Type: image/jpeg; qs=0.8</example>
+        <example><title>例</title>
+          Content-Type: image/jpeg; qs=0.8
+        </example>
       </dd>
 
-      <dt>URI:</dt>
-
+      <dt><code>URI:</code></dt>
       <dd>(指定のメディアタイプ、コンテントエンコーディングの) variant の
       ファイルの uri.  これは、マップファイルからの相対 URL として
       解釈されます。同じサーバに存在しなければならず、クライアントが
       直接リクエストしたときにアクセスを許可されるものでなければなりません。</dd>
 
-      <dt>Body:</dt>
-   
-      <dd><p>Apache 2.0 で新設されたこの Body ヘッダを使って、
+      <dt><code>Body:</code></dt>
+      <dd>Apache 2.0 で新設されたこの Body ヘッダを使って、
       リソースの実際の内容をタイプマップファイルに書くことができます。
       このヘッダは本文の内容の区切りとなる文字列で始まる必要があります。
       タイプマップファイルの続く行は、区切り文字列が見つかるまで、
-      リソースの本文になります。</p>
+      リソースの本文になります。
 
-      <p>例:</p>
-<example>
-Body:----xyz----<br />
-&lt;html&gt;<br />
-&lt;body&gt;<br />
-&lt;p&gt;Content of the page.&lt;/p&gt;<br />
-&lt;/body&gt;<br />
-&lt;/html&gt;<br />
-----xyz----
-</example>
+      <example><title>Example:</title>
+        Body:----xyz----<br />
+        &lt;html&gt;<br />
+        &lt;body&gt;<br />
+        &lt;p&gt;Content of the page.&lt;/p&gt;<br />
+        &lt;/body&gt;<br />
+        &lt;/html&gt;<br />
+        ----xyz----
+      </example>
       </dd>
     </dl>
 </section>
 
-<section id="multiviews">
-    <title>MultiViews</title>
-
-    <p>MultiViews 探索は、Multiviews <directive
+<section id="multiviews"><title>MultiViews</title>
+    <p>MultiViews 探索は、<code>Multiviews</code> <directive
     module="core">Options</directive> ディレクティブにより有効になります。
     サーバが <code>/some/dir/foo</code>
     へのリクエストを受け取り、<code>/some/dir/foo</code> が存在
@@ -150,8 +140,8 @@ Body:----xyz----<br />
 <name>CacheNegotiatedDocs</name>
 <description>コンテントネゴシエーションされたドキュメントをプロキシサーバが
 キャッシュできるようにする</description>
-<syntax>CacheNegotiatedDocs on|off</syntax>
-<default>CacheNegotiatedDocs off</default>
+<syntax>CacheNegotiatedDocs On|Off</syntax>
+<default>CacheNegotiatedDocs Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
@@ -180,11 +170,8 @@ Body:----xyz----<br />
 </description>
 <syntax>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</syntax>
 <default>ForceLanguagePriority Prefer</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>バージョン 2.0.30 以降で使用可能</compatibility>
 
@@ -197,53 +184,59 @@ Body:----xyz----<br />
     <p><code>ForceLanguagePriority Prefer</code> は、同等の選択肢が
     いくつかあるときに、HTTP の 300 (MULTIPLE CHOICES) を返す代わりに、
     <code>LanguagePriority</code> を使って一つだけドキュメントを返すように
-    します。以下のディレクティブが指定されていて、ユーザの Accept-Language
-    ヘッダでは en と de の品質が共に .500 (同じくらい許容) であるときは、
-    最初にマッチする variant の en が送られます。</p>
+    します。以下のディレクティブが指定されていて、ユーザの <code>Accept-Language</code>
+    ヘッダでは <code>en</code> と <code>de</code> の品質が共に
+    <code>.500</code> (同じくらい許容) であるときは、
+    最初にマッチする variant の <code>en</code> が送られます。</p>
 
-<example>
+    <example>
       LanguagePriority en fr de<br />
       ForceLanguagePriority Prefer
-</example>
+    </example>
 
-    <p><code>ForceLanguagePriority Fallback</code> は、HTTP 406
-    (NOT ACCEPTABLE) の代わりにドキュメントを送ります。
-    以下のディレクティブが指定されていて、ユーザの Accept-Language は
-    es 言語のみを許可していて、さらにそのような variant がないときには、
-    以下の LanguagePriority のリストの最初の variant が送れれます。</p>
+    <p><code>ForceLanguagePriority Fallback</code> では、HTTP 406
+    (NOT ACCEPTABLE) を送信する代わりに、
+    <directive module="mod_negotiation">LanguagePriority</directive>
+    が正しい結果を送ります。
+    以下のディレクティブが指定されていて、ユーザの <code>Accept-Language</code>
+    が <code>es</code> 言語のみを許可していて、さらにそのような variant がないときには、
+    以下の <directive module="mod_negotiation">LanguagePriority</directive>
+    のリストの最初の variant が送れれます。</p>
 
-<example>
+    <example>
       LanguagePriority en fr de<br />
       ForceLanguagePriority Fallback
-</example>
+    </example>
 
-    <p>Prefer と Fallback の両方のオプションを同時に指定することができます。
-    ですから、複数の variant があるときは LanguagePriority の最初の
+    <p><code>Prefer</code> と <code>Fallback</code> の両方のオプションを
+    同時に指定することができます。
+    ですから、複数の variant があるときは
+    <directive module="mod_negotiation">LanguagePriority</directive> の最初の
     variant が送られ、クライアントの許容言語に合う vaiant がないときは
     存在するドキュメントで最初のものが送られる、という様にすることができます。</p>
 </usage>
+<seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>LanguagePriority</name>
 <description>クライアントが優先度を示さなかったときの言語の variant の優先度を
 指定</description>
-<syntax>LanguagePriority <em>MIME-lang</em> [<em>MIME-lang</em>] ...</syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<syntax>LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
     <p><directive>LanguagePriority</directive> は、MultiViews
     リクエストを扱うときに、クライアントが優先順位を提供していない場合の
-    言語の優先順位を設定します。<em>MIME-lang</em>
-    のリストが優先度の降順に並びます。
-    例:</p>
+    言語の優先順位を設定します。<var>MIME-lang</var>
+    のリストが優先度の降順に並びます。</p>
 
-<example>LanguagePriority en fr de</example>
+    <example><title>Example:</title>
+      LanguagePriority en fr de
+    </example>
 
     <p><code>foo.html</code> がリクエストされ、<code>foo.html.fr</code>
     と <code>foo.html.de</code> が両方存在し、
@@ -257,6 +250,7 @@ Body:----xyz----<br />
     HTTP/1.1 リクエストが正しく実装されている場合には、
     このディレクティブは無効になります。</p>
 </usage>
+<seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>
 
 </modulesynopsis>
