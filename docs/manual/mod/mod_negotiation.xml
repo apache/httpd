@@ -133,7 +133,8 @@ Body:----xyz----<br />
     </dl>
 </section>
 
-<section><title>MultiViews</title>
+<section id="multiviews">
+    <title>MultiViews</title>
 
     <p>A MultiViews search is enabled by the MultiViews <directive
     module="core">Options</directive>. If the server receives a
