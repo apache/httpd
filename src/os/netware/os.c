@@ -225,7 +225,7 @@ int ap_os_is_filename_valid(const char *file)
 		"COM4", "LPT1", "LPT2", "LPT3", "PRN", "NUL", NULL 
     };
 
-	// First check to make sure that we have a file so that we don't abend
+	/* First check to make sure that we have a file so that we don't abend */
 	if (file == NULL)
 		return 0;
 

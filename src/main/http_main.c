@@ -6710,8 +6710,9 @@ int REALMAIN(int argc, char *argv[])
 #endif
 
 #ifdef NETWARE
-    // If top_module is not NULL then APACHEC was not exited cleanly
-    //  and is in a bad state.  Simply clean up and exit.
+    /* If top_module is not NULL then APACHEC was not exited cleanly
+     * and is in a bad state.  Simply clean up and exit.
+     */
     check_clean_load (top_module);
     init_name_space();
     signal(SIGTERM, signal_handler);

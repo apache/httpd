@@ -350,10 +350,11 @@ int tls_hook_Fixup(request_rec *r)
     char port[8];
     
     
-    // For some reason r->server->port always return 80 rather than
-    //  the current port.  So for now we will get it straight from
-    //  the horses mouth.
-    //  itoa(r->server->port, port, 10);
+    /* For some reason r->server->port always return 80 rather than
+     * the current port.  So for now we will get it straight from
+     * the horses mouth.
+     */
+    /*  itoa(r->server->port, port, 10); */
     itoa(ntohs(((r->connection)->local_addr).sin_port), port, 10);
     s_secure = ap_table_get(sc->sltable, port);    
     
