@@ -49,6 +49,8 @@ echo "Using config file: $file"
 
 if [ ! -r $file ]; then
   echo "Can't see or read \"$file\""
+  echo "Please copy Configuration.tmpl to $file, edit it for your platform,"
+  echo "and re-run $0 again."
   exitcode=1
   exit 1
 fi
