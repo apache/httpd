@@ -21,6 +21,7 @@ AP_DECLARE_DATA module *ap_prelinked_modules[] = {
   &so_module,
   NULL
 };
+
 AP_DECLARE_DATA module *ap_preloaded_modules[] = {
   &core_module,
   &win32_module,
