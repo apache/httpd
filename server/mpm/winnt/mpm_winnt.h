@@ -64,4 +64,15 @@ extern void clean_child_exit(int);
 extern int ap_extended_status;
 extern void clean_child_exit(int);
 
+typedef struct CompContext {
+    OVERLAPPED Overlapped;
+    SOCKET accept_socket;
+    BUFF* conn_io;
+    pool *ptrans;
+    struct sockaddr sa_server;
+    int sa_server_len;
+    struct sockaddr sa_client;
+    int sa_client_len;
+} COMP_CONTEXT, *PCOMP_CONTEXT;
+
 #endif /* APACHE_MPM_WINNT_H */
