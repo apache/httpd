@@ -185,14 +185,7 @@ int ssl_hook_ReadReq(request_rec *r)
      */
     if (strEQn(r->uri, "/mod_ssl:", 9))
         r->handler = "mod_ssl:content-handler";
-    if (ssl != NULL) {
-        apr_table_setn(r->notes, "ap::http::method",  "https");
-        apr_table_setn(r->notes, "ap::default::port", "443");
-    }
-    else {
-        apr_table_setn(r->notes, "ap::http::method",  NULL);
-        apr_table_setn(r->notes, "ap::default::port", NULL);
-    }
+
     return DECLINED;
 }
 
