@@ -37,6 +37,12 @@ source tree a new support tool named `apxs' is provided which hides the
 platform-dependend DSO-build mechanism and automates the installation and
 activation of those DSO files.
 
+Finally, this version of Apache attempts to protect against namespace
+collisions by prefacing ``external'' functions, including API functions,
+with the ap_ prefix. If you have or use an external module, the module
+will need to be updated and/or recompiled in order to use the new
+function names.
+
 Please be sure to read the CHANGES file and the "New Features with Apache
 1.3" document (at http://www.apache.org/docs/new_features_1_3.html).
 This is particularly important if you are using non-IP based virtual hosts.
