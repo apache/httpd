@@ -196,6 +196,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
     }
 
     ap_my_generation = ap_scoreboard_image->parent[child_slot].generation;
+    memset(ap_scoreboard_image->servers[child_slot], 0, sizeof(worker_score) * HARD_THREAD_LIMIT);
 
     /* Set up an OS/2 queue for passing connections & termination requests
      * to worker threads
