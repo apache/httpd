@@ -183,9 +183,6 @@ build for your OS.
     HAVE_GMTOFF:
       Define if the OS's tm struct has the tm_gmtoff element
 
-    HAVE_RESOURCE:
-      Define if the OS supports the getrlimit()/setrlimit() functions
-
     HAVE_CRYPT_H:
       Defined if the OS has the <crypt.h> header file. This is set
       automatically during the Configure process and stored in the
@@ -199,8 +196,9 @@ build for your OS.
     HAVE_SYS_RESOURCE_H:
       Defined if the OS has and supports the getrlimit/setrlimit
       family. Apache uses this to determine if RLIMIT_CPU|VMEM|DATA|RLIMIT
-      is found and used. This is set automatically during the Configure
-      process and stored in the src/include/ap_config_auto.h header
+      is found and used. This also assumes that the getrlimit()/setrlimit()
+      functions are available as well. This is set automatically during the
+      Configure process and stored in the src/include/ap_config_auto.h header
       file.
 --
 

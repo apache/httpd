@@ -216,7 +216,6 @@ typedef int rlim_t;
 #define HAVE_SHMGET
 #define USE_SHMGET_SCOREBOARD
 #undef  HAVE_GMTOFF
-#define HAVE_RESOURCE
 #define USE_FCNTL_SERIALIZED_ACCEPT
 /* feeling brave?  want to try using POSIX mutexes? */
 /* #define HAVE_MMAP */
@@ -510,7 +509,6 @@ extern char *crypt();
 #define NEED_STRCASECMP
 #define NEED_STRNCASECMP
 #define bzero(a,b) memset(a,0,b)
-#define HAVE_RESOURCE 1
 #define HAVE_MMAP 1
 #define USE_MMAP_SCOREBOARD
 #define USE_MMAP_FILES
@@ -630,7 +628,6 @@ int initgroups(char *, int);
 
 #elif defined(LYNXOS)
 #undef HAVE_GMTOFF
-#define HAVE_RESOURCE 1
 #undef USE_MMAP_SCOREBOARD
 #undef USE_SHMGET_SCOREBOARD
 #undef USE_FCNTL_SERIALIZED_ACCEPT
@@ -651,7 +648,6 @@ typedef int rlim_t;
 #undef HAVE_GMTOFF
 #define NO_KILLPG
 #undef NO_SETSID
-#define HAVE_RESOURCE 1 
 #define bzero(a,b) memset(a,0,b)
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP 1
