@@ -30,6 +30,7 @@ for the heavier TCP load, hardware/software conflicts that arise, etc.
 <LI><A HREF="#Linux">Linux</A>
 <LI><A HREF="#Solaris">Solaris</A>
 <LI><A HREF="#SunOS">SunOS 4.x</A>
+<LI><A HREF="#SVR4">SVR4</A>
 </UL>
 
 <HR>
@@ -117,6 +118,54 @@ SunOS 4.x
 More information on tuning SOMAXCONN on SunOS can be found at
 <A HREF="http://www.islandnet.com/~mark/somaxconn.html">
 http://www.islandnet.com/~mark/somaxconn.html</A>.
+
+<P><HR>
+
+<H3><A NAME="SVR4">
+SVR4
+</A></H3>
+
+Some SVR4 versions waste three system calls on every
+<SAMP>gettimeofday()</SAMP> call. Depending on the syntactic
+form of the <SAMP>TZ</SAMP> environment variable, these
+systems have several different algorithms to determine the
+local time zone (presumably <EM>compatible</EM> with
+something). The following example uses the central european
+time zone to demonstrate this:
+<DL>
+ <DT><STRONG>TZ=:MET</STRONG>
+ <DD>This form delegates the knowledge of the time zone
+     information to an external compiled zoneinfo file
+     (&agrave; la BSD).<BR>
+     <STRONG>Caveat:</STRONG> Each time the gettimeofday()
+     function is called, the external zone info is read in
+     again (at least on some SVR4 systems). That results in
+     three wasted system calls with every apache request
+     served.<PRE>
+     open("/usr/lib/locale/TZ/MET", O_RDONLY) = 3
+     read(3, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 7944) = 778
+     close(3)                                = 0</PRE>
+
+ <DT><STRONG>TZ=MET-1MDT,M3.5.0/02:00:00,M10.5.0/03:00:00</STRONG>
+ <DD>This syntax form (&agrave; la SYSV) contains all the
+     knowledge about time zone beginning and ending times in
+     its external representation. It has to be parsed each
+     time it is evaluated, resulting in a slight computing
+     overhead, but it requires no system call. Though the
+     table lookup &agrave; la BSD is the more sophisticated
+     technical solution, the bad SVR4 implementation makes
+     this the preferred syntax on systems which otherwise
+     access the external zone info file repeatedly.
+</DL>
+You should use the <SAMP>truss</SAMP> utility on a
+single-process apache server (started with the <SAMP>-X</SAMP>
+debugging switch) to determine whether your system can profit
+from the second form of the <SAMP>TZ</SAMP> environment
+variable. If it does, you could integrate the setting of the
+preferred <SAMP>TZ</SAMP> syntax into the httpd startup
+script, which is usually simply a copy of (or symbolic link
+to) the <SAMP>apachectl</SAMP> utility script, or into the
+system's <SAMP>/etc/TIMEZONE</SAMP> script.
 
 <P><HR>
 
