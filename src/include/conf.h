@@ -467,6 +467,7 @@ extern char *crypt();
 #define USE_SHMGET_SCOREBOARD
 #ifdef _OSD_POSIX /* BS2000-POSIX mainframe does not have syslog and needs initgroups */
 #define NEED_INITGROUPS
+#define NEED_HASHBANG_EMUL /* execve() doesn't start shell scripts by default */
 #undef HAVE_SYSLOG
 #undef HAVE_SHMGET
 #undef USE_SHMGET_SCOREBOARD
@@ -970,6 +971,18 @@ Sigfunc *signal(int signo, Sigfunc * func);
 
 #ifdef NO_OTHER_CHILD
 #define NO_RELIABLE_PIPED_LOGS
+#endif
+
+/* When the underlying OS doesn't support exec() of scripts which start
+ * with a HASHBANG (#!) followed by interpreter name and args, define this.
+ */
+#ifdef NEED_HASHBANG_EMUL
+extern int ap_execle(const char *filename, const char *arg,...);
+extern int ap_execve(const char *filename, const char *argv[],
+                     const char *envp[]);
+/* ap_execle() is a wrapper function around ap_execve(). */
+#define execle  ap_execle
+#define execve(path,argv,envp)  ap_execve(path,argv,envp)
 #endif
 
 /* Finding offsets of elements within structures.

@@ -1,5 +1,12 @@
 Changes with Apache 1.3b4
 
+  *) PORT: Some older *nix dialects cannot automatically start scripts
+     which begin with a #! interpreter line (the shell starts the scripts
+     appropriately on these platforms). Apache now supports starting of
+     "hashbang-scripts" when the NEED_HASHBANG_EMUL define is set.
+     [Martin Kraemer, with code from peter@zeus.dialix.oz.au (Peter Wemm)
+     taken from tcsh]
+
   *) "typedef array_header table" removed from alloc.h, folks should have
      been writing to use table as if it were an opaque type, but even
      some standard modules got this wrong.  By changing the definition
