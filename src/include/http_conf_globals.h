@@ -92,7 +92,7 @@ extern MODULE_VAR_EXPORT char *server_argv0;
  * statically...
  */
 
-extern char server_root[MAX_STRING_LEN];
+extern API_VAR_EXPORT char server_root[MAX_STRING_LEN];
 extern char server_confname[MAX_STRING_LEN];
 
 /* for -C and -c switches */

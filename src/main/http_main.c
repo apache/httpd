@@ -263,7 +263,7 @@ static int max_daemons_limit = -1;
 listen_rec *listeners;
 static listen_rec *head_listener;
 
-char server_root[MAX_STRING_LEN];
+API_VAR_EXPORT char server_root[MAX_STRING_LEN];
 char server_confname[MAX_STRING_LEN];
 char coredump_dir[MAX_STRING_LEN];
 
