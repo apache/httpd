@@ -192,7 +192,7 @@ apr_status_t ap_lingering_close(void *dummy)
      */
     if (apr_shutdown(net->client_socket, APR_SHUTDOWN_WRITE) != APR_SUCCESS || 
         net->c->aborted) {
-        apr_socket_close(c->client_socket);
+        apr_socket_close(net->client_socket);
         return APR_SUCCESS;
     }
 
