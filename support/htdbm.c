@@ -1,0 +1,627 @@
+/* ====================================================================
+ * The Apache Software License, Version 1.1
+ *
+ * Copyright (c) 2000-2001 The Apache Software Foundation.  All rights
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Apache" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ *
+ * Portions of this software are based upon public domain software
+ * originally written at the National Center for Supercomputing Applications,
+ * University of Illinois, Urbana-Champaign.
+ */
+
+/*
+ * htdbm.c: simple program for manipulating DBM
+ * password databases for the Apache HTTP server
+ *
+ * Contributed by Mladen Turk <mturk@mappingsoft.com>
+ * 12 Oct 2001
+ */
+
+#include "apr.h"
+#include "apr_lib.h"
+#include "apr_strings.h"
+#include "apr_file_io.h"
+#include "apr_file_info.h"
+#include "apr_pools.h"
+#include "apr_signal.h"
+#include "apr_md5.h"
+#include "apr_sha1.h"
+#include "apr_dbm.h"
+
+#if APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#if APR_HAVE_STRING_H
+#include <string.h>
+#endif
+#if APR_HAVE_STRINGS_H
+#include <strings.h>
+#endif
+
+#if APR_CHARSET_EBCDIC
+#include "apr_xlate.h"
+#endif /*APR_CHARSET_EBCDIC*/
+
+#if APR_HAVE_CRYPT_H
+#include <crypt.h>
+#endif
+
+
+#if !APR_CHARSET_EBCDIC
+#define LF 10
+#define CR 13
+#else /*APR_CHARSET_EBCDIC*/
+#define LF '\n'
+#define CR '\r'
+#endif /*APR_CHARSET_EBCDIC*/
+
+#define MAX_STRING_LEN 256
+#define ALG_PLAIN 0
+#define ALG_APMD5 1
+#define ALG_APSHA 2
+ 
+#if APR_HAVE_CRYPT_H
+#define ALG_CRYPT 3
+#endif
+
+
+#define ERR_FILEPERM    1
+#define ERR_SYNTAX      2
+#define ERR_PWMISMATCH  3
+#define ERR_INTERRUPTED 4
+#define ERR_OVERFLOW    5
+#define ERR_BADUSER     6
+#define ERR_EMPTY       7
+
+
+typedef struct apu_htdbm_t apu_htdbm_t;
+
+struct apu_htdbm_t {
+    apr_dbm_t               *dbm;
+    apr_pool_t              *pool;
+#if APR_CHARSET_EBCDIC
+    apr_xlate_t             *to_ascii;
+#endif
+    char                    *filename;
+    char                    *username;
+    char                    *userpass;
+    char                    *comment;
+    int                     create;
+    int                     rdonly;
+    int                     alg;
+};
+
+
+#define APU_HTDBM_DECLARE(x) static x
+#define APU_HTDBM_STANDALONE 1
+
+#define APU_HTDBM_MAKE   0
+#define APU_HTDBM_DELETE 1
+#define APU_HTDBM_VERIFY 2
+#define APU_HTDBM_LIST   3
+#define APU_HTDBM_NOFILE 4
+#define APU_HTDBM_STDIN  5
+
+APU_HTDBM_DECLARE(void) apu_htdbm_terminate(apu_htdbm_t *htdbm) 
+{
+    
+    if (htdbm->dbm)
+        apr_dbm_close(htdbm->dbm);
+    htdbm->dbm = NULL;
+}
+
+#if APU_HTDBM_STANDALONE
+
+static apu_htdbm_t *h;
+  
+APU_HTDBM_DECLARE(void) apu_htdbm_interrupted(void) 
+{
+    apu_htdbm_terminate(h);
+    fprintf(stderr, "htdbm Interrupted !\n");
+    exit(ERR_INTERRUPTED);
+}
+#endif
+
+APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_init(apr_pool_t **pool, apu_htdbm_t **hdbm) 
+{
+
+#if APR_CHARSET_EBCDIC
+    apr_status_t rv;
+#endif
+
+#if APU_HTDBM_STANDALONE    
+    apr_initialize();
+    atexit(apr_terminate);
+    apr_pool_create( pool, NULL);
+    apr_signal(SIGINT, (void (*)(int)) apu_htdbm_interrupted);
+
+#endif
+
+    (*hdbm) = (apu_htdbm_t *)apr_pcalloc(*pool, sizeof(apu_htdbm_t));
+    (*hdbm)->pool = *pool;
+
+#if APR_CHARSET_EBCDIC
+    rv = apr_xlate_open(to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, (*hdbm)->pool);
+    if (rv) {
+        fprintf(stderr, "apr_xlate_open(to ASCII)->%d\n", rv);
+        return APR_EGENERAL;
+    }
+    rv = apr_SHA1InitEBCDIC((*hdbm)->to_ascii);
+    if (rv) {
+        fprintf(stderr, "apr_SHA1InitEBCDIC()->%d\n", rv);
+        return APR_EGENERAL;
+    }
+    rv = apr_MD5InitEBCDIC((*hdbm)->to_ascii);
+    if (rv) {
+        fprintf(stderr, "apr_MD5InitEBCDIC()->%d\n", rv);
+        return APR_EGENERAL;
+    }
+#endif /*APR_CHARSET_EBCDIC*/
+
+    /* Set MD5 as default */
+    (*hdbm)->alg = ALG_APMD5;
+    return APR_SUCCESS;
+}
+
+APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_open(apu_htdbm_t *htdbm) 
+{
+    if (htdbm->create)
+        return apr_dbm_open(&htdbm->dbm, htdbm->filename, APR_DBM_RWCREATE, 
+                            APR_OS_DEFAULT, htdbm->pool);
+    else
+        return apr_dbm_open(&htdbm->dbm, htdbm->filename, 
+                            htdbm->rdonly ? APR_DBM_READONLY : APR_DBM_READWRITE, 
+                            APR_OS_DEFAULT, htdbm->pool);
+}
+
+APU_HTDBM_DECLARE(char *) ap_getword(apr_pool_t *atrans, char **line, char stop)
+{
+    char *pos = strrchr(*line, stop);
+    char *res;
+
+    if (!pos) {
+        res = apr_pstrdup(atrans, *line);
+        *line += strlen(*line);
+        return res;
+    }
+
+    res = apr_pstrndup(atrans, *line, pos - *line);
+
+    while (*pos == stop)
+        ++pos;
+    *line = pos;
+    return res;
+}
+
+APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_save(apu_htdbm_t *htdbm, int *changed) 
+{
+    apr_datum_t key, val;
+
+    if (!htdbm->username)
+        return APR_SUCCESS;
+
+    key.dptr = htdbm->username;
+    key.dsize = strlen(htdbm->username);
+    if (apr_dbm_exists(htdbm->dbm, key))
+        *changed = 1;
+
+    val.dsize = strlen(htdbm->userpass);
+    if (!htdbm->comment)
+        val.dptr  = htdbm->userpass;
+    else {
+        val.dptr = apr_pstrcat(htdbm->pool, htdbm->userpass, ";",
+                               htdbm->comment, NULL);
+        val.dsize += (strlen(htdbm->comment) + 1);
+    }
+    return apr_dbm_store(htdbm->dbm, key, val);
+}
+
+APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_del(apu_htdbm_t *htdbm) 
+{
+    apr_datum_t key;
+
+    key.dptr = htdbm->username;
+    key.dsize = strlen(htdbm->username);
+    if (!apr_dbm_exists(htdbm->dbm, key))
+        return APR_ENOENT;
+
+    return apr_dbm_delete(htdbm->dbm, key);
+}
+
+APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_verify(apu_htdbm_t *htdbm) 
+{
+    apr_datum_t key, val;
+    char pwd[MAX_STRING_LEN] = {0};
+    char *rec, *cmnt;
+
+    key.dptr = htdbm->username;
+    key.dsize = strlen(htdbm->username);
+    if (!apr_dbm_exists(htdbm->dbm, key))
+        return APR_ENOENT;    
+    if (apr_dbm_fetch(htdbm->dbm, key, &val) != APR_SUCCESS)
+        return APR_ENOENT;
+    rec = apr_pstrndup(htdbm->pool, val.dptr, val.dsize);
+    cmnt = strchr(rec, ';');
+    if (cmnt)
+        strncpy(pwd, rec, cmnt - rec);
+    else
+        strcpy(pwd, rec);
+    return apr_password_validate(htdbm->userpass, pwd);
+}
+
+APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_list(apu_htdbm_t *htdbm) 
+{
+    apr_status_t rv;
+    apr_datum_t key, val;
+    char *rec, *cmnt;
+    char kb[MAX_STRING_LEN];
+    int i = 0;
+
+    rv = apr_dbm_firstkey(htdbm->dbm, &key);
+    if (rv != APR_SUCCESS) {
+        fprintf(stderr, "Empty database -- %s\n", htdbm->filename); 
+        return APR_ENOENT;
+    }
+    rec = apr_pcalloc(htdbm->pool, HUGE_STRING_LEN);
+
+    fprintf(stderr, "Dumping records from database -- %s\n", htdbm->filename); 
+    fprintf(stderr, "    %-32sComment\n", "Username");    
+    while (key.dptr != NULL) {
+        rv = apr_dbm_fetch(htdbm->dbm, key, &val);
+        if (rv != APR_SUCCESS) {
+            fprintf(stderr, "Failed getting data from %s\n", htdbm->filename);
+            return APR_EGENERAL;
+        }
+        strncpy(kb, key.dptr, key.dsize);
+        kb[key.dsize] = '\0';
+        fprintf(stderr, "    %-32s", kb);
+        strncpy(rec, val.dptr, val.dsize);
+        rec[val.dsize] = '\0';
+        cmnt = strchr(rec, ';');
+        if (cmnt)
+            fprintf(stderr, cmnt + 1);
+        fprintf(stderr, "\n");
+        rv = apr_dbm_nextkey(htdbm->dbm, &key);
+        if (rv != APR_SUCCESS)
+            fprintf(stderr, "Failed getting NextKey\n");
+        ++i;
+    }
+
+    fprintf(stderr, "Total #records : %d\n", i);
+    return APR_SUCCESS;
+}
+
+static void to64(char *s, unsigned long v, int n)
+{
+    static unsigned char itoa64[] =         /* 0 ... 63 => ASCII - 64 */
+    "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+    while (--n >= 0) {
+        *s++ = itoa64[v&0x3f];
+        v >>= 6;
+    }
+}
+
+APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_make(apu_htdbm_t *htdbm) 
+{
+    char cpw[MAX_STRING_LEN];
+    char salt[9];
+
+    switch (htdbm->alg) {
+        case ALG_APSHA:
+            /* XXX cpw >= 28 + strlen(sha1) chars - fixed len SHA */
+            apr_sha1_base64(htdbm->userpass,strlen(htdbm->userpass),cpw);
+        break;
+
+        case ALG_APMD5: 
+            (void) srand((int) time((time_t *) NULL));
+            to64(&salt[0], rand(), 8);
+            salt[8] = '\0';
+            apr_md5_encode((const char *)htdbm->userpass, (const char *)salt,
+                            cpw, sizeof(cpw));
+        break;
+        case ALG_PLAIN:
+            /* XXX this len limitation is not in sync with any HTTPd len. */
+            apr_cpystrn(cpw,htdbm->userpass,sizeof(cpw));
+        break;
+#if APR_HAVE_CRYPT_H
+        case ALG_CRYPT:
+            (void) srand((int) time((time_t *) NULL));
+            to64(&salt[0], rand(), 8);
+            salt[8] = '\0';
+            apr_cpystrn(cpw, (char *)crypt(htdbm->userpass, salt), sizeof(cpw) - 1);
+            fprintf(stderr, "CRYPT is now depriciated, use MD5 instead !\n");
+#endif
+        default:
+        break;
+    }
+    htdbm->userpass = apr_pstrdup(htdbm->pool, cpw);
+    return APR_SUCCESS;
+}
+
+APU_HTDBM_DECLARE(apr_status_t) apu_htdbm_valid_username(apu_htdbm_t *htdbm)
+{
+    if (!htdbm->username || (strlen(htdbm->username) > 64) || (strlen(htdbm->username) < 1)) {
+        fprintf(stderr, "Invalid username length\n");
+        return APR_EINVAL;
+    }
+    if (strchr(htdbm->username, ':')) {
+        fprintf(stderr, "Username contains invalid characters\n");
+        return APR_EINVAL;
+    }
+    return APR_SUCCESS;
+}
+
+static void htdbm_usage(void)
+{
+
+#if APR_HAVE_CRYPT_H
+#define CRYPT_OPTION "d"
+#else
+#define CRYPT_OPTION ""
+#endif
+    fprintf(stderr, "htdbm -- program for manipulating DBM password databases.\n\n");
+    fprintf(stderr, "Usage: htdbm    [-cm"CRYPT_OPTION"pstvx] database username\n");
+    fprintf(stderr, "                -b[cm"CRYPT_OPTION"ptsv] database username password\n");
+    fprintf(stderr, "                -n[m"CRYPT_OPTION"pst]   username\n");
+    fprintf(stderr, "                -nb[m"CRYPT_OPTION"pst]  username password\n");
+    fprintf(stderr, "                -v[m"CRYPT_OPTION"ps]    database username\n");
+    fprintf(stderr, "                -vb[m"CRYPT_OPTION"ps]   database username password\n");
+    fprintf(stderr, "                -x[m"CRYPT_OPTION"ps]    database username\n");
+    fprintf(stderr, "                -l                       database\n");
+    fprintf(stderr, "Options:\n");
+    fprintf(stderr, "   -b   Use the password from the command line rather"
+                    "than prompting for it.\n");
+    fprintf(stderr, "   -c   Create a new database.\n");
+    fprintf(stderr, "   -n   Don't update database; display results on stdout.\n");
+    fprintf(stderr, "   -m   Force MD5 encryption of the password (default).\n");
+#if APR_HAVE_CRYPT_H
+    fprintf(stderr, "   -d   Force CRYPT encryption of the password (now depriciated).\n");
+#endif
+    fprintf(stderr, "   -p   Do not encrypt the password (plaintext).\n");
+    fprintf(stderr, "   -s   Force SHA encryption of the password.\n");
+    fprintf(stderr, "   -l   Display usernames from database on stdout.\n");
+    fprintf(stderr, "   -t   The last param is username comment.\n");
+    fprintf(stderr, "   -v   Verify the username/password.\n");
+    fprintf(stderr, "   -x   Remove the username record from database.\n");
+    exit(ERR_SYNTAX);
+
+}
+
+
+int main(int argc, const char *argv[])
+{
+    apr_pool_t *pool;
+    apr_status_t rv;
+    apr_size_t l;
+    char pwi[MAX_STRING_LEN];
+    char pwc[MAX_STRING_LEN];
+    char errbuf[MAX_STRING_LEN];
+    const char *arg;
+    int  need_file = 1;
+    int  need_user = 1;
+    int  need_pwd  = 1;
+    int  need_cmnt = 0;
+    int  pwd_supplied = 0;
+    int  changed;
+    int  cmd = APU_HTDBM_MAKE;
+    int  i;
+    int args_left = 2;
+
+    if ((rv = apu_htdbm_init(&pool, &h)) != APR_SUCCESS) {
+        fprintf(stderr, "Unable to initialize htdbm terminating!\n");
+        apr_strerror(rv, errbuf, sizeof(errbuf));
+        exit(1);
+    }
+    /*
+     * Preliminary check to make sure they provided at least
+     * three arguments, we'll do better argument checking as 
+     * we parse the command line.
+     */
+    if (argc < 3)
+       htdbm_usage();
+    /*
+     * Go through the argument list and pick out any options.  They
+     * have to precede any other arguments.
+     */
+    for (i = 1; i < argc; i++) {
+        arg = argv[i];
+        if (*arg != '-')
+            break;
+        
+        while (*++arg != '\0') {
+            switch (*arg) {
+            case 'b':
+                pwd_supplied = 1;
+                need_pwd = 0;
+                args_left++;
+                break;
+            case 'c':
+                h->create = 1;
+                break;
+            case 'n':
+                need_file = 0;
+                cmd = APU_HTDBM_NOFILE;
+                args_left--;
+                break;
+            case 'l':
+                need_pwd = 0;
+                need_user = 0;
+                cmd = APU_HTDBM_LIST;
+                h->rdonly = 1;
+                args_left--;
+                break;
+            case 't':
+                need_cmnt = 1;
+                args_left++;
+                break;
+            case 'v':
+                h->rdonly = 1;
+                cmd = APU_HTDBM_VERIFY;
+                break;
+            case 'x':
+                need_pwd = 0;
+                cmd = APU_HTDBM_DELETE;
+                break;
+            case 'm':
+                h->alg = ALG_APMD5;
+                break;
+            case 'p':
+                h->alg = ALG_PLAIN;
+                break;
+            case 's':
+                h->alg = ALG_APSHA;
+                break;
+#if APR_HAVE_CRYPT_H
+            case 'd':
+                h->alg = ALG_CRYPT;
+                break;
+#endif
+            default:
+                htdbm_usage();
+                break;
+            }
+        }
+    }
+    /*
+     * Make sure we still have exactly the right number of arguments left
+     * (the filename, the username, and possibly the password if -b was
+     * specified).
+     */
+    if ((argc - i) != args_left)
+        htdbm_usage();
+
+    if (!need_file)
+        i--;
+    else {
+        h->filename = apr_pstrdup(h->pool, argv[i]);
+        if ((rv = apu_htdbm_open(h)) != APR_SUCCESS) {
+            fprintf(stderr, "Error oppening database %s\n", argv[i]);
+            apr_strerror(rv, errbuf, sizeof(errbuf));
+            exit(ERR_FILEPERM);
+        }
+    }
+    if (need_user) {
+        h->username = apr_pstrdup(pool, argv[i+1]);
+        if (apu_htdbm_valid_username(h) != APR_SUCCESS)
+            exit(ERR_BADUSER);
+    }
+    if (pwd_supplied)
+        h->userpass = apr_pstrdup(pool, argv[i+2]);
+
+    if (need_pwd) {
+        l = sizeof(pwc);
+        if (apr_password_get("Enter password        : ", pwi, &l) != APR_SUCCESS) {
+            fprintf(stderr, "Password too long\n");
+            exit(ERR_OVERFLOW);
+        }
+        l = sizeof(pwc);
+        if (apr_password_get("Re-type password      : ", pwc, &l) != APR_SUCCESS) {
+            fprintf(stderr, "Password too long\n");
+            exit(ERR_OVERFLOW);
+        }
+        if (strcmp(pwi, pwc) != 0) {
+            fprintf(stderr, "Password verification error\n");
+            exit(ERR_PWMISMATCH);
+        }
+            
+        h->userpass = apr_pstrdup(pool,  pwi);
+    }
+    if (need_cmnt && pwd_supplied)
+        h->comment = apr_pstrdup(pool, argv[i+3]);
+    else if (need_cmnt)
+        h->comment = apr_pstrdup(pool, argv[i+2]);
+
+    switch (cmd) {
+        case APU_HTDBM_VERIFY:
+            if ((rv = apu_htdbm_verify(h)) != APR_SUCCESS) {
+                if(rv == APR_ENOENT) {
+                    fprintf(stderr, "The user '%s' cold not be found in database\n", h->username);
+                    exit(ERR_BADUSER);
+                }
+                else {
+                    fprintf(stderr, "Password mismatch for user '%s'\n", h->username);
+                    exit(ERR_PWMISMATCH);
+                }
+            }
+            else
+                fprintf(stderr, "Password validated for user '%s'\n", h->username);
+            break;
+        case APU_HTDBM_DELETE:
+            if (apu_htdbm_del(h) != APR_SUCCESS) {
+                fprintf(stderr, "Cannot find user '%s' in database\n", h->username);
+                exit(ERR_BADUSER);
+            }
+            h->username = NULL;
+            changed = 1;
+            break;
+        case APU_HTDBM_LIST:
+            apu_htdbm_list(h);
+            break;
+        default:
+            apu_htdbm_make(h);
+            break;
+
+    }    
+    if (need_file && !h->rdonly) {
+        if ((rv = apu_htdbm_save(h, &changed)) != APR_SUCCESS) {
+            apr_strerror(rv, errbuf, sizeof(errbuf));
+            exit(ERR_FILEPERM);
+        }
+        fprintf(stdout, "Database %s %s.\n", h->filename, 
+                h->create ? "created" : (changed ? "modified" : "updated"));
+    }
+    if (cmd == APU_HTDBM_NOFILE)
+        fprintf(stderr, "%s:%s\n", h->username, h->userpass);
+    apu_htdbm_terminate(h);
+    apr_terminate();
+    
+    return 0; /* Supress compiler warning. */
+}
