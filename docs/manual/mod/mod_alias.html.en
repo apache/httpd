@@ -44,6 +44,12 @@
     directives are used to instruct clients to make a new request with
     a different URL. They are often used when a resource has moved to
     a new location.</p>
+
+    <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> is designed to handle simple URL
+    manipulation tasks.  For more complicated tasks such as
+    manipulating the query string, use the tools provided by
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
