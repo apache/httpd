@@ -220,13 +220,13 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "mod_digest - Win32 Release"
 
 "ApacheCore - Win32 Release" : 
-   cd "\clean\apache-1.3\src"
+   cd "..\../..\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release"\
  
    cd ".\os\win32"
 
 "ApacheCore - Win32 ReleaseCLEAN" : 
-   cd "\clean\apache-1.3\src"
+   cd "..\../..\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Release" RECURSE=1 
    cd ".\os\win32"
@@ -234,12 +234,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "mod_digest - Win32 Debug"
 
 "ApacheCore - Win32 Debug" : 
-   cd "\clean\apache-1.3\src"
+   cd "..\../..\src"
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" 
    cd ".\os\win32"
 
 "ApacheCore - Win32 DebugCLEAN" : 
-   cd "\clean\apache-1.3\src"
+   cd "..\../..\src"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\ApacheCore.mak"\
  CFG="ApacheCore - Win32 Debug" RECURSE=1 
    cd ".\os\win32"
