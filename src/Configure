@@ -173,6 +173,7 @@ case "$PLAT" in
 	;;
     BSD486)
 	OS='FreeBSD/NETBSD on 486'
+	LIBS="$LIBS -lcrypt"
 	;;
     NeXT)
 	OS='NeXT'
