@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/02/21 14:21:03 $]
+Last modified at [$Date: 2004/02/21 14:50:26 $]
 
 Release:
 
@@ -117,8 +117,9 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Extend the SetEnvIf directive to capture subexpressions of the
       matched value.
-        modules/metadata/mod_setenvif.c r1.42
+        modules/metadata/mod_setenvif.c r1.42, r1.43
       +1: nd, rederpj (shouldn't it also include r1.43?)
+        nd: hell, yeah.
 
     * Allow mod_dav to do weak entity comparison functions.
       modules/dav/main/util.c: r1.45
