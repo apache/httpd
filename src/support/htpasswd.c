@@ -245,7 +245,7 @@ static int usage(void)
 	    " (default)"
 #endif
 	    ".\n");
-    fprintf(stderr, " -p  Force NO encryption of the password.\n");
+    fprintf(stderr, " -p  Do not encrypt the password (plaintext).\n");
     fprintf(stderr, " -s  Force SHA encryption of the password.\n");
     fprintf(stderr, " -b  Use the password from the command line rather "
 	    "than prompting for it.\n");
