@@ -1,13 +1,16 @@
 Changes with Apache 1.3.20
 
-  *) Introduce NUL device pipes for stdin and stdout for the parent Win32
-  *) Added a new API for NetWare to allow Apache the chance to unimport
-     module symbols before it shuts down.
-	   void ap_os_dso_unsym(void *handle, const char *symname)
-	 This is necessary so that Apache on NetWare can shutdown cleanly
-	 in an error condition such as a failure while reading the .CONF
-	 file. [Brad Nicholes <BNICHOLES@novell.com>]
+  *) Set the Win32 service description in the Services control panel to 
+     the server_version string from Apache and the loaded modules.
+     [William Rowe]
 
+  *) Added a new API for NetWare, ap_os_dso_unsym(), to allow Apache the 
+     chance to unimport module symbols before it shuts down.  This is 
+     necessary so that Apache on NetWare can shutdown cleanly in an error
+     condition such as a failure while reading the httpd.conf file.
+     [Brad Nicholes <BNICHOLES@novell.com>]
+
+  *) Introduce NUL device pipes for stdin and stdout for the parent Win32
      service process.  This solves bugs such as PR7198 that report 
      "dup2(stdin) failed" when trying to use piped logs.  [William Rowe]
 

@@ -646,6 +646,9 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
 
     atexit(service_main_fn_terminate);
 
+    /* Grab it or lose it */
+    globdat.name = argv[0];
+
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, NULL,
              "Hooked up the Service Error Event Logger.");
 
@@ -661,7 +664,7 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     argc += 2;
 
     /* Use the name of the service as the error log marker */
-    ap_server_argv0 = globdat.name = argv[0];
+	ap_server_argv0 = globdat.name;
 
     globdat.exit_status = globdat.main_fn( argc, argv );
 }
@@ -729,8 +732,42 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
 }
 
 
+typedef WINADVAPI BOOL (*CSD_T)(SC_HANDLE, DWORD, LPCVOID);
+    
+/* Windows 2000 only supports ChangeServiceConfig2 in order to
+ * register our server_version string... so we need some fixups
+ * to avoid binding to that function if we are on WinNT/9x
+ */
+void ReportDescriptionToSCM()
+{
+    const char *full_description = ap_get_server_version();
+    SC_HANDLE schSCManager;
+    CSD_T ChangeServiceDescription;    
+    HANDLE hwin2000scm = LoadLibrary("ADVAPI32.DLL");
+    if (!hwin2000scm) 
+        return;
+    ChangeServiceDescription = (CSD_T) GetProcAddress(hwin2000scm, 
+                                                      "ChangeServiceConfig2A");
+    schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+    if (schSCManager) {
+        SC_HANDLE schService = OpenService(schSCManager, globdat.name,
+                                           SERVICE_ALL_ACCESS);
+        if (schService) {
+            /* In advapi32 -only- on Win2000 */
+            ChangeServiceDescription(schService,
+                                     SERVICE_CONFIG_DESCRIPTION,
+                                     &full_description);
+            CloseServiceHandle(schService);
+        }
+        CloseServiceHandle(schSCManager);
+    }
+    FreeLibrary(hwin2000scm);
+}
+
+
 int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
 {
+    static int onceStarted = 1;
     static int firstTime = 1;
     static int checkPoint = 1;
     int rv;
@@ -768,6 +805,9 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
 
         rv = SetServiceStatus(globdat.hServiceStatus, &globdat.ssStatus);
 
+        if (currentState == SERVICE_RUNNING && onceStarted) {
+            onceStarted = 0;
+        }
     }
     return(1);
 }
