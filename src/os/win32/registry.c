@@ -89,6 +89,7 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "service.h"
 
 /* Define where the Apache values are stored in the registry. In general
  * VERSION will be the same across all beta releases for a particular
@@ -279,9 +280,8 @@ API_EXPORT(char *) ap_get_service_key(char *display_name)
     if (display_name == NULL)
         return strdup("");
 
-    service_name = strdup(display_name);
-    ap_remove_spaces(service_name, display_name);
-
+    service_name = get_service_name(display_name);
+    
     key = malloc(strlen(SERVICEKEYPRE) +
                  strlen(service_name) +
                  strlen(SERVICEKEYPOST) + 1);

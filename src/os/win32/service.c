@@ -668,7 +668,6 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     globdat.exit_status = globdat.main_fn( argc, argv );
 }
 
-
 /* Set the service description regardless of platform.
  * We revert to set_service_description_string on NT/9x, the
  * very long way so any Apache management program can grab the
@@ -693,6 +692,55 @@ static void set_service_description_string(const char *description)
                   (unsigned char *) description, 
                   strlen(description) + 1);
     RegCloseKey(hkey);
+}
+
+
+char *get_service_name(char *display_name)
+{
+    /* Get the service's true name from the SCM on NT/2000, since it
+     * can be changed by the user on 2000, especially, from the
+     * service control panel.  We can't trust the service name to 
+     * match a space-collapsed display name.
+     */
+    char service_name[MAX_PATH];
+    if (isWindowsNT())
+    {
+        SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_ENUMERATE_SERVICE);
+        DWORD namelen = sizeof(service_name);
+        if (scm) {
+            BOOL ok = GetServiceKeyName(scm, display_name, service_name, 
+                                        &namelen);
+            CloseServiceHandle(scm);
+            if (ok)
+                return strdup(service_name);
+        }
+    }
+    ap_remove_spaces(service_name, display_name);
+    return strdup(service_name);
+}
+
+
+char *get_display_name(char *service_name)
+{
+    /* Get the service's display name from the SCM on NT/2000, since it
+     * can be changed by the user on 2000, especially, from the
+     * service control panel.  We can't trust the service name as
+     * provided by the user.
+     */
+    if (isWindowsNT())
+    {
+        char display_name[MAX_PATH];
+        SC_HANDLE scm = OpenSCManager(NULL, NULL, SC_MANAGER_ENUMERATE_SERVICE);
+        DWORD namelen = sizeof(display_name);
+        if (scm) {
+            BOOL ok = GetServiceDisplayName(scm, service_name, display_name,
+                                            &namelen);
+            CloseServiceHandle(scm);
+            if (ok)
+                return strdup(display_name);
+        }
+    }
+    return service_name;
 }
 
 
@@ -854,7 +902,11 @@ void InstallService(pool *p, char *display_name, int argc, char **argv, int reco
     TCHAR szQuotedPath[512];
     char *service_name;
     int regargc = 0;
-    char **regargv = malloc((argc + 4) * sizeof(char*)), **newelem = regargv;
+    char default_depends[] = "Tcpip\0Afd\0";
+    char *depends = default_depends;
+    size_t depends_len = sizeof(default_depends);
+    char **regargv = malloc((argc + 4) * sizeof(char*));
+    char **newelem = regargv;
 
     regargc += 4;
     *(newelem++) = "-d";
@@ -865,10 +917,28 @@ void InstallService(pool *p, char *display_name, int argc, char **argv, int reco
     while (++argv, --argc) {
         if ((**argv == '-') && strchr("kndf", argv[0][1]))
             --argc, ++argv; /* Skip already handled -k -n -d -f options */
+        else if ((**argv == '-') && (argv[0][1] == 'W')) 
+        {
+            /* Catch this service -W dependency 
+             * the depends list is null seperated, double-null terminated
+             */
+            char *service = get_service_name(*(argv + 1));
+            size_t add_len = strlen(service) + 1;
+            char *more_depends = malloc(depends_len + add_len);
+            memcpy (more_depends, depends, depends_len - 1);
+            memcpy (more_depends + depends_len - 1, service, add_len);
+            depends_len += add_len;
+            depends = more_depends;
+            depends[depends_len - 1] = '\0';
+            ++argv, --argc;
+        }
         else if ((**argv != '-') || !strchr("iuw", argv[0][1]))
             *(newelem++) = *argv, ++regargc;  /* Ignoring -i -u -w options */
     }
 
+    /* Remove spaces from display name to create service name */
+    service_name = get_service_name(display_name);
+    
     printf(reconfig ? "Reconfiguring the %s service\n"
                     : "Installing the %s service\n", 
            display_name);
@@ -879,10 +949,6 @@ void InstallService(pool *p, char *display_name, int argc, char **argv, int reco
         "GetModuleFileName failed");
         return;
     }
-
-    /* Remove spaces from display name to create service name */
-    service_name = strdup(display_name);
-    ap_remove_spaces(service_name, display_name);
 
     if (isWindowsNT())
     {
@@ -909,6 +975,12 @@ void InstallService(pool *p, char *display_name, int argc, char **argv, int reco
          * required for DCOM communication.  I am far from
          * convinced we should toggle this, but be warned that
          * future apache modules or ISAPI dll's may depend on it.
+         * Also UNC share users may need the networking service 
+         * started (usually "LanmanWorkstation").  "ProtectedStorage" 
+         * may be needed depending on how files and registry keys are 
+         * stored.  And W3SVC may be needed to wait until IIS has
+         * glommed and released 0.0.0.0:80 if the admin allocates 
+         * two different IP's to Apache and IIS on the same port.
          */
         if (reconfig) 
         {
@@ -925,7 +997,7 @@ void InstallService(pool *p, char *display_name, int argc, char **argv, int reco
                         szQuotedPath,               // service's binary
                         NULL,                       // no load ordering group
                         NULL,                       // no tag identifier
-                        "Tcpip\0Afd\0",             // dependencies
+                        depends,                    // dependencies
                         NULL,                       // user account
                         NULL,                       // account password
                         display_name)) {            // service display name
@@ -949,7 +1021,7 @@ void InstallService(pool *p, char *display_name, int argc, char **argv, int reco
                         szQuotedPath,               // service's binary
                         NULL,                       // no load ordering group
                         NULL,                       // no tag identifier
-                        "Tcpip\0Afd\0",             // dependencies
+                        depends,                    // dependencies
                         NULL,                       // user account
                         NULL);                      // account password
             if (!schService)
@@ -1056,9 +1128,8 @@ void RemoveService(char *display_name)
     printf("Removing the %s service\n", display_name);
 
     /* Remove spaces from display name to create service name */
-    service_name = strdup(display_name);
-    ap_remove_spaces(service_name, display_name);
-
+    service_name = get_service_name(display_name);
+    
     if (isWindowsNT())
     {
         SC_HANDLE   schService;
@@ -1172,6 +1243,25 @@ void RemoveService(char *display_name)
                display_name);
 }
 
+
+BOOL isWindowsNT(void)
+{
+    static BOOL once = FALSE;
+    static BOOL isNT = FALSE;
+    
+    if (!once)
+    {
+        OSVERSIONINFO osver;
+        osver.dwOSVersionInfoSize = sizeof(osver);
+        if (GetVersionEx(&osver))
+            if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+                isNT = TRUE;
+        once = TRUE;
+    }
+    return isNT;
+}
+
+
 /*
  * A hack to determine if we're running as a service without waiting for
  * the SCM to fail.
@@ -1202,8 +1292,8 @@ BOOL isValidService(char *display_name) {
     
     /* Remove spaces from display name to create service name */
     strcpy(service_key, "System\\CurrentControlSet\\Services\\");
-    service_name = strchr(service_key, '\0');
-    ap_remove_spaces(service_name, display_name);
+    service_name = get_service_name(display_name);
+    strcat(service_key, service_name);
 
     if (RegOpenKey(HKEY_LOCAL_MACHINE, service_key, &hkey) != ERROR_SUCCESS) {
         return FALSE;
@@ -1212,22 +1302,6 @@ BOOL isValidService(char *display_name) {
     return TRUE;
 }
 
-BOOL isWindowsNT(void)
-{
-    static BOOL once = FALSE;
-    static BOOL isNT = FALSE;
-    
-    if (!once)
-    {
-        OSVERSIONINFO osver;
-        osver.dwOSVersionInfoSize = sizeof(osver);
-        if (GetVersionEx(&osver))
-            if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
-                isNT = TRUE;
-        once = TRUE;
-    }
-    return isNT;
-}
 
 int send_signal_to_service(char *display_name, char *sig, 
                            int argc, char **argv)
@@ -1253,9 +1327,7 @@ int send_signal_to_service(char *display_name, char *sig,
         return FALSE;
     }
 
-    /* Remove spaces from display name to create service name */
-    service_name = strdup(display_name);
-    ap_remove_spaces(service_name, display_name);
+    service_name = get_service_name(display_name);
 
     if (isWindowsNT()) 
     {

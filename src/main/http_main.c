@@ -1310,6 +1310,8 @@ static void usage(char *bin)
     fprintf(stderr, "  -k install   | -i: install an Apache service\n");
     fprintf(stderr, "  -k config        : reconfigure an installed Apache service\n");
     fprintf(stderr, "  -k uninstall | -u: uninstall an Apache service\n");
+    fprintf(stderr, "  -W service       : after -k config|install; Apache starts after 'service'\n");
+    fprintf(stderr, "  -w               : holds the window open for 30 seconds for fatal errors.\n");
 #endif
 
 #if defined(NETWARE)
@@ -7059,7 +7061,7 @@ int REALMAIN(int argc, char *argv[])
         reparsed = 1;
     }
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:wiuStThk:n:")) != -1) {
+    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:wiuStThk:n:W:")) != -1) {
 #else /* !WIN32 */
     while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLsStTh")) != -1) {
 #endif
@@ -7125,6 +7127,19 @@ int REALMAIN(int argc, char *argv[])
             else
                 signal_to_send = optarg;
 	    break;
+        case 'W':
+            /* -With a dependent service */
+            if (install < 1) {
+	        fprintf(stderr, "%s: invalid option: -W %s ignored\n"
+                        "\t-W only modifies -k install or -k config\n",
+                        argv[0], optarg);
+            }
+            else if (!isWindowsNT()) {
+                fprintf(stderr, "%s: invalid option: -W %s ignored\n"
+                        "\t-W is only supported for Windows NT/2000\n",
+                        argv[0], optarg);
+            }
+            break;
 #endif /* WIN32 */
 #ifdef NETWARE
         case 's':
@@ -7225,6 +7240,10 @@ int REALMAIN(int argc, char *argv[])
         service_name = DEFAULTSERVICENAME;
     }
 
+    if (service_name) {
+        service_name = get_display_name(service_name);
+    }
+
     if (service_name && isValidService(service_name)) 
     {
         if (install == 2) {
@@ -7314,8 +7333,6 @@ int REALMAIN(int argc, char *argv[])
     }
 
     if (install) {
-        if (!service_name)
-            service_name = ap_pstrdup(pconf, DEFAULTSERVICENAME);
         if (install > 0) 
             InstallService(pconf, service_name, argc, argv, install == 1);
         else

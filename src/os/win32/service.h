@@ -79,6 +79,8 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
 		   char *display_name);
 void service_set_status(int status);
 void service_cd();
+char *get_service_name(char *display_name);
+char *get_display_name(char *service_name);
 BOOL isProcessService();
 BOOL isValidService(char *display_name);
 void InstallService(pool *p, char *display_name, int argc, char **argv, int reconfig);

@@ -1,5 +1,13 @@
 Changes with Apache 1.3.21
 
+  *) Handle user modification of WinNT/2K service display names.  Prior
+     versions of Apache only accepted identical internal and display names
+     (where internal service names were space-stripped.)  [William Rowe]
+
+  *) Introduce Win32 -W option for -k install/config to set up service
+     dependencies on the workstation, snmp and other services that given
+     modules or configurations might depend upon.  [William Rowe]
+
   *) Update the mime.types file to map video/vnd.mpegurl to mxu
      and add commonly used audio/x-mpegurl for m3u extensions.
      [Heiko Recktenwald <uzs106@uni-bonn.de>, Lars Eilebrecht]
