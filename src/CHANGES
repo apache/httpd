@@ -1,5 +1,7 @@
 Changes with Apache 1.2b5
 
+  *) Allow whitespace in imagemap mapfile coordinates. [Marc Slemko]
+
   *) Change KeepAlive semantics (On|Off instead of a number), add
      MaxKeepAliveRequests directive. [Alexei Kosut]
 

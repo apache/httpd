@@ -720,7 +720,7 @@ int imap_handler(request_rec *r)
 
     vertex = 0;
     while ( vertex < MAXVERTS &&  
-     sscanf(string_pos, "%lf,%lf",
+     sscanf(string_pos, "%lf, %lf",
      &pointarray[vertex][X], &pointarray[vertex][Y])   == 2)
     {
 	/* Now skip what we just read... we can't use ANSIism %n */
@@ -729,6 +729,8 @@ int imap_handler(request_rec *r)
 	while(isdigit(*string_pos))	/* and the 1st number */
 	    string_pos++;
 	string_pos++;			/* skip the ',' */
+	while(isspace(*string_pos))	/* past any more whitespace */
+	    string_pos++;
 	while(isdigit(*string_pos))	/* 2nd number */
 	    string_pos++;
 	vertex++;
