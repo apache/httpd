@@ -276,7 +276,7 @@ int ap_listen_open(process_rec *process, apr_port_t port)
 
     /* allocate a default listener if necessary */
     if (ap_listeners == NULL) {
-	alloc_listener(process, NULL, port ? port : DEFAULT_HTTP_PORT);
+	alloc_listener(process, NULL, (apr_port_t)(port ? port : DEFAULT_HTTP_PORT));
     }
 
     num_open = 0;
