@@ -202,6 +202,23 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     return ret;
 }
 
+/* Soak up stderr from a script and redirect it to the error log. 
+ */
+static void log_script_err(request_rec *r, BUFF *script_err)
+{
+    char argsbuffer[HUGE_STRING_LEN];
+    char *newline;
+
+    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
+        newline = strchr(argsbuffer, '\n');
+        if (newline) {
+            *newline = '\0';
+        }
+        ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, 
+                      "%s", argsbuffer);            
+    }
+}
+
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 		  char *dbuf, const char *sbuf, BUFF *script_in, BUFF *script_err)
 {
@@ -221,19 +238,8 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
 	/* Soak up script output */
 	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0)
 	    continue;
-#ifdef WIN32
-        /* Soak up stderr and redirect it to the error log.
-         * Script output to stderr is already directed to the error log
-         * on Unix, thanks to the magic of fork().
-         */
-        while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r, 
-                          "%s", argsbuffer);            
-        }
-#else
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0)
-	    continue;
-#endif
+
+        log_script_err(r, script_err);
 	return ret;
     }
 
@@ -606,9 +612,7 @@ static int cgi_handler(request_rec *r)
 	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_in) > 0) {
 		continue;
 	    }
-	    while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
-		continue;
-	    }
+            log_script_err(r, script_err);
 	    /* This redirect needs to be a GET no matter what the original
 	     * method was.
 	     */
@@ -637,9 +641,7 @@ static int cgi_handler(request_rec *r)
 	}
 	ap_bclose(script_in);
 
-	while (ap_bgets(argsbuffer, HUGE_STRING_LEN, script_err) > 0) {
-	    continue;
-	}
+        log_script_err(r, script_err);
 	ap_bclose(script_err);
     }
 
