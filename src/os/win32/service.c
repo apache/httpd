@@ -698,7 +698,7 @@ static void set_service_description_string(const char *description)
 
 /* ChangeServiceConfig2() prototype:
  */
-typedef WINADVAPI BOOL (*CSD_T)(SC_HANDLE, DWORD, LPCVOID);
+typedef WINADVAPI BOOL (WINAPI *CSD_T)(SC_HANDLE, DWORD, LPCVOID);
 
 
 /* Windows 2000 alone supports ChangeServiceConfig2 in order to
@@ -727,7 +727,7 @@ void service_set_status(int status)
     /* Time to fix up the description, upon each successful restart
      */
     full_description = ap_get_server_version();
-    hwin2000scm = LoadLibrary("ADVAPI32.DLL");
+    hwin2000scm = GetModuleHandle("ADVAPI32.DLL");
     if (!hwin2000scm) {
         set_service_description_string(full_description);
         return;
@@ -735,7 +735,6 @@ void service_set_status(int status)
     ChangeServiceDescription = (CSD_T) GetProcAddress(hwin2000scm, 
                                                       "ChangeServiceConfig2A");
     if (!ChangeServiceDescription) {
-        FreeLibrary(hwin2000scm);
         set_service_description_string(full_description);
         return;
     }
@@ -753,7 +752,6 @@ void service_set_status(int status)
     }
     if (!ret)
         set_service_description_string(full_description);
-    FreeLibrary(hwin2000scm);
 }
 
 
