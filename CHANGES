@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Reverse the hook ordering for mod_userdir and mod_alias so
+     that Alias/ScriptAlias will override Userdir.  PR 8841
+     [Joshua Slive]
+
   *) Move mod_deflate out of experimental and into filters.
      [Justin Erenkrantz]
 
