@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Add some popular types to the mime magic file.  PR 7730.
+     [Linus Walleij <triad@df.lth.se>, Justin Erenkrantz]
+
   *) Tighten up the overridden-Server-header bugfix in the proxy, by
      only overriding if the request is a proxy request. It has been
      pointed out that the previous fix allows CGIs and modules to
