@@ -322,7 +322,7 @@ static int gen_unique_id(request_rec *r)
     } paddedbuf;
     unsigned char *x,*y;
     unsigned short counter;
-    char *e;
+    const char *e;
     int i,j,k;
 
     /* copy the unique_id if this is an internal redirect (we're never

@@ -144,7 +144,7 @@ static int agent_log_transaction(request_rec *orig)
                                              &agent_log_module);
 
     char str[HUGE_STRING_LEN];
-    char *agent;
+    const char *agent;
     request_rec *r;
 
     if (cls->agent_fd < 0)

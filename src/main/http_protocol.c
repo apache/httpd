@@ -173,7 +173,7 @@ API_EXPORT(int) ap_set_byterange(request_rec *r)
     }
     else {
         /* a multiple range */
-        char *r_range = ap_pstrdup(r->pool, range + 6);
+        const char *r_range = ap_pstrdup(r->pool, range + 6);
         long tlength = 0;
 
         r->byterange = 2;

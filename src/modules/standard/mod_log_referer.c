@@ -162,7 +162,8 @@ static int referer_log_transaction(request_rec *orig)
                                                &referer_log_module);
 
     char *str;
-    char *referer, *referertest;
+    const char *referer;
+    char *referertest;
     request_rec *r;
 
     if (cls->referer_fd < 0)

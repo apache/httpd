@@ -813,17 +813,21 @@ static int magic_rsl_to_request(request_rec *r)
     /* save the info in the request record */
     if (state == rsl_subtype || state == rsl_encoding ||
 	state == rsl_encoding) {
-	r->content_type = rsl_strdup(r, type_frag, type_pos, type_len);
+        char *tmp;
+	tmp = rsl_strdup(r, type_frag, type_pos, type_len);
 	/* XXX: this could be done at config time I'm sure... but I'm
 	 * confused by all this magic_rsl stuff. -djg */
-	ap_content_type_tolower(r->content_type);
+	ap_content_type_tolower(tmp);
+	r->content_type = tmp;
     }
     if (state == rsl_encoding) {
-	r->content_encoding = rsl_strdup(r, encoding_frag,
+        char *tmp;
+	tmp = rsl_strdup(r, encoding_frag,
 					 encoding_pos, encoding_len);
 	/* XXX: this could be done at config time I'm sure... but I'm
 	 * confused by all this magic_rsl stuff. -djg */
-	ap_str_tolower(r->content_encoding);
+	ap_str_tolower(tmp);
+	r->content_encoding = tmp;
     }
 
     /* detect memory allocation errors */

@@ -429,7 +429,7 @@ static array_header *do_header_line(pool *p, const char *accept_line)
  * return an array containing the languages of this variant
  */
 
-static array_header *do_languages_line(pool *p, char **lang_line)
+static array_header *do_languages_line(pool *p, const char **lang_line)
 {
     array_header *lang_recs = ap_make_array(p, 2, sizeof(char *));
 
@@ -724,13 +724,15 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
         hstate = get_header_line(buffer, MAX_STRING_LEN, map);
 
         if (hstate == header_seen) {
-            char *body = lcase_header_name_return_body(buffer, neg->r);
+            char *body1 = lcase_header_name_return_body(buffer, neg->r);
+	    const char *body;
 
-            if (body == NULL) {
+            if (body1 == NULL) {
                 return SERVER_ERROR;
             }
 
-            strip_paren_comments(body);
+            strip_paren_comments(body1);
+	    body=body1;
 
             if (!strncmp(buffer, "uri:", 4)) {
                 mime_info.file_name = ap_get_token(neg->pool, &body, 0);

@@ -116,7 +116,7 @@ typedef struct excfg {
  * the first time (non-request context only), and ignore subsequent calls for
  * the same routine/environment.
  */
-static char *trace = NULL;
+static const char *trace = NULL;
 static table *static_calls_made = NULL;
 
 /*
@@ -329,11 +329,11 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
                       const char *note)
 {
 
-    char *sofar;
+    const char *sofar;
     char *addon;
     char *where;
     pool *p;
-    char *trace_copy;
+    const char *trace_copy;
 
     /*
      * Make sure our pools and tables are set up - we need 'em.

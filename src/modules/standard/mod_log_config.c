@@ -244,9 +244,10 @@ typedef struct {
 
 /*
  * Format items...
+ * Note that many of these could have ap_sprintfs replaced with static buffers.
  */
 
-typedef char *(*item_key_func) (request_rec *, char *);
+typedef const char *(*item_key_func) (request_rec *, char *);
 
 typedef struct {
     item_key_func func;
@@ -271,28 +272,28 @@ static char *pfmt(pool *p, int i)
     }
 }
 
-static char *constant_item(request_rec *dummy, char *stuff)
+static const char *constant_item(request_rec *dummy, char *stuff)
 {
     return stuff;
 }
 
-static char *log_remote_host(request_rec *r, char *a)
+static const char *log_remote_host(request_rec *r, char *a)
 {
-    return (char *) ap_get_remote_host(r->connection, r->per_dir_config,
+    return ap_get_remote_host(r->connection, r->per_dir_config,
                                     REMOTE_NAME);
 }
 
-static char *log_remote_address(request_rec *r, char *a)
+static const char *log_remote_address(request_rec *r, char *a)
 {
     return r->connection->remote_ip;
 }
 
-static char *log_remote_logname(request_rec *r, char *a)
+static const char *log_remote_logname(request_rec *r, char *a)
 {
-    return (char *) ap_get_remote_logname(r);
+    return ap_get_remote_logname(r);
 }
 
-static char *log_remote_user(request_rec *r, char *a)
+static const char *log_remote_user(request_rec *r, char *a)
 {
     char *rvalue = r->connection->user;
 
@@ -305,7 +306,7 @@ static char *log_remote_user(request_rec *r, char *a)
     return rvalue;
 }
 
-static char *log_request_line(request_rec *r, char *a)
+static const char *log_request_line(request_rec *r, char *a)
 {
 	    /* NOTE: If the original request contained a password, we
 	     * re-write the request line here to contain XXXXXX instead:
@@ -318,20 +319,20 @@ static char *log_request_line(request_rec *r, char *a)
 					: r->the_request;
 }
 
-static char *log_request_file(request_rec *r, char *a)
+static const char *log_request_file(request_rec *r, char *a)
 {
     return r->filename;
 }
-static char *log_request_uri(request_rec *r, char *a)
+static const char *log_request_uri(request_rec *r, char *a)
 {
     return r->uri;
 }
-static char *log_status(request_rec *r, char *a)
+static const char *log_status(request_rec *r, char *a)
 {
     return pfmt(r->pool, r->status);
 }
 
-static char *log_bytes_sent(request_rec *r, char *a)
+static const char *log_bytes_sent(request_rec *r, char *a)
 {
     if (!r->sent_bodyct) {
         return "-";
@@ -369,11 +370,11 @@ static const char *log_env_var(request_rec *r, char *a)
     return ap_table_get(r->subprocess_env, a);
 }
 
-static char *log_request_time(request_rec *r, char *a)
+static const char *log_request_time(request_rec *r, char *a)
 {
     int timz;
     struct tm *t;
-    char tstr[MAX_STRING_LEN];
+    static char tstr[MAX_STRING_LEN];
 
     t = ap_get_gmtoff(&timz);
 
@@ -394,10 +395,10 @@ static char *log_request_time(request_rec *r, char *a)
                     "%c%.2d%.2d]", sign, timz / 60, timz % 60);
     }
 
-    return ap_pstrdup(r->pool, tstr);
+    return tstr;
 }
 
-static char *log_request_duration(request_rec *r, char *a)
+static const char *log_request_duration(request_rec *r, char *a)
 {
     return ap_psprintf(r->pool, "%ld", time(NULL) - r->request_time);
 }
@@ -405,17 +406,17 @@ static char *log_request_duration(request_rec *r, char *a)
 /* These next two routines use the canonical name:port so that log
  * parsers don't need to duplicate all the vhost parsing crud.
  */
-static char *log_virtual_host(request_rec *r, char *a)
+static const char *log_virtual_host(request_rec *r, char *a)
 {
-    return ap_pstrdup(r->pool, ap_get_server_name(r));
+    return ap_get_server_name(r);
 }
 
-static char *log_server_port(request_rec *r, char *a)
+static const char *log_server_port(request_rec *r, char *a)
 {
     return ap_psprintf(r->pool, "%u", ap_get_server_port(r));
 }
 
-static char *log_child_pid(request_rec *r, char *a)
+static const char *log_child_pid(request_rec *r, char *a)
 {
     return ap_psprintf(r->pool, "%ld", (long) getpid());
 }
@@ -636,10 +637,10 @@ static array_header *parse_log_string(pool *p, const char *s, const char **err)
  * Actually logging.
  */
 
-static char *process_item(request_rec *r, request_rec *orig,
+static const char *process_item(request_rec *r, request_rec *orig,
                           log_format_item *item)
 {
-    char *cp;
+    const char *cp;
 
     /* First, see if we need to process this thing at all... */
 
@@ -681,7 +682,8 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
                                   array_header *default_format)
 {
     log_format_item *items;
-    char *str, **strs, *s;
+    char *str, *s;
+    const char **strs;
     int *strl;
     request_rec *orig;
     int i;

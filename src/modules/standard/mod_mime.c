@@ -280,7 +280,7 @@ static int find_ct(request_rec *r)
             r->content_language = type;         /* back compat. only */
             if (!r->content_languages)
                 r->content_languages = ap_make_array(r->pool, 2, sizeof(char *));
-            new = (char **) ap_push_array(r->content_languages);
+            new = (const char **) ap_push_array(r->content_languages);
             *new = type;
             found = 1;
         }
