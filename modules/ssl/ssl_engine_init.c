@@ -964,6 +964,9 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
 
 void ssl_init_Child(apr_pool_t *p, server_rec *s)
 {
+    SSLModConfigRec *mc = myModConfig(s);
+    mc->pid = getpid(); /* only call getpid() once per-process */
+
      /* open the mutex lockfile */
      ssl_mutex_reinit(s, p);
      return;
