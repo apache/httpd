@@ -158,10 +158,15 @@
       valid attributes are:</p>
 
       <dl>
+      <dt><code>echomsg</code> (<em>Apache 2.1 and later</em>)</dt>
+      <dd>The value is a message that is sent back to the
+      client if the <code><a href="#element.echo">echo</a></code> element
+      attempts to echo an undefined variable. This overrides any <code class="directive"><a href="#ssiundefinedecho">SSIUndefinedEcho</a></code> directives.</dd>
+
       <dt><code>errmsg</code></dt>
       <dd>The value is a message that is sent back to the
       client if an error occurs while parsing the
-      document.</dd>
+      document. This overrides any <code class="directive"><a href="#ssierrormsg">SSIErrorMsg</a></code> directives.</dd>
 
       <dt><code>sizefmt</code></dt>
       <dd>The value sets the format to be used which displaying
@@ -732,7 +737,8 @@ displayed</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String displayed when an unset variable is echoed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIUndefinedEcho <var>string</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIUndefinedEcho "(none)"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.34 and later.</td></tr>

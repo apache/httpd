@@ -120,10 +120,17 @@
       valid attributes are:</p>
 
       <dl>
+      <dt><code>echomsg</code> (<em>Apache 2.1 and later</em>)</dt>
+      <dd>The value is a message that is sent back to the
+      client if the <code><a href="#element.echo">echo</a></code> element
+      attempts to echo an undefined variable. This overrides any <directive
+      module="mod_include">SSIUndefinedEcho</directive> directives.</dd>
+
       <dt><code>errmsg</code></dt>
       <dd>The value is a message that is sent back to the
       client if an error occurs while parsing the
-      document.</dd>
+      document. This overrides any <directive
+      module="mod_include">SSIErrorMsg</directive> directives.</dd>
 
       <dt><code>sizefmt</code></dt>
       <dd>The value sets the format to be used which displaying
@@ -610,7 +617,8 @@
 <syntax>SSIUndefinedEcho <var>string</var></syntax>
 <default>SSIUndefinedEcho &quot;(none)&quot;</default>
 <contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>All</override>
 <compatibility>Available in version 2.0.34 and later.</compatibility>
 
 <usage>
