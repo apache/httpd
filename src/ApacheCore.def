@@ -367,3 +367,4 @@ EXPORTS
 	ap_registry_set_service_conf @362
 	ap_start_shutdown @363
 	ap_start_restart @364
+        ap_configtestonly @365 DATA
