@@ -306,5 +306,5 @@
     proxycachedir: ${prefix}/var/cache/apache2/proxy
     infodir:       ${exec_prefix}/share/info
     installbuilddir: ${prefix}/etc/apache2/build
-    errordir:      ${prefix}/error
+    errordir:      ${datadir}/error
 </Layout>
