@@ -372,7 +372,8 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), NULL,
-        "Failure registering service handler");
+                     "Failure registering service handler");
+        PulseEvent(globdat.signal_monitor);
         return;
     }
 
@@ -432,7 +433,8 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
         rv = GetLastError();
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                      "Error starting service control dispatcher");
-    };
+    }
+
     globdat.service_thread = 0;
     return (rv);
 }
@@ -624,7 +626,8 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
 
         if (!schService) 
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), NULL, 
+            rv = GetLastError();
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, 
                          "Failed to create WinNT Service Profile");
             CloseServiceHandle(schSCManager);
             return (rv);
@@ -736,7 +739,9 @@ ap_status_t mpm_service_uninstall(void)
         
         /* we blast Services/us, not just the Services/us/Parameters branch */
         ap_snprintf(key_name, sizeof(key_name), SERVICECONFIG, service_name);
-        if (ap_registry_delete_key(key_name)) {
+        if (ap_registry_delete_key(key_name)) 
+        {
+            rv = GetLastError();
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                          "%s: Failed to remove the service config from the "
                          "registry.", display_name);
@@ -904,7 +909,7 @@ void mpm_signal_service(ap_pool_t *ptemp, char *fname, int signal)
         }
         if (!readpid)
         {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, 
                          "%s: could not retrieve pid from file %s",
 		         display_name, pid_file);
             return;
@@ -912,7 +917,7 @@ void mpm_signal_service(ap_pool_t *ptemp, char *fname, int signal)
     }
     else
     {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, 
                      "%s: could not retrieve pid from file %s",
 		     display_name, pid_file);
         return;
