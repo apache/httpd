@@ -1,4 +1,4 @@
-Microsoft Developer Studio Workspace File, Format Version 6.00
+Microsoft Developer Studio Workspace File, Format Version 5.00
 # WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
 
 ###############################################################################
@@ -82,6 +82,27 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ApacheCoreDll
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApacheModuleAuthDBM"=".\os\win32\ApacheModuleAuthDBM.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCoreDll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprlibdll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sdbmlib
     End Project Dependency
 }}}
 
@@ -355,6 +376,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name xmlparse
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheModuleAuthDBM
     End Project Dependency
 }}}
 

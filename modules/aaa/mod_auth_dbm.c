@@ -76,7 +76,15 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
-#if defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
+
+#if defined(WIN32) /* XXX: A better feature test is needed here */
+#include "sdbm.h"
+#define DBM SDBM
+#define datum sdbm_datum
+#define dbm_open sdbm_open
+#define dbm_fetch sdbm_fetch
+#define dbm_close sdbm_close
+#elif defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
     && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
 #include <db1/ndbm.h>
 #else
@@ -152,6 +160,7 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
     DBM *f;
     datum d, q;
     char *pw = NULL;
+    apr_status_t retval;
 
     q.dptr = user;
 #ifndef NETSCAPE_DBM_COMPAT
@@ -160,10 +169,15 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
     q.dsize = strlen(q.dptr) + 1;
 #endif
 
-
+#ifdef WIN32 /* XXX: Same bad symbol here - need feature macro */
+    if (!(retval = dbm_open(&f, auth_dbmpwfile, O_RDONLY, 0664, r->pool))) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+		    "could not open sdbm auth file: %s", auth_dbmpwfile);
+#else
     if (!(f = dbm_open(auth_dbmpwfile, O_RDONLY, 0664))) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r,
 		    "could not open dbm auth file: %s", auth_dbmpwfile);
+#endif
 	return NULL;
     }
 
