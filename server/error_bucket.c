@@ -93,12 +93,12 @@ AP_DECLARE(apr_bucket *) ap_bucket_error_create(int error,
     apr_bucket *b = (apr_bucket *)malloc(sizeof(*b));
 
     APR_BUCKET_INIT(b);
+    b->free = free;
     return ap_bucket_error_make(b, error, buf, p);
 }
 
 AP_DECLARE_DATA const apr_bucket_type_t ap_bucket_type_error = {
     "ERROR", 5,
-    free,
     free,
     error_read,
     apr_bucket_setaside_notimpl,

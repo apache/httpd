@@ -77,13 +77,13 @@
  * 20010523 (2.0.19-dev) bump for scoreboard structure reordering
  * 20010627 (2.0.19-dev) more API changes than I can count
  * 20010726 (2.0.22-dev) more big API changes
- * 20010807 (2.0.23-dev) the dir d_is_absolute bit is introduced, etc
+ * 20010808 (2.0.23-dev) dir d_is_absolute bit introduced, bucket changes, etc
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20010807
+#define MODULE_MAGIC_NUMBER_MAJOR 20010808
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
