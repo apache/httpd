@@ -100,10 +100,10 @@
 #include "http_config.h"
 
 typedef enum {
-    hdr_add = 'a',		/* add header (could mean multiple hdrs) */
-    hdr_set = 's',		/* set (replace old value) */
-    hdr_append = 'm',		/* append (merge into any old value) */
-    hdr_unset = 'u'		/* unset header */
+    hdr_add = 'a',              /* add header (could mean multiple hdrs) */
+    hdr_set = 's',              /* set (replace old value) */
+    hdr_append = 'm',           /* append (merge into any old value) */
+    hdr_unset = 'u'             /* unset header */
 } hdr_actions;
 
 typedef struct {
@@ -122,26 +122,25 @@ typedef struct {
 
 module MODULE_VAR_EXPORT headers_module;
 
-static void *create_headers_config (pool *p, server_rec *s)
+static void *create_headers_config(pool *p, server_rec *s)
 {
     headers_conf *a =
-      (headers_conf *)pcalloc (p, sizeof(headers_conf));
+    (headers_conf *) pcalloc(p, sizeof(headers_conf));
 
-    a->headers = make_array (p, 2, sizeof(header_entry));
+    a->headers = make_array(p, 2, sizeof(header_entry));
     return a;
 }
 
-static void *create_headers_dir_config (pool *p, char *d)
+static void *create_headers_dir_config(pool *p, char *d)
 {
-    return (headers_conf*)create_headers_config(p, NULL);
+    return (headers_conf *) create_headers_config(p, NULL);
 }
 
-static void *merge_headers_config (pool *p, void *basev, void *overridesv)
+static void *merge_headers_config(pool *p, void *basev, void *overridesv)
 {
     headers_conf *a =
-	(headers_conf *)pcalloc (p, sizeof(headers_conf));
-    headers_conf *base = (headers_conf *)basev,
-	*overrides = (headers_conf *)overridesv;
+    (headers_conf *) pcalloc(p, sizeof(headers_conf));
+    headers_conf *base = (headers_conf *) basev, *overrides = (headers_conf *) overridesv;
 
     a->headers = append_arrays(p, base->headers, overrides->headers);
 
@@ -149,35 +148,38 @@ static void *merge_headers_config (pool *p, void *basev, void *overridesv)
 }
 
 
-static const char *header_cmd(cmd_parms *cmd, headers_conf *dirconf, char *action, char *hdr, char *value)
+static const char *header_cmd(cmd_parms *cmd, headers_conf * dirconf, char *action, char *hdr, char *value)
 {
     header_entry *new;
     server_rec *s = cmd->server;
     headers_conf *serverconf =
-        (headers_conf *)get_module_config(s->module_config,&headers_module);
+    (headers_conf *) get_module_config(s->module_config, &headers_module);
     char *colon;
 
-    if ( cmd->path )
-    {
-	new = (header_entry*)push_array(dirconf->headers);
+    if (cmd->path) {
+        new = (header_entry *) push_array(dirconf->headers);
     }
-    else
-    {
-	new = (header_entry*)push_array(serverconf->headers);
+    else {
+        new = (header_entry *) push_array(serverconf->headers);
     }
 
-    if (!strcasecmp(action, "set")) new->action = hdr_set;
-    else if (!strcasecmp(action, "add")) new->action = hdr_add;
-    else if (!strcasecmp(action, "append")) new->action = hdr_append;
-    else if (!strcasecmp(action, "unset")) new->action = hdr_unset;
-    else 
-	return "first argument must be add, set, append or unset.";
+    if (!strcasecmp(action, "set"))
+        new->action = hdr_set;
+    else if (!strcasecmp(action, "add"))
+        new->action = hdr_add;
+    else if (!strcasecmp(action, "append"))
+        new->action = hdr_append;
+    else if (!strcasecmp(action, "unset"))
+        new->action = hdr_unset;
+    else
+        return "first argument must be add, set, append or unset.";
 
     if (new->action == hdr_unset) {
-	if (value) return "Header unset takes two arguments";
+        if (value)
+            return "Header unset takes two arguments";
     }
     else if (!value)
-	return "Header requires three arguments";
+        return "Header requires three arguments";
 
     if ((colon = strchr(hdr, ':')))
         *colon = '\0';
@@ -188,10 +190,11 @@ static const char *header_cmd(cmd_parms *cmd, headers_conf *dirconf, char *actio
     return NULL;
 }
 
-static command_rec headers_cmds[] = {
-{ "Header", header_cmd, NULL, OR_FILEINFO, TAKE23, 
-    "an action, header and value"},
-{ NULL }
+static command_rec headers_cmds[] =
+{
+    {"Header", header_cmd, NULL, OR_FILEINFO, TAKE23,
+     "an action, header and value"},
+    {NULL}
 };
 
 static void do_headers_fixup(request_rec *r, array_header *headers)
@@ -199,21 +202,21 @@ static void do_headers_fixup(request_rec *r, array_header *headers)
     int i;
 
     for (i = 0; i < headers->nelts; ++i) {
-	header_entry *hdr = &((header_entry*)(headers->elts))[i];
-	switch (hdr->action) {
-	case hdr_add:
-	    table_add(r->headers_out, hdr->header, hdr->value);
-	    break;
-	case hdr_append:
-	    table_merge(r->headers_out, hdr->header, hdr->value);
-	    break;
-	case hdr_set:
-	    table_set(r->headers_out, hdr->header, hdr->value);
-	    break;
-	case hdr_unset:
-	    table_unset(r->headers_out, hdr->header);
-	    break;
-	}
+        header_entry *hdr = &((header_entry *) (headers->elts))[i];
+        switch (hdr->action) {
+        case hdr_add:
+            table_add(r->headers_out, hdr->header, hdr->value);
+            break;
+        case hdr_append:
+            table_merge(r->headers_out, hdr->header, hdr->value);
+            break;
+        case hdr_set:
+            table_set(r->headers_out, hdr->header, hdr->value);
+            break;
+        case hdr_unset:
+            table_unset(r->headers_out, hdr->header);
+            break;
+        }
     }
 
 }
@@ -222,10 +225,10 @@ static int fixup_headers(request_rec *r)
 {
     void *sconf = r->server->module_config;
     headers_conf *serverconf =
-        (headers_conf *)get_module_config(sconf, &headers_module);
+    (headers_conf *) get_module_config(sconf, &headers_module);
     void *dconf = r->per_dir_config;
     headers_conf *dirconf =
-        (headers_conf *)get_module_config(dconf, &headers_module);
+    (headers_conf *) get_module_config(dconf, &headers_module);
 
     do_headers_fixup(r, serverconf->headers);
     do_headers_fixup(r, dirconf->headers);
@@ -233,24 +236,25 @@ static int fixup_headers(request_rec *r)
     return DECLINED;
 }
 
-module MODULE_VAR_EXPORT headers_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_headers_dir_config,	/* dir config creater */
-   merge_headers_config,	/* dir merger --- default is to override */
-   create_headers_config,	/* server config */
-   merge_headers_config,	/* merge server configs */
-   headers_cmds,		/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   fixup_headers,		/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT headers_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,                       /* initializer */
+    create_headers_dir_config,  /* dir config creater */
+    merge_headers_config,       /* dir merger --- default is to override */
+    create_headers_config,      /* server config */
+    merge_headers_config,       /* merge server configs */
+    headers_cmds,               /* command table */
+    NULL,                       /* handlers */
+    NULL,                       /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    NULL,                       /* type_checker */
+    fixup_headers,              /* fixups */
+    NULL,                       /* logger */
+    NULL,                       /* header parser */
+    NULL,                       /* child_init */
+    NULL,                       /* child_exit */
+    NULL                        /* post read-request */
 };

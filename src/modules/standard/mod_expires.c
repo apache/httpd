@@ -72,12 +72,12 @@
  *
  * Valid values for <code> are:
  *
- *     'M'	expires header shows file modification date + <seconds>
- *     'A'	expires header shows access time + <seconds>
+ *     'M'      expires header shows file modification date + <seconds>
+ *     'A'      expires header shows access time + <seconds>
  *
  *              [I'm not sure which of these is best under different
  *              circumstances, I guess it's for other people to explore.
- *		The effects may be indistinguishable for a number of cases]
+ *              The effects may be indistinguishable for a number of cases]
  *
  * <seconds> should be an integer value [acceptable to atoi()]
  *
@@ -121,55 +121,55 @@
  *     ExpiresByType type/encoding "<base> [plus] {<num> <type>}*"
  *
  * where <base> is one of:
- *	access	
- *	now		equivalent to 'access'
- *	modification
+ *      access  
+ *      now             equivalent to 'access'
+ *      modification
  *
  * where the 'plus' keyword is optional
  *
  * where <num> should be an integer value [acceptable to atoi()]
  *
  * where <type> is one of:
- *	years
- *	months
- *	weeks
- *	days
- *	hours
- *	minutes
- *	seconds
+ *      years
+ *      months
+ *      weeks
+ *      days
+ *      hours
+ *      minutes
+ *      seconds
  *
  * For example, any of the following directives can be used to make
  * documents expire 1 month after being accessed, by default:
  *
- *	ExpiresDefault "access plus 1 month"
- *	ExpiresDefault "access plus 4 weeks"
- *	ExpiresDefault "access plus 30 days"
+ *      ExpiresDefault "access plus 1 month"
+ *      ExpiresDefault "access plus 4 weeks"
+ *      ExpiresDefault "access plus 30 days"
  *
  * The expiry time can be fine-tuned by adding several '<num> <type>'
  * clauses:
  *
- *	ExpiresByType text/html "access plus 1 month 15 days 2 hours"
- *	ExpiresByType image/gif "modification plus 5 hours 3 minutes"
+ *      ExpiresByType text/html "access plus 1 month 15 days 2 hours"
+ *      ExpiresByType image/gif "modification plus 5 hours 3 minutes"
  *
  * ---
  *
  * Change-log:
- * 29.Jan.96	Hardened the add_* functions.  Server will now bail out
- *		if bad directives are given in the conf files.
- * 02.Feb.96	Returns DECLINED if not 'ExpiresActive on', giving other
- *		expires-aware modules a chance to play with the same
- *		directives. [Michael Rutman]
- * 03.Feb.96	Call tzset() before localtime().  Trying to get the module
- *		to work properly in non GMT timezones.
- * 12.Feb.96	Modified directive syntax to allow more readable commands:
- *		  ExpiresDefault "now plus 10 days 20 seconds"
- *		  ExpiresDefault "access plus 30 days"
- *		  ExpiresDefault "modification plus 1 year 10 months 30 days"
- * 13.Feb.96	Fix call to table_get() with NULL 2nd parameter [Rob Hartill]
- * 19.Feb.96	Call gm_timestr_822() to get time formatted correctly, can't
- *		rely on presence of HTTP_TIME_FORMAT in Apache 1.1+.
- * 21.Feb.96	This version (0.0.9) reverses assumptions made in 0.0.8
- *		about star/star handlers.  Reverting to 0.0.7 behaviour.
+ * 29.Jan.96    Hardened the add_* functions.  Server will now bail out
+ *              if bad directives are given in the conf files.
+ * 02.Feb.96    Returns DECLINED if not 'ExpiresActive on', giving other
+ *              expires-aware modules a chance to play with the same
+ *              directives. [Michael Rutman]
+ * 03.Feb.96    Call tzset() before localtime().  Trying to get the module
+ *              to work properly in non GMT timezones.
+ * 12.Feb.96    Modified directive syntax to allow more readable commands:
+ *                ExpiresDefault "now plus 10 days 20 seconds"
+ *                ExpiresDefault "access plus 30 days"
+ *                ExpiresDefault "modification plus 1 year 10 months 30 days"
+ * 13.Feb.96    Fix call to table_get() with NULL 2nd parameter [Rob Hartill]
+ * 19.Feb.96    Call gm_timestr_822() to get time formatted correctly, can't
+ *              rely on presence of HTTP_TIME_FORMAT in Apache 1.1+.
+ * 21.Feb.96    This version (0.0.9) reverses assumptions made in 0.0.8
+ *              about star/star handlers.  Reverting to 0.0.7 behaviour.
  * 08.Jun.96    allows ExpiresDefault to be used with responses that use 
  *              the DefaultType by not DECLINING, but instead skipping 
  *              the table_get check and then looking for an ExpiresDefault.
@@ -181,7 +181,7 @@
  * proposal (in this case, a ttl of 20 seconds) [ask roy]
  * add per-file expiry and explicit expiry times - duplicates some
  * of the mod_cern_meta.c functionality.  eg:
- * 		ExpiresExplicit index.html "modification plus 30 days"
+ *              ExpiresExplicit index.html "modification plus 30 days"
  *
  * BUGS
  * Hi, welcome to the internet.
@@ -202,39 +202,39 @@ typedef struct {
  */
 #define DIR_CMD_PERMS OR_INDEXES
 
-#define ACTIVE_ON 	1
-#define ACTIVE_OFF 	0
+#define ACTIVE_ON       1
+#define ACTIVE_OFF      0
 #define ACTIVE_DONTCARE 2
 
 module MODULE_VAR_EXPORT expires_module;
 
-static void *create_dir_expires_config (pool *p, char *dummy)
-{     
+static void *create_dir_expires_config(pool *p, char *dummy)
+{
     expires_dir_config *new =
-        (expires_dir_config *) pcalloc (p, sizeof(expires_dir_config));
+    (expires_dir_config *) pcalloc(p, sizeof(expires_dir_config));
     new->active = ACTIVE_DONTCARE;
     new->expiresdefault = "";
     new->expiresbytype = make_table(p, 4);
-    return (void *)new;
-}   
+    return (void *) new;
+}
 
-static const char *set_expiresactive (cmd_parms *cmd, expires_dir_config *dir_config, int arg)
+static const char *set_expiresactive(cmd_parms *cmd, expires_dir_config * dir_config, int arg)
 {
     /* if we're here at all it's because someone explicitly
      * set the active flag
      */
     dir_config->active = ACTIVE_ON;
-    if ( arg == 0 ) {
+    if (arg == 0) {
         dir_config->active = ACTIVE_OFF;
     };
     return NULL;
-} 
+}
 
 /* check_code() parse 'code' and return NULL or an error response
  * string.  If we return NULL then real_code contains code converted
  * to the cnnnn format.
  */
-static char *check_code( pool *p, const char *code, char **real_code )
+static char *check_code(pool *p, const char *code, char **real_code)
 {
     char *word;
     char base = 'X';
@@ -245,9 +245,9 @@ static char *check_code( pool *p, const char *code, char **real_code )
 
     /* 0.0.4 compatibility?
      */
-    if ( (code[0] == 'A') || (code[0] == 'M') ) {
-	*real_code = pstrdup( p, code );
-	return NULL;
+    if ((code[0] == 'A') || (code[0] == 'M')) {
+        *real_code = pstrdup(p, code);
+        return NULL;
     };
 
     /* <base> [plus] {<num> <type>}*
@@ -255,159 +255,172 @@ static char *check_code( pool *p, const char *code, char **real_code )
 
     /* <base>
      */
-    word = getword_conf( p, &code );
-    if ( !strncasecmp( word, "now", 1 ) ||
-	 !strncasecmp( word, "access", 1 ) ) {
-	base = 'A';
-    } else if ( !strncasecmp( word, "modification", 1 ) ) {
-	base = 'M';
-    } else {
-	return pstrcat( p, "bad expires code, unrecognised <base> '",
-		word, "'", NULL);
+    word = getword_conf(p, &code);
+    if (!strncasecmp(word, "now", 1) ||
+        !strncasecmp(word, "access", 1)) {
+        base = 'A';
+    }
+    else if (!strncasecmp(word, "modification", 1)) {
+        base = 'M';
+    }
+    else {
+        return pstrcat(p, "bad expires code, unrecognised <base> '",
+                       word, "'", NULL);
     };
 
     /* [plus]
      */
-    word = getword_conf( p, &code );
-    if ( !strncasecmp( word, "plus", 1 ) ) {
-        word = getword_conf( p, &code );
+    word = getword_conf(p, &code);
+    if (!strncasecmp(word, "plus", 1)) {
+        word = getword_conf(p, &code);
     };
 
     /* {<num> <type>}*
      */
-    while ( word[0] ) {
-	/* <num>
-	 */
-	if (isdigit(word[0])) {
-	    num = atoi( word );
-	} else {
-            return pstrcat( p, "bad expires code, numeric value expected <num> '",
-		word, "'", NULL);
-	};
+    while (word[0]) {
+        /* <num>
+         */
+        if (isdigit(word[0])) {
+            num = atoi(word);
+        }
+        else {
+            return pstrcat(p, "bad expires code, numeric value expected <num> '",
+                           word, "'", NULL);
+        };
 
-	/* <type>
-	 */
-	word = getword_conf( p, &code );
-	if ( word[0] ) {
-	    /* do nothing */
-	} else {
-            return pstrcat( p, "bad expires code, missing <type>", NULL);
-	};
+        /* <type>
+         */
+        word = getword_conf(p, &code);
+        if (word[0]) {
+            /* do nothing */
+        }
+        else {
+            return pstrcat(p, "bad expires code, missing <type>", NULL);
+        };
 
-	factor = 0;
-	if ( !strncasecmp( word, "years", 1 ) ) {
-		factor = 60*60*24*365;
-	} else if ( !strncasecmp( word, "months", 2 ) ) {
-		factor = 60*60*24*30;
-	} else if ( !strncasecmp( word, "weeks", 1 ) ) {
-		factor = 60*60*24*7;
-	} else if ( !strncasecmp( word, "days", 1 ) ) {
-		factor = 60*60*24;
-	} else if ( !strncasecmp( word, "hours", 1 ) ) {
-		factor = 60*60;
-	} else if ( !strncasecmp( word, "minutes", 2 ) ) {
-		factor = 60;
-	} else if ( !strncasecmp( word, "seconds", 1 ) ) {
-		factor = 1;
-	} else {
-            return pstrcat( p, "bad expires code, unrecognised <type>", 
-		"'", word, "'", NULL);
-	};
+        factor = 0;
+        if (!strncasecmp(word, "years", 1)) {
+            factor = 60 * 60 * 24 * 365;
+        }
+        else if (!strncasecmp(word, "months", 2)) {
+            factor = 60 * 60 * 24 * 30;
+        }
+        else if (!strncasecmp(word, "weeks", 1)) {
+            factor = 60 * 60 * 24 * 7;
+        }
+        else if (!strncasecmp(word, "days", 1)) {
+            factor = 60 * 60 * 24;
+        }
+        else if (!strncasecmp(word, "hours", 1)) {
+            factor = 60 * 60;
+        }
+        else if (!strncasecmp(word, "minutes", 2)) {
+            factor = 60;
+        }
+        else if (!strncasecmp(word, "seconds", 1)) {
+            factor = 1;
+        }
+        else {
+            return pstrcat(p, "bad expires code, unrecognised <type>",
+                           "'", word, "'", NULL);
+        };
 
-	modifier = modifier + factor * num;
+        modifier = modifier + factor * num;
 
-	/* next <num>
-	 */
-	word = getword_conf( p, &code );
+        /* next <num>
+         */
+        word = getword_conf(p, &code);
     };
 
-    ap_snprintf(foo, sizeof(foo), "%c%d", base, modifier );
-    *real_code = pstrdup( p, foo );
+    ap_snprintf(foo, sizeof(foo), "%c%d", base, modifier);
+    *real_code = pstrdup(p, foo);
 
     return NULL;
 }
 
-static const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config *dir_config, char *mime, char *code)
+static const char *set_expiresbytype(cmd_parms *cmd, expires_dir_config * dir_config, char *mime, char *code)
 {
     char *response, *real_code;
 
-    if ( (response = check_code( cmd->pool, code, &real_code  )) == NULL ) {
-        table_set (dir_config->expiresbytype, mime, real_code);
-	return NULL;
+    if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
+        table_set(dir_config->expiresbytype, mime, real_code);
+        return NULL;
     };
-    return pstrcat( cmd->pool, 
-	"'ExpiresByType ", mime, " ", code, "': ", response, NULL );
-} 
+    return pstrcat(cmd->pool,
+                 "'ExpiresByType ", mime, " ", code, "': ", response, NULL);
+}
 
-static const char *set_expiresdefault (cmd_parms *cmd, expires_dir_config *dir_config, char *code)
+static const char *set_expiresdefault(cmd_parms *cmd, expires_dir_config * dir_config, char *code)
 {
     char *response, *real_code;
 
-    if ( (response = check_code( cmd->pool, code, &real_code )) == NULL ) {
-        dir_config->expiresdefault = pstrdup( cmd->pool, real_code );
-	return NULL;
+    if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
+        dir_config->expiresdefault = pstrdup(cmd->pool, real_code);
+        return NULL;
     };
-    return pstrcat( cmd->pool, 
-	"'ExpiresDefault ", code, "': ", response, NULL );
-} 
+    return pstrcat(cmd->pool,
+                   "'ExpiresDefault ", code, "': ", response, NULL);
+}
 
-static command_rec expires_cmds[] = {
-{ "ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS, FLAG,
-    "Limited to 'on' or 'off'"},
-{ "ExpiresBytype", set_expiresbytype, NULL, DIR_CMD_PERMS, TAKE2,
-    "a MIME type followed by an expiry date code"},
-{ "ExpiresDefault", set_expiresdefault, NULL, DIR_CMD_PERMS, TAKE1,
-    "an expiry date code"},
-{ NULL }
-};  
-
-static void *merge_expires_dir_configs (pool *p, void *basev, void *addv)
+static command_rec expires_cmds[] =
 {
-    expires_dir_config *new= (expires_dir_config*)pcalloc (p, sizeof(expires_dir_config));
-    expires_dir_config *base = (expires_dir_config *)basev;
-    expires_dir_config *add = (expires_dir_config *)addv;
+    {"ExpiresActive", set_expiresactive, NULL, DIR_CMD_PERMS, FLAG,
+     "Limited to 'on' or 'off'"},
+    {"ExpiresBytype", set_expiresbytype, NULL, DIR_CMD_PERMS, TAKE2,
+     "a MIME type followed by an expiry date code"},
+    {"ExpiresDefault", set_expiresdefault, NULL, DIR_CMD_PERMS, TAKE1,
+     "an expiry date code"},
+    {NULL}
+};
 
-    if ( add->active == ACTIVE_DONTCARE ) {
-	new->active = base->active;
-    } else {
-	new->active = add->active;
+static void *merge_expires_dir_configs(pool *p, void *basev, void *addv)
+{
+    expires_dir_config *new = (expires_dir_config *) pcalloc(p, sizeof(expires_dir_config));
+    expires_dir_config *base = (expires_dir_config *) basev;
+    expires_dir_config *add = (expires_dir_config *) addv;
+
+    if (add->active == ACTIVE_DONTCARE) {
+        new->active = base->active;
+    }
+    else {
+        new->active = add->active;
     };
 
-    if ( add->expiresdefault != '\0' ) {
+    if (add->expiresdefault != '\0') {
         new->expiresdefault = add->expiresdefault;
     };
 
-    new->expiresbytype = overlay_tables (p, add->expiresbytype,
-                                          base->expiresbytype);
+    new->expiresbytype = overlay_tables(p, add->expiresbytype,
+                                        base->expiresbytype);
     return new;
-}  
+}
 
 static int add_expires(request_rec *r)
 {
     expires_dir_config *conf;
     char *code;
-    time_t base; 
-    time_t additional; 
-    time_t expires; 
+    time_t base;
+    time_t additional;
+    time_t expires;
     char age[20];
 
-    if (is_HTTP_ERROR(r->status))  /* Don't add Expires headers to errors */
-	return DECLINED;
+    if (is_HTTP_ERROR(r->status))       /* Don't add Expires headers to errors */
+        return DECLINED;
 
-    if (r->main != NULL)           /* Say no to subrequests */
-	return DECLINED;
+    if (r->main != NULL)        /* Say no to subrequests */
+        return DECLINED;
 
-    if ( r->finfo.st_mode == 0 )     /* no file ? shame. */
-	return DECLINED;
+    if (r->finfo.st_mode == 0)  /* no file ? shame. */
+        return DECLINED;
 
-    conf = (expires_dir_config *)get_module_config(r->per_dir_config, &expires_module);
-    if ( conf == NULL ) {
+    conf = (expires_dir_config *) get_module_config(r->per_dir_config, &expires_module);
+    if (conf == NULL) {
         aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-		    "internal error: %s", r->filename);
-	return SERVER_ERROR;
+                    "internal error: %s", r->filename);
+        return SERVER_ERROR;
     };
 
-    if ( conf->active != ACTIVE_ON )
+    if (conf->active != ACTIVE_ON)
         return DECLINED;
 
     /* we perhaps could use the default_type(r) in its place but that
@@ -421,70 +434,71 @@ static int add_expires(request_rec *r)
      *
      * Changed as of 08.Jun.96 don't DECLINE, look for an ExpiresDefault.
      */
-    if ( r->content_type == NULL )
-	code = NULL;
+    if (r->content_type == NULL)
+        code = NULL;
     else
-	code = (char *) table_get( conf->expiresbytype, r->content_type );
+        code = (char *) table_get(conf->expiresbytype, r->content_type);
 
-    if ( code == NULL ) {
-	/* no expires defined for that type, is there a default? */
-	code = conf->expiresdefault;
+    if (code == NULL) {
+        /* no expires defined for that type, is there a default? */
+        code = conf->expiresdefault;
 
-        if ( code[0] == '\0' )
-	    return OK;
+        if (code[0] == '\0')
+            return OK;
     };
 
     /* we have our code */
 
     switch (code[0]) {
-	case 'M':
-            base = r->finfo.st_mtime;
-	    additional = atoi( &code[1] );
-	    break;
-	case 'A':
-	    /* there's been some discussion and it's possible that 
-	     * 'access time' will be stored in request structure
-	     */
-	    base = r->request_time;
-	    additional = atoi( &code[1] );
-	    break;
-	default:
-	    /* expecting the add_* routines to be case-hardened this 
-	     * is just a reminder that module is beta
-	     */
-            aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			"internal error: bad expires code: %s", r->filename);
-            return SERVER_ERROR;
+    case 'M':
+        base = r->finfo.st_mtime;
+        additional = atoi(&code[1]);
+        break;
+    case 'A':
+        /* there's been some discussion and it's possible that 
+         * 'access time' will be stored in request structure
+         */
+        base = r->request_time;
+        additional = atoi(&code[1]);
+        break;
+    default:
+        /* expecting the add_* routines to be case-hardened this 
+         * is just a reminder that module is beta
+         */
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+                    "internal error: bad expires code: %s", r->filename);
+        return SERVER_ERROR;
     };
 
     expires = base + additional;
-    ap_snprintf(age, sizeof(age), "max-age=%d", (int)expires - (int)r->request_time);
-    table_set( r->headers_out, "Cache-Control", age);
-    tzset();	/* redundant? called implicitly by localtime, at least 
-		 * under FreeBSD
-		 */
-    table_set( r->headers_out, "Expires", gm_timestr_822( r->pool, expires ));
+    ap_snprintf(age, sizeof(age), "max-age=%d", (int) expires - (int) r->request_time);
+    table_set(r->headers_out, "Cache-Control", age);
+    tzset();                    /* redundant? called implicitly by localtime, at least 
+                                 * under FreeBSD
+                                 */
+    table_set(r->headers_out, "Expires", gm_timestr_822(r->pool, expires));
     return OK;
 }
 
-module MODULE_VAR_EXPORT expires_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_dir_expires_config,	/* dir config creater */
-   merge_expires_dir_configs,	/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server configs */
-   expires_cmds,		/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   add_expires,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT expires_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,                       /* initializer */
+    create_dir_expires_config,  /* dir config creater */
+    merge_expires_dir_configs,  /* dir merger --- default is to override */
+    NULL,                       /* server config */
+    NULL,                       /* merge server configs */
+    expires_cmds,               /* command table */
+    NULL,                       /* handlers */
+    NULL,                       /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    NULL,                       /* type_checker */
+    add_expires,                /* fixups */
+    NULL,                       /* logger */
+    NULL,                       /* header parser */
+    NULL,                       /* child_init */
+    NULL,                       /* child_exit */
+    NULL                        /* post read-request */
 };

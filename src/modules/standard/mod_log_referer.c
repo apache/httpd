@@ -56,13 +56,13 @@
 
 module referer_log_module;
 
-static int xfer_flags = ( O_WRONLY | O_APPEND | O_CREAT );
+static int xfer_flags = (O_WRONLY | O_APPEND | O_CREAT);
 
 #ifdef __EMX__
 /* OS/2 lacks support for users and groups */
-static mode_t xfer_mode = ( S_IREAD | S_IWRITE );
+static mode_t xfer_mode = (S_IREAD | S_IWRITE);
 #else
-static mode_t xfer_mode = ( S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH );
+static mode_t xfer_mode = (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 #endif
 
 typedef struct {
@@ -71,46 +71,47 @@ typedef struct {
     array_header *referer_ignore_list;
 } referer_log_state;
 
-void *make_referer_log_state (pool *p, server_rec *s)
+void *make_referer_log_state(pool *p, server_rec *s)
 {
     referer_log_state *cls =
-      (referer_log_state *)palloc (p, sizeof (referer_log_state));
+    (referer_log_state *) palloc(p, sizeof(referer_log_state));
 
     cls->fname = "";
     cls->referer_fd = -1;
     cls->referer_ignore_list = make_array(p, 1, sizeof(char *));
-    return (void *)cls;
+    return (void *) cls;
 }
 
-const char *set_referer_log (cmd_parms *parms, void *dummy, char *arg)
+const char *set_referer_log(cmd_parms *parms, void *dummy, char *arg)
 {
-    referer_log_state *cls = get_module_config (parms->server->module_config,
-					       &referer_log_module);
-  
+    referer_log_state *cls = get_module_config(parms->server->module_config,
+                                               &referer_log_module);
+
     cls->fname = arg;
     return NULL;
 }
 
-const char *add_referer_ignore (cmd_parms *parms, void *dummy, char *arg)
+const char *add_referer_ignore(cmd_parms *parms, void *dummy, char *arg)
 {
-  char **addme;
-  referer_log_state *cls = get_module_config (parms->server->module_config,
-					      &referer_log_module);
+    char **addme;
+    referer_log_state *cls = get_module_config(parms->server->module_config,
+                                               &referer_log_module);
 
-  addme = push_array(cls->referer_ignore_list);
-  *addme = pstrdup(cls->referer_ignore_list->pool, arg);
-  return NULL;
+    addme = push_array(cls->referer_ignore_list);
+    *addme = pstrdup(cls->referer_ignore_list->pool, arg);
+    return NULL;
 }
 
-command_rec referer_log_cmds[] = {
-{ "RefererLog", set_referer_log, NULL, RSRC_CONF, TAKE1,
-    "the filename of the referer log" },
-{ "RefererIgnore", add_referer_ignore, NULL, RSRC_CONF, ITERATE,
-    "referer hostnames to ignore" },
-{ NULL }
+command_rec referer_log_cmds[] =
+{
+    {"RefererLog", set_referer_log, NULL, RSRC_CONF, TAKE1,
+     "the filename of the referer log"},
+    {"RefererIgnore", add_referer_ignore, NULL, RSRC_CONF, ITERATE,
+     "referer hostnames to ignore"},
+    {NULL}
 };
 
-static int referer_log_child (void *cmd)
+static int referer_log_child(void *cmd)
 {
     /* Child process code for 'RefererLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -119,125 +120,126 @@ static int referer_log_child (void *cmd)
     int child_pid = 1;
 
     cleanup_for_exec();
-    signal (SIGHUP, SIG_IGN);
+    signal(SIGHUP, SIG_IGN);
 #if defined(WIN32)
     /* For OS/2 we need to use a '/' */
-    child_pid = spawnl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
-    return(child_pid);
+    child_pid = spawnl(SHELL_PATH, SHELL_PATH, "/c", (char *) cmd, NULL);
+    return (child_pid);
 #elif defined(__EMX__)
     /* For OS/2 we need to use a '/' */
-    execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    execl(SHELL_PATH, SHELL_PATH, "/c", (char *) cmd, NULL);
 #else
-    execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+    execl(SHELL_PATH, SHELL_PATH, "-c", (char *) cmd, NULL);
 #endif
-    perror ("execl");
-    fprintf (stderr, "Exec of shell for logging failed!!!\n");
-    return(child_pid);
+    perror("execl");
+    fprintf(stderr, "Exec of shell for logging failed!!!\n");
+    return (child_pid);
 }
 
-void open_referer_log (server_rec *s, pool *p)
+void open_referer_log(server_rec *s, pool *p)
 {
-    referer_log_state *cls = get_module_config (s->module_config,
-					       &referer_log_module);
-  
-    char *fname = server_root_relative (p, cls->fname);
-    
-    if (cls->referer_fd > 0) return; /* virtual log shared w/main server */
-    
+    referer_log_state *cls = get_module_config(s->module_config,
+                                               &referer_log_module);
+
+    char *fname = server_root_relative(p, cls->fname);
+
+    if (cls->referer_fd > 0)
+        return;                 /* virtual log shared w/main server */
+
     if (*cls->fname == '|') {
-	FILE *dummy;
-	
-	if (!spawn_child (p, referer_log_child, (void *)(cls->fname+1),
-		    kill_after_timeout, &dummy, NULL)) {
-	    perror ("spawn_child");
-	    fprintf (stderr, "Couldn't fork child for RefererLog process\n");
-	    exit (1);
-	}
+        FILE *dummy;
 
-	cls->referer_fd = fileno (dummy);
+        if (!spawn_child(p, referer_log_child, (void *) (cls->fname + 1),
+                         kill_after_timeout, &dummy, NULL)) {
+            perror("spawn_child");
+            fprintf(stderr, "Couldn't fork child for RefererLog process\n");
+            exit(1);
+        }
+
+        cls->referer_fd = fileno(dummy);
     }
-    else if(*cls->fname != '\0') {
-      if((cls->referer_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
-        perror("open");
-        fprintf(stderr,"httpd: could not open referer log file %s.\n", fname);
-        exit(1);
-      }
+    else if (*cls->fname != '\0') {
+        if ((cls->referer_fd = popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+            perror("open");
+            fprintf(stderr, "httpd: could not open referer log file %s.\n", fname);
+            exit(1);
+        }
     }
 }
 
-void init_referer_log (server_rec *s, pool *p)
+void init_referer_log(server_rec *s, pool *p)
 {
-    for (; s; s = s->next) open_referer_log (s, p);
+    for (; s; s = s->next)
+        open_referer_log(s, p);
 }
 
 int referer_log_transaction(request_rec *orig)
 {
     char **ptrptr, **ptrptr2;
-    referer_log_state *cls = get_module_config (orig->server->module_config,
-					       &referer_log_module);
-  
+    referer_log_state *cls = get_module_config(orig->server->module_config,
+                                               &referer_log_module);
+
     char *str;
     char *referer;
     request_rec *r;
 
-    if(cls->referer_fd <0)
-      return OK;
+    if (cls->referer_fd < 0)
+        return OK;
 
     for (r = orig; r->next; r = r->next)
         continue;
-    if (*cls->fname == '\0')	/* Don't log referer */
-	return DECLINED;
-    
+    if (*cls->fname == '\0')    /* Don't log referer */
+        return DECLINED;
+
     referer = table_get(orig->headers_in, "Referer");
-    if(referer != NULL)
-      {
+    if (referer != NULL) {
 
 
-	  /* The following is an upsetting mess of pointers, I'm sorry
-	     Anyone with the motiviation and/or the time should feel free
-	     to make this cleaner... */
+        /* The following is an upsetting mess of pointers, I'm sorry
+           Anyone with the motiviation and/or the time should feel free
+           to make this cleaner... */
 
-	  ptrptr2 = (char **) (cls->referer_ignore_list->elts + 
-		     (cls->referer_ignore_list->nelts *
-		      cls->referer_ignore_list->elt_size));
-	  
-	  /* Go through each element of the ignore list and compare it to the
-	     referer_host.  If we get a match, return without logging */
+        ptrptr2 = (char **) (cls->referer_ignore_list->elts +
+                             (cls->referer_ignore_list->nelts *
+                              cls->referer_ignore_list->elt_size));
 
-	  for(ptrptr = (char **) cls->referer_ignore_list->elts;
-	      ptrptr < ptrptr2;
-	      ptrptr = (char **)((char *)ptrptr + cls->referer_ignore_list->elt_size)) 
-	    {
-		if(strstr(referer, *ptrptr))
-		  return OK;
-	    }
-	  
-	  
-	  str = pstrcat(orig->pool, referer, " -> ", r->uri, "\n", NULL);
-	  write(cls->referer_fd, str, strlen(str));
-      }
+        /* Go through each element of the ignore list and compare it to the
+           referer_host.  If we get a match, return without logging */
+
+        for (ptrptr = (char **) cls->referer_ignore_list->elts;
+             ptrptr < ptrptr2;
+             ptrptr = (char **) ((char *) ptrptr + cls->referer_ignore_list->elt_size)) {
+            if (strstr(referer, *ptrptr))
+                return OK;
+        }
+
+
+        str = pstrcat(orig->pool, referer, " -> ", r->uri, "\n", NULL);
+        write(cls->referer_fd, str, strlen(str));
+    }
 
     return OK;
 }
 
-module referer_log_module = {
-   STANDARD_MODULE_STUFF,
-   init_referer_log,		/* initializer */
-   NULL,			/* create per-dir config */
-   NULL,			/* merge per-dir config */
-   make_referer_log_state,	/* server config */
-   NULL,			/* merge server config */
-   referer_log_cmds,		/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   referer_log_transaction,	/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module referer_log_module =
+{
+    STANDARD_MODULE_STUFF,
+    init_referer_log,           /* initializer */
+    NULL,                       /* create per-dir config */
+    NULL,                       /* merge per-dir config */
+    make_referer_log_state,     /* server config */
+    NULL,                       /* merge server config */
+    referer_log_cmds,           /* command table */
+    NULL,                       /* handlers */
+    NULL,                       /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    NULL,                       /* type_checker */
+    NULL,                       /* fixups */
+    referer_log_transaction,    /* logger */
+    NULL,                       /* header parser */
+    NULL,                       /* child_init */
+    NULL,                       /* child_exit */
+    NULL                        /* post read-request */
 };

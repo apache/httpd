@@ -71,53 +71,54 @@ typedef struct dir_config_struct {
 
 #define DIR_CMD_PERMS OR_INDEXES
 
-static command_rec dir_cmds[] = {
-{ "DirectoryIndex", set_string_slot,
-    (void*)XtOffsetOf(dir_config_rec, index_names),
-    DIR_CMD_PERMS, RAW_ARGS,
-    "a list of file names" },
-{ NULL }
+static command_rec dir_cmds[] =
+{
+    {"DirectoryIndex", set_string_slot,
+     (void *) XtOffsetOf(dir_config_rec, index_names),
+     DIR_CMD_PERMS, RAW_ARGS,
+     "a list of file names"},
+    {NULL}
 };
 
-static void *create_dir_config (pool *p, char *dummy)
+static void *create_dir_config(pool *p, char *dummy)
 {
     dir_config_rec *new =
-        (dir_config_rec *) pcalloc (p, sizeof(dir_config_rec));
+    (dir_config_rec *) pcalloc(p, sizeof(dir_config_rec));
 
     new->index_names = NULL;
-    return (void *)new;
+    return (void *) new;
 }
 
-static void *merge_dir_configs (pool *p, void *basev, void *addv)
+static void *merge_dir_configs(pool *p, void *basev, void *addv)
 {
-    dir_config_rec *new=(dir_config_rec*)pcalloc (p, sizeof(dir_config_rec));
-    dir_config_rec *base = (dir_config_rec *)basev;
-    dir_config_rec *add = (dir_config_rec *)addv;
+    dir_config_rec *new = (dir_config_rec *) pcalloc(p, sizeof(dir_config_rec));
+    dir_config_rec *base = (dir_config_rec *) basev;
+    dir_config_rec *add = (dir_config_rec *) addv;
 
-    new->index_names = add->index_names? add->index_names: base->index_names;
+    new->index_names = add->index_names ? add->index_names : base->index_names;
     return new;
 }
 
-static int handle_dir (request_rec *r)
+static int handle_dir(request_rec *r)
 {
     dir_config_rec *d =
-      (dir_config_rec *)get_module_config (r->per_dir_config,
-      &dir_module);
+    (dir_config_rec *) get_module_config(r->per_dir_config,
+                                         &dir_module);
     const char *names_ptr = d->index_names ? d->index_names : DEFAULT_INDEX;
     int error_notfound = 0;
 
-    if (r->uri[0] == '\0' || r->uri[strlen(r->uri)-1] != '/') {
-	char* ifile;
-	if (r->args != NULL)
-        	ifile = pstrcat (r->pool, escape_uri(r->pool, r->uri),
-			"/", "?", r->args, NULL);
-	else
-        	ifile = pstrcat (r->pool, escape_uri(r->pool, r->uri),
-			 "/", NULL);
+    if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') {
+        char *ifile;
+        if (r->args != NULL)
+            ifile = pstrcat(r->pool, escape_uri(r->pool, r->uri),
+                            "/", "?", r->args, NULL);
+        else
+            ifile = pstrcat(r->pool, escape_uri(r->pool, r->uri),
+                            "/", NULL);
 
-	table_set (r->headers_out, "Location",
-		   construct_url(r->pool, ifile, r->server)); 
-	return HTTP_MOVED_PERMANENTLY;
+        table_set(r->headers_out, "Location",
+                  construct_url(r->pool, ifile, r->server));
+        return HTTP_MOVED_PERMANENTLY;
     }
 
     /* KLUDGE --- make the sub_req lookups happen in the right directory.
@@ -125,92 +126,95 @@ static int handle_dir (request_rec *r)
      * and would probably break virtual includes...
      */
 
-    if (r->filename[strlen (r->filename) - 1] != '/') {
-	r->filename = pstrcat (r->pool, r->filename, "/", NULL);
+    if (r->filename[strlen(r->filename) - 1] != '/') {
+        r->filename = pstrcat(r->pool, r->filename, "/", NULL);
     }
-    
+
     while (*names_ptr) {
-          
-	char *name_ptr = getword_conf (r->pool, &names_ptr);
-	request_rec *rr = sub_req_lookup_uri (name_ptr, r);
-           
-	if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
-	    char* new_uri = escape_uri(r->pool, rr->uri);
 
-	    if (rr->args != NULL)
-		new_uri = pstrcat(r->pool, new_uri, "?", rr->args, NULL);
-	    else if (r->args != NULL)
-		new_uri = pstrcat(r->pool, new_uri, "?", r->args, NULL);
-	
-	    destroy_sub_req (rr);
-	    internal_redirect (new_uri, r);
-	    return OK;
-	}
+        char *name_ptr = getword_conf(r->pool, &names_ptr);
+        request_rec *rr = sub_req_lookup_uri(name_ptr, r);
 
-	/* If the request returned a redirect, propagate it to the client */
+        if (rr->status == HTTP_OK && rr->finfo.st_mode != 0) {
+            char *new_uri = escape_uri(r->pool, rr->uri);
 
-	if (is_HTTP_REDIRECT(rr->status) ||
-	    (rr->status == HTTP_NOT_ACCEPTABLE && *names_ptr == '\0')) {
+            if (rr->args != NULL)
+                new_uri = pstrcat(r->pool, new_uri, "?", rr->args, NULL);
+            else if (r->args != NULL)
+                new_uri = pstrcat(r->pool, new_uri, "?", r->args, NULL);
 
-	    error_notfound = rr->status;
-	    r->notes = overlay_tables(r->pool, r->notes, rr->notes);
-	    r->headers_out = overlay_tables(r->pool, r->headers_out,
-	                                            rr->headers_out);
-	    r->err_headers_out = overlay_tables(r->pool, r->err_headers_out,
-	                                                rr->err_headers_out);
-	    destroy_sub_req(rr);
-	    return error_notfound;
-	}
+            destroy_sub_req(rr);
+            internal_redirect(new_uri, r);
+            return OK;
+        }
 
-	/* If the request returned something other than 404 (or 200),
-	 * it means the module encountered some sort of problem. To be
-	 * secure, we should return the error, rather than create
-	 * along a (possibly unsafe) directory index.
-	 *
-	 * So we store the error, and if none of the listed files
-	 * exist, we return the last error response we got, instead
-	 * of a directory listing.
-	 */
-	if (rr->status && rr->status != HTTP_NOT_FOUND && rr->status != HTTP_OK)
-	    error_notfound = rr->status;
+        /* If the request returned a redirect, propagate it to the client */
 
-        destroy_sub_req (rr);
+        if (is_HTTP_REDIRECT(rr->status) ||
+            (rr->status == HTTP_NOT_ACCEPTABLE && *names_ptr == '\0')) {
+
+            error_notfound = rr->status;
+            r->notes = overlay_tables(r->pool, r->notes, rr->notes);
+            r->headers_out = overlay_tables(r->pool, r->headers_out,
+                                            rr->headers_out);
+            r->err_headers_out = overlay_tables(r->pool, r->err_headers_out,
+                                                rr->err_headers_out);
+            destroy_sub_req(rr);
+            return error_notfound;
+        }
+
+        /* If the request returned something other than 404 (or 200),
+         * it means the module encountered some sort of problem. To be
+         * secure, we should return the error, rather than create
+         * along a (possibly unsafe) directory index.
+         *
+         * So we store the error, and if none of the listed files
+         * exist, we return the last error response we got, instead
+         * of a directory listing.
+         */
+        if (rr->status && rr->status != HTTP_NOT_FOUND && rr->status != HTTP_OK)
+            error_notfound = rr->status;
+
+        destroy_sub_req(rr);
     }
 
     if (error_notfound)
-	return error_notfound;
+        return error_notfound;
 
-    if (r->method_number != M_GET) return NOT_IMPLEMENTED;
-    
+    if (r->method_number != M_GET)
+        return NOT_IMPLEMENTED;
+
     /* nothing for us to do, pass on through */
 
     return DECLINED;
 }
 
 
-static handler_rec dir_handlers[] = {
-{ DIR_MAGIC_TYPE, handle_dir },
-{ NULL }
+static handler_rec dir_handlers[] =
+{
+    {DIR_MAGIC_TYPE, handle_dir},
+    {NULL}
 };
 
-module MODULE_VAR_EXPORT dir_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,			/* initializer */
-   create_dir_config,		/* dir config creater */
-   merge_dir_configs,		/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server config */
-   dir_cmds,			/* command table */
-   dir_handlers,		/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+module MODULE_VAR_EXPORT dir_module =
+{
+    STANDARD_MODULE_STUFF,
+    NULL,                       /* initializer */
+    create_dir_config,          /* dir config creater */
+    merge_dir_configs,          /* dir merger --- default is to override */
+    NULL,                       /* server config */
+    NULL,                       /* merge server config */
+    dir_cmds,                   /* command table */
+    dir_handlers,               /* handlers */
+    NULL,                       /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    NULL,                       /* type_checker */
+    NULL,                       /* fixups */
+    NULL,                       /* logger */
+    NULL,                       /* header parser */
+    NULL,                       /* child_init */
+    NULL,                       /* child_exit */
+    NULL                        /* post read-request */
 };

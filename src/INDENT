@@ -69,19 +69,19 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_cern_meta.c		DONE by Dean
    mod_cgi.c			DONE by Dean
    mod_digest.c			DONE by Dean
-   mod_dir.c			RESERVED by Brian
-   mod_dld.c
-   mod_env.c			RESERVED by Brian
-   mod_expires.c		RESERVED by Brian
-   mod_headers.c		RESERVED by Brian
-   mod_imap.c			RESERVED by Brian
-   mod_include.c
+   mod_dir.c			DONE by Brian
+   mod_dld.c			RESERVED by Brian
+   mod_env.c			DONE by Brian
+   mod_expires.c		DONE by Brian
+   mod_headers.c		DONE by Brian
+   mod_imap.c			DONE by Brian
+   mod_include.c		RESERVED by Brian
    mod_info.c			DONE by Ken
-   mod_log_agent.c		RESERVED by Brian
+   mod_log_agent.c		DONE by Brian
    mod_log_config.c		DONE by Ken
-   mod_log_referer.c		RESERVED by Brian
-   mod_mime.c
-   mod_mime.h
+   mod_log_referer.c		DONE by Brian
+   mod_mime.c			RESERVED by Brian
+   mod_mime.h			RESERVED by Brian
    mod_mime_magic.c		DONE by Brian
    mod_negotiation.c		DONE by Ken
    mod_rewrite.c
