@@ -263,6 +263,7 @@ typedef struct {
     array_header *rewritemaps;     /* the RewriteMap entries */
     array_header *rewriteconds;    /* the RewriteCond entries (temporary) */
     array_header *rewriterules;    /* the RewriteRule entries */
+    server_rec   *server;          /* the corresponding server indicator */
 } rewrite_server_conf;
 
 

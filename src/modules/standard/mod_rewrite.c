@@ -271,6 +271,7 @@ static void *config_server_create(pool *p, server_rec *s)
     a->rewritemaps     = make_array(p, 2, sizeof(rewritemap_entry));
     a->rewriteconds    = make_array(p, 2, sizeof(rewritecond_entry));
     a->rewriterules    = make_array(p, 2, sizeof(rewriterule_entry));
+    a->server          = s;
 
     return (void *)a;
 }
@@ -285,6 +286,7 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
 
     a->state   = overrides->state;
     a->options = overrides->options;
+    a->server  = overrides->server;
 
     if (a->options & OPTION_INHERIT) {
         /* 
@@ -971,6 +973,17 @@ static int hook_uri2file(request_rec *r)
      *  else return immediately!
      */
     if (conf->state == ENGINE_DISABLED)
+        return DECLINED;
+
+    /*  
+     *  check for the ugly API case of a virtual host section where no
+     *  mod_rewrite directives exists. In this situation we became no chance
+     *  by the API to setup our default per-server config so we have to
+     *  on-the-fly assume we have the default config. But because the default
+     *  config has a disabled rewriting engine we are lucky because can
+     *  just stop operating now.
+     */
+    if (conf->server != r->server)
         return DECLINED;
 
     /*

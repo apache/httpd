@@ -1,5 +1,14 @@
 Changes with Apache 1.3b6
 
+  *) Fix mod_rewrite for the ugly API case where <VirtualHost> sections exist
+     but without any RewriteXXXXX directives. Here mod_rewrite is given no
+     chance by the API to initialise its per-server configuration and thus
+     receives the wrong one from the main server. This is now avoided by
+     remembering the server together with the config structure while
+     configuring and later assuming there is no config when we see a
+     difference between the remembered server and the one calling us. 
+     [Ralf S. Engelschall, PR#1790]
+
   *) Fixed the DBM RewriteMap support for mod_rewrite: First the support now
      is automatically disabled under configure time when the dbm_xxx functions
      are not available. Second, two heavy source code errors in the DBM
