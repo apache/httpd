@@ -439,12 +439,28 @@ void reinit_scoreboard(ap_context_t *p)
  * Above code is shmem code. Below code is interacting with the shmem
  ****/
 
-void ap_reset_connection_status(long conn_id)
+static int maintain_connection_status = 1;
+
+void ap_dexter_set_maintain_connection_status(int flag) {
+    maintain_connection_status = flag;
+    return;
+}
+
+/* Useful to erase the status of children that might be from previous
+ * generations */
+void ap_dexter_force_reset_connection_status(long conn_id)
 {
     int i;
 
     for (i = 0; i < STATUSES_PER_CONNECTION; i++) {
         ap_scoreboard_image->table[conn_id][i].key[0] = '\0';
+    }
+}
+
+void ap_reset_connection_status(long conn_id)
+{
+    if (maintain_connection_status) {
+        ap_dexter_force_reset_connection_status(conn_id);
     }
 }
 
@@ -454,6 +470,7 @@ const char *ap_get_connection_status(long conn_id, const char *key)
     int i = 0;
     status_table_entry *ss;
 
+    if (!maintain_connection_status) return "";
     while (i < STATUSES_PER_CONNECTION) {
         ss = &(ap_scoreboard_image->table[conn_id][i]);
         if (ss->key[0] == '\0') {
@@ -477,6 +494,7 @@ void ap_update_connection_status(long conn_id, const char *key,
     int i = 0;
     status_table_entry *ss;
 
+    if (!maintain_connection_status) return;
     while (i < STATUSES_PER_CONNECTION) {
         ss = &(ap_scoreboard_image->table[conn_id][i]);
         if (ss->key[0] == '\0') {
@@ -506,6 +524,11 @@ ap_array_header_t *ap_get_status_table(ap_context_t *p)
     status_table_entry *ss;
 
     server_status = ap_make_array(p, 0, sizeof(ap_status_table_row_t));
+
+    /* Go ahead and return what's in the connection status table even if we
+     * aren't maintaining it. We can at least look at what children from
+     * previous generations are up to. */
+
     for (i = 0; i < max_daemons_limit*HARD_THREAD_LIMIT; i++) {
 	if (ap_scoreboard_image->table[i][0].key[0] == '\0')
 	    continue;
