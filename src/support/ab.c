@@ -775,7 +775,7 @@ static void test(void)
 		"%s" "%s" "%s"
 		"Host: %s\r\n"
 		"Accept: */*\r\n"
-		"\r\n" "%s",
+		"%s" "\r\n",
 		path,
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
