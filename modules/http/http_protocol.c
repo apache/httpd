@@ -2015,9 +2015,10 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
 {
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
-    register int w, o;
+    register int o;
+    ap_ssize_t w;
     ap_ssize_t n;
-    ap_status_t status;
+    ap_status_t rv;
 
     if (length == 0)
         return 0;
@@ -2030,8 +2031,8 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
         
         n = o;
         do {
-            status = ap_read(fd, buf, &n);
-        } while (status == APR_EINTR && !ap_is_aborted(r->connection) &&
+            rv = ap_read(fd, buf, &n);
+        } while (rv == APR_EINTR && !ap_is_aborted(r->connection) &&
                  (n < 1));
 
         if (n < 1) {
@@ -2041,15 +2042,15 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
         o = 0;
 
         while (n && !ap_is_aborted(r->connection)) {
-            w = ap_bwrite(r->connection->client, &buf[o], n);
+            rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
             if (w > 0) {
                 total_bytes_sent += w;
                 n -= w;
                 o += w;
             }
-            else if (w < 0) {
+            else if (rv != APR_SUCCESS) {
                 if (!ap_is_aborted(r->connection)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                      "client stopped connection before send body completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
@@ -2076,7 +2077,8 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
     long zero_timeout = 0;
-    int w, o;
+    register int o;
+    ap_ssize_t w;
     ap_ssize_t n;
     ap_status_t rv;
 
@@ -2120,15 +2122,15 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
         
         o = 0;
         while (n && !ap_is_aborted(r->connection)) {
-            w = ap_bwrite(r->connection->client, &buf[o], n);
+            rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
             if (w > 0) {
                 total_bytes_sent += w;
                 n -= w;
                 o += w;
             }
-            else if (w < 0) {
+            else if (rv != APR_SUCCESS) {
                 if (!ap_is_aborted(r->connection)) {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                         "client stopped connection before rflush completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
@@ -2159,7 +2161,9 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
                              size_t length)
 {
     size_t total_bytes_sent = 0;
-    int n, w;
+    int n;
+    ap_ssize_t w;
+    ap_status_t rv;
 
     if (length == 0)
         return 0;
@@ -2175,19 +2179,19 @@ API_EXPORT(size_t) ap_send_mmap(void *mm, request_rec *r, size_t offset,
         }
 
         while (n && !r->connection->aborted) {
-            w = ap_bwrite(r->connection->client, (char *) mm + offset, n);
+            rv = ap_bwrite(r->connection->client, (char *) mm + offset, n, &w);
             if (w > 0) {
                 total_bytes_sent += w;
                 n -= w;
                 offset += w;
             }
-            else if (w < 0) {
+            else if (rv != APR_SUCCESS) {
                 if (r->connection->aborted)
                     break;
-                else if (errno == EAGAIN)
+                else if (rv == EAGAIN)
                     continue;
                 else {
-                    ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                      "client stopped connection before send mmap completed");
                     ap_bsetflag(r->connection->client, B_EOUT, 1);
                     r->connection->aborted = 1;
@@ -2242,15 +2246,16 @@ API_EXPORT(int) ap_rputs(const char *str, request_rec *r)
 
 API_EXPORT(int) ap_rwrite(const void *buf, int nbyte, request_rec *r)
 {
-    int n;
+    ap_ssize_t n;
+    ap_status_t rv;
 
     if (r->connection->aborted)
         return EOF;
 
-    n = ap_bwrite(r->connection->client, buf, nbyte);
+    rv = ap_bwrite(r->connection->client, buf, nbyte, &n);
     if (n < 0) {
         if (!r->connection->aborted) {
-            ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+            ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                 "client stopped connection before rwrite completed");
             ap_bsetflag(r->connection->client, B_EOUT, 1);
             r->connection->aborted = 1;
@@ -2314,6 +2319,7 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
     int i, j, k;
     const char *x;
     BUFF *fb = r->connection->client;
+    ap_status_t rv;
 
     if (r->connection->aborted)
         return EOF;
@@ -2324,11 +2330,11 @@ API_EXPORT_NONSTD(int) ap_rvputs(request_rec *r,...)
         if (x == NULL)
             break;
         j = strlen(x);
-        i = ap_bwrite(fb, x, j);
+        rv = ap_bwrite(fb, x, j, &i);
         if (i != j) {
             va_end(args);
             if (!r->connection->aborted) {
-                ap_log_rerror(APLOG_MARK, APLOG_INFO, errno, r,
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, rv, r,
                     "client stopped connection before rvputs completed");
                 ap_bsetflag(r->connection->client, B_EOUT, 1);
                 r->connection->aborted = 1;
