@@ -1,5 +1,10 @@
 Changes with Apache 2.0.36
 
+  *) mod_autoindex output when SuppressRules was specified would
+     omit the first carriage return so the first item in the list
+     would appear to the right of the column headings instead of
+     underneath them. PR 8016  [David Shane Holden <dpejesh@yahoo.com>]
+
   *) Moved the call to apr_mmap_dup outside the error branch so
      that it would actually get called. This fixes a core dump
      at init everytime you use the MMapFile directive. PR 8314

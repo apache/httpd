@@ -1607,6 +1607,9 @@ static void output_directories(struct ent **ar, int n,
         if (!(autoindex_opts & SUPPRESS_RULES)) {
             ap_rputs("<hr />", r);
         }
+        else {
+            ap_rputc('\n', r);
+        }
     }
     else {
         ap_rputs("<ul>", r);
