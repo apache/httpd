@@ -1192,8 +1192,6 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     walk_cache_t *cache;
     const char *entry_uri;
 
-    cache = prep_walk_cache(AP_NOTE_LOCATION_WALK, r);
-
     /* No tricks here, there are no <Locations > to parse in this vhost.
      * We won't destroy the cache, just in case _this_ redirect is later
      * redirected again to a vhost with <Location > blocks to optimize.
@@ -1201,6 +1199,8 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     if (!num_sec) {
         return OK;
     }
+
+    cache = prep_walk_cache(AP_NOTE_LOCATION_WALK, r);
 
     /* Location and LocationMatch differ on their behaviour w.r.t. multiple
      * slashes.  Location matches multiple slashes with a single slash,
