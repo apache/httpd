@@ -971,7 +971,8 @@ static int create_acceptex_context(ap_context_t *_pconf, ap_listen_rec *lr)
     /* AcceptEx on the completion context. The completion context will be signaled
      * when a connection is accepted. */
     if (!AcceptEx(nsd, context->accept_socket,
-                  context->recv_buf, context->recv_buf_size,
+                  context->recv_buf, 
+                  0, //context->recv_buf_size,
                   PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                   &BytesRead,
                   (LPOVERLAPPED) context)) {
@@ -1011,7 +1012,8 @@ static ap_inline int reset_acceptex_context(PCOMP_CONTEXT context)
     ap_get_os_sock(&nsd, context->lr->sd);
 
     if (!AcceptEx(nsd, context->accept_socket, 
-                  context->recv_buf, context->recv_buf_size,
+                  context->recv_buf, 
+                  0, //context->recv_buf_size,
                   PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                   &BytesRead, (LPOVERLAPPED) context)) {
         lasterror = WSAGetLastError();
@@ -1031,7 +1033,6 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     LPOVERLAPPED pol;
     DWORD CompKey;
     DWORD BytesRead;
-    int lastError;
 
     if (context != NULL) {
         /* If child shutdown has been signaled, clean-up the completion context */
@@ -1057,7 +1058,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
                                        &pol,
                                        INFINITE);
         if (!rc) {
-            ap_log_error(APLOG_MARK,APLOG_ERR, lastError, server_conf,
+            ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), server_conf,
                          "Child: %d - GetQueuedCompletionStatus() failed", my_pid);
             continue;
         }
@@ -1086,7 +1087,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
     /* Received a connection */
     context->conn_io->incnt = BytesRead;
     GetAcceptExSockaddrs(context->recv_buf, 
-                         context->recv_buf_size,
+                         0, //context->recv_buf_size,
                          PADDED_ADDR_SIZE,
                          PADDED_ADDR_SIZE,
                          &context->sa_server,
