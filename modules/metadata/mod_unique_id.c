@@ -64,20 +64,15 @@
  */
 
 #include "apr_general.h"    /* for APR_XtOffsetOf                */
+#include "apr_network_io.h"
 
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_protocol.h"  /* for ap_hook_post_read_request */
 
-#if APR_HAVE_NETDB_H
-#include <netdb.h>
-#endif
-#if APR_HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
 #if APR_HAVE_UNISTD_H
-#include <unistd.h>
+#include <unistd.h>         /* for getpid() */
 #endif
 
 typedef struct {
@@ -177,12 +172,11 @@ static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
 
 static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
 {
-#ifndef MAXHOSTNAMELEN
-#define MAXHOSTNAMELEN 256
-#endif
-    char str[MAXHOSTNAMELEN + 1];
-    struct hostent *hent;
+    char str[APRMAXHOSTLEN + 1];
     apr_short_interval_time_t pause;
+    apr_status_t rv;
+    char *ipaddrstr;
+    apr_sockaddr_t *sockaddr;
 
     /*
      * Calculate the sizes and offsets in cur_unique_id.
@@ -211,24 +205,27 @@ static void unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *p
      * of the addresses from the main_server, since those aren't as likely to
      * be unique as the physical address of the machine
      */
-    if (gethostname(str, sizeof(str) - 1) != 0) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, errno, main_server,
-          "gethostname: mod_unique_id requires the hostname of the server");
-        exit(1);
-    }
-    str[sizeof(str) - 1] = '\0';
-
-    if ((hent = gethostbyname(str)) == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, h_errno, main_server,
-                    "mod_unique_id: unable to gethostbyname(\"%s\")", str);
+    if ((rv = apr_gethostname(str, sizeof(str) - 1, p)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
+          "mod_unique_id: unable to find hostname of the server");
         exit(1);
     }
 
-    global_in_addr = ((struct in_addr *) hent->h_addr_list[0])->s_addr;
+    /* XXX theoretically there are boxes out there which want to use
+     *     mod_unique_id but which have no IPv4 address...  send in a patch :)
+     */
+    if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET, 0, 0, p)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
+                    "mod_unique_id: unable to find IPv4 address of \"%s\"", str);
+        exit(1);
+    }
 
+    global_in_addr = sockaddr->sa.sin.sin_addr.s_addr;
+
+    apr_sockaddr_ip_get(&ipaddrstr, sockaddr);
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, main_server,
                 "mod_unique_id: using ip addr %s",
-                inet_ntoa(*(struct in_addr *) hent->h_addr_list[0]));
+                 ipaddrstr);
 
     /*
      * If the server is pummelled with restart requests we could possibly end

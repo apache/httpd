@@ -1,5 +1,8 @@
 Changes with Apache 2.0.29-dev
 
+  *) APR-ize the resolver logic in mod_unique_id.  This fixes a bug
+     in logging the error from a failed DNS lookup.  [Jeff Trawick]
+
   *) Added the missing macros AP_INIT_TAKE13 and AP_INIT_TAKE123.
      [Cliff Woolley]
 
