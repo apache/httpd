@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.46.2.32 (outdated: 1.46.2.33) -->
+<!-- English Revision: 1.46.2.33 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -2035,6 +2035,8 @@ regul&auml;re Ausdr&uuml;cke passen</description>
     verf&uuml;gbar:</p>
 
     <table border="1">
+    <columnspec><column width=".2"/><column width=".3"/><column width=".5"/>
+  	</columnspec>
       <tr>
         <th><strong>Level</strong> </th>
 
