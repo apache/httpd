@@ -68,6 +68,7 @@
 #include "apr_lib.h"
 
 #define APR_WANT_STRFUNC
+#define APR_WANT_BYTEFUNC
 #include "apr_want.h"
 
 #include "ap_config.h"
@@ -80,10 +81,6 @@
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
-#if APR_HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-
 
 enum allowdeny_type {
     T_ENV,

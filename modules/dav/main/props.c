@@ -181,12 +181,9 @@
 #include "apr.h"
 #include "apr_strings.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for sprintf() */
-#endif
-#if APR_HAVE_ARPA_INET_H
-#include <arpa/inet.h>          /* for ntohs(), htons() */
-#endif
+#define APR_WANT_STDIO
+#define APR_WANT_BYTEFUNC
+#include "apr_want.h"
 
 #include "mod_dav.h"
 
