@@ -21,8 +21,6 @@ APACHE_CHECK_STANDARD_MODULE(status, process/thread monitoring, , no)
 APACHE_CHECK_STANDARD_MODULE(include, Server Side Includes, includes, yes)
 APACHE_CHECK_STANDARD_MODULE(autoindex, directory listing, , yes)
 APACHE_CHECK_STANDARD_MODULE(dir, directory request handling, , yes)
-APACHE_CHECK_STANDARD_MODULE(cgi, CGI scripts, , yes)
-APACHE_CHECK_STANDARD_MODULE(cgid, CGI scripts, , no)
 APACHE_CHECK_STANDARD_MODULE(asis, as-is filetypes, , yes)
 APACHE_CHECK_STANDARD_MODULE(imap, internal imagemaps, , yes)
 APACHE_CHECK_STANDARD_MODULE(actions, Action triggering on requests, action, yes)
@@ -55,6 +53,19 @@ APACHE_CHECK_STANDARD_MODULE(setenvif, basing ENV vars on headers, , yes)
 APACHE_CHECK_STANDARD_MODULE(echo, ECHO server, , yes)
 
 LTFLAGS="$LTFLAGS -export-dynamic"
+
+if test "$apache_cv_mpm" = "mpmt_pthread" -o "$apache_cv_mpm" = "dexter"; then
+# if we are using a threaded MPM, we will get better performance with
+# mod_cgid, so make it the default.
+    APACHE_CHECK_STANDARD_MODULE(cgid, CGI scripts, , yes)
+    APACHE_CHECK_STANDARD_MODULE(cgi, CGI scripts, , no)
+else
+# if we are using a non-threaded MPM, it makes little sense to use
+# mod_cgid, and it just opens up holes we don't need.  Make mod_cgi the
+# default
+    APACHE_CHECK_STANDARD_MODULE(cgi, CGI scripts, , yes)
+    APACHE_CHECK_STANDARD_MODULE(cgid, CGI scripts, , no)
+fi
 
 if test "$sharedobjs" = "yes"; then
     APACHE_CHECK_STANDARD_MODULE(so, DSO capability, , yes)
