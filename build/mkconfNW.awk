@@ -20,6 +20,8 @@ BEGIN {
     B["errordir"] = A["ServerRoot"]"/"A["errordir"]
     B["proxycachedir"] = A["ServerRoot"]"/"A["proxycachedir"]
     B["cgidir"] = A["ServerRoot"]"/"A["cgidir"]
+    B["listen_stmt_1"] = "Listen "A["Port"]
+    B["listen_stmt_2"] = ""
 }
 
 /@@LoadModule@@/ {
@@ -69,6 +71,11 @@ match ($0,/@rel_.*@/) {
 match ($0,/@exp_.*@/) {
     s=substr($0,RSTART+5,RLENGTH-6)
     sub(/@exp_.*@/,B[s],$0)
+}
+
+match ($0,/@nonssl_.*@/) {
+    s=substr($0,RSTART+8,RLENGTH-9)
+    sub(/@nonssl_.*@/,B[s],$0)
 }
 
 {
