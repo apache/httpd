@@ -288,7 +288,7 @@ int main (int argc, char *argv[])
 	    statfile = argv[i];
 	}
 	else {
-	    fprintf(stderr, "Usage: logresolve [-s statfile] [-c] < input > output");
+	    fprintf(stderr, "Usage: logresolve [-s statfile] [-c] < input > output\n");
 	    exit(0);
 	}
     }
