@@ -1,6 +1,8 @@
 Quick installation instructions (UNIX):
 
-- Add generic ldap support and the TWO ldap modules to the build, like this:
+- Building on generic Unix:
+
+  Add generic ldap support and the TWO ldap modules to the build, like this:
 
   ./configure --with-ldap --enable-ldap --enable-auth-ldap
 
@@ -15,6 +17,19 @@ Quick installation instructions (UNIX):
 
   The --enable-auth-ldap option switches on the LDAP authentication
   module.
+
+- Building on AIX:
+
+  The following ./configure line is reported to work for AIX:
+
+    CC=cc_r; export CC
+    CPPFLAGS=-qcpluscmt;export CPPFLAGS
+    ./configure --with-mpm=worker --prefix=/usr/local/apache \
+      --enable-dav=static --enable-dav_fs=static --enable-ssl=static
+      --with-ldap=yes --with-ldap-include=/usr/local/include
+      --with-ldap-lib=/usr/local/lib --enable-ldap=static
+      --enable-auth_ldap=static
+
 
 Quick installation instructions (win32):
 
