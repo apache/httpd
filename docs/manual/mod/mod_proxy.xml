@@ -515,7 +515,9 @@ functionality <code>ProxyPass</code> provides here). It also takes care of
 redirects the server foo.com sends: when <code>http://foo.com/bar</code> is
 redirected by him to <code>http://foo.com/quux</code> Apache adjusts this to
 <code>http://wibble.org/mirror/foo/quux</code> before forwarding the HTTP
-redirect response to the client. </p>
+redirect response to the client. Note that the hostname used for
+constructing the URL is chosen in respect to the setting of the
+<directive module="core">UseCanonicalName</directive> directive.</p>
 <p>
 Note that this <directive>ProxyPassReverse</directive> directive can
 also be used in conjunction with the proxy pass-through feature
