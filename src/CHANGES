@@ -1,5 +1,10 @@
 Changes with Apache 1.3.27
 
+  *) Add new "suppress-error-charset" environment variable to
+     allow a BrowserMatch workaround for clients that incorrectly
+     use the charset of a redirect as the charset of the target.
+     [Ken Coar]
+
   *) Support Caldera OpenUNIX 8.  [Larry Rosenman <ler@lerctr.org>]
 
   *) Use SysV semaphores by default on OpenBSD. [Henning Brauer 

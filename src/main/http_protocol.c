@@ -2834,7 +2834,13 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
         r->content_languages = NULL;
         r->content_encoding = NULL;
         r->clength = 0;
-        r->content_type = "text/html; charset=iso-8859-1";
+        if (ap_table_get(r->subprocess_env,
+                         "suppress-error-charset") != NULL) {
+            r->content_type = "text/html";
+        }
+        else {
+            r->content_type = "text/html; charset=iso-8859-1";
+        }
 
         if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
             ap_table_setn(r->headers_out, "Allow", make_allow(r));
