@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1.13 (outdated: 1.14) -->
+<!-- English Revision: 1.15 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -239,7 +239,7 @@ href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
 <dt><a name="https">HTTPS</a></dt> <dd>Protocolo de transferencia de
 Hipertext (Seguro), es el mecanismo de comunicaci&#243;n encriptado
 est&#225;ndar en World Wide Web. En realidad es HTTP sobre <a
-name="ssl">SSL</a>.<br /> Consulte: <a href="ssl/">Encriptado
+href="#ssl">SSL</a>.<br /> Consulte: <a href="ssl/">Encriptado
 SSL/TLS</a></dd>
 
 <dt><a name="method">M&#233;todo</a></dt> <dd>En el contexto de <a
@@ -305,7 +305,7 @@ SSL/TLS</a></dd>
 <dd>Un texto no encriptado.</dd>
 
 <dt><a name="privatekey">Clave Privada</a></dt> <dd>La clave secreta
-de un <a name="publickeycryptography">sistema criptogr&#225;fico de
+de un <a href="#publickeycryptography">sistema criptogr&#225;fico de
 Clave P&#250;blica</a>, usada para desencriptar los mensajes entrantes
 y firmar los salientes.<br /> Consulte: <a href="ssl/">Encriptado
 SSL/TLS</a></dd>
@@ -321,7 +321,7 @@ respuesta.<br /> Consulte: <a
 href="mod/mod_proxy.html">mod_proxy</a></dd>
 
 <dt><a name="publickey">Clave Publica</a></dt> <dd>La clave disponible
-p&#250;blicamente en un <a name="publickeycryptography">sistema
+p&#250;blicamente en un <a href="#publickeycryptography">sistema
 criptogr&#225;fico de Clave P&#250;blica</a>, usado para encriptar
 mensajes destinados a su propietario y para desencriptar firmas hechas
 por su propietario.<br /> Consulte: <a href="ssl/">Encriptado
