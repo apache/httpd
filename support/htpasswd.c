@@ -355,8 +355,8 @@ static int exists(char *fname, apr_pool_t *pool)
     apr_finfo_t sbuf;
     apr_status_t check;
 
-    check = apr_stat(&sbuf, fname, APR_FINFO_NORM, pool);
-    return (check ? 0 : 1);
+    check = apr_stat(&sbuf, fname, APR_FINFO_TYPE, pool);
+    return ((check || sbuf.filetype != APR_REG) ? 0 : 1);
 }
 
 /*
@@ -393,15 +393,17 @@ int main(int argc, char *argv[])
     int noninteractive = 0;
     int i;
     int args_left = 2;
-#if APR_CHARSET_EBCDIC
     apr_pool_t *pool;
+#if APR_CHARSET_EBCDIC
     apr_status_t rv;
     apr_xlate_t *to_ascii;
+#endif
 
     apr_initialize();
     atexit(apr_terminate);
     apr_pool_create(&pool, NULL);
 
+#if APR_CHARSET_EBCDIC
     rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
     if (rv) {
         fprintf(stderr, "apr_xlate_open(to ASCII)->%d\n", rv);
@@ -553,7 +555,7 @@ int main(int argc, char *argv[])
 	 * Now check to see if we can preserve an existing file in case
 	 * of password verification errors on a -c operation.
 	 */
-	if (newfile && exists(pwfilename) && (! readable(pwfilename))) {
+	if (newfile && exists(pwfilename, pool) && (! readable(pwfilename))) {
 	    fprintf(stderr, "%s: cannot open file %s for read access\n"
 		    "%s: existing auth data would be lost on "
 		    "password mismatch",
