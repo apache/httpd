@@ -383,12 +383,12 @@ the child processes</description>
 <module>prefork</module></modulelist>
 
 <usage>
-    <p>Apache uses a scoreboard to communicate between its children
-    and the parent. Some architectures require a file to facilitate
-    this communication. If left unspecified, Apache first attempts to
-    create the scoreboard entirely in memory (using anonymous shared
-    memory), and failing that will attempt to create the file on disk
-    (using file-based shared memory). Specifying this directive causes
+    <p>Apache uses a scoreboard to communicate between its parent
+    and child processes.  Some architectures require a file to facilitate
+    this communication. If the file is left unspecified, Apache first
+    attempts to create the scoreboard entirely in memory (using anonymous
+    shared memory) and, failing that, will attempt to create the file on
+    disk (using file-based shared memory). Specifying this directive causes
     Apache to always create the file on the disk.</p>
 
     <p>File-based shared memory is useful for third-party applications
