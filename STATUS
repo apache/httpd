@@ -70,12 +70,9 @@ Committed Code Changes:
       scheme never succeeds (fwd)
     * Paul's [PATCH] a bundle of multithreading changes
     * Ken's [PATCH] for copyright year update
+    * Dean's [PATCH] 1.3: security updates for mod_imap and mod_include
 
 Available Patches:
-
-    * Dean's [PATCH] 1.3: security updates for mod_imap and mod_include
-	<Pine.LNX.3.95dg3.980106143648.1054X-100000@twinlark.arctic.org>
-	Status: Dean +1, Jim +1, Martin +1
 
     * Dean's [PATCH] yet another slow function
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>

@@ -1,5 +1,12 @@
 Changes with Apache 1.3b4
 
+  *) SECURITY: General mod_include cleanup, including fixing several
+     possible buffer overflows and a possible infinite loop.
+     [Dean Gaudet, Marc Slemko]
+
+  *) SECURITY: Numerous changes to mod_imap in a general cleanup
+     including fixing a possible buffer overflow.  [Dean Gaudet]
+
   *) WIN32: overhaul of multithreading code. Shutdowns are now graceful
      (connections are not dropped). Code can handle graceful restarts
      (but there is as yet no way to signal this to Apache). Various
@@ -537,11 +544,11 @@ Changes with Apache 1.3b2 (there is no 1.3b1)
      update_mtime() routine has also been added to advance it if
      appropriate.  [Roy Fielding, Ken Coar]
 
-  *) If a htaccess file can not be read due to bad permissions, deny
-     access to the directory with a HTTP_FORBIDDEN.  The previous
-     behavior was to ignore the htaccess file if it could not
-     be read.  This change may make some setups with unreadable
-     htaccess files stop working.  PR#817  [Marc Slemko]
+  *) SECURITY: If a htaccess file can not be read due to bad permissions,
+     deny access to the directory with a HTTP_FORBIDDEN.  The previous
+     behavior was to ignore the htaccess file if it could not be read.
+     This change may make some setups with unreadable htaccess files
+     stop working.  PR#817  [Marc Slemko]
 
   *) Add aplog_error() providing a mechanism to define levels of
      verbosity to the server error logging. This addition also provides
