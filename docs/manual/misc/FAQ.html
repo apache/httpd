@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.32 $ ($Date: 1997/04/21 22:27:57 $)
+$Revision: 1.33 $ ($Date: 1997/04/21 22:43:23 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -21,10 +21,6 @@ do not appear, and are not needed, for the hypertext version.
 <!-- - can't bind to port 80					    -->
 <!--   - permission denied					    -->
 <!--   - address already in use					    -->
-<!-- - "httpd: could not set socket option TCP_NODELAY"		    -->
-<!--   not a problem if occasional; client disc before server	    -->
-<!--   setsockopt						    -->
-<!-- - disable Apache buffering of script output by using nph-	    -->
 <!-- - access control based on DNS name really needs MAXIMUM_DNS    -->
 <!--   and double-check that rDNS resolves to name expected	    -->
 <!-- - mod_auth & passwd lines "user:pw:.*" - ++1st colon onward is -->
@@ -123,6 +119,9 @@ do not appear, and are not needed, for the hypertext version.
    </LI>
    <LI><A HREF="#nodelay">Why am I getting &quot;<SAMP>httpd: could not
     set socket option TCP_NODELAY</SAMP>&quot; in my error log?</A>
+   </LI>
+   <LI><A HREF="#nph-scripts">How can I get my script's output without
+    Apache buffering it?</A>
    </LI>
   </OL>
  </LI>
@@ -925,6 +924,63 @@ do not appear, and are not needed, for the hypertext version.
   requests your server handles, and it's advisory only in any case.
   </P>
   <HR>
+ </LI>
+ <LI><A NAME="nph-scripts">
+      <STRONG>How can I get my script's output without Apache buffering
+      it?</STRONG>
+     </A>
+  <P>
+  In order to improve network performance, Apache buffers script output
+  into relatively large chunks.  If you have a script that sends
+  information in bursts (such as partial-done messages in a multi-commit
+  database transaction, perhaps), the client will not necessarily get
+  the output as the script is generating it.
+  </P>
+  <P>
+  To avoid this, Apache recognises scripts whose names begin with
+  &quot;<SAMP>nph-</SAMP>&quot; as <EM>non-parsed-header</EM> scripts.
+  That is, Apache won't buffer their output, but connect it directly to
+  the socket going back to the client.
+  </P>
+  <P>
+  While this will probably do what you want, there <EM>are</EM> some
+  disadvantages to it:
+  </P>
+  <UL>
+   <LI><STRONG>YOU</STRONG> (the script) are responsible for generating
+     <STRONG>ALL</STRONG> of the HTTP header, and no longer
+     <EM>just</EM> the &quot;<SAMP>Content-type</SAMP>&quot; or
+     &quot;<SAMP>Location</SAMP>&quot; headers
+   </LI>
+   <LI>Unless your script generates its output carefully, you will see a
+    performance penalty as excessive numbers of packets go back and forth
+   </LI>
+  </UL>
+  <P>
+  As an example how you might handle the former (in a Perl script):
+  </P>
+  <CODE>
+   <DL>
+    <DD>if ($0 =~ m:/*nph-:) {
+        <BR>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	$HTTP_headers&nbsp;=&nbsp;
+	&quot;HTTP/1.1&nbsp;200&nbsp;OK\015\012&quot;;
+        <BR>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	$HTTP_headers&nbsp;.=&nbsp;
+	&quot;Connection:&nbsp;close\015\012&quot;;
+        <BR>
+	&nbsp;&nbsp;&nbsp;&nbsp;
+	printf&nbsp;($HTTP_headers);
+	<BR>
+	};
+    </DD>
+   </DL>
+  </CODE>
+  <P>
+  and then follow with your normal non-<SAMP>nph</SAMP> headers.
+  </P>
  </LI>
 </OL>
 <HR>
