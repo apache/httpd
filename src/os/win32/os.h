@@ -12,12 +12,15 @@
    chdir() */
 #include <direct.h>
 
+#define STATUS
 #define WIN32_LEAN_AND_MEAN
 #define STRICT
 #define NO_UNISTD_H
 #define NO_WRITEV
 #define NO_SETSID
 #define NO_USE_SIGACTION
+#define NO_TIMES
+#define NO_GETTIMEOFDAY
 #define NEED_PROCESS_H
 #define USE_LONGJMP
 #define HAVE_MMAP
