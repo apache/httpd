@@ -45,7 +45,7 @@ clean:
 installdll: _release installdll
 
 _build:
-	echo LONG %LONG% SHORT %SHORT% x
+#	echo LONG %LONG% SHORT %SHORT% x
 	cd os\win32
 	 nmake /nologo CFG="ApacheOS - Win32 %LONG%" -f ApacheOS.mak
 	cd ..\..

@@ -26,5 +26,6 @@ int main(int argc, char *argv[])
 	printf("%s%c", value, (i < 255) ? ',' : ' ');
     }
     printf("\n};\n");
-    exit(0);
+
+    return 0;
 }
