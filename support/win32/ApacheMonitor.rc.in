@@ -58,6 +58,8 @@
 
 #include <windows.h>
 
+#include "ApacheMonitor.h"
+
 IDI_APSRVMON            ICON    DISCARDABLE     "ApacheMonitor.ico"
 IDI_ICOSTOP             ICON    DISCARDABLE     "apstop.ico"
 IDI_ICORUN              ICON    DISCARDABLE     "aprun.ico"
