@@ -1,6 +1,6 @@
 
-/*                          ZeusBench V1.0
-			    ==============
+/*                          ZeusBench V1.01
+			    ===============
 
 This program is Copyright (C) Zeus Technology Limited 1996.
 
@@ -16,21 +16,38 @@ procurement of substitute good or services; loss of use, data, or profits;
 or business interruption) however caused and on theory of liability.  Whether
 in contract, strict liability or tort (including negligence or otherwise) 
 arising in any way out of the use of this software, even if advised of the
-possibility of such damage 
+possibility of such damage.
 
-     Written by Adam Twiss (adam@zeus.co.uk).  February 1996
+     Written by Adam Twiss (adam@zeus.co.uk).  March 1996
+
+Thanks to the following people for their input:
+  Mike Belshe (mbelshe@netscape.com) 
+  Michael Campanella (campanella@stevms.enet.dec.com)
 
 */
 
-#ifdef SUNOS
-/* for some reason my SunOS headers did not have these defined */
-extern char *optarg;
-extern int optind, opterr, optopt;
+/* -------------------- Notes on compiling ------------------------------
+
+This should compile unmodified using gcc on HP-UX, FreeBSD, Linux,
+IRIX, Solaris, AIX and Digital Unix (OSF).  On Solaris 2.x you will
+need to compile with "-lnsl -lsocket" options.  If you have any
+difficulties compiling then let me know.
+
+On SunOS 4.x.x you may need to compile with -DSUNOS4 to add the following 
+two lines of code which appear not to exist in my SunOS headers */
+
+#ifdef SUNOS4
+extern char *optarg; 
+extern int optind, opterr, optopt;   
 #endif
 
-/* #include <sys/filio.h>*/
+/*  -------------------------------------------------------------------- */
+
+/* affects include files on Solaris */
+#define BSD_COMP
 
 #include <sys/time.h> 
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -43,6 +60,9 @@ extern int optind, opterr, optopt;
 #include <string.h>
 
 /* ------------------- DEFINITIONS -------------------------- */
+
+/* maximum number of requests on a time limited test */
+#define MAX_REQUESTS 50000 
 
 /* good old state machine */
 #define STATE_UNCONNECTED 0
@@ -96,7 +116,7 @@ int good=0, bad=0;     /* number of good and bad requests */
 /* store error cases */
 int err_length = 0, err_conn = 0, err_except = 0;
 
-struct timeval start, end;
+struct timeval start, endtime;
 
 /* global request (and its length) */
 char request[512];
@@ -168,12 +188,12 @@ void output_results()
 {
   int timetaken;
   
-  gettimeofday(&end,0);
-  timetaken = timedif(end, start);
+  gettimeofday(&endtime,0);
+  timetaken = timedif(endtime, start);
   
   printf("\n---\n");
   printf("Server:                 %s\n", server_name);
-  printf("Doucment Length:        %d\n", doclen);  
+  printf("Document Length:        %d\n", doclen);  
   printf("Concurency Level:       %d\n", concurrency);
   printf("Time taken for tests:   %d.%03d seconds\n", 
 	 timetaken/1000, timetaken%1000);
@@ -229,10 +249,13 @@ void start_connect(struct connection *c)
   c->keepalive = 0;
   c->cbx = 0; 
   c->gotheader = 0;
+
   c->fd = socket(AF_INET, SOCK_STREAM, 0);
   if(c->fd<0) err("socket");
+
   nonblock(c->fd);
   gettimeofday(&c->start,0);
+
   if(connect(c->fd, (struct sockaddr *) &server, sizeof(server))<0) {
     if(errno==EINPROGRESS) {
       c->state = STATE_CONNECTING;
@@ -260,19 +283,28 @@ void start_connect(struct connection *c)
 
 void close_connection(struct connection *c)
 {
-  if(good==1) {
-    /* first time here */
-    doclen = c->bread;
-  } else if(c->bread!=doclen) { bad++; err_length++; }
-
-  /* save out time */
-  if(done < requests) {
-    struct data s;
-    gettimeofday(&c->done,0);
-    s.read = c->read;
-    s.ctime = timedif(c->connect, c->start);
-    s.time = timedif(c->done, c->start);
-    stats[done++] = s;
+  if(c->read == 0 && c->keepalive) {
+    /* server has legitiamately shut down an idle keep alive request */
+    good--;  /* connection never happend */
+  } 
+  else {
+    if(good==1) {
+      /* first time here */
+      doclen = c->bread;
+    } else if (c->bread!=doclen) { 
+      bad++; 
+      err_length++; 
+    }
+    
+    /* save out time */
+    if(done < requests) {
+      struct data s;
+      gettimeofday(&c->done,0);
+      s.read = c->read;
+      s.ctime = timedif(c->connect, c->start);
+      s.time = timedif(c->done, c->start);
+      stats[done++] = s;
+    }
   }
 
   close(c->fd);
@@ -316,6 +348,7 @@ void read_connection(struct connection *c)
     /* this next line is so that we talk to NCSA 1.5 which blatantly breaks 
        the http specifaction */
     if(!s) { s = strstr(c->cbuff,"\n\n"); l=2; }
+
     if(!s) {
        /* read rest next time */
       if(space) 
@@ -344,7 +377,10 @@ void read_connection(struct connection *c)
 	
       c->gotheader = 1;
       *s = 0; /* terminate at end of header */
-      if(keepalive && strstr(c->cbuff, "Keep-Alive")) {
+      if(keepalive && 
+	 (strstr(c->cbuff, "Keep-Alive") 
+	  || strstr(c->cbuff, "keep-alive")))  /* for benefit of MSIIS */
+	{
 	char *cl;
 	cl = strstr(c->cbuff, "Content-Length:");
 	/* for cacky servers like NCSA which break the spec and send a 
@@ -392,7 +428,8 @@ void read_connection(struct connection *c)
 
 /* run the tests */
 
-int test() {
+int test() 
+{
   struct timeval timeout, now;
   fd_set sel_read, sel_except, sel_write;
   int i;
@@ -416,12 +453,11 @@ int test() {
   FD_ZERO(&writebits);
 
   /* setup request */
-  
   sprintf(request,"GET %s HTTP/1.0\r\nUser-Agent: ZeusBench/1.0\r\n"
-	  "%sAccept: */*\r\n\r\n", file, 
-	  keepalive?"Connection: Keep-Alive\r\n":"");
+	  "%sHost: %s\r\nAccept: */*\r\n\r\n", file, 
+	  keepalive?"Connection: Keep-Alive\r\n":"", machine );
     
-  reqlen=strlen(request);
+  reqlen = strlen(request);
 
   /* ok - lets start */
   gettimeofday(&start,0);
@@ -513,7 +549,7 @@ int main(int argc, char **argv) {
       break;
     case 't':
       tlimit = atoi(optarg);
-      requests = 20000;  /* need to size data array on something */
+      requests = MAX_REQUESTS;  /* need to size data array on something */
       break;
     default:
       usage(argv[0]);
@@ -523,4 +559,9 @@ int main(int argc, char **argv) {
   test();
   return 0;
 }
+
+
+
+
+
 
