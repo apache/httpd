@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/06 03:55:42 $]
+Last modified at [$Date: 2002/02/06 08:44:13 $]
 
 Release:
 
@@ -107,7 +107,10 @@ RELEASE SHOWSTOPPERS:
                 Justin postulates that this might be related to the fact
                 that mod_auth_dbm wasn't using apr-util.  See
                 modules/aaa/mod_auth_dbm.c revision 1.42 and
-                module/aaa/config.m4 revision 1.54.
+                module/aaa/config.m4 revision 1.54.  Also, FreeBSD's DB
+                variant was not properly detected.  See
+                apr-util/build/apu-conf.m4 revision 1.31 and
+                apr-util/dbm/apr_dbm_berkeleydb.c revision 1.17.
             
             * Madhu reports that the worker MPM doesn't shutdown nicely
               after a stress test.
