@@ -193,6 +193,8 @@ PATCHES TO BACKPORT FROM 2.1
          modules/mappers/mod_actions.c: r1.32, r1.34
        jerenkrantz: Icky side-effect of the *t == '0' check.
        +1: nd, jerenkrantz, wrowe, jim
+       -0: by rbb (inconsistent to 1.3, discussion on dev@)
+          nd: I'm going to reverse the default
 
     *) mod_log_config: Cleanup log_header_out function to allow multiple headers
        like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
