@@ -1073,8 +1073,15 @@ static int read_types_multi(negotiation_state *neg)
         }
 
         /* Don't negotiate directories and other unusual files
+         * Really shouldn't see anything but DIR/LNK/REG here,
+         * and we aught to discover if the LNK was interesting.
+         *
+         * Of course, this only helps platforms that capture the
+         * the filetype in apr_dir_read(), which most can once
+         * they are optimized with some magic [it's known to the
+         * dirent, not associated to the inode, on most FS's.]
          */
-        if (dirent.filetype != APR_REG)
+        if ((dirent.valid & APR_FINFO_TYPE) && (dirent.filetype == APR_DIR))
             continue;
 
         /* Ok, something's here.  Maybe nothing useful.  Remember that
