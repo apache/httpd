@@ -361,12 +361,7 @@ int status_handler (request_rec *r)
 	rputs("\"<code>D</code>\" DNS Lookup, \n",r);
 	rputs("\"<code>L</code>\" Logging<p>\n",r);
         rprintf(r,"\n%d requests currently being processed, %d idle servers\n"
-,busy,ready);
-
-#if 0
-        sprintf(buffer,"\n%d requests currently being processed, %d idle servers\n",busy,ready);
-	rputs(buffer,r);
-#endif
+		,busy,ready);
     }
 
 #if defined(STATUS)
