@@ -534,7 +534,7 @@ processing</td></tr>
 engine</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
 </a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <em>Options</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td> MaxRedirects=10 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
       <em>Pattern</em> <em>Substitution</em></a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>Sekunden</var>|max [<var>Sekunden</var>|max]</a></td><td /><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Begrenzt den CPU-Verbrauch von Prozessen, die von

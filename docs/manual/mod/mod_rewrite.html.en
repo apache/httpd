@@ -1153,11 +1153,14 @@ once!
 <div class="directive-section"><h2><a name="RewriteOptions" id="RewriteOptions">RewriteOptions</a> <a name="rewriteoptions" id="rewriteoptions">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets some special options for the rewrite engine</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteOptions <em>Options</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteOptions <var>Options</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>RewriteOptions MaxRedirects=10</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><code>MaxRedirects</code> is available in Apache 2.0.45 and
+later</td></tr>
 </table>
 
       <p>The <code class="directive">RewriteOptions</code> directive sets some
@@ -1165,15 +1168,23 @@ once!
       configuration. The <em>Option</em> strings can be one of the
       following:</p>
 
-      <ul>
-        <li>'<strong><code>inherit</code></strong>'<br />
-         This forces the current configuration to inherit the
-        configuration of the parent. In per-virtual-server context
-        this means that the maps, conditions and rules of the main
-        server are inherited. In per-directory context this means
-        that conditions and rules of the parent directory's
-        <code>.htaccess</code> configuration are inherited.</li>
-      </ul>
+      <dl>
+      <dt><code>inherit</code></dt>
+      <dd>This forces the current configuration to inherit the
+      configuration of the parent. In per-virtual-server context
+      this means that the maps, conditions and rules of the main
+      server are inherited. In per-directory context this means
+      that conditions and rules of the parent directory's
+      <code>.htaccess</code> configuration are inherited.</dd>
+
+      <dt><code>MaxRedirects=<var>number</var></code></dt>
+      <dd>In order to prevent endless loops of internal redirects
+      issued by per-directory <code class="directive"><a href="#rewriterule">RewriteRule</a></code>s, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> aborts
+      the request after reaching a maximum number of such redirects and
+      responds with an 500 Internal Server Error. If you really need
+      more internal redirects than 10 per request, you may increase
+      the default to the desired value.</dd>
+      </dl>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
