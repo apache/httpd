@@ -1,11 +1,16 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/03/02 11:04:59 $]
+Last modified at [$Date: 2000/03/08 21:36:39 $]
 
 Release:
 
     Vague plan, assuming more features aren't demanded for the 2.0 release
     2.0a1   : March 2000
     2.0     : later in 2000
+
+ALPHA SHOWSTOPPERS:
+    * New BugDB
+
+    * Tag the tree
 
 RELEASE SHOWSTOPPERS:
     * Fix SAFEREAD
