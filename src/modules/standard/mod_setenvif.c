@@ -161,7 +161,7 @@ static const char *add_setenvif(cmd_parms *cmd, void *mconfig, const char *args)
 	(sei_entry *)sconf->conditionals->elts;
     char *var;
     int i;
-    int cflags = (int)cmd->info;
+    int cflags = (int)(long)cmd->info;
     char *error;
     int beenhere = 0;
 
