@@ -16,6 +16,11 @@
 </xsl:text> <!-- insert line break -->
 
       <body id="manual-page">
+        <!-- unsqueeze if there's no sidebar -->
+        <xsl:if test="not(count(section) > 1 or seealso)">
+          <xsl:attribute name="class">no-sidebar</xsl:attribute>
+        </xsl:if>
+
         <xsl:call-template name="top"/>          
 
         <div id="page-content">
