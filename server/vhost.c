@@ -414,27 +414,13 @@ static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
         if (cur->sa.sin.sin_port == 0 ||
             sa->sa.sin.sin_port == 0  ||
             cur->sa.sin.sin_port == sa->sa.sin.sin_port) {
-            if (cur->ipaddr_len == sa->ipaddr_len &&
-                !memcmp(cur->ipaddr_ptr,
-                        sa->ipaddr_ptr,
-                        sa->ipaddr_len)) {
+            if (apr_sockaddr_equal(cur, sa)) {
                 return trav;
             }
-#if APR_HAVE_IPV6
-            else if (cur->sa.sin.sin_family == AF_INET &&
-                     sa->sa.sin.sin_family == AF_INET6 &&
-                     IN6_IS_ADDR_V4MAPPED((struct in6_addr *)sa->ipaddr_ptr) &&
-                     !memcmp(&((struct in6_addr *)sa->ipaddr_ptr)->s6_addr[12],
-                             cur->ipaddr_ptr,
-                             4)) {
-                return trav;
-            }
-#endif
         }    
     }
     return NULL;
 }
-
 
 static ipaddr_chain *find_default_server(apr_port_t port)
 {
