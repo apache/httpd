@@ -1174,7 +1174,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     }
     ap_register_cleanup(pconf, &pipe_of_death[0], cleanup_fd, cleanup_fd);
     ap_register_cleanup(pconf, &pipe_of_death[1], cleanup_fd, cleanup_fd);
-    if (fcntl(pipe_of_death[0], F_SETFD, O_NONBLOCK) == -1) {
+    if (fcntl(pipe_of_death[0], F_SETFL, O_NONBLOCK) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno,
                      (const server_rec*) server_conf,
                      "fcntl: O_NONBLOCKing (pipe_of_death)");
