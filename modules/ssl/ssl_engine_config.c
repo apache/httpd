@@ -205,7 +205,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     SSLSrvConfigRec *sc = apr_palloc(p, sizeof(*sc));
 
     sc->mc                     = NULL;
-    sc->enabled                = UNSET;
+    sc->enabled                = FALSE;
     sc->proxy_enabled          = UNSET;
     sc->vhost_id               = NULL;  /* set during module init */
     sc->vhost_id_len           = 0;     /* set during module init */
@@ -581,13 +581,24 @@ const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
     return NULL;
 }
 
-const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, int flag)
+const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
-    sc->enabled = flag ? TRUE : FALSE;
-
+    if (!strcasecmp(arg, "On")) {
+        sc->enabled = TRUE;
     return NULL;
+    }
+    else if (!strcasecmp(arg, "Off")) {
+        sc->enabled = FALSE;
+        return NULL;
+    }
+    else if (!strcasecmp(arg, "Optional")) {
+        sc->enabled = UNSET;
+        return NULL;
+    }
+
+    return "Argument must be On, Off, or Optional";
 }
 
 const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,

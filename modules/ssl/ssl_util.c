@@ -84,7 +84,7 @@ char *ssl_util_vhostid(apr_pool_t *p, server_rec *s)
         port = s->port;
     else {
         sc = mySrvConfig(s);
-        if (sc->enabled)
+        if (sc->enabled == TRUE)
             port = DEFAULT_HTTPS_PORT;
         else
             port = DEFAULT_HTTP_PORT;
