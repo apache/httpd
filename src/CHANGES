@@ -1,5 +1,11 @@
 Changes with Apache 1.3.7
 
+  *) Fix sed-substitutions in `make install': path elements like `httpd/conf'
+     (for instance from an APACI configure --sysconfdir=/etc/httpd/conf
+     option) were substituted with $(TARGET).conf, etc. Same for other strings
+     with dots where the dot wasn't matched as plain text. 
+     [Ralf S. Engelschall]
+
   *) PORT: Add support for FreeBSD 4.x [Ralf S. Engelschall]
 
   *) Fix verbose output of APACI configure (option -v) 

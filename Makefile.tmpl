@@ -432,16 +432,16 @@ install-config:
 			-e 's;@@ServerRoot@@/cgi-bin;$(cgidir);' \
 			-e 's;@@ServerRoot@@/proxy;$(proxycachedir);' \
 			-e 's;@@ServerRoot@@;$(prefix);g' \
-			-e 's;httpd.conf;$(TARGET).conf;' \
-			-e 's;logs/accept.lock;$(runtimedir)/$(TARGET).lock;' \
+			-e 's;httpd\.conf;$(TARGET).conf;' \
+			-e 's;logs/accept\.lock;$(runtimedir)/$(TARGET).lock;' \
 			-e 's;logs/apache_runtime_status;$(runtimedir)/$(TARGET).scoreboard;' \
-			-e 's;logs/httpd.pid;$(runtimedir)/$(TARGET).pid;' \
+			-e 's;logs/httpd\.pid;$(runtimedir)/$(TARGET).pid;' \
 			-e "s;logs/access_log;$(logfiledir)/$${target_prefix}access_log;" \
 			-e "s;logs/error_log;$(logfiledir)/$${target_prefix}error_log;" \
 			-e "s;logs/referer_log;$(logfiledir)/$${target_prefix}referer_log;" \
 			-e "s;logs/agent_log;$(logfiledir)/$${target_prefix}agent_log;" \
 			-e 's;conf/magic;$(sysconfdir)/magic;' \
-			-e 's;conf/mime.types;$(sysconfdir)/mime.types;' \
+			-e 's;conf/mime\.types;$(sysconfdir)/mime.types;' \
 			-e 's;Group #-1;Group $(conf_group);' \
 			-e 's;Port 80;Port $(conf_port);' \
 			-e 's;ServerAdmin you@your.address;ServerAdmin $(conf_serveradmin);' \
