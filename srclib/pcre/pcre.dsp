@@ -42,7 +42,7 @@ CPP=cl.exe
 RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
-# ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
+# ADD BASE CPP /nologo /MD /W3 /O2 /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibR/pcre" /FD /c
 # ADD CPP /nologo /MD /W3 /O2 /D "_WIN32" /D "NDEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibR/pcre" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
@@ -66,7 +66,7 @@ LIB32=link.exe -lib
 RSC=rc.exe
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
-# ADD BASE CPP /nologo /MDd /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /GX /ZI /Od /D "_WIN32" /D "_DEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibD/pcre" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /ZI /Od /D "_WIN32" /D "_DEBUG" /D "_WINDOWS" /D "STATIC" /Fd"LibD/pcre" /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
