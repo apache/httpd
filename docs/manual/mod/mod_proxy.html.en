@@ -295,7 +295,7 @@ always served directly, without forwarding to the configured
          <dd>the subnet <code>192.168.112.0/21</code> with a netmask of 21
              valid bits (also used in the form 255.255.248.0)</dd>
         </dl>
-		As a degenerate case, a <em>SubNet</em> with 32 valid bits is the
+	As a degenerate case, a <em>SubNet</em> with 32 valid bits is the
         equivalent to an <em>IPAddr</em>, while a <em>SubNet</em> with zero
         valid bits (<em>e.g.</em>, 0.0.0.0/0) is the same as the constant
         <em>_Default_</em>, matching any IP address. </dd>
@@ -349,7 +349,7 @@ proxy server:</p>
 &nbsp;&nbsp;Order Deny,Allow<br>
 &nbsp;&nbsp;Deny from all<br>
 &nbsp;&nbsp;Allow from yournetwork.example.com<br>
-&lt;Proxy&gt;
+&lt;/Proxy&gt;
 </code></td></tr></table></blockquote>
 
 <p>The following example will process all files in the
@@ -359,7 +359,7 @@ server:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
 &lt;Proxy http://example.com/foo/*&gt;<br>
 &nbsp;&nbsp;SetOutputFilter INCLUDES<br>
-&lt;Proxy&gt;
+&lt;/Proxy&gt;
 </code></td></tr></table></blockquote>
 <hr/><h2><a name="ProxyBlock">ProxyBlock</a> <a name="proxyblock">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Words, hosts, or domains that are banned from being
 proxied</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>ProxyBlock *|<em>word|host|domain</em>
