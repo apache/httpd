@@ -337,6 +337,7 @@ static void log_error_core(const char *file, int line, int level,
     size_t len;
     apr_file_t *logf = NULL;
     const char *referer;
+    int level_and_mask = level & APLOG_LEVELMASK;
 
     if (s == NULL) {
 	/*
@@ -344,8 +345,8 @@ static void log_error_core(const char *file, int line, int level,
 	 * above the default server log level unless it is a startup/shutdown
 	 * notice
 	 */
-	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
-	    ((level & APLOG_LEVELMASK) > DEFAULT_LOGLEVEL))
+	if ((level_and_mask != APLOG_NOTICE) &&
+	    (level_and_mask > DEFAULT_LOGLEVEL))
 	    return;
         logf = stderr_log;
     }
@@ -354,8 +355,8 @@ static void log_error_core(const char *file, int line, int level,
 	 * If we are doing normal logging, don't log messages that are
 	 * above the server log level unless it is a startup/shutdown notice
 	 */
-	if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) && 
-	    ((level & APLOG_LEVELMASK) > s->loglevel))
+	if ((level_and_mask != APLOG_NOTICE) && 
+	    (level_and_mask > s->loglevel))
 	    return;
 	logf = s->error_log;
     }
@@ -365,8 +366,8 @@ static void log_error_core(const char *file, int line, int level,
      * If we are doing normal logging, don't log messages that are
      * above the server log level unless it is a startup/shutdown notice
      */
-    if (((level & APLOG_LEVELMASK) != APLOG_NOTICE) &&
-        ((level & APLOG_LEVELMASK) > s->loglevel))
+    if ((level_and_mask != APLOG_NOTICE) &&
+        (level_and_mask > s->loglevel))
         return;
     logf = stderr;
     }
@@ -376,7 +377,7 @@ static void log_error_core(const char *file, int line, int level,
 	 * If we are doing syslog logging, don't log messages that are
 	 * above the server log level (including a startup/shutdown notice)
 	 */
-	if ((level & APLOG_LEVELMASK) > s->loglevel)
+	if (level_and_mask > s->loglevel)
 	    return;
 	logf = NULL;
     }
@@ -396,7 +397,7 @@ static void log_error_core(const char *file, int line, int level,
 	        "[%s] ", priorities[level & APLOG_LEVELMASK].t_name);
     }
 #ifndef TPF
-    if (file && (level & APLOG_LEVELMASK) == APLOG_DEBUG) {
+    if (file && level_and_mask == APLOG_DEBUG) {
 #ifdef _OSD_POSIX
 	char tmp[256];
 	char *e = strrchr(file, '/');
@@ -452,7 +453,7 @@ static void log_error_core(const char *file, int line, int level,
     }
 #ifdef HAVE_SYSLOG
     else {
-	syslog(level & APLOG_LEVELMASK, "%s", errstr);
+	syslog(level_and_mask, "%s", errstr);
     }
 #endif
 }
