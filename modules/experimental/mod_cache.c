@@ -963,7 +963,7 @@ static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
-    conf->no_last_mod_ignore = 1;
+    conf->no_last_mod_ignore = flag;
     conf->no_last_mod_ignore_set = 1;
     return NULL;
 
@@ -977,7 +977,7 @@ static const char *set_cache_ignore_cachecontrol(cmd_parms *parms,
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
-    conf->ignorecachecontrol = 1;
+    conf->ignorecachecontrol = flag;
     conf->ignorecachecontrol_set = 1;
     return NULL;
 }
