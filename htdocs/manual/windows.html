@@ -35,8 +35,8 @@ on a Unix platform such as Solaris, FreeBSD, or Linux.</STRONG></P>
 
 Most of this document assumes that you are installing Windows from a
 binary distribution. If you want to compile Apache yourself (possibly
-to help with development, or to track down bugs), see the section on
-<A HREF="#comp">Compiling Apache for Windows</A> below.
+to help with development, or to track down bugs), see 
+<A HREF="win_compiling.html">Compiling Apache for Microsoft Windows</A>.
 
 <HR>
 
@@ -50,7 +50,7 @@ to help with development, or to track down bugs), see the section on
   <LI><A HREF="#service">Running Apache for Windows as a Service</A>
   <LI><A HREF="#signal">Signalling Console Apache when running</A>
   <LI><A HREF="#signalsrv">Signalling Service Apache when running</A>
-  <LI><A HREF="#comp">Compiling Apache for Windows</A>
+  <LI><A HREF="win_compiling.html">Compiling Apache for Microsoft Windows</A>
 </UL>
 
 <HR>
@@ -77,8 +77,8 @@ cases TCP/IP networking must be installed.
 <H2><A NAME="down">Downloading Apache for Windows</A></H2>
 
 <P>Information on the latest version of Apache can be found on the
-Apache web server at <A
-HREF="http://www.apache.org/">http://www.apache.org/</A>.  This will
+Apache web server at <A HREF="http://www.apache.org/httpd">
+http://www.apache.org/httpd</A>.  This will
 list the current release, any more recent alpha or beta-test releases,
 together with details of mirror web and anonymous ftp sites.</P>
 
@@ -244,6 +244,14 @@ this URL:
 Once your basic installation is working, you should configure it
 properly by editing the files in the <SAMP>conf</SAMP> directory.
 
+<P>Because Apache <EMP>CANNOT</EMP> share the same port with another
+   TCPIP application, you may need to stop or uninstall certain 
+   services first.  These include (but are not limited to) other
+   web servers, and firewall products such as BlackIce.  If you can
+   only start Apache with these services disabled, reconfigure either
+   Apache or the other product so that they do not listen on the
+   same TCPIP ports.</P>
+
 <H2><A NAME="use">Configuring Apache for Windows</A></H2>
 
 Apache is configured by files in the <SAMP>conf</SAMP>
@@ -300,7 +308,8 @@ The main differences in Apache for Windows are:
   <LI><P>Apache can also load ISAPI Extensions (<EM>i.e.</EM>, Internet Server
          Applications), such as those used by Microsoft's IIS, and other
          Windows servers. <A HREF="mod/mod_isapi.html">More information
-         is available.</A>
+         is available.</A>  Note that Apache <EMP>CANNOT</EMP> load ISAPI
+		 Filters.
 </UL>
 
 <H2><A NAME="service">Running Apache for Windows as a Service</A></H2>
@@ -530,100 +539,6 @@ commands provide a Windows equivalent to <CODE>kill -TERM
 <EM>pid</EM></CODE> and <CODE>kill -USR1 <EM>pid</EM></CODE>. The command
 line option used, <CODE>-k</CODE>, was chosen as a reminder of the
 "kill" command used on Unix.
-
-<H2><A NAME="comp">Compiling Apache for Windows</A></H2>
-
-<P>Compiling Apache requires Microsoft Visual C++ 5.0 to be properly
-   installed. It is easiest to compile with the command-line tools
-   (nmake, <EM>etc.</EM>..). Consult the VC++ manual to determine how to install
-   them.</P>
-
-<P>First, unpack the Apache distribution into an appropriate
-   directory. Open a command-line prompt, and change to the
-   <CODE>src</CODE> subdirectory of the Apache distribution.</P>
-
-<P>The master Apache makefile instructions are contained in the
-   <CODE>Makefile.nt</CODE> file. To compile Apache on Windows NT, simply
-   use one of the following commands:
-<UL>
-<LI><CODE>nmake /f Makefile.nt _apacher</CODE> (release build)
-<LI><CODE>nmake /f Makefile.nt _apached</CODE> (debug build)
-</UL>
-
-<P><em>(1.3.4 and later)</em> To compile Apache on Windows 95, use one of
-<UL>
-<LI><CODE>nmake /f Makefile_win32.txt</CODE> (release build)
-<LI><CODE>nmake /f Makefile_win32_debug.txt</CODE> (debug build)
-</UL>
-
-<P>These will both compile Apache. The latter will include debugging
-   information in the resulting files, making it easier to find bugs and
-   track down problems.</P>
-
-<P>Apache can also be compiled using VC++'s Visual Studio development
-   environment. Although compiling Apache in this manner is not as
-   simple, it makes it possible to easily modify the Apache source, or
-   to compile Apache if the command-line tools are not installed.
-   Project files (<CODE>.DSP</CODE>) are included for each of the
-   portions of Apache. To build Apache from the these projects files
-   you will need to build the following projects <EM>in this order</EM>:
-
- <OL>
-   <LI><CODE>os\win32\ApacheOS.dsp</CODE>
-   <LI><CODE>regex\regex.dsp</CODE>
-   <LI><CODE>ap\ap.dsp</CODE>
-   <LI><CODE>main\gen_uri_delims.dsp</CODE>
-   <LI><CODE>main\gen_test_char.dsp</CODE>
-   <LI><CODE>ApacheCore.dsp</CODE>
-   <LI><CODE>Apache.dsp</CODE>
- </OL>
-
-   In addition, the <CODE>src\os\win32</CODE> subdirectory contains
-   project files for the optional modules (see below).</P>
-
-<P>Once Apache has been compiled, it needs to be installed in its server
-   root directory. The default is the <CODE>\Apache</CODE>
-   directory, on the current hard drive. </P>
-
-<P>To install the files into the <CODE>\Apache</CODE> directory
-   automatically, use one the following nmake commands (see above):</P>
-<UL>
-<LI><CODE>nmake /f Makefile.nt installr INSTDIR=<EM>dir</EM></CODE>
- (for release build)
-<LI><CODE>nmake /f Makefile.nt installd INSTDIR=<EM>dir</EM></CODE>
- (for debug build)
-</UL>
-or, for Windows 95 (1.3.4 and later), use one of:
-<UL>
-<LI><CODE>nmake /f Makefile_win32.txt install INSTDIR=<EM>dir</EM></CODE>
- (for release build)
-<LI><CODE>nmake /f Makefile_win32_debug.txt install INSTDIR=<EM>dir</EM></CODE>
- (for debug build)
-</UL>
-
-The dir argument to INSTDIR gives the installation directory; it can
-be omitted if Apache is to be installed into <SAMP>\Apache</SAMP>.
-
-<P>This will install the following:</P>
-
-<UL>
-  <LI><CODE><EM>dir</EM>\Apache.exe</CODE> - Apache executable
-  <LI><CODE><EM>dir</EM>\ApacheCore.dll</CODE> - Main Apache shared library
-  <LI><CODE><EM>dir</EM>\modules\ApacheModule*.dll</CODE> - Optional Apache
-      modules (7 files)
-  <LI><CODE><EM>dir</EM>\conf</CODE> - Empty configuration directory
-  <LI><CODE><EM>dir</EM>\logs</CODE> - Empty logging directory
-</UL>
-
-<P>If you do not have nmake, or wish to install in a different directory,
-   be sure to use a similar naming scheme.</P>
-
-<P>
-Before running the server you must fill out the conf directory.
-Copy the *.conf-dist-win from the distribution conf directory
-and rename *.conf.  Edit the @@ServerRoot@@ entries to your
-actual server root (for example "C:\apache").  Copy over
-the conf/magic and conf/mime.types files as well.
 
 <!--#include virtual="footer.html" -->
 </BODY>
