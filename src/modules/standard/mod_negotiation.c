@@ -837,9 +837,6 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
                 has_content = 1;
             }
             else if (!strncmp(buffer, "description:", 12)) {
-                /* XXX: The possibility to set a description is
-                 * currently not documented.
-                 */
                 char *desc = ap_pstrdup(neg->pool, body);
                 char *cp;
 
@@ -1913,9 +1910,6 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
     }
     /* If the best variant's charset is ISO-8859-1 and this variant has
      * the same charset quality, then we prefer this variant
-     */
-    /* XXX: TODO: this specific tie-breaker is not described in the
-     * documentation
      */
 
     if (variant->charset_quality > best->charset_quality ||
