@@ -297,7 +297,7 @@ if ($opt_q) {
         )) {
             if ($arg eq $name or $arg eq lc($name)) {
                 my $val = eval "\$CFG_$name";
-                $result .= "${val}::";
+                $result .= "${val}##";
                 $ok = 1;
             }
         }
@@ -306,8 +306,8 @@ if ($opt_q) {
             exit(1);
         }
     }
-    $result =~ s|::$||;
-    $result =~ s|::| |;
+    $result =~ s|##$||;
+    $result =~ s|##| |g;
     print $result;
 }
 
