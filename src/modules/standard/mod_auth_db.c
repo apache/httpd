@@ -73,10 +73,10 @@
  * mapped to Berkeley DB. You can use either mod_auth_dbm or
  * mod_auth_db. The latter makes it more obvious that it's Berkeley.
  *
- * dirkx - Added Authoratative control to allow passing on to lower  
+ * dirkx - Added Authoritative control to allow passing on to lower  
  *         modules if and only if the user-id is not known to this
  *         module. A known user with a faulty or absent password still
- *         causes an AuthRequired. The default is 'Authoratative', i.e.
+ *         causes an AuthRequired. The default is 'Authoritative', i.e.
  *         no control is passed along.
  */
 
@@ -125,7 +125,7 @@ command_rec db_auth_cmds[] = {
 { "AuthGroupFile", set_db_slot,
     (void*)XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
     OR_AUTHCFG, TAKE12, NULL },
-{ "AuthDBAuthoratative", set_flag_slot,
+{ "AuthDBAuthoritative", set_flag_slot,
     (void*)XtOffsetOf(db_auth_config_rec, auth_dbauthoritative),
     OR_AUTHCFG, FLAG, 
     "Set to 'no' to allow access control to be passed along to lower modules if the userID is not known to this module" },

@@ -57,10 +57,10 @@
  * 
  * Adapted to Apache by rst.
  *
- * dirkx - Added Authoratative control to allow passing on to lower
+ * dirkx - Added Authoritative control to allow passing on to lower
  *	   modules if and only if the user-id is not known to this
  *	   module. A known user with a faulty or absent password still
- *	   causes an AuthRequired. The default is 'Authoratative', i.e.
+ *	   causes an AuthRequired. The default is 'Authoritative', i.e.
  *	   no control is passed along.
  */
 

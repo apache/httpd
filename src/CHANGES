@@ -1,5 +1,8 @@
 Changes with Apache 1.2
 
+  *) Corrected spelling of "authoritative".  AuthDBAuthoratative became
+     AuthDBAuthoritative. [Marc Slemko] PR#420
+
   *) MaxClients should be at least 1. [Lars Eilebrecht] PR#375
 
   *) The default handler now logs invalid methods or URIs (i.e. PUT on an
