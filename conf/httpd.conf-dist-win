@@ -691,7 +691,7 @@ ServerSignature On
     # avoid the ambiguity with the common suffix for perl scripts.
     #
     # Note 2: The example entries below illustrate that in quite
-    # some cases the two character 'Language' abbriviation is not
+    # some cases the two character 'Language' abbreviation is not
     # identical to the two character 'Country' code for its country,
     # E.g. 'Danmark/dk' versus 'Danish/da'.
     #

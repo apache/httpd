@@ -1,5 +1,8 @@
 Changes with Apache 1.3.18
 
+  *) Correct a typo in httpd.conf.
+     [Kunihiro Tanaka <tanaka@apache.or.jp>] PR#7154 
+
   *) Get the correct IP address if ServerName isn't set and we can't
      find a fully-qualified domain name at startup.
      PR#7170 [Danek Duvall <dduvall@eng.sun.com>]
