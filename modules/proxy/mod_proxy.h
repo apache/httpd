@@ -586,7 +586,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 #endif
 /* The number of dynamic balancers that can be added */
 #define PROXY_DYNAMIC_BALANCER_LIMIT    16
-PROXY_DECLARE(int) ap_proxy_lb_workers(void);
+int ap_proxy_lb_workers(void);
 
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;

@@ -16,7 +16,6 @@
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
 #include "ap_mpm.h"
-#include "scoreboard.h"
 #include "apr_version.h"
 
 #if APR_HAVE_UNISTD_H
@@ -1816,7 +1815,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     return OK;
 }
 
-PROXY_DECLARE(int) ap_proxy_lb_workers(void)
+int ap_proxy_lb_workers(void)
 {
     /* Set the dynamic #workers limit */
     lb_workers_limit = lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;

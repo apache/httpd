@@ -19,6 +19,7 @@
 #include "mod_proxy.h"
 #include "mod_core.h"
 #include "apr_optional.h"
+#include "scoreboard.h"
 #include "mod_status.h"
 
 #if (MODULE_MAGIC_NUMBER_MAJOR > 20020903)
@@ -1766,7 +1767,8 @@ static void register_hooks(apr_pool_t *p)
 #ifndef FIX_15207
     static const char * const aszSucc[]={ "mod_rewrite.c", NULL };
 #endif
-
+    
+    APR_REGISTER_OPTIONAL_FN(ap_proxy_lb_workers);
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
