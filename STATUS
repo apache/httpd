@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/29 11:41:10 $]
+Last modified at [$Date: 2002/05/29 15:37:40 $]
 
 Release:
 
@@ -74,29 +74,9 @@ RELEASE SHOWSTOPPERS:
                   <00ca01c2033e$f1c54c10$a6271b09@sashimi>
                   <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
 
-    * ap_read_pid() needs cleanup w.r.t. apr_file_read_full() and EOL
-      Status: Patch proposed
-      Message-ID: <20020525200616.O27903@apache.org>
-
     * CWD issues
       Message-ID: <5.1.0.14.2.20020524115533.02785e28@pop3.rowe-clan.net>
                   <COEELENBBCHBFEPPGDOPCEPPGPAA.ake@meepzor.com>
-
-    * To high-free patch or not to high-free patch?
-      Status: Cliff thinks we need more time to test this
-      code and sniff out any side-effects it may uncover and is
-      leaning toward 2.0.38 but will reserve final judgement
-      since it's as yet unclear how soon 2.0.37 will be ready.
-      Vote tally for 2.0.37:
-        +1: Sander, Ian, Justin
-        -0: Brian, Cliff
-      Message-ID: <JLEGKKNELMHCJPNMOKHOGEIIFOAA.striker@apache.org>
-                  <1022371367.23007.13.camel@mypc1.pacbell.net>
-
-    * Need consensus and/or "fix" on mod_deflate and existing encodings
-      Status: Patch proposed
-      Message-ID: <20020520151226.K15813@lyra.org>
-                  <3CF05078.8040907@apache.org>
 
     * Find a better name for ap_signal_server()
       Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
@@ -104,11 +84,6 @@ RELEASE SHOWSTOPPERS:
     * server pushed CGI's not working.  (Is this a showstopper??)
       PR: 8482
       Message-ID: <3CE15B85.2FF45121@apache.org>
-
-    * Invalid chunk-length lines do not return 413.
-      Status: Justin is looking at this and is confused how to properly
-              return 413.
-      Message-ID: <m3n0ukxsmr.fsf@rdu88-251-253.nc.rr.com>
 
 CURRENT VOTES:
 
