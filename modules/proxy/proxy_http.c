@@ -584,7 +584,27 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
     terminate_headers(r->connection->bucket_alloc, header_brigade);
     APR_BRIGADE_CONCAT(header_brigade, body_brigade);
     if (tmpfile) {
-        e = apr_bucket_file_create(tmpfile, 0, fsize, p, origin->bucket_alloc);
+        /* For platforms where the size of the file may be larger than
+         * that which can be stored in a single bucket (where the
+         * length field is an apr_size_t), split it into several
+         * buckets: */
+        if (sizeof(apr_off_t) > sizeof(apr_size_t)
+            && fsize > AP_MAX_SENDFILE) {
+            e = apr_bucket_file_create(tmpfile, 0, AP_MAX_SENDFILE, p,
+                                       origin->bucket_alloc);
+            while (fsize > AP_MAX_SENDFILE) {
+                apr_bucket *ce;
+                apr_bucket_copy(e, &ce);
+                APR_BRIGADE_INSERT_TAIL(header_brigade, ce);
+                e->start += AP_MAX_SENDFILE;
+                fsize -= AP_MAX_SENDFILE;
+            }
+            e->length = (apr_size_t)fsize; /* Resize just the last bucket */
+        }
+        else {
+            e = apr_bucket_file_create(tmpfile, 0, (apr_size_t)fsize, p,
+                                       origin->bucket_alloc);
+        }
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
     status = pass_brigade(r, conn, origin, header_brigade, 1);
