@@ -82,16 +82,119 @@ LIB32=link.exe -lib
 
 # Name "ApacheCore - Win32 Release"
 # Name "ApacheCore - Win32 Debug"
-# Begin Group "Source Files"
+# Begin Group "Configuration"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\ap\ap_base64.c
+SOURCE=.\include\ap_config.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\ap_mmn.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ApacheCore.def
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\buildmark.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_conf_globals.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\modules.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\os.h
+# End Source File
+# End Group
+# Begin Group "Generated Files"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\main\gen_test_char.exe
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+# Begin Custom Build - Generating test_char.h
+InputPath=.\main\gen_test_char.exe
+
+".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_test_char.exe >.\main\test_char.h 
+	echo Generated test_char.h from gen_test_char.exe 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+# Begin Custom Build - Generating test_char.h
+InputPath=.\main\gen_test_char.exe
+
+".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_test_char.exe >.\main\test_char.h 
+	echo Generated test_char.h from gen_test_char.exe 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\gen_uri_delims.exe
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+# Begin Custom Build - Generating uri_delims.h
+InputPath=.\main\gen_uri_delims.exe
+
+".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_uri_delims.exe >.\main\uri_delims.h 
+	echo Generated uri_delims.h from gen_uri_delims.exe 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+# Begin Custom Build - Generating uri_delims.h
+InputPath=.\main\gen_uri_delims.exe
+
+".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_uri_delims.exe >.\main\uri_delims.h 
+	echo Generated uri_delims.h from gen_uri_delims.exe 
+	
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\test_char.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\uri_delims.h
+# End Source File
+# End Group
+# Begin Group "ap_buckets"
+
+# PROP Default_Filter ""
+# Begin Source File
+
 SOURCE=.\ap\ap_buckets.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_buckets.h
 # End Source File
 # Begin Source File
 
@@ -108,10 +211,6 @@ SOURCE=.\ap\ap_buckets_flush.c
 # Begin Source File
 
 SOURCE=.\ap\ap_buckets_heap.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\ap\ap_buckets_mmap.c
 # End Source File
 # Begin Source File
 
@@ -133,9 +232,29 @@ SOURCE=.\ap\ap_buckets_simple.c
 
 SOURCE=.\ap\ap_buckets_socket.c
 # End Source File
+# End Group
+# Begin Group "ap_general"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ap\ap_base64.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_base64.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\ap\ap_hooks.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_hooks.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_ring.h
 # End Source File
 # Begin Source File
 
@@ -143,15 +262,19 @@ SOURCE=.\ap\ap_sha1.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\buff.c
+SOURCE=.\include\ap_sha1.h
 # End Source File
-# Begin Source File
+# End Group
+# Begin Group "httpd"
 
-SOURCE=.\buildmark.c
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\main\http_config.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_config.h
 # End Source File
 # Begin Source File
 
@@ -159,7 +282,15 @@ SOURCE=.\main\http_connection.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\http_connection.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\http_core.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_core.h
 # End Source File
 # Begin Source File
 
@@ -167,7 +298,19 @@ SOURCE=.\main\http_log.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\http_log.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_main.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\http_protocol.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\http_protocol.h
 # End Source File
 # Begin Source File
 
@@ -175,12 +318,24 @@ SOURCE=.\main\http_request.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\http_request.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\http_vhost.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\listen.c
+SOURCE=.\include\http_vhost.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\include\httpd.h
+# End Source File
+# End Group
+# Begin Group "modules"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\modules\standard\mod_access.c
@@ -253,17 +408,17 @@ SOURCE=.\modules\standard\mod_so.c
 
 SOURCE=.\modules\standard\mod_userdir.c
 # End Source File
+# End Group
+# Begin Group "util"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\os\win32\modules.c
+SOURCE=.\main\buff.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\mpm_winnt.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\mpm\winnt\registry.c
+SOURCE=.\include\buff.h
 # End Source File
 # Begin Source File
 
@@ -271,7 +426,7 @@ SOURCE=.\main\rfc1413.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mpm\winnt\service.c
+SOURCE=.\include\rfc1413.h
 # End Source File
 # Begin Source File
 
@@ -283,7 +438,23 @@ SOURCE=.\main\util_cfgtree.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\util_cfgtree.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_charset.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\util_date.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_date.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_ebcdic.h
 # End Source File
 # Begin Source File
 
@@ -291,7 +462,15 @@ SOURCE=.\main\util_filter.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\util_filter.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\util_md5.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_md5.h
 # End Source File
 # Begin Source File
 
@@ -299,7 +478,15 @@ SOURCE=.\main\util_script.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\util_script.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\util_uri.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_uri.h
 # End Source File
 # Begin Source File
 
@@ -309,41 +496,17 @@ SOURCE=.\os\win32\util_win32.c
 
 SOURCE=.\main\util_xml.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\include\util_xml.h
+# End Source File
 # End Group
-# Begin Group "Header Files"
+# Begin Group "mpm_winnt"
 
-# PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
-# Begin Source File
-
-SOURCE=.\include\ap_base64.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_buckets.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_config.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_ctype.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_hooks.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_iol.h
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\include\ap_listen.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
 
@@ -351,71 +514,7 @@ SOURCE=.\include\ap_mpm.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\ap_sha1.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\buff.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\conf.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\explain.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\fnmatch.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_conf_globals.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_config.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_connection.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_core.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_log.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_main.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_protocol.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_request.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\http_vhost.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\httpd.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\iol_socket.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\modules\standard\mod_mime.h
+SOURCE=.\main\listen.c
 # End Source File
 # Begin Source File
 
@@ -435,119 +534,20 @@ SOURCE=.\include\mpm_status.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\modules\mpm\winnt\mpm_winnt.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\modules\mpm\winnt\mpm_winnt.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\os.h
+SOURCE=.\modules\mpm\winnt\registry.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\rfc1413.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_cfgtree.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_charset.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_date.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_ebcdic.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_md5.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_script.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_uri.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\util_xml.h
+SOURCE=.\modules\mpm\winnt\service.c
 # End Source File
 # End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
-# End Group
-# Begin Group "Generated Files"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\main\gen_test_char.exe
-
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-# Begin Custom Build - Generating test_char.h
-InputPath=.\main\gen_test_char.exe
-
-".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\main\gen_test_char.exe >.\main\test_char.h 
-	echo Generated test_char.h from gen_test_char.exe 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
-
-# Begin Custom Build - Generating test_char.h
-InputPath=.\main\gen_test_char.exe
-
-".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\main\gen_test_char.exe >.\main\test_char.h 
-	echo Generated test_char.h from gen_test_char.exe 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\main\gen_uri_delims.exe
-
-!IF  "$(CFG)" == "ApacheCore - Win32 Release"
-
-# Begin Custom Build - Generating uri_delims.h
-InputPath=.\main\gen_uri_delims.exe
-
-".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\main\gen_uri_delims.exe >.\main\uri_delims.h 
-	echo Generated uri_delims.h from gen_uri_delims.exe 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
-
-# Begin Custom Build - Generating uri_delims.h
-InputPath=.\main\gen_uri_delims.exe
-
-".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	.\main\gen_uri_delims.exe >.\main\uri_delims.h 
-	echo Generated uri_delims.h from gen_uri_delims.exe 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=.\ApacheCore.def
-# PROP Exclude_From_Build 1
-# End Source File
 # End Target
 # End Project
