@@ -62,11 +62,11 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
     <code>/icons</code> will not be aliased.</p>
 
     <p>Note that you may need to specify additional <directive
-    module="core">&lt;Directory&gt;</directive> sections which cover
-    the <em>destination</em> of aliases.  Aliasing occurs before
-    <directive module="core">&lt;Directory&gt;</directive> sections
+    type="section" module="core">Directory</directive> sections which
+    cover the <em>destination</em> of aliases.  Aliasing occurs before
+    <directive type="section" module="core">Directory</directive> sections
     are checked, so only the destination of aliases are affected.
-    (Note however <directive module="core">&lt;Location&gt;</directive>
+    (Note however <directive type="section" module="core">Location</directive>
     sections are run through once before aliases are performed, so
     they will apply.)</p>
 
@@ -126,7 +126,7 @@ a different URL</description>
 Alias and ScriptAlias directives, irrespective of their ordering in
 the configuration file. Also, <em>URL-path</em> must be an absolute
 path, not a relative path, even when used with .htaccess files or
-inside of <directive module="core">&lt;Directory&gt;</directive>
+inside of <directive type="section" module="core">Directory</directive>
 sections.</p></note>
 
     <p>If no <em>status</em> argument is given, the redirect will
