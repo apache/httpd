@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.80 (outdated: 1.89) -->
+<!-- English Revision: 1.89 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -264,12 +264,14 @@
     宣言されたどのディレクティブがより前に定義された設定ディレクティブを
     上書きできるかを知る必要があります。</p>
 
-    <note><title>Only available in &lt;Directory&gt; sections</title>
-    <directive>AllowOverride</directive> is valid only in
-    <directive type="section" module="core">Directory</directive>
-    sections, not in <directive type="section"
-    module="core">Location</directive> or <directive type="section"
-    module="core">Files</directive> sections.
+    <note><title>&lt;Directory&gt; セクションでのみ使用可能</title>
+    <directive>AllowOverride</directive> は正規表現無しの<directive
+    type="section" module="core">Directory</directive>
+    セクションでのみ有効で、<directive type="section"
+    module="core">Location</directive> や <directive
+    module="core" type="section">DirectoryMatch</directive>
+    や <directive type="section"
+    module="core">Files</directive> セクションでは無効です。
     </note>
 
     <p>このディレクティブを None に設定すると、<a href="#accessfilename">.htaccess</a> ファイルは完全に
@@ -339,12 +341,14 @@
       module="mod_authz_host">Deny</directive>, <directive
       module="mod_authz_host">Order</directive>).</dd>
 
-      <dt>Options</dt>
+      <dt>Options[=<var>Option</var>,...]</dt>
 
       <dd>
       特定のディレクトリにおける機能を指定するためのディレクティブの使用を許可する
       (<directive module="core">Options</directive> と
-      <directive module="mod_include">XBitHack</directive>).</dd>
+      <directive module="mod_include">XBitHack</directive>)。
+      等号の後に、コンマで分割された(空白の入っていない)オプションのリストを
+      続けることでオプションを設定することができます。</dd>
     </dl>
 
     <p>例:</p>
@@ -352,6 +356,9 @@
     <example>
       AllowOverride AuthConfig Indexes
     </example>
+
+    <p>上の例では <code>AuthConfig</code> と <code>Indexes</code> のどちらにも
+    属さないディレクティブはすべて内部サーバエラーを引き起こします。</p>
 </usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
@@ -877,6 +884,22 @@ module="core">Directory</directive></seealso>
       ErrorDocument 403 "Sorry can't allow you access today"
     </example>
 
+    <p>加えて、特別な値 <code>default</code> を使って Apache に
+    ハードコードされている簡単なメッセージを指定することができます。
+    通常は必要ではありませんが、<code>default</code> を使うと
+    既存の <directive>ErrorDocument</directive> ディレクティブの設定を
+    継承するところで、Apache のハードコードされた簡単なメッセージに
+    戻すことができます。</p>
+
+    <example>
+      ErrorDocument 404 /cgi-bin/bad_urls.pl<br /><br />
+      &lt;Directory /web/docs&gt;<br />
+      <indent>
+        ErrorDocument 404 default<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
     <p>リモート URL (例えば、頭に <code>http</code> と付与した方法) を
     <directive>ErrorDocument</directive> に指定するとき、
     たとえ文書が同じサーバにあろうとも、ドキュメントがどこにあるかを通知するために、
@@ -897,7 +920,7 @@ module="core">Directory</directive></seealso>
     置換します。サイズのしきい値はエラーの種類によって異なりますが、
     一般的にはエラーの文書を 512 バイトよりも多きくすると、MSIE は
     サーバが生成したエラーを隠さずに表示します。詳しい情報は Microsoft
-    Knowledgebase の記事 <a
+    Knowledge Base の記事 <a
     href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
     にあります。</p>
 
@@ -1263,12 +1286,13 @@ module="core">Directory</directive></seealso>
 <name>IfModule</name>
 <description>モジュールの存在するかしないかに応じて処理される
 ディレクティブを囲む</description>
-<syntax>&lt;IfModule [!]<var>module-name</var>&gt; ...
+<syntax>&lt;IfModule [!]<var>module-file</var>|<var>module-identifier</var>&gt; ...
     &lt;/IfModule&gt;</syntax>     
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
+<compatibility>モジュール識別子はバージョン 2.1 以降で使用可能。</compatibility>
 
 <usage>
     <p><code>&lt;IfModule <var>test</var>&gt;...&lt;/IfModule&gt;</code>
@@ -1285,23 +1309,24 @@ module="core">Directory</directive></seealso>
     次の二つの形式のうちの一つをとります。</p>
 
     <ul>
-      <li><var>module name</var></li>
+      <li><var>module</var></li>
 
-      <li>!<var>module name</var></li>
+      <li>!<var>module</var></li>
     </ul>
 
-    <p>前者の場合は、<var>module name</var> と名付けられたモジュールが
+    <p>前者の場合は、<var>module</var> と名付けられたモジュールが
     Apache に組み込まれていれば
     (コンパイル済みのものと、<directive
     module="mod_so">LoadModule</directive> を利用して
     動的に読み込んだものの両方)、
     開始と終了の間のディレクティブが処理されます。
-    後者の場合は逆で、<var>module name</var> が組み込まれて<strong>いない</strong>
+    後者の場合は逆で、<var>module</var> が組み込まれて<strong>いない</strong>
     場合に処理されます。</p>
 
-    <p><var>module name</var> 引数は、
-    コンパイルをした時のモジュールのファイル名で、
-    例えば <code>mod_rewrite.c</code> といった形になります。
+    <p><var>module</var> 引数は、モジュール識別子か
+    コンパイルをした時のモジュールのファイル名です。
+    例えば、<code>rewrite_module</code> は識別子で
+    <code>mod_rewrite.c</code> はファイル名です。
     モジュールが複数のソースファイルから構成されている場合は、文字列
     <code>STANDARD20_MODULE_STUFF</code> があるファイルの名前を
     使ってください。</p>
@@ -2508,14 +2533,22 @@ module="core">Directory</directive></seealso>
 <name>ServerAdmin</name>
 <description>サーバがクライアントに送るエラーメッセージに含める電子メールの
 アドレス</description>
-<syntax>ServerAdmin <var>email-address</var></syntax>
+<syntax>ServerAdmin <var>email-address</var>|<var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
     <p><directive>ServerAdmin</directive> は、クライアントに返すさまざまな
     エラーメッセージ中に記述する、
-    電子メールのアドレスを設定します。</p>
+    問合せアドレスを設定します。与えられた引数を <code>httpd</code> が
+    URL と認識しない場合は、<var>email-address</var> だと解釈して、
+    ハイパーリンクのターゲットに <code>mailto:</code> を付けます。
+    実際には、ここには電子メールアドレスを使うことが推奨されています。
+    多くの CGI スクリプトはそうなっていることを仮定しています。
+    URL を使う場合は、あなたの管理下にある別サーバを指すようにしてください。
+    そうでないと、エラーが起こったときに連絡をすることができなくなって
+    しまいます。
+</p>
 
     <p>その際、これのために専用のアドレスを設定するのが良いでしょう。
     例えば、</p>
@@ -2577,7 +2610,8 @@ module="core">Directory</directive></seealso>
 
     <p><directive>ServerName</directive> が指定されていないときは、
     サーバは IP アドレスから逆引きを行なうことでホスト名を知ろうとします。
-    ServerName にポートが指定されていないときは、サーバはリクエストが来ている
+    <directive>ServerName</directive> にポートが指定されていないときは、
+    サーバはリクエストが来ている
     ポートを使います。最高の信頼性と確実性をもたらすためには、
     <directive>ServerName</directive> を使ってホスト名とポートを明示的に
     指定してください。</p>
