@@ -1850,7 +1850,7 @@ die_now:
          * child a bit of time to exit gracefully. If the time expires,
          * the child will be wacked.
          */
-        if (strcasecmp(signal_arg, "runservice")) {
+        if (!strcasecmp(signal_arg, "runservice")) {
             mpm_service_stopping();
         }
         /* Signal the child processes to exit */
