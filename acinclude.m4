@@ -94,6 +94,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(SH_LIBTOOL)
   APACHE_SUBST(MK_IMPLIB)
   APACHE_SUBST(INSTALL_PROG_FLAGS)
+  APACHE_SUBST(DSO_MODULES)
 
   abs_srcdir="`(cd $srcdir && pwd)`"
 
@@ -259,7 +260,9 @@ AC_DEFUN(APACHE_MODULE,[
     shared*)
       enable_$1=`echo $ac_n $enable_$1$ac_c|sed 's/shared,*//'`
       sharedobjs=yes
-      shared=yes;;
+      shared=yes
+      DSO_MODULES="$DSO_MODULES $1"
+      ;;
     *)
       MODLIST="$MODLIST ifelse($4,,$1,$4)"
       if test "$1" = "so"; then
