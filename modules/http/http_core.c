@@ -302,7 +302,7 @@ static int ap_process_http_connection(conn_rec *c)
     return OK;
 }
 
-static void http_create_request(request_rec *r)
+static int http_create_request(request_rec *r)
 {
     if (!r->main && !r->prev) {
         ap_add_output_filter_handle(ap_byterange_filter_handle,
@@ -312,6 +312,8 @@ static void http_create_request(request_rec *r)
         ap_add_output_filter_handle(ap_http_header_filter_handle,
                                     NULL, r, r->connection);
     }
+
+    return OK;
 }
 
 static void register_hooks(apr_pool_t *p)
