@@ -106,6 +106,7 @@ for HTTP Basic authentication.</td></tr>
           <li><a href="#requser">require user</a></li>
           <li><a href="#reqgroup">require group</a></li>
           <li><a href="#reqdn">require dn</a></li>
+          <li><a href="#reqattribute">require ldap-attribute</a></li>
         </ul>
       </li>
 
@@ -219,6 +220,11 @@ for HTTP Basic authentication.</td></tr>
       <li>Grant access if there is a <a href="#reqgroup"><code>require group</code></a> directive, and
       the DN fetched from the LDAP directory (or the username
       passed by the client) occurs in the LDAP group.</li>
+
+      <li>Grant access if there is a <a href="#reqattribute">
+      <code>require ldap-attribute</code></a> 
+      directive, and the attribute fetched from the LDAP directory
+      matches the given value.</li> 
 
       <li>otherwise, deny or decline access</li>
     </ul>
@@ -350,6 +356,33 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></code>
     directive.</p>
+
+
+<h3><a name="reqattribute" id="reqattribute">require ldap-attribute</a></h3>
+
+    <p>The <code>require ldap-attribute</code> directive allows the
+    administrator to grant access based on attributes of the authenticated
+    user in the LDAP directory.  If the attribute in the directory
+    matches the value given in the configuration, access is granted.</p>
+    
+    <p>The following directive would grant access to anyone with
+    the attribute employeeType = active</p>
+
+    <div class="example"><p><code>require ldap-attribute employeeType=active</code></p></div>
+
+    <p>Multiple attribute/value pairs can be specified on the same line
+    separated by spaces or they can be specified in multiple 
+    <code>require ldap-attribute</code> directives. The effect of listing 
+    multiple attribute/values pairs is an OR operation. Access will be 
+    granted if any of the listed attribute values match the value of a 
+    corresponding attribute in the user object. If the value of the 
+    attribute contains a space, only the value must be within double quotes.</p>
+
+    <p>The following directive would grant access to anyone with
+    the city attribute equal to "San Jose" or status equal to "Active"</p>
+
+    <div class="example"><p><code>require ldap-attribute city="San Jose" status=active</code></p></div>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
