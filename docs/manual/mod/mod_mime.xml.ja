@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 105989:111581 (outdated) -->
+<!-- English Revision: 111581 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -225,8 +225,9 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <usage>
     <p><directive>AddCharset</directive> ディレクティブは、
     与えられた拡張子を指定された charset にマップします。<var>charset</var> 
-    は、拡張子 <var>extension</var> を含んでいるファイル名の MIME charset
-    パラメータです。新しいマッピングは既にある他のマッピングに追加され、同じ拡張子
+    は、拡張子 <var>extension</var> を含んでいるファイル名の 
+    <a href="http://www.iana.org/assignments/character-sets">MIME charset
+    パラメータ</a>です。新しいマッピングは既にある他のマッピングに追加され、同じ拡張子
     <var>extension</var> のためのマッピングを上書きします。</p>
 
     <example><title>例</title>
