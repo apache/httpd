@@ -163,7 +163,8 @@ static void *merge_setenvif_config(pool *p, void *basev, void *overridesv)
 }
 
 /* any non-NULL magic constant will do... used to indicate if REG_ICASE should
- * be used */
+ * be used
+ */
 #define ICASE_MAGIC	((void *)(&setenvif_module))
 
 static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
@@ -360,8 +361,14 @@ static int match_headers(request_rec *r)
 	    }
         }
 
-        if (!val) {
-            continue;
+	/*
+	 * A NULL value indicates that the header field or special entity
+	 * wasn't present or is undefined.  Represent that as an empty string
+	 * so that REs like "^$" will work and allow envariable setting
+	 * based on missing or empty field.
+	 */
+        if (val == NULL) {
+            val = "";
         }
 
         if (!regexec(b->preg, val, 0, NULL, 0)) {

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.1
 
+  *) mod_setenvif (BrowserMatch* and friends) will now match a missing
+     field with "^$".  [Ken Coar]
+
   *) Cache a proxied request in the event that the client cancels the
      transfer, provided that the configured percentage of the file has
      already been transfered. It works for http transfers only.  The 
