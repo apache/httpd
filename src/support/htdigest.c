@@ -253,8 +253,8 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "Use -c option to create new one.\n");
 	exit(1);
     }
-    strcpy(user, argv[3]);
-    strcpy(realm, argv[2]);
+    ap_cpystrn(user, argv[3], sizeof(user));
+    ap_cpystrn(realm, argv[2], sizeof(realm));
 
     found = 0;
     while (!(getline(line, MAX_STRING_LEN, f))) {

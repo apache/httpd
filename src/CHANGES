@@ -1,4 +1,7 @@
 Changes with Apache 1.3.28
+  
+  *) Fix a pair of potential buffer overflows in htdigest
+     [Martin Schulze <joey@infodrom.org>, Thom May]
 
   *) A newly created child now has a start_time of 0, to prevent
      mod_status from displaying a bogus value for the "time to
