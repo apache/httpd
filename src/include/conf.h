@@ -480,6 +480,7 @@ typedef int rlim_t;
  */
 
 #include <sys/types.h>
+#include <stdarg.h>
 /*
  * We use snprintf() to avoid overflows, but we include
  * our own version (ap_snprintf). Allow for people to use their
@@ -490,6 +491,7 @@ typedef int rlim_t;
 #define ap_vsnprintf    vsnprintf
 #else
 int ap_snprintf(char *buf, size_t len, const char *format,...);
+int ap_vsnprintf(char *buf, size_t len, const char *format, va_list ap);
 #endif
 
 #if !defined(NEXT) && !defined(CONVEXOS)
@@ -661,7 +663,6 @@ int gethostname (char *name, int namelen);
 void syslog (int, char *, ...);
 char *mktemp (char *);
      
-#include <stdarg.h>
 long vfprintf (FILE *, char *, va_list);
      
 #endif
