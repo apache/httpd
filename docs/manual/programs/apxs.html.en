@@ -203,11 +203,13 @@
 
       <dt><code>-Wc,<var>compiler-flags</var></code></dt>
       <dd>This option passes <var>compiler-flags</var> as additional flags to
-      the compiler command. Use this to add local compiler-specific options.</dd>
+      the <code>libtool --mode=compile</code> command. Use this to add local
+      compiler-specific options.</dd>
 
       <dt><code>-Wl,<var>linker-flags</var></code></dt>
-      <dd>This option passes <var>linker-flags</var> as additional flags to
-      the linker command. Use this to add local linker-specific options.</dd>
+      <dd>This option passes <var>linker-flags</var> as additional
+      flags to the <code>libtool --mode=link</code> command. Use this
+      to add local linker-specific options.</dd>
       </dl>
     
 
@@ -247,8 +249,8 @@
 
     <div class="example"><p><code>
       $ apxs -c mod_foo.c<br />
-      gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c<br />
-      ld -Bshareable -o mod_foo.so mod_foo.o<br />
+      /path/to/libtool --mode=compile gcc ... -c mod_foo.c<br />
+      /path/to/libtool --mode=link -o mod_foo.la mod_foo.slo<br />
       $ _
     </code></p></div>
 
@@ -260,10 +262,12 @@
     achieved by running:</p>
 
     <div class="example"><p><code>
-      $ apxs -i -a mod_foo.c<br />
-      cp mod_foo.so /path/to/apache/modules/mod_foo.so<br />
+      $ apxs -i -a mod_foo.la<br />
+      /path/to/instdso.sh mod_foo.la /path/to/apache/modules<br />
+      /path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+      ...
       chmod 755 /path/to/apache/modules/mod_foo.so<br />
-      [activating module `foo' in /path/to/apache/etc/httpd.conf]<br />
+      [activating module `foo' in /path/to/apache/conf/httpd.conf]<br />
       $ _
     </code></p></div>
 
@@ -288,7 +292,9 @@
       $ apxs -g -n foo<br />
       Creating [DIR]  foo<br />
       Creating [FILE] foo/Makefile<br />
+      Creating [FILE] foo/modules.mk<br />
       Creating [FILE] foo/mod_foo.c<br />
+      Creating [FILE] foo/.deps<br />
       $ _
     </code></p></div>
 
@@ -299,12 +305,14 @@
       $ cd foo<br />
       $ make all reload<br />
       apxs -c mod_foo.c<br />
-      gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c<br />
-      ld -Bshareable -o mod_foo.so mod_foo.o<br />
-      apxs -i -a -n "foo" mod_foo.so<br />
-      cp mod_foo.so /path/to/apache/modules/mod_foo.so<br />
+      /path/to/libtool --mode=compile gcc ... -c mod_foo.c<br />
+      /path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
+      apxs -i -a -n "foo" mod_foo.la<br />
+      /path/to/instdso.sh mod_foo.la /path/to/apache/modules<br />
+      /path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+      ...
       chmod 755 /path/to/apache/modules/mod_foo.so<br />
-      [activating module `foo' in /path/to/apache/etc/httpd.conf]<br />
+      [activating module `foo' in /path/to/apache/conf/httpd.conf]<br />
       apachectl restart<br />
       /path/to/apache/sbin/apachectl restart: httpd not running, trying to start<br />
       [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
@@ -312,21 +320,6 @@
       $ _
     </code></p></div>
 
-    <p>You can even use <code>apxs</code> to compile complex modules outside the
-    Apache source tree, like PHP3:</p>
-
-    <div class="example"><p><code>
-      $ cd php3<br />
-      $ ./configure --with-shared-apache=../apache-1.3<br />
-      $ apxs -c -o libphp3.so mod_php3.c libmodphp3-so.a<br />
-      gcc -fpic -DSHARED_MODULE -I/tmp/apache/include  -c mod_php3.c<br />
-      ld -Bshareable -o libphp3.so mod_php3.o libmodphp3-so.a<br />
-      $ _
-    </code></p></div>
-
-    <p>because <code>apxs</code> automatically recognized C source files and
-    object files. Only C source files are compiled while remaining object
-    files are used for the linking phase.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/apxs.html" title="English">&nbsp;en&nbsp;</a> |
