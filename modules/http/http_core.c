@@ -3434,7 +3434,7 @@ static void core_register_filter(request_rec *r)
 
     for (i = 0; i < conf->filters->nelts; i++) {
         char *foobar = items[i];
-        ap_add_filter(foobar, NULL, r, r->connection);
+        ap_add_output_filter(foobar, NULL, r, r->connection);
     }
 }
 
