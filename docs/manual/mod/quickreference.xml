@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY allmodules SYSTEM "allmodules.xml"> ]
+>
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+
+<quickreference>
+  <title>Directive Quick Reference</title>
+  <summary>
+    <p>The directive quick reference shows the usage, default, status, and context
+    of each Apache configuration directive.  For more information about each of these,
+    see the <a href="directive-dict.html">Directive Dictionary</a>.
+    </p>
+
+    <p>The first column gives the directive name and usage.  The second columns shows the
+    default value of the directive, if a default exists.  If the default is too large to
+    display, the first characters will be followed by "+".</p>
+
+    <p>The third and fourth columns lists the status of the directive and the
+    contexts where the directive is allowed according
+    to the following tables:</p>
+
+<table><tr><td>
+    <table><tr><td>C</td><td>Core</td></tr>
+    <tr><td>M</td><td>MPM</td></tr>
+    <tr><td>B</td><td>Base</td></tr>
+    <tr><td>E</td><td>Extension</td></tr>
+    <tr><td>X</td><td>Experimental</td></tr>
+    </table>
+</td><td>
+    <table><tr><td>s</td><td>server config</td></tr>
+    <tr><td>v</td><td>virtual host</td></tr>
+    <tr><td>d</td><td>directory</td></tr>
+    <tr><td>h</td><td>.htaccess</td></tr>
+    </table>
+</td></tr></table>
+  </summary>
+
+  &allmodules;
+</quickreference>
