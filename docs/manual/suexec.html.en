@@ -35,9 +35,9 @@
     develop and run private CGI or SSI programs. However, if suEXEC
     is improperly configured, it can cause any number of problems
     and possibly create new holes in your computer's security. If
-    you aren't familiar with managing setuid root programs and the
-    security issues they present, we highly recommend that you not
-    consider using suEXEC.</p>
+    you aren't familiar with managing <em>setuid root</em> programs
+    and the security issues they present, we highly recommend that
+    you not consider using suEXEC.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">Before we begin</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#model">suEXEC Security Model</a></li>
@@ -124,6 +124,16 @@
 
     <ol>
       <li>
+        <strong>Is the user executing this wrapper a valid user of
+        this system?</strong> 
+
+        <p class="indent">
+          This is to ensure that the user executing the wrapper is
+          truly a user of the system.
+        </p>
+     </li>
+
+     <li>
         <strong>Was the wrapper called with the proper number of
         arguments?</strong> 
 
@@ -134,16 +144,6 @@
           the proper number of arguments, it is either being
           hacked, or there is something wrong with the suEXEC
           portion of your Apache binary.
-        </p>
-      </li>
-
-      <li>
-        <strong>Is the user executing this wrapper a valid user of
-        this system?</strong> 
-
-        <p class="indent">
-          This is to ensure that the user executing the wrapper is
-          truly a user of the system.
         </p>
       </li>
 
@@ -192,8 +192,8 @@
 
 
         <p class="indent">
-          Presently, suEXEC does not allow 'root' to execute
-          CGI/SSI programs.
+          Presently, suEXEC does not allow <code><em>root</em></code>
+          to execute CGI/SSI programs.
         </p>
       </li>
 
@@ -214,8 +214,8 @@
         group?</strong> 
 
         <p class="indent">
-          Presently, suEXEC does not allow the 'root' group to
-          execute CGI/SSI programs.
+          Presently, suEXEC does not allow the <code><em>root</em></code>
+          group to execute CGI/SSI programs.
         </p>
       </li>
 
@@ -244,11 +244,12 @@
       </li>
 
       <li>
-        <strong>Does the directory in which the target CGI/SSI program
-        resides exist?</strong> 
+        <strong>Can we change directory to the one in which the target
+        CGI/SSI program resides?</strong>
 
         <p class="indent">
-          If it doesn't exist, it can't very well contain files.
+          If it doesn't exist, it can't very well contain files. If we
+          can't change directory to it, it might aswell not exist.
         </p>
       </li>
 
@@ -363,14 +364,14 @@
 
       <dd>This option enables the suEXEC feature which is never
       installed or activated by default. At least one
-      --with-suexec-xxxxx option has to be provided together with the
-      --enable-suexec option to let APACI accept your request for
-      using the suEXEC feature.</dd>
+      <code>--with-suexec-xxxxx</code> option has to be provided
+      together with the <code>--enable-suexec</code> option to let
+      APACI accept your request for using the suEXEC feature.</dd>
 
       <dt><code>--with-suexec-bin=<em>PATH</em></code></dt>
 
-      <dd>The path to the suexec binary must be hard-coded in
-      the server for security reasons. Use this option to override
+      <dd>The path to the <code>suexec</code> binary must be hard-coded
+      in the server for security reasons. Use this option to override
       the default path. <em>e.g.</em>
       <code>--with-suexec-bin=/usr/sbin/suexec</code></dd>
 
@@ -402,8 +403,8 @@
 
       <dd>Define as the DocumentRoot set for Apache. This will be
       the only hierarchy (aside from UserDirs) that can be used for
-      suEXEC behavior. The default directory is the --datadir value
-      with the suffix "/htdocs", <em>e.g.</em> if you configure
+      suEXEC behavior. The default directory is the <code>--datadir</code>
+      value with the suffix "/htdocs", <em>e.g.</em> if you configure
       with "<code>--datadir=/home/apache</code>" the directory
       "/home/apache/htdocs" is used as document root for the suEXEC
       wrapper.</dd>
@@ -426,7 +427,7 @@
       transactions and errors are logged (useful for auditing and
       debugging purposes). By default the logfile is named
       "suexec_log" and located in your standard logfile directory
-      (--logfiledir).</dd>
+      (<code>--logfiledir</code>).</dd>
 
       <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
@@ -438,15 +439,15 @@
     <p><strong>Checking your suEXEC
     setup</strong><br />
      Before you compile and install the suEXEC wrapper you can
-    check the configuration with the --layout option.<br />
+    check the configuration with the <code>--layout</code> option.<br />
      Example output:</p>
 
 <div class="example"><p><code>
     suEXEC setup:<br />
-            suexec binary: /usr/local/apache/sbin/suexec<br />
-            document root: /usr/local/apache/share/htdocs<br />
+            suexec binary: /usr/local/apache2/sbin/suexec<br />
+            document root: /usr/local/apache2/share/htdocs<br />
            userdir suffix: public_html<br />
-                  logfile: /usr/local/apache/var/log/suexec_log<br />
+                  logfile: /usr/local/apache2/var/log/suexec_log<br />
                 safe path: /usr/local/bin:/usr/bin:/bin<br />
                 caller ID: www<br />
           minimum user ID: 100<br />
@@ -456,33 +457,63 @@
     <p><strong>Compiling and installing the suEXEC
     wrapper</strong><br />
      If you have enabled the suEXEC feature with the
-    --enable-suexec option the suexec binary (together with Apache
-    itself) is automatically built if you execute the command
-    "make".<br />
+    <code>--enable-suexec</code> option the <code>suexec</code> binary
+    (together with Apache itself) is automatically built if you execute
+    the <code>make</code> command.<br />
      After all components have been built you can execute the
-    command "make install" to install them. The binary image
-    "suexec" is installed in the directory defined by the --sbindir
-    option. Default location is
-    "/usr/local/apache/sbin/suexec".<br />
+    command <code>make install</code> to install them. The binary image
+    <code>suexec</code> is installed in the directory defined by the
+    <code>--sbindir</code> option. The default location is
+    "/usr/local/apache2/sbin/suexec".<br />
      Please note that you need <strong><em>root
     privileges</em></strong> for the installation step. In order
     for the wrapper to set the user ID, it must be installed as
     owner <code><em>root</em></code> and must have the setuserid
     execution bit set for file modes.</p>
 
+    <p><strong>Setting paranoid permissions</strong><br />
+    Although the suEXEC wrapper will check to ensure that its
+    caller is the correct user as specified with the
+    <code>--with-suexec-caller</code> configure option, there is
+    always the possibility that a system or library call suEXEC uses
+    before this check may be exploitable on your system. To counter
+    this, and because it is best-practise in general, you should use 
+    filesystem permissions to ensure that only the group Apache 
+    runs as may execute suEXEC.</p>
+
+    <p>If for example, your web-server is configured to run as:</p>
+
+<div class="example"><p><code>
+    User www<br />
+    Group webgroup<br />
+</code></p></div>
+
+    <p>and <code>suexec</code> is installed at
+    "/usr/local/apache2/sbin/suexec", you should run:</p>
+
+<div class="example"><p><code>
+    chgrp webgroup /usr/local/apache2/bin/suexec<br />
+    chmod 4750 /usr/local/apache2/bin/suexec<br />
+</code></p></div>
+
+    <p>This will ensure that only the group Apache runs as can even
+    execute the suEXEC wrapper.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Enabling &amp; Disabling
     suEXEC</a></h2>
 
     <p>Upon startup of Apache, it looks for the file
-    "suexec" in the "sbin" directory (default is
+    <code>suexec</code> in the directory defined by the
+    <code>--sbindir</code> option (default is
     "/usr/local/apache/sbin/suexec"). If Apache finds a properly
     configured suEXEC wrapper, it will print the following message
     to the error log:</p>
+
 <div class="example"><p><code>
     [notice] suEXEC mechanism enabled (wrapper: <em>/path/to/suexec</em>)
 </code></p></div>
+
     <p>If you don't see this message at server startup, the server is
     most likely not finding the wrapper program where it expects
     it, or the executable is not installed <em>setuid root</em>.</p>
@@ -492,7 +523,7 @@
     restart Apache. Restarting it with a simple HUP or USR1 signal
     will not be enough. </p>
      <p>If you want to disable suEXEC you should kill and restart
-    Apache after you have removed the "suexec" file. </p>
+    Apache after you have removed the <code>suexec</code> file. </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">Using suEXEC</a></h2>
@@ -520,10 +551,10 @@
 <h2><a name="debug" id="debug">Debugging suEXEC</a></h2>
 
     <p>The suEXEC wrapper will write log information
-    to the file defined with the --with-suexec-logfile option as
-    indicated above. If you feel you have configured and installed
-    the wrapper properly, have a look at this log and the error_log
-    for the server to see where you may have gone astray.</p>
+    to the file defined with the <code>--with-suexec-logfile</code>
+    option as indicated above. If you feel you have configured and
+    installed the wrapper properly, have a look at this log and the
+    error_log for the server to see where you may have gone astray.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -546,7 +577,7 @@
         Hierarchy limitations 
 
         <p class="indent">
-          For security and efficiency reasons, all suexec requests
+          For security and efficiency reasons, all suEXEC requests
           must remain within either a top-level document root for
           virtual host requests, or one top-level personal document
           root for userdir requests. For example, if you have four
