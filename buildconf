@@ -109,8 +109,8 @@ echo rebuilding $apr_configure
 }
 
 echo rebuilding $aprutil_configure
-(cd srclib/apr-util && ./buildconf.sh) || {
-    echo "./buildconf.sh failed for apr-util" 
+(cd srclib/apr-util && ./buildconf) || {
+    echo "./buildconf failed for apr-util" 
     exit 1
 }
 
