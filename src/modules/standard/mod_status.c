@@ -406,7 +406,7 @@ int status_handler (request_rec *r)
     	if(no_table_report)
             rputs("<p><hr><h2>Server Details</h2>\n\n",r);
 	else
-            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Ptime<th>Conn<th>Child<th>Slot<th>Host<th>Request</tr>\n\n",r);
+            rputs("<p>\n\n<table border=0><tr><th>Srv<th>PID<th>Acc<th>M<th>CPU\n<th>SS<th>Ptime<th>Conn<th>Child<th>Slot<th>Host<th>VHost<th>Request</tr>\n\n",r);
 
 
     for (i = 0; i<HARD_SERVER_LIMIT; ++i)
@@ -513,8 +513,9 @@ int status_handler (request_rec *r)
 		    rprintf(r,"<td>%-1.1f<td>%-2.2f<td>%-2.2f\n",
 			(float)conn_bytes/KBYTE, (float)my_bytes/MBYTE,
 			(float)bytes/MBYTE);
-		    rprintf(r,"<td>%s<td nowrap>%s</tr>\n\n",
-			score_record.client, score_record.request);
+		    rprintf(r,"<td>%s<td nowrap>%s<td nowrap>%s</tr>\n\n",
+			    score_record.client, score_record.vhost,
+			    score_record.request);
 		}	/* no_table_report */
 	    }		/* !short_report */
 	}		/* if (<active child>) */

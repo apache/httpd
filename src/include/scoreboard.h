@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: scoreboard.h,v 1.15 1996/08/20 11:51:22 paul Exp $ */
+/* $Id: scoreboard.h,v 1.16 1996/10/23 13:15:25 mjc Exp $ */
 
 #include <sys/times.h>
 
@@ -89,6 +89,7 @@ typedef struct {
     time_t last_used;
     char client[32];	/* Keep 'em small... */
     char request[64];	/* We just want an idea... */
+    char vhost[32];     /* What virtual host is being accessed? */
 #endif
 } short_score;
 
