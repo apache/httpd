@@ -2044,7 +2044,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         h1 = &title[4];
 
         /* can't count on a charset filter being in place here, 
-         * so do ebcdic->ascii translation explicity (if needed)
+         * so do ebcdic->ascii translation explicitly (if needed)
          */
 
         ap_rvputs_proto_in_ascii(rlast,
