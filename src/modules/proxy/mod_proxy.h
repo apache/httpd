@@ -213,8 +213,8 @@ typedef struct {
 
 struct per_thread_data {
     struct hostent hpbuf;
-#ifdef TPF
-    u_int  ipaddr;
+#ifdef TPF64BIT
+    in_addr_t ipaddr;
 #else
     u_long ipaddr;
 #endif

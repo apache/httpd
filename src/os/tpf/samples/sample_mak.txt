@@ -60,7 +60,7 @@ C_SRC += util_uri.c
 C_SRC += os.c
 C_SRC += os-inline.c
 
-APACHE_MODULE_FILE := $(word 1,$(foreach d,$(TPF_ROOT),$(wildcard $d/your_path/apache/src/apache.modules)))
+APACHE_MODULE_FILE := $(word 1,$(foreach d,$(TPF_ROOT),$(wildcard $d/opensource/apache/src/apache.modules)))
 ifeq ("$(APACHE_MODULE_FILE)","")
 $(error $(MTPF0045E))
 endif
