@@ -989,8 +989,9 @@ const char *ap_build_cont_config(apr_pool_t *p, apr_pool_t *temp_pool,
     ap_directive_t *conftree = NULL;
 
     bracket = apr_pstrcat(p, orig_directive + 1, ">", NULL);
-    while(!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
-        if ((strcasecmp(l + 2, bracket) == 0) &&
+    while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
+        if (!memcmp(l, "</", 2) &&
+            (strcasecmp(l + 2, bracket) == 0) &&
             (*curr_parent == NULL)) {
             break;
         } 
