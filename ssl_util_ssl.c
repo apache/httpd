@@ -386,7 +386,7 @@ BOOL SSL_X509_getCN(apr_pool_t *p, X509 *xs, char **cppCN)
     X509_NAME *xsn;
     X509_NAME_ENTRY *xsne;
     int i, nid;
-    char *data_ptr;
+    unsigned char *data_ptr;
     int data_len;
 
     xsn = X509_get_subject_name(xs);
