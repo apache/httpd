@@ -84,8 +84,10 @@ C+MrKDeSk2WAicg6Uo0FWCsEHxrssw139A==
 =pwim
 -----END PGP PUBLIC KEY BLOCK-----
 
-Date       User ID
-1999-04-14 Jim Jagielski <jim@apache.org>
+Type Bits KeyID      Created    Expires    Algorithm       Use
+sec  1024 0x08C975E5 1999-04-14 ---------- DSS             Sign & Encrypt
+sub  2048 0x4CCDB430 1999-04-14 ---------- Diffie-Hellman
+uid  Jim Jagielski <jim@apache.org>
 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: PGPfreeware 5.5.3i
