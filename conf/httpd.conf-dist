@@ -66,7 +66,10 @@ TransferLog logs/access_log
 # PidFile: The file the server should log its pid to
 PidFile logs/httpd.pid
 
-# ScoreBoardFile: File used to store internal server process information
+# ScoreBoardFile: File used to store internal server process information.
+# Not all architectures require this.  But if yours does (you'll know because
+# this file is created when you run Apache) then you *must* ensure that
+# no two invocations of Apache share the same scoreboard file.
 ScoreBoardFile logs/apache_status
 
 # ServerName allows you to set a host name which is sent back to clients for
