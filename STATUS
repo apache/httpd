@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/08/12 18:45:22 $]
+Last modified at [$Date: 2000/08/12 18:56:43 $]
 
 Release:
 
@@ -314,10 +314,6 @@ put them into 'the next release':
       regerror() exists, use it
 	Status: 
 
-    * PR#1206: general
-      where possible use herror()
-	Status: 
-
     * PR#1233: apache-api
       there is no way to keep per-connection per-module state
 	Status: 
@@ -500,11 +496,6 @@ put them into 'the next release':
       When will Apache support P3P? Any Plans?
 	Status: 
 
-    * PR#2818: general
-      Parent process should remain attached to the terminal for high
-      availibility system's software check
-	Status: 
-
     * PR#2873: config
       Feedback/Comment on APACI
 	Status: 
@@ -565,10 +556,6 @@ put them into 'the next release':
 
     * PR#3677: general
       New ErrorDocumentMatch directive
-	Status: 
-
-    * PR#3854: apache-api
-      apache lacks hook for output stream "filter" modules in api
 	Status: 
 
     * PR#4180: os-windows
