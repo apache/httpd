@@ -80,30 +80,14 @@ struct dav_db {
     apr_dbm_t *file;
 };
 
-/* ### temp */
-#include "apr_sdbm.h"
-
 
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
 			    const char **state1, const char **state2)
 {
-    char *work;
-    int extension;
-
     if (fname == NULL)
 	fname = DAV_FS_STATE_FILE_FOR_DIR;
 
-    fname = apr_pstrcat(p, fname, SDBM_DIRFEXT, NULL);
-
-    *state1 = fname;
-
-    work = apr_pstrdup(p, fname);
-
-    /* we know the extension is 4 characters -- len(DIRFEXT) */
-    extension = strlen(work) - 4;
-    memcpy(&work[extension], SDBM_PAGFEXT, 4);
-    *state2 = work;
-
+    apr_dbm_get_usednames(p, fname, state1, state2);
 }
 
 static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
