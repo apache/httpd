@@ -182,6 +182,11 @@ static const char * const status_lines[RESPONSE_CODES] =
     "510 Not Extended"
 };
 
+APR_HOOK_STRUCT(
+    APR_HOOK_LINK(insert_error_filter)
+)
+
+AP_IMPLEMENT_HOOK_VOID(insert_error_filter, (request_rec *r), (r))
 
 /* The index of the first bit field that is used to index into a limit
  * bitmask. M_INVALID + 1 to METHOD_NUMBER_LAST.
@@ -2341,6 +2346,8 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
      */
 
     r->output_filters = r->proto_output_filters;
+
+    ap_run_insert_error_filter(r);
 
     /*
      * It's possible that the Location field might be in r->err_headers_out
