@@ -10,3 +10,5 @@ Makefile
 *.plg
 Debug
 Release
+LibD
+LibR
