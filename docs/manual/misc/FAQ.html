@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.130 $ ($Date: 1998/09/27 17:36:12 $)
+  $Revision: 1.131 $ ($Date: 1998/09/30 15:19:00 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -298,6 +298,12 @@
    </LI>
    <LI><A HREF="#aixccbug">Why am I getting "<SAMP>Expected &lt/Directory&gt;
         but saw &lt;/Directory&gt;</SAMP>" when I try to start Apache?</A>
+   </LI>
+   <LI><A HREF="#domination">Why has Apache stolen my favourite site's
+        Internet address?</A>
+   </LI>
+   <LI><A HREF="#apspam">Why am I getting spam mail from the Apache site?</A>
+   </LI>
   </OL>
  </LI>
 </UL>
@@ -2366,6 +2372,37 @@
    This is a known problem with certain versions of the AIX C compiler.
    IBM are working on a solution, and the issue is being tracked by
    <A HREF="http://bugs.apache.org/index/full/2312">problem report #2312</A>.
+   </P>
+   <HR>
+  </LI>
+  <LI><A NAME="domination"><STRONG>Why has Apache stolen my favourite site's
+       Internet address?</STRONG></A>
+   <P>
+   The simple answer is: "It hasn't."  This misconception is usually
+   caused by the site in question having migrated to the Apache Web
+   server software, but not having migrated the site's content yet.  When
+   Apache is installed, the default page that gets installed tells the
+   Webmaster the installation was successful.  The expectation is that
+   this default page will be replaced with the site's real content.
+   If it doesn't, complain to the Webmaster, not to the Apache project --
+   we just make the software and aren't responsible for what people
+   do (or don't do) with it.
+   </P>
+   <HR>
+  </LI>
+  <LI><A NAME="apspam"><STRONG>Why am I getting spam mail from the
+       Apache site?</STRONG></A>
+   <P>
+   The short answer is: "You aren't."  Usually when someone thinks the
+   Apache site is originating spam, it's because they've traced the
+   spam to a Web site, and the Web site says it's using Apache.  See the
+   <A HREF="#domination">previous FAQ entry</A> for more details on this
+   phenomenon.
+   </P>
+   <P>
+   No marketing spam originates from the Apache site.  The only mail
+   that comes from the site goes only to addresses that have been
+   <EM>requested</EM> to receive the mail.
    </P>
    <HR>
   </LI>
