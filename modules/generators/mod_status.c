@@ -321,7 +321,9 @@ static int status_handler(request_rec *r)
 	    ps_record = ap_scoreboard_image->parent[i];
 	    res = ws_record.status;
 	    stat_buffer[indx] = status_flags[res];
-            if (!ps_record.quiescing && ps_record.pid) {
+            if (!ps_record.quiescing && 
+                    ps_record.generation == ap_my_generation &&
+                    ps_record.pid) {
 	        if (res == SERVER_READY)
 	            ready++;
 	        else if (res != SERVER_DEAD && res != SERVER_IDLE_KILL)
