@@ -4,8 +4,8 @@
 <modulesynopsis>
 
 <name>mod_mime</name>
-<description>Associates the request filename's extensions
-    (e.g. .html) with the file's behavior (handlers and filters)
+<description>Associates the requested filename's extensions
+    with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
     encoding)</description>
 <status>Base</status>
@@ -23,41 +23,44 @@
     <module>mod_negotiation</module> for more information
     about content negotiation. </p>
 
-    <p>The directives <directive>AddCharset</directive>,
-    <directive>AddEncoding</directive>,
-    <directive>AddLanguage</directive> and
-    <directive>AddType</directive> all used to map file extensions
-    onto the meta-information for that file. Respectively they set
-    the character set, content-encoding, content-language, and
-    MIME-type (content-type) of documents.</p>
+    <p>The directives <directive
+    module="mod_mime">AddCharset</directive>, <directive
+    module="mod_mime">AddEncoding</directive>, <directive
+    module="mod_mime">AddLanguage</directive> and <directive
+    module="mod_mime">AddType</directive> are all used to map file
+    extensions onto the meta-information for that file. Respectively
+    they set the character set, content-encoding, content-language,
+    and MIME-type (content-type) of documents.</p>
 
-    <p>In addition, mod_mime may define the "handler" for a
-    document, which controls which module or script will serve the
-    document. With the introduction of "filters" in Apache 2.0,
-    mod_mime can also define the filters that the the content
-    should be processed through (e.g. the Includes output filter
-    for server side scripting) and what filters the client request
-    and POST content should be processed through (the input
+    <p>In addition, <module>mod_mime</module> may define the "handler"
+    for a document, which controls what module or script will serve
+    the document. With the introduction of "filters" in Apache 2.0,
+    <module>mod_mime</module> can also define the filters that the the
+    content should be processed through (e.g. the Includes output
+    filter for server side scripting) and what filters the client
+    request and POST content should be processed through (the input
     filters.)</p>
 
-    <p>The directives <directive>AddHandler</directive>,
-    <directive>AddOutputFilter</directive>, and
-    <directive>AddInputFilter</directive> control the modules
-    or scripts that serve the document.  The 
-    <directive>MultiviewsMatch</directive> directive allows
-    <directive>mod_negotiation</directive> to consider these
-    file extensions to included when testing Multiviews matches.</p>
+    <p>The directives <directive
+    module="mod_mime">AddHandler</directive>, <directive
+    module="mod_mime">AddOutputFilter</directive>, and <directive
+    module="mod_mime">AddInputFilter</directive> control the modules
+    or scripts that serve the document.  The <directive
+    module="mod_mime">MultiviewsMatch</directive> directive allows
+    <module>mod_negotiation</module> to consider these file extensions
+    to included when testing Multiviews matches.</p>
 
-    <p>The directive <directive>TypesConfig</directive> is used
-    to specify a file which also maps extensions onto MIME types.
-    Most administrators use the provided mime.types file which
-    associates common filename extensions with IANA registered
-    content types. The current list is maintained at
-    <code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>
-    although it may be mirrored elsewhere). This simplifies the
-    httpd.conf file by providing the majority of media-type
-    definitions, and they may be overridden by 
-    <directive>AddType</directive> directives as needed.</p>
+    <p>The directive <directive
+    module="mod_mime">TypesConfig</directive> is used to specify a
+    file which also maps extensions onto MIME types.  Most
+    administrators use the provided mime.types file which associates
+    common filename extensions with IANA registered content types. The
+    current list is maintained at
+    <code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>. This
+    simplifies the <code>httpd.conf</code> file by providing the
+    majority of media-type definitions, and they may be overridden by
+    <directive module="mod_mime">AddType</directive> directives as
+    needed.</p>
 
     <note>Please do not send requests to the Apache httpd Project
     to add any new entries in the distributed mime.types file
@@ -69,14 +72,16 @@
     character set namespace.</note>
 
     <p>The core directives <directive
-    module="core">ForceType</directive> and
-    <directive>SetHandler</directive> are used to
-    associate all the files in a given container (<em>e.g.</em>,
-    &lt;location&gt;, &lt;directory&gt;, or &lt;Files&gt;) with a
-    particular MIME-type or handler. These settings override any
-    filename extension mappings defined in mod_mime.</p>
+    module="core">ForceType</directive> and <directive
+    module="core">SetHandler</directive> are used to associate all the
+    files in a given container (<em>e.g.</em>, <directive
+    type="section" module="core">location</directive>, <directive
+    type="section" module="core">director</directive>, or <directive
+    type="section" module="core">Files</directive>) with a particular
+    MIME-type or handler. These settings override any filename
+    extension mappings defined in <module>mod_mime</module>.</p>
 
-    <p>Note that changing the type or encoding of a file does not
+    <p>Note that changing the meta-information for a file does not
     change the value of the <code>Last-Modified</code> header.
     Thus, previously cached copies may still be used by a client or
     proxy, with the previous headers. If you change the
@@ -86,8 +91,14 @@
     receive the corrected content headers.</p>
 </summary>
 
-    <seealso>See also: <directive
+    <seealso><directive
     module="mod_mime_magic">MimeMagicFile</directive></seealso>
+<seealso><directive module="core">DefaultType</directive></seealso>
+<seealso><directive module="core">AddDefaultCharset</directive></seealso>
+<seealso><directive module="core">SetHandler</directive></seealso>
+<seealso><directive module="core">SetInputFilter</directive></seealso>
+<seealso><directive module="core">SetOutputFilter</directive></seealso>
+
 
 <section id="multipleext">
 <title>Files with Multiple Extensions</title>
@@ -217,7 +228,6 @@ Content-Type: text/plain; charset=ISO-8859-2
     to the specified content charset</description>
 <syntax>AddCharset <em>charset extension</em> 
 [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -259,6 +269,7 @@ Content-Type: text/plain; charset=ISO-8859-2
 
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
+<seealso><directive module="core">AddDefaultCharset</directive></seealso>
 
 </directivesynopsis>
 
@@ -268,7 +279,6 @@ Content-Type: text/plain; charset=ISO-8859-2
     to the specified encoding type</description>
 <syntax>AddEncoding
     <em>MIME-enc extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -322,12 +332,10 @@ Content-Type: text/plain; charset=ISO-8859-2
 
 <directivesynopsis>
 <name>AddHandler</name>
-<description>AddHandler maps the filename extensions
-to the <a href="../handler.html">handler</a> 
-<em>handler-name</em></description>
+<description>Maps the filename extensions
+to the specified handler</description>
 <syntax>AddHandler
     <em>handler-name extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -357,17 +365,18 @@ to the <a href="../handler.html">handler</a>
 </usage>
  <seealso><a href="#multipleext">Files with
     multiple extensions</a></seealso>
+<seealso><a href="../handler.html">Handlers</a></seealso>
+<seealso><directive module="core">SetHandler</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddInputFilter</name>
-<description>Maps the filename extensions
-    to the filter or filters which will process
+<description>Maps filename extensions
+    to the filters that will process
     client requests</description>
 <syntax>AddInputFilter
     <em>filter</em>[<em>;filter</em>...] extension
     [<em>extension</em> ...]</syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -398,6 +407,7 @@ to the <a href="../handler.html">handler</a>
 </usage>
 <seealso><a href="../filter.html">Filters</a>
     documentation.</seealso>
+<seealso><directive module="core">SetInputFilter</directive></seealso>
 
 </directivesynopsis>
 
@@ -408,7 +418,6 @@ to the <a href="../handler.html">handler</a>
 to the specified content language</description>
 <syntax>AddLanguage
     <em>MIME-lang extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -473,7 +482,6 @@ responses from the server</description>
 <syntax>AddOutputFilter
     <em>filter</em>[<em>;filter</em>...] extension
     [<em>extension</em> ...]</syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -511,7 +519,7 @@ responses from the server</description>
 
 </usage>
 <seealso><a href="../filter.html">Filters</a> documentation</seealso>
-
+<seealso><directive module="core">SetOutputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -520,7 +528,6 @@ responses from the server</description>
 onto the specified content type</description>
 <syntax>AddType <em>MIME-type
     extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -559,13 +566,15 @@ onto the specified content type</description>
 </usage>
 <seealso><a href="#multipleext">Files with
     multiple extensions</a></seealso>
+<seealso><directive module="core">DefaultType</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MultiviewsMatch</name>
+<description>The types of files that will be included when 
+searching for a matching file with MultiViews</description>
 <syntax>MultiviewsMatch
     <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -573,7 +582,7 @@ onto the specified content type</description>
 <context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>only available 
+<compatibility>Available 
     in Apache 2.0.26 and later.</compatibility>
 
 <usage>
@@ -603,6 +612,8 @@ onto the specified content type</description>
     and can cause unpredicatable results, such as serving .old or .bak
     files the webmaster never expected to be served.</p>
 </usage>
+<seealso><module>mod_negotiation</module></seealso>
+<seealso><directive module="core">Options</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -611,7 +622,6 @@ onto the specified content type</description>
 specified language</description>
 <syntax>DefaultLanguage
     <em>MIME-lang</em></syntax>
-<default>None</default>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -650,9 +660,10 @@ specified language</description>
 
 <directivesynopsis>
 <name>RemoveCharset</name>
+<description>Removes any character set associations for a set of file
+extensions</description>
 <syntax>RemoveCharset
     <em>extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>directory</context>
 <context>.htaccess</context>
@@ -674,9 +685,10 @@ specified language</description>
 
 <directivesynopsis>
 <name>RemoveEncoding</name>
+<description>Removes any content encoding associations for a set of file
+extensions</description>
 <syntax>RemoveEncoding
     <em>extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>directory</context>
 <context>.htaccess</context>
@@ -722,9 +734,10 @@ specified language</description>
 
 <directivesynopsis>
 <name>RemoveHandler</name>
+<description>Removes any handler associations for a set of file
+extensions</description>
 <syntax>RemoveHandler
     <em>extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>directory</context>
 <context>.htaccess</context>
@@ -766,9 +779,10 @@ specified language</description>
 
 <directivesynopsis>
 <name>RemoveInputFilter</name>
+<description>Removes any input filter associations for a set of file
+extensions</description>
 <syntax>RemoveInputFilter
     <em>extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>directory</context>
 <context>.htaccess</context>
@@ -791,9 +805,10 @@ specified language</description>
 
 <directivesynopsis>
 <name>RemoveLanguage</name>
+<description>Removes any language associations for a set of file
+extensions</description>
 <syntax>RemoveLanguage
     <em>extension</em> [<em>extension</em>] ...</syntax>
-<default>None</default>
 <contextlist>
 <context>directory</context>
 <context>.htaccess</context>
@@ -817,9 +832,10 @@ specified language</description>
 
 <directivesynopsis>
 <name>RemoveOutputFilter</name>
+<description>Removes any output filter associations for a set of file
+extensions</description>
 <syntax>RemoveOutputFilter
     <em>extension</em> [<em>extension</em>] ...</syntax>
-<default></default>
 <contextlist>
 <context>directory</context>
 <context>.htaccess</context>
@@ -844,9 +860,10 @@ specified language</description>
 
 <directivesynopsis>
 <name>RemoveType</name>
+<description>Removes any content type associations for a set of file
+extensions</description>
 <syntax>RemoveType
     <em>extension</em> [<em>extension</em>] ...</syntax>
-<default></default>
 <contextlist>
 <context>directory</context>
 <context>.htaccess</context>
@@ -890,6 +907,7 @@ specified language</description>
 
 <directivesynopsis>
 <name>TypesConfig</name>
+<description>The location of the mime.types file</description>
 <syntax>TypesConfig <em>file-path</em></syntax>
 <default>TypesConfig conf/mime.types</default>
 <contextlist>
