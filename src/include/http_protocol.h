@@ -77,9 +77,9 @@ API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r, const char *fieldnam
                       const char *fieldval);
 
 /* Send the minimal part of an HTTP response header... but modules should be
- * very careful about using this, and should prefer send_http_header().
+ * very careful about using this, and should prefer ap_send_http_header().
  * Much of the HTTP/1.1 implementation correctness depends on code in
- * send_http_header().
+ * ap_send_http_header().
  */
 API_EXPORT(void) ap_basic_http_header(request_rec *r);
 

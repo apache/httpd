@@ -543,9 +543,9 @@ stop:
 static int %NAME%_handler(request_rec *r)
 {
     r->content_type = "text/html";      
-    send_http_header(r);
+    ap_send_http_header(r);
     if (!r->header_only)
-        rputs("The sample page from mod_%NAME%.c\n", r);
+        ap_rputs("The sample page from mod_%NAME%.c\n", r);
     return OK;
 }
 
