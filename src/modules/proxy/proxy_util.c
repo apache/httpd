@@ -552,15 +552,15 @@ void proxy_send_headers(request_rec *r, const char *respline, array_header *hdrs
     hdrs = (struct hdr_entry *) hdrs_arr->elts;
 
     bputs(respline, fp);
-    bputs("\015\012", fp);
+    bputs(CRLF, fp);
     for (i = 0; i < hdrs_arr->nelts; i++) {
 	if (hdrs[i].field == NULL)
 	    continue;
-	bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, "\015\012", NULL);
+	bvputs(fp, hdrs[i].field, ": ", hdrs[i].value, CRLF, NULL);
 	table_set(r->headers_out, hdrs[i].field, hdrs[i].value);
     }
 
-    bputs("\015\012", fp);
+    bputs(CRLF, fp);
 }
 
 
