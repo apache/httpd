@@ -243,7 +243,12 @@ Module action_module       mod_actions.o
 # Module dbm_auth_module     mod_auth_dbm.o
 
 ## msql_auth checks against an MSQL database.  You must have MSQL installed
-## and an "msql.h" available for this to even compile.
+## and an "msql.h" available for this to even compile.  Additionally,
+## you may need to add a couple entries to the CFLAGS line, like
+##
+##  -lmsql -L/usr/local/lib -L/usr/local/Minerva/lib
+##
+## This depends on your installation of MSQL.
 
 # Module msql_auth_module    mod_auth_msql.o
 
