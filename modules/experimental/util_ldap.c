@@ -88,6 +88,11 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s);
                           "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
 #endif
 
+#define LDAP_CACHE_LOCK() \
+    apr_global_mutex_lock(st->util_ldap_cache_lock)
+#define LDAP_CACHE_UNLOCK() \
+    apr_global_mutex_unlock(st->util_ldap_cache_lock)
+
 
 static void util_ldap_strdup (char **str, const char *newstr)
 {
@@ -498,11 +503,8 @@ LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection
 
     util_ldap_state_t *st =  (util_ldap_state_t *)ap_get_module_config(r->server->module_config, &ldap_module);
 
-    /* read lock this function */
-    LDAP_CACHE_LOCK_CREATE(st->pool);
-
     /* get cache entry (or create one) */
-    LDAP_CACHE_WRLOCK();
+    LDAP_CACHE_LOCK();
 
     curnode.url = url;
     curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
@@ -526,7 +528,7 @@ LDAP_DECLARE(int) util_ldap_cache_comparedn(request_rec *r, util_ldap_connection
 
     if (curl) {
         /* no - it's a server side compare */
-        LDAP_CACHE_RDLOCK();
+        LDAP_CACHE_LOCK();
     
         /* is it in the compare cache? */
         newnode.reqdn = (char *)reqdn;
@@ -581,7 +583,7 @@ start_over:
     else {
         if (curl) {
             /* compare successful - add to the compare cache */
-            LDAP_CACHE_WRLOCK();
+            LDAP_CACHE_LOCK();
             newnode.reqdn = (char *)reqdn;
             newnode.dn = (char *)dn;
             
@@ -625,11 +627,8 @@ LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
         &ldap_module);
 
-    /* read lock this function */
-    LDAP_CACHE_LOCK_CREATE(st->pool);
-
     /* get cache entry (or create one) */
-    LDAP_CACHE_WRLOCK();
+    LDAP_CACHE_LOCK();
     curnode.url = url;
     curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
     if (curl == NULL) {
@@ -639,7 +638,7 @@ LDAP_DECLARE(int) util_ldap_cache_compare(request_rec *r, util_ldap_connection_t
 
     if (curl) {
         /* make a comparison to the cache */
-        LDAP_CACHE_RDLOCK();
+        LDAP_CACHE_LOCK();
         curtime = apr_time_now();
     
         the_compare_node.dn = (char *)dn;
@@ -705,7 +704,7 @@ start_over:
         (LDAP_NO_SUCH_ATTRIBUTE == result)) {
         if (curl) {
             /* compare completed; caching result */
-            LDAP_CACHE_WRLOCK();
+            LDAP_CACHE_LOCK();
             the_compare_node.lastcompare = curtime;
             the_compare_node.result = result;
 
@@ -762,11 +761,8 @@ LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connecti
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
         &ldap_module);
 
-    /* read lock this function */
-    LDAP_CACHE_LOCK_CREATE(st->pool);
-
     /* Get the cache node for this url */
-    LDAP_CACHE_WRLOCK();
+    LDAP_CACHE_LOCK();
     curnode.url = url;
     curl = (util_url_node_t *)util_ald_cache_fetch(st->util_ldap_cache, &curnode);
     if (curl == NULL) {
@@ -775,7 +771,7 @@ LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connecti
     LDAP_CACHE_UNLOCK();
 
     if (curl) {
-        LDAP_CACHE_RDLOCK();
+        LDAP_CACHE_LOCK();
         the_search_node.username = filter;
         search_nodep = util_ald_cache_fetch(curl->search_cache, &the_search_node);
         if (search_nodep != NULL && search_nodep->bindpw) {
@@ -934,7 +930,7 @@ start_over:
      * Add the new username to the search cache.
      */
     if (curl) {
-        LDAP_CACHE_WRLOCK();
+        LDAP_CACHE_LOCK();
         the_search_node.username = filter;
         the_search_node.dn = *binddn;
         the_search_node.bindpw = bindpw;
@@ -1172,14 +1168,36 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     int rc = LDAP_SUCCESS;
     apr_status_t result;
     char buf[MAX_STRING_LEN];
+    server_rec *s_vhost;
+    util_ldap_state_t *st_vhost;
 
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(s->module_config, &ldap_module);
 
+    void *data;
+    const char *userdata_key = "util_ldap_init";
+
+    /* util_ldap_post_config() will be called twice. Don't bother
+     * going through all of the initialization on the first call
+     * because it will just be thrown away.*/
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (!data) {
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                               apr_pool_cleanup_null, s->process->pool);
+
 #if APR_HAS_SHARED_MEMORY
-    server_rec *s_vhost;
-    util_ldap_state_t *st_vhost;
-    
+        /* If the cache file already exists then delete it.  Otherwise we are
+         * going to run into problems creating the shared memory. */
+        apr_file_remove(st->cache_file, ptemp);
+        if (st->cache_file) {
+            char *lck_file = apr_pstrcat (st->pool, st->cache_file, ".lck", NULL);
+            apr_file_remove(lck_file, ptemp);
+        }
+#endif
+        return OK;
+    }
+
+#if APR_HAS_SHARED_MEMORY
     /* initializing cache if shared memory size is not zero and we already don't have shm address */
     if (!st->cache_shm && st->cache_bytes > 0) {
 #endif
@@ -1190,20 +1208,37 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                          "LDAP cache: error while creating a shared memory segment: %s", buf);
         }
 
+
 #if APR_HAS_SHARED_MEMORY
+        if (st->cache_file) {
+            st->lock_file = apr_pstrcat (st->pool, st->cache_file, ".lck", NULL);
+        }
+        else
+#endif
+            st->lock_file = ap_server_root_relative(st->pool, tmpnam(NULL));
+
+        result = apr_global_mutex_create(&st->util_ldap_cache_lock, st->lock_file, APR_LOCK_DEFAULT, st->pool);
+        if (result != APR_SUCCESS) {
+            return result;
+        }
+
         /* merge config in all vhost */
         s_vhost = s->next;
         while (s_vhost) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
-                         "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp for VHOST: %s",
-                         st->cache_shm, st->cache_rmm, s_vhost->server_hostname);
-
             st_vhost = (util_ldap_state_t *)ap_get_module_config(s_vhost->module_config, &ldap_module);
+
+#if APR_HAS_SHARED_MEMORY
             st_vhost->cache_shm = st->cache_shm;
             st_vhost->cache_rmm = st->cache_rmm;
             st_vhost->cache_file = st->cache_file;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, result, s, 
+                         "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp for VHOST: %s",
+                         st->cache_shm, st->cache_rmm, s_vhost->server_hostname);
+#endif
+            st_vhost->lock_file = st->lock_file;
             s_vhost = s_vhost->next;
         }
+#if APR_HAS_SHARED_MEMORY
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "LDAP cache: LDAPSharedCacheSize is zero, disabling shared memory cache");
@@ -1368,6 +1403,22 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     return(OK);
 }
 
+static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
+{
+    apr_status_t sts;
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(s->module_config, &ldap_module);
+
+    sts = apr_global_mutex_child_init(&st->util_ldap_cache_lock, st->lock_file, p);
+    if (sts != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s, "failed to init caching lock in child process");
+        return;
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, s, 
+                     "INIT global mutex %s in child %d ", st->lock_file, getpid());
+    }
+}
 
 command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPSharedCacheSize", util_ldap_set_cache_bytes, NULL, RSRC_CONF,
@@ -1413,6 +1464,7 @@ static void util_ldap_register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(util_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_handler(util_ldap_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(util_ldap_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module ldap_module = {
