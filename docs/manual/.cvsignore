@@ -3,3 +3,9 @@ _zip
 _tools
 _dist
 build
+*.tex
+*.aux
+*.out
+*.log
+*.pdf
+*.toc
