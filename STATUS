@@ -143,6 +143,7 @@ Committed Code Changes:
     * r->allowed cleanup
     * References to undefined 'cwd' cell fixed in suexec.c
     * fix options/allowoverride merging
+    * Ken's restructuring the header files into src/include
 
 Available Patches:
 
@@ -228,10 +229,6 @@ Open issues:
 	apprivate_xxx:
 	appri_xxx:
 	httpd_xxx: Ken +1
-
-    * Maybe moving *all* of the *.h header files into a new
-      src/include directory?
-	Status: Ken +1, Dean +1
 
     * Ken's [POLL] apachen/patches directory
       Shall we experiment with allowing patches to be distributed for
