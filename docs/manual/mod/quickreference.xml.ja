@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd"
+  [ <!ENTITY sitemap SYSTEM "../sitemap.xml.ja"> ]
+>
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English revision: 1.4 -->
+
+<quickreference>
+  <title>ディレクティブ クイックリファレンス</title>
+  <summary>
+    <p>ディレクティブ クイックリファレンスでは、各 Apache 設定ディレクティブの
+    使用方法、デフォルト値、ステータスとコンテキストを示しています。
+    各ディレクティブの、より詳しい情報に関しては
+    <a href="directive-dict.html">ディレクティブ辞書</a>を
+    ご覧下さい。</p>
+
+    <p>第 1 列目はディレクティブの名前と使用方法です。
+    第 2 列目は (もしあれば) デフォルト値となっています。
+    デフォルト値が長すぎて表示しきれない場合は、最初の文字列の後ろに
+    「 + 」が続きます。</p>
+
+    <p>第 3, 4 列は、下の表の注釈に従って、
+    ディレクティブの使用できるコンテキストと、
+    ディレクティブのステータスが示されています。</p>
+  </summary>
+
+  <legend>
+    <table>
+      <tr><th>s</th><td>サーバ設定ファイル</td></tr>
+      <tr><th>v</th><td>バーチャルホスト</td></tr>
+      <tr><th>d</th><td>ディレクトリ</td></tr>
+      <tr><th>h</th><td>.htaccess</td></tr>
+    </table>
+
+    <table>
+      <tr><th>C</th><td>Core</td></tr>
+      <tr><th>M</th><td>MPM</td></tr>
+      <tr><th>B</th><td>Base</td></tr>
+      <tr><th>E</th><td>Extension</td></tr>
+      <tr><th>X</th><td>Experimental</td></tr>
+    </table>
+  </legend>
+
+  &sitemap;
+</quickreference>
