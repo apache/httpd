@@ -240,6 +240,7 @@ _install:
 	-mkdir "$(INSTDIR)\bin"
 	-mkdir "$(INSTDIR)\cgi-bin"
 	-mkdir "$(INSTDIR)\conf"
+	-mkdir "$(INSTDIR)\error"
 	-mkdir "$(INSTDIR)\htdocs"
 	-mkdir "$(INSTDIR)\htdocs\manual"
 	-mkdir "$(INSTDIR)\icons"
@@ -359,6 +360,9 @@ _install:
     }
 <<
         copy docs\cgi-examples\test-cgi.bat "$(INSTDIR)\cgi-bin"
+        xcopy docs\error "$(INSTDIR)\error" /d < <<
+A
+<<
         xcopy docs\docroot "$(INSTDIR)\htdocs" /d < <<
 A
 <<
