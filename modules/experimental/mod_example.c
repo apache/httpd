@@ -510,14 +510,12 @@ static int example_handler(request_rec *r)
      * is broken.
      */
     r->content_type = "text/html";
-    ap_soft_timeout("send example call trace", r);
     ap_send_http_header(r);
     /*
      * If we're only supposed to send header information (HEAD request), we're
      * already there.
      */
     if (r->header_only) {
-        ap_kill_timeout(r);
         return OK;
     }
 
@@ -581,7 +579,6 @@ static int example_handler(request_rec *r)
      * post-processing - but it's possible that another handler might be
      * called and inherit our outstanding timer.  Not good; to each its own.
      */
-    ap_kill_timeout(r);
     /*
      * We did what we wanted to do, so tell the rest of the server we
      * succeeded.
