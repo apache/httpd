@@ -99,12 +99,14 @@ sed -e 's/_module//' $tmpfile | awk >modules.c '\
 #
 # Add module set only
 #
-awk >Makefile <$tmpfile '\
-   BEGIN { printf "# Makefile automatically generated from %s\n", $makefile_tmpl; \
-	   print "# and configuration file by Apache config script. "; \
-	   print "# Hand-edited changes will be lost if the config script"; \
-	   print "# is re-run."; \
-         } \
+echo "#" > Makefile
+echo "# Makefile automatically generated from $makefile_tmpl" >> Makefile
+echo "# and configuration file by Apache config script." >> Makefile
+echo "# Hand-edited changes will be lost if the config script" >> Makefile
+echo "# is re-run" >> Makefile
+echo "#" >> Makefile
+
+awk >>Makefile <$tmpfile '\
    /^Module/ { modules[n++] = $3 } \
    /^%Module/ { modules[n++] = $3 } \
    END { print "MODULES=\\"; \
