@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/25 02:13:58 $]
+Last modified at [$Date: 2003/02/25 12:46:19 $]
 
 Release:
 
@@ -171,7 +171,7 @@ PATCHES TO PORT FROM 2.1
       <http://cvs.apache.org/~nd/rewrite.1.3.patch>
       I'm note sure, whether the prefix_stat function can be done more simple.
       (not so familiar with the 1.3 API :))
-
+      PR 12902.
       modules/mappers/mod_rewrite.c: r1.142, r1.143, r1.144
                      (mod_rewrite.h: r1.41 for the changed prototype of
                                            prefix_stat)
