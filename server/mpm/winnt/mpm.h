@@ -74,6 +74,7 @@
 #define AP_MPM_WANT_SET_SCOREBOARD
 
 extern int ap_threads_per_child;
+extern int ap_thread_limit;
 extern server_rec *ap_server_conf;
 
 #endif /* APACHE_MPM_H */
