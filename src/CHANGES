@@ -1,4 +1,26 @@
 Changes with Apache 1.3.23
+  *) Win32: The Apache Win32 developers generally recommend that
+     MaxRequestsPerChild be set to 0 to prevent the child process
+     from ever recycling. However, for those that do require a 
+     non-zero setting, this patch fixes a serious bug that can cause 
+     an apparent 'server-hang' condition where the server stops
+     responding to requests for a period of time. Prior to this
+     fix, when the child process handled MaxRequestsPerChild
+     connnections, the child process would stop accepting new 
+     connections and begin allowing inactive threads to exit. The
+     problem was that a new process would not be created to begin
+     handling requests until the old process fully exited. The old 
+     process can take an indeterminate amount of time to exit because
+     it may be sending large responses to clients connected over slow
+     links, or it may have threads blocked in read awaiting requests
+     (eg, one attack mode of the Nimda worm is to establish a 
+     connection to the server but not send an HTTP request. This 
+     connection will be timed out according to the setting of the
+     Timeout directive, 300 seconds). This fix allows the new process
+     to be immediately started and begin accepting requests when the 
+     old child process reaches MaxRequestsPerChild. 
+     [Bill Stoddard]
+     
   *) Win32: Emit error message when the server bumps up against the
      ThreadsPerChild configuration limit. This will be useful for 
      admins to detect when their server is running out of threads

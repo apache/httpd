@@ -5616,8 +5616,8 @@ int remove_job(int csd)
     if (!reported && (active_threads == ap_threads_per_child)) {
         reported = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
-                     "server reached ThreadsPerChild setting, consider"
-                     " raising the ThreadsPerChild setting");
+                     "Server ran out of threads to serve requests. Consider "
+                     "raising the ThreadsPerChild setting");
     }
     return (sock);
 }
@@ -6279,8 +6279,10 @@ void worker_main(void)
 
     while (1) {
         if (max_jobs_per_exe && (total_jobs > max_jobs_per_exe)) {
-            /* MaxRequestsPerChild hit...
+            /* Reached MaxRequestsPerChild. Stop accepting new connections
+             * and signal the parent to start a new child process.
              */
+            ap_start_restart(1);
             break;
 	}
         /* Always check for the exit event being signaled.
@@ -6796,7 +6798,11 @@ int master_main(int argc, char **argv)
 	    }
             break;
         } else if (cld == current_live_processes+1) {
-            /* apPID_restart event signalled, restart the child process */
+            /* apPID_restart event signalled. 
+             * Signal the child to shutdown and start a new child process.
+             * The restart event can be signaled by a command line restart or
+             * by the child process when it handles MaxRequestPerChild connections.
+             */
             int children_to_kill = current_live_processes;
             restart_pending = 1;
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, 
@@ -6814,17 +6820,15 @@ int master_main(int argc, char **argv)
                 /* Remove the process (and event) from the process table */
                 cleanup_process(process_handles, process_kill_events, i, &current_live_processes);
 	    }
-	    processes_to_create = nchild;
+	    processes_to_create = 1;
             ++ap_my_generation;
             continue;
         } else {
-            /* A child process must have exited because of MaxRequestPerChild being hit
-             * or a fatal error condition (seg fault, etc.). Remove the dead process 
-             * from the process_handles and process_kill_events table and create a new
-             * child process.
+            /* The child process exited premeturely because of a fatal error condition
+             * (eg, seg fault). Cleanup and restart the child process.
              */
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf, 
-                         "master_main: Child processed exited (due to MaxRequestsPerChild?). Restarting the child process.");
+                         "master_main: Child processed exited prematurely. Restarting the child process.");
 	    ap_assert(cld < current_live_processes);
 	    cleanup_process(process_handles, process_kill_events, cld, &current_live_processes);
 	    APD2("main_process: child in slot %d died", rv);
