@@ -799,13 +799,11 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp_buck);
         tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        /* XXX: this looks like a bug: should be sizeof - 1 */
-        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">"));
+        tmp2_buck = apr_bucket_immortal_create("\">", sizeof("\">") - 1);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
         tmp2_buck = apr_bucket_heap_create(location, len_loc, 1);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
-        /* XXX: this looks like a bug: should be sizeof - 1 */
-        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>"));
+        tmp2_buck = apr_bucket_immortal_create("</A>", sizeof("</A>") - 1);
         APR_BUCKET_INSERT_BEFORE(head_ptr, tmp2_buck);
 
         if (*inserted_head == NULL) {
