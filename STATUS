@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/24 17:14:55 $]
+Last modified at [$Date: 2002/01/24 23:47:30 $]
 
 Release:
 
@@ -93,14 +93,6 @@ RELEASE SHOWSTOPPERS:
       directive instead of returning a "no acceptable variant" error.
         Status: Bill has some code in his tree that accomplishes
                 this, and will commit it Friday after it's tested.
-
-    * Fold mod_auth_db features back into mod_auth_dbm, and depricate it.
-        This can't wait until we have a 2.0-gold release, if folks need
-        to move over to auth_dbm, we can't do that to them after 2.0 gold.
-      Status: Ian says.. auth_dbm can now handle multiple DBM types,
-              is this still an issue?
-      Vote: Remove mod_auth_db
-            +1: Justin, Ian, Lars
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -365,7 +357,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         the dbmmanage employs the first-matched dbm format.  This is not
         necessarily the library that Apache was built with.  Aught to
         rewrite dbmmanage upon installation to bin/ with the proper library 
-        for predictable mod_auth_db/dbm administration.
+        for predictable mod_auth_dbm administration.
         Status: Mladen Turk has posted several patches and ideas.
                 Key question, part of htpasswd, or a seperate utility?
                 prefer htpasswd: Lars

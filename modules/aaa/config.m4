@@ -25,11 +25,6 @@ APACHE_MODULE(auth_dbm, DBM-based access databases, , , most, [
   fi
 ])
 
-APACHE_MODULE(auth_db, DB-based access databases, , , , [
-  AC_CHECK_HEADERS(db.h,,enable_auth_db=no)
-  AC_SEARCH_LIBS(dbopen,[c db],,enable_auth_db=no)
-]) 
-
 APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   ap_old_cppflags=$CPPFLAGS
   CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include -I$abs_builddir/srclib/apr/include"

@@ -79,10 +79,6 @@
     concernant les modules&nbsp;:</a></h2>
 
     <dl>
-      <dt><strong>mod_auth_db</strong></dt>
-
-      <dd>Il accepte maintenant les bases Berkeley DB 3.0.</dd>
-
       <dt><strong>mod_auth_digest</strong></dt>
 
       <dd>Il inclut une nouvelle gestion des sessions en utilisant
