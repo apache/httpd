@@ -2912,7 +2912,7 @@ static int default_handler(request_rec *r)
 {
     core_dir_config *d =
 	    (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
-    int rangestatus, errstatus;
+    int errstatus;
     apr_file_t *fd = NULL;
     apr_status_t status;
 #ifdef AP_USE_MMAP_FILES
@@ -2997,8 +2997,6 @@ static int default_handler(request_rec *r)
                            ap_md5digest(r->pool, fd));
 	}
 
-	rangestatus = ap_set_byterange(r);
-
 	ap_send_http_header(r);
 	
 	if (!r->header_only) {
@@ -3006,18 +3004,7 @@ static int default_handler(request_rec *r)
             apr_off_t  offset = 0;
             apr_size_t nbytes = 0;
 
-	    if (!rangestatus) {
-		ap_send_fd(fd, r, offset, length, &nbytes);
-	    }
-	    else {
-		while (ap_each_byterange(r, &offset, &length)) {
-                    if ((status = ap_send_fd(fd, r, offset, length, &nbytes)) != APR_SUCCESS) {
-		        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-				  "error byteserving file: %s", r->filename);
-			return HTTP_INTERNAL_SERVER_ERROR;
-		    }
-		}
-	    }
+            ap_send_fd(fd, r, offset, length, &nbytes);
 	}
 
 #ifdef AP_USE_MMAP_FILES
@@ -3035,20 +3022,10 @@ static int default_handler(request_rec *r)
 			  ap_md5contextTo64(r->pool, &context));
 	}
 
-	rangestatus = ap_set_byterange(r);
 	ap_send_http_header(r);
 	
 	if (!r->header_only) {
-	    if (!rangestatus) {
-		ap_send_mmap(mm, r, 0, r->finfo.size);
-	    }
-	    else {
-		apr_off_t offset;
-		apr_size_t length;
-		while (ap_each_byterange(r, &offset, &length)) {
-		    ap_send_mmap(mm, r, offset, length);
-		}
-	    }
+            ap_send_mmap(mm, r, 0, r->finfo.size);
 	}
     }
 #endif
@@ -3056,6 +3033,7 @@ static int default_handler(request_rec *r)
     apr_close(fd);
     return OK;
 }
+
 /*
  * coalesce_filter()
  * This is a simple filter to coalesce many small buckets into one large
@@ -3563,10 +3541,12 @@ static void register_hooks(void)
      * filters
      */
     ap_hook_insert_filter(core_insert_filter, NULL, NULL, AP_HOOK_MIDDLE);
+
     ap_register_input_filter("HTTP_IN", ap_http_filter, AP_FTYPE_CONNECTION);
     ap_register_input_filter("DECHUNK", ap_dechunk_filter, AP_FTYPE_TRANSCODE);
     ap_register_input_filter("CORE_IN", core_input_filter, AP_FTYPE_NETWORK);
-    ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, AP_FTYPE_HTTP_HEADER);
+    ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 
+                              AP_FTYPE_HTTP_HEADER);
     ap_register_output_filter("CONTENT_LENGTH", ap_content_length_filter, 
                               AP_FTYPE_HTTP_HEADER);
     ap_register_output_filter("CORE", core_output_filter, AP_FTYPE_NETWORK);
@@ -3574,6 +3554,8 @@ static void register_hooks(void)
                               AP_FTYPE_CONTENT);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);
     ap_register_output_filter("COALESCE", coalesce_filter, AP_FTYPE_CONNECTION);
+    ap_register_output_filter("BYTERANGE", ap_byterange_filter, 
+                              AP_FTYPE_TRANSCODE);
 }
 
 AP_DECLARE_DATA module core_module = {

@@ -98,42 +98,6 @@ AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(default_port)
 )
 
-/* if this is the first error, then log an INFO message and shut down the
- * connection.
- */
-static void check_first_conn_error(const request_rec *r, const char *operation,
-                                   apr_status_t status)
-{
-    if (!r->connection->aborted) {
-        if (status == 0)
-            status = ap_berror(r->connection->client);
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
-                      "client stopped connection before %s completed",
-                      operation);
-        r->connection->aborted = 1;
-    }
-}
-
-static int checked_bputstrs(request_rec *r, ...)
-{
-    va_list va;
-    int n;
-
-    if (r->connection->aborted)
-        return EOF;
-
-    va_start(va, r);
-    n = ap_vbputstrs(r->connection->client, va);
-    va_end(va);
-
-    if (n < 0) {
-        check_first_conn_error(r, "checked_bputstrs", 0);
-        return EOF;
-    }
-
-    return n;
-}
-
 /*
  * Builds the content-type that should be sent to the client from the
  * content-type specified.  The following rules are followed:
@@ -215,168 +179,118 @@ static int parse_byterange(char *range, apr_off_t clength,
     return (*start > 0 || *end < clength - 1);
 }
 
-/* forward declare */
-static int internal_byterange(int realreq, apr_off_t *tlength, request_rec *r,
-                              const char **r_range, apr_off_t *offset,
-                              apr_size_t *length);
+typedef struct byterange_ctx {
+    ap_bucket_brigade *bb;
+} byterange_ctx;
 
-AP_DECLARE(int) ap_set_byterange(request_rec *r)
-{
-    const char *range;
-    const char *if_range;
-    const char *match;
-    apr_off_t range_start;
-    apr_off_t range_end;
-
-    if (!r->clength || r->assbackwards)
-        return 0;
-
-    /* Check for Range request-header (HTTP/1.1) or Request-Range for
-     * backwards-compatibility with second-draft Luotonen/Franks
-     * byte-ranges (e.g. Netscape Navigator 2-3).
-     *
-     * We support this form, with Request-Range, and (farther down) we
-     * send multipart/x-byteranges instead of multipart/byteranges for
-     * Request-Range based requests to work around a bug in Netscape
-     * Navigator 2-3 and MSIE 3.
-     */
-
-    if (!(range = apr_table_get(r->headers_in, "Range")))
-        range = apr_table_get(r->headers_in, "Request-Range");
-
-    if (!range || strncasecmp(range, "bytes=", 6)) {
-        return 0;
-    }
-
-    /* Check the If-Range header for Etag or Date.
-     * Note that this check will return false (as required) if either
-     * of the two etags are weak.
-     */
-    if ((if_range = apr_table_get(r->headers_in, "If-Range"))) {
-        if (if_range[0] == '"') {
-            if (!(match = apr_table_get(r->headers_out, "Etag")) ||
-                (strcmp(if_range, match) != 0))
-                return 0;
-        }
-        else if (!(match = apr_table_get(r->headers_out, "Last-Modified")) ||
-                 (strcmp(if_range, match) != 0))
-            return 0;
-    }
-
-    if (!ap_strchr_c(range, ',')) {
-        /* A single range */
-        if (!parse_byterange(apr_pstrdup(r->pool, range + 6), r->clength,
-                             &range_start, &range_end))
-            return 0;
-
-        r->byterange = 1;
-
-        apr_table_setn(r->headers_out, "Content-Range",
-                       apr_psprintf(r->pool,
-                                    "bytes %" APR_OFF_T_FMT "-%" APR_OFF_T_FMT
-                                    "/%" APR_OFF_T_FMT,
-                                    range_start, range_end, r->clength));
-        apr_table_setn(r->headers_out, "Content-Length",
-                       apr_psprintf(r->pool, "%" APR_OFF_T_FMT,
-                                    range_end - range_start + 1));
-    }
-    else {
-        /* a multiple range */
-        const char *r_range = apr_pstrdup(r->pool, range + 6);
-        apr_off_t tlength = 0;
-
-        r->byterange = 2;
-        r->boundary = apr_psprintf(r->pool, "%qx%lx",
-				r->request_time, (long) getpid());
-        while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL))
-            continue;
-        apr_table_setn(r->headers_out, "Content-Length",
-                       apr_psprintf(r->pool, "%" APR_OFF_T_FMT, tlength));
-    }
-
-    r->status = HTTP_PARTIAL_CONTENT;
-    r->range = range + 6;
-
-    return 1;
-}
-
-AP_DECLARE(int) ap_each_byterange(request_rec *r, apr_off_t *offset,
-				  apr_size_t *length)
-{
-    return internal_byterange(1, NULL, r, &r->range, offset, length);
-}
-
-/* If this function is called with realreq=1, it will spit out
- * the correct headers for a byterange chunk, and set offset and
- * length to the positions they should be.
- *
- * If it is called with realreq=0, it will add to tlength the length
- * it *would* have used with realreq=1.
- *
- * Either case will return 1 if it should be called again, and 0
- * when done.
+/* If we are dealing with a file bucket, there are some interesting
+ * optimizations that can be made later, but for now this should work
+ * for all bucket types, and later we should optimize this for
+ * file buckets.
  */
-static int internal_byterange(int realreq, apr_off_t *tlength, request_rec *r,
-                              const char **r_range, apr_off_t *offset,
-                              apr_size_t *length)
+AP_CORE_DECLARE(apr_status_t) ap_byterange_filter(ap_filter_t *f, ap_bucket_brigade *bb)
 {
-    apr_off_t range_start;
-    apr_off_t range_end;
+#define MIN_LENGTH(len1, len2) ((len1 > len2) ? len2 : len1)
+    request_rec *r = f->r;
+    byterange_ctx *ctx;
+    ap_bucket *e;
+    apr_off_t curr_offset = 0;
+    apr_size_t curr_length = 0;
+    ap_bucket_brigade *bsend = ap_brigade_create(r->pool);
+    long range_start, range_end;
     char *range;
+    char *ts;
+    char *current;
+    char *end = apr_pstrcat(r->pool, CRLF "--", r->boundary, "--" CRLF, NULL);
+    char *bound = apr_pstrcat(r->pool, CRLF "--", r->boundary,
+                                    CRLF "Content-type: ", 
+                                    make_content_type(r, r->content_type),
+                                    CRLF "Content-range: bytes ", 
+                                    NULL);
 
-    if (!**r_range) {
-        if (r->byterange > 1) {
-            if (realreq) {
-                /* ### this isn't "content" so we can't use ap_rvputs(), but
-                 * ### it should be processed by non-processing filters. We
-                 * ### have no "in-between" APIs yet, so send it to the
-                 * ### network for now
-                 */
-                (void) checked_bputstrs(r, CRLF "--", r->boundary, "--" CRLF,
-                                        NULL);
-            }
-	    else {
-                *tlength += 4 + strlen(r->boundary) + 4;
+    ctx = f->ctx;
+    if (ctx == NULL) {
+        f->ctx = ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+    }
+
+    /* We can't actually deal with byte-ranges until we have the whole brigade
+     * because the byte-ranges can be in any order, and according to the RFC,
+     * we SHOULD return the data in the same order it was requested. 
+     */
+    if (!AP_BUCKET_IS_EOS(AP_BRIGADE_LAST(bb))) {
+        ap_save_brigade(f, &ctx->bb, &bb);
+        return APR_SUCCESS;
+    }
+    AP_BRIGADE_CONCAT(ctx->bb, bb);
+
+    bb = ctx->bb;
+    while ((current = ap_getword(r->pool, &r->range, ',')) &&
+           parse_byterange(current, r->clength, &range_start, &range_end)) {
+        const char *str;
+        apr_size_t n;
+        char *loc;
+
+        curr_length = range_end - range_start + 1;
+        loc = range = apr_pcalloc(r->pool, curr_length + 1);
+
+        e = AP_BRIGADE_FIRST(bb);
+        curr_offset = 0;
+        ap_bucket_read(e, &str, &n, AP_NONBLOCK_READ);
+        while (range_start > (curr_offset + e->length)) {
+            curr_offset += e->length;
+            e = AP_BUCKET_NEXT(e);
+            if (e == AP_BRIGADE_SENTINEL(bb)) {
+                break;
             }
         }
-        return 0;
-    }
+        if (range_start != curr_offset) {
+            /* If we get here, then we know that the beginning of this 
+             * byte-range occurs someplace in the middle of the current bucket
+             */
 
-    range = ap_getword(r->pool, r_range, ',');
-    if (!parse_byterange(range, r->clength, &range_start, &range_end)) {
-        /* Skip this one */
-        return internal_byterange(realreq, tlength, r, r_range, offset,
-                                  length);
-    }
+            apr_cpystrn(loc, str + (range_start - curr_offset), 
+                        MIN_LENGTH(curr_length + 1, e->length));
+            loc += MIN_LENGTH(curr_length + 1, e->length);
+            curr_length -= MIN_LENGTH(curr_length + 1, e->length);
+            e = AP_BUCKET_NEXT(e);
+        }
+        
+        do {
+            if (curr_length == 0) {
+                break;
+            }
+            ap_bucket_read(e, &str, &n, AP_NONBLOCK_READ);
+            apr_cpystrn(loc, str + (range_start - curr_offset), 
+                        MIN_LENGTH(curr_length + 1, e->length));
+            loc += MIN_LENGTH(curr_length + 1, e->length);
+            curr_length -= MIN_LENGTH(curr_length + 1, e->length);
+            e = AP_BUCKET_NEXT(e);
+        } while (e != AP_BRIGADE_SENTINEL(bb));
 
+        if (r->byterange > 1) {
+            e = ap_bucket_create_pool(bound, strlen(bound), r->pool);
+            AP_BRIGADE_INSERT_TAIL(bsend, e);
+
+            ts = apr_pcalloc(r->pool, MAX_STRING_LEN);
+            apr_snprintf(ts, MAX_STRING_LEN, "%ld-%ld/%ld" CRLF CRLF, 
+                         range_start, range_end, r->clength);
+            e = ap_bucket_create_pool(ts, strlen(ts), r->pool);
+            AP_BRIGADE_INSERT_TAIL(bsend, e);
+        }
+        
+        e = ap_bucket_create_pool(range, strlen(range), r->pool);
+        AP_BRIGADE_INSERT_TAIL(bsend, e);
+    }
     if (r->byterange > 1) {
-        const char *ct = make_content_type(r, r->content_type);
-        char ts[MAX_STRING_LEN];
-
-        apr_snprintf(ts, sizeof(ts),
-                     "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT,
-                     range_start, range_end, r->clength);
-        if (realreq)
-            (void) checked_bputstrs(r, CRLF "--", r->boundary,
-                                    CRLF "Content-type: ", ct,
-                                    CRLF "Content-range: bytes ", ts,
-                                    CRLF CRLF, NULL);
-        else
-            *tlength += 4 + strlen(r->boundary) + 16 + strlen(ct) + 23 +
-                        strlen(ts) + 4;
+        e = ap_bucket_create_pool(end, strlen(end), r->pool);
+        AP_BRIGADE_INSERT_TAIL(bsend, e);
     }
+    e = ap_bucket_create_eos();
+    AP_BRIGADE_INSERT_TAIL(bsend, e);
 
-    if (realreq) {
-        *offset = range_start;
-
-        /* ### we need to change ap_each_byterange() to fix this */
-        *length = (apr_size_t) (range_end - range_start + 1);
-    }
-    else {
-        *tlength += range_end - range_start + 1;
-    }
-    return 1;
-}
+    ap_brigade_destroy(bb);
+    return ap_pass_brigade(f->next, bsend); 
+}    
 
 AP_DECLARE(void) ap_set_content_length(request_rec *r, apr_off_t clength)
 {
@@ -2323,6 +2237,95 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     return ap_pass_brigade(f->next, b);
 }
 
+static int ap_set_byterange(request_rec *r)
+{
+    const char *range, *if_range, *match;
+    long range_start, range_end;
+
+    if (!r->clength || r->assbackwards)
+        return 0;
+
+    /* Check for Range request-header (HTTP/1.1) or Request-Range for
+     * backwards-compatibility with second-draft Luotonen/Franks
+     * byte-ranges (e.g. Netscape Navigator 2-3).
+     *
+     * We support this form, with Request-Range, and (farther down) we
+     * send multipart/x-byteranges instead of multipart/byteranges for
+     * Request-Range based requests to work around a bug in Netscape
+     * Navigator 2-3 and MSIE 3.
+     */
+
+    if (!(range = apr_table_get(r->headers_in, "Range")))
+        range = apr_table_get(r->headers_in, "Request-Range");
+
+    if (!range || strncasecmp(range, "bytes=", 6)) {
+        return 0;
+    }
+
+    /* Check the If-Range header for Etag or Date.
+     * Note that this check will return false (as required) if either
+     * of the two etags are weak.
+     */
+    if ((if_range = apr_table_get(r->headers_in, "If-Range"))) {
+        if (if_range[0] == '"') {
+            if (!(match = apr_table_get(r->headers_out, "Etag")) ||
+                (strcmp(if_range, match) != 0))
+                return 0;
+        }
+        else if (!(match = apr_table_get(r->headers_out, "Last-Modified")) ||
+                 (strcmp(if_range, match) != 0))
+            return 0;
+    }
+
+    if (!ap_strchr_c(range, ',')) {
+        /* A single range */
+        if (!parse_byterange(apr_pstrdup(r->pool, range + 6), r->clength, &range_start, &range_end)) {
+            return 0;
+        }
+        apr_table_setn(r->headers_out, "Content-Range",
+                       apr_psprintf(r->pool,
+                                    "bytes %" APR_OFF_T_FMT "-%" APR_OFF_T_FMT
+                                    "/%" APR_OFF_T_FMT,
+                                    range_start, range_end, r->clength));
+        apr_table_setn(r->headers_out, "Content-Length",
+                       apr_psprintf(r->pool, "%" APR_OFF_T_FMT,
+                                    range_end - range_start + 1));
+
+        r->byterange = 1;
+    }
+    else {
+#if 0
+        const char *temp = apr_pstrdup(r->pool, range + 6);
+        char *current;
+        long tlength = 0;
+#endif
+        /* a multiple range */
+
+        r->byterange = 2;
+        r->boundary = apr_psprintf(r->pool, "%qx%lx",
+				r->request_time, (long) getpid());
+#if 0
+        /* This computes the content-length for the actual data, but it does
+         * not add the length of the byte-range headers, so it is an invalid
+         * content-length.  I am leaving the code here, so that other people
+         * can see what I have done. rbb
+         */
+        while ((current = ap_getword(r->pool, &temp, ',')) &&
+               parse_byterange(current, r->clength, &range_start, &range_end)) {
+            tlength += (range_end - range_start + 2);
+        }
+        apr_table_setn(r->headers_out, "Content-Length",
+            apr_psprintf(r->pool, "%ld", tlength));
+#endif
+    }
+
+    r->status = HTTP_PARTIAL_CONTENT;
+    r->range = range + 6;
+
+    return 1;
+}
+
+
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
     int i;
@@ -2376,12 +2379,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
 /*      ap_add_output_filter("COALESCE", NULL, r, r->connection); */
     }
 
+    ap_set_byterange(r);
+
     if (r->byterange > 1) {
         apr_table_setn(r->headers_out, "Content-Type",
 		       apr_pstrcat(r->pool, "multipart",
 				   use_range_x(r) ? "/x-" : "/",
 				   "byteranges; boundary=",
 				   r->boundary, NULL));
+        /* Remove the content-length until we figure out how to compute
+         * it correctly.
+         */
+        apr_table_unset(r->headers_out, "Content-Length");
     }
     else {
 	apr_table_setn(r->headers_out, "Content-Type",
@@ -2441,11 +2450,18 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f, ap_bu
     ap_pass_brigade(f->next, b2);
 
     if (r->chunked) {
-        /* We can't add this filters until we have already sent the headers.
+        /* We can't add this filter until we have already sent the headers.
          * If we add it before this point, then the headers will be chunked
          * as well, and that is just wrong.
          */
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
+    }
+    if (r->byterange) {
+        /* We can't add this filter until we have already sent the headers.
+         * If we add it before this point, then the headers will be chunked
+         * as well, and that is just wrong.
+         */
+        ap_add_output_filter("BYTERANGE", NULL, r, r->connection);
     }
 
     /* Don't remove this filter until after we have added the CHUNK filter.
