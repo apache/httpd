@@ -494,10 +494,11 @@ implemented using shared memory.  The rest default to using an
 on-disk file.  The on-disk file is not only slow, but it is unreliable
 (and less featured).  Peruse the <code>src/main/conf.h</code> file
 for your architecture and look for either <code>USE_MMAP_SCOREBOARD</code> or
-<code>USE_SHMGET_SCOREBOARD</code>.  Defining one of those two enables the
-supplied shared memory code.  If your system has another type of
-shared memory then edit the file <code>src/main/http_main.c</code> and
-add the hooks necessary to use it in Apache.  (Send us back a patch
+<code>USE_SHMGET_SCOREBOARD</code>.  Defining one of those two (as
+well as their companions <code>HAVE_MMAP</code> and <code>HAVE_SHMGET</code>
+respectively) enables the supplied shared memory code.  If your system has
+another type of shared memory, edit the file <code>src/main/http_main.c</code>
+and add the hooks necessary to use it in Apache.  (Send us back a patch
 too please.)
 
 <p>Historical note:  The Linux port of Apache didn't start to use
@@ -706,7 +707,7 @@ large may lock out low bandwidth clients unless you also increase the
 
 <p>It may even be the case that <code>mmap</code> isn't
 used on your architecture, if so then defining <code>USE_MMAP_FILES</code>
-might work (if it works then report back to us).
+and <code>HAVE_MMAP</code> might work (if it works then report back to us).
 
 <p>Apache does its best to avoid copying bytes around in memory.  The
 first write of any request typically is turned into a <code>writev</code>
