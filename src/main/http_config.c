@@ -1296,6 +1296,7 @@ server_rec *init_server_config(pool *p)
     /* NOT virtual host; don't match any real network interface */
     s->addrs->host_addr.s_addr = htonl(INADDR_ANY);
     s->addrs->host_port = 0;	/* matches any port */
+    s->addrs->virthost = "";	/* must be non-NULL */
     s->names = s->wild_names = NULL;
 
     s->module_config = create_server_config(p, s);
