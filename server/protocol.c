@@ -113,7 +113,7 @@ APR_HOOK_STRUCT(
  *    - then, if there are no parameters on type, add the default charset
  *    - return type
  */
-const char *ap_make_content_type(request_rec *r, const char *type)
+AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
 {
     static const char *needcset[] = {
 	"text/plain",
