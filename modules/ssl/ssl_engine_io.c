@@ -406,9 +406,9 @@ static apr_status_t ssl_io_filter_Output(ap_filter_t *f,
             if ((ret = churn_output(ctx)) != APR_SUCCESS) {
                 break;
             }
-        }
 
-        apr_bucket_delete(bucket);
+            apr_bucket_delete(bucket);
+        }
     }
 
     apr_brigade_destroy(bb);
