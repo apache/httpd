@@ -49,6 +49,7 @@ always available.
 <LI><A HREF="#keepalive">KeepAlive</A>
 <LI><A HREF="#keepalivetimeout">KeepAliveTimeout</A>
 <LI><A HREF="#limit">&lt;Limit&gt;</A>
+<LI><A HREF="#limitexcept">&lt;LimitExcept&gt;</A>
 <LI><A HREF="#limitrequestbody">LimitRequestBody</A>
 <LI><A HREF="#limitrequestfields">LimitRequestFields</A>
 <LI><A HREF="#limitrequestfieldsize">LimitRequestFieldsize</A>
@@ -659,7 +660,8 @@ page for more details.
 
 The directory sections typically occur in the access.conf file, but they
 may appear in any configuration file. &lt;Directory&gt; directives cannot
-nest, and cannot appear in a <A HREF="#limit">&lt;Limit&gt;</A> section.
+nest, and cannot appear in a <A HREF="#limit">&lt;Limit&gt;</A> or
+<A HREF="#limitexcept">&lt;LimitExcept&gt;</A> section.
 <P>
 
 <STRONG>See also</STRONG>: <A HREF="../sections.html">How Directory,
@@ -1337,6 +1339,35 @@ OPTIONS. <STRONG>The method name is case-sensitive.</STRONG>
 If GET is used it will also restrict HEAD requests.
 <STRONG>If you wish to limit all methods, do not include any
 &lt;Limit&gt; directive at all.</STRONG>
+
+<P><HR>
+
+<H2><A NAME="limitexcept">&lt;LimitExcept&gt; directive</A></H2>
+<!--%plaintext &lt;?INDEX {\tt LimitExcept} section directive&gt; -->
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A>
+ &lt;LimitExcept <EM>method method</EM> ... &gt; ... &lt;/LimitExcept&gt;<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> any<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.3.5 and later<P>
+
+&lt;LimitExcept&gt; and &lt;/LimitExcept&gt; are used to enclose a group of
+access control directives which will then apply to any HTTP access method
+<STRONG>not</STRONG> listed in the arguments; i.e., it is the opposite of a
+<A HREF="#limit">&lt;Limit&gt;</A> section and can be used to control both
+standard and nonstandard/unrecognized methods. See the documentation for 
+<A HREF="#limit">&lt;Limit&gt;</A> for more details.
 
 <P><HR>
 
