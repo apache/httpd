@@ -1,0 +1,6 @@
+# Extra rules for making DLLs for OS/2
+
+%.def : %.c
+	echo "LIBRARY $* INITINSTANCE" > $@
+	echo "EXPORTS" >> $@
+	grep "^module .*=" $< | sed "s/module .* \(.*\) =/	\1/" >> $@
