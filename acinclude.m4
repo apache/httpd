@@ -314,113 +314,111 @@ AC_DEFUN(APACHE_REQUIRE_CXX,[
 dnl
 dnl APACHE_CHECK_SSL_TOOLKIT
 dnl
-dnl Find the openssl toolkit installation and check it for the right
-dnl version, then add its flags to INCLUDES and LIBS.  This should
-dnl really be using a custom AC_TRY_COMPILE function to test the includes
-dnl and then AC_TRY_LINK to test the libraries directly for the version,
-dnl but that will require someone who knows how to program openssl.
+dnl Configure for the detected openssl/ssl-c toolkit installation, giving
+dnl preference to "--with-ssl=<path>" if it was specified.
 dnl
 AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
-if test "x$ap_ssltk_base" = "x"; then
-  AC_MSG_CHECKING(for SSL/TLS toolkit base)
+if test "x$ap_ssltk_configured" = "x"; then
+  dnl initialise the variables we use
   ap_ssltk_base=""
-  AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,SSL/TLS toolkit (OpenSSL)), [
+  ap_ssltk_inc=""
+  ap_ssltk_lib=""
+  ap_ssltk_type=""
+
+  dnl Determine the SSL/TLS toolkit's base directory, if any
+  AC_MSG_CHECKING(for SSL/TLS toolkit base)
+  AC_ARG_WITH(ssl, APACHE_HELP_STRING(--with-ssl=DIR,SSL/TLS toolkit), [
+    dnl If --with-ssl specifies a directory, we use that directory or fail
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
-      ap_ssltk_base="$withval"
-      if test -f "$ap_ssltk_base/bin/openssl"; then
-          ap_ssltk_version="`$ap_ssltk_base/bin/openssl version`"
-      else
-          ap_ssltk_version="unknown"
-      fi
+      dnl This ensures $withval is actually a directory and that it is absolute
+      ap_ssltk_base="`cd $withval ; pwd`"
     fi
   ])
   if test "x$ap_ssltk_base" = "x"; then
-    AC_CACHE_VAL(ap_cv_ssltk,[
-      #
-      # shotgun approach: find all occurrences of the openssl program
-      #
-      # The IFS=... trick eliminates the colons from $PATH, without using an external program
-      for p in `IFS=":$IFS"; echo $PATH` /usr/local/openssl/bin /usr/local/ssl/bin; do
-        if test -f "$p/openssl"; then
-          ap_ssltk_version="`$p/openssl version`"
-          if test "x$ap_ssltk_version" != "x"; then
-            ap_cv_ssltk="`(cd $p/.. && pwd)`"
-            break
-          fi
-        fi
-      done
-      if test "x$ap_cv_ssltk" = "x"; then
-        AC_MSG_ERROR([requires OpenSSL 0.9.6e or higher])
-      fi
-    ])
-    ap_ssltk_base="$ap_cv_ssltk"
+    AC_MSG_RESULT(none)
+  else
+    AC_MSG_RESULT($ap_ssltk_base)
   fi
-  if test ! -d $ap_ssltk_base; then
-    AC_MSG_ERROR([invalid SSL/TLS toolkit base directory $ap_ssltk_base])
-  fi
-  AC_MSG_RESULT($ap_ssltk_base)
-    
-  AC_MSG_CHECKING(for SSL/TLS toolkit version)
-  AC_MSG_RESULT($ap_ssltk_version)
-  case "$ap_ssltk_version" in
-    "OpenSSL "[[1-9]]* | \
-    "OpenSSL "0.9.6[[e-z]]* | \
-    "OpenSSL "0.9.[[7-9]]* | \
-    "OpenSSL "0.[[1-9]][[0-9]]* )
-       # okay versions that do not have known security holes
-       ;;
-    "OpenSSL"*)
-       AC_MSG_WARN([OpenSSL versions prior to 0.9.6e have known security holes])
-       ;;
-    *)
-       # unknown version -- assume the user knows what they are doing
-       ;;
-  esac
-    
-  AC_MSG_CHECKING(for SSL/TLS toolkit includes)
-  ap_ssltk_incdir=""
-  for p in $ap_ssltk_base/include /usr/local/openssl/include \
-           /usr/local/ssl/include /usr/local/include /usr/include; do
-    if test -f "$p/openssl/ssl.h"; then
-      ap_ssltk_incdir="$p"
-      break
-    elif test -f "$p/ssl.h"; then
-      ap_ssltk_incdir="$p"
-      break
-    fi
-  done
-  if test "x$ap_ssltk_incdir" = "x"; then
-    AC_MSG_ERROR([OpenSSL headers not found])
-  fi
-  AC_MSG_RESULT($ap_ssltk_incdir)
 
-  AC_MSG_CHECKING(for SSL/TLS toolkit libraries)
-  ap_ssltk_libdir=""
-  for p in $ap_ssltk_base/lib /usr/local/openssl/lib \
-           /usr/local/ssl/lib /usr/local/lib /usr/lib /lib /usr/lib64; do
-    if test -f "$p/libssl.a" -o -f "$p/libssl.so" -o -f "$p/libssl.dylib"; then
-      ap_ssltk_libdir="$p"
-      break
+  dnl Run header and version checks
+  saved_CPPFLAGS=$CPPFLAGS
+  if test "x$ap_ssltk_base" != "x"; then
+    ap_ssltk_inc="-I$ap_ssltk_base/include"
+    CPPFLAGS="$CPPFLAGS $ap_ssltk_inc"
+  fi
+  AC_CHECK_HEADERS([sslc.h], [ap_ssltk_type="sslc"], [])
+  if test "x$ap_ssltk_type" = "x"; then
+    AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
+    if test "x$ap_ssltk_type" = "x"; then
+      AC_MSG_ERROR([No SSL/TLS headers were available])
     fi
-  done
-  if test ".$ap_ssltk_libdir" = .; then
-    AC_MSG_ERROR([OpenSSL libraries not found])
-  fi
-  AC_MSG_RESULT($ap_ssltk_libdir)
+    dnl so it's OpenSSL - report, then test for a good version
+    echo "... SSL/TLS support configuring for OpenSSL"
+    AC_MSG_CHECKING(for OpenSSL version)
+    AC_TRY_COMPILE([#include <openssl/opensslv.h>],
+[#if !defined(OPENSSL_VERSION_NUMBER) || OPENSSL_VERSION_NUMBER < 0x0090609f
+#error "invalid openssl version"
+#endif],
+      [dnl Replace this with OPENSSL_VERSION_TEXT from opensslv.h?
+      AC_MSG_RESULT(OK)],
+      [AC_MSG_RESULT([not encouraging])
+      echo "WARNING: OpenSSL version may contain security vulnerabilities!"])
 
-  dnl #  annotate the Apache build environment with determined information
-  APR_ADDTO(INCLUDES, [-I$ap_ssltk_incdir/openssl])
-  if test "x$ap_ssltk_incdir" != "x/usr/include"; then
-    APR_ADDTO(INCLUDES, [-I$ap_ssltk_incdir])
+  else
+
+    dnl so it's SSL-C - report, then test anything relevant
+    echo "... SSL/TLS support configuring for SSL-C"
+    AC_MSG_CHECKING(for SSL-C version)
+    dnl FIXME: we currently don't check anything for SSL-C
+    AC_MSG_RESULT([OK, but I didn't really check])
   fi
-  if test "x$ap_ssltk_libdir" != "x/usr/lib"; then
-    APR_ADDTO(LDFLAGS, [-L$ap_ssltk_libdir])
+  dnl restore
+  CPPFLAGS=$saved_CPPFLAGS
+
+  dnl Run library checks
+  saved_LDFLAGS=$LDFLAGS
+  saved_LIBS=$LIBS
+  if test "x$ap_ssltk_base" != "x"; then
+    if test -d "$ap_ssltk_base/lib"; then
+      ap_ssltk_lib="$ap_ssltk_base/lib"
+    else
+      ap_ssltk_lib="$ap_ssltk_base"
+    fi
+    LDFLAGS="$LDFLAGS -L$ap_ssltk_lib"
+  fi
+  dnl make sure "other" flags are available so libcrypto and libssl can link
+  LIBS="$LIBS `$apr_config --libs`"
+  liberrors=""
+  AC_CHECK_LIB(crypto, SSLeay_version, [], [liberrors="yes"])
+  AC_CHECK_LIB(ssl, SSL_CTX_new, [], [liberrors="yes"])
+  if test "x$liberrors" != "x"; then
+    AC_MSG_ERROR([... Error, SSL/TLS libraries were missing or unusable])
+  fi
+  dnl restore
+  LDFLAGS=$saved_LDFLAGS
+  LIBS=$saved_LIBS
+
+  dnl Adjust apache's configuration based on what we found above.
+  dnl (a) define preprocessor symbols
+  if test "$ap_ssltk_type" = "openssl"; then
+    AC_DEFINE(HAVE_OPENSSL)
+  else
+    AC_DEFINE(HAVE_SSLC)
+  fi
+  dnl (b) hook up include paths
+  if test "x$ap_ssltk_inc" != "x"; then
+    APR_ADDTO(INCLUDES, [$ap_ssltk_inc])
+  fi
+  dnl (c) hook up linker paths
+  if test "x$ap_ssltk_lib" != "x"; then
+    APR_ADDTO(LDFLAGS, ["-L$ap_ssltk_lib"])
     if test "x$ap_platform_runtime_link_flag" != "x"; then
-      APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_ssltk_libdir])
+      APR_ADDTO(LDFLAGS, ["$ap_platform_runtime_link_flag$ap_ssltk_libdir"])
     fi
   fi
+  dnl (d) add "-lssl -lcrypto" to LIBS because restoring LIBS after
+  dnl AC_CHECK_LIB() obliterates any flags AC_CHECK_LIB() added.
   APR_ADDTO(LIBS, [-lssl -lcrypto])
-  ap_cv_ssltk="$ap_ssltk_base"
 fi
 ])
 
