@@ -1,5 +1,8 @@
 Changes with Apache 2.0.12-dev
 
+  *) Namespace protect IOBUFSIZ since it is exposed in the API.
+     [Jon Travis <jtravis@covalent.net>]
+
   *) Use "Basic" authentication instead of "basic" in ab, as the spec
      says we should.  [Andre Breiler <andre.breiler@rd.bbc.co.uk>]
 
