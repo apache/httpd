@@ -62,6 +62,25 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
     <A HREF="http://bugs.apache.org/index/full/1336">PR#1336</A>.
     <STRONG>This is not an Apache bug, and no code will be changed to deal with
     it.</STRONG>
+<LI><STRONG>NT only</STRONG> When installed as a service, Apache expects
+    to find its ServerRoot at \Apache on the system disk. See 
+    <A HREF="http://bugs.apache.org/index/full/1489">PR#1489</A>.
+<LI><STRONG>Win32 only</STRONG> The <CODE>Alias</CODE> directive does not
+    work if the target is a root directory, e.g. D:/. See 
+    <A HREF="http://bugs.apache.org/index/full/1558">PR#1558</A>.
+<LI><STRONG>Win32 only</STRONG> Repeated concurrent requests to a CGI
+    program can cause Apache to lock-up. See 
+    <A HREF="http://bugs.apache.org/index/full/1129">PR#1129</A> and
+    <A HREF="http://bugs.apache.org/index/full/1609">PR#1609</A>.
+<LI><STRONG>Win32 only</STRONG> Apache requires the file 
+    <CODE>MSVCRT.EXE</CODE> to run. This is a Microsoft
+    redistributable file required for all C programs compiled by
+    MSVC++. Many other programs will require it, so it is already
+    installed on most systems. If Apache will not start because this
+    file is missing you can download it from <A
+    HREF="ftp://ftp.microsoft.com/Softlib/MSLFILES/msvcrt.exe">
+    ftp://ftp.microsoft.com/Softlib/MSLFILES/msvcrt.exe</A>. See <A
+    HREF="http://bugs.apache.org/index/full/1739">PR#1739</A>.
 </OL>
 
 <H2>Apache 1.3b2 Bugs</H2>
