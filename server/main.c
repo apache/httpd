@@ -30,6 +30,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_vhost.h"
 #include "apr_uri.h"
 #include "util_ebcdic.h"

@@ -352,7 +352,6 @@ static void ap_dump_loaded_modules(apr_pool_t* p, server_rec* s)
     ap_module_symbol_t *modie;
     ap_module_symbol_t *modi;
     so_server_conf *sconf;
-    module *modp;
     int i;
     apr_file_t *out = NULL;
     apr_file_open_stderr(&out, p);
