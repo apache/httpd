@@ -209,6 +209,11 @@ void ap_finalize_sub_req_protocol(request_rec *sub_r);
 
 CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri);
 
+/* Get the method number associated with the given string, assumed to
+ * contain an HTTP method.  Returns M_INVALID if not recognized.
+ */
+API_EXPORT(int) ap_method_number_of(const char *method);
+
 #ifdef __cplusplus
 }
 #endif

@@ -531,16 +531,28 @@ API_EXPORT(const char *) ap_get_server_built(void);
                                     ((x) == HTTP_SERVICE_UNAVAILABLE) || \
 				    ((x) == HTTP_NOT_IMPLEMENTED))
 
+/* Methods recognized (but not necessarily handled) by the server.
+ * These constants are used in bit shifting masks of size int, so it is
+ * unsafe to have more methods than bits in an int.  HEAD == M_GET.
+ */
+#define M_GET        0
+#define M_PUT        1
+#define M_POST       2
+#define M_DELETE     3
+#define M_CONNECT    4
+#define M_OPTIONS    5
+#define M_TRACE      6
+#define M_PATCH      7
+#define M_PROPFIND   8
+#define M_PROPPATCH  9
+#define M_MKCOL     10
+#define M_COPY      11
+#define M_MOVE      12
+#define M_LOCK      13
+#define M_UNLOCK    14
 
-#define METHODS 8
-#define M_GET 0
-#define M_PUT 1
-#define M_POST 2
-#define M_DELETE 3
-#define M_CONNECT 4
-#define M_OPTIONS 5
-#define M_TRACE 6
-#define M_INVALID 7
+#define METHODS     15
+#define M_INVALID   31
 
 #define CGI_MAGIC_TYPE "application/x-httpd-cgi"
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"

@@ -56,7 +56,7 @@
  */
 
 /*
- * mod_actions.c: executes scripts based on MIME type
+ * mod_actions.c: executes scripts based on MIME type or HTTP method
  *
  * by Alexei Kosut; based on mod_cgi.c, mod_mime.c and mod_includes.c,
  * adapted by rst from original NCSA code by Rob McCool
@@ -69,6 +69,12 @@
  * requested. It sends the URL and file path of the requested document using 
  * the standard CGI PATH_INFO and PATH_TRANSLATED environment variables.
  *
+ * Script PUT /cgi-bin/script
+ *
+ * will activate /cgi-bin/script when a request is received with the
+ * HTTP method "PUT".  The available method names are defined in httpd.h.
+ * If the method is GET, the script will only be activated if the requested
+ * URI includes query information (stuff after a ?-mark).
  */
 
 #include "httpd.h"
@@ -81,11 +87,8 @@
 #include "util_script.h"
 
 typedef struct {
-    table *action_types;	/* Added with Action... */
-    char *get;			/* Added with Script GET */
-    char *post;			/* Added with Script POST */
-    char *put;			/* Added with Script PUT */
-    char *delete;		/* Added with Script DELETE */
+    table *action_types;       /* Added with Action... */
+    char *scripted[METHODS];   /* Added with Script... */
 } action_dir_config;
 
 module action_module;
@@ -96,10 +99,7 @@ static void *create_action_dir_config(pool *p, char *dummy)
     (action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
 
     new->action_types = ap_make_table(p, 4);
-    new->get = NULL;
-    new->post = NULL;
-    new->put = NULL;
-    new->delete = NULL;
+    memset(new->scripted, 0, sizeof(new->scripted));
 
     return new;
 }
@@ -108,17 +108,17 @@ static void *merge_action_dir_configs(pool *p, void *basev, void *addv)
 {
     action_dir_config *base = (action_dir_config *) basev;
     action_dir_config *add = (action_dir_config *) addv;
-    action_dir_config *new =
-    (action_dir_config *) ap_palloc(p, sizeof(action_dir_config));
+    action_dir_config *new = (action_dir_config *) ap_palloc(p,
+                                  sizeof(action_dir_config));
+    int i;
 
     new->action_types = ap_overlay_tables(p, add->action_types,
 				       base->action_types);
 
-    new->get = add->get ? add->get : base->get;
-    new->post = add->post ? add->post : base->post;
-    new->put = add->put ? add->put : base->put;
-    new->delete = add->delete ? add->delete : base->delete;
-
+    for (i = 0; i < METHODS; ++i) {
+        new->scripted[i] = add->scripted[i] ? add->scripted[i]
+                                            : base->scripted[i];
+    }
     return new;
 }
 
@@ -129,19 +129,18 @@ static const char *add_action(cmd_parms *cmd, action_dir_config * m, char *type,
     return NULL;
 }
 
-static const char *set_script(cmd_parms *cmd, action_dir_config * m, char *method,
-			      char *script)
+static const char *set_script(cmd_parms *cmd, action_dir_config * m,
+                              char *method, char *script)
 {
-    if (!strcmp(method, "GET"))
-	m->get = script;
-    else if (!strcmp(method, "POST"))
-	m->post = script;
-    else if (!strcmp(method, "PUT"))
-	m->put = script;
-    else if (!strcmp(method, "DELETE"))
-	m->delete = script;
+    int methnum;
+
+    methnum = ap_method_number_of(method);
+    if (methnum == M_TRACE)
+        return "TRACE not allowed for Script";
+    else if (methnum == M_INVALID)
+        return "Unknown method type for Script";
     else
-	return "Unknown method type for Script";
+        m->scripted[methnum] = script;
 
     return NULL;
 }
@@ -157,30 +156,28 @@ static const command_rec action_cmds[] =
 
 static int action_handler(request_rec *r)
 {
-    action_dir_config *conf =
-    (action_dir_config *) ap_get_module_config(r->per_dir_config, &action_module);
+    action_dir_config *conf = (action_dir_config *)
+        ap_get_module_config(r->per_dir_config, &action_module);
     const char *t, *action = r->handler ? r->handler : r->content_type;
-    const char *script = NULL;
+    const char *script;
+    int i;
 
     /* Set allowed stuff */
-    if (conf->get)
-	r->allowed |= (1 << M_GET);
-    if (conf->post)
-	r->allowed |= (1 << M_POST);
-    if (conf->put)
-	r->allowed |= (1 << M_PUT);
-    if (conf->delete)
-	r->allowed |= (1 << M_DELETE);
+    for (i = 0; i < METHODS; ++i) {
+        if (conf->scripted[i])
+            r->allowed |= (1 << i);
+    }
 
     /* First, check for the method-handling scripts */
-    if ((r->method_number == M_GET) && r->args && conf->get)
-	script = conf->get;
-    else if ((r->method_number == M_POST) && conf->post)
-	script = conf->post;
-    else if ((r->method_number == M_PUT) && conf->put)
-	script = conf->put;
-    else if ((r->method_number == M_DELETE) && conf->delete)
-	script = conf->delete;
+    if (r->method_number == M_GET) {
+        if (r->args)
+            script = conf->scripted[M_GET];
+        else
+            script = NULL;
+    }
+    else {
+        script = conf->scripted[r->method_number];
+    }
 
     /* Check for looping, which can happen if the CGI script isn't */
     if (script && r->prev && r->prev->prev)

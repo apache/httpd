@@ -1,5 +1,12 @@
 Changes with Apache 1.3.4
 
+  *) Enabled all of the WebDAV method names for use by third-party
+     modules, Limit, and Script directives.  That includes PATCH,
+     PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK, and UNLOCK.
+     Improved mod_actions.c so that it can use any of the methods
+     defined in httpd.h.  Added ap_method_number_of(method) for
+     getting the internal method number.  [Roy Fielding]
+
   *) PORT: Add a port to the TPF OS. [Joe Moenich <moenich@us.ibm.com> and
      others at IBM]
 

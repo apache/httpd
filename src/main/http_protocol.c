@@ -517,6 +517,72 @@ API_EXPORT(void) ap_set_last_modified(request_rec *r)
               ap_gm_timestr_822(r->pool, mod_time));
 }
 
+/* Get the method number associated with the given string, assumed to
+ * contain an HTTP method.  Returns M_INVALID if not recognized.
+ *
+ * This is the first step toward placing method names in a configurable
+ * list.  Hopefully it (and other routines) can eventually be moved to
+ * something like a mod_http_methods.c, complete with config stuff.
+ */
+API_EXPORT(int) ap_method_number_of(const char *method)
+{
+    switch (*method) {
+        case 'H':
+           if (strcmp(method, "HEAD") == 0)
+               return M_GET;   /* see header_only in request_rec */
+           break;
+        case 'G':
+           if (strcmp(method, "GET") == 0)
+               return M_GET;
+           break;
+        case 'P':
+           if (strcmp(method, "POST") == 0)
+               return M_POST;
+           if (strcmp(method, "PUT") == 0)
+               return M_PUT;
+           if (strcmp(method, "PATCH") == 0)
+               return M_PATCH;
+           if (strcmp(method, "PROPFIND") == 0)
+               return M_PROPFIND;
+           if (strcmp(method, "PROPPATCH") == 0)
+               return M_PROPPATCH;
+           break;
+        case 'D':
+           if (strcmp(method, "DELETE") == 0)
+               return M_DELETE;
+           break;
+        case 'C':
+           if (strcmp(method, "CONNECT") == 0)
+               return M_CONNECT;
+           if (strcmp(method, "COPY") == 0)
+               return M_COPY;
+           break;
+        case 'M':
+           if (strcmp(method, "MKCOL") == 0)
+               return M_MKCOL;
+           if (strcmp(method, "MOVE") == 0)
+               return M_MOVE;
+           break;
+        case 'O':
+           if (strcmp(method, "OPTIONS") == 0)
+               return M_OPTIONS;
+           break;
+        case 'T':
+           if (strcmp(method, "TRACE") == 0)
+               return M_TRACE;
+           break;
+        case 'L':
+           if (strcmp(method, "LOCK") == 0)
+               return M_LOCK;
+           break;
+        case 'U':
+           if (strcmp(method, "UNLOCK") == 0)
+               return M_UNLOCK;
+           break;
+    }
+    return M_INVALID;
+}
+
 /* Get a line of protocol input, including any continuation lines
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
@@ -678,26 +744,11 @@ static int read_request_line(request_rec *r)
     uri = ap_getword_white(r->pool, &ll);
 
     /* Provide quick information about the request method as soon as known */
-    if (!strcmp(r->method, "HEAD")) {
+
+    r->method_number = ap_method_number_of(r->method);
+    if (r->method_number == M_GET && r->method[0] == 'H') {
         r->header_only = 1;
-        r->method_number = M_GET;
     }
-    else if (!strcmp(r->method, "GET"))
-        r->method_number = M_GET;
-    else if (!strcmp(r->method, "POST"))
-        r->method_number = M_POST;
-    else if (!strcmp(r->method, "PUT"))
-        r->method_number = M_PUT;
-    else if (!strcmp(r->method, "DELETE"))
-        r->method_number = M_DELETE;
-    else if (!strcmp(r->method, "CONNECT"))
-        r->method_number = M_CONNECT;
-    else if (!strcmp(r->method, "OPTIONS"))
-        r->method_number = M_OPTIONS;
-    else if (!strcmp(r->method, "TRACE"))
-        r->method_number = M_TRACE;
-    else
-        r->method_number = M_INVALID;   /* Will eventually croak. */
 
     ap_parse_uri(r, uri);
 
@@ -1237,13 +1288,22 @@ static void terminate_header(BUFF *client)
 static char *make_allow(request_rec *r)
 {
     return 2 + ap_pstrcat(r->pool,
-                       (r->allowed & (1 << M_GET)) ? ", GET, HEAD" : "",
-                       (r->allowed & (1 << M_POST)) ? ", POST" : "",
-                       (r->allowed & (1 << M_PUT)) ? ", PUT" : "",
-                       (r->allowed & (1 << M_DELETE)) ? ", DELETE" : "",
-                       (r->allowed & (1 << M_OPTIONS)) ? ", OPTIONS" : "",
-                       ", TRACE",
-                       NULL);
+                   (r->allowed & (1 << M_GET))       ? ", GET, HEAD" : "",
+                   (r->allowed & (1 << M_POST))      ? ", POST"      : "",
+                   (r->allowed & (1 << M_PUT))       ? ", PUT"       : "",
+                   (r->allowed & (1 << M_DELETE))    ? ", DELETE"    : "",
+                   (r->allowed & (1 << M_CONNECT))   ? ", CONNECT"   : "",
+                   (r->allowed & (1 << M_OPTIONS))   ? ", OPTIONS"   : "",
+                   (r->allowed & (1 << M_PATCH))     ? ", PATCH"     : "",
+                   (r->allowed & (1 << M_PROPFIND))  ? ", PROPFIND"  : "",
+                   (r->allowed & (1 << M_PROPPATCH)) ? ", PROPPATCH" : "",
+                   (r->allowed & (1 << M_MKCOL))     ? ", MKCOL"     : "",
+                   (r->allowed & (1 << M_COPY))      ? ", COPY"      : "",
+                   (r->allowed & (1 << M_MOVE))      ? ", MOVE"      : "",
+                   (r->allowed & (1 << M_LOCK))      ? ", LOCK"      : "",
+                   (r->allowed & (1 << M_UNLOCK))    ? ", UNLOCK"    : "",
+                   ", TRACE",
+                   NULL);
 }
 
 API_EXPORT(int) ap_send_http_trace(request_rec *r)

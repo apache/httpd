@@ -1068,28 +1068,18 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
     
     while (limited_methods[0]) {
         char *method = ap_getword_conf(cmd->pool, &limited_methods);
-	if (!strcmp(method, "GET")) {
-	    limited |= (1 << M_GET);
-	}
-	else if (!strcmp(method, "PUT")) {
-	    limited |= (1 << M_PUT);
-	}
-	else if (!strcmp(method, "POST")) {
-	    limited |= (1 << M_POST);
-	}
-	else if (!strcmp(method, "DELETE")) {
-	    limited |= (1 << M_DELETE);
-	}
-        else if (!strcmp(method, "CONNECT")) {
-	    limited |= (1 << M_CONNECT);
-	}
-	else if (!strcmp(method, "OPTIONS")) {
-	    limited |= (1 << M_OPTIONS);
-	}
-	else {
-	    return ap_pstrcat(cmd->pool, "unknown method \"",
-			      method, "\" in <Limit>", NULL);
-	}
+        int  methnum = ap_method_number_of(method);
+
+        if (methnum == M_TRACE) {
+            return "TRACE cannot be controlled by <Limit>";
+        }
+        else if (methnum == M_INVALID) {
+            return ap_pstrcat(cmd->pool, "unknown method \"",
+                              method, "\" in <Limit>", NULL);
+        }
+        else {
+            limited |= (1 << methnum);
+        }
     }
 
     cmd->limited = limited;
