@@ -131,7 +131,7 @@ authentication</description>
 
 <usage>
     <p>The <directive>AuthDigestQop</directive> directive determines
-    the quality-of-protection to use. <code>auth</code> will only do
+    the <dfn>quality-of-protection</dfn> to use. <code>auth</code> will only do
     authentication (username/password); <code>auth-int</code> is
     authentication plus integrity checking (an MD5 hash of the entity
     is also computed and checked); <code>none</code> will cause the module
