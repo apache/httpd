@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_include.xml.meta">
-<!-- English revision: 1.19 -->
+<!-- English revision: 1.23 -->
 
 <name>mod_include</name>
 <description>サーバがパースする html ドキュメント (Server Side Includes)</description>
@@ -604,7 +604,7 @@ directive]&quot;</default>
 <name>SSIStartTag</name>
 <description>include 要素を開始する文字列</description>
 <syntax>SSIStartTag <var>tag</var></syntax>
-<default>SSIStartTag &quot;&lt;!--&quot;</default>
+<default>SSIStartTag &quot;&lt;!--#&quot;</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>バージョン 2.0.30 以降で使用可能</compatibility>
@@ -627,7 +627,7 @@ directive]&quot;</default>
     下の例の様にして SSI ディレクティブを使うことができます:</p>
 
     <example><title>違う開始と終了のタグを使った SSI ディレクティブ</title>
-      &lt;%#printenv %&gt;
+      &lt;%printenv %&gt;
     </example>
 </usage>
 <seealso><directive module="mod_include">SSIEndTag</directive></seealso>

@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_alias.xml.meta">
-<!-- English revision: 1.11 -->
+<!-- English revision: 1.13 -->
 
 <name>mod_alias</name>
 <description>ホストファイルシステム上のいろいろな違う場所を
