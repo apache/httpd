@@ -167,7 +167,7 @@ _install:
         cd docs\docroot
           for %%a in (*.*) do if not exist $(INSTDIR)\htdocs\%%a copy %%a $(INSTDIR)\htdocs
         cd ..\..
-        xcopy docs\manual $(INSTDIR)\htdocs\manual /s
+        xcopy docs\manual $(INSTDIR)\htdocs\manual /sdy
 	perl <<
 
     my $$serverroot = '$(INSTDIR)';
