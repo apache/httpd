@@ -1,6 +1,6 @@
 Changes with Apache 2.0.38
 
-  *) AIX 4.3.3 and above: Define SINGLE_LISTEN_UNSERIALIZED_ACCEPT.
+  *) AIX 4.3.2 and above: Define SINGLE_LISTEN_UNSERIALIZED_ACCEPT.
      These levels of AIX don't have a thundering herd problem with
      accept().  [Jeff Trawick]
 
