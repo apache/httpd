@@ -23,9 +23,9 @@ BEGIN
     PUSHBUTTON      "&Start",IDC_SSTART,298,75,50,14
     PUSHBUTTON      "S&top",IDC_SSTOP,298,91,50,14
     PUSHBUTTON      "&Restart",IDC_SRESTART,298,107,50,14
-    PUSHBUTTON      "Ser&vices",IDC_SMANAGER,298,127,50,14
+    PUSHBUTTON      "Ser&vices",IDC_SMANAGER,298,123,50,14
     CONTROL         113,IDC_STATIC,"Static",SS_BITMAP,0,0,349,38
-    PUSHBUTTON      "&Exit",IDC_SEXIT,298,147,50,14
+    PUSHBUTTON      "E&xit",IDC_SEXIT,298,147,50,14
 END
 
 IDB_BMPSTOP             BITMAP  DISCARDABLE     "sstop.bmp"
@@ -46,9 +46,9 @@ BEGIN
     IDS_MSG_RUNNING         "Running %d from %d Apache services"
     IDS_MSG_RUNNINGNONE     "Running none from %d Apache services"
     IDS_MSG_NOSERVICES      "No services installed"
-    IDS_MSG_MNUSERVICES     "&Open Services"
+    IDS_MSG_MNUSERVICES     "Open &Services"
     IDS_MSG_MNUSHOW         "&Open Apache Monitor"
-    IDS_MSG_MNUEXIT         "&Exit..."
+    IDS_MSG_MNUEXIT         "E&xit"
     IDS_MSG_SRVSTART        "The %s is starting."
     IDS_MSG_SRVSTARTED      "The %s has started."
     IDS_MSG_SRVSTOP         "The %s is stopping."
@@ -56,4 +56,8 @@ BEGIN
     IDS_MSG_SRVRESTART      "The %s is restarting."
     IDS_MSG_SRVRESTARTED    "The %s has restarted."
     IDS_MSG_SRVFAILED       "The requested operation has failed!"
+    IDS_MSG_SSTART          "&Start"
+    IDS_MSG_SSTOP           "S&top"
+    IDS_MSG_SRESTART        "&Restart"
+    IDS_MSG_SERVICES        "Ser&vices"
 END
