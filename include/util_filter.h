@@ -181,7 +181,7 @@ typedef union ap_filter_func {
  *     responses across multiple requests.
  *
  *     It is important to note that these types of filters are not allowed
- *     in a sub-request. A sub-requests output can certainly be filtered
+ *     in a sub-request. A sub-request's output can certainly be filtered
  *     by AP_FTYPE_CONTENT filters, but all of the "final processing" is
  *     determined by the main request.
  *
