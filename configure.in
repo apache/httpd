@@ -243,6 +243,9 @@ AC_AIX
 AC_ISC_POSIX
 AC_MINIX
 
+dnl Check for what we can generate dependency files with
+APR_CHECK_DEPEND
+
 dnl ## Check for libraries
 
 dnl ## Check for header files

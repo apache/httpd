@@ -1,6 +1,9 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+  *) Allow 'make depend' to work with non-GCC compilers.
+     [Justin Erenkrantz]
+
   *) Rename CacheMaxStreamingBuffer to MCacheMaxStreamingBuffer. Move
      implementation of MCacheMaxStreamingBuffer from mod_cache to
      mod_mem_cache. MCacheMaxStreamingBuffer now defaults to the

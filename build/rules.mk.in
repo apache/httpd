@@ -179,7 +179,11 @@ local-shared-build: $(SHARED_TARGETS)
 
 local-depend: x-local-depend
 	if test -n "`ls $(srcdir)/*.c 2> /dev/null`"; then \
-		$(CC) -MM $(ALL_CPPFLAGS) $(ALL_INCLUDES) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
+		rm -f .deps; \
+		list='$(srcdir)/*.c'; \
+		for i in $$list; do \
+			$(MKDEP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) $$i | sed 's/\.o:/.lo:/' >> .deps; \
+		done; \
 	fi
 
 local-clean: x-local-clean
