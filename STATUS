@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/13 17:43:47 $]
+Last modified at [$Date: 2003/01/13 18:33:18 $]
 
 Release:
 
@@ -91,7 +91,7 @@ CURRENT VOTES:
     * APACHE_2_0_BRANCH *has* to work with an official stable version 
       of APR (i.e., 1.0).
       yes:
-      no:   trawick, jerenkrantz, wrowe
+      no:   trawick, jerenkrantz, wrowe, stoddard
         wrowe adds it's nice if we *can* compile against it, but as
         a matter of a practical tarball or binary release, don't.
 
