@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_speling.xml.meta">
-<!-- English revision: 1.3 -->
+<!-- English revision: 1.6 -->
 
 <name>mod_speling</name>
 <description>ユーザが入力したであろう間違った URL を、
@@ -63,7 +63,6 @@
 使用可能でした</compatibility>
 
 <usage>
-
     <p>このディレクティブは綴り用のモジュールを使用するかどうかを
     決めます。使用時には、以下のことを覚えておいてください</p>
 
@@ -86,6 +85,14 @@
       はネゴシエーションの結果のファイル "<code>/stats.html</code>"
       として間違って扱われるかもしれません。</li>
     </ul>
+
+    <!-- XXX: is that really true?! -nd -->
+    <p><a href="mod_dav.html">DAV</a> が有効なディレクトリでは
+    <module>mod_speling</module> は有効にしないでください。
+    新しく作成したリソース名を既に存在するファイル名に「修正」しようとする、
+    例えば、新規ドキュメント <code>doc43.html</code> が既に存在する
+    <code>doc34.html</code> にリダイレクトされて、
+    期待とは違う挙動になるからです。</p>
 </usage>
 
 </directivesynopsis>
