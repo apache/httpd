@@ -33,6 +33,17 @@ if [ "x$found_dbm" = "x" ]; then
 			found_dbm=0
 			LIBS="$oldLIBS"
 		    fi
+		else
+		    for dblib in dbm ndbm db
+		    do
+			DBM_LIB=""
+			if ./helpers/TestCompile lib $dblib dbm_open; then
+			    DBM_LIB="-l${dblib}"
+			    LIBS="$LIBS $DBM_LIB"
+			    found_dbm=1
+			    break
+			fi
+		    done
 		fi
 		;;
 	esac
