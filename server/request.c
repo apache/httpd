@@ -1575,7 +1575,7 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r)
 
 
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
-                                                const char *new_file,
+                                                const char *new_uri,
                                                 const request_rec *r,
                                                 ap_filter_t *next_filter)
 {
@@ -1589,13 +1589,13 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     rnew->method = method;
     rnew->method_number = ap_method_number_of(method);
 
-    if (new_file[0] == '/') {
-        ap_parse_uri(rnew, new_file);
+    if (new_uri[0] == '/') {
+        ap_parse_uri(rnew, new_uri);
     }
     else {
         udir = ap_make_dirstr_parent(rnew->pool, r->uri);
         udir = ap_escape_uri(rnew->pool, udir);    /* re-escape it */
-        ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_file));
+        ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_uri));
     }
 
     /* We cannot return NULL without violating the API. So just turn this
@@ -1620,11 +1620,11 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     return rnew;
 }
 
-AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_file,
+AP_DECLARE(request_rec *) ap_sub_req_lookup_uri(const char *new_uri,
                                                 const request_rec *r,
                                                 ap_filter_t *next_filter)
 {
-    return ap_sub_req_method_uri("GET", new_file, r, next_filter);
+    return ap_sub_req_method_uri("GET", new_uri, r, next_filter);
 }
 
 AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
