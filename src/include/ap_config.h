@@ -646,6 +646,7 @@ extern char *crypt();
 typedef quad_t rlim_t;
 #endif
 #define USE_FLOCK_SERIALIZED_ACCEPT
+#define SINGLE_LISTEN_UNSERIALIZED_ACCEPT
 #define HAVE_SYSLOG 1
 #define SYS_SIGLIST sys_siglist
 
