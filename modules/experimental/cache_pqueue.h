@@ -97,7 +97,7 @@ typedef void (*cache_pqueue_print_entry)(FILE *out, void *a);
 /**
  * initialize the queue
  *
- * @param n the intial estimate of the number of queue items for which memory
+ * @param n the initial estimate of the number of queue items for which memory
  *          should be preallocated
  * @param pri the callback function to run to assign a score to a element
  * @param get the callback function to get the current element's position
