@@ -1,5 +1,9 @@
 Changes with Apache 1.2.2
 
+  *) PORT: The slack fd changes in 1.2.1 introduced a problem with SIGHUP
+     under Solaris 2.x (up through 2.5.1).  It has been fixed.
+     [Dean Gaudet] PR#832
+
   *) API: In HTTP/1.1, whether or not a request message contains a body
      is independent of the request method and based solely on the presence
      of a Content-Length or Transfer-Encoding.  Therefore, our default
