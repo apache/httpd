@@ -221,7 +221,7 @@ ssl_algo_t ssl_util_algotypeof(X509 *pCert, EVP_PKEY *pKey)
     if (pCert != NULL)
         pKey = X509_get_pubkey(pCert);
     if (pKey != NULL) {
-        switch (EVP_PKEY_type(pKey->type)) {
+        switch (EVP_PKEY_key_type(pKey)) {
             case EVP_PKEY_RSA: 
                 t = SSL_ALGO_RSA;
                 break;

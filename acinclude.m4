@@ -451,6 +451,9 @@ if test "x$ap_ssltk_base" = "x"; then
     if test -f "$p/openssl/ssl.h"; then
       ap_ssltk_incdir="$p"
       break
+    elif test -f "$p/ssl.h"; then
+      ap_ssltk_incdir="$p"
+      break
     fi
   done
   if test "x$ap_ssltk_incdir" = "x"; then

@@ -284,12 +284,12 @@ char *SSL_make_ciphersuite(apr_pool_t *p, SSL *ssl)
 
     if (ssl == NULL) 
         return "";
-    if ((sk = SSL_get_ciphers(ssl)) == NULL)
+    if ((sk = (STACK_OF(SSL_CIPHER) *)SSL_get_ciphers(ssl)) == NULL)
         return "";
     l = 0;
     for (i = 0; i < sk_SSL_CIPHER_num(sk); i++) {
         c = sk_SSL_CIPHER_value(sk, i);
-        l += strlen(c->name)+2+1;
+        l += strlen(SSL_CIPHER_get_name(c))+2+1;
     }
     if (l == 0)
         return "";
@@ -297,11 +297,11 @@ char *SSL_make_ciphersuite(apr_pool_t *p, SSL *ssl)
     cp = cpCipherSuite;
     for (i = 0; i < sk_SSL_CIPHER_num(sk); i++) {
         c = sk_SSL_CIPHER_value(sk, i);
-        l = strlen(c->name);
-        memcpy(cp, c->name, l);
+        l = strlen(SSL_CIPHER_get_name(c));
+        memcpy(cp, SSL_CIPHER_get_name(c), l);
         cp += l;
         *cp++ = '/';
-        *cp++ = (c->valid == 1 ? '1' : '0');
+        *cp++ = (SSL_CIPHER_get_valid(c) == 1 ? '1' : '0');
         *cp++ = ':';
     }
     *(cp-1) = NUL;
@@ -378,15 +378,21 @@ BOOL SSL_X509_getCN(apr_pool_t *p, X509 *xs, char **cppCN)
     X509_NAME *xsn;
     X509_NAME_ENTRY *xsne;
     int i, nid;
+    char *data_ptr;
+    int data_len;
 
     xsn = X509_get_subject_name(xs);
-    for (i = 0; i < sk_X509_NAME_ENTRY_num(xsn->entries); i++) {
-        xsne = sk_X509_NAME_ENTRY_value(xsn->entries, i);
-        nid = OBJ_obj2nid(xsne->object);
+    for (i = 0; i < sk_X509_NAME_ENTRY_num((STACK_OF(X509_NAME_ENTRY) *)
+                                           X509_NAME_get_entries(xsn)); i++) {
+        xsne = sk_X509_NAME_ENTRY_value((STACK_OF(X509_NAME_ENTRY) *)
+                                         X509_NAME_get_entries(xsn), i);
+        nid = OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
         if (nid == NID_commonName) {
-            *cppCN = apr_palloc(p, xsne->value->length+1);
-            apr_cpystrn(*cppCN, (char *)xsne->value->data, xsne->value->length+1);
-            (*cppCN)[xsne->value->length] = NUL;
+            data_ptr = X509_NAME_ENTRY_get_data_ptr(xsne);
+            data_len = X509_NAME_ENTRY_get_data_len(xsne);
+            *cppCN = apr_palloc(p, data_len+1);
+            apr_cpystrn(*cppCN, (char *)data_ptr, data_len+1);
+            (*cppCN)[data_len] = NUL;
 #ifdef CHARSET_EBCDIC
             ascii2ebcdic(*cppCN, *cppCN, strlen(*cppCN));
 #endif
@@ -470,6 +476,7 @@ int SSL_CTX_use_certificate_chain(
     X509 *x509;
     unsigned long err;
     int n;
+    STACK *extra_certs;
 
     if ((bio = BIO_new(BIO_s_file_internal())) == NULL)
         return -1;
@@ -490,9 +497,10 @@ int SSL_CTX_use_certificate_chain(
         X509_free(x509);
     }
     /* free a perhaps already configured extra chain */
-    if (ctx->extra_certs != NULL) {
-        sk_X509_pop_free(ctx->extra_certs, X509_free);
-        ctx->extra_certs = NULL;
+    extra_certs=SSL_CTX_get_extra_certs(ctx);
+    if (extra_certs != NULL) {
+        sk_X509_pop_free((STACK_OF(X509) *)extra_certs, X509_free);
+        SSL_CTX_set_extra_certs(ctx,NULL);
     }
     /* create new extra chain by loading the certs */
     n = 0;
