@@ -607,7 +607,7 @@ static void menu_footer(request_rec *r)
     ap_rputs("\n\n</body>\n</html>\n", r);         /* finish the menu */
 }
 
-static int imap_handler(request_rec *r)
+static int imap_handler_internal(request_rec *r)
 {
     char input[MAX_STRING_LEN];
     char *directive;
@@ -634,10 +634,6 @@ static int imap_handler(request_rec *r)
     char *imap_base;
 
     ap_configfile_t *imap; 
-
-    if (r->method_number != M_GET || (strcmp(r->handler,IMAP_MAGIC_TYPE)
-				      && strcmp(r->handler, "imap-file")))
-	return DECLINED;
 
     icr = ap_get_module_config(r->per_dir_config, &imap_module);
 
@@ -906,6 +902,21 @@ menu_bail:
 	return OK;
     }
     return HTTP_INTERNAL_SERVER_ERROR;
+}
+
+static int imap_handler(request_rec *r)
+{
+    /* Optimizatoin: skip the allocation of large local variables on the
+     * stack (in imap_handler_internal()) on requests that aren't using
+     * imagemaps
+     */
+    if (r->method_number != M_GET || (strcmp(r->handler,IMAP_MAGIC_TYPE)
+				      && strcmp(r->handler, "imap-file"))) {
+	return DECLINED;
+    }
+    else {
+        return imap_handler_internal(r);
+    }
 }
 
 static void register_hooks(apr_pool_t *p)
