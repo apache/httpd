@@ -299,10 +299,19 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     if (HEADER == ctx->state) {
 
+        /* basedir is either "", or "/%2f" for the "squid %2f hack" */
+        const char *basedir = "";  /* By default, path is relative to the $HOME dir */
+        char *wildcard = NULL;
+
         /* Save "scheme://site" prefix without password */
         site = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITPASSWORD | APR_URI_UNP_OMITPATHINFO);
         /* ... and path without query args */
         path = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITSITEPART | APR_URI_UNP_OMITQUERY);
+
+        /* If path began with /%2f, change the basedir */
+        if (strncasecmp(path, "/%2f", 4) == 0) {
+            basedir = "/%2f";
+        }
 
         /* Strip off a type qualifier. It is ignored for dir listings */
         if ((type = strstr(path, ";type=")) != NULL)
@@ -310,44 +319,73 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         (void)decodeenc(path);
 
+        while (path[1] == '/') /* collapse multiple leading slashes to one */
+            ++path;
+
+        reldir = strrchr(path, '/');
+        if (reldir != NULL) {
+            for (n=0; reldir[n] != '\0'; ++n) {
+                if (reldir[n] == '\\' && reldir[n+1] != '\0')
+                    ++n; /* escaped character */
+                else if (reldir[n] == '*' || reldir[n] == '?') {
+                    wildcard = &reldir[1];
+                    reldir[0] = '\0'; /* strip off the wildcard suffix */
+                    break;
+                }
+            }
+        }
+
         /* Copy path, strip (all except the last) trailing slashes */
-        path = dir = apr_pstrcat(p, path, "/", NULL);
-        while ((n = strlen(path)) > 1 && path[n - 1] == '/' && path[n - 2] == '/')
+        /* (the trailing slash is needed for the dir component loop below) */
+        path = dir = ap_pstrcat(p, path, "/", NULL);
+        for (n = strlen(path); n > 1 && path[n - 1] == '/' && path[n - 2] == '/'; --n)
             path[n - 1] = '\0';
+
+        /* Add a link to the root directory (if %2f hack was used) */
+        str = (basedir[0] != '\0') ? "<a href=\"/%2f/\">%2f</a>/" : "";
 
         /* print "ftp://host/" */
         str = apr_psprintf(p, DOCTYPE_HTML_3_2
-                           "\n\n<html>\n<head>\n<title>%s%s</title>\n"
-                           "<base href=\"%s%s\">\n</head>\n\n"
-                           "<body>\n\n<h2>Directory of "
-                           "<a href=\"/\">%s</a>/",
-                           site, ap_escape_html(p, path),
-                           site, ap_escape_uri(p, path), site);
+                "<html>\n <head>\n  <title>%s%s%s</title>\n"
+                "  <base href=\"%s%s%s\">\n </head>\n"
+                " <body>\n  <h2>Directory of "
+                "<a href=\"/\">%s</a>/%s",
+                site, basedir, ap_escape_html(p, path),
+                site, basedir, ap_escape_uri(p, path),
+                site, str);
 
         e = apr_bucket_pool_create(str, strlen(str), p);
         APR_BRIGADE_INSERT_TAIL(out, e);
 
-        while ((dir = strchr(dir + 1, '/')) != NULL) {
+        for (dir = path+1; (dir = strchr(dir, '/')) != NULL; )
+        {
             *dir = '\0';
-            if ((reldir = strrchr(path + 1, '/')) == NULL)
-                reldir = path + 1;
+            if ((reldir = strrchr(path+1, '/'))==NULL) {
+                reldir = path+1;
+            }
             else
                 ++reldir;
             /* print "path/" component */
-            str = apr_psprintf(p, "<a href=\"/%s/\">%s</a>/",
-                               ap_escape_uri(p, path + 1),
-                               ap_escape_html(p, reldir));
-            e = apr_bucket_pool_create(str, strlen(str), p);
-            APR_BRIGADE_INSERT_TAIL(out, e);
+            str = apr_psprintf(p, "<a href=\"%s%s/\">%s</a>/", basedir,
+                        ap_escape_uri(p, path),
+                        ap_escape_html(p, reldir));
             *dir = '/';
+            while (*dir == '/')
+              ++dir;
+            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str), p));
         }
+        if (wildcard != NULL) {
+            APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(wildcard, strlen(wildcard), p));
+        }
+
         /* If the caller has determined the current directory, and it differs */
         /* from what the client requested, then show the real name */
         if (pwd == NULL || strncmp(pwd, path, strlen(pwd)) == 0) {
-            str = apr_psprintf(p, "</h2>\n\n<hr />\n\n<pre>");
+            str = apr_psprintf(p, "</h2>\n\n  <hr />\n\n<pre>");
         }
         else {
-            str = apr_psprintf(p, "</h2>\n\n(%s)\n\n<hr />\n\n<pre>", pwd);
+            str = apr_psprintf(p, "</h2>\n\n(%s)\n\n  <hr />\n\n<pre>",
+                               ap_escape_html(p, pwd));
         }
         e = apr_bucket_pool_create(str, strlen(str), p);
         APR_BRIGADE_INSERT_TAIL(out, e);
@@ -403,10 +441,10 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             if (len > max) {
                 len = max;
             }
-/* strncat works here, but apr_cpystrn does not - the last char gets chopped, dunno why */
-/*            strncat(ctx->buffer, response, len);*/
-            /* +1 to leave spave for the trailing nil char */
+
+            /* len+1 to leave spave for the trailing nil char */
             apr_cpystrn(ctx->buffer+strlen(ctx->buffer), response, len+1);
+
             APR_BUCKET_REMOVE(e);
             apr_bucket_destroy(e);
         }
@@ -424,9 +462,9 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         {
             size_t n = strlen(ctx->buffer);
-            if (ctx->buffer[n-1] == '\n')  /* strip trailing '\n' */
+            if (ctx->buffer[n-1] == CRLF[1])  /* strip trailing '\n' */
                 ctx->buffer[--n] = '\0';
-            if (ctx->buffer[n-1] == '\r')  /* strip trailing '\r' if present */
+            if (ctx->buffer[n-1] == CRLF[0])  /* strip trailing '\r' if present */
                 ctx->buffer[--n] = '\0';
         }
 
@@ -518,7 +556,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     if (FOOTER == ctx->state) {
-        str = apr_psprintf(p, "</pre>\n\n<hr />\n\n%s\n\n</body>\n</html>\n", ap_psignature("", r));
+        str = apr_psprintf(p, "</pre>\n\n  <hr />\n\n  %s\n\n </body>\n</html>\n", ap_psignature("", r));
         e = apr_bucket_pool_create(str, strlen(str), p);
         APR_BRIGADE_INSERT_TAIL(out, e);
 
@@ -882,10 +920,10 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
             /* FIXME: @@@: We created an APR_INET socket. Now there may be
              * IPv6 (AF_INET6) DNS addresses in the list... IMO the socket
-	     * should be created with the correct family in the first place.
+             * should be created with the correct family in the first place.
              * (either do it in this loop, or make at least two attempts
              * with the AF_INET and AF_INET6 elements in the list)
-	     */
+             */
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                          "proxy: FTP: trying to connect to %pI (%s)...", connect_addr, connectname);
 
@@ -1057,7 +1095,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         len = decodeenc(path);
 
         /* NOTE: FTP servers do globbing on the path.
-	 * So we need to escape the URI metacharacters.
+         * So we need to escape the URI metacharacters.
          * In the current implementation, we use shell escaping, because
          * it masks all characters which are also dangerous for FTP.
          * We could also have extended gen_test_char.c with a special T_ESCAPE_FTP_PATH
@@ -1394,7 +1432,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         else if (rc == 213) {/* Size command ok */
             int j;
             for (j = 0; apr_isdigit(ftpmessage[j]); j++)
-	        ;
+                ;
             ftpmessage[j] = '\0';
             if (ftpmessage[0] != '\0')
                  size = ftpmessage; /* already pstrdup'ed: no copy necessary */
