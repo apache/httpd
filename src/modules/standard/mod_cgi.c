@@ -197,9 +197,9 @@ static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
 	((f = pfopen(r->pool, server_root_relative(r->pool, conf->logname),
 		     "a")) == NULL)) {
       /* Soak up script output */
-      while (bgets(argsbuffer, MAX_STRING_LEN-1, script_in))
+      while (bgets(argsbuffer, HUGE_STRING_LEN, script_in))
 	continue;
-      while (bgets(argsbuffer, MAX_STRING_LEN-1, script_err))
+      while (bgets(argsbuffer, HUGE_STRING_LEN, script_err))
 	continue;
       return ret;
     }
@@ -233,21 +233,21 @@ static int log_script(request_rec *r, cgi_server_conf *conf, int ret,
       fprintf(f, "%s\n", sbuf);
 
     *argsbuffer = '\0';
-    bgets(argsbuffer, HUGE_STRING_LEN-1, script_in);
+    bgets(argsbuffer, HUGE_STRING_LEN, script_in);
     if (*argsbuffer) {
       fputs("%stdout\n", f);
       fputs(argsbuffer, f);
-      while (bgets(argsbuffer, HUGE_STRING_LEN-1, script_in))
+      while (bgets(argsbuffer, HUGE_STRING_LEN, script_in))
 	fputs(argsbuffer, f);
       fputs("\n", f);
     }
 
     *argsbuffer = '\0';
-    bgets(argsbuffer, HUGE_STRING_LEN-1, script_err);
+    bgets(argsbuffer, HUGE_STRING_LEN, script_err);
     if (*argsbuffer) {
       fputs("%stderr\n", f);
       fputs(argsbuffer, f);
-      while (bgets(argsbuffer, HUGE_STRING_LEN-1, script_err))
+      while (bgets(argsbuffer, HUGE_STRING_LEN, script_err))
 	fputs(argsbuffer, f);
       fputs("\n", f);
     }
@@ -492,9 +492,9 @@ int cgi_handler (request_rec *r)
 	  
 	    /* Soak up all the script output */
 	    hard_timeout ("read from script", r);
-	    while (bgets(argsbuffer, HUGE_STRING_LEN-1, script_in))
+	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_in))
 	        continue;
-	    while (bgets(argsbuffer, HUGE_STRING_LEN-1, script_err))
+	    while (bgets(argsbuffer, HUGE_STRING_LEN, script_err))
 	        continue;
 	    kill_timeout (r);
 
@@ -526,7 +526,7 @@ int cgi_handler (request_rec *r)
 	    send_fb(script_in, r);
 
 	soft_timeout("soaking script stderr", r);
-	while(bgets(argsbuffer, HUGE_STRING_LEN-1, script_err))
+	while(bgets(argsbuffer, HUGE_STRING_LEN, script_err))
 	      continue;
 	kill_timeout(r);
 	     
