@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/16 18:31:37 $]
+Last modified at [$Date: 2003/05/16 18:44:00 $]
 
 Release:
 
@@ -144,22 +144,6 @@ PATCHES TO PORT FROM 2.1
       New patch forthcoming - JimJag's changes make the merge ugly.
       +1: wrowe
       +1 (concept): jim (final vote when the patch is available)
-
-    * mod_ssl compile failure (or maybe warning, depending on
-      compiler) with SSLC 2.3 and later.
-      See MessageID: <5.2.0.9.2.20030405165151.01f1fe48@pop3.rowe-clan.net>
-      for a complete patch rollup of this and the two following patches.
-      +1: wrowe, jim
-      +1: trawick, if the patch is really 
-          http://www.apache.org/~trawick/20030501.ssl.compat.patch
-          why do I complicate matters?
-          1) the latest patch in the thread you mention won't apply
-          2) the SSLC compatibility stuff reintroduced some
-             const-ness problems (breakage on picky compilers,
-             warnings with gcc), so my patch includes
-             ssl_toolkit_compat.h r1.32, which resolves the issue for 
-             me on AIX (tested with various levels of OpenSSL and a picky
-             compiler) and RH 8.
 
     * Ensure that ssl-std.conf is generated at configure time, and switch
       to using the expanded config variables to work the same as 
