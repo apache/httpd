@@ -31,7 +31,7 @@
 <h3>Summary</h3>
 
     <p>This Multi-Processing Module (MPM) is the default for BeOS. It uses
-    a single control process creates threads to handle requests.</p>
+      a single control process which creates threads to handle requests.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
