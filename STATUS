@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/03 18:25:41 $]
+Last modified at [$Date: 2002/02/03 18:38:31 $]
 
 Release:
 
@@ -60,6 +60,12 @@ RELEASE SHOWSTOPPERS:
                 +1: Ian, Justin
                 +0:
                 -1:
+            * erroneous check in an AP_DEBUG_ASSERT() call.  Only happens
+              in maintainer mode.  Fixed in modules/http/http_protocol.c
+              revision 1.391.  Add item in release notes:
+                +1: Justin
+                +0:
+                -1:
             * hasn't run for 3 days on Daedalus 
             * the release has underscores instead of periods.
 
@@ -74,7 +80,11 @@ RELEASE SHOWSTOPPERS:
     * Test suite failures:
       o worker is also failing some of the 'cgi' subtests
       (see <URL:http://Source-Zone.Org/Apache/regression/>):
-        Justin says: "Worker should be fine and passes httpd-test here."
+        Justin says: "Worker should be fine and passes httpd-test here.
+                      If you can provide evidence that it can be reproduced
+                      outside of httpd-test, then it's a showstopper.  I
+                      think it's a perl or a httpd-test problem."
+        Not a showstopper: Justin
 
     * If any request gets to the core handler, without a flag that this 
       r->filename was tested by dir/file_walk, we need to 500 at the very 
@@ -96,6 +106,7 @@ RELEASE SHOWSTOPPERS:
         Justin says: "Is this really a showstopper?  This has been here
                       forever.  What's wrong?  Does this have to do with
                       autoconf or m4?"
+        Not a showstopper: Justin
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
