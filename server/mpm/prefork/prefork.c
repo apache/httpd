@@ -2160,17 +2160,21 @@ static void child_main(int child_num_arg)
 		}
 		else {
 		    lr = last_lr->next;
+		    if (!lr)
+			lr = ap_listeners;
 		}
 		first_lr=lr;
 		do {
-		    if (!lr) {
-			lr = ap_listeners;
-		    }
 		    if (FD_ISSET(lr->fd, &main_fds))
 			goto got_listener;
 		    lr = lr->next;
+		    if (!lr)
+			lr = ap_listeners;
 		}
 		while (lr != first_lr);
+		/* FIXME: if we get here, something bad has happened, and we're
+		   probably gonna spin forever.
+		*/
 		continue;
 	got_listener:
 		last_lr = lr;
