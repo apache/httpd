@@ -14,16 +14,16 @@
   <modulefile>mod_autoindex.xml.ko</modulefile>
   <modulefile>mod_cache.xml.ko</modulefile>
   <modulefile>mod_cern_meta.xml.ko</modulefile>
-  <modulefile>mod_cgi.xml</modulefile>
-  <modulefile>mod_cgid.xml</modulefile>
-  <modulefile>mod_charset_lite.xml</modulefile>
-  <modulefile>mod_dav.xml</modulefile>
-  <modulefile>mod_dav_fs.xml</modulefile>
-  <modulefile>mod_deflate.xml</modulefile>
-  <modulefile>mod_dir.xml</modulefile>
-  <modulefile>mod_disk_cache.xml</modulefile>
-  <modulefile>mod_echo.xml</modulefile>
-  <modulefile>mod_env.xml</modulefile>
+  <modulefile>mod_cgi.xml.ko</modulefile>
+  <modulefile>mod_cgid.xml.ko</modulefile>
+  <modulefile>mod_charset_lite.xml.ko</modulefile>
+  <modulefile>mod_dav.xml.ko</modulefile>
+  <modulefile>mod_dav_fs.xml.ko</modulefile>
+  <modulefile>mod_deflate.xml.ko</modulefile>
+  <modulefile>mod_dir.xml.ko</modulefile>
+  <modulefile>mod_disk_cache.xml.ko</modulefile>
+  <modulefile>mod_echo.xml.ko</modulefile>
+  <modulefile>mod_env.xml.ko</modulefile>
   <modulefile>mod_example.xml</modulefile>
   <modulefile>mod_expires.xml</modulefile>
   <modulefile>mod_ext_filter.xml</modulefile>
