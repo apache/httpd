@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix mod_include's expression parser to recognize strings correctly
+     even if they start with an escaped token.  [André Malo]
+
   *) Major overhaul of mod_include's filter parser. The new parser code
      is expected to be more robust and should catch all of the edge cases
      that were not handled by the previous one. This includes a binary

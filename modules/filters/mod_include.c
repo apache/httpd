@@ -1056,14 +1056,12 @@ static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token)
         return 0;
     }
 
-    /*
-     * It's a string or regex token
+    /* It's a string or regex token
+     * Now search for the next token, which finishes this string
      */
-    token->value = unmatched ? *parse : p;
-
-    /* Now search for the next token, which finishes this string */
     shift = 0;
-    p = *parse;
+    p = *parse = token->value = unmatched ? *parse : p;
+
     for (; **parse; p = ++*parse) {
         if (**parse == '\\') {
             if (!*(++*parse)) {
