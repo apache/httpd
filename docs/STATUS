@@ -1,9 +1,9 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/09/15 02:29:07 $
+Last modified: $Date: 2002/09/15 18:59:14 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
-apache-docs mailing list by mailing to apache-docs-subscribe@apache.org
+apache-docs mailing list by mailing to docs-subscribe@httpd.apache.org
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/, and
@@ -24,39 +24,29 @@ tutorial on how to get started with making your contribution.
     - mod_example: updates for 2.0
     
 - man pages
-    - Some of the man pages need to be updated for 2.0.  At least
-      the httpd man page appears to be outdated, and perhaps other.
-      After this is done, the manual/programs/ versions can be
-      regenerated using the program in the site-tools repository.
+    - Some of the man pages need to be updated for 2.0. 
+      Presently, these are generated from nroff man pages using
+      the program in the site-tools repository, but nobody seems
+      willing to update the nroff files at the moment.
+      What should we do?
 
 - MPM documentation
-   - Each MPM needs to have a documentation file in manual/mod/
-     which lists the directives it provides, and some details
-     about its operation.
-        Status: Initial outlines done.  Much more details need to be
-          filled in.
-          - Non unix/windows MPMs still need to be completed.
-          - the perchild directives in threaded/worker need docs
+     - Non unix/windows MPMs still need to be completed.
+     - the perchild directives in threaded/worker need docs
 
-   - Individual docs will need some cleanup. 
-        Status:  What docs still need to be touched here?
-                 - misc/custom_errordocs.html needs to be updated to
-                   essentially describe how the international error
-                   docs included in 2.0 work
-                 - misc/perf-tuning.html - needs major rewrite for 2.0
-                 - misc/tutorials.html - mostly not relevant to 2.0
-                 - misc/stopping.html
-                 - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
-                 - misc/known_client_problems.html - mostly ancient
+- Individual docs will need some cleanup. 
+     - misc/custom_errordocs.html needs to be updated to
+       essentially describe how the international error
+       docs included in 2.0 work
+     - misc/perf-tuning.html - needs major rewrite for 2.0
+     - misc/tutorials.html - mostly not relevant to 2.0
+     - misc/stopping.html
+     - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
+     - misc/known_client_problems.html - mostly ancient
 
 - New build process.
     - install.html has had a first-pass rewrite, but many things have
       changed in the build system since it was written.
-
-- Documentation of new features.
-   - This will probably require more input from new-httpd, since
-     not many people here follow the development process close
-     enough to know what is going on.
 
 - API documentation
     Status: Ben Laurie has written some hooks documentation
@@ -75,6 +65,22 @@ New User documentation
 
 Documentation improvements
 ==========================
+
+* Enhancements to the DTD/XSL:
+  - <glossary> tag that links to the glossary and uses some special 
+    style in the css.
+  - <parentdocument href="...">...</parentdocument> tag to give some
+    more structure for the cookie-crumbs, etc.
+  - New index: directives by context, including listing which directives
+    are available for each AllowOverride setting.
+  - Add more information to the directives.html index (description,
+    syntax, context, ...) or perhaps add a quickreference.html
+    that contains this info.
+  - Use a tag like <replaceable> (but not that long) in place of
+    <em> for things like the <syntax> listing.
+  - Use the sitemap.xml in place of allmodules.xml to generate the
+    directives.html and mod/index.html.
+  - Handle more levels of sub<section>s.
 
 * Improving the "security docs"
 
@@ -98,9 +104,6 @@ Documentation improvements
     updates the manual indices.  (We do something like that now for
     httpd.conf file with apxs [LoadModule, etc.].)
 
-* regex: We should at least document someplace what regex library we
-  are using and how to find more information about it
-
 XML Conversions
 ===============
 
@@ -108,34 +111,22 @@ The following files need to be converted to XML as described at
 http://httpd.apache.org/docs-project/docsformat.html
 
 ebcdic.html                        # Perhaps move to platform/
-footer.html                        # delete after finishing manual/ 
-header.html                        # delete after finishing manual/ 
 index.html.en                      # leave in html?
 cgi_path.html.en
 howto/cgi.html.en
 howto/ssi.html.en
 howto/auth.html.en
-howto/footer.html                  # delete after finishing howto/ 
-howto/header.html                  # delete after finishing howto/ 
 misc/custom_errordocs.html         # obsolete?
 misc/descriptors.html              # obsolete?
 misc/fin_wait_2.html               # obsolete?
-misc/footer.html                   # delete after finishing misc/ 
-misc/header.html                   # delete after finishing misc/ 
 misc/index.html
 misc/known_client_problems.html    # obsolete?
 misc/perf-tuning.html              
 misc/rewriteguide.html
 misc/tutorials.html                # obsolete?
-mod/footer.html                    # delete after finishing mod/ directory
-mod/header.html                    # delete after finishing mod/ directory
-platform/footer.html               # delete after finishing platform/
-platform/header.html               # delete after finishing platform/
 platform/win_compiling.html
 platform/win_service.html
 platform/windows.html
-ssl/footer.html                    # delete after finishing ssl/
-ssl/header.html                    # delete after finishing ssl/
 ssl/index.html.en
 ssl/ssl_compat.html
 ssl/ssl_faq.html
@@ -144,8 +135,6 @@ ssl/ssl_howto.html
 ssl/ssl_intro.html
 vhosts/details.html
 vhosts/examples.html
-vhosts/footer.html                 # delete after finishing vhosts/
-vhosts/header.html                 # delete after finishing vhosts/
 vhosts/ip-based.html
 vhosts/mass.html
 vhosts/index.html.en
