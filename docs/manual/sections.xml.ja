@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
+<!-- English revision: 1.3 -->
+
+<manualpage metafile="sections.xml.meta">
+  <relativepath href="."/>
+
+<title>セクションの設定</title>
+
+<summary> <p><a href="configuring.html">設定ファイル</a>中のディレクティブは
+サーバ全体に適用されたり、特定のディレクトリやファイル、ホスト、URL にのみ
+適用されるように制限したりすることができます。この文書は設定用のセクションの
+コンテナや <code>.htaccess</code> ファイルを使って他の設定ディレクティブの
+スコープを変更する方法を説明します。</p>
+</summary>
+
+<section id="types"><title>設定用セクションコンテナの種類</title>
+
+<related>
+<modulelist>
+<module>core</module>
+<module>mod_proxy</module>
+</modulelist>
+<directivelist>
+<directive type="section" module="core">Directory</directive>
+<directive type="section" module="core">DirectoryMatch</directive>
+<directive type="section" module="core">Files</directive>
+<directive type="section" module="core">FilesMatch</directive>
+<directive type="section" module="core">IfDefine</directive>
+<directive type="section" module="core">IfModule</directive>
+<directive type="section" module="core">Location</directive>
+<directive type="section" module="core">LocationMatch</directive>
+<directive type="section" module="mod_proxy">Proxy</directive>
+<directive type="section" module="mod_proxy">ProxyMatch</directive>
+<directive type="section" module="core">VirtualHost</directive>
+</directivelist>
+</related>
+
+<p>コンテナには二つの基本となる種類があります。ほとんどのコンテナは
+各リクエストに対して評価されます。その場合、コンテナ中のディレクティブは
+コンテナにマッチするリクエストにのみ適用されます。
+一方、<directive type="section"
+ module="core">IfDefine</directive> コンテナと <directive
+type="section" module="core">IfModule</directive> コンテナは
+サーバの起動時と再起動時にのみ評価されます。起動時に条件が真であれば、
+コンテナ中のディレクティブはすべてのリクエストに適用されます。条件が
+偽であれば、コンテナ中のディレクティブは無視されます。</p>
+
+<p><directive type="section" module="core">IfDefine</directive> ディレクティブは
+<code>httpd</code> コマンドラインで適切なパラメータが定義されたときにのみ
+適用されるディレクティブを囲います。例えば次の設定では、サーバが
+<code>httpd -DClosedForNow</code> を使って起動されたときだけすべての
+リクエストを別のサイトにリダイレクトします:</p>
+
+<example>
+&lt;IfDefine ClosedForNow&gt;<br />
+Redirect / http://otherserver.example.com/<br />
+&lt;/IfDefine&gt;
+</example>
+
+<p><directive type="section" module="core">IfModule</directive> は
+非常に似ていますが、代わりにサーバ上でモジュールが使用可能な場合にのみ
+適用可能なディレクティブを囲います。モジュールはサーバに
+静的に組み込まれているか、動的に組み込むようになっていて、設定ファイル中で
+<directive module="mod_so">LoadModule</directive> の行がより前の
+部分に書かれている必要があります。このディレクティブは特定のモジュールの
+存在に関わらず設定ファイルが動作する必要がある場合にのみ使ってください。
+常に動作して欲しいディレクティブを囲むために使うべきではありません。
+存在しないモジュールに関する有用なエラーメッセージの発生を抑制してしまいますので。
+</p>
+
+<p>次の例では、<module>mod_mime_magic</module> があるときにのみ <directive
+module="mod_mime_magic">MimeMagicFiles</directive> ディレクティブが
+適用されます。</p>
+
+<example>
+&lt;IfModule mod_mime_magic.c&gt;<br />
+MimeMagicFile conf/magic<br />
+&lt;/IfModule&gt;
+</example>
+
+<p><directive type="section" module="core">IfDefine</directive> ディレクティブと
+<directive type="section" module="core">IfModule</directive> ディレクティブは
+テストの前に "!" を付けることで否定の条件を適用することができます。
+また、これらのセクションはより複雑な制限を課すために入れ子にすることができます。
+</p>
+</section>
+
+<section id="file-and-web"><title>ファイルシステムとウェブ空間</title>
+
+<p>最もよく使われる設定のセクションコンテナはファイルシステムやウェブ空間の
+特定の場所の設定を変更するものです。まず、この二つの違いを理解することが
+大切です。ファイルシステムはオペレーティングシステムから見たディスクの内容です。
+たとえば、デフォルトのインストールでは Apache は Unix ファイルシステムでは
+<code>/usr/local/apache2</code> に、Windows ファイルシステムでは
+<code>"c:/Program Files/Apache Group/Apache2"</code> に存在します。
+(Apache では Windows でもパスセパレータとしてスラッシュを使うことに
+気をつけてください。) 対照的に、ウェブ空間はあなたのサイトを
+ウェブサーバから配信されるものとして見たもので、クライアントに見えるものです。
+デフォルトの Unix 上の Apache のインストールではウェブ空間の
+<code>/dir/</code> というパスはファイルシステムの
+<code>/usr/local/apache2/htdocs/dir/</code> というパスに対応します。
+ウェブページはデータベースや他の場所から動的に生成することもできますので、
+ウェブ空間はファイルシステムに直接マップする必要はありません。</p>
+
+<section id="filesystem"><title>ファイルシステムコンテナ</title>
+
+<p><directive type="section" module="core">Directory</directive> ディレクティブと
+<directive type="section" module="core">Files</directive> ディレクティブ、それと
+それらの正規表現版はディレクティブをファイルシステムの一部分に対して適用します。
+<directive type="section" module="core">Directory</directive> セクションの
+中のディレクティブは指定されたディレクトリとそのすべてのサブディレクトリに
+適用されます。<a href="howto/htaccess.html">.htaccess ファイル</a>を
+使うことでも同じ効果を得ることができます。例えば、次の設定では
+<code>/var/web/dir1</code> とすべてのサブディレクトリに対して
+ディレクトリインデックスを行ないます。</p>
+
+<example>
+&lt;Directory /var/web/dir1&gt;<br />
+Options +Indexes<br />
+&lt;/Directory&gt;
+</example>
+
+<p><directive type="section" module="core">Files</directive> セクションの
+中にあるディレクティブはどのディレクトリにあるかに関わらず、指定された名前の
+すべてのファイルに適用されます。ですから例えば以下の設定ディレクティブが
+設定ファイルの主セクションに書かれたときには、すべての場所の
+<code>private.html</code> という名前のファイルへのアクセスを拒否します。</p>
+
+<example>
+&lt;Files private.html&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/Files&gt;
+</example>
+
+<p>ファイルシステムの特定の場所にあるファイルを指定するために、
+<directive type="section" module="core">Files</directive> セクションと
+<directive type="section" module="core">Directory</directive> セクションを
+組み合わせることができます。例えば、次の設定では
+<code>/var/web/dir1/private.html</code>, 
+<code>/var/web/dir1/subdir2/private.html</code>, 
+<code>/var/web/dir1/subdir3/private.html</code> など、
+<code>/var/web/dir1/</code> ディレクトリの下にあるすべての
+<code>private.html</code> へのアクセスを拒否します。</p>
+
+<example>
+&lt;Directory /var/web/dir1&gt;<br />
+&lt;Files private.html&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/Files&gt;<br />
+&lt;/Directory&gt;
+</example>
+</section>
+
+<section id="webspace"><title>ウェブ空間コンテナ</title>
+
+<p>一方、<directive type="section" module="core">Location</directive>
+ディレクティブとその正規表現版はウェブ空間上の内容に対して設定を変更します。
+たとえば、次の設定では /private で始まる URL パスへのアクセスを制限します。
+具体的には、
+<code>http://yoursite.example.com/private</code>,
+<code>http://yoursite.example.com/private123</code>, 
+<code>http://yoursite.example.com/private/dir/file.html</code> 
+へのリクエストや、
+他の同様に <code>/private</code> 文字列で始まるリクエストに
+適用されます。</p>
+
+<example>
+&lt;Location /private&gt;<br />
+Order Allow,Deny<br />
+Deny from all<br />
+&lt;/Location&gt;
+</example>
+
+<p><directive type="section" module="core">Location</directive>
+ディレクティブはファイルシステムと関係ある必要が全くありません。
+たとえば次の例では、どのようにして特定の URL を
+<module>mod_status</module>で提供されている Apache 
+内部ハンドラにマップするかを示しています。ファイルシステムに
+<code>server-status</code> というファイルが存在する必要はありません。</p>
+
+<example>
+&lt;Location /server-status&gt;<br />
+SetHandler server-status<br />
+&lt;/Location&gt;
+</example>
+</section>
+
+<section id="wildcards"><title>ワイルドカードと正規表現</title>
+
+<p><directive type="section" module="core">Directory</directive>, 
+<directive type="section" module="core">Files</directive>, 
+<directive type="section" module="core">Location</directive> 
+ディレクティブでは、 C 標準ライブラリの <code>fnmatch</code> のように
+shell スタイルのワイルドカードキャラクタが使用できます。
+"*" 文字は任意の文字列にマッチし、"?" 文字は任意の 1 文字にマッチし、
+"[<em>seq</em>]" は <em>seq</em> の任意の文字にマッチします。
+"/" 文字はどのワイルドカードでもマッチされません。
+明示的に指定する必要があります。</p>
+
+<p>これより柔軟なマッチングが必要な場合は、これらのコンテナの正規表現
+(regex) 版である
+<directive type="section" module="core">DirectoryMatch</directive>, 
+<directive type="section" module="core">FilesMatch</directive>, 
+<directive type="section" module="core">LocationMatch</directive>
+があり、マッチを選択するのに perl 互換<a href="glossary.html#regex"
+>正規表現</a>を使用できます。しかし、次の設定のマージに目を通して、
+regex セクションを使用することで、ディレクティブの適用がどのように
+変化するか把握しておいてください。</p>
+
+<p>全ユーザディレクトリの設定を変更する、非 regex
+ワイルドカードセクションは次のようになります。</p>
+
+<example>
+&lt;Directory /home/*/public_html&gt;<br />
+Options Indexes<br />
+&lt;/Directory&gt;
+</example>
+
+<p>regex セクションを使用することで、画像ファイルの多くのタイプに対する
+アクセスを一度に拒否できます。</p>
+<example>
+&lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/FilesMatch&gt;
+</example>
+
+</section>
+
+<section id="whichwhen"><title>いつ何を使うか</title>
+
+<p>ファイルシステムコンテナとウェブ空間コンテナを使い分けるのは、
+実際には非常に簡単です。ファイルシステムに依存する
+オブジェクトにディレクティブを適応する場合は、必ず
+<directive type="section" module="core">Directory</directive> か
+<directive type="section" module="core">Files</directive>
+を使用します。ファイルシステムに依存しないオブジェクト
+(データベースから生成されるウェブページなど) 
+にディレクティブを適用する際には、
+<directive type="section" module="core">Location</directive>
+を使用します。</p>
+
+<p>ファイルシステム上のオブジェクトへのアクセスを制限するために、
+<directive type="section" module="core">Location</directive>
+を決して使用ないようにしましょう。
+同一のファイルシステム位置にマップしている、ウェブ空間位置 (URL)
+が多数あって、設定した制限を迂回されてしまうかもしれないからです。
+例えば次の設定を考えてみましょう。</p>
+
+<example>
+&lt;Location /dir/&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/Location&gt;
+</example>
+
+<p><code>http://yoursite.example.com/dir/</code>
+へのリクエストでは上手く動作します。しかし大文字小文字を区別しない
+ファイルシステムを使っていたらどうなるでしょう?
+<code>http://yoursite.example.com/DIR/</code> 
+へのリクエストで簡単にアクセス制限を迂回されてしまいます。これに対して
+<directive type="section" module="core">Directory</directive>
+ディレクティブを使用すると、どのように呼び出されたかに関わらず
+その場所から提供される内容に適用されます。
+(例外はファイルシステムのリンクです。シンボリックリンクを使って、
+同一のディレクトリを複数のファイルシステムに設置できます。
+<directive type="section" module="core">Directory</directive>
+ディレクティブはパス名をリセットすることなくシンボリックリンクを
+辿ります。ですから、高度なセキュリティが要求される場合は、
+適切に <directive module="core">Options</directive> 
+ディレクティブを使用してシンボリックリンクを無効にするべきです。)</p>
+
+<p>大文字小文字を区別するファイルシステムを使用しているから上記のことは
+無関係だと思われるかもしれませんが、
+同一のファイルシステム位置に複数のウェブ空間位置をマップする方法は、
+他にいくらでもあるということを覚えていてください。
+ですからできる限りファイルシステムコンテナを使用してください。
+しかしながら一つだけ例外があります。
+<code>&lt;Location /&gt;</code> セクションはどんな URL 
+にも関わらず適用されるので、そこにアクセスを制限するディレクティブを
+居れることは完全に安全です。</p>
+</section>
+
+</section>
+
+<section id="virtualhost"><title>バーチャルホスト</title>
+
+<p><directive type="section" module="core">VirtualHost</directive>
+コンテナは特定のホストに適用するディレクティブを格納します。
+一台のマシンで複数のホストを異なる設定で提供したいときに有用です。
+詳細に関しては<a href="vhosts/">バーチャルホストドキュメント</a>を
+ご覧下さい。</p>
+</section>
+
+<section id="proxy"><title>プロクシ</title>
+
+<p><directive type="section" module="mod_proxy">Proxy</directive>
+と <directive type="section" module="mod_proxy">ProxyMatch</directive>
+コンテナは、<module>mod_proxy</module>
+プロクシサーバを経由してアクセスされる特定の URL にマッチするサイトに
+対してのみ適用される
+設定ディレクティブを格納します。例えば次の設定は、プロキシサーバが
+<code>cnn.com</code> ウェブサイトをアクセスするためには使えないようにします。</p>
+
+<example>
+&lt;Proxy http://cnn.com/*&gt;<br />
+Order allow,deny<br />
+Deny from all<br />
+&lt;/Proxy&gt;
+</example>
+</section>
+
+<section id="whatwhere"><title>どのディレクティブが使えるの?</title>
+
+<p>どのタイプの設定セクションでどのディレクティブが使用できるかは、
+ディレクティブの <a href="mod/directive-dict.html#Context">Context</a>
+を見てください。
+<directive type="section" module="core">Directory</directive>
+で使用可能なものは全て、同様に
+<directive type="section" module="core">DirectoryMatch</directive>,
+<directive type="section" module="core">Files</directive>,
+<directive type="section" module="core">FilesMatch</directive>,
+<directive type="section" module="core">Location</directive>,
+<directive type="section" module="core">LocationMatch</directive>,
+<directive type="section" module="mod_proxy">Proxy</directive>,
+<directive type="section" module="mod_proxy">ProxyMatch</directive>
+セクションで使用可能です。しかしながら幾つか例外も存在します。</p>
+
+<ul>
+<li><directive module="core">AllowOverride</directive> ディレクティブは
+<directive type="section" module="core">Directory</directive>
+セクションでのみ使用可能です。</li>
+
+<li><code>FollowSymLinks</code> と <code>SymLinksIfOwnerMatch</code> の
+<directive module="core">Options</directive> は、
+<directive type="section" module="core">Directory</directive>
+セクションか <code>.htaccess</code> ファイルでのみ使用可能です。</li>
+
+<li><directive module="core">Options</directive> ディレクティブは、
+<directive type="section" module="core">Files</directive>
+と <directive type="section" module="core">FilesMatch</directive>
+セクションでは使用できません。</li>
+</ul>
+</section>
+
+<section id="mergin"><title>セクションのマージ方法</title>
+
+    <p>マージの順番は以下のようになっています:</p>
+
+    <ol>
+      <li><directive
+      type="section" module="core">Directory</directive> (正規表現無し) と
+      .htaccess を同時に (.htaccess が許可されていれば、それが
+      <directive type="section" module="core">Directory</directive> を上書きします)
+      </li>
+
+      <li><directive type="section" module="core">DirectoryMatch</directive>
+      (と <code>&lt;Directory ~&gt;</code></li>
+
+      <li><directive type="section" module="core">Files</directive> と
+      <directive type="section" module="core">FilesMatch</directive> を同時に</li>
+
+      <li><directive type="section" module="core">Location</directive> と
+      <directive type="section" module="core">LocationMatch</directive> を同時に</li>
+    </ol>
+
+    <p><directive type="section" module="core">Directory</directive>
+    以外は、それぞれのグループは設定ファイルに現れた順番に処理されます。
+    <directive type="section" module="core">Directory</directive> (上のグループ 1)
+    はディレクトリが短いものから長いものへと処理されます。ですから、
+    例えば <code>&lt;Directory /var/web/dir1&gt;</code> は
+    <code>&lt;Directory /var/web/dir/subdir&gt;</code> の前に処理されます。複数の
+    <directive
+    type="section" module="core">Directory</directive> セクションが
+    同じディレクトリに
+    適用される場合は、設定ファイル中の順番に従って処理されます。
+    <directive module="core">Include</directive>
+    によって挿入された設定は 挿入しているファイルの
+    <directive module="core">Include</directive>
+    ディレクティブの位置にあったかのように扱われます。</p>
+
+    <p><directive type="section"
+    module="core">VirtualHost</directive> セクション中のセクションは
+    バーチャルホストの定義の外側の対応するセクションの
+    <em>後</em>に適用されます。これによりバーチャルホストが
+    メインのサーバ設定を上書きできるようなります。</p>
+
+    <p>後のセクションのディレクティブが前のセクションのものを上書きします。</p>
+
+
+<note><title>技術メモ</title>
+      実際には、名前を変換する段階 (URL
+      をファイル名にマップするために <code>Alias</code> や
+      <code>DocumentRoot</code> が使用されるところ) の直前に
+      <directive type="section" module="core">Location</directive>/<directive type="section" module="core">LocationMatch</directive>
+      が行なわれます。
+      これらを適用した結果は変換が終わった後に完全に捨てられます。
+</note>
+<section id="merge-examples"><title>例</title>
+
+<p>次はマージの順番を示すための恣意的な例になっています。
+リクエスト全てに適用されるとして、本例のディレクティブは
+A &gt; B &gt; C &gt; D &gt; E の順番に適用されます。</p>
+
+<example>
+&lt;Location /&gt;<br />
+E<br />
+&lt;/Location&gt;<br />
+<br />
+&lt;Files f.html&gt;<br />
+D<br />
+&lt;/Files&gt;<br />
+<br />
+&lt;VirtualHost *&gt;<br />
+&lt;Directory /a/b&gt;<br />
+B<br />
+&lt;/Directory&gt;<br />
+&lt;/VirtualHost&gt;<br />
+<br />
+&lt;DirectoryMatch "^.*b$"&gt;<br />
+C<br />
+&lt;/DirectoryMatch&gt;<br />
+<br />
+&lt;Directory /a/b&gt;<br />
+A<br />
+&lt;/Directory&gt;<br />
+<br />
+</example>
+
+<p>もっと具体的な、次の例を考えてみましょう。
+<directive module="core" type="section">Directory</directive> 
+セクションに設置されたアクセス制限に関わらず、
+<directive module="core" type="section">Location</directive>
+セクションが最後に評価されて、サーバへのアクセスは制限されません。
+つまり、マージの順番は重要ですので、注意して使用してください!</p>
+
+<example>
+&lt;Location /&gt;<br />
+Order deny,allow<br />
+Allow from all<br />
+&lt;/Location&gt;<br />
+<br />
+# Woops!  This &lt;Directory&gt; section will have no effect<br />
+&lt;Directory /&gt;<br />
+Order allow,deny<br />
+Allow from all<br />
+Deny from badguy.example.com<br />
+&lt;/Directory&gt;
+</example>
+
+</section>
+
+</section>
+</manualpage>
