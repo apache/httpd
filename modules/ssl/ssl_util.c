@@ -139,7 +139,8 @@ void ssl_util_uuencode_binary(unsigned char *szTo,
     return;
 }
 
-apr_file_t *ssl_util_ppopen(server_rec *s, apr_pool_t *p, char *cmd)
+apr_file_t *ssl_util_ppopen(server_rec *s, apr_pool_t *p, const char *cmd,
+                            const char * const *argv)
 {
     apr_procattr_t *procattr;
     apr_proc_t *proc;
@@ -156,7 +157,7 @@ apr_file_t *ssl_util_ppopen(server_rec *s, apr_pool_t *p, char *cmd)
         return NULL;
     if ((proc = (apr_proc_t *)apr_pcalloc(p, sizeof(apr_proc_t))) == NULL)
         return NULL;
-    if (apr_proc_create(proc, cmd, NULL, NULL, procattr, p) != APR_SUCCESS)
+    if (apr_proc_create(proc, cmd, argv, NULL, procattr, p) != APR_SUCCESS)
         return NULL;
     return proc->out;
 }
@@ -170,16 +171,18 @@ void ssl_util_ppclose(server_rec *s, apr_pool_t *p, apr_file_t *fp)
 /*
  * Run a filter program and read the first line of its stdout output
  */
-char *ssl_util_readfilter(server_rec *s, apr_pool_t *p, char *cmd)
+char *ssl_util_readfilter(server_rec *s, apr_pool_t *p, const char *cmd,
+                          const char * const *argv)
 {
     static char buf[MAX_STRING_LEN];
     apr_file_t *fp;
-    apr_size_t nbytes;
+    apr_size_t nbytes = 1;
     char c;
     int k;
 
-    if ((fp = ssl_util_ppopen(s, p, cmd)) == NULL)
+    if ((fp = ssl_util_ppopen(s, p, cmd, argv)) == NULL)
         return NULL;
+    /* XXX: we are reading 1 byte at a time here */
     for (k = 0; apr_file_read(fp, &c, &nbytes) == APR_SUCCESS
                 && nbytes == 1 && (k < MAX_STRING_LEN-1)     ; ) {
         if (c == '\n' || c == '\r')
