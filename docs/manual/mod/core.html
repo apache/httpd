@@ -23,6 +23,8 @@ always available.
 <UL>
 <LI><A HREF="#accessconfig">AccessConfig</A>
 <LI><A HREF="#accessfilename">AccessFileName</A>
+<LI><A HREF="#adddefaultcharset">AddDefaultCharset</A>
+<LI><A HREF="#adddefaultcharsetname">AddDefaultCharsetName</A>
 <LI><A HREF="#addmodule">AddModule</A>
 <LI><A HREF="#allowoverride">AllowOverride</A>
 <LI><A HREF="#authname">AuthName</A>
@@ -162,6 +164,42 @@ for directives, unless they have been disabled with
 &lt;Directory /&gt;<BR>
 AllowOverride None<BR>
 &lt;/Directory&gt;</CODE></BLOCKQUOTE><P><HR>
+
+<H2><A NAME="adddefaultcharset">AddDefaultCharset directive</A></H2>
+<A HREF="directive-dict.html#Syntax" REL="Help"><STRONG>Syntax:</STRONG></A> 
+AddDefaultCharset <EM>on / off</EM><BR>
+<A HREF="directive-dict.html#Context" REL="Help" ><STRONG>Context:</STRONG></A> 
+all<BR>
+<A HREF="directive-dict.html#Status" REL="Help" ><STRONG>Status:</STRONG></A> 
+core<BR>
+<A HREF="directive-dict.html#Default" REL="Help"><STRONG>Default:</STRONG></A>
+<CODE>AddDefaultCharset off</CODE><BR>
+<A HREF="directive-dict.html#Compatibility" REL="Help"><STRONG>Compatibility:
+</STRONG></A> AddDefaultCharset is only available in Apache 1.3.12 and later<P>
+If enabled, any response that does not have any parameter on the content 
+type in the HTTP headers will have a charset parameter added specifying 
+the character set the client should use for the document.  This will 
+override any character set specified in the body of the document via a 
+<CODE>META</CODE> tag.  The character set added is specified by the 
+<CODE>AddDefaultCharsetName</CODE> directive.
+<P><HR>
+
+<H2><A NAME="adddefaultcharsetname">AddDefaultCharsetName directive</A></H2>
+<A HREF="directive-dict.html#Syntax" REL="Help"><STRONG>Syntax:</STRONG></A> 
+AddDefaultCharsetName <EM>charset</EM><BR>
+<A HREF="directive-dict.html#Context" REL="Help" ><STRONG>Context:</STRONG></A> 
+all<BR>
+<A HREF="directive-dict.html#Status" REL="Help" ><STRONG>Status:</STRONG></A> 
+core<BR>
+<A HREF="directive-dict.html#Default" REL="Help"><STRONG>Default:</STRONG></A>
+<CODE>AddDefaultCharsetName iso-8859-1</CODE><BR>
+<A HREF="directive-dict.html#Compatibility" REL="Help"><STRONG>Compatibility:
+</STRONG></A> AddDefaultCharsetName is only available in Apache 1.3.12 and 
+later<P>
+This directive specifies the name of the character set that will be added
+if the <A HREF="#adddefaultcharset">AddDefaultCharset</A> directive is 
+enabled.
+<P><HR>
 
 <H2><A NAME="addmodule">AddModule directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt AddModule} directive&gt; -->
