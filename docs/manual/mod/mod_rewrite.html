@@ -297,9 +297,25 @@ of the available directives.
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, per-directory config<BR>
-<P>
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> FileInfo<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.2<BR>
 
+<P>
 The <CODE>RewriteEngine</CODE> directive enables or disables the runtime
 rewriting engine. If it is set to <CODE>off</CODE> this module does no runtime
 processing at all. It does not even update the <CODE>SCRIPT_URx</CODE>
@@ -322,17 +338,33 @@ directive for each virtual host you wish to use it in.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> <CODE>RewriteOptions</CODE> <EM>Option</EM> ...<BR>
+><STRONG>Syntax:</STRONG></A> <CODE>RewriteOptions</CODE> <EM>Option</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> -<EM>None</EM>-<BR>
+><STRONG>Default:</STRONG></A> <EM>None</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, per-directory config<BR>
-<P>
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> FileInfo<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.2<BR>
 
+<P>
 The <CODE>RewriteOptions</CODE> directive sets some special options for the
 current per-server or per-directory configuration. The <EM>Option</EM>
 strings can be one of the following:
@@ -358,13 +390,29 @@ strings can be one of the following:
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> -<EM>None</EM>-<BR>
+><STRONG>Default:</STRONG></A> <EM>None</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
 ><STRONG>Context:</STRONG></A> server config, virtual host<BR>
-<P>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.2<BR>
 
+<P>
 The <CODE>RewriteLog</CODE> directive sets the name of the file to which the
 server logs any rewriting actions it performs. If the name does not begin
 with a slash ('<CODE>/</CODE>') then it is assumed to be relative to the
@@ -421,6 +469,22 @@ RewriteLog "/usr/local/var/apache/logs/rewrite.log"
  HREF="directive-dict.html#Context"
  REL="Help"
 ><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.2<BR>
 
 <P>
 The <CODE>RewriteLogLevel</CODE> directive set the verbosity level of the rewriting
@@ -461,11 +525,27 @@ RewriteLogLevel 3
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> -<EM>None</EM>-<BR>
+><STRONG>Default:</STRONG></A> <EM>None</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
 ><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.3<BR>
 
 <P>
 This directive sets the filename for a synchronization lockfile which
@@ -491,6 +571,22 @@ SAMP using all other types of rewriting maps.
  HREF="directive-dict.html#Context"
  REL="Help"
 ><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>Not applicable</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.2 (partially), Apache 1.3<BR>
 
 <P>
 The <CODE>RewriteMap</CODE> directive defines a <EM>Rewriting Map</EM>
@@ -704,7 +800,23 @@ only happens once!
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> per-directory config<BR>
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>FileInfo</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.2<BR>
 
 <P>
 The <CODE>RewriteBase</CODE> directive explicitly sets the base URL for
@@ -812,11 +924,27 @@ sure the design and implementation is correct.
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> -<EM>None</EM>-<BR>
+><STRONG>Default:</STRONG></A> <EM>None</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, per-directory config<BR>
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>FileInfo</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.2 (partially), Apache 1.3<BR>
 
 <P>
 The <CODE>RewriteCond</CODE> directive defines a rule condition. Precede a
@@ -1135,11 +1263,27 @@ use any other browser you get the standard homepage.
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
-><STRONG>Default:</STRONG></A> -<EM>None</EM>-<BR>
+><STRONG>Default:</STRONG></A> <EM>None</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, per-directory config<BR>
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> <EM>FileInfo</EM><BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Extension<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_rewrite.c<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Apache 1.2 (partially), Apache 1.3<BR>
 
 <P>
 The <CODE>RewriteRule</CODE> directive is the real rewriting workhorse.  The
@@ -1164,31 +1308,56 @@ Some hints about the syntax of regular expressions:
 <TR>
 <TD VALIGN=TOP>
 <PRE>
-<STRONG><CODE>^</CODE></STRONG>           Start of line
-<STRONG><CODE>$</CODE></STRONG>           End of line
-<STRONG><CODE>.</CODE></STRONG>           Any single character
-<STRONG><CODE>[</CODE></STRONG>chars<STRONG><CODE>]</CODE></STRONG>     One of chars
-<STRONG><CODE>[^</CODE></STRONG>chars<STRONG><CODE>]</CODE></STRONG>    None of chars
+<STRONG>Text:</STRONG>
+  <STRONG><CODE>.</CODE></STRONG>           Any single character
+  <STRONG><CODE>[</CODE></STRONG>chars<STRONG><CODE>]</CODE></STRONG>     Character class: One  of chars
+  <STRONG><CODE>[^</CODE></STRONG>chars<STRONG><CODE>]</CODE></STRONG>    Character class: None of chars
+  text1<STRONG><CODE>|</CODE></STRONG>text2 Alternative: text1 or text2
 
-<STRONG><CODE>?</CODE></STRONG>           0 or 1 of the preceding char
-<STRONG><CODE>*</CODE></STRONG>           0 or N of the preceding char
-<STRONG><CODE>+</CODE></STRONG>           1 or N of the preceding char
+<STRONG>Quantifiers:</STRONG>
+  <STRONG><CODE>?</CODE></STRONG>           0 or 1 of the preceding text
+  <STRONG><CODE>*</CODE></STRONG>           0 or N of the preceding text (N > 1)
+  <STRONG><CODE>+</CODE></STRONG>           1 or N of the preceding text (N > 1)
 
-<STRONG><CODE>\</CODE></STRONG>char       escape that specific char
-            (e.g. for specifying the chars "<CODE>.[]()</CODE>" etc.)
+<STRONG>Grouping:</STRONG>
+  <STRONG><CODE>(</CODE></STRONG>text<STRONG><CODE>)</CODE></STRONG>      Grouping of text
+              (either to set the borders of an alternative or
+              for making backreferences where the <STRONG>N</STRONG>th group can 
+              be used on the RHS of a RewriteRule with <CODE>$</CODE><STRONG>N</STRONG>)
 
-<STRONG><CODE>(</CODE></STRONG>string<STRONG><CODE>)</CODE></STRONG>    Grouping of chars (the <STRONG>N</STRONG>th group can be used on the RHS with <CODE>$</CODE><STRONG>N</STRONG>)
+<STRONG>Anchors:</STRONG>
+  <STRONG><CODE>^</CODE></STRONG>           Start of line anchor
+  <STRONG><CODE>$</CODE></STRONG>           End   of line anchor
+
+<STRONG>Escaping:</STRONG>
+  <STRONG><CODE>\</CODE></STRONG>char       escape that particular char
+              (for instance to specify the chars "<CODE>.[]()</CODE>" etc.)
 </PRE>
 </TD>
 </TR>
 </TABLE>
 
 <P>
-Additionally the NOT character ('<CODE>!</CODE>') is a possible pattern
-prefix. This gives you the ability to negate a pattern; to say, for instance: ``<EM>if
-the current URL does <STRONG>NOT</STRONG> match to this pattern</EM>''. This can be used
-for special cases where it is better to match the negative pattern or as a
-last default rule.
+For more information about regular expressions either have a look at your
+local regex(3) manpage or its <CODE>src/regex/regex.3</CODE> copy in the
+Apache 1.3 distribution.  When you are interested in more detailed and deeper
+information about regular expressions and its variants (POSIX regex, Perl
+regex, etc.) have a look at the following dedicated book on this topic: 
+
+<BLOCKQUOTE>
+<EM>Mastering Regular Expressions</EM><BR>
+Jeffrey E.F. Friedl<BR>
+Nutshell Handbook Series<BR>
+O'Reilly &amp; Associates, Inc. 1997<BR>
+ISBN 1-56592-257-3<BR>
+</BLOCKQUOTE>
+
+<P>
+Additionally in mod_rewrite the NOT character ('<CODE>!</CODE>') is a possible
+pattern prefix. This gives you the ability to negate a pattern; to say, for
+instance: ``<EM>if the current URL does <STRONG>NOT</STRONG> match to this
+pattern</EM>''. This can be used for special cases where it is better to match
+the negative pattern or as a last default rule.
 
 <P>
 <TABLE WIDTH="70%" BORDER=0 BGCOLOR="#E0E0F0" CELLSPACING=0 CELLPADDING=10>
