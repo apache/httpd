@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386 /out:"Release/mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so /opt:ref
+# ADD LINK32 kernel32.lib zlib.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_deflate.so" /libpath:"../../srclib/zlib" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_deflate - Win32 Debug"
 
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
+# ADD LINK32 kernel32.lib zlib.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_deflate.so" /libpath:"../../srclib/zlib" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
 
 !ENDIF 
 
@@ -87,54 +87,6 @@ LINK32=link.exe
 
 # Name "mod_deflate - Win32 Release"
 # Name "mod_deflate - Win32 Debug"
-# Begin Group "zlib"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\adler32.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\crc32.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\deflate.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\infblock.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\infcodes.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\inffast.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\inflate.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\inftrees.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\infutil.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\trees.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\srclib\zlib\zutil.c
-# End Source File
-# End Group
 # Begin Source File
 
 SOURCE=.\mod_deflate.c
