@@ -2417,7 +2417,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
                       "\nerror was encountered while trying to use an "
                       "ErrorDocument to handle the request.</p>\n", NULL);
         }
-        ap_rvputs_proto_in_ascii(r, ap_psignature("<hr />\n", r), NULL);
+        ap_rvputs_proto_in_ascii(r, ap_psignature("<hr>\n", r), NULL);
         ap_rvputs_proto_in_ascii(r, "</body></html>\n", NULL);
     }
     ap_finalize_request_protocol(r);
