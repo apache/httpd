@@ -1,13 +1,11 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/06/07 17:17:56 $]
+  Last modified at [$Date: 2002/06/14 15:31:28 $]
 
 Release:
 
    1.3.25-dev: In development
-             A release is proposed for end of May 2002. Jim
-             volunteers to be RM. Baseline schedule is a
-             T&R on June 1, 2002 with a release on or about
-             June 3, 2002.
+             A release is proposed for mid/late June 2002,
+             after the resolution of a few issues.
    1.3.24: Tagged Mar 21, 2002. Announced Mar 22, 2002.
    1.3.23: Tagged Jan 21, 2002.
    1.3.22: Tagged Oct 8, 2001.  Announced Oct 12, 2001.
