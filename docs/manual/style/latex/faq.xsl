@@ -52,45 +52,27 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */ -->
+<!DOCTYPE xsl:stylesheet [
+    <!ENTITY lf SYSTEM "util/lf.xml">
+]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                   xmlns="http://www.w3.org/1999/xhtml">
 
 <!-- ==================================================================== -->
-<!-- <directiveindex>                                                     -->
-<!-- Builds the directive index page                                      -->
+<!-- <faq>                                                                -->
+<!-- Process an entire document into an HTML page                         -->
 <!-- ==================================================================== -->
-<xsl:template match="directiveindex">
+<xsl:template match="faq">
 
-    <xsl:variable name="directives"
-        select="document(modulefilelist/modulefile)
-                /modulesynopsis[status!='Obsolete']
-                /directivesynopsis[not(@location)]" />
+<xsl:call-template name="section-title"/>
 
+<xsl:apply-templates select="summary"/>
 
-  <xsl:call-template name="section-title"/>
+<xsl:call-template name="seealso"/>
 
-  <xsl:apply-templates select="summary" />
-
-  <xsl:call-template name="seealso"/>
-
-  <xsl:text>\begin{itemize}
-</xsl:text>
-  <xsl:for-each select="$directives">
-  <xsl:sort select="name" />
-
-  <xsl:text>
-\item </xsl:text>
-  <xsl:apply-templates select="name" mode="simple"/>
-  <xsl:text> (p.\ \pageref{/mod/</xsl:text>
-  <xsl:value-of select="../name"/><xsl:text>:</xsl:text>
-  <xsl:value-of select="translate(name, $uppercase, $lowercase)"/>
-  <xsl:text>})</xsl:text>
-</xsl:for-each>
-
-  <xsl:text>\end{itemize}</xsl:text>
+<xsl:apply-templates select="section"/>
 
 </xsl:template>
-<!-- /directiveindex -->
-
+<!-- /faq -->
 </xsl:stylesheet>

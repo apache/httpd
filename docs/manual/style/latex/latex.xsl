@@ -18,14 +18,17 @@
 <xsl:include href="synopsis.xsl" />
 <xsl:include href="moduleindex.xsl" />
 <xsl:include href="directiveindex.xsl" />
+<xsl:include href="faq.xsl" />
+<xsl:include href="quickreference.xsl" />
 
 <xsl:template match="sitemap">
 <xsl:text>
 \documentclass[11pt]{book}
 \usepackage{times}
+\usepackage{longtable}
 \usepackage{style/latex/atbeginend}
 %\usepackage[pdftex]{color}
-\usepackage[colorlinks=true,letterpaper=true]{hyperref}
+\usepackage[colorlinks=true,letterpaper=true,linkcolor=green,urlcolor=blue]{hyperref}
 
 % Let LaTeX be lenient about very-bad line wrapping.
 \tolerance=9999 
@@ -224,6 +227,10 @@
  </xsl:choose>
 </xsl:variable>
 
+<!-- The '[' and ']' characters don't, in general, need to be
+  escaped.  But there are times when it is ambiguous whether
+  [ is the beginning of an optional argument or a literal '['.
+  Hence, it is safer to protect the literal ones with {}. -->
 <xsl:variable name="result5">
  <xsl:choose>
  <xsl:when test="contains($result4, '[')">

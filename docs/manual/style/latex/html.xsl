@@ -170,7 +170,7 @@ interpreted in pre -->
       <xsl:value-of select=".95 div last()"/>
     </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>\linewidth}\small </xsl:text>
+    <xsl:text>\textwidth}\small </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{minipage}</xsl:text>
     <xsl:if test="not(position()=last())">
@@ -189,7 +189,7 @@ interpreted in pre -->
       <xsl:value-of select=".95 div last()"/>
     </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>\linewidth}\bfseries </xsl:text>
+    <xsl:text>\textwidth}\bfseries </xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{minipage}</xsl:text>
     <xsl:if test="not(position()=last())">

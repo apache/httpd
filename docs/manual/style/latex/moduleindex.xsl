@@ -64,27 +64,11 @@
 
   <xsl:variable name="metafile" select="document(/*/@metafile)/metafile" /> 
 
-  <xsl:text>\section{</xsl:text><xsl:apply-templates select="title"/>
-  <xsl:text>}</xsl:text>
-  <xsl:text>\label{</xsl:text>
-  <xsl:value-of select="$metafile/path"/>
-  <xsl:value-of select="$metafile/basename"/>
-  <xsl:text>}
-</xsl:text>
+  <xsl:call-template name="section-title"/>
 
   <xsl:apply-templates select="summary"/>
 
-   <xsl:if test="seealso">
-   <xsl:text>\medskip\noindent\textbf{</xsl:text>
-   <xsl:value-of select="$messages/message[@name='seealso']" />
-   <xsl:text>}
-   \begin{itemize}</xsl:text>
-   <xsl:for-each select="seealso">
-     <xsl:text>\item </xsl:text><xsl:apply-templates />
-   </xsl:for-each>
-   \end{itemize}
-   </xsl:if>
-
+  <xsl:call-template name="seealso"/>
 
    <xsl:text>\subsection*{</xsl:text>
    <xsl:value-of select="$messages/message[@name='corefeatures']" />

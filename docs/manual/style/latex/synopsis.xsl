@@ -108,7 +108,7 @@
          <xsl:if test="@location">
            <xsl:variable name="lowerlocation"
             select="translate(@location, $uppercase, $lowercase)" />
-           <xsl:text> (p.\ \pageref{</xsl:text>
+           <xsl:text> (p.\ \pageref{/mod/</xsl:text>
            <xsl:value-of select="concat(translate(@location,$uppercase,$lowercase),':',translate(name,$uppercase,$lowercase))"/>
            <xsl:text>}) </xsl:text>
          </xsl:if>
@@ -128,18 +128,7 @@
      <xsl:text>
 </xsl:text>
 
-     <xsl:if test="seealso">
-	<xsl:text>\textbf{</xsl:text>
-        <xsl:value-of select="$messages/message [@name='seealso']" />
-        <xsl:text>}\begin{itemize}</xsl:text>
-        <xsl:for-each select="seealso">
-        <xsl:text>\item </xsl:text>
-          <xsl:apply-templates />
-        <xsl:text>
-</xsl:text>
-        </xsl:for-each>
-<xsl:text>\end{itemize}</xsl:text>
-     </xsl:if>
+<xsl:call-template name="seealso"/>
 
      <!-- Sections of documentation about the module as a whole -->
        <xsl:apply-templates select="section" />
@@ -261,22 +250,9 @@
 
 <xsl:apply-templates select="usage" />
 
-<xsl:if test="seealso">
-<xsl:text>\textbf{</xsl:text>
-<xsl:value-of select="$messages/message[@name='seealso']" />
-<xsl:text>}
-\begin{itemize}
-</xsl:text>
-<xsl:for-each select="seealso">
-<xsl:text>\item </xsl:text>
-<xsl:apply-templates />
-</xsl:for-each>
-<xsl:text>\end{itemize}
-</xsl:text>
-</xsl:if>
+<xsl:call-template name="seealso"/>
 
-</xsl:if>
-
+</xsl:if> <!-- /not(@location) -->
 </xsl:template>
 <!-- /directivesynopsis -->
 

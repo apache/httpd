@@ -1,12 +1,5 @@
 Some things that need to be done with the LaTeX transforms:
 
-- Finish special pages:
-  * quick reference
-  * faq
-  [This is a good job for someone who wants to get familiar with LaTeX,
-   since you can just take the existing LaTeX as an example, and combine
-   it with the xslt stuff under style/xsl/.]
-
 - Tables
   Add <columnspec> to xml files.
 
@@ -21,9 +14,6 @@ Some things that need to be done with the LaTeX transforms:
   not be feasible for us, in which case we could simply replace
   " with \texttt{"} or something, so that the quotes are all straight.
 
-- Fix page references on "external" directives
-  (<directivesynopsis location=...)
-
 - Hundreds of other little problems with presentation, cross-referencing,
   etc.
 
@@ -36,5 +26,7 @@ Some things that need to be done with the LaTeX transforms:
   drop this and manually adjust the relevant spacing.
 
 - Reduce the size of the pdf (both bytes and pages) in any way possible.
+
+- Speed up the XSLT tranform.
 
 - Translations.
