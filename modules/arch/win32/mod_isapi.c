@@ -682,7 +682,7 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
         }
         newstat = apr_palloc(cid->r->pool, statlen + 9);
         strcpy(newstat, "Status: ");
-        apr_cpystrn(newstat + 8, stat, statlen);
+        apr_cpystrn(newstat + 8, stat, statlen + 1);
         stat = newstat;
         statlen += 8;
     }
