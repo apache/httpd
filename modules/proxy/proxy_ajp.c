@@ -175,7 +175,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
         /* Try to send something */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: data to read (max %d at %08x)", bufsiz, buff);
+                     "proxy: data to read (max %d at %d)", bufsiz, msg->pos);
 
         status = apr_brigade_flatten(input_brigade, buff, &bufsiz);
         if (status != APR_SUCCESS) {
@@ -358,7 +358,6 @@ int ap_proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     char server_portstr[32];
     conn_rec *origin = NULL;
     proxy_conn_rec *backend = NULL;
-    int is_ssl = 0;
     const char *scheme = "AJP";
 
     /* Note: Memory pool allocation.
