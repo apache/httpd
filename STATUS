@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/18 00:43:59 $]
+Last modified at [$Date: 2004/09/18 17:19:13 $]
 
 Release:
 
@@ -76,27 +76,27 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) buildconf: Clean autoconf cache and do mod_ssl timestamp dance.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/buildconf?r1=1.37&r2=1.40
-       +1: jorton, trawick
-    
+       +1: jorton, trawick, jerenkrantz
+
     *) remove config.{guess,sub} and PrintPath from build (they are copied
        by buildconf already)
-       +1: jorton, trawick
+       +1: jorton, trawick, jerenkrantz
 
     *) Use HTML 2.0 <hr> for error pages. PR 30732
          modules/http/http_protocol.c: r1.483
-       +1: nd, jorton, trawick
-  
+       +1: nd, jorton, trawick, jerenkrantz
+
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
        (2.0 + 1.3)
          http://www.apache.org/~nd/dbmmap_1.3.patch
          http://www.apache.org/~nd/dbmmap_2.0.patch
-       +1: nd, trawick
+       +1: nd, trawick, jerenkrantz
 
     *) mod_rewrite:Fix query string handling for proxied URLs. PR 14518.
        (2.0 + 1.3)
          modules/mappers/mod_rewrite.c: r1.259
-       +1: nd
-       
+       +1: nd, jerenkrantz
+
     *) mod_headers: Support {...}s tag for SSL variable lookup.
        http://www.apache.org/~jorton/mod_headers-2.0-ssl.diff
        +1: jorton, trawick
