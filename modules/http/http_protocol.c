@@ -254,14 +254,14 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         if (ka_sent) {
             if (r->server->keep_alive_max) {
                 apr_table_setn(r->headers_out, "Keep-Alive",
-                               apr_psprintf(r->pool, "timeout=%d, max=%d",
-                                            r->server->keep_alive_timeout,
-                                            left));
+                       apr_psprintf(r->pool, "timeout=%d, max=%d",
+                            (int)apr_time_sec(r->server->keep_alive_timeout),
+                            left));
             }
             else {
                 apr_table_setn(r->headers_out, "Keep-Alive",
-                               apr_psprintf(r->pool, "timeout=%d",
-                                            r->server->keep_alive_timeout));
+                      apr_psprintf(r->pool, "timeout=%d",
+                            (int)apr_time_sec(r->server->keep_alive_timeout)));
             }
             apr_table_mergen(r->headers_out, "Connection", "Keep-Alive");
         }

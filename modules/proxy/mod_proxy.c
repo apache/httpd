@@ -886,7 +886,7 @@ static const char*
         return "Proxy Timeout must be at least 1 second.";
     }
     psf->timeout_set=1;
-    psf->timeout=timeout;
+    psf->timeout=apr_time_from_sec(timeout);
 
     return NULL;    
 }

@@ -490,23 +490,18 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
             *script_in = procnew->out;
             if (!*script_in)
                 return APR_EBADF;
-            apr_file_pipe_timeout_set(*script_in, (int)(r->server->timeout *
-                                                        APR_USEC_PER_SEC));
+            apr_file_pipe_timeout_set(*script_in, r->server->timeout);
 
             if (e_info->prog_type == RUN_AS_CGI) {
                 *script_out = procnew->in;
                 if (!*script_out)
                     return APR_EBADF;
-                apr_file_pipe_timeout_set(*script_out,
-                                          (int)(r->server->timeout *
-                                                APR_USEC_PER_SEC));
+                apr_file_pipe_timeout_set(*script_out, r->server->timeout);
 
                 *script_err = procnew->err;
                 if (!*script_err)
                     return APR_EBADF;
-                apr_file_pipe_timeout_set(*script_err,
-                                          (int)(r->server->timeout *
-                                                APR_USEC_PER_SEC));
+                apr_file_pipe_timeout_set(*script_err, r->server->timeout);
             }
         }
     }

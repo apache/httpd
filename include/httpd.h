@@ -1078,10 +1078,10 @@ struct server_rec {
 
     /** I haven't got a clue */
     server_addr_rec *addrs;
-    /** Timeout, in seconds, before we give up */
-    int timeout;
-    /** Seconds we'll wait for another request */
-    int keep_alive_timeout;
+    /** Timeout, as an apr interval, before we give up */
+    apr_interval_time_t timeout;
+    /** The apr interval we will wait for another request */
+    apr_interval_time_t keep_alive_timeout;
     /** Maximum requests per connection */
     int keep_alive_max;
     /** Use persistent connections? */
