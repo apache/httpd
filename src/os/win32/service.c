@@ -7,43 +7,10 @@
 #include <process.h>
 #include <direct.h>
 
-#include "conf.h"
+#include "httpd.h"
+#include "http_log.h"
 #include "multithread.h"
 #include "service.h"
-
-/*
- * ReportWin32Error() - map the last Win32 error onto a string
- *
- * This function can be called after a Win32 function has returned an error
- * status. This function writes an error line to the file pointed to by
- * fp (which could be stdout or stderr) consisting of the passed-in prefix
- * string, a colon, and the system error text corresponding to the last
- * Win32 function error.
- *
- * If the file pointer argument is NULL, nothing is logged.
- */
-
-void ReportWin32Error(FILE *fp, char *prefix) {
-    LPVOID lpMsgBuf;
-
-    if (!fp) return;
-
-    FormatMessage( 
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-        NULL,
-        GetLastError(),
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-        (LPTSTR) &lpMsgBuf,
-        0,
-        NULL 
-    );
-
-    fprintf(fp, "%s: %s\n", prefix, lpMsgBuf);
-
-    // Free the buffer.
-    LocalFree( lpMsgBuf );
-}
-
 
 static struct
 {
@@ -262,7 +229,8 @@ void InstallService()
                         SC_MANAGER_ALL_ACCESS   // access required
                         );
    if (!schSCManager) {
-       ReportWin32Error(stderr, "Cannot open service manager");
+       aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+	   "OpenSCManager failed");
     }
     else {
         schService = CreateService(
@@ -284,7 +252,8 @@ void InstallService()
             CloseServiceHandle(schService);
         }
         else {
-            ReportWin32Error(stderr, "Cannot create service");
+            aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 
+		"CreateService failed");
         }
 
         CloseServiceHandle(schSCManager);
@@ -306,14 +275,16 @@ void RemoveService()
                         SC_MANAGER_ALL_ACCESS   // access required
                         );
     if (!schSCManager) {
-        ReportWin32Error(stderr, "Cannot open service manager");
+       aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+	   "OpenSCManager failed");
     }
     else {
         schService = OpenService(schSCManager, globdat.name, SERVICE_ALL_ACCESS);
 
         if (schService == NULL) {
             /* Could not open the service */
-            ReportWin32Error(stderr, "Error accessing service");
+           aplog_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+			"OpenService failed");
         }
         else {
             /* try to stop the service */
