@@ -745,6 +745,9 @@ unsigned char *ssl_asn1_table_set(apr_hash_t *table,
                                   const void *key,
                                   long int length);
 
+ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table,
+                               const void *key);
+
 void ssl_asn1_table_unset(apr_hash_t *table,
                           const void *key);
 

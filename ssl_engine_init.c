@@ -338,7 +338,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         ssl_log(s, SSL_LOG_INFO, "Init: Configuring temporary RSA private keys (512/1024 bits)");
 
         /* allocate 512 bit RSA key */
-        if ((asn1 = (ssl_asn1_t *)apr_hash_get(mc->tTmpKeys, "RSA:512", APR_HASH_KEY_STRING)) != NULL) {
+        if ((asn1 = ssl_asn1_table_get(mc->tTmpKeys, "RSA:512")) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_RSA512] = 
                  (void *)d2i_RSAPrivateKey(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
@@ -348,7 +348,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         }
 
         /* allocate 1024 bit RSA key */
-        if ((asn1 = (ssl_asn1_t *)apr_hash_get(mc->tTmpKeys, "RSA:1024", APR_HASH_KEY_STRING)) != NULL) {
+        if ((asn1 = ssl_asn1_table_get(mc->tTmpKeys, "RSA:1024")) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_RSA1024] = 
                  (void *)d2i_RSAPrivateKey(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
@@ -360,7 +360,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         ssl_log(s, SSL_LOG_INFO, "Init: Configuring temporary DH parameters (512/1024 bits)");
 
         /* allocate 512 bit DH param */
-        if ((asn1 = (ssl_asn1_t *)apr_hash_get(mc->tTmpKeys, "DH:512", APR_HASH_KEY_STRING)) != NULL) {
+        if ((asn1 = ssl_asn1_table_get(mc->tTmpKeys, "DH:512")) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_DH512] = 
                  (void *)d2i_DHparams(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
@@ -370,7 +370,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         }
 
         /* allocate 1024 bit DH param */
-        if ((asn1 = (ssl_asn1_t *)apr_hash_get(mc->tTmpKeys, "DH:512", APR_HASH_KEY_STRING)) != NULL) {
+        if ((asn1 = ssl_asn1_table_get(mc->tTmpKeys, "DH:1024")) != NULL) {
             ucp = asn1->cpData;
             if ((mc->pTmpKeys[SSL_TKPIDX_DH1024] = 
                  (void *)d2i_DHparams(NULL, SSL_UCP_CAST(&ucp), asn1->nData)) == NULL) {
