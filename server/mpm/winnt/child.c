@@ -163,8 +163,8 @@ AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
                     CloseHandle(context->Overlapped.hEvent);
                     return NULL;
                 }
-                apr_pool_tag(context->ptrans, "transaction");
                 apr_allocator_owner_set(allocator, context->ptrans);
+                apr_pool_tag(context->ptrans, "transaction");
                 context->accept_socket = INVALID_SOCKET;
                 context->ba = apr_bucket_alloc_create(pchild);
                 apr_atomic_inc(&num_completion_contexts); 
@@ -403,6 +403,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         apr_allocator_create(&allocator);
         apr_allocator_max_free_set(allocator, ap_max_mem_free);
         apr_pool_create_ex(&context->ptrans, pchild, NULL, allocator);
+        apr_allocator_owner_set(allocator, context->ptrans);
         apr_pool_tag(context->ptrans, "transaction");
         context->ba = apr_bucket_alloc_create(pchild);
     }
