@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.32 $ -->
+<!-- $Revision: 1.33 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -435,7 +435,7 @@ request</description>
 <usage>
     <p>When enabled, this option will pass the Host: line from the incoming
     request to the proxied host, instead of the hostname specified in the
-    proxypass line.</p>
+    <directive>ProxyPass</directive> line.</p>
 
     <p>This option should normally be turned <code>Off</code>. It is mostly 
     useful in special configurations like proxied mass name-based virtual
@@ -568,7 +568,7 @@ expressions</description>
 
     <note><title>Note</title>
       <p>Order is important. you need to put the exclusions <em>before</em> the
-      general proxypass directive.</p>
+      general <directive>ProxyPass</directive> directive.</p>
     </note>
 
     <p>When used inside a <directive type="section" module="core"
@@ -621,8 +621,8 @@ proxied server</description>
 
     <example>
       ProxyPass         /mirror/foo/ http://backend.example.com/<br />
-      ProxyPassReverse  /mirror/foo/ http://backend.example.com/
-      ProxyPassReverseCookieDomain  backend.example.com  public.example.com
+      ProxyPassReverse  /mirror/foo/ http://backend.example.com/<br />
+      ProxyPassReverseCookieDomain  backend.example.com  public.example.com<br />
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </example>
 
@@ -1019,7 +1019,8 @@ header for proxied requests</description>
 <usage>
     <p>This directive is useful for reverse-proxy setups, where you want to 
     have a common look and feel on the error pages seen by the end user. 
-    This also allows for included files (via mod_include's SSI) to get
+    This also allows for included files (via
+    <module>mod_include</module>'s SSI) to get
     the error code and act accordingly (default behavior would display
     the error page of the proxied server, turning this on shows the SSI
     Error message).</p>
