@@ -166,7 +166,7 @@ client</description>
     prevents compressed content from being sent to a client that will
     not understand it.</p>
 
-    <p>If you use some special exclusions dependant
+    <p>If you use some special exclusions dependent
     on, for example, the <code>User-Agent</code> header, you must 
     manually configure an addition to the <code>Vary</code> header
     to alert proxies of the additional restrictions.  For example,
