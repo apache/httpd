@@ -81,6 +81,8 @@ ap_status_t ap_registry_delete_value(const char *key, const char *name);
 
 /* From service.c: */
 
+#define SERVICE_APACHE_RESTART 128
+
 #define DEFAULT_SERVICE_NAME AP_SERVER_BASEPRODUCT
 #define SERVICECONFIG9X "Software\\Microsoft\\Windows\\CurrentVersion\\RunServices"
 #define SERVICECONFIG "System\\CurrentControlSet\\Services\\%s"
@@ -102,9 +104,9 @@ ap_status_t mpm_service_uninstall(void);
 ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc, 
                               char const* const* argv);
 
-void mpm_signal_service(ap_pool_t *ptemp, char *fname, int signal);
+void mpm_signal_service(ap_pool_t *ptemp, int signal);
 
-void mpm_service_nt_stopping(void);
+void mpm_service_stopping(void);
 
 void mpm_start_console_handler(void);
 void mpm_start_child_console_handler(void);
@@ -118,6 +120,7 @@ extern int ap_extended_status;
 extern void clean_child_exit(int);
 
 API_EXPORT(void) ap_start_shutdown(void);
+API_EXPORT(void) ap_start_restart(int gracefully);
 
 void setup_signal_names(char *prefix);
 void signal_parent(int type);

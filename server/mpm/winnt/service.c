@@ -85,7 +85,6 @@
 #include "httpd.h"
 #include "http_conf_globals.h"
 #include "http_log.h"
-#include "ap_mpm.h"
 #include "mpm_winnt.h"
 
 char *service_name = NULL;
@@ -118,6 +117,73 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
  */
 
 
+/* exit() for Win32 is macro mapped (horrible, we agree) that allows us 
+ * to catch the non-zero conditions and inform the console process that
+ * the application died, and hang on to the console a bit longer.
+ *
+ * The macro only maps for http_main.c and other sources that include
+ * the service.h header, so we best assume it's an error to exit from
+ * _any_ other module.
+ *
+ * If real_exit_code is reset to 0, it will not be set or trigger this
+ * behavior on exit.  All service and child processes are expected to
+ * reset this flag to zero to avoid undesireable side effects.
+ */
+int real_exit_code = 1;
+
+void hold_console_open_on_error(void)
+{
+    HANDLE hConIn;
+    HANDLE hConErr;
+    DWORD result;
+    time_t start;
+    time_t remains;
+    char *msg = "Note the errors or messages above, "
+                "and press the <ESC> key to exit.  ";
+    CONSOLE_SCREEN_BUFFER_INFO coninfo;
+    INPUT_RECORD in;
+    char count[16];
+    
+    if (!real_exit_code)
+        return;
+    hConIn = GetStdHandle(STD_INPUT_HANDLE);
+    hConErr = GetStdHandle(STD_ERROR_HANDLE);
+    if ((hConIn == INVALID_HANDLE_VALUE) || (hConErr == INVALID_HANDLE_VALUE))
+        return;
+    if (!WriteConsole(hConErr, msg, strlen(msg), &result, NULL) || !result)
+        return;
+    if (!GetConsoleScreenBufferInfo(hConErr, &coninfo))
+        return;
+    if (!SetConsoleMode(hConIn, ENABLE_MOUSE_INPUT | 0x80))
+        return;
+        
+    start = time(NULL);
+    do
+    {
+        while (PeekConsoleInput(hConIn, &in, 1, &result) && result)
+        {
+            if (!ReadConsoleInput(hConIn, &in, 1, &result) || !result)
+                return;
+            if ((in.EventType == KEY_EVENT) && in.Event.KeyEvent.bKeyDown 
+                    && (in.Event.KeyEvent.uChar.AsciiChar == 27))
+                return;
+            if (in.EventType == MOUSE_EVENT 
+                    && (in.Event.MouseEvent.dwEventFlags == DOUBLE_CLICK))
+                return;
+        }
+        remains = ((start + 30) - time(NULL)); 
+        sprintf (count, "%d...", remains);
+        if (!SetConsoleCursorPosition(hConErr, coninfo.dwCursorPosition))
+            return;
+        if (!WriteConsole(hConErr, count, strlen(count), &result, NULL) 
+                || !result)
+            return;
+    }
+    while ((remains > 0) && WaitForSingleObject(hConIn, 1000) != WAIT_FAILED);
+}
+
+static BOOL  die_on_logoff = FALSE;
+
 static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg, 
                                                 WPARAM wParam, LPARAM lParam)
 {
@@ -126,7 +192,8 @@ static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg,
  * a signal WM_ENDSESSION. We clean up by signaling Apache
  * to shut down, and idle until Apache's primary thread quits.
  */
-    if ((msg == WM_ENDSESSION) && (lParam != ENDSESSION_LOGOFF))
+    if ((msg == WM_ENDSESSION) 
+            && (die_on_logoff || (lParam != ENDSESSION_LOGOFF)))
     {
         signal_parent(0);
 	if (wParam)
@@ -137,16 +204,21 @@ static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg,
     return (DefWindowProc(hWnd, msg, wParam, lParam));
 }
 
-static DWORD WINAPI monitor_service_9x_thread(LPVOID initEvent)
+static DWORD WINAPI monitor_service_9x_thread(void *service_name)
 {
-/* When running on Windows 9x, the ConsoleCtrlHandler is _NOT_ 
- * called when the system is shutdown.  So create an invisible 
- * window to watch for the WM_ENDSESSION message, and watch for
- * the WM_CLOSE message to shut the window down.
- */
+    /* When running as a service under Windows 9x, there is no console
+     * window present, and no ConsoleCtrlHandler to call when the system 
+     * is shutdown.  If the WatchWindow thread is created with a NULL
+     * service_name argument, then the ...SystemMonitor window class is
+     * used to create the "Apache" window to watch for logoff and shutdown.
+     * If the service_name is provided, the ...ServiceMonitor window class
+     * is used to create the window named by the service_name argument,
+     * and the logoff message is ignored.
+     */
     WNDCLASS wc;
     HWND hwndMain;
-
+    MSG msg;
+    
     wc.style         = CS_GLOBALCLASS;
     wc.lpfnWndProc   = monitor_service_9x_proc; 
     wc.cbClsExtra    = 0;
@@ -156,62 +228,57 @@ static DWORD WINAPI monitor_service_9x_thread(LPVOID initEvent)
     wc.hCursor       = NULL;
     wc.hbrBackground = NULL;
     wc.lpszMenuName  = NULL;
-    wc.lpszClassName = "ApacheWin9xServiceMonitor";
+    if (service_name)
+	wc.lpszClassName = "ApacheWin95ServiceMonitor";
+    else
+	wc.lpszClassName = "ApacheWin95SystemMonitor";
  
-    if (RegisterClass(&wc)) 
+    die_on_logoff = service_name ? FALSE : TRUE;
+
+    if (!RegisterClass(&wc)) 
     {
-        /* Create an invisible window */
-        hwndMain = CreateWindow(wc.lpszClassName, display_name, 
- 	                        WS_OVERLAPPEDWINDOW & ~WS_VISIBLE, 
-                                CW_USEDEFAULT, CW_USEDEFAULT, 
-                                CW_USEDEFAULT, CW_USEDEFAULT, 
-                                NULL, NULL, NULL, NULL);
-        if (hwndMain)
-        {
-            MSG msg;
-            /* If we succeed, eliminate the console window.
-             * Signal the parent we are all set up, and
-             * watch the message queue while the window lives.
-             */
-            FreeConsole();
-            SetEvent((HANDLE) initEvent);
-            while (GetMessage(&msg, NULL, 0, 0)) 
-            {
-                if (msg.message == WM_CLOSE)
-                    DestroyWindow(hwndMain); 
-                else {
-	            TranslateMessage(&msg);
-	            DispatchMessage(&msg);
-                }
-            }
-            globdat.service_thread = 0;
-            return(0);
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), 
+                     NULL, "Could not register window class for WatchWindow");
+        SetEvent(globdat.signal_monitor);
+        globdat.service_thread_id = 0;
+        return 0;
+    }
+    
+    /* Create an invisible window */
+    hwndMain = CreateWindow(wc.lpszClassName, 
+                            service_name ? (char *) service_name : "Apache",
+ 	                    WS_OVERLAPPEDWINDOW & ~WS_VISIBLE, 
+                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 
+                            CW_USEDEFAULT, NULL, NULL, NULL, NULL);
+                            
+    if (!hwndMain)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), 
+                     NULL, "Could not create WatchWindow");
+        SetEvent(globdat.signal_monitor);
+        globdat.service_thread_id = 0;
+        return 0;
+    }
+
+    /* If we succeed, eliminate the console window.
+     * Signal the parent we are all set up, and
+     * watch the message queue while the window lives.
+     */
+    FreeConsole();
+    SetEvent((HANDLE) globdat.signal_monitor);
+    while (GetMessage(&msg, NULL, 0, 0)) 
+    {
+        if (msg.message == WM_CLOSE)
+            DestroyWindow(hwndMain); 
+        else {
+	    TranslateMessage(&msg);
+	    DispatchMessage(&msg);
         }
     }
-    /* We failed or are soon to die... 
-     * we won't need this much longer 
-     */
-    SetEvent(globdat.signal_monitor);
-    globdat.service_thread = 0;
-    return(0);
+    globdat.service_thread_id = 0;
+    return 0;
 }
 
-void service_9x_stopped(void)
-{
-    /* Still have a thread & window to clean up, so signal now */
-    if (globdat.service_thread)
-    {
-        PostThreadMessage(globdat.service_thread_id, WM_CLOSE, 0, 0);
-        // TODO: Test Possible (30 second) deadlock if we are shutting down
-        WaitForSingleObject(globdat.service_thread, 30000);
-    }
-
-    /* When the service quits, remove it from the 
-       system service table */
-    RegisterServiceProcess(0, 0);
-
-    return;
-}
 
 static BOOL CALLBACK console_control_handler(DWORD ctrl_type)
 {
@@ -246,20 +313,19 @@ static BOOL CALLBACK console_control_handler(DWORD ctrl_type)
     return FALSE;
 }
 
+
 static void stop_console_handler(void)
 {
     SetConsoleCtrlHandler(console_control_handler, FALSE);
 }
 
+
 void mpm_start_console_handler(void)
 {
-    // TODO: Win9x will ignore the CLOSE and SHUTDOWN events,
-    //       we don't get to see them... possible solution in
-    //       psdk docs "Reading Input Buffer Events", by using
-    //       the menu item therein.
     SetConsoleCtrlHandler(console_control_handler, TRUE);
     atexit(stop_console_handler);
 }
+
 
 /* Special situation - children of services need to mind their
  * P's & Q's and wait quietly, ignoring the mean OS signaling
@@ -293,10 +359,12 @@ static BOOL CALLBACK child_control_handler(DWORD ctrl_type)
     return FALSE;
 }
 
+
 static void stop_child_console_handler(void)
 {
     SetConsoleCtrlHandler(child_control_handler, FALSE);
 }
+
 
 void mpm_start_child_console_handler(void)
 {
@@ -305,11 +373,6 @@ void mpm_start_child_console_handler(void)
     }
     else
     {
-        // TODO: We really need to play the RegisterServiceProcess 
-        //       game if this is the child of a Win9x service process
-        //       We also have a huge problem here.  This won't handle
-        //       the close window, but if we FreeConsole() to detach,
-        //       the Win9x console will ALWAYS close.  ick.
         SetConsoleCtrlHandler(child_control_handler, TRUE);
         atexit(stop_child_console_handler);
     }
@@ -325,7 +388,7 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
     static int checkPoint = 1;
     int rv = APR_SUCCESS;
     
-    if(globdat.hServiceStatus)
+    if (globdat.hServiceStatus)
     {
         if (currentState == SERVICE_RUNNING)
             globdat.ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
@@ -334,9 +397,7 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
         
         globdat.ssStatus.dwCurrentState = currentState;
         globdat.ssStatus.dwWin32ExitCode = exitCode;
-        if(waitHint)
-            globdat.ssStatus.dwWaitHint = waitHint;
-
+        
         if ( ( currentState == SERVICE_RUNNING ) ||
              ( currentState == SERVICE_STOPPED ) )
         {
@@ -344,24 +405,107 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
             globdat.ssStatus.dwCheckPoint = 0;
         }
         else
+        {
+            if(waitHint)
+                globdat.ssStatus.dwWaitHint = waitHint;
             globdat.ssStatus.dwCheckPoint = ++checkPoint;
-
+        }
         rv = SetServiceStatus(globdat.hServiceStatus, &globdat.ssStatus);
-
     }
     return(rv);
 }
+
 
 /* handle the SCM's ControlService() callbacks to our service */
 
 static VOID WINAPI service_nt_ctrl(DWORD dwCtrlCode)
 {
     if (dwCtrlCode == SERVICE_CONTROL_STOP)
-        /* Reports our status change itself */
-        signal_parent(0);
+    {
+        ap_start_shutdown();
+        globdat.ssStatus.dwCurrentState = SERVICE_STOP_PENDING;
+        ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 3000);
+        return;
+    }
+    if (dwCtrlCode == SERVICE_APACHE_RESTART)
+    {
+        ap_start_restart(1);
+        globdat.ssStatus.dwCurrentState = SERVICE_START_PENDING;
+        ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 3000);
+        return;
+    }
     
     ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 0);            
 }
+
+
+long __stdcall service_stderr_thread(LPVOID hPipe)
+{
+    HANDLE hPipeRead = (HANDLE) hPipe;
+    HANDLE hEventSource;
+    char errbuf[256];
+    char *errmsg = errbuf;
+    char *errarg[9];
+    DWORD errlen = 0;
+    DWORD errres;
+    HKEY hk;
+    
+    errarg[0] = "The Apache service named";
+    errarg[1] = display_name;
+    errarg[2] = "reported the following error:\r\n>>>";
+    errarg[3] = errmsg;
+    errarg[4] = "<<<\r\n before the error.log file could be opened.\r\n";
+    errarg[5] = "More information may be available in the error.log file.";
+    errarg[6] = NULL;
+    errarg[7] = NULL;
+    errarg[8] = NULL;
+    
+    /* What are we going to do in here, bail on the user?  not. */
+    if (!RegCreateKey(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services"
+                      "\\EventLog\\Application\\Apache Service", &hk)) 
+    {
+        /* The stock message file */
+        char *netmsgkey = "%SystemRoot%\\System32\\netmsg.dll";
+        DWORD dwData = EVENTLOG_ERROR_TYPE | EVENTLOG_WARNING_TYPE | 
+                       EVENTLOG_INFORMATION_TYPE; 
+ 
+        RegSetValueEx(hk, "EventMessageFile", 0, REG_EXPAND_SZ,
+                          (LPBYTE) netmsgkey, strlen(netmsgkey) + 1);
+        
+        RegSetValueEx(hk, "TypesSupported", 0, REG_DWORD,
+                          (LPBYTE) &dwData, sizeof(dwData));
+        RegCloseKey(hk);
+    }
+
+    hEventSource = RegisterEventSource(NULL, "Apache Service");
+
+    while (ReadFile(hPipeRead, errmsg, 1, &errres, NULL) && (errres == 1))
+    {
+        if ((errmsg > errbuf) || !isspace(*errmsg))
+        {
+            ++errlen;
+            ++errmsg;
+            if ((*(errmsg - 1) == '\n') || (errlen == sizeof(errbuf) - 1))
+            {
+                while (errlen && isspace(errbuf[errlen - 1]))
+                    --errlen;
+                errbuf[errlen] = '\0';
+
+                /* Generic message: '%1 %2 %3 %4 %5 %6 %7 %8 %9'
+                 * The event code in netmsg.dll is 3299
+                 */
+                ReportEvent(hEventSource, EVENTLOG_ERROR_TYPE, 0, 
+                            3299, NULL, 9, 0, errarg, NULL);
+                errmsg = errbuf;
+                errlen = 0;
+            }
+        }
+    }
+
+    CloseHandle(hPipeRead);
+    return 0;
+}
+
 
 /* service_nt_main_fn is outside of the call stack and outside of the
  * primary server thread... so now we _really_ need a placeholder!
@@ -371,6 +515,15 @@ extern ap_array_header_t *mpm_new_argv;
 
 static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 {
+    HANDLE waitfor[2];
+    HANDLE hCurrentProcess;
+    HANDLE hPipeRead = NULL;
+    HANDLE hPipeWrite = NULL;
+    HANDLE hPipeReadDup;
+    HANDLE thread;
+    DWORD  threadid;
+    SECURITY_ATTRIBUTES sa = {0};  
+    
     /* args and service names live in the same pool */
     mpm_service_set_name(mpm_new_argv->cont, argv[0]);
 
@@ -381,8 +534,8 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 
     if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, GetLastError(), NULL,
-                     "Failure registering service handler");
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), 
+                     NULL, "Failure registering service handler");
         PulseEvent(globdat.signal_monitor);
         return;
     }
@@ -391,6 +544,46 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
                         NO_ERROR,              // exit code
                         3000);                 // wait hint, 3 seconds more
     
+    /* Create a pipe to send stderr messages to the system error log */
+    hCurrentProcess = GetCurrentProcess();
+    if (CreatePipe(&hPipeRead, &hPipeWrite, &sa, 0)) 
+    {
+        if (DuplicateHandle(hCurrentProcess, hPipeRead, hCurrentProcess,
+                            &hPipeReadDup, 0, FALSE, DUPLICATE_SAME_ACCESS))
+        {
+            CloseHandle(hPipeRead);
+            hPipeRead = hPipeReadDup;
+            thread = CreateThread(NULL, 0, service_stderr_thread, 
+                                  (LPVOID) hPipeRead, 0, &threadid);
+            if (thread)
+            {
+                int fh;
+                FILE *fl;
+                CloseHandle(thread);
+            	fflush(stderr);
+		SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
+				
+                fh = _open_osfhandle((long) STD_ERROR_HANDLE, 
+                                     _O_WRONLY | _O_BINARY);
+                dup2(fh, STDERR_FILENO);
+                fl = _fdopen(STDERR_FILENO, "wcb");
+                memcpy(stderr, fl, sizeof(FILE));
+            }
+            else
+            {
+                CloseHandle(hPipeRead);
+                CloseHandle(hPipeWrite);
+                hPipeWrite = NULL;
+            }            
+        }
+        else
+        {
+            CloseHandle(hPipeRead);
+            CloseHandle(hPipeWrite);
+            hPipeWrite = NULL;
+        }            
+    }
+
     /* We need to append all the command arguments passed via StartService() 
      * to our running service... which just got here via the SCM...
      * but we hvae no interest in argv[0] for the mpm_new_argv list.
@@ -417,15 +610,16 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     /* Let the main thread continue now... but hang on to the
      * signal_monitor event so we can take further action
      */
-    PulseEvent(globdat.signal_monitor);
+    SetEvent(globdat.signal_monitor);
 
-    // TODO: Wait on mpm_thread as well!!!
-    //       Hey, we could even add a timeout during startup
-    //       to tickle the SCM every second or few till we finish.
-    WaitForSingleObject(globdat.signal_monitor, INFINITE);
-    
-    /* This function only returns when we are killed */
+    waitfor[0] = globdat.signal_monitor;
+    waitfor[1] = globdat.mpm_thread;
+    WaitForMultipleObjects(2, waitfor, FALSE, INFINITE);
+    /* The process is ready to terminate, or already has */
+
+    CloseHandle(hPipeWrite);
 }
+
 
 DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 {
@@ -441,46 +635,30 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
     {
         /* This is a genuine failure of the SCM. */
         rv = GetLastError();
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      "Error starting service control dispatcher");
     }
 
-    globdat.service_thread = 0;
+    globdat.service_thread_id = 0;
     return (rv);
 }
 
-void mpm_service_nt_stopping(void)
-{
-    ReportStatusToSCMgr(SERVICE_STOP_PENDING, // service state
-                        NO_ERROR,             // exit code
-                        1000);                // wait hint
-}
-
-static void service_nt_stopped(void)
-{
-    ReportStatusToSCMgr(SERVICE_STOPPED,    // service state
-                        NO_ERROR,           // exit code
-                        0);                 // wait hint
-
-    /* Cause the instant closure of the service_nt_main_fn */
-    SetEvent(globdat.signal_monitor);
-}
 
 ap_status_t mpm_service_set_name(ap_pool_t *p, char *name)
 {
     char *key_name;
     
-    // TODO: the display name might have been modified in the registry...
-    //       Win9x could walk for DisplayName in the services entries
     service_name = ap_palloc(p, strlen(name) + 1);
     ap_collapse_spaces(service_name, name);
     key_name = ap_psprintf(p, SERVICECONFIG, service_name);
     if (ap_registry_get_value(p, key_name, "DisplayName", &display_name) == APR_SUCCESS)
         return APR_SUCCESS;
 
+    /* Take the given literal name if there is no service entry */
     display_name = ap_pstrdup(p, name);
     return APR_NOTFOUND;
 }
+
 
 ap_status_t mpm_merge_service_args(ap_pool_t *p, 
                                    ap_array_header_t *args, 
@@ -527,47 +705,81 @@ ap_status_t mpm_merge_service_args(ap_pool_t *p,
     return APR_SUCCESS;
 }
 
+
+void service_stopped(void)
+{
+    /* Still have a thread & window to clean up, so signal now */
+    if (globdat.service_thread_id)
+    {
+        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+        {
+            ReportStatusToSCMgr(SERVICE_STOPPED,    // service state
+                                NO_ERROR,           // exit code
+                                0);                 // wait hint
+
+            /* Cause the service_nt_main_fn to complete */
+            SetEvent(globdat.signal_monitor);
+        }
+        else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
+        {
+            RegisterServiceProcess(0, 0);
+            PostThreadMessage(globdat.service_thread_id, WM_CLOSE, 0, 0);
+        }
+
+        WaitForSingleObject(globdat.service_thread, 5000);
+        CloseHandle(globdat.service_thread);
+    }
+}
+
+
 ap_status_t mpm_service_to_start(void)
 {
+    HANDLE waitfor[2];
+
+    globdat.mpm_thread = GetCurrentThread();
+    
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
         globdat.signal_monitor = CreateEvent(NULL, FALSE, FALSE, NULL);
-        globdat.service_thread = CreateThread(NULL, 0, 
-                                              service_nt_dispatch_thread, 
-                                              NULL, 0, 
-                                              &globdat.service_thread_id);
-    
-        // TODO: Add service_thread to this wait as well
-        WaitForSingleObject(globdat.signal_monitor, 45000);
-
-        if (!globdat.service_thread)
-            return APR_ENOTHREAD;
-
-        /* SetEvent(globdat.signal_monitor) to clean up the SCM thread */
-        atexit(service_nt_stopped);
+        if (globdat.signal_monitor)
+            globdat.service_thread = CreateThread(NULL, 0, 
+                                                  service_nt_dispatch_thread, 
+                                                  NULL, 0, 
+                                                  &globdat.service_thread_id);
     }
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
     {
-        globdat.mpm_thread = GetCurrentThread();
-    
-        if (RegisterServiceProcess(0, 1)) {
-            globdat.signal_monitor = CreateEvent(NULL, FALSE, FALSE, NULL);
+        if (!RegisterServiceProcess(0, 1)) 
+            return GetLastError();
+
+        globdat.signal_monitor = CreateEvent(NULL, FALSE, FALSE, NULL);
+        if (globdat.signal_monitor)
             globdat.service_thread = CreateThread(NULL, 0,
                                                   monitor_service_9x_thread, 
-                                                  NULL, 0, 
+                                                  (LPVOID) service_name, 0, 
                                                   &globdat.service_thread_id);
-            // TODO: Add service_thread to the wait as well.
-            WaitForSingleObject(globdat.signal_monitor, 30000);
-        }
-
-        if (!globdat.service_thread)
-            return APR_ENOTHREAD;
-
-        /* PostThreadMessage to clean up the hidden monitor window */
-        atexit(service_9x_stopped);
     }
+
+    if (globdat.signal_monitor && globdat.service_thread) 
+    {
+        waitfor[0] = globdat.signal_monitor;
+        waitfor[1] = globdat.service_thread;
+    
+        /* SetEvent(globdat.signal_monitor) to clean up the SCM thread */
+        if (WaitForMultipleObjects(2, waitfor, FALSE, 10000) != WAIT_OBJECT_0) {
+            CloseHandle(globdat.service_thread);
+            return APR_ENOTHREAD;
+        }
+    }
+
+    if (globdat.service_thread_id)
+        atexit(service_stopped);
+    else if (globdat.service_thread)
+        CloseHandle(globdat.service_thread);
+
     return APR_SUCCESS;
 }
+
 
 ap_status_t mpm_service_started(void)
 {
@@ -579,6 +791,16 @@ ap_status_t mpm_service_started(void)
     }
     return APR_SUCCESS;
 }
+
+
+void mpm_service_stopping(void)
+{
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+        ReportStatusToSCMgr(SERVICE_STOP_PENDING, // service state
+                            NO_ERROR,             // exit code
+                            3000);                // wait hint
+}
+
 
 ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc, 
                                 char const* const* argv)
@@ -593,7 +815,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
     if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
     {
         ap_status_t rv = GetLastError();
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                      "GetModuleFileName failed");
         return rv;
     }
@@ -608,7 +830,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
                                      SC_MANAGER_ALL_ACCESS);
         if (!schSCManager) {
             rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "Failed to open the WinNT service manager");
             return (rv);
         }
@@ -637,7 +859,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
         if (!schService) 
         {
             rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, 
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "Failed to create WinNT Service Profile");
             CloseServiceHandle(schSCManager);
             return (rv);
@@ -653,7 +875,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
                                  exe_path, service_name);
         rv = ap_registry_store_value(SERVICECONFIG9X, service_name, launch_cmd);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, 
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "%s: Failed to add the RunServices registry entry.", 
                          display_name);
             return (rv);
@@ -662,7 +884,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
         ap_snprintf(key_name, sizeof(key_name), SERVICECONFIG, service_name);
         rv = ap_registry_store_value(key_name, "DisplayName", display_name);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, 
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                          "%s: Failed to store DisplayName in the registry.", 
                          display_name);
             return (rv);
@@ -674,7 +896,7 @@ ap_status_t mpm_service_install(ap_pool_t *ptemp, int argc,
     ap_snprintf(key_name, sizeof(key_name), SERVICEPARAMS, service_name);
     rv = ap_registry_store_array(ptemp, key_name, "ConfigArgs", argc, argv);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
                      "%s: Failed to store the ConfigArgs in the registry.", 
                      display_name);
         return (rv);
@@ -700,7 +922,7 @@ ap_status_t mpm_service_uninstall(void)
                                      SC_MANAGER_ALL_ACCESS);
         if (!schSCManager) {
             rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "Failed to open the WinNT service manager.");
             return (rv);
         }
@@ -709,10 +931,11 @@ ap_status_t mpm_service_uninstall(void)
 
         if (!schService) {
            rv = GetLastError();
-           ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+           ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
 			"%s: OpenService failed", display_name);
            return (rv);
         }
+        
         /* assure the service is stopped before continuing
          *
          * This may be out of order... we might not be able to be
@@ -725,7 +948,7 @@ ap_status_t mpm_service_uninstall(void)
 
         if (DeleteService(schService) == 0) {
             rv = GetLastError();
-	    ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to delete the service.", display_name);
             return (rv);
         }
@@ -737,11 +960,11 @@ ap_status_t mpm_service_uninstall(void)
     {
         printf("Removing the %s service\n", display_name);
 
-        /* TODO: assure the service is stopped before continuing*/
+        /* TODO: assure the service is stopped before continuing */
 
         if (ap_registry_delete_value(SERVICECONFIG9X, service_name)) {
             rv = GetLastError();
-	    ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+	    ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to remove the RunServices registry "
                          "entry.", display_name);
             return (rv);
@@ -752,7 +975,7 @@ ap_status_t mpm_service_uninstall(void)
         if (ap_registry_delete_key(key_name)) 
         {
             rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to remove the service config from the "
                          "registry.", display_name);
             return (rv);
@@ -761,6 +984,29 @@ ap_status_t mpm_service_uninstall(void)
     printf("The %s service has been removed successfully.\n", display_name);
     return APR_SUCCESS;
 }
+
+
+/* signal_service_transition is a simple thunk to signal the service
+ * and monitor it's successful transition.  If the signal passed is 0,
+ * then the caller is assumed to already have performed some service 
+ * operation to be monitored (such as StartService), and no actual
+ * ControlService signal is sent.
+ */
+
+static int signal_service_transition(SC_HANDLE schService, DWORD signal, DWORD pending, DWORD complete)
+{
+    if (signal && !ControlService(schService, signal, &globdat.ssStatus)) 
+        return FALSE;
+    
+    do {
+        Sleep(1000);    
+        if (!QueryServiceStatus(schService, &globdat.ssStatus))
+            return FALSE;
+    } while (globdat.ssStatus.dwCurrentState == pending);
+        
+    return (globdat.ssStatus.dwCurrentState == complete);
+}
+
 
 ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc, 
                               char const* const* argv)
@@ -780,7 +1026,7 @@ ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc,
                                      SC_MANAGER_ALL_ACCESS);
         if (!schSCManager) {
             rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "Failed to open the WinNT service manager");
             return (rv);
         }
@@ -789,48 +1035,37 @@ ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc,
                                  SERVICE_START | SERVICE_QUERY_STATUS);
         if (!schService) {
             rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to open the service.", display_name);
             CloseServiceHandle(schSCManager);
             return (rv);
         }
 
+        if (QueryServiceStatus(schService, &globdat.ssStatus)
+            && (globdat.ssStatus.dwCurrentState == SERVICE_RUNNING)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, 0, NULL,
+                         "Service %s is already started!", display_name);
+            CloseServiceHandle(schService);
+            CloseServiceHandle(schSCManager);
+            return 0;
+        }
+        
         argc += 1;
         start_argv = ap_palloc(ptemp, argc * sizeof(char**));
         start_argv[0] = service_name;
-        memcpy(start_argv + 1, argv, (argc - 1) * sizeof(char**));
+        if (argc > 1)
+            memcpy(start_argv + 1, argv, (argc - 1) * sizeof(char**));
         
-        rv = APR_SUCCESS;
-        if (StartService(schService, argc, start_argv))
-        {
-            globdat.ssStatus.dwCurrentState = SERVICE_START_PENDING;
-            while(globdat.ssStatus.dwCurrentState == SERVICE_START_PENDING) {
-                Sleep(1000);
-                if (!QueryServiceStatus(schService, &globdat.ssStatus)) {
-                    rv = GetLastError();
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                                 "%s: QueryServiceStatus failed.", 
-                                 display_name);
-                    break;
-                }                
-            }
-            // TODO: Something informative, plus a time out, would be nice.
-        }
-        else
-        {
+        rv = APR_EINIT;
+        if (StartService(schService, argc, start_argv)
+            && signal_service_transition(schService, 0, /* test only */
+                                         SERVICE_START_PENDING, 
+                                         SERVICE_RUNNING))
+                rv = APR_SUCCESS;
+
+        if (rv != APR_SUCCESS)
             rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                         "%s: StartService failed.", display_name);
-        }
-
-        if ((rv == APR_SUCCESS )
-                && (globdat.ssStatus.dwCurrentState != SERVICE_RUNNING))
-        {
-            rv = globdat.ssStatus.dwCurrentState;
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                         "%s: StartService failed.", display_name);
-        }
-
+        
         CloseServiceHandle(schService);
         CloseServiceHandle(schSCManager);
     }
@@ -842,6 +1077,15 @@ ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc,
         char *pCommand;
         int i;
 
+        /* Locate the active top level window named service_name
+         * provided the class is ApacheWin95ServiceMonitor
+         */
+        if (FindWindow("ApacheWin95ServiceMonitor", service_name)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, 0, NULL,
+                         "Service %s is already started!", display_name);
+            return 0;
+        }
+
         /* This may not appear intuitive, but Win9x will not allow a process
          * to detach from the console without releasing the entire console.
          * Ergo, we must spawn a new process for the service to get back our
@@ -852,7 +1096,7 @@ ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc,
         if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
         {
             ap_status_t rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "GetModuleFileName failed");
             return rv;
         }
@@ -868,78 +1112,170 @@ ap_status_t mpm_service_start(ap_pool_t *ptemp, int argc,
         si.cb = sizeof(si);
         si.dwFlags     = STARTF_USESHOWWINDOW;
         si.wShowWindow = SW_HIDE;   /* This might be redundant */
-
-        if (!CreateProcess(NULL, pCommand, NULL, NULL, FALSE, 
+        
+        rv = APR_EINIT;
+        if (CreateProcess(NULL, pCommand, NULL, NULL, FALSE, 
                            DETACHED_PROCESS, /* Creation flags */
                            NULL, NULL, &si, &pi)) 
         {
-            rv = GetLastError();
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                         "%s: Failed to create the service process.",
-                         display_name);
-            /* Just in case... */
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-            return (rv);
+            DWORD code;
+            while (GetExitCodeProcess(pi.hProcess, &code) == STILL_ACTIVE) {
+                if (FindWindow("ApacheWin95ServiceMonitor", service_name)) {
+                    rv = APR_SUCCESS;
+                    break;
+                }
+                Sleep (1000);
+            }
         }
-
-        // TODO: We can watch the pi.hProcess and wait to be able to open the
-        //       shutdown Event of pi.dwProcessId... hang around for a minute
-        //       or so on 1 second Sleeps, and declare failure on timeout or
-        //       an invalid pi.hProcess handle.
-        //       However, that isn't the biggest priority right now :-)
+        
+        if (rv != APR_SUCCESS)
+            rv = GetLastError();
         
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
     }    
 
-    if (rv != APR_SUCCESS) {
-        return (rv);
-    }
-
-    printf("The %s service is running.\n", display_name);
-    return APR_SUCCESS;
+    if (rv == APR_SUCCESS)
+        printf("The %s service is running.\n", display_name);
+    else
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                     "%s: Failed to start the service process.",
+                     display_name);
+        
+    return rv;
 }
 
-void mpm_signal_service(ap_pool_t *ptemp, char *fname, int signal)
-{
-    long readpid = 0;
-    char pid_str[10]; /* long enough for a long */
-    const char *pid_fname = ap_server_root_relative(ptemp, fname);
-    ap_file_t *pid_file = NULL;
-    ap_finfo_t finfo;
 
-    if (ap_stat(&finfo, pid_fname, ptemp) == APR_SUCCESS) 
+/* signal is zero to stop, non-zero for restart */
+
+void mpm_signal_service(ap_pool_t *ptemp, int signal)
+{
+    int success = FALSE;
+    
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) 
     {
-        if (ap_open(&pid_file, pid_fname, APR_READ,
-                APR_OS_DEFAULT, ptemp) == APR_SUCCESS) {
-            ap_fgets(pid_str, sizeof(pid_str), pid_file);
-            readpid = atol(pid_str);
-            ap_close(pid_file);
-        }
-        if (!readpid)
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, 
-                         "%s: could not retrieve pid from file %s",
-		         display_name, pid_file);
+        SC_HANDLE   schService;
+        SC_HANDLE   schSCManager;
+
+        schSCManager = OpenSCManager(NULL, NULL, // default machine & database
+                                     SC_MANAGER_ALL_ACCESS);
+        
+        if (!schSCManager) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), NULL,
+                         "Failed to open the NT Service Manager");
             return;
         }
+        
+        schService = OpenService(schSCManager, service_name, 
+                                 SERVICE_ALL_ACCESS);
+
+        if (schService == NULL) {
+            /* Could not open the service */
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), NULL,
+                         "Failed to open the %s Service", display_name);
+            CloseServiceHandle(schSCManager);
+            return;
+        }
+        
+        if (!QueryServiceStatus(schService, &globdat.ssStatus)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, GetLastError(), NULL,
+                         "Query of Service %s failed", display_name);
+            CloseServiceHandle(schService);
+            CloseServiceHandle(schSCManager);
+            return;
+        }
+
+        if (!signal && (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED)) {
+            printf("The %s service is not started.\n", display_name);
+            CloseServiceHandle(schService);
+            CloseServiceHandle(schSCManager);
+            return;
+        }
+        
+        printf("The %s service is %s.\n", display_name, 
+               signal ? "restarting" : "stopping");
+
+        if (!signal)
+            success = signal_service_transition(schService, 
+                                                SERVICE_CONTROL_STOP, 
+                                                SERVICE_STOP_PENDING, 
+                                                SERVICE_STOPPED);
+        else if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED) {
+            mpm_service_start(ptemp, 0, NULL);
+            CloseServiceHandle(schService);
+            CloseServiceHandle(schSCManager);
+            return;
+        }
+        else
+            success = signal_service_transition(schService, 
+                                                SERVICE_APACHE_RESTART, 
+                                                SERVICE_START_PENDING, 
+                                                SERVICE_RUNNING);
+
+        CloseServiceHandle(schService);
+        CloseServiceHandle(schSCManager);
     }
-    else
+    else /* !isWindowsNT() */
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL, 
-                     "%s: could not retrieve pid from file %s",
-		     display_name, pid_file);
-        return;
+        DWORD       service_pid;
+        HANDLE      hwnd;
+        char prefix[20];
+        /* Locate the active top level window named service_name
+         * provided the class is ApacheWin95ServiceMonitor
+         */
+        hwnd = FindWindow("ApacheWin95ServiceMonitor", service_name);
+        if (hwnd && GetWindowThreadProcessId(hwnd, &service_pid))
+            globdat.ssStatus.dwCurrentState = SERVICE_RUNNING;
+        else
+        {
+            globdat.ssStatus.dwCurrentState = SERVICE_STOPPED;
+            if (!signal) {
+                printf("The %s service is not started.\n", display_name);
+                return;
+            }
+        }
+
+        printf("The %s service is %s.\n", display_name, 
+               signal ? "restarting" : "stopping");
+
+        ap_snprintf(prefix, sizeof(prefix), "ap%ld", (long)service_pid);
+        setup_signal_names(prefix);
+
+        if (!signal) 
+        {
+            int ticks = 60;
+            ap_start_shutdown();
+            while (--ticks)
+            {
+                if (!IsWindow(hwnd)) {
+                    success = TRUE;
+                    break;
+                }
+                Sleep(1000);
+            }
+        }
+        else /* !stop */
+        {   
+            /* TODO: Aught to add a little test to the restart logic, and
+             * store the restart counter in the window's user dword.
+             * Then we can hang on and report a successful restart.  But
+             * that's a project for another day.
+             */
+            if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED) {
+                mpm_service_start(ptemp, 0, NULL);
+                return;
+            }
+            else {
+                success = TRUE;
+                ap_start_restart(1);
+            }
+        }
     }
 
-    setup_signal_names(ap_psprintf(ptemp,"ap%d", (int) readpid));
-    signal_parent(signal);
-    if (signal)
-        printf ("Signaled Service %s (pid %ld) to restart.", 
-                display_name, readpid);
+    if (success)
+        printf("The %s service has %s.\n", display_name, 
+               signal ? "restarted" : "stopped");
     else
-        printf ("Signaled Service %s (pid %ld) to stop.", 
-                display_name, readpid);
-    return;
+        printf("Failed to %s the %s service.\n", 
+               signal ? "restart" : "stop", display_name);
 }

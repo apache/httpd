@@ -337,6 +337,12 @@ API_EXPORT(void) ap_start_shutdown(void)
     signal_parent(0);
 }
 
+API_EXPORT(void) ap_start_restart(int gracefully)
+{
+    is_graceful = gracefully;
+    signal_parent(1);
+}
+
 /*
  * Initialise the signal names, in the global variables signal_name_prefix, 
  * signal_restart_name and signal_shutdown_name.
@@ -1724,9 +1730,8 @@ die_now:
     {
         int tmstart = time(NULL);
         
-        if (strcasecmp(signal_arg,"runservice")
-                && (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)) {
-            mpm_service_nt_stopping();
+        if (strcasecmp(signal_arg, "runservice")) {
+            mpm_service_stopping();
         }
         /* Signal each child processes to die */
         for (i = 0; i < current_live_processes; i++) {
@@ -1828,11 +1833,10 @@ void winnt_rewrite_args(process_rec *process)
      * 
      * The end result will look like:
      *
-     * The invocation command ($0)
+     * The invocation command (%0)
      *     The -d serverroot default from the running executable
      *         The requested service's (-n) registry ConfigArgs
-     *             The command line arguments from this process
-     *                 The WinNT SCM's StartService() args
+     *             The WinNT SCM's StartService() args
      */
 
     if (!GetModuleFileName(NULL, fnbuf, sizeof(fnbuf))) {
@@ -1937,7 +1941,16 @@ void winnt_rewrite_args(process_rec *process)
                                              DEFAULT_SERVICE_NAME);
     }
 
-    if (strcasecmp(signal_arg, "install")) /* not -k install */
+    if (!strcasecmp(signal_arg, "install")) /* -k install */
+    {
+        if (service_named == APR_SUCCESS) 
+        {
+            ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
+                 "%s: Service is already installed.", display_name);
+            exit(1);
+        }
+    }
+    else
     {
         if (service_named == APR_SUCCESS) 
         {
@@ -1956,16 +1969,7 @@ void winnt_rewrite_args(process_rec *process)
             exit(1);
         }
     }
-    else /* -k install */
-    {
-        if (service_named == APR_SUCCESS) 
-        {
-            ap_log_error(APLOG_MARK,APLOG_ERR, 0, NULL,
-                 "%s: Service is already installed.", display_name);
-            exit(1);
-        }
-    }
-
+    
     /* Track the args actually entered by the user.
      * These will be used for the -k install parameters, as well as
      * for the -k start service override arguments.
@@ -1983,8 +1987,9 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
      *
      *   -k runservice [WinNT errors logged from rewrite_args]
      *   -k uninstall
+     *   -k stop
      *
-     * in both cases we -don't- care if httpd.conf is error-free
+     * in these cases we -don't- care if httpd.conf has config errors!
      */
     ap_status_t rv;
 
@@ -2000,6 +2005,11 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
     if (!strcasecmp(signal_arg, "uninstall")) {
         rv = mpm_service_uninstall();
         exit(rv);
+    }
+
+    if (!strcasecmp(signal_arg, "stop")) {
+        mpm_signal_service(ptemp, 0);
+        exit(0);
     }
 
     ap_listen_pre_config();
@@ -2023,7 +2033,6 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
      *   -k install
      *   -k start
      *   -k restart
-     *   -k stop
      *   -k runservice [Win95, only once - after we parsed the config]
      *
      * because all of these signals are useful _only_ if there
@@ -2044,22 +2053,8 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
     }
 
     if (!strcasecmp(signal_arg, "restart")) {
-        mpm_signal_service(ptemp, ap_pid_fname, 1);
+        mpm_signal_service(ptemp, 1);
         exit (rv);
-    }
-
-    // TODO: This Stinks - but we needed the ap_pid_fname entry from 
-    //       the config!?!  Find a clean way to get the egg back into
-    //       into the chicken and shove this signal into pre_config
-    //
-    // src/os/win32/main_win32.c had some (possibly buggy) code to
-    // search for just the PidFile entry, but this sounds like a
-    // universally useful function that we ought to wrap into the
-    // main server, not just the Win32 MPM.
-    //
-    if (!strcasecmp(signal_arg, "stop")) {
-        mpm_signal_service(ptemp, ap_pid_fname, 0);
-        exit(0);
     }
 
     if (parent_pid == my_pid) 
