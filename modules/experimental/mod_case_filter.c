@@ -1,4 +1,4 @@
-// Ben messing around...
+/* Ben messing around... */
 
 #include "httpd.h"
 #include "http_config.h"
@@ -43,7 +43,7 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
     apr_bucket *pbktIn;
     apr_bucket_brigade *pbbOut;
 
-    // XXX: is this the most appropriate pool?
+    /* XXX: is this the most appropriate pool? */
     pbbOut=apr_brigade_create(f->r->pool);
     APR_BRIGADE_FOREACH(pbktIn,pbbIn)
 	{
@@ -55,27 +55,28 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
 
 	if(APR_BUCKET_IS_EOS(pbktIn))
 	    {
-	    // XXX: why can't I reuse pbktIn???
+            /* XXX: why can't I reuse pbktIn??? */
 	    apr_bucket *pbktEOS=apr_bucket_eos_create();
 	    APR_BRIGADE_INSERT_TAIL(pbbOut,pbktEOS);
 	    break;
 	    }
 
-	// read
+	/* read */
 	apr_bucket_read(pbktIn,&data,&len,APR_BLOCK_READ);
 
-	// write
+	/* write */
 	buf=apr_palloc(f->r->pool,len);
 	for(n=0 ; n < len ; ++n)
 	    buf[n]=toupper(data[n]);
 
-	// XXX: should we use a heap bucket instead? Or a transient (in
-	// which case we need a separate brigade for each bucket)?
+	/* XXX: should we use a heap bucket instead? Or a transient (in
+	 * which case we need a separate brigade for each bucket)?
+         */
 	pbktOut=apr_bucket_pool_create(buf,len,f->r->pool);
 	APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
 	}
 
-    // XXX: is there any advantage to passing a brigade for each bucket?
+    /* XXX: is there any advantage to passing a brigade for each bucket? */
     return ap_pass_brigade(f->next,pbbOut);
     }
 
