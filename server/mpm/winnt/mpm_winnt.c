@@ -1334,7 +1334,7 @@ static void child_main()
 
     /* Give busy worker threads a chance to service their connections */
     ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
-                 "Child %d: Waiting for %d threads to die.", my_pid, nthreads);
+                 "Child %d: Waiting for %d worker threads to exit.", my_pid, nthreads);
     end_time = time(NULL) + 180;
     while (nthreads) {
         rv = wait_for_many_objects(nthreads, child_handles, end_time - time(NULL));
@@ -1353,7 +1353,7 @@ static void child_main()
         CloseHandle(child_handles[i]);
     }
     ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
-                 "Child %d: All worker threads have ended.", my_pid);
+                 "Child %d: All worker threads have exited.", my_pid);
 
     CloseHandle(allowed_globals.jobsemaphore);
     apr_thread_mutex_destroy(allowed_globals.jobmutex);
