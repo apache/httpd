@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Fix mod_proxy so that it handles chunked transfer-encoding and works
+     with the new input filtering system.  [Justin Erenkrantz]
+
   *) Introduce the MultiviewsMatch directive, to allow the operator
      to be flexible in recognizing Handlers and Filters filename
      extensions as part of the Multiviews matching logic, strict with

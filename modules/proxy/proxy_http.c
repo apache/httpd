@@ -793,27 +793,26 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             (r->status != HTTP_NOT_MODIFIED)) {	/* not 304 */
 
             const char *buf;
-            apr_off_t readbytes;
             if (ap_proxy_liststr((buf = apr_table_get(r->headers_out,
                                   "Transfer-Encoding")), "chunked")) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                          "proxy: Transfer-Encoding Chunked!");
                 apr_table_unset(r->headers_out,"Content-Length");
             }
-            /* if keepalive cancelled, read to EOF */
-            if (p_conn->close) {
-                readbytes = -1;
-            }
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                          "proxy: start body send");
-    
+             
             /*
              * if we are overriding the errors, we cant put the content of the
              * page into the brigade
              */
             if ( (conf->error_override ==0) || r->status < 400 ) {
             /* read the body, pass it to the output filters */
+                apr_off_t readbytes;
+                apr_bucket *e;
+                rp->headers_in = r->headers_out;
+                readbytes = 8192;
                 while (ap_get_brigade(rp->input_filters, 
                                        bb, 
                                       AP_MODE_NONBLOCKING, 
@@ -823,17 +822,22 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                  r->server, "proxy (PID %d): readbytes: %#x",
                                  getpid(), readbytes);
 #endif
-
+                    if (APR_BRIGADE_EMPTY(bb)) {
+                        break;
+                    }
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
                         ap_pass_brigade(r->output_filters, bb);
                 		break;
                     }
+                    e = apr_bucket_flush_create();
+                    APR_BRIGADE_INSERT_TAIL(bb, e);
                     if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
                         /* Ack! Phbtt! Die! User aborted! */
                         p_conn->close = 1;  /* this causes socket close below */
                         break;
                     }
                     apr_brigade_cleanup(bb);
+                    readbytes = 8192;
                 }
             }
             ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
