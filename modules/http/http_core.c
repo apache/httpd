@@ -335,6 +335,7 @@ static void register_hooks(apr_pool_t *p)
     ap_byterange_filter_handle =
         ap_register_output_filter("BYTERANGE", ap_byterange_filter,
                                   AP_FTYPE_PROTOCOL);
+    ap_method_registry_init(p);
 }
 
 module AP_MODULE_DECLARE_DATA http_module = {
