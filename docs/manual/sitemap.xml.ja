@@ -20,6 +20,7 @@
 <title>リリースのメモ</title>
 <page href="upgrading.html">1.3 から 2.0 へのアップグレード</page>
 <page href="new_features_2_0.html">Apache 2.0 の新機能</page>
+<page href="license.html">Apache のライセンス</page>
 </category>
 
 <category id="using">
