@@ -362,6 +362,17 @@ if ($opt_q) {
     print "$result\n";
 }
 
+my $apr_bindir = get_vars("APR_BINDIR");
+
+if (! -x "$apr_bindir/apr-config") {
+    error("$apr_bindir/apr-config not found!");
+    exit(1);
+}
+
+my $libtool = `$apr_bindir/apr-config --installbuilddir`;
+chomp($libtool);
+$libtool = "$libtool/libtool";
+
 if ($opt_c) {
     ##
     ##  SHARED OBJECT COMPILATION
@@ -424,7 +435,7 @@ if ($opt_c) {
         $la =~ s|\.c$|.la|;
         my $o = $s;
         $o =~ s|\.c$|.o|;
-        push(@cmds, "$installbuilddir/libtool $ltflags --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c -o $lo $s && touch $slo");
+        push(@cmds, "$libtool $ltflags --mode=compile $CFG_CC $cflags -I$CFG_INCLUDEDIR $opt -c -o $lo $s && touch $slo");
         unshift(@objs, $lo);
     }
 
@@ -449,13 +460,6 @@ if ($opt_c) {
         $opt .= " -l$opt_l";
     }
 
-    my $apr_bindir = get_vars("APR_BINDIR");
-
-    if (! -x "$apr_bindir/apr-config") {
-        error("$apr_bindir/apr-config not found!");
-        exit(1);
-    }
-
     if ($opt_p == 1) {
         my $apu_bindir = get_vars("APU_BINDIR");
 
@@ -477,7 +481,7 @@ if ($opt_c) {
         $opt .= " -rpath $CFG_LIBEXECDIR -module -avoid-version $apr_ldflags";
     }
 
-    push(@cmds, "$installbuilddir/libtool $ltflags --mode=link $CFG_CC -o $dso_file $opt $lo");
+    push(@cmds, "$libtool $ltflags --mode=link $CFG_CC -o $dso_file $opt $lo");
 
     #   execute the commands
     &execute_cmds(@cmds);
@@ -508,7 +512,7 @@ if ($opt_i or $opt_e) {
         $t =~ s|\.la$|\.so|;
         if ($opt_i) {
 	    push(@cmds, "$installbuilddir/instdso.sh SH_LIBTOOL='" .
-                 "$installbuilddir/libtool' $f $CFG_LIBEXECDIR");
+                 "$libtool' $f $CFG_LIBEXECDIR");
 	    push(@cmds, "chmod 755 $CFG_LIBEXECDIR/$t");
         }
 
