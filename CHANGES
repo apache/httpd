@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) Fix a long delay with CGI requests and keepalive connections on
+     AIX.  [Jeff Trawick]
+
   *) mod_autoindex: Add 'XHTML' option in order to allow switching between
      HTML 3.2 and XHTML 1.0 output. PR 23747.  [André Malo]
 

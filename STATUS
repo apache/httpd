@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/12 15:54:35 $]
+Last modified at [$Date: 2004/01/12 18:31:30 $]
 
 Release:
 
@@ -297,12 +297,6 @@ PATCHES TO BACKPORT FROM 2.1
         modules/experimental/mod_mem_cache.c r1.97,1.99
         modules/experimental/cache_cache.c r1.5
       +1: jwoolley, bnicholes, rederpj
-
-    * Fix a long delay with CGI requests and keepalive connections on
-      AIX.
-        modules/generators/mod_cgid.c r1.159
-      jerenkrantz: Could we do this on other platforms, too?
-      +1: trawick, stoddard, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
