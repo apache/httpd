@@ -225,7 +225,7 @@ build for your OS.
       public servers).
       See htdocs/manual/misc/perf-tuning.html.
      
-     USE_PTHREADS_SERIALIZED_ACCEPT:
+     USE_PTHREAD_SERIALIZED_ACCEPT:
       Use POSIX mutexes to serialize accept.
       See htdocs/manual/misc/perf-tuning.html.
 
