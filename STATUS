@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/17 15:43:55 $]
+Last modified at [$Date: 2003/05/17 16:39:19 $]
 
 Release:
 
@@ -194,13 +194,13 @@ PATCHES TO PORT FROM 2.1
       paths included in VPATH builds; this change drops a number of -I'ncluded
       module paths containing no .h files.
       configure.in r1.251
-      +1: wrowe, nd
+      +1: wrowe, nd, jerenkrantz
 
     * Fix a VPATH build install bug - the special.mk file was never installed 
       (because we didn't rewrite it to the VPATH from the sourcepath), so copy 
       any sourcepath\build\*.mk files along with the vpath\build\*.mk files.
       Makefile.in r1.130, 1.131 (undid minor breakage)
-      +1: wrowe, nd
+      +1: wrowe, nd, jerenkrantz
 
     * Assure that we block on the read BIO when we invoke the read BIO for both
       first-use cases (via ssl_io_input_add_filter) and when we are writing and
@@ -208,13 +208,13 @@ PATCHES TO PORT FROM 2.1
       cases are always blocking. PR: 19242
 
       Submitted by: David Deaves <David.Deaves@dd.id.au>, William Rowe
-      modules/ssl/ssl_engine_io.c r1.106
-      +1: wrowe
+      modules/ssl/ssl_engine_io.c r1.106, r1.107 (minor breakage)
+      +1: wrowe, jerenkrantz
       
     * Add another check for already compressed content in mod_deflate.
       PR 19913.
       modules/filters/mod_deflate.c: r1.34
-      +1: nd, trawick
+      +1: nd, trawick, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
