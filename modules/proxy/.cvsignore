@@ -2,6 +2,7 @@ Debug
 Release
 Makefile
 *.lo
+*.plg
 *.slo
 *.la
 *.so
