@@ -402,7 +402,7 @@ typedef struct {
     apr_hash_t     *tPublicCert;
     apr_hash_t     *tPrivateKey;
 #ifdef HAVE_ENGINE_INIT
-    char           *szCryptoDevice;
+    const char     *szCryptoDevice;
 #endif
     struct {
         void *pV1, *pV2, *pV3, *pV4, *pV5, *pV6, *pV7, *pV8, *pV9, *pV10;
