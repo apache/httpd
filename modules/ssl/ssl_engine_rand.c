@@ -151,12 +151,12 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
 
 #if XXX_SBENTROPY_SOLVED
                 /*
-                 * XXX: This is entirely borked, SCOREBOARD_SIZE < 1024
+                 * XXX: This is entirely borked, sizeof(scoreboard) < 1024
                  *
                  * seed in an 1KB extract of the current scoreboard
                  */
                 if (ap_scoreboard_image != NULL) {
-                    n = ssl_rand_choosenum(0, SCOREBOARD_SIZE-1024-1);
+                    n = ssl_rand_choosenum(0, sizeof(scoreboard)-1024-1);
                     RAND_seed(((unsigned char *)ap_scoreboard_image)+n, 1024);
                     nDone += 1024;
                 }
