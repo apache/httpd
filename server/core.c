@@ -3812,10 +3812,6 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     return APR_SUCCESS;
 }
 
-/* Default filter.  This filter should almost always be used.  Its only job
- * is to send the headers if they haven't already been sent, and then send
- * the actual data.
- */
 #define MAX_IOVEC_TO_WRITE 16
 
 /* Optional function coming from mod_logio, used for logging of output
