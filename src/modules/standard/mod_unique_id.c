@@ -245,7 +245,10 @@ static void unique_id_child_init(server_rec *s, pool *p)
         cur_unique_id.counter = 0;
     }
     else {
-        cur_unique_id.counter = tv.tv_usec;
+	/* Some systems have very low variance on the low end of their
+	 * system counter, defend against that.
+	 */
+        cur_unique_id.counter = tv.tv_usec / 10;
     }
 #else
     cur_unique_id.counter = 0;
