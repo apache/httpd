@@ -1016,10 +1016,9 @@ static int cgid_handler(request_rec *r)
             AP_BRIGADE_INSERT_TAIL(bb, b);
             ap_pass_brigade(r->filters, bb);
         } 
-        apr_close(tempsock); 
     } 
 
-    if (tempsock && nph) { 
+    if (nph) {
         bb = ap_brigade_create(r->pool);
         b = ap_bucket_create_pipe(tempsock);
         AP_BRIGADE_INSERT_TAIL(bb, b);
@@ -1027,6 +1026,8 @@ static int cgid_handler(request_rec *r)
         AP_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->filters, bb);
     } 
+
+    apr_close(tempsock);
 
     return OK; /* NOT r->status, even if it has changed. */ 
 } 
