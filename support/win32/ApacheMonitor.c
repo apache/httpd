@@ -1411,10 +1411,10 @@ int WINAPI WinMain(HINSTANCE hInstance,
     InitCommonControls();
     g_hInstance = hInstance;
     g_hwndMain = CreateMainWindow(hInstance);
+    g_bUiTaskbarCreated = RegisterWindowMessage("TaskbarCreated");
     InitializeCriticalSection(&g_stcSection);
     if (g_hwndMain != NULL)
     {
-        g_bUiTaskbarCreated = RegisterWindowMessage("TaskbarCreated");
         while (GetMessage(&msg, NULL, 0, 0) == TRUE) 
         {
             TranslateMessage(&msg);
