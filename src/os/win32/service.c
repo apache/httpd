@@ -670,11 +670,92 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
 }
 
 
-void service_set_status(int status)
+/* Set the service description regardless of platform.
+ * We revert to set_service_description_string on NT/9x, the
+ * very long way so any Apache management program can grab the
+ * description.  This would be bad on Win2000, since it wouldn't
+ * notify the service control manager of the name change.
+ */
+static void set_service_description_string(const char *description)
 {
-    ReportStatusToSCMgr(status, NO_ERROR, 3000);
+    char szPath[MAX_PATH];
+    HKEY hkey;
+
+    /* Create/Find the Service key that Monitor Applications iterate */
+    ap_snprintf(szPath, sizeof(szPath), 
+                "SYSTEM\\CurrentControlSet\\Services\\%s", globdat.name);
+    ap_remove_spaces(szPath, szPath);
+    if (RegCreateKey(HKEY_LOCAL_MACHINE, szPath, &hkey) != ERROR_SUCCESS) {
+        return;
+    }
+
+    /* Attempt to set the Description value for our service */
+    RegSetValueEx(hkey, "Description", 0, REG_SZ,  
+                  (unsigned char *) description, 
+                  strlen(description) + 1);
+    RegCloseKey(hkey);
 }
 
+
+/* ChangeServiceConfig2() prototype:
+ */
+typedef WINADVAPI BOOL (*CSD_T)(SC_HANDLE, DWORD, LPCVOID);
+
+
+/* Windows 2000 alone supports ChangeServiceConfig2 in order to
+ * register our server_version string... so we need some fixups
+ * to avoid binding to that function if we are on WinNT/9x.
+ * Fall back on set_service_description_string if we fail.
+ */
+void service_set_status(int status)
+{
+    const char *full_description;
+    SC_HANDLE schSCManager;
+    CSD_T ChangeServiceDescription;
+    HANDLE hwin2000scm;
+    BOOL ret;
+
+    /* Nothing to do if we are a console
+     */
+    if (!is_service)
+        return;
+
+    ReportStatusToSCMgr(status, NO_ERROR, 3000);
+
+    if (status != SERVICE_RUNNING)
+        return;
+
+    /* Time to fix up the description, upon each successful restart
+     */
+    full_description = ap_get_server_version();
+    hwin2000scm = LoadLibrary("ADVAPI32.DLL");
+    if (!hwin2000scm) {
+        set_service_description_string(full_description);
+        return;
+    }
+    ChangeServiceDescription = (CSD_T) GetProcAddress(hwin2000scm, 
+                                                      "ChangeServiceConfig2A");
+    if (!ChangeServiceDescription) {
+        FreeLibrary(hwin2000scm);
+        set_service_description_string(full_description);
+        return;
+    }
+    schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+    if (schSCManager) {
+        SC_HANDLE schService = OpenService(schSCManager, globdat.name,
+                                           SERVICE_ALL_ACCESS);
+        if (schService) {
+            ret = ChangeServiceDescription(schService,
+                                           SERVICE_CONFIG_DESCRIPTION,
+                                           &full_description);
+            CloseServiceHandle(schService);
+        }
+        CloseServiceHandle(schSCManager);
+    }
+    if (!ret)
+        set_service_description_string(full_description);
+    FreeLibrary(hwin2000scm);
+}
 
 
 //
@@ -732,46 +813,8 @@ VOID WINAPI service_ctrl(DWORD dwCtrlCode)
 }
 
 
-typedef WINADVAPI BOOL (*CSD_T)(SC_HANDLE, DWORD, LPCVOID);
-    
-/* Windows 2000 only supports ChangeServiceConfig2 in order to
- * register our server_version string... so we need some fixups
- * to avoid binding to that function if we are on WinNT/9x
- */
-void ReportDescriptionToSCM()
-{
-    const char *full_description = ap_get_server_version();
-    SC_HANDLE schSCManager;
-    CSD_T ChangeServiceDescription;    
-    HANDLE hwin2000scm = LoadLibrary("ADVAPI32.DLL");
-    if (!hwin2000scm) 
-        return;
-    ChangeServiceDescription = (CSD_T) GetProcAddress(hwin2000scm, 
-                                                      "ChangeServiceConfig2A");
-    if (!ChangeServiceDescription) {
-        FreeLibrary(hwin2000scm);
-        return;
-    }
-    schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
-    if (schSCManager) {
-        SC_HANDLE schService = OpenService(schSCManager, globdat.name,
-                                           SERVICE_ALL_ACCESS);
-        if (schService) {
-            /* In advapi32 -only- on Win2000 */
-            ChangeServiceDescription(schService,
-                                     SERVICE_CONFIG_DESCRIPTION,
-                                     &full_description);
-            CloseServiceHandle(schService);
-        }
-        CloseServiceHandle(schSCManager);
-    }
-    FreeLibrary(hwin2000scm);
-}
-
-
 int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
 {
-    static int onceStarted = 1;
     static int firstTime = 1;
     static int checkPoint = 1;
     int rv;
@@ -808,10 +851,6 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
             globdat.ssStatus.dwCheckPoint = ++checkPoint;
 
         rv = SetServiceStatus(globdat.hServiceStatus, &globdat.ssStatus);
-
-        if (currentState == SERVICE_RUNNING && onceStarted) {
-            onceStarted = 0;
-        }
     }
     return(1);
 }

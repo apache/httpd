@@ -1,4 +1,10 @@
 Changes with Apache 1.3.20
+
+  *) Populate the Win32 HKLM\System\CurrentControlSet\Services\[apachesvc]
+     key with the Description value of the running server across all Win32
+     platforms, including NT, ME and 9x.  This value is the server_version
+     string including loaded modules.  [William Rowe]
+
   *) Fix ndbm.h include problems with various Linux distributions and 
      brain-dead glibc >= 2.1, which sometimes have ndbm.h in a
      non-standard db1/ subdir. PR#6929
