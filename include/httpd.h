@@ -82,7 +82,6 @@ extern "C" {
 #include "apr_lib.h"
 #include "apr_time.h"
 #include "apr_network_io.h"
-#include "buff.h"
 #include "ap_mmn.h"
 
 #ifdef HAVE_NETINET_IN_H
@@ -833,7 +832,6 @@ struct conn_rec {
     /* Information about the connection itself */
 
     /** Connection to the client */
-    BUFF *client;
     apr_socket_t *client_socket;
 
     /* Who is the client? */

@@ -494,14 +494,10 @@ void ap_time_process_request(int child_num, int status)
 /*
 static void increment_counts(int child_num, request_rec *r)
 {
-    long int bs = 0;
     short_score *ss;
 
     ap_sync_scoreboard_image();
     ss = &ap_scoreboard_image->servers[child_num];
-
-    if (r->sent_bodyct)
-	ap_bgetopt(r->connection->client, BO_BYTECT, &bs);
 
 #ifdef HAVE_TIMES
     times(&ss->times);
@@ -509,9 +505,9 @@ static void increment_counts(int child_num, request_rec *r)
     ss->access_count++;
     ss->my_access_count++;
     ss->conn_count++;
-    ss->bytes_served += (unsigned long) bs;
-    ss->my_bytes_served += (unsigned long) bs;
-    ss->conn_bytes += (unsigned long) bs;
+    ss->bytes_served += r->bytes_sent;
+    ss->my_bytes_served += r->bytes_sent;
+    ss->conn_bytes += r->bytes_sent;
 
     put_scoreboard_info(child_num, ss);
 }

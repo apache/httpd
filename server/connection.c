@@ -274,8 +274,6 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
 			    const struct sockaddr_in *saddr, long id)
 {
     conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
-    BUFF *conn_io = ap_bcreate(p, B_RDWR);
-    ap_bpush_socket(conn_io, inout);
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
@@ -288,7 +286,6 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
     conn->local_addr = *saddr;
     apr_get_local_ipaddr(&conn->local_ip, inout);
     conn->base_server = server;
-    conn->client = conn_io;
     conn->client_socket = inout;
 
     conn->remote_addr = *remaddr;
