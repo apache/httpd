@@ -1,4 +1,4 @@
-# Makefile for Windows NT and Windows 95/98
+# Makefile for Windows NT and Windows 95/98/2000
 
 # Targets are:
 #   _apacher   - build Apache in Release mode
