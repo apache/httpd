@@ -141,17 +141,4 @@
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 10000
 #endif
 
-/* Backlog for the Unix Domain sockets used to pass requests between
- * children.
- */
-#ifndef DEFAULT_PERCHILD_LISTENBACKLOG
-#define DEFAULT_PERCHILD_LISTENBACKLOG 100
-#endif
-
-/* Default name for the unix domain sockets
- */
-#ifndef DEFAULT_PERCHILD_SOCKET
-#define DEFAULT_PERCHILD_SOCKET "logs/perchild_socket"
-#endif
-
 #endif /* AP_MPM_DEFAULT_H */
