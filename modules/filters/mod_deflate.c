@@ -340,7 +340,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         /* force-gzip will just force it out regardless if the browser
          * can actually do anything with it.
          */
-        if (apr_table_get(r->subprocess_env, "force-gzip") != NULL) {
+        if (!apr_table_get(r->subprocess_env, "force-gzip")) {
             const char *accepts;
             /* if they don't have the line, then they can't play */
             accepts = apr_table_get(r->headers_in, "Accept-Encoding");
