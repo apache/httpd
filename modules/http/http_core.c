@@ -2617,8 +2617,11 @@ static apr_status_t sendfile_it_all(conn_rec   *c,
                 ++hdtr->headers;
             }
             else {
+                char *iov_base = (char *)hdtr->headers[0].iov_base;
+
                 hdtr->headers[0].iov_len -= tmplen;
-       (char *) hdtr->headers[0].iov_base += tmplen;
+                iov_base += tmplen;
+                hdtr->headers[0].iov_base = iov_base;
                 tmplen = 0;
             }
         }
@@ -2643,8 +2646,11 @@ static apr_status_t sendfile_it_all(conn_rec   *c,
                 ++hdtr->trailers;
             }
             else {
+                char *iov_base = (char *)hdtr->trailers[0].iov_base;
+
                 hdtr->trailers[0].iov_len -= tmplen;
-        (char *)hdtr->trailers[0].iov_base += tmplen;
+                iov_base += tmplen;
+                hdtr->trailers[0].iov_base = iov_base;
                 tmplen = 0;
             }
         }
