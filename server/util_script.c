@@ -487,8 +487,12 @@ API_EXPORT(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	/* Delete terminal (CR?)LF */
 
 	p = strlen(w);
+	     /* Indeed, the host's '\n':
+	        '\012' for UNIX; '\015' for MacOS; '\025' for OS/390
+	         -- whatever the script generates.
+	     */                                  
 	if (p > 0 && w[p - 1] == '\n') {
-	    if (p > 1 && w[p - 2] == '\015') {
+	    if (p > 1 && w[p - 2] == CR) {
 		w[p - 2] = '\0';
 	    }
 	    else {

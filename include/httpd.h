@@ -514,9 +514,26 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define INCLUDES_MAGIC_TYPE "text/x-server-parsed-html"
 #define INCLUDES_MAGIC_TYPE3 "text/x-server-parsed-html3"
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
+#ifdef CHARSET_EBCDIC
+#define ASCIITEXT_MAGIC_TYPE_PREFIX "text/x-ascii-" /* Text files whose content-type starts with this are passed thru unconverted */
+#endif /*CHARSET_EBCDIC*/         
 
+/* Just in case your linefeed isn't the one the other end is expecting. */
+#ifndef CHARSET_EBCDIC
 #define LF 10
 #define CR 13
+#define CRLF "\015\012"
+#else /* CHARSET_EBCDIC */
+/* For platforms using the EBCDIC charset, the transition ASCII->EBCDIC is done
+ * in the buff package (bread/bputs/bwrite).  Everywhere else, we use
+ * "native EBCDIC" CR and NL characters. These are therefore
+ * defined as
+ * '\r' and '\n'.
+ */
+#define CR '\r'
+#define LF '\n'
+#define CRLF "\r\n"
+#endif /* CHARSET_EBCDIC */                                   
 
 /* Possible values for request_rec.read_body (set by handling module):
  *    REQUEST_NO_BODY          Send 413 error if message has any body

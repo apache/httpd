@@ -179,7 +179,7 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
     i = 0;
     memset(buffer, '\0', sizeof(buffer));
     /*
-     * Note that the strchr function below checks for 10 instead of '\n'
+     * Note that the strchr function below checks for \012 instead of '\n'
      * this allows it to work on both ASCII and EBCDIC machines.
      */
     while((cp = strchr(buffer, '\012')) == NULL && i < sizeof(buffer) - 1) {
