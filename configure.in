@@ -162,7 +162,7 @@ case $host in
       LIBTOOL="$my_libtool \$(LTFLAGS)"
       libtoolversion=`$my_libtool --version`
       case $libtoolversion in
-          *1.4*)
+          *1.[[45]]*)
               SH_LIBTOOL='$(LIBTOOL)'
               SHLTCFLAGS="-prefer-pic"
               LTCFLAGS="-prefer-non-pic -static"

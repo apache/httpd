@@ -1,5 +1,7 @@
 Changes with Apache 2.0.46
 
+  *) configure.in: Play nice with libtool-1.5. [Wilfredo Sanchez]
+
   *) If mod_mime_magic does not know the content-type, do not attempt to
      guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
 
