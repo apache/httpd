@@ -53,7 +53,7 @@
 # <http://www.apache.org/>.
 #
 
-require 5.003;
+require 5.004;
 use strict;
 package apxs;
 
