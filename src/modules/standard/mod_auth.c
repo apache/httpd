@@ -279,9 +279,10 @@ static int check_user_access(request_rec *r)
          */
 	if (strcmp(w, "file-owner") == 0) {
 #if defined(WIN32) || defined(NETWARE) || defined(OS2)
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-                          "'Require file-user' not supported on this platform");
-            return HTTP_UNAUTHORIZED;
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
+                          "'Require file-user' not supported "
+                          "on this platform, ignored");
+            continue;
 #else
             struct passwd *pwent;
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
@@ -307,32 +308,33 @@ static int check_user_access(request_rec *r)
                     return OK;
                 }
                 else {
-                    return HTTP_UNAUTHORIZED;
+                    continue;
                 }
             }
 #endif
         }
 	if (strcmp(w, "file-group") == 0) {
 #if defined(WIN32) || defined(NETWARE) || defined(OS2)
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
-                          "'Require file-group' not supported on this platform");
-            return HTTP_UNAUTHORIZED;
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
+                          "'Require file-group' not supported "
+                          "on this platform, ignored");
+            continue;
 #else
             struct group *grent;
             if (sec->auth_grpfile == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
+                ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r,
                               "no AuthGroupFile, so 'file-group' "
-                              "requirement fails for file '%s'",
+                              "requirement cannot succeed for file '%s'",
                               r->filename);
-                return HTTP_UNAUTHORIZED;
+                continue;
             }
             if (grpstatus == NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, r,
                               "authenticated user '%s' not a member of "
                               "any groups, so 'file-group' requirement "
-                              "fails for file '%s'",
+                              "cannot succeed for file '%s'",
                               user, r->filename);
-                return HTTP_UNAUTHORIZED;
+                continue;
             }
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, r,
                           "checking for 'group' access for file '%s'",
@@ -357,7 +359,7 @@ static int check_user_access(request_rec *r)
                     return OK;
                 }
                 else {
-                    return HTTP_UNAUTHORIZED;
+                    continue;
                 }
             }
 #endif
