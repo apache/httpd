@@ -1,0 +1,141 @@
+This is the current status of running indent on the source code.
+If you are about to edit a file, mark it as RESERVED below with your name.
+If a file has already been indent'd, or doesn't need it, mark it as DONE
+
+./main:				STATUS
+   alloc.c
+   alloc.h
+   buff.c
+   buff.h
+   conf.h
+   dummy.c
+   explain.c
+   explain.h
+   fnmatch.c
+   fnmatch.h
+   http_bprintf.c
+   http_conf_globals.h
+   http_config.c
+   http_config.h
+   http_core.c
+   http_core.h
+   http_log.c
+   http_log.h
+   http_main.c
+   http_main.h
+   http_protocol.c
+   http_protocol.h
+   http_request.c
+   http_request.h
+   httpd.h
+   md5.h
+   md5c.c
+   multithread.h
+   os-inline.c
+   os.h
+   rfc1413.c
+   rfc1413.h
+   scoreboard.h
+   util.c
+   util_date.c
+   util_date.h
+   util_md5.c
+   util_md5.h
+   util_script.c
+   util_script.h
+   util_snprintf.c
+
+./modules/example:
+   mod_example.c
+
+./modules/proxy:
+   mod_proxy.c
+   mod_proxy.h
+   proxy_cache.c
+   proxy_connect.c
+   proxy_ftp.c
+   proxy_http.c
+   proxy_util.c
+
+./modules/standard:
+   mod_access.c
+   mod_actions.c
+   mod_alias.c
+   mod_asis.c
+   mod_auth.c
+   mod_auth_anon.c
+   mod_auth_db.c
+   mod_auth_dbm.c
+   mod_autoindex.c
+   mod_cern_meta.c
+   mod_cgi.c
+   mod_digest.c
+   mod_dir.c
+   mod_dld.c
+   mod_env.c
+   mod_expires.c
+   mod_headers.c
+   mod_imap.c
+   mod_include.c
+   mod_info.c
+   mod_log_agent.c
+   mod_log_config.c
+   mod_log_referer.c
+   mod_mime.c
+   mod_mime.h
+   mod_mime_magic.c
+   mod_negotiation.c
+   mod_rewrite.c
+   mod_rewrite.h
+   mod_setenvif.c
+   mod_speling.c
+   mod_status.c
+   mod_unique_id.c
+   mod_userdir.c
+   mod_usertrack.c
+
+./os/unix:
+   os-inline.c
+   os.c
+   os.h
+
+./os/win32:
+   getopt.c
+   getopt.h
+   mod_dll.c
+   mod_isapi.c
+   modules.c
+   multithread.c
+   os.c
+   os.h
+   passwd.c
+   passwd.h
+   readdir.c
+   readdir.h
+   service.c
+   service.h
+   util_win32.c
+
+./regex:			(we are not doing this one, right?)
+   cclass.h			DONE
+   cname.h			DONE
+   debug.c			DONE
+   engine.c			DONE
+   main.c			DONE
+   regcomp.c			DONE
+   regerror.c			DONE
+   regex.h			DONE
+   regex2.h			DONE
+   regexec.c			DONE
+   regfree.c			DONE
+   split.c			DONE
+   utils.h			DONE
+
+./support:
+   cls.c
+   htdigest.c
+   htpasswd.c
+   logresolve.c
+   rotatelogs.c
+   suexec.c
+   suexec.h
