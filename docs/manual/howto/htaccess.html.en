@@ -25,7 +25,7 @@ changes on a per-directory basis.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#when">When (not) to use .htaccess files</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#how">How directives are applied</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#auth">Authentication example</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server side includes example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes example</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI example</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Troubleshooting</a></li>
 </ul></div>
@@ -44,17 +44,16 @@ changes on a per-directory basis.</p>
     particular document directory, and the directives apply to that
     directory, and all subdirectories thereof.</p>
 
-<div class="note">
-    <p>Note: If you want to call your <code>.htaccess</code> file something
-    else, you can change the name of the file using the <code><a href="../mod/core.html#accessfilename">AccessFileName</a></code>
-    directive. For example, if you would rather call the file
-    <code>.config</code> then you can put the following in your server
-    configuration file:</p>
+    <div class="note"><h3>Note:</h3>
+      <p>If you want to call your <code>.htaccess</code> file something
+      else, you can change the name of the file using the <code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code> directive. For example,
+      if you would rather call the file <code>.config</code> then you
+      can put the following in your server configuration file:</p>
 
-    <div class="example"><p><code>
-    AccessFileName .config
-    </code></p></div>
-</div>
+      <div class="example"><p><code>
+        AccessFileName .config
+      </code></p></div>
+    </div>
 
     <p>What you can put in these files is determined by the <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
     directive. This directive specifies, in categories, what directives
@@ -67,32 +66,28 @@ changes on a per-directory basis.</p>
     <p>For example, if you look at the documentation for the <code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code>
     directive, you will find that it is permitted in <code>.htaccess</code>
     files. (See the Context line in the directive summary.) The <a href="../mod/directive-dict.html#Context">Override</a> line reads
-    "<code>FileInfo</code>". Thus, you must have at least
-    "<code>AllowOverride FileInfo</code>" in order for this directive to be
+    <code>FileInfo</code>. Thus, you must have at least
+    <code>AllowOverride FileInfo</code> in order for this directive to be
     honored in <code>.htaccess</code> files.</p>
 
-<div class="example"><h3>Example:</h3><table>
+    <div class="example"><h3>Example:</h3><table>
         <tr>
           <td><a href="../mod/directive-dict.html#Context">Context:</a></td>
-
           <td>server config, virtual host, directory, .htaccess</td>
         </tr>
 
         <tr>
           <td><a href="../mod/directive-dict.html#Override">Override:</a></td>
-
           <td>FileInfo</td>
         </tr>
       </table></div>
 
-
     <p>If you are unsure whether a particular directive is permitted in a
     <code>.htaccess</code> file, look at the documentation for that
-    directive, and check the Context line for ".htaccess."</p>
+    directive, and check the Context line for ".htaccess".</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="when" id="when">When (not) to use .htaccess files</a></h2>
-    
 
     <p>In general, you should never use <code>.htaccess</code> files unless
     you don't have access to the main server configuration file. There is,
@@ -145,8 +140,9 @@ changes on a per-directory basis.</p>
 
     <p>And so, for each file access out of that directory, there are 4
     additional file-system accesses, even if none of those files are
-    present. (Note that this would only be the case if .htaccess files were
-    enabled for /, which is not usually the case.)</p>
+    present. (Note that this would only be the case if
+    <code>.htaccess</code> files were enabled for <code>/</code>, which
+    is not usually the case.)</p>
 
     <p>The second consideration is one of security. You are permitting
     users to modify server configuration, which may result in changes over
@@ -155,13 +151,15 @@ changes on a per-directory basis.</p>
     privileges than they need will lead to additional technical support
     requests. Make sure you clearly tell your users what level of
     privileges you have given them. Specifying exactly what you have set
-    <code>AllowOverride</code> to, and pointing them to the relevant
-    documentation, will save yourself a lot of confusion later.</p>
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> to, and pointing them
+    to the relevant documentation, will save yourself a lot of confusion
+    later.</p>
 
-    <p>Note that it is completely equivalent to put a .htaccess file in a
-    directory <code>/www/htdocs/example</code> containing a directive, and
-    to put that same directive in a Directory section <code>&lt;Directory
-    /www/htdocs/example&gt;</code> in your main server configuration:</p>
+    <p>Note that it is completely equivalent to put a <code>.htaccess</code>
+    file in a directory <code>/www/htdocs/example</code> containing a
+    directive, and to put that same directive in a Directory section
+    <code>&lt;Directory /www/htdocs/example&gt;</code> in your main server
+    configuration:</p>
 
     <p><code>.htaccess</code> file in <code>/www/htdocs/example</code>:</p>
 
@@ -172,9 +170,11 @@ changes on a per-directory basis.</p>
 
     <div class="example"><h3>Section from your <code>httpd.conf</code>
     file</h3><p><code>
-          &lt;Directory /www/htdocs/example&gt;<br />
-           AddType text/example .exm<br />
-           &lt;/Directory&gt;
+      &lt;Directory /www/htdocs/example&gt;<br />
+      <span class="indent">
+        AddType text/example .exm<br />
+      </span>
+      &lt;/Directory&gt;
     </code></p></div>
 
     <p>However, putting this configuration in your server configuration
@@ -183,7 +183,8 @@ changes on a per-directory basis.</p>
     requested.</p>
 
     <p>The use of <code>.htaccess</code> files can be disabled completely
-    by setting the <code>AllowOverride</code> directive to "none"</p>
+    by setting the <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
+    directive to <code>none</code>:</p>
 
     <div class="example"><p><code>
       AllowOverride None
@@ -237,10 +238,10 @@ changes on a per-directory basis.</p>
     common misconception that you are required to use
     <code>.htaccess</code> files in order to implement password
     authentication. This is not the case. Putting authentication directives
-    in a <code>&lt;Directory&gt;</code> section, in your main server
-    configuration file, is the preferred way to implement this, and
-    <code>.htaccess</code> files should be used only if you don't have
-    access to the main server configuration file. See <a href="#when">above</a> for a discussion of when you should and should
+    in a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    section, in your main server configuration file, is the preferred way
+    to implement this, and <code>.htaccess</code> files should be used only
+    if you don't have access to the main server configuration file. See <a href="#when">above</a> for a discussion of when you should and should
     not use <code>.htaccess</code> files.</p>
 
     <p>Having said that, if you still think you need to use a
@@ -267,7 +268,7 @@ changes on a per-directory basis.</p>
     more complete discussion of authentication and authorization.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server side includes example</a></h2>
+<h2><a name="ssi" id="ssi">Server Side Includes example</a></h2>
 
     <p>Another common use of <code>.htaccess</code> files is to enable
     Server Side Includes for a particular directory. This may be done with
@@ -308,8 +309,9 @@ changes on a per-directory basis.</p>
        SetHandler cgi-script
     </code></p></div>
 
-    <p>Note that <code>AllowOverride Options</code> must be in effect for
-    these directives to have any effect.</p>
+    <p>Note that <code>AllowOverride Options</code> and <code>AllowOverride
+    FileInfo</code> must both be in effect for these directives to have any
+    effect.</p>
 
     <p>Please see the <a href="cgi.html">CGI tutorial</a> for a more
     complete discussion of CGI programming and configuration.</p>
@@ -332,11 +334,11 @@ changes on a per-directory basis.</p>
 
     <p>If, on the other hand, you are getting server errors when trying to
     access documents, check your Apache error log. It will likely tell you
-    that the directive used in your .htaccess file is not permitted.
-    Alternately, it may tell you that you had a syntax error, which you
-    will then need to fix.</p>
+    that the directive used in your <code>.htaccess</code> file is not
+    permitted. Alternately, it may tell you that you had a syntax error,
+    which you will then need to fix.</p>
 
-  </div></div>
+</div></div>
 <div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
