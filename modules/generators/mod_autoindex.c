@@ -1151,7 +1151,7 @@ static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
     p->ascending = (ap_toupper(direction) == D_ASCENDING);
 
     if (autoindex_opts & FANCY_INDEXING) {
-	request_rec *rr = ap_sub_req_lookup_file(name, r);
+        request_rec *rr = ap_sub_req_lookup_file(name, r);
 
 	if (rr->finfo.st_mode != 0) {
 	    p->lm = rr->finfo.st_mtime;
@@ -1521,7 +1521,6 @@ static int index_directory(request_rec *r,
 	ap_pclosedir(r->pool, d);
 	return 0;
     }
-    ap_hard_timeout("send directory", r);
 
     /* Spew HTML preamble */
 
@@ -1603,7 +1602,6 @@ static int index_directory(request_rec *r,
     emit_tail(r, find_readme(autoindex_conf, r),
 	      autoindex_opts & SUPPRESS_PREAMBLE);
 
-    ap_kill_timeout(r);
     return 0;
 }
 

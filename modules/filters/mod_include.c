@@ -2400,8 +2400,6 @@ static int send_parsed_file(request_rec *r)
      * expect to be signal-ready to SIGALRM.  There is no clean way to
      * fix this, except to put alarm support into BUFF. -djg
      */
-    ap_hard_timeout("send SSI", r);
-
 #ifdef CHARSET_EBCDIC
     /* XXX:@@@ Is the generated/included output ALWAYS in text/ebcdic format? */
     ap_bsetflag(r->connection->client, B_EBCDIC2ASCII, 1);
@@ -2415,7 +2413,6 @@ static int send_parsed_file(request_rec *r)
 	    NESTED_INCLUDE_MAGIC);
     }
 
-    ap_kill_timeout(r);
     return OK;
 }
 
