@@ -28,7 +28,7 @@ then
   echo "ERROR: The current directory contains no valid Apache distribution."
   echo "Please change the directory to the top level directory of a freshly"
   echo "unpacked Apache 2.0 source distribution and re-execute the script"
-  echo "'./build/bindbuild.sh'." 
+  echo "'./build/binbuild.sh'." 
   exit 1;
 fi
 
