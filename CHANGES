@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_deflate: Check also err_headers_out for an already set
+     Content-Encoding: gzip header. This prevents gzip compressed content
+     from a CGI script from being compressed once more. PR 17797.
+     [André Malo]
+
   *) Forward port: Escape special characters (especially control
      characters) in mod_log_config to make a clear distinction between
      client-supplied strings (with special characters) and server-side
