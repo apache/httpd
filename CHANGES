@@ -1,4 +1,6 @@
 Changes with Apache 2.0.33-dev
+  *) mod-include: make it handle flush'es and fix the 'false-alarm'
+     [Justin Everkrantz, Brian Pane, Ian Holsman]
 
   *) ap_get_*_filter_handle() functions to allow 3rd party modules
      to lookup filter handles so they can bypass the filter name

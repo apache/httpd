@@ -366,7 +366,14 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             break;
         }
 
-        if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+        if (APR_BUCKET_IS_FLUSH(dptr)) {
+            apr_bucket *old = dptr; 
+            dptr = APR_BUCKET_NEXT(old);
+            APR_BUCKET_REMOVE(old);
+            ctx->output_now = 1;
+            ctx->output_flush = 1;
+        }
+        else if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
             ctx->output_now = 1;
         }
         else if (ctx->bytes_parsed > 0) {
@@ -430,9 +437,11 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             }
 
             /* False alarm... 
-             * send out the unmatched part
              */
-            if (ctx->parse_pos > 0) {
+            /* send out the unmatched part
+             */
+             
+            if ((ctx->parse_pos > 0) && (ctx->bytes_parsed == 0)) {
                 apr_bucket *tmp_buck;
                 tmp_buck = apr_bucket_pool_create(apr_pstrndup(ctx->pool,
                                                                ctx->start_seq,
@@ -441,6 +450,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                                                   ctx->pool);
                 APR_BUCKET_INSERT_BEFORE(dptr, tmp_buck);
             }
+
+
             ctx->state = PRE_HEAD;
         }
 
@@ -501,6 +512,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         }
         dptr = APR_BUCKET_NEXT(dptr);
     } while (dptr != APR_BRIGADE_SENTINEL(bb));
+          
+  
     return NULL;
 }
 
@@ -519,7 +532,14 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         if (APR_BUCKET_IS_EOS(dptr)) {
             break;
         }
-        if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+        if (APR_BUCKET_IS_FLUSH(dptr)) {
+            apr_bucket *old = dptr; 
+            dptr = APR_BUCKET_NEXT(old);
+            APR_BUCKET_REMOVE(old);
+            ctx->output_now = 1;
+            ctx->output_flush = 1;
+        }
+        else if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
             ctx->output_now = 1;
         }
         else if (ctx->bytes_parsed > 0) {
@@ -2888,12 +2908,17 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                       (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD))) {
                 /* Send the large chunk of pre-tag bytes...  */
                 tag_and_after = apr_brigade_split(*bb, tmp_dptr);
+                if (ctx->output_flush) {
+                    APR_BRIGADE_INSERT_TAIL(*bb, apr_bucket_flush_create());
+                }
+
                 rv = ap_pass_brigade(f->next, *bb);
                 if (rv != APR_SUCCESS) {
                     return rv;
                 }
                 *bb  = tag_and_after;
                 dptr = tmp_dptr;
+                ctx->output_flush = 0;
                 ctx->bytes_parsed = 0;
                 ctx->output_now = 0;
             }
@@ -2936,6 +2961,7 @@ static apr_status_t send_parsed_content(apr_bucket_brigade **bb,
                     if (rv != APR_SUCCESS) {
                         return rv;
                     }
+                    ctx->output_flush = 0;
                     ctx->output_now = 0;
                 }
             }
