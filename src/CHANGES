@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Fix document "hyperlink" for dso.html in src/Configuration.tmpl
+     [Ralf S. Engelschall] PR#2674
+
   *) Modify mod_rewrite to update the Vary response field if it Does
      Anything based upon request fields.  [Ken Coar]  PR#1644
 
