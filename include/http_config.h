@@ -145,34 +145,34 @@ typedef union {
 /** This configuration directive takes a flag (on/off) as a argument*/
 # define AP_FLAG	func.flag
 
-/** method of decalring a directive with no arguments */
+/** method of declaring a directive with no arguments */
 # define AP_INIT_NO_ARGS(directive, func, mconfig, where, help) \
     { directive, { .no_args=func }, mconfig, where, RAW_ARGS, help }
-/** method of decalring a directive with raw argument parsing */
+/** method of declaring a directive with raw argument parsing */
 # define AP_INIT_RAW_ARGS(directive, func, mconfig, where, help) \
     { directive, { .raw_args=func }, mconfig, where, RAW_ARGS, help }
-/** method of decalring a directive which takes 1 argument */
+/** method of declaring a directive which takes 1 argument */
 # define AP_INIT_TAKE1(directive, func, mconfig, where, help) \
     { directive, { .take1=func }, mconfig, where, TAKE1, help }
-/** method of decalring a directive which takes multiple arguments */
+/** method of declaring a directive which takes multiple arguments */
 # define AP_INIT_ITERATE(directive, func, mconfig, where, help) \
     { directive, { .take1=func }, mconfig, where, ITERATE, help }
-/** method of decalring a directive which takes 2 arguments */
+/** method of declaring a directive which takes 2 arguments */
 # define AP_INIT_TAKE2(directive, func, mconfig, where, help) \
     { directive, { .take2=func }, mconfig, where, TAKE2, help }
-/** method of decalring a directive which takes 1 or 2 arguments */
+/** method of declaring a directive which takes 1 or 2 arguments */
 # define AP_INIT_TAKE12(directive, func, mconfig, where, help) \
     { directive, { .take2=func }, mconfig, where, TAKE12, help }
-/** method of decalring a directive which takes multiple 2 arguments */
+/** method of declaring a directive which takes multiple 2 arguments */
 # define AP_INIT_ITERATE2(directive, func, mconfig, where, help) \
     { directive, { .take2=func }, mconfig, where, ITERATE2, help }
-/** method of decalring a directive which takes 2 or 3 arguments */
+/** method of declaring a directive which takes 2 or 3 arguments */
 # define AP_INIT_TAKE23(directive, func, mconfig, where, help) \
     { directive, { .take3=func }, mconfig, where, TAKE23, help }
-/** method of decalring a directive which takes 3 arguments */
+/** method of declaring a directive which takes 3 arguments */
 # define AP_INIT_TAKE3(directive, func, mconfig, where, help) \
     { directive, { .take3=func }, mconfig, where, TAKE3, help }
-/** method of decalring a directive which takes a flag (on/off) as a argument*/
+/** method of declaring a directive which takes a flag (on/off) as a argument*/
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
     { directive, { .flag=func }, mconfig, where, FLAG, help }
 
