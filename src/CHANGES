@@ -1,5 +1,12 @@
 Changes with Apache 1.3b6
 
+  *) Now all configuration files support Unix-style line-continuation via 
+     the trailing backslash ("\") character. This enables us to write down
+     complex or just very long directives in a more readable way.  The
+     backslash character has to be really the last character before the
+     newline and it has not been prefixed by another (escaping) backslash.
+     [Ralf S. Engelschall]
+
   *) When using ProxyPass the ?querystring was not passed correctly.
      [Joel Truher <truher@wired.com>]
 

@@ -65,18 +65,9 @@ Committed Code Changes:
     * back out USE_PTHREAD_SERIALIZED_ACCEPT for solaris
     * Ken's abstraction of SERVER_{BUILT,VERSION}
     * Ken's fix for os/unix/os.h and the new -DHIDE functionality
+    * Ralf's Config File Line Continuation
 
 Available Patches:
-
-    * Ralf's [PATCH] Config File Line Continuation (take 3)
-        <199803020910.KAA12793@en1.engelschall.com>
-        (this version uses strict matching of the backslash, i.e.  no trailing
-        spaces are allowed - this should be now avoid problems)
-        Status: Ralf +1
-                Martin +1 (on concept)
-                Dean +1 (on concept, but -1? because of RAW_ARGS issues?)
-		Dirk-Willem van Gulik +1
-		Jim +1
 
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>

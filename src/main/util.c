@@ -756,9 +756,49 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
     /* If a "get string" function is defined, use it */
     if (cfp->getstr != NULL) {
 	char *src, *dst;
-	++cfp->line_number;
-	if (cfp->getstr(buf, bufsize, cfp->param) == NULL)
-	    return 1;
+	char *cp;
+	char *cbuf = buf;
+	size_t cbufsize = bufsize;
+
+	while (1) {
+	    ++cfp->line_number;
+	    if (cfp->getstr(cbuf, cbufsize, cfp->param) == NULL)
+		return 1;
+
+	    /*
+	     *  check for line continuation,
+	     *  i.e. match [^\\]\\[\r]\n only
+	     */
+	    cp = cbuf;
+	    while (cp < cbuf+cbufsize && *cp != '\0')
+		cp++;
+	    if (cp > cbuf && cp[-1] == LF) {
+		cp--;
+		if (cp > cbuf && cp[-1] == CR)
+		    cp--;
+		if (cp > cbuf && cp[-1] == '\\') {
+		    cp--;
+		    if (!(cp > cbuf && cp[-1] == '\\')) {
+			/*
+			 * line continuation requested -
+			 * then remove backslash and continue
+			 */
+			cbuf = cp;
+			cbufsize -= (cp-cbuf);
+			continue;
+		    }
+		    else {
+			/* 
+			 * no real continuation because escaped -
+			 * then just remove escape character
+			 */
+			for ( ; cp < cbuf+cbufsize && *cp != '\0'; cp++)
+			    cp[0] = cp[1];
+		    }   
+		}
+	    }
+	    break;
+	}
 
 	/* Compress the line, reducing all blanks and tabs to one space.
 	 * Leading and trailing white space is eliminated completely
@@ -820,6 +860,21 @@ API_EXPORT(int) cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
 		++cfp->line_number;
 	    }
 	    if (c == EOF || c == 0x4 || c == LF || i >= (bufsize - 2)) {
+		/* 
+		 *  check for line continuation
+		 */
+		if (i > 0 && buf[i-1] == '\\') {
+		    i--;
+		    if (!(i > 0 && buf[i-1] == '\\')) {
+			/* line is continued */
+			c = cfp->getch(cfp->param);
+			continue;
+		    }
+		    /* else nothing needs be done because
+		     * then the backslash is escaped and
+		     * we just strip to a single one
+		     */
+		}
 		/* blast trailing whitespace */
 		while (i > 0 && isspace(buf[i - 1]))
 		    --i;
