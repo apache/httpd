@@ -1454,12 +1454,15 @@ AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
     for (; *s; ++s) {
 
 #if defined(OS2) || defined(WIN32)
-	/* Don't allow '&' in parameters under OS/2. */
-	/* This can be used to send commands to the shell. */
-	if (*s == '&') {
-	    *d++ = ' ';
-	    continue;
-	}
+        /* 
+         * Newlines to Win32/OS2 CreateProcess() are ill advised.
+         * Convert them to spaces since they are effectively white
+         * space to most applications
+         */
+        if (*s == '\r' || *s == '\n') {
+ 	    *d++ = ' ';
+ 	    continue;
+ 	}
 #endif
 
 	if (TEST_CHAR(*s, T_ESCAPE_SHELL_CMD)) {
@@ -1498,7 +1501,7 @@ static char x2c(const char *what)
  * Failure is due to
  *   bad % escape       returns HTTP_BAD_REQUEST
  *
- *   decoding %00 -> \0
+ *   decoding %00 -> \0  (the null character)
  *   decoding %2f -> /   (a special character)
  *                      returns HTTP_NOT_FOUND
  */
