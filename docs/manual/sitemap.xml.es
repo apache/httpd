@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
-  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.es"> ]
->
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1.36 -->
+<!-- English Revision: 1.37 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -142,7 +140,6 @@ Apache</page>
 para describir los m&#243;dulos de Apache</page>
 <page href="mod/directive-dict.html">Definiciones de t&#233;rminos
 usados para describir las directivas de Apache</page>
-&allmodules;
 </category>
 
 <category id="developer">

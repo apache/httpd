@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd"  
-  [ <!ENTITY allmodules SYSTEM "./mod/allmodules.xml.ja"> ]
->
+<!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.36 -->
+<!-- English Revision: 1.37 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -139,7 +137,6 @@
 <title>Apache モジュール</title>
 <page href="mod/module-dict.html">Apache ディレクティブの説明に使われる用語</page>
 <page href="mod/directive-dict.html">Apache ディレクティブを説明に使われる用語</page>
-&allmodules;
 </category>
 
 <category id="developer">
