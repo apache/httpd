@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="invoking.xml.meta">
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.8 -->
 
   <title>Apache の起動</title>
 
