@@ -11,7 +11,7 @@
     NT, 2000 and XP, or as a console application on Windows 9x and
     ME. For details, see <a
     href="platform/windows.html#winsvc">Running Apache as a Service</a>
-    and <a href="platform/windows.xml#wincons">Running Apache as a
+    and <a href="platform/windows.html#wincons">Running Apache as a
     Console Application</a>.</p>
 
     <p>On Unix, the <a href="programs/httpd.html">httpd</a> program
