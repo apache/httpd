@@ -968,7 +968,7 @@ echo "##  restoring your configuration. Additional parameters can be supplied." 
 echo "##" >>$configstatus
 echo "" >>$configstatus
 for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
-           LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS TARGET; do
+           LDFLAGS_SHLIB_EXPORT LIBS DBM_LIB INCLUDES RANLIB DEPS TARGET; do
     eval "val=\"\$$var\""
     if [ "x$val" != "x" ]; then
         echo "$var=$val" |\
