@@ -162,6 +162,22 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
 }
 
+static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
+                                  apr_pool_t *p)
+{
+    modssl_ctx_t *mctx;
+
+    mctx = sc->proxy = apr_palloc(p, sizeof(*sc->proxy));
+
+    modssl_ctx_init(mctx);
+
+    mctx->pkp = apr_palloc(p, sizeof(*mctx->pkp));
+
+    mctx->pkp->cert_file = NULL;
+    mctx->pkp->cert_path = NULL;
+    mctx->pkp->certs     = NULL;
+}
+
 static void modssl_ctx_init_server(SSLSrvConfigRec *sc,
                                    apr_pool_t *p)
 {
@@ -200,6 +216,8 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
     sc->log_level              = SSL_LOG_NONE;
     sc->session_cache_timeout  = UNSET;
 
+    modssl_ctx_init_proxy(sc, p);
+
     modssl_ctx_init_server(sc, p);
 
     return sc;
@@ -232,6 +250,16 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
     cfgMerge(auth.verify_mode, SSL_CVERIFY_UNSET);
 }
 
+static void modssl_ctx_cfg_merge_proxy(modssl_ctx_t *base,
+                                       modssl_ctx_t *add,
+                                       modssl_ctx_t *mrg)
+{
+    modssl_ctx_cfg_merge(base, add, mrg);
+
+    cfgMergeString(pkp->cert_file);
+    cfgMergeString(pkp->cert_path);
+}
+
 static void modssl_ctx_cfg_merge_server(modssl_ctx_t *base,
                                         modssl_ctx_t *add,
                                         modssl_ctx_t *mrg)
@@ -255,6 +283,8 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     SSLSrvConfigRec *add  = (SSLSrvConfigRec *)addv;
     SSLSrvConfigRec *mrg  = (SSLSrvConfigRec *)apr_palloc(p, sizeof(*mrg));
 
+    modssl_ctx_init_proxy(mrg, p);
+
     modssl_ctx_init_server(mrg, p);
 
     cfgMerge(mc, NULL);
@@ -262,6 +292,8 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeString(log_file_name);
     cfgMerge(log_level, SSL_LOG_NONE);
     cfgMergeInt(session_cache_timeout);
+
+    modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
 
     modssl_ctx_cfg_merge_server(base->server, add->server, mrg->server);
 
