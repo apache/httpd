@@ -70,6 +70,7 @@
 #endif
 
 apr_file_t *tfp = NULL;
+apr_file_t *errfile;
 apr_pool_t *cntxt;
 #if APR_CHARSET_EBCDIC
 apr_xlate_t *to_ascii;
@@ -154,13 +155,13 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     apr_size_t len = sizeof(pwin);
 
     if (apr_password_get("New password: ", pwin, &len) != APR_SUCCESS) {
-        fprintf(stderr, "password too long");
+        apr_file_printf(errfile, "password too long");
         cleanup_tempfile_and_exit(5);
     }
     len = sizeof(pwin);
     apr_password_get("Re-type new password: ", pwv, &len);
     if (strcmp(pwin, pwv) != 0) {
-        fprintf(stderr, "They don't match, sorry.\n");
+        apr_file_printf(errfile, "They don't match, sorry.\n");
         cleanup_tempfile_and_exit(1);
     }
     pw = pwin;
@@ -184,14 +185,14 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
 
 static void usage(void)
 {
-    fprintf(stderr, "Usage: htdigest [-c] passwordfile realm username\n");
-    fprintf(stderr, "The -c flag creates a new file.\n");
+    apr_file_printf(errfile, "Usage: htdigest [-c] passwordfile realm username\n");
+    apr_file_printf(errfile, "The -c flag creates a new file.\n");
     exit(1);
 }
 
 static void interrupted(void)
 {
-    fprintf(stderr, "Interrupted.\n");
+    apr_file_printf(errfile, "Interrupted.\n");
     cleanup_tempfile_and_exit(1);
 }
 
@@ -215,17 +216,17 @@ int main(int argc, const char * const argv[])
     char l[MAX_STRING_LEN];
     char w[MAX_STRING_LEN];
     char x[MAX_STRING_LEN];
-    char command[MAX_STRING_LEN];
     int found;
    
     apr_app_initialize(&argc, &argv, NULL);
     atexit(terminate); 
     apr_pool_create(&cntxt, NULL);
+    apr_file_open_stderr(&errfile, cntxt);
 
 #if APR_CHARSET_EBCDIC
     rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, cntxt);
     if (rv) {
-        fprintf(stderr, "apr_xlate_open(): %s (%d)\n",
+        apr_file_printf(errfile, "apr_xlate_open(): %s (%d)\n",
                 apr_strerror(rv, line, sizeof(line)), rv);
         exit(1);
     }
@@ -239,12 +240,13 @@ int main(int argc, const char * const argv[])
         if (rv != APR_SUCCESS) {
             char errmsg[120];
 
-            fprintf(stderr, "Could not open passwd file %s for writing: %s\n",
+            apr_file_printf(errfile, "Could not open passwd file %s for writing: %s\n",
                     argv[2],
                     apr_strerror(rv, errmsg, sizeof errmsg));
             exit(1);
         }
-        printf("Adding password for %s in realm %s.\n", argv[4], argv[3]);
+        apr_file_printf(errfile, "Adding password for %s in realm %s.\n", 
+                    argv[4], argv[3]);
         add_password(argv[4], argv[3], f);
         apr_file_close(f);
         exit(0);
@@ -253,7 +255,7 @@ int main(int argc, const char * const argv[])
         usage();
 
     if (apr_temp_dir_get((const char**)&dirname, cntxt) != APR_SUCCESS) {
-        fprintf(stderr, "%s: could not determine temp dir\n",
+        apr_file_printf(errfile, "%s: could not determine temp dir\n",
                         argv[0]);
         exit(1);
     }
@@ -266,14 +268,14 @@ int main(int argc, const char * const argv[])
     0
 #endif
     , cntxt) != APR_SUCCESS) {
-        fprintf(stderr, "Could not open temp file.\n");
+        apr_file_printf(errfile, "Could not open temp file %s.\n", dirname);
         exit(1);
     }
 
     if (apr_file_open(&f, argv[1], APR_READ, -1, cntxt) != APR_SUCCESS) {
-        fprintf(stderr,
+        apr_file_printf(errfile,
                 "Could not open passwd file %s for reading.\n", argv[1]);
-        fprintf(stderr, "Use -c option to create new one.\n");
+        apr_file_printf(errfile, "Use -c option to create new one.\n");
         cleanup_tempfile_and_exit(1);
     }
     apr_cpystrn(user, argv[3], sizeof(user));
@@ -293,13 +295,14 @@ int main(int argc, const char * const argv[])
             continue;
         }
         else {
-            printf("Changing password for user %s in realm %s\n", user, realm);
+            apr_file_printf(errfile, "Changing password for user %s in realm %s\n", 
+                    user, realm);
             add_password(user, realm, tfp);
             found = 1;
         }
     }
     if (!found) {
-        printf("Adding user %s in realm %s\n", user, realm);
+        apr_file_printf(errfile, "Adding user %s in realm %s\n", user, realm);
         add_password(user, realm, tfp);
     }
     apr_file_close(f);
@@ -310,7 +313,7 @@ int main(int argc, const char * const argv[])
      */
     if (apr_file_copy(dirname, argv[1], APR_FILE_SOURCE_PERMS, cntxt) !=
                 APR_SUCCESS) {
-        fprintf(stderr, "%s: unable to update file %s\n", 
+        apr_file_printf(errfile, "%s: unable to update file %s\n", 
                         argv[0], argv[1]);
     }
 #ifdef OMIT_DELONCLOSE
