@@ -212,8 +212,8 @@ DEP_CPP_MOD_H=\
 	"..\httpd.h"\
 	"..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"\sys\stat.h"\
-	{$(INCLUDE)}"\sys\types.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 NODEP_CPP_MOD_H=\
 	"..\sfio.h"\
@@ -231,8 +231,10 @@ DEP_CPP_MOD_H=\
 	"..\conf.h"\
 	"..\http_config.h"\
 	"..\httpd.h"\
+	"..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"\sys\types.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 NODEP_CPP_MOD_H=\
 	"..\sfio.h"\

@@ -201,6 +201,9 @@ LINK32_OBJS= \
 # Begin Source File
 
 SOURCE=\work\apache\src\mod_digest.c
+
+!IF  "$(CFG)" == "ApacheModuleDigest - Win32 Release"
+
 DEP_CPP_MOD_D=\
 	"..\alloc.h"\
 	"..\buff.h"\
@@ -224,6 +227,34 @@ NODEP_CPP_MOD_D=\
 "$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ELSEIF  "$(CFG)" == "ApacheModuleDigest - Win32 Debug"
+
+DEP_CPP_MOD_D=\
+	"..\alloc.h"\
+	"..\buff.h"\
+	"..\conf.h"\
+	"..\http_config.h"\
+	"..\http_core.h"\
+	"..\http_log.h"\
+	"..\http_protocol.h"\
+	"..\httpd.h"\
+	"..\md5.h"\
+	"..\regex\regex.h"\
+	"..\util_md5.h"\
+	".\readdir.h"\
+	{$(INCLUDE)}"\sys\stat.h"\
+	{$(INCLUDE)}"\sys\types.h"\
+	
+NODEP_CPP_MOD_D=\
+	"..\sfio.h"\
+	
+
+"$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
 
 # End Source File
 # End Target

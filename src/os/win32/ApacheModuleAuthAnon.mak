@@ -201,24 +201,6 @@ LINK32_OBJS= \
 # Begin Source File
 
 SOURCE=\work\apache\src\mod_auth_anon.c
-
-!IF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Release"
-
-DEP_CPP_MOD_A=\
-	"..\conf.h"\
-	"..\http_config.h"\
-	"..\http_core.h"\
-	"..\http_log.h"\
-	"..\http_protocol.h"\
-	"..\httpd.h"\
-	
-
-"$(INTDIR)\mod_auth_anon.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "ApacheModuleAuthAnon - Win32 Debug"
-
 DEP_CPP_MOD_A=\
 	"..\alloc.h"\
 	"..\buff.h"\
@@ -227,11 +209,12 @@ DEP_CPP_MOD_A=\
 	"..\http_core.h"\
 	"..\http_log.h"\
 	"..\http_protocol.h"\
+	"..\http_request.h"\
 	"..\httpd.h"\
 	"..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"\sys\stat.h"\
-	{$(INCLUDE)}"\sys\types.h"\
+	{$(INCLUDE)}"\sys\STAT.H"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 NODEP_CPP_MOD_A=\
 	"..\sfio.h"\
@@ -240,8 +223,6 @@ NODEP_CPP_MOD_A=\
 "$(INTDIR)\mod_auth_anon.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ENDIF 
 
 # End Source File
 # End Target

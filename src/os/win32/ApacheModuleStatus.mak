@@ -201,6 +201,34 @@ LINK32_OBJS= \
 # Begin Source File
 
 SOURCE=\work\apache\src\mod_status.c
+
+!IF  "$(CFG)" == "ApacheModuleStatus - Win32 Release"
+
+DEP_CPP_MOD_S=\
+	"..\alloc.h"\
+	"..\buff.h"\
+	"..\conf.h"\
+	"..\http_config.h"\
+	"..\http_core.h"\
+	"..\http_log.h"\
+	"..\http_main.h"\
+	"..\http_protocol.h"\
+	"..\httpd.h"\
+	"..\scoreboard.h"\
+	"..\util_script.h"\
+	".\readdir.h"\
+	{$(INCLUDE)}"\sys\types.h"\
+	
+NODEP_CPP_MOD_S=\
+	"..\sfio.h"\
+	
+
+"$(INTDIR)\mod_status.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "ApacheModuleStatus - Win32 Debug"
+
 DEP_CPP_MOD_S=\
 	"..\alloc.h"\
 	"..\buff.h"\
@@ -225,6 +253,8 @@ NODEP_CPP_MOD_S=\
 "$(INTDIR)\mod_status.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ENDIF 
 
 # End Source File
 # End Target

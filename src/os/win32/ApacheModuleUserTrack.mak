@@ -1,11 +1,14 @@
 # Microsoft Developer Studio Generated NMAKE File, Format Version 4.20
 # ** DO NOT EDIT **
+
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
+
 !IF "$(CFG)" == ""
 CFG=ApacheModuleUserTrack - Win32 Debug
-!MESSAGE No configuration specified.  Defaulting to ApacheModuleUserTrack - Win32\
- Debug.
+!MESSAGE No configuration specified.  Defaulting to ApacheModuleUserTrack -\
+ Win32 Debug.
 !ENDIF 
+
 !IF "$(CFG)" != "ApacheModuleUserTrack - Win32 Release" && "$(CFG)" !=\
  "ApacheModuleUserTrack - Win32 Debug"
 !MESSAGE Invalid configuration "$(CFG)" specified.
@@ -24,6 +27,7 @@ CFG=ApacheModuleUserTrack - Win32 Debug
 !MESSAGE 
 !ERROR An invalid configuration is specified.
 !ENDIF 
+
 !IF "$(OS)" == "Windows_NT"
 NULL=
 !ELSE 
@@ -33,9 +37,11 @@ NULL=nul
 # Begin Project
 # PROP Target_Last_Scanned "ApacheModuleUserTrack - Win32 Debug"
 MTL=mktyplib.exe
-CPP=cl.exe
 RSC=rc.exe
+CPP=cl.exe
+
 !IF  "$(CFG)" == "ApacheModuleUserTrack - Win32 Release"
+
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
 # PROP BASE Output_Dir "Release"
@@ -48,14 +54,18 @@ RSC=rc.exe
 # PROP Target_Dir ""
 OUTDIR=.\ApacheModuleUserTrackR
 INTDIR=.\ApacheModuleUserTrackR
+
 ALL : "$(OUTDIR)\ApacheModuleUserTrack.dll"
+
 CLEAN : 
 	-@erase "$(INTDIR)\mod_usertrack.obj"
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.dll"
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.exp"
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.lib"
+
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
 # ADD CPP /nologo /MD /W3 /GX /O2 /I "..\regex" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\regex" /D "WIN32" /D "NDEBUG" /D\
@@ -84,11 +94,14 @@ LINK32_FLAGS=..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  /implib:"$(OUTDIR)/ApacheModuleUserTrack.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_usertrack.obj"
+
 "$(OUTDIR)\ApacheModuleUserTrack.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
+
 !ELSEIF  "$(CFG)" == "ApacheModuleUserTrack - Win32 Debug"
+
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
 # PROP BASE Output_Dir "Debug"
@@ -101,7 +114,9 @@ LINK32_OBJS= \
 # PROP Target_Dir ""
 OUTDIR=.\ApacheModuleUserTrackD
 INTDIR=.\ApacheModuleUserTrackD
+
 ALL : "$(OUTDIR)\ApacheModuleUserTrack.dll"
+
 CLEAN : 
 	-@erase "$(INTDIR)\mod_usertrack.obj"
 	-@erase "$(INTDIR)\vc40.idb"
@@ -111,8 +126,10 @@ CLEAN :
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.ilk"
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.lib"
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.pdb"
+
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
 # ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\regex" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\regex" /D "WIN32" /D "_DEBUG"\
@@ -137,57 +154,73 @@ LINK32=link.exe
 LINK32_FLAGS=..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
  uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
- /incremental:yes /pdb:"$(OUTDIR)/ApacheModuleUserTrack.pdb" /debug /machine:I386\
- /out:"$(OUTDIR)/ApacheModuleUserTrack.dll"\
+ /incremental:yes /pdb:"$(OUTDIR)/ApacheModuleUserTrack.pdb" /debug\
+ /machine:I386 /out:"$(OUTDIR)/ApacheModuleUserTrack.dll"\
  /implib:"$(OUTDIR)/ApacheModuleUserTrack.lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_usertrack.obj"
+
 "$(OUTDIR)\ApacheModuleUserTrack.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
+
 !ENDIF 
+
 .c{$(CPP_OBJS)}.obj:
    $(CPP) $(CPP_PROJ) $<  
+
 .cpp{$(CPP_OBJS)}.obj:
    $(CPP) $(CPP_PROJ) $<  
+
 .cxx{$(CPP_OBJS)}.obj:
    $(CPP) $(CPP_PROJ) $<  
+
 .c{$(CPP_SBRS)}.sbr:
    $(CPP) $(CPP_PROJ) $<  
+
 .cpp{$(CPP_SBRS)}.sbr:
    $(CPP) $(CPP_PROJ) $<  
+
 .cxx{$(CPP_SBRS)}.sbr:
    $(CPP) $(CPP_PROJ) $<  
+
 ################################################################################
 # Begin Target
+
 # Name "ApacheModuleUserTrack - Win32 Release"
 # Name "ApacheModuleUserTrack - Win32 Debug"
+
 !IF  "$(CFG)" == "ApacheModuleUserTrack - Win32 Release"
+
 !ELSEIF  "$(CFG)" == "ApacheModuleUserTrack - Win32 Debug"
+
 !ENDIF 
+
 ################################################################################
 # Begin Source File
+
 SOURCE=\work\apache\src\mod_usertrack.c
-DEP_CPP_MOD_A=\
+DEP_CPP_MOD_U=\
 	"..\alloc.h"\
 	"..\buff.h"\
 	"..\conf.h"\
 	"..\http_config.h"\
 	"..\http_core.h"\
-	"..\http_log.h"\
-	"..\http_request.h"\
 	"..\httpd.h"\
 	"..\regex\regex.h"\
 	".\readdir.h"\
 	{$(INCLUDE)}"\sys\stat.h"\
 	{$(INCLUDE)}"\sys\types.h"\
 	
-NODEP_CPP_MOD_A=\
+NODEP_CPP_MOD_U=\
 	"..\sfio.h"\
 	
-"$(INTDIR)\mod_usertrack.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"
+
+"$(INTDIR)\mod_usertrack.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 # End Source File
 # End Target
 # End Project
