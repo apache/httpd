@@ -149,7 +149,6 @@ static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;
-static int ap_extended_status = 0;
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
