@@ -2188,6 +2188,7 @@ static const char *
 host2addr(const char *host, struct in_addr *addr)
 {
     int i;
+    unsigned long ipaddr;
 
     for (i=0; host[i] != '\0'; i++)
 	if (!isdigit(host[i]) && host[i] != '.')
@@ -2202,8 +2203,9 @@ host2addr(const char *host, struct in_addr *addr)
 	memcpy(addr, hp->h_addr, sizeof(struct in_addr));
     } else
     {
-	if (!inet_aton(host, addr))
+	if ((ipaddr = inet_addr(host)) == -1)
 	    return "Bad IP address";
+	memcpy(addr, &ipaddr, sizeof(unsigned long));
     }
     return NULL;
 }
