@@ -30,6 +30,8 @@
        connection on a rarely-accessed listening socket will cause a
        child to hold the accept mutex and block out new connections until
        another connection arrives on that rarely-accessed listening socket.
+       This only affects some platforms, such as Solaris, AIX and
+       IRIX. Linux is unaffected.
 
      o CAN-2003-0993 (cve.mitre.org) 
        Fix parsing of Allow/Deny rules using IP addresses without a
