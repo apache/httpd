@@ -52,6 +52,7 @@ CLEAN :"apr - Win32 ReleaseCLEAN" "aprutil - Win32 ReleaseCLEAN"
 !ELSE 
 CLEAN :
 !ENDIF 
+	-@erase "$(INTDIR)\gen_test_char.idb"
 	-@erase "$(INTDIR)\gen_test_char.obj"
 	-@erase "$(OUTDIR)\gen_test_char.exe"
 
@@ -60,8 +61,8 @@ CLEAN :
 
 CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "..\include" /I "..\srclib\apr\include" /I\
- "../srclib/apr-util/include" /I "..\os\win32" /D "WIN32" /D "NDEBUG" /D\
- "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"Release\gen_test_char"/FD /c 
+ "..\srclib\apr-util\include" /I "..\os\win32" /D "WIN32" /D "NDEBUG" /D\
+ "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\gen_test_char" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 
@@ -147,7 +148,7 @@ CLEAN :
 
 CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I\
- "..\srclib\apr\include" /I "../srclib/apr-util/include" /I "..\os\win32" /D\
+ "..\srclib\apr\include" /I "..\srclib\apr-util\include" /I "..\os\win32" /D\
  "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fo"$(INTDIR)\\"\
  /Fd"$(INTDIR)\gen_test_char" /FD /c 
 CPP_OBJS=.\Debug/
@@ -211,12 +212,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 "apr - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Release" 
    cd "..\..\server"
 
 "apr - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Release"\
  RECURSE=1 
    cd "..\..\server"
@@ -224,12 +225,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
 "apr - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Debug" 
    cd "..\..\server"
 
 "apr - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Debug" RECURSE=1\
  
    cd "..\..\server"
@@ -239,12 +240,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 "aprutil - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Release" 
    cd "..\..\server"
 
 "aprutil - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Release"\
  RECURSE=1 
    cd "..\..\server"
@@ -252,12 +253,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
 "aprutil - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Debug" 
    cd "..\..\server"
 
 "aprutil - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Debug"\
  RECURSE=1 
    cd "..\..\server"
@@ -268,13 +269,16 @@ SOURCE=.\gen_test_char.c
 DEP_CPP_GEN_T=\
 	"..\include\ap_config.h"\
 	"..\include\ap_mmn.h"\
+	"..\include\ap_release.h"\
 	"..\include\httpd.h"\
 	"..\include\pcreposix.h"\
 	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
-	"..\srclib\apr-util\include\ap_hooks.h"\
+	"..\srclib\apr-util\include\apr_hooks.h"\
+	"..\srclib\apr-util\include\apu.h"\
 	"..\srclib\apr\include\apr.h"\
 	"..\srclib\apr\include\apr_errno.h"\
+	"..\srclib\apr\include\apr_file_info.h"\
 	"..\srclib\apr\include\apr_file_io.h"\
 	"..\srclib\apr\include\apr_general.h"\
 	"..\srclib\apr\include\apr_lib.h"\
@@ -282,11 +286,12 @@ DEP_CPP_GEN_T=\
 	"..\srclib\apr\include\apr_pools.h"\
 	"..\srclib\apr\include\apr_tables.h"\
 	"..\srclib\apr\include\apr_time.h"\
-	"..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\srclib\apr\include\apr_user.h"\
+	"..\srclib\apr\include\apr_want.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_GEN_T=\
 	"..\include\ap_config_auto.h"\
-	"..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\gen_test_char.obj" : $(SOURCE) $(DEP_CPP_GEN_T) "$(INTDIR)"

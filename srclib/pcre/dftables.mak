@@ -55,7 +55,7 @@ CLEAN :
     if not exist "$(INTDIR)/$(NULL)" mkdir "$(INTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"\
+CPP_PROJ=/nologo /MD /W3 /O2 /D "_WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"\
  /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\dftables" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.

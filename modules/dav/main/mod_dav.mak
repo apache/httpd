@@ -41,14 +41,14 @@ ALL : "$(OUTDIR)\mod_dav.so"
 
 !ELSE 
 
-ALL : "libaprutil - Win32 Release" "libapr - Win32 Release"\
- "libhttpd - Win32 Release" "$(OUTDIR)\mod_dav.so"
+ALL : "libhttpd - Win32 Release" "libaprutil - Win32 Release"\
+ "libapr - Win32 Release" "$(OUTDIR)\mod_dav.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libhttpd - Win32 ReleaseCLEAN" "libapr - Win32 ReleaseCLEAN"\
- "libaprutil - Win32 ReleaseCLEAN" 
+CLEAN :"libapr - Win32 ReleaseCLEAN" "libaprutil - Win32 ReleaseCLEAN"\
+ "libhttpd - Win32 ReleaseCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -150,14 +150,14 @@ ALL : "$(OUTDIR)\mod_dav.so"
 
 !ELSE 
 
-ALL : "libaprutil - Win32 Debug" "libapr - Win32 Debug"\
- "libhttpd - Win32 Debug" "$(OUTDIR)\mod_dav.so"
+ALL : "libhttpd - Win32 Debug" "libaprutil - Win32 Debug"\
+ "libapr - Win32 Debug" "$(OUTDIR)\mod_dav.so"
 
 !ENDIF 
 
 !IF "$(RECURSE)" == "1" 
-CLEAN :"libhttpd - Win32 DebugCLEAN" "libapr - Win32 DebugCLEAN"\
- "libaprutil - Win32 DebugCLEAN" 
+CLEAN :"libapr - Win32 DebugCLEAN" "libaprutil - Win32 DebugCLEAN"\
+ "libhttpd - Win32 DebugCLEAN" 
 !ELSE 
 CLEAN :
 !ENDIF 
@@ -256,30 +256,36 @@ SOURCE=.\liveprop.c
 DEP_CPP_LIVEP=\
 	"..\..\..\include\ap_config.h"\
 	"..\..\..\include\ap_mmn.h"\
+	"..\..\..\include\ap_release.h"\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
 	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
-	"..\..\..\srclib\apr-util\include\ap_hooks.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
+	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_xml.h"\
+	"..\..\..\srclib\apr-util\include\apu.h"\
+	"..\..\..\srclib\apr-util\include\apu_compat.h"\
 	"..\..\..\srclib\apr\include\apr.h"\
+	"..\..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
-	"..\..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\..\srclib\apr\include\apr_pools.h"\
 	"..\..\..\srclib\apr\include\apr_strings.h"\
 	"..\..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\..\srclib\apr\include\apr_time.h"\
-	"..\..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\..\srclib\apr\include\apr_user.h"\
+	"..\..\..\srclib\apr\include\apr_want.h"\
 	".\mod_dav.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_LIVEP=\
 	"..\..\..\include\ap_config_auto.h"\
-	"..\..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\liveprop.obj" : $(SOURCE) $(DEP_CPP_LIVEP) "$(INTDIR)"
@@ -289,6 +295,7 @@ SOURCE=.\mod_dav.c
 DEP_CPP_MOD_D=\
 	"..\..\..\include\ap_config.h"\
 	"..\..\..\include\ap_mmn.h"\
+	"..\..\..\include\ap_release.h"\
 	"..\..\..\include\http_config.h"\
 	"..\..\..\include\http_core.h"\
 	"..\..\..\include\http_log.h"\
@@ -303,13 +310,18 @@ DEP_CPP_MOD_D=\
 	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
-	"..\..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
+	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_xml.h"\
+	"..\..\..\srclib\apr-util\include\apu.h"\
+	"..\..\..\srclib\apr-util\include\apu_compat.h"\
 	"..\..\..\srclib\apr\include\apr.h"\
+	"..\..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\..\srclib\apr\include\apr_dso.h"\
 	"..\..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
@@ -323,12 +335,14 @@ DEP_CPP_MOD_D=\
 	"..\..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\..\srclib\apr\include\apr_thread_proc.h"\
 	"..\..\..\srclib\apr\include\apr_time.h"\
-	"..\..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\..\srclib\apr\include\apr_user.h"\
+	"..\..\..\srclib\apr\include\apr_want.h"\
 	".\mod_dav.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
+	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_MOD_D=\
 	"..\..\..\include\ap_config_auto.h"\
-	"..\..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\mod_dav.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
@@ -338,6 +352,7 @@ SOURCE=.\props.c
 DEP_CPP_PROPS=\
 	"..\..\..\include\ap_config.h"\
 	"..\..\..\include\ap_mmn.h"\
+	"..\..\..\include\ap_release.h"\
 	"..\..\..\include\http_log.h"\
 	"..\..\..\include\http_request.h"\
 	"..\..\..\include\httpd.h"\
@@ -346,16 +361,20 @@ DEP_CPP_PROPS=\
 	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
-	"..\..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
+	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_xml.h"\
+	"..\..\..\srclib\apr-util\include\apu.h"\
+	"..\..\..\srclib\apr-util\include\apu_compat.h"\
 	"..\..\..\srclib\apr\include\apr.h"\
+	"..\..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
-	"..\..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\..\srclib\apr\include\apr_pools.h"\
@@ -363,12 +382,13 @@ DEP_CPP_PROPS=\
 	"..\..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\..\srclib\apr\include\apr_thread_proc.h"\
 	"..\..\..\srclib\apr\include\apr_time.h"\
-	"..\..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\..\srclib\apr\include\apr_user.h"\
+	"..\..\..\srclib\apr\include\apr_want.h"\
 	".\mod_dav.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_PROPS=\
 	"..\..\..\include\ap_config_auto.h"\
-	"..\..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\props.obj" : $(SOURCE) $(DEP_CPP_PROPS) "$(INTDIR)"
@@ -378,29 +398,35 @@ SOURCE=.\providers.c
 DEP_CPP_PROVI=\
 	"..\..\..\include\ap_config.h"\
 	"..\..\..\include\ap_mmn.h"\
+	"..\..\..\include\ap_release.h"\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
 	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
-	"..\..\..\srclib\apr-util\include\ap_hooks.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
+	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_xml.h"\
+	"..\..\..\srclib\apr-util\include\apu.h"\
+	"..\..\..\srclib\apr-util\include\apu_compat.h"\
 	"..\..\..\srclib\apr\include\apr.h"\
+	"..\..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
-	"..\..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\..\srclib\apr\include\apr_pools.h"\
 	"..\..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\..\srclib\apr\include\apr_time.h"\
-	"..\..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\..\srclib\apr\include\apr_user.h"\
+	"..\..\..\srclib\apr\include\apr_want.h"\
 	".\mod_dav.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_PROVI=\
 	"..\..\..\include\ap_config_auto.h"\
-	"..\..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\providers.obj" : $(SOURCE) $(DEP_CPP_PROVI) "$(INTDIR)"
@@ -410,30 +436,36 @@ SOURCE=.\std_liveprop.c
 DEP_CPP_STD_L=\
 	"..\..\..\include\ap_config.h"\
 	"..\..\..\include\ap_mmn.h"\
+	"..\..\..\include\ap_release.h"\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
 	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
-	"..\..\..\srclib\apr-util\include\ap_hooks.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
+	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_xml.h"\
+	"..\..\..\srclib\apr-util\include\apu.h"\
+	"..\..\..\srclib\apr-util\include\apu_compat.h"\
 	"..\..\..\srclib\apr\include\apr.h"\
+	"..\..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
-	"..\..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\..\srclib\apr\include\apr_pools.h"\
 	"..\..\..\srclib\apr\include\apr_strings.h"\
 	"..\..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\..\srclib\apr\include\apr_time.h"\
-	"..\..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\..\srclib\apr\include\apr_user.h"\
+	"..\..\..\srclib\apr\include\apr_want.h"\
 	".\mod_dav.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
 	
 NODEP_CPP_STD_L=\
 	"..\..\..\include\ap_config_auto.h"\
-	"..\..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\std_liveprop.obj" : $(SOURCE) $(DEP_CPP_STD_L) "$(INTDIR)"
@@ -443,6 +475,7 @@ SOURCE=.\util.c
 DEP_CPP_UTIL_=\
 	"..\..\..\include\ap_config.h"\
 	"..\..\..\include\ap_mmn.h"\
+	"..\..\..\include\ap_release.h"\
 	"..\..\..\include\http_config.h"\
 	"..\..\..\include\http_log.h"\
 	"..\..\..\include\http_protocol.h"\
@@ -455,13 +488,18 @@ DEP_CPP_UTIL_=\
 	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
-	"..\..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
+	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_xml.h"\
+	"..\..\..\srclib\apr-util\include\apu.h"\
+	"..\..\..\srclib\apr-util\include\apu_compat.h"\
 	"..\..\..\srclib\apr\include\apr.h"\
+	"..\..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\..\srclib\apr\include\apr_dso.h"\
 	"..\..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
@@ -475,12 +513,14 @@ DEP_CPP_UTIL_=\
 	"..\..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\..\srclib\apr\include\apr_thread_proc.h"\
 	"..\..\..\srclib\apr\include\apr_time.h"\
-	"..\..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\..\srclib\apr\include\apr_user.h"\
+	"..\..\..\srclib\apr\include\apr_want.h"\
 	".\mod_dav.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
+	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_UTIL_=\
 	"..\..\..\include\ap_config_auto.h"\
-	"..\..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\util.obj" : $(SOURCE) $(DEP_CPP_UTIL_) "$(INTDIR)"
@@ -490,6 +530,7 @@ SOURCE=.\util_lock.c
 DEP_CPP_UTIL_L=\
 	"..\..\..\include\ap_config.h"\
 	"..\..\..\include\ap_mmn.h"\
+	"..\..\..\include\ap_release.h"\
 	"..\..\..\include\http_config.h"\
 	"..\..\..\include\http_core.h"\
 	"..\..\..\include\http_log.h"\
@@ -497,21 +538,24 @@ DEP_CPP_UTIL_L=\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
 	"..\..\..\include\util_cfgtree.h"\
-	"..\..\..\include\util_filter.h"\
 	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
-	"..\..\..\srclib\apr-util\include\ap_buckets.h"\
-	"..\..\..\srclib\apr-util\include\ap_hooks.h"\
-	"..\..\..\srclib\apr-util\include\ap_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
+	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_xml.h"\
+	"..\..\..\srclib\apr-util\include\apu.h"\
+	"..\..\..\srclib\apr-util\include\apu_compat.h"\
 	"..\..\..\srclib\apr\include\apr.h"\
+	"..\..\..\srclib\apr\include\apr_compat.h"\
 	"..\..\..\srclib\apr\include\apr_dso.h"\
 	"..\..\..\srclib\apr\include\apr_errno.h"\
+	"..\..\..\srclib\apr\include\apr_file_info.h"\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
-	"..\..\..\srclib\apr\include\apr_lib.h"\
 	"..\..\..\srclib\apr\include\apr_lock.h"\
 	"..\..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\..\srclib\apr\include\apr_network_io.h"\
@@ -521,12 +565,14 @@ DEP_CPP_UTIL_L=\
 	"..\..\..\srclib\apr\include\apr_tables.h"\
 	"..\..\..\srclib\apr\include\apr_thread_proc.h"\
 	"..\..\..\srclib\apr\include\apr_time.h"\
-	"..\..\..\srclib\apr\network_io\os2\os2nerrno.h"\
+	"..\..\..\srclib\apr\include\apr_user.h"\
+	"..\..\..\srclib\apr\include\apr_want.h"\
 	".\mod_dav.h"\
+	{$(INCLUDE)}"arpa\inet.h"\
+	{$(INCLUDE)}"dirent.h"\
 	
 NODEP_CPP_UTIL_L=\
 	"..\..\..\include\ap_config_auto.h"\
-	"..\..\..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\util_lock.obj" : $(SOURCE) $(DEP_CPP_UTIL_L) "$(INTDIR)"
@@ -534,41 +580,13 @@ NODEP_CPP_UTIL_L=\
 
 !IF  "$(CFG)" == "mod_dav - Win32 Release"
 
-"libhttpd - Win32 Release" : 
-   cd "\test\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
-   cd ".\modules\dav\main"
-
-"libhttpd - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
- CFG="libhttpd - Win32 Release" RECURSE=1 
-   cd ".\modules\dav\main"
-
-!ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
-
-"libhttpd - Win32 Debug" : 
-   cd "\test\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
-   cd ".\modules\dav\main"
-
-"libhttpd - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
- RECURSE=1 
-   cd ".\modules\dav\main"
-
-!ENDIF 
-
-!IF  "$(CFG)" == "mod_dav - Win32 Release"
-
 "libapr - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\dav\main"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\dav\main"
@@ -576,12 +594,12 @@ NODEP_CPP_UTIL_L=\
 !ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\dav\main"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr"
+   cd "\clean\httpd-2.0\srclib\apr"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\dav\main"
@@ -591,13 +609,13 @@ NODEP_CPP_UTIL_L=\
 !IF  "$(CFG)" == "mod_dav - Win32 Release"
 
 "libaprutil - Win32 Release" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
  
    cd "..\..\modules\dav\main"
 
 "libaprutil - Win32 ReleaseCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Release" RECURSE=1 
    cd "..\..\modules\dav\main"
@@ -605,15 +623,43 @@ NODEP_CPP_UTIL_L=\
 !ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
 
 "libaprutil - Win32 Debug" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Debug" 
    cd "..\..\modules\dav\main"
 
 "libaprutil - Win32 DebugCLEAN" : 
-   cd "\test\httpd-2.0\srclib\apr-util"
+   cd "\clean\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Debug" RECURSE=1 
    cd "..\..\modules\dav\main"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "mod_dav - Win32 Release"
+
+"libhttpd - Win32 Release" : 
+   cd "\clean\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
+   cd ".\modules\dav\main"
+
+"libhttpd - Win32 ReleaseCLEAN" : 
+   cd "\clean\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
+ CFG="libhttpd - Win32 Release" RECURSE=1 
+   cd ".\modules\dav\main"
+
+!ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
+
+"libhttpd - Win32 Debug" : 
+   cd "\clean\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
+   cd ".\modules\dav\main"
+
+"libhttpd - Win32 DebugCLEAN" : 
+   cd "\clean\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
+ RECURSE=1 
+   cd ".\modules\dav\main"
 
 !ENDIF 
 

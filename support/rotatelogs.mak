@@ -57,9 +57,9 @@ CLEAN :
 
 CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /O2 /I "../srclib/apr/include" /I\
- "../srclib/apr-util/include" /I "../include" /I "../os/win32" /D "NDEBUG" /D\
- "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "AP_DECLARE_STATIC"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\rotatelogs" /FD /c 
+ "../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D\
+ "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\rotatelogs" /FD /c 
 CPP_OBJS=.\Release/
 CPP_SBRS=.
 
@@ -132,7 +132,7 @@ CLEAN :
 	-@erase "$(INTDIR)\rotatelogs.idb"
 	-@erase "$(INTDIR)\rotatelogs.obj"
 	-@erase "$(OUTDIR)\rotatelogs.exe"
-	-@erase "$(OUTDIR)\rotatelogs.ilk"
+	-@erase "$(OUTDIR)\rotatelogs.map"
 	-@erase "$(OUTDIR)\rotatelogs.pdb"
 
 "$(OUTDIR)" :
@@ -140,9 +140,9 @@ CLEAN :
 
 CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I\
- "../srclib/apr-util/include" /I "../include" /I "../os/win32" /D "_DEBUG" /D\
- "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "AP_DECLARE_STATIC"\
- /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\rotatelogs" /FD /c 
+ "../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D\
+ "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\rotatelogs" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.
 
@@ -183,8 +183,9 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo\
- /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\rotatelogs.pdb" /debug\
- /machine:I386 /out:"$(OUTDIR)\rotatelogs.exe" /pdbtype:sept 
+ /subsystem:console /incremental:no /pdb:"$(OUTDIR)\rotatelogs.pdb"\
+ /map:"$(INTDIR)\rotatelogs.map" /debug /machine:I386\
+ /out:"$(OUTDIR)\rotatelogs.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\rotatelogs.obj"
 
@@ -200,21 +201,7 @@ LINK32_OBJS= \
  "rotatelogs - Win32 Debug"
 SOURCE=.\rotatelogs.c
 DEP_CPP_ROTAT=\
-	"..\include\ap_config.h"\
-	"..\include\ap_mmn.h"\
-	"..\os\win32\os.h"\
-	"..\srclib\apr-util\include\ap_hooks.h"\
 	"..\srclib\apr\include\apr.h"\
-	"..\srclib\apr\include\apr_errno.h"\
-	"..\srclib\apr\include\apr_general.h"\
-	"..\srclib\apr\include\apr_lib.h"\
-	"..\srclib\apr\include\apr_pools.h"\
-	"..\srclib\apr\include\apr_tables.h"\
-	"..\srclib\apr\network_io\os2\os2nerrno.h"\
-	
-NODEP_CPP_ROTAT=\
-	"..\include\ap_config_auto.h"\
-	"..\include\ap_config_path.h"\
 	
 
 "$(INTDIR)\rotatelogs.obj" : $(SOURCE) $(DEP_CPP_ROTAT) "$(INTDIR)"
