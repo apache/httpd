@@ -178,10 +178,10 @@ typedef struct cache_handle cache_handle_t;
 struct cache_handle {
     cache_object_t *cache_obj;
     int (*remove_entity) (cache_handle_t *h);
-    apr_status_t (*write_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
-    apr_status_t (*write_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
-    apr_status_t (*read_headers) (cache_handle_t *h, request_rec *r);
-    apr_status_t (*read_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
+    apr_status_t (*store_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
+    apr_status_t (*store_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+    apr_status_t (*recall_headers) (cache_handle_t *h, request_rec *r);
+    apr_status_t (*recall_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
     apr_table_t *req_hdrs;   /* These are the original request headers */
 };
 
@@ -242,11 +242,11 @@ apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key
  */
 const char* cache_create_key( request_rec*r );
 
-apr_status_t cache_write_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info);
-apr_status_t cache_write_entity_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *bb);
+apr_status_t cache_store_entity_headers(cache_handle_t *h, request_rec *r, cache_info *info);
+apr_status_t cache_store_entity_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *bb);
 
-apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r);
-apr_status_t cache_read_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
+apr_status_t cache_recall_entity_headers(cache_handle_t *h, request_rec *r);
+apr_status_t cache_recall_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
 
 /* hooks */

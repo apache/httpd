@@ -78,10 +78,10 @@ module AP_MODULE_DECLARE_DATA disk_cache_module;
 
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
-static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *i);
-static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
-static apr_status_t read_headers(cache_handle_t *h, request_rec *r);
-static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
+static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *i);
+static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+static apr_status_t recall_headers(cache_handle_t *h, request_rec *r);
+static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
 /*
  * Local static functions
@@ -186,7 +186,7 @@ static apr_status_t file_cache_errorcleanup(disk_cache_object_t *dobj, request_r
  * file for an ap_cache_el, this state information will be read
  * and written transparent to clients of this module
  */
-static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
+static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
                                   disk_cache_object_t *dobj)
 {
     apr_status_t rv;
@@ -243,7 +243,7 @@ static int file_cache_read_mydata(apr_file_t *fd, cache_info *info,
     return APR_SUCCESS;
 }
 
-static int file_cache_write_mydata(apr_file_t *fd , cache_handle_t *h, request_rec *r)
+static int file_cache_store_mydata(apr_file_t *fd , cache_handle_t *h, request_rec *r)
 {
     apr_status_t rc;
     char *buf;
@@ -337,10 +337,10 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     if (rv == APR_SUCCESS) {
         /* Populate the cache handle */
         h->cache_obj = obj;
-        h->read_body = &read_body;
-        h->read_headers = &read_headers;
-        h->write_body = &write_body;
-        h->write_headers = &write_headers;
+        h->recall_body = &recall_body;
+        h->recall_headers = &recall_headers;
+        h->store_body = &store_body;
+        h->store_headers = &store_headers;
         h->remove_entity = &remove_entity;
 
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
@@ -430,17 +430,17 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     }
 
     /* Read the bytes to setup the cache_info fields */
-    rc = file_cache_read_mydata(hfd, info, dobj);
+    rc = file_cache_recall_mydata(hfd, info, dobj);
     if (rc != APR_SUCCESS) {
         /* XXX log message */
         return DECLINED;
     }
 
     /* Initialize the cache_handle callback functions */
-    h->read_body = &read_body;
-    h->read_headers = &read_headers;
-    h->write_body = &write_body;
-    h->write_headers = &write_headers;
+    h->recall_body = &recall_body;
+    h->recall_headers = &recall_headers;
+    h->store_body = &store_body;
+    h->store_headers = &store_headers;
     h->remove_entity = &remove_entity;
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
@@ -462,7 +462,7 @@ static int remove_entity(cache_handle_t *h)
  * @@@: XXX: FIXME: currently the headers are passed thru un-merged.
  * Is that okay, or should they be collapsed where possible?
  */
-static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
+static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 {
     apr_status_t rv;
     char urlbuff[1034];
@@ -523,7 +523,7 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     return APR_SUCCESS;
 }
 
-static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb)
+static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb)
 {
     apr_bucket *e;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
@@ -537,7 +537,7 @@ static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_briga
     return APR_SUCCESS;
 }
 
-static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
+static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
@@ -578,7 +578,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
         hfd = dobj->hfd;
         dobj->name = h->cache_obj->key;
 
-        file_cache_write_mydata(dobj->hfd, h, r);
+        file_cache_store_mydata(dobj->hfd, h, r);
 
         if (r->headers_out) {
             int i;
@@ -645,7 +645,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
     return APR_SUCCESS;
 }
 
-static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
+static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
 {
     apr_bucket *e;
     apr_status_t rv;

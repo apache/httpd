@@ -145,7 +145,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
         case OK: {
             char *vary = NULL;
             const char *varyhdr = NULL;
-            if (cache_read_entity_headers(h, r) != APR_SUCCESS) {
+            if (cache_recall_entity_headers(h, r) != APR_SUCCESS) {
                 /* TODO: Handle this error */
                 return DECLINED;
             }
@@ -222,24 +222,26 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     return DECLINED;
 }
 
-apr_status_t cache_write_entity_headers(cache_handle_t *h, 
+apr_status_t cache_store_entity_headers(cache_handle_t *h, 
                                         request_rec *r, 
                                         cache_info *info)
 {
-    return (h->write_headers(h, r, info));
-}
-apr_status_t cache_write_entity_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
-{
-    return (h->write_body(h, r, b));
+    return (h->store_headers(h, r, info));
 }
 
-apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r)
+apr_status_t cache_store_entity_body(cache_handle_t *h, request_rec *r,
+                                     apr_bucket_brigade *b) 
+{
+    return (h->store_body(h, r, b));
+}
+
+apr_status_t cache_recall_entity_headers(cache_handle_t *h, request_rec *r)
 {
     apr_status_t rv;
     cache_info *info = &(h->cache_obj->info);
 
     /* Build the header table from info in the info struct */
-    rv = h->read_headers(h, r);
+    rv = h->recall_headers(h, r);
     if (rv != APR_SUCCESS) {
         return rv;
     }
@@ -248,9 +250,11 @@ apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r)
 
     return APR_SUCCESS;
 }
-apr_status_t cache_read_entity_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *b) 
+
+apr_status_t cache_recall_entity_body(cache_handle_t *h, apr_pool_t *p,
+                                    apr_bucket_brigade *b)
 {
-    return (h->read_body(h, p, b));
+    return (h->recall_body(h, p, b));
 }
 
 apr_status_t cache_generate_key_default( request_rec *r, apr_pool_t*p, char**key ) 

@@ -260,8 +260,8 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
                  "cache: running CACHE_OUT filter");
 
-    /* cache_read_entity_headers() was called in cache_select_url() */
-    cache_read_entity_body(cache->handle, r->pool, bb);
+    /* cache_recall_entity_headers() was called in cache_select_url() */
+    cache_recall_entity_body(cache->handle, r->pool, bb);
 
     /* This filter is done once it has served up its content */
     ap_remove_output_filter(f);
@@ -369,7 +369,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* pass the brigades into the cache, then pass them
          * up the filter stack
          */
-        rv = cache_write_entity_body(cache->handle, r, in);
+        rv = cache_store_entity_body(cache->handle, r, in);
         if (rv != APR_SUCCESS) {
             ap_remove_output_filter(f);
         }
@@ -708,9 +708,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /*
      * Write away header information to cache.
      */
-    rv = cache_write_entity_headers(cache->handle, r, info);
+    rv = cache_store_entity_headers(cache->handle, r, info);
     if (rv == APR_SUCCESS) {
-        rv = cache_write_entity_body(cache->handle, r, in);
+        rv = cache_store_entity_body(cache->handle, r, in);
     }
     if (rv != APR_SUCCESS) {
         ap_remove_output_filter(f);
