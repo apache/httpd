@@ -99,6 +99,24 @@ http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
       Tips</a> page for more information.</strong>
 </note>
 
+<p>Additional examples:</p>
+
+<p>To allow a few users to have <code>UserDir</code> directories, but
+not anyone else, use the following:</p>
+
+<example>
+UserDir disabled<br />
+UserDir enabled user1 user2 user3
+</example>
+
+<p>To allow most users to have <code>UserDir</code> directories, but
+deny this to a few, use the following:</p>
+
+<example>
+UserDir enabled<br />
+UserDir disabled user4 user5 user6
+</example>
+
 </usage>
 
 </directivesynopsis>
