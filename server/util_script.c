@@ -81,6 +81,7 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
+#if defined(OS2) || defined(WIN32)
 /* If a request includes query info in the URL (stuff after "?"), and
  * the query info does not contain "=" (indicative of a FORM submission),
  * then this routine is called to create the argument list to be passed
@@ -135,7 +136,7 @@ static char **create_argv(ap_context_t *p, char *path, char *user, char *group,
     av[idx] = NULL;
     return av;
 }
-
+#endif /* defined(OS2) || defined(WIN32) */
 
 static char *http2env(ap_context_t *a, char *w)
 {
