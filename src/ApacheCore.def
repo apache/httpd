@@ -321,4 +321,5 @@ EXPORTS
 	ap_exists_config_define   @314
 	ap_single_module_configure   @315
 	ap_single_module_init   @316
+	ap_make_etag   @317
 

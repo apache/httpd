@@ -190,10 +190,12 @@
  *                        as of this rev.  See scoreboard.h for documentation.
  * 19981211             - DSO changes -- added ap_single_module_configure()
  *                                    -- added ap_single_module_init()
+ * 19981229             - mod_negotiation overhaul -- added ap_make_etag()
+ *                        and added vlist_validator to request_rec.
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19981211
+#define MODULE_MAGIC_NUMBER_MAJOR 19981229
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

@@ -778,6 +778,7 @@ struct request_rec {
  * binary compatibility for some other reason.
  */
     unsigned expecting_100;     /* is client waiting for a 100 response? */
+    char *vlist_validator;      /* variant list validator (if negotiated) */
 };
 
 

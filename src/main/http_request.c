@@ -1270,6 +1270,7 @@ static request_rec *internal_internal_redirect(const char *new_uri, request_rec 
     new->no_cache        = r->no_cache;
     new->no_local_copy   = r->no_local_copy;
     new->read_length     = r->read_length;     /* We can only read it once */
+    new->vlist_validator = r->vlist_validator;
 
     ap_table_setn(new->subprocess_env, "REDIRECT_STATUS",
 	ap_psprintf(r->pool, "%d", r->status));

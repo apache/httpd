@@ -115,6 +115,7 @@ void ap_send_error_response(request_rec *r, int recursive_error);
 API_EXPORT(int) ap_set_content_length(request_rec *r, long length);
 API_EXPORT(int) ap_set_keepalive(request_rec *r);
 API_EXPORT(time_t) ap_rationalize_mtime(request_rec *r, time_t mtime);
+API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak);
 API_EXPORT(void) ap_set_etag(request_rec *r);
 API_EXPORT(void) ap_set_last_modified(request_rec *r);
 API_EXPORT(int) ap_meets_conditions(request_rec *r);

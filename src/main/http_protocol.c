@@ -469,7 +469,7 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
  * could be modified again in as short an interval.  We rationalize the
  * modification time we're given to keep it from being in the future.
  */
-API_EXPORT(void) ap_set_etag(request_rec *r)
+API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
 {
     char *etag;
     char *weak;
@@ -487,11 +487,11 @@ API_EXPORT(void) ap_set_etag(request_rec *r)
      * would be incorrect.
      */
     
-    weak = (r->request_time - r->mtime > 1) ? "" : "W/";
+    weak = ((r->request_time - r->mtime > 1) && !force_weak) ? "" : "W/";
 
     if (r->finfo.st_mode != 0) {
-	etag = ap_psprintf(r->pool,
-		    "%s\"%lx-%lx-%lx\"", weak,
+        etag = ap_psprintf(r->pool,
+                    "%s\"%lx-%lx-%lx\"", weak,
                     (unsigned long) r->finfo.st_ino,
                     (unsigned long) r->finfo.st_size,
                     (unsigned long) r->mtime);
@@ -499,6 +499,50 @@ API_EXPORT(void) ap_set_etag(request_rec *r)
     else {
         etag = ap_psprintf(r->pool, "%s\"%lx\"", weak,
                     (unsigned long) r->mtime);
+    }
+
+    return etag;
+}
+
+API_EXPORT(void) ap_set_etag(request_rec *r)
+{
+    char *etag;
+    char *variant_etag, *vlv;
+    int vlv_weak;
+
+    if (!r->vlist_validator) {
+        etag = ap_make_etag(r, 0);
+    }
+    else {
+        /* If we have a variant list validator (vlv) due to the
+         * response being negotiated, then we create a structured
+         * entity tag which merges the variant etag with the variant
+         * list validator (vlv).  This merging makes revalidation
+         * somewhat safer, ensures that caches which can deal with
+         * Vary will (eventually) be updated if the set of variants is
+         * changed, and is also a protocol requirement for transparent
+         * content negotiation.
+         */
+
+        /* if the variant list validator is weak, we make the whole
+         * structured etag weak.  If we would not, then clients could
+         * have problems merging range responses if we have different
+         * variants with the same non-globally-unique strong etag.
+         */
+
+        vlv = r->vlist_validator;
+        vlv_weak = (vlv[0] == 'W');
+               
+        variant_etag = ap_make_etag(r, vlv_weak);
+
+        /* merge variant_etag and vlv into a structured etag */
+
+        variant_etag[strlen(variant_etag) - 1] = '\0';
+        if (vlv_weak)
+            vlv += 3;
+        else
+            vlv++;
+        etag = ap_pstrcat(r->pool, variant_etag, ";", vlv, NULL);
     }
 
     ap_table_setn(r->headers_out, "ETag", etag);
@@ -2371,9 +2415,10 @@ void ap_send_error_response(request_rec *r, int recursive_error)
 	    ap_bputs("response from an upstream server.<P>\015\012", fd);
 	    break;
 	case VARIANT_ALSO_VARIES:
-	    ap_bvputs(fd, "A variant for the requested entity  ",
-		      ap_escape_html(r->pool, r->uri), " is itself a ",
-		      "transparently negotiable resource.<P>\n", NULL);
+	    ap_bvputs(fd, "A variant for the requested resource\n<PRE>\n",
+		      ap_escape_html(r->pool, r->uri),
+		      "\n</PRE>\nis itself a negotiable resource. "
+		      "This indicates a configuration error.<P>\n", NULL);
 	    break;
 	case HTTP_REQUEST_TIME_OUT:
 	    ap_bputs("I'm tired of waiting for your request.\n", fd);

@@ -1,5 +1,33 @@
 Changes with Apache 1.3.4
 
+  *) Major overhaul of mod_negotiation.c.
+     - cleanups to mod_negotiation comments and code structure
+     - made compliant with HTTP/1.1 proposed standard (rfc2068) and added
+       support for everything in the upcoming HTTP/1.1
+       revision (draft-ietf-http-v11-spec-rev-06.txt).
+         - language tag matching also handles tags with more than 2
+           levels like x-y-z
+         - empty Accept, Accept-Language, Accept-Charset headers are
+           processed correctly; previously an empty header would make all
+           values acceptable instead of unacceptable.
+         - allowed for q values in Accept-Encoding
+     - added support for transparent content negotiation (rfc2295 and
+       rfc2296) (though we do not implement all features in these drafts,
+       e.g. no feature negotiation).  Removed old experimental version.
+     - implemented 'structured entity tags' for better cache correctness
+       (structured entity tags ensure that caches which can deal with Vary
+       will (eventually) be updated if the set of variants on the server
+       is changed)
+         - this involved adding a vlist_validator element to request_rec
+         - this involved adding the ap_make_etag() function to the global API
+     - modified guessing of charsets used by Apache negotiation algorithm 
+       to guess 'no charset' if the variant is not a text/* type
+     - added code to sort multiviews variants into a canonical order so that
+       negotiation results are consistent across backup/restores and mirrors
+     - removed possibility of a type map file resolving to another type map
+       file as its best variant
+     [Koen Holtman, Roy Fielding, Lars Eilebrecht] PR#3451, 1987
+
   *) RFC2396 allows the syntax http://host:/path (with no port number)
      but the proxy disallowed it (ap_proxy_canon_netloc()).
      [David Kristol <dmk@bell-labs.com>] PR#3530
