@@ -476,7 +476,7 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
     else {
         provider = apr_palloc(cmd->pool, sizeof(ap_filter_provider_t));
 
-        if (match[0] == '!') {
+        if (*match == '!') {
             provider->not = 1;
             ++match;
         }
@@ -484,22 +484,22 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
             provider->not = 0;
         }
 
-        switch (match[0]) {
+        switch (*match++) {
         case '<':
             provider->match_type = INT_LT;
-            provider->match.number = atoi(match+1);
+            provider->match.number = atoi(match);
             break;
         case '>':
             provider->match_type = INT_GT;
-            provider->match.number = atoi(match+1);
+            provider->match.number = atoi(match);
             break;
         case '=':
             provider->match_type = INT_EQ;
-            provider->match.number = atoi(match+1);
+            provider->match.number = atoi(match);
             break;
         case '/':
             provider->match_type = REGEX_MATCH;
-            rxend = ap_strchr_c(match+1, '/');
+            rxend = ap_strchr_c(match, '/');
             if (!rxend) {
                   return "Bad regexp syntax";
             }
@@ -511,8 +511,8 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
             }
             provider->match.regex = ap_pregcomp(cmd->pool,
                                                 apr_pstrndup(cmd->pool,
-                                                             match+1,
-                                                             rxend-match-1),
+                                                             match,
+                                                             rxend-match),
                                                 flags);
             break;
         case '*':
@@ -521,13 +521,13 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *fname,
             break;
         case '$':
             provider->match_type = STRING_CONTAINS;
-            str = apr_pstrdup(cmd->pool, match+1);
+            str = apr_pstrdup(cmd->pool, match);
             ap_str_tolower(str);
             provider->match.string = str;
             break;
         default:
             provider->match_type = STRING_MATCH;
-            provider->match.string = apr_pstrdup(cmd->pool, match);
+            provider->match.string = apr_pstrdup(cmd->pool, match-1);
             break;
         }
         provider->frec = provider_frec;
