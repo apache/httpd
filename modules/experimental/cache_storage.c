@@ -156,6 +156,7 @@ int cache_select_url(request_rec *r, const char *types, char *url)
     const char *next = types;
     const char *type;
     apr_status_t rv;
+    cache_info *info;
     cache_request_rec *cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
                                                                           &cache_module);
 
@@ -166,13 +167,14 @@ int cache_select_url(request_rec *r, const char *types, char *url)
         type = ap_cache_tokstr(r->pool, next, &next);
         switch ((rv = cache_run_open_entity(cache->handle, type, url))) {
         case OK: {
+            info = &(cache->handle->cache_obj->info);
             /* XXX:
              * Handle being returned a collection of entities.
              */
 
             /* Has the cache entry expired? */
 #if 0
-            if (r->request_time > cache->handle... need to get info out of the cache... info.expire)
+            if (r->request_time > info->expire)
                 cache->fresh = 0;
             else
 #endif
@@ -213,10 +215,14 @@ apr_status_t cache_write_entity_body(cache_handle_t *h, apr_bucket_brigade *b)
 apr_status_t cache_read_entity_headers(cache_handle_t *h, request_rec *r, 
                                        apr_table_t **headers)
 {
+    cache_info *info = &(h->cache_obj->info);
+
     /* Build the header table from info in the info struct */
     *headers = apr_table_make(r->pool, 15);
 
     h->read_headers(h, r, *headers);
+
+    r->content_type = apr_pstrdup(r->pool, info->content_type);
 
     return APR_SUCCESS;
 }
