@@ -707,6 +707,7 @@ int          ssl_mutex_off(server_rec *);
 void         ssl_log_open(server_rec *, server_rec *, apr_pool_t *);
 void         ssl_log(server_rec *, int, const char *, ...);
 void         ssl_die(void);
+void         ssl_log_ssl_error(const char *, int, int, server_rec *);
 
 /*  Variables  */
 void         ssl_var_register(void);
