@@ -187,7 +187,10 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime)
  * caused by MIME folding (or broken clients) if fold != 0, and place it
  * in the buffer s, of size n bytes, without the ending newline.
  *
- * Returns -1 on error, or the length of s.  
+ * Returns: 
+ *     the length of s (normal case),
+ *     n               (buffer full),
+ *    -1               (other errors)
  *
  * Notes: Because the buffer uses 1 char for NUL, the most we can return is 
  *        (n - 1) actual characters.  
@@ -269,7 +272,7 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
              * redirects get a new req_cfg->bb
              */
 
-            return -1;
+            return n;
         }
         
         pos = last_char;        /* Point at the last character           */
