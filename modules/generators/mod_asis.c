@@ -68,8 +68,6 @@ static int asis_handler(request_rec *r)
     ap_file_t *f;
     ap_status_t status;
     const char *location;
-    FILE *thefile;         /* XXX leave these alone until we convert */
-    int thefd;             /* everything to use apr_file_t's. */ 
 
     r->allowed |= (1 << M_GET);
     if (r->method_number != M_GET)
@@ -87,10 +85,7 @@ static int asis_handler(request_rec *r)
 	return FORBIDDEN;
     }
 
-    ap_get_os_file(&thefd, f); 
-    thefile = fdopen(thefd, "r");
-    
-    ap_scan_script_header_err(r, thefile, NULL);
+    ap_scan_script_header_err(r, f, NULL);
     location = ap_table_get(r->headers_out, "Location");
 
     if (location && location[0] == '/' &&
@@ -113,8 +108,6 @@ static int asis_handler(request_rec *r)
 
     ap_send_http_header(r);
     if (!r->header_only) {
-        ap_off_t zero = 0;
-	ap_seek(f, APR_CUR, &zero);
 	ap_send_fd(f, r);
     }
 
