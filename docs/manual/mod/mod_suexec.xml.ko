@@ -26,7 +26,7 @@
 <status>Extension</status>
 <sourcefile>mod_suexec.c</sourcefile>
 <identifier>suexec_module</identifier>
-<compatibility>Available in Apache 2.0 and later</compatibility>
+<compatibility>아파치 2.0 이후부터</compatibility>
 
 
 <summary>

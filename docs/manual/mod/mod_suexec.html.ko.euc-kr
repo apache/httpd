@@ -29,7 +29,7 @@
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>suexec_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_suexec.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">지원:</a></th><td>Available in Apache 2.0 and later</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">지원:</a></th><td>아파치 2.0 이후부터</td></tr></table>
 <h3>요약</h3>
 
     <p>이 모듈은 <a href="../programs/suexec.html">suexec 지원
