@@ -264,22 +264,13 @@ int check_auth (request_rec *r) {
    return run_method (r, XtOffsetOf (module, auth_checker), 0);
 }
 
-/*
- * This should really do multiple passes, choosing wildcards last,
- * which would allow us to declare default_handler as a wildcard on
- * core_module.  Close enough for now...
- */
-
 int invoke_handler (request_rec *r)
 {
    module *modp;
    handler_rec *handp;
    char *content_type = r->content_type ? r->content_type : default_type (r);
-   char *handler = r->handler ? r->handler : r->content_type;
+   char *handler = r->handler ? r->handler : content_type;
   
-   if (!handler)
-       handler = default_type(r);
-
    /* Pass one --- direct matches */
    
    for (modp = top_module; modp; modp = modp->next) 
