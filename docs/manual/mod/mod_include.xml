@@ -88,8 +88,10 @@ Server Error Messages</a></seealso>
     possible. Many commands only allow a single attribute-value pair.
     Note that the comment terminator (<code>--&gt;</code>) should be
     preceded by whitespace to ensure that it isn't considered part of
-    an SSI token. The allowed elements are listed in the following
-    table:</p>
+    an SSI token. Note that the leading <code>&lt;!--#</code> is <em>one</em>
+    token and may not contain any whitespaces.</p>
+
+    <p>The allowed elements are listed in the following table:</p>
 
     <table border="1">
     <tr><th>Element</th><th>Description</th></tr>
