@@ -1355,6 +1355,9 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
     }
     else if (access_status == DECLINED && balancer != NULL) {
         /* All the workers are busy */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+          "proxy: all workers are busy.  Unable to serve %s",
+          *url);
         access_status = HTTP_SERVICE_UNAVAILABLE;
     }
     return access_status;
