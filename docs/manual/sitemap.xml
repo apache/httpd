@@ -147,6 +147,7 @@ Server on HPUX</page>
   <modulefile>mod_dav_fs.xml</modulefile>
   <modulefile>mod_deflate.xml</modulefile>
   <modulefile>mod_dir.xml</modulefile>
+  <modulefile>mod_disk_cache.xml</modulefile>
   <modulefile>mod_echo.xml</modulefile>
   <modulefile>mod_env.xml</modulefile>
   <modulefile>mod_example.xml</modulefile>
@@ -161,6 +162,7 @@ Server on HPUX</page>
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
   <modulefile>mod_logio.xml</modulefile>
+  <modulefile>mod_mem_cache.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
