@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/12/27 19:53:37 $]
+Last modified at [$Date: 2001/12/27 20:14:49 $]
 
 Release:
 
@@ -42,9 +42,6 @@ RELEASE SHOWSTOPPERS:
     * ap_directory_walk skips some per-dir config merge functions
       if there is no "<Directory />" block in the configuration
         Message-ID: <m3itbdiijq.fsf@rdu163-40-092.nc.rr.com>
-
-    * Segfault in worker MPM during child process exit
-        Message-ID: <3C29C868.5090509@pacbell.net>
 
     * Test suite failures:
       o perchild doesn't even build
