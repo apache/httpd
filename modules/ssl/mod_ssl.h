@@ -401,7 +401,7 @@ typedef struct {
     void           *pTmpKeys[SSL_TMP_KEY_MAX];
     apr_hash_t     *tPublicCert;
     apr_hash_t     *tPrivateKey;
-#ifdef HAVE_ENGINE_INIT
+#if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     const char     *szCryptoDevice;
 #endif
     struct {
