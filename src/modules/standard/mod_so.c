@@ -247,11 +247,21 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * symbol name.
      */
     if (!(modp = (module *)(ap_os_dso_sym(modhandle, modname)))) {
-	return ap_pstrcat(cmd->pool, "Can't find module ", modname,
-		       " in file ", filename, ":", ap_os_dso_error(), NULL);
+	return ap_pstrcat(cmd->pool, "Can't locate API module structure `", modname,
+		       "' in file ", szModuleFile, ": ", ap_os_dso_error(), NULL);
     }
     modi->modp = modp;
     modp->dynamic_load_handle = modhandle;
+
+    /* 
+     * Make sure the found module structure is really a module structure
+     * 
+     */
+    if (modp->magic != MODULE_MAGIC_COOKIE) {
+        return ap_pstrcat(cmd->pool, "API module structure `", modname,
+                          "' in file ", szModuleFile, " is garbled -"
+                          " perhaps this is not an Apache module DSO?", NULL);
+    }
 
     /* 
      * Add this module to the Apache core structures

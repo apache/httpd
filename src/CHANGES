@@ -1,4 +1,9 @@
 Changes with Apache 1.3.4
+
+  *) Added MODULE_MAGIC_COOKIE as the first field in a module structure to
+     allow us to distinguish between a garbled DSO (or even a file which isn't
+     an Apache module DSO at all) and a DSO which doesn't match the current
+     Apache API. [Ralf S. Engelschall] PR#3152
  
   *) Two minor enhancements to mod_rewrite: First RewriteRule now also
      supports the ``nocase|NC'' flag (as RewriteCond already does for ages) to

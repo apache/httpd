@@ -193,7 +193,10 @@
  * 19981229             - mod_negotiation overhaul -- added ap_make_etag()
  *                        and added vlist_validator to request_rec.
  * 19990101             - renamed macro escape_uri() to ap_escape_uri()
+ *                      - Added MODULE_MAGIC_COOKIE to identify module structures
  */
+
+#define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990101

@@ -186,6 +186,10 @@ typedef struct {
  */
 
 typedef struct module_struct {
+    unsigned long magic;        /* Magic Cookie to identify a module structure;
+                                 * It's mainly important for the DSO facility
+                                 * (see also mod_so).
+                                 */
     int version;		/* API version, *not* module version;
 				 * check that module is compatible with this
 				 * version of the server.
@@ -281,7 +285,8 @@ typedef struct module_struct {
  * signal an error). See src/include/ap_mmn.h for MMN version history.
  */
 
-#define STANDARD_MODULE_STUFF	MODULE_MAGIC_NUMBER_MAJOR, \
+#define STANDARD_MODULE_STUFF	MODULE_MAGIC_COOKIE, \
+				MODULE_MAGIC_NUMBER_MAJOR, \
 				MODULE_MAGIC_NUMBER_MINOR, \
 				-1, \
 				__FILE__, \
