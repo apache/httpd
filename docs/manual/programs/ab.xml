@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.5 $ -->
+<!-- $Revision: 1.6 $ -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -93,7 +93,7 @@
     <dt><code>-g <var>gnuplot-file</var></code></dt>
     <dd>Write all measured values out as a 'gnuplot' or TSV (Tab separate
     values) file. This file can easily be imported into packages like Gnuplot,
-    IDL, Mathematica, Igor or even Excell. The labels are on the first line of
+    IDL, Mathematica, Igor or even Excel. The labels are on the first line of
     the file. </dd>
 
     <dt><code>-h</code></dt>
