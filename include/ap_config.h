@@ -56,6 +56,7 @@
 #define AP_AC_CONFIG_H
 
 #include "ap_mmn.h"		/* MODULE_MAGIC_NUMBER_ */
+#include <resource.h>		/* rlim_t */
 
 /* Implemented flags for dynamic library bindings.
  *
@@ -243,6 +244,10 @@ extern int strncasecmp(const char *, const char *, unsigned);
 #define USE_MMAP_FILES 1
 #else
 #undef USE_MMAP_FILES
+#endif
+
+#ifndef rlim_t
+typedef unsigned long rlim_t;
 #endif
 
 #if defined(CHARSET_EBCDIC) && !defined(APACHE_XLATE)
