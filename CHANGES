@@ -1,5 +1,11 @@
 Changes with Apache 2.0.46
 
+  *) Code fixes, constness corrections and ssl_toolkit_compat.h updates
+     for SSLC and OpenSSL toolkit compatibility.  Still work remains to
+     be done to cripple features based on the limitations of RSA's binary 
+     distribution of their SSL-C toolkit.
+     [William Rowe, Madhusudan Mathihalli, Jeff Trawick]
+
   *) Linux 2.4+: If Apache is started as root and you code 
      CoreDumpDirectory, coredumps are enabled via the prctl() syscall.
      [Greg Ames]

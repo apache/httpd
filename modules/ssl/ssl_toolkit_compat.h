@@ -94,8 +94,17 @@
 
 #define MODSSL_BIO_CB_ARG_TYPE const char
 #define MODSSL_CRYPTO_CB_ARG_TYPE const char
+#if (OPENSSL_VERSION_NUMBER < 0x00907000)
+#define MODSSL_INFO_CB_ARG_TYPE SSL*
+#else
+#define MODSSL_INFO_CB_ARG_TYPE const SSL*
+#endif
+#define MODSSL_CLIENT_CERT_CB_ARG_TYPE X509
+#define MODSSL_PCHAR_CAST
 
 #define modssl_X509_verify_cert X509_verify_cert
+
+typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 
 #if (OPENSSL_VERSION_NUMBER < 0x00904000)
 #define modssl_PEM_read_bio_X509(b, x, cb, arg) PEM_read_bio_X509(b, x, cb)
@@ -119,9 +128,11 @@
 
 #define HAVE_SSL_RAND_EGD /* since 9.5.1 */
 
+#ifdef HAVE_SSL_X509V3_H
 #define HAVE_SSL_X509V3_EXT_d2i
+#endif
 
-#else /* RSA sslc */
+#elif defined (SSLC_VERSION_NUMBER) /* RSA */
 
 /* sslc does not support this function, OpenSSL has since 9.5.1 */
 #define RAND_status() 1
@@ -135,6 +146,11 @@
 
 #define MODSSL_BIO_CB_ARG_TYPE char
 #define MODSSL_CRYPTO_CB_ARG_TYPE char
+#define MODSSL_INFO_CB_ARG_TYPE SSL*
+#define MODSSL_CLIENT_CERT_CB_ARG_TYPE void
+#define MODSSL_PCHAR_CAST (char *)
+
+typedef int (modssl_read_bio_cb_fn)(char*,int,int);
 
 #define modssl_X509_verify_cert(c) X509_verify_cert(c, NULL)
 
@@ -160,7 +176,7 @@
 #define PEM_F_DEF_CALLBACK PEM_F_DEF_CB
 #endif
 
-#if SSLC_VERSION < 0x2000
+#if SSLC_VERSION_NUMBER < 0x2000
 
 #define X509_STORE_CTX_set_depth(st, d)    
 #define X509_CRL_get_lastUpdate(x) ((x)->crl->lastUpdate)
@@ -173,37 +189,47 @@
 
 #define NO_SSL_X509V3_H
 
-#endif
+#else /* SSLC_VERSION_NUMBER >= 0x2000 */
 
-/* BEGIN GENERATED SECTION */
-#define sk_SSL_CIPHER_free sk_free
+#define CRYPTO_malloc_init R_malloc_init
+
+#define EVP_cleanup() 
+
+#endif /* SSLC_VERSION_NUMBER >= 0x2000 */
+
+typedef void (*modssl_popfree_fn)(char *data);
+
 #define sk_SSL_CIPHER_dup sk_dup
-#define sk_SSL_CIPHER_num sk_num
 #define sk_SSL_CIPHER_find(st, data) sk_find(st, (void *)data)
+#define sk_SSL_CIPHER_free sk_free
+#define sk_SSL_CIPHER_num sk_num
 #define sk_SSL_CIPHER_value (SSL_CIPHER *)sk_value
 #define sk_X509_num sk_num
 #define sk_X509_push sk_push
+#define sk_X509_pop_free(st, free) sk_pop_free((STACK*)(st), (modssl_popfree_fn)(free))
 #define sk_X509_value (X509 *)sk_value
-#define sk_X509_INFO_value (X509_INFO *)sk_value
 #define sk_X509_INFO_free sk_free
-#define sk_X509_INFO_pop_free sk_pop_free 
+#define sk_X509_INFO_pop_free(st, free) sk_pop_free((STACK*)(st), (modssl_popfree_fn)(free))
 #define sk_X509_INFO_num sk_num
 #define sk_X509_INFO_new_null sk_new_null
+#define sk_X509_INFO_value (X509_INFO *)sk_value
+#define sk_X509_NAME_find(st, data) sk_find(st, (void *)data)
+#define sk_X509_NAME_free sk_free
+#define sk_X509_NAME_new sk_new
 #define sk_X509_NAME_num sk_num
 #define sk_X509_NAME_push(st, data) sk_push(st, (void *)data)
 #define sk_X509_NAME_value (X509_NAME *)sk_value
-#define sk_X509_NAME_free sk_free
-#define sk_X509_NAME_new sk_new
-#define sk_X509_NAME_find(st, data) sk_find(st, (void *)data)
 #define sk_X509_NAME_ENTRY_num sk_num
 #define sk_X509_NAME_ENTRY_value (X509_NAME_ENTRY *)sk_value
 #define sk_X509_NAME_set_cmp_func sk_set_cmp_func
 #define sk_X509_REVOKED_num sk_num
 #define sk_X509_REVOKED_value (X509_REVOKED *)sk_value
-#define sk_X509_pop_free sk_pop_free
-/* END GENERATED SECTION */
 
-#endif /* OPENSSL_VERSION_NUMBER */
+#else /* ! OPENSSL_VERSION_NUMBER && ! SSLC_VERSION_NUMBER */
+
+#error "Unrecognized SSL Toolkit!"
+
+#endif /* ! OPENSSL_VERSION_NUMBER && ! SSLC_VERSION_NUMBER */
 
 #ifndef modssl_set_verify
 #define modssl_set_verify(ssl, verify, cb) \

@@ -629,7 +629,7 @@ int ssl_hook_Access(request_rec *r)
                  * we put it back here for the purpose of quick_renegotiation.
                  */
                 cert_stack = sk_new_null();
-                sk_X509_push(cert_stack, cert);
+                sk_X509_push(cert_stack, MODSSL_PCHAR_CAST cert);
             }
 
             if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
@@ -1526,7 +1526,7 @@ static void modssl_proxy_info_log(server_rec *s,
     *pkey = info->x_pkey->dec_pkey; \
     EVP_PKEY_reference_inc(*pkey)
 
-int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey) 
+int ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey) 
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s = c->base_server;
@@ -1740,7 +1740,7 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
  * SSL handshake and does SSL record layer stuff. We use it to
  * trace OpenSSL's processing in out SSL logfile.
  */
-void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
+void ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE ssl, int where, int rc)
 {
     conn_rec *c;
     server_rec *s;

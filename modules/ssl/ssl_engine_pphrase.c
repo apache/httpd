@@ -142,7 +142,11 @@ static apr_file_t *readtty = NULL;
  */
 static server_rec *ssl_pphrase_server_rec = NULL;
 
+#ifdef SSLC_VERSION_NUMBER
+int ssl_pphrase_Handle_CB(char *, int, int);
+#else
 int ssl_pphrase_Handle_CB(char *, int, int, void *);
+#endif
 
 static char *pphrase_array_get(apr_array_header_t *arr, int idx)
 {
@@ -635,8 +639,14 @@ static int pipe_get_passwd_cb(char *buf, int length, char *prompt, int verify)
     return 0;
 }
 
+#ifdef SSLC_VERSION_NUMBER
+int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify)
+{
+    void *srv = ssl_pphrase_server_rec;
+#else
 int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
 {
+#endif
     SSLModConfigRec *mc;
     server_rec *s;
     apr_pool_t *p;
@@ -651,11 +661,6 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     BOOL *pbPassPhraseDialogOnce;
     char *cpp;
     int len = -1;
-
-#ifndef OPENSSL_VERSION_NUMBER
-    /* make up for sslc flaw */
-    srv = ssl_pphrase_server_rec;
-#endif
 
     mc = myModConfig((server_rec *)srv);
 

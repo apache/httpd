@@ -109,7 +109,19 @@
 
 #define MOD_SSL_VERSION AP_SERVER_BASEREVISION
 
-/* OpenSSL headers */
+#ifdef HAVE_SSLC
+  
+#include <bio.h>
+#include <ssl.h>
+#include <err.h>
+#include <x509.h>
+#include <pem.h>
+#include <evp.h>
+#include <objects.h>
+#include <sslc.h>
+
+#else /* !HAVE_SSLC (implicit HAVE_OPENSSL) */
+
 #include <ssl.h>
 #include <err.h>
 #include <x509.h>
@@ -120,14 +132,15 @@
 #ifdef SSL_EXPERIMENTAL_ENGINE
 #include <engine.h>
 #endif
-
-#include "ssl_toolkit_compat.h"
-
 #ifdef HAVE_SSL_X509V3_H
 #include <x509v3.h>
 #endif
 
+#endif /* !HAVE_SSLC (implicit HAVE_OPENSSL) */
+
+
 /* mod_ssl headers */
+#include "ssl_toolkit_compat.h"
 #include "ssl_expr.h"
 #include "ssl_util_ssl.h"
 #include "ssl_util_table.h"
@@ -601,11 +614,11 @@ RSA         *ssl_callback_TmpRSA(SSL *, int, int);
 DH          *ssl_callback_TmpDH(SSL *, int, int);
 int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
 int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, conn_rec *);
-int          ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey);
+int          ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey);
 int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
-void         ssl_callback_LogTracingState(SSL *, int, int);
+void         ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE, int, int);
 
 /*  Session Cache Support  */
 void         ssl_scache_init(server_rec *, apr_pool_t *);

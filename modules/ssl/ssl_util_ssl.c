@@ -107,7 +107,7 @@ void SSL_set_app_data2(SSL *ssl, void *arg)
 **  _________________________________________________________________
 */
 
-X509 *SSL_read_X509(char* filename, X509 **x509, int (*cb)(char*,int,int,void*))
+X509 *SSL_read_X509(char* filename, X509 **x509, modssl_read_bio_cb_fn *cb)
 {
     X509 *rc;
     BIO *bioS;
@@ -158,7 +158,7 @@ static EVP_PKEY *d2i_PrivateKey_bio(BIO *bio, EVP_PKEY **key)
 }
 #endif
 
-EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, int (*cb)(char*,int,int,void*), void *s)
+EVP_PKEY *SSL_read_PrivateKey(char* filename, EVP_PKEY **key, modssl_read_bio_cb_fn *cb, void *s)
 {
     EVP_PKEY *rc;
     BIO *bioS;
@@ -430,7 +430,7 @@ BOOL SSL_X509_INFO_load_file(apr_pool_t *ptemp,
         return FALSE;
     }
 
-    if (BIO_read_filename(in, filename) <= 0) {
+    if (BIO_read_filename(in, MODSSL_PCHAR_CAST filename) <= 0) {
         BIO_free(in);
         return FALSE;
     }
@@ -493,7 +493,7 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
  * should be sent to the peer in the SSL Certificate message.
  */
 int SSL_CTX_use_certificate_chain(
-    SSL_CTX *ctx, char *file, int skipfirst, int (*cb)(char*,int,int,void*))
+    SSL_CTX *ctx, char *file, int skipfirst, modssl_read_bio_cb_fn *cb)
 {
     BIO *bio;
     X509 *x509;

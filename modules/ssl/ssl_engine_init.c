@@ -554,8 +554,8 @@ static void ssl_init_ctx_verify(server_rec *s,
                      "Configuring client authentication");
 
         if (!SSL_CTX_load_verify_locations(ctx,
-                                           mctx->auth.ca_cert_file,
-                                           mctx->auth.ca_cert_path))
+                         MODSSL_PCHAR_CAST mctx->auth.ca_cert_file,
+                         MODSSL_PCHAR_CAST mctx->auth.ca_cert_path))
         {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                     "Unable to configure verify locations "
@@ -612,7 +612,7 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
                  "Configuring permitted SSL ciphers [%s]", 
                  suite);
 
-    if (!SSL_CTX_set_cipher_list(ctx, suite)) {
+    if (!SSL_CTX_set_cipher_list(ctx, MODSSL_PCHAR_CAST suite)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                 "Unable to configure permitted SSL ciphers");
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
@@ -1072,10 +1072,17 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     }
 }
 
+#ifdef SSLC_VERSION_NUMBER
+static int ssl_init_FindCAList_X509NameCmp(char **a, char **b)
+{
+    return(X509_NAME_cmp((void*)*a, (void*)*b));
+}
+#else
 static int ssl_init_FindCAList_X509NameCmp(X509_NAME **a, X509_NAME **b)
 {
     return(X509_NAME_cmp(*a, *b));
 }
+#endif
 
 static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
                                 server_rec *s, const char *file)
@@ -1083,7 +1090,8 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
     int n;
     STACK_OF(X509_NAME) *sk;
 
-    sk = (STACK_OF(X509_NAME) *)SSL_load_client_CA_file(file);
+    sk = (STACK_OF(X509_NAME) *)
+             SSL_load_client_CA_file(MODSSL_PCHAR_CAST file);
 
     if (!sk) {
         return;
