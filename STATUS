@@ -2,8 +2,11 @@ Apache 1.3 STATUS:
 
 Release:
 
-    1.3.1: In development. Plan to release the next days...
-           Jim offers to be RM.
+    1.3.1: In development. Hopeful for rolling tarball on Monday
+           evening, with release a day or two later.  This depends on
+	   Win32 working and being ready.
+
+           Does Jim offer to be RM?
 
     1.3.0: Tagged and rolled on June 1. Announced and Released on the 6th.
            
@@ -30,12 +33,10 @@ RELEASE SHOWSTOPPERS:
 
 WIN32 1.3 RELEASE SHOWSTOPPERS:
 
-    * SECURITY: numerous uses of strcpy and strcat have potential
-	for buffer overflow, someone should rewrite or verify
-	they're safe
-
     * Win95: when authentication is required for directory /foobar/, direct 
       access to /foobar/bletch is permitted.  PR #2145
+
+	UPDATE: may be false alarm, probably shouldn't hole 1.3.1.
 
 Documentation that needs writing:
 
@@ -277,9 +278,6 @@ Win32 specific issues:
 
  Help:
 
-    * SECURITY: check if the magic con/aux/nul/etc names do anything
-	really bad
-
     * chdir() for CGI scripts and mod_include #exec needs to be 
       re-implemented now that CreateProcess is being used.
 
@@ -346,7 +344,6 @@ Win32 specific issues:
 
       That _really_ sucks.  Can we recommend running Apache as some 
       other user?
-
 
     * need a crypt() of some sort.
 	- sources are easy; problem is export restrictions on DES
