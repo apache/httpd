@@ -345,7 +345,8 @@ static int32 worker_thread(void * dummy)
     sigfillset(&sig_mask);
     sigprocmask(SIG_BLOCK, &sig_mask, NULL);
 
-    apr_pool_create(&ptrans, tpool);
+    apr_pool_create_ex(&ptrans, tpool, NULL, APR_POOL_FNEW_ALLOCATOR);
+    apr_pool_tag(ptrans, "transaction");
 
     apr_lock_acquire(worker_thread_count_mutex);
     worker_thread_count++;
@@ -359,9 +360,9 @@ static int32 worker_thread(void * dummy)
         apr_poll_socket_add(pollset, listening_sockets[n], APR_POLLIN);
 
     while (1) {
-        /* If we're here, then chances are (unless we're the first thread created) we're going
-           to be held up on the accept_muetx, so doing this here shouldn't be a peformance hit.
-           If it is, you probably need more threads...
+        /* If we're here, then chances are (unless we're the first thread created) 
+         * we're going to be held up in the accept mutex, so doing this here
+         * shouldn't hurt performance.
          */
 
         this_worker_should_exit |= (ap_max_requests_per_thread != 0) && (requests_this_child <= 0);
