@@ -1680,14 +1680,17 @@ static const char *set_group(cmd_parms *cmd, void *dummy, char *arg)
 static const char *set_server_root(cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
     if (err != NULL) {
         return err;
     }
 
+    arg = ap_os_canonical_filename(cmd->pool, arg);
+
     if (!ap_is_directory(arg)) {
         return "ServerRoot must be a valid directory";
     }
-    ap_cpystrn(ap_server_root, ap_os_canonical_filename(cmd->pool, arg),
+    ap_cpystrn(ap_server_root, arg,
 	       sizeof(ap_server_root));
     return NULL;
 }
