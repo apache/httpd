@@ -125,6 +125,7 @@
  *         'X' = connection aborted before the response completed.
  *         '+' = connection may be kept alive after the response is sent.
  *         '-' = connection will be closed after the response is sent.
+ * %...{FOOBAR}C:  The contents of the HTTP cookie FOOBAR
  * %...{FOOBAR}e:  The contents of the environment variable FOOBAR
  * %...f:  filename
  * %...h:  remote host
@@ -415,6 +416,27 @@ static const char *log_env_var(request_rec *r, char *a)
     return apr_table_get(r->subprocess_env, a);
 }
 
+static const char *log_cookie(request_rec *r, char *a)
+{
+    const char *cookies;
+    const char *start_cookie;
+
+    if ((cookies = apr_table_get(r->headers_in, "Cookie"))) {
+        if ((start_cookie = ap_strstr_c(cookies,a))) {
+            char *cookie, *end_cookie;
+            start_cookie += strlen(a) + 1; /* cookie_name + '=' */
+            cookie = apr_pstrdup(r->pool, start_cookie);
+            /* kill everything in cookie after ';' */
+            end_cookie = strchr(cookie, ';'); 
+            if (end_cookie) {
+                *end_cookie = '\0';
+            }
+            return cookie;
+        }
+    }
+    return NULL;
+}
+
 static const char *log_request_time(request_rec *r, char *a)
 {
     apr_exploded_time_t xt;
@@ -591,6 +613,9 @@ static struct log_item_list {
     },
     {
         'c', log_connection_status, 0
+    },
+    {
+        'C', log_cookie, 0
     },
     {
         '\0'
