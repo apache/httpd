@@ -1347,9 +1347,7 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 #endif /* APR_HAS_MMAP */
 
 typedef struct {
-    char *buf;
-    char *cur;
-    apr_size_t avail;
+    apr_bucket_brigade *bb;
 } old_write_filter_ctx;
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
@@ -1359,39 +1357,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
 
     AP_DEBUG_ASSERT(ctx);
 
-    if (ctx->buf != NULL) {
-        apr_size_t nbyte = ctx->cur - ctx->buf;
-
-        if (nbyte != 0) {
-            /* whatever is coming down the pipe (we don't care), we
-               can simply insert our buffered data at the front and
-               pass the whole bundle down the chain. */
-            apr_bucket *b = apr_bucket_heap_create(ctx->buf, nbyte, 0, NULL);
-            APR_BRIGADE_INSERT_HEAD(bb, b);
-            ctx->buf = NULL;
-        }
+    if (ctx->bb != 0) {
+        /* whatever is coming down the pipe (we don't care), we
+         * can simply insert our buffered data at the front and
+         * pass the whole bundle down the chain. 
+         */
+        APR_BRIGADE_CONCAT(ctx->bb, bb);
     }
 
-    return ap_pass_brigade(f->next, bb);
-}
-
-static apr_status_t flush_buffer(request_rec *r, old_write_filter_ctx *ctx,
-                                 const char *extra, apr_size_t extra_len)
-{
-    apr_bucket_brigade *bb = apr_brigade_create(r->pool);
-    apr_size_t nbyte = ctx->cur - ctx->buf;
-    apr_bucket *b = apr_bucket_heap_create(ctx->buf, nbyte, 0, NULL);
-
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    ctx->buf = NULL;
-
-    /* if there is extra data, then send that, too */
-    if (extra != NULL) {
-        b = apr_bucket_transient_create(extra, extra_len);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-    }
-
-    return ap_pass_brigade(r->output_filters, bb);
+    return ap_pass_brigade(f->next, ctx->bb);
 }
 
 static apr_status_t buffer_output(request_rec *r,
@@ -1399,14 +1373,13 @@ static apr_status_t buffer_output(request_rec *r,
 {
     ap_filter_t *f;
     old_write_filter_ctx *ctx;
-    apr_size_t amt;
-    apr_status_t status;
 
     if (len == 0)
         return APR_SUCCESS;
 
-    /* ### future optimization: record some flags in the request_rec to
-       ### say whether we've added our filter, and whether it is first. */
+    /* future optimization: record some flags in the request_rec to
+     * say whether we've added our filter, and whether it is first.
+     */
 
     /* this will typically exit on the first test */
     for (f = r->output_filters; f != NULL; f = f->next)
@@ -1416,11 +1389,12 @@ static apr_status_t buffer_output(request_rec *r,
         /* our filter hasn't been added yet */
         ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ap_add_output_filter("OLD_WRITE", ctx, r, r->connection);
+        f = r->output_filters;
     }
 
     /* if the first filter is not our buffering filter, then we have to
-       deliver the content through the normal filter chain */
-    if (strcmp("OLD_WRITE", r->output_filters->frec->name) != 0) {
+     * deliver the content through the normal filter chain */
+    if (f != r->output_filters) {
         apr_bucket_brigade *bb = apr_brigade_create(r->pool);
         apr_bucket *b = apr_bucket_transient_create(str, len);
         APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -1431,42 +1405,11 @@ static apr_status_t buffer_output(request_rec *r,
     /* grab the context from our filter */
     ctx = r->output_filters->ctx;
 
-    /* if there isn't a buffer in the context yet, put one there. */
-    if (ctx->buf == NULL) {
-        /* use the heap so it will get free'd after being flushed */
-        ctx->avail = AP_MIN_BYTES_TO_WRITE;
-        ctx->buf = ctx->cur = malloc(ctx->avail);
+    if (ctx->bb == NULL) {
+        ctx->bb = apr_brigade_create(r->pool);
     }
 
-    /* squeeze the data into the existing buffer */
-    if (len <= ctx->avail) {
-        memcpy(ctx->cur, str, len);
-        ctx->cur += len;
-        if ((ctx->avail -= len) == 0)
-            return flush_buffer(r, ctx, NULL, 0);
-        return APR_SUCCESS;
-    }
-
-    /* the new content can't fit in the existing buffer */
-
-    if (len >= AP_MIN_BYTES_TO_WRITE) {
-        /* it is really big. send what we have, and the new stuff. */
-        return flush_buffer(r, ctx, str, len);
-    }
-
-    /* the new data is small. put some into the current buffer, flush it,
-       and then drop the remaining into a new buffer. */
-    amt = ctx->avail;
-    memcpy(ctx->cur, str, amt);
-    ctx->cur += amt;
-    ctx->avail = 0;
-    if ((status = flush_buffer(r, ctx, NULL, 0)) != APR_SUCCESS)
-        return status;
-
-    ctx->buf = malloc(AP_MIN_BYTES_TO_WRITE);
-    memcpy(ctx->buf, str + amt, len - amt);
-    ctx->cur = ctx->buf + (len - amt);
-    ctx->avail = AP_MIN_BYTES_TO_WRITE - (len - amt);
+    ap_fwrite(f->next, ctx->bb, str, len);
 
     return APR_SUCCESS;
 }
