@@ -1695,9 +1695,9 @@ static const char *get_canned_error_string(int status,
 		                 ap_escape_html(r->pool, r->uri),
 		                 " could not be found on this server.</p>\n",
                          NULL);
-        return(add_optional_notes(r, s1, "variant-list", ""));
+            return(add_optional_notes(r, s1, "variant-list", ""));
 	case HTTP_MULTIPLE_CHOICES:
-        return(add_optional_notes(r, "", "variant-list", ""));
+            return(add_optional_notes(r, "", "variant-list", ""));
 	case HTTP_LENGTH_REQUIRED:
 	    s1 = apr_pstrcat(p, 
                         "<p>A request of the requested method ", 
