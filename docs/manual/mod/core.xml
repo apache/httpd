@@ -2509,6 +2509,9 @@ is accessed by an incompatible browser</description>
     "mailto:" reference to the <directive
     module="core">ServerAdmin</directive> of the referenced
     document.</p>
+
+    <p>After version 2.0.44, the details of the server version number
+    presented are controlled by the ServerTokens directive.</p>
 </usage>
 <seealso><directive module="core">ServerTokens</directive></seealso>
 </directivesynopsis>
@@ -2560,6 +2563,9 @@ is accessed by an incompatible browser</description>
 
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.</p>
+
+    <p>After version 2.0.44, this directive also controls the
+    information presented by the ServerSignature directive.</p>
 </usage>
 <seealso><directive module="core">ServerSignature</directive></seealso>
 </directivesynopsis>

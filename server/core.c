@@ -2265,7 +2265,8 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
     apr_snprintf(sport, sizeof sport, "%u", (unsigned) ap_get_server_port(r));
 
     if (conf->server_signature == srv_sig_withmail) {
-        return apr_pstrcat(r->pool, prefix, "<address>" AP_SERVER_BASEVERSION
+        return apr_pstrcat(r->pool, prefix, "<address>", 
+                           ap_get_server_version(),
                            " Server at <a href=\"mailto:",
                            r->server->server_admin, "\">",
                            ap_escape_html(r->pool, ap_get_server_name(r)),
@@ -2273,7 +2274,7 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
                            "</address>\n", NULL);
     }
 
-    return apr_pstrcat(r->pool, prefix, "<address>" AP_SERVER_BASEVERSION
+    return apr_pstrcat(r->pool, prefix, "<address>", ap_get_server_version(),
                        " Server at ",
                        ap_escape_html(r->pool, ap_get_server_name(r)),
                        " Port ", sport,
