@@ -89,10 +89,10 @@ static mem_cache_conf *sconf;
 
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
-static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *i);
-static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
-static apr_status_t read_headers(cache_handle_t *h, request_rec *r);
-static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
+static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *i);
+static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+static apr_status_t recall_headers(cache_handle_t *h, request_rec *r);
+static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
 static void cleanup_cache_object(cache_object_t *obj);
 
@@ -372,7 +372,7 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     if (len == -1) {
         /* Caching a streaming response. Assume the response is
          * less than or equal to max_streaming_buffer_size. We will
-         * correct all the cache size counters in write_body once
+         * correct all the cache size counters in store_body once
          * we know exactly know how much we are caching.
          */
         len = sconf->max_streaming_buffer_size;
@@ -471,10 +471,10 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 
     /* Populate the cache handle */
     h->cache_obj = obj;
-    h->read_body = &read_body;
-    h->read_headers = &read_headers;
-    h->write_body = &write_body;
-    h->write_headers = &write_headers;
+    h->recall_body = &recall_body;
+    h->recall_headers = &recall_headers;
+    h->store_body = &store_body;
+    h->store_headers = &store_headers;
     h->remove_entity = &remove_entity;
 
     return OK;
@@ -526,13 +526,13 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
     }
 
     /* Initialize the cache_handle */
-    h->read_body = &read_body;
-    h->read_headers = &read_headers;
-    h->write_body = &write_body;
-    h->write_headers = &write_headers;
+    h->recall_body = &recall_body;
+    h->recall_headers = &recall_headers;
+    h->store_body = &store_body;
+    h->store_headers = &store_headers;
     h->remove_entity = &remove_entity;
     h->cache_obj = obj;
-    h->req_hdrs = NULL;  /* Pick these up in read_headers() */
+    h->req_hdrs = NULL;  /* Pick these up in recall_headers() */
     return OK;
 }
 
@@ -665,7 +665,7 @@ static int remove_url(const char *type, const char *key)
     return OK;
 }
 
-static apr_status_t read_headers(cache_handle_t *h, request_rec *r) 
+static apr_status_t recall_headers(cache_handle_t *h, request_rec *r) 
 {
     int rc;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
@@ -700,7 +700,7 @@ static apr_status_t read_headers(cache_handle_t *h, request_rec *r)
     return rc;
 }
 
-static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb) 
+static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb) 
 {
     apr_bucket *b;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
@@ -723,7 +723,7 @@ static apr_status_t read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_briga
 }
 
 
-static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
+static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *info)
 {
     cache_object_t *obj = h->cache_obj;
     mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
@@ -820,7 +820,7 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
     return APR_SUCCESS;
 }
 
-static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
+static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b) 
 {
     apr_status_t rv;
     cache_object_t *obj = h->cache_obj;
