@@ -290,10 +290,12 @@ Win32 specific issues:
     * we don't mmap on NT.  Use TransmitFile?
 
     * CGIs
-	- simultaneous execution problem
+        - hangs on multiple CGI execution?  PR#1607,1129
+    	    Marc can't repeat...
 	- docs on how they work w/scripts
 	- use registry to find interpreter?
 	- WTF is the buffering coming from?
+	    - we don't have a way to make non-blocking files on NT!
 
     * performance
 
@@ -338,3 +340,6 @@ Win32 specific issues:
         - mod_example isn't multithreadreded
 
     * do something to disable bogus warnings
+
+
+
