@@ -159,7 +159,7 @@ else
 	    ;;
 
 	SINIX*)
-	    echo "${MACHINE}-whatever-sysv4"; exit 0
+	    echo "${MACHINE}-sni-sysv4"; exit 0
 	    ;;
 
 	library:*)
