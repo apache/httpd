@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!DOCTYPE xml:manual [ <!ENTITY nbsp "&#160;"> ]>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_deflate</name>
+<description>Compress content before
+    it is delivered to the client</description>
+<status>experimental</status>
+<sourcefile>mod_deflate.c</sourcefile>
+<identifier>deflate_module</identifier>
+
+<summary>
+    <p>The experimental <module>mod_deflate</module> module provides
+    the <code>DEFLATE</code> output filter that allows output from
+    your server to be compressed before being sent to the client over
+    the network.</p>
+</summary>
+<seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
+<seealso><directive module="core">SetOutputFilter</directive></seealso>
+
+<section><title>Enabling Compression</title>
+
+    <p>Compression is implemented by the <code>DEFLATE</code>
+    <a href="../filter.html">filter</a>.  The following directive
+    will enable compression for documents in the container where it
+    is placed:</p>
+    <p><strong>Most popular browsers can not handle compression of all content
+        so you may want to enable the 'gzip-only-text/html' note (see below)
+    </strong></p>
+
+<example>SetEnv gzip-only-text/html 1<br />
+SetOutputFilter DEFLATE
+</example>
+
+    <p>Here is an example of enabling compression for the Apache
+    documentation:</p>
+
+<example>
+&lt;Directory "/your-server-root/manual"&gt;<br />
+      SetEnv gzip-only-text/html 1<br />
+      SetOutputFilter DEFLATE<br />
+&lt;/Directory&gt;
+</example>
+</section>
+
+<directivesynopsis>
+<name>DeflateFilterNote</name>
+<description>Places the compression ratio in a note for logging</description>
+<syntax>DeflateFilterNote <em>notename</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>The <directive>DeflateFilterNote</directive> directive
+    specifies that a note about compression ratios should be attached
+    to the request.  The name of the note is the value specified for
+    the directive.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateWindowSize</name>
+<description>Zlib compression window size</description>
+<syntax>DeflateWindowSize <em>value</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <!-- XXX: Ummm... What unit??? -->
+    <p>The <directive>DeflateWindowSize</directive> directive specifies the
+    zlib compression window size.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DeflateMemLevel</name>
+<description>Amount of memory available to zlib for compression</description>
+<syntax>DeflateMemLevel <em>value</em></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <!-- XXX: Ummm... What unit??? -->
+    <p>The <directive>DeflateMemLevel</directive> directive specifies
+    the amount of memory available to zlib for compression.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
