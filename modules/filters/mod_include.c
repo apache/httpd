@@ -2660,7 +2660,6 @@ static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
     result->default_time_fmt = DEFAULT_TIME_FORMAT;
     result->xbithack = xbh;
     return result;
-    return result;
 }
 
 static const char *set_xbithack(cmd_parms *cmd, void *xbp, const char *arg)
