@@ -5,6 +5,8 @@
 *.dsw
 ApacheModuleAuthAnonD
 ApacheModuleAuthAnonR
+ApacheModuleAuthDBMD
+ApacheModuleAuthDBMR
 ApacheModuleAuthDigestD
 ApacheModuleAuthDigestR
 ApacheModuleCERNMetaD

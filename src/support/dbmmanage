@@ -112,7 +112,7 @@ sub need_md5_crypt {
         print STDERR <<MD5ERR;
 dbmmanage MD5 passwords require the module Crypt::PasswdMD5 available from CPAN
  
-    http://www.cpan.org/modules/by-module/Crypt/PasswdMD5-1.1.tar.gz
+    http://www.cpan.org/modules/by-module/Crypt/Crypt-PasswdMD5-1.1.tar.gz
  
 Please install Crypt::PasswdMD5 and try again, or use a different crypt option:
 
