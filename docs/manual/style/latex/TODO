@@ -24,8 +24,6 @@ Some things that need to be done with the LaTeX transforms:
 - Fix page references on "external" directives
   (<directivesynopsis location=...)
 
-- External URL references containing a "#" are broken.
-
 - Hundreds of other little problems with presentation, cross-referencing,
   etc.
 
