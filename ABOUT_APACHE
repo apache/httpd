@@ -107,7 +107,7 @@ Other major contributors
 
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:
-<http://www.zyzzyva.com/module_registry/>, and their authors frequently
+<http://modules.apache.org/>, and their authors frequently
 contribute ideas, patches, and testing.  In particular, Doug MacEachern
 (mod_perl) and Rasmus Lerdorf (mod_php).
 
