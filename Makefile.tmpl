@@ -322,7 +322,7 @@ install-include:
 	@echo "===> [include: Installing Apache C header files]"
 	$(UMASK) 022; $(CP) $(TOP)/$(SRC)/include/*.h $(root)$(includedir)/
 	@osdir=`grep '^OSDIR=' $(TOP)/$(SRC)/Makefile.config | sed -e 's:^OSDIR=.*/os:os:'`; \
-	echo "$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(includedir)/"; \
+	echo "$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/"; \
 	$(UMASK) 022; $(CP) $(TOP)/$(SRC)/$${osdir}/os.h $(root)$(includedir)/
 	@echo "<=== [include]"
 
