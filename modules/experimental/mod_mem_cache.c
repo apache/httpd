@@ -660,7 +660,7 @@ static apr_status_t serialize_table(cache_header_tbl_t **obj,
         *obj=NULL;
         return APR_SUCCESS;
     }
-    *obj = calloc(1, sizeof(cache_header_tbl_t) * elts_arr->nelts);
+    *obj = malloc(sizeof(cache_header_tbl_t) * elts_arr->nelts);
     if (NULL == *obj) {
         return APR_ENOMEM;
     }
@@ -671,7 +671,7 @@ static apr_status_t serialize_table(cache_header_tbl_t **obj,
     }
 
     /* Transfer the headers into a contiguous memory block */
-    buf = calloc(1, len);
+    buf = malloc(len);
     if (!buf) {
         *obj = NULL;
         return APR_ENOMEM;
@@ -680,12 +680,12 @@ static apr_status_t serialize_table(cache_header_tbl_t **obj,
     for (i = 0; i < *nelts; ++i) {
         (*obj)[i].hdr = &buf[idx];
         len = strlen(elts[i].key) + 1;              /* Include NULL terminator */
-        strncpy(&buf[idx], elts[i].key, len);
+        memcpy(&buf[idx], elts[i].key, len);
         idx+=len;
 
         (*obj)[i].val = &buf[idx];
         len = strlen(elts[i].val) + 1;
-        strncpy(&buf[idx], elts[i].val, len);
+        memcpy(&buf[idx], elts[i].val, len);
         idx+=len;
     }
     return APR_SUCCESS;
