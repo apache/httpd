@@ -759,8 +759,8 @@ write_it_all(BUFF *fb, const void *buf, int nbyte)
 
     while (nbyte > 0) {
 	i = buff_write( fb, buf, nbyte );
-	if( i < 0 ) {
-	    if( errno != EAGAIN && errno != EINTR ) {
+	if (i < 0) {
+	    if (errno != EAGAIN && errno != EINTR) {
 		return -1;
 	    }
 	}
@@ -785,19 +785,16 @@ static int
 bcwrite(BUFF *fb, const void *buf, int nbyte)
 {
     char chunksize[16];	/* Big enough for practically anything */
-    int i;
 #ifndef NO_WRITEV
     struct iovec vec[3];
-    int rv;
+    int i, rv;
 #endif
 
     if (fb->flags & (B_WRERR|B_EOUT))
 	return -1;
 
-    if (!(fb->flags & B_CHUNK))
-    {
-	i = buff_write(fb, buf, nbyte);
-        return(i);
+    if (!(fb->flags & B_CHUNK)) {
+	return buff_write(fb, buf, nbyte);
     }
 
 #ifdef NO_WRITEV
@@ -1050,9 +1047,25 @@ bclose(BUFF *fb)
 
     if (fb->flags & B_WR) rc1 = bflush(fb);
     else rc1 = 0;
-    rc2 = closesocket(fb->fd);
-    if (fb->fd_in != fb->fd) rc3 = closesocket(fb->fd_in);
-    else rc3 = 0;
+#ifdef WIN32
+    if (fb->flags & B_SOCKET) {
+	rc2 = closesocket(fb->fd);
+	if (fb->fd_in != fb->fd) {
+	    rc3 = closesocket(fb->fd_in);
+	} else {
+	    rc3 = 0;
+	}
+    } else {
+#endif
+	rc2 = close(fb->fd);
+	if (fb->fd_in != fb->fd) {
+	    rc3 = close(fb->fd_in);
+	} else {
+	    rc3 = 0;
+	}
+#ifdef WIN32
+    }
+#endif
 
     fb->inptr = fb->inbase;
     fb->incnt = 0;
