@@ -774,6 +774,7 @@ TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 ## Check for user provided flags for shared object support
 ##
 TLDFLAGS_SHLIB=`egrep '^LDFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+TLDFLAGS_SHLIB_EXPORT=`egrep '^LDFLAGS_SHLIB_EXPORT=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 
 ####################################################################
