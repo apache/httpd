@@ -136,10 +136,6 @@ Changes with Apache 2.1.0-dev
   *) mod_usertrack: Escape the cookie name before pasting into the
      regexp.  [André Malo]
 
-  *) Enable special ErrorDocument value 'default' which restores the
-     canned server response for the scope of the directive.
-     [Geoffrey Young]
-
   *) Allow Digest providers to return AUTH_DENIED to propagate a 401
      status and terminate the provider chain prior to checking the password.
      [Geoffrey Young]
@@ -404,6 +400,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) Enable special ErrorDocument value 'default' which restores the
+     canned server response for the scope of the directive.
+     [Geoffrey Young, Andre Malo]
 
   *) work around MSIE Digest auth bug - if AuthDigestEnableQueryStringHack
      is set in r->subprocess_env allow mismatched query strings to pass.
