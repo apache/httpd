@@ -1,158 +1,504 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 3.2//EN">
 <HTML>
 <HEAD>
-<TITLE>Apache server Frequently Asked Questions</TITLE>
+<TITLE>Apache Server Frequently Asked Questions</TITLE>
 </HEAD>
 
 <BODY>
 <!--#include virtual="header.html" -->
-<H1>Apache server Frequently Asked Questions</H1>
+<H1>Apache Server Frequently Asked Questions</H1>
 
 <H2>The Questions</H2>
-<OL>
-<LI><A HREF="#what">What is Apache ?</A>
-<LI><A HREF="#why">Why was Apache created ?</A>
-<LI><A HREF="#relate">How does the Apache group relate to other servers ?</A>
-<LI><A HREF="#name">Why the name "Apache" ?</A>
-<LI><A HREF="#compatible">How compatible is Apache with my existing NCSA 1.3 setup ?</A>
-<LI><A HREF="#compare">OK, so how does Apache compare to other servers ?</A>
-<LI><A HREF="#tested">How thoroughly tested is Apache?</A>
-<LI><A HREF="#proxy">Does or will Apache act as a Proxy server?</A>
-<LI><A HREF="#future">What are the future plans for Apache ?</A>
-<LI><A HREF="#support">Who do I contact for support ?</A>
-<LI><A HREF="#more">Is there any more information on Apache ?</A>
-<LI><A HREF="#where">Where can I get Apache ?</A>
-</OL>
+<!-- Stuff to Add:						    -->
+<!-- - bad mod_rewrite included in 1.2b6			    -->
+<!-- - how-to PUT (publish, Netscape Gold)			    -->
+<!-- - can't bind to port 80					    -->
+<!--   - permission denied					    -->
+<!--   - address already in use					    -->
+<!-- - "httpd: could not set socket option TCP_NODELAY"		    -->
+<!--   not a problem if occasional; client disc before server	    -->
+<!--   setsockopt						    -->
+<!-- - disable Apache buffering of script output by using nph-	    -->
+<!-- - access control based on DNS name really needs MAXIMUM_DNS    -->
+<!--   and double-check that rDNS resolves to name expected	    -->
+<!-- - "I wanna use my /etc/passwd file for auth"		    -->
+<UL>
+ <LI><STRONG>Background</STRONG>
+  <OL START=1>
+   <LI><A HREF="#what">What is Apache?</A>
+   </LI>
+   <LI><A HREF="#why">Why was Apache created?</A>
+   </LI>
+   <LI><A HREF="#relate">How does The Apache Group's work relate to
+    other servers?</A> 
+   </LI>
+   <LI><A HREF="#name">Why the name &quot;Apache&quot;?</A>
+   </LI>
+   <LI><A HREF="#compare">OK, so how does Apache compare to other servers?</A>
+   </LI>
+   <LI><A HREF="#tested">How thoroughly tested is Apache?</A>
+   </LI>
+   <LI><A HREF="#future">What are the future plans for Apache?</A>
+   </LI>
+   <LI><A HREF="#support">Whom do I contact for support?</A>
+   </LI>
+   <LI><A HREF="#more">Is there any more information on Apache?</A>
+   </LI>
+   <LI><A HREF="#where">Where can I get Apache?</A>
+   </LI>
+  </OL>
+ </LI>
+ <LI><STRONG>Technical Questions</STRONG>
+  <OL START=11>
+   <LI><A HREF="#what2do">&quot;Why can't I ...?  Why won't ...
+        work?&quot;  What to do in case of problems</A>
+   </LI>
+   <LI><A HREF="#compatible">How compatible is Apache with my existing
+    NCSA 1.3 setup?</A>
+   </LI>
+   <LI><A HREF="#premature-script-headers">What does it mean when my
+        CGIs fail with &quot;Premature end of script headers&quot;?</A>
+   </LI>
+   <LI><A HREF="#ssi-part-i">How do I enable SSI (parsed HTML)?</A>
+   </LI>
+   <LI><A HREF="#ssi-part-ii">Why don't my parsed files get cached?</A>
+   </LI>
+   <LI><A HREF="#ssi-part-iii">How can I have my script output parsed?</A>
+   </LI>
+   <LI><A HREF="#proxy">Does or will Apache act as a Proxy server?</A>
+   </LI>
+   <LI><A HREF="#multiviews">What are &quot;multiviews&quot;?</A>
+   </LI>
+   <LI><A HREF="#fdlim">Why can't I run more than &lt;<EM>n</EM>&gt;
+    virtual hosts?</A>
+   </LI>
+  </OL>
+ </LI>
+</UL>
 
 <HR>
 
 <H2>The Answers</H2>
-<OL>
-<LI><A name="what">What is Apache ?</A>
 <P>
-    Apache was originally based on code and ideas found in the most
-popular HTTP server of the time.. NCSA httpd 1.3 (early 1995). It has
-since evolved into a far superior system which can rival (and probably
-surpass) almost any other UNIX based HTTP server in terms of functionality,
-efficiency and speed.
-<p>Since it began, it has been completely rewritten, and includes many new
-features. Apache is, as of November 1996, the most popular WWW server on
-the Internet, according to the <a
-href="http://www.netcraft.com/Survey/">Netcraft Survey</a>.
-
 </P>
-<HR>
-<LI><A name="relate">How does the Apache group relate to other
-server efforts, such as NCSA's?</A>
-<P>
-We, of course, owe a great debt to NCSA and their programmers for
-making the server Apache was based on. We now, however, have our own
-server, and our project is mostly our own. The Apache Project is an
-entirely independent venture.
-</P>
-<HR>
-
-<LI><A name="why">Why was Apache created ?</A>
-<P>to address concerns of a group of www providers and part time httpd
-programmers, that httpd didn't behave as they wanted it
-to. Apache is an entirely volunteer effort, completely funded by its
-members, not by commercial sales.
-</P>
-
-<HR>
-
-<LI><A name="name">Why the name "Apache" ?</A>
-<P>A cute name which stuck. Apache is "<B>A PA</B>t<B>CH</B>y server". It was
-    based on some existing code and a series of "patch files".
-</P>
-<HR>
-
-
-<LI><A name="compatible">How compatible is Apache with my existing NCSA 1.3
-setup ?</A><P>
-
-Apache attempts to offer all the features and configuration options
-of NCSA httpd 1.3, as well as many of the additional features found in
-NCSA httpd 1.4 and NCSA httpd 1.5.<P>
-
-NCSA httpd appears to be moving toward adding experimental features 
-which are not generally required at the moment. Some of the experiments
-will succeed while others will inevitably be dropped. The Apache philosophy is
-to add what's needed as and when it is needed.<p>
-
-Friendly interaction between Apache and NCSA developers should ensure
-that fundamental feature enhancments stay consistent between the two
-servers for the foreseeable future.<p>
-
-<HR>
-
-<LI><A name="compare">OK, so how does Apache compare to other servers ?</A>
-<P>
-For an independent assessment, see <A HREF="http://webcompare.iworld.com/compare/chart.html">http://webcompare.iworld.com/compare/chart.html</A>
-</P>
-
-<P>Apache has been shown to be substantially faster than many other
-free servers. Although certain commercial servers have claimed to
-surpass Apache's speed (it has not been demonstrated that any of these
-"benchmarks" are a good way of measuring WWW server speed at any
-rate), we feel that it is better to have a mostly-fast free server
-than an extremely-fast server that costs thousands of dollars. Apache
-is run on sites that get millions of hits per day, and they have
-experienced no performance difficulties.</p>
-
-<HR>
-<LI><A name="tested">How thoroughly tested is Apache?</A>
-
-<p>Apache is run on over 200,000 Internet servers (as of November 1996). It has
-been tested thoroughly by both developers and users. The Apache Group
-maintains rigorous standards before releasing new versions of their
-server, and our server runs without a hitch on over one third of all
-WWW servers. When bugs do show up, we release patches and new
-versions, as soon as they are available.</a>
-
-<P>See <A HREF="http://www.apache.org/info/apache_users.html">http://www.apache.org/info/apache_users.html</A> for an incomplete list of sites running Apache.</P>
-
-<hr>
-
-<LI><A name="proxy">Does or will Apache act as a Proxy server?
-<p>Apache version 1.1
-and above comes with a proxy module. If compiled in, this will make
-Apache act as a caching-proxy server
-<p>
-<HR>
-
-<LI><A name="future">What are the future plans for Apache ?</A>
-<P><UL>
-<LI>to continue as a public domain HTTP server,
-<LI>to keep up with advances in HTTP protocol and web developments in general
-<LI>to collect suggestions for fixes/improvements from its users,
-<LI>to respond to needs of large volume providers as well as occasional users.
-</UL>
-</P><HR>
-
-<LI><A name="support">Who do I contact for support ?</A>
-<P>There is no official support for Apache. None of the developers want to
-be swamped by a flood of trivial questions that can be resolved elsewhere.
-Bug reports and suggestions should be sent via <A HREF="http://www.apache.org/bug_report.html">the bug report page.</A> 
-Other questions should be directed to
-<A HREF="news:comp.infosystems.www.servers.unix">comp.infosystems.www.servers.unix</A>, where some of the Apache team lurk,
-in the company of many other httpd gurus who should be able
-to help.
-<p>
-Commercial support for Apache is, however, available from a number
-third parties.
-</p>
-<HR>
-
-<LI><A name="more">Is there any more information on Apache ?</A>
-<P>Indeed there is. See <A HREF="http://www.apache.org/">http://www.apache.org/</A>.
-</P>
-<HR>
-
-<LI><A name="where">Where can I get Apache ?</A>
-<P>
-You can find the source for Apache at <A HREF="http://www.apache.org/">http://www.apache.org/</A>.
-</P>
+<H3>
+ Background
+</H3>
+<OL START=1>
+ <LI><A
+      NAME="what"
+     ><STRONG>What is Apache?</STRONG></A>
+  <P>
+  Apache was originally based on code and ideas found in the most
+  popular HTTP server of the time.. NCSA httpd 1.3 (early 1995). It has
+  since evolved into a far superior system which can rival (and probably
+  surpass) almost any other UNIX based HTTP server in terms of functionality,
+  efficiency and speed.
+  </P>
+  <P>
+  Since it began, it has been completely rewritten, and includes many new
+  features. Apache is, as of January 1997, the most popular WWW server on
+  the Internet, according to the
+  <A
+   HREF="http://www.netcraft.com/Survey/"
+  >Netcraft Survey</A>.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="why"
+     ><STRONG>Why was Apache created?</STRONG></A>
+  <P>
+  To address the concerns of a group of WWW providers and part-time httpd
+  programmers that httpd didn't behave as they wanted it to behave.
+  Apache is an entirely volunteer effort, completely funded by its 
+  members, not by commercial sales.
+  <HR>
+  </P>
+ </LI>
+ <LI><A
+      NAME="relate"
+     ><STRONG>How does The Apache Group's work relate to other
+      server efforts, such as NCSA's?</STRONG></A>
+  <P>
+  We, of course, owe a great debt to NCSA and their programmers for
+  making the server Apache was based on. We now, however, have our own
+  server, and our project is mostly our own. The Apache Project is an
+  entirely independent venture.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="name"
+     ><STRONG>Why the name &quot;Apache&quot;?</STRONG></A>
+  <P>
+  A cute name which stuck. Apache is &quot;<STRONG>A
+  PA</STRONG>t<STRONG>CH</STRONG>y server&quot;.  It was
+  based on some existing code and a series of &quot;patch files&quot;.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="compare"
+     ><STRONG>OK, so how does Apache compare to other servers?</STRONG></A>
+  <P>
+  For an independent assessment, see
+  <A
+   HREF="http://webcompare.iworld.com/compare/chart.html"
+  ><SAMP>http://webcompare.iworld.com/compare/chart.html</SAMP></A>.
+  </P>
+  <P>
+  Apache has been shown to be substantially faster than many other
+  free servers. Although certain commercial servers have claimed to
+  surpass Apache's speed (it has not been demonstrated that any of these
+  &quot;benchmarks&quot; are a good way of measuring WWW server speed at any
+  rate), we feel that it is better to have a mostly-fast free server
+  than an extremely-fast server that costs thousands of dollars. Apache
+  is run on sites that get millions of hits per day, and they have
+  experienced no performance difficulties.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="tested"
+     ><STRONG>How thoroughly tested is Apache?</STRONG></A>
+  <P>
+  Apache is run on over 400,000 Internet servers (as of April 1997). It has
+  been tested thoroughly by both developers and users. The Apache Group
+  maintains rigorous standards before releasing new versions of their
+  server, and our server runs without a hitch on over one third of all
+  WWW servers available on the Internet.  When bugs do show up, we
+  release patches and new versions as soon as they are available.
+  </P>
+  <P>
+  See
+  <A
+   HREF="http://www.apache.org/info/apache_users.html"
+  ><SAMP>http://www.apache.org/info/apache_users.html</SAMP></A>
+  for a partial list of sites running Apache.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="future"
+     ><STRONG>What are the future plans for Apache?</STRONG></A>
+  <P>
+  <UL>
+   <LI>to continue as a public domain HTTP server,
+   </LI>
+   <LI>to keep up with advances in HTTP protocol and web developments in
+    general 
+   </LI>
+   <LI>to collect suggestions for fixes/improvements from its users,
+   </LI>
+   <LI>to respond to needs of large volume providers as well as
+    occasional users.
+   </LI>
+  </UL>
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="support"
+     ><STRONG>Whom do I contact for support?</STRONG></A>
+  <P>
+  There is no official support for Apache. None of the developers want to
+  be swamped by a flood of trivial questions that can be resolved elsewhere.
+  Bug reports and suggestions should be sent <EM>via</EM>
+  <A
+   HREF="http://www.apache.org/bug_report.html"
+  >the bug report page</A> .
+  Other questions should be directed to the
+  <A
+   HREF="news:comp.infosystems.www.servers.unix"
+  ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
+  newsgroup, where some of the Apache team lurk,
+  in the company of many other httpd gurus who should be able
+  to help.
+  </P>
+  <P>
+  Commercial support for Apache is, however, available from a number
+  of third parties.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="more"
+     ><STRONG>Is there any more information available on Apache?</STRONG></A>
+  <P>
+  Indeed there is.  See the main Apache Web site at
+  <A
+   HREF="http://www.apache.org/"
+  ><SAMP>http://www.apache.org/</SAMP></A>.
+  There is also a regular electronic publication called <EM>Apache
+  Week</EM> available; you can find out more about this at
+  <A
+   HREF="http://www.apacheweek.com"
+   REL="Help"
+  ><SAMP>http://www.apacheweek.com/</SAMP></A>.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="where"
+     ><STRONG>Where can I get Apache?</STRONG></A>
+  <P>
+  You can find the source for Apache at the main web page,
+  <A
+   HREF="http://www.apache.org/"
+  ><SAMP>http://www.apache.org/</SAMP></A>.
+  </P>
+  <HR>
+ </LI>
+</OL>
+<H3>
+ Technical Questions
+</H3>
+<OL START=11>
+ <LI><A
+      NAME="what2do"
+     ><STRONG>&quot;Why can't I ...?  Why won't ... work?&quot;  What to
+     do in case of problems</STRONG></A>
+  <P>
+  If you are having trouble with your Apache server software, you should
+  take the following steps:
+  </P>
+  <OL>
+   <LI><STRONG>Check the errorlog!</STRONG>
+    <P>
+    Apache tries to be helpful when it encounters a problem.  In many
+    cases, it will provide some details by writing one or messages to
+    the server error log (see the
+    <A
+     HREF="http:../mod/core.html#errorlog"
+    >ErrorLog</A>
+    directive).  Somethimes this is enough for you to diagnose &amp;
+    fix the problem yourself (such as file permissions or the like).
+    </P>
+   </LI>
+   <LI><STRONG>Check the Apache bug database</STRONG>
+    <P>
+    Most problems that get reported to The Apache Group are recorded in
+    the bug database (available at
+    <A
+     HREF="http://www.apache.org/bugdb.cgi"
+    ><SAMP>http://www.apache.org/bugdb.cgi</SAMP></A>).
+    <EM><STRONG>Please</STRONG> check the existing reports, open
+    <STRONG>and</STRONG> closed, before adding one.</EM>  If you find
+    that your issue has already been reported, please <EM>don't</EM> add
+    a &quot;me, too&quot; report.  If the original report isn't closed
+    yet, we suggest that you check it periodically.  You might also
+    consider contacting the original submittor, because there may be an
+    email exchange going on about the issue that isn't getting recorded
+    in the database.
+    </P>
+   </LI>
+   <LI><STRONG>Ask in the <SAMP>comp.infosystems.www.servers.unix</SAMP>
+    USENET newsgroup</STRONG>
+    <P>
+    A lot of common problems never make it to the bug database because
+    there's already high Q&amp;A traffic about them in the
+    <A
+     HREF="news:comp.infosystems.www.servers.unix"
+    ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
+    newsgroup.  Many Apache users, and some of the developers, can be
+    found roaming its virtual halls, so it is suggested that you seek
+    wisdom there.  The chances are good that you'll get a faster answer
+    there than from the bug database, even if you <EM>don't</EM> see
+    your question already posted.
+    </P>
+   </LI>
+   <LI><STRONG>If all else fails, report the problem in the bug
+    database</STRONG>
+    <P>
+    If you've gone through those steps above that are appropriate and
+    have obtained no relief, then please <EM>do</EM> let The Apache
+    Group know about the problem by logging a bug report (see
+    <A
+     HREF="http://www.apache.org/bugdb.cgi"
+    ><SAMP>http://www.apache.org/bugdb.cgi</SAMP></A>).
+    </P>
+    <P>
+    If your problem involves the server crashing and generating a core
+    dump, please include a backtrace (if possible).  As an example,
+    </P>
+    <PRE>
+     # cd <EM>ServerRoot</EM>
+     # dbx httpd core
+     (dbx) where
+    </PRE>
+    <P>
+    (Substitute the appropiate locations for your
+    <SAMP>ServerRoot</SAMP> and your <SAMP>httpd</SAMP> and
+    <SAMP>core</SAMP> files.)
+    </P>
+   </LI>
+  </OL>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="compatible"
+     ><STRONG>How compatible is Apache with my existing NCSA 1.3
+      setup?</STRONG></A>
+  <P>
+  Apache attempts to offer all the features and configuration options
+  of NCSA httpd 1.3, as well as many of the additional features found in
+  NCSA httpd 1.4 and NCSA httpd 1.5.
+  </P>
+  <P>
+  NCSA httpd appears to be moving toward adding experimental features 
+  which are not generally required at the moment. Some of the experiments
+  will succeed while others will inevitably be dropped. The Apache
+  philosophy is to add what's needed as and when it is needed.
+  </P>
+  <P>
+  Friendly interaction between Apache and NCSA developers should ensure
+  that fundamental feature enhancments stay consistent between the two
+  servers for the foreseeable future.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="premature-script-headers"
+     ><STRONG>What does it mean when my CGIs fail with &quot;Premature
+     end of script headers&quot;?</STRONG></A> 
+  <P>
+  </P>
+  <P>
+  It means just what it says: the server was expecting a complete set of
+  HTTP headers (one or more followed by a blank line), and didn't get
+  them.  The most common cause of this is Perl scripts which haven't
+  disabled buffering; if you insert the following statements before your
+  first <SAMP>print</SAMP> statement, this will probably go away.
+  </P>
+  <PRE>
+   $cfh = select (STDOUT);
+   $| = 1;
+   select ($cfh);
+  </PRE>
+  <P>
+  If your script isn't written in Perl, do the equivalent thing for
+  whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call 
+  <SAMP>fflush()</SAMP> after writing the headers).
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="ssi-part-i"
+     ><STRONG>How do I enable SSI (parsed HTML)?</STRONG></A>
+  <P>
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="ssi-part-ii"
+     ><STRONG>Why don't my parsed files get cached?</STRONG></A>
+  <P>
+  Since the server is performing run-time processing of your SSI
+  directives, which may change the content shipped to the client, it
+  can't know at the time it starts parsing what the final size of the
+  result will be, or whether the parsed result will always be the same.
+  This means that it can't generate <CODE>Content-Length</CODE> or
+  <CODE>Last-Modified</CODE> headers.  Caches commonly work by comparing
+  the <CODE>Last-Modified</CODE> of what's in the cache with that being
+  delivered by the server.  Since the server isn't sending that header
+  for a parsed document, whatever's doing the caching can't tell whether
+  the document has changed or not - and so fetches it again to be on the
+  safe side.
+  </P>
+  <P>
+  You can work around this in some cases by causing an
+  <CODE>Expires</CODE> header to be generated.  (See the
+  <A
+   HREF="../mod/mod_expires.html"
+   REL="Help"
+  ><CODE>mod_expires</CODE></A>
+  documentation for more details.)
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="ssi-part-iii"
+     ><STRONG>How can I have my script output parsed?</STRONG></A>
+  <P>
+  So you want to include SSI directives in the output from your CGI
+  script, but can't figure out how to do it?
+  The short answer is &quot;you can't.&quot;  This has been regarded as a
+  security liability, and the basic solution is for your script itself to do
+  what the SSIs would be doing.  After all, it's generating the
+  rest of the content.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="proxy"
+     ><STRONG>Does or will Apache act as a Proxy server?</STRONG></A>
+  <P>
+  Apache version 1.1 and above comes with a proxy module. If compiled
+  in, this will make Apache act as a caching-proxy server.  This module
+  is still considered experimental, however.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="multiviews"
+     ><STRONG>What are &quot;multiviews&quot;?</STRONG></A>
+  <P>
+  &quot;Multiviews&quot; is the general name given to the Apache
+  server's ability to provide language-specific document variants in
+  response to a request.  This is documented quite thoroughly in the 
+  <A
+   HREF="http:../content-negotiation.html"
+   REL="Help"
+  >content negotiation</A>
+  description page.
+  </P>
+  <HR>
+ </LI>
+ <LI><A
+      NAME="multiviews"
+     ><STRONG>Why can't I run more than &lt;<EM>n</EM>&gt;
+      virtual hosts?</STRONG></A>
+  <P>
+  The Apache server can behave unpredictably when it encounters some
+  resource limitations.  One of these is the <EM>per</EM>-process limit
+  on <STRONG>file descriptors</STRONG>, and that's almost always the
+  cause of problems seen when adding virtual hosts.  In this
+  case, it is not actually Apache that's encountering the problem, but 
+  typically some library routine (such as <SAMP>gethostbyname()</SAMP>)
+  which needs file descriptors and doesn't complain intelligibly when it
+  can't get them.
+  </P>
+  <P>
+  Each virtual host requires several file descriptors for housekeeping
+  functions, in addition to those actually used to serve files to
+  clients.
+  </P>
+  <P>
+  Typical values for &lt;<EM>n</EM>&gt; that we've seen are in
+  the neighbourhoods of 128 or 250.  When the server bumps into the file
+  descriptor limit, it may dump core with a SIGSEGV, or it might just
+  hang, or it may limp along and you'll see (possibly meaningful) errors
+  in the error log.
+  </P>
+  <P>
+  As to what you can do about this:
+  </P>
+  <OL>
+   <LI>Increase the number of file descriptors available to the server
+    (see your system's documentation on the <SAMP>limit</SAMP> or
+    <SAMP>ulimit</SAMP> commands)
+   </LI>
+   <LI>&quot;Don't do that&quot; - try to run with fewer virtual hosts
+   </LI>
+   <LI>Spread your operation across multiple server processes and/or ports
+   </LI>
+  </OL>
+  <P>
+  Since this is an operating-system limitation, there's not much else
+  available in the way of solutions.
+  </P>
+  <HR>
 </OL>
 
 <!--#include virtual="footer.html" -->
