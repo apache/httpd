@@ -377,6 +377,6 @@
 0	byte		2			video/unknown
 # Quicktime video, from Linus Walleij <triad@df.lth.se>
 # from Apple quicktime file format documentation.
-4   string      moov        video/quicktime 
+4   string      moov        video/quicktime
 4   string      mdat        video/quicktime
 
