@@ -65,6 +65,17 @@
 #include "util_script.h"
 
 /*
+ * disk_cache_object_t
+ * Pointed to by cache_object_t::vobj
+ */
+typedef struct disk_cache_object {
+    const char *root;           /* the location of the cache directory */
+    char *tempfile;
+    int dirlevels;              /* Number of levels of subdirectories */
+    int dirlength;              /* Length of subdirectory names */   
+} disk_cache_object_t;
+
+/*
  * mod_disk_cache configuration
  */
 typedef struct {
@@ -86,12 +97,6 @@ typedef struct {
     int maxgcmem;                /* maximum memory used by garbage collection */
 } disk_cache_conf;
 
-apr_status_t file_cache_el_final(cache_info *info, cache_handle_t *h, request_rec *r);
-static int file_cache_write_mydata(apr_file_t *fd , cache_info *info, request_rec *r);
-
-/* XXX: This is defined in cache_util... Needs implementing */
-extern int mkdir_structure(char *file, const char *root);
-
 module AP_MODULE_DECLARE_DATA disk_cache_module;
 
 /* Forward declarations */
@@ -101,12 +106,180 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
 static int read_headers(cache_handle_t *h, request_rec *r);
 static int read_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
+/*
+ * Local static functions
+ */
+#define CACHE_HEADER_SUFFIX ".header"
+#define CACHE_DATA_SUFFIX   ".data"
+static char *header_file(apr_pool_t *p, int dirlevels, int dirlength, 
+                         const char *root, const char *name)
+{
+    char *hashfile;
+    hashfile = generate_name(p, dirlevels, dirlength, name);
+    return apr_pstrcat(p, root, "/", hashfile, CACHE_HEADER_SUFFIX);
+}
+
+static char *data_file(apr_pool_t *p, int dirlevels, int dirlength, 
+                       const char *root, const char *name)
+{
+    char *hashfile;
+    hashfile = generate_name(p, dirlevels, dirlength, name);
+    return apr_pstrcat(p, root, "/", hashfile, CACHE_DATA_SUFFIX);
+}
+
+static int mkdir_structure(char *file, const char *root)
+{
+    
+    /* XXX TODO: Use APR to make a root directory. Do some sanity checking... */
+    return 0;
+}
+
+static apr_status_t file_cache_el_final(cache_info *info, cache_handle_t *h, request_rec *r)
+{
+    disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
+                                                 &disk_cache_module);
+    disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
+
+    /* move the data over */
+    if (info->fd) {
+        apr_file_flush(info->fd);
+        if (!info->datafile) info->datafile = data_file(r->pool, conf->dirlevels, conf->dirlength,
+                                                        conf->cache_root, h->cache_obj->key);
+        if (unlink(info->datafile)) {
+            mkdir_structure(info->datafile, conf->cache_root);
+        }
+        else {
+            /* XXX log */
+        }
+        if (link(dobj->tempfile, info->datafile) == -1) {
+            /* XXX log */
+        }
+        else {
+            /* XXX log message */
+        }
+       if (unlink(dobj->tempfile) == -1) {
+           /* XXX log message */
+       }
+       else {
+           /* XXX log message */
+       }
+   }
+   if (info->fd) {
+       apr_file_close(info->fd);     /* if you finalize, you are done writing, so close it */
+       info->fd = 0;
+       /* XXX log */
+   }
+
+   return APR_SUCCESS;
+}
+
+
+/* These two functions get and put state information into the data 
+ * file for an ap_cache_el, this state information will be read 
+ * and written transparent to clients of this module 
+ */
+static int file_cache_read_mydata(apr_file_t *fd, cache_info *info, request_rec *r)
+{
+    apr_status_t rv;
+    char urlbuff[1034];
+    int urllen = sizeof(urlbuff);
+    int offset=0;
+    char * temp;
+
+    if(!info->hdrsfile) {
+        return APR_NOTFOUND;
+    }
+
+    /* read the data from the cache file */
+    /* format
+     * date SP expire SP count CRLF
+     * dates are stored as hex seconds since 1970
+     */
+    rv = apr_file_gets(&urlbuff[0], urllen, fd);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    if ((temp = strchr(&urlbuff[0], '\n')) != NULL) /* trim off new line character */
+        *temp = '\0';      /* overlay it with the null terminator */
+
+    if (!apr_date_checkmask(urlbuff, "&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&")) {
+        return APR_EGENERAL;
+    }
+
+    info->date = ap_cache_hex2msec(urlbuff + offset);
+    offset += (sizeof(info->date)*2) + 1;
+    info->expire = ap_cache_hex2msec(urlbuff + offset);
+    offset += (sizeof(info->expire)*2) + 1;
+    info->version = ap_cache_hex2msec(urlbuff + offset);
+    
+    /* check that we have the same URL */
+    rv = apr_file_gets(&urlbuff[0], urllen, fd);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    if ((temp = strchr(&urlbuff[0], '\n')) != NULL) { /* trim off new line character */
+        *temp = '\0';      /* overlay it with the null terminator */
+    }
+
+    if (strncmp(urlbuff, "X-NAME: ", 7) != 0) {
+        return APR_EGENERAL;
+    }
+    if (strcmp(urlbuff + 8, info->name) != 0) {
+        return APR_EGENERAL;
+    }
+    
+    return APR_SUCCESS;
+}
+
+static int file_cache_write_mydata(apr_file_t *fd , cache_info *info, request_rec *r)
+{
+    apr_status_t rc;
+    char *buf;
+    apr_size_t amt;
+
+    char	dateHexS[sizeof(apr_time_t) * 2 + 1];
+    char	expireHexS[sizeof(apr_time_t) * 2 + 1];
+    char	verHexS[sizeof(apr_time_t) * 2 + 1];
+    
+    if (!r->headers_out) {
+        /* XXX log message */
+        return 0;
+    }
+
+    ap_cache_msec2hex(info->date, dateHexS);
+    ap_cache_msec2hex(info->expire, expireHexS);
+    ap_cache_msec2hex(info->version++, verHexS);
+    buf = apr_pstrcat(r->pool, dateHexS, " ", expireHexS, " ", verHexS, "\n", NULL);
+    amt = strlen(buf);
+    rc = apr_file_write(fd, buf, &amt);
+    if (rc != APR_SUCCESS) {
+        /* XXX log message */
+        return 0;
+    }
+
+    buf = apr_pstrcat(r->pool, "X-NAME: ", info->name, "\n", NULL);
+    amt = strlen(buf);
+    rc = apr_file_write(fd, buf, &amt);
+    if (rc != APR_SUCCESS) {
+        /* XXX log message */
+        return 0;
+    }
+    return 1;
+}
+
+/*
+ * Hook and mod_cache callback functions
+ */
 static int create_entity(cache_handle_t *h, request_rec *r,
                          const char *type, 
                          const char *key, 
                          apr_size_t len)
 { 
     cache_object_t *obj;
+    disk_cache_object_t *dobj;
+
     cache_info *info;
 #ifdef AS400
     char tempfile[L_tmpnam];	/* L_tmpnam defined in stdio.h */
@@ -116,23 +289,17 @@ static int create_entity(cache_handle_t *h, request_rec *r,
 	return DECLINED;
     }
 
-    /* Allocate and initialize cache_object_t */
-    obj = apr_pcalloc(r->pool, sizeof(cache_object_t));
-
-    if (!obj) {
-	return DECLINED;
-    }
+    /* Allocate and initialize cache_object_t and disk_cache_object_t */
+    obj = apr_pcalloc(r->pool, sizeof(*obj));
+    obj->vobj = dobj = apr_pcalloc(r->pool, sizeof(*dobj));
 
     obj->key = apr_pcalloc(r->pool, (strlen(key) + 1));
-    if (!obj->key) {
-	return DECLINED;
-    }
-
     strncpy(obj->key, key, strlen(key) + 1);
     obj->info.len = len;
     obj->complete = 0;   /* Cache object is not complete */
 
-    info = create_cache_el(r->pool, h, key);
+    info = apr_pcalloc(r->pool, sizeof(cache_info));
+    info->name = key;
     obj->info = *(info);
 
 #ifdef AS400
@@ -175,11 +342,14 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     return OK;
 }
 
-static int open_entity(cache_handle_t *h, apr_pool_t *p, const char *type, const char *key)
+static int open_entity(cache_handle_t *h, request_rec *r, const char *type, const char *key)
 {
+    disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
+                                                 &disk_cache_module);
     apr_status_t ret = DECLINED;
     apr_status_t rc;
-    char *data = data_file(h, p, key);
+    char *data = data_file(r->pool, conf->dirlevels, conf->dirlength, 
+                           conf->cache_root, key);
     apr_file_t *fd;
     apr_finfo_t finfo;
     cache_object_t *obj;
@@ -190,16 +360,18 @@ static int open_entity(cache_handle_t *h, apr_pool_t *p, const char *type, const
 	return DECLINED;
     }
 
-    obj = apr_pcalloc(p, sizeof(cache_object_t));
+    obj = apr_pcalloc(r->pool, sizeof(cache_object_t));
     obj->key = key;
 
-    if((rc = apr_file_open(&fd, data, APR_WRITE | APR_READ | APR_BINARY, 0, p)) == APR_SUCCESS)  /*  Open the file  */
-    {
-	info = create_cache_el(p, h, key);
+    rc = apr_file_open(&fd, data, APR_WRITE | APR_READ | APR_BINARY, 0, r->pool);
+    if (rc == APR_SUCCESS) {
+        info = apr_pcalloc(r->pool, sizeof(cache_info));
+        info->name = key;
         /* XXX log message */
 	info->fd = fd;
 	info->datafile = data;
-	info->hdrsfile = header_file(h, p, key);
+	info->hdrsfile = header_file(r->pool, conf->dirlevels, conf->dirlength, 
+                                     conf->cache_root, key);
 	rc = apr_file_info_get(&finfo, APR_FINFO_SIZE, fd);
 	if (rc == APR_SUCCESS)
 	    info->file_size = finfo.size;
@@ -234,7 +406,6 @@ static int remove_entity(cache_handle_t *h)
 
     /* Null out the cache object pointer so next time we start from scratch  */
     h->cache_obj = NULL;
-
     return OK;
 }
 
@@ -282,8 +453,7 @@ static int read_headers(cache_handle_t *h, request_rec *r)
     }
 
     /* XXX log */
-    if(rv = file_cache_read_mydata(fd, info, r) != APR_SUCCESS)
-    {
+    if(rv = file_cache_read_mydata(fd, info, r) != APR_SUCCESS) {
         /* XXX log message */
         apr_file_close(fd);
         return rv;
@@ -294,12 +464,11 @@ static int read_headers(cache_handle_t *h, request_rec *r)
      */
     ap_scan_script_header_err(r, fd, NULL);
  
-    apr_table_setn(r->headers_out, "Content-Type", ap_make_content_type(r,
-        r->content_type));                           /* Set content type   */
+    apr_table_setn(r->headers_out, "Content-Type", 
+                   ap_make_content_type(r, r->content_type));
 
     rv = apr_file_gets(&urlbuff[0], urllen, fd);           /* Read status  */
-    if (rv != APR_SUCCESS)
-    {
+    if (rv != APR_SUCCESS) {
         /* XXX log message */
 	return rv;
     }
@@ -307,8 +476,7 @@ static int read_headers(cache_handle_t *h, request_rec *r)
     r->status = atoi(urlbuff);                           /* Save status line into request rec  */
 
     rv = apr_file_gets(&urlbuff[0], urllen, fd);               /* Read status line */
-    if (rv != APR_SUCCESS)
-    {
+    if (rv != APR_SUCCESS) {
         /* XXX log message */
 	return rv;
     }
@@ -318,9 +486,7 @@ static int read_headers(cache_handle_t *h, request_rec *r)
 
     r->status_line = apr_pstrdup(r->pool, urlbuff);            /* Save status line into request rec  */
 
-
     apr_file_close(fd);
-
     return APR_SUCCESS;
 }
 
@@ -349,7 +515,11 @@ static int write_headers(cache_handle_t *h, request_rec *r, cache_info *info)
     apr_size_t amt;
     
     if (!info->fd)  {
-        if(!info->hdrsfile) info->hdrsfile = header_file(h, r->pool, h->cache_obj->key);
+        if(!info->hdrsfile) info->hdrsfile = header_file(r->pool, 
+                                                         conf->dirlevels, 
+                                                         conf->dirlength, 
+                                                         conf->cache_root,
+                                                         h->cache_obj->key);
         if(unlink(info->hdrsfile)) /* if we can remove it, we clearly don't have to build the dirs */
             mkdir_structure(info->hdrsfile, conf->cache_root);
         else {
@@ -397,12 +567,14 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
 {
     apr_bucket *e;
     apr_status_t rv;
+    disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     cache_info *info = &(h->cache_obj->info);
- 
-    if(!info->fd) {
-        if ((rv = apr_file_open(&info->fd, h->cache_obj->tempfile, 
-                                APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BUFFERED,
-                                APR_UREAD | APR_UWRITE, r->pool)) != APR_SUCCESS) {
+
+    if (!info->fd) {
+        rv = apr_file_open(&info->fd, dobj->tempfile, 
+                           APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BUFFERED,
+                           APR_UREAD | APR_UWRITE, r->pool);
+        if (rv != APR_SUCCESS) {
             return DECLINED;
         }
     }
@@ -418,79 +590,6 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
     return OK;	
 }
 
-static int file_cache_write_mydata(apr_file_t *fd , cache_info *info, request_rec *r)
-{
-    apr_status_t rc;
-    char *buf;
-    apr_size_t amt;
-
-    char	dateHexS[sizeof(apr_time_t) * 2 + 1];
-    char	expireHexS[sizeof(apr_time_t) * 2 + 1];
-    char	verHexS[sizeof(apr_time_t) * 2 + 1];
-    
-    if(!r->headers_out)
-    {
-        /* XXX log message */
-        return 0;
-    }
-
-    ap_cache_msec2hex(info->date, dateHexS);
-    ap_cache_msec2hex(info->expire, expireHexS);
-    ap_cache_msec2hex(info->version++, verHexS);
-    buf = apr_pstrcat(r->pool, dateHexS, " ", expireHexS, " ", verHexS, "\n", NULL);
-    amt = strlen(buf);
-    rc = apr_file_write(fd, buf, &amt);
-    if(rc != APR_SUCCESS) {
-        /* XXX log message */
-        return 0;
-    }
-
-    buf = apr_pstrcat(r->pool, "X-NAME: ", info->name, "\n", NULL);
-    amt = strlen(buf);
-    rc = apr_file_write(fd, buf, &amt);
-    if(rc != APR_SUCCESS) {
-        /* XXX log message */
-        return 0;
-    }
-    return 1;
-}
-
-apr_status_t file_cache_el_final(cache_info *info, cache_handle_t *h, request_rec *r)
-{
-    disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
-                                                 &disk_cache_module);
-
-    /* move the data over */
-    if (info->fd) {
-        apr_file_flush(info->fd);
-        if (!info->datafile) info->datafile = data_file(h, r->pool, h->cache_obj->key);  /* by: wsf @A1A */
-        if (unlink(info->datafile)) /* if we can remove it, we clearly don't have to build the dirs */
-            mkdir_structure(info->datafile, conf->cache_root);
-        else {
-            /* XXX log */
-        }
-        if (link(h->cache_obj->tempfile, info->datafile) == -1) {
-            /* XXX log */
-        }
-        else {
-            /* XXX log message */
-        }
-       if (unlink(h->cache_obj->tempfile) == -1) {
-           /* XXX log message */
-       }
-       else {
-           /* XXX log message */
-       }
-   }
-   if (info->fd) {
-       apr_file_close(info->fd);     /* if you finalize, you are done writing, so close it */
-       info->fd = 0;
-       /* XXX log */
-   }
-
-   return APR_SUCCESS;
-}
-
 static void *create_config(apr_pool_t *p, server_rec *s)
 {
     disk_cache_conf *conf = apr_pcalloc(p, sizeof(disk_cache_conf));
@@ -501,7 +600,7 @@ static void *create_config(apr_pool_t *p, server_rec *s)
 }
 
 /*
- * mod_disk_cache configuration directives
+ * mod_disk_cache configuration directives handlers.
  */
 static const char
 *set_cache_root(cmd_parms *parms, void *struct_ptr, char *arg)
@@ -599,6 +698,7 @@ static const char
     /* XXX */
     return NULL;
 }
+static const char
 *set_cache_maxgcmem(cmd_parms *parms, char *struct_ptr, char *arg)
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
