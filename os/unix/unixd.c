@@ -63,7 +63,6 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "unixd.h"
-#include "apr_lock.h"
 #include "mpm_common.h"
 #include "os.h"
 #include "ap_mpm.h"
@@ -376,38 +375,6 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 
     return ap_unix_create_privileged_process(newproc, progname, args, env,
                                               attr, ugid, p);
-}
-
-AP_DECLARE(apr_status_t) unixd_set_lock_perms(apr_lock_t *lock)
-{
-/* MPM shouldn't call us unless we're actually using a SysV sem;
- * this is just to avoid compile issues on systems without that
- * feature
- */
-#if APR_HAS_SYSVSEM_SERIALIZE
-    apr_os_lock_t oslock;
-#if !APR_HAVE_UNION_SEMUN
-    union semun {
-        long val;
-        struct semid_ds *buf;
-        ushort *array;
-    };
-#endif
-    union semun ick;
-    struct semid_ds buf;
-
-    if (!geteuid()) {
-        apr_os_lock_get(&oslock, lock);
-        buf.sem_perm.uid = unixd_config.user_id;
-        buf.sem_perm.gid = unixd_config.group_id;
-        buf.sem_perm.mode = 0600;
-        ick.buf = &buf;
-        if (semctl(oslock.crossproc, 0, IPC_SET, ick) < 0) {
-            return errno;
-        }
-    }
-#endif
-    return APR_SUCCESS;
 }
 
 AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)

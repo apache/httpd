@@ -70,7 +70,6 @@
 #endif
 #include "apr_hooks.h"
 #include "apr_thread_proc.h"
-#include "apr_lock.h"
 #include "apr_proc_mutex.h"
 
 #include <pwd.h>
@@ -119,7 +118,6 @@ AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy,
 AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type);
 #endif
-AP_DECLARE(apr_status_t) unixd_set_lock_perms(apr_lock_t *lock);
 AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex);
 AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr, apr_pool_t *ptrans);
 
