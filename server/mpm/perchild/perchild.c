@@ -107,6 +107,13 @@
 #include <sys/processor.h> /* for bindprocessor() */
 #endif
 
+/*
+ * Define some magic numbers that we use for the state of the incomming
+ * request. These must be < 0 so they don't collide with a file descriptor.
+ */
+#define AP_PERCHILD_THISCHILD -1
+#define AP_PERCHILD_OTHERCHILD -2
+
 #define AP_ID_FROM_CHILD_THREAD(c, t)    ((c * HARD_THREAD_LIMIT) + t)
 #define AP_CHILD_THREAD_FROM_ID(i)    (i / HARD_THREAD_LIMIT), (i % HARD_THREAD_LIMIT)
 
@@ -720,7 +727,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                  * We should set a flag here, and then below we will read
                  * two bytes (the socket number and the NULL byte.
                  */
-                thread_socket_table[thread_num] = -2;
+                thread_socket_table[thread_num] = AP_PERCHILD_OTHERCHILD;
                 goto got_from_other_child;
             }
 
@@ -772,7 +779,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
             }
             apr_lock_release(idle_thread_count_mutex);
         got_from_other_child:
-            if (thread_socket_table[thread_num] == -2) {
+            if (thread_socket_table[thread_num] == AP_PERCHILD_OTHERCHILD) {
                 struct msghdr msg;
                 struct cmsghdr *cmsg;
                 char sockname[80];
@@ -804,7 +811,7 @@ static void *worker_thread(apr_thread_t *thd, void *arg)
                 process_socket(ptrans, csd, conn_id);
             }
             else {
-                thread_socket_table[thread_num] = -1;
+                thread_socket_table[thread_num] = AP_PERCHILD_THISCHILD;
             }  
             requests_this_child--;
         }
@@ -1439,7 +1446,7 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
         child_info_table[i].sd = -1;
     }
     for (i = 0; i < HARD_THREAD_LIMIT; i++) {
-        thread_socket_table[i] = -1;
+        thread_socket_table[i] = AP_PERCHILD_THISCHILD;
     }
 }
 
@@ -1569,7 +1576,7 @@ static int perchild_post_read(request_rec *r)
         f = f->next;
     }
 
-    if (thread_socket_table[thread_num] != -1) {
+    if (thread_socket_table[thread_num] != AP_PERCHILD_THISCHILD) {
         apr_socket_t *csd = NULL;
 
         apr_os_sock_put(&csd, &thread_socket_table[thread_num], 
