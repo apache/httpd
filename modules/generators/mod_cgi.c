@@ -361,7 +361,7 @@ static void add_ssi_vars(request_rec *r, ap_filter_t *next)
                                                            r->path_info));
 
         pa_req = ap_sub_req_lookup_uri(ap_escape_uri(r->pool, r->path_info),
-                                       r, next);
+                                       r, NULL);
         if (pa_req->filename) {
             apr_table_setn(e, "PATH_TRANSLATED",
                            apr_pstrcat(r->pool, pa_req->filename,
