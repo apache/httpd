@@ -380,8 +380,8 @@ EXPORTS
         ap_get_win32_interpreter @371
         ap_is_rdirectory @372
         ap_registry_get_server_root @373
-	ap_registry_get_service_conf @374
-	ap_registry_set_service_conf @375
+	; ap_registry_get_service_conf removed in 1.3.15
+	; ap_registry_set_service_conf removed in 1.3.15
         ap_remove_spaces @376
 	ap_scan_script_header_err_strs @377
         ap_start_shutdown @378

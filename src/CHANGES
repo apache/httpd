@@ -1,5 +1,19 @@
 Changes with Apache 1.3.15
 
+  *) The new Win32 command line option, -k config, replaces the default
+     options for the existing, named service with the options given on 
+     the -k config command line.  Apache -n servicename -t now displays
+     the default options before it tests the httpd.conf.  Use the syntax
+     apache -k config -n servicename -f conffile to upgrade an existing
+     1.3.x service to the new 1.3.15 default arguments.  [William Rowe]
+
+  *) All Win32 services now support default command line options when
+     starting an Apache service.  The command line options given with
+     the apache -k install command, including -d, -f, -D, -C and -c, 
+     are all saved in the registry.  This change superceeds the old
+     ConfPath entry, so existing services must be reconfigured when
+     upgrading to 1.3.15.  [William Rowe]
+
   *) The Win32 build is overhauled to use mod_foo.so for all dynamic
      Apache modules.  [William Rowe]
 

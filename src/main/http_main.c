@@ -1076,12 +1076,13 @@ static void usage(char *bin)
     fprintf(stderr, "  -t               : run syntax check for config files (with docroot check)\n");
     fprintf(stderr, "  -T               : run syntax check for config files (without docroot check)\n");
 #ifdef WIN32
-    fprintf(stderr, "  -n name          : set service name and use its ServerConfigFile\n");
+    fprintf(stderr, "  -n name          : name the Apache service for -k options below;\n");
     fprintf(stderr, "  -k shutdown      : tell running Apache to shutdown\n");
     fprintf(stderr, "  -k restart       : tell running Apache to do a graceful restart\n");
     fprintf(stderr, "  -k start         : tell Apache to start\n");
-    fprintf(stderr, "  -i               : install an Apache service\n");
-    fprintf(stderr, "  -u               : uninstall an Apache service\n");
+    fprintf(stderr, "  -k install   | -i: install an Apache service\n");
+    fprintf(stderr, "  -k config        : reconfigure an installed Apache service\n");
+    fprintf(stderr, "  -k uninstall | -u: uninstall an Apache service\n");
 #endif
 
 #ifdef NETWARE
@@ -6670,8 +6671,10 @@ int REALMAIN(int argc, char *argv[])
     char cwd[MAX_STRING_LEN];
 
 #ifdef WIN32
+    jmp_buf reparse_args;
     char *service_name = NULL;
     int install = 0;
+    int reparsed = 0;
     int is_child_of_service = 0;
     char *signal_to_send = NULL;
 
@@ -6726,6 +6729,25 @@ int REALMAIN(int argc, char *argv[])
     ap_cpystrn(ap_server_root, cwd, sizeof(ap_server_root));
 #endif
 
+#ifdef WIN32
+    /* If this is a service, we will need to fall back here and 
+     * reparse the entire options list.
+     */
+    if (setjmp(reparse_args)) {
+        /* Reset and reparse the command line */
+        ap_server_pre_read_config  = ap_make_array(pcommands, 1, sizeof(char *));
+        ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
+        ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
+
+        /* Reset optreset and optind to allow getopt to work correctly
+         * the second time around, and assure we never come back here.
+         */
+        optreset = 1;
+        optind = 1;
+        reparsed = 1;
+    }
+#endif
+
     while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLz:Z:iusStThk:n:")) != -1) {
         char **new;
 	switch (c) {
@@ -6765,10 +6787,10 @@ int REALMAIN(int argc, char *argv[])
             service_name = ap_pstrdup(pcommands, optarg);
             break;
 	case 'i':
-	    install = 1;
+            install = 2;
 	    break;
 	case 'u':
-	    install = -1;
+            install = -1;
 	    break;
 	case 'S':
 	    ap_dump_settings = 1;
@@ -6777,6 +6799,8 @@ int REALMAIN(int argc, char *argv[])
             if (!strcasecmp(optarg, "stop"))
                 signal_to_send = "shutdown";
             else if (!strcasecmp(optarg, "install"))
+                install = 2;
+            else if (!strcasecmp(optarg, "config"))
                 install = 1;
             else if (!strcasecmp(optarg, "uninstall"))
                 install = -1;
@@ -6871,17 +6895,54 @@ int REALMAIN(int argc, char *argv[])
 
     if (service_name && isValidService(service_name)) 
     {
-        ap_registry_get_service_conf(pconf, ap_server_confname, 
-                                     sizeof(ap_server_confname),
-                                     service_name);
-        conf_specified = 1;
-        if (install > 0) {
+        if (install == 2) {
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
                          "Service \"%s\" is already installed!", service_name);
             clean_parent_exit(1);
         }
+        /* Don't proceed if we are configuring, uninstalling 
+         * or already merged and reparsed the service args
+         */
+        if (!install && !reparsed)
+        {
+            int svcargc;
+            char **newargv, **svcargv;
+            if (ap_configtestonly)
+                fprintf(stderr, "Default command options for service %s:\n", 
+                        service_name);
+                    
+            /* Merge the service's default args */
+            if (ap_registry_get_service_args(pcommands, &svcargc, &svcargv, 
+                                             service_name) > 0) {
+                newargv = (char**)malloc((svcargc + argc + 1) * sizeof(char*));
+                newargv[0] = argv[0];  /* The true executable name */
+                memcpy(newargv + 1, svcargv, svcargc * sizeof(char*)); 
+                memcpy(newargv + 1 + svcargc, argv + 1, 
+                       (argc - 1) * sizeof(char*));
+                argc += svcargc; /* Add the startup options args */
+                argv = newargv;
+                argv[argc] = NULL;
+
+                if (ap_configtestonly) {
+                    while (svcargc-- > 0) {
+                        if ((**svcargv == '-') && strchr("dfDCc", svcargv[0][1])
+                            && svcargc) {
+                            fprintf(stderr, "    %s %s\n", 
+                                    *svcargv, *(svcargv + 1));
+                            svcargv += 2; --svcargc;
+                        }
+                        else
+                            fprintf(stderr, "    %s\n", *(svcargv++));
+                    }
+                }
+                /* Run through the command line args all over again */
+                longjmp(reparse_args, 1);
+            }
+            else if (ap_configtestonly)
+                fprintf (stderr, "    (none)\n");
+        }
     }
-    else if (service_name && (install <= 0))
+    else if (service_name && (install <= 1))
     {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, NULL,
                      "Service \"%s\" is not installed!", service_name);
@@ -6900,7 +6961,7 @@ int REALMAIN(int argc, char *argv[])
     if (!conf_specified) {
         ap_cpystrn(ap_server_confname, SERVER_CONFIG_FILE, sizeof(ap_server_confname));
         if (access(ap_server_root_relative(pcommands, ap_server_confname), 0)) {
-#ifndef NETWARE
+#ifdef WIN32
             ap_registry_get_server_root(pconf, ap_server_root, sizeof(ap_server_root));
 #endif
             if (!*ap_server_root)
@@ -6910,16 +6971,12 @@ int REALMAIN(int argc, char *argv[])
         }
     }
 
-    if (!ap_os_is_path_absolute(ap_server_confname)) {
-        char *full_conf_path;
-
-        full_conf_path = ap_pstrcat(pcommands, ap_server_root, "/", ap_server_confname, NULL);
-        full_conf_path = ap_os_canonical_filename(pcommands, full_conf_path);
-        ap_cpystrn(ap_server_confname, full_conf_path, sizeof(ap_server_confname));
-    }
+    ap_cpystrn(ap_server_confname,
+               ap_server_root_relative(pcommands, ap_server_confname),
+               sizeof(ap_server_confname));
     ap_getparents(ap_server_confname);
     ap_no2slash(ap_server_confname);
-
+    
 #ifdef WIN32
     /* Read the conf now unless we are uninstalling the service,
      * or shutting down a running service 
@@ -6934,16 +6991,10 @@ int REALMAIN(int argc, char *argv[])
         if (!service_name)
             service_name = ap_pstrdup(pconf, DEFAULTSERVICENAME);
         if (install > 0) 
-            InstallService(service_name, ap_server_root_relative(pcommands, 
-                                                         ap_server_confname));
+            InstallService(pconf, service_name, argc, argv, install == 1);
         else
             RemoveService(service_name);
         clean_parent_exit(0);
-    }
-
-    if (service_name && !conf_specified) {
-        printf("Unknown service: %s\n", service_name);
-        clean_parent_exit(1);
     }
 
     /* All NT signals, and all but the 9x start signal are handled entirely.

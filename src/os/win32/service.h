@@ -79,7 +79,7 @@ void service_set_status(int status);
 void service_cd();
 BOOL isProcessService();
 BOOL isValidService(char *display_name);
-void InstallService(char *display_name, char *conf);
+void InstallService(pool *p, char *display_name, int argc, char **argv, int reconfig);
 void RemoveService(char *display_name);
 int send_signal_to_service(char *display_name, char *sig, 
                            int argc, char **argv);

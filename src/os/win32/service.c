@@ -397,7 +397,7 @@ int service_main(int (*main_fn)(int, char **), int argc, char **argv )
     /* Prevent holding open the (nonexistant) console and allow us past
      * the first NT service to parse the service's args in apache_main() 
      */
-	ap_server_argv0 = argv[0];
+    ap_server_argv0 = argv[0];
     real_exit_code = 0;
 
     /* keep the server from going to any real effort, since we know */
@@ -426,6 +426,8 @@ void service_cd()
     char buf[300], *p;
     GetModuleFileName(NULL, buf, 300);
     p = strrchr(buf, '\\');
+    if (p < strrchr(buf, '/'))
+        p = strrchr(buf, '/');
     if (p != NULL)
         *p = 0;
     chdir(buf);
@@ -506,18 +508,11 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
     HANDLE hPipeReadDup;
     HANDLE thread;
     DWORD  threadid;
-    SECURITY_ATTRIBUTES sa = {0};  
-    
-	argv = (char**) memcpy(malloc((argc + 3) * sizeof(char*)), 
-		                   argv, argc * sizeof(char*));
-	argv[argc++] = "-n";
-	argv[argc++] = argv[0];
-	argv[argc] = NULL;
-    argv[0] = ap_server_argv0;
-	ap_server_argv0 = globdat.name = argv[0];
+    SECURITY_ATTRIBUTES sa = {0};
+    char **newargv;
 
-    if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(globdat.name, 
-                                                             service_ctrl)))
+    if(!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], 
+		                                                     service_ctrl)))
     {
         ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
         "Failure registering service handler");
@@ -568,6 +563,20 @@ void __stdcall service_main_fn(DWORD argc, LPTSTR *argv)
             hPipeWrite = NULL;
         }            
     }
+
+    /* Fold the "Start Parameters" in with the true executable argv[0],
+     * and insert a -n tag to pass the service name from the SCM's argv[0]
+     */
+    newargv = (char**) malloc((argc + 3) * sizeof(char*));
+    newargv[0] = ap_server_argv0;  /* The true executable name */
+    newargv[1] = "-n";             /* True service name follows (argv[0]) */
+    memcpy (newargv + 2, argv, argc * sizeof(char*));
+    newargv[argc + 2] = NULL;      /* SCM doesn't null terminate the array */
+    argv = newargv;
+    argc += 2;
+
+    /* Use the name of the service as the error log marker */
+    ap_server_argv0 = globdat.name = argv[0];
 
     service_cd();
     globdat.exit_status = globdat.main_fn( argc, argv );
@@ -679,13 +688,30 @@ int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
     return(1);
 }
 
-void InstallService(char *display_name, char *conf)
+void InstallService(pool *p, char *display_name, int argc, char **argv, int reconfig)
 {
     TCHAR szPath[MAX_PATH];
     TCHAR szQuotedPath[512];
     char *service_name;
+    int regargc = 0;
+    char **regargv = malloc((argc + 4) * sizeof(char*)), **newelem = regargv;
 
-    printf("Installing the %s service to use %s\n", display_name, conf);
+    regargc += 4;
+    *(newelem++) = "-d";
+    *(newelem++) = ap_server_root;
+    *(newelem++) = "-f";
+    *(newelem++) = ap_server_confname;
+
+    while (++argv, --argc) {
+        if ((**argv == '-') && strchr("kndf", argv[0][1]))
+            --argc, ++argv; /* Skip already handled -k -n -d -f options */
+        else
+            *(newelem++) = *argv, ++regargc;
+    }
+
+    printf(reconfig ? "Reconfiguring the %s service\n"
+                    : "Installing the %s service\n", 
+           display_name);
 
     if (GetModuleFileName( NULL, szPath, 512 ) == 0)
     {
@@ -710,10 +736,10 @@ void InstallService(char *display_name, char *conf)
                             NULL,                 // database (default)
                             SC_MANAGER_ALL_ACCESS // access required
                             );
-       if (!schSCManager) {
-           ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-	       "OpenSCManager failed");
-           return;
+        if (!schSCManager) {
+            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
+                         "OpenSCManager failed");
+            return;
         }
         
         /* Added dependencies for the following: TCPIP, AFD
@@ -724,31 +750,59 @@ void InstallService(char *display_name, char *conf)
          * convinced we should toggle this, but be warned that
          * future apache modules or ISAPI dll's may depend on it.
          */
-        schService = CreateService(
-            schSCManager,               // SCManager database
-            service_name,               // name of service
-            display_name,               // name to display
-            SERVICE_ALL_ACCESS,         // desired access
-            SERVICE_WIN32_OWN_PROCESS,  // service type
-            SERVICE_AUTO_START,         // start type
-            SERVICE_ERROR_NORMAL,       // error control type
-            szQuotedPath,               // service's binary
-            NULL,                       // no load ordering group
-            NULL,                       // no tag identifier
-            "Tcpip\0Afd\0",             // dependencies
-            NULL,                       // LocalSystem account
-            NULL);                      // no password
-
-        if (schService) {
+        if (reconfig) 
+        {
+            schService = OpenService(schSCManager, service_name, 
+                                     SERVICE_ALL_ACCESS);
+            if (!schService)
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 
+                             "OpenService failed");
+            else if (!ChangeServiceConfig(
+                        schService,                 // Service handle
+                        SERVICE_WIN32_OWN_PROCESS,  // service type
+                        SERVICE_AUTO_START,         // start type
+                        SERVICE_ERROR_NORMAL,       // error control type
+                        szQuotedPath,               // service's binary
+                        NULL,                       // no load ordering group
+                        NULL,                       // no tag identifier
+                        "Tcpip\0Afd\0",             // dependencies
+                        NULL,                       // user account
+                        NULL,                       // account password
+                        display_name)) {            // service display name
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 
+		             "ChangeServiceConfig failed");
+                /* !schService aborts configuration below */
+                CloseServiceHandle(schService);
+                schService = NULL;
+            }
+        }
+        else /* !reconfig */
+        {
+            schService = CreateService(
+                        schSCManager,               // SCManager database
+                        service_name,               // name of service
+                        display_name,               // name to display
+                        SERVICE_ALL_ACCESS,         // desired access
+                        SERVICE_WIN32_OWN_PROCESS,  // service type
+                        SERVICE_AUTO_START,         // start type
+                        SERVICE_ERROR_NORMAL,       // error control type
+                        szQuotedPath,               // service's binary
+                        NULL,                       // no load ordering group
+                        NULL,                       // no tag identifier
+                        "Tcpip\0Afd\0",             // dependencies
+                        NULL,                       // user account
+                        NULL);                      // account password
+            if (!schService)
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 
+                             "CreateService failed");
+        }
+        if (schService)
             CloseServiceHandle(schService);
-
-        }
-        else {
-            ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL, 
-		"CreateService failed");
-        }
-
+        
         CloseServiceHandle(schSCManager);
+        
+        if (!schService)
+            return;
     }
     else /* !isWindowsNT() */
     {
@@ -825,9 +879,13 @@ void InstallService(char *display_name, char *conf)
         RegCloseKey(hkey);
     }
 
-    /* Both Platforms: Now store the server_root in the registry */
-    if(!ap_registry_set_service_conf(conf, service_name))
-        printf("The %s service has been installed successfully.\n", display_name);
+    /* Both Platforms: Now store the args in the registry */
+    if (ap_registry_set_service_args(p, regargc, regargv, service_name)) {
+        return;
+    }
+
+    printf("The %s service has been %s successfully.\n", 
+           display_name, reconfig ? "reconfigured" : "installed");
 }
 
 void RemoveService(char *display_name)
