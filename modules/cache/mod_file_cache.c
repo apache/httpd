@@ -418,8 +418,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
         }
     }
     if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "mod_file_cache: sendfile_handler error serving file: %s", r->filename);
+        /* ap_send_fd will log the error */
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 #endif
