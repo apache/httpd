@@ -2,6 +2,7 @@ Debug
 Release
 Makefile
 *.lo
+*.slo
 *.la
 *.so
 modules.mk
