@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/11/12 01:18:02 $
+Last modified: $Date: 2004/04/02 21:08:29 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -36,7 +36,6 @@ Things That Need Fixing
 
 - modules docs
     - mod_suexec: very little documentation
-    - mod_proxy: updates for 2.0
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
     - mod_rewrite: explain, when which variables are actually available
@@ -62,19 +61,14 @@ Things That Need Fixing
      - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
      - platform/ebcdic.xml - needs major rework for 2.0
 
-- New build process.
-    - install.html has had a first-pass rewrite, it is basically
-      accurate, but very incomplete: many configure options are missing,
-      especially those inherited from apr.
-
 - API documentation
     - Ben Laurie has written some hooks documentation
     - authn provider API documentation could be useful
 
-- SSL docs are generally good, but they need a refreshing by someone
-  familiar with mod_ssl and openssl.
-
-  - I've begun working on this (again) --mads
+- SSL docs need serious update and enhancement
+    - compat docs are wrong
+    - no basic how to setup ssl doc
+    mads said he was working on this, but...
 
 - How does <Proxy> fit into sections.html?
 
@@ -107,11 +101,6 @@ Documentation improvements
   - More content and better organisation
   - mod_dav ressources are owned by the httpd
 
-* General cleaning and improving of module docs
-
-* Making the directive definitions "less terse" (i.e., adding more
-  examples and details to the definitions of the directives)
-
 * Making site-specific enhancements easier, including a documented
   and robust way for 3P module docco to be added -- and have it
   survive a server docco upgrade
@@ -121,11 +110,6 @@ Documentation improvements
     script in the support directory that scans the files there and
     updates the manual indices.  (We do something like that now for
     httpd.conf file with apxs [LoadModule, etc.].)
-
-* Summarize all the implemented drafts/standards with short explanations
-  within a document. (PR 16938)
-
-  - I've begun working on this --jsl
 
 * Provide example solutions for the mapping of encodings, especially
   for .gz etc. (also in regard to our default configuration)
@@ -141,27 +125,15 @@ Documentation improvements
 LaTeX Todo list
 ==================
 
-- Tables
-  Add <columnspec> to xml files.
-
-- Images
-
-  A quick search makes me believe that pdftex will not handle gifs.
-  It probably will handle png.
-
-- Hundreds of other little problems with presentation, cross-referencing,
+- Dozens of other little problems with presentation, cross-referencing,
   etc.
 
-- Fix build system
-
-- Cleanup xsl to make it more readable and add licenses.  Almost everything
+- Cleanup xsl to make it more readable.  Almost everything
   that is currently in latex.xsl should probably be moved to common.xsl.
   There may be a license problem with the atbeginend.sty file, since
   latex style files rarely have explict licenses.  At worst, we can
   drop this and manually adjust the relevant spacing.
 
 - Reduce the size of the pdf (both bytes and pages) in any way possible.
-
-- Speed up the XSLT tranform.
 
 - Translations.
