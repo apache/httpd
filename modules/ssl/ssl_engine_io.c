@@ -684,7 +684,7 @@ static apr_status_t ssl_io_input_getline(ssl_io_input_ctx_t *ctx,
      * in most cases we get all the headers on the first SSL_read.
      * however, in certain cases SSL_read will only get a partial
      * chunk of the headers, so we try to read until LF is seen.
-     * /
+     */
 
     while (tmplen > 0) {
         status = ssl_io_input_read(ctx, buf + offset, &tmplen);
