@@ -1,5 +1,10 @@
 Changes with Apache 1.3.4
 
+  *) Fix multiple whitespace handling in imagemaps for mod_imap which was
+     broken since Apache 1.3.1 where we took out compressing of multiple
+     spaces in ap_cfg_getline().
+     [Ivan Richwalski <ivan@seppuku.net>] PR#3249
+
   *) Fix Berkeley-DB/2.x support in mod_auth_db: The data structures were not
      initialized correctly and the db_open() call used an invalid mode
      parameter. [Ron Klatchko <ron@ckm.ucsf.edu>] PR#3171

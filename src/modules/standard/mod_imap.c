@@ -679,11 +679,10 @@ static int imap_handler(request_rec *r)
                                    if we aren't printing a menu */
 
 	/* find the first two space delimited fields, recall that
-	 * cfg_getline has removed leading/trailing whitespace and
-	 * compressed the other whitespace down to one space a piece
+	 * ap_cfg_getline has removed leading/trailing whitespace.
 	 *
 	 * note that we're tokenizing as we go... if we were to use the
-	 * getword() class of functions we would end up allocating extra
+	 * ap_getword() class of functions we would end up allocating extra
 	 * memory for every line of the map file
 	 */
         string_pos = input;
@@ -692,7 +691,7 @@ static int imap_handler(request_rec *r)
 	}
 
 	directive = string_pos;
-	while (*string_pos && *string_pos != ' ') {	/* past directive */
+	while (*string_pos && !ap_isspace(*string_pos)) {	/* past directive */
 	    ++string_pos;
 	}
 	if (!*string_pos) {		/* need at least two fields */
@@ -703,11 +702,15 @@ static int imap_handler(request_rec *r)
 	if (!*string_pos) {		/* need at least two fields */
 	    goto need_2_fields;
 	}
-	value = string_pos;
-	while (*string_pos && *string_pos != ' ') {	/* past value */
+	while(*string_pos && ap_isspace(*string_pos)) { /* past whitespace */
 	    ++string_pos;
 	}
-	if (*string_pos == ' ') {
+
+	value = string_pos;
+	while (*string_pos && !ap_isspace(*string_pos)) {	/* past value */
+	    ++string_pos;
+	}
+	if (ap_isspace(*string_pos)) {
 	    *string_pos++ = '\0';
 	}
 	else {
