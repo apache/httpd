@@ -628,7 +628,7 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     len = strlen(buffer);
 
     /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
-    if (ap_checkmask(buffer, "HTTP/#.# ###*")) {
+    if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
 	int major, minor;
 
 	if (2 != sscanf(buffer, "HTTP/%u.%u", &major, &minor)) {

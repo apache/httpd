@@ -91,6 +91,7 @@
 #include "apr_pools.h"
 #include "apr_strings.h"
 #include "apr_uri.h"
+#include "apr_date.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -103,7 +104,6 @@
 #include "http_log.h"
 #include "http_connection.h"
 #include "util_filter.h"
-#include "util_date.h"
 #include "mod_core.h"
 
 
