@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/21 06:58:15 $]
+Last modified at [$Date: 2003/05/21 09:19:29 $]
 
 Release:
 
@@ -234,7 +234,12 @@ PATCHES TO PORT FROM 2.1
       support/apxs.in r1.54, r1.55
       r1.54 adds libtool detection
       r1.55 adds includes detection of apr and apr-util
-      +1: jerenkrantz
+      +1: jerenkrantz, 
+          thommay (this doesn't fix all the problems with apxs and out of
+                   tree apr/apr-util, but it's a good start. There's still the 
+		   query cases; but I'm beginning to think that in these cases 
+		   the app should be querying ap{r,u}-config directly)
+
 
 CURRENT RELEASE NOTES:
 
