@@ -1035,7 +1035,7 @@ static int hook_uri2file(request_rec *r)
     char docroot[512];
     char *cp, *cp2;
     const char *ccp;
-    struct stat finfo;
+    ap_finfo_t finfo;
     unsigned int port;
     int n;
     int l;
