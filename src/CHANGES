@@ -1,5 +1,10 @@
 Changes with Apache 1.3b6
 
+  *) Prior to the existence of mod_setenv it was necessary to tweak the TZ
+     environment variable in the apache core.  But that tweaking interferes
+     with mod_setenv.  So don't tweak if the user has specified an explicit
+     TZ variable.  [Jay Soffian <jay@cimedia.com>] PR#1888
+
   *) rputs() did not calculate r->sent_bodyct properly.
      [Siegmund Stirnweiss <siegst@kat.ina.de>] PR#1900
 

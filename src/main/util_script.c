@@ -151,9 +151,11 @@ API_EXPORT(char **) create_environment(pool *p, table *t)
     char *whack;
 
     j = 0;
-    tz = getenv("TZ");
-    if (tz != NULL)
-	env[j++] = pstrcat(p, "TZ=", tz, NULL);
+    if (!table_get(t, "TZ")) {
+	tz = getenv("TZ");
+	if (tz != NULL)
+	    env[j++] = pstrcat(p, "TZ=", tz, NULL);
+    }
     for (i = 0; i < env_arr->nelts; ++i) {
 	if (!elts[i].key)
 	    continue;
