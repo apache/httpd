@@ -282,9 +282,9 @@ SetEnv proxy-nokeepalive 1<br />
 
 <directivesynopsis type="section">
 <name>Proxy</name>
-<syntax>&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</syntax>
 <description>Container for directives applied to proxied 
 resources</description>
+<syntax>&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -320,9 +320,9 @@ server:</p>
 
 <directivesynopsis type="section">
 <name>ProxyMatch</name>
-<syntax>&lt;Proxy <em>regex</em>&gt; ...&lt;/Proxy&gt;</syntax>
 <description>Container for directives applied to regular-expression-matched 
 proxied resources</description>
+<syntax>&lt;Proxy <em>regex</em>&gt; ...&lt;/Proxy&gt;</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 

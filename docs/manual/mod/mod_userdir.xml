@@ -10,8 +10,8 @@
 <identifier>userdir_module</identifier>
 
 <summary>
-This module allows user-specific directories to be accessed using the
-<code>http://example.com/~user/</code> syntax.
+<p>This module allows user-specific directories to be accessed using the
+<code>http://example.com/~user/</code> syntax.</p>
 </summary>
 
 <seealso><a href="../urlmapping.html">Mapping URLs to the
