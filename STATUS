@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/13 04:49:55 $]
+Last modified at [$Date: 2002/02/13 06:09:02 $]
 
 Release:
 
@@ -110,6 +110,12 @@ FINAL RELEASE SHOWSTOPPERS:
                 but is hesitant to do the same for the httpd binary.
         Message-ID: <20020207142751.T31582@clove.org>
 
+    * [Aaron] All signals have been removed from the worker MPM, which
+      makes the code significantly cleaner, but there are a couple of
+      lingering problems:
+        * mod_cgid doesn't die at shutdown
+        * httpd -X and -DONE_PROCESS is broken
+        Status: Aaron volunteers. (This is a -1 for beta from him)
 
 CURRENT VOTES:
 
@@ -139,6 +145,14 @@ CURRENT VOTES:
       -0:   Aaron (premature decision, needs more discussion), Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * When we start httpd with the -DNO_DETACH flag on Unix, we
+      should still create a new session (and possibly also still close
+      stdin/stdout/stderr and redirect from /dev/null), so that
+      process management tools like 'daemontools' or AIX's System
+      Resource Controller can manage apache.
+        Message-ID: <20011228014444.GA40283@lizzy.bugworks.com>
+        Status: Aaron volunteers.
 
     * Usage of APR_BRIGADE_NORMALIZE in core_input_filter should be
       removed if possible.
