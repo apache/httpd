@@ -599,6 +599,7 @@ int ap_cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     info->request_time = r->request_time;
 
     /* check last-modified date */
+    /* XXX FIXME we're referencing date on a path where we didn't set it */
     if (lastmod != APR_DATE_BAD && lastmod > date)
     {
 	/* if its in the future, then replace by date */
