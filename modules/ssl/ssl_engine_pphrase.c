@@ -69,13 +69,21 @@
 
 static apr_status_t exists_and_readable(char *fname, apr_pool_t *pool)
 {
+    apr_status_t stat;
     apr_finfo_t sbuf;
+    apr_file_t *fd;
 
-    if ( apr_stat(&sbuf, fname, APR_FINFO_NORM, pool) != APR_SUCCESS )
-        return APR_ENOSTAT;
+    if ((stat = apr_stat(&sbuf, fname, APR_FINFO_MIN, pool)) != APR_SUCCESS)
+        return stat;
 
-    return ( ((sbuf.filetype == APR_REG) && (sbuf.protection & APR_UREAD)) ?
-                   APR_SUCCESS : APR_EGENERAL);
+    if (sbuf.filetype != APR_REG)
+        return APR_EGENERAL;
+
+    if ((stat = apr_file_open(&fd, fname, APR_READ, 0, pool)) != APR_SUCCESS)
+        return stat;
+
+    apr_file_close(fd);
+    return APR_SUCCESS;
 }
 
 /*  _________________________________________________________________
