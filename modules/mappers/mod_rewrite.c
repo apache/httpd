@@ -1943,7 +1943,6 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     regmatch_t regmatch[AP_MAX_REG_MATCH];
     backrefinfo *briRR = NULL;
     backrefinfo *briRC = NULL;
-    int prefixstrip;
     int failed;
     apr_array_header_t *rewriteconds;
     rewritecond_entry *conds;
@@ -1974,14 +1973,12 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  the local part.  Additionally indicate this special
      *  threatment in the logfile.
      */
-    prefixstrip = 0;
-    if (perdir != NULL) {
+    if (perdir) {
         if (   strlen(uri) >= strlen(perdir)
             && strncmp(uri, perdir, strlen(perdir)) == 0) {
             rewritelog(r, 3, "[per-dir %s] strip per-dir prefix: %s -> %s",
                        perdir, uri, uri+strlen(perdir));
             uri = uri+strlen(perdir);
-            prefixstrip = 1;
         }
     }
 
@@ -2177,8 +2174,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *   location, i.e. if it's not an absolute URL (!) path nor
      *   a fully qualified URL scheme.
      */
-    if (prefixstrip && *r->filename != '/'
-                    && !is_absolute_uri(r->filename)) {
+    if (perdir && *r->filename != '/' && !is_absolute_uri(r->filename)) {
         rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
                    perdir, r->filename, perdir, r->filename);
         r->filename = apr_pstrcat(r->pool, perdir, r->filename, NULL);
