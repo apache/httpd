@@ -428,9 +428,7 @@ static int get_listeners_from_parent(server_rec *s)
         apr_os_sock_put(&lr->sd, &nsd, pconf);
         num_listeners++;
     }
-
     CloseHandle(pipe);
-
     return num_listeners;
 }
 
@@ -1324,7 +1322,7 @@ static int create_process(apr_pool_t *p, HANDLE *handles, HANDLE *events, int *p
     /* We never store the thread's handle, so close it now. */
     ResumeThread(pi.hThread);
     CloseHandle(pi.hThread);
- 
+
     /* Run the chain of open sockets. For each socket, duplicate it 
      * for the target process then send the WSAPROTOCOL_INFO 
      * (returned by dup socket) to the child.
@@ -1517,6 +1515,32 @@ die_now:
     return 1;      /* Tell the caller we want a restart */
 }
 
+/* set_listeners_noninheritable()
+ * Make the listening socket handles noninheritable by processes
+ * started out of this process.
+ */
+static int set_listeners_noninheritable(apr_pool_t *p) 
+{
+    ap_listen_rec *lr;
+    HANDLE dup;
+    SOCKET nsd;
+    HANDLE hProcess = GetCurrentProcess();
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        apr_os_sock_get(&nsd,lr->sd);
+        if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 0,
+                             FALSE,     /* Inherit flag */
+                             DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), 
+                         server_conf,
+                         "set_listeners_noninheritable: DuplicateHandle failed.");
+            return 0;
+        }
+        nsd = (SOCKET) dup;
+        apr_os_sock_put(&lr->sd, &nsd, p);
+    }
+    return 1;
+}
 
 /* service_nt_main_fn needs to append the StartService() args 
  * outside of our call stack and thread as the service starts...
@@ -1945,11 +1969,8 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Child %d: Child process is running", my_pid);
 
-        /* Set up the scoreboard. The scoreboard in this MPM only applies to the
-         * child process and is not shared across processes
-         */
+        /* Set up the scoreboard. */
         ap_create_scoreboard(pconf, SB_NOT_SHARED);
-
         if (one_process) {
             if (ap_setup_listeners(server_conf) < 1) {
                 return 1;
@@ -1958,12 +1979,13 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         else {
             get_listeners_from_parent(server_conf);
         }
-
+        if (!set_listeners_noninheritable(pconf)) {
+            return 1;
+        }
         child_main();
 
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
                      "Child %d: Child process is exiting", my_pid);        
-
         return 1;
     }
     else { 
@@ -1973,7 +1995,9 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
                          "no listening sockets available, shutting down");
             return 1;
         }
-
+        if (!set_listeners_noninheritable(pconf)) {
+            return 1;
+        }
         restart = master_main(server_conf, shutdown_event, restart_event);
 
         if (!restart) {
