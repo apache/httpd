@@ -159,6 +159,30 @@ API_EXPORT(int) ap_snprintf(char *buf, size_t len, const char *format,...)
 			    __attribute__((format(printf,3,4)));
 API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 			     va_list ap);
+/* Simple BASE64 encode/decode functions.
+ * 
+ * As we might encode binary strings, hence we require the length of
+ * the incoming plain source. And return the length of what we decoded.
+ *
+ * The decoding function takes any non valid char (i.e. whitespace, \0
+ * or anything non A-Z,0-9 etc as terminal.
+ * 
+ * plain strings/binary sequences are not assumed '\0' terminated. Encoded
+ * strings are neither. But propably should.
+ *
+ */
+API_EXPORT(int) ap_uuencode_len(int len);
+API_EXPORT(int) ap_uuencode(char * coded_dst, const char *plain_src,int len_plain_src);
+API_EXPORT(int) ap_uuencode_binary(char * coded_dst, const unsigned char *plain_src,int len_plain_src);
+
+API_EXPORT(int) ap_uudecode_len(const char * coded_src);
+API_EXPORT(int) ap_uudecode(char * plain_dst, const char *coded_src);
+API_EXPORT(int) ap_uudecode_binary(unsigned char * plain_dst, const char *coded_src);
+
+/* Password validation, as used in AuthType Basic which is able to cope
+ * (based on the prexix) with the SHA1, Apache's internal MD5 and (depending
+ * on your platform either plain or crypt(3) passwords.
+ */
 API_EXPORT(char *) ap_validate_password(const char *passwd, const char *hash);
 
 #ifdef __cplusplus

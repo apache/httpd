@@ -123,6 +123,7 @@
 #define ap_select       select
 #else				/* (!)NO_APACHE_INCLUDES */
 #include "ap_config.h"
+#include "ap_base64.h"
 #ifdef CHARSET_EBCDIC
 #include "ebcdic.h"
 #endif
@@ -236,56 +237,6 @@ static void err(char *s)
 	printf("%s", s);
     }
     exit(errno);
-}
-
-/* -- simple uuencode, lifted from main/util.c which
- *    needed the pool, so duplicated here with normal
- *    malloc.
- */
-static const char basis_64[] =
-"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-static char *uuencode(char *string)
-{
-    int i, len = strlen(string);
-    char *p;
-    char *encoded = (char *) malloc((len + 2) / 3 * 4 + 1);
-    p = encoded;
-#ifndef CHARSET_EBCDIC
-    for (i = 0; i < len-2; i += 3) {
-        *p++ = basis_64[(string[i] >> 2) & 0x3F];
-        *p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)];
-        *p++ = basis_64[((string[i + 1] & 0xF) << 2) | ((int) (string[i + 2] & 0xC0) >> 6)];
-        *p++ = basis_64[string[i + 2] & 0x3F];
-    }
-    if (i < len) {
-        *p++ = basis_64[(string[i] >> 2) & 0x3F];
-        *p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)];
-        if (i == (len-2))
-           *p++ = basis_64[((string[i + 1] & 0xF) << 2)];
-        else
-           *p++ = '=';
-        *p++ = '=';
-    }
-#else /*CHARSET_EBCDIC*/
-    for (i = 0; i < len-2; i += 3) {
-        *p++ = basis_64[(os_toascii[string[i]] >> 2) & 0x3F];
-        *p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) | ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)];
-        *p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2) | ((int) (os_toascii[string[i + 2]] & 0xC0) >> 6)];
-        *p++ = basis_64[os_toascii[string[i + 2]] & 0x3F];
-    }
-    if (i < len) {
-       *p++ = basis_64[(os_toascii[string[i]] >> 2) & 0x3F];
-       *p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) | ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)];
-       if (i == (len-2))
-           *p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2)];
-       else
-           *p++ = '=';
-       *p++ = '=';
-    }
-#endif /*CHARSET_EBCDIC*/
-    *p = '\0';
-    return encoded;
 }
 
 /* --------------------------------------------------------- */
@@ -1021,7 +972,8 @@ extern int optind, opterr, optopt;
 /* sort out command-line args and call test */
 int main(int argc, char **argv)
 {
-    int c, r;
+    int c, r,l;
+    char tmp[1024];
 
     /* table defaults  */
     tablestring = "";
@@ -1064,25 +1016,35 @@ int main(int argc, char **argv)
 	case 'T':
 	    strcpy(content_type, optarg);
 	    break;
-	case 'C':
+	case 'C': 
 	    strncat(cookie, "Cookie: ", sizeof(cookie));
 	    strncat(cookie, optarg, sizeof(cookie));
 	    strncat(cookie, "\r\n", sizeof(cookie));
 	    break;
-	case 'A':
-	    /*
-	     * assume username passwd already to be in colon separated form.
+	case 'A': 
+	    /* assume username passwd already to be in colon separated form. Ready
+	     * to be uu-encoded.
 	     */
+	    while(isspace(*optarg))
+		optarg++;
+	    l=ap_uuencode(tmp,optarg,strlen(optarg));
+	    tmp[l]='\0';
+
 	    strncat(auth, "Authorization: basic ", sizeof(auth));
-	    strncat(auth, uuencode(optarg), sizeof(auth));
+	    strncat(auth, tmp, sizeof(auth));
 	    strncat(auth, "\r\n", sizeof(auth));
 	    break;
 	case 'P':
 	    /*
 	     * assume username passwd already to be in colon separated form.
 	     */
+	    while(isspace(*optarg))
+		optarg++;
+	    l=ap_uuencode(tmp,optarg,strlen(optarg));
+	    tmp[l]='\0';
+
 	    strncat(auth, "Proxy-Authorization: basic ", sizeof(auth));
-	    strncat(auth, uuencode(optarg), sizeof(auth));
+	    strncat(auth, tmp, sizeof(auth));
 	    strncat(auth, "\r\n", sizeof(auth));
 	    break;
 	case 'H':

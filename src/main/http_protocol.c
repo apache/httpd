@@ -1151,7 +1151,13 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
         return AUTH_REQUIRED;
     }
 
-    t = ap_uudecode(r->pool, auth_line);
+    /* CHARSET_EBCDIC Issue's here ?!? Compare with 32/9 instead
+     * as we are operating on an octed stream ?
+     */
+    while (*auth_line== ' ' || *auth_line== '\t')
+        auth_line++;
+
+    t = ap_puudecode(r->pool, auth_line);
     /* Note that this allocation has to be made from r->connection->pool
      * because it has the lifetime of the connection.  The other allocations
      * are temporary and can be tossed away any time.

@@ -84,11 +84,27 @@
 extern "C" {
 #endif
 
+typedef unsigned long AP_LONG;     /* a 32-bit quantity */
+
+typedef struct {
+    AP_LONG digest[5];             /* message digest */
+    AP_LONG count_lo, count_hi;    /* 64-bit bit count */
+    AP_LONG data[16];              /* SHA data buffer */
+    int local;                     /* unprocessed amount in data */
+} AP_SHA1_CTX;
+
 extern const char *sha1_id;	/* passwd prefix marker for SHA1 */
 API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out);
+API_EXPORT(void) ap_SHA1Init(AP_SHA1_CTX *context);
+API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *context, const char *input,
+			       unsigned int inputLen);
+API_EXPORT(void) ap_SHA1Update_binary(AP_SHA1_CTX *context,
+				      const unsigned char *input,
+				      unsigned int inputLen);
+API_EXPORT(void) ap_SHA1Final(unsigned char digest[20], AP_SHA1_CTX *context);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* !APACHE_MD5_H */
+#endif	/* !APACHE_SHA1_H */

@@ -990,8 +990,8 @@ API_EXPORT(char *) ap_make_full_path(pool *a, const char *dir, const char *f);
 API_EXPORT(int) ap_is_matchexp(const char *str);
 API_EXPORT(int) ap_strcmp_match(const char *str, const char *exp);
 API_EXPORT(int) ap_strcasecmp_match(const char *str, const char *exp);
-API_EXPORT(char *) ap_uudecode(pool *, const char *);
-API_EXPORT(char *) ap_uuencode(pool *p, char *string); 
+API_EXPORT(char *) ap_puudecode(pool *, const char *);
+API_EXPORT(char *) ap_puuencode(pool *p, char *string); 
 #ifdef OS2
 void os2pathname(char *path);
 char *ap_double_quotes(pool *p, char *str);

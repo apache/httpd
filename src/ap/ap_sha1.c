@@ -6,7 +6,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -70,10 +70,10 @@
  *     will always generate the same hash, making it easier
  *     to break since the search space is smaller.
  *
- * See also the documentation in support/SHA1 as to hints on how to 
+ * See also the documentation in support/SHA1 as to hints on how to
  * migrate an existing netscape installation and other supplied utitlites.
  *
- * This software also makes use of the following components: 
+ * This software also makes use of the following components:
  *
  * NIST Secure Hash Algorithm
  *  	heavily modified by Uwe Hollerbach uh@alumni.caltech edu
@@ -86,15 +86,15 @@
  *
  * Metamail's copyright is:
  * 	Copyright (c) 1991 Bell Communications Research, Inc. (Bellcore)
- * 	Permission to use, copy, modify, and distribute this material 
- *	for any purpose and without fee is hereby granted, provided 
- *	that the above copyright notice and this permission notice 
- *	appear in all copies, and that the name of Bellcore not be 
- *	used in advertising or publicity pertaining to this 
- *	material without the specific, prior written permission 
- *	of an authorized representative of Bellcore.  BELLCORE 
- *	MAKES NO REPRESENTATIONS ABOUT THE ACCURACY OR SUITABILITY 
- *	OF THIS MATERIAL FOR ANY PURPOSE.  IT IS PROVIDED "AS IS", 
+ * 	Permission to use, copy, modify, and distribute this material
+ *	for any purpose and without fee is hereby granted, provided
+ *	that the above copyright notice and this permission notice
+ *	appear in all copies, and that the name of Bellcore not be
+ *	used in advertising or publicity pertaining to this
+ *	material without the specific, prior written permission
+ *	of an authorized representative of Bellcore.  BELLCORE
+ *	MAKES NO REPRESENTATIONS ABOUT THE ACCURACY OR SUITABILITY
+ *	OF THIS MATERIAL FOR ANY PURPOSE.  IT IS PROVIDED "AS IS",
  *	WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
  */
 
@@ -133,30 +133,13 @@
     temp = ROT32(A,5) + f##n(B,C,D) + E + W[i] + CONST##n;	\
     E = D; D = C; C = ROT32(B,30); B = A; A = temp
 
-typedef unsigned char AP_BYTE;     /* an 8-bit quantity */
-typedef unsigned long AP_LONG;     /* a 32-bit quantity */
- 
 #define SHA_BLOCKSIZE           64
 #define SHA_DIGESTSIZE          20
- 
-typedef struct {
-    AP_LONG digest[5];             /* message digest */
-    AP_LONG count_lo, count_hi;    /* 64-bit bit count */
-    AP_LONG data[16];              /* SHA data buffer */
-    int local;                  /* unprocessed amount in data */
-} SHA_INFO;
 
-static void sha_init(SHA_INFO *);
-static void sha_update(SHA_INFO *, const AP_BYTE *, int);
-static void sha_final(SHA_INFO *);
-static void sha_raw_swap(SHA_INFO *);
-static void output64chunk(unsigned char, unsigned char, unsigned char,
-			  int, unsigned char **);
-static void encode_mime64(unsigned char *, unsigned char *, int);
-void sha1_base64(char *, int, char *);
+typedef unsigned char AP_BYTE;
 
 /* do SHA transformation */
-static void sha_transform(SHA_INFO *sha_info)
+static void sha_transform(AP_SHA1_CTX *sha_info)
 {
     int i;
     AP_LONG temp, A, B, C, D, E, W[80];
@@ -236,7 +219,7 @@ static void maybe_byte_reverse(AP_LONG *buffer, int count)
     int i;
     AP_BYTE ct[4], *cp;
 
-    if (isLittleEndian()) {    /* do the swap only if it is little endian */
+    if (isLittleEndian()) {	/* do the swap only if it is little endian */
 	count /= sizeof(AP_LONG);
 	cp = (AP_BYTE *) buffer;
 	for (i = 0; i < count; ++i) {
@@ -255,7 +238,7 @@ static void maybe_byte_reverse(AP_LONG *buffer, int count)
 
 /* initialize the SHA digest */
 
-static void sha_init(SHA_INFO *sha_info)
+API_EXPORT(void) ap_SHA1Init(AP_SHA1_CTX *sha_info)
 {
     sha_info->digest[0] = 0x67452301L;
     sha_info->digest[1] = 0xefcdab89L;
@@ -269,7 +252,9 @@ static void sha_init(SHA_INFO *sha_info)
 
 /* update the SHA digest */
 
-static void sha_update(SHA_INFO *sha_info, const AP_BYTE *buffer, int count)
+API_EXPORT(void) ap_SHA1Update_binary(AP_SHA1_CTX *sha_info,
+				      const unsigned char *buffer,
+				      unsigned int count)
 {
     int i;
 
@@ -306,12 +291,55 @@ static void sha_update(SHA_INFO *sha_info, const AP_BYTE *buffer, int count)
     sha_info->local = count;
 }
 
+API_EXPORT(void) ap_SHA1Update(AP_SHA1_CTX *sha_info, const char *buf,
+			       unsigned int count)
+{
+#ifdef CHARSET_EBCDIC
+    int i;
+    const AP_BYTE *buffer = (const AP_BYTE *) buf;
+
+    if ((sha_info->count_lo + ((LONG) count << 3)) < sha_info->count_lo) {
+	++sha_info->count_hi;
+    }
+    sha_info->count_lo += (LONG) count << 3;
+    sha_info->count_hi += (LONG) count >> 29;
+    if (sha_info->local) {
+	i = SHA_BLOCKSIZE - sha_info->local;
+	if (i > count) {
+	    i = count;
+	}
+	ebcdic2ascii_strictly(((AP_BYTE *) sha_info->data) + sha_info->local, ubuf, i);
+	count -= i;
+	buffer += i;
+	sha_info->local += i;
+	if (sha_info->local == SHA_BLOCKSIZE) {
+	    maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
+	    sha_transform(sha_info);
+	}
+	else {
+	    return;
+	}
+    }
+    while (count >= SHA_BLOCKSIZE) {
+	ebcdic2ascii_strictly(sha_info->data, buffer, SHA_BLOCKSIZE);
+	buffer += SHA_BLOCKSIZE;
+	count -= SHA_BLOCKSIZE;
+	maybe_byte_reverse(sha_info->data, SHA_BLOCKSIZE);
+	sha_transform(sha_info);
+    }
+    ebcdic2ascii_strictly(sha_info->data, buffer, count);
+    sha_info->local = count;
+#else
+    ap_SHA1Update_binary(sha_info, (const unsigned char *) buf, count);
+#endif
+}
+
 /* finish computing the SHA digest */
 
-static void sha_final(SHA_INFO *sha_info)
+API_EXPORT(void) ap_SHA1Final(unsigned char digest[20], AP_SHA1_CTX *sha_info)
 {
-    int count;
-    AP_LONG lo_bit_count, hi_bit_count;
+    int count, i, j;
+    AP_LONG lo_bit_count, hi_bit_count, k;
 
     lo_bit_count = sha_info->count_lo;
     hi_bit_count = sha_info->count_hi;
@@ -331,65 +359,16 @@ static void sha_final(SHA_INFO *sha_info)
     sha_info->data[14] = hi_bit_count;
     sha_info->data[15] = lo_bit_count;
     sha_transform(sha_info);
-}
 
-/*
-   internally implemented as an array of longs, need to swap if 
-   you're going to access the memory in the raw, instead of looping
-   through with arrays of longs.
-*/
-
-static void sha_raw_swap(SHA_INFO *sha_info)
-{
-    int i;
-
-    for (i = 0; i < 5; ++i) {
-	maybe_byte_reverse((AP_LONG *) &sha_info->digest[i], 4);
+    for (i = 0, j = 0; j < SHA_DIGESTSIZE; i++) {
+	k = sha_info->digest[i];
+	digest[j++] = (unsigned char) ((k >> 24) & 0xff);
+	digest[j++] = (unsigned char) ((k >> 16) & 0xff);
+	digest[j++] = (unsigned char) ((k >> 8) & 0xff);
+	digest[j++] = (unsigned char) (k & 0xff);
     }
 }
 
-static char basis_64[] =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-static void output64chunk(unsigned char c1, unsigned char c2, unsigned char c3,
-			  int pads, unsigned char **outfile)
-{
-    *(*outfile)++ = basis_64[c1>>2];
-
-    *(*outfile)++ = basis_64[((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4)];
-    if (pads == 2) {
-	*(*outfile)++ = '=';
-	*(*outfile)++ = '=';
-    }
-    else if (pads) {
-	*(*outfile)++ =  basis_64[((c2 & 0xF) << 2) | ((c3 & 0xC0) >>6)];
-	*(*outfile)++ = '=';
-    }
-    else {
-	*(*outfile)++ = basis_64[((c2 & 0xF) << 2) | ((c3 & 0xC0) >>6)];
-	*(*outfile)++ = basis_64[c3 & 0x3F];
-    }
-}
-
-static void encode_mime64(unsigned char *in, unsigned char *out, int length)
-{
-    int diff, ct = 0;
-
-    while ((diff = length - ct)) {
-	if ( diff >= 3 ) {
-	    diff = 3;
-	    output64chunk(in[ct], in[ct+1], in[ct+2], 0, &out);
-	}
-	else if (diff == 2) {
-	    output64chunk(in[ct], in[ct+1], 0, 1, &out);
-	}
-	else if (diff == 1) {
-	    output64chunk(in[ct], 0, 0, 2, &out);
-	}
-	ct += diff;
-    }
-    *out++ = 0;
-}
 
 /* {SHA} is the prefix used for base64 encoded sha1 in
  * ldap data interchange format.
@@ -398,23 +377,27 @@ const char *sha1_id = "{SHA}";
 
 API_EXPORT(void) ap_sha1_base64(const char *clear, int len, char *out)
 {
-    SHA_INFO context;
+    int l;
+    AP_SHA1_CTX context;
+    AP_BYTE digest[SHA_DIGESTSIZE];
 
     if (!strncmp(clear, sha1_id, strlen(sha1_id))) {
 	clear += strlen(sha1_id);
     }
 
-    sha_init(&context);
-    sha_update(&context, clear, len);
-    sha_final(&context);
-
-    sha_raw_swap(&context);
+    ap_SHA1Init(&context);
+    ap_SHA1Update(&context, clear, len);
+    ap_SHA1Final(digest, &context);
 
     /* private marker. */
     strcpy(out, sha1_id);
 
     /* SHA1 hash is always 20 chars */
-    encode_mime64((char *)context.digest, out+strlen(sha1_id), 20);
-    /* output of MIME Base 64 encoded SHA1 is always
-     * 28 characters + strlen(sha1_id) */
+    l = ap_uuencode_binary(out + strlen(sha1_id), digest, sizeof(digest));
+    out[l + strlen(sha1_id)] = '\0';
+
+    /*
+     * output of MIME Base 64 encoded SHA1 is always 28 characters +
+     * strlen(sha1_id)
+     */
 }

@@ -1957,167 +1957,31 @@ char *ap_get_local_host(pool *a)
     return server_hostname;
 }
 
-/* aaaack but it's fast and const should make it shared text page. */
-static const unsigned char pr2six[256] =
+/* simple 'pool' alloc()ing glue to ap_base64.c
+ */
+API_EXPORT(char *) ap_puudecode(pool *p, const char *bufcoded)
 {
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 62, 64, 64, 64, 63, 52, 53, 54,
-    55, 56, 57, 58, 59, 60, 61, 64, 64, 64, 64, 64, 64, 64, 0, 1, 2, 3,
-    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25, 64, 64, 64, 64, 64, 64, 26, 27, 28, 29, 30, 31, 32,
-    33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
-    50, 51, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
-    64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64
-};
+    char *decoded;
+    int l;
 
-API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
-{
-    int nbytesdecoded;
-    register const unsigned char *bufin;
-    register char *bufplain;
-    register unsigned char *bufout;
-    register int nprbytes;
+    decoded = (char *) ap_palloc(p, 1+ap_uudecode_len(bufcoded));
+    l = ap_uudecode(decoded,bufcoded);
+    decoded[l]='\0'; /* make binary sequence into string */
 
-    /* Strip leading whitespace. */
-
-    while (*bufcoded == ' ' || *bufcoded == '\t')
-	bufcoded++;
-
-    /* Figure out how many characters are in the input buffer.
-     * Allocate this many from the per-transaction pool for the result.
-     */
-#ifndef CHARSET_EBCDIC
-    bufin = (const unsigned char *) bufcoded;
-    while (pr2six[*(bufin++)] <= 63);
-    nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
-    nbytesdecoded = ((nprbytes + 3) / 4) * 3;
-
-    bufplain = ap_palloc(p, nbytesdecoded + 1);
-    bufout = (unsigned char *) bufplain;
-
-    bufin = (const unsigned char *) bufcoded;
-
-    while (nprbytes > 4) {
-	*(bufout++) =
-	    (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
-	*(bufout++) =
-	    (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
-	*(bufout++) =
-	    (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
-	bufin += 4;
-	nprbytes -= 4;
-    }
-
-    /* Note: (nprbytes == 1) would be an error, so just ingore that case */
-    if (nprbytes > 1) {
-	*(bufout++) =
-	    (unsigned char) (pr2six[*bufin] << 2 | pr2six[bufin[1]] >> 4);
-    }
-    if (nprbytes > 2) {
-	*(bufout++) =
-	    (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
-    }
-    if (nprbytes > 3) {
-        *(bufout++) =
-            (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
-    }
-#else /*CHARSET_EBCDIC*/
-    bufin = (const unsigned char *) bufcoded;
-    while (pr2six[os_toascii[(unsigned char)*(bufin++)]] <= 63);
-    nprbytes = (bufin - (const unsigned char *) bufcoded) - 1;
-    nbytesdecoded = ((nprbytes + 3) / 4) * 3;
-
-    bufplain = ap_palloc(p, nbytesdecoded + 1);
-    bufout = (unsigned char *) bufplain;
-
-    bufin = (const unsigned char *) bufcoded;
-
-    while (nprbytes > 4) {
-	*(bufout++) = os_toebcdic[
-	    (unsigned char) (pr2six[os_toascii[*bufin]] << 2 | pr2six[os_toascii[bufin[1]]] >> 4)];
-	*(bufout++) = os_toebcdic[
-	    (unsigned char) (pr2six[os_toascii[bufin[1]]] << 4 | pr2six[os_toascii[bufin[2]]] >> 2)];
-	*(bufout++) = os_toebcdic[
-	    (unsigned char) (pr2six[os_toascii[bufin[2]]] << 6 | pr2six[os_toascii[bufin[3]]])];
-	bufin += 4;
-	nprbytes -= 4;
-    }
-
-    /* Note: (nprbytes == 1) would be an error, so just ingore that case */
-    if (nprbytes > 1) {
-	*(bufout++) = os_toebcdic[
-	    (unsigned char) (pr2six[os_toascii[*bufin]] << 2 | pr2six[os_toascii[bufin[1]]] >> 4)];
-    }
-    if (nprbytes > 2) {
-	*(bufout++) = os_toebcdic[
-	    (unsigned char) (pr2six[os_toascii[bufin[1]]] << 4 | pr2six[os_toascii[bufin[2]]] >> 2)];
-    }
-    if (nprbytes > 3) {
-        *(bufout++) = os_toebcdic[
-            (unsigned char) (pr2six[os_toascii[bufin[2]]] << 6 | pr2six[os_toascii[bufin[3]]])];
-    }
-#endif /*CHARSET_EBCDIC*/
-
-    nbytesdecoded -= (4 - nprbytes) & 3;
-    bufplain[nbytesdecoded] = '\0';
-
-    return bufplain;
+    return decoded;
 }
 
-static const char basis_64[] = 
-"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; 
- 
-API_EXPORT(char *) ap_uuencode(pool *a, char *string) 
+API_EXPORT(char *) ap_puuencode(pool *p, char *string) 
 { 
-    int i, len = strlen(string); 
-    char *p; 
-    char *encoded = (char *) ap_palloc(a, ((len+2) / 3 * 4) + 1); 
- 
-    p = encoded; 
-#ifndef CHARSET_EBCDIC
-    for (i = 0; i < len-2; i += 3) { 
-        *p++ = basis_64[(string[i] >> 2) & 0x3F]; 
-        *p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)]; 
-        *p++ = basis_64[((string[i + 1] & 0xF) << 2) | ((int) (string[i + 2] & 0xC0) >> 6)]; 
-        *p++ = basis_64[string[i + 2] & 0x3F]; 
-    } 
-    if (i < len) {
-        *p++ = basis_64[(string[i] >> 2) & 0x3F]; 
-       *p++ = basis_64[((string[i] & 0x3) << 4) | ((int) (string[i + 1] & 0xF0) >> 4)]; 
-       if (i == (len-2))
-           *p++ = basis_64[((string[i + 1] & 0xF) << 2)]; 
-       else
-           *p++ = '='; 
-       *p++ = '='; 
-    }
-#else /*CHARSET_EBCDIC*/
-    for (i = 0; i < len-2; i += 3) { 
-        *p++ = basis_64[(os_toascii[string[i]] >> 2) & 0x3F]; 
-        *p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) | ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)]; 
-        *p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2) | ((int) (os_toascii[string[i + 2]] & 0xC0) >> 6)]; 
-        *p++ = basis_64[os_toascii[string[i + 2]] & 0x3F]; 
-    } 
-    if (i < len) {
-        *p++ = basis_64[(os_toascii[string[i]] >> 2) & 0x3F]; 
-       *p++ = basis_64[((os_toascii[string[i]] & 0x3) << 4) | ((int) (os_toascii[string[i + 1]] & 0xF0) >> 4)]; 
-       if (i == (len-2))
-           *p++ = basis_64[((os_toascii[string[i + 1]] & 0xF) << 2)]; 
-       else
-           *p++ = '='; 
-       *p++ = '='; 
-    }
-#endif /*CHARSET_EBCDIC*/
+    char *encoded;
+    int l = strlen(string);
 
-    *p = '\0'; 
-    return encoded; 
-} 
+    encoded = (char *) ap_palloc(p, 1+ap_uuencode_len(l));
+    l=ap_uuencode(encoded,string,l);
+    encoded[l]='\0'; /* make binary sequence into string */
+
+    return encoded;
+}
 
 #ifdef OS2
 void os2pathname(char *path)
