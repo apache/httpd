@@ -129,6 +129,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "ap_config.h"
 
 module MODULE_VAR_EXPORT so_module;
 
