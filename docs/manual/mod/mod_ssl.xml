@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.28 $ -->
+<!-- $Revision: 1.29 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -74,6 +74,7 @@ compatibility variables.</p>
 <tr><td><code>SSL_CLIENT_I_DN_</code><em>x509</em></td> <td>string</td>    <td>Component of client's Issuer DN</td></tr>
 <tr><td><code>SSL_CLIENT_V_START</code></td>            <td>string</td>    <td>Validity of client's certificate (start time)</td></tr>
 <tr><td><code>SSL_CLIENT_V_END</code></td>              <td>string</td>    <td>Validity of client's certificate (end time)</td></tr>
+<tr><td><code>SSL_CLIENT_V_REMAIN</code></td>           <td>string</td>    <td>Number of days until client's certificate expires</td></tr>
 <tr><td><code>SSL_CLIENT_A_SIG</code></td>              <td>string</td>    <td>Algorithm used for the signature of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_A_KEY</code></td>              <td>string</td>    <td>Algorithm used for the public key of client's certificate</td></tr>
 <tr><td><code>SSL_CLIENT_CERT</code></td>               <td>string</td>    <td>PEM-encoded client certificate</td></tr>
@@ -100,6 +101,9 @@ same name, this suffix is used as an index to select a particular
 attribute.  For example, where the server certificate subject DN
 included two OU fields, <code>SSL_SERVER_S_DN_OU_0</code> and
 <code>SSL_SERVER_S_DN_OU_1</code> could be used to reference each.</p>
+
+<p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
+and later.</p>
 
 </section>
 
