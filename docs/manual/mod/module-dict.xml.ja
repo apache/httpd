@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English revision: 1.1 -->
 
-<manualpage>
+<manualpage metafile="module-dict.xml.meta">
   <relativepath href=".."/>
 
   <title>Apache モジュールの解説で使用する用語</title>

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
 <!-- English revision: 1.7 -->
 
-<manualpage>
+<manualpage metafile="upgrading.xml.meta">
 <relativepath href="."/>
 
 <title>Upgrade von 1.3 auf 2.0</title>

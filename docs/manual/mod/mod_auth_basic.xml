@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<modulesynopsis>
+<modulesynopsis metafile="mod_auth_basic.xml.meta">
 
 <name>mod_auth_basic</name>
 <description>Basic authentication</description>

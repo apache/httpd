@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<modulesynopsis>
+<modulesynopsis metafile="mod_proxy_http.xml.meta">
 
 <name>mod_proxy_http</name>
 <description>HTTP support module for

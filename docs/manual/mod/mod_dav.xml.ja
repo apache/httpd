@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English revision: 1.5 -->
-<modulesynopsis>
+<modulesynopsis metafile="mod_dav.xml.meta">
 
 <name>mod_dav</name> 
 <description>分散オーサリングとバージョン管理

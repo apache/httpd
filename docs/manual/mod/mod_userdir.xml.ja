@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English revision: 1.10 -->
-<modulesynopsis>
+<modulesynopsis metafile="mod_userdir.xml.meta">
 
 <name>mod_userdir</name>
 <description>ユーザ専用のディレクトリを提供

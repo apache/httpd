@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
-<manualpage>
+<manualpage metafile="perf-hp.xml.meta">
   <relativepath href=".." />
   <parentdocument href="./">Platform Specific Notes</parentdocument>
 

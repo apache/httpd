@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<modulesynopsis>
+<modulesynopsis metafile="mpm_common.xml.meta">
 
 <name>mpm_common</name>
 <description>A collection of directives that are implemented by

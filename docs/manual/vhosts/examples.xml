@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
-<manualpage>
+<manualpage metafile="examples.xml.meta">
 <relativepath href=".."/>
 <parentdocument href="./">Virtual Hosts</parentdocument>
     <title>VirtualHost Examples</title>

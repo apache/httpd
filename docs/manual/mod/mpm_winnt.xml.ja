@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<modulesynopsis>
+<modulesynopsis metafile="mpm_winnt.xml.meta">
 <!-- English revision: 1.4 -->
 <name>mpm_winnt</name>
 <description>Windows NT

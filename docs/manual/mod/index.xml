@@ -4,7 +4,7 @@
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
-<moduleindex>
+<moduleindex metafile="index.xml.meta">
   <title>Module Index</title>
   <summary>
     <p>
