@@ -961,7 +961,7 @@ filenames</description>
 <name>ForceType</name>
 <description>Forces all matching files to be served with the specified
 MIME content-type</description>
-<syntax>ForceType <var>MIME-type</var></syntax>
+<syntax>ForceType <var>MIME-type</var>|none</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -985,6 +985,25 @@ MIME content-type</description>
     <p>Note that unlike <directive module="core">DefaultType</directive>,
     this directive overrides all mime-type associations, including
     filename extensions, that might identify the media type.</p>
+
+    <p>You can override any <directive>ForceType</directive> setting
+    by using the value of <code>none</code>:</p>
+
+    <example>
+      # force all files to be image/gif:<br />
+      &lt;Location /images&gt;<br />
+        <indent>
+          ForceType image/gif<br />
+        </indent>
+      &lt;/Location&gt;<br />
+      <br />
+      # but normal mime-type associations here:<br />
+      &lt;Location /images/mixed&gt;<br />
+      <indent>
+        ForceType none<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -2480,7 +2499,7 @@ is accessed by an incompatible browser</description>
 <name>SetHandler</name>
 <description>Forces all matching files to be processed by a
 handler</description>
-<syntax>SetHandler <var>handler-name</var></syntax>
+<syntax>SetHandler <var>handler-name</var>|none</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
