@@ -1366,8 +1366,9 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
 
     do {
         if (APR_BRIGADE_EMPTY(bb)) {
+            len_read = r->remaining;
             if (ap_get_brigade(r->input_filters, bb, AP_MODE_BLOCKING,
-                               &r->remaining) != APR_SUCCESS) {
+                               &len_read) != APR_SUCCESS) {
                 /* if we actually fail here, we want to just return and
                  * stop trying to read data from the client.
                  */
@@ -1375,6 +1376,7 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer, apr_size_t bu
                 apr_brigade_destroy(bb);
                 return -1;
             }
+            r->remaining -= len_read;
         }
     } while (APR_BRIGADE_EMPTY(bb));
 
