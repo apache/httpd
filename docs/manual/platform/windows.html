@@ -217,6 +217,14 @@ There are two ways you can run Apache:
    service for Apache, first attempt to start it from the command
    line to assure that the service starts with no errors.</P>
 
+<P>Because Apache <EMP>CANNOT</EMP> share the same port with another
+   TCPIP application, you may need to stop or uninstall certain 
+   services first.  These include (but are not limited to) other
+   web servers, and firewall products such as BlackIce.  If you can
+   only start Apache with these services disabled, reconfigure either
+   Apache or the other product so that they do not listen on the
+   same TCPIP ports.</P>
+
 <H2><A NAME="use">Configuring Apache for Windows</A></H2>
 
 <P>Apache is configured by files in the <SAMP>conf</SAMP>
@@ -276,7 +284,8 @@ There are two ways you can run Apache:
   <LI><P>Apache can also load ISAPI Extensions (<EM>i.e.</EM>, Internet Server
          Applications), such as those used by Microsoft's IIS, and other
          Windows servers. <A HREF="mod/mod_isapi.html">More information
-         is available.</A>
+         is available.</A>  Note that Apache <EMP>CANNOT</EMP> load ISAPI
+		 Filters.
 </UL>
 
 <H2><A NAME="service">Running Apache for Windows as a Service</A></H2>
@@ -468,12 +477,6 @@ There are two ways you can run Apache:
     apache -k shutdown
 </PRE>
 
-<BLOCKQUOTE>
- <STRONG>Note: This option is only available with Apache 1.3.3 and
- later.  For earlier versions, you need to use Control-C in the
- Apache console window to shut down the server.</STRONG>
-</BLOCKQUOTE>
-
 <P>This should be used instead of pressing Control-C in the running
    Apache console window, because it lets Apache end any current
    transactions and cleanup gracefully.</P>
@@ -485,12 +488,6 @@ There are two ways you can run Apache:
 <PRE>
     apache -k restart
 </PRE>
-
-<BLOCKQUOTE>
-   <STRONG>Note: This option is only available with Apache 1.3.3 and
-   later.  For earlier versions, you need to use Control-C in the
-   Apache console window to shut down the server.</STRONG>
-</BLOCKQUOTE>
 
 <P>Note for people familiar with the Unix version of Apache: these
    commands provide a Windows equivalent to <CODE>kill -TERM
