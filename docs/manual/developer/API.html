@@ -494,27 +494,30 @@ only be correct in the last request in the chain (the one for which a
 response was actually sent).
 
 <H2><A name="pools">Resource allocation and resource pools</A></H2>
-
+<P>
 One of the problems of writing and designing a server-pool server is
 that of preventing leakage, that is, allocating resources (memory,
 open files, etc.), without subsequently releasing them.  The resource
 pool machinery is designed to make it easy to prevent this from
 happening, by allowing resource to be allocated in such a way that
 they are <EM>automatically</EM> released when the server is done with
-them. <P>
-
+them.
+</P>
+<P>
 The way this works is as follows:  the memory which is allocated, file
 opened, etc., to deal with a particular request are tied to a
 <EM>resource pool</EM> which is allocated for the request.  The pool
-is a data structure which itself tracks the resources in question. <P>
-
+is a data structure which itself tracks the resources in question.
+</P>
+<P>
 When the request has been processed, the pool is <EM>cleared</EM>.  At
 that point, all the memory associated with it is released for reuse,
 all files associated with it are closed, and any other clean-up
 functions which are associated with the pool are run.  When this is
 over, we can be confident that all the resource tied to the pool have
-been released, and that none of them have leaked. <P>
-
+been released, and that none of them have leaked.
+</P>
+<P>
 Server restarts, and allocation of memory and resources for per-server
 configuration, are handled in a similar way.  There is a
 <EM>configuration pool</EM>, which keeps track of resources which were
@@ -524,8 +527,9 @@ per-server module configuration, log files and other files that were
 opened, and so forth).  When the server restarts, and has to reread
 the configuration files, the configuration pool is cleared, and so the
 memory and file descriptors which were taken up by reading them the
-last time are made available for reuse. <P>
-
+last time are made available for reuse.
+</P>
+<P>
 It should be noted that use of the pool machinery isn't generally
 obligatory, except for situations like logging handlers, where you
 really need to register cleanups to make sure that the log file gets
@@ -538,14 +542,15 @@ documented here).  However, there are two benefits to using it:
 resources allocated to a pool never leak (even if you allocate a
 scratch string, and just forget about it); also, for memory
 allocation, <CODE>ap_palloc</CODE> is generally faster than
-<CODE>malloc</CODE>.<P>
-
+<CODE>malloc</CODE>.
+</P>
+<P>
 We begin here by describing how memory is allocated to pools, and then
 discuss how other resources are tracked by the resource pool
 machinery.
-
+</P>
 <H3>Allocation of memory in pools</H3>
-
+<P>
 Memory is allocated to pools by calling the function
 <CODE>ap_palloc</CODE>, which takes two arguments, one being a pointer to
 a resource pool structure, and the other being the amount of memory to
@@ -554,7 +559,7 @@ requests, the most common way of getting a resource pool structure is
 by looking at the <CODE>pool</CODE> slot of the relevant
 <CODE>request_rec</CODE>; hence the repeated appearance of the
 following idiom in module code:
-
+</P>
 <PRE>
 int my_handler(request_rec *r)
 {
@@ -564,14 +569,15 @@ int my_handler(request_rec *r)
     foo = (foo *)ap_palloc (r-&gt;pool, sizeof(my_structure));
 }
 </PRE>
-
+<P>
 Note that <EM>there is no <CODE>ap_pfree</CODE></EM> ---
 <CODE>ap_palloc</CODE>ed memory is freed only when the associated
 resource pool is cleared.  This means that <CODE>ap_palloc</CODE> does not
 have to do as much accounting as <CODE>malloc()</CODE>; all it does in
 the typical case is to round up the size, bump a pointer, and do a
-range check.<P>
-
+range check.
+</P>
+<P>
 (It also raises the possibility that heavy use of <CODE>ap_palloc</CODE>
 could cause a server process to grow excessively large.  There are
 two ways to deal with this, which are dealt with below; briefly, you
@@ -582,9 +588,9 @@ periodically.  The latter technique is discussed in the section on
 sub-pools below, and is used in the directory-indexing code, in order
 to avoid excessive storage allocation when listing directories with
 thousands of files).
-
+</P>
 <H3>Allocating initialized memory</H3>
-
+<P>
 There are functions which allocate initialized memory, and are
 frequently useful.  The function <CODE>ap_pcalloc</CODE> has the same
 interface as <CODE>ap_palloc</CODE>, but clears out the memory it
@@ -596,34 +602,157 @@ varargs-style function, which takes a pointer to a resource pool, and
 at least two <CODE>char *</CODE> arguments, the last of which must be
 <CODE>NULL</CODE>.  It allocates enough memory to fit copies of each
 of the strings, as a unit; for instance:
-
+</P>
 <PRE>
      ap_pstrcat (r-&gt;pool, "foo", "/", "bar", NULL);
 </PRE>
-
+<P>
 returns a pointer to 8 bytes worth of memory, initialized to
 <CODE>"foo/bar"</CODE>.
-
+</P>
+<H3><A name="pools-used">Commonly-used pools in the Apache Web server</A></H3>
+<P>
+A pool is really defined by its lifetime more than anything else.  There
+are some static pools in http_main which are passed to various
+non-http_main functions as arguments at opportune times.  Here they are:
+</P>
+<DL COMPACT>
+ <DT>permanent_pool
+ </DT>
+ <DD>
+  <UL>
+   <LI>never passed to anything else, this is the ancestor of all pools
+   </LI>
+  </UL>
+ </DD>
+ <DT>pconf
+ </DT>
+ <DD>
+  <UL>
+   <LI>subpool of permanent_pool
+   </LI>
+   <LI>created at the beginning of a config "cycle"; exists until the
+    server is terminated or restarts; passed to all config-time
+    routines, either via cmd->pool, or as the "pool *p" argument on
+    those which don't take pools
+   </LI>
+   <LI>passed to the module init() functions
+   </LI>
+  </UL>
+ </DD>
+ <DT>ptemp
+ </DT>
+ <DD>
+  <UL>
+   <LI>sorry I lie, this pool isn't called this currently in 1.3, I
+    renamed it this in my pthreads development.  I'm referring to
+    the use of ptrans in the parent... contrast this with the later
+    definition of ptrans in the child.
+   </LI>
+   <LI>subpool of permanent_pool
+   </LI>
+   <LI>created at the beginning of a config "cycle"; exists until the
+    end of config parsing; passed to config-time routines via
+    cmd->temp_pool.  Somewhat of a "bastard child" because it isn't
+    available everywhere.  Used for temporary scratch space which
+    may be needed by some config routines but which is deleted at
+    the end of config.
+   </LI>
+  </UL>
+ </DD>
+ <DT>pchild
+ </DT>
+ <DD>
+  <UL>
+   <LI>subpool of permanent_pool
+   </LI>
+   <LI>created when a child is spawned (or a thread is created); lives
+    until that child (thread) is destroyed
+   </LI>
+   <LI>passed to the module child_init functions
+   </LI>
+   <LI>destruction happens right after the child_exit functions are
+    called... (which may explain why I think child_exit is redundant
+    and unneeded)
+   </LI>
+  </UL>
+ </DD>
+ <DT>ptrans
+ <DT>
+ <DD>
+  <UL>
+   <LI>should be a subpool of pchild, but currently is a subpool of
+    permanent_pool, see above
+   </LI>
+   <LI>cleared by the child before going into the accept() loop to receive
+    a connection
+   </LI>
+   <LI>used as connection->pool
+   </LI>
+  </UL>
+ </DD>
+ <DT>r->pool
+ </DT>
+ <DD>
+  <UL>
+   <LI>for the main request this is a subpool of connection->pool; for
+    subrequests it is a subpool of the parent request's pool.
+   </LI>
+   <LI>exists until the end of the request (<EM>i.e.</EM>, destroy_sub_req, or
+    in child_main after process_request has finished)
+   </LI>
+   <LI>note that r itself is allocated from r->pool; <EM>i.e.</EM>, r->pool is
+    first created and then r is the first thing palloc()d from it
+   </LI>
+  </UL>
+ </DD>
+</DL>
+<P>
+For almost everything folks do, r->pool is the pool to use.  But you
+can see how other lifetimes, such as pchild, are useful to some
+modules... such as modules that need to open a database connection once
+per child, and wish to clean it up when the child dies.
+</P>
+<P>
+You can also see how some bugs have manifested themself, such as setting
+connection->user to a value from r->pool -- in this case connection exists
+for the lifetime of ptrans, which is longer than r->pool (especially if
+r->pool is a subrequest!).  So the correct thing to do is to allocate
+from connection->pool.
+</P>
+<P>
+And there was another interesting bug in mod_include/mod_cgi.  You'll see
+in those that they do this test to decide if they should use r->pool
+or r->main->pool.  In this case the resource that they are registering
+for cleanup is a child process.  If it were registered in r->pool,
+then the code would wait() for the child when the subrequest finishes.
+With mod_include this could be any old #include, and the delay can be up
+to 3 seconds... and happened quite frequently.  Instead the subprocess
+is registered in r->main->pool which causes it to be cleaned up when
+the entire request is done -- <EM>i.e.</EM>, after the output has been sent to
+the client and logging has happened.
+</P>
 <H3><A name="pool-files">Tracking open files, etc.</A></H3>
-
+<P>
 As indicated above, resource pools are also used to track other sorts
 of resources besides memory.  The most common are open files.  The
 routine which is typically used for this is <CODE>ap_pfopen</CODE>, which
 takes a resource pool and two strings as arguments; the strings are
-the same as the typical arguments to <CODE>fopen</CODE>, e.g.,
-
+the same as the typical arguments to <CODE>fopen</CODE>, <EM>e.g.</EM>,
+</P>
 <PRE>
      ...
      FILE *f = ap_pfopen (r-&gt;pool, r-&gt;filename, "r");
 
      if (f == NULL) { ... } else { ... }
 </PRE>
-
+<P>
 There is also a <CODE>ap_popenf</CODE> routine, which parallels the
 lower-level <CODE>open</CODE> system call.  Both of these routines
 arrange for the file to be closed when the resource pool in question
-is cleared.  <P>
-
+is cleared.
+</P>
+<P>
 Unlike the case for memory, there <EM>are</EM> functions to close
 files allocated with <CODE>ap_pfopen</CODE>, and <CODE>ap_popenf</CODE>,
 namely <CODE>ap_pfclose</CODE> and <CODE>ap_pclosef</CODE>.  (This is
@@ -632,17 +761,26 @@ can have open is quite limited).  It is important to use these
 functions to close files allocated with <CODE>ap_pfopen</CODE> and
 <CODE>ap_popenf</CODE>, since to do otherwise could cause fatal errors on
 systems such as Linux, which react badly if the same
-<CODE>FILE*</CODE> is closed more than once. <P>
-
+<CODE>FILE*</CODE> is closed more than once.
+</P>
+<P>
 (Using the <CODE>close</CODE> functions is not mandatory, since the
 file will eventually be closed regardless, but you should consider it
 in cases where your module is opening, or could open, a lot of files).
-
+</P>
 <H3>Other sorts of resources --- cleanup functions</H3>
-
+<BLOCKQUOTE>
 More text goes here.  Describe the the cleanup primitives in terms of
 which the file stuff is implemented; also, <CODE>spawn_process</CODE>.
-
+</BLOCKQUOTE>
+<P>
+Pool cleanups live until clear_pool() is called:  clear_pool(a) recursively
+calls destroy_pool() on all subpools of a; then calls all the cleanups for a; 
+then releases all the memory for a.  destroy_pool(a) calls clear_pool(a) 
+and then releases the pool structure itself.  i.e. clear_pool(a) doesn't
+delete a, it just frees up all the resources and you can start using it
+again immediately. 
+</P>
 <H3>Fine control --- creating and dealing with sub-pools, with a note
 on sub-requests</H3>
 
