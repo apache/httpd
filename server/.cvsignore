@@ -9,7 +9,6 @@ exports.c
 export_vars.h
 Debug
 Release
-apache.exports
 ApacheCoreOS2.def
 httpd.exp
 *.plg
