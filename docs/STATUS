@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/06/01 21:11:05 $
+Last modified: $Date: 2003/06/27 04:42:58 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -27,6 +27,10 @@ Decisions pending
              scratch_pad (clearly stated on the relevant pages) and
              finally incorporate the useful info in it into the static
              documentation
+       jsl: +1 with nd on Wikis, especially regarding the PHP site.  Why
+            not (continue to) use Bugzilla?  Filters out people without
+            a general clue (ergo most probably stupid submissions
+            anyhow), has assignees, tracking/history etc.
 
 Things That Need Fixing
 =======================
