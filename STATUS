@@ -227,11 +227,6 @@ Open issues:
 
 Win32 specific issues:
 
- Open issues:
-
-    * Should ApacheCore.dll be merged back into the main server
-      image?  May make debugging easier..
-
  In progress:
 
     * Ben's ASP work... All agree it sounds cool.
