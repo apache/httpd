@@ -1366,8 +1366,6 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r)
 } 
 
 
-
-
 AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
                                                 const char *new_file,
                                                 const request_rec *r,
@@ -1382,7 +1380,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
 
     rnew->per_dir_config = r->server->lookup_defaults;
 
-    /* We have to run this after ap_set_sub_req_protocol, or the r->main
+    /* We have to run this after fill_in_sub_req_vars, or the r->main
      * pointer won't be setup
      */
     ap_run_create_request(rnew);
@@ -1427,7 +1425,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
 
     rnew->chunked        = r->chunked;
 
-    /* We have to run this after ap_set_sub_req_protocol, or the r->main
+    /* We have to run this after fill_in_sub_req_vars, or the r->main
      * pointer won't be setup
      */
     ap_run_create_request(rnew);
@@ -1540,9 +1538,13 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     rnew = make_sub_request(r);
     fill_in_sub_req_vars(rnew, r, next_filter);
 
+    /* XXX Either this is needed for all subreq types (move into
+     * fill_in_sub_req_vars), or it isn't needed at all.  
+     * WHICH IS IT?
+     */
     rnew->chunked        = r->chunked;
 
-    /* We have to run this after ap_set_sub_req_protocol, or the r->main
+    /* We have to run this after fill_in_sub_req_vars, or the r->main
      * pointer won't be setup
      */
     ap_run_create_request(rnew);
