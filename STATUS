@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/05/04 04:02:10 $]
+Last modified at [$Date: 2000/05/05 20:10:32 $]
 
 Release:
 
@@ -127,9 +127,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Status: Manoj has placed an initial version into the 2.0
         repository. Todos include:
           
-          - a tool to simplfy third-party module building should be
-            written. Something like apxs
-
     * Use APR to get rid of more platform dependancies.
         Status: Ryan Bloom <rbb@covalenet.net> is working on this.
 
