@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_authn_dbm.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authn_dbm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>DBM ファイルを用いたユーザ認証</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authn_dbm_module</td></tr>
@@ -120,7 +118,7 @@
     ものがあります。ですから、異なるアプリケーション間での DBM ファイルの
     使用に問題がある場合は、これが原因になっている可能性があります。</p>
 
-    <p>Apache には <a href="../programs/dbmmanage.html">dbmmanage</a> という
+    <p>Apache には <code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code> という
     perl スクリプトが含まれています。このプログラムを使ってこの
     モジュールが使用する DBM フォーマットのパスワードファイルを作成したり
     更新したりすることができます。</p>

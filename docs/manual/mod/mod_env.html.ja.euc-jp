@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_env.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>CGI スクリプト及び SSI
 ページに渡される環境変数を変更する機能を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -36,7 +34,7 @@
 
     <p>このモジュールにより CGI スクリプトと SSI
     ページに適用される環境変数を制御することができるようになります。
-    環境変数は httpd プロセスを起動したシェルから渡されます。また、
+    環境変数は <code class="program"><a href="../programs/httpd.html">httpd</a></code> プロセスを起動したシェルから渡されます。また、
     設定ファイルで環境変数を設定したり、削除したりすることができます。
     </p>
 </div>
@@ -63,7 +61,7 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_env</td></tr>
 </table>
 
-    <p>httpd プロセスを起動したシェルの環境から CGI スクリプトと
+    <p><code class="program"><a href="../programs/httpd.html">httpd</a></code> プロセスを起動したシェルの環境から CGI スクリプトと
     SSI ページに渡す環境変数を一つ以上指定します。</p>
 
     <div class="example"><h3>例</h3><p><code>

@@ -22,17 +22,15 @@
 <a href="./ja/dso.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>Apache HTTP サーバはモジュール化されたプログラムで、
     管理者がモジュールを選択することでサーバに組み込む機能を選ぶことができます。
-    モジュールはサーバがビルドされるときに <code>httpd</code> バイナリに
-    静的に組み込むことができます。もしくは、<code>httpd</code> バイナリとは
+    モジュールはサーバがビルドされるときに <code class="program"><a href="./programs/httpd.html">httpd</a></code> バイナリに
+    静的に組み込むことができます。もしくは、<code class="program"><a href="./programs/httpd.html">httpd</a></code> バイナリとは
     別に存在する動的共有オブジェクト (訳注: Dynamic Shared Object)
     (DSO) としてコンパイルすることも
     できます。DSO モジュールはサーバがビルドされるときにコンパイルしたり、
-    Apache 拡張ツール (<a href="programs/apxs.html">apxs</a>) を
+    Apache 拡張ツール (<code class="program"><a href="./programs/apxs.html">apxs</a></code>) を
     使って後でコンパイルして追加したりできます。</p>
 
     <p>この文書は DSO モジュールの使い方と、仕組みについて
@@ -55,7 +53,7 @@
     それは <code class="module"><a href="./mod/core.c.html">core.c</a></code> 以外では DSO にできない唯一の
     モジュールです。事実上、他のすべての Apache のモジュールは、
     <a href="install.html">インストールの文書</a>で説明されているように、
-    <code>configure</code> の
+    <code class="program"><a href="./programs/configure.html">configure</a></code> の
     <code>--enable-<em>module</em>=shared</code> オプションでそれぞれを
     DSO ビルドにすることにより、DSO モジュールにすることができます。
     <code>mod_foo.so</code> のような DSO にモジュールがコンパイルされれば、
@@ -65,13 +63,13 @@
     ロードするようにできます。</p>
 
     <p>Apache モジュール用の (特にサードパーティモジュールの) DSO ファイルの
-    作成を簡単にするために、<a href="programs/apxs.html">apxs</a>
-    (<em>APache eXtenSion</em>) という新しいサポートプログラムがあります。
+    作成を簡単にするために、<code class="program"><a href="./programs/apxs.html">apxs</a></code>
+    (<dfn>APache eXtenSion</dfn>) という新しいサポートプログラムがあります。
     Apache のソースツリーの<em>外で</em> DSO モジュールをビルドするために
     使うことができます。発想は単純です: Apache のインストール時の
-    <code>configure</code>、<code>make install</code> のときに Apache の
+    <code class="program"><a href="./programs/configure.html">configure</a></code>、<code>make install</code> のときに Apache の
     C ヘッダをインストールし、DSO ビルド用のプラットフォーム依存の
-    コンパイラとリンカのフラグを <code>apxs</code> プログラムに追加します。
+    コンパイラとリンカのフラグを <code class="program"><a href="./programs/apxs.html">apxs</a></code> プログラムに追加します。
     これにより、ユーザが Apache の配布ソースツリーなしで、さらに
     DSO サポートのためのプラットフォーム依存のコンパイラやリンカの
     フラグをいじることなく Apache のモジュールのソースをコンパイル
@@ -99,7 +97,10 @@ $ make install
         として、それを DSO <code>mod_foo.so</code> にビルド、インストール:
 
 <div class="example"><p><code>
-$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c --enable-foo=shared<br />
+$ ./configure --add-module=<var>module_type</var>:/path/to/3rdparty/mod_foo.c \<br />
+<span class="indent">
+  --enable-foo=shared<br />
+</span>
 $ make install
 </code></p></div>
       </li>
@@ -116,7 +117,7 @@ $ make install
 
       <li>
         <em>サードパーティ</em> Apache モジュール、仮に <code>mod_foo.c</code>
-        として、それを <a href="programs/apxs.html">apxs</a> を使って
+        として、それを <code class="program"><a href="./programs/apxs.html">apxs</a></code> を使って
         Apache ソースツリーの<em>外で</em> DSO にビルド、インストール:
 
 <div class="example"><p><code>
@@ -247,7 +248,7 @@ $ apxs -i -a -n foo mod_foo.la
       大きな利点があります。</li>
 
       <li>Apache モジュールの開発が簡単になります。
-      これは DSO/<code>apxs</code> の組み合わせにより、Apache ソースツリーの
+      これは DSO と <code class="program"><a href="./programs/apxs.html">apxs</a></code> の組み合わせにより、Apache ソースツリーの
       外で作業でき、開発中のモジュールの新しいバージョンを
       実行中の Apache サーバに組み込むために <code>apxs -i</code> と
       <code>apachectl restart</code> を行なうだけで良くなるからです。</li>

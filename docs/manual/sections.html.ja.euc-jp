@@ -22,8 +22,6 @@
 <a href="./ja/sections.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
  <p><a href="configuring.html">設定ファイル</a>中のディレクティブは
 サーバ全体に適用されたり、特定のディレクトリやファイル、ホスト、URL にのみ
 適用されるように制限したりすることができます。この文書は設定用のセクションの
@@ -52,7 +50,7 @@
 偽であれば、コンテナ中のディレクティブは無視されます。</p>
 
 <p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> ディレクティブは
-<code>httpd</code> コマンドラインで適切なパラメータが定義されたときにのみ
+<code class="program"><a href="./programs/httpd.html">httpd</a></code> コマンドラインで適切なパラメータが定義されたときにのみ
 適用されるディレクティブを囲います。例えば次の設定では、サーバが
 <code>httpd -DClosedForNow</code> を使って起動されたときだけすべての
 リクエストを別のサイトにリダイレクトします:</p>

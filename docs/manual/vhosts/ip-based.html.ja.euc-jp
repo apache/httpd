@@ -22,8 +22,6 @@
 <a href="../ja/vhosts/ip-based.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">システム要件</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Apache の設定方法</a></li>
@@ -49,7 +47,7 @@
 <h2><a name="howto" id="howto">Apache の設定方法</a></h2>
 
     <p>複数のホストをサポートするように Apache を設定する方法は
-    二通りあります。別の httpd デーモンを各ホスト毎に実行するか、
+    二通りあります。別の <code class="program"><a href="../programs/httpd.html">httpd</a></code> デーモンを各ホスト毎に実行するか、
     すべてのバーチャルホストをサポートするデーモンを一つ実行するかです。</p>
 
     <p>以下のときには複数のデーモンを使うと良いでしょう:</p>
@@ -65,8 +63,8 @@
       アドレスか、特定のアドレスのみを listen することができます。
       ですから、何らかの理由で特定のアドレスを listen しなけばならない
       ときは、その特定のアドレスをすべて listen する必要があります。
-      (ただし、一つの httpd が N-1 個のアドレスを listen し、
-      別の httpd が残りのアドレスを listen するといったことは可能です。)</li>
+      (ただし、一つの <code class="program"><a href="../programs/httpd.html">httpd</a></code> が N-1 個のアドレスを listen し、
+      別の <code class="program"><a href="../programs/httpd.html">httpd</a></code> が残りのアドレスを listen するといったことは可能です。)</li>
     </ul>
 
     <p>以下のときには単独のデーモンを使うと良いでしょう:</p>
@@ -82,7 +80,7 @@
 <div class="section">
 <h2><a name="multiple" id="multiple">複数デーモンの設定</a></h2>
 
-    <p>各バーチャルホストに対して別の httpd のインストールを行ないます。
+    <p>各バーチャルホストに対して別の <code class="program"><a href="../programs/httpd.html">httpd</a></code> のインストールを行ないます。
     設定ファイル中の <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> 
     ディレクティブを使って、
     各インストールでデーモンが扱う IP アドレス (バーチャルホスト) 
@@ -101,7 +99,7 @@
 <h2><a name="single" id="single">複数のバーチャルホストの設定をした
 デーモンを一つ設定する</a></h2>
 
-    <p>この場合は、一つの httpd が主サーバとすべてのバーチャルホストのリクエストを
+    <p>この場合は、一つの <code class="program"><a href="../programs/httpd.html">httpd</a></code> が主サーバとすべてのバーチャルホストのリクエストを
     処理します。設定ファイルの <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> ディレクティブを使って、
     <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>, <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>, <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>, <code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code>
     や <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code>

@@ -22,8 +22,6 @@
 <a href="../ja/howto/cgi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>
@@ -384,12 +382,12 @@
 
       <p>suexec を使っているかどうかを調べためには <code>apachectl
       -V</code> を実行して、<code>SUEXEC_BIN</code> の場所を調べてください。
-      Apache がそこに suexec のバイナリを発見した場合は、suexec が
+      Apache がそこに <code class="program"><a href="../programs/suexec.html">suexec</a></code> のバイナリを発見した場合は、suexec が
       使用されます。</p>
 
       <p>suexec を完全に理解していない限り、使うべきではありません。
       suexec を無効にするには、<code>SUEXEC_BIN</code> から指されている
-      <code>suexec</code> バイナリを削除 (か名前を変更) するだけです。
+      <code class="program"><a href="../programs/suexec.html">suexec</a></code> バイナリを削除 (か名前を変更) するだけです。
       <a href="../suexec.html">suexec</a> を読んだ後で、まだそれを
       使いたいのであれば、<code>suexec -V</code> を実行して suexec の
       ログファイルの位置を調べ、そのログファイルを使ってポリシー違反を

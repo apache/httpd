@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_version.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_version.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>バージョン依存の設定</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>version_module</td></tr>
@@ -73,7 +71,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_version</td></tr>
 </table>
-    <p><code class="directive">&lt;IfVersion&gt;</code> は httpd のバージョン
+    <p><code class="directive">&lt;IfVersion&gt;</code> は <code class="program"><a href="../programs/httpd.html">httpd</a></code> のバージョン
     が基準を満たしたときにのみ実行させたいディレクティブを囲みます。
     通常の (数値) 比較のときは <var>version</var> 引数は
     <code><var>major</var>[.<var>minor</var>[.<var>patch</var>]]</code> という

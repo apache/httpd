@@ -25,8 +25,6 @@
 <a href="../en/mod/worker.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/worker.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>マルチスレッドとマルチプロセスのハイブリッド型
 ウェブサーバを実装したマルチプロセッシングモジュール</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
@@ -168,7 +166,7 @@
     Apache の子プロセスの権限を設定するのに用いられます。
     子プロセスはクライアントに送るコンテンツ全てを読めないといけませんが、
     可能な限り必要最小限の権限のみを持っているようにするべきです。
-    さらに、<a href="../suexec.html">suexec</a>
+    さらに、<code class="program"><a href="../programs/suexec.html">suexec</a></code>
     が使用されていない限り、これらのディレクティブは
     CGI スクリプトで継承される権限も設定します。</p>
 
