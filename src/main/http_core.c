@@ -65,6 +65,8 @@
 #include "util_md5.h"
 #include "scoreboard.h"
 
+extern char *module_names[];
+
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
  * operation of other modules.  Consider this the bureaucracy module.
@@ -670,6 +672,38 @@ char *filesection (cmd_parms *cmd, core_dir_config *c, char *arg)
     return NULL;
 }
 
+char *end_ifmod (cmd_parms *cmd, void *dummy) {
+    return NULL;
+}
+
+char *start_ifmod (cmd_parms *cmd, void *dummy, char *arg)
+{
+    char *endp = strrchr (arg, '>');
+    char l[MAX_STRING_LEN];
+    int i, not = (arg[0] == '!');
+    int found = 0;
+    int nest = 1;
+
+    if (endp) *endp = '\0';
+    if (not) arg++;
+
+    for (i=0; module_names[i]; i++)
+      if (!strcasecmp(arg, module_names[i]))
+	found++;
+
+    if ((!not && found) || (not && !found))
+      return NULL;
+
+    while (nest && !(cfg_getline (l, MAX_STRING_LEN, cmd->infile))) {
+        if (!strncasecmp(l, "<IfModule", 9))
+	  nest++;
+	if (!strcasecmp(l, "</IfModule>"))
+	  nest--;
+    }
+
+    return NULL;
+}
+
 /* httpd.conf commands... beginning with the <VirtualHost> business */
 
 char *end_virthost_magic = "</Virtualhost> out of place";
@@ -1014,6 +1048,8 @@ command_rec core_cmds[] = {
 { "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1, "Keep-Alive timeout duration (sec)"},
 { "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Maximum Keep-Alive requests per connection (0 to disable)" },
 { "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG, NULL },
+{ "<IfModule", start_ifmod, NULL, OR_ALL, RAW_ARGS, NULL },
+{ "</IfModule>", end_ifmod, NULL, OR_ALL, NO_ARGS, NULL },
 { "ContentDigest", set_content_md5, NULL, RSRC_CONF|ACCESS_CONF|OR_AUTHCFG, FLAG, "whether or not to send a Content-MD5 header with each request" },
 { "CacheNegotiatedDocs", },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1, NULL },
