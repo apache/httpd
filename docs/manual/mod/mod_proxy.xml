@@ -662,15 +662,7 @@ set to prevent infinite proxy loops, or a DoS attack.</p>
 <name>NoProxy</name>
 <description>Hosts, domains, or networks that will be connected
 to directly</description>
-<syntax>NoProxy 
- <em>Domain</em>|
- <em>SubNet</em>|
- <em>IpAddr</em>| 
- <em>Hostname</em>
-[<em>Domain</em>| 
- <em>SubNet</em>|
- <em>IpAddr</em>| 
- <em>Hostname</em>] ...</syntax>
+<syntax>NoProxy <em>host</em> [<em>host</em>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
@@ -688,7 +680,8 @@ always served directly, without forwarding to the configured
   NoProxy         .mycompany.com 192.168.112.0/21 
 </example>
 
-<p>The arguments to the NoProxy directive are one of the following type list:</p>
+<p>The <em>host</em> arguments to the NoProxy directive are one of the
+following type list:</p>
    <dl>
     <!-- ===================== Domain ======================= -->
     <dt><a name="domain">

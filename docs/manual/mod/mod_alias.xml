@@ -176,9 +176,8 @@ sections.</p></note>
 
 <directivesynopsis>
 <name>RedirectMatch</name>
-<description>Sends an external redirect asking the client to fetch
-a different URL based on a regular expression match of the 
-current URL</description>
+<description>Sends an external redirect based on a regular expression match 
+of the current URL</description>
 <syntax>RedirectMatch [<em>status</em>] <em>regex URL</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>

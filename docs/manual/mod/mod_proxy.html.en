@@ -267,15 +267,7 @@ allow connections to the listed ports only.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Hosts, domains, or networks that will be connected
 to directly</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>NoProxy 
- <em>Domain</em>|
- <em>SubNet</em>|
- <em>IpAddr</em>| 
- <em>Hostname</em>
-[<em>Domain</em>| 
- <em>SubNet</em>|
- <em>IpAddr</em>| 
- <em>Hostname</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td>NoProxy <em>host</em> [<em>host</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_proxy</td></tr></table>
@@ -291,7 +283,8 @@ always served directly, without forwarding to the configured
   NoProxy         .mycompany.com 192.168.112.0/21 
 </code></p></div>
 
-<p>The arguments to the NoProxy directive are one of the following type list:</p>
+<p>The <em>host</em> arguments to the NoProxy directive are one of the
+following type list:</p>
    <dl>
     
     <dt><a name="domain">

@@ -118,9 +118,8 @@ performance</description>
 <directivesynopsis>
 
 <name>ExtendedStatus</name>
-<description>This directive controls whether the server keeps track of
-extended status information for each request. This is only
-useful if the status module is enabled on the server.</description>
+<description>Keep track of extended status information for each 
+request</description>
 <syntax>ExtendedStatus On|Off</syntax>
 <default>ExtendedStatus Off</default>
 <contextlist><context>server config</context></contextlist>
@@ -129,7 +128,9 @@ later.</compatibility>
 
 <usage>
     <p>This setting applies to the entire server, and cannot be
-    enabled or disabled on a virtualhost-by-virtualhost basis.</p>
+    enabled or disabled on a virtualhost-by-virtualhost basis.
+    The collection of extended status information can slow down
+    the server.</p>
 </usage>
 
 </directivesynopsis>

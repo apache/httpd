@@ -6,7 +6,7 @@
 <name>mod_auth_ldap</name>
 <description>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</description>
-<status>experimental</status>
+<status>Experimental</status>
 <sourcefile>mod_auth_ldap.c</sourcefile>
 <identifier>auth_ldap_module</identifier>
 <compatibility>Available in version 2.0.41 and later</compatibility>
@@ -537,6 +537,8 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPAuthoritative</name>
+<description>Prevent other authentication modules from
+authenticating the user if this one fails</description>
 <syntax>AuthLDAPAuthoritative on|off</syntax>
 <default>AuthLDAPAuthoritative on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -554,6 +556,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPBindDN</name>
+<description>Optional DN to use in binding to the LDAP server</description>
 <syntax>AuthLDAPBindDN <em>distinguished-name</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -568,6 +571,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPBindPassword</name>
+<description>Password used in conjuction with the bind DN</description>
 <syntax>AuthLDAPBindPassword <em>password</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -585,6 +589,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPCompareDNOnServer</name>
+<description>Use the LDAP server to compare the DNs</description>
 <syntax>AuthLDAPCompareDNOnServer on|off</syntax>
 <default>AuthLDAPCompareDNOnServer on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -608,6 +613,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPDereferenceAliases</name>
+<description>When will the module de-reference aliases</description>
 <syntax>AuthLDAPDereferenceAliases never|searching|finding|always</syntax>
 <default>AuthLDAPDereferenceAliases Always</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -623,6 +629,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPEnabled</name>
+<description>Turn on or off LDAP authentication</description>
 <syntax> AuthLDAPEnabled on|off</syntax>
 <default>AuthLDAPEnabled on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -640,6 +647,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPFrontPageHack</name>
+<description>Allow LDAP authentication to work with MS FrontPage</description>
 <syntax>AuthLDAPFrontPageHack on|off</syntax>
 <default>AuthLDAPFronPageHack off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -654,6 +662,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPGroupAttribute</name>
+<description>LDAP attributes used to check for group membership</description>
 <syntax>AuthLDAPGroupAttribute <em>attribute</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -670,6 +679,8 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPGroupAttributeIsDN</name>
+<description>Use the DN of the client username when checking for
+group membership</description>
 <syntax>AuthLDAPGroupAttributeIsDN on|off</syntax>
 <default>AuthLDAPGroupAttributeIsDN on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -692,6 +703,8 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPRemoteUserIsDN</name>
+<description>Use the DN of the client username to set the REMOTE_USER
+environment variable</description>
 <syntax>AuthLDAPRemoteUserIsDN on|off</syntax>
 <default>AuthLDAPUserIsDN off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -709,6 +722,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPStartTLS directive</name>
+<description>Use a secure TLS connection to the LDAP server</description>
 <syntax>AuthLDAPStartTLS on|off</syntax>
 <default>AuthLDAPStartTLS off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -725,6 +739,7 @@ AuthLDAPFrontPageHack  on
 
 <directivesynopsis>
 <name>AuthLDAPUrl</name>
+<description>URL specifying the LDAP search parameters</description>
 <syntax>AuthLDAPUrl <em>url</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>

@@ -172,8 +172,7 @@ authentication</description>
 <directivesynopsis>
 <name>AuthDigestNonceFormat</name>
 <description>Determines how the nonce is generated</description>
-<syntax>???</syntax>
-<default>???</default>
+<syntax>AuthDigestNonceFormat <em>format</em></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>

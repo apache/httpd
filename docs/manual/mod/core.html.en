@@ -416,10 +416,10 @@ such as via different symbolic links.</p>
     Directory, Location and Files sections work</a> for an
     explanation of how these different sections are combined when a
     request is received</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>Enclose a group of directives that apply only to 
-file-system directories that match a regular expression and their
+              </a></th><td>Enclose directives that apply to 
+file-system directories matching a regular expression and their
 subdirectories</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>&lt;Directory <em>regex</em>&gt;
+              </a></th><td>&lt;DirectoryMatch <em>regex</em>&gt;
 ... &lt;/Directory&gt;</td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:

@@ -6,7 +6,7 @@
 <name>mod_ldap</name>
 <description>LDAP connection pooling and result caching
 services for use by other LDAP modules</description>
-<status>experimental</status>
+<status>Experimental</status>
 <sourcefile>util_ldap.c</sourcefile>
 <identifier>ldap_module</identifier>
 <compatibility>Available in version 2.0.41 and later</compatibility>
@@ -157,6 +157,7 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 
 <directivesynopsis>
 <name>LDAPSharedCacheSize</name>
+<description>Size in bytes of the shared-memory cache</description>
 <syntax>LDAPSharedCacheSize <em>bytes</em></syntax>
 <default>LDAPSharedCacheSize 102400</default>
 <contextlist><context>server config</context></contextlist>
@@ -169,6 +170,7 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 
 <directivesynopsis>
 <name>LDAPCacheEntries</name>
+<description>Maximum number of entires in the primary LDAP cache</description>
 <syntax>LDAPCacheEntries <em>number</em></syntax>
 <default>LDAPCacheEntries 1024</default>
 <contextlist><context>server config</context></contextlist>
@@ -183,6 +185,7 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 
 <directivesynopsis>
 <name>LDAPCacheTTL</name>
+<description>Time that cached items remain valid</description>
 <syntax>LDAPCacheTTL <em>seconds</em></syntax>
 <default>LDAPCacheTTL 600</default>
 <contextlist><context>server config</context></contextlist>
@@ -196,6 +199,8 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 
 <directivesynopsis>
 <name>LDAPOpCacheEntries</name>
+<description>Number of entries used to cache LDAP compare 
+operations</description>
 <syntax>LDAPOpCacheEntries <em>number</em></syntax>
 <default>LDAPOpCacheEntries 1024</default>
 <contextlist><context>server config</context></contextlist>
@@ -209,6 +214,8 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 
 <directivesynopsis>
 <name>LDAPOpCacheTTL</name>
+<description>Time that entries in the operation cache remain 
+valid</description>
 <syntax>LDAPOpCacheTTL <em>seconds</em></syntax>
 <default>LDAPOpCacheTTL 600</default>
 <contextlist><context>server config</context></contextlist>
@@ -221,6 +228,7 @@ authentication provided by <module>mod_auth_ldap</module>.</p>
 
 <directivesynopsis>
 <name>LDAPCertDBPath</name>
+<description>Directory containing certificates for SSL support</description>
 <syntax>LDAPCertDBPath <em>directory-path</em></syntax>
 <contextlist><context>server config</context></contextlist>
 

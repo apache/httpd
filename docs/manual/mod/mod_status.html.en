@@ -105,9 +105,8 @@ performance</td></tr><tr><th><a href="module-dict.html#Status">Status:
     </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
-              </a></th><td>This directive controls whether the server keeps track of
-extended status information for each request. This is only
-useful if the status module is enabled on the server.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
+              </a></th><td>Keep track of extended status information for each 
+request</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>ExtendedStatus On|Off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ExtendedStatus Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -116,5 +115,7 @@ useful if the status module is enabled on the server.</td></tr><tr><th><a href="
               </a></th><td>ExtendedStatus is only available in Apache 1.3.2 and 
 later.</td></tr></table>
     <p>This setting applies to the entire server, and cannot be
-    enabled or disabled on a virtualhost-by-virtualhost basis.</p>
+    enabled or disabled on a virtualhost-by-virtualhost basis.
+    The collection of extended status information can slow down
+    the server.</p>
 </div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
