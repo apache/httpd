@@ -1794,6 +1794,32 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
             /*  and add the variable to Apache's structures  */
             add_env_variable(r, env);
         }
+        if (p->forced_mimetype != NULL) {
+            if (perdir == NULL) {
+                /* In the per-server context we can force the MIME-type
+                 * the correct way by notifying our MIME-type hook handler
+                 * to do the job when the MIME-type API stage is reached.
+                 */
+                rewritelog(r, 2, "remember %s to have MIME-type '%s'",
+                           r->filename, p->forced_mimetype);
+                ap_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
+                              p->forced_mimetype);
+            }
+            else {
+                /* In per-directory context we operate in the Fixup API hook
+                 * which is after the MIME-type hook, so our MIME-type handler
+                 * has no chance to set r->content_type. And because we are
+                 * in the situation where no substitution takes place no
+                 * sub-request will happen (which could solve the
+                 * restriction). As a workaround we do it ourself now
+                 * immediately although this is not strictly API-conforming.
+                 * But it's the only chance we have...
+                 */
+                rewritelog(r, 1, "[per-dir %s] force %s to have MIME-type "
+                           "'%s'", perdir, r->filename, p->forced_mimetype);
+                r->content_type = p->forced_mimetype;
+            }
+        }
         return 2;
     }
 
@@ -1951,7 +1977,9 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  Finally we had to remember if a MIME-type should be
      *  forced for this URL (`RewriteRule .. .. [T=<type>]')
      *  Later in the API processing phase this is forced by our
-     *  MIME API-hook function.
+     *  MIME API-hook function. This time its no problem even for
+     *  the per-directory context (where the MIME-type hook was
+     *  already processed) because a sub-request happens ;-)
      */
     if (p->forced_mimetype != NULL) {
         ap_table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,

@@ -1,5 +1,12 @@
 Changes with Apache 1.3b7
 
+  *) Make sure a MIME-type can be forced via a RewriteRule even when no
+     substitution takes place, for instance via the following rule:
+     ``RewriteRule ^myscript$ - [T=application/x-httpd-cgi]'' This was often
+     requested by users in the past to force a single script without a .cgi
+     extension and outside any cgi-bin dirs to be executed as a CGI program.
+     [Ralf S. Engelschall] PR#2254
+
   *) A fix for protocol issues surrounding 400, 408, and
      414 responses. [Ed Korthof]
 
