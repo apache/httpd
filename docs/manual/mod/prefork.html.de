@@ -21,7 +21,7 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache-MPM prefork</h1>
 <div class="toplang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/prefork.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/prefork.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/prefork.html">&nbsp;ja&nbsp;</a></p>
+<p><span>Verfügbare Sprachen: </span><a href="../de/mod/prefork.html" hreflang="de" title="Deutsch">&nbsp;de&nbsp;</a> | <a href="../en/mod/prefork.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/prefork.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Implementiert einen im Voraus forkenden Webserver ohne
   Thread-Unterstützung</td></tr>
@@ -177,7 +177,7 @@
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Verfügbare Sprachen: </span><a href="../de/mod/prefork.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/prefork.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/prefork.html">&nbsp;ja&nbsp;</a></p>
+<p><span>Verfügbare Sprachen: </span><a href="../de/mod/prefork.html" hreflang="de" title="Deutsch">&nbsp;de&nbsp;</a> | <a href="../en/mod/prefork.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ja/mod/prefork.html" hreflang="ja" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div>
