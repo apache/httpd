@@ -703,7 +703,7 @@ struct ent {
     char *icon;
     char *alt;
     char *desc;
-    off_t size;
+    apr_off_t size;
     apr_time_t lm;
     struct ent *next;
     int ascending, version_sort;

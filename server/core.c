@@ -2494,7 +2494,7 @@ static apr_status_t writev_it_all(apr_socket_t *s,
     apr_size_t bytes_written = 0;
     apr_status_t rv;
     apr_size_t n = len;
-    apr_size_t i = 0;
+    int i = 0;
 
     *nbytes = 0;
 
@@ -2996,6 +2996,10 @@ static int default_handler(request_rec *r)
     }
 
     bb = apr_brigade_create(r->pool);
+    /* XXX: APR_HAS_LARGE_FILES issue; need to split into mutiple buckets, 
+     * no greater than MAX(apr_size_t), (perhaps more granular than that
+     * in case the brigade code/filters attempt to read it!)
+     */
     e = apr_bucket_file_create(fd, 0, r->finfo.size, r->pool);
 
     APR_BRIGADE_INSERT_HEAD(bb, e);

@@ -883,7 +883,7 @@ static void terminate_header(apr_bucket_brigade *bb)
 {
     char tmp[] = "X-Pad: avoid browser bug" CRLF;
     char crlf[] = CRLF;
-    apr_ssize_t len;
+    apr_off_t len;
     apr_size_t buflen;
 
     (void) apr_brigade_length(bb, 1, &len);
@@ -2272,7 +2272,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     apr_off_t range_end;
     char *current;
     char *bound_head;
-    apr_ssize_t bb_length;
+    apr_off_t bb_length;
     apr_off_t clength = 0;
     apr_status_t rv;
     int found = 0;

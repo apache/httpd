@@ -118,6 +118,9 @@ static int asis_handler(request_rec *r)
     }
 
     if (!r->header_only) {
+        /* XXX: APR_HAS_LARGE_FILES issue; need to split into mutiple send_fd
+         * chunks, no greater than MAX(apr_size_t).
+         */
 	ap_send_fd(f, r, 0, r->finfo.size, &nbytes);
     }
 
