@@ -287,11 +287,8 @@ API_EXPORT(char *) pregsub(pool *p, const char *input, const char *source,
 	}
 	else if (no < nmatch && pmatch[no].rm_so < pmatch[no].rm_eo) {
 	    len = pmatch[no].rm_eo - pmatch[no].rm_so;
-	    ap_cpystrn(dst, source + pmatch[no].rm_so, len);
+	    memcpy(dst, source + pmatch[no].rm_so, len);
 	    dst += len;
-	    /* is this still valid? jj 12/26/97 */
-	    if (*(dst - 1) == '\0')	/* ap_cpystrn hit NULL. */
-		return NULL;
 	}
 
     }
@@ -447,7 +444,7 @@ API_EXPORT(char *) make_dirstr(pool *p, const char *s, int n)
 	if (s[x] == '/')
 	    if ((++f) == n) {
 		res = palloc(p, x + 2);
-		ap_cpystrn(res, s, x);
+		memcpy(res, s, x);
 		res[x] = '/';
 		res[x + 1] = '\0';
 		return res;
@@ -506,7 +503,7 @@ API_EXPORT(char *) getword(pool *atrans, const char **line, char stop)
     }
 
     res = palloc(atrans, pos + 1);
-    ap_cpystrn(res, *line, pos);
+    ap_cpystrn(res, *line, pos + 1);
 
     while ((*line)[pos] == stop)
 	++pos;
@@ -540,7 +537,7 @@ API_EXPORT(char *) getword_white(pool *atrans, const char **line)
     }
 
     res = palloc(atrans, pos + 1);
-    ap_cpystrn(res, *line, pos);
+    ap_cpystrn(res, *line, pos + 1);
 
     while (isspace((*line)[pos]))
 	++pos;
@@ -567,7 +564,7 @@ API_EXPORT(char *) getword_nulls(pool *atrans, const char **line, char stop)
     }
 
     res = palloc(atrans, pos + 1);
-    ap_cpystrn(res, *line, pos);
+    ap_cpystrn(res, *line, pos + 1);
 
     ++pos;
 
@@ -850,7 +847,7 @@ API_EXPORT(char *) get_token(pool *p, char **accept_line, int accept_white)
 
     tok_len = ptr - tok_start;
     token = palloc(p, tok_len + 1);
-    ap_cpystrn(token, tok_start, tok_len);
+    ap_cpystrn(token, tok_start, tok_len + 1);
 
     /* Advance accept_line pointer to the next non-white byte */
 
