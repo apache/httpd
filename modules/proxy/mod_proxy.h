@@ -228,7 +228,8 @@ struct proxy_worker {
     apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection
                                  * may be available while exceeding the soft limit */
     apr_interval_time_t timeout; /* connection timeout */
-
+    apr_interval_time_t acquire; /* acquire timeout when the maximum number of connections is exceeded */
+    char                acquire_set;
     proxy_conn_pool *cp;        /* Connection pool to use */
     void            *opaque;    /* per scheme worker data */
 };
