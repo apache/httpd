@@ -1,5 +1,11 @@
 Changes with Apache 1.2b8
 
+  *) In the proxy, if the cache filesystem was full, garbage_coll() was
+     never called, and thus the filesystem would remain full indefinitely.
+     We now also remove incomplete cache files left if the origin server
+     didn't send a Content-Length header and either the client has aborted
+     transfer or bwrite() to client has failed. [Petr Lampa]
+
   *) Fixed the handling of module and script-added header fields.
      Improved the interface for sending header fields and reduced
      the duplication of code between sending okay responses and errors.

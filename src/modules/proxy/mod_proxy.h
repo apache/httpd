@@ -228,6 +228,7 @@ int proxy_cache_check(request_rec *r, char *url, struct cache_conf *conf,
     struct cache_req **cr);
 int proxy_cache_update(struct cache_req *c, array_header *resp_hdrs,
     const char *protocol, int nocache);
+void proxy_garbage_coll(request_rec *r);
 
 /* proxy_connect.c */
 

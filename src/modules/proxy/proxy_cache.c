@@ -88,7 +88,7 @@ static char *filename;
 static int sub_garbage_coll(request_rec *r,array_header *files,
 			    const char *cachedir,const char *cachesubdir);
 
-static void garbage_coll(request_rec *r)
+void proxy_garbage_coll(request_rec *r)
     {
     const char *cachedir;
     void *sconf = r->server->module_config;
@@ -835,6 +835,11 @@ proxy_cache_tidy(struct cache_req *c)
 	    return;
 	}
     } else
+    if (c->req->connection->aborted) {
+	    pclosef(c->req->pool, c->fp->fd);  /* no need to flush */
+	    unlink(c->tempfile);
+	    return;
+    } else 
     {
 /* update content-length of file */
 	char buff[9];
@@ -909,6 +914,5 @@ proxy_cache_tidy(struct cache_req *c)
 	    "proxy: error deleting temp file",s);
 #endif
 
-    garbage_coll(c->req);
 }
 

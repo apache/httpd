@@ -395,6 +395,7 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 
     pclosef(pool, sock);
 
+    proxy_garbage_coll(r);
     return OK;
 }
 

@@ -408,8 +408,14 @@ proxy_send_fb(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c)
 	
         while(n && !r->connection->aborted) {
             w = bwrite(con->client, &buf[o], n);
-	    if (w <= 0)
-		break;
+            if (w <= 0) {
+                if (f2 != NULL) {
+                    pclosef(c->req->pool, c->fp->fd);
+                    c->fp = NULL; 
+                    unlink(c->tempfile);
+                }
+                break;
+            }
 	    reset_timeout(r); /* reset timeout after successfule write */
             n-=w;
             o+=w;
