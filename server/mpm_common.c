@@ -193,7 +193,7 @@ void ap_reclaim_child_processes(int terminate)
         }
 
 #if APR_HAS_OTHER_CHILD
-        apr_proc_other_child_check();
+        apr_proc_other_child_refresh_all(APR_OC_REASON_RESTART);
 #endif
 
         if (!not_dead_yet) {
