@@ -333,7 +333,6 @@ static void win9x_accept(void * dummy)
     int clen;
     ap_listen_rec *lr;
     struct fd_set listenfds;
-    SOCKET listenmaxfd = INVALID_SOCKET;
 #if APR_HAVE_IPV6
     struct sockaddr_in6 sa_client;
 #else
@@ -348,9 +347,6 @@ static void win9x_accept(void * dummy)
         if (lr->sd != NULL) {
             apr_os_sock_get(&nsd, lr->sd);
             FD_SET(nsd, &listenfds);
-            if (listenmaxfd == INVALID_SOCKET || nsd > listenmaxfd) {
-                listenmaxfd = nsd;
-            }
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                          "Child %d: Listening on port %d.", my_pid, lr->bind_addr->port);
         }
