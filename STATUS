@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/06 01:19:49 $]
+Last modified at [$Date: 2002/01/08 00:31:19 $]
 
 Release:
 
@@ -157,19 +157,27 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                  hang. My theory is that this has to do with the
                  pthread_cond_*() implementation in FreeBSD, but it's still
                  possible that it is in APR.
-    Justin adds: Oh, FreeBSD threads are implemented entirely with 
-                 select()/poll()/longjmp().  Welcome to the nightmare.
-                 So, that means a ktrace output also has the thread 
-                 scheduling internals in it (since it is all the same to 
-                 the kernel).  Which makes it hard to distinguish between 
-                 our select() calls and their select() calls.  
-                 *bangs head on wall repeatedly*  But, some of the libc_r 
-                 files have a DBG_MSG #define.  This is moderately helpful
-                 when used with -DNO_DETACH.  The kernel scheduler isn't 
-                 waking up the threads on a select().  Yum.  And, I bet 
-                 those decrementing select calls have to do with the 
-                 scheduler.  Time to brush up on our OS fundamentals.
-     
+      
+      Justin adds: Oh, FreeBSD threads are implemented entirely with 
+                   select()/poll()/longjmp().  Welcome to the nightmare.
+                   So, that means a ktrace output also has the thread 
+                   scheduling internals in it (since it is all the same to 
+                   the kernel).  Which makes it hard to distinguish between 
+                   our select() calls and their select() calls.  
+                   *bangs head on wall repeatedly*  But, some of the libc_r 
+                   files have a DBG_MSG #define.  This is moderately helpful
+                   when used with -DNO_DETACH.  The kernel scheduler isn't 
+                   waking up the threads on a select().  Yum.  And, I bet 
+                   those decrementing select calls have to do with the 
+                   scheduler.  Time to brush up on our OS fundamentals.
+
+      David says:  Having spent a fair bit of time tracking this further, it
+                   seems that FreeBSD's thread_kern_poll gets into a situation
+                   where it polls for the kern_pipe and gets a hit (so the
+                   timeout becomes an irrelevancy) but the pipe never seems to
+                   be read and so successive calls simply return and the cpu
+                   usage grows. Time to flag this to the FreeBSD team.
+
     * There is increasing demand from module writers for an API
       that will allow them to control the server à la apachectl.
       Reasons include sole-function servers that need to die if
