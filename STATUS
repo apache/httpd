@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/04 05:53:28 $]
+Last modified at [$Date: 2000/10/06 14:28:00 $]
 
 Release:
 
@@ -163,6 +163,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       Status: Greg +1 (volunteers), Jeff +1, Ryan +1, Tony -0(?)
 
     * mod_info to use the configuration tree
+
+    * make apr_get_uuid() thread-safe
+
+    * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
+
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
