@@ -135,7 +135,13 @@ static char *asn1_table_vhost_key(SSLModConfigRec *mc, apr_pool_t *p,
 
 static apr_file_t *writetty = NULL;
 static apr_file_t *readtty = NULL;
-    
+
+/*
+ * sslc has a nasty flaw where its
+ * PEM_read_bio_PrivateKey does not take a callback arg.
+ */
+static server_rec *ssl_pphrase_server_rec = NULL;
+
 int ssl_pphrase_Handle_CB(char *, int, int, void *);
 
 static char *pphrase_array_get(apr_array_header_t *arr, int idx)
@@ -355,9 +361,11 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 }
 
                 cpPassPhraseCur = NULL;
+                ssl_pphrase_server_rec = s; /* to make up for sslc flaw */
+
                 bReadable = ((pPrivateKey = SSL_read_PrivateKey(szPath, NULL,
                             ssl_pphrase_Handle_CB, s)) != NULL ? TRUE : FALSE);
-                
+
                 /*
                  * when the private key file now was readable,
                  * it's fine and we go out of the loop
@@ -608,7 +616,7 @@ static int pipe_get_passwd_cb(char *buf, int length, char *prompt, int verify)
 
 int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
 {
-    SSLModConfigRec *mc = myModConfig((server_rec *)srv);
+    SSLModConfigRec *mc;
     server_rec *s;
     apr_pool_t *p;
     apr_array_header_t *aPassPhrase;
@@ -622,6 +630,13 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
     BOOL *pbPassPhraseDialogOnce;
     char *cpp;
     int len = -1;
+
+#ifndef OPENSSL_VERSION_NUMBER
+    /* make up for sslc flaw */
+    srv = ssl_pphrase_server_rec;
+#endif
+
+    mc = myModConfig((server_rec *)srv);
 
     /*
      * Reconnect to the context of ssl_phrase_Handle()
