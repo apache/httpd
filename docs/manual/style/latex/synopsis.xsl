@@ -30,18 +30,18 @@
 <xsl:text>\section{</xsl:text>
 <xsl:choose>
   <xsl:when test="../status='Core'">
-    <xsl:value-of select="$messages/message [@name='apachecore']" />
+    <xsl:value-of select="$message[@id='apachecore']" />
   </xsl:when>
   <xsl:when test=".='mpm_common'">
-    <xsl:value-of select="$messages/message [@name='apachempmcommon']" />
+    <xsl:value-of select="$message[@id='apachempmcommon']" />
   </xsl:when>
   <xsl:when test="../status='MPM'">
-    <xsl:value-of select="$messages/message [@name='apachempm']" />
+    <xsl:value-of select="$message[@id='apachempm']" />
     <xsl:text> </xsl:text>
     <xsl:apply-templates select="name"/>
   </xsl:when>
   <xsl:otherwise>
-    <xsl:value-of select="$messages/message [@name='apachemodule']" />
+    <xsl:value-of select="$message[@id='apachemodule']" />
     <xsl:text> </xsl:text>
     <xsl:apply-templates select="name"/>
   </xsl:otherwise>
@@ -56,20 +56,20 @@
 \begin{tabular}{lp{.75\linewidth}}
 \hline
 </xsl:text>
-<xsl:value-of select="$messages/message [@name='description']" />
+<xsl:value-of select="$message[@id='description']" />
 <xsl:text>: &amp;</xsl:text> 
 <xsl:apply-templates select="description" />
 <xsl:text>\\
 </xsl:text>
 
-<xsl:value-of select="$messages/message [@name='status']" />
+<xsl:value-of select="$message[@id='status']" />
 <xsl:text>: &amp;</xsl:text>
 <xsl:value-of select="status" />
 <xsl:text>\\
 </xsl:text>
 
 <xsl:if test="identifier">
-<xsl:value-of select="$messages/message [@name='moduleidentifier']" />
+<xsl:value-of select="$message[@id='moduleidentifier']" />
 <xsl:text>: &amp;</xsl:text>
 <xsl:apply-templates select="identifier" />
 <xsl:text>\\
@@ -77,7 +77,7 @@
 </xsl:if>
 
 <xsl:if test="sourcefile">
-<xsl:value-of select="$messages/message [@name='sourcefile']" />
+<xsl:value-of select="$message[@id='sourcefile']" />
 <xsl:text>: &amp;</xsl:text>
 <xsl:apply-templates select="sourcefile" />
 <xsl:text>\\
@@ -85,7 +85,7 @@
 </xsl:if>
 
 <xsl:if test="compatibility">
-<xsl:value-of select="$messages/message [@name='compatibility']" />
+<xsl:value-of select="$message[@id='compatibility']" />
 <xsl:text>: &amp;</xsl:text>
 <xsl:apply-templates select="compatibility" />
 <xsl:text> \\
@@ -97,7 +97,7 @@
     <!-- optional)                                            -->
     <xsl:if test="summary">
       <xsl:text>\subsection*{</xsl:text>
-      <xsl:value-of select="$messages/message [@name='summary']" />
+      <xsl:value-of select="$message[@id='summary']" />
       <xsl:text>}
 </xsl:text>
       <xsl:apply-templates select="summary" />
@@ -105,7 +105,7 @@
 
      <xsl:text>
 \smallskip\textbf{</xsl:text>
-     <xsl:value-of select="$messages/message [@name='directives']" />
+     <xsl:value-of select="$message[@id='directives']" />
      <xsl:text>}
 </xsl:text>
 
@@ -136,7 +136,7 @@
 </xsl:text>
      </xsl:when>
      <xsl:otherwise>
-       <xsl:value-of select="$messages/message [@name='nodirectives']" />
+       <xsl:value-of select="$message[@id='nodirectives']" />
      <xsl:text>
 </xsl:text>
      </xsl:otherwise>
@@ -172,17 +172,15 @@
 <xsl:text>\subsection*{</xsl:text>
 <xsl:call-template name="simpledirname"/>
   <xsl:choose>
-  <xsl:when test="$messages/message
-      [@name='directive']/@replace-space-with">
-    <xsl:value-of select="$messages/message
-        [@name='directive']/@replace-space-with"/>
+  <xsl:when test="$message[@id='directive']/@replace-space-with">
+    <xsl:value-of select="$message[@id='directive']/@replace-space-with"/>
   </xsl:when>
   <xsl:otherwise>
     <xsl:text> </xsl:text>
   </xsl:otherwise>
   </xsl:choose>
 
-<xsl:value-of select="$messages/message[@name='directive']" />
+<xsl:value-of select="$message[@id='directive']" />
 <xsl:text>}\label{</xsl:text>
 <xsl:value-of select="concat('/mod/', //modulesynopsis/name, ':', translate(., $uppercase, $lowercase))"/>
 <xsl:text>}\hypertarget{</xsl:text>
@@ -199,47 +197,47 @@
 \begin{tabular}{lp{.8\linewidth}}
 \hline
 </xsl:text>
-<xsl:value-of select="$messages/message [@name='description']" />
+<xsl:value-of select="$message[@id='description']" />
 <xsl:text>: &amp; </xsl:text>
 <xsl:apply-templates select="description" />
 <xsl:text>\\
 </xsl:text>
 
-<xsl:value-of select="$messages/message[@name='syntax']" />
+<xsl:value-of select="$message[@id='syntax']" />
 <xsl:text>: &amp; {\ttfamily </xsl:text>
 <xsl:apply-templates select="syntax" />
 <xsl:text>}\\
 </xsl:text>
 
 <xsl:if test="default">
-<xsl:value-of select="$messages/message[@name='default']" />
+<xsl:value-of select="$message[@id='default']" />
 <xsl:text>: &amp; {\ttfamily </xsl:text>
 <xsl:apply-templates select="default" />
 <xsl:text>} \\
 </xsl:text>
 </xsl:if>
 
-<xsl:value-of select="$messages/message[@name='context']" />
+<xsl:value-of select="$message[@id='context']" />
 <xsl:text>: &amp;</xsl:text>
 <xsl:apply-templates select="contextlist" />
 <xsl:text> \\
 </xsl:text>
 
 <xsl:if test="override">
-<xsl:value-of select="$messages/message[@name='override']"/>
+<xsl:value-of select="$message[@id='override']"/>
 <xsl:text>: &amp;</xsl:text>
 <xsl:apply-templates select="override" />
 <xsl:text> \\
 </xsl:text>
 </xsl:if>
 
-<xsl:value-of select="$messages/message[@name='status']" />
+<xsl:value-of select="$message[@id='status']" />
 <xsl:text>: &amp;</xsl:text>
 <xsl:value-of select="../status" />
 <xsl:text> \\
 </xsl:text>
 
-<xsl:value-of select="$messages/message[@name='module']" />
+<xsl:value-of select="$message[@id='module']" />
 <xsl:text>: &amp;</xsl:text>
 <xsl:choose>
 <xsl:when test="modulelist">
@@ -253,7 +251,7 @@
 </xsl:text>
 
 <xsl:if test="compatibility">
-<xsl:value-of select="$messages/message[@name='compatibility']" />
+<xsl:value-of select="$message[@id='compatibility']" />
 <xsl:text>: &amp;</xsl:text>
 <xsl:apply-templates select="compatibility" />
 <xsl:text> \\
@@ -290,16 +288,16 @@
 <xsl:template match="context">
 <xsl:choose>
 <xsl:when test="normalize-space(.) = 'server config'">
-    <xsl:value-of select="$messages/message[@name='serverconfig']" />
+    <xsl:value-of select="$message[@id='serverconfig']" />
 </xsl:when>
 <xsl:when test="normalize-space(.) = 'virtual host'">
-    <xsl:value-of select="$messages/message[@name='virtualhost']" />
+    <xsl:value-of select="$message[@id='virtualhost']" />
 </xsl:when>
 <xsl:when test="normalize-space(.) = 'directory'">
-    <xsl:value-of select="$messages/message[@name='directory']" />
+    <xsl:value-of select="$message[@id='directory']" />
 </xsl:when>
 <xsl:when test="normalize-space(.) = '.htaccess'">
-    <xsl:value-of select="$messages/message[@name='htaccess']" />
+    <xsl:value-of select="$message[@id='htaccess']" />
 </xsl:when>
 <xsl:otherwise> <!-- error -->
     <xsl:message terminate="yes">
