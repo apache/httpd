@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Extend mod_negotiation to evaluate the environment variables
+     no-gzip and gzip-only-text/html the same way as mod_deflate does.
+     [André Malo]
+
   *) Prevent endless loops of internal redirects in mod_rewrite by
      aborting after exceeding a limit of internal redirects. The
      limit defaults to 10 and can be changed using the RewriteOptions
