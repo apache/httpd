@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1998/12/31 00:44:12 $]
+  Last modified at [$Date: 1998/12/31 01:10:54 $]
 
 Release:
 
@@ -23,6 +23,8 @@ RELEASE SHOWSTOPPERS:
     * Version component misbehaviour
         See: <36738822.D2FD6C0@lyra.org>
         Status: Ralf mentioned that he knows a solution... (?)
+	Is this the module placing it's token first? If so, I have
+	a patch: Jim
 
     * Paul's [PATCH] Win32 device files
         Message-ID: <Pine.LNX.4.00.9812021631410.21697-100000@ecstasy.localnet>
