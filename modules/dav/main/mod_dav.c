@@ -623,28 +623,29 @@ static int dav_get_resource(request_rec *r, const char *target,
                             dav_resource **res_p)
 {
     void *data;
+    dav_dir_conf *conf;
+    const dav_hooks_repository *repos_hooks;
 
     /* go look for the resource if it isn't already present */
     (void) apr_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
-    if (data == NULL) {
-        dav_dir_conf *conf;
-        int rv;
-
-        conf = ap_get_module_config(r->per_dir_config, &dav_module);
-
-        /* have somebody store it into the request's user data... */
-        rv = ap_run_get_resource(r, conf->dir, target);
-        if (rv == DECLINED) {
-            /* Apache will supply a default error for this. */
-            return HTTP_NOT_FOUND;
-        }
-        else if (rv != OK)
-            return rv;
-
-        (void) apr_get_userdata(&data, DAV_KEY_RESOURCE, r->pool);
+    if (data != NULL) {
+        *res_p = data;
+        return OK;
     }
 
-    *res_p = data;
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+
+    /* assert: provider != NULL */
+    repos_hooks = dav_lookup_repository(conf->provider);
+
+    *res_p = (*repos_hooks->get_resource)(r, conf->dir, target);
+    if (*res_p == NULL) {
+        /* Apache will supply a default error for this. */
+        return HTTP_NOT_FOUND;
+    }
+
+    (void) apr_set_userdata(*res_p, DAV_KEY_RESOURCE, apr_null_cleanup,
+                            r->pool);
     return OK;
 }
 
@@ -3289,7 +3290,6 @@ module MODULE_VAR_EXPORT dav_module =
 };
 
 AP_HOOK_STRUCT(
-    AP_HOOK_LINK(get_resource)
     AP_HOOK_LINK(get_lock_hooks)
     AP_HOOK_LINK(get_propdb_hooks)
     AP_HOOK_LINK(get_vsn_hooks)
@@ -3297,10 +3297,6 @@ AP_HOOK_STRUCT(
     AP_HOOK_LINK(find_liveprop)
     AP_HOOK_LINK(insert_all_liveprops)
     )
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, get_resource,
-                            (request_rec *r, const char *root_dir,
-                             const char *workspace),
-                            (r, root_dir, workspace), DECLINED);
 AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_locks *, get_lock_hooks,
                             (request_rec *r), (r), NULL);
 AP_IMPLEMENT_HOOK_RUN_FIRST(const dav_hooks_db *, get_propdb_hooks,

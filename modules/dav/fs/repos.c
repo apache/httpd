@@ -1996,19 +1996,6 @@ static const dav_hooks_liveprop dav_hooks_liveprop_fs =
 };
 
 
-int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
-                             const char *workspace)
-{
-    dav_resource *resource = dav_fs_get_resource(r, root_dir, workspace);
-
-    if (resource == NULL)
-        return DECLINED;
-
-    (void) apr_set_userdata(resource, DAV_KEY_RESOURCE, apr_null_cleanup,
-                           r->pool);
-    return OK;
-}
-
 const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r)
 {
     return &dav_hooks_locks_fs;
@@ -2045,11 +2032,15 @@ void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
     dav_fs_insert_all(resource, insvalue, phdr);
 }
 
-void dav_fs_register_uris(apr_pool_t *p)
+void dav_fs_register(apr_pool_t *p)
 {
+    /* register the namespace URIs */
     const char * const * uris = dav_fs_namespace_uris;
 
     for ( ; *uris != NULL; ++uris) {
         dav_register_liveprop_namespace(p, *uris);
     }
+
+    /* register the repository provider */
+    dav_register_repository(p, "filesystem", &dav_hooks_repository_fs);
 }

@@ -385,10 +385,6 @@ ap_xml_elem *dav_find_child(const ap_xml_elem *elem, const char *tagname);
 
 /* ### docco ... */
 
-/* ### add a repository friendly-name to the get_resource */
-AP_DECLARE_HOOK(int, get_resource, (request_rec *r, const char *root_dir,
-                                    const char *workspace))
-
 AP_DECLARE_HOOK(const dav_hooks_locks *, get_lock_hooks, (request_rec *r))
 AP_DECLARE_HOOK(const dav_hooks_propdb *, get_propdb_hooks, (request_rec *r))
 AP_DECLARE_HOOK(const dav_hooks_vsn *, get_vsn_hooks, (request_rec *r))
@@ -410,6 +406,10 @@ AP_DECLARE_HOOK(void, insert_all_liveprops, (request_rec *r,
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_get_propdb_hooks(request_rec *r);
 const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r);
+
+void dav_register_repository(apr_pool_t *p, const char *name,
+                             const dav_hooks_repository *hooks);
+const dav_hooks_repository * dav_lookup_repository(const char *name);
 
 void dav_register_liveprop_namespace(apr_pool_t *pool, const char *uri);
 int dav_get_liveprop_ns_index(const char *uri);

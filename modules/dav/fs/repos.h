@@ -95,8 +95,6 @@ void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
 /* where is the lock database located? */
 const char *dav_get_lockdb_path(const request_rec *r);
 
-int dav_fs_hook_get_resource(request_rec *r, const char *root_dir,
-                             const char *workspace);
 const dav_hooks_locks *dav_fs_get_lock_hooks(request_rec *r);
 const dav_hooks_propdb *dav_fs_get_propdb_hooks(request_rec *r);
 
@@ -106,6 +104,6 @@ int dav_fs_find_liveprop(request_rec *r, const char *ns_uri, const char *name,
 void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
                                  int insvalue, ap_text_header *phdr);
 
-void dav_fs_register_uris(apr_pool_t *p);
+void dav_fs_register(apr_pool_t *p);
 
 #endif /* _DAV_FS_REPOS_H_ */
