@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/13 15:22:48 $]
+Last modified at [$Date: 2003/11/13 18:01:11 $]
 
 Release:
 
@@ -74,7 +74,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     * Better descriptions for the configure --help output for some modules
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/config9.m4.diff?r1=1.17&r2=1.18
-      +1: kess
+      +1: kess, trawick
 
     * Modifies the cache code to be header-location agnostic. Also
       fixes a number of other cache code bugs related to PR 15852
