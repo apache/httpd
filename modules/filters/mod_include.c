@@ -1034,7 +1034,7 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb,
                     return (1);
                 }
             }
-            if (!strcmp(tag, "file") || !strcmp(tag, "virtual")) {
+            if (!strcmp(tag, "virtual") || !strcmp(tag, "file")) {
                 request_rec *rr = NULL;
                 char *error_fmt = NULL;
 
