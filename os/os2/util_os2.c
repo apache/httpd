@@ -68,7 +68,7 @@ int ap_os_kill(pid_t pid, int sig)
 char *ap_os_error_message(int err)
 {
   static char result[200];
-  char message[HUGE_STRING_LEN];
+  unsigned char message[HUGE_STRING_LEN];
   ULONG len;
   char *pos;
   int c;
@@ -93,4 +93,95 @@ char *ap_os_error_message(int err)
   }
   
   return result;
+}
+
+
+
+
+int (*os2_select)( int *, int, int, int, long ) = NULL;
+static HMODULE hSO32DLL;
+
+int ap_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
+{
+    int *fds, s, fd_count=0, rc;
+    int num_read, num_write, num_except;
+    long ms_timeout = -1;
+
+    if (os2_select == NULL) {
+        DosEnterCritSec(); /* Stop two threads doing this at the same time */
+
+        if (os2_select == NULL) {
+            hSO32DLL = ap_os_dso_load("SO32DLL");
+
+            if (hSO32DLL) {
+                os2_select = ap_os_dso_sym(hSO32DLL, "SELECT");
+            }
+        }
+        DosExitCritSec();
+    }
+
+    ap_assert(os2_select != NULL);
+    fds = alloca(sizeof(int) * nfds);
+
+    if (readfds) {
+        for (s=0; s<nfds; s++)
+            if (FD_ISSET(s, readfds))
+                fds[fd_count++] = _getsockhandle(s);
+    }
+
+    num_read = fd_count;
+
+    if (writefds) {
+        for (s=0; s<nfds; s++)
+            if (FD_ISSET(s, writefds))
+                fds[fd_count++] = _getsockhandle(s);
+    }
+
+    num_write = fd_count - num_read;
+
+    if (exceptfds) {
+        for (s=0; s<nfds; s++)
+            if (FD_ISSET(s, exceptfds))
+                fds[fd_count++] = _getsockhandle(s);
+    }
+
+    num_except = fd_count - num_read - num_write;
+
+    if (timeout)
+        ms_timeout = timeout->tv_usec / 1000 + timeout->tv_sec * 1000;
+
+    rc = os2_select(fds, num_read, num_write, num_except, ms_timeout);
+
+    if (rc > 0) {
+        fd_count = 0;
+
+        if (readfds) {
+            for (s=0; s<nfds; s++) {
+                if (FD_ISSET(s, readfds)) {
+                    if (fds[fd_count++] < 0)
+                        FD_CLR(s, readfds);
+                }
+            }
+        }
+
+        if (writefds) {
+            for (s=0; s<nfds; s++) {
+                if (FD_ISSET(s, writefds)) {
+                    if (fds[fd_count++] < 0)
+                        FD_CLR(s, writefds);
+                }
+            }
+        }
+
+        if (exceptfds) {
+            for (s=0; s<nfds; s++) {
+                if (FD_ISSET(s, exceptfds)) {
+                    if (fds[fd_count++] < 0)
+                        FD_CLR(s, exceptfds);
+                }
+            }
+        }
+    }
+
+    return rc;
 }
