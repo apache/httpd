@@ -1631,6 +1631,14 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
         udir = ap_escape_uri(rnew->pool, udir);    /* re-escape it */
         ap_parse_uri(rnew, ap_make_full_path(rnew->pool, udir, new_file));
     }
+
+    /* We cannot return NULL without violating the API. So just turn this
+     * subrequest into a 500 to indicate the failure. */
+    if (ap_is_subreq_limit_exceeded(r)) {
+        rnew->status = HTTP_INTERNAL_SERVER_ERROR;
+        return rnew;
+    }
+
     /* lookup_uri 
      * If the content can be served by the quick_handler, we can
      * safely bypass request_internal processing.
@@ -1764,6 +1772,13 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         ap_parse_uri(rnew, rnew->uri);
     }
 
+    /* We cannot return NULL without violating the API. So just turn this
+     * subrequest into a 500. */
+    if (ap_is_subreq_limit_exceeded(r)) {
+        rnew->status = HTTP_INTERNAL_SERVER_ERROR;
+        return rnew;
+    }
+
     if ((res = ap_process_request_internal(rnew))) {
         rnew->status = res;
     }
@@ -1849,6 +1864,13 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * file may not have a uri associated with it -djg
          */
         rnew->uri = apr_pstrdup(rnew->pool, "");
+    }
+
+    /* We cannot return NULL without violating the API. So just turn this
+     * subrequest into a 500. */
+    if (ap_is_subreq_limit_exceeded(r)) {
+        rnew->status = HTTP_INTERNAL_SERVER_ERROR;
+        return rnew;
     }
 
     if ((res = ap_process_request_internal(rnew))) {

@@ -468,6 +468,10 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
     conf->sec_dir = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
     conf->sec_url = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
 
+    /* recursion stopper */
+    conf->redirect_limit = 0; /* 0 == unset */
+    conf->subreq_limit = 0;
+
     return (void *)conf;
 }
 
@@ -490,6 +494,14 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
 
     conf->sec_dir = apr_array_append(p, base->sec_dir, virt->sec_dir);
     conf->sec_url = apr_array_append(p, base->sec_url, virt->sec_url);
+
+    conf->redirect_limit = virt->redirect_limit
+                           ? virt->redirect_limit
+                           : base->redirect_limit;
+
+    conf->subreq_limit = virt->subreq_limit
+                         ? virt->subreq_limit
+                         : base->subreq_limit;
 
     return conf;
 }
@@ -2613,6 +2625,141 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 }
 #endif
 
+static const char *set_recursion_limit(cmd_parms *cmd, void *dummy,
+                                       const char *arg1, const char *arg2)
+{
+    core_server_config *conf = ap_get_module_config(cmd->server->module_config,
+                                                    &core_module);
+    int limit = atoi(arg1);
+
+    if (limit <= 0) {
+        return "The recursion limit must be greater than zero.";
+    }
+    if (limit < 4) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                     "Limiting internal redirects to very low numbers may "
+                     "cause normal requests to fail.");
+    }
+
+    conf->redirect_limit = limit;
+
+    if (arg2) {
+        limit = atoi(arg2);
+
+        if (limit <= 0) {
+            return "The recursion limit must be greater than zero.";
+        }
+        if (limit < 4) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                         "Limiting the subrequest depth to a very low level may"
+                         " cause normal requests to fail.");
+        }
+    }
+
+    conf->subreq_limit = limit;
+
+    return NULL;
+}
+
+static void log_backtrace(const request_rec *top, const request_rec *r)
+{
+    while (top) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "redirected from r->uri = %s",
+                      top->uri ? top->uri : "(unexpectedly NULL)");
+
+        if (!top->prev && top->main) {
+            top = top->main;
+
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "subrequested from r->uri = %s",
+                          top->uri ? top->uri : "(unexpectedly NULL)");
+        }
+        else {
+            top = top->prev;
+        }
+    }
+}
+
+/*
+ * check whether redirect limit is reached
+ */
+AP_DECLARE(int) ap_is_redirect_limit_exceeded(const request_rec *r)
+{
+    core_server_config *conf = ap_get_module_config(r->server->module_config,
+                                                    &core_module);
+    const request_rec *top = r;
+    int redirects = 0;
+    int limit = conf->redirect_limit
+                ? conf->redirect_limit
+                : AP_DEFAULT_MAX_INTERNAL_REDIRECTS;
+
+    while (top->prev) {
+        if (++redirects >= limit) {
+            /* uuh, too much. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Request exceeded the limit of %d internal redirects "
+                          "due to probable configuration error. Use "
+                          "'LimitInternalRecursion' to increase the limit if "
+                          "necessary. Use 'LogLevel debug' to get a "
+                          "backtrace.", limit);
+
+            /* post backtrace */
+            log_backtrace(r->prev, r);
+
+            /* return failure */
+            return 1;
+        }
+
+        if (!top->prev && top->main) {
+            top = top->main;
+        }
+        else {
+            top = top->prev;
+        }
+    }
+
+    /* number of redirects is ok */
+    return 0;
+}
+
+/*
+ * check whether subrequest depth limit is reached
+ */
+AP_DECLARE(int) ap_is_subreq_limit_exceeded(const request_rec *r)
+{
+    core_server_config *conf = ap_get_module_config(r->server->module_config,
+                                                    &core_module);
+    const request_rec *top = r;
+    int subreqs = 0;
+    int limit = conf->subreq_limit
+                ? conf->subreq_limit
+                : AP_DEFAULT_MAX_SUBREQ_DEPTH;
+
+    while (top->main) {
+        if (++subreqs >= limit) {
+            /* uuh, too much. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Request exceeded the limit of %d subrequest "
+                          "nesting levels due to probable confguration error. "
+                          "Use 'LimitInternalRecursion' to increase the limit "
+                          "if necessary. Use 'LogLevel debug' to get a "
+                          "backtrace.", limit);
+
+            /* post backtrace */
+            log_backtrace(r->main, r);
+
+            /* return failure */
+            return 1;
+        }
+
+        top = top->main;
+    }
+
+    /* number of subrequests is ok */
+    return 0;
+}
+
 static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
                                          const char *arg, const char *arg2)
 {
@@ -3062,6 +3209,10 @@ AP_INIT_TAKE12("RLimitNPROC", set_limit_nproc,
 AP_INIT_TAKE12("RLimitNPROC", no_set_limit, NULL,
    OR_ALL, "soft/hard limits for max number of processes per uid"),
 #endif
+
+/* internal recursion stopper */
+AP_INIT_TAKE12("LimitInternalRecursion", set_recursion_limit, NULL, RSRC_CONF,
+              "maximum recursion depth of internal redirects and subrequests"),
 
 AP_INIT_TAKE1("ForceType", ap_set_string_slot_lower,
        (void *)APR_OFFSETOF(core_dir_config, mime_type), OR_FILEINFO,
