@@ -897,13 +897,13 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
         return NULL;
 
     if (ap_get_filetype(file, &type) == APR_SUCCESS &&
-        type == APR_REG &&
+        type != APR_REG &&
 #if defined(WIN32) || defined(OS2)
         !(strcasecmp(name, "nul") == 0 ||
           (strlen(name) >= 4 &&
            strcasecmp(name + strlen(name) - 4, "/nul") == 0))) {
 #else
-        strcmp(name, "/dev/null") == 0) {
+        strcmp(name, "/dev/null") != 0) {
 #endif /* WIN32 || OS2 */
 	saved_errno = errno;
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
