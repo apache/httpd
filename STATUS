@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/11 16:32:45 $]
+Last modified at [$Date: 2002/12/11 16:48:08 $]
 
 Release:
 
@@ -57,13 +57,10 @@ Contributors looking for a mission:
 
 PATCHES TO PORT FROM 2.1
 
-    * stoddard: All mod_cache (and related) patches as of 12/10/02.
-      +1: stoddard, trawick, rederpj
-
     * Fix the building of cgi command lines when the query string
       contains '='.  PR 13914  [Ville Skyttä <ville.skytta@iki.fi>,
       Jeff Trawick]
-      +1: trawick, wrowe
+      +1: trawick, wrowe, stoddard
 
     * Reorder the definitions for mod_ldap and mod_auth_ldap within
       config.m4 to make sure the parent mod_ldap is defined first.
@@ -71,7 +68,17 @@ PATCHES TO PORT FROM 2.1
       httpd.conf file, which is necessary for mod_auth_ldap to load.
       PR 14256  [Graham Leggett]
       +1: trawick, wrowe
- 
+
+    * Rewrite how proxy sends its request to allow input bodies to 
+      morph the request bodies.  Previously, if an input filter
+      changed the request body, the original C-L would be sent which
+      would be incorrect.
+  
+      Due to HTTP compliance, we must either send the body T-E: chunked
+      or include a C-L for the request body.  Connection: Close is not
+      an option. [jerenkrantz    2002/12/08 21:37:27]
+      +1: stoddard
+
 CURRENT RELEASE NOTES:
 
     * Backwards compatibility is expected of future Apache 2.0 releases,
