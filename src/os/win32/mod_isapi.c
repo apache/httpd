@@ -457,6 +457,7 @@ BOOL WINAPI ServerSupportFunction (HCONN hConn, DWORD dwHSERequest,
 		while (endp > value && isspace(*endp)) *endp-- = '\0';
             
 		r->content_type = pstrdup (r->pool, value);
+		str_tolower(r->content_type);
 	    }
 	    else if (!strcasecmp(data, "Content-Length")) {
 		table_set(r->headers_out, data, value);

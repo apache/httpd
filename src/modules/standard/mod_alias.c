@@ -327,7 +327,7 @@ static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, in
 
 	if (found) {
 	    if (p->handler) {	/* Set handler, and leave a note for mod_cgi */
-		r->handler = pstrdup(r->pool, p->handler);
+		r->handler = p->handler;
 		table_setn(r->notes, "alias-forced-type", r->handler);
 	    }
 

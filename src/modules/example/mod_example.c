@@ -492,7 +492,8 @@ static int example_handler(request_rec *r)
      * where you set the "Content-type" header, and you do so by putting it in
      * r->content_type, *not* r->headers_out("Content-type").  If you don't
      * set it, it will be filled in with the server's default type (typically
-     * "text/plain").
+     * "text/plain").  You *must* also ensure that r->content_type is lower
+     * case.
      *
      * We also need to start a timer so the server can know if the connexion
      * is broken.

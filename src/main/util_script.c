@@ -470,6 +470,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 		*endp-- = '\0';
 
 	    r->content_type = pstrdup(r->pool, l);
+	    str_tolower(r->content_type);
 	}
 	else if (!strcasecmp(w, "Status")) {
 	    sscanf(l, "%d", &r->status);

@@ -434,7 +434,7 @@ int invoke_handler(request_rec *r)
 	    continue;
 
 	for (handp = modp->handlers; handp->content_type; ++handp) {
-	    if (!strcasecmp(handler, handp->content_type)) {
+	    if (!strcmp(handler, handp->content_type)) {
 		int result = (*handp->handler) (r);
 
 		if (result != DECLINED)
@@ -458,7 +458,7 @@ int invoke_handler(request_rec *r)
 
 	    len = starp - handp->content_type;
 
-	    if (!len || !strncasecmp(handler, handp->content_type, len)) {
+	    if (!len || !strncmp(handler, handp->content_type, len)) {
 		int result = (*handp->handler) (r);
 
 		if (result != DECLINED)
@@ -906,7 +906,18 @@ API_EXPORT_NONSTD(const char *) set_string_slot(cmd_parms *cmd,
     /* This one's pretty generic... */
 
     int offset = (int) (long) cmd->info;
-    *(char **) (struct_ptr + offset) = pstrdup(cmd->pool, arg);
+    *(char **) (struct_ptr + offset) = arg;
+    return NULL;
+}
+
+API_EXPORT_NONSTD(const char *) set_string_slot_lower(cmd_parms *cmd,
+						char *struct_ptr, char *arg)
+{
+    /* This one's pretty generic... */
+
+    int offset = (int) (long) cmd->info;
+    str_tolower(arg);
+    *(char **) (struct_ptr + offset) = arg;
     return NULL;
 }
 
@@ -928,7 +939,7 @@ API_EXPORT_NONSTD(const char *) set_file_slot(cmd_parms *cmd, char *struct_ptr, 
     char *p;
     int offset = (int) (long) cmd->info;
     if (os_is_path_absolute(arg))
-	p = pstrdup(cmd->pool, arg);
+	p = arg;
     else
 	p = make_full_path(cmd->pool, server_root, arg);
     *(char **) (struct_ptr + offset) = p;

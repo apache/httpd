@@ -264,6 +264,7 @@ static int scan_meta_file(request_rec *r, FILE *f)
 		*endp-- = '\0';
 
 	    r->content_type = pstrdup(r->pool, l);
+	    str_tolower(r->content_type);
 	}
 	else if (!strcasecmp(w, "Status")) {
 	    sscanf(l, "%d", &r->status);

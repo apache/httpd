@@ -60,6 +60,11 @@
 
 /* Command dispatch structures... */
 
+/* Note that for all of these except RAW_ARGS, the config routine is
+ * passed a freshly allocated string which can be modified or stored
+ * or whatever... it's only necessary to do pstrdup() stuff with
+ * RAW_ARGS.
+ */
 enum cmd_how {
     RAW_ARGS,			/* cmd_func parses command line itself */
     TAKE1,			/* one argument only */
@@ -162,7 +167,7 @@ typedef struct {
 /* This structure records the existence of handlers in a module... */
 
 typedef struct {
-    char *content_type;
+    const char *content_type;	/* MUST be all lower case */
     int (*handler) (request_rec *);
 } handler_rec;
 
@@ -275,6 +280,7 @@ API_EXPORT(void) set_module_config(void *conf_vector, module *m, void *val);
 /* Generic command handling function... */
 
 API_EXPORT_NONSTD(const char *) set_string_slot(cmd_parms *, char *, char *);
+API_EXPORT_NONSTD(const char *) set_string_slot_lower(cmd_parms *, char *, char *);
 API_EXPORT_NONSTD(const char *) set_flag_slot(cmd_parms *, char *, int);
 API_EXPORT_NONSTD(const char *) set_file_slot(cmd_parms *, char *, char *);
 

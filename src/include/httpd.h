@@ -174,7 +174,7 @@
 #endif
 
 /* Define this to be what type you'd like returned for files with unknown */
-/* suffixes */
+/* suffixes.  MUST be all lower case. */
 #ifndef DEFAULT_CONTENT_TYPE
 #define DEFAULT_CONTENT_TYPE "text/plain"
 #endif
@@ -642,6 +642,10 @@ struct request_rec {
     table *subprocess_env;
     table *notes;
 
+    /* content_type, handler, content_encoding, content_language, and all
+     * content_languages MUST be lowercased strings.  They may be pointers
+     * to static strings; they should not be modified in place.
+     */
     char *content_type;		/* Break these out --- we dispatch on 'em */
     char *handler;		/* What we *really* dispatch on           */
 

@@ -153,7 +153,7 @@ static command_rec negotiation_cmds[] =
  */
 
 typedef struct accept_rec {
-    char *type_name;
+    char *type_name;		/* MUST be lowercase */
     float quality;
     float max_bytes;
     float level;
@@ -174,7 +174,7 @@ typedef struct accept_rec {
 
 typedef struct var_rec {
     request_rec *sub_req;       /* May be NULL (is, for map files) */
-    char *type_name;
+    char *type_name;		/* MUST be lowercase */
     char *file_name;
     char *content_encoding;
     array_header *content_languages;    /* list of languages for this variant */
@@ -749,7 +749,6 @@ static int read_type_map(negotiation_state *neg, request_rec *rr)
             }
             else if (!strncmp(buffer, "content-encoding:", 17)) {
                 mime_info.content_encoding = get_token(neg->pool, &body, 0);
-                str_tolower(mime_info.content_encoding);
             }
             else if (!strncmp(buffer, "description:", 12)) {
                 mime_info.description = get_token(neg->pool, &body, 0);
@@ -861,18 +860,9 @@ static int read_types_multi(negotiation_state *neg)
         mime_info.file_name = pstrdup(neg->pool, dir_entry->d_name);
         if (sub_req->content_encoding) {
             mime_info.content_encoding = sub_req->content_encoding;
-            str_tolower(mime_info.content_encoding);
         }
         if (sub_req->content_languages) {
-            int i;
-
             mime_info.content_languages = sub_req->content_languages;
-            if (mime_info.content_languages) {
-                for (i = 0; i < mime_info.content_languages->nelts; ++i) {
-                    str_tolower(((char **)
-                                 (mime_info.content_languages->elts))[i]);
-                }
-            }
         }
 
         get_entry(neg->pool, &accept_info, sub_req->content_type);

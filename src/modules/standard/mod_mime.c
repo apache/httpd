@@ -118,7 +118,8 @@ static const char *add_type(cmd_parms *cmd, mime_dir_config * m, char *ct, char 
 {
     if (*ext == '.')
         ++ext;
-    table_set(m->forced_types, ext, ct);
+    str_tolower(ct);
+    table_setn(m->forced_types, ext, ct);
     return NULL;
 }
 
@@ -127,7 +128,8 @@ static const char *add_encoding(cmd_parms *cmd, mime_dir_config * m, char *enc,
 {
     if (*ext == '.')
         ++ext;
-    table_set(m->encoding_types, ext, enc);
+    str_tolower(enc);
+    table_setn(m->encoding_types, ext, enc);
     return NULL;
 }
 
@@ -136,7 +138,8 @@ static const char *add_language(cmd_parms *cmd, mime_dir_config * m, char *lang,
 {
     if (*ext == '.')
         ++ext;
-    table_set(m->language_types, ext, lang);
+    str_tolower(lang);
+    table_setn(m->language_types, ext, lang);
     return NULL;
 }
 
@@ -145,7 +148,8 @@ static const char *add_handler(cmd_parms *cmd, mime_dir_config * m, char *hdlr,
 {
     if (*ext == '.')
         ++ext;
-    table_set(m->handlers, ext, hdlr);
+    str_tolower(hdlr);
+    table_setn(m->handlers, ext, hdlr);
     return NULL;
 }
 
@@ -155,8 +159,7 @@ static const char *add_handler(cmd_parms *cmd, mime_dir_config * m, char *hdlr,
 
 static const char *set_types_config(cmd_parms *cmd, void *dummy, char *arg)
 {
-    set_module_config(cmd->server->module_config, &mime_module,
-                      pstrdup(cmd->pool, arg));
+    set_module_config(cmd->server->module_config, &mime_module, arg);
     return NULL;
 }
 
@@ -170,9 +173,9 @@ static command_rec mime_cmds[] =
      "a language (e.g., fr), followed by one or more file extensions"},
     {"AddHandler", add_handler, NULL, OR_FILEINFO, ITERATE2,
      "a handler name followed by one or more file extensions"},
-  {"ForceType", set_string_slot, (void *) XtOffsetOf(mime_dir_config, type),
+  {"ForceType", set_string_slot_lower, (void *) XtOffsetOf(mime_dir_config, type),
    OR_FILEINFO, TAKE1, "a media type"},
-    {"SetHandler", set_string_slot, (void *) XtOffsetOf(mime_dir_config, handler),
+    {"SetHandler", set_string_slot_lower, (void *) XtOffsetOf(mime_dir_config, handler),
      OR_FILEINFO, TAKE1, "a handler name"},
     {"TypesConfig", set_types_config, NULL, RSRC_CONF, TAKE1,
      "the MIME types config file"},
@@ -310,9 +313,9 @@ static int find_ct(request_rec *r)
     /* Check for overrides with ForceType/SetHandler */
 
     if (conf->type && strcmp(conf->type, "none"))
-        r->content_type = pstrdup(r->pool, conf->type);
+        r->content_type = conf->type;
     if (conf->handler && strcmp(conf->handler, "none"))
-        r->handler = pstrdup(r->pool, conf->handler);
+        r->handler = conf->handler;
 
     if (!r->content_type)
         return DECLINED;

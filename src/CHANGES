@@ -1,5 +1,16 @@
 Changes with Apache 1.3b6
 
+  *) API: Clarify usage of content_type, handler, content_encoding,
+     content_language and content_languages fields in request_rec.  They
+     must always be lowercased; and the strings pointed to shouldn't
+     be modified (you must copy them to modify them).  Fix a few bugs
+     related to this.  [Dean Gaudet]
+
+  *) API: Clarification: except for RAW_ARGS, all command handlers can
+     treat the char * parameters as permanent, and modifiable.  There
+     is no need to pstrdup() them.  Clean up some needless pstrdup().
+     [Dean Gaudet]
+
   *) Now mod_so keeps track of which module shared objects with which names
      are loaded and thus avoids multiple loading and unloading and irritating
      error_log messages. [Ralf S. Engelschall]
@@ -94,10 +105,10 @@ Changes with Apache 1.3b6
   *) WIN32: Preserve trailing slash in canonical path (and hence
 	   in PATH_INFO). [Paul Sutton, Ben Laurie]
 
-  *) USE_PTHREAD_SERIALIZED_ACCEPT has proven unreliable depending on
-     the rev of Solaris and what mixture of modules are in use.  So
-     it has been disabled, and Solaris is back to using
-     USE_FCNTL_SERIALIZED_ACCEPT.  Users may experiment with
+  *) PORT: USE_PTHREAD_SERIALIZED_ACCEPT has proven unreliable
+     depending on the rev of Solaris and what mixture of modules
+     are in use.  So it has been disabled, and Solaris is back to
+     using USE_FCNTL_SERIALIZED_ACCEPT.  Users may experiment with
      USE_PTHREAD_SERIALIZED_ACCEPT at their own risk, it may speed
      up static content only servers.  Or it may fail unpredictably.
      [Dean Gaudet] PR#1779, 1854, 1904
@@ -105,11 +116,11 @@ Changes with Apache 1.3b6
   *) mod_test_util_uri.c created which tests the logic in util_uri.c.
      [Dean Gaudet]
 
-  *) Rewrite of absoluteURI handling, and in particular how absoluteURIs
-     match vhosts.  Unless a request is a proxy request, a "http://host"
-     url is treated as if a similar "Host:" header had been supplied.
-     This change was made to support future HTTP/1.x protocols which
-     may require clients to send absoluteURIs for all requests.
+  *) API: Rewrite of absoluteURI handling, and in particular how
+     absoluteURIs match vhosts.  Unless a request is a proxy request, a
+     "http://host" url is treated as if a similar "Host:" header had been
+     supplied.  This change was made to support future HTTP/1.x protocols
+     which may require clients to send absoluteURIs for all requests.
 
      In order to achieve this change subtle changes were made to the API.  In a
      request_rec, r->hostlen has been removed.  r->unparsed_uri now exists so
@@ -123,9 +134,9 @@ Changes with Apache 1.3b6
      managed by the same httpd.
      [Dean Gaudet]
 
-  *) Cleanup of code in http_vhost.c, and remove vhost matching code from
-     mod_rewrite.  The vhost matching is now performed by a globally
-     available function matches_request_vhost().  [Dean Gaudet]
+  *) API: Cleanup of code in http_vhost.c, and remove vhost matching
+     code from mod_rewrite.  The vhost matching is now performed by a
+     globally available function matches_request_vhost().  [Dean Gaudet]
 
   *) Reduce memory usage, and speed up ServerAlias support.  As a
      side-effect users can list multiple ServerAlias directives
@@ -247,7 +258,7 @@ Changes with Apache 1.3b6
      loop if RLimitMem was used with a small amount of memory -- too small
      for the signal stack frame to be set up.  [Dean Gaudet]
 
-  *) Fix problems with absoluteURIs.  [Dean Gaudet,
+  *) Fix problems with absoluteURIs introduced during 1.3b4.  [Dean Gaudet,
      Alvaro Martinez Echevarria <alvaro@lander.es>]
 
   *) Fix multiple UserDir problem introduced during 1.3b4-dev.
@@ -309,7 +320,7 @@ Changes with Apache 1.3b6
      (but note /~../.. was handled properly).
      [Lauri Jesmin <jesmin@ut.ee>] PR#1701
 
-  *) os_is_path_absolute() now takes a const char * instead of a char *.
+  *) API: os_is_path_absolute() now takes a const char * instead of a char *.
      [Dean Gaudet]
 
 Changes with Apache 1.3b5

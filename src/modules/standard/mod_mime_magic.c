@@ -810,10 +810,16 @@ static int magic_rsl_to_request(request_rec *r)
     if (state == rsl_subtype || state == rsl_encoding ||
 	state == rsl_encoding) {
 	r->content_type = rsl_strdup(r, type_frag, type_pos, type_len);
+	/* XXX: this could be done at config time I'm sure... but I'm
+	 * confused by all this magic_rsl stuff. -djg */
+	str_tolower(r->content_type);
     }
     if (state == rsl_encoding) {
 	r->content_encoding = rsl_strdup(r, encoding_frag,
 					 encoding_pos, encoding_len);
+	/* XXX: this could be done at config time I'm sure... but I'm
+	 * confused by all this magic_rsl stuff. -djg */
+	str_tolower(r->content_encoding);
     }
 
     /* detect memory allocation errors */
@@ -2075,7 +2081,7 @@ static struct {
     int maglen;
     char *argv[3];
     int silent;
-    char *encoding;
+    char *encoding;	/* MUST be lowercase */
 } compr[] = {
 
     {
@@ -2121,7 +2127,7 @@ static int zmagic(request_rec *r, unsigned char *buf, int nbytes)
 	tryit(r, newbuf, newsize);
 
 	/* set encoding type in the request record */
-	r->content_encoding = pstrdup(r->pool, compr[i].encoding);
+	r->content_encoding = compr[i].encoding;
     }
     return 1;
 }

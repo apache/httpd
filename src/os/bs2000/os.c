@@ -76,8 +76,8 @@ int os_checkconv(struct request_rec *r)
     convert_to_ascii = (r->content_type == NULL);
 
     /* Conversion is applied to text/ files only, if ever. */
-    if (r->content_type && strncasecmp(r->content_type, "text/", 5)==0) {
-        if (strncasecmp(r->content_type, ASCIITEXT_MAGIC_TYPE_PREFIX, 
+    if (r->content_type && strncmp(r->content_type, "text/", 5)==0) {
+        if (strncmp(r->content_type, ASCIITEXT_MAGIC_TYPE_PREFIX, 
         sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1) == 0)
         r->content_type = pstrcat(r->pool, "text/",
         r->content_type+sizeof(ASCIITEXT_MAGIC_TYPE_PREFIX)-1, NULL);

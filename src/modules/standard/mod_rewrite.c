@@ -820,6 +820,7 @@ static const char *cmd_rewriterule_setflag(pool *p, rewriterule_entry *cfg,
     else if (   strcasecmp(key, "type") == 0
              || strcasecmp(key, "T") == 0   ) {
         cfg->forced_mimetype = pstrdup(p, val);
+	str_tolower(cfg->forced_mimetype);
     }
     else if (   strcasecmp(key, "env") == 0
              || strcasecmp(key, "E") == 0   ) {
