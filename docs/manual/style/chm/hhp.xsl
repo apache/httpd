@@ -77,7 +77,7 @@
 <xsl:text>Compatibility=1.0</xsl:text>&lf;
 
 <!-- resulting filename -->
-<xsl:text>Compiled file=..\manual.</xsl:text>
+<xsl:text>Compiled file=manual.</xsl:text>
 <xsl:value-of select="$messages/@lang" />
 <xsl:text>.chm</xsl:text>&lf;
 
