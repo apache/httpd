@@ -841,7 +841,7 @@ static int cfg_getch(void *param)
 {
     char ch;
     ap_file_t *cfp = (ap_file_t *) param;
-    if (ap_getc(cfp, &ch) == APR_SUCCESS)
+    if (ap_getc(&ch, cfp) == APR_SUCCESS)
         return ch;
     return (int)EOF;
 }
@@ -849,7 +849,7 @@ static int cfg_getch(void *param)
 static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
 {
     ap_file_t *cfp = (ap_file_t *) param;
-    if (ap_fgets(cfp, buf, bufsiz) == APR_SUCCESS)
+    if (ap_fgets(buf, bufsiz, cfp) == APR_SUCCESS)
         return buf;
     return NULL;
 }
@@ -888,7 +888,7 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(ap_context_t *p, const char *name)
     if (stat != APR_SUCCESS)
         return NULL;
 
-    if (ap_get_filetype(file, &type) == APR_SUCCESS &&
+    if (ap_get_filetype(&type, file) == APR_SUCCESS &&
         type != APR_REG &&
 #if defined(WIN32) || defined(OS2)
         !(strcasecmp(name, "nul") == 0 ||

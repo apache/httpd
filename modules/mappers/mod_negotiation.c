@@ -644,7 +644,7 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
     /* Get a noncommented line */
 
     do {
-        if (ap_fgets(map, buffer, MAX_STRING_LEN) != APR_SUCCESS) {
+        if (ap_fgets(buffer, MAX_STRING_LEN, map) != APR_SUCCESS) {
             return header_eof;
         }
     } while (buffer[0] == '#');
@@ -665,10 +665,10 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
 
     cp += strlen(cp);
 
-    while (ap_getc(map, &c) != APR_EOF) {
+    while (ap_getc(&c, map) != APR_EOF) {
         if (c == '#') {
             /* Comment line */
-            while (ap_getc(map, &c) != EOF && c != '\n') {
+            while (ap_getc(&c, map) != EOF && c != '\n') {
                 continue;
             }
         }
@@ -679,11 +679,11 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
              */
 
             while (c != '\n' && ap_isspace(c)) {
-                if(ap_getc(map, &c) != APR_SUCCESS)
+                if(ap_getc(&c, map) != APR_SUCCESS)
 		    break;
             }
 
-            ap_ungetc(map, c);
+            ap_ungetc(c, map);
 
             if (c == '\n') {
                 return header_seen;     /* Blank line */
@@ -691,7 +691,7 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
 
             /* Continuation */
 
-            while (cp < buf_end - 2 && (ap_getc(map, &c)) != EOF && c != '\n') {
+            while (cp < buf_end - 2 && (ap_getc(&c, map)) != EOF && c != '\n') {
                 *cp++ = c;
             }
 
@@ -702,7 +702,7 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
 
             /* Line beginning with something other than whitespace */
 
-            ap_ungetc(map, c);
+            ap_ungetc(c, map);
             return header_seen;
         }
     }
@@ -908,7 +908,7 @@ static int read_types_multi(negotiation_state *neg)
     ++filp;
     prefix_len = strlen(filp);
 
-    if (ap_opendir(&dirp, neg->pool, neg->dir_name) != APR_SUCCESS) {
+    if (ap_opendir(&dirp, neg->dir_name, neg->pool) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                     "cannot read directory for multi: %s", neg->dir_name);
         return HTTP_FORBIDDEN;

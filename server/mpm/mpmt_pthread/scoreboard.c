@@ -454,7 +454,7 @@ API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
     ap_open(p, ap_scoreboard_fname, APR_CREATE | APR_BINARY | APR_READ | APR_WRITE,
             APR_UREAD | APR_UWRITE | APR_GREAD | APR_GWRITE | APR_WREAD | APR_WWRITE,
             &scoreboard_file);
-    ap_get_os_file(scoreboard_file, &scoreboard_fd);
+    ap_get_os_file(&scoreboard_fd, scoreboard_file);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
 	fprintf(stderr, "Cannot open scoreboard file:\n");
@@ -482,7 +482,7 @@ void reinit_scoreboard(ap_context_t *p)
 
     ap_open(p, ap_scoreboard_fname, APR_CREATE | APR_BINARY | APR_READ | APR_WRITE,
             APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD, &scoreboard_file);
-    ap_get_os_file(scoreboard_file, &scoreboard_fd);
+    ap_get_os_file(&scoreboard_fd, scoreboard_file);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
 	fprintf(stderr, "Cannot open scoreboard file:\n");

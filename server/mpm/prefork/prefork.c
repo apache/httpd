@@ -544,7 +544,7 @@ static void accept_mutex_init(ap_context_t *p)
     expand_lock_fname(p);
     ap_open(&tempfile, p, ap_lock_fname, APR_CREATE | APR_WRITE | APR_EXCL,
             APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD);
-    ap_get_os_file(tempfile, &lock_fd);
+    ap_get_os_file(&lock_fd, tempfile);
     if (lock_fd == -1) {
 	perror("open");
 	fprintf(stderr, "Cannot open lock file: %s\n", ap_lock_fname);
@@ -611,7 +611,7 @@ static void accept_mutex_child_init(ap_context_t *p)
 		    "Child cannot open lock file: %s", ap_lock_fname);
 	clean_child_exit(APEXIT_CHILDINIT);
     }
-    ap_get_os_file(tempfile, &lock_fd);
+    ap_get_os_file(&lock_fd, tempfile);
 }
 
 /*
@@ -631,7 +631,7 @@ static void accept_mutex_init(ap_context_t *p)
 		    "Parent cannot open lock file: %s", ap_lock_fname);
 	exit(APEXIT_INIT);
     }
-    ap_get_os_file(tempfile, &lock_fd);
+    ap_get_os_file(&lock_fd, tempfile);
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
 }
 
