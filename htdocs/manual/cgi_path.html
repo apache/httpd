@@ -16,7 +16,7 @@
 
 <HR>
 
-<H2><A name="over">Overview</A></H2>
+<H2><A NAME="over">Overview</A></H2>
 
 <P>As implemented in Apache 1.1.1 and earlier versions, the method
 Apache used to create PATH_INFO in the CGI environment was
@@ -27,7 +27,7 @@ applications, the Apache 1.2 behavior is still compatible with the
 CGI/1.1 specification, and CGI scripts can be easily modified (<A
 HREF="#compat">see below</A>).
 
-<H2><A name="prob">The Problem</A></H2>
+<H2><A NAME="prob">The Problem</A></H2>
 
 <P>Apache 1.1.1 and earlier implemented the PATH_INFO and SCRIPT_NAME
 environment variables by looking at the filename, not the URL. While
@@ -46,7 +46,7 @@ SCRIPT_NAME to "<CODE>/cgi-</CODE>". Obviously, the latter is
 incorrect. In certain cases, this could even cause the server to
 crash.</P>
 
-<H2><A name="solution">The Solution</A></H2>
+<H2><A NAME="solution">The Solution</A></H2>
 
 <P>Apache 1.2 and later now determine SCRIPT_NAME and PATH_INFO by
 looking directly at the URL, and determining how much of the URL is
@@ -67,7 +67,7 @@ sort of information is not a recommended method, and a script making
 use of it "deserves" not to work. Apache 1.2b3 and later, however, do
 provide <A HREF="#compat">a workaround.</A>
 
-<H2><A name="compat">Compatibility with Previous Servers</A></H2>
+<H2><A NAME="compat">Compatibility with Previous Servers</A></H2>
 
 <P>It may be necessary for a script that was designed for earlier
 versions of Apache or other servers to need the information that the

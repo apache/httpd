@@ -46,7 +46,7 @@ enhancements, <A HREF="http://www.apache.org/dist/">Apache
 <UL>
 
 <!-- change the "name" to an "href" if/when there's such a document -->
-<LI><STRONG><A name="http11.html">HTTP/1.1 Compliance</A></STRONG>
+<LI><STRONG><A NAME="http11.html">HTTP/1.1 Compliance</A></STRONG>
 [Documentation to be written]<BR>
 Aside from the optional proxy module (which operates as HTTP/1.0),
 Apache is conditionally compliant with the HTTP/1.1 proposed standard,
@@ -69,7 +69,8 @@ and use conditional HTML.
 Directive Sections</A></STRONG><BR>
 The new
 <A HREF="mod/core.html#files"><CODE>&lt;Files&gt;</CODE></A>
-section allows directives to be enabled based on full filename, not just directory and URL. In
+section allows directives to be enabled based on full filename, not just
+directory and URL. In
 addition, <CODE>&lt;Files&gt;</CODE> sections can appear in
 <CODE>.htaccess</CODE> files. <CODE>&lt;Files&gt;</CODE>, along with
 <A HREF="mod/core.html#directory"><CODE>&lt;Directory&gt;</CODE></A>
@@ -90,7 +91,8 @@ conditional HTML documents.
     than the server user. A number of security checks are built in
     to try and make this as safe as possible.
 
-<LI><STRONG><A HREF="mod/mod_rewrite.html">URL Rewriting Module</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_rewrite.html">URL Rewriting Module</A></STRONG>
+<BR>
 The optional <CODE>mod_rewrite</CODE> module is now included. This
 module can provide powerful URL mapping, using regular
 expressions. There's nothing this module can't do!
@@ -119,25 +121,29 @@ generation of cookies, even when
     the cookie module is compiled in. Also, an expiry time can be set
     on the cookies.
 
-<LI><STRONG><A HREF="mod/core.html#virtualhost">&lt;VirtualHost&gt; Enhancements</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/core.html#virtualhost">&lt;VirtualHost&gt;
+Enhancements</A></STRONG><BR>
     The &lt;VirtualHost&gt; directive can now take more than one IP
     address or hostname. This lets a single vhost handles requests
     for multiple IPs or hostnames. Also the special section
     &lt;VirtualHost _default_&gt; can be used to handle requests normally
     left for the main server configuration.
 
-<LI><STRONG><A HREF="mod/mod_cgi.html#cgi_debug">CGI Debugging Environment</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_cgi.html#cgi_debug">CGI Debugging
+Environment</A></STRONG><BR>
 <CODE>ScriptLog</CODE> allows you to now set up a log that records
 all input and output to failed CGI scripts. This includes environment
 variables, input headers, POST data, output, and more. This makes CGI
 scripts much easier to debug.
 
-<LI><STRONG><A HREF="mod/core.html#rlimit">Resource Limits for CGI Scripts</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/core.html#rlimit">Resource Limits for CGI
+Scripts</A></STRONG><BR>
 New directives allow the limiting of resources used by CGI scripts
 (e.g. max CPU time). This is helpful in preventing 'runaway' CGI
 processes.
 
-<LI><STRONG><A HREF="mod/mod_alias.html">Redirect Directive Can Return Alternate Status</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_alias.html">Redirect Directive Can Return
+Alternate Status</A></STRONG><BR>
     The Redirect directive can return permanent or temporary redirects,
     "Gone" or "See Other" HTTP status. For NCSA-compatibility,
     RedirectTemp and RedirectPermanent are also implemented.
@@ -146,7 +152,8 @@ processes.
     The process of configuring Apache for compilation has been
     simplified.
 
-<LI><STRONG><A HREF="mod/core.html#options">Add or Remove Options</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/core.html#options">Add or Remove
+Options</A></STRONG><BR>
     The <CODE>Options</CODE> directive can now add or remove options from
     those currently in force, rather than always replacing them.
 
@@ -154,12 +161,14 @@ processes.
 The <CODE>-h</CODE> command-line option now lists all the available
 directives.
 
-<LI><STRONG><A HREF="mod/mod_headers.html">Optional Headers Module to Set or Remove HTTP Headers</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_headers.html">Optional Headers Module to Set or
+Remove HTTP Headers</A></STRONG><BR>
 The optional <CODE>mod_headers</CODE> module can be used to set custom
 headers in the HTTP response. It can append to existing headers,
 replace them, or remove headers from the response.
 
-<LI><STRONG><A HREF="mod/core.html#ifmodule">Conditional Config Directives</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/core.html#ifmodule">Conditional Config
+Directives</A></STRONG><BR>
 A new <CODE>&lt;IfModule&gt;</CODE> section allows directives to be
 enabled only if a given module is loaded into the server.
 

@@ -22,7 +22,7 @@ the suggestions will be general, others specific to Apache.
 
 <HR>
 
-<H2><A name="serverroot">Permissions on ServerRoot Directories</A></H2>
+<H2><A NAME="serverroot">Permissions on ServerRoot Directories</A></H2>
 <P>In typical operation, Apache is started by the root
 user, and it switches to the user defined by the <A
 HREF="../mod/core.html#user"><STRONG>User</STRONG></A> directive to serve hits.
@@ -81,7 +81,8 @@ directive.<P>
 <HR>
 
 <H2>Non Script Aliased CGI</H2>
-<P>Allowing users to execute <STRONG>CGI</STRONG> scripts in any directory should only
+<P>Allowing users to execute <STRONG>CGI</STRONG> scripts in any directory
+should only
 be considered if;
 <OL>
  <LI>You trust your users not to write scripts which will deliberately or
@@ -93,7 +94,8 @@ make one more potential hole irrelevant.
 <HR>
 
 <H2>Script Alias'ed CGI</H2>
-<P>Limiting <STRONG>CGI</STRONG> to special directories gives the admin control over
+<P>Limiting <STRONG>CGI</STRONG> to special directories gives the admin
+control over
 what goes into those directories. This is inevitably more secure than
 non script aliased CGI, but <STRONG>only if users with write access to the
 directories are trusted</STRONG> or the admin is willing to test each new CGI

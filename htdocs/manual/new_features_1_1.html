@@ -76,20 +76,23 @@ example, check out <A
 HREF="http://www.apache.org/serv-info">information about the
 www.apache.org server</A>.
 
-<LI><STRONG><A HREF="mod/mod_proxy.html">Experimental Caching Proxy Server</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_proxy.html">Experimental Caching Proxy
+Server</A></STRONG><BR>
 Apache can now act as
 an HTTP proxy server, allowing clients behind firewalls to use the
 server to access the outside world. In addition, it can cache
 documents it proxies, speeding up access to frequently requested
 documents.
 
-<LI><STRONG><A HREF="location.html">URL-based Access Protection</A></STRONG><BR>
+<LI><STRONG><A HREF="location.html">URL-based Access Protection</A></STRONG>
+<BR>
 In addition to access checking and authorization by filename (with
 <CODE><A HREF="mod/core.html#directory">&lt;Directory&gt;</A></CODE>),
 the new <CODE>&lt;Location&gt;</CODE> directive allows protection by
 URL.
 
-<LI><STRONG><A HREF="mod/mod_actions.html">Filetype-based Script "Actions"</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_actions.html">Filetype-based Script
+"Actions"</A></STRONG><BR>
 You can now run CGI scripts whenever a file of a certain type is
 requested. This makes it much easier to execute scripts that process
 files. In addition, you can use the new <A
@@ -109,17 +112,21 @@ Variables</A></STRONG><BR>
 New <CODE>PassEnv</CODE> and <CODE>SetEnv</CODE> directives allow you to
 modify the environment variables passed to CGI scripts.
 
-<LI><STRONG><A HREF="mod/mod_cern_meta.html">CERN Metafile Support</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_cern_meta.html">CERN Metafile Support</A></STRONG>
+<BR>
 Now emulates the CERN httpd's support for metafiles containing additional
 HTTP headers to be supplied with a document.
 
-<LI><STRONG><A HREF="mod/mod_imap.html">Improved Imagemap Support</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_imap.html">Improved Imagemap Support</A></STRONG>
+<BR>
 The internal imagemap handling code has been rewritten and
 reorganized, adding new handling of default, base and relative URLs,
 and support for creating non-graphical menus for use with clients that
 do not support imagemaps.
 
-<LI><STRONG><A HREF="mod/mod_userdir.html">Improved UserDir Directive</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_userdir.html">Improved UserDir
+Directive</A></STRONG>
+<BR>
 Now supports the ability to point user's files (as specified by URLs
 beginning with the "<CODE>~</CODE>" character) at directories other
 than those specified by the Unix password file.
@@ -130,35 +137,41 @@ server configuration directive can be used to turn <CODE>On</CODE> or
 <CODE>Off</CODE> DNS lookups. This supersedes the -DMINIMAL_DNS
 compile-time configuration option. This option can be set per-directory.
 
-<LI><STRONG>IdentityCheck Now Per-Directory  Option</STRONG><BR>
+<LI><STRONG>IdentityCheck Now Per-Directory  Option</STRONG>
+<BR>
 The <CODE>IdentityCheck</CODE> directive, which controls the use of
 ident to check the remote user name, can now be set per directory. The
 ident support is also RFC 1413-compliant.
 
-<LI><STRONG>Redirect Now Usable in <CODE>.htaccess</CODE> Files</STRONG><BR>
+<LI><STRONG>Redirect Now Usable in <CODE>.htaccess</CODE> Files</STRONG>
+<BR>
 The <A HREF="mod/mod_alias.html#redirect"><CODE>Redirect</CODE></A>
 directive can now be used in <CODE>.htaccess</CODE> files when the
 <CODE>FileInfo</CODE> directive has been set on. This allows users to
 redirect parts of their directories without requiring CGI scripts
 
-<LI><STRONG>ErrorDocument Now Usable in <CODE>.htaccess</CODE> Files</STRONG><BR>
+<LI><STRONG>ErrorDocument Now Usable in <CODE>.htaccess</CODE> Files</STRONG>
+<BR>
 The <A HREF="custom-error.html"><CODE>ErrorDocument</CODE></A>
 directive can now be used in <CODE>.htaccess</CODE> files when the
 <CODE>FileInfo</CODE> directive has been set on. This allows users to
 have different error messages for different sections of a site.
 
-<LI><STRONG><CODE>ForceType</CODE> Directive</STRONG><BR>
+<LI><STRONG><CODE>ForceType</CODE> Directive</STRONG>
+<BR>
 This new directive, in <CODE>&lt;Directory&gt;</CODE> sections or
 .htaccess files, allows you to override the filename extensions and
 force a single content type. (e.g. <CODE>ForceType
 application/octet-stream</CODE>)
 
-<LI><STRONG>File Owner Available to Included CGI Scripts</STRONG><BR>
+<LI><STRONG>File Owner Available to Included CGI Scripts</STRONG>
+<BR>
 Server-side includes that call CGI scripts will now set a
 <CODE>USER_NAME</CODE> environment variable that contains the owner of
 the file which included it.
 
-<LI><STRONG>Improved Icons</STRONG><BR>
+<LI><STRONG>Improved Icons</STRONG>
+<BR>
 Thanks to <A HREF="mailto:kevinh@eit.com">Kevin
 Hughes</A>, Apache's nifty color GIF icons for directory listings have
 been updated. In addition, the <A
@@ -178,7 +191,8 @@ on the host system. They must be enabled specifically in the
 
 <UL>
 
-<LI><STRONG><A HREF="mod/mod_auth_anon.html">Anonymous HTTP Logins</A></STRONG><BR>
+<LI><STRONG><A HREF="mod/mod_auth_anon.html">Anonymous HTTP Logins</A></STRONG>
+<BR>
 New options allow you to allow, using Basic HTTP Authentication,
 anonymous logins, like those of FTP. This allows you to collect email
 addresses of people accessing your site.
@@ -205,7 +219,8 @@ is now supported.
 
 <H3>OS/2 Support</H3>
 
-<P>Apache now includes support for OS/2, thanks to <A HREF="http://www.slink.com/ApacheOS2/">Softlink Services.</A></P>
+<P>Apache now includes support for OS/2, thanks to
+<A HREF="http://www.slink.com/ApacheOS2/">Softlink Services</A>.</P>
 
 <!--#include virtual="footer.html" -->
 </BODY>

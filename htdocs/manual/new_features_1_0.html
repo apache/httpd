@@ -22,7 +22,8 @@ functionality (see also more detailed <CODE>CHANGES</CODE> file) in
 the source directory.  Because the core code has changed so
 significantly, there are certain liberties that earlier versions of
 Apache (and the NCSA daemon) took that Apache 1.0 is pickier about -
-please check the <A HREF="misc/compat_notes.html">compatibility notes</A> if you have any problems.
+please check the <A HREF="misc/compat_notes.html">compatibility notes</A> if
+you have any problems.
 
 <UL>
 
@@ -35,7 +36,8 @@ included a sample module, for instance, which one of us is using to
 track click-trails using the <A
 HREF="http://home.netscape.com/newsref/std/cookie_spec.html">Netscape
 cookie mechanism</A>, for visitors who come in through Netscape
-clients).  <A HREF="mod/mod_dld.html">Modules</A> can also be loaded dynamically using GNU DLD.
+clients).  <A HREF="mod/mod_dld.html">Modules</A> can also be loaded
+dynamically using GNU DLD.
 
 <P>
 The API is not yet quite stable (see src/TODO for some possible
@@ -44,7 +46,8 @@ versions --- after all, we have more modules to adapt than you do.
 
 <P>
 
-<LI> <A HREF="process-model.html">New Process Model - much less forking, no fixed number of children.</A>
+<LI> <A HREF="process-model.html">New Process Model - much less forking, no
+fixed number of children.</A>
 
 We found that many people were using values for "MaxServers" either
 too high or too low, and were hanging themselves on it.  The model we
@@ -58,7 +61,8 @@ minimal forking.
 
 <P>
 
-<LI> <A HREF="vhosts/index.html">&lt;VirtualHost&gt; (the configuration directive for
+<LI> <A HREF="vhosts/index.html">&lt;VirtualHost&gt; (the configuration
+directive for
 multiple-homed servers)</A> is more general now.  Just about any srm.conf or
 httpd.conf command can go in a &lt;Virtualhost&gt; section, with the
 following specific exceptions: ServerType, UserId, GroupId,
@@ -67,7 +71,8 @@ ServerRoot.
 
 <P>
 
-<LI> <A HREF="content-negotiation.html">Support for content negotiation of languages through MultiViews</A>
+<LI> <A HREF="content-negotiation.html">Support for content negotiation of
+languages through MultiViews</A>
 (*.fr, *.de, *.en suffixes), via the new AddLanguage and LanguagePriority
 commands (code written by Florent Guillaume, guillaum@clipper.ens.fr).
 
@@ -114,7 +119,8 @@ commands (code written by Florent Guillaume, guillaum@clipper.ens.fr).
 <UL>
 <LI><A HREF="mod/mod_dld.html">Dynamically loading modules using GNU DLD</A>
 <LI><A HREF="mod/mod_imap.html">Imagemap Module</A>
-<LI><A HREF="mod/mod_dir.html#directoryindex">Multiple DirectoryIndex filenames</A>
+<LI><A HREF="mod/mod_dir.html#directoryindex">Multiple DirectoryIndex
+filenames</A>
 <LI><A HREF="mod/mod_asis.html"> &quot;Send as is&quot; file types</A>
 <LI><A HREF="mod/mod_include.html#xbithack">XBITHACK last modified</A>
 </UL>

@@ -65,7 +65,8 @@ accomplished while remaining backwards-compatible.</P>
     should proceed (to step 3).
     This step also sends a 100 Continue response
     to HTTP/1.1 clients, so should not be called until the module
-    is <STRONG>*definitely*</STRONG> ready to read content. (otherwise, the point of the
+    is <STRONG>*definitely*</STRONG> ready to read content. (otherwise, the
+    point of the
     100 response is defeated). Never call this function more than once.
 
 <LI>Finally, call <CODE>ap_get_client_block</CODE> in a loop. Pass it a
