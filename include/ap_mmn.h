@@ -76,12 +76,13 @@
  * 20010224 (2.0.13-dev) MODULE_MAGIC_COOKIE reset to "AP20"
  * 20010523 (2.0.19-dev) bump for scoreboard structure reordering
  * 20010627 (2.0.19-dev) more API changes than I can count
+ * 20010726 (2.0.22-dev) more big API changes
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503230UL /* "AP20" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20010627
+#define MODULE_MAGIC_NUMBER_MAJOR 20010726
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
