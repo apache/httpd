@@ -1,11 +1,11 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/08/09 19:18:58 $]
+Last modified at [$Date: 2002/08/12 19:30:12 $]
 
 Release:
 
     2.0.41  : in development.
-    2.0.40  : rolled August 09, 2002.
-    2.0.39  : rolled June 17, 2002.
+    2.0.40  : released August 9, 2002 as GA.
+    2.0.39  : released June 17, 2002 as GA.
     2.0.38  : rolled June 16, 2002.  not released.
     2.0.37  : rolled June 11, 2002.  not released.
     2.0.36  : released May 6, 2002 as GA.
@@ -54,9 +54,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * apr_poll() grows the pool (e.g., pchild or the thread's pool) on
-      each call...  Apache MPMs don't have logic to work around this
-      issue.
 
 CURRENT VOTES:
 
@@ -876,7 +873,7 @@ Other bugs that need fixing:
         Status: Greg volunteers to investigate (esp. since he was most 
                 likely the one to break it :-)
 
-Binaries (2.0.39):
+Binaries (2.0.40):
 
  Platform                      Avail.  Volunteer
  ------------------------------------------------------------------
@@ -884,18 +881,19 @@ Binaries (2.0.39):
  Mandrake 8.1                  no      Ryan Bloom
  FreeBSD 4.1                   no      Ryan Bloom
  hppa2.0w-hp-hpux11.00         yes     Cliff Woolley
- i386-pc-solaris2.8            yes     Aaron Bannert
+ i386-pc-solaris2.8            no      Aaron Bannert
  i386-unknown-freebsd4.5       no
- i386-unknown-freebsd4.6       yes     Aaron Bannert
- i686-pc-linux-gnu             yes     Aaron Bannert
- i686-pc-linux-gnu-rh70        yes     Aaron Bannert
- ia64-hp-hpux11.20             yes     Cliff Woolley
- powerpc-apple-darwin5.5       yes     Aaron Bannert
- powerpc-unknown-linux-gnu     yes     Graham Leggett
- sparc-sun-solaris2.8          yes     Jim Jagielski
- NetWare                       yes     Brad Nicholes
- OS/2                          yes     Brian Havard
- Win32-x86                     yes     William Rowe
+ i386-unknown-freebsd4.6       yes     Cliff Woolley
+ i686-pc-linux-gnu-slackware81 yes     Cliff Woolley
+ i686-pc-linux-gnu-rh70        no      Aaron Bannert
+ i686-pc-linux-gnu-rh73        yes     Cliff Woolley
+ ia64-hp-hpux11.20             no
+ powerpc-apple-darwin5.5       no      Aaron Bannert
+ powerpc-unknown-linux-gnu     no      Graham Leggett
+ sparc-sun-solaris2.8          no      Jim Jagielski
+ NetWare                       no      Brad Nicholes
+ OS/2                          no      Brian Havard
+ Win32-x86                     no      William Rowe
 
 Other features that need writing:
 
