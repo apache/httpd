@@ -73,6 +73,7 @@
 #define CORE_PRIVATE
 
 #include "apr_portable.h"
+#include "apr_file_io.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -1255,15 +1256,14 @@ static void init_config_globals(ap_context_t *p)
 
 static server_rec *init_server_config(process_rec *process, ap_context_t *p)
 {
-    ap_os_file_t errfile = STDERR_FILENO;
     server_rec *s = (server_rec *) ap_pcalloc(p, sizeof(server_rec));
 
+    ap_open_stderr(&s->error_log, p);
     s->process = process;
     s->port = 0;
     s->server_admin = DEFAULT_ADMIN;
     s->server_hostname = NULL;
     s->error_fname = DEFAULT_ERRORLOG;
-    ap_put_os_file(&s->error_log, &errfile, p);
     s->loglevel = DEFAULT_LOGLEVEL;
     s->srm_confname = RESOURCE_CONFIG_FILE;
     s->access_confname = ACCESS_CONFIG_FILE;
