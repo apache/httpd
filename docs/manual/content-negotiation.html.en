@@ -119,7 +119,7 @@
     conventional to begin a map file with an entry for the combined
     entity as a whole (although this is not required, and if
     present will be ignored). An example map file is shown below.
-    This file would be named <code>foo.html</code>, as it describes
+    This file would be named <code>foo.var</code>, as it describes
     a resource named <code>foo</code>.</p>
 <pre>
   URI: foo
