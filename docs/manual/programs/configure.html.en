@@ -1,0 +1,823 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>configure - Configure the source tree - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>configure - Configure the source tree</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/programs/configure.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+
+    <p>The <code>configure</code> script configures the source tree
+    for compiling and installing the Apache HTTP Server at your
+    particular platform. Various options allow the compilation of a
+    server corresponding to your personal requirements.</p>
+
+    <p>This script, included in the root directory of the distribution,
+    is for compilation on Unix and Unix-like systems only. For other
+    platforms, see the <a href="../platform/">platform</a>
+    documentation.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#env">Environment variables</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../install.html">Compiling and Installing</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="synopsis" id="synopsis">Synopsis</a></h2>
+    <p>You should call the <code>configure</code> script from within the
+    root directory of the distribution.</p>
+
+    <p><code><strong>./configure</strong> [<var>OPTION</var>]...
+    [<var>VAR</var>=<var>VALUE</var>]...</code></p>
+
+    <p>To assign environment variables (e.g., <code>CC</code>,
+    <code>CFLAGS</code> ...), specify them as
+    <code><var>VAR</var>=<var>VALUE</var></code>. See <a href="#env">below</a>
+    for descriptions of some of the useful variables.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="options" id="options">Options</a></h2>
+  <ul>
+    <li><a href="#configurationoptions">Configuration options</a></li>
+    <li><a href="#installationdirectories">Installation directories</a></li>
+    <li><a href="#systemtypes">System types</a></li>
+    <li><a href="#optionalfeatures">Optional features</a></li>
+    <li><a href="#supportopt">Options for support programs</a></li>
+  </ul>
+
+  <h3><a name="configurationoptions" id="configurationoptions">Configuration options</a></h3>
+
+    <p>The following options influence the behavior of
+    <code>configure</code> itself.</p>
+
+    <dl>
+      <dt><code>-C</code></dt>
+      <dt><code>--config-cache</code></dt>
+      <dd>This is an alias for <code>--cache-file=config.cache</code></dd>
+
+      <dt><code>--cache-file=<var>FILE</var></code></dt>
+      <dd>The test results will be cached in file <var>FILE</var>.
+        This option is disabled by default.</dd>
+
+      <dt><code>-h</code></dt>
+      <dt><code>--help [short|recursive]</code></dt>
+      <dd>Output the help and exit. With the argument <code>short</code> only
+        options specific to this package will displayed. The argument
+        <code>recursive</code> displays the short help of all the included
+        packages.</dd>
+
+      <dt><code>-n</code></dt>
+      <dt><code>--no-create</code></dt>
+      <dd>The <code>configure</code> script is running normally but does
+        not create output files. This is useful to check the test results
+        before generating makefiles for compilation.</dd>
+
+      <dt><code>-q</code></dt>
+      <dt><code>--quiet</code></dt>
+      <dd>Do not print <code>checking ...</code> messages during the
+        configure process.</dd>
+
+      <dt><code>--srcdir=<var>DIR</var></code></dt>
+      <dd>Defines directory <var>DIR</var> to be the source file directory.
+        Default is the directory, where configure is located, or the parent
+        directory <code>..</code>.</dd>
+
+      <dt><code>--silent</code></dt>
+      <dd>Same as <code>--quiet</code></dd>
+
+      <dt>-V</dt>
+      <dt>--version</dt>
+      <dd>Display copyright information and exit.</dd>
+    </dl>
+  
+
+  <h3><a name="installationdirectories" id="installationdirectories">Installation 
+    directories</a></h3>
+
+    <p>These options define the installation directory. The installation
+      tree depends on the selected layout.</p>
+
+    <dl>
+      <dt><code>--prefix=<var>PREFIX</var></code></dt>
+      <dd>Install architecture-independent files in <var>PREFIX</var>.
+        By default the installation directory is set to
+        <code>/usr/local/apache2</code>.</dd>
+
+      <dt><code>--exec-prefix=<var>EPREFIX</var></code></dt>
+      <dd>Install architecture-dependent files in <var>EPREFIX</var>.
+        By default the installation directory is set to the
+        <var>PREFIX</var> directory.</dd>
+    </dl>
+
+    <p>By default, <code>make install</code> will install all the files in
+      <code>/usr/local/apache2/bin</code>, <code>/usr/local/apache2/lib</code>
+      etc. You can specify an installation prefix other than
+      <code>/usr/local/apache2</code> using <code>--prefix</code>,
+      for instance <code>--prefix=$HOME</code>.</p>
+
+    <h4><a name="layout" id="layout">Define a directory layout</a></h4>
+      <dl>
+        
+        <dt><code>--enable-layout=<var>LAYOUT</var></code></dt>
+        <dd>Configure the source code and build scripts to assume an
+          installation tree based on the layout <var>LAYOUT</var>. The default
+          layout is <code>Apache</code>.</dd>
+      </dl>
+    
+
+    <h4><a name="directoryfinetuning" id="directoryfinetuning">Fine tuning of the installation
+      directories</a></h4>
+    
+      <p>For better control of the installation directories, use the options
+        below. Please note that the directory defaults are set by
+        <code>autoconf</code> and be overwritten by the corresponding layout
+        setting.</p>
+
+      <dl>
+        
+        <dt><code>--bindir=<var>DIR</var></code></dt>
+        <dd>Install user executables in <var>DIR</var>. The user executables
+          are supporting programs like <code>htpasswd</code>,
+          <code>dbmmanage</code>, etc. which are useful for site
+          administrators. By default <var>DIR</var> is set to
+          <code><var>EPREFIX</var>/bin</code>.</dd>
+
+        <dt><code>--datadir=<var>DIR</var></code></dt>
+        <dd>Install read-only architecture-independent data in <var>DIR</var>.
+          By default <code>datadir</code> is set to
+          <code><var>PREFIX</var>/share</code>. This option is offered by
+          <code>autoconf</code> and currently unused.</dd>
+
+        <dt><code>--includedir=<var>DIR</var></code></dt>
+        <dd>Install C header files in <var>DIR</var>. By default
+          <code>includedir</code> is set to
+          <code><var>EPREFIX</var>/include</code>.</dd>
+
+        <dt><code>--infodir=<var>DIR</var></code></dt>
+        <dd>Install info documentation in <var>DIR</var>.
+          By default <code>infodir</code> is set to
+          <code><var>PREFIX</var>/info</code>. This option is currently
+          unused.</dd>
+        
+        <dt><code>--libdir=<var>DIR</var></code></dt>
+        <dd>Install object code libraries in <var>DIR</var>. By default
+          <code>libdir</code> is set to
+          <code><var>EPREFIX</var>/lib</code>.</dd>
+
+        <dt><code>--libexecdir=<var>DIR</var></code></dt>
+        <dd>Install the program executables (i.e., shared modules) in
+          <var>DIR</var>. By default <code>libexecdir</code> is set to
+          <code><var>EPREFIX</var>/libexec</code>.</dd>
+
+        <dt><code>--localstatedir=<var>DIR</var></code></dt>
+        <dd>Install modifiable single-machine data in <var>DIR</var>.
+          By default <code>localstatedir</code> is set to
+          <code><var>PREFIX</var>/var</code>. This option is offered by
+          <code>autoconf</code> and currently unused.</dd>
+
+        <dt><code>--mandir=<var>DIR</var></code></dt>
+        <dd>Install the man documentation in <var>DIR</var>. By default 
+          <code>mandir</code> is set to
+          <code><var>EPREFIX</var>/man</code>.</dd>
+      
+        <dt><code>--oldincludedir=<var>DIR</var></code></dt>
+        <dd>Install C header files for non-gcc in <var>DIR</var>.
+          By default <code>oldincludedir</code> is set to
+          <code>/usr/include</code>. This option is offered by
+          <code>autoconf</code> and currently unused.</dd>
+        
+        <dt><code>--sbindir=<var>DIR</var></code></dt>
+        <dd>Install the system administrator executables in <var>DIR</var>.
+          Those are server programs like <code>httpd</code>,
+          <code>apachectl</code>, <code>suexec</code>, etc. which are neccessary
+          to run the Apache HTTP Server. By default <code>sbindir</code> is
+          set to <code><var>EPREFIX</var>/sbin</code>.</dd>
+
+        <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
+        <dd>Install modifiable architecture-independent data in <var>DIR</var>.
+          By default <code>sharedstatedir</code> is set to
+          <code><var>PREFIX</var>/com</code>. This option is offered by
+          <code>autoconf</code> and currently unused.</dd>
+
+        <dt><code>--sysconfdir=<var>DIR</var></code></dt>
+        <dd>Install read-only single-machine data like the server configuration
+          files <code>httpd.conf</code>, <code>mime.types</code>, etc. in
+          <var>DIR</var>. By default <code>sysconfdir</code> is set to
+          <code><var>PREFIX</var>/etc</code>.</dd>
+      </dl>        
+    
+  
+  
+  <h3><a name="systemtypes" id="systemtypes">System types</a></h3>
+
+    <p>These options are used to crosscompile the Apache HTTP Server to run on
+      another system. In normal cases, when building and running the server on
+      the same system, these options are not used.</p>
+
+    <dl>
+      <dt><code>--build=<var>BUILD</var></code></dt>
+      <dd>Defines the system type of the system on which the tools are being
+        built. It defaults to the result of the script
+        <code>config.guess</code>.</dd>
+
+      <dt><code>--host=<var>HOST</var></code></dt>
+      <dd>Defines the system type of the system on which the server will run.
+        <var>HOST</var> defaults to <var>BUILD</var>.</dd>
+
+      <dt><code>--target=<var>TARGET</var></code></dt>
+      <dd>Configure for building compilers for the system type
+        <var>TARGET</var>. It defaults to <var>HOST</var>. This option is
+        offered by <code>autoconf</code> and not necessary for the Apache HTTP
+        Server.</dd>
+    </dl>
+  
+
+  <h3><a name="optionalfeatures" id="optionalfeatures">Optional Features</a></h3>
+
+    <p>These options are used to fine tune the features your HTTP server will
+      have.</p>
+
+    <h4><a name="generaloptfeat" id="generaloptfeat">General syntax</a></h4>
+      <p>Generally you can use the following syntax to enable or disable a
+        feature:</p>
+
+      <dl>
+        <dt><code>--disable-<var>FEATURE</var></code></dt>
+        <dd>Do not include <var>FEATURE</var>. This is the same as
+          <code>--enable-<var>FEATURE</var>=no</code>.</dd>
+
+        <dt><code>--enable-<var>FEATURE</var>[=<var>ARG</var>]</code></dt>
+        <dd>Include <var>FEATURE</var>. The default value for <var>ARG</var> 
+          is <code>yes</code>.</dd>
+
+        <dt><code>--enable-<var>MODULE</var>=shared</code></dt>
+        <dd>The corresponding module will be build as DSO module.</dd>
+
+        <dt><code>--enable-<var>MODULE</var>=static</code></dt>
+        <dd>By default enabled modules are linked statically. You can force 
+          this explicitly.</dd>
+      </dl>
+    
+
+    <h4><a name="modules" id="modules">Enable or disable discrete modules</a></h4>
+      <p>Some modules are compiled by default and have to be disabled
+        explicitly while other modules have to be enabled explicitly or by
+        using the keywords <code>most</code> or <code>all</code> (see
+        <code>--enable-mods-shared</code> below for further explanation) to be
+        available. Therefor use the options below.</p>
+
+      <dl>
+        <dt><code>--disable-actions</code></dt>
+        <dd>Disable action triggering on requests, which is provided by
+          <code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code>.</dd>
+
+        <dt><code>--disable-alias</code></dt>
+        <dd>Disable the mapping of requests to different parts of the filesystem,
+          which is provided by <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>.</dd>
+
+        <dt><code>--disable-asis</code></dt>
+        <dd>Disable support for as-is filetypes, which is provided by
+          <code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code>.</dd>
+
+        <dt><code>--disable-auth</code></dt>
+        <dd>Disable user-based access control provided  by
+          <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>.</dd>
+
+        <dt><code>--disable-autoindex</code></dt>
+        <dd>Disable the directory listing functionality provided by
+          <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>.</dd>
+
+        <dt><code>--disable-access</code></dt>
+        <dd>Disable host-based access control provided by
+          <code class="module"><a href="../mod/mod_access.html">mod_access</a></code>.</dd>
+
+        <dt><code>--disable-cgi</code></dt>
+        <dd><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, which provides support for CGI scripts, is
+          enabled by default when using a non-threaded MPM. Use this option to
+          disable CGI support.</dd>
+
+        <dt><code>--disable-cgid</code></dt>
+        <dd>When using the threaded MPMs <code class="module"><a href="../mod/worker.html">worker</a></code> or
+          <code class="module"><a href="../mod/perchild.html">perchild</a></code> support for CGI scripts is provided by
+          <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> by default. To disable CGI support use this
+          option.</dd>
+
+        <dt><code>--disable-charset-lite</code></dt>
+        <dd>Disable character set translation provided by
+          <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>. This module will be installed by
+          default only on EBCDIC systems.</dd>
+
+        <dt><code>--disable-dir</code></dt>
+        <dd>Disable directory request handling provided by
+          <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>.</dd>
+
+        <dt><code>--disable-env</code></dt>
+        <dd>Enable setting and clearing of environment variables, which is
+          provided by <code class="module"><a href="../mod/mod_env.html">mod_env</a></code>.</dd>
+
+        
+        <dt><code>--disable-http</code></dt>
+        <dd>Disable the HTTP protocol handling. The <code>http</code> module is
+          a basic one, enabling the server to function as an HTTP server. It is
+          only useful to disable it if you want to use another protocol module
+          instead. <strong>Don't disable this module until you are really sure
+            what you are doing.</strong><br />
+          Note: This module will always be linked statically.</dd> 
+
+        <dt><code>--disable-imap</code></dt>
+        <dd>Disable support for server based imagemaps, which provided by
+          <code class="module"><a href="../mod/mod_imap.html">mod_imap</a></code>.</dd>
+
+        <dt><code>--disable-include</code></dt>
+        <dd>Disable Server Side Includes provided by
+          <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>.</dd>
+
+        <dt><code>--disable-log-config</code></dt>
+        <dd>Disable the logging configuration provided by
+          <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</dd>
+
+        <dt><code>--disable-mime</code></dt>
+        <dd>Disable the mapping of file-extensions to MIME, which is provided by
+          <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>.</dd>
+
+        <dt><code>--disable-negotiation</code></dt>
+        <dd>Disable content negotiation provided by
+          <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>.</dd>
+
+        <dt><code>--disable-setenvif</code></dt>
+        <dd>Disable support for basing environment variables on headers, which
+          is provided by <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>.</dd>
+
+        <dt><code>--disable-status</code></dt>
+        <dd>Enable the process/thread monitoring, which is provided by
+          <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.</dd>
+
+        <dt><code>--disable-userdir</code></dt>
+        <dd>Disable the mapping of requests to user-specific directories, which
+          is provided by <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</dd>
+
+        <dt><code>--enable-auth-anon</code></dt>
+        <dd>Enable anonymous user access provided by
+          <code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code>.</dd>
+
+        <dt><code>--enable-auth-dbm</code></dt>
+        <dd>Enable support for DBM-based access databases provided by
+          <code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code>.</dd>
+
+        <dt><code>--enable-auth-digest</code></dt>
+        <dd>Enable RFC2617 Digest authentication provided by
+          <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>.</dd>
+
+        <dt><code>--enable-auth-ldap</code></dt>
+        <dd>Enable LDAP based authentication provided by
+          <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code>.</dd>
+
+        
+        <dt><code>--enable-bucketeer</code></dt>
+        <dd>Enable manipulation filter the manipulation filter for buckets,
+          which is provided by <code>mod_bucketeer</code>.</dd>
+          
+        <dt><code>--enable-cache</code></dt>
+        <dd>Enable dynamic file caching provided by
+          <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</dd>
+
+        
+        <dt><code>--enable-case-filter</code></dt>
+        <dd>Enable the example uppercase conversion output filter support of
+          <code>mod_case_filter</code>.</dd>
+
+        
+        <dt><code>--enable-case-filter-in</code></dt>
+        <dd>Enable the example uppercase conversion input filter support of
+          <code>mod_case_filter_in</code>.</dd>
+
+        <dt><code>--enable-cern-meta</code></dt>
+        <dd>Enable the CERN-type meta files support provided by
+          <code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code>.</dd>
+
+        <dt><code>--enable-charset-lite</code></dt>
+        <dd>Enable character set translation provided by
+          <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>. This module will be installed by
+          default only on EBCDIC systems. On other systems, you have to enable
+          it.</dd>
+
+        <dt><code>--enable-dav</code></dt>
+        <dd>Enable the WebDAV protocol handling provided by
+          <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>. Support for filesystem resources is
+          provided by the seperate module <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>. This
+          module is also automatically enabled with
+          <code>--enable-dav</code>.<br />
+          Note: <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> can only be used together with the
+          <code>http</code> protocol module.</dd>
+
+        <dt><code>--enable-dav-fs</code></dt>
+        <dd>Enable DAV support for filesystem resources, which is provides by
+          <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code>. This module is a provider for the
+          <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> module, so you should also use
+          <code>--enable-dav</code>.</dd> 
+
+        <dt><code>--enable-deflate</code></dt>
+        <dd>Enable deflate transfer encoding provided by
+          <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.</dd>
+
+        <dt><code>--enable-disk-cache</code></dt>
+        <dd>Enable disk caching provided by
+          <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>.</dd>
+
+        <dt><code>--enable-echo</code></dt>
+        <dd>Enable the ECHO server provided by
+          <code class="module"><a href="../mod/mod_echo.html">mod_echo</a></code>.</dd>
+
+        <dt><code>--enable-example</code></dt>
+        <dd>Enable the example and demo module
+          <code class="module"><a href="../mod/mod_example.html">mod_example</a></code>.</dd>
+
+        <dt><code>--enable-expires</code></dt>
+        <dd>Enable Expires header control provided by
+          <code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code>.</dd>
+
+        <dt><code>--enable-ext-filter</code></dt>
+        <dd>Enable the external filter support provided by
+          <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>.</dd>
+
+        <dt><code>--enable-file-cache</code></dt>
+        <dd>Enable the file cache provided by
+          <code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code>.</dd>
+
+        <dt><code>--enable-headers</code></dt>
+        <dd>Enable control of HTTP headers provided by
+          <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>.</dd>
+
+        <dt><code>--enable-info</code></dt>
+        <dd>Enable the server information provided by
+          <code class="module"><a href="../mod/mod_info.html">mod_info</a></code>.</dd>
+
+        <dt><code>--enable-ldap</code></dt>
+        <dd>Enable LDAP caching and connection pooling services provided by
+          <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>.</dd>
+
+        <dt><code>--enable-logio</code></dt>
+        <dd>Enable logging of input and output bytes including headers provided
+          by <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</dd>
+
+        <dt><code>--enable-mem-cache</code></dt>
+        <dd>Enable memory caching provided by
+          <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>.</dd>
+
+        <dt><code>--enable-mime-magic</code></dt>
+        <dd>Enable automatical determining of MIME types, which is provided by
+          <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>.</dd>
+
+        <dt><code>--enable-isapi</code></dt>
+        <dd>Enable the isapi extension support provided by
+          <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code>.</dd>
+
+        
+        <dt><code>--enable-optional-fn-export</code></dt>
+        <dd>Enable the example for an optional function exporter, which is
+          provided by <code>mod_optional_fn_export</code>.</dd> 
+
+        
+        <dt><code>--enable-optional-fn-import</code></dt>
+        <dd>Enable the example for an optional function importer, which is
+          provided by <code>mod_optional_fn_import</code>.</dd>
+
+        
+        <dt><code>--enable-optional-hook-export</code></dt>
+        <dd>Enable the example for an optional hook exporter, which is provided
+          by <code>mod_optional_hook_export</code>.</dd>
+
+        
+        <dt><code>--enable-optional-hook-import</code></dt>
+        <dd>Enable the example optional hook importer, which is provided by
+          <code>mod_optional_hook_import</code>.</dd>
+
+        <dt><code>--enable-proxy</code></dt>
+        <dd>Enable the proxy/gateway functionality provided by
+          <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. The proxying capabilities for
+          <code>CONNECT</code>, <code>FTP</code> and <code>HTTP</code> are
+          provided by the seperate modules <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>,
+          <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code> and <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.
+          These three modules are also automatically enabled with
+          <code>--enable-proxy</code>.</dd>
+
+        <dt><code>--enable-proxy-connect</code></dt>
+        <dd>Enable proxy support for <code>CONNECT</code> request handling,
+          which is provided by <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code>. This module
+          is an extension for the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> module, so you
+          should also use <code>--enable-proxy</code>.</dd>
+
+        <dt><code>--enable-proxy-ftp</code></dt>
+        <dd>Enable proxy support for <code>FTP</code> requests, which is
+          provided by <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>.. This module
+          is an extension for the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> module, so you
+          should also use <code>--enable-proxy</code>.</dd>
+
+        <dt><code>--enable-proxy-http</code></dt>
+        <dd>Enable proxy support for <code>HTTP</code> requests, which is
+          provided by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>. This module
+          is an extension for the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> module, so you
+          should also use <code>--enable-proxy</code>.</dd>
+
+        <dt><code>--enable-rewrite</code></dt>
+        <dd>Enable rule based URL manipulation provided by
+          <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</dd>
+
+        <dt><code>--enable-so</code></dt>
+        <dd>Enable DSO capability provided by <code class="module"><a href="../mod/mod_so.html">mod_so</a></code>. This
+          module will automatically enabled if you use the
+          <code>--enable-mods-shared</code> option.</dd>
+
+        <dt><code>--enable-speling</code></dt>
+        <dd>Enable the functionality to correct common URL misspellings, which
+          is provided by <code class="module"><a href="../mod/mod_spelling.html">mod_spelling</a></code>.</dd>
+
+        <dt><code>--enable-ssl</code></dt>
+        <dd>Enable support for SSL/TLS provided by
+          <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</dd>
+
+        <dt><code>--enable-unique-id</code></dt>
+        <dd>Enable the generation of per-request unique ids, which is provided
+          by <code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code>.</dd>
+
+        <dt><code>--enable-usertrack</code></dt>
+        <dd>Enable user-session tracking provided by
+          <code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code>.</dd>
+
+        <dt><code>--with-module=<var>module-type</var>:<var>module-file</var>
+          </code></dt>
+        <dd><p>Add a third-party module to the list of statically linked
+            modules. The module source file <code><var>module-file</var></code>
+            will be searched in the <code>modules/<var>module-type</var></code>
+            subdirectory of your Apache HTTP server source tree so it has to be
+            placed there before. If it is not found here 
+            <code>configure</code> is considering <var>module-file</var> to be a
+            an absolute file path and tries to copy the source file into the
+            <var>module-type</var> subdirectory.</p>
+          <p>This option is useful to add small external modules consiting of
+            one source file. For bigger modules you should read the vendors
+            documentation.</p>
+          <div class="note"><h3>Note</h3>
+            If you want to build a DSO module instead of a statically linked use
+            <a href="apxs.html">apxs</a>.</div>
+        </dd>
+
+        <dt><code>--with-mpm=MPM</code></dt>
+        <dd>Choose the process model for your server. You have to select
+          exactly one <a href="mpm.html">Multi-Processing Module</a>. Otherwise
+          the <a href="mpm.html#defaults">default MPM</a> for your operating
+          system will be taken. Possible MPMs are <code class="module"><a href="../mod/beos.html">beos</a></code>,
+          <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>,
+          <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>,
+          <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> and <code class="module"><a href="../mod/worker.html">worker</a></code>.</dd>
+      </dl>
+    
+
+    <h4><a name="otheroptfeat" id="otheroptfeat">Cumulative and other options</a></h4>
+      <dl>
+        <dt><code>--enable-maintainer-mode</code></dt>
+        <dd>Turn on debugging and compile time warnings.</dd>
+
+        <dt><code>--enable-mods-shared=<var>MODULE-LIST</var></code></dt>
+        <dd>
+          <p>Defines a list of modules to be enabled and build as dynamic
+            shared modules. This mean, these module have to be loaded
+            dynamically by using the  <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive.</p>
+          <p><var>MODULE-LIST</var> is a space separated list of modulenames
+            enclosed by quotation marks. The module names are given without the
+            preceding <code>mod_</code>. For example:</p>
+          <div class="example"><p><code>
+            --enable-mods-shared='headers rewrite dav'
+          </code></p></div>
+          <p>Additionally you can use the special keywords <code>all</code> and
+            <code>most</code>. For example,</p>
+          <div class="example"><p><code>
+            --enable-mods-shared=most
+          </code></p></div>
+          <p>will compile most modules and build them as DSO modules.
+            </p>
+        </dd>
+                    
+        <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
+        <dd>This option behaves similar to <code>--enable-mods-shared</code>, 
+          but will link the given modules statically. This mean, these modules
+          will always be present while running <code>httpd</code>. They need
+          not be loaded with <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>.</dd>
+
+        <dt><code>--enable-v4-mapped</code></dt>
+        <dd>Allow IPv6 sockets to handle IPv4 connections.</dd>
+
+        <dt><code>--enable-vhost-alias</code></dt>
+        <dd>Enable mass virtual hosting provided by
+          <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>.</dd>
+
+        <dt><code>--with-port=<var>PORT</var></code></dt>
+        <dd>This defines the port on which <code>httpd</code> will listen. This
+          port number is used when generating the configuration file
+          <code>httpd.conf</code>. The default is 80.</dd>
+
+        <dt><code>--with-program-name</code></dt>
+        <dd>Define an alternate executable name.</dd>
+      </dl>
+    
+  
+
+  <h3><a name="packages" id="packages">Optional packages</a></h3>
+    <p>These options are used to define optional packages.</p>
+
+    <h4><a name="generalpackages" id="generalpackages">General syntax</a></h4>
+      <p>Generally you can use the following syntax to define an optional
+        package:</p>
+
+      <dl>
+        <dt><code>--with-<var>PACKAGE</var>[=<var>ARG</var>]</code></dt>
+        <dd>Use the package <var>PACKAGE</var>. The default value for
+          <var>ARG</var> is<code>yes</code>.</dd>
+
+        <dt><code>--without-<var>PACKAGE</var></code></dt>
+        <dd>Do not use the package <var>PACKAGE</var>. This is the same as
+          <code>--with-<var>PACKAGE</var>=no</code>. This option is provided by
+          <code>autoconf</code> but not very useful for the Apache HTTP
+          Server.</dd>
+      </dl>
+    
+
+    
+
+    <h4><a name="packageopt" id="packageopt">Specific packages</a></h4>
+      <dl>
+        <dt><code>--with-apr=<var>DIR</var>|<var>FILE</var></code></dt>
+        <dd>The Apache Portable Runtime (APR) is part of the <code>httpd</code>
+          source distribution and will automatically be build together with the
+          HTTP server. If you want to use an already installed APR instead you
+          have to tell <code>configure</code> the path to the
+          <code>apr-config</code> script. You may set the absolute path and name
+          or the directory to the installed APR. <code>apr-config</code> must
+          exists within this directory or the subdirectory
+          <code>bin</code>.</dd>
+        
+        <dt><code>--with-apr-util=<var>DIR</var>|<var>FILE</var></code></dt>
+        <dd>The Apache Portable Runtime Utilities (APU) are part of the
+          <code>httpd</code> source distribution and will automatically be build
+          together with the HTTP server. If you want to use an already installed
+          APU instead you have to tell <code>configure</code> the path to the
+          <code>apu-config</code> script. You may set the absolute path and name
+          or the directory to the installed APU. <code>apu-config</code> must
+          exists within this directory or the subdirectory
+          <code>bin</code>.</dd>
+
+        <dt><code>--with-ssl=<var>DIR</var></code></dt>
+        <dd>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> has been enabled <code>configure</code>
+          searches for an installed OpenSSL. You can set the directory path
+          to the SSL/TLS toolkit instead.</dd>
+
+        <dt><code>--with-z=<var>DIR</var></code></dt>
+        <dd><code>configure</code> searches automatically for an installed
+          <code>zlib</code> library if your source configuration requires one
+          (e.g., when <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is enabled). You can set the
+          directory path to the compression library instead.</dd>
+      </dl>
+    
+  
+  
+  <h3><a name="supportopt" id="supportopt">Options for support programs</a></h3>
+    <dl>
+      <dt><code>--enable-static-support</code></dt>
+      <dd>Build a statically linked version of the support binaries. This
+        means, a stand-alone executable will be build with all necessary
+        libraries are integrated. Otherwise the support binaries are linked
+        dynamically by default.</dd>
+
+      <dt><code>--enable-suexec</code></dt>
+      <dd>Use this option to enable <code><a href="suexec.html">suexec</a></code>, which allows you to set uid
+        and gid for spawned processes. Further options to configure
+        <code>suexec</code> are described <a href="#suexec">below</a>.</dd>
+    </dl>
+
+    <p>It is possible to create a statically linked binary of a single
+      support program by using the following options:</p>
+
+    <dl>
+      <dt><code>--enable-static-ab</code></dt>
+      <dd>Build a statically linked version of <code><a href="ab.html">ab</a></code>.</dd>
+
+      
+      <dt><code>--enable-static-checkgid</code></dt>
+      <dd>Build a statically linked version of <code>checkgid</code>.</dd>
+
+      
+      <dt><code>--enable-static-htdbm</code></dt>
+      <dd>Build a statically linked version of <code>htdbm</code>.</dd>
+
+      <dt><code>--enable-static-htdigest</code></dt>
+      <dd>Build a statically linked version of <code><a href="htdigest.html">htdigest</a></code>.</dd>
+        
+      <dt><code>--enable-static-htpasswd</code></dt>
+      <dd>Build a statically linked version of <code><a href="htpasswd.html">htpasswd</a></code>.</dd>
+
+      <dt><code>--enable-static-logresolve</code></dt>
+      <dd>Build a statically linked version of <code><a href="logresolve.html">logresolve</a></code>.</dd>
+
+      <dt><code>--enable-static-rotatelogs</code></dt>
+      <dd>Build a statically linked version of <code><a href="rotatelogs.html">rotatelogs</a></code>.</dd>
+    </dl>
+
+    <h4><a name="suexec" id="suexec">suexec configuration options</a></h4>
+      <p>The following options are used to fine tune the behavior of <code><a href="suexec.html">suexec</a></code>. See <a href="suexec.html#install">Configuring and installing suEXEC</a>
+        for further information.</p>
+
+      <dl>
+        <dt><code>--with-suexec-bin</code></dt>
+        <dd>This defines the path to suexec binary. Default is
+          <code>--sbindir</code> (see <a href="directoryfinetuning">Fine
+            tuning of installation directories</a>).</dd>
+
+        <dt><code>--with-suexec-caller</code></dt>
+        <dd>This defines the user allowed to call <code>suexec</code>. It should
+          be the same as the user under which <code>httpd</code> normally
+          runs.</dd>
+
+        <dt><code>--with-suexec-docroot</code></dt>
+        <dd>This defines the directory tree under which <code>suexec</code>
+          access is allowed for executables. Default value is
+          <code>--datadir/htdocs</code>.</dd>
+
+        <dt><code>--with-suexec-gidmin</code></dt>
+        <dd>Define this as the lowest GID allowed to be a target user for
+          <code>suexec</code>. The default value is 100.</dd>
+
+        <dt><code>--with-suexec-logfile</code></dt>
+        <dd>This defines the filename of the <code>suexec</code> logfile. By
+          default the logfile is named <code>suexec_log</code> and located in
+          <code>--logfiledir</code>.</dd>
+
+        <dt><code>--with-suexec-safepath</code></dt>
+        <dd>Define the value of the environment variable <code>PATH</code> to
+          be set for processes started by <code>suexec</code>. Default value is
+          <code>/usr/local/bin:/usr/bin:/bin</code>.</dd>
+
+        <dt><code>--with-suexec-userdir</code></dt>
+        <dd>This defines the subdirectory under the user's directory that
+          contains all executables for which <code>suexec</code> access is
+          allowed. This setting is necessary when you want to use
+          <code>suexec</code> together with user-specific directories (as
+          provided by <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>). The default is
+          <code>public_html</code>.</dd>
+
+        <dt><code>--with-suexec-uidmin</code></dt>
+        <dd>Define this as the lowest UID allowed to be a target user for
+          <code>suexec</code>. The default value is 100.</dd>
+
+        <dt><code>--with-suexec-umask</code></dt>
+        <dd>Set <code>umask</code> for processes started by <code>suexec</code>.
+          It default to your system settings.</dd>
+      </dl>
+    
+  
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="env" id="env">Environment variables</a></h2>
+  <p>There are some useful environment variables to override the choices made by
+    <code>configure</code> or to help it to find libraries and programs with
+    nonstandard names or locations.</p>
+
+  
+  <dl>
+    <dt><code>CC</code></dt>
+    <dd>Define the C compiler command to be used for compilation.</dd>
+
+    <dt><code>CFLAGS</code></dt>
+    <dd>Set C compiler flags you want to use for compilation.</dd>
+
+    <dt><code>CPP</code></dt>
+    <dd>Define the C preprocessor command to be used.</dd>
+
+    <dt><code>CPPFLAGS</code></dt>
+    <dd>Set C/C++ preprocessor flags, e.g. <code>-I<var>includedir</var></code>
+      if you have headers in a nonstandard directory <var>includedir</var>.</dd>
+
+    <dt><code>LDFLAGS</code></dt>
+    <dd>Set linker flags, e.g. <code>-L<var>libdir</var></code> if you have
+      libraries in a nonstandard directory <var>libdir</var>.</dd> 
+  </dl>
+</div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/programs/configure.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
