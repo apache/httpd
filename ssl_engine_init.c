@@ -270,7 +270,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     /*
      * SSL external crypto device ("engine") support
      */
-#ifdef SSL_EXPERIMENTAL_ENGINE
+#ifdef HAVE_ENGINE_INIT
     ssl_init_Engine(base_server, p);
 #endif
 
@@ -351,7 +351,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
  * Support for external a Crypto Device ("engine"), usually
  * a hardware accellerator card for crypto operations.
  */
-#ifdef SSL_EXPERIMENTAL_ENGINE
+#ifdef HAVE_ENGINE_INIT
 void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);

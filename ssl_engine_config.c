@@ -108,7 +108,7 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->tVHostKeys             = apr_hash_make(pool);
     mc->tPrivateKey            = apr_hash_make(pool);
     mc->tPublicCert            = apr_hash_make(pool);
-#ifdef SSL_EXPERIMENTAL_ENGINE
+#ifdef HAVE_ENGINE_INIT
     mc->szCryptoDevice         = NULL;
 #endif
 
@@ -510,7 +510,7 @@ const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd,
     return NULL;
 }
 
-#ifdef SSL_EXPERIMENTAL_ENGINE
+#ifdef HAVE_ENGINE_INIT
 const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
                                     void *dcfg,
                                     const char *arg)

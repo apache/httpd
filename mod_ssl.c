@@ -116,7 +116,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(SessionCache, TAKE1,
                 "SSL Session Cache storage "
                 "(`none', `dbm:/path/to/file')")
-#ifdef SSL_EXPERIMENTAL_ENGINE
+#ifdef HAVE_ENGINE_INIT
     SSL_CMD_SRV(CryptoDevice, TAKE1,
                 "SSL external Crypto Device usage "
                 "(`builtin', `...')")
