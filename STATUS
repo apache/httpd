@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/26 22:45:47 $]
+Last modified at [$Date: 2002/04/28 01:56:20 $]
 
 Release:
 
@@ -102,12 +102,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       close them all as soon as the listener thread receives the
       signal to shutdown.
       Status: Aaron volunteers
-
-    * The worker MPM should not accept more connections than it
-      currently has available workers. Instead, the listener thread
-      should block on a condition of the fdqueue such that it waits
-      until there is at least one idle worker before continuing
-      into its accept-loop.
 
     * Incorrect Content-Range headers or invalid 416 HTTP responses
       if a filter such as INCLUDES changes the content length.  It may
