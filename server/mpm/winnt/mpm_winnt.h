@@ -160,4 +160,41 @@ AP_DECLARE_LATE_DLL_FUNC(DLL_WINBASEAPI, DWORD, WINAPI, RegisterServiceProcess, 
     (dwProcessId, dwType));
 #define RegisterServiceProcess ap_winapi_RegisterServiceProcess
 
+/*
+ * The Windoes MPM uses a queue of completion contexts that it passes
+ * between the accept threads and the worker threads. Declare the
+ * functions to access the queue and the structures passed on the
+ * queue in the header file to enable modules to access them
+ * if necessary. The queue resides in the MPM.
+ */
+#ifdef CONTAINING_RECORD
+#undef CONTAINING_RECORD
+#endif
+#define CONTAINING_RECORD(address, type, field) ((type *)( \
+                                                  (PCHAR)(address) - \
+                                                  (PCHAR)(&((type *)0)->field)))
+#define PADDED_ADDR_SIZE sizeof(SOCKADDR_IN)+16
+typedef struct CompContext {
+    struct CompContext *next;
+    OVERLAPPED Overlapped;
+    apr_socket_t *sock;
+    SOCKET accept_socket;
+    char buff[2*PADDED_ADDR_SIZE];
+    struct sockaddr *sa_server;
+    int sa_server_len;
+    struct sockaddr *sa_client;
+    int sa_client_len;
+    apr_pool_t *ptrans;
+} COMP_CONTEXT, *PCOMP_CONTEXT;
+
+typedef enum {
+    IOCP_CONNECTION_ACCEPTED = 1,
+    IOCP_WAIT_FOR_RECEIVE = 2,
+    IOCP_WAIT_FOR_TRANSMITFILE = 3,
+    IOCP_SHUTDOWN = 4
+} io_state_e;
+
+AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void);
+AP_DECLARE(void)          mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext);
+AP_DECLARE(apr_status_t)  mpm_post_completion_context(PCOMP_CONTEXT pCompContext, io_state_e state);
 #endif /* APACHE_MPM_WINNT_H */

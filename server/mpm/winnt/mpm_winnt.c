@@ -75,45 +75,8 @@
 #include "mpm_common.h"
 #include <malloc.h>
 
-typedef HANDLE thread;
-#ifdef CONTAINING_RECORD
-#undef CONTAINING_RECORD
-#endif
-#define CONTAINING_RECORD(address, type, field) ((type *)( \
-                                                  (PCHAR)(address) - \
-                                                  (PCHAR)(&((type *)0)->field)))
-#define PADDED_ADDR_SIZE sizeof(SOCKADDR_IN)+16
-
-typedef struct CompContext {
-    struct CompContext *next;
-    OVERLAPPED Overlapped;
-    apr_socket_t *sock;
-    SOCKET accept_socket;
-    char buff[2*PADDED_ADDR_SIZE];
-    struct sockaddr *sa_server;
-    int sa_server_len;
-    struct sockaddr *sa_client;
-    int sa_client_len;
-    apr_pool_t *ptrans;
-} COMP_CONTEXT, *PCOMP_CONTEXT;
-
-typedef enum {
-    IOCP_CONNECTION_ACCEPTED = 1,
-    IOCP_WAIT_FOR_RECEIVE = 2,
-    IOCP_WAIT_FOR_TRANSMITFILE = 3,
-    IOCP_SHUTDOWN = 4
-} io_state_e;
-
-/* Queue for managing the passing of COMP_CONTEXTs from 
- * the accept thread to the worker threads and back again
- */
-apr_lock_t  *qlock;
-COMP_CONTEXT *qhead = NULL;
-COMP_CONTEXT *qtail = NULL;
-
-static HANDLE ThreadDispatchIOCP = NULL;
-
 server_rec *ap_server_conf;
+typedef HANDLE thread;
 
 /* Definitions of WINNT MPM specific config globals */
 static apr_pool_t *pconf;
@@ -140,10 +103,95 @@ static DWORD parent_pid;
 
 int ap_threads_per_child = 0;
 
-/* ap_get_max_daemons and ap_my_generation are used by the scoreboard
- * code
+/* ap_my_generation are used by the scoreboard code */
+ap_generation_t volatile ap_my_generation=0;
+
+/* Queue for managing the passing of COMP_CONTEXTs between
+ * the accept and worker threads.
  */
-ap_generation_t volatile ap_my_generation=0; /* Used by the scoreboard */
+static apr_lock_t  *qlock;
+static PCOMP_CONTEXT qhead = NULL;
+static PCOMP_CONTEXT qtail = NULL;
+static int num_completion_contexts = 0;
+static HANDLE ThreadDispatchIOCP = NULL;
+AP_DECLARE(void) mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext)
+{
+    /* Recycle the completion context.
+     * - destroy the ptrans pool
+     * - put the context on the queue to be consumed by the accept thread
+     * Note: 
+     * pCompContext->accept_socket may be in a disconnected but reusable 
+     * state so -don't- close it.
+     */
+    if (pCompContext) {
+        apr_pool_clear(pCompContext->ptrans);
+        apr_pool_destroy(pCompContext->ptrans);
+        pCompContext->ptrans = NULL;
+        pCompContext->next = NULL;
+        apr_lock_acquire(qlock);
+        if (qtail)
+            qtail->next = pCompContext;
+        else
+            qhead = pCompContext;
+        qtail = pCompContext;
+        apr_lock_release(qlock);
+    }
+}
+AP_DECLARE(PCOMP_CONTEXT) mpm_get_completion_context(void)
+{
+    PCOMP_CONTEXT pCompContext = NULL;
+
+    /* Grab a context off the queue */
+    apr_lock_acquire(qlock);
+    if (qhead) {
+        pCompContext = qhead;
+        qhead = qhead->next;
+        if (!qhead)
+            qtail = NULL;
+    }
+    apr_lock_release(qlock);
+
+    /* If we failed to grab a context off the queue, alloc one out of 
+     * the child pool. There may be up to ap_threads_per_child contexts
+     * in the system at once.
+     */
+    if (!pCompContext) {
+        if (num_completion_contexts >= ap_threads_per_child) {
+            static int reported = 0;
+            if (!reported) {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
+                             "Server ran out of threads to serve requests. Consider "
+                             "raising the ThreadsPerChild setting");
+                reported = 1;
+            }
+            return NULL;
+        }
+        pCompContext = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
+
+        pCompContext->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
+        if (pCompContext->Overlapped.hEvent == NULL) {
+            /* Hopefully this is a temporary condition ... */
+            ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_os_error(), ap_server_conf,
+                         "mpm_get_completion_context: CreateEvent failed.");
+            return NULL;
+        }
+        pCompContext->accept_socket = INVALID_SOCKET;
+        num_completion_contexts++;
+    }
+    return pCompContext;
+}
+AP_DECLARE(apr_status_t) mpm_post_completion_context(PCOMP_CONTEXT pCompContext, 
+                                                     io_state_e state)
+{
+    LPOVERLAPPED pOverlapped;
+    if (pCompContext)
+        pOverlapped = &pCompContext->Overlapped;
+    else
+        pOverlapped = NULL;
+
+    PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, state, pOverlapped);
+    return APR_SUCCESS;
+}
 
 /* This is the helper code to resolve late bound entry points 
  * missing from one or more releases of the Win32 API...
@@ -652,7 +700,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
  */
 static void winnt_accept(void *listen_socket) 
 {
-    static int num_completion_contexts = 0;
+
     PCOMP_CONTEXT pCompContext;
     DWORD BytesRead;
     SOCKET nlsd;
@@ -661,45 +709,16 @@ static void winnt_accept(void *listen_socket)
     nlsd = (SOCKET) listen_socket;
 
     while (!shutdown_in_progress) {
-
-        pCompContext = NULL;
-        /* Grab a context off the queue */
-        apr_lock_acquire(qlock);
-        if (qhead) {
-            pCompContext = qhead;
-            qhead = qhead->next;
-            if (!qhead)
-                qtail = NULL;
-        }
-        apr_lock_release(qlock);
-
-        /* If we failed to grab a context off the queue, alloc one out of 
-         * the child pool. There may be up to ap_threads_per_child contexts
-         * in the system at once.
-         */
+        pCompContext = mpm_get_completion_context();
         if (!pCompContext) {
-            if (num_completion_contexts >= ap_threads_per_child) {
-                static int reported = 0;
-                if (!reported) {
-                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
-                                 "Server ran out of threads to serve requests. Consider "
-                                 "raising the ThreadsPerChild setting");
-                    reported = 1;
-                }
-                Sleep(500);
-                continue;
-            }
-            pCompContext = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
-
-            pCompContext->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
-            if (pCompContext->Overlapped.hEvent == NULL) {
-                ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_os_error(), ap_server_conf,
-                             "winnt_accept: CreateEvent failed. Process will exit.");
-                // return -1;
-            }
-            pCompContext->accept_socket = INVALID_SOCKET;
-            num_completion_contexts++;
+            /* Hopefully whatever is preventing us from getting a 
+             * completion context is a temporary condition. Give other 
+             * threads a chance to run before trying again. 
+             */
+            Sleep(750);
+            continue;
         }
+
 
     again:            
         /* Create and initialize the accept socket */
@@ -757,7 +776,8 @@ static void winnt_accept(void *listen_socket)
         }
 
         /* When a connection is received, send an io completion notification to
-         * the ThreadDispatchIOCP
+         * the ThreadDispatchIOCP. This function could be replaced by
+         * mpm_post_completion_context(), but why do an extra function call...
          */
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_CONNECTION_ACCEPTED,
                                    &pCompContext->Overlapped);
@@ -776,25 +796,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT pCompContext)
     DWORD CompKey;
     LPOVERLAPPED pol;
 
-    /* Recycle the completion context.
-     * - destroy the ptrans pool
-     * - put the context on the queue to be consumed by the accept thread
-     * Note: pCompContext->accept_socket may be in a disconnected
-     * but reusable state so -don't- close it.
-     */
-    if (pCompContext) {
-        apr_pool_clear(pCompContext->ptrans);
-        apr_pool_destroy(pCompContext->ptrans);
-        pCompContext->ptrans = NULL;
-        pCompContext->next = NULL;
-        apr_lock_acquire(qlock);
-        if (qtail)
-            qtail->next = pCompContext;
-        else
-            qhead = pCompContext;
-        qtail = pCompContext;
-        apr_lock_release(qlock);
-    }
+    mpm_recycle_completion_context(pCompContext);
 
     g_blocked_threads++;        
     while (1) {
