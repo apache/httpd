@@ -98,7 +98,7 @@
 <div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Selects the algorithm used to calculate the challenge and
-response hases in digest authentication</td></tr>
+response hashes in digest authentication</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestAlgorithm MD5|MD5-sess</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestAlgorithm MD5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
@@ -130,10 +130,10 @@ authentication</td></tr>
     <p>The <code class="directive">AuthDigestDomain</code> directive allows
     you to specify one or more URIs which are in the same protection
     space (<em>i.e.</em> use the same realm and username/password info).
-    The specified URIs are prefixes, <em>i.e.</em> the client will assume
+    The specified URIs are prefixes; the client will assume
     that all URIs "below" these are also protected by the same
     username/password. The URIs may be either absolute URIs (<em>i.e.</em>
-    inluding a scheme, host, port, etc) or relative URIs.</p>
+    including a scheme, host, port, etc.) or relative URIs.</p>
 
     <p>This directive <em>should</em> always be specified and
     contain at least the (set of) root URI(s) for this space.
@@ -269,7 +269,7 @@ of clients</td></tr>
     <p>The <code class="directive">AuthDigestShmemSize</code> directive defines
     the amount of shared memory, that will be allocated at the server
     startup for keeping track of clients. Note that the shared memory
-    segment cannot be set less than the space that is neccessary for
+    segment cannot be set less than the space that is necessary for
     tracking at least <em>one</em> client. This value is dependant on your
     system. If you want to find out the exact value, you may simply
     set <code class="directive">AuthDigestShmemSize</code> to the value of
