@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/08/19 15:46:24 $]
+Last modified at [$Date: 2002/08/29 06:45:57 $]
 
 Release:
 
@@ -106,13 +106,6 @@ CURRENT VOTES:
       -0:   Lars
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
-
-    * Performance problems in the content-length filter:
-      - In many situations, the C-L filter sets aside buckets
-        until it sees EOS.  Setting aside file buckets is bad
-        because it requires an mmap+memcpy+munmap.
-      - In addition, the C-L filter reads and buffers all the
-        content from a pipe bucket.
 
     * All handlers should always send content down even if r->header_only
       is set.  If not, it means that the HEAD requests don't generate the
