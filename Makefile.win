@@ -460,6 +460,7 @@ _install:
 	copy INSTALL 		"$(INSTDIR)\INSTALL.txt" <.y
 	copy LICENSE 		"$(INSTDIR)\LICENSE.txt" <.y
 	copy README 		"$(INSTDIR)\README.txt" <.y
+!IF EXIST("srclib\openssl")
 	type << >> "$(INSTDIR)\README.txt"
 
   This binary distribution includes cryptographic software written by
