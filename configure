@@ -444,7 +444,7 @@ do
             echo " --without-confadjust   disable the user/situation adjustments in config"
             echo " --without-execstrip    disable the stripping of executables on installation"
             echo " --server-uid=UID       set the user ID the web server should run as [nobody]"
-            echo " --server-gid=GID       set the group ID the web server UID is a memeber of [-1]"
+            echo " --server-gid=GID       set the group ID the web server UID is a memeber of [#-1]"
             echo ""
             echo "suEXEC options:"
             echo " --enable-suexec        enable the suEXEC feature"
