@@ -51,11 +51,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:console /incremental:no /pdb:"Release\gen_test_char.pdb" /machine:I386
 # ADD LINK32 /nologo /subsystem:console /incremental:no /pdb:"Release\gen_test_char.pdb" /machine:I386
-# Begin Special Build Tool
-SOURCE=$(InputPath)
-PostBuild_Desc=Create test_char.h
-PostBuild_Cmds=.\gen_test_char > test_char.h
-# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
@@ -80,11 +75,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_test_char.pdb" /debug /machine:I386
 # ADD LINK32 /nologo /subsystem:console /incremental:no /pdb:"Debug\gen_test_char.pdb" /debug /machine:I386
-# Begin Special Build Tool
-SOURCE=$(InputPath)
-PostBuild_Desc=Create test_char.h
-PostBuild_Cmds=.\gen_test_char > test_char.h
-# End Special Build Tool
 
 !ENDIF 
 

@@ -390,6 +390,64 @@ SOURCE=.\include\util_uri.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\main\gen_test_char.exe
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating test_char.h from gen_test_char.exe
+InputPath=.\main\gen_test_char.exe
+
+".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_test_char.exe >.\main\test_char.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating test_char.h from gen_test_char.exe
+InputPath=.\main\gen_test_char.exe
+
+".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_test_char.exe >.\main\test_char.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\main\gen_uri_delims.exe
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating uri_delims.h from gen_uri_delims.exe
+InputPath=.\main\gen_uri_delims.exe
+
+".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_uri_delims.exe >.\main\uri_delims.h
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Generating uri_delims.h from gen_uri_delims.exe
+InputPath=.\main\gen_uri_delims.exe
+
+".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_uri_delims.exe >.\main\uri_delims.h
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\main\test_char.h
 # End Source File
 # Begin Source File
