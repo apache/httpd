@@ -1558,7 +1558,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
                        r->content_encoding);
     }
 
-    if (!apr_is_empty_table(r->content_languages)) {
+    if (!apr_is_empty_array(r->content_languages)) {
         int i;
         char **languages = (char **)(r->content_languages->elts);
         for (i = 0; i < r->content_languages->nelts; ++i) {
