@@ -247,16 +247,13 @@ static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
     return rv;
 }
 
-static void doerror(BUFF *fb, int err)
+static void doerror(BUFF *fb, int direction)
 {
     int errsave = errno;	/* Save errno to prevent overwriting it below */
 
-    if (err == B_RD)
-	fb->flags |= B_RDERR;
-    else
-	fb->flags |= B_WRERR;
+    fb->flags |= (direction == B_RD ? B_RDERR : B_WRERR);
     if (fb->error != NULL)
-	(*fb->error) (fb, err, fb->error_data);
+	(*fb->error) (fb, direction, fb->error_data);
 
     errno = errsave;
 }
