@@ -82,7 +82,7 @@
    **    - Cleaned up by Ralf S. Engelschall <rse@apache.org>, March 1998
    **    - POST and verbosity by Kurt Sussman <kls@merlot.com>, August 1998
    **    - HTML table output added by David N. Welton <davidw@prosa.it>, January 1999
-   **    - Added Cookie, Arbitrary header and auth support. <dirkx@webweaving.org>, April 199
+   **    - Added Cookie, Arbitrary header and auth support. <dirkx@webweaving.org>, April 1999
    **
  */
 
@@ -135,7 +135,7 @@
 #define STATE_CONNECTING  1
 #define STATE_READ        2
 
-#define CBUFFSIZE       512
+#define CBUFFSIZE       2048
 
 struct connection {
     ap_socket_t *aprsock;
@@ -143,7 +143,7 @@ struct connection {
     int read;        		/* amount of bytes read */
     int bread;        		/* amount of body read */
     int length;        		/* Content-Length value used for keep-alive */
-    char cbuff[CBUFFSIZE];        /* a buffer to store server response header */
+    char cbuff[CBUFFSIZE];      /* a buffer to store server response header */
     int cbx;        		/* offset in cbuffer */
     int keepalive;        	/* non-zero if a keep-alive request */
     int gotheader;        	/* non-zero if we have the entire header in
@@ -605,6 +605,7 @@ static void read_connection(struct connection *c)
                 /* header is in invalid or too big - close connection */
                 ap_remove_poll_socket(readbits, c->aprsock);
                 ap_close_socket(c->aprsock);
+                err_response++;
                 if (bad++ > 10) {
                     err("\nTest aborted after 10 failures\n\n");
                 }
@@ -838,14 +839,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.14 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.15 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.14 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", VERSION, "$Revision: 1.15 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -1080,6 +1081,9 @@ int main(int argc, char **argv)
 	case 'h':
 	    usage(argv[0]);
 	    break;
+	case 'V':
+	    copyright();
+	    return 0;
         }
     }
 
