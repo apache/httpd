@@ -746,7 +746,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the socket is now open, create a new connection */
-    origin = ap_run_create_connection(p, r->server, sock, r->connection->id, r->connection->sbh);
+    origin = ap_new_connection(p, r->server, sock, r->connection->id, r->connection->sbh);
     if (!origin) {
 	/* the peer reset the connection already; ap_new_connection() 
 	 * closed the socket */
@@ -1549,7 +1549,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     }
 
     /* the transfer socket is now open, create a new connection */
-    remote = ap_run_create_connection(p, r->server, remote_sock, r->connection->id, r->connection->sbh);
+    remote = ap_new_connection(p, r->server, remote_sock, r->connection->id, r->connection->sbh);
     if (!remote) {
 	/* the peer reset the connection already; ap_new_connection() 
 	 * closed the socket */
