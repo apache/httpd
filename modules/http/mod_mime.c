@@ -864,14 +864,9 @@ static int find_ct(request_rec *r)
 
     if (r->content_type) {
 	content_type *ctp;
-	char *ct;
 	int override = 0;
 
-	ct = (char *) apr_palloc(r->pool,
-				sizeof(char) * (strlen(r->content_type) + 1));
-	strcpy(ct, r->content_type);
-
-	if ((ctp = analyze_ct(r, ct))) {
+	if ((ctp = analyze_ct(r, r->content_type))) {
 	    param *pp = ctp->param;
 	    r->content_type = apr_pstrcat(r->pool, ctp->type, "/",
 					 ctp->subtype, NULL);
