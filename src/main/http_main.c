@@ -3610,7 +3610,10 @@ static void child_main(int child_num_arg)
 	 * (Re)initialize this child to a pre-connection state.
 	 */
 
-	ap_kill_timeout(0);	/* Cancel any outstanding alarms. */
+	ap_kill_timeout(0);	/* Cancel any outstanding alarms */
+#ifdef OPTIMIZE_TIMEOUTS
+	alarm(0);		/* even if not set by Apache routines */
+#endif
 	current_conn = NULL;
 
 	ap_clear_pool(ptrans);
