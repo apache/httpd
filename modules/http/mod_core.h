@@ -85,6 +85,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(ap_filter_t *f, apr_buc
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode);
 apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode);
 
+
+/*
+ * Setting up the protocol fields for subsidiary requests...
+ * Also, a wrapup function to keep the internal accounting straight.
+ */
+void ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r);
+void ap_finalize_sub_req_protocol(request_rec *sub_r);
+
+
+/* Send the response to special method requests */
+int ap_send_http_trace(request_rec *r);
+int ap_send_http_options(request_rec *r);
+
+
+char *ap_response_code_string(request_rec *r, int error_index);
+
 #ifdef __cplusplus
 }
 #endif
