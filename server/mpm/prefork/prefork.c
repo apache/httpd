@@ -1044,7 +1044,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 		}
 #if APR_HAS_OTHER_CHILD
 	    }
-	    else if (apr_proc_other_child_read(&pid, status) == 0) {
+	    else if (apr_proc_other_child_alert(&pid, APR_OC_REASON_DEATH, status) == APR_SUCCESS) {
 		/* handled */
 #endif
 	    }
