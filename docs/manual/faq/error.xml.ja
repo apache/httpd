@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="iso-2022-jp" ?>
+<!DOCTYPE faq SYSTEM "../style/faq.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- English Revision: 1.6 -->
+
+<!--
+ Copyright 2003-2004 The Apache Software Foundation
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<faq metafile="error.xml.meta">
+<parentdocument href="./">FAQ</parentdocument>
+
+<title>エラーメッセージ ― よくある質問</title>
+<description>このエラーメッセージの意味は?</description>
+
+<section id="error"><title>エラーメッセージ</title>
+    <ul>
+    <li><a href="#error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></li>
+    <li><a href="#error.acceptex">AcceptEx failed</a></li>
+    <li><a href="#error.scriptheaders">Premature end of script 
+    headers</a></li>
+    </ul>
+
+    <section id="error.sendfile"><title>Invalid argument:
+    core_output_filter: writing data to the network</title>
+
+    <p>(訳注: 無効な引数: core_output_filter: ネットワークへのデータの
+    書き込み)</p>
+
+    <p>Apache は応答の返送を速くするために、<code>sendfile</code> システム
+    コールが使用可能なプラットフォームではそのシステムコールを使用します。
+    ところが、都合の悪いことに、<code>sendfile</code> が正しく動作しないにも
+    関わらず、Apache がコンパイル時に存在を検知してしまうシステムがあります。
+    これは、ネットワークファイルシステムや他の非標準のファイルシステムを
+    使用しているときに一番よく発生します。</p>
+    
+    <p>この問題の症状は、上記のメッセージがエラーログに書かれることと、
+    サイズがゼロでないファイルの応答がゼロになることです。
+    動的なコンテンツは <code>sendfile</code> を利用しないため、
+    この問題は通常は静的なファイルでのみ発生します。</p>
+
+    <p>この問題は、<directive
+    module="core">EnableSendfile</directive> ディレクティブを使用して、
+    サーバのすべて、もしくは一部分に対して <code>sendfile</code> を
+    無効にするだけで修正できます。同様の問題を解決するための
+    <directive module="core">EnableMMAP</directive> ディレクティブも
+    参照してください。</p>
+
+    </section>
+
+    <section id="error.acceptex"><title>AcceptEx Failed</title>
+
+    <p>(訳注: AcceptEx 失敗)</p>
+
+    <p>Win32 での <code>AcceptEx</code> システムコールに関係するエラー
+    メッセージを受け取ったときは、<directive module="mpm_winnt"
+    >Win32DisableAcceptEx</directive> を参照してください。</p>
+    </section>
+
+
+    <section id="error.scriptheaders"><title>Premature end of script 
+    headers</title>
+
+    <p>(訳注: スクリプトヘッダの中途終了)</p>
+
+    <p>CGI スクリプトのほとんどの問題はエラーログにこのメッセージが書かれ、
+    ブラウザには <code>Internal Server Error</code> が送られることになります。
+    この種の問題のデバッグ方法は <a href="../howto/cgi.html#troubleshoot">CGI
+    チュートリアル</a> で説明されています。</p>
+    </section>
+
+</section>
+
+</faq>
+
