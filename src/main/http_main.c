@@ -6726,6 +6726,7 @@ int REALMAIN(int argc, char *argv[])
     ap_cpystrn(cwd, ap_server_root, sizeof(cwd));
     if (cwd[strlen(cwd)-1] != '/')
 	strcat (cwd, "/");
+    chdir (cwd);
 #else
     if(!GetCurrentDirectory(sizeof(cwd),cwd)) {
        ap_log_error(APLOG_MARK,APLOG_EMERG|APLOG_WIN32ERROR, NULL,
