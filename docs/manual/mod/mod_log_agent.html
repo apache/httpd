@@ -15,14 +15,39 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_log_agent</H1>
 
-This module is contained in the <CODE>mod_log_agent.c</CODE> file, and is not
-compiled in by default. It provides for logging of the client user agents.
-mod_log_agent is deprecated. Use <A HREF="mod_log_config.html">mod_log_config</A>
-instead.
+<p>This module provides for logging of the client user agents.</p>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_log_agent.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> agent_log_module
+</p>
+
+<h2>Summary</h2>
+
+<p>This module is provided strictly for compatibility with NCSA httpd,
+and is deprecated.  We recommend you use <A
+HREF="mod_log_config.html">mod_log_config</A> instead.</p>
+
+<h2>Directives</h2>
 
 <UL>
 <LI><A HREF="#agentlog">AgentLog</A>
 </UL>
+
+<p>See also: <a href="mod_log_config.html#customlog">CustomLog</a> and
+<a href="mod_log_config.html#logformat">LogFormat</a>.
+
 <HR>
 
 

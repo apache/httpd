@@ -15,18 +15,42 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_imap</H1>
 
-This module is contained in the <CODE>mod_imap.c</CODE> file, and is
-compiled in by default. It provides for <CODE>.map</CODE> files,
-replacing the functionality of the <CODE>imagemap</CODE> CGI
-program. Any directory or document type configured to use the handler
-<CODE>imap-file</CODE> (using either <CODE><A
-HREF="mod_mime.html#addhandler">AddHandler</A> </CODE> or <CODE><A
-HREF="mod_mime.html#sethandler">SetHandler</A></CODE>) will be
-processed by this module.
+<p>This module provides for server-side imagemap processing.</p>
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Base
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_imap.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> imap_module
+<BR>
+<A
+HREF="module-dict.html#compatibility"
+REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.1 and later.
+</P>
+
+
 
 <H2>Summary</H2>
 
-This module is in the default Apache distribution. The following directive will
+<p>This module processes <CODE>.map</CODE> files, thereby replacing
+the functionality of the <CODE>imagemap</CODE> CGI program. Any
+directory or document type configured to use the handler
+<CODE>imap-file</CODE> (using either <CODE><A
+HREF="mod_mime.html#addhandler">AddHandler</A> </CODE> or <CODE><A
+HREF="mod_mime.html#sethandler">SetHandler</A></CODE>) will be
+processed by this module.</p>
+
+<p>The following directive will
 activate files ending with <CODE>.map</CODE> as imagemap files:
 
 <BLOCKQUOTE><CODE>AddHandler imap-file map</CODE></BLOCKQUOTE>
@@ -37,6 +61,13 @@ Note that the following is still supported:
 
 However, we are trying to phase out "magic MIME types" so we are deprecating
 this method.
+
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#imapmenu">ImapMenu</A>
+<LI><A HREF="#imapdefault">ImapDefault</A>
+<LI><A HREF="#imapbase">ImapBase</A>
+</UL>
 
 <H2>New Features</H2>
 The imagemap module adds some new features that were not
@@ -50,135 +81,7 @@ possible with previously distributed imagemap programs.<P>
 <LI>Point references.
 <LI>Configurable generation of imagemap menus.
 </UL>
-<P>
 
-<H2>Configuration Directives</H2>
-<UL>
-<LI><A HREF="#imapmenu">ImapMenu</A>
-<LI><A HREF="#imapdefault">ImapDefault</A>
-<LI><A HREF="#imapbase">ImapBase</A>
-</UL>
-
-
-<P>
-
-<H3><A NAME="imapmenu">ImapMenu</A></H3>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ImapMenu <CODE>{none, formatted, semiformatted,
-                                                      unformatted}</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> Indexes<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_imap.c<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> ImapMenu is only available in Apache
-1.1 and later.<P>
-
-The ImapMenu directive determines the action taken if an imagemap file
-is called without valid coordinates.
-<DL>
-  <DT><CODE>none</CODE>
-  <DD>If ImapMenu is
-       <CODE>none</CODE>, no menu is generated, and the <CODE>default</CODE>
-       action is performed.
-  <DT><CODE>formatted</CODE>
-  <DD>A <CODE>formatted</CODE> menu is the simplest menu.  Comments
-       in the imagemap file are ignored.  A level one header is
-       printed, then an hrule, then the links each on a separate line.
-       The menu has a consistent, plain look close to that of
-       a directory listing.
-  <DT><CODE>semiformatted</CODE>
-  <DD>In the <CODE>semiformatted</CODE> menu, comments are printed
-       where they occur in the imagemap file.  Blank lines are turned
-       into HTML breaks.  No header or hrule is printed, but otherwise
-       the menu is the same as a <CODE>formatted</CODE> menu.
-  <DT><CODE>unformatted</CODE>
-  <DD>Comments are printed, blank lines are ignored.  Nothing is
-       printed that does not appear in the imagemap file.  All breaks
-       and headers must be included as comments in the imagemap file.
-       This gives you the most flexibility over the appearance of your
-       menus, but requires you to treat your map files as HTML instead
-       of plaintext.
-</DL>
-
-<P>
-
-<H3><A NAME="imapdefault">ImapDefault</A></H3>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ImapDefault <CODE>{error, nocontent,
-                                                 map, referer, URL}</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> Indexes<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_imap.c<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> ImapDefault is only available in Apache
-1.1 and later.<P>
-
-
-The ImapDefault directive sets the default <CODE>default</CODE> used in
-the imagemap files.  Its value is overridden by a <CODE>default</CODE>
-directive within the imagemap file.  If not present, the
-<CODE>default</CODE> action is <CODE>nocontent</CODE>, which means
-that a <CODE>204 No Content</CODE> is sent to the client.  In this
-case, the client should continue to display the original page.
-
-<P>
-
-<H3><A NAME="imapbase">ImapBase</A></H3>
-<A
- HREF="directive-dict.html#Syntax"
- REL="Help"
-><STRONG>Syntax:</STRONG></A> ImapBase <CODE>{map, referer, URL}</CODE><BR>
-<A
- HREF="directive-dict.html#Context"
- REL="Help"
-><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
-<A
- HREF="directive-dict.html#Override"
- REL="Help"
-><STRONG>Override:</STRONG></A> Indexes<BR>
-<A
- HREF="directive-dict.html#Module"
- REL="Help"
-><STRONG>Module:</STRONG></A> mod_imap.c<BR>
-<A
- HREF="directive-dict.html#Compatibility"
- REL="Help"
-><STRONG>Compatibility:</STRONG></A> ImapBase is only available in Apache
-1.1 and later.<P>
-
-The ImapBase directive sets the default <CODE>base</CODE> used in
-the imagemap files.  Its value is overridden by a <CODE>base</CODE>
-directive within the imagemap file.  If not present, the
-<CODE>base</CODE> defaults to <CODE>http://servername/</CODE>.
-
-<HR>
-<P>
 
 <H2>Imagemap File</H2>
 The lines in the imagemap files can have one of several formats:
@@ -298,8 +201,6 @@ The values for each of the directives can any of the following:
        It is impossible to escape double quotes within this text.
 </DL>
 
-<HR>
-
 <H2>Example Mapfile</H2>
 <BLOCKQUOTE><CODE>
 #Comments are printed in a 'formatted' or 'semiformatted' menu. <BR>
@@ -321,6 +222,125 @@ rect mailto:nate@tripod.com 100,150 200,0 "Bugs?" <BR>
 &lt;IMG ISMAP SRC="/images/imagemap1.gif"&gt; <BR>
 &lt;/A&gt;
 </CODE></BLOCKQUOTE><P>
+
+
+<hr>
+
+<H2><A NAME="imapmenu">ImapMenu</A> directive</H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ImapMenu <CODE>{none, formatted, semiformatted,
+                                                      unformatted}</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> Indexes<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_imap<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ImapMenu is only available in Apache
+1.1 and later.<P>
+
+The ImapMenu directive determines the action taken if an imagemap file
+is called without valid coordinates.
+<DL>
+  <DT><CODE>none</CODE>
+  <DD>If ImapMenu is
+       <CODE>none</CODE>, no menu is generated, and the <CODE>default</CODE>
+       action is performed.
+  <DT><CODE>formatted</CODE>
+  <DD>A <CODE>formatted</CODE> menu is the simplest menu.  Comments
+       in the imagemap file are ignored.  A level one header is
+       printed, then an hrule, then the links each on a separate line.
+       The menu has a consistent, plain look close to that of
+       a directory listing.
+  <DT><CODE>semiformatted</CODE>
+  <DD>In the <CODE>semiformatted</CODE> menu, comments are printed
+       where they occur in the imagemap file.  Blank lines are turned
+       into HTML breaks.  No header or hrule is printed, but otherwise
+       the menu is the same as a <CODE>formatted</CODE> menu.
+  <DT><CODE>unformatted</CODE>
+  <DD>Comments are printed, blank lines are ignored.  Nothing is
+       printed that does not appear in the imagemap file.  All breaks
+       and headers must be included as comments in the imagemap file.
+       This gives you the most flexibility over the appearance of your
+       menus, but requires you to treat your map files as HTML instead
+       of plaintext.
+</DL>
+
+<hr>
+
+<H2><A NAME="imapdefault">ImapDefault</A> directive</H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ImapDefault <CODE>{error, nocontent,
+                                                 map, referer, URL}</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> Indexes<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_imap<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ImapDefault is only available in Apache
+1.1 and later.<P>
+
+
+The ImapDefault directive sets the default <CODE>default</CODE> used in
+the imagemap files.  Its value is overridden by a <CODE>default</CODE>
+directive within the imagemap file.  If not present, the
+<CODE>default</CODE> action is <CODE>nocontent</CODE>, which means
+that a <CODE>204 No Content</CODE> is sent to the client.  In this
+case, the client should continue to display the original page.
+
+<hr>
+
+<H2><A NAME="imapbase">ImapBase</A> directive</H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> ImapBase <CODE>{map, referer, URL}</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory, .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> Indexes<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_imap<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> ImapBase is only available in Apache
+1.1 and later.<P>
+
+The ImapBase directive sets the default <CODE>base</CODE> used in
+the imagemap files.  Its value is overridden by a <CODE>base</CODE>
+directive within the imagemap file.  If not present, the
+<CODE>base</CODE> defaults to <CODE>http://servername/</CODE>.
+
 
 <!--#include virtual="footer.html" -->
 </BODY>

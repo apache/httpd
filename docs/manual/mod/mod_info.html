@@ -15,24 +15,38 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_info</H1>
 
-This module is contained in the <CODE>mod_info.c</CODE> file.  It
-provides a comprehensive overview of the server configuration
-including all installed modules and directives in the configuration
-files.  This module is not compiled into the
-server by default.  It is only available in Apache 1.1 and later. To
-enable it, add the following line to the server build Configuration
-file, and rebuild the server:
+<p>This module provides a comprehensive overview of the server
+configuration including all installed modules and directives in the
+configuration files.</p>
 
-<PRE>
-AddModule modules/standard/mod_info.o
-</PRE>
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_info.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> info_module
+<BR>
+<A
+HREF="module-dict.html#compatibility"
+REL="Help"
+><STRONG>Compatibility:</STRONG></A> Available in Apache 1.1 and later.
+</P>
 
 <H2>Directives</H2>
 <UL>
 <LI><A HREF="#addmoduleinfo">AddModuleInfo</A>
 </UL>
 
-<HR>
+<h2>Using mod_info</h2>
+
 <P>
 To configure it, add the following to your <CODE>access.conf</CODE> file.
 
@@ -88,11 +102,11 @@ Once configured, the server information is obtained by accessing
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> base<BR>
+><STRONG>Status:</STRONG></A> Extension<BR>
 <A
  HREF="directive-dict.html#Module"
  REL="Help"
-><STRONG>Module:</STRONG></A> mod_browser<BR>
+><STRONG>Module:</STRONG></A> mod_info<BR>
 <A
  HREF="directive-dict.html#Compatibility"
  REL="Help"
