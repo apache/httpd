@@ -1,5 +1,8 @@
 Changes with Apache 2.0.43
 
+  *) New Module: mod_logio. adds the ability to log bytes sent and
+     received. [Bojan Smojver <bojan@rexursive.com>]
+
   *) SuExec needs to use the same default directory as the rest of
      server, namely /usr/local/apache2.  
      [SangBeom han <sbhan@os.korea.ac.kr>]
