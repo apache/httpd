@@ -13,7 +13,7 @@ Changes with Apache 1.3b6
      is automatically disabled under configure time when the dbm_xxx functions
      are not available. Second, two heavy source code errors in the DBM
      support code were fixed.  This makes DBM RewriteMap's useable again after
-     a long time of brokeness. [Ralf S. Engelschall]
+     a long time of brokeness. [Ralf S. Engelschall, PR#1696]
 
   *) Now all configuration files support Unix-style line-continuation via 
      the trailing backslash ("\") character. This enables us to write down
