@@ -483,7 +483,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num, 
     long conn_id = AP_ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int csd;
 
-    (void) apr_os_sock_get(&csd, sock);
+    apr_os_sock_get(&csd, sock);
 
     if (csd >= FD_SETSIZE) {
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
@@ -697,11 +697,9 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
 
     free(ti);
 
-    (void) ap_update_child_status(process_slot, thread_slot,
-                                  SERVER_STARTING, (request_rec *)NULL);
+    ap_update_child_status(process_slot, thread_slot, SERVER_STARTING, NULL);
     while (!workers_may_exit) {
-        (void) ap_update_child_status(process_slot, thread_slot,
-                                      SERVER_READY, (request_rec *)NULL);
+        ap_update_child_status(process_slot, thread_slot, SERVER_READY, NULL);
         rv = ap_queue_pop(worker_queue, &csd, &ptrans);
         /* We get FD_QUEUE_EINTR whenever ap_queue_pop() has been interrupted
          * from an explicit call to ap_queue_interrupt_all(). This allows
@@ -778,8 +776,7 @@ static void *start_threads(apr_thread_t *thd, void *dummy)
 	    my_info->sd = 0;
 	
   	    /* We are creating threads right now */
-	    (void) ap_update_child_status(my_child_num, i, SERVER_STARTING, 
-	  			          (request_rec *) NULL);
+	    ap_update_child_status(my_child_num, i, SERVER_STARTING, NULL);
             /* We let each thread update its own scoreboard entry.  This is
              * done because it lets us deal with tid better.
 	     */
@@ -947,7 +944,7 @@ static int make_child(server_rec *s, int slot)
         /* fork didn't succeed. Fix the scoreboard or else
          * it will say SERVER_STARTING forever and ever
          */
-        (void) ap_update_child_status(slot, 0, SERVER_DEAD, (request_rec *) NULL);
+        ap_update_child_status(slot, 0, SERVER_DEAD, NULL);
 
 	/* In case system resources are maxxed out, we don't want
 	   Apache running away with the CPU trying to fork over and
