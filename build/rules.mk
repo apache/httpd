@@ -184,7 +184,7 @@ shared-modules-recursive:
 			(cd $$i && $(MAKE) $$target) || exit 1; \
 		fi; \
 	done; \
-	if test -e 'modules.mk'; then \
+	if test -f 'modules.mk'; then \
 		if test -n '$(shared_targets)'; then \
 			echo "Building shared modules: $(shared_targets)"; \
 			if test -z '$(shared_targets)'; then ok=yes; fi; \
