@@ -30,11 +30,58 @@ rewriting all their scripts
 
 <H2>Directives</H2>
 <UL>
+<LI><A HREF="#passallenv">PassAllEnv</A>
 <LI><A HREF="#passenv">PassEnv</A>
 <LI><A HREF="#setenv">SetEnv</A>
 <LI><A HREF="#unsetenv">UnsetEnv</A>
 </UL>
 
+<HR>
+
+<H2><A NAME="passallenv">PassAllEnv</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> PassAllEnv <EM>On | Off</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <EM>Off</EM>
+<BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_env<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> PassAllEnv is only available in
+Apache 1.3.5 and later.
+<P>
+This directive controls whether <EM>all</EM> of the server's environment
+variables should be made available to CGI scripts and SSI documents,
+or only those explicitly named by
+<A HREF="#passenv"><CODE>PassEnv</CODE></A> directives or otherwise
+created by the server itself.
+</P>
+<BLOCKQUOTE><STRONG>It is highly recommended that this functionality
+be enabled only with extreme caution and after careful examination
+of whether the entire environment is needed.</STRONG></BLOCKQUOTE>
+<P>
+Because of security considerations, <CODE>PassAllEnv</CODE> may
+only appear inside
+<A HREF="core.html#directory"><SAMP>&lt;Directory&gt;</SAMP></A> and
+<A HREF="core.html#location"><SAMP>&lt;Location&gt;</SAMP></A>
+containers in the server configuration files.
+</P>
 <HR>
 
 <H2><A NAME="passenv">PassEnv</A></H2>
