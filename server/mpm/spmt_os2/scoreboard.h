@@ -145,13 +145,8 @@ typedef struct {
     unsigned long my_bytes_served;
     unsigned long conn_bytes;
     unsigned short conn_count;
-#if !defined(HAVE_GETTIMEOFDAY)
-    clock_t start_time;
-    clock_t stop_time;
-#else
-    struct timeval start_time;
-    struct timeval stop_time;
-#endif
+    ap_time_t start_time;
+    ap_time_t stop_time;
 #ifdef HAVE_TIMES
     struct tms times;
 #endif

@@ -281,20 +281,10 @@ void ap_time_process_request(int child_num, int thread_num, int status)
     ss = &ap_scoreboard_image->servers[child_num][thread_num];
 
     if (status == START_PREQUEST) {
-      /*ss->start_time = GetCurrentTime(); return time in uS since the 
-	epoch. Some platforms do not support gettimeofday. Create a routine 
-	to get the current time is some useful units. */
-        if (gettimeofday(&ss->start_time, (struct timezone *) 0) < 0) {
-            ss->start_time.tv_sec = ss->start_time.tv_usec = 0L;
-        }
+        ss->start_time = ap_now(); 
     }
     else if (status == STOP_PREQUEST) {
-      /*ss->stop_time = GetCurrentTime(); 
-	return time in uS since the epoch */
-        
-        if (gettimeofday(&ss->stop_time, (struct timezone *) 0) < 0) {
-            ss->start_time.tv_sec = ss->start_time.tv_usec = 0L;
-        }
+        ss->stop_time = ap_now(); 
     }
     put_scoreboard_info(child_num, thread_num, ss);
 }

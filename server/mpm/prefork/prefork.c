@@ -949,9 +949,6 @@ static void update_scoreboard_global(void)
 void ap_time_process_request(int child_num, int status)
 {
     short_score *ss;
-#if !defined(HAVE_GETTIMEOFDAY) && defined(HAVE_TIMES)
-    struct tms tms_blk;
-#endif
 
     if (child_num < 0)
 	return;
@@ -960,31 +957,10 @@ void ap_time_process_request(int child_num, int status)
     ss = &ap_scoreboard_image->servers[child_num];
 
     if (status == START_PREQUEST) {
-#if !defined(HAVE_GETTIMEOFDAY)
-#ifdef HAVE_TIMES
-	if ((ss->start_time = times(&tms_blk)) == -1)
-#endif /* HAVE_TIMES */
-	    ss->start_time = (clock_t) 0;
-#else
-	if (gettimeofday(&ss->start_time, (struct timezone *) 0) < 0)
-	    ss->start_time.tv_sec =
-		ss->start_time.tv_usec = 0L;
-#endif
+	ss->start_time = ap_now();
     }
     else if (status == STOP_PREQUEST) {
-#if !defined(HAVE_GETTIMEOFDAY)
-#ifdef HAVE_TIMES
-	if ((ss->stop_time = times(&tms_blk)) == -1)
-#endif
-	    ss->stop_time = ss->start_time = (clock_t) 0;
-#else
-	if (gettimeofday(&ss->stop_time, (struct timezone *) 0) < 0)
-	    ss->stop_time.tv_sec =
-		ss->stop_time.tv_usec =
-		ss->start_time.tv_sec =
-		ss->start_time.tv_usec = 0L;
-#endif
-
+	ss->stop_time = ap_now();
     }
 
     put_scoreboard_info(child_num, ss);

@@ -169,9 +169,7 @@ static void unique_id_global_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptem
 #endif
     char str[MAXHOSTNAMELEN + 1];
     struct hostent *hent;
-#ifdef HAVE_GETTIMEOFDAY
-    struct timeval tv;
-#endif
+    ap_time_t tv;
 
     /*
      * Calculate the sizes and offsets in cur_unique_id.
@@ -232,26 +230,14 @@ static void unique_id_global_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptem
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
-#ifndef HAVE_GETTIMEOFDAY
-    sleep(1);
-#else
-    if (gettimeofday(&tv, NULL) == -1) {
-        sleep(1);
-    }
-    else if (tv.tv_usec) {
-        tv.tv_sec = 0;
-        tv.tv_usec = 1000000 - tv.tv_usec;
-        select(0, NULL, NULL, NULL, &tv);
-    }
-#endif
+    tv = ap_now();
+    ap_sleep(
 }
 
 static void unique_id_child_init(ap_pool_t *p, server_rec *s)
 {
     pid_t pid;
-#ifdef HAVE_GETTIMEOFDAY
-    struct timeval tv;
-#endif
+    time_t tv;
 
     /*
      * Note that we use the pid because it's possible that on the same
@@ -283,19 +269,8 @@ static void unique_id_child_init(ap_pool_t *p, server_rec *s)
      * against restart problems, and a little less protection against a clock
      * going backwards in time.
      */
-#ifdef HAVE_GETTIMEOFDAY
-    if (gettimeofday(&tv, NULL) == -1) {
-        cur_unique_id.counter = 0;
-    }
-    else {
-	/* Some systems have very low variance on the low end of their
-	 * system counter, defend against that.
-	 */
-        cur_unique_id.counter = tv.tv_usec / 10;
-    }
-#else
-    cur_unique_id.counter = 0;
-#endif
+    tv = ap_now();
+    cur_unique_id.counter = tv % APR_USEC_PER_SEC / 10;
 
     /*
      * We must always use network ordering for these bytes, so that
