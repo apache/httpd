@@ -5964,14 +5964,16 @@ int REALMAIN(int argc, char *argv[])
     ap_init_modules(pconf, server_conf);
     ap_suexec_enabled = init_suexec();
     version_locked++;
-    ap_open_logs(server_conf, pconf);
+    if (!install) {
+	ap_open_logs(server_conf, pconf);
+    }
     set_group_privs();
 
 #ifdef OS2
     printf("%s running...\n", ap_get_server_version());
 #endif
 #ifdef WIN32
-    if (!child) {
+    if (!child && !install) {
 	printf("%s running...\n", ap_get_server_version());
     }
 #endif
