@@ -46,7 +46,7 @@ To do this:
       % 
 
    (*: Depending on Configuration and your system, Configure
-       make not print these lines. That's OK)
+       may not print these lines. That's OK)
 
 3) Type "make".
 
