@@ -1,5 +1,11 @@
 Changes with Apache 1.3.30
 
+  *) SECURITY: CAN-2003-0993 (cve.mitre.org) 
+     Fix parsing of Allow/Deny rules using IP addresses without a
+     netmask; issue is only known to affect big-endian 64-bit
+     platforms; on affected platforms such rules would never produce
+     matches.  PR 23850.  [Henning Brauer <henning openbsd.org>]
+
   *) Fix mod_include's expression parser to recognize strings correctly
      even if they start with an escaped token.  [André Malo]
 
