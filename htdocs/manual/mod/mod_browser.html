@@ -9,7 +9,7 @@
 <H1>Apache module mod_browser</h1>
 
 This module is contained in the <code>mod_browser.c</code> file, and
-is compiled in by default. It provides for
+is compiled in by default with Apache 1.2 and above. It provides for
 setting environment variables based on the browser.
 
 <h2>Summary</h2>
@@ -33,6 +33,7 @@ can provide for simple browser-based negotiation of HTML features.</p>
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> base<br>
 <strong>Module:</strong> mod_browser<p>
+<strong>Compatibility:</strong> Apache 1.2 and above
 
 The BrowserMatch directive defines environment variables based on the
 User-Agent
@@ -59,6 +60,7 @@ entries can override earlier ones.
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> base<br>
 <strong>Module:</strong> mod_browser
+<strong>Compatibility:</strong> Apache 1.2 and above
 
 <p>The <code>BrowserMatchNoCase</code> directive is semantically identical to
    the <a href="#browsermatch"><code>BrowserMatch</code></a>
