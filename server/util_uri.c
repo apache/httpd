@@ -62,6 +62,7 @@
  */
 
 #include "ap_config.h"
+#include "apr_strings.h"
 #include "httpd.h"
 #include "http_log.h"
 #include "util_uri.h"

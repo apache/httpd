@@ -63,6 +63,7 @@
  * 
  */
 
+#include "apr_strings.h"
 #include "apr_network_io.h"
 #include "ap_config.h"
 #include "httpd.h"

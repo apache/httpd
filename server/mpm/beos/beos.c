@@ -66,6 +66,7 @@ ap_/* ====================================================================
  
 #define CORE_PRIVATE 
  
+#include "apr_strings.h"
 #include "apr_portable.h"
 #include "httpd.h" 
 #include "http_main.h" 

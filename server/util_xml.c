@@ -64,6 +64,7 @@
 #include "http_protocol.h"
 #include "http_log.h"
 #include "http_core.h"
+#include "apr_strings.h"
 
 #include "util_xml.h"
 

@@ -66,6 +66,7 @@
  *
  * Version sort added by Martin Pool <mbp@humbug.org.au>. */
 
+#include "apr_strings.h"
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"

@@ -76,6 +76,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_charset.h"
+#include "apr_strings.h"
 #include "apr_file_io.h"
 #include "apr_fnmatch.h"
 

@@ -67,6 +67,7 @@
 #define CORE_PRIVATE
 #include "apr.h"  /* for ap_signal */
 #include "ap_config.h"
+#include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_portable.h"
 #include "httpd.h"

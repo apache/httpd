@@ -69,6 +69,7 @@
 #include "http_vhost.h"
 #include "http_protocol.h"
 #include "http_core.h"
+#include "apr_strings.h"
 
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>

@@ -60,6 +60,7 @@
  
 #include "ap_config.h"
 #include "apr_portable.h"
+#include "apr_strings.h"
 #include "apr_file_io.h"
 #include "httpd.h" 
 #include "http_main.h" 

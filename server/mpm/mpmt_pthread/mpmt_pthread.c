@@ -59,6 +59,7 @@
 #define CORE_PRIVATE 
  
 #include "apr_portable.h"
+#include "apr_strings.h"
 #include "apr_file_io.h"
 #include "apr_thread_proc.h"
 #include "ap_config.h"

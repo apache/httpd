@@ -73,6 +73,7 @@
 
 #include "ap_config.h"
 #include "ap_base64.h"
+#include "apr_strings.h"
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
