@@ -64,6 +64,7 @@
 #include "http_vhost.h"
 #include "http_request.h"
 #include "util_date.h"
+#include "mod_core.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */
@@ -427,7 +428,6 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->recv_buffer_size = 0; /* this default was left unset for some reason */
     ps->recv_buffer_size_set = 0;
 
-    ap_cache_init(&ps->cache, "mod_proxy cache", s);
     return ps;
 }
 
