@@ -10,11 +10,11 @@ AND don't forget to run expand on the file after it has been indent'd.
    buff.h			DONE by Dean
    conf.h			DONE by Dean
    dummy.c			DONE by Dean
-   explain.c			RESERVED by Dean
-   explain.h			RESERVED by Dean
+   explain.c			DONE by Dean
+   explain.h			DONE by Dean
    fnmatch.c			DONE by Dean
    fnmatch.h			DONE by Dean
-   http_bprintf.c		RESERVED by Dean
+   http_bprintf.c		DONE by Dean
    http_conf_globals.h		DONE by Dean
    http_config.c		DONE by Dean
    http_config.h		DONE by Dean
@@ -29,9 +29,9 @@ AND don't forget to run expand on the file after it has been indent'd.
    http_request.c		DONE by Roy
    http_request.h		DONE by Roy
    httpd.h			DONE by Dean
-   md5.h			RESERVED by Dean
-   md5c.c			RESERVED by Dean
-   multithread.h		RESERVED by Dean
+   md5.h			DONE by Dean
+   md5c.c			DONE by Dean
+   multithread.h		DONE by Dean
    rfc1413.c			DONE by Dean
    rfc1413.h			DONE by Dean
    scoreboard.h			DONE by Dean
@@ -48,13 +48,13 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_example.c		DONE by Ken
 
 ./modules/proxy:
-   mod_proxy.c
-   mod_proxy.h
-   proxy_cache.c
-   proxy_connect.c
-   proxy_ftp.c
-   proxy_http.c
-   proxy_util.c
+   mod_proxy.c			RESERVED by Dean
+   mod_proxy.h			RESERVED by Dean
+   proxy_cache.c		RESERVED by Dean
+   proxy_connect.c		RESERVED by Dean
+   proxy_ftp.c			RESERVED by Dean
+   proxy_http.c			RESERVED by Dean
+   proxy_util.c			RESERVED by Dean
 
 ./modules/standard:
    mod_access.c

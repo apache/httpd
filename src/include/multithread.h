@@ -17,19 +17,17 @@ typedef void event;
 #ifdef MULTITHREAD
 #define APACHE_TLS __declspec( thread )
 
-thread *create_thread(void (thread_fn)(void *thread_arg), void *thread_arg);
+thread *create_thread(void (thread_fn) (void *thread_arg), void *thread_arg);
 int kill_thread(thread *thread_id);
 int await_thread(thread *thread_id, int sec_to_wait);
 void exit_thread(int status);
 void free_thread(thread *thread_id);
-
 
 API_EXPORT(mutex *) create_mutex(char *name);
 API_EXPORT(mutex *) open_mutex(char *name);
 API_EXPORT(int) acquire_mutex(mutex *mutex_id);
 API_EXPORT(int) release_mutex(mutex *mutex_id);
 API_EXPORT(void) destroy_mutex(mutex *mutex_id);
-
 
 semaphore *create_semaphore(int initial);
 int acquire_semaphore(semaphore *semaphore_id);
@@ -56,4 +54,3 @@ extern void *dummy_mutex;
 #endif /* ndef MULTITHREAD */
 
 #endif /* ndef MULTITHREAD_H */
-
