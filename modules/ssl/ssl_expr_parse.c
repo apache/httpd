@@ -1,3 +1,4 @@
+#if 0 /* XXX */
 #ifndef lint
 static char const 
 ssl_expr_yyrcsid[] = "$FreeBSD: src/usr.bin/yacc/skeleton.c,v 1.28 2000/01/17 02:04:06 bde Exp $";
@@ -603,3 +604,4 @@ ssl_expr_yyabort:
 ssl_expr_yyaccept:
     return (0);
 }
+#endif /* XXX */

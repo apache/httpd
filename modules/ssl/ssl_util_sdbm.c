@@ -68,6 +68,8 @@
 
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
+
 #ifdef SSL_USE_SDBM
 
 #include <stdio.h>
@@ -922,3 +924,6 @@ char *pag;
 }
 
 #endif /* SSL_USE_SDBM */
+
+#endif /* XXX */
+

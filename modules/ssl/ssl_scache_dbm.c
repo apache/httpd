@@ -59,6 +59,8 @@
 
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
+
 void ssl_scache_dbm_init(server_rec *s, pool *p)
 {
     SSLModConfigRec *mc = myModConfig();
@@ -435,4 +437,6 @@ void ssl_scache_dbm_status(server_rec *s, pool *p, void (*func)(char *, void *),
     func(ap_psprintf(p, "average session size: <b>%d</b> bytes<br>", nAverage), arg);
     return;
 }
+
+#endif /* XXX */
 

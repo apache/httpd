@@ -67,6 +67,8 @@
 #ifndef SSL_UTIL_SDBM_H
 #define SSL_UTIL_SDBM_H
 
+#if 0 /* XXX */
+
 #define DUFF    /* go ahead and use the loop-unrolled version */
 
 #include <stdio.h>
@@ -186,4 +188,7 @@ extern int duppair proto((char *, datum));
 #define debug(x)
 #endif
 
+#endif /* XXX */
+
 #endif /* SSL_UTIL_SDBM_H */
+

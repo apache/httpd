@@ -63,6 +63,7 @@
                                            -- Clifford Stoll     */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -540,4 +541,6 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify)
      */
     return (len);
 }
+
+#endif /* XXX */
 

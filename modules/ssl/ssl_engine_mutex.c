@@ -62,6 +62,7 @@
                                              -- Unknown     */
 #include "mod_ssl.h"
 
+#if 0 /* XXX */
 
 /*  _________________________________________________________________
 **
@@ -392,4 +393,6 @@ BOOL ssl_mutex_sem_release(void)
     else
         return TRUE;
 }
+
+#endif /* XXX */
 
