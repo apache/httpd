@@ -1,40 +1,40 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="EUC-KR"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>$B%G%#%l%/%F%#%V0lMw(B - Apache HTTP $B%5!<%P(B</title>
+<title>Áö½Ã¾î ¸ñ·Ï - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="directive-index"><div id="page-header">
-<p class="menu"><a href="../mod/">$B%b%8%e!<%k(B</a> | <a href="../mod/directives.html">$B%G%#%l%/%F%#%V(B</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">$BMQ8l(B</a> | <a href="../sitemap.html">$B%5%$%H%^%C%W(B</a></p>
-<p class="apache">Apache HTTP $B%5!<%P(B $B%P!<%8%g%s(B 2.1</p>
+<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/directives.html">Áö½Ã¾îµé</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
+<p class="apache">Apache HTTP Server Version 2.1</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP $B%5!<%P(B</a> &gt; <a href="http://httpd.apache.org/docs-project/">$B%I%-%e%a%s%F!<%7%g%s(B</a> &gt; <a href="../">$B%P!<%8%g%s(B 2.1</a> &gt; <a href="./">$B%b%8%e!<%k(B</a></div><div id="preamble"><h1>$B%G%#%l%/%F%#%V0lMw(B</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">¸ðµâ</a></div><div id="preamble"><h1>Áö½Ã¾î ¸ñ·Ï</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../de/mod/directives.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/directives.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/directives.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/directives.html">&nbsp;ko&nbsp;</a></p>
+<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../de/mod/directives.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/directives.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/directives.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/directives.html">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>
-      $BI8=`(B Apache $BG[I[$K$"$k$9$Y$F$N(B Apache $B$N%G%#%l%/%F%#%V$N0lMw$G$9!#(B
-      $B$3$l$i$O0l4S$7$?7A<0$G=q$+$l$F$$$F!";H$o$l$F$$$kMQ8l$N(B
-      <a href="directive-dict.html" rel="Glossary">$BMQ8l=8(B</a> $B$bMQ0U$5$l$F$$$^$9!#(B
+      ´ÙÀ½Àº Ç¥ÁØ ¾ÆÆÄÄ¡ ¹èÆ÷º»¿¡¼­ »ç¿ë°¡´ÉÇÑ Áö½Ã¾î ¸ñ·ÏÀÌ´Ù.
+      ÀÌµéÀ» µ¿ÀÏÇÑ Çü½ÄÀ¸·Î ¼³¸íÇÏ¿´°í, ¼³¸í¿¡ »ç¿ëÇÑ ¿ë¾î
+      <a href="directive-dict.html" rel="Glossary">»çÀü</a>µµ ÀÖ´Ù.
     </p>
+
     <p>
-      $B3F%G%#%l%/%F%#%V$N35MW$r@bL@$7$?(B <a href="quickreference.html">$B%G%#%l%/%F%#%V%/%$%C%/%j%U%!%l%s%9(B</a>$B$b(B
-      $B$"$j$^$9!#(B
+      °¢ Áö½Ã¾î¸¦ ¿ä¾àÇÏ¿© ¼³¸íÇÑ <a href="quickreference.html">Áö½Ã¾î ºü¸¥ÂüÁ¶</a>µµ ÀÖ´Ù.
     </p>
   
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#G">&nbsp;G&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#K">&nbsp;K&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#O">&nbsp;O&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#T">&nbsp;T&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
 </div>
 <div id="directive-list"><ul>
-<li><a href="prefork.html#acceptmutex" id="A" name="A">AcceptMutex</a></li>
+<li><a href="mpm_common.html#acceptmutex" id="A" name="A">AcceptMutex</a></li>
 <li><a href="core.html#acceptpathinfo">AcceptPathInfo</a></li>
 <li><a href="core.html#accessfilename">AccessFileName</a></li>
 <li><a href="mod_actions.html#action">Action</a></li>
@@ -230,7 +230,6 @@
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
-<li><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
 <li><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
 <li><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
 <li><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
@@ -249,7 +248,6 @@
 <li><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></li>
 <li><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost</a></li>
 <li><a href="mod_proxy.html#noproxy">NoProxy</a></li>
-<li><a href="mpm_common.html#numservers">NumServers</a></li>
 <li><a href="perchild.html#numservers">NumServers</a></li>
 <li><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
@@ -383,8 +381,8 @@
 <li><a href="mod_include.html#xbithack" id="X" name="X">XBitHack</a></li>
 </ul></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../de/mod/directives.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/directives.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/directives.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/directives.html">&nbsp;ko&nbsp;</a></p>
+<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../de/mod/directives.html">&nbsp;de&nbsp;</a> | <a href="../en/mod/directives.html">&nbsp;en&nbsp;</a> | <a href="../ja/mod/directives.html">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/directives.html">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
-<p class="menu"><a href="../mod/">$B%b%8%e!<%k(B</a> | <a href="../mod/directives.html">$B%G%#%l%/%F%#%V(B</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">$BMQ8l(B</a> | <a href="../sitemap.html">$B%5%$%H%^%C%W(B</a></p></div>
+<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/directives.html">Áö½Ã¾îµé</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div>
 </body></html>

@@ -1,51 +1,48 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="EUC-KR"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Module Index - Apache HTTP Server</title>
+<title>¸ðµâ ¸ñ·Ï - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/directives.html">Áö½Ã¾îµé</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p>
 <p class="apache">Apache HTTP Server Version 2.1</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>Module Index</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a></div><div id="page-content"><div id="preamble"><h1>¸ðµâ ¸ñ·Ï</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../de/mod/">&nbsp;de&nbsp;</a> | <a href="../en/mod/">&nbsp;en&nbsp;</a> | <a href="../ja/mod/">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/">&nbsp;ko&nbsp;</a></p>
+<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../de/mod/">&nbsp;de&nbsp;</a> | <a href="../en/mod/">&nbsp;en&nbsp;</a> | <a href="../ja/mod/">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>
-      Below is a list of all of the modules that come as part of
-      the Apache distribution.  See also the complete
-      alphabetical list of <a href="directives.html">all Apache
-      directives</a>.
+      ´ÙÀ½Àº ¾ÆÆÄÄ¡ ¹èÆ÷º»¿¡ Æ÷ÇÔµÈ ¸ðµç ¸ðµâ ¸ñ·ÏÀÌ´Ù. <a href="directives.html">¸ðµç ¾ÆÆÄÄ¡ Áö½Ã¾î</a> ¸ñ·Ïµµ
+      Âü°íÇÏ¶ó.
     </p>
   </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#core">Core Features and Multi-Processing Modules</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Other Modules</a></li></ul><h3>See also</h3>
+<li><img alt="" src="../images/down.gif" /> <a href="#core">ÇÙ½É ±â´É°ú ´ÙÁßÃ³¸® ¸ðµâ</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">´Ù¸¥ ¸ðµâ</a></li></ul><h3>Âü°í</h3>
 <ul class="seealso">
-<li><a href="../mpm.html">Multi-Processing Modules (MPMs)</a>
+<li><a href="../mpm.html">´ÙÁßÃ³¸®¸ðµâ (MPM)</a>
   </li>
-<li><a href="quickreference.html">Directive Quick Reference</a>
+<li><a href="quickreference.html">Áö½Ã¾î ºü¸¥Âü°í</a>
   </li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="core" name="core">Core Features and Multi-Processing Modules</a></h2>
+<div class="section"><h2><a id="core" name="core">ÇÙ½É ±â´É°ú ´ÙÁßÃ³¸® ¸ðµâ</a></h2>
 <dl>
 <dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
 available</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
 more than one multi-processing module (MPM)</dd>
-<dt><a href="beos.html">beos</a></dt><dd>This Multi-Processing Module is optimized for BeOS.</dd>
-<dt><a href="leader.html">leader</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</dd>
+<dt><a href="beos.html">beos</a></dt><dd>BeOS¿¡ ÃÖÀûÈ­µÈ ´ÙÁßÃ³¸® ¸ðµâ.</dd>
+<dt><a href="leader.html">leader</a></dt><dd>Ç¥ÁØ <code class="module"><a href="../mod/worker.html">worker</a></code> MPMÀÇ ½ÇÇèÀûÀÎ º¯Çü</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
@@ -60,14 +57,13 @@ NT.</dd>
     multi-threaded multi-process web server</dd>
 </dl></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="other" name="other">Other Modules</a></h2>
+<div class="section"><h2><a id="other" name="other">´Ù¸¥ ¸ðµâ</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
-<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
-media type or request method.</dd>
+<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>ÀÌ ¸ðµâÀº ¹Ìµð¾îÁ¾·ù³ª ¿äÃ»¸Þ¼­µå¿¡ µû¶ó CGI
+½ºÅ©¸³Æ®¸¦ ½ÇÇàÇÑ´Ù.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</dd>
-<dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
-HTTP headers</dd>
+<dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP Çì´õ¸¦ Æ÷ÇÔÇÑ ÆÄÀÏÀ» º¸³½´Ù</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd>
@@ -85,11 +81,10 @@ for HTTP Basic authentication.</dd>
 address)</dd>
 <dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Authorization based on file ownership</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
-<dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Generates directory indexes,
-    automatically, similar to the Unix <code>ls</code> command or the
-    Win32 <code>dir</code> shell command</dd>
+<dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>ÀÚµ¿À¸·Î À¯´Ð½ºÀÇ <code>ls</code> ¸í·É¾î³ª Win32ÀÇ
+    <code>dir</code> ½©¸í·É¾î¿Í À¯»çÇÑ µð·ºÅä¸® ¸ñ·ÏÀ» ¸¸µç´Ù</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
-<dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
+<dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN À¥¼­¹ö ¸ÞÅ¸ÆÄÀÏ Áö¿ø</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
 <dt><a href="mod_cgid.html">mod_cgid</a></dt><dd>Execution of CGI scripts using an
     external CGI daemon</dd>
@@ -165,8 +160,8 @@ identifier for each request</dd>
 hosting</dd>
 </dl></div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../de/mod/">&nbsp;de&nbsp;</a> | <a href="../en/mod/">&nbsp;en&nbsp;</a> | <a href="../ja/mod/">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/">&nbsp;ko&nbsp;</a></p>
+<p><span>°¡´ÉÇÑ ¾ð¾î: </span><a href="../de/mod/">&nbsp;de&nbsp;</a> | <a href="../en/mod/">&nbsp;en&nbsp;</a> | <a href="../ja/mod/">&nbsp;ja&nbsp;</a> | <a href="../ko/mod/">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/directives.html">Áö½Ã¾îµé</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a></p></div>
 </body></html>
