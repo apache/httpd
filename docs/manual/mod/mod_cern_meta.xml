@@ -20,8 +20,8 @@
     CERN users who can exploit this module.</p>
 
     <p>More information on the <a
-    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir">
-    CERN metafile semantics</a> is available.</p>
+    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
+    >CERN metafile semantics</a> is available.</p>
 </summary>
 
 <seealso><module>mod_headers</module></seealso>
@@ -47,7 +47,7 @@
 <name>MetaDir</name>
 <description>Name of the directory to find CERN-style meta information
 files</description>
-<syntax>MetaDir <em>directory</em></syntax>
+<syntax>MetaDir <var>directory</var></syntax>
 <default>MetaDir .web</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -75,7 +75,7 @@ files</description>
 <name>MetaSuffix</name>
 <description>File name suffix for the file containg CERN-style
 meta information</description>
-<syntax>MetaSuffix <em>suffix</em></syntax>
+<syntax>MetaSuffix <var>suffix</var></syntax>
 <default>MetaSuffix .meta</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -92,10 +92,9 @@ meta information</description>
     will use its contents to generate additional MIME header
     information.</p>
 
-    <p>Example:</p>
-
-    <example>MetaSuffix .meta</example>
-
+    <example><title>Example:</title>
+      MetaSuffix .meta
+    </example>
 </usage>
 </directivesynopsis>
 
