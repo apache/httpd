@@ -677,6 +677,13 @@ static apr_status_t ssl_io_input_read(ssl_io_input_ctx_t *ctx,
             char_buffer_write(&ctx->cbuf, buf, rc);
         }
     }
+    else if ((rc == -1) && (ctx->inbio.rc == APR_SUCCESS)) {
+        /*
+         * bucket read from socket was successful,
+         * but there was an error within the ssl runtime.
+         */
+        return APR_EGENERAL;
+    }
 
     return ctx->inbio.rc;
 }
