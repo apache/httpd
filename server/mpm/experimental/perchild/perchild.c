@@ -73,7 +73,7 @@
 #include <sys/socket.h>
 #endif
 
-#if !APR_HAVE_THREADS
+#if !APR_HAS_THREADS
 #error The perchild MPM requires APR threads, but they are unavailable.
 #endif  
 
