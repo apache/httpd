@@ -113,10 +113,10 @@ int main() {
     int data = 1;
     return pthread_create(&thd, NULL, thread_routine, &data);
 } ], [ 
-  THREADS_WORKING="yes"
+  apache_threads_working="yes"
   ], [
-  THREADS_WORKING="no"
-  ], THREADS_WORKING="no" ) ] )
+  apache_threads_working="no"
+  ], apache_threads_working="no" ) ] )
 
 define(APACHE_CHECK_THREADS, [dnl
   cflags_orig="$CFLAGS"
@@ -126,11 +126,11 @@ define(APACHE_CHECK_THREADS, [dnl
       CFLAGS="$test_cflag $cflags_orig"
       LDFLAGS="$test_ldflag $ldflags_orig"
       THREAD_TEST()
-      if test "$THREADS_WORKING" = "yes"; then
+      if test "$apache_threads_working" = "yes"; then
         break
       fi
     done
-    if test "$THREADS_WORKING" = "yes"; then
+    if test "$apache_threads_working" = "yes"; then
       threads_result="Updating CFLAGS and LDFLAGS"
       break
     fi
