@@ -870,8 +870,6 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
         errno = save_errno;
         return NULL;
     }
-    /* Pipes are 'inheritable' by default, but we want only the logger to inherit it */
-    /*@@@ missing in API! apr_pipe_inherit_unset();*/
     return pl;
 }
 
