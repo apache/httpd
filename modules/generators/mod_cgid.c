@@ -531,8 +531,8 @@ static int cgid_server(void *data)
         procnew = apr_pcalloc(ptrans, sizeof(*procnew));
         r->pool = ptrans; 
         get_req(sd2, r, &argv0, &env, &req_type); 
-        apr_os_file_put(&r->server->error_log, &errfileno, r->pool);
-        apr_os_file_put(&inout, &sd2, r->pool);
+        apr_os_file_put(&r->server->error_log, &errfileno, 0, r->pool);
+        apr_os_file_put(&inout, &sd2, 0, r->pool);
 
         if (req_type == SSI_REQ) {
             in_pipe  = APR_NO_PIPE;
@@ -941,7 +941,7 @@ static int cgid_handler(request_rec *r)
     /* We are putting the tempsock variable into a file so that we can use
      * a pipe bucket to send the data to the client.
      */
-    apr_os_file_put(&tempsock, &sd, r->pool);
+    apr_os_file_put(&tempsock, &sd, 0, r->pool);
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
         return retval; 
@@ -1208,7 +1208,7 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
     /* We are putting the tempsock variable into a file so that we can use
      * a pipe bucket to send the data to the client.
      */
-    apr_os_file_put(&tempsock, &sd, r->pool);
+    apr_os_file_put(&tempsock, &sd, 0, r->pool);
 
     if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
         return retval; 

@@ -892,7 +892,7 @@ BOOL WINAPI ServerSupportFunction(HCONN hConn, DWORD dwHSERequest,
             return FALSE;
         }
         
-        if ((rv = apr_os_file_put(&fd, tf->hFile, r->pool)) != APR_SUCCESS) {
+        if ((rv = apr_os_file_put(&fd, tf->hFile, 0, r->pool)) != APR_SUCCESS) {
             return FALSE;
         }
         
