@@ -341,6 +341,33 @@ int main(int argc, char *argv[])
 	actual_gname = strdup(target_gname);
     }
 
+#ifdef _OSD_POSIX
+    /*
+     * Initialize BS2000 user environment
+     */
+    {
+	pid_t pid;
+	int status;
+
+	switch (pid = ufork(target_uname))
+	{
+	case -1:	/* Error */
+	    log_err("failed to setup bs2000 environment for user %s: %s\n",
+		    target_uname, strerror(errno));
+	    exit(150);
+	case 0:	/* Child */
+	    break;
+	default:	/* Father */
+	    while (pid != waitpid(pid, &status, 0))
+		;
+	    /* @@@ FIXME: should we deal with STOP signals as well? */
+	    if (WIFSIGNALED(status))
+		kill (getpid(), WTERMSIG(status));
+	    exit(WEXITSTATUS(status));
+	}
+    }
+#endif /*_OSD_POSIX*/
+
     /*
      * Save these for later since initgroups will hose the struct
      */
