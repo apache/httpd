@@ -3192,10 +3192,6 @@ static const command_rec includes_cmds[] =
 
 static int include_fixup(request_rec *r)
 {
-#if defined(OS2) || defined(WIN32) || defined(NETWARE)
-    /* OS/2 dosen't currently support the xbithack. This is being worked on. */
-    return DECLINED;
-#else
     include_dir_config *conf;
  
     conf = (include_dir_config *) ap_get_module_config(r->per_dir_config,
@@ -3209,11 +3205,13 @@ static int include_fixup(request_rec *r)
         r->handler = "default-handler";
     }
     else 
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
+    /* These OS's don't support xbithack. This is being worked on. */
     {
-        if (strcmp(r->handler, "text/html")) {
-            return DECLINED;
-        }
-    
+        return DECLINED;
+    }
+#else
+    {
         if (*conf->xbithack == xbithack_off) {
             return DECLINED;
         }
@@ -3221,14 +3219,18 @@ static int include_fixup(request_rec *r)
         if (!(r->finfo.protection & APR_UEXECUTE)) {
             return DECLINED;
         }
-    }
 
-    /* We always return declined, because the default handler will actually
-     * serve the file.  All we have to do is add the filter.
+        if (!r->handler || strcmp(r->handler, "text/html")) {
+            return DECLINED;
+        }
+    }
+#endif
+
+    /* We always return declined, because the default handler actually
+     * serves the file.  All we have to do is add the filter.
      */
     ap_add_output_filter("INCLUDES", NULL, r, r->connection);
     return DECLINED;
-#endif
 }
 
 static void register_hooks(apr_pool_t *p)
