@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
-#include "mod_cache.h"
 #include "apr_file_io.h"
 #include "apr_strings.h"
+#include "mod_cache.h"
+#include "ap_provider.h"
 #include "util_filter.h"
 #include "util_script.h"
 
@@ -224,7 +225,6 @@ static int file_cache_recall_mydata(apr_file_t *fd, cache_info *info,
 {
     apr_status_t rv;
     char *urlbuff;
-    char * temp;
     disk_cache_info_t disk_info;
     apr_size_t len;
 
@@ -424,7 +424,6 @@ static int remove_url(const char *key)
  */
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 {
-    apr_status_t rv;
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     apr_table_t * tmp;
 
@@ -520,8 +519,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
     apr_status_t rv;
-    char *buf;
-    char statusbuf[8];
     apr_size_t amt;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
     apr_file_t *hfd = dobj->hfd;
@@ -662,6 +659,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     /* Was this the final bucket? If yes, close the body file and make sanity checks */
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b))) {
         if (h->cache_obj->info.len <= 0) {
+          /* XXX Fixme: file_size isn't constrained by size_t. */
           h->cache_obj->info.len = dobj->file_size;
         }
         else if (h->cache_obj->info.len != dobj->file_size) {
