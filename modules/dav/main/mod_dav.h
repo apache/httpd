@@ -256,20 +256,22 @@ typedef dav_hooks_propdb dav_hooks_db;
 typedef enum {
     DAV_RESOURCE_TYPE_UNKNOWN,
 
-    DAV_RESOURCE_TYPE_REGULAR,      /* file or collection; could be
-                                     * unversioned or version selector */
+    DAV_RESOURCE_TYPE_REGULAR,          /* file or collection; could be
+                                           unversioned or version selector */
 
-    DAV_RESOURCE_TYPE_VERSION,      /* version URL */
+    DAV_RESOURCE_TYPE_VERSION,          /* version URL */
 
-    DAV_RESOURCE_TYPE_HISTORY,      /* version history URL */
+    DAV_RESOURCE_TYPE_HISTORY,          /* version history URL */
 
-    DAV_RESOURCE_TYPE_WORKING,      /* working resource URL */
+    DAV_RESOURCE_TYPE_WORKING,          /* working resource URL */
 
-    DAV_RESOURCE_TYPE_WORKSPACE,    /* workspace URL */
+    DAV_RESOURCE_TYPE_WORKSPACE,        /* workspace URL */
 
-    DAV_RESOURCE_TYPE_ACTIVITY,     /* activity URL */
+    DAV_RESOURCE_TYPE_ACTIVITY,         /* activity URL */
 
-    DAV_RESOURCE_TYPE_BASELINE      /* baseline URL */
+    DAV_RESOURCE_TYPE_BASELINE,         /* baseline URL */
+
+    DAV_RESOURCE_TYPE_PRIVATE           /* repository-private type */
 
 } dav_resource_type;
 
