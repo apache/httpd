@@ -1,4 +1,7 @@
 Changes with Apache 2.0.19-dev
+  *) httpd children now re-bind themselves to a random CPU on
+     multiprocessor systems on AIX via bindprocessor() in 2.0.
+     [Victor J. Orlikowski]
 
   *) Fix htdigest. It would go into a loop in getline when adding 
      a second user. [Bill Stoddard]

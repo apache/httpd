@@ -183,7 +183,8 @@ unistd.h \
 sys/socket.h \
 pwd.h \
 grp.h \
-strings.h
+strings.h \
+sys/processor.h
 )
 AC_HEADER_SYS_WAIT
 

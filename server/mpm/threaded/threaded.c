@@ -803,7 +803,7 @@ static int make_child(server_rec *s, int slot)
     }
 
     if (!pid) {
-#ifdef AIX_BIND_PROCESSOR
+#ifdef HAVE_SYS_PROCESSOR_H
       /* By default, AIX binds to a single processor.  This bit unbinds
 	 children which will then bind to another CPU.
       */
