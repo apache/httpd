@@ -1,4 +1,4 @@
-Changes with Apache 2.0.27-dev
+Changes with Apache 2.0.27
 
   *) Fix a truncation bug in how we print the port on the Via: header. 
      The routine that prints the Via: header now takes a length for
