@@ -85,6 +85,7 @@
 <li><a href="mod_auth_ldap.html#authldapauthoritative">AuthLDAPAuthoritative</a></li>
 <li><a href="mod_auth_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><a href="mod_auth_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></li>
+<li><a href="mod_auth_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
 <li><a href="mod_auth_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li>
 <li><a href="mod_auth_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li>
 <li><a href="mod_auth_ldap.html#authldapenabled">AuthLDAPEnabled</a></li>
