@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/23 20:58:10 $]
+Last modified at [$Date: 2003/01/24 02:57:41 $]
 
 Release:
 
@@ -59,7 +59,7 @@ Contributors looking for a mission:
 PATCHES TO PORT FROM 2.1
 
     * mod_file_cache segfault bugfix. PR 16313.
-     +1: stoddard
+     +1: stoddard, orlikowski
 
     * Allow RewriteEngine Off even if Options -FollowSymlinks. PR 12395.
       +1: nd
@@ -81,7 +81,7 @@ PATCHES TO PORT FROM 2.1
 
     * apxs fix to include any special APR ld flags when linking a DSO
       This is revision 1.50 of support/apxs.in
-      +1: trawick
+      +1: trawick, orlikowski
 
 CURRENT RELEASE NOTES:
 
