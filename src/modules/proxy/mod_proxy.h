@@ -321,6 +321,7 @@ BUFF *ap_proxy_create_cachefile(request_rec *r, char *filename);
 void ap_proxy_clear_connection(pool *p, table *headers);
 int ap_proxy_table_replace(table *base, table *overlay);
 void ap_proxy_table_unmerge(pool *p, table *t, char *key);
+int ap_proxy_read_response_line(BUFF *f, request_rec *r, char *buffer, int size, int *backasswards, int *major, int *minor);
 
 /* WARNING - PRIVATE DEFINITION BELOW */
 

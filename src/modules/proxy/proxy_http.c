@@ -414,7 +414,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
         /* then, read a response line */
         ap_hard_timeout("proxy receive response status line", r);
-        result = ap_proxy_read_response_line(f, r, buffer, sizeof(buffer)-1, 1, &backasswards, &major, &minor);
+        result = ap_proxy_read_response_line(f, r, buffer, sizeof(buffer)-1, &backasswards, &major, &minor);
         ap_kill_timeout(r);
 
         /* trap any errors */
@@ -428,7 +428,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
          */
         if (r->status == 100) {
             ap_hard_timeout("proxy receive response status line", r);
-            result = ap_proxy_read_response_line(f, r, buffer, sizeof(buffer)-1, 1, &backasswards, &major, &minor);
+            result = ap_proxy_read_response_line(f, r, buffer, sizeof(buffer)-1, &backasswards, &major, &minor);
             ap_kill_timeout(r);
 
             /* trap any errors */
