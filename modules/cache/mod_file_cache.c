@@ -164,7 +164,7 @@ static apr_status_t cleanup_file_cache(void *sconfv)
 
     /* Iterate over the file hash table and clean up each entry */
     for (hi = apr_hash_first(sconf->fileht); hi; hi=apr_hash_next(hi)) {
-        apr_hash_this(hi, NULL, NULL, &file);
+        apr_hash_this(hi, NULL, NULL, (void **)&file);
 #if APR_HAS_MMAP
         if (file->is_mmapped) { 
 	    apr_mmap_delete(file->mm);
@@ -224,11 +224,13 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
         apr_file_close(fd);
         new_file->is_mmapped = TRUE;
     }
+#if APR_HAS_SENDFILE
     else {
         /* CacheFile directive. Caching the file handle */
         new_file->is_mmapped = FALSE;
         new_file->file = fd;
     }
+#endif
 
     new_file->filename = fspec;
     apr_rfc822_date(new_file->mtimestr, new_file->finfo.mtime);
@@ -250,7 +252,7 @@ static const char *cachefilehandle(cmd_parms *cmd, void *dummy, const char *file
 #else
     /* Sendfile not supported by this OS */
     ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, cmd->server,
-                 "mod_file_cache: unable to cache file: %s. Sendfile is not supported on this OS", fspec);
+                 "mod_file_cache: unable to cache file: %s. Sendfile is not supported on this OS", filename);
 #endif
     return NULL;
 }
