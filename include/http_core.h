@@ -171,7 +171,7 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r);
  * @param conn The current connection
  * @param dir_config The directory config vector from the request
  * @param type The type of lookup to perform.  One of:
- * <PRE>
+ * <pre>
  *     REMOTE_HOST returns the hostname, or NULL if the hostname
  *                 lookup fails.  It will force a DNS lookup according to the
  *                 HostnameLookups setting.
@@ -184,7 +184,7 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r);
  *                   a double reverse lookup, regardless of the HostnameLookups
  *                   setting.  The result is the (double reverse checked) 
  *                   hostname, or NULL if any of the lookups fail.
- * </PRE>
+ * </pre>
  * @param str_is_ip unless NULL is passed, this will be set to non-zero on output when an IP address 
  *        string is returned
  * @return The remote hostname
@@ -302,11 +302,11 @@ AP_DECLARE(const char *) ap_auth_name(request_rec *r);
  * How the requires lines must be met.
  * @param r The current request
  * @return How the requirements must be met.  One of:
- * <PRE>
+ * <pre>
  *      SATISFY_ANY    -- any of the requirements must be met.
  *      SATISFY_ALL    -- all of the requirements must be met.
  *      SATISFY_NOSPEC -- There are no applicable satisfy lines
- * </PRE>
+ * </pre>
  * @deffunc int ap_satisfies(request_rec *r)
  */
 AP_DECLARE(int) ap_satisfies(request_rec *r);

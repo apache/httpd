@@ -384,11 +384,11 @@ AP_DECLARE(const char *) ap_get_status_line(int status);
  * Setup the client to allow Apache to read the request body.
  * @param r The current request
  * @param read_policy How the server should interpret a chunked 
- *                    transfer-encoding.  One of: <PRE>
+ *                    transfer-encoding.  One of: <pre>
  *    REQUEST_NO_BODY          Send 413 error if message has any body
  *    REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
  *    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
- * </PRE>
+ * </pre>
  * @return either OK or an error code
  * @deffunc int ap_setup_cleint_block(request_rec *r, int read_policy)
  */
@@ -475,11 +475,11 @@ AP_DECLARE(int) ap_get_basic_auth_pw(request_rec *r, const char **pw);
 
 /**
  * parse_uri: break apart the uri
- * @warning Side Effects: <PRE>
+ * @warning Side Effects: <pre>
  *    - sets r->args to rest after '?' (or NULL if no '?')
  *    - sets r->uri to request uri (without r->args part)
  *    - sets r->hostname (if not set already) from request (scheme://host:port)
- * </PRE>
+ * </pre>
  * @param r The current request
  * @param uri The uri to break apart
  * @deffunc void ap_parse_uri(request_rec *r, const char *uri)
