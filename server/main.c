@@ -277,7 +277,7 @@ int main(int argc, char **argv)
 
     ap_setup_prelinked_modules();
 
-    while ((c = getopt(argc, argv, "D:C:c:Xd:f:vVlLR:th")) != -1) {
+    while ((c = getopt(argc, argv, "C:c:d:f:vVlLth")) != -1) {
         char **new;
         switch (c) {
  	case 'c':
