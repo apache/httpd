@@ -52,6 +52,7 @@ always available.
 <LI><A HREF="#location">&lt;Location&gt;</A>
 <LI><A HREF="#locationmatch">&lt;LocationMatch&gt;</A>
 <LI><A HREF="#lockfile">LockFile</A>
+<LI><A HREF="#loglevel">LogLevel</A>
 <LI><A HREF="#maxclients">MaxClients</A>
 <LI><A HREF="#maxkeepaliverequests">MaxKeepAliveRequests</A>
 <LI><A HREF="#maxrequestsperchild">MaxRequestsPerChild</A>
@@ -1426,6 +1427,69 @@ world writable directory such as <CODE>/var/tmp</CODE> because someone
 could create a denial of service attack and prevent the server from
 starting by creating a lockfile with the same name as the one the 
 server will try to create.<P>
+
+<P><HR>
+
+<H2><A NAME="loglevel">LogLevel directive</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> LogLevel <EM>level</EM><BR>
+<A
+ HREF="directive-dict.html#Default"
+ REL="Help"
+><STRONG>Default:</STRONG></A> <CODE>LogLevel error</CODE><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> LogLevel is only available in 1.3 or later.
+
+<P>LogLevel adjusts the verbosity of the messages recorded in the
+error logs.  The following <EM>level</EM>s are available, in order of
+decreasing significance:
+
+<P><TABLE>
+  <TR><TH ALIGN="LEFT"><STRONG>Level</STRONG>
+      <TH ALIGN="LEFT"><STRONG>Description</STRONG>
+  <TR><TH><TH ALIGN="LEFT"><STRONG>Example</STRONG>
+  <TR><TD><CODE>emerg</CODE>
+      <TD>Emergencies - system is unusable.
+  <TR><TD><TD>"Child cannot open lock file.  Exiting"    
+  <TR><TD><CODE>alert</CODE>
+      <TD>Action must be taken immediately.
+  <TR><TD><TD>"getpwuid: couldn't determine user name from uid"
+  <TR><TD><CODE>crit</CODE>
+      <TD>Critical Conditions.
+  <TR><TD><TD>"socket: Failed to get a socket, exiting child"
+  <TR><TD><CODE>error</CODE>
+      <TD>Error conditions.
+  <TR><TD><TD>"Premature end of script headers"
+  <TR><TD><CODE>warn</CODE>
+      <TD>Warning conditions.
+  <TR><TD><TD>"request lost connection to xxx.yyy.zzz.aaa"
+  <TR><TD><CODE>notice</CODE>
+      <TD>Normal but significant condition.
+  <TR><TD><TD>"httpd: caught SIGBUS, attempting to dump core in ..."
+  <TR><TD><CODE>info</CODE>
+      <TD>Informational.
+  <TR><TD><TD>"Server seems busy, (you may need to increase StartServers, or Min/MaxSpareServers)..."
+  <TR><TD><CODE>debug</CODE>
+      <TD>Debug-level messages
+  <TR><TD><TD>"Opening config file ..."
+</TABLE>
+
+<P>When a particular level is specified, messages from all other levels
+of higher significance will be reported as well.  E.g., when 
+<CODE>LogLevel info</CODE> is specified, then messages with log levels of
+<CODE>notice</CODE> and <CODE>warn</CODE> will also be posted.
 
 <P><HR>
 
