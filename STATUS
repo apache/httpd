@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/08/01 15:56:07 $]
+Last modified at [$Date: 2000/08/01 16:45:55 $]
 
 Release:
 
@@ -523,10 +523,6 @@ put them into 'the next release':
     * PR#5993: general
       AllowOverride should have a 'CheckNone' and 'AllowNone' argument
       instead of only 'None'
-
-    * PR#6347: mod_mime
-      MIME types for MNG and JNG files need adding to mime.types and
-      the mime.types and magic files
 
 Other bugs that need fixing:
 
