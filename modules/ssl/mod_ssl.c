@@ -240,7 +240,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
      */
     CRYPTO_malloc_init();
     ERR_load_crypto_strings();
-    SSL_load_library();
+    OpenSSL_add_all_algorithms();
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     ENGINE_load_builtin_engines();
 #endif
