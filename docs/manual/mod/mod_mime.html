@@ -34,7 +34,7 @@ HREF="#addhandler">AddHandler</A>, <A
 HREF="#addlanguage">AddLanguage</A> and <A HREF="#addtype">AddType</A>
 are all used to map file extensions onto the meta-information for that
 file.  Respectively they set the content-encoding, handler,
-content-language and mime-type (content-type) of documents.  The
+content-language and MIME-type (content-type) of documents.  The
 directive <A HREF="#typesconfig">TypesConfig</A> is used to specify a
 file which also maps extensions onto mime types. The directives <A
 HREF="#forcetype">ForceType</A> and <A
@@ -89,7 +89,7 @@ copies may still be used by a client or proxy.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AddEncoding <EM>mime-enc extension extension...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AddEncoding <EM>MIME-enc extension extension...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -179,7 +179,7 @@ program.</P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AddLanguage <EM>mime-lang extension extension...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AddLanguage <EM>MIME-lang extension extension...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -218,7 +218,7 @@ from several documents based on the client's language preference.<P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> AddType <EM>mime-type extension extension...</EM><BR>
+><STRONG>Syntax:</STRONG></A> AddType <EM>MIME-type extension extension...</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -359,7 +359,7 @@ file. <EM>Filename</EM> is relative to the
 mappings from filename extensions to content types; changing this file is not
 recommended. Use the <A HREF="#addtype">AddType</A> directive instead. The
 file contains lines in the format of the arguments to an AddType command:
-<BLOCKQUOTE><EM>mime-type extension extension ...</EM></BLOCKQUOTE>
+<BLOCKQUOTE><EM>MIME-type extension extension ...</EM></BLOCKQUOTE>
 The extensions are lower-cased. Blank lines, and lines beginning with a hash
 character (`#') are ignored.<P>
 
