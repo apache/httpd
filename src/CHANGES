@@ -1,5 +1,8 @@
 Changes with Apache 1.3.8
 
+  *) Added updated mod_digest as modules/experimental/mod_auth_digest.
+     [Ronald Tschalär <ronald@innovation.ch>]
+
   *) Fix a memory leak where the module counts were getting messed
      up across restarts.  [David Harris <dharris@drh.net>]
 
