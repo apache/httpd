@@ -61,9 +61,10 @@ targets = $(static) $(shared)
 install_targets = install-modules
 
 install-modules:
-	-@has_mod_so=`echo $(static) | grep 'mod_so'`
 	@shared='$(shared)'; \
-	if [ "x$(has_mod_so)" != "x" ]; then \
+	static='$(static)'; \
+	has_mod_so=`echo $$static|sed 's/^.*mod_so.*$$/has_mod_so/'`; \
+	if [ "x$$has_mod_so" = "xhas_mod_so" ]; then \
 		$(MKINSTALLDIRS) $(libexecdir); \
 		for i in $$shared; do \
 			$(SH_LIBTOOL) --mode=install cp $$i $(libexecdir); \
