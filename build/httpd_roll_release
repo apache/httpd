@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export CVSROOT=cvs.apache.org:/home/cvs
+
 if [ "x$1" = "xhelp" -o "x$2" = "x" ]; then
     echo "Usage:  ./httpd_roll_release tag log_name [user]"
     echo "tag        the tag to use when checking out the repository"
@@ -34,8 +36,8 @@ cd $START_DIR/$WORKING_DIR
 
 # Make sure the master site's FAQ is up-to-date.  It doesn't hurt to do this
 # all the time.  :-)
-echo "Updating the site's FAQ"
-(cd /www/httpd.apache.org/docs-2.0/faq/; cvs update)
+echo "REMEMBER TO UPDATE THE SITE'S FAQ!!"
+#(cd /www/httpd.apache.org/docs-2.0/faq/; cvs update)
 
 # Now update the FAQ in the tarball via a download from the master site.
 # The FAQ contains SSI tags too complex for the expand.pl script to handle.
@@ -55,9 +57,11 @@ echo "Running ./buildconf" >> $LOG_NAME
 rm -f STATUS
 
 echo >> $LOG_NAME
+echo "Removing files that we don't distribute"
 echo "Removing files that we don't distribute" >> $LOG_NAME
 find . -name ".cvsignore" -exec rm {} \; >> $LOG_NAME 
 find . -type d -name "CVS" | xargs rm -rf >> $LOG_NAME
+find . -type d -name "autom4te.cache" | xargs rm -rf >> $LOG_NAME
 
 # expand SSI directives in the manual
 echo "Making sure people can read the manual (expanding SSI's)"
@@ -75,8 +79,9 @@ echo "Rolling the tarball" >> $LOG_NAME
 tar cvf $WORKING_DIR-alpha.tar $WORKING_DIR >> $LOG_NAME
 cp -p $WORKING_DIR-alpha.tar x$WORKING_DIR-alpha.tar
 gzip -9 $WORKING_DIR-alpha.tar
-mv x$WORKING_DIR-alpha.tar $WORKING_DIR-alpha.tar
-compress $WORKING_DIR-alpha.tar
+mv x$WORKING_DIR-alpha.tar httpd.tar
+compress httpd.tar
+mv httpd.tar.Z $WORKING_DIR-alpha.tar.Z
 
 # Test the tarballs
 echo "Testing the tarball"
