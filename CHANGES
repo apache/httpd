@@ -1,5 +1,8 @@
 Changes with Apache 2.0.26-dev
 
+  *) Switch back to SIGUSR1 for graceful restarts on all platforms that
+     support it.  [Justin Erenkrantz]
+
   *) Cleanup the worker MPM.  We no longer re-use transaction
      pools.  This incurs less overhead than shuffling the pools
      around so that they can be re-used.  Remove one of the

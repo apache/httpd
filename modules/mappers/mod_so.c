@@ -59,8 +59,8 @@
 /* 
  * This module is used to load Apache modules at runtime. This means that the
  * server functionality can be extended without recompiling and even without
- * taking the server down at all. Only a HUP or WINCH signal needs to be send
- * to the server to reload the dynamically loaded modules.
+ * taking the server down at all. Only a HUP or AP_SIG_GRACEFUL signal 
+ * needs to be sent to the server to reload the dynamically loaded modules.
  *
  * To use, you'll first need to build your module as a shared library, then
  * update your configuration (httpd.conf) to get the Apache core to load the
@@ -98,9 +98,9 @@
  * directive to get these log messages).
  *
  * If you edit the LoadModule directives while the server is live you can get
- * Apache to re-load the modules by sending it a HUP or WINCH signal as normal.
- * You can use this to dynamically change the capability of your server
- * without bringing it down.
+ * Apache to re-load the modules by sending it a HUP or AP_SIG_GRACEFUL 
+ * signal as normal.  You can use this to dynamically change the capability 
+ * of your server without bringing it down.
  *
  * Because currently there is only limited builtin support in the Configure
  * script for creating the shared library files (`.so'), please consult your

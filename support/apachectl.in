@@ -125,7 +125,7 @@ do
 	    fi
 	else
 	    if $HTTPD -t >/dev/null 2>&1; then
-		if kill -WINCH $PID ; then
+		if kill -@AP_SIG_GRACEFUL@ $PID ; then
 		    echo "$0 $ARG: httpd gracefully restarted"
 		else
 		    echo "$0 $ARG: httpd could not be restarted"
@@ -161,7 +161,7 @@ restart    - restart httpd if running by sending a SIGHUP or start if
              not running
 fullstatus - dump a full status screen; requires lynx and mod_status enabled
 status     - dump a short status screen; requires lynx and mod_status enabled
-graceful   - do a graceful restart by sending a SIGWINCH or start if not running
+graceful   - do a graceful restart by sending a @AP_SIG_GRACEFUL@ or start if not running
 configtest - do a configuration syntax test
 help       - this screen
 
