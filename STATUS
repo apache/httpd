@@ -18,6 +18,16 @@ FINAL RELEASE SHOWSTOPPERS:
        o Jim's looked over the ap_snprintf() stuff (the changes that Dean
          did to make thread-safe) and they look fine.
 
+    * The whole SERVER_SUBVERSION, Server: token debate.
+      Problem: currently the additional tokens show up in the
+       reverse order that they were added. Also, no real control
+       over whether to display them or not. Keeping SERVER_SUBVERSION
+       available "conflicts" with the new ap_add_version_component()
+       function.
+     Available patch:
+     <199805101650.MAA26935@devsys.jaguNET.com>
+     Status:
+
 WIN32 1.3 FINAL RELEASE SHOWSTOPPERS:
 
     * SECURITY: check if the magic con/aux/nul/etc names do anything
