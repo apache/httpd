@@ -950,9 +950,6 @@ static int index_directory(request_rec *r, autoindex_config_rec *autoindex_conf)
     char *tmp;
     const char *qstring;
     int autoindex_opts = find_opts(autoindex_conf, r);
-    char key;
-    int sort_ascending = 1;
-    char *query_string;
     char keyid;
     char direction;
 
