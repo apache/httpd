@@ -14,11 +14,6 @@ RELEASE SHOWSTOPPERS:
 
 WIN32 1.3.1 RELEASE SHOWSTOPPERS:
 
-    * Win95: when authentication is required for directory /foobar/, direct 
-      access to /foobar/bletch is permitted.  PR #2145
-
-	UPDATE: may be false alarm, probably shouldn't hold 1.3.1.
-
     * can not build tarball until someone verifies the final code
       will build on win32.  Want to avoid changes-after-tag that 
       happened with 1.3.0.
@@ -29,6 +24,12 @@ Documentation that needs writing:
 	virtualhosting.  (If it exists already I can't find it easily.)
 
 Available Patches:
+
+    * [PATCH] PR #2355 and very minor security hole fix 
+      Message-ID: <19980717183717.A16507@raleigh.ibm.com>
+      With this patch, Apache uses ap_sub_req_lookup_file to get the 
+      filename specified in a "file=" parameter (for example, in an 
+      flastmod or fsize call).
 
     * "[PATCH] Link DSO modules against possible libraries from $(LIBS)"
       Message-ID: <19980711133804.A2439@engelschall.com>
