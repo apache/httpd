@@ -59,7 +59,7 @@
 
 /* Read a request and fill in the fields. */
 
-request_rec *read_request (conn_rec *c, request_rec *back);
+request_rec *read_request (conn_rec *c);
 
 /* Send header for http response */
 

@@ -305,11 +305,6 @@ struct request_rec {
 				 * pointer back to the main request.
 				 */
 
-  request_rec *back;		/* If this is part of a persistent con-
-				 * nection (Keep-Alive), pointer to the
-				 * previous one.
-				 */
-
   /* Info about the request itself... we begin with stuff that only
    * protocol.c should ever touch...
    */

@@ -1037,12 +1037,13 @@ void child_main(int child_num_arg)
 		rfc931((struct sockaddr_in *)&sa_client,
 		       (struct sockaddr_in *)&sa_server);
 	
-	r = read_request (current_conn, NULL);
+	r = read_request (current_conn);
 	if (r) process_request (r); /* else premature EOF --- ignore */
 
 	while (r && current_conn->keepalive) {
 	  fflush(conn_out);
-	  r = read_request (current_conn, r);
+	  destroy_pool(r->pool);
+	  r = read_request (current_conn);
 	  if (r) process_request (r);
 	}
 	
@@ -1299,12 +1300,13 @@ main(int argc, char *argv[])
 	server_conf->port =ntohs(((struct sockaddr_in *)&sa_server)->sin_port);
 	conn = new_connection (ptrans, server_conf, stdin, stdout,
 			       (struct sockaddr_in *)&sa_server);
-	r = read_request (conn, NULL);
+	r = read_request (conn);
 	if (r) process_request (r); /* else premature EOF (ignore) */
 
         while (r && conn->keepalive) {
 	  fflush(stdout);
-          r = read_request (conn, r);
+	  destroy_pool(r->pool);
+          r = read_request (conn);
           if (r) process_request (r);
         }
     }
