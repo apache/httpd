@@ -341,6 +341,13 @@ case "$PLAT" in
     *-hp-hpux10.*)
 	OS='HP-UX 10'
 	CFLAGS="$CFLAGS -DHPUX10"
+ 	case "$PLAT" in
+ 	  *-hp-hpux10.01)
+	       # We know this is a problem in 10.01.
+               # Not a problem in 10.20.  Otherwise, who knows?
+               CFLAGS="$CFLAGS -DSELECT_NEEDS_CAST"
+               ;;	     
+ 	esac
 	DEF_WANTHSREGEX=yes
 	;;
     *-hp-hpux*)
