@@ -1,5 +1,9 @@
 Changes with Apache 1.3.15
 
+  *) Eliminate caching problems of mod_autoindex results, so the last
+     modified date of the directory is returned as the Last-Modified 
+     tag, and an appropriate ETag is sent. [William Rowe]
+
   *) Corrected file path arguments from server conf directives to
      their canonical form (excluding OS2 - which uses alternate 
      logic.)  Resolves a long list of PRs reporting that Win32 paths

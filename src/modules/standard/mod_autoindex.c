@@ -1615,7 +1615,10 @@ static int index_directory(request_rec *r,
     }
 
     r->content_type = "text/html";
-
+    ap_update_mtime(r, r->finfo.st_mtime);
+    ap_set_last_modified(r);
+    ap_set_etag(r);
+    
     ap_send_http_header(r);
 
     if (r->header_only) {
