@@ -1,6 +1,6 @@
 APACHE 2.1+ ROADMAP:
 
-Last modified at [$Date: 2001/12/26 17:54:38 $]
+Last modified at [$Date: 2002/02/14 05:21:45 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -52,3 +52,5 @@ DEFERRRED FOR APACHE 3.0
     * Add a string "class" that combines a char* with a length
       and a reference count.  This will help reduce the number
       of strlen and strdup operations during request processing.
+      Including both the length and allocation will save us a ton 
+      of reallocation we do today, in terms of string manipulation.
