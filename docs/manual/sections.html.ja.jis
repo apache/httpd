@@ -202,7 +202,7 @@ shell スタイルのワイルドカードキャラクタが使用できます。
 "/" 文字はどのワイルドカードでもマッチされません。
 明示的に指定する必要があります。</p>
 
-<p>これより柔軟なマッチングが必要な場合は、これらのコンテナの正規表現
+<p>これより柔軟なマッチングが必要な場合は、これらのコンテナに正規表現
 (regex) 版である
 <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, 
 <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, 
@@ -281,8 +281,7 @@ Deny from all<br />
 ですからできる限りファイルシステムコンテナを使用してください。
 しかしながら一つだけ例外があります。
 <code>&lt;Location /&gt;</code> セクションはどんな URL 
-にも関わらず適用されるので、そこにアクセスを制限するディレクティブを
-居れることは完全に安全です。</p>
+にも関わらず適用されるので、完全に安全です。</p>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -290,7 +289,7 @@ Deny from all<br />
 <h2><a name="virtualhost" id="virtualhost">バーチャルホスト</a></h2>
 
 <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-コンテナは特定のホストに適用するディレクティブを格納します。
+コンテナは特定のホストに適用するディレクティブを格納します。
 一台のマシンで複数のホストを異なる設定で提供したいときに有用です。
 詳細に関しては<a href="vhosts/">バーチャルホストドキュメント</a>を
 ご覧下さい。</p>
@@ -300,11 +299,11 @@ Deny from all<br />
 
 <p><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
 と <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
-コンテナは、<code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>
-プロクシサーバを経由してアクセスされる特定の URL にマッチするサイトに
-対してのみ適用される
-設定ディレクティブを格納します。例えば次の設定は、プロキシサーバが
-<code>cnn.com</code> ウェブサイトをアクセスするためには使えないようにします。</p>
+コンテナは、特定の URL にマッチする <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>
+プロクシサーバを経由してアクセスしたサイトに対してのみ適用される
+設定ディレクティブを格納します。例えば次の設定は、<code>cnn.com</code> 
+ウェブサイトにアクセスするために用いられるプロクシサーバを
+制限します。</p>
 
 <div class="example"><p><code>
 &lt;Proxy http://cnn.com/*&gt;<br />
@@ -353,7 +352,7 @@ Deny from all<br />
 
     <ol>
       <li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (正規表現無し) と
-      .htaccess を同時に (.htaccess が許可されていれば、それが
+      <code>.htaccess</code> を同時に (<code>.htaccess</code> が許可されていれば、それが
       <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> を上書きします)
       </li>
 
@@ -368,7 +367,7 @@ Deny from all<br />
     </ol>
 
     <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
-    以外は、それぞれのグループは設定ファイルに現れた順番に処理されます。
+    以外は、それぞれのグループは設定ファイルに現れた順番に処理されます。
     <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (上のグループ 1)
     はディレクトリが短いものから長いものへと処理されます。ですから、
     例えば <code>&lt;Directory /var/web/dir1&gt;</code> は
@@ -430,10 +429,10 @@ A<br />
 
 <p>もっと具体的な、次の例を考えてみましょう。
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> 
-セクションに設置されたアクセス制限に関わらず、
+セクションに設置されたアクセス制限に関わらず、
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-セクションが最後に評価されて、サーバへのアクセスは制限されません。
-つまり、マージの順番は重要ですので、注意して使用してください!</p>
+セクションが最後に評価されて、サーバへのアクセスは制限されません。
+言い換えれば、マージの順番は重要で、注意して使用してください!</p>
 
 <div class="example"><p><code>
 &lt;Location /&gt;<br />

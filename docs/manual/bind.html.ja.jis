@@ -33,10 +33,10 @@
 <div class="section">
 <h2><a name="overview" id="overview">概要</a></h2>
     
-    
+
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
-    
-    
+
+
     <p>Apache は起動時に、ローカルマシンのあるポートあよびアドレス
     に対して接続し、リクエストが来るのを待ちます。
     デフォルトではマシンのすべてのアドレスに対して listen します。
@@ -118,7 +118,7 @@
     FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
     ですから、おそらくお手元の Apache はこの設定でビルドされているでしょう。</p>
 
-    <p>プラットフォームや APR が何をサポートするかに関わらず、
+    <p>プラットフォームや APR が何をサポートするかに関わらず、
     IPv4 コネクションのみを扱うようにしたい場合は、
     次の例のように全ての
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブで

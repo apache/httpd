@@ -48,7 +48,7 @@
 
     <div class="example"><p><code>
       Alias /cgi-ralph /usr/local/httpd/cgi-bin/user.cgi/ralph
-    </code></p></div>    
+    </code></p></div>
 
     <p>この場合、<code>user.cgi</code> は CGI スクリプトであり、
     "/ralph" は、CGI に渡される情報です。もし上の設定がなされていて、
