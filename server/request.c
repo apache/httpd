@@ -1554,14 +1554,14 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     /* Translate r->filename, if it was canonical, it stays canonical
      */
-    if (r->canonical_filename != r->filename)
-        r->canonical_filename = NULL;
+    if (r->canonical_filename == r->filename)
+        rnew->canonical_filename = (char*)(1);
     if (apr_filepath_merge(&rnew->filename, fdir, new_file,
                            APR_FILEPATH_TRUENAME, rnew->pool) != APR_SUCCESS) {
         rnew->status = HTTP_FORBIDDEN;
         return rnew;
     }
-    if (r->canonical_filename)
+    if (rnew->canonical_filename)
         rnew->canonical_filename = rnew->filename;
 
     /*
