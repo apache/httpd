@@ -1982,6 +1982,10 @@ API_EXPORT(char *) ap_uudecode(pool *p, const char *bufcoded)
 	*(bufout++) =
 	    (unsigned char) (pr2six[bufin[1]] << 4 | pr2six[bufin[2]] >> 2);
     }
+    if (nprbytes > 3) {
+        *(bufout++) =
+            (unsigned char) (pr2six[bufin[2]] << 6 | pr2six[bufin[3]]);
+    }
 #else /*CHARSET_EBCDIC*/
     bufin = (const unsigned char *) bufcoded;
     while (pr2six[os_toascii[(unsigned char)*(bufin++)]] <= 63);
