@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English revision: 1.7 -->
+<modulesynopsis>
+
+<name>mod_userdir</name>
+<description>ユーザ専用のディレクトリを提供します
+  </description>
+<status>Base</status>
+<sourcefile>mod_userdir.c</sourcefile>
+<identifier>userdir_module</identifier>
+
+<summary>
+このモジュールは、
+<code>http://example.com/~user/</code>
+構文を使ってユーザ専用ディレクトリにアクセスできるようにします。
+</summary>
+
+<seealso><a href="../urlmapping.html">URL から
+ファイルシステムへのマッピング</a></seealso>
+
+<directivesynopsis>
+
+<name>UserDir</name>
+<description>ユーザ専用ディレクトリの位置</description>
+<syntax>UserDir <em>directory-filename</em></syntax>
+<default>UserDir public_html</default>
+<contextlist><context>サーバ設定ファイル</context>
+<context>バーチャルホスト</context></contextlist>
+
+<usage>
+
+    <p><directive>UserDir</directive> ディレクティブは、
+    ユーザのドキュメントへのリクエストを受けた時に使う
+    ユーザのホームディレクトリ中の、実際のディレクトリを
+    設定します。
+    <em>directory-filename</em> には次のどれかを指定します:</p>
+
+    <ul>
+      <li>ディレクトリ名か下に示すようなパターン。</li>
+
+      <li><code>disabled</code> キーワード。
+      <code>enabled</code> キーワード (下記参照) で明示的に
+      指定されたユーザ以外の
+      <em>全ての</em>ユーザ名-ディレクトリ変換を
+      しないようにします。</li>
+
+      <li><code>disabled</code> キーワードと、スペース区切りのユーザ名リスト。
+      このリスト中に含まれるユーザ名に対しては、たとえ
+      <code>enabled</code> 節にあったとしても、
+      <em>決して</em>ディレクトリ変換は行われません。</li>
+
+      <li><code>enebled</code> キーワードとスペース区切りのユーザ名リスト。
+      全体では変換が無効になっていたといたとしても、
+      これらのユーザ名にはディレクトリ変換が行われます。
+      ただし、<code>disabled</code> 節にもあれば変換はされません。
+      </li>
+    </ul>
+
+    <p>もし <code>enabled</code> も <code>disabled</code>
+    キーワードも <code>UserDir</code> に現われていなければ、
+    引数はファイル名パターンとして扱われ、
+    名前からディレクトリへの変換の指定を行なう時に使われます。
+    <code>http://www.foo.com/~bob/one/two.html</code>
+    へのリクエストは次のように変換されます:</p>
+
+<table>
+<tr><th>UserDir ディレクティブ</th>
+<th>変換後のパス</th></tr>
+<tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
+<tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
+<tr><td>UserDir /home/*/www</td><td>/home/bob/www/one/two.html</td></tr>
+</table>
+
+    <p>次のディレクティブはクライアントに対してリダイレクトを
+    送信します:</p>
+
+<table>
+<tr><th>UserDir ディレクティブ</th>
+<th>変換後のパス</th></tr>
+<tr><td>UserDir http://www.foo.com/users</td><td>http://www.foo.com/users/bob/one/two.html</td></tr>
+<tr><td>UserDir
+http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></tr>
+<tr><td>UserDir
+http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
+</table> 
+
+<note>
+      <strong>このディレクティブを使うときは注意してください;
+      "<code>UserDir ./</code>" は
+      "<code>/~root</code>" から "<code>/</code>" へマップしますが、
+      これは望ましい動作ではないでしょう。
+      "<code>UserDir disabled root</code>" 宣言を
+      設定の中に含めておくことを強くお薦めします。
+      追加情報に <directive module="core">Directory</directive>
+      ディレクティブや
+      <a href="../misc/security_tips.html">セキュリティ
+      Tips</a> のページもご覧下さい。</strong>
+</note>
+
+<p>追加の例:</p>
+
+<p>少数のユーザのみが <code>UserDir</code>
+ディレクトリを利用し、それ以外には利用させたくない場合は
+次を使いましょう:</p>
+
+<example>
+UserDir disabled<br />
+UserDir enabled user1 user2 user3
+</example>
+
+<p>大部分のユーザは <code>UserDir</code> ディレクトリを利用するけれど、
+少数の人は不許可にしたい場合は、次を使いましょう:</p>
+
+<example>
+UserDir enabled<br />
+UserDir disabled user4 user5 user6
+</example>
+
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+
+

@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <title>認証</title>
+    <link rev="made" href="mailto:rbowen@rcbowen.com" />
+  </head>
+  <!-- English revision: 1.7 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">認証</h1>
+    <a id="__index__" name="__index__"></a> <!-- INDEX BEGIN -->
+     
+
+    <ul>
+      <li><a href="#introduction">はじめに</a></li>
+
+      <li><a href="#theprerequisites">準備</a></li>
+
+      <li><a href="#gettingitworking">動作させる</a></li>
+
+      <li><a href="#lettingmorethanonepersonin">複数の人が
+      入れるようにする</a></li>
+
+      <li><a href="#possibleproblems">起こりえる問題</a></li>
+
+      <li><a href="#whatotherneatstuffcanido">
+      もっと巧みに制御できない?</a></li>
+
+      <li><a href="#moreinformation">追加情報</a></li>
+    </ul>
+    <!-- INDEX END -->
+    <hr />
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連モジュール</strong><br />
+         <br />
+         <a href="../mod/mod_auth.html">mod_auth</a><br />
+         <a href="../mod/mod_access.html">mod_access</a><br />
+         </td>
+
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+         <br />
+         <a href="../mod/mod_access.html#allow">Allow</a><br />
+         <a
+        href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a><br />
+         <a href="../mod/core.html#authname">AuthName</a><br />
+         <a href="../mod/core.html#authtype">AuthType</a><br />
+         <a
+        href="../mod/mod_auth.html#authuserfile">AuthUserFile</a><br />
+         <a href="../mod/mod_access.html#deny">Deny</a><br />
+         <a href="../mod/core.html#options">Options</a><br />
+         <a href="../mod/core.html#require">Require</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <h1><a id="authentication"
+    name="authentication">認証</a></h1>
+
+    <p>「認証」とは、誰かが自分は誰であるかを主張した場合に、
+    それを確認するための全ての過程を指します。「承認」とは、
+    誰かが行きたい場所に行けるように、あるいは欲しい情報を
+    得ることができるようにするための全ての過程を指します。</p>
+
+    <h2><a id="introduction"
+    name="introduction">はじめに</a></h2>
+
+    <p>もし機密の情報や、ごくごく少数グループの人向けの情報を
+    ウェブサイトに置くのであれば、この文書に書かれている
+    テクニックを使うことによって、そのページを見ている人たちが
+    望みの人たちであることを確実にできるでしょう。</p>
+
+    <p>この文書では、多くの人が採用するであろう、
+    ウェブサイトの一部分を保護する「一般的な」
+    方法についてカバーします。</p>
+
+    <h2><a id="theprerequisites" name="theprerequisites">
+    準備</a></h2>
+
+    <p>この文書で取り扱われるディレクティブは、
+    メインサーバ設定ファイル (普通は &lt;Directory&gt;
+    セクション中) か、あるいはディレクトリ毎の設定ファイル 
+    (<code>.htaccess</code> ファイル) かで用います。</p>
+
+    <p><code>.htaccess</code> ファイルを用いるのであれば、
+    これらのファイルに認証用のディレクティブを置けるように
+    サーバの設定をしないといけないでしょう。これは
+    <code><a
+    href="../mod/core.html#allowoverride">AllowOverride</a></code>
+    ディレクティブで可能になります。このディレクティブは、
+    ディレクトリ毎の設定ファイル中に置くことのできる
+    ディレクティブを、もしあれば、指定します。</p>
+
+    <p>認証について話を進めているので、次のような
+    <code>AllowOverride</code>
+    ディレクティブが必要になるでしょう:</p>
+<pre>
+    AllowOverride AuthConfig
+</pre>
+
+    <p>そうでなく、メインサーバ設定ファイルの中にディレクティブを
+    直接置こうというのであれば、当然ながらそのファイルへの書き込み
+    権限を持っていなければならないでしょう。</p>
+
+    <p>その上、どのファイルがどこに保存されているか知るために、
+    サーバのディレクトリ構造について少し知っておく
+    必要があるでしょう。
+    これはそんなに難しくないはずで、
+    ディレクトリ構造が必要な場面ではそれが明らかになるようにしています。</p>
+
+    <h2><a id="gettingitworking"
+    name="gettingitworking">動作させる</a></h2>
+
+    <p>では、サーバ上のあるディレクトリをパスワードで保護する
+    基本を示します。</p>
+
+    <p>パスワードファイルを作る必要があります。
+    このファイルは、ウェブからアクセスできる場所に
+    置くべきではありません。これは、他の人がパスワードファイルを
+    ダウンロードできないようにするためです。例えば、
+    <code>/usr/local/apache/htdocs</code> でドキュメントを
+    提供しているのであれば、パスワードファイルは
+    <code>/usr/local/apache/passwd</code>
+    などに置いた方が良いでしょう。</p>
+
+    <p>ファイルを作るためには、Apache 付属の <a
+    href="../programs/htpasswd.html">htpasswd</a> 
+    を使います。これは Apache をどこにインストールしようとも、
+    インストールディレクトリの <code>bin</code> 
+    ディレクトリに置かれます。ファイルを作るには、次のように
+    タイプしてください:</p>
+<pre>
+        htpasswd -c /usr/local/apache/passwd/password rbowen
+</pre>
+
+    <p><code>htpasswd</code> は、パスワードを要求し、その後
+    確認のためにもう一度入力するように要求してきます。</p>
+<pre>
+        # htpasswd -c /usr/local/apache/passwd/passwords rbowen
+        New password: mypassword
+        Re-type new password: mypassword
+        Adding password for user rbowen
+</pre>
+
+    <p>もし <code>htpasswd</code> がパスの中に入っていない場合は、
+    もちろん、実行するためにプログラムまでのフルパスを
+    タイプする必要があります。私のサーバであれば、
+    <code>/usr/local/apache/bin/htpasswd</code>
+    にプログラムが置かれています。</p>
+
+    <p>次に、サーバがパスワードを要求するように設定して、
+    どのユーザがアクセスを許されているかをサーバに知らせなければ
+    なりません。 <code>httpd.conf</code> を編集するか
+    <code>.htaccess</code> ファイルを使用するかでこれを
+    行います。例えば、ディレクトリ
+    <code>/usr/local/apache/htdocs/secret</code>
+    を保護したい場合は、
+    <code>/usr/local/apache/htdocs/secret/.htaccess</code>
+    か httpd.conf 中の &lt;Directory
+    /usr/local/apache/apache/htdocs/secret&gt; セクションに
+    配置した、次のディレクティブを使うことができます。</p>
+<pre>
+        AuthType Basic
+        AuthName "Restricted Files"
+        AuthUserFile /usr/local/apache/passwd/passwords
+        require user rbowen
+</pre>
+
+    <p>これら個々のディレクティブについて見てみましょう。
+    <a href="../mod/core.html#authtype">AuthType</a>
+    ディレクティブはどういう方法でユーザの認証を行うかを
+    選択します。最も一般的な方法は <code>Basic</code>
+    で、これは <a href="../mod/mod_auth.html">mod_auth</a>
+    において実装されています。しかしながら、
+    これは気を付けるべき重要なことなのですが、
+    Basic 認証はクライアントからブラウザへ、
+    パスワードを暗号化せずに送ります。ですから、
+    この方法は特に機密性の高いデータに対しては用いるべきでは
+    ありません。 Apache ではもう一つ別の認証方法:
+    <code>AuthType Digest</code> をサポートしています。
+    この方法は <a
+    href="../mod/mod_auth_digest.html">mod_auth_digest</a>
+    で実装されていて、もっと安全です。
+    ごく最近のクライアントのみが Digest 認証をサポートしている
+    ことが知られています。</p>
+
+    <p><a href="../mod/core.html#authname">AuthName</a>
+    ディレクティブでは、認証に使う <em>Realm</em> (訳注: 領域)
+    を設定します。Realm は大きく分けて二つの機能を提供します。
+    一つ目は、クライアントがパスワードダイアログボックスの
+    一部としてユーザにこの情報をよく提示する、というものです。
+    二つ目には、クライアントが与えられた認証領域に対してどのパスワードを
+    送信すれば良いのかを決定するために使われる、という機能があります。
+    ですから例えば、<code>"Restricted Files"</code> 領域中で
+    一度認証されれば、同一サーバ上で <code>"Restricted Files"</code>
+    realm としてマークされたどんな領域でも、クライアントは
+    自動的に同じパスワードを使おうと試みます。
+    ですから、複数の制限領域に同じ realm を共有させて、
+    ユーザがパスワードを何度も要求される事態を
+    防ぐことができます。もちろん、セキュリティ上の理由から、
+    サーバのホスト名が変わればいつでも必ず、
+    クライアントは再びパスワードを尋ねる必要があります。</p>
+
+    <p><a href="../mod/mod_auth.html#authuserfile">AuthUserFile</a>
+    ディレクティブは <code>htpasswd</code> で作った
+    パスワードファイルへのパスを設定します。
+    ユーザ数が多い場合は、リクエスト毎のユーザの認証のための
+    プレーンテキストの探索が非常に遅くなることがあります。
+    Apache ではユーザ情報を高速なデータベースファイルに
+    保管することもできます。
+    <a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a>
+    モジュールが<a
+    href="../mod/mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a>
+    ディレクティブを提供します。これらのファイルは <a
+    href="../programs/dbmmanage.html">dbmmanage</a>
+    プログラムで作成したり操作したりできます。
+    <a href="http://modules.apache.org/">Apache 
+    モジュールデータベース</a>中にあるサードパーティー製の
+    モジュールで、その他多くのタイプの認証オプションが
+    利用可能です。</p>
+
+    <p>最後に、<a href="../mod/core.html#require">require</a>
+    ディレクティブが、サーバのこの領域にアクセスできるユーザを
+    指定することによって、プロセスの承認部分を提供します。
+    次のセクションでは、<code>require</code> ディレクティブの
+    様々な用法について述べます。</p>
+
+    <h2><a id="lettingmorethanonepersonin"
+    name="lettingmorethanonepersonin">
+    複数の人が入れるようにする</a></h2>
+
+    <p>上記のディレクティブは、ただ一人 (具体的にはユーザ名
+    <code>rbowen</code> の誰か) がディレクトリに
+    入れるようにします。多くの場合は、複数の人が
+    入れるようにしたいでしょう。ここで<a
+    href="../mod/mod_auth.html#authgroupfile">AuthGroupFile</a>
+    の登場です。</p>
+
+    <p>もし複数の人が入れるようにしたいのであれば、
+    グループに属するユーザの一覧の入っている、グループ名のついた
+    グループファイルを作る必要があります。このファイルの
+    書式はきわめて単純で、お好みのエディタで生成できます。
+    ファイルの中身は次のようなものです:</p>
+<pre>
+        GroupName: rbowen dpitts sungo rshersey
+</pre>
+
+    <p>一行にスペース区切りで、グループに所属するメンバーの
+    一覧をならべるだけです。</p>
+
+    <p>既に存在するパスワードファイルにユーザを加える場合は、
+    次のようにタイプしてください:</p>
+<pre>
+        htpasswd /usr/local/apache/passwd/password dpitts
+</pre>
+
+    <p>依然と同じ応答が返されますが、新しいファイルを
+    作るのではなく、既にあるファイルに追加されています。
+    (新しいパスワードファイルを作るには <code>-c</code>
+    を使います。)</p>
+
+    <p>ここで次のようにして <code>.htaccess</code> ファイルを
+    修正する必要があります:</p>
+<pre>
+        AuthType Basic
+        AuthName "By Invitation Only"
+        AuthUserFile /usr/local/apache/passwd/passwords
+        AuthGroupFile /usr/local/apache/passwd/groups
+        require group GroupName
+</pre>
+
+    <p>これで、グループ <code>GroupName</code> にリストされていて、
+    <code>password</code> ファイルにエントリがある人は、
+    正しいパスワードをタイプすれば入ることができるでしょう。</p>
+
+    <p>もっと特定せずに複数のユーザが入れるようにする、
+    もう一つの方法があります。グループファイルを作るのではなく、
+    次のディレクティブを使えばできます。</p>
+<pre>
+        require valid-user
+</pre>
+
+    <p><code>require user rbowen</code> 行でなく、上記を使うと、
+    パスワードファイルにリストされている人であれば誰でも
+    許可されます。
+    単にパスワードファイルをグループ毎に分けておくことで、
+    グループのような振る舞いをさせることもできます。
+    このアプローチの利点は、Apache は二つではなく、
+    ただ一つのファイルだけを検査すればよいという点です。
+    欠点は、たくさんのパスワードファイルを管理して、
+    その中から <code>AuthUserFile</code> ディレクティブに正しいファイルへの
+    参照をさせなければならない点です。</p>
+
+    <h2><a id="possibleproblems" name="possibleproblems">
+    起こりえる問題</a></h2>
+
+    <p>Basic 認証が指定されている場合は、
+    サーバにドキュメントをリクエストする度に
+    ユーザ名とパスワードを検査しなければなりません。
+    これは同じページ、ページにある全ての画像を
+    リロードする場合であっても該当します
+     (もし画像も保護されたディレクトリから来るのであれば) 。
+    予想される通り、これは動作を多少遅くします。
+    遅くなる程度はパスワードファイルの大きさと比例しますが、
+    これは、ファイルを開いてあなたの名前を発見するまで
+    ユーザ名のリストを読まなければならないからです。
+    そして、ページがロードされる度にこれを行わなければ
+    なりません。</p>
+
+    <p>結論としては、一つのパスワードファイルに置くことのできる
+    ユーザ数には実質的な限界があります。
+    この限界はサーバマシンの性能に依存して変わりますが、
+    数百のエントリを越えたあたりから速度低下が見られると予期されています。
+    その時は他の認証方法を考慮に入れた方が良いでしょう。</p>
+
+    <h2><a id="whatotherneatstuffcanido"
+    name="whatotherneatstuffcanido">
+    もっと巧みに制御できない？</a></h2>
+
+    <p>ユーザ名とパスワードによる認証は認証の一つの方法に過ぎません。
+    しばしば誰であるかということとは違う何かに基づいて、
+    入れるようにしたくなることもあるでしょう。例えばその人がどこから来ているか
+    といったことです。</p>
+
+    <p><code>allow</code> と <code>deny</code>
+    ディレクティブを使って、ドキュメントを要求してきたマシンの
+    ホスト名やホストアドレスに基づいて許可不許可を制御できます。
+    <code>order</code> ディレクティブはこの二つと連携して
+    動作し、Apache にどの順番でフィルタを適用するかを
+    知らせます。</p>
+
+    <p>これらのディレクティブの使い方は:</p>
+<pre>
+        allow from address
+</pre>
+
+    <p>ここで、<em>address</em> は IP アドレス
+    (または IP アドレスの一部)、あるいは完全修飾ドメイン名
+    (またはドメイン名の一部) です。
+    必要であれば複数のアドレスやドメイン名を指定できます。</p>
+
+    <p>例えば、もし誰かが掲示板を攻撃していて、
+    その人を閉め出したいのであれば、
+    次のようにすることができます:</p>
+<pre>
+        deny from 205.252.46.165
+</pre>
+
+    <p>このアドレスから来る人は、このディレクティブの範囲内の
+    コンテンツを見ることができないません。もし IP
+    アドレスの代わりにマシン名があれば、それを使えます。</p>
+<pre>
+        deny from host.example.com
+</pre>
+
+    <p>ドメイン全体からのアクセスを防ぎたければ、
+    単にアドレスやドメイン名の一部を指定することができます:</p>
+<pre>
+        deny from 192.101.205
+        deny from cyberthugs.com moreidiots.com
+        deny from ke
+</pre>
+
+    <p><code>order</code> を使うことで、
+    <code>deny</code> と <code>allow</code> の組み合わせで
+    入っても良いグループが本当に確実に限定できているようにできます:</p>
+<pre>
+        order deny,allow
+        deny from all
+        allow from dev.example.com
+</pre>
+
+    <p><code>allow</code> ディレクティブを単純に列挙するのでは
+    望みの動作をしないでしょう。
+    なぜなら、全ての人が入れるということに加えて、
+    指定したホストからの人が入れるようにするからです。
+    やりたいことは、指定した人たち<em>だけ</em>が入れるように
+    することです。</p>
+
+    <h2><a id="moreinformation" name="moreinformation">
+    追加情報</a></h2>
+
+    <p>これら全てがどのように動作するかについて
+    もっと多くの情報が書かれている <code><a
+    href="../mod/mod_auth.html">mod_auth</a></code> と <code><a
+    href="../mod/mod_access.html">mod_access</a></code>
+    の文書も読むとよいでしょう。</p>
+  </body>
+</html>
+

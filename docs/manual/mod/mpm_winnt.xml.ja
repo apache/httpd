@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis>
+<!-- English revision: 1.3 -->
+<name>mpm_winnt</name>
+<description>このマルチプロセッシングモジュールは Windows NT
+向けに最適化されています。</description>
+<status>MPM</status>
+<sourcefile>mpm_winnt.c</sourcefile>
+<identifier>mpm_winnt_module</identifier>
+
+<summary>
+    <p>このマルチプロセッシングモジュール (MPM)
+    は Windows NT でのデフォルトになります。
+    一つの制御用プロセスを用い、これが一つの子プロセスを起動し、
+    そして子プロセスがリクエストを取り扱うためにスレッドを
+    起動します。</p>
+</summary>
+
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+
+</modulesynopsis>
