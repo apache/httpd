@@ -20,3 +20,12 @@ creates libstandard.a, etc...).
 
 The MPM_METHOD Rule will use the actual name (eg: prefork) to
 pick the correct method module to build.
+
+The following MPMs currently exist:
+
+  prefork ....... Multi  Process Model with Preforking (Apache 1.3)
+  dexter ........ Multi  Process Model with Threading via Pthreads (v2)
+  mpmt_pthread .. Multi  Process Model with Threading via Pthreads (v1 = Apache/pthread)
+  spmt_os2 ...... Single Process Model with Threading on OS/2
+  winnt ......... Single Process Model with Threading on Windows NT
+
