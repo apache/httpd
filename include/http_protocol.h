@@ -658,6 +658,8 @@ typedef struct ap_bucket_error ap_bucket_error;
  * first brigade to be sent from a given filter.
  */
 struct ap_bucket_error {
+    /** Number of buckets using this memory */
+    apr_bucket_refcount refcount;
     /** The error code */
     int status;
     /** The error string */
