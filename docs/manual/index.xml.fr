@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- English Revision: 151405 -->
+<!-- French translation by Vincent Deffontaines, review by alain B -->
+
+<!--
+ Copyright 2004-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<indexpage metafile="index.xml.meta">
+<parentdocument href="http://httpd.apache.org/docs-project/" />
+
+<title>Documentation du Serveur Apache Version 2.0</title>
+
+<category id="release"><title>Notes sur cette version</title>
+    <page href="new_features_2_0.html">Nouvelles Fonctionnalités de la version 2.0</page>
+    <page href="upgrading.html">Migrer en 2.0 depuis la version 1.3</page>
+    <page href="license.html">Licence Apache</page>
+</category>
+
+<category id="manual"><title>Manuel de Référence</title>
+    <page href="install.html">Compilation et Installation</page>
+    <page href="invoking.html">Démarrage</page>
+    <page href="stopping.html">Arrêt ou Redémarrage</page>
+    <page href="mod/directives.html">Directives de Configuration pour l'Éxecution</page>
+    <page href="mod/quickreference.html">Résumé des Directives</page>
+    <page href="mod/">Modules</page>
+    <page href="mpm.html">Modules Multi-Processing (MPMs)</page>
+    <page href="filter.html">Filtres</page>
+    <page href="handler.html">Gestionnaires</page>
+    <page href="programs/">Serveur et Autres Programmes</page>
+    <page href="glossary.html">Glossaire</page>
+</category>    
+
+<category id="usersguide"><title>Guide de l'Utilisateur</title>
+    <page href="bind.html">Liaison</page>
+    <page href="configuring.html">Fichiers de Configuration</page>
+    <page href="sections.html">Sections de Configuration</page>
+    <page href="content-negotiation.html">Négociation de Contenu</page>
+    <page href="dso.html">Objets Partagés Dynamiques (DSO)</page>
+    <page href="env.html">Variables d'Environnement</page>
+    <page href="logs.html">Fichiers Journaux</page>
+    <page href="urlmapping.html">Correspondances entre URLs et Système de Fichiers</page>
+    <page href="misc/perf-tuning.html">Ajuster les Performances</page>
+    <page href="misc/security_tips.html">Conseils sur la Sécurité</page>
+    <page href="server-wide.html">Configuration à l'échelle du Serveur</page>
+    <page href="ssl/">Chiffrage SSL/TLS</page>
+    <page href="suexec.html">Éxecution Suexec des CGIs</page>
+    <page href="misc/rewriteguide.html">Guide de l'URL-rewriting</page>
+    <page href="vhosts/">Serveurs Virtuels</page>
+</category>
+
+<category id="howto"><title>Outils / Tutoriels</title>
+    <page href="howto/auth.html">Authentification, Autorisations, et 
+    Contrôles d'Accès</page>
+    <page href="howto/cgi.html">CGI: Contenus Dynamiques</page>
+    <page href="howto/htaccess.html">Fichiers .htaccess </page>
+    <page href="howto/ssi.html">Server Side Includes (SSI)</page>
+    <page href="howto/public_html.html">Répertoires Web Personnels
+    (public_html)</page>
+</category>
+
+<category id="platform"><title>Notes Spécifiques aux Différentes Plates-formes</title>
+    <page href="platform/windows.html">Microsoft Windows</page>
+    <page href="platform/netware.html">Novell NetWare</page>
+    <page href="platform/ebcdic.html">Port EBCDIC</page>
+</category>
+
+<category id="other"><title>Autres Sujets</title>
+    <page href="faq/">Foire Aux Questions</page>
+    <page href="sitemap.html">Plan du Site</page>
+    <page href="developer/">Documentation pour Développeurs</page>
+    <page href="misc/">Divers</page>
+</category>
+
+</indexpage>
+
