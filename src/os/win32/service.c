@@ -941,7 +941,27 @@ void RemoveService(char *display_name)
     else /* !isWindowsNT() */
     {
         HKEY hkey;
+        DWORD service_pid;
         DWORD rv;
+        HWND hwnd;
+
+        /* Locate the named window of class ApacheWin95ServiceMonitor
+         * from the active top level windows
+         */
+        hwnd = FindWindow("ApacheWin95ServiceMonitor", service_name);
+        if (hwnd && GetWindowThreadProcessId(hwnd, &service_pid))
+        {
+            int ticks = 120;
+            char prefix[20];
+            ap_snprintf(prefix, sizeof(prefix), "ap%ld", (long)service_pid);
+            setup_signal_names(prefix);
+            ap_start_shutdown();
+            while (--ticks) {
+                if (!IsWindow(hwnd))
+                    break;
+                Sleep(1000);
+            }
+        }
 
         /* Open the RunServices key */
         rv = RegOpenKey(HKEY_LOCAL_MACHINE, 

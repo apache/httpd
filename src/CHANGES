@@ -1,5 +1,8 @@
 Changes with Apache 1.3.18
 
+  *) Apache on Win9x now ensures the service is stopped before removal.
+     [William Rowe]
+
   *) SECURITY: The default installation could lead to mod_negotiation
      and mod_dir/mod_autoindex displaying a directory listing instead of
      the index.html.* files, if a very long path was created artificially
