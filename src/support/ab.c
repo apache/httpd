@@ -1,5 +1,5 @@
 /* ====================================================================
- * Copyright (c) 1998 The Apache Group.  All rights reserved.
+ * Copyright (c) 1998-1999 The Apache Group.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -688,7 +688,7 @@ static void copyright(void)
 {
     printf("This is ApacheBench, Version %s\n", VERSION);
     printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
-    printf("Copyright (c) 1998 The Apache Group, http://www.apache.org/\n");
+    printf("Copyright (c) 1998-1999 The Apache Group, http://www.apache.org/\n");
     printf("\n");
 }
 
