@@ -108,7 +108,7 @@ static const char **hashbang(const char *filename, char **argv);
  * local argv[] array. The va_arg logic makes sure we do the right thing.
  * XXX: malloc() is used because we expect to be overlaid soon.
  */
-int ap_execle(const char *filename, const char *arg, ...)
+int ap_execle(const char *filename, const char *argv0, ...)
 {
     va_list adummy;
     char **envp;
@@ -116,8 +116,8 @@ int ap_execle(const char *filename, const char *arg, ...)
     int argc, ret;
 
     /* First pass: Count arguments on stack */
-    va_start(adummy, arg);
-    for (argc = 0; va_arg(adummy, char *) != NULL; ++argc) {
+    va_start(adummy, argv0);
+    for (argc = 1; va_arg(adummy, char *) != NULL; ++argc) {
 	continue;
     }
     va_end(adummy);
@@ -125,8 +125,9 @@ int ap_execle(const char *filename, const char *arg, ...)
     argv = (char **) malloc((argc + 2) * sizeof(*argv));
 
     /* Pass two --- copy the argument strings into the result space */
-    va_start(adummy, arg);
-    for (argc = 0; (argv[argc] = va_arg(adummy, char *)) != NULL; ++argc) {
+    va_start(adummy, argv0);
+    argv[0] = argv0;
+    for (argc = 1; (argv[argc] = va_arg(adummy, char *)) != NULL; ++argc) {
 	continue;
     }
     envp = va_arg(adummy, char **);
