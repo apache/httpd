@@ -254,8 +254,11 @@ static PSECURITY_ATTRIBUTES GetNullACL()
     PSECURITY_ATTRIBUTES sa;
 
     sa  = (PSECURITY_ATTRIBUTES) LocalAlloc(LPTR, sizeof(SECURITY_ATTRIBUTES));
-    pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR,
-					    SECURITY_DESCRIPTOR_MIN_LENGTH);
+    sa->nLength = sizeof(sizeof(SECURITY_ATTRIBUTES));
+
+    pSD = (PSECURITY_DESCRIPTOR) LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
+    sa->lpSecurityDescriptor = pSD;
+
     if (pSD == NULL || sa == NULL) {
         return NULL;
     }
@@ -272,8 +275,7 @@ static PSECURITY_ATTRIBUTES GetNullACL()
         LocalFree( sa );
         return NULL;
     }
-    sa->nLength = sizeof(sa);
-    sa->lpSecurityDescriptor = pSD;
+
     sa->bInheritHandle = TRUE;
     return sa;
 }
@@ -433,24 +435,23 @@ static int set_listeners_noninheritable(apr_pool_t *p)
 
     for (lr = ap_listeners; lr; lr = lr->next) {
         apr_os_sock_get(&nsd,lr->sd);
-        if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 0,
-                             FALSE,     /* Inherit flag */
-                             DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), 
-                         ap_server_conf,
+        if (!DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup, 
+                             0, FALSE, DUPLICATE_SAME_ACCESS)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
                          "set_listeners_noninheritable: DuplicateHandle failed.");
-            return 0;
         }
-        nsd = (SOCKET) dup;
-        apr_os_sock_put(&lr->sd, &nsd, p);
+        else {
+            nsd = (SOCKET) dup;
+            apr_os_sock_put(&lr->sd, &nsd, p);
+        }
     }
 
     if (my_pid == parent_pid) {
         ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
-                     "Parent: Marking listeners non-inherited.");
+                     "Parent: Marked listeners as not inheritable.");
     } else {
         ap_log_error(APLOG_MARK, APLOG_INFO | APLOG_NOERRNO, 0, ap_server_conf,
-                     "Child %d: Marking listeners non-inherited.", my_pid);
+                     "Child %d: Marked listeners as not inheritable.", my_pid);
     }
     return 1;
 }
@@ -1279,7 +1280,7 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
     DWORD BytesWritten;
 
     if (!DuplicateHandle(hCurrentProcess, child_exit_event, hProcess, &hDup,
-                         0, FALSE, DUPLICATE_SAME_ACCESS)) {
+                         EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, 0)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Unable to duplicate the exit event handle for the child");
         return -1;
@@ -1298,7 +1299,7 @@ static int send_handles_to_child(apr_pool_t *p, HANDLE child_exit_event, HANDLE 
         return -1;
     }
     if (!DuplicateHandle(hCurrentProcess, hScore, hProcess, &hDup,
-                         0, FALSE, DUPLICATE_SAME_ACCESS)) {
+                         FILE_MAP_READ | FILE_MAP_WRITE, FALSE, 0)) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                      "Parent: Unable to duplicate the scoreboard handle to the child");
         return -1;
@@ -1439,7 +1440,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         if (rv == APR_SUCCESS && hShareError != INVALID_HANDLE_VALUE) {
             if (DuplicateHandle(hCurrentProcess, hShareError, 
                                 hCurrentProcess, &hDup, 
-                                0, TRUE, DUPLICATE_SAME_ACCESS)) {
+                                GENERIC_WRITE, TRUE, 0)) {
                 hShareError = hDup;
             }
             else {
@@ -1465,7 +1466,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         else {
             hShareError = GetStdHandle(STD_ERROR_HANDLE);
         }
-
     }
 
     /* Create the child_exit_event */
