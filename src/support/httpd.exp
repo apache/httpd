@@ -74,6 +74,7 @@ ap_clear_module_list
 ap_clear_pool
 ap_clear_table
 ap_close_piped_log
+ap_configtestonly
 ap_construct_server
 ap_construct_url
 ap_content_type_tolower
