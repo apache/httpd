@@ -1414,7 +1414,7 @@ const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     if (ports != NULL)
     {
 	if (ports == ips) return "Missing IP address";
-	else if (ports[0] == '\0')
+	else if (ports[1] == '\0')
 	    return "Address must end in :<port-number>";
 	*(ports++) = '\0';
     } else
