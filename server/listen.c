@@ -192,6 +192,13 @@ static void alloc_listener(process_rec *process, char *addr, apr_port_t port)
     apr_port_t oldport;
     apr_sockaddr_t *sa;
 
+    if (!addr) {
+        /* XXX not valid for IPv6 if we can get an IPv6 socket when the
+         *     config doesn't specify an interface address
+         */
+        addr = APR_ANYADDR;
+    }
+
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
         apr_get_sockaddr(&sa, APR_LOCAL, (*walk)->sd);
@@ -235,7 +242,7 @@ int ap_listen_open(process_rec *process, apr_port_t port)
 
     /* allocate a default listener if necessary */
     if (ap_listeners == NULL) {
-	alloc_listener(process, APR_ANYADDR, port ? port : DEFAULT_HTTP_PORT);
+	alloc_listener(process, NULL, port ? port : DEFAULT_HTTP_PORT);
     }
 
     num_open = 0;
@@ -288,43 +295,33 @@ void ap_listen_pre_config(void)
 }
 
 
-const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips_)
+const char *ap_set_listener(cmd_parms *cmd, void *dummy, const char *ips)
 {
-    char *ips=apr_pstrdup(cmd->pool, ips_);
-    char *ports;
-    unsigned short port;
+    char *host, *scope_id;
+    apr_port_t port;
+    apr_status_t rv;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    ports = strchr(ips, ':');
-    if (ports != NULL) {
-	if (ports == ips) {
-	    return "Missing IP address";
-	}
-	else if (ports[1] == '\0') {
-	    return "Address must end in :<port-number>";
-	}
-	*(ports++) = '\0';
+    rv = apr_parse_addr_port(&host, &scope_id, &port, ips, cmd->pool);
+    if (rv != APR_SUCCESS) {
+        return "Invalid address or port";
     }
-    else {
-	ports = ips;
+    if (host && !strcmp(host, "*")) {
+        host = NULL;
     }
-
-    port = atoi(ports);
+    if (scope_id) {
+        /* XXX scope id support is useful with link-local IPv6 addresses */
+        return "Scope id is not supported";
+    }
     if (!port) {
-	return "Port must be numeric";
+        return "Port must be specified";
     }
 
-    if (ports == ips) { /* no address */
-        alloc_listener(cmd->server->process, APR_ANYADDR, port);
-    }
-    else {
-        ips[(ports - ips) - 1] = '\0';
-	alloc_listener(cmd->server->process, ips, port);
-    }
+    alloc_listener(cmd->server->process, host, port);
 
     return NULL;
 }
