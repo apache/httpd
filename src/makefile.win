@@ -211,8 +211,8 @@ A
 	awk -f <<script.awk "support\dbmmanage" >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 !~ /^#.*-lsdbm/) {
           gsub( /AnyDBM_File::ISA = qw\(.*\)/, "AnyDBM_File::ISA = qw(SDBM_File)" ); 
-          print $$0;
       } 
+      print $$0;
     }
 <<
 
