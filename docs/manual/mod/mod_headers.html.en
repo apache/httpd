@@ -39,6 +39,7 @@ is available only in Apache 2.0</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#errorheader">ErrorHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requestheader">RequestHeader</a></li>
 </ul>
@@ -134,6 +135,25 @@ is available only in Apache 2.0</td></tr></table>
        </code></p></div>
       </li>
     </ol>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ErrorHeader" id="ErrorHeader">ErrorHeader</a> <a name="errorheader" id="errorheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers also for error responses</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ErrorHeader set|append|add|unset|echo <var>header</var>
+[<var>value</var> [env=[!]<var>variable</var>]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
+</table>
+<p>This directive can replace, merge or remove HTTP response headers also during
+<code>3<var>xx</var></code>, <code>4<var>xx</var></code> and
+<code>5<var>xx</var></code> replies. For normal replies use the <code class="directive"><a href="#header">Header</a></code> directive.</p>
+
+<p>This directive is identical to the <code class="directive"><a href="#header">Header</a></code> directive in all other respects.
+Consult this directive for more information on the syntax.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
