@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/15 23:17:12 $]
+Last modified at [$Date: 2003/10/16 00:37:55 $]
 
 Release:
 
@@ -263,7 +263,7 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_include: fix segfault which occured if the filename was not
       set, for example, when processing some error conditions. PR 23836.
         modules/filters/mod_include.c: r1.288
-      +1: nd, trawick
+      +1: nd, trawick, jwoolley
 
 CURRENT RELEASE NOTES:
 
