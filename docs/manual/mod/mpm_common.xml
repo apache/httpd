@@ -247,7 +247,7 @@ to serve requests</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>MaxRequestPerChild</name>
+<name>MaxRequestsPerChild</name>
 <description>Limit on the number of requests that an individual child server
 will handle during its life</description>
 <syntax>MaxRequestsPerChild <em>number</em></syntax>
