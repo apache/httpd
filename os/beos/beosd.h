@@ -68,7 +68,7 @@
 #define DEFAULT_USER "#-1"
 #endif
 #ifndef DEFAULT_GROUP
-#define DEFAULT_GROUP "#-1"
+#define DEFAULT_GROUP "#"
 #endif
 
 typedef struct {
