@@ -58,7 +58,7 @@
 
 /*
  * http_vhost.c: functions pertaining to virtual host addresses
- *	(configuration and run-time)
+ *      (configuration and run-time)
  */
 
 #include "apr.h"
@@ -92,9 +92,9 @@
 typedef struct name_chain name_chain;
 struct name_chain {
     name_chain *next;
-    server_addr_rec *sar;	/* the record causing it to be in
-				 * this chain (needed for port comparisons) */
-    server_rec *server;		/* the server to use on a match */
+    server_addr_rec *sar;       /* the record causing it to be in
+                                 * this chain (needed for port comparisons) */
+    server_rec *server;         /* the server to use on a match */
 };
 
 /* meta-list of ip addresses.  Each server_rec can be in possibly multiple
@@ -103,12 +103,12 @@ struct name_chain {
 typedef struct ipaddr_chain ipaddr_chain;
 struct ipaddr_chain {
     ipaddr_chain *next;
-    server_addr_rec *sar;	/* the record causing it to be in
-				 * this chain (need for both ip addr and port
-				 * comparisons) */
-    server_rec *server;		/* the server to use if this matches */
-    name_chain *names;		/* if non-NULL then a list of name-vhosts
-    				 * sharing this address */
+    server_addr_rec *sar;       /* the record causing it to be in
+                                 * this chain (need for both ip addr and port
+                                 * comparisons) */
+    server_rec *server;         /* the server to use if this matches */
+    name_chain *names;          /* if non-NULL then a list of name-vhosts
+                                 * sharing this address */
 };
 
 /* This defines the size of the hash apr_table_t used for hashing ip addresses
@@ -178,7 +178,7 @@ void ap_init_vhost_config(apr_pool_t *p)
  * port is the default port to assume
  */
 static const char *get_addresses(apr_pool_t *p, const char *w_,
-				 server_addr_rec ***paddr, 
+                                 server_addr_rec ***paddr, 
                                  apr_port_t default_port)
 {
     apr_sockaddr_t *my_addr;
@@ -190,7 +190,7 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     apr_status_t rv;
 
     if (*w_ == '\0')
-	return NULL;
+        return NULL;
 
     w = apr_pstrdup(p, w_);
     /* apr_parse_addr_port() doesn't understand ":*" so handle that first. */
@@ -219,12 +219,14 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
     if (strcmp(host, "*") == 0) {
         rv = apr_sockaddr_info_get(&my_addr, NULL, APR_INET, port, 0, p);
         my_addr->sa.sin.sin_addr.s_addr = htonl(INADDR_ANY);
-    } else if (strcasecmp(host, "_default_") == 0
+    }
+    else if (strcasecmp(host, "_default_") == 0
         || strcmp(host, "255.255.255.255") == 0) {
         rv = apr_sockaddr_info_get(&my_addr, NULL, APR_INET, port, 0, p);
         ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
         my_addr->sa.sin.sin_addr.s_addr = DEFAULT_VHOST_ADDR;
-    } else {
+    }
+    else {
         rv = apr_sockaddr_info_get(&my_addr, host, APR_UNSPEC, port, 0, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
@@ -247,7 +249,9 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
 
 
 /* parse the <VirtualHost> addresses */
-const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec *s)
+const char *ap_parse_vhost_addrs(apr_pool_t *p,
+                                 const char *hostname,
+                                 server_rec *s)
 {
     server_addr_rec **addrs;
     const char *err;
@@ -255,30 +259,30 @@ const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec
     /* start the list of addreses */
     addrs = &s->addrs;
     while (hostname[0]) {
-	err = get_addresses(p, ap_getword_conf(p, &hostname), &addrs, s->port);
-	if (err) {
-	    *addrs = NULL;
-	    return err;
-	}
+        err = get_addresses(p, ap_getword_conf(p, &hostname), &addrs, s->port);
+        if (err) {
+            *addrs = NULL;
+            return err;
+        }
     }
     /* terminate the list */
     *addrs = NULL;
     if (s->addrs) {
-	if (s->addrs->host_port) {
-	    /* override the default port which is inherited from main_server */
-	    s->port = s->addrs->host_port;
-	}
+        if (s->addrs->host_port) {
+            /* override the default port which is inherited from main_server */
+            s->port = s->addrs->host_port;
+        }
     }
     return NULL;
 }
 
 
-const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
-				      const char *arg)
+const char *ap_set_name_virtual_host(cmd_parms *cmd, void *dummy,
+                                     const char *arg)
 {
     /* use whatever port the main server has at this point */
     return get_addresses(cmd->pool, arg, &name_vhost_list_tail,
-			    cmd->server->port);
+                         cmd->server->port);
 }
 
 
@@ -303,33 +307,33 @@ static void dump_iphash_statistics(server_rec *main_s)
 
     total = 0;
     for (i = 0; i < IPHASH_TABLE_SIZE; ++i) {
-	count[i] = 0;
-	for (src = iphash_table[i]; src; src = src->next) {
-	    ++count[i];
-	    if (i < IPHASH_TABLE_SIZE) {
-		/* don't count the slop buckets in the total */
-		++total;
-	    }
-	}
+        count[i] = 0;
+        for (src = iphash_table[i]; src; src = src->next) {
+            ++count[i];
+            if (i < IPHASH_TABLE_SIZE) {
+                /* don't count the slop buckets in the total */
+                ++total;
+            }
+        }
     }
     qsort(count, IPHASH_TABLE_SIZE, sizeof(count[0]), iphash_compare);
     p = buf + apr_snprintf(buf, sizeof(buf),
-		    "iphash: total hashed = %u, avg chain = %u, "
-		    "chain lengths (count x len):",
-		    total, total / IPHASH_TABLE_SIZE);
+                           "iphash: total hashed = %u, avg chain = %u, "
+                           "chain lengths (count x len):",
+                           total, total / IPHASH_TABLE_SIZE);
     total = 1;
     for (i = 1; i < IPHASH_TABLE_SIZE; ++i) {
-	if (count[i - 1] != count[i]) {
-	    p += apr_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
-			     total, count[i - 1]);
-	    total = 1;
-	}
-	else {
-	    ++total;
-	}
+        if (count[i - 1] != count[i]) {
+            p += apr_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
+                              total, count[i - 1]);
+            total = 1;
+        }
+        else {
+            ++total;
+        }
     }
     p += apr_snprintf(p, sizeof(buf) - (p - buf), " %ux%u",
-		     total, count[IPHASH_TABLE_SIZE - 1]);
+                      total, count[IPHASH_TABLE_SIZE - 1]);
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, main_s, buf);
 }
 #endif
@@ -364,7 +368,7 @@ static APR_INLINE unsigned hash_addr(struct apr_sockaddr_t *sa)
 }
 
 static ipaddr_chain *new_ipaddr_chain(apr_pool_t *p,
-				    server_rec *s, server_addr_rec *sar)
+                                      server_rec *s, server_addr_rec *sar)
 {
     ipaddr_chain *new;
 
@@ -377,7 +381,8 @@ static ipaddr_chain *new_ipaddr_chain(apr_pool_t *p,
 }
 
 
-static name_chain *new_name_chain(apr_pool_t *p, server_rec *s, server_addr_rec *sar)
+static name_chain *new_name_chain(apr_pool_t *p,
+                                  server_rec *s, server_addr_rec *sar)
 {
     name_chain *new;
 
@@ -397,7 +402,7 @@ static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
     /* scan the hash apr_table_t for an exact match first */
     bucket = hash_addr(sa);
     for (trav = iphash_table[bucket]; trav; trav = trav->next) {
-	server_addr_rec *sar = trav->sar;
+        server_addr_rec *sar = trav->sar;
         apr_sockaddr_t *cur = sar->host_addr;
 
         if (cur->sa.sin.sin_port == 0 ||
@@ -424,7 +429,7 @@ static ipaddr_chain *find_default_server(apr_port_t port)
         sar = trav->sar;
         if (sar->host_port == 0 || sar->host_port == port) {
             /* match! */
-	    return trav;
+            return trav;
         }
     }
     return NULL;
@@ -439,38 +444,40 @@ static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
 
     if (ha->sa.sin.sin_family == APR_INET &&
         ha->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR) {
-	len = apr_snprintf(buf, sizeof(buf), "_default_:%u",
-		ic->sar->host_port);
+        len = apr_snprintf(buf, sizeof(buf), "_default_:%u",
+                           ic->sar->host_port);
     }
     else if (ha->sa.sin.sin_family == APR_INET &&
              ha->sa.sin.sin_addr.s_addr == INADDR_ANY) {
-	len = apr_snprintf(buf, sizeof(buf), "*:%u",
-		ic->sar->host_port);
+        len = apr_snprintf(buf, sizeof(buf), "*:%u",
+                           ic->sar->host_port);
     }
     else {
-	len = apr_snprintf(buf, sizeof(buf), "%pI", ha);
+        len = apr_snprintf(buf, sizeof(buf), "%pI", ha);
     }
     if (ic->sar->host_port == 0) {
-	buf[len-1] = '*';
+        buf[len-1] = '*';
     }
     if (ic->names == NULL) {
-	apr_file_printf(f, "%-22s %s (%s:%u)\n", buf, ic->server->server_hostname,
-		ic->server->defn_name, ic->server->defn_line_number);
-	return;
+        apr_file_printf(f, "%-22s %s (%s:%u)\n", buf,
+                        ic->server->server_hostname,
+                        ic->server->defn_name, ic->server->defn_line_number);
+        return;
     }
     apr_file_printf(f, "%-22s is a NameVirtualHost\n"
-	    "%8s default server %s (%s:%u)\n",
-	    buf, "", ic->server->server_hostname,
-	    ic->server->defn_name, ic->server->defn_line_number);
+                    "%8s default server %s (%s:%u)\n",
+                    buf, "", ic->server->server_hostname,
+                    ic->server->defn_name, ic->server->defn_line_number);
     for (nc = ic->names; nc; nc = nc->next) {
-	if (nc->sar->host_port) {
-	    apr_file_printf(f, "%8s port %u ", "", nc->sar->host_port);
-	}
-	else {
-	    apr_file_printf(f, "%8s port * ", "");
-	}
-	apr_file_printf(f, "namevhost %s (%s:%u)\n", nc->server->server_hostname,
-		nc->server->defn_name, nc->server->defn_line_number);
+        if (nc->sar->host_port) {
+            apr_file_printf(f, "%8s port %u ", "", nc->sar->host_port);
+        }
+        else {
+            apr_file_printf(f, "%8s port * ", "");
+        }
+        apr_file_printf(f, "namevhost %s (%s:%u)\n",
+                        nc->server->server_hostname,
+                        nc->server->defn_name, nc->server->defn_line_number);
     }
 }
 
@@ -481,70 +488,71 @@ static void dump_vhost_config(apr_file_t *f)
 
     apr_file_printf(f, "VirtualHost configuration:\n");
     for (i = 0; i < IPHASH_TABLE_SIZE; ++i) {
-	for (ic = iphash_table[i]; ic; ic = ic->next) {
-	    dump_a_vhost(f, ic);
-	}
+        for (ic = iphash_table[i]; ic; ic = ic->next) {
+            dump_a_vhost(f, ic);
+        }
     }
     if (default_list) {
-	apr_file_printf(f, "wildcard NameVirtualHosts and _default_ servers:\n");
-	for (ic = default_list; ic; ic = ic->next) {
-	    dump_a_vhost(f, ic);
-	}
+        apr_file_printf(f, "wildcard NameVirtualHosts and _default_ servers:\n");
+        for (ic = default_list; ic; ic = ic->next) {
+            dump_a_vhost(f, ic);
+        }
     }
 }
 
 /*
  * Two helper functions for ap_fini_vhost_config()
  */
-static int add_name_vhost_config(apr_pool_t *p, server_rec *main_s, server_rec *s,
-				 server_addr_rec *sar, ipaddr_chain *ic)
+static int add_name_vhost_config(apr_pool_t *p, server_rec *main_s,
+                                 server_rec *s, server_addr_rec *sar,
+                                 ipaddr_chain *ic)
 {
     /* the first time we encounter a NameVirtualHost address
      * ic->server will be NULL, on subsequent encounters
      * ic->names will be non-NULL.
      */
     if (ic->names || ic->server == NULL) {
-	name_chain *nc = new_name_chain(p, s, sar);
-	nc->next = ic->names;
-	ic->names = nc;
-	ic->server = s;
-	if (sar->host_port != ic->sar->host_port) {
-	    /* one of the two is a * port, the other isn't */
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, main_s,
-		    "VirtualHost %s:%u -- mixing * "
-		    "ports and non-* ports with "
-		    "a NameVirtualHost address is not supported,"
-		    " proceeding with undefined results",
-		    sar->virthost, sar->host_port);
-	}
-	return 1;
+        name_chain *nc = new_name_chain(p, s, sar);
+        nc->next = ic->names;
+        ic->names = nc;
+        ic->server = s;
+        if (sar->host_port != ic->sar->host_port) {
+            /* one of the two is a * port, the other isn't */
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, main_s,
+                         "VirtualHost %s:%u -- mixing * "
+                         "ports and non-* ports with "
+                         "a NameVirtualHost address is not supported,"
+                         " proceeding with undefined results",
+                         sar->virthost, sar->host_port);
+        }
+        return 1;
     }
     else {
-	/* IP-based vhosts are handled by the caller */
-	return 0;
+        /* IP-based vhosts are handled by the caller */
+        return 0;
     }
 }
 
 static void remove_unused_name_vhosts(server_rec *main_s, ipaddr_chain **pic)
 {
     while (*pic) {
-	ipaddr_chain *ic = *pic;
-	
-	if (ic->server == NULL) {
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, main_s,
-			 "NameVirtualHost %s:%u has no VirtualHosts",
-			 ic->sar->virthost, ic->sar->host_port);
-	    *pic = ic->next;
-	}
-	else if (ic->names == NULL) {
-	    /* if server != NULL and names == NULL then we're done
-	     * looking at NameVirtualHosts
-	     */
-	    break;
-	}
-	else {
-	    pic = &ic->next;
-	}
+        ipaddr_chain *ic = *pic;
+        
+        if (ic->server == NULL) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, main_s,
+                         "NameVirtualHost %s:%u has no VirtualHosts",
+                         ic->sar->virthost, ic->sar->host_port);
+            *pic = ic->next;
+        }
+        else if (ic->names == NULL) {
+            /* if server != NULL and names == NULL then we're done
+             * looking at NameVirtualHosts
+             */
+            break;
+        }
+        else {
+            pic = &ic->next;
+        }
     }
 }
 
@@ -564,12 +572,12 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
     s = main_s;
 
     if (!s->server_hostname) {
-	s->server_hostname = ap_get_local_host(p);
+        s->server_hostname = ap_get_local_host(p);
     }
 
     /* initialize the tails */
     for (i = 0; i < IPHASH_TABLE_SIZE; ++i) {
-	iphash_table_tail[i] = &iphash_table[i];
+        iphash_table_tail[i] = &iphash_table[i];
     }
 
     /* The first things to go into the hash apr_table_t are the NameVirtualHosts
@@ -577,24 +585,24 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
      * occured in the config file, we'll copy it in that order.
      */
     for (sar = name_vhost_list; sar; sar = sar->next) {
-	unsigned bucket = hash_addr(sar->host_addr);
-	ipaddr_chain *ic = new_ipaddr_chain(p, NULL, sar);
+        unsigned bucket = hash_addr(sar->host_addr);
+        ipaddr_chain *ic = new_ipaddr_chain(p, NULL, sar);
 
-	if (sar->host_addr->sa.sin.sin_addr.s_addr != INADDR_ANY) {
-	    *iphash_table_tail[bucket] = ic;
-	    iphash_table_tail[bucket] = &ic->next;
-	}
-	else {
-	    /* A wildcard NameVirtualHost goes on the default_list so
-	     * that it can catch incoming requests on any address.
-	     */
-	    ic->next = default_list;
-	    default_list = ic;
-	}
-	/* Notice that what we've done is insert an ipaddr_chain with
-	 * both server and names NULL. This fact is used to spot name-
-	 * based vhosts in add_name_vhost_config().
-	 */
+        if (sar->host_addr->sa.sin.sin_addr.s_addr != INADDR_ANY) {
+            *iphash_table_tail[bucket] = ic;
+            iphash_table_tail[bucket] = &ic->next;
+        }
+        else {
+            /* A wildcard NameVirtualHost goes on the default_list so
+             * that it can catch incoming requests on any address.
+             */
+            ic->next = default_list;
+            default_list = ic;
+        }
+        /* Notice that what we've done is insert an ipaddr_chain with
+         * both server and names NULL. This fact is used to spot name-
+         * based vhosts in add_name_vhost_config().
+         */
     }
 
     /* The next things to go into the hash apr_table_t are the virtual hosts
@@ -604,96 +612,98 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
      */
 
     for (s = main_s->next; s; s = s->next) {
-	has_default_vhost_addr = 0;
-	for (sar = s->addrs; sar; sar = sar->next) {
-	    ipaddr_chain *ic;
+        has_default_vhost_addr = 0;
+        for (sar = s->addrs; sar; sar = sar->next) {
+            ipaddr_chain *ic;
 
-	    if (sar->host_addr->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR
-		|| sar->host_addr->sa.sin.sin_addr.s_addr == INADDR_ANY) {
-		ic = find_default_server(sar->host_port);
-		if (!ic || !add_name_vhost_config(p, main_s, s, sar, ic)) {
-		    if (ic && ic->sar->host_port != 0) {
-			ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
-			    0, main_s, "_default_ VirtualHost overlap on port %u,"
-			    " the first has precedence", sar->host_port);
-		    }
-		    ic = new_ipaddr_chain(p, s, sar);
-		    ic->next = default_list;
-		    default_list = ic;
-		}
-		has_default_vhost_addr = 1;
-	    }
-	    else {
-		/* see if it matches something we've already got */
-		ic = find_ipaddr(sar->host_addr);
+            if (sar->host_addr->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR
+                || sar->host_addr->sa.sin.sin_addr.s_addr == INADDR_ANY) {
+                ic = find_default_server(sar->host_port);
+                if (!ic || !add_name_vhost_config(p, main_s, s, sar, ic)) {
+                    if (ic && ic->sar->host_port != 0) {
+                        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+                                     0, main_s, "_default_ VirtualHost "
+                                     "overlap on port %u, the first has "
+                                     "precedence", sar->host_port);
+                    }
+                    ic = new_ipaddr_chain(p, s, sar);
+                    ic->next = default_list;
+                    default_list = ic;
+                }
+                has_default_vhost_addr = 1;
+            }
+            else {
+                /* see if it matches something we've already got */
+                ic = find_ipaddr(sar->host_addr);
 
-		if (!ic) {
-		    unsigned bucket = hash_addr(sar->host_addr);
+                if (!ic) {
+                    unsigned bucket = hash_addr(sar->host_addr);
 
-		    ic = new_ipaddr_chain(p, s, sar);
-		    ic->next = *iphash_table_tail[bucket];
-		    *iphash_table_tail[bucket] = ic;
-		}
-		else if (!add_name_vhost_config(p, main_s, s, sar, ic)) {
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, main_s,
-			    "VirtualHost %s:%u overlaps with "
-			    "VirtualHost %s:%u, the first has precedence, "
-			    "perhaps you need a NameVirtualHost directive",
-			    sar->virthost, sar->host_port,
-			    ic->sar->virthost, ic->sar->host_port);
-		    ic->sar = sar;
-		    ic->server = s;
-		}
-	    }
-	}
+                    ic = new_ipaddr_chain(p, s, sar);
+                    ic->next = *iphash_table_tail[bucket];
+                    *iphash_table_tail[bucket] = ic;
+                }
+                else if (!add_name_vhost_config(p, main_s, s, sar, ic)) {
+                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
+                                 0, main_s, "VirtualHost %s:%u overlaps "
+                                 "with VirtualHost %s:%u, the first has "
+                                 "precedence, perhaps you need a "
+                                 "NameVirtualHost directive",
+                                 sar->virthost, sar->host_port,
+                                 ic->sar->virthost, ic->sar->host_port);
+                    ic->sar = sar;
+                    ic->server = s;
+                }
+            }
+        }
 
-	/* Ok now we want to set up a server_hostname if the user was
-	 * silly enough to forget one.
-	 * XXX: This is silly we should just crash and burn.
-	 */
-	if (!s->server_hostname) {
-	    if (has_default_vhost_addr) {
-		s->server_hostname = main_s->server_hostname;
-	    }
-	    else if (!s->addrs) {
-		/* what else can we do?  at this point this vhost has
-		    no configured name, probably because they used
-		    DNS in the VirtualHost statement.  It's disabled
-		    anyhow by the host matching code.  -djg */
-		s->server_hostname =
-		    apr_pstrdup(p, "bogus_host_without_forward_dns");
-	    }
-	    else {
-		apr_status_t rv;
+        /* Ok now we want to set up a server_hostname if the user was
+         * silly enough to forget one.
+         * XXX: This is silly we should just crash and burn.
+         */
+        if (!s->server_hostname) {
+            if (has_default_vhost_addr) {
+                s->server_hostname = main_s->server_hostname;
+            }
+            else if (!s->addrs) {
+                /* what else can we do?  at this point this vhost has
+                    no configured name, probably because they used
+                    DNS in the VirtualHost statement.  It's disabled
+                    anyhow by the host matching code.  -djg */
+                s->server_hostname =
+                    apr_pstrdup(p, "bogus_host_without_forward_dns");
+            }
+            else {
+                apr_status_t rv;
                 char *hostname;
 
                 rv = apr_getnameinfo(&hostname, s->addrs->host_addr, 0);
                 if (rv == APR_SUCCESS) {
                     s->server_hostname = apr_pstrdup(p, hostname);
-		}
-		else {
-		    /* again, what can we do?  They didn't specify a
-		       ServerName, and their DNS isn't working. -djg */
+                }
+                else {
+                    /* again, what can we do?  They didn't specify a
+                       ServerName, and their DNS isn't working. -djg */
                     char *ipaddr_str;
 
                     apr_sockaddr_ip_get(&ipaddr_str, s->addrs->host_addr);
-		    ap_log_error(APLOG_MARK, APLOG_ERR, rv, main_s,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, main_s,
                                  "Failed to resolve server name "
                                  "for %s (check DNS) -- or specify an explicit "
                                  "ServerName",
                                  ipaddr_str);
-		    s->server_hostname =
-			apr_pstrdup(p, "bogus_host_without_reverse_dns");
-		}
-	    }
-	}
+                    s->server_hostname =
+                        apr_pstrdup(p, "bogus_host_without_reverse_dns");
+                }
+            }
+        }
     }
 
     /* now go through and delete any NameVirtualHosts that didn't have any
      * hosts associated with them.  Lamers.
      */
     for (i = 0; i < IPHASH_TABLE_SIZE; ++i) {
-	remove_unused_name_vhosts(main_s, &iphash_table[i]);
+        remove_unused_name_vhosts(main_s, &iphash_table[i]);
     }
     remove_unused_name_vhosts(main_s, &default_list);
 
@@ -703,7 +713,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
     if (ap_exists_config_define("DUMP_VHOSTS")) {
         apr_file_t *thefile = NULL;
         apr_file_open_stderr(&thefile, p);
-	dump_vhost_config(thefile);
+        dump_vhost_config(thefile);
     }
 }
 
@@ -750,14 +760,14 @@ static void fix_hostname(request_rec *r)
      */
     if (r->hostname[0] != '[') {
         for (dst = host; *dst; dst++) {
-	    if (*dst == '.') {
-		dst++;
-		if (*dst == '.')
-		    goto bad;
-	    }
-	    else if (*dst == '/' || *dst == '\\') {
-		goto bad;
-	    }
+            if (*dst == '.') {
+                dst++;
+                if (*dst == '.')
+                    goto bad;
+            }
+            else if (*dst == '/' || *dst == '\\') {
+                goto bad;
+            }
         }
         /* strip trailing gubbins */
         if (dst > host && dst[-1] == '.') {
@@ -770,7 +780,7 @@ static void fix_hostname(request_rec *r)
 bad:
     r->status = HTTP_BAD_REQUEST;
     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-		  "Client sent malformed Host header");
+                  "Client sent malformed Host header");
     return;
 }
 
@@ -783,27 +793,27 @@ static int matches_aliases(server_rec *s, const char *host)
 
     /* match ServerName */
     if (!strcasecmp(host, s->server_hostname)) {
-	return 1;
+        return 1;
     }
 
     /* search all the aliases from ServerAlias directive */
     names = s->names;
     if (names) {
-	char **name = (char **) names->elts;
-	for (i = 0; i < names->nelts; ++i) {
-	    if(!name[i]) continue;
-	    if (!strcasecmp(host, name[i]))
-		return 1;
-	}
+        char **name = (char **) names->elts;
+        for (i = 0; i < names->nelts; ++i) {
+            if(!name[i]) continue;
+            if (!strcasecmp(host, name[i]))
+                return 1;
+        }
     }
     names = s->wild_names;
     if (names) {
-	char **name = (char **) names->elts;
-	for (i = 0; i < names->nelts; ++i) {
-	    if(!name[i]) continue;
-	    if (!ap_strcasecmp_match(host, name[i]))
-		return 1;
-	}
+        char **name = (char **) names->elts;
+        for (i = 0; i < names->nelts; ++i) {
+            if(!name[i]) continue;
+            if (!ap_strcasecmp_match(host, name[i]))
+                return 1;
+        }
     }
     return 0;
 }
@@ -817,7 +827,7 @@ static int matches_aliases(server_rec *s, const char *host)
  * the ServerName and/or ServerAliases.
  */
 AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
-    apr_port_t port)
+                                         apr_port_t port)
 {
     server_rec *s;
     server_addr_rec *sar;
@@ -841,16 +851,16 @@ AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
      * it would really go to v1.
      */
     for (sar = s->addrs; sar; sar = sar->next) {
-	if ((sar->host_port == 0 || port == sar->host_port)
-	    && !strcasecmp(host, sar->virthost)) {
-	    return 1;
-	}
+        if ((sar->host_port == 0 || port == sar->host_port)
+            && !strcasecmp(host, sar->virthost)) {
+            return 1;
+        }
     }
 
     /* the Port has to match now, because the rest don't have ports associated
      * with them. */
     if (port != s->port) {
-	return 0;
+        return 0;
     }
 
     return matches_aliases(s, host);
@@ -895,32 +905,32 @@ static void check_hostalias(request_rec *r)
     for (src = r->connection->vhost_lookup_data; src; src = src->next) {
         server_addr_rec *sar;
 
-	/* We only consider addresses on the name_chain which have a matching
-	 * port
-	 */
-	sar = src->sar;
-	if (sar->host_port != 0 && port != sar->host_port) {
-	    continue;
-	}
+        /* We only consider addresses on the name_chain which have a matching
+         * port
+         */
+        sar = src->sar;
+        if (sar->host_port != 0 && port != sar->host_port) {
+            continue;
+        }
 
         s = src->server;
 
-	/* does it match the virthost from the sar? */
-	if (!strcasecmp(host, sar->virthost)) {
-	    goto found;
-	}
+        /* does it match the virthost from the sar? */
+        if (!strcasecmp(host, sar->virthost)) {
+            goto found;
+        }
 
-	if (s == last_s) {
-	    /* we've already done ServerName and ServerAlias checks for this
-	     * vhost
-	     */
-	    continue;
-	}
-	last_s = s;
+        if (s == last_s) {
+            /* we've already done ServerName and ServerAlias checks for this
+             * vhost
+             */
+            continue;
+        }
+        last_s = s;
 
-	if (matches_aliases(s, host)) {
-	    goto found;
-	}
+        if (matches_aliases(s, host)) {
+            goto found;
+        }
     }
     return;
 
@@ -951,26 +961,26 @@ static void check_serverpath(request_rec *r)
 
     last_s = NULL;
     for (src = r->connection->vhost_lookup_data; src; src = src->next) {
-	/* We only consider addresses on the name_chain which have a matching
-	 * port
-	 */
-	if (src->sar->host_port != 0 && port != src->sar->host_port) {
-	    continue;
-	}
+        /* We only consider addresses on the name_chain which have a matching
+         * port
+         */
+        if (src->sar->host_port != 0 && port != src->sar->host_port) {
+            continue;
+        }
 
         s = src->server;
-	if (s == last_s) {
-	    continue;
-	}
-	last_s = s;
+        if (s == last_s) {
+            continue;
+        }
+        last_s = s;
 
         if (s->path && !strncmp(r->uri, s->path, s->pathlen) &&
             (s->path[s->pathlen - 1] == '/' ||
              r->uri[s->pathlen] == '/' ||
              r->uri[s->pathlen] == '\0')) {
             r->server = s;
-	    return;
-	}
+            return;
+        }
     }
 }
 
@@ -979,9 +989,9 @@ void ap_update_vhost_from_headers(request_rec *r)
 {
     /* must set this for HTTP/1.1 support */
     if (r->hostname || (r->hostname = apr_table_get(r->headers_in, "Host"))) {
-	fix_hostname(r);
-	if (r->status != HTTP_OK)
-	    return;
+        fix_hostname(r);
+        if (r->status != HTTP_OK)
+            return;
     }
     /* check if we tucked away a name_chain */
     if (r->connection->vhost_lookup_data) {
@@ -1004,10 +1014,10 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     /* scan the hash apr_table_t for an exact match first */
     trav = find_ipaddr(conn->local_addr);
     if (trav) {
-	/* save the name_chain for later in case this is a name-vhost */
-	conn->vhost_lookup_data = trav->names;
-	conn->base_server = trav->server;
-	return;
+        /* save the name_chain for later in case this is a name-vhost */
+        conn->vhost_lookup_data = trav->names;
+        conn->base_server = trav->server;
+        return;
     }
 
     /* maybe there's a default server or wildcard name-based vhost
@@ -1016,9 +1026,9 @@ void ap_update_vhost_given_ip(conn_rec *conn)
     apr_sockaddr_port_get(&port, conn->local_addr);
     trav = find_default_server(port);
     if (trav) {
-	conn->vhost_lookup_data = trav->names;
-	conn->base_server = trav->server;
-	return;
+        conn->vhost_lookup_data = trav->names;
+        conn->base_server = trav->server;
+        return;
     }
 
     /* otherwise we're stuck with just the main server
