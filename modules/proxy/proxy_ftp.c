@@ -552,7 +552,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     char *user = NULL;
 /*    char *account = NULL; how to supply an account in a URL? */
     const char *password = NULL;
-    int i, j, len, rc;
+    int i = 0, j, len, rc;
     int one = 1;
     char *size = NULL;
     apr_size_t readbytes = -1;
@@ -1264,7 +1264,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* set request; "path" holds last path component */
     len = decodeenc(path);
 
-    /* TM - if len == 0 then it must be a directory (you can't RETR nothing) */
+    /* TM - if len == 0 then it must be a directory (you can't RETR anything) */
 
     if (len == 0) {
 	parms = "d";
@@ -1588,43 +1588,24 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 		ap_pass_brigade(r->output_filters, bb);
 		break;
 	    }
-	    ap_pass_brigade(r->output_filters, bb);
+	    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
+		/* Ack! Phbtt! Die! User aborted! */
+		apr_brigade_cleanup(bb);
+		break;
+	    }
 	    apr_brigade_cleanup(bb);
 	}
-	ap_flush_conn(remote);
-	apr_socket_close(remote->client_socket);
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: FTP: Closing Data connection.");
-	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: FTP: %d %s", rc, buffer);
-	apr_brigade_cleanup(bb);
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: FTP: end body send");
     }
-    else {
-
-	/* abort the transfer */
-	buf = apr_pstrcat(p, "ABOR", CRLF, NULL);
-	e = apr_bucket_pool_create(buf, strlen(buf), p);
-	APR_BRIGADE_INSERT_TAIL(bb, e);
-	e = apr_bucket_flush_create();
-	APR_BRIGADE_INSERT_TAIL(bb, e);
-	ap_pass_brigade(origin->output_filters, bb);
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-				 "proxy: FTP: ABOR");
-	/* responses: 225, 226, 421, 500, 501, 502 */
-	/*   225 Data connection open; no transfer in progress. */
-	/*   226 Closing data connection. */
-	/*   421 Service not available, closing control connection. */
-	/*   500 Syntax error, command unrecognized. */
-	/*   501 Syntax error in parameters or arguments. */
-	/*   502 Command not implemented. */
-	rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: FTP: %d %s", rc, buffer);
-    }
-
+    ap_flush_conn(remote);
+    apr_socket_close(remote->client_socket);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: FTP: Closing Data connection.");
+    rc = ftp_getrc_msg(origin, cbb, buffer, sizeof(buffer));
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: FTP: %d %s", rc, buffer);
+    apr_brigade_cleanup(bb);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+		 "proxy: FTP: end body send");
 
     /*
      * VII: Clean Up
