@@ -267,24 +267,24 @@ SOURCE=..\..\modules\proxy\proxy_util.c
 !IF  "$(CFG)" == "mod_proxy - Win32 Release"
 
 "ApacheCore - Win32 Release" : 
-   cd "..\../..\src"
+   cd ".\..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release" 
    cd ".\os\win32"
 
 "ApacheCore - Win32 ReleaseCLEAN" : 
-   cd "..\../..\src"
+   cd ".\..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Release" RECURSE=1 CLEAN 
    cd ".\os\win32"
 
 !ELSEIF  "$(CFG)" == "mod_proxy - Win32 Debug"
 
 "ApacheCore - Win32 Debug" : 
-   cd "..\../..\src"
+   cd ".\..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" 
    cd ".\os\win32"
 
 "ApacheCore - Win32 DebugCLEAN" : 
-   cd "..\../..\src"
+   cd ".\..\.."
    $(MAKE) /$(MAKEFLAGS) /F ".\ApacheCore.mak" CFG="ApacheCore - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\os\win32"
 

@@ -745,3 +745,16 @@
 	".\os\win32\os.h"\
 	".\os\win32\readdir.h"\
 	
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+!ENDIF 
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+!ENDIF 
+
