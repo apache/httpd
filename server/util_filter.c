@@ -62,11 +62,6 @@
 #include "http_log.h"
 #include "util_filter.h"
 
-/* ### make this visible for direct manipulation?
- */
-static apr_hash_t *registered_output_filters = NULL;
-static apr_hash_t *registered_input_filters = NULL;
-
 /* NOTE: Apache's current design doesn't allow a pool to be passed thru,
    so we depend on a global to hold the correct pool
 */
@@ -83,6 +78,103 @@ static apr_hash_t *registered_input_filters = NULL;
                            || (before_this)->frec->ftype > (f)->frec->ftype \
                            || (before_this)->r != (f)->r)
 
+/* Trie structure to hold the mapping from registered
+ * filter names to filters
+ */
+
+typedef struct filter_trie_node filter_trie_node;
+
+typedef struct {
+    char c;
+    filter_trie_node *child;
+} filter_trie_child_ptr;
+
+/* Each trie node has an array of pointers to its children.
+ * The array is kept in sorted order so that add_any_filter()
+ * can do a binary search
+ */
+struct filter_trie_node {
+    ap_filter_rec_t *frec;
+    filter_trie_child_ptr *children;
+    int nchildren;
+    int size;
+};
+
+#define TRIE_INITIAL_SIZE 4
+
+/* Link a trie node to its parent
+ */
+static void trie_node_link(apr_pool_t *p, filter_trie_node *parent,
+                           filter_trie_node *child, char c)
+{
+    int i, j;
+
+    if (parent->nchildren == parent->size) {
+        filter_trie_child_ptr *new;
+        parent->size *= 2;
+        new = (filter_trie_child_ptr *)apr_palloc(p, parent->size *
+                                             sizeof(filter_trie_child_ptr));
+        memcpy(new, parent->children, parent->nchildren *
+               sizeof(filter_trie_child_ptr));
+        parent->children = new;
+    }
+
+    for (i = 0; i < parent->nchildren; i++) {
+        if (c == parent->children[i].c) {
+            return;
+        }
+        else if (c < parent->children[i].c) {
+            break;
+        }
+    }
+    for (j = parent->nchildren; j > i; j--) {
+        parent->children[j].c = parent->children[j - 1].c;
+        parent->children[j].child = parent->children[j - 1].child;
+    }
+    parent->children[i].c = c;
+    parent->children[i].child = child;
+
+    parent->nchildren++;
+}
+
+/* Allocate a new node for a trie.
+ * If parent is non-NULL, link the new node under the parent node with
+ * key 'c' (or, if an existing child node matches, return that one)
+ */
+static filter_trie_node *trie_node_alloc(apr_pool_t *p,
+                                         filter_trie_node *parent, char c)
+{
+    filter_trie_node *new_node;
+    if (parent) {
+        int i;
+        for (i = 0; i < parent->nchildren; i++) {
+            if (c == parent->children[i].c) {
+                return parent->children[i].child;
+            }
+            else if (c < parent->children[i].c) {
+                break;
+            }
+        }
+        new_node =
+            (filter_trie_node *)apr_palloc(p, sizeof(filter_trie_node));
+        trie_node_link(p, parent, new_node, c);
+    }
+    else { /* No parent node */
+        new_node = (filter_trie_node *)apr_palloc(p,
+                                                  sizeof(filter_trie_node));
+    }
+
+    new_node->frec = NULL;
+    new_node->nchildren = 0;
+    new_node->size = TRIE_INITIAL_SIZE;
+    new_node->children = (filter_trie_child_ptr *)apr_palloc(p,
+                             new_node->size * sizeof(filter_trie_child_ptr));
+    return new_node;
+}
+
+static filter_trie_node *registered_output_filters = NULL;
+static filter_trie_node *registered_input_filters = NULL;
+
 
 static apr_status_t filter_cleanup(void *ctx)
 {
@@ -94,12 +186,14 @@ static apr_status_t filter_cleanup(void *ctx)
 static ap_filter_rec_t *register_filter(const char *name,
                             ap_filter_func filter_func,
                             ap_filter_type ftype,
-                            apr_hash_t **reg_filter_set)
+                            filter_trie_node **reg_filter_set)
 {
     ap_filter_rec_t *frec = apr_palloc(FILTER_POOL, sizeof(*frec));
+    const char *n;
+    filter_trie_node *node;
 
     if (!*reg_filter_set) {
-        *reg_filter_set = apr_hash_make(FILTER_POOL);
+        *reg_filter_set = trie_node_alloc(FILTER_POOL, NULL, 0);
     }
 
     frec->name = apr_pstrdup(FILTER_POOL, name);
@@ -107,8 +201,16 @@ static ap_filter_rec_t *register_filter(const char *name,
     frec->filter_func = filter_func;
     frec->ftype = ftype;
 
-    apr_hash_set(*reg_filter_set, frec->name, APR_HASH_KEY_STRING, frec);
-
+    node = *reg_filter_set;
+    for (n = frec->name; *n; n++) {
+        filter_trie_node *child = trie_node_alloc(FILTER_POOL, node, *n);
+        if (apr_isalpha(*n)) {
+            trie_node_link(FILTER_POOL, node, child, apr_toupper(*n));
+        }
+        node = child;
+    }
+    node->frec = frec;
+    
     apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, 
                               apr_pool_cleanup_null);
     return frec;
@@ -134,35 +236,45 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
 
 static ap_filter_t *add_any_filter(const char *name, void *ctx, 
                                    request_rec *r, conn_rec *c, 
-                                   apr_hash_t *reg_filter_set,
+                                   const filter_trie_node *reg_filter_set,
                                    ap_filter_t **r_filters,
                                    ap_filter_t **c_filters)
 {
     if (reg_filter_set) {
-        ap_filter_rec_t *frec;
-        apr_pool_t *p;
-        int len = strlen(name);
-        int size = len + 1;
-        char *name_lower;
-        char *dst;
-        const char *src = name;
+        const char *n;
+        const filter_trie_node *node;
 
-        p = r ? r->pool : c->pool;
-        name_lower = apr_palloc(p, size);
-        dst = name_lower;
+        node = reg_filter_set;
+        for (n = name; *n; n++) {
+            int start, end;
+            start = 0;
+            end = node->nchildren - 1;
+            while (end >= start) {
+                int middle = (end + start) / 2;
+                char c = node->children[middle].c;
+                if (*n == c) {
+                    node = node->children[middle].child;
+                    break;
+                }
+                else if (*n < c) {
+                    end = middle - 1;
+                }
+                else {
+                    start = middle + 1;
+                }
+            }
+            if (end < start) {
+                node = NULL;
+                break;
+            }
+        }
 
-        /* Normalize the name to all lowercase to match register_filter() */
-        do {
-            *dst++ = apr_tolower(*src++);
-        } while (--size);
-
-        frec = (ap_filter_rec_t *)apr_hash_get(reg_filter_set,
-                                               name_lower, len);
-        if (frec) {
+        if (node && node->frec) {
+            apr_pool_t* p = r ? r->pool : c->pool;
             ap_filter_t *f = apr_pcalloc(p, sizeof(*f));
             ap_filter_t **outf = r ? r_filters : c_filters;
 
-            f->frec = frec;
+            f->frec = node->frec;
             f->ctx = ctx;
             f->r = r;
             f->c = c;
