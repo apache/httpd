@@ -49,7 +49,8 @@ fi
 sed 's/#.*//' $file | \
  sed '/^[ 	]*$/d' | \
  sed 's/[ 	]*$//' | \
- sed 's/^Rule[ 	]*/##Rule:/' | \
+ sed 's/^Rule[ 	]*/##Rule:/' \
+ > $tmpfile
 
 # Check for syntax errors...
 
