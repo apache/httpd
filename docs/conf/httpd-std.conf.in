@@ -850,7 +850,7 @@ ServerSignature On
     AddCharset ISO-2022-JP .iso2022-jp .jis
     AddCharset ISO-2022-KR .iso2022-kr .kis
     AddCharset ISO-2022-CN .iso2022-cn .cis
-    AddCharset Big5        .Big5       .big5
+    AddCharset Big5        .Big5       .big5 .b5
     AddCharset cn-Big5     .cn-big5
     # For russian, more than one charset is used (depends on client, mostly):
     AddCharset WINDOWS-1251 .cp-1251   .win-1251
@@ -874,27 +874,12 @@ ServerSignature On
     AddCharset euc-gb      .euc-gb
     AddCharset euc-jp      .euc-jp
     AddCharset euc-kr      .euc-kr
-    AddCharset gb2312      .gb2312
+    #Not sure how euc-tw got in - IANA doesn't list it???
+    AddCharset EUC-TW      .euc-tw
+    AddCharset gb2312      .gb2312 .gb
     AddCharset iso-10646-ucs-2 .ucs-2 .iso-10646-ucs-2
     AddCharset iso-10646-ucs-4 .ucs-4 .iso-10646-ucs-4
-    AddCharset shift_jis   .shift_jis
-
-    # The set below does not map to a specific (iso) standard
-    # but works on a fairly wide range of browsers. Note that
-    # capitalization actually matters (it should not, but it
-    # does for some browsers).
-    #
-    # See http://www.iana.org/assignments/character-sets
-    # for a list of sorts. But browsers support few.
-    #
-    AddCharset GB2312      .gb2312 .gb 
-    AddCharset utf-7       .utf7
-    AddCharset utf-8       .utf8
-    AddCharset big5        .big5 .b5
-    AddCharset EUC-TW      .euc-tw
-    AddCharset EUC-JP      .euc-jp
-    AddCharset EUC-KR      .euc-kr
-    AddCharset shift_jis   .sjis
+    AddCharset shift_jis   .shift_jis .sjis
 
     #
     # AddHandler allows you to map certain file extensions to "handlers":
