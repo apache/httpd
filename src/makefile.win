@@ -114,12 +114,20 @@ _build:
 
 _install:
 	-mkdir "$(INSTDIR)"
-	-mkdir "$(INSTDIR)\modules"
-        -mkdir "$(INSTDIR)\htdocs"
-	-mkdir "$(INSTDIR)\proxy"
-	-mkdir "$(INSTDIR)\logs"
-	-mkdir "$(INSTDIR)\conf"
 	-mkdir "$(INSTDIR)\bin"
+	-mkdir "$(INSTDIR)\cgi-bin"
+	-mkdir "$(INSTDIR)\conf"
+        -mkdir "$(INSTDIR)\htdocs"
+        -mkdir "$(INSTDIR)\icons"
+        -mkdir "$(INSTDIR)\include"
+        -mkdir "$(INSTDIR)\include\regex"
+        -mkdir "$(INSTDIR)\include\sdbm"
+        -mkdir "$(INSTDIR)\include\xml"
+	-mkdir "$(INSTDIR)\lib"
+	-mkdir "$(INSTDIR)\libexec"
+	-mkdir "$(INSTDIR)\logs"
+	-mkdir "$(INSTDIR)\modules"
+	-mkdir "$(INSTDIR)\proxy"
 	copy Apache$(SHORT)\Apache.exe "$(INSTDIR)"
 	copy Core$(SHORT)\ApacheCore.dll "$(INSTDIR)"
 	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.dll "$(INSTDIR)"
@@ -143,6 +151,23 @@ _install:
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
         -xcopy ..\htdocs "$(INSTDIR)\htdocs" /sdy
+	copy ..\cgi-bin\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
+	xcopy include\*.h "$(INSTDIR)\include" /dy
+	xcopy os\win32\*.h "$(INSTDIR)\include" /dy
+	xcopy regex\*.h "$(INSTDIR)\include\regex" /dy
+	xcopy lib\sdbm\*.h "$(INSTDIR)\include\sdbm" /dy
+	xcopy lib\expat-lite\*.h "$(INSTDIR)\include\xml" /dy
+        -xcopy ..\icons "$(INSTDIR)\icons" /sdy
+	copy ap\$(LONG)\ap.lib "$(INSTDIR)\lib"
+	copy os\win32\ApacheOS$(SHORT)\ApacheOS.lib "$(INSTDIR)\lib"
+	copy regex\$(LONG)\regex.lib "$(INSTDIR)\lib"
+	copy lib\sdbm\$(LONG)\sdbm.lib "$(INSTDIR)\lib"
+	copy Core$(SHORT)\ApacheCore.exp "$(INSTDIR)\libexec"
+	copy Core$(SHORT)\ApacheCore.lib "$(INSTDIR)\libexec"
+	copy lib\expat-lite\$(LONG)\xmltok.exp "$(INSTDIR)\libexec"
+	copy lib\expat-lite\$(LONG)\xmltok.lib "$(INSTDIR)\libexec"
+	copy lib\expat-lite\$(LONG)\xmlparse.exp "$(INSTDIR)\libexec"
+	copy lib\expat-lite\$(LONG)\xmlparse.lib "$(INSTDIR)\libexec"
         copy ..\conf\magic "$(INSTDIR)\conf\magic.default"
         if not exist "$(INSTDIR)\conf\magic" \
             copy "$(INSTDIR)\conf\magic.default" "$(INSTDIR)\conf\magic"
