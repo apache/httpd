@@ -879,7 +879,7 @@ command_rec includes_cmds[] = {
 handler_rec includes_handlers[] = {
 { INCLUDES_MAGIC_TYPE, send_parsed_file },
 { INCLUDES_MAGIC_TYPE3, send_parsed_file },
-{ "*/*", xbithack_handler },
+{ "text/html", xbithack_handler },
 { NULL }
 };
 
