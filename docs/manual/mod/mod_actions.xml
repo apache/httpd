@@ -77,8 +77,8 @@ content-type</description>
     <example><title>Example</title>
       &lt;Location /news&gt;<br />
       <indent>
-        SetHandler news-handler
-        Action news-handler /cgi-bin/news.cgi virtual
+        SetHandler news-handler<br />
+        Action news-handler /cgi-bin/news.cgi virtual<br />
       </indent>
       &lt;/Location&gt;
     </example>
