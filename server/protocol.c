@@ -86,7 +86,6 @@
 #include "http_vhost.h"
 #include "http_log.h"           /* For errors detected in basic auth common
                                  * support code... */
-#include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include "util_charset.h"
 #include "util_ebcdic.h"
 

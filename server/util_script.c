@@ -77,7 +77,7 @@
 #include "http_protocol.h"
 #include "http_request.h"	/* for sub_req_lookup_uri() */
 #include "util_script.h"
-#include "util_date.h"		/* For parseHTTPdate() */
+#include "apr_date.h"		/* For apr_date_parse_http() */
 #include "util_ebcdic.h"
 
 #ifdef OS2
@@ -546,7 +546,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	 * pass it on blindly because of restrictions on future values.
 	 */
 	else if (!strcasecmp(w, "Last-Modified")) {
-	    ap_update_mtime(r, ap_parseHTTPdate(l));
+	    ap_update_mtime(r, apr_date_parse_http(l));
 	    ap_set_last_modified(r);
 	}
 	else if (!strcasecmp(w, "Set-Cookie")) {
