@@ -396,7 +396,12 @@ typedef quad_t rlim_t;
 #ifndef QNX
 #include <memory.h>
 #endif
+
+#ifdef USE_HS_REGEX
 #include "regex/regex.h"
+#else
+#include <regex.h>
+#endif
 
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>

@@ -186,6 +186,11 @@ of these #defines.
 
     HAVE_SYS_SELECT_H:
       Define if the OS has the <sys/select.h> header file.
+
+    HAVE_SYS_RESOURCE_H:
+      Define if the OS has and supports the getrlimit/setrlimit
+      family. Apache uses this to determine if RLIMIT_CPU|VMEM|DATA|RLIMIT
+      is found and used.
 --
 
  USE_*:
@@ -203,6 +208,11 @@ of these #defines.
 
      USE_LONGJMP:
       use the longjmp() call instead of siglongjmp()
+
+     USE_HS_REGEX:
+      Define this (and adjust Configuration as required) if you want
+      or need to use H. Spencer's POSIX/regex package which is
+      included.
 --
 
   NO_*:
