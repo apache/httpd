@@ -1,4 +1,8 @@
 Changes with Apache 1.3.13
+
+  *) Add '-n' option to htpasswd to make it print its user:pw record
+     on stdout rather than having to frob a text file.  [Ken Coar]
+
   *) Set default ServerName setting to 127.0.0.1 for the Windows
      config file (httpd.conf-dist-win)
      PR: 5509, 5783, 5953, 5903, 5983, 5259, 5515, 5858

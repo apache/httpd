@@ -257,7 +257,10 @@ static int usage(void)
     fprintf(stderr, "Usage:\n");
     fprintf(stderr, "\thtpasswd [-cmdps] passwordfile username\n");
     fprintf(stderr, "\thtpasswd -b[cmdps] passwordfile username password\n\n");
+    fprintf(stderr, "\thtpasswd -n[mdps] username\n");
+    fprintf(stderr, "\thtpasswd -nb[mdps] username password\n");
     fprintf(stderr, " -c  Create a new file.\n");
+    fprintf(stderr, " -n  Don't update file; display results on stdout.\n");
     fprintf(stderr, " -m  Force MD5 encryption of the password"
 #if defined(WIN32) || defined(TPF)
 	" (default)"
@@ -370,6 +373,7 @@ int main(int argc, char *argv[])
     int found = 0;
     int alg = ALG_CRYPT;
     int newfile = 0;
+    int nofile = 0;
     int noninteractive = 0;
     int i;
     int args_left = 2;
@@ -398,6 +402,10 @@ int main(int argc, char *argv[])
 	while (*++arg != '\0') {
 	    if (*arg == 'c') {
 		newfile++;
+	    }
+	    else if (*arg == 'n') {
+		nofile++;
+		args_left--;
 	    }
 	    else if (*arg == 'm') {
 		alg = ALG_APMD5;
@@ -429,15 +437,24 @@ int main(int argc, char *argv[])
     if ((argc - i) != args_left) {
 	return usage();
     }
-    if (strlen(argv[i]) > (sizeof(pwfilename) - 1)) {
-	fprintf(stderr, "%s: filename too long\n", argv[0]);
-	return ERR_OVERFLOW;
+    if (newfile && nofile) {
+	fprintf(stderr, "%s: -c and -n options conflict\n", argv[0]);
+	return ERR_SYNTAX;
     }
-    strcpy(pwfilename, argv[i]);
-    if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
-	fprintf(stderr, "%s: username too long (>%d)\n", argv[0],
-		sizeof(user) - 1);
-	return ERR_OVERFLOW;
+    if (nofile) {
+	i--;
+    }
+    else {
+	if (strlen(argv[i]) > (sizeof(pwfilename) - 1)) {
+	    fprintf(stderr, "%s: filename too long\n", argv[0]);
+	    return ERR_OVERFLOW;
+	}
+	strcpy(pwfilename, argv[i]);
+	if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
+	    fprintf(stderr, "%s: username too long (>%d)\n", argv[0],
+		    sizeof(user) - 1);
+	    return ERR_OVERFLOW;
+	}
     }
     strcpy(user, argv[i + 1]);
     if ((arg = strchr(user, ':')) != NULL) {
@@ -472,49 +489,55 @@ int main(int argc, char *argv[])
 		"just not work on this platform.\n");
     }
 #endif
-    /*
-     * Verify that the file exists if -c was omitted.  We give a special
-     * message if it doesn't.
-     */
-    if ((! newfile) && (! exists(pwfilename))) {
-	fprintf(stderr, "%s: cannot modify file %s; use '-c' to create it\n",
-		argv[0], pwfilename);
-	perror("fopen");
-	exit(ERR_FILEPERM);
-    }
-    /*
-     * Verify that we can read the existing file in the case of an update
-     * to it (rather than creation of a new one).
-     */
-    if ((! newfile) && (! readable(pwfilename))) {
-	fprintf(stderr, "%s: cannot open file %s for read access\n",
-		argv[0], pwfilename);
-	perror("fopen");
-	exit(ERR_FILEPERM);
-    }
-    /*
-     * Now check to see if we can preserve an existing file in case
-     * of password verification errors on a -c operation.
-     */
-    if (newfile && exists(pwfilename) && (! readable(pwfilename))) {
-	fprintf(stderr, "%s: cannot open file %s for read access\n"
-		"%s: existing auth data would be lost on password mismatch",
-		argv[0], pwfilename, argv[0]);
-	perror("fopen");
-	exit(ERR_FILEPERM);
-    }
-    /*
-     * Now verify that the file is writable!
-     */
-    if (! writable(pwfilename)) {
-	fprintf(stderr, "%s: cannot open file %s for write access\n",
-		argv[0], pwfilename);
-	perror("fopen");
-	exit(ERR_FILEPERM);
+    if (! nofile) {
+	/*
+	 * Only do the file checks if we're supposed to frob it.
+	 *
+	 * Verify that the file exists if -c was omitted.  We give a special
+	 * message if it doesn't.
+	 */
+	if ((! newfile) && (! exists(pwfilename))) {
+	    fprintf(stderr,
+		    "%s: cannot modify file %s; use '-c' to create it\n",
+		    argv[0], pwfilename);
+	    perror("fopen");
+	    exit(ERR_FILEPERM);
+	}
+	/*
+	 * Verify that we can read the existing file in the case of an update
+	 * to it (rather than creation of a new one).
+	 */
+	if ((! newfile) && (! readable(pwfilename))) {
+	    fprintf(stderr, "%s: cannot open file %s for read access\n",
+		    argv[0], pwfilename);
+	    perror("fopen");
+	    exit(ERR_FILEPERM);
+	}
+	/*
+	 * Now check to see if we can preserve an existing file in case
+	 * of password verification errors on a -c operation.
+	 */
+	if (newfile && exists(pwfilename) && (! readable(pwfilename))) {
+	    fprintf(stderr, "%s: cannot open file %s for read access\n"
+		    "%s: existing auth data would be lost on "
+		    "password mismatch",
+		    argv[0], pwfilename, argv[0]);
+	    perror("fopen");
+	    exit(ERR_FILEPERM);
+	}
+	/*
+	 * Now verify that the file is writable!
+	 */
+	if (! writable(pwfilename)) {
+	    fprintf(stderr, "%s: cannot open file %s for write access\n",
+		    argv[0], pwfilename);
+	    perror("fopen");
+	    exit(ERR_FILEPERM);
+	}
     }
 
     /*
-     * All the file access checks have been made.  Time to go to work;
+     * All the file access checks (if any) have been made.  Time to go to work;
      * try to create the record for the username in question.  If that
      * fails, there's no need to waste any time on file manipulations.
      * Any error message text is returned in the record buffer, since
@@ -526,6 +549,10 @@ int main(int argc, char *argv[])
     if (i != 0) {
 	fprintf(stderr, "%s: %s\n", argv[0], record);
 	exit(i);
+    }
+    if (nofile) {
+	printf("%s\n", record);
+	exit(0);
     }
 
     /*
