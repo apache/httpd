@@ -281,7 +281,7 @@ if [ ".$help" = .no ]; then
     echo "##" >>$configstatus
     echo "" >>$configstatus
     for var in CC CPP OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LD_SHLIB LDFLAGS_SHLIB \
-               LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB TARGET; do
+               LDFLAGS_SHLIB_EXPORT LIBS INCLUDES RANLIB DEPS TARGET; do
         eval "val=\"\$$var\""
         if [ ".$val" != . ]; then
             echo "$var=$val" |\
