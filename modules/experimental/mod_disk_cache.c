@@ -88,11 +88,12 @@ typedef struct disk_cache_object {
  * mod_disk_cache configuration
  */
 /* TODO: Make defaults OS specific */
-#define MAX_DIRLEVELS 20
-#define MAX_DIRLENGTH 20
-#define MIN_FILE_SIZE 1
-#define MAX_FILE_SIZE 1000000
-#define MAX_CACHE_SIZE 1000000
+#define CACHEFILE_LEN 20        /* must be less than HASH_LEN/2 */
+#define DEFAULT_DIRLEVELS 3
+#define DEFAULT_DIRLENGTH 2
+#define DEFAULT_MIN_FILE_SIZE 1
+#define DEFAULT_MAX_FILE_SIZE 1000000
+#define DEFAULT_CACHE_SIZE 1000000
  
 typedef struct {
     const char* cache_root;
@@ -144,7 +145,7 @@ static char *data_file(apr_pool_t *p, int dirlevels, int dirlength,
     return apr_pstrcat(p, root, "/", hashfile, CACHE_DATA_SUFFIX, NULL);
 }
 
-static void mkdir_structure(disk_cache_conf *conf, const char *file, apr_pool_t *pool)
+static void mkdir_structure(disk_cache_conf *conf, char *file, apr_pool_t *pool)
 {
     apr_status_t rv;
     char *p;
@@ -310,16 +311,18 @@ static int file_cache_write_mydata(apr_file_t *fd , cache_handle_t *h, request_r
 /*
  * Hook and mod_cache callback functions
  */
+#define AP_TEMPFILE "/aptmpXXXXXX"
 static int create_entity(cache_handle_t *h, request_rec *r,
                          const char *type, 
                          const char *key, 
                          apr_size_t len)
 { 
+    disk_cache_conf *conf = ap_get_module_config(r->server->module_config, 
+                                                 &disk_cache_module);
     apr_status_t rv;
     cache_object_t *obj;
     disk_cache_object_t *dobj;
     apr_file_t *tmpfile;
-
     cache_info *info;
 
     if (strcasecmp(type, "disk")) {
@@ -339,13 +342,9 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     dobj->name = (char *) key;
     obj->info = *(info);
 
-    /* open temporary file 
-     * This is broken... The AS400 code created the tempfilename here
-     * Why not just open the tempfile? Or name and open it on the first call 
-     * to write_body? I just don;t see why we would want to name it here
-     * and open it in write_body...
-     * rv = apr_file_mktemp(*tmpfile, "XXXXXX", flags, r->pool);
-     */
+    /* open temporary file */
+    dobj->tempfile = apr_pstrcat(r->pool, conf->cache_root, AP_TEMPFILE, NULL);
+    rv = apr_file_mktemp(&tmpfile, dobj->tempfile, 0, r->pool);
 
     /* Populate the cache handle */
     h->cache_obj = obj;
@@ -597,7 +596,7 @@ static int write_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
 
     if (!dobj->fd) {
         rv = apr_file_open(&dobj->fd, dobj->tempfile, 
-                           APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BUFFERED,
+                           APR_WRITE | APR_CREATE | APR_BINARY| APR_TRUNCATE | APR_BUFFERED,
                            APR_UREAD | APR_UWRITE, r->pool);
         if (rv != APR_SUCCESS) {
             return DECLINED;
@@ -620,11 +619,11 @@ static void *create_config(apr_pool_t *p, server_rec *s)
     disk_cache_conf *conf = apr_pcalloc(p, sizeof(disk_cache_conf));
 
     /* XXX: Set default values */
-    conf->dirlevels = MAX_DIRLEVELS;
-    conf->dirlength = MAX_DIRLENGTH;
-    conf->space = MAX_CACHE_SIZE;
-    conf->maxfs = MAX_FILE_SIZE;
-    conf->minfs = MIN_FILE_SIZE;
+    conf->dirlevels = DEFAULT_DIRLEVELS;
+    conf->dirlength = DEFAULT_DIRLENGTH;
+    conf->space = DEFAULT_CACHE_SIZE;
+    conf->maxfs = DEFAULT_MAX_FILE_SIZE;
+    conf->minfs = DEFAULT_MIN_FILE_SIZE;
 
     conf->cache_root = NULL;
     conf->cache_root_len = 0;
@@ -642,6 +641,7 @@ static const char
                                                  &disk_cache_module);
     conf->cache_root = arg;
     conf->cache_root_len = strlen(arg);
+    /* TODO: canonicalize cache_root and strip off any trailing slashes */
 
     return NULL;
 }
@@ -661,14 +661,23 @@ static const char
     /* XXX */
     return NULL;
 }
+/*
+ * Consider eliminating the next two directives in favor of
+ * Ian's prime number hash...
+ * key = hash_fn( r->uri) 
+ * filename = "/key % prime1 /key %prime2/key %prime3" 
+ */
 static const char
 *set_cache_dirlevels(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-
-    /* TODO: Put some meaningful platform specific constraints on this */
-    conf->dirlevels = atoi(arg);
+    int val = atoi(arg);
+    if (val < 1)
+        return "CacheDirLevels value must be an integer greater than 0";
+    if (val * conf->dirlength > CACHEFILE_LEN)
+        return "CacheDirLevels*CacheDirLength value must not be higher than 20";
+    conf->dirlevels = val;
     return NULL;
 }
 static const char
@@ -676,8 +685,13 @@ static const char
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config, 
                                                  &disk_cache_module);
-    /* TODO: Put some meaningful platform specific constraints on this */
-    conf->dirlength = atoi(arg);
+    int val = atoi(arg);
+    if (val < 1)
+        return "CacheDirLength value must be an integer greater than 0";
+    if (val * conf->dirlevels > CACHEFILE_LEN)
+        return "CacheDirLevels*CacheDirLength value must not be higher than 20";
+
+    conf->dirlength = val;
     return NULL;
 }
 static const char
