@@ -567,7 +567,9 @@ static void dav_send_multistatus(request_rec *r, int status,
     apr_pool_destroy(subpool);
 
     ap_fputs(r->output_filters, bb, "</D:multistatus>" DEBUG_CR);
-    ap_filter_flush(bb, r->output_filters);
+
+    /* deliver whatever might be remaining in the brigade */
+    ap_pass_brigade(r->output_filters, bb);
 }
 
 /*
@@ -2076,7 +2078,9 @@ static int dav_method_propfind(request_rec *r)
 
     /* Finish up the multistatus response. */
     ap_fputs(r->output_filters, ctx.bb, "</D:multistatus>" DEBUG_CR);
-    ap_filter_flush(ctx.bb, r->output_filters);
+
+    /* deliver whatever might be remaining in the brigade */
+    ap_pass_brigade(r->output_filters, ctx.bb);
 
     /* the response has been sent. */
     return DONE;
