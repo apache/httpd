@@ -47,8 +47,8 @@ RSC=rc.exe
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x41a /d "NDEBUG"
-# ADD RSC /l 0x41a /d "NDEBUG"
+# ADD BASE RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -74,8 +74,8 @@ LINK32=link.exe
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x41a /d "_DEBUG"
-# ADD RSC /l 0x41a /d "_DEBUG"
+# ADD BASE RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -114,14 +114,6 @@ SOURCE=.\aprun.ico
 # End Source File
 # Begin Source File
 
-SOURCE=.\apsmall.ico
-# End Source File
-# Begin Source File
-
-SOURCE=.\apsrvmon.ico
-# End Source File
-# Begin Source File
-
 SOURCE=.\apstop.ico
 # End Source File
 # Begin Source File
@@ -131,6 +123,37 @@ SOURCE=.\srun.bmp
 # Begin Source File
 
 SOURCE=.\sstop.bmp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "ApacheMonitor - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\ApacheMonitor.ver" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor\
+ "Apache Server Monitor" ../../include/ap_release.h > .\ApacheMonitor.ver
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\ApacheMonitor.ver" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk ApacheMonitor\
+ "Apache Server Monitor" ../../include/ap_release.h > .\ApacheMonitor.ver
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Source File
