@@ -626,6 +626,55 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
     saved_pid = mypid;
 }
 
+AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename,
+                                     pid_t *mypid)
+{
+    const int BUFFER_SIZE = sizeof(long) * 3 + 2; /* see apr_ltoa */
+    apr_file_t *pid_file = NULL;
+    apr_status_t rv;
+    const char *fname;
+    char *buf, *endptr;
+    apr_size_t bytes_wanted, bytes_read;
+
+    if (!filename) {
+        return APR_EGENERAL;
+    }
+
+    fname = ap_server_root_relative(p, filename);
+    if (!fname) {
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH, 
+                     NULL, "Invalid PID file path %s, ignoring.", filename);
+        return APR_EGENERAL;
+    }
+
+    rv = apr_file_open(&pid_file, fname, APR_READ, APR_OS_DEFAULT, p);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    bytes_wanted = BUFFER_SIZE;
+    endptr = buf = apr_palloc(p, BUFFER_SIZE);
+    do {
+        bytes_read = bytes_wanted;
+        rv = apr_file_read(pid_file, endptr, &bytes_read);
+        if (rv != APR_SUCCESS && rv != APR_EOF) {
+            return rv;
+        }
+        bytes_wanted -= bytes_read;
+        endptr += bytes_read; 
+    }
+    while (bytes_wanted > 0 && rv != APR_EOF);
+
+    *mypid = strtol(buf, &endptr, 10);
+    /* We only know for sure that the beginning part is the pid. */
+    if (*buf == '\0' || *endptr != '\n') {
+        return APR_EGENERAL;
+    }
+
+    apr_file_close(pid_file);
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile,
                                int nLine)
 {

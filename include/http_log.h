@@ -240,6 +240,14 @@ AP_DECLARE(void) ap_error_log2stderr(server_rec *s);
  */
 AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *fname);
 
+/**
+ * Retrieve the pid from a pidfile.
+ * @param p The pool to use for logging
+ * @param filename The name of the file containing the pid
+ * @param mypid Pointer to pid_t (valid only if return APR_SUCCESS)
+ */
+AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename, pid_t *mypid);
+
 typedef struct piped_log piped_log;
 
 /**
