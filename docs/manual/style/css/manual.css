@@ -399,11 +399,6 @@ li.separate {
     padding: 0;
 }
 
-#toc li img,
-#topics li img {
-    margin-right: 19px;
-}
-
 /* see also               */
 /* ====================== */
 .seealso {
@@ -622,7 +617,6 @@ div.note div.example {
     color: inherit;
     margin-right: 1em;
 }
-
 
 /* example inside table */
 table div.example {
