@@ -9,8 +9,8 @@ Changes with Apache 2.0.37
      Elimiates possible gpfault or garbage title without the -t option.
      [William Rowe]
 
-  *) Rewrite mod_cgi and mod_cgid's input handling to use brigades and input
-     filters.  [Justin Erenkrantz]
+  *) Rewrite mod_cgi, mod_cgid, and mod_proxy input handling to use
+     brigades and input filters.  [Justin Erenkrantz]
 
   *) Allow ap_http_filter (HTTP_IN) to return EOS when there is no request
      body.  [Justin Erenkrantz]

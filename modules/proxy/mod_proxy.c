@@ -394,9 +394,6 @@ static int proxy_handler(request_rec *r)
     apr_table_set(r->headers_in, "Max-Forwards", 
                   apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd : 0));
 
-    if ((rc = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR)))
-        return rc;
-
     url = r->filename + 6;
     p = strchr(url, ':');
     if (p == NULL)
