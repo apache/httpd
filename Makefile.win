@@ -572,11 +572,13 @@ BEGIN {
 		inst_exe="$(INSTDIR)\bin"                              \
 		inst_dll="$(INSTDIR)\bin"                              \
 		inst_so="$(INSTDIR)\modules"
+!IF "$(LONG)" == "Release"
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
 		_copybin src_exe=dbg src_dll=dbg src_so=dbg quiet="-"  \
 		inst_exe="$(INSTDIR)\symbols\exe"                      \
 		inst_dll="$(INSTDIR)\symbols\dll"                      \
 		inst_so="$(INSTDIR)\symbols\so" 
+!ENDIF
 	cd srclib\apr-iconv
 	$(MAKE) $(MAKEOPT) -f build\modules.mk.win install symbols \
 		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=. \
