@@ -437,7 +437,7 @@ AP_DECLARE(const char *) ap_get_status_line(int status);
  *    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
  * </pre>
  * @return either OK or an error code
- * @deffunc int ap_setup_cleint_block(request_rec *r, int read_policy)
+ * @deffunc int ap_setup_client_block(request_rec *r, int read_policy)
  */
 AP_DECLARE(int) ap_setup_client_block(request_rec *r, int read_policy);
 
