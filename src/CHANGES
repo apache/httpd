@@ -1,5 +1,10 @@
 Changes with Apache 1.3.5
 
+  *) Use -fPIC instead of -fpic on Solaris and SunOS for compiling DSOs
+     because SPARCs have a small machine-specific maximum size for the Global
+     Offset Table which is often exceeded when compiling one of the larger
+     third-party modules with Apache. [Peter Urban <Peter.Urban@epfl.ch>] PR#3977
+
   *) Move the directive `ExtendedStatus' in httpd.conf-dist-win _after_ the
      DSO/DLL section because it's a directive from mod_status and isn't
      available before the DLL of mod_status is loaded.

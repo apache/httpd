@@ -996,7 +996,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    ;;
 	*-solaris2*)
 	    case $CC in
-		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/gcc|gcc ) CFLAGS_SHLIB="-fPIC" ;;
 		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
 	    esac
 	    LDFLAGS_SHLIB="-G"
@@ -1005,7 +1005,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    ;;
 	*-sunos4*)
 	    case $CC in
-		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/gcc|gcc ) CFLAGS_SHLIB="-fPIC" ;;
 		*/acc|acc ) CFLAGS_SHLIB="-pic" ;;
 	    esac
 	    LDFLAGS_SHLIB="-assert pure-text"
