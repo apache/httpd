@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) mod_ldap: prevent the possiblity of an infinite loop in the LDAP
+     statistics display. PR 29216 [Graham Leggett]
+
   *) mod_ldap: fix a bogus error message to tell the user which file
      is causing a potential problem with the LDAP shared memory cache.
      PR 31431 [Graham Leggett]
