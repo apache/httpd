@@ -738,6 +738,11 @@ Sigfunc *signal(int signo, Sigfunc *func);
 #define ap_select	select
 #endif
 
+/* so that we can use inline on some critical functions */
+#if !defined(__GNUC__)
+#define inline
+#endif
+
 /* Finding offsets of elements within structures.
  * Taken from the X code... they've sweated portability of this stuff
  * so we don't have to.  Sigh...

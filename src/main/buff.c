@@ -190,12 +190,6 @@ recvwithtimeout(int sock, char *buf, int len, int flags)
 
 #endif /* WIN32 */    
 
-
-/* these are wrappers to make code below more readable */
-#if !defined (__GNUC__)
-#define inline
-#endif
-
 static inline int buff_read (BUFF *fb, void *buf, int nbyte)
 {
     int rv;
