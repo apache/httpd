@@ -91,5 +91,34 @@ LINK32=link.exe
 
 SOURCE=.\mod_charset_lite.c
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\build\win32\win32ver.awk
+
+!IF  "$(CFG)" == "mod_charset_lite - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_charset_lite.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_charset_lite.so "charset_lite_module for Apache" ../../include/ap_release.h > .\mod_charset_lite.rc
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "mod_charset_lite - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - Creating Version Resource
+InputPath=..\..\build\win32\win32ver.awk
+
+".\mod_charset_lite.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	awk -f ../../build/win32/win32ver.awk mod_charset_lite.so "charset_lite_module for Apache" ../../include/ap_release.h > .\mod_charset_lite.rc
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
