@@ -1173,7 +1173,9 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_pt
        so the server can be moved or mirrored with less pain.  */
     char *p;
     int offset = (int) (long) cmd->info;
+#ifndef OS2
     arg = ap_os_canonical_filename(cmd->pool, arg);
+#endif
     if (ap_os_is_path_absolute(arg))
 	p = apr_pstrdup(cmd->pool, arg);
     else
@@ -1192,6 +1194,9 @@ static cmd_parms default_parms =
 
 AP_DECLARE(const char *) ap_server_root_relative(apr_pool_t *p, const char *file)
 {
+#ifndef OS2
+    file = ap_os_canonical_filename(p, file);
+#endif
     if(ap_os_is_path_absolute(file))
 	return file;
     return ap_make_full_path(p, ap_server_root, file);
