@@ -243,7 +243,7 @@ API_EXPORT(char *) ap_rfc1413(conn_rec *conn, server_rec *srv)
 
     result = FROM_UNKNOWN;
 
-    sock = ap_psocket(conn->pool, AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = ap_psocket_ex(conn->pool, AF_INET, SOCK_STREAM, IPPROTO_TCP, 1);
     if (sock < 0) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, srv,
 		    "socket: rfc1413: error creating socket");

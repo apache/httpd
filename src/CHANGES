@@ -1,5 +1,14 @@
 Changes with Apache 1.3.28
 
+  *) Certain 3rd party modules would bypass the Apache API and not
+     invoke ap_cleanup_for_exec() before creating sub-processes.
+     To such a child process, Apache's file descriptors (lock
+     fd's, log files, sockets) were accessible, allowing them
+     direct access to Apache log file etc.  Where the OS allows,
+     we now add proactive close functions to prevent these file
+     descriptors from leaking to the child processes.
+     [Jim Jagielski, Martin Kraemer]
+
   *) Prevent obscenely large values of precision in ap_vformatter
      from clobbering a buffer. [Sander Striker, Jim Jagielski]
 

@@ -241,7 +241,7 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
      * we have worked out who exactly we are going to connect to, now make
      * that connection...
      */
-    sock = ap_psocket(p, PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = ap_psocket_ex(p, PF_INET, SOCK_STREAM, IPPROTO_TCP, 1);
     if (sock == -1) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
                       "proxy: error creating socket");

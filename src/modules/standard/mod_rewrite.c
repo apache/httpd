@@ -3105,8 +3105,8 @@ static void open_rewritelog(server_rec *s, pool *p)
         conf->rewritelogfp = ap_piped_log_write_fd(pl);
     }
     else if (*conf->rewritelogfile != '\0') {
-        if ((conf->rewritelogfp = ap_popenf(p, fname, rewritelog_flags,
-                                            rewritelog_mode)) < 0) {
+        if ((conf->rewritelogfp = ap_popenf_ex(p, fname, rewritelog_flags,
+                                            rewritelog_mode, 1)) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s, 
 
                          "mod_rewrite: could not open RewriteLog "
@@ -3253,8 +3253,8 @@ static void rewritelock_create(server_rec *s, pool *p)
 
     /* create the lockfile */
     unlink(lockname);
-    if ((lockfd = ap_popenf(p, lockname, O_WRONLY|O_CREAT,
-                                         REWRITELOCK_MODE)) < 0) {
+    if ((lockfd = ap_popenf_ex(p, lockname, O_WRONLY|O_CREAT,
+                                         REWRITELOCK_MODE, 1)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, s,
                      "mod_rewrite: Parent could not create RewriteLock "
                      "file %s", lockname);
@@ -3281,8 +3281,8 @@ static void rewritelock_open(server_rec *s, pool *p)
     }
 
     /* open the lockfile (once per child) to get a unique fd */
-    if ((lockfd = ap_popenf(p, lockname, O_WRONLY,
-                                         REWRITELOCK_MODE)) < 0) {
+    if ((lockfd = ap_popenf_ex(p, lockname, O_WRONLY,
+                                         REWRITELOCK_MODE, 1)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, s,
                      "mod_rewrite: Child could not open RewriteLock "
                      "file %s", lockname);

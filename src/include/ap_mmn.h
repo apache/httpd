@@ -239,8 +239,9 @@
  * 19990320.13          - add ap_strtol()
  * 19990320.14          - add ap_register_cleanup_ex(),
  *                        ap_note_cleanups_for_fd_ex(),
- *                        ap_note_cleanups_for_socket_ex() and
- *                        ap_note_cleanups_for_file_ex()
+ *                        ap_note_cleanups_for_socket_ex(),
+ *                        ap_note_cleanups_for_file_ex(),
+ *                        ap_popenf_ex() and ap_psocket_ex().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */

@@ -1069,7 +1069,8 @@ static config_log_state *open_config_log(server_rec *s, pool *p,
     }
     else {
         char *fname = ap_server_root_relative(p, cls->fname);
-        if ((cls->log_fd = ap_popenf(p, fname, xfer_flags, xfer_mode)) < 0) {
+        if ((cls->log_fd = ap_popenf_ex(p, fname, xfer_flags, xfer_mode, 1))
+             < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, s,
                          "could not open transfer log file %s.", fname);
             exit(1);

@@ -1687,14 +1687,19 @@ API_EXPORT(void) ap_register_cleanup_ex(pool *p, void *data,
 				      void (*child_cleanup) (void *),
 				      int (*magic_cleanup) (void *))
 {
-    struct cleanup *c = (struct cleanup *) ap_palloc(p, sizeof(struct cleanup));
-    c->data = data;
-    c->plain_cleanup = plain_cleanup;
-    c->child_cleanup = child_cleanup;
-    c->next = p->cleanups;
-    p->cleanups = c;
-    if(magic_cleanup) {
-	if(!magic_cleanup(data)) 
+    struct cleanup *c;
+    if (p) {
+	c = (struct cleanup *) ap_palloc(p, sizeof(struct cleanup));
+	c->data = data;
+	c->plain_cleanup = plain_cleanup;
+	c->child_cleanup = child_cleanup;
+	c->next = p->cleanups;
+	p->cleanups = c;
+    }
+    /* attempt to do magic even if not passed a pool. Allows us
+     * to perform the magic, therefore, "whenever" we want/need */
+    if (magic_cleanup) {
+	if (!magic_cleanup(data)) 
 	   ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
 		 "exec() may not be safe");
     }
@@ -1827,7 +1832,8 @@ API_EXPORT(void) ap_kill_cleanups_for_fd(pool *p, int fd)
     ap_kill_cleanup(p, (void *) (long) fd, fd_cleanup);
 }
 
-API_EXPORT(int) ap_popenf(pool *a, const char *name, int flg, int mode)
+API_EXPORT(int) ap_popenf_ex(pool *a, const char *name, int flg, int mode,
+                             int domagic)
 {
     int fd;
     int save_errno;
@@ -1837,11 +1843,16 @@ API_EXPORT(int) ap_popenf(pool *a, const char *name, int flg, int mode)
     save_errno = errno;
     if (fd >= 0) {
 	fd = ap_slack(fd, AP_SLACK_HIGH);
-	ap_note_cleanups_for_fd(a, fd);
+	ap_note_cleanups_for_fd_ex(a, fd, domagic);
     }
     ap_unblock_alarms();
     errno = save_errno;
     return fd;
+}
+
+API_EXPORT(int) ap_popenf(pool *a, const char *name, int flg, int mode)
+{
+    return ap_popenf_ex(a, name, flg, mode, 0);
 }
 
 API_EXPORT(int) ap_pclosef(pool *a, int fd)
@@ -2047,7 +2058,8 @@ API_EXPORT(void) ap_kill_cleanups_for_socket(pool *p, int sock)
     ap_kill_cleanup(p, (void *) (long) sock, socket_cleanup);
 }
 
-API_EXPORT(int) ap_psocket(pool *p, int domain, int type, int protocol)
+API_EXPORT(int) ap_psocket_ex(pool *p, int domain, int type, int protocol,
+                              int domagic)
 {
     int fd;
 
@@ -2059,9 +2071,14 @@ API_EXPORT(int) ap_psocket(pool *p, int domain, int type, int protocol)
 	errno = save_errno;
 	return -1;
     }
-    ap_note_cleanups_for_socket(p, fd);
+    ap_note_cleanups_for_socket_ex(p, fd, domagic);
     ap_unblock_alarms();
     return fd;
+}
+
+API_EXPORT(int) ap_psocket(pool *p, int domain, int type, int protocol)
+{
+    return ap_psocket_ex(p, domain, type, protocol, 0);
 }
 
 API_EXPORT(int) ap_pclosesocket(pool *a, int sock)

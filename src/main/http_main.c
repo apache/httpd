@@ -876,7 +876,7 @@ static void accept_mutex_init_fcntl(pool *p)
     unlock_it.l_pid = 0;		/* pid not actually interesting */
 
     expand_lock_fname(p);
-    lock_fd = ap_popenf(p, ap_lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644);
+    lock_fd = ap_popenf_ex(p, ap_lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644, 1);
     if (lock_fd == -1) {
 	perror("open");
 	fprintf(stderr, "Cannot open lock file: %s\n", ap_lock_fname);
@@ -943,7 +943,7 @@ static void accept_mutex_cleanup_flock(void *foo)
 static void accept_mutex_child_init_flock(pool *p)
 {
 
-    flock_fd = ap_popenf(p, ap_lock_fname, O_WRONLY, 0600);
+    flock_fd = ap_popenf_ex(p, ap_lock_fname, O_WRONLY, 0600, 1);
     if (flock_fd == -1) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Child cannot open lock file: %s", ap_lock_fname);
@@ -959,7 +959,7 @@ static void accept_mutex_init_flock(pool *p)
 {
     expand_lock_fname(p);
     unlink(ap_lock_fname);
-    flock_fd = ap_popenf(p, ap_lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0600);
+    flock_fd = ap_popenf_ex(p, ap_lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0600, 1);
     if (flock_fd == -1) {
 	ap_log_error(APLOG_MARK, APLOG_EMERG, server_conf,
 		    "Parent cannot open lock file: %s", ap_lock_fname);
@@ -2457,7 +2457,7 @@ void reopen_scoreboard(pool *p)
 #ifdef TPF
     ap_scoreboard_fname = ap_server_root_relative(p, ap_scoreboard_fname);
 #endif /* TPF */
-    scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0666);
+    scoreboard_fd = ap_popenf_ex(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0666, 1);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
 	fprintf(stderr, "Cannot open scoreboard file:\n");
@@ -2483,7 +2483,7 @@ static void reinit_scoreboard(pool *p)
     ap_scoreboard_image = &_scoreboard_image;
     ap_scoreboard_fname = ap_server_root_relative(p, ap_scoreboard_fname);
 
-    scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0644);
+    scoreboard_fd = ap_popenf_ex(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0644, 1);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
 	fprintf(stderr, "Cannot open scoreboard file:\n");
@@ -3655,7 +3655,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     s = ap_slack(s, AP_SLACK_HIGH);
 #endif
 
-    ap_note_cleanups_for_socket(p, s);	/* arrange to close on exec or restart */
+    ap_note_cleanups_for_socket_ex(p, s, 1);	/* arrange to close on exec or restart */
 #ifdef TPF
     os_note_additional_cleanups(p, s);
 #endif /* TPF */
@@ -3796,7 +3796,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #ifdef WORKAROUND_SOLARIS_BUG
     s = ap_slack(s, AP_SLACK_HIGH);
 
-    ap_note_cleanups_for_socket(p, s);	/* arrange to close on exec or restart */
+    ap_note_cleanups_for_socket_ex(p, s, 1);	/* arrange to close on exec or restart */
 #endif
     ap_unblock_alarms();
 
@@ -3903,7 +3903,7 @@ static void setup_listeners(pool *p)
 	    fd = make_sock(p, &lr->local_addr);
 	}
 	else {
-	    ap_note_cleanups_for_socket(p, fd);
+	    ap_note_cleanups_for_socket_ex(p, fd, 1);
 	}
 	/* if we get here, (fd >= 0) && (fd < FD_SETSIZE) */
 	FD_SET(fd, &listenfds);
@@ -4517,7 +4517,7 @@ static void child_main(int child_num_arg)
 	 */
 	signal(SIGUSR1, SIG_IGN);
 
-	ap_note_cleanups_for_socket(ptrans, csd);
+	ap_note_cleanups_for_socket_ex(ptrans, csd, 1);
 
 	/* protect various fd_sets */
 #ifdef CHECK_FD_SETSIZE
@@ -4565,7 +4565,7 @@ static void child_main(int child_num_arg)
 			"dup: couldn't duplicate csd");
 	    dupped_csd = csd;	/* Oh well... */
 	}
-	ap_note_cleanups_for_socket(ptrans, dupped_csd);
+	ap_note_cleanups_for_socket_ex(ptrans, dupped_csd, 1);
 
 	/* protect various fd_sets */
 #ifdef CHECK_FD_SETSIZE
@@ -5092,7 +5092,7 @@ static void standalone_main(int argc, char **argv)
 #ifdef SCOREBOARD_FILE
 	else {
 	    ap_scoreboard_fname = ap_server_root_relative(pconf, ap_scoreboard_fname);
-	    ap_note_cleanups_for_fd(pconf, scoreboard_fd);
+	    ap_note_cleanups_for_fd_ex(pconf, scoreboard_fd, 1); /* close on exec */
 	}
 #endif
 
@@ -5892,7 +5892,7 @@ static void child_sub_main(int child_num)
 
 	requests_this_child++;
 
-	ap_note_cleanups_for_socket(ptrans, csd);
+	ap_note_cleanups_for_socket_ex(ptrans, csd, 1);
 
 	/*
 	 * We now have a connection, so set it up with the appropriate
@@ -5924,7 +5924,7 @@ static void child_sub_main(int child_num)
 			"dup: couldn't duplicate csd");
 	    dupped_csd = csd;	/* Oh well... */
 	}
-	ap_note_cleanups_for_socket(ptrans, dupped_csd);
+	ap_note_cleanups_for_socket_ex(ptrans, dupped_csd, 1);
 #endif
 	ap_bpushfd(conn_io, csd, dupped_csd);
 
@@ -6140,7 +6140,7 @@ static void setup_inherited_listeners(pool *p)
             if (fd > listenmaxfd)
                 listenmaxfd = fd;
         }
-        ap_note_cleanups_for_socket(p, fd);
+        ap_note_cleanups_for_socket_ex(p, fd, 1);
         lr->fd = fd;
         if (lr->next == NULL) {
             /* turn the list into a ring */

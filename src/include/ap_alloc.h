@@ -337,6 +337,8 @@ API_EXPORT(void) ap_unblock_alarms(void);
 API_EXPORT(FILE *) ap_pfopen(struct pool *, const char *name, const char *fmode);
 API_EXPORT(FILE *) ap_pfdopen(struct pool *, int fd, const char *fmode);
 API_EXPORT(int) ap_popenf(struct pool *, const char *name, int flg, int mode);
+API_EXPORT(int) ap_popenf_ex(struct pool *, const char *name, int flg,
+                             int mode, int domagic);
 
 API_EXPORT(void) ap_note_cleanups_for_file(pool *, FILE *);
 API_EXPORT(void) ap_note_cleanups_for_file_ex(pool *, FILE *, int);
@@ -351,6 +353,7 @@ API_EXPORT(void) ap_note_cleanups_for_socket(pool *, int);
 API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *, int, int);
 API_EXPORT(void) ap_kill_cleanups_for_socket(pool *p, int sock);
 API_EXPORT(int) ap_psocket(pool *p, int, int, int);
+API_EXPORT(int) ap_psocket_ex(pool *p, int, int, int, int);
 API_EXPORT(int) ap_pclosesocket(pool *a, int sock);
 
 API_EXPORT(regex_t *) ap_pregcomp(pool *p, const char *pattern, int cflags);
