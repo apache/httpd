@@ -64,7 +64,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 2.3.9 (11-12-1996)
+**  URL Rewriting Module, Version 2.3.10 (20-12-1996)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -189,6 +189,10 @@
 #ifndef NO
 #define NO    FALSE
 #define YES   TRUE
+#endif
+
+#ifndef LONG_STRING_LEN
+#define LONG_STRING_LEN 2048
 #endif
 
 

@@ -61,7 +61,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 2.3.9 (11-12-1996)
+**  URL Rewriting Module, Version 2.3.10 (20-12-1996)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -1087,7 +1087,7 @@ static int hook_fixup(request_rec *r)
     rewrite_perdir_conf *dconf;
     char *cp;
     char *cp2;
-    static char prefix[MAX_STRING_LEN];
+    char *prefix;
     int l;
 
     dconf = (rewrite_perdir_conf *)get_module_config(r->per_dir_config, &rewrite_module);
@@ -1236,7 +1236,7 @@ static int hook_fixup(request_rec *r)
                    document_root if it is prefix */
 
                 if ((cp = document_root(r)) != NULL) {
-                    strcpy(prefix, cp);
+                    prefix = pstrdup(r->pool, cp);
                     /* allways NOT have a trailing slash */
                     l = strlen(prefix);
                     if (prefix[l-1] == '/') {
@@ -1374,8 +1374,8 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
     char *uri;
     char *output;
     int flags;
-    static char newuri[MAX_STRING_LEN];
-    static char port[32];
+    char newuri[MAX_STRING_LEN];
+    char port[32];
 #ifdef HAS_APACHE_REGEX_LIB
     regex_t *regexp;
     regmatch_t regmatch[10];
@@ -1613,7 +1613,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p, char *perdir
 static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir)
 {
 #ifndef HAS_APACHE_REGEX_LIB
-    static char inputbuf[MAX_STRING_LEN];
+    char inputbuf[LONG_STRING_LEN];
     int i;
 #endif
     char *input;
@@ -1693,11 +1693,11 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p, char *perdir
 static void splitout_queryargs(request_rec *r)
 {
     char *q;
-    static char olduri[MAX_STRING_LEN];
+    char *olduri;
 
     q = strchr(r->filename, '?');
     if (q != NULL) {
-        strcpy(olduri, r->filename);
+        olduri = pstrdup(r->pool, r->filename);
         *q++ = '\0';
         r->args = pstrcat(r->pool, q, "&", r->args, NULL);
         if (r->args[strlen(r->args)-1] == '&')
@@ -1722,9 +1722,9 @@ static void reduce_uri(request_rec *r)
     char *hostp;
     char *url;
     char c;
-    static char host[MAX_STRING_LEN];
-    static char buf[MAX_STRING_LEN];
-    static char olduri[MAX_STRING_LEN];
+    char host[LONG_STRING_LEN];
+    char buf[MAX_STRING_LEN];
+    char *olduri;
 
 #ifdef APACHE_SSL
     if (   (!r->connection->client->ssl &&
@@ -1736,7 +1736,7 @@ static void reduce_uri(request_rec *r)
 #endif
         /* there was really a rewrite to a remote path */
 
-        strcpy(olduri, r->filename); /* save for logging */
+        olduri = pstrdup(r->pool, r->filename); /* save for logging */
 
         /* cut the hostname and port out of the URI */
 #ifdef APACHE_SSL
@@ -1801,7 +1801,7 @@ static void reduce_uri(request_rec *r)
 
 static char *expand_tildepaths(request_rec *r, char *uri)
 {
-    static char user[MAX_STRING_LEN];
+    char user[LONG_STRING_LEN];
     struct passwd *pw;
     char *newuri;
     int i, j;
@@ -1845,15 +1845,15 @@ static char *expand_tildepaths(request_rec *r, char *uri)
 
 static void expand_map_lookups(request_rec *r, char *uri)
 {
-    static char newuri[MAX_STRING_LEN];
+    char newuri[MAX_STRING_LEN];
     char *cpI;
     char *cpIE;
     char *cpO;
     char *cpT;
     char *cpT2;
-    static char mapname[MAX_STRING_LEN];
-    static char mapkey[MAX_STRING_LEN];
-    static char defaultvalue[MAX_STRING_LEN];
+    char mapname[LONG_STRING_LEN];
+    char mapkey[LONG_STRING_LEN];
+    char defaultvalue[LONG_STRING_LEN];
     int n;
 
     cpI = uri;
@@ -2067,7 +2067,7 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
     datum dbmkey;
     datum dbmval;
     char *value = NULL;
-    static char buf[MAX_STRING_LEN];
+    char buf[MAX_STRING_LEN];
 
     dbmkey.dptr  = key;
     dbmkey.dsize = strlen(key);
@@ -2086,17 +2086,17 @@ static char *lookup_map_dbmfile(request_rec *r, char *file, char *key)
 
 static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
 {
-    static char buf[MAX_STRING_LEN];
+    char buf[LONG_STRING_LEN];
     char c;
     int i;
 
     /* write out the request key */
-    sprintf(buf, "%s\n", key);
-    write(fpin, buf, strlen(buf));
+    write(fpin, key, strlen(key));
+    write(fpin, "\n", 1);
 
     /* read in the response value */
     i = 0;
-    while (read(fpout, &c, 1) == 1) {
+    while (read(fpout, &c, 1) == 1 && (i < LONG_STRING_LEN)) {
         if (c == '\n')
             break;
         buf[i++] = c;
@@ -2229,7 +2229,7 @@ static char *current_logtime(request_rec *r)
     long timz;
 #endif
     struct tm *t;
-    static char tstr[MAX_STRING_LEN];
+    char tstr[80];
     char sign;
     
     t = get_gmtoff(&timz);
@@ -2364,7 +2364,7 @@ static char *expand_variables(request_rec *r, char *str)
 static char *lookup_variable(request_rec *r, char *var)
 {
     char *result;
-    static char resultbuf[MAX_STRING_LEN];
+    char resultbuf[LONG_STRING_LEN];
     time_t tc;
     struct tm *tm;
 
@@ -2654,8 +2654,8 @@ static cacheentry *retrieve_cache_string(cache *c, char *res, char *key)
 
 static char *subst_prefix_path(request_rec *r, char *input, char *match, char *subst)
 {
-    static char matchbuf[MAX_STRING_LEN];
-    static char substbuf[MAX_STRING_LEN];
+    char matchbuf[LONG_STRING_LEN];
+    char substbuf[LONG_STRING_LEN];
     char *output;
     int l;
 
@@ -2781,7 +2781,7 @@ static int parseargline(char *str, char **a1, char **a2, char **a3)
 
 static int prefix_stat(const char *path, struct stat *sb)
 {
-    static char curpath[MAX_STRING_LEN];
+    char curpath[LONG_STRING_LEN];
     char *cp;
 
     strcpy(curpath, path);
