@@ -1813,17 +1813,21 @@ static long get_chunk_size(char *b)
 API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 {
     int c;
-    long len_read, len_to_read;
+    ap_size_t len_to_read;
+    ap_ssize_t len_read;
     long chunk_start = 0;
     unsigned long max_body;
+    ap_status_t rv;
 
     if (!r->read_chunked) {     /* Content-length read */
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
-        len_read = ap_bread(r->connection->client, buffer, len_to_read);
-        if (len_read <= 0) {
-            if (len_read < 0)
+        rv = ap_bread(r->connection->client, buffer, len_to_read, &len_read);
+        if (len_read == 0) {    /* error or eof */
+            if (rv != APR_SUCCESS) {
                 r->connection->keepalive = -1;
-            return len_read;
+                return -1;
+            }
+            return 0;
         }
         r->read_length += len_read;
         r->remaining -= len_read;
@@ -1931,8 +1935,8 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
 
     len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
 
-    len_read = ap_bread(r->connection->client, buffer, len_to_read);
-    if (len_read <= 0) {
+    (void) ap_bread(r->connection->client, buffer, len_to_read, &len_read);
+    if (len_read == 0) {        /* error or eof */
         r->connection->keepalive = -1;
         return -1;
     }
@@ -2072,7 +2076,9 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
     char buf[IOBUFSIZE];
     long total_bytes_sent = 0;
     long zero_timeout = 0;
-    int n, w, o;
+    int w, o;
+    ap_ssize_t n;
+    ap_status_t rv;
 
     if (length == 0) {
         return 0;
@@ -2085,13 +2091,13 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
 
     ap_bsetopt(fb, BO_TIMEOUT, &zero_timeout);
     while (!ap_is_aborted(r->connection)) {
-        n = ap_bread(fb, buf, sizeof(buf));
-        if (n <= 0) {
-            if (n == 0) {
+        rv = ap_bread(fb, buf, sizeof(buf), &n);
+        if (n == 0) {
+            if (rv == APR_SUCCESS) {    /* eof */
                 (void) ap_rflush(r);
                 break;
             }
-            if (n == -1 && errno != EAGAIN) {
+            if (rv != APR_EAGAIN) {
                 r->connection->aborted = 1;
                 break;
             }
@@ -2101,9 +2107,9 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
             }
 
             ap_bsetopt(fb, BO_TIMEOUT, &r->server->timeout);
-            n = ap_bread(fb, buf, sizeof(buf));
-            if (n <= 0) {
-                if (n == 0) {
+            rv = ap_bread(fb, buf, sizeof(buf), &n);
+            if (n == 0) {
+                if (rv == APR_SUCCESS) {        /* eof */
                     (void) ap_rflush(r);
                 }
                 r->connection->aborted = 1;

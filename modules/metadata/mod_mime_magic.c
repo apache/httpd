@@ -2173,6 +2173,7 @@ static int uncompress(request_rec *r, int method,
     struct uncompress_parms parm;
     BUFF *bout;
     ap_context_t *sub_pool;
+    ap_status_t rv;
 
     parm.r = r;
     parm.method = method;
@@ -2192,9 +2193,10 @@ static int uncompress(request_rec *r, int method,
     }
 
     *newch = (unsigned char *) ap_palloc(r->pool, n);
-    if ((n = ap_bread(bout, *newch, n)) <= 0) {
+    rv = ap_bread(bout, *newch, n, &n);
+    if (n == 0) {
 	ap_destroy_pool(sub_pool);
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 	    MODNAME ": read failed %s", r->filename);
 	return -1;
     }
