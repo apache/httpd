@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.9 $ -->
+<!-- $Revision: 1.10 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -35,7 +35,7 @@ and is left as an exercise for the reader.</p>
 <p>How to solve particular security constraints for an SSL-aware
 webserver is not always obvious because of the coherences between SSL,
 HTTP and Apache's way of processing requests. This chapter gives
-instructions on how to solve such typical situations. Treat is as a first
+instructions on how to solve such typical situations. Treat it as a first
 step to find out the final solution, but always try to understand the 
 stuff before you use it. Nothing is worse than using a security solution
 without knowing its restrictions and coherences.</p>
