@@ -280,7 +280,7 @@ extern "C" {
 
 #define AP_SERVER_BASEVENDOR "Apache Software Foundation"
 #define AP_SERVER_BASEPRODUCT "Apache"
-#define AP_SERVER_BASEREVISION "2.0a5"
+#define AP_SERVER_BASEREVISION "2.0a6-dev"
 #define AP_SERVER_BASEVERSION AP_SERVER_BASEPRODUCT "/" AP_SERVER_BASEREVISION
 #define AP_SERVER_VERSION  AP_SERVER_BASEVERSION
 
@@ -373,7 +373,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * Always increases along the same track as the source branch.
  * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
  */
-#define APACHE_RELEASE 20000005
+#define APACHE_RELEASE 20000006
 
 #define DECLINED -1		/* Module declines to handle */
 #define DONE -2			/* Module has served the response completely 
