@@ -206,6 +206,7 @@ typedef int pid_t;
 #define NEED_SELECT_H
 #define FCNTL_SERIALIZED_ACCEPT
 #define HAVE_MMAP
+#define SecureWare
 
 /* Although SCO 5 defines these in <strings.h> (note the "s") they don't have
 consts. Sigh. */

@@ -93,6 +93,11 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #endif
+#ifdef SecureWare
+#include <sys/security.h>
+#include <sys/audit.h>
+#include <prot.h>
+#endif
 
 /*
  * Actual definitions of config globals... here because this is
@@ -1223,6 +1228,16 @@ int
 main(int argc, char *argv[])
 {
     int c;
+
+#ifdef SecureWare
+    if(set_auth_parameters(argc,argv) < 0)
+    	perror("set_auth_parameters");
+    if(getluid() < 0)
+	if(setluid(getuid()) < 0)
+	    perror("setluid");
+    if(setreuid(0, 0) < 0)
+	perror("setreuid");
+#endif
 
     init_alloc();
     pconf = permanent_pool;
