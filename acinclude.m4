@@ -385,9 +385,9 @@ if test "x$ap_ssltk_base" = "x"; then
       for p in $ap_ssltk_try; do
         ap_ssltk_version="`$p/openssl version`"
         case "$ap_ssltk_version" in
-            *[[^0-9a-z.]][[1-9]]* | \
-            *[[^0-9a-z.]]0.9.[[6-9]]* | \
-            *[[^0-9a-z.]]0.[[1-9]][[0-9]]* )
+            *[[!0-9a-z.]][[1-9]]* | \
+            *[[!0-9a-z.]]0.9.[[6-9]]* | \
+            *[[!0-9a-z.]]0.[[1-9]][[0-9]]* )
                 ap_cv_ssltk="`(cd $p/.. && pwd)`"
                 break
                 ;;
