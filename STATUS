@@ -118,6 +118,10 @@ FINAL RELEASE SHOWSTOPPERS:
       parent would then abort.  See
       <Pine.LNX.3.96dg4.980413204700.6322R-100000@twinlark.arctic.org>
 
+    * The DoS issue about symlinks to /dev/zero is still present.
+      A device checker patch had been sent to the list a while ago.
+      Msg-Id: ?
+
 Documentation that needs writing:
 
     * Documentation for:
