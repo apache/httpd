@@ -1591,7 +1591,9 @@ static char *make_allow(request_rec *r)
 		       (r->allowed & (1 << M_UNLOCK))    ? ", UNLOCK"    : "",
 		       ", TRACE",
 		       NULL);
-    if ((r->allowed & (1 << M_INVALID)) && (r->allowed_xmethods->nelts)) {
+    if ((r->allowed & (1 << M_INVALID))
+	&& (r->allowed_xmethods != NULL)
+	&& (r->allowed_xmethods->nelts != 0)) {
 	int i;
 	char **xmethod = (char **) r->allowed_xmethods->elts;
 
