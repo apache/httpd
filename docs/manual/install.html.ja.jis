@@ -19,7 +19,7 @@
     するために <code>libtool</code> と <code>autoconf</code>
     を使うようになっています。</p>
 
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要 (せっかちな人向け)</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">必要なもの</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">ダウンロード</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">展開</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">ソースツリーを設定する</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">ビルド</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">インストール</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">概要 (せっかちな人向け)</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要 (せっかちな人向け)</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">必要なもの</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">ダウンロード</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">展開</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">ソースツリーを設定する</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">ビルド</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">インストール</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="invoking.html">起動</a></li><li><a href="stopping.html">停止と再起動</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">概要 (せっかちな人向け)</a></h2>
 
     <table>
       <tr>
@@ -71,7 +71,7 @@
     </table>
 
     <p><em>NN</em> は最新のマイナーバージョンナンバーに、
-    <em>PREFIX</em> はインストールするサーバでのファイルシステムのパスに、
+    <em>PREFIX</em> はインストールするサーバでのファイルシステムのパスに、
     置き換えてください。<em>PREFIX</em> を指定しなかった場合は、
     デフォルトの <code>/usr/local/apache2</code> になります。</p>
 
@@ -106,8 +106,8 @@
       サーバに関する詳細は、Usenet ニュースグループ <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a> や <a href="http://www.eecis.udel.edu/~ntp/">NTP ホームページ</a> をご覧下さい。</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
-      [オプション]</dt>
-      <dd>提供されているスクリプト幾つか、例えば <a href="programs/apxs.html">apxs</a> や <a href="programs/dbmmanage.html">dbmmanage</a> は
+      [オプション]</dt>
+      <dd>提供されているスクリプト幾つか、例えば <a href="programs/apxs.html">apxs</a> や <a href="programs/dbmmanage.html">dbmmanage</a> は
       Perl で書かれているので、Perl 
       5 インタプリタが必要になります (5.003 以降)。
       "configure"スクリプトでこのようなインタプリタが見つからなくても、
@@ -198,7 +198,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="configure" id="configure">ソースツリーを設定する</a></h2>
 
     <p>次のステップは、あなたのプラットホームと
-    個人的な要求に合うように Apache
+    個人的な要求に合うように Apache
     ソースツリーを設定することです。
     これは配布ディレクトリのルートディレクトリにある、
     <code>configure</code> スクリプトで行ないます。
@@ -271,14 +271,15 @@
 
       <dt><code>LIBS=...</code></dt>
 
-      <dd>リンカに渡すライブラリの位置情報 ("-L"と"-l"オプション) 。
+      <dd>リンカに渡すライブラリの位置情報
+      ("<code>-L</code>"と"<code>-l</code>"オプション) 。
       </dd>
 
       <dt><code>INCLUDES=...</code></dt>
 
-      <dd>ヘッダファイルの探索ディレクトリ ("-I<em>dir</em>") 。</dd>
+      <dd>ヘッダファイルの探索ディレクトリ ("<code>-I<em>dir</em></code>") 。</dd>
 
-      <dt><code>TARGET=...</code> [デフォルト値: apache]</dt>
+      <dt><code>TARGET=...</code> [デフォルト値: <code>apache</code>]</dt>
 
       <dd>ビルドする実行ファイルの名前。</dd>
 
@@ -299,7 +300,7 @@
 
       <dt><code>SHLIB_PATH=...</code></dt>
 
-      <dd>コンパイラとリンカに渡す、共有ライブラリへのパスを指定する
+      <dd>コンパイラとリンカに渡す、共有ライブラリへのパスを指定する
       オプション。</dd>
     </dl>
 
@@ -314,7 +315,7 @@
 
       <dt><code>--quiet</code></dt>
 
-      <dd>"cheking..." といったメッセージがプリントされないように
+      <dd>"<code>cheking...</code>" といったメッセージがプリントされないように
       します。</dd>
 
       <dt><code>--verbose</code></dt>
@@ -333,7 +334,7 @@
 
     <dl>
       <dt><code>--prefix=<em>PREFIX</em></code> [デフォルト値:
-      /usr/local/apache2]</dt>
+      <code>/usr/local/apache2</code>]</dt>
 
       <dd>Apache のファイル群がインストールされるディレクトリを
       指定します。</dd>
@@ -409,7 +410,7 @@
       <dd><em>MODULE</em> モジュールをコンパイルして
       インクルードします。識別子 <em>MODULE</em> は
       モジュール文書に記載されている<a href="mod/module-dict.html#ModuleIdentifier">モジュール
-      識別子</a>から "_module" を取り除いた文字列です。
+      識別子</a>から "_module" を取り除いた文字列です。
       DSO としてモジュールをコンパイルする場合は、
       <code>=shared</code> オプションを付加してください。</dd>
 
@@ -436,8 +437,8 @@
     <code>--enable-mods-shared</code> オプションに使う
     <em>MODULE-LIST</em> は、普通はスペース区切りの
     モジュール識別子のリストです。
-    例えば mod_dav と mod_info を有効にする場合は、
-    次のどちらかが使えます。</p>
+    例えば <code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code> と <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>
+    を有効にする場合は、次のどちらかが使えます。</p>
 
 <div class="example"><p><code>./configure --enable-dav --enable-info</code></p></div>
 
@@ -450,8 +451,8 @@
     一度に全てあるいはほとんどのモジュールを加えることができます。
     その後で好きなモジュールを <code>--disable-<em>MODULE</em>
     </code>オプションを使って取り除くことができます。
-    例えば、mod_info を除く全てのモジュールを DSO モジュールとして
-    組み込む場合は、次のようにします。</p>
+    例えば、<code class="module"><a href="./mod/mod_info.html">mod_info</a></code> を除く全てのモジュールを DSO
+    モジュールとして組み込む場合は、次のようにします。</p>
 
 <div class="example"><p><code>
       ./configure --enable-mods-shared=all
@@ -535,15 +536,14 @@
     ドキュメントファイルの上書きは行いません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="customize" id="customize">カスタマイズ</a></h2>
 
-    <p>次に <em>PREFIX</em>/conf/ 以下にある <a href="configuring.html">設定ファイル</a>を編集して、
+    <p>次に <code><em>PREFIX</em>/conf/</code> 以下にある <a href="configuring.html">設定ファイル</a>を編集して、
     Apache HTTP サーバをカスタマイズします。</p>
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p><a href="mod/directives.html">設定ディレクティブ</a>の
-    完全なリファレンスが載っていますので、
-    <a href="./">docs/manual/</a> や <a href="http://httpd.apache.org/docs/">http://httpd.apache.org/docs/</a>
-    にある Apache マニュアルをざっと見てください。</p>
+    <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
+    または、<a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>
+    にあるマニュアル最新版、<a href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="test" id="test">テスト</a></h2>
 
     <p>次のコマンドを実行して Apache HTTP サーバを<a href="invoking.html">開始</a>できます:</p>

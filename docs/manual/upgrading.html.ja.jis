@@ -10,12 +10,12 @@
   注意書きとして書かれています。より詳しい情報は
   <a href="new_features_2_0.html">新機能</a>の文書や
   <code>src/CHANGES</code> ファイルで見つけられると思います。</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">コンパイル時の設定の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">実行時の設定の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">その他の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">サードパーティモジュール</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">コンパイル時の設定の変更</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">コンパイル時の設定の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#run-time">実行時の設定の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#misc">その他の変更</a></li><li><img alt="" src="./images/down.gif" /> <a href="#third-party">サードパーティモジュール</a></li></ul><h3>参照</h3><ul class="seealso"><li><a href="new_features_2_0.html">Apache 2.0 の新機能</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="compile-time" id="compile-time">コンパイル時の設定の変更</a></h2>
     
 
     <ul>
       <li>Apache は <a href="install.html">ビルド処理の設定</a>
-      に <code>autoconf</code> と <code>libtool</code> を使うようになりました。
+      に <code>autoconf</code> と <code>libtool</code> を使うようになりました。
       このシステムは Apache 1.3 の APACI システムと似ていますが、
       まったく同じというわけではありません。</li>
 
@@ -28,33 +28,34 @@
     
 
     <ul>
-      <li>Apache 1.3 の時にコアサーバにあった多くのディレクティブは
+      <li>Apache 1.3 の時にコアサーバにあった多くのディレクティブは
       MPM に移動しました。サーバに Apache 1.3 とできるだけ同じ振る舞いを
       させたい場合は、<code class="module"><a href="./mod/prefork.html">prefork</a></code> MPM を
       選んでください。他の MPM はプロセスの作成やリクエストの処理の
       制御に異なったディレクティブを使います。</li>
 
-      <li>Proxy モジュール (<code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>) は
-      HTTP/1.1 に対応するために再構成されました。重要な変更としては、
-      プロキシのアクセス制御が &lt;Directory proxy:&gt; ブロックの
-      代わりに &lt;Proxy&gt; ブロックに置かれるようになった、というものが
-      あります。</li>
+      <li><a href="mod/mod_proxy.html">Proxy モジュール</a> は
+      HTTP/1.1 に対応するために再構成されました。重要な変更点としては、
+      プロキシのアクセス制御が <code>&lt;Directory proxy:&gt;</code> ブロックの
+      代わりに <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
+      ブロックに置かれるようになった、というものがあります。</li>
 
-      <li>モジュールの中には、PATH_INFO (本当のファイル名の後に続く
+      <li>モジュールの中には、<code>PATH_INFO</code> (本当のファイル名の後に続く
       パス情報) の扱いが変わったものがあります。以前はハンドラとして
-      実装されていたものがフィルタとして実装されるようになったものは PATH_INFO
-      のあるリクエストを受け付けません。<a href="mod/mod_include.html">INCLUDES</a> などのフィルタは
-      コアハンドラの上に実装されていますので、PATH_INFO 付きの
-      リクエストを拒否します。
+      実装されていたものがフィルタとして実装されるようになったものは
+      <code>PATH_INFO</code> のあるリクエストを受け付けません。<a href="mod/mod_include.html">INCLUDES</a> などのフィルタは
+      コアハンドラの上に実装されていますので、<code>PATH_INFO</code>
+      付きのリクエストを拒否します。
       <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>
-      ディレクティブを使ってコアハンドラが PATH_INFO 付きのリクエストを
-      受け付けるようにでき、それによって SSI で PATH_INFO を使う
-      機能を復活させることができます。</li>
+      ディレクティブを使ってコアハンドラが <code>PATH_INFO</code>
+      付きのリクエストを受け付けるようにでき、それによって SSI で
+      <code>PATH_INFO</code> を使う機能を復活させることができます。</li>
 
       <li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>
       ディレクティブは <code>on</code> もしくは <code>off</code> という引数を
       取るようになりました。既に存在している
-      <code>CacheNegotiatedDocs</code> は <code>CacheNegotiatedDocs on</code>
+      <code class="directive">CacheNegotiatedDocs</code> は
+      <code>CacheNegotiatedDocs on</code>
       に置き換えてください。</li>
 
       <li>
@@ -84,12 +85,13 @@
       <code class="directive"><a href="./mod/core.html#include">Include</a></code> で
       置き換えることができます。設定ファイルに取り込む代わりに、
       上のディレクティブのデフォルト値を使っていた場合は、
-      httpd.conf に <code>Include conf/access.conf</code> と
+      <code>httpd.conf</code> に <code>Include conf/access.conf</code> と
       <code>Include conf/srm.conf</code> を追加する必要があるでしょう。
       以前のディレクティブによる順番のように Apache が設定ファイルを
-      読み込むようにするためには、httpd.conf の最後に
+      読み込むようにするためには、<code>httpd.conf</code> の最後に
       <code>srm.conf</code>、<code>access.conf</code> の順にそれぞれ
-      <code>Include</code> ディレクティブを書いてください。</li>
+      <code class="directive"><a href="./mod/core.html#include">Include</a></code>
+      ディレクティブを書いてください。</li>
 
       <li><code>BindAddress</code> ディレクティブと <code>Port</code>
       ディレクティブは削除されました。同等の機能はより柔軟な
@@ -110,7 +112,8 @@
       <li><code>AgentLog</code> ディレクティブ、
       <code>RefererLog</code> ディレクティブ、
       <code>RefererIgnore</code> ディレクティブを提供していた
-      mod_log_agent と mod_log_referer モジュールは削除されました。
+      <code>mod_log_agent</code> と <code>mod_log_referer</code>
+      モジュールは削除されました。
       Agent ログと refere ログは <code class="directive">mod_log_config</code> の
       <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
       ディレクティブにより実現可能です。</li>
