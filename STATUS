@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/03/14 22:40:14 $]
+Last modified at [$Date: 2002/03/15 01:04:15 $]
 
 Release:
 
@@ -79,7 +79,6 @@ FINAL RELEASE SHOWSTOPPERS:
     * API changes planned for 2.0 that should happen before the
       GA release:
           * Free lists for bucket allocation
-          * Pool allocator change
 
     * We do not properly substitute the prefix-variables in the configuration
       scripts or generated-configs.  (i.e. if sysconfdir is etc,
