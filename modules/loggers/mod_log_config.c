@@ -1013,6 +1013,18 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
                                          apr_array_header_t *default_format)
 {
     apr_status_t status;
+    void *data;
+    const char *userdata_key = "open_config_log";
+
+    /* Skip opening the log the first time through. It's really
+     * good to avoid starting the piped log process during preflight.
+     */
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (!data) {
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                         apr_pool_cleanup_null, s->process->pool);
+        return cls;
+    }
 
     if (cls->log_fd != NULL) {
         return cls;             /* virtual config shared w/main server */
