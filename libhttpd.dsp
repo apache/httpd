@@ -101,11 +101,6 @@ SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\libhttpd.def
-# PROP Exclude_From_Build 1
-# End Source File
-# Begin Source File
-
 SOURCE=.\server\buildmark.c
 # End Source File
 # Begin Source File
