@@ -997,7 +997,7 @@ API_EXPORT(int) find_token(pool *p, const char *line, const char *tok)
 	while (*s && !TEST_CHAR(*s, T_HTTP_TOKEN_STOP)) {
 	    ++s;
 	}
-	if (!strncasecmp(start_token, tok, s - start_token)) {
+	if (!strncasecmp((const char *)start_token, (const char *)tok, s - start_token)) {
 	    return 1;
 	}
 	if (!*s) {
