@@ -2,9 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) mod_cgid: Fix storage corruption caused by use of incorrect pool.
-     [Jeff Trawick]
-
   *) Satisfy directives now can be influenced by a surrounding <Limit>
      container.  PR 14726.  [André Malo]
 
@@ -282,6 +279,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) mod_cgid: Fix storage corruption caused by use of incorrect pool.
+     [Jeff Trawick]
 
   *) Win32: find_read_listeners was not correctly handling multiple
      listeners on the Win32DisableAcceptEx path.  [Bill Stoddard]
