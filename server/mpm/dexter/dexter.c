@@ -930,6 +930,27 @@ static int start_thread(worker_thread_info *thread_info)
     return 1;
 
 }
+/* Sets workers_may_exit if we received a character on the pipe_of_death */
+static void check_pipe_of_death(void)
+{
+    pthread_mutex_lock(&pipe_of_death_mutex);
+    if (!workers_may_exit) {
+        int ret;
+        char pipe_read_char;
+
+        ret = read(listenfds[0].fd, &pipe_read_char, 1);
+        if (ret == -1 && errno == EAGAIN) {
+            /* It lost the lottery. It must continue to suffer
+             * through a life of servitude. */
+        }
+        else {
+            /* It won the lottery (or something else is very
+             * wrong). Embrace death with open arms. */
+            workers_may_exit = 1;
+        }
+    }
+    pthread_mutex_unlock(&pipe_of_death_mutex);
+}
 
 /* idle_thread_count should be incremented before starting a worker_thread */
 
@@ -941,8 +962,6 @@ static void *worker_thread(void *arg)
     pool *ptrans;		/* Pool for per-transaction stuff */
     int sd = -1;
     int srv;
-    int ret;
-    char pipe_read_char;
     int curr_pollfd, last_pollfd = 0;
     size_t len = sizeof(struct sockaddr);
     worker_thread_info *thread_info = arg;
@@ -997,24 +1016,8 @@ static void *worker_thread(void *arg)
             if (listenfds[0].revents & POLLIN) {
                 /* A process got a signal on the shutdown pipe. Check if we're
                  * the lucky process to die. */
-                pthread_mutex_lock(&pipe_of_death_mutex);
-                if (!workers_may_exit) {
-                    ret = read(listenfds[0].fd, &pipe_read_char, 1);
-                    if (ret == -1 && errno == EAGAIN) {
-                        /* It lost the lottery. It must continue to suffer
-                         * through a life of servitude. */
-                        pthread_mutex_unlock(&pipe_of_death_mutex);
-                        continue;
-                    }
-                    else {
-                        /* It won the lottery (or something else is very
-                         * wrong). Embrace death with open arms. */
-                        workers_may_exit = 1;
-                        pthread_mutex_unlock(&pipe_of_death_mutex);
-                        break;
-                    }
-                }
-                pthread_mutex_unlock(&pipe_of_death_mutex);
+                check_pipe_of_death();
+                continue;
             }
 
             if (num_listenfds == 1) {
