@@ -71,7 +71,7 @@
 #include <stdlib.h>     /* for atexit(), malloc() */
 #include <string.h>
 
-#include "apu_dbm.h"
+#include "apr_dbm.h"
 
 static const char *progname;
 static int rflag;
@@ -96,25 +96,25 @@ typedef struct {
 
 static const cmd cmds[] = {
 
-    { "fetch", DLOOK,	 	APU_DBM_READONLY, },
-    { "get", DLOOK,		APU_DBM_READONLY, },
-    { "look", DLOOK,		APU_DBM_READONLY, },
-    { "add", DINSERT,		APU_DBM_READWRITE, },
-    { "insert", DINSERT,	APU_DBM_READWRITE, },
-    { "store", DINSERT,		APU_DBM_READWRITE, },
-    { "delete", DDELETE,	APU_DBM_READWRITE, },
-    { "remove", DDELETE,	APU_DBM_READWRITE, },
-    { "dump", DCAT,		APU_DBM_READONLY, },
-    { "list", DCAT, 		APU_DBM_READONLY, },
-    { "cat", DCAT,		APU_DBM_READONLY, },
+    { "fetch", DLOOK,	 	APR_DBM_READONLY, },
+    { "get", DLOOK,		APR_DBM_READONLY, },
+    { "look", DLOOK,		APR_DBM_READONLY, },
+    { "add", DINSERT,		APR_DBM_READWRITE, },
+    { "insert", DINSERT,	APR_DBM_READWRITE, },
+    { "store", DINSERT,		APR_DBM_READWRITE, },
+    { "delete", DDELETE,	APR_DBM_READWRITE, },
+    { "remove", DDELETE,	APR_DBM_READWRITE, },
+    { "dump", DCAT,		APR_DBM_READONLY, },
+    { "list", DCAT, 		APR_DBM_READONLY, },
+    { "cat", DCAT,		APR_DBM_READONLY, },
 #if 0
-    { "creat", DCREAT,		APU_DBM_RWCREATE | O_TRUNC, },
-    { "new", DCREAT,		APU_DBM_RWCREATE | O_TRUNC, },
+    { "creat", DCREAT,		APR_DBM_RWCREATE | O_TRUNC, },
+    { "new", DCREAT,		APR_DBM_RWCREATE | O_TRUNC, },
 #endif
-    { "build", DBUILD,		APU_DBM_RWCREATE, },
-    { "squash", DPRESS,		APU_DBM_READWRITE, },
-    { "compact", DPRESS,	APU_DBM_READWRITE, },
-    { "compress", DPRESS,	APU_DBM_READWRITE, },
+    { "build", DBUILD,		APR_DBM_RWCREATE, },
+    { "squash", DPRESS,		APR_DBM_READWRITE, },
+    { "compact", DPRESS,	APR_DBM_READWRITE, },
+    { "compress", DPRESS,	APR_DBM_READWRITE, },
 };
 
 #define CTABSIZ (sizeof (cmds)/sizeof (cmd))
@@ -122,7 +122,7 @@ static const cmd cmds[] = {
 static void doit(const cmd *act, const char *file, apr_pool_t *pool);
 static void badk(const char *word);
 static const cmd *parse(const char *str);
-static void prdatum(FILE *stream, apu_datum_t d);
+static void prdatum(FILE *stream, apr_datum_t d);
 static void oops(const char *s1, const char *s2);
 
 
@@ -167,9 +167,9 @@ int main(int argc, const char * const * argv)
 static void doit(const cmd *act, const char *file, apr_pool_t *pool)
 {
     apr_status_t rv;
-    apu_datum_t key;
-    apu_datum_t val;
-    apu_dbm_t *db;
+    apr_datum_t key;
+    apr_datum_t val;
+    apr_dbm_t *db;
     char *op;
     int n;
     char *line;
@@ -178,7 +178,7 @@ static void doit(const cmd *act, const char *file, apr_pool_t *pool)
     extern long time();
 #endif
 
-    if (apu_dbm_open(file, pool, act->flags, &db) != APR_SUCCESS)
+    if (apr_dbm_open(file, pool, act->flags, &db) != APR_SUCCESS)
         oops("cannot open: %s", file);
 
     if ((line = (char *) malloc(LINEMAX)) == NULL)
@@ -192,7 +192,7 @@ static void doit(const cmd *act, const char *file, apr_pool_t *pool)
             line[n] = 0;
             key.dptr = line;
             key.dsize = n;
-            rv = apu_dbm_fetch(db, key, &val);
+            rv = apr_dbm_fetch(db, key, &val);
             if (rv == APR_SUCCESS) {
                 prdatum(stdout, val);
                 putchar('\n');
@@ -210,20 +210,20 @@ static void doit(const cmd *act, const char *file, apr_pool_t *pool)
             line[n] = 0;
             key.dptr = line;
             key.dsize = n;
-            if (apu_dbm_delete(db, key) != APR_SUCCESS) {
+            if (apr_dbm_delete(db, key) != APR_SUCCESS) {
                 prdatum(stderr, key);
                 fprintf(stderr, ": not found.\n");
             }
         }
         break;
     case DCAT:
-        if (apu_dbm_firstkey(db, &key) != APR_SUCCESS)
+        if (apr_dbm_firstkey(db, &key) != APR_SUCCESS)
             oops("could not fetch first key: %s", file);
 
-        for (; key.dptr != 0; (void) apu_dbm_nextkey(db, &key)) {
+        for (; key.dptr != 0; (void) apr_dbm_nextkey(db, &key)) {
             prdatum(stdout, key);
             putchar('\t');
-            (void) apu_dbm_fetch(db, key, &val);
+            (void) apr_dbm_fetch(db, key, &val);
             prdatum(stdout, val);
             putchar('\n');
         }
@@ -245,7 +245,7 @@ static void doit(const cmd *act, const char *file, apr_pool_t *pool)
             else
                 oops("bad input: %s", line);
 	
-            if (apu_dbm_store(db, key, val) != APR_SUCCESS) {
+            if (apr_dbm_store(db, key, val) != APR_SUCCESS) {
                 prdatum(stderr, key);
                 fprintf(stderr, ": ");
                 oops("store: %s", "failed");
@@ -261,7 +261,7 @@ static void doit(const cmd *act, const char *file, apr_pool_t *pool)
         break;
     }
 
-    apu_dbm_close(db);
+    apr_dbm_close(db);
 }
 
 static void badk(const char *word)
@@ -290,7 +290,7 @@ static const cmd *parse(const char *str)
     return NULL;
 }
 
-static void prdatum(FILE *stream, apu_datum_t d)
+static void prdatum(FILE *stream, apr_datum_t d)
 {
     int c;
     const char *p = d.dptr;
