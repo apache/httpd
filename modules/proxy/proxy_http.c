@@ -207,6 +207,11 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
     conn_rec *origin = NULL;
     apr_uri_components uri;
     proxy_conn_rec *backend;
+    int received_continue = 1; /* flag to indicate if we should
+                                * loop over response parsing logic
+                                * in the case that the origin told us
+                                * to HTTP_CONTINUE
+                                */
 
     /* Note: Memory pool allocation.
      * A downstream keepalive connection is always connected to the existence
@@ -619,191 +624,198 @@ int ap_proxy_http_handler(request_rec *r, proxy_server_conf *conf,
 
     apr_brigade_cleanup(bb);
 
-    if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer), &eos))) {
-	apr_socket_close(sock);
-	backend->connection = NULL;
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-	     "proxy: error reading status line from remote server %s",
-	     connectname);
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-			     "Error reading from remote server");
-    }
-    len = strlen(buffer);
-
-    /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
-    if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
-	int major, minor;
-
-	if (2 != sscanf(buffer, "HTTP/%u.%u", &major, &minor)) {
-	    major = 1;
-	    minor = 1;
-	}
-
-        /* If not an HTTP/1 message or if the status line was > 8192 bytes */
-	else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
-	    apr_socket_close(sock);
-	    backend->connection = NULL;
-	    return ap_proxyerror(r, HTTP_BAD_GATEWAY,
-				 apr_pstrcat(p, "Corrupt status line returned by remote server: ", buffer, NULL));
-	}
-	backasswards = 0;
-	buffer[--len] = '\0';
-
-	buffer[12] = '\0';
-	r->status = atoi(&buffer[9]);
-
-	buffer[12] = ' ';
-	r->status_line = apr_pstrdup(p, &buffer[9]);
-
-        /* read the headers. */
-        /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
-        /* Also, take care with headers with multiple occurences. */
-
-	r->headers_out = ap_proxy_read_headers(r, rp, buffer, sizeof(buffer), origin);
-	if (r->headers_out == NULL) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
-			 "proxy: bad HTTP/%d.%d header returned by %s (%s)",
-			 major, minor, r->uri, r->method);
-	    close += 1;
-	}
-        else
-        {
-	    /* strip connection listed hop-by-hop headers from response */
-	    const char *buf;
-            close += ap_proxy_liststr(apr_table_get(r->headers_out, "Connection"), "close");
-            ap_proxy_clear_connection(p, r->headers_out);
-            if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
-                r->content_type = apr_pstrdup(p, buf);
+    while (received_continue) {
+        if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer), &eos))) {
+            apr_socket_close(sock);
+            backend->connection = NULL;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                 "proxy: error reading status line from remote server %s",
+                 connectname);
+              return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             "Error reading from remote server");
+        }
+        len = strlen(buffer);
+    
+        /* Is it an HTTP/1 response?  This is buggy if we ever see an HTTP/1.10 */
+        if (apr_date_checkmask(buffer, "HTTP/#.# ###*")) {
+            int major, minor;
+    
+            if (2 != sscanf(buffer, "HTTP/%u.%u", &major, &minor)) {
+                major = 1;
+                minor = 1;
+            }
+    
+            /* If not an HTTP/1 message or if the status line was > 8192 bytes */
+            else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
+                apr_socket_close(sock);
+                backend->connection = NULL;
+                return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+            			 apr_pstrcat(p, "Corrupt status line returned by remote server: ", buffer, NULL));
+            }
+            backasswards = 0;
+            buffer[--len] = '\0';
+    
+            buffer[12] = '\0';
+            r->status = atoi(&buffer[9]);
+    
+            buffer[12] = ' ';
+            r->status_line = apr_pstrdup(p, &buffer[9]);
+    
+            /* read the headers. */
+            /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers */
+            /* Also, take care with headers with multiple occurences. */
+    
+            r->headers_out = ap_proxy_read_headers(r, rp, buffer, sizeof(buffer), origin);
+            if (r->headers_out == NULL) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r->server,
+            		 "proxy: bad HTTP/%d.%d header returned by %s (%s)",
+            		 major, minor, r->uri, r->method);
+                close += 1;
+            }
+            else
+            {
+                /* strip connection listed hop-by-hop headers from response */
+                const char *buf;
+                close += ap_proxy_liststr(apr_table_get(r->headers_out, "Connection"), "close");
+                ap_proxy_clear_connection(p, r->headers_out);
+                if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
+                    r->content_type = apr_pstrdup(p, buf);
+                }
+            }
+    
+            /* handle Via header in response */
+            if (conf->viaopt != via_off && conf->viaopt != via_block) {
+                /* create a "Via:" response header entry and merge it */
+                ap_table_mergen(r->headers_out, "Via",
+            		    (conf->viaopt == via_full)
+            		    ? apr_psprintf(p, "%d.%d %s%s (%s)",
+            			    HTTP_VERSION_MAJOR(r->proto_num),
+            			    HTTP_VERSION_MINOR(r->proto_num),
+            			    ap_get_server_name(r), server_portstr,
+            			    AP_SERVER_BASEVERSION)
+            		    : apr_psprintf(p, "%d.%d %s%s",
+            			    HTTP_VERSION_MAJOR(r->proto_num),
+            			    HTTP_VERSION_MINOR(r->proto_num),
+            			    ap_get_server_name(r), server_portstr)
+                                );
+            }
+    
+            /* cancel keepalive if HTTP/1.0 or less */
+            if ((major < 1) || (minor < 1)) {
+                close += 1;
+            origin->keepalive = 0;
             }
         }
-
-        /* handle Via header in response */
-	if (conf->viaopt != via_off && conf->viaopt != via_block) {
-	    /* create a "Via:" response header entry and merge it */
-            ap_table_mergen(r->headers_out, "Via",
-			    (conf->viaopt == via_full)
-			    ? apr_psprintf(p, "%d.%d %s%s (%s)",
-				    HTTP_VERSION_MAJOR(r->proto_num),
-				    HTTP_VERSION_MINOR(r->proto_num),
-				    ap_get_server_name(r), server_portstr,
-				    AP_SERVER_BASEVERSION)
-			    : apr_psprintf(p, "%d.%d %s%s",
-				    HTTP_VERSION_MAJOR(r->proto_num),
-				    HTTP_VERSION_MINOR(r->proto_num),
-				    ap_get_server_name(r), server_portstr)
-                            );
-	}
-
-	/* cancel keepalive if HTTP/1.0 or less */
-	if ((major < 1) || (minor < 1)) {
-	    close += 1;
-	    origin->keepalive = 0;
-	}
-    }
-    else {
-	/* an http/0.9 response */
-	backasswards = 1;
-	r->status = 200;
-	r->status_line = "200 OK";
-	close += 1;
-    }
-
-    /* we must accept 3 kinds of date, but generate only 1 kind of date */
-    {
-	const char *buf;
-        if ((buf = apr_table_get(r->headers_out, "Date")) != NULL) {
-	    apr_table_set(r->headers_out, "Date", ap_proxy_date_canon(p, buf));
-	}
-        if ((buf = apr_table_get(r->headers_out, "Expires")) != NULL) {
-	    apr_table_set(r->headers_out, "Expires", ap_proxy_date_canon(p, buf));
-	}
-        if ((buf = apr_table_get(r->headers_out, "Last-Modified")) != NULL) {
-	    apr_table_set(r->headers_out, "Last-Modified", ap_proxy_date_canon(p, buf));
-	}
-    }
-
-    /* munge the Location and URI response headers according to ProxyPassReverse */
-    {
-	const char *buf;
-        if ((buf = apr_table_get(r->headers_out, "Location")) != NULL) {
-	    apr_table_set(r->headers_out, "Location", ap_proxy_location_reverse_map(r, conf, buf));
-	}
-        if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL) {
-	    apr_table_set(r->headers_out, "Content-Location", ap_proxy_location_reverse_map(r, conf, buf));
-	}
-        if ((buf = apr_table_get(r->headers_out, "URI")) != NULL) {
-	    apr_table_set(r->headers_out, "URI", ap_proxy_location_reverse_map(r, conf, buf));
-	}
-    }
-
-    r->sent_bodyct = 1;
-    /* Is it an HTTP/0.9 response? If so, send the extra data */
-    if (backasswards) {
-        apr_ssize_t cntr = len;
-        e = apr_bucket_heap_create(buffer, cntr, 0, NULL);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
-    }
-
-    /* send body - but only if a body is expected */
-    if ((!r->header_only) &&			/* not HEAD request */
-        (r->status > 199) &&			/* not any 1xx response */
-        (r->status != HTTP_NO_CONTENT) &&	/* not 204 */
-        (r->status != HTTP_RESET_CONTENT) &&	/* not 205 */
-        (r->status != HTTP_NOT_MODIFIED)) {	/* not 304 */
-
-	const char *buf;
-	apr_off_t readbytes;
-
-	/* if chunked - insert DECHUNK filter */
-	if (ap_proxy_liststr((buf = apr_table_get(r->headers_out, "Transfer-Encoding")), "chunked")) {
-	    rp->read_chunked = 1;
-	    apr_table_unset(r->headers_out, "Transfer-Encoding");
-	    if ((buf = ap_proxy_removestr(r->pool, buf, "chunked"))) {
-		apr_table_set(r->headers_out, "Transfer-Encoding", buf);
-	    }
-	    ap_add_input_filter("DECHUNK", NULL, rp, origin);
-	    readbytes = -1;
-	}
-
-	/* if content length - set the length to read */
-	else if ((buf = apr_table_get(r->headers_out, "Content-Length"))) {
-	    readbytes = atol(buf);
-	}
-
-	/* no chunked / no length therefore read till EOF and cancel keepalive */
-	else {
-	    close += 1;
-	}
-
-	/* if keepalive cancelled, read to EOF */
-	if (close) {
-	    readbytes = -1;
-	}
-
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: start body send");
-
-	/* read the body, pass it to the output filters */
-	while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING, &readbytes) == APR_SUCCESS) {
-	    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-		ap_pass_brigade(r->output_filters, bb);
-		break;
-	    }
-            if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
-                /* Ack! Phbtt! Die! User aborted! */
-                close = 1;  /* this causes socket close below */
-                break;
+        else {
+            /* an http/0.9 response */
+                backasswards = 1;
+                r->status = 200;
+                   r->status_line = "200 OK";
+                close += 1;
+        }
+    
+            if ( r->status != HTTP_CONTINUE ) {
+                received_continue = 0;
+            } else {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, NULL,
+                             "proxy: HTTP: received 100 CONTINUE");
             }
-            apr_brigade_cleanup(bb);
-	}
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: end body send");
+        /* we must accept 3 kinds of date, but generate only 1 kind of date */
+        {
+            const char *buf;
+            if ((buf = apr_table_get(r->headers_out, "Date")) != NULL) {
+                apr_table_set(r->headers_out, "Date", ap_proxy_date_canon(p, buf));
+            }
+            if ((buf = apr_table_get(r->headers_out, "Expires")) != NULL) {
+                apr_table_set(r->headers_out, "Expires", ap_proxy_date_canon(p, buf));
+            }
+            if ((buf = apr_table_get(r->headers_out, "Last-Modified")) != NULL) {
+                apr_table_set(r->headers_out, "Last-Modified", ap_proxy_date_canon(p, buf));
+            }
+        }
+    
+        /* munge the Location and URI response headers according to ProxyPassReverse */
+        {
+            const char *buf;
+            if ((buf = apr_table_get(r->headers_out, "Location")) != NULL) {
+                apr_table_set(r->headers_out, "Location", ap_proxy_location_reverse_map(r, conf, buf));
+            }
+            if ((buf = apr_table_get(r->headers_out, "Content-Location")) != NULL) {
+                apr_table_set(r->headers_out, "Content-Location", ap_proxy_location_reverse_map(r, conf, buf));
+            }
+            if ((buf = apr_table_get(r->headers_out, "URI")) != NULL) {
+                apr_table_set(r->headers_out, "URI", ap_proxy_location_reverse_map(r, conf, buf));
+            }
+        }
+    
+        r->sent_bodyct = 1;
+        /* Is it an HTTP/0.9 response? If so, send the extra data */
+        if (backasswards) {
+            apr_ssize_t cntr = len;
+            e = apr_bucket_heap_create(buffer, cntr, 0, NULL);
+            APR_BRIGADE_INSERT_TAIL(bb, e);
+        }
+    
+        /* send body - but only if a body is expected */
+        if ((!r->header_only) &&        		/* not HEAD request */
+            (r->status > 199) &&        		/* not any 1xx response */
+            (r->status != HTTP_NO_CONTENT) &&        /* not 204 */
+            (r->status != HTTP_RESET_CONTENT) &&        /* not 205 */
+            (r->status != HTTP_NOT_MODIFIED)) {        /* not 304 */
+    
+            const char *buf;
+            apr_off_t readbytes;
+    
+            /* if chunked - insert DECHUNK filter */
+            if (ap_proxy_liststr((buf = apr_table_get(r->headers_out, "Transfer-Encoding")), "chunked")) {
+                rp->read_chunked = 1;
+                apr_table_unset(r->headers_out, "Transfer-Encoding");
+                if ((buf = ap_proxy_removestr(r->pool, buf, "chunked"))) {
+            	apr_table_set(r->headers_out, "Transfer-Encoding", buf);
+                }
+                ap_add_input_filter("DECHUNK", NULL, rp, origin);
+                readbytes = -1;
+            }
+    
+            /* if content length - set the length to read */
+            else if ((buf = apr_table_get(r->headers_out, "Content-Length"))) {
+                readbytes = atol(buf);
+            }
+    
+            /* no chunked / no length therefore read till EOF and cancel keepalive */
+            else {
+                close += 1;
+            }
+    
+            /* if keepalive cancelled, read to EOF */
+            if (close) {
+                readbytes = -1;
+            }
+    
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            	     "proxy: start body send");
+    
+            /* read the body, pass it to the output filters */
+            while (ap_get_brigade(rp->input_filters, bb, AP_MODE_BLOCKING, &readbytes) == APR_SUCCESS) {
+                if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+            	ap_pass_brigade(r->output_filters, bb);
+            	break;
+                }
+                if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS) {
+                    /* Ack! Phbtt! Die! User aborted! */
+                    close = 1;  /* this causes socket close below */
+                    break;
+                }
+                apr_brigade_cleanup(bb);
+            }
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+                         "proxy: end body send");
+        }
+        else {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
+            	     "proxy: header only");
+        }
     }
-    else {
-	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
-		     "proxy: header only");
-    }
-
 
     /*
      * Step Five: Clean Up
