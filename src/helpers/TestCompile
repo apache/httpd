@@ -102,7 +102,7 @@ INCLUDES=\$(INCLUDES1) \$(EXTRA_INCLUDES)
 LDFLAGS=\$(LDFLAGS1) \$(EXTRA_LDFLAGS)
 
 dummy:
-	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) dummy.c -o dummy $TLIB
+	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) dummy.c -o dummy $TLIB \$(LIBS)
 
 testfunc:
 	\$(CC) \$(CFLAGS) \$(INCLUDES) \$(LDFLAGS) testfunc.c -o testfunc \$(LIBS)
