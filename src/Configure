@@ -662,33 +662,41 @@ TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{prin
 
 ####################################################################
 # We adjust now CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT as
-# required.  For more PLATFORMs just add the required lines below.
+# required.  For more platforms just add the required lines below.
 #
 if [ "x$using_shlib" = "x1" ] ; then
     case "$PLAT" in
-	*-linux1)
-	    CFLAGS_SHLIB="-fpic"
-	    LDFLAGS_SHLIB="-Bshareable"
-	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
-	    ;;
-	*-linux2)
-	    CFLAGS_SHLIB="-fpic"
-	    LDFLAGS_SHLIB="-Bshareable"
-	    LDFLAGS_SHLIB_EXPORT="-rdynamic"
-	    ;;
-	*-freebsd*)
-	    CFLAGS_SHLIB="-fpic"
-	    LDFLAGS_SHLIB="-Bshareable"
-	    LDFLAGS_SHLIB_EXPORT=""
-	    ;;
-	*-solaris2*)
-	    case $CC in
-		    */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
-		      */cc|cc ) CFLAGS_SHLIB="-KPIC" ;;
-	    esac
-	    LDFLAGS_SHLIB="-G"
-	    LDFLAGS_SHLIB_EXPORT=""
-	    ;;
+        *-linux1)
+            CFLAGS_SHLIB="-fpic"
+            LDFLAGS_SHLIB="-Bshareable"
+            LDFLAGS_SHLIB_EXPORT="-rdynamic"
+            ;;
+        *-linux2)
+            CFLAGS_SHLIB="-fpic"
+            LDFLAGS_SHLIB="-Bshareable"
+            LDFLAGS_SHLIB_EXPORT="-rdynamic"
+            ;;
+        *-freebsd*)
+            CFLAGS_SHLIB="-fpic"
+            LDFLAGS_SHLIB="-Bshareable"
+            LDFLAGS_SHLIB_EXPORT=""
+            ;;
+        *-solaris2*)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+            esac
+            LDFLAGS_SHLIB="-G"
+            LDFLAGS_SHLIB_EXPORT=""
+            ;;
+        *-sunos4*)
+            case $CC in
+                */gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+                */acc|acc ) CFLAGS_SHLIB="-pic" ;;
+            esac
+            LDFLAGS_SHLIB="-assert pure-text"
+            LDFLAGS_SHLIB_EXPORT=""
+            ;;
     esac
 fi
 
