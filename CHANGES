@@ -1,5 +1,9 @@
 Changes with Apache 2.0.51
 
+  *) SECURITY: CAN-2004-0747 (cve.mitre.org)
+     Fix buffer overflow in expansion of environment variables in
+     configuration file parsing.  [André Malo]
+
   *) SECURITY: CAN-2004-0809 (cve.mitre.org)
      mod_dav_fs: Fix a segfault in the handling of an indirect lock
      refresh.  PR 31183.  [Joe Orton]
