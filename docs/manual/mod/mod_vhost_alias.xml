@@ -11,19 +11,30 @@ hosting</description>
 <identifier>vhost_alias_module</identifier>
 
 <summary>
-
     <p>This module creates dynamically configured virtual hosts, by
     allowing the IP address and/or the <code>Host:</code> header of
     the HTTP request to be used as part of the pathname to
     determine what files to serve. This allows for easy use of a
     huge number of virtual hosts with similar configurations.</p>
+    
+    <note><title>Note</title>
+      <p>If <module>mod_alias</module> or <module>mod_userdir</module> are
+      used for translating URIs to filenames, they will override the
+      directives of <module>mod_vhost_alias</module> described below. For
+      example, the following configuration will map <code>
+      /cgi-bin/script.pl</code> to <code>
+      /usr/local/apache2/cgi-bin/script.pl</code> in all cases:</p>
 
-
+      <example>
+        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/<br />
+        VirtualScriptAlias /never/found/%0/cgi-bin/
+      </example>
+    </note>
 </summary>
-    <seealso><directive
-    module="core">UseCanonicalName</directive></seealso>
-    <seealso><a href="../vhosts/mass.html">Dynamically configured mass 
-virtual hosting</a></seealso>
+
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
+<seealso><a href="../vhosts/mass.html">Dynamically configured mass 
+    virtual hosting</a></seealso>
 
 <section id="interpol">
     <title>Directory Name Interpolation</title>
