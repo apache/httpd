@@ -26,7 +26,7 @@ accomplished while remaining backwards-compatible.</p>
 <h3>The New API Functions</h3>
 
 <pre>
-   int setup_client_block (request_rec *);
+   int setup_client_block (request_rec *, int read_policy);
    int should_client_block (request_rec *);
    long get_client_block (request_rec *, char *buffer, int buffer_size);
 </pre>
@@ -35,7 +35,20 @@ accomplished while remaining backwards-compatible.</p>
 <li>Call <code>setup_client_block()</code> near the beginning of the request
     handler. This will set up all the neccessary properties, and
     will return either OK, or an error code. If the latter,
-    the module should return that error code.
+    the module should return that error code. The second parameter
+    selects the policy to apply if the request message indicates a
+    body, and how a chunked
+    transfer-coding sho uld be interpreted. Choose one of
+<pre>
+    REQUEST_NO_BODY          Send 413 error if message has any body
+    REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
+    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
+    REQUEST_CHUNKED_PASS     Pass the chunks to me without removal.
+</pre>
+    In order to use the last two options, the caller MUST provide a buffer
+    large enough to hold a chunk-size line, including any extensions.
+
+
 
 <li>When you are ready to possibly accept input, call
     <code>should_client_block()</code>.
@@ -52,8 +65,8 @@ accomplished while remaining backwards-compatible.</p>
     buffer and its 
     size. It will put data into the buffer (not neccessarily the full
     buffer, in the case of chunked inputs), and return the length of
-    the input block. When it is done reading, it will return 0, and
-    the module should proceed.
+    the input block. When it is done reading, it will
+    return 0 if EOF, or -1 if there was an error.
 
 </ol>
 
