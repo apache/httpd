@@ -1,5 +1,7 @@
 Changes with Apache 2.0.41
 
+  *) Fix Segfault in mod_cache. [Kris Verbeeck <Kris.Verbeeck@ubizen.com>]
+
   *) Fix a null pointer dereference in the merge_env_dir_configs
      function of the mod_env module. PR 11791
      [Paul J. Reder]

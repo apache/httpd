@@ -104,6 +104,9 @@ CACHE_DECLARE(const char *)ap_cache_get_cachetype(request_rec *r,
     const char *type = NULL;
     int i;
 
+    /* we can't cache if there's no URL */
+    if (!url) return NULL;
+
     /* loop through all the cacheenable entries */
     for (i = 0; i < conf->cacheenable->nelts; i++) {
         struct cache_enable *ent = 
