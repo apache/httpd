@@ -1557,10 +1557,14 @@ static int index_directory(request_rec *r,
 	return HTTP_FORBIDDEN;
     }
 
-    r->content_type = "text/html";
 #if APR_HAS_UNICODE_FS 
     r->content_type = "text/html;charset=utf-8";
+#else
+    r->content_type = "text/html";
 #endif
+    ap_update_mtime(r, r->finfo.mtime);
+    ap_set_last_modified(r);
+    ap_set_etag(r);
 
     ap_send_http_header(r);
 
