@@ -327,8 +327,8 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd, void *ctx,
         }
         mc->nMutexMode  = SSL_MUTEXMODE_USED;
         mc->szMutexFile =
-            (char *)apr_psprintf(mc->pPool, "%s.%lu",
-                                 file, (unsigned long)getpid());
+            apr_psprintf(mc->pPool, "%s.%lu",
+                         file, (unsigned long)getpid());
     }
     else if (strcEQ(arg, "sem") || strcEQ(arg, "yes")) {
         mc->nMutexMode  = SSL_MUTEXMODE_USED;
@@ -526,7 +526,7 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd, void *ctx,
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
 
     if (cmd->path) {
-        dc->szCipherSuite = (char *)arg;
+        dc->szCipherSuite = arg;
     }
     else {
         sc->szCipherSuite = arg;
