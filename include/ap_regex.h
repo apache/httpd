@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-/* This is the header for the POSIX wrapper interface to the PCRE Perl-
-Compatible Regular Expression library. It defines the things POSIX says should
-be there. I hope.
+/* Derived from PCRE's pcreposix.h.
 
             Copyright (c) 1997-2004 University of Cambridge
 
@@ -52,9 +50,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #ifndef AP_REGEX_H
 #define AP_REGEX_H
 
-/* Have to include stdlib.h in order to ensure that size_t is defined. */
-
-#include <stdlib.h>
+#include "apr.h"
 
 /* Allow for C++ users */
 
@@ -82,17 +78,15 @@ enum {
 
 /* The structure representing a compiled regular expression. */
 typedef struct {
-  void *re_pcre;
-  size_t re_nsub;
-  size_t re_erroffset;
+    void *re_pcre;
+    apr_size_t re_nsub;
+    apr_size_t re_erroffset;
 } ap_regex_t;
-
-typedef int regoff_t;
 
 /* The structure in which a captured offset is returned. */
 typedef struct {
-  regoff_t rm_so;
-  regoff_t rm_eo;
+    int rm_so;
+    int rm_eo;
 } ap_regmatch_t;
 
 #ifndef AP_DECLARE
@@ -102,7 +96,7 @@ typedef struct {
 /* The functions */
 
 /**
- * Compile a regeular expression.
+ * Compile a regular expression.
  * @param preg Returned compiled regex
  * @param regex The regular expression string
  * @param cflags Must be zero (currently).
@@ -111,7 +105,7 @@ typedef struct {
 AP_DECLARE(int) ap_regcomp(ap_regex_t *preg, const char *regex, int cflags);
 
 /**
- * Match a null-terminated string against a pre-compiled regex.
+ * Match a NUL-terminated string against a pre-compiled regex.
  * @param preg The pre-compiled regex
  * @param string The string to match
  * @param nmatch Provide information regarding the location of any matches
@@ -120,7 +114,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t *preg, const char *regex, int cflags);
  * @return 0 for successful match, #REG_NOMATCH otherwise
  */ 
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
-                           size_t nmatch, ap_regmatch_t *pmatch, int eflags);
+                           apr_size_t nmatch, ap_regmatch_t *pmatch, int eflags);
 
 /**
  * Return the error code returned by regcomp or regexec into error messages
@@ -129,8 +123,8 @@ AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
  * @param errbuf A buffer to store the error in
  * @param errbuf_size The size of the buffer
  */
-AP_DECLARE(size_t) ap_regerror(int errcode, const ap_regex_t *preg, 
-                               char *errbuf, size_t errbuf_size);
+AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg, 
+                                   char *errbuf, apr_size_t errbuf_size);
 
 /** Destroy a pre-compiled regex.
  * @param preg The pre-compiled regex to free.

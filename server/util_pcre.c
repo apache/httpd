@@ -67,11 +67,11 @@ static const char *const pstring[] = {
   "match failed"                     /* AP_REG_NOMATCH */
 };
 
-AP_DECLARE(size_t) ap_regerror(int errcode, const ap_regex_t *preg, 
-                               char *errbuf, size_t errbuf_size)
+AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg, 
+                                   char *errbuf, apr_size_t errbuf_size)
 {
 const char *message, *addmessage;
-size_t length, addlength;
+apr_size_t length, addlength;
 
 message = (errcode >= (int)(sizeof(pstring)/sizeof(char *)))?
   "unknown error code" : pstring[errcode];
@@ -157,8 +157,9 @@ ints. However, if the number of possible capturing brackets is small, use a
 block of store on the stack, to reduce the use of malloc/free. The threshold is
 in a macro that can be changed at configure time. */
 
-AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string, size_t nmatch,
-                           ap_regmatch_t pmatch[], int eflags)
+AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
+                           apr_size_t nmatch, ap_regmatch_t pmatch[],
+                           int eflags)
 {
 int rc;
 int options = 0;
@@ -169,7 +170,7 @@ int allocated_ovector = 0;
 if ((eflags & AP_REG_NOTBOL) != 0) options |= PCRE_NOTBOL;
 if ((eflags & AP_REG_NOTEOL) != 0) options |= PCRE_NOTEOL;
 
-((ap_regex_t *)preg)->re_erroffset = (size_t)(-1);  /* Only has meaning after compile */
+((ap_regex_t *)preg)->re_erroffset = (apr_size_t)(-1);  /* Only has meaning after compile */
 
 if (nmatch > 0)
   {
@@ -192,8 +193,8 @@ if (rc == 0) rc = nmatch;    /* All captured slots were filled in */
 
 if (rc >= 0)
   {
-  size_t i;
-  for (i = 0; i < (size_t)rc; i++)
+  apr_size_t i;
+  for (i = 0; i < (apr_size_t)rc; i++)
     {
     pmatch[i].rm_so = ovector[i*2];
     pmatch[i].rm_eo = ovector[i*2+1];
