@@ -105,7 +105,7 @@ static void setup_shared_mem(apr_pool_t *p)
     const char *fname;
 
     fname = ap_server_root_relative(p, ap_scoreboard_fname);
-    if (apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + NEW_SCOREBOARD_SIZE + 40, fname, p) != APR_SUCCESS) {
+    if (apr_shm_init(&scoreboard_shm, SCOREBOARD_SIZE + NEW_SCOREBOARD_SIZE + 80, fname, p) != APR_SUCCESS) {
         apr_snprintf(buf, sizeof(buf), "%s: could not open(create) scoreboard",
                     ap_server_argv0);
         perror(buf);
