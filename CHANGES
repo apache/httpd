@@ -1,5 +1,11 @@
 Changes with Apache 2.0b1
 
+  *) Get mod_cgid to use apr calls for creating the actual CGI process.
+     This also allows mod_cgid to use ap_os_create_priviledged_process,
+     thus allowing for SuExec execution from mod_cgid.  Currently, we do
+     not support everything that standard SuExec supports, but at least
+     it works minimally now. [Ryan Bloom]
+
   *) Allow SuExec to be configured from the ./configure command line.
      [Ryan Bloom]
 

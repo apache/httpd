@@ -203,31 +203,6 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
     return av;
 }
 
-static int call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
-{
-    int pid = 0;
-    int errfileno = STDERR_FILENO;
-    /* the fd on r->server->error_log is closed, but we need somewhere to            
-     * put the error messages from the log_* functions. So, we use stderr,
-     * since that is better than allowing errors to go unnoticed. 
-     */
-    apr_put_os_file(&r->server->error_log, &errfileno, r->pool);
-    if (shellcmd) {
-        execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
-    }
-
-    else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
-        execle(r->filename, argv0, NULL, env);
-    }
-
-    else {
-        execve(r->filename,
-               create_argv(r->pool, NULL, NULL, NULL, argv0, r->args),
-               env);
-    }
-    return (pid);
-}
-
 static void cgid_maint(int reason, void *data, apr_wait_t status)
 {
 #if APR_HAS_OTHER_CHILD
@@ -319,6 +294,12 @@ static void get_req(int fd, request_rec *r, char **filename, char **argv0, char 
 #endif
     dconf[i] = (void *)temp_core; 
     r->per_dir_config = dconf; 
+
+    /* For right now, just make the notes table.  At some point we will need
+     * to actually fill this out, but for now we just don't want suexec to
+     * seg fault.
+     */
+    r->notes = apr_make_table(r->pool, 1);
 } 
 
 
@@ -397,30 +378,10 @@ static void send_req(int fd, request_rec *r, char *argv0, char **env)
 #endif 
 } 
 
-static void cgid_server_child(int sd) 
-{ 
-    char *argv0; 
-    char *filename; 
-    char **env; 
-    apr_pool_t *p; 
-    request_rec *r; 
-
-    apr_create_pool(&p, pcgi); 
-    r = apr_pcalloc(p, sizeof(request_rec)); 
-    r->pool = p; 
-    dup2(sd, STDIN_FILENO); 
-    dup2(sd, STDOUT_FILENO); 
-    get_req(sd, r, &filename, &argv0, &env); 
-    call_exec(r, argv0, env, 0); 
-    exit(-1);   /* We should NEVER get here */
-} 
-
 static int cgid_server(void *data) 
 { 
     struct sockaddr_un unix_addr;
-    int pid; 
     int sd, sd2, rc;
-    int errfile;
     mode_t omask;
     apr_socklen_t len;
     server_rec *main_server = data;
@@ -473,6 +434,18 @@ static int cgid_server(void *data)
     unixd_setup_child(); /* if running as root, switch to configured user/group */
 
     while (1) {
+        int errfileno = STDERR_FILENO;
+        char *argv0; 
+        char *filename; 
+        char **env; 
+        const char * const *argv; 
+        apr_pool_t *p; 
+        request_rec *r; 
+        apr_procattr_t *procattr = NULL;
+        apr_proc_t *procnew = NULL;
+        apr_file_t *inout = NULL;
+
+
         len = sizeof(unix_addr);
         sd2 = accept(sd, (struct sockaddr *)&unix_addr, &len);
         if (sd2 < 0) {
@@ -484,27 +457,43 @@ static int cgid_server(void *data)
             continue;
         }
        
-        if ((pid = fork()) > 0) {
+        apr_create_pool(&p, pcgi); 
+
+        r = apr_pcalloc(p, sizeof(request_rec)); 
+        procnew = apr_pcalloc(p, sizeof(*procnew));
+        r->pool = p; 
+        get_req(sd2, r, &filename, &argv0, &env); 
+        apr_put_os_file(&r->server->error_log, &errfileno, r->pool);
+        apr_put_os_file(&inout, &sd2, r->pool);
+
+        if (((rc = apr_createprocattr_init(&procattr, p)) != APR_SUCCESS) ||
+            ((rc = apr_setprocattr_io(procattr,
+                                     APR_CHILD_BLOCK,
+                                     APR_CHILD_BLOCK,
+                                     APR_CHILD_BLOCK)) != APR_SUCCESS) ||
+            ((rc = apr_setprocattr_childin(procattr, inout, NULL)) != APR_SUCCESS) ||
+            ((rc = apr_setprocattr_childout(procattr, inout, NULL)) != APR_SUCCESS) ||
+            ((rc = apr_setprocattr_childerr(procattr, r->server->error_log, NULL)) != APR_SUCCESS) ||
+            ((rc = apr_setprocattr_dir(procattr,
+                                  ap_make_dirstr_parent(r->pool, r->filename))) != APR_SUCCESS) ||
+            ((rc = apr_setprocattr_cmdtype(procattr, APR_PROGRAM)) != APR_SUCCESS)) {
+            /* Something bad happened, tell the world. */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+                      "couldn't set child process attributes: %s", r->filename);
+        }
+        else {
+            argv = (const char * const *)create_argv(r->pool, NULL, NULL, NULL, argv0, r->args);
+            rc = ap_os_create_privileged_process(r, procnew, argv0, argv, 
+                                                 (const char * const *)env, 
+                                                 procattr, p);
+
             close(sd2);
-        } 
-        else if (pid == 0) { 
-            /* setup the STDERR here, because I have all the info
-             * for it.  I'll do the STDIN and STDOUT later, but I can't
-             * do STDERR as easily.
-             */
-            if (sconf->logname) {
-                dup2(open(sconf->logname, O_WRONLY), STDERR_FILENO);
+            if (rc != APR_SUCCESS) {
+                /* Bad things happened. Everyone should have cleaned up. */
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
+                        "couldn't create child process: %d: %s", rc, r->filename);
             }
-            else {
-                apr_get_os_file(&errfile, main_server->error_log);
-                dup2(errfile, STDERR_FILENO);
-            }
-            cgid_server_child(sd2); 
-        } 
-        else { 
-            ap_log_error(APLOG_MARK, APLOG_ERR, errno, (server_rec *)data, 
-                         "Couldn't fork cgi script"); 
-        } 
+        }
     } 
     return -1; 
 } 
