@@ -1312,7 +1312,8 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     if (!ok) {
         ssl_log(s, SSL_LOG_ERROR, "Certificate Verification: Error (%d): %s",
                 errnum, X509_verify_cert_error_string(errnum));
-        sslconn->client_cert = sslconn->client_dn = NULL;
+        sslconn->client_dn = NULL;
+        sslconn->client_cert = NULL;
         sslconn->verify_error = 
             X509_verify_cert_error_string(errnum);
     }
