@@ -1,5 +1,10 @@
 Changes with Apache 2.0.36
 
+  *) Fix Win32 NTFS Junctions (symlinks).  PR 8014  [William Rowe]
+
+  *) Fix Win32 'short name' aliases in httpd.conf directives.
+     PR 8009  [William Rowe]
+
   *) Fix generation of default httpd.conf when the layout paths are
      disjoint.  PR 7979, 8227.  [Justin Erenkrantz]
 
