@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<!--<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>-->
+<!-- English revision: 1.3.2.7 -->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+   <title>Apache-Dokumentation zu virtuellen Hosts</title>
+
+<summary>
+    <p>Der Begriff <cite>virtueller Host</cite> <transnote>engl. 'virtual
+    host'</transnote> bezieht sich auf die Praxis, mehr als ein Webangebot
+    (z.B. <code>www.company1.com</code> und <code>www.company2.com</code>)
+    auf einer einzigen Maschine zu betreiben. Virtuelle Hosts k&ouml;nnen
+    "<a href="ip-based.html">IP-basiert</a>" sein, was bedeutet, dass jedes
+    Webangebot eine andere IP besitzt, oder  "<a
+    href="name-based.html">Namens-basiert</a>", was bedeutet, dass
+    unter jeder IP-Adresse mehrere Namen laufen. Die Tatsache, dass sie
+    auf dem gleichen physischen Server laufen, ist f&uuml;r den Endbenutzer
+    nicht offensichtlich.</p>
+
+    <p>Der Apache war einer der ersten Server, der IP-basierte
+    virtuelle Hosts von Haus aus direkt unterst&uuml;tzt hat. Seit Version 1.1
+    unterst&uuml;tzt der Apache sowohl IP-basierte als auch namensbasierte
+    virtuelle Hosts (vhosts). Letzteres wird zuweilen auch
+    <em>Host-basiert</em> oder <em>non-IP-Virtual-Host</em> genannt.</p>
+
+    <p>Nachfolgend finden Sie eine Liste von Dokumenten, die alle Details
+    der Unterst&uuml;tzung von virtuellen Hosts ab Apache Version 1.3
+    beschreiben.</p>
+
+</summary>
+
+<seealso><module>mod_vhost_alias</module></seealso>
+<seealso><a href="name-based.html">Namensbasierte virtuelle Hosts</a></seealso>
+<seealso><a href="ip-based.html">IP-basierte virtuelle Hosts</a></seealso>
+<seealso><a href="examples.html">Beispiele f&uuml;r virtuelle
+  Hosts</a></seealso>
+<seealso><a href="fd-limits.html">Datei-Deskriptor-Begrenzungen</a></seealso>
+<seealso><a href="mass.html">Massen-Virtual-Hosting</a></seealso>
+<seealso><a href="details.html">Zuweisung virtueller Hosts</a></seealso>
+
+<section id="support"><title>Unterst&uuml;tzung virtueller Hosts</title>
+
+    <ul>
+      <li><a href="name-based.html">Namensbasierte virtuelle Hosts</a> (Mehr
+       als ein Webangebot pro IP-Adresse)</li>
+      <li><a href="ip-based.html">IP-basierte virtuelle Hosts</a> (Eine
+        IP-Adresse f&uuml;r jedes Webangebot)</li>
+      <li><a href="examples.html">Beispiele f&uuml;r virtuelles Hosts in
+        typischen Installationen</a></li>
+      <li><a href="fd-limits.html">Datei-Deskriptor-Begrenzungen</a> (oder
+      <em>Zu viele Protokolldateien</em>)</li>
+      <li><a href="mass.html">Dynamisch konfiguriertes
+        Massen-Virtual-Hosting</a></li>
+      <li><a href="details.html">Tiefergehende Er&ouml;rterung der Zuweisung
+        virtueller Hosts</a></li>
+    </ul>
+
+</section>
+
+<section id="directives"><title>Konfigurationsdirektiven</title>
+
+    <ul>
+      <li><directive type="section"
+           module="core">VirtualHost</directive></li>
+      <li><directive module="core">NameVirtualHost</directive></li>
+      <li><directive module="core">ServerName</directive></li>
+      <li><directive module="core">ServerAlias</directive></li>
+      <li><directive module="core">ServerPath</directive></li>
+    </ul>
+
+    <p>Bei der Suche von Fehlern in Ihrer Virtual-Host-Konfiguration ist
+    die Apache-Befehlszeilenoption <code>-S</code> m&ouml;glicherweise
+    hilfreich. Geben Sie dazu den folgenden Befehl ein:</p>
+
+    <example>
+    /usr/local/apache2/bin/httpd -S
+    </example>
+
+    <p>Diese Anweisung gibt eine Beschreibung aus, wie der Apache die
+    Konfigurationsdatei analysiert hat. Eine sorgf&auml;ltige
+    &Uuml;berpr&uuml;fung der IP-Adressen und Servernamen kann helfen,
+    Konfigurationsfehler aufzudecken. (Lesen Sie <a
+    href="../programs/httpd.html">die Dokumentation zum httpd-Programm</a>
+    f&uuml;r weitere Befehlszeilenoptionen.)</p>
+
+</section>
+</manualpage>
