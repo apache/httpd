@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 1.37 -->
+<!-- English Revision: 1.38 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -129,7 +129,6 @@
 <category id="misc">
 <title>Apache その他</title>
 <page separate="yes" href="misc/">概略</page>
-<page href="cgi_path.html">CGI 環境の PATH_INFO の変更</page>
 <page href="misc/relevant_standards.html">関連する標準規格</page>
 </category>
 

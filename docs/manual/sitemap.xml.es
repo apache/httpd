@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1.37 -->
+<!-- English Revision: 1.38 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -130,7 +130,6 @@ Apache</page>
 <category id="misc">
 <title>Documentaci&#243;n adicional sobre Apache</title>
 <page separate="yes" href="misc/">Visi&#243;n General</page>
-<page href="cgi_path.html">Cambios en PATH_INFO en el entorno CGI</page>
 <page href="misc/relevant_standards.html">Est&#225;ndares Importantes</page>
 </category>
 

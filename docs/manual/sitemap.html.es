@@ -141,7 +141,6 @@ Apache</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Documentación adicional sobre Apache</a></h2>
 <ul><li class="separate"><a href="misc/">Visión General</a></li>
-<li><a href="cgi_path.html">Cambios en PATH_INFO en el entorno CGI</a></li>
 <li><a href="misc/relevant_standards.html">Estándares Importantes</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
