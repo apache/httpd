@@ -442,9 +442,12 @@ static int cgid_server(void *data)
     int sd, sd2, rc, req_type;
     mode_t omask;
     apr_socklen_t len;
+    apr_pool_t *ptrans;
     server_rec *main_server = data;
     cgid_server_conf *sconf = ap_get_module_config(main_server->module_config,
                                                    &cgid_module); 
+
+    apr_pool_create(&ptrans, pcgi); 
 
     apr_signal(SIGCHLD, SIG_IGN); 
     if (unlink(sconf->sockname) < 0 && errno != ENOENT) {
@@ -499,11 +502,12 @@ static int cgid_server(void *data)
         apr_int32_t   out_pipe = APR_CHILD_BLOCK;
         apr_int32_t   err_pipe = APR_CHILD_BLOCK;
         apr_cmdtype_e cmd_type = APR_PROGRAM;
-        apr_pool_t *p; 
         request_rec *r; 
         apr_procattr_t *procattr = NULL;
         apr_proc_t *procnew = NULL;
         apr_file_t *inout;
+
+        apr_pool_clear(ptrans);
 
         len = sizeof(unix_addr);
         sd2 = accept(sd, (struct sockaddr *)&unix_addr, &len);
@@ -516,11 +520,9 @@ static int cgid_server(void *data)
             continue;
         }
        
-        apr_pool_create(&p, pcgi); 
-
-        r = apr_pcalloc(p, sizeof(request_rec)); 
-        procnew = apr_pcalloc(p, sizeof(*procnew));
-        r->pool = p; 
+        r = apr_pcalloc(ptrans, sizeof(request_rec)); 
+        procnew = apr_pcalloc(ptrans, sizeof(*procnew));
+        r->pool = ptrans; 
         get_req(sd2, r, &argv0, &env, &req_type); 
         apr_os_file_put(&r->server->error_log, &errfileno, r->pool);
         apr_os_file_put(&inout, &sd2, r->pool);
@@ -532,7 +534,7 @@ static int cgid_server(void *data)
             cmd_type = APR_SHELLCMD;
         }
 
-        if (((rc = apr_procattr_create(&procattr, p)) != APR_SUCCESS) ||
+        if (((rc = apr_procattr_create(&procattr, ptrans)) != APR_SUCCESS) ||
             ((req_type == CGI_REQ) && 
              (((rc = apr_procattr_io_set(procattr,
                                         in_pipe,
@@ -566,7 +568,7 @@ static int cgid_server(void *data)
 
             rc = ap_os_create_privileged_process(r, procnew, argv0, argv, 
                                                  (const char * const *)env, 
-                                                 procattr, p);
+                                                 procattr, ptrans);
 
             if (rc != APR_SUCCESS) {
                 /* Bad things happened. Everyone should have cleaned up. */
@@ -574,7 +576,6 @@ static int cgid_server(void *data)
                         "couldn't create child process: %d: %s", rc, r->filename);
             }
         }
-        apr_pool_clear(p);
     } 
     return -1; 
 } 
