@@ -425,7 +425,7 @@ void parse_string(request_rec *r, char *in, char *out, int length,
                 if (braces == 1) {
                     if (*in == '}') break;
                 }
-                if (! (isalpha((int)*in) || (*in == '_') || isdigit((int)*in)) ) break;
+                else if (! (isalpha((int)*in) || (*in == '_') || isdigit((int)*in)) ) break;
                 if (vtlen < (MAX_STRING_LEN - 1)) vtext[vtlen++] = *in;
                 var[vlen++] = *in++;
             }
