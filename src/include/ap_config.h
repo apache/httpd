@@ -254,6 +254,7 @@ typedef int pid_t;
 #undef NO_KILLPG
 #undef NO_SETSID
 #undef NEED_STRDUP
+#define HAVE_SHMGET
 #define JMP_BUF sigjmp_buf
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #include <sys/time.h>     

@@ -1,5 +1,7 @@
 Changes with Apache 1.2b8
 
+  *) Defined HAVE_SHMGET for shared memory on Linux.  [Dean Gaudet]
+
   *) Report extra info from errno with many errors that cause httpd to exit.
      spawn_child, popenf, and pclosef now have valid errno returns in the
      event of an error.  Correct problems where errno was stomped on
