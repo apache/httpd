@@ -1,5 +1,9 @@
 Changes with Apache 1.3.13
 
+  *) Make ApacheBench (ab) compile again stand-alone under 
+     -DNO_APACHE_INCLUDES.
+     [Ralf S. Engelschall]
+
   *) The ServerTokens directive now accepts the 'ProductOnly' keyword,
      which results in the display of just 'Apache' with no version
      information.  Additional product tokens are still only visible
