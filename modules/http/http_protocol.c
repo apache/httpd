@@ -891,7 +891,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, ap_bucket_brigade *bb,
          */
         b = AP_BRIGADE_FIRST(bb);
         while (b != AP_BRIGADE_SENTINEL(bb) && !AP_BUCKET_IS_EOS(b)) {
-            ap_bucket_read(b, &buf, &len, AP_BLOCK_READ);
+            ap_bucket_read(b, &buf, &len, mode);
             AP_DEBUG_ASSERT(len <= ctx->chunk_size - ctx->bytes_delivered);
             ctx->bytes_delivered += len;
             b = AP_BUCKET_NEXT(b);
@@ -966,7 +966,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
         while (e != AP_BRIGADE_SENTINEL(ctx->b)) {
             const char *ignore;
 
-            if ((rv = ap_bucket_read(e, &ignore, &len, AP_BLOCK_READ)) != APR_SUCCESS) {
+            if ((rv = ap_bucket_read(e, &ignore, &len, mode)) != APR_SUCCESS) {
                 /* probably APR_IS_EAGAIN(rv); socket state isn't correct;
                  * remove log once we get this squared away */
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, f->c->base_server, 
@@ -1002,7 +1002,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
 
     while (!AP_BRIGADE_EMPTY(ctx->b)) {
         e = AP_BRIGADE_FIRST(ctx->b);
-        if ((rv = ap_bucket_read(e, (const char **)&buff, &len, AP_BLOCK_READ)) != APR_SUCCESS) {
+        if ((rv = ap_bucket_read(e, (const char **)&buff, &len, mode)) != APR_SUCCESS) {
             return rv;
         }
 
