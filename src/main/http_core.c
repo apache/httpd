@@ -2626,8 +2626,12 @@ static const char *set_listener(cmd_parms *cmd, void *dummy, char *ips)
     else {
 	new->local_addr.sin_addr.s_addr = ap_get_virthost_addr(ips, NULL);
     }
+    errno = 0; /* clear errno before calling strtol */
     port = ap_strtol(ports, &endptr, 10);
-    if (errno || (endptr && *endptr) || port < 1 || port > 65535) {
+    if (errno /* some sort of error */
+       || (endptr && *endptr) /* make sure no trailing characters */
+       || port < 1 || port > 65535) /* underflow/overflow */
+    {
 	return "Missing, invalid, or non-numeric port";
     }
     new->local_addr.sin_port = htons((unsigned short)port);
