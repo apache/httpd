@@ -1008,11 +1008,6 @@ void internal_redirect (const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     process_request_internal (new);
-
-    /* Promote the new redirected request result into r for logging.
-     * We may need to promote other things, but this one is known.
-     */
-    r->status = new->status;
 }
 
 /* This function is designed for things like actions or CGI scripts, when

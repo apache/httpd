@@ -155,7 +155,7 @@
  *
  * --- rst */
 
-#define DEFAULT_LOG_FORMAT "%h %l %u %t \"%r\" %s %b"
+#define DEFAULT_LOG_FORMAT "%h %l %u %t \"%r\" %>s %b"
 
 #include "httpd.h"
 #include "http_config.h"
