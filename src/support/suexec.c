@@ -211,7 +211,7 @@ static void clean_env(void)
 
     sprintf(pathbuf, "PATH=%s", SAFE_PATH);
     cleanenv[cidx] = strdup(pathbuf);
-    cidx++
+    cidx++;
 
     for (ep = environ; *ep && cidx < AP_ENVBUF-1; ep++) {
 	if (!strncmp(*ep, "HTTP_", 5)) {
