@@ -570,7 +570,7 @@ static const char *log_request_time(request_rec *r, char *a)
                          "[%02d/%s/%d:%02d:%02d:%02d %c%.2d%.2d]",
                          xt.tm_mday, apr_month_snames[xt.tm_mon],
                          xt.tm_year+1900, xt.tm_hour, xt.tm_min, xt.tm_sec,
-                         sign, timz / (60*60), timz % (60*60));
+                         sign, timz / (60*60), (timz % (60*60)) / 60);
             cached_time->t_validate = t_seconds;
             memcpy(&(request_time_cache[i]), cached_time,
                    sizeof(*cached_time));
