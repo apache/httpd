@@ -59,6 +59,7 @@
 #define CORE_PRIVATE 
  
 #include "ap_config.h"
+#include "apr_hash.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
 #include "apr_file_io.h"
@@ -87,8 +88,19 @@
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>
 #endif
+#include <grp.h>
+#include <pwd.h>
 #include <pthread.h>
 #include <signal.h>
+
+typedef struct child_info_t child_info_t;
+
+struct child_info_t {
+    uid_t uid;
+    gid_t gid;
+};
+static int curr_child_num = 0;  /* how many children have been setup so
+                                   far */
 
 /*
  * Actual definitions of config globals
@@ -106,6 +118,8 @@ static int workers_may_exit = 0;
 static int requests_this_child;
 static int num_listenfds = 0;
 static ap_socket_t **listenfds;
+
+static ap_hash_t *child_hash;
 
 struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 
@@ -650,6 +664,83 @@ static void *worker_thread(void *arg)
     return NULL;
 }
 
+/* Set group privileges.
+ *
+ * Note that we use the username as set in the config files, rather than
+ * the lookup of to uid --- the same uid may have multiple passwd entries,
+ * with different sets of groups for each.
+ */
+
+static int set_group_privs(uid_t uid, gid_t gid)
+{
+    if (!geteuid()) {
+        const char *name;
+
+        /* Get username if passed as a uid */
+
+        struct passwd *ent;
+
+        if ((ent = getpwuid(uid)) == NULL) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                     "getpwuid: couldn't determine user name from uid %u, "
+                     "you probably need to modify the User directive",
+                     (unsigned)uid);
+            return -1;
+        }
+
+        name = ent->pw_name;
+
+        /*
+         * Set the GID before initgroups(), since on some platforms
+         * setgid() is known to zap the group list.
+         */
+        if (setgid(gid) == -1) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                        "setgid: unable to set group id to Group %u",
+                        (unsigned)gid);
+            return -1;
+        }
+
+        /* Reset `groups' attributes. */
+
+        if (initgroups(name, gid) == -1) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                        "initgroups: unable to set groups for User %s "
+                        "and Group %u", name, (unsigned)gid);
+            return -1;
+        }
+    }
+    return 0;
+}
+
+
+static int perchild_setup_child(int childnum)
+{
+    child_info_t *ug;
+    char child_num_str[5];
+
+    ap_snprintf(child_num_str, 5, "%d", childnum); 
+    ug = ap_hash_get(child_hash, child_num_str, 1); 
+    if (!ug) {
+        return unixd_setup_child();
+    }
+    if (set_group_privs(ug->uid, ug->gid)) {
+        return -1;
+    }
+    /* Only try to switch if we're running as root */
+    if (!geteuid() && (
+#ifdef _OSD_POSIX
+        os_init_job_environment(server_conf, unixd_config.user_name, one_process) != 0 ||
+#endif
+        setuid(ug->uid) == -1)) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                    "setuid: unable to change to uid: %ld",
+                    (long) ug->uid);
+        return -1;
+    }
+    return 0;
+}
+
 static void child_main(int child_num_arg)
 {
     sigset_t sig_mask;
@@ -672,7 +763,7 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    if (unixd_setup_child()) {
+    if (perchild_setup_child(child_num)) {
 	clean_child_exit(APEXIT_CHILDFATAL);
     }
 
@@ -1153,6 +1244,7 @@ static void perchild_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
     lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_perchild_set_maintain_connection_status(1);
+    child_hash = ap_make_hash(p);
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 }
@@ -1355,16 +1447,42 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg
     ap_cpystrn(ap_coredump_dir, fname, sizeof(ap_coredump_dir));
     return NULL;
 }
-static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *arg) 
+
+static ap_status_t reset_child_process(void *data)
 {
+    curr_child_num = 0;
+    return APR_SUCCESS;	
 }
-/*
+
+static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *u,
+                                    const char *g) 
+{
+    child_info_t *ug = ap_palloc(cmd->pool, sizeof(*ug));
+    char child_num_str[5];
+
+    if (curr_child_num > num_daemons) {
+        return "Trying to use more child ID's than NumServers.  Increase "
+               "NumServers in your config file.";
+    }
+   
+    ug->uid = atoi(u);
+    ug->gid = atoi(g); 
+    ap_snprintf(child_num_str, 5, "%d", curr_child_num++); 
+    ap_hash_set(child_hash, ap_pstrdup(cmd->pool, child_num_str), 1, ug); 
+
+    ap_register_cleanup(cmd->pool, &curr_child_num, reset_child_process, ap_null_cleanup);
+
+    return NULL;
+}
+    
+
+#if 0
     if (unlink(sconf->sockname) < 0 &&
         errno != ENOENT) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
                      "Couldn't unlink unix domain socket %s",
                      sconf->sockname);
-        /* just a warning; don't bail out
+        /* JUSt a warning; don't bail out */
     }
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
@@ -1377,10 +1495,10 @@ static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *arg
     unix_addr.sun_family = AF_UNIX;
     strcpy(unix_addr.sun_path, sconf->sockname);
 
-    omask = umask(0077); /* so that only Apache can use socket 
+    omask = umask(0077); /* so that only Apache can use socket */
     rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
-*/
-
+}
+#endif
 
 
 
@@ -1411,8 +1529,8 @@ AP_INIT_FLAG("ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF
              "Whether or not to maintain status information on current connections"),
 AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
-AP_INIT_TAKE1("ChildProcess", set_childprocess, NULL, RSRC_CONF,
-              "Which child process is responsible for serving this virtual host"),
+AP_INIT_TAKE2("ChildProcess", set_childprocess, NULL, RSRC_CONF,
+              "The User and Group this child Process should run as."),
 { NULL }
 };
 
