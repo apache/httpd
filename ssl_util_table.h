@@ -83,8 +83,6 @@
 #ifndef __SSL_UTIL_TABLE_H__
 #define __SSL_UTIL_TABLE_H__
 
-#if 0 /* XXX */
-
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -177,15 +175,11 @@ extern int             table_this(table_t *table_p, void **key_buf_p, int *key_s
 extern int             table_first_r(table_t *table_p, table_linear_t *linear_p, void **key_buf_p, int *key_size_p, void **data_buf_p, int *data_size_p);
 extern int             table_next_r(table_t *table_p, table_linear_t *linear_p, void **key_buf_p, int *key_size_p, void **data_buf_p, int *data_size_p);
 extern int             table_this_r(table_t *table_p, table_linear_t *linear_p, void **key_buf_p, int *key_size_p, void **data_buf_p, int *data_size_p);
-extern table_t        *table_read(const char *path, int *error_p, void *(*malloc_f)(size_t size), void *(*calloc_f)(size_t number, size_t size), void *(*realloc_f)(void *ptr, size_t size), void (*free_f)(void *ptr));
-extern int             table_write(const table_t *table_p, const char *path, const int mode);
 extern table_entry_t **table_order(table_t *table_p, table_compare_t compare, int *num_entries_p, int *error_p);
 extern int             table_entry_info(table_t *table_p, table_entry_t *entry_p, void **key_buf_p, int *key_size_p, void **data_buf_p, int *data_size_p);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
-#endif /* XXX */
 
 #endif /* __SSL_UTIL_TABLE_H__ */
