@@ -3086,7 +3086,6 @@ module MODULE_VAR_EXPORT mpm_prefork_module = {
     NULL,			/* merge per-server config structures */
     prefork_cmds,		/* command table */
     NULL,			/* handlers */
-    NULL,			/* check_user_id */
     NULL,			/* check auth */
     NULL,			/* check access */
     NULL,			/* type_checker */
