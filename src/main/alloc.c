@@ -111,6 +111,11 @@
  */
 /* #define MAKE_TABLE_PROFILE */
 
+/* Provide some statistics on the cost of allocations.  It requires a
+ * bit of an understanding of how alloc.c works.
+ */
+/* #define ALLOC_STATS */
+
 #ifdef POOL_DEBUG
 #ifdef ALLOC_USE_MALLOC
 # error "sorry, no support for ALLOC_USE_MALLOC and POOL_DEBUG at the same time"
@@ -171,6 +176,13 @@ static int stack_direction;
 static union block_hdr *global_block_list;
 #define FREE_POOL	((struct pool *)(-1))
 #endif
+#ifdef ALLOC_STATS
+static unsigned long long num_free_blocks_calls;
+static unsigned long long num_blocks_freed;
+static unsigned max_blocks_in_one_free;
+static unsigned num_malloc_calls;
+static unsigned num_malloc_bytes;
+#endif
 
 #ifdef ALLOC_DEBUG
 #define FILL_BYTE	((char)(0xa5))
@@ -207,6 +219,10 @@ static union block_hdr *malloc_block(int size)
      * always filled
      */
     size += CLICK_SZ;
+#endif
+#ifdef ALLOC_STATS
+    ++num_malloc_calls;
+    num_malloc_bytes += size + sizeof(union block_hdr);
 #endif
     blok = (union block_hdr *) malloc(size + sizeof(union block_hdr));
     if (blok == NULL) {
@@ -261,6 +277,9 @@ static void free_blocks(union block_hdr *blok)
 	free(blok);
     }
 #else
+#ifdef ALLOC_STATS
+    unsigned num_blocks;
+#endif
     /* First, put new blocks at the head of the free list ---
      * we'll eventually bash the 'next' pointer of the last block
      * in the chain to point to the free blocks we already had.
@@ -281,7 +300,13 @@ static void free_blocks(union block_hdr *blok)
      * now.
      */
 
+#ifdef ALLOC_STATS
+    num_blocks = 1;
+#endif
     while (blok->h.next != NULL) {
+#ifdef ALLOC_STATS
+	++num_blocks;
+#endif
 	chk_on_blk_list(blok, old_free_list);
 	blok->h.first_avail = (char *) (blok + 1);
 	debug_fill(blok->h.first_avail, blok->h.endp - blok->h.first_avail);
@@ -301,6 +326,15 @@ static void free_blocks(union block_hdr *blok)
     /* Finally, reset next pointer to get the old free blocks back */
 
     blok->h.next = old_free_list;
+
+#ifdef ALLOC_STATS
+    if (num_blocks > max_blocks_in_one_free) {
+	max_blocks_in_one_free = num_blocks;
+    }
+    ++num_free_blocks_calls;
+    num_blocks_freed += num_blocks;
+#endif
+
     (void) ap_release_mutex(alloc_mutex);
 #endif
 }
@@ -448,6 +482,20 @@ static void stack_var_init(char *s)
 }
 #endif
 
+#ifdef ALLOC_STATS
+static void dump_stats(void)
+{
+    fprintf(stderr,
+	"alloc_stats: [%d] #free_blocks %llu #blocks %llu max %u #malloc %u #bytes %u\n",
+	(int)getpid(),
+	num_free_blocks_calls,
+	num_blocks_freed,
+	max_blocks_in_one_free,
+	num_malloc_calls,
+	num_malloc_bytes);
+}
+#endif
+
 pool *ap_init_alloc(void)
 {
 #ifdef POOL_DEBUG
@@ -459,6 +507,9 @@ pool *ap_init_alloc(void)
     alloc_mutex = ap_create_mutex(NULL);
     spawn_mutex = ap_create_mutex(NULL);
     permanent_pool = ap_make_sub_pool(NULL);
+#ifdef ALLOC_STATS
+    atexit(dump_stats);
+#endif
 
     return permanent_pool;
 }
