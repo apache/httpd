@@ -589,7 +589,7 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 {
     int pid = 0;
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
-    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
+    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
 
     core_dir_config *conf =
     (core_dir_config *) get_module_config(r->per_dir_config, &core_module);
@@ -614,17 +614,21 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
 			"setrlimit: failed to set process limit");
 #endif
-#ifdef RLIMIT_DATA
+#if defined(RLIMIT_AS)
+    if (conf->limit_mem != NULL)
+	if ((setrlimit(RLIMIT_AS, conf->limit_mem)) != 0)
+	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+			"setrlimit(RLIMIT_AS): failed to set memory usage limit");
+#elif defined(RLIMIT_DATA)
     if (conf->limit_mem != NULL)
 	if ((setrlimit(RLIMIT_DATA, conf->limit_mem)) != 0)
 	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			"setrlimit: failed to set memory usage limit");
-#endif
-#ifdef RLIMIT_VMEM
+			"setrlimit(RLIMIT_DATA): failed to set memory usage limit");
+#elif defined(RLIMIT_VMEM)
     if (conf->limit_mem != NULL)
 	if ((setrlimit(RLIMIT_VMEM, conf->limit_mem)) != 0)
 	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			"setrlimit: failed to set memory usage limit");
+			"setrlimit(RLIMIT_VMEM): failed to set memory usage limit");
 #endif
 
 #ifdef __EMX__

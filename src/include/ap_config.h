@@ -372,13 +372,6 @@ typedef int pid_t;
 typedef int rlim_t;
 #endif
 
-/* Linux 2.0 and above implement the new posix RLIMIT_AS rather than the
- * older BSD semantics (some would actually call this a bug, like me -djg).
- */
-#ifndef RLIMIT_VMEM
-#define RLIMIT_VMEM RLIMIT_AS
-#endif
-
 /* flock is faster ... but hasn't been tested on 1.x systems */
 #define USE_FLOCK_SERIALIZED_ACCEPT
 

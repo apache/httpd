@@ -127,7 +127,7 @@ void *create_core_dir_config (pool *a, char *dir)
 #ifdef RLIMIT_CPU
     conf->limit_cpu = NULL;
 #endif
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
     conf->limit_mem = NULL;
 #endif
 #ifdef RLIMIT_NPROC
@@ -207,7 +207,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
 #ifdef RLIMIT_CPU
     if (new->limit_cpu) conf->limit_cpu = new->limit_cpu;
 #endif
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM)
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
     if (new->limit_mem) conf->limit_mem = new->limit_mem;
 #endif
 #ifdef RLIMIT_NPROC    
@@ -1560,7 +1560,7 @@ const char *set_excess_requests (cmd_parms *cmd, void *dummy, char *arg) {
 }
 
 
-#if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC)
+#if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
 static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
                        const char * arg2, int type)
 {
@@ -1612,7 +1612,7 @@ static void set_rlimit(cmd_parms *cmd, struct rlimit **plimit, const char *arg,
 }
 #endif
 
-#if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)) || !defined (RLIMIT_NPROC)
+#if !defined (RLIMIT_CPU) || !(defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)) || !defined (RLIMIT_NPROC)
 static const char *no_set_limit (cmd_parms *cmd, core_dir_config *conf,
 				 char *arg, char *arg2)
 {
@@ -1630,12 +1630,14 @@ const char *set_limit_cpu (cmd_parms *cmd, core_dir_config *conf, char *arg, cha
 }
 #endif
 
-#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)
 const char *set_limit_mem (cmd_parms *cmd, core_dir_config *conf, char *arg, char * arg2)
 {
-#ifdef RLIMIT_DATA
+#if defined(RLIMIT_AS)
+    set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_AS);
+#elif defined(RLIMIT_DATA)
     set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_DATA);
-#else
+#else defined(RLIMIT_VMEM)
     set_rlimit(cmd,&conf->limit_mem,arg,arg2,RLIMIT_VMEM);
 #endif
     return NULL;
@@ -1898,7 +1900,7 @@ command_rec core_cmds[] = {
 #endif
       OR_ALL, TAKE12, "soft/hard limits for max CPU usage in seconds" },
 { "RLimitMEM",
-#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined (RLIMIT_AS)
  set_limit_mem, (void*)XtOffsetOf(core_dir_config, limit_mem),
 #else
  no_set_limit, NULL,

@@ -202,7 +202,7 @@ typedef struct {
 #ifdef RLIMIT_CPU
     struct rlimit *limit_cpu;
 #endif
-#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM)
+#if defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS)
     struct rlimit *limit_mem;
 #endif
 #ifdef RLIMIT_NPROC
