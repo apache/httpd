@@ -159,6 +159,7 @@ Server on HPUX</page>
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_headers.xml</modulefile>
+  <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imap.xml</modulefile>
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml</modulefile>

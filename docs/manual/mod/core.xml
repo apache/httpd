@@ -1152,32 +1152,6 @@ MIME content-type</description>
 </usage>
 </directivesynopsis>
 
-<directivesynopsis>
-<name>IdentityCheck</name>
-<description>Enables logging of the RFC1413 identity of the remote
-user</description>
-<syntax>IdentityCheck On|Off</syntax>
-<default>IdentityCheck Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
-<usage>
-    <p>This directive enables RFC1413-compliant logging of the
-    remote user name for each connection, where the client machine
-    runs identd or something similar. This information is logged in
-    the access log.</p>
-
-    <p>The information should not be trusted in any way except for
-    rudimentary usage tracking.</p>
-
-    <p>Note that this can cause serious latency problems accessing
-    your server since every request requires one of these lookups
-    to be performed. When firewalls are involved each lookup might
-    possibly fail and add 30 seconds of latency to each hit. So in
-    general this is not very useful on public servers accessible
-    from the Internet.</p>
-</usage>
-</directivesynopsis>
-
 <directivesynopsis type="section">
 <name>IfDefine</name>
 <description>Encloses directives that will be processed only
