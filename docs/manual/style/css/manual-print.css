@@ -459,12 +459,14 @@ div#quickview li img {
     display: none;
 }
 
+#module-index div#quickview ul#toc,
 #manual-page div#quickview ul#toc,
 div#quickview #topics,
 div#quickview .seealso {
     padding-left: 0;
 }
 
+#module-index div#quickview ul#toc li,
 #manual-page div#quickview ul#toc li,
 div#quickview #topics li,
 div#quickview .seealso li {

@@ -35,10 +35,12 @@
 <!ELEMENT directivelist (directive)+>
 
 <!ELEMENT module (#PCDATA)>
+<!ATTLIST module status CDATA  #IMPLIED>
 
 <!ELEMENT directive (#PCDATA)>
 <!ATTLIST directive  module CDATA  #IMPLIED
-                     type   CDATA  #IMPLIED >
+                     type   CDATA  #IMPLIED
+                     status CDATA  #IMPLIED >
 
 <!ELEMENT p %Inline;>
 <!ATTLIST p class CDATA  #IMPLIED>

@@ -462,7 +462,11 @@
           </xsl:when>
 
           <xsl:otherwise>
-            <a href="{$path}/mod/{@module}.html#{$lowerdirective}">
+            <xsl:variable name="obs_">
+              <xsl:if test="@status = 'obsolete'">obs_</xsl:if>
+            </xsl:variable>
+
+            <a href="{$path}/mod/{$obs_}{@module}.html#{$lowerdirective}">
               <xsl:if test="@type='section'">&lt;</xsl:if>
               <xsl:value-of select="."/>
               <xsl:if test="@type='section'">&gt;</xsl:if>
@@ -487,8 +491,12 @@
   <!-- Inserts a link to refereed module                  -->
   <!--                                                    -->
   <xsl:template match="module" name="module">
+    <xsl:variable name="obs_">
+      <xsl:if test="@status = 'obsolete'">obs_</xsl:if>
+    </xsl:variable>
+
     <code class="module">
-      <a href="{$path}/mod/{.}.html">
+      <a href="{$path}/mod/{$obs_}{.}.html">
         <xsl:value-of select="."/>
       </a>
     </code>
@@ -642,6 +650,16 @@
   <!-- Passes through content                             -->
   <!--                                                    -->
   <xsl:template match="description">
+    <xsl:apply-templates/>
+  </xsl:template> 
+  <!-- /description -->
+
+
+  <!--                                                    -->
+  <!-- <hint>                                             -->
+  <!-- Passes through content                             -->
+  <!--                                                    -->
+  <xsl:template match="hint">
     <xsl:apply-templates/>
   </xsl:template> 
   <!-- /description -->

@@ -79,6 +79,7 @@ div#quickview li img {
     margin-right: 19px;
 }
 
+#module-index div#quickview ul#toc,
 #manual-page div#quickview ul#toc,
 div#quickview #topics {
     padding-left: 0;
@@ -88,6 +89,7 @@ div#quickview .seealso {
     padding-left: 34px;
 }
 
+#module-index div#quickview ul#toc li,
 #manual-page div#quickview ul#toc li,
 div#quickview #topics li,
 div#quickview .seealso li {

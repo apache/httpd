@@ -15,7 +15,7 @@
       <body id="directive-index">
         <xsl:call-template name="top"/>
 
-        <xsl:variable name="directives" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)]"/>
+        <xsl:variable name="directives" select="document(sitemap/category[@id='modules']/modulefilelist/modulefile)/modulesynopsis[status!='Obsolete']/directivesynopsis[not(@location)]"/>
 
         <!-- collect the start letters -->
         <xsl:variable name="start-letters">

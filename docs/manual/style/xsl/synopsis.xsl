@@ -18,7 +18,12 @@
         <div id="page-content">
           <div id="preamble">
             <h1>
-              <xsl:value-of select="$messages/message[@name='apachemodule']"/>
+              <xsl:if test="status='Obsolete'">
+                <xsl:value-of select="$messages/message[@name='obsoleteapachemodule']"/>
+              </xsl:if>
+              <xsl:if test="status!='Obsolete'">
+                <xsl:value-of select="$messages/message[@name='apachemodule']"/>
+              </xsl:if>
               <xsl:text> </xsl:text> 
               <xsl:value-of select="name"/>
             </h1>
@@ -44,6 +49,15 @@
                 </th>
                 <td>
                   <xsl:value-of select="status"/>
+
+                  <xsl:if test="hint">
+                    <em>
+                      <xsl:text> (</xsl:text>
+                      <xsl:apply-templates select="hint"/>
+                      <xsl:text>)</xsl:text>
+                    </em>
+                    <br />
+                  </xsl:if>
                 </td>
               </tr>
 
@@ -81,7 +95,7 @@
                   </a>
                 </th>
                 <td>
-                  <xsl:value-of select="compatibility"/>
+                  <xsl:apply-templates select="compatibility"/>
                 </td>
               </tr>
               </xsl:if>
@@ -194,6 +208,14 @@
     </html>
   </xsl:template>
   <!-- /modulesynopsis -->
+
+
+  <!--                                                            -->
+  <!--    modulesynopsis/compatibility                            -->
+  <!--                                                            -->
+  <xsl:template match="modulesynopsis/compatibility">
+    <xsl:apply-templates />
+  </xsl:template>
 
 
   <!--                                                            -->
