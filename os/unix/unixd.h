@@ -79,8 +79,7 @@ typedef struct {
     gid_t gid;
 } ap_unix_identity_t;
 
-AP_DECLARE_HOOK(ap_unix_identity_t *, get_suexec_identity,(const request_rec *r)
-)
+AP_DECLARE_HOOK(ap_unix_identity_t *, get_suexec_identity,(const request_rec *r))
 
 /* common stuff that unix MPMs will want */
 
