@@ -382,6 +382,7 @@ void ap_show_modules(void);
 server_rec *ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name);
 void ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
 void ap_child_init_hook(ap_pool_t *pchild, server_rec *s);
+void ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp);
 
 void ap_register_hooks(module *m);
 void ap_hook_deregister_all(void);

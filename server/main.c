@@ -280,9 +280,9 @@ static void usage(process_rec *process)
 ap_pool_t *g_pHookPool;
 
 #ifdef WIN32
-API_EXPORT_NONSTD(int) apache_main(int argc, char *argv[])
+API_EXPORT(int) apache_main(int argc, char *argv[])
 #else
-API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
+API_EXPORT(int)        main(int argc, char *argv[])
 #endif
 {
     int c;

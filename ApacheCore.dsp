@@ -227,15 +227,7 @@ SOURCE=.\os\win32\modules.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\registry.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\main\rfc1413.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\service.c
 # End Source File
 # Begin Source File
 
@@ -363,15 +355,7 @@ SOURCE=.\os\win32\os.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\os\win32\registry.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\include\rfc1413.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\os\win32\service.h
 # End Source File
 # Begin Source File
 

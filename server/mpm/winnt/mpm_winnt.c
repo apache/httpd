@@ -68,7 +68,7 @@
 #include "ap_config.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
-#include "service.h"
+//#include "service.h"
 #include "iol_socket.h"
 #include "winnt.h"
 
@@ -107,6 +107,8 @@ HANDLE maintenance_event;
 ap_lock_t *start_mutex;
 int my_pid;
 int parent_pid;
+typedef void (CALLBACK *ap_completion_t)();
+API_VAR_EXPORT ap_completion_t ap_mpm_init_complete = NULL;
 
 static ap_status_t socket_cleanup(void *sock)
 {
@@ -1555,7 +1557,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     /* Create child process 
      * Should only be one in this version of Apache for WIN32 
      */
-    service_set_status(SERVICE_START_PENDING);
+    //service_set_status(SERVICE_START_PENDING);
     while (remaining_children_to_start--) {
         if (create_process(pconf, process_handles, process_kill_events, 
                            &current_live_processes) < 0) {
@@ -1565,7 +1567,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             goto die_now;
         }
     }
-    service_set_status(SERVICE_RUNNING);
+    //service_set_status(SERVICE_RUNNING);
 
     restart_pending = shutdown_pending = 0;
     
@@ -1738,7 +1740,7 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
             }
 
             ap_log_pid(pconf, ap_pid_fname);
-            service_set_status(SERVICE_START_PENDING);
+            //service_set_status(SERVICE_START_PENDING);
 
             /* Create shutdown event, apPID_shutdown, where PID is the parent 
              * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
@@ -1763,7 +1765,10 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
                 exit(1);
             }
             CleanNullACL((void *)sa);
-            
+
+            if (ap_mpm_init_complete)
+                ap_mpm_init_complete();
+
             /* Create the start mutex, apPID, where PID is the parent Apache process ID.
              * Ths start mutex is used during a restart to prevent more than one 
              * child process from entering the accept loop at once.
@@ -1808,7 +1813,7 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
 
-            service_set_status(SERVICE_STOPPED);
+            //service_set_status(SERVICE_STOPPED);
 
             return 1;
         }
