@@ -1,5 +1,7 @@
 Changes with Apache 1.2b3:
 
+  *) Add PASV mode to mod_proxy FTP handler. [Chuck Murcko]
+
   *) Changes to suexec wrapper to fix the following problems:
      1.  symlinked homedirs will kill ~userdirs.
      2.  initgroups() on Linux 2.0.x clobbers gr->grid.
