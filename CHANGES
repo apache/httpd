@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) If content-encoding is already present, do not run deflate (PR 9222)
+     [Kazuhisa ASADA <kaz@asada.sytes.net>]
+
   *) The APLOG_NOERRNO flag to ap_log_[r]error() is now deprecated.
      It is currently ignored and it will be removed in a future release
      of Apache.  [Jeff Trawick]
