@@ -323,10 +323,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
             "cache: running CACHE_OUT filter");
 
-    /* XXX: Wouldn't it be better to do read_entity_headers when we 
-     * opened the cache entity? This would better accomodate implementations 
-     * that stored headers and the entity body in seperate files.
-     */
+    /* TODO: Handle getting errors on either of these calls */
     cache_read_entity_headers(cache->handle, r);    
     cache_read_entity_body(cache->handle, r->pool, bb);
 
@@ -429,11 +426,14 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /* have we already run the cachability check and set up the cached file 
      * handle? 
      */
-    if(cache->in_checked) {
+    if (cache->in_checked) {
         /* pass the brigades into the cache, then pass them
          * up the filter stack
          */
-        cache_write_entity_body(cache->handle, r, in);
+        rv = cache_write_entity_body(cache->handle, r, in);
+        if (rv != APR_SUCCESS) {
+            ap_remove_output_filter(f);
+        }
         return ap_pass_brigade(f->next, in);
     }
 
@@ -713,8 +713,13 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /*
      * Write away header information to cache.
      */
-    cache_write_entity_headers(cache->handle, r, info);
-    cache_write_entity_body(cache->handle, r, in);    
+    rv = cache_write_entity_headers(cache->handle, r, info);
+    if (rv == APR_SUCCESS) {
+        rv = cache_write_entity_body(cache->handle, r, in);
+    }
+    if (rv != APR_SUCCESS) {
+        ap_remove_output_filter(f);
+    }
     return ap_pass_brigade(f->next, in);
 }
 
