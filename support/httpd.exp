@@ -358,7 +358,6 @@ ap_update_child_status
 ap_update_mtime
 ap_update_vhost_from_headers
 ap_update_vhost_given_ip
-ap_util_uri_init
 ap_vrprintf
 ap_wait_or_timeout
 ap_walk_config

@@ -194,11 +194,6 @@ AP_DECLARE(char *) ap_unparse_uri_components(apr_pool_t *p, const uri_components
 #define NOTEND_HOSTINFO	(T_SLASH | T_QUESTION | T_HASH | T_NUL)
 #define NOTEND_PATH	(T_QUESTION | T_HASH | T_NUL)
 
-AP_DECLARE(void) ap_util_uri_init(void)
-{
-    /* nothing to do */
-}
-
 /* parse_uri_components():
  * Parse a given URI, fill in all supplied fields of a uri_components
  * structure. This eliminates the necessity of extracting host, port,

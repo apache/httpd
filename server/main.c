@@ -310,8 +310,6 @@ int main(int argc, const char * const argv[])
     }
 #endif
 
-    ap_util_uri_init();
-
     ap_setup_prelinked_modules(process);
 
     apr_pool_create(&pcommands, pglobal);
