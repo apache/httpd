@@ -135,6 +135,7 @@ API_EXPORT(char *) ap_construct_url(ap_pool_t *p, const char *uri, request_rec *
 API_EXPORT(const char *) ap_get_server_name(request_rec *r);
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
 API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
+API_EXPORT(size_t) ap_get_limit_xml_body(const request_rec *r);
 API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
 API_EXPORT(int) ap_exists_config_define(const char *name);
 API_EXPORT_NONSTD(int) ap_core_translate(request_rec *r);
@@ -270,6 +271,7 @@ typedef struct {
     struct rlimit *limit_nproc;
 #endif
     unsigned long limit_req_body;  /* limit on bytes in request msg body */
+    long limit_xml_body;           /* limit on bytes in XML request msg body */
 
     /* logging options */
     enum { srv_sig_unset, srv_sig_off, srv_sig_on,

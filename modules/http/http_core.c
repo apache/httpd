@@ -111,6 +111,10 @@
 #endif
 #endif /* USE_MMAP_FILES */
 
+/* LimitXMLRequestBody handling */
+#define AP_LIMIT_UNSET                  ((long) -1)
+#define AP_DEFAULT_LIMIT_XML_BODY       ((size_t)1000000)
+
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
  * operation of other modules.  Consider this the bureaucracy module.
@@ -164,6 +168,7 @@ static void *create_core_dir_config(ap_pool_t *a, char *dir)
 #endif
 
     conf->limit_req_body = 0;
+    conf->limit_xml_body = AP_LIMIT_UNSET;
     conf->sec = ap_make_array(a, 2, sizeof(void *));
 #ifdef WIN32
     conf->script_interpreter_source = INTERPRETER_SOURCE_UNSET;
@@ -285,6 +290,12 @@ static void *merge_core_dir_configs(ap_pool_t *a, void *basev, void *newv)
     if (new->limit_req_body) {
         conf->limit_req_body = new->limit_req_body;
     }
+
+    if (new->limit_xml_body != AP_LIMIT_UNSET)
+        conf->limit_xml_body = new->limit_xml_body;
+    else
+        conf->limit_xml_body = base->limit_xml_body;
+
     conf->sec = ap_append_arrays(a, base->sec, new->sec);
 
     if (new->satisfy != SATISFY_NOSPEC) {
@@ -2369,6 +2380,32 @@ static const char *set_limit_req_body(cmd_parms *cmd, void *conf_,
     return NULL;
 }
 
+static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
+                                          const char *arg) 
+{
+    core_dir_config *conf = conf_;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
+    if (err != NULL) {
+        return err;
+    }
+
+    conf->limit_xml_body = atol(arg);
+    if (conf->limit_xml_body < 0)
+        return "LimitXMLRequestBody requires a non-negative integer.";
+
+    return NULL;
+}
+
+API_EXPORT(size_t) ap_get_limit_xml_body(const request_rec *r)
+{
+    core_dir_config *conf;
+
+    conf = ap_get_module_config(r->per_dir_config, &core_module);
+    if (conf->limit_xml_body == AP_LIMIT_UNSET)
+        return AP_DEFAULT_LIMIT_XML_BODY;
+    return (size_t)conf->limit_xml_body;
+}
+
 #ifdef WIN32
 static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
                                                 char *arg)
@@ -2579,6 +2616,10 @@ AP_INIT_TAKE1("LimitRequestFields", set_limit_req_fields, NULL, RSRC_CONF,
 AP_INIT_TAKE1("LimitRequestBody", set_limit_req_body,
   (void*)XtOffsetOf(core_dir_config, limit_req_body), OR_ALL,
   "Limit (in bytes) on maximum size of request message body"),
+AP_INIT_TAKE1("LimitXMLRequestBody", set_limit_xml_req_body, NULL, OR_ALL,
+              "Limit (in bytes) on maximum size of an XML-based request "
+              "body"),
+
 /* System Resource Controls */
 #ifdef RLIMIT_CPU
 AP_INIT_TAKE12("RLimitCPU", set_limit_cpu,
