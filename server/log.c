@@ -168,7 +168,7 @@ static int log_child(ap_pool_t *p, const char *progname,
      */
     int rc = -1;
     ap_procattr_t *procattr;
-    ap_proc_t *procnew;
+    ap_proc_t procnew;
 
 #ifdef SIGHUP
     /* No concept of a child process on Win32 */
@@ -192,8 +192,8 @@ static int log_child(ap_pool_t *p, const char *progname,
         rc = ap_create_process(&procnew, pname, args, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
-            ap_note_subprocess(p, procnew, kill_after_timeout);
-            ap_get_childin(fpin, procnew);
+            ap_note_subprocess(p, &procnew, kill_after_timeout);
+            (*fpin) = procnew.stdin;
         }
     }
 
@@ -589,7 +589,7 @@ static int piped_log_spawn(piped_log *pl)
 {
     int rc;
     ap_procattr_t *procattr;
-    ap_proc_t *procnew;
+    ap_proc_t procnew;
 
 #ifdef SIGHUP
     ap_signal(SIGHUP, SIG_IGN);
@@ -617,8 +617,8 @@ static int piped_log_spawn(piped_log *pl)
             /*   I am assuming that if ap_create_process was  */
             /*   successful that the child is running.        */
             RAISE_SIGSTOP(PIPED_LOG_SPAWN); 
-            pl->pid = procnew;
-            ap_register_other_child(procnew, piped_log_maintenance, pl, 
+            pl->pid = &procnew;
+            ap_register_other_child(&procnew, piped_log_maintenance, pl, 
                                     ap_piped_log_write_fd(pl), pl->p);
         }
     }

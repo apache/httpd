@@ -822,7 +822,7 @@ static int include_cmd(char *s, request_rec *r)
     include_cmd_arg arg;
     BUFF *script_in;
     ap_procattr_t *procattr;
-    ap_proc_t *procnew;
+    ap_proc_t procnew;
     ap_status_t rc;
     ap_table_t *env = r->subprocess_env;
     char **argv;
@@ -880,9 +880,9 @@ static int include_cmd(char *s, request_rec *r)
                         "couldn't create child process: %d: %s", rc, s);
         }
         else {
-            ap_note_subprocess(r->pool, procnew, kill_after_timeout);
+            ap_note_subprocess(r->pool, &procnew, kill_after_timeout);
             /* Fill in BUFF structure for parents pipe to child's stdout */
-            ap_get_childout(&file, procnew);
+            file = procnew.stdout;
             iol = ap_create_file_iol(file);
             if (!iol)
                 return APR_EBADF;
