@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/09/08 13:18:59 $]
+  Last modified at [$Date: 2004/09/08 13:25:17 $]
 
 Release:
 
@@ -69,7 +69,7 @@ PROPOSED PATCHES FOR THIS RELEASE:
       statically compiled into the server (backport from 2.0)
        original 2.0 commit: modules/mappers/mod_so.c: r1.49
        1.3 patch: http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=109456591812509&w=2
-        +1: geoff
+        +1: geoff, jim
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
