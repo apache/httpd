@@ -68,17 +68,20 @@
 */
 
 #include "apr_strings.h"
-#include "sdbm.h"
+#include "apr_file_io.h"
+
+#include "apu_dbm.h"
 
 #include "mod_dav.h"
 #include "repos.h"
 
 struct dav_db {
     apr_pool_t *pool;
-    SDBM *file;
+    apu_dbm_t *file;
 };
 
-#define D2G(d)	(*(sdbm_datum*)&(d))
+/* ### temp */
+#include "sdbm.h"
 
 
 void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
@@ -103,21 +106,27 @@ void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
 
 }
 
-static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p)
+static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
+                                    apr_status_t status)
 {
     int save_errno = errno;
     int errcode;
     const char *errstr;
     dav_error *err;
 
+    if (status == APR_SUCCESS)
+        return NULL;
+
     p = db ? db->pool : p;
 
     /* There might not be a <db> if we had problems creating it. */
-    errcode = !db || sdbm_error(db->file);
-    if (errcode)
-	errstr = "I/O error occurred.";
-    else
-	errstr = "No error.";
+    if (db == NULL) {
+        errcode = 1;
+        errstr = "Could not open property database.";
+    }
+    else {
+        apu_dbm_geterror(db->file, &errcode, &errstr);
+    }
 
     err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, errcode, errstr);
     err->save_errno = save_errno;
@@ -142,17 +151,20 @@ void dav_fs_ensure_state_dir(apr_pool_t * p, const char *dirname)
 dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
 				dav_db **pdb)
 {
-    SDBM *file;
+    apr_status_t status;
+    apu_dbm_t *file;
 
     *pdb = NULL;
 
-    /* NOTE: stupid cast to get rid of "const" on the pathname */
-    if (sdbm_open(&file, pathname,
-		  APR_READ | (ro ? 0 : (APR_WRITE | APR_CREATE)),
-		  APR_OS_DEFAULT, p) != APR_SUCCESS && !ro) {
+    if ((status = apu_dbm_open(pathname, p,
+                               ro ? APU_DBM_READONLY : APU_DBM_RWCREATE,
+                               &file)) != APR_SUCCESS
+        && !ro) {
+        /* ### do something with 'status' */
+
 	/* we can't continue if we couldn't open the file 
 	   and we need to write */
-	return dav_fs_dbm_error(NULL, p);
+	return dav_fs_dbm_error(NULL, p, status);
     }
 
     /* may be NULL if we tried to open a non-existent db as read-only */
@@ -198,87 +210,52 @@ static dav_error * dav_dbm_open(apr_pool_t * p, const dav_resource *resource,
 
 static void dav_dbm_close(dav_db *db)
 {
-    sdbm_close(db->file);
+    apu_dbm_close(db->file);
 }
 
 static dav_error * dav_dbm_fetch(dav_db *db, dav_datum key, dav_datum *pvalue)
 {
-    *(sdbm_datum *) pvalue = sdbm_fetch(db->file, D2G(key));
+    apr_status_t status = apu_dbm_fetch(db->file, key, pvalue);
 
-    /* we don't need the error; we have *pvalue to tell */
-    sdbm_clearerr(db->file);
-
-    return NULL;
+    return dav_fs_dbm_error(db, NULL, status);
 }
 
 static dav_error * dav_dbm_store(dav_db *db, dav_datum key, dav_datum value)
 {
-    apr_status_t status;
+    apr_status_t status = apu_dbm_store(db->file, key, value);
 
-    status = sdbm_store(db->file, D2G(key), D2G(value), SDBM_REPLACE);
-
-    /* ### fetch more specific error information? */
-
-    /* we don't need the error; we have rv to tell */
-    sdbm_clearerr(db->file);
-
-    if (status != APR_SUCCESS) {
-	return dav_fs_dbm_error(db, NULL);
-    }
-    return NULL;
+    return dav_fs_dbm_error(db, NULL, status);
 }
 
 static dav_error * dav_dbm_delete(dav_db *db, dav_datum key)
 {
-    int rv;
+    apr_status_t status = apu_dbm_delete(db->file, key);
 
-    rv = sdbm_delete(db->file, D2G(key));
-
-    /* ### fetch more specific error information? */
-
-    /* we don't need the error; we have rv to tell */
-    sdbm_clearerr(db->file);
-
-    if (rv == -1) {
-	return dav_fs_dbm_error(db, NULL);
-    }
-    return NULL;
+    return dav_fs_dbm_error(db, NULL, status);
 }
 
 static int dav_dbm_exists(dav_db *db, dav_datum key)
 {
-    int exists;
-    sdbm_datum value = sdbm_fetch(db->file, D2G(key));
-
-    sdbm_clearerr(db->file);	/* unneeded */
-    exists = value.dptr != NULL;
-
-    return exists;
+    return apu_dbm_exists(db->file, key);
 }
 
 static dav_error * dav_dbm_firstkey(dav_db *db, dav_datum *pkey)
 {
-    *(sdbm_datum *) pkey = sdbm_firstkey(db->file);
+    apr_status_t status = apu_dbm_firstkey(db->file, pkey);
 
-    /* we don't need the error; we have *pkey to tell */
-    sdbm_clearerr(db->file);
-
-    return NULL;
+    return dav_fs_dbm_error(db, NULL, status);
 }
 
 static dav_error * dav_dbm_nextkey(dav_db *db, dav_datum *pkey)
 {
-    *(sdbm_datum *) pkey = sdbm_nextkey(db->file);
+    apr_status_t status = apu_dbm_nextkey(db->file, pkey);
 
-    /* we don't need the error; we have *pkey to tell */
-    sdbm_clearerr(db->file);
-
-    return NULL;
+    return dav_fs_dbm_error(db, NULL, status);
 }
 
 static void dav_dbm_freedatum(dav_db *db, dav_datum data)
 {
-    /* nothing */
+    apu_dbm_freedatum(db->file, data);
 }
 
 const dav_hooks_db dav_hooks_db_dbm =
