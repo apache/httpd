@@ -432,7 +432,7 @@ with filenames missing the .gif extension.<P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> &lt;Directory <EM>directory</EM>&gt;
+><STRONG>Syntax:</STRONG></A> &lt;Directory <EM>directory-path</EM>&gt;
  ... &lt;/Directory&gt; <BR>
 <A
  HREF="directive-dict.html#Context"
@@ -443,17 +443,16 @@ with filenames missing the .gif extension.<P><HR>
  REL="Help"
 ><STRONG>Status:</STRONG></A> Core. <P>
 
-&lt;Directory&gt; and &lt;/Directory&gt; are used to enclose a group of
-directives which will apply only to the named directory and sub-directories
-of that directory. Any directive which is allowed in a directory
-context may be used. <EM>Directory</EM> is either the full path to a directory,
-or a wild-card string. In a wild-card string, `?' matches any single character,
-and `*' matches any sequences of characters.  As of Apache 1.3, you
-may also use `[]' character ranges like in the shell.  Also as of Apache 1.3
-none of the wildcards match a `/' character, which more closely mimics the
-behaviour of Unix shells.
-Example:
-<PRE>
+&lt;Directory&gt; and &lt;/Directory&gt; are used to enclose a group
+of directives which will apply only to the named directory and
+sub-directories of that directory. Any directive which is allowed in a
+directory context may be used. <EM>Directory-path</EM> is either the
+full path to a directory, or a wild-card string. In a wild-card
+string, `?' matches any single character, and `*' matches any
+sequences of characters.  As of Apache 1.3, you may also use `[]'
+character ranges like in the shell.  Also as of Apache 1.3 none of the
+wildcards match a `/' character, which more closely mimics the
+behaviour of Unix shells.  Example: <PRE>
    &lt;Directory /usr/local/httpd/htdocs&gt;
    Options Indexes FollowSymLinks
    &lt;/Directory&gt;
@@ -601,7 +600,7 @@ different sections are combined when a request is received
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> DocumentRoot <EM>directory-filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> DocumentRoot <EM>directory-path</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
@@ -662,8 +661,8 @@ one of four things,
 <OL>
 <LI>output a simple hardcoded error message
 <LI>output a customized message
-<LI>redirect to a local URL to handle the problem/error
-<LI>redirect to an external URL to handle the problem/error
+<LI>redirect to a local <em>URL-path</em> to handle the problem/error
+<LI>redirect to an external <em>URL</em> to handle the problem/error
 </OL>
 
 <P>The first option is the default, while options 2-4 are configured
@@ -707,7 +706,7 @@ responses.</A><P><HR>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ErrorLog <EM>filename</EM>|syslog[:<em>facility</em>]
+><STRONG>Syntax:</STRONG></A> ErrorLog <EM>file-path</EM>|syslog[:<em>facility</em>]
 <BR>
 <A
  HREF="directive-dict.html#Default"
@@ -727,11 +726,12 @@ responses.</A><P><HR>
  REL="Help"
 ><STRONG>Status:</STRONG></A> core<P>
 
-The error log directive sets the name of the file to which the server will log
-any errors it encounters. If the filename does not begin with a slash (/)
-then it is assumed to be relative to the <A HREF="#serverroot">ServerRoot</A>.
-If the filename begins with a pipe (|) then it is assumed to be a command to
-spawn to handle the error log.
+The error log directive sets the name of the file to which the server
+will log any errors it encounters. If the <em>file-path</em> does not
+begin with a slash (/) then it is assumed to be relative to the <A
+HREF="#serverroot">ServerRoot</A>.  If the <em>file-path</em> begins
+with a pipe (|) then it is assumed to be a command to spawn to handle
+the error log.
 
 <P><STRONG>Apache 1.3 and above:</STRONG>
 Using <CODE>syslog</CODE> instead of a filename enables logging via syslogd(8)
@@ -1069,7 +1069,7 @@ simple multiple-module tests.
 <P> <HR>
 
 <H2><A NAME="include">Include directive</A></H2>
-<STRONG>Syntax:</STRONG> Include <EM>filename</EM><BR>
+<STRONG>Syntax:</STRONG> Include <EM>file-path</EM>|<em>directory-path</em><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -1463,7 +1463,7 @@ not be changed from the default.<P>
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> &lt;Location <EM>URL</EM>&gt;
+><STRONG>Syntax:</STRONG></A> &lt;Location <EM>URL-path</EM>|<em>URL</em>&gt;
 ... &lt;/Location&gt;<BR>
 <A
  HREF="directive-dict.html#Context"
@@ -2288,7 +2288,7 @@ section specifies what hostname must appear in the request's
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ServerPath <EM>pathname</EM><BR>
+><STRONG>Syntax:</STRONG></A> ServerPath <EM>directory-path</EM><BR>
 <A
  HREF="directive-dict.html#Context"
  REL="Help"
@@ -2316,7 +2316,7 @@ use with <A HREF="../vhosts/">name-based virtual hosts</A>.
 <A
  HREF="directive-dict.html#Syntax"
  REL="Help"
-><STRONG>Syntax:</STRONG></A> ServerRoot <EM>directory-filename</EM><BR>
+><STRONG>Syntax:</STRONG></A> ServerRoot <EM>directory-path</EM><BR>
 <A
  HREF="directive-dict.html#Default"
  REL="Help"
