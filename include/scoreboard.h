@@ -99,6 +99,13 @@ struct worker_score {
 #if APR_HAS_THREADS
     apr_os_thread_t tid;
 #endif
+    /* With some MPMs (e.g., worker), a worker_score can represent
+     * a thread in a terminating process which is no longer
+     * represented by the corresponding process_score.  These MPMs
+     * should set pid and generation fields in the worker_score.
+     */
+    pid_t pid;
+    ap_generation_t generation;
     unsigned char status;
     unsigned long access_count;
     apr_off_t     bytes_served;
