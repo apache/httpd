@@ -238,16 +238,23 @@ int find_path_info (char *uri, char *path_info)
     return lu;
 }
 
+/* Obtain the Request-URI from the original request-line, returning
+ * a new string from the request pool containing the URI or "".
+ */
 static char *original_uri(request_rec *r)
 {
-    char *last;
-    char *first = r->the_request;
+    char *first, *last;
 
-    while (*first && !isspace(*first)) ++first;
-    while (isspace(*first)) ++first;
+    if (r->the_request == NULL)
+        return (char *)pcalloc(r->pool, 1);
+
+    first = r->the_request;                      /* use the request-line */
+
+    while (*first && !isspace(*first)) ++first;  /* skip over the method */
+    while (isspace(*first)) ++first;             /*   and the space(s)   */
 
     last = first;
-    while (*last && !isspace(*last)) ++last;
+    while (*last && !isspace(*last)) ++last;     /* end at next whitespace */
     
     return pstrndup(r->pool, first, last - first);
 }
