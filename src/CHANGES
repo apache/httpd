@@ -50,6 +50,10 @@ Changes with Apache 1.3b7
      when ensuring 'x' is at least 30-chars big. [Jim Jagielski,
      Brian Behlendorf]
 
+  *) [BS2000 security] BS2000 needs an extra authentication to initialize
+     the task environment to the unprivileged User id. Otherwise CGI scripts
+     would have a way to gain super user access. [Martin Kraemer]
+
   *) Fix debug log messages for BS2000/OSD: instead of logging the whole
      absolute path, only log base name of logging source as is done
      in unix. [Martin Kraemer]
