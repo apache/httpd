@@ -27,65 +27,64 @@
 <title>Documentation du Serveur Apache Version 2.0</title>
 
 <category id="release"><title>Notes sur cette version</title>
-    <page href="new_features_2_0.html">Nouvelles Fonctionnalités de la version 2.0</page>
+    <page href="new_features_2_0.html">Nouvelles fonctionnalités de la version 2.0</page>
     <page href="upgrading.html">Migrer en 2.0 depuis la version 1.3</page>
     <page href="license.html">Licence Apache</page>
 </category>
 
-<category id="manual"><title>Manuel de Référence</title>
-    <page href="install.html">Compilation et Installation</page>
+<category id="manual"><title>Manuel de référence</title>
+    <page href="install.html">Compilation et installation</page>
     <page href="invoking.html">Démarrage</page>
     <page href="stopping.html">Arrêt ou Redémarrage</page>
-    <page href="mod/directives.html">Directives de Configuration pour l'Éxecution</page>
-    <page href="mod/quickreference.html">Résumé des Directives</page>
+    <page href="mod/directives.html">Directives de configuration pour l'exécution</page>
+    <page href="mod/quickreference.html">Résumé des directives</page>
     <page href="mod/">Modules</page>
     <page href="mpm.html">Modules Multi-Processing (MPMs)</page>
     <page href="filter.html">Filtres</page>
     <page href="handler.html">Gestionnaires</page>
-    <page href="programs/">Serveur et Autres Programmes</page>
+    <page href="programs/">Serveur et autres programmes</page>
     <page href="glossary.html">Glossaire</page>
 </category>    
 
-<category id="usersguide"><title>Guide de l'Utilisateur</title>
+<category id="usersguide"><title>Guide de l'utilisateur</title>
     <page href="bind.html">Liaison</page>
-    <page href="configuring.html">Fichiers de Configuration</page>
-    <page href="sections.html">Sections de Configuration</page>
-    <page href="content-negotiation.html">Négociation de Contenu</page>
-    <page href="dso.html">Objets Partagés Dynamiques (DSO)</page>
-    <page href="env.html">Variables d'Environnement</page>
-    <page href="logs.html">Fichiers Journaux</page>
-    <page href="urlmapping.html">Correspondances entre URLs et Système de Fichiers</page>
-    <page href="misc/perf-tuning.html">Ajuster les Performances</page>
-    <page href="misc/security_tips.html">Conseils sur la Sécurité</page>
-    <page href="server-wide.html">Configuration à l'échelle du Serveur</page>
-    <page href="ssl/">Chiffrage SSL/TLS</page>
-    <page href="suexec.html">Éxecution Suexec des CGIs</page>
+    <page href="configuring.html">Fichiers de configuration</page>
+    <page href="sections.html">Sections de configuration</page>
+    <page href="content-negotiation.html">Négociation de contenu</page>
+    <page href="dso.html">Objets partagés dynamiques (DSO)</page>
+    <page href="env.html">Variables d'environnement</page>
+    <page href="logs.html">Fichiers journaux</page>
+    <page href="urlmapping.html">Correspondances entre URLs et système de fichiers</page>
+    <page href="misc/perf-tuning.html">Ajuster les performances</page>
+    <page href="misc/security_tips.html">Conseils sur la sécurité</page>
+    <page href="server-wide.html">Configuration à l'échelle du serveur</page>
+    <page href="ssl/">Cryptage SSL/TLS</page>
+    <page href="suexec.html">Exécution Suexec des CGIs</page>
     <page href="misc/rewriteguide.html">Guide de l'URL-rewriting</page>
-    <page href="vhosts/">Serveurs Virtuels</page>
+    <page href="vhosts/">Serveurs virtuels</page>
 </category>
 
-<category id="howto"><title>Outils / Tutoriels</title>
+<category id="howto"><title>Guides / Tutoriels</title>
     <page href="howto/auth.html">Authentification, Autorisations, et 
-    Contrôles d'Accès</page>
-    <page href="howto/cgi.html">CGI: Contenus Dynamiques</page>
+    Contrôles d'accès</page>
+    <page href="howto/cgi.html">Contenus dynamiques CGI</page>
     <page href="howto/htaccess.html">Fichiers .htaccess </page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
-    <page href="howto/public_html.html">Répertoires Web Personnels
+    <page href="howto/public_html.html">Répertoires Web personnels
     (public_html)</page>
 </category>
 
-<category id="platform"><title>Notes Spécifiques aux Différentes Plates-formes</title>
+<category id="platform"><title>Notes spécifiques aux différentes plates-formes</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
     <page href="platform/ebcdic.html">Port EBCDIC</page>
 </category>
 
-<category id="other"><title>Autres Sujets</title>
+<category id="other"><title>Autres sujets</title>
     <page href="faq/">Foire Aux Questions</page>
-    <page href="sitemap.html">Plan du Site</page>
-    <page href="developer/">Documentation pour Développeurs</page>
+    <page href="sitemap.html">Plan du site</page>
+    <page href="developer/">Documentation pour développeurs</page>
     <page href="misc/">Divers</page>
 </category>
 
 </indexpage>
-
