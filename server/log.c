@@ -170,9 +170,6 @@ static int log_child(ap_pool_t *p, const char *progname,
     ap_procattr_t *procattr;
     ap_proc_t *procnew;
 
-    ap_block_alarms();
-    ap_cleanup_for_exec();
-
 #ifdef SIGHUP
     /* No concept of a child process on Win32 */
     ap_signal(SIGHUP, SIG_IGN);
@@ -187,7 +184,12 @@ static int log_child(ap_pool_t *p, const char *progname,
         rc = -1;
     }
     else {
-        rc = ap_create_process(&procnew, progname, NULL, NULL, procattr, p);
+        char **args;
+        const char *pname;
+        
+        ap_tokenize_to_argv(progname, &args, p);
+        pname = ap_pstrdup(p, args[0]);
+        rc = ap_create_process(&procnew, pname, args, NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
             ap_note_subprocess(p, procnew, kill_after_timeout);
@@ -594,9 +596,7 @@ static int piped_log_spawn(piped_log *pl)
 
     /* pjr - calls to block and unblock alarms weren't here before, was this */
     /*       an oversight or intentional?                                    */
-/*  ap_block_alarms();   */
 
-    ap_cleanup_for_exec();
 #ifdef SIGHUP
     ap_signal(SIGHUP, SIG_IGN);
 #endif
@@ -612,9 +612,11 @@ static int piped_log_spawn(piped_log *pl)
     else {
         rc = ap_create_process(&procnew, pl->program, NULL, NULL, procattr, pl->p);
     
-        if (rc == APR_SUCCESS) {            /* pjr - This no longer happens inside the child, */
-            RAISE_SIGSTOP(PIPED_LOG_SPAWN); /*   I am assuming that if ap_create_process was  */
-                                            /*   successful that the child is running.        */
+        if (rc == APR_SUCCESS) {            
+            /* pjr - This no longer happens inside the child, */
+            /*   I am assuming that if ap_create_process was  */
+            /*   successful that the child is running.        */
+            RAISE_SIGSTOP(PIPED_LOG_SPAWN); 
             pl->pid = procnew;
             ap_get_os_proc(&pid, procnew);
             ap_register_other_child(pid, piped_log_maintenance, pl, ap_piped_log_write_fd(pl));
