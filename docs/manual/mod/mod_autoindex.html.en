@@ -183,7 +183,7 @@ icon selected by MIME content-type</td></tr><tr><td nowrap="nowrap"><a href="dir
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
     AddAltByType "TXT" text/plain
 </code></td></tr></table></blockquote>
-<hr/><h2><a name="AddDescription">AddDescription</a> <a name="adddescription">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td/></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddDescription
+<hr/><h2><a name="AddDescription">AddDescription</a> <a name="adddescription">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Description to display for a file</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>AddDescription
     <em>string file</em> [<em>file</em>] ...</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_autoindex</td></tr></table></td></tr></table>
     <p>This sets the description to display for a file, for
     <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
@@ -270,7 +270,7 @@ content-type</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Synta
 configured</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Syntax" class="help">Syntax:</a></td><td>DefaultIcon <em>url-path</em></td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Context" class="help">Context:</a></td><td>server config, virtual host, directory, .htaccess</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Override" class="help">Override:</a></td><td>Indexes</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Status" class="help">Status:</a></td><td>Base</td></tr><tr><td nowrap="nowrap"><a href="directive-dict.html#Module" class="help">Module:</a></td><td>mod_autoindex</td></tr></table></td></tr></table>
     <p>The <code class="directive">DefaultIcon</code> directive sets the icon
     to display for files when no specific icon is known, for <code><a href="#indexoptions:fancyindexing">FancyIndexing</a></code>.
-    <em>Url</em> is a (%-escaped) relative URL to the icon.
+    <em>Url-path</em> is a (%-escaped) relative URL to the icon.
     Examples:</p>
 <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>DefaultIcon /icon/unknown.xbm</code></td></tr></table></blockquote>
 <hr/><h2><a name="HeaderName">HeaderName</a> <a name="headername">Directive</a></h2><table cellpadding="1" cellspacing="0" border="0" bgcolor="#cccccc"><tr><td><table bgcolor="#ffffff"><tr><td nowrap="nowrap"><strong>Description: </strong></td><td>Name of the file that will be inserted at the top
