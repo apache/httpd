@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/12/23 14:59:25 $]
+Last modified at [$Date: 2003/12/27 07:41:28 $]
 
 Release:
 
@@ -88,31 +88,6 @@ PATCHES TO BACKPORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/metadata/mod_expires.c?r1=1.48&r2=1.49
       +1: rederpj, trawick (requires minor MMN bump I believe), stoddard
 
-    * mod_dav: Return a WWW-Auth header for MOVE/COPY requests where
-      the destination resource gives a 401.
-      http://cvs.apache.org/viewcvs/httpd-2.0/modules/dav/main/mod_dav.c.diff?r1=1.100&r2=1.101
-      PR: 15571
-      +1: jorton, trawick
-
-    * mod_dav_fs: Fix for dropping custom namespaces
-      http://cvs.apache.org/viewcvs/httpd-2.0/modules/dav/fs/dbm.c.diff?r1=1.28&r2=1.29
-      PR: 11637
-      +1: jorton, trawick
-
-    * prefork: Fix slow graceful restarts on some platforms.
-      http://cvs.apache.org/viewcvs/httpd-2.0/server/mpm/prefork/prefork.c.diff?r1=1.279&r2=1.280
-      +1: jorton, trawick
-
-    * parsed_uri.port is only valid iff parsed_uri.port_str != NULL.
-      Old code simply checked if it was non-zero, not if it
-      was *valid*
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c.diff?r1=1.247&r2=1.248
-      +1: bnicholes, jim 
-
-    * Better descriptions for the configure --help output for some modules
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/config9.m4.diff?r1=1.17&r2=1.18
-      +1: kess, trawick, nd, erikabele
-
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
       server/mpm/worker/fdqueue.c 1.24, 1.25
@@ -192,12 +167,13 @@ PATCHES TO BACKPORT FROM 2.1
       No updates are available at present for the BeOS or OS/2 MPMs,
       but that is not a showstopper for the other changes.
 
+        include/ap_mpm.h r1.36
         server/mpm/prefork/prefork.c r1.284
-        server/mpm/worker/worker.c r1.142
+        server/mpm/worker/worker.c r1.142,r1.143
         server/mpm/experimental/leader/leader.c r1.35
         server/mpm/experimental/threadpool/threadpool.c r1.23
         server/mpm/netware/mpm_netware.c r1.78
-      +1: trawick, stoddard
+      +1: trawick, stoddard, jerenkrantz
 
         server/mpm/winnt/mpm_winnt.c r1.303
         server/mpm/winnt/mpm_winnt.h r1.44
@@ -209,7 +185,8 @@ PATCHES TO BACKPORT FROM 2.1
         modules/generators/mod_cgid.c r1.152, r1.161
         server/mpm_common.c r1.111
         PREREQ: ap_mpm_query(mpm-state) support in Unix MPMs
-        +1: trawick, stoddard
+        jerenkrantz asks: What does mpm_common.c r1.111 have to do with this?
+        +1: trawick, stoddard, jerenkrantz
 
     * piped log programs respawning after Apache is stopped. PR 24805
       bogus "piped log program '(null)' failed" messages during
@@ -220,7 +197,7 @@ PATCHES TO BACKPORT FROM 2.1
         (If an MPM is used that doesn't support the query, a complaint
         will be written to the error log when a piped log program
         terminates, and it won't get restarted.)
-        +1: trawick
+        +1: trawick, jerenkrantz
 
     * ab: catch out of memory (reasoning report ID 29)
         support/ab.c: r1.125
@@ -239,6 +216,7 @@ PATCHES TO BACKPORT FROM 2.1
               around... :)
               Yes, I think, a useful error message is better than
               a coredump in this case.
+          jerenkrantz: Oh, bah.  Let 'em segfault.  Use flood!
 
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
@@ -249,25 +227,25 @@ PATCHES TO BACKPORT FROM 2.1
       which is responsible for this behaviour. I'd suggest to backport that
       function rewrite at all (it's even much better code :-). (2.0 + 1.3)
         modules/mappers/mod_rewrite.c: r1.162
-      +1: nd, trawick
+      jerenkrantz: Committed to 2.0.  Will leave backport to 1.3 to someone
+                   else.  BTW, clever use of NULL terms (or lack of).  ;-)
+      +1: nd, trawick, jerenkrantz
 
     * mod_rewrite: cause a lookup failure in external rewrite maps if
       the key contains a newline. PR 14453. (2.0 + 1.3)
         modules/mappers/mod_rewrite.c: r1.199
-      +1: nd, trawick
-
-    * mod_dav: Use bucket brigades when reading PUT data. This avoids
-      problems if the data stream is modified by an input filter. PR 22104.
-        modules/dav/main/mod_dav.c: r1.98, r1.99
-      +1: nd, trawick
-      (gstein likes the concept, but needs to review...)
+      jerenkrantz: Okay by me, but perhaps we should just escape the \n?
+                   Wouldn't ignoring the rewrite here do something bad tho?
+                   (Am not backporting.)
+      +1: nd, trawick, jerenkrantz
 
     * mod_ssl: fix a link failure when the openssl-engine libraries are
       present but the engine headers are missing.
         modules/ssl/mod_ssl.c: r1.87
         modules/ssl/mod_ssl.h: r1.139
         modules/ssl/ssl_engine_config.c: r1.82
-      +1: jwoolley, trawick, jim
+      PREREQ: Blow away of SSL_EXPERIMENTAL_ENGINE (see above)
+      +1: jwoolley, trawick, jim, jerenkrantz
 
     * Catch an edge case, where strange subsequent RewriteRules could lead to
       a 400 (Bad Request) response. (2.0 + 1.3)
@@ -285,7 +263,7 @@ PATCHES TO BACKPORT FROM 2.1
                   internal meaning I do not think that the change requires a
                   bump.
       +1: nd, brianp
-      +1 (concept): trawick
+      +1 (concept): trawick, jerenkrantz (on r2 below)
       jwoolley suggests: Hang onto it for 2.2 series.
       brianp asks: Do we have an alternate fix to eliminate 2.0's segfaults?
       nd adds: I've found some time over the weekend to create the following
@@ -308,14 +286,14 @@ PATCHES TO BACKPORT FROM 2.1
 
     * mod_ssl: fix check for the plain-HTTP-request error
         modules/ssl/ssl_engine_io.c r1.111
-      +1: jorton
+      +1: jorton, jerenkrantz
 
     * When UseCanonicalName is set to OFF, allow ap_get_server_port to 
       check r->connection->local_addr->port before defaulting to 
       server->port or ap_default_port()
         server/core.c r1.247
       +1: bnicholes, jim
-       0: nd
+       0: nd, jerenkrantz
          nd: can the local_addr->port ever be 0?
 	 bnicholes response: I couldn't tell you for sure if local_addr->port
 	  could be 0.  But it makes sense that if it were then Apache 
@@ -326,14 +304,15 @@ PATCHES TO BACKPORT FROM 2.1
     * mod_setenvif: Fix optimizer to treat regexps as such even if they
       only contain anchors like \b. PR 24219.
         modules/metadata/mod_setenvif.c: r1.44
-      +1: nd
+      +1: nd, jerenkrantz
 
     * mod_autoindex: Allow switching between XHTML and HTML output.
       PR 23747. (minor MMN bump).
         modules/generators/mod_autoindex.c: r1.124
         include/httpd.h: r1.201
         include/ap_mmn.h: r1.60
-      +1: nd
+      jerenkrantz suggests: Why don't we just always output XHTML instead?
+      +1: nd, jerenkrantz
 
     * LDAP cache fixes from Matthieu Estrade; see PR 18756
         include/util_ldap.h r1.12
@@ -346,11 +325,6 @@ PATCHES TO BACKPORT FROM 2.1
 	  bnicholes (looks good on Netware but then NetWare does not
 	             use shared memory.)
 
-     * Fix htdbm to generate comment fields in the DBM files correctly.
-      (This causes DBMAuthGroupFile to break)
-        support/htdbm.c r1.11
-      +1: jerenkrantz, striker, trawick, ianh
-
     * Fix mod_mem_cache removal ordering bug.
         modules/experimental/mod_mem_cache.c r1.97,1.99
         modules/experimental/cache_cache.c r1.5
@@ -359,14 +333,15 @@ PATCHES TO BACKPORT FROM 2.1
     * Fix a long delay with CGI requests and keepalive connections on
       AIX.
         modules/generators/mod_cgid.c r1.159
-      +1: trawick, stoddard
+      jerenkrantz: Could we do this on other platforms, too?
+      +1: trawick, stoddard, jerenkrantz
 
     * mod_status hook
         configure.in r1.254
         Makefile.in r1.134
-        modules/generators/mod_status.c r1.173
-        modules/generators/mod_status.h r1.2
-      +1: trawick, ianh
+        modules/generators/mod_status.c r1.73
+        modules/generators/mod_status.h r1.1,r1.2
+      +1: trawick, ianh, jerenkrantz
 
 CURRENT RELEASE NOTES:
 
