@@ -6,7 +6,9 @@
 # regex makes delete the appropriate apache.exe. Tacky, but it'll work!
 # Ben, 5 July 97
 
-_release:
+_release: release
+
+release:
     cd regex & set CFG=regex - Win32 Release& nmake /nologo -f regex.mak
 	cd . & set CFG=ApacheCore - Win32 Release& nmake /nologo -f ApacheCore.mak
 	cd . & set CFG=Apache - Win32 Release& nmake /nologo -f Apache.mak
@@ -20,7 +22,7 @@ _release:
 	cd nt & set CFG=ApacheModuleUserTrack - Win32 Release& nmake /nologo -f ApacheModuleUserTrack.mak
 	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Release& nmake /nologo -f ApacheModuleProxy.mak
 
-_debug:
+debug:
     cd regex & set CFG=regex - Win32 Debug& nmake /nologo -f regex.mak
 	cd . & set CFG=ApacheCore - Win32 Debug& nmake /nologo -f ApacheCore.mak
 	cd . & set CFG=Apache - Win32 Debug& nmake /nologo -f Apache.mak
@@ -34,9 +36,11 @@ _debug:
 	cd nt & set CFG=ApacheModuleUserTrack - Win32 Debug& nmake /nologo -f ApacheModuleUserTrack.mak
 	cd modules\proxy & set CFG=ApacheModuleProxy - Win32 Debug& nmake /nologo -f ApacheModuleProxy.mak
 
-installr: _release
+installr: release
 	-mkdir \Apache
 	-mkdir \Apache\modules
+	-mkdir \Apache\logs
+	-mkdir \Apache\conf
 	copy ApacheR\Apache.exe \Apache
 	copy CoreR\ApacheCore.dll \Apache
 	copy nt\ApacheModuleStatusR\ApacheModuleStatus.dll \Apache\modules
@@ -49,9 +53,11 @@ installr: _release
 	copy nt\ApacheModuleUserTrackR\ApacheModuleUserTrack.dll \Apache\modules
 	copy modules\proxy\Release\ApacheModuleProxy.dll \Apache\modules
 
-installd: _debug
+installd: debug
 	-mkdir \Apache
 	-mkdir \Apache\modules
+	-mkdir \Apache\logs
+	-mkdir \Apache\conf
 	copy ApacheD\Apache.exe \Apache
 	copy CoreD\ApacheCore.dll \Apache
 	copy nt\ApacheModuleStatusD\ApacheModuleStatus.dll \Apache\modules
