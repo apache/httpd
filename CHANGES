@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Changes to the worker MPM's queue management and thread
+     synchronization code to reduce mutex contention  [Brian Pane]
+
   *) Don't install *.in configuration files since we already install
      *-std.conf files.  [Aaron Bannert]
 
