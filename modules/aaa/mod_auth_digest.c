@@ -101,7 +101,7 @@
 #include "apr_lib.h"
 #include "apr_time.h"
 #include "apr_errno.h"
-#include "apr_lock.h"
+#include "apr_global_mutex.h"
 #include "apr_strings.h"
 
 #define APR_WANT_STRFUNC
@@ -218,8 +218,8 @@ static apr_shm_t      *client_shm =  NULL;
 static apr_rmm_t      *client_rmm = NULL;
 static unsigned long  *opaque_cntr;
 static apr_time_t     *otn_counter;     /* one-time-nonce counter */
-static apr_lock_t     *client_lock = NULL;
-static apr_lock_t     *opaque_lock = NULL;
+static apr_global_mutex_t *client_lock = NULL;
+static apr_global_mutex_t *opaque_lock = NULL;
 static char           client_lock_name[L_tmpnam];
 static char           opaque_lock_name[L_tmpnam];
 
@@ -249,12 +249,12 @@ static apr_status_t cleanup_tables(void *not_used)
     }
 
     if (client_lock) {
-        apr_lock_destroy(client_lock);
+        apr_global_mutex_destroy(client_lock);
         client_lock = NULL;
     }
 
     if (opaque_lock) {
-        apr_lock_destroy(opaque_lock);
+        apr_global_mutex_destroy(opaque_lock);
         opaque_lock = NULL;
     }
 
@@ -325,10 +325,12 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_list->num_entries = 0;
 
     tmpnam(client_lock_name);
-    sts = apr_lock_create(&client_lock, APR_READWRITE, APR_LOCKALL,
-                          APR_LOCK_DEFAULT, client_lock_name, ctx);
+    /* FIXME: get the client_lock_name from a directive so we're portable
+     * to non-process-inheriting operating systems, like Win32. */
+    sts = apr_global_mutex_create(&client_lock, client_lock_name,
+                                  APR_LOCK_DEFAULT, ctx);
     if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock", sts, s);
+        log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return;
     }
 
@@ -343,10 +345,12 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
     *opaque_cntr = 1UL;
 
     tmpnam(opaque_lock_name);
-    sts = apr_lock_create(&opaque_lock, APR_MUTEX, APR_LOCKALL,
-                          APR_LOCK_DEFAULT, opaque_lock_name, ctx);
+    /* FIXME: get the opaque_lock_name from a directive so we're portable
+     * to non-process-inheriting operating systems, like Win32. */
+    sts = apr_global_mutex_create(&opaque_lock, opaque_lock_name,
+                                  APR_LOCK_DEFAULT, ctx);
     if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock", sts, s);
+        log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
         return;
     }
 
@@ -413,11 +417,18 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
         return;
     }
 
-    if ((sts = apr_lock_child_init(&client_lock, client_lock_name, p))
-            != APR_SUCCESS
-        ||  (sts = apr_lock_child_init(&opaque_lock, opaque_lock_name, p))
-            != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock", sts, s);
+    /* FIXME: get the client_lock_name from a directive so we're portable
+     * to non-process-inheriting operating systems, like Win32. */
+    sts = apr_global_mutex_child_init(&client_lock, client_lock_name, p);
+    if (sts != APR_SUCCESS) {
+        log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
+        return;
+    }
+    /* FIXME: get the opaque_lock_name from a directive so we're portable
+     * to non-process-inheriting operating systems, like Win32. */
+    sts = apr_global_mutex_child_init(&opaque_lock, opaque_lock_name, p);
+    if (sts != APR_SUCCESS) {
+        log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
         return;
     }
 }
@@ -721,7 +732,7 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
 
-    apr_lock_acquire(client_lock /*, MM_LOCK_RD */);
+    apr_global_mutex_lock(client_lock);
 
     while (entry && key != entry->key) {
         prev  = entry;
@@ -734,7 +745,7 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
         client_list->table[bucket] = entry;
     }
 
-    apr_lock_release(client_lock);
+    apr_global_mutex_unlock(client_lock);
 
     if (entry) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, r,
@@ -806,7 +817,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
 
-    apr_lock_acquire(client_lock /*, MM_LOCK_RW */);
+    apr_global_mutex_lock(client_lock);
 
     /* try to allocate a new entry */
 
@@ -834,7 +845,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     client_list->num_created++;
     client_list->num_entries++;
 
-    apr_lock_release(client_lock);
+    apr_global_mutex_unlock(client_lock);
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_DEBUG, 0, s,
                  "allocated new client %lu", key);
@@ -1088,9 +1099,9 @@ static client_entry *gen_client(const request_rec *r)
         return NULL;
     }
 
-    apr_lock_acquire(opaque_lock /*, MM_LOCK_RW */);
+    apr_global_mutex_lock(opaque_lock);
     op = (*opaque_cntr)++;
-    apr_lock_release(opaque_lock);
+    apr_global_mutex_lock(opaque_lock);
 
     if (!(entry = add_client(op, &new_entry, r->server))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
