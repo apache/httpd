@@ -1,5 +1,8 @@
 Changes with Apache 2.0.41
 
+  *) Fix Logic on non-html file removal in mod_deflate
+     [Kris Verbeeck <Kris.Verbeeck@ubizen.com>]
+
   *) Fix "ab -g"'s truncated year: the last digit was cut off.
      [Leon Brocard <acme@astray.com>]
 
