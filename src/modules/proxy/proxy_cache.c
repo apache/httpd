@@ -1524,7 +1524,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
     if (clen == NULL)
         c->len = -1;
     else
-        c->len = atoi(clen);
+        c->len = ap_strtol(clen, NULL, 10);
 
 /* we have all the header information we need - write it to the cache file */
     c->version++;
@@ -1560,6 +1560,18 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
  */
 
         if (c->hdrs) {
+            /* recall at this point that c->len is already set from resp_hdrs.
+               If Content-Length was NULL, then c->len is -1, otherwise it's
+               set to whatever the value was. */
+            if (c->len == 0) {
+                const char *c_clen_str;
+                off_t c_clen;
+                if ( (c_clen_str = ap_table_get(c->hdrs, "Content-Length")) &&
+                   ( (c_clen = ap_strtol(c_clen_str, NULL, 10)) > 0) ) {
+                        ap_table_set(resp_hdrs, "Content-Length", c_clen_str);
+                        c->len = c_clen;
+                }
+            }
             if (!ap_proxy_table_replace(c->hdrs, resp_hdrs)) {
                 c->xcache = ap_pstrcat(r->pool, "HIT from ", ap_get_server_name(r), " (with revalidation)", NULL);
                 return ap_proxy_cache_conditional(r, c, c->fp);

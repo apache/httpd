@@ -1,5 +1,9 @@
 Changes with Apache 1.3.27
 
+  *) The cache in mod_proxy was incorrectly updating the Content-Length
+     value (to 0) from 304 responses when doing validation. Bugz#10128
+     [Paul Terry <paul.terry@gmx.net>, ast@domdv.de, Jim Jagielski]
+
   *) Added support for Berkeley-DB/4.x to mod_auth_db.
      [Martin Kraemer]
 
