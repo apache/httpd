@@ -2703,7 +2703,7 @@ is accessed by an incompatible browser</description>
     subdirectories <code>conf/</code> and <code>logs/</code>. Relative
     paths in other configuration directives (such as <directive
     module="core">Include</directive> or <directive
-    module="so">LoadModule</directive>, for example) are taken as 
+    module="mod_so">LoadModule</directive>, for example) are taken as 
     relative to this directory.</p>
 
     <example><title>Example</title>
