@@ -76,6 +76,7 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(LIBTOOL)
   APACHE_SUBST(SHELL)
   APACHE_SUBST(MODULE_DIRS)
+  APACHE_SUBST(MODULE_CLEANDIRS)
   APACHE_SUBST(PORT)
   APACHE_SUBST(CORE_IMPLIB_FILE)
   APACHE_SUBST(CORE_IMPLIB)
@@ -144,6 +145,8 @@ AC_DEFUN(APACHE_MODPATH_FINISH,[
   echo "shared = $modpath_shared" >> $modpath_current/modules.mk
   if test ! -z "$modpath_static" -o ! -z "$modpath_shared"; then
     MODULE_DIRS="$MODULE_DIRS $current_dir"
+  else
+    MODULE_CLEANDIRS="$MODULE_CLEANDIRS $current_dir"
   fi
   APACHE_FAST_OUTPUT($modpath_current/Makefile)
 ])dnl

@@ -1,7 +1,7 @@
 
 # no targets: we don't want to build anything by default. if you want the
 # test programs, then "make test"
-targets =
+TARGETS =
 
 PROGRAMS =
 

@@ -51,7 +51,7 @@
 # information on the Apache Software Foundation, please see
 # <http://www.apache.org/>.
 #
-# The build environment was provided by Sascha Schumann.
+# The build environment was originally provided by Sascha Schumann.
 #
 
 include $(top_builddir)/config_vars.mk
@@ -94,8 +94,122 @@ INSTALL = $(abs_srcdir)/build/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
 INSTALL_PROGRAM = $(INSTALL) -m 755 $(INSTALL_PROG_FLAGS)
 
-# Suffixes
+#
+# Standard build rules
+#
+all: all-recursive
+depend: depend-recursive
+clean: clean-recursive
+distclean: distclean-recursive
+extraclean: extraclean-recursive
 
+install: all-recursive local-install
+shared-build: shared-build-recursive
+
+all-recursive depend-recursive:
+	@otarget=`echo $@|sed s/-recursive//`; \
+	list='$(SUBDIRS)'; \
+	for i in $$list; do \
+	    if test -d "$$i"; then \
+		target="$$otarget"; \
+		echo "Making $$target in $$i"; \
+		if test "$$i" = "."; then \
+			made_local=yes; \
+			target="local-$$target"; \
+		fi; \
+		(cd $$i && $(MAKE) $$target) || exit 1; \
+	    fi; \
+	done; \
+	if test "$$otarget" = "all" && test -z '$(TARGETS)'; then \
+	    made_local=yes; \
+	fi; \
+	if test "$$made_local" != "yes"; then \
+	    $(MAKE) "local-$$otarget" || exit 1; \
+	fi
+
+clean-recursive distclean-recursive extraclean-recursive:
+	@otarget=`echo $@|sed s/-recursive//`; \
+	list='$(SUBDIRS) $(CLEAN_SUBDIRS)'; \
+	for i in $$list; do \
+	    if test -d "$$i"; then \
+		target="$$otarget"; \
+		echo "Making $$target in $$i"; \
+		if test "$$i" = "."; then \
+			made_local=yes; \
+			target="local-$$target"; \
+		fi; \
+		(cd $$i && $(MAKE) $$target); \
+	    fi; \
+	done; \
+	if test "$$otarget" = "all" && test -z '$(TARGETS)'; then \
+	    made_local=yes; \
+	fi; \
+	if test "$$made_local" != "yes"; then \
+	    $(MAKE) "local-$$otarget"; \
+	fi
+
+shared-build-recursive:
+	@if test `pwd` = "$(top_builddir)"; then \
+	    $(PRE_SHARED_CMDS) ; \
+	fi; \
+	list='$(SUBDIRS)'; for i in $$list; do \
+	    target="shared-build"; \
+	    if test "$$i" = "."; then \
+		made_local=yes; \
+		target="local-shared-build"; \
+	    fi; \
+	    if test "$$i" != "srclib"; then \
+		(cd $$i && $(MAKE) $$target) || exit 1; \
+	    fi; \
+	done; \
+	if test -f 'modules.mk'; then \
+	    if test -n '$(SHARED_TARGETS)'; then \
+		echo "Building shared: $(SHARED_TARGETS)"; \
+		if test "$$made_local" != "yes"; then \
+			$(MAKE) "local-shared-build" || exit 1; \
+		fi; \
+	    fi; \
+	fi; \
+	if test `pwd` = "$(top_builddir)"; then \
+		$(POST_SHARED_CMDS) ; \
+	fi
+
+local-all: $(TARGETS)
+
+local-shared-build: $(SHARED_TARGETS)
+
+local-depend: x-local-depend
+	if test "`echo $(srcdir)/*.c`" != "$(srcdir)'/*.c'"; then \
+		$(CC) -MM $(ALL_CPPFLAGS) $(ALL_INCLUDES) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
+	fi
+
+local-clean: x-local-clean
+	rm -f *.o *.lo *.slo *.obj *.a *.la $(CLEAN_TARGETS) $(TARGETS)
+	rm -rf .libs
+
+local-distclean: local-clean x-local-distclean
+	rm -f .deps Makefile $(DISTCLEAN_TARGETS)
+
+local-extraclean: local-distclean x-local-extraclean
+	@if test -n "$(EXTRACLEAN_TARGETS)"; then \
+	    echo "rm -f $(EXTRACLEAN_TARGETS)"; \
+	    rm -f $(EXTRACLEAN_TARGETS) ; \
+	fi
+
+local-install: $(TARGETS) $(SHARED_TARGETS) $(INSTALL_TARGETS)
+	@if test -n '$(PROGRAMS)'; then \
+	    test -d $(bindir) || $(MKINSTALLDIRS) $(bindir); \
+	    list='$(PROGRAMS)'; for i in $$list; do \
+	        $(INSTALL_PROGRAM) $$i $(bindir); \
+	    done; \
+	fi
+
+# to be filled in by the actual Makefile if extra commands are needed
+x-local-depend x-local-clean x-local-distclean x-local-extraclean:
+
+#
+# Implicit rules for creating outputs from input files
+#
 CXX_SUFFIX = cpp
 SHLIB_SUFFIX = so
 
@@ -132,117 +246,20 @@ SHLIB_SUFFIX = so
 .l.c:
 	$(LEX) $(LFLAGS) $< && mv $(LEX_OUTPUT_ROOT).c $@
 
-
-all: all-recursive
-shared-modules: shared-modules-recursive
-install: install-recursive
-
-
 # Makes an import library from a def file
 .def.la:
 	$(LIBTOOL) --mode=compile $(MK_IMPLIB) -o $@ $<
 
-
-# if we are doing a distclean, we actually want to hit every 
-# directory that has ever been configured.  To do this, we just do a quick
-# find for all the leftover Makefiles, and then run make distclean in those
-# directories.
-# Exception: Skip APR directories (other than the base APR directory),
-#            because APR knows how to do these tasks better than we do.
-distclean-recursive clean-recursive depend-recursive all-recursive install-recursive:
-	@otarget=`echo $@|sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for i in $$list; do \
-		target="$$otarget"; \
-		echo "Making $$target in $$i"; \
-		if test "$$i" = "."; then \
-			ok=yes; \
-			target="$$target-p"; \
-		fi; \
-		(cd $$i && $(MAKE) $$target) || exit 1; \
-	done; \
-	if test "$$otarget" = "all" && test -z '$(targets)'; then ok=yes; fi;\
-	if test "$$ok" != "yes"; then $(MAKE) "$$otarget-p" || exit 1; fi; \
-	if test "$$otarget" = "distclean" ; then\
-		for d in `find . -name Makefile`; do \
-			i=`dirname "$$d"`; \
-			target="$$otarget"; \
-			in_apr=`echo $$i|sed 's%^.*apr/.*$$%ignore_apr_subdirs%'`; \
-			in_apr=`echo $$in_apr|sed 's%^.*apr-util/.*$$%ignore_apr_subdirs%'`; \
-			if test "x$$in_apr" != "xignore_apr_subdirs"; then \
-				echo "Making $$target in $$i"; \
-				if test "$$i" = "."; then \
-					ok=yes; \
-					target="$$target-p"; \
-				fi; \
-				(cd $$i && $(MAKE) $$target) || exit 1; \
-			fi; \
-		done; \
-	fi
-
-shared-modules-recursive:
-	@if test `pwd` = "$(top_builddir)"; then \
-		$(PRE_SHARED_CMDS) ; \
-	fi; \
-	list='$(SUBDIRS)'; for i in $$list; do \
-		target="shared-modules"; \
-		if test "$$i" = "."; then \
-			ok = yes; \
-			target="shared-modules-p"; \
-		fi; \
-		if test "$$i" != "srclib"; then \
-			(cd $$i && $(MAKE) $$target) || exit 1; \
-		fi; \
-	done; \
-	if test -f 'modules.mk'; then \
-		if test -n '$(shared_targets)'; then \
-			echo "Building shared modules: $(shared_targets)"; \
-			if test -z '$(shared_targets)'; then ok=yes; fi; \
-			if test "$$ok" != "yes"; then \
-				$(MAKE) "shared-modules-p" || exit 1; \
-			fi; \
-		fi; \
-	fi; \
-	if test `pwd` = "$(top_builddir)"; then \
-		$(POST_SHARED_CMDS) ; \
-	fi
-
-all-p: $(targets)
-shared-modules-p: $(shared_targets)
-
-install-p: $(targets) $(shared_targets) $(install_targets)
-	@if test -n '$(PROGRAMS)'; then \
-		test -d $(bindir) || $(MKINSTALLDIRS) $(bindir); \
-		for i in $(PROGRAMS) ""; do \
-		    if test "x$$i" != "x"; then \
-			$(INSTALL_PROGRAM) $$i $(bindir); \
-		    fi; \
-		done; \
-	fi
-
-distclean-p depend-p clean-p:
-
-depend: depend-recursive
-	if test "`echo $(srcdir)/*.c`" != "$(srcdir)'/*.c'"; then \
-		$(CC) -MM $(ALL_CPPFLAGS) $(ALL_INCLUDES) $(srcdir)/*.c | sed 's/\.o:/.lo:/' > $(builddir)/.deps || true;           \
-	fi
-#	    test "`echo *.c`" = '*.c' || perl $(top_srcdir)/build/mkdep.perl $(CPP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) *.c > .deps
-
-clean: clean-recursive clean-x
-
-clean-x:
-	rm -f $(targets) *.slo *.lo *.la *.o *.obj $(CLEAN_TARGETS)
-	rm -rf .libs
-
-distclean: distclean-recursive clean-x
-	rm -f config.cache config.log config.status config_vars.mk \
-	stamp-h Makefile shlibtool .deps $(DISTCLEAN_TARGETS)
-
-extraclean: distclean
-	rm -f $(EXTRACLEAN_TARGETS)
-
+#
+# Dependencies
+#
 include $(builddir)/.deps
 
-.PHONY: all-recursive clean-recursive install-recursive \
-$(install_targets) install all clean depend depend-recursive shared \
-distclean-recursive distclean clean-x all-p install-p distclean-p \
-depend-p clean-p $(phony_targets)
+.PHONY: all all-recursive local-all $(PHONY_TARGETS) \
+	shared-build shared-build-recursive local-shared-build \
+	depend depend-recursive local-depend x-local-depend \
+	clean clean-recursive local-clean x-local-clean \
+	distclean distclean-recursive local-distclean x-local-distclean \
+	extraclean extraclean-recursive local-extraclean x-local-extraclean \
+	install local-install $(INSTALL_TARGETS)
+
