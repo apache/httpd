@@ -41,7 +41,7 @@
 <directivesynopsis>
 <name>AuthGroupFile</name>
 <description>Sets the name of a text file containing the list
-of user groups for authentication</description>
+of user groups for authorization</description>
 <syntax>AuthGroupFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -50,7 +50,7 @@ of user groups for authentication</description>
 <usage>
     <p>The <directive>AuthGroupFile</directive> directive sets the
     name of a textual file containing the list of user groups for user
-    authentication. <var>File-path</var> is the path to the group
+    authorization. <var>File-path</var> is the path to the group
     file. If it is not absolute, it is treated as relative to the <directive
     module="core">ServerRoot</directive>.</p>
 
