@@ -7,6 +7,8 @@
 #include "apr_buckets.h"
 #include "http_request.h"
 
+#include <ctype.h>
+
 static const char s_szCaseFilterName[]="CaseFilter";
 module case_filter_module;
 
@@ -108,6 +110,5 @@ module case_filter_module =
     CaseFilterCreateServerConfig,
     NULL,
     CaseFilterCmds,
-    NULL,
     CaseFilterRegisterHooks
 };
