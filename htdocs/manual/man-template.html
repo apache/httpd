@@ -1,69 +1,81 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
-<HEAD>
-<TITLE>Apache module mod_foobar</TITLE>
-</HEAD>
-
+ <HEAD>
+  <TITLE>Apache module mod_foobar</TITLE>
+ </HEAD>
 <!-- read and delete all blockquotes, and this comment -->
-
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
-<BODY
- BGCOLOR="#FFFFFF"
- TEXT="#000000"
- LINK="#0000FF"
- VLINK="#000080"
- ALINK="#FF0000"
->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
 <!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_foobar</h1>
+  <H1 ALIGN="CENTER">Module mod_foobar</h1>
 
-<blockquote><em>Add this file as a link in modules.html</em></blockquote>
+<BLOCKQUOTE><EM>Add this file as a link in modules.html</EM></BLOCKQUOTE>
 
-This module is contained in the <code>mod_foobar.c</code> file, and
-<strong>is/is not</strong> compiled in by default. It provides for
-<strong>the foobar feature</strong>. Any document with the mime type
-<code>foo/bar</code> will be processed by this module.
+  <P>
+  This module is contained in the <code>mod_foobar.c</code> file, and
+  <STRONG>is/is not</STRONG> compiled in by default. It provides for
+  <STRONG>the foobar feature</STRONG>. Any document with the mime type
+  <SAMP>foo/bar</SAMP> will be processed by this module.
+  </P>
 
-<blockquote><em>Add the magic mime type to the list in
-magic_types.html</em></blockquote>
+<BLOCKQUOTE><EM>Add the magic mime type to the list in
+magic_types.html</EM></BLOCKQUOTE>
 
-<h2>Summary</h2>
-General module documentation here.
+  <H2>Summary</H2>
+  <P>
+  <EM>General module documentation here.</EM>
+  </P>
 
-<h2>Directives</h2>
-<ul>
-<li><A HREF="#adirective">ADirective</A>
-</ul>
+  <H2>Directives</H2>
+  <UL>
+   <LI><A HREF="#adirective">ADirective</A>
+   </LI>
+  </UL>
 
-<blockquote><em>Add these directives to the list in
-directives.html</em></blockquote>
+<BLOCKQUOTE><EM>Add these directives to the list in
+directives.html</EM></BLOCKQUOTE>
 
-<hr>
+  <HR>
 
-<h2><A name="adirective">ADirective</A></h2>
-<strong>Syntax:</strong> ADirective <em>some args</em><br>
-<strong>Default:</strong> <code>ADirective default value</code><br>
-<strong>Context:</strong> context-list<br>
+  <H2><A NAME="adirective">ADirective directive</A></H2>
+  <P>
+  <STRONG>Syntax:</STRONG> ADirective <EM>some args</EM>
+  <BR>
+  <STRONG>Default:</STRONG> <SAMP>ADirective default value</SAMP>
+  <BR>
+  <STRONG>Context:</STRONG> context-list
+  <BR>
 
-<blockquote><em>context-list is where this directive can appear;
-allowed: server config, virtual host, directory, .htaccess</em></blockquote>
+<BLOCKQUOTE><EM>context-list is where this directive can appear;
+allowed: server config, virtual host, directory, .htaccess</EM></BLOCKQUOTE>
 
-<strong>Override:</strong> override<br>
+  <STRONG>Override:</STRONG> override
+  <BR>
 
-<blockquote><em>required if the directive is allowed in .htaccess files;
-the AllowOverride option that allows the directive.</em></blockquote>
+<BLOCKQUOTE><EM>required if the directive is allowed in .htaccess files;
+the AllowOverride option that allows the directive.</EM></BLOCKQUOTE>
 
-<strong>Status:</strong> status<br>
+  <STRONG>Status:</STRONG> status
+  <BR>
 
-<blockquote><em>Core if in core apache, Base if in one of the standard
+<BLOCKQUOTE><EM>Core if in core apache, Base if in one of the standard
 modules, Extension if in an extension module (not compiled in by default)
-or Experimental</em></blockquote>
+or Experimental</EM></BLOCKQUOTE>
 
-<strong>Module:</strong> mod_foobar<p>
+  <STRONG>Module:</STRONG> mod_foobar
+  </P>
 
-The ADirective directive does something.
+  <P>
+  The ADirective directive does something.
+  </P>
+  <HR>
 
 <!--#include virtual="footer.html" -->
-</BODY>
+ </BODY>
 </HTML>
-

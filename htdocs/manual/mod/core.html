@@ -15,11 +15,11 @@
 <!--#include virtual="header.html" -->
 
 <H1 ALIGN="CENTER">Apache Core Features</h1>
-
+<P>
 These configuration parameters control the core Apache features, and are
 always available.
-
-
+</P>
+<H2>Directives</H2>
 <ul>
 <li><A HREF="#accessconfig">AccessConfig</A>
 <li><A HREF="#accessfilename">AccessFileName</A>
@@ -75,7 +75,7 @@ always available.
 </ul>
 <hr>
 
-<A name="accessconfig"><h2>AccessConfig directive</h2></A>
+<h2><A name="accessconfig">AccessConfig directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
 <strong>Syntax:</strong> AccessConfig <em>filename</em><br>
 <strong>Default:</strong> <code>AccessConfig conf/access.conf</code><br>
@@ -92,7 +92,7 @@ Historically, this file only contained
 contain any server directive allowed in the <em>server config</em> context.
 <p><hr>
 
-<A name="accessfilename"><h2>AccessFileName directive</h2></A>
+<h2><A name="accessfilename">AccessFileName directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt AccessFileName} directive&gt; -->
 <strong>Syntax:</strong> AccessFileName <em>filename</em><br>
 <strong>Default:</strong> <code>AccessFileName .htaccess</code><br>
@@ -113,7 +113,7 @@ for directives, unless they have been disabled with
 AllowOverride None<br>
 &lt;/Directory&gt;</code></blockquote><p><hr>
 
-<A name="addmodule"><h2>AddModule directive</h2></A>
+<h2><A name="addmodule">AddModule directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt AddModule} directive&gt; -->
 <strong>Syntax:</strong> AddModule <em>module module ...</em><br>
 <strong>Context:</strong> server config <br>
@@ -126,7 +126,7 @@ server comes with a pre-loaded list of active modules; this list can
 be cleared with the <A HREF="#clearmodulelist">ClearModuleList</A>
 directive.<p><hr>
 
-<A name="allowoverride"><h2>AllowOverride directive</h2></A>
+<h2><A name="allowoverride">AllowOverride directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt AllowOverride} directive&gt; -->
 <strong>Syntax:</strong> AllowOverride <em>override override ...</em><br>
 <strong>Default:</strong> <code>AllowOverride All</code><br>
@@ -188,7 +188,7 @@ Allow use of the directives controlling specific directory features
 <A HREF="mod_include.html#xbithack">XBitHack</A>).
 </dl><p><hr>
 
-<A name="authname"><h2>AuthName directive</h2></A>
+<h2><A name="authname">AuthName directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt AuthName} directive&gt; -->
 <strong>Syntax:</strong> AuthName <em>auth-domain</em><br>
 <strong>Context:</strong> directory, .htaccess<br>
@@ -203,7 +203,7 @@ It must be accompanied by <A HREF="#authtype">AuthType</A> and
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> to work.<p><hr>
 
-<A name="authtype"><h2>AuthType directive</h2></A>
+<h2><A name="authtype">AuthType directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt AuthType} directive&gt; -->
 <strong>Syntax:</strong> AuthType <em>type</em><br>
 <strong>Context:</strong> directory, .htaccess<br>
@@ -218,7 +218,7 @@ It must be accompanied by <A HREF="#authname">AuthName</A> and
 <A HREF="mod_auth.html#authuserfile">AuthUserFile</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> to work.<p><hr>
 
-<A name="bindaddress"><h2>BindAddress directive</h2></A>
+<h2><A name="bindaddress">BindAddress directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt BindAddress} directive&gt; -->
 <strong>Syntax:</strong> BindAddress <em>saddr</em><br>
 <strong>Default:</strong> <code>BindAddress *</code><br>
@@ -249,7 +249,7 @@ This option can be used as an alternative method for supporting
 
 <hr>
 
-<A name="clearmodulelist"><h2>ClearModuleList directive</h2></A>
+<h2><A name="clearmodulelist">ClearModuleList directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ClearModuleList} directive&gt; -->
 <strong>Syntax:</strong> ClearModuleList<br>
 <strong>Context:</strong> server config<br>
@@ -260,7 +260,7 @@ The server comes with a built-in list of active modules.  This
 directive clears the list.  It is assumed that the list will then be
 re-populated using the <A HREF="#addmodule">AddModule</A> directive.<p><hr>
 
-<A name="defaulttype"><h2>DefaultType directive</h2></A>
+<h2><A name="defaulttype">DefaultType directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt DefaultType} directive&gt; -->
 <strong>Syntax:</strong> DefaultType <em>mime-type</em><br>
 <strong>Default:</strong> <code>DefaultType text/html</code><br>
@@ -278,7 +278,7 @@ example:
 would be appropriate for a directory which contained many gif images
 with filenames missing the .gif extension.<p><hr>
 
-<A name="directory"><h2>&lt;Directory&gt; directive</h2></A>
+<h2><A name="directory">&lt;Directory&gt; directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Directory} section directive&gt; -->
 <strong>Syntax:</strong> &lt;Directory <em>directory</em>&gt; ... &lt;/Directory&gt; <br>
 <strong>Context:</strong> server config, virtual host<br>
@@ -356,7 +356,7 @@ may appear in any configuration file. &lt;Directory&gt; directives cannot
 nest, and cannot appear in a <A HREF="#limit">&lt;Limit&gt;</A> section.
 <p><hr>
 
-<A NAME="documentroot"><h2>DocumentRoot directive</h2></A>
+<h2><A NAME="documentroot">DocumentRoot directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt DocumentRoot} directive&gt; -->
 <strong>Syntax:</strong> DocumentRoot <em>directory-filename</em><br>
 <strong>Default:</strong> <code>DocumentRoot
@@ -378,7 +378,7 @@ please avoid that.
 
 <p><hr>
 
-<A name="errordocument"><h2>ErrorDocument directive</h2></A>
+<h2><A name="errordocument">ErrorDocument directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ErrorDocument} directive&gt; -->
 <strong>Syntax:</strong> ErrorDocument <em>error-code document</em><br>
 <strong>Context</strong> server config, virtual host, directory, .htaccess<br>
@@ -427,7 +427,7 @@ from the nature of the HTTP basic authentication scheme.
 <P>See Also: <A HREF="../custom-error.html">documentation of customizable
 responses.</A><p><hr>
 
-<A name="errorlog"><h2>ErrorLog directive</h2></A>
+<h2><A name="errorlog">ErrorLog directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ErrorLog} directive&gt; -->
 <strong>Syntax:</strong> ErrorLog <em>filename</em><br>
 <strong>Default:</strong> <code>ErrorLog logs/error_log</code><br>
@@ -448,7 +448,7 @@ than the user that starts the server.
 
 <p><hr>
 
-<A name="files"><h2>&lt;Files&gt;</h2></A>
+<h2><A name="files">&lt;Files&gt; directive</A></h2>
 <strong>Syntax:</strong> &lt;Files <em>filename</em>&gt;
 ... &lt;/Files&gt;<br>
 <strong>Context:</strong> server config, virtual host, htaccess<br>
@@ -489,7 +489,7 @@ the directory being applied will be prefixed automatically.
 
 <p> <hr>
 
-<A name="group"><h2>Group directive</h2></A>
+<h2><A name="group">Group directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Group} directive&gt; -->
 <strong>Syntax:</strong> Group <em>unix-group</em><br>
 <strong>Default:</strong> <code>Group #-1</code><br>
@@ -523,7 +523,7 @@ as the group specified in the main Group directive.<p>
 SECURITY: See <A HREF="#user">User</A> for a discussion of the security
 considerations.<p><hr>
 
-<A name="hostnamelookups"><h2>HostNameLookups directive</h2></A>
+<h2><A name="hostnamelookups">HostNameLookups directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt HostNameLookups} directive&gt; -->
 <strong>Syntax:</strong> HostNameLookups <em>boolean</em><br>
 <strong>Default:</strong> <code>HostNameLookups on</code><br>
@@ -539,7 +539,7 @@ lookups can take considerable amounts of time. The utility <i>logresolve</i>,
 provided in the <i>/support</i> directory, can be used to look up host names
 from logged IP addresses offline.<p><hr>
 
-<A name="identitycheck"><h2>IdentityCheck directive</h2></A>
+<h2><A name="identitycheck">IdentityCheck directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt IdentityCheck} directive&gt; -->
 <strong>Syntax:</strong> IdentityCheck <em>boolean</em><br>
 <strong>Default:</strong> <code>IdentityCheck off</code><br>
@@ -561,7 +561,7 @@ of latency to each hit.  So in general this is not very useful on public
 servers accessible from the Internet.
 <p><hr>
 
-<A NAME="ifmodule"><H2>&lt;IfModule&gt;</H2></A>
+<H2><A NAME="ifmodule">&lt;IfModule&gt; directive</A></H2>
 <b>Syntax:</b> &lt;IfModule [!]<i>module-name</i>&gt; <i>...</i>
 &lt;/IfModule&gt;<br>
 <b>Default:</b> None<br>
@@ -601,7 +601,7 @@ simple multiple-module tests.
 
 <P> <hr>
 
-<h2><a name="keepalive">KeepAlive</a></h2>
+<h2><a name="keepalive">KeepAlive directive</a></h2>
 <strong>Syntax: (Apache 1.1)</strong> KeepAlive <em>max-requests</em><br>
 <strong>Default: (Apache 1.1)</strong> <code>KeepAlive 5</code><br>
 <strong>Syntax: (Apache 1.2)</strong> KeepAlive <em>on/off</em><br>
@@ -624,7 +624,7 @@ server resources. Set this to <code>0</code> to disable support.
 persistent connections, "Off" to disable. See also the <a
 href="#maxkeepaliverequests">MaxKeepAliveRequests</a> directive.</p>
 
-<h2><a name="keepalivetimeout">KeepAliveTimeout</a></h2>
+<h2><a name="keepalivetimeout">KeepAliveTimeout directive</a></h2>
 <strong>Syntax:</strong> KeepAliveTimeout <em>seconds</em><br>
 <strong>Default:</strong> <code>KeepAliveTimeout 15</code><br>
 <strong>Context:</strong> server config<br>
@@ -639,7 +639,7 @@ href="#timeout"><code>Timeout</code></a> directive
 applies.
 <hr>
 
-<A name="listen"><h2>Listen</h2></A>
+<h2><A name="listen">Listen directive</A></h2>
 <strong>Syntax:</strong>
 Listen [<em>IP address</em>:]<em>port number</em><br>
 <strong>Context:</strong> server config<br>
@@ -660,7 +660,7 @@ directive.</p>
 <a href="../misc/known_bugs.html#listenbug">Known Bugs</a></p>
 <hr>
 
-<A NAME="listenbacklog"><H2>ListenBacklog</H2></A>
+<H2><A NAME="listenbacklog">ListenBacklog directive</A></H2>
 <strong>Syntax:</strong> ListenBacklog <em>backlog</em><br>
 <strong>Default:</strong> <code>ListenBacklog 511</code><br>
 <strong>Context:</strong> server config<br>
@@ -673,7 +673,7 @@ tuning is needed or desired, however on some systems it is desirable
 to increase this when under a TCP SYN flood attack.  See 
 the backlog parameter to the <code>listen(2)</code> system call.
 
-<A name="limit"><h2>&lt;Limit&gt; directive</h2></A>
+<h2><A name="limit">&lt;Limit&gt; directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Limit} section directive&gt; -->
 <strong>Syntax:</strong>
  &lt;Limit <em>method method</em> ... &gt; ... &lt;/Limit&gt;<br>
@@ -693,7 +693,7 @@ require valid-user<br>
 If an access control directive appears outside a &lt;Limit&gt; directive,
 then it applies to all access methods.<p><hr>
 
-<h2><a name="location">&lt;Location&gt;</a></h2>
+<h2><a name="location">&lt;Location&gt; directive</a></h2>
 
 <strong>Syntax:</strong> &lt;Location <em>URL</em>&gt;
 ... &lt;/Location&gt;<br>
@@ -747,7 +747,7 @@ from browsers at foo.com, you might use:
 </pre>
 <hr>
 
-<A NAME="lockfile"><H2>LockFile</H2></A>
+<H2><A NAME="lockfile">LockFile directive</A></H2>
 <strong>Syntax:</strong> LockFile <em>filename</em><BR>
 <strong>Default:</strong> <code>LockFile logs/accept.lock</code><BR>
 <strong>Context:</strong> server config<BR>
@@ -763,7 +763,7 @@ server process is automatically appended to the filename.
 
 <P><HR>
 
-<A name="maxclients"><h2>MaxClients</h2></A>
+<h2><A name="maxclients">MaxClients directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt MaxClients} directive&gt; -->
 <strong>Syntax:</strong> MaxClients <em>number</em><br>
 <strong>Default:</strong> <code>MaxClients 256</code><br>
@@ -774,7 +774,7 @@ The MaxClients directive sets the limit on the number of simultaneous
 requests that can be supported; not more than this number of child server
 processes will be created.<p><hr>
 
-<A name="maxkeepaliverequests"><h2>MaxKeepAliveRequests</h2></A>
+<h2><A name="maxkeepaliverequests">MaxKeepAliveRequests directive</A></h2>
 <strong>Syntax:</strong> MaxKeepAliveRequests <em>number</em><br>
 <strong>Default:</strong> <code>MaxKeepAliveRequests 100</code><br>
 <strong>Context:</strong> server config<br>
@@ -788,7 +788,7 @@ on. If it is set to "<code>0</code>", unlimited requests will be
 allowed. We recommend that this setting be kept to a high value for
 maximum server performance.
 
-<A name="maxrequestsperchild"><h2>MaxRequestsPerChild directive</h2></A>
+<h2><A name="maxrequestsperchild">MaxRequestsPerChild directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt MaxRequestsPerChild} directive&gt; -->
 <strong>Syntax:</strong> MaxRequestsPerChild <em>number</em><br>
 <strong>Default:</strong> <code>MaxRequestsPerChild 0</code><br>
@@ -808,7 +808,7 @@ memory leakage;
 number of processes when the server load reduces.
 </ul><p><hr>
 
-<A name="maxspareservers"><h2>MaxSpareServers directive</h2></A>
+<h2><A name="maxspareservers">MaxSpareServers directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
 <strong>Syntax:</strong> MaxSpareServers <em>number</em><br>
 <strong>Default:</strong> <code>MaxSpareServers 10</code><br>
@@ -826,7 +826,7 @@ Setting this parameter to a large number is almost always a bad idea.<p>
 See also <A HREF="#minspareservers">MinSpareServers</A> and
 <A HREF="#startservers">StartServers</A>.<p><hr>
 
-<A name="minspareservers"><h2>MinSpareServers directive</h2></A>
+<h2><A name="minspareservers">MinSpareServers directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt MinSpareServers} directive&gt; -->
 <strong>Syntax:</strong> MinSpareServers <em>number</em><br>
 <strong>Default:</strong> <code>MinSpareServers 5</code><br>
@@ -844,7 +844,7 @@ Setting this parameter to a large number is almost always a bad idea.<p>
 See also <A HREF="#maxspareservers">MaxSpareServers</A> and
 <A HREF="#startservers">StartServers</A>.<p><hr>
 
-<A name="options"><h2>Options directive</h2></A>
+<h2><A name="options">Options directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Options} directive&gt; -->
 <strong>Syntax:</strong> Options <em>[+|-]option [+|-]option ...</em><br>
 <strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
@@ -931,7 +931,7 @@ then the options <code>FollowSymLinks</code> and <code>Includes</code>
 are set for the /web/docs/spec directory.
 <hr>
 
-<A name="pidfile"><h2>PidFile directive</h2></A>
+<h2><A name="pidfile">PidFile directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt PidFile} directive&gt; -->
 <strong>Syntax:</strong> PidFile <em>filename</em><br>
 <strong>Default:</strong> <code>PidFile logs/httpd.pid</code><br>
@@ -953,7 +953,7 @@ The PidFile is subject to the same warnings about log file placement and
 
 <p><hr>
 
-<A name="port"><h2>Port directive</h2></A>
+<h2><A name="port">Port directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Port} directive&gt; -->
 <strong>Syntax:</strong> Port <em>number</em><br>
 <strong>Default:</strong> <code>Port 80</code><br>
@@ -1009,7 +1009,7 @@ not to set <A HREF="#user">User</A> to root. If you run the server as
 root whilst handling connections, your site may be open to a major security
 attack.<p><hr>
 
-<A name="require"><h2>require directive</h2></A>
+<h2><A name="require">require directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt require} directive&gt; -->
 <strong>Syntax:</strong> require <em>entity-name entity entity...</em><br>
 <strong>Context:</strong> directory, .htaccess<br>
@@ -1046,7 +1046,7 @@ Require must be accompanied by <A HREF="#authname">AuthName</A> and
 <A HREF="mod_auth.html#authgroupfile">AuthGroupFile</A> (to define users and
 groups) in order to work correctly.<p><hr>
 
-<A name="resourceconfig"><h2>ResourceConfig directive</h2></A>
+<h2><A name="resourceconfig">ResourceConfig directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ResourceConfig} directive&gt; -->
 <strong>Syntax:</strong> ResourceConfig <em>filename</em><br>
 <strong>Default:</strong> <code>ResourceConfig conf/srm.conf</code><br>
@@ -1065,8 +1065,7 @@ sections; in fact it can now contain any server directive allowed in the
 
 See also <A HREF="#accessconfig">AccessConfig</A>.<p><hr>
 
-<A name="rlimit"> </A>
-<A name="rlimitcpu"><h2>RLimitCPU directive</h2></A>
+<H2><A name="rlimit">RLimitCPU</A> <A NAME="rlimit">directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt RLimitCPU} directive&gt; -->
 <strong>Syntax:</strong> RLimitCPU <em># or 'max'</em> <em>[# or 'max']</em><br>
 <strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
@@ -1085,7 +1084,7 @@ CPU resource limits are expressed in seconds per process.<p>
 
 See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitnproc">RLimitNPROC</A>.<p><hr>
 
-<A name="rlimitmem"><h2>RLimitMEM directive</h2></A>
+<h2><A name="rlimitmem">RLimitMEM directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt RLimitMEM} directive&gt; -->
 <strong>Syntax:</strong> RLimitMEM <em># or 'max'</em> <em>[# or 'max']</em><br>
 <strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
@@ -1104,7 +1103,7 @@ Memory resource limits are expressed in bytes per process.<p>
 
 See also <A HREF="#rlimitcpu">RLimitCPU</A> or <A HREF="#rlimitnproc">RLimitNPROC</A>.<p><hr>
 
-<A name="rlimitnproc"><h2>RLimitNPROC directive</h2></A>
+<h2><A name="rlimitnproc">RLimitNPROC directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt RLimitNPROC} directive&gt; -->
 <strong>Syntax:</strong> RLimitNPROC <em># or 'max'</em> <em>[# or 'max']</em><br>
 <strong>Default:</strong> <code>Unset uses operating system defaults</code><br>
@@ -1130,7 +1129,7 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or <A HREF="#rlimitcpu">RLimitCPU</A
 
 <p><hr>
 
-<A name="satisfy"><h2>Satisfy</h2></A>
+<h2><A name="satisfy">Satisfy directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Satisfy} directive&gt; -->
 <strong>Syntax:</strong> Satisfy <em>'any' or 'all'</em><br>
 <strong>Default:</strong> Satisfy all<br>
@@ -1152,7 +1151,7 @@ clients from particular addresses in without prompting for a password.
 
 <p><hr>
 
-<A name="scoreboardfile"><h2>ScoreBoardFile directive</h2></A>
+<h2><A name="scoreboardfile">ScoreBoardFile directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ScoreBoardFile} directive&gt; -->
 <strong>Syntax:</strong> ScoreBoardFile <em>filename</em><br>
 <strong>Default:</strong> <code>ScoreBoardFile logs/apache_status</code><br>
@@ -1189,7 +1188,7 @@ release.<p>
 
 <p><hr>
 
-<A name="sendbuffersize"><h2>SendBufferSize directive</h2></A>
+<h2><A name="sendbuffersize">SendBufferSize directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt SendBufferSize} directive&gt; -->
 <strong>Syntax:</strong> SendBufferSize <em>bytes</em><br>
 <strong>Context:</strong> server config<br>
@@ -1201,7 +1200,7 @@ speed high latency (i.e. 100ms or so, such as transcontinental
 fast pipes)
 <p><hr>
 
-<A name="serveradmin"><h2>ServerAdmin directive</h2></A>
+<h2><A name="serveradmin">ServerAdmin directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ServerAdmin} directive&gt; -->
 <strong>Syntax:</strong> ServerAdmin <em>email-address</em><br>
 <strong>Context:</strong> server config, virtual host<br>
@@ -1214,7 +1213,7 @@ It may be worth setting up a dedicated address for this, e.g.
 <blockquote><code>ServerAdmin www-admin@foo.bar.com</code></blockquote>
 as users do not always mention that they are talking about the server!<p><hr>
 
-<A name="serveralias"><h2>ServerAlias directive</h2></A>
+<h2><A name="serveralias">ServerAlias directive</A></h2>
 
 <strong>Syntax:</strong> ServerAlias <em>host1 host2 ...</em><br>
 <strong>Context:</strong> virtual host<br>
@@ -1230,7 +1229,7 @@ with
 
 <hr>
 
-<A name="servername"><h2>ServerName directive</h2></A>
+<h2><A name="servername">ServerName directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ServerName} directive&gt; -->
 <strong>Syntax:</strong> ServerName <em>fully-qualified domain name</em><br>
 <strong>Context:</strong> server config, virtual host<br>
@@ -1247,7 +1246,7 @@ were <code>monster.wibble.com</code>.<p>
 <a href="../dns-caveats.html">DNS Issues</a></p>
 <hr>
 
-<A name="serverpath"><h2>ServerPath directive</h2></A>
+<h2><A name="serverpath">ServerPath directive</A></h2>
 
 <strong>Syntax:</strong> ServerPath <em>pathname</em><br>
 <strong>Context:</strong> virtual host<br>
@@ -1261,7 +1260,7 @@ use with <a href="../host.html">Host-header based virtual hosts</a>.
 <a href="../vhosts-in-depth.html">In-depth description of Virtual Host matching</a></p>
 <hr>
 
-<A name="serverroot"><h2>ServerRoot directive</h2></A>
+<h2><A name="serverroot">ServerRoot directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ServerRoot} directive&gt; -->
 <strong>Syntax:</strong> ServerRoot <em>directory-filename</em><br>
 <strong>Default:</strong> <code>ServerRoot /usr/local/etc/httpd</code><br>
@@ -1274,7 +1273,7 @@ Typically it will contain the subdirectories <code>conf/</code> and
 as relative to this directory.<br>
 See also <a href="../invoking.html">the <code>-d</code> option to httpd</a>.<p><hr>
 
-<A name="servertype"><h2>ServerType directive</h2></A>
+<h2><A name="servertype">ServerType directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt ServerType} directive&gt; -->
 <strong>Syntax:</strong> ServerType <em>type</em><br>
 <strong>Default:</strong> <code>ServerType standalone</code><br>
@@ -1308,7 +1307,7 @@ SECURITY: if you are paranoid about security, run in inetd mode. Security
 cannot be guaranteed in either, but whilst most people are happy to use
 standalone, inetd is probably least prone to attack.<p><hr>
 
-<A name="startservers"><h2>StartServers directive</h2></A>
+<h2><A name="startservers">StartServers directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt StartServers} directive&gt; -->
 <strong>Syntax:</strong> StartServers <em>number</em><br>
 <strong>Default:</strong> <code>StartServers 5</code><br>
@@ -1322,7 +1321,7 @@ on the load, there is usually little reason to adjust this parameter.<p>
 See also <A HREF="#minspareservers">MinSpareServers</A> and
 <A HREF="#maxspareservers">MaxSpareServers</A>.<p><hr>
 
-<A name="timeout"><h2>TimeOut directive</h2></A>
+<h2><A name="timeout">TimeOut directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt TimeOut} directive&gt; -->
 <strong>Syntax:</strong> TimeOut <em>number</em><br>
 <strong>Default:</strong> <code>TimeOut 300</code><br>
@@ -1349,7 +1348,7 @@ a packet is sent.
 
 <p><hr>
 
-<A name="user"><h2>User directive</h2></A>
+<h2><A name="user">User directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt User} directive&gt; -->
 <strong>Syntax:</strong> User <em>unix-userid</em><br>
 <strong>Default:</strong> <code>User #-1</code><br>
@@ -1388,7 +1387,7 @@ SECURITY: Don't set User (or <A HREF="#group">Group</A>) to
 <code>root</code> unless you know exactly what you are doing, and what the
 dangers are.<p><hr>
 
-<A name="virtualhost"><h2>&lt;VirtualHost&gt; directive</h2></A>
+<h2><A name="virtualhost">&lt;VirtualHost&gt; directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt VirtualHost} section directive&gt; -->
 <strong>Syntax:</strong> &lt;VirtualHost <em>addr</em>[:<em>port</em>] ...&gt; ...
 &lt;/VirtualHost&gt; <br>

@@ -273,6 +273,7 @@ the virtual hosts).
     &quot;main IP address&quot;.  You essentially have to create a bogus
     <code>ServerName</code> for the main_server that does not match the
     machine's IPs.
+    <P>
 
 <li>During the scans in both <code>check_hostalias</code> and
     <code>check_serverpath</code> no check is made that the vhost being
@@ -281,8 +282,8 @@ the virtual hosts).
     because the scan starts in the vhost list at the first vhost that
     matched the local IP address of the connection, not all IP-based vhosts
     can be matched.
-
-    <p>Consider the config file above with three vhosts A, B, C.  Suppose
+    <p>
+    Consider the config file above with three vhosts A, B, C.  Suppose
     that B is a named-based vhost, and A and C are IP-based vhosts.  If
     a request comes in on B or C's address containing a header
     &quot;<SAMP>Host: A</SAMP>&quot; then
@@ -296,8 +297,8 @@ the virtual hosts).
     vhosts.  During the <code>find_virtual_server</code> phase above no
     named-based vhost will be matched, so the main_server will remain the
     connection vhost.  Then scans will cover all vhosts in the vhost list.
-
-    <p>If you do have a <SAMP>_default_</SAMP> vhost, then you cannot place
+    <p>
+    If you do have a <SAMP>_default_</SAMP> vhost, then you cannot place
     named-based vhosts after it in the config.  This is because on any
     connection to the main server IPs the connection vhost will always be
     the <SAMP>_default_</SAMP> vhost since none of the name-based are 
@@ -308,22 +309,25 @@ the virtual hosts).
     directives because it will force your server to rely on DNS to boot.
     Furthermore it poses a security threat if you do not control the
     DNS for all the domains listed.
-    <a href="dns-caveats.html">
-    There's more information
-    available on this and the next two topics</a>.</p>
+    <a href="dns-caveats.html">There's more information
+    available on this and the next two topics</a>.
+    <p>
 
 <li><code>ServerName</code> should always be set for each vhost.  Otherwise
-    A DNS lookup is required for each vhost.</p>
+    A DNS lookup is required for each vhost.
+    <p>
 
 <li>A DNS lookup is always required for the main_server's
     <code>ServerName</code> (or to generate that if it isn't specified
-    in the config).</p>
+    in the config).
+    <p>
 
 <li>If a <code>ServerPath</code> directive exists which is a prefix of
     another <code>ServerPath</code> directive that appears later in
     the configuration file, then the former will always be matched
     and the latter will never be matched.  (That is assuming that no
-    Host header was available to disambiguate the two.)</p>
+    Host header was available to disambiguate the two.)
+    <p>
 
 <li>If a vhost that would otherwise be a name-vhost includes a
     <code>Port</code> statement that doesn't match the main_server
@@ -333,17 +337,19 @@ the virtual hosts).
     to the port of the main_server) as the connection vhost.  Then
     <code>check_hostalias</code> will refuse to check any other name-based
     vhost because of the port mismatch.  The result is that the vhost
-    will steal all hits going to the main_server address.</p>
+    will steal all hits going to the main_server address.
+    <p>
 
 <li>If two IP-based vhosts have an address in common, the vhost appearing
     later in the file is always matched.  Such a thing might happen
     inadvertently.  If the config has name-based vhosts and for some reason
     the main_server <code>ServerName</code> resolves to the wrong address
     then all the name-based vhosts will be parsed as ip-based vhosts.
-    Then the last of them will steal all the hits.</P>
+    Then the last of them will steal all the hits.
+    <P>
 
 <li>The last name-based vhost in the config is always matched for any hit
-    which doesn't match one of the other name-based vhosts.</p>
+    which doesn't match one of the other name-based vhosts.
 
 </ul>
 
@@ -373,10 +379,10 @@ the configuration file than the shorter (less specific) prefix
 &quot;ServerPath /abcdef&quot;).
 <p>
 
-<li>Do not use <i>port-based</i> vhosts in the same server as
+<li>Do not use <EM>port-based</EM> vhosts in the same server as
 name-based vhosts.  A loose definition for port-based is a vhost which
-is determined by the port on the server (<em>i.e.</em> one server with
-ports 8000, 8080, and 80 all of which have different configurations).
+is determined by the port on the server (<em>i.e.</em>, one server with
+ports 8000, 8080, and 80 - all of which have different configurations).
 <p>
 
 </ul>

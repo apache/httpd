@@ -27,8 +27,9 @@ in early versions have been fixed in 1.2.
 
 <H2>Apache 1.2 Bugs</H2>
 
-<OL><a name="listenbug"></a>
-    <LI>On some architectures if your configuration uses multiple
+<OL>
+    <LI><a name="listenbug">On some architectures</A>
+    if your configuration uses multiple
     <a href="../mod/core.html#listen">Listen</a> directives then it is possible
     that the server will starve one of the sockets while serving hits on
     another.  The work-around is to add
@@ -43,9 +44,8 @@ in early versions have been fixed in 1.2.
     <a href="http://www.apache.org/bugdb.cgi/full/467">PR#467</a>.
     <P></LI>
 
-    <a name="cnegbug"></a>
     <LI><b>Fixed in 1.2.1.</b>
-    Apache's <A HREF="../content-negotiation.html">Content
+    <a name="cnegbug">Apache's</A> <A HREF="../content-negotiation.html">Content
     Negotiation</A> should pick the smallest variant if there
     are several that are equally acceptable. A bug in 1.2 means it no
     longer does this unless all the variants have character sets. 
