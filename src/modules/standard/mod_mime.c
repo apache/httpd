@@ -250,7 +250,13 @@ int find_ct(request_rec *r)
 
       /* Check for Content-Language */
       if ((type = table_get (conf->language_types, ext))) {
-	  r->content_language = type;
+	  char **new;
+
+	  r->content_language = type; /* back compat. only */
+	  if (!r->content_languages)
+	      r->content_languages = make_array (r->pool, 2, sizeof(char*));
+	  new = (char **)push_array (r->content_languages);
+	  *new = type;
 	  found = 1;
       }
 	
@@ -278,6 +284,7 @@ int find_ct(request_rec *r)
       if (!found) {
 	r->content_type = NULL;
 	r->content_language = NULL;
+	r->content_languages = NULL;
 	r->content_encoding = NULL;
 	r->handler = orighandler;
       }

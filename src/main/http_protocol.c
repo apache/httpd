@@ -1011,7 +1011,16 @@ void send_http_header(request_rec *r)
     if (r->content_encoding)
         bvputs(fd,"Content-Encoding: ", r->content_encoding, "\015\012", NULL);
     
-    if (r->content_language)
+    if (r->content_languages && r->content_languages->nelts) {
+	int i;
+	bputs("Content-Langauge: ", fd);
+	for (i = 0; i < r->content_languages->nelts; ++i) {
+	    char *lang = ((char**)(r->content_languages->elts))[i];
+	    bvputs(fd, i ? ", " : "", lang, NULL);
+	}
+	bputs("\015\012", fd);
+    }
+    else if (r->content_language)
         bvputs(fd,"Content-Language: ", r->content_language, "\015\012", NULL);
 
     /* We now worry about this here */

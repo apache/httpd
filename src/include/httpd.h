@@ -451,7 +451,8 @@ struct request_rec {
   char *handler;		/* What we *really* dispatch on           */
 
   char *content_encoding;
-  char *content_language;
+  char *content_language;	/* for back-compat. only -- do not use */
+  array_header *content_languages; /* array of (char*) */
   
   int no_cache;
   int no_local_copy;
