@@ -1053,9 +1053,10 @@ static const char *set_add_default_charset(cmd_parms *cmd,
     if (err != NULL) {
         return err;
     }
-    if (!strcasecmp(arg, "None"))
+    if (!strcasecmp(arg, "Off")) {
        d->add_default_charset = 0;
-    else if (!strcasecmp(arg, "Default")) {
+    }
+    else if (!strcasecmp(arg, "On")) {
        d->add_default_charset = 1;
        d->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
     }
