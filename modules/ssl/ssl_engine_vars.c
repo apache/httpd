@@ -489,7 +489,7 @@ static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_UTCTIME *tm)
         return apr_pstrdup(p, "0");
     }
     
-    diff = (apr_time_sec(then) - apr_time_sec(now)) / (60*60*24);
+    diff = (long)(apr_time_sec(then) - apr_time_sec(now)) / (60*60*24));
 
     return diff > 0 ? apr_ltoa(p, diff) : apr_pstrdup(p, "0");
 }
