@@ -398,14 +398,17 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
                               char *perdir, backrefinfo *briRR,
                               backrefinfo *briRC);
 
+static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
+		      backrefinfo *briRR, backrefinfo *briRC);
+static void do_expand_env(request_rec *r, char *env[],
+			  backrefinfo *briRR, backrefinfo *briRC);
+
     /* URI transformation function */
 static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  fully_qualify_uri(request_rec *r);
 static void  reduce_uri(request_rec *r);
-static void  expand_backref_inbuffer(apr_pool_t *p, char *buf, int nbuf,
-                                     backrefinfo *bri, char c);
+static int   is_absolute_uri(char *uri);
 static char *expand_tildepaths(request_rec *r, char *uri);
-static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
 
     /* rewrite map support functions */
 static char *lookup_map(request_rec *r, char *name, char *key);
@@ -443,8 +446,6 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p, const char *progname
                                              apr_file_t **fperr);
 
     /* env variable support */
-static void  expand_variables_inbuffer(request_rec *r, char *buf, int buf_len);
-static char *expand_variables(request_rec *r, char *str);
 static char *lookup_variable(request_rec *r, char *var);
 static char *lookup_header(request_rec *r, const char *name);
 
@@ -463,6 +464,7 @@ static char  *subst_prefix_path(request_rec *r, char *input, char *match,
 static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, apr_finfo_t *sb);
 static void   add_env_variable(request_rec *r, char *s);
+static int    subreq_ok(request_rec *r);
 
     /* Lexicographic Comparison */
 static int compare_lexicography(char *cpNum1, char *cpNum2);
