@@ -1275,6 +1275,9 @@ is a comma-separated list of the following flags:
     This makes the test case-insensitive, <EM>i.e.</EM>, there is
     no difference between 'A-Z' and 'a-z' both in the expanded
     <EM>TestString</EM> and the <EM>CondPattern</EM>.
+    This flag is effective only for comparisons between
+    <EM>TestString</EM> and <EM>CondPattern</EM>.  It has no
+    effect on filesystem and subrequest checks.
 <P>
 <LI>'<STRONG><CODE>ornext|OR</CODE></STRONG>' (<STRONG>or</STRONG> next condition)<BR>
     Use this to combine rule conditions with a local OR instead of the
