@@ -18,11 +18,11 @@ include $(top_srcdir)/build/ltlib.mk
 
 gen_uri_delims_OBJECTS = gen_uri_delims.lo
 gen_uri_delims: $(gen_uri_delims_OBJECTS)
-	$(LINK) $(gen_uri_delims_OBJECTS)
+	$(LINK) $(EXTRA_LDFLAGS) $(gen_uri_delims_OBJECTS)
 
 gen_test_char_OBJECTS = gen_test_char.lo
 gen_test_char: $(gen_test_char_OBJECTS)
-	$(LINK) $(gen_test_char_OBJECTS)
+	$(LINK) $(EXTRA_LDFLAGS) $(gen_test_char_OBJECTS)
 
 uri_delims.h: gen_uri_delims
 	./gen_uri_delims > uri_delims.h
