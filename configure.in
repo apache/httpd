@@ -111,7 +111,7 @@ AC_CHECK_LIB(nsl, gethostbyname)
 AC_CHECK_LIB(nsl, gethostname)
 AC_CHECK_LIB(socket, socket)
 
-AC_ARG_WITH(optim,[  --with-optim="FLAG"      obsolete (use env OPTIM)],
+AC_ARG_WITH(optim,[  --with-optim="FLAG"       obsolete (use OPTIM environment variable)],
         [AC_MSG_ERROR('option --with-optim is obsolete; use OPTIM environment variable instead')])
 
 AC_ARG_WITH(port,[  --with-port=PORT        Port on which to listen (default is 80)],
@@ -121,7 +121,7 @@ AC_ARG_WITH(port,[  --with-port=PORT        Port on which to listen (default is 
 AC_ARG_WITH(debug,[  --with-debug            Turn on debugging and compile time warnings],
         [if test "$GCC" = "yes"; then CFLAGS="$CFLAGS -g -Wall"; else CFLAGS="$CFLAGS -g"; fi])
 
-AC_ARG_WITH(maintainer-mode,[  --with-maintainer-mode   Turn on debugging and compile time warnings],
+AC_ARG_WITH(maintainer-mode,[  --with-maintainer-mode  Turn on debugging and compile time warnings],
         [if test "$GCC" = "yes"; then CFLAGS="$CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations -DAP_DEBUG"; else CFLAGS="$CFLAGS -g"; fi])
 
 APACHE_ENABLE_LAYOUT
@@ -165,37 +165,37 @@ if test "$apache_need_shared" = "yes"; then
 fi
 
 AC_ARG_WITH(program-name,
-[  --with-program-name=alternate executable name],[
+[  --with-program-name     alternate executable name],[
   progname="$withval" ], [
   progname="httpd"] )
 
 # SuExec parameters
 AC_ARG_WITH(suexec-caller,
-[  --with-suexec-caller=User allowed to call SuExec],[
+[  --with-suexec-caller    User allowed to call SuExec],[
   AC_DEFINE_UNQUOTED(AP_HTTPD_USER, "$withval", [User allowed to call SuExec] ) ] )
 
 AC_ARG_WITH(suexec-userdir,
-[  --with-suexec-userdir=User subdirectory],[
+[  --with-suexec-userdir   User subdirectory],[
   AC_DEFINE_UNQUOTED(AP_USERDIR_SUFFIX, "$withval", [User subdirectory] ) ] )
 
 AC_ARG_WITH(suexec-docroot,
-[  --with-suexec-docroot=SuExec root directory],[
+[  --with-suexec-docroot   SuExec root directory],[
   AC_DEFINE_UNQUOTED(AP_DOC_ROOT, "$withval", [SuExec root directory] ) ] )
 
 AC_ARG_WITH(suexec-uidmin,
-[  --with-suexec-uidmin=Minimal allowed UID],[
+[  --with-suexec-uidmin    Minimal allowed UID],[
   AC_DEFINE_UNQUOTED(AP_UID_MIN, "$withval", [Minimal allowed UID] ) ] )
 
 AC_ARG_WITH(suexec-gidmin,
-[  --with-suexec-gidmin=Minimal allowed GID],[
+[  --with-suexec-gidmin    Minimal allowed GID],[
   AC_DEFINE_UNQUOTED(AP_GID_MIN, "$withval", [Minimal allowed GID] ) ] )
 
 AC_ARG_WITH(suexec-logfile,
-[  --with-suexec-logfile=Set the logfile],[
+[  --with-suexec-logfile   Set the logfile],[
   AC_DEFINE_UNQUOTED(AP_LOG_EXEC, "$withval", [SuExec log file] ) ] )
 
 AC_ARG_WITH(suexec-safepath,
-[  --with-suexec-safepath=Set the safepath],[
+[  --with-suexec-safepath  Set the safepath],[
   AC_DEFINE_UNQUOTED(AP_SAFE_PATH, "$withval", [safe shell path for SuExec] ) ] )
 
 dnl ### util_xml is always included, so we always need Expat (for now)
