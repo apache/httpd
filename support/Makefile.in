@@ -13,12 +13,12 @@ include $(top_srcdir)/build/rules.mk
 
 install:
 	@test -d $(bindir) || $(MKINSTALLDIRS) $(bindir)
-	@cp -p $(top_srcdir)/server/httpd.exp $(bindir)
-	@cp -p apachectl $(bindir)
-	chmod 755 $(bindir)/apachectl
+	@cp -p $(top_srcdir)/server/httpd.exp $(libexecdir)
+	@cp -p apachectl $(sbindir)
+	chmod 755 $(sbindir)/apachectl
 	@if test -f $(builddir)/apxs; then \
-	    cp -p apxs $(bindir); \
-	    chmod 755 $(bindir)/apxs; \
+	    cp -p apxs $(sbindir); \
+	    chmod 755 $(sbindir)/apxs; \
 	fi
 
 htpasswd_OBJECTS = htpasswd.lo
