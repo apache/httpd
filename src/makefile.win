@@ -12,7 +12,7 @@
 # The default installation directory is \Apache. This can be changed
 # with the INSTDIR macro, for example:
 #
-#   nmake /f Makefile.nt INSTDIR="d:\Program Files\Apache" installr
+#   nmake /f Makefile.win INSTDIR="d:\Program Files\Apache" installr
 #
 # Note: this does *NOT* change the compiled in default "server root"
 
