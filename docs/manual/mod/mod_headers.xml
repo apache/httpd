@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.14 $ -->
+<!-- $Revision: 1.15 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -129,7 +129,7 @@ is available only in Apache 2.0</compatibility>
 <name>ErrorHeader</name>
 <description>Configure HTTP response headers also for error responses</description>
 <syntax>ErrorHeader set|append|add|unset|echo <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</syntax>
+[<var>value</var>] [env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -150,7 +150,7 @@ Consult this directive for more information on the syntax.</p>
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
 <syntax>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</syntax>
+[<var>value</var>] [env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -183,7 +183,8 @@ Consult this directive for more information on the syntax.</p>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
-    there are multiple headers of the same name, all will be removed.</dd>
+    there are multiple headers of the same name, all will be removed.
+    <var>value</var> must be omitted.</dd>
     </dl>
 
     <p>This argument is followed by a header name, which can
@@ -191,17 +192,20 @@ Consult this directive for more information on the syntax.</p>
     ignored. For <code>add</code>, <code>append</code> and
     <code>set</code> a <var>value</var> is given as the third argument. If
     <var>value</var> contains spaces, it should be surrounded by double
-    quotes. For unset, no <var>value</var> should be given.</p>
+    quotes. For unset, no <var>value</var> should be given.
+    <var>value</var> may be a character string, a string containing format
+    specifiers or a combination of both. The supported format specifiers
+    are the same as for the <directive module="mod_headers">Header</directive>,
+    please have a look there for details.</p>
 
-    <p>When the <directive>RequestHeader</directive> directive is used with the
-    <code>add</code>, <code>append</code>, or <code>set</code> argument, a
-    fourth argument may be used to specify conditions under which the action
-    will be taken. If the <a href="../env.html">environment variable</a>
-    specified in the <code>env=...</code> argument exists (or if the environment
-    variable does not exist and <code>env=!...</code> is specified) then the
-    action specified by the <directive>RequestHeader</directive> directive will
-    take effect. Otherwise, the directive will have no effect on the
-    request.</p>
+    <p>The <directive>RequestHeader</directive> directive may be followed by
+    an additional argument, which may be used to specify conditions under
+    which the action will be taken. If the <a href="../env.html">environment
+    variable</a> specified in the <code>env=<var>...</var></code> argument
+    exists (or if the environment variable does not exist and
+    <code>env=!<var>...</var></code> is specified) then the action specified
+    by the <directive>RequestHeader</directive> directive will take effect.
+    Otherwise, the directive will have no effect on the request.</p>
 
     <p>The <directive>RequestHeader</directive> directive is processed
     just before the request is run by its handler in the fixup phase.
@@ -214,7 +218,7 @@ Consult this directive for more information on the syntax.</p>
 <name>Header</name>
 <description>Configure HTTP response headers</description>
 <syntax>Header set|append|add|unset|echo  <var>header</var>
-[<var>value</var> [env=[!]<var>variable</var>]]</syntax>
+[<var>value</var>] [env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -247,11 +251,12 @@ Consult this directive for more information on the syntax.</p>
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
     If there are multiple headers of the same name, all will be
-    removed.</dd>
+    removed. <var>value</var> must be omitted.</dd>
 
     <dt><code>echo</code></dt>
     <dd>Request headers with this name are echoed back in the
-    response headers. <var>header</var> may be a regular expression.</dd>
+    response headers. <var>header</var> may be a regular expression.
+    <var>value</var> must be omitted.</dd>
     </dl>
 
     <p>This argument is followed by a <var>header</var> name, which
@@ -267,8 +272,12 @@ Consult this directive for more information on the syntax.</p>
     specifiers or a combination of both. The following format specifiers
     are supported in <var>value</var>:</p>
 
-    <table border="1">
+    <table border="1" style="zebra">
     <columnspec><column width=".25"/><column width=".75"/></columnspec>
+    <tr><th>Format</th><th>Description</th></tr>
+    <tr><td><code>%%</code></td>
+        <td>The percent sign</td></tr>
+
     <tr><td><code>%t</code></td>
         <td>The time the request was received in Universal Coordinated Time
         since the epoch (Jan. 1, 1970) measured in microseconds. The value
@@ -290,23 +299,20 @@ Consult this directive for more information on the syntax.</p>
     </table>
 
     <note><title>Note</title>
-
       <p>The <code>%s</code> format specifier is only available in
       Apache 2.1 and later; it can be used instead of <code>%e</code>
       to avoid the overhead of enabling <code>SSLOptions
       +StdEnvVars</code>.  If <code>SSLOptions +StdEnvVars</code> must
       be enabled anyway for some other reason, <code>%e</code> will be
       more efficient than <code>%s</code>.</p>
-
     </note> 
 
-    <p>When the <directive>Header</directive> directive is used with the
-    <code>add</code>, <code>append</code>, or <code>set</code>
-    argument, a fourth argument may be used to specify conditions
+    <p>The <directive>Header</directive> directive may be followed by an
+    additional argument, which may be used to specify conditions
     under which the action will be taken. If the <a
     href="../env.html">environment variable</a> specified in the
-    <code>env=...</code> argument exists (or if the environment
-    variable does not exist and <code>env=!...</code> is specified)
+    <code>env=<var>...</var></code> argument exists (or if the environment
+    variable does not exist and <code>env=!<var>...</var></code> is specified)
     then the action specified by the <directive>Header</directive> directive
     will take effect. Otherwise, the directive will have no effect
     on the request.</p>
