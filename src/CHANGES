@@ -1,5 +1,8 @@
 Changes with Apache 1.3.20
 
+  *) Enhance rotatelogs so that a UTC offset can be specified, and
+     the logfile name can be formatted using strftime(3).  [Ken Coar]
+
   *) Fix a possible NULL pointer dereference in the detection of the
      default ServerName or IP string (introduced in 1.3.18).
      [Ignasi Roca, <Ignasi.Roca@fujitsu-siemens.com>]

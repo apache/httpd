@@ -1,4 +1,4 @@
-.TH rotatelogs 8 "March 1998"
+.TH rotatelogs 8 "March 2001"
 .\" ====================================================================
 .\" The Apache Software License, Version 1.1
 .\"
@@ -62,6 +62,7 @@ rotatelogs \- rotate Apache logs without having to kill the server
 .B rotatelogs
 .I logfile
 .I rotationtime
+.I [offset]
 .PP
 .SH DESCRIPTION
 .B rotatelogs
@@ -69,7 +70,7 @@ is a simple program for use in conjunction with Apache's piped logfile
 feature which can be used like this:
 
 .fi
-   TransferLog "|rotatelogs /path/to/logs/access_log 86400"
+   TransferLog "| rotatelogs /path/to/logs/access_log 86400"
 .mf
 
 This creates the files /path/to/logs/access_log.nnnn where nnnn is the system
@@ -78,11 +79,16 @@ the rotation time, so you can synchronize cron scripts with it).  At the end
 of each rotation time (here after 24 hours) a new log is started.
 .SH OPTIONS
 .IP \fB\fIlogfile\fP
-The path plus basename of the logfile. The suffix .nnnn is automatically
-added.
+The path plus basename of the logfile.  If \fBlogfile\fP includes any
+'%' characters, it is treated as a format string for \fIstrftime(3)\fP.
+Otherwise, the suffix .nnnn is automatically added and is the time at which
+the logfile was created.
 .IP \fB\fIrotationtime\fP
 The rotation time in seconds.
+.IP \fB\fIoffset\fP
+The number of minutes offset from UTC.  If omitted, zero is assumed and
+UTC is used.  For example, to use local time in the zone UTC -5 hours,
+specify a value of \fI-300\fP for this argument.
 .PD
 .SH SEE ALSO
 .BR httpd(8)
-.
