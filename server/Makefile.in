@@ -9,7 +9,7 @@ SUBDIRS = mpm
 LTLIBRARY_NAME    = libmain.la
 LTLIBRARY_SOURCES = \
     test_char.h \
-	config.c log.c main.c vhost.c util.c util_date.c \
+	config.c log.c main.c vhost.c util.c \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c \
 	rfc1413.c connection.c listen.c \
         mpm_common.c util_charset.c util_debug.c util_xml.c \
