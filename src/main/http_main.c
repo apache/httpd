@@ -960,8 +960,10 @@ void reap_children()
 int wait_or_timeout (int *status)
 {
     int wait_or_timeout_retval = -1;
+#ifdef BROKEN_WAIT
     static int ntimes;
-    
+#endif
+
 #if defined(NEXT)
     if (setjmp(wait_timeout_buf) != 0) {
 #else 
