@@ -46,13 +46,15 @@
 </category>
 
 <category id="vhosts">
-<title>Virtual-Host-Dokumentation des Apache</title>
+<title>Apache-Dokumentation zu virtuellen Hosts</title>
 <page separate="yes" href="vhosts/">&#220;bersicht</page>
-<page href="vhosts/name-based.html">Namens-basierte Virtual Hosts</page>
-<page href="vhosts/ip-based.html">IP-basierte Virtual Hosts</page>
+<page href="vhosts/name-based.html">Namensbasierte virtuelle Hosts</page>
+<page href="vhosts/ip-based.html">IP-basierte virtuelle Hosts</page>
 <page href="vhosts/mass.html">Dynamisch konfiguriertes Massen-Virtual-Hosting</page>
-<page href="vhosts/examples.html">Virtual-Host-Beispiele</page>
-<page href="vhosts/details.html">Tiefergehende Er&#246;rterung des Virtual-Hosts-Matchings</page>
+<page href="vhosts/examples.html">Beispiele f&uuml;r virtuelles Hosts in
+  typischen Installationen</page>
+<page href="vhosts/details.html">Tiefergehende Er&ouml;rterung der Zuweisung
+        virtueller Hosts</page>
 <page href="vhosts/fd-limits.html">Datei-Deskriptor-Begrenzungen</page>
 <page href="dns-caveats.html">Probleme bez&#252;glich DNS und Apache</page>
 </category>
