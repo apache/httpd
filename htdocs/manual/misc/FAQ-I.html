@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.7 $ ($Date: 2000/04/18 19:43:59 $)
+  $Revision: 1.8 $ ($Date: 2000/07/13 17:16:50 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -87,6 +87,9 @@
    <LI><A HREF="#conditional-logging">How do I keep certain requests from
         appearing in my logs?</A>
    </LI>
+   <li><a href="#dbinteg">Does Apache include any sort of database
+        integration?</a>
+   </li>
   </OL>
  </LI>
 <!--#endif -->
@@ -248,6 +251,19 @@
   </P>
   <HR>
  </LI>
+
+ <li><a name="dbinteg"><b>Does Apache support any sort of database
+      integration?</b></a>
+  <p>
+  No.  Apache is a Web (HTTP) server, not an application server.  The
+  base package does not include any such functionality.  See the
+  <a href="http://www.php.net/">PHP project</a> and the
+  <a href="http://perl.apache.org/">mod_perl project</a>
+  for examples of modules that allow you to work with databases
+  from within the Apache environment.
+  </p>
+  <hr>
+ </li>
 
 </OL>
 <!--#endif -->
