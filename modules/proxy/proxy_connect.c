@@ -276,9 +276,11 @@ int ap_proxy_connect_handler(request_rec *r, proxy_server_conf *conf,
 		     "proxy: CONNECT: Returning 200 OK Status");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
 			      "HTTP/1.0 200 Connection Established" CRLF);
+        ap_xlate_proto_to_ascii(buffer, nbytes);
         apr_send(client_socket, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
 			      "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+        ap_xlate_proto_to_ascii(buffer, nbytes);
         apr_send(client_socket, buffer, &nbytes);
 #if 0
         /* This is safer code, but it doesn't work yet.  I'm leaving it 
