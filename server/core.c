@@ -181,6 +181,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->etag_remove = ETAG_UNSET;
 
     conf->enable_mmap = ENABLE_MMAP_UNSET;
+    conf->enable_sendfile = ENABLE_SENDFILE_UNSET;
 
     return (void *)conf;
 }
@@ -445,6 +446,10 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (new->enable_mmap != ENABLE_MMAP_UNSET) {
         conf->enable_mmap = new->enable_mmap;
+    }
+
+    if (new->enable_sendfile != ENABLE_SENDFILE_UNSET) {
+        conf->enable_sendfile = new->enable_sendfile;
     }
 
     return (void*)conf;
@@ -1450,6 +1455,29 @@ static const char *set_enable_mmap(cmd_parms *cmd, void *d_,
     }
     else if (strcasecmp(arg, "off") == 0) {
         d->enable_mmap = ENABLE_MMAP_OFF;
+    }
+    else {
+        return "parameter must be 'on' or 'off'";
+    }
+
+    return NULL;
+}
+
+static const char *set_enable_sendfile(cmd_parms *cmd, void *d_,
+                                   const char *arg)
+{
+    core_dir_config *d = d_;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    if (strcasecmp(arg, "on") == 0) {
+        d->enable_sendfile = ENABLE_SENDFILE_ON;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        d->enable_sendfile = ENABLE_SENDFILE_OFF;
     }
     else {
         return "parameter must be 'on' or 'off'";
@@ -2936,6 +2964,8 @@ AP_INIT_RAW_ARGS("FileETag", set_etag_bits, NULL, OR_FILEINFO,
   "Specify components used to construct a file's ETag"),
 AP_INIT_TAKE1("EnableMMAP", set_enable_mmap, NULL, OR_FILEINFO,
   "Controls whether memory-mapping may be used to read files"),
+AP_INIT_TAKE1("EnableSendfile", set_enable_sendfile, NULL, OR_FILEINFO,
+  "Controls whether sendfile may be used to transmit files"),
 
 /* Old server config file commands */
 
@@ -3283,8 +3313,13 @@ static int default_handler(request_rec *r)
             }
         }
 
-        if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY, 0,
-                                    r->pool)) != APR_SUCCESS) {
+
+        if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY
+#if APR_HAS_SENDFILE
+                             | ((d->enable_sendfile == ENABLE_SENDFILE_OFF) 
+                                                ? 0 : APR_OPEN_FOR_SENDFILE)
+#endif
+                                    , 0, r->pool)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                           "file permissions deny server access: %s", r->filename);
             return HTTP_FORBIDDEN;
@@ -3306,8 +3341,9 @@ static int default_handler(request_rec *r)
         }
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
-#if APR_HAS_LARGE_FILES
-        if (r->finfo.size > AP_MAX_SENDFILE) {
+#if APR_HAS_SENDFILE && APR_HAS_LARGE_FILES
+        if ((d->enable_sendfile != ENABLE_SENDFILE_OFF) &&
+            (r->finfo.size > AP_MAX_SENDFILE)) {
             /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets,
              * no greater than MAX(apr_size_t), and more granular than that
              * in case the brigade code/filters attempt to read it directly.
@@ -3888,27 +3924,24 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             }
 
 #if APR_HAS_SENDFILE
-            if (c->keepalive == AP_CONN_CLOSE && APR_BUCKET_IS_EOS(last_e)) {
-                /* Prepare the socket to be reused */
-                flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+            if (apr_file_flags_get(fd) & APR_OPEN_FOR_SENDFILE) {
+
+                if (c->keepalive == AP_CONN_CLOSE && APR_BUCKET_IS_EOS(last_e)) {
+                    /* Prepare the socket to be reused */
+                    flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+                }
+
+                rv = sendfile_it_all(net,      /* the network information   */
+                                     fd,       /* the file to send          */
+                                     &hdtr,    /* header and trailer iovecs */
+                                     foffset,  /* offset in the file to begin
+                                                  sending from              */
+                                     flen,     /* length of file            */
+                                     nbytes + flen, /* total length including
+                                                       headers                */
+                                     flags);   /* apr_sendfile flags        */
             }
-
-            rv = sendfile_it_all(net,      /* the network information   */
-                                 fd,       /* the file to send          */
-                                 &hdtr,    /* header and trailer iovecs */
-                                 foffset,  /* offset in the file to begin
-                                              sending from              */
-                                 flen,     /* length of file            */
-                                 nbytes + flen, /* total length including
-                                                   headers                */
-                                 flags);   /* apr_sendfile flags        */
-
-            /* If apr_sendfile() returns APR_ENOTIMPL, call emulate_sendfile().
-             * emulate_sendfile() is useful to enable the same Apache binary
-             * distribution to support Windows NT/2000 (supports TransmitFile)
-             * and Win95/98 (do not support TransmitFile)
-             */
-            if (rv == APR_ENOTIMPL)
+            else
 #endif
             {
                 apr_size_t unused_bytes_sent;
