@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/12 23:38:49 $]
+Last modified at [$Date: 2003/09/13 04:05:37 $]
 
 Release:
 
@@ -69,7 +69,7 @@ PATCHES TO PORT FROM 2.1
       Expires header but no Etag or Last-Modified headers. This submitted
       patch (by bjorn@exoweb.net) resolves PR 23130.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.c.diff?r1=1.76&r2=1.77
-      +1: rederpj, fielding
+      +1: rederpj, fielding, brianp
 
     * Modifies the cache code to be header-location agnostic. Also
       fixes a number of other cache code bugs related to PR 15852
@@ -294,11 +294,11 @@ PATCHES TO PORT FROM 2.1
       potentially destabilizing and may take some iterations in
       2.1-dev before it is ready for prime time.
         support/ab.c: r1.128
-      +1: trawick, stoddard
+      +1: trawick, stoddard, brianp
 
       More fixes
         support/ab.c: r1.129, r1.130
-      +1: trawick
+      +1: trawick, brianp
 
     * mod_rewrite: more or less cosmetic fix. If a .htaccess in DocumentRoot
       configures:
@@ -375,13 +375,13 @@ PATCHES TO PORT FROM 2.1
     * Fix include_cmd in mod_cgid, not to treat the cmd output (partially)
       as CGI output.
         modules/generators/mod_cgid.c: r1.153
-      +1: nd, trawick
+      +1: nd, trawick, brianp
 
     * Fix inconsistency in generated expression parse tree. (2.0 + 1.3)
       There's also a practical advantage; it saves some CPU cycles, since the
       tree walk is shorter.
         modules/filters/mod_include.c: r1.261
-      +1: nd
+      +1: nd, brianp
 
     * mod_include's expression tokenizer: don't skip the first character of
       a string, it may be a backslash. (2.0 + 1.3)
