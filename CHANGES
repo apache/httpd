@@ -1,5 +1,10 @@
 Changes with Apache 2.0.50
 
+  *) SECURITY: CAN-2004-0493 (cve.mitre.org)
+     Close a denial of service vulnerability identified by Georgi
+     Guninski which could lead to memory exhaustion with certain
+     input data.  [Jeff Trawick]
+
   *) mod_cgi: Handle output on stderr during script execution on Unix
      platforms; preventing deadlock when stderr output fills pipe buffer.
      Also fixes case where stderr from nph- scripts could be lost.
