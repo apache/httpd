@@ -1871,7 +1871,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                 /*  One condition is false, but another can be
                  *  still true, so we have to continue...
                  */
-	        apr_table_unset(r->notes, VARY_KEY_THIS);
+                apr_table_unset(r->notes, VARY_KEY_THIS);
                 continue;
             }
             else {
@@ -1897,11 +1897,11 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                 break;
             }
         }
-	vary = apr_table_get(r->notes, VARY_KEY_THIS);
-	if (vary != NULL) {
-	    apr_table_merge(r->notes, VARY_KEY, vary);
-	    apr_table_unset(r->notes, VARY_KEY_THIS);
-	}
+        vary = apr_table_get(r->notes, VARY_KEY_THIS);
+        if (vary != NULL) {
+            apr_table_merge(r->notes, VARY_KEY, vary);
+            apr_table_unset(r->notes, VARY_KEY_THIS);
+        }
     }
     /*  if any condition fails the complete rule fails  */
     if (failed) {
@@ -1917,7 +1917,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      */
     if ((vary = apr_table_get(r->notes, VARY_KEY)) != NULL) {
         apr_table_merge(r->headers_out, "Vary", vary);
-	apr_table_unset(r->notes, VARY_KEY);
+        apr_table_unset(r->notes, VARY_KEY);
     }
 
     /*
@@ -1927,7 +1927,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  (`RewriteRule <pat> - [E=...]')
      */
     if (strcmp(output, "-") == 0) {
-	do_expand_env(r, p->env, briRR, briRC);
+        do_expand_env(r, p->env, briRR, briRC);
         if (p->forced_mimetype != NULL) {
             if (perdir == NULL) {
                 /* In the per-server context we can force the MIME-type
@@ -2268,7 +2268,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 */
 
 static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
-		       backrefinfo *briRR, backrefinfo *briRC)
+                      backrefinfo *briRR, backrefinfo *briRC)
 {
     char *inp, *outp;
     size_t span, space;
@@ -2286,119 +2286,120 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
     space = nbuf - 1; /* room for '\0' */
 
     for (;;) {
-	span = strcspn(inp, "\\$%");
-	if (span > space) {
-	    span = space;
-	}
-	memcpy(outp, inp, span);
-	inp += span;
-	outp += span;
-	space -= span;
-	if (space == 0 || *inp == '\0') {
-	    break;
-	}
-	/* now we have a '\', '$', or '%' */
+        span = strcspn(inp, "\\$%");
+        if (span > space) {
+            span = space;
+        }
+        memcpy(outp, inp, span);
+        inp += span;
+        outp += span;
+        space -= span;
+        if (space == 0 || *inp == '\0') {
+            break;
+        }
+        /* now we have a '\', '$', or '%' */
         if (inp[0] == '\\') {
             if (inp[1] != '\0') {
                 inp++;
                 goto skip;
             }
         }
-	else if (inp[1] == '{') {
-	    char *endp;
-	    endp = find_closing_bracket(inp+2, '{', '}');
-	    if (endp == NULL) {
-		goto skip;
-	    }
-	    /*
-	     * These lookups may be recursive in a very convoluted
-	     * fashion -- see the LA-U and LA-F variable expansion
-	     * prefixes -- so we copy lookup keys to a separate buffer
-	     * rather than adding zero bytes in order to use them in
-	     * place.
-	     */
-	    if (inp[0] == '$') {
-		/* ${...} map lookup expansion */
-		/*
-		 * To make rewrite maps useful the lookup key and
-		 * default values must be expanded, so we make
-		 * recursive calls to do the work. For security
-		 * reasons we must never expand a string that includes
-		 * verbatim data from the network. The recursion here
-		 * isn't a problem because the result of expansion is
-		 * only passed to lookup_map() so it cannot be
-		 * re-expanded, only re-looked-up. Another way of
-		 * looking at it is that the recursion is entirely
-		 * driven by the syntax of the nested curly brackets.
-		 */
-		char *map, *key, *dflt, *result;
-		char xkey[MAX_STRING_LEN];
-		char xdflt[MAX_STRING_LEN];
-		key = find_char_in_brackets(inp+2, ':', '{', '}');
-		if (key == NULL) {
+        else if (inp[1] == '{') {
+            char *endp;
+            endp = find_closing_bracket(inp+2, '{', '}');
+            if (endp == NULL) {
+                goto skip;
+            }
+            /*
+            * These lookups may be recursive in a very convoluted
+            * fashion -- see the LA-U and LA-F variable expansion
+            * prefixes -- so we copy lookup keys to a separate buffer
+            * rather than adding zero bytes in order to use them in
+            * place.
+            */
+            if (inp[0] == '$') {
+                /* ${...} map lookup expansion */
+                /*
+                * To make rewrite maps useful the lookup key and
+                * default values must be expanded, so we make
+                * recursive calls to do the work. For security
+                * reasons we must never expand a string that includes
+                * verbatim data from the network. The recursion here
+                * isn't a problem because the result of expansion is
+                * only passed to lookup_map() so it cannot be
+                * re-expanded, only re-looked-up. Another way of
+                * looking at it is that the recursion is entirely
+                * driven by the syntax of the nested curly brackets.
+                */
+                char *map, *key, *dflt, *result;
+                char xkey[MAX_STRING_LEN];
+                char xdflt[MAX_STRING_LEN];
+                key = find_char_in_brackets(inp+2, ':', '{', '}');
+                if (key == NULL) {
                     goto skip;
                 }
-		map  = apr_pstrndup(r->pool, inp+2, key-inp-2);
-		dflt = find_char_in_brackets(key+1, '|', '{', '}');
-		if (dflt == NULL) {
-		    key  = apr_pstrndup(r->pool, key+1, endp-key-1);
-		    dflt = "";
-		}
+                map  = apr_pstrndup(r->pool, inp+2, key-inp-2);
+                dflt = find_char_in_brackets(key+1, '|', '{', '}');
+                if (dflt == NULL) {
+                    key  = apr_pstrndup(r->pool, key+1, endp-key-1);
+                    dflt = "";
+                }
                 else {
-		    key  = apr_pstrndup(r->pool, key+1, dflt-key-1);
-		    dflt = apr_pstrndup(r->pool, dflt+1, endp-dflt-1);
-		}
-		do_expand(r, key,  xkey,  sizeof(xkey),  briRR, briRC);
-		result = lookup_map(r, map, xkey);
-		if (result) {
-		    span = apr_cpystrn(outp, result, space) - outp;
-		} else {
-		    do_expand(r, dflt, xdflt, sizeof(xdflt), briRR, briRC);
-		    span = apr_cpystrn(outp, xdflt, space) - outp;
-		}
-	    }
-	    else if (inp[0] == '%') {
-		/* %{...} variable lookup expansion */
-		char *var;
-		var  = apr_pstrndup(r->pool, inp+2, endp-inp-2);
-		span = apr_cpystrn(outp, lookup_variable(r, var), space) - outp;
-	    }
-	    else {
-		span = 0;
-	    }
-	    inp = endp+1;
-	    outp += span;
-	    space -= span;
-	    continue;
-	}
-	else if (apr_isdigit(inp[1])) {
-	    int n = inp[1] - '0';
-	    backrefinfo *bri = NULL;
-	    if (inp[0] == '$') {
-		/* $N RewriteRule regexp backref expansion */
-		bri = briRR;
-	    }
-	    else if (inp[0] == '%') {
-		/* %N RewriteCond regexp backref expansion */
-		bri = briRC;
-	    }
-	    /* see ap_pregsub() in src/main/util.c */
-            if (bri && n <= bri->nsub &&
-		bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
-		span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
-		if (span > space) {
-		    span = space;
-		}
-		memcpy(outp, bri->source + bri->regmatch[n].rm_so, span);
-		outp += span;
-		space -= span;
-	    }
-	    inp += 2;
-	    continue;
-	}
-    skip:
-	*outp++ = *inp++;
-	space--;
+                    key  = apr_pstrndup(r->pool, key+1, dflt-key-1);
+                    dflt = apr_pstrndup(r->pool, dflt+1, endp-dflt-1);
+                }
+                do_expand(r, key,  xkey,  sizeof(xkey),  briRR, briRC);
+                result = lookup_map(r, map, xkey);
+                if (result) {
+                    span = apr_cpystrn(outp, result, space) - outp;
+                }
+                else {
+                    do_expand(r, dflt, xdflt, sizeof(xdflt), briRR, briRC);
+                    span = apr_cpystrn(outp, xdflt, space) - outp;
+                }
+            }
+            else if (inp[0] == '%') {
+                /* %{...} variable lookup expansion */
+                char *var;
+                var  = apr_pstrndup(r->pool, inp+2, endp-inp-2);
+                span = apr_cpystrn(outp, lookup_variable(r, var), space) - outp;
+            }
+            else {
+                span = 0;
+            }
+            inp = endp+1;
+            outp += span;
+            space -= span;
+            continue;
+        }
+        else if (apr_isdigit(inp[1])) {
+            int n = inp[1] - '0';
+            backrefinfo *bri = NULL;
+            if (inp[0] == '$') {
+                /* $N RewriteRule regexp backref expansion */
+                bri = briRR;
+            }
+            else if (inp[0] == '%') {
+                /* %N RewriteCond regexp backref expansion */
+                bri = briRC;
+            }
+            /* see ap_pregsub() in src/main/util.c */
+            if (bri && n <= bri->nsub
+                && bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
+                span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
+                if (span > space) {
+                    span = space;
+                }
+                memcpy(outp, bri->source + bri->regmatch[n].rm_so, span);
+                outp += span;
+                space -= span;
+            }
+            inp += 2;
+            continue;
+        }
+        skip:
+        *outp++ = *inp++;
+        space--;
     }
     *outp++ = '\0';
 }
@@ -2411,14 +2412,14 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
 */
 
 static void do_expand_env(request_rec *r, char *env[],
-			  backrefinfo *briRR, backrefinfo *briRC)
+                          backrefinfo *briRR, backrefinfo *briRC)
 {
     int i;
     char buf[MAX_STRING_LEN];
 
     for (i = 0; env[i] != NULL; i++) {
-	do_expand(r, env[i], buf, sizeof(buf), briRR, briRC);
-	add_env_variable(r, buf);
+    do_expand(r, env[i], buf, sizeof(buf), briRR, briRC);
+    add_env_variable(r, buf);
     }
 }
 
@@ -2599,10 +2600,10 @@ static int is_absolute_uri(char *uri)
         || (i > 5 && strncasecmp(uri, "ldap:",     5) == 0)
         || (i > 5 && strncasecmp(uri, "news:",     5) == 0)
         || (i > 7 && strncasecmp(uri, "mailto:",   7) == 0) ) {
-	return 1;
+        return 1;
     }
     else {
-	return 0;
+        return 0;
     }
 }
 
@@ -3233,8 +3234,8 @@ static char *current_logtime(request_rec *r)
 
     apr_strftime(tstr, &len, 80, "[%d/%b/%Y:%H:%M:%S ", &t);
     apr_snprintf(tstr + strlen(tstr), 80-strlen(tstr), "%c%.2d%.2d]",
-                t.tm_gmtoff < 0 ? '-' : '+',
-		t.tm_gmtoff / (60*60), t.tm_gmtoff % (60*60));
+                 t.tm_gmtoff < 0 ? '-' : '+',
+                 t.tm_gmtoff / (60*60), t.tm_gmtoff % (60*60));
     return apr_pstrdup(r->pool, tstr);
 }
 
@@ -3512,7 +3513,7 @@ static char *lookup_variable(request_rec *r, char *var)
     }
     else if (strcasecmp(var, "API_VERSION") == 0) { /* non-standard */
         apr_snprintf(resultbuf, sizeof(resultbuf), "%d:%d",
-		    MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
+                     MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
         result = resultbuf;
     }
 
@@ -3548,9 +3549,9 @@ static char *lookup_variable(request_rec *r, char *var)
     else if (strcasecmp(var, "TIME") == 0) {
         apr_explode_localtime(&tm, apr_time_now());
         apr_snprintf(resultbuf, sizeof(resultbuf),
-		    "%04d%02d%02d%02d%02d%02d", tm.tm_year + 1900,
-		    tm.tm_mon+1, tm.tm_mday,
-		    tm.tm_hour, tm.tm_min, tm.tm_sec);
+                     "%04d%02d%02d%02d%02d%02d", tm.tm_year + 1900,
+                     tm.tm_mon+1, tm.tm_mday,
+                     tm.tm_hour, tm.tm_min, tm.tm_sec);
         result = resultbuf;
         rewritelog(r, 1, "RESULT='%s'", result);
     }
@@ -3638,7 +3639,7 @@ static char *lookup_header(request_rec *r, const char *name)
             continue;
         }
         if (strcasecmp(hdrs[i].key, name) == 0) {
-	    apr_table_merge(r->notes, VARY_KEY_THIS, name);
+            apr_table_merge(r->notes, VARY_KEY_THIS, name);
             return hdrs[i].val;
         }
     }
@@ -3662,8 +3663,9 @@ static cache *init_cache(apr_pool_t *p)
     cache *c;
 
     c = (cache *)apr_palloc(p, sizeof(cache));
-    if (apr_pool_create(&c->pool, p) != APR_SUCCESS)
-		return NULL;
+    if (apr_pool_create(&c->pool, p) != APR_SUCCESS) {
+        return NULL;
+    }
     c->lists = apr_array_make(c->pool, 2, sizeof(cachelist));
 #if APR_HAS_THREADS
     (void)apr_lock_create(&(c->lock), APR_MUTEX, APR_INTRAPROCESS, NULL, p);
@@ -4040,9 +4042,10 @@ static int subreq_ok(request_rec *r)
      * either not in a subrequest, or in a subrequest
      * and URIs aren't NULL and sub/main URIs differ
      */
-    return (r->main == NULL ||
-	    (r->main->uri != NULL && r->uri != NULL &&
-	     strcmp(r->main->uri, r->uri) != 0));
+    return (r->main == NULL
+            || (r->main->uri != NULL
+                && r->uri != NULL
+                && strcmp(r->main->uri, r->uri) != 0));
 }
 
 
@@ -4115,12 +4118,12 @@ static char *find_closing_bracket(char *s, int left, int right)
     int depth;
 
     for (depth = 1; *s; ++s) {
-	if (*s == right && --depth == 0) {
-	    return s;
-	}
-	else if (*s == left) {
-	    ++depth;
-	}
+        if (*s == right && --depth == 0) {
+            return s;
+        }
+        else if (*s == left) {
+            ++depth;
+        }
     }
     return NULL;
 }
@@ -4130,15 +4133,15 @@ static char *find_char_in_brackets(char *s, int c, int left, int right)
     int depth;
 
     for (depth = 1; *s; ++s) {
-	if (*s == c && depth == 1) {
-	    return s;
-	}
-	else if (*s == right && --depth == 0) {
-	    return NULL;
-	}
-	else if (*s == left) {
-	    ++depth;
-	}
+        if (*s == c && depth == 1) {
+            return s;
+        }
+        else if (*s == right && --depth == 0) {
+            return NULL;
+        }
+        else if (*s == left) {
+            ++depth;
+        }
     }
     return NULL;
 }
@@ -4185,12 +4188,12 @@ static const command_rec command_table[] = {
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(handler_redirect, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_config(init_module,NULL,NULL,APR_HOOK_MIDDLE);
-    ap_hook_child_init(init_child,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_post_config(init_module, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(init_child, NULL, NULL, APR_HOOK_MIDDLE);
 
-    ap_hook_fixups(hook_fixup,NULL,NULL,APR_HOOK_FIRST);
-    ap_hook_translate_name(hook_uri2file,NULL,NULL,APR_HOOK_FIRST);
-    ap_hook_type_checker(hook_mimetype,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_fixups(hook_fixup, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_translate_name(hook_uri2file, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_type_checker(hook_mimetype, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
     /* the main config structure */
