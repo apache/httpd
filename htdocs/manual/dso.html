@@ -118,18 +118,19 @@ Apache modules into DSO files for explicit loading at run-time.
 <H3>Implementation</H3>
 
 <P>The DSO support for loading individual Apache modules is based on a module
-named <CODE>mod_so.c</CODE> which has to be statically compiled into the
-Apache core. It is the only module besides <CODE>http_core.c</CODE> which
-cannot be put into a DSO itself (bootstrapping!). Practically all other
-distributed Apache modules then can then be placed into a DSO by individually
-enabling the DSO build for them via <CODE>configure</CODE>'s
-<CODE>--enable-shared</CODE> option (see top-level <CODE>INSTALL</CODE> file)
-or by changing the <CODE>AddModule</CODE> command in your
-<CODE>src/Configuration</CODE> into a <CODE>SharedModule</CODE> command (see
-<CODE>src/INSTALL</CODE> file).  After a module is compiled into a DSO named
-<CODE>mod_foo.so</CODE> you can use <CODE>mod_so</CODE>'s
-<CODE>LoadModule</CODE> command in your <CODE>httpd.conf</CODE> file to load
-this module at server startup or restart.
+named <A HREF="mod/mod_so.html"><CODE>mod_so.c</CODE></A> which has to be
+statically compiled into the Apache core. It is the only module besides
+<CODE>http_core.c</CODE> which cannot be put into a DSO itself
+(bootstrapping!). Practically all other distributed Apache modules then can
+then be placed into a DSO by individually enabling the DSO build for them via
+<CODE>configure</CODE>'s <CODE>--enable-shared</CODE> option (see top-level
+<CODE>INSTALL</CODE> file) or by changing the <CODE>AddModule</CODE> command
+in your <CODE>src/Configuration</CODE> into a <CODE>SharedModule</CODE>
+command (see <CODE>src/INSTALL</CODE> file).  After a module is compiled into
+a DSO named <CODE>mod_foo.so</CODE> you can use <A
+HREF="mod/mod_so.html"><CODE>mod_so</CODE></A>'s <A
+HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A> command in your
+<CODE>httpd.conf</CODE> file to load this module at server startup or restart.
 
 <P>To simplify this creation of DSO files for Apache modules (especially for
 third-party modules) a new support program named <CODE>apxs</CODE> (<EM>APache
@@ -319,7 +320,8 @@ $ apxs -i -a -n foo mod_foo.so
 
 <UL>
 <LI> The server package is more flexible at run-time because the actual server
-     process can be assembled at run-time via <CODE>LoadModule</CODE>
+     process can be assembled at run-time via <A
+     HREF="mod/mod_so.html#loadmodule"><CODE>LoadModule</CODE></A>
      <CODE>httpd.conf</CODE> configuration commands instead of
      <CODE>Configuration</CODE> <CODE>AddModule</CODE> commands at build-time.
      For instance this way one is able to run different server instances

@@ -126,9 +126,9 @@
   -----------------------------------
 
   Apache 1.3 supports building modules as shared objects on all major Unix
-  platforms (see section "Supported Platforms" in file src/README.DSO for
-  details).  APACI has a nice way of enabling the building of DSO-based
-  modules and automatically installing them:
+  platforms (see section "Supported Platforms" in document
+  htdocs/manual/dso.html for details).  APACI has a nice way of enabling the
+  building of DSO-based modules and automatically installing them:
 
     $ ./configure --prefix=/path/to/apache \
                   --enable-module=rewrite \

@@ -34,10 +34,10 @@
        http://www.apache.org/dist/apache_1.3b7/INSTALL
 
    o Dynamic Shared Object (DSO) support for all major Unix platforms 
-       http://www.apache.org/dist/apache_1.3b7/src/README.DSO
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/dso.html
 
    o APache eXtenSion (APXS) tool for building third-party modules as DSO
-       http://www.apache.org/dist/apache_1.3b7/src/README.DSO
+       http://www.apache.org/dist/apache_1.3b7/htdocs/manual/dso.html
        http://www.apache.org/dist/apache_1.3b7/src/support/
 
    o Additional support tools: apachectl, ab (ApacheBench), dbmmanage
