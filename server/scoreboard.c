@@ -372,3 +372,7 @@ AP_DECLARE(process_score *) ap_get_parent_scoreboard(int x)
     return(&ap_scoreboard_image->parent[x]);
 }
 
+AP_DECLARE(global_score *) ap_get_global_scoreboard()
+{
+    return(&ap_scoreboard_image->global);
+}
