@@ -1,5 +1,10 @@
 Changes with Apache 2.0.44
 
+  *) Fix a bug where we keep files open until the end of a 
+     keepalive connection, which can result in:
+     (24)Too many open files: file permissions deny server access
+     especially on threaded servers.  [Greg Ames, Jeff Trawick]
+
   *) Fix a bug in which mod_proxy sent an invalid Content-Length
      when a proxied URL was invoked as a server-side include within
      a page generated in response to a form POST.  [Brian Pane]
