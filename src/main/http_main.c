@@ -130,8 +130,12 @@
     #endif
 #endif
 
-
 DEF_Explain
+
+#ifndef MULTITHREAD
+/* this just need to be anything non-NULL */
+void *dummy_mutex = &dummy_mutex;
+#endif
 
 /*
  * Actual definitions of config globals... here because this is

@@ -150,7 +150,7 @@ void free_blocks (union block_hdr *blok)
 
   if (blok == NULL) return;	/* Sanity check --- freeing empty pool? */
   
-  acquire_mutex(alloc_mutex);
+  (void)acquire_mutex(alloc_mutex);
   old_free_list = block_freelist;
   block_freelist = blok;
   
@@ -172,7 +172,7 @@ void free_blocks (union block_hdr *blok)
   /* Finally, reset next pointer to get the old free blocks back */
 
   blok->h.next = old_free_list;
-  release_mutex(alloc_mutex);
+  (void)release_mutex(alloc_mutex);
 }
 
 
@@ -271,7 +271,7 @@ struct pool *make_sub_pool (struct pool *p)
 
   block_alarms();
 
-  acquire_mutex(alloc_mutex);
+  (void)acquire_mutex(alloc_mutex);
   
   blok = new_block (0);
   new_pool = (pool *)blok->h.first_avail;
@@ -288,7 +288,7 @@ struct pool *make_sub_pool (struct pool *p)
     p->sub_pools = new_pool;
   }
   
-  release_mutex(alloc_mutex);
+  (void)release_mutex(alloc_mutex);
   unblock_alarms();
   
   return new_pool;
@@ -374,13 +374,13 @@ void *palloc (struct pool *a, int reqsize)
   
   block_alarms();
   
-  acquire_mutex(alloc_mutex);
+  (void)acquire_mutex(alloc_mutex);
 
   blok = new_block (size);
   a->last->h.next = blok;
   a->last = blok;
   
-  release_mutex(alloc_mutex);
+  (void)release_mutex(alloc_mutex);
 
   unblock_alarms();
 
@@ -1073,7 +1073,7 @@ int spawn_child_err (pool *p, int (*func)(void *), void *data,
       int hStdIn, hStdOut, hStdErr;
       int old_priority;
       
-      acquire_mutex(spawn_mutex);
+      (void)acquire_mutex(spawn_mutex);
       thread_handle = GetCurrentThread(); /* doesn't need to be closed */
       old_priority = GetThreadPriority(thread_handle);
       SetThreadPriority(thread_handle, THREAD_PRIORITY_HIGHEST);
@@ -1137,7 +1137,7 @@ int spawn_child_err (pool *p, int (*func)(void *), void *data,
           }
       }
       SetThreadPriority(thread_handle, old_priority);
-      release_mutex(spawn_mutex);
+      (void)release_mutex(spawn_mutex);
       /*
        * go on to the end of the function, where you can
        * unblock alarms and return the pid
