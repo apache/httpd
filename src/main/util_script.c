@@ -769,14 +769,9 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 			     char **env, int shellcmd)
 {
     int pid = 0;
-#if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
-    defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
-
     core_dir_config *conf;
     conf = (core_dir_config *) ap_get_module_config(r->per_dir_config,
 						    &core_module);
-
-#endif
 
 #if !defined(WIN32) && !defined(OS2)
     /* the fd on r->server->error_log is closed, but we need somewhere to
@@ -844,8 +839,11 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
         int env_len, e;
         char *env_block, *env_block_pos;
 
-	if (r->args && r->args[0] && !strchr(r->args, '='))
+	if ((conf->cgi_command_args != AP_FLAG_OFF)
+            && r->args && r->args[0]
+            && !strchr(r->args, '=')) {
 	    args = r->args;
+        }
 	    
 	program = fopen(r->filename, "rt");
 	
@@ -1023,7 +1021,9 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
              * Look at the arguments...
              */
             arguments = "";
-            if ((r->args) && (r->args[0]) && !strchr(r->args, '=')) { 
+            if ((conf->cgi_command_args != AP_FLAG_OFF)
+                 && (r->args) && (r->args[0])
+                 && !strchr(r->args, '=')) { 
                 /* If we are in this leg, there are some other arguments
                  * that we must include in the execution of the CGI.
                  * Because CreateProcess is the way it is, we have to
@@ -1242,7 +1242,9 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 		   NULL, env);
 	}
 
-	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
+	else if ((conf->cgi_command_args == AP_FLAG_OFF)
+            || (!r->args) || (!r->args[0])
+            || strchr(r->args, '=')) {
 	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0,
 		   NULL, env);
 	}
@@ -1259,7 +1261,9 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
 	    execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
 	}
 
-	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
+	else if ((conf->cgi_command_args == AP_FLAG_OFF)
+            || (!r->args) || (!r->args[0])
+            || strchr(r->args, '=')) {
 	    execle(r->filename, argv0, NULL, env);
 	}
 

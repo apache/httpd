@@ -346,6 +346,10 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
         conf->etag_bits &= (~ ETAG_NONE);
     }
 
+    if (new->cgi_command_args != AP_FLAG_UNSET) {
+        conf->cgi_command_args = new->cgi_command_args;
+    }
+
     return (void*)conf;
 }
 
@@ -2908,6 +2912,14 @@ static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
 }
 #endif
 
+static const char *set_cgi_command_args(cmd_parms *cmd,
+                                              void *mconfig,
+                                              int arg)
+{
+    core_dir_config *cfg = (core_dir_config *)mconfig;
+    cfg->cgi_command_args = arg ? AP_FLAG_ON : AP_FLAG_OFF;
+    return NULL;
+}
 
 #ifdef CHARSET_EBCDIC
 
@@ -3385,6 +3397,8 @@ static const command_rec core_cmds[] = {
 { "ScriptInterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
   "Where to find interpreter to run Win32 scripts - Registry or Script (shebang line)" },
 #endif
+{ "CGICommandArgs", set_cgi_command_args, NULL, OR_OPTIONS, FLAG,
+  "Allow or Disallow CGI requests to pass args on the command line" },
 { "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
   "Tokens displayed in the Server: header - Min[imal], OS, Prod[uctOnly], Full" },
 { "LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF, TAKE1,

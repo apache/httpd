@@ -196,6 +196,12 @@ typedef unsigned long etag_components_t;
 #define ETAG_BACKWARD (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
 #define ETAG_ALL   (ETAG_MTIME | ETAG_INODE | ETAG_SIZE)
 
+typedef enum {
+    AP_FLAG_UNSET = 0,
+    AP_FLAG_ON = 1,
+    AP_FLAG_OFF = 2
+} ap_flag_e;
+
 typedef struct {
     /* path of the directory/regex/etc.  see also d_is_fnmatch below */
     char *d;
@@ -330,6 +336,12 @@ typedef struct {
     etag_components_t etag_bits;
     etag_components_t etag_add;
     etag_components_t etag_remove;
+
+    /*
+     * Do we allow ISINDEX CGI scripts to pass their query argument as
+     * direct command line parameters or argv elements?
+     */
+    ap_flag_e cgi_command_args;
 
 } core_dir_config;
 
