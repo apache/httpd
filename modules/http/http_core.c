@@ -2110,7 +2110,7 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg)
         return err;
     }
 
-    /* TODO: re ap_context_t mplement the server token stuff. */
+    /* TODO: reimplement the server token stuff. */
 #if 0
     if (!strcasecmp(arg, "OS")) {
         ap_server_tokens = SrvTk_OS;

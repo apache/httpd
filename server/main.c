@@ -156,7 +156,7 @@ static void show_compile_settings(void)
     printf(" -D SHARED_CORE\n");
 #endif
 
-/* This list displays the compiled ap_context_t n default paths: */
+/* This list displays the compiled in default paths: */
 #ifdef HTTPD_ROOT
     printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
 #endif
@@ -253,7 +253,7 @@ static void usage(process_rec *process)
     fprintf(stderr, "  -v               : show version number\n");
     fprintf(stderr, "  -V               : show compile settings\n");
     fprintf(stderr, "  -h               : list available command line options (this page)\n");
-    fprintf(stderr, "  -l               : list compiled ap_context_t n modules\n");
+    fprintf(stderr, "  -l               : list compiled in modules\n");
     fprintf(stderr, "  -L               : list available configuration directives\n");
     /* TODOC: -S has been replaced by '-t -D DUMP_VHOSTS' */
     /* fprintf(stderr, "  -S               : show parsed settings (currently only vhost settings)\n"); */

@@ -332,7 +332,7 @@ API_EXPORT(int) ap_find_path_info(const char *uri, const char *path_info)
 }
 
 /* Obtain the Request-URI from the original request-line, returning
- * a new string from the request ap_context_t containing the URI or "".
+ * a new string from the request pool containing the URI or "".
  */
 static char *original_uri(request_rec *r)
 {
@@ -997,7 +997,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, ap_child_info_t *pinfo, char *argv0
     }
 
 #else
-    /* TODO: re ap_context_t mplement suexec */
+    /* TODO: reimplement suexec */
 #if 0
     if (ap_suexec_enabled
 	&& ((r->server->server_uid != ap_user_id)

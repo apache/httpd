@@ -795,7 +795,7 @@ static int read_request_line(request_rec *r)
      * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
      * have to block during a read.
      */
-    /* TODO: re ap_context_t mplement SAFEREAD external to BUFF using a layer */
+    /* TODO: reimplement SAFEREAD external to BUFF using a layer */
     /* //ap_bsetflag(conn->client, B_SAFEREAD, 1); */
     ap_bflush(conn->client);
     while ((len = getline(l, sizeof(l), conn->client, 0)) <= 0) {
@@ -1533,7 +1533,7 @@ static void fixup_vary(request_rec *r)
     ap_table_do((int (*)(void *, const char *, const char *))uniq_field_values,
 		(void *) varies, r->headers_out, "Vary", NULL);
 
-    /* If we found any, replace old Vary fields with unique ap_context_t fied value */
+    /* If we found any, replace old Vary fields with unique-ified value */
 
     if (varies->nelts > 0) {
 	ap_table_setn(r->headers_out, "Vary",
@@ -2057,7 +2057,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
 }
 
 
-/* TODO: re ap_context_t mplement ap_send_fb */
+/* TODO: reimplement ap_send_fb */
 #if 0
 /*
  * Send the body of a response to the client.

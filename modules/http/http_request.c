@@ -1260,7 +1260,7 @@ void ap_process_request(request_rec *r)
      * this packet, then it'll appear like the link is stalled when really
      * it's the application that's stalled.
      */
-    /* TODO: re ap_context_t mplement ap_bhalfduplex... not sure how yet */
+    /* TODO: reimplement ap_bhalfduplex... not sure how yet */
     /* //ap_bhalfduplex(r->connection->client); */
     ap_run_log_transaction(r);
 }
