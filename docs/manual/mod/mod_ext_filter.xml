@@ -239,7 +239,7 @@ delivery to the client</description>
       external command to run. If there are arguments after the
       program name, the command line should be surrounded in
       quotation marks (<em>e.g.</em>, <code>cmd="<var>/bin/mypgm</var>
-      <var>arg1</var> <var>arg2</var>"</code>. Normal shell quoting is
+      <var>arg1</var> <var>arg2</var>"</code>.) Normal shell quoting is
       not necessary since the program is run directly, bypassing the shell.
       Program arguments are blank-delimited. A backslash can be used to
       escape blanks which should be part of a program argument. Any
