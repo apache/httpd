@@ -481,6 +481,7 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 
     h->status = dobj->disk_info.status;
     h->content_type = apr_table_get(h->resp_hdrs, "Content-Type");
+    h->cache_obj->info.etag = apr_table_get(h->resp_hdrs, "ETag");
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "disk_cache: Recalled headers for URL %s",  dobj->name);
