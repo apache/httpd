@@ -105,7 +105,7 @@ static int is_scriptaliased(request_rec *r)
 #define DEFAULT_BUFBYTES 1024
 
 typedef struct {
-    char *logname;
+    const char *logname;
     long logbytes;
     int bufbytes;
 } cgi_server_conf;
@@ -129,7 +129,7 @@ static void *merge_cgi_config(ap_pool_t *p, void *basev, void *overridesv)
     return overrides->logname ? overrides : base;
 }
 
-static const char *set_scriptlog(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
     cgi_server_conf *conf =
@@ -139,7 +139,8 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy,
+					const char *arg)
 {
     server_rec *s = cmd->server;
     cgi_server_conf *conf =
@@ -149,7 +150,8 @@ static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy,
+					const char *arg)
 {
     server_rec *s = cmd->server;
     cgi_server_conf *conf =
@@ -161,12 +163,12 @@ static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, char *arg)
 
 static const command_rec cgi_cmds[] =
 {
-    {"ScriptLog", set_scriptlog, NULL, RSRC_CONF, TAKE1,
-     "the name of a log for script debugging info"},
-    {"ScriptLogLength", set_scriptlog_length, NULL, RSRC_CONF, TAKE1,
-     "the maximum length (in bytes) of the script debug log"},
-    {"ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF, TAKE1,
-     "the maximum size (in bytes) to record of a POST request"},
+AP_INIT_TAKE1("ScriptLog", set_scriptlog, NULL, RSRC_CONF,
+     "the name of a log for script debugging info"),
+AP_INIT_TAKE1("ScriptLogLength", set_scriptlog_length, NULL, RSRC_CONF,
+     "the maximum length (in bytes) of the script debug log"),
+AP_INIT_TAKE1("ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF,
+     "the maximum size (in bytes) to record of a POST request"),
     {NULL}
 };
 
@@ -407,7 +409,7 @@ static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_pool_t *p)
     char *w;
     const char *args = r->args;
 
-    if (!args || !args[0] || strchr(args, '=')) {
+    if (!args || !args[0] || ap_strchr_c(args, '=')) {
         numwords = 1;
     }
     else {
