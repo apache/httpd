@@ -753,14 +753,14 @@ static void emit_link(request_rec *r, char *anchor, char fname, char curkey,
     int reverse;
 
     if (!nosort) {
-    qvalue[0] = '?';
-    qvalue[1] = fname;
-    qvalue[2] = '=';
-    qvalue[4] = '\0';
-    reverse = ((curkey == fname) && (curdirection == D_ASCENDING));
-    qvalue[3] = reverse ? D_DESCENDING : D_ASCENDING;
-    rvputs(r, "<A HREF=\"", qvalue, "\">", anchor, "</A>", NULL);
-}
+	qvalue[0] = '?';
+	qvalue[1] = fname;
+	qvalue[2] = '=';
+	qvalue[4] = '\0';
+	reverse = ((curkey == fname) && (curdirection == D_ASCENDING));
+	qvalue[3] = reverse ? D_DESCENDING : D_ASCENDING;
+	rvputs(r, "<A HREF=\"", qvalue, "\">", anchor, "</A>", NULL);
+    }
     else {
         rputs(anchor, r);
     }
