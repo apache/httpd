@@ -445,17 +445,8 @@ TODO ISSUES REMAINING IN MOD_SSL:
       jumping through all the "safe" memcpy and memset hoops
 
 WISH LIST
-    * mod_proxy performance: when mod_proxy is configured to do proxy
-      gateway (aka reverse proxy), it would be nice to be able to reuse
-      connections to the backend servers. Now, connections to the 
-      backend servers are taken down when the corresponding frontend
-      connection is taken down.
-
     * mod_proxy: Ability to run SSL over proxy gateway connections,
       encrypting (or reencrypting) at the proxy.
-
-    * mod_proxy: Add capability of mod_proxy to load balance across
-      a farm of backend servers.
 
     * mod_cache: Handle ESI tags.
 
