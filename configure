@@ -297,14 +297,9 @@ for module in `egrep '^[# 	]*(Add|Shared)Module' $src/Configuration.tmpl`; do
     module=`echo "$module" |\
             sed -e 's%^.*/\(.*\)$%\1%' \
                 -e 's/\.[oa]$//' \
-                -e 's/\.so$//' \
                 -e 's/\.module$//' \
                 -e 's/^mod_//' \
                 -e 's/^lib//'`
-    case $module in
-     *.*) echo "configure:Error: module name must end in .o|.a|.so|.module" 1>&2
-          exit 1;;
-    esac
     eval "module_$module=$add"
     eval "shared_$module=$share"
     modules="${modules}:$module"
