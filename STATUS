@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/13 19:41:16 $]
+Last modified at [$Date: 2003/01/17 18:42:49 $]
 
 Release:
 
@@ -75,6 +75,12 @@ PATCHES TO PORT FROM 2.1
     * Fix mod_ext_filter to properly NULL-terminate an array of args
       for some forms of ExtFilterDefine.  PR 15491.  This is r1.2 of
       modules/filters/mod_ext_filter.c.
+      +1: trawick
+
+    * Use different ulimit commands in apachectl on Tru64 and AIX.
+      On both platforms, there are situations where problems with the
+      default command won't be found at configure time.  The changes
+      are r1.6 and r1.7 of support/config.m4.
       +1: trawick
 
 CURRENT RELEASE NOTES:
