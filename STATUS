@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/02/18 21:07:52 $]
+Last modified at [$Date: 2003/02/19 07:13:30 $]
 
 Release:
 
@@ -146,7 +146,7 @@ PATCHES TO PORT FROM 2.1
       PR 14451.
       server/util_filter.c: r1.95
       +1: nd, trawick
-      
+
     * Standardize mod_ldap and mod_auth_ldap SSL support across the various 
       LDAP SDKs.  Isolate the SSL functionality to mod_ldap rather than 
       speading it across mod_auth_ldap and mod_ldap.  Add LDAPTrustedCA
@@ -156,7 +156,7 @@ PATCHES TO PORT FROM 2.1
       modules/experimental/mod_auth_ldap.c r1.12
       modules/experimental/util_ldap.c r1.11
       +1: bnicholes
-
+       0: jerenkrantz (mod_ldap is experimental, no need to update it)
 
     * Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
       mod_rewrite proxied URLs will not be escaped accidentally by
