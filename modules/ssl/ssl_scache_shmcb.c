@@ -289,8 +289,8 @@ static BOOL shmcb_get_division(SHMCBHeader *, SHMCBQueue *, SHMCBCache *, unsign
 static SHMCBIndex *shmcb_get_index(const SHMCBQueue *, unsigned int);
 static unsigned int shmcb_expire_division(server_rec *, SHMCBQueue *, SHMCBCache *);
 static BOOL shmcb_insert_encoded_session(server_rec *, SHMCBQueue *, SHMCBCache *, unsigned char *, unsigned int, unsigned char *, time_t);
-static SSL_SESSION *shmcb_lookup_session_id(server_rec *, SHMCBQueue *, SHMCBCache *, UCHAR *, int);
-static BOOL shmcb_remove_session_id(server_rec *, SHMCBQueue *, SHMCBCache *, UCHAR *, int);
+static SSL_SESSION *shmcb_lookup_session_id(server_rec *, SHMCBQueue *, SHMCBCache *, UCHAR *, unsigned int);
+static BOOL shmcb_remove_session_id(server_rec *, SHMCBQueue *, SHMCBCache *, UCHAR *, unsigned int);
 
 /*
  * Data-alignment functions (a.k.a. avoidance tactics)
@@ -1207,7 +1207,7 @@ static BOOL shmcb_insert_encoded_session(
 static SSL_SESSION *shmcb_lookup_session_id(
     server_rec *s, SHMCBQueue *queue,
     SHMCBCache *cache, UCHAR *id,
-    int idlen)
+    unsigned int idlen)
 {
     unsigned char tempasn[SSL_SESSION_MAX_DER];
     SHMCBIndex *idx;
@@ -1272,7 +1272,7 @@ static SSL_SESSION *shmcb_lookup_session_id(
 
 static BOOL shmcb_remove_session_id(
     server_rec *s, SHMCBQueue *queue,
-    SHMCBCache *cache, UCHAR *id, int idlen)
+    SHMCBCache *cache, UCHAR *id, unsigned int idlen)
 {
     unsigned char tempasn[SSL_SESSION_MAX_DER];
     SSL_SESSION *pSession = NULL;
