@@ -120,7 +120,8 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     const char *rpw, *w;
 
     if(!(f=pfopen(r->pool, auth_pwfile, "r"))) {
-        log_reason ("Could not open password file", auth_pwfile, r);
+        aplog_error(APLOG_MARK, APLOG_ERR, r->server,
+		    "Could not open password file: %s", auth_pwfile);
 	return NULL;
     }
     while(!(cfg_getline(l,MAX_STRING_LEN,f))) {
@@ -194,22 +195,22 @@ static int authenticate_basic_user (request_rec *r)
     
     if ((res = get_basic_auth_pw (r, &sent_pw))) return res;
     
-    if(!sec->auth_pwfile) 
+    if (!sec->auth_pwfile) 
         return DECLINED;
 	
     if (!(real_pw = get_pw(r, c->user, sec->auth_pwfile))) {
 	if (!(sec->auth_authoritative))
 	    return DECLINED;
-        ap_snprintf(errstr, sizeof(errstr), "user %s not found",c->user);
-	log_reason (errstr, r->uri, r);
-	note_basic_auth_failure (r);
+        ap_snprintf(errstr, sizeof(errstr), "user %s not found", c->user);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
+	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     /* anyone know where the prototype for crypt is? */
-    if(strcmp(real_pw,(char *)crypt(sent_pw,real_pw))) {
+    if (strcmp(real_pw, (char *)crypt(sent_pw,real_pw))) {
         ap_snprintf(errstr, sizeof(errstr), "user %s: password mismatch",c->user);
-	log_reason (errstr, r->uri, r);
-	note_basic_auth_failure (r);
+	aplog_error(APLOG_MARK, APLOG_ERR, r->server, "%s: %s", errstr, r->uri);
+	note_basic_auth_failure(r);
 	return AUTH_REQUIRED;
     }
     return OK;
@@ -217,9 +218,10 @@ static int authenticate_basic_user (request_rec *r)
     
 /* Checking ID */
     
-static int check_user_access (request_rec *r) {
+static int check_user_access (request_rec *r)
+{
     auth_config_rec *sec =
-      (auth_config_rec *)get_module_config (r->per_dir_config, &auth_module);
+	(auth_config_rec *)get_module_config (r->per_dir_config, &auth_module);
     char *user = r->connection->user;
     int m = r->method_number;
     int method_restricted = 0;
@@ -236,12 +238,12 @@ static int check_user_access (request_rec *r) {
         return (OK);
     reqs = (require_line *)reqs_arr->elts;
 
-    if(sec->auth_grpfile)
+    if (sec->auth_grpfile)
         grpstatus = groups_for_user (r->pool, user, sec->auth_grpfile);
     else
         grpstatus = NULL;
 
-    for(x=0; x < reqs_arr->nelts; x++) {
+    for (x = 0; x < reqs_arr->nelts; x++) {
       
 	if (! (reqs[x].method_mask & (1 << m))) continue;
 	
@@ -249,22 +251,22 @@ static int check_user_access (request_rec *r) {
 
         t = reqs[x].requirement;
         w = getword(r->pool, &t, ' ');
-        if(!strcmp(w,"valid-user"))
+        if (!strcmp(w,"valid-user"))
             return OK;
-        if(!strcmp(w,"user")) {
+        if (!strcmp(w,"user")) {
             while(t[0]) {
-                w = getword_conf (r->pool, &t);
-                if(!strcmp(user,w))
+                w = getword_conf(r->pool, &t);
+                if (!strcmp(user,w))
                     return OK;
             }
         }
-        else if(!strcmp(w,"group")) {
-            if(!grpstatus) 
+        else if (!strcmp(w,"group")) {
+            if (!grpstatus) 
 	        return DECLINED;	/* DBM group?  Something else? */
 	    
-            while(t[0]) {
+            while (t[0]) {
                 w = getword_conf(r->pool, &t);
-                if(table_get (grpstatus, w))
+                if (table_get(grpstatus, w))
 		    return OK;
             }
         }
@@ -276,7 +278,7 @@ static int check_user_access (request_rec *r) {
     if (!(sec -> auth_authoritative))
       return DECLINED;
 
-    note_basic_auth_failure (r);
+    note_basic_auth_failure(r);
     return AUTH_REQUIRED;
 }
 
