@@ -2386,7 +2386,7 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
                                      "%s: Unable to start the service manager.",
                                      service_name);
                         return HTTP_INTERNAL_SERVER_ERROR;
-                    }            
+                    }
                 }
             }
             else /* ! -k runservice */
