@@ -347,7 +347,6 @@
 #define limit_section                  AP_limit_section
 #define location_walk                  AP_location_walk
 #define log_assert                     AP_log_assert
-#define log_error                      AP_log_error
 #define log_pid                        AP_log_pid
 #define log_printf                     AP_log_printf
 #define log_reason                     AP_log_reason
@@ -545,6 +544,7 @@
 #define set_signals                    AP_set_signals
 #define set_signature_flag             AP_set_signature_flag
 #define set_string_slot                AP_set_string_slot
+#define set_string_slot_lower          AP_set_string_slot_lower
 #define set_sub_req_protocol           AP_set_sub_req_protocol
 #define set_threads                    AP_set_threads
 #define set_timeout                    AP_set_timeout
