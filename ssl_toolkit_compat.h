@@ -101,6 +101,10 @@
 #define modssl_set_verify(ssl, verify, cb) \
     SSL_set_verify(ssl, verify)
 
+#else /* SSLC 1.x */
+
+#define NO_SSL_X509V3_H
+
 #endif
 
 /* BEGIN GENERATED SECTION */
@@ -133,6 +137,10 @@
 #ifndef modssl_set_verify
 #define modssl_set_verify(ssl, verify, cb) \
     SSL_set_verify(ssl, verify, cb)
+#endif
+
+#ifndef NO_SSL_X509V3_H
+#define HAVE_SSL_X509V3_H
 #endif
 
 #endif /* SSL_TOOLKIT_COMPAT_H */
