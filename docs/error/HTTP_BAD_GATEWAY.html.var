@@ -55,7 +55,8 @@ Body:----------fr--
 <!--#set var="TITLE" value="Gateway incorrecte!" -->
 <!--#include virtual="include/top.html" -->
 
-    Le serveur proxy a re&ccedil;u une r&eacute;ponse incorrecte de la part d'un serveur sup&eacute;rieur. 
+    Le serveur proxy a re&ccedil;u une r&eacute;ponse
+    incorrecte de la part d'un serveur sup&eacute;rieur. 
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->
@@ -64,3 +65,20 @@ Body:----------fr--
 
 <!--#include virtual="include/bottom.html" -->   
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Felaktig Gateway!" -->
+<!--#include virtual="include/top.html" -->
+
+    Proxyservern mottog ett felaktigt svar fr&aring;n
+    en tidigare server.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->   
+----------sv--

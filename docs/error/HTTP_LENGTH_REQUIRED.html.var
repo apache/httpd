@@ -35,3 +35,15 @@ Body:----------fr--
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Felaktig Content-Length!" -->
+<!--#include virtual="include/top.html" -->
+
+    En f&ouml;rfr&aring;gan med <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    metoden kr&auml;ver ett korrekt <code>Content-Length</code> huvud.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

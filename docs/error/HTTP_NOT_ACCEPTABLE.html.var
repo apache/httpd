@@ -47,3 +47,15 @@ Body:----------fr--
 
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Inget acceptabelt objekt hittat!" -->
+<!--#include virtual="include/top.html" -->
+
+    En l&auml;mplig representation av den efterfr&aring;gade
+    resursen kunde inte hittas p&aring; denna server.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

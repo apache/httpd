@@ -16,7 +16,7 @@ Body:----------en--
 <!--#set var="TITLE" value="Cannot process request!" -->
 <!--#include virtual="include/top.html" -->
 
-   The server does not support the action requested by the browser.
+    The server does not support the action requested by the browser.
    
 <!--#include virtual="include/bottom.html" -->
 ----------en--
@@ -39,7 +39,20 @@ Body:----------fr--
 <!--#set var="TITLE" value="La requ&ecirc;te ne peut &ecirc;tre effectu&eacute;e!" -->
 <!--#include virtual="include/top.html" -->
 
-Le serveur n'est pas en mesure d'effectuer l'action requise par le navigateur. 
+    Le serveur n'est pas en mesure d'effectuer l'action
+    requise par le navigateur. 
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Kan ej utf&ouml;ra f&ouml;rfr&aring;gan!" -->
+<!--#include virtual="include/top.html" -->
+
+    Servern st&ouml;djer inte den handling som &ouml;nskades
+    av webbl&auml;saren.
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

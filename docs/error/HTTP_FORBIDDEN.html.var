@@ -26,15 +26,16 @@ Content-type: text/html
 Body:----------en--
 <!--#set var="TITLE" value="Access forbidden!" -->
 <!--#include virtual="include/top.html" -->
-<!--#if expr="$REDIRECT_URL = /\/$/" -->
 
-   You don't have permission to access the requested directory.
-   There is either no index document or the directory is read-protected.
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+    You don't have permission to access the requested directory.
+    There is either no index document or the directory is read-protected.
 
   <!--#else -->
 
-   You don't have permission to access the requested object.
-   It is either read-protected or not readable by the server.
+    You don't have permission to access the requested object.
+    It is either read-protected or not readable by the server.
 
   <!--#endif -->
 
@@ -49,16 +50,16 @@ Body:----------es--
 
   <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
-        Usted no tiene permiso para accesar a la direcci&oacute;n
-        solicitada. Existe la posibilidad de que el directorio
-        este protegido contra lectura o que no exista la
-        documentaci&oacute;n requerida.
+    Usted no tiene permiso para accesar a la direcci&oacute;n
+    solicitada. Existe la posibilidad de que el directorio
+    este protegido contra lectura o que no exista la
+    documentaci&oacute;n requerida.
 
   <!--#else -->
 
-        Usted no tiene permiso de accesar al objeto solicitado.
-        Existe la posibilidad de que este protegido contra
-        lectura o que no haya podido ser leido por el servidor.
+    Usted no tiene permiso de accesar al objeto solicitado.
+    Existe la posibilidad de que este protegido contra
+    lectura o que no haya podido ser leido por el servidor.
 
   <!--#endif -->
 
@@ -70,15 +71,43 @@ Content-type: text/html
 Body:----------fr--
 <!--#set var="TITLE" value="Acc&egrave;s interdit!" -->
 <!--#include virtual="include/top.html" -->
-<!--#if expr="$REDIRECT_URL = /\/$/" -->
-Vous n'avez pas le droit d'acc&eacute;der au r&eacute;pertoire
-demand&eacute;. Soit il n'y a pas de document index soit le r&eacute;pertoire
-est prot&eacute;g&eacute;.
-<!--#else -->
-Vous n'avez pas le droit d'acc&eacute;der &agrave; l'objet
-demand&eacute;. Soit celui-ci est prot&eacute;g&eacute;, soit il ne peut
-&ecirc;tre lu par le serveur.
-<!--#endif -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+    Vous n'avez pas le droit d'acc&eacute;der au r&eacute;pertoire
+    demand&eacute;. Soit il n'y a pas de document index soit le r&eacute;pertoire
+    est prot&eacute;g&eacute;.
+
+  <!--#else -->
+
+    Vous n'avez pas le droit d'acc&eacute;der &agrave; l'objet
+    demand&eacute;. Soit celui-ci est prot&eacute;g&eacute;, soit il ne peut
+    &ecirc;tre lu par le serveur.
+
+  <!--#endif -->
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="&Aring;tkomst f&ouml;rbjuden!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
+    tillg&aring;ng till den &ouml;nskade katalogen. Det existerar inget
+    indexdokument eller s&aring; &auml;r katalogen skrivskyddad.
+
+  <!--#else -->
+
+    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
+    tillg&aring;ng till det &ouml;nskade objektet. Objektet &auml;r
+    skrivskyddat eller inte l&auml;sbart f&ouml;r servern.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--

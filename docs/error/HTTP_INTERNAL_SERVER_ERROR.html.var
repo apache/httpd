@@ -67,7 +67,7 @@ Body:----------es--
 
     <!--#include virtual="include/spacer.html" -->
 
-        Mensaje de error:
+    Mensaje de error:
     <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
@@ -96,7 +96,7 @@ Body:----------fr--
 
     <!--#include virtual="include/spacer.html" -->
 
-        Message d'erreur:
+    Message d'erreur:
     <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
@@ -110,3 +110,30 @@ Body:----------fr--
 
 <!--#include virtual="include/bottom.html" -->   
 ----------fr--
+
+Content-language: sv
+Content-type: text/html
+Body:----------sv--
+<!--#set var="TITLE" value="Serverfel!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+
+    Servern r&aring;kade ut f&ouml;r ett internt fel och var inte m&ouml;jlig
+    att slutf&ouml;ra din beg&auml;ran.
+
+    <!--#include virtual="include/spacer.html" -->
+
+    Felmeddelande:
+    <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
+
+  <!--#else -->
+
+    Servern r&aring;kade ut f&ouml;r ett internt fel och var inte m&ouml;jlig
+    att slutf&ouml;ra din beg&auml;ran. Server &auml;r antigen &ouml;verbelastad
+    eller s&aring; inneh&aring;ller CGI-skriptet fel.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------sv--
