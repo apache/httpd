@@ -125,7 +125,9 @@ static int handle_dir (request_rec *r)
      * and would probably break virtual includes...
      */
 
-    r->filename = pstrcat (r->pool, r->filename, "/", NULL);
+    if (r->filename[strlen (r->filename) - 1] != '/') {
+	r->filename = pstrcat (r->pool, r->filename, "/", NULL);
+    }
     
     while (*names_ptr) {
           

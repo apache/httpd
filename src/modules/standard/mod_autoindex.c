@@ -861,9 +861,17 @@ static int handle_autoindex (request_rec *r)
     
     /* OK, nothing easy.  Trot out the heavy artillery... */
 
-    if (allow_opts & OPT_INDEXES) 
+    if (allow_opts & OPT_INDEXES) {
+	/* KLUDGE --- make the sub_req lookups happen in the right directory.
+	* Fixing this in the sub_req_lookup functions themselves is difficult,
+	* and would probably break virtual includes...
+	*/
+
+	if (r->filename[strlen (r->filename) - 1] != '/') {
+	    r->filename = pstrcat (r->pool, r->filename, "/", NULL);
+	}
         return index_directory (r, d);
-    else {
+    } else {
         log_reason ("Directory index forbidden by rule", r->filename, r);
         return HTTP_FORBIDDEN;
     }
