@@ -835,6 +835,13 @@ case "$PLAT" in
        DEF_WANTHSREGEX=yes
        LIBS="$LIBS"
        ;;
+    *-cygwin*)
+	OS='Cygwin'
+	OSDIR="os/cygwin"
+	CFLAGS="$CFLAGS -DCYGWIN"
+	DEF_WANTHSREGEX=yes
+	LIBS="$LIBS -lcrypt"
+	;;
     *) # default: Catch systems we don't know about
 	OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"
@@ -1378,6 +1385,19 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT=""
             ;;
+	*-cygwin*)
+	    DEF_SHARED_CORE=yes
+	    LDFLAGS_SHLIB="-g"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
+	    SHLIB_SUFFIX_NAME=dll
+	    SHLIB_SUFFIX_DEPTH=0
+	    DLL_IMPORT_LIB='lib$(TARGET).a'
+	    DLL_IMPORT_DEF='lib$(TARGET).def'
+	    LD_SHLIB='dllwrap --export-all --output-def $(DLL_IMPORT_DEF) --implib $(DLL_IMPORT_LIB) --driver-name $(CC)'
+	    LD_SHCORE_LIBS='$(LIBS)'
+	    LIBS_SHLIB='$(EXTRA_LIBS)'
+	    SHARED_CORE_EP=''
+	    ;;
 	*)
 	    ##  ok, no known explict support for shared objects
 	    ##  on this platform, but we give not up immediately.
@@ -1855,7 +1875,11 @@ if [ "x$using_shlib" = "x1" ] ; then
 	RULE_SHARED_CORE=$DEF_SHARED_CORE
     fi
     if [ "x$RULE_SHARED_CORE" = "xyes" ]; then
-	echo " + enabling generation of Apache core as DSO"
+	DSO_STRING="DSO"
+	if [ "$OS" = "Cygwin" ]; then
+	    DSO_STRING="DLL"
+	fi
+	echo " + enabling generation of Apache core as $DSO_STRING"
 	#    shuffle compiler flags from shlib variant to standard
 	CFLAGS="$CFLAGS $CFLAGS_SHLIB"
 	CFLAGS_SHLIB=""
@@ -1898,6 +1922,12 @@ fi
 if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$TCFLAGS_SHLIB" = "x" ]; then
 	echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
+    fi
+    if [ "x$TDLL_IMPORT_DEF" = "x" ]; then
+	echo "DLL_IMPORT_DEF=$DLL_IMPORT_DEF" >> Makefile.config
+    fi
+    if [ "x$TDLL_IMPORT_LIB" = "x" ]; then
+	echo "DLL_IMPORT_LIB=$DLL_IMPORT_LIB" >> Makefile.config
     fi
     if [ "x$TLD_SHLIB" = "x" ]; then
 	echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config

@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/03/28 12:20:20 $]
+  Last modified at [$Date: 2001/04/02 09:22:02 $]
 
 Release:
 
@@ -62,11 +62,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <199907080712.JAA28269@chill.innovation.ch>
         Status:
 
-    * Stipe Tolj's Cygwin32 port
-        Message-ID: <3AB10E79.8218ED79@wapme-systems.de> for 1.3.19
-	Original PR#: 2936
-        Status: Roy +1
-        Lame-o conceptual musings: +1 from Lars, Martin, Ken, Jim
 
 Documentation that needs writing:
 

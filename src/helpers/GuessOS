@@ -313,6 +313,9 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
     OS/390:*)
         echo "${MACHINE}-IBM-OS390-${RELEASE}-${VERSION}"; exit 0;
         ;;
+    CYGWIN*:*:*:*)
+	echo "${MACHINE}-whatever-cygwin"; exit 0
+	;;
 esac
 
 #

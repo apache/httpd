@@ -1000,6 +1000,11 @@ typedef int rlim_t;
 #define NET_SIZE_T size_t
 #define NEED_HASHBANG_EMUL
 
+#elif defined(CYGWIN)               /* Cygwin 1.x POSIX layer for Win32 */
+#define JMP_BUF jmp_buf
+#define NO_KILLPG
+#define USE_LONGJMP
+
 #else
 /* Unknown system - Edit these to match */
 #ifdef BSD

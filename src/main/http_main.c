@@ -117,7 +117,7 @@ int ap_main(int argc, char *argv[]);
 #endif
 #ifdef WIN32
 #include "../os/win32/getopt.h"
-#elif !defined(BEOS) && !defined(TPF) && !defined(NETWARE) && !defined(OS390)
+#elif !defined(BEOS) && !defined(TPF) && !defined(NETWARE) && !defined(OS390) && !defined(CYGWIN)
 #include <netinet/tcp.h>
 #endif
 #ifdef HAVE_BSTRING_H
@@ -7167,8 +7167,12 @@ int main(int argc, char *argv[])
 #endif /* ndef SHARED_CORE_TIESTATIC */
 #else  /* ndef SHARED_CORE_BOOTSTRAP */
 
-#ifdef OS2
-/* Shared core loader for OS/2 */
+#if defined(OS2) || defined(CYGWIN)
+/* Shared core loader for OS/2 and Cygwin */
+
+#if defined(CYGWIN)
+__declspec(dllimport) 
+#endif
 
 int ap_main(int argc, char *argv[]); /* Load time linked from libhttpd.dll */
 
