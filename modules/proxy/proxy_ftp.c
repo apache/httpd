@@ -374,7 +374,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 	    }
 	    pos = memchr(response, APR_ASCII_LF, len);
 	    if (pos != NULL) {
-		if ((pos - response + 1) != len) {
+		if ((response + len) != (pos + 1)) {
 		    len = pos - response + 1;
 		    apr_bucket_split(e, pos - response + 1);
 		    
@@ -1130,7 +1130,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 		"%d,%d,%d,%d,%d,%d", &h3, &h2, &h1, &h0, &p1, &p0) == 6)) {
 
 		apr_sockaddr_t *pasv_addr;
-		int pasvport = (p1 << 8) + p0;
+		apr_port_t pasvport = (p1 << 8) + p0;
         	ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r->server,
                              "proxy: FTP: PASV contacting host %d.%d.%d.%d:%d",
                              h3, h2, h1, h0, pasvport);
