@@ -1,4 +1,15 @@
 Changes with Apache 2.0.34-dev
+  *) Use apr_atomic operations in managing the mod_mem_cache
+     cache_objects for SMP scalability. (see USE_ATOMICS
+     preprocessor directive in mod_file_cache)
+     [Bill Stoddard]
+
+  *) Add filehandle caching to mod_mem_cache. (see CACHE_FD
+     preprocessor directive in mod_file_cache)
+     [Bill Stoddard]
+
+  *) Implement prototype mod_disk_cache for use with mod_cache.
+     [Bill Stoddard]
 
   *) Add a missing manualdir entry in the Debian config.layout.
      [Thom May <thom@planetarytramp.net>]
