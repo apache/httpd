@@ -308,60 +308,53 @@ int ap_invoke_handler(request_rec *r)
     const char *handler;
     char *p;
     size_t handler_len;
-    int result;
+    int result = HTTP_INTERNAL_SERVER_ERROR;
 
-    do {
-        result = DECLINED;
-        if (r->handler) {
-    	    handler = r->handler;
+    if (r->handler) {
+        handler = r->handler;
+        handler_len = strlen(handler);
+    }
+    else {
+        handler = r->content_type ? r->content_type : ap_default_type(r);
+        if ((p = strchr(handler, ';')) != NULL) { /* MIME type arguments */
+            while (p > handler && p[-1] == ' ')
+	        --p;		/* strip trailing spaces */
+	    handler_len = p - handler;
+	}
+	else {
 	    handler_len = strlen(handler);
+	}
+    }
+
+    /* Pass one --- direct matches */
+
+    for (handp = handlers; handp->hr.content_type; ++handp) {
+        if (handler_len == handp->len
+            && !strncmp(handler, handp->hr.content_type, handler_len)) {
+            result = (*handp->hr.handler) (r);
+
+            if (result != DECLINED)
+                return result;
         }
-        else {
-	    handler = r->content_type ? r->content_type : ap_default_type(r);
-	    if ((p = strchr(handler, ';')) != NULL) { /* MIME type arguments */
-    	        while (p > handler && p[-1] == ' ')
-		    --p;		/* strip trailing spaces */
-	        handler_len = p - handler;
-	    }
-	    else {
-	        handler_len = strlen(handler);
-	    }
-        }
+    }
 
-        /* Pass one --- direct matches */
- 
-        for (handp = handlers; handp->hr.content_type; ++handp) {
-    	    if (handler_len == handp->len
-	        && !strncmp(handler, handp->hr.content_type, handler_len)) {
-                result = (*handp->hr.handler) (r);
+    /* Pass two --- wildcard matches */
 
-                if (result != DECLINED)
-                    break;
-            }
-        }
+    for (handp = wildhandlers; handp->hr.content_type; ++handp) {
+        if (handler_len >= handp->len
+            && !strncmp(handler, handp->hr.content_type, handp->len)) {
+            result = (*handp->hr.handler) (r);
 
-        /* Pass two --- wildcard matches */
-
-        if (result == DECLINED) {
-            for (handp = wildhandlers; handp->hr.content_type; ++handp) {
-    	        if (handler_len >= handp->len
-	            && !strncmp(handler, handp->hr.content_type, handp->len)) {
-                    result = (*handp->hr.handler) (r);
-
-                    if (result != DECLINED)
-                        break;
-                 }
-            }
-        }
-    } while (result == RERUN_HANDLERS);
+            if (result != DECLINED)
+                return result;
+         }
+    }
 
     if (result == HTTP_INTERNAL_SERVER_ERROR && r->handler && r->filename) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, r,
             "handler \"%s\" not found for: %s", r->handler, r->filename);
-        return HTTP_INTERNAL_SERVER_ERROR;
     }
- 
-    return result;
+    return HTTP_INTERNAL_SERVER_ERROR;
 }
 
 int g_bDebugHooks;
