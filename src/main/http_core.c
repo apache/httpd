@@ -1207,7 +1207,7 @@ command_rec core_cmds[] = {
 { "KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF, TAKE1, "Keep-Alive timeout duration (sec)"},
 { "MaxKeepAliveRequests", set_keep_alive_max, NULL, RSRC_CONF, TAKE1, "Maximum number of Keep-Alive requests per connection, or 0 for infinite" },
 { "KeepAlive", set_keep_alive, NULL, RSRC_CONF, TAKE1, "Whether persistent connections should be On or Off" },
-{ "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG, "Enable identd (RFC931) user lookups - SLOW" },
+{ "IdentityCheck", set_idcheck, NULL, RSRC_CONF|ACCESS_CONF, FLAG, "Enable identd (RFC 1413) user lookups - SLOW" },
 { "ContentDigest", set_content_md5, NULL, RSRC_CONF|ACCESS_CONF|OR_AUTHCFG, FLAG, "whether or not to send a Content-MD5 header with each request" },
 { "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1, "Number of child processes launched at server startup" },
 { "MinSpareServers", set_min_free_servers, NULL, RSRC_CONF, TAKE1, "Minimum number of idle children, to handle request spikes" },
