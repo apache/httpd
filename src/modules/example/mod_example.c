@@ -303,12 +303,18 @@ static void trace_add
     addon = pstrcat 
 		(
 		    subpool,
-		    "   <DT><SAMP>",
+		    "   <LI>\n",
+		    "    <DL>\n",
+		    "     <DT><SAMP>",
 		    note,
-		    "</SAMP>\n   </DT>\n",
-		    "   <DD><SAMP>[",
+		    "</SAMP>\n",
+		    "     </DT>\n",
+		    "     <DD><SAMP>[",
 		    where,
-		    "]</SAMP>\n   </DD>\n",
+		    "]</SAMP>\n",
+		    "     </DD>\n",
+		    "    </DL>\n",
+		    "   </LI>\n",
 		    NULL
 		);
     sofar = (trace == NULL) ? "" : trace;
@@ -438,7 +444,7 @@ static int example_handler
     rputs ("  The format for the callback trace is:\n", r);
     rputs ("  </P>\n", r);
     rputs ("  <DL>\n", r);
-    rputs ("   <DT><SAMP>&lt;routine-name&gt;", r);
+    rputs ("   <DT><EM>n</EM>.<SAMP>&lt;routine-name&gt;", r);
     rputs ("(&lt;routine-data&gt;)</SAMP>\n", r);
     rputs ("   </DT>\n", r);
     rputs ("   <DD><SAMP>[&lt;applies-to&gt;]</SAMP>\n", r);
@@ -455,7 +461,7 @@ static int example_handler
     rputs ("  indicates a location in the URL or filesystem\n", r);
     rputs ("  namespace.\n", r);
     rputs ("  </P>\n", r);
-    rprintf (r, "  <H2>Callbacks so far:</H2>\n  <DL>\n%s  </DL>\n", trace);
+    rprintf (r, "  <H2>Callbacks so far:</H2>\n  <OL>\n%s  </OL>\n", trace);
     rputs ("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
     rputs ("  <UL>\n", r);
     rprintf (r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", cfg->loc);
