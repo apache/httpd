@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.9 $ -->
+<!-- $Revision: 1.10 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -93,6 +93,59 @@ a directory</description>
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
     executed if neither <code>index.html</code> or <code>index.txt</code>
     existed in a directory.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DirectorySlash</name>
+<description>Toggle trailing slash redirects on or off</description>
+<syntax>DirectorySlash On|Off</syntax>
+<default>DirectorySlash On</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>Available in version 2.1 and later</compatibility>
+
+<usage>
+    <p>The <directive>DirectorySlash</directive> directive determines, whether
+    <module>mod_dir</module> should fixup URLs pointing to a directory or
+    not.</p>
+
+    <p>Typically if a user requests a resource without a trailing slash, which
+    points to a directory, <module>mod_dir</module> redirects him to the same
+    ressource, but <em>with</em> trailing slash for some good reasons:</p>
+
+    <ul>
+    <li>The user is finally requesting the canonical URL of the resource</li>
+    <li><module>mod_autoindex</module> works correctly. Since it doesn't emit
+    the path in the link, it would point to the wrong path.</li>
+    <li><directive module="mod_dir">DirectoryIndex</directive> will be evaluated
+    <em>only</em> for directories requested with trailing slash.</li>
+    </ul>
+
+    <p>Well, if you don't want this effect <em>and</em> the reasons above don't
+    apply to you, you can turn off the redirect with:</p>
+
+    <example>
+        # see security warning below!<br />
+        &lt;Location /some/path&gt;<br />
+        <indent>
+            DirectorySlash Off<br />
+            SetHandler some-handler<br />
+        </indent>
+        &lt;/Location&gt;
+    </example>
+
+    <note type="warning"><title>Security Warning</title>
+    <p>Turning off the trailing slash redirect may result in an information
+    disclosure. Consider a situation where <module>mod_autoindex</module> is
+    active (<code>Options +Indexes</code>) and <directive module="mod_dir"
+    >DirectoryIndex</directive> is set to a valid resource (say,
+    <code>index.html</code>) and there's no other special handler defined for
+    that URL. In this case a request with a trailing slash would show the
+    <code>index.html</code> file. <strong>But a request without trailing slash
+    would list the directory contents</strong>.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
