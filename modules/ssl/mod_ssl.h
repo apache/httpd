@@ -207,11 +207,6 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
 
-#define AP_CTX_NUM2PTR(n) (void *)(((unsigned long)(n))+1)
-#define AP_CTX_PTR2NUM(p) (unsigned long)(((char *)(p))-1)
-
-#define AP_CTX_MAX_ENTRIES 1024
-
 /*
  * SSL Logging
  */
