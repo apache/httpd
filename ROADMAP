@@ -1,6 +1,6 @@
 APACHE 2.1+ ROADMAP:
 
-Last modified at [$Date: 2001/12/07 15:53:19 $]
+Last modified at [$Date: 2001/12/26 17:54:38 $]
 
 DEFERRRED FOR APACHE 2.1
 
@@ -13,6 +13,13 @@ DEFERRRED FOR APACHE 2.1
         Recall when the release plan for 2.0 was written:
             Absolute Enforcement of an "Apache Style" for code.
         Watch this slip into 3.0.
+
+      David says:
+        The style guide needs to be reviewed before this can be done.
+        http://dev.apache.org/styleguide.html
+        The current file is dated April 20th 1998!
+        Also the file should be moved to the correct location for
+        future use.  Q: should APR have it's own copy as well?
 
     * revamp the input filter syntax to provide for ordering of
       filters created with the Set{Input|Output}Filter and the
