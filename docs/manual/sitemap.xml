@@ -138,6 +138,7 @@ Server on HPUX</page>
   <modulefile>mod_authz_default.xml</modulefile>
   <modulefile>mod_authz_groupfile.xml</modulefile>
   <modulefile>mod_authz_host.xml</modulefile>
+  <modulefile>mod_authz_owner.xml</modulefile>
   <modulefile>mod_authz_user.xml</modulefile>
   <modulefile>mod_auth_ldap.xml</modulefile>
   <modulefile>mod_autoindex.xml</modulefile>

@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_authz_owner</name> 
+<description>Authorization based on file ownership</description>
+<status>Extension</status>
+<sourcefile>mod_authz_owner.c</sourcefile>
+<identifier>authz_owner_module</identifier>
+<compatibility>Available in Apache 2.1 and later</compatibility>
+
+<summary>
+    <p>This module authorizes access to files by comparing the userid used
+    for HTTP authentication (the web userid) with the file-system owner or
+    group of the requested file. The supplied username and password
+    must be already properly verified by an authentication module,
+    such as <module>mod_auth_basic</module> or
+    <module>mod_auth_digest</module>. <module>mod_authz_owner</module>
+    recognizes two arguments for the <directive module="core"
+    >Require</directive> directive, <code>file-owner</code> and
+    <code>file-group</code>, as follows:</p>
+
+    <dl>
+      <dt><code>file-owner</code></dt>
+      <dd>The supplied web-username must match the system's name for the
+      owner of the file being requested. That is, if the operating system
+      says the requested file is owned by <code>jones</code>, then the
+      username used to access it through the web must be <code>jones</code>
+      as well.</dd>
+
+      <dt><code>file-group</code></dt>
+      <dd>The name of the system group that owns the file must be present
+      in a group database, which is provided, for example, by <module
+      >mod_authz_groupfile</module> or <module>mod_authz_dbm</module>,
+      and the web-username must be a member of that group. For example, if
+      the operating system says the requested file is owned by (system)
+      group <code>accounts</code>, the group <code>accounts</code> must
+      appear in the group database and the web-username used in the request
+      must be a member of that group.</dd>
+    </dl>
+
+    <note><title>Note</title>
+      <p>If <module>mod_authz_owner</module> is used in order to authorize
+      a resource that is not actually present in the filesystem
+      (<em>i.e.</em> a virtual resource), it will deny the access.</p>
+
+      <p>Particularly it will never authorize <a
+      href="../content-negotiation.html#multiviews">content negotiated
+      "MultiViews"</a> resources.</p>
+    </note>
+</summary>
+<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="core">Satisfy</directive></seealso>
+
+<section id="examples"><title>Configuration Examples</title>
+
+    <section id="examples:file-owner"><title>Require file-owner</title>
+      <p>Consider a multi-user system running the Apache Web server, with
+      each user having his or her own files in <code
+      >~/public_html/private</code>. Assuming that there is a single
+      <directive module="mod_authn_dbm">AuthDBMUserFile</directive> database
+      that lists all of their web-usernames, and that these usernames match
+      the system's usernames that actually own the files on the server, then
+      the following stanza would allow only the user himself access to his
+      own files. User <code>jones</code> would not be allowed to access
+      files in <code>/home/smith/public_html/private</code> unless they
+      were owned by <code>jones</code> instead of <code>smith</code>.</p>
+
+      <example>
+        &lt;Directory /home/*/public_html/private&gt;<br />
+        <indent>
+          AuthType Basic<br />
+          AuthName MyPrivateFiles<br />
+          AuthBasicProvider dbm<br />
+          AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
+          Satisfy All<br />
+          Require file-owner<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
+    </section>
+
+    <section id="examples:file-group"><title>Require file-group</title>
+      <p>Consider a system similar to the one described above, but with
+      some users that share their project files in
+      <code>~/public_html/project-foo</code>. The files are owned by the
+      system group <code>foo</code> and there is a single <directive
+      module="mod_authz_dbm">AuthDBMGroupFile</directive> database that
+      contains all of the web-usernames and their group membership,
+      <em>i.e.</em> they must be at least member of a group named
+      <code>foo</code>. So if <code>jones</code> and <code>smith</code>
+      are both member of the group <code>foo</code>, then both will be
+      authorized to access the <code>project-foo</code> directories of
+      each other.</p>
+
+      <example>
+        &lt;Directory /home/*/public_html/project-foo&gt;<br />
+        <indent>
+          AuthType Basic<br />
+          AuthName "Project Foo Files"<br />
+          AuthBasicProvider dbm<br />
+          <br />
+          # combined user/group database<br />
+          AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all<br />
+          AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all<br />
+          <br />
+          Satisfy All<br />
+          Require file-group<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
+    </section>
+</section>
+
+<directivesynopsis>
+<name>AuthzOwnerAuthoritative</name>
+<description>Sets whether authorization will be passed on to lower level
+modules</description>
+<syntax>AuthzOwnerAuthoritative On|Off</syntax>
+<default>AuthzOwnerAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Setting the <directive>AuthzOwnerAuthoritative</directive>
+    directive explicitly to <code>Off</code> allows for
+    user authorization to be passed on to lower level modules (as defined
+    in the <code>modules.c</code> files) if:</p>
+
+    <ul>
+    <li>in the case of <code>file-owner</code> the file-system owner does not
+    match the supplied web-username or could not be determined, or</li>
+
+    <li>in the case of <code>file-group</code> the file-system group does not
+    contain the supplied web-username or could not be determined.</li>
+    </ul>
+
+    <p>Note that setting the value to <code>Off</code> also allows the
+    combination of <code>file-owner</code> and <code>file-group</code>, so
+    access will be allowed if either one or the other (or both) match.</p>
+
+    <p>By default, control is not passed on and an authorization failure
+    will result in an "Authentication Required" reply. Not
+    setting it to <code>Off</code> thus keeps the system secure and forces
+    an NCSA compliant behaviour.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
