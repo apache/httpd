@@ -868,7 +868,6 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
     char *buff;
     apr_ssize_t length;
     char *pos;
-    int state = 0;
     http_ctx_t *ctx = f->ctx;
     ap_bucket_brigade *bb;
     apr_status_t rv;
@@ -921,30 +920,19 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
             return rv;
         }
 
-        pos = buff + 1;
+        pos = buff;
         while (pos < buff + length) {
-
-            /* We are at the start of one line, but it actually has data. */
-            if ((*pos != ASCII_LF) && (*pos != ASCII_CR)) {
-                state = 0;
-            }
-            else {
-                if (*pos == ASCII_LF) {
-                    state++;
+            if (*pos == ASCII_LF) {
+                if (*(pos - 1) == ASCII_CR) {
+                    *(pos - 1) = ASCII_LF;
+                    *pos = '\0';
                 }
-            }
-            
-            if ((*pos == ASCII_LF) && (*(pos - 1) == ASCII_CR)) {
-                *(pos - 1) = ASCII_LF;
-                *pos = '\0';
-            }
-            pos++;
-            if (state == 2) {
-                e->split(e, pos - buff);
+                e->split(e, pos - buff + (*pos == '\0'));
                 bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
                 ctx->b = bb;
                 return APR_SUCCESS;
             }
+            pos++;
         }
     }
     return APR_SUCCESS;
@@ -1003,8 +991,8 @@ static int getline(char *s, int n, conn_rec *c, int fold)
     if (AP_BRIGADE_EMPTY(b)) {
         return -1;
     }
-    e = AP_BRIGADE_FIRST(b); 
     while (1) {
+        e = AP_BRIGADE_FIRST(b); 
         while (e->length == 0) {
             AP_BUCKET_REMOVE(e);
             ap_bucket_destroy(e);
@@ -1028,13 +1016,25 @@ static int getline(char *s, int n, conn_rec *c, int fold)
 	/* check for line end using ascii encoding, even on an ebcdic box
 	 * since this is raw protocol data fresh from the network
 	 */
+/*XXX This needs to be scrubbed, but Greg Ames is going to do a lot to this
+  *   code in a little while.  When he is done, it shouldn't need scrubbing
+  *   any more.
+  *
+  *   GREG, this is where the breakage is!!!!
+  */
         if ((toss = ap_strchr_c(temp, ASCII_LF)) != NULL) { 
-            length = toss - temp + 1;
-            e->split(e, length + (temp[length] == '\0'));
+            length = (toss - temp) + (pos - s) + 1;
+            e->split(e, length + (temp[length] == '\0')); 
             apr_cpystrn(pos, temp, length + 1);
-	    
             AP_BUCKET_REMOVE(e);
             ap_bucket_destroy(e);
+        }
+        else {
+            apr_cpystrn(pos, temp, length + 1);
+            pos += length;
+            AP_BUCKET_REMOVE(e);
+            ap_bucket_destroy(e);
+            continue;
         }
         c->input_data = b;
         e = AP_BRIGADE_FIRST(b); 
