@@ -72,6 +72,7 @@
 
 #define CORE_PRIVATE
 
+#include "ap_config.h"
 #include "apr_portable.h"
 #include "apr_file_io.h"
 #include "httpd.h"
@@ -81,7 +82,6 @@
 #include "http_request.h"	/* for default_handler (see invoke_handler) */
 #include "http_main.h"
 #include "http_vhost.h"
-#include "ap_config.h"
 
 HOOK_STRUCT(
 	    HOOK_LINK(header_parser)

@@ -56,6 +56,7 @@
  */
 
 #define CORE_PRIVATE
+#include "ap_config.h"
 #include "apr_lib.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -69,7 +70,6 @@
 #include "util_md5.h"
 #include "apr_fnmatch.h"
 #include "http_connection.h"
-#include "ap_config.h"
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES

@@ -58,6 +58,7 @@
 #include "apr_network_io.h"
 
 #define CORE_PRIVATE
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "ap_listen.h"

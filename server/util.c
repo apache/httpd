@@ -70,11 +70,11 @@
 
 #define CORE_PRIVATE
 
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#include "ap_config.h"
 #if defined(SUNOS4)
 /* stdio.h has been read in ap_config.h already. Add missing prototypes here: */
 extern int fgetc(FILE *);

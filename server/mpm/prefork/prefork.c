@@ -1025,7 +1025,7 @@ static void reopen_scoreboard(ap_context_t *p)
  * this #ifdef section must be ABOVE the next one (BSD style).
  *
  * I tested this stuff and it works fine for me, but if it provides 
- * trouble for you, just comment out USE_MMAP_SCOREBOARD in QNX section
+ * trouble foR YOU, JUst comment out USE_MMAP_SCOREBOARD in QNX section
  * of ap_config.h
  *
  * June 5, 1997, 

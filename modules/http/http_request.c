@@ -66,6 +66,7 @@
  */
 
 #define CORE_PRIVATE
+#include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
@@ -74,7 +75,6 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "apr_fnmatch.h"
-#include "ap_config.h"
 
 HOOK_STRUCT(
 	    HOOK_LINK(translate_name)
