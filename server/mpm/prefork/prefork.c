@@ -1110,12 +1110,13 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     ap_server_conf = s;
  
-    ap_log_pid(pconf, ap_pid_fname);
-
     if (setup_listeners(s)) {
 	/* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
 	return 1;
     }
+
+    ap_log_pid(pconf, ap_pid_fname);
+
     if ((rv = ap_mpm_pod_open(pconf, &pod))) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
 		"Could not open pipe-of-death.");
