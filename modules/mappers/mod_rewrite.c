@@ -3229,7 +3229,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
 
 static char *current_logtime(request_rec *r)
 {
-    apr_exploded_time_t t;
+    apr_time_exp_t t;
     char tstr[80];
     apr_size_t len;
 
@@ -3413,7 +3413,7 @@ static char *lookup_variable(request_rec *r, char *var)
 {
     const char *result;
     char resultbuf[LONG_STRING_LEN];
-    apr_exploded_time_t tm;
+    apr_time_exp_t tm;
     request_rec *rsub;
 
     result = NULL;

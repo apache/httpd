@@ -60,7 +60,7 @@
 
 struct exploded_time_cache_element {
     apr_int64_t t;
-    apr_exploded_time_t xt;
+    apr_time_exp_t xt;
     apr_int64_t t_validate; /* please see comments in cached_explode() */
 };
 
@@ -71,7 +71,7 @@ static struct exploded_time_cache_element exploded_cache_localtime[TIME_CACHE_SI
 static struct exploded_time_cache_element exploded_cache_gmt[TIME_CACHE_SIZE];
 
 
-static apr_status_t cached_explode(apr_exploded_time_t *xt, apr_time_t t,
+static apr_status_t cached_explode(apr_time_exp_t *xt, apr_time_t t,
                                    struct exploded_time_cache_element *cache,
                                    int use_gmt)
 {
@@ -86,7 +86,7 @@ static apr_status_t cached_explode(apr_exploded_time_t *xt, apr_time_t t,
      * exploded time for the current second (vs the time
      * 'now - AP_TIME_RECENT_THRESHOLD' seconds ago).  If the
      * cached value is for the current time, we use it.  Otherwise,
-     * we compute the apr_exploded_time_t and store it in this
+     * we compute the apr_time_exp_t and store it in this
      * cache element. Note that the timestamp in the cache
      * element is updated only after the exploded time.  Thus
      * if two threads hit this cache element simultaneously
@@ -139,7 +139,7 @@ static apr_status_t cached_explode(apr_exploded_time_t *xt, apr_time_t t,
         else {
             /* Valid snapshot */
             memcpy(xt, &(cache_element_snapshot.xt),
-                   sizeof(apr_exploded_time_t));
+                   sizeof(apr_time_exp_t));
         }
     }
     else {
@@ -154,7 +154,7 @@ static apr_status_t cached_explode(apr_exploded_time_t *xt, apr_time_t t,
             return r;
         }
         cache_element->t = seconds;
-        memcpy(&(cache_element->xt), xt, sizeof(apr_exploded_time_t));
+        memcpy(&(cache_element->xt), xt, sizeof(apr_time_exp_t));
         cache_element->t_validate = seconds;
     }
     xt->tm_usec = (int)(t % APR_USEC_PER_SEC);
@@ -162,13 +162,13 @@ static apr_status_t cached_explode(apr_exploded_time_t *xt, apr_time_t t,
 }
 
 
-AP_DECLARE(apr_status_t) ap_explode_recent_localtime(apr_exploded_time_t * tm,
+AP_DECLARE(apr_status_t) ap_explode_recent_localtime(apr_time_exp_t * tm,
                                                      apr_time_t t)
 {
     return cached_explode(tm, t, exploded_cache_localtime, 0);
 }
 
-AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_exploded_time_t * tm,
+AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_time_exp_t * tm,
                                                apr_time_t t)
 {
     return cached_explode(tm, t, exploded_cache_gmt, 1);

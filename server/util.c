@@ -142,7 +142,7 @@ AP_DECLARE(char *) ap_ht_time(apr_pool_t *p, apr_time_t t, const char *fmt, int 
     apr_size_t retcode;
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
-    apr_exploded_time_t xt;
+    apr_time_exp_t xt;
 
     if (gmt) {
 	const char *f;

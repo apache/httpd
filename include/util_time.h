@@ -83,9 +83,8 @@ extern "C" {
  *       that need to explode the current time multiple times per second,
  *       like loggers.
  * @return APR_SUCCESS iff successful
- * @deffunc apr_status_t ap_explode_recent_localtime(apr_exploded_time_t *tm, apr_time_t t);
  */
-AP_DECLARE(apr_status_t) ap_explode_recent_localtime(apr_exploded_time_t *tm,
+AP_DECLARE(apr_status_t) ap_explode_recent_localtime(apr_time_exp_t *tm,
                                                      apr_time_t t);
 
 /**
@@ -98,9 +97,8 @@ AP_DECLARE(apr_status_t) ap_explode_recent_localtime(apr_exploded_time_t *tm,
  *       that need to explode the current time multiple times per second,
  *       like loggers.
  * @return APR_SUCCESS iff successful
- * @deffunc apr_status_t ap_explode_recent_gmt(apr_exploded_time_t *tm, apr_time_t t);
  */
-AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_exploded_time_t *tm,
+AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_time_exp_t *tm,
                                                apr_time_t t);
 
 

@@ -155,7 +155,7 @@ static void make_cookie(request_rec *r)
                                   dcfg->cookie_name, cookiebuf);
 
         if ((dcfg->style == CT_UNSET) || (dcfg->style == CT_NETSCAPE)) {
-	    apr_exploded_time_t tms;
+	    apr_time_exp_t tms;
             apr_explode_gmt(&tms, r->request_time 
                                 + cls->expires * APR_USEC_PER_SEC);
             new_cookie = apr_psprintf(r->pool,
