@@ -93,6 +93,8 @@ static void *create_netware_dir_config(apr_pool_t *p, char *dir)
     new->file_handler_mode = apr_table_make(p, 10);
     new->extra_env_vars = apr_table_make(p, 10);
 
+    apr_table_set(new->file_type_handlers, "NLM", "OS");
+
     return new;
 }
 
@@ -181,16 +183,18 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     if (*ext == '.')
         ++ext;
 
-    /* If it is an NLM then just execute it. */
-    if (stricmp(ext, "nlm")) {
-        /* check if we have a registered command for the extension*/
-        *cmd = apr_table_get(d->file_type_handlers, ext);
-        if (*cmd == NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Could not find a command associated with the %s extension", ext);
-            return APR_EBADF;
-        }
-
+    /* check if we have a registered command for the extension*/
+    *cmd = apr_table_get(d->file_type_handlers, ext);
+    if (*cmd == NULL) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "Could not find a command associated with the %s extension", ext);
+        return APR_EBADF;
+    }
+    if (!stricmp(*cmd, "OS")) {
+        /* If it is an NLM then restore *cmd and just execute it */
+        *cmd = cmd_only;
+    }
+    else {
         /* If we have a registered command then add the file that was passed in as a
           parameter to the registered command. */
         *cmd = apr_pstrcat (p, *cmd, " ", cmd_only, NULL);
@@ -198,11 +202,11 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         /* Run in its own address space if specified */
         detached = apr_table_get(d->file_handler_mode, ext);
         if (detached) {
-		    e_info->cmd_type = APR_PROGRAM_ENV;
+            e_info->cmd_type = APR_PROGRAM_ENV;
         }
-		else {
-		    e_info->cmd_type = APR_PROGRAM;
-		}
+        else {
+            e_info->cmd_type = APR_PROGRAM;
+        }
     }
 
     /* Tokenize the full command string into its arguments */
@@ -222,9 +226,10 @@ static void register_hooks(apr_pool_t *p)
 
 static const command_rec netware_cmds[] = {
 AP_INIT_TAKE23("CGIMapExtension", set_extension_map, NULL, OR_FILEINFO, 
-              "Full path to the CGI NLM module followed by a file extension. "
-              "The optional parameter \"detach\" can be specified if the NLM should "
-              "be launched in its own address space."),
+              "Full path to the CGI NLM module followed by a file extension. If the "
+              "first parameter is set to \"OS\" then the following file extension is "
+              "treated as NLM. The optional parameter \"detach\" can be specified if "
+              "the NLM should be launched in its own address space."),
 { NULL }
 };
 
