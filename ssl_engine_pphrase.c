@@ -207,14 +207,6 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
             if (sc->szPrivateKeyFile[j] != NULL)
                 apr_cpystrn(szPath, sc->szPrivateKeyFile[j++], sizeof(szPath));
 
-            if (sc->szPrivateKeyFile[j] == NULL) {
-                ssl_log(pServ, SSL_LOG_ERROR,
-                        "Init: Server %s should be SSL-aware but "
-                        "too few private key files were specified "
-                        "[Hint: SSLCertificateKeyFile]", cpVHostID);
-                ssl_die();
-            }
-
             /*
              * Try to read the private key file with the help of
              * the callback function which serves the pass
@@ -320,7 +312,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 
             if (pPrivateKey == NULL) {
                 ssl_log(s, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                        "Init: Unable to read server private key from file %s", szPath);
+                        "Init: Unable to read server private key from file %s perhaps it is in a seperate file? [Hint: SSLCertificateKeyFile]", szPath);
                 ssl_die();
             }
 
