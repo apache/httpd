@@ -1,7 +1,7 @@
 Changes with Apache 2.0.42
 
-  *) Add -p option to apxs to allow programs to be compiled with apxs.
-     [Justin Erenkrantz]
+  *) mod_dav: Check for versioning hooks before using them.
+     [Greg Stein]
 
 Changes with Apache 2.0.41
 
@@ -33,9 +33,6 @@ Changes with Apache 2.0.41
 
   *) Fix memory leak in core_output_filter.  [Justin Erenkrantz]
 
-  *) Rewrite of aaa modules to an authn/authz model.
-     [Dirk-Willem van Gulik, Justin Erenkrantz]
-  
   *) Update OpenSSL detection to work on Darwin.
      [Sander Temme <sctemme@covalent.net>]
 
