@@ -73,7 +73,7 @@
 apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
 {
     SSL *ssl = filter->pssl;
-    const char *cpType = "";
+    const char *type = "";
     conn_rec *conn;
     SSLConnRec *sslconn;
 
@@ -126,19 +126,19 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
         /* send close notify, but don't wait for clients close notify
            (standard compliant and safe, so it's the DEFAULT!) */
         SSL_set_shutdown(ssl, SSL_RECEIVED_SHUTDOWN);
-        cpType = "standard";
+        type = "standard";
         break;
       case SSL_SHUTDOWN_TYPE_UNCLEAN:
         /* perform no close notify handshake at all
            (violates the SSL/TLS standard!) */
         SSL_set_shutdown(ssl, SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN);
-        cpType = "unclean";
+        type = "unclean";
         break;
       case SSL_SHUTDOWN_TYPE_ACCURATE:
         /* send close notify and wait for clients close notify
            (standard compliant, but usually causes connection hangs) */
         SSL_set_shutdown(ssl, 0);
-        cpType = "accurate";
+        type = "accurate";
         break;
     }
 
@@ -149,7 +149,7 @@ apr_status_t ssl_hook_CloseConnection(SSLFilterRec *filter)
         ssl_log(conn->base_server, SSL_LOG_INFO,
                 "Connection to child %d closed with %s shutdown"
                 "(server %s, client %s)",
-                conn->id, cpType,
+                conn->id, type,
                 ssl_util_vhostid(conn->pool, conn->base_server),
                 conn->remote_ip ? conn->remote_ip : "unknown");
     }
@@ -317,23 +317,23 @@ int ssl_hook_Access(request_rec *r)
     SSLConnRec *sslconn = myConnConfig(r->connection);
     SSL *ssl            = sslconn ? sslconn->ssl : NULL;
     SSL_CTX *ctx = NULL;
-    apr_array_header_t *apRequirement;
-    ssl_require_t *pRequirements, *pRequirement;
+    apr_array_header_t *requires;
+    ssl_require_t *ssl_requires;
     char *cp;
     int ok, i;
     BOOL renegotiate = FALSE, renegotiate_quick = FALSE;
 #ifdef SSL_EXPERIMENTAL_PERDIRCA
     BOOL reconfigured_locations = FALSE;
-    STACK_OF(X509_NAME) *skCAList;
-    char *cpCAPath, *cpCAFile;
+    STACK_OF(X509_NAME) *ca_list;
+    char *ca_path, *ca_file;
 #endif
     X509 *cert;
-    STACK_OF(X509) *certstack;
-    X509_STORE *certstore;
-    X509_STORE_CTX certstorectx;
-    STACK_OF(SSL_CIPHER) *skCipherOld, *skCipher = NULL;
-    SSL_CIPHER *pCipher = NULL;
-    int depth, nVerifyOld, nVerify, n;
+    STACK_OF(X509) *cert_stack;
+    X509_STORE *cert_store;
+    X509_STORE_CTX cert_store_ctx;
+    STACK_OF(SSL_CIPHER) *cipher_list_old, *cipher_list = NULL;
+    SSL_CIPHER *cipher = NULL;
+    int depth, verify_old, verify, n;
 
     if (ssl) {
         ctx = SSL_get_SSL_CTX(ssl);
@@ -405,13 +405,13 @@ int ssl_hook_Access(request_rec *r)
         /* remember old state */
 
         if (dc->nOptions & SSL_OPT_OPTRENEGOTIATE) {
-            pCipher = SSL_get_current_cipher(ssl);
+            cipher = SSL_get_current_cipher(ssl);
         }
         else {
-            skCipherOld = (STACK_OF(SSL_CIPHER) *)SSL_get_ciphers(ssl);
+            cipher_list_old = (STACK_OF(SSL_CIPHER) *)SSL_get_ciphers(ssl);
 
-            if (skCipherOld) {
-                skCipherOld = sk_SSL_CIPHER_dup(skCipherOld);
+            if (cipher_list_old) {
+                cipher_list_old = sk_SSL_CIPHER_dup(cipher_list_old);
             }
         }
 
@@ -421,55 +421,55 @@ int ssl_hook_Access(request_rec *r)
                     "Unable to reconfigure (per-directory) "
                     "permitted SSL ciphers");
 
-            if (skCipherOld) {
-                sk_SSL_CIPHER_free(skCipherOld);
+            if (cipher_list_old) {
+                sk_SSL_CIPHER_free(cipher_list_old);
             }
 
             return HTTP_FORBIDDEN;
         }
 
         /* determine whether a renegotiation has to be forced */
-        skCipher = (STACK_OF(SSL_CIPHER) *)SSL_get_ciphers(ssl);
+        cipher_list = (STACK_OF(SSL_CIPHER) *)SSL_get_ciphers(ssl);
 
         if (dc->nOptions & SSL_OPT_OPTRENEGOTIATE) {
             /* optimized way */
-            if ((!pCipher && skCipher) ||
-                (pCipher && !skCipher))
+            if ((!cipher && cipher_list) ||
+                (cipher && !cipher_list))
             {
                 renegotiate = TRUE;
             }
-            else if (pCipher && skCipher &&
-                     (sk_SSL_CIPHER_find(skCipher, pCipher) < 0))
+            else if (cipher && cipher_list &&
+                     (sk_SSL_CIPHER_find(cipher_list, cipher) < 0))
             {
                 renegotiate = TRUE;
             }
         }
         else {
             /* paranoid way */
-            if ((!skCipherOld && skCipher) ||
-                (skCipherOld && !skCipher))
+            if ((!cipher_list_old && cipher_list) ||
+                (cipher_list_old && !cipher_list))
             {
                 renegotiate = TRUE;
             }
-            else if (skCipherOld && skCipher) {
+            else if (cipher_list_old && cipher_list) {
                 for (n = 0;
-                     !renegotiate && (n < sk_SSL_CIPHER_num(skCipher));
+                     !renegotiate && (n < sk_SSL_CIPHER_num(cipher_list));
                      n++)
                 {
-                    SSL_CIPHER *value = sk_SSL_CIPHER_value(skCipher, n);
+                    SSL_CIPHER *value = sk_SSL_CIPHER_value(cipher_list, n);
 
-                    if (sk_SSL_CIPHER_find(skCipherOld, value) < 0) {
+                    if (sk_SSL_CIPHER_find(cipher_list_old, value) < 0) {
                         renegotiate = TRUE;
                     }
                 }
 
                 for (n = 0;
-                     !renegotiate && (n < sk_SSL_CIPHER_num(skCipherOld));
+                     !renegotiate && (n < sk_SSL_CIPHER_num(cipher_list_old));
                      n++)
                 {
-                    SSL_CIPHER *value = sk_SSL_CIPHER_value(skCipherOld, n);
+                    SSL_CIPHER *value = sk_SSL_CIPHER_value(cipher_list_old, n);
 
-                    if (sk_SSL_CIPHER_find(skCipher, value) < 0) {
+                    if (sk_SSL_CIPHER_find(cipher_list, value) < 0) {
                         renegotiate = TRUE;
                     }
                 }
@@ -477,8 +477,8 @@ int ssl_hook_Access(request_rec *r)
         }
 
         /* cleanup */
-        if (skCipherOld) {
-            sk_SSL_CIPHER_free(skCipherOld);
+        if (cipher_list_old) {
+            sk_SSL_CIPHER_free(cipher_list_old);
         }
 
         /* tracing */
@@ -531,39 +531,39 @@ int ssl_hook_Access(request_rec *r)
      */
     if (dc->nVerifyClient != SSL_CVERIFY_UNSET) {
         /* remember old state */
-        nVerifyOld = SSL_get_verify_mode(ssl);
+        verify_old = SSL_get_verify_mode(ssl);
         /* configure new state */
-        nVerify = SSL_VERIFY_NONE;
+        verify = SSL_VERIFY_NONE;
 
         if (dc->nVerifyClient == SSL_CVERIFY_REQUIRE) {
-            nVerify |= SSL_VERIFY_PEER_STRICT;
+            verify |= SSL_VERIFY_PEER_STRICT;
         }
 
         if ((dc->nVerifyClient == SSL_CVERIFY_OPTIONAL) ||
             (dc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA))
         {
-            nVerify |= SSL_VERIFY_PEER;
+            verify |= SSL_VERIFY_PEER;
         }
 
-        SSL_set_verify(ssl, nVerify, ssl_callback_SSLVerify);
+        SSL_set_verify(ssl, verify, ssl_callback_SSLVerify);
         SSL_set_verify_result(ssl, X509_V_OK);
 
         /* determine whether we've to force a renegotiation */
-        if (nVerify != nVerifyOld) {
-            if (((nVerifyOld == SSL_VERIFY_NONE) &&
-                 (nVerify    != SSL_VERIFY_NONE)) ||
+        if (verify != verify_old) {
+            if (((verify_old == SSL_VERIFY_NONE) &&
+                 (verify     != SSL_VERIFY_NONE)) ||
 
-                (!(nVerifyOld & SSL_VERIFY_PEER) &&
-                  (nVerify    & SSL_VERIFY_PEER)) ||
+                (!(verify_old & SSL_VERIFY_PEER) &&
+                  (verify     & SSL_VERIFY_PEER)) ||
 
-                (!(nVerifyOld & SSL_VERIFY_PEER_STRICT) &&
-                  (nVerify    & SSL_VERIFY_PEER_STRICT)))
+                (!(verify_old & SSL_VERIFY_PEER_STRICT) &&
+                  (verify     & SSL_VERIFY_PEER_STRICT)))
             {
                 renegotiate = TRUE;
                 /* optimization */
 
                 if ((dc->nOptions & SSL_OPT_OPTRENEGOTIATE) &&
-                    (nVerifyOld == SSL_VERIFY_NONE) &&
+                    (verify_old == SSL_VERIFY_NONE) &&
                     SSL_get_peer_certificate(ssl))
                 {
                     renegotiate_quick = TRUE;
@@ -600,18 +600,18 @@ int ssl_hook_Access(request_rec *r)
     if (MODSSL_CFG_NE(szCACertificateFile) ||
         MODSSL_CFG_NE(szCACertificatePath))
     {
-        cpCAFile = dc->szCACertificateFile ?
+        ca_file = dc->szCACertificateFile ?
             dc->szCACertificateFile : sc->szCACertificateFile;
 
-        cpCAPath = dc->szCACertificatePath ?
+        ca_path = dc->szCACertificatePath ?
             dc->szCACertificatePath : sc->szCACertificatePath;
 
         /*
            FIXME: This should be...
-           if (!SSL_load_verify_locations(ssl, cpCAFile, cpCAPath)) {
+           if (!SSL_load_verify_locations(ssl, ca_file, ca_path)) {
            ...but OpenSSL still doesn't provide this!
          */
-        if (!SSL_CTX_load_verify_locations(ctx, cpCAFile, cpCAPath)) {
+        if (!SSL_CTX_load_verify_locations(ctx, ca_file, ca_path)) {
             ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "Unable to reconfigure verify locations "
                     "for client authentication");
@@ -619,8 +619,8 @@ int ssl_hook_Access(request_rec *r)
             return HTTP_FORBIDDEN;
         }
 
-        if (!(skCAList = ssl_init_FindCAList(r->server, r->pool,
-                                             cpCAFile, cpCAPath)))
+        if (!(ca_list = ssl_init_FindCAList(r->server, r->pool,
+                                            ca_file, ca_path)))
         {
             ssl_log(r->server, SSL_LOG_ERROR,
                     "Unable to determine list of available "
@@ -629,7 +629,7 @@ int ssl_hook_Access(request_rec *r)
             return HTTP_FORBIDDEN;
         }
 
-        SSL_set_client_CA_list(ssl, skCAList);
+        SSL_set_client_CA_list(ssl, ca_list);
         renegotiate = TRUE;
         reconfigured_locations = TRUE;
 
@@ -731,41 +731,41 @@ int ssl_hook_Access(request_rec *r)
                     "Performing quick renegotiation: "
                     "just re-verifying the peer");
 
-            if (!(certstore = SSL_CTX_get_cert_store(ctx))) {
+            if (!(cert_store = SSL_CTX_get_cert_store(ctx))) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Cannot find certificate storage");
 
                 return HTTP_FORBIDDEN;
             }
 
-            certstack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
+            cert_stack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
 
-            if (!certstack || (sk_X509_num(certstack) == 0)) {
+            if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Cannot find peer certificate chain");
 
                 return HTTP_FORBIDDEN;
             }
 
-            cert = sk_X509_value(certstack, 0);
-            X509_STORE_CTX_init(&certstorectx, certstore, cert, certstack);
+            cert = sk_X509_value(cert_stack, 0);
+            X509_STORE_CTX_init(&cert_store_ctx, cert_store, cert, cert_stack);
             depth = SSL_get_verify_depth(ssl);
 
             if (depth >= 0) {
-                X509_STORE_CTX_set_depth(&certstorectx, depth);
+                X509_STORE_CTX_set_depth(&cert_store_ctx, depth);
             }
 
-            X509_STORE_CTX_set_ex_data(&certstorectx,
+            X509_STORE_CTX_set_ex_data(&cert_store_ctx,
                                        SSL_get_ex_data_X509_STORE_CTX_idx(),
                                        (char *)ssl);
 
-            if (!X509_verify_cert(&certstorectx)) {
+            if (!X509_verify_cert(&cert_store_ctx)) {
                 ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR, 
                         "Re-negotiation verification step failed");
             }
 
-            SSL_set_verify_result(ssl, certstorectx.error);
-            X509_STORE_CTX_cleanup(&certstorectx);
+            SSL_set_verify_result(ssl, cert_store_ctx.error);
+            X509_STORE_CTX_cleanup(&cert_store_ctx);
         }
         else {
             request_rec *id = r->main ? r->main : r;
@@ -816,9 +816,9 @@ int ssl_hook_Access(request_rec *r)
          * Finally check for acceptable renegotiation results
          */
         if (dc->nVerifyClient != SSL_CVERIFY_NONE) {
-            BOOL verify = (dc->nVerifyClient == SSL_CVERIFY_REQUIRE);
+            BOOL do_verify = (dc->nVerifyClient == SSL_CVERIFY_REQUIRE);
 
-            if (verify && (SSL_get_verify_result(ssl) != X509_V_OK)) {
+            if (do_verify && (SSL_get_verify_result(ssl) != X509_V_OK)) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Re-negotiation handshake failed: "
                         "Client verification failed");
@@ -826,7 +826,7 @@ int ssl_hook_Access(request_rec *r)
                 return HTTP_FORBIDDEN;
             }
 
-            if (verify && !SSL_get_peer_certificate(ssl)) {
+            if (do_verify && !SSL_get_peer_certificate(ssl)) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Re-negotiation handshake failed: "
                         "Client certificate missing");
@@ -860,12 +860,12 @@ int ssl_hook_Access(request_rec *r)
     /*
      * Check SSLRequire boolean expressions
      */
-    apRequirement = dc->aRequirement;
-    pRequirements = (ssl_require_t *)apRequirement->elts;
+    requires = dc->aRequirement;
+    ssl_requires = (ssl_require_t *)requires->elts;
 
-    for (i = 0; i < apRequirement->nelts; i++) {
-        pRequirement = &pRequirements[i];
-        ok = ssl_expr_exec(r, pRequirement->mpExpr);
+    for (i = 0; i < requires->nelts; i++) {
+        ssl_require_t *req = &ssl_requires[i];
+        ok = ssl_expr_exec(r, req->mpExpr);
 
         if (ok < 0) {
             cp = apr_psprintf(r->pool,
@@ -890,7 +890,7 @@ int ssl_hook_Access(request_rec *r)
                     r->filename, r->connection->remote_ip);
 
             ssl_log(r->server, SSL_LOG_INFO,
-                    "Failed expression: %s", pRequirement->cpExpr);
+                    "Failed expression: %s", req->cpExpr);
 
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r, 
                           "access to %s failed, reason: %s",
@@ -929,9 +929,9 @@ int ssl_hook_UserCheck(request_rec *r)
     SSLConnRec *sslconn = myConnConfig(r->connection);
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
-    char b1[MAX_STRING_LEN], b2[MAX_STRING_LEN];
+    char buf1[MAX_STRING_LEN], buf2[MAX_STRING_LEN];
     char *clientdn;
-    const char *cpAL, *cpUN, *cpPW;
+    const char *auth_line, *username, *password;
 
     /*
      * Additionally forbid access (again)
@@ -949,17 +949,17 @@ int ssl_hook_UserCheck(request_rec *r)
      * ("/XX=YYY/XX=YYY/..") as the username and "password" as the
      * password.
      */
-    if ((cpAL = apr_table_get(r->headers_in, "Authorization"))) {
-        if (strcEQ(ap_getword(r->pool, &cpAL, ' '), "Basic")) {
-            while ((*cpAL == ' ') || (*cpAL == '\t')) {
-                cpAL++;
+    if ((auth_line = apr_table_get(r->headers_in, "Authorization"))) {
+        if (strcEQ(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
+            while ((*auth_line == ' ') || (*auth_line == '\t')) {
+                auth_line++;
             }
 
-            cpAL = ap_pbase64decode(r->pool, cpAL);
-            cpUN = ap_getword_nulls(r->pool, &cpAL, ':');
-            cpPW = cpAL;
+            auth_line = ap_pbase64decode(r->pool, auth_line);
+            username = ap_getword_nulls(r->pool, &auth_line, ':');
+            password = auth_line;
 
-            if ((cpUN[0] == '/') && strEQ(cpPW, "password")) {
+            if ((username[0] == '/') && strEQ(password, "password")) {
                 return HTTP_FORBIDDEN;
             }
         }
@@ -998,14 +998,14 @@ int ssl_hook_UserCheck(request_rec *r)
      * adding the string "xxj31ZMTZzkVA" as the password in the user file.
      * This is just the crypted variant of the word "password" ;-)
      */
-    apr_snprintf(b1, sizeof(b1), "%s:password", clientdn);
-    ssl_util_uuencode(b2, b1, FALSE);
+    apr_snprintf(buf1, sizeof(buf1), "%s:password", clientdn);
+    ssl_util_uuencode(buf2, buf1, FALSE);
 
-    apr_snprintf(b1, sizeof(b1), "Basic %s", b2);
-    apr_table_set(r->headers_in, "Authorization", b1);
+    apr_snprintf(buf1, sizeof(buf1), "Basic %s", buf2);
+    apr_table_set(r->headers_in, "Authorization", buf1);
 
     ssl_log(r->server, SSL_LOG_INFO,
-            "Faking HTTP Basic Auth header: \"Authorization: %s\"", b1);
+            "Faking HTTP Basic Auth header: \"Authorization: %s\"", buf1);
 
     return DECLINED;
 }
@@ -1118,9 +1118,9 @@ int ssl_hook_Fixup(request_rec *r)
     SSLConnRec *sslconn = myConnConfig(r->connection);
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
-    apr_table_t *e = r->subprocess_env;
+    apr_table_t *env = r->subprocess_env;
     char *var, *val = "";
-    STACK_OF(X509) *sk;
+    STACK_OF(X509) *peer_certs;
     SSL *ssl;
     int i;
 
@@ -1135,7 +1135,7 @@ int ssl_hook_Fixup(request_rec *r)
      * Annotate the SSI/CGI environment with standard SSL information
      */
     /* the always present HTTPS (=HTTP over SSL) flag! */
-    apr_table_setn(e, "HTTPS", "on"); 
+    apr_table_setn(env, "HTTPS", "on"); 
 
     /* standard SSL environment variables */
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
@@ -1143,7 +1143,7 @@ int ssl_hook_Fixup(request_rec *r)
             var = (char *)ssl_hook_Fixup_vars[i];
             val = ssl_var_lookup(r->pool, r->server, r->connection, r, var);
             if (!strIsEmpty(val)) {
-                apr_table_set(e, var, val);
+                apr_table_setn(env, var, val);
             }
         }
     }
@@ -1155,20 +1155,20 @@ int ssl_hook_Fixup(request_rec *r)
         val = ssl_var_lookup(r->pool, r->server, r->connection,
                              r, "SSL_SERVER_CERT");
 
-        apr_table_setn(e, "SSL_SERVER_CERT", val);
+        apr_table_setn(env, "SSL_SERVER_CERT", val);
 
         val = ssl_var_lookup(r->pool, r->server, r->connection,
                              r, "SSL_CLIENT_CERT");
 
-        apr_table_setn(e, "SSL_CLIENT_CERT", val);
+        apr_table_setn(env, "SSL_CLIENT_CERT", val);
 
-        if ((sk = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl))) {
-            for (i = 0; i < sk_X509_num(sk); i++) {
+        if ((peer_certs = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl))) {
+            for (i = 0; i < sk_X509_num(peer_certs); i++) {
                 var = apr_psprintf(r->pool, "SSL_CLIENT_CERT_CHAIN_%d", i);
                 val = ssl_var_lookup(r->pool, r->server, r->connection,
                                      r, var);
                 if (val) {
-                     apr_table_setn(e, var, val);
+                    apr_table_setn(env, var, val);
                 }
             }
         }
@@ -1217,18 +1217,18 @@ int ssl_hook_Fixup(request_rec *r)
  * which we now just handle out on demand....
  */
 
-RSA *ssl_callback_TmpRSA(SSL *pSSL, int nExport, int nKeyLen)
+RSA *ssl_callback_TmpRSA(SSL *ssl, int export, int keylen)
 {
-    conn_rec *c = (conn_rec *)SSL_get_app_data(pSSL);
+    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     SSLModConfigRec *mc = myModConfig(c->base_server);
     RSA *rsa = NULL;
 
-    if (nExport) {
+    if (export) {
         /* It's because an export cipher is used */
-        if (nKeyLen == 512) {
+        if (keylen == 512) {
             rsa = (RSA *)mc->pTmpKeys[SSL_TKPIDX_RSA512];
         }
-        else if (nKeyLen == 1024) {
+        else if (keylen == 1024) {
             rsa = (RSA *)mc->pTmpKeys[SSL_TKPIDX_RSA1024];
         }
         else {
@@ -1247,18 +1247,18 @@ RSA *ssl_callback_TmpRSA(SSL *pSSL, int nExport, int nKeyLen)
 /* 
  * Handle out the already generated DH parameters...
  */
-DH *ssl_callback_TmpDH(SSL *pSSL, int nExport, int nKeyLen)
+DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 {
-    conn_rec *c = (conn_rec *)SSL_get_app_data(pSSL);
+    conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     SSLModConfigRec *mc = myModConfig(c->base_server);
     DH *dh = NULL;
 
-    if (nExport) {
+    if (export) {
         /* It's because an export cipher is used */
-        if (nKeyLen == 512) {
+        if (keylen == 512) {
             dh = (DH *)mc->pTmpKeys[SSL_TKPIDX_DH512];
         }
-        else if (nKeyLen == 1024) {
+        else if (keylen == 1024) {
             dh = (DH *)mc->pTmpKeys[SSL_TKPIDX_DH1024];
         }
         else {
@@ -1291,7 +1291,6 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSLConnRec *sslconn = myConnConfig(conn);
 
     /* Get verify ingredients */
-    X509 *xs     = X509_STORE_CTX_get_current_cert(ctx);
     int errnum   = X509_STORE_CTX_get_error(ctx);
     int errdepth = X509_STORE_CTX_get_error_depth(ctx);
     int depth, verify;
@@ -1300,21 +1299,22 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
      * Log verification information
      */
     if (sc->nLogLevel >= SSL_LOG_TRACE) {
-        char *cp  = X509_NAME_oneline(X509_get_subject_name(xs), NULL, 0);
-        char *cp2 = X509_NAME_oneline(X509_get_issuer_name(xs),  NULL, 0);
+        X509 *cert  = X509_STORE_CTX_get_current_cert(ctx);
+        char *sname = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
+        char *iname = X509_NAME_oneline(X509_get_issuer_name(cert),  NULL, 0);
 
         ssl_log(s, SSL_LOG_TRACE,
                 "Certificate Verification: depth: %d, subject: %s, issuer: %s",
                 errdepth,
-                cp ? cp : "-unknown-",
-                cp2 ? cp2 : "-unknown-");
+                sname ? sname : "-unknown-",
+                iname ? iname : "-unknown-");
 
-        if (cp) {
-            free(cp);
+        if (sname) {
+            free(sname);
         }
 
-        if (cp2) {
-            free(cp2);
+        if (iname) {
+            free(iname);
         }
     }
 
@@ -1394,7 +1394,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
     SSLSrvConfigRec *sc = mySrvConfig(s);
     X509_OBJECT obj;
     X509_NAME *subject, *issuer;
-    X509 *xs;
+    X509 *cert;
     X509_CRL *crl;
     BIO *bio;
     int i, n, rc;
@@ -1410,9 +1410,9 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
     /*
      * Determine certificate ingredients in advance
      */
-    xs      = X509_STORE_CTX_get_current_cert(ctx);
-    subject = X509_get_subject_name(xs);
-    issuer  = X509_get_issuer_name(xs);
+    cert    = X509_STORE_CTX_get_current_cert(ctx);
+    subject = X509_get_subject_name(cert);
+    issuer  = X509_get_issuer_name(cert);
 
     /*
      * OpenSSL provides the general mechanism to deal with CRLs but does not
@@ -1487,7 +1487,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
         /*
          * Verify the signature on this CRL
          */
-        if (X509_CRL_verify(crl, X509_get_pubkey(xs)) <= 0) {
+        if (X509_CRL_verify(crl, X509_get_pubkey(cert)) <= 0) {
             ssl_log(s, SSL_LOG_WARN, "Invalid signature on CRL");
 
             X509_STORE_CTX_set_error(ctx, X509_V_ERR_CRL_SIGNATURE_FAILURE);
@@ -1547,7 +1547,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
 
             ASN1_INTEGER *sn = X509_REVOKED_get_serialNumber(revoked);
 
-            if (!ASN1_INTEGER_cmp(sn, X509_get_serialNumber(xs))) {
+            if (!ASN1_INTEGER_cmp(sn, X509_get_serialNumber(cert))) {
                 if (sc->nLogLevel >= SSL_LOG_INFO) {
                     char *cp = X509_NAME_oneline(issuer, NULL, 0);
                     long serial = ASN1_INTEGER_get(sn);
@@ -1578,7 +1578,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, server_rec *s)
  *  SSL_SESSION also to the inter-process disk-cache to make share it with our
  *  other Apache pre-forked server processes.
  */
-int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *pNew)
+int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
 {
     /* Get Apache context back through OpenSSL context */
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
@@ -1593,18 +1593,18 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *pNew)
      * Set the timeout also for the internal OpenSSL cache, because this way
      * our inter-process cache is consulted only when it's really necessary.
      */
-    SSL_set_timeout(pNew, timeout);
+    SSL_set_timeout(session, timeout);
 
     /*
      * Store the SSL_SESSION in the inter-process cache with the
      * same expire time, so it expires automatically there, too.
      */
-    session_id = SSL_SESSION_get_session_id(pNew);
-    session_id_length = SSL_SESSION_get_session_id_length(pNew);
+    session_id = SSL_SESSION_get_session_id(session);
+    session_id_length = SSL_SESSION_get_session_id_length(session);
 
-    timeout += SSL_get_time(pNew);
+    timeout += SSL_get_time(session);
     rc = ssl_scache_store(s, session_id, session_id_length,
-                          timeout, pNew);
+                          timeout, session);
 
     /*
      * Log this cache operation
@@ -1617,7 +1617,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *pNew)
             (timeout - time(NULL)));
 
     /*
-     * return 0 which means to OpenSSL that the pNew is still
+     * return 0 which means to OpenSSL that the session is still
      * valid and was not freed by us with SSL_SESSION_free().
      */
     return 0;
@@ -1632,22 +1632,22 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *pNew)
  */
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
                                                unsigned char *id,
-                                               int idlen, int *pCopy)
+                                               int idlen, int *do_copy)
 {
     /* Get Apache context back through OpenSSL context */
     conn_rec *conn = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s  = conn->base_server;
-    SSL_SESSION *pSession;
+    SSL_SESSION *session;
 
     /*
      * Try to retrieve the SSL_SESSION from the inter-process cache
      */
-    pSession = ssl_scache_retrieve(s, id, idlen);
+    session = ssl_scache_retrieve(s, id, idlen);
 
     /*
      * Log this cache operation
      */
-    if (pSession) {
+    if (session) {
         ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
                 "request=GET status=FOUND id=%s (session reuse)",
                 SSL_SESSION_id2sz(id, idlen));
@@ -1659,13 +1659,13 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
     }
     /*
      * Return NULL or the retrieved SSL_SESSION. But indicate (by
-     * setting pCopy to 0) that the reference count on the
+     * setting do_copy to 0) that the reference count on the
      * SSL_SESSION should not be incremented by the SSL library,
      * because we will no longer hold a reference to it ourself.
      */
-    *pCopy = 0;
+    *do_copy = 0;
 
-    return pSession;
+    return session;
 }
 
 /*
@@ -1675,7 +1675,7 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
  *  disk-cache, too.
  */
 void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
-                                       SSL_SESSION *pSession)
+                                       SSL_SESSION *session)
 {
     server_rec *s;
     unsigned char *session_id;
@@ -1691,8 +1691,8 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     /*
      * Remove the SSL_SESSION from the inter-process cache
      */
-    session_id = SSL_SESSION_get_session_id(pSession);
-    session_id_length = SSL_SESSION_get_session_id_length(pSession);
+    session_id = SSL_SESSION_get_session_id(session);
+    session_id_length = SSL_SESSION_get_session_id_length(session);
 
     ssl_scache_remove(s, session_id, session_id_length);
 
@@ -1716,7 +1716,6 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
     conn_rec *c;
     server_rec *s;
     SSLSrvConfigRec *sc;
-    char *str;
 
     /*
      * find corresponding server
@@ -1755,7 +1754,7 @@ void ssl_callback_LogTracingState(SSL *ssl, int where, int rc)
                     SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
         }
         else if (where & SSL_CB_ALERT) {
-            str = (where & SSL_CB_READ) ? "read" : "write";
+            char *str = (where & SSL_CB_READ) ? "read" : "write";
             ssl_log(s, SSL_LOG_TRACE, "%s: Alert: %s:%s:%s\n",
                     SSL_LIBRARY_NAME, str,
                     SSL_alert_type_string_long(rc),
