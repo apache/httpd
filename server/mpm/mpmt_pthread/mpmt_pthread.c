@@ -816,7 +816,7 @@ static void * worker_thread(void * dummy)
     worker_thread_count++;
     pthread_mutex_unlock(&worker_thread_count_mutex);
 
-    ap_setup_poll(&pollset, tpool, num_listensocks+1);
+    ap_setup_poll(&pollset, num_listensocks+1, tpool);
     for(n=0 ; n <= num_listensocks ; ++n)
 	ap_add_poll_socket(pollset, listensocks[n], APR_POLLIN);
 
@@ -853,7 +853,7 @@ static void * worker_thread(void * dummy)
 
             if (workers_may_exit) break;
 
-	    ap_get_revents(pollset, listensocks[0], &event);
+	    ap_get_revents(&event, listensocks[0], pollset);
             if (event & APR_POLLIN) {
                 /* A process got a signal on the shutdown pipe. Check if we're
                  * the lucky process to die. */
@@ -874,7 +874,7 @@ static void * worker_thread(void * dummy)
                         curr_pollfd = 1;
                     }
                     /* XXX: Should we check for POLLERR? */
-		    ap_get_revents(pollset, listensocks[curr_pollfd], &event);
+		    ap_get_revents(&event, listensocks[curr_pollfd], pollset);
                     if (event & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
 			sd=listensocks[curr_pollfd];
@@ -894,7 +894,7 @@ static void * worker_thread(void * dummy)
             SAFE_ACCEPT(intra_mutex_off(0));
             break;
         }
-        ap_get_os_sock(csd, &thesock);
+        ap_get_os_sock(&thesock, csd);
         process_socket(ptrans, &sa_client, thesock, process_slot, thread_slot);
         ap_clear_pool(ptrans);
         requests_this_child--;
