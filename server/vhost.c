@@ -187,7 +187,7 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
 				 server_addr_rec ***paddr, apr_port_t port)
 {
     struct hostent *hep;
-    apr_in_addr my_addr;
+    apr_in_addr_t my_addr;
     server_addr_rec *sar;
     char *t;
     int i, is_an_ip_addr;
@@ -402,7 +402,7 @@ static name_chain *new_name_chain(apr_pool_t *p, server_rec *s, server_addr_rec 
 }
 
 
-static apr_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
+static apr_inline ipaddr_chain *find_ipaddr(apr_in_addr_t *server_ip,
     apr_port_t port)
 {
     unsigned bucket;
