@@ -70,6 +70,7 @@
 #include "multithread.h"
 #include "service.h"
 #include "registry.h"
+#include "Win9xConHook.h"
 
 #define SERVICE_APACHE_RESTART 128
 
@@ -87,10 +88,6 @@ static struct
 
 /* statics for atexit processing or shared between threads */
 static BOOL  die_on_logoff = FALSE;
-static DWORD monitor_thread_id = 0;
-static HINSTANCE monitor_hkernel = NULL;
-static DWORD dos_child_procid = 0;
-static HHOOK catch_term_hook = NULL;
 static HWND  console_wnd = NULL;
 static int   is_service = -1;
 
@@ -234,10 +231,6 @@ static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
     }
     return TRUE;
 }
-
-LRESULT WINAPI RegisterWindows9xService(BOOL is_service);
-BOOL WINAPI FixConsoleCtrlHandler(PHANDLER_ROUTINE phandler, BOOL add);
-BOOL WINAPI Windows9xServiceCtrlHandler(PHANDLER_ROUTINE phandler, BOOL add);
 
 void stop_child_monitor(void)
 {
