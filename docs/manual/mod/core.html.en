@@ -642,8 +642,9 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Core</td></tr><tr><th><a href="directive-dict.html#Module">Module:
-              </a></th><td>core</td></tr></table>
-    <p>This directive controls whether the httpd may use the sendfile
+              </a></th><td>core</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:
+              </a></th><td>Available in version 2.0.44 and later</td></tr></table>
+    <p>This directive controls whether httpd may use the sendfile
     support from the kernel to transmit file contents to the client.
     By default, when the handling of a request requires no access
     to the data within a file -- for example, when delivering a
@@ -658,10 +659,11 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
     <ul>
     <li>Some platforms may have broken sendfile support that the build
     system did not detect, especially if the binaries were built on
-    another box and moved to such a machine with broken sendfile support.</li>
-    <li>With an NFS-mounted <code class="directive"><a href="#documentroot">DocumentRoot</a></code>,
+    another box and moved to such a machine with broken sendfile
+    support.</li> 
+    <li>With a network-mounted <code class="directive"><a href="#documentroot">DocumentRoot</a></code> (e.g., NFS or SMB), 
     the kernel may be unable to serve the network file through 
-    it's own cache.</li>
+    its own cache.</li>
     </ul>
 
     <p>For server configurations that are vulnerable to these problems,
@@ -671,12 +673,12 @@ Location</a></li></ul></div><div class="top"><a href="#page-header"><img alt="to
       EnableSendfile off
     </code></p></div>
 
-    <p>For NFS mounted files, this feature may be disabled explicitly for
-    the offending files by specifying:</p>
+    <p>For NFS or SMB mounted files, this feature may be disabled explicitly 
+    for the offending files by specifying:</p>
 
     <div class="example"><p><code>
-      &lt;Directory "/path-to-nfs-files"&gt;
-            EnableSendfile off
+      &lt;Directory "/path-to-nfs-files"&gt;<br />
+            EnableSendfile off<br />
       &lt;/Directory&gt;
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
