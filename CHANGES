@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Fix the RFC number mentioned when complaining about a missing
+     Host: header. PR#7079 [Alexey Toptygin <alexeyt@wam.umd.edu>]
+
   *) Fix an endless loop in ab which occurred when ab was posting
      and the server dropped the connection unexpectedly.
      [Jeff Trawick]
