@@ -909,7 +909,7 @@ a resource</td></tr>
                Enables or disables runtime rewriting engine</td></tr>
 <tr class="even"><td><a href="mod_rewrite.html#rewritelock" style="text-decoration: none">RewriteLock <em>file-path</em></a></td><td /><td>E</td><td>s</td></tr><tr class="even"><td colspan="4">
                  
-               Sets the name of the lock file used for <code class="directive"><a href="#rewritemap">RewriteMap</a></code>
+               Sets the name of the lock file used for <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
 synchronization</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritelog" style="text-decoration: none">RewriteLog <em>file-path</em></a></td><td /><td>E</td><td>sv</td></tr><tr class="odd"><td colspan="4">
                  
