@@ -599,6 +599,33 @@ Allows additional information to be listed along with a specified module.
   directory layout.  Any options from the old configuration scheme are
   available plus a lot of new options for flexibly customizing Apache.
  </LI>
+ <LI><STRONG>Dynamic Shared Object (DSO) support</STRONG>
+  <BR>
+  The support for loading Apache modules under runtime from DSO files was
+  greatly enhanced: First, <CODE>mod_so</CODE> was cleaned up and the
+  <CODE>src/Configure</CODE> script was extended to setup the totally
+  platform-dependend commands to build DSO files on all major Unix platforms
+  which support the pragmatic <CODE>dlopen()</CODE> interface (Linux, FreeBSD,
+  Solaris, SunOS, IRIX, OSF1, UnixWare). The two popular platforms HP/UX and
+  AIX are not supported because they both use a very special proprietary
+  interface. Second the modules <CODE>mod_proxy</CODE> and
+  <CODE>mod_mime</CODE> were unbundled to be able to use them independend from
+  each other.  Finally the Makefile generation stuff in
+  <CODE>src/Configure</CODE> was overhauled to support building shared objects
+  as clean as building static objects.  Additionally the new APACI (see below)
+  provides a powerful mechanism for out-of-the-box enabling, building,
+  installing and activating those DSO-based modules.
+ </LI>
+ <LI><STRONG>APache eXtenSion (APXS) support tool</STRONG>
+  <BR>
+  Now that Apache provides full support for loading modules under runtime from
+  dynamic shared object (DSO) files, a new support tool <CODE>apxs</CODE> was
+  created which provides off-source building, installing and activating of
+  those DSO-based modules. It completely hides the platform-dependend
+  DSO-build commands from the user and provides an easy way to build modules
+  outside the Apache source tree. To achieve this APACI installs the Apache C
+  header files together with the <CODE>apxs</CODE> tool.
+ </LI>
 </UL>
 
 <!--#include virtual="footer.html" -->
