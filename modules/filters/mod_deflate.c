@@ -126,13 +126,14 @@ typedef struct deflate_filter_config_t
 {
     int windowSize;
     int memlevel;
+    int bufferSize;
     char *noteName;
 } deflate_filter_config;
 
 /* windowsize is negative to suppress Zlib header */
 #define DEFAULT_WINDOWSIZE -15
 #define DEFAULT_MEMLEVEL 9
-#define FILTER_BUFSIZE 8096
+#define DEFAULT_BUFFERSIZE 8096
 
 /* Outputs a long in LSB order to the given file
  * only the bottom 4 bits are required for the deflate file format.
@@ -152,6 +153,7 @@ static void *create_deflate_server_config(apr_pool_t *p, server_rec *s)
 
     c->memlevel   = DEFAULT_MEMLEVEL;
     c->windowSize = DEFAULT_WINDOWSIZE;
+    c->bufferSize = DEFAULT_BUFFERSIZE;
 
     return c;
 }
@@ -173,6 +175,20 @@ static const char *deflate_set_window_size(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+static const char *deflate_set_buffer_size(cmd_parms *cmd, void *dummy,
+                                           const char *arg)
+{
+    deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
+                                                    &deflate_module);
+
+    c->bufferSize = atoi(arg);
+
+    if (c->bufferSize <= 0) {
+        return "DeflateBufferSize should be positive";
+    }
+
+    return NULL;
+}
 static const char *deflate_set_note(cmd_parms *cmd, void *dummy,
                                     const char *arg)
 {
@@ -206,7 +222,7 @@ static int deflate_magic[2] = { 0x1f, 0x8b };
 typedef struct deflate_ctx_t
 {
     z_stream stream;
-    unsigned char buffer[FILTER_BUFSIZE];
+    unsigned char *buffer;
     unsigned long crc;
     apr_bucket_brigade *bb;
 } deflate_ctx;
@@ -280,6 +296,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
+        ctx->buffer = apr_palloc(r->pool, c->bufferSize);
 /*
         ctx->stream.zalloc = (alloc_func) 0;
         ctx->stream.zfree = (free_func) 0;
@@ -324,7 +341,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             ctx->stream.avail_in = 0; /* should be zero already anyway */
             for (;;) {
-                deflate_len = FILTER_BUFSIZE - ctx->stream.avail_out;
+                deflate_len = c->bufferSize - ctx->stream.avail_out;
 
                 if (deflate_len != 0) {
                     b = apr_bucket_heap_create((char *)ctx->buffer,
@@ -332,7 +349,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                                                f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
                     ctx->stream.next_out = ctx->buffer;
-                    ctx->stream.avail_out = FILTER_BUFSIZE;
+                    ctx->stream.avail_out = c->bufferSize;
                 }
 
                 if (done) {
@@ -420,17 +437,17 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                                                       * trust zlib */
         ctx->stream.avail_in = len;
         ctx->stream.next_out = ctx->buffer;
-        ctx->stream.avail_out = FILTER_BUFSIZE;
+        ctx->stream.avail_out = c->bufferSize;
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
                 ctx->stream.next_out = ctx->buffer;
-                len = FILTER_BUFSIZE - ctx->stream.avail_out;
+                len = c->bufferSize - ctx->stream.avail_out;
 
                 b = apr_bucket_heap_create((char *)ctx->buffer, len,
                                            NULL, f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-                ctx->stream.avail_out = FILTER_BUFSIZE;
+                ctx->stream.avail_out = c->bufferSize;
             }
 
             zRC = deflate(&(ctx->stream), Z_NO_FLUSH);
@@ -455,6 +472,8 @@ static const command_rec deflate_filter_cmds[] = {
                   "Set a note to report on compression ratio"),
     AP_INIT_TAKE1("DeflateWindowSize", deflate_set_window_size, NULL,
                   RSRC_CONF, "Set the Deflate window size (1-15)"),
+    AP_INIT_TAKE1("DeflateBufferSize", deflate_set_buffer_size, NULL, RSRC_CONF,
+                  "Set the Deflate Buffer Size"),
     AP_INIT_TAKE1("DeflateMemLevel", deflate_set_memlevel, NULL, RSRC_CONF,
                   "Set the Deflate Memory Level (1-9)"),
     {NULL}
