@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/12 20:08:56 $]
+Last modified at [$Date: 2003/09/12 23:38:49 $]
 
 Release:
 
@@ -69,7 +69,7 @@ PATCHES TO PORT FROM 2.1
       Expires header but no Etag or Last-Modified headers. This submitted
       patch (by bjorn@exoweb.net) resolves PR 23130.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.c.diff?r1=1.76&r2=1.77
-      +1: rederpj
+      +1: rederpj, fielding
 
     * Modifies the cache code to be header-location agnostic. Also
       fixes a number of other cache code bugs related to PR 15852
@@ -82,13 +82,13 @@ PATCHES TO PORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.h.diff?r1=1.39&r2=1.40
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_disk_cache.c.diff?r1=1.46&r2=1.47
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_mem_cache.c.diff?r1=1.93&r2=1.94
-      +1: rederpj
+      +1: rederpj, fielding
       
 
     * Correct the code in ap_check_cache_feshness to check max_age, smax_age,
       and expires correctly. This is a RFC 2616 compliance issue.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/cache_util.c.diff?r1=1.26&r2=1.27
-      +1: rederpj, stoddard
+      +1: rederpj, stoddard, fielding
 
     * mod_rewrite.c: Fix mod_rewrite's support of the [P] option to send
       rewritten request using "proxy:". The code was adding multiple "proxy:"
@@ -97,7 +97,7 @@ PATCHES TO PORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.154&r2=1.155
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.156&r2=1.157
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.173&r2=1.174
-      +1: rederpj, nd, trawick
+      +1: rederpj, nd, trawick, fielding
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
@@ -324,13 +324,13 @@ PATCHES TO PORT FROM 2.1
 
     * fix extern "C" declaration of util_ebcdic.h. PR: 22203
         include/util_ebcdic.h: r1.15
-      +1: nd, trawick
+      +1: nd, trawick, fielding
 
     * Avoid an infinite recursion, which occured if the name of an included
       config file or directory contained a wildcard character. PR 22194.
       (2.0 + 1.3)
         server/config.c: r1.165
-      +1: nd, trawick
+      +1: nd, trawick, fielding
 
     * mod_ssl: fix a link failure when the openssl-engine libraries are
       present but the engine headers are missing.
@@ -397,7 +397,7 @@ PATCHES TO PORT FROM 2.1
     * Fix EOS handling in ap_get_client_block.
         modules/http/http_protocol.c: r1.471
       See Message-ID: <3EC0B430.4010008@stason.org>
-      +1: jerenkrantz, trawick
+      +1: jerenkrantz, trawick, fielding
 
 CURRENT RELEASE NOTES:
 
@@ -413,7 +413,7 @@ CURRENT VOTES:
     * Promote mod_cache from experimental to non-experimental
       status (keep issues noted below in EXPERIMENTAL MODULES as
       items to be addressed as a supported module).
-      +1: jim, stoddard, bnicholes
+      +1: jim, stoddard, bnicholes, fielding
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
