@@ -314,10 +314,9 @@ Open issues:
         - Public API module structure variables (e.g.,
           status_module) which are used special in Configure,
           mod_so, etc and have to be exported:
-            ..._module:+1: Roy [status quo] 
+            ..._module:+1: Roy [status quo], Dean
             ap_xxx:    +1:
             apm_xxx:   +1: Ralf, Jim
-	    ap_mod_xxx:+1: Dean
 
         Notes: 
             - Ralf: My opinion for my decisions are the following ones: 
