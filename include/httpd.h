@@ -321,6 +321,9 @@ extern "C" {
 /** The size of the server's internal read-write buffers */
 #define AP_IOBUFSIZE 8192
 
+/** The max number of regex captures that can be expanded by ap_pregsub */
+#define AP_MAX_REG_MATCH 10
+
 /**
  * APR_HAS_LARGE_FILES introduces the problem of spliting sendfile into 
  * mutiple buckets, no greater than MAX(apr_size_t), and more granular 

@@ -319,6 +319,10 @@ typedef struct {
     }    state;
 }      proxy_dir_ctx_t;
 
+/* fallback regex for ls -s1;  ($0..$2) == 3 */
+#define LS_REG_PATTERN "^ *([0-9]+) +([^ ]+)$"
+#define LS_REG_MATCH   3
+
 apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     request_rec *r = f->r;
@@ -462,10 +466,10 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
         int eos = 0;
 
         regex_t *re = NULL;
-        regmatch_t re_result[3];
+        regmatch_t re_result[LS_REG_MATCH];
 
         /* Compile the output format of "ls -s1" as a fallback for non-unix ftp listings */
-        re = ap_pregcomp(p, "^ *([0-9]+) +([^ ]+)$", REG_EXTENDED);
+        re = ap_pregcomp(p, LS_REG_PATTERN, REG_EXTENDED);
 
         /* get a complete line */
         /* if the buffer overruns - throw data away */
@@ -581,7 +585,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
             }
         }
         /* Try a fallback for listings in the format of "ls -s1" */
-        else if (0 == ap_regexec(re, ctx->buffer, 3, re_result, 0)) {
+        else if (0 == ap_regexec(re, ctx->buffer, LS_REG_MATCH, re_result, 0)) {
 
             filename = apr_pstrndup(p, &ctx->buffer[re_result[2].rm_so], re_result[2].rm_eo - re_result[2].rm_so);
 
