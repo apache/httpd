@@ -1452,7 +1452,7 @@ static void perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pte
 
 static int pass_request(request_rec *r)
 {
-    apr_socket_t *thesock = r->connection->client_socket;
+    apr_socket_t *thesock = ap_get_module_config(r->connection->conn_config, &core_module);
     struct msghdr msg;
     struct cmsghdr *cmsg;
     int sfd;
@@ -1582,7 +1582,7 @@ static int perchild_post_read(request_rec *r)
         apr_os_sock_put(&csd, &thread_socket_table[thread_num], 
                         r->connection->pool);
         ap_sock_disable_nagle(csd);
-        r->connection->client_socket = csd;
+        ap_set_module_config(r->connection->conn_config, &core_module, csd);
         return OK;
     }
     else {
