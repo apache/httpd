@@ -125,7 +125,8 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                                          request_rec *r, apr_pool_t *p, 
                                          cgi_exec_info_t *e_info)
 {
-    const char *ext = NULL;
+    char *ext = NULL;
+    char *cmd_only, *ptr;
     const char *detached = NULL;
     netware_dir_config *d;
     apr_file_t *fh;
@@ -147,7 +148,13 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
             args = r->args;
         }
     }
-    ext = strrchr(apr_filename_of_pathname(*cmd), '.');
+    cmd_only = apr_pstrdup(p, *cmd);
+
+    /* truncate any arguments from the cmd */
+    for (ptr = cmd_only; *ptr && (*ptr != ' '); ptr++);
+    *ptr = '\0';
+
+    ext = strrchr(apr_filename_of_pathname(cmd_only), '.');
     
     if (*ext == '.')
         ++ext;
@@ -166,8 +173,9 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         }
     }
 
-    apr_tokenize_to_argv(r->filename, (char***)argv, p);
+    apr_tokenize_to_argv(*cmd, (char***)argv, p);
     e_info->cmd_type = APR_PROGRAM;
+    *cmd = ap_server_root_relative(p, cmd_only);
 
     return APR_SUCCESS;
 }
