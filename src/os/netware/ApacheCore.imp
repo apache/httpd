@@ -363,6 +363,7 @@
  ap_os_http_method,
  os_readdir,
  os_opendir,
+ os_closedir,
  ap_update_vhost_from_headers,
  ap_update_vhost_given_ip,
  ap_set_name_virtual_host,

@@ -134,6 +134,10 @@ DIR *os_opendir (const char *pathname);
 #define readdir(p) os_readdir(p)
 DIR *os_readdir (DIR *dirP);
 
+#define closedir_510(p) os_closedir(p)
+#define closedir(p) os_closedir(p)
+int os_closedir (DIR *dirP);
+
 /* Prototypes */
 void AMCSocketCleanup(void);
 void clean_parent_exit(int code);

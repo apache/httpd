@@ -180,7 +180,8 @@ char *ap_os_canonical_filename(pool *pPool, const char *szFile)
             _splitpath (ap_server_root, vol, NULL, NULL, NULL);
             pNewName = ap_pstrcat (pPool, vol, pNewName, NULL);
         }
-        if ((slash_test = strchr(pNewName, ':')) && (*(slash_test+1) != '/'))
+        if ((slash_test = strchr(pNewName, ':')) && (*(slash_test+1) != '/') 
+            && (*(slash_test+1) != '\0'))
         {
             char vol[_MAX_VOLUME+1];
         
@@ -261,7 +262,8 @@ int ap_os_is_filename_valid(const char *file)
 	pos = ++colonpos;
    	if (!*pos) {
 		/* No path information */
-		return 0;
+		/* Same as specifying volume:\ */
+		return 1;
     }
 
     while (*pos) {
@@ -290,6 +292,14 @@ int ap_os_is_filename_valid(const char *file)
 				strchr(invalid_characters, segstart[idx])) {
 				return 0;
 	    	}
+		}
+
+		/* Test 2.5 */
+		if (seglength == 2) {
+			if ( (segstart[0] == '.') && (segstart[1] == '.') ) {
+					return 1;
+			}
+		
 		}
 
 		/* Test 3 */
@@ -323,18 +333,66 @@ int ap_os_is_filename_valid(const char *file)
 #undef opendir_411
 DIR *os_opendir (const char *pathname)
 {
-    DIR *d = opendir_411 (pathname);
+	struct stat s;
+	DIR *d = opendir_411 (pathname);
 
     if (d) {
         strcpy (d->d_name, "<<**");
     }
+
+	if (!d) {
+		/* Let's check if this is an empty directory */
+		if (stat(pathname, &s) != 0)
+			return NULL;
+		if (!(S_ISDIR(s.st_mode)))
+			return NULL; 
+		
+		/* If we are here, then this appears to be a directory */
+		/* We allocate a name */
+		d = NULL;
+        d = (DIR *)malloc(sizeof(DIR));
+        if (d) {
+            memset(d, 0, sizeof(DIR));
+            strcpy(d->d_name, "**<<");
+			d->d_cdatetime = 50;
+
+        }    
+
+  	}
+
     return d;
+
 }
 
 #undef readdir_411
 DIR *os_readdir (DIR *dirP)
 {
-    if ((dirP->d_name[0] == '<') && (dirP->d_name[2] == '*')) {
+
+/*
+ * First three if statements added for empty directory support.
+ *
+ */
+    if (  (dirP->d_cdatetime == 50) && (dirP->d_name[0] == '*') &&
+       	  (dirP->d_name[2] == '<') )
+    {
+        strcpy (dirP->d_name, ".");
+        strcpy (dirP->d_nameDOS, ".");
+        return (dirP);
+    }
+    else if ((dirP->d_cdatetime == 50) &&
+             (dirP->d_name[0] == '.') &&
+             (dirP->d_name[1] == '\0')) {
+        strcpy (dirP->d_name, "..");
+        strcpy (dirP->d_nameDOS, "..");
+        return (dirP);
+    }
+    else if ( (dirP->d_cdatetime == 50) &&
+             (dirP->d_name[0] == '.') &&
+             (dirP->d_name[1] == '.') &&
+             (dirP->d_name[2] == '\0') ) {
+        return (NULL);
+    }
+    else if ((dirP->d_name[0] == '<') && (dirP->d_name[2] == '*')) {
         strcpy (dirP->d_name, ".");
         strcpy (dirP->d_nameDOS, ".");
         return (dirP);
@@ -346,6 +404,42 @@ DIR *os_readdir (DIR *dirP)
     }
     else
         return readdir_411 (dirP);
+}
+
+
+#undef closedir_510
+int os_closedir (DIR *dirP)
+{
+/*
+ * Modified to handle empty directories.
+ *
+ */
+
+	if (dirP == NULL) {
+		return 0;
+	}
+
+    if (  (  (dirP->d_cdatetime == 50) && (dirP->d_name[0] == '*') &&
+       	  	 (dirP->d_name[2] == '<') 
+       	  ) ||
+       	  (	 (dirP->d_cdatetime == 50) && (dirP->d_name[0] == '.') &&
+       	     (dirP->d_name[1] == '\0')
+       	  ) ||
+       	  (	 (dirP->d_cdatetime == 50) && (dirP->d_name[0] == '.') &&
+       	     (dirP->d_name[1] == '.') && (dirP->d_name[2] == '\0')
+       	  )
+       )
+	{
+
+ 	       free(dirP); 
+ 	       dirP = NULL;
+ 	       return 0;
+ 	}
+ 	else {
+	       return closedir_510(dirP);
+	}
+		
+
 }
 
 char *ap_os_http_method(void *r)
