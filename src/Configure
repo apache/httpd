@@ -1853,17 +1853,17 @@ if [ "x$RULE_WANTHSREGEX" = "xyes" ]; then
 fi
 
 ####################################################################
-## Add in the Expat library. Choose whether we want the system's
-## version ('yes'), our version (expat-lite) ('no') or for Configure
+## Add in the Expat(-lite) library. Choose whether we want the expat-lite
+## version ('yes'), the system's expat ('no') or for Configure
 ## to choose for us ('default' - system is prefered if available).
 ##
 
-if ./helpers/TestCompile lib expat && [ "x$RULE_EXPAT" != "xno" ]; then
+if ./helpers/TestCompile lib expat && [ "x$RULE_EXPAT" != "xyes" ]; then
         echo " + using system Expat"
 	LIBS="$LIBS -lexpat"
 else
-    if [ "x$RULE_EXPAT" = "xyes" ]; then
-        echo "ERROR: RULE_EXPAT set to \"yes\" but is not available."
+    if [ "x$RULE_EXPAT" = "xno" ]; then
+        echo "ERROR: RULE_EXPAT set to \"no\" but system expat is not available."
         exit 1
     fi
     if [ ! -d ./lib/expat-lite/ ]; then
