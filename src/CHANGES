@@ -6,7 +6,7 @@ Changes with Apache 1.3.1
 
   *) Fix parsing of FTP `SIZE' responses in proxy module: The newline was not
      truncated which forced following HTTP headers to be data in the HTTP
-     reponse. [Ralf S. Engelschall, Charles Fu <ccwf@bacchus.com>] PR#2412
+     reponse. [Ralf S. Engelschall, Charles Fu <ccwf@bacchus.com>] PR#2412, 2367
 
   *) Portability fix for APACI shadow tree support: Swap order of awk and sed
      in top-level configure script to avoid sed fails on some platforms (for
