@@ -78,28 +78,23 @@ Ben Laurie <ben@algroup.co.uk> 30 Mar 96
 
 More things to do:
 
-0. Code cleanup
+0. Code cleanup (ongoing)
 
-1. add 230 response output and PASV mode for ftp now that it works
+1. add 230 response output for ftp now that it works
 
 2. Add gopher & WAIS
 
-3. Various other fixups to insure no NULL strings parsed, etc.
-
-4. NoProxy directive for excluding sites to proxy
+3. NoProxy directive for excluding sites to proxy
  
-5. Imply NoCache * if cache directory is not configured, to enable proxy
-   without cache (and avoid SIGSEGV)
+4. Use protocol handler struct a la Apache module handlers (Dirk van Gulik)
  
-6. Use protocol handler struct a la Apache module handlers (Dirk van Gulik)
- 
-7. Use a cache expiry database for more efficient GC (Jeremy Wohl)
+5. Use a cache expiry database for more efficient GC (Jeremy Wohl)
 
-8. Handle multiple IPs for doconnect()
+6. Handle multiple IPs for doconnect()
 
-9. Bulletproof GC against SIGALRM
+7. Bulletproof GC against SIGALRM
 
-10. Make HTTPS and SNEWS ports configurable from a list
+8. Make HTTPS and SNEWS ports configurable from a list
 
 Chuck Murcko <chuck@telebase.com> 1 Oct 96
 
