@@ -222,12 +222,12 @@ static ap_filter_rec_t *get_filter_handle(const char *name,
     return NULL;
 }
 
-ap_filter_rec_t *ap_get_output_filter_handle(const char *name)
+AP_DECLARE(ap_filter_rec_t *)ap_get_output_filter_handle(const char *name)
 {
     return get_filter_handle(name, registered_output_filters);
 }
 
-ap_filter_rec_t *ap_get_input_filter_handle(const char *name)
+AP_DECLARE(ap_filter_rec_t *)ap_get_input_filter_handle(const char *name)
 {
     return get_filter_handle(name, registered_input_filters);
 }
