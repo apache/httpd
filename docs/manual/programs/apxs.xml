@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.5 $ -->
+<!-- $Revision: 1.6 $ -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -251,7 +251,7 @@
     <example>
       $ apxs -c mod_foo.c<br />
       /path/to/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /path/to/libtool --mode=link -o mod_foo.la mod_foo.slo<br />
+      /path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
       $ _
     </example>
 
