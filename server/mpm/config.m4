@@ -29,10 +29,12 @@ AC_DEFUN(APACHE_MPM_CHECK_SHMEM, [
     
     AC_MSG_CHECKING(which shared memory mechanism to use)
     if test "$ac_cv_func_shmget" = "yes" ; then
-        AC_DEFINE(USE_SHMGET_SCOREBOARD)
+        AC_DEFINE(USE_SHMGET_SCOREBOARD,,
+            [Define if MPMs should use shmget to implement their shared memory])
         AC_MSG_RESULT(shmget)
     elif test "$ac_cv_func_mmap" = "yes" ; then
-        AC_DEFINE(USE_MMAP_SCOREBOARD)
+        AC_DEFINE(USE_MMAP_SCOREBOARD,,
+            [Define if MPMs should use mmap to implement their shared memory])
         AC_MSG_RESULT(mmap)
     else
         AC_MSG_ERROR(No known shared memory system)
@@ -55,5 +57,6 @@ dnl platform. This will cover a couple of them, anyway
     ])
 
     dnl User threads libraries need pthread.h included everywhere
-    AC_DEFINE(PTHREAD_EVERYWHERE)
+    AC_DEFINE(PTHREAD_EVERYWHERE,,
+        [Define if all code should have #include <pthread.h>])
 ])
