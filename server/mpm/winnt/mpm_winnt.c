@@ -1179,7 +1179,7 @@ static void child_main()
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
         exit(APEXIT_CHILDINIT);
     }
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                  "Child %d: Acquired the start mutex.", my_pid);
 
     /*
@@ -1198,7 +1198,7 @@ static void child_main()
     /* 
      * Create the pool of worker threads
      */
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                  "Child %d: Starting %d worker threads.", my_pid, nthreads);
     child_handles = (thread) alloca(nthreads * sizeof(int));
     for (i = 0; i < nthreads; i++) {
@@ -1254,7 +1254,7 @@ static void child_main()
         }
         else if (cld == 0) {
             /* Exit event was signaled */
-            ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                          "Child %d: Exit event signaled. Child process is ending.", my_pid);
             break;
         }
@@ -1262,7 +1262,7 @@ static void child_main()
             /* MaxRequestsPerChild event set by the worker threads.
              * Signal the parent to restart
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                          "Child %d: Process exiting because it reached "
                          "MaxRequestsPerChild. Signaling the parent to "
                          "restart a new child process.", my_pid);
@@ -1293,7 +1293,7 @@ static void child_main()
      */
     rv = apr_proc_mutex_unlock(start_mutex);
     if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK,APLOG_INFO | APLOG_NOERRNO, rv, ap_server_conf, 
+        ap_log_error(APLOG_MARK,APLOG_NOTICE | APLOG_NOERRNO, rv, ap_server_conf, 
                      "Child %d: Released the start mutex", my_pid);
     }
     else {
@@ -1333,7 +1333,7 @@ static void child_main()
     }
 
     /* Give busy worker threads a chance to service their connections */
-    ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                  "Child %d: Waiting for %d threads to die.", my_pid, nthreads);
     end_time = time(NULL) + 180;
     while (nthreads) {
@@ -1352,7 +1352,7 @@ static void child_main()
         TerminateThread(child_handles[i], 1);
         CloseHandle(child_handles[i]);
     }
-    ap_log_error(APLOG_MARK,APLOG_DEBUG, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                  "Child %d: All worker threads have ended.", my_pid);
 
     CloseHandle(allowed_globals.jobsemaphore);
@@ -1643,7 +1643,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         return -1;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", pi.dwProcessId);
 
     if (send_handles_to_child(p, hExitEvent, pi.hProcess, hPipeWrite)) {
@@ -1780,7 +1780,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     else if (cld == SHUTDOWN_HANDLE) {
         /* shutdown_event signalled */
         shutdown_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, s, 
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, APR_SUCCESS, s, 
                      "Parent: Received shutdown signal -- Shutting down the server.");
         if (ResetEvent(shutdown_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
@@ -1793,7 +1793,7 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          * then signal the child process to exit. 
          */
         restart_pending = 1;
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, s, 
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, s, 
                      "Parent: Received restart signal -- Restarting the server.");
         if (ResetEvent(restart_event) == 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), s,
@@ -1821,12 +1821,12 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         if (   exitcode == APEXIT_CHILDFATAL 
             || exitcode == APEXIT_CHILDINIT
             || exitcode == APEXIT_INIT) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                          "Parent: child process exited with status %u -- Aborting.", exitcode);
         }
         else {
             restart_pending = 1;
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                          "Parent: child process exited with status %u -- Restarting.", exitcode);
         }
         CloseHandle(event_handles[CHILD_HANDLE]);
@@ -1854,13 +1854,13 @@ die_now:
         if (event_handles[CHILD_HANDLE]) {
             rv = WaitForSingleObject(event_handles[CHILD_HANDLE], timeout);
             if (rv == WAIT_OBJECT_0) {
-                ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
-                             "Parent: Child process %d exited successfully.", event_handles[CHILD_HANDLE]);
+                ap_log_error(APLOG_MARK,APLOG_NOTICE|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
+                             "Parent: Child process exited successfully.");
                 CloseHandle(event_handles[CHILD_HANDLE]);
                 event_handles[CHILD_HANDLE] = NULL;
             }
             else {
-                ap_log_error(APLOG_MARK,APLOG_INFO|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
+                ap_log_error(APLOG_MARK,APLOG_NOTICE|APLOG_NOERRNO, APR_SUCCESS, ap_server_conf,
                              "Parent: Forcing termination of child process %d ", event_handles[CHILD_HANDLE]);
                 TerminateProcess(event_handles[CHILD_HANDLE], 1);
                 CloseHandle(event_handles[CHILD_HANDLE]);
@@ -2422,12 +2422,12 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     {
         /* The child process or in one_process (debug) mode 
          */
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                      "Child %d: Child process is running", my_pid);
 
         child_main();
 
-        ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                      "Child %d: Child process is exiting", my_pid);        
         return 1;
     }
