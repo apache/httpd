@@ -1,5 +1,8 @@
 Changes with Apache 2.0.31-dev
 
+  *) Change ap_get_brigade prototype to use apr_off_t instead of apr_off_t*.
+     [Justin Erenkrantz]
+
   *) Refactor ap_rgetline so that it does not use an internal brigade.
      Change ap_rgetline's prototype to return errors.  [Justin Erenkrantz]
 
