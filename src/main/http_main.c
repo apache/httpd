@@ -1552,16 +1552,16 @@ static void sock_disable_nagle (int s)
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
-     * P-HTTP and Nagle's algorithm that have very severe performance
-     * penalties.  (Failing to do disable Nagle is not much of a
+     * persistent connections and Nagle's algorithm that have very severe
+     * performance penalties.  (Failing to disable Nagle is not much of a
      * problem with simple HTTP.)
      *
      * In spite of these problems, failure here is not a shooting offense.
      */
-    const int just_say_no = 1;
+    int just_say_no = 1;
 
-    if (0 != setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&just_say_no,
-			sizeof just_say_no))
+    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&just_say_no,
+                   sizeof(int)) < 0)
 	fprintf(stderr, "httpd: could not set socket option TCP_NODELAY\n");
 }
 #else
@@ -1842,8 +1842,7 @@ static int
 make_sock(pool *pconf, const struct sockaddr_in *server)
 {
     int s;
-    const int one = 1;
-    const int keepalive_value = 1;  
+    int one = 1;
 
     if ((s = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP)) == -1) {
         perror("socket");
@@ -1855,14 +1854,13 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
     
 #ifndef MPE
 /* MPE does not support SO_REUSEADDR and SO_KEEPALIVE */
-    if((setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(one)))
-       == -1) {
+    if (setsockopt(s, SOL_SOCKET,SO_REUSEADDR,(char *)&one,sizeof(int)) < 0) {
 	perror("setsockopt(SO_REUSEADDR)");
 	fprintf(stderr,"httpd: could not set socket option SO_REUSEADDR\n");
         exit(1);
     }
-    if((setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&keepalive_value,
-        sizeof(keepalive_value))) == -1) {
+    one = 1;
+    if (setsockopt(s, SOL_SOCKET,SO_KEEPALIVE,(char *)&one,sizeof(int)) < 0) {
 	perror("setsockopt(SO_KEEPALIVE)"); 
         fprintf(stderr,"httpd: could not set socket option SO_KEEPALIVE\n"); 
         exit(1); 
@@ -1883,7 +1881,7 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
 	li.l_linger = 900;
 
 	if (setsockopt(s, SOL_SOCKET, SO_LINGER,
-	    (char *)&li, sizeof(struct linger)) < 0) {
+	               (char *)&li, sizeof(struct linger)) < 0) {
 	    perror("setsockopt(SO_LINGER)");
 	    fprintf(stderr,"httpd: could not set socket option SO_LINGER\n");
 	    exit(1);
@@ -1912,7 +1910,8 @@ make_sock(pool *pconf, const struct sockaddr_in *server)
      * If no size is specified, use the kernel default.
      */
     if (server_conf->send_buffer_size) {
-        if((setsockopt(s, SOL_SOCKET, SO_SNDBUF, (char*)&server_conf->send_buffer_size, sizeof(int))) < 0) {
+        if (setsockopt(s, SOL_SOCKET, SO_SNDBUF,
+              (char *)&server_conf->send_buffer_size, sizeof(int)) < 0) {
 	    perror("setsockopt(SO_SNDBUF), using default buffer size"); 
 	    /* Fail soft. */
 	}
