@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
+<modulesynopsis>
+
+<name>mod_userdir</name>
+<status>Base</status>
+<description>This module provides for user-specific
+directories.</description>
+<identifier>userdir_module</identifier>
+<sourcefile>mod_userdir.c</sourcefile>
+
+<summary>
+</summary>
+
+
+<directivesynopsis>
+
+<name>UserDir</name>
+<description>Sets the directory from which to serve files when requests
+for a particular user are received, denoted by requests containing
+<em>~username</em>, such as 
+<em>http://server.example.com/~bob/</em></description>
+<syntax>UserDir <em>directory-filename</em></syntax>
+<default>UserDir <em>public_html</em></default>
+<contextlist><context>server config</context> <context>virtual
+host</context></contextlist>
+<compatibility>All forms except the <code>UserDir public_html</code>
+form are only available in Apache 1.1 or above. Use of the 
+<code>enabled</code> keyword, or <code>disabled</code> with a
+list of usernames, is only available in Apache 1.3 and
+above.</compatibility>
+
+<usage>
+
+    <p>The UserDir directive sets the real directory in a user's
+    home directory to use when a request for a document for a user
+    is received. <em>Directory-filename</em> is one of the
+    following:</p>
+
+    <ul>
+      <li>The name of a directory or a pattern such as those shown
+      below.</li>
+
+      <li>The keyword <code>disabled</code>. This turns off
+      <em>all</em> username-to-directory translations except those
+      explicitly named with the <code>enabled</code> keyword (see
+      below).</li>
+
+      <li>The keyword <code>disabled</code> followed by a
+      space-delimited list of usernames. Usernames that appear in
+      such a list will <em>never</em> have directory translation
+      performed, even if they appear in an <code>enabled</code>
+      clause.</li>
+
+      <li>The keyword <code>enabled</code> followed by a
+      space-delimited list of usernames. These usernames will have
+      directory translation performed even if a global disable is
+      in effect, but not if they also appear in a
+      <code>disabled</code> clause.</li>
+    </ul>
+
+    <p>If neither the <code>enabled</code> nor the
+    <code>disabled</code> keywords appear in the
+    <code>Userdir</code> directive, the argument is treated as a
+    filename pattern, and is used to turn the name into a directory
+    specification. A request for
+    <code>http://www.foo.com/~bob/one/two.html</code> will be
+    translated to:</p>
+
+<table>
+<tr><th>UserDir directive used</th>
+<th>Translated path</th></tr>
+<tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
+<tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
+<tr><td>UserDir /home/*/www</td><td>/home/bob/www/one/two.html</td></tr>
+</table>
+
+    <p>The following directives will send redirects to the client:</p> 
+
+<table>
+<tr><th>UserDir directive used</th>
+<th>Translated path</th></tr>
+<tr><td>UserDir http://www.foo.com/users</td><td>http://www.foo.com/users/bob/one/two.html</td></tr>
+<tr><td>UserDir
+http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></tr>
+<tr><td>UserDir
+http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
+</table> 
+
+    <blockquote>
+      <strong>Be careful when using this directive; for instance,
+      <code>"UserDir ./"</code> would map
+      <code>"/~root"</code> to <code>"/"</code> - which is probably
+      undesirable. If you are running Apache 1.3 or above, it is
+      strongly recommended that your configuration include a
+      "<code>UserDir disabled root</code>" declaration.
+      See also the <directive module="core">Directory</directive>
+      directive and the <a href="../misc/security_tips.html">Security
+      Tips</a> page for more information.</strong>
+    </blockquote>
+
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+
+
