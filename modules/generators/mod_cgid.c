@@ -690,7 +690,7 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
     cgid_server_conf *conf = ap_get_module_config(s->module_config,
                                                   &cgid_module); 
 
-    conf->logname = ap_server_root_relative(cfg->pool, arg);
+    conf->logname = ap_server_root_relative(cmd->pool, arg);
     return NULL; 
 } 
 
@@ -753,7 +753,7 @@ static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
     if (!conf->logname || 
         ((stat(conf->logname, &finfo) == 0) 
          && (finfo.st_size > conf->logbytes)) || 
-         (apr_file_open(&f, r->pool, conf->logname,
+         (apr_file_open(&f, conf->logname,
                   APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
         return ret; 
     } 
