@@ -1,7 +1,8 @@
 Changes with Apache 2.0.39
 
-  *) Improve ap_get_client_block implementation by using APR-util helper
-     functions.  [Justin Erenkrantz]
+  *) Improve ap_get_client_block implementation by using APR-util brigade
+     helper functions and relying on current filter assumptions.
+     [Justin Erenkrantz]
 
 Changes with Apache 2.0.38
 
