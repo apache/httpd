@@ -26,7 +26,7 @@ APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 /* Handles for cache filters, resolved at startup to eliminate
  * a name-to-function mapping on each request
  */
-static ap_filter_rec_t *cache_in_filter_handle;
+static ap_filter_rec_t *cache_save_filter_handle;
 static ap_filter_rec_t *cache_out_filter_handle;
 static ap_filter_rec_t *cache_conditional_filter_handle;
 
@@ -40,7 +40,7 @@ static ap_filter_rec_t *cache_conditional_filter_handle;
  * If no:
  *   check whether we're allowed to try cache it
  *   If yes:
- *     add CACHE_IN filter
+ *     add CACHE_SAVE filter
  *   If No:
  *     oh well.
  */
@@ -133,7 +133,7 @@ static int cache_url_handler(request_rec *r, int lookup)
      * Try to serve this request from the cache.
      *
      * If no existing cache file (DECLINED)
-     *   add cache_in filter
+     *   add cache_save filter
      * If cached file (OK)
      *   If fresh cache file
      *     clear filter stack
@@ -147,8 +147,8 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
-                /* add cache_in filter to cache this request */
-                ap_add_output_filter_handle(cache_in_filter_handle, NULL, r,
+                /* add cache_save filter to cache this request */
+                ap_add_output_filter_handle(cache_save_filter_handle, NULL, r,
                                             r->connection);
             }
         }
@@ -281,7 +281,7 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
  * If response HTTP_NOT_MODIFIED
  *   replace ourselves with cache_out filter
  * Otherwise
- *   replace ourselves with cache_in filter
+ *   replace ourselves with cache_save filter
  */
 
 static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
@@ -295,8 +295,8 @@ static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
                                     f->r, f->r->connection);
     }
     else {
-        /* replace ourselves with CACHE_IN filter */
-        ap_add_output_filter_handle(cache_in_filter_handle, NULL,
+        /* replace ourselves with CACHE_SAVE filter */
+        ap_add_output_filter_handle(cache_save_filter_handle, NULL,
                                     f->r, f->r->connection);
     }
     ap_remove_output_filter(f);
@@ -306,7 +306,7 @@ static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
 
 /*
- * CACHE_IN filter
+ * CACHE_SAVE filter
  * ---------------
  *
  * Decide whether or not this content should be cached.
@@ -318,7 +318,7 @@ static int cache_conditional_filter(ap_filter_t *f, apr_bucket_brigade *in)
  *
  */
 
-static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
+static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     int rv;
     int date_in_errhdr = 0;
@@ -346,7 +346,7 @@ static int cache_in_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache = (cache_request_rec *) ap_get_module_config(r->request_config,
                                                        &cache_module);
     if (!cache) {
-        /* user likely configured CACHE_IN manually; they should really use
+        /* user likely configured CACHE_SAVE manually; they should really use
          * mod_cache configuration to do that
          */
         cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
@@ -961,9 +961,9 @@ static void register_hooks(apr_pool_t *p)
      * Make them AP_FTYPE_CONTENT for now.
      * XXX ianhH:they should run AFTER all the other content filters.
      */
-    cache_in_filter_handle = 
-        ap_register_output_filter("CACHE_IN", 
-                                  cache_in_filter, 
+    cache_save_filter_handle = 
+        ap_register_output_filter("CACHE_SAVE", 
+                                  cache_save_filter, 
                                   NULL,
                                   AP_FTYPE_CONTENT_SET-1);
     /* CACHE_OUT must go into the filter chain before SUBREQ_CORE to
