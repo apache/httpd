@@ -269,7 +269,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     apr_status_t rv;
 
     *worker = NULL;
-    /* Spet 1: check if the url is for us */
+    /* Step 1: check if the url is for us */
     if (!(*balancer = ap_proxy_get_balancer(r->pool, conf, *url)))
         return DECLINED;
     
