@@ -1809,21 +1809,21 @@ void standalone_main(int argc, char **argv)
     
     default_server_hostnames (server_conf);
 
-    if (listeners == NULL)
-    {
-        if(!is_graceful)
-	    {
+    if (listeners == NULL) {
+        if(!is_graceful) {
 	    memset((char *) &sa_server, 0, sizeof(sa_server));
 	    sa_server.sin_family=AF_INET;
 	    sa_server.sin_addr=bind_address;
 	    sa_server.sin_port=htons(server_conf->port);
 
 	    sd = make_sock(pconf, &sa_server);
-	    }
-	else
-	    sd=saved_sd;
-    } else
-    {
+	}
+	else {
+	    sd = saved_sd;
+	    note_cleanups_for_fd(pconf, sd);
+	}
+    }
+    else {
 	listen_rec *lr;
 	int fd;
 
