@@ -1,11 +1,11 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/12/21 08:26:49 $]
+Last modified at [$Date: 1999/12/22 06:20:11 $]
 
 Release:
 
-    Assuming more features aren't demanded for the 2.0 release
+    Vague plan, assuming more features aren't demanded for the 2.0 release
     2.0a1/b1: January 2000
-    2.0     : Early 2000
+    2.0     : later in 2000
 
 RELEASE SHOWSTOPPERS:
 
@@ -85,7 +85,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Status: Manoj has placed an initial version into the 2.0
         repository. Todos include:
           
-          - "make install" and "make depend" should work
+          - "make install" should work
           - a tool to simplfy third-party module building should be
             written. Something like apxs
           - Add a lot more checks to satisfy the various platforms, e.g.
