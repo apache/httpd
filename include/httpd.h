@@ -978,7 +978,6 @@ API_EXPORT(gid_t) ap_gname2id(const char *name);
 API_EXPORT(int) ap_is_directory(const char *name);
 API_EXPORT(void) ap_chdir_file(const char *file);
 API_EXPORT(int) ap_get_max_daemons(void);
-API_EXPORT(const server_rec *) ap_get_server_conf(void);
 
 #ifdef _OSD_POSIX
 extern const char *os_set_account(ap_pool_t *p, const char *account);

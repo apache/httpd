@@ -140,11 +140,6 @@ static int one_process = 0;
 int raise_sigstop_flags;
 #endif
 
-API_EXPORT(const server_rec *) ap_get_server_conf(void)
-{
-    return (ap_server_conf);
-}
-
 API_EXPORT(int) ap_get_max_daemons(void)
 {
     return ap_max_child_assigned;
@@ -481,7 +476,7 @@ static int32 worker_thread(void * dummy)
                 /* poll() will only return errors in catastrophic
                  * circumstances. Let's try exiting gracefully, for now. */
                 ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
-                             ap_get_server_conf(), "ap_poll: (listen)");
+                             ap_server_conf, "ap_poll: (listen)");
                 this_worker_should_exit = 1;
             }
 

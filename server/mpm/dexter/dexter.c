@@ -173,11 +173,6 @@ static ap_lock_t *process_accept_mutex;
 static const char *lock_fname;
 static pthread_mutex_t thread_accept_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-API_EXPORT(const server_rec *) ap_get_server_conf(void)
-{
-    return (ap_server_conf);
-}
-
 API_EXPORT(int) ap_get_max_daemons(void)
 {
     return ap_max_daemons_limit;
@@ -652,7 +647,7 @@ static void *worker_thread(void *arg)
                 /* ap_poll() will only return errors in catastrophic
                  * circumstances. Let's try exiting gracefully, for now. */
                 ap_log_error(APLOG_MARK, APLOG_ERR, srv, (const server_rec *)
-                             ap_get_server_conf(), "ap_poll: (listen)");
+                             ap_server_conf, "ap_poll: (listen)");
                 workers_may_exit = 1;
             }
             if (workers_may_exit) break;
