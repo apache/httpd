@@ -2,6 +2,8 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) forward port of buffer overflow fixes for htdigest. [Thom May]
+
   *) prefork MPM: Use the right permissions for the directory created 
      for gprof support.  [Jim Carlson <jcarlson@jnous.com>]
 
