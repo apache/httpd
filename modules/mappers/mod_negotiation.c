@@ -1066,7 +1066,7 @@ static int read_type_map(apr_file_t **map, negotiation_state *neg,
                      break;
                 }
                 mime_info.bytes = len;
-                mime_info.file_name = apr_filename_of_pathname(rr->filename);
+                mime_info.file_name = apr_filepath_name_get(rr->filename);
             }
         }
         else {

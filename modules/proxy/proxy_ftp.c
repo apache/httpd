@@ -954,7 +954,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         int failed = 1;
         while (connect_addr) {
 
-	    if ((rv = apr_socket_create(&sock, connect_addr->family, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+	    if ((rv = apr_socket_create(&sock, connect_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
 		ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			      "proxy: FTP: error creating socket");
                 connect_addr = connect_addr->next;
@@ -993,7 +993,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                          connect_addr->family, connect_addr, connectname);
 
             /* make the connection out of the socket */
-            rv = apr_connect(sock, connect_addr);
+            rv = apr_socket_connect(sock, connect_addr);
 
             /* if an error occurred, loop round and try again */
             if (rv != APR_SUCCESS) {
@@ -1272,7 +1272,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                        "proxy: FTP: EPSV contacting remote host on port %d",
                              data_port);
 
-                if ((rv = apr_socket_create(&data_sock, connect_addr->family, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_socket_create(&data_sock, connect_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                   "proxy: FTP: error creating EPSV socket");
                     return HTTP_INTERNAL_SERVER_ERROR;
@@ -1291,7 +1291,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                 apr_socket_addr_get(&data_addr, APR_REMOTE, sock);
                 apr_sockaddr_ip_get(&data_ip, data_addr);
                 apr_sockaddr_info_get(&epsv_addr, data_ip, connect_addr->family, data_port, 0, p);
-                rv = apr_connect(data_sock, epsv_addr);
+                rv = apr_socket_connect(data_sock, epsv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                                  "proxy: FTP: EPSV attempt to connect to %pI failed - Firewall/NAT?", epsv_addr);
@@ -1359,7 +1359,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
                           "proxy: FTP: PASV contacting host %d.%d.%d.%d:%d",
                              h3, h2, h1, h0, pasvport);
 
-                if ((rv = apr_socket_create(&data_sock, connect_addr->family, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+                if ((rv = apr_socket_create(&data_sock, connect_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                                   "proxy: error creating PASV socket");
                     return HTTP_INTERNAL_SERVER_ERROR;
@@ -1376,7 +1376,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
                 /* make the connection */
                 apr_sockaddr_info_get(&pasv_addr, apr_psprintf(p, "%d.%d.%d.%d", h3, h2, h1, h0), connect_addr->family, pasvport, 0, p);
-                rv = apr_connect(data_sock, pasv_addr);
+                rv = apr_socket_connect(data_sock, pasv_addr);
                 if (rv != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                                  "proxy: FTP: PASV attempt to connect to %pI failed - Firewall/NAT?", pasv_addr);
@@ -1402,7 +1402,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
         apr_port_t local_port;
         unsigned int h0, h1, h2, h3, p0, p1;
 
-        if ((rv = apr_socket_create(&local_sock, connect_addr->family, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
+        if ((rv = apr_socket_create(&local_sock, connect_addr->family, SOCK_STREAM, 0, r->pool)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "proxy: FTP: error creating local socket");
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -1422,14 +1422,14 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
         apr_sockaddr_info_get(&local_addr, local_ip, APR_UNSPEC, local_port, 0, r->pool);
 
-        if ((rv = apr_bind(local_sock, local_addr)) != APR_SUCCESS) {
+        if ((rv = apr_socket_bind(local_sock, local_addr)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
             "proxy: FTP: error binding to ftp data socket %pI", local_addr);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
         /* only need a short queue */
-        if ((rv = apr_listen(local_sock, 2)) != APR_SUCCESS) {
+        if ((rv = apr_socket_listen(local_sock, 2)) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "proxy: FTP: error listening to ftp data socket %pI", local_addr);
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -1766,7 +1766,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     /* wait for connection */
     if (use_port) {
         for (;;) {
-            rv = apr_accept(&data_sock, local_sock, r->pool);
+            rv = apr_socket_accept(&data_sock, local_sock, r->pool);
             if (rv == APR_EINTR) {
                 continue;
             }

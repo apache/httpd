@@ -119,7 +119,7 @@ AP_DECLARE(apr_status_t) beosd_accept(void **accepted, ap_listen_rec *lr,
     apr_status_t status;
     int sockdes;
 
-    status = apr_accept(&csd, lr->sd, ptrans);
+    status = apr_socket_accept(&csd, lr->sd, ptrans);
     if (status == APR_SUCCESS) { 
         *accepted = csd;
         apr_os_sock_get(&sockdes, csd);
@@ -195,13 +195,13 @@ AP_DECLARE(apr_status_t) beosd_accept(void **accepted, ap_listen_rec *lr,
              * occur in mobile IP.
              */
             ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
-                         "apr_accept: giving up.");
+                         "apr_socket_accept: giving up.");
             return APR_EGENERAL;
 #endif /*ENETDOWN*/
 
         default:
             ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
-                         "apr_accept: (client socket)");
+                         "apr_socket_accept: (client socket)");
             return APR_EGENERAL;
     }
     return status;

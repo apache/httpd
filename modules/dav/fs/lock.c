@@ -671,7 +671,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
                     apr_status_t rv;
 
 		    /* if we don't see the file, then it's a locknull */
-                    rv = apr_lstat(&finfo, fname, APR_FINFO_MIN, p);
+                    rv = apr_stat(&finfo, fname, APR_FINFO_MIN | APR_FINFO_LINK, p);
 		    if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
 			if ((err = dav_fs_remove_locknull_member(p, fname, &buf)) != NULL) {
                             /* ### push a higher-level description? */

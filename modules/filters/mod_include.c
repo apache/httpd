@@ -678,7 +678,7 @@ static const char *add_include_vars_lazy(request_rec *r, const char *var)
         val = ap_ht_time(r->pool, r->finfo.mtime, conf->default_time_fmt, 0);
     }
     else if (!strcasecmp(var, "USER_NAME")) {
-        if (apr_get_username(&val, r->finfo.user, r->pool) != APR_SUCCESS) {
+        if (apr_uid_name_get(&val, r->finfo.user, r->pool) != APR_SUCCESS) {
             val = "<unknown>";
         }
     }

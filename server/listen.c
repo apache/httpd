@@ -159,7 +159,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     ap_sock_disable_nagle(s);
 #endif
 
-    if ((stat = apr_bind(s, server->bind_addr)) != APR_SUCCESS) {
+    if ((stat = apr_socket_bind(s, server->bind_addr)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, stat, p,
                       "make_sock: could not bind to address %pI",
                       server->bind_addr);
@@ -167,7 +167,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
         return stat;
     }
 
-    if ((stat = apr_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
+    if ((stat = apr_socket_listen(s, ap_listenbacklog)) != APR_SUCCESS) {
         ap_log_perror(APLOG_MARK, APLOG_STARTUP|APLOG_ERR, stat, p,
                       "make_sock: unable to listen for connections "
                       "on address %pI",
@@ -295,7 +295,7 @@ static const char *alloc_listener(process_rec *process, char *addr, apr_port_t p
         sa = sa->next;
 
         status = apr_socket_create(&new->sd, new->bind_addr->family,
-                                    SOCK_STREAM, process->pool);
+                                    SOCK_STREAM, 0, process->pool);
 
 #if APR_HAVE_IPV6
         /* What could happen is that we got an IPv6 address, but this system

@@ -77,8 +77,8 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
     (*pod)->p = p;
     
     /* close these before exec. */
-    apr_file_unset_inherit((*pod)->pod_in);
-    apr_file_unset_inherit((*pod)->pod_out);
+    apr_file_inherit_unset((*pod)->pod_in);
+    apr_file_inherit_unset((*pod)->pod_out);
 
     return APR_SUCCESS;
 }

@@ -167,7 +167,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     /* Shut down the socket for write, which will send a FIN
      * to the peer.
      */
-    if (apr_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS
+    if (apr_socket_shutdown(csd, APR_SHUTDOWN_WRITE) != APR_SUCCESS
         || c->aborted) {
         apr_socket_close(csd);
         return;
@@ -183,7 +183,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     apr_socket_opt_set(csd, APR_INCOMPLETE_READ, 1);
     while (1) {
         nbytes = sizeof(dummybuf);
-        rc = apr_recv(csd, dummybuf, &nbytes);
+        rc = apr_socket_recv(csd, dummybuf, &nbytes);
         if (rc != APR_SUCCESS || nbytes == 0)
             break;
 

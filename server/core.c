@@ -2845,7 +2845,7 @@ static apr_status_t writev_it_all(apr_socket_t *s,
 
     /* XXX handle checking for non-blocking socket */
     while (bytes_written != len) {
-        rv = apr_sendv(s, vec + i, nvec - i, &n);
+        rv = apr_socket_sendv(s, vec + i, nvec - i, &n);
         bytes_written += n;
         if (rv != APR_SUCCESS)
             return rv;
@@ -2853,7 +2853,7 @@ static apr_status_t writev_it_all(apr_socket_t *s,
         *nbytes += n;
 
         /* If the write did not complete, adjust the iovecs and issue
-         * apr_sendv again
+         * apr_socket_sendv again
          */
         if (bytes_written < len) {
             /* Skip over the vectors that have already been written */
@@ -2908,8 +2908,8 @@ static apr_status_t sendfile_it_all(core_net_rec *c,
     do {
         apr_size_t tmplen = file_bytes_left;
 
-        rv = apr_sendfile(c->client_socket, fd, hdtr, &file_offset, &tmplen,
-                          flags);
+        rv = apr_socket_sendfile(c->client_socket, fd, hdtr, &file_offset, &tmplen,
+                                 flags);
         *bytes_sent += tmplen;
         total_bytes_left -= tmplen;
         if (!total_bytes_left || rv != APR_SUCCESS) {
@@ -3019,7 +3019,7 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
         rv = apr_file_read(fd, buffer, &sendlen);
         while (rv == APR_SUCCESS && sendlen) {
             bytes_sent = sendlen;
-            rv = apr_send(c->client_socket, &buffer[o], &bytes_sent);
+            rv = apr_socket_send(c->client_socket, &buffer[o], &bytes_sent);
             if (rv == APR_SUCCESS) {
                 sendlen -= bytes_sent; /* sendlen != bytes_sent ==> partial write */
                 o += bytes_sent;       /* o is where we are in the buffer */

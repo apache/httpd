@@ -1490,8 +1490,8 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 
 
         /* ### Optimize me, dirent can give us what we need! */
-        status = apr_lstat(&fsctx->info1.finfo, fsctx->path1.buf, 
-                           APR_FINFO_NORM, pool);
+        status = apr_stat(&fsctx->info1.finfo, fsctx->path1.buf, 
+                          APR_FINFO_NORM | APR_FINFO_LINK, pool);
         if (status != APR_SUCCESS && status != APR_INCOMPLETE) {
             /* woah! where'd it go? */
             /* ### should have a better error here */

@@ -418,7 +418,8 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
      * owner of the symlink, then get the info of the target.
      */
     if (!(lfi->valid & APR_FINFO_OWNER)) {
-        if ((res = apr_lstat(&fi, d, lfi->valid | APR_FINFO_OWNER, p))
+        if ((res = apr_stat(&fi, d, 
+                            lfi->valid | APR_FINFO_LINK | APR_FINFO_OWNER, p))
             != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
@@ -429,7 +430,7 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
         return HTTP_FORBIDDEN;
     }
 
-    if (apr_compare_users(fi.user, lfi->user) != APR_SUCCESS) {
+    if (apr_uid_compare(fi.user, lfi->user) != APR_SUCCESS) {
         return HTTP_FORBIDDEN;
     }
 
@@ -806,7 +807,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                     && ((entry_core->d_components < seg)
                      || (entry_core->d_is_fnmatch
                          ? (apr_fnmatch(entry_core->d, r->filename,
-                                        FNM_PATHNAME) != APR_SUCCESS)
+                                        APR_FNM_PATHNAME) != APR_SUCCESS)
                          : (strcmp(r->filename, entry_core->d) != 0)))) {
                     continue;
                 }
@@ -976,14 +977,16 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 continue;
             }
 
-            /* We choose apr_lstat here, rather that apr_stat, so that we
-             * capture this path object rather than its target.  We will
-             * replace the info with our target's info below.  We especially
-             * want the name of this 'link' object, not the name of its
-             * target, if we are fixing the filename case/resolving aliases.
+            /* We choose apr_stat with flag APR_FINFO_LINK here, rather that 
+             * plain apr_stat, so that we capture this path object rather than
+             * its target.  We will replace the info with our target's info 
+             * below.  We especially want the name of this 'link' object, not 
+             * the name of its target, if we are fixing the filename 
+             * case/resolving aliases.
              */
-            rv = apr_lstat(&thisinfo, r->filename,
-                           APR_FINFO_MIN | APR_FINFO_NAME, r->pool);
+            rv = apr_stat(&thisinfo, r->filename,
+                          APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK, 
+                          r->pool);
 
             if (APR_STATUS_IS_ENOENT(rv)) {
                 /* Nothing?  That could be nice.  But our directory
@@ -1273,7 +1276,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
             if (entry_core->r
                 ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
                 : (entry_core->d_is_fnmatch
-                   ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
+                   ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
                    : (strncmp(entry_core->d, cache->cached, len)
                       || (entry_core->d[len - 1] != '/'
                           && cache->cached[len] != '/'
@@ -1422,7 +1425,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             if (entry_core->r
                 ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
                 : (entry_core->d_is_fnmatch
-                   ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
+                   ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
                    : strcmp(entry_core->d, cache->cached))) {
                 continue;
             }
@@ -1715,10 +1718,10 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
     if ((dirent->valid & APR_FINFO_MIN) != APR_FINFO_MIN) {
         /*
          * apr_dir_read isn't very complete on this platform, so
-         * we need another apr_lstat (or simply apr_stat if we allow
-         * all symlinks here.)  If this is an APR_LNK that resolves
-         * to an APR_DIR, then we will rerun everything anyways...
-         * this should be safe.
+         * we need another apr_stat (with or without APR_FINFO_LINK
+         * depending on whether we allow all symlinks here.)  If this 
+         * is an APR_LNK that resolves to an APR_DIR, then we will rerun 
+         * everything anyways... this should be safe.
          */
         apr_status_t rv;
         if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
@@ -1729,8 +1732,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
             }
         }
         else {
-            if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
-                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+            if (((rv = apr_stat(&rnew->finfo, rnew->filename,
+                                APR_FINFO_LINK | APR_FINFO_MIN, 
+                                rnew->pool)) != APR_SUCCESS)
                 && (rv != APR_INCOMPLETE)) {
                 rnew->finfo.filetype = 0;
             }
@@ -1834,8 +1838,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
             }
         }
         else {
-            if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
-                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+            if (((rv = apr_stat(&rnew->finfo, rnew->filename,
+                                APR_FINFO_LINK | APR_FINFO_MIN, 
+                                rnew->pool)) != APR_SUCCESS)
                 && (rv != APR_INCOMPLETE)) {
                 rnew->finfo.filetype = 0;
             }

@@ -239,7 +239,7 @@ void ap_mpm_child_main(apr_pool_t *pconf)
         worker_args->pconn = pconn;
 
         if (num_listeners == 1) {
-            rv = apr_accept(&worker_args->conn_sd, ap_listeners->sd, pconn);
+            rv = apr_socket_accept(&worker_args->conn_sd, ap_listeners->sd, pconn);
         } else {
             rc = DosRequestMutexSem(ap_mpm_accept_mutex, SEM_INDEFINITE_WAIT);
 
@@ -287,14 +287,14 @@ void ap_mpm_child_main(apr_pool_t *pconf)
                 }
 
                 sd = lr->sd;
-                rv = apr_accept(&worker_args->conn_sd, sd, pconn);
+                rv = apr_socket_accept(&worker_args->conn_sd, sd, pconn);
             }
         }
 
         if (rv != APR_SUCCESS) {
             if (!APR_STATUS_IS_EINTR(rv)) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                             "apr_accept");
+                             "apr_socket_accept");
                 clean_child_exit(APEXIT_CHILDFATAL);
             }
         } else {

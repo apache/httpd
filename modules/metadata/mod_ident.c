@@ -158,7 +158,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
 
     if ((rv = apr_socket_create(newsock,
                                 localsa->family, /* has to match */
-                                SOCK_STREAM, conn->pool)) != APR_SUCCESS) {
+                                SOCK_STREAM, 0, conn->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: error creating query socket");
         return rv;
@@ -180,7 +180,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
  * addresses from the query socket.
  */
 
-    if ((rv = apr_bind(*newsock, localsa)) != APR_SUCCESS) {
+    if ((rv = apr_socket_bind(*newsock, localsa)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, srv,
                      "rfc1413: Error binding query socket to local port");
         apr_socket_close(*newsock);
@@ -191,7 +191,7 @@ static apr_status_t rfc1413_connect(apr_socket_t **newsock, conn_rec *conn,
  * errors from connect usually imply the remote machine doesn't support
  * the service; don't log such an error
  */
-    if ((rv = apr_connect(*newsock, destsa)) != APR_SUCCESS) {
+    if ((rv = apr_socket_connect(*newsock, destsa)) != APR_SUCCESS) {
         apr_socket_close(*newsock);
         return rv;
     }
@@ -223,7 +223,7 @@ static apr_status_t rfc1413_query(apr_socket_t *sock, conn_rec *conn,
     while (i < buflen) {
         apr_size_t j = strlen(buffer + i);
         apr_status_t status;
-        status  = apr_send(sock, buffer+i, &j);
+        status  = apr_socket_send(sock, buffer+i, &j);
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
                          "write: rfc1413: error sending request");
@@ -249,7 +249,7 @@ static apr_status_t rfc1413_query(apr_socket_t *sock, conn_rec *conn,
     while((cp = strchr(buffer, '\012')) == NULL && i < sizeof(buffer) - 1) {
         apr_size_t j = sizeof(buffer) - 1 - i;
         apr_status_t status;
-        status = apr_recv(sock, buffer+i, &j);
+        status = apr_socket_recv(sock, buffer+i, &j);
         if (status != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
                          "read: rfc1413: error reading response");

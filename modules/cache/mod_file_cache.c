@@ -315,7 +315,7 @@ static int mmap_handler(request_rec *r, a_file *file)
     apr_mmap_t *mm;
     apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-    apr_mmap_dup(&mm, file->mm, r->pool, 0);
+    apr_mmap_dup(&mm, file->mm, r->pool);
     b = apr_bucket_mmap_create(mm, 0, (apr_size_t)file->finfo.size,
                                c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
