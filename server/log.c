@@ -269,7 +269,7 @@ void ap_open_logs(server_rec *s_main, ap_pool_t *p)
         /* replace stderr with this new log */
         ap_flush(s_main->error_log);
         ap_open_stderr(&errfile, p);        
-        if ((rc = ap_dupfile(&errfile, s_main->error_log)) != APR_SUCCESS) {
+        if ((rc = ap_dupfile(&errfile, s_main->error_log, NULL)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s_main,
                          "unable to replace stderr with error_log");
         } else {
@@ -306,7 +306,7 @@ API_EXPORT(void) ap_error_log2stderr(server_rec *s) {
 
     ap_open_stderr(&errfile, s->process->pool);        
     if (s->error_log != NULL) {
-        ap_dupfile(&(s->error_log), errfile);
+        ap_dupfile(&(s->error_log), errfile, s->process->pool);
     }
 }
 
