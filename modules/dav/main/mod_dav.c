@@ -2663,14 +2663,6 @@ static int dav_method_copymove(request_rec *r, int is_move)
      */
     resnew_state = dav_get_resource_state(lookup.rnew, resnew);
 
-    /* If destination does not exist, initialize resource object
-     * to be same type as the source.
-     */
-    if (!resnew->exists) {
-        resnew->type = resource->type;
-        resnew->collection = resource->collection;
-    }
-
     /* In a MOVE operation, the destination is replaced by the source.
      * In a COPY operation, if the destination exists, is under version
      * control, and is the same resource type as the source,
