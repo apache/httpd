@@ -545,7 +545,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                     return status;
                 }
                 apr_filepath_merge(&template, temp_dir,
-                                   "proxy_reqbody_spoolXXXXXX",
+                                   "modproxy.tmp.XXXXXX",
                                    APR_FILEPATH_NATIVE, p);
                 status = apr_file_mktemp(&tmpfile, template, 0, p);
                 if (status != APR_SUCCESS) {
