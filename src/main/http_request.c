@@ -867,6 +867,11 @@ void process_request_internal (request_rec *r)
         die (access_status, r);
 	return;
     }	
+
+    if ((access_status = header_parse (r))) {
+        die (access_status, r);
+	return;
+    }
     
     switch (satisfies(r)) {
     case SATISFY_ALL:

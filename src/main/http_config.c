@@ -292,6 +292,10 @@ int log_transaction (request_rec *r) {
    return run_method (r, XtOffsetOf (module, logger), 1);
 }
 
+int header_parse (request_rec *r) {
+    return run_method (r, XtOffsetOf (module, header_parser), 1);
+}
+
 /* Auth stuff --- anything that defines one of these will presumably
  * want to define something for the other.  Note that check_auth is
  * separate from check_access to make catching some config errors easier.

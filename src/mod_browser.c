@@ -138,7 +138,7 @@ command_rec browser_module_cmds[] = {
 { NULL },
 };
 
-int fixup_browser_module(request_rec *r)
+int parse_headers_browser_module(request_rec *r)
 {
     server_rec *s = r->server;
     browser_server_config_rec *sconf = get_module_config (s->module_config,
@@ -182,6 +182,7 @@ module browser_module = {
    NULL,			/* check auth */
    NULL,			/* check access */
    NULL,			/* type_checker */
-   fixup_browser_module,	/* fixups */
+   NULL,			/* fixups */
    NULL,			/* logger */
+   parse_headers_browser_module,/* header parser */
 };

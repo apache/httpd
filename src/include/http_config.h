@@ -216,6 +216,7 @@ typedef struct module_struct {
     int (*type_checker)(request_rec *);
     int (*fixer_upper)(request_rec *);
     int (*logger)(request_rec *);
+    int (*header_parser)(request_rec *);
 } module;
 
 /* Initializer for the first few module slots, which are only
@@ -225,7 +226,7 @@ typedef struct module_struct {
  * handle it back-compatibly, or at least signal an error).
  */
 
-#define MODULE_MAGIC_NUMBER 19961211
+#define MODULE_MAGIC_NUMBER 19970103
 #define STANDARD_MODULE_STUFF MODULE_MAGIC_NUMBER, -1, __FILE__, NULL
 
 /* Generic accessors for other modules to get at their own module-specific
@@ -291,5 +292,6 @@ int find_types (request_rec *);	/* identify MIME type */
 int run_fixups (request_rec *);	/* poke around for other metainfo, etc.... */
 int invoke_handler (request_rec *);     
 int log_transaction (request_rec *r);
+int header_parse (request_rec *);
 
 #endif
