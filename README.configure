@@ -206,29 +206,26 @@
   a Perl 5 interpreter into the Apache HTTP server both for running Perl
   programs and for programming Apache modules in Perl. The distribution
   mod_perl-1.XX.tar.gz can be found on http://perl.apache.org/src/. Here is
-  how you can install Apache with mod_perl:
+  how you can build and install Apache with mod_perl:
 
-    $ cd mod_perl-1.11
-    $ perl Makefile.PL
-    ReadLine support enabled
-    Configure mod_perl with ../apache-1.3/src ? [y] y
-    Shall I build httpd in ../apache-1.3/src for you? [y] y
-      :
-    $ cd ../apache-1.3
-    $ LIBS='`perl $(SRCDIR)/modules/perl/ldopts`' \
-      ./configure --prefix=/path/to/apache \
-                  --activate-module=src/modules/perl/libperl.a
-    $ make 
+    $ gunzip <apache_1.3.tar.gz | tar xvf -
+    $ gunzip <mod_perl_1.XX.tar.gz | tar xvf -
+    $ cd mod_perl-1.XX
+    $ perl Makefile.PL APACHE_SRC=../apache_1.3/src \
+                       DO_HTTPD=1 USE_APACI=1 \
+                       [EVERYTHING=1 ...]
+    $ make
     $ make install
 
-  This automatically builds and installs Apache 1.3 with mod_perl.  After
-  additionally installing the Perl side of mod_perl via
+    [optionally you now have the chance to prepare or add more 
+     third-party modules to the Apache source tree]
 
-    $ cd ../mod_perl-1.11
-    $ perl Makefile.PL NO_HTTPD=1
-    $ make all install
-
-  you can fire up Apache with mod_perl enabled.
+    $ cd ../apache-1.3
+    $ ./configure --prefix=/path/to/apache \
+                  --activate-module=src/modules/perl/libperl.a \
+                  [--enable-shared=perl]
+    $ make 
+    $ make install
 
   Apache and PHP
   --------------
