@@ -199,7 +199,6 @@ void clean_env()
     cleanenv[++cidx] = NULL;
 	    
     environ = cleanenv;
-    free(cleanenv);
 }
 
 int main(int argc, char *argv[])

@@ -1,5 +1,8 @@
 Changes with Apache 1.2b7
 
+  *) Remove free() from clean_env() in suexec wrapper. This was nuking
+     the clean environment on some systems.
+
   *) Tweak byteserving code (e.g. serving PDF files) to work around a 
      bug in Netscape Navigator. [Alexei Kosut]
 
