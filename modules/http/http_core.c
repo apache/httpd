@@ -2951,25 +2951,31 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 		break;
 	    }
 	    else if (e->length == -1) {
-                /* Bucket Of Interdeterminate Length (BOIL). (e.g. a pipe) */
-
+                /* unknown amount of data (e.g. a pipe) */
 		const char *data;
 		apr_ssize_t len;
 
-                /* this will construct a new bucket */
 		rv = e->read(e, &data, &len, 1);
 		if (rv != APR_SUCCESS) {
 		    return rv;
 		}
-		bytes += len;
-
-                /*
-                 * We split between the new bucket and the BOIL. We'll come
-                 * back for the rest of the brigade later (reading more out
-                 * of the BOIL, possibly splitting again
-                 */
-		more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
-		break;
+		if (len > 0) {
+		    /*
+		     * There may be a new next bucket representing the
+		     * rest of the data stream on which a read() may
+		     * block so we pass down what we have so far.
+		     */
+		    bytes += len;
+		    more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+		    break;
+		}
+		else {
+		    /* If there was nothing in this bucket then we can
+		     * safely move on to the next one without pausing
+		     * to pass down what we have counted up so far.
+		     */
+		    continue;
+		}
 	    }
 	    else {
 		bytes += e->length;
@@ -2978,7 +2984,8 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
 	/*
 	 * XXX: if there aren't very many bytes at this point it may
-	 * be a good idea to set them aside and return for more.
+	 * be a good idea to set them aside and return for more,
+	 * unless we haven't finished counting this brigade yet.
 	 */
 
         /* if there are content bytes, then wrap them in a chunk */
