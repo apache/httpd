@@ -1,9 +1,6 @@
 #
-# Server-Pool Size Regulation (MPM specific)
+# Server-Pool Management (MPM specific)
 # 
-# Only one of the below sections will be relevant on your
-# installed httpd.  Use "apachectl -l" to find out the
-# active mpm.
 
 #
 # PidFile: The file in which the server should record its process
@@ -14,6 +11,21 @@
 <IfModule !mpm_netware_module>
     PidFile @rel_runtimedir@/httpd.pid
 </IfModule>
+
+#
+# The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
+#
+<IfModule !mpm_winnt_module>
+<IfModule !mpm_netware_module>
+LockFile @rel_logfiledir@/accept.lock
+</IfModule>
+</IfModule>
+
+#
+# Only one of the below sections will be relevant on your
+# installed httpd.  Use "apachectl -l" to find out the
+# active mpm.
+#
 
 # prefork MPM
 # StartServers: number of server processes to start

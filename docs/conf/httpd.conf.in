@@ -21,16 +21,12 @@
 # ServerRoot: The top of the directory tree under which the server's
 # configuration, error, and log files are kept.
 #
-# Do NOT add a slash at the end of the directory path.
+# Do NOT add a slash at the end of the directory path.  If you point
+# ServerRoot at a non-local disk, be sure to point the LockFile directive
+# at a local disk.  If you wish to share the same ServerRoot for multiple
+# httpd daemons, you will need to change at least LockFile and PidFile.
 #
 ServerRoot "@@ServerRoot@@"
-
-# NOTE! The following two directives are used on some systems
-# to coordinate the httpd children.  THEY MUST BE STORED ON
-# A LOCAL DISK!
-#
-#LockFile @rel_logfiledir@/accept.lock
-#ScoreBoardFile @rel_logfiledir@/apache_runtime_status
 
 #
 # Listen: Allows you to bind Apache to specific IP addresses and/or
