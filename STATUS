@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/17 19:57:10 $]
+Last modified at [$Date: 2004/03/17 23:52:12 $]
 
 Release:
 
@@ -73,7 +73,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
        segmentation fault.
-           support/ab.c: r1.140
+           support/ab.c: r1.140, r1.141
        +1: madhum
 
     *) Fix the comment delimiter so that it correctly parses the username
