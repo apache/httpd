@@ -146,7 +146,7 @@ merges and default values are set.  In particular:
 Essentially, the main_server is treated as &quot;defaults&quot; or a
 &quot;base&quot; on
 which to build each vhost.  But the positioning of these main_server
-definitions in the config file is largely irrelevent -- the entire
+definitions in the config file is largely irrelevant -- the entire
 config of the main_server has been parsed when this final merging occurs.
 So even if a main_server definition appears after a vhost definition
 it might affect the vhost definition.
@@ -187,9 +187,9 @@ connected) is looked up in the server list.  A vhost is matched if it
 is an IP-based vhost, the IP address matches and the port matches
 (taking into account wildcards).
 
-<p> If no vhosts are matched then the last occurance, if it appears,
+<p> If no vhosts are matched then the last occurrence, if it appears,
 of a <SAMP>_default_</SAMP> address (which if you recall the ordering of the
-server list mentioned above means that this would be the first occurance
+server list mentioned above means that this would be the first occurrence
 of <SAMP>_default_</SAMP> in the config file) is matched.
 
 <p> In any event, if nothing above has matched, then the main_server is
@@ -264,8 +264,7 @@ the virtual hosts).
 <li>It is difficult to define an IP-based vhost for the machine's
     &quot;main IP address&quot;.  You essentially have to create a bogus
     <code>ServerName</code> for the main_server that does not match the
-    machine's ips.
-    </p>
+    machine's IPs.
 
 <li>During the scans in both <code>check_hostalias</code> and
     <code>check_serverpath</code> no check is made that the vhost being
@@ -292,9 +291,9 @@ the virtual hosts).
 
     <p>If you do have a <SAMP>_default_</SAMP> vhost, then you cannot place
     named-based vhosts after it in the config.  This is because on any
-    connection to the main server ips the connection vhost will always be
-    the <SAMP>_default_</SAMP> vhost since none of the name-based are considered
-    during <code>find_virtual_server</code>.
+    connection to the main server IPs the connection vhost will always be
+    the <SAMP>_default_</SAMP> vhost since none of the name-based are 
+    considered during <code>find_virtual_server</code>.
     </p>
 
 <li>You should never specify DNS names in <code>VirtualHost</code>
@@ -304,22 +303,19 @@ the virtual hosts).
     <a href="dns-caveats.html">
     There's more information
     available on this and the next two topics</a>.
-    </p>
 
 <li><code>ServerName</code> should always be set for each vhost.  Otherwise
     A DNS lookup is required for each vhost.
-    </p>
 
 <li>A DNS lookup is always required for the main_server's
     <code>ServerName</code> (or to generate that if it isn't specified
     in the config).
-    </p>
 
 <li>If a <code>ServerPath</code> directive exists which is a prefix of
     another <code>ServerPath</code> directive that appears later in
     the configuration file, then the former will always be matched
     and the latter will never be matched.  (That is assuming that no
-    Host header was available to disambiguate the two.)</p>
+    Host header was available to disambiguate the two.)
 
 <li>If a vhost that would otherwise be a name-vhost includes a
     <code>Port</code> statement that doesn't match the main_server
@@ -329,21 +325,21 @@ the virtual hosts).
     to the port of the main_server) as the connection vhost.  Then
     <code>check_hostalias</code> will refuse to check any other name-based
     vhost because of the port mismatch.  The result is that the vhost
-    will steal all hits going to the main_server address.</p>
+    will steal all hits going to the main_server address.
 
 <li>If two IP-based vhosts have an address in common, the vhost appearing
     later in the file is always matched.  Such a thing might happen
-    inadvertantly.  If the config has name-based vhosts and for some reason
+    inadvertently.  If the config has name-based vhosts and for some reason
     the main_server <code>ServerName</code> resolves to the wrong address
-    then all the name-based vhosts will be parsed as IP-based vhosts.
-    Then the last of them will steal all the hits.</p>
+    then all the name-based vhosts will be parsed as ip-based vhosts.
+    Then the last of them will steal all the hits.</P>
 
 <li>The last name-based vhost in the config is always matched for any hit
     which doesn't match one of the other name-based vhosts.
 
 </ul>
 
-<a name="whatworks"><h3>What Works</h3></a>
+<h3><a name="whatworks">What Works</a></h3>
 
 <p>In addition to the tips on the <a href="dns-caveats.html#tips">DNS
 Issues</a> page, here are some further tips:

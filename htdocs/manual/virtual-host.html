@@ -147,7 +147,8 @@ internal use. Unix operating systems limit the number of file descriptors that
 may be used by a process; the limit is typically 64, and may usually be
 increased up to a large hard-limit.
 <p>
-Although Apache attempts to increase imit as required. this may not work if:
+Although Apache attempts to increase the limit as required, this 
+may not work if:
 <ol>
 <li>Your system does not provide the setrlimit() system call.
 <li>The setrlimit(RLIMIT_NOFILE) call does not function on your system

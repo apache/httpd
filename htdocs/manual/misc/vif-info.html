@@ -65,7 +65,7 @@ This will cause any ARP requests for the VIF addresses to be replied
 with your machine's ethernet address. 
 
 Now, make sure your default route is to your segment's gateway,
-throught the real interface. FInally, make sure your routers and/or
+through the real interface. Finally, make sure your routers and/or
 hosts on the same segment as yours know that 198.4.3.2 and 198.5.4.3
 are on that cable. 
 
@@ -125,7 +125,7 @@ Make sure you remember the correct major device number, 14 in this case!
 
 Finally, here's the code. It has the tunneling pieces removed (you
 need more code to use that anyway), and it comes from a Mach 2.6
-kernel; it should compile on any berkeley-derived unix with minor
+kernel; it should compile on any Berkeley-derived unix with minor
 changes (most likely only in the includes). 
 
 ---------------------netinet/if_vif.h--------------------------------------

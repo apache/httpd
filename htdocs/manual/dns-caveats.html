@@ -27,8 +27,8 @@ Consider this configuration snippet:
 <p>In order for Apache to function properly it absolutely needs
 to have two pieces of information about each virtual host: the
 <a href="mod/core.html#servername"><code>ServerName</code></a>
-and at least one ip address that the server
-responds to.  This example does not include the ip address, so Apache
+and at least one IP address that the server
+responds to.  This example does not include the IP address, so Apache
 must use DNS to find the address of <code>www.abc.dom</code>.  If for
 some reason DNS is not available at the time your server is parsing its
 config file, then this virtual host <b>will not be configured</b>.  It
@@ -49,7 +49,7 @@ consider this configuration snippet:
 for this virtualhost.  If that reverse lookup fails then it will partially
 disable the virtualhost (prior to Apache version 1.2 the server would not
 even boot).  If the virtual host is name-based then it will effectively
-be totally disabled, but if it is ip-based then it will mostly work.
+be totally disabled, but if it is IP-based then it will mostly work.
 However if Apache should ever have to generate a full URL for the server
 which includes the server name then it will fail to generate a valid URL.
 
@@ -136,18 +136,18 @@ for your OS.
 <h3>The _default_ Address</h3>
 
 <p>Any address that happens to go to your webserver which doesn't match
-the ip address of any of the webservers will be served from the "main" or
+the IP address of any of the webservers will be served from the "main" or
 "default" server configurations.  The "main" server configuration consists
 of all those definitions appearing outside of any VirtualHost section.
 You may want instead to define a <code>&lt;VirtualHost _default&gt;</code>
 which returns 403 or 404 for all hits.
 
-<a name="tips"><h3>Tips to Avoid these problems</h3></a>
+<h3><a name="tips">Tips to Avoid these problems</a></h3>
 
 <ul>
-<li> use ip addresses in <code>&lt;VirtualHost&gt</code>
-<li> use ip addresses in <code>Listen</code>
-<li> use ip addresses in <code>BindAddress</code>
+<li> use IP addresses in <code>&lt;VirtualHost&gt</code>
+<li> use IP addresses in <code>Listen</code>
+<li> use IP addresses in <code>BindAddress</code>
 <li> ensure all virtual hosts have an explicit <code>ServerName</code>
 <li> create a <code>&lt;VirtualHost _default_&gt;</code> server that
     has no pages to serve
@@ -158,7 +158,7 @@ which returns 403 or 404 for all hits.
 <p>The situation regarding DNS is highly undesirable.  For Apache
 1.2 we've attempted to make the server at least continue booting
 in the event of failed DNS, but it might not be the best we
-can do.  In any event requiring the use of explicit ip addresses in
+can do.  In any event requiring the use of explicit IP addresses in
 configuration files is highly undesirable in today's Internet where <a
 href="http://www.ietf.org/html.charters/pier-charter.html">renumbering
 </a> is a necessity.
@@ -179,7 +179,7 @@ to accomplish.
 
 <p>As HTTP/1.1 is deployed and browsers and proxies start issuing the 
 <code>Host</code> header it will become possible to avoid the use of
-ip-based virtual hosts entirely.  In this event a webserver has no requirement
+IP-based virtual hosts entirely.  In this event a webserver has no requirement
 to do DNS lookups during configuration.  But as of March 1997 these
 features have not been deployed widely enough to be put into use on
 critical webservers.

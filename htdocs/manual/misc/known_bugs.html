@@ -21,7 +21,7 @@ information.
 <H2>Version 1.2 (all)</H2>
 
 <OL>
-    <LI>On some architectectures if your configuration uses multiple
+    <LI>On some architectures if your configuration uses multiple
     <a href="../mod/core#listen">Listen</a> directives then it is possible
     that the server will starve one of the sockets while serving hits on
     another.  The work-around is to add
@@ -76,7 +76,7 @@ isalpha() check creates a security hole, consider the DNS map
 "1.1.1.1.in-addr.arpa IN PTR 2.2.2."  if the user has a config line
 "allow from 2.2.2" it will allow 1.1.1.1 in (unless -DMAXIMUM_DNS).
 -- which is bad because it breaks people who understand double reverse
-lookup and are trying to avoid it by using only ip addresses on
+lookup and are trying to avoid it by using only IP addresses on
 allow/deny statements. - reported by Dean Gaudet, fixed in 1.2.
 
 </OL>
@@ -151,7 +151,7 @@ allow/deny statements. - reported by Dean Gaudet, fixed in 1.2.
 <H2>Version 0.8.10 (beta)</H2>
 
 <OL>
-  <LI>Server side includes which include CGI output can have unbareable
+  <LI>Server side includes which include CGI output can have unbearable
    delays on some platforms. We're looking into a fix.
 
 <P>
@@ -179,7 +179,7 @@ allow/deny statements. - reported by Dean Gaudet, fixed in 1.2.
 
 <P>
 
-  <LI>ErrorDocument is a little shakey, <CODE>" Some text %s</CODE> doesn't
+  <LI>ErrorDocument is a little shaky, <CODE>" Some text %s</CODE> doesn't
     agree with the documentation.
 
 <P>
@@ -209,7 +209,7 @@ allow/deny statements. - reported by Dean Gaudet, fixed in 1.2.
   created in <B>/tmp</B>. We now find this to be a bad idea, and have plans
   to move it into the <CODE>/logs</CODE> directory along with other
   files created by Apache.
-  <P>If you have any <B>/tmp</B> cleaning scritps (e.g. from crontab), you
+  <P>If you have any <B>/tmp</B> cleaning scripts (e.g. from crontab), you
   should have them ignore the scoreboard file, which is named 
   <B>/tmp/htstatus.XXXXXXX</B>. If the scoreboard file is damaged, Apache
   can become very confused (a SIGHUP repairs the damage).  Furthermore, not
@@ -251,7 +251,7 @@ allow/deny statements. - reported by Dean Gaudet, fixed in 1.2.
 
 <P>
 
-  <LI>ErrorDocument is a little shakey, <CODE>" Some text %s</CODE> doesn't
+  <LI>ErrorDocument is a little shaky, <CODE>" Some text %s</CODE> doesn't
     agree with the documentation.
 
 <P>
