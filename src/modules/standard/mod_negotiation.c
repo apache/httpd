@@ -1463,6 +1463,7 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
     int i;
     accept_rec *accept_recs = (accept_rec *) neg->accept_encodings->elts;
     char *enc = variant->content_encoding;
+    char *x_enc = NULL;
 
     if (!enc || is_identity_encoding(enc)) {
         return;
@@ -1479,19 +1480,28 @@ static void set_encoding_quality(negotiation_state *neg, var_rec *variant)
 
     /* Go through each of the encodings on the Accept-Encoding: header,
      * looking for a match with our encoding
-     */
+     * Prefer non- 'x-' prefixed token (e.g. gzip over x-gzip) */
+    if (enc[0] == 'x' && enc[1] == '-') {
+        enc += 2;
+    }
     for (i = 0; i < neg->accept_encodings->nelts; ++i) {
         char *name = accept_recs[i].type_name;
-        int off = 0;
 
-	if (name[0] == 'x' && name[1] == '-')
-            off = 2;
-
-        if (!strcmp(name+off, enc)) {
+        if (!strcmp(name, enc)) {
             variant->encoding_quality = 1;
             variant->content_encoding = name;
             return;
         }
+
+        if (name[0] == 'x' && name[1] == '-' && !strcmp(name+2, enc)) {
+            x_enc = name;
+        }
+    }
+
+    if (x_enc != NULL) {
+        variant->encoding_quality = 1;
+        variant->content_encoding = x_enc;
+        return;
     }
 
     /* Encoding not found on Accept-Encoding: header, so it is

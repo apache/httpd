@@ -1,5 +1,9 @@
 Changes with Apache 1.3b5
 
+  *) Preserve the content encoding given by the AddEncoding directive
+     when the client doesn't otherwise specify an encoding.
+     [Ronald Tschalaer <Ronald.Tschalaer@psi.ch>]
+
   *) WIN32: Append a '.' to extensionless executables in spawn[lv]e*
      replacements, which makes them work.
      [Sam Robb <srobb@wisewire.com>, Ben Laurie]

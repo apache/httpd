@@ -178,9 +178,6 @@ static const char *add_alt(cmd_parms *cmd, void *d, char *alt, char *to)
 	    to = "^^DIRECTORY^^";
     if (cmd->info == BY_ENCODING) {
 	str_tolower(to);
-	if (to[0] == 'x' && to[1] == '-') {
-	    to += 2;
-	}
     }
 
     push_item(((autoindex_config_rec *) d)->alt_list, cmd->info, to, cmd->path, alt);
@@ -207,9 +204,6 @@ static const char *add_icon(cmd_parms *cmd, void *d, char *icon, char *to)
 	    to = "^^DIRECTORY^^";
     if (cmd->info == BY_ENCODING) {
 	str_tolower(to);
-	if (to[0] == 'x' && to[1] == '-') {
-	    to += 2;
-	}
     }
 
     push_item(((autoindex_config_rec *) d)->icon_list, cmd->info, to, cmd->path,
