@@ -482,7 +482,7 @@ Negotiation</a></li>
 
     <p>In order to support advanced techniques (such as Cookies or
     special URL-paths) to determine the user's preferred language,
-    since Apache 2.0.46 <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> recognizes
+    since Apache 2.0.47 <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> recognizes
     the <a href="env.html">environment variable</a>
     <code>prefer-language</code>. If it exists and contains an
     appropriate language tag, <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> will
