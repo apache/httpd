@@ -1005,6 +1005,13 @@ echo "" >>$AP_CONFIG_AUTO_H
 echo "#ifndef AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
 echo "#define AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
 
+for uppercase in "tr [a-z] [A-Z]" "tr [:lower:] [:upper:]" "sed y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/"
+do
+  case `echo Apache | $uppercase` in
+    APACHE) break;;
+  esac
+done
+echo " + using \"$uppercase\" to uppercase"
 echo " + checking for system header files"
 CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h sys/param.h"
 (
@@ -1012,7 +1019,7 @@ export CPP
 for header in $CHECK_FOR_HEADERS; do
     echo "" >>$AP_CONFIG_AUTO_H
     echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
-    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
+    name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | $uppercase`"
     ./helpers/checkheader.sh $header
     if [ $? -eq 0 ]; then
 	echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
