@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.10 (outdated: 1.15) -->
+<!-- English Revision: 1.15 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -24,10 +24,8 @@
 <title>名前ベースのバーチャルホスト</title>
 
 <summary>
-
     <p>この文書では名前ベースのバーチャルホストをどんなとき、
     どうやって使うかを説明します。</p>
-
 </summary>
 
 <seealso><a href="ip-based.html">ネームベースのバーチャルホスト</a></seealso>
@@ -99,6 +97,8 @@
     ディレクティブで設定します。通常、<directive 
     module="core">NameVirtualHost</directive> で
     <code>*</code> の属性を使ってサーバの全ての IP アドレスを使います。
+    (例えば SSL の使用などで) 複数のポートを使うことを計画しているのであれば、
+    引数に <code>*:80</code> のようにポートも含めるようにしてください。
     <directive module="core">NameVirtualHost</directive> ディレクティブで
     IP アドレスを書いても、
     自動的にサーバがその IP アドレスをリッスンするということはないことに
@@ -120,16 +120,16 @@
     書く必要があります。</p>
 
     <note><title>メインホストはなくなります</title>
-    <p>既にあるウェブサーバにバーチャルホストを追加する場合、
-    既存のウェブサーバに対しても <directive module="core"
-    type="section">VirtualHost</directive>
-    ブロックを作らなければなりません。このバーチャルホストの
-    <directive module="core">ServerName</directive> と
-    <directive module="core">DocumentRoot</directive>
-    は、グローバルな <directive module="core">ServerName</directive> と
-    <directive module="core">DocumentRoot</directive>
-    と同じものにします。また、このバーチャルホストを設定ファイルの中で
-    先頭に置いて、デフォルトホストとして動作するようにします。</p>
+        <p>既にあるウェブサーバにバーチャルホストを追加する場合、
+        既存のウェブサーバに対しても <directive module="core"
+        type="section">VirtualHost</directive>
+        ブロックを作らなければなりません。このバーチャルホストの
+        <directive module="core">ServerName</directive> と
+        <directive module="core">DocumentRoot</directive>
+        は、グローバルな <directive module="core">ServerName</directive> と
+        <directive module="core">DocumentRoot</directive>
+        と同じものにします。また、このバーチャルホストを設定ファイルの中で
+        先頭に置いて、デフォルトホストとして動作するようにします。</p>
     </note>
 
     <p>たとえば、<code>www.domain.tld</code> を動かしていて、
@@ -139,26 +139,30 @@
     に以下のようなコードを追加するだけです</p>
 
     <example>
-    NameVirtualHost *<br />
-    <br />
-    &lt;VirtualHost *&gt;<br />
-    <indent>
-    ServerName www.domain.tld<br />
-    DocumentRoot /www/domain<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost *&gt;<br />
-    <indent>
-    ServerName www.otherdomain.tld<br />
-    DocumentRoot /www/otherdomain<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
+        NameVirtualHost *:80<br />
+        <br />
+        &lt;VirtualHost *:80&gt;<br />
+        <indent>
+            ServerName www.domain.tld<br />
+            ServerAlias domain.tld *.domain.tld<br />
+            DocumentRoot /www/domain<br />
+        </indent>
+        &lt;/VirtualHost&gt;<br />
+        <br />
+        &lt;VirtualHost *:80&gt;<br />
+        <indent>ServerName www.otherdomain.tld<br />
+            DocumentRoot /www/otherdomain<br />
+        </indent>
+        &lt;/VirtualHost&gt;<br />
     </example>
 
     <p><directive module="core">NameVirtualHost</directive> 及び
     <directive module="core">VirtualHost</directive> のどちらの場合も、
-    * の部分には明示的に IP アドレスを指定することができます。</p>
+    * の部分には明示的に IP アドレスを指定することができます。
+    例えば、ある IP アドレスでは名前ベースのバーチャルホストを使いたい一方で、
+    別の IP アドレスでは、他の IP ベースのバーチャルホストや
+    別組の名前ベースのバーチャルホストを使いたい場合、
+    そう設定することになるでしょう。</p>
 
     <p>複数の名前でサーバアクセスができるようにしたいことも多いでしょう。
     このようなことは、<directive module="core"
@@ -173,7 +177,7 @@
     ディレクティブで指定できます。</p> 
 
     <example>
-    ServerAlias domain.tld *.domain.tld
+        ServerAlias domain.tld *.domain.tld
     </example>
 
     <p><code>domain.tld</code> ドメインへの全てのホストへのリクエストは
@@ -246,15 +250,15 @@
     <p>設定例</p>
 
     <example>
-    NameVirtualHost 111.22.33.44<br />
-    <br />
-    &lt;VirtualHost 111.22.33.44&gt;<br />
-    <indent>
-    ServerName www.domain.tld<br />
-    ServerPath /domain<br />
-    DocumentRoot /web/domain<br />
-    </indent>
-    &lt;/VirtualHost&gt;<br />
+        NameVirtualHost 111.22.33.44<br />
+        <br />
+        &lt;VirtualHost 111.22.33.44&gt;<br />
+        <indent>
+            ServerName www.domain.tld<br />
+            ServerPath /domain<br />
+            DocumentRoot /web/domain<br />
+        </indent>
+        &lt;/VirtualHost&gt;<br />
     </example>
 
     <p>この例にはどういう意味があるでしょうか? これは
@@ -282,5 +286,3 @@
 
 </section>
 </manualpage>
-
-
