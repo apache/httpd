@@ -58,6 +58,9 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.45
 
+  *) mod_rewrite: Allow "RewriteEngine Off" even if no "Options FollowSymlinks"
+     (or SymlinksIfOwnermatch) is set. PR 12395.  [André Malo]
+
   *) apxs: Include any special APR ld flags when linking the DSO.
      This resolves problems on AIX when building a DSO with apxs+gcc.
      [Jeff Trawick]
