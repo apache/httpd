@@ -115,6 +115,7 @@ Server on HPUX</page>
 <title>Apache Miscellaneous Documentation</title>
 <page separate="yes" href="misc/">Overview</page>
 <page href="cgi_path.html">PATH_INFO Changes in the CGI Environment</page>
+<page href="misc/relevant_standards.html">Relevant Standards</page>
 </category>
 
 <category id="modules">
