@@ -3002,6 +3002,7 @@ static void perform_idle_server_maintenance(void)
     int free_length;
     int free_slots[MAX_SPAWN_RATE];
     int last_non_dead;
+    int total_non_dead;
 
     /* initialize the free_list */
     free_length = 0;
@@ -3009,6 +3010,7 @@ static void perform_idle_server_maintenance(void)
     to_kill = -1;
     idle_count = 0;
     last_non_dead = -1;
+    total_non_dead = 0;
 
     sync_scoreboard_image();
     for (i = 0; i < daemons_limit; ++i) {
@@ -3041,6 +3043,7 @@ static void perform_idle_server_maintenance(void)
 	    break;
 	}
 	if (ss->status != SERVER_DEAD) {
+	    ++total_non_dead;
 	    last_non_dead = i;
 #ifdef OPTIMIZE_TIMEOUTS
 	    if (ss->timeout_len) {
@@ -3086,11 +3089,13 @@ static void perform_idle_server_maintenance(void)
 	    idle_spawn_rate = 1;
 	}
 	else {
-	    if (idle_spawn_rate >= 4) {
-		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
-		    "server seems busy, spawning %d children (you may need "
-			"to increase StartServers, or Min/MaxSpareServers)",
-			    idle_spawn_rate);
+	    if (idle_spawn_rate >= 8) {
+		aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, server_conf,
+		    "server seems busy, (you may need "
+		    "to increase StartServers, or Min/MaxSpareServers), "
+		    "spawning %d children, there are %d idle, and "
+		    "%d total children", idle_spawn_rate,
+		    idle_count, total_non_dead);
 	    }
 	    for (i = 0; i < free_length; ++i) {
 		make_child(server_conf, free_slots[i], now);

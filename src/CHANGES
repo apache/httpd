@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) Improve the warning message generated when the "server is busy".
+     [Dean Gaudet] PR#1293
+
   *) PORT: All ports which don't otherwise define DEF_WANTHSREGEX will
      get Spencer regex by default.  This is to avoid having to
      discover bugs in operating system libraries.  [Dean Gaudet]
