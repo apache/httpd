@@ -538,6 +538,7 @@ static int cgi_handler(request_rec *r)
      */
     if (ap_should_client_block(r)) {
 	int dbsize, len_read;
+        ap_ssize_t bytes_written;
 
 	if (conf->logname) {
 	    dbuf = ap_pcalloc(r->pool, conf->bufbytes + 1);
@@ -556,7 +557,8 @@ static int cgi_handler(request_rec *r)
 		memcpy(dbuf + dbpos, argsbuffer, dbsize);
 		dbpos += dbsize;
 	    }
-	    if (ap_bwrite(script_out, argsbuffer, len_read) < len_read) {
+            (void) ap_bwrite(script_out, argsbuffer, len_read, &bytes_written);
+	    if (bytes_written < len_read) {
 		/* silly script stopped reading, soak up remaining message */
 		while (ap_get_client_block(r, argsbuffer, HUGE_STRING_LEN) > 0) {
 		    /* dump it */
