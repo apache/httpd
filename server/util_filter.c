@@ -344,7 +344,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
                  */
                 if (*r_filters != *c_filters) {
                     first = *r_filters;
-                    while (first && first->next && (first->next != (*outf))) {
+                    while (first && (first->next != (*outf))) {
                         first = first->next;
                     }
                 }
