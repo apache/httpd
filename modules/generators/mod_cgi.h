@@ -67,8 +67,7 @@
  * @param argv Pointer to the arguments to pass (may be overridden)
  * @param r The current request
  * @param p The pool to allocate correct cmd/argv elements within.
- * @deffunc apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv, request_rec *r, apr_pool_t *p)
- * @tip This callback may be registered by the os-specific module 
+ * @remark This callback may be registered by the os-specific module 
  * to correct the command and arguments for apr_proc_create invocation
  * on a given os.  mod_cgi will call the function if registered.
  */
