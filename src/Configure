@@ -931,11 +931,13 @@ echo "#define AP_CONFIG_AUTO_H" >>$AP_CONFIG_AUTO_H
 
 echo " + checking for system header files"
 CHECK_FOR_HEADERS="dlfcn.h dl.h bstring.h crypt.h unistd.h sys/resource.h sys/select.h sys/processor.h sys/param.h"
+(
+export CPP
 for header in $CHECK_FOR_HEADERS; do
     echo "" >>$AP_CONFIG_AUTO_H
     echo "/* check: #include <$header> */" >>$AP_CONFIG_AUTO_H
     name="`echo $header | sed -e 's:/:_:g' -e 's:\.:_:g' | tr '[a-z]' '[A-Z]'`"
-    ( export CPP; ./helpers/checkheader.sh $header )
+    ./helpers/checkheader.sh $header
     if [ $? -eq 0 ]; then
 	echo "#ifndef HAVE_${name}" >>$AP_CONFIG_AUTO_H
 	echo "#define HAVE_${name} 1" >>$AP_CONFIG_AUTO_H
@@ -946,6 +948,7 @@ for header in $CHECK_FOR_HEADERS; do
 	echo "#endif" >>$AP_CONFIG_AUTO_H
     fi
 done
+)
 
 ####################################################################
 # Special AIX 4.x support: need to check for sys/processor.h
