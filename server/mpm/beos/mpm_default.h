@@ -59,6 +59,10 @@
 #ifndef APACHE_MPM_DEFAULT_H
 #define APACHE_MPM_DEFAULT_H
 
+
+#define AP_ID_FROM_CHILD_THREAD(c, t)    ((c * HARD_THREAD_LIMIT) + t)
+#define AP_CHILD_THREAD_FROM_ID(i)       (0),(i)
+
 /* Number of servers to spawn off by default --- also, if fewer than
  * this free when the caretaker checks, it will spawn more.
  */
@@ -117,6 +121,7 @@
 #ifdef NO_THREADS
 #define DEFAULT_THREADS_PER_CHILD 1
 #endif
+
 #ifndef DEFAULT_THREADS_PER_CHILD
 #define DEFAULT_THREADS_PER_CHILD 10
 #endif
@@ -124,6 +129,11 @@
 /* Where the main/parent process's pid is logged */
 #ifndef DEFAULT_PIDLOG
 #define DEFAULT_PIDLOG "logs/httpd.pid"
+#endif
+
+/* Scoreboard file, if there is one */
+#ifndef DEFAULT_SCOREBOARD
+#define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
 #endif
 
 /*
