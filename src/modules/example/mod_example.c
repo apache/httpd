@@ -253,6 +253,7 @@ static excfg *our_dconfig(request_rec *r)
     return (excfg *) get_module_config(r->per_dir_config, &example_module);
 }
 
+#if 0
 /*
  * Locate our server configuration record for the specified server.
  */
@@ -270,6 +271,7 @@ static excfg *our_rconfig(request_rec *r)
 
     return (excfg *) get_module_config(r->request_config, &example_module);
 }
+#endif
 
 /*
  * This routine sets up some module-wide cells if they haven't been already.
@@ -320,7 +322,6 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
     char *where;
     pool *p;
     char *trace_copy;
-    excfg *rconfig;
 
     /*
      * Make sure our pools and tables are set up - we need 'em.
@@ -480,7 +481,6 @@ static int example_handler(request_rec *r)
 {
 
     excfg *dcfg;
-    excfg *rcfg;
 
     dcfg = our_dconfig(r);
     trace_add(r->server, r, dcfg, "example_handler()");
