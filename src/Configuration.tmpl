@@ -325,7 +325,11 @@ AddModule modules/standard/mod_userdir.o
 ## "digest" implements HTTP Digest Authentication rather than the less 
 ## secure Basic Auth used by the other modules. This is an updated
 ## version of mod_digest, but it is not well tested and is therefore
-## marked experimental
+## marked experimental.
+## Note: if you add this module in then you might also need the
+## truerand library (available for example from
+## ftp://research.att.com/dist/mab/librand.shar) - see the Rule
+## DEV_RANDOM above for more info.
 
 # AddModule modules/experimental/mod_auth_digest.o
 
