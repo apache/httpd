@@ -1,5 +1,15 @@
 Changes with Apache 1.3a2
 
+  *) When a large bwrite() occurs (larger than the internal buffer size),
+     while there is already something in the buffer, apache will combine
+     the large write and the buffer into a single writev().  (This is
+     in anticipation of using mmap() for reading files.)
+     [Dean Gaudet]
+
+  *) In obscure cases where a partial socket write occured while chunking,
+     Apache would omit the chunk header/footer on the next block.
+     [Dean Gaudet]
+
   *) API: Added child_exit function to module structure.  This is called
      once per "heavy-weight process" just before a server child exit()'s 
      e.g. when max_requests_per_child is reached, etc.

@@ -840,6 +840,45 @@ write_it_all(BUFF *fb, const void *buf, int nbyte)
 }
 
 
+#ifndef NO_WRITEV
+/* similar to previous, but uses writev.  Note that it modifies vec.
+ * return 0 if successful, -1 otherwise.
+ */
+static int writev_it_all (BUFF *fb, struct iovec *vec, int nvec)
+{
+    int i, rv;
+
+    /* while it's nice an easy to build the vector and crud, it's painful
+     * to deal with a partial writev()
+     */
+    for( i = 0; i < nvec; ) {
+	do rv = writev( fb->fd, &vec[i], nvec - i );
+	while (rv == -1 && errno == EINTR && !(fb->flags & B_EOUT));
+	if (rv == -1)
+	    return -1;
+	/* recalculate vec to deal with partial writes */
+	while (rv > 0) {
+	    if (rv < vec[i].iov_len) {
+		vec[i].iov_base = (char *)vec[i].iov_base + rv;
+		vec[i].iov_len -= rv;
+		rv = 0;
+		if (vec[i].iov_len == 0) {
+		    ++i;
+		}
+	    } else {
+		rv -= vec[i].iov_len;
+		++i;
+	    }
+	}
+	if (fb->flags & B_EOUT)
+	    return -1;
+    }
+    /* if we got here, we wrote it all */
+    return 0;
+}
+#endif
+
+
 /*
  * A hook to write() that deals with chunking. This is really a protocol-
  * level issue, but we deal with it here because it's simpler; this is
@@ -852,7 +891,6 @@ bcwrite(BUFF *fb, const void *buf, int nbyte)
     char chunksize[16];	/* Big enough for practically anything */
 #ifndef NO_WRITEV
     struct iovec vec[3];
-    int i, rv;
 #endif
 
     if (fb->flags & (B_WRERR|B_EOUT))
@@ -874,9 +912,6 @@ bcwrite(BUFF *fb, const void *buf, int nbyte)
 	return -1;
     return nbyte;
 #else
-
-#define NVEC	(sizeof(vec)/sizeof(vec[0]))
-
     vec[0].iov_base = chunksize;
     vec[0].iov_len = ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012",
 	nbyte);
@@ -884,36 +919,49 @@ bcwrite(BUFF *fb, const void *buf, int nbyte)
     vec[1].iov_len = nbyte;
     vec[2].iov_base = "\r\n";
     vec[2].iov_len = 2;
-    /* while it's nice an easy to build the vector and crud, it's painful
-     * to deal with a partial writev()
-     */
-    for( i = 0; i < NVEC; ) {
-	do rv = writev( fb->fd, &vec[i], NVEC - i );
-	while (rv == -1 && errno == EINTR && !(fb->flags & B_EOUT));
-	if (rv == -1)
-	    return -1;
-	/* recalculate vec to deal with partial writes */
-	while (rv > 0) {
-	    if( rv <= vec[i].iov_len ) {
-		vec[i].iov_base = (char *)vec[i].iov_base + rv;
-		vec[i].iov_len -= rv;
-		rv = 0;
-		if( vec[i].iov_len == 0 ) {
-		    ++i;
-		}
-	    } else {
-		rv -= vec[i].iov_len;
-		++i;
-	    }
-	}
-	if (fb->flags & B_EOUT)
-	    return -1;
-    }
-    /* if we got here, we wrote it all */
-    return nbyte;
-#undef NVEC
+
+    return writev_it_all (fb, vec, (sizeof(vec)/sizeof(vec[0]))) ? -1 : nbyte;
 #endif
 }
+
+
+#ifndef NO_WRITEV
+/*
+ * Used to combine the contents of the fb buffer, and a large buffer
+ * passed in.
+ */
+static int large_write (BUFF *fb, const void *buf, int nbyte)
+{
+    struct iovec vec[4];
+    int nvec;
+    char chunksize[16];
+
+    nvec = 0;
+    /* it's easiest to end the current chunk */
+    if (fb->flags & B_CHUNK) {
+	end_chunk(fb);
+    }
+    vec[0].iov_base = fb->outbase;
+    vec[0].iov_len = fb->outcnt;
+    if (fb->flags & B_CHUNK) {
+	vec[1].iov_base = chunksize;
+	vec[1].iov_len = ap_snprintf (chunksize, sizeof(chunksize),
+	    "%x\015\012", nbyte);
+	vec[2].iov_base = (void *)buf;
+	vec[2].iov_len = nbyte;
+	vec[3].iov_base = "\r\n";
+	vec[3].iov_len = 2;
+	nvec = 4;
+    } else {
+	vec[1].iov_base = (void *)buf;
+	vec[1].iov_len = nbyte;
+	nvec = 2;
+    }
+
+    fb->outcnt = 0;
+    return writev_it_all (fb, vec, nvec) ? -1 : nbyte;
+}
+#endif
 
 
 /*
@@ -952,6 +1000,19 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
 	    return i;
     }
 
+#ifndef NO_WRITEV
+/*
+ * Detect case where we're asked to write a large buffer, and combine our
+ * current buffer with it in a single writev()
+ */
+    if (fb->outcnt > 0 && nbyte >= fb->bufsiz) {
+	return large_write (fb, buf, nbyte);
+    }
+#endif
+
+    /* in case a chunk hasn't been started yet */
+    if( fb->flags & B_CHUNK ) start_chunk( fb );
+
 /*
  * Whilst there is data in the buffer, keep on adding to it and writing it
  * out
@@ -978,13 +1039,17 @@ API_EXPORT(int) bwrite(BUFF *fb, const void *buf, int nbyte)
 	    /* it is just too painful to try to re-cram the buffer while
 	     * chunking
 	     */
-	    i = (write_it_all(fb, fb->outbase, fb->outcnt) == -1) ?
-	            -1 : fb->outcnt;
-	} else {
-	    do {
-	        i = buff_write(fb, fb->outbase, fb->outcnt);
-	    } while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
+	    if (write_it_all(fb, fb->outbase, fb->outcnt) == -1) {
+		/* we cannot continue after a chunked error */
+		doerror (fb, B_WR);
+		return -1;
+	    }
+	    fb->outcnt = 0;
+	    break;
 	}
+	do {
+	    i = buff_write(fb, fb->outbase, fb->outcnt);
+	} while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
 	if (i <= 0) {
 	    if (i == 0) /* return of 0 means non-blocking */
 	        errno = EAGAIN;
@@ -1062,7 +1127,6 @@ API_EXPORT(int) bflush(BUFF *fb)
 
     while (fb->outcnt > 0)
     {
-	/* the buffer must be full */
 	do {
 	    i = buff_write(fb, fb->outbase, fb->outcnt);
 	} while (i == -1 && errno == EINTR && !(fb->flags & B_EOUT));
