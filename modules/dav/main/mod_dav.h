@@ -2063,6 +2063,28 @@ struct dav_hooks_vsn
     */
     dav_error * (*make_workspace)(dav_resource *resource,
                                   ap_xml_doc *doc);
+
+    /*
+    ** Determine whether a null resource can be created as an activity.
+    ** The provider may restrict activities to certain locations.
+    ** Returns 0 if the resource cannot be an activity.
+    **
+    ** This hook is optional; if the provider does not support activities,
+    ** it should be set to NULL.
+    */
+    int (*can_be_activity)(const dav_resource *resource);
+
+    /*
+    ** Create an activity resource. The resource must not already
+    ** exist.
+    **
+    ** If activity creation is succesful, the state of the resource
+    ** object is updated appropriately.
+    **
+    ** This hook is optional; if the provider does not support activities,
+    ** it should be set to NULL.
+    */
+    dav_error * (*make_activity)(dav_resource *resource);
 };
 
 
