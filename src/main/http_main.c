@@ -3005,7 +3005,7 @@ static void perform_idle_server_maintenance(void)
 	     */
 	case SERVER_STARTING:
 	case SERVER_READY:
-		++ idle_count;
+	    ++ idle_count;
 	    /* always kill the highest numbered child if we have to...
 	     * no really well thought out reason ... other than observing
 	     * the server behaviour under linux where lower numbered children
@@ -3016,7 +3016,7 @@ static void perform_idle_server_maintenance(void)
 	    break;
 	case SERVER_DEAD:
 	    /* try to keep children numbers as low as possible */
-		if (free_length < idle_spawn_rate) {
+	    if (free_length < idle_spawn_rate) {
 		free_slots[free_length] = i;
 		++free_length;
 	    }
