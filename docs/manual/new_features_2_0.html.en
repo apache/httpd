@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD>
+<TITLE>New features with Apache 2.0</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" 
+      VLINK="#000080" ALINK="#FF0000">
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Overview of New Features in Apache 2.0</H1>
+
+<P>Enhancements: <A HREF="#core">Core</A> |
+
+<P><HR>
+
+<H2><A NAME="core">Core Enhancements:</A></H2>
+
+<DL>
+<DT><STRONG>Unix Threading</STRONG>
+<DD>On Unix systems with POSIX threads support, Apache can now run in a
+    hybrid multiprocess, multithreaded mode. This should improve
+    scalability. 
+
+<DT><STRONG>New Build System</STRONG>
+<DD>The build system has been rewritten from scratch to be based on
+    autoconf and libtool. This makes Apache's configuration system more
+    similar to that of other packages.
+
+<DT><STRONG>Multiprotocol Support</STRONG>
+<DD>Apache now has some of the infrastructure in place to support serving
+    multiple protocols. mod_echo has been written as an example.
+
+<DT><STRONG>Better support for non-Unix platforms</STRONG>
+<DD>Apache 2.0 should be faster and more stable on non-Unix platforms such
+    as BeOS, OS/2, and Windows. With the introduction of platform-specific
+    multiprocessing modules and the Apache Portable Runtime, these
+    platforms can now avoid using POSIX-emulation functions that are
+    sometimes buggy and always hurt performance.
+
+<DT><STRONG>New API</STRONG>
+<DD>The API for modules has changed significantly for 2.0. Many of the
+    module-ordering problems from 1.3 should be gone, since 2.0 does much
+    of this automatically now. Also, new calls have been added that should
+    allow modules to do more without requiring patching of the core Apache
+    server.
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+
