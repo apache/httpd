@@ -1,5 +1,10 @@
 Changes with Apache 2.0.35
 
+  *) Added support for Posix semaphore mutex locking (AcceptMutex posixsem)
+     for those platforms that support it. If using the default
+     implementation, this is between pthread and sysvsem in priority.
+     This implies it's the new default for Darwin. [Jim Jagielski]
+
   *) AIX: Fix the syntax for setting the LDR_CNTRL and AIXTHREAD_SCOPE
      environment variables in the envvars file.  [Jeff Trawick]
 

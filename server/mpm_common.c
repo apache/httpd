@@ -672,6 +672,9 @@ const char ap_valid_accept_mutex_string[] =
 #if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
     ", sysvsem"
 #endif
+#if APR_HAS_POSIXSEM_SERIALIZE
+    ", posixsem"
+#endif
 #if APR_HAS_PROC_PTHREAD_SERIALIZE
     ", pthread"
 #endif
@@ -708,6 +711,11 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
 #if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
     else if (!strcasecmp(arg, "sysvsem")) {
         ap_accept_lock_mech = APR_LOCK_SYSVSEM;
+    }
+#endif
+#if APR_HAS_POSIXSEM_SERIALIZE
+    else if (!strcasecmp(arg, "posixsem")) {
+        ap_accept_lock_mech = APR_LOCK_POSIXSEM;
     }
 #endif
 #if APR_HAS_PROC_PTHREAD_SERIALIZE
