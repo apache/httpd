@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) Make mod_mime use case-insensitive matching when examining
+     extensions on all platforms.  PR 8223.  [Justin Erenkrantz]
+
   *) Add an intelligent error message should no proxy submodules be
      valid to handle a request. PR 8407 [Graham Leggett]
 
