@@ -1869,12 +1869,12 @@ Apache).<P>
 
 <UL>
 <LI>
-In the absence of any <A HREF="#listen">Listen</A> or
-<A HREF="#bindaddress">BindAddress</A> directives specifying a port number,
+In the absence of any <A HREF="mpm_common.html#listen">Listen</A>
+directives specifying a port number,
 a Port directive given in the "main server"
 (<EM>i.e.</EM>, outside any <A HREF="#virtualhost">&lt;VirtualHost&gt</A> section)
 sets the network port on which the server listens.
-If there are any Listen or BindAddress directives specifying
+If there are any Listen directives specifying
 <CODE>:number</CODE> then Port has no effect on what address the server
 listens at.
 
@@ -1897,20 +1897,21 @@ and Port together specify what you consider to be the <EM>canonical</EM>
 address of the server.
 (See also <A HREF="#usecanonicalname">UseCanonicalName</A>.)<P>
 
-Port 80 is one of Unix's special ports. All ports numbered
-below 1024 are reserved for system use, <EM>i.e.</EM>, regular (non-root) users cannot
-make use of them; instead they can only use higher port numbers.
-To use port 80, you must start the server from the root account.
-After binding to the port and before accepting requests, Apache will change
-to a low privileged user as set by the <A HREF="#user">User directive</A>.<P>
+Port 80 is one of Unix's special ports. All ports numbered below 1024
+are reserved for system use, <EM>i.e.</EM>, regular (non-root) users
+cannot make use of them; instead they can only use higher port
+numbers.  To use port 80, you must start the server from the root
+account.  After binding to the port and before accepting requests,
+Apache will change to a low privileged user as set by the <A
+HREF="mpm_common.html#user">User directive</A>.<P>
 
 If you cannot use port 80, choose any other unused port. Non-root users
 will have to choose a port number higher than 1023, such as 8000.<P>
 
-SECURITY: if you do start the server as root, be sure
-not to set <A HREF="#user">User</A> to root. If you run the server as
-root whilst handling connections, your site may be open to a major security
-attack.<P><HR>
+SECURITY: if you do start the server as root, be sure not to set <A
+HREF="mpm_common.html#user">User</A> to root. If you run the server as
+root whilst handling connections, your site may be open to a major
+security attack.<P><HR>
 
 <H2><A NAME="require">Require directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt Require} directive&gt; -->
@@ -2642,8 +2643,7 @@ than the user that starts the server.
 <P><STRONG>NOTE</STRONG>: The use of &lt;VirtualHost&gt; does
 <STRONG>not</STRONG> affect what addresses Apache listens on. You may
 need to ensure that Apache is listening on the correct addresses using
-either <A HREF="#bindaddress">BindAddress</A> or <A
-HREF="#listen">Listen</A>.
+<A HREF="mpm_common.html#listen">Listen</A>.
 
 <P><STRONG>See also:</STRONG>
 <A HREF="../vhosts/index.html">Apache Virtual Host documentation</A><BR>
