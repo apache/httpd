@@ -103,6 +103,8 @@ extern API_VAR_EXPORT char *ap_server_argv0;
 
 extern enum server_token_type ap_server_tokens;
 
+extern int ap_protocol_req_check;
+
 /* Trying to allocate these in the config pool gets us into some *nasty*
  * chicken-and-egg problems in http_main.c --- where do you stick them
  * when pconf gets cleared?  Better to just allocate a little space

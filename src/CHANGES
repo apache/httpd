@@ -1,8 +1,16 @@
 Changes with Apache 1.3.27
 
+  *) Add ProtocolReqCheck directive, which determines if Apache will
+     check for a valid protocol string in the request (eg: HTTP/1.1)
+     and return HTTP_BAD_REQUEST if not valid. Versions of Apache
+     prior to 1.3.26 would silently ignore bad protocol strings, but
+     1.3.26 included a more strict check. This makes it runtime
+     configurable. The default is On. This also removes the requirement
+     on an ANSI sscanf() implementation. [Jim Jagielski]
+
   *) NetWare: implemented file locking in mod_rewrite for the NetWare
      CLib platform. This fixes a bug that prevented rewrite logging 
-	 from working. [Brad Nicholes]
+     from working. [Brad Nicholes]
 
 Changes with Apache 1.3.26
 

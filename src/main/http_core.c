@@ -2778,6 +2778,18 @@ static const char *set_bs2000_account(cmd_parms *cmd, void *dummy, char *name)
 }
 #endif /*_OSD_POSIX*/
 
+static const char *set_protocol_req_check(cmd_parms *cmd,
+                                              core_dir_config *d, int arg) 
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_protocol_req_check = arg != 0;
+    return NULL;
+}
+
 /*
  * Handle a request to include the server's OS platform in the Server
  * response header field (the ServerTokens directive).  Unfortunately
@@ -2785,7 +2797,6 @@ static const char *set_bs2000_account(cmd_parms *cmd, void *dummy, char *name)
  * http_main so it can insert the information in the right place in the
  * string.
  */
-
 static const char *set_serv_tokens(cmd_parms *cmd, void *dummy, char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -3411,6 +3422,8 @@ static const command_rec core_cmds[] = {
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   OR_ALL, TAKE1,
   "Limit (in bytes) on maximum size of request message body" },
+{ "ProtocolReqCheck", set_protocol_req_check, NULL, RSRC_CONF, FLAG,
+  "Enable strict checking of Protocol type in requests" },
 { "AcceptMutex", set_accept_mutex, NULL, RSRC_CONF, TAKE1,
   "Serialized Accept Mutex; the methods " 
 #ifdef HAVE_USLOCK_SERIALIZED_ACCEPT

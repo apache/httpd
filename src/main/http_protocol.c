@@ -991,7 +991,9 @@ static int read_request_line(request_rec *r)
     const char *uri;
     conn_rec *conn = r->connection;
     unsigned int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
-    int len, n = 0;
+    int len = 0;
+    int valid_protocol = 1;
+    char *kruft;
 
     /* Read past empty lines until we get a real request line,
      * a read error, the connection closes (EOF), or we timeout.
@@ -1053,26 +1055,41 @@ static int read_request_line(request_rec *r)
     r->assbackwards = (ll[0] == '\0');
     r->protocol = ap_pstrdup(r->pool, ll[0] ? ll : "HTTP/0.9");
 
-    if (2 == sscanf(r->protocol, "HTTP/%u.%u%n", &major, &minor, &n)
-      && minor < HTTP_VERSION(1,0))	/* don't allow HTTP/0.1000 */
-	r->proto_num = HTTP_VERSION(major, minor);
+    /* Avoid sscanf in the common case */
+    if (strlen(r->protocol) == 8
+        && r->protocol[0] == 'H' && r->protocol[1] == 'T'
+	&& r->protocol[2] == 'T' && r->protocol[3] == 'P'
+        && r->protocol[4] == '/' && ap_isdigit(r->protocol[5])
+	&& r->protocol[6] == '.' && ap_isdigit(r->protocol[7])) {
+        r->proto_num = HTTP_VERSION(r->protocol[5] - '0', r->protocol[7] - '0');
+    }
     else {
-	r->proto_num = HTTP_VERSION(1,0);
-	n = 0;
+	kruft = ap_palloc(r->pool, strlen(r->protocol)+1);
+	if (2 == sscanf(r->protocol, "HTTP/%u.%u%s", &major, &minor, kruft)
+	    && minor < HTTP_VERSION(1,0)) /* don't allow HTTP/0.1000 */
+	    r->proto_num = HTTP_VERSION(major, minor);
+	else {
+	    r->proto_num = HTTP_VERSION(1,0);
+	    valid_protocol = 0;
+	}
     }
 
     /* Check for a valid protocol, and disallow everything but whitespace
-     * after the protocol string */
-    while (ap_isspace(r->protocol[n]))
-        ++n;
-    if (r->protocol[n] != '\0') {
-        r->status    = HTTP_BAD_REQUEST;
-        r->proto_num = HTTP_VERSION(1,0);
-        r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
-        ap_table_setn(r->notes, "error-notes",
-                      "The request line contained invalid characters "
-                      "following the protocol string.<P>\n");
-        return 0;
+     * after the protocol string. A protocol string of nothing but
+     * whitespace is considered valid */
+    if (ap_protocol_req_check && !valid_protocol) {
+        int n = 0;
+	while (ap_isspace(r->protocol[n]))
+	    ++n;
+	if (r->protocol[n] != '\0') {
+	    r->status    = HTTP_BAD_REQUEST;
+	    r->proto_num = HTTP_VERSION(1,0);
+	    r->protocol  = ap_pstrdup(r->pool, "HTTP/1.0");
+	    ap_table_setn(r->notes, "error-notes",
+                     "The request line contained invalid characters "
+                     "following the protocol string.<P>\n");
+	    return 0;
+	}
     }
 
     return 1;

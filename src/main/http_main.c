@@ -398,6 +398,9 @@ static int version_locked = 0;
 /* Global, alas, so http_core can talk to us */
 enum server_token_type ap_server_tokens = SrvTk_FULL;
 
+/* Also global, for http_core and http_protocol */
+int ap_protocol_req_check = 1;
+
 /*
  * This routine is called when the pconf pool is vacuumed.  It resets the
  * server version string to a known value and [re]enables modifications
