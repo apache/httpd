@@ -837,8 +837,10 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
                strncat(tmp,word,s - word);
                if ((s[1] == '{') && (e=ap_strchr_c(s,'}'))) {
                        const char *e2 = e;
+                       char *var;
                        word = e + 1;
-                       e = getenv(s+2);
+                       var = apr_pstrndup(p, s+2, e2-(s+2));
+                       e = getenv(var);
                        if (e) {
                            strcat(tmp,e);
                        } else {
