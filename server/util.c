@@ -1557,7 +1557,7 @@ AP_DECLARE(int) ap_unescape_url(char *url)
 }
 
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
-				    unsigned port, const request_rec *r)
+				    apr_port_t port, const request_rec *r)
 {
     if (ap_is_default_port(port, r))
 	return apr_pstrdup(p, hostname);
@@ -1846,7 +1846,7 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name)
  * Parses a host of the form <address>[:port]
  * :port is permitted if 'port' is not NULL
  */
-unsigned long ap_get_virthost_addr(char *w, unsigned short *ports)
+unsigned long ap_get_virthost_addr(char *w, apr_port_t *ports)
 {
     struct hostent *hep;
     unsigned long my_addr;

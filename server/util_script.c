@@ -166,7 +166,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
     apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
     int i;
-    apr_uint32_t rport;
+    apr_port_t rport;
 
     /* use a temporary apr_table_t which we'll overlap onto
      * r->subprocess_env later

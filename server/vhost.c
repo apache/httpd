@@ -854,7 +854,7 @@ static void check_hostalias(request_rec *r)
      *   names we'll match have ports associated with them
      */
     const char *host = r->hostname;
-    unsigned port;
+    apr_port_t port;
     server_rec *s;
     server_rec *last_s;
     name_chain *src;
@@ -914,7 +914,7 @@ static void check_serverpath(request_rec *r)
     server_rec *s;
     server_rec *last_s;
     name_chain *src;
-    unsigned port;
+    apr_port_t port;
     apr_get_local_port(&port, r->connection->client_socket);
    
     /*

@@ -904,7 +904,7 @@ struct server_addr_rec {
     /** The bound address, for this server */
     apr_in_addr host_addr;
     /** The bound port, for this server */
-    unsigned short host_port;
+    apr_port_t host_port;
     /** The name given in <VirtualHost> */
     char *virthost;
 };
@@ -928,7 +928,7 @@ struct server_rec {
     /** The server hostname */
     char *server_hostname;
     /** for redirects, etc. */
-    unsigned short port;
+    apr_port_t port;
 
     /* Log files --- note that transfer log is now in the modules... */
 
@@ -1277,10 +1277,10 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s);
  * @param port The port the server is running on
  * @param r The current request
  * @return The server's hostname
- * @deffunc char *ap_construct_server(apr_pool_t *p, const char *hostname, unsiged port, const request_rec *r)
+ * @deffunc char *ap_construct_server(apr_pool_t *p, const char *hostname, apr_port_t port, const request_rec *r)
  */
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
-				    unsigned port, const request_rec *r);
+				    apr_port_t port, const request_rec *r);
 /**
  * Escape a shell command
  * @param p The pool to allocate out of
@@ -1569,9 +1569,9 @@ char *ap_get_local_host(apr_pool_t *p);
  * @param hostname The hostname to parse
  * @param port The port found in the hostname
  * @return The address of the server
- * @deffunc unsigned long ap_get_virthost_addr(char *hostname, unsigned shor *port)
+ * @deffunc unsigned long ap_get_virthost_addr(char *hostname, apr_port_t *port)
  */
-unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
+unsigned long ap_get_virthost_addr(char *hostname, apr_port_t *port);
 
 /*
  * Redefine assert() to something more useful for an Apache...

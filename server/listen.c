@@ -83,7 +83,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     int one = 1;
     char addr[512];
     apr_status_t stat;
-    apr_uint32_t port;
+    apr_port_t port;
     char *ipaddr;
 
     apr_get_local_port(&port,s);
@@ -178,7 +178,7 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
     ap_listen_rec *new;
     apr_status_t status;
     char *oldaddr;
-    unsigned int oldport;
+    apr_port_t oldport;
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {

@@ -112,8 +112,8 @@ static int get_rfc1413(apr_socket_t *sock, const char *local_ip,
 		       const char *rmt_ip, 
 		       char user[RFC1413_USERLEN+1], server_rec *srv)
 {
-    unsigned int rmt_port, our_port;
-    unsigned int sav_rmt_port, sav_our_port;
+    apr_port_t rmt_port, our_port;
+    apr_port_t sav_rmt_port, sav_our_port;
     apr_status_t status;
     int i;
     char *cp;

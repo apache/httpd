@@ -94,7 +94,7 @@ static schemes_t schemes[] =
 };
 
 
-AP_DECLARE(unsigned short) ap_default_port_for_scheme(const char *scheme_str)
+AP_DECLARE(apr_port_t) ap_default_port_for_scheme(const char *scheme_str)
 {
     schemes_t *scheme;
 
@@ -105,7 +105,7 @@ AP_DECLARE(unsigned short) ap_default_port_for_scheme(const char *scheme_str)
     return 0;
 }
 
-AP_DECLARE(unsigned short) ap_default_port_for_request(const request_rec *r)
+AP_DECLARE(apr_port_t) ap_default_port_for_request(const request_rec *r)
 {
     return (r->parsed_uri.scheme)
 	? ap_default_port_for_scheme(r->parsed_uri.scheme)
