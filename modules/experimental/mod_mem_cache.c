@@ -287,7 +287,16 @@ static int create_entity(cache_handle_t *h, request_rec *r,
     mobj->m_len = len;    /* Duplicates info in cache_object_t info */
 
 
-    /* Place the cache_object_t into the hash table
+    /* Place the cache_object_t into the hash table.
+     * Note: Perhaps we should wait to put the object in the
+     * hash table when the object is complete?  I add the object here to
+     * avoid multiple threads attempting to cache the same content only
+     * to discover at the very end that only one of them will suceed.
+     * Furthermore, adding the cache object to the table at the end could
+     * open up a subtle but easy to exploit DoS hole: someone could request 
+     * a very large file with multiple requests. Better to detect this here
+     * rather than after the cache object has been completely built and
+     * initialized...
      * XXX Need a way to insert into the cache w/o such coarse grained locking 
      * XXX Need to enable caching multiple cache objects (representing different
      * views of the same content) under a single search key
