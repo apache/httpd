@@ -4,6 +4,9 @@ Changes with Apache 2.0.53
 
   *) Fix Expires handling in mod_cache.  [Justin Erenkrantz]
 
+  *) Alter mod_expires to run at a different filter priority to allow
+     proper Expires storage by mod_cache.  [Justin Erenkrantz]
+
 Changes with Apache 2.0.52
 
   *) Use HTML 2.0 <hr> for error pages. PR 30732 [André Malo]
