@@ -5,10 +5,10 @@ DESCRIPTION ''
 
 EXPORTS
 	; Add new API calls to the end of this list.
-	ap_MD5Final   @1
-	ap_MD5Init   @2
-	ap_MD5Update   @3
-	ap_acquire_mutex   @4
+;	ap_MD5Final   @1
+;	ap_MD5Init   @2
+;	ap_MD5Update   @3
+;	ap_acquire_mutex   @4
 	ap_add_cgi_vars	  @5
 	ap_add_common_vars   @6
 	ap_add_loaded_module   @7
@@ -19,8 +19,8 @@ EXPORTS
 	;ap_add_version_component   @12
 	ap_allow_options   @13
 	ap_allow_overrides   @14
-	ap_append_arrays   @15
-	ap_array_cat   @16
+;	ap_append_arrays   @15
+;	ap_array_cat   @16
 	ap_auth_name   @17
 	ap_auth_type   @18
 	ap_basic_http_header   @19
@@ -44,11 +44,11 @@ EXPORTS
 	ap_bsetflag   @37
 	ap_bsetopt   @38
 	;ap_bskiplf   @39
-	ap_bspawn_child   @40
+;	ap_bspawn_child   @40
 	ap_bwrite   @41
 	;ap_bytes_in_free_blocks   @42
 	;ap_bytes_in_pool   @43
-	ap_call_exec   @44
+;	ap_call_exec   @44
 	;ap_can_exec   @45
 	ap_cfg_closefile   @46
 	ap_cfg_getc   @47
@@ -57,28 +57,28 @@ EXPORTS
 	;ap_check_alarm   @50
 	ap_check_cmd_context   @51
 	ap_checkmask   @52
-	ap_cleanup_for_exec   @53
+;	ap_cleanup_for_exec   @53
 	ap_clear_module_list   @54
-	ap_clear_pool   @55
-	ap_clear_table   @56
+;	ap_clear_pool   @55
+;	ap_clear_table   @56
 	ap_close_piped_log   @57
 	ap_construct_server   @58
 	ap_construct_url   @59
 	ap_content_type_tolower   @60
-	ap_copy_array   @61
-	ap_copy_array_hdr   @62
-	ap_copy_table   @63
+;	ap_copy_array   @61
+;	ap_copy_array_hdr   @62
+;	ap_copy_table   @63
 	ap_count_dirs   @64
-	ap_cpystrn   @65
+;	ap_cpystrn   @65
 	ap_create_environment   @66
-	ap_create_mutex   @67
+;	ap_create_mutex   @67
 	ap_create_per_dir_config   @68
 	ap_custom_response   @69
 	ap_default_port_for_request   @70
 	ap_default_port_for_scheme   @71
 	ap_default_type   @72
-	ap_destroy_mutex   @73
-	ap_destroy_pool   @74
+;	ap_destroy_mutex   @73
+;	ap_destroy_pool   @74
 	ap_destroy_sub_req   @75
 	ap_die   @76
 	ap_discard_request_body   @77
@@ -130,25 +130,25 @@ EXPORTS
 	ap_internal_redirect   @123
 	ap_internal_redirect_handler   @124
 	ap_is_directory   @125
-	ap_is_fnmatch   @126
+;	ap_is_fnmatch   @126
 	ap_is_initial_req   @127
 	ap_is_matchexp   @128
 	ap_is_url   @129
-	ap_kill_cleanup   @130
-	ap_kill_cleanups_for_fd   @131
-	ap_kill_cleanups_for_socket   @132
+;	ap_kill_cleanup   @130
+;	ap_kill_cleanups_for_fd   @131
+;	ap_kill_cleanups_for_socket   @132
 	;ap_kill_timeout   @133
 	ap_log_assert   @134
 	ap_log_error_old   @135
 	ap_log_reason   @136
 	ap_log_unixerr   @137
-	ap_make_array   @138
+;	ap_make_array   @138
 	ap_make_dirstr   @139
 	ap_make_dirstr_parent   @140
 	ap_make_dirstr_prefix   @141
 	ap_make_full_path   @142
-	ap_make_sub_pool   @143
-	ap_make_table   @144
+;	ap_make_sub_pool   @143
+;	ap_make_table   @144
 	ap_matches_request_vhost   @145
 	ap_md5   @146
 	ap_md5_binary   @147
@@ -158,49 +158,49 @@ EXPORTS
 	ap_no2slash   @151
 	ap_note_auth_failure   @152
 	ap_note_basic_auth_failure   @153
-	ap_note_cleanups_for_fd   @154
-	ap_note_cleanups_for_file   @155
-	ap_note_cleanups_for_h   @156
-	ap_note_cleanups_for_socket   @157
+;	ap_note_cleanups_for_fd   @154
+;	ap_note_cleanups_for_file   @155
+;	ap_note_cleanups_for_h   @156
+;	ap_note_cleanups_for_socket   @157
 	ap_note_digest_auth_failure   @158
-	ap_note_subprocess   @159
-	ap_open_mutex   @160
+;	ap_note_subprocess   @159
+;	ap_open_mutex   @160
 	ap_open_piped_log   @161
 	ap_os_canonical_filename   @162
 	ap_os_escape_path   @163
-	ap_overlap_tables   @164
-	ap_overlay_tables   @165
-	ap_palloc   @166
+;	ap_overlap_tables   @164
+;	ap_overlay_tables   @165
+;	ap_palloc   @166
 	ap_parseHTTPdate   @167
 	ap_parse_hostinfo_components   @168
 	ap_parse_uri   @169
 	ap_parse_uri_components   @170
-	ap_pcalloc   @171
+;	ap_pcalloc   @171
 	ap_pcfg_open_custom   @172
 	ap_pcfg_openfile   @173
-	ap_pclosedir   @174
-	ap_pclosef   @175
-	ap_pcloseh   @176
-	ap_pclosesocket   @177
+;	ap_pclosedir   @174
+;	ap_pclosef   @175
+;	ap_pcloseh   @176
+;	ap_pclosesocket   @177
 	ap_pduphostent   @178
-	ap_pfclose   @179
-	ap_pfdopen   @180
-	ap_pfopen   @181
+;	ap_pfclose   @179
+;	ap_pfdopen   @180
+;	ap_pfopen   @181
 	ap_pgethostbyname   @182
-	ap_popendir   @183
-	ap_popenf   @184
+;	ap_popendir   @183
+;	ap_popenf   @184
 	ap_pregcomp   @185
 	ap_pregfree   @186
 	ap_pregsub   @187
 	ap_psignature   @188
-	ap_psocket   @189
-	ap_pstrdup   @190
-	ap_pstrndup   @191
-	ap_push_array   @192
-	ap_pvsprintf   @193
+;	ap_psocket   @189
+;	ap_pstrdup   @190
+;	ap_pstrndup   @191
+;	ap_push_array   @192
+;	ap_pvsprintf   @193
 	ap_rationalize_mtime   @194
-	ap_register_cleanup   @195
-	ap_release_mutex   @196
+;	ap_register_cleanup   @195
+;	ap_release_mutex   @196
 	ap_remove_loaded_module   @197
 	ap_remove_module   @198
 	ap_requires   @199
@@ -209,7 +209,7 @@ EXPORTS
 	ap_rind   @202
 	ap_rputc   @203
 	ap_rputs   @204
-	ap_run_cleanup   @205
+;	ap_run_cleanup   @205
 	ap_run_sub_req   @206
 	ap_rwrite   @207
 	ap_satisfies   @208
@@ -234,7 +234,7 @@ EXPORTS
 	ap_should_client_block   @227
 	;ap_soft_timeout   @228
 	ap_some_auth_required   @229
-	ap_spawn_child   @230
+;	ap_spawn_child   @230
 	ap_srm_command_loop   @231
 	ap_str_tolower   @232
 	ap_strcasecmp_match   @233
@@ -242,14 +242,14 @@ EXPORTS
 	ap_sub_req_lookup_file   @235
 	ap_sub_req_lookup_uri   @236
 	;ap_sync_scoreboard_image   @237
-	ap_table_add   @238
-	ap_table_addn   @239
-	ap_table_get   @240
-	ap_table_merge   @241
-	ap_table_mergen   @242
-	ap_table_set   @243
-	ap_table_setn   @244
-	ap_table_unset   @245
+;	ap_table_add   @238
+;	ap_table_addn   @239
+;	ap_table_get   @240
+;	ap_table_merge   @241
+;	ap_table_mergen   @242
+;	ap_table_set   @243
+;	ap_table_setn   @244
+;	ap_table_unset   @245
 	ap_tm2sec   @246
 	ap_uname2id   @247
 	;ap_unblock_alarms   @248
@@ -259,8 +259,8 @@ EXPORTS
 	ap_uudecode   @252
 	ap_uuencode   @253
 	ap_vbprintf   @254
-	ap_vformatter   @255
-	ap_vsnprintf   @256
+;	ap_vformatter   @255
+;	ap_vsnprintf   @256
 	closedir   @257
 	opendir   @258
 	os_spawnv   @259
@@ -282,9 +282,9 @@ EXPORTS
 	ap_log_printf   @275
 	ap_log_rerror   @276
 	ap_month_snames  @277
-	ap_null_cleanup   @278
-	ap_psprintf   @279
-	ap_pstrcat   @280
+;	ap_null_cleanup   @278
+;	ap_psprintf   @279
+;	ap_pstrcat   @280
 	;ap_restart_time  @281 
 	ap_rprintf   @282
 	ap_rvputs   @283
@@ -296,9 +296,9 @@ EXPORTS
 	ap_set_flag_slot   @289
 	ap_set_string_slot  @290
 	ap_set_string_slot_lower  @291 
-	ap_snprintf   @292
+;	ap_snprintf   @292
 	;ap_suexec_enabled  @293 
-	ap_table_do   @294
+;	ap_table_do   @294
 	apache_main   @295
 	asis_module   @296
 	auth_module   @297
@@ -316,16 +316,16 @@ EXPORTS
 	setenvif_module  @309 
 	;so_module   @310
 	top_module   @311
-	ap_fnmatch   @312
+;	ap_fnmatch   @312
 	ap_method_number_of   @313
 	ap_exists_config_define   @314
 	ap_single_module_configure   @315
 	ap_make_etag   @317
-	ap_array_pstrcat   @318
+;	ap_array_pstrcat   @318
 	ap_os_is_filename_valid   @319
 	ap_find_list_item   @320
-	ap_MD5Encode   @321
-	ap_validate_password   @322
+;	ap_MD5Encode   @321
+;	ap_validate_password   @322
 	ap_size_list_item   @323
 	ap_get_list_item   @324
 	;ap_scoreboard_fname   @325
@@ -366,3 +366,4 @@ EXPORTS
 	ap_hook_check_user_id @361
 	ap_hook_auth_checker @362
 	ap_hook_fixups @363
+        regerror @364
