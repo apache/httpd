@@ -171,8 +171,7 @@ install:
 	fi
 	@$(MAKE) -f $(MKF) $(MFLAGS) \
 	    install-mktree install-programs $(install-support) \
-		install-config install-include \
-		install-docroot
+		install-include install-docroot install-config
 	-@rm -f .install.tmp
 	-@rm -f .install.conf
 	-@if [ ".$(QUIET)" != .1 ]; then \
@@ -299,38 +298,6 @@ install-support:
 	fi
 	@echo "<=== [support]"
 
-#   create the initial configuration by providing default files
-#   and initial config files while preserving existing ones.
-install-config:
-	@echo "===> [config: Installing Apache configuration files]"
-	for conf in httpd.conf access.conf srm.conf; do \
-        (echo "##"; \
-         echo "## $$conf -- Apache HTTP server configuration file"; \
-         echo "##"; \
-		 echo ""; \
-		 cat $(ROOT)/conf/$$conf-dist ) |\
-    	sed -e '/# LoadModule/r .install.conf' \
-    	    -e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
-    	    -e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
-        	-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
-        	-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
-        	-e 's;@@ServerRoot@@/proxy;$(localstatedir)/proxy;' \
-        	-e 's;@@ServerRoot@@;$(prefix);' \
-        	-e 's;logs/accept.lock;$(localstatedir)/$(localstatesubdir_run)/httpd.lock;' \
-        	-e 's;logs/apache_status;$(localstatedir)/$(localstatesubdir_run)/httpd.scoreboard;' \
-        	-e 's;logs/httpd.pid;$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
-        	-e 's;logs/access_log;$(localstatedir)/$(localstatesubdir_logs)/access_log;' \
-        	-e 's;logs/error_log;$(localstatedir)/$(localstatesubdir_logs)/error_log;' \
-        	>.install.tmp && \
-		$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf.default; \
-		if [ ! -f "$(sysconfdir)/$$conf" ]; then \
-			$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf; \
-		fi; \
-	done
-	$(CP) $(ROOT)/conf/mime.types $(sysconfdir)/mime.types
-	$(CP) $(ROOT)/conf/magic $(sysconfdir)/magic
-	@echo "<=== [config]"
-
 #   install the Apache C header files 
 install-include:
 	@echo "===> [include: Installing Apache C header files]"
@@ -356,6 +323,43 @@ install-docroot:
 	-find $(datadir)/cgi-bin/ -type d -exec chmod a+rx {} \;
 	-find $(datadir)/cgi-bin/ -type f -exec chmod a+r {} \;
 	@echo "<=== [docroot]"
+
+#   create the initial configuration by providing default files
+#   and initial config files while preserving existing ones.
+install-config:
+	@echo "===> [config: Installing Apache configuration files]"
+	-@for conf in httpd.conf access.conf srm.conf; do \
+        (echo "##"; \
+         echo "## $$conf -- Apache HTTP server configuration file"; \
+         echo "##"; \
+		 echo ""; \
+		 cat $(ROOT)/conf/$$conf-dist ) |\
+    	sed -e '/# LoadModule/r .install.conf' \
+    	    -e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
+    	    -e 's;@@ServerRoot@@/htdocs;$(datadir)/htdocs;' \
+        	-e 's;@@ServerRoot@@/icons;$(datadir)/icons;' \
+        	-e 's;@@ServerRoot@@/cgi-bin;$(datadir)/cgi-bin;' \
+        	-e 's;@@ServerRoot@@/proxy;$(localstatedir)/proxy;' \
+        	-e 's;@@ServerRoot@@;$(prefix);' \
+        	-e 's;logs/accept.lock;$(localstatedir)/$(localstatesubdir_run)/httpd.lock;' \
+        	-e 's;logs/apache_status;$(localstatedir)/$(localstatesubdir_run)/httpd.scoreboard;' \
+        	-e 's;logs/httpd.pid;$(localstatedir)/$(localstatesubdir_run)/httpd.pid;' \
+        	-e 's;logs/access_log;$(localstatedir)/$(localstatesubdir_logs)/access_log;' \
+        	-e 's;logs/error_log;$(localstatedir)/$(localstatesubdir_logs)/error_log;' \
+        	>.install.tmp && \
+		echo "$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf.default"; \
+		$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf.default; \
+		if [ ! -f "$(sysconfdir)/$$conf" ]; then \
+			echo "$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf"; \
+			$(INSTALL_DATA) .install.tmp $(sysconfdir)/$$conf; \
+		else \
+			echo "[PRESERVING EXISTING CONFIG FILE: $(sysconfdir)/$$conf]"; \
+		fi; \
+	done
+	$(CP) $(ROOT)/conf/mime.types $(sysconfdir)/mime.types
+	$(CP) $(ROOT)/conf/magic $(sysconfdir)/magic
+	@echo "<=== [config]"
+
 
 ## ------------------------------------------------------------------
 ##                       Cleanup Targets  
