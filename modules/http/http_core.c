@@ -3382,10 +3382,11 @@ static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
                 break;
             }
             else if (e->type == AP_BUCKET_FILE) {
+                ap_bucket_file *a = e->data;
                 /* Assume there is at most one AP_BUCKET_FILE in the brigade */
-                fd = e->data;
+                fd = a->fd;
                 flen = e->length;
-                foffset = e->offset;
+                foffset = a->offset;
             }
             else {
                 const char *str;
