@@ -186,7 +186,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->add_default_charset = ADD_DEFAULT_CHARSET_UNSET;
     conf->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
 
-    conf->filters = apr_make_array(a, 2, sizeof(void *));
+    conf->output_filters = apr_make_array(a, 2, sizeof(void *));
     conf->input_filters = apr_make_array(a, 2, sizeof(void *));
     return (void *)conf;
 }
@@ -327,7 +327,8 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 	    conf->add_default_charset_name = new->add_default_charset_name;
 	}
     }
-    conf->filters = apr_append_arrays(a, base->filters, new->filters);
+    conf->output_filters = apr_append_arrays(a, base->output_filters, 
+                                             new->output_filters);
     conf->input_filters = apr_append_arrays(a, base->input_filters,
                                             new->input_filters);
 
@@ -1905,7 +1906,7 @@ static const char *add_filter(cmd_parms *cmd, void *dummy, const char *arg)
     core_dir_config *conf = dummy;
     char **newfilter;
     
-    newfilter = (char **)apr_push_array(conf->filters);
+    newfilter = (char **)apr_push_array(conf->output_filters);
     *newfilter = apr_pstrdup(cmd->pool, arg);
     return NULL;
 }
@@ -3546,9 +3547,9 @@ static void core_insert_filter(request_rec *r)
     core_dir_config *conf = (core_dir_config *)
                             ap_get_module_config(r->per_dir_config,
 						   &core_module); 
-    char **items = (char **)conf->filters->elts;
+    char **items = (char **)conf->output_filters->elts;
 
-    for (i = 0; i < conf->filters->nelts; i++) {
+    for (i = 0; i < conf->output_filters->nelts; i++) {
         char *foobar = items[i];
         ap_add_output_filter(foobar, NULL, r, r->connection);
     }
