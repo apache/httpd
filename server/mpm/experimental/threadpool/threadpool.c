@@ -939,10 +939,13 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 signal_threads(ST_GRACEFUL);
             }
             if (csd != NULL) {
-                worker->csd = (apr_socket_t *)csd;
+                /* Wake up the sleeping worker. */
                 apr_thread_mutex_lock(worker->mutex);
-                apr_thread_mutex_unlock(worker->mutex);
+                worker->csd = (apr_socket_t *)csd;
+                /* We must own the lock associated with the condition
+                 * variable that we are signaling. */
                 apr_thread_cond_signal(worker->cond);
+                apr_thread_mutex_unlock(worker->mutex);
                 worker = NULL;
             }
         }
@@ -962,8 +965,10 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     worker_stack_interrupt_all(idle_worker_stack);
     if (worker) {
         apr_thread_mutex_lock(worker->mutex);
-        apr_thread_mutex_unlock(worker->mutex);
+        /* We must own the lock associated with the condition
+         * variable that we are signaling. */
         apr_thread_cond_signal(worker->cond);
+        apr_thread_mutex_unlock(worker->mutex);
     }
     dying = 1;
     ap_scoreboard_image->parent[process_slot].quiescing = 1;
@@ -1003,6 +1008,8 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
     apr_allocator_set_owner(allocator, ptrans);
 
+    /* XXX: What happens if this is allocated from the
+     * single-thread-optimized ptrans pool? -aaron */
     bucket_alloc = apr_bucket_alloc_create(tpool);
 
     wakeup = (worker_wakeup_info *)apr_palloc(tpool, sizeof(*wakeup));
