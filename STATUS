@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/06/05 05:35:30 $]
+Last modified at [$Date: 2002/06/05 12:50:23 $]
 
 Release:
 
@@ -47,9 +47,9 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 37 status: Cliff tagged JCW_PRE2_2037 on Wednesday.  Some
-      showstoppers remain, so there will be a PRE3 as well, probably
-      Friday.  Just wanted an intermediate milestone.
+    * 37 status: Cliff tagged JCW_PRE2_2037 on Wednesday, May 29.  Some
+      showstoppers remain, so there will be a PRE3 as well at some
+      point in the future.  Just wanted an intermediate milestone.
 
 RELEASE SHOWSTOPPERS:
 
