@@ -1108,7 +1108,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
 {
     ap_directive_t *current = *conftree;
     ap_directive_t *curr_parent = NULL;
-    char l[MAX_STRING_LEN];
+    char *l = apr_palloc (temp_pool, MAX_STRING_LEN);
     const char *errmsg;
 
     if (current != NULL) {

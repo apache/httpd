@@ -1,5 +1,10 @@
 Changes with Apache 2.0.51
 
+  *) Recursive Include directives no longer crash. The server stops
+     including configuration files after a certain nesting level (128
+     as distributed). This is configurable at compile time using the
+     -DAP_MAX_INCLUDE_DEPTH switch. PR 28370.  [André Malo]
+
   *) mod_dir: the trailing-slash behaviour is now configurable using the
      DirectorySlash directive.  [André Malo]
 

@@ -60,6 +60,9 @@
 /* Allow MOD_AUTH_DBM to use APR */
 #define AP_AUTH_DBM_USE_APR
 
+/* Restrict the number of nested includes */
+#define AP_MAX_INCLUDE_DEPTH    48
+
 #endif
 
 
