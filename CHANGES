@@ -1,5 +1,8 @@
 Changes with Apache 2.0.44
 
+  *) Add -S as a synonym for -t -DDUMP_VHOSTS.
+     [Thom May <thom@planetarytramp.net>]
+
   *) Fix a bug with dbm rewrite maps which caused the wrong value to
      be used when the key was not found in the dbm.  PR 13204
      [Jeff Trawick]
