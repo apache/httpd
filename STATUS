@@ -1,4 +1,4 @@
- 1.3 STATUS:
+  1.3 STATUS:
 
 Release:
 
@@ -110,13 +110,6 @@ Available Patches:
       change "httpd" to "apache" or to whatever for the particular
       installation.
       Status: Ralf +1
-
-    * Paul's [PATCH] adding a DefaultLanguage directive
-      This patch implements a DefaultLanguage directive. It sets the
-      language to apply to files with no explicit language set via
-      AddLanguage.
-	Message-ID: <Pine.LNX.4.00.9811230931230.1852-100000@ecstasy.localnet>
-	Status: Paul +1, Ken +1
 
     * Michael van Elst's patch [PR#3160] to improve mod_rewrite's
       in-core cache handling by using a hash table.

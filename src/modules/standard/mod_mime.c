@@ -81,6 +81,7 @@ typedef struct {
 
     char *type;                 /* Type forced with ForceType  */
     char *handler;              /* Handler forced with SetHandler */
+    char *default_language;     /* Language if no AddLanguage ext found */
 } mime_dir_config;
 
 module MODULE_VAR_EXPORT mime_module;
@@ -98,6 +99,7 @@ static void *create_mime_dir_config(pool *p, char *dummy)
 
     new->type = NULL;
     new->handler = NULL;
+    new->default_language = NULL;
 
     return new;
 }
@@ -107,13 +109,13 @@ static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
     mime_dir_config *base = (mime_dir_config *) basev;
     mime_dir_config *add = (mime_dir_config *) addv;
     mime_dir_config *new =
-	(mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
+        (mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
     int i;
     handlers_info *hand;
 
     hand = (handlers_info *) add->handlers_remove->elts;
     for (i = 0; i < add->handlers_remove->nelts; i++) {
-	ap_table_unset(base->handlers, hand[i].name);
+        ap_table_unset(base->handlers, hand[i].name);
     }
 
     new->forced_types = ap_overlay_tables(p, add->forced_types,
@@ -127,6 +129,8 @@ static void *merge_mime_dir_configs(pool *p, void *basev, void *addv)
 
     new->type = add->type ? add->type : base->type;
     new->handler = add->handler ? add->handler : base->handler;
+    new->default_language = add->default_language ?
+        add->default_language : base->default_language;
 
     return new;
 }
@@ -182,7 +186,7 @@ static const char *remove_handler(cmd_parms *cmd, void *m, char *ext)
     handlers_info *hand;
 
     if (*ext == '.') {
-	++ext;
+        ++ext;
     }
     hand = (handlers_info *) ap_push_array(mcfg->handlers_remove);
     hand->name = ap_pstrdup(cmd->pool, ext);
@@ -219,6 +223,9 @@ static const command_rec mime_cmds[] =
      "a handler name"},
     {"TypesConfig", set_types_config, NULL, RSRC_CONF, TAKE1,
      "the MIME types config file"},
+    {"DefaultLanguage", ap_set_string_slot,
+     (void*)XtOffsetOf(mime_dir_config, default_language), OR_FILEINFO, TAKE1,
+     "language to use for documents with no other language file extension" },
     {NULL}
 };
 
@@ -347,6 +354,20 @@ static int find_ct(request_rec *r)
             r->handler = orighandler;
         }
 
+    }
+
+    /* Set default language, if none was specified by the extensions
+     * and we have a DefaultLanguage setting in force
+     */
+
+    if (!r->content_languages && conf->default_language) {
+        const char **new;
+
+        r->content_language = conf->default_language; /* back compat. only */
+        if (!r->content_languages)
+            r->content_languages = ap_make_array(r->pool, 2, sizeof(char *));
+        new = (const char **) ap_push_array(r->content_languages);
+        *new = conf->default_language;
     }
 
     /* Check for overrides with ForceType/SetHandler */
