@@ -364,7 +364,7 @@ static void write_request(struct connection * c)
 {
     do {
 	apr_time_t tnow = apr_time_now();
-	int l = c->rwrite;
+	apr_size_t l = c->rwrite;
 	apr_status_t e;
 
 	/*
@@ -930,7 +930,7 @@ static void close_connection(struct connection * c)
 
 static void read_connection(struct connection * c)
 {
-    int r;
+    apr_size_t r;
     apr_status_t status;
     char *part;
     char respcode[4];		/* 3 digits and null */
@@ -1298,14 +1298,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.77 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.78 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.77 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.78 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
