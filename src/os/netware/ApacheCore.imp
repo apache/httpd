@@ -418,3 +418,5 @@
  ap_update_child_status,
  ap_sendwithtimeout,
  ap_recvwithtimeout,
+ ap_getline,
+ ap_get_chunk_size,

@@ -371,3 +371,5 @@ EXPORTS
 	ap_is_rdirectory  @365
 	ap_stripprefix  @366
 	ap_child_terminate  @367
+        ap_getline @368
+        ap_get_chunk_size @369

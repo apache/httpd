@@ -444,3 +444,5 @@ EXPORTS
         ap_recvwithtimeout @436
         ap_caret_escape_args @437
         ap_double_quotes @438
+        ap_getline @439
+        ap_get_chunk_size @440
