@@ -63,9 +63,6 @@ Changes with Apache 2.1.0-dev
      to enable Header and RequestHeader directives to be used to set up
      testcases for pre-fixups request phases [Nick Kew]
 
-  *) mod_dir: the trailing-slash behaviour is now configurable using the
-     DirectorySlash directive.  [André Malo]
-
   *) mod_proxy: multiple bugfixes, principally support cookies in
      ProxyPassReverse, and don't canonicalise URL passed to backend.
      Documentation correspondingly updated. [Nick Kew <nick webthing.com>]
@@ -130,11 +127,6 @@ Changes with Apache 2.1.0-dev
      of included directories (128 as distributed). This is configurable
      at compile time using the -DAP_MAX_INCLUDE_DIR_DEPTH switch.
      PR 28492.  [André Malo]
-
-  *) Recursive Include directives no longer crash. The server stops
-     including configuration files after a certain nesting level (128
-     as distributed). This is configurable at compile time using the
-     -DAP_MAX_INCLUDE_DEPTH switch. PR 28370.  [André Malo]
 
   *) mod_headers: Allow %% in header values to represent a literal %.
      [André Malo]
@@ -227,9 +219,6 @@ Changes with Apache 2.1.0-dev
   *) mod_rewrite: Introduce the RewriteCond -x check, which returns
      true if the pattern is a file with execution permissions.
      [André Malo]
-
-  *) Allow proxying of resources that are invoked via DirectoryIndex.
-     PR 14648, 15112, 29961.  [André Malo]
 
   *) mod_rewrite: Allow proxying and RewriteRules in directory context
      for subrequests.  PR 14648, 15114.  [André Malo]
@@ -376,9 +365,6 @@ Changes with Apache 2.1.0-dev
   *) Allow apachectl to perform status with links and elinks as well.
      [Justin Erenkrantz]
 
-  *) Extend the SetEnvIf directive to capture subexpressions of the
-     matched value.  [André Malo]
-
   *) mod_log_config change optional hook to return previous handler
      [Ian Holsman]
 
@@ -430,6 +416,20 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.51
+
+  *) Extend the SetEnvIf directive to capture subexpressions of the
+     matched value.  [André Malo]
+
+  *) Recursive Include directives no longer crash. The server stops
+     including configuration files after a certain nesting level (128
+     as distributed). This is configurable at compile time using the
+     -DAP_MAX_INCLUDE_DEPTH switch. PR 28370.  [André Malo]
+
+  *) mod_dir: the trailing-slash behaviour is now configurable using the
+     DirectorySlash directive.  [André Malo]
+
+  *) Allow proxying of resources that are invoked via DirectoryIndex.
+     PR 14648, 15112, 29961.  [André Malo]
 
   *) util_ldap: Switched the lock types on the shared memory cache 
      from thread reader/writer locks to global mutexes in order to 
