@@ -1139,8 +1139,8 @@ static void worker_main(int thread_num)
         conn_rec *c;
         apr_int32_t disconnected;
 
-        (void) ap_update_child_status(0, thread_num, SERVER_READY, 
-                                      (request_rec *) NULL);
+        ap_update_child_status(0, thread_num, SERVER_READY, 
+                               (request_rec *) NULL);
 
         /* Grab a connection off the network */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -1177,6 +1177,8 @@ static void worker_main(int thread_num)
             ap_lingering_close(c);
         }
     }
+
+    ap_update_child_status(0, thread_num, SERVER_DEAD, (request_rec *) NULL);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, server_conf,
                  "Child %d: Thread exiting.", my_pid);
@@ -1297,6 +1299,7 @@ static void child_main()
                  "Child %d: Starting %d worker threads.", my_pid, nthreads);
     child_handles = (thread) alloca(nthreads * sizeof(int));
     for (i = 0; i < nthreads; i++) {
+        ap_update_child_status(0, i, SERVER_STARTING, (request_rec *) NULL);
         child_handles[i] = (thread) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
                                                    (void *) i, 0, &tid);
     }
