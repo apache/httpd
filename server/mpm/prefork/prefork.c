@@ -2147,6 +2147,8 @@ static void prefork_hooks(void)
     (void) set42sig();
 #endif
     /* TODO: set one_process properly */ one_process = 0;
+
+    ap_hook_pre_config(prefork_pre_config, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
@@ -2437,7 +2439,6 @@ LISTEN_COMMANDS
 module MODULE_VAR_EXPORT mpm_prefork_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
-    prefork_pre_config,         /* run hook before the configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
     NULL,			/* create per-server config structure */

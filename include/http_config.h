@@ -226,7 +226,6 @@ typedef struct module_struct {
                                  * (see also mod_so).
                                  */
     void (*rewrite_args) (process_rec *process);
-    void (*pre_config) (ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp);
     void *(*create_dir_config) (ap_pool_t *p, char *dir);
     void *(*merge_dir_config) (ap_pool_t *p, void *base_conf, void *new_conf);
     void *(*create_server_config) (ap_pool_t *p, server_rec *s);
@@ -271,8 +270,7 @@ typedef struct module_struct {
 				NULL, \
 				NULL, \
 				MODULE_MAGIC_COOKIE, \
-                                NULL, \
-                                NULL
+                                NULL      /* rewrite args spot */
 
 #define MPM20_MODULE_STUFF	MODULE_MAGIC_NUMBER_MAJOR, \
 				MODULE_MAGIC_NUMBER_MINOR, \
@@ -383,10 +381,9 @@ API_EXPORT(void) ap_setup_prelinked_modules(process_rec *process);
 API_EXPORT(void) ap_show_directives(void);
 API_EXPORT(void) ap_show_modules(void);
 API_EXPORT(server_rec*) ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name);
+API_EXPORT(void) ap_pre_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
 API_EXPORT(void) ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
 API_EXPORT(void) ap_run_rewrite_args(process_rec *process);
-API_EXPORT(void) ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp);
-
 API_EXPORT(void) ap_register_hooks(module *m);
 
 /* For http_request.c... */
@@ -429,6 +426,8 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
 
   /* Hooks */
 AP_DECLARE_HOOK(int,header_parser,(request_rec *))
+AP_DECLARE_HOOK(void,pre_config,
+	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp))
 AP_DECLARE_HOOK(void,post_config,
 	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
 AP_DECLARE_HOOK(void,open_logs,
