@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/05 16:54:30 $]
+Last modified at [$Date: 2003/09/05 18:03:09 $]
 
 Release:
 
@@ -385,7 +385,7 @@ PATCHES TO PORT FROM 2.1
         server/mpm/experimental/leader/leader.c r1.31
         server/mpm/experimental/threadpool/threadpool.c r1.19
         server/mpm/worker/worker.c r1.138
-      +1: trawick
+      +1: trawick, stoddard
 
 CURRENT RELEASE NOTES:
 
