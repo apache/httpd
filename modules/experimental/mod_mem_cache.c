@@ -429,12 +429,24 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *type, cons
                                           APR_HASH_KEY_STRING);
     if (obj) {
         if (obj->complete) {
+            request_rec *rmain, *rtmp;
+
 #ifdef USE_ATOMICS
             apr_atomic_inc(&obj->refcount);
 #else
             obj->refcount++;
 #endif
-            apr_pool_cleanup_register(r->pool, obj, decrement_refcount,
+            /* If this is a subrequest, register the cleanup against
+             * the main request. This will prevent the cache object 
+             * from being cleaned up from under the request after the
+             * subrequest is destroyed.
+             */
+            rtmp = r;
+            while (rtmp) {
+                rmain = rtmp;
+                rtmp = rmain->main;
+            }
+            apr_pool_cleanup_register(rmain->pool, obj, decrement_refcount,
                                       apr_pool_cleanup_null);
         }
         else {
