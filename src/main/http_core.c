@@ -201,7 +201,7 @@ void *merge_core_server_configs (pool *p, void *basev, void *virtv)
     if (!conf->access_name) conf->access_name = base->access_name;
     if (!conf->document_root) conf->document_root = base->document_root;
     conf->sec = append_arrays (p, base->sec, virt->sec);
-    conf->sec_url = append_arrays (p, base->sec, virt->sec_url);
+    conf->sec_url = append_arrays (p, base->sec_url, virt->sec_url);
 
     return conf;
 }
