@@ -17,7 +17,7 @@
 #include <unistd.h>
 
 /* This is probably the easiest way to do it */
-#include "../core/md5c.c"
+#include "../main/md5c.c"
 
 #define LF 10
 #define CR 13
