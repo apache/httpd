@@ -73,7 +73,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE) 
         return TRUE;
 
-    if (ssl_config_global_isfixed(mc)) {
+    if (mc->pMutex) {
         return TRUE;
     }
     if ((rv = apr_global_mutex_create(&mc->pMutex, mc->szMutexFile,
