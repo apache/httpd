@@ -78,7 +78,7 @@ behavior and performance of the apache server (<EM>e.g.</EM>,
 <SAMP>-DUSE_MMAP_FILES</SAMP>),
 then exit.
 
-<DT><A NAME="help"><CODE>-h</CODE></A>
+<DT><A NAME="help"><CODE>-L</CODE></A>
 <DD>Give a list of directives together with expected arguments and
 places where the directive is valid. (New in Apache 1.2)
 
