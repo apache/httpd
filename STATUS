@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/16 15:04:29 $]
+Last modified at [$Date: 2003/04/16 15:14:16 $]
 
 Release:
 
@@ -191,6 +191,11 @@ PATCHES TO PORT FROM 2.1
       modules/http/http_request.c: r1.155
       +1: nd
 
+      jerenkrantz asks: Do we even need subreq_core_filter anymore?  I'm sort
+                        of confused on the interaction.  subreq_core_filter
+                        should probably be the top-most output filter and it
+                        will have to eat the EOS (then return).  Is it?
+
     * Keep the same SSLMutex for the lifetime of the parent process
       (instead of having children using different mutexes and failing
       to lock the session cache across restarts.)
@@ -220,10 +225,16 @@ PATCHES TO PORT FROM 2.1
       +1: trawick, wrowe (including the other patches above)
 
     * Fix warnings on AIX for missing str[n]casecmp prototypes
-      modules/aaa/mod_authn_default r1.6
       modules/ssl/mod_ssl.h r1.130
       modules/experimenal/mod_auth_ldap.c r1.15
+      +1: trawick, wrowe, jerenkrantz
+
+      modules/aaa/mod_authn_default.c r1.6
       +1: trawick, wrowe
+      -1: jerenkrantz
+
+      jerenkrantz says: Um, like mod_authn_default.c doesn't exist in 2.0.
+                        Not sure if its counterpart in 2.0 needs it.  Jeff?
 
 CURRENT RELEASE NOTES:
 
