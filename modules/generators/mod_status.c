@@ -182,7 +182,7 @@ static void format_kbyte_out(request_rec *r, unsigned long kbytes)
 	ap_rprintf(r, "%.1f GB", (float) kbytes / MBYTE);
 }
 
-static void show_time(request_rec *r, apr_time_t tsecs) 
+static void show_time(request_rec *r, apr_interval_time_t tsecs) 
 {
     apr_time_t days, hrs, mins, secs;
     
@@ -193,13 +193,13 @@ static void show_time(request_rec *r, apr_time_t tsecs)
     hrs = tsecs % 24;
     days = tsecs / 24;
     if (days)
-	ap_rprintf(r, " %lld day%s", days, days == 1 ? "" : "s");
+	ap_rprintf(r, " %qd day%s", days, days == 1 ? "" : "s");
     if (hrs)
-	ap_rprintf(r, " %lld hour%s", hrs, hrs == 1 ? "" : "s");
+	ap_rprintf(r, " %qd hour%s", hrs, hrs == 1 ? "" : "s");
     if (mins)
-	ap_rprintf(r, " %lld minute%s", mins, mins == 1 ? "" : "s");
+	ap_rprintf(r, " %qd minute%s", mins, mins == 1 ? "" : "s");
     if (secs)
-	ap_rprintf(r, " %lld second%s", secs, secs == 1 ? "" : "s");
+	ap_rprintf(r, " %qd second%s", secs, secs == 1 ? "" : "s");
 }
 
 /* Main handler for x-httpd-status requests */
@@ -231,7 +231,7 @@ static int status_handler(request_rec *r)
 {
     const char *loc;
     apr_time_t nowtime = apr_time_now();
-    apr_time_t up_time;
+    apr_interval_time_t up_time;
     int j, i, res;
     int ready = 0;
     int busy = 0;
