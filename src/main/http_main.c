@@ -4082,6 +4082,7 @@ static void show_compile_settings(void)
 	printf(" -D PIPE_BUF=%ld\n",(long)PIPE_BUF);
 #endif
 #endif
+    printf(" -D HARD_SERVER_LIMIT=%ld\n",(long)HARD_SERVER_LIMIT);
 #ifdef MULTITHREAD
     printf(" -D MULTITHREAD\n");
 #endif
