@@ -72,6 +72,8 @@
 #include "apr_signal.h"
 #include "apr_strings.h"
 #include "apr_lock.h"
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "httpd.h"
 #include "http_config.h"
