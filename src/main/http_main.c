@@ -314,7 +314,7 @@ accept_mutex_init(pool *p)
     if (lock_fd == -1)
     {
 	perror ("open");
-	fprintf (stderr, "Cannot open lock file\n");
+	fprintf (stderr, "Cannot open lock file: %s\n", lock_fname);
 	exit (1);
     }
     unlink(lock_fname);
