@@ -118,6 +118,7 @@ int daemons_to_start;
 int daemons_min_free;
 int daemons_max_free;
 int daemons_limit;
+time_t restart_time;
 
 char server_root[MAX_STRING_LEN];
 char server_confname[MAX_STRING_LEN];
@@ -658,8 +659,13 @@ void sync_scoreboard_image ()
 void update_child_status (int child_num, int status)
 {
     short_score new_score_rec;
+    memcpy(&new_score_rec,&scoreboard_image[child_num],sizeof new_score_rec);
     new_score_rec.pid = getpid();
     new_score_rec.status = status;
+
+#if defined(STATUS_INSTRUMENTATION)
+    new_score_rec.last_used=time(NULL);
+#endif
 
 #if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
     memcpy(&scoreboard_image[child_num], &new_score_rec, sizeof(short_score));
@@ -668,6 +674,46 @@ void update_child_status (int child_num, int status)
     force_write (scoreboard_fd, (char*)&new_score_rec, sizeof(short_score));
 #endif
 }
+
+int count_busy_servers ()
+{
+    int i;
+    int res = 0;
+
+    for (i = 0; i < HARD_SERVER_MAX; ++i)
+      if (scoreboard_image[i].status == SERVER_BUSY_READ ||
+              scoreboard_image[i].status == SERVER_BUSY_WRITE)
+          ++res;
+    return res;
+}
+
+short_score get_scoreboard_info(int i)
+{
+    return (scoreboard_image[i]);
+}
+
+#if defined(STATUS_INSTRUMENTATION)
+void increment_counts (int child_num, request_rec *r)
+{
+    long int bs=0;
+    short_score new_score_rec=scoreboard_image[child_num];
+
+    if (r->sent_bodyct)
+        bgetopt(r->connection->client, BO_BYTECT, &bs);
+
+    new_score_rec.access_count ++;
+    new_score_rec.bytes_served += (long)bs;
+
+    times(&new_score_rec.times);
+
+#if defined(HAVE_MMAP) || defined(HAVE_SHMGET)
+    memcpy(&scoreboard_image[child_num], &new_score_rec, sizeof(short_score));
+#else
+    lseek (scoreboard_fd, (long)child_num * sizeof(short_score), 0);
+    force_write (scoreboard_fd, (char*)&new_score_rec, sizeof(short_score));
+#endif
+}
+#endif
 
 int count_idle_servers ()
 {
@@ -1074,7 +1120,7 @@ void child_main(int child_num_arg)
 	    continue;
 	}
 	
-	update_child_status (child_num, SERVER_BUSY);
+	update_child_status (child_num, SERVER_BUSY_READ);
 	conn_io = bcreate(ptrans, B_RDWR);
 	dupped_csd = csd;
 #if defined(NEED_DUPPED_CSD)
@@ -1090,13 +1136,23 @@ void child_main(int child_num_arg)
 				       (struct sockaddr_in *)&sa_server);
 	
 	r = read_request (current_conn);
+	update_child_status (child_num, SERVER_BUSY_WRITE);
 	if (r) process_request (r); /* else premature EOF --- ignore */
 
+#if defined(STATUS_INSTRUMENTATION)
+        if (r) increment_counts(child_num,r);
+#endif
 	while (r && current_conn->keepalive) {
 	  bflush(conn_io);
 	  destroy_pool(r->pool);
+	  update_child_status (child_num, SERVER_BUSY_READ);
 	  r = read_request (current_conn);
+	  update_child_status (child_num, SERVER_BUSY_WRITE);
 	  if (r) process_request (r);
+
+#if defined(STATUS_INSTRUMENTATION)
+	  if (r) increment_counts(child_num,r);
+#endif
 	}
 	
 	if (bytes_in_pool (ptrans) > 80000)
@@ -1210,6 +1266,7 @@ void standalone_main(int argc, char **argv)
 	log_error ("SIGHUP received.  Attempting to restart", server_conf);
     }
     
+    restart_time = time(NULL);
     clear_pool (pconf);
     ptrans = make_sub_pool (pconf);
     

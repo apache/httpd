@@ -51,6 +51,7 @@
  *
  */
 
+#include <sys/times.h>
 
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process
@@ -61,15 +62,22 @@
  *
  * Status values:
  */
-   
-#define SERVER_DEAD 0		/* Unused scoreboard entry */
-#define SERVER_READY 1		/* Waiting for connection (or accept() lock) */
-#define SERVER_BUSY 2		/* Processing a client request */
-#define SERVER_STARTING 3	/* Launched, but not yet live */
+
+#define SERVER_DEAD 0
+#define SERVER_READY 1          /* Waiting for connection (or accept() lock) */
+#define SERVER_STARTING 3       /* Server Starting up */
+#define SERVER_BUSY_READ 2      /* Reading a client request */
+#define SERVER_BUSY_WRITE 4     /* Processing a client request */
 
 typedef struct {
     pid_t pid;
     char status;
+#if defined(STATUS_INSTRUMENTATION)
+    long access_count;
+    long bytes_served;
+    struct tms times;
+    time_t last_used;
+#endif
 } short_score;
 
 /*
@@ -85,3 +93,4 @@ typedef struct {
 
 #define HARD_SERVER_MAX 150
 
+extern void sync_scoreboard_image(void);
