@@ -469,6 +469,12 @@ static int authz_ldap_check_user_access(request_rec *r)
     char *w;
     int method_restricted = 0;
 
+    char filtbuf[FILTER_LENGTH];
+    const char *dn = NULL;
+    const char **vals = NULL;
+    const char *type = ap_auth_type(r);
+    char *tmpuser;
+
 /*
     if (!sec->enabled) {
         return DECLINED;
@@ -515,6 +521,44 @@ static int authz_ldap_check_user_access(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
                       "[%d] auth_ldap authorise: no requirements array", getpid());
         return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
+    }
+
+    /*
+     * If we have been authenticated by some other module than mod_auth_ldap,
+     * the req structure needed for authorization needs to be created
+     * and populated with the userid and DN of the account in LDAP
+     */
+
+    /* Check that we have a userid to start with */
+    if ((!r->user) || (strlen(r->user) == 0)) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0, r,
+            "ldap authorize: Userid is blank, AuthType=%s",
+            r->ap_auth_type);
+    }
+
+    if(!req) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+            "ldap authorize: Creating LDAP req structure");
+
+        /* Build the username filter */
+        authn_ldap_build_filter(filtbuf, r, r->user, sec);
+
+        /* Search for the user DN */
+        result = util_ldap_cache_getuserdn(r, ldc, sec->url, sec->basedn,
+             sec->scope, sec->attributes, filtbuf, &dn, &vals);
+
+        /* Search failed, log error and return failure */
+        if(result != LDAP_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, r,
+                "auth_ldap authorise: User DN not found, %s", ldc->reason);
+            return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
+        }
+
+        req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
+            sizeof(authn_ldap_request_t));
+        ap_set_module_config(r->request_config, &authnz_ldap_module, req);
+        req->dn = apr_pstrdup(r->pool, dn);
+        req->user = r->user;
     }
 
     /* Loop through the requirements array until there's no elements
