@@ -919,16 +919,43 @@ The PidFile is subject to the same warnings about log file placement and
 <strong>Context:</strong> server config<br>
 <strong>Status:</strong> core<p>
 
-The Port directive sets the network port on which the server listens.
-<em>Num</em> is a number from 0 to 65535; some port numbers (especially below
+<em>Number</em> is a number from 0 to 65535; some port numbers (especially below
 1024) are reserved for particular protocols. See <code>/etc/services</code>
 for a list of some defined ports; the standard port for the http protocol
 is 80.<p>
 
+The Port directive has two behaviours, the first of which is necessary for
+NCSA backwards compatibility (and which is confusing in the context of
+Apache).<p>
+
+<ul>
+<li>
+In the absence of any <a href="#listen">Listen</a> or
+<a href="#bindaddress">BindAddress</a> directives specifying a port number,
+the Port directive sets the network port on which the server listens.
+If there are any Listen or BindAddress directives specifying
+<code>:number</code> then Port has no effect on what address the server
+listens at.
+
+<li>The Port directive
+sets the <code>SERVER_PORT</code> environment variable (for
+<a href="mod_cgi.html">CGI</a> and <a href="mod_include.html">SSI</a>),
+and is used when the server must generate a URL that refers to itself
+(for example when creating an external redirect to itself).  
+</ul>
+
+In no event does a Port setting affect
+what ports a <a href="#virtualhost">VirtualHost</a> responds on, the
+VirtualHost directive itself is used for that.<p>
+
+The primary behaviour of Port should be considered to be similar to that of
+the <a href="#servername">ServerName</a> directive.  The ServerName
+and Port together specify what you consider to be the <i>canonical</i>
+address of the server.<p>
+
 Port 80 is one of Unix's special ports. All ports numbered
 below 1024 are reserved for system use, i.e. regular (non-root) users cannot
-make use of them; instead they can only use higher port numbers.<p>
-
+make use of them; instead they can only use higher port numbers.
 To use port 80, you must start the server from the root account.
 After binding to the port and before accepting requests, Apache will change
 to a low privileged user as set by the <A HREF="#user">User directive</A>.<p>
