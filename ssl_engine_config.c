@@ -529,22 +529,50 @@ const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd, void *ctx,
 #define SSL_FLAGS_CHECK_DIR \
     (SSL_PCM_EXISTS|SSL_PCM_ISDIR)
 
+static const char *ssl_cmd_check_file(cmd_parms *parms,
+                                      const char **file)
+{
+    *file = ap_server_root_relative(parms->pool, *file);
+
+    if (ssl_util_path_check(SSL_FLAGS_CHECK_FILE, *file, parms->pool)) {
+        return NULL;
+    }
+
+    return apr_pstrcat(parms->pool, parms->cmd->name,
+                       ": file '", *file, 
+                       "' does not exist or is empty", NULL);
+
+}
+
+static const char *ssl_cmd_check_dir(cmd_parms *parms,
+                                     const char **dir)
+{
+    *dir = ap_server_root_relative(parms->pool, *dir);
+
+    if (ssl_util_path_check(SSL_FLAGS_CHECK_DIR, *dir, parms->pool)) {
+        return NULL;
+    }
+
+    return apr_pstrcat(parms->pool, parms->cmd->name,
+                       ": directory '", *dir, 
+                       "' does not exist", NULL);
+
+}
+
 const char *ssl_cmd_SSLCertificateFile(cmd_parms *cmd, void *ctx,
                                        const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
     int i;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_FILE, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLCertificateFile: file '",
-                           path, "' does not exist or is empty", NULL);
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
     }
 
     for (i = 0; i < SSL_AIDX_MAX; i++) {
         if (!sc->szPublicCertFile[i]) {
-            sc->szPublicCertFile[i] = path;
+            sc->szPublicCertFile[i] = arg;
             return NULL;
         }
     }
@@ -559,18 +587,16 @@ const char *ssl_cmd_SSLCertificateKeyFile(cmd_parms *cmd, void *ctx,
                                           const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
     int i;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_FILE, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLCertificateKeyFile: file '",
-                           path, "' does not exist or is empty", NULL);
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
     }
 
     for (i = 0; i < SSL_AIDX_MAX; i++) {
         if (!sc->szPrivateKeyFile[i]) {
-            sc->szPrivateKeyFile[i] = path;
+            sc->szPrivateKeyFile[i] = arg;
             return NULL;
         }
     }
@@ -585,15 +611,13 @@ const char *ssl_cmd_SSLCertificateChainFile(cmd_parms *cmd, void *ctx,
                                             const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_FILE, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLCertificateChainFile: file '",
-                           path, "' does not exist or is empty", NULL);
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
     }
 
-    sc->szCertificateChain = path;
+    sc->szCertificateChain = arg;
 
     return NULL;
 }
@@ -605,23 +629,21 @@ const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd, void *ctx,
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
 #endif
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_DIR, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLCACertificatePath: directory '",
-                           path, "' does not exist", NULL);
+    if ((err = ssl_cmd_check_dir(cmd, &arg))) {
+        return err;
     }
 
 #ifdef SSL_EXPERIMENTAL_PERDIRCA
     if (!(cmd->path || dc)) {
-        sc->szCACertificatePath = path;
+        sc->szCACertificatePath = arg;
     }
     else {
-        dc->szCACertificatePath = path;
+        dc->szCACertificatePath = arg;
     }
 #else
-    sc->szCACertificatePath = path;
+    sc->szCACertificatePath = arg;
 #endif
 
     return NULL;
@@ -634,23 +656,21 @@ const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd, void *ctx,
     SSLDirConfigRec *dc = (SSLDirConfigRec *)ctx;
 #endif
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_FILE, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLCACertificateFile: file '",
-                           path, "' does not exist or is empty", NULL);
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
     }
 
 #ifdef SSL_EXPERIMENTAL_PERDIRCA
     if (!(cmd->path || dc)) {
-        sc->szCACertificateFile = path;
+        sc->szCACertificateFile = arg;
     }
     else {
-        dc->szCACertificateFile = path;
+        dc->szCACertificateFile = arg;
     }
 #else
-    sc->szCACertificateFile = path;
+    sc->szCACertificateFile = arg;
 #endif
 
     return NULL;
@@ -660,15 +680,13 @@ const char *ssl_cmd_SSLCARevocationPath(cmd_parms *cmd, void *ctx,
                                         const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_DIR, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLCARevcocationPath: directory '",
-                           path, "' does not exist", NULL);
+    if ((err = ssl_cmd_check_dir(cmd, &arg))) {
+        return err;
     }
 
-    sc->szCARevocationPath = path;
+    sc->szCARevocationPath = arg;
 
     return NULL;
 }
@@ -677,15 +695,13 @@ const char *ssl_cmd_SSLCARevocationFile(cmd_parms *cmd, void *ctx,
                                         const char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_FILE, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLCARevocationFile: file '",
-                           path, "' does not exist or is empty", NULL);
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
     }
 
-    sc->szCARevocationFile = path;
+    sc->szCARevocationFile = arg;
 
     return NULL;
 }
@@ -1166,15 +1182,13 @@ const char *ssl_cmd_SSLProxyCACertificateFile(cmd_parms *cmd,
                                               char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_FILE, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLProxyCACertificateFile: file '",
-                           path, "' does not exist or is empty", NULL);
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
     }
 
-    sc->szProxyCACertificateFile = path;
+    sc->szProxyCACertificateFile = arg;
 
     return NULL;
 }
@@ -1184,15 +1198,13 @@ const char *ssl_cmd_SSLProxyCACertificatePath(cmd_parms *cmd,
                                               char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_DIR, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLProxyCACertificatePath: directory '",
-                           path, "' does not exist", NULL);
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
     }
 
-    sc->szProxyCACertificatePath = path;
+    sc->szProxyCACertificatePath = arg;
 
     return NULL;
 }
@@ -1202,15 +1214,13 @@ const char *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *cmd,
                                                    char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_FILE, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLProxyMachineCertFile: file '",
-                           path, "' does not exist or is empty", NULL);
+    if ((err = ssl_cmd_check_file(cmd, &arg))) {
+        return err;
     }
 
-    sc->szProxyClientCertificateFile = path;
+    sc->szProxyClientCertificateFile = arg;
 
     return NULL;
 }
@@ -1220,15 +1230,13 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *cmd,
                                                    char *arg)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    const char *path = ap_server_root_relative(cmd->pool, arg);
+    const char *err;
 
-    if (!ssl_util_path_check(SSL_FLAGS_CHECK_DIR, path, cmd->pool)) {
-        return apr_pstrcat(cmd->pool,
-                           "SSLProxyMachineCertPath: directory '",
-                           path, "' does not exist", NULL);
+    if ((err = ssl_cmd_check_dir(cmd, &arg))) {
+        return err;
     }
 
-    sc->szProxyClientCertificatePath = path;
+    sc->szProxyClientCertificatePath = arg;
 
     return NULL;
 }
