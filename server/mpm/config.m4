@@ -1,10 +1,14 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
 [  --with-mpm=MPM          Choose the process model for Apache to use.
-                          MPM={dexter,mpmt_beos,mpmt_pthread,prefork}],[
+                          MPM={dexter,mpmt_beos,mpmt_pthread,prefork,spmt_os2}],[
   APACHE_MPM=$withval
 ],[
   APACHE_MPM=mpmt_pthread
+  case "`uname -sr`" in
+    "BeOS"*)
+      APACHE_MPM=mpmt_beos;;
+  esac 
 ])
 AC_MSG_RESULT($APACHE_MPM)
 
