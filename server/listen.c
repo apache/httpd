@@ -134,6 +134,7 @@ static ap_status_t make_sock(ap_context_t *p, ap_listen_rec *server)
     }
 
     server->sd = s;
+    server->active = 1;
     return APR_SUCCESS;
 }
 
@@ -144,6 +145,7 @@ static ap_status_t close_listeners_on_exec(void *v)
 
     for (lr = ap_listeners; lr; lr = lr->next) {
 	ap_close_socket(lr->sd);
+	lr->active = 0;
     }
     return APR_SUCCESS;
 }
@@ -171,7 +173,9 @@ static void alloc_listener(char *addr, unsigned int port)
     }
 
     /* this has to survive restarts */
+    /* XXX - We need to deal with freeing this structure properly. */
     new = malloc(sizeof(ap_listen_rec));
+    new->active = 0;
     if (ap_create_tcp_socket(NULL, &new->sd) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, NULL,
                  "make_sock: failed to get a socket for %s", addr);
@@ -189,7 +193,7 @@ int ap_listen_open(ap_context_t *pconf, unsigned port)
     ap_listen_rec *lr;
     ap_listen_rec *next;
     int num_open;
-    ap_status_t stat;
+
     /* allocate a default listener if necessary */
     if (ap_listeners == NULL) {
 	alloc_listener(APR_ANYADDR, port ? port : DEFAULT_HTTP_PORT);
@@ -197,15 +201,21 @@ int ap_listen_open(ap_context_t *pconf, unsigned port)
 
     num_open = 0;
     for (lr = ap_listeners; lr; lr = lr->next) {
-	stat = make_sock(pconf, lr);
-	if (stat == APR_SUCCESS) {
+	if (lr->active) {
 	    ++num_open;
+	}
+	else {
+	    if (make_sock(pconf, lr) == APR_SUCCESS) {
+		++num_open;
+		lr->active = 1;
+	    }
 	}
     }
 
     /* close the old listeners */
     for (lr = old_listeners; lr; lr = next) {
 	ap_close_socket(lr->sd);
+	lr->active = 0;
 	next = lr->next;
 /*	free(lr);*/
     }

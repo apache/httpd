@@ -64,6 +64,7 @@ typedef struct ap_listen_rec ap_listen_rec;
 struct ap_listen_rec {
     ap_listen_rec *next;
     ap_socket_t *sd;
+    int active;
 /* more stuff here, like which protocol is bound to the port */
 };
 
