@@ -905,6 +905,14 @@ struct request_rec {
     struct ap_filter_t *output_filters;
     /** A list of input filters to be used for this request */
     struct ap_filter_t *input_filters;
+
+    /** A list of protocol level output filters to be used for this
+     *  request */
+    struct ap_filter_t *proto_output_filters;
+    /** A list of protocol level input filters to be used for this
+     *  request */
+    struct ap_filter_t *proto_input_filters;
+
     /** A flag to determine if the eos bucket has been sent yet */
     int eos_sent;
 

@@ -391,8 +391,11 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->read_length     = r->read_length;     /* We can only read it once */
     new->vlist_validator = r->vlist_validator;
 
-    new->output_filters  = r->connection->output_filters;
-    new->input_filters   = r->connection->input_filters;
+    new->proto_output_filters  = r->proto_output_filters;
+    new->proto_input_filters   = r->proto_input_filters;
+
+    new->output_filters  = new->proto_output_filters;
+    new->input_filters   = new->proto_input_filters;
 
     ap_add_input_filter("HTTP_IN", NULL, new, new->connection);
 
@@ -441,6 +444,9 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
                                         r->err_headers_out);
     r->subprocess_env = apr_table_overlay(r->pool, rr->subprocess_env,
                                        r->subprocess_env);
+
+    r->output_filters = rr->output_filters;
+    r->input_filters = rr->input_filters;
 }
 
 AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
