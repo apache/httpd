@@ -764,7 +764,10 @@ int read_types_multi (negotiation_state *neg)
 	if (sub_req->handler && !sub_req->content_type)
 	  sub_req->content_type = CGI_MAGIC_TYPE;
 
-	if (sub_req->status != HTTP_OK || !sub_req->content_type) continue;
+	if (sub_req->status != HTTP_OK || !sub_req->content_type) {
+	    destroy_sub_req(sub_req);
+	    continue;
+	}
 	
 	/* If it's a map file, we use that instead of the map
 	 * we're building...
@@ -1806,9 +1809,14 @@ int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *varia
     char *sub_vary;
 
     if (!variant->sub_req) {
+        int status;
+
         sub_req = sub_req_lookup_file(variant->file_name, r);
-        if (sub_req->status != HTTP_OK && sub_req->status != HTTP_MULTIPLE_CHOICES)
-            return sub_req->status;
+        status = sub_req->status;
+        if (status != HTTP_OK && status != HTTP_MULTIPLE_CHOICES) {
+            destroy_sub_req(sub_req);
+            return status;
+        }
         variant->sub_req = sub_req;
     }
     else 
@@ -1970,6 +1978,7 @@ return_from_multi:
         sub_req = sub_req_lookup_file (best->file_name, r);
         if (sub_req->status != HTTP_OK) {
            res = sub_req->status;
+           destroy_sub_req(sub_req);
            goto return_from_multi;
         }
     }
@@ -1997,9 +2006,11 @@ return_from_multi:
     r->content_language = sub_req->content_language;
     r->finfo = sub_req->finfo;
     /* copy output headers from subrequest, but leave negotiation headers */
-    overlay_tables(r->pool, sub_req->notes, r->notes);
-    overlay_tables(r->pool, sub_req->headers_out, r->headers_out);
-    overlay_tables(r->pool, sub_req->err_headers_out, r->err_headers_out);
+    r->notes = overlay_tables(r->pool, sub_req->notes, r->notes);
+    r->headers_out = overlay_tables(r->pool, sub_req->headers_out,
+                                             r->headers_out);
+    r->err_headers_out = overlay_tables(r->pool, sub_req->err_headers_out,
+                                                 r->err_headers_out);
     avail_recs = (var_rec *)neg->avail_vars->elts;
     for (j = 0; j < neg->avail_vars->nelts; ++j) {
         var_rec *variant = &avail_recs[j];

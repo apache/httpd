@@ -77,6 +77,9 @@ Changes with Apache 1.2b8
      no variants found; Add handling of '*' wildcard in Accept-Charset.
      [Petr Lampa and Paul Sutton]
 
+  *) Fixed overlaying of request/sub-request notes and headers in
+     mod_negotiation.  [Dean Gaudet]
+
   *) If two variants' charset quality are equal and one is the default
      charset (iso-8859-1), then prefer the variant that was specifically
      listed in Accept-Charset instead of the default.  [Petr Lampa]
