@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/11/09 07:13:42 $]
+Last modified at [$Date: 2000/11/10 01:35:38 $]
 
 Release:
 
@@ -583,10 +583,6 @@ put them into 'the next release':
     * PR#4448: mod_log-any
       Please allow CGI env variables (QUERY_STRING, ...) to be logged
       with %{}e
-	Status: 
-
-    * PR#4455: config
-      apache provides no way to do a wildcard/global NameVirtualHost
 	Status: 
 
     * PR#4459: mod_include
