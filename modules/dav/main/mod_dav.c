@@ -115,8 +115,6 @@ typedef struct {
     int locktimeout;
     int allow_depthinfinity;
 
-    apr_table_t *d_params;	/* per-directory DAV config parameters */
-
 } dav_dir_conf;
 
 /* per-server configuration */
@@ -220,8 +218,6 @@ static void *dav_create_dir_config(apr_pool_t *p, char *dir)
         conf->dir = d;
     }
 
-    conf->d_params = apr_table_make(p, 1);
-
     return conf;
 }
 
@@ -255,19 +251,7 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
                                                      allow_depthinfinity);
 
-    newconf->d_params = apr_table_copy(p, parent->d_params);
-    apr_table_overlap(newconf->d_params, child->d_params,
-		      APR_OVERLAP_TABLES_SET);
-
     return newconf;
-}
-
-apr_table_t *dav_get_dir_params(const request_rec *r)
-{
-    dav_dir_conf *conf;
-
-    conf = ap_get_module_config(r->per_dir_config, &dav_module);
-    return conf->d_params;
 }
 
 static const dav_provider * dav_get_provider(request_rec *r)
@@ -363,19 +347,6 @@ static const char *dav_cmd_davmintimeout(cmd_parms *cmd, void *config,
     conf->locktimeout = atoi(arg1);
     if (conf->locktimeout < 0)
         return "DAVMinTimeout requires a non-negative integer.";
-
-    return NULL;
-}
-
-/*
- * Command handler for DAVParam directive, which is TAKE2
- */
-static const char *dav_cmd_davparam(cmd_parms *cmd, void *config,
-                                    const char *arg1, const char *arg2)
-{
-    dav_dir_conf *conf = (dav_dir_conf *) config;
-
-    apr_table_set(conf->d_params, arg1, arg2);
 
     return NULL;
 }
@@ -4554,11 +4525,6 @@ static const command_rec dav_cmds[] =
     AP_INIT_FLAG("DAVDepthInfinity", dav_cmd_davdepthinfinity, NULL,
                  ACCESS_CONF|RSRC_CONF,
                  "allow Depth infinity PROPFIND requests"),
-
-    /* per directory/location, or per server */
-    AP_INIT_TAKE2("DAVParam", dav_cmd_davparam, NULL,
-                  ACCESS_CONF|RSRC_CONF,
-                  "DAVParam <parameter name> <parameter value>"),
 
     { NULL }
 };

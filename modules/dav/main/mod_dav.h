@@ -2322,9 +2322,6 @@ struct dav_hooks_binding {
 ** MISCELLANEOUS STUFF
 */
 
-/* allow providers access to the per-directory parameters */
-apr_table_t *dav_get_dir_params(const request_rec *r);
-
 /* fetch the "LimitXMLRequestBody" in force for this resource */
 apr_size_t dav_get_limit_xml_body(const request_rec *r);
 
