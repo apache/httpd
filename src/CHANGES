@@ -1,5 +1,10 @@
 Changes with Apache 1.3b1
 
+  *) API: New function child_terminate() triggers the child process to
+     exit, while allowing the child finish what it needs to for the
+     current request first.  
+     [Doug MacEachern, Alexei Kosut]
+
   *) Windows now defaults to using full status reports with mod_status.
      [Alexei Kosut, PR #1094]
 

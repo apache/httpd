@@ -2591,6 +2591,12 @@ static int dupped_csd;
 static int requests_this_child;
 static fd_set main_fds;
 
+API_EXPORT(void) child_terminate (request_rec *r)
+{
+    r->connection->keepalive = 0;
+    requests_this_child = max_requests_per_child = 1;
+}
+  
 void child_main(int child_num_arg)
 {
     NET_SIZE_T clen;
