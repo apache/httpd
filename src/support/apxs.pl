@@ -211,6 +211,7 @@ if (@opt_S) {
                 print STDERR "apxs:Error: no config variable $var\n";
                 &usage;
             }
+	    $val=~s/"/\\"/g;
             eval "\$CFG_${var}=\"${val}\"";
         } else {
             print STDERR "apxs:Error: malformatted -S option\n";

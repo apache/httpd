@@ -1,5 +1,8 @@
 Changes with Apache 1.3.24
 
+  *) apxs: fix bug that prevented -S option from containing quotes.
+     [Ben Laurie]
+
   *) ftp proxy: various cosmetic and functional improvements
      - Allow for /%2f hack (to access the root directory / )
      - properly escape generated links in dir listing
