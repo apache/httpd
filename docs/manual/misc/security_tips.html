@@ -4,7 +4,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta name="generator" content="HTML Tidy, see www.w3.org" />
-
     <title>Apache HTTP Server: Security Tips</title>
   </head>
   <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -14,6 +13,25 @@
     <!--#include virtual="header.html" -->
 
     <h1 align="CENTER">Security Tips for Server Configuration</h1>
+
+    <ul>
+      <li><a href="#serverroot">Permissions on ServerRoot
+      Directories</a></li>
+
+      <li><a href="#ssi">Server Side Includes</a></li>
+
+      <li><a href="#nsaliasedcgi">Non Script Aliased CGI</a></li>
+
+      <li><a href="#saliasedcgi">Script Aliased CGI</a></li>
+
+      <li><a href="#cgi">CGI in General</a></li>
+
+      <li><a href="#systemsettings">Protecting System
+      Settings</a></li>
+
+      <li><a href="#protectserverfiles">Protect Server Files by
+      Default</a></li>
+    </ul>
     <hr />
 
     <p>Some hints and tips on security issues in setting up a web
@@ -32,9 +50,9 @@
     modification by non-root users. Not only must the files
     themselves be writeable only by root, but so must the
     directories, and parents of all directories. For example, if
-    you choose to place ServerRoot in
-    <code>/usr/local/apache</code> then it is suggested that you
-    create that directory as root, with commands like these:</p>
+    you choose to place ServerRoot in <code>
+    /usr/local/apache</code> then it is suggested that you create
+    that directory as root, with commands like these:</p>
 
     <blockquote>
 <pre>
@@ -75,18 +93,55 @@
     overwrite the log itself with bogus data.</p>
     <hr />
 
-    <h2>Server Side Includes</h2>
+    <h2><a id="ssi" name="ssi">Server Side Includes</a></h2>
 
-    <p>Server side includes (SSI) can be configured so that users
-    can execute arbitrary programs on the server. That thought
-    alone should send a shiver down the spine of any sys-admin.</p>
+    <p>Server Side Includes (SSI) present a server administrator with
+    several potential security risks.</p>
 
-    <p>One solution is to disable that part of SSI. To do that you
-    use the IncludesNOEXEC option to the <a
-    href="../mod/core.html#options">Options</a> directive.</p>
+    <p>
+    The first risk is the increased load on the server.  All SSI-enabled
+    files have to be parsed by Apache, whether or not there are any SSI
+    directives included within the files.  While this load increase is
+    minor, in a shared server environment it can become significant.</p>
+
+    <p>
+    SSI files also pose the same risks that are associated with CGI
+    scripts in general.  Using the "exec cmd" element, SSI-enabled
+    files can execute any CGI script or program under the permissions
+    of the user and group Apache runs as, as configured in httpd.conf.
+    That should definitely give server administrators pause.</p>
+
+    <p>
+    There are ways to enhance the security of SSI files while still taking
+    advantage of the benefits they provide.</p>
+
+    <p>To isolate the damage a wayward SSI file can cause, a server
+    administrator can enable <a href="../docs/suexec.html"
+    >suexec</a> as described in the <a href="#cgi">CGI in General</a>
+    section.</p>
+
+    <p>
+    Enabling SSI for files with .html or .htm extensions can be
+    dangerous.  This is especially true in a shared, or high traffic,
+    server environment.  SSI-enabled files should have a separate
+    extension, such as the conventional .shtml.  This helps keep
+    server load at a minimum and allows for easier management of
+    risk.</p>
+
+
+    <p>Another solution is to disable the ability to run scripts and
+    programs from SSI pages. To do this replace <code>Includes</code>
+    with <code>IncludesNOEXEC</code> in the <a
+    href="../mod/core.html#options">Options</a> directive.  Note that
+    users may still use &lt;--#include virtual="..." --&gt; to execute
+    CGI scripts if these scripts are in directories desginated by a <a
+    href="../mod/mod_alias.html#ScriptAlias">ScriptAlias</a>
+    directive.</p>
+
     <hr />
 
-    <h2>Non Script Aliased CGI</h2>
+    <h2><a id="nsaliasedcgi" name="nsaliasedcgi">Non Script Aliased
+    CGI</a></h2>
 
     <p>Allowing users to execute <strong>CGI</strong> scripts in
     any directory should only be considered if;</p>
@@ -105,7 +160,8 @@
     </ol>
     <hr />
 
-    <h2>Script Alias'ed CGI</h2>
+    <h2><a id="saliasedcgi" name="saliasedcgi">Script Aliased
+    CGI</a></h2>
 
     <p>Limiting <strong>CGI</strong> to special directories gives
     the admin control over what goes into those directories. This
@@ -116,9 +172,11 @@
 
     <p>Most sites choose this option over the non script aliased
     CGI approach.</p>
+
+    <p></p>
     <hr />
 
-    <h2>CGI in general</h2>
+    <h2><a id="cgi" name="cgi">CGI in General</a></h2>
 
     <p>Always remember that you must trust the writers of the CGI
     script/programs or your ability to spot potential security
@@ -133,9 +191,12 @@
     as of 1.2 and is called from special hooks in the Apache server
     code. Another popular way of doing this is with <a
     href="http://wwwcgi.umr.edu/~cgiwrap/">CGIWrap</a>.</p>
+
+    <p></p>
     <hr />
 
-    <h2>Stopping users overriding system wide settings...</h2>
+    <h2><a id="systemsettings" name="systemsettings">Protecting
+    System Settings</a></h2>
 
     <p>To run a really tight ship, you'll want to stop users from
     setting up <code>.htaccess</code> files which can override
@@ -152,13 +213,14 @@
        &lt;/Directory&gt;<br />
       </code>
     </blockquote>
-    Then setup for specific directories 
+    Then setup for specific directories
 
     <p>This stops all overrides, Includes and accesses in all
     directories apart from those named.</p>
     <hr />
 
-    <h2>Protect server files by default</h2>
+    <h2><a id="protectserverfiles" name="protectserverfiles">
+    Protect Server Files by Default</a></h2>
 
     <p>One aspect of Apache which is occasionally misunderstood is
     the feature of default access. That is, unless you take steps
@@ -184,10 +246,9 @@
 </pre>
 
     <p>This will forbid default access to filesystem locations. Add
-    appropriate <a
-    href="../mod/core.html#directory"><samp>&lt;Directory&gt;</samp></a>
-    blocks to allow access only in those areas you wish. For
-    example,</p>
+    appropriate <a href="../mod/core.html#directory"><samp>
+    &lt;Directory&gt;</samp></a> blocks to allow access only in
+    those areas you wish. For example,</p>
 <pre>
  &lt;Directory /usr/users/*/public_html&gt;
      Order Deny,Allow
@@ -200,12 +261,12 @@
 </pre>
 
     <p>Pay particular attention to the interactions of <a
-    href="../mod/core.html#location"><samp>&lt;Location&gt;</samp></a>
-    and <a
-    href="../mod/core.html#directory"><samp>&lt;Directory&gt;</samp></a>
-    directives; for instance, even if <samp>&lt;Directory
-    /&gt;</samp> denies access, a <samp>&lt;Location /&gt;</samp>
-    directive might overturn it.</p>
+    href="../mod/core.html#location"><samp>
+    &lt;Location&gt;</samp></a> and <a
+    href="../mod/core.html#directory"><samp>
+    &lt;Directory&gt;</samp></a> directives; for instance, even if
+    <samp>&lt;Directory /&gt;</samp> denies access, a <samp>
+    &lt;Location /&gt;</samp> directive might overturn it.</p>
 
     <p>Also be wary of playing games with the <a
     href="../mod/mod_userdir.html#userdir">UserDir</a> directive;
@@ -221,15 +282,13 @@
     <hr />
 
     <p>Please send any other useful security tips to The Apache
-    Group by filling out a <a
-    href="http://bugs.apache.org/">problem
-    report</a>. If you are confident you have found a security bug
-    in the Apache source code itself, <a
+    Group by filling out a <a href="http://bugs.apache.org/">
+    problem report</a>. If you are confident you have found a
+    security bug in the Apache source code itself, <a
     href="http://httpd.apache.org/bug_report.html">please let us
     know</a>.</p>
 
-    <p><!--#include virtual="footer.html" -->
-    </p>
+    <p><!--#include virtual="footer.html" --></p>
   </body>
 </html>
 
