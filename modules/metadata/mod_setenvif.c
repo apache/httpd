@@ -411,8 +411,9 @@ static int match_headers(request_rec *r)
     int i, j;
     char *last_name;
 
-    if (apr_table_get(r->notes, SEI_MAGIC_HEIRLOOM) == NULL) {
-	apr_table_set(r->notes, SEI_MAGIC_HEIRLOOM, "post-read done");
+    if (!ap_get_module_config(r->request_config, &setenvif_module)) {
+        ap_set_module_config(r->request_config, &setenvif_module,
+                             SEI_MAGIC_HEIRLOOM);
 	sconf  = (sei_cfg_rec *) ap_get_module_config(r->server->module_config,
 						      &setenvif_module);
     }
@@ -493,7 +494,7 @@ static int match_headers(request_rec *r)
             elts = (const apr_table_entry_t *) arr->elts;
 
             for (j = 0; j < arr->nelts; ++j) {
-                if (!strcmp(elts[j].val, "!")) {
+                if (*(elts[j].val) == '!') {
                     apr_table_unset(r->subprocess_env, elts[j].key);
                 }
                 else {
