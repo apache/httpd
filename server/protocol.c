@@ -853,85 +853,125 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(ap_filter_t *f,
     struct content_length_ctx *ctx;
     apr_status_t rv;
     apr_bucket *e;
-    int send_it = 0;
+    int eos = 0, flush = 0, partial_send_okay = 0;
+    apr_bucket_brigade *more, *split;
+    apr_read_type_e eblock = APR_NONBLOCK_READ;
 
     ctx = f->ctx;
     if (!ctx) { /* first time through */
         f->ctx = ctx = apr_pcalloc(r->pool, sizeof(struct content_length_ctx));
+        ctx->compute_len = 1;   /* Assume we will compute the length */
     }
 
-    APR_BRIGADE_FOREACH(e, b) {
-        const char *ignored;
-        apr_size_t len;
-
-        if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
-            send_it = 1;
-        }
-        if (e->length == -1) { /* if length unknown */
-            rv = apr_bucket_read(e, &ignored, &len, APR_NONBLOCK_READ);
-            if (rv == APR_EAGAIN) {
-                /* If the protocol level implies support for chunked encoding, 
-                 * flush the filter chain to the network then do a blocking 
-                 * read. This is replicating the behaviour of ap_send_fb
-                 * in Apache 1.3.
-                 */
-                if (r->proto_num >= HTTP_VERSION(1,1)) {
-                    apr_bucket_brigade *split;
-                    split = apr_brigade_split(b, e);
-                    rv = ap_fflush(f, b);
-                    if (rv != APR_SUCCESS)
-                        return rv;
-                    b = split;
-                    ctx->curr_len = 0;
-                }
-                rv = apr_bucket_read(e, &ignored, &len, APR_BLOCK_READ);
-            }
-            if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "ap_content_length_filter: "
-                              "apr_bucket_read() failed");
-                return rv;
-            }
-        }
-        else {
-            len = e->length;
-        }
-        ctx->curr_len += len;
-        r->bytes_sent += len;
-    }
-
-    if ((ctx->curr_len < AP_MIN_BYTES_TO_WRITE) && !send_it) {
-        return ap_save_brigade(f, &ctx->saved, &b, (r->main) ? r->main->pool : r->pool);
-    }
-
-    /* We will compute a content length if:
-     *     The protocol is < 1.1
-     * and We can not chunk
-     * and this is a keepalive request.
-     * or  We already have all the data
-     *         This is a bit confusing, because we will always buffer up
-     *         to AP_MIN_BYTES_TO_WRITE, so if we get all the data while
-     *         we are buffering that much data, we set the c-l.
+    /* Humm, is this check the best it can be? 
+     * - protocol >= HTTP/1.1 implies support for chunking 
+     * - non-keepalive implies the end of byte stream will be signaled
+     *    by a connection close
+     * In both cases, we can send bytes to the client w/o needing to
+     * compute content-length. 
+     * Todo: 
+     * We should be able to force connection close from this filter
+     * when we see we are buffering too much. 
      */
-    if ((r->proto_num < HTTP_VERSION(1,1)
-        && (!ap_find_last_token(f->r->pool,
-                               apr_table_get(r->headers_out,
-                                             "Transfer-Encoding"),
-                               "chunked")
-        && (f->r->connection->keepalive)))
-        || (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(b)))) {
-        ctx->compute_len = 1;
+    if ((r->proto_num >= HTTP_VERSION(1,1)) ||
+        (!f->r->connection->keepalive)) {
+        partial_send_okay = 1;
     }
-    else {
-        ctx->compute_len = 0;
+
+    more = b;
+    while (more) {
+        b = more;
+        more = NULL;
+        split = NULL;
+        flush = 0;
+
+        APR_BRIGADE_FOREACH(e, b) {
+            const char *ignored;
+            apr_size_t len;
+            /* If we've accumulated more than 4xAP_MIN_BYTES_TO_WRITE and 
+             * the client supports chunked encoding, send what we have 
+             * and come back for more.
+             */
+            if ((ctx->curr_len > 4*AP_MIN_BYTES_TO_WRITE) && partial_send_okay) {
+                split = b;
+                more = apr_brigade_split(b, e);
+                break;
+            }
+            len = 0;
+            if (APR_BUCKET_IS_EOS(e)) {
+                eos = 1;
+            }
+            else if (APR_BUCKET_IS_FLUSH(e)) {
+                if (partial_send_okay) {
+                    split = b;
+                    more = apr_brigade_split(b, e);
+                    /* Remove the flush bucket from brigade 'more' */
+                    APR_BUCKET_REMOVE(e);
+                    flush = 1;
+                    break;
+                }
+            }
+            if (e->length == -1) { /* if length unknown */
+                rv = apr_bucket_read(e, &ignored, &len, eblock);
+                if (rv == APR_SUCCESS) {
+                    /* Attempt a nonblocking read next time through */
+                    eblock = APR_NONBLOCK_READ;
+                }
+                else if (rv == APR_EAGAIN) {
+                    /* Make the next read blocking.  If the client supports chunked
+                     * encoding, flush the filter stack to the network.
+                     */
+                    eblock = APR_BLOCK_READ;
+                    if (partial_send_okay) {
+                        split = b;
+                        more = apr_brigade_split(b, e);
+                        flush = 1;
+                        break;
+                    }
+                }
+                else  { 
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "ap_content_length_filter: "
+                                  "apr_bucket_read() failed");
+                    return rv;
+                }
+            }
+            else {
+                len = e->length;
+            }
+            ctx->curr_len += len;
+            r->bytes_sent += len;
+        }
+
+        if (split) {
+            ctx->compute_len = 0;  /* Ooops, can't compute the length now */
+            ctx->curr_len = 0;
+            if (ctx->saved) {
+                APR_BRIGADE_CONCAT(ctx->saved, split);
+                apr_brigade_destroy(split);
+                split = ctx->saved;
+                ctx->saved = NULL;
+            }
+            if (flush) {
+                rv = ap_fflush(f->next, split);
+            }
+            else {
+                rv = ap_pass_brigade(f->next, split);
+            }
+            if (rv != APR_SUCCESS)
+                return rv;
+        }
+    }
+
+    if ((ctx->curr_len < AP_MIN_BYTES_TO_WRITE) && !eos) {
+        return ap_save_brigade(f, &ctx->saved, &b, (r->main) ? r->main->pool : r->pool);
     }
 
     if (ctx->compute_len) {
         /* save the brigade; we can't pass any data to the next
          * filter until we have the entire content length
          */
-        if (!send_it) {
-            ap_save_brigade(f, &ctx->saved, &b, r->pool);
-            return APR_SUCCESS;
+        if (!eos) {
+            return ap_save_brigade(f, &ctx->saved, &b, r->pool);
         }
         ap_set_content_length(r, r->bytes_sent);
     }
