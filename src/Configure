@@ -10,7 +10,7 @@ if [ "x$1" = "x-file" ] ; then
   echo "Using alternate config file $2"
   file=$2 
 else
-  echo "Using \'$file\' as config file"
+  echo "Using '$file' as config file"
 fi
 
 # First, strip comments and blank lines...
