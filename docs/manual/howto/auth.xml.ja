@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.10 -->
+<!-- English Revision: 1.1.2.8 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -34,19 +34,17 @@
 <section id="related"><title>関連するモジュールとディレクティブ</title>
     <related>
       <modulelist>
-        <module>mod_auth_basic</module>
-        <module>mod_authn_file</module>
-        <module>mod_authz_groupfile</module>
-        <module>mod_authz_host</module>
+        <module>mod_auth</module>
+        <module>mod_access</module>
       </modulelist>
 
       <directivelist>
-        <directive module="mod_authz_host">Allow</directive>
-        <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+        <directive module="mod_access">Allow</directive>
+        <directive module="mod_auth">AuthGroupFile</directive>
         <directive module="core">AuthName</directive>
         <directive module="core">AuthType</directive>
-        <directive module="mod_authn_file">AuthUserFile</directive>
-        <directive module="mod_authz_host">Deny</directive>
+        <directive module="mod_auth">AuthUserFile</directive>
+        <directive module="mod_access">Deny</directive>
         <directive module="core">Options</directive>
         <directive module="core">Require</directive>
       </directivelist>
@@ -163,7 +161,7 @@
     <directive module="core">AuthType</directive>
     ディレクティブはどういう認証方法でユーザの認証を行うかを
     選択します。最も一般的な方法は <code>Basic</code>
-    で、これは <module>mod_auth_basic</module>
+    で、これは <module>mod_auth</module>
     で実装されています。しかしながら、
     これは気を付けるべき重要なポイントなのですが、
     Basic 認証はクライアントからブラウザへ、
@@ -194,15 +192,15 @@
     サーバのホスト名が変わればいつでも必ず、
     クライアントは再びパスワードを尋ねる必要があります。</p>
 
-    <p><directive module="mod_authn_file">AuthUserFile</directive>
+    <p><directive module="mod_auth">AuthUserFile</directive>
     ディレクティブは <code>htpasswd</code> で作った
     パスワードファイルへのパスを設定します。
     ユーザ数が多い場合は、リクエスト毎のユーザの認証のための
     プレーンテキストの探索が非常に遅くなることがあります。
     Apache ではユーザ情報を高速なデータベースファイルに
     保管することもできます。
-    <module>mod_authn_dbm</module> モジュールが
-    <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
+    <module>mod_auth_dbm</module> モジュールが
+    <directive module="mod_auth_dbm">AuthDBMUserFile</directive>
     ディレクティブを提供します。これらのファイルは <a
     href="../programs/dbmmanage.html">dbmmanage</a>
     プログラムで作成したり操作したりできます。
@@ -224,7 +222,7 @@
     <code>rbowen</code> の誰か) がディレクトリに
     入れるようにします。多くの場合は、複数の人が
     入れるようにしたいでしょう。ここで
-    <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+    <directive module="mod_auth">AuthGroupFile</directive>
     の登場です。</p>
 
     <p>もし複数の人が入れるようにしたいのであれば、
@@ -283,7 +281,7 @@
     このアプローチの利点は、Apache は二つではなく、
     ただ一つのファイルだけを検査すればよいという点です。
     欠点は、たくさんのパスワードファイルを管理して、その中から
-    <directive module="mod_authn_file">AuthUserFile</directive>
+    <directive module="mod_auth_file">AuthUserFile</directive>
     ディレクティブに正しいファイルを参照させなければならない点です。</p>
 </section>
 
@@ -315,11 +313,11 @@
     入れるようにしたくなることもあるでしょう。
     例えばその人がどこから来ているかといったことです。</p>
 
-    <p><directive module="mod_authz_host">Allow</directive> と
-    <directive module="mod_authz_host">Deny</directive>
+    <p><directive module="mod_access">Allow</directive> と
+    <directive module="mod_access">Deny</directive>
     ディレクティブを使って、ドキュメントを要求してきたマシンの
     ホスト名やホストアドレスに基づいて許可不許可を制御できます。
-    <directive module="mod_authz_host">Order</directive>
+    <directive module="mod_access">Order</directive>
     ディレクティブはこの二つと連携して動作し、Apache 
     にどの順番でフィルタを適用するかを知らせます。</p>
 
@@ -359,9 +357,9 @@
       Deny from ke
     </example>
 
-    <p><directive module="mod_authz_host">Order</directive> を使うことで、
-    <directive module="mod_authz_host">Deny</directive> と
-    <directive module="mod_authz_host">Allow</directive> の組み合わせで
+    <p><directive module="mod_access">Order</directive> を使うことで、
+    <directive module="mod_access">Deny</directive> と
+    <directive module="mod_access">Allow</directive> の組み合わせで
     入っても良いグループが本当に確実に限定できているようにできます。</p>
 
     <example>
@@ -370,7 +368,7 @@
       Allow from <var>dev.example.com</var>
     </example>
 
-    <p><directive module="mod_authz_host">Allow</directive>
+    <p><directive module="mod_access">Allow</directive>
     ディレクティブを単純に列挙するのでは望みの動作をしないでしょう。
     なぜなら、全ての人が入れるということに加えて、
     指定したホストからの人が入れるようにするからです。
@@ -380,8 +378,8 @@
 
 <section id="moreinformation"><title>追加情報</title>
     <p>これら全てがどのように動作するかについて
-    もっと多くの情報が書かれている <module>mod_auth_basic</module> と
-    <module>mod_authz_host</module>
+    もっと多くの情報が書かれている <module>mod_auth</module> と
+    <module>mod_access</module>
     の文書も読むとよいでしょう。</p>
 </section>
 
