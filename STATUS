@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/16 22:40:08 $]
+  Last modified at [$Date: 1999/03/20 12:32:25 $]
 
 Release:
 
@@ -8,7 +8,7 @@ Release:
       - Release date:             March 22. Monday
       - Announcement:             March 23. Tuesday
       - Release manager:          Lars
-      - Win32 release:            ???
+      - Win32 release:            Paul
 
     1.3.4: Tagged and rolled on Jan. 9.  Released on 11th, announced on 12th.
     1.3.3: Tagged and rolled on Oct. 7.  Released on 9th, announced on 10th.
