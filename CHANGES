@@ -1,5 +1,9 @@
 Changes with Apache 2.0.18-dev
 
+  *) Removed the keptalive boolean from conn_rec because it is now only
+     used by a single routine and can be replaced by a local variable.
+     [Greg Stein, Ryan Bloom, Roy Fielding]
+
   *) Patch prefork to put enough of the signal processing back in so that
      signals are all handled properly now. The previous patch fixed the
      deadlock race condition, but broke the user directed signal handling.
