@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) New directive, DocumentRootCheck, added to determine if
+     we bother doing the stat of each DocumentRoot during
+     startup. [Mathijs Maassen <mathijs@xs4all.nl>. Jim Jagielski]
+
   *) Win32: The query switch "apache -S" didn't exit after showing the
      vhost settings. That was inconsistent with the other query functions.
      [Bill Stoddard - Fixed by Martin on Unix in 1.3.4]
@@ -40,6 +44,9 @@ Changes with Apache 1.3.7
   *) Remove "mxb" support from mod_negotiation -- it was a draft feature
      never accepted into any standard, and it opens up certain DoS
      attacks.  [Koen Holtman <Koen.Holtman@cern.ch>]
+
+  *) TestCompile updated. We can now run programs and output the
+     results during the Configure process. [ Jim Jagielski]
 
   *) The source is now quad (long long) aware as needed. Specifically,
      the Configure process determines the correct size of off_t and

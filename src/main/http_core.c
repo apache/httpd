@@ -1009,7 +1009,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
     }
 
     arg = ap_os_canonical_filename(cmd->pool, arg);
-    if (!ap_is_directory(arg)) {
+    if (ap_documentroot_check && !ap_is_directory(arg)) {
 	if (cmd->server->is_virtual) {
 	    fprintf(stderr, "Warning: DocumentRoot [%s] does not exist\n",
 		    arg);
@@ -1020,6 +1020,18 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy, char *arg)
     }
     
     conf->ap_document_root = arg;
+    return NULL;
+}
+
+static const char *set_document_root_check(cmd_parms *cmd, void *dummy, int arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_documentroot_check = arg != 0;
     return NULL;
 }
 
@@ -2734,6 +2746,8 @@ static const command_rec core_cmds[] = {
   "Name(s) of per-directory config files (default: .htaccess)" },
 { "DocumentRoot", set_document_root, NULL, RSRC_CONF, TAKE1,
   "Root directory of the document tree"  },
+{ "DocumentRootCheck", set_document_root_check, NULL, RSRC_CONF, FLAG,
+  "En-/Disable checking for existance of DocumentRoot during startup"  },
 { "ErrorDocument", set_error_document, NULL, OR_FILEINFO, RAW_ARGS,
   "Change responses for HTTP errors" },
 { "AllowOverride", set_override, NULL, ACCESS_CONF, RAW_ARGS,

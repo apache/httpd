@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/13 11:25:24 $]
+  Last modified at [$Date: 1999/06/13 19:59:34 $]
 
 Release:
 
@@ -90,11 +90,6 @@ Documentation that needs writing:
 
 
 Available Patches:
-
-    * Mathijs Maassen <mathijs@xs4all.nl> path to disable the initial
-      check/stat of DocumentRoot.
-        Message-ID: <19990611145033.B25977@xs4all.nl>
-	Status: Jim +1 (will add to docs), Lars +1
 
     * Stipe Tolj's Cygwin32 port
 	PR#: 2936
