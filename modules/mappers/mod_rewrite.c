@@ -1507,7 +1507,7 @@ static int hook_fixup(request_rec *r)
                 r->filename = apr_pstrdup(r->pool, r->filename+12);
             }
 
-            /* the filename has to start with a slash! */
+            /* the filename must be an absolute path! */
             if (!ap_os_is_path_absolute(r->pool, r->filename)) {
                 return HTTP_BAD_REQUEST;
             }
@@ -1987,11 +1987,11 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     /*
      *   Again add the previously stripped per-directory location
      *   prefix if the new URI is not a new one for this
-     *   location, i.e. if it's not starting with either a slash
-     *   or a fully qualified URL scheme.
+     *   location, i.e. if it's not an absolute path nor
+     *   a fully qualified URL scheme.
      */
     if (prefixstrip && !ap_os_is_path_absolute(r->pool, r->filename)
-	&& !is_absolute_uri(r->filename)) {
+                    && !is_absolute_uri(r->filename)) {
         rewritelog(r, 3, "[per-dir %s] add per-dir prefix: %s -> %s%s",
                    perdir, r->filename, perdir, r->filename);
         r->filename = apr_pstrcat(r->pool, perdir, r->filename, NULL);
@@ -2073,8 +2073,8 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
     /*
      *  Now we are sure it is not a fully qualified URL.  But
      *  there is still one special case left: A local rewrite in
-     *  per-directory context, i.e. a substitution URL which does
-     *  not start with a slash. Here we add again the initially
+     *  per-directory context, i.e. a substitution URL which is not
+     *  an absolute path. Here we add again the initially
      *  stripped per-directory prefix.
      */
     if (prefixstrip && !ap_os_is_path_absolute(r->pool, r->filename)) {
