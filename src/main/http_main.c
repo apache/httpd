@@ -2843,6 +2843,11 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #define WORKAROUND_SOLARIS_BUG
 #endif
 
+    /* PR#1973 NCR SVR4 systems appear to have the same problem */
+#if defined (MPRAS)
+#define WORKAROUND_SOLARIS_BUG
+#endif
+
 #ifndef WORKAROUND_SOLARIS_BUG
     s = ap_slack(s, AP_SLACK_HIGH);
 

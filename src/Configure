@@ -616,6 +616,12 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lnsl"
 	DEF_WANTHSREGEX=yes
 	;;
+    i486-ncr-sysv4)
+	OS='NCR MP/RAS'
+	CFLAGS="$CFLAGS -DSVR4 -DMPRAS"
+	LIBS="$LIBS -lsocket -lnsl -lc -L/usr/ucblib -lucb"
+	DEF_WANTHSREGEX=yes
+	;;
     *-sysv4*)
 	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4"
