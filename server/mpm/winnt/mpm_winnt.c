@@ -1163,7 +1163,7 @@ static void worker_main(int child_num)
     /* TODO: Add code to clean-up completion contexts here */
 }
 
-static void cleanup_thread(thread **handles, int *thread_cnt, int thread_to_clean)
+static void cleanup_thread(thread *handles, int *thread_cnt, int thread_to_clean)
 {
     int i;
 
@@ -1204,7 +1204,7 @@ static void child_main()
     char* exit_event_name;
     int nthreads = ap_threads_per_child;
     int tid;
-    thread **child_handles;
+    thread *child_handles;
     int rv;
     time_t end_time;
     int i;
@@ -1267,10 +1267,10 @@ static void child_main()
     /* Create the worker thread pool */
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 
                  "Child %d: Starting %d worker threads.", my_pid, nthreads);
-    child_handles = (thread *) alloca(nthreads * sizeof(int));
+    child_handles = (thread) alloca(nthreads * sizeof(int));
     for (i = 0; i < nthreads; i++) {
-        child_handles[i] = (thread *) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
-                                                     NULL, 0, &tid);
+        child_handles[i] = (thread) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
+                                                   NULL, 0, &tid);
     }
 
     /* Begin accepting connections */
