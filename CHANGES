@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_disk_cache: Remove a bunch of non-implemented garbage collection
+     and cache size directives that are now available through htcacheclean.
+     [Justin Erenkrantz]
+
   *) Add htcacheclean to support/ for assistance with mod_disk_cache.
      [Andreas Steinmetz]
 

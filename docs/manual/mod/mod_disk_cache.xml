@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.10 $ -->
+<!-- $Revision: 1.11 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -71,52 +71,6 @@ stored</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CacheSize</name>
-<description>The maximum amount of disk space that will be used by the
-cache in KBytes</description>
-<syntax>CacheSize <var>KBytes</var></syntax>
-<default>CacheSize 1000000</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>The <directive>CacheSize</directive> directive sets the desired
-    disk space usage of the cache, in KBytes (1024-byte units). This
-    directive does not put a  hard limit on the size of the cache. The
-    garbage collector will delete files until the usage is at or below the
-    settings. Always use a value that is lower than the available disk
-    space.</p>
-
-    <example>
-      CacheSize  5000000
-    </example>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>CacheGcInterval</name>
-<description>The interval between garbage collection attempts.</description>
-<syntax>CacheGcInterval <var>hours</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>The <directive>CacheGcInterval</directive> directive specifies the
-    number of hours to wait between attempts to free up disk space.</p>
-    <p>More detail will be added here, when the function is implemented.</p>
-
-    <example>
-      CacheGcInterval  24<br />
-    </example>
-
-    <note type="warning">
-      The <directive>CacheGcInterval</directive> directive is currently
-      <em>not</em> implemented.
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CacheDirLevels</name>
 <description>The number of levels of subdirectories in the
 cache.</description>
@@ -168,29 +122,6 @@ cache.</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>CacheExpiryCheck</name>
-<description>Indicates if the cache observes Expires dates when seeking
-files</description>
-<syntax>CacheExpiryCheck On|Off</syntax>
-<default>CacheExpiryCheck On</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>More detail will be added here, when the function is implemented.</p>
-
-    <example>
-      CacheExpiryCheck Off<br />
-    </example>
-
-    <note type="warning">
-      The <directive>CacheExpiryCheck</directive> directive is currently
-      <em>not</em> implemented.
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CacheMinFileSize</name>
 <description>The minimum size (in bytes) of a document to be placed in the
 cache</description>
@@ -227,120 +158,6 @@ cache</description>
     <example>
       CacheMaxFileSize 64000
     </example>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>CacheTimeMargin</name>
-<description>The minimum time margin to cache a document</description>
-<syntax>CacheTimeMargin <var>?</var></syntax>
-<default>CacheTimeMargin ?</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>More detail will be added here, when the function is implemented.</p>
-
-    <example>
-      CacheTimeMargin X
-    </example>
-
-    <note type="warning">
-      The <directive>CacheTimeMargin</directive> directive is currently
-      <em>not</em> implemented.
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>CacheGcDaily</name>
-<description>The recurring time each day for garbage collection to be run.
-(24 hour clock)</description>
-<syntax>CacheGcDaily <var>time</var></syntax>
-<default>CacheGcDaily ?</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>More detail will be added here, when the function is implemented.</p>
-
-    <example>
-      CacheGcDaily 23:59
-    </example>
-
-    <note type="warning">
-      The <directive>CacheGcDaily</directive> directive is currently
-      <em>not</em> implemented.
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>CacheGcUnused</name>
-<description>The time to retain unreferenced cached files that match a
-URL.</description>
-<syntax>CacheGcUnused <var>hours</var> <var>url-string</var></syntax>
-<default>CacheGcUnused ?</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>More detail will be added here, when the function is implemented.</p>
-
-    <example>
-      CacheGcUnused 12 /local_images
-    </example>
-
-    <note type="warning">
-      The <directive>CacheGcUnused</directive> directive is currently
-      <em>not</em> implemented.
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>CacheGcClean</name>
-<description>The time to retain unchanged cached files that match a
-URL</description>
-<syntax>CacheGcClean <var>hours</var> <var>url-string</var></syntax>
-<default>CacheGcClean ?</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>More detail will be added here, when the function is implemented.</p>
-
-    <example>
-      CacheGcClean 12 /daily_scripts
-    </example>
-
-    <note type="warning">
-      The <directive>CacheGcClean</directive> directive is currently
-      <em>not</em> implemented.
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>CacheGcMemUsage</name>
-<description>The maximum kilobytes of memory used for garbage
-collection</description>
-<syntax>CacheGcMemUsage <var>KBytes</var></syntax>
-<default>CacheGcMemUsage ?</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>More detail will be added here, when the function is implemented.</p>
-
-    <example>
-      CacheGcMemUsage 16
-    </example>
-
-    <note type="warning">
-      The <directive>CacheGcMemUsage</directive> directive is currently
-      <em>not</em> implemented.
-    </note>
 </usage>
 </directivesynopsis>
 
