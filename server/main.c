@@ -473,6 +473,9 @@ int main(int argc, const char * const argv[])
         case 'D':
             new = (char **)apr_array_push(ap_server_config_defines);
             *new = apr_pstrdup(pcommands, optarg);
+            /* Setting -D DUMP_VHOSTS is equivalent to setting -S */
+            if (strcmp(optarg, "DUMP_VHOSTS") == 0)
+                configtestonly = 1;
             break;
 
         case 'e':
