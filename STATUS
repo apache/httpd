@@ -45,10 +45,6 @@ Showstoppers:
 
 Available Patches:
 
-    * Dean's mod_alias.c, translate_alias_redir patch
-      <Pine.LNX.3.96dg4.980502223053.15827H-100000@twinlark.arctic.org>
-      Status: Dean, Ben, Jim +1
-
     * Arnt Gulbrandsen <agulbra@troll.no> 03 Apr 1998 21:28:17 +0200
       <m3emzer9gu.fsf@lupinella.troll.no> mod_usertrack.c patch:
       The patch provides per-domain cookies (which I use to share user-ids

@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) Fix to mod_alias: translate_alias_redir is dealing with
+     a URI, not a filename, so the check for drive letters for win32 
+     and emx is not necessary. [Dean Gaudet]
+
   *) WIN32: Allow .cmd as an executable extension.
      [Kari Likovuori <Kari.Likovuori@mol.fi>] PR#2146
 

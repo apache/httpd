@@ -353,12 +353,7 @@ static int translate_alias_redir(request_rec *r)
     char *ret;
     int status;
 
-#if defined(__EMX__) || defined(WIN32)
-    /* Add support for OS/2 drive names */
-    if ((r->uri[0] != '/' && r->uri[0] != '\0') && r->uri[1] != ':')
-#else
     if (r->uri[0] != '/' && r->uri[0] != '\0')
-#endif
 	return DECLINED;
 
     if ((ret = try_alias_list(r, serverconf->redirects, 1, &status)) != NULL) {
