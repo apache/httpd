@@ -713,7 +713,7 @@ void service_set_status(int status)
     SC_HANDLE schSCManager;
     CSD_T ChangeServiceDescription;
     HANDLE hwin2000scm;
-    BOOL ret;
+    BOOL ret = 0;
 
     /* Nothing to do if we are a console
      */
