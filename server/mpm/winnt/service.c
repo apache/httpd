@@ -775,14 +775,15 @@ void mpm_service_stopping(void)
 
 
 apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc, 
-                                 const char * const * argv)
+                                 const char * const * argv, int reconfig)
 {
     char key_name[MAX_PATH];
     char exe_path[MAX_PATH];
     char *launch_cmd;
     apr_status_t(rv);
     
-    fprintf(stderr,"Installing the %s service\n", mpm_display_name);
+    fprintf(stderr,reconfig ? "Reconfiguring the %s service\n"
+		   : "Installing the %s service\n", mpm_display_name);
 
     if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
     {
@@ -809,12 +810,37 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
 
         launch_cmd = apr_psprintf(ptemp, "\"%s\" -k runservice", exe_path);
 
-        /* RPCSS is the Remote Procedure Call (RPC) Locator required for DCOM 
-         * communication pipes.  I am far from convinced we should add this to
-         * the default service dependencies, but be warned that future apache 
-         * modules or ISAPI dll's may depend on it.
-         */
-        schService = CreateService(schSCManager,         // SCManager database
+        if (reconfig) {
+            schService = OpenService(schSCManager, mpm_service_name, 
+                                     SERVICE_ALL_ACCESS);
+            if (!schService) {
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR, 
+                             apr_get_os_error(), NULL,
+                             "OpenService failed");
+            }
+            else if (!ChangeServiceConfig(schService, 
+                                          SERVICE_WIN32_OWN_PROCESS,
+                                          SERVICE_AUTO_START,
+                                          SERVICE_ERROR_NORMAL,
+                                          launch_cmd, NULL, NULL, 
+                                          "Tcpip\0Afd\0", NULL, NULL,
+                                          mpm_display_name)) {
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR, 
+                             apr_get_os_error(), NULL,
+                             "ChangeServiceConfig failed");
+	        /* !schService aborts configuration below */
+	        CloseServiceHandle(schService);
+	        schService = NULL;
+	    }
+        }
+        else {
+            /* RPCSS is the Remote Procedure Call (RPC) Locator required 
+             * for DCOM communication pipes.  I am far from convinced we 
+             * should add this to the default service dependencies, but 
+             * be warned that future apache modules or ISAPI dll's may 
+             * depend on it.
+             */
+            schService = CreateService(schSCManager,         // SCManager database
                                    mpm_service_name,     // name of service
                                    mpm_display_name,     // name to display
                                    SERVICE_ALL_ACCESS,   // access required
@@ -828,15 +854,16 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                                    NULL,                 // use SYSTEM account
                                    NULL);                // no password
 
-        if (!schService) 
-        {
-            rv = apr_get_os_error();
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
-                         "Failed to create WinNT Service Profile");
-            CloseServiceHandle(schSCManager);
-            return (rv);
+            if (!schService) 
+            {
+                rv = apr_get_os_error();
+                ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
+                             "Failed to create WinNT Service Profile");
+                CloseServiceHandle(schSCManager);
+                return (rv);
+            }
         }
-
+	
         CloseServiceHandle(schService);
         CloseServiceHandle(schSCManager);
     }

@@ -2213,6 +2213,7 @@ static int winnt_post_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *p
     /* Handle the following SCM aspects in this phase:
      *
      *   -k install
+     *   -k config
      *   -k start
      *   -k restart
      *   -k runservice [Win95, only once - after we parsed the config]
@@ -2225,7 +2226,11 @@ static int winnt_post_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *p
      */
 
     if (!strcasecmp(signal_arg, "install")) {
-        rv = mpm_service_install(ptemp, inst_argc, inst_argv);
+        rv = mpm_service_install(ptemp, inst_argc, inst_argv, 0);
+        exit (rv);
+    }
+    if (!strcasecmp(signal_arg, "config")) {
+        rv = mpm_service_install(ptemp, inst_argc, inst_argv, 1);
         exit (rv);
     }
 
