@@ -9,10 +9,12 @@ INCLUDES=$(INCLUDES1) $(INCLUDES_DEPTH1) $(EXTRA_INCLUDES)
 LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS) -L../ap
 INCDIR=../include
 
+TARGETS=htpasswd htdigest rotatelogs logresolve
+
+OBJS=htpasswd.o htdigest.o rotatelogs.o logresolve.o
+
 .c.o: 
 	$(CC) -c $(CFLAGS) $(INCLUDES) $<
-
-TARGETS=htpasswd htdigest rotatelogs logresolve
 
 all: $(TARGETS)
 
@@ -23,7 +25,7 @@ htdigest: htdigest.o
 	$(CC) $(CFLAGS) htdigest.o -o htdigest $(LDFLAGS) $(LIBS)
 
 rotatelogs: rotatelogs.o
-	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.o -o rotatelogs
+	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.o -o rotatelogs $(LDFLAGS) $(LIBS)
 
 logresolve: logresolve.o
 	$(CC) $(INCLUDES) $(CFLAGS) logresolve.o -o logresolve $(LDFLAGS) $(LIBS)
