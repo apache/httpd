@@ -678,8 +678,9 @@ static enum header_state get_header_line(char *buffer, int len, ap_file_t *map)
              * so that we will pick up the blank line the next time 'round.
              */
 
-            while (c != EOF && c != '\n' && ap_isspace(c)) {
-                ap_getc(map, &c);
+            while (c != '\n' && ap_isspace(c)) {
+                if(ap_getc(map, &c) != APR_SUCCESS)
+		    break;
             }
 
             ap_ungetc(map, c);
