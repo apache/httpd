@@ -82,9 +82,6 @@
 #define dbm_open apr_dbm_open
 #define dbm_fetch apr_dbm_fetch
 #define dbm_close apr_dbm_close
-#elif defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
-    && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
-#include <db1/ndbm.h>
 #else
 #include <ndbm.h>
 #endif
