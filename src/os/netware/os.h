@@ -125,7 +125,7 @@ static void clean_parent_exit(int code);
 
 inline int ap_os_is_path_absolute(const char *file)
 {
-    if(strstr(file, ":/"))
+    if (strstr(file, ":/"))
         return 1;
     else
         return 0;
@@ -140,3 +140,4 @@ const char *ap_os_dso_error(void);
 char *remove_filename(char*);
 char *bslash2slash(char*);
 #endif /*! APACHE_OS_H*/
+

@@ -55,70 +55,94 @@
  *
  */
 
-#include "ap_config.h"
+#include "httpd.h"
+#include "http_config.h"
+#include <nwadv.h>
 
-void ap_os_dso_init(void)
+module MODULE_VAR_EXPORT nlm_module;
+static int been_there_done_that = 0; /* Loaded the modules yet? */
+
+char *load_module(cmd_parms *cmd, void *dummy, char *modname, char *filename)
 {
-}
+    module *modp;
+    int nlmHandle;
+    const char *szModuleFile = ap_server_root_relative(cmd->pool, filename);
 
-void *ap_os_dso_load(const char *path)
-{
-    unsigned int nlmHandle;
-    char *moduleName = NULL;
-    
-    moduleName = strrchr(path, '/');
+    if (been_there_done_that)
+        return NULL;
 
-    if (moduleName)
-        moduleName++;
-    
-    nlmHandle = FindNLMHandle((char*)moduleName);
+	nlmHandle = FindNLMHandle(filename);
 
     if (nlmHandle == NULL) {
-        spawnlp(P_NOWAIT | P_SPAWN_IN_CURRENT_DOMAIN, path, NULL);        
-        nlmHandle = FindNLMHandle((char *)moduleName);
+        spawnlp(P_NOWAIT, szModuleFile, NULL);
+        nlmHandle = FindNLMHandle(filename);
+
+        if (nlmHandle == NULL)
+            return ap_pstrcat(cmd->pool, "Cannot load ", szModuleFile,
+                              " into server", NULL);
     }
 
-    return (void *)nlmHandle;
-}
+    modp = (module *) ImportSymbol(nlmHandle, modname);
 
-void ap_os_dso_unload(void *handle)
-{
-	KillMe(handle);
-}
+    if (!modp)
+        return ap_pstrcat(cmd->pool, "Can't find module ", modname,
+                          " in file ", filename, NULL);
+	
+    ap_add_module(modp);
 
-void *ap_os_dso_sym(void *handle, const char *symname)
-{
-    return ImportSymbol((int)GetNLMHandle(), (char *)symname);
-}
+    if (modp->create_server_config)
+        ((void**)cmd->server->module_config)[modp->module_index] =
+         (*modp->create_server_config)(cmd->pool, cmd->server);
 
-const char *ap_os_dso_error(void)
-{
+    if (modp->create_dir_config)
+        ((void**)cmd->server->lookup_defaults)[modp->module_index] =
+         (*modp->create_dir_config)(cmd->pool, NULL);
+
     return NULL;
 }
 
-char *remove_filename(char* str)
+char *load_file(cmd_parms *cmd, void *dummy, char *filename)
 {
-    int i, len = strlen(str);    
-  
-    for (i=len; i; i--) {
-        if (str[i] == '\\' || str[i] == '/') {
-            str[i] = NULL;
-            break;
-        }
-    }
-    return str;
+    if (been_there_done_that)
+        return NULL;
+
+    if (spawnlp(P_NOWAIT, ap_server_root_relative(cmd->pool, filename), NULL))
+        return ap_pstrcat(cmd->pool, "Cannot load ", filename, " into server", NULL);
+
+    return NULL;
 }
 
-char *bslash2slash(char* str)
+void check_loaded_modules(server_rec *dummy, pool *p)
 {
-    int i, len = strlen(str);    
-  
-    for (i=0; i<len; i++) {
-        if (str[i] == '\\') {
-            str[i] = '/';
-            break;
-        }
-    }
-    return str;
+    if (been_there_done_that)
+        return;
+
+    been_there_done_that = 1;
 }
+
+command_rec nlm_cmds[] = {
+{ "LoadModule", load_module, NULL, RSRC_CONF, TAKE2,
+  "a module name, and the name of a file to load it from"},
+{ "LoadFile", load_file, NULL, RSRC_CONF, ITERATE,
+  "files or libraries to link into the server at runtime"},
+{ NULL }
+};
+
+module nlm_module = {
+   STANDARD_MODULE_STUFF,
+   check_loaded_modules,  /* initializer */
+   NULL,                  /* create per-dir config */
+   NULL,                  /* merge per-dir config */
+   NULL,                  /* server config */
+   NULL,                  /* merge server config */
+   nlm_cmds,              /* command table */
+   NULL,                  /* handlers */
+   NULL,                  /* filename translation */
+   NULL,                  /* check_user_id */
+   NULL,                  /* check auth */
+   NULL,                  /* check access */
+   NULL,                  /* type_checker */
+   NULL,                  /* logger */
+   NULL                   /* header parser */
+};
 
