@@ -16,35 +16,37 @@
 
     <p>The main thread is responsible for launching child
     worker threads which listen for connections and serve them when they
-    arrive. Apache always tries to maintain several <em>spare</em>
+    arrive. Apache always tries to maintain several <dfn>spare</dfn>
     or idle worker threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     child threads to be spawned before their requests can be
     served.</p>
 
-    <p>The <code>StartThreads</code>, <code>MinSpareThreads</code>,
-    <code>MaxSpareThreads</code>, and <code>MaxThreads</code>
+    <p>The <directive module="mpm_common">StartThreads</directive>,
+    <directive module="mpm_common">MinSpareThreads</directive>,
+    <directive module="mpm_common">MaxSpareThreads</directive>, and
+    <directive module="mpm_netware">MaxThreads</directive>
     regulate how the main thread creates worker threads to serve
     requests. In general, Apache is very self-regulating, so most
     sites do not need to adjust these directives from their default
     values. Sites which need to serve more than 250 simultaneous
-    requests may need to increase <code>MaxThreads</code>, while
+    requests may need to increase <directive>MaxThreads</directive>, while
     sites with limited memory may need to decrease
-    <code>MaxThreads</code> to keep the server from thrashing (spawning and
-    terminating idle threads). More information about
+    <directive>MaxThreads</directive> to keep the server from thrashing
+    (spawning and terminating idle threads). More information about
     tuning process creation is provided in the <a
     href="../misc/perf-tuning.html">performance hints</a>
     documentation.</p>
 
-    <p><code>MaxRequestsPerChild</code> controls how frequently the
-    server recycles processes by killing old ones and launching new
-    ones.&nbsp; On the NetWare OS it is highly recommended that this directive
-    remain set to 0.&nbsp; This allows worker threads to continue servicing
-    requests indefinitely.</p>
-
-    <p>See also: <a href="../bind.html">Setting which addresses and
-    ports Apache uses</a>.</p>
+    <p><directive module="mpm_common">MaxRequestsPerChild</directive>
+    controls how frequently the server recycles processes by killing old
+    ones and launching new ones. On the NetWare OS it is highly
+    recommended that this directive remain set to 0. This allows worker
+    threads to continue servicing requests indefinitely.</p>
 </summary>
+<seealso><a href="../bind.html">Setting which addresses and
+    ports Apache uses</a>
+</seealso>
 
 <directivesynopsis location="mpm_common"><name>Listen</name>
 </directivesynopsis>
@@ -59,7 +61,7 @@
 
 <directivesynopsis>
 <name>MaxThreads</name>
-<syntax>MaxThreads <em>number</em></syntax>
+<syntax>MaxThreads <var>number</var></syntax>
 <default>MaxThreads 250</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -83,7 +85,7 @@
 
 <directivesynopsis>
 <name>ThreadStackSize</name>
-<syntax>ThreadStackSize <em>number</em></syntax>
+<syntax>ThreadStackSize <var>number</var></syntax>
 <default>ThreadStackSize 65536</default>
 <contextlist><context>server config</context></contextlist>
 

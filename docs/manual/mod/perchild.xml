@@ -31,7 +31,7 @@ make it functional.
     The individual threads then
     listen for connections and serve them when they arrive.</p>
 
-    <p>Apache always tries to maintain a pool of <em>spare</em> or
+    <p>Apache always tries to maintain a pool of <dfn>spare</dfn> or
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for new
     threads to be created. For each child process, Apache assesses
@@ -65,15 +65,15 @@ make it functional.
     server recycles processes by killing old ones and launching new
     ones.</p>
 
-    <p>See also: <a href="../bind.html">Setting which addresses and
-    ports Apache uses</a>.</p>
-
     <p>In addition it adds the extra ability to specify that
     specific processes should serve requests under different
     userids. These processes can then be associated with specific
     virtual hosts.</p>
     <!-- XXX: This desperately needs more explanation. -->
 </summary>
+<seealso><a href="../bind.html">Setting which addresses and
+    ports Apache uses</a>
+</seealso>
 
 <directivesynopsis location="mpm_common">
 <name>CoreDumpDirectory</name>
@@ -123,7 +123,7 @@ make it functional.
 
 <directivesynopsis>
 <name>AssignUserId</name>
-<syntax>AssignUserID <em>user_id</em> <em>group_id</em></syntax>
+<syntax>AssignUserID <var>user_id</var> <var>group_id</var></syntax>
 <contextlist><context>virtual host</context></contextlist>
 
 <usage>
@@ -135,8 +135,8 @@ running with the specified user and group id.</p>
 
 <directivesynopsis>
 <name>ChildPerUserId</name>
-<syntax>ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>num_children</em></syntax>
+<syntax>ChildPerUserID <var>user_id</var>
+<var>group_id</var> <var>num_children</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>

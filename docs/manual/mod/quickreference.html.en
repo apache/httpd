@@ -31,7 +31,7 @@
       <tr><th>E</th><td>Extension</td></tr>
       <tr><th>X</th><td>Experimental</td></tr>
     </table></td></tr></table>
-<table class="qref"><tr><td><a href="prefork.html#acceptmutex" id="A" name="A">AcceptMutex default|<em>method</em></a></td><td> default </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Method that Apache uses to serialize multiple children
+<table class="qref"><tr><td><a href="prefork.html#acceptmutex" id="A" name="A">AcceptMutex default|<var>method</var></a></td><td> default </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Method that Apache uses to serialize multiple children
 accepting requests on network sockets</td></tr>
 <tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Resources accept trailing pathname information</td></tr>
 <tr><td><a href="core.html#accessfilename">AccessFileName <var>filename</var> [<var>filename</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Name of the distributed configuration file</td></tr>
@@ -110,7 +110,7 @@ error log</td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
 <tr class="odd"><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether to check the password field for a correctly
 formatted email address</td></tr>
-<tr><td><a href="perchild.html#assignuserid">AssignUserID <em>user_id</em> <em>group_id</em></a></td><td /><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="perchild.html#assignuserid">AssignUserID <var>user_id</var> <var>group_id</var></a></td><td /><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative on|off</a></td><td> on </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization and authentication are
 passed to lower level modules</td></tr>
 <tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <em>provider-name</em></a></td><td /><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
@@ -187,8 +187,8 @@ NoImp +</td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Config
 <tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <em>charset</em></a></td><td /><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Source charset of files</td></tr>
 <tr><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables the spelling 
 module</td></tr>
-<tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>num_children</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user_id</var>
+<var>group_id</var> <var>num_children</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="core.html#contentdigest">ContentDigest on|off</a></td><td> off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables the generation of Content-MD5 HTTP Response
 headers</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td /><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
@@ -198,7 +198,7 @@ headers</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
     <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Format of the cookie header field</td></tr>
 <tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <em>directory</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Directory where Apache attempts to
+<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>directory</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Directory where Apache attempts to
 switch before dumping core</td></tr>
 <tr><td><a href="mod_log_config.html#customlog">CustomLog 
     <em>file</em>|<em>pipe</em> <em>format</em>|<em>nickname</em>
@@ -262,7 +262,7 @@ filenames</td></tr>
 found</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>MIME-type</var>|none</a></td><td /><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
 MIME content-type</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <em>unix-group</em></a></td><td> #-1 </td><td>sv</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
+<tr class="odd"><td><a href="mpm_common.html#group" id="G" name="G">Group <var>unix-group</var></a></td><td> #-1 </td><td>sv</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header set|append|add|unset|echo  <em>header</em> 
 [<em>value</em>]</a></td><td /><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
@@ -329,9 +329,9 @@ client</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limit the size of the HTTP request line that will be accepted
 from the client</td></tr>
 <tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>number</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the size of an XML-based request body</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listen">Listen [<em>IP-address</em>:]<em>portnumber</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">IP addresses and ports that the server
+<tr class="odd"><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">IP addresses and ports that the server
 listens to</td></tr>
-<tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <em>backlog</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum length of the queue of pending connections</td></tr>
+<tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum length of the queue of pending connections</td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td /><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Link in the named object file or library</td></tr>
 <tr><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td /><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Links in the object file or library, and adds to the list
 of active modules</td></tr>
@@ -341,22 +341,22 @@ URLs</td></tr>
 <tr><td><a href="core.html#locationmatch">&lt;LocationMatch
     <var>regex</var>&gt; ... &lt;/Location&gt;</a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression 
 matching URLs</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#lockfile">LockFile <em>filename</em></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the accept serialization lock file</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#lockfile">LockFile <var>filename</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the accept serialization lock file</td></tr>
 <tr><td><a href="mod_log_config.html#logformat">LogFormat
     <em>format</em>|<em>nickname</em> [<em>nickname</em>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Describes a format for use in a log file</td></tr>
 <tr class="odd"><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the verbosity of the ErrorLog</td></tr>
-<tr><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of child processes that will be created
+<tr><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of child processes that will be created
 to serve requests</td></tr>
 <tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>number</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Number of requests allowed on a persistent 
 connection</td></tr>
-<tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum amount of memory that the main allocator is allowed
+<tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum amount of memory that the main allocator is allowed
 to hold without calling free()</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <em>number</em></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on the number of requests that an individual child server
+<tr class="odd"><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>number</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on the number of requests that an individual child server
 will handle during its life</td></tr>
-<tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <em>number</em><br /></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of idle child server processes</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of idle threads</td></tr>
-<tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <em>number</em></a></td><td> 250 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild <em>number</em></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
+<tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>number</var><br /></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of idle child server processes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of idle threads</td></tr>
+<tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 250 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild <var>number</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
 <tr><td><a href="mod_cern_meta.html#metadir">MetaDir <em>directory</em></a></td><td> .web </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
 files</td></tr>
 <tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
@@ -364,8 +364,8 @@ files</td></tr>
 meta information</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <em>file-path</em></a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
-<tr><td><a href="prefork.html#minspareservers">MinSpareServers <em>number</em></a></td><td>  5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareServers <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle threads available to handle request
+<tr><td><a href="prefork.html#minspareservers">MinSpareServers <var>number</var></a></td><td>  5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareServers <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle threads available to handle request
 spikes</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <em>file-path</em> [<em>file-path</em>] ...</a></td><td /><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td /><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tells mod_mime to treat path_info components as part of the filename</td></tr>
@@ -376,7 +376,7 @@ searching for a matching file with MultiViews</td></tr>
 hosting</td></tr>
 <tr><td><a href="mod_proxy.html#noproxy">NoProxy <em>host</em> [<em>host</em>] ...</a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected
 to directly</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#numservers">NumServers <em>number</em></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Total number of children alive at the same time</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#numservers">NumServers <var>number</var></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Total number of children alive at the same time</td></tr>
 <tr><td><a href="core.html#options" id="O" name="O">Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures what features are available in a particular
 directory</td></tr>
@@ -385,7 +385,7 @@ directory</td></tr>
 evaluated.</td></tr>
 <tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv
     <em>env-variable</em> [<em>env-variable</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <em>filename</em></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">File where the server records the process ID
+<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">File where the server records the process ID
 of the daemon</td></tr>
 <tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho <em>On|Off</em></a></td><td /><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxy">&lt;Proxy <em>wildcard-url</em>&gt; ...&lt;/Proxy&gt;</a></td><td /><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to proxied 
@@ -475,7 +475,7 @@ by Apache children</td></tr>
 processes launched by Apache children</td></tr>
 <tr class="odd"><td><a href="core.html#satisfy" id="S" name="S">Satisfy any|all</a></td><td> all </td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and 
 user authentication</td></tr>
-<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <em>file-path</em></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the file used to store coordination data for
+<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the file used to store coordination data for
 the child processes</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#script"> Script <em>method cgi-script</em></a></td><td /><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
@@ -492,12 +492,12 @@ scripts</td></tr>
 in the scriptlog</td></tr>
 <tr class="odd"><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <em>bytes</em></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Size limit of the CGI script logfile</td></tr>
 <tr><td><a href="mod_cgid.html#scriptsock">ScriptSock <em>file-path</em></a></td><td> logs/cgisock </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">-</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <em>bytes</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP buffer size</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bytes</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP buffer size</td></tr>
 <tr><td><a href="core.html#serveradmin">ServerAdmin <var>email-address</var></a></td><td /><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Email address that the server includes in error
 messages sent to the client</td></tr>
 <tr class="odd"><td><a href="core.html#serveralias">ServerAlias <var>hostname</var> [<var>hostname</var>] ...</a></td><td /><td>v</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Alternate names for a host used when matching requests
 to name-virtual hosts</td></tr>
-<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <em>number</em></a></td><td> 256 (prefork), Serv +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Upper limit on configurable number of processes</td></tr>
+<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td> 256 (prefork), Serv +</td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Upper limit on configurable number of processes</td></tr>
 <tr class="odd"><td><a href="core.html#servername">ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</a></td><td /><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Hostname and port that the server uses to identify
 itself</td></tr>
 <tr><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td /><td>v</td><td>C</td></tr><tr><td class="descr" colspan="4">Legacy URL pathname for a name-virtual host that
@@ -579,13 +579,13 @@ in the Session Cache</td></tr>
 <tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
 Certificate verification</td></tr>
-<tr><td><a href="mpm_common.html#startservers">StartServers <em>number</em></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of child server processes created at startup</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nubmer of threads created on startup</td></tr>
+<tr><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of child server processes created at startup</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Nubmer of threads created on startup</td></tr>
 <tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td /><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group permissions for CGI programs</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the upper limit on the configurable number of threads
+<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the upper limit on the configurable number of threads
 per child process</td></tr>
-<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <em>number</em></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of threads created by each child process</td></tr>
-<tr class="odd"><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <em>number</em></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td /><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of threads created by each child process</td></tr>
+<tr class="odd"><td><a href="mpm_netware.html#threadstacksize">ThreadStackSize <var>number</var></a></td><td> 65536 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>number</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for
 certain events before failing a request</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <em>file</em>|<em>pipe</em></a></td><td /><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specifly location of a log file</td></tr>
@@ -593,7 +593,7 @@ certain events before failing a request</td></tr>
 <tr class="odd"><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</a></td><td /><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes variables from the environment</td></tr>
 <tr><td><a href="core.html#usecanonicalname">UseCanonicalName on|off|dns</a></td><td> on </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures how the server determines its own name and
 port</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#user">User <em>unix-userid</em></a></td><td> #-1 </td><td>sv</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">The userid under which the server will answer
+<tr class="odd"><td><a href="mpm_common.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>sv</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">The userid under which the server will answer
 requests</td></tr>
 <tr><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em></a></td><td> public_html </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Location of the user-specific directories</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root

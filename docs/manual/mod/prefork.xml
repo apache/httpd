@@ -28,10 +28,10 @@
 <seealso><a href="../bind.html">Setting which addresses and
     ports Apache uses</a></seealso>
 
-<section><title>How it Works</title>
+<section id="how-it-works"><title>How it Works</title>
     <p>A single control process is responsible for launching child
     processes which listen for connections and serve them when they
-    arrive. Apache always tries to maintain several <em>spare</em>
+    arrive. Apache always tries to maintain several <dfn>spare</dfn>
     or idle server processes, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     child processes to be forked before their requests can be
@@ -127,7 +127,7 @@
 <name>AcceptMutex</name>
 <description>Method that Apache uses to serialize multiple children
 accepting requests on network sockets</description>
-<syntax>AcceptMutex default|<em>method</em></syntax>
+<syntax>AcceptMutex default|<var>method</var></syntax>
 <default>AcceptMutex default</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -175,7 +175,7 @@ accepting requests on network sockets</description>
 <directivesynopsis>
 <name>MaxSpareServers</name>
 <description>Maximum number of idle child server processes</description>
-<syntax>MaxSpareServers <em>number</em><br /></syntax>
+<syntax>MaxSpareServers <var>number</var><br /></syntax>
 <default>MaxSpareServers 10</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -197,7 +197,7 @@ accepting requests on network sockets</description>
 <directivesynopsis>
 <name>MinSpareServers</name>
 <description>Minimum number of idle child server processes</description>
-<syntax>MinSpareServers <em>number</em></syntax>
+<syntax>MinSpareServers <var>number</var></syntax>
 <default>MinSpareServers  5</default>
 <contextlist><context>server config</context></contextlist>
 

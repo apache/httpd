@@ -42,8 +42,8 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> How it Works</li></ul><h3>See also</h3><ul class="seealso"><li><a href="../bind.html">Setting which addresses and
-    ports Apache uses</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>How it Works</h2>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../bind.html">Setting which addresses and
+    ports Apache uses</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="how-it-works" id="how-it-works">How it Works</a></h2>
     <p>Each process has a fixed
     number of threads. The server adjusts to handle load by
     increasing or decreasing the number of processes.</p>
@@ -54,7 +54,7 @@
     individual threads then listen for connections and serve them when
     they arrive.</p>
 
-    <p>Apache always tries to maintain a pool of <em>spare</em> or
+    <p>Apache always tries to maintain a pool of <dfn>spare</dfn> or
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     threads or processes to be created before their requests can be
@@ -77,12 +77,14 @@
     <p>A typical configuration of the process-thread controls in
     the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM could look as follows:</p>
 
-<div class="example"><pre>StartServers         2
-MaxClients         150
-MinSpareThreads     25
-MaxSpareThreads     75
-ThreadsPerChild     25
-ServerLimit         16</pre></div>
+    <div class="example"><p><code>
+      StartServers         2<br />
+      MaxClients         150<br />
+      MinSpareThreads     25<br />
+      MaxSpareThreads     75<br />
+      ThreadsPerChild     25<br />
+      ServerLimit         16
+    </code></p></div>
 
     <p>While the parent process is usually started as root under Unix
     in order to bind to port 80, the child processes and threads are
