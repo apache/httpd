@@ -15,11 +15,6 @@ Changes with Apache 2.1.0-dev
   *) SECURITY [CAN-2003-0020]: Escape arbitrary data before writing
      into the errorlog.  [André Malo]
 
-  *) mod_expires: Initialize ExpiresDefault to NULL instead of "" to
-     avoid reporting an Internal Server error if it is used without
-     having been set in the httpd.conf file. PR: 23748, 24459
-     [Andre Malo, Liam Quinn  <liam htmlhelp.com>]
-
   *) mod_logio: Account for some bytes handed to the network layer prior to
      dropped connections.  [Jeff Trawick]
 
@@ -258,6 +253,11 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) mod_expires: Initialize ExpiresDefault to NULL instead of "" to
+     avoid reporting an Internal Server error if it is used without
+     having been set in the httpd.conf file. PR: 23748, 24459
+     [Andre Malo, Liam Quinn  <liam htmlhelp.com>]
 
   *) mod_autoindex: Don't omit the <tr> start tag if the SuppressIcon
      option is set. PR 21668.  [Jesse Tie-Ten-Quee <highos highos.com>]
