@@ -3,39 +3,6 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "ApacheMonitor"=".\support\win32\ApacheMonitor.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
 Project: "InstallBin"=".\InstallBin.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -111,10 +78,13 @@ Package=<4>
     Project_Dep_Name ab
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name htpasswd
+    Project_Dep_Name htdbm
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name htdigest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name htpasswd
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name logresolve
@@ -125,6 +95,39 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name wintty
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApacheMonitor"=".\support\win32\ApacheMonitor.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
