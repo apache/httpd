@@ -718,6 +718,9 @@ int ssl_hook_Access(request_rec *r)
          * Remember the peer certificate's DN
          */
         if ((cert = SSL_get_peer_certificate(ssl))) {
+            if (sslconn->client_cert) {
+                X509_free(sslconn->client_cert);
+            }
             sslconn->client_cert = cert;
             sslconn->client_dn = NULL;
         }
@@ -1262,8 +1265,11 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
                      "Certificate Verification: Error (%d): %s",
                      errnum, X509_verify_cert_error_string(errnum));
 
+        if (sslconn->client_cert) {
+            X509_free(sslconn->client_cert);
+            sslconn->client_cert = NULL;
+        }
         sslconn->client_dn = NULL;
-        sslconn->client_cert = NULL;
         sslconn->verify_error = X509_verify_cert_error_string(errnum);
     }
 

@@ -995,6 +995,10 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     }
 
     /* deallocate the SSL connection */
+    if (sslconn->client_cert) {
+        X509_free(sslconn->client_cert);
+        sslconn->client_cert = NULL;
+    }
     SSL_free(ssl);
     sslconn->ssl = NULL;
     filter_ctx->pssl = NULL; /* so filters know we've been shutdown */
@@ -1161,9 +1165,11 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
      * Remember the peer certificate's DN
      */
     if ((cert = SSL_get_peer_certificate(filter_ctx->pssl))) {
+        if (sslconn->client_cert) {
+            X509_free(sslconn->client_cert);
+        }
         sslconn->client_cert = cert;
         sslconn->client_dn = NULL;
-        X509_free(cert);
     }
 
     /*
