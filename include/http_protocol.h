@@ -567,7 +567,7 @@ struct ap_bucket_error {
     char    *start;
 };
 
-extern const apr_bucket_type_t ap_bucket_type_error;
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_error;
 
 /**
  * Make the bucket passed in an error bucket
