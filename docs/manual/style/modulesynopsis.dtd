@@ -60,7 +60,7 @@ usage?, seealso*)>
 
 <!ELEMENT syntax %Inline;>
 
-<!ELEMENT default (#PCDATA | %inlinetags;)*>
+<!ELEMENT default (#PCDATA)>
 
 <!ELEMENT contextlist (context+)+>
 
