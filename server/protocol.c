@@ -522,9 +522,6 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
             if ((retval = ap_get_brigade(c->input_filters, b, AP_MODE_BLOCKING)) != APR_SUCCESS ||
                 APR_BRIGADE_EMPTY(b)) {
                 apr_brigade_destroy(b);
-                if (retval != APR_EOF && retval != APR_TIMEUP) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r, "ap_get_brigade() failed");
-                }
                 return -1;
             }
         }
