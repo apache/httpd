@@ -216,8 +216,6 @@ the commercial alternatives like Raven or Stronghold?</a></h3>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="installation" id="installation">About Installation</a></h2>
 <ul>
 <li><a href="#coredump">Core dumps for HTTPS requests?</a></li>
-<li><a href="#php3">Core dumps for Apache+mod_ssl+PHP3?</a></li>
-<li><a href="#undefinedsym">Undefined symbols on startup?</a></li>
 <li><a href="#mutex">Permission problem on SSLMutex</a></li>
 <li><a href="#mm">Shared memory and process size?</a></li>
 <li><a href="#mmpath">Shared memory and pathname?</a></li>
@@ -235,22 +233,6 @@ the commercial alternatives like Raven or Stronghold?</a></h3>
     Apache with MM, of course).</p>
 
 
-<h3><a name="php3" id="php3">My Apache dumps core when I add both mod_ssl and PHP3?</a></h3>
-<p>Make sure you add mod_ssl to the Apache source tree first and then do a
-    fresh configuration and installation of PHP3. For SSL support EAPI patches
-    are required which have to change internal Apache structures. PHP3 needs
-    to know about these in order to work correctly. Always make sure that
-    <code>-DEAPI</code> is contained in the compiler flags when PHP3 is built.</p>
-
-
-<h3><a name="undefinedsym" id="undefinedsym">When I startup Apache I get errors about undefined symbols like ap_global_ctx?</a></h3>
-<p>This actually means you installed mod_ssl as a DSO, but without rebuilding
-    Apache with EAPI. Because EAPI is a requirement for mod_ssl, you need an
-    extra patched Apache (containing the EAPI patches) and you have to build
-    this Apache with EAPI enabled (explicitly specify
-    <code>--enable-rule=EAPI</code> at the APACI command line).</p>
-
-
 <h3><a name="mutex" id="mutex">When I startup Apache I get permission errors related to SSLMutex?</a></h3>
 <p>When you receive entries like ``<code>mod_ssl: Child could not open
     SSLMutex lockfile /opt/apache/logs/ssl_mutex.18332 (System error follows)
@@ -264,7 +246,7 @@ the commercial alternatives like Raven or Stronghold?</a></h3>
 
 <h3><a name="mm" id="mm">When I use the MM library and the shared memory cache each process grows
 1.5MB according to `top' although I specified 512000 as the cache size?</a></h3>
-<p>The additional 1MB are caused by the global shared memory pool EAPI
+<p>The additional 1MB are caused by the global shared memory pool Apache
     allocates for all modules and which is not used by mod_ssl for
     various reasons. So the actually allocated shared memory is always
     1MB more than what you specify on <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>.
