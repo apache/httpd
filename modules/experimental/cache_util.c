@@ -118,7 +118,7 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
     return apr_time_sec(current_age);
 }
 
-CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache, 
+CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
                                             request_rec *r)
 {
     apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
@@ -129,7 +129,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
     const char *expstr = NULL;
     char *val;
     apr_time_t age_c = 0;
-    cache_info *info = &(cache->handle->cache_obj->info);
+    cache_info *info = &(h->cache_obj->info);
 
     /*
      * We now want to check if our cached data is still fresh. This depends
@@ -163,20 +163,20 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
      * entity, and it's value is in the past, it has expired.
      * 
      */
-    cc_cresp = apr_table_get(r->headers_out, "Cache-Control");
-    cc_ceresp = apr_table_get(r->err_headers_out, "Cache-Control");
-    cc_req = apr_table_get(r->headers_in, "Cache-Control");
-    
-    if ((agestr = apr_table_get(r->headers_out, "Age"))) {
+    cc_cresp = apr_table_get(h->resp_hdrs, "Cache-Control");
+    cc_ceresp = apr_table_get(h->resp_err_hdrs, "Cache-Control");
+    cc_req = apr_table_get(h->req_hdrs, "Cache-Control");
+
+    if ((agestr = apr_table_get(h->resp_hdrs, "Age"))) {
         age_c = apr_atoi64(agestr);
     }
-    else if ((agestr = apr_table_get(r->err_headers_out, "Age"))) {
+    else if ((agestr = apr_table_get(h->resp_err_hdrs, "Age"))) {
         age_c = apr_atoi64(agestr);
         age_in_errhdr = 1;
     }
 
-    if (!(expstr = apr_table_get(r->err_headers_out, "Expires"))) {
-        expstr = apr_table_get(r->headers_out, "Expires");
+    if (!(expstr = apr_table_get(h->resp_err_hdrs, "Expires"))) {
+        expstr = apr_table_get(h->resp_hdrs, "Expires");
     }
 
     /* calculate age of object */
@@ -267,23 +267,23 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache,
         const char *warn_head;
         apr_table_t *head_ptr;
 
-        warn_head = apr_table_get(r->headers_out, "Warning");
+        warn_head = apr_table_get(h->resp_hdrs, "Warning");
         if (warn_head != NULL) {
-            head_ptr = r->headers_out;
+            head_ptr = h->resp_hdrs;
         }
         else {
-            warn_head = apr_table_get(r->err_headers_out, "Warning");
-            head_ptr = r->err_headers_out;
+            warn_head = apr_table_get(h->resp_err_hdrs, "Warning");
+            head_ptr = h->resp_err_hdrs;
         }
 
         /* it's fresh darlings... */
         /* set age header on response */
         if (age_in_errhdr) {
-            apr_table_set(r->err_headers_out, "Age",
+            apr_table_set(h->resp_err_hdrs, "Age",
                           apr_psprintf(r->pool, "%lu", (unsigned long)age));
         }
         else {
-            apr_table_set(r->headers_out, "Age",
+            apr_table_set(h->resp_hdrs, "Age",
                           apr_psprintf(r->pool, "%lu", (unsigned long)age));
         }
 

@@ -2,6 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix Expires handling in mod_cache.  [Justin Erenkrantz]
+
+  *) Alter mod_expires to run at a different filter priority to allow
+     proper Expires storage by mod_cache.  [Justin Erenkrantz]
+
   *) Fix the global mutex crash when the global mutex is never allocated due
      to disabled/empty caches. [Jess Holle <jessh ptc.com>]
 

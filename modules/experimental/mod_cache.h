@@ -203,7 +203,11 @@ struct cache_provider_list {
 
 struct cache_handle {
     cache_object_t *cache_obj;
-    apr_table_t *req_hdrs;   /* These are the original request headers */
+    apr_table_t *req_hdrs;        /* cached request headers */
+    apr_table_t *resp_hdrs;       /* cached response headers */
+    apr_table_t *resp_err_hdrs;   /* cached response err headers */
+    const char *content_type;     /* cached content type */
+    int status;                   /* cached status */
 };
 
 /* per request cache information */
@@ -229,11 +233,11 @@ CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_
 
 /**
  * Check the freshness of the cache object per RFC2616 section 13.2 (Expiration Model)
- * @param cache cache_request_rec
+ * @param h cache_handle_t
  * @param r request_rec
  * @return 0 ==> cache object is stale, 1 ==> cache object is fresh
  */
-CACHE_DECLARE(int) ap_cache_check_freshness(cache_request_rec *cache, request_rec *r);
+CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, request_rec *r);
 CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x);
 CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
 CACHE_DECLARE(char *) generate_name(apr_pool_t *p, int dirlevels, 
