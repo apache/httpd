@@ -719,6 +719,9 @@ server_rec *init_virtual_host (pool *p, char *hostname)
     s->module_config = create_empty_config (p);
     s->lookup_defaults = create_per_dir_config (p);
     
+    s->server_uid = user_id;
+    s->server_gid = group_id;
+
     return s;
 }
 

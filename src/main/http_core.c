@@ -739,9 +739,6 @@ char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     if (s->access_confname)
 	process_resource_config (s, s->access_confname, p, ptemp);
     
-    s->server_uid = user_id;
-    s->server_gid = group_id;
-    
     if (errmsg == end_virthost_magic) return NULL;
     return errmsg;
 }
