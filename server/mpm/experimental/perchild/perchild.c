@@ -1550,12 +1550,15 @@ static int pass_request(request_rec *r)
     perchild_server_conf *sconf = (perchild_server_conf *)
                             ap_get_module_config(r->server->module_config, 
                                                  &mpm_perchild_module);
-    char *foo = NULL;
-    apr_size_t len;
+    char request_body[HUGE_STRING_LEN];
+    apr_off_t len = 0;
+    apr_size_t l = 0;
 
-/* XXX apr_get_brigade(..., AP_MODE_EXHAUSTIVE);  RBB */
-/* foo = brigade_to_string() */
-    len = strlen(foo);
+    ap_get_brigade(r->input_filters, bb, AP_MODE_EXHAUSTIVE, APR_NONBLOCK_READ,
+                   len);
+    if (apr_brigade_flatten(bb, request_body, &l) != APR_SUCCESS) {
+        return DECLINED;
+    }
 
     apr_os_sock_get(&sfd, thesock);
 
@@ -1583,7 +1586,7 @@ static int pass_request(request_rec *r)
         return -1;
     }
 
-    write(sconf->sd2, foo, len);
+    write(sconf->sd2, request_body, len);
 
     /* ### this "read one line" doesn't seem right... shouldn't we be
        ### reading large chunks of data or something?
@@ -1594,8 +1597,8 @@ static int pass_request(request_rec *r)
         APR_BRIGADE_FOREACH(e, bb) {
             const char *str;
 
-            apr_bucket_read(e, &str, &len, APR_NONBLOCK_READ);
-            write(sconf->sd2, str, len);
+            apr_bucket_read(e, &str, &l, APR_NONBLOCK_READ);
+            write(sconf->sd2, str, l);
         }
     }
 
@@ -1826,20 +1829,21 @@ static const char *set_child_per_uid(cmd_parms *cmd, void *dummy, const char *u,
 {
     int i;
     int max_this_time = atoi(num) + curr_child_num;
+    
 
     for (i = curr_child_num; i < max_this_time; i++, curr_child_num++) {
-        child_info_t *ug = &child_info_table[i - 1];
+        int uid = 0, gid = 0;
 
         if (i > num_daemons) {
             return "Trying to use more child ID's than NumServers.  Increase "
                    "NumServers in your config file.";
         }
     
-        ug->uid = ap_uname2id(u);
-        ug->gid = ap_gname2id(g); 
+        child_info_table[i].uid = ap_uname2id(u);
+        child_info_table[i].gid = ap_gname2id(g); 
 
 #ifndef BIG_SECURITY_HOLE
-        if (ug->uid == 0 || ug->gid == 0) {
+        if (child_info_table[i].uid == 0 || child_info_table[i].gid == 0) {
             return "Assigning root user/group to a child.";
         }
 #endif
