@@ -186,6 +186,7 @@ typedef struct {
      * returned from the rest of the system 
      */
     int error_override;
+    int error_override_set;
 
 } proxy_server_conf;
 

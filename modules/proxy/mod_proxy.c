@@ -483,6 +483,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->maxfwd = DEFAULT_MAX_FORWARDS;
     ps->maxfwd_set = 0;
     ps->error_override = 0; 
+    ps->error_override_set = 0; 
     return ps;
 }
 
@@ -505,6 +506,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->req = (overrides->req_set == 0) ? base->req : overrides->req;
     ps->recv_buffer_size = (overrides->recv_buffer_size_set == 0) ? base->recv_buffer_size : overrides->recv_buffer_size;
     ps->maxfwd = (overrides->maxfwd_set == 0) ? base->maxfwd : overrides->maxfwd;
+    ps->error_override = (overrides->error_override_set == 0) ? base->error_override : overrides->error_override;
 
     return ps;
 }
@@ -767,6 +769,7 @@ static const char *
     ap_get_module_config(parms->server->module_config, &proxy_module);
 
     psf->error_override = flag;
+    psf->error_override_set = 1;
     return NULL;
 }
 
