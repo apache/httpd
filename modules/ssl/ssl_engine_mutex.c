@@ -84,7 +84,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
     }
 
 #if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
-    rv = unixd_set_global_mutex_perms_lock(mc->pMutex);
+    rv = unixd_set_global_mutex_perms(mc->pMutex);
     if (rv != APR_SUCCESS) {
         ssl_log(s, SSL_LOG_ERROR, "Could not set permissions on "
                      "ssl_mutex; check User and Group directives");
