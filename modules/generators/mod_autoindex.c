@@ -159,6 +159,7 @@ typedef struct ai_desc_t {
 typedef struct autoindex_config_struct {
 
     char *default_icon;
+    char *style_sheet;
     apr_int32_t opts;
     apr_int32_t incremented_opts;
     apr_int32_t decremented_opts;
@@ -193,9 +194,19 @@ static char c_by_encoding, c_by_type, c_by_path;
  */
 static void emit_preamble(request_rec *r, int xhtml, const char *title)
 {
+    autoindex_config_rec *d;
+
+    d = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config,
+                                                      &autoindex_module);
+
     ap_rvputs(r, xhtml ? DOCTYPE_XHTML_1_0T : DOCTYPE_HTML_3_2,
               "<html>\n <head>\n  <title>Index of ", title,
-              "</title>\n </head>\n <body>\n", NULL);
+              "</title>\n", NULL);
+    if (d->style_sheet != NULL) {
+        ap_rvputs(r, "  <link rel=\"stylesheet\" href=\"", d->style_sheet,
+                "\" type=\"text/css\"", xhtml ? "/>\n" : ">\n", NULL);
+    }
+    ap_rvputs(r, "</head>\n <body>\n", NULL);
 }
 
 static void push_item(apr_array_header_t *arr, char *type, const char *to,
@@ -599,6 +610,9 @@ static const command_rec autoindex_cmds[] =
     AP_INIT_TAKE1("DefaultIcon", ap_set_string_slot,
                   (void *)APR_OFFSETOF(autoindex_config_rec, default_icon),
                   DIR_CMD_PERMS, "an icon URL"),
+    AP_INIT_TAKE1("IndexStyleSheet", ap_set_string_slot,
+                  (void *)APR_OFFSETOF(autoindex_config_rec, style_sheet),
+                  DIR_CMD_PERMS, "URL to style sheet"),
     {NULL}
 };
 
@@ -637,6 +651,8 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
     new = (autoindex_config_rec *) apr_pcalloc(p, sizeof(autoindex_config_rec));
     new->default_icon = add->default_icon ? add->default_icon
                                           : base->default_icon;
+    new->style_sheet = add->style_sheet ? add->style_sheet
+                                          : base->style_sheet;
     new->icon_height = add->icon_height ? add->icon_height : base->icon_height;
     new->icon_width = add->icon_width ? add->icon_width : base->icon_width;
 

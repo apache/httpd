@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_autoindex: new directive IndexStyleSheet 
+    [Tyler Riddle <triddle_1999 yahoo.com>, Paul Querna <chip force-elite.com>]
+
   *) Fix a long delay with CGI requests and keepalive connections on
      AIX.  [Jeff Trawick]
 
