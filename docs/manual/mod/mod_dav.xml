@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE xml:manual [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.xsl"?>
 <modulesynopsis>
 
@@ -67,8 +67,8 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<description>Location of the DAV lock database</description>
 <name>DavLockDB</name>
+<description>Location of the DAV lock database</description>
 <syntax>DavLockDB <em>file-path</em></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
