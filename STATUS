@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/06/06 21:45:07 $]
+Last modified at [$Date: 2000/06/06 21:46:40 $]
 
 Release:
 
@@ -57,6 +57,11 @@ RELEASE SHOWSTOPPERS:
     * We need a thread-safe resolver, at least on Unix.
         Status: The best known candidate would be something from
 	BIND v9.
+        Status: Greg asks, "why? doesn't gethostname_r() handle this?"
+
+    * Fix up ./configure to properly detect the various dynamic load
+        libraries/flags on the different platforms (current, we default to
+        -ldl which is wrong).
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * OS/2: Get loadable modules working again. Requires shared core support
@@ -142,6 +147,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Get mod_mmap_static working on 2.0.  Greg Ames posted a patch on 
       05/26/2000 to get it running and to improve performance.
+
+    * Integrate mod_dav.
+        Message-id: forthcoming (plan to be posted before integration begins)
+        Status: Greg +1 (volunteers :-)
 
 Other bugs that need fixing:
 
