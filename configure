@@ -1283,7 +1283,7 @@ for module in $modules; do
     if [ "x$add" = "xyes" ]; then
         echo $SEO "s%^.*\\(AddModule.*[_b/]$module\\..*\\)%\\1%g" >>$sedsubst
         echo $SEO "s%^.*\\(SharedModule.*[_b/]$module\\..*\\)%\\1%g" >>$sedsubst
-        m="yes [static]"
+        m="yes"
     else
         echo $SEO "s%^.*\\(AddModule.*[_b/]$module\\..*\\)%# \\1%g" >>$sedsubst
         echo $SEO "s%^.*\\(SharedModule.*[_b/]$module\\..*\\)%# \\1%g" >>$sedsubst
@@ -1292,7 +1292,7 @@ for module in $modules; do
     eval "share=\$shared_$module"
     if [ "x$share" = "xyes" ]; then
         echo $SEO "s%^\\(.*\\)AddModule\\(.*[_b/]$module\\.\\)[oam].*\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
-        m="yes [shared]"
+        m="$m [shared]"
     fi
     if [ "x$verbose" = "xyes" ]; then
         echo " + Module $module: $m"

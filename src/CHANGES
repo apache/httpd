@@ -1,5 +1,7 @@
 Changes with Apache 1.3.7
 
+  *) Fix verbose output of APACI configure (option -v) 
+     [Martin Kraemer, Ralf S. Engelschall]
 
 Changes with Apache 1.3.6
 
