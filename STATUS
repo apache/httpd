@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/01/12 18:31:30 $]
+Last modified at [$Date: 2004/01/12 21:21:00 $]
 
 Release:
 
@@ -73,6 +73,11 @@ RELEASE SHOWSTOPPERS:
     IPv4 numeric address string from IPv4-mapped address would work
     but actually resolving the host would not.  To catch the check
     via retcode, you have to specify the NI_NAMEREQD flag.
+
+    * unescaped error logs seem to be essential for some folks
+      backport -DAP_ERROR_LOG_UNESCAPED to 2.0 and 1.3
+        server/log.c: r1.139
+    +1: nd
 
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
