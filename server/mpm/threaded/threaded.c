@@ -1047,9 +1047,11 @@ static void perform_idle_server_maintenance(void)
             }
 	    ++free_length;
 	}
+        if (!all_dead_threads) {
+            last_non_dead = i; 
+        }
         /* XXX if (!ps->quiescing)     is probably more reliable  GLA */
 	if (!any_dying_threads) {
-            last_non_dead = i;
             ++total_non_dead;
         }
     }
