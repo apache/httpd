@@ -444,7 +444,7 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p)
 
 AP_DECLARE(void) ap_add_module(module *m, apr_pool_t *p)
 {
-    /* This could be called from an AddModule httpd.conf command,
+    /* This could be called from an LoadModule httpd.conf command,
      * after the file has been linked and the module structure within it
      * teased out...
      */
