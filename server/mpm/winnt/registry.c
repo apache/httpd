@@ -258,7 +258,13 @@ apr_status_t ap_registry_get_array(apr_pool_t *p, const char *key, const char *n
     }
     else 
     {
-        pValue = apr_palloc(p, nSize);
+        /* Small possiblity the array is either unterminated 
+         * or single NULL terminated.  Avert.
+         */
+        pValue = apr_palloc(p, nSize + 2);
+        pValue[nSize + 1] = '\0';
+        pValue[nSize] = '\0';
+        
         rv = RegQueryValueEx(hKey, 
 			     name,		/* key name */
 			     NULL,		/* reserved */
