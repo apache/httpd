@@ -134,7 +134,6 @@ typedef struct {
 } listen_socket_t;
 
 typedef struct {
-    apr_os_file_t errorlog_fd;
     apr_time_t restart_time;
     HMTX accept_mutex;
     listen_socket_t listeners[1];
@@ -166,8 +165,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         ap_listen_rec *lr;
         int num_listeners = 0;
 
-        apr_file_close(ap_server_conf->error_log);
-        apr_os_file_put(&ap_server_conf->error_log, &parent_info->errorlog_fd, pconf);
         ap_restart_time = parent_info->restart_time;
         ap_mpm_accept_mutex = parent_info->accept_mutex;
 
@@ -287,7 +284,6 @@ static char master_main()
     ap_restart_time = apr_time_now();
     parent_info->restart_time = ap_restart_time;
     parent_info->accept_mutex = ap_mpm_accept_mutex;
-    apr_os_file_get(&parent_info->errorlog_fd, s->error_log);
 
     /* Allocate shared memory for scoreboard */
     if (ap_scoreboard_image == NULL) {
