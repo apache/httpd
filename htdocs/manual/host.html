@@ -12,7 +12,7 @@
 <p>The "Virtual Host" refers to the practice of maintaining more than
 one server on one machine, as differentiated by their apparent
 hostname. For example, it is often desirable for companies sharing a
-web server to have their own domains, with web servers accessable as
+web server to have their own domains, with web servers accessible as
 <code>www.company1.com</code> and <code>www.company2.com</code>,
 without requiring the user to know any extra path information.</p>
 
@@ -20,7 +20,7 @@ without requiring the user to know any extra path information.</p>
 out of the box, but since the base <code>HTTP</code> (HyperText
 Transport Protocol) standard does not allow any method for the server
 to determine the hostname it is being addressed as, Apache's virtual
-host support has required a seperate IP address for each
+host support has required a separate IP address for each
 server. Documentation on using this approach (which still works very
 well) is available <a href="virtual-host.html">here</a>.
 
@@ -60,8 +60,8 @@ DNS entry points to the same IP address as the main
 server. Optionally, you could simply use that IP address in the
 &lt;VirtualHost&gt; entry.</p>
 
-<p>Additionally, many servers may wish to be accessable by more than
-one name. For example, the Apache server might want to be accessable
+<p>Additionally, many servers may wish to be accessible by more than
+one name. For example, the Apache server might want to be accessible
 as <code>apache.org</code>, or <code>ftp.apache.org</code>, assuming
 the IP addresses pointed to the same server. In fact, one might want it
 so that all addresses at <code>apache.org</code> were picked up by the
@@ -73,7 +73,7 @@ example:</p>
     ServerAlias apache.org *.apache.org
 </pre>
 
-<p>Note that you can use <code>*</code> and <code>?</code> as wildcard
+<p>Note that you can use <code>*</code> and <code>?</code> as wild-card
 characters.</p>
 
 <h2>Security Considerations</h2>
@@ -95,7 +95,7 @@ will be sent.
 This is a security concern if you are controlling access to a
 particular server based on IP-layer controls, such as from within a
 firewall or router.  Let's say <code>www.bar.com</code> in the above
-example was instead an intranet server called
+example was instead an intra-net server called
 <code>private.foo.com</code>, and the router used by foo.com only let
 internal users access <code>private.foo.com</code>.  Obviously,
 <code>Host:</code> header functionality now allows someone who has
@@ -104,7 +104,7 @@ access to <code>www.foo.com</code> to get
 private.foo.com</code> header.  It is important to note that this
 condition exists only if you only implement this policy at the IP
 layer - all security controls used by Apache (i.e., <A
-HREF="mod_access.html">allow, deny from,</A> etc.) are consistantly
+HREF="mod_access.html">allow, deny from,</A> etc.) are consistently
 respected.
 
 <h2>Compatibility with Older Browsers</h2>

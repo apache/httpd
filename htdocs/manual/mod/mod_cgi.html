@@ -33,7 +33,7 @@ configuration variable.
 
 <h2>CGI Environment variables</h2>
 The server will set the CGI environment variables as described in the CGI
-specification, with the following provisos:
+specification, with the following provisons:
 <dl>
 <dt>REMOTE_HOST
 <dd>This will only be set if the server has not been compiled with
@@ -135,7 +135,7 @@ taken relative to the server root.
 script logfile.  Since the logfile logs a lot of information per CGI
 error (all request headers, all script output) it can grow to be a big
 file. To prevent problems due to unbounded growth, this directive can
-be used to set an maximum filesize for the CGI logfile. If the file
+be used to set an maximum file-size for the CGI logfile. If the file
 exceeds this size, no more information will be written to it.
 
 <a name="scriptlogbuffer"><h3>ScriptLogBuffer</h3></a>

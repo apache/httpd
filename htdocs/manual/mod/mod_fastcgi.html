@@ -145,7 +145,7 @@ server won't be able to communicate with its FastCGI applications.<p>
 
 To avoid this problem place a <code>FastCgiIpcDir</code> directive
 before the <code>AppClass</code> directives in your server
-configuration.  Specify a directory that's readable, writeable,
+configuration.  Specify a directory that's readable, writable,
 and searchable by the account you use for your Web server, but
 otherwise not accessible to anyone.<p>
 
@@ -334,7 +334,7 @@ AddType application/x-httpd-fcgi .fcg
 # the socket files stored locally, in /tmp.
 # FastCgiIpcDir $APACHE/logs
 
-# Start the echo.fcg application (echo.fcg is a symlink to echo,
+# Start the echo.fcg application (echo.fcg is a sym-link to echo,
 # created by $FASTCGI/examples/Makefile.)
 AppClass $FASTCGI/examples/echo.fcg -initial-env STATE=TEXAS
 

@@ -9,7 +9,7 @@
 <h1>Multiple Log Files</h1>
 
 It is now possible to specify multiple log files, each with a fully
-customisable format. This is compatable with existing
+customizable format. This is compatible with existing
 configurations.  Multiple log files are implemented as part of the <a
 href="mod/mod_log_config.html">mod_log_config</a> module which as of
 Apache 1.2 is the default log module.
@@ -23,7 +23,7 @@ or <code>CustomLog</code> directive. These directives can be
 repeated to create more than one log file (in previous releases,
 only one logfile could be given per server configuration).
 The <code>TransferLog</code> directive creates a log file
-in the standard "common log format", although this can be customised
+in the standard "common log format", although this can be customized
 with <code>LogFormat</code>. The syntax of these two
 directives is the same as for the config log module in previous
 Apache releases.
@@ -32,7 +32,7 @@ Apache releases.
 The real power of multiple log files come from the ability to
 create log files in different formats. For example, as well
 as a CLF transfer log, the server could log the user agent of
-each client, or the referer information, or any other aspect of
+each client, or the referrer information, or any other aspect of
 the request, such as the language preferences of the user.
 <p>
 
@@ -41,7 +41,7 @@ to, and a log file format.
 
 <hr>
 
-<strong>Sytnax:</strong> CustomLog <em>filename "format"</em><br>
+<strong>Syntax:</strong> CustomLog <em>filename "format"</em><br>
 <strong>Context:</strong> server config, virtual host<br>
 <strong>Status:</strong> base<br>
 <strong>Module:</strong> mod_log_config<p>
@@ -81,7 +81,7 @@ TransferLog logs/access_log
 CustomLog   logs/agents     "%{user-agent}i"
 </pre>
 
-To define a CLF transfer log and a referer log which log
+To define a CLF transfer log and a referrer log which log
 all accesses to both the main server and a virtual host:
 
 <pre>
@@ -104,7 +104,7 @@ TransferLog logs/vhost_access_log
 </pre>
 
 was added inside the virtual host definition, then accesses to this
-virtual host will be logged in vhost_acces_log file (in common
+virtual host will be logged in vhost_access_log file (in common
 log format), and <i>not</i> in logs/access_log or logs/referer.
 
 <!--#include virtual="footer.html" -->

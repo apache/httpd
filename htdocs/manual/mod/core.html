@@ -214,7 +214,7 @@ It must be accompanied by <A HREF="#authname">AuthName</A> and
 
 The server comes with a built-in list of active modules.  This
 directive clears the list.  It is assumed that the list will then be
-repopulated using the <A HREF="#addmodule">AddModule</A> directive.<p><hr>
+re-populated using the <A HREF="#addmodule">AddModule</A> directive.<p><hr>
 
 <A name="bindaddress"><h2>BindAddress directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt BindAddress} directive&gt; -->
@@ -271,7 +271,7 @@ with filenames missing the .gif extension.<p><hr>
 directives which will apply only to the named directory and sub-directories
 of that directory. Any directive which is allowed in a directory
 context may be used. <em>Directory</em> is either the full path to a directory,
-or a wildcard string. In a wildcard string, `?' matches any single character,
+or a wild-card string. In a wild-card string, `?' matches any single character,
 and `*' matches any sequences of characters. Example:
 <pre>
    &lt;Directory /usr/local/httpd/htdocs&gt;
@@ -296,7 +296,7 @@ first, interspersed with the directives from the
 <blockquote><code>
 &lt;Directory /&gt;<br>
 AllowOverride None<br>
-&lt;/Directoy&gt;<br><br>
+&lt;/Directory&gt;<br><br>
 &lt;Directory /home/*&gt;<br>
 AllowOverride FileInfo<br>
 &lt;/Directory&gt;</code></blockquote>
@@ -408,7 +408,7 @@ order they appear in the configuration file, after the
 read, but before &lt;Location&gt; sections.</p>
 
 <p>The <em>filename</em> argument should include a filename, or a 
-wildcard string, where `?' matches any single character, and `*' matches any
+wild-card string, where `?' matches any single character, and `*' matches any
 sequences of characters. Extended regular expressions can also be used, with the addition of
 the <code>~</code> character. For example:</p>
 
@@ -437,7 +437,7 @@ the directory being applied will be prefixed automatically.
 <strong>Status:</strong> core<p>
 
 The Group directive sets the group under which the server will answer requests.
-In order to use this directive, the standalone server must be run initially
+In order to use this directive, the stand-alone server must be run initially
 as root. <em>Unix-group</em> is one of:
 <dl>
 <dt>A group name
@@ -510,7 +510,7 @@ the directives if <i>module name</i> is <b>not</b> compiled in.
 name of the module, at the time it was compiled. For example,
 <code>mod_rewrite.c</code>.
 
-<p>&lt;IfModule&gt; sections are nestable, which can be used to implement
+<p>&lt;IfModule&gt; sections are nest-able, which can be used to implement
 simple multiple-module tests.
 
 <P> <hr>
@@ -592,7 +592,7 @@ then it applies to all access methods.<p><hr>
 1.1 and later.<p>
 
 <p>The &lt;Location&gt; directive provides for access control by
-URL. It is comprable to the <a
+URL. It is comparable to the <a
 href="#directory">&lt;Directory&gt;</a> directive, and
 should be matched with a &lt;/Location&gt; directive. Directives that
 apply to the URL given should be listen
@@ -604,8 +604,8 @@ read.</p>
 <p>Note that, due to the way HTTP functions, <em>URL prefix</em>
 should, save for proxy requests, be of the form <code>/path/</code>,
 and should not include the <code>http://servername</code>. It doesn't
-neccessarily have to protect a directory (it can be an individual
-file, or a number of files), and can include wildcards.  In a wildcard
+necessarily have to protect a directory (it can be an individual
+file, or a number of files), and can include wild-cards.  In a wild-card
 string, `?' matches any single character, and `*' matches any
 sequences of characters.
 
@@ -746,7 +746,7 @@ return a formatted listing of the directory.
 <dt>MultiViews
 <dd>
 <!--%plaintext &lt;?INDEX {\tt MultiViews} option&gt; -->
-<A HREF="content-negotiation.html">Ccontent negotiatad</A> MultiViews are
+<A HREF="content-negotiation.html">Content negotiated</A> MultiViews are
 allowed.
 <dt>SymLinksIfOwnerMatch
 <dd>
@@ -948,7 +948,7 @@ startup phase.<p>
 Process limits control the number of processes per user.<p>
 
 Note: If CGI processes are <b>not</b> running under userids other than the
-webserver userid, this directive will limit the number of processes that the
+web server userid, this directive will limit the number of processes that the
 server itself can create. Evidence of this situation will be indicated by
 <b><em>cannot fork</em></b> messages in the error_log.<p>
 

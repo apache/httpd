@@ -42,8 +42,8 @@ versions --- after all, we have more modules to adapt than you do.
 We found that many people were using values for "MaxServers" either
 too high or too low, and were hanging themselves on it.  The model we
 adopted is still based on long-lived minimal-forking processes, but
-instead of specifying one number of persistant processes, the
-webmaster specifies a maximum and minimum number of processes to be
+instead of specifying one number of persistent processes, the
+web-master specifies a maximum and minimum number of processes to be
 "spare" - every couple of seconds the parent checks the actual number
 of spare servers and adjusts accordingly.  This should keep the number
 of servers concurrently running relatively low while still ensuring

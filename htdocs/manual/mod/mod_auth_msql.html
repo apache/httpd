@@ -30,7 +30,7 @@ Auth_MSQLhost &lt; FQHN | IP Address | localhost &gt
 </code></dt><dd>
         Hostname of the machine running the mSQL demon. The effective uid
         of the server should be allowed access. If not given, or if it is
-        the magic name <code>localhost</code>, it is passed to the mSQL libary as a null
+        the magic name <code>localhost</code>, it is passed to the mSQL library as a null
         pointer. This effectively forces it to use /dev/msql rather than the
         (slower) socket communication.
 </dd>
@@ -75,7 +75,7 @@ Auth_MSQLgrp_table &lt; mSQL table name in the above database &gt
 Auth_MSQLuid_field &lt; mSQL field name &gt
 </code></dt><dd>
         Name of the field containing the username in the <code>
-        Auth_MSQLpwd_table</code> and optionaly in the <code>
+        Auth_MSQLpwd_table</code> and optionally in the <code>
         Auth_MSQLgrp_table</code> tables.
 </dd>
 
@@ -117,7 +117,7 @@ Auth_MSQL_nopasswd &lt; on | off &gt
         not in the right group) or has the password wrong, then
         he or she is denied access. When this directive is set to
         'off', control is passed on to any other authorization
-        modules, such as the basic auth module wih the htpasswd
+        modules, such as the basic auth module with the htpasswd
         file or the Unix-(g)dbm modules. The default is 'on'
         to avoid nasty 'fall-through' surprises. Be sure you
         know what you are doing when you decide to switch it off.
@@ -127,7 +127,7 @@ Auth_MSQL_nopasswd &lt; on | off &gt
 Auth_MSQL_EncryptedPasswords &lt; on | off &gt
 </code></dt><dd>
         Default is 'on'. When set on, the values in the
-        pwd_field are assumed to be crypted using *your*
+        pwd_field are assumed to be crypt-ed using *your*
         machines 'crypt()' function and the incoming password
         is 'crypt'ed before comparison. When this function is
         'off', the comparison is done directly with the plaintext
@@ -230,7 +230,7 @@ Auth_MSQLpwd_field   Cpasswd
 Auth_MSQLgrp_table   user_records <br>
 Auth_MSQLgrp_field   Xgroup       <br>
 </code></dt><dd>
-                Optionaly one can also specify a table which contains the
+                Optionally one can also specify a table which contains the
                 user/group combinations. This can be the same table which
                 also contains the username/password combinations. However
                 if a user belongs to two or more groups, one will have to
@@ -290,13 +290,13 @@ AuthType                basic
    not have the uid field as a primary key, it is possible for the
    uid to occur more than once in the table with possibly different
    passwords. When this module is compiled with the <code>ONLY_ONCE</code>
-   directive set, access is denied if the uid occures more than once in the
+   directive set, access is denied if the uid occurs more than once in the
    uid/passwd table. If you choose not to set it, the software takes
    the first pair returned and ignores any further pairs. The SQL
    statement used for this is<br>
    <p><code>"select password form pwd_table where user='uid'"</code><p>
    this might lead to unpredictable results. For this reason as well
-   as for performance reasons you are strongly adviced to make the
+   as for performance reasons you are strongly advised to make the
    uid field a primary key. Use at your own peril :-)
 </dd>
 
@@ -304,18 +304,18 @@ AuthType                basic
 <a name="KEEP_MSQL_CONNECTION_OPEN">#define KEEP_MSQL_CONNECTION_OPEN</a>
 </code></dt><dd>
    Normally the (tcp/ip) connection with the database is opened and
-   closed for each SQL query. When the Apache webserver and the database
+   closed for each SQL query. When the Apache web-server and the database
    are on the same machine, and /dev/msql is used this does not
    cause a serious overhead. However when your platform does not
    support this (see the mSQL documentation) or when the web server
    and the database are on different machines the overhead can be
    considerable. When the above directive is set defined the server leaves
    the connection open, i.e. no call to <code>msqlClose()</code>.
-   If an error occures an attempt is made to reopen the connection for
+   If an error occurs an attempt is made to reopen the connection for
    the next http request.
    <p>
    This has a number of very serious drawbacks
-   <ul><li> It costs 2 already rare filedescriptors for each child.
+   <ul><li> It costs 2 already rare file-descriptors for each child.
        <li> It costs msql-connections, typically one per child. The (compiled in)
             number of connections mSQL can handle is low, typically 6 or 12.
             which might prohibit access to the mSQL database for later
@@ -323,10 +323,10 @@ AuthType                basic
        <li> When a child dies, it might not free that connection properly
             or quick enough.
        <li> When errors start to occur, connection/file-descriptor resources
-            might become exausted very quickly.
+            might become exhausted very quickly.
    </ul>
    <p>
-   In short, use this at your own peril and only in a highly controled and
+   In short, use this at your own peril and only in a highly controlled and
    monitored environment.
 </dd>
 
@@ -339,18 +339,18 @@ AuthType                basic
    A second mSQL auth module for Apache has also been developed by Vivek Khera
    &lt<a href="mailto:khera@kciLink.com"><code>khera@kciLink.com</code></a>&gt
    and was subsequently distributed with some early versions of Apache. It
-   can be optained from
+   can be obtained from
    <code><a href="ftp://ftp.kcilink.com/pub/">ftp://ftp.kcilink.com/pub/mod_auth_msql.c*</a></code>.
    Older 'vitek' versions had the field/table names compiled in. Newer
    versions, v.1.11 have more <code>access.conf</code> configuration
-   options. However these where choosen not to be in line the 'ewse'
+   options. However these where chosen not to be in line the 'ewse'
    version of this module. Also, the 'vitek' module does not give group
    control or 'empty' password control.
    <p>
    To get things slightly more in line this version (0.9) should
    be backward compatible with the 'vitek' module by:
    <ul><li> Adding support for the <code>Auth_MSQL_EncryptedPasswords</code> on/off functionality
-       <li> Adding support for the different spelling fo the 4 configuration
+       <li> Adding support for the different spelling of the 4 configuration
             tokens for user-table-name, user/password-field-name and dbase-name.
        <li> Setting some field names to a default which used to be hard
             coded in in older 'vitek' modules.
@@ -438,7 +438,7 @@ This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
 This module was written for the
 <a href="http://ewse.ceo.org">European Wide Service Exchange</a> by
 &lt<a href="mailto:Dirk.vanGulik@jrc.it"><code>Dirk.vanGulik@jrc.it</code></a>&gt.
-Feel free to contact me if you have any problems, icecreams or bugs. This
+Feel free to contact me if you have any problems, ice-creams or bugs. This
 documentation, courtesy of Nick Himba, <a href="mailto:himba@cs.utwente.nl">
 <code>&lt;himba@cs.utwente.nl&gt;</code></a>.
 <p>

@@ -13,9 +13,9 @@
 
 <h2>What are virtual hosts?</h2>
 This is the ability of a single machine to be a web server for multiple
-domains. For example, an internet service provider might have a machine
+domains. For example, an Internet service provider might have a machine
 called <code>www.serve.com</code> which provides Web space for several
-organisations including, say, <em>smallco</em> and <em>baygroup</em>.
+organizations including, say, <em>smallco</em> and <em>baygroup</em>.
 Ordinarily, these groups would be given parts of the Web tree on www.serve.com.
 So smallco's home page would have the URL
 <blockquote>
@@ -26,13 +26,13 @@ and baygroup's home page would have the URL
 http://www.serve.com/baygroup/
 </blockquote>
 <p>
-For aesthetic reasons, however, both organisations would rather their home
+For esthetic reasons, however, both organizations would rather their home
 pages appeared under their own names rather than that of the service
-provider's; but they do not want to set up their own internet links and
+provider's; but they do not want to set up their own Internet links and
 servers.
 <p>
 Virtual hosts are the solution to this problem. smallco and baygroup would
-have their own internet name registrations, <code>www.smallco.com</code> and
+have their own Internet name registrations, <code>www.smallco.com</code> and
 <code>www.baygroup.org</code> respectively. These hostnames would both
 correspond to the service provider's machine (www.serve.com). Thus
 smallco's home page would now have the URL
@@ -90,7 +90,7 @@ The <A HREF="mod/core.html#virtualhost">VirtualHost</A> directive in the
 <A HREF="mod/core.html#documentroot">DocumentRoot</A>,
 <A HREF="mod/core.html#errorlog">ErrorLog</A> and
 <A HREF="mod_log_common.html#transferlog">TransferLog</A> configuration
-directives to different values for each virtaul host.
+directives to different values for each virtual host.
 e.g.
 <blockquote><code>
 &lt;VirtualHost www.smallco.com&gt;<br>
