@@ -275,7 +275,9 @@ struct ap_filter_provider_t {
         REGEX_MATCH,
         INT_EQ,
         INT_LT,
+        INT_LE,
         INT_GT,
+        INT_GE,
         DEFINED
     } match_type;
 
