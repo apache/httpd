@@ -2,16 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) Fix bug in mod_usertrack when no CookieName is set.  PR 24483.
-     [Manni Wood <manniwood planet-save.com>]
-
-  *) Remove compile-time length limit on request strings. Length is
-     now enforced solely with the LimitRequestLine config directive.
-     [Paul J. Reder]
-
-  *) mod_ssl: Send the Close Alert message to the peer before closing
-     the SSL session. [Madhusudan Mathihalli, Joe Orton]
-
   *) mod_setenvif: Remove "support" for Remote_User variable which
      never worked at all. PR 25725.  [André Malo]
 
@@ -40,9 +30,6 @@ Changes with Apache 2.1.0-dev
 
   *) Delete some make-generated files in the server directory during 
      "make clean" processing.  PR 26552.  [Jeff Trawick]
-
-  *) Fixed file extensions for real media files and removed rpm extension
-     from mime.types. PR 26079.  [Allan Sandfeld <kde carewolf.com>]
 
   *) Unix MPMs: Stop dropping connections when the file descriptor
      is at least FD_SETSIZE.  [Jeff Trawick]
@@ -91,11 +78,6 @@ Changes with Apache 2.1.0-dev
   *) Bring ErrorHeader concept forward from 1.3, so that response
      header fields can be set for return even on errors or external
      redirects.  [Ken Coar]
-
-  *) Fix some piped log problems: bogus "piped log program '(null)'
-     failed" messages during restart and problem with the logger
-     respawning again after Apache is stopped.  PR 21648, PR 24805.
-     [Jeff Trawick]
 
   *) Fix <Limit> and <LimitExcept> parsing to require a closing '>' 
      in the initial container.  PR 25414. 
@@ -273,6 +255,27 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.49
+
+  *) Win32: find_read_listeners was not correctly handling multiple
+     listeners on the Win32DisableAcceptEx path.  [Bill Stoddard]
+
+  *) Fix bug in mod_usertrack when no CookieName is set.  PR 24483.
+     [Manni Wood <manniwood planet-save.com>]
+
+  *) Fix some piped log problems: bogus "piped log program '(null)'
+     failed" messages during restart and problem with the logger
+     respawning again after Apache is stopped.  PR 21648, PR 24805.
+     [Jeff Trawick]
+
+  *) Fixed file extensions for real media files and removed rpm extension
+     from mime.types. PR 26079.  [Allan Sandfeld <kde carewolf.com>]
+
+  *) Remove compile-time length limit on request strings. Length is
+     now enforced solely with the LimitRequestLine config directive.
+     [Paul J. Reder]
+
+  *) mod_ssl: Send the Close Alert message to the peer before closing
+     the SSL session. [Madhusudan Mathihalli, Joe Orton]
 
   *) SECURITY: CAN-2004-0113 (cve.mitre.org)
      mod_ssl: Fix a memory leak in plain-HTTP-on-SSL-port handling.
