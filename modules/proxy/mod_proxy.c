@@ -63,8 +63,6 @@
 
 #include "apr_optional.h"
 
-extern module AP_MODULE_DECLARE_DATA proxy_module;
-
 #ifndef MAX
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
 #endif
@@ -499,10 +497,12 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->maxfwd_set = 0;
     ps->error_override = 0; 
     ps->error_override_set = 0; 
-    ps->preserve_host_set =0;
-    ps->preserve_host =0;    
-    ps->timeout=0;
-    ps->timeout_set=0;
+    ps->preserve_host_set = 0;
+    ps->preserve_host = 0;    
+    ps->timeout = 0;
+    ps->timeout_set = 0;
+    ps->badopt = bad_error;
+    ps->badopt_set = 0;
     return ps;
 }
 
@@ -529,6 +529,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->error_override = (overrides->error_override_set == 0) ? base->error_override : overrides->error_override;
     ps->preserve_host = (overrides->preserve_host_set == 0) ? base->preserve_host : overrides->preserve_host;
     ps->timeout= (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
+    ps->badopt = (overrides->badopt_set == 0) ? base->badopt : overrides->badopt;
 
     return ps;
 }
@@ -914,6 +915,27 @@ static const char*
     return NULL;    
 }
 
+static const char*
+    set_bad_opt(cmd_parms *parms, void *dummy, const char *arg)
+{
+    proxy_server_conf *psf =
+    ap_get_module_config(parms->server->module_config, &proxy_module);
+
+    if (strcasecmp(arg, "IsError") == 0)
+        psf->badopt = bad_error;
+    else if (strcasecmp(arg, "Ignore") == 0)
+        psf->badopt = bad_ignore;
+    else if (strcasecmp(arg, "StartBody") == 0)
+        psf->badopt = bad_body;
+    else {
+        return "ProxyBadHeader must be one of: "
+            "IsError | Ignore | StartBody";
+    }
+
+    psf->badopt_set = 1;
+    return NULL;    
+}
+
 static void ap_add_per_proxy_conf(server_rec *s, ap_conf_vector_t *dir_config)
 {
     proxy_server_conf *sconf = ap_get_module_config(s->module_config,
@@ -1042,6 +1064,8 @@ static const command_rec proxy_cmds[] =
     AP_INIT_TAKE1("ProxyTimeout", set_proxy_timeout, NULL, RSRC_CONF,
      "Set the timeout (in seconds) for a proxied connection. "
      "This overrides the server timeout"),
+    AP_INIT_TAKE1("ProxyBadHeader", set_bad_opt, NULL, RSRC_CONF,
+     "How to handle bad header line in response: IsError | Ignore | StartBody"),
  
     {NULL}
 };
