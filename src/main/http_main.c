@@ -2816,6 +2816,9 @@ static void setup_listeners(pool *p)
 	if (fd < 0) {
 	    fd = make_sock(p, &lr->local_addr);
 	}
+	else {
+	    note_cleanups_for_socket(p, fd);
+	}
 	if (fd >= 0) {
 	    FD_SET(fd, &listenfds);
 	    if (fd > listenmaxfd)

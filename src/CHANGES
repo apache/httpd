@@ -1,4 +1,8 @@
 Changes with Apache 1.3b6
+
+  *) After a SIGHUP the listening sockets in the parent weren't
+     properly marked for closure on fork().
+     [Jürgen Keil <jk@tools.de>] PR#2000
  
   *) Allow %2F in two situations: 1) it is in the query part of the URI,
      therefore not exposed to %2F -> '/' translations and 2) the request
