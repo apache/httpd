@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) suexec: Be more pedantic when cleaning environment. Clean it
+     immediately after startup. PR 2790, 10449.
+     [Jeff Stewart <jws@purdue.edu>, André Malo]
+
   *) Return 413 if chunk-ext-header is too long rather than reading from
      the truncated line.  PR 15857.  [Justin Erenkrantz]
 
