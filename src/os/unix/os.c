@@ -26,7 +26,12 @@ void *ap_os_dso_load(const char *path)
     handle = shl_load(path, BIND_IMMEDIATE|BIND_VERBOSE|BIND_NOSTART, 0L);
     return (void *)handle;
 #else
+#if defined(OSF1) ||\
+    (defined(__FreeBSD_version) && (__FreeBSD_version >= 220000))
+    return dlopen((char *)path, RTLD_NOW);
+#else
     return dlopen(path, RTLD_NOW);
+#endif
 #endif
 }
 
