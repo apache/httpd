@@ -2140,7 +2140,7 @@ struct uncompress_parms {
 };
 
 static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
-                            BUFF **script_in)
+                            apr_file_t **pipe_in)
 {
     int rc = 1;
     char *new_argv[4];
@@ -2184,17 +2184,7 @@ static int uncompress_child(struct uncompress_parms *parm, apr_pool_t *cntxt,
         }
         else {
             apr_note_subprocess(child_context, procnew, kill_after_timeout);
-            /* Fill in BUFF structure for parents pipe to child's stdout */
-            /* XXX This is a hack.  The correct solution is to create a
-             * pipe bucket, and just pass it down.  Since that bucket type
-             * hasn't been written, we can hack it for the moment.
-             */
-            apr_socket_from_file(&sock, procnew->out);
-
-            if (script_in) {
-                *script_in = ap_bcreate(child_context, B_RD);
-            }
-            ap_bpush_socket(*script_in, sock);
+            *pipe_in = procnew->out;
         }
     }
 
@@ -2205,7 +2195,7 @@ static int uncompress(request_rec *r, int method,
 		      unsigned char **newch, int n)
 {
     struct uncompress_parms parm;
-    BUFF *bout = NULL;
+    apr_file_t *pipe_out = NULL;
     apr_pool_t *sub_context;
     apr_status_t rv;
 
@@ -2219,14 +2209,14 @@ static int uncompress(request_rec *r, int method,
     if (apr_create_pool(&sub_context, r->pool) != APR_SUCCESS)
         return -1;
 
-    if ((rv = uncompress_child(&parm, sub_context, &bout)) != APR_SUCCESS) {
+    if ((rv = uncompress_child(&parm, sub_context, &pipe_out)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 		    MODNAME ": couldn't spawn uncompress process: %s", r->uri);
 	return -1;
     }
 
     *newch = (unsigned char *) apr_palloc(r->pool, n);
-    rv = ap_bread(bout, *newch, n, &n);
+    rv = apr_read(pipe_out, *newch, &n);
     if (n == 0) {
 	apr_destroy_pool(sub_context);
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
