@@ -393,13 +393,13 @@ int main(int argc, const char * const argv[])
     }
 #endif
 
-    ap_setup_prelinked_modules(process);
-
     apr_pool_create(&pcommands, pglobal);
     apr_pool_tag(pcommands, "pcommands");
     ap_server_pre_read_config  = apr_array_make(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = apr_array_make(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = apr_array_make(pcommands, 1, sizeof(char *));
+
+    ap_setup_prelinked_modules(process);
 
     ap_run_rewrite_args(process);
 
