@@ -1385,6 +1385,8 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->read_length     = r->read_length;     /* We can only read it once */
     new->vlist_validator = r->vlist_validator;
 
+    new->output_filters  = r->connection->output_filters;
+
     apr_table_setn(new->subprocess_env, "REDIRECT_STATUS",
 	apr_psprintf(r->pool, "%d", r->status));
 
