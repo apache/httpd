@@ -69,10 +69,12 @@
         <xsl:text> </xsl:text>
         <xsl:value-of select="$messages/message[@name='apachetitle']"/>
       </title>
-      
       <link title="Main stylesheet"  type="text/css" media="all" rel="stylesheet"
              href="{$path}/style/css/manual.css" />
-
+      <link title="No Sidebar - Default font size" type="text/css" media="all"
+             rel="alternate stylesheet" 
+             href="{$path}/style/css/manual-loose-100pc.css"/>
+      
       <link rel="shortcut icon" href="{$path}/images/favicon.ico" />
     </head>
   </xsl:template>
