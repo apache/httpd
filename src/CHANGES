@@ -1,5 +1,11 @@
 Changes with Apache 1.2b5
 
+  *) Replace instances of inet_ntoa() with inet_addr() for ProxyBlock.
+     It's more portable. [Martin Kraemer]
+
+  *) Replace references to make in Makefile.tmpl with $(MAKE).
+     [Chuck Murcko]
+
   *) Add ProxyBlock directive w/IP address caching. Add IP address
      caching to NoCache directive as well. ProxyBlock works with all
      handlers; NoCache now also works with FTP for anonymous logins.
