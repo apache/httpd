@@ -70,6 +70,7 @@
  * 18.3.96  Make extra Scoreboard variables #definable
  * 25.3.96  Make short report have full precision [Ben Laurie suggested]
  * 25.3.96  Show uptime better [Mark/Ben Laurie]
+ * 29.3.96  Better HTML and explanation [Mark/Rob Hartill suggested]
  */
 
 #include "httpd.h"
@@ -177,7 +178,8 @@ int status_handler (request_rec *r)
     up_time=nowtime-restart_time;
 
     if (!short_report) {
-        rputs("<h1>Server Status Page</h1>\n\n",r);
+        rputs("<html><head><title>Apache Status</title></head><body>",r);
+        rputs("<h1>Apache Server Status</h1>\n\n",r);
 	rvputs(r,"Hostname: ",server->server_hostname,"<br>",NULL);
 	rvputs(r,"Current Time: ",asctime(localtime(&nowtime)),"<br>",NULL);
 	rvputs(r,"Restart Time: ",asctime(localtime(&restart_time)),"<br>",
@@ -203,13 +205,18 @@ int status_handler (request_rec *r)
 	if(!short_report && i%25 == 24)
 	    rputs("\r\n",r);
     }
-    if(!short_report)
+    if(!short_report) {
 	rputs("</PRE>",r);
-
+	rputs("Server States:<ul>",r);
+	rputs("<li>\"<code>_</code>\" Waiting for Connection",r);
+	rputs("<li>\"<code>S</code>\" Starting up",r);
+	rputs("<li>\"<code>R</code>\" Reading Request",r);
+	rputs("<li>\"<code>W</code>\" Sending Reply</ul>",r);
+    }
     if (short_report)
         sprintf(buffer,"\nBusyServers: %d\nIdleServers: %d\n",busy,ready);
     else 
-        sprintf(buffer,"\n<br>%d requests currently being processed,\n %d idle servers\n\n",busy,ready);
+        sprintf(buffer,"\n%d requests currently being processed,\n %d idle servers\n\n",busy,ready);
     rputs(buffer,r);
 
 #ifdef STATUS_INSTRUMENTATION
@@ -309,6 +316,8 @@ int status_handler (request_rec *r)
 	    }
     }
 #endif
+    if (!short_report)
+        rputs("</body></html>",r);
     return 0;
 }
 
