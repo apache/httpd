@@ -1961,18 +1961,6 @@ API_EXPORT(char *) ap_pbase64encode(apr_pool_t *p, char *string)
     return encoded;
 }
 
-/* deprecated names for the above two functions, here for compatibility
- */
-API_EXPORT(char *) ap_uudecode(apr_pool_t *p, const char *bufcoded)
-{
-    return ap_pbase64decode(p, bufcoded);
-}
-
-API_EXPORT(char *) ap_uuencode(apr_pool_t *p, char *string) 
-{ 
-    return ap_pbase64encode(p, string);
-}
-
 /* we want to downcase the type/subtype for comparison purposes
  * but nothing else because ;parameter=foo values are case sensitive.
  * XXX: in truth we want to downcase parameter names... but really,
