@@ -202,8 +202,9 @@ static void add_include_vars(request_rec *r, char *timefmt)
    ap_status_t status = ap_getc(&c, f); \
    if (status != APR_SUCCESS) { /* either EOF or error -- needs error handling if latter */ \
        if (status != APR_EOF) { \
-           fprintf(stderr, "encountered error in GET_CHAR macro, " \
-                   "mod_include.\n"); \
+           ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, \
+                        "encountered error in GET_CHAR macro, " \
+                        "mod_include."); \
        } \
        FLUSH_BUF(r); \
        ap_close(f); \
@@ -247,8 +248,9 @@ static int find_string(ap_file_t *in, const char *str, request_rec *r, int print
    ap_status_t status = ap_getc(&c, f); \
    if (status != APR_SUCCESS) { /* either EOF or error -- needs error handling if latter */ \
        if (status != APR_EOF) { \
-           fprintf(stderr, "encountered error in GET_CHAR macro, " \
-                   "mod_include.\n"); \
+           ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, \
+                        "encountered error in GET_CHAR macro, " \
+                        "mod_include."); \
        } \
        ap_close(f); \
        return r; \

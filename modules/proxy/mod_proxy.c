@@ -581,26 +581,31 @@ static const char *
 
 	if (ap_proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING
-	    fprintf(stderr, "Parsed addr %s\n", inet_ntoa(New->addr));
-	    fprintf(stderr, "Parsed mask %s\n", inet_ntoa(New->mask));
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "Parsed addr %s", inet_ntoa(New->addr));
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "Parsed mask %s", inet_ntoa(New->mask));
 #endif
 	}
 	else if (ap_proxy_is_domainname(New, parms->pool)) {
 	    ap_str_tolower(New->name);
 #if DEBUGGING
-	    fprintf(stderr, "Parsed domain %s\n", New->name);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "Parsed domain %s", New->name);
 #endif
 	}
 	else if (ap_proxy_is_hostname(New, parms->pool)) {
 	    ap_str_tolower(New->name);
 #if DEBUGGING
-	    fprintf(stderr, "Parsed host %s\n", New->name);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "Parsed host %s", New->name);
 #endif
 	}
 	else {
 	    ap_proxy_is_word(New, parms->pool);
 #if DEBUGGING
-	    fprintf(stderr, "Parsed word %s\n", New->name);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "Parsed word %s", New->name);
 #endif
 	}
     }

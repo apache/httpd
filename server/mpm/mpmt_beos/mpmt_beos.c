@@ -1275,9 +1275,12 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
 
     min_spare_threads = atoi(arg);
     if (min_spare_threads <= 0) {
-       fprintf(stderr, "WARNING: detected MinSpareThreads set to non-positive.\n");
-       fprintf(stderr, "Resetting to 1 to avoid almost certain Apache failure.\n");
-       fprintf(stderr, "Please read the documentation.\n");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: detected MinSpareThreads set to non-positive.");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    "Resetting to 1 to avoid almost certain Apache failure.");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "Please read the documentation.");
        min_spare_threads = 1;
     }
        
@@ -1304,15 +1307,19 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg)
 
     ap_daemons_limit = atoi(arg);
     if (ap_daemons_limit > HARD_SERVER_LIMIT) {
-       fprintf(stderr, "WARNING: MaxClients of %d exceeds compile time limit "
-           "of %d servers,\n", ap_daemons_limit, HARD_SERVER_LIMIT);
-       fprintf(stderr, " lowering MaxClients to %d.  To increase, please "
-           "see the\n", HARD_SERVER_LIMIT);
-       fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: MaxClients of %d exceeds compile time limit "
+                    "of %d servers,", ap_daemons_limit, HARD_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " lowering MaxClients to %d.  To increase, please "
+                    "see the", HARD_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " HARD_SERVER_LIMIT define in src/include/httpd.h.");
        ap_daemons_limit = HARD_SERVER_LIMIT;
     } 
     else if (ap_daemons_limit < 1) {
-	fprintf(stderr, "WARNING: Require MaxClients > 0, setting to 1\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require MaxClients > 0, setting to 1");
 	ap_daemons_limit = 1;
     }
     return NULL;
@@ -1327,15 +1334,19 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg
 
     ap_threads_per_child = atoi(arg);
     if (ap_threads_per_child > HARD_THREAD_LIMIT) {
-        fprintf(stderr, "WARNING: ThreadsPerChild of %d exceeds compile time"
-                "limit of %d threads,\n", ap_threads_per_child,
-                HARD_THREAD_LIMIT);
-        fprintf(stderr, " lowering ThreadsPerChild to %d. To increase, please"
-                "see the\n", HARD_THREAD_LIMIT);
-        fprintf(stderr, " HARD_THREAD_LIMIT define in src/include/httpd.h.\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: ThreadsPerChild of %d exceeds compile time"
+                     "limit of %d threads,\n", ap_threads_per_child,
+                     HARD_THREAD_LIMIT);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     " lowering ThreadsPerChild to %d. To increase, please"
+                     "see the", HARD_THREAD_LIMIT);
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     " HARD_THREAD_LIMIT define in src/include/httpd.h.");
     }
     else if (ap_threads_per_child < 1) {
-	fprintf(stderr, "WARNING: Require ThreadsPerChild > 0, setting to 1\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require ThreadsPerChild > 0, setting to 1");
 	ap_threads_per_child = 1;
     }
     return NULL;

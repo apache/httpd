@@ -49,7 +49,8 @@ void reinit_scoreboard(ap_context_t *p)
     ap_assert(!ap_scoreboard_image);
     ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
     if (ap_scoreboard_image == NULL) {
-        fprintf(stderr, "Ouch! Out of memory reiniting scoreboard!\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Ouch! Out of memory reiniting scoreboard!");
     }
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
 }
@@ -120,15 +121,16 @@ static void setup_shared_mem(ap_context_t *p)
 
     m = (caddr_t) create_shared_heap("\\SHAREMEM\\SCOREBOARD", SCOREBOARD_SIZE);
     if (m == 0) {
-	fprintf(stderr, "%s: Could not create OS/2 Shared memory pool.\n",
-		ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not create OS/2 Shared memory pool.",
+		     ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 
     rc = _uopen((Heap_t) m);
     if (rc != 0) {
-	fprintf(stderr,
-		"%s: Could not uopen() newly created OS/2 Shared memory pool.\n",
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+		"%s: Could not uopen() newly created OS/2 Shared memory pool.",
 		ap_server_argv0);
     }
     ap_scoreboard_image = (scoreboard *) m;
@@ -142,8 +144,9 @@ API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
 
     m = (caddr_t) get_shared_heap("\\SHAREMEM\\SCOREBOARD");
     if (m == 0) {
-	fprintf(stderr, "%s: Could not find existing OS/2 Shared memory pool.\n",
-		ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not find existing OS/2 Shared memory pool.",
+		     ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 
@@ -257,14 +260,16 @@ static void setup_shared_mem(ap_context_t *p)
 	int fd = mkstemp(mfile);
 	if (fd == -1) {
 	    perror("open");
-	    fprintf(stderr, "%s: Could not open %s\n", ap_server_argv0, mfile);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s: Could not open %s", ap_server_argv0, mfile);
 	    exit(APEXIT_INIT);
 	}
 	m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
 		PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	if (m == (caddr_t) - 1) {
 	    perror("mmap");
-	    fprintf(stderr, "%s: Could not mmap %s\n", ap_server_argv0, mfile);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s: Could not mmap %s", ap_server_argv0, mfile);
 	    exit(APEXIT_INIT);
 	}
 	close(fd);
@@ -276,7 +281,8 @@ static void setup_shared_mem(ap_context_t *p)
 #endif
     if (m == (caddr_t) - 1) {
 	perror("mmap");
-	fprintf(stderr, "%s: Could not mmap memory\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not mmap memory", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 #else
@@ -286,14 +292,16 @@ static void setup_shared_mem(ap_context_t *p)
     fd = open("/dev/zero", O_RDWR);
     if (fd == -1) {
 	perror("open");
-	fprintf(stderr, "%s: Could not open /dev/zero\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not open /dev/zero", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
     m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (m == (caddr_t) - 1) {
 	perror("mmap");
-	fprintf(stderr, "%s: Could not mmap /dev/zero\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not mmap /dev/zero", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
     close(fd);
@@ -455,7 +463,8 @@ API_EXPORT(void) reopen_scoreboard(ap_context_t *p)
     ap_get_os_file(&scoreboard_fd, scoreboard_file);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
-	fprintf(stderr, "Cannot open scoreboard file:\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Cannot open scoreboard file:");
 	clean_child_exit(1);
     }
 }
@@ -483,7 +492,8 @@ void reinit_scoreboard(ap_context_t *p)
     ap_get_os_file(&scoreboard_fd, scoreboard_file);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
-	fprintf(stderr, "Cannot open scoreboard file:\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Cannot open scoreboard file:");
 	exit(APEXIT_INIT);
     }
     ap_register_cleanup(p, NULL, cleanup_scoreboard_file, ap_null_cleanup);

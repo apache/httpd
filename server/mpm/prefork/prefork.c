@@ -282,7 +282,8 @@ static void accept_mutex_on(void)
 	/* got lock */
 	break;
     case 0:
-	fprintf(stderr, "didn't get lock\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "didn't get lock");
 	clean_child_exit(APEXIT_CHILDFATAL);
     case -1:
 	perror("ussetlock");
@@ -546,7 +547,8 @@ static void accept_mutex_init(ap_context_t *p)
     ap_get_os_file(&lock_fd, tempfile);
     if (lock_fd == -1) {
 	perror("open");
-	fprintf(stderr, "Cannot open lock file: %s\n", ap_lock_fname);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Cannot open lock file: %s", ap_lock_fname);
 	exit(APEXIT_INIT);
     }
     unlink(ap_lock_fname);
@@ -954,15 +956,16 @@ static void setup_shared_mem(ap_context_t *p)
 
     m = (caddr_t) create_shared_heap("\\SHAREMEM\\SCOREBOARD", SCOREBOARD_SIZE);
     if (m == 0) {
-	fprintf(stderr, "%s: Could not create OS/2 Shared memory pool.\n",
-		ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not create OS/2 Shared memory pool.",
+		     ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 
     rc = _uopen((Heap_t) m);
     if (rc != 0) {
-	fprintf(stderr,
-		"%s: Could not uopen() newly created OS/2 Shared memory pool.\n",
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+		"%s: Could not uopen() newly created OS/2 Shared memory pool.",
 		ap_server_argv0);
     }
     ap_scoreboard_image = (scoreboard *) m;
@@ -976,8 +979,9 @@ static void reopen_scoreboard(ap_context_t *p)
 
     m = (caddr_t) get_shared_heap("\\SHAREMEM\\SCOREBOARD");
     if (m == 0) {
-	fprintf(stderr, "%s: Could not find existing OS/2 Shared memory pool.\n",
-		ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not find existing OS/2 Shared memory pool.",
+		     ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 
@@ -1091,14 +1095,16 @@ static void setup_shared_mem(ap_context_t *p)
 	int fd = mkstemp(mfile);
 	if (fd == -1) {
 	    perror("open");
-	    fprintf(stderr, "%s: Could not open %s\n", ap_server_argv0, mfile);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s: Could not open %s", ap_server_argv0, mfile);
 	    exit(APEXIT_INIT);
 	}
 	m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
 		PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	if (m == (caddr_t) - 1) {
 	    perror("mmap");
-	    fprintf(stderr, "%s: Could not mmap %s\n", ap_server_argv0, mfile);
+	    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                         "%s: Could not mmap %s", ap_server_argv0, mfile);
 	    exit(APEXIT_INIT);
 	}
 	close(fd);
@@ -1110,7 +1116,8 @@ static void setup_shared_mem(ap_context_t *p)
 #endif
     if (m == (caddr_t) - 1) {
 	perror("mmap");
-	fprintf(stderr, "%s: Could not mmap memory\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not mmap memory", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
 #else
@@ -1120,14 +1127,16 @@ static void setup_shared_mem(ap_context_t *p)
     fd = open("/dev/zero", O_RDWR);
     if (fd == -1) {
 	perror("open");
-	fprintf(stderr, "%s: Could not open /dev/zero\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not open /dev/zero", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
     m = mmap((caddr_t) 0, SCOREBOARD_SIZE,
 	     PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (m == (caddr_t) - 1) {
 	perror("mmap");
-	fprintf(stderr, "%s: Could not mmap /dev/zero\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: Could not mmap /dev/zero", ap_server_argv0);
 	exit(APEXIT_INIT);
     }
     close(fd);
@@ -1250,7 +1259,8 @@ static void setup_shared_mem(ap_context_t *p)
     ap_scoreboard_image = (scoreboard *) gsysc(SCOREBOARD_FRAMES, SCOREBOARD_NAME);
 
     if (!ap_scoreboard_image) {
-        fprintf(stderr, "httpd: Could not create scoreboard system heap storage.\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "httpd: Could not create scoreboard system heap storage.");
         exit(APEXIT_INIT);
     }
 
@@ -1317,7 +1327,8 @@ void reopen_scoreboard(ap_context_t *p)
     scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0666);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
-	fprintf(stderr, "Cannot open scoreboard file:\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Cannot open scoreboard file:");
 	clean_child_exit(1);
     }
 }
@@ -1343,7 +1354,8 @@ static void reinit_scoreboard(ap_context_t *p)
     scoreboard_fd = ap_popenf(p, ap_scoreboard_fname, O_CREAT | O_BINARY | O_RDWR, 0644);
     if (scoreboard_fd == -1) {
 	perror(ap_scoreboard_fname);
-	fprintf(stderr, "Cannot open scoreboard file:\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Cannot open scoreboard file:");
 	exit(APEXIT_INIT);
     }
     ap_register_cleanup(p, NULL, cleanup_scoreboard_file, ap_null_cleanup);
@@ -2868,9 +2880,12 @@ static const char *set_min_free_servers(cmd_parms *cmd, void *dummy, char *arg)
 
     ap_daemons_min_free = atoi(arg);
     if (ap_daemons_min_free <= 0) {
-       fprintf(stderr, "WARNING: detected MinSpareServers set to non-positive.\n");
-       fprintf(stderr, "Resetting to 1 to avoid almost certain Apache failure.\n");
-       fprintf(stderr, "Please read the documentation.\n");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: detected MinSpareServers set to non-positive.");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "Resetting to 1 to avoid almost certain Apache failure.");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "Please read the documentation.");
        ap_daemons_min_free = 1;
     }
        
@@ -2897,15 +2912,19 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg)
 
     ap_daemons_limit = atoi(arg);
     if (ap_daemons_limit > HARD_SERVER_LIMIT) {
-       fprintf(stderr, "WARNING: MaxClients of %d exceeds compile time limit "
-           "of %d servers,\n", ap_daemons_limit, HARD_SERVER_LIMIT);
-       fprintf(stderr, " lowering MaxClients to %d.  To increase, please "
-           "see the\n", HARD_SERVER_LIMIT);
-       fprintf(stderr, " HARD_SERVER_LIMIT define in src/include/httpd.h.\n");
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    "WARNING: MaxClients of %d exceeds compile time limit "
+                    "of %d servers,", ap_daemons_limit, HARD_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                    " lowering MaxClients to %d.  To increase, please "
+                    "see the", HARD_SERVER_LIMIT);
+       ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL,
+                    " HARD_SERVER_LIMIT define in src/include/httpd.h.");
        ap_daemons_limit = HARD_SERVER_LIMIT;
     } 
     else if (ap_daemons_limit < 1) {
-	fprintf(stderr, "WARNING: Require MaxClients > 0, setting to 1\n");
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "WARNING: Require MaxClients > 0, setting to 1");
 	ap_daemons_limit = 1;
     }
     return NULL;

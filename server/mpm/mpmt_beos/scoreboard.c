@@ -18,7 +18,8 @@ void reinit_scoreboard(ap_context_t *p)
     ap_assert(!ap_scoreboard_image);
     ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
     if (ap_scoreboard_image == NULL) {
-        fprintf(stderr, "Ouch! Out of memory reiniting scoreboard!\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "Ouch! Out of memory reiniting scoreboard!");
     }
     memset(ap_scoreboard_image, 0, SCOREBOARD_SIZE);
 }

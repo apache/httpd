@@ -76,7 +76,8 @@ void unixd_detach(void)
 	exit(0);
     else if (x == -1) {
 	perror("fork");
-	fprintf(stderr, "%s: unable to fork new process\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: unable to fork new process", ap_server_argv0);
 	exit(1);
     }
     RAISE_SIGSTOP(DETACH);
@@ -84,13 +85,15 @@ void unixd_detach(void)
 #ifndef NO_SETSID
     if ((pgrp = setsid()) == -1) {
 	perror("setsid");
-	fprintf(stderr, "%s: setsid failed\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: setsid failed", ap_server_argv0);
 	exit(1);
     }
 #elif defined(NEXT) || defined(NEWSOS)
     if (setpgrp(0, getpid()) == -1 || (pgrp = getpgrp(0)) == -1) {
 	perror("setpgrp");
-	fprintf(stderr, "%s: setpgrp or getpgrp failed\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: setpgrp or getpgrp failed", ap_server_argv0);
 	exit(1);
     }
 #elif defined(OS2) || defined(TPF)
@@ -102,14 +105,16 @@ void unixd_detach(void)
 #else
     if ((pgrp = setpgrp(getpid(), 0)) == -1) {
 	perror("setpgrp");
-	fprintf(stderr, "%s: setpgrp failed\n", ap_server_argv0);
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: setpgrp failed", ap_server_argv0);
 	exit(1);
     }
 #endif
 
     /* close out the standard file descriptors */
     if (freopen("/dev/null", "r", stdin) == NULL) {
-	fprintf(stderr, "%s: unable to replace stdin with /dev/null: %s\n",
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: unable to replace stdin with /dev/null: %s",
 		ap_server_argv0, strerror(errno));
 	/* continue anyhow -- note we can't close out descriptor 0 because we
 	 * have nothing to replace it with, and if we didn't have a descriptor
@@ -118,8 +123,9 @@ void unixd_detach(void)
 	 */
     }
     if (freopen("/dev/null", "w", stdout) == NULL) {
-	fprintf(stderr, "%s: unable to replace stdout with /dev/null: %s\n",
-		ap_server_argv0, strerror(errno));
+	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+                     "%s: unable to replace stdout with /dev/null: %s",
+		     ap_server_argv0, strerror(errno));
     }
     /* stderr is a tricky one, we really want it to be the error_log,
      * but we haven't opened that yet.  So leave it alone for now and it'll

@@ -580,8 +580,9 @@ static void parse_negotiate_header(request_rec *r, negotiation_state *neg)
     }
 
 #ifdef NEG_DEBUG
-    fprintf(stderr, "dont_fiddle_headers=%d use_rvsa=%d ua_supports_trans=%d "
-            "send_alternates=%d, may_choose=%d\n",
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+            "dont_fiddle_headers=%d use_rvsa=%d ua_supports_trans=%d "
+            "send_alternates=%d, may_choose=%d",
             neg->dont_fiddle_headers, neg->use_rvsa,  
             neg->ua_supports_trans, neg->send_alternates, neg->may_choose);
 #endif
@@ -1757,9 +1758,10 @@ static int is_variant_better_rvsa(negotiation_state *neg, var_rec *variant,
     */
 
 #ifdef NEG_DEBUG
-    fprintf(stderr, "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+           "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
            "mimeq=%1.3f langq=%1.3f charq=%1.3f encq=%1.3f "
-           "q=%1.5f definite=%d\n",            
+           "q=%1.5f definite=%d",            
             (variant->file_name ? variant->file_name : ""),
             (variant->mime_type ? variant->mime_type : ""),
             (variant->content_languages
@@ -1827,8 +1829,9 @@ static int is_variant_better(negotiation_state *neg, var_rec *variant,
      */
 
 #ifdef NEG_DEBUG
-    fprintf(stderr, "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
-           "mimeq=%1.3f langq=%1.3f langidx=%d charq=%1.3f encq=%1.3f \n",
+    ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
+           "Variant: file=%s type=%s lang=%s sourceq=%1.3f "
+           "mimeq=%1.3f langq=%1.3f langidx=%d charq=%1.3f encq=%1.3f ",
             (variant->file_name ? variant->file_name : ""),
             (variant->mime_type ? variant->mime_type : ""),
             (variant->content_languages
