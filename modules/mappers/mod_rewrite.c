@@ -2170,7 +2170,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
         }
     }
     else if (strcmp(p->pattern, "-l") == 0) {
-#if !defined(OS2) && !defined(WIN32)
+#if !defined(OS2)
         if (apr_lstat(&sb, input, r->pool) == APR_SUCCESS) {
             if (sb.filetype == APR_LNK) {
                 rc = 1;
