@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.55 1996/10/10 12:12:01 fielding Exp $ */
+/* $Id: http_protocol.c,v 1.56 1996/10/16 20:56:19 fielding Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -1296,9 +1296,9 @@ void send_error_response (request_rec *r, int recursive_error)
 {
     conn_rec *c = r->connection;
     char *custom_response;
+    char *location = table_get (r->headers_out, "Location");
     int status = r->status;
     int idx = index_of_response (status);
-    char *location = table_get (r->headers_out, "Location");
 
     /* If status code not found, use code 500.  */
     if (idx == -1) {
@@ -1336,7 +1336,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	 */
 	bputs("Connection: close\015\012", c->client);
 	
-	if ((status == REDIRECT) || (status == MOVED))
+	if (location && (status >= 300) && (status < 400))
 	    bvputs(c->client, "Location: ", location, "\015\012", NULL);
 
 	if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
@@ -1388,6 +1388,15 @@ void send_error_response (request_rec *r, int recursive_error)
 	    bvputs(fd, "The document has moved <A HREF=\"",
 		    escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
 	    break;
+	case HTTP_SEE_OTHER:
+	    bvputs(fd, "The answer to your request is located <A HREF=\"",
+		    escape_html(r->pool, location), "\">here</A>.<P>\n", NULL);
+	    break;
+	case HTTP_USE_PROXY:
+	    bvputs(fd, "This resource is only accessible through the proxy\n",
+		   escape_html(r->pool, location), "<BR>\nYou will need to ",
+                   "configure your client to use that proxy.<P>\n", NULL);
+	    break;
 	case AUTH_REQUIRED:
 	    bputs("This server could not verify that you\n", fd);
 	    bputs("are authorized to access the document you\n", fd);
@@ -1397,7 +1406,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	    bputs("the credentials required.<P>\n", fd);
 	    break;
 	case BAD_REQUEST:
-	    bputs("Your browser sent a query that\n", fd);
+	    bputs("Your browser sent a request that\n", fd);
 	    bputs("this server could not understand.<P>\n", fd);
 	    break;
 	case FORBIDDEN:
@@ -1415,9 +1424,10 @@ void send_error_response (request_rec *r, int recursive_error)
 		   ".<P>\n", NULL);
 	    break;
 	case NOT_ACCEPTABLE:
-	    bvputs(fd, "An appropriate variant to the requested entity ",
-		   escape_html(r->pool, r->uri), " could not be found "
-		   "on this server.<P>\n", NULL);
+	    bvputs(fd,
+		  "An appropriate representation of the requested resource ",
+		   escape_html(r->pool, r->uri),
+		   " could not be found on this server.<P>\n", NULL);
 	    /* fall through */
 	case MULTIPLE_CHOICES: 
 	    {
@@ -1431,19 +1441,9 @@ void send_error_response (request_rec *r, int recursive_error)
 		   " requires a valid Content-length.<P>\n", NULL);
 	    break;
 	case PRECONDITION_FAILED:
-	    bvputs(fd, "The requested precondition for serving the URL ",
+	    bvputs(fd, "The precondition on the request for the URL ",
 		   escape_html(r->pool, r->uri), " evaluated to false.<P>\n",
 		   NULL);
-	    break;
-	case SERVER_ERROR:
-	    bputs("The server encountered an internal error or\n", fd);
-	    bputs("misconfiguration and was unable to complete\n", fd);
-	    bputs("your request.<P>\n", fd);
-	    bputs("Please contact the server administrator,\n ", fd);
-	    bputs(escape_html(r->pool, r->server->server_admin), fd);
-	    bputs(" and inform them of the time the error occurred,\n", fd);
-	    bputs("and anything you might have done that may have\n", fd);
-	    bputs("caused the error.<P>\n", fd);
 	    break;
 	case NOT_IMPLEMENTED:
 	    bvputs(fd, escape_html(r->pool, r->method), " to ",
@@ -1458,6 +1458,48 @@ void send_error_response (request_rec *r, int recursive_error)
 		   escape_html(r->pool, r->uri), " is itself a ",
 		   "transparently negotiable resource.<P>\n", NULL);
   	    break;
+	case HTTP_REQUEST_TIME_OUT:
+	    bputs("I'm tired of waiting for your request.\n", fd);
+  	    break;
+	case HTTP_GONE:
+	    bvputs(fd, "The requested resource<BR>",
+		   escape_html(r->pool, r->uri),
+                   "<BR>\nis no longer available on this server ",
+		   "and there is no forwarding address.\n",
+	           "Please remove all references to this resource.\n", NULL);
+  	    break;
+	case HTTP_REQUEST_ENTITY_TOO_LARGE:
+	    bputs("The supplied request data exceeds the capacity\n", fd);
+	    bputs("limit placed on this resource. The request data \n", fd);
+	    bputs("must be reduced before the request can proceed.\n", fd);
+  	    break;
+	case HTTP_REQUEST_URI_TOO_LARGE:
+	    bputs("The requested URL's length exceeds the capacity\n", fd);
+	    bputs("limit for this server.\n", fd);
+  	    break;
+	case HTTP_UNSUPPORTED_MEDIA_TYPE:
+	    bputs("The supplied request data is not in a format\n", fd);
+	    bputs("acceptable for processing by this resource.\n", fd);
+  	    break;
+	case HTTP_SERVICE_UNAVAILABLE:
+	    bputs("The server is temporarily unable to service your\n", fd);
+	    bputs("request due to maintenance downtime or capacity\n", fd);
+	    bputs("problems. Please try again later.\n", fd);
+  	    break;
+	case HTTP_GATEWAY_TIME_OUT:
+	    bputs("The proxy server did not receive a timely response\n", fd);
+	    bputs("from the upstream server.<P>\n", fd);
+	    break;
+	default:  /* HTTP_INTERNAL_SERVER_ERROR */
+	    bputs("The server encountered an internal error or\n", fd);
+	    bputs("misconfiguration and was unable to complete\n", fd);
+	    bputs("your request.<P>\n", fd);
+	    bputs("Please contact the server administrator,\n ", fd);
+	    bputs(escape_html(r->pool, r->server->server_admin), fd);
+	    bputs(" and inform them of the time the error occurred,\n", fd);
+	    bputs("and anything you might have done that may have\n", fd);
+	    bputs("caused the error.<P>\n", fd);
+	    break;
 	}
 
         if (recursive_error) {
