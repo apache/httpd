@@ -109,7 +109,9 @@ int gethostname(char *name, int namelen);
 #endif
 #define JMP_BUF sigjmp_buf
 #define HAVE_SHMGET
+#ifndef HPUX10
 typedef int rlim_t;
+#endif
 
 #elif defined(AIX)
 #undef HAVE_GMTOFF
