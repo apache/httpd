@@ -405,54 +405,38 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
     if (!strcasecmp(meth, "default") || !strcasecmp(meth, "yes")) {
         mc->nMutexMech = APR_LOCK_DEFAULT;
     }
-#if APR_HAS_FLOCK_SERIALIZE
-    else if (!strcasecmp(meth, "flock") && file) {
-        mc->nMutexMech = APR_LOCK_FLOCK;
-    }
-#endif
 #if APR_HAS_FCNTL_SERIALIZE
-    else if (!strcasecmp(meth, "fcntl") && file) {
+    else if ((!strcasecmp(meth, "fcntl") || !strcasecmp(meth, "file")) && file) {
         mc->nMutexMech = APR_LOCK_FCNTL;
     }
 #endif
-#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
-    else if (!strcasecmp(meth, "sysvsem") && file) {
-        mc->nMutexMech = APR_LOCK_SYSVSEM;
+#if APR_HAS_FLOCK_SERIALIZE
+    else if ((!strcasecmp(meth, "flock") || !strcasecmp(meth, "file")) && file) {
+        mc->nMutexMech = APR_LOCK_FLOCK;
     }
 #endif
 #if APR_HAS_POSIXSEM_SERIALIZE
-    else if (!strcasecmp(meth, "posixsem")) {
+    else if (!strcasecmp(meth, "posixsem") || !strcasecmp(meth, "sem")) {
         mc->nMutexMech = APR_LOCK_POSIXSEM;
-        mc->szMutexFile = apr_pstrdup(cmd->server->process->pool, file);
-        file = NULL;
+        /* Posix/SysV semaphores aren't file based, use the literal name 
+         * if provided and fall back on APR's default if not.  Today, APR
+         * will ignore it, but once supported it has an absurdly short limit.
+         */
+	if (file) {
+            mc->szMutexFile = apr_pstrdup(cmd->server->process->pool, file);
+
+            file = NULL;
+        }
+    }
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
+    else if (!strcasecmp(meth, "sysvsem") || !strcasecmp(meth, "sem")) {
+        mc->nMutexMech = APR_LOCK_SYSVSEM;
     }
 #endif
 #if APR_HAS_PROC_PTHREAD_SERIALIZE
     else if (!strcasecmp(meth, "pthread")) {
         mc->nMutexMech = APR_LOCK_PROC_PTHREAD;
-    }
-#endif
-#if APR_HAS_FLOCK_SERIALIZE
-    else if (!strcasecmp(meth, "file") && file) {
-        mc->nMutexMech  = APR_LOCK_FLOCK;
-    }
-#elif APR_HAS_FCNTL_SERIALIZE
-    else if (!strcasecmp(meth, "file") && file) {
-        mc->nMutexMech  = APR_LOCK_FCNTL;
-    }
-#endif
-#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
-    else if (!strcasecmp(meth, "sem")) {
-        mc->nMutexMech  = APR_LOCK_SYSVSEM;
-    }
-#elif APR_HAS_POSIXSEM_SERIALIZE
-    else if (!strcasecmp(meth, "sem")) {
-        mc->nMutexMech  = APR_LOCK_POSIXSEM;
-        /* Posix/SysV semaphores aren't file based, use the literal name 
-         * if provided and fall back on APR's default if not.
-         */
-        mc->szMutexFile = apr_pstrdup(cmd->server->process->pool, file);
-        file = NULL;
     }
 #endif
     else {
