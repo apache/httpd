@@ -106,6 +106,9 @@ extern "C" {
 #elif defined (BEOS)
 /* Set the default for BeOS */
 #define HTTPD_ROOT "/boot/home/apache"
+#elif defined (NETWARE)
+/* Set the default for NetWare */
+#define HTTPD_ROOT "/apache"
 #else
 #define HTTPD_ROOT "/usr/local/apache"
 #endif
