@@ -1682,8 +1682,10 @@ struct cleanup {
     struct cleanup *next;
 };
 
-API_EXPORT(void) ap_register_cleanup(pool *p, void *data, void (*plain_cleanup) (void *),
-				  void (*child_cleanup) (void *))
+API_EXPORT(void) ap_register_cleanup_ex(pool *p, void *data,
+				      void (*plain_cleanup) (void *),
+				      void (*child_cleanup) (void *),
+				      int (*magic_cleanup) (void *))
 {
     struct cleanup *c = (struct cleanup *) ap_palloc(p, sizeof(struct cleanup));
     c->data = data;
@@ -1691,6 +1693,18 @@ API_EXPORT(void) ap_register_cleanup(pool *p, void *data, void (*plain_cleanup) 
     c->child_cleanup = child_cleanup;
     c->next = p->cleanups;
     p->cleanups = c;
+    if(magic_cleanup) {
+	if(!magic_cleanup(data)) 
+	   ap_log_error(APLOG_MARK, APLOG_WARNING, NULL,
+		 "exec() may not be safe");
+    }
+}
+
+API_EXPORT(void) ap_register_cleanup(pool *p, void *data,
+				     void (*plain_cleanup) (void *),
+				     void (*child_cleanup) (void *))
+{
+    ap_register_cleanup_ex(p, data, plain_cleanup, child_cleanup, NULL);
 }
 
 API_EXPORT(void) ap_kill_cleanup(pool *p, void *data, void (*cleanup) (void *))
@@ -1771,14 +1785,48 @@ API_EXPORT_NONSTD(void) ap_null_cleanup(void *data)
  * generic cleanup interface.
  */
 
+int ap_close_fd_on_exec(int fd)
+{
+#if defined(F_SETFD) && defined(FD_CLOEXEC)
+    /* Protect the fd so that it will not be inherited by child processes */
+    if(fcntl(fd, F_SETFD, FD_CLOEXEC) < 0) {
+	ap_log_error(APLOG_MARK, APLOG_ERR, NULL,
+		     "fcntl(%d, F_SETFD, FD_CLOEXEC) failed", fd);
+	return 0;
+    }
+
+    return 1;
+#else
+    return 0;
+#endif
+}
+
 static void fd_cleanup(void *fdv)
 {
     close((int) (long) fdv);
 }
 
+static int fd_magic_cleanup(void *fdv)
+{
+    return ap_close_fd_on_exec((int) (long) fdv);
+}
+
+API_EXPORT(void) ap_note_cleanups_for_fd_ex(pool *p, int fd, int domagic)
+{
+    if (domagic) {
+        ap_register_cleanup_ex(p, (void *) (long) fd, fd_cleanup, fd_cleanup,
+			 fd_magic_cleanup);
+    } else {
+	/* basically ap_register_cleanup but save the possible
+	   overhead of an extraneous function call */
+        ap_register_cleanup_ex(p, (void *) (long) fd, fd_cleanup, fd_cleanup,
+			 NULL);
+    }
+}
+
 API_EXPORT(void) ap_note_cleanups_for_fd(pool *p, int fd)
 {
-    ap_register_cleanup(p, (void *) (long) fd, fd_cleanup, fd_cleanup);
+    ap_note_cleanups_for_fd_ex(p, fd, 0);
 }
 
 API_EXPORT(void) ap_kill_cleanups_for_fd(pool *p, int fd)
@@ -1860,10 +1908,25 @@ static void file_child_cleanup(void *fpv)
 {
     close(fileno((FILE *) fpv));
 }
+static int file_magic_cleanup(void *fpv)
+{
+    return ap_close_fd_on_exec(fileno((FILE *) fpv));
+}
+
+API_EXPORT(void) ap_note_cleanups_for_file_ex(pool *p, FILE *fp, int domagic)
+{
+    if (domagic) {
+	ap_register_cleanup_ex(p, (void *) fp, file_cleanup, file_child_cleanup,
+			 file_magic_cleanup);
+    } else {
+	ap_register_cleanup_ex(p, (void *) fp, file_cleanup, file_child_cleanup,
+			 NULL);
+    }
+}
 
 API_EXPORT(void) ap_note_cleanups_for_file(pool *p, FILE *fp)
 {
-    ap_register_cleanup(p, (void *) fp, file_cleanup, file_child_cleanup);
+    ap_note_cleanups_for_file_ex(p, fp, 0);
 }
 
 API_EXPORT(FILE *) ap_pfopen(pool *a, const char *name, const char *mode)
@@ -1974,10 +2037,25 @@ static void socket_cleanup(void *fdv)
 {
     closesocket((int) (long) fdv);
 }
+static int socket_magic_cleanup(void *fpv)
+{
+    return ap_close_fd_on_exec(fileno((FILE *) fpv));
+}
+
+API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *p, int fd, int domagic)
+{
+    if (domagic) {
+	ap_register_cleanup_ex(p, (void *) (long) fd, socket_cleanup,
+			 socket_cleanup, socket_magic_cleanup);
+    } else {
+	ap_register_cleanup_ex(p, (void *) (long) fd, socket_cleanup,
+			 socket_cleanup, NULL);
+    }
+}
 
 API_EXPORT(void) ap_note_cleanups_for_socket(pool *p, int fd)
 {
-    ap_register_cleanup(p, (void *) (long) fd, socket_cleanup, socket_cleanup);
+    ap_note_cleanups_for_socket_ex(p, fd, 0);
 }
 
 API_EXPORT(void) ap_kill_cleanups_for_socket(pool *p, int sock)
@@ -2603,19 +2681,19 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
 
     if (pipe_out) {
 	*pipe_out = ap_bcreate(p, B_RD);
-	ap_note_cleanups_for_fd(p, fd_out);
+	ap_note_cleanups_for_fd_ex(p, fd_out, 0);
 	ap_bpushfd(*pipe_out, fd_out, fd_out);
     }
 
     if (pipe_in) {
 	*pipe_in = ap_bcreate(p, B_WR);
-	ap_note_cleanups_for_fd(p, fd_in);
+	ap_note_cleanups_for_fd_ex(p, fd_in, 0);
 	ap_bpushfd(*pipe_in, fd_in, fd_in);
     }
 
     if (pipe_err) {
 	*pipe_err = ap_bcreate(p, B_RD);
-	ap_note_cleanups_for_fd(p, fd_err);
+	ap_note_cleanups_for_fd_ex(p, fd_err, 0);
 	ap_bpushfd(*pipe_err, fd_err, fd_err);
     }
 #endif

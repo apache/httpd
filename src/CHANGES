@@ -1,5 +1,14 @@
 Changes with Apache 1.3.28
 
+  *) Added new ap_register_cleanup_ex() API function which allows
+     for a "magic" cleanup function to be run at register time
+     rather than at cleanup time. Also added the
+     ap_note_cleanups_for_(socket|fd|file)_ex() API functions
+     which allows for control over whether that magic cleanup
+     should be called or not. This does not change the default
+     behavior of the non-"ex" function (eg: ap_register_cleanup).
+     [Jim Jagielski, concept by Ben Laurie]
+
   *) PORT: Take advantage of OpenBSD's arc4random() function for the
      initial secret [Henning Brauer <hb-apache-dev at bsws.de>]
 

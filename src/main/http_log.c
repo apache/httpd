@@ -691,6 +691,13 @@ static void piped_log_cleanup_for_exec(void *data)
     close(pl->fds[1]);
 }
 
+static int piped_log_magic_cleanup(void *data)
+{
+    piped_log *pl = data;
+
+    /* Yes, I _do_ mean a binary and */
+    return ap_close_fd_on_exec(pl->fds[0]) & ap_close_fd_on_exec(pl->fds[1]);
+}
 
 API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
 {
@@ -707,7 +714,8 @@ API_EXPORT(piped_log *) ap_open_piped_log(pool *p, const char *program)
 	errno = save_errno;
 	return NULL;
     }
-    ap_register_cleanup(p, pl, piped_log_cleanup, piped_log_cleanup_for_exec);
+    ap_register_cleanup_ex(p, pl, piped_log_cleanup, piped_log_cleanup_for_exec,
+			 piped_log_magic_cleanup);
     if (piped_log_spawn(pl) == -1) {
 	int save_errno = errno;
 	ap_kill_cleanup(p, pl, piped_log_cleanup);

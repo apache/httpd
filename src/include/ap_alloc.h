@@ -291,11 +291,19 @@ API_EXPORT(void) ap_overlap_tables(table *a, const table *b, unsigned flags);
  * NB any code which invokes register_cleanup or kill_cleanup directly
  * is a critical section which should be guarded by block_alarms() and
  * unblock_alarms() below...
+ *
+ * ap_register_cleanup_ex provided to allow for an optional "cleanup"
+ * to be run at call-time for things like setting CLOSEXEC flags
+ * on fd's or whatever else may make sense.
  */
 
 API_EXPORT(void) ap_register_cleanup(pool *p, void *data,
-				  void (*plain_cleanup) (void *),
-				  void (*child_cleanup) (void *));
+				     void (*plain_cleanup) (void *),
+				     void (*child_cleanup) (void *));
+API_EXPORT(void) ap_register_cleanup_ex(pool *p, void *data,
+				      void (*plain_cleanup) (void *),
+				      void (*child_cleanup) (void *),
+				      int (*magic_cleanup) (void *));
 
 API_EXPORT(void) ap_kill_cleanup(pool *p, void *data, void (*plain_cleanup) (void *));
 API_EXPORT(void) ap_run_cleanup(pool *p, void *data, void (*cleanup) (void *));
@@ -331,13 +339,16 @@ API_EXPORT(FILE *) ap_pfdopen(struct pool *, int fd, const char *fmode);
 API_EXPORT(int) ap_popenf(struct pool *, const char *name, int flg, int mode);
 
 API_EXPORT(void) ap_note_cleanups_for_file(pool *, FILE *);
+API_EXPORT(void) ap_note_cleanups_for_file_ex(pool *, FILE *, int);
 API_EXPORT(void) ap_note_cleanups_for_fd(pool *, int);
+API_EXPORT(void) ap_note_cleanups_for_fd_ex(pool *, int, int);
 #ifdef WIN32
 API_EXPORT(void) ap_note_cleanups_for_h(pool *, HANDLE);
 #endif
 API_EXPORT(void) ap_kill_cleanups_for_fd(pool *p, int fd);
 
 API_EXPORT(void) ap_note_cleanups_for_socket(pool *, int);
+API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *, int, int);
 API_EXPORT(void) ap_kill_cleanups_for_socket(pool *p, int sock);
 API_EXPORT(int) ap_psocket(pool *p, int, int, int);
 API_EXPORT(int) ap_pclosesocket(pool *a, int sock);
@@ -384,6 +395,7 @@ API_EXPORT(int) ap_spawn_child(pool *, int (*)(void *, child_info *),
 				   void *, enum kill_conditions,
 				   FILE **pipe_in, FILE **pipe_out,
 				   FILE **pipe_err);
+int ap_close_fd_on_exec(int fd);
 
 /* magic numbers --- min free bytes to consider a free pool block useable,
  * and the min amount to allocate if we have to go to malloc() */

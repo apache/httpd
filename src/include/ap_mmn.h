@@ -237,6 +237,10 @@
  *                        structure
  * 19990320.12		- add ap_getline(), ap_get_chunk_size()
  * 19990320.13          - add ap_strtol()
+ * 19990320.14          - add ap_register_cleanup_ex(),
+ *                        ap_note_cleanups_for_fd_ex(),
+ *                        ap_note_cleanups_for_socket_ex() and
+ *                        ap_note_cleanups_for_file_ex()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
@@ -244,7 +248,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19990320
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 13                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 14                    /* 0...n */
 
 /* Useful for testing for features. */
 #define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\
