@@ -226,9 +226,9 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
     return av;
 }
 
+#if APR_HAS_OTHER_CHILD
 static void cgid_maint(int reason, void *data, apr_wait_t status)
 {
-#if APR_HAS_OTHER_CHILD
     pid_t *sd = data;
     switch (reason) {
         case APR_OC_REASON_DEATH:
@@ -246,8 +246,8 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
             kill(*sd, SIGHUP);
             break;
     }
-#endif
 }
+#endif
 
 static void get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_type) 
 { 
