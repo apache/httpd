@@ -221,6 +221,7 @@ DEP_CPP_MOD_A=\
 	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
+	"..\..\include\ap_ebcdic.h"\
 	"..\..\include\ap_md5.h"\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\ap_sha1.h"\
@@ -240,7 +241,6 @@ DEP_CPP_MOD_A=\
 	
 NODEP_CPP_MOD_A=\
 	"..\..\include\ap_config_auto.h"\
-	"..\..\include\ebcdic.h"\
 	"..\..\include\sfio.h"\
 	"..\..\modules\experimental\mm.h"\
 	

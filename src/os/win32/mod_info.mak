@@ -217,6 +217,7 @@ DEP_CPP_MOD_I=\
 	"..\..\include\ap_alloc.h"\
 	"..\..\include\ap_config.h"\
 	"..\..\include\ap_ctype.h"\
+	"..\..\include\ap_ebcdic.h"\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
 	"..\..\include\hsregex.h"\
@@ -234,7 +235,6 @@ DEP_CPP_MOD_I=\
 	
 NODEP_CPP_MOD_I=\
 	"..\..\include\ap_config_auto.h"\
-	"..\..\include\ebcdic.h"\
 	"..\..\include\sfio.h"\
 	
 

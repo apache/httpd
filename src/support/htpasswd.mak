@@ -195,12 +195,12 @@ DEP_CPP_AP_BA=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
 NODEP_CPP_AP_BA=\
-	"..\ap\ebcdic.h"\
 	"..\include\ap_config_auto.h"\
 	
 
@@ -233,6 +233,7 @@ DEP_CPP_AP_CP=\
 	"..\include\ap_alloc.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
 	"..\include\ap_mmn.h"\
 	"..\include\buff.h"\
 	"..\include\hsregex.h"\
@@ -243,7 +244,6 @@ DEP_CPP_AP_CP=\
 	
 NODEP_CPP_AP_CP=\
 	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
 	"..\include\sfio.h"\
 	
 
@@ -273,13 +273,13 @@ DEP_CPP_AP_MD=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
 	"..\include\ap_md5.h"\
 	"..\include\ap_mmn.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
 NODEP_CPP_AP_MD=\
-	"..\ap\ebcdic.h"\
 	"..\include\ap_config_auto.h"\
 	
 
@@ -292,13 +292,13 @@ DEP_CPP_AP_SH=\
 	"..\include\ap.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
 	"..\include\ap_mmn.h"\
 	"..\include\ap_sha1.h"\
 	"..\include\hsregex.h"\
 	"..\os\win32\os.h"\
 	
 NODEP_CPP_AP_SH=\
-	"..\ap\ebcdic.h"\
 	"..\include\ap_config_auto.h"\
 	
 
@@ -312,6 +312,7 @@ DEP_CPP_AP_SN=\
 	"..\include\ap_alloc.h"\
 	"..\include\ap_config.h"\
 	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
 	"..\include\ap_mmn.h"\
 	"..\include\buff.h"\
 	"..\include\hsregex.h"\
@@ -322,7 +323,6 @@ DEP_CPP_AP_SN=\
 	
 NODEP_CPP_AP_SN=\
 	"..\include\ap_config_auto.h"\
-	"..\include\ebcdic.h"\
 	"..\include\sfio.h"\
 	
 

@@ -49,8 +49,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 /nologo /subsystem:console /incremental:no /map /machine:I386
-# ADD LINK32 /nologo /subsystem:console /incremental:no /map /machine:I386
+# ADD BASE LINK32 /nologo /subsystem:console /map /machine:I386
+# ADD LINK32 kernel32.lib wsock32.lib /nologo /subsystem:console /map /machine:I386
 
 !ELSEIF  "$(CFG)" == "rotatelogs - Win32 Debug"
 
@@ -74,7 +74,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:console /incremental:no /map /debug /machine:I386
-# ADD LINK32 /nologo /subsystem:console /incremental:no /map /debug /machine:I386
+# ADD LINK32 kernel32.lib wsock32.lib /nologo /subsystem:console /incremental:no /map /debug /machine:I386
 
 !ENDIF 
 
@@ -82,6 +82,18 @@ LINK32=link.exe
 
 # Name "rotatelogs - Win32 Release"
 # Name "rotatelogs - Win32 Debug"
+# Begin Source File
+
+SOURCE=..\ap\ap_cpystrn.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\ap\ap_snprintf.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\os\win32\os.c
+# End Source File
 # Begin Source File
 
 SOURCE=.\rotatelogs.c
