@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/20 13:12:26 $]
+Last modified at [$Date: 2004/06/21 19:11:56 $]
 
 Release:
 
@@ -76,17 +76,6 @@ PATCHES TO BACKPORT FROM 2.1
        so that static modules can push Defines values when registering
        hooks just like DSO modules can ["Philippe M. Chiasson" <gozer cpan.org>]
        +1: geoff
-
-    *) mod_cgi: Added API call and new field in apr_procattr_t and cgi_exec_info_t 
-       structures to support loading in current or new address space for CGIs.
-       It fixes NetWare that is currently broken after changes done to log.c r1.145.
-       modules/generators/mod_cgi.c r1.164
-       modules/generators/mod_cgi.h r1.14
-       modules/arch/netware/mod_netware r1.18
-       +1: jjclar, bnicholes
-       -0: nd
-       trawick: is minor mmn bump needed to reflect that API structure was extended?
-       nd: same as mod_ssl.h issues. It's actually a major bump.
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
