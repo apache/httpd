@@ -104,6 +104,8 @@ configuration</td></tr>
             <dd>Only information relevant to the named module</dd>
         <dt><code>?config</code></dt>
             <dd>Just the configuration directives, not sorted by module</dd>
+        <dt><code>?hooks</code></dt>
+            <dd>Only the list of Hooks each module is attached to</dd>
         <dt><code>?list</code></dt>
             <dd>Only a simple list of enabled modules</dd>
         <dt><code>?server</code></dt>
