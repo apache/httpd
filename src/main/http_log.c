@@ -440,9 +440,18 @@ API_EXPORT(void) ap_log_rerror(const char *file, int line, int level,
 
     va_start(args, fmt);
     log_error_core(file, line, level, r->server, r, fmt, args);
-    if (ap_table_get(r->notes, "error-notes") == NULL) {
+    /*
+     * IF the error level is 'warning' or more severe,
+     * AND there isn't already error text associated with this request,
+     * THEN make the message text available to ErrorDocument and
+     * other error processors.  This can be disabled by stuffing
+     * something, even an empty string, into the "error-notes" cell
+     * before calling this routine.
+     */
+    if (((level & APLOG_LEVELMASK) <= APLOG_WARNING)
+	&& (ap_table_get(r->notes, "error-notes") == NULL)) {
 	ap_table_setn(r->notes, "error-notes",
-	    ap_pvsprintf(r->pool, fmt, args));
+		      ap_pvsprintf(r->pool, fmt, args));
     }
     va_end(args);
 }
