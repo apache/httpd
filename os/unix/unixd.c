@@ -176,7 +176,7 @@ AP_DECLARE(int) unixd_setup_child(void)
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
 #ifdef _OSD_POSIX
-	os_init_job_environment(server_conf, unixd_config.user_name, one_process) != 0 || 
+	os_init_job_environment(NULL, unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
 #endif
 	setuid(unixd_config.user_id) == -1)) {
 	ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
