@@ -1110,6 +1110,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
 	    e = APR_BRIGADE_FIRST(bb);
 	    if (APR_BUCKET_IS_EOS(e)) {
 		*eos = 1;
+		continue;
 	    }
 	    if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
 		return rv;
