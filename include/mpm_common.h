@@ -108,6 +108,7 @@ extern "C" {
  *  MPM_SYNC_CHILD_TABLE -- sync the scoreboard image between child and parent
  *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
  *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
+ * </PRE>
  */
 void ap_reclaim_child_processes(int terminate);
 

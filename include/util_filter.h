@@ -69,41 +69,38 @@ extern "C" {
 #endif
 
 /**
- * @package Apache filter library
+ * @file util_filter.h
+ * @brief Apache filter library
  */
 
+/** Returned by the bottom-most filter if no data was written.
+ *  @see ap_pass_brigade(). */
 #define AP_NOBODY_WROTE         -1
+/** Returned by the bottom-most filter if no data was read.
+ *  @see ap_get_brigade(). */
 #define AP_NOBODY_READ          -2
+/** Returned when?? @bug find out when! */
 #define AP_FILTER_ERROR         -3
 
 /**
- * @heading ap_input_mode_t - input filtering modes 
- * 
- * AP_MODE_BLOCKING
- *
- *   The filter shouldn't return until data is received or EOF is hit
- *   or an error occurs.
- *
- * AP_MODE_NONBLOCKING
- *
- *   The filter should process any available data/status as normal,
- *   but will not wait for additional data.
- *
- * AP_MODE_PEEK
- *
- *   The filter should return APR_SUCCESS if data is available or
- *   APR_EOF otherwise.  The filter must not return any buckets of
- *   data.  Data returned on a subsequent call, when mode is
- *   AP_MODE_BLOCKING or AP_MODE_NONBLOCKING.
+ * input filtering modes 
  */
 typedef enum {
+    /** The filter shouldn't return until data is received or EOF is hit
+     *  or an error occurs. */
     AP_MODE_BLOCKING,
+    /** The filter should process any available data/status as normal,
+     *  but will not wait for additional data. */
     AP_MODE_NONBLOCKING,
+    /** The filter should return ::APR_SUCCESS if data is available or
+     *  ::APR_EOF otherwise.  The filter must not return any buckets of
+     *  data.  Data returned on a subsequent call, when mode is
+     *  ::AP_MODE_BLOCKING or ::AP_MODE_NONBLOCKING. */
     AP_MODE_PEEK
 } ap_input_mode_t;
 
-/*
- * FILTER CHAIN
+/**
+ * @defgroup filter FILTER CHAIN
  *
  * Filters operate using a "chaining" mechanism. The filters are chained
  * together into a sequence. When output is generated, it is passed through
@@ -130,8 +127,8 @@ typedef enum {
 /* forward declare the filter type */
 typedef struct ap_filter_t ap_filter_t;
 
-/*
- * ap_filter_func:
+/**
+ * @name Filter callbacks
  *
  * This function type is used for filter callbacks. It will be passed a
  * pointer to "this" filter, and a "bucket" containing the content to be
@@ -152,6 +149,9 @@ typedef struct ap_filter_t ap_filter_t;
  * the types and values of the individual buckets should not be altered.
  *
  * The return value of a filter should be an APR status value.
+ * 
+ * @ingroup filter
+ * @{
  */
 typedef apr_status_t (*ap_out_filter_func)(ap_filter_t *f, apr_bucket_brigade *b);
 typedef apr_status_t (*ap_in_filter_func)(ap_filter_t *f, apr_bucket_brigade *b, 
@@ -161,55 +161,42 @@ typedef union ap_filter_func {
     ap_in_filter_func in_func;
 } ap_filter_func;
 
+/** @} */
+
 /**
- * @heading Filter Types
- *
- * ap_filter_type:
- *
  * Filters have different types/classifications. These are used to group
  * and sort the filters to properly sequence their operation.
- *
- * AP_FTYPE_CONTENT:
- *     These filters are used to alter the content that is passed through
- *     them. Examples are SSI or PHP.
- *
- * AP_FTYPE_HTTP_HEADER: (XXX somebody rename me or get rid of me please)
- *     This special type ensures that the HTTP header filter ends up in
- *     the proper location in the filter chain.
- *
- * AP_FTYPE_TRANSCODE:
- *     These filters implement transport encodings (e.g., chunking).
- *
- * AP_FTYPE_CONNECTION:
- *     These filters will alter the content, but in ways that are more
- *     strongly associated with the connection.  Examples are splitting
- *     an HTTP connection into multiple requests and buffering HTTP
- *     responses across multiple requests.
- *
- *     It is important to note that these types of filters are not allowed
- *     in a sub-request. A sub-request's output can certainly be filtered
- *     by AP_FTYPE_CONTENT filters, but all of the "final processing" is
- *     determined by the main request.
- *
- * AP_FTYPE_NETWORK:
- *     These filters don't alter the content.  They are responsible for
- *     sending/receiving data to/from the client.
  *
  * The types have a particular sort order, which allows us to insert them
  * into the filter chain in a determistic order. Within a particular grouping,
  * the ordering is equivalent to the order of calls to ap_add_*_filter().
  */
 typedef enum {
+    /** These filters are used to alter the content that is passed through
+     *  them. Examples are SSI or PHP. */
     AP_FTYPE_CONTENT     = 10,
+    /** (XXX somebody rename me or get rid of me please)
+     *  This special type ensures that the HTTP header filter ends up in
+     *  the proper location in the filter chain. */
     AP_FTYPE_HTTP_HEADER = 20,
+    /** These filters implement transport encodings (e.g., chunking). */
     AP_FTYPE_TRANSCODE   = 30,
+    /** These filters will alter the content, but in ways that are
+     *  more strongly associated with the connection.  Examples are
+     *  splitting * an HTTP connection into multiple requests and
+     *  buffering HTTP * responses across multiple requests.
+     *
+     *  It is important to note that these types of filters are not
+     *  allowed in a sub-request. A sub-request's output can certainly
+     *  be filtered by ::AP_FTYPE_CONTENT filters, but all of the "final
+     *  processing" is determined by the main request. */
     AP_FTYPE_CONNECTION  = 40,
+    /** These filters don't alter the content.  They are responsible for
+     *  sending/receiving data to/from the client. */
     AP_FTYPE_NETWORK     = 50
 } ap_filter_type;
 
-/*
- * ap_filter_t:
- *
+/**
  * This is the request-time context structure for an installed filter (in
  * the output filter chain). It provides the callback to use for filtering,
  * the request this filter is associated with (which is important when
@@ -280,12 +267,10 @@ struct ap_filter_t {
 /**
  * Get the current bucket brigade from the next filter on the filter
  * stack.  The filter should return an apr_status_t value.  If the bottom-most 
- * filter doesn't write to the network, then AP_NOBODY_READ is returned.
+ * filter doesn't write to the network, then ::AP_NOBODY_READ is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
- * @param mode   AP_MODE_BLOCKING, AP_MODE_NONBLOCKING, or AP_MODE_PEEK
- * @return apr_status_t value
- * @deffunc apr_status_t ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket, ap_input_mode_t mode)
+ * @param mode   ::AP_MODE_BLOCKING, ::AP_MODE_NONBLOCKING, or ::AP_MODE_PEEK
  */
 AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket, 
                                         ap_input_mode_t mode);
@@ -293,11 +278,9 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade 
 /**
  * Pass the current bucket brigade down to the next filter on the filter
  * stack.  The filter should return an apr_status_t value.  If the bottom-most 
- * filter doesn't write to the network, then AP_NOBODY_WROTE is returned.
+ * filter doesn't write to the network, then ::AP_NOBODY_WROTE is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
- * @return apr_status_t value
- * @deffunc apr_status_t ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket)
  */
 AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade *bucket);
 
@@ -309,7 +292,9 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter, apr_bucket_brigade
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param ftype The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
+ * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or ::
+ *        AP_FTYPE_CONNECTION
+ * @see add_input_filter()
  */
 AP_DECLARE(void) ap_register_input_filter(const char *name,
 					  ap_in_filter_func filter_func,
@@ -322,16 +307,15 @@ AP_DECLARE(void) ap_register_input_filter(const char *name,
  *
  * @param name The name to attach to the filter function
  * @param filter_func The filter function to name
- * @param ftype The type of filter function, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION
- * @see ::ap_add_output_filter
+ * @param ftype The type of filter function, either ::AP_FTYPE_CONTENT or
+ *              ::AP_FTYPE_CONNECTION
+ * @see ap_add_output_filter()
  */
 AP_DECLARE(void) ap_register_output_filter(const char *name,
 					    ap_out_filter_func filter_func,
 					    ap_filter_type ftype);
 
-/*
- * ap_add_filter():
- *
+/**
  * Adds a named filter into the filter chain on the specified request record.
  * The filter will be installed with the specified context pointer.
  *
@@ -343,14 +327,10 @@ AP_DECLARE(void) ap_register_output_filter(const char *name,
  * 
  * To re-iterate that last comment.  This function is building a FIFO
  * list of filters.  Take note of that when adding your filter to the chain.
- */
-/**
- * Add a filter to the current connection.  Filters are added in a FIFO manner.
- * The first filter added will be the first filter called.
+ *
  * @param name The name of the filter to add
  * @param r The request to add this filter for (or NULL if it isn't associated with a request)
  * @param c The connection to add the fillter for
- * @deffunc void ap_add_input_filter(const char *name, void *ctx, request_rec *r, conn_rec *c)
  */
 AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
 					      request_rec *r, conn_rec *c);
@@ -362,10 +342,15 @@ AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
  * @param ctx Context data to set in the filter
  * @param r The request to add this filter for (or NULL if it isn't associated with a request)
  * @param c The connection to add this filter for
- * @deffunc void ap_add_output_filter(const char *name, void *ctx, request_rec *r, conn_rec *c)
  */
 AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx, 
 					       request_rec *r, conn_rec *c);
+
+/**
+ * Remove an output filter from either the request or connection stack
+ * it is associated with.
+ * @param f The filter to remove
+ */
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
 
@@ -390,7 +375,6 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f);
  *             new bucket brigade is returned in this location.
  * @param b The bucket brigade to save aside.  This brigade is always empty
  *          on return
- * @deffunc apr_status_t ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **save_to, apr_bucket_brigade **b)
  */
 AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **save_to,
                                          apr_bucket_brigade **b);    
@@ -400,15 +384,13 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **sa
  * to flush the brigade if the brigade buffer overflows.
  * @param bb The brigade to flush
  * @param ctx The filter to pass the brigade to
- * @deffunc apr_status_t ap_filter_flush(apr_bucket_brigade *bb, void *ctx)
  */
 AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, void *ctx);
 
 /**
- * Flush the current brigade down the filter stack
- * @param f the next filter in the stack
+ * Flush the current brigade down the filter stack.
+ * @param f The current filter
  * @param bb The brigade to flush
- * @deffunc apr_status_t ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb)
  */
 AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
 
@@ -418,7 +400,6 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param bb The brigade to buffer into
  * @param data The data to write
  * @param nbyte The number of bytes in the data
- * @deffunc int ap_fwrite(ap_filter_t *f, apr_bucket_brigade *bb, const char *data, apr_ssize_t nbyte)
  */
 #define ap_fwrite(f, bb, data, nbyte) \
 	apr_brigade_write(bb, ap_filter_flush, (f)->next, data, nbyte)
@@ -428,7 +409,6 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param f the filter doing the writing
  * @param bb The brigade to buffer into
  * @param str The string to write
- * @deffunc int ap_fputs(ap_filter_t *f, apr_bucket_brigade *bb, const char *str)
  */
 #define ap_fputs(f, bb, str) \
 	apr_brigade_puts(bb, ap_filter_flush, (f)->next, str)
@@ -438,7 +418,6 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param f the filter doing the writing
  * @param bb The brigade to buffer into
  * @param c The character to write
- * @deffunc int ap_fputc(ap_filter_t *f, apr_bucket_brigade *bb, char c)
  */
 #define ap_fputc(f, bb, c) \
 	apr_brigade_putc(bb, ap_filter_flush, (f)->next, c)
@@ -448,7 +427,6 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param f the filter doing the writing
  * @param bb The brigade to buffer into
  * @param ... The strings to write
- * @deffunc int ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...)
  */
 AP_DECLARE_NONSTD(int) ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
 
@@ -458,7 +436,6 @@ AP_DECLARE_NONSTD(int) ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
  * @param bb The brigade to buffer into
  * @param fmt The format string
  * @param ... The argumets to use to fill out the format string
- * @deffunc int ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...)
  */
 AP_DECLARE_NONSTD(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...)
         __attribute__((format(printf,3,4)));                                    
