@@ -119,6 +119,23 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                               const request_rec *r,
                                               ap_filter_t *next_filter);
 /**
+ * Create a sub request for the given apr_dir_read result.  This sub request 
+ * can be inspected to find information about the requested file
+ * @param finfo The apr_dir_read result to lookup
+ * @param r The current request
+ * @param next_filter The first filter the sub_request should use.  If this is
+ *                    NULL, it defaults to the first filter for the main request
+ * @return The new request record
+ * @deffunc request_rec * ap_sub_req_lookup_dirent(apr_finfo_t *finfo, const request_rec *r)
+ * @tip The apr_dir_read flags value APR_FINFO_MIN|APR_FINFO_NAME flag is the 
+ * minimum recommended query if the results will be passed to apr_dir_read.
+ * The file info passed must include the name, and must have the same relative
+ * directory as the current request.
+ */
+AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(apr_finfo_t *finfo,
+                                              const request_rec *r,
+                                              ap_filter_t *next_filter);
+/**
  * Create a sub request for the given URI using a specific method.  This
  * sub request can be inspected to find information about the requested URI
  * @param method The method to use in the new sub request
