@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.7 -->
 
 <name>mod_setenvif</name>
 <description>リクエストの特徴に基づいた環境変数の設定を可能にする</description>
@@ -135,6 +135,10 @@
 
       <li><code>Remote_Addr</code> -
       リクエストを行なっているクライアントの IP アドレス</li>
+
+      <li><code>Server_Addr</code> - 
+      リクエストを受け取ったサーバの IP アドレス
+      (2.0.43 以降のみ)</li>
 
       <li><code>Remote_User</code> -
       認証されたユーザ名 (もしあれば)</li>
