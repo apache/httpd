@@ -1,7 +1,7 @@
 BEGIN {
     RS = " "
-    modules[n++] = ""
-    pmodules[pn++] = ""
+    modules[n++] = "core"
+    pmodules[pn++] = "core"
 } 
 {
     modules[n] = $1;
@@ -21,7 +21,7 @@ END {
     print "#include \"httpd.h\""
     print "#include \"http_config.h\""
     print ""
-    for (i = 1; i < pn; ++i) {
+    for (i = 0; i < pn; ++i) {
         printf ("extern module %s_module;\n", pmodules[i])
     }
     print ""
@@ -33,7 +33,7 @@ END {
     print " *  [extendable under run-time via AddModule]"
     print " */"
     print "module *ap_prelinked_modules[] = {"
-    for (i =1 ; i < n; ++i) {
+    for (i = 0 ; i < n; ++i) {
         printf "  &%s_module,\n", modules[i]
     }
     print "  NULL"
@@ -47,7 +47,7 @@ END {
     print " *  [extendable under run-time via LoadModule]"
     print " */"
     print "module *ap_preloaded_modules[] = {"
-    for (i = 1; i < pn; ++i) {
+    for (i = 0; i < pn; ++i) {
         printf "  &%s_module,\n", pmodules[i]
     }
     print "  NULL"

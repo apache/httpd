@@ -13,7 +13,7 @@ LTLIBRARY_SOURCES = \
 	rfc1413.c connection.c listen.c \
         mpm_common.c util_charset.c util_debug.c util_xml.c \
 	util_filter.c exports.c buildmark.c scoreboard.c \
-	error_bucket.c protocol.c
+	error_bucket.c protocol.c core.c
 
 targets = delete-exports $(LTLIBRARY_NAME)
 
