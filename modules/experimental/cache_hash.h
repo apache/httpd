@@ -130,20 +130,18 @@ CACHE_DECLARE(void *) cache_hash_get(cache_hash_t *ht, const void *key,
 
 /**
  * Start iterating over the entries in a hash table.
- * @param p The pool to allocate the cache_hash_index_t iterator. If this
- *          pool is NULL, then an internal, non-thread-safe iterator is used.
  * @param ht The hash table
  * @example
  */
 /**
  * <PRE>
  * 
- *     int sum_values(apr_pool_t *p, cache_hash_t *ht)
+ *     int sum_values(cache_hash_t *ht)
  *     {
  *         cache_hash_index_t *hi;
  * 	   void *val;
  * 	   int sum = 0;
- * 	   for (hi = cache_hash_first(p, ht); hi; hi = cache_hash_next(hi)) {
+ * 	   for (hi = cache_hash_first(ht); hi; hi = cache_hash_next(hi)) {
  * 	       cache_hash_this(hi, NULL, NULL, &val);
  * 	       sum += *(int *)val;
  * 	   }
