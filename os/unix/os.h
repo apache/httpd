@@ -23,4 +23,8 @@
 #define PLATFORM "Unix"
 #endif
 
+#ifdef _OSD_POSIX
+pid_t os_fork(const char *user);
+#endif
+
 #endif	/* !APACHE_OS_H */
