@@ -267,62 +267,71 @@ otherwise:
     &lt;!--#endif --&gt;
 </PRE>
 
-<H2>Flow Control Elements</H2>
+<H2><A NAME="flowctrl">Flow Control Elements</A></H2>
 
 These are available in Apache 1.2 and above.  The basic flow control
 elements are:
 
 <PRE>
-    &lt;!--#if expr="<I>test_condition</I>" --&gt;
-    &lt;!--#elif expr="<I>test_condition</I>" --&gt;
+    &lt;!--#if expr="<EM>test_condition</EM>" --&gt;
+    &lt;!--#elif expr="<EM>test_condition</EM>" --&gt;
     &lt;!--#else --&gt;
     &lt;!--#endif --&gt;
 </PRE>
 
-<P> The <B><CODE>if</CODE></B> element works like an
+<P> The <STRONG><CODE>if</CODE></STRONG> element works like an
     if statement in a programming language.  The test condition
     is evaluated and if the result is true, then the text until
-    the next <B><CODE>elif</CODE></B>, <B><CODE>else</CODE></B>.
-    or <B><CODE>endif</CODE></B> element is included in the
+    the next <STRONG><CODE>elif</CODE></STRONG>, <STRONG><CODE>else</CODE></STRONG>.
+    or <STRONG><CODE>endif</CODE></STRONG> element is included in the
     output stream.
 
-<P> The <B><CODE>elif</CODE></B> or <B><CODE>else</CODE></B>
+<P> The <STRONG><CODE>elif</CODE></STRONG> or <STRONG><CODE>else</CODE></STRONG>
     statements are be used the put text into the output stream
     if the original test_condition was false.  These elements
     are optional.
 
-<P> The <B><CODE>endif</CODE></B> element ends the
-    <B><CODE>if</CODE></B> element and is required.
+<P> The <STRONG><CODE>endif</CODE></STRONG> element ends the
+    <STRONG><CODE>if</CODE></STRONG> element and is required.
 
-<P> <I>test_condition</I> is one of the following:
+<P> <EM>test_condition</EM> is one of the following:
 
 <DL>
 
-<DT><I>string</I><DD>true if <I>string</I> is not empty
+<DT><EM>string</EM><DD>true if <EM>string</EM> is not empty
 
-<DT><I>string1</I> = <I>string2</I><BR>
-    <I>string1</I> != <I>string2</I>
+<DT><EM>string1</EM> = <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> != <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> &lt; <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> &lt;= <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> &gt; <EM>string2</EM>
+    <BR>
+    <EM>string1</EM> &gt;= <EM>string2</EM>
 
-<DD>Compare string1 with string 2.  If string2 has the form <I>/string/</I>
-    than it is compared as a regular expression.
+<DD>Compare string1 with string 2.  If string2 has the form <EM>/string/</EM>
+    then it is compared as a regular expression.
     Regular expressions have the same syntax as those found in the
-    Unix egrep command.
+    Unix <SAMP>egrep</SAMP> command.
 
-<DT>( <I>test_condition</I> )
-        <DD>true if <I>test_condition</I> is true
-<DT>! <I>test_condition</I>
-        <DD>true if <I>test_condition</I> is false
-<DT><I>test_condition1</I> && <I>test_condition2</I>
-        <DD>true if both <I>test_condition1</I> and
-        <I>test_condition2</I> are true
-<DT><I>test_condition1</I> || <I>test_condition2</I>
-        <DD>true if either <I>test_condition1</I> or
-        <I>test_condition2</I> is true
+<DT>( <EM>test_condition</EM> )
+        <DD>true if <EM>test_condition</EM> is true
+<DT>! <EM>test_condition</EM>
+        <DD>true if <EM>test_condition</EM> is false
+<DT><EM>test_condition1</EM> && <EM>test_condition2</EM>
+        <DD>true if both <EM>test_condition1</EM> and
+        <EM>test_condition2</EM> are true
+<DT><EM>test_condition1</EM> || <EM>test_condition2</EM>
+        <DD>true if either <EM>test_condition1</EM> or
+        <EM>test_condition2</EM> is true
 </DL>
 
-<P> "<I>=</I>" and "<I>!=</I>" bind more tightly than "<I>&&</I>" and
-    "<I>||</I>".
-    "<I>!</I>" binds most tightly.  Thus, the following are equivalent:
+<P> "<EM>=</EM>" and "<EM>!=</EM>" bind more tightly than "<EM>&&</EM>" and
+    "<EM>||</EM>".
+    "<EM>!</EM>" binds most tightly.  Thus, the following are equivalent:
 
 <PRE>
     &lt;!--#if expr="$a = test1 && $b = test2" --&gt;
@@ -330,15 +339,15 @@ elements are:
 </PRE>
 
 <P> Anything that's not recognized as a variable or an operator is
-    treated as a string.  Strings can also be quoted: <I>'string'</I>.
+    treated as a string.  Strings can also be quoted: <EM>'string'</EM>.
     Unquoted strings can't contain whitespace (blanks and tabs)
     because it is used to separate tokens such as variables.  If
     multiple strings are found in a row, they are concatenated using
     blanks.  So,
 
 <PRE>
-     <I>string1    string2</I>  results in <I>string1 string2</I>
-    <I>'string1    string2'</I> results in <I>string1    string2</I>
+     <EM>string1    string2</EM>  results in <EM>string1 string2</EM>
+    <EM>'string1    string2'</EM> results in <EM>string1    string2</EM>
 </PRE>
 
 <hr>
@@ -374,7 +383,7 @@ is set, then set the Last-modified date of the returned file to be the
 last modified time of the file. If it is not set, then no last-modified date
 is sent. Setting this bit allows clients and proxies to cache the result of
 the request.
-<p><b>Note:</b> you would not want to use this, for example, when you
+<p><STRONG>Note:</STRONG> you would not want to use this, for example, when you
 <code>#include</code> a CGI that produces different output on each hit
 (or potentially depends on the hit).
 </dl>
