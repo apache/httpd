@@ -190,6 +190,7 @@ static int split_and_pass_pretag_buckets(apr_bucket_brigade **brgd,
             return rv;
         }
     }
+    return APR_SUCCESS;
 }
 
 /* If a request includes query info in the URL (stuff after "?"), and

@@ -119,6 +119,7 @@ static int split_and_pass_pretag_buckets(apr_bucket_brigade **brgd,
             return rv;
         }
     }
+    return APR_SUCCESS;
 }
 
 /* ------------------------ Environment function -------------------------- */

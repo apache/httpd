@@ -158,6 +158,7 @@ static int split_and_pass_pretag_buckets(apr_bucket_brigade **brgd,
             return rv;
         }
     }
+    return APR_SUCCESS;
 }
 
 static void *create_cgi_config(apr_pool_t *p, server_rec *s)
