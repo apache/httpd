@@ -1,8 +1,8 @@
 ##
-##  config.layout -- APACI Pre-defined Installation Path Layouts
+##  config.layout -- Pre-defined Installation Path Layouts
 ##
 ##  Hints:
-##  - layouts can be loaded with APACI's --with-layout=ID option
+##  - layouts can be loaded with configure's --with-layout=ID option
 ##  - when no --with-layout option is given, the default layout is `Apache'
 ##  - a trailing plus character (`+') on paths is replaced with a 
 ##    `/<target>' suffix where <target> is the the argument from 
