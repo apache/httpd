@@ -351,6 +351,7 @@ ap_strcasecmp_match
 ap_strcasestr
 ap_strcmp_match
 ap_stripprefix
+ap_strtol
 ap_sub_req_lookup_file
 ap_sub_req_lookup_uri
 ap_sub_req_method_uri

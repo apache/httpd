@@ -26,6 +26,7 @@ CFG=ap - Win32 Debug
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
+RSC=rc.exe
 
 !IF  "$(CFG)" == "ap - Win32 Release"
 
@@ -39,9 +40,10 @@ CPP=cl.exe
 # PROP Output_Dir "LibR"
 # PROP Intermediate_Dir "LibR"
 # PROP Target_Dir ""
-RSC=rc.exe
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /FD /c
 # ADD CPP /nologo /MD /W3 /O2 /I "..\include" /I "..\os\win32" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /Fd"LibR\ap" /FD /c
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -61,9 +63,10 @@ LIB32=link.exe -lib
 # PROP Output_Dir "LibD"
 # PROP Intermediate_Dir "LibD"
 # PROP Target_Dir ""
-RSC=rc.exe
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "..\include" /I "..\os\win32" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fd"LibD\ap" /FD /c
+# ADD BASE RSC /l 0x409
+# ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -115,6 +118,10 @@ SOURCE=.\ap_slack.c
 # Begin Source File
 
 SOURCE=.\ap_snprintf.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ap_strtol.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
