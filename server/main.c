@@ -368,10 +368,10 @@ int main(int argc, const char * const argv[])
             else if (strcasecmp(optarg, "crit") == 0) {
                 ap_default_loglevel = APLOG_CRIT;
             } 
-            else if (strcasecmp(optarg, "error") == 0) {
+            else if (strncasecmp(optarg, "err", 3) == 0) {
                 ap_default_loglevel = APLOG_ERR;
             } 
-            else if (strcasecmp(optarg, "warning") == 0) {
+            else if (strncasecmp(optarg, "warn", 4) == 0) {
                 ap_default_loglevel = APLOG_WARNING;
             } 
             else if (strcasecmp(optarg, "notice") == 0) {
@@ -464,7 +464,6 @@ int main(int argc, const char * const argv[])
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);
         }
-
 
         /* This is a hack until we finish the code so that it only reads
          * the config file once and just operates on the tree already in
