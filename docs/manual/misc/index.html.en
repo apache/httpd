@@ -101,6 +101,13 @@
         <p>A list of external resources which help to accomplish common
         tasks with the Apache HTTP server.</p>
       </dd>
+
+      <dt><a href="relevant_standards.html">Relevant Standards</a></dt>
+
+      <dd>
+        <p>This document acts as a reference page for most of the relevant
+        standards that Apache follows.</p>
+      </dd>
     </dl>
   </div>
 </div>
