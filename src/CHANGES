@@ -1,5 +1,8 @@
 Changes with Apache 1.3.28
-  
+
+  *) Don't block synchronous signals (e.g., SIGSEGV) while waiting for
+     and holding a pthread accept mutex.  [Jeff Trawick]
+
   *) AIX: Change the default accept mechanism from pthread back to
      fcntl.  Idle child cleanup doesn't work when the child selected
      for termination by the parent is waiting on a pthread mutex, and 

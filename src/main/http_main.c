@@ -650,6 +650,49 @@ static void accept_mutex_cleanup_pthread(void *foo)
     accept_mutex = (void *)(caddr_t)-1;
 }
 
+/* remove_sync_sigs() is from APR 0.9.4
+ *
+ * It is invalid to block synchronous signals, as such signals must
+ * be delivered on the thread that generated the original error
+ * (e.g., invalid storage reference).  Blocking them interferes
+ * with proper recovery.
+ */
+static void remove_sync_sigs(sigset_t *sig_mask)
+{
+#ifdef SIGABRT
+    sigdelset(sig_mask, SIGABRT);
+#endif
+#ifdef SIGBUS
+    sigdelset(sig_mask, SIGBUS);
+#endif
+#ifdef SIGEMT
+    sigdelset(sig_mask, SIGEMT);
+#endif
+#ifdef SIGFPE
+    sigdelset(sig_mask, SIGFPE);
+#endif
+#ifdef SIGILL
+    sigdelset(sig_mask, SIGILL);
+#endif
+#ifdef SIGIOT
+    sigdelset(sig_mask, SIGIOT);
+#endif
+#ifdef SIGPIPE
+    sigdelset(sig_mask, SIGPIPE);
+#endif
+#ifdef SIGSEGV
+    sigdelset(sig_mask, SIGSEGV);
+#endif
+#ifdef SIGSYS
+    sigdelset(sig_mask, SIGSYS);
+#endif
+#ifdef SIGTRAP
+    sigdelset(sig_mask, SIGTRAP);
+#endif
+
+/* APR logic to remove SIGUSR2 not copied */
+}
+
 static void accept_mutex_init_pthread(pool *p)
 {
     pthread_mutexattr_t mattr;
@@ -689,6 +732,7 @@ static void accept_mutex_init_pthread(pool *p)
     sigdelset(&accept_block_mask, SIGHUP);
     sigdelset(&accept_block_mask, SIGTERM);
     sigdelset(&accept_block_mask, SIGUSR1);
+    remove_sync_sigs(&accept_block_mask);
     ap_register_cleanup(p, NULL, accept_mutex_cleanup_pthread, ap_null_cleanup);
 }
 
