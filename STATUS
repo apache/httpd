@@ -32,6 +32,9 @@ RELEASE SHOWSTOPPERS:
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * How should an Apache binary release tarball look?
+    
+      - A proposed solution is available.
+        See: <XFMail.981213175013.sfx@unix-ag.org>
 
       1. The "old" way where it is just a source release tarball
          plus a pre-compiled src/httpd-<gnutriple>. It is created
@@ -99,6 +102,7 @@ Available Patches:
     * Ralf's [PATCH] Cleanup command line options
         Message-ID: <19981206195422.A10001@engelschall.com>
         Status: Ralf +1, Roy +1, Jim 0 (is a 1.3.3->1.3.4 bump the place?)
+                Lars 0 (for 1.3)
 
     * Michael van Elst's patch [PR#3160] to improve mod_rewrite's
       in-core cache handling by using a hash table.
@@ -117,7 +121,7 @@ Available Patches:
       to mod_include's variable processing.
 	Mesage-ID: PR#3246, also available at
 		   <http://www.physics.mcgill.ca/~juan/mod_include.patch>
-	Status: Ken -0 for 1.3/+0 for 2.0
+	Status: Ken -0 for 1.3/+0 for 2.0, Lars -0 for 1.3
 
     * Eric Prud'hommeaux's mod_dir mods for file-level access control.
         Message-ID: <Pine.LNX.3.96.981111213739.1364E-200000@tux.w3.org>
@@ -130,9 +134,19 @@ Available Patches:
         Message-ID: <Pine.LNX.3.96.981110105230.10006B-200000@tux.w3.org>
         Status: 
 
+    * Ronald Tschalär's major update of mod_digest
+        Message-ID: <199811200942.KAA16023@chill.innovation.ch>
+        Status: 
+
 In progress:
 
+    * Lars' 'binbuild' patch/proposal
+        Message-ID: <XFMail.981213175013.sfx@unix-ag.org>
+        Status: 
+
     * Ralf's take 2 for "MODULE_MAGIC_COOKIE field for module structure"
+        Message-ID: <19981106125801.A17402@engelschall.com>
+        Status:
  
     * Mark Bixby's freshening up the MPE/iX port (mostly APACI)
 	Message-ID: <199811162227.OAA18137@spock.dis.cccd.edu>
