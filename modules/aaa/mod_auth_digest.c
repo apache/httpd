@@ -1777,6 +1777,14 @@ static int authenticate_digest_user(request_rec *r)
     else if (return_code == AUTH_USER_FOUND) {
         /* we have a password, so continue */
     }
+    else if (return_code == AUTH_DENIED) {
+        /* authentication denied in the provider before attempting a match */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Digest: user `%s' in realm `%s' denied by provider: %s",
+                      r->user, conf->realm, r->uri);
+        note_digest_auth_failure(r, conf, resp, 0);
+        return HTTP_UNAUTHORIZED;
+    }
     else {
         /* AUTH_GENERAL_ERROR (or worse)
          * We'll assume that the module has already said what its error
