@@ -2354,17 +2354,37 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     long chunk_start = 0;
     long max_body;
     apr_status_t rv;
+    apr_int32_t timeout;
+
 
     if (!r->read_chunked) {     /* Content-length read */
+        ap_bucket *b;
+        const char *tempbuf;
+
         len_to_read = (r->remaining > bufsiz) ? bufsiz : r->remaining;
-        rv = ap_bread(r->connection->client, buffer, len_to_read, &len_read);
-        if (len_read == 0) {    /* error or eof */
+        if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
+            apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
+            apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
+            rv = ap_get_brigade(r->connection->input_filters, r->connection->input_data); 
+            apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
+        }
+        if (AP_BRIGADE_EMPTY(r->connection->input_data)) {
             if (rv != APR_SUCCESS) {
                 r->connection->keepalive = -1;
                 return -1;
             }
             return 0;
         }
+        b = AP_BRIGADE_FIRST(r->connection->input_data);
+        len_read = len_to_read;
+        rv = b->read(b, &tempbuf, &len_read, 0);
+        if (len_read < b->length) {
+            b->split(b, len_read);
+        }
+        memcpy(buffer, tempbuf, len_read);
+        AP_BUCKET_REMOVE(b);
+        b->destroy(b);
+
         r->read_length += len_read;
         r->remaining -= len_read;
         return len_read;
