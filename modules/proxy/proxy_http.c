@@ -280,7 +280,8 @@ static void terminate_headers(apr_bucket_alloc_t *bucket_alloc,
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 }
 
-static apr_status_t pass_brigade(request_rec *r, proxy_conn_rec *conn,
+static apr_status_t pass_brigade(apr_bucket_alloc_t *bucket_alloc,
+                                 request_rec *r, proxy_conn_rec *conn,
                                  conn_rec *origin, apr_bucket_brigade *b,
                                  int flush)
 {
@@ -288,7 +289,7 @@ static apr_status_t pass_brigade(request_rec *r, proxy_conn_rec *conn,
     apr_off_t transferred;
 
     if (flush) {
-        apr_bucket *e = apr_bucket_flush_create(r->connection->bucket_alloc);
+        apr_bucket *e = apr_bucket_flush_create(bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(b, e);
     }
     apr_brigade_length(b, 0, &transferred);
@@ -315,10 +316,11 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
     apr_size_t hdr_len;
     apr_off_t bytes;
     apr_status_t status;
+    apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
     apr_bucket_brigade *b, *input_brigade;
     apr_bucket *e;
 
-    input_brigade = apr_brigade_create(p, origin->bucket_alloc);
+    input_brigade = apr_brigade_create(p, bucket_alloc);
 
     do {
         char chunk_hdr[20];  /* must be here due to transient bucket. */
@@ -355,21 +357,21 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         
         ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
         e = apr_bucket_transient_create(chunk_hdr, hdr_len,
-                                        input_brigade->bucket_alloc);
+                                        bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(input_brigade, e);
         
         /*
          * Append the end-of-chunk CRLF
          */
-        e = apr_bucket_immortal_create(ASCII_CRLF, 2, input_brigade->bucket_alloc);
+        e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(input_brigade, e);
         
         if (header_brigade) {
             /* we never sent the header brigade, so go ahead and
              * take care of that now
              */
-            add_te_chunked(p, r->connection->bucket_alloc, header_brigade);
-            terminate_headers(r->connection->bucket_alloc, header_brigade);
+            add_te_chunked(p, bucket_alloc, header_brigade);
+            terminate_headers(bucket_alloc, header_brigade);
             b = header_brigade;
             APR_BRIGADE_CONCAT(b, input_brigade);
             header_brigade = NULL;
@@ -378,7 +380,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
             b = input_brigade;
         }
         
-        status = pass_brigade(r, conn, origin, b, 1);
+        status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -388,7 +390,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         /* we never sent the header brigade because there was no request body;
          * send it now without T-E
          */
-        terminate_headers(r->connection->bucket_alloc, header_brigade);
+        terminate_headers(bucket_alloc, header_brigade);
         b = header_brigade;
     }
     else {
@@ -401,12 +403,12 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
                                        /* <trailers> */
                                        ASCII_CRLF,
-                                       5, r->connection->bucket_alloc);
+                                       5, bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(input_brigade, e);
         b = input_brigade;
     }
     
-    status = pass_brigade(r, conn, origin, b, 1);
+    status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
     return status;
 }
 
@@ -419,10 +421,11 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
 {
     int seen_eos = 0;
     apr_status_t status;
+    apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
     apr_bucket_brigade *b, *input_brigade;
     apr_bucket *e;
 
-    input_brigade = apr_brigade_create(p, origin->bucket_alloc);
+    input_brigade = apr_brigade_create(p, bucket_alloc);
 
     do {
         status = ap_get_brigade(r->input_filters, input_brigade,
@@ -453,8 +456,8 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             /* we never sent the header brigade, so go ahead and
              * take care of that now
              */
-            add_cl(p, r->connection->bucket_alloc, header_brigade, old_cl_val);
-            terminate_headers(r->connection->bucket_alloc, header_brigade);
+            add_cl(p, bucket_alloc, header_brigade, old_cl_val);
+            terminate_headers(bucket_alloc, header_brigade);
             b = header_brigade;
             APR_BRIGADE_CONCAT(b, input_brigade);
             header_brigade = NULL;
@@ -463,7 +466,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             b = input_brigade;
         }
         
-        status = pass_brigade(r, conn, origin, b, 1);
+        status = pass_brigade(bucket_alloc, r, conn, origin, b, 1);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -475,10 +478,10 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
          * C-L: 0
          */
         if (!strcmp(old_cl_val, "0")) {
-            add_cl(p, r->connection->bucket_alloc, header_brigade, old_cl_val);
+            add_cl(p, bucket_alloc, header_brigade, old_cl_val);
         }
-        terminate_headers(r->connection->bucket_alloc, header_brigade);
-        status = pass_brigade(r, conn, origin, header_brigade, 1);
+        terminate_headers(bucket_alloc, header_brigade);
+        status = pass_brigade(bucket_alloc, r, conn, origin, header_brigade, 1);
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -497,13 +500,14 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
 {
     int seen_eos = 0;
     apr_status_t status;
+    apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
     apr_bucket_brigade *body_brigade, *input_brigade;
     apr_bucket *e;
     apr_off_t bytes, bytes_spooled = 0, fsize = 0;
     apr_file_t *tmpfile = NULL;
 
-    body_brigade = apr_brigade_create(p, origin->bucket_alloc);
-    input_brigade = apr_brigade_create(p, origin->bucket_alloc);
+    body_brigade = apr_brigade_create(p, bucket_alloc);
+    input_brigade = apr_brigade_create(p, bucket_alloc);
 
     do {
         status = ap_get_brigade(r->input_filters, input_brigade,
@@ -581,9 +585,9 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
     } while (!seen_eos);
 
     if (bytes_spooled) {
-        add_cl(p, r->connection->bucket_alloc, header_brigade, apr_off_t_toa(p, bytes_spooled));
+        add_cl(p, bucket_alloc, header_brigade, apr_off_t_toa(p, bytes_spooled));
     }
-    terminate_headers(r->connection->bucket_alloc, header_brigade);
+    terminate_headers(bucket_alloc, header_brigade);
     APR_BRIGADE_CONCAT(header_brigade, body_brigade);
     if (tmpfile) {
         /* For platforms where the size of the file may be larger than
@@ -593,7 +597,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         if (sizeof(apr_off_t) > sizeof(apr_size_t)
             && fsize > AP_MAX_SENDFILE) {
             e = apr_bucket_file_create(tmpfile, 0, AP_MAX_SENDFILE, p,
-                                       origin->bucket_alloc);
+                                       bucket_alloc);
             while (fsize > AP_MAX_SENDFILE) {
                 apr_bucket *ce;
                 apr_bucket_copy(e, &ce);
@@ -605,11 +609,11 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         }
         else {
             e = apr_bucket_file_create(tmpfile, 0, (apr_size_t)fsize, p,
-                                       origin->bucket_alloc);
+                                       bucket_alloc);
         }
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
-    status = pass_brigade(r, conn, origin, header_brigade, 1);
+    status = pass_brigade(bucket_alloc, r, conn, origin, header_brigade, 1);
     if (status != APR_SUCCESS) {
         return status;
     }
