@@ -31,18 +31,7 @@ extern int ap_os_is_path_absolute(const char *file);
 
 /* Other ap_os_ routines not used by this platform */
 
-#define ap_os_canonical_filename(p,f)       (f)
-#define ap_os_case_canonical_filename(p,f)  (f)
-#define ap_os_systemcase_filename(p,f)      (f)
 #define ap_os_is_filename_valid(f)          (1)
-
-/* Routines in bs2login.c */
-
-#ifdef _OSD_POSIX
-extern const char *os_set_account(pool *p, const char *account);
-extern int os_init_job_environment(server_rec *s, const char *user_name,
-                                   int one_process);
-#endif
 
 /* Sorry if this is ugly, but the include order doesn't allow me
  * to use request_rec here... */

@@ -1017,6 +1017,29 @@ API_EXPORT(int) ap_is_directory(const char *name);
 API_EXPORT(int) ap_can_exec(const struct stat *);
 API_EXPORT(void) ap_chdir_file(const char *file);
 
+#ifndef HAVE_CANONICAL_FILENAME
+/*
+ *  We can't define these in os.h because of dependence on pool pointer.
+ */
+#define ap_os_canonical_filename(p,f)  (f)
+#define ap_os_case_canonical_filename(p,f)  (f)
+#define ap_os_systemcase_filename(p,f)  (f)
+#else
+API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
+#ifdef WIN32
+API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool, const char *szFile);
+API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
+#else
+#define ap_os_case_canonical_filename(p,f) ap_os_canonical_filename(p,f)
+#define ap_os_systemcase_filename(p,f) ap_os_canonical_filename(p,f)
+#endif
+#endif
+
+#ifdef _OSD_POSIX
+extern const char *os_set_account(pool *p, const char *account);
+extern int os_init_job_environment(server_rec *s, const char *user_name, int one_process);
+#endif /* _OSD_POSIX */
+
 char *ap_get_local_host(pool *);
 unsigned long ap_get_virthost_addr(char *hostname, unsigned short *port);
 

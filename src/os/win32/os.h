@@ -33,6 +33,7 @@
 #define HAVE_MMAP
 #define USE_MMAP_SCOREBOARD
 #define MULTITHREAD
+#define HAVE_CANONICAL_FILENAME
 typedef int uid_t;
 typedef int gid_t;
 typedef int pid_t;
@@ -104,12 +105,8 @@ API_EXPORT(int) os_spawnve(int mode,const char *cmdname,const char *const *argv,
 #define spawnle				    os_spawnle
 API_EXPORT(int) os_spawnle(int mode,const char *cmdname,...);
 
-/* Canonical Filename Routines in util_win32.c */
+/* OS-dependent filename routines in util_win32.c */
 
-API_EXPORT(char *) ap_os_canonical_filename(pool *p, const char *file);
-API_EXPORT(char *) ap_os_case_canonical_filename(pool *pPool,
-                                                 const char *szFile);
-API_EXPORT(char *) ap_os_systemcase_filename(pool *pPool, const char *szFile);
 API_EXPORT(int) ap_os_is_filename_valid(const char *file);
 
 /* Abstractions for dealing with shared object files (DLLs on Win32).
