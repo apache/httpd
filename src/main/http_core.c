@@ -1300,7 +1300,9 @@ int default_handler (request_rec *r)
     if (r->method_number != M_GET) return METHOD_NOT_ALLOWED;
 
     if (r->finfo.st_mode == 0 || (r->path_info && *r->path_info)) {
-	log_reason("File does not exist", r->filename, r);
+	log_reason("File does not exist",
+	    r->path_info ? pstrcat(r->pool, r->filename, r->path_info, NULL)
+		: r->filename, r);
 	return NOT_FOUND;
     }
 	
