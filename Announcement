@@ -1,20 +1,20 @@
 
-                            Apache 1.3.13 Released
+                            Apache 1.3.14 Released
                                        
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.13 of the Apache HTTP
-   server.
+   pleased to announce the release of version 1.3.14 of the Apache HTTP
+   server.  Version 1.3.13 was never released.
    
    This version of Apache is primarily a security fix and bug fix
    release, but there are a few new features and improvements. A summary
    of the new features is given at the end of this document.
    
-   We consider Apache 1.3.13 to be the best version of Apache available
+   We consider Apache 1.3.14 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
    the 1.1.x and 1.2.x family, upgrade as soon as possible. No further
    releases will be made in the 1.2.x family.
    
-   Apache 1.3.13 is available for download from
+   Apache 1.3.14 is available for download from
    
      http://httpd.apache.org/dist/
      
@@ -57,7 +57,7 @@
    version, but is of acceptable quality. Any Win32 stability or security
    problems do not impact, in any way, Apache on other platforms.
    
-                          Apache 1.3.13 Major changes
+                          Apache 1.3.14 Major changes
                                        
    The security fixes are:
      * A problem with the Rewrite module, mod_rewrite, allowed access to
