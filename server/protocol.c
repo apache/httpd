@@ -216,7 +216,7 @@ AP_CORE_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
 
     while (1) {
         if (APR_BRIGADE_EMPTY(b)) {
-            apr_size_t zero = 0;
+            apr_off_t zero = 0;
             if ((retval = ap_get_brigade(c->input_filters, b,
                                          AP_MODE_BLOCKING,
                                          &zero /* readline */)) != APR_SUCCESS ||

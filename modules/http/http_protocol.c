@@ -494,7 +494,7 @@ struct dechunk_ctx {
 static long get_chunk_size(char *);
 
 apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
-                               ap_input_mode_t mode, apr_size_t *readbytes)
+                               ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_status_t rv;
     struct dechunk_ctx *ctx = f->ctx;
@@ -551,7 +551,7 @@ apr_status_t ap_dechunk_filter(ap_filter_t *f, apr_bucket_brigade *bb,
 
     if (ctx->state == WANT_BODY) {
         /* Tell ap_http_filter() how many bytes to deliver. */
-        apr_size_t chunk_bytes = ctx->chunk_size - ctx->bytes_delivered;
+        apr_off_t chunk_bytes = ctx->chunk_size - ctx->bytes_delivered;
 
         if ((rv = ap_get_brigade(f->next, bb, mode,
                                  &chunk_bytes)) != APR_SUCCESS) {
@@ -588,7 +588,7 @@ typedef struct http_filter_ctx {
     apr_bucket_brigade *b;
 } http_ctx_t;
 
-apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t *readbytes)
+apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_bucket *e;
     char *buff;
