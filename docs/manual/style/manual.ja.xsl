@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
-<xsl:output method="html" encoding="ISO-2202-JP" indent="no"/>
+<xsl:output method="html" encoding="iso-2202-jp" indent="no"/>
 
 <!-- Read the localized messages from the specified language file -->
 <xsl:variable name="messages" select="document('ja.xml')/messages"/>
