@@ -30,10 +30,10 @@ request URL.
 Everything that is syntactically allowed in
 <CODE>&lt;Directory&gt;</CODE> is also allowed in
 <CODE>&lt;Location&gt;</CODE> (except a sub-<CODE>&lt;Files&gt;</CODE>
-section, but the code doesn't test for that, Lars has an open bug
-report on that).  Semantically however some things, and the most
-notable is AllowOverride, make no sense in
-<CODE>&lt;Location&gt;</CODE>.  The same for
+section).  Semantically however some things, and the most
+notable are <CODE>AllowOverride</CODE> and the two options
+<CODE>FollowSymLinks</CODE> and <CODE>SymLinksIfOwnerMatch</CODE>,
+make no sense in <CODE>&lt;Location&gt;</CODE>.  The same for
 <CODE>&lt;Files&gt;</CODE> -- syntactically everything is fine, but
 semantically some things are different.
 
@@ -118,13 +118,40 @@ But a notable exception is:
 </LI>
 </UL>
 
-Note also that modifying .htaccess parsing during Location doesn't do
-anything because .htaccess parsing has already occurred.
+<P>
+Note about .htaccess parsing:
+</P>
+<UL>
+<LI>
+    Modifying .htaccess parsing during Location doesn't do
+    anything because .htaccess parsing has already occurred.
+</UL>
 
 <P>
+<CODE>&lt;Location&gt;</CODE> and symbolic links:
+</P>
+<UL>
+<LI>
+    It is not possible to use "<CODE>Options FollowSymLinks</CODE>"
+    or "<CODE>Options SymLinksIfOwnerMatch</CODE>" inside a
+    <CODE>&lt;Location&gt;</CODE>/<CODE>&lt;LocationMatch&gt;</CODE> section
+    (the options are simply ignored).
+    Using the options in question is only possible inside a
+    <CODE>&lt;Directory&gt;</CODE> section (or a <CODE>.htaccess</CODE> file).
+</UL>
 
+<P>
+<CODE>&lt;Files&gt;</CODE> and <CODE>Options</CODE>:
+</P>
+<UL>
+<LI>
+    Apache won't check for it, but using an <CODE>Options</CODE>
+    directive inside a <CODE>&lt;Files&gt;</CODE> section has no effect.
+</UL>
+
+<P>
 Another note:
-<P>
+</P>
 
 <UL>
 <LI>
