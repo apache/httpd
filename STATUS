@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/16 22:43:51 $]
+Last modified at [$Date: 2001/11/17 02:31:23 $]
 
 Release:
 
@@ -322,7 +322,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       link flags.
 
     * Remove the threaded MPM.
-      +1:   Ryan, Justin, Jeff, Ian, Aaron, Cliff
+      +1:   Ryan, Justin, Jeff, Ian, Aaron, Cliff, Greg Ames
       +0:
       -1:
 
