@@ -593,6 +593,9 @@ int read_types_multi (negotiation_state *neg)
 
     if (!(filp = strrchr (r->filename, '/'))) return DECLINED; /* Weird... */
 
+    if (strncmp(r->filename, "proxy:", 6) == 0)
+        return DECLINED;
+
     ++filp;
     prefix_len = strlen (filp);
 
