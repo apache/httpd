@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.56 1996/10/16 20:56:19 fielding Exp $ */
+/* $Id: http_protocol.c,v 1.57 1996/10/16 23:24:33 fielding Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -363,7 +363,7 @@ int set_last_modified(request_rec *r, time_t mtime)
      * to succeed if the GET was successful; ErrorDocuments *always* get sent.
      */
     
-    if ((r->status < 200) || (r->status >= 300))
+    if (!is_HTTP_SUCCESS(r->status))
         return OK;
 
     if (if_modified_since && !r->header_only &&
@@ -650,7 +650,7 @@ request_rec *read_request (conn_rec *conn)
 
     r->sent_bodyct = 0; /* bytect isn't for body */
     
-    r->status = 200;		/* Until further notice.
+    r->status = HTTP_OK;	/* Until further notice.
 				 * Only changed by die(), or (bletch!)
 				 * scan_script_header...
 				 */
@@ -711,7 +711,7 @@ void set_sub_req_protocol (request_rec *rnew, request_rec *r)
     rnew->method = "GET"; rnew->method_number = M_GET;
     rnew->protocol = "INCLUDED";
 
-    rnew->status = 200;
+    rnew->status = HTTP_OK;
 
     rnew->headers_in = r->headers_in;
     rnew->subprocess_env = copy_table (rnew->pool, r->subprocess_env);
@@ -1117,20 +1117,26 @@ int setup_client_block (request_rec *r)
     return OK;
 }
 
-int should_client_block (request_rec *r) {
-   if (r->method_number != M_POST && r->method_number != M_PUT)
-       return 0;
+int should_client_block (request_rec *r)
+{
+    /* The following should involve a test of whether the request message
+     * included a Content-Length or Transfer-Encoding header field, since
+     * methods are supposed to be extensible.  However, this'll do for now.
+     */
+    if (r->method_number != M_POST && r->method_number != M_PUT)
+        return 0;
 
-   if (r->proto_num >= 1001) {
-       bvputs(r->connection->client,
-            SERVER_PROTOCOL, " 100 Continue\015\012\015\012", NULL);
-       bflush(r->connection->client);
-   }
+    if (r->proto_num >= 1001) {    /* sending 100 Continue interim response */
+        bvputs(r->connection->client,
+            SERVER_PROTOCOL, " ", status_lines[0], "\015\012\015\012", NULL);
+        bflush(r->connection->client);
+    }
 
-   return 1;
+    return 1;
 }
 
-static int rd_chunk_size (BUFF *b) {
+static int rd_chunk_size (BUFF *b)
+{
     int chunksize = 0;
     int c;
 
@@ -1302,8 +1308,8 @@ void send_error_response (request_rec *r, int recursive_error)
 
     /* If status code not found, use code 500.  */
     if (idx == -1) {
-        status = SERVER_ERROR;
-        idx = index_of_response (SERVER_ERROR);
+        status = HTTP_INTERNAL_SERVER_ERROR;
+        idx = index_of_response(HTTP_INTERNAL_SERVER_ERROR);
     }
 
     if (!r->assbackwards) {
@@ -1336,7 +1342,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	 */
 	bputs("Connection: close\015\012", c->client);
 	
-	if (location && (status >= 300) && (status < 400))
+	if (location && is_HTTP_REDIRECT(status))
 	    bvputs(c->client, "Location: ", location, "\015\012", NULL);
 
 	if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
@@ -1372,7 +1378,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	}
 	/* Redirect failed, so get back the original error
 	 */
-	while (r->prev && r->prev->status != 200)
+	while (r->prev && (r->prev->status != HTTP_OK))
           r = r->prev;
     }
     {

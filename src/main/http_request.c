@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_request.c,v 1.17 1996/10/16 17:29:22 ben Exp $ */
+/* $Id: http_request.c,v 1.18 1996/10/16 23:24:34 fielding Exp $ */
 
 /*
  * http_request.c: functions to get and process requests
@@ -540,10 +540,10 @@ request_rec *sub_req_lookup_simple (char *new_file, request_rec *r)
     if (rnew->finfo.st_mode == 0 && stat (rnew->filename, &rnew->finfo) < 0)
         rnew->finfo.st_mode = 0;
 
-    if ((rnew->status == 200) && (res = find_types (rnew)))
+    if ((rnew->status == HTTP_OK) && (res = find_types (rnew)))
         rnew->status = res;
     
-    if ((rnew->status == 200) && (res = run_fixups (rnew)))
+    if ((rnew->status == HTTP_OK) && (res = run_fixups (rnew)))
         rnew->status = res;
     
     return rnew;
@@ -687,10 +687,10 @@ void die(int type, request_rec *r)
      * any attempt to handle the other thing "intelligently"...
      */
 
-    if (r->status != 200) {
+    if (r->status != HTTP_OK) {
         recursive_error = type;
 
-	while (r->prev && r->prev->status != 200)
+	while (r->prev && (r->prev->status != HTTP_OK))
 	  r = r->prev; /* Get back to original error */
 	
 	type = r->status;

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_asis.c,v 1.6 1996/08/20 11:50:56 paul Exp $ */
+/* $Id: mod_asis.c,v 1.7 1996/10/16 23:24:34 fielding Exp $ */
 
 #include "httpd.h"
 #include "http_config.h"
@@ -82,9 +82,10 @@ int asis_handler (request_rec *r)
     location = table_get (r->headers_out, "Location");
 
     if (location && location[0] == '/' && 
-        (r->status == 200 || r->status == 301 || r->status == 302)) {
+        ((r->status == HTTP_OK) || is_HTTP_REDIRECT(r->status))) {
 
-        r->status = 200; /* Assume 200 status on whatever we're pointing to */
+        /* Internal redirect -- fake-up a pseudo-request */
+        r->status = HTTP_OK;
 
 	/* This redirect needs to be a GET no matter what the original
 	 * method was.
