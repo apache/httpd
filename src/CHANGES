@@ -1,5 +1,11 @@
 Changes with Apache 1.3b1
 
+  *) set_last_modified() broken into set_last_modified(), set_etag(), and
+     meets_conditions().  This allows conditional HTTP selection to be
+     handled separately from the storing of the header fields, and provides
+     the ability for CGIs to set their own ETags for conditional checking.
+     [Ken Coar, Roy Fielding]  PR#895
+
   *) Changes to mod_log_config to allow naming of format strings.
      Format nicknames are defined with "LogFormat fmt nickname", and can
      be used with "LogFormat nickname" and "CustomLog logtarget nickname".
