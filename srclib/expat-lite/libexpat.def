@@ -4,48 +4,48 @@ LIBRARY expatlib
 DESCRIPTION ''
 
 EXPORTS
-   XmlGetUtf16InternalEncoding           @1
-   XmlGetUtf8InternalEncoding            @2
-   XmlInitEncoding                       @3
-   XmlInitUnknownEncoding                @4
-   XmlParseXmlDecl                       @5
-   XmlPrologStateInit                    @6
-   XmlSizeOfUnknownEncoding              @7
-   XmlUtf16Encode                        @8
-   XmlUtf8Encode                         @9
+   XmlGetUtf16InternalEncoding
+   XmlGetUtf8InternalEncoding
+   XmlInitEncoding
+   XmlInitUnknownEncoding
+   XmlParseXmlDecl
+   XmlPrologStateInit
+   XmlSizeOfUnknownEncoding
+   XmlUtf16Encode
+   XmlUtf8Encode
 
-   XML_DefaultCurrent                    @11
-   XML_ErrorString                       @12
-   XML_ExternalEntityParserCreate        @13
-   XML_GetBase                           @14
-   XML_GetBuffer                         @15
-   XML_GetCurrentByteCount               @16
-   XML_GetCurrentByteIndex               @17
-   XML_GetCurrentColumnNumber            @18
-   XML_GetCurrentLineNumber              @19
-   XML_GetErrorCode                      @20
-   XML_GetSpecifiedAttributeCount        @21
-   XML_Parse                             @22
-   XML_ParseBuffer                       @23
-   XML_ParserCreate                      @24
-   XML_ParserCreateNS                    @25
-   XML_ParserFree                        @26
-   XML_SetBase                           @27
-   XML_SetCdataSectionHandler            @28
-   XML_SetCharacterDataHandler           @29
-   XML_SetCommentHandler                 @30
-   XML_SetDefaultHandler                 @31
-   XML_SetDefaultHandlerExpand           @32
-   XML_SetElementHandler                 @33
-   XML_SetEncoding                       @34
-   XML_SetExternalEntityRefHandler       @35
-   XML_SetExternalEntityRefHandlerArg    @36
-   XML_SetNamespaceDeclHandler           @37
-   XML_SetNotStandaloneHandler           @38
-   XML_SetNotationDeclHandler            @39
-   XML_SetProcessingInstructionHandler   @40
-   XML_SetUnknownEncodingHandler         @41
-   XML_SetUnparsedEntityDeclHandler      @42
-   XML_SetUserData                       @43
-   XML_UseParserAsHandlerArg             @44
+   XML_DefaultCurrent
+   XML_ErrorString
+   XML_ExternalEntityParserCreate
+   XML_GetBase
+   XML_GetBuffer
+   XML_GetCurrentByteCount
+   XML_GetCurrentByteIndex
+   XML_GetCurrentColumnNumber
+   XML_GetCurrentLineNumber
+   XML_GetErrorCode
+   XML_GetSpecifiedAttributeCount
+   XML_Parse
+   XML_ParseBuffer
+   XML_ParserCreate
+   XML_ParserCreateNS
+   XML_ParserFree
+   XML_SetBase
+   XML_SetCdataSectionHandler
+   XML_SetCharacterDataHandler
+   XML_SetCommentHandler
+   XML_SetDefaultHandler
+   XML_SetDefaultHandlerExpand
+   XML_SetElementHandler
+   XML_SetEncoding
+   XML_SetExternalEntityRefHandler
+   XML_SetExternalEntityRefHandlerArg
+   XML_SetNamespaceDeclHandler
+   XML_SetNotStandaloneHandler
+   XML_SetNotationDeclHandler
+   XML_SetProcessingInstructionHandler
+   XML_SetUnknownEncodingHandler
+   XML_SetUnparsedEntityDeclHandler
+   XML_SetUserData
+   XML_UseParserAsHandlerArg
 
