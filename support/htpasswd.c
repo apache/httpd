@@ -434,7 +434,6 @@ int main(int argc, const char * const argv[])
     char *user = NULL;
     char tn[] = "htpasswd.tmp.XXXXXX";
     char scratch[MAX_STRING_LEN];
-    char *str = NULL;
     int found = 0;
     int i;
     int alg = ALG_CRYPT;
