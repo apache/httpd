@@ -999,7 +999,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
         /* send body - but only if a body is expected */
         if ((!r->header_only) &&                   /* not HEAD request */
-            (r->status > 199) &&                   /* not any 1xx response */
+            (!ap_is_HTTP_INFO(r->status)) &&       /* not any 1xx response */
             (r->status != HTTP_NO_CONTENT) &&      /* not 204 */
             (r->status != HTTP_RESET_CONTENT) &&   /* not 205 */
             (r->status != HTTP_NOT_MODIFIED)) {    /* not 304 */
