@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
-<TITLE>Available MPM's for Apache 2.0</TITLE>
+<TITLE>Apache Multi-Processing Modules (MPMs)</TITLE>
 </HEAD>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
@@ -12,85 +12,61 @@
  VLINK="#000080"
  ALINK="#FF0000"
 >
-<h1 align="center">Apache 2.0 - Available MPM's</h1>
-<p align="center"><em>Dated 15<sup>th</sup> January 2000</em></p>
-<p>Apache 2.0 has a new architecture that moves the processing of requests from the code server into a MultiProcessing Module (MPM).  By selecting the MPM to use you can alter the way the server behaves.  Additionally the introduction of the MPM's has led to platforms developing their own optimised modules.  On some platforms there is no choice, whilst on others there are different options, each with differing processing models.  This list aims to help you select a suitable MPM for your system.</p>
-<hr>
-<h3>Platforms</h3>
+
+<!--#include virtual="header.html" -->
+
+<h1 align="center">Apache Multi-Processing Modules</h1>
+
+<p>The Apache HTTP Server is designed to be a powerful and flexible
+web server that can work on a very wide variety of platforms in a
+range of different environments.  Different platforms and different
+environments often require different features, or may have different
+ways of implementing the same feature most efficiently.  Apache has
+always accommodated a wide variety of environments through its modular
+design.  This design allows the webmaster to choose which features
+will be included in the server by selecting which modules to load
+either at compile-time or at run-time.</p>
+
+<p>Apache 2.0 extends this modular design to the most basic functions
+of a web server.  The server ships with a selection of
+Multi-Processing Modules (MPMs) which are responsible for binding to
+network ports on the machine, accepting requests, and dispatching
+children to handle the requests.</p>
+
+<p>Extending the modular design to this level of the server 
+allows two important benefits:
 <ul>
-<li><A href="#unix">Unix</a></li>
-<li><a href="#windows">Windows</a></li>
-<li><a href="#os2">OS/2</a></li>
-<li><a href="#beos">BeOS</a></li>
+<li>Apache can more cleanly and efficiently support a wide variety of
+operating systems.  In particular, the Windows version of Apache is
+now much more efficient, since <a
+href="mod/mpm_winnt.html">mpm_winnt</a> can use native networking
+features in place of the POSIX layer used in Apache 1.3.  This benefit
+also extends to other operating systems that implement specialized
+MPMs.</li>
+<li>The server can be better customized for the needs of the
+particular site.  For example, sites that need a great deal of
+scalability can choose to use a threaded MPM like <a
+href="mod/mpmt_pthread.html">mpmt_pthread</a>, while sites requiring
+stability or compatibility with older software can use a <a
+href="mod/prefork.html">preforking MPM</a>.  In addition, special
+features like serving different hosts under different userids
+(<a href="mod/perchild.html">perchild</a>) can be provided.</li>
 </ul>
-<a name="unix"><h3>Unix</h3>
-<table width="100%" border="1">
-<tr>
-<th width="20%">MPM</th>
-<th width="60%">Description</th>
-<th width="20%">Maintainer</th>
-</tr>
-<tr>
-<td>prefork</td>
-<td>The prefork MPM reproduces the behaviour of Apache 1.3.</td>
-<td>Ryan Bloom</td>
-</tr>
-<tr>
-<td>mpmt_pthread</td>
-<td>This MPM uses a multi-process, multi-threaded model to provide good scability and stability.</td>
-<td>Ryan Bloom</td>
-</tr>
-<tr>
-<td>dexter</td>
-<td>This is Manoj's plaything.  It has a number of hybrid features that Manoj has been looking at to improve performance.</td>
-<td><a href="mailto:manojk@io.com">Manoj</a></td>
-</tr>
-</table>
 
-<a name="windows"><h3>Windows</h3>
-<table width="100%" border="1">
-<tr>
-<th width="20%">MPM</th>
-<th width="60%">Description</th>
-<th width="20%">Maintainer</th>
-</tr>
-<tr>
-<td>mpm_winnt</td>
-<td>The Windows MPM, this is a multi-threaded model with a parent watchdog process.</td>
-<td><a href="mailto:stoddard@raleigh.ibm.com">Bill Stoddard</a></td>
-</tr>
-</table>
+<p>At the user level, MPMs appear much like other Apache modules.
+The main difference is that one and only one MPM must be loaded
+into the server at any time.  The list of available MPMs
+appears on the <a href="mod/">module index page</a>.</p>
 
-<a name="os2"><h3>OS/2</h3>
-<table width="100%" border="1">
-<tr>
-<th width="20%">MPM</th>
-<th width="60%">Description</th>
-<th width="20%">Maintainer</th>
-</tr>
-<tr>
-<td>spmt_os2</td>
-<td>Single process, multiple thread MPM for OS2.</td>
-<td><a href="mailto:brianh@kheldar.apana.org.au">Brian Havard</a></td>
-</tr>
-</table>
+<!-- XXX: Needed here: a brief discussion or reference to instructions
+on how to choose and load an MPM, how to figure out what MPM you are
+currently using, and what MPMs are the defaults on various
+platforms. -->
 
-<a name="beos"><h3>BeOS</h3>
-<table width="100%" border="1">
-<tr>
-<th width="20%">MPM</th>
-<th width="60%">Description</th>
-<th width="20%">Maintainer</th>
-</tr>
-<tr>
-<td>mpmt_beos</td>
-<td>Multi-threaded MPM for BeOS.  This follows the mpmt_pthread model.</td>
-<td><a href="mailto:dreid@jetnet.co.uk">David Reid</a></td>
-</tr>
-</table>
 
-<hr>
-<I>David Reid, 15<sup>th</sup> January 2000</I>
+
+<!--#include virtual="footer.html" -->
+
 </body>
 </html>
 
