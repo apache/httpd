@@ -72,5 +72,5 @@ install-modules:
 		done; \
 	fi	
 
-include $(top_srcdir)/build/rules.mk
+include $(top_builddir)/build/rules.mk
 
