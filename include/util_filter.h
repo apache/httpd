@@ -268,8 +268,8 @@ struct ap_filter_t {
 
 /**
  * Get the current bucket brigade from the next filter on the filter
- * stack.  The filter should return an apr_status_t value.  If the bottom-most 
- * filter doesn't write to the network, then ::AP_NOBODY_READ is returned.
+ * stack.  The filter returns an apr_status_t value.  If the bottom-most 
+ * filter doesn't read from the network, then ::AP_NOBODY_READ is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
  * @param mode   ::AP_MODE_BLOCKING, ::AP_MODE_NONBLOCKING, or ::AP_MODE_PEEK
@@ -281,7 +281,7 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter, apr_bucket_brigade 
 
 /**
  * Pass the current bucket brigade down to the next filter on the filter
- * stack.  The filter should return an apr_status_t value.  If the bottom-most 
+ * stack.  The filter returns an apr_status_t value.  If the bottom-most 
  * filter doesn't write to the network, then ::AP_NOBODY_WROTE is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
