@@ -780,7 +780,7 @@ do
                 module )
                     case $apc_optarg in
                        all ) 
-                           OOIFS="$IFS"r
+                           OOIFS="$IFS"
                            IFS=':'
                            for module in $modules; do
                                eval "module_${module}=no" 
