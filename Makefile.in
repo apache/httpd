@@ -15,7 +15,7 @@ PROGRAM_DEPENDENCIES = \
 PROGRAMS        = $(PROGRAM_NAME)
 targets         = $(PROGRAMS)
 phony_targets   = $(srcdir)/buildmark.c
-install_targets = install-conf install-htdocs install-icons install-other \
+install_targets = install-conf install-icons install-other \
 	install-cgi install-include install-support
 DISTCLEANFILES  = include/config_auto.h modules.c aclocal.m4 buildmk.stamp \
 	configure generated_lists include/ap_config_auto.h \
@@ -26,7 +26,7 @@ include $(top_srcdir)/build/program.mk
 
 install-conf:
 	@echo Installing configuration files
-	@test -d $(sysconfdir) || $(mkinstalldirs) $(sysconfdir)
+	@test -d $(sysconfdir) || $(MKINSTALLDIRS) $(sysconfdir)
 	@cd $(srcdir)/../conf; \
 	for i in mime.types magic; do \
 		$(INSTALL_DATA) $$i $(sysconfdir); \
@@ -46,22 +46,22 @@ install-conf:
 
 install-htdocs:
 	@echo Installing HTML documents
-	@test -d $(htdocsdir) || $(mkinstalldirs) $(htdocsdir)
+	@test -d $(htdocsdir) || $(MKINSTALLDIRS) $(htdocsdir)
 	@(cd $(srcdir)/../htdocs && cp -rp * $(htdocsdir))
 
 install-icons:
 	@echo Installing icons
-	@test -d $(iconsdir) || $(mkinstalldirs) $(iconsdir)
+	@test -d $(iconsdir) || $(MKINSTALLDIRS) $(iconsdir)
 	@(cd $(srcdir)/../icons && cp -rp * $(iconsdir))
 
 install-cgi:
 	@echo Installing CGIs
-	@test -d $(cgidir) || $(mkinstalldirs) $(cgidir)
+	@test -d $(cgidir) || $(MKINSTALLDIRS) $(cgidir)
 	@(cd $(srcdir)/../cgi-bin && cp -rp * $(cgidir))
 
 install-support:
 	@echo Installing Support Binaries
-	@test -d $(bindir) || $(mkinstalldirs) $(bindir)
+	@test -d $(bindir) || $(MKINSTALLDIRS) $(bindir)
 	@cp -p $(srcdir)/support/httpd.exp $(bindir)
 	@cp -p $(builddir)/support/htpasswd $(bindir)
 	@cp -p $(builddir)/support/htdigest $(bindir)
@@ -70,13 +70,13 @@ install-support:
 	@cp -p $(builddir)/support/ab $(bindir)
 
 install-other:
-	@test -d $(logdir) || $(mkinstalldirs) $(logdir)
+	@test -d $(logdir) || $(MKINSTALLDIRS) $(logdir)
 
 install-include:
 	@echo Installing header files
-	@test -d $(includedir)     || $(mkinstalldirs) $(includedir)
-	@test -d $(includedir)/xml || $(mkinstalldirs) $(includedir)/xml
-	@test -d $(includedir)/apr || $(mkinstalldirs) $(includedir)/apr
+	@test -d $(includedir)     || $(MKINSTALLDIRS) $(includedir)
+	@test -d $(includedir)/xml || $(MKINSTALLDIRS) $(includedir)/xml
+	@test -d $(includedir)/apr || $(MKINSTALLDIRS) $(includedir)/apr
 	@cp -p include/*.h $(srcdir)/include/*.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/os.h $(includedir)
 	@cp -p $(srcdir)/os/$(OS_DIR)/os-inline.c $(includedir)
