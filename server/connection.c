@@ -174,8 +174,7 @@ void ap_lingering_close(conn_rec *c)
      * to the peer.
      */
     
-    if (ap_bshutdown(c->client, 1) != APR_SUCCESS
-        || ap_is_aborted(c)) {
+    if (ap_bshutdown(c->client, 1) != APR_SUCCESS || c->aborted) {
         ap_bclose(c->client);
         return;
     }

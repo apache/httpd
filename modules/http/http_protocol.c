@@ -2154,7 +2154,7 @@ API_EXPORT(int) ap_discard_request_body(request_rec *r)
 static void check_first_conn_error(const request_rec *r, const char *operation,
                                    ap_status_t status)
 {
-    if (!ap_is_aborted(r->connection)) {
+    if (!r->connection->aborted) {
         if (status == 0)
             status = ap_berror(r->connection->client);
         ap_log_rerror(APLOG_MARK, APLOG_INFO, status, r,
@@ -2215,7 +2215,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
     if (length == 0)
         return 0;
 
-    while (!ap_is_aborted(r->connection)) {
+    while (!r->connection->aborted) {
         if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
             o = length - total_bytes_sent;
         else
@@ -2224,7 +2224,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
         n = o;
         do {
             rv = ap_read(fd, buf, &n);
-        } while (rv == APR_EINTR && !ap_is_aborted(r->connection));
+        } while (rv == APR_EINTR && !r->connection->aborted);
 
         if (n < 1) {
             break;
@@ -2232,7 +2232,7 @@ API_EXPORT(long) ap_send_fd_length(ap_file_t *fd, request_rec *r, long length)
 
         o = 0;
 
-        while (n && !ap_is_aborted(r->connection)) {
+        while (n && !r->connection->aborted) {
             rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
             if (w > 0) {
                 total_bytes_sent += w;
@@ -2280,13 +2280,13 @@ API_EXPORT(long) ap_send_fb_length(BUFF *fb, request_rec *r, long length)
      * as soon as possible */
 
     ap_bsetopt(fb, BO_TIMEOUT, &zero_timeout);
-    while (!ap_is_aborted(r->connection)) {
+    while (!r->connection->aborted) {
         read_rv = ap_bread(fb, buf, sizeof(buf), &n);
     got_read:
         bytes_read = n;
         /* Regardless of read errors, EOF, etc, bytes may have been read */
         o = 0;
-        while (n && !ap_is_aborted(r->connection)) {
+        while (n && !r->connection->aborted) {
             rv = ap_bwrite(r->connection->client, &buf[o], n, &w);
             if (w > 0) {
                 total_bytes_sent += w;

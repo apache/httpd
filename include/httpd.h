@@ -1044,8 +1044,6 @@ API_EXPORT(extern const char *) ap_psignature(const char *prefix, request_rec *r
 #endif
 #define strtoul strtoul_is_not_a_portable_function_use_strtol_instead
 
-#define ap_is_aborted(abort) (abort->aborted == 1)
-
   /* The C library has functions that allow const to be silently dropped ...
      these macros detect the drop in maintainer mode, but use the native
      methods far narmal builds
