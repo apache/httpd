@@ -10,7 +10,7 @@
 ------------------------------------------------------------------*/
 #include <netware.h>
 //#include "stddef.h"
-#include "ws2nlm.h"
+#include "novsock2.h"
 
 int _NonAppStart
 (
