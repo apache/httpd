@@ -61,8 +61,8 @@
 #define INCL_DOS
 #define INCL_DOSERRORS
 
-#include "httpd.h"
 #include "ap_config.h"
+#include "httpd.h"
 #include "mpm_default.h"
 #include "http_main.h"
 #include "http_log.h"
