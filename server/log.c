@@ -406,7 +406,7 @@ static void log_error_core(const char *file, int line, int level,
 	    FORMAT_MESSAGE_FROM_SYSTEM,
 	    NULL,
 	    nErrorCode,
-	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), /* // Default language */
 	    (LPTSTR) errstr + len,
 	    sizeof(errstr) - len,
 	    NULL 
