@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/06/11 00:19:17 $
+Last modified: $Date: 2002/06/22 19:54:41 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -128,12 +128,6 @@ Documentation improvements
 
   - We'll need to audit these and find out which ones need munging, as
     some of it looks ok.  --jsl
-
-  - Every directive should have at least one example of usage, except
-    those directives which list all possible usages in the Syntax
-    description. And maybe some of those too. People like examples.
-    mod/core.html has been checked all the way through, as have a few
-    of the modules.
 
 * Making site-specific enhancements easier, including a documented
   and robust way for 3P module docco to be added -- and have it
