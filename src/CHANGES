@@ -1,5 +1,13 @@
 Changes with Apache 1.3a2
 
+  *) Implement a new timer scheme which eliminates the need to call alarm() all
+     the time.  Instead a counter in the scoreboard for each child is used to
+     show when the child has made forward progress.  The parent samples this
+     counter every scoreboard maintenance cycle, and issues SIGALRM if no
+     progress has been made in the timeout period.  This reduces the static
+     request best-case syscall count to 22 from 29.  This scheme is only
+     used by systems with memory-based scoreboards.  [Dean Gaudet]
+
   *) The proxy now properly handles CONNECT requests which are sent
      to proxy servers when using ProxyRemote.  [Marc Slemko, PR#1024]
 
