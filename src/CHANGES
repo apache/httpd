@@ -14,7 +14,7 @@ Changes with Apache 1.1.1:
 
   *) Problems with mod_auth_msql fixed [Dirk vanGulik]
 
-  *) Fix mispelling of "Anonymous_Authorative" directive in mod_auth_anon.
+  *) Fix misspelling of "Anonymous_Authorative" directive in mod_auth_anon.
 
 Changes with Apache 1.1.0:
 
@@ -48,7 +48,7 @@ Changes with Apache 1.1b4:
 
   *) More mod_auth_msql authentication improvements.
 
-  *) VirtualHosts based on Host: headers no longer conflict with the
+  *) VirtualHost's based on Host: headers no longer conflict with the
      Listen directive.
 
   *) OS/2 compatibility enhancements. [Gary Smiley]
@@ -152,7 +152,7 @@ Changes with Apache 1.0.3:
      now configurable (for OSes that can't use mmap) via ScoreBoardFile
      which works similar to PidFile (in httpd.conf) [Rob Hartill]
 
-  *) Include sys/resource.h in the correct place for SunOS4 [Samerr Parekh]
+  *) Include sys/resource.h in the correct place for SunOS4 [Sameer Parekh]
 
   *) the pstrcat call in mod_cookies.c didn't have an ending NULL,
      which caused a SEGV with cookies enabled
@@ -208,7 +208,7 @@ Changes with Apache 1.0.1
      be, and heavy system loads, generally followed by catastrophic
      system failure. [Ben Laurie]
 
-  *) Fix typo in licence. [David Robinson]
+  *) Fix typo in license. [David Robinson]
 
 Changes with Apache 1.0.0
 
@@ -355,7 +355,7 @@ Changes with Apache 0.8.13
 
   *) Suppress -Wall warning by casting const away in util.c [Aram Mirzadeh]
 
-  *) Suppress -Wall warning by initializing variable in negotation code
+  *) Suppress -Wall warning by initializing variable in negotiation code
      [Tobias Weingartner]
 
 Changes with Apache 0.8.12
@@ -415,7 +415,7 @@ Changes with Apache 0.8.11
   *) Doesn't reset DirectoryIndex to 'index.html' when
      other directory options are set in a .htaccess file.  [Robert Thau]
   
-  *) Clarifed init code and nuked bogus warning in mod_access.c
+  *) Clarified init code and nuked bogus warning in mod_access.c
      [Florent Guillaume]
   
   *) Corrected several directives in sample srm.conf
@@ -437,8 +437,8 @@ Changes with Apache 0.8.11
      mod_alias.c, merging it almost completely with handling of Alias, and
      adding a 'notes' field to the request_rec which allows the CGI module
      to discover whether the Alias module has put this request through
-     ScriptAlias (which it needs to know for back-combatibility, as the old
-     NCSA code did not check Options ExecCGI in ScriptAliased directories).
+     ScriptAlias (which it needs to know for back-compatibility, as the old
+     NCSA code did not check Options ExecCGI in ScriptAlias directories).
      [Robert Thau]
   
 
@@ -465,7 +465,7 @@ Changes with Apache 0.8.9
 
   *) <!--exec cgi="/some/uri/here"--> always treats the item named by the
      URI as a CGI script, even if it would have been treated as something
-     else if requested directly, for NCSA back-combatibility.  (Note that
+     else if requested directly, for NCSA back-compatibility.  (Note that
      this means that people who know the name of the script can see the
      code just by asking for it).  [Robert Thau]
 
@@ -600,7 +600,7 @@ Changes with Apache 0.8.4
      StartServers to MinSpareServers, created separate StartServers
      parameter which means what it says, and renamed MaxServers to
      MaxSpareServers (though the old name still works, for NCSA 1.4
-     back-combatibility).  The old names were generally regarded as
+     back-compatibility).  The old names were generally regarded as
      too confusing.  Also altered "docs" in sample config files.
 
   *) More improvements to default config files ---
@@ -709,7 +709,7 @@ Changes with Apache 0.8.0 (nee Shambhala 0.6.2):
      if there are fewer than StartServers, it starts a new one.  This
      does not depend on the number of server processes already extant.
      The accounting is arranged through a "scoreboard" file, named
-     /tmp/htstatus.*, on which each process has an independant file
+     /tmp/htstatus.*, on which each process has an independent file
      descriptor (they need to seek without interference).
 
      The end effect is that MaxServers is the maximum number of
