@@ -181,8 +181,8 @@ API_EXPORT(int) ap_get_max_daemons(void)
     return max_daemons_limit;
 }
 
-/* a clean exit from a child with proper cleanup 
-   static void clean_child_exit(int code) __attribute__ ((noreturn)); */
+/* a clean exit from a child with proper cleanup */ 
+static void clean_child_exit(int code) __attribute__ ((noreturn));
 void clean_child_exit(int code)
 {
     if (pchild) {
