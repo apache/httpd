@@ -57,10 +57,17 @@
  */
 
 #define CORE_PRIVATE
+/* CACHE_FD will eventually be exposed as a configuration directive */
 #define CACHE_FD 0
 #include "mod_cache.h"
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
+
+/* USE_ATOMICS should be replaced with the appropriate APR feature macro */
+#define USE_ATOMICS
+#ifdef USE_ATOMICS
+#include "apr_atomic.h"
+#endif
 
 #if !APR_HAS_THREADS
 #error This module does not currently compile unless you have a thread-capable APR. Sorry!
@@ -191,6 +198,13 @@ static apr_status_t decrement_refcount(void *arg)
 {
     cache_object_t *obj = (cache_object_t *) arg;
 
+#ifdef USE_ATOMICS
+    if (!apr_atomic_dec(&obj->refcount)) {
+        if (obj->cleanup) {
+            cleanup_cache_object(obj);
+        }
+    }
+#else
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
@@ -204,6 +218,7 @@ static apr_status_t decrement_refcount(void *arg)
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
+#endif
     return APR_SUCCESS;
 }
 static apr_status_t cleanup_cache_mem(void *sconfv)
@@ -223,8 +238,14 @@ static apr_status_t cleanup_cache_mem(void *sconfv)
     for (hi = apr_hash_first(NULL, co->cacheht); hi; hi=apr_hash_next(hi)) {
         apr_hash_this(hi, NULL, NULL, (void **)&obj);
         if (obj) {
+#ifdef USE_ATOMICS
+            apr_atomic_inc(&obj->refcount);
+            obj->cleanup = 1;
+            if (!apr_atomic_dec(&obj->refcount)) {
+#else
             obj->cleanup = 1;
             if (!obj->refcount) {
+#endif
                 cleanup_cache_object(obj);
             }
         }
@@ -422,6 +443,7 @@ static int remove_entity(cache_handle_t *h)
 {
     cache_object_t *obj = h->cache_obj;
 
+    /* Remove the cache object from the cache */
     if (sconf->lock) {
         apr_thread_mutex_lock(sconf->lock);
     }
@@ -432,16 +454,36 @@ static int remove_entity(cache_handle_t *h)
         apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
-        obj->cleanup = 1;
-        if (!obj->refcount) {
-            cleanup_cache_object(obj);
-        }
-        h->cache_obj = NULL;
     }
+    else {
+        /* If the object was removed from the cache prior to this function being
+         * called, then obj == NULL. Reinit obj with the object being cleaned up.
+         * Note: This code assumes that there is at most only one object in the
+         * cache per key.
+         */
+        obj = h->cache_obj;
+    }
+
+    /* Cleanup the cache object 
+     * Set obj->cleanup to ensure decrement_refcount cleans up the obj if it 
+     * is still being referenced by another thread
+     */
+    obj->cleanup = 1;
+#ifndef USE_ATOMICS
+    obj->refcount--;
+    if (!obj->refcount) {
+        cleanup_cache_object(obj);
+    }
+#endif
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }    
-    
+#ifdef USE_ATOMICS
+    if (!apr_atomic_dec(&obj->refcount)) {
+        cleanup_cache_object(obj);
+    }
+#endif
+    h->cache_obj = NULL;   
     return OK;
 }
 static apr_status_t serialize_table(cache_header_tbl_t **obj, 
@@ -527,19 +569,29 @@ static int remove_url(const char *type, const char *key)
         apr_hash_set(sconf->cacheht, key, APR_HASH_KEY_STRING, NULL);
         sconf->object_cnt--;
         sconf->cache_size -= mobj->m_len;
+        /* Set cleanup to ensure decrement_refcount cleans up the obj if it 
+         * is still being referenced by another thread
+         */
         obj->cleanup = 1;
+#ifdef USE_ATOMICS
+        /* Refcount increment MUST be made under protection of the lock */
+        obj->refcount++;
+#else
         if (!obj->refcount) {
             cleanup_cache_object(obj);
         }
+#endif
     }
     if (sconf->lock) {
         apr_thread_mutex_unlock(sconf->lock);
     }
-
-    if (!obj) {
-        return DECLINED;
+#ifdef USE_ATOMICS
+    if (obj) {
+        if (!apr_atomic_dec(&obj->refcount)) {
+            cleanup_cache_object(obj);
+        }
     }
-    
+#endif
     return OK;
 }
 
