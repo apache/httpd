@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) mod_include: Fix bug which could truncate variable expansions
+     of N*64 characters by one byte.  PR 32985.  [Joe Orton]
+
   *) Correct handling of certain bucket types in ap_save_brigade, fixing
      possible segfaults in mod_cgi with #include virtual.  PR 31247.
      [Joe Orton]

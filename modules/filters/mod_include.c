@@ -616,7 +616,7 @@ static char *ap_ssi_parse_string(request_rec *r, include_ctx_t *ctx,
                     char *new_out;
                     do {
                         new_out_size *= 2;
-                    } while (new_out_size < current_length + l);
+                    } while (new_out_size < current_length + l + 1); /* +1 for NUL */
                     if (new_out_size > length) {
                         new_out_size = length;
                     }
