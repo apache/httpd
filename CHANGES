@@ -119,7 +119,7 @@ Changes with Apache 2.1.0-dev
 
   *) OpenSSL headers should be included as "openssl/ssl.h", and not rely on
      the INCLUDE path to be defined properly.
-     PR 11310. [Geoff Thrope <geoff@geoffthorpe.net>]
+     PR 11310. [Geoff Thorpe <geoff@geoffthorpe.net>]
 
   *) Modify APACHE_CHECK_SSL_TOOLKIT to detect SSL-C. [Madhusudan Mathihalli]
 
