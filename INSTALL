@@ -14,7 +14,7 @@
 
      NOTES: * Replace PREFIX with the filesystem path under which 
               Apache should be installed.  A typical installation
-              might use "/usr/local/apache" for PREFIX (without the
+              might use "/usr/local/apache2" for PREFIX (without the
               quotes).
 
             * If you are building on FreeBSD, be aware that threads will
