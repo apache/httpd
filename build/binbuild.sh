@@ -220,7 +220,7 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "	-e \"s;\@libexecdir\@;\$SR/libexec;\" -e \"s;\@includedir\@;\$SR/include;\" \\" && \
   echo "	-e \"s;\@sysconfdir\@;\$SR/conf;\" bindist/bin/apxs > \$SR/bin/apxs" && \
   echo "sed -e \"s;^#!/.*;#!\$PERL;\" bindist/bin/dbmmanage > \$SR/bin/dbmmanage" && \
-  echo "sed -e \"s%/usr/local/apache%\$SR%\" \$SR/conf/httpd.conf.default > \$SR/conf/httpd.conf" && \
+  echo "sed -e \"s%/usr/local/apache%\$SR%\" \$SR/conf/httpd-std.conf > \$SR/conf/httpd.conf" && \
   echo "sed -e \"s%PIDFILE=%PIDFILE=\$SR/%\" -e \"s%HTTPD=%HTTPD=\\\"\$SR/%\" -e \"s%httpd\$%httpd -d \$SR -R \$SR/libexec\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
   echo " " && \
   echo "echo \"Ready.\"" && \
@@ -251,7 +251,7 @@ sed -e "s%\"htdocs%\"/usr/local/apache/htdocs%" \
     -e "s%^ServerAdmin.*%ServerAdmin you@your.address%" \
     -e "s%#ServerName.*%#ServerName localhost%" \
     -e "s%Port 8080%Port 80%" \
-    bindist/conf/httpd.conf.default > bindist/conf/httpd.conf
+    bindist/conf/httpd-std.conf > bindist/conf/httpd.conf
 cp bindist/conf/httpd.conf bindist/conf/httpd.conf.default
 
 echo "Creating distribution archive and readme file..."
