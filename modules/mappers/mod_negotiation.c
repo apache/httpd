@@ -912,6 +912,7 @@ static int read_types_multi(negotiation_state *neg)
     char *filp;
     int prefix_len;
     apr_dir_t *dirp;
+    apr_finfo_t dirent;
     apr_status_t status;
     struct var_rec mime_info;
     struct accept_rec accept_info;
@@ -936,17 +937,14 @@ static int read_types_multi(negotiation_state *neg)
         return HTTP_FORBIDDEN;
     }
 
-    while (apr_readdir(dirp) == APR_SUCCESS) {
+    while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
         request_rec *sub_req;
-        const char *d_name;
-
-        apr_get_dir_filename(&d_name, dirp);
+        
         /* Do we have a match? */
-
-        if (strncmp(d_name, filp, prefix_len)) {
+        if (strncmp(dirent.name, filp, prefix_len)) {
             continue;
         }
-        if (d_name[prefix_len] != '.') {
+        if (dirent.name[prefix_len] != '.') {
             continue;
         }
 
@@ -955,7 +953,7 @@ static int read_types_multi(negotiation_state *neg)
          * which we'll be slapping default_type on later).
          */
 
-        sub_req = ap_sub_req_lookup_file(d_name, r, NULL);
+        sub_req = ap_sub_req_lookup_file(dirent.name, r, NULL);
 
         /* If it has a handler, we'll pretend it's a CGI script,
          * since that's a good indication of the sort of thing it
@@ -979,7 +977,7 @@ static int read_types_multi(negotiation_state *neg)
             ((sub_req->handler) &&
              !strcmp(sub_req->handler, "type-map"))) {
 
-            apr_closedir(dirp);
+            apr_dir_close(dirp);
             neg->avail_vars->nelts = 0;
             if (sub_req->status != HTTP_OK) {
                 return sub_req->status;
@@ -990,7 +988,7 @@ static int read_types_multi(negotiation_state *neg)
         /* Have reasonable variant --- gather notes. */
 
         mime_info.sub_req = sub_req;
-        mime_info.file_name = apr_pstrdup(neg->pool, d_name);
+        mime_info.file_name = apr_pstrdup(neg->pool, dirent.name);
         if (sub_req->content_encoding) {
             mime_info.content_encoding = sub_req->content_encoding;
         }
@@ -1009,7 +1007,7 @@ static int read_types_multi(negotiation_state *neg)
         clean_var_rec(&mime_info);
     }
 
-    apr_closedir(dirp);
+    apr_dir_close(dirp);
 
     set_vlist_validator(r, r);
 

@@ -237,7 +237,7 @@ static int check_speling(request_rec *r)
 {
     spconfig *cfg;
     char *good, *bad, *postgood, *url;
-    const char *fname;
+    apr_finfo_t dirent;
     int filoc, dotloc, urlen, pglen;
     apr_array_header_t *candidates = NULL;
     apr_dir_t          *dir;
@@ -310,8 +310,7 @@ static int check_speling(request_rec *r)
         dotloc = strlen(bad);
     }
 
-    while (apr_readdir(dir) == APR_SUCCESS &&
-	   apr_get_dir_filename(&fname, dir) == APR_SUCCESS) {
+    while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dir) == APR_SUCCESS) {
         sp_reason q;
 
         /*
@@ -319,8 +318,8 @@ static int check_speling(request_rec *r)
          * requested one, we must have found a broken symlink or some such.
          * Do _not_ try to redirect this, it causes a loop!
          */
-        if (strcmp(bad, fname) == 0) {
-            apr_closedir(dir);
+        if (strcmp(bad, dirent.name) == 0) {
+            apr_dir_close(dir);
             return OK;
         }
 
@@ -328,11 +327,11 @@ static int check_speling(request_rec *r)
          * miscapitalization errors are checked first (like, e.g., lower case
          * file, upper case request)
          */
-        else if (strcasecmp(bad, fname) == 0) {
+        else if (strcasecmp(bad, dirent.name) == 0) {
             misspelled_file *sp_new;
 
 	    sp_new = (misspelled_file *) apr_push_array(candidates);
-            sp_new->name = apr_pstrdup(r->pool, fname);
+            sp_new->name = apr_pstrdup(r->pool, dirent.name);
             sp_new->quality = SP_MISCAPITALIZED;
         }
 
@@ -340,11 +339,11 @@ static int check_speling(request_rec *r)
          * simple typing errors are checked next (like, e.g.,
          * missing/extra/transposed char)
          */
-        else if ((q = spdist(bad, fname)) != SP_VERYDIFFERENT) {
+        else if ((q = spdist(bad, dirent.name)) != SP_VERYDIFFERENT) {
             misspelled_file *sp_new;
 
 	    sp_new = (misspelled_file *) apr_push_array(candidates);
-            sp_new->name = apr_pstrdup(r->pool, fname);
+            sp_new->name = apr_pstrdup(r->pool, dirent.name);
             sp_new->quality = q;
         }
 
@@ -380,23 +379,23 @@ static int check_speling(request_rec *r)
              * (e.g. foo.gif and foo.html) This code will pick the first one
              * it finds. Better than a Not Found, though.
              */
-            int entloc = ap_ind(fname, '.');
+            int entloc = ap_ind(dirent.name, '.');
             if (entloc == -1) {
-                entloc = strlen(fname);
+                entloc = strlen(dirent.name);
 	    }
 
             if ((dotloc == entloc)
-                && !strncasecmp(bad, fname, dotloc)) {
+                && !strncasecmp(bad, dirent.name, dotloc)) {
                 misspelled_file *sp_new;
 
 		sp_new = (misspelled_file *) apr_push_array(candidates);
-                sp_new->name = apr_pstrdup(r->pool, fname);
+                sp_new->name = apr_pstrdup(r->pool, dirent.name);
                 sp_new->quality = SP_VERYDIFFERENT;
             }
 #endif
         }
     }
-    apr_closedir(dir);
+    apr_dir_close(dir);
 
     if (candidates->nelts != 0) {
         /* Wow... we found us a mispelling. Construct a fixed url */

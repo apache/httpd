@@ -1315,6 +1315,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
     apr_pool_t *pool = params->pool;
     dav_error *err = NULL;
     int isdir = fsctx->res1.collection;
+    apr_finfo_t dirent;
     apr_dir_t *dirp;
 
     /* ensure the context is prepared properly, then call the func */
@@ -1357,15 +1358,14 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	/* ### need a better error */
 	return dav_new_error(pool, HTTP_NOT_FOUND, 0, NULL);
     }
-    while ((apr_readdir(dirp)) == APR_SUCCESS) {
-	const char *name;
+    while ((apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp)) == APR_SUCCESS) {
 	apr_size_t len;
 
-	apr_get_dir_filename(&name, dirp);
-	len = strlen(name);
+	len = strlen(dirent.name);
 
 	/* avoid recursing into our current, parent, or state directories */
-	if (name[0] == '.' && (len == 1 || (name[1] == '.' && len == 2))) {
+	if (dirent.name[0] == '.' 
+              && (len == 1 || (dirent.name[1] == '.' && len == 2))) {
 	    continue;
 	}
 
@@ -1374,19 +1374,21 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	    /* ### example: .htaccess is normally configured to fail auth */
 
 	    /* stuff in the state directory is never authorized! */
-	    if (!strcmp(name, DAV_FS_STATE_DIR)) {
+	    if (!strcmp(dirent.name, DAV_FS_STATE_DIR)) {
 		continue;
 	    }
 	}
 	/* skip the state dir unless a HIDDEN is performed */
 	if (!(params->walk_type & DAV_WALKTYPE_HIDDEN)
-	    && !strcmp(name, DAV_FS_STATE_DIR)) {
+	    && !strcmp(dirent.name, DAV_FS_STATE_DIR)) {
 	    continue;
 	}
 
 	/* append this file onto the path buffer (copy null term) */
-	dav_buffer_place_mem(pool, &fsctx->path1, name, len + 1, 0);
+	dav_buffer_place_mem(pool, &fsctx->path1, dirent.name, len + 1, 0);
 
+
+        /* ### Optimize me, dirent can give us what we need! */
         if (apr_lstat(&fsctx->info1.finfo, fsctx->path1.buf, 
                       APR_FINFO_NORM, pool) != APR_SUCCESS) {
 	    /* woah! where'd it go? */
@@ -1397,11 +1399,11 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 
 	/* copy the file to the URI, too. NOTE: we will pad an extra byte
 	   for the trailing slash later. */
-	dav_buffer_place_mem(pool, &fsctx->uri_buf, name, len + 1, 1);
+	dav_buffer_place_mem(pool, &fsctx->uri_buf, dirent.name, len + 1, 1);
 
 	/* if there is a secondary path, then do that, too */
 	if (fsctx->path2.buf != NULL) {
-	    dav_buffer_place_mem(pool, &fsctx->path2, name, len + 1, 0);
+	    dav_buffer_place_mem(pool, &fsctx->path2, dirent.name, len + 1, 0);
 	}
 
 	/* set up the (internal) pathnames for the two resources */
@@ -1458,7 +1460,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
     }
 
     /* ### check the return value of this? */
-    apr_closedir(dirp);
+    apr_dir_close(dirp);
 
     if (err != NULL)
 	return err;
