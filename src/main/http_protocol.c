@@ -2056,7 +2056,7 @@ void send_error_response (request_rec *r, int recursive_error)
 	    bputs("Your browser sent a request that\n", fd);
 	    bputs("this server could not understand.<P>\n", fd);
 	    break;
-	case FORBIDDEN:
+	case HTTP_FORBIDDEN:
 	    bvputs(fd, "You don't have permission to access ",
 		     escape_html(r->pool, r->uri), "\non this server.<P>\n",
 		   NULL);
