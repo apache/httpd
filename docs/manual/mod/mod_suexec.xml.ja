@@ -26,8 +26,8 @@
 <name>SuexecUserGroup</name>
 <description>CGI プログラムのユーザパーミッション、グループパーミッション</description>
 <syntax>SuexecUserGroup <em>User Group</em></syntax>
-<contextlist><context>サーバ設定ファイル</context>
-<context>バーチャルホスト</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 <compatibility>SuexecUserGroup は 2.0 以降でのみ使用可能。</compatibility>
 
 <usage>

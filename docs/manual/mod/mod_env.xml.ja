@@ -25,8 +25,8 @@
     <syntax>PassEnv
     <em>env-variable</em> [<em>env-variable</em>] ...</syntax>
     <contextlist>
-      <context>サーバ設定ファイル</context><context>バーチャルホスト</context>
-      <context>ディレクトリ</context><context>.htaccess</context>
+      <context>server config</context><context>virtual host</context>
+      <context>directory</context><context>.htaccess</context>
     </contextlist>
     <override>FileInfo</override>
 
@@ -46,8 +46,8 @@
 <description>環境変数を設定する</description>
 <syntax>SetEnv <em>env-variable value</em></syntax>
 <contextlist>
-<context>サーバ設定ファイル</context><context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
 
@@ -65,8 +65,8 @@
 <description>環境から変数を取り除く</description>
 <syntax>UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</syntax>
 <contextlist>
-<context>サーバ設定ファイル</context><context>バーチャルホスト</context>
-<context>ディレクトリ</context><context>.htaccess</context>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
 
