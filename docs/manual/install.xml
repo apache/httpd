@@ -24,6 +24,9 @@
 
 </summary>
 
+<seealso><a href="invoking.html">Starting</a></seealso>
+<seealso><a href="stopping.html">Stopping or Restarting</a></seealso>
+
 <section id="overview"><title>Overview for the
     impatient</title>
 
@@ -295,14 +298,14 @@
 
       <dt><code>LIBS=...</code></dt>
 
-      <dd>Library location information ("-L" and "-l" options) to
-      pass to the linker.</dd>
+      <dd>Library location information ("<code>-L</code>" and
+      "<code>-l</code>" options) to pass to the linker.</dd>
 
       <dt><code>INCLUDES=...</code></dt>
 
-      <dd>Header file search directories ("-I<em>dir</em>").</dd>
+      <dd>Header file search directories ("<code>-I<em>dir</em></code>").</dd>
 
-      <dt><code>TARGET=...</code> [Default: apache]</dt>
+      <dt><code>TARGET=...</code> [Default: <code>apache</code>]</dt>
 
       <dd>Name of the executable which will be built.</dd>
 
@@ -338,7 +341,7 @@
 
       <dt><code>--quiet</code></dt>
 
-      <dd>Prevents the printing of the usual "checking..."
+      <dd>Prevents the printing of the usual "<code>checking...</code>"
       messages.</dd>
 
       <dt><code>--verbose</code></dt>
@@ -357,7 +360,7 @@
 
     <dl>
       <dt><code>--prefix=<em>PREFIX</em></code> [Default:
-      /usr/local/apache2]</dt>
+      <code>/usr/local/apache2</code>]</dt>
 
       <dd>Specifies the directory under which the Apache files will
       be installed.</dd>
@@ -368,7 +371,7 @@
 
     <dl>
       <dt><code>--exec-prefix=<em>EPREFIX</em></code> [Default:
-      <em>PREFIX</em>]</dt>
+      <code><em>PREFIX</em></code>]</dt>
 
       <dd>Specifies the directory under which
       architecture-dependent files will be placed.</dd>
@@ -457,7 +460,8 @@
     <code>--enable-modules</code> and
     <code>--enable-mods-shared</code> options is usually a
     space-separated list of module identifiers. For example, to
-    enable mod_dav and mod_info, you can either use</p>
+    enable <module>mod_dav</module> and <module>mod_info</module>,
+    you can either use</p>
 
 <example>./configure --enable-dav --enable-info</example>
 
@@ -470,7 +474,7 @@
     in one step. You can then remove any modules that you do not
     want with the <code>--disable-<em>MODULE</em></code> option.
     For example, to include all modules as DSOs with the exception
-    of mod_info, you can use</p>
+    of <module>mod_info</module>, you can use</p>
 
 <example>
       ./configure --enable-mods-shared=all
@@ -558,15 +562,16 @@ seperated by a colon.</dd>
 
     <p>Next, you can customize your Apache HTTP server by editing
     the <a href="configuring.html">configuration files</a> under
-    <em>PREFIX</em>/conf/.</p>
+    <code><em>PREFIX</em>/conf/</code>.</p>
 
 <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
     <p>Have a look at the Apache manual under <a
     href="./">docs/manual/</a> or consult <a
-    href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>
-    for the most recent version of this manual and a complete reference of
-	available <a href="mod/directives.html">configuration directives</a>.</p>
+    href="http://httpd.apache.org/docs-2.0/"
+    >http://httpd.apache.org/docs-2.0/</a> for the most recent version of
+    this manual and a complete reference of available <a
+    href="mod/directives.html">configuration directives</a>.</p>
 </section>
 
 <section id="test"><title>Test</title>

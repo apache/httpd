@@ -19,7 +19,7 @@
     projects.</p>
 
 </div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview for the
-    impatient</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">Requirements</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">Extract</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">Configuring the source tree</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">Build</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">Install</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">Customize</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">Test</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">Overview for the
+    impatient</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">Requirements</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">Extract</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">Configuring the source tree</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">Build</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">Install</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">Customize</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">Test</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="invoking.html">Starting</a></li><li><a href="stopping.html">Stopping or Restarting</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">Overview for the
     impatient</a></h2>
 
     <table>
@@ -273,14 +273,14 @@
 
       <dt><code>LIBS=...</code></dt>
 
-      <dd>Library location information ("-L" and "-l" options) to
-      pass to the linker.</dd>
+      <dd>Library location information ("<code>-L</code>" and
+      "<code>-l</code>" options) to pass to the linker.</dd>
 
       <dt><code>INCLUDES=...</code></dt>
 
-      <dd>Header file search directories ("-I<em>dir</em>").</dd>
+      <dd>Header file search directories ("<code>-I<em>dir</em></code>").</dd>
 
-      <dt><code>TARGET=...</code> [Default: apache]</dt>
+      <dt><code>TARGET=...</code> [Default: <code>apache</code>]</dt>
 
       <dd>Name of the executable which will be built.</dd>
 
@@ -316,7 +316,7 @@
 
       <dt><code>--quiet</code></dt>
 
-      <dd>Prevents the printing of the usual "checking..."
+      <dd>Prevents the printing of the usual "<code>checking...</code>"
       messages.</dd>
 
       <dt><code>--verbose</code></dt>
@@ -335,7 +335,7 @@
 
     <dl>
       <dt><code>--prefix=<em>PREFIX</em></code> [Default:
-      /usr/local/apache2]</dt>
+      <code>/usr/local/apache2</code>]</dt>
 
       <dd>Specifies the directory under which the Apache files will
       be installed.</dd>
@@ -346,7 +346,7 @@
 
     <dl>
       <dt><code>--exec-prefix=<em>EPREFIX</em></code> [Default:
-      <em>PREFIX</em>]</dt>
+      <code><em>PREFIX</em></code>]</dt>
 
       <dd>Specifies the directory under which
       architecture-dependent files will be placed.</dd>
@@ -432,7 +432,8 @@
     <code>--enable-modules</code> and
     <code>--enable-mods-shared</code> options is usually a
     space-separated list of module identifiers. For example, to
-    enable mod_dav and mod_info, you can either use</p>
+    enable <code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code> and <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>,
+    you can either use</p>
 
 <div class="example"><p><code>./configure --enable-dav --enable-info</code></p></div>
 
@@ -445,7 +446,7 @@
     in one step. You can then remove any modules that you do not
     want with the <code>--disable-<em>MODULE</em></code> option.
     For example, to include all modules as DSOs with the exception
-    of mod_info, you can use</p>
+    of <code class="module"><a href="./mod/mod_info.html">mod_info</a></code>, you can use</p>
 
 <div class="example"><p><code>
       ./configure --enable-mods-shared=all
@@ -526,13 +527,12 @@ seperated by a colon.</dd>
 
     <p>Next, you can customize your Apache HTTP server by editing
     the <a href="configuring.html">configuration files</a> under
-    <em>PREFIX</em>/conf/.</p>
+    <code><em>PREFIX</em>/conf/</code>.</p>
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>Have a look at the Apache manual under <a href="./">docs/manual/</a> or consult <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>
-    for the most recent version of this manual and a complete reference of
-	available <a href="mod/directives.html">configuration directives</a>.</p>
+    <p>Have a look at the Apache manual under <a href="./">docs/manual/</a> or consult <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a> for the most recent version of
+    this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="test" id="test">Test</a></h2>
 
     <p>Now you can <a href="invoking.html">start</a> your Apache
