@@ -112,9 +112,6 @@
     /* now our own stuff ... */
 #include "mod_rewrite.h"
 
-#ifdef USE_LOCKING
-#include <sys/locking.h>
-#endif 
 
 
 /*
@@ -172,6 +169,8 @@ static command_rec command_table[] = {
       "a URL-applied regexp-pattern and a substitution URL" },
     { "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,   TAKE2, 
       "a mapname and a filename" },
+    { "RewriteLock",     cmd_rewritelock,     NULL, RSRC_CONF,   TAKE1,
+      "the filename of a lockfile used for inter-process synchronization"},
     { "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF,   TAKE1, 
       "the filename of the rewriting logfile" },
     { "RewriteLogLevel", cmd_rewriteloglevel, NULL, RSRC_CONF,   TAKE1, 
@@ -250,6 +249,8 @@ static void *config_server_create(pool *p, server_rec *s)
     a->rewritelogfile  = NULL;
     a->rewritelogfp    = -1;
     a->rewriteloglevel = 1;
+    a->rewritelockfile = NULL;
+    a->rewritelockfp   = -1;
     a->rewritemaps     = make_array(p, 2, sizeof(rewritemap_entry));
     a->rewriteconds    = make_array(p, 2, sizeof(rewritecond_entry));
     a->rewriterules    = make_array(p, 2, sizeof(rewriterule_entry));
@@ -272,6 +273,10 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
     a->rewritelogfp    = base->rewritelogfp != -1   ?
                          base->rewritelogfp : overrides->rewritelogfp;
     a->rewriteloglevel = overrides->rewriteloglevel;
+    a->rewritelockfile = base->rewritelockfile != NULL ?
+                         base->rewritelockfile : overrides->rewritelockfile;
+    a->rewritelockfp   = base->rewritelockfp != -1   ?
+                         base->rewritelockfp : overrides->rewritelockfp;
 
     if (a->options & OPTION_INHERIT) {
         a->rewritemaps  = append_arrays(p, overrides->rewritemaps,
@@ -486,6 +491,18 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, char *a1,
                        && (stat(new->checkfile, &st) == -1))
         return pstrcat(cmd->pool, "RewriteMap: map file or program not found:",
                        new->checkfile, NULL);
+
+    return NULL;
+}
+
+static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, char *a1)
+{
+    rewrite_server_conf *sconf;
+
+    sconf = (rewrite_server_conf *)
+            get_module_config(cmd->server->module_config, &rewrite_module);
+
+    sconf->rewritelockfile = a1;
 
     return NULL;
 }
@@ -856,10 +873,12 @@ static void init_module(server_rec *s, pool *p)
 {
     /* step through the servers and
      * - open each rewriting logfile 
+     * - open each rewriting lockfile 
      * - open the RewriteMap prg:xxx programs
      */
     for (; s; s = s->next) {
         open_rewritelog(s, p);
+        open_rewritelock(s, p);
         run_rewritemap_programs(s, p);
     }
 
@@ -2635,10 +2654,8 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     char c;
     int i;
 
-    /* lock the channel */
-#ifdef USE_PIPE_LOCKING
-    fd_lock(fpin);
-#endif
+    /* take the lock */
+    rewritelock_alloc(r);
 
     /* write out the request key */
     write(fpin, key, strlen(key));
@@ -2653,10 +2670,8 @@ static char *lookup_map_program(request_rec *r, int fpin, int fpout, char *key)
     }
     buf[i] = '\0';
 
-    /* unlock the channel */
-#ifdef USE_PIPE_LOCKING
-    fd_unlock(fpin);
-#endif
+    /* give the lock back */
+    rewritelock_free(r);
 
     if (strcasecmp(buf, "NULL") == 0)
         return NULL;
@@ -2775,7 +2790,7 @@ static void open_rewritelog(server_rec *s, pool *p)
     if (*(conf->rewritelogfile) == '\0')
         return;
     if (conf->rewritelogfp > 0)
-        return; /* virtual log shared w/main server */
+        return; /* virtual log shared w/ main server */
 
     fname = server_root_relative(p, conf->rewritelogfile);
     
@@ -2918,6 +2933,70 @@ static char *current_logtime(request_rec *r)
 }
 
 
+
+
+/*
+** +-------------------------------------------------------+
+** |                                                       |
+** |              rewriting lockfile support
+** |                                                       |
+** +-------------------------------------------------------+
+*/
+
+static void open_rewritelock(server_rec *s, pool *p)
+{
+    rewrite_server_conf *conf;
+    char *fname;
+    int    rewritelock_flags = ( O_WRONLY|O_APPEND|O_CREAT );
+#ifdef WIN32
+    mode_t rewritelock_mode  = ( _S_IREAD|_S_IWRITE );
+#else
+    mode_t rewritelock_mode  = ( S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
+#endif
+  
+    conf = get_module_config(s->module_config, &rewrite_module);
+    
+    if (conf->rewritelockfile == NULL)
+        return; 
+    if (*(conf->rewritelockfile) == '\0')
+        return;
+    if (conf->rewritelockfp > 0)
+        return; /* virtual log shared w/ main server */
+
+    fname = server_root_relative(p, conf->rewritelockfile);
+    
+    if ((conf->rewritelockfp = popenf(p, fname, rewritelock_flags, 
+                                      rewritelock_mode)) < 0) {
+        perror("open");
+        fprintf(stderr, 
+                "mod_rewrite: could not open RewriteLock file %s.\n",
+                fname);
+        exit(1);
+    }
+    return;
+}
+
+static void rewritelock_alloc(request_rec *r)
+{
+    rewrite_server_conf *conf;
+
+    conf = get_module_config(r->server->module_config, &rewrite_module);
+
+    if (conf->rewritelockfp != -1)
+        fd_lock(conf->rewritelockfp);
+    return;
+}
+
+static void rewritelock_free(request_rec *r)
+{
+    rewrite_server_conf *conf;
+
+    conf = get_module_config(r->server->module_config, &rewrite_module);
+
+    if (conf->rewritelockfp != -1)
+        fd_unlock(conf->rewritelockfp);
+    return;
+}
 
 
 /*
@@ -3789,18 +3868,22 @@ static void fd_lock(int fd)
 #ifdef USE_LOCKING
     /* Lock the first byte, always, assume we want to append 
        and seek to the end afterwards */
-    lseek(fd,0,SEEK_SET);
-    rc=_locking(fd, _LK_LOCK, 1);
-    lseek(fd,0,SEEK_END);
+    lseek(fd, 0, SEEK_SET);
+    rc = _locking(fd, _LK_LOCK, 1);
+    lseek(fd, 0, SEEK_END);
 #endif
 
     if (rc < 0) {
 #ifdef USE_FLOCK
         perror("flock");
-#else
+#endif
+#ifdef USE_FCNTL
         perror("fcntl");
 #endif
-        fprintf(stderr, "Error getting lock. Exiting!");
+#ifdef USE_LOCKING
+        perror("_locking");
+#endif
+        fprintf(stderr, "mod_rewrite: Error getting lock. Exiting!");
         exit(1);
     }
     return;
@@ -3823,18 +3906,22 @@ static void fd_unlock(int fd)
     rc = flock(fd, LOCK_UN);
 #endif 
 #ifdef USE_LOCKING
-    lseek(fd,0,SEEK_SET);
-    rc=_locking(fd,_LK_UNLCK,1);
-    lseek(fd,0,SEEK_END);
+    lseek(fd, 0, SEEK_SET);
+    rc = _locking(fd, _LK_UNLCK, 1);
+    lseek(fd, 0, SEEK_END);
 #endif
 
     if (rc < 0) {
 #ifdef USE_FLOCK
         perror("flock");
-#else
+#endif
+#ifdef USE_FCNTL
         perror("fcntl");
 #endif
-        fprintf(stderr, "Error freeing lock. Exiting!");
+#ifdef USE_LOCKING
+        perror("_locking");
+#endif
+        fprintf(stderr, "mod_rewrite: Error freeing lock. Exiting!");
         exit(1);
     }
 }

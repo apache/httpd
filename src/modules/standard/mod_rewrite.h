@@ -136,17 +136,9 @@
 #ifdef WIN32
 #undef USE_FCNTL
 #define USE_LOCKING
+#include <sys/locking.h>
 #endif
 
-    /* The locking support for the RewriteMap programs:
-     * Locking a pipe to the child works fine under most
-     * Unix derivates, but braindead SunOS 4.1.x has 
-     * problems with this approach...
-     */
-#define USE_PIPE_LOCKING 1
-#ifdef SUNOS4
-#undef USE_PIPE_LOCKING
-#endif
 
 /*
 **
@@ -265,6 +257,8 @@ typedef struct {
     char         *rewritelogfile;  /* the RewriteLog filename */
     int           rewritelogfp;    /* the RewriteLog open filepointer */
     int           rewriteloglevel; /* the RewriteLog level of verbosity */
+    char         *rewritelockfile; /* the RewriteLock filename */
+    int           rewritelockfp;   /* the RewriteLock open filepointer */
     array_header *rewritemaps;     /* the RewriteMap entries */
     array_header *rewriteconds;    /* the RewriteCond entries (temporary) */
     array_header *rewriterules;    /* the RewriteRule entries */
@@ -339,6 +333,8 @@ static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
 static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1,
                                        char *a2);
 
+static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, char *a1);
+
 static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *a1);
 
@@ -409,6 +405,11 @@ static int   rewritelog_child(void *cmd);
 static void  rewritelog(request_rec *r, int level, const char *text, ...)
 			__attribute__((format(printf,3,4)));
 static char *current_logtime(request_rec *r);
+
+    /* rewritinf lockfile support */
+static void open_rewritelock(server_rec *s, pool *p);
+static void rewritelock_alloc(request_rec *r);
+static void rewritelock_free(request_rec *r);
 
     /* program map support */
 static void  run_rewritemap_programs(server_rec *s, pool *p);

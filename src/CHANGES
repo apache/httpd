@@ -1,5 +1,11 @@
 Changes with Apache 1.3b6
 
+  *) Fix long-standing problem with RewriteMap _programs_ under Unix derivates
+     (like SunOS and FreeBSD) which don't accept the locking of pipes
+     directly.  A new directive RewriteLock is introduced which can be used to
+     setup a separate locking file which then is used for synchronization.
+     [Ralf S. Engelschall, PR#1029]
+
   *) WIN32: The server root is obtained from the registry key
      HKLM\SOFTWARE\Apache Group\Apache\<version> (version is currently
      "1.3 beta"), unless overridden by the -d command line flag. The
