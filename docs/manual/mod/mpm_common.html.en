@@ -33,6 +33,7 @@ more than one multi-processing module (MPM)</td></tr>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
@@ -146,6 +147,27 @@ switch before dumping core</td></tr>
       writable for the process. Apache (2.0.46 and later) reenables core dumps
       on Linux 2.4 and beyond, but only if you explicitly configure a <code class="directive">CoreDumpDirectory</code>.</p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a> <a name="enableexceptionhook" id="enableexceptionhook">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the fatal exception handler after a crash</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>EnableExceptionHook On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>EnableExceptionHook Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.49 an later</td></tr>
+</table>
+    <p>For safety reasons this directive is only available if the server was
+    configured with the <code>--enable-exception-hook</code> option. It
+    enables a hook that allows external modules to plug in and do something
+    after a child crashed.</p>
+    
+    <p>There are already two modules, <code>mod_whatkilledus</code> and
+    <code>mod_backtrace</code> that make use of this hook. Please have a
+    look at Jeff Trawick's <a href="http://www.apache.org/~trawick/exception_hook.html">EnableExceptionHook site</a> for more information about these.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
