@@ -380,7 +380,7 @@ static int get_req(int fd, request_rec *r, char **argv0, char ***env, int *req_t
     if ((rc == sizeof(len)) && len) {
         data = apr_pcalloc(r->pool, len + 1); /* last byte is '\0' */
         rc = read(fd, data, len);
-        if(rc != len) {
+        if (rc != len) {
             return 1;
         }
         apr_table_set(r->notes,"mod_userdir_user", data);
@@ -1028,7 +1028,7 @@ static int cgid_handler(request_rec *r)
     apr_file_t *tempsock;
     apr_size_t nbytes;
 
-    if(strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
+    if (strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
         return DECLINED;
 
     if (r->method_number == M_OPTIONS) { 
