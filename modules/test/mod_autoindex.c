@@ -912,7 +912,7 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
 {
     char buf[IOBUFSIZE + 1];
     int i, c, ch;
-    apr_ssize_t n;
+    apr_size_t n;
     apr_status_t stat;
 
     ap_rputs("<PRE>\n", r);
@@ -1106,7 +1106,7 @@ static char *find_title(request_rec *r)
     char titlebuf[MAX_STRING_LEN], *find = "<TITLE>";
     apr_file_t *thefile = NULL;
     int x, y, p;
-    apr_ssize_t n;
+    apr_size_t n;
 
     if (r->status != HTTP_OK) {
 	return NULL;
@@ -1157,7 +1157,7 @@ static char *find_title(request_rec *r)
     return NULL;
 }
 
-static struct ent *make_autoindex_entry(char *name, int autoindex_opts,
+static struct ent *make_autoindex_entry(const char *name, int autoindex_opts,
 					autoindex_config_rec *d,
 					request_rec *r, char keyid,
 					char direction)
@@ -1540,8 +1540,8 @@ static int index_directory(request_rec *r,
     char *title_name = ap_escape_html(r->pool, r->uri);
     char *title_endp;
     char *name = r->filename;
-
-    apr_dir_t *d;
+    apr_finfo_t dirent;
+    apr_dir_t *thedir;
     apr_status_t status;
     int num_ent = 0, x;
     struct ent *head, *p;
@@ -1551,7 +1551,7 @@ static int index_directory(request_rec *r,
     char keyid;
     char direction;
 
-    if ((status = apr_dir_open(&d, name, r->pool)) != APR_SUCCESS) {
+    if ((status = apr_dir_open(&thedir, name, r->pool)) != APR_SUCCESS) {
 	ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
 		    "Can't open directory for index: %s", r->filename);
 	return HTTP_FORBIDDEN;
@@ -1569,7 +1569,7 @@ static int index_directory(request_rec *r,
     ap_send_http_header(r);
 
     if (r->header_only) {
-	apr_closedir(d);
+	apr_dir_close(thedir);
 	return 0;
     }
 
@@ -1621,10 +1621,8 @@ static int index_directory(request_rec *r,
      * linked list and then arrayificate them so qsort can use them. 
      */
     head = NULL;
-    while (apr_readdir(d) == APR_SUCCESS) {
-        const char *d_name;
-        apr_get_dir_filename(&d_name, d);
-	p = make_autoindex_entry(d_name, autoindex_opts,
+    while (apr_dir_read(&dirent, APR_FINFO_DIRENT, thedir) == APR_SUCCESS) {
+	p = make_autoindex_entry(dirent.name, autoindex_opts,
 				 autoindex_conf, r, keyid, direction);
 	if (p != NULL) {
 	    p->next = head;
@@ -1647,7 +1645,7 @@ static int index_directory(request_rec *r,
     }
     output_directories(ar, num_ent, autoindex_conf, r, autoindex_opts, keyid,
 		       direction);
-    apr_closedir(d);
+    apr_dir_close(thedir);
 
     if (autoindex_opts & FANCY_INDEXING) {
 	ap_rputs("<HR>\n", r);
@@ -1663,7 +1661,12 @@ static int index_directory(request_rec *r,
 static int handle_autoindex(request_rec *r)
 {
     autoindex_config_rec *d;
-    int allow_opts = ap_allow_options(r);
+    int allow_opts;
+
+    if(strcmp(r->handler,DIR_MAGIC_TYPE))
+	return DECLINED;
+
+    allow_opts = ap_allow_options(r);
 
     d = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config,
 						      &autoindex_module);
@@ -1693,12 +1696,10 @@ static int handle_autoindex(request_rec *r)
     }
 }
 
-
-static const handler_rec autoindex_handlers[] =
+static void register_hooks(apr_pool_t *p)
 {
-    {DIR_MAGIC_TYPE, handle_autoindex},
-    {NULL}
-};
+    ap_hook_handler(handle_autoindex,NULL,NULL,APR_HOOK_MIDDLE);
+}
 
 module AP_MODULE_DECLARE_DATA autoindex_module =
 {
@@ -1708,6 +1709,5 @@ module AP_MODULE_DECLARE_DATA autoindex_module =
     NULL,			/* server config */
     NULL,			/* merge server config */
     autoindex_cmds,		/* command apr_table_t */
-    autoindex_handlers,		/* handlers */
-    NULL			/* register hooks */
+    register_hooks		/* register hooks */
 };
