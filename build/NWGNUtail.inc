@@ -96,11 +96,13 @@ VERSION_STR	= 2.0.0
 endif
 
 
-$(OBJDIR)/%.o: %.c $(OBJDIR)\cc.opt
-	@echo Compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+ifeq "$(words $(strip $(TARGET_nlm)))" "1"
 
-$(OBJDIR)\cc.opt: $(CCOPT_DEPENDS)
+$(OBJDIR)/%.o: %.c $(OBJDIR)\$(NLM_NAME)_cc.opt
+	@echo Compiling $<
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
+
+$(OBJDIR)\$(NLM_NAME)_cc.opt: $(CCOPT_DEPENDS)
 	$(CHK) $@ $(DEL) $@
 	@echo Generating $@
 ifneq "$(strip $(CFLAGS))" ""
@@ -148,6 +150,8 @@ ifneq "$(strip $(XDEFINES))" ""
 	@echo $(XDEFINES) >> $@
 endif
 
+endif # one target nlm
+
 #
 # Rules to build libraries
 #
@@ -188,6 +192,8 @@ ifeq "$(words $(strip $(TARGET_nlm)))" "1"
 $(TARGET_nlm) : $(FILES_nlm_objs) $(FILES_nlm_libs) $(OBJDIR)\$(NLM_NAME)_link.opt
 	@echo Linking $@
 	$(LINK) @$(OBJDIR)\$(NLM_NAME)_link.opt
+        
+#	$(CHK) $(OBJDIR)\cc.opt $(DEL) $(OBJDIR)\cc.opt
 
 # This will force the link option file to be rebuilt if we change the
 # corresponding makefile

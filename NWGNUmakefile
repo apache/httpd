@@ -348,53 +348,53 @@ installdev :: FORCE
 # Any specialized rules here
 #
 
-$(OBJDIR)/%.o: server/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: server/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: modules/arch/netware/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: modules/arch/netware/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: modules/http/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: modules/http/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: modules/aaa/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: modules/aaa/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: modules/mappers/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: modules/mappers/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: modules/generators/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: modules/generators/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: modules/metadata/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: modules/metadata/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: modules/filters/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: modules/filters/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: modules/loggers/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: modules/loggers/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: os/netware/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: os/netware/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: server/mpm/netware/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: server/mpm/netware/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
-$(OBJDIR)/%.o: srclib/pcre/%.c $(OBJDIR)\cc.opt
+$(OBJDIR)/%.o: srclib/pcre/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 	@echo compiling $<
-	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\cc.opt
+	$(CC) $< -o=$(OBJDIR)\$(@F) @$(OBJDIR)\$(NLM_NAME)_cc.opt
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
