@@ -1165,7 +1165,7 @@ echo "#### End of Configure created section ####">> Makefile.config
 # can be used by external modules needing to include Apache
 # header files.
 for cflag in $CFLAGS; do
-	echo $cflag >>$tmpconfig ;
+	echo $cflag | sed 's/\\\"/\"/g' >>$tmpconfig ;
 done
 awk > include/ap_config.h < $tmpconfig '
 	BEGIN {
