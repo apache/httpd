@@ -1,5 +1,5 @@
 dnl modules enabled in this directory by default
-APACHE_MODPATH_INIT(standard)
+APACHE_MODPATH_INIT(loggers)
 
 dnl APACHE_MODULE(vhost_alias,blabla)
 	

@@ -4,7 +4,6 @@ targets  = $(PROGRAMS)
 
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES = ../ap/libap.la \
-	../lib/aputil/libaputil.la \
 	../lib/sdbm/libsdbm.la \
 	../lib/apr/$(LIBPRE)apr.a
 

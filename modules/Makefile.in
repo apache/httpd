@@ -1,5 +1,5 @@
 
-SUBDIRS = mpm $(MODULE_DIRS)
+SUBDIRS = $(MODULE_DIRS)
 
 include $(top_srcdir)/build/rules.mk
 
