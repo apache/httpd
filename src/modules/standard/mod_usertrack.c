@@ -50,9 +50,9 @@
  *
  */
 
-/* $Id: mod_cookies.c,v 1.17 1996/09/26 12:04:00 mjc Exp $ */
+/* $Id: mod_usertrack.c,v 1.1 1996/09/27 08:46:50 mjc Exp $ */
 
-/* User Tracking Module
+/* User Tracking Module (Was mod_cookies.c)
  *
  * This Apache module is designed to track users paths through a site.
  * It uses the client-side state ("Cookie") protocol developed by Netscape.
@@ -91,20 +91,9 @@
  *     never expires.  You would then get the same Cookie each time the
  *     user revisits your site.
  *
- * Mark Cox, mark@ukweb.com, http://www.ukweb.com/~mark/, 6 July 95
+ * Mark Cox, mark@ukweb.com, 6 July 95
  *
- * 6.12.95  MJC Now be more friendly.  Allow our cookies to overlap with
- *              others the site may be using.  Use a more descriptive 
- *              cookie name.
- * 18.3.96  MJC Generate cookies for EVERY request no matter what the 
- *              browser.  We never know when a new browser writer will
- *              add cookie support.
- * 31.3.95 JimC Allow the log to be sent to a pipe.  Copies the relevant
- *              code from mod_log_agent.c.
- * 24.5.96  MJC Improved documentation after receiving comments from users
- *  4.7.96  MJC Bug, "else" missing since February caused logging twice
- * 19.7.96  AEK Added CookieExpires and CookieEnable directives
- * 03.9.96  MJC Remove logging stuff from here, (use AEK notes addition)
+ * This file replaces mod_cookies.c
  */
 
 #include "httpd.h"
@@ -112,7 +101,7 @@
 #include "http_core.h"
 #include <sys/time.h>
 
-module cookies_module;
+module usertrack_module;
 
 typedef struct {
     int always;
@@ -132,7 +121,7 @@ typedef struct {
 void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = get_module_config (r->server->module_config,
-					       &cookies_module);
+					       &usertrack_module);
     struct timeval tv;
     char new_cookie[100];	/* blurgh */
     char *dot;
@@ -184,7 +173,7 @@ void make_cookie(request_rec *r)
 int spot_cookie(request_rec *r)
 {
     int *disable = (int *)get_module_config(r->per_dir_config,
-					    &cookies_module);
+					    &usertrack_module);
     char *cookie;
     char *value;
 
@@ -231,7 +220,7 @@ char *set_cookie_disable (cmd_parms *cmd, int *c, int arg)
 char *set_cookie_exp (cmd_parms *parms, void *dummy, char *arg)
 {
     cookie_log_state *cls = get_module_config (parms->server->module_config,
-                           &cookies_module);
+                           &usertrack_module);
     time_t factor, modifier = 0;
     time_t num = 0;
     char *word;
@@ -301,7 +290,7 @@ command_rec cookie_log_cmds[] = {
 { NULL }
 };
 
-module cookies_module = {
+module usertrack_module = {
    STANDARD_MODULE_STUFF,
    NULL,                   /* initializer */
    make_cookie_dir,    	   /* dir config creater */

@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.37 1996/09/26 12:33:56 chuck Exp $
+# $Id: Configuration.tmpl,v 1.38 1996/09/27 08:46:48 mjc Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -211,13 +211,16 @@ Module browser_module      mod_browser.o
 # Module digest_module       mod_digest.o
 
 ## Outright experiments --- mod_dld defines commands which
-## allows other modules to be loaded in at runtime, and mod_cookies
-## uses Netscape cookies to automatically construct and log accurate
-## click-trails from Netscape cookies, for Netscape-using clients who
-## aren't coming in via proxy.   
+## allows other modules to be loaded in at runtime, 
 
 # Module dld_module	     mod_dld.o
-# Module cookies_module      mod_cookies.o
+
+## mod_usertrack.c is the new name for mod_cookies.c.  This module
+## uses Netscape cookies to automatically construct and log accurate
+## click-trails from Netscape cookies, for compatible clients who
+## aren't coming in via proxy.   
+
+# Module usertrack_module      mod_usertrack.o
 
 ## Finally, the proxy module.  It's not as complete as it could
 ## be yet, so use at your own risk.
