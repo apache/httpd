@@ -461,11 +461,14 @@ array_header *make_array (pool *p, int nelts, int elt_size)
 void *push_array (array_header *arr)
 {
   if (arr->nelts == arr->nalloc) {
-    char *new_data = pcalloc (arr->pool, arr->nalloc * arr->elt_size * 2);
+    int new_size = (arr->nalloc <= 0) ? 1 : arr->nalloc * 2;
+    char *new_data;
+    
+    new_data = pcalloc (arr->pool, arr->elt_size * new_size);
 
     memcpy (new_data, arr->elts, arr->nalloc * arr->elt_size);
     arr->elts = new_data;
-    arr->nalloc *= 2;
+    arr->nalloc = new_size;
   }
 
   ++arr->nelts;
@@ -477,11 +480,9 @@ void array_cat (array_header *dst, const array_header *src)
   int elt_size = dst->elt_size;
   
   if (dst->nelts + src->nelts > dst->nalloc) {
-    int new_size = dst->nalloc * 2;
+    int new_size = (dst->nalloc <= 0) ? 1 : dst->nalloc * 2;
     char *new_data;
 
-    if (new_size == 0) ++new_size;
-    
     while (dst->nelts + src->nelts > new_size)
       new_size *= 2;
 

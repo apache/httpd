@@ -1,7 +1,10 @@
 Changes with Apache 1.2b8
 
+  *) Memory allocation problem in push_array() -- it would corrupt memory
+     when nalloc==0.  [Kai Risku <krisku@tf.hut.fi> and Roy Fielding]
+
   *) invoke_handler() doesn't handle mime arguments in content-type
-    [Petr Lampa] PR#160
+     [Petr Lampa] PR#160
 
   *) Reduced IdentityCheck timeout to 30 seconds, as per RFC 1413 minimum.
      [Ken Coar]
