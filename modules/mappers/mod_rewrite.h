@@ -114,10 +114,6 @@
 
 #include "ap_config.h"
 
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-
     /* Include from the Apache server ... */
 #define CORE_PRIVATE
 #include "httpd.h"
@@ -304,7 +300,7 @@ typedef struct {
      * a 4-way hash apr_table_t with LRU functionality
      */
 typedef struct cacheentry {
-    time_t time;
+    apr_time_t time;
     char  *key;
     char  *value;
 } cacheentry;
@@ -452,9 +448,9 @@ static char *lookup_header(request_rec *r, const char *name);
 
     /* caching functions */
 static cache *init_cache(apr_pool_t *p);
-static char  *get_cache_string(cache *c, const char *res, int mode, time_t mtime,
+static char  *get_cache_string(cache *c, const char *res, int mode, apr_time_t mtime,
                                char *key);
-static void   set_cache_string(cache *c, const char *res, int mode, time_t mtime,
+static void   set_cache_string(cache *c, const char *res, int mode, apr_time_t mtime,
                                char *key, char *value);
 static cacheentry *retrieve_cache_string(cache *c, const char *res, char *key);
 static void   store_cache_string(cache *c, const char *res, cacheentry *ce);

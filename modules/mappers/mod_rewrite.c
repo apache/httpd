@@ -3056,7 +3056,7 @@ static void open_rewritelog(server_rec *s, apr_pool_t *p)
     apr_status_t rc;
     piped_log *pl;
     int    rewritelog_flags = ( APR_WRITE | APR_APPEND | APR_CREATE );
-    mode_t rewritelog_mode  = ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD );
+    apr_fileperms_t rewritelog_mode  = ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD );
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
@@ -3626,7 +3626,7 @@ static cache *init_cache(apr_pool_t *p)
     return c;
 }
 
-static void set_cache_string(cache *c, const char *res, int mode, time_t t,
+static void set_cache_string(cache *c, const char *res, int mode, apr_time_t t,
                              char *key, char *value)
 {
     cacheentry ce;
@@ -3639,7 +3639,7 @@ static void set_cache_string(cache *c, const char *res, int mode, time_t t,
 }
 
 static char *get_cache_string(cache *c, const char *res, int mode,
-                              time_t t, char *key)
+                              apr_time_t t, char *key)
 {
     cacheentry *ce;
 
