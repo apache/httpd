@@ -58,6 +58,7 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "http_main.h"
+#include "http_request.h"
 
 int asis_handler (request_rec *r)
 {
