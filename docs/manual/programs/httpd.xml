@@ -35,7 +35,7 @@
      <var>file</var> ] [ <strong>-k</strong> start|restart|graceful|stop ]
      [ -<strong>R</strong> <var>directory</var> ] [ -<strong>h</strong> ]
      [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
-     [ -<strong>t</strong> ] [ -<strong>v</strong>] [ -<strong>V</strong> ]
+     [ -<strong>t</strong> ] [ -<strong>v</strong> ] [ -<strong>V</strong> ]
      [ -<strong>X</strong> ]</code></p>
 
      <p>On <a href="../platform/windows.html">Windows systems</a>, the
