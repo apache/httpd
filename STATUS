@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/19 01:56:07 $]
+Last modified at [$Date: 2002/01/19 05:56:20 $]
 
 Release:
 
@@ -39,9 +39,6 @@ on related projects:
     * docs/STATUS
 
 RELEASE SHOWSTOPPERS:
-
-    * daedalus: load spikes on checkouts from Nov 15 onward.  This may be
-      because idle servers in prefork now block in apr_poll.
 
     * win32 scoreboard should _not_ use anon with no scoreboard name, it
       should revert to the old method if scoreboard name is null (use the
