@@ -2871,6 +2871,9 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mod
         apr_bucket *e;
         apr_bucket_brigade *newbb;
 
+        if (APR_BRIGADE_EMPTY(ctx->b))
+            return APR_EOF;
+
         e = APR_BRIGADE_FIRST(ctx->b);
         rv = apr_bucket_read(e, &str, &len, mode);
 
