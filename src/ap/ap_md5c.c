@@ -487,7 +487,7 @@ API_EXPORT(void) ap_MD5Encode(const unsigned char *pw,
     /*
      * Then our magic string
      */
-    ap_MD5Update(&ctx, AP_MD5PW_ID, AP_MD5PW_IDLEN);
+    ap_MD5Update(&ctx, (const unsigned char *) AP_MD5PW_ID, AP_MD5PW_IDLEN);
 
     /*
      * Then the raw salt
