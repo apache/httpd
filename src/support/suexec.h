@@ -68,6 +68,36 @@
 #endif
 
 /*
+ * UID_MIN -- Define this as the lowest UID allowed to be a target user
+ *            for suEXEC.  For most systems, 500 or 100 is common.
+ */
+#ifndef UID_MIN
+#define UID_MIN 500
+#endif
+
+/*
+ * GID_MIN -- Define this as the lowest GID allowed to be a target group
+ *            for suEXEC.  For most systems, 100 is common.
+ */
+#ifndef GID_MIN
+#define GID_MIN 100
+#endif
+
+/*
+ * USERDIR_SUFFIX -- Define to be the same as the UserDir in the conf
+ *                   file.  If you have VirtualHosts with a different
+ *                   UserDir for each, you will need to define them to
+ *                   all reside in one parent directory; then name that
+ *                   parent directory here.  IF THIS IS NOT DEFINED
+ *                   PROPERLY, ~USERDIR CGI REQUESTS WILL NOT WORK!
+ *                   See the suEXEC documentation for more detailed
+ *                   information.
+ */
+#ifndef USERDIR_SUFFIX
+#define USERDIR_SUFFIX "public_html"
+#endif
+
+/*
  * LOG_EXEC -- Define this as a filename if you want all suEXEC
  *             transactions and errors logged for auditing and
  *             debugging purposes.

@@ -81,8 +81,51 @@
 #include <time.h>
 #include <sys/stat.h>
 
+#define CLEAN_ENV_BUF 256
 
+extern char **environ;
 static FILE *log;
+
+char *safe_env_lst[] =
+{
+    "AUTH_TYPE",
+    "CONTENT_LENGTH",
+    "CONTENT_TYPE",
+    "DATE_GMT",
+    "DATE_LOCAL",
+    "DOCUMENT_NAME",
+    "DOCUMENT_PATH_INFO",
+    "DOCUMENT_ROOT",
+    "DOCUMENT_URI",
+    "FILEPATH_INFO",
+    "GATEWAY_INTERFACE",
+    "LAST_MODIFIED",
+    "PATH_INFO",
+    "PATH_TRANSLATED",
+    "QUERY_STRING",
+    "QUERY_STRING_UNESCAPED",
+    "REMOTE_ADDR",
+    "REMOTE_HOST",
+    "REMOTE_IDENT",
+    "REMOTE_PORT",
+    "REMOTE_USER",
+    "REDIRECT_QUERY_STRING",
+    "REDIRECT_STATUS",
+    "REDIRECT_URL",
+    "REQUEST_METHOD",
+    "SCRIPT_FILENAME",
+    "SCRIPT_NAME",
+    "SCRIPT_URI",
+    "SCRIPT_URL",
+    "SERVER_ADMIN",
+    "SERVER_NAME",
+    "SERVER_PORT",
+    "SERVER_PROTOCOL",
+    "SERVER_SOFTWARE",
+    "USER_NAME",
+    NULL
+};
+
 
 static void err_output(const char *fmt, va_list ap)
 {
@@ -120,9 +163,46 @@ void log_err(const char *fmt, ...)
     return;
 }
 
-int main(int argc, char *argv[], char **env)
+void clean_env() 
 {
-    int doclen;             /* length of the docroot     */
+    char pathbuf[512];
+    char **cleanenv;
+    char **ep;
+    int cidx = 0;
+    int idx;
+    
+
+    if ((cleanenv = (char **)malloc(CLEAN_ENV_BUF * (sizeof(char *)))) == NULL) {
+	log_err("failed to malloc env mem\n");
+	exit(120);
+    }
+    
+    for (ep = environ; *ep; ep++) {
+	if (!strncmp(*ep, "HTTP_", 5)) {
+	    cleanenv[cidx] = *ep;
+	    cidx++;
+	}
+	else {
+	    for (idx = 0; safe_env_lst[idx]; idx++) {
+		if (!strncmp(*ep, safe_env_lst[idx], strlen(safe_env_lst[idx]))) {
+		    cleanenv[cidx] = *ep;
+		    cidx++;
+		    break;
+		}
+	    }
+	}
+    }
+
+    sprintf(pathbuf, "PATH=%s", SAFE_PATH);
+    cleanenv[cidx] = pathbuf;
+    cleanenv[++cidx] = NULL;
+	    
+    environ = cleanenv;
+    free(cleanenv);
+}
+
+int main(int argc, char *argv[])
+{
     int userdir = 0;        /* ~userdir flag             */
     uid_t uid;              /* user information          */
     gid_t gid;              /* target group placeholder  */
@@ -211,7 +291,7 @@ int main(int argc, char *argv[], char **env)
     /*
      * Get the current working directory, as well as the proper
      * document root (dependant upon whether or not it is a
-     * ~userdir request.  Error out if we cannot get either one,
+     * ~userdir request).  Error out if we cannot get either one,
      * or if the current working directory is not in the docroot.
      * Use chdir()s and getcwd()s to avoid problems with symlinked
      * directories.  Yuck.
@@ -223,6 +303,7 @@ int main(int argc, char *argv[], char **env)
     
     if (userdir) {
         if (((chdir(pw->pw_dir)) != 0) ||
+            ((chdir(USERDIR_SUFFIX)) != 0) ||
 	    ((getcwd(dwd, MAXPATHLEN)) == NULL) ||
             ((chdir(cwd)) != 0))
         {
@@ -239,9 +320,8 @@ int main(int argc, char *argv[], char **env)
             exit(108);
         }
     }
-    
-    doclen = strlen(dwd);
-    if ((strncmp(cwd, dwd, doclen)) != 0) {
+
+    if ((strncmp(cwd, dwd, strlen(dwd))) != 0) {
         log_err("command not in docroot (%s/%s)\n", cwd, cmd);
         exit(109);
     }
@@ -303,18 +383,22 @@ int main(int argc, char *argv[], char **env)
     }
 
     /*
-     * Error out if attempt is made to execute as root.  Tsk tsk.
+     * Error out if attempt is made to execute as root or as
+     * a UID less than UID_MIN.  Tsk tsk.
      */
-    if (pw->pw_uid == 0) {
-	log_err("cannot run as uid 0 (%s)\n", cmd);
+    if ((pw->pw_uid == 0) ||
+        (pw->pw_uid < UID_MIN)) {
+	log_err("cannot run as forbidden uid (%d/%s)\n", pw->pw_uid, cmd);
 	exit(116);
     }
 
     /*
-     * Error out if attempt is made to execute as root group.  Tsk tsk.
+     * Error out if attempt is made to execute as root group
+     * or as a GID less than GID_MIN.  Tsk tsk.
      */
-    if (gr->gr_gid == 0) {
-	log_err("cannot run as gid 0 (%s)\n", cmd);
+    if ((gr->gr_gid == 0) ||
+        (gr->gr_gid < GID_MIN)) {
+	log_err("cannot run as forbidden gid (%d/%s)\n", gr->gr_gid, cmd);
 	exit(117);
     }
 
@@ -333,7 +417,7 @@ int main(int argc, char *argv[], char **env)
      */
     uid = pw->pw_uid;
     gid = gr->gr_gid;
-    if ((initgroups(target_uname,gid) != 0) || ((setgid(gid)) != 0)) {
+    if (((setgid(gid)) != 0) || (initgroups(pw->pw_name,gid) != 0)) {
         log_err("failed to setgid (%ld: %s/%s)\n", gid, cwd, cmd);
         exit(118);
     }
@@ -346,15 +430,12 @@ int main(int argc, char *argv[], char **env)
 	exit(119);
     }
 
-    if ((setenv("PATH", SAFE_PATH, 1)) != 0) {
-	log_err("cannot reset environment PATH\n");
-	exit(120);
-    }
+    clean_env();
     
     /*
      * Execute the command, replacing our image with its own.
      */
-    execve(cmd, &argv[3], env);
+    execv(cmd, argv);
 
     /*
      * (I can't help myself...sorry.)
