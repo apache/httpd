@@ -13,9 +13,7 @@ APACHE_MODULE(speling, correct common URL misspellings, , , most)
 APACHE_MODULE(userdir, mapping of user requests, , , yes)
 APACHE_MODULE(alias, translation of requests, , , yes)
 
-APACHE_MODULE(rewrite, regex URL translation, , , most, [
-  APR_ADDTO(CFLAGS,-DNO_DBM_REWRITEMAP)
-])
+APACHE_MODULE(rewrite, regex URL translation, , , most)
 
 dnl mod_so should only be built as a static module
 if test "$enable_so" = "yes"; then

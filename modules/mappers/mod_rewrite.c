@@ -120,6 +120,8 @@
 #include "unixd.h"
 #endif
 
+#define DBM_MAP_TYPE "SDBM"
+
 /*
 ** +-------------------------------------------------------+
 ** |                                                       |
@@ -160,23 +162,6 @@
 **       - always return a "OK" independed if the file really exists
 **         or not!
 */
-
-    /* The section for the Configure script:
-    * XXX: this needs updating for apache-2.0 configuration method
-     * MODULE-DEFINITION-START
-     * Name: rewrite_module
-     * ConfigStart
-    . ./build/find-dbm-lib
-    if [ "x$found_dbm" = "x1" ]; then
-        echo "      enabling DBM support for mod_rewrite"
-    else
-        echo "      disabling DBM support for mod_rewrite"
-        echo "      (perhaps you need to add -ldbm, -lndbm or -lgdbm to EXTRA_LIBS)"
-        CFLAGS="$CFLAGS -DNO_DBM_REWRITEMAP"
-    fi
-     * ConfigEnd
-     * MODULE-DEFINITION-END
-     */
 
     /* the module (predeclaration) */
 module AP_MODULE_DECLARE_DATA rewrite_module;
@@ -444,14 +429,12 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->checkfile = a2+4;
     }
     else if (strncmp(a2, "dbm:", 4) == 0) {
-#ifndef NO_DBM_REWRITEMAP
+        const char *ignored_fname;
+
         newmap->type      = MAPTYPE_DBM;
         newmap->datafile  = a2+4;
-        newmap->checkfile = apr_pstrcat(cmd->pool, a2+4, NDBM_FILE_SUFFIX, NULL);
-#else
-        return apr_pstrdup(cmd->pool, "RewriteMap: cannot use NDBM mapfile, "
-                          "because no NDBM support is compiled in");
-#endif
+        apr_dbm_get_usednames_ex(cmd->pool, DBM_MAP_TYPE, newmap->datafile, 
+                                 &newmap->checkfile, &ignored_fname);
     }
     else if (strncmp(a2, "prg:", 4) == 0) {
         newmap->type      = MAPTYPE_PRG;
@@ -2789,7 +2772,6 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                 }
             }
             else if (s->type == MAPTYPE_DBM) {
-#ifndef NO_DBM_REWRITEMAP
                 if ((rv = apr_stat(&st, s->checkfile,
                                    APR_FINFO_MIN, r->pool)) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -2825,9 +2807,6 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                                "-> val=%s", s->name, key, value);
                     return value[0] != '\0' ? value : NULL;
                 }
-#else
-                return NULL;
-#endif
             }
             else if (s->type == MAPTYPE_PRG) {
                 if ((value =
@@ -2946,31 +2925,31 @@ static char *lookup_map_txtfile(request_rec *r, const char *file, char *key)
     return value;
 }
 
-#ifndef NO_DBM_REWRITEMAP
 static char *lookup_map_dbmfile(request_rec *r, const char *file, char *key)
 {
-    DBM *dbmfp = NULL;
-    datum dbmkey;
-    datum dbmval;
+    apr_dbm_t *dbmfp = NULL;
+    apr_datum_t dbmkey;
+    apr_datum_t dbmval;
     char *value = NULL;
     char buf[MAX_STRING_LEN];
+    apr_status_t rv;
 
     dbmkey.dptr  = key;
     dbmkey.dsize = strlen(key);
-    if ((dbmfp = dbm_open(file, O_RDONLY, 0666)) != NULL) {
-        dbmval = dbm_fetch(dbmfp, dbmkey);
-        if (dbmval.dptr != NULL) {
+    if ((rv = apr_dbm_open_ex(&dbmfp, DBM_MAP_TYPE, file, APR_DBM_READONLY, 
+                              0 /* irrelevant when reading */, r->pool)) == APR_SUCCESS) {
+        rv = apr_dbm_fetch(dbmfp, dbmkey, &dbmval);
+        if (rv == APR_SUCCESS) {
             memcpy(buf, dbmval.dptr, 
                    dbmval.dsize < sizeof(buf)-1 ? 
                    dbmval.dsize : sizeof(buf)-1  );
             buf[dbmval.dsize] = '\0';
             value = apr_pstrdup(r->pool, buf);
         }
-        dbm_close(dbmfp);
+        apr_dbm_close(dbmfp);
     }
     return value;
 }
-#endif
 
 static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
                                 apr_file_t *fpout, char *key)
