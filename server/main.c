@@ -72,7 +72,7 @@
 #include "http_log.h" 
 #include "http_config.h"
 #include "http_vhost.h"
-#include "util_uri.h" 
+#include "apr_uri.h" 
 #include "util_ebcdic.h"
 #include "ap_mpm.h"
 

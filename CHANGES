@@ -1,5 +1,8 @@
 Changes with Apache 2.0.19-dev
 
+  *) Moved util_uri to the apr-util library.  This required a bunch of
+     apr_name changes for the uri utility functions.  [Justin Erenkrantz]
+
   *) Move the addition of default AP_HTTP_HTTP_HEADER filters to the
      insert_filter phase so that other filters are not bypassed by default.
      [Graham Leggett]

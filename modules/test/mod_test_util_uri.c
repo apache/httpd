@@ -142,7 +142,7 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
     apr_pool_t *sub;
     char *input_uri;
     char *strp;
-    uri_components result;
+    apr_uri_components result;
     unsigned expect;
     int status;
     unsigned failures;
@@ -208,8 +208,8 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	*strp = 0;
 
 	sub = apr_pool_sub_make(r->pool);
-	status = ap_parse_uri_components(sub, input_uri, &result);
-	if (status == HTTP_OK) {
+	status = apr_uri_parse_components(sub, input_uri, &result);
+	if (status == APR_SUCCESS) {
 #define CHECK(f)							\
 	    if ((expect & T_##f)					\
 		&& (result.f == NULL || strcmp(result.f, pieces->f))) { \
@@ -228,7 +228,7 @@ static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row
 	    CHECK(fragment)
 #undef CHECK
 	}
-	if (status != HTTP_OK) {
+	if (status != APR_SUCCESS) {
 	    ap_rprintf(r, "<tr><td>%d</td><td>0x%02x</td><td>0x%02x</td><td>%d</td><td>\"%s\"</td>", row, u, expect, status, input_uri);
 #define DUMP(f) 							\
 	    if (result.f) {						\
