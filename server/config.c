@@ -1445,6 +1445,9 @@ AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname,
     ap_configfile_t *cfp;
     int ispatt;
 
+    /* XXX: lstat() won't work on the wildcard pattern...
+     */
+
     /* don't require conf/httpd.conf if we have a -C or -c switch */
     if ((ap_server_pre_read_config->nelts
         || ap_server_post_read_config->nelts)

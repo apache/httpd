@@ -1635,8 +1635,9 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
         /*
          * Ensure that the pathname is canonical, and append the trailing /
          */
-        if (apr_filepath_merge(&newpath, NULL, cmd->path,
-                               APR_FILEPATH_TRUENAME, cmd->pool) != APR_SUCCESS) {
+        apr_status_t rv = apr_filepath_merge(&newpath, NULL, cmd->path,
+                                             APR_FILEPATH_TRUENAME, cmd->pool);
+        if (rv != APR_SUCCESS && rv != APR_EPATHWILD) {
             return apr_pstrcat(cmd->pool, "<Directory \"", cmd->path,
                                "\"> path is invalid.", NULL);
         }
@@ -2191,6 +2192,9 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
 {
     ap_directive_t *conftree = NULL;
     const char* conffile = ap_server_root_relative(cmd->pool, name);
+
+    /* XXX: ap_server_root_relative won't work on the wildcard pattern...
+     */
     
     if (!conffile) {
         return apr_pstrcat(cmd->pool, "Invalid Include path ", 
