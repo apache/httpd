@@ -333,6 +333,16 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
     char hbuf[MAX_STRING_LEN];
     const char *old_handler = r->handler;
 
+    /*
+     * The new insert_filter stage makes the most sense here.  We only use
+     * it when we are going to run the request, so we must insert filters
+     * if any are available.  Since the goal of this phase is to allow all
+     * modules to insert a filter if they want to, this filter returns
+     * void.  I just can't see any way that this filter can reasonably
+     * fail, either your modules inserts something or it doesn't.  rbb
+     */
+    ap_run_insert_filter(r);
+
     if (!r->handler) {
         handler = r->content_type ? r->content_type : ap_default_type(r);
         if ((p=ap_strchr_c(handler, ';')) != NULL) {
