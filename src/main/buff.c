@@ -459,6 +459,7 @@ API_EXPORT(int) bnonblock(BUFF *fb, int direction)
 #elif defined(F_NDELAY)
     return fcntl(fd, F_SETFL, F_NDELAY);
 #else
+    /* XXXX: this breaks things, but an alternative isn't obvious...*/
     return 0;
 #endif
 }
