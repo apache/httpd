@@ -68,7 +68,13 @@ DIFS='
 ##
 ##  avoid brain dead shells on Ultrix and friends
 ##
-test -f /bin/sh5 && exec /bin/sh5 $0 "$@"
+if [ -f /bin/sh5 ]; then
+    if [ ".$APACI_SH5_UPGRADE_STEP" != .done ]; then
+         APACI_SH5_UPGRADE_STEP=done
+         export APACI_SH5_UPGRADE_STEP
+         exec /bin/sh5 $0 "$@"
+    fi
+fi
 
 ##
 ##  the paths to the Apache source tree

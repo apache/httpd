@@ -1,5 +1,9 @@
 Changes with Apache 1.3.12
 
+  *) Avoid infinite looping in APACI's configure script
+     inside Ultrix' /bin/sh5 upgrade step.
+     [Jan Gallo <gallo@viapvt.sk>, Ralf S. Engelschall] PR#4940
+
   *) PORT: Add support for Amdahl UTS 4.3 and later.
      [Dave Dykstra <dwd@bell-labs.com>] PR#5654
 
