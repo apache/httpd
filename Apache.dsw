@@ -78,6 +78,9 @@ Package=<4>
     Project_Dep_Name mod_info
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_mime_magic
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_rewrite
     End Project Dependency
     Begin Project Dependency
@@ -543,6 +546,24 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_unique_id"=".\modules\metadata\mod_mime_magic.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_rewrite"=".\modules\mappers\mod_rewrite.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -802,6 +823,9 @@ Project: "rotatelogs"=".\support\rotatelogs.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name apr
+    End Project Dependency
 }}}
 
 Package=<4>
