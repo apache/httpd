@@ -874,31 +874,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     char *udir;
 
     rnew = make_sub_request(r);
-    rnew->hostname       = r->hostname;
-    rnew->request_time   = r->request_time;
-    rnew->connection     = r->connection;
-    rnew->server         = r->server;
-
-    rnew->request_config = ap_create_request_config(rnew->pool);
-
-    rnew->htaccess       = r->htaccess;
-    rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
-
-    /* make a copy of the allowed-methods list */
-    ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
-
-    /* start with the same set of output filters */
-    if (next_filter) {
-        rnew->output_filters = next_filter;
-    }
-    else {
-        rnew->output_filters = r->output_filters;
-    }
-    ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
-
-    /* no input filters for a subrequest */
-
-    ap_set_sub_req_protocol(rnew, r);
+    fill_in_sub_req_vars(rnew, r, next_filter);
 
     rnew->per_dir_config = r->server->lookup_defaults;
 
@@ -987,31 +963,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     char *fdir;
 
     rnew = make_sub_request(r);
-    rnew->hostname       = r->hostname;
-    rnew->request_time   = r->request_time;
-    rnew->connection     = r->connection;
-    rnew->server         = r->server;
-
-    rnew->request_config = ap_create_request_config(rnew->pool);
-
-    rnew->htaccess       = r->htaccess;
-    rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
-
-    /* make a copy of the allowed-methods list */
-    ap_copy_method_list(rnew->allowed_methods, r->allowed_methods);
-
-    /* start with the same set of output filters */
-    if (next_filter) {
-        rnew->output_filters = next_filter;
-    }
-    else {
-        rnew->output_filters = r->output_filters;
-    }
-    ap_add_output_filter("SUBREQ_CORE", NULL, rnew, rnew->connection); 
-
-    /* no input filters for a subrequest */
-
-    ap_set_sub_req_protocol(rnew, r);
+    fill_in_sub_req_vars(rnew, r, next_filter);
 
     rnew->chunked        = r->chunked;
 
