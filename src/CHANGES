@@ -1,5 +1,9 @@
 Changes with Apache 1.2b1:
 
+  *) Add new option; "-h". This lists all directives known to Apache,
+      together with their help text and the module which implements them.
+      [Ben Laurie].
+
   *) Somewhat cleaner Configure implementation
       Only a simple selection of PLATFORM is required for Configure/
       Configuration to work. Concept of "Rules" added to allow
@@ -41,7 +45,7 @@ Changes with Apache 1.2b1:
       changed #tmpXXXX to tmpXXXX in temp file template, for broken link/unlink
       changed Expire to Expires in cache_update()
       added appropriate #defines for Next compile
-      added $Id: CHANGES,v 1.51 1996/08/05 01:17:20 jim Exp $ for RCS/CVS [Chuck Murcko]
+      added $Id: CHANGES,v 1.52 1996/08/19 20:59:20 ben Exp $ for RCS/CVS [Chuck Murcko]
 
   *) Fix ErrorDocument handling.  When ErrorDocument failed it used to 
      display filename instead of error message. [Paul Sutton]
