@@ -902,11 +902,10 @@ static int handle_echo(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
             }
             if (!strcmp(tag, "var")) {
                 const char *val = apr_table_get(r->subprocess_env, tag_val);
-                int b_copy = 0;
 
                 if (val) {
                     switch(encode) {
-                    case E_NONE:   echo_text = val;  b_copy = 1;             break;
+                    case E_NONE:   echo_text = val;                          break;
                     case E_URL:    echo_text = ap_escape_uri(r->pool, val);  break;
                     case E_ENTITY: echo_text = ap_escape_html(r->pool, val); break;
             	}
