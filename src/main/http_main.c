@@ -5764,9 +5764,10 @@ int REALMAIN(int argc, char *argv[])
 **  in the shared core library under run-time.
 */
 
+extern int ap_main(int argc, char *argv[]);
+
 int main(int argc, char *argv[]) 
 {
-    extern int ap_main(int argc, char *argv[]);
     return ap_main(argc, argv);
 }
 
@@ -5804,10 +5805,11 @@ int main(int argc, char *argv[])
 #define SHARED_CORE_EXECUTABLE_PROGRAM "libhttpd.ep"
 #endif
 
+extern char *optarg;
+extern int   optind;
+
 int main(int argc, char *argv[], char *envp[]) 
 {
-    extern char *optarg;
-    extern int optind;
     char prog[MAX_STRING_LEN];
     char llp_buf[MAX_STRING_LEN];
     char **llp_slot;
