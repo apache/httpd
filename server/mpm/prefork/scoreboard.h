@@ -203,6 +203,9 @@ API_VAR_EXPORT extern ap_generation_t volatile ap_my_generation;
 #define START_PREQUEST 1
 #define STOP_PREQUEST  2
 
+int ap_update_child_status(int child_num, int status, request_rec *r);
+void ap_time_process_request(int child_num, int status);
+
 #ifdef __cplusplus
 }
 #endif

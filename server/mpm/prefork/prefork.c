@@ -90,6 +90,7 @@
 #include "apr_portable.h"
 #include "httpd.h"
 #include "mpm_default.h"
+#include "mpm_status.h"
 #include "http_main.h"
 #include "http_log.h"
 #include "http_config.h"
@@ -1935,12 +1936,6 @@ static int srv;
 static ap_socket_t *csd;
 static int requests_this_child;
 static fd_set main_fds;
-
-API_EXPORT(void) ap_child_terminate(request_rec *r)
-{
-    r->connection->keepalive = 0;
-    requests_this_child = ap_max_requests_per_child = 1;
-}
 
 int ap_graceful_stop_signalled(void)
 {
