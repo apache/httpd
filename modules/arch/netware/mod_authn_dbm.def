@@ -1,2 +1,2 @@
 EXPORT  authn_dbm_module
-IMPORT  authn_register_provider
+
