@@ -512,7 +512,7 @@ static void check_pipe_of_death(void)
     if (!workers_may_exit) {
         int ret;
         char pipe_read_char;
-        apr_ssize_t n = 1;
+        apr_size_t n = 1;
 
         ret = apr_recv(listenfds[0], &pipe_read_char, &n);
         if (APR_STATUS_IS_EAGAIN(ret)) {
@@ -1138,7 +1138,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     int remaining_children_to_start;
     int i;
     apr_status_t rv;
-    apr_ssize_t one = 1;
+    apr_size_t one = 1;
 
     pconf = _pconf;
     ap_server_conf = s;

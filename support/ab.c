@@ -183,7 +183,7 @@ char hostname[1024];        /* host name */
 char path[1024];        	/* path name */
 char postfile[1024];        /* name of file containing post data */
 char *postdata;        		/* *buffer containing data from postfile */
-apr_ssize_t postlen = 0;    /* length of data to be POSTed */
+apr_size_t postlen = 0;    /* length of data to be POSTed */
 char content_type[1024];    /* content type to put in POST header */
 char cookie[1024],        	/* optional cookie line */
      auth[1024],        	/* optional (basic/uuencoded)
@@ -214,7 +214,7 @@ apr_time_t start, endtime;
 
 /* global request (and its length) */
 char request[512];
-apr_ssize_t reqlen;
+apr_size_t reqlen;
 
 /* one global throw-away buffer to read stuff into */
 char buffer[8192];
@@ -258,7 +258,7 @@ static void apr_err(char *s, apr_status_t rv)
 
 static void write_request(struct connection *c)
 {
-    apr_ssize_t len = reqlen;
+    apr_size_t len = reqlen;
     c->connect = apr_now();
     apr_setsocketopt(c->aprsock, APR_SO_TIMEOUT, aprtimeout);
     if (apr_send(c->aprsock, request, &reqlen) != APR_SUCCESS ||
@@ -569,7 +569,7 @@ static void close_connection(struct connection *c)
 
 static void read_connection(struct connection *c)
 {
-    apr_ssize_t r;
+    apr_size_t r;
     apr_status_t status;
     char *part;
     char respcode[4];        	/* 3 digits and null */
@@ -876,14 +876,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.31 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.32 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.31 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.32 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -956,7 +956,7 @@ static int open_postfile(const char *pfile)
     apr_file_t *postfd = NULL;
     apr_finfo_t finfo;
     apr_fileperms_t mode = APR_OS_DEFAULT;
-    apr_ssize_t length;
+    apr_size_t length;
 
     if (apr_open(&postfd, pfile, APR_READ, mode, cntxt) != APR_SUCCESS) {
         printf("Invalid postfile name (%s)\n", pfile);

@@ -255,7 +255,7 @@ typedef struct {
     apr_file_t *log_fd;
     char *condition_var;
 #ifdef BUFFERED_LOGS
-    apr_ssize_t outcnt;
+    apr_size_t outcnt;
     char outbuf[LOG_BUFSIZE];
 #endif
 } config_log_state;
@@ -828,7 +828,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     int *strl;
     request_rec *orig;
     int i;
-    apr_ssize_t len = 0;
+    apr_size_t len = 0;
     apr_array_header_t *format;
     char *envar;
 
@@ -881,7 +881,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
         flush_log(cls);
     }
     if (len >= LOG_BUFSIZE) {
-        apr_ssize_t w;
+        apr_size_t w;
 
         str = apr_palloc(r->pool, len + 1);
         for (i = 0, s = str; i < format->nelts; ++i) {

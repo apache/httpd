@@ -912,7 +912,7 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
 {
     char buf[IOBUFSIZE + 1];
     int i, c, ch;
-    apr_ssize_t n;
+    apr_size_t n;
     apr_status_t stat;
 
     ap_rputs("<PRE>\n", r);
@@ -1106,7 +1106,7 @@ static char *find_title(request_rec *r)
     char titlebuf[MAX_STRING_LEN], *find = "<TITLE>";
     apr_file_t *thefile = NULL;
     int x, y, p;
-    apr_ssize_t n;
+    apr_size_t n;
 
     if (r->status != HTTP_OK) {
 	return NULL;
