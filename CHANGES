@@ -1,5 +1,9 @@
 Changes with Apache 2.0.14-dev
 
+  *) Fix content-length computation.  We ONLY compute a content-length if
+     We are not in a 1.1 request and we cannot chunk, and this is a keepalive
+     or we already have all the data.  [Ryan Bloom]
+
   *) Report unbounded containers in the config file.  Previously, a typo
      in the </container> directive could result in the rest of the config
      file being silently ignored, with undesired defaults used.
