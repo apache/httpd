@@ -2274,7 +2274,7 @@ static void do_expand(request_rec *r, char *input, char *buffer, int nbuf,
     size_t span, space;
 
     /*
-     * for security reasons this expansion must be perfomed in a
+     * for security reasons this expansion must be performed in a
      * single pass, otherwise an attacker can arrange for the result
      * of an earlier expansion to include expansion specifiers that
      * are interpreted by a later expansion, producing results that
