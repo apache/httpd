@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Remove autom4te.cache in 'make distclean'.
+     [Thom May <thom@planetarytramp.net>]
+
   *) Fix generated httpd.conf to respect layout for LoadModule lines.
      PR 8170.  [Thom May <thom@planetarytramp.net>]
 
