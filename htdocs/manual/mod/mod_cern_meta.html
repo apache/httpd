@@ -36,16 +36,29 @@ who can exploit this module.
 
 <h2>Directives</h2>
 <ul>
+<li><A HREF="#metafiles">MetaFiles</A>
 <li><A HREF="#metadir">MetaDir</A>
 <li><A HREF="#metasuffix">MetaSuffix</A>
 </ul>
 
 <hr>
 
+<h2><A name="metafiles">MetaFiles</A></h2>
+<strong>Syntax:</strong> MetaFiles <em>on/off</em><br>
+<strong>Default:</strong> <code>MetaFiles off</code><br>
+<strong>Context:</strong> per-directory config<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_cern_meta<br>
+<strong>Compatibility:</strong> MetaFiles is only available in Apache 1.3
+and later.<p>
+
+Turns on/off Meta file processing on a per-directory basis. This option was introduced in Apache 1.3.
+
 <h2><A name="metadir">MetaDir</A></h2>
 <strong>Syntax:</strong> MetaDir <em>directory name</em><br>
 <strong>Default:</strong> <code>MetaDir .web</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context: (Apache prior to 1.3)</strong> server config<br>
+<strong>Context: (Apache 1.3)</strong> per-directory config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_cern_meta<br>
 <strong>Compatibility:</strong> MetaDir is only available in Apache 1.1
@@ -60,7 +73,8 @@ file.
 <h2><A name="metasuffix">MetaSuffix</A></h2>
 <strong>Syntax:</strong> MetaSuffix <em>suffix</em><br>
 <strong>Default:</strong> <code>MetaSuffix .meta</code><br>
-<strong>Context:</strong> server config<br>
+<strong>Context: (Apache prior to 1.3)</strong> server config<br>
+<strong>Context: (Apache 1.3)</strong> per-directory config<br>
 <strong>Status:</strong> Base<br>
 <strong>Module:</strong> mod_cern_meta<br>
 <strong>Compatibility:</strong> MetaSuffix is only available in Apache 1.1
