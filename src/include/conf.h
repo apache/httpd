@@ -91,6 +91,7 @@ typedef int rlim_t;
 #define memmove(a,b,c) bcopy(b,a,c)
 #define NO_LINGCLOSE
 #define USE_FLOCK_SERIALIZED_ACCEPT
+#define NEED_DIFFTIME
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF

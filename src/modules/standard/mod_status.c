@@ -157,15 +157,6 @@ void show_time(request_rec *r,time_t tsecs)
 	rprintf(r," %ld second%s",secs,secs==1?"":"s");
 }
 
-#if defined(SUNOS4)
-double
-difftime(time1, time0)
-        time_t time1, time0;
-{   
-        return(time1 - time0);
-}   
-#endif
-    
 /* Main handler for x-httpd-status requests */
 
 /* ID values for command table */

@@ -1421,3 +1421,10 @@ int ap_slack (int fd, int line)
 #endif
 }
 #endif /* NO_SLACK */
+
+#if defined(NEED_DIFFTIME)
+double difftime(time_t time1, time_t time0)
+{
+        return(time1 - time0);
+}
+#endif
