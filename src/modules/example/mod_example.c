@@ -83,6 +83,12 @@
  * both, though, so the handlers need to be able to tell them apart.  One
  * possibility is for both structures to start with an int which is zero for
  * one and 1 for the other.
+ *
+ * Note that while the per-directory and per-server configuration records are
+ * available to most of the module handlers, they should be treated as
+ * READ-ONLY by all except the command and merge handlers.  Sometimes handlers
+ * are handed a record that applies to the current location by implication or
+ * inheritance, and modifying it will change the rules for other locations.
  */
 typedef struct example_config {
     int	    cmode;	/* Environment to which record applies (directory,  */
@@ -99,9 +105,13 @@ typedef struct example_config {
 /*
  * Let's set up a module-local static cell to point to the accreting callback
  * trace.  As each API callback is made to us, we'll tack on the particulars
- * to whatever we've already recorded.
+ * to whatever we've already recorded.  To avoid massive memory bloat as
+ * directories are walked again and again, we record the routine/environment
+ * the first time (non-request context only), and ignore subsequent calls for
+ * the same routine/environment.
  */
 static char *trace = NULL;
+static table *static_calls_made = NULL;
 
 /*
  * To avoid leaking memory from pools other than the per-request one, we
@@ -261,36 +271,135 @@ static example_config *our_sconfig
 }
 
 /*
+ * Likewise for our configuration record for the specified request.
+ */
+static example_config *our_rconfig
+	(request_rec *r) {
+
+    return (example_config *) get_module_config
+				(
+				    r->request_config,
+				    &example_module
+				);
+}
+
+/*
+ * This routine sets up some module-wide cells if they haven't been already.
+ */
+static void setup_module_cells () {
+    /*
+     * If we haven't already allocated our module-private pool, do so now.
+     */
+    if (example_pool == NULL) {
+	example_pool = make_sub_pool (NULL);
+    };
+    /*
+     * Likewise for the table of routine/environment pairs we visit outside of
+     * request context.
+     */
+    if (static_calls_made == NULL) {
+	static_calls_made = make_table (example_pool, 16);
+    };
+}
+
+/*
  * This routine is used to add a trace of a callback to the list.  We're
- * passed the server record (if available), an allocation pool, a pointer to
- * our private configuration record (if available) for the environment to
- * which the callback is supposed to apply, and some text.  We turn this into
- * a textual representation and add it to the tail of the list.  The list can
- * be displayed by the example_handler() routine.
+ * passed the server record (if available), the request record (if available),
+ * a pointer to our private configuration record (if available) for the
+ * environment to which the callback is supposed to apply, and some text.  We
+ * turn this into a textual representation and add it to the tail of the list.
+ * The list can be displayed by the example_handler() routine.
+ *
+ * If the call occurs within a request context (i.e., we're passed a request
+ * record), we put the trace into the request pool and attach it to the
+ * request via the request_config mechanism.  Otherwise, the trace gets added
+ * to the static (non-request-specific)  list.
+ *
+ * Note that this method is not a formal part of the API.  The use of the
+ * request_config field in the request_rec record is not currently defined.
+ * However, the only defined method of maintaining per-request information,
+ * the r->notes table, is string-oriented and can't conveniently handle
+ * arbitrary data.
+ *
+ * In any other context, what we're doing here - accessing components outside
+ * our scope, like the main request - would be considered a technical
+ * violation of the API.  However, we can do what we want with undefined
+ * aspects, as long as we're prepared for them to have undefined results.
  */
 static void trace_add
-	(server_rec *s, example_config *mconfig, const char *note) {
+	(server_rec *s, request_rec *r, example_config *mconfig,
+	 const char *note) {
 
     char    *sofar;
     char    *addon;
     char    *where;
-    pool    *subpool;
+    pool    *p;
+    char    **ctrace;
+    request_rec
+	    *req = r;
+    example_config
+	    *rconfig;
 
     /*
-     * Make a new sub-pool and copy any existing trace to it.
+     * Make sure our pools and tables are set up - we need 'em.
      */
-    subpool = make_sub_pool (example_pool);
-    if (trace != NULL) {
-	addon = pstrcat (subpool, trace, NULL);
-    }
+    setup_module_cells ();
     /*
-     * Now, if we have a sub-pool from before, nuke it and replace with the
-     * one we just allocated.
+     * Now, if we're in request-context, we use the request pool.
      */
-    if (example_subpool != NULL) {
-	destroy_pool (example_subpool);
+    if (r != NULL) {
+	/*
+	 * Make sure that we're storing our trace in the main request; we want
+	 * to track all activities for subrequests as well.
+	 */
+	if (req->main != NULL) {
+	    req = req->main;
+	}
+	p = req->pool;
+	/*
+	 * Find our per-request configuration record, which holds the trace
+	 * of activities specific to the request  itself.
+	 */
+	rconfig = (example_config *) get_module_config
+					(req->request_config, &example_module);
+	/*
+	 * If there isn't one, create one and add it.
+	 */
+	if (rconfig == NULL) {
+	    rconfig = pcalloc (req->pool, sizeof(example_config));
+	    set_module_config (req->request_config, &example_module, rconfig);
+	    rconfig->trace = NULL;
+	}
+	/*
+	 * Note that the trace data from this call go into the per-request
+	 * list, not the static one.
+	 */
+	 ctrace = &rconfig->trace;
+    } else {
+	/*
+	 * We're not in request context, so the trace gets attached to our
+	 * module-wide pool.  We do the create/destroy every time we're called
+	 * in non-request context; this avoids leaking memory in some of
+	 * the subsequent calls that allocate memory only once (such as the
+	 * key formation below).
+	 *
+	 * Make a new sub-pool and copy any existing trace to it.  Point the
+	 * trace cell at the copied value.
+	 */
+	p = make_sub_pool (example_pool);
+	if (trace != NULL) {
+	    trace = pstrdup (p, trace);
+	}
+	/*
+	 * Now, if we have a sub-pool from before, nuke it and replace with
+	 * the one we just allocated.
+	 */
+	if (example_subpool != NULL) {
+	    destroy_pool (example_subpool);
+	}
+	example_subpool = p;
+	ctrace = &trace;
     }
-    example_subpool = subpool;
     /*
      * If we weren't passed a configuration record, we can't figure out to
      * what location this call applies.  This only happens for co-routines
@@ -300,9 +409,31 @@ static void trace_add
      */
     where = (mconfig != NULL) ? mconfig->loc : "nowhere";
     where = (where != NULL) ? where : "";
+    /*
+     * Now, if we're not in request context, see if we've been called with
+     * this particular combination before.  The table is allocated in the
+     * module's private pool, which doesn't get destroyed.
+     */
+    if (req == NULL) {
+	char	*key;
+
+	key = pstrcat (p, note, ":", where, NULL);
+	if (table_get (static_calls_made, key) != NULL) {
+	    /*
+	     * Been here, done this.
+	     */
+	    return;
+	} else {
+	    /*
+	     * First time for this combination of routine and environment -
+	     * log it so we don't do it again.
+	     */
+	    table_set (static_calls_made, key, "been here");
+	}
+    }
     addon = pstrcat 
 		(
-		    subpool,
+		    p,
 		    "   <LI>\n",
 		    "    <DL>\n",
 		    "     <DT><SAMP>",
@@ -317,16 +448,8 @@ static void trace_add
 		    "   </LI>\n",
 		    NULL
 		);
-    sofar = (trace == NULL) ? "" : trace;
-    trace = pstrcat (subpool, sofar, addon, NULL);
-    /*
-     * Store a copy of the same information in the configuration record, if
-     * there is one.
-     */
-    if (mconfig != NULL) {
-	sofar = (mconfig->trace == NULL) ? "" : mconfig->trace;
-	mconfig->trace = pstrcat (subpool, sofar, addon, NULL);
-    }
+    sofar = (*ctrace == NULL) ? "" : *ctrace;
+    *ctrace = pstrcat (p, sofar, addon, NULL);
     /*
      * You *could* uncomment the following if you wanted to see the calling
      * sequence reported in the server's error_log, but beware - almost all of
@@ -341,7 +464,6 @@ static void trace_add
 }
 
 /*--------------------------------------------------------------------------*/
-/*									    */
 /* We prototyped the various syntax for command handlers (routines that     */
 /* are called when the configuration parser detects a directive declared    */
 /* by our module) earlier.  Now we actually declare a "real" routine that   */
@@ -351,6 +473,13 @@ static void trace_add
 /* If a command handler encounters a problem processing the directive, it   */
 /* signals this fact by returning a non-NULL pointer to a string	    */
 /* describing the problem.						    */
+/*									    */
+/* The magic return value DECLINE_CMD is used to deal with directives	    */
+/* that might be declared by multiple modules.  If the command handler	    */
+/* returns NULL, the directive was processed; if it returns DECLINE_CMD,    */
+/* the next module (if any) that declares the directive is given a chance   */
+/* at it.  If it returns any other value, it's treated as the text of an    */
+/* error message.							    */
 /*--------------------------------------------------------------------------*/
 /* 
  * Command handler for the NO_ARGS "Example" directive.  All we do is mark the
@@ -367,7 +496,7 @@ static const char *cmd_example
      * "Example Wuz Here"
      */
     cfg->local = 1;
-    trace_add (cmd->server, cfg, "cmd_example()");
+    trace_add (cmd->server, NULL, cfg, "cmd_example()");
     return NULL;
 }
 
@@ -399,10 +528,13 @@ static int example_handler
 	(request_rec *r) {
 
     example_config
-	    *cfg;
+	    *dcfg;
+    example_config
+	    *rcfg;
 
-    cfg = our_dconfig (r);
-    trace_add (r->server, cfg, "example_handler()");
+    dcfg = our_dconfig (r);
+    rcfg = our_rconfig (r);
+    trace_add (r->server, r, dcfg, "example_handler()");
     /*
      * We're about to start sending content, so we need to force the HTTP
      * headers to be sent at this point.  Otherwise, no headers will be sent
@@ -461,21 +593,32 @@ static int example_handler
     rputs ("  indicates a location in the URL or filesystem\n", r);
     rputs ("  namespace.\n", r);
     rputs ("  </P>\n", r);
-    rprintf (r, "  <H2>Callbacks so far:</H2>\n  <OL>\n%s  </OL>\n", trace);
+    rprintf
+	(
+	    r,
+	    "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
+	    trace
+	);
+    rprintf
+	(
+	    r,
+	    "  <H2>Request-specific callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
+	    rcfg->trace
+	);
     rputs ("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
     rputs ("  <UL>\n", r);
-    rprintf (r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", cfg->loc);
+    rprintf (r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", dcfg->loc);
     rprintf
 	(
 	    r,
 	    "   <LI>\"Example\" directive declared here: %s\n   </LI>\n",
-	    (cfg->local ? "YES" : "NO")
+	    (dcfg->local ? "YES" : "NO")
 	);
     rprintf
 	(
 	    r,
 	    "   <LI>\"Example\" inherited: %s\n   </LI>\n",
-	    (cfg->congenital ? "YES" : "NO")
+	    (dcfg->congenital ? "YES" : "NO")
 	);
     rputs ("  </UL>\n", r);
     rputs (" </BODY>\n", r);
@@ -541,18 +684,16 @@ static void example_init
     char    *sname = s->server_hostname;
 
     /*
-     * If we haven't already allocated our module-private pool, do so now.
+     * Set up any module cells that ought to be initialised.
      */
-    if (example_pool == NULL) {
-	example_pool = make_sub_pool (NULL);
-    };
+    setup_module_cells ();
     /*
      * The arbitrary text we add to our trace entry indicates for which server
      * we're being called.
      */
     sname = (sname != NULL) ? sname : "";
     note = pstrcat (p, "example_init(", sname, ")", NULL);
-    trace_add (s, NULL, note);
+    trace_add (s, NULL, NULL, note);
 }
 
 /*
@@ -590,7 +731,7 @@ static void *example_dir_create
      */
     dname = (dname != NULL) ? dname : "";
     cfg->loc = pstrcat (p, "DIR(", dname, ")", NULL);
-    trace_add (NULL, cfg, "example_dir_create()");
+    trace_add (NULL, NULL, cfg, "example_dir_create()");
     return (void *) cfg;
 }
 
@@ -654,7 +795,7 @@ static void *example_dir_merge
 		"\")",
 		NULL
 	    );
-    trace_add (NULL, merged_config, note);
+    trace_add (NULL, NULL, merged_config, note);
     return (void *) merged_config;
 }
 
@@ -685,7 +826,7 @@ static void *example_server_create
      */
     sname = (sname != NULL) ? sname : "";
     cfg->loc = pstrcat (p, "SVR(", sname, ")", NULL);
-    trace_add (s, cfg, "example_server_create()");
+    trace_add (s, NULL, cfg, "example_server_create()");
     return (void *) cfg;
 }
 
@@ -736,7 +877,7 @@ static void *example_server_merge
 		"\")",
 		NULL
 	    );
-    trace_add (NULL, merged_config, note);
+    trace_add (NULL, NULL, merged_config, note);
     return (void *) merged_config;
 }
 
@@ -759,7 +900,7 @@ static int example_xlate
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add (r->server, cfg, "example_xlate()");
+    trace_add (r->server, r, cfg, "example_xlate()");
     return DECLINED;
 }
 
@@ -782,7 +923,7 @@ static int example_ckuser
     /*
      * Don't do anything except log the call.
      */
-    trace_add (r->server, cfg, "example_ckuser()");
+    trace_add (r->server, r, cfg, "example_ckuser()");
     return DECLINED;
 }
 
@@ -807,7 +948,7 @@ static int example_ckauth
      * Log the call and return OK, or access will be denied (even though we
      * didn't actually do anything).
      */
-    trace_add (r->server, cfg, "example_ckauth()");
+    trace_add (r->server, r, cfg, "example_ckauth()");
     return OK;
 }
 
@@ -827,7 +968,7 @@ static int example_ckaccess
 	    *cfg;
 
     cfg = our_dconfig (r);
-    trace_add (r->server, cfg, "example_ckaccess()");
+    trace_add (r->server, r, cfg, "example_ckaccess()");
     return OK;
 }
 
@@ -850,7 +991,7 @@ static int example_typer
      * Log the call, but don't do anything else - and report truthfully that
      * we didn't do anything.
      */
-    trace_add (r->server, cfg, "example_typer()");
+    trace_add (r->server, r, cfg, "example_typer()");
     return DECLINED;
 }
 
@@ -872,7 +1013,7 @@ static int example_fixer
     /*
      * Log the call and exit.
      */
-    trace_add (r->server, cfg, "example_fixer()");
+    trace_add (r->server, r, cfg, "example_fixer()");
     return OK;
 }
 
@@ -890,7 +1031,7 @@ static int example_logger
 	    *cfg;
 
     cfg = our_dconfig (r);
-    trace_add (r->server, cfg, "example_logger()");
+    trace_add (r->server, r, cfg, "example_logger()");
     return DECLINED;
 }
 
@@ -909,7 +1050,7 @@ static int example_hparser
 	    *cfg;
 
     cfg = our_dconfig (r);
-    trace_add (r->server, cfg, "example_hparser()");
+    trace_add (r->server, r, cfg, "example_hparser()");
     return DECLINED;
 }
 
