@@ -1,5 +1,7 @@
 Changes with Apache 1.3.2
 
+  *) Clean up a warning in mod_proxy. [Ralf S. Engelschall]
+
   *) Renamed __EMX__ (internal define of the gcc port under OS/2) to OS2
      following the same idea as "MSVC vs WIN32". Additionally the src/os/emx/
      directory was renamed to src/os/os2/ for consistency.
