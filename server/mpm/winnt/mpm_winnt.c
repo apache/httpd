@@ -111,7 +111,7 @@ typedef enum {
 apr_lock_t  *qlock;
 COMP_CONTEXT *qhead = NULL;
 COMP_CONTEXT *qtail = NULL;
-static unsigned int g_num_completion_contexts = 0;
+
 static HANDLE ThreadDispatchIOCP = NULL;
 
 /* Definitions of WINNT MPM specific config globals */
@@ -670,6 +670,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
  */
 static void winnt_accept(void *listen_socket) 
 {
+    static int num_completion_contexts = 0;
     PCOMP_CONTEXT pCompContext;
     DWORD BytesRead;
     SOCKET nlsd;
@@ -679,7 +680,7 @@ static void winnt_accept(void *listen_socket)
 
     while (1) {
         pCompContext = NULL;
-        /* Grab a context off the queue if there is one available */
+        /* Grab a context off the queue */
         apr_lock_acquire(qlock);
         if (qhead) {
             pCompContext = qhead;
@@ -689,11 +690,22 @@ static void winnt_accept(void *listen_socket)
         }
         apr_lock_release(qlock);
 
-        /* Alloc a new context out of the child pool if none were available on
-         * the queue. Todo: Place a max upper limit on the number of completion
-         * contexts in the system.
+        /* If we failed to grab a context off the queue, alloc one out of 
+         * the child pool. There may be up to ap_threads_per_child contexts
+         * in the system at once.
          */
         if (!pCompContext) {
+            if (num_completion_contexts >= ap_threads_per_child) {
+                static int reported = 0;
+                if (!reported) {
+                    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, server_conf,
+                                 "Server ran out of threads to serve requests. Consider "
+                                 "raising the ThreadsPerChild setting");
+                    reported = 1;
+                }
+                Sleep(500);
+                continue;
+            }
             pCompContext = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
 
             pCompContext->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL); 
@@ -703,7 +715,7 @@ static void winnt_accept(void *listen_socket)
                 // return -1;
             }
             pCompContext->accept_socket = INVALID_SOCKET;
-            g_num_completion_contexts++;
+            num_completion_contexts++;
         }
 
     again:            
