@@ -94,6 +94,12 @@
 #include <stdlib.h>
 #include "ap_ctype.h"
 
+#ifndef LONG_MAX
+#define LONG_MAX  2147483647
+#endif
+#ifndef LONG_MIN
+#define LONG_MIN  (-2147483647-1)
+#endif
 
 /*
  * Convert a string to a long integer.
