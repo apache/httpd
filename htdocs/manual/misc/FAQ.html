@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.26 $ ($Date: 1997/04/20 02:43:12 $)
+$Revision: 1.27 $ ($Date: 1997/04/20 15:40:06 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -351,11 +351,18 @@ do not appear, and are not needed, for the hypertext version.
     If your problem involves the server crashing and generating a core
     dump, please include a backtrace (if possible).  As an example,
     </P>
-    <PRE>
-     # cd <EM>ServerRoot</EM>
-     # dbx httpd core
-     (dbx) where
-    </PRE>
+    <P>
+    <CODE>
+     <DL>
+      <DD># cd <EM>ServerRoot</EM>
+      </DD>
+      <DD># dbx httpd core
+      </DD>
+      <DD>(dbx) where
+      </DD>
+     </DL>
+    </CODE>
+    </P>
     <P>
     (Substitute the appropiate locations for your
     <SAMP>ServerRoot</SAMP> and your <SAMP>httpd</SAMP> and
@@ -414,14 +421,17 @@ do not appear, and are not needed, for the hypertext version.
   <A
    HREF="../mod/mod_mime.html#addhandler"
   ><SAMP>AddHandler</SAMP></A>
-  </P>
   directive.
+  </P>
   <OL>
    <LI>In an appropriate section of your server configuration files, add
     a line such as
-    <PRE>
-     AddHandler cgi-script .cgi
-    </PRE>
+    <P>
+    <DL>
+     <DD><CODE>AddHandler cgi-script .cgi</CODE>
+     </DD>
+    </DL>
+    </P>
     The server will then recognise that all files in that location (and
     its logical descendants) that end in &quot;<SAMP>.cgi</SAMP>&quot;
     are script files, not documents.
@@ -448,11 +458,18 @@ do not appear, and are not needed, for the hypertext version.
   disabled buffering; if you insert the following statements before your
   first <SAMP>print</SAMP> statement, this will probably go away.
   </P>
-  <PRE>
-   $cfh = select (STDOUT);
-   $| = 1;
-   select ($cfh);
-  </PRE>
+  <P>
+  <CODE>
+   <DL>
+    <DD>$cfh = select (STDOUT);
+    </DD>
+    <DD>$| = 1;
+    </DD>
+    <DD>select ($cfh);
+    </DD>
+   </DL>
+  </CODE>
+  </P>
   <P>
   If your script isn't written in Perl, do the equivalent thing for
   whatever language you <EM>are</EM> using (<EM>e.g.</EM>, for C, call 
@@ -500,9 +517,12 @@ do not appear, and are not needed, for the hypertext version.
      HREF="../mod/mod_mime.html#addhandler"
     ><SAMP>AddHandler</SAMP></A>
     directive:
-    <PRE>
-     AddHandler server-parsed .shtml
-    </PRE>
+    <P>
+    <DL>
+     <DD><CODE>AddHandler server-parsed .shtml</CODE>
+     </DD>
+    </DL>
+    </P>
     This indicates that all files ending in &quot;.shtml&quot; in that
     location (or its descendants) should be parsed.  Note that using
     &quot;.html&quot; will cause all normal HTML files to be parsed,
@@ -669,10 +689,16 @@ do not appear, and are not needed, for the hypertext version.
   configuration files for something that resembles the following and
   would affect the location where the POST-handling script resides:
   </P>
-  <PRE>
-   &lt;Limit GET&gt;
-      :
-  </PRE>
+  <P>
+  <CODE>
+   <DL>
+    <DD>&lt;Limit GET&gt;
+    </DD>
+    <DD>&nbsp;&nbsp;&nbsp;&nbsp;:
+    </DD>
+   </DL>
+  </CODE>
+  </P>
   <P>
   Change that to <SAMP>&lt;Limit GET POST&gt;</SAMP> and the problem
   will probably go away.
