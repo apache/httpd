@@ -42,7 +42,7 @@ accepting requests on network sockets</description>
       >LockFile</directive> directive.</dd>
 
       <dt><code>fcntl</code></dt>
-      <dd>uses the <code>fnctl(2)</code> system call to lock the
+      <dd>uses the <code>fcntl(2)</code> system call to lock the
       file defined by the <directive module="mpm_common"
       >LockFile</directive> directive.</dd>
 
@@ -104,7 +104,7 @@ switch before dumping core</description>
 
 <usage>
     <p>This controls the directory to which Apache attempts to
-    switch before dumping core. The default is in the 
+    switch before dumping core. The default is in the
     <directive module="core">ServerRoot</directive> directory, however
     since this should not be writable by the user the server runs
     as, core dumps won't normally get written. If you want a core
@@ -129,10 +129,10 @@ requests</description>
 <usage>
     <p>The <directive>Group</directive> directive sets the group under
     which the server will answer requests. In order to use this
-    directive, the server must be run initially as root. If you start the
-    server as a non-root user, it will fail to change to the specified
-    group, and will instead continue to run as the group of the original
-    user. <var>Unix-group</var> is one of:</p>
+    directive, the server must be run initially as <code>root</code>. If
+    you start the server as a non-root user, it will fail to change to the
+    specified group, and will instead continue to run as the group of the
+    original user. <var>Unix-group</var> is one of:</p>
 
     <dl>
       <dt>A group name</dt>
@@ -200,14 +200,14 @@ of the daemon</description>
     SIGHUP (kill -1) signal to the process id listed in the
     <directive>PidFile</directive>.</p>
 
-    <p>The PidFile is subject to the same warnings about log file
-    placement and <a
+    <p>The <directive>PidFile</directive> is subject to the same
+    warnings about log file placement and <a
     href="../misc/security_tips.html#serverroot">security</a>.</p>
 
     <note><title>Note</title>
-      As of Apache 2 it is recommended to use only the <a
+      <p>As of Apache 2 it is recommended to use only the <a
       href="../programs/apachectl.html">apachectl</a> script for
-      (re-)starting or stopping the server.
+      (re-)starting or stopping the server.</p>
     </note>
 </usage>
 </directivesynopsis>
@@ -236,7 +236,7 @@ listens to</description>
     <p>The <directive>Listen</directive> directive tells the server to
     accept incoming requests on the specified port or address-and-port
     combination. If only a port number is specified, the server listens to
-    the given port on all interfaces. If an IP address is given as well 
+    the given port on all interfaces. If an IP address is given as well
     as a port, the server will listen on the given port and
     interface.</p>
 
@@ -319,7 +319,7 @@ uses</a></seealso>
     of the main server process is automatically appended to the
     filename.</p>
 
-    <note type="warning"><title>Security:</title>
+    <note type="warning"><title>Security</title>
       <p>It is best to <em>avoid</em> putting this file in a world writable
       directory such as <code>/var/tmp</code> because someone could create
       a denial of service attack and prevent the server from starting by
@@ -353,7 +353,7 @@ to serve requests</description>
     <p>For non-threaded servers (<em>i.e.</em>, <module>prefork</module>),
     <directive>MaxClients</directive> translates into the maximum
     number of child processes that will be launched to serve requests.
-    The default value is 256; to increase it, you must also raise
+    The default value is <code>256</code>; to increase it, you must also raise
     <directive module="mpm_common">ServerLimit</directive>.</p>
 
     <p>For threaded and hybrid servers (<em>e.g.</em> <module>beos</module>
@@ -382,7 +382,7 @@ to hold without calling <code>free()</code></description>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>The <directive>MaxMemFree</directive> directive sets the 
+    <p>The <directive>MaxMemFree</directive> directive sets the
     maximum number of free Kbytes that the main allocator is allowed
     to hold without calling <code>free()</code>. When not set, or when set
     to zero, the threshold will be set to unlimited.</p>
@@ -409,7 +409,7 @@ will handle during its life</description>
     process will die. If <directive>MaxRequestsPerChild</directive> is
     <code>0</code>, then the process will never expire.</p>
 
-    <note><title>Different default values:</title>
+    <note><title>Different default values</title>
       <p>The default value for <module>mpm_netware</module> and
       <module>mpm_winnt</module> is <code>0</code>.</p>
     </note>
@@ -425,7 +425,7 @@ will handle during its life</description>
       the number of processes when the server load reduces.</li>
     </ul>
 
-    <note><title>Note:</title>
+    <note><title>Note</title>
       <p>For <directive module="core">KeepAlive</directive> requests, only
       the first request is counted towards this limit. In effect, it
       changes the behavior to limit the number of <em>connections</em> per
@@ -611,8 +611,9 @@ Apache</a></seealso>
     <p>For the <module>prefork</module> MPM, this directive sets the
     maximum configured value for <directive
     module="mpm_common">MaxClients</directive> for the lifetime of the
-    Apache process.  For the worker MPM, this directive in combination
-    with <directive module="mpm_common">ThreadLimit</directive> sets
+    Apache process.  For the <module>worker</module> MPM, this directive
+    in combination with <directive
+    module="mpm_common">ThreadLimit</directive> sets
     the maximum configured value for <directive
     module="mpm_common">MaxClients</directive> for the lifetime of the
     Apache process.  Any attempts to change this directive during a
