@@ -30,6 +30,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authname">AuthName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authtype">AuthType</a></li>
@@ -293,6 +294,38 @@ response without an explicit character set</td></tr>
 <li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li>
 <li><code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code></li>
 <li><a href="../filter.html">filters</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine whether encoded path separators in URLs are allowed to
+be passed through</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowEncodedSlashes On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowEncodedSlashes Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.46 and later</td></tr>
+</table>
+    <p>The <code class="directive">AllowEncodedSlashes</code> directive allows URLs
+    which contain encoded path separators (<code>%2F</code> for <code>/</code>
+    and additionally <code>%5C</code> for <code>\</code> on according systems)
+    to be used. Normally such URLs are refused with a 404 (Not found) error.</p>
+
+    <p>Turning <code class="directive">AllowEncodedSlashes</code> <code>On</code> is
+    mostly useful when used in conjunction with <code>PATH_INFO</code>.</p>
+
+    <div class="note"><h3>Note</h3>
+      <p>Allowing encoded slashes does <em>not</em> imply <em>decoding</em>.
+      Occurences of <code>%2F</code> or <code>%5C</code> (<em>only</em> on
+      according systems) will be left as such in the otherwise decoded URL
+      string.</p>
+    </div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="#acceptpathinfo">AcceptPathInfo</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -58,6 +58,7 @@
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
 <li><a href="mod_access.html#allow">Allow</a></li>
 <li><a href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
+<li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><a href="core.html#allowoverride">AllowOverride</a></li>
 <li><a href="mod_auth_anon.html#anonymous">Anonymous</a></li>
 <li><a href="mod_auth_anon.html#anonymous_authoritative">Anonymous_Authoritative</a></li>
