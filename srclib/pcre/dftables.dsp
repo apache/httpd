@@ -49,9 +49,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\dftables.pdb" /map /machine:I386
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\dftables.pdb" /machine:I386
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\dftables.pdb" /map /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\dftables.pdb" /machine:I386
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "dftables - Win32 Debug"
@@ -75,9 +75,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\dftables.pdb" /map /debug /machine:I386 /pdbtype:sept
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\dftables.pdb" /debug /machine:I386 /pdbtype:sept
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\dftables.pdb" /map /debug /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\dftables.pdb" /debug /machine:I386
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
