@@ -1,4 +1,3 @@
-
 /* ====================================================================
  * The Apache Software License, Version 1.1
  *
@@ -67,6 +66,7 @@
 #include "apr_portable.h"
 #include "apr_getopt.h"
 #include "apr_strings.h"
+#include "apr_lib.h"
 #include "ap_mpm.h"
 #include "ap_config.h"
 #include "ap_listen.h"

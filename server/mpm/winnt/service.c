@@ -86,6 +86,7 @@
 #include "http_log.h"
 #include "mpm_winnt.h"
 #include "apr_strings.h"
+#include "apr_lib.h"
 
 static const char * service_name = NULL;
 
