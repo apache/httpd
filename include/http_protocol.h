@@ -527,7 +527,7 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum);
  * @return OK or DECLINED
  * @deffunc ap_run_post_read_request(request_rec *r)
  */
-AP_DECLARE_HOOK(int,post_read_request,(request_rec *))
+AP_DECLARE_HOOK(int,post_read_request,(request_rec *r))
 /**
  * This hook allows modules to perform any module-specific logging activities
  * over and above the normal server things.
@@ -535,7 +535,7 @@ AP_DECLARE_HOOK(int,post_read_request,(request_rec *))
  * @return OK, DECLINED, or HTTP_...
  * @deffunc int ap_run_log_transaction(request_rec *r)
  */
-AP_DECLARE_HOOK(int,log_transaction,(request_rec *))
+AP_DECLARE_HOOK(int,log_transaction,(request_rec *r))
 /**
  * This hook allows modules to retrieve the http method from a request.  This
  * allows Apache modules to easily extend the methods that Apache understands
@@ -543,14 +543,14 @@ AP_DECLARE_HOOK(int,log_transaction,(request_rec *))
  * @return The http method from the request
  * @deffunc const char *ap_run_http_method(const request_rec *r)
  */
-AP_DECLARE_HOOK(const char *,http_method,(const request_rec *))
+AP_DECLARE_HOOK(const char *,http_method,(const request_rec *r))
 /**
  * Return the default port from the current request
  * @param r The current request
  * @return The current port
  * @deffunc apr_port_t ap_run_default_port(const request_rec *r)
  */
-AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *))
+AP_DECLARE_HOOK(apr_port_t,default_port,(const request_rec *r))
 
 typedef struct ap_bucket_error ap_bucket_error;
 /**

@@ -249,7 +249,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r);
  * @return OK, DECLINED, or HTTP_...
  * @deffunc int ap_run_translate_name(request_rec *r)
  */
-AP_DECLARE_HOOK(int,translate_name,(request_rec *))
+AP_DECLARE_HOOK(int,translate_name,(request_rec *r))
 
 /**
  * This hook allows modules to check the authentication information sent with
@@ -258,7 +258,7 @@ AP_DECLARE_HOOK(int,translate_name,(request_rec *))
  * @return OK, DECLINED, or HTTP_...
  * @deffunc int ap_run_check_user_id(request_rec *r)
  */
-AP_DECLARE_HOOK(int,check_user_id,(request_rec *))
+AP_DECLARE_HOOK(int,check_user_id,(request_rec *r))
 
 /**
  * Allows modules to perform module-specific fixing of header fields.  This
@@ -267,7 +267,7 @@ AP_DECLARE_HOOK(int,check_user_id,(request_rec *))
  * @return OK, DECLINED, or HTTP_...
  * @deffunc int ap_run_fixups(request_rec *r)
  */
-AP_DECLARE_HOOK(int,fixups,(request_rec *))
+AP_DECLARE_HOOK(int,fixups,(request_rec *r))
  
 /**
  * This routine is called to determine and/or set the various document type
@@ -277,7 +277,7 @@ AP_DECLARE_HOOK(int,fixups,(request_rec *))
  * @return OK, DECLINED, or HTTP_...
  * @deffunc int ap_run_type_checker(request_rec *r)
  */
-AP_DECLARE_HOOK(int,type_checker,(request_rec *))
+AP_DECLARE_HOOK(int,type_checker,(request_rec *r))
 
 /**
  * This routine is called to check for any module-specific restrictions placed
@@ -286,7 +286,7 @@ AP_DECLARE_HOOK(int,type_checker,(request_rec *))
  * @return OK, DECLINED, or HTTP_...
  * @deffunc int ap_run_access_checker(request_rec *r)
  */
-AP_DECLARE_HOOK(int,access_checker,(request_rec *))
+AP_DECLARE_HOOK(int,access_checker,(request_rec *r))
 
 /**
  * This routine is called to check to see if the resource being requested
@@ -295,14 +295,14 @@ AP_DECLARE_HOOK(int,access_checker,(request_rec *))
  * @return OK, DECLINED, or HTTP_...
  * @deffunc int ap_run_auth_checker(request_rec *r)
  */
-AP_DECLARE_HOOK(int,auth_checker,(request_rec *))
+AP_DECLARE_HOOK(int,auth_checker,(request_rec *r))
 
 /**
  * This hook allows modules to insert filters for the current request
  * @param r the current request
  * @deffunc void ap_run_insert_filter(request_rec *r)
  */
-AP_DECLARE_HOOK(void,insert_filter,(request_rec *))
+AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
 
 #ifdef __cplusplus
 }

@@ -137,21 +137,21 @@ extern "C" {
  * @return the Options bitmask
  * @deffunc int ap_allow_options(request_rec *r)
  */
-AP_DECLARE(int) ap_allow_options (request_rec *);
+AP_DECLARE(int) ap_allow_options (request_rec *r);
 /**
  * Retrieve the value of the AllowOverride for this request
  * @param r The current request
  * @return the overrides bitmask
  * @deffunc int ap_allow_overrides(request_rec *r)
  */
-AP_DECLARE(int) ap_allow_overrides (request_rec *);
+AP_DECLARE(int) ap_allow_overrides (request_rec *r);
 /**
  * Retrieve the value of the DefaultType directive, or text/plain if not set
  * @param r The current request
  * @return The default type
  * @deffunc const char *ap_default_type(request_rec *r)
  */
-AP_DECLARE(const char *) ap_default_type (request_rec *);     
+AP_DECLARE(const char *) ap_default_type (request_rec *r);     
 /**
  * Retrieve the document root for this server
  * @param r The current request
@@ -160,7 +160,7 @@ AP_DECLARE(const char *) ap_default_type (request_rec *);
  * @return The document root
  * @deffunc const char *ap_document_root(request_rec *r)
  */
-AP_DECLARE(const char *) ap_document_root (request_rec *);
+AP_DECLARE(const char *) ap_document_root (request_rec *r);
 /**
  * Lookup the remote client's DNS name or IP address
  * @param conn The current connection
@@ -274,14 +274,14 @@ struct require_line {
  * @return The authorization required
  * @deffunc const char *ap_auth_type(request_rec *r)
  */
-AP_DECLARE(const char *) ap_auth_type (request_rec *);
+AP_DECLARE(const char *) ap_auth_type (request_rec *r);
 /**
  * Return the current Authorization realm
  * @param r The current request
  * @return The current authorization realm
  * @deffunc const char *ap_auth_name(request_rec *r)
  */
-AP_DECLARE(const char *) ap_auth_name (request_rec *);     
+AP_DECLARE(const char *) ap_auth_name (request_rec *r);     
 /**
  * How the requires lines must be met.
  * @param r The current request
@@ -300,7 +300,7 @@ AP_DECLARE(int) ap_satisfies (request_rec *r);
  * @return An array of all requires directives for this request
  * @deffunc const apr_array_header_t *ap_requires(request_rec *r)
  */
-AP_DECLARE(const apr_array_header_t *) ap_requires (request_rec *);    
+AP_DECLARE(const apr_array_header_t *) ap_requires (request_rec *r);    
 
 #if defined(WIN32)
 /* 

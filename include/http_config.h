@@ -469,8 +469,8 @@ AP_DECLARE(void) ap_set_module_config(void *conf_vector, module *m, void *val);
  * @return An error string or NULL on success
  * @deffunc const char *ap_set_string_slot(cmd_parms *cmd, void *struct_ptr, const char *arg)
  */
-AP_DECLARE_NONSTD(const char *) ap_set_string_slot(cmd_parms *, void *,
-						   const char *);
+AP_DECLARE_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd, void *struct_ptr,
+						   const char *arg);
 
 /**
  * Return true if the specified method is limited by being listed in
@@ -494,8 +494,8 @@ AP_DECLARE(int) ap_method_is_limited(cmd_parms *cmd, const char *method);
  * @return An error string or NULL on success
  * @deffunc const char *ap_set_string_slot_lower(cmd_parms *cmd, void *struct_ptr, const char *arg)
  */
-AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *, 
-							 void *, const char *);
+AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd, 
+							 void *struct_ptr, const char *arg);
 /**
  * Generic command handling function for flags
  * @param cmd The command parameters for this directive
@@ -504,7 +504,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *,
  * @return An error string or NULL on success
  * @deffunc const char *ap_set_flag_slot(cmd_parms *cmd, void *struct_ptr, int arg)
  */
-AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, void *, int);
+AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd, void *struct_ptr, int arg);
 /**
  * Generic command handling function for files
  * @param cmd The command parameters for this directive
@@ -513,7 +513,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *, void *, int);
  * @return An error string or NULL on success
  * @deffunc const char *ap_set_file_slot(cmd_parms *cmd, void *struct_ptr, const char *arg)
  */
-AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *, void *, const char *);
+AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_ptr, const char *arg);
 
 /**
  * For modules which need to read config files, open logs, etc. ...
@@ -589,7 +589,7 @@ AP_DECLARE(module *) ap_find_linked_module(const char *name);
  * @param name the name of the file to open
  * @deffunc apr_status_t ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p, const char *name)
  */
-AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **, apr_pool_t *p, const char *name);
+AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p, const char *name);
 
 /**
  * Allocate a configfile_t handle with user defined functions and params 
@@ -951,7 +951,7 @@ AP_CORE_DECLARE(void *) ap_set_config_vectors(cmd_parms *parms, void *config, mo
  * @return OK or DECLINED
  * @deffunc int ap_run_header_parser(request_rec *r)
  */
-AP_DECLARE_HOOK(int,header_parser,(request_rec *))
+AP_DECLARE_HOOK(int,header_parser,(request_rec *r))
 
 /**
  * Run the pre_config function for each module
@@ -999,7 +999,7 @@ AP_DECLARE_HOOK(void,child_init,(apr_pool_t *pchild, server_rec *s))
  * @tip non-wildcard handlers should HOOK_MIDDLE, wildcard HOOK_LAST
  * @deffunc void ap_run_handler(request_rec *r)
  */
-AP_DECLARE_HOOK(int,handler,(request_rec *))
+AP_DECLARE_HOOK(int,handler,(request_rec *r))
 
 /**
  * Retrieve the optional functions for each module.
