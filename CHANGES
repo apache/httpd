@@ -1,92 +1,81 @@
 New features with this release, as extensions of the Apache functionality
-(see also more detailed CHANGES file) in the source directory.
+(see also more detailed CHANGES file) in the source directory. For more
+information, see http://www.apache.org/docs/1.1/
 
-*) API for server extensions --- see src/API.html for an overview.  Most
-   server functionality (including includes, CGI, and most forms of access
-   control) are actually implemented as API-conformant modules.
+In addition to a number of bug fixes and internal performance
+enhancements, Apache 1.1 has the following specific new user
+features:
 
-   The API is not yet quite stable (see src/TODO for some possible
-   changes), but anything done now will be easily adapted for future
-   versions --- after all, we have more modules to adapt than you do.
+  *) Caching Proxy Server
+       Apache can now act as an HTTP proxy server, allowing clients
+       behind firewalls to use the server to access the outside world. In
+       addition, it can cache documents it proxies, speeding up access to
+       frequently requested documents.
 
-*) <VirtualHost> is more general --- just about any srm.conf or
-   httpd.conf command can go in a <Virtualhost> section, with the
-   following specific exceptions: ServerType, UserId, GroupId,
-   StartServers, MaxRequestsPerChild, BindAddress, PidFile,
-   TypesConfig, ServerRoot.  
+  *) Filetype-based Script "Actions"
+       You can now run CGI scripts whenever a file of a certion type is
+       requested. Makes it much easier to execute scripts that process
+       files.
 
-*) Support for content negotiation of languages through MultiViews
-   (*.fr, *.de, *.en suffixes), via the new AddLanguage and LanguagePriority
-   commands (code written by Francois Guillaume).
+  *) Support for Keep-Alive Persistent Connections
+       Apache now has (optional) support for persistent connections, as
+       defined by the HTTP/1.1 draft. This protocol, supported by a
+       number of current HTTP servers and browsers (including Netscape
+       Navigator 2.0) has been shown to increase speed of document
+       transfer by up to 50% in certain cases.
 
-*) Significant internal cleanups and rearrangements.  The two externally
-   visible consequences of this are that just about all of the unchecked
-   fixed limits are gone, and that the server is somewhat pickier about
-   config file syntax (noting and complaining about extraneous command
-   arguments or other stuff at the end of command lines).
+  *) Customizable CGI Environment Variables (not in this release)
+       New PassEnv and SetEnv directives allow you to modify the
+       environment variables passed to CGI scripts
 
-*) XBITHACK is a run-time option, and can be selectively enabled per
-   directory --- the -DXBITHACK compile-time option just changes the
-   default.  The command which configures it is "XBitHack", which is
-   allowed everywhere "Options" is; this takes an argument ---
-   "XBitHack Off" turns it off; "XBitHack On" gets you the NCSA
-   -DXBITHACK behavior; and "XBitHack Full" gets you the Apache GXBIT
-   stuff on top of that.  (-DXBITHACK makes "Full" the default;
-   otherwise, it defaults "Off").
+  *) CERN Metafile Support
+       Now emulates the CERN httpd's support for metafiles containing
+       additional HTTP headers to be supplied with a document.
 
-*) TransferLog can specify a program which gets the log entries piped to it,
-   a la 'TransferLog "| /var/www/my-perl-script -arg valu"' --- this should
-   give the same SIGTERM/pause/SIGKILL treatment to the logging process on
-   server restarts that a CGI script gets on an aborted request.  NB the
-   server is counting on the logging process to work, and will probably hang
-   or worse if it dies.
+  *) Redirect Now Usable in .htaccess Files
+       The Redirect directive can now be used in .htaccess files when the
+       FileInfo directive has been set on. This allows users to redirect
+       parts of their directories without requiring CGI scripts
 
-We also have a few experimental modules which indicate directions for
-a future release (NB these experimental, meaning they haven't been
-tested as much as the rest of the code here; also, they are not in
-final form yet, and what appears as supported may not be quite what
-you see now, though it will support at least the same functionality):
+  *) Improved UserDir Directive (not in this release)
+       Now supports the ability to point user's files (as specificed by
+       URLs beginning with the "~" character) at directories other than
+       those specified by the Unix password file.
 
-*) Configurable logging module --- this is a replacement for the
-   standard plane-jane Common Log Format code, which supports a
-   LogFormat directive which allows you to control the formatting of
-   entries in the TransferLog, and add some new items if you like (in
-   particular, Referer and User-Agent).
+  *) Minimal DNS Now Runtime Option
+       New HostnameLookups server configuration directive can be used to
+       turn On or  Off DNS lookups. This supercedes the -DMINIMAL_DNS
+       compile-time configuration option.
 
-*) The optional dld module is a proof-of-concept piece of code which 
-   loads other modules into the server as it is configuring itself (the
-   first time only --- for now, rereading the config files cannot
-   affect the state of loaded modules), using the GNU dynamic linking
-   library, DLD.  It isn't compiled into the server by default, since
-   not everyone has DLD, but it works when I try it.  (Famous last
-   words). 
+  *) Listen to Multiple Addresses and Ports
+       Using the new Listen directive, Apache can listen to more than one
+       port and IP address, using the same configuration set.
 
-   This module defines two commands:
+  *) Anonymous HTTP Logins
+       New options allow you to allow, using Basic HTTP Authentication,
+       anonymous logins, like those of FTP. This allows you to collect
+       email addresses of people accessing your site.
 
-     LoadModule module_sym filename
-     LoadFile filename filename filename...
-     
-   LoadModule tells the server to link in the file "filename", and add
-   the module structure named "module_sym" to the list of active
-   modules (this is the "foo_module" in "module foo_module = {..." at
-   the bottom of all the mod_*.c files).
+  *) File Owner Avialable to Included CGI Scripts
+       Server-side includes that call CGI scripts will now set a
+       USER_NAME environment variable that contains the owner of the file
+       which included it.
 
-   LoadFile links with additional object files or libraries which may
-   be required for some module to work.  Filenames are taken relative
-   to ServerRoot unless they begin with '/'.  Note that for some
-   reason, "LoadFile /lib/libc.a" seems to be required for just about
-   everything.
+  *) Improved Icons
+       Thanks to Kevin Hughes, Apache's nifty color GIF icons for
+       directory listings have been updated. In addition, the Powered by
+       Apache (apache_pb.gif) logo has been included.
 
-   NB that DLD needs to read the symbol table out of the server binary
-   when starting up; these commands will fail if the server can't find
-   its own binary when it starts up, or if that binary is stripped.
+NEW AUTHENTICATION MODULES:
 
-   Sample usage:
+Note: These modules are not compiled into the server by default, as
+they require special support on the host system. They must be enabled
+specifically in the Configuration file.
 
-     LoadModule ai_backcompat_module modules/mod_ai_backcompat.o
-     LoadFile /lib/libc.a
+  *) Support for Unix DB Authentication - mod_db.c
+       In addition to DBM support, Apache now contains optional support
+       for Berkeley DB databases.
 
-   (assuming mod_ai_backcompat.o is in fact in the 'modules'
-   subdirectory of ServerRoot).
-
-
+  *) mSQL Database Authentication - mod_auth_msql.html
+       Support for the use of mSQL databases for user authentication via
+       HTTP is now supported.
