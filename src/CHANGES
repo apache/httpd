@@ -48,6 +48,9 @@ Changes with Apache 1.2b8
      ensure that the server-reserved fields are not being overridden,
      while not overriding those that are not reserved.  [Roy Fielding]
 
+  *) Moved transparent content negotiation fields to err_headers_out
+     to reflect above changes.  [Petr Lampa]
+
   *) Fixed the determination of whether or not we should make the
      connection persistent for all of the cases where some other part
      of the server has already indicated that we should not.  Also

@@ -1663,18 +1663,9 @@ void set_neg_headers(request_rec *r, negotiation_state *neg, int na_result)
     int vary_by_encoding = 0;
     array_header *hdrs;
 
-    /* This is a bit of a hack: the apache status handling code regards
-     * any status other than 200 as an error, and only outputs
-     * headers marked as safe for output with errors. This
-     * are the header stored in err_headers_out. If we know
-     * we are going to generate a 300 status (because we got
-     * a network-algorithm result of na_list), we put these
-     * headers into err_headers_out to get them output with the
-     * list response. The core code which handles error responses
-     * should really be updated, since these headers should probably
-     * be output for other 2xx and 3xx statuses as well.
-     */
-    hdrs = (na_result == na_list) ? r->err_headers_out : r->headers_out;
+    /* Put headers into err_headers_out, new send_http_header()
+     * outputs both headers_out and err_headers_out */
+    hdrs = r->err_headers_out;
 
     for (j = 0; j < neg->avail_vars->nelts; ++j) {
             
@@ -1832,13 +1823,13 @@ int setup_choice_response(request_rec *r, negotiation_state *neg, var_rec *varia
      */
 
     if ((sub_req->status == HTTP_MULTIPLE_CHOICES) ||
-        (table_get(sub_req->headers_out, "Alternates")) ||
-        (table_get(sub_req->headers_out, "Content-Location")))
+        (table_get(sub_req->err_headers_out, "Alternates")) ||
+        (table_get(sub_req->err_headers_out, "Content-Location")))
         return VARIANT_ALSO_VARIES;
     
-    if ((sub_vary = table_get(sub_req->headers_out, "Vary")) != NULL)
-        table_set(r->headers_out, "Variant-Vary", sub_vary);
-    table_set(r->headers_out, "Content-Location", variant->file_name);
+    if ((sub_vary = table_get(sub_req->err_headers_out, "Vary")) != NULL)
+        table_set(r->err_headers_out, "Variant-Vary", sub_vary);
+    table_set(r->err_headers_out, "Content-Location", variant->file_name);
     set_neg_headers(r, neg, na_choice); /* add Alternates and Vary */
     /* to do: add Expires */
 
