@@ -70,7 +70,7 @@ void beosd_detach(void)
 
     chdir("/");
 
-/* ZZZ
+/* 
  * fork() is evil if we're also doing spawn_thread...so we don't use it.
  * This means that it won't detach properly, so we'll have to find a way
  * round this. 

@@ -1021,14 +1021,14 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_context_t *
 
     if (!(strcmp(fname, ap_server_root_relative(p, RESOURCE_CONFIG_FILE))) ||
 	!(strcmp(fname, ap_server_root_relative(p, ACCESS_CONFIG_FILE)))) {
-	if (stat(fname, &finfo) == -1)   /* ZZZ  can we read the file?  ACCESS better here. */
+	if (stat(fname, &finfo) == -1)   
 	    return;
     }
 
     /* don't require conf/httpd.conf if we have a -C or -c switch */
     if((ap_server_pre_read_config->nelts || ap_server_post_read_config->nelts) &&
        !(strcmp(fname, ap_server_root_relative(p, SERVER_CONFIG_FILE)))) {
-	if (stat(fname, &finfo) == -1)     /* ZZZ  can we read the file?  ACCESS better here. */ 
+	if (stat(fname, &finfo) == -1)     
 	    return;
     }
 
@@ -1041,7 +1041,6 @@ void ap_process_resource_config(server_rec *s, const char *fname, ap_context_t *
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
 
     if (ap_pcfg_openfile(&parms.config_file, p, fname) != APR_SUCCESS) {
-        /* ZZZ  use ap_strerror() once it exists to print an error message */
 	fprintf(stderr, "%s: could not open document config file %s\n",
 		ap_server_argv0, fname);
 	exit(1);
@@ -1262,14 +1261,13 @@ static server_rec *init_server_config(process_rec *process, ap_context_t *p)
     s->limit_req_line = DEFAULT_LIMIT_REQUEST_LINE;
     s->limit_req_fieldsize = DEFAULT_LIMIT_REQUEST_FIELDSIZE;
     s->limit_req_fields = DEFAULT_LIMIT_REQUEST_FIELDS;
-    s->timeout = DEFAULT_TIMEOUT;     /*ZZZ use AP default timeouts here*/
+    s->timeout = DEFAULT_TIMEOUT;     
     s->keep_alive_timeout = DEFAULT_KEEPALIVE_TIMEOUT;
     s->keep_alive_max = DEFAULT_KEEPALIVE;
     s->keep_alive = 1;
     s->next = NULL;
     s->addrs = ap_pcalloc(p, sizeof(server_addr_rec));
     /* NOT virtual host; don't match any real network interface */
-    /* ZZZ  Initialize the Network Address here. */
     s->addrs->host_addr.s_addr = htonl(INADDR_ANY);
     s->addrs->host_port = 0;	/* matches any port */
     s->addrs->virthost = "";	/* must be non-NULL */

@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 1999/11/16 15:11:51 $]
+Last modified at [$Date: 1999/11/16 18:30:18 $]
 
 Release:
 
@@ -117,8 +117,6 @@ Other features that need writing:
         Status: ?
 
     * TODO in source -- just do an egrep on "TODO" and see what's there
-
-    * Odd comments in source (egrep for "ZZZ") need to be cleaned-up
 
     * Work on other MPMs. Possible MPMs discussed or in progress include:
 

@@ -682,9 +682,6 @@ static char **create_argv_cmd(ap_context_t *p, char *av0, const char *args, char
 }
 #endif
 
-/* ZZZ need to look at this in more depth and convert to an AP func so we 
-   can get rid of OS specific code.
-   */
 #if 0
 API_EXPORT(int) ap_call_exec(request_rec *r, ap_child_info_t *pinfo, char *argv0,
 			     char **env, int shellcmd)

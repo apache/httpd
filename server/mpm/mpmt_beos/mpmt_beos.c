@@ -872,7 +872,7 @@ static int32 child_main(void * data)
     return (0);
 }
 
-static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
+static int make_child(server_rec *s, int slot, time_t now)
 {
     thread_id tid;
     
@@ -1017,7 +1017,6 @@ static void server_main_loop(int remaining_children_to_start)
 		    /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
-                    /* ZZZ abstract out for AP funcs. */
 		    make_child(server_conf, child_slot, time(NULL));
 		    --remaining_children_to_start;
 		}
@@ -1185,7 +1184,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
 		    "SIGHUP received.  Attempting to restart");
     }
     if (!is_graceful) {
-        ap_restart_time = time(NULL); /* ZZZZZ */
+        ap_restart_time = time(NULL); 
     }
     delete_port(port_of_death);
     return 0;
@@ -1376,7 +1375,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    /* ZZZ change this to the AP func FileInfo*/
     if ((stat(fname, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {
 	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);

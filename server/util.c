@@ -103,8 +103,6 @@ API_VAR_EXPORT const char ap_day_snames[7][4] =
 
 API_EXPORT(char *) ap_get_time()
 {
-  /* ZZZ When we abstract out time, this whole function should change to use
-     AP funcs. */
     time_t t;
     char *time_string;
 
@@ -136,8 +134,6 @@ API_EXPORT(char *) ap_field_noparam(ap_context_t *p, const char *intype)
 
 API_EXPORT(char *) ap_ht_time(ap_context_t *p, time_t t, const char *fmt, int gmt)
 {
-  /* ZZZ this function can be replaced by calls to time formatting routines
-     in APR.  */
     char ts[MAX_STRING_LEN];
     char tf[MAX_STRING_LEN];
     struct tm *tms;
@@ -190,7 +186,7 @@ API_EXPORT(char *) ap_gm_timestr_822(ap_context_t *p, time_t sec)
     char *date_str_ptr = date_str;
     int real_year;
 
-    tms = gmtime(&sec);    /* ZZZ replace with AP time routine */
+    tms = gmtime(&sec);    
 
     /* Assumption: this is always 3 */
     /* i = strlen(ap_day_snames[tms->tm_wday]); */
@@ -1665,7 +1661,6 @@ API_EXPORT(int) ap_is_directory(const char *path)
 {
     struct stat finfo;
 
-    /* ZZZ replace with AP File Info func. */
     if (stat(path, &finfo) == -1)
 	return 0;		/* in error condition, just return no */
 
@@ -1914,7 +1909,6 @@ API_EXPORT(gid_t) ap_gname2id(const char *name)
  */
 unsigned long ap_get_virthost_addr(char *w, unsigned short *ports)
 {
-  /* ZZZ Redesign for AP func changes */
     struct hostent *hep;
     unsigned long my_addr;
     char *p;
@@ -1986,7 +1980,6 @@ char *ap_get_local_host(ap_context_t *a)
     char *server_hostname;
     struct hostent *p;
 
-    /* ZZZ change to use AP funcs. */
 #ifdef BEOS
     if (gethostname(str, sizeof(str) - 1) == 0)
 #else

@@ -198,7 +198,6 @@ API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile, int convert)
     int nbytes;
 
     ap_MD5Init(&context);
-    /* ZZZ use AP func instead of fread. */
     while ((nbytes = read(infile, buf, sizeof(buf)))) {
 	length += nbytes;
         if (!convert) {
@@ -206,7 +205,6 @@ API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile, int convert)
         }
 	ap_MD5Update(&context, buf, nbytes);
     }
-    /* ZZZ use AP seek func instead of REWIND. */
     lseek(infile, 0L, SEEK_SET);
     return ap_md5contextTo64(p, &context);
 }
@@ -221,12 +219,10 @@ API_EXPORT(char *) ap_md5digest(ap_context_t *p, int infile)
     int nbytes;
 
     ap_MD5Init(&context);
-    /* ZZZ use AP func instead of fread. */
     while ((nbytes = read(infile, buf, sizeof(buf)))) {
 	length += nbytes;
 	ap_MD5Update(&context, buf, nbytes);
     }
-    /* ZZZ use AP seek func instead of REWIND. */
     lseek(infile, 0L, SEEK_SET);
     return ap_md5contextTo64(p, &context);
 }

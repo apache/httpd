@@ -2933,7 +2933,6 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
     }
 
     fname = ap_server_root_relative(cmd->pool, arg);
-    /* ZZZ change this to the AP func FileInfo*/
     if ((stat(fname, &finfo) == -1) || !S_ISDIR(finfo.st_mode)) {
 	return ap_pstrcat(cmd->pool, "CoreDumpDirectory ", fname, 
 			  " does not exist or is not a directory", NULL);
