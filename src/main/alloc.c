@@ -1790,6 +1790,44 @@ API_EXPORT_NONSTD(void) ap_null_cleanup(void *data)
  * generic cleanup interface.
  */
 
+#if defined(WIN32)
+/* Provided by service.c, internal to the core library (not exported) */
+BOOL isWindowsNT(void);
+
+int ap_close_handle_on_exec(HANDLE nth)
+{
+    /* Protect the fd so that it will not be inherited by child processes */
+    if (isWindowsNT()) {
+        DWORD hinfo;
+        if (!GetHandleInformation(nth, &hinfo)) {
+	    ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "GetHandleInformation"
+                         "(%08x) failed", nth);
+	    return 0;
+        }
+        if ((hinfo & HANDLE_FLAG_INHERIT)
+                && !SetHandleInformation(nth, HANDLE_FLAG_INHERIT, 0)) {
+	    ap_log_error(APLOG_MARK, APLOG_ERR, NULL, "SetHandleInformation"
+                         "(%08x, HANDLE_FLAG_INHERIT, 0) failed", nth);
+	    return 0;
+        }
+        return 1;
+    }
+    else /* Win9x */ {
+        /* XXX: This API doesn't work... you can't change the handle by just
+         * 'touching' it... you must duplicat to a second handle and close
+         * the original.
+         */
+        return 0;
+    }
+}
+
+int ap_close_fd_on_exec(int fd)
+{
+    return ap_close_handle_on_exec((HANDLE)_get_osfhandle(fd));
+}
+
+#else
+
 int ap_close_fd_on_exec(int fd)
 {
 #if defined(F_SETFD) && defined(FD_CLOEXEC)
@@ -1805,6 +1843,8 @@ int ap_close_fd_on_exec(int fd)
     return 0;
 #endif
 }
+
+#endif /* ndef(WIN32) */
 
 static void fd_cleanup(void *fdv)
 {
@@ -1870,14 +1910,27 @@ API_EXPORT(int) ap_pclosef(pool *a, int fd)
 }
 
 #ifdef WIN32
-static void h_cleanup(void *fdv)
+static void h_cleanup(void *nth)
 {
-    CloseHandle((HANDLE) fdv);
+    CloseHandle((HANDLE) nth);
 }
 
-API_EXPORT(void) ap_note_cleanups_for_h(pool *p, HANDLE hDevice)
+static int h_magic_cleanup(void *nth)
 {
-    ap_register_cleanup(p, (void *) hDevice, h_cleanup, h_cleanup);
+    /* Set handle not-inherited
+     */
+    return ap_close_handle_on_exec((HANDLE) nth);
+}
+
+API_EXPORT(void) ap_note_cleanups_for_h_ex(pool *p, HANDLE nth, int domagic)
+{
+    ap_register_cleanup_ex(p, (void *) nth, h_cleanup, h_cleanup,
+                           domagic ? h_magic_cleanup : NULL);
+}
+
+API_EXPORT(void) ap_note_cleanups_for_h(pool *p, HANDLE nth)
+{
+    ap_note_cleanups_for_h_ex(p, nth, 0);
 }
 
 API_EXPORT(int) ap_pcloseh(pool *a, HANDLE hDevice)
@@ -1908,10 +1961,12 @@ static void file_cleanup(void *fpv)
 {
     fclose((FILE *) fpv);
 }
+
 static void file_child_cleanup(void *fpv)
 {
     close(fileno((FILE *) fpv));
 }
+
 static int file_magic_cleanup(void *fpv)
 {
     return ap_close_fd_on_exec(fileno((FILE *) fpv));
@@ -2036,9 +2091,14 @@ static void socket_cleanup(void *fdv)
 {
     closesocket((int) (long) fdv);
 }
+
 static int socket_magic_cleanup(void *fpv)
 {
+#ifdef WIN32
+    return ap_close_handle_on_exec((HANDLE) fpv);
+#else
     return ap_close_fd_on_exec((int) (long) fpv);
+#endif
 }
 
 API_EXPORT(void) ap_note_cleanups_for_socket_ex(pool *p, int fd, int domagic)
@@ -2613,7 +2673,7 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
             *pipe_out = ap_bcreate(p, B_RD);
 
 	    /* Setup the cleanup routine for the handle */
-            ap_note_cleanups_for_h(p, hPipeOutputRead);   
+            ap_note_cleanups_for_h_ex(p, hPipeOutputRead, 1);   
 
 	    /* Associate the handle with the new buffer */
             ap_bpushh(*pipe_out, hPipeOutputRead);
@@ -2628,7 +2688,7 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
             *pipe_in = ap_bcreate(p, B_WR);             
 
 	    /* Setup the cleanup routine for the handle */
-            ap_note_cleanups_for_h(p, hPipeInputWrite);
+            ap_note_cleanups_for_h_ex(p, hPipeInputWrite, 1);
 
 	    /* Associate the handle with the new buffer */
             ap_bpushh(*pipe_in, hPipeInputWrite);
@@ -2644,7 +2704,7 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
             *pipe_err = ap_bcreate(p, B_RD);
 
 	    /* Setup the cleanup routine for the handle */
-            ap_note_cleanups_for_h(p, hPipeErrorRead);
+            ap_note_cleanups_for_h_ex(p, hPipeErrorRead, 1);
 
 	    /* Associate the handle with the new buffer */
             ap_bpushh(*pipe_err, hPipeErrorRead);
