@@ -306,6 +306,26 @@ static int ssl_hook_pre_connection(conn_rec *c)
     return APR_SUCCESS;
 }
 
+static apr_status_t ssl_abort(SSLFilterRec *pRec, conn_rec *c)
+{
+    /*
+     * try to gracefully shutdown the connection:
+     * - send an own shutdown message (be gracefully)
+     * - don't wait for peer's shutdown message (deadloop)
+     * - kick away the SSL stuff immediately
+     * - block the socket, so Apache cannot operate any more
+     */
+
+    SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
+    SSL_smart_shutdown(pRec->pssl);
+    SSL_free(pRec->pssl);
+    pRec->pssl = NULL; /* so filters know we've been shutdown */
+    apr_table_setn(c->notes, "ssl", NULL);
+    c->aborted = 1;
+
+    return APR_EGENERAL;
+}
+
 /*
  * The hook is NOT registered with ap_hook_process_connection. Instead, it is
  * called manually from the churn () before it tries to read any data.
@@ -414,20 +434,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                         ssl_util_vhostid(c->pool,c->base_server),
                         c->remote_ip != NULL ? c->remote_ip : "unknown");
             }
-            /*
-             * try to gracefully shutdown the connection:
-             * - send an own shutdown message (be gracefully)
-             * - don't wait for peer's shutdown message (deadloop)
-             * - kick away the SSL stuff immediately
-             * - block the socket, so Apache cannot operate any more
-             */
-            SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
-            SSL_smart_shutdown(pRec->pssl);
-            SSL_free(pRec->pssl);
-            pRec->pssl = NULL; /* so filters know we've been shutdown */
-            apr_table_setn(c->notes, "ssl", NULL);
-            c->aborted = 1;
-            return APR_EGENERAL;
+            return ssl_abort(pRec, c);
         }
 
         /*
@@ -439,12 +446,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
             ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "SSL client authentication failed: %s",
                     cp != NULL ? cp : "unknown reason");
-            SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
-            SSL_smart_shutdown(pRec->pssl);
-            SSL_free(pRec->pssl);
-            apr_table_setn(c->notes, "ssl", NULL);
-            c->aborted = 1;
-            return APR_EGENERAL;
+            return ssl_abort(pRec, c);
         }
 
         /*
@@ -464,12 +466,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
             && apr_table_get(c->notes, "ssl::client::dn") == NULL) {
             ssl_log(c->base_server, SSL_LOG_ERROR,
                     "No acceptable peer certificate available");
-            SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
-            SSL_smart_shutdown(pRec->pssl);
-            SSL_free(pRec->pssl);
-            apr_table_setn(c->notes, "ssl", NULL);
-            c->aborted = 1;
-            return APR_EGENERAL;
+            return ssl_abort(pRec, c);
         }
     }
     return APR_SUCCESS;
