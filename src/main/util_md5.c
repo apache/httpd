@@ -82,23 +82,23 @@
 #include "httpd.h"
 #include "util_md5.h"
 
-API_EXPORT(char *) ap_md5 (pool *p, unsigned char *string)
+API_EXPORT(char *) ap_md5(pool *p, unsigned char *string)
 {
     AP_MD5_CTX my_md5;
     unsigned char hash[16];
     char *r, result[33];
     int i;
-	
+
     /*
      * Take the MD5 hash of the string argument.
      */
 
     MD5Init(&my_md5);
-    MD5Update(&my_md5, string, strlen((const char *)string));
+    MD5Update(&my_md5, string, strlen((const char *) string));
     MD5Final(hash, &my_md5);
 
-    for (i=0, r=result; i<16; i++, r+=2)
-        sprintf(r, "%02x", hash[i]);
+    for (i = 0, r = result; i < 16; i++, r += 2)
+	sprintf(r, "%02x", hash[i]);
     *r = '\0';
 
     return pstrdup(p, result);
@@ -147,26 +147,26 @@ API_EXPORT(char *) ap_md5 (pool *p, unsigned char *string)
  */
 
 static char basis_64[] =
-   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-API_EXPORT(char *) ap_md5contextTo64(pool *a, AP_MD5_CTX *context)
+API_EXPORT(char *) ap_md5contextTo64(pool *a, AP_MD5_CTX * context)
 {
     unsigned char digest[18];
     char *encodedDigest;
     int i;
     char *p;
 
-    encodedDigest = (char *)pcalloc(a, 25 * sizeof(char));
+    encodedDigest = (char *) pcalloc(a, 25 * sizeof(char));
 
     MD5Final(digest, context);
-    digest[sizeof(digest)-1] = digest[sizeof(digest)-2] = 0;
+    digest[sizeof(digest) - 1] = digest[sizeof(digest) - 2] = 0;
 
     p = encodedDigest;
-    for (i=0; i < sizeof(digest); i+=3) {
-        *p++ = basis_64[digest[i]>>2];
-        *p++ = basis_64[((digest[i] & 0x3)<<4) | ((int)(digest[i+1] & 0xF0)>>4)];
-        *p++ = basis_64[((digest[i+1] & 0xF)<<2) | ((int)(digest[i+2] & 0xC0)>>6)];
-        *p++ = basis_64[digest[i+2] & 0x3F];
+    for (i = 0; i < sizeof(digest); i += 3) {
+	*p++ = basis_64[digest[i] >> 2];
+	*p++ = basis_64[((digest[i] & 0x3) << 4) | ((int) (digest[i + 1] & 0xF0) >> 4)];
+	*p++ = basis_64[((digest[i + 1] & 0xF) << 2) | ((int) (digest[i + 2] & 0xC0) >> 6)];
+	*p++ = basis_64[digest[i + 2] & 0x3F];
     }
     *p-- = '\0';
     *p-- = '=';
@@ -183,10 +183,9 @@ API_EXPORT(char *) ap_md5digest(pool *p, FILE *infile)
 
     MD5Init(&context);
     while ((nbytes = fread(buf, 1, sizeof(buf), infile))) {
-        length += nbytes;
-        MD5Update(&context, buf, nbytes);
+	length += nbytes;
+	MD5Update(&context, buf, nbytes);
     }
     rewind(infile);
     return ap_md5contextTo64(p, &context);
 }
-

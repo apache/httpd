@@ -67,9 +67,9 @@
 
 #ifdef HAVE_CVT
 
-# define ap_ecvt ecvt
-# define ap_fcvt fcvt
-# define ap_gcvt gcvt
+#define ap_ecvt ecvt
+#define ap_fcvt fcvt
+#define ap_gcvt gcvt
 
 #else
 
@@ -87,8 +87,7 @@
 
 #define	NDIG	80
 
-static char *
-     ap_cvt(double arg, int ndigits, int *decpt, int *sign, int eflag)
+static char *ap_cvt(double arg, int ndigits, int *decpt, int *sign, int eflag)
 {
     register int r2;
     double fi, fj;
@@ -162,14 +161,12 @@ static char *
     return (buf);
 }
 
-static char *
-     ap_ecvt(double arg, int ndigits, int *decpt, int *sign)
+static char *ap_ecvt(double arg, int ndigits, int *decpt, int *sign)
 {
     return (ap_cvt(arg, ndigits, decpt, sign, 1));
 }
 
-static char *
-     ap_fcvt(double arg, int ndigits, int *decpt, int *sign)
+static char *ap_fcvt(double arg, int ndigits, int *decpt, int *sign)
 {
     return (ap_cvt(arg, ndigits, decpt, sign, 0));
 }
@@ -179,8 +176,7 @@ static char *
  * minimal length string
  */
 
-static char *
-     ap_gcvt(double number, int ndigit, char *buf)
+static char *ap_gcvt(double number, int ndigit, char *buf)
 {
     int sign, decpt;
     register char *p1, *p2;
@@ -250,9 +246,9 @@ typedef enum {
 #define INT_NULL		((int *)0)
 #define WIDE_INT		long
 
-typedef WIDE_INT		wide_int;
-typedef unsigned WIDE_INT	u_wide_int;
-typedef int			bool_int;
+typedef WIDE_INT wide_int;
+typedef unsigned WIDE_INT u_wide_int;
+typedef int bool_int;
 
 #define S_NULL			"(null)"
 #define S_NULL_LEN		6
@@ -352,9 +348,9 @@ typedef struct buf_area buffy;
  * which is a pointer to the END of the buffer + 1 (i.e. if the buffer
  * is declared as buf[ 100 ], buf_end should be &buf[ 100 ])
  */
-static char *
-     conv_10(register wide_int num, register bool_int is_unsigned,
-	  register bool_int * is_negative, char *buf_end, register int *len)
+static char *conv_10(register wide_int num, register bool_int is_unsigned,
+		     register bool_int *is_negative, char *buf_end,
+		     register int *len)
 {
     register char *p = buf_end;
     register u_wide_int magnitude;
@@ -378,7 +374,7 @@ static char *
 	if (*is_negative) {
 	    wide_int t = num + 1;
 
-	    magnitude = ((u_wide_int) - t) + 1;
+	    magnitude = ((u_wide_int) -t) + 1;
 	}
 	else
 	    magnitude = (u_wide_int) num;
@@ -390,7 +386,7 @@ static char *
     do {
 	register u_wide_int new_magnitude = magnitude / 10;
 
-	*--p = (char)(magnitude - new_magnitude * 10 + '0');
+	*--p = (char) (magnitude - new_magnitude * 10 + '0');
 	magnitude = new_magnitude;
     }
     while (magnitude);
@@ -409,7 +405,7 @@ static char *
  */
 static char *
      conv_fp(register char format, register double num,
-boolean_e add_dp, int precision, bool_int * is_negative, char *buf, int *len)
+boolean_e add_dp, int precision, bool_int *is_negative, char *buf, int *len)
 {
     register char *s = buf;
     register char *p;
@@ -500,9 +496,8 @@ boolean_e add_dp, int precision, bool_int * is_negative, char *buf, int *len)
  * which is a pointer to the END of the buffer + 1 (i.e. if the buffer
  * is declared as buf[ 100 ], buf_end should be &buf[ 100 ])
  */
-static char *
-     conv_p2(register u_wide_int num, register int nbits,
-	     char format, char *buf_end, register int *len)
+static char *conv_p2(register u_wide_int num, register int nbits,
+		     char format, char *buf_end, register int *len)
 {
     register int mask = (1 << nbits) - 1;
     register char *p = buf_end;
@@ -524,8 +519,8 @@ static char *
 /*
  * Do format conversion placing the output in buffer
  */
-static int format_converter(register buffy * odp, const char *fmt,
-			      va_list ap)
+static int format_converter(register buffy *odp, const char *fmt,
+			    va_list ap)
 {
     register char *sp;
     register char *bep;
@@ -828,8 +823,8 @@ static int format_converter(register buffy * odp, const char *fmt,
 		ui_num = (u_wide_int) va_arg(ap, char *);
 
 		if (sizeof(char *) <= sizeof(u_wide_int))
-		         s = conv_p2(ui_num, 4, 'x',
-				     &num_buf[NUM_BUF_SIZE], &s_len);
+		               s = conv_p2(ui_num, 4, 'x',
+					   &num_buf[NUM_BUF_SIZE], &s_len);
 		else {
 		    s = "%p";
 		    s_len = 2;
@@ -947,4 +942,4 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
     return (cc);
 }
 
-#endif	/* HAVE_SNPRINTF */
+#endif /* HAVE_SNPRINTF */

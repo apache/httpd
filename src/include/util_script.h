@@ -66,5 +66,4 @@ API_EXPORT(void) add_common_vars(request_rec *r);
 API_EXPORT(int) scan_script_header_err(request_rec *r, FILE *f, char *buffer);
 API_EXPORT(int) scan_script_header_err_buff(request_rec *r, BUFF *f, char *buffer);
 API_EXPORT(void) send_size(size_t size, request_rec *r);
-API_EXPORT(int) call_exec (request_rec *r, char *argv0, char **env, int shellcmd);
-
+API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd);
