@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/21 17:03:40 $]
+Last modified at [$Date: 2002/11/23 19:15:28 $]
 
 Release:
 
@@ -53,54 +53,34 @@ on related projects:
 
 Contributors looking for a mission:
 
-    * just do an egrep on "TODO" and see what's there
-
+    * just do an egrep on "TODO", "XXX" and see what's there
 
 CURRENT RELEASE NOTES:
 
+    * This branch is operating under R-T-C guidelines.
+
+    * Backwards compatibility is expected of future Apache 2.0 releases,
+      such that no MMN major number changes will occur until 2.1.
+
+    * The current sandbox (cvs HEAD) operating under C-T-R guidelines
+      is version 2.1-dev.
+
+    * All commits to APACHE_2_0_BRANCH must be reflected in cvs HEAD
+      as well, if they apply.  Logical progression is commit to HEAD,
+      get feedback (3 +1's) and then commit to APACHE_2_0_BRANCH.
+
+    * The 'modules/experimental' tree will evaporate soon.  Anything
+      in the development branch should be located under it's eventual 
+      home (such as modules/cache/.)
 
 RELEASE SHOWSTOPPERS:
 
+    * The Auth module overhaul of module names and directives need to
+      be reverted to their 2.0.43 names.  The new hooks remain.
 
 CURRENT VOTES:
 
-    * Adopt backwards compatibility for future Apache 2.0 releases
-      such that MMN major number changes and eliminating non-experimental
-      modules are deferred for the next minor version bump (e.g. 2.1, 2.2 
-      or 3.0).
-        +1: wrowe, jerenkrantz, aaron, brianp, trawick, stoddard, jwoolley,
-            rbowen, rederpj, jim, striker
-         0: 
-        -1: 
-
-    * Defer the Auth module overhaul to the next minor version bump
-      (e.g. 2.1, 2.2, 3.0) on the condition that forward compatibility
-      resolution is adopted.
-        +1: wrowe, aaron, trawick, stoddard, jwoolley, rbowen, gregames,
-            rederpj, jim
-         0: jerenkrantz
-        -1: striker 
-
-    * Adopt an even/odd release paradigm (see VERSIONING) such that
-      even numbered releases are stable, and odd numbered releases 
-      are development efforts, keeping in the tradition of Linux, 
-      Perl, etc.  In pratical terms, this implies C-T-R-T-C, where
-      patches are (generally) first applied to the development branch,
-      tested, and then (after vote) applied to the stable branch.
-        +1: wrowe, jerenkrantz, aaron, trawick, stoddard, jwoolley, rbowen,
-            gregames, rederpj, jim, striker
-         0: 
-        -1: 
-
-    * Branch APACHE_2_0_BRANCH today, changing the version in CVS HEAD
-      to 2.1.0-dev.
-        +1 [from APACHE_2_0_43]: wrowe, aaron, trawick, stoddard, jwoolley,
-                                 gregames, rederpj, jim
-        +1 [from HEAD]: striker
-         0: jerenkrantz
-        -1: 
-
-    * httpd-std.conf and friends
+    * httpd-std.conf and friends;
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
@@ -143,10 +123,10 @@ CURRENT VOTES:
                                   something useful?)
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
-      +1:   Justin, Ian, Cliff, BillS, striker, wrowe
+      +1:   Justin, Ian, Cliff, BillS, striker
       +0:   BrianP, Aaron (mutex contention is looking better with the
             latest code, let's continue tuning and testing), rederpj, jim
-      -0:   Lars
+      -0:   Lars, wrowe (let's make this defacto for the 2.2 release.)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -166,7 +146,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * pipes deadlock on all platforms with limited pipe buffers (e.g. both
       Linux and Win32, as opposed to only Win32 on 1.3).  The right solution
       is either GStein's proposal for a "CGI Brigade", or OtherBill's proposal
-      for "Poll Buckets" for "Polling Filter Chains".
+      for "Poll Buckets" for "Polling Filter Chains".  Or perhaps both :-)
 
     * All handlers should always send content down even if r->header_only
       is set.  If not, it means that the HEAD requests don't generate the
@@ -295,6 +275,12 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         sequence causes the request to fail!  This happens notably in
         the ja-jis encoding.
 
+      OtherBill is -0.5 for even considering this until 2.2 because
+      it removes some protection we provided to third party modules
+      that would mysteriously 'evaporate', exposing potential holes
+      in security.  Putting this change into 2.1 development now (with
+      strong warnings!) will give authors a chance to vet their code.
+
     * FreeBSD, threads, and worker MPM.  All seems to work fine 
       if you only have one worker process with many threads.  Add 
       a second worker process and the accept lock seems to be
@@ -348,17 +334,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
              to both parent and child for writing.  Then we just need to
              figure out how to do graceless on non-threaded MPMs.
 
-    * Allow the DocumentRoot directive within <Location > scopes?  This
-      allows the beloved (crusty) Alias /foo/ /somepath/foo/ followed
-      by a <Directory /somepath/foo> to become simply 
-      <Location /foo/> DocumentRoot /somefile/foo (IMHO a bit more legible
-      and in-your-face.)  DocumentRoot unset would be accepted [and would
-      not permit content to be served, only virtual resources such as
-      server-info or server-status.
-      This proposed change would _not_ depricate Alias.
-        striker: See the thread starting with Message-ID:
-          JLEGKKNELMHCJPNMOKHOGEEJFBAA.striker@apache.org.
-
     * Win32: Rotatelogs sometimes is not terminated when Apache
       goes down hard.  FirstBill was looking at possibly tracking the 
       child's-child processes in the parent process.
@@ -372,12 +347,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Combine log_child and piped_log_spawn. Clean up http_log.c.
       Common logging API.
-
-    * Document mod_file_cache.
-
-    * Platforms that do not support fork (primarily Win32 and AS/400)
-      Architect start-up code that avoids initializing all the modules 
-      in the parent process on platforms that do not support fork.
 
     * Win32: Migrate the MPM over to use APR thread/process calls. This
       would eliminate some code in the Win32 branch that essentially
@@ -418,6 +387,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       ap_sort_hooks()  [to reduce the logic in main()]
 
     * read the config tree just once, and process N times (as necessary)
+        OtherBill adds that the 'good' solution of three passes against the
+        config tree within one read is the better solution, but breaks many
+        modules.  Best left for 2.2?
+        -0.5:  OtherBill
 
     * (possibly) use UUIDs in mod_unique_id and/or mod_usertrack
 
