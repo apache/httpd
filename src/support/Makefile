@@ -20,26 +20,30 @@ RM= /bin/rm -f
 
 all: htpasswd unescape inc2shtml httpd_monitor
 
-aux: $(OBJS)
+aux:
 	make all CC=gcc CFLAGS=-O2
 
-ibm: $(OBJS)
+ibm:
 	make all CC=gcc
 
-sun: $(OBJS)
+sun:
 	make all CC=gcc
 
-hp: $(OBJS)
+hp:
 	make all CC=gcc
 
-sgi: $(OBJS)
+sgi:
 	make all CC=cc
 
-decmips: $(OBJS)
+decmips:
 	make all CC=cc
 
-decaxp: $(OBJS)
+decaxp:
 	make all CC=cc
+
+sco:
+	make all CC=cc
+
 
 tar: htpasswd unescape
 	$(RM) htpasswd unescape
