@@ -1223,7 +1223,10 @@ int core_translate (request_rec *r)
     if ((r->uri[0] != '/') && strcmp(r->uri, "*")) return BAD_REQUEST;
     
     if (r->server->path &&
-	!strncmp(r->uri, r->server->path, r->server->pathlen))
+	!strncmp(r->uri, r->server->path, r->server->pathlen) &&
+	(r->server->path[r->server->pathlen - 1] == '/' ||
+	 r->uri[r->server->pathlen] == '/' ||
+	 r->uri[r->server->pathlen] == '\0'))
       r->filename = pstrcat (r->pool, conf->document_root,
 			     (r->uri + r->server->pathlen), NULL);
     else

@@ -1,3 +1,8 @@
+Changes with Apache 1.2b5
+
+  *) Fix bug with ServerPath that could cause certaub files to be not
+     found by the server. [Alexei Kosut] 
+
 Changes with Apache 1.2b4:
 
   *) Fix possible race condition in accept_mutex_init() that

@@ -614,7 +614,10 @@ void check_serverpath (request_rec *r) {
    */
 
   for (s = r->server->next; s; s = s->next) {
-    if (s->path && !strncmp(r->uri, s->path, s->pathlen))
+    if (s->path && !strncmp(r->uri, s->path, s->pathlen) &&
+	(s->path[s->pathlen - 1] == '/' ||
+	 r->uri[s->pathlen] == '/' ||
+	 r->uri[s->pathlen] == '\0'))
       r->server = r->connection->server = s;
   }
 }
