@@ -381,7 +381,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     ap_unblock_alarms();
     return (rc);
 }
-static ap_status_t build_argv_list(char **argv, request_rec *r, ap_context_t *p) 
+static ap_status_t build_argv_list(char *argv[], request_rec *r, ap_context_t *p) 
 {
     int numwords, x, idx;
     char *w;
@@ -400,9 +400,9 @@ static ap_status_t build_argv_list(char **argv, request_rec *r, ap_context_t *p)
         if (numwords > APACHE_ARG_MAX) {
             numwords = APACHE_ARG_MAX;	/* Truncate args to prevent overrun */
         }
-        argv = (char **) ap_palloc(p, numwords * sizeof(char *));
+        argv = (char **) ap_palloc(p, (numwords + 1) * sizeof(char *));
 
-        for (x = 0; x < numwords; x++) {
+        for (x = 1, idx = 0; x <= numwords; x++) {
             w = ap_getword_nulls(p, &args, '+');
             ap_unescape_url(w);
             argv[idx++] = ap_escape_shell_cmd(p, w);
@@ -452,7 +452,7 @@ static int cgi_handler(request_rec *r)
     int retval, nph, dbpos = 0;
     char *argv0, *dbuf = NULL;
     char *command;
-    char *argv;
+    char *argv = NULL;
 
     BUFF *script_out, *script_in, *script_err;
     char argsbuffer[HUGE_STRING_LEN];
@@ -479,26 +479,26 @@ static int cgi_handler(request_rec *r)
     nph = !(strncmp(argv0, "nph-", 4));
 
     if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
-	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
-			       "Options ExecCGI is off in this directory");
+        return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+                               "Options ExecCGI is off in this directory");
     if (nph && is_included)
-	return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
-			       "attempt to include NPH CGI script");
+        return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+                               "attempt to include NPH CGI script");
 
 #if defined(OS2) || defined(WIN32)
     /* Allow for cgi files without the .EXE extension on them under OS/2 */
     if (r->finfo.st_mode == 0) {
-	struct stat statbuf;
-	char *newfile;
+        struct stat statbuf;
+        char *newfile;
 
-	newfile = ap_pstrcat(r->pool, r->filename, ".EXE", NULL);
+        newfile = ap_pstrcat(r->pool, r->filename, ".EXE", NULL);
 
-	if ((stat(newfile, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) {
-	    return log_scripterror(r, conf, NOT_FOUND, 0,
-				   "script not found or unable to stat");
-	} else {
-	    r->filename = newfile;
-	}
+        if ((stat(newfile, &statbuf) != 0) || (!S_ISREG(statbuf.st_mode))) {
+            return log_scripterror(r, conf, NOT_FOUND, 0,
+                                   "script not found or unable to stat");
+        } else {
+            r->filename = newfile;
+        }
     }
 #else
     if (r->finfo.st_mode == 0)
