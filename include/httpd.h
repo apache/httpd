@@ -1115,10 +1115,9 @@ struct server_rec {
 
 typedef struct core_output_filter_ctx {
     apr_bucket_brigade *b;
-    apr_pool_t *subpool; /* subpool of c->pool used for data saved after a
-                          * request is finished
-                          */
-    int subpool_has_stuff; /* anything in the subpool? */
+    apr_pool_t *deferred_write_pool; /* subpool of c->pool used for resources 
+                                      * which may outlive the request
+                                      */
 } core_output_filter_ctx_t;
  
 typedef struct core_filter_ctx {

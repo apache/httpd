@@ -3923,7 +3923,10 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                     }
                 }
             }
-            ap_save_brigade(f, &ctx->b, &b, c->pool);
+            if (!ctx->deferred_write_pool) {
+                apr_pool_create(&ctx->deferred_write_pool, c->pool);
+            }
+            ap_save_brigade(f, &ctx->b, &b, ctx->deferred_write_pool);
 
             return APR_SUCCESS;
         }
@@ -3994,6 +3997,14 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
 
         apr_brigade_destroy(b);
+
+        /* drive cleanups for resources which were set aside 
+         * this may occur before or after termination of the request which
+         * created the resource
+         */
+        if (ctx->deferred_write_pool) {
+            apr_pool_clear(ctx->deferred_write_pool);  
+        }
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                          "core_output_filter: writing data to the network");
