@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.6 -->
 
 <manualpage metafile="handler.xml.meta">
 
@@ -31,7 +31,7 @@
         <directive module="core">SetHandler</directive>
       </directivelist>
     </related>
-    
+
 
     <p>「ハンドラ」とは、ファイルが呼ばれたときに実行される動作の
     Apache における内部表現です。
@@ -92,7 +92,7 @@
       <p>以下のディレクティブによって、拡張子が <code>html</code>
       であるファイルは <code>footer.pl</code>
       CGI スクリプトを起動するようになります。</p>
-      
+
       <example>
         Action add-footer /cgi-bin/footer.pl<br/>
         AddHandler add-footer .html
@@ -118,7 +118,7 @@
         SetHandler send-as-is<br/>
         &lt;/Directory&gt;
       </example>
-      
+
     </section>
   </section>
   <section id="programmer">

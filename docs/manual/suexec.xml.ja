@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English revision: 1.7 -->
+<!-- English revision: 1.8 -->
 
 <manualpage metafile="suexec.xml.meta">
 
@@ -533,7 +533,7 @@
 
       <li>suEXEC の PATH 環境変数
 
- 
+
         <p class="indent">
           これを変更するのは危険です。この指定に含まれる各パスが
           <strong>信頼できる</strong>

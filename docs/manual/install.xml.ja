@@ -2,7 +2,7 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="install.xml.meta">
-<!-- English revision: 1.18 -->
+<!-- English revision: 1.20 -->
 
   <title>コンパイルとインストール</title>
 
@@ -31,6 +31,7 @@
 <section id="overview"><title>概要 (せっかちな人向け)</title>
 
     <table>
+      <columnspec><column width=".13"/><column width=".80"/></columnspec>
       <tr>
         <td><a href="#download">ダウンロード</a></td>
 
@@ -140,7 +141,7 @@
 <section id="download"><title>ダウンロード</title>
 
     <p>Apache は <a
-    href="http://httpd.apache.org/download.cgi">Apache Software
+    href="http://www.apache.org/dist/httpd/">Apache Software
     Foundation ダウンロードサイト</a>からダウンロードできますし、
     同じ場所に幾つかのミラーサイトもリストしています。
     ここから最新の安定版が手に入ります。</p>
