@@ -341,7 +341,9 @@ static int status_handler(request_rec *r)
     ap_hard_timeout("send status info", r);
 
     if (!short_report) {
-	ap_rputs("<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n", r);
+	ap_rputs(DOCTYPE_HTML_3_2
+		 "<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n",
+		 r);
 	ap_rputs("<H1>Apache Server Status for ", r);
 	ap_rvputs(r, ap_get_server_name(r), "</H1>\n\n", NULL);
 	ap_rvputs(r, "Server Version: ",

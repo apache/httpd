@@ -275,7 +275,8 @@ static int test_util_uri(request_rec *r)
     }
     ap_hard_timeout("test_util_uri", r);
 
-    ap_rputs("
+    ap_rputs(
+DOCTYPE_HTML_2_0 "
 <html><body>
 <p>Key:
 <dl>

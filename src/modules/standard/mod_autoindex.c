@@ -192,7 +192,7 @@ static ap_inline int is_parent(const char *name)
  */
 static void emit_preamble(request_rec *r, char *title)
 {
-    ap_rvputs(r, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n",
+    ap_rvputs(r, DOCTYPE_HTML_3_2,
 	      "<HTML>\n <HEAD>\n  <TITLE>Index of ", title,
 	      "</TITLE>\n </HEAD>\n <BODY>\n", NULL);
 }

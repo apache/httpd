@@ -291,7 +291,7 @@ static long int send_dir(BUFF *f, request_rec *r, cache_req *c, char *cwd)
 	path[n-1] = '\0';
 
     /* print "ftp://host/" */
-    n = ap_snprintf(buf, sizeof(buf), "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">\n"
+    n = ap_snprintf(buf, sizeof(buf), DOCTYPE_HTML_3_2
 		"<HTML><HEAD><TITLE>%s%s</TITLE>\n"
 		"<BASE HREF=\"%s%s\"></HEAD>\n"
 		"<BODY><H2>Directory of "

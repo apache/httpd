@@ -574,6 +574,23 @@ API_EXPORT(const char *) ap_get_server_built(void);
 #define DIR_MAGIC_TYPE "httpd/unix-directory"
 #define STATUS_MAGIC_TYPE "application/x-httpd-status"
 
+/*
+ * Define the HTML doctype strings centrally.
+ */
+#define DOCTYPE_HTML_2_0  "<!DOCTYPE HTML PUBLIC \"-//IETF//" \
+                          "DTD HTML 2.0//EN\">\n"
+#define DOCTYPE_HTML_3_2  "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
+                          "DTD HTML 3.2 Final//EN\">\n"
+#define DOCTYPE_HTML_4_0S "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
+                          "DTD HTML 4.0//EN\"\n" \
+                          "\"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+#define DOCTYPE_HTML_4_0T "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
+                          "DTD HTML 4.0 Transitional//EN\"\n" \
+                          "\"http://www.w3.org/TR/REC-html40/loose.dtd\">\n"
+#define DOCTYPE_HTML_4_0F "<!DOCTYPE HTML PUBLIC \"-//W3C//" \
+                          "DTD HTML 4.0 Frameset//EN\"\n" \
+                          "\"http://www.w3.org/TR/REC-html40/frameset.dtd\">\n"
+
 /* Just in case your linefeed isn't the one the other end is expecting. */
 #ifndef CHARSET_EBCDIC
 #define LF 10

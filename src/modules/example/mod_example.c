@@ -525,7 +525,7 @@ static int example_handler(request_rec *r)
      * Now send our actual output.  Since we tagged this as being
      * "text/html", we need to embed any HTML.
      */
-    ap_rputs("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n", r);
+    ap_rputs(DOCTYPE_HTML_3_2, r);
     ap_rputs("<HTML>\n", r);
     ap_rputs(" <HEAD>\n", r);
     ap_rputs("  <TITLE>mod_example Module Content-Handler Output\n", r);

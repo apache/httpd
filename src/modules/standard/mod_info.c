@@ -378,7 +378,8 @@ static int display_info(request_rec *r)
     }
     ap_hard_timeout("send server info", r);
 
-    ap_rputs("<html><head><title>Server Information</title></head>\n", r);
+    ap_rputs(DOCTYPE_HTML_3_2
+	     "<html><head><title>Server Information</title></head>\n", r);
     ap_rputs("<body><h1 align=center>Apache Server Information</h1>\n", r);
     if (!r->args || strcasecmp(r->args, "list")) {
         cfname = ap_server_root_relative(r->pool, ap_server_confname);

@@ -2453,7 +2453,7 @@ void ap_send_error_response(request_rec *r, int recursive_error)
         h1 = &title[4];
 
         ap_rvputs(r,
-                  "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n"
+                  DOCTYPE_HTML_2_0
                   "<HTML><HEAD>\n<TITLE>", title,
                   "</TITLE>\n</HEAD><BODY>\n<H1>", h1, "</H1>\n",
                   NULL);
