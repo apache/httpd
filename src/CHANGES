@@ -1,7 +1,9 @@
 Changes with Apache 1.3a2
 
-  *) "HostnameLookups double" forces double-reverse DNS to succeed.
-     The old define MAXIMUM_DNS has been deprecated.  [Dean Gaudet]
+  *) "HostnameLookups double" forces double-reverse DNS to succeed in
+     order for remote_host to be set (for logging, or for the env var
+     REMOTE_HOST).  The old define MAXIMUM_DNS has been deprecated.
+     [Dean Gaudet]
 
   *) mod_access overhaul:
      - Now understands network/netmask syntax (i.e.  10.1.0.0/255.255.0.0)
