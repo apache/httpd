@@ -418,10 +418,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
 #ifdef WIN32
                 if (sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                                 "Init: PassPhraseDialog BuiltIn not "
-                                 "supported in server private key from file "
-                                 "%s", szPath);
-                    ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+                                 "Init: SSLPassPhraseDialog builtin is not "
+                                 "supported on Win32 (key file "
+                                 "%s)", szPath);
                     ssl_die();
                 }
 #endif /* WIN32 */
