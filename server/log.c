@@ -500,10 +500,29 @@ static void log_error_core(const char *file, int line, int level,
                             "[client %s] ", r->connection->remote_ip);
     }
     if (status != 0) {
-        char buf[120];
-        len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            "(%d)%s: ", status,
-                            apr_strerror(status, buf, sizeof(buf)));
+        if (status < APR_OS_START_EAIERR) {
+            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
+                                "(%d)", status);
+        }
+        else if (status < APR_OS_START_SYSERR) {
+            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
+                                "(EAI %d)", status - APR_OS_START_EAIERR);
+        }
+        else if (status < 100000 + APR_OS_START_SYSERR) {
+            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
+                                "(OS %d)", status - APR_OS_START_SYSERR);
+        }
+        else {
+            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
+                                "(os 0x%08x)", status - APR_OS_START_SYSERR);
+        }
+        apr_strerror(status, errstr + len, MAX_STRING_LEN - len);
+        len += strlen(errstr + len);
+        if (MAX_STRING_LEN - len > 2) {
+            errstr[len++] = ':';
+            errstr[len++] = ' ';
+            errstr[len] = '\0';
+        }
     }
     errstrlen = len;
     len += apr_vsnprintf(errstr + len, MAX_STRING_LEN - len, fmt, args);
