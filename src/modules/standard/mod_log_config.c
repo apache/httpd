@@ -242,8 +242,16 @@ char *log_remote_host (request_rec *r, char *a)
 char *log_remote_logname(request_rec *r, char *a)
 {return (char *)get_remote_logname(r);}
 
-char *log_remote_user (request_rec *r, char *a)
-{ return r->connection->user; }
+char *log_remote_user (request_rec *r, char *a) {
+    char *rvalue = r->connection->user;
+
+    if (rvalue == NULL) {
+        rvalue = "-";
+    } else if (strlen (rvalue) == 0) {
+        rvalue = "\"\"";
+    }
+    return rvalue;
+}
 
 char *log_request_line (request_rec *r, char *a)
 { return r->the_request; }

@@ -2185,6 +2185,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     static char str3[HUGE_STRING_LEN];
     static char type[20];
     static char redir[20];
+    char *ruser;
     va_list ap;
     int i;
     request_rec *req;
@@ -2203,9 +2204,17 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
     if (level > conf->rewriteloglevel)
         return;
 
+    if (connect->user == NULL) {
+        ruser = "-";
+    } else if (strlen (connect->user) != 0) {
+        ruser = connect->user;
+    } else {
+        ruser = "\"\"";
+    };
+
     str1 = pstrcat(r->pool, get_remote_host(connect, r->server->module_config, REMOTE_NAME), " ",
                             (connect->remote_logname != NULL ? connect->remote_logname : "-"), " ",
-                            (connect->user != NULL ? connect->user : "-"),
+                            ruser,
                             NULL);
     vsprintf(str2, text, ap);
 
