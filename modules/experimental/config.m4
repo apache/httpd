@@ -8,5 +8,7 @@ APACHE_MODULE(ext_filter, external filter module, , , no)
 APACHE_MODULE(case_filter, example uppercase conversion filter, , , no)
 APACHE_MODULE(generic_hook_export, example hook exporter, , , no)
 APACHE_MODULE(generic_hook_import, example hook importer, , , no)
+APACHE_MODULE(optional_fn_import, example optional function importer, , , no)
+APACHE_MODULE(optional_fn_export, example optional function exporter, , , no)
 
 APACHE_MODPATH_FINISH

@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Support for typedsafe optional functions - that is functions exported by
+     optional modules, which, therefore, may or may not be present, depending
+     on configuration. See the experimental modules mod_optional_fn_{ex,im}port
+     for sample code. [Ben Laurie]
+
   *) filters can now report an HTTP error to the server.  This is done
      by sending a brigade where the first bucket is an error_bucket.
      This bucket is a simple bucket that stores an HTTP error and

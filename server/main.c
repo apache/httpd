@@ -426,6 +426,8 @@ int main(int argc, const char * const argv[])
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
 	apr_destroy_pool(ptemp);
 
+	ap_run_optional_fn_retrieve();
+
 	if (ap_mpm_run(pconf, plog, server_conf)) break;
     }
     destroy_and_exit_process(process, 0);
