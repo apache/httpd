@@ -161,7 +161,7 @@ CACHE_DECLARE(void) cache_insert(cache_cache_t* c, void *entry)
         /* FIX: If ejected is NULL, we'll segfault here */
         priority = c->get_pri(ejected);
 
-        if (c->queue_clock < priority)
+        if (c->queue_clock > priority)
             c->queue_clock = priority;
 
         cache_hash_set(c->ht,
