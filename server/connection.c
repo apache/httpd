@@ -77,10 +77,13 @@
 APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(pre_connection)
 	    APR_HOOK_LINK(process_connection)
+            APR_HOOK_LINK(install_transport_filters)
 )
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, install_transport_filters, 
+                            (conn_rec *c, apr_socket_t *csd),(c, csd), DECLINED)
 
 /*
  * More machine-dependent networking gooo... on some systems,
@@ -157,7 +160,7 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     apr_status_t rc;
     apr_int32_t timeout;
     apr_int32_t total_linger_time = 0;
-    apr_socket_t *csd = c->client_socket;
+    apr_socket_t *csd = ap_get_module_config(c->conn_config, &core_module);
 
     if (!csd) {
         return;
@@ -216,9 +219,11 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
     return;
 }
 
-AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c)
+AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, apr_socket_t *csd)
 {
     ap_update_vhost_given_ip(c);
+
+    ap_run_install_transport_filters(c, csd);
 
     ap_run_pre_connection(c);
 
@@ -234,15 +239,6 @@ AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *ptrans, server_rec *ser
 
     c->sbh = sbh; 
     (void) ap_update_child_status(c->sbh, SERVER_BUSY_READ, (request_rec *) NULL);
-
-#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
-    /* BillS says perhaps this should be moved to the MPMs. Some OSes
-     * allow listening socket attributes to be inherited by the
-     * accept sockets which means this call only needs to be made 
-     * once on the listener
-     */
-    ap_sock_disable_nagle(csd);
-#endif
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
@@ -268,9 +264,7 @@ AP_CORE_DECLARE(conn_rec *)ap_new_connection(apr_pool_t *ptrans, server_rec *ser
     }
     apr_sockaddr_ip_get(&c->remote_ip, c->remote_addr);
     c->base_server = server;
-    c->client_socket = csd;
  
     c->id = id;
-
     return c;
 }

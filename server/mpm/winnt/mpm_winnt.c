@@ -927,7 +927,7 @@ static void worker_main(int thread_num)
                               thread_num, sbh);
 
         if (c) {
-            ap_process_connection(c);
+            ap_process_connection(c, context->sock);
             apr_getsocketopt(context->sock, APR_SO_DISCONNECTED, &disconnected);
             if (!disconnected) {
                 context->accept_socket = INVALID_SOCKET;
