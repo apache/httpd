@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_rewrite: Introduce the ability to force a content handler via
+     the [handler=...] flag.  [André Malo]
+
   *) mod_rewrite: Introduce the RewriteCond -x check, which returns
      true if the pattern is a file with execution permissions.
      [André Malo]
