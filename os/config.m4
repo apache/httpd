@@ -23,4 +23,4 @@ bs2000*)
 esac
 
 AC_MSG_RESULT($OS)
-APACHE_FAST_OUTPUT(os/$OS_DIR/Makefile)
+APACHE_FAST_OUTPUT(os/${OS_DIR}/Makefile)
