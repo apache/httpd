@@ -263,6 +263,10 @@ static void process_request_internal(request_rec *r)
         return;
     }
 
+    if (r->proto_num > HTTP_VERSION(1,0) && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
+        r->proto_num = HTTP_VERSION(1,0);
+    }
+
     if (!r->proxyreq) {
 	/*
 	 * We don't want TRACE to run through the normal handler set, we
@@ -275,10 +279,6 @@ static void process_request_internal(request_rec *r)
 		ap_finalize_request_protocol(r);
 	    return;
 	}
-    }
-
-    if (r->proto_num > HTTP_VERSION(1,0) && apr_table_get(r->subprocess_env, "downgrade-1.0")) {
-        r->proto_num = HTTP_VERSION(1,0);
     }
 
     /*
