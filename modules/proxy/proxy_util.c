@@ -1408,7 +1408,6 @@ static apr_status_t connection_destructor(void *resource, void *params,
                                           apr_pool_t *pool)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)resource;
-    server_rec *s = (server_rec *)params;
     
 #if 0
     if (conn->sock)
@@ -1541,7 +1540,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
         ap_proxy_retry_worker(proxy_function, worker, s);
     
         if (!PROXY_WORKER_IS_USABLE(worker)) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "proxy: %s: disabled connection for (%s)",
                          proxy_function, worker->hostname);
             return HTTP_SERVICE_UNAVAILABLE;
@@ -1583,8 +1582,6 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
                                                proxy_conn_rec *conn,
                                                server_rec *s)
 {
-    apr_status_t rv = APR_SUCCESS;
-
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "proxy: %s: has relesed connection for (%s)",
                  proxy_function, conn->worker->hostname);
