@@ -4,7 +4,7 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>コンテントネゴシエーション - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>コンテントネゴシエーション</h1>
+      --><title>コンテントネゴシエーション - Apache HTTP サーバ</title><link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="./images/favicon.ico" rel="shortcut icon" /></head><body id="manual-page"><div id="page-header"><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p><p class="apache">Apache HTTP サーバ バージョン 2.0</p><img alt="" src="./images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.0</a></div><div id="page-content"><div id="preamble"><h1>コンテントネゴシエーション</h1>
 
     <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
     サポートしています。
@@ -264,8 +264,8 @@
         <td>メディアタイプ</td>
 
         <td>ブラウザは Accept 
-	ヘッダフィールドで優先傾向を指定します。
-	アイテムそれぞれは、関連した品質数値を持つことができます。
+	ヘッダフィールドで優先傾向を指定します。
+	アイテムそれぞれは、関連した品質数値を持つことができます。
 	variant の説明も品質数値を持つことができます
 	("qs" パラメータをご覧下さい)。</td>
       </tr>
@@ -274,7 +274,7 @@
         <td>言語</td>
 
 	<td>ブラウザは Accept-Language
-	ヘッダフィールドで優先傾向を指定します。
+	ヘッダフィールドで優先傾向を指定します。
 	要素それぞれに品質数値を持たせることができます。
 	variants は 0 か 1 つかそれ以上の言語と
 	関連づけることができます。</td>
@@ -293,7 +293,7 @@
 
 	<td>ブラウザは Accept-Charset
 	ヘッダフィールドで優先傾向を指定します。
-	要素それぞれに品質数値を持たせることができます。
+	要素それぞれに品質数値を持たせることができます。
 	variant はメディアタイプのパラメータとして文字セットを
 	指定することもできます。</td>
       </tr>
@@ -538,7 +538,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
       <tr>
         <th>ファイル名</th>
 
-        <th>使えるリンク</th>
+        <th>使えるリンク</th>
 
         <th>使えないリンク</th>
       </tr>
@@ -644,4 +644,4 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     Negotiation Notes</a> をご覧下さい。ですが、
     Apache 2.0 での変更点を含むためには更新されていないかもしれない
     ということに注意してください。</p>
-</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
+</div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div></body></html>
