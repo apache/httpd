@@ -8,7 +8,7 @@
 <!--#include virtual="header.html" -->
 <H1>Apache Server Frequently Asked Questions</H1>
 <P>
-$Revision: 1.29 $ ($Date: 1997/04/21 20:21:47 $)
+$Revision: 1.30 $ ($Date: 1997/04/21 21:26:15 $)
 </P>
 <P>
 If you are reading a text-only version of this FAQ, you may find numbers
@@ -18,7 +18,6 @@ do not appear, and are not needed, for the hypertext version.
 </P>
 <H2>The Questions</H2>
 <!-- Stuff to Add:						    -->
-<!-- - how-to PUT (publish, Netscape Gold)			    -->
 <!-- - can't bind to port 80					    -->
 <!--   - permission denied					    -->
 <!--   - address already in use					    -->
@@ -43,7 +42,6 @@ do not appear, and are not needed, for the hypertext version.
 <!-- - Is there an Apache for W95/WNT?				    -->
 <!-- - Why does Apache die when a vhost can't be DNS-resolved?	    -->
 <!-- - How do I add browsers ands referrers to my logs?		    -->
-<!-- - Why was FastCGI removed from the 1.2 beta versions?	    -->
 <UL>
  <LI><STRONG>Background</STRONG>
   <OL START=1>
@@ -119,6 +117,9 @@ do not appear, and are not needed, for the hypertext version.
    </LI>
    <LI><A HREF="#putsupport">Why can't I publish to my Apache server
     using PUT on Netscape Gold and other programs?</STRONG></A>
+   </LI>
+   <LI><A HREF="#fastcgi">Why isn't FastCGI included with Apache any
+    more?</A>
    </LI>
   </OL>
  </LI>
@@ -282,7 +283,7 @@ do not appear, and are not needed, for the hypertext version.
   <A
    HREF="http://www.apacheweek.com/"
    REL="Help"
-  ><EM>Apache Week</EM></A>
+  ><CITE>Apache Week</CITE></A>
   available.
   </P>
   <HR>
@@ -878,17 +879,38 @@ do not appear, and are not needed, for the hypertext version.
  </LI>
  <LI><A NAME="putsupport">
       <STRONG>Why can't I publish to my Apache server using PUT on
-          Netscape Gold and other programs?</STRONG></A>
+      Netscape Gold and other programs?</STRONG>
+     </A>
   <P>
   Because you need to install and configure a script to handle
-  the uploaded files. This script is often called a "PUT" handler.
+  the uploaded files.  This script is often called a &quot;PUT&quot; handler.
   There are several available, but they may have security problems.
   Using FTP uploads may be easier and more secure, at least for now.
-  For more information, see
-   <A HREF="http://www.apacheweek.com/features/put">Publishing Pages with
-      PUT</A> in Apache Week.
-  </LI>
+  For more information, see the <CITE>Apache Week</CITE> article
+  <A
+   HREF="http://www.apacheweek.com/features/put"
+  ><CITE>Publishing Pages with PUT</CITE></A>.
   </P>
+  <HR>
+  </LI>
+ <LI><A NAME="fastcgi">
+      <STRONG>Why isn't FastCGI included with Apache any more?</STRONG>
+     </A>
+  <P>
+  The simple answer is that it was becoming too difficult to keep the
+  version being included with Apache synchronised with the master copy
+  at the
+  <A
+   HREF="http://www.fastcgi.com/servers/apache/"
+  >FastCGI web site</A>.  When a new version of Apache was released, the
+  version of the FastCGI module included with it would soon be out of date.
+  </P>
+  <P>
+  You can still obtain the FastCGI module for Apache from the master
+  FastCGI web site.
+  </P>
+  <HR>
+ </LI>
 </OL>
 <HR>
  <!--#include virtual="footer.html" -->
