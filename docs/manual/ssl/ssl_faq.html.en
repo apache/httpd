@@ -431,7 +431,7 @@ server Certificate for it. How do I do it?</a></h3>
              </a>
        </li>
        </ol>
-       <br />
+
        Second you can use your own CA and now have to sign the CSR yourself by
        this CA. Read the next answer in this FAQ on how to sign a CSR with
        your CA yourself.
@@ -900,16 +900,12 @@ server" What's the reason?</a></h3>
         First look inside the F.A.Q. (this text), perhaps your problem is such
         popular that it was already answered a lot of times in the past.
     </dd>
-    <dt>Postings from the modssl-users Support Mailing List
-        <a href="http://www.modssl.org/support/">
-        http://www.modssl.org/support/</a></dt>
+    <dt>Postings from the modssl-users Support Mailing List <a href="http://www.modssl.org/support/">http://www.modssl.org/support/</a></dt>
     <dd>Second search for your problem in one of the existing archives of the
         modssl-users mailing list. Perhaps your problem popped up at least once for
         another user, too.
     </dd>
-    <dt>Problem Reports in the Bug Database
-        <a href="http://www.modssl.org/support/bugdb/">
-        http://www.modssl.org/support/bugdb/</a></dt>
+    <dt>Problem Reports in the Bug Database <a href="http://www.modssl.org/support/bugdb/">http://www.modssl.org/support/bugdb/</a></dt>
     <dd>Third look inside the mod_ssl Bug Database. Perhaps
         someone else already has reported the problem.
     </dd>

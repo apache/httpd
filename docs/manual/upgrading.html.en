@@ -21,9 +21,9 @@
 <p><span>Available Languages: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="">&nbsp;ja&nbsp;</a> |
-<a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
-<a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="">&nbsp;ru&nbsp;</a></p>
+<a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
   <p>In order to assist folks upgrading, we maintain a document
@@ -129,4 +129,81 @@ Apache 2.0</a></li></ul></div>
       directive.</li>
 
       <li>Another use of the <code>Port</code>
-      
+      directive in Apache-1.3 was setting the port number to be used
+      in self-referential URL's. The Apache-2.0 equivalent is
+      the new <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>
+      syntax: it has been changed to allow specifying both the
+      hostname <em>and</em> the port number for self-referential URL's
+      in one directive.</li>
+
+      <li>The <code>ServerType</code> directive no longer exists.
+      The method used to serve requests is now determined by the
+      selection of MPM. There is currently no MPM designed to be
+      launched by inetd.</li>
+
+      <li>The <code>mod_log_agent</code> and <code>mod_log_referer</code>
+      modules which provided the <code>AgentLog</code>,
+      <code>RefererLog</code> and <code>RefererIgnore</code> directives have
+      been removed. Agent and referer logs are still available using the
+      <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>
+      directive of <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.</li>
+
+      <li>The <code>AddModule</code> and
+      <code>ClearModuleList</code> directives no longer exist.
+      These directives were used to ensure that modules could be
+      enabled in the correct order. The new Apache 2.0 API allows
+      modules to explicitly specify their ordering, eliminating the
+      need for these directives.</li>
+
+      <li>The <code>FancyIndexing</code> directive has been removed.
+      The same functionality is available through the
+      <code>FancyIndexing</code> option to the <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code>
+      directive.</li>
+
+      <li>The MultiViews content-negotiation technique provided by
+      <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> has become more strict in its
+      default file matching.  It will select only from <em>negotiable</em>
+      files.  The old behavior can be restored using the <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code> directive.</li>
+
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="misc" id="misc">Misc Changes</a></h2>
+    
+
+    <ul>
+      <li>The module <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code>, which was
+      experimental in Apache 1.3, is now a standard module.</li>
+
+      <li>The <code>mod_mmap_static</code> module, which was experimental in
+      Apache 1.3, has been replaced with <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>.</li>
+
+      <li>The distribution has been completely reorganized so that
+      it no longer contains an independent <code>src</code>
+      directory. Instead, the sources are logically organized under
+      the main distribution directory, and installations of the
+      compiled server should be directed to a separate
+      directory.</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="third-party" id="third-party">Third Party Modules</a></h2>
+    
+
+    <p>Extensive changes were made to the server API in Apache 2.0.
+    Existing modules designed for the Apache 1.3 API will
+    <strong>not</strong> work in Apache 2.0 without modification.
+    Details are provided in the <a href="developer/">developer
+    documentation</a>.</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="./de/upgrading.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/upgrading.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/upgrading.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+</body></html>

@@ -264,6 +264,7 @@ Negotiation</a></li>
 <h3><a name="dimensions" id="dimensions">Dimensions of Negotiation</a></h3>
 
     <table>
+      
       <tr valign="top">
         <th>Dimension</th>
 
@@ -544,6 +545,7 @@ decimal places before choosing the best variant.</p>
     invalid hyperlinks:</p>
 
     <table class="bordered">
+      
       <tr>
         <th>Filename</th>
 

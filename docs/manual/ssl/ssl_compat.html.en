@@ -212,6 +212,7 @@ are listed in <a href="#table3">Table 3</a>.</p>
 <h3><a name="table3" id="table3">Table 3: Custom Log Cryptography Function</a></h3>
 
 <table>
+
 <tr><th>Function Call</th><th>Description</th></tr>
 
 <tr><td><code>%...{version}c</code></td>   <td>SSL protocol version</td></tr>

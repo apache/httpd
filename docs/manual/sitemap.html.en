@@ -22,8 +22,8 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="">&nbsp;ja&nbsp;</a> |
-<a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a></p>
+<a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
 <p>This page lists the currently available documents of the
@@ -41,7 +41,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Apache Miscellaneous Documentation</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#modules">Apache modules</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#developer">Developer Documentation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#descriptive">Descriptive Information</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#index">Glossary and Index</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -87,8 +87,8 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="faq" id="faq">Apache Server Frequently Asked Questions</a></h2>
 <ul><li><a href="faq/">Overview</a></li>
-<li class="separate"><a href="faq/all_in_one.html">All on One Page</a></li>
 <li><a href="faq/support.html">Support</a></li>
+<li><a href="faq/error.html">Error Messages</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache SSL/TLS Encryption</a></h2>
@@ -146,9 +146,8 @@ Server on HPUX</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache modules</a></h2>
-<ul><li><a href="mod/">Module index</a></li>
-<li><a href="mod/directives.html">Directive index</a></li>
-<li><a href="mod/quickreference.html">Directive Quick-Reference</a></li>
+<ul><li><a href="mod/module-dict.html">Definitions of terms used to describe Apache modules</a></li>
+<li><a href="mod/directive-dict.html">Definitions of terms used to describe Apache directives</a></li>
 </ul><ul><li><a href="mod/core.html">Apache Core Features</a></li>
 <li><a href="mod/mpm_common.html">Apache MPM Common Directives</a></li>
 <li><a href="mod/beos.html">Apache MPM beos</a></li>
@@ -227,18 +226,18 @@ Server on HPUX</a></li>
 <li><a href="developer/filters.html">How Filters Work in Apache 2.0</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="descriptive" id="descriptive">Descriptive Information</a></h2>
-<ul><li><a href="mod/module-dict.html">Definitions of terms used to describe Apache modules</a></li>
-<li><a href="mod/directive-dict.html">Definitions of terms used to describe Apache directives</a></li>
-<li><a href="glossary.html">Glossary</a></li>
-<li>Sitemap (this document)</li>
+<div class="section"><h2><a name="index" id="index">Glossary and Index</a></h2>
+<ul><li><a href="glossary.html">Glossary</a></li>
+<li><a href="mod/">Module index</a></li>
+<li><a href="mod/directives.html">Directive index</a></li>
+<li><a href="mod/quickreference.html">Directive Quick-Reference</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="">&nbsp;ja&nbsp;</a> |
-<a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a></p>
+<a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>

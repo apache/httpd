@@ -153,6 +153,7 @@
         <td>Connection status when response is completed:
 
         <table>
+        
         <tr><td><code>X</code> =</td>
             <td>connection aborted before the response completed.</td></tr>
         <tr><td><code>+</code> =</td>
