@@ -61,7 +61,7 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
     sub_canonical_filename(buf, szFile);
     buf[0]=tolower(buf[0]);
 
-    if (*szFile && szFile[strlen(szFile)-1] == '/')
+    if (*szFile && szFile[strlen(szFile)-1] == '/' && buf[strlen(buf)-1] != '/')
         strcat(buf, "/");
 
     return ap_pstrdup(pPool, buf);

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b7
 
+  *) WIN32: Make roots of filesystems (e.g. c:/) work. [Ben Laurie]
+     PR#1558
+
   *) PORT: Various porting changes to support AIX 3.2, 4.1.5, 4.2 and 4.3.
      Additionally the checks for finding the vendor DSO library were moved
      from mod_so.c to Configure because first it needs $PLAT etc. and second

@@ -177,11 +177,26 @@ static int get_path_info(request_rec *r)
     char *end = &path[strlen(path)];
     char *last_cp = NULL;
     int rv;
+#ifdef WIN32
+    char buf[5];
+#endif
 
     if (r->finfo.st_mode) {
 	/* assume path_info already set */
 	return OK;
     }
+
+#ifdef WIN32
+    /* If the path is x:/, then convert it to x:/., coz that's what stat needs to work properly */
+    if(strlen(path) == 3)
+	{
+	strcpy(buf,path);
+	buf[3]='.';
+	buf[4]='\0';
+	path=buf;
+	end=buf+4;
+	}
+#endif
 
     /* Advance over trailing slashes ... NOT part of filename */
 
