@@ -140,14 +140,14 @@ running with the specified user and group id.</p>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Specify a user id and group id for a specific child process. The number of
-children if set by the <a href="mpm_common.html#numservers">NumServers</a>
-directive. For example, the default value for <a
-href="mpm_common.html#numservers">NumServers</a> is 5 and that means
+<p>Specify a user id and group id for a specific child process. The number of
+children is set by the <directive module="mpm_common">NumServers</directive>
+directive. For example, the default value for <directive
+module="mpm_common">NumServers</directive> is 5 and that means
 children ids 1,2,3,4 and 5 are available for assigment. If a child does not
-have an associated ChildPerUserID, it inherits the <a
-href="mpm_common.html#user">User</a> and <a
-href="mpm_common.html#group">Group</a> settings from the main server </p> 
+have an associated ChildPerUserID, it inherits the <directive
+module="mpm_common">User</directive> and <directive
+module="mpm_common">Group</directive> settings from the main server </p> 
 </usage>
 </directivesynopsis>
 
