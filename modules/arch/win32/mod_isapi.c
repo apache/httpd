@@ -568,13 +568,15 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
         /* lf delimited, colon split, comma seperated and 
          * null terminated list of HTTP_ vars 
          */
-        const char * const *env = (const char* const *) apr_table_elts(r->subprocess_env)->elts;
-        int nelts = 2 * apr_table_elts(r->subprocess_env)->nelts;
+        const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
+        const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
         int i;
 
-        for (len = 0, i = 0; i < nelts; i += 2)
-            if (!strncmp(env[i], "HTTP_", 5))
-                len += strlen(env[i]) + strlen(env[i + 1]) + 2;
+        for (len = 0, i = 0; i < arr->nelts; i++) {
+            if (!strncmp(elts[i].key, "HTTP_", 5)) {
+                len += strlen(elts[i].key) + strlen(elts[i].val) + 2;
+            }
+        }
   
         if (*lpdwSizeofBuffer < len + 1) {
             *lpdwSizeofBuffer = len + 1;
@@ -582,15 +584,16 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
             return FALSE;
         }
     
-        for (i = 0; i < nelts; i += 2)
-            if (!strncmp(env[i], "HTTP_", 5)) {
-                strcpy(lpvBuffer, env[i]);
-                ((char*)lpvBuffer) += strlen(env[i]);
+        for (i = 0; i < arr->nelts; i++) {
+            if (!strncmp(elts[i].key, "HTTP_", 5)) {
+                strcpy(lpvBuffer, elts[i].key);
+                ((char*)lpvBuffer) += strlen(elts[i].key);
                 *(((char*)lpvBuffer)++) = ':';
-                strcpy(lpvBuffer, env[i + 1]);
-                ((char*)lpvBuffer) += strlen(env[i + 1]);
+                strcpy(lpvBuffer, elts[i].val);
+                ((char*)lpvBuffer) += strlen(elts[i].val);
                 *(((char*)lpvBuffer)++) = '\n';
             }
+        }
 
         *(((char*)lpvBuffer)++) = '\0';
         *lpdwSizeofBuffer = len;
@@ -602,12 +605,13 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
         /* lf delimited, colon split, comma seperated and 
          * null terminated list of the raw request header
          */
-        const char * const *raw = (const char* const *) apr_table_elts(r->headers_in)->elts;
-        int nelts = 2 * apr_table_elts(r->headers_in)->nelts;
+        const apr_array_header_t *arr = apr_table_elts(r->headers_in);
+        const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
         int i;
 
-        for (len = 0, i = 0; i < nelts; i += 2)
-            len += strlen(raw[i]) + strlen(raw[i + 1]) + 2;
+        for (len = 0, i = 0; i < arr->nelts; i++) {
+            len += strlen(elts[i].key) + strlen(elts[i].val) + 2;
+        }
   
         if (*lpdwSizeofBuffer < len + 1) {
             *lpdwSizeofBuffer = len + 1;
@@ -615,15 +619,14 @@ BOOL WINAPI GetServerVariable (HCONN hConn, LPSTR lpszVariableName,
             return FALSE;
         }
     
-        for (i = 0; i < nelts; i += 2) {
-            strcpy(lpvBuffer, raw[i]);
-            ((char*)lpvBuffer) += strlen(raw[i]);
+        for (i = 0; i < arr->nelts; i++) {
+            strcpy(lpvBuffer, elts[i].key);
+            ((char*)lpvBuffer) += strlen(elts[i].key);
             *(((char*)lpvBuffer)++) = ':';
             *(((char*)lpvBuffer)++) = ' ';
-            strcpy(lpvBuffer, raw[i + 1]);
-            ((char*)lpvBuffer) += strlen(raw[i + 1]);
+            strcpy(lpvBuffer, elts[i].val);
+            ((char*)lpvBuffer) += strlen(elts[i].val);
             *(((char*)lpvBuffer)++) = '\n';
-            i += 2;
         }
         *(((char*)lpvBuffer)++) = '\0';
         *lpdwSizeofBuffer = len;
