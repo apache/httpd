@@ -211,6 +211,7 @@ FILES_nlm_Ximports = \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
 	@ws2nlm.imp \
+	proxy_module \
 	proxy_hook_scheme_handler \
 	proxy_hook_canon_handler \
 	$(EOLIST)
