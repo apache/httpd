@@ -1244,8 +1244,7 @@ CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p
 	char *path = ap_pstrdup(p,fname);
 	char *pattern = NULL;
 
-        if(ispatt) {
-	    pattern = strrchr(path, '/');
+        if(ispatt && (pattern = strrchr(path, '/')) != NULL) {
             *pattern++ = '\0';
             if (ap_is_fnmatch(path)) {
                 fprintf(stderr, "%s: wildcard patterns not allowed in Include "
@@ -1263,7 +1262,6 @@ CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p
                         "for Include %s\n", ap_server_argv0, fname);
                 exit(1);
             }
-
         }
 
 
