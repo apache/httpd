@@ -1,4 +1,7 @@
 Changes with Apache 2.0.31-dev
+  *) rewrite of mod_ssl input filter for better performance and less
+     memory usage [Doug MacEachern]
+
   *) allow quick_handler to be run on subrequests. [Ian Holsman]
 
   *) mod_dav now asks its provider to place content directly into the
