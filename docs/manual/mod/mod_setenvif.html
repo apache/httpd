@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Apache module mod_setenvif</TITLE>
+ </HEAD>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+<!--#include virtual="header.html" -->
+  <H1 ALIGN="CENTER">Module mod_setenvif</H1>
+  <P>
+  This module is contained in the <SAMP>mod_setenvif.c</SAMP> file, and
+  <STRONG>is</STRONG> compiled in by default. It provides for
+  the ability to set environment variables based upon attributes of the
+  request.
+  </P>
+  <H2>Summary</H2>
+  <P>
+  The <SAMP>mod_setenvif</SAMP> module allows you to set environment
+  variables according to whether different aspects of the request match
+  regular expressions you specify.  These envariables can be used by
+  other parts of the server to make decisions about actions to be taken.
+  </P>
+  <H2>Directives</H2>
+  <UL>
+   <LI><A HREF="#BrowserMatch">BrowserMatch</A>
+   </LI>
+   <LI><A HREF="#BrowserMatchNoCase">BrowserMatchNoCase</A>
+   </LI>
+   <LI><A HREF="#SetEnvIf">SetEnvIf</A>
+   </LI>
+   <LI><A HREF="#SetEnvIfNoCase">SetEnvIfNoCase</A>
+   </LI>
+  </UL>
+
+  <HR> <!-- the HR is part of the directive description -->
+  <H2><A NAME="BrowserMatch">The <SAMP>BrowserMatch</SAMP> Directive</A></H2>
+  <P>
+  <STRONG>Syntax:</STRONG> BrowserMatch <EM>regex envar[=value] [...]</EM>
+  <BR>
+  <STRONG>Default:</STRONG> <EM>none</EM>
+  <BR>
+  <STRONG>Context:</STRONG> server config
+  <BR>
+  <STRONG>Override:</STRONG> <EM>none</EM>
+  <BR>
+  <STRONG>Status:</STRONG> Base
+  <BR>
+  <STRONG>Module:</STRONG> mod_setenvif
+  <BR>
+  <STRONG>Compatibility:</STRONG> Apache 1.2 and above
+  </P>
+  <P>
+  The BrowserMatch directive defines environment variables based on the
+  <SAMP>User-Agent</SAMP> HTTP request header field. The first argument
+  should be a POSIX.2 extended regular expression (similar to an
+  <SAMP>egrep</SAMP>-style regex).  The rest of the arguments give the
+  names of variables to set, and optionally values to which they should
+  be set. These take the form of
+  </P>
+  <OL>
+   <LI><SAMP><EM>varname</EM></SAMP>, or
+   </LI>
+   <LI><SAMP>!<EM>varname</EM></SAMP>, or
+   </LI>
+   <LI><SAMP><EM>varname</EM>=<EM>value</EM></SAMP>
+   </LI>
+  </OL>
+  <P>
+  In the first form, the value will be set to &quot;1&quot;. The second
+  will remove the given variable if already defined, and the third will
+  set the variable to the value given by <SAMP><EM>value</EM></SAMP>. If a
+  <SAMP>User-Agent</SAMP> string matches more than one entry, they will
+  be merged.  Entries are processed in the order in which they appear,
+  and later entries can override earlier ones.
+  </P>
+  <P>
+  For example:
+  </P>
+  <PRE>
+    BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+    BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+    BrowserMatch MSIE !javascript
+  </PRE>
+  <P>
+  Note that the regular expression string is
+  <STRONG>case-sensitive</STRONG>.  For cane-INsensitive matching, see
+  the
+  <A
+   HREF="#BrowserMatchNoCase"
+  ><SAMP>BrowserMatchNoCase</SAMP></A>
+  directive.
+  </P>
+  <P>
+  The <SAMP>BrowserMatch</SAMP> and <SAMP>BrowserMatchNoCase</SAMP>
+  directives are special cases of the
+  <A
+   HREF="#SetEnvIf"
+  ><SAMP>SetEnvIf</SAMP></A>
+  and
+  <A
+   HREF="#SetEnvIfNoCase"
+  ><SAMP>SetEnvIfNoCase</SAMP></A>
+  directives.  The following two lines have the same effect:
+  </P>
+  <PRE>
+   BrowserMatchNoCase Robot is_a_robot
+   SetEnvIfNoCase User-Agent Robot is_a_robot
+  </PRE>
+
+  <HR> <!-- the HR is part of the directive description -->
+  <H2>
+   <A NAME="BrowserMatchNoCase">
+    The <SAMP>BrowserMatchNoCase</SAMP> Directive
+   </A>
+  </H2>
+  <P>
+  <STRONG>Syntax:</STRONG> BrowserMatchNoCase <EM>regex envar[=value] [...]</EM>
+  <BR>
+  <STRONG>Default:</STRONG> <EM>none</EM>
+  <BR>
+  <STRONG>Context:</STRONG> server config
+  <BR>
+  <STRONG>Override:</STRONG> <EM>none</EM>
+  <BR>
+  <STRONG>Status:</STRONG> Base
+  <BR>
+  <STRONG>Module:</STRONG> mod_setenvif
+  <BR>
+  <STRONG>Compatibility:</STRONG> Apache 1.2 and above
+  </P>
+  <P>
+  The <SAMP>BrowserMatchNoCase</SAMP> directive is semantically identical to
+  the
+  <A
+   HREF="#BrowserMatch"
+  ><SAMP>BrowserMatch</SAMP></A>
+  directive. However, it provides for case-insensitive matching. For
+  example:
+  </P>
+  <PRE>
+    BrowserMatchNoCase mac platform=macintosh
+    BrowserMatchNoCase win platform=windows
+  </PRE>
+  <P>
+  The <SAMP>BrowserMatch</SAMP> and <SAMP>BrowserMatchNoCase</SAMP>
+  directives are special cases of the
+  <A
+   HREF="#SetEnvIf"
+  ><SAMP>SetEnvIf</SAMP></A>
+  and
+  <A
+   HREF="#SetEnvIfNoCase"
+  ><SAMP>SetEnvIfNoCase</SAMP></A>
+  directives.  The following two lines have the same effect:
+  </P>
+  <PRE>
+   BrowserMatchNoCase Robot is_a_robot
+   SetEnvIfNoCase User-Agent Robot is_a_robot
+  </PRE>
+
+  <HR> <!-- the HR is part of the directive description -->
+  <H2>
+   <A NAME="SetEnvIf">
+    The <SAMP>SetEnvIf</SAMP> Directive
+   </A>
+  </H2>
+  <P>
+  <STRONG>Syntax:</STRONG> SetEnvIf <EM> attribute regex envar[=value] [...]</EM>
+  <BR>
+  <STRONG>Default:</STRONG> <EM>none</EM>
+  <BR>
+  <STRONG>Context:</STRONG> server config
+  <BR>
+  <STRONG>Override:</STRONG> <EM>none</EM>
+  <BR>
+  <STRONG>Status:</STRONG> Base
+  <BR>
+  <STRONG>Module:</STRONG> mod_setenvif
+  <BR>
+  <STRONG>Compatibility:</STRONG> Apache 1.3 and above
+  </P>
+  <P>
+  The <SAMP>SetEnvIf</SAMP> directive defines environment variables
+  based on attributes of the request.  These attributes can be the
+  values of various HTTP request header fields (see
+  <A
+   HREF="http://ds.internic.net/rfc/rfc2068.txt"
+  >RFC2068</A>
+  for more information about these), or of other aspects of the request,
+  including the following:
+  </P>
+  <UL>
+   <LI><SAMP>Remote_Host</SAMP> - the hostname (if available) of the
+    client making the request
+   </LI>
+   <LI><SAMP>Remote_Addr</SAMP> - the IP address of the client making
+    the request
+   </LI>
+   <LI><SAMP>Remote_User</SAMP> - the authenticated username (if
+    available)
+   </LI>
+   <LI><SAMP>Request_Method</SAMP> - the name of the method being used
+    (<SAMP>GET</SAMP>, <SAMP>POST</SAMP>, <EM>et cetera</EM>)
+   </LI>
+   <LI><SAMP>Request_URI</SAMP> - the portion of the URL following the
+    scheme and host portion
+   </LI>
+  </UL>
+  <P>
+  Some of the more commonly used request header field names include
+  <SAMP>Host</SAMP>, <SAMP>User-Agent</SAMP>, and <SAMP>Referer</SAMP>.
+  </P>
+  <P>
+  Example:
+  </P>
+  <PRE>
+   SetEnvIf Request_URI "\.(gif)|(jpg)|(xbm)$" object_is_image
+   SetEnvIf Referer www\.mydomain\.com intra_site_referral
+  </PRE>
+  <P>
+  The first will set the envariable <SAMP>object_is_image</SAMP> if the
+  request was for an image file, and the second sets
+  <SAMP>intra_site_referral</SAMP> if the referring page was somewhere
+  on the <SAMP>www.mydomain.com</SAMP> Web site.
+  </P>
+
+  <HR> <!-- the HR is part of the directive description -->
+  <H2>
+   <A NAME="SetEnvIfNoCase">
+    The <SAMP>SetEnvIfNoCase</SAMP> Directive
+   </A>
+  </H2>
+  <P>
+  <STRONG>Syntax:</STRONG> SetEnvIfNoCase
+   <EM> attribute regex envar[=value] [...]</EM>
+  <BR>
+  <STRONG>Default:</STRONG> <EM>none</EM>
+  <BR>
+  <STRONG>Context:</STRONG> server config
+  <BR>
+  <STRONG>Override:</STRONG> <EM>none</EM>
+  <BR>
+  <STRONG>Status:</STRONG> Base
+  <BR>
+  <STRONG>Module:</STRONG> mod_setenvif
+  <BR>
+  <STRONG>Compatibility:</STRONG> Apache 1.3 and above
+  </P>
+  <P>
+  The <SAMP>SetEnvIfNoCase</SAMP> is semantically identical to the
+  <A
+   HREF="#SetEnvIf"
+  ><SAMP>SetEnvIf</SAMP></A>
+  directive, and differs only in that the regular expression matching is
+  performed in a case-insensitive manner. For example:
+  </P>
+  <PRE>
+   SetEnvIfNoCase Host Apache\.Org site=apache
+  </PRE>
+  <P>
+  This will cause the <SAMP>site</SAMP> envariable to be set to
+  &quot;<SAMP>apache</SAMP>&quot; if the HTTP request header field
+  <SAMP>Host:</SAMP> was included and contained <SAMP>Apache.Org</SAMP>,
+  <SAMP>apache.org</SAMP>, or any other combination.
+  </P>
+
+<!--#include virtual="footer.html" -->
+ </BODY>
+</HTML>
