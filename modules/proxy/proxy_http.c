@@ -640,8 +640,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     char buffer[HUGE_STRING_LEN];
     request_rec *rp;
     apr_bucket *e;
-    apr_status_t rv;
-    int eos, len, backasswards;
+    int len, backasswards;
     int received_continue = 1; /* flag to indicate if we should
                                 * loop over response parsing logic
                                 * in the case that the origin told us
@@ -657,16 +656,16 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     while (received_continue) {
         apr_brigade_cleanup(bb);
 
-        if (APR_SUCCESS != (rv = ap_proxy_string_read(origin, bb, buffer, sizeof(buffer), &eos))) {
+        len = ap_getline(buffer, sizeof(buffer), rp, 0);
+        if (len <= 0) {
             apr_socket_close(p_conn->sock);
             backend->connection = NULL;
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                           "proxy: error reading status line from remote "
                           "server %s", p_conn->name);
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
         }
-        len = strlen(buffer);
 
        /* Is it an HTTP/1 response?
         * This is buggy if we ever see an HTTP/1.10
