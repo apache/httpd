@@ -1827,7 +1827,7 @@ void winnt_rewrite_args(process_rec *process)
     char optbuf[3];
     const char *optarg;
     int fixed_args;
-    int pid;
+    char *pid;
     apr_getopt_t *opt;
     int running_as_service = 1;
 
@@ -1835,11 +1835,12 @@ void winnt_rewrite_args(process_rec *process)
     GetVersionEx(&osver);
 
     /* AP_PARENT_PID is only valid in the child */
-    pid = ap_exists_config_define("AP_PARENT_PID");
+    pid = getenv("AP_PARENT_PID");
     if (pid) 
     {
         /* This is the child */
         my_pid = GetCurrentProcessId();
+        parent_pid = (DWORD) atol(pid);
 
         /* The parent is responsible for providing the
          * COMPLETE ARGUMENTS REQUIRED to the child.
