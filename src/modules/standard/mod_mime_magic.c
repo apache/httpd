@@ -1530,7 +1530,7 @@ static int fsmagic(request_rec *r, const char *fn, struct stat *sb)
 	break;
     default:
 	aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_ERR, r->server,
-		    MODNAME ": invalid mode 0%o.", sb->st_mode);
+		    MODNAME ": invalid mode 0%o.", (unsigned int)sb->st_mode);
 	return HTTP_INTERNAL_SERVER_ERROR;
     }
 
