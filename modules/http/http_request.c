@@ -199,14 +199,15 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
              */
             apr_table_setn(r->subprocess_env, "REQUEST_METHOD", r->method);
 
-	    /*
-	     * Provide a special method for modules to communicate
-	     * more informative (than the plain canned) messages to us.
-	     * Propagate them to ErrorDocuments via the ERROR_NOTES variable:
-	     */
-            if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
-		apr_table_setn(r->subprocess_env, "ERROR_NOTES", error_notes);
-	    }
+            /*
+             * Provide a special method for modules to communicate
+             * more informative (than the plain canned) messages to us.
+             * Propagate them to ErrorDocuments via the ERROR_NOTES variable:
+             */
+            if ((error_notes = apr_table_get(r->notes, 
+                                             "error-notes")) != NULL) {
+                apr_table_setn(r->subprocess_env, "ERROR_NOTES", error_notes);
+            }
             r->method = apr_pstrdup(r->pool, "GET");
             r->method_number = M_GET;
             ap_internal_redirect(custom_response, r);
