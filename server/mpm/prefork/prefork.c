@@ -2514,11 +2514,11 @@ static void process_child_status(int pid, ap_wait_t status)
 }
 
 
-static int setup_listeners(pool *pconf, server_rec *s)
+static int setup_listeners(pool *p, server_rec *s)
 {
     ap_listen_rec *lr;
 
-    if (ap_listen_open(pconf, s->port)) {
+    if (ap_listen_open(p, s->port)) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, s,
 		    "no listening sockets available, shutting down");
 	return -1;
@@ -2752,7 +2752,7 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
     return 0;
 }
 
-static void prefork_pre_config(pool *pconf, pool *plog, pool *ptemp)
+static void prefork_pre_config(pool *p, pool *plog, pool *ptemp)
 {
     static int restart_num = 0;
 
