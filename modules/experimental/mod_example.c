@@ -67,7 +67,10 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "http_protocol.h"
+#include "http_request.h"
 #include "util_script.h"
+
+#include "apr_strings.h"
 
 #include <stdio.h>
 
@@ -289,7 +292,7 @@ static excfg *our_rconfig(request_rec *r)
 /*
  * This routine sets up some module-wide cells if they haven't been already.
  */
-static void setup_module_cells()
+static void setup_module_cells(void)
 {
     /*
      * If we haven't already allocated our module-private pool, do so now.
@@ -648,6 +651,34 @@ static void example_init(apr_pool_t *p, apr_pool_t *ptemp,
 }
 
 /* 
+ * This function is called when an heavy-weight process (such as a child) is
+ * being run down or destroyed.  As with the child initialisation function,
+ * any information that needs to be recorded must be in static cells, since
+ * there's no configuration record.
+ *
+ * There is no return value.
+ */
+
+/*
+ * All our process-death routine does is add its trace to the log.
+ */
+static apr_status_t example_child_exit(void *sv)
+{
+    server_rec *s = sv;
+    char *note;
+    char *sname = s->server_hostname;
+
+    /*
+     * The arbitrary text we add to our trace entry indicates for which server
+     * we're being called.
+     */
+    sname = (sname != NULL) ? sname : "";
+    note = apr_pstrcat(s->process->pool, "example_child_exit(", sname, ")", NULL);
+    trace_add(s, NULL, NULL, note);
+    return APR_SUCCESS;
+}
+
+/* 
  * This function is called during server initialisation when an heavy-weight
  * process (such as a child) is being initialised.  As with the
  * module initialisation function, any information that needs to be recorded
@@ -676,33 +707,8 @@ static void example_child_init(apr_pool_t *p, server_rec *s)
     sname = (sname != NULL) ? sname : "";
     note = apr_pstrcat(p, "example_child_init(", sname, ")", NULL);
     trace_add(s, NULL, NULL, note);
-}
 
-/* 
- * This function is called when an heavy-weight process (such as a child) is
- * being run down or destroyed.  As with the child initialisation function,
- * any information that needs to be recorded must be in static cells, since
- * there's no configuration record.
- *
- * There is no return value.
- */
-
-/*
- * All our process-death routine does is add its trace to the log.
- */
-static void example_child_exit(server_rec *s, apr_pool_t *p)
-{
-
-    char *note;
-    char *sname = s->server_hostname;
-
-    /*
-     * The arbitrary text we add to our trace entry indicates for which server
-     * we're being called.
-     */
-    sname = (sname != NULL) ? sname : "";
-    note = apr_pstrcat(p, "example_child_exit(", sname, ")", NULL);
-    trace_add(s, NULL, NULL, note);
+    apr_register_cleanup(p, s, example_child_exit, example_child_exit);
 }
 
 /*
@@ -1137,14 +1143,13 @@ static void example_register_hooks(void)
  */
 static const command_rec example_cmds[] =
 {
-    {
+    AP_INIT_NO_ARGS(
         "Example",                          /* directive name */
         cmd_example,                        /* config action routine */
         NULL,                               /* argument to include in call */
         OR_OPTIONS,                         /* where available */
-        NO_ARGS,                            /* arguments */
         "Example directive - no arguments"  /* directive description */
-    },
+    ),
     {NULL}
 };
 
