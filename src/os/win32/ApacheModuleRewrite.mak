@@ -64,7 +64,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "WIN32" /D\
- "_WINDOWS" /D "NO_DBM_REWRITEMAP" /D "SHARED_MODULE"\
+ "_WINDOWS" /D "NO_DBM_REWRITEMAP" /D "SHARED_MODULE" /D "WIN32_LEAN_AND_MEAN"\
  /Fp"$(INTDIR)\ApacheModuleRewrite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
  /FD /c 
 CPP_OBJS=.\ApacheModuleRewriteR/
@@ -76,7 +76,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib wsock32.lib /nologo\
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib /nologo\
  /subsystem:windows /dll /incremental:no\
  /pdb:"$(OUTDIR)\ApacheModuleRewrite.pdb" /machine:I386\
  /out:"$(OUTDIR)\ApacheModuleRewrite.dll"\
@@ -123,9 +123,9 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\include" /D "_DEBUG" /D\
- "WIN32" /D "_WINDOWS" /D "NO_DBM_REWRITEMAP" /D "SHARED_MODULE"\
- /Fp"$(INTDIR)\ApacheModuleRewrite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\"\
- /FD /c 
+ "WIN32" /D "_WINDOWS" /D "NO_DBM_REWRITEMAP" /D "SHARED_MODULE" /D\
+ "WIN32_LEAN_AND_MEAN" /Fp"$(INTDIR)\ApacheModuleRewrite.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleRewriteD/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -135,7 +135,7 @@ BSC32_SBRS= \
 	
 LINK32=link.exe
 LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
- winspool.lib comdlg32.lib advapi32.lib shell32.lib wsock32.lib /nologo\
+ winspool.lib comdlg32.lib advapi32.lib shell32.lib ws2_32.lib /nologo\
  /subsystem:windows /dll /incremental:yes\
  /pdb:"$(OUTDIR)\ApacheModuleRewrite.pdb" /debug /machine:I386\
  /out:"$(OUTDIR)\ApacheModuleRewrite.dll"\
@@ -191,18 +191,21 @@ SOURCE=..\..\modules\standard\mod_rewrite.c
 DEP_CPP_MOD_R=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
-	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
+	"..\..\include\http_conf_globals.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\
 	"..\..\include\http_request.h"\
+	"..\..\include\http_vhost.h"\
 	"..\..\include\httpd.h"\
+	"..\..\include\util_uri.h"\
 	"..\..\modules\standard\mod_rewrite.h"\
 	".\os.h"\
-	".\passwd.h"\
 	".\readdir.h"\
 	
 
@@ -215,10 +218,12 @@ DEP_CPP_MOD_R=\
 DEP_CPP_MOD_R=\
 	"..\..\include\alloc.h"\
 	"..\..\include\ap.h"\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
 	"..\..\include\ap_mmn.h"\
 	"..\..\include\buff.h"\
-	"..\..\include\conf.h"\
 	"..\..\include\hsregex.h"\
+	"..\..\include\http_conf_globals.h"\
 	"..\..\include\http_config.h"\
 	"..\..\include\http_core.h"\
 	"..\..\include\http_log.h"\

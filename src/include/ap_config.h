@@ -1033,7 +1033,7 @@ typedef int rlim_t;
 #endif
 
 #else /* WIN32 */
-#include <winsock.h>
+#include <winsock2.h>
 #include <malloc.h>
 #include <io.h>
 #include <fcntl.h>

@@ -18,7 +18,7 @@
 #include <direct.h>
 
 #define STATUS
-#define WIN32_LEAN_AND_MEAN
+/*#define WIN32_LEAN_AND_MEAN Now defined in project files */
 #ifndef STRICT
  #define STRICT
 #endif
