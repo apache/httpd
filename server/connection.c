@@ -67,6 +67,7 @@
 #include "mpm_status.h"
 #include "http_config.h"
 #include "http_vhost.h"
+#include "http_log.h"
 #include "util_filter.h"
 
 #ifdef HAVE_NETINET_IN_H
@@ -270,6 +271,7 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
                             apr_socket_t *inout, long id)
 {
     conn_rec *conn = (conn_rec *) apr_pcalloc(p, sizeof(conn_rec));
+    apr_status_t rv;
 
     /* Got a connection structure, so initialize what fields we can
      * (the rest are zeroed out by pcalloc).
@@ -279,9 +281,21 @@ conn_rec *ap_new_connection(apr_pool_t *p, server_rec *server,
     conn->notes = apr_make_table(p, 5);
 
     conn->pool = p;
-    apr_get_sockaddr(&conn->local_addr, APR_LOCAL, inout);
+    if ((rv = apr_get_sockaddr(&conn->local_addr, APR_LOCAL, inout)) 
+        != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
+                     "apr_get_sockaddr(APR_LOCAL)");
+        apr_close_socket(inout);
+        return NULL;
+    }
     apr_get_ipaddr(&conn->local_ip, conn->local_addr);
-    apr_get_sockaddr(&conn->remote_addr, APR_REMOTE, inout);
+    if ((rv = apr_get_sockaddr(&conn->remote_addr, APR_REMOTE, inout))
+        != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, server,
+                     "apr_get_sockaddr(APR_REMOTE)");
+        apr_close_socket(inout);
+        return NULL;
+    }
     apr_get_ipaddr(&conn->remote_ip, conn->remote_addr);
     conn->base_server = server;
     conn->client_socket = inout;
