@@ -77,7 +77,9 @@
 #include "util_ldap.h"
 #include "util_ldap_cache.h"
 
+#if APR_HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 
 module AP_MODULE_DECLARE_DATA ldap_module;
 

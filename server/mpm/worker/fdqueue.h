@@ -60,7 +60,9 @@
 #define FDQUEUE_H
 #include "httpd.h"
 #include <stdlib.h>
+#if APR_HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/socket.h>

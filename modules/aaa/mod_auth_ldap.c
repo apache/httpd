@@ -60,13 +60,14 @@
  * Copyright 1999-2001 Dave Carrigan
  */
 
-/* for getpid() */
-#include <unistd.h>
-
 #include <apr_ldap.h>
 #include <apr_strings.h>
 
 #include "ap_config.h"
+#if APR_HAVE_UNISTD_H
+/* for getpid() */
+#include <unistd.h>
+#endif
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
