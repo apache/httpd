@@ -664,9 +664,9 @@ DefaultLanguage en
 ModMimeUsePathInfo On
 </example>
 
-  <p>If you have a request for /bar/foo.html where /bar is a Location and
+  <p>If you have a request for /bar/foo.shtml where /bar is a Location and
      ModMimeUsePathInfo is on, mod_mime will treat the incoming request as
-     /bar/foo.html and directives like
+     /bar/foo.shtml and directives like
      <code>AddOutputFilter INCLUDES .shtml</code> will add the INCLUDES
      filter to the request.  If ModMimeUsePathInfo is not set, the includes
      filter will not be added.
