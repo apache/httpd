@@ -353,7 +353,7 @@ struct log_item_list {
     { 'l', log_remote_logname, 0 },
     { 'u', log_remote_user, 0 },
     { 't', log_request_time, 0 },
-    { 'T', log_request_duration, 0 },
+    { 'T', log_request_duration, 1 },
     { 'r', log_request_line, 1 },
     { 'f', log_request_file, 0 },
     { 'U', log_request_uri, 1 },

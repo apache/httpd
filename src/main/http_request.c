@@ -601,6 +601,7 @@ request_rec *sub_req_lookup_uri (const char *new_file, const request_rec *r)
     char *udir;
     
     rnew = make_sub_request (r);
+    rnew->request_time = r->request_time;
     rnew->connection = r->connection; 
     rnew->server = r->server;
     rnew->request_config = create_request_config (rnew->pool);
@@ -684,7 +685,7 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
 
     rnew = make_sub_request (r);
     fdir = make_dirstr (rnew->pool, r->filename, count_dirs (r->filename));
-    
+    rnew->request_time = r->request_time;
     rnew->connection = r->connection; /* For now... */
     rnew->server = r->server;
     rnew->request_config = create_request_config (rnew->pool);
