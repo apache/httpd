@@ -1442,23 +1442,21 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
      * directory_walk
      */
     if (rnew->finfo.filetype == APR_DIR) {
-        res = directory_walk(rnew);
-        if (!res) {
-            res = file_walk(rnew);
-        }
+        if (!(res = directory_walk(rnew)))
+            if (!(res = file_walk(rnew)))
+                res = location_walk(rnew);
     }
     else if (rnew->finfo.filetype == APR_REG || !rnew->finfo.filetype) {
         /*
          * do a file_walk, if it doesn't change the per_dir_config then
          * we know that we don't have to redo all the access checks
          */
-        if ((res = file_walk(rnew))) {
-            rnew->status = res;
-            return rnew;
-        }
-        if (rnew->per_dir_config == r->per_dir_config) {
-            if ((res = ap_run_type_checker(rnew)) 
-                    || (res = ap_run_fixups(rnew))) {
+        if (   !(res = file_walk(rnew))
+            && !(res = location_walk(rnew))
+            && (rnew->per_dir_config == r->per_dir_config))
+        {
+            if (   (res = ap_run_type_checker(rnew)) 
+                || (res = ap_run_fixups(rnew))) {
                 rnew->status = res;
             }
             return rnew;
@@ -1549,27 +1547,25 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
          * directory_walk
          */
         if (rnew->finfo.filetype == APR_DIR) {
-            res = directory_walk(rnew);
-            if (!res) {
-                res = file_walk(rnew);
-            }
+            if (!(res = directory_walk(rnew)))
+                if (!(res = file_walk(rnew)))
+                    res = location_walk(rnew);
         }
         else if (rnew->finfo.filetype == APR_REG || !rnew->finfo.filetype) {
             /*
              * do a file_walk, if it doesn't change the per_dir_config then
              * we know that we don't have to redo all the access checks
              */
-        if ((res = file_walk(rnew))) {
-            rnew->status = res;
-            return rnew;
-        }
-        if (rnew->per_dir_config == r->per_dir_config) {
-            if ((res = ap_run_type_checker(rnew)) 
+            if (   !(res = file_walk(rnew))
+                && !(res = location_walk(rnew))
+                && (rnew->per_dir_config == r->per_dir_config))
+            {
+                if (   (res = ap_run_type_checker(rnew)) 
                     || (res = ap_run_fixups(rnew))) {
-                rnew->status = res;
+                    rnew->status = res;
+                }
+                return rnew;
             }
-            return rnew;
-        }  
         }
         else {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, rnew,
