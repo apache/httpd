@@ -1,5 +1,15 @@
 Changes with Apache 2.0.25-dev
 
+  *) Modfied mod_mime to prevent mod_negotation from serving a multiview
+     of a 'handler' or 'filter', so that any filename extension that does 
+     not contribute to the negotiated metadata can't be served without
+     an explicit request.  E.g., if the .Z extension is associated with
+     an unzip filter, the user request somefile.Z.html, mod_negotiation
+     won't serve it.  It can serve somefile.Z.html when somefile.Z is
+     requested, since the .Z extension is explictly requested, if the
+     .html extension is associated with ContentType text/html.
+     [William Rowe]
+
   *) Introduce the AddInputFilter filter[;filter...] ext [ext...]
      and corresponding AddOutputFilter syntax, to insert one or more 
      filters by mod_mime filename extension processing.
