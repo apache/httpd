@@ -47,7 +47,6 @@ installr: _apacher
 	-mkdir \Apache\conf
 	copy ApacheR\Apache.exe \Apache
 	copy CoreR\ApacheCore.dll \Apache
-	copy os\win32\ApacheOSR\ApacheOS.dll \Apache
 	copy os\win32\ApacheModuleStatusR\ApacheModuleStatus.dll \Apache\modules
 #       copy os\win32\ApacheModuleInfoR\ApacheModuleInfo.dll \Apache\modules
 	copy os\win32\ApacheModuleAuthAnonR\ApacheModuleAuthAnon.dll \Apache\modules
@@ -65,7 +64,6 @@ installd: _apached
 	-mkdir \Apache\conf
 	copy ApacheD\Apache.exe \Apache
 	copy CoreD\ApacheCore.dll \Apache
-	copy os\win32\ApacheOSD\ApacheOS.dll \Apache
 	copy os\win32\ApacheModuleStatusD\ApacheModuleStatus.dll \Apache\modules
 #       copy os\win32\ApacheModuleInfoD\ApacheModuleInfo.dll \Apache\modules
 	copy os\win32\ApacheModuleAuthAnonD\ApacheModuleAuthAnon.dll \Apache\modules
