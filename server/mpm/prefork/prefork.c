@@ -256,7 +256,14 @@ static void expand_lock_fname(ap_pool_t *p)
  */
 static void accept_mutex_child_init(ap_pool_t *p)
 {
-    ap_child_init_lock(&accept_lock, ap_lock_fname, p);
+    ap_status_t rv;
+
+    rv = ap_child_init_lock(&accept_lock, ap_lock_fname, p);
+    if (rv) {
+	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, 
+                     "couldn't do child init for accept mutex");
+        clean_child_exit(APEXIT_CHILDINIT);
+    }
 }
 
 /* Initialize mutex lock.
@@ -269,7 +276,8 @@ static void accept_mutex_init(ap_pool_t *p)
     expand_lock_fname(p);
     rv = ap_create_lock(&accept_lock, APR_MUTEX, APR_CROSS_PROCESS, ap_lock_fname, p);
     if (rv) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, "couldn't create accept mutex");
+	ap_log_error(APLOG_MARK, APLOG_EMERG, rv, NULL, "couldn't create accept mutex");
+        exit(APEXIT_INIT);
     }
 }
 
