@@ -138,6 +138,8 @@ typedef struct {
 #if APR_HAS_MMAP
     apr_mmap_t *mm;
 #endif
+    char mtimestr[APR_RFC822_DATE_LEN];
+    char sizestr[21];	/* big enough to hold any 64-bit file size + null */ 
 } a_file;
 
 typedef struct {
@@ -216,6 +218,8 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
     }
     tmp.file = fd;
     tmp.filename = apr_pstrdup(cmd->pool, filename);
+    apr_rfc822_date(tmp.mtimestr, tmp.finfo.mtime);
+    apr_snprintf(tmp.sizestr, sizeof tmp.sizestr, "%lu", tmp.finfo.size);
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
     new_file = apr_array_push(sconf->files);
     *new_file = tmp;
@@ -272,6 +276,8 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     }
     apr_file_close(fd);
     tmp.filename = fspec;
+    apr_rfc822_date(tmp.mtimestr, tmp.finfo.mtime);
+    apr_snprintf(tmp.sizestr, sizeof tmp.sizestr, "%lu", tmp.finfo.size);
     sconf = ap_get_module_config(cmd->server->module_config, &file_cache_module);
     new_file = apr_array_push(sconf->files);
     *new_file = tmp;
@@ -432,12 +438,35 @@ static int file_cache_handler(request_rec *r)
         return errstatus;
 
     ap_update_mtime(r, match->finfo.mtime);
-    ap_set_last_modified(r);
+
+    /* ap_set_last_modified() always converts the file mtime to a string
+     * which is slow.  Accelerate the common case.
+     * ap_set_last_modified(r);
+     */
+    {
+        apr_time_t mod_time;
+        char *datestr;
+
+        mod_time = ap_rationalize_mtime(r, r->mtime);
+        if (mod_time == match->finfo.mtime)
+            datestr = match->mtimestr;
+        else {
+            datestr = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
+            apr_rfc822_date(datestr, mod_time);
+        }
+        apr_table_setn(r->headers_out, "Last-Modified", datestr);
+    }
+
     ap_set_etag(r);
     if ((errstatus = ap_meets_conditions(r)) != OK) {
        return errstatus;
     }
-    ap_set_content_length(r, match->finfo.size);
+
+    /* ap_set_content_length() always converts the same number and never
+     * returns an error.  Accelerate it.
+     */
+    r->clength = match->finfo.size;
+    apr_table_setn(r->headers_out, "Content-Length", match->sizestr);
 
     ap_send_http_header(r);
 
