@@ -190,6 +190,7 @@ KeepAliveTimeout 15
     MaxSpareThreads        250
     MaxThreads            1000
     MaxRequestsPerChild      0
+    MaxMemFree             100
 </IfModule>
 
 # OS/2 MPM
