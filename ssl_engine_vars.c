@@ -283,8 +283,9 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
     }
     else if (ssl != NULL && strcEQ(var, "SESSION_ID")) {
         SSL_SESSION *pSession = SSL_get_session(ssl);
-        result = apr_pstrdup(p, SSL_SESSION_id2sz(pSession->session_id, 
-                                                 pSession->session_id_length));
+        result = apr_pstrdup(p, SSL_SESSION_id2sz(
+                                SSL_SESSION_get_session_id(pSession),
+                                SSL_SESSION_get_session_id_length(pSession)));
     }
     else if (ssl != NULL && strlen(var) >= 6 && strcEQn(var, "CIPHER", 6)) {
         result = ssl_var_lookup_ssl_cipher(p, c, var+6);
@@ -356,13 +357,15 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var)
         resdup = FALSE;
     }
     else if (strcEQ(var, "A_SIG")) {
-        nid = OBJ_obj2nid(xs->cert_info->signature->algorithm);
-        result = apr_pstrdup(p, (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
+        nid = OBJ_obj2nid((ASN1_OBJECT *)X509_get_signature_algorithm(xs));
+        result = apr_pstrdup(p, 
+                             (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
         resdup = FALSE;
     }
     else if (strcEQ(var, "A_KEY")) {
-        nid = OBJ_obj2nid(xs->cert_info->key->algor->algorithm);
-        result = apr_pstrdup(p, (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
+        nid = OBJ_obj2nid((ASN1_OBJECT *)X509_get_key_algorithm(xs));
+        result = apr_pstrdup(p,
+                             (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
         resdup = FALSE;
     }
     else if (strcEQ(var, "CERT")) {
@@ -400,21 +403,30 @@ static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *
     char *result;
     X509_NAME_ENTRY *xsne;
     int i, j, n;
+    char *data_ptr;
+    int data_len;
 
     result = NULL;
 
     for (i = 0; ssl_var_lookup_ssl_cert_dn_rec[i].name != NULL; i++) {
         if (strEQ(var, ssl_var_lookup_ssl_cert_dn_rec[i].name)) {
-            for (j = 0; j < sk_X509_NAME_ENTRY_num(xsname->entries); j++) {
-                xsne = sk_X509_NAME_ENTRY_value(xsname->entries, j);
-                n = OBJ_obj2nid(xsne->object);
+            for (j = 0; j < sk_X509_NAME_ENTRY_num((STACK_OF(X509_NAME_ENTRY) *)
+                                                 X509_NAME_get_entries(xsname));
+                 j++) {
+                xsne = sk_X509_NAME_ENTRY_value((STACK_OF(X509_NAME_ENTRY) *)
+                                             X509_NAME_get_entries(xsname), j);
+
+                n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
+                data_ptr = X509_NAME_ENTRY_get_data_ptr(xsne);
+                data_len = X509_NAME_ENTRY_get_data_len(xsne);
+
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid) {
-                    result = apr_palloc(p, xsne->value->length+1);
-                    apr_cpystrn(result, (char *)xsne->value->data, xsne->value->length+1);
+                    result = apr_palloc(p, data_len+1);
+                    apr_cpystrn(result, (char *)data_ptr, data_len+1);
 #ifdef CHARSET_EBCDIC
                     ascii2ebcdic(result, result, xsne->value->length);
 #endif /* CHARSET_EBCDIC */
-                    result[xsne->value->length] = NUL;
+                    result[data_len] = NUL;
                     break;
                 }
             }

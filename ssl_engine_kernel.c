@@ -489,7 +489,7 @@ int ssl_hook_Access(request_rec *r)
         if (dc->nOptions & SSL_OPT_OPTRENEGOTIATE)
             pCipher = SSL_get_current_cipher(ssl);
         else {
-            skCipherOld = SSL_get_ciphers(ssl);
+            skCipherOld = (STACK_OF(SSL_CIPHER) *)SSL_get_ciphers(ssl);
             if (skCipherOld != NULL)
                 skCipherOld = sk_SSL_CIPHER_dup(skCipherOld);
         }
@@ -502,7 +502,7 @@ int ssl_hook_Access(request_rec *r)
             return HTTP_FORBIDDEN;
         }
         /* determine whether a renegotiation has to be forced */
-        skCipher = SSL_get_ciphers(ssl);
+        skCipher = (STACK_OF(SSL_CIPHER) *)SSL_get_ciphers(ssl);
         if (dc->nOptions & SSL_OPT_OPTRENEGOTIATE) {
             /* optimized way */
             if ((pCipher == NULL && skCipher != NULL) ||
@@ -741,19 +741,23 @@ int ssl_hook_Access(request_rec *r)
          * here because it resets too much of the connection.  So we set the
          * state explicitly and continue the handshake manually.
          */
-        ssl_log(r->server, SSL_LOG_INFO, "Requesting connection re-negotiation");
+        ssl_log(r->server, SSL_LOG_INFO,
+                "Requesting connection re-negotiation");
         if (renegotiate_quick) {
             /* perform just a manual re-verification of the peer */
             ssl_log(r->server, SSL_LOG_TRACE,
-                    "Performing quick renegotiation: just re-verifying the peer");
+                    "Performing quick renegotiation: "
+                    "just re-verifying the peer");
             certstore = SSL_CTX_get_cert_store(ctx);
             if (certstore == NULL) {
-                ssl_log(r->server, SSL_LOG_ERROR, "Cannot find certificate storage");
+                ssl_log(r->server, SSL_LOG_ERROR,
+                        "Cannot find certificate storage");
                 return HTTP_FORBIDDEN;
             }
-            certstack = SSL_get_peer_cert_chain(ssl);
+            certstack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
             if (certstack == NULL || sk_X509_num(certstack) == 0) {
-                ssl_log(r->server, SSL_LOG_ERROR, "Cannot find peer certificate chain");
+                ssl_log(r->server, SSL_LOG_ERROR,
+                        "Cannot find peer certificate chain");
                 return HTTP_FORBIDDEN;
             }
             cert = sk_X509_value(certstack, 0);
@@ -772,9 +776,11 @@ int ssl_hook_Access(request_rec *r)
         else {
             /* do a full renegotiation */
             ssl_log(r->server, SSL_LOG_TRACE,
-                    "Performing full renegotiation: complete handshake protocol");
+                    "Performing full renegotiation: "
+                    "complete handshake protocol");
             if (r->main != NULL)
-                SSL_set_session_id_context(ssl, (unsigned char *)&(r->main), sizeof(r->main));
+                SSL_set_session_id_context(ssl, (unsigned char *)&(r->main),
+                                           sizeof(r->main));
             else
                 SSL_set_session_id_context(ssl, (unsigned char *)&r, sizeof(r));
             /* will need to push to / pull from filters to renegotiate */
@@ -783,11 +789,13 @@ int ssl_hook_Access(request_rec *r)
             SSL_do_handshake(ssl);
 
             if (SSL_get_state(ssl) != SSL_ST_OK) {
-                ssl_log(r->server, SSL_LOG_ERROR, "Re-negotiation request failed");
+                ssl_log(r->server, SSL_LOG_ERROR,
+                        "Re-negotiation request failed");
                 ssl_bio_hooks_unset(ssl);
                 return HTTP_FORBIDDEN;
             }
-            ssl_log(r->server, SSL_LOG_INFO, "Awaiting re-negotiation handshake");
+            ssl_log(r->server, SSL_LOG_INFO,
+                    "Awaiting re-negotiation handshake");
             SSL_set_state(ssl, SSL_ST_ACCEPT);
             SSL_do_handshake(ssl);
 
@@ -795,7 +803,8 @@ int ssl_hook_Access(request_rec *r)
 
             if (SSL_get_state(ssl) != SSL_ST_OK) {
                 ssl_log(r->server, SSL_LOG_ERROR,
-                        "Re-negotiation handshake failed: Not accepted by client!?");
+                        "Re-negotiation handshake failed: "
+                        "Not accepted by client!?");
                 return HTTP_FORBIDDEN;
             }
         }
@@ -1124,7 +1133,7 @@ int ssl_hook_Fixup(request_rec *r)
         apr_table_set(e, "SSL_SERVER_CERT", val);
         val = ssl_var_lookup(r->pool, r->server, r->connection, r, "SSL_CLIENT_CERT");
         apr_table_set(e, "SSL_CLIENT_CERT", val);
-        if ((sk = SSL_get_peer_cert_chain(ssl)) != NULL) {
+        if ((sk = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl)) != NULL) {
             for (i = 0; i < sk_X509_num(sk); i++) {
                 var = apr_psprintf(r->pool, "SSL_CLIENT_CERT_CHAIN_%d", i);
                 val = ssl_var_lookup(r->pool, r->server, r->connection, r, var);
@@ -1485,11 +1494,14 @@ int ssl_callback_SSLVerify_CRL(
 #else
             revoked = sk_X509_REVOKED_value(X509_CRL_get_REVOKED(crl), i);
 #endif
-            if (ASN1_INTEGER_cmp(revoked->serialNumber, X509_get_serialNumber(xs)) == 0) {
+            if (ASN1_INTEGER_cmp(X509_REVOKED_get_serialNumber(revoked),
+                                 X509_get_serialNumber(xs)) == 0) {
+
 
                 if (sc->nLogLevel >= SSL_LOG_INFO) {
                     char *cp = X509_NAME_oneline(issuer, NULL, 0);
-                    long serial = ASN1_INTEGER_get(revoked->serialNumber);
+                    long serial = ASN1_INTEGER_get(
+                                       X509_REVOKED_get_serialNumber(revoked));
 
                     ssl_log(s, SSL_LOG_INFO,
                             "Certificate with serial %ld (0x%lX) "
@@ -1520,6 +1532,9 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *pNew)
     SSLSrvConfigRec *sc;
     long t;
     BOOL rc;
+    unsigned char *session_id;
+    unsigned int session_id_length;
+
 
     /*
      * Get Apache context back through OpenSSL context
@@ -1539,8 +1554,12 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *pNew)
      * Store the SSL_SESSION in the inter-process cache with the
      * same expire time, so it expires automatically there, too.
      */
+    session_id = SSL_SESSION_get_session_id(pNew);
+    session_id_length = SSL_SESSION_get_session_id_length(pNew);
+
     t = (SSL_get_time(pNew) + sc->nSessionCacheTimeout);
-    rc = ssl_scache_store(s, pNew->session_id, pNew->session_id_length, t, pNew);
+    rc = ssl_scache_store(s, session_id, session_id_length, t, pNew);
+
 
     /*
      * Log this cache operation
@@ -1548,7 +1567,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *pNew)
     ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
             "request=SET status=%s id=%s timeout=%ds (session caching)",
             rc == TRUE ? "OK" : "BAD",
-            SSL_SESSION_id2sz(pNew->session_id, pNew->session_id_length),
+            SSL_SESSION_id2sz(session_id, session_id_length),
             t-time(NULL));
 
     /*
@@ -1615,6 +1634,9 @@ void ssl_callback_DelSessionCacheEntry(
     SSL_CTX *ctx, SSL_SESSION *pSession)
 {
     server_rec *s;
+    unsigned char *session_id;
+    unsigned int session_id_length;
+
 
     /*
      * Get Apache context back through OpenSSL context
@@ -1626,15 +1648,18 @@ void ssl_callback_DelSessionCacheEntry(
     /*
      * Remove the SSL_SESSION from the inter-process cache
      */
-    ssl_scache_remove(s, pSession->session_id, pSession->session_id_length);
+    session_id = SSL_SESSION_get_session_id(pSession);
+    session_id_length = SSL_SESSION_get_session_id_length(pSession);
+
+    ssl_scache_remove(s, session_id, session_id_length);
+
 
     /*
      * Log this cache operation
      */
     ssl_log(s, SSL_LOG_TRACE, "Inter-Process Session Cache: "
             "request=REM status=OK id=%s (session dead)",
-            SSL_SESSION_id2sz(pSession->session_id,
-            pSession->session_id_length));
+            SSL_SESSION_id2sz(session_id, session_id_length));
 
     return;
 }
