@@ -57,6 +57,8 @@ AC_DEFUN(APACHE_GEN_CONFIG_VARS,[
   APACHE_SUBST(cgidir)
   APACHE_SUBST(logdir)
   APACHE_SUBST(exec_prefix)
+  APACHE_SUBST(datadir)
+  APACHE_SUBST(localstatedir)
   APACHE_SUBST(libexecdir)
   APACHE_SUBST(htdocsdir)
   APACHE_SUBST(includedir)
@@ -338,13 +340,12 @@ AC_DEFUN(APACHE_LAYOUT,[
       -e "s/:[ 	]*/=\'/g" \
       -e "s/[ 	]*$/'/g" \
       $1 > $pldconf
-  changequote([,])
   layout_name=$2
   . $pldconf
   rm $pldconf
   for var in prefix exec_prefix bindir sbindir libexecdir mandir \
              sysconfdir datadir iconsdir htdocsdir cgidir includedir \
-             localstatedir runtimedir logfiledir proxycachedir; do
+             localstatedir runtimedir logdir proxycachedir; do
     eval "val=\"\$$var\""
     case $val in
       *+)
@@ -357,6 +358,7 @@ AC_DEFUN(APACHE_LAYOUT,[
         ;;
     esac
     val=`echo $val | sed -e 's:\(.\)/*$:\1:'`
+    val=`echo $val | sed -e 's:$\([a-z_]*\):$(\1):g'`
     if test "$autosuffix" = "yes"; then
       if echo $val | grep apache >/dev/null; then
         addtarget=no
@@ -367,8 +369,9 @@ AC_DEFUN(APACHE_LAYOUT,[
         val="$val/apache"
       fi
     fi
-    eval "$var=\"$val\""
+    eval "$var='$val'"
   done
+  changequote([,])
 ])dnl
 dnl
 dnl APACHE_ENABLE_LAYOUT

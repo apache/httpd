@@ -73,6 +73,16 @@ LT_CXX_COMPILE = $(LIBTOOL) --mode=compile $(CXX_COMPILE) -c $< && touch $@
 LINK    = $(LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) -o $@
 SH_LINK = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) -o $@
 
+# Cross compile commands
+
+ifeq (,$(CC_FOR_BUILD))
+CC_FOR_BUILD  = $(CC)
+endif
+
+BUILD_COMPILE    = $(CC_FOR_BUILD) $(COMMON_FLAGS) $(CFLAGS) $(EXTRA_CFLAGS)
+BUILD_LT_COMPILE = $(BUILD_COMPILE) -c $< -o build-$(@:.lo=.o)
+BUILD_LINK       = $(BUILD_COMPILE) $(LTFLAGS) $(LDFLAGS) -o build-$@
+
 # Helper programs
 
 SH_LIBTOOL = $(SHELL) $(top_builddir)/shlibtool --silent
