@@ -1,6 +1,6 @@
 # This is the main server configuration file. See URL http://www.apache.org/
 # for instructions.
-# $Id: httpd.conf-dist,v 1.6 1996/09/02 08:30:11 mjc Exp $
+# $Id: httpd.conf-dist,v 1.7 1996/09/17 14:27:28 chuck Exp $
 
 # Do NOT simply read the instructions in here without understanding
 # what they do, if you are unsure consult the online docs. You have been
@@ -30,6 +30,12 @@ HostnameLookups on
 #  On SCO (ODT 3) use User nouser and Group nogroup
 User nobody
 Group #-1
+
+# The following directive disables keepalives and HTTP header flushes for
+# Netscape 2.x and browsers which spoof it. There are known problems with
+# these
+
+BrowserMatch ^Mozilla/2* nokeepalive
 
 # ServerAdmin: Your address, where problems with the server should be
 # e-mailed.
