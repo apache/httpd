@@ -1,5 +1,8 @@
 Changes with Apache 2.0.35
 
+  *) Update mod_cgid to not do single-byte socket reads for CGI headers
+     [Brian Pane]
+
   *) The old, legacy (and unused) code in which the scoreboard was totally
      and completely contained in a file (SCOREBOARD_FILE) has been
      removed. This does not affect scoreboards which are *mapped* to
