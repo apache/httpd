@@ -4,7 +4,7 @@ Release:
 
     1.3.2: In development.
 
-    1.3.1: Tagged and rolled on July 19. Still not announced and released.
+    1.3.1: Tagged and rolled on July 19. Announced and released.
 
     1.3.0: Tagged and rolled on June 1. Announced and Released on the 6th.
            
@@ -22,6 +22,9 @@ Documentation that needs writing:
 
     * Need a document explaining mod_rewrite/"UseCanonicalName off" based
       virtualhosting.  (If it exists already I can't find it easily.)
+      => It still doesn't exists but I've already assembled the relevant
+         information and config snippets. We just have to write a vhost-xxx.html
+         document out of it. -- rse
 
 Available Patches:
 
