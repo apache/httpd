@@ -622,11 +622,16 @@ static int include_cgi(char *s, request_rec *r)
  * ensentially ensure that it does not match the regex:
  * (^/|(^|/)\.\.(/|$))
  * XXX: this needs os abstraction... consider c:..\foo in win32
+ * ???: No, c:../foo is not relative to ., it's potentially on another volume
  */
 static int is_only_below(const char *path)
 {
 #ifdef HAVE_DRIVE_LETTERS
     if (path[1] == ':')
+	return 0;
+#endif
+#ifdef NETWARE
+    if (strchr(path, ':'))
 	return 0;
 #endif
     if (path[0] == '/') {
