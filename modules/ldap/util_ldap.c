@@ -815,6 +815,7 @@ LDAP_DECLARE(int) util_ldap_cache_checkuserid(request_rec *r, util_ldap_connecti
                               const char ***retvals)
 {
     const char **vals = NULL;
+    int numvals = 0;
     int result = 0;
     LDAPMessage *res, *entry;
     char *dn;
@@ -977,6 +978,7 @@ start_over:
         int i = 0;
         while (attrs[k++]);
         vals = apr_pcalloc(r->pool, sizeof(char *) * (k+1));
+        numvals = k;
         while (attrs[i]) {
             char **values;
             int j = 0;
@@ -1004,6 +1006,7 @@ start_over:
         the_search_node.bindpw = bindpw;
         the_search_node.lastbind = apr_time_now();
         the_search_node.vals = vals;
+        the_search_node.numvals = numvals;
 
         /* Search again to make sure that another thread didn't ready insert this node
            into the cache before we got here. If it does exist then update the lastbind */
@@ -1046,6 +1049,7 @@ LDAP_DECLARE(int) util_ldap_cache_getuserdn(request_rec *r, util_ldap_connection
                               const char ***retvals)
 {
     const char **vals = NULL;
+    int numvals = 0;
     int result = 0;
     LDAPMessage *res, *entry;
     char *dn;
@@ -1160,6 +1164,7 @@ start_over:
         int i = 0;
         while (attrs[k++]);
         vals = apr_pcalloc(r->pool, sizeof(char *) * (k+1));
+        numvals = k;
         while (attrs[i]) {
             char **values;
             int j = 0;
@@ -1187,6 +1192,7 @@ start_over:
         the_search_node.bindpw = NULL;
         the_search_node.lastbind = apr_time_now();
         the_search_node.vals = vals;
+        the_search_node.numvals = numvals;
 
         /* Search again to make sure that another thread didn't ready insert this node
            into the cache before we got here. If it does exist then update the lastbind */
