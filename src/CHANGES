@@ -1,5 +1,10 @@
 Changes with Apache 1.3b4
 
+  *) WIN32: overhaul of multithreading code. Shutdowns are now graceful
+     (connections are not dropped). Code can handle graceful restarts
+     (but there is as yet no way to signal this to Apache). Various
+     other cleanups. [Paul Sutton]
+
   *) The aplog_error changes specific to 1.3 introduced a buffer
      overrun in the (now legacy) log_printf function.  Fixed.
      [Dean Gaudet]
