@@ -65,7 +65,7 @@ typedef struct recycled_pool {
 } recycled_pool;
 
 struct fd_queue_info_t {
-    int idlers;
+    apr_uint32_t idlers;
     apr_thread_mutex_t *idlers_mutex;
     apr_thread_cond_t *wait_for_idler;
     int terminated;
