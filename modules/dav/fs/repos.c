@@ -354,7 +354,7 @@ static dav_error * dav_fs_copymove_file(
 	    apr_file_close(inf);
 	    apr_file_close(outf);
 
-	    if (apr_file_remove(dst, p) != 0) {
+	    if (apr_file_remove(dst, p) != APR_SUCCESS) {
 		/* ### ACK! Inconsistent state... */
 
 		/* ### use something besides 500? */
@@ -382,11 +382,11 @@ static dav_error * dav_fs_copymove_file(
     apr_file_close(inf);
     apr_file_close(outf);
 
-    if (is_move && remove(src) != 0) {
+    if (is_move && apr_file_remove(src, p) != APR_SUCCESS) {
 	dav_error *err;
 	int save_errno = errno;	/* save the errno that got us here */
 
-	if (remove(dst) != 0) {
+	if (apr_file_remove(dst, p) != APR_SUCCESS) {
 	    /* ### ACK. this creates an inconsistency. do more!? */
 
 	    /* ### use something besides 500? */
@@ -548,6 +548,7 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
     const char *state1;
     const char *state2;
     const char *pathname;
+    apr_status_t status;
 
     /* Get directory, filename, and state-file names for the resource */
     dav_fs_dir_file_name(resource, &dirpath, &fname);
@@ -561,7 +562,8 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
 			  NULL);
 
     /* note: we may get ENOENT if the state dir is not present */
-    if (remove(pathname) != 0 && errno != ENOENT) {
+    if ((status = apr_file_remove(pathname, p)) != APR_SUCCESS
+        && !APR_STATUS_IS_ENOENT(status)) {
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			     "Could not remove properties.");
     }
@@ -574,7 +576,8 @@ static dav_error *dav_fs_deleteset(apr_pool_t *p, const dav_resource *resource)
 			      state2,
 			      NULL);
 
-	if (remove(pathname) != 0 && errno != ENOENT) {
+        if ((status = apr_file_remove(pathname, p)) != APR_SUCCESS
+            && !APR_STATUS_IS_ENOENT(status)) {
 	    /* ### CRAP. only removed half. */
 	    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 "Could not fully remove properties. "
@@ -835,7 +838,7 @@ static dav_error * dav_fs_close_stream(dav_stream *stream, int commit)
     apr_file_close(stream->f);
 
     if (!commit) {
-	if (apr_file_remove(stream->pathname, stream->p) != 0) {
+	if (apr_file_remove(stream->pathname, stream->p) != APR_SUCCESS) {
 	    /* ### use a better description? */
             return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,
 				 "There was a problem removing (rolling "
@@ -973,7 +976,7 @@ static dav_error * dav_fs_copymove_walker(dav_walk_resource *wres,
 	     * Note: when copying, we do not enable the postfix-traversal.
 	     */
 	    /* ### we are ignoring any error here; what should we do? */
-	    (void) rmdir(srcinfo->pathname);
+	    (void) apr_dir_remove(srcinfo->pathname, ctx->pool);
 	}
         else {
 	    /* copy/move of a collection. Create the new, target collection */
@@ -1235,11 +1238,11 @@ static dav_error * dav_fs_delete_walker(dav_walk_resource *wres, int calltype)
     if (wres->resource->exists &&
         (!wres->resource->collection || calltype == DAV_CALLTYPE_POSTFIX)) {
 	/* try to remove the resource */
-	int result;
+	apr_status_t result;
 
 	result = wres->resource->collection
-	    ? rmdir(info->pathname)
-	    : remove(info->pathname);
+	    ? apr_dir_remove(info->pathname, wres->pool)
+	    : apr_file_remove(info->pathname, wres->pool);
 
 	/*
         ** If an error occurred, then add it to multistatus response.
@@ -1248,7 +1251,7 @@ static dav_error * dav_fs_delete_walker(dav_walk_resource *wres, int calltype)
         **
         ** (also: remember we are deleting via a postfix traversal)
         */
-	if (result != 0) {
+	if (result != APR_SUCCESS) {
             /* ### assume there is a permissions problem */
 
             /* ### use errno to generate DAV:responsedescription? */
@@ -1302,7 +1305,7 @@ static dav_error * dav_fs_remove_resource(dav_resource *resource,
     }
 
     /* not a collection; remove the file and its properties */
-    if (remove(info->pathname) != 0) {
+    if (apr_file_remove(info->pathname, info->pool) != APR_SUCCESS) {
 	/* ### put a description in here */
 	return dav_new_error(info->pool, HTTP_FORBIDDEN, 0, NULL);
     }
