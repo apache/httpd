@@ -70,6 +70,213 @@
 
 /* XXX THIS STUFF NEEDS A MAJOR CLEANUP -RSE XXX */
 
+/* this custom BIO allows us to hook SSL_write directly into 
+ * an apr_bucket_brigade and use transient buckets with the SSL
+ * malloc-ed buffer, rather than copying into a mem BIO.
+ * also allows us to pass the brigade as data is being written
+ * rather than buffering up the entire response in the mem BIO.
+ */
+
+typedef struct {
+    SSLFilterRec *frec;
+    conn_rec *c;
+    apr_bucket_brigade *bb;
+    apr_size_t length;
+    char buffer[AP_IOBUFSIZE];
+    apr_size_t blen;
+} BIO_bucket_t;
+
+static BIO_bucket_t *BIO_bucket_new(SSLFilterRec *frec, conn_rec *c)
+{
+    BIO_bucket_t *b = apr_palloc(c->pool, sizeof(*b));
+
+    b->frec = frec;
+    b->c = c;
+    b->bb = apr_brigade_create(c->pool);
+    b->blen = 0;
+    b->length = 0;
+
+    return b;
+}
+
+#define BIO_bucket_ptr(bio) (BIO_bucket_t *)bio->ptr
+
+static int BIO_bucket_flush(BIO *bio)
+{
+    BIO_bucket_t *b = BIO_bucket_ptr(bio);
+
+    if (!(b->blen || b->length)) {
+        return APR_SUCCESS;
+    }
+
+    if (b->blen) {
+        apr_bucket *bucket = 
+            apr_bucket_transient_create(b->buffer,
+                                        b->blen);
+        /* we filled this buffer first so add it to the 
+         * head of the brigade
+         */
+        APR_BRIGADE_INSERT_HEAD(b->bb, bucket);
+        b->blen = 0;
+    }
+
+    b->length = 0;
+    APR_BRIGADE_INSERT_TAIL(b->bb, apr_bucket_flush_create());
+
+    return ap_pass_brigade(b->frec->pOutputFilter->next, b->bb);
+}
+
+static int bio_bucket_new(BIO *bio)
+{
+    bio->shutdown = 1;
+    bio->init = 1;
+    bio->num = -1;
+    bio->ptr = NULL;
+
+    return 1;
+}
+
+static int bio_bucket_free(BIO *bio)
+{
+    if (bio == NULL) {
+        return 0;
+    }
+
+    /* nothing to free here.
+     * apache will destroy the bucket brigade for us
+     */
+    return 1;
+}
+	
+static int bio_bucket_read(BIO *bio, char *out, int outl)
+{
+    /* this is never called */
+    return -1;
+}
+
+static int bio_bucket_write(BIO *bio, const char *in, int inl)
+{
+    BIO_bucket_t *b = BIO_bucket_ptr(bio);
+
+    /* when handshaking we'll have a small number of bytes.
+     * max size SSL will pass us here is about 16k.
+     * (16413 bytes to be exact)
+     */
+    BIO_clear_retry_flags(bio);
+
+    if (!b->length && (inl < (sizeof(b->buffer) - b->blen))) {
+        /* the first two SSL_writes (of 1024 and 261 bytes)
+         * need to be in the same packet (vec[0].iov_base)
+         */
+        /* XXX: could use apr_brigade_write() to make code look cleaner
+         * but this way we avoid the malloc(APR_BUCKET_BUFF_SIZE)
+         * and free() of it later
+         */
+        memcpy(&b->buffer[b->blen], in, inl);
+        b->blen += inl;
+    }
+    else {
+        /* pass along the encrypted data
+         * need to flush since we're using SSL's malloc-ed buffer 
+         * which will be overwritten once we leave here
+         */
+        apr_bucket *bucket = apr_bucket_transient_create(in, inl);
+
+        b->length += inl;
+        APR_BRIGADE_INSERT_TAIL(b->bb, bucket);
+
+        BIO_bucket_flush(bio);
+    }
+
+    return inl;
+}
+
+static long bio_bucket_ctrl(BIO *bio, int cmd, long num, void *ptr)
+{
+    long ret = 1;
+    char **pptr;
+
+    BIO_bucket_t *b = BIO_bucket_ptr(bio);
+
+    switch (cmd) {
+      case BIO_CTRL_RESET:
+        b->blen = b->length = 0;
+        break;
+      case BIO_CTRL_EOF:
+        ret = (long)((b->blen + b->length) == 0);
+        break;
+      case BIO_C_SET_BUF_MEM_EOF_RETURN:
+        b->blen = b->length = (apr_size_t)num;
+        break;
+      case BIO_CTRL_INFO:
+        ret = (long)(b->blen + b->length);
+        if (ptr) {
+            pptr = (char **)ptr;
+            *pptr = (char *)&(b->buffer[0]);
+        }
+        break;
+      case BIO_CTRL_GET_CLOSE:
+        ret = (long)bio->shutdown;
+        break;
+      case BIO_CTRL_SET_CLOSE:
+        bio->shutdown = (int)num;
+        break;
+      case BIO_CTRL_WPENDING:
+        ret = 0L;
+        break;
+      case BIO_CTRL_PENDING:
+        ret = (long)(b->blen + b->length);
+        break;
+      case BIO_CTRL_FLUSH:
+        ret = (BIO_bucket_flush(bio) == APR_SUCCESS);
+        break;
+      case BIO_CTRL_DUP:
+        ret = 1;
+        break;
+        /* N/A */
+      case BIO_C_SET_BUF_MEM:
+      case BIO_C_GET_BUF_MEM_PTR:
+        /* we don't care */
+      case BIO_CTRL_PUSH:
+      case BIO_CTRL_POP:
+      default:
+        ret = 0;
+        break;
+    }
+
+    return ret;
+}
+
+static int bio_bucket_gets(BIO *bio, char *buf, int size)
+{
+    /* this is never called */
+    return -1;
+}
+
+static int bio_bucket_puts(BIO *bio, const char *str)
+{
+    /* this is never called */
+    return -1;
+}
+
+static BIO_METHOD bio_bucket_method = {
+    BIO_TYPE_MEM,
+    "APR bucket brigade",
+    bio_bucket_write,
+    bio_bucket_read,
+    bio_bucket_puts,
+    bio_bucket_gets,
+    bio_bucket_ctrl,
+    bio_bucket_new,
+    bio_bucket_free,
+    NULL,
+};
+
+static BIO_METHOD *BIO_s_bucket(void)
+{
+    return &bio_bucket_method;
+}
+
 static const char ssl_io_filter[] = "SSL/TLS Filter";
 
 static int ssl_io_hook_read(SSL *ssl, char *buf, int len)
@@ -146,45 +353,14 @@ static int ssl_io_hook_write(SSL *ssl, unsigned char *buf, int len)
     return rc;
 }
 
-#define BIO_mem(b) ((BUF_MEM *)b->ptr)
-
 static apr_status_t churn_output(SSLFilterRec *ctx)
 {
-    ap_filter_t *f = ctx->pOutputFilter;
-    apr_pool_t *p = f->c->pool;
-
     if (!ctx->pssl) {
         /* we've been shutdown */
         return APR_EOF;
     }
 
-    if (BIO_pending(ctx->pbioWrite)) {
-        BUF_MEM *bm = BIO_mem(ctx->pbioWrite);
-        apr_bucket_brigade *bb = apr_brigade_create(p);
-        apr_bucket *bucket; 
-
-        /*
-         * use the BIO memory buffer that has already been allocated,
-         * rather than making another copy of it.
-         * use bm directly here is *much* faster than calling BIO_read()
-         * look at crypto/bio/bss_mem.c:mem_read and you'll see why
-         */
-
-        bucket = apr_bucket_transient_create((const char *)bm->data,
-                                             bm->length);
-
-        bm->length = 0; /* reset */
-
-        APR_BRIGADE_INSERT_TAIL(bb, bucket);
-
-	/* XXX: it may be possible to not always flush */
-        bucket = apr_bucket_flush_create();
-        APR_BRIGADE_INSERT_TAIL(bb, bucket);
-
-        return ap_pass_brigade(f->next, bb);
-    }
-
-    return APR_SUCCESS;
+    return BIO_bucket_flush(ctx->pbioWrite);
 }
 
 #define bio_is_renegotiating(bio) \
@@ -583,7 +759,8 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     filter->b               = apr_brigade_create(c->pool);
     filter->rawb            = apr_brigade_create(c->pool);
     filter->pbioRead        = BIO_new(BIO_s_mem());
-    filter->pbioWrite       = BIO_new(BIO_s_mem());
+    filter->pbioWrite       = BIO_new(BIO_s_bucket());
+    filter->pbioWrite->ptr  = BIO_bucket_new(filter, c);
     SSL_set_bio(ssl, filter->pbioRead, filter->pbioWrite);
     filter->pssl            = ssl;
 
