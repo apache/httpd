@@ -14,7 +14,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.126 $ ($Date: 1998/08/06 20:46:12 $)
+  $Revision: 1.127 $ ($Date: 1998/09/09 16:01:03 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -125,6 +125,9 @@
    <LI><A HREF="#ssi-part-ii">Why don't my parsed files get cached?</A>
    </LI>
    <LI><A HREF="#ssi-part-iii">How can I have my script output parsed?</A>
+   </LI>
+   <LI><A HREF="#ssi-part-iv">SSIs don't work for VirtualHosts and/or 
+        user home directories</A>
    </LI>
    <LI><A HREF="#proxy">Does or will Apache act as a Proxy server?</A>
    </LI>
@@ -829,6 +832,18 @@
   release after 1.3.
   </P>
   <HR>
+ </LI>
+
+ <LI><A NAME="ssi-part-iv">
+      <STRONG>SSIs don't work for VirtualHosts and/or 
+        user home directories.</STRONG>
+     </A>
+  <P>
+  This is almost always due to having some setting in your config file that
+  sets "Options Includes" or some other setting for your DocumentRoot
+  but not for other directories.  If you set it inside a Directory
+  section, then that setting will only apply to that directory.  
+  </P>
  </LI>
 
  <LI><A NAME="proxy">
