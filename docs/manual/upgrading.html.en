@@ -61,7 +61,7 @@ files, you may need to add <code>Include conf/access.conf</code> and
 assure that Apache reads the configuration files in the same order as
 was implied by the older directives, the <code>Include</code>
 directives should be placed at the end of httpd.conf, with the one for
-<code>srm.conf</code> preceding the one of
+<code>srm.conf</code> preceding the one for
 <code>access.conf</code>.</li>
 
 <li>The <code>BindAddress</code> directive no longer exists.
