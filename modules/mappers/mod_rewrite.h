@@ -458,7 +458,7 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p,
 
     /* env variable support */
 static char *lookup_variable(request_rec *r, char *var);
-static char *lookup_header(request_rec *r, const char *name);
+static const char *lookup_header(request_rec *r, const char *name);
 
     /* caching functions */
 static cache *init_cache(apr_pool_t *p);
