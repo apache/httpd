@@ -125,7 +125,7 @@ static int decl_die(int status, char *phase, request_rec *r)
 {
     if (status == DECLINED) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, r,
-                    "configuration error:  couldn't %s: %s", phase, r->uri);
+                      "configuration error:  couldn't %s: %s", phase, r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     else {
@@ -172,8 +172,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
      */
     r->per_dir_config = r->server->lookup_defaults;
 
-    if ((access_status = ap_run_map_to_storage(r))) 
-    {
+    if ((access_status = ap_run_map_to_storage(r))) {
         /* This request wasn't in storage (e.g. TRACE) */
         return access_status;
     }
@@ -216,15 +215,19 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                 return decl_die(access_status, "check access", r);
             }
             if (ap_some_auth_required(r)) {
-                if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+                if (((access_status = ap_run_check_user_id(r)) != 0)
+                    || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-		                ? "check user.  No user file?"
-		                : "perform authentication. AuthType not set!", r);
+                                    ? "check user.  No user file?"
+                                    : "perform authentication. AuthType not set!",
+                                    r);
                 }
-                if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
+                if (((access_status = ap_run_auth_checker(r)) != 0)
+                    || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-		                ? "check access.  No groups file?"
-		                : "perform authentication. AuthType not set!", r);
+                                    ? "check access.  No groups file?"
+                                    : "perform authentication. AuthType not set!",
+                                    r);
                 }
             }
             break;
@@ -232,18 +235,23 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             if (((access_status = ap_run_access_checker(r)) != 0) || !ap_auth_type(r)) {
                 if (!ap_some_auth_required(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-		                ? "check access"
-		                : "perform authentication. AuthType not set!", r);
+                                    ? "check access"
+                                    : "perform authentication. AuthType not set!",
+                                    r);
                 }
-                if (((access_status = ap_run_check_user_id(r)) != 0) || !ap_auth_type(r)) {
+                if (((access_status = ap_run_check_user_id(r)) != 0)
+                    || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-		                ? "check user.  No user file?"
-		                : "perform authentication. AuthType not set!", r);
+                                    ? "check user.  No user file?"
+                                    : "perform authentication. AuthType not set!",
+                                    r);
                 }
-                if (((access_status = ap_run_auth_checker(r)) != 0) || !ap_auth_type(r)) {
+                if (((access_status = ap_run_auth_checker(r)) != 0)
+                    || !ap_auth_type(r)) {
                     return decl_die(access_status, ap_auth_type(r)
-		                ? "check access.  No groups file?"
-		                : "perform authentication. AuthType not set!", r);
+                                    ? "check access.  No groups file?"
+                                    : "perform authentication. AuthType not set!",
+                                    r);
                 }
             }
             break;
@@ -307,18 +315,17 @@ static walk_cache_t *prep_walk_cache(const char *cache_name, request_rec *r)
      * this _walk()er with a copy it is allowed to munge.  If there is no
      * parent or prior cached request, then create a new walk cache.
      */
-    if ((apr_pool_userdata_get((void **)&cache, 
-                               cache_name, r->pool)
-                != APR_SUCCESS) || !cache) 
-    {
+    if ((apr_pool_userdata_get((void **)&cache, cache_name, r->pool)
+                != APR_SUCCESS)
+        || !cache) {
         if ((r->main && (apr_pool_userdata_get((void **)&cache, 
                                                cache_name,
                                                r->main->pool)
-                                 == APR_SUCCESS) && cache)
+                         == APR_SUCCESS) && cache)
          || (r->prev && (apr_pool_userdata_get((void **)&cache, 
                                                cache_name,
                                                r->prev->pool)
-                                 == APR_SUCCESS) && cache)) {
+                         == APR_SUCCESS) && cache)) {
             cache = apr_pmemdup(r->pool, cache, sizeof(*cache));
             cache->walked = apr_array_copy(r->pool, cache->walked);
         }
@@ -361,8 +368,8 @@ static int check_safe_file(request_rec *r)
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                "object is not a file, directory or symlink: %s",
-                r->filename);
+                  "object is not a file, directory or symlink: %s",
+                  r->filename);
     return HTTP_FORBIDDEN;
 }
 
@@ -459,7 +466,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      */
     if (r->filename == NULL || !ap_os_is_path_absolute(r->pool, r->filename)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, r,
-                      "Module bug?  Request filename path %s is missing or "
+                      "Module bug?  Request filename path %s is missing "
                       "or not absolute for uri %s", 
                       r->filename ? r->filename : "<NULL>", r->uri);
        return OK;
@@ -501,9 +508,9 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * we can skip rewalking the directory_walk entries.
      */
     if (cache->cached && ((r->finfo.filetype == APR_REG)
-                       || (r->finfo.filetype == APR_DIR))
-                      && (cache->dir_conf_tested == sec_ent) 
-                      && (strcmp(entry_dir, cache->cached) == 0)) {
+                          || (r->finfo.filetype == APR_DIR))
+        && (cache->dir_conf_tested == sec_ent) 
+        && (strcmp(entry_dir, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
          * didn't change, we have absolutely nothing to do :)  
          * Otherwise (as is the case with most dir_merged/file_merged requests)
@@ -728,14 +735,15 @@ minimerge:
                      * See core.c::merge_core_dir_configs() for explanation.
                      */
 minimerge2:
-                    this_dir = ap_get_module_config(htaccess_conf, &core_module);
+                    this_dir = ap_get_module_config(htaccess_conf,
+                                                    &core_module);
 
-                    if (this_dir) 
-                    {
+                    if (this_dir) {
                         if (this_dir->opts & OPT_UNSET) {
-	                    opts_add = (opts_add & ~this_dir->opts_remove) | this_dir->opts_add;
+	                    opts_add = (opts_add & ~this_dir->opts_remove)
+                                | this_dir->opts_add;
 	                    opts_remove = (opts_remove & ~this_dir->opts_add)
-	                                | this_dir->opts_remove;
+                                | this_dir->opts_remove;
 	                    opts = (opts & ~opts_remove) | opts_add;
                         }
                         else {
@@ -804,10 +812,12 @@ minimerge2:
              * want the name of this 'link' object, not the name of its
              * target, if we are fixing case.
              */
-            rv = apr_lstat(&r->finfo, r->filename, APR_FINFO_MIN | APR_FINFO_NAME, r->pool);
+            rv = apr_lstat(&r->finfo, r->filename,
+                           APR_FINFO_MIN | APR_FINFO_NAME, r->pool);
 
             if (APR_STATUS_IS_ENOENT(rv)) {
-                /* Nothing?  That could be nice.  But our directory walk is done.
+                /* Nothing?  That could be nice.  But our directory
+                 * walk is done.
                  */
                 r->finfo.filetype = APR_NOFILE;
                 break;
@@ -842,14 +852,15 @@ minimerge2:
                 strcpy(seg_name, r->finfo.name);
             }
 
-            if (r->finfo.filetype == APR_LNK) 
-            {
+            if (r->finfo.filetype == APR_LNK) {
                 /* Is this an possibly acceptable symlink?
                  */
                 if ((res = resolve_symlink(r->filename, &r->finfo, 
-                                           opts, r->pool)) != OK) {
+                                           opts, r->pool))
+                    != OK) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                                "Symbolic link not allowed: %s", r->filename);
+                                  "Symbolic link not allowed: %s",
+                                  r->filename);
                     return r->status = res;
                 }
 
@@ -926,10 +937,11 @@ minimerge2:
         }
     }
 
-/* It seems this shouldn't be needed anymore.  We translated the symlink above
- x  into a real resource, and should have died up there.  Even if we keep this,
- x  it needs more thought (maybe an r->file_is_symlink) perhaps it should actually
- x  happen in file_walk, so we catch more obscure cases in autoindex sub requests, etc.
+/* It seems this shouldn't be needed anymore.  We translated the
+ x symlink above into a real resource, and should have died up there.
+ x Even if we keep this, it needs more thought (maybe an r->file_is_symlink)
+ x perhaps it should actually happen in file_walk, so we catch more
+ x obscure cases in autoindex sub requests, etc.
  x
  x    * Symlink permissions are determined by the parent.  If the request is
  x    * for a directory then applying the symlink test here would use the
@@ -940,9 +952,10 @@ minimerge2:
  x    * you would *not* get the 403.
  x
  x   if (r->finfo.filetype != APR_DIR
- x       && (res = resolve_symlink(r->filename, r->info, ap_allow_options(r), r->pool))) {
+ x       && (res = resolve_symlink(r->filename, r->info, ap_allow_options(r),
+ x                                 r->pool))) {
  x       ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
- x                   "Symbolic link not allowed: %s", r->filename);
+ x                     "Symbolic link not allowed: %s", r->filename);
  x       return res;
  x   }
  */
@@ -1009,8 +1022,9 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
      * and the vhost's list of locations hasn't changed, we can skip
      * rewalking the location_walk entries.
      */
-    if (cache->cached && (cache->dir_conf_tested == sec_ent) 
-                      && (strcmp(entry_uri, cache->cached) == 0)) {
+    if (cache->cached
+        && (cache->dir_conf_tested == sec_ent) 
+        && (strcmp(entry_uri, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
          * didn't change, we have absolutely nothing to do :)  
          * Otherwise (as is the case with most dir_merged/file_merged requests)
@@ -1055,11 +1069,11 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
              * terminated (or at the end of the string) to match.
              */
 	    if (entry_core->r 
-                 ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
-                 : (entry_core->d_is_fnmatch
-                     ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
-                     : (strncmp(entry_core->d, cache->cached, len)
-                         ||   (entry_core->d[len - 1] != '/'
+                ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
+                : (entry_core->d_is_fnmatch
+                   ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
+                   : (strncmp(entry_core->d, cache->cached, len)
+                      ||   (entry_core->d[len - 1] != '/'
                             && cache->cached[len] != '/' 
                             && cache->cached[len] != '\0')))) {
 	        continue;
@@ -1161,8 +1175,9 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
      * and the directory's list of file sections hasn't changed, we 
      * can skip rewalking the file_walk entries.
      */
-    if (cache->cached && (cache->dir_conf_tested == sec_ent) 
-                      && (strcmp(test_file, cache->cached) == 0)) {
+    if (cache->cached
+        && (cache->dir_conf_tested == sec_ent) 
+        && (strcmp(test_file, cache->cached) == 0)) {
         /* Well this looks really familiar!  If our end-result (per_dir_result)
          * didn't change, we have absolutely nothing to do :)  
          * Otherwise (as is the case with most dir_merged requests)
@@ -1177,7 +1192,7 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         }
         if (cache->walked->nelts) {
             now_merged = ((walk_walked_t*)cache->walked->elts)
-                                            [cache->walked->nelts - 1].merged;
+                [cache->walked->nelts - 1].merged;
         }
     }
     else {
@@ -1199,10 +1214,10 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
             if (entry_core->r
-                 ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
-                 : (entry_core->d_is_fnmatch
-                     ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
-                     : strcmp(entry_core->d, cache->cached))) {
+                ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
+                : (entry_core->d_is_fnmatch
+                   ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
+                   : strcmp(entry_core->d, cache->cached))) {
                 continue;
             }
 
@@ -1325,7 +1340,7 @@ static void fill_in_sub_req_vars(request_rec *rnew, const request_rec *r,
 }
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
-                                                        apr_bucket_brigade *bb)
+                                                              apr_bucket_brigade *bb)
 {
     apr_bucket *e = APR_BRIGADE_LAST(bb);
 
@@ -1455,9 +1470,10 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         apr_status_t rv;
         if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
-                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
-                                                      && (rv != APR_INCOMPLETE))
+                                APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                && (rv != APR_INCOMPLETE)) {
                 rnew->finfo.filetype = 0;
+            }
         }
         else {
             if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
@@ -1468,7 +1484,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         }
     }
     else {
-        memcpy (&rnew->finfo, dirent, sizeof(apr_finfo_t));
+        memcpy(&rnew->finfo, dirent, sizeof(apr_finfo_t));
     }
 
     if (rnew->finfo.filetype == APR_LNK) {
@@ -1476,7 +1492,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
          * Resolve this symlink.  We should tie this back to dir_walk's cache
          */
         if ((res = resolve_symlink(rnew->filename, &rnew->finfo, 
-                              ap_allow_options(rnew), rnew->pool)) != OK) {
+                                   ap_allow_options(rnew), rnew->pool))
+            != OK) {
             rnew->status = res;
             return rnew;
         }
@@ -1503,8 +1520,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
 }
 
 AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
-                                              const request_rec *r,
-                                              ap_filter_t *next_filter)
+                                                 const request_rec *r,
+                                                 ap_filter_t *next_filter)
 {
     request_rec *rnew;
     int res;
@@ -1543,26 +1560,28 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
      */
 
     if (strncmp(rnew->filename, fdir, fdirlen) == 0
-           && rnew->filename[fdirlen] 
-           && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL)
-    {
+        && rnew->filename[fdirlen] 
+        && ap_strchr_c(rnew->filename + fdirlen, '/') == NULL) {
         apr_status_t rv;
         if (ap_allow_options(rnew) & OPT_SYM_LINKS) {
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
-                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
-                                                      && (rv != APR_INCOMPLETE))
+                                APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
+                && (rv != APR_INCOMPLETE)) {
                 rnew->finfo.filetype = 0;
+            }
         }
         else {
             if (((rv = apr_lstat(&rnew->finfo, rnew->filename,
                                  APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
-                                                      && (rv != APR_INCOMPLETE))
+                && (rv != APR_INCOMPLETE)) {
                 rnew->finfo.filetype = 0;
+            }
         }
 
         if (r->uri && *r->uri) {
             char *udir = ap_make_dirstr_parent(rnew->pool, r->uri);
-            rnew->uri = ap_make_full_path(rnew->pool, udir, rnew->filename + fdirlen);
+            rnew->uri = ap_make_full_path(rnew->pool, udir,
+                                          rnew->filename + fdirlen);
             ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
         }
         else {
