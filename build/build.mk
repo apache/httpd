@@ -61,9 +61,15 @@
 STAMP = buildmk.stamp
 
 all: $(STAMP) generated_lists
-	@if [ ! -d srclib/apr ]; then \
+	@if [ ! -d srclib/apr -o ! -f srclib/apr/apr_common.m4 ]; then \
 	    echo "APR not found."; \
 	    echo "Please check-out a working version of APR, the anonymous"; \
+	    echo "CVS root is :pserver:anoncvs@www.apache.org:/home/cvspublic"; \
+	    exit 1; \
+	fi
+	@if [ ! -d srclib/apr-util -o ! -f srclib/apr-util/Makefile.in ]; then \
+	    echo "APR-util not found."; \
+	    echo "Please check-out a working version of APR-util, the anonymous"; \
 	    echo "CVS root is :pserver:anoncvs@www.apache.org:/home/cvspublic"; \
 	    exit 1; \
 	fi
