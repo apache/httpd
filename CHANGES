@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a link failure in mod_ssl when the OpenSSL libraries contain
+     the ENGINE functions but the engine header files are missing.
+     [Cliff Woolley]
+
   *) Fix bug in mod_deflate, which was passing calling deflate()
      without checkinig first whether it has something to deflate. (currently 
      this causes deflate to generate a fatal error according to the zlib spec).
