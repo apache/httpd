@@ -1,7 +1,7 @@
 
 SUBDIRS = srclib modules os server support
 
-PROGRAM_NAME         = $(progname)
+PROGRAM_NAME         = $(progname) 
 PROGRAM_SOURCES      = modules.c
 PROGRAM_LDADD        = $(EXTRA_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS)
 PROGRAM_DEPENDENCIES = \
@@ -15,7 +15,7 @@ PROGRAMS        = $(PROGRAM_NAME)
 targets         = $(PROGRAMS) 
 phony_targets   = $(srcdir)/buildmark.c
 install_targets = install-conf install-htdocs install-icons install-other \
-	install-cgi install-include install-support
+	install-cgi install-include install-support install-suexec
 DISTCLEANFILES  = include/config_auto.h modules.c aclocal.m4 buildmk.stamp \
 	configure generated_lists include/ap_config_auto.h \
 	include/ap_config_auto.h.in include/ap_config_path.h install-sh
@@ -108,3 +108,12 @@ install-include:
 	@cp -p $(srcdir)/srclib/apr/include/*.h $(includedir)
 	@cp -p $(srcdir)/srclib/apr-util/include/*.h $(includedir)
 	@chmod 644 $(includedir)/*.h
+
+install-suexec:
+	@if test -f $(builddir)/support/suexec; then \
+	    $(MKINSTALLDIRS) -p $(bindir)/sbin; \
+	    cp -p $(srcdir)/support/suexec $(bindir)/sbin; \
+	fi
+
+suexec:
+	cd support && make suexec
