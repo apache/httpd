@@ -1251,7 +1251,8 @@ API_EXPORT(char *) ap_escape_html(pool *p, const char *s)
 	    j += 4;
 
     if (j == 0)
-	return ap_pstrdup(p, s);
+	return ap_pstrndup(p, s, i);
+
     x = ap_palloc(p, i + j + 1);
     for (i = 0, j = 0; s[i] != '\0'; i++, j++)
 	if (s[i] == '<') {
