@@ -200,9 +200,15 @@ static ap_inline void debug_verify_filled(const char *ptr,
 
 static union block_hdr *malloc_block(int size)
 {
-    union block_hdr *blok =
-	(union block_hdr *) malloc(size + sizeof(union block_hdr));
+    union block_hdr *blok;
 
+#ifdef ALLOC_DEBUG
+    /* make some room at the end which we'll fill and expect to be
+     * always filled
+     */
+    size += CLICK_SZ;
+#endif
+    blok = (union block_hdr *) malloc(size + sizeof(union block_hdr));
     if (blok == NULL) {
 	fprintf(stderr, "Ouch!  malloc failed in malloc_block()\n");
 	exit(1);
@@ -211,6 +217,9 @@ static union block_hdr *malloc_block(int size)
     blok->h.next = NULL;
     blok->h.first_avail = (char *) (blok + 1);
     blok->h.endp = size + blok->h.first_avail;
+#ifdef ALLOC_DEBUG
+    blok->h.endp -= CLICK_SZ;
+#endif
 #ifdef POOL_DEBUG
     blok->h.global_next = global_block_list;
     global_block_list = blok;
@@ -225,6 +234,8 @@ static union block_hdr *malloc_block(int size)
 #if defined(ALLOC_DEBUG) && !defined(ALLOC_USE_MALLOC)
 static void chk_on_blk_list(union block_hdr *blok, union block_hdr *free_blk)
 {
+    debug_verify_filled(blok->h.endp, blok->h.endp + CLICK_SZ,
+	"Ouch!  Someone trounced the padding at the end of a block!\n");
     while (free_blk) {
 	if (free_blk == blok) {
 	    fprintf(stderr, "Ouch!  Freeing free block\n");
@@ -326,8 +337,6 @@ static union block_hdr *new_block(int min_size)
 
     min_size += BLOCK_MINFREE;
     blok = malloc_block((min_size > BLOCK_MINALLOC) ? min_size : BLOCK_MINALLOC);
-    debug_verify_filled(blok->h.first_avail, blok->h.endp,
-	"Ouch!  Someone trounced a block on the free list!\n");
     return blok;
 }
 
