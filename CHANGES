@@ -1,7 +1,7 @@
 Changes with Apache 2.0.51
-  *) Backport all mod_cache, mod_mem_cache, mod_disk_cache and
-     related cache utilities from the Apache 2.1 branch.
-     [Bill Stoddard]
+
+  *) mod_disk_cache: Implement binary format for on-disk header files.
+     [Brian Akins <bakins web.turner.com>, Justin Erenkrantz]
 
   *) mod_autoindex: Don't truncate the directory listing if a stat()
      call fails (for instance on a >2Gb file).  PR 17357.
