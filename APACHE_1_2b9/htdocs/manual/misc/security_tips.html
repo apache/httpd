@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache HTTP Server: Security Tips</TITLE>
+</HEAD>
+
+<BODY>
+<!--#include virtual="header.html" -->
+<H1>Security Tips for Server Configuration</H1>
+
+<hr>
+
+<P>Some hints and tips on security issues in setting up a web server. Some of
+the suggestions will be general, others specific to Apache.
+
+<HR>
+
+<H2>Permissions on Log File Directories</H2>
+<P>When Apache starts, it opens the log files as the user who started the
+server before switching to the user defined in the 
+<a href="../mod/core.html#user"><b>User</b></a> directive.  Anyone who
+has write permission for the directory where any log files are
+being written to can append pseudo-arbitrary data to any file on the
+system which is writable by the user who starts Apache.  Since the
+server is normally started by root, you should <EM>NOT</EM> give anyone
+write permission to the directory where logs are stored unless you
+want them to have root access. 
+<P>
+<HR>
+<H2>Server Side Includes</H2>
+<P>Server side includes (SSI) can be configured so that users can execute
+arbitrary programs on the server. That thought alone should send a shiver
+down the spine of any sys-admin.<p>
+
+One solution is to disable that part of SSI. To do that you use the
+IncludesNOEXEC option to the <A HREF="../mod/core.html#options">Options</A>
+directive.<p>
+
+<HR>
+
+<H2>Non Script Aliased CGI</H2>
+<P>Allowing users to execute <B>CGI</B> scripts in any directory should only
+be considered if;
+<OL>
+ <LI>You trust your users not to write scripts which will deliberately or
+accidentally expose your system to an attack.
+ <LI>You consider security at your site to be so feeble in other areas, as to
+make one more potential hole irrelevant.
+ <LI>You have no users, and nobody ever visits your server.
+</OL><p>
+<HR>
+
+<H2>Script Alias'ed CGI</H2>
+<P>Limiting <B>CGI</B> to special directories gives the admin control over
+what goes into those directories. This is inevitably more secure than
+non script aliased CGI, but <strong>only if users with write access to the
+directories are trusted</strong> or the admin is willing to test each new CGI
+script/program for potential security holes.<P>
+
+Most sites choose this option over the non script aliased CGI approach.<p>
+
+<HR>
+<H2>CGI in general</H2>
+<P>Always remember that you must trust the writers of the CGI script/programs
+or your ability to spot potential security holes in CGI, whether they were
+deliberate or accidental.<p>
+
+All the CGI scripts will run as the same user, so they have potential to
+conflict (accidentally or deliberately) with other scripts e.g.
+User A hates User B, so he writes a script to trash User B's CGI
+database.  One program which can be used to allow scripts to run
+as different users is <A HREF="../suexec.html">suEXEC</A> which is
+included with Apache as of 1.2 and is called from special hooks in
+the Apache server code.  Another popular way of doing this is with
+<A HREF="http://wwwcgi.umr.edu/~cgiwrap/">CGIWrap</A>.  <P>
+
+<HR>
+
+
+<H2>Stopping users overriding system wide settings...</H2>
+<P>To run a really tight ship, you'll want to stop users from setting
+up <CODE>.htaccess</CODE> files which can override security features
+you've configured. Here's one way to do it...<p>
+
+In the server configuration file, put
+<blockquote><code>
+&lt;Directory /&gt; <br>
+AllowOverride None <br>
+Options None <br>
+allow from all <br>
+&lt;/Directory&gt; <br>
+</code></blockquote>
+
+Then setup for specific directories<P>
+
+This stops all overrides, Includes and accesses in all directories apart
+from those named.<p>
+<HR>
+<H2>
+ Protect server files by default
+</H2>
+<P>
+One aspect of Apache which is occasionally misunderstood is the feature
+of default access.  That is, unless you take steps to change it, if the
+server can find its way to a file through normal URL mapping rules, it
+can serve it to clients.
+</P>
+<P>
+For instance, consider the following example:
+</P>
+<OL>
+ <LI><SAMP># cd /; ln -s / public_html</SAMP>
+ </LI>
+ <LI>Accessing <SAMP>http://localhost/~root/</SAMP>
+ </LI>
+</OL>
+<P>
+This would allow clients to walk through the entire filesystem.  To work
+around this, add the following block to your server's configuration:
+</P>
+<PRE>
+ &lt;Directory /&gt;
+     Order deny,allow
+     Deny from all
+ &lt;/Directory&gt;
+</PRE>
+<P>
+This will forbid default access to filesystem locations.  Add
+appropriate
+<A
+ HREF="../mod/core.html#directory"
+><SAMP>&lt;Directory&gt;</SAMP></A>
+blocks to allow access only
+in those areas you wish.  For example,
+</P>
+<PRE>
+ &lt;Directory /usr/users/*/public_html&gt;
+     Order deny,allow
+     Allow from all
+ &lt;/Directory&gt;
+ &lt;Directory /usr/local/httpd&gt;
+     Order deny,allow
+     Allow from all
+ &lt;/Directory&gt;
+</PRE>
+<P>
+Pay particular attention to the interactions of
+<A
+ HREF="../mod/core.html#location"
+><SAMP>&lt;Location&gt;</SAMP></A>
+and
+<A
+ HREF="../mod/core.html#directory"
+><SAMP>&lt;Directory&gt;</SAMP></A>
+directives; for instance, even if <SAMP>&lt;Directory /&gt;</SAMP>
+denies access, a <SAMP>&lt;Location /&gt;</SAMP> directive might
+overturn it.
+</P>
+<P>
+Also be wary of playing games with the
+<A
+ HREF="../mod/mod_userdir.html#userdir"
+>UserDir</A>
+directive; setting it to something like <SAMP>&quot;./&quot;</SAMP>
+would have the same effect, for root, as the first example above.
+</P>
+
+<HR>
+<P>Please send any other useful security tips to The Apache Group
+by filling out a
+<A HREF="http://www.apache.org/bugdb.cgi">problem report</A>, or by
+sending mail to
+<A HREF="mailto:apache-bugs@mail.apache.org">apache-bugs@mail.apache.org</A>
+<p>
+<HR>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
