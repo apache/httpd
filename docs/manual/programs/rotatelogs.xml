@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.8 $ -->
+<!-- $Revision: 1.9 $ -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -57,7 +57,9 @@
 
 <section id="synopsis"><title>Synopsis</title>
 
-     <p><code><strong>rotatelogs</strong> <var>logfile</var>
+     <p><code><strong>rotatelogs</strong>
+     [ -<strong>l</strong> ]
+       <var>logfile</var>
      [ <var>rotationtime</var> [ <var>offset</var> ]] |
      [ <var>filesize</var>M ]</code></p>
 </section>
@@ -65,6 +67,11 @@
 <section id="options"><title>Options</title>
 
 <dl>
+
+<dt><code>-l</code></dt>
+<dd>causes the use of local time rather than GMT as the base for the
+interval. Note that using <code>-l</code> in an environment which changes the
+GMT offset (such as for BST or DST) can lead to unpredictable results!</dd>
 
 <dt><code><var>logfile</var></code></dt>
 
