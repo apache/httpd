@@ -816,11 +816,16 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        /* XXX Check for overflow */
-        if (len ) {
-            memcpy(cur, s, len);
-            cur+=len;
-            obj->count+=len;
+        if (len) {
+            /* Check for buffer overflow */
+           if ((obj->count + len) > mobj->m_len) {
+               return APR_ENOMEM;
+           }
+           else {
+               memcpy(cur, s, len);
+               cur+=len;
+               obj->count+=len;
+           }
         }
         /* This should not happen, but if it does, we are in BIG trouble
          * cause we just stomped all over the heap.
