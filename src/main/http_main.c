@@ -333,7 +333,9 @@ struct other_child_rec {
 static other_child_rec *other_children;
 #endif
 
+static pool *pglobal;		/* Global pool */
 static pool *pconf;		/* Pool for config stuff */
+static pool *plog;		/* Pool for error-logging files */
 static pool *ptrans;		/* Pool for per-transaction stuff */
 static pool *pchild;		/* Pool for httpd child stuff */
 static pool *pcommands;	/* Pool for -C and -c switches */
@@ -2104,7 +2106,7 @@ static void clean_parent_exit(int code) __attribute__((noreturn));
 static void clean_parent_exit(int code)
 {
     /* Clear the pool - including any registered cleanups */
-    ap_destroy_pool(pconf);
+    ap_destroy_pool(pglobal);
     exit(code);
 }
 
@@ -3579,7 +3581,9 @@ static void common_init(void)
     AMCSocketInitialize();
 #endif /* WIN32 */
 
-    pconf = ap_init_alloc();
+    pglobal = ap_init_alloc();
+    pconf = ap_make_sub_pool(pglobal);
+    plog = ap_make_sub_pool(pglobal);
     ptrans = ap_make_sub_pool(pconf);
 
     ap_util_init();
@@ -4415,7 +4419,8 @@ static void standalone_main(int argc, char **argv)
 
 	server_conf = ap_read_config(pconf, ptrans, ap_server_confname);
 	setup_listeners(pconf);
-	ap_open_logs(server_conf, pconf);
+	ap_clear_pool(plog);
+	ap_open_logs(server_conf, plog);
 	ap_log_pid(pconf, ap_pid_fname);
 	ap_set_version();	/* create our server_version string */
 	ap_init_modules(pconf, server_conf);
@@ -4762,7 +4767,7 @@ int REALMAIN(int argc, char *argv[])
 
 #ifndef TPF
     if (ap_standalone) {
-	ap_open_logs(server_conf, pconf);
+	ap_open_logs(server_conf, plog);
 	ap_set_version();
 	ap_init_modules(pconf, server_conf);
 	version_locked++;
@@ -4805,7 +4810,7 @@ int REALMAIN(int argc, char *argv[])
 	/* Yes this is called twice. */
 	ap_init_modules(pconf, server_conf);
 	version_locked++;
-	ap_open_logs(server_conf, pconf);
+	ap_open_logs(server_conf, plog);
 	ap_init_modules(pconf, server_conf);
 	set_group_privs();
 
@@ -5855,7 +5860,8 @@ int master_main(int argc, char **argv)
 	pparent = ap_make_sub_pool(pconf);
 
 	server_conf = ap_read_config(pconf, pparent, ap_server_confname);
-	ap_open_logs(server_conf, pconf);
+	ap_clear_pool(plog);
+	ap_open_logs(server_conf, plog);
 	ap_set_version();
 	ap_init_modules(pconf, server_conf);
 	version_locked++;
@@ -6093,7 +6099,7 @@ void post_parse_init()
     ap_init_modules(pconf, server_conf);
     ap_suexec_enabled = init_suexec();
     version_locked++;
-    ap_open_logs(server_conf, pconf);
+    ap_open_logs(server_conf, plog);
     set_group_privs();
 }
 

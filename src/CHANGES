@@ -1,5 +1,9 @@
 Changes with Apache 1.3.7
 
+  *) Piped error logs could cause a segfault if an error occured
+     during configuration after a restart.
+     [Aidan Cully <aidan@panix.com>] PR#4456
+
   *) If a "Location" field was stored in r->err_headers_out rather
      than r->headers_out, redirect processing wouldn't find it and
      the server would core dump on ap_escape_html(NULL).
