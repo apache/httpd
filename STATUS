@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/13 20:01:00 $]
+Last modified at [$Date: 2002/01/14 01:30:42 $]
 
 Release:
 
@@ -100,7 +100,7 @@ RELEASE SHOWSTOPPERS:
       Status: Ian says.. auth_dbm can now handle multiple DBM types,
               is this still an issue?
       Vote: Remove mod_auth_db
-            +1: Justin, Ian
+            +1: Justin, Ian, Lars
 
     * Convert all instances of the old apr_lock_t type to the new
       types (once they are fully supported in APR).
@@ -336,7 +336,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         for predictable mod_auth_db/dbm administration.
         Status: Mladen Turk has posted several patches and ideas.
                 Key question, part of htpasswd, or a seperate utility?
-                prefer htpasswd:
+                prefer htpasswd: Lars
                 prefer seperate: OtherBill
 
     * use apu_dbm in mod_auth_dbm
@@ -407,7 +407,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Jeff, Ian
-      -0:   Aaron (premature decision, needs more discussion)
+      -0:   Aaron (premature decision, needs more discussion), Lars
       -0:   Cliff (I think the default config should be the safest possible)
 
     * Fix the worker MPM to use POD to kill child processes instead
