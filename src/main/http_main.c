@@ -2176,6 +2176,9 @@ void child_main(int child_num_arg)
     child_num = child_num_arg;
     requests_this_child = 0;
 
+    /* needs to be done before we switch UIDs so we have permissions */
+    reopen_scoreboard(pconf);
+
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */
     if (geteuid() == 1 && user_id > 1) {
@@ -2196,7 +2199,6 @@ void child_main(int child_num_arg)
 
     child_init_modules(pconf, server_conf);
 
-    reopen_scoreboard(pconf);
     (void)update_child_status(child_num, SERVER_READY, (request_rec*)NULL);
 
     /*
