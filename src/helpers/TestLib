@@ -1,0 +1,40 @@
+#!/bin/sh
+trap 'rm -rf Makefile a.out; exit' 0 1 2 3 15
+#
+# Yet another Apache Configure helper script.
+# This one exists simply to test for the existance of
+# a library. It does so by using ../Makefile.config to get
+# things like the C-compiler, etc, and then trying to
+# compile a dummy program and linking it with that
+# library. If the linking succeeds, then we assume that
+# library exists and we print out "yes" otherwise we
+# print out "no"
+#
+
+#
+# Get makefile settings and build a basic Makefile
+#
+rm -rf a.out
+cat ../Makefile.config > Makefile
+cat <<EOF >> Makefile
+TLIB=-$1
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(EXTRA_INCLUDES)
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
+
+all:
+EOF
+cat <<\EOFF >> Makefile
+	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) dummy.c $(TLIB) 
+EOFF
+
+# Now run that Makefile
+`make > /dev/null 2<&1`
+
+# And see if a.out exists
+if [ -f a.out ]; then
+    echo "yes"
+else
+    echo "no"
+fi
