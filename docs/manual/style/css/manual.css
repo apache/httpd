@@ -730,10 +730,14 @@ div#page-content {
 }
 
 /* unsqueeze on some pages... */
+body.no-sidebar div#page-content,
 body#index-page div#page-content {
-    margin-left: 30px;
     margin-right: 0;
     padding-right: 0;
+}
+
+body#index-page div#page-content {
+    margin-left: 30px;
     padding-bottom: 1em;
 }
 
