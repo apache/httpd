@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.15 -->
+<!-- English revision: 1.19 -->
 <modulesynopsis metafile="mod_autoindex.xml.meta">
 <name>mod_autoindex</name>
 
@@ -282,10 +282,7 @@
     <var>file</var> は説明するファイルのファイル拡張子、
     ファイル名の一部、ワイルドカード表現、完全なファイル名の
     どれかになります。
-    <var>string</var> は二重引用符 (<code>"</code>) で囲まれます。
-    この文字列は、クライアントが画像を表示できない場合や
-    画像のロードを無効にしている場合や
-    アイコンの取得に失敗したときに表示されます。</p>
+    <var>string</var> は二重引用符 (<code>"</code>) で囲まれます。</p>
 
     <example><title>例</title>
       AddDescription "The planet Mars" /web/pics/mars.gif
@@ -378,7 +375,7 @@
     <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
     において、ファイルの隣に表示するアイコンを設定します。
     <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
-    か、他の書式 (<var>alttext</var>, <var>url</var>) です。
+    か、他の書式 <code>(<var>alttext</var>, <var>url</var>)</code> です。
     ここで <var>alttext</var>
     は、非グラフィカルブラウザ向けにアイコンに付けられたテキストタグです。
     </p>
@@ -501,7 +498,7 @@ MIME タイプによって選択</description>
       <p><directive module="core">Options</directive> <code>MultiViews</code> が
       有効になっている場合は、
       <a href="../content-negotiation.html">コンテントネゴシエーション</a>
-      が行われます。
+      が行なわれます。
       もし <var>filename</var> が (CGI スクリプトでない) 静的な 
       <code>text/html</code> ドキュメントで解決され、
       <directive module="core">options</directive>
@@ -512,7 +509,7 @@ MIME タイプによって選択</description>
     </note>
 
     <p>もし <directive>HeaderName</directive> で指定されたファイルが
-    HTML ドキュメントの開始部分 (&lt;HTML&gt;, &lt;HEAD&gt;, 
+    HTML ドキュメントの開始部分 (&lt;html&gt;, &lt;head&gt;, 
     等) を含んでいたら、
     <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>
@@ -598,7 +595,7 @@ MIME タイプによって選択</description>
       その後に続きます。
       一覧は基本的には、ファイルとディレクトリの二つの部分に分けられて、
       それぞれは別々にソートされ、その後サブディレクトリを先にして
-      表示が行われます。例えばソート順が名前の降順になっていて、
+      表示が行なわれます。例えばソート順が名前の降順になっていて、
       <code>FoldersFirst</code> が有効になっている場合は、
       サブディレクトリ <code>Zed</code> はサブディレクトリ
       <code>Beta</code> よりも前にリストされ、通常のファイル
@@ -642,7 +639,7 @@ MIME タイプによって選択</description>
                id="indexoptions.iconwidth">IconWidth[=<var
 	       >pixels</var>]</a></dt>
 
-      <dd>このオプションが、IconHeightとともに使われている場合は、
+      <dd>このオプションが、<code>IconHeight</code> とともに使われている場合は、
       サーバはファイルアイコンのための <code>img</code>
       タグに <code>height</code> と <code>width</code>
       属性を取り込むようになります。
@@ -831,6 +828,13 @@ MIME タイプによって選択</description>
         foo-1.04
       </example>
       </dd>
+
+      <dt><a name="indexoptions.xhtml"
+               id="indexoptions.xhtml">XHTML</a>
+      (<em>Apache 2.1.0 以降</em>)</dt>
+
+      <dd><code>XHTML</code> キーワードを指定すると、<module>mod_autoindex</module>
+      はHTML 3.2 の代わりに XHTML 1.0 のコードを出力するようになります。</dd>
     </dl>
 
    <!--
@@ -936,6 +940,26 @@ Name|Date|Size|Description</syntax>
     ディレクトリ一覧をある特定の順番でのみ表示するようにできます。
     これは、
     クライアントが別の順番でディレクトリ一覧をリクエストすることを防ぎます。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexStyleSheet</name>
+<description>ディレクトリインデックスに CSS スタイルシートを追加する</description>
+<syntax>IndexStyleSheet <var>url-path</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>IndexStyleSheet</directive> ディレクティブは
+    インデックス表示に使用される CSS のファイル名を設定します。
+    </p>
+    <example>
+      <title>例</title>
+      IndexStyleSheet "/css/style.css"
+    </example>
 </usage>
 </directivesynopsis>
 
