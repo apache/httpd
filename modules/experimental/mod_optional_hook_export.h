@@ -52,32 +52,11 @@
  * <http://www.apache.org/>.
  */
 
-#include "httpd.h"
-#include "http_config.h"
-#include "http_log.h"
-#include "mod_generic_hook_export.h"
+#ifndef MOD_GENERIC_HOOK_EXPORT_H
+#define MOD_GENERIC_HOOK_EXPORT_H
 
-static int ImportGenericHookTestHook(const char *szStr)
-{
-    ap_log_error(APLOG_MARK,APLOG_ERR,OK,NULL,"Generic hook test said: %s",
-		 szStr);
+#include "apr_optional_hooks.h"
 
-    return OK;
-}
+APR_DECLARE_EXTERNAL_HOOK(ap,AP_MODULE,int,generic_hook_test,(const char *))
 
-static void ImportRegisterHooks(apr_pool_t *p)
-{
-    APR_HOOK_GENERIC(ap,generic_hook_test,ImportGenericHookTestHook,NULL,NULL,
-		    APR_HOOK_MIDDLE);
-}
-
-module generic_hook_import_module=
-{
-    STANDARD20_MODULE_STUFF,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    ImportRegisterHooks
-};
+#endif /* def MOD_GENERIC_HOOK_EXPORT_H */

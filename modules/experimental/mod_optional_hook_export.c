@@ -54,11 +54,12 @@
 
 #include "httpd.h"
 #include "http_config.h"
-#include "mod_generic_hook_export.h"
+#include "mod_optional_hook_export.h"
 #include "http_protocol.h"
 
-APR_IMPLEMENT_GENERIC_HOOK_RUN_ALL(ap,AP_MODULE,int,generic_hook_test,(const char *szStr),
-				   (szStr),OK,DECLINED)
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap,AP_MODULE,int,generic_hook_test,
+				    (const char *szStr),
+				    (szStr),OK,DECLINED)
 
 static int ExportLogTransaction(request_rec *r)
 {
@@ -70,7 +71,7 @@ static void ExportRegisterHooks(apr_pool_t *p)
     ap_hook_log_transaction(ExportLogTransaction,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module generic_hook_export_module =
+module optional_hook_export_module =
 {
     STANDARD20_MODULE_STUFF,
     NULL,
