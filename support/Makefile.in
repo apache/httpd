@@ -1,9 +1,4 @@
 
-DEPTH     = ..
-top_srcdir = @top_srcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
-
 PROGRAMS = htpasswd htdigest rotatelogs logresolve ab
 targets  = $(PROGRAMS)
 
@@ -12,7 +7,6 @@ PROGRAM_DEPENDENCIES = ../lib/apr/$(LIBPRE)apr.a \
 	../ap/libap.la
 
 include $(top_srcdir)/build/rules.mk
-include $(top_srcdir)/build/program.mk
 
 htpasswd_OBJECTS = htpasswd.lo
 htpasswd: $(htpasswd_OBJECTS)

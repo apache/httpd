@@ -58,15 +58,3 @@ LTLIBRARY_OBJECTS = $(LTLIBRARY_SOURCES:.c=.lo)
 
 $(LTLIBRARY_NAME): $(LTLIBRARY_OBJECTS) $(LTLIBRARY_DEPENDENCIES)
 	$(LINK) $(LTLIBRARY_LDFLAGS) $(LTLIBRARY_OBJECTS) $(LTLIBRARY_LIBADD)
-
-$(LTLIBRARY_SHARED_NAME): $(LTLIBRARY_OBJECTS) $(LTLIBRARY_DEPENDENCIES)
-	@test -d $(phplibdir) || $(mkinstalldirs) $(phplibdir)
-	$(LINK) -avoid-version -module -rpath $(phplibdir) $(LTLIBRARY_LDFLAGS) $(LTLIBRARY_OBJECTS) $(LTLIBRARY_SHARED_LIBADD)
-	$(SHLIBTOOL) --mode=install install $@ $(phplibdir)
-
-shared:
-	@if test '$(SHLIBTOOL)' != '$(LIBTOOL)'; then \
-		$(MAKE) 'LIBTOOL=$(SHLIBTOOL)' $(LTLIBRARY_SHARED_NAME); \
-	else \
-		$(MAKE) $(LTLIBRARY_SHARED_NAME); \
-	fi;

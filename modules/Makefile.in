@@ -1,9 +1,4 @@
 
-DEPTH     = ..
-top_srcdir = @top_srcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
-
 SUBDIRS = mpm $(MODULE_DIRS)
 
 include $(top_srcdir)/build/rules.mk

@@ -1,9 +1,4 @@
 
-DEPTH     = .
-top_srcdir = @top_srcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
-
 SUBDIRS = ap lib main modules os support $(REGEX_DIR)
 
 PROGRAM_NAME         = $(progname)
