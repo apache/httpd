@@ -1053,6 +1053,34 @@ void basic_http_header (request_rec *r)
     table_unset(r->headers_out, "Server");
 }
 
+/* Navigator versions 2.x, 3.x and 4.0 betas up to and including 4.0b2
+ * have a header parsing bug.  If the terminating \r\n occur starting
+ * at the 256th or 257th byte of output then it will not properly parse
+ * the headers.  Curiously it doesn't exhibit this problem at 512, 513.
+ * We are guessing that this is because their initial read of a new request
+ * uses a 256 byte buffer, and subsequent reads use a larger buffer.
+ * So the problem might exist at different offsets as well.
+ *
+ * This should also work on keepalive connections assuming they use the
+ * same small buffer for the first read of each new request.
+ *
+ * At any rate, we check the bytes written so far and, if we are about to
+ * tickle the bug, we instead insert a bogus padding header.  Since the bug
+ * manifests as a broken image in Navigator, users blame the server.  :(
+ * It is more expensive to check the User-Agent than it is to just add the
+ * bytes, so we haven't used the BrowserMatch feature here.
+ */
+static void terminate_header (BUFF *client)
+{
+    long int bs;
+
+    bgetopt(client, BO_BYTECT, &bs);
+    if (bs == 256 || bs == 257)
+        bputs("X-Pad: avoid browser bug\015\012", client);
+
+    bputs("\015\012", client);    /* Send the terminating empty line */
+}
+
 static char *make_allow(request_rec *r)
 {
     int allowed = r->allowed;
@@ -1114,7 +1142,8 @@ int send_http_options(request_rec *r)
 
     table_do((int (*)(void *, const char *, const char *))send_header_field,
              (void *)r, r->headers_out, NULL);
-    bputs("\015\012", r->connection->client);
+
+    terminate_header(r->connection->client);
 
     kill_timeout(r);
     bsetopt(r->connection->client, BO_BYTECT, &zero);
@@ -1207,7 +1236,8 @@ void send_http_header(request_rec *r)
 
     table_do((int (*)(void *, const char *, const char *))send_header_field,
              (void *)r, r->headers_out, NULL);
-    bputs("\015\012", r->connection->client);
+
+    terminate_header(r->connection->client);
 
     kill_timeout(r);
 
@@ -1630,7 +1660,8 @@ void send_error_response (request_rec *r, int recursive_error)
 	             "Warning",
 	             "WWW-Authenticate",
 	             NULL);
-	    bputs("\015\012", fd);
+
+	    terminate_header(r->connection->client);
 
 	    kill_timeout(r);
 	    return;
