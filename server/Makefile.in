@@ -66,3 +66,4 @@ ApacheCoreOS2.def: exports.c $(top_srcdir)/os/$(OS_DIR)/core_header.def
 httpd.exp: exports.c
 	echo "#! ." > $@
 	$(CPP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) exports.c | grep "ap_hack_" | sed -e 's/^.*[)]\(.*\);$$/\1/' >> $@
+	$(AWK) -f $(top_srcdir)/build/make_var_export.awk $(top_srcdir)/include/*.h $(top_srcdir)/os/$(OS_DIR)/*.h $(top_srcdir)/srclib/apr/include/*.h $(top_srcdir)/srclib/apr-util/include/*.h | $(CPP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) - | sed -e 's/^\# .*//' | sed -e '/^$$/d' >> $@
