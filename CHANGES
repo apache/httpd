@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a problem that caused httpd to linked with incorrect flags
+     on some platforms when mod_so was enabled by default, breaking 
+     DSOs on AIX.  PR 19012  [Jeff Trawick]
+
   *) Enable ap_sock_disable_nagle for Windows. This along with the  
      addition of  APR_TCP_NODELAY_INHERITED to apr.hw will cause Nagle 
      to be disabled for Windows.
