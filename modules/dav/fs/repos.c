@@ -427,7 +427,7 @@ static dav_error * dav_fs_copymove_state(
     src = apr_pstrcat(p, src_dir, "/" DAV_FS_STATE_DIR "/", src_file, NULL);
 
     /* the source file doesn't exist */
-    if (apr_stat(&src_finfo, src, p) != 0) {
+    if (apr_stat(&src_finfo, src, APR_FINFO_NORM, p) != APR_SUCCESS) {
 	return NULL;
     }
 
@@ -447,7 +447,7 @@ static dav_error * dav_fs_copymove_state(
     }
 
     /* get info about the state directory */
-    if (apr_stat(&dst_state_finfo, dst, p) != 0) {
+    if (apr_stat(&dst_state_finfo, dst, APR_FINFO_NORM, p) != APR_SUCCESS) {
 	/* Ack! Where'd it go? */
 	/* ### use something besides 500? */
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -735,7 +735,8 @@ static dav_resource * dav_fs_get_parent_resource(const dav_resource *resource)
 	parent_resource->uri = uri;
     }
 
-    if (apr_stat(&parent_ctx->finfo, parent_ctx->pathname, ctx->pool) == 0) {
+    if (apr_stat(&parent_ctx->finfo, parent_ctx->pathname, 
+                 APR_FINFO_NORM, ctx->pool) == APR_SUCCESS) {
         parent_resource->exists = 1;
     }
 
@@ -1138,7 +1139,7 @@ static dav_error * dav_fs_move_resource(
 	 * so try it
 	 */
 	dirpath = ap_make_dirstr_parent(dstinfo->pool, dstinfo->pathname);
-	if (apr_stat(&finfo, dirpath, dstinfo->pool) == 0
+	if (apr_stat(&finfo, dirpath, APR_FINFO_NORM, dstinfo->pool) == 0
 	    && finfo.device == srcinfo->finfo.device) {
 	    can_rename = 1;
 	}
@@ -1386,7 +1387,8 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 	/* append this file onto the path buffer (copy null term) */
 	dav_buffer_place_mem(pool, &fsctx->path1, name, len + 1, 0);
 
-	if (apr_lstat(&fsctx->info1.finfo, fsctx->path1.buf, pool) != 0) {
+        if (apr_lstat(&fsctx->info1.finfo, fsctx->path1.buf, 
+                      APR_FINFO_NORM, pool) != APR_SUCCESS) {
 	    /* woah! where'd it go? */
 	    /* ### should have a better error here */
 	    err = dav_new_error(pool, HTTP_NOT_FOUND, 0, NULL);

@@ -446,7 +446,7 @@ static dav_datum dav_fs_build_key(apr_pool_t *p, const dav_resource *resource)
     apr_finfo_t finfo;
 
     /* ### use lstat() ?? */
-    if (apr_stat(&finfo, file, p) == 0) {
+    if (apr_stat(&finfo, file, APR_FINFO_NORM, p) == APR_SUCCESS) {
 
 	/* ### can we use a buffer for this? */
 	key.dsize = 1 + sizeof(finfo.inode) + sizeof(finfo.device);
@@ -663,7 +663,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, dav_datum key,
 		    apr_finfo_t finfo;
 
 		    /* if we don't see the file, then it's a locknull */
-		    if (apr_lstat(&finfo, fname, p) != 0) {
+		    if (apr_lstat(&finfo, fname, APR_FINFO_NORM, p) != APR_SUCCESS) {
 			if ((err = dav_fs_remove_locknull_member(p, fname, &buf)) != NULL) {
                             /* ### push a higher-level description? */
                             return err;
@@ -833,7 +833,7 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
 	return NULL;
     }
 
-    if (apr_getfileinfo(&finfo, file) != APR_SUCCESS) {
+    if (apr_getfileinfo(&finfo, APR_FINFO_NORM, file) != APR_SUCCESS) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			    apr_psprintf(p,
 					"Opened but could not stat file %s",

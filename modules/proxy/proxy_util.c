@@ -1271,7 +1271,7 @@ int ap_proxy_cache_send(request_rec *r, ap_cache_el *c)
     len = 2;
     apr_send(fp, CRLF, &len);
     /* send data */
-    apr_getfileinfo(&finfo, cachefp);
+    apr_getfileinfo(&finfo, APR_FINFO_NORM, cachefp);
     if(!r->header_only && ap_send_fd(cachefp, r, offset, finfo.size, &len))
         return HTTP_INTERNAL_SERVER_ERROR;
     return OK;

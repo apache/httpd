@@ -157,39 +157,6 @@ static void *create_server_config(apr_pool_t *p, server_rec *s)
     return sconf;
 }
 
-#if APR_HAS_SENDFILE
-static apr_status_t open_file(apr_file_t **file, const char *filename, int flg1, int flg2, 
-                             apr_pool_t *p)
-{
-    apr_status_t rv;
-#ifdef WIN32
-    /* The Windows file needs to be opened for overlapped i/o, which APR doesn't
-     * support.
-     */
-    HANDLE hFile;
-    /* XXX: This is wrong for unicode FS ... and it doesn't belong in httpd */
-    hFile = CreateFile(filename,          /* pointer to name of the file */
-                       GENERIC_READ,      /* access (read-write) mode */
-                       FILE_SHARE_READ,   /* share mode */
-                       NULL,              /* pointer to security attributes */
-                       OPEN_EXISTING,     /* how to create */
-                       FILE_FLAG_OVERLAPPED | FILE_FLAG_SEQUENTIAL_SCAN, /* file attributes */
-                       NULL);            /* handle to file with attributes to copy */
-    if (hFile != INVALID_HANDLE_VALUE) {
-        rv = apr_put_os_file(file, &hFile, p);
-    }
-    else {
-        rv = GetLastError();
-        *file = NULL;
-    }
-#else
-    rv = apr_open(file, filename, flg1, flg2, p);
-#endif
-
-    return rv;
-}
-#endif /* APR_HAS_SENDFILE */
-
 static apr_status_t cleanup_file_cache(void *sconfv)
 {
     a_server_config *sconf = sconfv;
@@ -219,8 +186,8 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 {
     /* ToDo:
      * Disable the file cache on a Windows 9X box. APR_HAS_SENDFILE will be
-     * defined in an Apache for Windows build, but apr_sendfile is not
-     * implemened on Windows 9X because TransmitFile is not available.
+     * defined in an Apache for Windows build, but apr_sendfile returns
+     * APR_ENOTIMPL on Windows 9X because TransmitFile is not available.
      */
 
 #if APR_HAS_SENDFILE
@@ -232,7 +199,9 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 
     /* canonicalize the file name? */
     /* os_canonical... */
-    if ((rc = apr_stat(&tmp.finfo, filename, cmd->temp_pool)) != APR_SUCCESS) {
+    /* XXX: uh... yea, or expect them to be -very- accurate typists */
+    if ((rc = apr_stat(&tmp.finfo, filename, APR_FINFO_NORM, 
+                       cmd->temp_pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);
 	return NULL;
@@ -243,11 +212,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 	return NULL;
     }
 
-    /* Note: open_file should call apr_open for Unix and CreateFile for Windows.
-     * The Windows file needs to be opened for async I/O to allow multiple threads
-     * to serve it up at once.
-     */
-    rc = open_file(&fd, filename, APR_READ, APR_OS_DEFAULT, cmd->pool);
+    rc = apr_open(&fd, filename, APR_READ | APR_XTHREAD, APR_OS_DEFAULT, cmd->pool);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                      "mod_file_cache: unable to open(%s, O_RDONLY), skipping", filename);
@@ -285,7 +250,8 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     const char *fspec;
 
     fspec = ap_os_case_canonical_filename(cmd->pool, filename);
-    if ((rc = apr_stat(&tmp.finfo, fspec, cmd->temp_pool)) != APR_SUCCESS) {
+    if ((rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_NORM, 
+                       cmd->temp_pool)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);
 	return NULL;

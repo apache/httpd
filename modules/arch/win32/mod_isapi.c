@@ -1238,7 +1238,8 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
     char *fspec;
     
     fspec = ap_os_case_canonical_filename(cmd->pool, filename);
-    if (apr_stat(&tmp, fspec, cmd->temp_pool) != APR_SUCCESS) { 
+    if (apr_stat(&tmp, fspec, 
+                 APR_FINFO_NORM, cmd->temp_pool) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "ISAPI: unable to stat(%s), skipping", filename);
 	return NULL;

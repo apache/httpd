@@ -344,7 +344,8 @@ static int translate_userdir(request_rec *r)
          * used, for example, to run a CGI script for the user.
          */
         if (filename && (!*userdirs || 
-            apr_stat(&statbuf, filename, r->pool) == APR_SUCCESS)) {
+            apr_stat(&statbuf, filename, 
+                     APR_FINFO_NORM, r->pool) == APR_SUCCESS)) {
             r->filename = apr_pstrcat(r->pool, filename, dname, NULL);
 	    /* when statbuf contains info on r->filename we can save a syscall
 	     * by copying it to r->finfo
