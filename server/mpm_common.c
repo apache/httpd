@@ -75,6 +75,7 @@
 #include "apr_want.h"
 #include "apr_getopt.h"
 #include "apr_optional.h"
+#include "apr_allocator.h"
 
 #include "httpd.h"
 #include "http_config.h"
@@ -881,7 +882,7 @@ void ap_mpm_rewrite_args(process_rec *process)
 #endif /* AP_MPM_WANT_SIGNAL_SERVER */
 
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-apr_uint32_t ap_max_mem_free = 0;
+apr_uint32_t ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 
 const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
 	                            const char *arg)
