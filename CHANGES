@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Add -l option to rotatelogs to let it use local time rather than
+     UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
+
   *) Drop the ErrorHeader directive which turned out to be a misnomer.
      Instead there's a new optional flag for the Header directive
      ('always'), which keeps the former ErrorHeader functionality.

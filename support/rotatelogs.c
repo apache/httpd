@@ -128,12 +128,7 @@ int main (int argc, const char * const argv[])
         }
     }
     else {
-        if (use_localtime) {
-            apr_time_exp_t lt;
-            apr_time_exp_lt(&lt, apr_time_now());
-            utc_offset = lt.tm_gmtoff;
-        }
-        else if (argc >= (argBase + 4)) {
+        if (argc >= (argBase + 4)) {
             utc_offset = atoi(argv[argOffset]) * 60;
         }
         tRotation = atoi(argv[argIntv]);
@@ -155,6 +150,16 @@ int main (int argc, const char * const argv[])
             exit(3);
         }
         if (tRotation) {
+            /*
+             * Check for our UTC offset every time through the loop, since
+             * it might change if there's a switch between standard and
+             * daylight savings time.
+             */
+            if (use_localtime) {
+                apr_time_exp_t lt;
+                apr_time_exp_lt(&lt, apr_time_now());
+                utc_offset = lt.tm_gmtoff;
+            }
             now = (int)(apr_time_now() / APR_USEC_PER_SEC) + utc_offset;
             if (nLogFD != NULL && now >= tLogEnd) {
                 nLogFDprev = nLogFD;
