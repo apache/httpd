@@ -91,7 +91,7 @@
 
 /* Make sure we don't write less than 4096 bytes at any one time.
  */
-#define MIN_SIZE_TO_WRITE  4096
+#define MIN_SIZE_TO_WRITE  9000
 
 /* Allow Apache to use ap_mmap */
 #ifdef USE_MMAP_FILES
@@ -2526,32 +2526,6 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 }
 #endif
 
-#if APR_HAS_SENDFILE
-/* XXX handle partial writes */
-static apr_status_t send_the_file(request_rec *r, apr_file_t *fd, 
-                                  apr_hdtr_t *hdtr, apr_off_t offset, 
-                                  apr_size_t length, apr_size_t *nbytes) 
-{
-    apr_int32_t flags = 0;
-    apr_status_t rv;
-    apr_size_t n = length;
-
-    if (!r->connection->keepalive) {
-        /* Prepare the socket to be reused */
-        flags |= APR_SENDFILE_DISCONNECT_SOCKET;
-    }
-
-    rv = apr_sendfile(r->connection->client->bsock, 
-                      fd,      /* The file to send */
-                      hdtr,    /* Header and trailer iovecs */
-                      &offset, /* Offset in file to begin sending from */
-                      &n,
-                      flags);
-    *nbytes = n;
-
-    return rv;
-}
-#endif
 static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec, 
                                   apr_size_t len, apr_ssize_t *nbytes)
 {
@@ -2587,6 +2561,35 @@ static apr_status_t writev_it_all(apr_socket_t *s, struct iovec *vec, int nvec,
         }
         n = len - bytes_written;
     }
+
+    return APR_SUCCESS;
+}
+/* XXX handle partial writes */
+static apr_status_t send_the_file(request_rec *r, apr_file_t *fd, 
+                                  apr_hdtr_t *hdtr, apr_off_t offset, 
+                                  apr_size_t length, apr_size_t *nbytes) 
+{
+    apr_int32_t flags = 0;
+    apr_status_t rv;
+    apr_size_t n = length;
+
+#if APR_HAS_SENDFILE
+    if (!r->connection->keepalive) {
+        /* Prepare the socket to be reused */
+        flags |= APR_SENDFILE_DISCONNECT_SOCKET;
+    }
+    rv = apr_sendfile(r->connection->client->bsock, 
+                      fd,      /* The file to send */
+                      hdtr,    /* Header and trailer iovecs */
+                      &offset, /* Offset in file to begin sending from */
+                      &n,
+                      flags);
+    if ((rv == APR_SUCCESS) || (rv != APR_ENOTIMPL)) {
+        *nbytes = n;
+        return rv;
+    }
+#endif;
+    /* XXX: apr_sendfile is not available. Use apr_send/apr_sendv instead */
 
     return APR_SUCCESS;
 }
@@ -3157,7 +3160,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 		     * block so we pass down what we have so far.
 		     */
 		    bytes += len;
-		    more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+                    more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
 		    break;
 		}
 		else {
@@ -3269,159 +3272,133 @@ static int core_input_filter(ap_filter_t *f, ap_bucket_brigade *b)
          * in the future */
     }
     return length;
-} 
-
+}
 /* Default filter.  This filter should almost always be used.  Its only job
  * is to send the headers if they haven't already been sent, and then send
  * the actual data.
  */
+typedef struct CORE_OUTPUT_FILTER_CTX {
+    ap_bucket_brigade *b;
+} core_output_filter_ctx_t;
+#define MAX_IOVEC_TO_WRITE 16
 static int core_output_filter(ap_filter_t *f, ap_bucket_brigade *b)
 {
-    request_rec *r = f->r;
-    apr_pool_t *p = r->pool;
     apr_status_t rv;
-    apr_ssize_t bytes_sent = 0, len = 0;
+    ap_bucket_brigade *more = NULL;
+    apr_ssize_t bytes_sent = 0, nbytes = 0;
     ap_bucket *e;
+    request_rec *r = f->r;
+    core_output_filter_ctx_t *ctx = f->ctx;
 
-    
-#if 0 /* XXX: bit rot! */
-    /* This will all be needed once BUFF is removed from the code */
-    /* At this point we need to discover if there was any data saved from
-     * the last call to core_output_filter.
-     */
-    b = ap_get_saved_data(f, &b);
-
-    /* It is very obvious that we need to make sure it makes sense to send data
-     * out at this point.
-     */
-    dptr = b->head; 
-    while (dptr) { 
-        len += dptr->length;
-        dptr = dptr->next;
-    }
-    if (len < MIN_SIZE_TO_WRITE && b->tail->color != AP_BUCKET_EOS) {
-        ap_save_data_to_filter(f, &b);
-        return 0;
-    } 
-    else {
-#endif
-    struct iovec *iov;
-    apr_array_header_t *vec_trailers = NULL;
-    int  nvec_trailers= 0;
-    apr_array_header_t *vec;
-    int nvec = 0;
+    apr_ssize_t nvec = 0;
+    apr_ssize_t nvec_trailers= 0;
+    struct iovec vec[MAX_IOVEC_TO_WRITE];
+    struct iovec vec_trailers[MAX_IOVEC_TO_WRITE];
 
     apr_file_t *fd = NULL;
     apr_ssize_t flen = 0;
     apr_off_t foffset = 0;
 
-    vec = apr_make_array(p, 1, sizeof(struct iovec));
+    if (ctx == NULL) {
+        f->ctx = ctx = apr_pcalloc(r->pool, sizeof(core_output_filter_ctx_t));
+    }
+    /* If we have a saved brigade, concatenate the new brigade to it */
+    if (ctx->b) {
+        AP_BRIGADE_CONCAT(ctx->b, b);
+        b = ctx->b;
+        ctx->b = NULL;
+    }
 
-    /* Hijack the data in BUFF to send on apr_sendv */
-    iov = (struct iovec *) apr_push_array(vec);
-    iov->iov_base = r->connection->client->outbase;
-    iov->iov_len =  r->connection->client->outcnt;
-    r->connection->client->outcnt = 0;
-    len = iov->iov_len;
-    nvec++;
+    /* Hijack any bytes in BUFF and prepend it to the brigade. */
+    if (r->connection->client->outcnt) {
+        e = ap_bucket_create_heap(r->connection->client->outbase,
+                                  r->connection->client->outcnt, 1, NULL);
+        r->connection->client->outcnt = 0;
+        AP_BRIGADE_INSERT_HEAD(b, e);
+    }
 
-    /* Iterate across the buckets and build an iovec array.
-     * XXX The chunk filter gives us some very small chunks to send.
-     * Consider buffering some of these chunks into a contiguous piece
-     * of memory
-     */
-    AP_BRIGADE_FOREACH(e, b) {
-        switch (e->type) {
-        case AP_BUCKET_EOS:
-            break;
-        case AP_BUCKET_FILE:
-            /* Assume there is at most one AP_BUCKET_FILE in the brigade */
-            fd = e->data;
-            flen = e->length;
-            foffset = e->offset;
-            break;
-        default: 
-        {
-            const char *str;
-            apr_ssize_t n;
-            rv = e->read(e, &str, &n, 0);
-            if (n) {
-                len += n;
-
-                if (!fd) {
-                    nvec++;
-                    iov = (struct iovec *) apr_push_array(vec);
-                } 
-                else {
-                    /* The bucket is a trailer to a file bucket */
-                    nvec_trailers++;
-                    if (vec_trailers == NULL) {
-                        vec_trailers = apr_make_array(p, 1, sizeof(struct iovec));
-                    }
-                    iov = (struct iovec *) apr_push_array(vec_trailers);
-                }
-                iov->iov_base = (char *)str;
-                iov->iov_len = n;
+    /* Iterate over the brigade collecting iovecs */
+    while (b) {
+        more = NULL;
+        AP_BRIGADE_FOREACH(e, b) {
+            if (e->type == AP_BUCKET_EOS) {
+                break;
             }
-            break;
+            else if (e->type == AP_BUCKET_FILE) {
+                /* Assume there is at most one AP_BUCKET_FILE in the brigade */
+                fd = e->data;
+                flen = e->length;
+                foffset = e->offset;
+            }
+            else {
+                const char *str;
+                apr_ssize_t n;
+                rv = e->read(e, &str, &n, 0);
+                if (n) {
+                    nbytes += n;
+                    if (!fd) {
+                        vec[nvec].iov_base = (char*) str;
+                        vec[nvec].iov_len = n;
+                        nvec++;
+                    }
+                    else {
+                        /* The bucket is a trailer to a file bucket */
+                        vec_trailers[nvec_trailers].iov_base = (char*) str;
+                        vec_trailers[nvec_trailers].iov_len = n;
+                        nvec_trailers++;
+                    }
+                }
+            }
+
+            if ((nvec == MAX_IOVEC_TO_WRITE) || (nvec_trailers == MAX_IOVEC_TO_WRITE)) {
+                /* Split the brigade and break */
+                if (AP_BUCKET_NEXT(e) != AP_BRIGADE_SENTINEL(b)) {
+                    more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
+                }
+                break;
+            }
         }
+
+        /* Completed iterating over the brigades, now determine if we want to
+         * buffer the brigade or send the brigade out on the network
+         */
+        if (!fd && (!more) && (nbytes < MIN_SIZE_TO_WRITE) && (e->type != AP_BUCKET_EOS)) {
+            ap_save_brigade(f, &ctx->b, &b);
+            return APR_SUCCESS;
+        }
+        if (fd) {
+            apr_hdtr_t hdtr;
+            memset(&hdtr, '\0', sizeof(hdtr));
+            if (nvec) {
+                hdtr.numheaders = nvec;
+                hdtr.headers = vec;
+            }
+            if (nvec_trailers) {
+                hdtr.numtrailers = nvec_trailers;
+                hdtr.trailers = vec_trailers;
+            }
+            rv = send_the_file(r, fd, &hdtr, foffset, flen, &bytes_sent);
+        }
+        else {
+            rv = writev_it_all(r->connection->client->bsock, 
+                               vec, nvec, 
+                               nbytes, &bytes_sent);
         }
 
-        /* there shouldn't be anything after the eos */
-        if (e->type == AP_BUCKET_EOS) {
-            break;
+        ap_brigade_destroy(b);
+        if (rv != APR_SUCCESS) {
+            /* XXX: log the error */
+            if (more)
+                ap_brigade_destroy(more);
+            return rv;
         }
-    }
+        nvec = 0;
+        nvec_trailers = 0;
 
-    /* We're done iterating across the buckets. Time to do network i/o. 
-     * XXX Set socket i/o timeout and blocking characteristics.
-     * XXX We should consider eliminating ap_send_mmap and using ap_send_fd
-     * instead. Defer the decision on whether to use sendfile, mmap, or
-     * buffered file reads to the core filter.
-     */
+        b = more;
+    }  /* end while () */
 
-#if APR_HAS_SENDFILE
-     if (fd) {
-         apr_hdtr_t *hdtr =  apr_pcalloc(r->pool, sizeof(*hdtr));
-         if (nvec) {
-             hdtr->numheaders = nvec;
-             hdtr->headers = (struct iovec *) vec->elts;
-         }
-         if (nvec_trailers) {
-             hdtr->numtrailers = nvec_trailers;
-             hdtr->trailers = (struct iovec *) vec_trailers->elts;
-         }
-
-         rv = send_the_file(r, fd, hdtr, foffset, flen, &bytes_sent);
-
-         if (rv == APR_SUCCESS) {
-             ap_brigade_destroy(b);
-             return APR_SUCCESS;
-         }
-         /* If apr_sendfile is not implemented (e.g. Win95/98), then
-          * use apr_senv() to send the content.
-          */
-         if (rv != APR_ENOTIMPL) {
-             ap_brigade_destroy(b);
-             /* check_first_conn_error(r, "send_fd", rv); */
-             return rv;
-         }
-         /* XXX: If we made it this far, sendfile must have failed with 
-          * APR_ENOTIMPL. Read the file into an iovec array to prepare 
-          * for a writev.
-          */
-     }
-#endif
-     rv = writev_it_all(r->connection->client->bsock, 
-                        (struct iovec*) vec->elts, nvec, 
-                        len, &bytes_sent);
-
-     ap_brigade_destroy(b);
-
-     return rv;
-#if 0
-    }
-#endif
+    return APR_SUCCESS;
 }
 
 static const handler_rec core_handlers[] = {
