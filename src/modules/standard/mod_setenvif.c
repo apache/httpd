@@ -314,13 +314,17 @@ static int fname_translate_setenvif(request_rec *r)
 		    (sconf->zero_means_unset && (!strcmp(elts[j].val, "0")))) {
 
 		    table_unset(r->subprocess_env, elts[j].key);
+#ifdef SETENV_DEBUG
 		    log_printf(r->server, "mod_setenvif: unsetting %s",
 			       elts[j].key);
+#endif
 		}
 		else {
 		    table_set(r->subprocess_env, elts[j].key, elts[j].val);
+#ifdef SETENV_DEBUG
 		    log_printf(r->server, "mod_setenvif: setting %s to %s",
 			       elts[j].key, elts[j].val);
+#endif
 		}
 	    }
 	}
