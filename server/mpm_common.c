@@ -372,7 +372,8 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
     apr_file_pipe_timeout_set((*pod)->pod_in, 0);
     (*pod)->p = p;
     
-    apr_sockaddr_info_get(&(*pod)->sa, "127.0.0.1", APR_UNSPEC, ap_listeners->bind_addr->port, 0, p);
+    apr_sockaddr_info_get(&(*pod)->sa, ap_listeners->bind_addr->hostname,
+                          APR_UNSPEC, ap_listeners->bind_addr->port, 0, p);
 
     return APR_SUCCESS;
 }
