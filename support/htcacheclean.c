@@ -163,7 +163,7 @@ static void fake_file_remove(char *pathname, apr_pool_t *p)
     /* stat and printing to simulate some deletion system load and to
        display what would actually have happened */
     apr_stat(&info, pathname, DIRINFO, p);
-    apr_file_printf(errfile, "would delete %s\n", pathname);
+    apr_file_printf(errfile, "would delete %s" APR_EOL_STR, pathname);
 }
 #endif
 
@@ -173,7 +173,7 @@ static void fake_file_remove(char *pathname, apr_pool_t *p)
 static void setterm(int unused)
 {
 #ifdef DEBUG
-    apr_file_printf(errfile, "interrupt\n");
+    apr_file_printf(errfile, "interrupt" APR_EOL_STR);
 #endif
     interrupted = 1;
 }
@@ -231,7 +231,7 @@ static void printstats(apr_off_t total, apr_off_t sum, apr_off_t max,
         max /= KBYTE;
     }
 
-    apr_file_printf(errfile, "Statistics:\n");
+    apr_file_printf(errfile, "Statistics:" APR_EOL_STR);
     if (unsolicited) {
         utype = 'K';
         ufrag = ((unsolicited * 10) / KBYTE) % 10;
@@ -244,16 +244,17 @@ static void printstats(apr_off_t total, apr_off_t sum, apr_off_t max,
         if (!unsolicited && !ufrag) {
             ufrag = 1;
         }
-        apr_file_printf(errfile, "unsolicited size %d.%d%c\n",
+        apr_file_printf(errfile, "unsolicited size %d.%d%c" APR_EOL_STR,
                         (int)(unsolicited), (int)(ufrag), utype);
      }
-     apr_file_printf(errfile, "size limit %d.0%c\n", (int)(max), mtype);
+     apr_file_printf(errfile, "size limit %d.0%c" APR_EOL_STR,
+                     (int)(max), mtype);
      apr_file_printf(errfile, "total size was %d.%d%c, total size now "
-                              "%d.%d%c\n",
+                              "%d.%d%c" APR_EOL_STR,
                      (int)(total), (int)(tfrag), ttype, (int)(sum),
                      (int)(sfrag), stype);
-     apr_file_printf(errfile, "total entries was %d, total entries now %d\n",
-                     (int)(etotal), (int)(entries));
+     apr_file_printf(errfile, "total entries was %d, total entries now %d"
+                              APR_EOL_STR, (int)(etotal), (int)(entries));
 }
 
 /*
@@ -946,8 +947,8 @@ int main(int argc, const char * const argv[])
                 purge(path, instance, max);
             }
             else if (!isdaemon && !interrupted) {
-                apr_file_printf(errfile,
-                     "An error occurred, cache cleaning aborted.\n");
+                apr_file_printf(errfile, "An error occurred, cache cleaning "
+                                         "aborted." APR_EOL_STR);
                 return 1;
             }
 
@@ -1005,8 +1006,8 @@ int main(int argc, const char * const argv[])
     } while (isdaemon && !interrupted);
 
     if (!isdaemon && interrupted) {
-        apr_file_printf(errfile,
-                        "Cache cleaning aborted due to user request.\n");
+        apr_file_printf(errfile, "Cache cleaning aborted due to user "
+                                 "request." APR_EOL_STR);
         return 1;
     }
 
