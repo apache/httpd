@@ -540,6 +540,16 @@ Changes with Apache 2.1.1
 
 Changes with Apache 2.0.53
 
+  *) Fix handling of files >2Gb on all platforms (or builds) where
+     apr_off_t is larger than apr_size_t.  PR 28898.  [Joe Orton]
+
+  *) mod_include: Fix bug which could truncate variable expansions
+     of N*64 characters by one byte.  PR 32985.  [Joe Orton]
+
+  *) Correct handling of certain bucket types in ap_save_brigade, fixing
+     possible segfaults in mod_cgi with #include virtual.  PR 31247.
+     [Joe Orton]
+
   *) Allow for the use of --with-module=foo:bar where the ./modules/foo
      directory is local only. Assumes, of course, that the required
      files are in ./modules/foo, but makes it easier to statically
