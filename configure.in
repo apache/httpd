@@ -48,23 +48,15 @@ dnl work on some platforms
 
 AC_CANONICAL_SYSTEM
 
-case $host in
-    *-ibm-aix*)
-        disable_shared="--disable-shared"
-      ;;
-    *)
-        disable_shared=""
-esac
-
 orig_prefix="$prefix"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix $disable_shared")
+APR_SUBDIR_CONFIG(srclib/apr, "$apache_apr_flags --prefix=$prefix")
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix $disable_shared")
+APR_SUBDIR_CONFIG(srclib/apr-util, "--with-apr=../apr --prefix=$prefix")
 
 echo $ac_n "${nl}Configuring PCRE regular expression library ...${nl}"
 
@@ -280,7 +272,7 @@ if test "$apache_need_shared" = "yes"; then
   case $host in
     *-ibm-aix*)
       HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-bE:$abs_builddir/server/httpd.exp"
-      SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_builddir/server/httpd.exp"
+      SH_LDFLAGS="$SH_LDFLAGS -Wl,-bI:$abs_builddir/server/httpd.exp -Wl,-bI:$abs_builddir/srclib/apr/apr.exp -Wl,-bI:$abs_builddir/srclib/apr-util/aprutil.exp"
       ;;
     *beos)
       SH_LDFLAGS='$(top_builddir)/_APP_'
