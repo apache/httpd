@@ -368,7 +368,7 @@ So if you're using a multiprocessor IRIX box then you should rebuild your
 webserver with <code>-DUSE_USLOCK_SERIALIZED_ACCEPT</code> on the
 <code>EXTRA_CFLAGS</code>.
 
-<dt><code>USE_PTHREADS_SERIALIZED_ACCEPT</code>
+<dt><code>USE_PTHREAD_SERIALIZED_ACCEPT</code>
 <dd>(1.3 or later) This method uses POSIX mutexes and should work on
 any architecture implementing the full POSIX threads specification,
 however appears to only work on Solaris (2.5 or later).  This is the
