@@ -1007,6 +1007,12 @@ request_rec *ap_read_request(conn_rec *conn)
         return r;
     }
 
+    if ((access_status = ap_run_post_read_request(r))) {
+        ap_die(access_status, r);
+        ap_run_log_transaction(r);
+        return NULL;
+    }
+
     if (((expect = apr_table_get(r->headers_in, "Expect")) != NULL)
         && (expect[0] != '\0')) {
         /*
@@ -1031,12 +1037,6 @@ request_rec *ap_read_request(conn_rec *conn)
 
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
-
-    if ((access_status = ap_run_post_read_request(r))) {
-        ap_die(access_status, r);
-        ap_run_log_transaction(r);
-        return NULL;
-    }
 
     return r;
 }
