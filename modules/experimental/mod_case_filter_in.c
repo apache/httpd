@@ -123,11 +123,12 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
 	char *buf;
 	int n;
 
-	// It is tempting to do this...
-	//APR_BUCKET_REMOVE(pB);
-	//APR_BRIGADE_INSERT_TAIL(pbbOut,pB);
-	// and change the case of the bucket data, but that would be wrong
-	// for a file or socket buffer, for example...
+	/* It is tempting to do this...
+         * APR_BUCKET_REMOVE(pB);
+         * APR_BRIGADE_INSERT_TAIL(pbbOut,pB);
+         * and change the case of the bucket data, but that would be wrong
+         * for a file or socket buffer, for example...
+         */
 
 	if(APR_BUCKET_IS_EOS(pbktIn)) {
 	    APR_BUCKET_REMOVE(pbktIn);
