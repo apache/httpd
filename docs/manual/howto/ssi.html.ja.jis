@@ -68,13 +68,13 @@
     <code>.shtml</code> 拡張子にするため、そのページの名前と、
     そのページへの全てのリンクを変更しなければならないことです。</p>
 
-    <p>もう一つの方法は、<code class="directive"><a href="../mod/mod_includes.html#xbithack">XBitHack</a></code>
+    <p>もう一つの方法は、<code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>
     ディレクティブを使用することです:</p>
 <div class="example"><p><code>
         XBitHack on
 </code></p></div>
 
-    <p><code class="directive"><a href="../mod/mod_includes.html#xbithack">XBitHack</a></code> 
+    <p><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code> 
     は、ファイルの実行ビットが立っている場合、
     SSI ディレクティブにより解析することを Apache に伝えます。
     従って、SSI ディレクティブを現在のページに加えるためには、
@@ -88,7 +88,7 @@
     <code>.html</code> ファイルを SSI で解析するよう Apache に伝えれば、
     わざわざ <code>.shtml</code> というファイル名にする必要がないといって
     薦めるのを見ることでしょう。こういう人たちは、おそらく
-    <code class="directive"><a href="../mod/mod_includes.html#xbithack">XBitHack</a></code>
+    <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>
     について聞いたことがないのでしょう。
     この方法について注意することは、たとえ SSI
     ディレクティブを全く含まない場合でも、Apache がクライアントに
