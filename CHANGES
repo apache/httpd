@@ -5,6 +5,10 @@ Changes with Apache 2.0.23
      Transitional specifications.  [William Rowe]
 
 Changes with Apache 2.0.22
+  
+  *) Fix a problem where the threaded MPM stalls after restarts or
+     segfaults.  Also prevent multiple active processes from using
+     the same scoreboard slot.  [Greg Ames]
 
   *) Apache/Win32 now fills in the service description with Apache's
      server version string, including loaded and advertised modules.
