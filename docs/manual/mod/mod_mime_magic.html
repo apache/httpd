@@ -42,11 +42,8 @@
   In the case of this module,
   it tries to figure out the MIME type of the file.
   <p>
-  This module is only active if the magic file exists and
-  was successfully opened at server-configuration time.
-  The magic file can be named by the
-  <A HREF="#mimemagicfile"><code>MimeMagicFile</code></a>
-  directive or defaults to conf/magic.
+  This module active only if the magic file is specified by the 
+  <A HREF="#mimemagicfile"><code>MimeMagicFile</code></a> directive.
   <p>
   The contents of the file are plain ASCII text in 4-5 columns.
   Blank lines are allowed but ignored.
@@ -175,7 +172,7 @@
   <P>
   <STRONG>Syntax:</STRONG> MimeMagicFile <em>magic-file-name</em>
   <BR>
-  <STRONG>Default:</STRONG> conf/magic
+  <STRONG>Default:</STRONG> none
   <BR>
   <STRONG>Context:</STRONG> server config, virtual host
   <BR>
@@ -184,9 +181,12 @@
   <STRONG>Module:</STRONG> mod_mime_magic
   <p>
 
-  The MimeMagicFile directive can be used to change the location of the
-  magic file from its default location at <code>conf/magic</code>.
-  Non-rooted paths are relative to the ServerRoot.
+  The <code>MimeMagicFile</code> directive can be used to enable this module,
+  the default file is distributed at <code>conf/magic</code>.
+  Non-rooted paths are relative to the ServerRoot.  Virtual hosts
+  will use the same file as the main server unless a more specific setting
+  is used, in which case the more specific setting overrides the main server's
+  file.
   <p>
   <HR>
 
