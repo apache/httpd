@@ -189,13 +189,9 @@ int cache_select_url(request_rec *r, const char *types, char *url)
 }
 
 apr_status_t cache_write_entity_headers(cache_handle *h, request_rec *r, cache_info *info,
-                                        apr_table_t *headers_in, apr_table_t *headers_out) 
+                                        apr_table_t *headers)
 {
-    const char *ct;
-
-    ct = ap_table_get(r->headers_out, "Content-Type");
-    info->content_type = ct;
-    h->write_headers(h, r, info);
+    h->write_headers(h, r, info, headers);
     return APR_SUCCESS;
 }
 apr_status_t cache_write_entity_body(cache_handle *h, apr_bucket_brigade *b) 
@@ -211,27 +207,11 @@ apr_status_t cache_read_entity_headers(cache_handle *h, request_rec *r,
 {
     cache_info *info;
 
-    /* Be careful to not modify info. */
-    h->read_headers(h, r, &info);
-
     /* Build the header table from info in the info struct */
     *headers = apr_table_make(r->pool, 15);
-    /* Content-Length */
-    if (info->len)
-        apr_table_set(*headers, "Content-Length", 
-                      apr_psprintf(r->pool, "%" APR_SIZE_T_FMT, info->len));
 
-    /* Last-Modified */
-    if (info->lastmod) {
-    }
-    /* Expires */
-    if (info->expire) {
-    }
-    if (info->content_type) {
-        r->content_type = apr_pstrdup(r->pool, info->content_type);
-    }
-    /* Date */
-    
+    h->read_headers(h, r, &info, *headers);
+
     return APR_SUCCESS;
 }
 apr_status_t cache_read_entity_body(cache_handle *h, apr_bucket_brigade *b) 
