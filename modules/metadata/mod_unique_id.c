@@ -175,7 +175,6 @@ static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
 static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server)
 {
     char str[APRMAXHOSTLEN + 1];
-    apr_short_interval_time_t pause;
     apr_status_t rv;
     char *ipaddrstr;
     apr_sockaddr_t *sockaddr;
@@ -253,8 +252,7 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
      * next second.
      */
     now = apr_time_now();
-    pause = (apr_short_interval_time_t)(1000000 - apr_time_usec(now));
-    apr_sleep(pause);
+    apr_sleep(apr_time_from_sec(1));
     return OK;
 }
 
