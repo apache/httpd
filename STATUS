@@ -45,6 +45,7 @@ Committed Code Changes:
     * Lars' Configure fix to avoid confusing message under APACI control
     * Ralf's Configure fix for AWK's failing with "string to long" error
     * Ralf's fix for stderr logging to make sure default loglevel is honored
+    * Ralf's cast for dlopen's arg1 under OSF1 and FreeBSD 2.2.x
 
 Available Patches:
 

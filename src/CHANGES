@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
 
+  *) PORT: Cast the first argument of dlopen() in ap_os_dso_load()
+     to `char *' under OSF1 and FreeBSD 2.x where it is defined this way
+     to avoid "discard const" warnings. [Ralf S. Engelschall]
+
   *) If a specific handler is set for a file yet the request still
      ends up being handled by the default handler, log an error
      message before handling it.  This catches things such as trying 
