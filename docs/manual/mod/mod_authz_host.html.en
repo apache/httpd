@@ -33,12 +33,15 @@ address)</td></tr><tr><th><a href="module-dict.html#Status">Status:
     cases. However, it is possible to restrict some methods, while
     leaving other methods unrestricted, by enclosing the directives
     in a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> section.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li><li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li><li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Controls which hosts can access an area of the
 server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td> Allow from
+              </a></th><td><code> Allow from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+    [<em>host</em>|env=<em>env-variable</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -136,9 +139,9 @@ SetEnvIf User-Agent ^KnockKnock/2.0 let_me_in<br />
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Controls which hosts are denied access to the
 server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td> Deny from
+              </a></th><td><code> Deny from
     all|<em>host</em>|env=<em>env-variable</em>
-    [<em>host</em>|env=<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+    [<em>host</em>|env=<em>env-variable</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -151,7 +154,7 @@ server</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
               </a></th><td>Controls the default access state and the order in which
 Allow and Deny are
 evaluated.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td> Order <em>ordering</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code> Order <em>ordering</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>Order Deny,Allow</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Limit</td></tr><tr><th><a href="directive-dict.html#Status">Status:

@@ -13,9 +13,10 @@ and Group</td></tr><tr><th><a href="module-dict.html#Status">Status:
                   </a></th><td>Available in Apache 2.0 and later</td></tr></table><h3>Summary</h3>
     <p>This module, in combination with the <a href="../programs/suexec.html">suexec support program</a> allows
     CGI scripts to run as a specified user and Group.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#suexecusergroup">SuexecUserGroup</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../suexec.html">SuEXEC support</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SuexecUserGroup" id="SuexecUserGroup">SuexecUserGroup</a> <a name="suexecusergroup" id="suexecusergroup">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#suexecusergroup">SuexecUserGroup</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../suexec.html">SuEXEC support</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SuexecUserGroup" id="SuexecUserGroup">SuexecUserGroup</a> <a name="suexecusergroup" id="suexecusergroup">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>User and group permissions for CGI programs</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>SuexecUserGroup <em>User Group</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>SuexecUserGroup <em>User Group</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_suexec</td></tr><tr><th><a href="directive-dict.html#Compatibility">Compatibility:

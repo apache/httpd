@@ -68,9 +68,26 @@ make it functional.
     userids. These processes can then be associated with specific
     virtual hosts.</p>
     
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#assignuserid">AssignUserId</a></li><li><img alt="" src="../images/down.gif" /> <a href="#childperuserid">ChildPerUserId</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#numservers">NumServers</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li><li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AssignUserId" id="AssignUserId">AssignUserId</a> <a name="assignuserid" id="assignuserid">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#assignuserid">AssignUserId</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#childperuserid">ChildPerUserId</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#numservers">NumServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startthreads">StartThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AssignUserId" id="AssignUserId">AssignUserId</a> <a name="assignuserid" id="assignuserid">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AssignUserID <em>user_id</em> <em>group_id</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AssignUserID <em>user_id</em> <em>group_id</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>perchild</td></tr></table>
@@ -79,8 +96,8 @@ the virtual host where this directive appears will be served by the process
 running with the specified user and group id.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ChildPerUserId" id="ChildPerUserId">ChildPerUserId</a> <a name="childperuserid" id="childperuserid">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td /></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ChildPerUserID <em>user_id</em>
-<em>group_id</em> <em>child_id</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ChildPerUserID <em>user_id</em>
+<em>group_id</em> <em>child_id</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>MPM</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>perchild</td></tr></table>

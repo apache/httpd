@@ -15,10 +15,13 @@
     may be passed from the shell which invoked the httpd process.
     Alternatively, environment variables may be set or unset within
     the configuration process.</p>
-  </div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#passenv">PassEnv</a></li><li><img alt="" src="../images/down.gif" /> <a href="#setenv">SetEnv</a></li><li><img alt="" src="../images/down.gif" /> <a href="#unsetenv">UnsetEnv</a></li></ul><h3>See also</h3><ul class="seealso"><li><a href="../env.html">Environment Variables</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+  </div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#passenv">PassEnv</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenv">SetEnv</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#unsetenv">UnsetEnv</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../env.html">Environment Variables</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="PassEnv" id="PassEnv">PassEnv</a> <a name="passenv" id="passenv">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Passes environment variables from the shell</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>PassEnv
-    <em>env-variable</em> [<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>PassEnv
+    <em>env-variable</em> [<em>env-variable</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -31,7 +34,7 @@
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="SetEnv" id="SetEnv">SetEnv</a> <a name="setenv" id="setenv">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets environment variables</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>SetEnv <em>env-variable value</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>SetEnv <em>env-variable value</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -43,7 +46,7 @@
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Removes variables from the environment</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>UnsetEnv <em>env-variable</em> [<em>env-variable</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:

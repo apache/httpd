@@ -23,10 +23,18 @@
     directives are used to instruct clients to make a new request with
     a different URL. They are often used when a resource has moved to
     a new location.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li><li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li><li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li><li><img alt="" src="../images/down.gif" /> <a href="#redirectpermanent">RedirectPermanent</a></li><li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li><li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li><li><a href="../urlmapping.html">Mapping URLs to the filesystem</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectpermanent">RedirectPermanent</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li><li><a href="../urlmapping.html">Mapping URLs to the filesystem</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps URLs to filesystem locations</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td> Alias <em>URL-path
-    file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code> Alias <em>URL-path
+    file-path</em>|<em>directory-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_alias</td></tr></table>
@@ -61,8 +69,8 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps URLs to filesystem locations using regular 
 expressions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AliasMatch <em>regex
-    file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AliasMatch <em>regex
+    file-path</em>|<em>directory-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_alias</td></tr></table>
@@ -79,7 +87,7 @@ expressions</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sends an external redirect asking the client to fetch
 a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>Redirect [<em>status</em>] <em>URL-path URL</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>Redirect [<em>status</em>] <em>URL-path URL</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -151,7 +159,7 @@ sections.</p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sends an external redirect based on a regular expression match 
 of the current URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RedirectMatch [<em>status</em>] <em>regex URL</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RedirectMatch [<em>status</em>] <em>regex URL</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -169,7 +177,7 @@ of the current URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sends an external permanent redirect asking the client to fetch
 a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RedirectPermanent <em>URL-path URL</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RedirectPermanent <em>URL-path URL</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -180,7 +188,7 @@ a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sends an external temporary redirect asking the client to fetch
 a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>RedirectTemp <em>URL-path URL</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>RedirectTemp <em>URL-path URL</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -191,8 +199,8 @@ a different URL</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps a URL to a filesystem location and designates the
 target as a CGI script</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ScriptAlias 
-<em>URL-path file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ScriptAlias 
+<em>URL-path file-path</em>|<em>directory-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_alias</td></tr></table>
@@ -213,8 +221,8 @@ target as a CGI script</td></tr><tr><th><a href="directive-dict.html#Syntax">Syn
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maps a URL to a filesystem location using a regular expression
 and designates the target as a CGI script</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ScriptAliasMatch
-<em>regex file-path</em>|<em>directory-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ScriptAliasMatch
+<em>regex file-path</em>|<em>directory-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_alias</td></tr></table>

@@ -20,14 +20,16 @@
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
     <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
     with the 'dbm' value.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdbmtype">AuthDBMType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authdbmuserfile">AuthDBMUserFile</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdbmtype">AuthDBMType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdbmuserfile">AuthDBMUserFile</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li>
   <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
 </li><li>
   <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>
 </li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMType" id="AuthDBMType">AuthDBMType</a> <a name="authdbmtype" id="authdbmtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the type of database file that is used to
 store passwords</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDBMType default|SDBM|GDBM|NDBM|DB</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthDBMType default</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -45,7 +47,7 @@ files is configured to use the same type of database.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMUserFile" id="AuthDBMUserFile">AuthDBMUserFile</a> <a name="authdbmuserfile" id="authdbmuserfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the name of a database file containing the list of users and
 passwords for authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDBMUserFile <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthDBMUserFile <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:

@@ -22,7 +22,10 @@
     from the source until this time has passed. After that, the
     cache copy is considered "expired" and invalid, and a new copy
     must be obtained from the source.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#expiresactive">ExpiresActive</a></li><li><img alt="" src="../images/down.gif" /> <a href="#expiresbytype">ExpiresByType</a></li><li><img alt="" src="../images/down.gif" /> <a href="#expiresdefault">ExpiresDefault</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">Alternate Interval
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#expiresactive">ExpiresActive</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#expiresbytype">ExpiresByType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#expiresdefault">ExpiresDefault</a></li>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#AltSyn">Alternate Interval
     Syntax</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="AltSyn" id="AltSyn">Alternate Interval
     Syntax</a></h2>
 
@@ -94,7 +97,7 @@ ExpiresByType text/html "access plus 1 month 15
     that there is no modification time for such content.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresActive" id="ExpiresActive">ExpiresActive</a> <a name="expiresactive" id="expiresactive">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enables generation of Expires headers</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ExpiresActive On|Off</td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ExpiresActive On|Off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -120,8 +123,8 @@ ExpiresByType text/html "access plus 1 month 15
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresByType" id="ExpiresByType">ExpiresByType</a> <a name="expiresbytype" id="expiresbytype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Value of the Expires header configured
 by MIME type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ExpiresByType
-    <em>MIME-type &lt;code&gt;seconds</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ExpiresByType
+    <em>MIME-type &lt;code&gt;seconds</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -171,7 +174,7 @@ ExpiresByType text/html M604800
     this document.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Default algorithm for calculating expiration time</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>ExpiresDefault <em>&lt;code&gt;seconds</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ExpiresDefault <em>&lt;code&gt;seconds</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:

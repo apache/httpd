@@ -17,7 +17,12 @@
     Apache 1.2 and later this module has been renamed the "user
     tracking" module, mod_usertrack. This module has been
     simplified and new directives added.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cookiedomain">CookieDomain</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cookieexpires">CookieExpires</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cookiename">CookieName</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cookiestyle">CookieStyle</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cookietracking">CookieTracking</a></li></ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Logging</li><li><img alt="" src="../images/down.gif" /> 2-digit or 4-digit dates for cookies?</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Logging</h2>
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cookiedomain">CookieDomain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookieexpires">CookieExpires</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookiename">CookieName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookiestyle">CookieStyle</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cookietracking">CookieTracking</a></li>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> Logging</li><li><img alt="" src="../images/down.gif" /> 2-digit or 4-digit dates for cookies?</li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>Logging</h2>
 
 
     <p>Previously, the cookies module (now the user tracking
@@ -76,7 +81,7 @@ time late in the year "37".
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieDomain" id="CookieDomain">CookieDomain</a> <a name="cookiedomain" id="cookiedomain">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>The domain to which the tracking cookie applies</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>CookieDomain <em>domain</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>CookieDomain <em>domain</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -91,7 +96,7 @@ time late in the year "37".
     ".foo.com" is legal, but "foo.bar.com" and ".com" are not.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieExpires" id="CookieExpires">CookieExpires</a> <a name="cookieexpires" id="cookieexpires">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Expiry time for the tracking cookie</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>CookieExpires <em>expiry-period</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>CookieExpires <em>expiry-period</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -108,7 +113,7 @@ time late in the year "37".
     current browser session.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieName" id="CookieName">CookieName</a> <a name="cookiename" id="cookiename">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Name of the tracking cookie</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>CookieName <em>token</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>CookieName <em>token</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CookieName Apache</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -123,8 +128,8 @@ time late in the year "37".
     Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieStyle" id="CookieStyle">CookieStyle</a> <a name="cookiestyle" id="cookiestyle">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Format of the cookie header field</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CookieStyle Netscape</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -150,7 +155,7 @@ time late in the year "37".
     users' browsers.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="CookieTracking" id="CookieTracking">CookieTracking</a> <a name="cookietracking" id="cookietracking">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Enables tracking cookie</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>CookieTracking on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>CookieTracking on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>CookieTracking off</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:

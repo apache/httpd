@@ -16,10 +16,12 @@ media type or request method.</td></tr><tr><th><a href="module-dict.html#Status"
     you run CGI scripts whenever a particular method is used in a
     request. This makes it much easier to execute scripts that process
     files.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li><li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li>
+</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Activates a CGI script for a particular handler or
 content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>Action <em>action-type cgi-script</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>Action <em>action-type cgi-script</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>FileInfo</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -54,7 +56,7 @@ content-type</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
 <h3>See also</h3><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Activates a CGI script for a particular request
 method.</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td> Script <em>method cgi-script</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code> Script <em>method cgi-script</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td>mod_actions</td></tr></table>

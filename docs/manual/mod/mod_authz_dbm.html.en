@@ -14,10 +14,13 @@
        authenticated users can be allowed or denied access to portions
        of the web site by group membership. Similar functionality is
        provided by <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code>.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdbmgroupfile">AuthDBMGroupFile</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authzdbmauthoritative">AuthzDBMAuthoritative</a></li><li><img alt="" src="../images/down.gif" /> <a href="#authzdbmtype">AuthzDBMType</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#authdbmgroupfile">AuthDBMGroupFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbmauthoritative">AuthzDBMAuthoritative</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbmtype">AuthzDBMType</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li><li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the name of the database file containing the list
 of user groups for authentication</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthDBMGroupFile <em>file-path</em></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>AuthDBMGroupFile <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Extension</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -66,7 +69,7 @@ AuthDBMUserFile /www/userbase
     password and group database.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthzDBMAuthoritative" id="AuthzDBMAuthoritative">AuthzDBMAuthoritative</a> <a name="authzdbmauthoritative" id="authzdbmauthoritative">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets whether authorization will be passed on to lower level modules</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthzDBMAuthoritative on|off</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthzDBMAuthoritative on|off</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthzDBMAuthoritative on</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:
@@ -108,7 +111,7 @@ AuthDBMUserFile /www/userbase
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a> <a name="authzdbmtype" id="authzdbmtype">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Sets the type of database file that is used to
 store passwords</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>AuthzDBMType default|SDBM|GDBM|NDBM|DB</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>AuthzDBMType default|SDBM|GDBM|NDBM|DB</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>AuthzDBMType default</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>AuthConfig</td></tr><tr><th><a href="directive-dict.html#Status">Status:

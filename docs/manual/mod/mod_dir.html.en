@@ -31,11 +31,12 @@
     <code>dirname</code> is a directory. Directories require a
     trailing slash, so <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> issues a redirect to
     <code>http://servername/foo/dirname/</code>.</p>
-</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
+</div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
+</ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>List of resources to look for when the client requests
 a directory</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td>DirectoryIndex
-    <em>local-url</em> [<em>local-url</em>] ...</td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>DirectoryIndex
+    <em>local-url</em> [<em>local-url</em>] ...</code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>DirectoryIndex index.html</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host, directory, .htaccess</td></tr><tr><th><a href="directive-dict.html#Override">Override:
               </a></th><td>Indexes</td></tr><tr><th><a href="directive-dict.html#Status">Status:
