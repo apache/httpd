@@ -45,10 +45,6 @@ clean:
 	$(MAKE) /f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _build
 	$(MAKE) /f Makefile.win SHORT=D LONG=Debug   CTARGET=CLEAN _build
 	$(MAKE) /f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _installdll
-	cd main
-	 del uri_delims.h
-	 del test_char.h
-	cd ..
 
 installdll:
 	$(MAKE) /f Makefile.win SHORT=R LONG=Release _installdll
@@ -56,9 +52,9 @@ installdll:
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
 	cd lib\apr
-#	 apr.lib will be a static library for exe's requring a minimal subset of the apr
-#	 nmake /nologo CFG="apr - Win32 $(LONG)" -f apr.mak RECURSE=0 $(CTARGET)
+#	 aprlibdll creates the dynamic aprlib.dll from the static library project aprlib.dsp
 	 nmake /nologo CFG="aprlib - Win32 $(LONG)" -f aprlib.mak RECURSE=0 $(CTARGET)
+	 nmake /nologo CFG="aprlibdll - Win32 $(LONG)" -f aprlibdll.mak RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd regex
 	 nmake /nologo CFG="regex - Win32 $(LONG)" -f regex.mak RECURSE=0 $(CTARGET)

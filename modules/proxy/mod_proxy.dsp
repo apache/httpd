@@ -54,8 +54,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib /nologo /base:"0x279B0000" /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release"
-# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /base:"0x279B0000" /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release"
+# ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /base:@BaseAddr.ref,mod_proxy /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release"
+# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /base:@BaseAddr.ref,mod_proxy /subsystem:windows /dll /map /machine:I386 /libpath:"..\..\CoreR" /libpath:"..\..\lib\apr\Release"
 
 !ELSEIF  "$(CFG)" == "ApacheModuleProxy - Win32 Debug"
 
@@ -80,8 +80,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /base:"0x279B0000" /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug"
-# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /base:"0x279B0000" /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug"
+# ADD BASE LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /base:@BaseAddr.ref,mod_proxy /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug"
+# ADD LINK32 ApacheCore.lib aprlib.lib kernel32.lib ws2_32.lib mswsock.lib /nologo /base:@BaseAddr.ref,mod_proxy /subsystem:windows /dll /map /debug /machine:I386 /libpath:"..\..\CoreD" /libpath:"..\..\lib\apr\Debug"
 
 !ENDIF 
 

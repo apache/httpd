@@ -54,8 +54,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:"0x27800000" /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release"
-# ADD LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:"0x27800000" /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release"
+# ADD BASE LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:@"os\win32\BaseAddr.ref",ApacheCore /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release"
+# ADD LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:@"os\win32\BaseAddr.ref",ApacheCore /subsystem:windows /dll /map /machine:I386 /libpath:"lib\apr\Release" /libpath:"regex\release" /libpath:"ap\Release"
 
 !ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
 
@@ -81,8 +81,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:"0x27800000" /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug"
-# ADD LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:"0x27800000" /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug"
+# ADD BASE LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:@"os\win32\BaseAddr.ref",ApacheCore /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug"
+# ADD LINK32 aprlib.lib regex.lib ap.lib kernel32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /base:@"os\win32\BaseAddr.ref",ApacheCore /subsystem:windows /dll /map /debug /machine:I386 /libpath:"lib\apr\debug" /libpath:"regex\debug" /libpath:"ap\Debug"
 
 !ENDIF 
 
@@ -415,11 +415,61 @@ SOURCE=.\modules\mpm\winnt\winnt.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\main\test_char.h
+SOURCE=.\main\gen_test_char.exe
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+# Begin Custom Build - Generating test_char.h
+InputPath=.\main\gen_test_char.exe
+
+".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_test_char.exe >.\main\test_char.h 
+	echo Generated test_char.h from gen_test_char.exe 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+# Begin Custom Build - Generating test_char.h
+InputPath=.\main\gen_test_char.exe
+
+".\main\test_char.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_test_char.exe >.\main\test_char.h 
+	echo Generated test_char.h from gen_test_char.exe 
+	
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=.\main\uri_delims.h
+SOURCE=.\main\gen_uri_delims.exe
+
+!IF  "$(CFG)" == "ApacheCore - Win32 Release"
+
+# Begin Custom Build - Generating uri_delims.h
+InputPath=.\main\gen_uri_delims.exe
+
+".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_uri_delims.exe >.\main\uri_delims.h 
+	echo Generated uri_delims.h from gen_uri_delims.exe 
+	
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "ApacheCore - Win32 Debug"
+
+# Begin Custom Build - Generating uri_delims.h
+InputPath=.\main\gen_uri_delims.exe
+
+".\main\uri_delims.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	.\main\gen_uri_delims.exe >.\main\uri_delims.h 
+	echo Generated uri_delims.h from gen_uri_delims.exe 
+	
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Group
 # End Target
