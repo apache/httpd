@@ -1193,6 +1193,7 @@ API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte)
     static char *cbuf = NULL;
     static int csize = 0;
 
+    /* XXX: martin don't you want to do this after the error tests below? */
     if (bgetflag(fb, B_EBCDIC2ASCII)) {
         if (nbyte > csize) {
             if (cbuf != NULL)
@@ -1362,7 +1363,7 @@ API_EXPORT(int) ap_bflush(BUFF *fb)
     int ret;
 
     if (!(fb->flags & B_WR) || (fb->flags & B_EOUT))
-	return 0;
+	return -1;
 
     if (fb->flags & B_WRERR)
 	return -1;
@@ -1523,6 +1524,9 @@ API_EXPORT_NONSTD(int) ap_bprintf(BUFF *fb, const char *fmt, ...)
     int res;
     struct bprintf_data b;
 
+    /* XXX: only works with buffered writes */
+    if ((fb->flags & (B_WRERR | B_EOUT | B_WR)) != B_WR)
+	return -1;
     b.vbuff.curpos = (char *)&fb->outbase[fb->outcnt];
     b.vbuff.endpos = (char *)&fb->outbase[fb->bufsiz];
     b.fb = fb;
@@ -1547,6 +1551,9 @@ API_EXPORT(int) ap_vbprintf(BUFF *fb, const char *fmt, va_list ap)
     struct bprintf_data b;
     int res;
 
+    /* XXX: only works with buffered writes */
+    if ((fb->flags & (B_WRERR | B_EOUT | B_WR)) != B_WR)
+	return -1;
     b.vbuff.curpos = (char *)&fb->outbase[fb->outcnt];
     b.vbuff.endpos = (char *)&fb->outbase[fb->bufsiz];
     b.fb = fb;
