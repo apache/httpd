@@ -356,6 +356,10 @@ static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
 {
     int rv;
 
+    if (fb->filter_callback != NULL) {
+        fb->filter_callback(fb, buf, nbyte);
+    }
+   
 #if defined(WIN32) || defined(NETWARE)
     if (fb->flags & B_SOCKET) {
 	rv = sendwithtimeout(fb->fd, buf, nbyte, 0);
@@ -437,6 +441,9 @@ API_EXPORT(BUFF *) ap_bcreate(pool *p, int flags)
     fb->sf_out = sfnew(fb->sf_out, NIL(Void_t *),
 		       (size_t) SF_UNBOUND, 1, SF_WRITE);
 #endif
+
+    fb->callback_data = NULL;
+    fb->filter_callback = NULL;
 
     return fb;
 }
@@ -1077,6 +1084,12 @@ static int write_it_all(BUFF *fb, const void *buf, int nbyte)
 static int writev_it_all(BUFF *fb, struct iovec *vec, int nvec)
 {
     int i, rv;
+    
+    if (fb->filter_callback != NULL) {
+        for (i = 0; i < nvec; i++) {
+            fb->filter_callback(fb, vec[i].iov_base, vec[i].iov_len);
+        }
+    }
 
     /* while it's nice an easy to build the vector and crud, it's painful
      * to deal with a partial writev()

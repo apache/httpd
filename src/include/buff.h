@@ -129,6 +129,10 @@ struct buff_struct {
     Sfio_t *sf_in;
     Sfio_t *sf_out;
 #endif
+
+    void *callback_data;
+    void (*filter_callback)(BUFF *, const void *, int );
+	
 };
 
 #ifdef B_SFIO
