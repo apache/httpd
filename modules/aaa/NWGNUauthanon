@@ -94,19 +94,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= authndef
+NLM_NAME		= authanon
 
 #
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Default Authentication Module
+NLM_DESCRIPTION	= Authentication Anonymous Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= Authndef Module
+NLM_THREAD_NAME	= AuthAnon Module
 
 #
 # If this is specified, it will override VERSION value in 
@@ -151,7 +151,7 @@ XDCDATA         =
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/authndef.nlm \
+	$(OBJDIR)/authanon.nlm \
 	$(EOLIST)
 
 #
@@ -165,7 +165,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/mod_authn_default.o \
+	$(OBJDIR)/mod_auth_anon.o \
 	$(EOLIST)
 
 #
@@ -213,7 +213,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	authn_default_module \
+	auth_anon_module \
 	$(EOLIST)
 	
 #   

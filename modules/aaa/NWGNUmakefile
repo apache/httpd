@@ -152,16 +152,9 @@ XDCDATA         =
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/authbasc.nlm \
-	$(OBJDIR)/authdigt.nlm \
-	$(OBJDIR)/authnano.nlm \
-	$(OBJDIR)/authndbm.nlm \
-	$(OBJDIR)/authndef.nlm \
-	$(OBJDIR)/authnfil.nlm \
-	$(OBJDIR)/authzdbm.nlm \
-	$(OBJDIR)/authzdef.nlm \
-	$(OBJDIR)/authzgrp.nlm \
-	$(OBJDIR)/authzusr.nlm \
+	$(OBJDIR)/authanon.nlm \
+	$(OBJDIR)/authdbm.nlm \
+	$(OBJDIR)/digest.nlm \
 	$(EOLIST)
 
 #

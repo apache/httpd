@@ -16,7 +16,6 @@ endif
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(AP_WORK)/include \
 			$(NWOS) \
 			$(AP_WORK)/modules/arch/netware \
 			$(AP_WORK)/srclib/apr/include \
@@ -28,7 +27,6 @@ XINCDIRS	+= \
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
-			-prefix pre_nw.h \
 			$(EOLIST)
 
 #
@@ -94,19 +92,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= authnano
+NLM_NAME		= digest
 
 #
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Anonymouse Authentication Module
+NLM_DESCRIPTION	= Digest Authentication Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= AuthAnon Module
+NLM_THREAD_NAME	= Digest Module
 
 #
 # If this is specified, it will override VERSION value in 
@@ -151,7 +149,7 @@ XDCDATA         =
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/authnano.nlm \
+	$(OBJDIR)/digest.nlm \
 	$(EOLIST)
 
 #
@@ -165,7 +163,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/mod_authn_anon.o \
+	$(OBJDIR)/mod_auth_digest.o \
 	$(EOLIST)
 
 #
@@ -213,7 +211,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	authn_anon_module \
+	auth_digest_module \
 	$(EOLIST)
 	
 #   

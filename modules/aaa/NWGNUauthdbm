@@ -28,7 +28,6 @@ XINCDIRS	+= \
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
-			-prefix pre_nw.h \
 			$(EOLIST)
 
 #
@@ -94,19 +93,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= authbasc
+NLM_NAME		= authdbm
 
 #
 # This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Basic Authentication Module
+NLM_DESCRIPTION	= Database Authentication Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= AuthBasic Module
+NLM_THREAD_NAME	= AuthDBM Module
 
 #
 # If this is specified, it will override VERSION value in 
@@ -151,7 +150,7 @@ XDCDATA         =
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/authbasc.nlm \
+	$(OBJDIR)/authdbm.nlm \
 	$(EOLIST)
 
 #
@@ -165,8 +164,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/mod_auth_basic.o \
-	$(OBJDIR)/auth_provider.o \
+	$(OBJDIR)/mod_auth_dbm.o \
 	$(EOLIST)
 
 #
@@ -214,7 +212,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	auth_basic_module \
+	auth_dbm_module \
 	$(EOLIST)
 	
 #   

@@ -32,7 +32,6 @@ XINCDIRS	+= \
 			$(AP_WORK)/srclib/include/arch/NetWare \
 			$(AP_WORK)/srclib/apr-util/include \
 			$(AP_WORK)/include \
-			$(AP_WORK)/modules/aaa/ \
 			$(AP_WORK)/modules/filters/ \
 			$(AP_WORK)/modules/generators/ \
 			$(AP_WORK)/modules/http/ \
@@ -184,7 +183,6 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/auth_provider.o \
 	$(OBJDIR)/buildmark.o \
 	$(OBJDIR)/config.o \
 	$(OBJDIR)/connection.o \
@@ -196,10 +194,11 @@ FILES_nlm_objs = \
 	$(OBJDIR)/listen.o \
 	$(OBJDIR)/log.o \
 	$(OBJDIR)/main.o \
-	$(OBJDIR)/mod_authz_host.o \
+	$(OBJDIR)/mod_access.o \
 	$(OBJDIR)/mod_actions.o \
 	$(OBJDIR)/mod_alias.o \
 	$(OBJDIR)/mod_asis.o \
+	$(OBJDIR)/mod_auth.o \
 	$(OBJDIR)/mod_autoindex.o \
 	$(OBJDIR)/mod_cgi.o \
 	$(OBJDIR)/mod_dir.o \
