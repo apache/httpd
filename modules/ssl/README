@@ -30,10 +30,9 @@
  # mod_ssl.h ............... common header file of mod_ssl
  # ssl_engine_config.c ..... module configuration handling
  # ssl_engine_dh.c ......... DSA/DH support
- # ssl_engine_ds.c ......... data structures
  - ssl_engine_ext.c ........ Extensions to other Apache parts
  # ssl_engine_init.c ....... module initialization
- * ssl_engine_io.c ......... I/O support
+ # ssl_engine_io.c ......... I/O support
  # ssl_engine_kernel.c ..... SSL engine kernel
  # ssl_engine_log.c ........ logfile support
  # ssl_engine_mutex.c ...... mutual exclusion support
@@ -42,16 +41,16 @@
  # ssl_engine_vars.c ....... Variable Expansion support
  # ssl_expr.c .............. expression handling main source
  # ssl_expr.h .............. expression handling common header
- - ssl_expr_scan.c ......... expression scanner automaton (pre-generated)
- - ssl_expr_scan.l ......... expression scanner source
- - ssl_expr_parse.c ........ expression parser automaton  (pre-generated)
- - ssl_expr_parse.h ........ expression parser header     (pre-generated)
- - ssl_expr_parse.y ........ expression parser source
+ # ssl_expr_scan.c ......... expression scanner automaton (pre-generated)
+ # ssl_expr_scan.l ......... expression scanner source
+ # ssl_expr_parse.c ........ expression parser automaton  (pre-generated)
+ # ssl_expr_parse.h ........ expression parser header     (pre-generated)
+ # ssl_expr_parse.y ........ expression parser source
  # ssl_expr_eval.c ......... expression machine evaluation
  # ssl_scache.c ............ session cache abstraction layer
  # ssl_scache_dbm.c ........ session cache via DBM file
- - ssl_scache_shmcb.c ...... session cache via shared memory cyclic buffer
- - ssl_scache_shmht.c ...... session cache via shared memory hash table
+ ~ ssl_scache_shmcb.c ...... session cache via shared memory cyclic buffer
+ ~ ssl_scache_shmht.c ...... session cache via shared memory hash table
  # ssl_util.c .............. utility functions
  # ssl_util_ssl.c .......... the OpenSSL companion source
  # ssl_util_ssl.h .......... the OpenSSL companion header
@@ -60,6 +59,7 @@
 
  Legend: # = already ported to Apache 2.0 and is cleaned up
          * = ported to Apache 2.0 but still needs cleaning up
+         ~ = ported to Apache 2.0 but still needs work
          - = port still not finished
 
  The source files are written in clean ANSI C and pass the ``gcc -O -g
@@ -90,18 +90,18 @@
 
    server_rec .............. Apache (Virtual) Server
    conn_rec ................ Apache Connection
-   BUFF .................... Apache Connection Buffer
    request_rec ............. Apache Request
    SSLModConfig ............ mod_ssl (Global)  Module Configuration
    SSLSrvConfig ............ mod_ssl (Virtual) Server Configuration
    SSLDirConfig ............ mod_ssl Directory Configuration
+   SSLConnConfig ........... mod_ssl Connection Configuration
+   SSLFilterRec ............ mod_ssl Filter Context
    SSL_CTX ................. OpenSSL Context
    SSL_METHOD .............. OpenSSL Protocol Method
    SSL_CIPHER .............. OpenSSL Cipher
    SSL_SESSION ............. OpenSSL Session
    SSL ..................... OpenSSL Connection
    BIO ..................... OpenSSL Connection Buffer
-   SSLFilterRec ............ mod_ssl Filter Context
 
  For an overview how these are related and chained together have a look at the
  page in README.dsov.{fig,ps}. It contains overview diagrams for those data
@@ -123,12 +123,6 @@
  defined (via CFLAGS). Or in other words: SSL_EXPERIMENTAL enables all
  SSL_EXPERIMENTAL_xxxx variables, except if SSL_EXPERIMENTAL_xxxx_IGNORE
  is already defined. Currently the following features are experimental:
-
-   o SSL_EXPERIMENTAL_PERDIRCA
-     The ability to use SSLCACertificateFile and SSLCACertificatePath
-     in a per-directory context (.htaccess). This is provided by some nasty
-     reconfiguration hacks until OpenSSL has better support for this. It
-     should work on non-multithreaded platforms (all but Win32).
 
    o SSL_EXPERIMENTAL_PROXY
      The ability to use various additional SSLProxyXXX directives in
@@ -165,12 +159,20 @@
    process_rec->pool->user_data. The ssl_pphrase_Handle_CB() and 
    ssl_config_global_* () functions have an extra parameter now - 
    "server_rec *" -  which is used to retrieve the SSLModConfigRec.
- 
+ o Properly support restarts, allowing mod_ssl to be added to a server
+   that is already running and to change server certs/keys on restart
+ o Various performance enhancements
+
  TODO
 
- o Cleanup ssl_engine_io.c !!
  o Port all remaining code (code inside #if 0...#endif blocks)
  o Do we need SSL_set_read_ahead()?
- o Enable use of MM, SHMCB and SHMHT.
  o Enable SSL extensions (ssl_engine_ext.c)
-
+ o add configure check for SSL_set_cert_store to support per-dir
+   SSLCACertificate{File,Path}
+ o the ssl_expr api is NOT THREAD SAFE.  race conditions exist:
+   -in ssl_expr_comp() if SSLRequire is used in .htaccess
+    (ssl_expr_info is global)
+   -is ssl_expr_eval() if there is an error
+    (ssl_expr_error is global)
+ o SSLRequire directive (parsing of) leaks memory
