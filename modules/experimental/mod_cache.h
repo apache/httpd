@@ -64,11 +64,7 @@
 #include <arpa/inet.h>
 #endif
 
-/* USE_ATOMICS should be replaced with the appropriate APR feature macro */
-#define USE_ATOMICS
-#ifdef USE_ATOMICS
 #include "apr_atomic.h"
-#endif
 
 #ifndef MAX
 #define MAX(a,b)                ((a) > (b) ? (a) : (b))
@@ -175,11 +171,7 @@ struct cache_object {
     void *vobj;         /* Opaque portion (specific to the cache implementation) of the cache object */
     apr_size_t count;   /* Number of body bytes written to the cache so far */
     int complete;
-#ifdef USE_ATOMICS
     apr_uint32_t refcount;
-#else
-    apr_size_t refcount;
-#endif
     apr_size_t cleanup;
 };
 
