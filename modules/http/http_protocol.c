@@ -930,9 +930,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, ap_bucket_brigade *b, ap_input_mode_
     }
 
     if (mode == AP_MODE_PEEK) {
-        /* XXX make me *try* to read from the network if AP_BRIGADE_EMPTY().
-         * For now, we can't do a non-blocking read so we bypass this.
-         */
         ap_bucket *e;
         const char *str;
         apr_size_t length;
