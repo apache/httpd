@@ -473,7 +473,7 @@ static void output_results(void)
     printf("Server Port:            %hd\n", port);
     printf("\n");
     printf("Document Path:          %s\n", path);
-    printf("Document Length:        %d bytes\n", doclen);
+    printf("Document Length:        %" APR_SIZE_T_FMT " bytes\n", doclen);
     printf("\n");
     printf("Concurrency Level:      %d\n", concurrency);
     printf("Time taken for tests:   %ld.%03ld seconds\n",
@@ -731,7 +731,7 @@ static void output_html_results(void)
 	   "<td colspan=2 %s>%s</td></tr>\n",
 	   trstring, tdstring, tdstring, path);
     printf("<tr %s><th colspan=2 %s>Document Length:</th>"
-	   "<td colspan=2 %s>%d bytes</td></tr>\n",
+	   "<td colspan=2 %s>%" APR_SIZE_T_FMT " bytes</td></tr>\n",
 	   trstring, tdstring, tdstring, doclen);
     printf("<tr %s><th colspan=2 %s>Concurrency Level:</th>"
 	   "<td colspan=2 %s>%d</td></tr>\n",
@@ -1302,14 +1302,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.83 $> apache-2.0");
+	printf("This is ApacheBench, Version %s\n", AP_SERVER_BASEREVISION " <$Revision: 1.84 $> apache-2.0");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.83 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_SERVER_BASEREVISION, "$Revision: 1.84 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2001 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
