@@ -1190,11 +1190,8 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                                                      &core_module);
     ap_conf_vector_t **locations = (ap_conf_vector_t **) sconf->sec_url->elts;
     int num_loc = sconf->sec_url->nelts;
-    core_dir_config *entry_core;
     walk_cache_t *cache;
-    walk_walked_t *last_walk;
     const char *entry_uri;
-    int len, j;
 
     cache = prep_walk_cache("ap_location_walk::cache", r);
     
@@ -1241,8 +1238,9 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
         /* We start now_merged from NULL since we want to build 
          * a locations list that can be merged to any vhost.
          */
+        int len, j;
         int matches = cache->walked->nelts;
-        last_walk = (walk_walked_t*)cache->walked->elts;
+        walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
         cache->cached = entry_uri;
         cache->dir_conf_tested = locations;
 
@@ -1252,10 +1250,11 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
          */
         for (j = 0; j < num_loc; ++j) {
 
-	    entry_core = ap_get_module_config(locations[j], &core_module);
-	    entry_uri = entry_core->d;
-
-	    len = strlen(entry_uri);
+	    core_dir_config *entry_core 
+                        = ap_get_module_config(locations[j], &core_module);
+	    
+            /* ### const strlen can be optimized in location config parsing */
+	    len = strlen(entry_core->d);
 
             /* Test the regex, fnmatch or string as appropriate.
              * If it's a strcmp, and the <Location > pattern was 
@@ -1263,13 +1262,13 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
              * terminated (or at the end of the string) to match.
              */
 	    if (entry_core->r 
-                  ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
-                  : (entry_core->d_is_fnmatch
-                       ? apr_fnmatch(entry_uri, cache->cached, FNM_PATHNAME)
-                       : (strncmp(cache->cached, entry_uri, len)
-                            || (entry_uri[len - 1] != '/'
-                             && cache->cached[len] != '/' 
-                             && cache->cached[len] != '\0')))) {
+                 ? ap_regexec(entry_core->r, r->uri, 0, NULL, 0)
+                 : (entry_core->d_is_fnmatch
+                     ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
+                     : (strncmp(entry_core->d, cache->cached, len)
+                         ||   (entry_core->d[len - 1] != '/'
+                            && cache->cached[len] != '/' 
+                            && cache->cached[len] != '\0')))) {
 	        continue;
             }
 
@@ -1321,12 +1320,13 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
 
 AP_DECLARE(int) ap_file_walk(request_rec *r)
 {
-    core_dir_config *conf = ap_get_module_config(r->per_dir_config,
-                                                 &core_module);
-    ap_conf_vector_t *per_dir_defaults = r->per_dir_config;
-    ap_conf_vector_t **file = (ap_conf_vector_t **) conf->sec_file->elts;
-    int num_files = conf->sec_file->nelts;
-    char *test_file;
+    ap_conf_vector_t *now_merged = NULL;
+    core_dir_config *dconf = ap_get_module_config(r->per_dir_config,
+                                                  &core_module);
+    ap_conf_vector_t **file = (ap_conf_vector_t **) dconf->sec_file->elts;
+    int num_files = dconf->sec_file->nelts;
+    walk_cache_t *cache;
+    const char *test_file;
 
     /* To allow broken modules to proceed, we allow missing filenames to pass.
      * We will catch it later if it's heading for the core handler.  
@@ -1336,62 +1336,113 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
         return OK;
     }
 
-    /* get the basename */
+    cache = prep_walk_cache("ap_file_walk::cache", r);
+
+    /* No tricks here, there are just no <Files > to parse in this context.
+     * We won't destroy the cache, just in case _this_ redirect is later
+     * redirected again to a context containing the same or similar <Files >.
+     */
+    if (!num_files) {
+	return OK;
+    }
+
+    /* Get the basename .. and copy for the cache just 
+     * in case r->filename is munged by another module
+     */
     test_file = strrchr(r->filename, '/');
     if (test_file == NULL) {
-	test_file = r->filename;
+	test_file = apr_pstrdup(r->pool, r->filename);
     }
     else {
-	++test_file;
+	test_file = apr_pstrdup(r->pool, ++test_file);
     }
 
-    /* Go through the file entries, and check for matches. */
-
-    if (num_files) {
-        ap_conf_vector_t *this_conf;
-        ap_conf_vector_t *entry_config;
-        core_dir_config *entry_core;
-        char *entry_file;
+    /* If we have an cache->cached file name that matches test_file,
+     * and the directory's list of file sections hasn't changed, we 
+     * can skip rewalking the file_walk entries.
+     */
+    if (cache->cached && (cache->dir_conf_tested == file) 
+                      && (strcmp(test_file, cache->cached) == 0)) {
+        /* Well this looks really familiar!  If our end-result (per_dir_result)
+         * didn't change, we have absolutely nothing to do :)  
+         * Otherwise (as is the case with most dir_merged requests)
+         * we must merge our dir_conf_merged onto this new r->per_dir_config.
+         */
+        if (cache->per_dir_result == r->per_dir_config)
+            return OK;
+        if (cache->walked->nelts)
+            now_merged = ((walk_walked_t*)cache->walked->elts)
+                                            [cache->walked->nelts - 1].merged;
+    }
+    else {
+        /* We start now_merged from NULL since we want to build 
+         * a file section list that can be merged to any dir_walk.
+         */
         int j;
+        int matches = cache->walked->nelts;
+        walk_walked_t *last_walk = (walk_walked_t*)cache->walked->elts;
+        cache->cached = test_file;
+        cache->dir_conf_tested = file;
 
-        /* we apply the directive sections in some order;
-         * should really try them with the most general first.
+        /* Go through the location entries, and check for matches.
+         * We apply the directive sections in given order, we should
+         * really try them with the most general first.
          */
         for (j = 0; j < num_files; ++j) {
+        
+            core_dir_config *entry_core 
+                                = ap_get_module_config(file[j], &core_module);
 
-            entry_config = file[j];
-
-            entry_core = ap_get_module_config(entry_config, &core_module);
-            entry_file = entry_core->d;
-
-            this_conf = NULL;
-
-            if (entry_core->r) {
-                if (!ap_regexec(entry_core->r, test_file, 0, NULL, 0))
-                    this_conf = entry_config;
+            if (entry_core->r
+                 ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
+                 : (entry_core->d_is_fnmatch
+                     ? apr_fnmatch(entry_core->d, cache->cached, FNM_PATHNAME)
+                     : strcmp(entry_core->d, cache->cached))) {
+                continue;
             }
-            else if (entry_core->d_is_fnmatch) {
-                if (!apr_fnmatch(entry_file, test_file, FNM_PATHNAME)) {
-                    this_conf = entry_config;
+
+            /* If we merged this same section last time, reuse it
+             */
+            if (matches) {
+                if (last_walk->matched == file[j]) {
+                    now_merged = last_walk->merged;
+                    ++last_walk;
+                    --matches;
+                    continue;
                 }
+                /* We fell out of sync.  This is our own copy of walked,
+                 * so truncate the remaining matches and reset remaining.
+                 */
+                cache->walked->nelts -= matches;
+                matches = 0;
             }
-            else if (!strcmp(test_file, entry_file)) {
-                this_conf = entry_config;
-	    }
 
-            if (this_conf)
-                per_dir_defaults = ap_merge_per_dir_configs(r->pool,
-                                                            per_dir_defaults,
-                                                            this_conf);
+            if (now_merged)
+	        now_merged = ap_merge_per_dir_configs(r->pool, 
+                                                      now_merged,
+                                                      file[j]);
+            else
+                now_merged = file[j];
+
+            last_walk = (walk_walked_t*)apr_array_push(cache->walked);
+            last_walk->matched = file[j];
+            last_walk->merged = now_merged;
         }
-        r->per_dir_config = per_dir_defaults;
+        /* Whoops - everything matched in sequence, but the original walk
+         * found some additional matches.  Truncate them.
+         */
+        if (matches)
+            cache->walked->nelts -= matches;
     }
 
-    /* Save a dummy userdata element till we optimize this function.
-     * If this userdata is set, file_walk has run.
+    /* Merge our cache->dir_conf_merged construct with the r->per_dir_configs,
+     * and note the end result to (potentially) skip this step next time.
      */
-    apr_pool_userdata_set((void *)1, "ap_file_walk::cache",
-                          apr_pool_cleanup_null, r->pool);
+    if (now_merged)
+        r->per_dir_config = ap_merge_per_dir_configs(r->pool,
+                                                     r->per_dir_config,
+                                                     now_merged);
+    cache->per_dir_result = r->per_dir_config;
 
     return OK;
 }
