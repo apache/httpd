@@ -184,53 +184,64 @@ void ap_init_vhost_config(apr_pool_t *p)
  * port is the default port to assume
  */
 static const char *get_addresses(apr_pool_t *p, const char *w_,
-				 server_addr_rec ***paddr, apr_port_t port)
+				 server_addr_rec ***paddr, 
+                                 apr_port_t default_port)
 {
     apr_sockaddr_t *my_addr;
     server_addr_rec *sar;
-    char *t;
-    int i;
-    char *w;
+    char *w, *host, *scope_id;
+    int wild_port;
+    size_t wlen;
+    apr_port_t port;
     apr_status_t rv;
 
-    if (*w_ == 0)
+    if (*w_ == '\0')
 	return NULL;
 
-    w=apr_pstrdup(p, w_);
-    t = strchr(w, ':');
-    if (t) {
-	if (strcmp(t + 1, "*") == 0) {
-	    port = 0;
-	}
-	else if ((i = atoi(t + 1))) {
-	    port = i;
-	}
-	else {
-	    return ":port must be numeric";
-	}
-	*t = 0;
+    w = apr_pstrdup(p, w_);
+    /* apr_parse_addr_port() doesn't understand ":*" so handle that first. */
+    wlen = strlen(w);
+    if (wlen > 2 && w[wlen - 1] == '*' && w[wlen - 2] == ':') {
+        w[wlen - 2] = '\0';
+        wild_port = 1;
+    }
+    else {
+        wild_port = 0;
+    }
+    rv = apr_parse_addr_port(&host, &scope_id, &port, w, p);
+    if (rv != APR_SUCCESS) {
+        return "The address or port is invalid";
+    }
+    if (scope_id) {
+        return "Scope ids are not supported";
+    }
+    if (!port && !wild_port) {
+        port = default_port;
     }
 
-    if (strcasecmp(w, "_default_") == 0
-        || strcmp(w, "255.255.255.255") == 0) {
+    if (strcasecmp(host, "_default_") == 0
+        || strcmp(host, "255.255.255.255") == 0) {
         rv = apr_getaddrinfo(&my_addr, NULL, APR_INET, port, 0, p);
         ap_assert(rv == APR_SUCCESS); /* must be bug or out of storage */
         my_addr->sa.sin.sin_addr.s_addr = DEFAULT_VHOST_ADDR;
     } else {
-        rv = apr_getaddrinfo(&my_addr, w, APR_INET, port, 0, p);
+        rv = apr_getaddrinfo(&my_addr, host, APR_UNSPEC, port, 0, p);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, NULL,
-                "Cannot resolve host name %s --- ignoring!", w);
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
+                "Cannot resolve host name %s --- ignoring!", host);
             return NULL;
         }
     }
+
+    /* XXX Gotta go through *all* addresses for the host name! 
+     * Fix apr_getaddrinfo() to save them! */
 
     sar = apr_pcalloc(p, sizeof(server_addr_rec));
     **paddr = sar;
     *paddr = &sar->next;
     sar->host_addr = my_addr;
     sar->host_port = port;
-    sar->virthost = apr_pstrdup(p, w);
+    sar->virthost = host;
     return NULL;
 }
 
@@ -424,17 +435,20 @@ static void dump_a_vhost(apr_file_t *f, ipaddr_chain *ic)
     name_chain *nc;
     int len;
     char buf[MAX_STRING_LEN];
+    apr_sockaddr_t *ha = ic->sar->host_addr;
 
-    if (ic->sar->host_addr->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR) {
+    if (ha->sa.sin.sin_family == APR_INET &&
+        ha->sa.sin.sin_addr.s_addr == DEFAULT_VHOST_ADDR) {
 	len = apr_snprintf(buf, sizeof(buf), "_default_:%u",
 		ic->sar->host_port);
     }
-    else if (ic->sar->host_addr->sa.sin.sin_addr.s_addr == INADDR_ANY) {
+    else if (ha->sa.sin.sin_family == APR_INET &&
+             ha->sa.sin.sin_addr.s_addr == INADDR_ANY) {
 	len = apr_snprintf(buf, sizeof(buf), "*:%u",
 		ic->sar->host_port);
     }
     else {
-	len = apr_snprintf(buf, sizeof(buf), "%pI", ic->sar->host_addr);
+	len = apr_snprintf(buf, sizeof(buf), "%pI", ha);
     }
     if (ic->sar->host_port == 0) {
 	buf[len-1] = '*';
@@ -663,7 +677,7 @@ void ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
                     char *ipaddr_str;
 
                     apr_get_ipaddr(&ipaddr_str, s->addrs->host_addr);
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, main_s,
+		    ap_log_error(APLOG_MARK, APLOG_ERR, rv, main_s,
                                  "Failed to resolve server name "
                                  "for %s (check DNS) -- or specify an explicit "
                                  "ServerName",
