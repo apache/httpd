@@ -543,7 +543,11 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         opts_remove = this_dir->opts_remove;
         override = this_dir->override;
 
-        r->path_info = r->filename;
+        /* XXX: Remerge path_info, or we are broken.  Needs more thought.
+         */
+        if (r->path_info)
+            r->path_info = ap_make_full_path(r->pool, r->filename, 
+                                                      r->path_info);
         rv = apr_filepath_root((const char **)&r->filename,
                                (const char **)&r->path_info,
                                APR_FILEPATH_TRUENAME, r->pool);
