@@ -1,5 +1,9 @@
 Changes with Apache 2.0.43
 
+  *) Make mod_cache's CacheMaxStreamingBuffer directive work
+     properly for virtual hosts that override server-wide mod_cache
+     setttings.  [Matthieu Estrade <estrade-m@ifrance.com>]
+
   *) Add ap_register_provider/ap_lookup_provider API.
      [John K. Sterling <john@sterls.com>, Justin Erenkrantz]
 

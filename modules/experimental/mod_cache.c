@@ -919,6 +919,10 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->ignorecachecontrol_set == 0)
         ? base->ignorecachecontrol
         : overrides->ignorecachecontrol;
+    ps->max_streaming_buffer_size  =
+        (overrides->max_streaming_buffer_size == 0)
+        ? base->max_streaming_buffer_size
+        : overrides->max_streaming_buffer_size;
 
     return ps;
 }
