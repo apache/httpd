@@ -1,5 +1,8 @@
 Changes with Apache 2.0.36
 
+  *) fix possible compilation problem in ssl_engine_kernel.c. PR 7802
+     [Doug MacEachern]
+
   *) fix possible infinite loop in mod_ssl triggered by certain
      netscape clients [Doug MacEachern]
 
