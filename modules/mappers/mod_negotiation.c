@@ -932,6 +932,7 @@ static int read_types_multi(negotiation_state *neg)
     }
 
     while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
+        apr_array_header_t *exception_list;
         request_rec *sub_req;
         
         /* Do we have a match? */
@@ -961,7 +962,36 @@ static int read_types_multi(negotiation_state *neg)
             sub_req->content_type = CGI_MAGIC_TYPE;
         }
 
-        if (sub_req->status != HTTP_OK || !sub_req->content_type) {
+        exception_list = 
+            (apr_array_header_t *)apr_table_get(sub_req->notes, 
+                                                "ap-mime-exceptions-list");
+        if (exception_list) {
+            /* Every last missing bit danged well better be in our table!
+             * Simple enough for now, every unregonized bit better match
+             * our base name.  When we break up our base name and allow
+             * index.en to match index.html.en, this gets tricker.
+             */
+            char *base = apr_array_pstrcat(sub_req->pool, exception_list, '.');
+            int base_len = strlen(base);
+            if (base_len > prefix_len 
+#ifdef CASE_BLIND_FILESYSTEM
+                || strncasecmp(base, filp, base_len)
+#else
+                || strncmp(base, filp, base_len)
+#endif
+                || (prefix_len > base_len && filp[base_len] != '.')) {
+                /* 
+                 * Something you don't know is, something you don't know...
+                 */
+                ap_destroy_sub_req(sub_req);
+                continue;
+            }
+        }
+
+        /* XXX If we successfully negotate ANYTHING, continue
+         */
+        if (sub_req->status != HTTP_OK ||
+            (!sub_req->content_type && !exception_list)) {
             ap_destroy_sub_req(sub_req);
             continue;
         }
