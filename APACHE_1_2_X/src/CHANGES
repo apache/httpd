@@ -1,14 +1,14 @@
 Changes with Apache 1.2.2
 
-  *) Fixed improper vhost merging of <Location> and <Directory>: changed the
-     ordering of the arguments to append_arrays for the main server's before 
-     the vhost's.
+  *) When merging the main server's <Directory> and <Location> sections into
+     a vhost, put the main server's first and the vhost's second.  Otherwise
+     the vhost can't override the main server.  [Dean Gaudet] PR#717
+
+  *) The <Directory> code would merge and re-merge the same section after
+     a match was found, possibly causing problems with some modules.
      [Dean Gaudet]
 
-  *) Bugfix for case where multiple <Directory>s match and all are applied.
-     [Dean Gaudet]
-
-  *) Fixed an infinite loop in mod_imap for references above the server root
+  *) Fixed an infinite loop in mod_imap for references above the server root.
      [Dean Gaudet] PR#748
 
   *) mod_include cleanup showed that handle_else was being used to handle
