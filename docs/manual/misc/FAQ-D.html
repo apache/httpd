@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.3 $ ($Date: 1999/08/04 18:10:40 $)
+  $Revision: 1.4 $ ($Date: 1999/09/17 17:31:37 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -101,6 +101,9 @@
         window, I get a message like "<samp>Cannot determine host name.
 	Use ServerName directive to set it manually.</samp>"  What does
 	this mean?</A>
+   </LI>
+   <LI><A HREF="#ws2_32dll">When I try to start Apache for Windows, I get a message
+	like "<samp>Unable To Locate WS2_32.DLL...</samp>". What should I do?</A>
    </LI>
   </OL>
  </LI>
@@ -355,6 +358,21 @@
   in the file.  Correct it if there one there with wrong information, or
   add one if you don't already have one.  Then try to start the server
   again.
+  </p>
+  <hr>
+ </LI>
+ <LI><A name="ws2_32dll">
+       <b>When I try to start Apache for Windows, I get a message
+	like "<samp>Unable To Locate WS2_32.DLL...</samp>". What should I do?</b></A>
+  <p>
+  Short answer: You need to install Winsock 2, available from
+  <A HREF="http://www.microsoft.com/windows95/downloads/">http://www.microsoft.com/windows95/downloads/</A>
+  </p>
+  <p>
+  Detailed answer: Prior to version 1.3.9, Apache for Windows used Winsock 1.1. Beginning with
+  version 1.3.9, Apache began using Winsock 2 features (specifically, WSADuplicateSocket()).
+  WS2_32.DLL implements the Winsock 2 API. Winsock 2 ships with Windows NT 4.0 and Windows 98.
+  Some of the earlier releases of Windows 95 did not include Winsock 2.
   </p>
   <hr>
  </LI>
