@@ -863,6 +863,12 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *skCAList,
                 "CA certificate: %s",
                 X509_NAME_oneline(name, name_buf, sizeof(name_buf)));
 
+        /*
+         * note that SSL_load_client_CA_file() checks for duplicates,
+         * but since we call it multiple times when reading a directory
+         * we must also check for duplicates ourselves.
+         */
+
         if (sk_X509_NAME_find(skCAList, name) < 0) {
             /* this will be freed when skCAList is */
             sk_X509_NAME_push(skCAList, name);
@@ -893,12 +899,6 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s, apr_pool_t *pp, const ch
      * entries get added in sorted order.
      */
     skCAList = sk_X509_NAME_new(ssl_init_FindCAList_X509NameCmp);
-
-    /*
-     * note that SSL_load_client_CA_file() checks for duplicates,
-     * but since we call it multiple times when reading a directory
-     * we must also check for duplicates ourselves.
-     */
 
     /*
      * Process CA certificate bundle file
