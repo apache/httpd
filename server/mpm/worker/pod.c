@@ -56,22 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#include "apr.h"
-#include "apr_strings.h"
-#include "apr_lock.h"
-#define APR_WANT_STRFUNC
-#include "apr_want.h"
-
-#include "httpd.h"
-#include "http_config.h"
-#include "http_log.h"
-#include "http_main.h"
-#include "mpm.h"
 #include "pod.h"
-#include "mpm_common.h"
-#include "ap_mpm.h"
-#include "ap_listen.h"
-#include "mpm_default.h"
+
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
