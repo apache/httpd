@@ -1388,16 +1388,18 @@ if [ "x$using_shlib" = "x1" ] ; then
             ;;
 	*-cygwin*)
 	    DEF_SHARED_CORE=yes
-	    LDFLAGS_SHLIB="-g"
+	    LDFLAGS_SHLIB="--export-all"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    SHLIB_SUFFIX_NAME=dll
+	    SHMOD_SUFFIX_NAME=dll
 	    SHLIB_SUFFIX_DEPTH=0
-	    DLL_IMPORT_LIB='lib$(TARGET).a'
-	    DLL_IMPORT_DEF='lib$(TARGET).def'
-	    LD_SHLIB='dllwrap --export-all --implib $(DLL_IMPORT_LIB) --driver-name $(CC)'
-	    LD_SHCORE_LIBS='$(LIBS)'
+	    LD_SHLIB='dllwrap'
+	    LD_SHCORE_DEF=''
+	    LD_SHCORE_LIBS="$LIBS"
 	    LIBS_SHLIB='$(EXTRA_LIBS)'
-	    SHARED_CORE_EP=''
+	    SHARED_CORE_EP='lib$(TARGET).ep'
+	    SHCORE_IMPLIB='lib$(TARGET).dll'
+	    OS_MODULE_INCLUDE='Makefile.Cygwin'
 	    ;;
 	*)
 	    ##  ok, no known explict support for shared objects
