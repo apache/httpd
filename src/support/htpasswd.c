@@ -244,6 +244,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	pw = strd((char *) getpass("New password: "));
 	if (strcmp(pw, (char *) getpass("Re-type new password: "))) {
 	    ap_cpystrn(record, "password verification error", (rlen - 1));
+	    free(pw);
 	    return ERR_PWMISMATCH;
 	}
     }
@@ -260,7 +261,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
 	break;
     }
-    fprintf(stderr, "Yow!\n");
+
     /*
      * Now that we have the smashed password, we don't need the
      * plaintext one any more.
