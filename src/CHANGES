@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Make sure the config.status file is not overridden when just
+     ``configure --help'' is used. [Ralf S. Engelschall] PR#2844
+
   *) Split MODULE_MAGIC_NUMBER into _MAJOR/_MINOR numbers. This should
      provide a way to trace API changes that add functionality but do
      not create a compatibility issue for precompiled modules, etc.
