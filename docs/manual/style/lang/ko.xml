@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!-- English revision: 1.11 -->
+<!-- English Revision: 1.16 -->
 <!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
 
 <!--
@@ -104,6 +104,6 @@
  <message name="langavail">가능한 언어</message>
 
  <!-- not up to date -->
- <message name="outofdate">This translation may be out of date. Check the
- English version for recent changes.</message>
+ <message name="outofdate">이 문서는 최신판 번역이 아닙니다.
+ 최근에 변경된 내용은 영어 문서를 참고하세요.</message>
 </messages>

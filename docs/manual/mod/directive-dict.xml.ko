@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 1.4 (outdated: 1.8) -->
+<!-- English Revision: 1.8 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -143,12 +143,12 @@
 
       <dt>디렉토리 (directory)</dt>
 
-      <dd>지시어가 <a href="../sections.html">어떻게 Directory,
-      Location, Files 섹션이 동작하나</a>에 설명한 제약을 따르며,
-      서버 설정파일의 <directive module="core"
+      <dd>지시어가 <a href="../sections.html">섹션 설정</a>에
+      설명한 제약을 따르며, 서버 설정파일의 <directive module="core"
       type="section">Directory</directive>, <directive
-      type="section" module="core">Location</directive>,
-      <directive module="core" type="section">Files</directive>에서
+      type="section" module="core">Location</directive>, <directive
+      module="core" type="section">Files</directive>, <directive
+      module="mod_proxy" type="section">Proxy</directive>에서
       사용할 수 있음을 뜻한다.</dd>
 
       <dt>.htaccess</dt>

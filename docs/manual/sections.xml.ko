@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 1.6 (outdated: 1.11) -->
+<!-- English Revision: 1.11 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -325,7 +325,7 @@ module="core">Location</directive>, <directive type="section"
 module="core">LocationMatch</directive>, <directive type="section"
 module="mod_proxy">Proxy</directive>, <directive type="section"
 module="mod_proxy">ProxyMatch</directive> 섹션에서도 사용가능하다.
-그러나, 예외가 있다.</p>
+그러나, 예외가 있다:</p>
 
 <ul>
 <li><directive module="core">AllowOverride</directive> 지시어는
@@ -354,10 +354,10 @@ type="section" module="core">Directory</directive> 섹션이나
 
     <ol>
       <li> (정규표현식을 사용하지않는) <directive type="section"
-      module="core">Directory</directive>와 .htaccess는 동시에
-      일어난다 (경우에 따라 .htaccess이 <directive type="section"
-      module="core">Directory</directive>를 무시하도록 설정할
-      수 있다)</li>
+      module="core">Directory</directive>와 <code>.htaccess</code>는
+      동시에 일어난다 (경우에 따라 <code>.htaccess</code>이
+      <directive type="section" module="core">Directory</directive>를
+      무시하도록 설정할 수 있다)</li>
 
       <li><directive type="section"
       module="core">DirectoryMatch</directive> (그리고
@@ -390,6 +390,11 @@ type="section" module="core">Directory</directive> 섹션이나
     module="core">VirtualHost</directive> 섹션 안에 포함된 섹션은
     가상호스트 정의 밖에 있는 해당 섹션 <em>이후에</em> 적용된다.
     그래서 가상호스트 안에서 주서버의 설정사항을 수정할 수 있다.</p>
+
+    <p><module>mod_proxy</module>가 요청 서비스할때, <directive
+    module="mod_proxy" type="section">Proxy</directive> 섹션의
+    처리순서는 <directive module="core"
+    type="section">Directory</directive> 섹션과 같다.</p>
 
     <p>다음에 나오는 섹션은 이전 섹션의 결과를 수정한다.</p>
 
