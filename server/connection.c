@@ -76,9 +76,13 @@
 APR_HOOK_STRUCT(
 	    APR_HOOK_LINK(pre_connection)
 	    APR_HOOK_LINK(process_connection)
+            APR_HOOK_LINK(add_listeners)
             APR_HOOK_LINK(create_connection)
 )
 
+AP_IMPLEMENT_HOOK_RUN_ALL(int,add_listeners,
+     (apr_pollfd_t *pollset, apr_socket_t **listensocks, int num_listensocks),
+     (pollset, listensocks, num_listensocks),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_connection,(conn_rec *c),(c),OK,DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,

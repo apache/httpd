@@ -544,8 +544,7 @@ static void child_main(int child_num_arg)
     apr_pool_t *ptrans;
     conn_rec *current_conn;
     apr_status_t stat = APR_EINIT;
-    int sockdes, i;
-    ap_listen_rec *lr;
+    int sockdes;
     int curr_pollfd, last_pollfd = 0;
     apr_pollfd_t *pollset;
     apr_socket_t *sd;
@@ -576,15 +575,12 @@ static void child_main(int child_num_arg)
 
     ap_sync_scoreboard_image();
 
+    apr_poll_setup(&pollset, num_listensocks, pchild);
     /* Set up the pollfd array */
     listensocks = apr_pcalloc(pchild,
                             sizeof(*listensocks) * (num_listensocks));
-    for (lr = ap_listeners, i = 0; i < num_listensocks; lr = lr->next, i++)
-        listensocks[i]=lr->sd;
 
-    apr_poll_setup(&pollset, num_listensocks, pchild);
-    for (i = 0; i < num_listensocks; i++)
-        apr_poll_socket_add(pollset, listensocks[i], APR_POLLIN);
+    ap_run_add_listeners(pollset, listensocks, num_listensocks);
 
     while (!die_now) {
 	/*
