@@ -168,7 +168,7 @@
 #include <fcntl.h>
 #endif
 #endif
-#ifdef AIX
+#if defined(AIX) || defined(AIXIA64)
 #undef USE_FLOCK
 #define USE_FCNTL 1
 #include <fcntl.h>
