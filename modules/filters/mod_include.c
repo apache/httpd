@@ -806,7 +806,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
  * The tag value is html decoded if dodecode is non-zero.
  * The tag value may be NULL if there is no tag value..
  *    format:
- *        [WS]<Tag>[WS]=[WS]['|"]<Value>['|"|WS]
+ *        [WS]<Tag>[WS]=[WS]['|"|`]<Value>[['|"|`|]|WS]
  */
 
 #define SKIP_TAG_WHITESPACE(ptr) while ((*ptr != '\0') && (apr_isspace (*ptr))) ptr++
@@ -857,20 +857,28 @@ static void ap_ssi_get_tag_and_value(include_ctx_t *ctx, char **tag,
     }
 
     SKIP_TAG_WHITESPACE(c);
-    if (*c == '"' || *c == '\'') { 
-        /* Allow quoted values for space inclusion. */
-        term = *c++;     /* NOTE: This does not pass the quotes on return. */
+    if (*c == '"' || *c == '\'' || *c == '`') { 
+        /* Allow quoted values for space inclusion. 
+         * NOTE: This does not pass the quotes on return.
+         */
+        term = *c++;
     }
     
     *tag_val = c;
     while ((*c != '\0') &&
            (((term != '\0') && (*c != term)) ||
             ((term == '\0') && (!apr_isspace(*c))))) {
-        if (*c == '\\') {  /* Accept \" and \' as valid char in string. */
+        /* Accept \" (or ' or `) as valid quotation of string. 
+         */
+        if (*c == '\\') {  
+            /* Overwrite the "\" during the embedded 
+             * escape sequence of '"'. "\'" or '`'. 
+             * Shift bytes from here to next delimiter.     
+             */
             c++;
-            if (*c == term) { /* Overwrite the "\" during the embedded  */
-                shift_val++;  /* escape sequence of '\"' or "\'". Shift */
-            }                 /* bytes from here to next delimiter.     */
+            if (*c == term) {
+                shift_val++;
+            }
             if (shift_val > 0) {
                 *(c-shift_val) = *c;
             }
