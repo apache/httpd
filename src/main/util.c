@@ -701,7 +701,8 @@ API_EXPORT(char *) ap_getword_conf(pool *p, const char **line)
 API_EXPORT(int) ap_cfg_closefile(configfile_t *cfp)
 {
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, "Done with config file %s", fp->name);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, NULL, 
+        "Done with config file %s", cfp->name);
 #endif
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
 }
