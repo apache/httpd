@@ -1,5 +1,9 @@
 Changes with Apache 2.0.34-dev
 
+  *) Add new M_FOO symbols for the WebDAV/DeltaV methods specified by
+     RFC 3253. Improved the method name/number mapping functions.
+     [Greg Stein]
+
   *) remove sock_enable_linger from connection.c [Ian Holsman]
 
   *) Fix for virtual host processing where the requested hostname
