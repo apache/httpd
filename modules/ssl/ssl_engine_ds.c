@@ -201,7 +201,7 @@ void ssl_ds_table_kill(ssl_ds_table *t)
  * we do not leak the malloc-ed data.
  */
 unsigned char *ssl_asn1_table_set(apr_hash_t *table,
-                                  const void *key,
+                                  const char *key,
                                   long int length)
 {
     apr_ssize_t klen = strlen(key);
@@ -235,13 +235,13 @@ unsigned char *ssl_asn1_table_set(apr_hash_t *table,
 }
 
 ssl_asn1_t *ssl_asn1_table_get(apr_hash_t *table,
-                               const void *key)
+                               const char *key)
 {
     return (ssl_asn1_t *)apr_hash_get(table, key, APR_HASH_KEY_STRING);
 }
 
 void ssl_asn1_table_unset(apr_hash_t *table,
-                          const void *key)
+                          const char *key)
 {
     apr_ssize_t klen = strlen(key);
     ssl_asn1_t *asn1 = apr_hash_get(table, key, klen);
