@@ -287,9 +287,9 @@ char *ssl_util_ptxtsub(
      */
     cpResult = apr_pcalloc(p, nResult+1);
     for (cpI = (char *)cpLine, cpO = cpResult, i = 0; cppMatch[i] != NULL; i++) {
-        ap_cpystrn(cpO, cpI, cppMatch[i]-cpI+1);
+        apr_cpystrn(cpO, cpI, cppMatch[i]-cpI+1);
         cpO += (cppMatch[i]-cpI);
-        ap_cpystrn(cpO, cpSubst, nSubst+1);
+        apr_cpystrn(cpO, cpSubst, nSubst+1);
         cpO += nSubst;
         cpI = (cppMatch[i]+nMatch);
     }
