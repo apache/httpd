@@ -27,26 +27,23 @@
 <seealso><a href="apachectl.html">apachectl</a></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
-
-     <p><code><strong>httpd </strong>[ -<strong>d </strong><var>serverroot
-     </var>] [ -<strong>f </strong><var>config </var>] [ -<strong>C
-     </strong> <var>directive </var>] [ -<strong>c </strong>
-     <var>directive</var>] [ -<strong>D </strong> <var>parameter
-     </var>] [ -<strong>e </strong> <var>level</var> ] [ -<strong>E
-     </strong> <var>file</var> ] [ <strong>-k </strong>
-     <code>start|restart|graceful|stop</code> ] [ -<strong>R </strong>
-     <var>directory</var> ] [ -<strong>h </strong>] [ -<strong>l
-     </strong>] [ -<strong>L </strong>] [-<strong>S</strong>] [
-     -<strong>t </strong>] [ -<strong>v </strong>] [ -<strong>V
-     </strong>] [ -<strong>X </strong>]</code></p>
+     <p><code><strong>httpd</strong> [ -<strong>d</strong>
+     <var>serverroot</var> ] [ -<strong>f</strong> <var>config</var> ]
+     [ -<strong>C</strong> <var>directive</var> ] [ -<strong>c</strong>
+     <var>directive</var> ] [ -<strong>D</strong> <var>parameter</var> ]
+     [ -<strong>e</strong> <var>level</var> ] [ -<strong>E</strong>
+     <var>file</var> ] [ <strong>-k</strong> start|restart|graceful|stop ]
+     [ -<strong>R</strong> <var>directory</var> ] [ -<strong>h</strong> ]
+     [ -<strong>l</strong> ] [ -<strong>L</strong> ] [ -<strong>S</strong> ]
+     [ -<strong>t</strong> ] [ -<strong>v</strong>] [ -<strong>V</strong> ]
+     [ -<strong>X</strong> ]</code></p>
 
      <p>On <a href="../platform/windows.html">Windows systems</a>, the
      following additional arguments are available:</p>
 
-     <p><code><strong>httpd </strong> [ -<strong>k </strong>
-     <code>install|config|uninstall</code> ] [ -<strong>n </strong>
-     <var>name</var> ] [ -<strong>w</strong> ]</code></p>
-
+     <p><code><strong>httpd</strong> [ -<strong>k</strong>
+     install|config|uninstall ] [ -<strong>n</strong> <var>name</var> ]
+     [ -<strong>w</strong> ]</code></p>
 </section>
 
 <section id="options"><title>Options</title>
@@ -157,7 +154,7 @@ href="../platform/windows.html">Windows platform</a>:</p>
 
 <dl>
 
-<dt><code>-k <code>install|config|uninstall</code></code></dt>
+<dt><code>-k install|config|uninstall</code></dt>
 
 <dd>Install Apache as a Windows NT service; change startup options for
 the Apache service; and uninstall the Apache service.</dd>
