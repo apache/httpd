@@ -665,8 +665,6 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
 
 void service_stopped(void)
 {
-    DWORD rv;
-
     /* Still have a thread & window to clean up, so signal now */
     if (globdat.service_thread)
     {
