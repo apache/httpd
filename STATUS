@@ -1,5 +1,5 @@
 APACHE 2.1 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/03 18:26:44 $]
+Last modified at [$Date: 2003/01/21 20:55:55 $]
 
 Release [NOTE that only Alpha/Beta releases occur in 2.1 development]:
 
@@ -29,7 +29,7 @@ CURRENT VOTES:
 
       a) httpd-std.conf should be tailored by install (from src or
          binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim
+         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim, nd
            wrowe - prefer httpd.default.conf to avoid ambiguity with cvs
 
       b) tailored httpd-std.conf should be copied by install to
@@ -38,13 +38,13 @@ CURRENT VOTES:
 
       c) tailored httpd-std.conf should be installed to
          sysconfdir/examples or manualdir/exampleconf/
-         +1:   slive, trawick, Ken
+         +1:   slive, trawick, Ken, nd (prefer the latter)
 
       d) Installing a set of default config files when upgrading a server
          doesn't make ANY sense at all.
          +1:   ianh - medium/big sites don't use 'standard config' anyway, as it
                       usually needs major customizations
-         -1:   Ken, wrowe, jwoolley, jim
+         -1:   Ken, wrowe, jwoolley, jim, nd
            wrowe - diff is wonderful when comparing old/new default configs,
                    even for customized sites that ianh mentions
            jim - ... assuming that the default configs have been updated
@@ -59,16 +59,16 @@ CURRENT VOTES:
 
       Self-destruct: Ken, Martin
       Not self-destruct: BrianP, Ian, Cliff, BillS
-      Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj
+      Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj, nd
 
       /* The below was a concept on *how* to handle the problem */
       Have 2 parents: +1: jim
-                      -1: Justin, wrowe, rederpj
+                      -1: Justin, wrowe, rederpj, nd
                       +0: Martin (while standing by, could it do
                                   something useful?)
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
-      +1:   Justin, Ian, Cliff, BillS, striker, wrowe
+      +1:   Justin, Ian, Cliff, BillS, striker, wrowe, nd
       +0:   BrianP, Aaron (mutex contention is looking better with the
             latest code, let's continue tuning and testing), rederpj, jim
       -0:   Lars
