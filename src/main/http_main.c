@@ -845,7 +845,7 @@ void timeout(int sig)
     }
 
     if (!current_conn->keptalive)
-	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
+	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING,
 		    current_conn->server, errstr);
 
     if (timeout_req) {
