@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/01/24 23:47:30 $]
+Last modified at [$Date: 2002/01/25 02:23:37 $]
 
 Release:
 
@@ -112,13 +112,6 @@ RELEASE SHOWSTOPPERS:
       variable, but ab, htpasswd, etc. don't know how to pick up apr,
       apr-util, etc.
         Message-ID: <20020116000226.GA15991@ebuilt.com>
-
-    * mod_cgid leaks pipe descriptors, apparently for every request.
-      I would guess that this is due to recent apr_file_dup[2] 
-      changes.
-
-      I was unable to recreate the problem with mod_cgi (yea!).
-        Message-ID: <20020123070827.GV28051@ebuilt.com> (dev@apr)
 
     * mod_negotiation seems to have out-of-control recursive subreqs.
 
