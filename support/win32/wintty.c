@@ -71,14 +71,18 @@
 #include <windows.h>
 
 const char *options = 
-"Syntax: wintty [opts] [-?]\n\n"
+"\nwintty: a utility for echoing the stdin stream to a new console window,\n"
+"\teven when invoked from within a service (such as the Apache server.)\n"
+"\tAlso reflects the console input back to the stdout stream, allowing\n"
+"\tthe operator to respond to prompts from the context of a service.\n\n"
+"Syntax: %s [opts]\n\n"
 "  opts: -c{haracter}   or -l{ine} input\n"
 "\t-q{uiet}       or -e{cho} input\n"
-"\topts: -u{nprocessed} or -p{rocessed} input\n"
-"\topts: -n{owrap}      or -w{rap} output lines\n"
-"\topts: -f{ormatted}   or -r{aw} output lines\n"
-"\topts: -v{erbose} error checking\n"
-"\topts: -? for this message\n\n";
+"\t-u{nprocessed} or -p{rocessed} input\n"
+"\t-n{owrap}      or -w{rap} output lines\n"
+"\t-f{ormatted}   or -r{aw} output lines\n"
+"\t-v{erbose} error checking\n"
+"\t-? for this message\n\n";
 
 HANDLE herrout;
 BOOL verbose = FALSE;
@@ -112,6 +116,7 @@ int main(int argc, char** argv)
     DWORD tid;
     DWORD len;
     BOOL isservice = FALSE;
+    char *arg0 = argv[0];
 
     while (--argc) {
         ++argv;
@@ -145,7 +150,7 @@ int main(int argc, char** argv)
                     --argc;
                     break;
                 case '?':
-                    printf(options);
+                    printf(options, arg0);
                     exit(1);
 		default:
                     printf("wintty option %s not recognized, use -? for help.\n\n", *argv);
