@@ -17,7 +17,7 @@
 
 <P ALIGN="LEFT">
 <OL>
-        <LH><BIG><STRONG>CONTENTS</STRONG></BIG></LH>
+        <LI><BIG><STRONG>CONTENTS</STRONG></BIG></LI>
         <LI><A HREF="#what">What is suEXEC?</A></LI>
         <LI><A HREF="#before">Before we begin.</A></LI>
         <LI><A HREF="#model">suEXEC Security Model.</A></LI>
@@ -468,7 +468,7 @@ There are a few points of interest regarding the wrapper that can cause
 limitations on server setup.  Please review these before submitting any
 "bugs" regarding suEXEC.
 <UL>
-        <LH><STRONG>suEXEC Points Of Interest</STRONG></LH>
+        <LI><STRONG>suEXEC Points Of Interest</STRONG></LI>
         <LI>Hierarchy limitations
         <BLOCKQUOTE>
         For security and efficiency reasons, all suexec requests must
