@@ -321,10 +321,15 @@ static int status_handler(request_rec *r)
 	    ps_record = ap_scoreboard_image->parent[i];
 	    res = ws_record.status;
 	    stat_buffer[indx] = status_flags[res];
-	    if (res == SERVER_READY)
-	        ready++;
-	    else if (res != SERVER_DEAD && res != SERVER_IDLE_KILL)
-	        busy++;
+            if (!ps_record.quiescing && ps_record.pid) {
+	        if (res == SERVER_READY)
+	            ready++;
+	        else if (res != SERVER_DEAD && res != SERVER_IDLE_KILL)
+	            busy++;
+            }
+            /* XXX what about the counters for quiescing/seg faulted
+             * processes?  should they be counted or not?  GLA
+             */
 	    if (ap_extended_status) {
 	        lres = ws_record.access_count;
 	        bytes = ws_record.bytes_served;
@@ -432,10 +437,10 @@ static int status_handler(request_rec *r)
     }					/* ap_extended_status */
 
     if (!short_report)
-	ap_rprintf(r, "<dt>%d requests currently being processed, %d idle servers</dt>\n"
+	ap_rprintf(r, "<dt>%d requests currently being processed, %d idle workers</dt>\n"
 		,busy, ready);
     else
-	ap_rprintf(r, "BusyServers: %d\nIdleServers: %d\n", busy, ready);
+	ap_rprintf(r, "BusyWorkers: %d\nIdleWorkers: %d\n", busy, ready);
 
     /* send the scoreboard 'table' out */
 
