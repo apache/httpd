@@ -3134,8 +3134,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
          *       with the hope of concatenating with another response)
          */
         if ((!fd && !more && 
-             (nbytes < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(e))
-            || (APR_BUCKET_IS_EOS(e) && c->keepalive)) {
+            (nbytes + flen < AP_MIN_BYTES_TO_WRITE) && !APR_BUCKET_IS_FLUSH(e))
+            || (nbytes + flen < AP_MIN_BYTES_TO_WRITE && APR_BUCKET_IS_EOS(e) && c->keepalive)) {
             /* NEVER save an EOS in here.  If we are saving a brigade with 
              * an EOS bucket, then we are doing keepalive connections, and 
              * we want to process to second request fully.
