@@ -60,8 +60,7 @@ if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     echo "or specify the location of the source with " 
     echo "--with-apr=[path to apr] :"
     echo ""
-    echo "   cd srclib"
-    echo "   svn co https://svn.apache.org/repos/asf/apr/apr/trunk apr"
+    echo "   svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr"
     echo ""
     should_exit=1
 fi
@@ -72,8 +71,7 @@ if [ ! -d "$apu_src_dir" -o ! -f "$apu_src_dir/Makefile.in" ]; then
     echo "or specify the location of the source with "
     echo "--with-apr-util=[path to apr-util]:"
     echo ""
-    echo "   cd srclib"
-    echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/trunk apr-util"
+    echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/trunk srclib/apr-util"
     echo ""
     should_exit=1
 fi
