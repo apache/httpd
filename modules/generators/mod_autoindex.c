@@ -355,26 +355,6 @@ static const char *add_readme(cmd_parms *cmd, void *d, const char *name)
     return NULL;
 }
 
-/* A legacy directive, FancyIndexing is superseded by the IndexOptions
- * keyword.  But for compatibility..
- */
-static const char *fancy_indexing(cmd_parms *cmd, void *d, int arg)
-{
-    int curopts;
-    int newopts;
-    autoindex_config_rec *cfg;
-
-    cfg = (autoindex_config_rec *) d;
-    curopts = cfg->opts;
-    if (curopts & NO_OPTIONS) {
-	return "FancyIndexing directive conflicts with existing "
-	       "IndexOptions None";
-    }
-    newopts = (arg ? (curopts | FANCY_INDEXING) : (curopts & ~FANCY_INDEXING));
-    cfg->opts = newopts;
-    return NULL;
-}
-
 static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 {
     char *w;
@@ -581,8 +561,8 @@ static const command_rec autoindex_cmds[] =
                   "a filename"),
     AP_INIT_TAKE1("ReadmeName", add_readme, NULL, DIR_CMD_PERMS,
                   "a filename"),
-    AP_INIT_FLAG("FancyIndexing", fancy_indexing, NULL, DIR_CMD_PERMS,
-                 "Limited to 'on' or 'off' (superseded by IndexOptions FancyIndexing)"),
+    AP_INIT_RAW_ARGS("FancyIndexing", ap_set_deprecated, NULL, OR_ALL,
+                 "The FancyIndexing directive is no longer supported.  Use IndexOptions FancyIndexing."),
     AP_INIT_TAKE1("DefaultIcon", ap_set_string_slot,
                   (void *) XtOffsetOf(autoindex_config_rec, default_icon),
                   DIR_CMD_PERMS, "an icon URL"),
