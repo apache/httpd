@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/12/11 17:28:39 $]
+  Last modified at [$Date: 2000/12/12 06:56:55 $]
 
 Release:
 
@@ -249,29 +249,6 @@ Open issues:
       
 Win32 specific issues:
 
- Important
-
-    * fix O(n^2) attack in mod_isapi.c ... i.e. recopy the code from
-      scan_script_headers_err_core.  Concept patch available for review
-      from OtherBill <002001bff8b6$cb53b420$345985d0@corecomm.net>
-        Status: Is this done, now that we use scan_script_headers_err_strs?
-
-    * Apache console on Windows 95 alone won't close, close button/menu 
-      option can't (?) be intercepted, any workarounds out there?
-      There is also an unverified report that Apache in a Win98 (95?) 
-      console window is ignoring shutdown/logoff, but this is not a
-      confirmed report, and Apache as a hidden service does not share
-      this reported problem.  Perhaps this is a child process issue,
-      or just a simple matter of timing, since a hidden window exists
-      to intercept these conditions.
-
- In progress:
-
-    * Windows install script review/revision?
-        - Daniel S. Reichenbach is cooking something up.
-
-    * Ben's ASP work... All agree it sounds cool.
-
     * Adding a tray application to the Windoze version for ease of
       status/management.  (PR3594, PR4873)
         No one has implemented a pure C language WinAPI (no MFC) 
@@ -282,7 +259,13 @@ Win32 specific issues:
         See src/os/win32/monitoring-services.txt for details.
         Status: both Brian Moon and William Rowe are experimenting.
 
- Help:
+    * The recent patch to 1.3.15, adding Win9xConHook.dll to add
+      back console windows, resolve the close button and shutdown
+      messages on Win9x, and handle Win9x as a service broke the
+      Win95/98 as-a-service feature, in that Apache now dies when
+      the user logs off.  Will is happy to point any coder in the
+      right directions.
+
     * chdir() for CGI scripts and mod_include #exec needs to be 
       re-implemented now that CreateProcess is being used.
 
