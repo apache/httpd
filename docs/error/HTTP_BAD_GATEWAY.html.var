@@ -1,9 +1,9 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Fehlerhaftes Gateway!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Fehlerhaftes Gateway!"
+--><!--#include virtual="include/top.html"-->
 
     Der Proxy-Server erhielt eine fehlerhafte Antwort
     eines &uuml;bergeordneten Servers oder Proxies. 
@@ -19,8 +19,8 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Bad Gateway!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Bad Gateway!"
+--><!--#include virtual="include/top.html" -->
 
     The proxy server received an invalid
     response from an upstream server.
@@ -36,9 +36,9 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Bad Gateway!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Bad Gateway!"
+--><!--#include virtual="include/top.html" -->
 
 	El servidor fuente recibio informaci&oacute;n 
 	inv&aacute;lida por parte del servidor destino.
@@ -54,9 +54,9 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Gateway incorrecte!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Gateway incorrecte!"
+--><!--#include virtual="include/top.html" -->
 
     Le serveur proxy a re&ccedil;u une r&eacute;ponse
     incorrecte de la part d'un serveur sup&eacute;rieur. 
@@ -72,9 +72,9 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Verkeerde Gateway!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Verkeerde Gateway!"
+--><!--#include virtual="include/top.html" -->
 
     De proxy server heeft een ongeldig
     antwoord ontvangen van een gecontacteerde server.
@@ -90,9 +90,9 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Felaktig Gateway!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Felaktig Gateway!"
+--><!--#include virtual="include/top.html" -->
 
     Proxyservern mottog ett felaktigt svar fr&aring;n
     en tidigare server.
@@ -108,9 +108,9 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="Gateway errato!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Gateway errato!"
+--><!--#include virtual="include/top.html" -->
 
     Il server proxy ha ricevuto una risposta
     non valida dal server precedente.
@@ -126,8 +126,9 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Gateway inv&aacute;lido!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Gateway inv&aacute;lido!"
+--><!--#include virtual="include/top.html" -->
 
     O servidor proxy recebeu uma resposta
     inv&aacute;lida do servidor destino.
@@ -139,3 +140,4 @@ Body:-------pt-br--
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+

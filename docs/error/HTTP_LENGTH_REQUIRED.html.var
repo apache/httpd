@@ -1,12 +1,12 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Content-Length-Angabe fehlerhaft!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Content-Length-Angabe fehlerhaft!"
+--><!--#include virtual="include/top.html" -->
 
     Die Anfrage kann nicht beantwortet werden.
-    Bei Verwendung der <!--#echo var="REDIRECT_REQUEST_METHOD"-->-Methode
+    Bei Verwendung der <!--#echo var="REDIRECT_REQUEST_METHOD" -->-Methode
     mu&szlig; ein korrekter <code>Content-Length</code>-Header
     angegeben werden. 
 
@@ -16,10 +16,10 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Bad Content-Length!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Bad Content-Length!"
+--><!--#include virtual="include/top.html" -->
 
-    A request with the <!--#echo var="REDIRECT_REQUEST_METHOD"-->
+    A request with the <!--#echo var="REDIRECT_REQUEST_METHOD" -->
     method requires a valid <code>Content-Length</code> header.
 
 <!--#include virtual="include/bottom.html" -->
@@ -28,12 +28,13 @@ Body:----------en--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Longueur du contenu ill&eacute;gal!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Longueur du contenu ill&eacute;gal!"
+--><!--#include virtual="include/top.html" -->
 
-    Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo var="REDIRECT_REQUEST_METHOD"-->
-    n&eacute;cessite un header valable <code>Content-Length</code> (indiquant la longueur).
+    Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo
+    var="REDIRECT_REQUEST_METHOD" --> n&eacute;cessite un header valable
+    <code>Content-Length</code> (indiquant la longueur).
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
@@ -41,11 +42,11 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Ongeldige lengte inhoud!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Ongeldige lengte inhoud!"
+--><!--#include virtual="include/top.html" -->
 
-    Een vraag met het <!--#echo var="REDIRECT_REQUEST_METHOD"-->
+    Een vraag met het <!--#echo var="REDIRECT_REQUEST_METHOD" -->
     type methode heeft een correcte <code>Content-Length</code> lijn nodig.
 
 <!--#include virtual="include/bottom.html" -->
@@ -54,11 +55,11 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Felaktig Content-Length!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Felaktig Content-Length!"
+--><!--#include virtual="include/top.html" -->
 
-    En f&ouml;rfr&aring;gan med <!--#echo var="REDIRECT_REQUEST_METHOD"-->
+    En f&ouml;rfr&aring;gan med <!--#echo var="REDIRECT_REQUEST_METHOD" -->
     metoden kr&auml;ver ett korrekt <code>Content-Length</code> huvud.
 
 <!--#include virtual="include/bottom.html" -->
@@ -67,13 +68,14 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="Campo Content-Length non valido!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Campo Content-Length non valido!"
+--><!--#include virtual="include/top.html" -->
 
     Una richiesta con il metodo
-    <!--#echo var="REDIRECT_REQUEST_METHOD"-->
-    richiede che venga specificato un header <code>Content-Length</code> valido.
+    <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    richiede che venga specificato un header <code>Content-Length</code>
+    valido.
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
@@ -81,8 +83,9 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Content-Length Inv&aacute;lido!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Content-Length Inv&aacute;lido!"
+--><!--#include virtual="include/top.html" -->
 
     Uma requisi&ccedil;&atilde;o 
     do m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD"-->
@@ -90,3 +93,4 @@ Body:-------pt-br--
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+

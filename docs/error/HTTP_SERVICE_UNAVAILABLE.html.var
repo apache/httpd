@@ -1,9 +1,9 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Zugriff nicht m&ouml;glich!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Zugriff nicht m&ouml;glich!"
+--><!--#include virtual="include/top.html" -->
 
     Der Server ist derzeit nicht in der Lage die Anfrage
     zu bearbeiten. Entweder ist der Server derzeit &uuml;berlastet
@@ -16,8 +16,8 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Service unavailable!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Service unavailable!"
+--><!--#include virtual="include/top.html" -->
 
     The server is temporarily unable to service your
     request due to maintenance downtime or capacity
@@ -29,9 +29,9 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Service unavailable!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Service unavailable!"
+--><!--#include virtual="include/top.html" -->
 
 	El servidor no puede atender su solicitud por
 	el momento debido a problemas de mantenimiento
@@ -46,9 +46,9 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Service inaccessible!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Service inaccessible!"
+--><!--#include virtual="include/top.html" -->
 
     En raison de travaux de maintenance ou de probl&egrave;mes
     de capacit&eacute; le serveur n'est pas en mesure de r&eacute;pondre
@@ -61,9 +61,9 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Dienst niet beschikbaar!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Dienst niet beschikbaar!"
+--><!--#include virtual="include/top.html" -->
 
     De server kan tijdelijk uw vraag niet verwerken
     door onderhoud of problemen met de capaciteit van de server.
@@ -75,9 +75,9 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!"
+--><!--#include virtual="include/top.html" -->
 
     Servern &auml;r f&ouml;r tillf&auml;llet of&ouml;rm&ouml;gen att
     utf&ouml;ra din f&ouml;rfr&aring;gan p&aring; grund av underh&aring;ll
@@ -90,9 +90,9 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="Servizio non disponibile!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Servizio non disponibile!"
+--><!--#include virtual="include/top.html" -->
 
     Il server in questo momento non &egrave; in grado di
     soddisfare la richiesta per motivi di manutenzione
@@ -105,8 +105,9 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Servi&ccedil;o indispon&iacute;vel!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Servi&ccedil;o indispon&iacute;vel!"
+--><!--#include virtual="include/top.html" -->
 
     O servidor est&aacute; temporariamente fora de servi&ccedil;o
     para manutan&ccedil;&atilde;o ou devido a problemas de capacidade.
@@ -114,3 +115,4 @@ Body:-------pt-br--
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+

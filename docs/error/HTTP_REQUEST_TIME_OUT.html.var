@@ -1,9 +1,9 @@
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
-<!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Zeitlimit &uuml;berschritten!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Zeitlimit &uuml;berschritten!"
+--><!--#include virtual="include/top.html" -->
 
     Der Server konnte nicht mehr l&auml;nger auf die Beendigung
     der Browseranfrage warten; die Netzwerkverbindung wurde
@@ -15,8 +15,8 @@ Body:----------de--
 Content-language: en
 Content-type: text/html; charset=ISO-8859-1
 Body:----------en--
-<!--#set var="TITLE" value="Request time-out!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="TITLE" value="Request time-out!"
+--><!--#include virtual="include/top.html" -->
 
     The server closed the network connection because the browser
     didn't finish the request within the specified time.
@@ -27,9 +27,9 @@ Body:----------en--
 Content-language: es
 Content-type: text/html; charset=ISO-8859-1
 Body:----------es--
-<!--#set var="CONTENT_LANGUAGE" value="es" -->
-<!--#set var="TITLE" value="Request time-out!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="es"
+--><!--#set var="TITLE" value="Request time-out!"
+--><!--#include virtual="include/top.html" -->
 
 	El servidor ha cerrado la conecci&oacute;n de red 
 	debido a que el buscador no termino la solicitud
@@ -41,9 +41,9 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html; charset=ISO-8859-1
 Body:----------fr--
-<!--#set var="CONTENT_LANGUAGE" value="fr" -->
-<!--#set var="TITLE" value="Requ&ecirc;te trop longue !" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Requ&ecirc;te trop longue !"
+--><!--#include virtual="include/top.html" -->
 
     Le serveur a ferm&eacute; la connection car le navigateur n'a pas 
     fini la requ&ecirc;te dans le temps sp&eacute;cifi&eacute;.
@@ -54,9 +54,9 @@ Body:----------fr--
 Content-language: nl
 Content-type: text/html; charset=ISO-8859-1
 Body:----------nl--
-<!--#set var="CONTENT_LANGUAGE" value="nl" -->
-<!--#set var="TITLE" value="Tijdlimiet overschreden!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="nl"
+--><!--#set var="TITLE" value="Tijdlimiet overschreden!"
+--><!--#include virtual="include/top.html" -->
 
    De server heeft de netwerkverbinding gesloten omdat de browser
    de vraag niet heeft be&euml;indigd binnen een gestelde tijd.
@@ -67,9 +67,9 @@ Body:----------nl--
 Content-language: sv
 Content-type: text/html; charset=ISO-8859-1
 Body:----------sv--
-<!--#set var="CONTENT_LANGUAGE" value="sv" -->
-<!--#set var="TITLE" value="Request time-out!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="sv"
+--><!--#set var="TITLE" value="Request time-out!"
+--><!--#include virtual="include/top.html" -->
 
     Servern st&auml;ngde f&ouml;rbindelsen d&auml;rf&ouml;r att
     webbl&auml;saren inte avslutade f&ouml;rfr&aring;gan inom
@@ -81,9 +81,9 @@ Body:----------sv--
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
-<!--#set var="CONTENT_LANGUAGE" value="it" -->
-<!--#set var="TITLE" value="Time-out della richiesta!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="it"
+--><!--#set var="TITLE" value="Time-out della richiesta!"
+--><!--#include virtual="include/top.html" -->
 
     Il server ha chiuso la connessione in quanto &egrave; stato
     superato il limite di tempo entro il quale il browser avrebbe
@@ -95,8 +95,9 @@ Body:----------it--
 Content-language: pt-br
 Content-type: text/html; charset=ISO-8859-1
 Body:-------pt-br--
-<!--#set var="TITLE" value="Tempo excedido!" -->
-<!--#include virtual="include/top.html" -->
+<!--#set var="CONTENT_LANGUAGE" value="pt-br"
+--><!--#set var="TITLE" value="Tempo excedido!"
+--><!--#include virtual="include/top.html" -->
 
    O servidor encerrou a conex&atilde;o porque o "browser"
    n&atilde;o finalizou a requisi&ccedil;&atilde;o dentro
@@ -104,3 +105,4 @@ Body:-------pt-br--
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
+
