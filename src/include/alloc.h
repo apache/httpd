@@ -51,7 +51,7 @@
  *
  */
 
-/* $Id: alloc.h,v 1.12 1996/10/13 13:35:29 ben Exp $ */
+/* $Id: alloc.h,v 1.13 1996/10/17 08:59:54 ben Exp $ */
 
 /*
  * Resource allocation routines...
@@ -183,6 +183,7 @@ void register_cleanup (pool *p, void *data,
 		       void (*child_cleanup)(void *));
 
 void kill_cleanup (pool *p, void *data, void (*plain_cleanup)(void *));
+void run_cleanup (pool *p, void *data, void (*cleanup)(void *));
 
 /* The time between when a resource is actually allocated, and when it
  * its cleanup is registered is a critical section, during which the

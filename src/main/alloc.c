@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: alloc.c,v 1.16 1996/10/13 13:35:28 ben Exp $ */
+/* $Id: alloc.c,v 1.17 1996/10/17 08:59:54 ben Exp $ */
 
 
 /*
@@ -681,7 +681,7 @@ void kill_cleanup (pool *p, void *data, void (*cleanup)(void *))
   }
 }
 
-static void run_cleanup (pool *p, void *data, void (*cleanup)(void *))
+void run_cleanup (pool *p, void *data, void (*cleanup)(void *))
 {
   block_alarms();		/* Run cleanup only once! */
   (*cleanup)(data);
