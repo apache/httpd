@@ -1,5 +1,9 @@
 Changes with Apache 2.0.40
 
+  *) mod-defalte now checks to make sure that 'gzip-only-text/html' is
+     set to 1, so we can exclude things from the general case with
+     browsermatch. [Ian Holsman, Andre Schild <A.Schild@aarboard.ch>]
+  
   *) Accept multiple leading /'s for requests within the DocumentRoot.
      PR 10946  [William Rowe, David Shane Holden <dpejesh@yahoo.com>]
 
