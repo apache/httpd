@@ -464,8 +464,9 @@ static int status_handler(request_rec *r)
 	ap_rputs("\"<B><code>W</code></B>\" Sending Reply, \n", r);
 	ap_rputs("\"<B><code>K</code></B>\" Keepalive (read), \n", r);
 	ap_rputs("\"<B><code>D</code></B>\" DNS Lookup,<BR>\n", r);
+	ap_rputs("\"<B><code>C</code></B>\" Closing connection, \n", r);
 	ap_rputs("\"<B><code>L</code></B>\" Logging, \n", r);
-	ap_rputs("\"<B><code>G</code></B>\" Gracefully finishing, \n", r);
+	ap_rputs("\"<B><code>G</code></B>\" Gracefully finishing,<BR> \n", r);
         ap_rputs("\"<B><code>I</code></B>\" Idle cleanup of worker, \n", r);
 	ap_rputs("\"<B><code>.</code></B>\" Open slot with no current process<P>\n", r);
 	ap_rputs("<P>\n", r);
@@ -585,6 +586,9 @@ static int status_handler(request_rec *r)
 			case SERVER_BUSY_DNS:
 			    ap_rputs("<b>DNS lookup</b>", r);
 			    break;
+			case SERVER_CLOSING:
+			    ap_rputs("<b>Closing</b>", r);
+			    break;
 			case SERVER_DEAD:
 			    ap_rputs("Dead", r);
 			    break;
@@ -658,6 +662,9 @@ static int status_handler(request_rec *r)
 			    break;
 			case SERVER_BUSY_DNS:
 			    ap_rputs("<td><b>D</b>", r);
+			    break;
+			case SERVER_CLOSING:
+			    ap_rputs("<td><b>C</b>", r);
 			    break;
 			case SERVER_DEAD:
 			    ap_rputs("<td>.", r);
@@ -764,6 +771,7 @@ static void status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serv
     status_flags[SERVER_BUSY_KEEPALIVE] = 'K';
     status_flags[SERVER_BUSY_LOG] = 'L';
     status_flags[SERVER_BUSY_DNS] = 'D';
+    status_flags[SERVER_CLOSING] = 'C';
     status_flags[SERVER_GRACEFUL] = 'G';
     status_flags[SERVER_IDLE_KILL] = 'I';
 }
