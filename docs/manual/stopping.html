@@ -172,7 +172,7 @@
     architectures.</p>
 
     <p>Architectures that use an on disk <a
-    href="mod/core.html#scoreboardfile">ScoreBoardFile</a> have the
+    href="mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a> have the
     potential to corrupt their scoreboards. This can result in the
     "bind: Address already in use" (after <code>HUP</code>) or
     "long lost child came home!" (after <code>USR1</code>). The
@@ -181,7 +181,7 @@
     use graceful restarts, with an occasional hard restart. These
     problems are very difficult to work around, but fortunately
     most architectures do not require a scoreboard file. See the <a
-    href="mod/core.html#scoreboardfile">ScoreBoardFile</a>
+    href="mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a>
     documentation for a architecture uses it.</p>
 
     <p><code>NEXT</code> and <code>MACHTEN</code> (68k only) have
