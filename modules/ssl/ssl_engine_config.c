@@ -60,8 +60,9 @@
                                       /* ``Damned if you do,
                                            damned if you don't.''
                                                -- Unknown        */
-#include "mod_ssl.h"
+#if 0 /* XXX */
 
+#include "mod_ssl.h"
 
 /*  _________________________________________________________________
 **
@@ -1088,4 +1089,6 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(
 }
 
 #endif /* SSL_EXPERIMENTAL_PROXY */
+
+#endif /* XXX */
 

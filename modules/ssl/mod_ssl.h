@@ -64,6 +64,8 @@
 #ifndef MOD_SSL_H
 #define MOD_SSL_H 1
 
+#if 0 /* XXX */
+
 /* 
  * Check whether Extended API (EAPI) is enabled
  */
@@ -848,5 +850,7 @@ void         ssl_util_thread_setup(void);
 void         ssl_vendor_register(void);
 void         ssl_vendor_unregister(void);
 #endif
+
+#endif /* XXX */
 
 #endif /* MOD_SSL_H */
