@@ -618,6 +618,12 @@ static int balancer_handler(request_rec *r)
             if (ival >= 0)
                 bsel->timeout = apr_time_from_sec(ival);
         }
+        if ((val = apr_table_get(params, "fa"))) {
+            int ival = atoi(val);
+            if (ival >= 0)
+                bsel->max_attempts = ival;
+            bsel->max_attempts_set = 1;
+        }
     }
     if (wsel) {
         const char *val;
@@ -696,11 +702,12 @@ static int balancer_handler(request_rec *r)
                       "\">", NULL); 
             ap_rvputs(r, balancer->name, "</a></h3>\n\n", NULL);
             ap_rputs("\n\n<table border=\"0\"><tr>"
-                "<th>StickySesion</th><th>Timeout</th>"
+                "<th>StickySesion</th><th>Timeout</th><th>FailoverAttempts</th>"
                 "</tr>\n<tr>", r);                
             ap_rvputs(r, "<td>", balancer->sticky, NULL);
-            ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>\n",
+            ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
                 apr_time_sec(balancer->timeout));
+            ap_rprintf(r, "<td>%d</td>\n", balancer->max_attempts);
             ap_rputs("</table>\n", r);
             ap_rputs("\n\n<table border=\"0\"><tr>"
                 "<th>Scheme</th><th>Host</th>"
@@ -774,6 +781,9 @@ static int balancer_handler(request_rec *r)
             ap_rputs("></td><tr>\n<tr><td>Timeout:</td><td><input name=\"tm\" type=text ", r);
             ap_rprintf(r, "value=\"%" APR_TIME_T_FMT "\"></td></tr>\n",
                        apr_time_sec(bsel->timeout));
+            ap_rputs("<tr><td>Failover Attempts:</td><td><input name=\"fa\" type=text ", r);
+            ap_rprintf(r, "value=\"%d\"></td></tr>\n",
+                       bsel->max_attempts);
             ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name=\"b\" ", NULL);
             ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
