@@ -290,6 +290,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
 {
     const char *etag;
     const char *if_match, *if_modified_since, *if_unmodified, *if_nonematch;
+    apr_time_t tmp_time;
     apr_int64_t mtime;
 
     /* Check for conditional requests --- note that we only want to do
@@ -313,7 +314,8 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
      * highest time resolution the HTTP specification allows.
      */
     /* XXX: we should define a "time unset" constant */
-    mtime = ((r->mtime != 0) ? r->mtime : apr_time_now()) / APR_USEC_PER_SEC;
+    tmp_time = ((r->mtime != 0) ? r->mtime : apr_time_now());
+    mtime =  apr_time_sec(tmp_time);
 
     /* If an If-Match request-header field was given
      * AND the field value is not "*" (meaning match anything)
@@ -337,7 +339,7 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
         if (if_unmodified != NULL) {
             apr_time_t ius = apr_date_parse_http(if_unmodified);
 
-            if ((ius != APR_DATE_BAD) && (mtime > (ius / APR_USEC_PER_SEC))) {
+            if ((ius != APR_DATE_BAD) && (mtime > apr_time_sec(ius))) {
                 return HTTP_PRECONDITION_FAILED;
             }
         }
@@ -390,10 +392,12 @@ AP_DECLARE(int) ap_meets_conditions(request_rec *r)
              && ((if_modified_since =
                   apr_table_get(r->headers_in,
                                 "If-Modified-Since")) != NULL)) {
+        apr_time_t ims_time;
         apr_int64_t ims, reqtime;
 
-        ims = apr_date_parse_http(if_modified_since) / APR_USEC_PER_SEC;
-        reqtime = r->request_time / APR_USEC_PER_SEC;
+        ims_time = apr_date_parse_http(if_modified_since);
+        ims = apr_time_sec(ims_time);
+        reqtime = apr_time_sec(r->request_time);
 
         if ((ims >= mtime) && (ims <= reqtime)) {
             return HTTP_NOT_MODIFIED;
@@ -2595,7 +2599,8 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
      * be modified again later in the second, and the validation
      * would be incorrect.
      */
-    if ((r->request_time - r->mtime > APR_USEC_PER_SEC) && !force_weak) {
+    if ((apr_time_sec(r->request_time) - apr_time_sec(r->mtime) > 1) &&
+        !force_weak) {
         weak = NULL;
         weak_len = 0;
     }
