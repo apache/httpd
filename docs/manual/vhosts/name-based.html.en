@@ -105,10 +105,18 @@ designate which host is served and a <a
 href="../mod/core.html#documentroot">DocumentRoot</a> directive to
 show where in the filesystem the content for that host lives.</p>
 
-<p>For example, suppose that both <samp>www.domain.tld</samp> and
-<samp>www.otherdomain.tld</samp> point at an IP address
-that the server is listening to.  Then you simply add the following
-to <code>httpd.conf</code>:</p>
+<p>If you are adding virtual hosts to an existing web server, you
+must also create a &lt;VirtualHost&gt; block for the existing host.
+The <code>ServerName</code> and <code>DocumentRoot</code> included in
+this virtual host should be the same as the global
+<code>ServerName</code> and <code>DocumentRoot</code>.  List this
+virtual host first in the configuration file so that it will act as
+the default host.</p>
+
+<p>For example, suppose that you are serving the domain
+<samp>www.domain.tld</samp> and you wish to add the virtual host
+<samp>www.otherdomain.tld</samp>, which points at the same IP address.
+Then you simply add the following to <code>httpd.conf</code>:</p>
 
 <pre>
     NameVirtualHost *
