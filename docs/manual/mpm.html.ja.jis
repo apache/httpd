@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Multi-Processing Modules (MPMs)</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <!-- English revision: 1.11 -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache マルチプロセッシングモジュール</h1>
+
+    <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
+    動作するように、パワフルで柔軟性に富んだ設計になっています。
+    異なるプラットホーム・異なる環境ではしばしば、
+    異なる機能が必要になったり、
+    同じ機能でも効率のために異なる実装が必要になったりします。
+    Apache ではモジュール化された設計により幅広い環境に適応してきました。
+    この設計のおかげで、管理者は
+    コンパイル時または実行時にどのモジュールをロードするか選ぶことによって、
+    どの機能をサーバに取り込むか選択することがができます。</p>
+
+    <p>Apache 2.0 では、
+    このモジュール化された設計をサーバの基本機能にまで拡張しました。
+    サーバには精選されたマルチプロセッシングモジュール (MPM) が
+    付いてきて、
+    これらはマシンのネットワークポートをバインドしたり、
+    リクエストを受け付けたり、リクエストを扱うよう子プロセスに
+    割り当てたり、
+    といった役割を持ちます。</p>
+
+    <p>モジュール化された設計をサーバのこのレベルまで拡張することで
+    二つの重要な利点が生まれます:</p>
+
+    <ul>
+      <li>Apache は幅広いオペレーティングシステムを
+      より美しく効率的にサポートできます。
+      特に Windows 版の Apache は随分効率的になりました。
+      なぜなら <a href="mod/mpm_winnt.html">mpm_winnt</a>
+      によって、Apache 1.3 で用いられていた POSIX 
+      レイヤの代わりにネイティブのネットワーク機能を
+      利用できるからです。
+      特別化された MPM 
+      を実装した他のオペレーティングシステムでも、
+      同様にこの利点は生まれます。</li>
+
+      <li>サーバは特定のサイト向けに、より上手にカスタマイズできます。
+      例えば、非常に大きなスケーラビリティを必要とするサイトでは、
+      <a href="mod/worker.html"> worker </a>といったスレッド化された
+      MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
+      必要とするサイトでは <a href="mod/prefork.html">preforking MPM</a>
+      が利用できます。また、
+      異なるホストを異なるユーザ ID で動作させる
+      (<a href="mod/perchild.html">perchild</a>) といった
+      特別な機能も提供できます。</li>
+    </ul>
+
+    <p>ユーザレベルでは、MPM は他の Apache 
+    モジュールと同等に見えます。
+    主な違いは、いつでも唯一の MPM 
+    がロードされなければならないという点です。
+    利用可能な MPM は 
+    <a href="mod/">module インデックス</a>にあります。</p>
+
+    <h2 align="center">MPM を選ぶ</h2>
+
+    <p>MPM は設定中に選択して、サーバ内部にコンパイルされなければ
+    なりません。
+    コンパイラは、スレッドが使用されていれば様々な機能を最適化できますが、
+    そもそもスレッドが使われているということを知る必要があります。
+    MPM には Unix 上でスレッドを用いるものや、スレッドをまったく
+    使わないものがあるので、
+    Apache は、MPM が設定中に選択されて Apache 内部に組み込まれた場合の方が
+    常により良いパフォーマンスを発揮します。</p>
+
+    <p>望みの MPM を実際に選ぶためには、./configure スクリプトで
+    --with-mpm= <em>NAME</em> 引数を用いてください。
+    <em>NAME</em> は望みの MPM の名前です。</p>
+
+    <p>サーバコンパイル後は、どの MPM が選択されたかを
+    <code>./httpd -l</code> で確かめることができます。
+    このコマンドは、MPM
+    を含め、サーバにコンパイルで組み込まれたモジュール全てを
+    列挙します。</p>
+
+    <h2 align="center">MPM デフォルト値</h2>
+
+    <ul>
+      <li>BeOS: beos</li>
+
+      <li>OS/2: mpmt_os2</li>
+
+      <li>Unix: prefork</li>
+
+      <li>Windows: winnt</li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
