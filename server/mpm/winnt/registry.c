@@ -52,7 +52,7 @@
  * Because this is common, let's have a macro.
  */
 #define do_error(rv,fmt,arg) do { \
-	ap_log_error(APLOG_MARK, APLOG_WIN32ERROR|APLOG_ERR, rv, NULL, fmt, arg); \
+         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL, fmt, arg); \
     } while (0);
 
 /*
@@ -106,13 +106,13 @@ static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char 
 		      &hKey);
 
     if (rv == ERROR_FILE_NOT_FOUND) {
-	ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,rv,NULL,
+        ap_log_error(APLOG_MARK,APLOG_WARNING|APLOG_NOERRNO,rv,NULL,
         "Registry does not contain key %s",key);
-	return -1;
+        return -1;
     }
     if (rv != ERROR_SUCCESS) {
         do_error(rv, "RegOpenKeyEx HKLM\\%s",key);
-	return -4;
+        return -4;
     }
 
     if (pBuffer == NULL) {
