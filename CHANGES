@@ -1,4 +1,9 @@
 Changes with Apache 2.0b1
+  *) Get byterange requests working with responses that do not have a
+     content-length.  Because of the way byterange requests work, we have to
+     have all of the data before we can actually do the byterange, so we
+     can compute the content-length in the byterange filter.
+     [Ryan Bloom]
 
   *) Get exe CGI's working again on Windows.
      [Allan Edwards]
