@@ -51,9 +51,13 @@ install-conf:
 install-build:
 	@echo Installing build system files 
 	@test -d $(installbuilddir) || $(MKINSTALLDIRS) $(installbuilddir) 
-	@cp config_vars.mk $(installbuilddir); \
-	cd build; \
-	cp *.mk $(installbuilddir);
+	@sed 's#LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#' \
+	    config_vars.mk > $(installbuilddir)config_vars.mk; \
+	cp build/*.mk $(installbuilddir); \
+	cp srclib/apr/libtool $(installbuilddir); \
+	if test -f srclib/apr/shlibtool; then \
+	    cp srclib/apr/shlibtool $(installbuilddir); \
+	fi
 
 htdocs-srcdir = docs/docroot
 
