@@ -8,13 +8,7 @@ COPY=	os.h os-inline.c
 
 LIB=	libos.a
 
-all:	$(LIB) copy
-
-copy:
-	for i in $(COPY); do  \
-		rm -f $(INCDIR)/$$i ;\
-		cp `pwd`/$$i $(INCDIR)/$$i ;\
-	done
+all:	$(LIB)
 
 $(LIB): $(OBJS)
 	rm -f $@
@@ -33,6 +27,12 @@ distclean: clean
 
 $(OBJS): Makefile
 
+$(INCDIR)/os.h: os.h
+	cp $< $@
+	
+$(INCDIR)/os-inline.c: os-inline.c
+	cp $< $@
+	
 # We really don't expect end users to use this rule.  It works only with
 # gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
 # using it.
