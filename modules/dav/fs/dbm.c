@@ -59,7 +59,7 @@
 */
 
 /*
-** This implementation uses a SDBM or GDBM database per file and directory to
+** This implementation uses a SDBM database per file and directory to
 ** record the properties. These databases are kept in a subdirectory (of
 ** the directory in question or the directory that holds the file in
 ** question) named by the macro DAV_FS_STATE_DIR (.DAV). The filename of the
@@ -67,98 +67,39 @@
 ** DAV_FS_STATE_FILE_FOR_DIR (.state_for_dir) for the directory itself.
 */
 
-#ifdef DAV_USE_GDBM
-#include <gdbm.h>
-#else
-
-/* ### need to APR-ize */
-#include <fcntl.h>		/* for O_RDONLY, O_WRONLY */
-#include <sys/stat.h>           /* for S_IRUSR, etc */
-
 #include "sdbm.h"
-
-/* ### this is still needed for sdbm_open()...
- * sdbm should be APR-ized really. */
-#ifndef WIN32
-
-#define DAV_FS_MODE_FILE	(S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP)
-
-#else /* WIN32 */
-
-#define DAV_FS_MODE_FILE	(_S_IREAD | _S_IWRITE)
-
-#endif /* WIN32 */
-
-#endif
 
 #include "mod_dav.h"
 #include "repos.h"
 
-
-#ifdef DAV_USE_GDBM
-
-typedef GDBM_FILE dav_dbm_file;
-
-#define DAV_DBM_CLOSE(f)	gdbm_close(f)
-#define DAV_DBM_FETCH(f, k)	gdbm_fetch((f), (k))
-#define DAV_DBM_STORE(f, k, v)	gdbm_store((f), (k), (v), GDBM_REPLACE)
-#define DAV_DBM_DELETE(f, k)	gdbm_delete((f), (k))
-#define DAV_DBM_FIRSTKEY(f)	gdbm_firstkey(f)
-#define DAV_DBM_NEXTKEY(f, k)	gdbm_nextkey((f), (k))
-#define DAV_DBM_CLEARERR(f)	if (0) ; else	/* stop "no effect" warning */
-#define DAV_DBM_FREEDATUM(f, d)	((d).dptr ? free((d).dptr) : 0)
-
-#else
-
-typedef DBM *dav_dbm_file;
-
-#define DAV_DBM_CLOSE(f)	sdbm_close(f)
-#define DAV_DBM_FETCH(f, k)	sdbm_fetch((f), (k))
-#define DAV_DBM_STORE(f, k, v)	sdbm_store((f), (k), (v), DBM_REPLACE)
-#define DAV_DBM_DELETE(f, k)	sdbm_delete((f), (k))
-#define DAV_DBM_FIRSTKEY(f)	sdbm_firstkey(f)
-#define DAV_DBM_NEXTKEY(f, k)	sdbm_nextkey(f)
-#define DAV_DBM_CLEARERR(f)	sdbm_clearerr(f)
-#define DAV_DBM_FREEDATUM(f, d)	if (0) ; else	/* stop "no effect" warning */
-
-#endif
-
 struct dav_db {
     ap_pool_t *pool;
-    dav_dbm_file file;
+    SDBM *file;
 };
 
-#define D2G(d)	(*(datum*)&(d))
+#define D2G(d)	(*(sdbm_datum*)&(d))
 
 
 void dav_dbm_get_statefiles(ap_pool_t *p, const char *fname,
 			    const char **state1, const char **state2)
 {
     char *work;
+    int extension;
 
     if (fname == NULL)
 	fname = DAV_FS_STATE_FILE_FOR_DIR;
 
-#ifndef DAV_USE_GDBM
-    fname = ap_pstrcat(p, fname, DIRFEXT, NULL);
-#endif
+    fname = ap_pstrcat(p, fname, SDBM_DIRFEXT, NULL);
 
     *state1 = fname;
 
-#ifdef DAV_USE_GDBM
-    *state2 = NULL;
-#else
-    {
-	int extension;
+    work = ap_pstrdup(p, fname);
 
-	work = ap_pstrdup(p, fname);
+    /* we know the extension is 4 characters -- len(DIRFEXT) */
+    extension = strlen(work) - 4;
+    memcpy(&work[extension], SDBM_PAGFEXT, 4);
+    *state2 = work;
 
-	/* we know the extension is 4 characters -- len(DIRFEXT) */
-	extension = strlen(work) - 4;
-	memcpy(&work[extension], PAGFEXT, 4);
-	*state2 = work;
-    }
-#endif
 }
 
 static dav_error * dav_fs_dbm_error(dav_db *db, ap_pool_t *p)
@@ -170,17 +111,12 @@ static dav_error * dav_fs_dbm_error(dav_db *db, ap_pool_t *p)
 
     p = db ? db->pool : p;
 
-#ifdef DAV_USE_GDBM
-    errcode = gdbm_errno;
-    errstr = gdbm_strerror(gdbm_errno);
-#else
     /* There might not be a <db> if we had problems creating it. */
     errcode = !db || sdbm_error(db->file);
     if (errcode)
 	errstr = "I/O error occurred.";
     else
 	errstr = "No error.";
-#endif
 
     err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, errcode, errstr);
     err->save_errno = save_errno;
@@ -205,25 +141,16 @@ void dav_fs_ensure_state_dir(ap_pool_t * p, const char *dirname)
 dav_error * dav_dbm_open_direct(ap_pool_t *p, const char *pathname, int ro,
 				dav_db **pdb)
 {
-    dav_dbm_file file;
+    SDBM *file;
 
     *pdb = NULL;
 
     /* NOTE: stupid cast to get rid of "const" on the pathname */
-#ifdef DAV_USE_GDBM
-    file = gdbm_open((char *) pathname,
-		     0,
-		     ro ? GDBM_READER : GDBM_WRCREAT,
-		     DAV_FS_MODE_FILE,
-		     NULL);
-#else
-    file = sdbm_open((char *) pathname,
-		     ro ? O_RDONLY : (O_RDWR | O_CREAT),
-		     DAV_FS_MODE_FILE);
-#endif
-
-    /* we can't continue if we couldn't open the file and we need to write */
-    if (file == NULL && !ro) {
+    if (sdbm_open(&file, pathname,
+		  APR_READ | (ro ? 0 : (APR_WRITE | APR_CREATE)),
+		  APR_OS_DEFAULT, p) != APR_SUCCESS && !ro) {
+	/* we can't continue if we couldn't open the file 
+	   and we need to write */
 	return dav_fs_dbm_error(NULL, p);
     }
 
@@ -270,31 +197,31 @@ static dav_error * dav_dbm_open(ap_pool_t * p, const dav_resource *resource,
 
 static void dav_dbm_close(dav_db *db)
 {
-    DAV_DBM_CLOSE(db->file);
+    sdbm_close(db->file);
 }
 
 static dav_error * dav_dbm_fetch(dav_db *db, dav_datum key, dav_datum *pvalue)
 {
-    *(datum *) pvalue = DAV_DBM_FETCH(db->file, D2G(key));
+    *(sdbm_datum *) pvalue = sdbm_fetch(db->file, D2G(key));
 
     /* we don't need the error; we have *pvalue to tell */
-    DAV_DBM_CLEARERR(db->file);
+    sdbm_clearerr(db->file);
 
     return NULL;
 }
 
 static dav_error * dav_dbm_store(dav_db *db, dav_datum key, dav_datum value)
 {
-    int rv;
+    ap_status_t status;
 
-    rv = DAV_DBM_STORE(db->file, D2G(key), D2G(value));
+    status = sdbm_store(db->file, D2G(key), D2G(value), SDBM_REPLACE);
 
     /* ### fetch more specific error information? */
 
     /* we don't need the error; we have rv to tell */
-    DAV_DBM_CLEARERR(db->file);
+    sdbm_clearerr(db->file);
 
-    if (rv == -1) {
+    if (status != APR_SUCCESS) {
 	return dav_fs_dbm_error(db, NULL);
     }
     return NULL;
@@ -304,12 +231,12 @@ static dav_error * dav_dbm_delete(dav_db *db, dav_datum key)
 {
     int rv;
 
-    rv = DAV_DBM_DELETE(db->file, D2G(key));
+    rv = sdbm_delete(db->file, D2G(key));
 
     /* ### fetch more specific error information? */
 
     /* we don't need the error; we have rv to tell */
-    DAV_DBM_CLEARERR(db->file);
+    sdbm_clearerr(db->file);
 
     if (rv == -1) {
 	return dav_fs_dbm_error(db, NULL);
@@ -320,42 +247,37 @@ static dav_error * dav_dbm_delete(dav_db *db, dav_datum key)
 static int dav_dbm_exists(dav_db *db, dav_datum key)
 {
     int exists;
+    sdbm_datum value = sdbm_fetch(db->file, D2G(key));
 
-#ifdef DAV_USE_GDBM
-    exists = gdbm_exists(db->file, D2G(key)) != 0;
-#else
-    {
-	datum value = sdbm_fetch(db->file, D2G(key));
-	sdbm_clearerr(db->file);	/* unneeded */
-	exists = value.dptr != NULL;
-    }
-#endif
+    sdbm_clearerr(db->file);	/* unneeded */
+    exists = value.dptr != NULL;
+
     return exists;
 }
 
 static dav_error * dav_dbm_firstkey(dav_db *db, dav_datum *pkey)
 {
-    *(datum *) pkey = DAV_DBM_FIRSTKEY(db->file);
+    *(sdbm_datum *) pkey = sdbm_firstkey(db->file);
 
     /* we don't need the error; we have *pkey to tell */
-    DAV_DBM_CLEARERR(db->file);
+    sdbm_clearerr(db->file);
 
     return NULL;
 }
 
 static dav_error * dav_dbm_nextkey(dav_db *db, dav_datum *pkey)
 {
-    *(datum *) pkey = DAV_DBM_NEXTKEY(db->file, D2G(*pkey));
+    *(sdbm_datum *) pkey = sdbm_nextkey(db->file);
 
     /* we don't need the error; we have *pkey to tell */
-    DAV_DBM_CLEARERR(db->file);
+    sdbm_clearerr(db->file);
 
     return NULL;
 }
 
 static void dav_dbm_freedatum(dav_db *db, dav_datum data)
 {
-    DAV_DBM_FREEDATUM(db, data);
+    /* nothing */
 }
 
 const dav_hooks_db dav_hooks_db_dbm =
