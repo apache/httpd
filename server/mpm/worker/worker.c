@@ -1269,6 +1269,8 @@ static void make_pipe_of_death(int *num_listeners, apr_pool_t *p)
     lr->sd = sd;
     lr->active = 1;
     lr->accept_func = check_pipe_of_death;
+    /* We are not bound to a real address.  So, indicate that. */
+    lr->bind_addr = 0;
     lr->next = ap_listeners;
     ap_listeners = lr;
     (*num_listeners)++;
