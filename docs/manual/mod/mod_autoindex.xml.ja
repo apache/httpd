@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English revision: 1.6 -->
+<!-- English revision: 1.9 -->
 <modulesynopsis>
 <name>mod_autoindex</name>
 
@@ -138,31 +138,31 @@
     引数が全て解釈されるように、
     未知の引数 "X" はリストの最後に置かれています。</p>
 
-<example>
-&lt;FORM METHOD="GET"&gt;<br />
-&nbsp;&nbsp;Show me a &lt;SELECT NAME="F"&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="0"&gt; Plain list <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="1" SELECTED&gt; Fancy list<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="2"&gt; Table list<br />
-&nbsp;&nbsp;&lt;/SELECT&gt;<br />
-&nbsp;&nbsp;Sorted by &lt;SELECT NAME="C"&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="N" SELECTED&gt; Name<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="M"&gt; Date Modified<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="S"&gt; Size<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="D"&gt; Description<br />
-&nbsp;&nbsp;&lt;/SELECT&gt;<br />
-&nbsp;&nbsp;&lt;SELECT NAME="O"&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="A" SELECTED&gt; Ascending<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="D"&gt; Descending<br />
-&nbsp;&nbsp;&lt;/SELECT&gt;<br />
-&nbsp;&nbsp;&lt;SELECT NAME="V"&gt;<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="0" SELECTED&gt; in Normal order<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;OPTION VALUE="1"&gt; in Version order<br />
-&nbsp;&nbsp;&lt;/SELECT&gt;<br />
-&nbsp;&nbsp;Matching &lt;INPUT TYPE="text" NAME="P" VALUE="*"&gt;<br />
-&nbsp;&nbsp;&lt;INPUT TYPE="submit" NAME="X" VALUE="Go"&gt;<br />
-&lt;/FORM&gt;
-</example>
+<example><pre>
+&lt;form action="" method="get"&gt;
+  Show me a &lt;select name="F"&gt;
+    &lt;option value="0"&gt; Plain list&lt;/option&gt;
+    &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;
+    &lt;option value="2"&gt; Table list&lt;/option&gt;
+  &lt;/select&gt;
+  Sorted by &lt;select name="C"&gt;
+    &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;
+    &lt;option value="M"&gt; Date Modified&lt;/option&gt;
+    &lt;option value="S"&gt; Size&lt;/option&gt;
+    &lt;option value="D"&gt; Description&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;select name="O"&gt;
+    &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;
+    &lt;option value="D"&gt; Descending&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;select name="V"&gt;
+    &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;
+    &lt;option value="1"&gt; in Version order&lt;/option&gt;
+  &lt;/select&gt;
+  Matching &lt;input type="text" name="P" value="*" /&gt;
+  &lt;input type="submit" name="X" value="Go" /&gt;
+&lt;/form&gt;
+</pre></example>
 
 </section>
 
@@ -184,15 +184,16 @@
     <em>File</em> は、説明するファイルのファイル拡張子、
     ファイル名の一部、ワイルドカード表現、完全なファイル名の
     どれかになります。
-    <em>String</em> は二重引用符 (<code>"</code>) で囲まれます。
+    <em>String</em> に空白がある場合は引用符  (<code>"</code>
+    か <code>'</code>) で囲む必要があります。
     この文字列は、クライアントが画像を表示できない場合や
     画像のロードを無効にしている場合や
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
 <example>
-    AddAlt "PDF" *.pdf<br />
-    AddAlt "Compressed" *.gz *.zip *.Z
+    AddAlt "PDF file" *.pdf<br />
+    AddAlt Compressed *.gz *.zip *.Z
 </example>
 </usage>
 </directivesynopsis>
@@ -216,14 +217,15 @@
     <em>MIME-encoding</em> は有効な符号化、例えば
     <code>x-compress</code>
     です。 
-    <em>String</em> は二重引用符 (<code>"</code>) で囲まれます。
+    <em>String</em> に空白があるときは、引用符 (<code>"</code> か
+    <code>'</code>) で囲む必要があります。
     この文字列は、クライアントが画像を表示できない場合や
     画像のロードを無効にしている場合や
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
 <example>
-    AddAltByEncoding "gzip" x-gzip
+    AddAltByEncoding gzip x-gzip
 </example>
 </usage>
 </directivesynopsis>
@@ -247,14 +249,15 @@
     <em>MIME-type</em> は有効なタイプ、例えば
     <code>text/html</code>
     です。
-    <em>String</em> は二重引用符 (<code>"</code>) で囲まれます。
+    <em>String</em> に空白があるときは、引用符 (<code>"</code> か
+    <code>'</code>) で囲む必要があります。
     この文字列は、クライアントが画像を表示できない場合や
     画像のロードを無効にしている場合や
     アイコンの取得に失敗したときに表示されます。</p>
 
     <p>例:</p>
 <example>
-    AddAltByType "TXT" text/plain
+    AddAltByType 'plain text' text/plain
 </example>
 </usage>
 </directivesynopsis>
@@ -471,15 +474,15 @@ HeaderName HEADER.html
 <example>
     AddType text/html .cgi
 </example>
-      <p><code>MultiViews</code> <directive
-      module="core">Option</directive> が有効になっている場合は、
+      <p><directive module="core">Options</directive> <code>MultiViews</code> が
+      有効になっている場合は、
       <a href="../content-negotiation.html">コンテントネゴシエーション</a>
       が行われます。
       もし <em>filename</em> が (CGI スクリプトでない) 静的な 
       <code>text/html</code> ドキュメントで解決され、
-      <code>Includes</code>
-      <directive module="core">option</directive>
-      オプションが有効になっている場合は、
+      <directive module="core">options</directive>
+      <code>Includes</code> か <code>IncludesNOEXEC</code>
+      が有効になっている場合は、
       ファイルはサーバーサイドインクルードで処理されます
       (<module>mod_include</module> ドキュメントを参照して下さい)。</p>
 </note>
@@ -858,6 +861,7 @@ foo-1.04
 ディレクトリインデックスの標準の順番付けを設定</description>
 <syntax>IndexOrderDefault
 Ascending|Descending Name|Date|Size|Description</syntax>
+<default>IndexOrderDefault Ascending Name</default>
 <contextlist><context>サーバ設定ファイル</context>
 <context>バーチャルホスト</context>
 <context>ディレクトリ</context><context>.htaccess</context>
