@@ -83,14 +83,14 @@ all: $(targets)
 	touch $@
 
 libtool_m4 = $(libtool_prefix)/share/aclocal/libtool.m4
-	
+
 aclocal.m4: acinclude.m4 $(libtool_m4)
 	@echo rebuilding $@
 	@cat acinclude.m4 $(libtool_m4) > $@
-	
+
 $(LT_TARGETS):
 	libtoolize $(AMFLAGS) --force
-	
+
 $(config_h_in): configure
 # explicitly remove target since autoheader does not seem to work 
 # correctly otherwise (timestamps are not updated)
