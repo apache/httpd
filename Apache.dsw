@@ -747,6 +747,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_deflate"=".\modules\experimental\mod_deflate.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_dir"=".\modules\mappers\mod_dir.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -814,6 +835,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_expires"=".\modules\metadata\mod_expires.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_ext_filter"=".\modules\experimental\mod_ext_filter.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
