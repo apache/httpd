@@ -377,7 +377,7 @@ to hold without calling <code>free()</code></description>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>threadpool</module><module>worker</module><module>mpm_winnt</module></modulelist>
 
 <usage>
     <p>The <directive>MaxMemFree</directive> directive sets the
