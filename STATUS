@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/15 21:41:17 $]
+Last modified at [$Date: 2003/07/21 11:52:02 $]
 
 Release:
 
@@ -71,7 +71,7 @@ PATCHES TO PORT FROM 2.1
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.153&r2=1.154
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.154&r2=1.155
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_rewrite.c.diff?r1=1.156&r2=1.157
-      +1: rederpj, nd (besides my further comments on dev@)
+      +1: rederpj, nd
 
     * Replace some of the mutex locking in the worker MPM with
       atomic operations for higher concurrency.
@@ -288,6 +288,10 @@ PATCHES TO PORT FROM 2.1
       containing the .htaccess file is requested without a trailing slash.
       PR 20195.
         modules/mappers/mod_rewrite.c: r1.156
+      +1: nd
+
+    * ab: reject overlong credentials from command line (2.0 + 1.3)
+        support/ab.c: r1.127
       +1: nd
 
 CURRENT RELEASE NOTES:
