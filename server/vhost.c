@@ -68,7 +68,7 @@ struct ipaddr_chain {
                                  * sharing this address */
 };
 
-/* This defines the size of the hash apr_table_t used for hashing ip addresses
+/* This defines the size of the hash table used for hashing ip addresses
  * of virtual hosts.  It must be a power of two.
  */
 #ifndef IPHASH_TABLE_SIZE
@@ -248,7 +248,7 @@ const char *ap_set_name_virtual_host(cmd_parms *cmd, void *dummy,
 }
 
 
-/* hash apr_table_t statistics, keep this in here for the beta period so
+/* hash table statistics, keep this in here for the beta period so
  * we can find out if the hash function is ok
  */
 #ifdef IPHASH_STATISTICS
@@ -361,7 +361,7 @@ static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
     unsigned bucket;
     ipaddr_chain *trav;
 
-    /* scan the hash apr_table_t for an exact match first */
+    /* scan the hash table for an exact match first */
     bucket = hash_addr(sa);
     for (trav = iphash_table[bucket]; trav; trav = trav->next) {
         server_addr_rec *sar = trav->sar;
@@ -536,7 +536,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
         iphash_table_tail[i] = &iphash_table[i];
     }
 
-    /* The first things to go into the hash apr_table_t are the NameVirtualHosts
+    /* The first things to go into the hash table are the NameVirtualHosts
      * Since name_vhost_list is in the same order that the directives
      * occured in the config file, we'll copy it in that order.
      */
@@ -563,7 +563,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
          */
     }
 
-    /* The next things to go into the hash apr_table_t are the virtual hosts
+    /* The next things to go into the hash table are the virtual hosts
      * themselves.  They're listed off of main_s->next in the reverse
      * order they occured in the config file, so we insert them at
      * the iphash_table_tail but don't advance the tail.
@@ -988,7 +988,7 @@ AP_DECLARE(void) ap_update_vhost_given_ip(conn_rec *conn)
     ipaddr_chain *trav;
     apr_port_t port;
 
-    /* scan the hash apr_table_t for an exact match first */
+    /* scan the hash table for an exact match first */
     trav = find_ipaddr(conn->local_addr);
 
     if (trav) {
