@@ -382,6 +382,9 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                            fb->bufsiz);
                 fb->inptr = fb->inbase;
                 fb->incnt = strlen((char *)fb->inptr);
+#else
+                ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
+                        "SSL handshake failed: HTTP spoken on HTTPS port");
 #endif
             }
             else if (ssl_util_getmodconfig_ssl(pRec->pssl, "ssl::handshake::timeout")
