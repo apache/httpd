@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2001/05/15 15:31:30 $]
+  Last modified at [$Date: 2001/05/15 15:35:59 $]
 
 Release:
 
@@ -35,8 +35,7 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    ab is broken on many platforms.  Dirk has offered patch, it does not
-    apply cleanly.
+    None at present 
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 

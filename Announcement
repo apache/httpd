@@ -115,9 +115,6 @@
        special characters.  Allows embedding of both the '$' and '%' 
        characters in the results, so 'foo\$1' translates to 'foo$1' 
        rather than 'foo\<value of $1>'.
-     * The 'ab' support utility has fixed a number of overruns, added 
-       statistics, offers csv/gnuplot output, introduces rudimentary 
-       SSL support and other tweaks to make results more accurate.
      * Added the -V flag to suexec, to display the compile-time settings
        with which it was built.  (Only valid for root or the HTTPD_USER 
        username.)          
