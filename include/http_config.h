@@ -400,7 +400,8 @@ struct module_struct {
      *  @param new_conf The directory structure currently being processed.
      *  @return The new per-directory structure created
      */
-    void *(*merge_server_config) (apr_pool_t *p, void *base_conf, void *new_conf);
+    void *(*merge_server_config) (apr_pool_t *p, void *base_conf, 
+                                  void *new_conf);
 
     /** A command_rec table that describes all of the directives this module
      * defines. */
@@ -498,8 +499,9 @@ AP_DECLARE(void) ap_set_module_config(ap_conf_vector_t *cv, const module *m,
  * @param arg The argument to the directive
  * @return An error string or NULL on success
  */
-AP_DECLARE_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd, void *struct_ptr,
-						   const char *arg);
+AP_DECLARE_NONSTD(const char *) ap_set_string_slot(cmd_parms *cmd, 
+                                                   void *struct_ptr,
+                                                   const char *arg);
 
 /**
  * Generic command handling function for integers
@@ -533,7 +535,8 @@ AP_DECLARE(int) ap_method_is_limited(cmd_parms *cmd, const char *method);
  * @return An error string or NULL on success
  */
 AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd, 
-							 void *struct_ptr, const char *arg);
+                                                         void *struct_ptr, 
+                                                         const char *arg);
 /**
  * Generic command handling function for flags
  * @param cmd The command parameters for this directive
@@ -541,7 +544,9 @@ AP_DECLARE_NONSTD(const char *) ap_set_string_slot_lower(cmd_parms *cmd,
  * @param arg The argument to the directive (either 1 or 0)
  * @return An error string or NULL on success
  */
-AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd, void *struct_ptr, int arg);
+AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd, 
+                                                 void *struct_ptr, 
+                                                 int arg);
 /**
  * Generic command handling function for files
  * @param cmd The command parameters for this directive
@@ -549,7 +554,9 @@ AP_DECLARE_NONSTD(const char *) ap_set_flag_slot(cmd_parms *cmd, void *struct_pt
  * @param arg The argument to the directive
  * @return An error string or NULL on success
  */
-AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_ptr, const char *arg);
+AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, 
+                                                 void *struct_ptr, 
+                                                 const char *arg);
 /**
  * Generic command handling function to respond with cmd->help as an error
  * @param cmd The command parameters for this directive
@@ -562,7 +569,9 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, void *struct_pt
  *         "The Foo directive is no longer supported, use Bar"),
  * </pre>
  */
-AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd, void *struct_ptr, const char *arg);
+AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd, 
+                                                  void *struct_ptr, 
+                                                  const char *arg);
 /**
  * For modules which need to read config files, open logs, etc. this returns
  * the canonical form of fname made absolute to ap_server_root.
@@ -627,7 +636,8 @@ AP_DECLARE(module *) ap_find_linked_module(const char *name);
  * @param p The pool to allocate the structure from
  * @param name the name of the file to open
  */
-AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t *p, const char *name);
+AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, 
+                                          apr_pool_t *p, const char *name);
 
 /**
  * Allocate a ap_configfile_t handle with user defined functions and params 
@@ -638,7 +648,8 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t 
  * @param gets_func The getstr function
  * @param close_func The close function
  */
-AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
+AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, 
+    const char *descr,
     void *param,
     int(*getc_func)(void*),
     void *(*gets_func) (void *buf, size_t bufsiz, void *param),
@@ -688,11 +699,11 @@ AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
  * @return Error string on failure, NULL on success
 */
 AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p, 
-                                  apr_pool_t *temp_pool,
-                                  cmd_parms *parms,
-                                  ap_directive_t **current,
-                                  ap_directive_t **curr_parent,
-                                  char *orig_directive);
+                                              apr_pool_t *temp_pool,
+                                              cmd_parms *parms,
+                                              ap_directive_t **current,
+                                              ap_directive_t **curr_parent,
+                                              char *orig_directive);
 
 /**
  * Build a config tree from a config file
@@ -703,9 +714,9 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
  * @return Error string on erro, NULL otherwise
  */
 AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
-					 apr_pool_t *conf_pool,
-					 apr_pool_t *temp_pool,
-					 ap_directive_t **conftree);
+                                         apr_pool_t *conf_pool,
+                                         apr_pool_t *temp_pool,
+                                         ap_directive_t **conftree);
 
 /**
  * Walk a config tree and setup the server's internal structures
@@ -715,7 +726,7 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
  * @return Error string on error, NULL otherwise
  */
 AP_DECLARE(const char *) ap_walk_config(ap_directive_t *conftree,
-					cmd_parms *parms,
+                                        cmd_parms *parms,
                                         ap_conf_vector_t *section_vector);
 
 /**
@@ -728,7 +739,8 @@ AP_DECLARE(const char *) ap_walk_config(ap_directive_t *conftree,
  * @param forbidden Where the command is forbidden.
  * @return Error string on error, NULL on success
  */
-AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
+AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd, 
+                                              unsigned forbidden);
 
 #define  NOT_IN_VIRTUALHOST     0x01 /**< Forbidden in <Virtualhost> */
 #define  NOT_IN_LIMIT           0x02 /**< Forbidden in <Limit> */
@@ -808,7 +820,10 @@ AP_DECLARE(const char *) ap_show_mpm(void);
  * @param conftree Place to store the root of the config tree
  * @return The setup server_rec list.
  */
-AP_DECLARE(server_rec *) ap_read_config(process_rec *process, apr_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree);
+AP_DECLARE(server_rec *) ap_read_config(process_rec *process, 
+                                        apr_pool_t *temp_pool, 
+                                        const char *config_name, 
+                                        ap_directive_t **conftree);
 
 /**
  * Run all rewrite args hooks for loaded modules
@@ -828,7 +843,8 @@ AP_DECLARE(void) ap_register_hooks(module *m, apr_pool_t *p);
  * @param p The pool to allocate from
  * @param main_server The head of the server_rec list
  */
-AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server);
+AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, 
+                                        server_rec *main_server);
 
 /* For http_request.c... */
 
@@ -876,8 +892,9 @@ AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_conn_config(apr_pool_t *p);
  * int The status of the current request
  */
 AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result, 
-                      request_rec *r, int override,
-                      const char *path, const char *access_name);
+                                       request_rec *r, int override,
+                                       const char *path, 
+                                       const char *access_name);
 
 /**
  * Setup a virtual host
@@ -887,8 +904,10 @@ AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result,
  * @param ps Place to store the new server_rec
  * return Error string on error, NULL on success
  */
-AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, const char *hostname,
-				server_rec *main_server, server_rec **);
+AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, 
+                                                   const char *hostname,
+                                                   server_rec *main_server, 
+                                                   server_rec **);
 
 /**
  * Process the config file for Apache
@@ -899,7 +918,8 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p, const char *ho
  * @param ptem Pool for temporary allocation
  */
 AP_DECLARE(void) ap_process_resource_config(server_rec *s, const char *fname, 
-                 ap_directive_t **conftree, apr_pool_t *p, apr_pool_t *ptemp);
+                                            ap_directive_t **conftree, 
+                                            apr_pool_t *p, apr_pool_t *ptemp);
 
 /**
  * Process all directives in the config tree
@@ -928,7 +948,8 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r);
  * @param cmds The table to search
  * @return The directive definition of the specified directive
  */
-AP_CORE_DECLARE(const command_rec *) ap_find_command(const char *name, const command_rec *cmds);
+AP_CORE_DECLARE(const command_rec *) ap_find_command(const char *name, 
+                                                     const command_rec *cmds);
 
 /**
  * Find a given directive in a list module
@@ -936,7 +957,8 @@ AP_CORE_DECLARE(const command_rec *) ap_find_command(const char *name, const com
  * @param mod The module list to search
  * @return The directive definition of the specified directive
  */
-AP_CORE_DECLARE(const command_rec *) ap_find_command_in_modules(const char *cmd_name, module **mod);
+AP_CORE_DECLARE(const command_rec *) ap_find_command_in_modules(const char *cmd_name, 
+                                                                module **mod);
 
 /**
  * Ask a module to create per-server and per-section (dir/loc/file) configs
@@ -972,7 +994,9 @@ AP_DECLARE_HOOK(int,header_parser,(request_rec *r))
  * @param ptemp The temporary pool
  * @return OK or DECLINED on success anything else is a error
  */
-AP_DECLARE_HOOK(int,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp))
+AP_DECLARE_HOOK(int,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,
+                                apr_pool_t *ptemp))
+
 
 /**
  * Run the post_config function for each module
@@ -982,7 +1006,8 @@ AP_DECLARE_HOOK(int,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *p
  * @param s The list of server_recs
  * @return OK or DECLINED on success anything else is a error
  */
-AP_DECLARE_HOOK(int,post_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
+AP_DECLARE_HOOK(int,post_config,(apr_pool_t *pconf,apr_pool_t *plog,
+                                 apr_pool_t *ptemp,server_rec *s))
 
 /**
  * Run the open_logs functions for each module
@@ -992,7 +1017,8 @@ AP_DECLARE_HOOK(int,post_config,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *
  * @param s The list of server_recs
  * @return OK or DECLINED on success anything else is a error
  */
-AP_DECLARE_HOOK(int,open_logs,(apr_pool_t *pconf,apr_pool_t *plog,apr_pool_t *ptemp,server_rec *s))
+AP_DECLARE_HOOK(int,open_logs,(apr_pool_t *pconf,apr_pool_t *plog,
+                               apr_pool_t *ptemp,server_rec *s))
 
 /**
  * Run the child_init functions for each module
