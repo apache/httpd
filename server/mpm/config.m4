@@ -5,7 +5,7 @@ AC_ARG_WITH(mpm,
   APACHE_MPM=$withval
 ],[
   if test "x$APACHE_MPM" = "x"; then
-    APACHE_MPM=threaded
+    APACHE_MPM=prefork
   fi
 ])
 AC_MSG_RESULT($APACHE_MPM)
