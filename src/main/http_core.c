@@ -2552,7 +2552,7 @@ static const command_rec core_cmds[] = {
 { "ServerTokens", set_serv_tokens, NULL, RSRC_CONF, TAKE1,
   "Determine tokens displayed in the Server: header - Min(imal), OS or Full" },
 { "ExtendedStatus", set_extended_status, NULL, RSRC_CONF, TAKE1,
-  "\On\" to enable extended status information, \"Off\" to disable" },
+  "\"On\" to enable extended status information, \"Off\" to disable" },
 { "LimitRequestBody", set_limit_req_body,
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   RSRC_CONF|ACCESS_CONF|OR_ALL, TAKE1,
