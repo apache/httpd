@@ -946,10 +946,19 @@ for var in prefix exec_prefix bindir sbindir libexecdir mandir \
     eval "$var=\"$val\""
     #   expand value
     eval "val=\$$var"
-    #   add target suffix when requested
-    if [ ".`echo $val | grep $thetarget`" = . ]; then
-        eval "autosuffix=\$autosuffix_$var"
-        if [ "x$autosuffix" = "xyes" ]; then
+    #   automatically add target suffix to path when it's
+    #   requested (path has a trailing plus in config.layout) and
+    #   looks reasonable (i.e. when "apache" or target-name
+    #   still not part of path)
+    eval "autosuffix=\$autosuffix_$var"
+    if [ "x$autosuffix" = "xyes" ]; then
+        addtarget=no
+        if [ "x`echo $val | grep apache`" = "x" ]; then
+            if [ "x`echo $val | grep $thetarget`" = "x" ]; then
+                addtarget=yes
+            fi
+        fi
+        if [ "x$addtarget" = "xyes" ]; then
             eval "$var=\"\$$var/$thetarget\""
         fi
     fi

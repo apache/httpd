@@ -1,5 +1,8 @@
 Changes with Apache 1.3.5
 
+  *) In configure, do not append the target name to the directory path if
+     the path already contains "apache".  [Ralf S. Engelschall]
+
   *) SIGPIPE is now ignored by the server core.  The request write routines
      (ap_rputc, ap_rputs, ap_rvputs, ap_rwrite, ap_rprintf, ap_rflush) now
      correctly check for output errors and mark the connection as aborted.
