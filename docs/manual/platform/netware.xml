@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.3.2.7 $ -->
+<!-- $Revision: 1.3.2.8 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -412,6 +412,10 @@
       <ul>
         <li><directive module="mod_nw_ssl">NWSSLTrustedCerts</directive> -
         Adds trusted certificates that are used to create secure connections to proxied servers.</li>
+      </ul>
+      <ul>
+        <li><directive module="mod_nw_ssl">NWSSLUpgradeable</directive> -
+        Allow a connection created on the specified address/port to be upgraded to an SSL connection.</li>
       </ul>
 
     </section>
