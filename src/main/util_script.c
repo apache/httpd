@@ -499,7 +499,8 @@ API_EXPORT(void) send_size(size_t size, request_rec *r)
 {
     char ss[20];
 
-    if (size == -1)
+    /* XXX: this -1 thing is a gross hack */
+    if (size == (size_t)-1)
 	strcpy(ss, "    -");
     else if (!size)
 	strcpy(ss, "   0k");

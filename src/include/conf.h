@@ -395,6 +395,9 @@ extern char *crypt();
 /* A lot of SVR4 systems need this */
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #define HAVE_SYSLOG
+#ifdef SNI  /* SINIX/ReliantUNIX, probably other SVR4's as well */
+#define NET_SIZE_T size_t
+#endif /*SNI*/
 
 #elif defined(UW)
 #define NO_LINGCLOSE

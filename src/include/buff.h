@@ -69,6 +69,9 @@
 #define B_RDERR (16)
 /* A write error has occurred */
 #define B_WRERR (32)
+#ifdef B_ERROR  /* in SVR4: sometimes defined in /usr/include/sys/buf.h */
+#undef B_ERROR
+#endif
 #define B_ERROR (48)
 /* Use chunked writing */
 #define B_CHUNK (64)
