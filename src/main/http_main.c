@@ -97,7 +97,7 @@
 #include <prot.h>
 #endif
 #ifdef WIN32
-#include "nt/getopt.h"
+#include "../os/win32/getopt.h"
 #else
 #include <netinet/tcp.h>
 #endif
@@ -113,7 +113,7 @@
 #endif
 
 #ifdef WIN32
-#include "nt/service.h"
+#include "../os/win32/service.h"
 #endif
 
 

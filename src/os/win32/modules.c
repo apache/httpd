@@ -2,8 +2,8 @@
  * configuration script.  DO NOT HAND EDIT!!!!!
  */
 
-#include "../httpd.h"
-#include "../http_config.h"
+#include "httpd.h"
+#include "http_config.h"
 
 extern module core_module;
 extern module dll_module;

@@ -54,6 +54,7 @@ ALL : "$(OUTDIR)\ApacheModuleDigest.dll"
 
 CLEAN :
 	-@erase "$(INTDIR)\mod_digest.obj"
+	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.dll"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.exp"
 	-@erase "$(OUTDIR)\ApacheModuleDigest.lib"
@@ -61,9 +62,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\regex" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\core" /D "WIN32" /D\
+ "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleDigestR/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -72,7 +73,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleDigest.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
+LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
  uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
  /incremental:no /pdb:"$(OUTDIR)\ApacheModuleDigest.pdb" /machine:I386\
@@ -117,9 +118,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\regex" /D "WIN32" /D "_DEBUG"\
- /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\core" /D\
+ "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleDigest.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleDigestD/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -128,7 +129,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleDigest.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
+LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
  uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
  /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleDigest.pdb" /debug /machine:I386\
@@ -177,30 +178,56 @@ LINK32_OBJS= \
 
 !IF "$(CFG)" == "ApacheModuleDigest - Win32 Release" || "$(CFG)" ==\
  "ApacheModuleDigest - Win32 Debug"
-SOURCE=..\mod_digest.c
+SOURCE=..\..\modules\standard\mod_digest.c
+
+!IF  "$(CFG)" == "ApacheModuleDigest - Win32 Release"
+
 DEP_CPP_MOD_D=\
-	"..\alloc.h"\
-	"..\buff.h"\
-	"..\conf.h"\
-	"..\http_config.h"\
-	"..\http_core.h"\
-	"..\http_log.h"\
-	"..\http_protocol.h"\
-	"..\httpd.h"\
-	"..\md5.h"\
-	"..\regex\regex.h"\
-	"..\util_md5.h"\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_core.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\http_protocol.h"\
+	"..\..\core\httpd.h"\
+	"..\..\core\md5.h"\
+	"..\..\core\util_md5.h"\
+	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_D=\
-	"..\sfio.h"\
 	
 
 "$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ELSEIF  "$(CFG)" == "ApacheModuleDigest - Win32 Debug"
+
+DEP_CPP_MOD_D=\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_core.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\http_protocol.h"\
+	"..\..\core\httpd.h"\
+	"..\..\core\md5.h"\
+	"..\..\core\util_md5.h"\
+	"..\..\regex\regex.h"\
+	".\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_D=\
+	"..\..\core\sfio.h"\
+	
+
+"$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
 
 
 !ENDIF 

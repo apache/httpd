@@ -69,13 +69,13 @@
  * the ISA is in.
  */
 
-#include "../httpd.h"
-#include "../http_config.h"
-#include "../http_core.h"
-#include "../http_protocol.h"
-#include "../http_request.h"
-#include "../http_log.h"
-#include "../util_script.h"
+#include "httpd.h"
+#include "http_config.h"
+#include "http_core.h"
+#include "http_protocol.h"
+#include "http_request.h"
+#include "http_log.h"
+#include "util_script.h"
 
 /* We use the exact same header file as the original */
 #include <HttpExt.h>

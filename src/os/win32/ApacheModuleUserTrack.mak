@@ -54,6 +54,7 @@ ALL : "$(OUTDIR)\ApacheModuleUserTrack.dll"
 
 CLEAN :
 	-@erase "$(INTDIR)\mod_usertrack.obj"
+	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.dll"
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.exp"
 	-@erase "$(OUTDIR)\ApacheModuleUserTrack.lib"
@@ -61,9 +62,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\regex" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleUserTrack.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\core" /D "WIN32" /D\
+ "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleUserTrack.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleUserTrackR/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -72,7 +73,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleUserTrack.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
+LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
  uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
  /incremental:no /pdb:"$(OUTDIR)\ApacheModuleUserTrack.pdb" /machine:I386\
@@ -117,9 +118,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\regex" /D "WIN32" /D "_DEBUG"\
- /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleUserTrack.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\core" /D\
+ "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleUserTrack.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleUserTrackD/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -128,7 +129,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleUserTrack.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
+LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
  uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
  /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleUserTrack.pdb" /debug\
@@ -177,24 +178,19 @@ LINK32_OBJS= \
 
 !IF "$(CFG)" == "ApacheModuleUserTrack - Win32 Release" || "$(CFG)" ==\
  "ApacheModuleUserTrack - Win32 Debug"
-SOURCE=..\mod_usertrack.c
+SOURCE=..\..\modules\standard\mod_usertrack.c
 
 !IF  "$(CFG)" == "ApacheModuleUserTrack - Win32 Release"
 
 DEP_CPP_MOD_U=\
-	"..\alloc.h"\
-	"..\buff.h"\
-	"..\conf.h"\
-	"..\http_config.h"\
-	"..\http_core.h"\
-	"..\httpd.h"\
-	"..\regex\regex.h"\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_core.h"\
+	"..\..\core\httpd.h"\
+	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_U=\
-	"..\sfio.h"\
 	
 
 "$(INTDIR)\mod_usertrack.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"
@@ -204,14 +200,19 @@ NODEP_CPP_MOD_U=\
 !ELSEIF  "$(CFG)" == "ApacheModuleUserTrack - Win32 Debug"
 
 DEP_CPP_MOD_U=\
-	"..\alloc.h"\
-	"..\buff.h"\
-	"..\conf.h"\
-	"..\http_config.h"\
-	"..\http_core.h"\
-	"..\httpd.h"\
-	"..\regex\regex.h"\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_core.h"\
+	"..\..\core\httpd.h"\
+	"..\..\regex\regex.h"\
 	".\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_U=\
+	"..\..\core\sfio.h"\
 	
 
 "$(INTDIR)\mod_usertrack.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"

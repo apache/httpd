@@ -54,6 +54,7 @@ ALL : "$(OUTDIR)\ApacheModuleExpires.dll"
 
 CLEAN :
 	-@erase "$(INTDIR)\mod_expires.obj"
+	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.dll"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.exp"
 	-@erase "$(OUTDIR)\ApacheModuleExpires.lib"
@@ -61,9 +62,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\regex" /D "WIN32" /D "NDEBUG" /D\
- "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleExpires.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\..\regex" /I "..\..\core" /D "WIN32" /D\
+ "NDEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleExpires.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleExpiresR/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
@@ -72,7 +73,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleExpires.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
+LINK32_FLAGS=..\..\CoreR\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
  uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
  /incremental:no /pdb:"$(OUTDIR)\ApacheModuleExpires.pdb" /machine:I386\
@@ -117,9 +118,9 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\regex" /D "WIN32" /D "_DEBUG"\
- /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleExpires.pch" /YX /Fo"$(INTDIR)\\"\
- /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GX /Zi /Od /I "..\..\regex" /I "..\..\core" /D\
+ "WIN32" /D "_DEBUG" /D "_WINDOWS" /Fp"$(INTDIR)\ApacheModuleExpires.pch" /YX\
+ /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\ApacheModuleExpiresD/
 CPP_SBRS=.
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
@@ -128,7 +129,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\ApacheModuleExpires.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
+LINK32_FLAGS=..\..\CoreD\ApacheCore.lib kernel32.lib user32.lib gdi32.lib\
  winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib\
  uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll\
  /incremental:yes /pdb:"$(OUTDIR)\ApacheModuleExpires.pdb" /debug /machine:I386\
@@ -177,24 +178,19 @@ LINK32_OBJS= \
 
 !IF "$(CFG)" == "ApacheModuleExpires - Win32 Release" || "$(CFG)" ==\
  "ApacheModuleExpires - Win32 Debug"
-SOURCE=..\mod_expires.c
+SOURCE=..\..\modules\standard\mod_expires.c
 
 !IF  "$(CFG)" == "ApacheModuleExpires - Win32 Release"
 
 DEP_CPP_MOD_E=\
-	"..\alloc.h"\
-	"..\buff.h"\
-	"..\conf.h"\
-	"..\http_config.h"\
-	"..\http_log.h"\
-	"..\httpd.h"\
-	"..\regex\regex.h"\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\httpd.h"\
+	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\STAT.H"\
-	{$(INCLUDE)}"sys\TYPES.H"\
-	
-NODEP_CPP_MOD_E=\
-	"..\sfio.h"\
 	
 
 "$(INTDIR)\mod_expires.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"
@@ -204,14 +200,19 @@ NODEP_CPP_MOD_E=\
 !ELSEIF  "$(CFG)" == "ApacheModuleExpires - Win32 Debug"
 
 DEP_CPP_MOD_E=\
-	"..\alloc.h"\
-	"..\buff.h"\
-	"..\conf.h"\
-	"..\http_config.h"\
-	"..\http_log.h"\
-	"..\httpd.h"\
-	"..\regex\regex.h"\
+	"..\..\core\alloc.h"\
+	"..\..\core\buff.h"\
+	"..\..\core\conf.h"\
+	"..\..\core\http_config.h"\
+	"..\..\core\http_log.h"\
+	"..\..\core\httpd.h"\
+	"..\..\regex\regex.h"\
 	".\readdir.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_MOD_E=\
+	"..\..\core\sfio.h"\
 	
 
 "$(INTDIR)\mod_expires.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"

@@ -1,19 +1,15 @@
-# Microsoft Developer Studio Generated NMAKE File, Format Version 4.20
-# ** DO NOT EDIT **
-
-# TARGTYPE "Win32 (x86) Static Library" 0x0104
-
+# Microsoft Developer Studio Generated NMAKE File, Based on regex.dsp
 !IF "$(CFG)" == ""
-CFG=regex - Win32 Debug
-!MESSAGE No configuration specified.  Defaulting to regex - Win32 Debug.
+CFG=regex - Win32 Release
+!MESSAGE No configuration specified. Defaulting to regex - Win32 Release.
 !ENDIF 
 
 !IF "$(CFG)" != "regex - Win32 Release" && "$(CFG)" != "regex - Win32 Debug"
 !MESSAGE Invalid configuration "$(CFG)" specified.
-!MESSAGE You can specify a configuration when running NMAKE on this makefile
-!MESSAGE by defining the macro CFG on the command line.  For example:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "regex.mak" CFG="regex - Win32 Debug"
+!MESSAGE NMAKE /f "regex.mak" CFG="regex - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -28,54 +24,48 @@ NULL=
 !ELSE 
 NULL=nul
 !ENDIF 
-################################################################################
-# Begin Project
-# PROP Target_Last_Scanned "regex - Win32 Debug"
+
 CPP=cl.exe
 
 !IF  "$(CFG)" == "regex - Win32 Release"
 
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Release"
-# PROP BASE Intermediate_Dir "Release"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Release"
-# PROP Intermediate_Dir "Release"
-# PROP Target_Dir ""
 OUTDIR=.\Release
 INTDIR=.\Release
+# Begin Custom Macros
+OutDir=.\.\Release
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
 
 ALL : "$(OUTDIR)\regex.lib"
 
-CLEAN : 
+!ELSE 
+
+ALL : "$(OUTDIR)\regex.lib"
+
+!ENDIF 
+
+CLEAN :
 	-@erase "$(INTDIR)\regcomp.obj"
 	-@erase "$(INTDIR)\regerror.obj"
 	-@erase "$(INTDIR)\regexec.obj"
 	-@erase "$(INTDIR)\regfree.obj"
+	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\regex.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I "." /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "." /D "WIN32" /D "NDEBUG" /D "_WINDOWS"\
- /Fp"$(INTDIR)/regex.pch" /YX /Fo"$(INTDIR)/" /c 
+ /Fp"$(INTDIR)\regex.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Release/
-CPP_SBRS=.\.
+CPP_SBRS=.
 BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-BSC32_FLAGS=/nologo /o"$(OUTDIR)/regex.bsc" 
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\regex.bsc" 
 BSC32_SBRS= \
 	
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
-LIB32_FLAGS=/nologo /out:"$(OUTDIR)/regex.lib" 
+LIB32_FLAGS=/nologo /out:"$(OUTDIR)\regex.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\regcomp.obj" \
 	"$(INTDIR)\regerror.obj" \
@@ -89,22 +79,23 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "regex - Win32 Debug"
 
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
-# PROP Target_Dir ""
 OUTDIR=.\Debug
 INTDIR=.\Debug
+# Begin Custom Macros
+OutDir=.\.\Debug
+# End Custom Macros
+
+!IF "$(RECURSE)" == "0" 
 
 ALL : "$(OUTDIR)\regex.lib" "$(OUTDIR)\regex.bsc"
 
-CLEAN : 
+!ELSE 
+
+ALL : "$(OUTDIR)\regex.lib" "$(OUTDIR)\regex.bsc"
+
+!ENDIF 
+
+CLEAN :
 	-@erase "$(INTDIR)\regcomp.obj"
 	-@erase "$(INTDIR)\regcomp.sbr"
 	-@erase "$(INTDIR)\regerror.obj"
@@ -113,22 +104,20 @@ CLEAN :
 	-@erase "$(INTDIR)\regexec.sbr"
 	-@erase "$(INTDIR)\regfree.obj"
 	-@erase "$(INTDIR)\regfree.sbr"
+	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\regex.bsc"
 	-@erase "$(OUTDIR)\regex.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-# ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /GX /Z7 /Od /I "." /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /c
 CPP_PROJ=/nologo /MDd /W3 /GX /Z7 /Od /I "." /D "WIN32" /D "_DEBUG" /D\
- "_WINDOWS" /FR"$(INTDIR)/" /Fp"$(INTDIR)/regex.pch" /YX /Fo"$(INTDIR)/" /c 
+ "_WINDOWS" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\regex.pch" /YX /Fo"$(INTDIR)\\"\
+ /Fd"$(INTDIR)\\" /FD /c 
 CPP_OBJS=.\Debug/
 CPP_SBRS=.\Debug/
 BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-BSC32_FLAGS=/nologo /o"$(OUTDIR)/regex.bsc" 
+BSC32_FLAGS=/nologo /o"$(OUTDIR)\regex.bsc" 
 BSC32_SBRS= \
 	"$(INTDIR)\regcomp.sbr" \
 	"$(INTDIR)\regerror.sbr" \
@@ -141,9 +130,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
-LIB32_FLAGS=/nologo /out:"$(OUTDIR)/regex.lib" 
+LIB32_FLAGS=/nologo /out:"$(OUTDIR)\regex.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\regcomp.obj" \
 	"$(INTDIR)\regerror.obj" \
@@ -157,40 +144,42 @@ LIB32_OBJS= \
 
 !ENDIF 
 
-.c{$(CPP_OBJS)}.obj:
-   $(CPP) $(CPP_PROJ) $<  
+.c{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
-.cpp{$(CPP_OBJS)}.obj:
-   $(CPP) $(CPP_PROJ) $<  
+.cpp{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
-.cxx{$(CPP_OBJS)}.obj:
-   $(CPP) $(CPP_PROJ) $<  
+.cxx{$(CPP_OBJS)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
-.c{$(CPP_SBRS)}.sbr:
-   $(CPP) $(CPP_PROJ) $<  
+.c{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
-.cpp{$(CPP_SBRS)}.sbr:
-   $(CPP) $(CPP_PROJ) $<  
+.cpp{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
-.cxx{$(CPP_SBRS)}.sbr:
-   $(CPP) $(CPP_PROJ) $<  
+.cxx{$(CPP_SBRS)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
-################################################################################
-# Begin Target
 
-# Name "regex - Win32 Release"
-# Name "regex - Win32 Debug"
+!IF "$(CFG)" == "regex - Win32 Release" || "$(CFG)" == "regex - Win32 Debug"
+SOURCE=.\regcomp.c
 
 !IF  "$(CFG)" == "regex - Win32 Release"
 
-!ELSEIF  "$(CFG)" == "regex - Win32 Debug"
-
-!ENDIF 
-
-################################################################################
-# Begin Source File
-
-SOURCE=.\regcomp.c
 DEP_CPP_REGCO=\
 	".\cclass.h"\
 	".\cname.h"\
@@ -198,112 +187,118 @@ DEP_CPP_REGCO=\
 	".\regex.h"\
 	".\regex2.h"\
 	".\utils.h"\
-	{$(INCLUDE)}"\sys\types.h"\
 	
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 
 "$(INTDIR)\regcomp.obj" : $(SOURCE) $(DEP_CPP_REGCO) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "regex - Win32 Debug"
 
+DEP_CPP_REGCO=\
+	".\cclass.h"\
+	".\cname.h"\
+	".\regcomp.ih"\
+	".\regex.h"\
+	".\regex2.h"\
+	".\utils.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
 
-"$(INTDIR)\regcomp.obj" : $(SOURCE) $(DEP_CPP_REGCO) "$(INTDIR)"
-
-"$(INTDIR)\regcomp.sbr" : $(SOURCE) $(DEP_CPP_REGCO) "$(INTDIR)"
+"$(INTDIR)\regcomp.obj"	"$(INTDIR)\regcomp.sbr" : $(SOURCE) $(DEP_CPP_REGCO)\
+ "$(INTDIR)"
 
 
 !ENDIF 
 
-# End Source File
-################################################################################
-# Begin Source File
-
 SOURCE=.\regerror.c
+
+!IF  "$(CFG)" == "regex - Win32 Release"
+
 DEP_CPP_REGER=\
 	".\regerror.ih"\
 	".\regex.h"\
 	".\utils.h"\
-	{$(INCLUDE)}"\sys\types.h"\
 	
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 
 "$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "regex - Win32 Debug"
 
+DEP_CPP_REGER=\
+	".\regerror.ih"\
+	".\regex.h"\
+	".\utils.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
 
-"$(INTDIR)\regerror.obj" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
-
-"$(INTDIR)\regerror.sbr" : $(SOURCE) $(DEP_CPP_REGER) "$(INTDIR)"
+"$(INTDIR)\regerror.obj"	"$(INTDIR)\regerror.sbr" : $(SOURCE) $(DEP_CPP_REGER)\
+ "$(INTDIR)"
 
 
 !ENDIF 
 
-# End Source File
-################################################################################
-# Begin Source File
-
 SOURCE=.\regexec.c
+
+!IF  "$(CFG)" == "regex - Win32 Release"
+
 DEP_CPP_REGEX=\
 	".\engine.c"\
 	".\engine.ih"\
 	".\regex.h"\
 	".\regex2.h"\
 	".\utils.h"\
-	{$(INCLUDE)}"\sys\types.h"\
 	
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 
 "$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "regex - Win32 Debug"
 
+DEP_CPP_REGEX=\
+	".\engine.c"\
+	".\engine.ih"\
+	".\regex.h"\
+	".\regex2.h"\
+	".\utils.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
 
-"$(INTDIR)\regexec.obj" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
-
-"$(INTDIR)\regexec.sbr" : $(SOURCE) $(DEP_CPP_REGEX) "$(INTDIR)"
+"$(INTDIR)\regexec.obj"	"$(INTDIR)\regexec.sbr" : $(SOURCE) $(DEP_CPP_REGEX)\
+ "$(INTDIR)"
 
 
 !ENDIF 
 
-# End Source File
-################################################################################
-# Begin Source File
-
 SOURCE=.\regfree.c
+
+!IF  "$(CFG)" == "regex - Win32 Release"
+
 DEP_CPP_REGFR=\
 	".\regex.h"\
 	".\regex2.h"\
 	".\utils.h"\
-	{$(INCLUDE)}"\sys\types.h"\
 	
-
-!IF  "$(CFG)" == "regex - Win32 Release"
-
 
 "$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
 
 
 !ELSEIF  "$(CFG)" == "regex - Win32 Debug"
 
+DEP_CPP_REGFR=\
+	".\regex.h"\
+	".\regex2.h"\
+	".\utils.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
 
-"$(INTDIR)\regfree.obj" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
-
-"$(INTDIR)\regfree.sbr" : $(SOURCE) $(DEP_CPP_REGFR) "$(INTDIR)"
+"$(INTDIR)\regfree.obj"	"$(INTDIR)\regfree.sbr" : $(SOURCE) $(DEP_CPP_REGFR)\
+ "$(INTDIR)"
 
 
 !ENDIF 
 
-# End Source File
-# End Target
-# End Project
-################################################################################
+SOURCE=.\engine.c
+
+!ENDIF 
+

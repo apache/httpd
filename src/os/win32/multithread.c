@@ -1,6 +1,6 @@
 
-#include "../conf.h"
-#include "../multithread.h"
+#include "conf.h"
+#include "multithread.h"
 
 #ifdef WIN32
 #include <process.h>

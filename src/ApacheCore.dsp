@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\regex" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\regex" /I ".\core" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\regex" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\regex" /I ".\core" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -93,7 +93,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\alloc.c
+SOURCE=.\core\alloc.c
 # End Source File
 # Begin Source File
 
@@ -101,163 +101,163 @@ SOURCE=.\ApacheCore.def
 # End Source File
 # Begin Source File
 
-SOURCE=.\buff.c
+SOURCE=.\core\buff.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\explain.c
+SOURCE=.\core\explain.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\fnmatch.c
+SOURCE=.\core\fnmatch.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\getopt.c
+SOURCE=.\os\win32\getopt.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_bprintf.c
+SOURCE=.\core\http_bprintf.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_config.c
+SOURCE=.\core\http_config.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_core.c
+SOURCE=.\core\http_core.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_log.c
+SOURCE=.\core\http_log.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_main.c
+SOURCE=.\core\http_main.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_protocol.c
+SOURCE=.\core\http_protocol.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\http_request.c
+SOURCE=.\core\http_request.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\md5c.c
+SOURCE=.\core\md5c.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_access.c
+SOURCE=.\modules\standard\mod_access.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_actions.c
+SOURCE=.\modules\standard\mod_actions.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_alias.c
+SOURCE=.\modules\standard\mod_alias.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_asis.c
+SOURCE=.\modules\standard\mod_asis.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_auth.c
+SOURCE=.\modules\standard\mod_auth.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_autoindex.c
+SOURCE=.\modules\standard\mod_autoindex.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_cgi.c
+SOURCE=.\modules\standard\mod_cgi.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_dir.c
+SOURCE=.\modules\standard\mod_dir.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\mod_dll.c
+SOURCE=.\os\win32\mod_dll.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_env.c
+SOURCE=.\modules\standard\mod_env.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_imap.c
+SOURCE=.\modules\standard\mod_imap.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_include.c
+SOURCE=.\modules\standard\mod_include.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\mod_isapi.c
+SOURCE=.\os\win32\mod_isapi.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_log_config.c
+SOURCE=.\modules\standard\mod_log_config.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_mime.c
+SOURCE=.\modules\standard\mod_mime.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_negotiation.c
+SOURCE=.\modules\standard\mod_negotiation.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_setenvif.c
+SOURCE=.\modules\standard\mod_setenvif.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_userdir.c
+SOURCE=.\modules\standard\mod_userdir.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\modules.c
+SOURCE=.\os\win32\modules.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\multithread.c
+SOURCE=.\os\win32\multithread.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\readdir.c
+SOURCE=.\os\win32\readdir.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\rfc1413.c
+SOURCE=.\core\rfc1413.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\nt\service.c
+SOURCE=.\os\win32\service.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\util.c
+SOURCE=.\core\util.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\util_date.c
+SOURCE=.\core\util_date.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\util_md5.c
+SOURCE=.\core\util_md5.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\util_script.c
+SOURCE=.\core\util_script.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\util_snprintf.c
+SOURCE=.\core\util_snprintf.c
 # End Source File
 # End Group
 # Begin Group "Header Files"

@@ -91,8 +91,8 @@
  *    DLL, follow the above instructions to load it into Apache.
  */
 
-#include "../httpd.h"
-#include "../http_config.h"
+#include "httpd.h"
+#include "http_config.h"
 
 /*
  * The hard part of implementing LoadModule is deciding what to do about

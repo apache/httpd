@@ -159,9 +159,10 @@ LINK32_OBJS= \
 
 
 !IF "$(CFG)" == "Apache - Win32 Release" || "$(CFG)" == "Apache - Win32 Debug"
-SOURCE=.\dummy.c
+SOURCE=.\core\dummy.c
 
 "$(INTDIR)\dummy.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 
