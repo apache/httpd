@@ -1,5 +1,8 @@
 Changes with Apache 2.0.51
 
+  *) Extend the SetEnvIf directive to capture subexpressions of the
+     matched value.  [André Malo]
+
   *) Recursive Include directives no longer crash. The server stops
      including configuration files after a certain nesting level (128
      as distributed). This is configurable at compile time using the
