@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<modulesynopsis metafile="mod_cgid.xml.meta">
+<!-- English revision: 1.8 -->
+
+<name>mod_cgid</name>
+<description>外部 CGI デーモンを使った CGI スクリプトの実行</description>
+<status>Base</status>
+<sourcefile>mod_cgid.c</sourcefile>
+<identifier>cgid_module</identifier>
+<compatibility>Unix のスレッド MPM のみ</compatibility>
+
+<summary>
+    <p>最適化が施されていることと、以下で説明されている追加の <directive
+    module="mod_cgid">ScriptSock</directive> ディレクティブを除いては、
+    <module>mod_cgid</module> は <module>mod_cgi</module> と同様の
+    動作をします。<strong>Apache と CGI に関する詳細は
+    <module>mod_cgi</module> の概要を読んでください。</strong></p>
+
+    <p>Unix オペレーティングシステムの中には、マルチスレッドのサーバから
+    プロセスを fork するのが非常にコストの高い動作になっているものがあります。
+    理由は、新しいプロセスが親プロセスのスレッドすべてを複製するからです。
+    各 CGI 起動時にこのコストがかかるのを防ぐために、<module>mod_cgid</module>
+    は子プロセスを fork して CGI スクリプトを実行するための
+    外部デーモンを実行します。
+    主サーバは unix ドメインソケットを使ってこのデーモンと通信します。</p>
+
+    <p>コンパイル時にマルチスレッド MPM が選ばれたときは
+    <module>mod_cgi</module> の代わりに必ずこのモジュールが使用されます。
+    ユーザのレベルではこのモジュールの設定と動作は <module>mod_cgi</module>
+    とまったく同じです。唯一の例外は <code>ScriptSock</code> ディレクティブの
+    追加で、このディレクティブは CGI デーモンとの通信用のソケットの名前を
+    指定します。</p>
+</summary>
+
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../suexec.html">CGI プログラムを違うユーザ ID で実行する</a></seealso>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLog</name>
+</directivesynopsis>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLogLength</name>
+</directivesynopsis>
+
+<directivesynopsis location="mod_cgi">
+<name>ScriptLogBuffer</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ScriptSock</name>
+<description>CGI デーモンとの通信に使われるソケットの名前</description>
+<syntax>ScriptSock <var>file-path</var></syntax>
+<default>ScriptSock logs/cgisock</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+    <p>このディレクティブは CGI デーモンとの通信に使われるソケットの
+    名前を設定します。ソケットは Apache が起動されたユーザ (通常 root) の
+    パーミッションを用いてオープンされます。CGI スクリプトとの通信の
+    セキュリティを保つために、ソケットの存在するディレクトリに
+    他のユーザが書き込み権限を持っていないようにすることが重要です。</p>
+
+    <example><title>例</title>
+      ScriptSock /var/run/cgid.sock
+    </example>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+
