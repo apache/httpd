@@ -1,4 +1,4 @@
-$Id: README,v 1.15 1996/08/20 11:50:37 paul Exp $ 
+$Id: README,v 1.16 1996/08/23 18:19:09 jim Exp $ 
 
 The basic idea of the new Apache release is to make a modular
 "tinkertoy" server, to which people can easily add code which is
@@ -223,8 +223,7 @@ of these #defines.
        Do not use the sigaction() call, even if we have it.
       NO_LINGCLOSE:
        Do not use Apache's soft, "lingering" close feature to
-       terminate connections. The lingering_close function
-       can cause problems with nph- scripts on some platforms.
+       terminate connections.
 --
 
   MISC #DEFINES:

@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_main.c,v 1.62 1996/08/20 11:50:47 paul Exp $ */
+/* $Id: http_main.c,v 1.63 1996/08/23 18:19:11 jim Exp $ */
 
 /*
  * httpd.c: simple http daemon for answering WWW file requests
@@ -1527,7 +1527,7 @@ void child_main(int child_num_arg)
 	bflush(conn_io);
 
 #ifdef NO_LINGCLOSE
-	bclose(conn_io);	/* slam it shut */
+	bclose(conn_io);	/* just close it */
 #else
 	if (r)
 	    lingering_close (conn_io->fd, r->server);

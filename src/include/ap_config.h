@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: ap_config.h,v 1.35 1996/08/21 18:40:03 akosut Exp $ */
+/* $Id: ap_config.h,v 1.36 1996/08/23 18:19:09 jim Exp $ */
 
 /*
  * conf.h: system-dependant #defines and includes...
@@ -243,7 +243,7 @@ extern int strncasecmp(const char *,const char *,unsigned);
 #undef USE_FLOCK_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define MOVEBREAK		0x4000000
-#define NO_LINGCLOSE
+#undef NO_LINGCLOSE
 /* These are to let -Wall compile more cleanly */
 extern int strcasecmp(const char *, const char *);
 extern int strncasecmp(const char *,const char *,unsigned);

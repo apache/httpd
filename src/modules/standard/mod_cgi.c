@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: mod_cgi.c,v 1.17 1996/08/20 11:51:03 paul Exp $ */
+/* $Id: mod_cgi.c,v 1.18 1996/08/23 18:19:13 jim Exp $ */
 
 /*
  * http_script: keeps all script-related ramblings together.
@@ -351,6 +351,7 @@ int cgi_handler (request_rec *r)
 	(cgi_server_conf *)get_module_config(sconf, &cgi_module);
 
     struct cgi_child_stuff cld;
+    pid_t child_pid;
 
     if (r->method_number == M_OPTIONS) {
         /* 99 out of 100 CGI scripts, this is all they support */
@@ -389,13 +390,14 @@ int cgi_handler (request_rec *r)
     cld.argv0 = argv0; cld.r = r; cld.nph = nph;
     cld.debug = conf->logname ? 1 : 0;
     
-    if (!spawn_child_err (r->connection->pool, cgi_child, (void *)&cld,
-		      nph ? just_wait : kill_after_timeout,
+    if (!(child_pid =
+	  spawn_child_err (r->connection->pool, cgi_child, (void *)&cld,
+			   nph ? just_wait : kill_after_timeout,
 #ifdef __EMX__
-		      &script_out, &script_in, &script_err)) {
+			   &script_out, &script_in, &script_err))) {
 #else
-                      &script_out, nph ? NULL : &script_in,
-                      &script_err)) {
+			   &script_out, nph ? NULL : &script_in,
+	    		   &script_err))) {
 #endif
         log_reason ("couldn't spawn child process", r->filename, r);
         return SERVER_ERROR;
@@ -491,13 +493,15 @@ int cgi_handler (request_rec *r)
 	pfclose (r->connection->pool, script_err);
     }
 
-#ifdef __EMX__
     if (nph) {
+#ifdef __EMX__
         while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL) {
             bputs(argsbuffer, r->connection->client);
         }
-    }    
+#else
+	waitpid(child_pid, (int*)0, 0);
 #endif
+    }    
 
     return OK;			/* NOT r->status, even if it has changed. */
 }
