@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: util_md5.c,v 1.4 1996/08/20 11:51:24 paul Exp $ */
-
 /************************************************************************
  * NCSA HTTPd Server
  * Software Development Group

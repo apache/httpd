@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: alloc.c,v 1.17 1996/10/17 08:59:54 ben Exp $ */
-
 
 /*
  * Resource allocation code... the code here is responsible for making

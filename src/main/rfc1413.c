@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: rfc1413.c,v 1.5 1996/11/03 20:52:11 brian Exp $ */
-
 /*
  * rfc1413() speaks a common subset of the RFC 1413, AUTH, TAP and IDENT
  * protocols. The code queries an RFC 1413 etc. compatible daemon on a remote
