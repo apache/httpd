@@ -10,3 +10,4 @@ build
 *.pdf
 *.toc
 .cvsstat.prop
+.outdated*
