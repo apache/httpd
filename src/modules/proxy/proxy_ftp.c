@@ -149,7 +149,7 @@ proxy_ftp_canon(request_rec *r, char *url)
 	}
 	else
 	{
-	    p = proxy_canonenc(pool, r->args, strlen(r->args), enc_path, 1);
+	    p = proxy_canonenc(pool, r->args, strlen(r->args), enc_fpath, 1);
 	    if (p == NULL) return BAD_REQUEST;
 	    path = pstrcat(pool, path, "?", p, NULL);
 	}
@@ -213,6 +213,27 @@ ftp_getrc(BUFF *f)
     return status;
 }
 
+static char *
+encode_space(request_rec *r, char *path)
+{
+    pool *pool=r->pool;
+    char *newpath;
+    int i, j, len;
+
+    len = strlen(path);
+    newpath = palloc(pool, 3 * len + 1);
+    for (i=0, j=0; i < len; i++, j++) {
+	if (path[i] != ' ')
+	    newpath[j] = path[i];
+	else {
+	    proxy_c2hex(' ', &newpath[j]);
+	    j += 2;
+	}
+    }
+    newpath[j] = '\0';
+    return newpath;
+}
+
 static long int
 send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
 {
@@ -220,6 +241,7 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
     char buf2[IOBUFSIZE];
     char *filename;
     char *tempurl;
+    char *newurlptr;
     int searchidx = 0;
     char *searchptr = NULL;
     int firstfile = 1;
@@ -235,6 +257,7 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
 	tempurl += n - 5;	/* leave room for ftp:// */
     }
 
+    n = decodeenc(tempurl);
     ap_snprintf(buf, sizeof(buf), "<HTML><HEAD><TITLE>%s</TITLE></HEAD><BODY><H1>Directory %s</H1><HR><PRE>", tempurl, tempurl);
     bwrite(con->client, buf, strlen(buf));
     if (f2 != NULL) bwrite(f2, buf, strlen(buf));
@@ -326,7 +349,8 @@ send_dir(BUFF *f, request_rec *r, BUFF *f2, struct cache_req *c, char *url)
             else 
             {
                 ap_snprintf(urlptr, sizeof(urlptr), "%s%s%s",url,(url[strlen(url)-1]=='/' ? "" : "/"), filename);
-                ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\015\012", buf, urlptr, filename);
+		newurlptr = encode_space(r, urlptr);
+                ap_snprintf(buf2, sizeof(buf2), "%s <A HREF=\"%s\">%s</A>\015\012", buf, newurlptr, filename);
             }
             strncpy(buf, buf2, sizeof(buf));
 	    buf[sizeof(buf)-1] = '\0';
