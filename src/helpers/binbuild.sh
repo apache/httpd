@@ -172,11 +172,20 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "##" && \
   echo "##  determine path to (optional) Perl interpreter" && \
   echo "##" && \
-  echo "PERL=no-perl-on-this-system" && \
-  echo "perlpath=\"\`src/helpers/PrintPath perl5 perl miniperl\`\"" && \
-  echo "if [ \"x\$perlpath\" != \"x\" ]; then" && \
-  echo "  PERL=\"\$perlpath\"" && \
-  echo "fi" && \
+  echo "PERL=no-perl5-on-this-system" && \
+  echo "perls='perl5 perl'" && \
+  echo "path=\`echo \$PATH | sed -e 's/:/ /g'\`" && \
+  echo " " && \
+  echo "for dir in \${path} ;  do" && \
+  echo "  for pperl in \${perls} ; do" && \
+  echo "    if test -f \"\${dir}/\${pperl}\" ; then" && \
+  echo "      if \`\${dir}/\${pperl} -v | grep 'version 5\.' >/dev/null 2>&1\` ; then" && \
+  echo "        PERL=\"\${dir}/\${pperl}\"" && \
+  echo "        break" && \
+  echo "      fi" && \
+  echo "    fi" && \
+  echo "  done" && \
+  echo "done" && \
   echo " " && \
   echo "if [ .\$1 = . ]" && \
   echo "then" && \
@@ -186,7 +195,7 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "fi" && \
   echo "echo \"Installing binary distribution for platform $OS\"" && \
   echo "echo \"into directory \$SR ...\"" && \
-  echo "./src/helpers/mkdir.sh \$SR" && \
+  echo "lmkdir \$SR 755" && \
   echo "lmkdir \$SR/proxy 750" && \
   echo "lmkdir \$SR/logs 750" && \
   echo "lcopy bindist/man \$SR/man 755 644" && \
@@ -213,8 +222,8 @@ cp README.bindist ../apache_$VER-$OS.README
   echo "	-e \"s;\@libexecdir\@;\$SR/libexec;\" -e \"s;\@includedir\@;\$SR/include;\" \\" && \
   echo "	-e \"s;\@sysconfdir\@;\$SR/conf;\" bindist/bin/apxs > \$SR/bin/apxs" && \
   echo "sed -e \"s;^#!/.*;#!\$PERL;\" bindist/bin/dbmmanage > \$SR/bin/dbmmanage" && \
-  echo "sed -e s%/usr/local/apache%\$SR/% \$SR/conf/httpd.conf.default > \$SR/conf/httpd.conf" && \
-  echo "sed -e s%PIDFILE=%PIDFILE=\$SR/% -e s%HTTPD=%HTTPD=\\\"\$SR/% -e \"s%/httpd$%/httpd -d \$SR\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
+  echo "sed -e \"s%/usr/local/apache%\$SR/%\" \$SR/conf/httpd.conf.default > \$SR/conf/httpd.conf" && \
+  echo "sed -e \"s%PIDFILE=%PIDFILE=\$SR/%\" -e \"s%HTTPD=%HTTPD=\\\"\$SR/%\" -e \"s%httpd\$%httpd -d \$SR\\\"%\" bindist/bin/apachectl > \$SR/bin/apachectl" && \
   echo " " && \
   echo "echo \"Ready.\"" && \
   echo "echo \" +--------------------------------------------------------+\"" && \
