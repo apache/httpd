@@ -290,14 +290,18 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     int configtestonly = 0;
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
-    process_rec *process = create_process(argc, (const char **)argv);
+    process_rec *process;
     server_rec *server_conf;
-    ap_context_t *pglobal = process->pool;
-    ap_context_t *pconf = process->pconf;
+    ap_context_t *pglobal;
+    ap_context_t *pconf;
     ap_context_t *plog; /* Pool of log streams, reset _after_ each read of conf */
     ap_context_t *ptemp; /* Pool for temporary config stuff, reset often */
     ap_context_t *pcommands; /* Pool for -C and -c switches */
 
+    ap_initialize();
+    process = create_process(argc, (const char **)argv);
+    pglobal = process->pool;
+    pconf = process->pconf;
     ap_server_argv0 = process->short_name;
     
     ap_util_uri_init();
