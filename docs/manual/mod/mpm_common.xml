@@ -383,16 +383,18 @@ the child processes</description>
 <module>prefork</module></modulelist>
 
 <usage>
-    <p>The <directive>ScoreBoardFile</directive> directive is required
-    on some architectures to place a file that the server will use to
-    communicate between its children and the parent. The easiest way
-    to find out if your architecture requires a scoreboard file is to
-    run Apache and see if it creates the file named by the
-    directive. If your architecture requires it then you must ensure
-    that this file is not used at the same time by more than one
-    invocation of Apache.</p>
+    <p>Apache uses a scoreboard to communicate between its children
+    and the parent. Some architectures require a file to facilitate
+    this communication. If left unspecified, Apache first attempts to
+    create the scoreboard entirely in memory (using anonymous shared
+    memory), and failing that will attempt to create the file on disk
+    (using file-based shared memory). Specifying this directive causes
+    Apache to always create the file on the disk.</p>
 
-    <p>If you have to use a <directive>ScoreBoardFile</directive> then
+    <p>File-based shared memory is useful for third-party applications
+    that require direct access to the scoreboard.</p>
+
+    <p>If you use a <directive>ScoreBoardFile</directive> then
     you may see improved speed by placing it on a RAM disk. But be
     careful that you heed the same warnings about log file placement
     and <a href="../misc/security_tips.html">security</a>.</p>
