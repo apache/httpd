@@ -167,6 +167,11 @@ static apr_status_t churn_output(SSLFilterRec *pRec)
     apr_bucket_brigade *pbbOutput=NULL;
     int done;
 
+    if (!pRec->pssl) {
+        /* we've been shutdown */
+        return APR_EOF;
+    }
+
     do {
 	char buf[1024];
 	int n;
@@ -416,6 +421,11 @@ apr_status_t ssl_io_filter_cleanup (void *data)
 {
     apr_status_t ret;
     SSLFilterRec *pRec = (SSLFilterRec *)data;
+
+    if (!pRec->pssl) {
+        /* already been shutdown */
+        return APR_SUCCESS;
+    }
 
     if ((ret = ssl_hook_CloseConnection(pRec)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, ret, NULL,
