@@ -158,13 +158,13 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
     ap_listen_rec **walk;
     ap_listen_rec *new;
     ap_status_t status;
-    char oldaddr[17];
+    char *oldaddr;
     unsigned int oldport;
 
     /* see if we've got an old listener for this address:port */
     for (walk = &old_listeners; *walk; walk = &(*walk)->next) {
-        ap_getport(&oldport, (*walk)->sd);
-	ap_getipaddr(oldaddr,sizeof oldaddr,(*walk)->sd);
+        ap_get_local_port(&oldport, (*walk)->sd);
+	ap_get_local_ipaddr(&oldaddr,(*walk)->sd);
 	if (!strcmp(oldaddr, addr) && port == oldport) {
 	    /* re-use existing record */
 	    new = *walk;
@@ -184,8 +184,8 @@ static void alloc_listener(process_rec *process, char *addr, unsigned int port)
                  "make_sock: failed to get a socket for %s", addr);
         return;
     }
-    ap_setport(new->sd, port);
-    ap_setipaddr(new->sd, addr);
+    ap_set_local_port(new->sd, port);
+    ap_set_local_ipaddr(new->sd, addr);
     new->next = ap_listeners;
     ap_listeners = new;
 }

@@ -288,3 +288,15 @@ conn_rec *ap_new_connection(ap_context_t *p, server_rec *server, BUFF *inout,
 
     return conn;
 }
+
+
+
+conn_rec *ap_new_apr_connection(ap_context_t *p, server_rec *server, BUFF *inout,
+			    const ap_socket_t *conn_socket, long id)
+{
+    struct sockaddr_in *sa_local, *sa_remote;
+
+    ap_get_local_name(&sa_local, conn_socket);
+    ap_get_remote_name(&sa_remote, conn_socket);
+    return ap_new_connection(p, server, inout, sa_remote, sa_local, id);
+}

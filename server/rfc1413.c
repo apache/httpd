@@ -124,26 +124,26 @@ static int get_rfc1413(ap_socket_t *sock, const char *local_ip,
      * addresses from the query socket.
      */
 
-    ap_setport(sock, ANY_PORT);
-    ap_setipaddr(sock, local_ip); 
+    ap_set_local_port(sock, ANY_PORT);
+    ap_set_local_ipaddr(sock, local_ip);
 
     if ((status = ap_bind(sock)) != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, status, srv,
 		    "bind: rfc1413: Error binding to local port");
 	return -1;
     }
-    ap_getport(&sav_our_port, sock);
+    ap_get_local_port(&sav_our_port, sock);
 
 /*
  * errors from connect usually imply the remote machine doesn't support
  * the service
  */
-    ap_setport(sock, RFC1413_PORT);
-    ap_setipaddr(sock, rmt_ip); 
+    ap_set_remote_port(sock, RFC1413_PORT);
+    ap_set_remote_ipaddr(sock, rmt_ip);
                     
     if (ap_connect(sock, NULL) != APR_SUCCESS)
         return -1;
-    ap_getport(&sav_rmt_port, sock);
+    ap_get_remote_port(&sav_rmt_port, sock);
 
 /* send the data */
     buflen = ap_snprintf(buffer, sizeof(buffer), "%u,%u\r\n", sav_rmt_port,
