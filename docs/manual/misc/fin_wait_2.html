@@ -123,13 +123,26 @@ The following systems are known to have a timeout:
 	    <A HREF="ftp://ftp.bsdi.com/bsdi/patches/patches-2.1/K210-027">
 	    K210-027</A> patch installed.  
 	<LI><A HREF="http://www.sun.com/">Solaris</A> as of around version
-	    2.2.  The timeout may need tuning by using <CODE>ndd</CODE> to 
-	    modify <CODE>tcp_fin_wait_2_flush_interval</CODE>.
+	    2.2.  The timeout can be tuned by using <CODE>ndd</CODE> to 
+	    modify <CODE>tcp_fin_wait_2_flush_interval</CODE>, but the
+	    default should be appropriate for most servers and improper 
+	    tuning can have negative impacts.
 	<LI><A HREF="http://www.sco.com/">SCO TCP/IP Release 1.2.1</A>
 	    can be modified to have a timeout by following
 	    <A HREF="http://www.sco.com/cgi-bin/waisgate?WAISdocID=2242622956+0+0+0&WAISaction=retrieve"> SCO's instructions</A>.
 	<LI><A HREF="http://www.linux.org/">Linux</A> 2.0.x and
 	    earlier(?)
+	<LI><A HREF="http://www.hp.com/">HP-UX</A> 10.x defaults to 
+ 	    terminating connections in the FIN_WAIT_2 state after the 
+	    normal keepalive timeouts.  This does not
+	    refer to the persistent connection or HTTP keepalive
+	    timeouts, but the <CODE>SO_LINGER</CODE> socket option 
+	    which is enabled by Apache.  This parameter can be adjusted 
+	    by using <CODE>nettune</CODE> to modify parameters such as
+	    <CODE>tcp_keepstart</CODE> and <CODE>tcp_keepstop</CODE>.
+	    In later revisions, there is an explicit timer for
+	    connections in FIN_WAIT_2 that can be modified; contact HP
+	    support for details.
 </UL>
 <P>
 The following systems are known to not have at timeout:
