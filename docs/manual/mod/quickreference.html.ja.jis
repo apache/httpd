@@ -120,14 +120,14 @@ proxy</td></tr>
 決定する</td></tr>
 <tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var> 
 [<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4"><code>.htaccess</code> で許可されるディレクティブの種類</td></tr>
-<tr class="odd"><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies userIDs that are allowed access without
-password verification</td></tr>
-<tr><td><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the password entered will be logged in the
-error log</td></tr>
-<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies whether blank passwords are allowed</td></tr>
-<tr><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
-<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether to check the password field for a correctly
-formatted email address</td></tr>
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">パスワードの検査無しでアクセスを許可する userID を指定する
+</td></tr>
+<tr><td><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">入力されたパスワードがエラーログにロギングされるかどうかを
+設定する</td></tr>
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">空パスワードを許可するかどうかを指定する</td></tr>
+<tr><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">空 userID を許可するかを指定する</td></tr>
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">パスワード欄が正しい形式の電子メールアドレスであることを
+調べるかどうかを設定する</td></tr>
 <tr><td><a href="perchild.html#assignuserid">AssignUserID <var>user-id</var> <var>group-id</var></a></td><td></td><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">Tie a virtual host to a user and group ID</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">認証と承認を、より低いレベルのモジュールに移行させるかを
 設定します。</td></tr>
@@ -135,10 +135,10 @@ formatted email address</td></tr>
 [<var>provider-name</var>] ...</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">この位置に対する認証プロバイダを設定します。</td></tr>
 <tr class="odd"><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the database file containing the list
 of user groups for authentication</td></tr>
-<tr><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
-store passwords</td></tr>
-<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of a database file containing the list of users and
-passwords for authentication</td></tr>
+<tr><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">パスワードを保存するために必要なデータベースファイルの種類を
+設定する</td></tr>
+<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">認証用のユーザとパスワードのリストを保持している
+データベースファイル名を設定する</td></tr>
 <tr><td><a href="mod_authn_default.html#authdefaultauthoritative">AuthDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">次の低次レベルの認証モジュールに制御を渡すかどうかを
 設定します</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5|MD5-sess</a></td><td> MD5 </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
@@ -155,8 +155,8 @@ server</td></tr>
 authentication</td></tr>
 <tr><td><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize <var>size</var></a></td><td> 1000 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The amount of shared memory to allocate for keeping track
 of clients</td></tr>
-<tr class="odd"><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of a text file containing the list
-of user groups for authentication</td></tr>
+<tr class="odd"><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">認証に使用するユーザグループの一覧が格納されている、
+テキストファイルの名前を設定する</td></tr>
 <tr><td><a href="mod_auth_ldap.html#authldapauthoritative">AuthLDAPAuthoritative on|off</a></td><td> on </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Prevent other authentication modules from
 authenticating the user if this one fails</td></tr>
 <tr class="odd"><td><a href="mod_auth_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
@@ -180,10 +180,8 @@ environment variable</td></tr>
 modules</td></tr>
 <tr><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
 store passwords</td></tr>
-<tr class="odd"><td><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization is passed to lower level
-modules</td></tr>
-<tr><td><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level
-modules</td></tr>
+<tr class="odd"><td><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">承認が低位のモジュールに渡されるかどうかを設定する</td></tr>
+<tr><td><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">承認が下位のモジュールに渡されるかどうかを設定する</td></tr>
 <tr class="odd"><td><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level
 modules</td></tr>
 <tr><td><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets whether authorization will be passed on to lower level

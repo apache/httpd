@@ -76,14 +76,14 @@ CGI スクリプトを実行する機能を提供</dd>
     Digest Authentication.</dd>
 <dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
-    areas</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
+<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>認証が必要な領域への "anonymous" ユーザのアクセスを許可する
+</dd>
+<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM ファイルを用いたユーザ認証</dd>
 <dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>認証フォールバックモジュール</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>テキストファイルを用いたユーザ認証</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>Authorization fallback module</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Group authorization using plaintext files</dd>
+<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>承認フォールバックモジュール</dd>
+<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>プレーンテキストファイルを用いたグループ承認</dd>
 <dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</dd>
 <dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Authorization based on file ownership</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>

@@ -11,7 +11,7 @@
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.1</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -22,8 +22,6 @@
 <a href="../ja/howto/auth.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>「認証」とは、誰かが自分は誰であるかを主張した場合に、
     それを確認するための全過程を指します。「承認」とは、
@@ -204,7 +202,7 @@
     利用可能です。</p>
 
     <p>最後に、<code class="directive"><a href="../mod/core.html#require">Require</a></code>
-    ディレクティブが、サーバのこの領域にアクセスできるユーザを
+    ディレクティブが、サーバのこの領域にアクセスできるユーザを
     指定することによって、プロセスの承認部分を提供します。
     次のセクションでは、<code class="directive"><a href="../mod/core.html#require">Require</a></code>
     ディレクティブの様々な用法について述べます。</p>
@@ -236,7 +234,7 @@
     次のようにタイプしてください。</p>
 
     <div class="example"><p><code>
-      htpasswd /usr/local/apache/passwd/password dpitts
+      htpasswd /usr/local/apache/passwd/passwords dpitts
     </code></p></div>
 
     <p>以前と同じ応答が返されますが、新しいファイルを
@@ -363,7 +361,7 @@
     </code></p></div>
 
     <p><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>
-    ディレクティブを単純に列挙するのでは望みの動作をしないでしょう。
+    ディレクティブを単純に列挙するのでは望みの動作をしないでしょう。
     なぜなら、全ての人が入れるということに加えて、
     指定したホストからの人が入れるようにするからです。
     やりたいことは、指定した人たち<em>だけ</em>が入れるように
@@ -382,5 +380,5 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 1999-2004 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>
