@@ -347,12 +347,10 @@ AddModule modules/standard/mod_auth.o
 
 # AddModule modules/standard/mod_so.o
 
-## mod_mmap_static lets you speedup the serving of a list of files
-## by mmap()ing them at server startup-time into memory and thus 
-## avoiding a lot of I/O which is required on normal file serving.
-## This is an experimental feature. USE IT WITH CARE AND ALWAYS
-## REMEMBER THAT WHENEVER ONE OF THESE FILES CHANGES THE SERVER HAS
-## TO BE RESTARTED MANUALLY TO SYNC WITH THE CHANGED FILE CONTENTS.
+## mod_mmap_static is an experimental module, you almost certainly
+## don't need it.  It can make some webservers faster.  No further
+## documentation is provided here because you'd be foolish
+## to use mod_mmap_static without reading the full documentation.
 
 # AddModule modules/experimental/mod_mmap_static.o
 
