@@ -113,6 +113,8 @@ libexecdir_relative   = @libexecdir_relative@
 #   suexec details (optional)
 suexec          = @suexec@
 suexec_caller   = @suexec_caller@
+suexec_docroot  = @suexec_docroot@
+suexec_logexec   = @suexec_logexec@
 suexec_userdir  = @suexec_userdir@
 suexec_uidmin   = @suexec_uidmin@
 suexec_gidmin   = @suexec_gidmin@
@@ -166,8 +168,8 @@ build-support:
 			-DUID_MIN=$(suexec_uidmin) \
 			-DGID_MIN=$(suexec_gidmin) \
 			-DUSERDIR_SUFFIX=\"$(suexec_userdir)\" \
-			-DLOG_EXEC=\"$(logfiledir)/suexec_log\" \
-			-DDOC_ROOT=\"$(datadir)/htdocs\" \
+			-DLOG_EXEC=\"$(suexec_logexec)\" \
+			-DDOC_ROOT=\"$(suexec_docroot)\" \
 			-DSAFE_PATH=\"$(suexec_safepath)\" \
 		' \
 		suexec; \

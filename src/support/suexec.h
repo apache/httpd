@@ -57,6 +57,7 @@
 
 /*
  * suexec.h -- user-definable variables for the suexec wrapper code.
+ *             (See README.configure on how to customize these variables.)
  */
 
 

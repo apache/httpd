@@ -192,6 +192,8 @@ layout=0
 #   suexec defaults
 suexec=0
 suexec_ok=0
+suexec_docroot='$datadir/htdocs'
+suexec_logexec='$logfiledir/suexec_log'
 suexec_caller=www
 suexec_userdir=public_html
 suexec_uidmin=100
@@ -426,6 +428,8 @@ do
             echo "suEXEC options:"
             echo " --enable-suexec        enable the suEXEC feature"
             echo " --suexec-caller=NAME   set the suEXEC username of the allowed caller [$suexec_caller]"
+            echo " --suexec-docroot=DIR   set the suEXEC root directory [PREFIX/share/htdocs]"
+            echo " --suexec-logfile=FILE  set the suEXEC logfile [PREFIX/var/log/suexec_log]"
             echo " --suexec-userdir=DIR   set the suEXEC user subdirectory [$suexec_userdir]"
             echo " --suexec-uidmin=UID    set the suEXEC minimal allowed UID [$suexec_uidmin]"
             echo " --suexec-gidmin=GID    set the suEXEC minimal allowed GID [$suexec_gidmin]"
@@ -736,6 +740,14 @@ do
             suexec_caller="$apc_optarg"
             suexec_ok=1
             ;;
+        --suexec-docroot=*)
+            suexec_docroot="$apc_optarg"
+            suexec_ok=1
+            ;;
+        --suexec-logfile=*)
+            suexec_logexec="$apc_optarg"
+            suexec_ok=1
+            ;;
         --suexec-userdir=*)
             suexec_userdir="$apc_optarg"
             suexec_ok=1
@@ -799,10 +811,9 @@ fi
 ##  they do not end with a backslash
 ##
 OIFS="$IFS" IFS="$DIFS"
-for var in prefix exec_prefix bindir sbindir \
-           libexecdir mandir sysconfdir datadir \
-           includedir localstatedir runtimedir \
-           logfiledir proxycachedir; do
+for var in prefix exec_prefix bindir sbindir libexecdir mandir sysconfdir \
+           sysconfdir datadir includedir localstatedir runtimedir \
+           logfiledir proxycachedir suexec_docroot suexec_logexec; do
     eval "val=\"\$$var\"";
     val=`echo $val | sed -e 's:/*$::'`
     eval "$var=\"$val\""
@@ -895,7 +906,6 @@ if [ ".$layout" = .1 ]; then
     echo ""
     echo "Compilation paths:"
     echo "           HTTPD_ROOT: $prefix"
-    echo "           SUEXEC_BIN: $sbindir/suexec"
     echo "      SHARED_CORE_DIR: $libexecdir"
     echo "       DEFAULT_PIDLOG: ${runtimedir_relative}httpd.pid"
     echo "   DEFAULT_SCOREBOARD: ${runtimedir_relative}httpd.scoreboard"
@@ -907,6 +917,18 @@ if [ ".$layout" = .1 ]; then
     echo "   ACCESS_CONFIG_FILE: ${sysconfdir_relative}access.conf"
     echo " RESOURCE_CONFIG_FILE: ${sysconfdir_relative}srm.conf"
     echo ""
+    if [ ".$suexec" = .1 ]; then
+        echo "suEXEC setup:"
+        echo "        suexec binary: $sbindir/suexec"
+        echo "        document root: $suexec_docroot"
+        echo "       userdir suffix: $suexec_userdir"
+        echo "              logfile: $suexec_logexec"
+        echo "            safe path: $suexec_safepath"
+        echo "            caller ID: $suexec_caller"
+        echo "      minimum user ID: $suexec_uidmin"
+        echo "     minimum group ID: $suexec_gidmin"
+        echo ""
+    fi
     exit 0
 fi
 
@@ -938,6 +960,8 @@ sed <Makefile.tmpl >$mkf \
 -e "s%@proxycachedir@%$proxycachedir%g" \
 -e "s%@suexec@%$suexec%g" \
 -e "s%@suexec_caller@%$suexec_caller%g" \
+-e "s%@suexec_docroot@%$suexec_docroot%g" \
+-e "s%@suexec_logexec@%$suexec_logexec%g" \
 -e "s%@suexec_userdir@%$suexec_userdir%g" \
 -e "s%@suexec_uidmin@%$suexec_uidmin%g" \
 -e "s%@suexec_gidmin@%$suexec_gidmin%g" \

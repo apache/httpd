@@ -98,7 +98,9 @@
      $ ./configure --prefix=/path/to/apache \
                    --enable-suexec \
                    --suexec-caller=www \
-                   --suexec-userdir=.www
+                   --suexec-userdir=.www \
+                   --suexec-docroot=/path/to/root/dir \
+                   --suexec-logfile=/path/to/logdir/suexec_log \
                    --suexec-uidmin=1000 \
                    --suexec-gidmin=1000 \
                    --suexec-safepath="/bin:/usr/bin"
@@ -106,9 +108,12 @@
      $ make install
 
   This automatically builds and installs Apache 1.3 with suEXEC support for
-  the caller uid "www" and the user's homedir subdirs ".www".  The access
-  paths for the suexec program are automatically adjusted and the suexec
-  program is installed, so Apache can find it on startup.
+  the caller uid "www" and the user's homedir subdirs ".www". The default
+  paths for --suexec-docroot is the value from the --datadir option with
+  the suffix "/htdocs" and the --logfiledir value with the suffix
+  "/suexec_log" for the --suexec-logfile option. The access paths for the
+  suexec program are automatically adjusted and the suexec program is
+  installed, so Apache can find it on startup.
 
   Building multiple platforms in parallel
   ---------------------------------------
