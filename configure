@@ -317,9 +317,19 @@ IFS="$OIFS"
 ## Platform-specific defaults
 ##
 case $PLATFORM in
-    *-apple-rhapsody*) default_layout="Mac OS X Server";;
-    *-apple-macos*)    default_layout="Mac OS X Server";;
-    *)                 default_layout="Apache";;
+    *-apple-rhapsody*)
+	default_layout="Mac OS X Server"
+	iflags_core="${iflags_core} -S \"-S\""
+	iflags_dso="${iflags_core} -S \"-S\""
+	;;
+    *-apple-macos*)
+	default_layout="Mac OS X Server"
+	iflags_core="${iflags_core} -S \"-S\"" 
+	iflags_dso="${iflags_core} -S \"-S\""
+	;;
+   *)
+	default_layout="Apache"
+	;;
 esac
 
 ##
