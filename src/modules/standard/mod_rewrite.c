@@ -214,7 +214,8 @@ module rewrite_module = {
    NULL,                        /* [#9] log a transaction */
    NULL,                        /* [#3] header parser */
    NULL,                        /* child_init */
-   NULL                         /* child_exit */
+   NULL,                        /* child_exit */
+   NULL				/* post read-request */
 };
 
     /* the cache */

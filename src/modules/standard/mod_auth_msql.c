@@ -993,5 +993,6 @@ module msql_auth_module = {
    NULL,			/* pre-run fixups */
    NULL,			/* logger */
    NULL,			/* header parser */
-   NULL				/* child_init */
+   NULL,			/* child_init */
+   NULL				/* post read-request */
 };

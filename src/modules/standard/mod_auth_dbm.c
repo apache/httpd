@@ -321,5 +321,6 @@ module dbm_auth_module = {
    NULL,			/* logger */
    NULL,			/* header parser */
    NULL,			/* child_init */
-   NULL			/* child_exit */
+   NULL,			/* child_exit */
+   NULL				/* post read-request */
 };

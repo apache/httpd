@@ -500,22 +500,23 @@ static handler_rec info_handlers[] = {
 };
 
 module MODULE_VAR_EXPORT info_module = {
-	STANDARD_MODULE_STUFF,
-	NULL,				/* initializer */
-	NULL,				/* dir config creater */
-	NULL,				/* dir merger --- default is to override */
-	create_info_config,		/* server config */
-	merge_info_config,		/* merge server config */
-	info_cmds,			/* command table */
-	info_handlers,		/* handlers */
-	NULL,				/* filename translation */
-	NULL,				/* check_user_id */
-	NULL,				/* check auth */
-	NULL,				/* check access */
-	NULL,				/* type_checker */
-	NULL,				/* fixups */
-	NULL,				/* logger */
-	NULL,				/* header parser */
-	NULL,				/* child_init */
-	NULL			/* child_exit */
+   STANDARD_MODULE_STUFF,
+   NULL,			/* initializer */
+   NULL,			/* dir config creater */
+   NULL,			/* dir merger --- default is to override */
+   create_info_config,		/* server config */
+   merge_info_config,		/* merge server config */
+   info_cmds,			/* command table */
+   info_handlers,		/* handlers */
+   NULL,			/* filename translation */
+   NULL,			/* check_user_id */
+   NULL,			/* check auth */
+   NULL,			/* check access */
+   NULL,			/* type_checker */
+   NULL,			/* fixups */
+   NULL,			/* logger */
+   NULL,			/* header parser */
+   NULL,			/* child_init */
+   NULL,			/* child_exit */
+   NULL				/* post read-request */
 };

@@ -2531,22 +2531,23 @@ magic_find_ct(request_rec * r)
  */
 
 module mime_magic_module = {
-    STANDARD_MODULE_STUFF,
-    magic_init,      /* initializer */
-    NULL,            /* dir config creator */
-    NULL,            /* dir merger --- default is to override */
-    create_magic_server_config,    /* server config */
-    merge_magic_server_config,    /* merge server config */
-    mime_magic_cmds, /* command table */
-    NULL,            /* handlers */
-    NULL,            /* filename translation */
-    NULL,            /* check_user_id */
-    NULL,            /* check auth */
-    NULL,            /* check access */
-    magic_find_ct,   /* type_checker */
-    NULL,            /* fixups */
-    NULL,            /* logger */
-    NULL,            /* header parser */
-    NULL,	     /* child_init */
-    NULL             /* child_exit */
+   STANDARD_MODULE_STUFF,
+   magic_init,			/* initializer */
+   NULL,			/* dir config creator */
+   NULL,			/* dir merger --- default is to override */
+   create_magic_server_config,	/* server config */
+   merge_magic_server_config,	/* merge server config */
+   mime_magic_cmds,		/* command table */
+   NULL,			/* handlers */
+   NULL,			/* filename translation */
+   NULL,			/* check_user_id */
+   NULL,			/* check auth */
+   NULL,			/* check access */
+   magic_find_ct,		/* type_checker */
+   NULL,			/* fixups */
+   NULL,			/* logger */
+   NULL,			/* header parser */
+   NULL,			/* child_init */
+   NULL				/* child_exit */
+   NULL				/* post read-request */
 };

@@ -791,5 +791,6 @@ module MODULE_VAR_EXPORT config_log_module = {
    multi_log_transaction,	/* logger */
    NULL,			/* header parser */
    NULL,			/* child_init */
-   NULL			/* child_exit */
+   NULL,			/* child_exit */
+   NULL				/* post read-request */
 };

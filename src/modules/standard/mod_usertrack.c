@@ -324,21 +324,22 @@ command_rec cookie_log_cmds[] = {
 
 module MODULE_VAR_EXPORT usertrack_module = {
    STANDARD_MODULE_STUFF,
-   NULL,                   /* initializer */
-   make_cookie_dir,    	   /* dir config creater */
-   NULL,	      	   /* dir merger --- default is to override */
-   make_cookie_log_state,  /* server config */
-   NULL,		   /* merge server configs */
-   cookie_log_cmds,	   /* command table */
-   NULL,		   /* handlers */
-   NULL,		   /* filename translation */
-   NULL,		   /* check_user_id */
-   NULL,		   /* check auth */
-   NULL,		   /* check access */
-   NULL,		   /* type_checker */
-   spot_cookie,		   /* fixups */
-   NULL,                   /* logger */
-   NULL,		   /* header parser */
-   NULL,		   /* child_init */
-   NULL			/* child_exit */
+   NULL,			/* initializer */
+   make_cookie_dir,		/* dir config creater */
+   NULL,			/* dir merger --- default is to override */
+   make_cookie_log_state,	/* server config */
+   NULL,			/* merge server configs */
+   cookie_log_cmds,		/* command table */
+   NULL,			/* handlers */
+   NULL,			/* filename translation */
+   NULL,			/* check_user_id */
+   NULL,			/* check auth */
+   NULL,			/* check access */
+   NULL,			/* type_checker */
+   spot_cookie,			/* fixups */
+   NULL,			/* logger */
+   NULL,			/* header parser */
+   NULL,			/* child_init */
+   NULL,			/* child_exit */
+   NULL				/* post read-request */
 };

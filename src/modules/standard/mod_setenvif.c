@@ -349,8 +349,8 @@ module MODULE_VAR_EXPORT setenvif_module = {
    NULL,			/* type_checker */
    NULL,			/* fixups */
    NULL,			/* logger */
-   NULL,			/* browser parse */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
+   NULL,			/* input header parse */
+   NULL,			/* child (process) initialization */
+   NULL,			/* child (process) rundown */
    match_headers		/* post_read_request */
 };

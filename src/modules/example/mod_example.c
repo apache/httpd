@@ -702,6 +702,33 @@ static void example_child_init
     trace_add (s, NULL, NULL, note);
 }
 
+/* 
+ * This function is called when an heavy-weight process (such as a child) is
+ * being run down or destroyed.  As with the child-initialisation function,
+ * any information that needs to be recorded must be in static cells, since
+ * there's no configuration record.
+ *
+ * There is no return value.
+ */
+
+/*
+ * All our process-death routine does is add its trace to the log.
+ */
+static void example_child_exit
+        (server_rec *s, pool *p) {
+
+    char    *note;
+    char    *sname = s->server_hostname;
+
+    /*
+     * The arbitrary text we add to our trace entry indicates for which server
+     * we're being called.
+     */
+    sname = (sname != NULL) ? sname : "";
+    note = pstrcat (p, "example_child_exit(", sname, ")", NULL);
+    trace_add (s, NULL, NULL, note);
+}
+
 /*
  * This function gets called to create up a per-directory configuration
  * record.  This will be called for the "default" server environment, and for
@@ -885,6 +912,29 @@ static void *example_server_merge
             );
     trace_add (NULL, NULL, merged_config, note);
     return (void *) merged_config;
+}
+
+/*
+ * This routine is called after the request has been read but before any other
+ * phases have been processed.  This allows us to make decisions based upon
+ * the input header fields.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
+ * further modules are called for this phase.
+ */
+static int example_post_readreq
+        (request_rec *r) {
+
+    example_config
+            *cfg;
+
+    cfg = our_dconfig (r);
+    /*
+     * We don't actually *do* anything here, except note the fact that we were
+     * called.
+     */
+    trace_add (r->server, r, cfg, "example_post_readreq()");
+    return DECLINED;
 }
 
 /*
@@ -1139,5 +1189,6 @@ module example_module = {
     example_logger,             /* [9] logger */
     example_hparser,            /* [2] header parser */
     example_child_init,         /* process initializer */
-    NULL			/* process exit/cleanup */
+    example_child_exit,		/* process exit/cleanup */
+    example_post_readreq	/* ? */
 };
