@@ -1,5 +1,10 @@
 Changes with Apache 1.2
 
+  *) Promote per_dir_config and subprocess_env from the subrequest to the
+     main request in mod_negotiation.  In particular this fixes a bug
+     where <Files> sections wouldn't properly apply to negotiated content.
+     [Dean Gaudet]
+
   *) Updated mod_rewrite to 3.0.4: Fixes HTTP redirects from within
      .htaccess files because the RewriteBase was not replaced correctly.
      [Ralf S. Engelschall]

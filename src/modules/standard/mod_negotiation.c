@@ -1996,12 +1996,15 @@ return_from_multi:
     r->content_languages = sub_req->content_languages;
     r->content_language = sub_req->content_language;
     r->finfo = sub_req->finfo;
+    r->per_dir_config = sub_req->per_dir_config;
     /* copy output headers from subrequest, but leave negotiation headers */
     r->notes = overlay_tables(r->pool, sub_req->notes, r->notes);
     r->headers_out = overlay_tables(r->pool, sub_req->headers_out,
                                              r->headers_out);
     r->err_headers_out = overlay_tables(r->pool, sub_req->err_headers_out,
                                                  r->err_headers_out);
+    r->subprocess_env = overlay_tables(r->pool, sub_req->subprocess_env,
+						r->subprocess_env);
     avail_recs = (var_rec *)neg->avail_vars->elts;
     for (j = 0; j < neg->avail_vars->nelts; ++j) {
         var_rec *variant = &avail_recs[j];
