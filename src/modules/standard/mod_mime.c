@@ -203,37 +203,26 @@ int find_ct(request_rec *r)
 	return OK;
     }
     
-    if((i=rind(fn,'.')) < 0) return DECLINED;
-    ++i;
+    /* Parse filename extensions, which can be in any order */
+    while ((i = rind (fn, '.')) >= 0) {
+      ++i;
 
-    if ((type = table_get (conf->encoding_types, &fn[i])))
-    {
-        r->content_encoding = type;
-
-	/* go back to previous extension to try to use it as a language */
-	
-        fn[i-1] = '\0';
-	if((i=rind(fn,'.')) < 0) return OK;
-	++i;
-    }
-
-    if ((type = table_get (conf->language_types, &fn[i])))
-    {
-        r->content_language = type;
-
-	/* go back to previous extension to try to use it as a type */
-	
-        fn[i-1] = '\0';
-	if((i=rind(fn,'.')) < 0) return OK;
-	++i;
-    }
-
-    if ((type = table_get (conf->forced_types, &fn[i]))
-	|| (type = table_get (hash_buckets[hash(fn[i])], &fn[i])))
-    {
+      /* Check for Content-Type */
+      if ((type = table_get (conf->forced_types, &fn[i]))
+	  || (type = table_get (hash_buckets[hash(fn[i])], &fn[i])))
         r->content_type = type;
+
+      /* Check for Content-Language */
+      if ((type = table_get (conf->language_types, &fn[i])))
+	  r->content_language = type;
+	
+      /* Check for Content-Encoding */
+      if ((type = table_get (conf->encoding_types, &fn[i])))
+          r->content_encoding = type;
+
+      fn[i-1] = '\0';
     }
-    
+
     return OK;
 }
 
