@@ -235,16 +235,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* GETs only (for the moment) */
-        if (r->method_number != M_GET) {
-            return ap_pass_brigade(f->next, bb);
-        }
-
-        /* only compress text/html files */
-        if (strncmp(r->content_type, "text/html", 9)) {
-            return ap_pass_brigade(f->next, bb);
-        }
-
         /* some browsers might have problems, so set no-gzip 
          * (with browsermatch) for them */
         if (apr_table_get(r->subprocess_env, "no-gzip")) {
@@ -297,6 +287,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
         apr_table_setn(r->headers_out, "Content-Encoding", "gzip");
         apr_table_setn(r->headers_out, "Vary", "Accept-Encoding");
+        apr_table_unset(r->headers_out, "Content-Length");
     }
 
     APR_BRIGADE_FOREACH(e, bb) {
