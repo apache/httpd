@@ -1054,14 +1054,14 @@ static const char *set_add_default_charset(cmd_parms *cmd,
         return err;
     }
     if (!strcasecmp(arg, "Off")) {
-       d->add_default_charset = 0;
+       d->add_default_charset = ADD_DEFAULT_CHARSET_OFF;
     }
     else if (!strcasecmp(arg, "On")) {
-       d->add_default_charset = 1;
+       d->add_default_charset = ADD_DEFAULT_CHARSET_ON;
        d->add_default_charset_name = DEFAULT_ADD_DEFAULT_CHARSET_NAME;
     }
     else {
-       d->add_default_charset = 1;
+       d->add_default_charset = ADD_DEFAULT_CHARSET_ON;
        d->add_default_charset_name = arg;
     }
     return NULL;
@@ -2819,7 +2819,7 @@ static const command_rec core_cmds[] = {
   "Directory to plop gmon.out files" },
 #endif
 { "AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO, 
-  TAKE1, "The name of the default charset to add to any Content-Type without one or 'None' to disable" },
+  TAKE1, "The name of the default charset to add to any Content-Type without one or 'Off' to disable" },
 
 /* Old resource config file commands */
   
