@@ -66,9 +66,11 @@
 
 HOOK_STRUCT(
 	    HOOK_LINK(pre_connection)
+	    HOOK_LINK(process_connection)
 );
 
 IMPLEMENT_VOID_HOOK(pre_connection,(conn_rec *c),(c),RUN_ALL)
+IMPLEMENT_HOOK(int,process_connection,(conn_rec *c),(c),RUN_FIRST,OK,DECLINED)
 
 /* TODO: re-implement the lingering close stuff */
 #define NO_LINGCLOSE
@@ -190,11 +192,16 @@ static void lingering_close(request_rec *r)
 
 CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 {
-    request_rec *r;
-
     ap_update_vhost_given_ip(c);
 
     ap_run_pre_connection(c);
+
+    ap_run_process_connection(c);
+}
+
+int ap_process_http_connection(conn_rec *c)
+    {
+    request_rec *r;
 
     /*
      * Read and process each request found on our connection
@@ -216,7 +223,7 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 	if (ap_graceful_stop_signalled()) {
 	    /* XXX: hey wait, this should do a lingering_close! */
 	    ap_bclose(c->client);
-	    return;
+	    return OK;
 	}
     }
 
@@ -241,6 +248,8 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 	ap_bclose(c->client);
     }
 #endif
+
+    return OK;
 }
 
 /* Clearly some of this stuff doesn't belong in a generalised connection

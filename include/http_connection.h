@@ -69,9 +69,11 @@ conn_rec *ap_new_connection(pool *p, server_rec *server, BUFF *inout,
 			    const struct sockaddr_in *saddr,
 			    int child_num, int thread_num);
 CORE_EXPORT(void) ap_process_connection(conn_rec *);
+int ap_process_http_connection(conn_rec *);
 
   /* Hooks */
 DECLARE_HOOK(void,pre_connection,(conn_rec *))
+DECLARE_HOOK(int,process_connection,(conn_rec *))
 
 #ifdef __cplusplus
 }
