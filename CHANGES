@@ -1,3 +1,5 @@
+Changes with Apache 2.0b1
+
 Changes with Apache 2.0a9
 
   *) Win32 now requires perl to complete the final install step for users
