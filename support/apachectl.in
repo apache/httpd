@@ -28,7 +28,7 @@
 PIDFILE=@prefix@/logs/httpd.pid
 #
 # the path to your httpd binary, including options if necessary
-HTTPD='@prefix@/bin/httpd'
+HTTPD='@prefix@/bin/@progname@'
 #
 # a command that outputs a formatted text version of the HTML at the
 # url given on the command line.  Designed for lynx, however other
