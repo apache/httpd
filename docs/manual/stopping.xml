@@ -21,14 +21,16 @@
     <p>In order to stop or restart Apache, you must send a signal to
     the running <code>httpd</code> processes.  There are two ways to
     send the signals.  First, you can use the unix <code>kill</code>
-    command to directly send signals to the processes.  You will
+    command to directly send signals to the processes. You will
     notice many <code>httpd</code> executables running on your system,
     but you should not send signals to any of them except the parent,
     whose pid is in the <directive
     module="mpm_common">PidFile</directive>. That is to say you
     shouldn't ever need to send signals to any process except the
     parent. There are three signals that you can send the parent:
-    <code>TERM</code>, <code>HUP</code>, and <code>USR1</code>, which
+    <a href="#term"><code>TERM</code></a>,
+    <a href="#hup"><code>HUP</code></a>, and
+    <a href="#graceful"><code>USR1</code></a>, which
     will be described in a moment.</p>
 
     <p>To send a signal to the parent you should issue a command
