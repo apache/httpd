@@ -669,7 +669,6 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     unsigned int seg;
     int res;
     ap_conf_vector_t *entry_config;
-    ap_conf_vector_t *this_conf;
     core_dir_config *entry_core;
     apr_status_t rv;
     apr_size_t buflen;
@@ -677,11 +676,13 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
     char *delim;
 
     /*
+     * XXX: Better (faster) tests needed!!!
+     *
      * Are we dealing with a file? If not, the handler needed to register
      * a hook to escape from our walking the file.  Since they haven't, we
      * are going to assume the worst and refuse to proceed.
      */
-    if (r->filename == NULL || !ap_os_is_path_absolute(r->filename)) {
+    if (r->filename == NULL || !ap_os_is_path_absolute(r->pool, r->filename)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
                       "Module bug?  Request filename path %s is missing or "
                       "or not absolute for uri %s", 
@@ -715,13 +716,11 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         r->finfo.valid = APR_FINFO_TYPE;
         r->finfo.filetype = APR_DIR; /* It's the root, of course it's a dir */
     } else {
-        if (r->filename == NULL || !ap_os_is_path_absolute(r->filename)) {
-            ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                          "Config bug?  Request filename path %s is invalid or "
-                          "or not absolute for uri %s", 
-                          r->filename, r->uri);
-            return HTTP_INTERNAL_SERVER_ERROR;
-        }
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                      "Config bug?  Request filename path %s is invalid or "
+                      "or not absolute for uri %s", 
+                      r->filename, r->uri);
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /*
@@ -765,7 +764,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
             if (entry_core->d_components
                   && (entry_core->d_is_fnmatch
                         ? (apr_fnmatch(entry_dir, r->filename, FNM_PATHNAME) != APR_SUCCESS)
-                        : (strcmp(r->filename, entry_dir) != 0)) {
+                        : (strcmp(r->filename, entry_dir) != 0))) {
                 continue;
             }
 
