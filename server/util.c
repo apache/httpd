@@ -817,7 +817,7 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 
        return apr_pstrdup(p,tmp);
 }
-AP_DECLARE(int) ap_cfg_closefile(configfile_t *cfp)
+AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp)
 {
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, NULL, 
@@ -851,10 +851,10 @@ static void *cfg_getstr(void *buf, size_t bufsiz, void *param)
     return NULL;
 }
 
-/* Open a configfile_t as FILE, return open configfile_t struct pointer */
-AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p, const char *name)
+/* Open a ap_configfile_t as FILE, return open ap_configfile_t struct pointer */
+AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t *p, const char *name)
 {
-    configfile_t *new_cfg;
+    ap_configfile_t *new_cfg;
     apr_file_t *file = NULL;
     apr_finfo_t finfo;
     apr_status_t status;
@@ -916,14 +916,14 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p,
 }
 
 
-/* Allocate a configfile_t handle with user defined functions and params */
-AP_DECLARE(configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
+/* Allocate a ap_configfile_t handle with user defined functions and params */
+AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
     void *param,
     int(*getch)(void *param),
     void *(*getstr) (void *buf, size_t bufsiz, void *param),
     int(*close_func)(void *param))
 {
-    configfile_t *new_cfg = apr_palloc(p, sizeof(*new_cfg));
+    ap_configfile_t *new_cfg = apr_palloc(p, sizeof(*new_cfg));
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, NULL, "Opening config handler %s", descr);
 #endif
@@ -937,19 +937,9 @@ AP_DECLARE(configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
 }
 
 
-/* Read one character from a configfile_t */
-AP_DECLARE(int) ap_cfg_getc(configfile_t *cfp)
-{
-    register int ch = cfp->getch(cfp->param);
-    if (ch == LF) 
-	++cfp->line_number;
-    return ch;
-}
-
-
-/* Read one line from open configfile_t, strip LF, increase line number */
+/* Read one line from open ap_configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
-AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
+AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
 {
     /* If a "get string" function is defined, use it */
     if (cfp->getstr != NULL) {

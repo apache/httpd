@@ -1340,7 +1340,7 @@ static void note_digest_auth_failure(request_rec *r,
 static const char *get_hash(request_rec *r, const char *user,
 			    const char *realm, const char *auth_pwfile)
 {
-    configfile_t *f;
+    ap_configfile_t *f;
     char l[MAX_STRING_LEN];
     const char *rpw;
     char *w, *x;
@@ -1775,7 +1775,7 @@ static int authenticate_digest_user(request_rec *r)
 static apr_table_t *groups_for_user(request_rec *r, const char *user,
 			      const char *grpfile)
 {
-    configfile_t *f;
+    ap_configfile_t *f;
     apr_table_t *grps = apr_table_make(r->pool, 15);
     apr_pool_t *sp;
     char l[MAX_STRING_LEN];

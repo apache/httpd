@@ -127,7 +127,7 @@ module AP_MODULE_DECLARE_DATA auth_module;
 
 static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 {
-    configfile_t *f;
+    ap_configfile_t *f;
     char l[MAX_STRING_LEN];
     const char *rpw, *w;
     apr_status_t status;
@@ -154,7 +154,7 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
 
 static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
 {
-    configfile_t *f;
+    ap_configfile_t *f;
     apr_table_t *grps = apr_table_make(p, 15);
     apr_pool_t *sp;
     char l[MAX_STRING_LEN];

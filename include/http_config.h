@@ -254,9 +254,9 @@ struct command_struct {
  */
 #define DECLINE_CMD "\a\b"
 
-typedef struct configfile_t configfile_t;
+typedef struct ap_configfile_t ap_configfile_t;
 /** Common structure for reading of config files / passwd files etc. */
-struct configfile_t {
+struct ap_configfile_t {
     /** a getc()-like function
      *  @deffunc int getch(void *param) */
     int (*getch) (void *param);	
@@ -290,7 +290,7 @@ struct cmd_parms_struct {
     ap_method_list_t *xlimited;
 
     /** Config file structure. */
-    configfile_t *config_file;
+    ap_configfile_t *config_file;
     /** the directive specifying this command */
     ap_directive_t *directive;
 
@@ -593,55 +593,47 @@ AP_DECLARE(const char *) ap_find_module_name(module *m);
 AP_DECLARE(module *) ap_find_linked_module(const char *name);
 
 /**
- * Open a configfile_t as apr_file_t
- * @param ret_cfg open configfile_t struct pointer
+ * Open a ap_configfile_t as apr_file_t
+ * @param ret_cfg open ap_configfile_t struct pointer
  * @param p The pool to allocate the structure out of
  * @param name the name of the file to open
- * @deffunc apr_status_t ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p, const char *name)
+ * @deffunc apr_status_t ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t *p, const char *name)
  */
-AP_DECLARE(apr_status_t) ap_pcfg_openfile(configfile_t **ret_cfg, apr_pool_t *p, const char *name);
+AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg, apr_pool_t *p, const char *name);
 
 /**
- * Allocate a configfile_t handle with user defined functions and params 
+ * Allocate a ap_configfile_t handle with user defined functions and params 
  * @param p The pool to allocate out of
  * @param descr The name of the file
  * @param param The argument passed to getch/getstr/close
  * @param getc_func The getch function
  * @param gets_func The getstr function
  * @param close_func The close function
- * @deffunc configfile_t *ap_pcfg_open_custom(apr_pool_t *p, const char *descr, void *param, int(*getc_func)(void*), void *(*gets_func) (void *buf, size_t bufsiz, void *param), int(*close_func)(void *param))
+ * @deffunc ap_configfile_t *ap_pcfg_open_custom(apr_pool_t *p, const char *descr, void *param, int(*getc_func)(void*), void *(*gets_func) (void *buf, size_t bufsiz, void *param), int(*close_func)(void *param))
  */
-AP_DECLARE(configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
+AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *descr,
     void *param,
     int(*getc_func)(void*),
     void *(*gets_func) (void *buf, size_t bufsiz, void *param),
     int(*close_func)(void *param));
 
 /**
- * Read one line from open configfile_t, strip LF, increase line number
+ * Read one line from open ap_configfile_t, strip LF, increase line number
  * @param buf place to store the line read
  * @param bufsize size of the buffer
  * @param cfp File to read from
  * @return 1 on success, 0 on failure
- * @deffunc int ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp)
+ * @deffunc int ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
  */
-AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, configfile_t *cfp);
+AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp);
 
 /**
- * Read one char from open configfile_t, increase line number upon LF 
- * @param cfp The file to read from
- * @return the character read
- * @deffunc int ap_cfg_getc(configfile_t *cfp)
- */
-AP_DECLARE(int) ap_cfg_getc(configfile_t *cfp);
-
-/**
- * Detach from open configfile_t, calling the close handler
+ * Detach from open ap_configfile_t, calling the close handler
  * @param cfp The file to close
  * @return 1 on sucess, 0 on failure
- * @deffunc int ap_cfg_closefile(configfile_t *cfp)
+ * @deffunc int ap_cfg_closefile(ap_configfile_t *cfp)
  */
-AP_DECLARE(int) ap_cfg_closefile(configfile_t *cfp);
+AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp);
 
 /**
  * Read all data between the current <foo> and the matching </foo>.  All
