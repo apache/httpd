@@ -74,9 +74,11 @@
 #include "mpm.h"
 #include "mpm_common.h"
 
-#ifdef DEXTER_MPM
+#if defined(DEXTER_MPM) || defined(MPMT_BEOS_MPM)
+#define CHILD_TABLE 1
 #define CHILD_INFO_TABLE     ap_child_table
 #elif defined(MPMT_PTHREAD_MPM) || defined (PREFORK_MPM)
+#define SCOREBOARD 1
 #define CHILD_INFO_TABLE     ap_scoreboard_image->parent
 #endif 
 
@@ -90,7 +92,7 @@ void ap_reclaim_child_processes(int terminate)
     int waitret, tries;
     int not_dead_yet;
 
-#ifndef DEXTER_MPM
+#ifdef SCOREBOARD
     ap_sync_scoreboard_image();
 #endif
 
@@ -109,18 +111,18 @@ void ap_reclaim_child_processes(int terminate)
         for (i = 0; i < ap_max_daemons_limit; ++i) {
             pid_t pid = CHILD_INFO_TABLE[i].pid;
 
-#ifdef DEXTER_MPM
+#ifdef CHILD_TABLE
             if (ap_child_table[i].status == SERVER_DEAD)
-#elif defined(MPMT_PTHREAD_MPM) || defined (PREFORK_MPM)
+#elif defined(SCOREBOARD)
             if (pid == ap_my_pid || pid == 0)
 #endif
                 continue;
 
             waitret = waitpid(pid, &status, WNOHANG);
             if (waitret == pid || waitret == -1) {
-#ifdef DEXTER_MPM
+#ifdef CHILD_TABLE
                 ap_child_table[i].status = SERVER_DEAD;
-#elif defined(MPMT_PTHREAD_MPM) || defined(PREFORK_MPM)
+#elif defined(SCOREBOARD)
                 ap_scoreboard_image->parent[i].pid = 0;
 #endif
                 continue;
