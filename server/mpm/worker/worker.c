@@ -595,6 +595,7 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     apr_pool_t *tpool = apr_thread_pool_get(thd);
     void *csd = NULL;
     apr_pool_t *ptrans;                /* Pool for per-transaction stuff */
+    apr_pool_t *recycled_pool = NULL;
     int n;
     apr_pollfd_t *pollset;
     apr_status_t rv;
@@ -670,9 +671,13 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     got_fd:
         if (!workers_may_exit) {
             /* create a new transaction pool for each accepted socket */
-            apr_pool_create_ex(&ptrans, NULL, NULL, APR_POOL_FNEW_ALLOCATOR);
+            if (recycled_pool == NULL) {
+                apr_pool_create_ex(&ptrans, NULL, NULL, APR_POOL_FNEW_ALLOCATOR);
+            }
+            else {
+                ptrans = recycled_pool;
+            }
             apr_pool_tag(ptrans, "transaction");
-
             rv = lr->accept_func(&csd, lr, ptrans);
 
             if (rv == APR_EGENERAL) {
@@ -688,7 +693,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 signal_workers();
             }
             if (csd != NULL) {
-                rv = ap_queue_push(worker_queue, csd, ptrans);
+                rv = ap_queue_push(worker_queue, csd, ptrans,
+                                   &recycled_pool);
                 if (rv) {
                     /* trash the connection; we couldn't queue the connected
                      * socket to a worker 
@@ -729,6 +735,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     int process_slot = ti->pid;
     int thread_slot = ti->tid;
     apr_socket_t *csd = NULL;
+    apr_pool_t *last_ptrans = NULL;
     apr_pool_t *ptrans;                /* Pool for per-transaction stuff */
     apr_status_t rv;
 
@@ -737,7 +744,9 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_STARTING, NULL);
     while (!workers_may_exit) {
         ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_READY, NULL);
-        rv = ap_queue_pop(worker_queue, &csd, &ptrans);
+        rv = ap_queue_pop(worker_queue, &csd, &ptrans, last_ptrans);
+        last_ptrans = NULL;
+
         /* We get FD_QUEUE_EINTR whenever ap_queue_pop() has been interrupted
          * from an explicit call to ap_queue_interrupt_all(). This allows
          * us to unblock threads stuck in ap_queue_pop() when a shutdown
@@ -747,7 +756,8 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
         }
         process_socket(ptrans, csd, process_slot, thread_slot);
         requests_this_child--; /* FIXME: should be synchronized - aaron */
-        apr_pool_destroy(ptrans);
+        apr_pool_clear(ptrans);
+        last_ptrans = ptrans;
     }
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,

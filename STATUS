@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/10 21:16:25 $]
+Last modified at [$Date: 2002/02/13 04:49:55 $]
 
 Release:
 
@@ -185,13 +185,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         gregames says: I see the breakage now, and volunteer to fix it
                        when things calm down a little.  It looks OK when 
                        there are complete lines and no mime continuations.
-
-    * Modify the worker MPM so that it doesn't need to create and
-      destroy a pool for each request--possibly by adopting a
-      leader/follower model in which each worker owns a persistent
-      ptrans pool (like the prefork MPM) and the workers take
-      turns acting as listeners...this approach might also help
-      reduce context-switching
 
     * CGI single-byte reads
       BrianP suggests that this is caused by the ap_scan_script_header_err()
