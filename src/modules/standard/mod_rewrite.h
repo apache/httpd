@@ -1,3 +1,4 @@
+
 /* ====================================================================
  * Copyright (c) 1996,1997 The Apache Group.  All rights reserved.
  *
@@ -63,7 +64,7 @@
 **  |_| |_| |_|\___/ \__,_|___|_|  \___| \_/\_/ |_|  |_|\__\___|
 **                       |_____|
 **
-**  URL Rewriting Module, Version 2.3.10 (20-12-1996)
+**  URL Rewriting Module, Version 3.0.0 (01-02-1997)
 **
 **  This module uses a rule-based rewriting engine (based on a
 **  regular-expression parser) to rewrite requested URLs on the fly. 
@@ -83,42 +84,15 @@
 **  The documentation and latest release can be found on
 **  http://www.engelschall.com/sw/mod_rewrite/
 **
-**  Copyright (c) 1996 Ralf S. Engelschall, All rights reserved.
+**  Copyright (c) 1996-1997 Ralf S. Engelschall, All rights reserved.
 **
 **  Written for The Apache Group by
 **      Ralf S. Engelschall
 **      rse@engelschall.com
-**      http://www.engelschall.com/
+**      www.engelschall.com
 */
 
 
-
-
-    /* Check Apache Release */
-#if (MODULE_MAGIC_NUMBER >= 19960725)
-#define IS_APACHE_12         1
-#define HAS_APACHE_REGEX_LIB 1
-#endif
-
-
-    /* The const problem:
-       The Apache Group changed some essential prototypes
-       to have an additional "const" qualifier. To be backward
-       compatible with Apache 1.1.1 we use a special define */
-#ifdef IS_APACHE_12
-#define _const const
-#else
-#define _const  
-#endif
-
-
-    /* The RegExp support:
-       For Apache 1.1.1 we provide our own Spencer V8 library,
-       for Apache 1.2 and higher there is a Spencer POSIX library
-       in the distribution */
-#ifndef HAS_APACHE_REGEX_LIB
-#include "regexp/regexp.h"
-#endif
 
 
     /* The NDBM support:
@@ -133,6 +107,30 @@
 #define NDBM_FILE_SUFFIX ".pag"
 #endif
 #endif
+
+
+    /* The locking support:
+       Try to determine whether we should use
+       fcntl() or flock(). */
+#if defined(USE_FCNTL_SERIALIZED_ACCEPT)
+#define USE_FCNTL 1
+#include <fcntl.h>
+#endif
+#if defined(USE_FLOCK_SERIALIZED_ACCEPT)
+#define USE_FLOCK 1
+#include <sys/file.h>
+#endif
+#if !defined(USE_FCNTL) && !defined(USE_FLOCK)
+#define USE_FLOCK 1
+#include <sys/file.h>
+#ifndef LOCK_UN
+#undef USE_FLOCK
+#define USE_FCNTL 1
+#include <fcntl.h>
+#endif
+#endif
+
+
 
 
 /*
@@ -165,6 +163,7 @@
 #define RULEFLAG_PROXY              1<<7
 #define RULEFLAG_PASSTHROUGH        1<<8
 #define RULEFLAG_FORBIDDEN          1<<9
+#define RULEFLAG_GONE               1<<10
 
 #define MAPTYPE_TXT                 1<<0
 #define MAPTYPE_DBM                 1<<1
@@ -193,6 +192,10 @@
 #define LONG_STRING_LEN 2048
 #endif
 
+#define MAX_ENV_FLAGS 5
+
+#define EOS_PARANOIA(ca) ca[sizeof(ca)-1] = '\0'
+
 
 /*
 **
@@ -215,26 +218,20 @@ typedef struct {
 typedef struct {
     char    *input;                /* Input string of RewriteCond */
     char    *pattern;              /* the RegExp pattern string */
-#ifdef HAS_APACHE_REGEX_LIB
     regex_t *regexp;
-#else
-    regexp  *regexp;               /* the RegExp pattern compilation */
-#endif
     int      flags;                /* Flags which control the match */
 } rewritecond_entry;
 
 typedef struct {
     array_header *rewriteconds;    /* the corresponding RewriteCond entries */
     char         *pattern;         /* the RegExp pattern string */
-#ifdef HAS_APACHE_REGEX_LIB
     regex_t      *regexp;          /* the RegExp pattern compilation */
-#else
-    regexp       *regexp;
-#endif
-    char         *output;          /* the Substitution string */
-    int           flags;           /* Flags which control the substitution */
-    char         *forced_mimetype; /* forced MIME-type of substitution */
-    int           skip;            /* number of next rules to skip */
+    char         *output;              /* the Substitution string */
+    int           flags;               /* Flags which control the substitution */
+    char         *forced_mimetype;     /* forced MIME type of substitution */
+    int           forced_responsecode; /* forced HTTP redirect response status */
+    char         *env[MAX_ENV_FLAGS+1];/* added environment variables */
+    int           skip;                /* number of next rules to skip */
 } rewriterule_entry;
 
 
@@ -298,22 +295,22 @@ static void *config_perdir_create(pool *p, char *path);
 static void *config_perdir_merge (pool *p, void *basev, void *overridesv);
 
     /* config directive handling */
-static _const char *cmd_rewriteengine  (cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag);
-static _const char *cmd_rewriteoptions (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option);
-static _const char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name);
-static _const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
-static _const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
-static _const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1, char *a2);
+static const char *cmd_rewriteengine  (cmd_parms *cmd, rewrite_perdir_conf *dconf, int flag);
+static const char *cmd_rewriteoptions (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *option);
+static const char *cmd_rewriteoptions_setoption(pool *p, int *options, char *name);
+static const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
+static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
+static const char *cmd_rewritemap     (cmd_parms *cmd, void *dconf, char *a1, char *a2);
 
-static _const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1);
+static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf, char *a1);
 
-static _const char *cmd_rewritecond    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
-static _const char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *new, char *str);
-static _const char *cmd_rewritecond_setflag       (pool *p, rewritecond_entry *cfg, char *key, char *val);
+static const char *cmd_rewritecond    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
+static const char *cmd_rewritecond_parseflagfield(pool *p, rewritecond_entry *new, char *str);
+static const char *cmd_rewritecond_setflag       (pool *p, rewritecond_entry *cfg, char *key, char *val);
 
-extern _const char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
-static _const char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *new, char *str);
-static _const char *cmd_rewriterule_setflag       (pool *p, rewriterule_entry *cfg, char *key, char *val);
+extern const char *cmd_rewriterule    (cmd_parms *cmd, rewrite_perdir_conf *dconf, char *str);
+static const char *cmd_rewriterule_parseflagfield(pool *p, rewriterule_entry *new, char *str);
+static const char *cmd_rewriterule_setflag       (pool *p, rewriterule_entry *cfg, char *key, char *val);
 
     /* initialisation */
 static void init_module(server_rec *s, pool *p);
@@ -370,6 +367,7 @@ static void        store_cache_string(cache *c, char *res, cacheentry *ce);
 static char  *subst_prefix_path(request_rec *r, char *input, char *match, char *subst);
 static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, struct stat *sb);
+static void   add_env_variable(request_rec *r, char *s);
 
     /* DNS functions */
 static int    is_this_our_host(request_rec *r, char *testhost);
@@ -378,6 +376,10 @@ static char **resolv_ipaddr_list(request_rec *r, char *name);
 
     /* Proxy Module check */
 static int is_proxy_available(server_rec *s);
+
+    /* File locking */
+static void fd_lock(int fd);
+static void fd_unlock(int fd);
 
 #endif /* _MOD_REWRITE_H */
 
