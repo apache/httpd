@@ -114,7 +114,11 @@ always available.
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
 
 The server will read this file for more directives after reading the
 <A HREF="#resourceconfig">ResourceConfig</A> file. <EM>Filename</EM> is
@@ -359,7 +363,12 @@ It must be accompanied by <A HREF="#authname">AuthName</A> and
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 A Unix&#174; http server can either listen for connections to every
 IP address of the server machine, or just one IP address of the server
@@ -525,7 +534,11 @@ CGI scripts, and byte range responses do not have this header.
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Removed in version 2.0<P>
 
 This controls the directory to which Apache attempts to switch before
 dumping core.  The default is in the <A HREF="#serverroot">ServerRoot</A>
@@ -1003,7 +1016,11 @@ different sections are combined when a request is received
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Removed in version 2.0<P>
 
 The Group directive sets the group under which the server will answer requests.
 In order to use this directive, the stand-alone server must be run initially
@@ -1612,7 +1629,7 @@ Listen [<EM>IP address</EM>:]<EM>port number</EM><BR>
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> Listen is only available in Apache
-1.1 and later.<P>
+1.1 and later. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.
 
 <P>The Listen directive instructs Apache to listen to more than one IP
 address or port; by default it responds to requests on all IP
@@ -1682,7 +1699,7 @@ interfaces and port numbers, use
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> ListenBacklog is only available in Apache
-versions after 1.2.0.
+versions after 1.2.0. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.
 
 <P>The maximum length of the queue of pending connections.  Generally no
 tuning is needed or desired, however on some systems it is desirable
@@ -1849,7 +1866,12 @@ different sections are combined when a request is received
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 The LockFile directive sets the path to the lockfile used when
 Apache is compiled with either USE_FCNTL_SERIALIZED_ACCEPT or
@@ -1951,7 +1973,12 @@ Using a level of at least <CODE>crit</CODE> is recommended.
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 <P>The MaxClients directive sets the limit on the number of simultaneous
 requests that can be supported; not more than this number of child server
@@ -2011,7 +2038,12 @@ maximum server performance.</P><HR>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 The MaxRequestsPerChild directive sets the limit on the number of requests
 that an individual child server process will handle. After MaxRequestsPerChild
@@ -2051,7 +2083,12 @@ behavior to limit the number of <EM>connections</EM> per child.
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 The MaxSpareServers directive sets the desired maximum number of <EM>idle</EM>
 child server processes. An idle process is one which is not handling
@@ -2086,7 +2123,12 @@ See also <A HREF="#minspareservers">MinSpareServers</A> and
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 The MinSpareServers directive sets the desired minimum number of <EM>idle</EM>
 child server processes. An idle process is one which is not handling
@@ -2148,6 +2190,7 @@ virtual hosts should be used, <EM>e.g.</EM>
 <STRONG>See also:</STRONG>
 <A HREF="../vhosts/index.html">Apache Virtual Host documentation</A>
 <HR>
+
 <H2><A NAME="options">Options directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt Options} directive&gt; -->
 <A
@@ -2280,7 +2323,12 @@ The default in the absence of any other settings is <CODE>All</CODE>.<P>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 The PidFile directive sets the file to which the server records the
 process id of the daemon. If the filename does not begin with a slash (/)
@@ -2440,7 +2488,11 @@ HREF="#limit">&lt;Limit&gt;</A> section<P>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
 
 The server will read this file for more directives after reading the
 httpd.conf file. <EM>Filename</EM> is relative to the
@@ -2479,7 +2531,7 @@ See also <A HREF="#accessconfig">AccessConfig</A>.<P><HR>
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> RLimitCPU is only available in Apache 1.2
-and later<P>
+and later. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.<P>
 
 Takes 1 or 2 parameters. The first parameter sets the soft resource limit
 for all processes and the second parameter sets the maximum resource limit.
@@ -2522,7 +2574,7 @@ See also <A HREF="#rlimitmem">RLimitMEM</A> or
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> RLimitMEM is only available in Apache 1.2
-and later<P>
+and later. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.<P>
 
 Takes 1 or 2 parameters. The first parameter sets the soft resource limit for
 all processes and the second parameter sets the maximum resource limit. Either
@@ -2565,7 +2617,7 @@ See also <A HREF="#rlimitcpu">RLimitCPU</A> or
  HREF="directive-dict.html#Compatibility"
  REL="Help"
 ><STRONG>Compatibility:</STRONG></A> RLimitNPROC is only available in Apache
-1.2 and later<P>
+1.2 and later. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.<P>
 
 Takes 1 or 2 parameters. The first parameter sets the soft resource limit
 for all processes and the second parameter sets the maximum resource limit.
@@ -2650,7 +2702,12 @@ See also <A HREF="#require">require</A> and
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 The ScoreBoardFile directive is required on some architectures to place
 a file that the server will use to communicate between its children and
@@ -2723,7 +2780,11 @@ Windows Registry to be searched using the script file extension (e.g., .pl) as a
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
 
 The server will set the TCP buffer size to the number of bytes
 specified. Very useful to increase past standard OS defaults on high
@@ -2995,7 +3056,11 @@ disabled on a virtualhost-by-virtualhost basis.
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
 
 The ServerType directive sets how the server is executed by the system.
 <EM>Type</EM> is one of
@@ -3022,6 +3087,7 @@ it is far more efficient. The server is started once, and services all
 subsequent connections. If you intend running Apache to serve a busy site,
 standalone will probably be your only option.<P>
 <HR>
+
 <H2><A NAME="startservers">StartServers directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt StartServers} directive&gt; -->
 <A
@@ -3039,7 +3105,12 @@ standalone will probably be your only option.<P>
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Moved in version 2.0 to the
+<A HREF="../mpm.html">MPMs</A>.<P>
 
 The StartServers directive sets the number of child server processes created
 on startup. As the number of processes is dynamically controlled depending
@@ -3076,7 +3147,7 @@ See also <A HREF="#minspareservers">MinSpareServers</A> and
  REL="Help"
 ><STRONG>Status:</STRONG></A> core (Windows, NetWare)<BR>
 <STRONG>Compatibility:</STRONG> Available only with Apache 1.3 and later
-with Windows
+with Windows. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.
 
 <P>This directive tells the server how many threads it should use. This
    is the maximum number of connections the server can handle at once; be
@@ -3107,7 +3178,7 @@ with Windows
  REL="Help"
 ><STRONG>Status:</STRONG></A> core (NetWare)<BR>
 <STRONG>Compatibility:</STRONG> Available only with Apache 1.3 and later
-with NetWare
+with NetWare. Moved in version 2.0 to the <A HREF="../mpm.html">MPMs</A>.
 
 <P>This directive tells the server what stack size to use for each of the
    running threads. If you ever get a stack overflow you will need to bump
@@ -3115,11 +3186,6 @@ with NetWare
    
 <P>This directive has no effect on other systems.
 <HR>
-
-
-
-
-
 
 <H2><A NAME="timeout">TimeOut directive</A></H2>
 <!--%plaintext &lt;?INDEX {\tt TimeOut} directive&gt; -->
@@ -3237,7 +3303,11 @@ self-referential URLs then it should be just fine.
 <A
  HREF="directive-dict.html#Status"
  REL="Help"
-><STRONG>Status:</STRONG></A> core<P>
+><STRONG>Status:</STRONG></A> core<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Removed in version 2.0.<P>
 
 The User directive sets the userid as which the server will answer requests.
 In order to use this directive, the standalone server must be run initially
