@@ -93,6 +93,7 @@ module MODULE_VAR_EXPORT autoindex_module;
 #define SUPPRESS_DESC 32
 #define SUPPRESS_PREAMBLE 64
 #define SUPPRESS_COLSORT 128
+#define NO_OPTIONS 256
 
 #define K_PAD 1
 #define K_NOPAD 0
@@ -331,7 +332,7 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
             opts |= SUPPRESS_COLSORT;
 	}
 	else if (!strcasecmp(w, "None")) {
-	    opts = 0;
+	    opts = NO_OPTIONS;
 	}
 	else if (!strcasecmp(w, "IconWidth")) {
 	    d_cfg->icon_width = DEFAULT_ICON_WIDTH;
@@ -361,6 +362,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, const char *optstr)
 	else {
 	    return "Invalid directory indexing option";
 	}
+    }
+    if ((opts & NO_OPTIONS) && (opts & ~NO_OPTIONS)) {
+	return "Cannot combine other IndexOptions keywords with 'None'";
     }
     d_cfg->opts = opts;
     return NULL;
@@ -436,7 +440,12 @@ static void *merge_autoindex_configs(pool *p, void *basev, void *addv)
     new->desc_list = ap_append_arrays(p, add->desc_list, base->desc_list);
     new->icon_list = ap_append_arrays(p, add->icon_list, base->icon_list);
     new->rdme_list = ap_append_arrays(p, add->rdme_list, base->rdme_list);
-    new->opts = add->opts;
+    if (add->opts & NO_OPTIONS) {
+	new->opts = NO_OPTIONS;
+    }
+    else {
+	new->opts = base->opts | add->opts;
+    }
     new->name_width = add->name_width;
     new->name_adjust = add->name_adjust;
 
