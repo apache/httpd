@@ -17,7 +17,9 @@
 
 This module is contained in the <CODE>mod_log_referer.c</CODE> file, and is not
 compiled in by default. It provides for logging of the documents which
-reference documents on the server.
+reference documents on the server. As of Apache 1.3.5 it is deprecated.
+Use <A HREF="mod_log_config.html#customlog-conditional">CustomLog
+(conditional)</A> instead.
 
 <H2>Log file format</H2>
 The log file contains a separate line for each refer. Each line has the
