@@ -2071,6 +2071,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             }
             else {
                 new->left = current->right;
+                new->left->parent = new;
                 current->right = new;
                 new->parent = current;
             }
@@ -2177,6 +2178,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             }
             else {
                 new->left = current->right;
+                new->left->parent = new;
                 current->right = new;
                 new->parent = current;
             }
