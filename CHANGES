@@ -5,7 +5,7 @@ Changes with Apache 2.1.0-dev
   *) mod_ssl: Add "SSLHonorCipherOrder" directive to enable the
      OpenSSL 0.9.7 flag which uses the server's cipher order rather
      than the client's.  
-     PR 28665.  [Jim Shneider <jschneid netilla.com>]
+     PR 28665.  [Jim Schneider <jschneid netilla.com>]
 
   *) mod_ssl: Drop support for the CompatEnvVars argument to
      SSLOptions, which was never actually implemented in 2.0.
