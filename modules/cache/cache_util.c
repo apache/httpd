@@ -122,6 +122,9 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     char *val;
     apr_time_t age_c = 0;
     cache_info *info = &(h->cache_obj->info);
+    cache_server_conf *conf =
+      (cache_server_conf *)ap_get_module_config(r->server->module_config,
+                                                &cache_module);
 
     /*
      * We now want to check if our cached data is still fresh. This depends
@@ -162,9 +165,6 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
 
     if (ap_cache_liststr(NULL, pragma, "no-cache", NULL)
         || ap_cache_liststr(NULL, cc_req, "no-cache", NULL)) {
-        cache_server_conf *conf =
-          (cache_server_conf *)ap_get_module_config(r->server->module_config,
-                                                    &cache_module);
 
         if (!conf->ignorecachecontrol) {
 	    /* Treat as stale, causing revalidation */
@@ -172,7 +172,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
 	}
 
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "Incoming request may be asking for a uncached version of "
+                     "Incoming request is asking for a uncached version of "
                      "%s, but we know better and are ignoring it",
                      r->unparsed_uri);
     }
@@ -197,7 +197,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     }
 
     /* extract max-age from request */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val)) {
+    if (!conf->ignorecachecontrol
+        && cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val)) {
         maxage_req = apr_atoi64(val);
     }
     else {
@@ -234,7 +235,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     }
 
     /* extract min-fresh */
-    if (cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val)) {
+    if (!conf->ignorecachecontrol
+        && cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val)) {
         minfresh = apr_atoi64(val);
     }
     else {
