@@ -985,25 +985,23 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
     return (char *)result;
 }
 
+#define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
+#define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
+#define CONNECTION_HEADER "Connection: Upgrade"
+
 static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
                                          apr_bucket_brigade *bb)
 
 {
-#define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
-#define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
-#define CONNECTION_HEADER "Connection: Upgrade"
     const char *upgrade;
-    const char *connection;
     apr_bucket_brigade *upgradebb;
     request_rec *r = f->r;
     apr_socket_t *csd = NULL;
     char *key;
-    unicode_t keyFileName[512];
     int ret;
-    char *token_string;
-    char *token;
-    char *token_state;
     secsocket_data *csd_data;
+    apr_bucket *b;
+    apr_status_t rv;
 
     /* Just remove the filter, if it doesn't work the first time, it won't
      * work at all for this request.
@@ -1015,27 +1013,9 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
      */
 
     upgrade = apr_table_get(r->headers_in, "Upgrade");
-    if (upgrade == NULL) {
-        return ap_pass_brigade(f->next, bb);
-    }
-    token_string = apr_pstrdup(r->pool,upgrade);
-    token = apr_strtok(token_string,", ",&token_state);
-    while (token && strcmp(token,"TLS/1.0")) {
-        apr_strtok(NULL,", ",&token_state);
-    }
-    // "Upgrade: TLS/1.0" header not found, don't do Upgrade
-    if (!token) {
-        return ap_pass_brigade(f->next, bb);
-    }
-
-    connection = apr_table_get(r->headers_in, "Connection");
-    token_string = apr_pstrdup(r->pool,connection);
-    token = apr_strtok(token_string,",",&token_state);
-    while (token && strcmp(token,"Upgrade")) {
-        apr_strtok(NULL,",",&token_state);
-    }
-    // "Connection: Upgrade" header not found, don't do Upgrade
-    if (!token) {
+    if (upgrade == NULL
+        || strcmp(ap_getword(r->pool, &upgrade, ','), "TLS/1.0")) {
+            /* "Upgrade: TLS/1.0, ..." header not found, don't do Upgrade */
         return ap_pass_brigade(f->next, bb);
     }
 
@@ -1052,24 +1032,20 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     }
 
 
-    if (r->method_number == M_OPTIONS) {
-        apr_bucket *b = NULL;
-        /* This is a mandatory SSL upgrade. */
+    /* Send the interim 101 response. */
+    upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
 
-        upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
+    ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
+                UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
 
-        ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
-                    UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
+    b = apr_bucket_flush_create(f->c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(upgradebb, b);
 
-        b = apr_bucket_flush_create(f->c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(upgradebb, b);
-        ap_pass_brigade(f->next, upgradebb);
-    }
-    else {
-        /* This is optional, and should be configurable, for now don't bother
-         * doing anything.
-         */
-        return ap_pass_brigade(f->next, bb);
+    rv = ap_pass_brigade(f->next, upgradebb);
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "could not send interim 101 Upgrade response");
+        return AP_FILTER_ERROR;
     }
 
     key = get_port_key(r->connection);
@@ -1087,13 +1063,16 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "Upgradeable socket handle not found");
-        return ap_pass_brigade(f->next, bb);
+        return AP_FILTER_ERROR;
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                  "Awaiting re-negotiation handshake");
 
-    return ap_pass_brigade(f->next, bb);
+    /* Now that we have initialized the ssl connection which added the ssl_io_filter, 
+       pass the brigade off to the connection based output filters so that the 
+       request can complete encrypted */
+    return ap_pass_brigade(f->c->output_filters, bb);
 }
 
 static void ssl_hook_Insert_Filter(request_rec *r)
