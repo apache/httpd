@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 1.8 (outdated: 1.9) -->
+<!-- English Revision: 1.9 -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -94,9 +94,8 @@
 
       <dt><em>regex</em></dt>
 
-      <dd>正規表現で、
-      テキストのマッチのパターンを表します。ディレクティブの定義が
-      <em>regex</em>
+      <dd>Perl 互換の<a href="../glossary.html#regex">正規表現</a>です。
+      ディレクティブの定義が <em>regex</em>
       が何に対してマッチを行なうのかを指定します。</dd>
 
       <dt><em>extension</em></dt>
