@@ -261,6 +261,7 @@ _install:
   by Tim Hudson (tjh@cryptsoft.com).  This product includes software
   developed by the OpenSSL Project for use in the OpenSSL Toolkit.
   (http://www.openssl.org/)
+<<
 !ELSE
 #	--- just a vanilla copy, in this case.
 	copy README "$(INSTDIR)\README.txt"
