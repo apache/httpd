@@ -297,10 +297,12 @@ static int alias_matches(const char *uri, const char *alias_fakename)
             if (*urip != '/')
                 return 0;
 
-            while (*aliasp == '/')
+            do {
                 ++aliasp;
-            while (*urip == '/')
+            } while (*aliasp == '/');
+            do {
                 ++urip;
+            } while (*urip == '/');
         }
         else {
             /* Other characters are compared literally */
