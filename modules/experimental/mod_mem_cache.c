@@ -759,7 +759,7 @@ static apr_status_t write_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         }
         if (fd == 1 && !other && eos) {
             apr_file_t *tmpfile;
-            char *name;
+            const char *name;
             /* Open a new XTHREAD handle to the file */
             apr_file_name_get(&name, file);
             rv = apr_file_open(&tmpfile, name, 
