@@ -1113,7 +1113,7 @@ static int make_child(server_rec *s, int slot, time_t now) /* ZZZ */
 }
 
 /* start up a bunch of children */
-static void startup_children(int number_to_start)
+static int startup_children(int number_to_start)
 {
     int i;
 
@@ -1126,6 +1126,7 @@ static void startup_children(int number_to_start)
 	}
 	--number_to_start;
     }
+    return number_to_start;
 }
 
 
@@ -1238,8 +1239,8 @@ static void server_main_loop(int remaining_children_to_start)
 	     * generation of children needed to be reaped... so assume
 	     * they're all done, and pick up the slack if any is left.
 	     */
-	    startup_children(remaining_children_to_start);
-	    remaining_children_to_start = 0;
+	    remaining_children_to_start = \
+	    	startup_children(remaining_children_to_start);
 	    /* In any event we really shouldn't do the code below because
 	     * few of the servers we just started are in the IDLE state
 	     * yet, so we'd mistakenly create an extra server.
@@ -1298,8 +1299,8 @@ int ap_mpm_run(pool *_pconf, pool *plog, server_rec *s)
      */
     remaining_children_to_start = ap_num_daemons;
     if (!is_graceful) {
-	startup_children(remaining_children_to_start);
-	remaining_children_to_start = 0;
+	remaining_children_to_start = \
+	    startup_children(remaining_children_to_start);
     }
     else {
 	/* give the system some time to recover before kicking into
