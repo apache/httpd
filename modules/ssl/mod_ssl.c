@@ -364,6 +364,17 @@ int ssl_hook_process_connection(SSLFilterRec *filter)
     long verify_result;
 
     if (!SSL_is_init_finished(filter->pssl)) {
+        if (sslconn->is_proxy) {
+            if ((n = SSL_connect(filter->pssl)) <= 0) {
+                ssl_log(c->base_server,
+                        SSL_LOG_ERROR|SSL_ADD_SSLERR|SSL_ADD_ERRNO,
+                        "SSL Proxy connect failed");
+                return ssl_abort(filter, c);
+            }
+
+            return APR_SUCCESS;
+        }
+
         if ((n = SSL_accept(filter->pssl)) <= 0) {
             err = SSL_get_error(filter->pssl, n);
 
