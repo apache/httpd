@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/07/28 15:25:10 $]
+Last modified at [$Date: 2003/07/28 15:38:28 $]
 
 Release:
 
@@ -285,6 +285,10 @@ PATCHES TO PORT FROM 2.1
       internal server error instead to shutdown cleanly.
         modules/mappers/mod_rewrite.c: r1.191
       +1: nd, trawick
+
+    * Install config.nice to make minor version upgrades easier.
+        Makefile.in: r1.135
+      +1: slive
 
 CURRENT RELEASE NOTES:
 
