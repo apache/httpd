@@ -18,7 +18,7 @@
     <code>libtool</code> und <code>autoconf</code>, um eine Umgebung zu
     schaffen, die der vieler anderer Open Source Projekte ähnlich
     sieht.</p>
-</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Überblick für die Ungeduldigen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">Anforderungen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">Auspacken</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">Den Codebaum konfigurieren</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">Erstellen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">Installieren</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">Anpassen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">Testen</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">Überblick für die Ungeduldigen</a></h2>
+</div><div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Überblick für die Ungeduldigen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#requirements">Anforderungen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li><li><img alt="" src="./images/down.gif" /> <a href="#extract">Auspacken</a></li><li><img alt="" src="./images/down.gif" /> <a href="#configure">Den Codebaum konfigurieren</a></li><li><img alt="" src="./images/down.gif" /> <a href="#compile">Erstellen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#install">Installieren</a></li><li><img alt="" src="./images/down.gif" /> <a href="#customize">Anpassen</a></li><li><img alt="" src="./images/down.gif" /> <a href="#test">Testen</a></li></ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="invoking.html">Starten</a></li><li><a href="stopping.html">Stoppen oder Neustarten</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="overview" id="overview">Überblick für die Ungeduldigen</a></h2>
 
     <table>
       <tr>
@@ -236,8 +236,9 @@
     haben, folgt hier ein typisches Beispiel, das den Apache mit einem
     speziellen Compiler und Compilerflags für das
     Installationsverzeichnis <code>/sk/pkg/apache</code> kompiliert, sowie
-    die beiden zusätzlichen Module mod_rewrite und mod_speling
-    für späteres Laden durch den DSO-Mechanismus:</p>
+    die beiden zusätzlichen Module <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> und
+    <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> für späteres Laden durch den
+    DSO-Mechanismus:</p>
 
   <div class="example"><p><code>
       $ CC="pgcc" CFLAGS="-O2" \<br />
@@ -288,15 +289,16 @@
 
       <dt><code>LIBS=...</code></dt>
 
-      <dd>Informationen über den Ablageort von Libraries ("-L" und
-      "-l" Optionen), die an den Linker durchgereicht werden.</dd>
+      <dd>Informationen über den Ablageort von Libraries
+      ("<code>-L</code>" und "<code>-l</code>" Optionen), die
+      an den Linker durchgereicht werden.</dd>
 
       <dt><code>INCLUDES=...</code></dt>
 
       <dd>Suchverzeichnisse für Header-Dateien
-      ("-I<em>Verzeichnis</em>").</dd>
+      ("<code>-I<em>Verzeichnis</em></code>").</dd>
 
-      <dt><code>TARGET=...</code> [Default: apache]</dt>
+      <dt><code>TARGET=...</code> [Default: <code>apache</code>]</dt>
 
       <dd>Name der lauffähigen Datei, die erstellt wird.</dd>
 
@@ -334,7 +336,7 @@
 
       <dt><code>--quiet</code></dt>
 
-      <dd>Verhindert die Ausgabe der üblichen "checking..."
+      <dd>Verhindert die Ausgabe der üblichen "<code>checking...</code>"
       Nachrichten.</dd>
 
       <dt><code>--verbose</code></dt>
@@ -355,7 +357,7 @@
 
     <dl>
       <dt><code>--prefix=<em>PREFIX</em></code> [Default:
-      /usr/local/apache2]</dt>
+      <code>/usr/local/apache2</code>]</dt>
 
       <dd>Gibt das Verzeichnis an, in dem die Apache-Dateien
       installiert werden.</dd>
@@ -366,7 +368,7 @@
 
     <dl>
       <dt><code>--exec-prefix=<em>EPREFIX</em></code> [Default:
-      <em>PREFIX</em>]</dt>
+      <code><em>PREFIX</em></code>]</dt>
 
       <dd>Gibt das Verzeichnis an, in dem Architektur-abhängige Dateien
       abgelegt werden.</dd>
@@ -454,8 +456,9 @@
     <p>Die <em>MODUL-LISTE</em> in den Optionen
     <code>--enable-modules</code> und <code>--enable-mods-shared</code>
     ist üblicherweise eine durch Leerzeichen getrennte Liste von
-    Modul-Bezeichnern. Zum Beispiel können zum Aktivieren vom mod_dav
-    und mod_info beide benutzt werden, sowohl</p>
+    Modul-Bezeichnern. Zum Beispiel können zum Aktivieren vom
+    <code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code> und <code class="module"><a href="./mod/mod_info.html">mod_info</a></code> beide
+    benutzt werden, sowohl</p>
 
   <div class="example"><p><code>./configure --enable-dav --enable-info</code></p></div>
 
@@ -468,8 +471,8 @@
     die meisten der Module in einem Schritt hinzuzufügen. Sie
     können Module, die Sie nicht benutzen möchten, mit der Option
     <code>--disable-<em>MODUL</em></code> entfernen. Um beispielsweise alle
-    Module mit Ausnahme von mod_info als DSOs einzubinden, können
-    Sie</p>
+    Module mit Ausnahme von <code class="module"><a href="./mod/mod_info.html">mod_info</a></code> als DSOs einzubinden,
+    können Sie</p>
 
   <div class="example"><p><code>
       ./configure --enable-mods-shared=all
@@ -495,7 +498,7 @@
 
 <h3><a name="dbm" id="dbm">DBM</a></h3>
 
-    <p>Verschiedene Apache-Features, darunter <code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code>
+    <p>Verschiedene Apache-Features, darunter <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>
     und DBM <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> aus
     <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>, verwenden einfache
     Schlüssel/Wert-Datenbanken für eine schnelle Suche nach
@@ -554,13 +557,13 @@
 
     <p>Als nächstes können Sie Ihren Apache HTTP Server anpassen,
     indem Sie die <a href="configuring.html">Konfigurationsdateien</a>
-    unterhalb von <em>PREFIX</em>/conf/ editieren.</p>
+    unterhalb von <code><em>PREFIX</em>/conf/</code> editieren.</p>
 
   <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>Werfen Sie auch einen Blick in das Apache Handbuch unter <a href="./">docs/manual/</a>. Die aktuellste Version dieses Handbuchs
-	sowie eine komplette Referenz der verfügbaren <a href="mod/directives.html">Konfigurationsanweisungen</a> finden
-	Sie unter <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>.</p>
+    <p>Werfen Sie auch einen Blick in das Apache-Handbuch unter <a href="./">docs/manual/</a>. Die aktuellste Version dieses Handbuchs
+    sowie eine komplette Referenz der verfügbaren <a href="mod/directives.html">Konfigurationsanweisungen</a> finden
+    Sie unter <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div><div class="section"><h2><a name="test" id="test">Testen</a></h2>
 
     <p>Sie können nun Ihren Apache HTTP Server <a href="invoking.html">starten</a>, indem Sie einfach</p>

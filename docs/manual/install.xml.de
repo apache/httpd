@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
-<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English revision: 1.5 -->
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English revision: 1.10 -->
 
 <manualpage>
 <relativepath href="."/>
@@ -24,6 +24,9 @@
     schaffen, die der vieler anderer Open Source Projekte &#228;hnlich
     sieht.</p>
 </summary>
+
+<seealso><a href="invoking.html">Starten</a></seealso>
+<seealso><a href="stopping.html">Stoppen oder Neustarten</a></seealso>
 
 <section id="overview"><title>&#220;berblick f&#252;r die Ungeduldigen</title>
 
@@ -257,8 +260,9 @@
     haben, folgt hier ein typisches Beispiel, das den Apache mit einem
     speziellen Compiler und Compilerflags f&#252;r das
     Installationsverzeichnis <code>/sk/pkg/apache</code> kompiliert, sowie
-    die beiden zus&#228;tzlichen Module mod_rewrite und mod_speling
-    f&#252;r sp&#228;teres Laden durch den DSO-Mechanismus:</p>
+    die beiden zus&#228;tzlichen Module <module>mod_rewrite</module> und
+    <module>mod_speling</module> f&#252;r sp&#228;teres Laden durch den
+    DSO-Mechanismus:</p>
 
   <example>
       $ CC="pgcc" CFLAGS="-O2" \<br />
@@ -309,15 +313,16 @@
 
       <dt><code>LIBS=...</code></dt>
 
-      <dd>Informationen &#252;ber den Ablageort von Libraries ("-L" und
-      "-l" Optionen), die an den Linker durchgereicht werden.</dd>
+      <dd>Informationen &#252;ber den Ablageort von Libraries
+      ("<code>-L</code>" und "<code>-l</code>" Optionen), die
+      an den Linker durchgereicht werden.</dd>
 
       <dt><code>INCLUDES=...</code></dt>
 
       <dd>Suchverzeichnisse f&#252;r Header-Dateien
-      ("-I<em>Verzeichnis</em>").</dd>
+      ("<code>-I<em>Verzeichnis</em></code>").</dd>
 
-      <dt><code>TARGET=...</code> [Default: apache]</dt>
+      <dt><code>TARGET=...</code> [Default: <code>apache</code>]</dt>
 
       <dd>Name der lauff&#228;higen Datei, die erstellt wird.</dd>
 
@@ -355,7 +360,7 @@
 
       <dt><code>--quiet</code></dt>
 
-      <dd>Verhindert die Ausgabe der &#252;blichen "checking..."
+      <dd>Verhindert die Ausgabe der &#252;blichen "<code>checking...</code>"
       Nachrichten.</dd>
 
       <dt><code>--verbose</code></dt>
@@ -376,7 +381,7 @@
 
     <dl>
       <dt><code>--prefix=<em>PREFIX</em></code> [Default:
-      /usr/local/apache2]</dt>
+      <code>/usr/local/apache2</code>]</dt>
 
       <dd>Gibt das Verzeichnis an, in dem die Apache-Dateien
       installiert werden.</dd>
@@ -387,7 +392,7 @@
 
     <dl>
       <dt><code>--exec-prefix=<em>EPREFIX</em></code> [Default:
-      <em>PREFIX</em>]</dt>
+      <code><em>PREFIX</em></code>]</dt>
 
       <dd>Gibt das Verzeichnis an, in dem Architektur-abh&#228;ngige Dateien
       abgelegt werden.</dd>
@@ -477,8 +482,9 @@
     <p>Die <em>MODUL-LISTE</em> in den Optionen
     <code>--enable-modules</code> und <code>--enable-mods-shared</code>
     ist &#252;blicherweise eine durch Leerzeichen getrennte Liste von
-    Modul-Bezeichnern. Zum Beispiel k&#246;nnen zum Aktivieren vom mod_dav
-    und mod_info beide benutzt werden, sowohl</p>
+    Modul-Bezeichnern. Zum Beispiel k&#246;nnen zum Aktivieren vom
+    <module>mod_dav</module> und <module>mod_info</module> beide
+    benutzt werden, sowohl</p>
 
   <example>./configure --enable-dav --enable-info</example>
 
@@ -491,8 +497,8 @@
     die meisten der Module in einem Schritt hinzuzuf&#252;gen. Sie
     k&#246;nnen Module, die Sie nicht benutzen m&#246;chten, mit der Option
     <code>--disable-<em>MODUL</em></code> entfernen. Um beispielsweise alle
-    Module mit Ausnahme von mod_info als DSOs einzubinden, k&#246;nnen
-    Sie</p>
+    Module mit Ausnahme von <module>mod_info</module> als DSOs einzubinden,
+    k&#246;nnen Sie</p>
 
   <example>
       ./configure --enable-mods-shared=all
@@ -518,7 +524,7 @@
 
 <section id="dbm"><title>DBM</title>
 
-    <p>Verschiedene Apache-Features, darunter <module>mod_auth_dbm</module>
+    <p>Verschiedene Apache-Features, darunter <module>mod_authn_dbm</module>
     und DBM <directive module="mod_rewrite">RewriteMap</directive> aus
     <module>mod_rewrite</module>, verwenden einfache
     Schl&#252;ssel/Wert-Datenbanken f&#252;r eine schnelle Suche nach
@@ -584,16 +590,16 @@
 
     <p>Als n&#228;chstes k&#246;nnen Sie Ihren Apache HTTP Server anpassen,
     indem Sie die <a href="configuring.html">Konfigurationsdateien</a>
-    unterhalb von <em>PREFIX</em>/conf/ editieren.</p>
+    unterhalb von <code><em>PREFIX</em>/conf/</code> editieren.</p>
 
   <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
-    <p>Werfen Sie auch einen Blick in das Apache Handbuch unter <a
+    <p>Werfen Sie auch einen Blick in das Apache-Handbuch unter <a
     href="./">docs/manual/</a>. Die aktuellste Version dieses Handbuchs
-	sowie eine komplette Referenz der verf&#252;gbaren <a
+    sowie eine komplette Referenz der verf&#252;gbaren <a
     href="mod/directives.html">Konfigurationsanweisungen</a> finden
-	Sie unter <a href="http://httpd.apache.org/docs-2.0/"
-	>http://httpd.apache.org/docs-2.0/</a>.</p>
+    Sie unter <a href="http://httpd.apache.org/docs-2.0/"
+    >http://httpd.apache.org/docs-2.0/</a>.</p>
 </section>
 
 <section id="test"><title>Testen</title>
