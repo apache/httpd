@@ -268,7 +268,13 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      */
     ssl_rand_seed(base_server, ptemp, SSL_RSCTX_STARTUP, "Init: ");
 
-    ssl_pphrase_Handle(base_server, p);
+    /*
+     * read server private keys/public certs into memory.
+     * decrypting any encrypted keys via configured SSLPassPhraseDialogs
+     * anything that needs to live longer than ptemp needs to also survive
+     * restarts, in which case they'll live inside s->process->pool.
+     */
+    ssl_pphrase_Handle(base_server, ptemp);
 
     ssl_tmp_keys_init(base_server);
 
