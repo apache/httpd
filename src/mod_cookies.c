@@ -96,6 +96,7 @@
  *              code from mod_log_agent.c.
  * 24.5.96  MJC Improved documentation after receiving comments from users
  *  4.7.96  MJC Bug, "else" missing since February caused logging twice
+ * 19.7.96  AEK Added CookieExpires and CookieEnable directives
  */
 
 #include "httpd.h"
@@ -109,7 +110,13 @@ typedef struct {
     char *fname;
     int log_fd;
     int always;
+    time_t expires;
 } cookie_log_state;
+
+/* Define this to allow post-2000 cookies. Cookies use two-digit dates,
+ * so it might be dicey. (Netscape does it correctly, but others may not)
+ */
+#define MILLENIAL_COOKIES
 
 /* Make Cookie: Now we have to generate something that is going to be
  * pretty unique.  We can base it on the pid, time, hostip */
@@ -118,21 +125,53 @@ typedef struct {
 
 void make_cookie(request_rec *r)
 {
+    cookie_log_state *cls = get_module_config (r->server->module_config,
+					       &cookies_module);
     struct timeval tv;
     char new_cookie[100];	/* blurgh */
     char *dot;
     const char *rname = pstrdup(r->pool, 
-				get_remote_host(r->connection, r->per_dir_config,
+		       	    get_remote_host(r->connection, r->per_dir_config,
 						REMOTE_NAME));
     
     struct timezone tz = { 0 , 0 };
 
     if ((dot = strchr(rname,'.'))) *dot='\0';	/* First bit of hostname */
     gettimeofday(&tv, &tz);
-    sprintf(new_cookie,"%s%s%d%ld%d; path=/",
-        COOKIE_NAME, rname,
-        (int)getpid(),  
-        (long)tv.tv_sec, (int)tv.tv_usec/1000 );
+
+    if (cls->expires) {
+      static const char *const days[7]=
+          {"Sun","Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+      struct tm *tms;
+      time_t when = time(NULL) + cls->expires;
+
+#ifndef MILLENIAL_COOKIES      
+      /* Only two-digit date string, so we can't trust "00" or more.
+       * Therefore, we knock it all back to just before midnight on
+       * 1/1/2000 (which is 946684799)
+       */
+
+      if (when > 946684799)
+	when = 946684799;
+#endif
+      tms = gmtime(&when);
+
+
+
+      /* Cookie with date; as strftime '%a, %d-%h-%y %H:%M:%S GMT' */
+      sprintf(new_cookie,
+	   "%s%s%d%ld%d; path=/; expires=%s, %.2d-%s-%.2d %.2d:%.2d:%.2d GMT",
+	      COOKIE_NAME, rname, (int)getpid(),  
+	      (long)tv.tv_sec, (int)tv.tv_usec/1000, days[tms->tm_wday],
+	      tms->tm_mday, month_snames[tms->tm_mon],
+	      (tms->tm_year >= 100) ? tms->tm_year - 100 : tms->tm_year,
+	      tms->tm_hour, tms->tm_min, tms->tm_sec);
+    }
+    else
+      sprintf(new_cookie,"%s%s%d%ld%d; path=/",
+	      COOKIE_NAME, rname,
+	      (int)getpid(),  
+	      (long)tv.tv_sec, (int)tv.tv_usec/1000 );
 
     table_set(r->headers_out,"Set-Cookie",new_cookie);
     return;
@@ -140,7 +179,11 @@ void make_cookie(request_rec *r)
 
 int spot_cookie(request_rec *r)
 {
+    int *disable = (int *)get_module_config(r->per_dir_config,
+					    &cookies_module);
     char *cookie;
+
+    if (*disable) return DECLINED;
 
     if ((cookie = table_get (r->headers_in, "Cookie")))
         if (strstr(cookie,COOKIE_NAME))
@@ -165,8 +208,19 @@ void *make_cookie_log_state (pool *p, server_rec *s)
 
     cls->fname = "";
     cls->log_fd = -1;
+    cls->expires = 0;
 
     return (void *)cls;
+}
+
+void *make_cookie_dir (pool *p, char *d) {
+    return (void *)pcalloc(p, sizeof(int));
+}
+
+char *set_cookie_disable (cmd_parms *cmd, int *c, int arg)
+{
+    *c = !arg;
+    return NULL;
 }
 
 char *set_cookie_log (cmd_parms *parms, void *dummy, char *arg)
@@ -177,9 +231,78 @@ char *set_cookie_log (cmd_parms *parms, void *dummy, char *arg)
     return NULL;
 }
 
+char *set_cookie_exp (cmd_parms *parms, void *dummy, char *arg)
+{
+    cookie_log_state *cls = get_module_config (parms->server->module_config,
+                           &cookies_module);
+    time_t factor, modifier = 0;
+    time_t num = 0;
+    char *word;
+
+    /* The simple case first - all numbers (we assume) */
+    if (isdigit(arg[0]) && isdigit(arg[strlen(arg)-1])) {
+      cls->expires = atol(arg);
+      return NULL;
+    }
+
+    /* The harder case - stolen from mod_expires
+     * CookieExpires "[plus] {<num> <type>}*"
+     */
+
+    word = getword_conf( parms->pool, &arg );
+    if ( !strncasecmp( word, "plus", 1 ) ) {
+        word = getword_conf( parms->pool, &arg );
+    };
+
+    /* {<num> <type>}* */
+    while ( word[0] ) {
+        /* <num> */
+        if ( index("0123456789", word[0]) != NULL )
+	  num = atoi( word );
+	else
+	  return "bad expires code, numeric value expected.";
+      
+	/* <type> */
+	word = getword_conf( parms->pool, &arg );
+	if (!word[0] )
+	  return "bad expires code, missing <type>";
+	  
+	factor = 0;
+	if ( !strncasecmp( word, "years", 1 ) )
+	  factor = 60*60*24*365;
+	else if ( !strncasecmp( word, "months", 2 ) )
+	  factor = 60*60*24*30;
+	else if ( !strncasecmp( word, "weeks", 1 ) )
+	  factor = 60*60*24*7;
+	else if ( !strncasecmp( word, "days", 1 ) )
+	  factor = 60*60*24;
+	else if ( !strncasecmp( word, "hours", 1 ) )
+	  factor = 60*60;
+	else if ( !strncasecmp( word, "minutes", 2 ) )
+	  factor = 60;
+	else if ( !strncasecmp( word, "seconds", 1 ) )
+	  factor = 1;
+	else
+	  return "bad expires code, unrecognized type";
+
+	modifier = modifier + factor * num;
+
+	/* next <num> */
+	word = getword_conf( parms->pool, &arg );
+    }
+
+    cls->expires = modifier;
+
+    return NULL;
+}
+
 command_rec cookie_log_cmds[] = {
 { "CookieLog", set_cookie_log, NULL, RSRC_CONF, TAKE1,
     "the filename of the cookie log" },
+{ "CookieExpires", set_cookie_exp, NULL, RSRC_CONF, TAKE1,
+    "an expiry date code" },
+{ "CookieEnable", set_cookie_disable, NULL, OR_FILEINFO, FLAG,
+    "whether or not to enable cookies" },
 { NULL }
 };
 
@@ -282,8 +405,8 @@ int cookie_log_transaction(request_rec *orig)
 module cookies_module = {
    STANDARD_MODULE_STUFF,
    init_cookie_log,				/* initializer */
-   NULL,						/* dir config creater */
-   NULL,						/* dir merger --- default is to override */
+   make_cookie_dir,    		       		/* dir config creater */
+   NULL,	      			/* dir merger --- default is to override */
    make_cookie_log_state,		/* server config */
    NULL,						/* merge server configs */
    cookie_log_cmds,				/* command table */
