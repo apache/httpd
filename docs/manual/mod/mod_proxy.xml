@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.31 $ -->
+<!-- $Revision: 1.32 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -168,7 +168,7 @@
       </example>
 
       <p>For more information on access control directives, see
-      <module>mod_access</module>.</p>
+      <module>mod_authz_host</module>.</p>
 
       <p>Strictly limiting access is essential if you are using a
       forward proxy (using the <directive
