@@ -391,6 +391,9 @@ static int proxy_detect(request_rec *r)
         for (i = 0; i < conf->aliases->nelts; i++) {
             len = alias_match(r->unparsed_uri, ent[i].fake);
             if (len > 0) {
+                if ((ent[i].real[0] == '!') && (ent[i].real[1] == 0)) {
+                    return DECLINED;
+                }
                 r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
                                           r->unparsed_uri + len, NULL);
                 r->handler = "proxy-server";
@@ -979,6 +982,8 @@ static const char *
     new = apr_array_push(conf->aliases);
     new->fake = apr_pstrdup(cmd->pool, f);
     new->real = apr_pstrdup(cmd->pool, r);
+    if (r[0] == '!' && r[1] == '\0')
+        return NULL;
     
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
