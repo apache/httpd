@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/06/17 15:52:28 $]
+Last modified at [$Date: 2004/06/19 16:39:17 $]
 
 Release:
 
@@ -84,7 +84,9 @@ PATCHES TO BACKPORT FROM 2.1
        modules/generators/mod_cgi.h r1.14
        modules/arch/netware/mod_netware r1.18
        +1: jjclar, bnicholes
+       -0: nd
        trawick: is minor mmn bump needed to reflect that API structure was extended?
+       nd: same as mod_ssl.h issues. It's actually a major bump.
 
     *) mod_ssl: Remove some unused functions (after CAN-2004-0488 fix is applied)
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_util.c?r1=1.46&r2=1.47
