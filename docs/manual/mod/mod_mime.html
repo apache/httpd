@@ -59,6 +59,12 @@ text/html but <i>no</i> language.
 
 <P>
 
+Note that changing the type or encoding of a file does not change the
+value of the <code>Last-Modified</code> header. Thus, previously cached
+copies may still be used by a client or proxy, with the previous headers.
+
+<P>
+
 <h2> Directives</h2>
 <ul>
 <li><A HREF="#addencoding">AddEncoding</A>
