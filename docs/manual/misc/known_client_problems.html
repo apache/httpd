@@ -216,6 +216,26 @@ There's also
 <A HREF="http://www.arctic.org/~dgaudet/apache/no-content-length/">
 some information</A> about the actual problem.
 
+<H3><A name="jdk-12-bugs">JDK 1.2 betas lose parts of responses.</A></H3>
+
+<P>The http client in the JDK1.2beta2 and beta3 will throw away the first part of
+the response body when both the headers and the first part of the body are sent
+in the same network packet AND keep-alive's are being used. If either condition
+is not met then it works fine.
+
+<P>See also Bug-ID's 4124329 and 4125538 at the java developer connection.
+
+<P>If you are seeing this bug yourself, you can add the following BrowserMatch
+directive to work around it:
+
+<BLOCKQUOTE><CODE>
+BrowserMatch "Java1\.2beta[23]" nokeepalive
+</CODE></BLOCKQUOTE>
+
+<P>We don't advocate this though since bending over backwards for beta software
+is usually not a good idea; ideally it gets fixed, new betas or a final release
+comes out, and no one uses the broken old software anymore.  In theory.
+
 <!--#include virtual="footer.html" -->
 </BODY>
 </HTML>
