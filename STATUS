@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/12/17 14:03:21 $]
+  Last modified at [$Date: 1999/12/20 02:11:15 $]
 
 Release:
 
@@ -19,6 +19,10 @@ Release:
     2.0  : In pre-alpha development, see apache-2.0 repository
 
 RELEASE SHOWSTOPPERS:
+
+    * mod_vhost_alias "Host:" header check
+      Message-ID: <XFMail.19991219070209.lars@hyperreal.org>
+
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
