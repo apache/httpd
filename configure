@@ -646,7 +646,7 @@ fi
 ##
 localstatedir_relative=`echo $localstatedir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
 sysconfdir_relative=`echo $sysconfdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
-libexecdir_relative=`echo $libexecdir | sed -e "s:^$prefix/*::" -e 's:\(.\)$:\1/:'`
+libexecdir_relative=`echo $libexecdir | sed -e "s:^$exec_prefix/*::" -e 's:\(.\)$:\1/:'`
 
 ##
 ##  check and debug
