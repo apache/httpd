@@ -670,7 +670,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	    else if (strstr(strupr(r->filename), ".CMD") > 0) {
 		/* Special case to allow use of REXX commands as scripts. */
 		os2pathname(r->filename);
-		execl("CMD.EXE", "CMD.EXE", "/C", r->filename, NULL);
+		execl(SHELL_PATH, SHELL_PATH, "/C", r->filename, NULL);
 	    }
 	    else {
 		execl(r->filename, argv0, NULL);
@@ -690,7 +690,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	    if (strstr(strupr(r->filename), ".CMD") > 0) {
 		/* Special case to allow use of REXX commands as scripts. */
 		os2pathname(r->filename);
-		execv("CMD.EXE", create_argv_cmd(r->pool, argv0, r->args, r->filename));
+		execv(SHELL_PATH, create_argv_cmd(r->pool, argv0, r->args, r->filename));
 	    }
 	    else
 		execv(r->filename,
@@ -802,7 +802,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 	        /* If not an executable or script, just execute it
                  * from a command prompt.  
                  */
-	        pCommand = ap_pstrcat(r->pool, "CMD.EXE", " /C ", 
+	        pCommand = ap_pstrcat(r->pool, SHELL_PATH, " /C ", 
 				      r->filename, NULL);
 	    }
 	}
@@ -857,7 +857,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 				      r->filename, " ", arguments, NULL);
 	    }
 	    else {
-	        pCommand = ap_pstrcat(r->pool, "CMD.EXE", " /C ", 
+	        pCommand = ap_pstrcat(r->pool, SHELL_PATH, " /C ", 
 				      r->filename, " ", arguments, NULL);
 	    }
 	}
@@ -881,7 +881,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 			      r->filename, NULL, env);
 	    }
 	    else {
-		pid = spawnle(_P_NOWAIT, "CMD.EXE", "CMD.EXE", "/C",
+		pid = spawnle(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/C",
 			      r->filename, NULL, env);
 	    }
 	}
@@ -897,7 +897,7 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0, cha
 					  r->filename, r->args), env);
 	    }
 	    else {
-		pid = spawnve(_P_NOWAIT, "CMD.EXE",
+		pid = spawnve(_P_NOWAIT, SHELL_PATH,
 			      create_argv_cmd(r->pool, argv0, r->args,
 					      r->filename), env);
 	    }

@@ -231,10 +231,10 @@ extern "C" {
 #define DEFAULT_PATH "/bin:/usr/bin:/usr/ucb:/usr/bsd:/usr/local/bin"
 #endif
 
-/* The path to the Bourne shell, for parsed docs */
+/* The path to the shell interpreter, for parsed docs */
 #ifndef SHELL_PATH
 #if defined(__EMX__) || defined(WIN32)
-/* Set default for OS/2 file system */
+/* Set default for OS/2 and Windows file system */
 #define SHELL_PATH "CMD.EXE"
 #else
 #define SHELL_PATH "/bin/sh"
