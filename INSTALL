@@ -6,23 +6,20 @@
         htdocs/manual/windows.html file included with Apache). 
         The following applies only to Unix users.
 
-  Installing the Apache 1.3 HTTP server manually
-  ==============================================
+  Introduction
+  ============
 
-  If you really want to build and install Apache 1.3 manually, you can still
-  use the Apache 1.2 way by following the instructions in the file src/INSTALL
-  as in the past. Nothing has changed there. So when you are already familiar
-  with this procedure or really need a very special custom configuration go
-  for it.  
+  Like all good things, there are two ways to configure, compile, and
+  install Apache.  You can go for the 3-minute installation process
+  using the APACI process described below; or, you can opt for the same
+  mechanism used in previous versions of Apache, as described in the
+  file 'src/INSTALL'.  Each mechanism has its benefits and drawbacks -
+  APACI is newer and a little more raw, but it gets you up and running
+  the least amount of time, whereas the "Configuration.tmpl" mechanism
+  may be more familiar and give you some more flexibility to the power
+  user.  We'd be very interested in your comments and feedback regarding
+  each approach.
 
-  On the other hand you should remember that the new Apache 1.3 Autoconf-style
-  Interface (APACI) already is a user-friendly frontend to the old scripts (it
-  actually uses them internally). And because APACI provides all usually
-  needed functionality the user wants to specify, there is no longer real need
-  to do so. Especially when it comes to the installation process: only APACI
-  provides an out-of-the-box way of installing the _complete_ Apache package.
-  See the file README.configure for an overview of APACI and the following
-  description for detailed information about how to use APACI.
 
   Installing the Apache 1.3 HTTP server with APACI
   ================================================
