@@ -1740,7 +1740,12 @@ int send_parsed_file(request_rec *r)
                 : r->filename, r);
 	return NOT_FOUND;
     }
-	
+
+    if(!(f=pfopen(r->pool, r->filename, "r"))) {
+        log_reason("file permissions deny server access", r->filename, r);
+	return FORBIDDEN;
+    }
+
     if (*state == xbithack_full
 #ifndef __EMX__    
     /*  OS/2 dosen't support Groups. */
@@ -1748,12 +1753,7 @@ int send_parsed_file(request_rec *r)
 #endif
 	&& (errstatus = set_last_modified (r, r->finfo.st_mtime)))
         return errstatus;
-    
-    if(!(f=pfopen(r->pool, r->filename, "r"))) {
-        log_reason("file permissions deny server access", r->filename, r);
-	return FORBIDDEN;
-    }
-    
+
     send_http_header(r);
 
     if (r->header_only) {

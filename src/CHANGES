@@ -1,10 +1,16 @@
 Changes with Apache 1.2
 
+  *) Test for error conditions before creating output header fields, since
+     we don't want the error message to include those fields.  Likewise,
+     reset the content_language(s) and content_encoding of the response
+     before generating or redirecting to an error message, since the new
+     message will have its own Content-* definitions. [Dean Gaudet]
+
   *) Fixed a couple places where a check for the default Content-Type was
      not properly checking both the value configured by the DefaultType
      directive and the DEFAULT_TYPE symbol in httpd.h.  Changed the value
      of DEFAULT_TYPE to match the documented default (text/plain).
-     [Dean Gaudet]
+     [Dean Gaudet] PR#506
 
   *) Escape the HTML-sensitive characters in the Request-URI that is
      output for each child by mod_status. [Dean Gaudet and Ken Coar] PR#501

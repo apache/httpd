@@ -1322,10 +1322,6 @@ int default_handler (request_rec *r)
 	return NOT_FOUND;
     }
     if (r->method_number != M_GET) return METHOD_NOT_ALLOWED;
-	
-    if ((errstatus = set_last_modified (r, r->finfo.st_mtime))
-	|| (errstatus = set_content_length (r, r->finfo.st_size)))
-        return errstatus;
     
 #ifdef __EMX__
     /* Need binary mode for OS/2 */
@@ -1338,6 +1334,10 @@ int default_handler (request_rec *r)
         log_reason("file permissions deny server access", r->filename, r);
         return FORBIDDEN;
     }
+	
+    if ((errstatus = set_last_modified (r, r->finfo.st_mtime))
+	|| (errstatus = set_content_length (r, r->finfo.st_size)))
+        return errstatus;
 
     if (d->content_md5 & 1) {
       table_set (r->headers_out, "Content-MD5", md5digest(r->pool, f));

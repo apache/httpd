@@ -763,7 +763,17 @@ void die(int type, request_rec *r)
     }
        
     r->status = type;
-    
+
+    /* XXX: this is an awful thing to have to do here, in fact there are
+     * probably other cases that need this attention.  Essentially we're
+     * about to report an error, and if we don't do an internal_redirect
+     * below then we'll report the error with the wrong headers -- we'll
+     * use headers belonging to the original request.
+     */
+    r->content_language = NULL;
+    r->content_languages = NULL;
+    r->content_encoding = NULL;
+
     /* Two types of custom redirects --- plain text, and URLs.
      * Plain text has a leading '"', so the URL code, here, is triggered
      * on its absence
