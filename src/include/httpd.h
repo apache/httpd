@@ -245,7 +245,7 @@
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_VERSION "Apache/1.2b1" /* SEE COMMENTS ABOVE */
+#define SERVER_VERSION "Apache/1.2b2" /* SEE COMMENTS ABOVE */
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #define SERVER_SUPPORT "http://www.apache.org/"
