@@ -492,7 +492,7 @@ BOOL CenterWindow(HWND hwndChild)
 
 static void addListBoxItem(HWND hDlg, LPSTR lpStr, HBITMAP hBmp) 
 { 
-    int nItem; 
+    LRESULT nItem; 
  
     nItem = SendMessage(hDlg, LB_ADDSTRING, 0, (LPARAM)lpStr); 
     SendMessage(hDlg, LB_SETITEMDATA, nItem, (LPARAM)hBmp); 
@@ -688,7 +688,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
         sPos = strstr(szImagePath, "-k start");
         if (sPos)
         {
-            lstrcpyn(szBuf, szImagePath, sPos - szImagePath);
+            lstrcpyn(szBuf, szImagePath, (int)(sPos - szImagePath));
             switch (dwCommand)
             {
             case SERVICE_CONTROL_STOP:
@@ -1142,7 +1142,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
     int i, y; 
     HDC hdcMem; 
     RECT rcBitmap; 
-    UINT nItem;
+    LRESULT nItem;
     LPMEASUREITEMSTRUCT lpmis; 
     LPDRAWITEMSTRUCT lpdis; 
 
@@ -1324,7 +1324,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                SetBkColor(lpdis->hDC, GetSysColor(COLOR_WINDOW)); 
                FillRect(lpdis->hDC, &rcBitmap, (HBRUSH)(COLOR_WINDOW+1)); 
             }
-            TextOut(lpdis->hDC, XBITMAP + 6, y, szBuf, strlen(szBuf)); 
+            TextOut(lpdis->hDC, XBITMAP + 6, y, szBuf, (int)strlen(szBuf)); 
             break; 
 
         case ODA_FOCUS: 

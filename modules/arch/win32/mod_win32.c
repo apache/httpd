@@ -108,7 +108,7 @@ static void prep_string(const char ** str, apr_pool_t *p)
 {
     const char *ch = *str;
     char *ch2;
-    int widen = 0;
+    apr_size_t widen = 0;
 
     if (!ch) {
         return;

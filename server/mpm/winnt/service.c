@@ -134,7 +134,7 @@ void hold_console_open_on_error(void)
     hConErr = GetStdHandle(STD_ERROR_HANDLE);
     if ((hConIn == INVALID_HANDLE_VALUE) || (hConErr == INVALID_HANDLE_VALUE))
         return;
-    if (!WriteConsole(hConErr, msg, strlen(msg), &result, NULL) || !result)
+    if (!WriteConsole(hConErr, msg, (int)strlen(msg), &result, NULL) || !result)
         return;
     if (!GetConsoleScreenBufferInfo(hConErr, &coninfo))
         return;
@@ -159,7 +159,7 @@ void hold_console_open_on_error(void)
         sprintf (count, "%d...", remains);
         if (!SetConsoleCursorPosition(hConErr, coninfo.dwCursorPosition))
             return;
-        if (!WriteConsole(hConErr, count, strlen(count), &result, NULL) 
+        if (!WriteConsole(hConErr, count, (int)strlen(count), &result, NULL) 
                 || !result)
             return;
     }
