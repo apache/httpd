@@ -168,6 +168,7 @@ void *util_ldap_compare_node_copy(void *c)
     node->attrib = util_ald_strdup(n->attrib);
     node->value = util_ald_strdup(n->value);
     node->lastcompare = n->lastcompare;
+    node->result = n->result;
     return node;
 }
 

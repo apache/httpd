@@ -1,5 +1,10 @@
 Changes with Apache 2.0.25-dev
 
+  *) Enabled negative caching on attribute comparisons in the LDAP cache.
+     Fixed a problem where the default cache TTL was set in milliseconds
+     not microseconds causing the cache to time out almost immediately.
+     [Graham Leggett]
+
   *) Fixed all the #if APR_HAS_SHARED_MEMORY checks within the LDAP
      module code to follow APR. [Graham Leggett]
 

@@ -60,16 +60,6 @@
  * Copyright 1999-2001 Dave Carrigan
  */
 
-/*
- * FIXME:
- *
- * - The compare cache presently does not have the ability to
- *   cache negatively. This has the negative effect of requiring
- *   a connect/bind/compare/unbind/disconnect when two or more
- *   atrributes are optional for group membership, and performance
- *   sucks as a result.
- */
-
 #include <apr_ldap.h>
 
 #ifdef APU_HAS_LDAP
@@ -209,7 +199,7 @@ void util_ldap_connection_close(util_ldap_connection_t *ldc)
 /*
  * Destroys an LDAP connection by unbinding. This function is registered
  * with the pool cleanup function - causing the LDAP connections to be
- * shut down cleanly on thread exit.
+ * shut down cleanly on graceful restart.
  */
 apr_status_t util_ldap_connection_destroy(void *param)
 {
@@ -646,6 +636,7 @@ int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
     the_compare_node.dn = (char *)dn;
     the_compare_node.attrib = (char *)attrib;
     the_compare_node.value = (char *)value;
+    the_compare_node.result = 0;
 
     compare_nodep = util_ald_cache_fetch(curl->compare_cache, &the_compare_node);
 
@@ -659,8 +650,22 @@ int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
             /* ...and it is good */
             /* unlock this read lock */
             apr_lock_release(util_ldap_cache_lock);
-            ldc->reason = "Comparison successful (cached)";
-            return LDAP_COMPARE_TRUE;
+            if (LDAP_COMPARE_TRUE == compare_nodep->result) {
+                ldc->reason = "Comparison true (cached)";
+                return compare_nodep->result;
+            }
+            else if (LDAP_COMPARE_FALSE == compare_nodep->result) {
+                ldc->reason = "Comparison false (cached)";
+                return compare_nodep->result;
+            }
+            else if (LDAP_NO_SUCH_ATTRIBUTE == compare_nodep->result) {
+                ldc->reason = "Comparison no such attribute (cached)";
+                return compare_nodep->result;
+            }
+            else {
+                ldc->reason = "Comparison undefined (cached)";
+                return compare_nodep->result;
+            }
         }
     }
     /* unlock this read lock */
@@ -685,15 +690,30 @@ start_over:
         ldc->reason = "ldap_compare_s() failed with server down";
         goto start_over;
     }
-  
-    if (result == LDAP_COMPARE_TRUE) {
-        /* compare succeeded; caching result */
+
+    ldc->reason = "Comparison complete";
+    if ((LDAP_COMPARE_TRUE == result) || 
+        (LDAP_COMPARE_FALSE == result) ||
+        (LDAP_NO_SUCH_ATTRIBUTE == result)) {
+        /* compare completed; caching result */
         apr_lock_acquire_rw(util_ldap_cache_lock, APR_WRITER);
         the_compare_node.lastcompare = curtime;
+        the_compare_node.result = result;
         util_ald_cache_insert(curl->compare_cache, &the_compare_node);
         apr_lock_release(util_ldap_cache_lock);
+        if (LDAP_COMPARE_TRUE == result) {
+            ldc->reason = "Comparison true (adding to cache)";
+            return LDAP_COMPARE_TRUE;
+        }
+        else if (LDAP_COMPARE_FALSE == result) {
+            ldc->reason = "Comparison false (adding to cache)";
+            return LDAP_COMPARE_FALSE;
+        }
+        else {
+            ldc->reason = "Comparison no such attribute (adding to cache)";
+            return LDAP_NO_SUCH_ATTRIBUTE;
+        }
     }
-    ldc->reason = "Comparison complete";
     return result;
 }
 
@@ -888,7 +908,7 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy, const ch
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
 						  &ldap_module);
 
-    st->search_cache_ttl = atol(ttl) * 1000;
+    st->search_cache_ttl = atol(ttl) * 1000000;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
                       "[%d] ldap cache: Setting cache TTL to %ld microseconds.", 
@@ -922,7 +942,7 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy, const 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
 						  &ldap_module);
 
-    st->compare_cache_ttl = atol(ttl) * 1000;
+    st->compare_cache_ttl = atol(ttl) * 1000000;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0, cmd->server, 
                       "[%d] ldap cache: Setting operation cache TTL to %ld microseconds.", 
@@ -978,9 +998,9 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->pool = p;
 
     st->cache_bytes = 100000;
-    st->search_cache_ttl = 600000;
+    st->search_cache_ttl = 600000000;
     st->search_cache_size = 1024;
-    st->compare_cache_ttl = 600000;
+    st->compare_cache_ttl = 600000000;
     st->compare_cache_size = 1024;
 
     st->connections = NULL;
