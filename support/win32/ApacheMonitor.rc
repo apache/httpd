@@ -60,6 +60,10 @@
 
 #include "ApacheMonitor.h"
 
+/* Bring in our version resource generated from win32ver.awk
+ */
+#include "ApacheMonitorVer.h"
+
 IDI_APSRVMON            ICON    DISCARDABLE     "ApacheMonitor.ico"
 IDI_ICOSTOP             ICON    DISCARDABLE     "apstop.ico"
 IDI_ICORUN              ICON    DISCARDABLE     "aprun.ico"
