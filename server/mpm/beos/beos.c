@@ -78,7 +78,7 @@
 #include "iol_socket.h"
 #include "ap_listen.h"
 #include "scoreboard.h" 
-//#include "poll.h"
+#include <kernel/OS.h>
 #include "mpm_common.h"
 #include "mpm.h"
 #include <unistd.h>
@@ -90,8 +90,8 @@
 
 int ap_threads_per_child=0;         /* Worker threads per child */
 int ap_max_requests_per_child=0;
-static char *ap_pid_fname=NULL;
-static char *ap_scoreboard_fname=NULL;
+static const char *ap_pid_fname=NULL;
+static const char *ap_scoreboard_fname=NULL;
 static int ap_threads_to_start=0;
 static int min_spare_threads=0;
 static int max_spare_threads=0;
@@ -127,13 +127,13 @@ struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 int ap_max_child_assigned = -1;
 int ap_max_threads_limit = -1;
 static char ap_coredump_dir[MAX_STRING_LEN];
+static port_id port_of_death;
 
 /* shared http_main globals... */
 
 server_rec *ap_server_conf;
 
 /* one_process */
-/* TODO - get this working again... */
 static int one_process = 0;
 
 #ifdef DEBUG_SIGSTOP
@@ -152,7 +152,7 @@ API_EXPORT(int) ap_get_max_daemons(void)
 
 /* a clean exit from a child with proper cleanup 
    static void clean_child_exit(int code) __attribute__ ((noreturn)); */
-void clean_child_exit(int code)
+static void clean_child_exit(int code)
 {
     if (pchild)
         ap_destroy_pool(pchild);
@@ -236,14 +236,13 @@ static void restart(int sig)
     ap_start_restart(sig == SIGWINCH);
 }
 
-static void tell_workers_to_exit()
+static void tell_workers_to_exit(void)
 {
     int i, code = 99;
-    
+
     for (i=0;i<ap_max_child_assigned;i++) {
         if (ap_child_table[i].status != SERVER_DEAD)
-            send_data(ap_child_table[i].pid, code, NULL, 0);
-        
+            write_port(port_of_death, code, NULL, 0);
     }
 }
 
@@ -302,7 +301,7 @@ static void process_child_status(int pid, ap_wait_t status)
 	*/
     if ((WIFEXITED(status)) &&
 	WEXITSTATUS(status) == APEXIT_CHILDFATAL) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, errno, ap_server_conf,
+	ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, 0, ap_server_conf,
 			"Child %d returned a Fatal error... \n"
 			"Apache is exiting!",
 			pid);
@@ -320,7 +319,7 @@ static void process_child_status(int pid, ap_wait_t status)
 #ifdef WCOREDUMP
 	    if (WCOREDUMP(status)) {
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-			     errno, ap_server_conf,
+			     0, ap_server_conf,
 			     "child pid %d exit signal %s (%d), "
 			     "possible coredump in %s",
 			     pid, (WTERMSIG(status) >= NumSIG) ? "" : 
@@ -330,7 +329,7 @@ static void process_child_status(int pid, ap_wait_t status)
 	    else {
 #endif
 		ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-			     errno, ap_server_conf,
+			     0, ap_server_conf,
 			     "child pid %d exit signal %s (%d)", pid,
 			     SYS_SIGLIST[WTERMSIG(status)], WTERMSIG(status));
 #ifdef WCOREDUMP
@@ -338,7 +337,7 @@ static void process_child_status(int pid, ap_wait_t status)
 #endif
 #else
 	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE,
-			 errno, ap_server_conf,
+			 0, ap_server_conf,
 			 "child pid %d exit signal %d",
 			 pid, WTERMSIG(status));
 #endif
@@ -383,20 +382,23 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num)
     long conn_id = my_child_num;
     int csd;
 
+    (void)ap_get_os_sock(&csd, sock);
+    
+    if (csd >= FD_SETSIZE) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, NULL,
+            "filedescriptor (%u) larger than FD_SETSIZE (%u) "
+            "found, you probably need to rebuild Apache with a "
+            "larger FD_SETSIZE", csd, FD_SETSIZE);
+        ap_close_socket(sock);
+	    return;
+    }
+    
     iol = beos_attach_socket(sock);
     if (iol == NULL) {
-        if (errno == EBADF) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, NULL,
-                "filedescriptor (%u) larger than FD_SETSIZE (%u) "
-                "found, you probably need to rebuild Apache with a "
-                "larger FD_SETSIZE", csd, FD_SETSIZE);
-        }
-        else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
-                "error attaching to socket");
-        }
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, NULL,
+          "error attaching to socket");
         ap_close_socket(sock);
-	return;
+	    return;
     }
 
     conn_io = ap_bcreate(p, B_RDWR);
@@ -409,6 +411,21 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num)
     ap_lingering_close(current_conn);
 }
 
+/* call_samaritans checks to see if there's a message waiting on the
+ * port_of_death.  If there is then it return 1 and the worker thread
+ * should consider itself told to die.  I use the _etc call to stop this
+ * from blocking the calling thread.  As we've already checked I just use
+ * the basic read_port to actually remove the message from the queue.
+ */
+static int call_samaritans(port_id port) {
+    if (port_buffer_size_etc(port, B_TIMEOUT, 0) != B_WOULD_BLOCK) {
+        int32 code;
+        read_port(port, &code, NULL, 0);
+        return 1;
+    }
+    return 0;
+}
+
 static int32 worker_thread(void * dummy)
 {
     proc_info * ti = dummy;
@@ -417,6 +434,7 @@ static int32 worker_thread(void * dummy)
     ap_socket_t *csd = NULL;
     ap_pool_t *ptrans;		/* Pool for per-transaction stuff */
     ap_socket_t *sd = NULL;
+    ap_status_t rv = APR_EINIT;
     int srv , n;
     int curr_pollfd, last_pollfd = 0;
     sigset_t sig_mask;
@@ -424,8 +442,7 @@ static int32 worker_thread(void * dummy)
     ap_pollfd_t *pollset;
     /* each worker thread is in control of it's own destiny...*/
     int this_worker_should_exit = 0; 
-    thread_id me = find_thread(NULL);
-    
+    port_id chk = find_port("the_samaritans");    
     free(ti);
 
     /* block the signals for this thread */
@@ -453,11 +470,9 @@ static int32 worker_thread(void * dummy)
             ap_int16_t event;
             ap_status_t ret = ap_poll(pollset, &srv, -1);
             
-            if (has_data(me)) {
-                thread_id sender;
-                receive_data(&sender, NULL, 0);
+            if (call_samaritans(chk))
                 this_worker_should_exit = 1;
-            }
+
             if (ret != APR_SUCCESS) {
                 if (errno == EINTR) {
                     continue;
@@ -465,8 +480,8 @@ static int32 worker_thread(void * dummy)
 
                 /* poll() will only return errors in catastrophic
                  * circumstances. Let's try exiting gracefully, for now. */
-                ap_log_error(APLOG_MARK, APLOG_ERR,errno,  (const server_rec *)
-                             ap_get_server_conf(), "poll: (listen)");
+                ap_log_error(APLOG_MARK, APLOG_ERR, ret, (const server_rec *)
+                             ap_get_server_conf(), "ap_poll: (listen)");
                 this_worker_should_exit = 1;
             }
 
@@ -487,7 +502,6 @@ static int32 worker_thread(void * dummy)
                     /* Get the revent... */
                     ap_get_revents(&event, listening_sockets[curr_pollfd], pollset);
                     
-                    /* XXX: Should we check for POLLERR? */
                     if (event & APR_POLLIN) {
                         last_pollfd = curr_pollfd;
                         sd = listening_sockets[curr_pollfd];
@@ -498,10 +512,14 @@ static int32 worker_thread(void * dummy)
         }
     got_fd:
         if (!this_worker_should_exit) {
-            ap_accept(&csd, sd, ptrans);
             ap_unlock(accept_mutex);
-            process_socket(ptrans, csd, child_slot);
-            requests_this_child--;
+            if ((rv = ap_accept(&csd, sd, ptrans)) != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                  "ap_accept");
+            } else {
+                process_socket(ptrans, csd, child_slot);
+                requests_this_child--;
+            }
         }
         else {
             ap_unlock(accept_mutex);
@@ -540,15 +558,12 @@ static int make_worker(server_rec *s, int slot, time_t now)
     if (slot + 1 > ap_max_child_assigned)
 	    ap_max_child_assigned = slot + 1;
 
-    /* TODO: figure out the one_process stuff... */
-/*
     if (one_process) {
     	set_signals();
         ap_child_table[slot].pid = getpid();
         ap_child_table[slot].status = SERVER_ALIVE;
+        return 0;
     }
-This is deliberate to remind me to do something about it!
-*/
 
     tid = spawn_thread(worker_thread, "apache_worker", B_NORMAL_PRIORITY,
         my_info);
@@ -690,7 +705,7 @@ static void server_main_loop(int remaining_threads_to_start)
 		     * scoreboard.  Somehow we don't know about this
 		     * child.
 		     */
-		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, errno, ap_server_conf,
+		    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, 0, ap_server_conf,
 			    "long lost child came home! (pid %ld)", pid.pid);
 	    }
 	    
@@ -726,10 +741,15 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     ap_listen_rec *lr;    
     pconf = _pconf;
     ap_server_conf = s;
-
+    
+    if ((port_of_death = create_port(ap_thread_limit, "the_samaritans")) < 0){
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, s, 
+          "couldn't create a port_of_death, shutting down");
+        return 1;
+    }
+       
     if ((num_listening_sockets = setup_listeners(ap_server_conf)) < 1) {
-        /* XXX: hey, what's the right way for the mpm to indicate a fatal error? */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, errno, s,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT, 0, s,
             "no listening sockets available, shutting down");
         return 1;
     }
@@ -816,10 +836,10 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     /*
      * record that we've entered the world !
      */
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		"%s configured -- resuming normal operations",
 		ap_get_server_version());
-    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, errno, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, 0, ap_server_conf,
 		"Server built: %s", ap_get_server_built());
     restart_pending = shutdown_pending = 0;
 
@@ -845,7 +865,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
             pidfile = ap_server_root_relative (pconf, ap_pid_fname);
             if ( pidfile != NULL && unlink(pidfile) == 0)
                 ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO,
-            		 errno, ap_server_conf,
+            		 0, ap_server_conf,
             		 "removed PID file %s (pid=%ld)",
             		 pidfile, (long)getpid());
         }
@@ -854,7 +874,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
         ap_reclaim_child_processes(1);
 
         /* record the shutdown in the log */
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
             "caught SIGTERM, shutting down");
     
 	return 1;
@@ -868,7 +888,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
     }
 
     if (is_graceful) {
-        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGWINCH received.  Doing graceful restart");
         tell_workers_to_exit();
         /* TODO - need to test some ideas here... */
@@ -881,7 +901,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
         push_workers_off_cliff(SIGTERM);
 	    
         ap_reclaim_child_processes(1);		/* Start with SIGTERM */
-	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, errno, ap_server_conf,
+	    ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "SIGHUP received.  Attempting to restart");
     }
     
@@ -893,7 +913,8 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
      * potential leak of semaphores... */
     ap_destroy_lock(worker_thread_count_mutex);
     ap_destroy_lock(accept_mutex);
-
+    delete_port(port_of_death);
+    
     return 0;
 }
 
@@ -907,7 +928,7 @@ static void beos_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp)
     if (restart_num++ == 1) {
         is_graceful = 0;
         if (!one_process)
-	        beosd_detach();
+	        ap_detach();
         server_pid = getpid();
     }
 
@@ -934,7 +955,7 @@ static void beos_hooks(void)
 }
 
 
-static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -948,7 +969,7 @@ static const char *set_pidfile(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_scoreboard(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_scoreboard(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -959,7 +980,7 @@ static const char *set_scoreboard(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -970,7 +991,7 @@ static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -991,7 +1012,7 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1002,7 +1023,7 @@ static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1029,7 +1050,7 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1046,7 +1067,7 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg
                      " lowering ThreadsPerChild to %d. To increase, please"
                      "see the", HARD_THREAD_LIMIT);
         ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
-                     " HARD_THREAD_LIMIT define in src/include/httpd.h.");
+                     " HARD_THREAD_LIMIT define in %s", AP_MPM_HARD_LIMITS_FILE);
     }
     else if (ap_threads_per_child < 1) {
 	ap_log_error(APLOG_MARK, APLOG_STARTUP | APLOG_NOERRNO, 0, NULL, 
@@ -1056,7 +1077,7 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg
     return NULL;
 }
 
-static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_max_requests(cmd_parms *cmd, void *dummy, const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1069,7 +1090,7 @@ static const char *set_max_requests(cmd_parms *cmd, void *dummy, char *arg)
 }
 
 static const char *set_maintain_connection_status(cmd_parms *cmd,
-                                                  core_dir_config *d, int arg) 
+                                                  void *dummy, int arg) 
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1080,7 +1101,7 @@ static const char *set_maintain_connection_status(cmd_parms *cmd,
     return NULL;
 }
 
-static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg) 
+static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, const char *arg) 
 {
     ap_finfo_t finfo;
     const char *fname;
@@ -1102,26 +1123,26 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
 static const command_rec beos_cmds[] = {
 UNIX_DAEMON_COMMANDS
 LISTEN_COMMANDS
-{ "PidFile", set_pidfile, NULL, RSRC_CONF, TAKE1,
-    "A file for logging the server process ID"},
-{ "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF, TAKE1,
-    "A file for Apache to maintain runtime process management information"},
-{ "StartServers", set_daemons_to_start, NULL, RSRC_CONF, TAKE1,
-  "Number of child processes launched at server startup" },
-{ "MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF, TAKE1,
-  "Minimum number of idle children, to handle request spikes" },
-{ "MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of idle children" },
-{ "MaxClients", set_server_limit, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of children alive at the same time" },
-{ "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF, TAKE1,
-  "Number of threads each child creates" },
-{ "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF, TAKE1,
-  "Maximum number of requests a particular child serves before dying." },
-{ "ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF, FLAG,
-  "Whether or not to maintain status information on current connections"},
-{ "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, TAKE1,
-  "The location of the directory Apache changes to before dumping core" },
+AP_INIT_TAKE1( "PidFile", set_pidfile, NULL, RSRC_CONF,
+    "A file for logging the server process ID"),
+AP_INIT_TAKE1( "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF,
+    "A file for Apache to maintain runtime process management information"),
+AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF,
+  "Number of child processes launched at server startup"),
+AP_INIT_TAKE1( "MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,
+  "Minimum number of idle children, to handle request spikes"),
+AP_INIT_TAKE1( "MaxSpareThreads", set_max_spare_threads, NULL, RSRC_CONF,
+  "Maximum number of idle children" ),
+AP_INIT_TAKE1( "MaxClients", set_server_limit, NULL, RSRC_CONF, 
+  "Maximum number of children alive at the same time" ),
+AP_INIT_TAKE1( "ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF, 
+  "Number of threads each child creates" ),
+AP_INIT_TAKE1( "MaxRequestsPerChild", set_max_requests, NULL, RSRC_CONF,
+  "Maximum number of requests a particular child serves before dying." ),
+AP_INIT_FLAG( "ConnectionStatus", set_maintain_connection_status, NULL, RSRC_CONF,
+  "Whether or not to maintain status information on current connections." ),
+AP_INIT_TAKE1( "CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF, 
+  "The location of the directory Apache changes to before dumping core" ),
 { NULL }
 };
 
