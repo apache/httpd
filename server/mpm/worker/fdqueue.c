@@ -58,25 +58,6 @@
 
 #include "fdqueue.h"
 
-/* Assumption: increment and decrement are atomic on int */
-
-/**
- * Threadsafe way to increment the number of empty slots ("blanks")
- * in the resource queue.
- */
-int ap_increase_blanks(fd_queue_t *queue) 
-{
-    if (pthread_mutex_lock(&queue->one_big_mutex) != 0) {
-        return FD_QUEUE_FAILURE;
-    }
-    queue->blanks++;
-    if (pthread_mutex_unlock(&queue->one_big_mutex) != 0) {
-        return FD_QUEUE_FAILURE;
-    }
-
-    return FD_QUEUE_SUCCESS;
-}
-
 /**
  * Detects when the fd_queue_t is full. This utility function is expected
  * to be called from within critical sections, and is not threadsafe.
