@@ -10,8 +10,8 @@ config.status
 configure
 dftables
 dftables.exe
-dftables_D
-dftables_R
+Debug
+Release
 libtool
 pcre-config
 pcretest
