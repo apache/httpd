@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fixed file extensions for real media files and removed rpm extension
+     from mime.types. PR 26079.  [Allan Sandfeld <kde carewolf.com>]
+
   *) worker MPM: fix stack overlay bug that could cause the parent
      process to crash.  [Jeff Trawick]
 
