@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.5 $ ($Date: 2000/02/11 22:11:33 $)
+  $Revision: 1.6 $ ($Date: 2000/04/18 17:21:27 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -83,6 +83,9 @@
    <LI><A HREF="#search">Does Apache include a search engine?</A>
    </LI>
    <LI><A HREF="#rotate">How can I rotate my log files?</A>
+   </LI>
+   <LI><A HREF="#conditional-logging">How do I keep certain requests from
+        appearing in my logs?</A>
    </LI>
   </OL>
  </LI>
@@ -227,6 +230,25 @@
   </PRE></P>
   <HR>
  </LI>
+ <LI><A NAME="conditional-logging">
+       	<STRONG>How do I keep certain requests from appearing
+        in my logs?</STRONG></A> 
+  <P>
+  The maximum flexibility for removing unwanted information from
+  log files is obtained by post-processing the logs, or using
+  piped-logs to feed the logs through a program which does whatever
+  you want.  However, Apache does offer the ability to prevent
+  requests from ever appearing in the log files.  You can do this by
+  using the
+  <A HREF="../mod/mod_setenvif.html#SetEnvIf"><CODE>SetEnvIf</CODE></A>
+  directive to set an environment variable for certain requests and
+  then using the conditional
+  <A HREF="../mod/mod_log_config.html#customlog-conditional"><CODE>CustomLog</CODE></A>
+  syntax to prevent logging when the environment variable is set.
+  </P>
+  <HR>
+ </LI>
+
 </OL>
 <!--#endif -->
 <!--#if expr="$STANDALONE" -->

@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.1 $ ($Date: 1999/06/24 15:02:52 $)
+  $Revision: 1.2 $ ($Date: 2000/04/18 17:21:27 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -88,6 +88,9 @@
    </LI>
    <LI><A HREF="#passwdauth">Can I use my <SAMP>/etc/passwd</SAMP> file
         for Web page authentication?</A>
+   </LI>
+   <LI><A HREF="#prompted-twice">Why does Apache ask for my password
+	      twice before serving a file?
    </LI>
   </OL>
  </LI>
@@ -360,6 +363,37 @@
   </P>
   <HR>
  </LI>
+ <LI><A NAME="prompted-twice"><STRONG>Why does Apache ask for my password
+	      twice before serving a file?</STRONG>
+  <P>
+  If the hostname under which you are accessing the server is
+  different than the hostname specified in the 
+  <A HREF="../mod/core.html#servername"<CODE>ServerName</CODE></A>
+  directive, then depending on the setting of the
+  <A HREF="../mod/core.html#usecanonicalname"><CODE>UseCanonicalName</CODE></A>
+  directive, Apache will redirect you to a new hostname when
+  constructing self-referential URLs.  This happens, for example, in
+  the case where you request a directory without including the
+  trailing slash.
+  </P>
+  <P>
+  When this happens, Apache will ask for authentication once under the
+  original hostname, perform the redirect, and then ask again under the
+  new hostname.  For security reasons, the browser must prompt again
+  for the password when the host name changes.
+  </P>
+  <P>
+  To eliminate this problem you should
+  <OL>
+    <LI>Always use the trailing slash when requesting directories;
+    <LI>Change the <CODE>ServerName</CODE> to match the name you are
+        using in the URL; and/or
+    <LI>Set <CODE>UseCanonicalName off</CODE>.
+  </OL>
+  </P>
+  <HR>
+ </LI>
+
 </OL>
 <!--#endif -->
 <!--#if expr="$STANDALONE" -->

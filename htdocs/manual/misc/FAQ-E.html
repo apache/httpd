@@ -31,7 +31,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.4 $ ($Date: 1999/07/04 16:33:00 $)
+  $Revision: 1.5 $ ($Date: 2000/04/18 17:21:26 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -111,6 +111,9 @@
    <LI><A HREF="#forbidden">Why do I get a 
         &quot;<SAMP>Forbidden</SAMP>&quot; message whenever I try to 
         access a particular directory?</A>
+   <LI><A HREF="#ie-ignores-mime">Why do my files appear correctly in
+        Internet Explorer, but show up as source or trigger a save
+        window with Netscape?</A> 
   </OL>
  </LI>
 <!--#endif -->
@@ -520,8 +523,7 @@
   directives so Apache can be sure to tell them apart correctly.
   </P>
   <P>
-  Please see the
-  <A HREF="http://www.apache.org/docs/vhosts/">Apache
+  Please see the <A HREF="../vhosts/">Apache
   Virtual Host documentation</A> for further details about configuration.
   </P>
   <HR>
@@ -584,6 +586,28 @@
    that not only must the directory and files in question be readable,
    but also all parent directories must be at least searchable by the
    web server in order for the content to be accessible.
+   </P>
+   <HR>
+ </LI>
+ <LI><A NAME="ie-ignores-mime">
+       <STRONG>Why do my files appear correctly in Internet
+       Explorer, but show up as source or trigger a save window
+       with Netscape?</STRONG></A> 
+   <P>
+   Internet Explorer is ignoring the mime-type you have configured for
+   the file and guessing the file type based on the filename
+   extension.  IE does this for any file which the web server marks as
+   application/octet-stream or text/plain.  Netscape, on the other
+   hand, properly follows the directions of the web server and treats
+   the file as text/plain (displays it in the browser window as-is) or
+   application/octet-stream (pops up a download window).
+   </P>
+   <P>
+   In order to make all browsers work correctly, you should assure
+   that Apache sends the correct mime type for the file.  This is
+   accomplished by editing the <CODE>mime.types</CODE> file or using
+   an <A HREF="../mod/mod_mime.html#addtype"><CODE>AddType</CODE></A>
+   directive in the Apache configuration files.
    </P>
    <HR>
   </LI>
