@@ -2915,34 +2915,6 @@ static int default_handler(request_rec *r)
 }
 
 /*
- * Turn a bucket brigade into a properly-formatted HTTP/1.1 chunk
- * before passing it down to the next filter.
- */
-static apr_status_t pass_chunk(ap_filter_t *f, ap_bucket_brigade *b,
-			       apr_off_t bytes, int eos)
-{
-    char chunk_hdr[20]; /* enough space for the snprintf below */
-    size_t hdr_len;
-    ap_bucket *e;
-
-    if (bytes == 0) {
-	return APR_SUCCESS;
-    }
-    hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr), "%qx" CRLF, bytes);
-    e = ap_bucket_create_transient(chunk_hdr, hdr_len);
-    AP_BRIGADE_INSERT_HEAD(b, e);
-    if (eos) {
-	/* any trailer should go between the last two CRLFs */
-	e = ap_bucket_create_immortal(CRLF "0" CRLF CRLF, 7);
-	AP_BUCKET_INSERT_BEFORE(AP_BRIGADE_LAST(b), e);
-    } else {
-	e = ap_bucket_create_immortal(CRLF, 2);
-	AP_BRIGADE_INSERT_TAIL(b, e);
-    }
-    return ap_pass_brigade(f->next, b);
-}
-
-/*
  * HTTP/1.1 chunked transfer encoding filter.
  */
 static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
@@ -2953,21 +2925,33 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 
     for (more = NULL; b; b = more, more = NULL) {
 	apr_off_t bytes = 0;
-	int eos = 0;
+        ap_bucket *eos = NULL;
+
 	AP_BRIGADE_FOREACH(e, b) {
 	    if (e->type == AP_BUCKET_EOS) {
 		/* assume it is the last one in the brigade */
-		eos = 1;
+                /* ### can we chop off the stuff after the EOS? */
+		eos = e;
 		break;
 	    }
-	    else if (e->length == -1) { /* indeterminate (e.g., a pipe) */
+	    else if (e->length == -1) {
+                /* Bucket Of Interdeterminate Length (BOIL). (e.g. a pipe) */
+
 		const char *data;
 		apr_ssize_t len;
+
+                /* this will construct a new bucket */
 		rv = e->read(e, &data, &len, 1);
 		if (rv != APR_SUCCESS) {
 		    return rv;
 		}
 		bytes += len;
+
+                /*
+                 * We split between the new bucket and the BOIL. We'll come
+                 * back for the rest of the brigade later (reading more out
+                 * of the BOIL, possibly splitting again
+                 */
 		more = ap_brigade_split(b, AP_BUCKET_NEXT(e));
 		break;
 	    }
@@ -2975,15 +2959,65 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
 		bytes += e->length;
 	    }
 	}
+
 	/*
 	 * XXX: if there aren't very many bytes at this point it may
 	 * be a good idea to set them aside and return for more.
 	 */
-	rv = pass_chunk(f, b, bytes, eos);
-	if (rv != APR_SUCCESS || eos) {
+
+        /* if there are content bytes, then wrap them in a chunk */
+        if (bytes > 0) {
+            char chunk_hdr[20]; /* enough space for the snprintf below */
+            apr_size_t hdr_len;
+
+            /*
+             * Insert the chunk header, specifying the number of bytes in
+             * the chunk.
+             */
+            /* ### might be nice to have APR_OFF_T_FMT_HEX */
+            hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
+                                   "%qx" CRLF, (apr_uint64_t)bytes);
+            e = ap_bucket_create_transient(chunk_hdr, hdr_len);
+            AP_BRIGADE_INSERT_HEAD(b, e);
+
+            /*
+             * Insert the end-of-chunk CRLF before the EOS bucket, or
+             * appended to the brigade
+             */
+            e = ap_bucket_create_immortal(CRLF, 2);
+            if (eos != NULL) {
+                AP_BUCKET_INSERT_BEFORE(eos, e);
+            }
+            else {
+                AP_BRIGADE_INSERT_TAIL(b, e);
+            }
+        }
+
+        /* RFC 2616, Section 3.6.1
+         *
+         * If there is an EOS bucket, then prefix it with:
+         *   1) the last-chunk marker ("0" CRLF)
+         *   2) the trailer
+         *   3) the end-of-chunked body CRLF
+         *
+         * If there is no EOS bucket, then do nothing.
+         *
+         * ### it would be nice to combine this with the end-of-chunk marker
+         * ### above, but this is a bit more straight-forward for now.
+         */
+        if (eos != NULL) {
+            /* ### (2) trailers ... does not yet exist */
+            e = ap_bucket_create_immortal("0" CRLF /* <trailers> */ CRLF, 5);
+            AP_BUCKET_INSERT_BEFORE(eos, e);
+        }
+
+        /* pass the brigade to the next filter. */
+	rv = ap_pass_brigade(f->next, b);
+	if (rv != APR_SUCCESS || eos != NULL) {
 	    return rv;
 	}
     }
+
     return APR_SUCCESS;
 }
 
