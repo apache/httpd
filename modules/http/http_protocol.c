@@ -2250,22 +2250,40 @@ static ap_status_t static_send_file(ap_file_t *fd, request_rec *r, ap_off_t offs
 {
     ap_int32_t flags = 0;
     ap_status_t rv;
+    struct iovec iov;
+    ap_hdtr_t hdtr;
 
     ap_bsetopt(r->connection->client, BO_TIMEOUT,
                r->connection->keptalive
                ? &r->server->keep_alive_timeout
                : &r->server->timeout);
 
-    ap_bflush(r->connection->client);
+    /*
+     * We want to send any data held in the client buffer on the
+     * call to iol_sendfile. So hijack it then set outcnt to 0
+     * to prevent the data from being sent to the client again
+     * when the buffer is flushed to the client at the end of the
+     * request.
+     */
+    iov.iov_base = r->connection->client->outbase;
+    iov.iov_len =  r->connection->client->outcnt;
+    r->connection->client->outcnt = 0;
+
+    /* initialize the ap_hdtr_t struct */
+    hdtr.headers = &iov;
+    hdtr.numheaders = 1;
+    hdtr.trailers = NULL;
+    hdtr.numtrailers = 0;
 
     if (!r->connection->keepalive) {
         /* Prepare the socket to be reused */
+        /* XXX fix me - byteranges? */
         flags |= APR_SENDFILE_DISCONNECT_SOCKET;
     }
 
     rv = iol_sendfile(r->connection->client->iol, 
                       fd,      /* The file to send */
-                      NULL,    /* Header and trailer iovecs */
+                      &hdtr,   /* Header and trailer iovecs */
                       &offset, /* Offset in file to begin sending from */
                       &length,
                       flags);
