@@ -68,6 +68,13 @@
 #include "http_config.h"
 #include "http_log.h"
 
+/*
+ * isascii(c) isn't universal, and even those places where it is
+ * defined it's not always right for our needs.  Roll our own that
+ * we can rely on.
+ */
+#define ap_isascii(c) ((OS_ASC(c) & ~0177) != 0)
+
 typedef struct handlers_info {
     char *name;
 } handlers_info;
@@ -338,7 +345,7 @@ static int is_token(char c)
 {
     int res;
 
-    res = (isascii(c) && isgraph(c)
+    res = (ap_isascii(c) && isgraph(c)
 	   && (strchr(tspecial, c) == NULL)) ? 1 : -1;
     return res;
 }
@@ -347,7 +354,8 @@ static int is_qtext(char c)
 {
     int res;
 
-    res = (isascii(c) && (c != '"') && (c != '\\') && (c != '\n')) ? 1 : -1;
+    res = (ap_isascii(c) && (c != '"') && (c != '\\') && (c != '\n'))
+	? 1 : -1;
     return res;
 }
 
@@ -358,7 +366,7 @@ static int is_quoted_pair(char *s)
 
     if (((s + 1) != NULL) && (*s == '\\')) {
 	c = (int) *(s + 1);
-	if (isascii(c)) {
+	if (ap_isascii(c)) {
 	    res = 1;
 	}
     }
