@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/27 19:07:29 $]
+Last modified at [$Date: 2004/03/28 18:44:48 $]
 
 Release:
 
@@ -283,6 +283,10 @@ PATCHES TO BACKPORT FROM 2.1
     * logresolve: Allow size of log line buffer to be overridden at
       build time (MAXLINE).  PR 27793.
       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/logresolve.c?r1=1.22&r2=1.23
+      +1: trawick
+
+    * core_output_filter: tag the deferred write_pool
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/core.c?r1=1.269&r2=1.270
       +1: trawick
 
 CURRENT RELEASE NOTES:
