@@ -136,6 +136,10 @@
 #define	MBYTE			1048576L
 #define	GBYTE			1073741824L
 
+#ifndef DEFAULT_TIME_FORMAT 
+#define DEFAULT_TIME_FORMAT "%A, %d-%b-%Y %H:%M:%S %Z"
+#endif
+
 module MODULE_VAR_EXPORT status_module;
 
 #ifdef STATUS
@@ -328,9 +332,10 @@ static int status_handler(request_rec *r)
 	       NULL);
 	ap_rvputs(r, "Server Built: ", ap_get_server_built(), "<br>\n<hr>\n",
 	       NULL);
-	ap_rvputs(r, "Current Time: ", asctime(localtime(&nowtime)), "<br>\n", NULL);
-	ap_rvputs(r, "Restart Time: ", asctime(localtime(&ap_restart_time)), "<br>\n",
-	       NULL);
+	ap_rvputs(r, "Current Time: ", ap_ht_time(r->pool, nowtime, DEFAULT_TIME_FORMAT, 0), 
+               "<br>\n", NULL);
+	ap_rvputs(r, "Restart Time: ", ap_ht_time(r->pool, ap_restart_time, DEFAULT_TIME_FORMAT, 0), 
+	       "<br>\n", NULL);
 	ap_rputs("Server uptime: ", r);
 	show_time(r, up_time);
 	ap_rputs("<br>\n", r);
