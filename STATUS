@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/04/27 19:01:31 $]
+Last modified at [$Date: 2000/04/27 23:30:56 $]
 
 Release:
 
@@ -78,20 +78,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       a config file and sets up an internal tree structure for
       configuration.
     
-    * "make distclean" leaves (at least these) turds:
-	lib/.deps
-	lib/apr/.deps
-	lib/apr/shmem/unix/mm/config.log
-	lib/apr/shmem/unix/mm/mm_conf.h
-	lib/apr/shmem/unix/mm/libtool
-	lib/apr/shmem/unix/mm/config.status
-	lib/apr/shmem/unix/mm/Makefile
-	lib/apr/shmem/unix/mm/mm-config
-	main/a
-	modules/.deps
-	modules/mpm/.deps
-	os/.deps
-
     * the top-level configure.in appears to use $USE_MAINTAINER_MODE = yes
 	to set -Wall/etc. flags, and the APR configure.in appears to use
 	--with-debug.  both seem like more of a hardwired pain compaired
