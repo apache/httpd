@@ -6834,7 +6834,17 @@ int REALMAIN(int argc, char *argv[])
 #endif /* WIN32 */
 #ifdef NETWARE
         case 's':
-            DestroyScreen(GetCurrentScreen());
+            if (DestroyScreen(GetCurrentScreen()) == 0)
+            {
+                int screenHandle;  
+   
+                /* Create a screen handle for the console screen, 
+                even though the console screen exists. */
+                if ((screenHandle = CreateScreen("System Console", 0)) != NULL)
+                {
+                    SetCurrentScreen(screenHandle);  /* switch to console screen I/O */
+                }
+            }
             break;
 #endif
 	case 'S':
@@ -7075,7 +7085,6 @@ int REALMAIN(int argc, char *argv[])
         printf("%s running...\n", ap_get_server_version());
     }
 #elif defined(NETWARE)
-    clrscr();
     printf("%s running...\n", ap_get_server_version());
 #endif
 
