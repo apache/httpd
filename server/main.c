@@ -308,8 +308,6 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 
     g_pHookPool=pglobal;
 
-    ap_initialize();
-
     ap_setup_prelinked_modules(process);
 
     ap_create_context(&pcommands, pglobal);
