@@ -56,22 +56,6 @@ APACHE_CHECK_STANDARD_MODULE(echo, ECHO server, , yes)
 
 LTFLAGS="$LTFLAGS -export-dynamic"
 
-PLAT=`$ac_config_guess`
-PLAT=`$ac_config_sub $PLAT`
-case "$PLAT" in
-    *-ibm-os390)
-        ;;
-    *-freebsd*)
-        ;;
-    *-os2_emx)
-        ;;
-    *-beos*)
-        ;;
-    *)
-        LIBS="$LIBS -ldl"
-        ;;
-esac
-
 if test "$sharedobjs" = "yes"; then
     APACHE_CHECK_STANDARD_MODULE(so, DSO capability, , yes)
 else
