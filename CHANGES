@@ -1,4 +1,4 @@
-Changes with Apache 2.0.19-dev
+Changes with Apache 2.0.19
 
   *) Fix problem with threaded MPM.  The problem was that if each child
      process was busy serving a single long-lived request and the server
