@@ -1589,6 +1589,7 @@ int handle_endif(FILE *in, request_rec *r, char *error,
 #ifdef DEBUG_INCLUDE
 rvputs(r,"**** endif conditional_status=\"", *conditional_status ? "1" : "0", "\"\n", NULL);
 #endif
+        *printing = 1;
         *conditional_status = 1;
         return 0;
     } else {
@@ -1704,8 +1705,7 @@ void send_parsed_content(FILE *f, request_rec *r)
                 continue;
             } else if(!strcmp(directive,"endif")) {
                 if (!if_nesting) {
-                    ret=handle_else(f, r, error, &conditional_status, &printing);
-                    printing = 1;
+                    ret = handle_endif(f, r, error, &conditional_status, &printing);
                 } else {
                     if_nesting--;
                 }

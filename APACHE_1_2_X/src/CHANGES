@@ -1,5 +1,9 @@
 Changes with Apache 1.2.2
 
+  *) mod_include cleanup showed that handle_else was being used to handle
+     endif.  It didn't cause problems, but it was cleaned up too.
+     [Howard Fear]
+
   *) Last official synchonisation of mod_rewrite with author version (because
      mod_rewrite is now directly developed by the author at the Apache Group):
      o added diff between mod_rewrite 3.0.6+ and 3.0.9
