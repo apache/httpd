@@ -1725,7 +1725,15 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* set up the connection filters */
-    ap_run_pre_connection(data, data_sock);
+    rc = ap_run_pre_connection(data, data_sock);
+    if (rc != OK && rc != DONE) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: FTP: pre_connection setup failed (%d)",
+                     rc);
+        data->aborted = 1;
+        proxy_ftp_cleanup(r, backend);
+        return rc;
+    }
 
     /*
      * VI: Receive the Response ------------------------
