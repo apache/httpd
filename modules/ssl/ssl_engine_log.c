@@ -168,7 +168,7 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
     char lstr[20];
     char vstr[1024];
     char str[1024];
-    char nstr[2];
+    char *nstr;
     apr_size_t len;
     apr_exploded_time_t t;
     va_list ap;
@@ -215,10 +215,9 @@ void ssl_log(server_rec *s, int level, const char *msg, ...)
 
     /*  determine whether newline should be written */
     if (add & SSL_NO_NEWLINE)
-        nstr[0] = NUL;
+        nstr = NUL;
     else {
-        nstr[0] = '\n';
-        nstr[1] = NUL;
+        nstr = APR_EOL_STR;
     }
 
     /*  determine level name  */
