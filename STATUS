@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/21 20:48:39 $]
+Last modified at [$Date: 2003/01/21 22:20:20 $]
 
 Release:
 
@@ -107,13 +107,21 @@ CURRENT VOTES:
       from the APACHE_2_0_44 tag.
       yes:   trawick, jerenkrantz, striker, nd
         (but nd doesn't branch anything in apr repos)
+      no:    wrowe
+        (objection remains the same, APR 0.9 is pretty much in 'bugfix'
+         mode, all such bugfixes are helpful to the httpd project; some 
+         on the APR list have suggested branching APR 0.10.x when some
+         new code comes along.  Again, wrowe suggests the option below
+         is sufficient as long as eyeballs remain on binary compat.)
 
     * APACHE_2_0_BRANCH uses a level of APR code versioned 0.9.2-dev
         or later (to 0.9.9), so long it remains binary compatible.
       yes:   wrowe
       no:    
-        wrowe suggests that when apr chooses to break compatibility,
-        httpd would continue to use that last compatible build.
+        (wrowe suggests that when apr chooses to break compatibility,
+         httpd would continue to use that last compatible build.  It's
+         in the httpd project's interest to participate instead of fork
+         APR efforts.)
 
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
