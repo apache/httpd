@@ -95,6 +95,9 @@
 #include "dav_opaquelock.h"
 
 
+/* ### what is the best way to set this? */
+#define DAV_DEFAULT_PROVIDER    "filesystem"
+
 enum {
     DAV_ENABLED_UNSET = 0,
     DAV_ENABLED_OFF,
@@ -103,7 +106,7 @@ enum {
 
 /* per-dir configuration */
 typedef struct {
-    int enabled;
+    const char *provider;
     const char *dir;
     int locktimeout;
     int handle_get;		/* cached from repository hook structure */
@@ -184,7 +187,20 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     /* DBG3("dav_merge_dir_config: new=%08lx  base=%08lx  overrides=%08lx",
        (long)newconf, (long)base, (long)overrides); */
 
-    newconf->enabled = DAV_INHERIT_VALUE(parent, child, enabled);
+    newconf->provider = child->provider;
+    if (parent->provider != NULL) {
+        if (child->provider == NULL) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
+                         "\"DAV Off\" cannot be used to turn off a subtree "
+                         "of a DAV-enabled location.");
+        }
+        else if (strcasecmp(child->provider, parent->provider) != 0) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
+                         "A subtree cannot specify a different DAV provider "
+                         "than its parent.");
+        }
+    }
+
     newconf->locktimeout = DAV_INHERIT_VALUE(parent, child, locktimeout);
     newconf->dir = DAV_INHERIT_VALUE(parent, child, dir);
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
@@ -263,16 +279,22 @@ const dav_hooks_vsn *dav_get_vsn_hooks(request_rec *r)
 }
 
 /*
- * Command handler for the DAV directive, which is FLAG.
+ * Command handler for the DAV directive, which is TAKE1.
  */
-static const char *dav_cmd_dav(cmd_parms *cmd, void *config, int arg)
+static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
 {
     dav_dir_conf *conf = (dav_dir_conf *) config;
 
-    if (arg)
-	conf->enabled = DAV_ENABLED_ON;
-    else
-	conf->enabled = DAV_ENABLED_OFF;
+    if (strcasecmp(arg1, "on") == 0) {
+	conf->provider = DAV_DEFAULT_PROVIDER;
+    }
+    else if (strcasecmp(arg1, "off") == 0) {
+	conf->provider = NULL;
+    }
+    else {
+        conf->provider = apr_pstrdup(cmd->pool, arg1);
+    }
+
     return NULL;
 }
 
@@ -3171,7 +3193,7 @@ static int dav_type_checker(request_rec *r)
 						 &dav_module);
 
     /* if DAV is not enabled, then we've got nothing to do */
-    if (conf->enabled != DAV_ENABLED_ON) {
+    if (conf->provider == NULL) {
 	return DECLINED;
     }
 
@@ -3227,8 +3249,8 @@ static void register_hooks(void)
 static const command_rec dav_cmds[] =
 {
     /* per directory/location */
-    AP_INIT_FLAG("DAV", dav_cmd_dav, NULL, ACCESS_CONF,
-                 "turn DAV on/off for a directory or location"),
+    AP_INIT_TAKE1("DAV", dav_cmd_dav, NULL, ACCESS_CONF,
+                  "specify the DAV provider for a directory or location"),
 
     /* per directory/location, or per server */
     AP_INIT_TAKE1("DAVMinTimeout", dav_cmd_davmintimeout, NULL,
