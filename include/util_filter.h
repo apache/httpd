@@ -366,6 +366,13 @@ AP_DECLARE(ap_filter_t *) ap_add_input_filter_handle(ap_filter_rec_t *f,
                                                      conn_rec *c);
 
 /**
+ * Returns the filter handle for use with ap_add_input_filter_handle.
+ *
+ * @param name The filter name to look up
+ */
+AP_DECLARE(ap_filter_rec_t *) ap_get_input_filter_handle(const char *name);
+
+/**
  * Add a filter to the current request.  Filters are added in a FIFO manner.
  * The first filter added will be the first filter called.
  * @param name The name of the filter to add
@@ -388,6 +395,12 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter_handle(ap_filter_rec_t *f,
                                                       void *ctx,
                                                       request_rec *r,
                                                       conn_rec *c);
+/**
+ * Returns the filter handle for use with ap_add_output_filter_handle.
+ *
+ * @param name The filter name to look up
+ */
+AP_DECLARE(ap_filter_rec_t *) ap_get_output_filter_handle(const char *name);
 
 /**
  * Remove an input filter from either the request or connection stack
