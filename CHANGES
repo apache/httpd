@@ -1,6 +1,9 @@
 
 Changes with Apache 2.0.38
 
+  *) Added log rotation based on file size to the RotateLog support
+     utility. [Brad Nicholes]
+
   *) Fix some casting in mod_rewrite which broke random maps.
      PR 9770  [Allan Edwards, Greg Ames, Jeff Trawick]
 
