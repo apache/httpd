@@ -31,6 +31,8 @@
     <li><a href="#error.sendfile">Invalid argument:
     core_output_filter: writing data to the network</a></li>
     <li><a href="#error.acceptex">AcceptEx failed</a></li>
+    <li><a href="#error.scriptheaders">Premature end of script 
+    headers</a></li>
     </ul>
 
     <section id="error.sendfile"><title>Invalid argument:
@@ -61,6 +63,17 @@
     <p>If you get error messages related to the <code>AcceptEx</code> syscall
     on win32, see the <directive module="mpm_winnt">Win32DisableAcceptEx</directive>
     directive.</p>
+    </section>
+
+
+    <section id="error.scriptheaders"><title>Premature end of script 
+    headers</title>
+
+    <p>Most problems with CGI scripts result in this message written in the
+    error log together with an <code>Internal Server Error</code> delivered
+    to the browser.  A guide to helping debug this type of problem is
+    available in the <a href="../howto/cgi.html#troubleshoot">CGI
+    tutorial</a>.</p>
     </section>
 
 </section>
