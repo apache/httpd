@@ -1,4 +1,12 @@
 Changes with Apache 2.0.18-dev
+  *) Fix seg fault at start-up introduced by Ryan's change to enable
+     modules to specify their own logging tags. mod_log_config
+     registers an optional function, ap_register_log_handler().
+     ap_register_log_handler() was being called by http_core before
+     the directive hash table was created. This patch creates the
+     directive hash table before ap_register_log_handler() is
+     registered as an optional function.
+     [jean-frederic clere <jfrederic.clere@fujitsu-siemens.com>]
 
   *) Add ap_set_int_slot() function
      [John K. Sterling <sterling@covalent.net>]
