@@ -2480,7 +2480,7 @@ http_handler(request_rec *r, struct cache_req *c, char *url,
 	    *(p++) = '\0';
 	    port = atoi(p);
 	}
-	server.sin_port = port;
+	server.sin_port = htons(port);
 	err = host2addr(host, &server.sin_addr);
 	if (err != NULL) return proxyerror(r, err); /* give up */
     }
