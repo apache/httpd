@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/03/07 18:03:41 $]
+  Last modified at [$Date: 1999/03/08 15:53:20 $]
 
 Release:
 
@@ -52,30 +52,6 @@ Documentation that needs writing:
       TCN additions and when the RVSA algorithm is used.
 
 Available Patches:
-
-    * Roy's [PATCH] always ignore SIGPIPE
-      Changes the default behavior to always ignore SIGPIPE.
-      Will also need a minor MMN bump when committed.
-	MID: <9903070831.aa16567@paris.ics.uci.edu>
-	Status: Roy +1
-
-    * Ken's [PATCH] Merge RefererIgnore into mod_log_config
-      Allows mod_log_agent and mod_log_referer to be dropped from
-      distribution.
-	MID: <36C1EE94.E1E0D54E@Golux.Com>
-	Status: Ken +1, Lars +1 (untested)
-
-    * Ralf's [PATCH] Shared Memory Pools
-        Message-ID: <19990124134912.A29193@engelschall.com>
-        Status: Roy?: Not sure if this is intended for 1.3.x or just feedback
-                Ralf: The stuff in general _IS_ for 1.3.x but the posted
-                      patch was just a first cut to get feedback. An updated
-                      one is posted in a few days. And I'm actually still
-                      waiting for a review from Dean for the shared memory
-                      hard-core stuff. When someone else is also interested
-                      please review the shared memory deep-level code.
-                Doug: +1 on concept (untested)
-                Lars: +1 on concept
 
     * Fred's [PATCH: srm.conf and access.conf refer to httpd.conf
         Message-ID: <199901192353.PAA15190@scv4.apple.com>
@@ -136,6 +112,17 @@ Available Patches:
         Status: Big change -- needs review.
 
 In progress:
+
+    * Ralf's [PATCH] Shared Memory Pools
+        Message-ID: <19990124134912.A29193@engelschall.com>
+        Status: Ralf: The stuff in general _IS_ for 1.3.x but the posted
+                      patch was just a first cut to get feedback. An updated
+                      one is posted in a few days. And I'm actually still
+                      waiting for a review from Dean for the shared memory
+                      hard-core stuff. When someone else is also interested
+                      please review the shared memory deep-level code.
+                Doug: +1 on concept (untested)
+                Lars: +1 on concept
 
     * Marc's [PATCH] PR#3323: recursive includes
         Message-ID: <Pine.BSF.4.03.9810311132540.20832-100000@alive.znep.com>
