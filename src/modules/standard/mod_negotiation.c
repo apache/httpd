@@ -1175,7 +1175,7 @@ void set_language_quality(negotiation_state *neg, var_rec *variant)
 /* Determining the content length --- if the map didn't tell us,
  * we have to do a stat() and remember for next time.
  *
- * Grump.  For shambhala, even the first stat here may well be
+ * Grump.  For Apache, even the first stat here may well be
  * redundant (for multiviews) with a stat() done by the sub_req
  * machinery.  At some point, that ought to be fixed.
  */

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_digest.c,v 1.9 1996/10/31 00:09:37 brian Exp $ */
-
 /*
  * mod_digest: MD5 digest authentication
  * 

@@ -50,18 +50,16 @@
  *
  */
 
-/* $Id: mod_auth_anon.c,v 1.9 1996/10/31 00:06:42 brian Exp $ */
-
 /*
  * http_auth: authentication
  * 
  * Rob McCool & Brian Behlendorf.
  * 
- * Adapted to Shambhala by rst.
+ * Adapted to Apache by rst.
  *
  * Version 0.5 May 1996
  *
- * Brutally raped by Dirk.vanGulik@jrc.it to
+ * Modified by Dirk.vanGulik@jrc.it to
  * 
  * Adapted to allow anonymous logins, just like with Anon-FTP, when
  * one gives the magic user name 'anonymous' and ones email address

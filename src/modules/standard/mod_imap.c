@@ -50,7 +50,6 @@
  *
  */
 
-/* $Id: mod_imap.c,v 1.11 1996/09/28 03:10:37 brian Exp $ */
 /*
  * This imagemap module started as a port of the original imagemap.c
  * written by Rob McCool (11/13/93 robm@ncsa.uiuc.edu).

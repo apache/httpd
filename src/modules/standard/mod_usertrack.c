@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_usertrack.c,v 1.3 1996/11/01 14:45:58 mjc Exp $ */
-
 /* User Tracking Module (Was mod_cookies.c)
  *
  * This Apache module is designed to track users paths through a site.

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_cern_meta.c,v 1.6 1996/10/30 23:53:20 brian Exp $ */
-
 /*
  * mod_cern_meta.c
  * version 0.0.5

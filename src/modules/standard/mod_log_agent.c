@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_log_agent.c,v 1.4 1996/11/03 20:33:16 brian Exp $ */
-
 
 #include "httpd.h"
 #include "http_config.h"

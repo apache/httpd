@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_auth_db.c,v 1.3 1996/10/08 22:19:23 brian Exp $ */
-
 /*
  * mod_auth_db: authentication
  * 

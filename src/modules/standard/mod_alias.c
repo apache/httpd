@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_alias.c,v 1.8 1996/10/20 18:03:33 ben Exp $ */
-
 /*
  * http_alias.c: Stuff for dealing with directory aliases
  * 

@@ -50,14 +50,12 @@
  *
  */
 
-/* $Id: mod_auth_dbm.c,v 1.8 1996/10/31 00:06:42 brian Exp $ */
-
 /*
  * http_auth: authentication
  * 
  * Rob McCool & Brian Behlendorf.
  * 
- * Adapted to Shambhala by rst.
+ * Adapted to Apache by rst.
  */
 
 #include "httpd.h"

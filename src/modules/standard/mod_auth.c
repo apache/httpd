@@ -55,7 +55,7 @@
  * 
  * Rob McCool
  * 
- * Adapted to Shambhala by rst.
+ * Adapted to Apache by rst.
  */
 
 #include "httpd.h"

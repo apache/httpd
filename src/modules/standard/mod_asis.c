@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_asis.c,v 1.7 1996/10/16 23:24:34 fielding Exp $ */
-
 #include "httpd.h"
 #include "http_config.h"
 #include "http_protocol.h"

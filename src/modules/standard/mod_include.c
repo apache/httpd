@@ -54,7 +54,7 @@
  * http_include.c: Handles the server-parsed HTML documents
  * 
  * Original by Rob McCool; substantial fixups by David Robinson;
- * incorporated into the Shambhala module framework by rst.
+ * incorporated into the Apache module framework by rst.
  * 
  */
 

@@ -50,8 +50,6 @@
  *
  */
 
-/* $Id: mod_log_referer.c,v 1.5 1996/11/03 20:33:17 brian Exp $ */
-
 
 #include "httpd.h"
 #include "http_config.h"

@@ -50,14 +50,12 @@
  *
  */
 
-/* $Id: mod_auth_msql.c,v 1.13 1996/08/20 11:51:01 paul Exp $ */
-
 /*
  * mod_auth_msql: authentication
  *
  * Rob McCool & Brian Behlendorf.
  *
- * Adapted to Shambhala by rst.
+ * Adapted to Apache by rst.
  *
  * Addapted for use with the mSQL database
  * (see ftp:/ftp.bond.edu.au/pub/Minerva/mSQL)
