@@ -1,0 +1,8 @@
+Leader MPM:
+This is an experimental variant of the standard worker MPM.
+It uses a Leader/Followers design pattern to coordinate work among threads:
+http://deuce.doc.wustl.edu/doc/pspdfs/lf.pdf
+
+As of Apache 2.0.39, the key learnings from the development of the
+leader MPMs have been applied to the worker MPM.  Worker now is
+running faster than leader in benchmark testing.
