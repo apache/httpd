@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2004-01-06" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2004-04-28" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -52,6 +52,15 @@ This creates the files /var/logs/logfile\&.nnnn where nnnn is the system time at
  
 .PP
 This configuration will rotate the logfile whenever it reaches a size of 5 megabytes\&.
+ 
+.nf
+
+     ErrorLog "|bin/rotatelogs /var/logs/errorlog\&.%Y-%m-%d-%H_%M_%S 5M"
+
+.fi
+ 
+.PP
+This configuration will rotate the error logfile whenever it reaches a size of 5 megabytes, and the suffix to the logfile name will be created of the form errorlog\&.YYYY-mm-dd-HH_MM_SS\&.
  
 
 .SH "OPTIONS"
