@@ -2190,11 +2190,11 @@ static void child_main(int child_num_arg)
 		    lr = last_lr->next;
 		}
 		while (lr != last_lr) {
-		    if (FD_ISSET(lr->fd, &main_fds)) break;
-		    lr = lr->next;
 		    if (!lr) {
 			lr = ap_listeners;
 		    }
+		    if (FD_ISSET(lr->fd, &main_fds)) break;
+		    lr = lr->next;
 		}
 		if (lr == last_lr) {
 		    continue;
