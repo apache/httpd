@@ -47,7 +47,7 @@ typedef struct {
     apr_thread_mutex_t *lock;       /* Lock for this config */
 #endif
     int auth_authoritative;         /* Is this auth method the one and only? */
-/*    int authz_enabled;              /* Is ldap authorization enabled in this directory? */
+/*    int authz_enabled;              Is ldap authorization enabled in this directory? */
 
 
     /* These parameters are all derived from the AuthLDAPURL directive */
