@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/04/28 18:09:59 $]
+Last modified at [$Date: 2004/04/28 23:36:31 $]
 
 Release:
 
@@ -366,6 +366,10 @@ PATCHES TO BACKPORT FROM 2.1
       fixed up as well as putting together a patch for httpd 2.0.next
       which integrates the two rounds of changes)
       +1 concept: trawick
+
+    * Make sure long request lines are '\0'-terminated. (PR 28376)
+      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.147&r2=1.148
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
