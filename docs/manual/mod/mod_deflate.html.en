@@ -165,8 +165,34 @@ client</td></tr>
         The <code>DEFLATE</code> filter is always inserted after RESOURCE
         filters like PHP or SSI. It never touches internal subrequests.
       </div>
-    
+      <div class="note"><h3>Note</h3>
+        There is a environment variable <code>force-gzip</code>,
+        set via <code class="directive"><a href="../mod/core.html#setenv">SetEnv</a></code>, which
+        will ignore the accept-encoding setting of your browser and will
+        send compressed output.
+      </div>
 
+    
+    <h3><a name="inflate" id="inflate">Output Decompression</a></h3>
+      <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
+      inflating/uncompressing a gzip compressed response body. In order to activate
+      this feature you have to insert the <code>INFLATE</code> filter into
+      the outputfilter chain using <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>, for example:</p>
+
+      <div class="example"><p><code>
+        &lt;Location /dav-area&gt;<br />
+        <span class="indent">
+          ProxyPass http://example.com/<br />
+          SetOutputFilter INFLATE<br />
+        </span>
+        &lt;/Location&gt;
+      </code></p></div>
+
+      <p>This Example will uncompress gzip'ed output from example.com, so other
+      filters can do further processing with it.
+      </p>
+      
+    
     <h3><a name="input" id="input">Input Decompression</a></h3>
       <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
       decompressing a gzip compressed request body . In order to activate
