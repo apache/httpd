@@ -759,7 +759,7 @@ subdirectories</td></tr>
     takes as an argument a regular expression. For example:</p>
 
     <div class="example"><p><code>
-      &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
+      &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
     </code></p></div>
 
     <p>would match directories in <code>/www/</code> that consisted of three
