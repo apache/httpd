@@ -912,6 +912,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
         return (rv);
     }
     printf("The %s service is successfully installed.\n", mpm_display_name);
+    return APR_SUCCESS;
 }
 
 
