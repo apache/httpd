@@ -1,5 +1,9 @@
 Changes with Apache 1.3.30
 
+  *) Reinit socket to allow mod_proxy to continue to try
+     connections when invalid IPs are accessed. PR 27542.
+     [Alexander Prohorenko <white extrasy.net>]
+   
   *) SECURITY: CAN-2004-0174 (cve.mitre.org)
      Fix starvation issue on listening sockets where a short-lived
      connection on a rarely-accessed listening socket will cause a

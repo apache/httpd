@@ -225,6 +225,11 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
             i = ap_proxy_doconnect(sock, &server, r);
             if (i == 0)
                 break;
+            /*
+             * Even if the connection was unsuccesful we should
+             * reinit the socket
+             */
+            sock = ap_psocket_ex(p, PF_INET, SOCK_STREAM, IPPROTO_TCP, 1);
         }
     }
 #else
@@ -235,6 +240,11 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
         i = ap_proxy_doconnect(sock, &server, r);
         if (i == 0)
             break;
+        /*
+         * Even if the connection was unsuccesful we should
+         * reinit the socket
+         */
+        sock = ap_psocket_ex(p, PF_INET, SOCK_STREAM, IPPROTO_TCP, 1);
         j++;
     }
 #endif
