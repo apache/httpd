@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD>
+<TITLE>Upgrading to 1.3 from 1.2</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Upgrading to 1.3 from 1.2</H1>
+
+<P>In order to assist folks upgrading we are now going to maintain a
+document describing information critical to existing Apache users.  Note
+that it only lists differences between recent major releases, so
+for example, folks using Apache 1.1 or earlier will have to figure out
+what changed up to Apache 1.2 before this document can be considered
+relevant.  Old users could look at the <CODE>src/CHANGES</CODE> file
+which tracks code changes.
+
+<P>These are intended to be brief notes, and you should be able to find
+more information in either the <A HREF="new_features_1_3.html">New Features</A>
+document, or in the <CODE>src/CHANGES</CODE> file.
+
+<H3>Compile-Time Configuration Changes</H3>
+
+<UL>
+  <LI>The source code has been <A HREF="sourcereorg.html">reorganized</A>,
+    which affects anyone with custom modules or modifications.  But also,
+    the <CODE>Module</CODE> directive has been changed to the
+    <CODE>AddModule</CODE> directive.
+
+  <LI>The <CODE>Configuration</CODE> variable <CODE>EXTRA_LFLAGS</CODE> has
+    been renamed <CODE>EXTRA_LDFLAGS</CODE>.
+  
+  <LI>The <CODE>-DMAXIMUM_DNS</CODE> definition has been obsoleted by
+    changes to <CODE>mod_access</CODE> enforcing double-reverse DNS lookups
+    when necessary.
+
+  <LI>The <CODE>-DSERVER_SUBVERSION=\"string\"</CODE> compile-time option has
+   been replaced with the run-time API call
+   <CODE>ap_add_version_component()</CODE>.  Compile-time modification of the
+   server identity by the configuration scripts is no longer supported.
+  </LI>  
+
+  <LI><CODE>mod_dir</CODE> has been split into two pieces
+    <CODE><A HREF="mod/mod_autoindex.html">mod_autoindex</A></CODE>, and
+    <CODE><A HREF="mod/mod_dir.html">mod_dir</A></CODE>.
+
+  <LI><A HREF="mod/mod_browser.html"><CODE>mod_browser</CODE></A> has been
+    replaced by <A HREF="mod/mod_setenvif.html"><CODE>mod_setenvif</CODE></A>.
+
+  <LI>IRIX systems with untrusted users who can write CGIs which execute
+    as the same uid as httpd should consider using <CODE>suexec</CODE>,
+    or adding <CODE>-DUSE_FCNTL_SERIALIZED_ACCEPT</CODE> to
+    <CODE>EXTRA_CFLAGS</CODE>.  This is slower, more information is available
+    on the <A HREF="misc/perf-tuning.html#serialize">performance tuning
+    page</A>.  There is a mild denial of service attack possible with the
+    default config, but the default config is an order of magnitude faster.
+
+  <LI><CODE>mod_auth_msql</CODE> has been removed from the distribution.
+
+  <LI>The new Apache Autoconf-style Interface (APACI) was added to
+      the top-level to provide a real out-of-the-box build and installation
+      procedure for the complete Apache package.
+</UL>
+
+<H3>Run-Time Configuration Changes</H3>
+
+<UL>
+  <LI><STRONG><SAMP>AuthName</SAMP> strings may need to be quoted</STRONG>
+    in <SAMP>.htaccess</SAMP> or server configuration files.  If you use
+    an <SAMP>AuthName</SAMP> directive like this:
+    <P>
+    <PRE>
+     AuthName This and That
+    </PRE>
+    </P>
+    you will need to change it to
+    <P>
+    <PRE>
+     AuthName "This and That"
+    </PRE>
+    </P>
+    This change was made for consistency in the config language.
+  <LI><STRONG>The default Apache ServerRoot directory changed</STRONG>
+    from the NCSA-compatible <SAMP>/usr/local/etc/httpd/</SAMP> to
+    <SAMP>/usr/local/apache/</SAMP>. This change covers only the default
+    setting (and the documentation); it is of course possible to override it
+    using the <EM>-d ServerRoot</EM> and <EM>-f httpd.conf</EM> switches
+    when starting apache.
+
+  <LI>Folks using HTTP/1.1-style virtual hosting will need to list the
+    ip:port pairs that are supposed to have HTTP/1.1-style virtual hosting
+    via the <A HREF="mod/core.html#namevirtualhost"><CODE>
+    NameVirtualHost</CODE></A> directive (one directive per pair).
+    Previously this support was given implicitly on the "main server
+    address".  Now it has to be explicitly listed so as to avoid many
+    problems that users had.
+    Please see the <A HREF="vhosts/index.html">Apache Virtual Host
+    documentation</A> for further details on configuration.
+
+  <LI>The precedence of virtual hosts has been reversed (applies mainly to
+    vhosts using HTTP/1.1 Host: headers, and the
+    <A HREF="mod/core.html#serverpath">ServerPath</A> directive).  Now
+    the earlier vhosts in the file have precedence over the later vhosts.
+
+  <LI><CODE>HostnameLookups</CODE> defaults to Off.
+
+  <LI>The undocumented
+    <A HREF="mod/mod_access.html"><CODE>mod_access</CODE></A>
+    syntax "allow user-agents" was removed.  The replacement is the
+    more general "allow from env".
+
+  <LI>When using wildcards in pathnames (such as * and ?) they no longer
+    match / (slash).  That is, they more closely behave how a UNIX shell
+    behaves.  This affects <CODE>&lt;Directory&gt;</CODE> directives,
+    for example.
+
+  <LI>If no <CODE>TransferLog</CODE> directive is given then nothing will
+    be logged.
+    (Previously it would default to <CODE>logs/access_log</CODE>.)
+
+  <LI>Apache now has <A HREF="mod/core.html#loglevel">configurable error
+    logging levels</A>, and the default eliminates some messages that
+    earlier versions always generated.
+
+  <LI>When booting, Apache will now detach itself from stdin, stdout,
+     and stderr.  stderr will not be detached until after the config
+     files have been read so you will be able to see initial error
+     messages.  After that all errors are logged in the error_log.
+     This makes it more convenient to start Apache via rsh, ssh,
+     or crontabs.
+   
+  <LI>&lt;Files&gt; sections previously could take a full pathname, and
+     were matched against the full pathnames.  This had some
+     inconsistancies, and was removed.  To emulate this older behaviour
+     use a &lt;Files&gt; section nested inside a &lt;Directory&gt;
+     section.
+
+  <LI>&lt;Location&gt; matching behaviour with respect to slashes has
+     changed.  See the <A HREF="mod/core.html#location">&lt;Location&gt;
+     documentation</A> for more info.
+
+</UL>
+
+<H3>Misc Changes</H3>
+
+<UL>
+  <LI><CODE>ServerType inetd</CODE> has been deprecated.  It still exists,
+    but bugs are unlikely to be fixed.
+
+  <LI><CODE>httpd_monitor</CODE> has been deprecated.  The replacement is
+    to use <CODE>mod_status</CODE> and make a request to a URL such as
+    <CODE>http://myhost/server-status?refresh=10</CODE>.
+
+  <LI>
+    Apache now provides an effectively unbuffered connection for
+    CGI scripts.  This means that data will be sent to the client
+    as soon as the CGI pauses or stops output; previously, Apache would
+    buffer the output up to a fixed buffer size before sending, which
+    could result in the user viewing an empty page until the CGI finished
+    or output a complete buffer.  It is no longer necessary to use an
+    "nph-" CGI to get unbuffered output.  Given that most CGIs are written
+    in a language that by default does buffering (e.g. perl) this
+    shouldn't have a detrimental effect on performance.
+
+    <P>"nph-" CGIs, which formerly provided a direct socket to the client
+    without any server post-processing, were not fully compatible with
+    HTTP/1.1 or SSL support.  As such they would have had to implement
+    the transport details, such as encryption or chunking, in order
+    to work properly in certain situations.  Now, the only difference
+    between nph and non-nph scripts is "non-parsed headers".
+
+  <LI>
+    <CODE>dbmmanage</CODE> has been overhauled.
+
+</UL>
+
+<H3>Third Party Modules</H3>
+
+<P>The following changes between the 1.2 and 1.3 API may require slight
+changes in third party modules not maintained by Apache.
+
+<UL>
+  <LI>
+   To avoid symbol clashes with third-party code compiled into the server, the
+   general prefix `<CODE>ap_</CODE>' was globally applied to the following
+   classes of symbols: Apache provided general functions (e.g.,
+   <CODE>ap_cpystrn</CODE>), public API functions (e.g., <CODE>palloc</CODE>,
+   <CODE>bgets</CODE>) and private functions which can't be made static
+   (because of cross-object usage) but should be (e.g.,
+   <CODE>new_connection</CODE>).  For backward source compatibility with
+   Apache 1.2 a new header file named <CODE>compat.h</CODE> was created which
+   provides defines for the old symbol names.
+   You'll either have to <CODE>#include compat.h</CODE> or update the API
+   symbols you use.
+  </LI>
+  <LI>
+   Be sure and examine the <A HREF="sourcereorg.html">source code
+   reorganization page</A> to see whether any item there affects you.
+  </LI>
+
+  <LI>Use of <SAMP>SERVER_VERSION</SAMP> definition.  If third-party
+   modules reference the server version string using this symbol,
+   they should be corrected to obtain it by calling the new API routine
+   <CODE>const&nbsp;char&nbsp;*ap_get_server_version()</CODE>.
+  </LI>
+
+  <LI><CODE>ap_construct_url</CODE> prototype change.  The second parameter
+    was previously a <CODE>server_rec</CODE>, it has been changed to
+    a <CODE>request_rec</CODE>.
+
+  <LI>The <CODE>table</CODE> datatype has been made an opaque type.
+    Code which assumes a <CODE>table</CODE> is the same as an
+    <CODE>array_header</CODE> will not compile.  This is actually a
+    change to enforce the API the way it was intended, all versions
+    of Apache have had a <CODE>table_elts()</CODE> function which
+    is intended for code which needs to access the elements of
+    a table.  The changes required for this are pretty easy, and
+    work with all versions of Apache.
+
+    <P>Suppose <CODE>t</CODE> is a table.  Whenever code refers to
+    <CODE>t-&gt;elts</CODE>, replace it with something like this:
+
+<BLOCKQUOTE><PRE>
+    array_header *arr = table_elts(t);
+    table_entry *elts = (table_entry *)arr-&gt;elts;
+</PRE></BLOCKQUOTE>
+
+    Whenever code refers to <CODE>t-&gt;nelts</CODE> use
+    <CODE>arr-&gt;nelts</CODE>.  Many examples can be found in
+    the standard modules, search for <CODE>table_elts</CODE>.
+  </LI>
+
+</UL>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

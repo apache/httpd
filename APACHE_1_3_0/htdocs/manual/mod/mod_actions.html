@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Module mod_actions</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_actions</H1>
+<P>
+This module is contained in the <CODE>mod_actions.c</CODE> file, and
+is compiled in by default. It provides for
+executing CGI scripts based on media type or request method. It is not
+present in versions prior to Apache 1.1.
+</P>
+<H2>Summary</H2>
+<P>
+This module lets you run CGI scripts whenever a file of a certain type
+is requested. This makes it much easier to execute scripts that
+process files.
+</P>
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#action">Action</A>
+<LI><A HREF="#script">Script</A>
+</UL>
+
+<HR>
+
+<H2><A NAME="action">Action directive</A></H2>
+<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> Action <EM>mime-type cgi-script</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory,
+ .htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> FileInfo<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_actions<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Action is only available in Apache 1.1
+and later
+</P>
+<P>
+This directive adds an action, which will activate <EM>cgi-script</EM> when
+a file of content type <EM>mime-type</EM> is requested. It sends the
+URL and file path of the requested document using the standard
+CGI PATH_INFO and PATH_TRANSLATED environment variables.
+</P>
+<HR>
+
+<H2><A NAME="script">Script directive</A></H2>
+<P>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> Script <EM>method cgi-script</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_actions<BR>
+<A
+ HREF="directive-dict.html#Compatibility"
+ REL="Help"
+><STRONG>Compatibility:</STRONG></A> Script is only available in Apache 1.1
+and later
+</P>
+
+<P>
+This directive adds an action, which will activate <EM>cgi-script</EM> when
+a file is requested using the method of <EM>method</EM>, which can be
+one of <CODE>GET</CODE>, <CODE>POST</CODE>, <CODE>PUT</CODE> or
+<CODE>DELETE</CODE>. It sends the
+URL and file path of the requested document using the standard
+CGI PATH_INFO and PATH_TRANSLATED environment variables.
+</P>
+<P>
+Note that the Script command defines default actions only. If a CGI
+script is called, or some other resource that is capable of handling
+the requested method internally, it will do so. Also note that Script
+with a method of <CODE>GET</CODE> will only be called if there are
+query arguments present (e.g. foo.html?hi). Otherwise, the request
+will proceed normally.
+</P>
+<P>
+Examples:
+</P>
+<PRE>
+    Script GET /cgi-bin/search     #e.g. for &lt;ISINDEX&gt;-style searching
+    Script PUT /~bob/put.cgi
+</PRE>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

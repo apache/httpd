@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache's Handler Use</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Apache's Handler Use</H1>
+
+<H2>What is a Handler</H2>
+
+<P>A "handler" is an internal Apache representation of the action to be
+performed when a file is called. Generally, files have implicit
+handlers, based on the file type. Normally, all files are simply
+served by the server, but certain file typed are "handled"
+separately. For example, you may use a type of
+"application/x-httpd-cgi" to invoke CGI scripts.</P>
+
+<P>Apache 1.1 adds the additional ability to use handlers
+explicitly. Either based on filename extensions or on location, these
+handlers are unrelated to file type. This is advantageous both because
+it is a more elegant solution, but it also allows for both a type
+<STRONG>and</STRONG> a handler to be associated with a file.</P>
+
+<P>Handlers can either be built into the server or to a module, or
+they can be added with the <A
+HREF="mod/mod_actions.html#action">Action</A> directive. The built-in
+handlers in the standard distribution are as follows:</P>
+
+<UL>
+<LI><STRONG>send-as-is</STRONG>:
+    Send file with HTTP headers as is.
+    (<A HREF="mod/mod_asis.html">mod_asis</A>)
+<LI><STRONG>cgi-script</STRONG>:
+    Treat the file as a CGI script.
+    (<A HREF="mod/mod_cgi.html">mod_cgi</A>)
+<LI><STRONG>imap-file</STRONG>:
+    Imagemap rule file.
+    (<A HREF="mod/mod_imap.html">mod_imap</A>)
+<LI><STRONG>server-info</STRONG>:
+    Get the server's configuration information
+    (<A HREF="mod/mod_info.html">mod_info</A>)
+<LI><STRONG>server-parsed</STRONG>:
+    Parse for server-side includes
+    (<A HREF="mod/mod_include.html">mod_include</A>)
+<LI><STRONG>server-status</STRONG>:
+    Get the server's status report
+    (<A HREF="mod/mod_status.html">mod_status</A>)
+<LI><STRONG>type-map</STRONG>:
+    Parse as a type map file for content negotiation
+    (<A HREF="mod/mod_negotiation.html">mod_negotiation</A>)
+</UL>
+
+<P>
+
+<H2>Directives</H2>
+<UL>
+<LI><A HREF="#addhandler">AddHandler</A>
+<LI><A HREF="#sethandler">SetHandler</A>
+</UL>
+
+<HR>
+
+<H2><A NAME="addhandler">AddHandler</A></H2>
+
+<A
+ HREF="mod/directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> &lt;AddHandler <EM>handler-name
+ extension</EM>&gt;<BR>
+<A
+ HREF="mod/directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory,
+ .htaccess<BR>
+<A
+ HREF="mod/directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="mod/directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_mime
+
+<P>AddHandler maps the filename extension <EM>extension</EM> to the
+handler <EM>handler-name</EM>. For example, to activate CGI scripts
+with the file extension "<CODE>.cgi</CODE>", you might use:
+<PRE>
+    AddHandler cgi-script cgi
+</PRE>
+
+<P>Once that has been put into your srm.conf or httpd.conf file, any
+file ending with "<CODE>.cgi</CODE>" will be treated as a CGI
+program.</P>
+
+<HR>
+
+<H2><A NAME="sethandler">SetHandler</A></H2>
+
+<A
+ HREF="mod/directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> &lt;SetHandler <EM>handler-name</EM>&gt;<BR>
+<A
+ HREF="mod/directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> directory, .htaccess<BR>
+<A
+ HREF="mod/directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> Base<BR>
+<A
+ HREF="mod/directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_mime
+
+<P>When placed into an <CODE>.htaccess</CODE> file or a
+<CODE>&lt;Directory&gt;</CODE> or <CODE>&lt;Location&gt;</CODE> section,
+this directive forces all matching files to be parsed through the
+handler given by <EM>handler-name</EM>. For example, if you had a
+directory you wanted to be parsed entirely as imagemap rule files,
+regardless of extension, you might put the following into an
+<CODE>.htaccess</CODE> file in that directory:
+<PRE>
+    SetHandler imap-file
+</PRE>
+<P>Another example: if you wanted to have the server display a status
+report whenever a URL of <CODE>http://servername/status</CODE> was
+called, you might put the following into access.conf:
+<PRE>
+    &lt;Location /status&gt;
+    SetHandler server-status
+    &lt;/Location&gt;
+</PRE>
+
+<P><HR>
+
+<H2>Programmer's Note</H2>
+
+<P>In order to implement the handler features, an addition has been
+made to the <A HREF="misc/API.html">Apache API</A> that you may wish to
+make use of. Specifically, a new record has been added to the
+<CODE>request_rec</CODE> structure:</P>
+<PRE>
+    char *handler
+</PRE>
+<P>If you wish to have your module engage a handler, you need only to
+set <CODE>r-&gt;handler</CODE> to the name of the handler at any time
+prior to the <CODE>invoke_handler</CODE> stage of the
+request. Handlers are implemented as they were before, albeit using
+the handler name instead of a content type. While it is not
+necessary, the naming convention for handlers is to use a
+dash-separated word, with no slashes, so as to not invade the media
+type name-space.</P>
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+

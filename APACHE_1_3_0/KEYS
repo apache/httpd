@@ -1,0 +1,325 @@
+This file contains the PGP keys of various Apache developers.
+Please don't use them for email unless you have to. Their main
+purpose is code signing.
+
+Apache users: pgp < KEYS
+Apache developers: pgp -kxa <your name> and append it to this file.
+
+
+Type Bits/KeyID    Date       User ID
+pub  1024/2719AF35 1995/05/13 Ben Laurie <ben@algroup.co.uk>
+                              Ben Laurie <ben@gonzo.ben.algroup.co.uk>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3ia
+
+mQCNAi+0jQEAAAEEAK7oX0FeNncaHfa1v+V7SMUviAm8qB8orWG0zvja4ZtSrHVg
+/PMwppUh44t5ERA9lltRBdHu30+YSh8a1dYt1XOD83nknzj9rhtpFAPqyywlLVhN
+VY3PVLyMbULw27aEAGc+StFqrDoUQ0+j9QU/YH/IyVN9rBaJyhsIDEUnGa81AAUR
+tB5CZW4gTGF1cmllIDxiZW5AYWxncm91cC5jby51az6JARUDBRAyb2Doc3AsNzyk
+Yh0BARa6CACUBnsP9Vb+T/PvNYKVQBIODz+90tz5GozWwCVfPVSaRd8Dz+oF1sFs
+YCz/KuxqBhL5PkiCuSMfOVlPA5nirjoktMF/af5saZqhPr5rvr67Z1OzZnVDvWe4
+DhFrn8EoLrY5YNJhUwfINnZqyKaQu8TW6p4caLkTCW0KM+4ztTe74xRG9NeE+K0+
+0RMpAF3jEY36LGRjq6miazt2bVZQDTl6CuWE+gAaFlX2ojV7e1xdxVvpBIEc34MP
+g9ORJ0evx1QilMt1VyGcS/pe4IQgjdJqjU/4fzqFZkT2nntQMbV9kQyNe2+qfqP7
+giTryIanmBAfd3oOCTsRz2VKPfdhCqCRiQB1AwUQMRdzEEyr2GZv4ALJAQEuhAL6
+A8I84BR+87uNAHD0ZJkTM73WdyMEGvAKBvrZK/g0VLYj0NtgkSuRJfrXnGkuh27I
+ZrjfL952Q/mXgMtHhJHJ9YfenGFWSEDHnolNzKOzTQJpE01IZ3nWv7ezA9N1LZVC
+iQCVAgUQMROrdRsIDEUnGa81AQEUNgQAlvyjt534RDQd2AYGoZriaFzjaL7dTCRH
+4b1zxuWBNWf3pI4W0iwU02Q5rEWEmY5DLl6/ie+vcQKOWSqXVgnM/s6EARdKEN56
+d6PzkwszgfEybDYrcAxReJcTCcV8ItJer/iqpBLgtaxyUpI77NvKcDGHp6BgYpnv
+1lNkH0FISK+JAJUDBRAwtzlWdGx7qH+PTVkBARFWA/99NTCMihlOZS7LmHDVic/q
+H1K1DVdMcv0iL39+7Pq4+AA/ET8dWIgcjaIreSqAZTpjwU1pMPaWgecDD1rEMCYX
+R+JoofLJ24BLcSlpXJ/gWMifYNxqdDeMRkw/aW/kaXQJWIz+oDYNuOyi5VvB6faF
+6Lm7P5cw1mX0I5rYc3woh7QoQmVuIExhdXJpZSA8YmVuQGdvbnpvLmJlbi5hbGdy
+b3VwLmNvLnVrPokAlQIFEDEXgCUbCAxFJxmvNQEBiL8D/3MLjfHGvuByqP1VFQrF
+QeMNd2aIQuC7ys3lkDvrLkkPJQANua0/MdDaZk6F5pCGcTmmmaJOjcOcCheD7FU5
+w9zxkQGR3Swr3opFHSr/CkEl83jRy3oq1MFydWoGajQjIr/c23X8zr+XntPyO6VX
+q5He4RrTiXeAEFBzz+J+R+EQ
+=zh1u
+-----END PGP PUBLIC KEY BLOCK-----
+
+
+Type bits/keyID    Date       User ID
+pub  1024/A99F75DD 1997/01/24 Ken A L Coar <Coar@DECUS.Org>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.2
+
+mQCNAzLpIyUAAAEEAN9KC8CxTeozPYJjsnhFpJ14d4Hhf2M6OTgqPQFRHOswM/3j
+B7IW0s+HwVyQ5/SjIlo+8ur9X7yaj1FS2GQmKD1x9LKeHRAoosBIs33okRtoeDRy
+ufTaTyQTwLklxClWm3JEef4xZioun1mtWbpz0yVEOCSZcRvtnJrNPMCpn3XdAAUR
+tB1LZW4gQSBMIENvYXIgPENvYXJAREVDVVMuT3JnPokAlQMFEDNLrGCazTzAqZ91
+3QEBzwEEAMqamgAftJ8X39dH+slXVZhXAkUDfUNPkDyy7Yd8R+UTCdXXZMRrVSc3
+3nGsd7sycFot+TQ4RWK8g1o/eY0LzgT+hSxsI80BabdnX2hCP8Yq6aqBw9XfHRQU
++zUHA5h150dX9vEUp+Rb8UKPvkqTNz58Cv1HFAHboZ55KMJ+oeTk
+=arlJ
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type Bits/KeyID    Date       User ID
+pub   768/A0BB71C1 1997/06/03 Jim Jagielski <jim@jaguNET.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3
+
+mQBtAzOUkNMAAAEDANZdTUJQPwrFI9526Qf+DEWL8dXgfhWW8o6CzewdcCoHYEpu
+9CiOMD3f9bgo1VozOPceGzCu/9FF2hMLUvVsTAZkzC3rre5TtPo/vOf5HJ+ac9M7
+aqxW+gRu2/90oLtxwQAFEbQfSmltIEphZ2llbHNraSA8amltQGphZ3VORVQuY29t
+PokAdQMFEDOUkNRu2/90oLtxwQEB8iEC/i9Qo55TlT8bRpcqeM3lzNDqzU9cqKRf
+9X8pGJIVE5m2JPm99qPLs8RPeepLChi8ZZ+2hSfb7ldQhvVLgNqQqLpsjGtJjJOU
+C+MrKDeSk2WAicg6Uo0FWCsEHxrssw139A==
+=pwim
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type Bits/KeyID    Date       User ID
+pub  2048/DD919C31 1996/12/24 sameer@c2.net
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3ia
+
+mQENAzK/QZIAAAEIALrsEjuGlt6wkHy8fx2wPSkH7paAqJHDCbO1W/GMVs41BsH1
+xpyBi9lOtUXHsDC8Obx/TES4/xVPSsFKPQLa9Q/OsxjXmEPBvQ5PZdOXJ5zmRMI1
+1cfUp2s8w6i+IS68IWRKdPMshGWFGar1YUPM1UpVME7U+uGD3wgdC4DrVJHzS5Eh
+gEDyQ9FPb+8CpsRO3AvUPzsZGG8Iy/9GiLzmaJG34zZ5fv5X7sr89xiWJ21ehk+X
+ePO9kvq+nzfOCCK6a3GZD4g3KJX/Pm3oKeaXeL8WSCCPzpNbtRJk3ofeN7Zm1K0L
+yChPiyui+OO063/WASv52bxUIlmzbX82a92RnDEABRG0DXNhbWVlckBjMi5uZXSJ
+ARUDBRAyv0GTbX82a92RnDEBAfqVB/9GSzADIVqY0faFOLN6+E3qqg3hPRLBvjgC
+5cvTlwT7W64zI+aiSZuN+xAXq+3lnKtmzn45F3hD7gBxRPJbSKsObn2zU4UcqW/o
+qoiYEnO9EhoBomwPUbVy8C00CWvDLfeF4L5r+2oXgilTsCojSaWJX0QoPCwRQao1
+YwZ6CqAA78vdbBNkmA0WrPsVqwd3ijgFapcX671AqiT+pDbvK646I6uGPXJzN3ZU
+vFuDim9D2uNk9CfvPhKGscr4qqP40TnNn5fjSsmrFyFxYsdwo7I4TFpnsEPOw226
+GU+TR7zdwnByP72AxPEBJ/F22LwNyreuph+fRpWCnCf+9gVW9Heh
+=jS5Z
+-----END PGP PUBLIC KEY BLOCK-----
+
+ ===========================
+Rob Hartill <robh@imdb.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.2
+
+mQCNAzG6VfMAAAEEAOvtvphFG/D02vGLENBl5OVPgEJgP9E1xhUgKTZnJstv30kD
+h1IqeIBkEAy5bpKapCbvvxukyQErhB0efTi2v5yTAlz5pVjgWM5Sa8CyTXJmXPHH
+EuOfy1DqaiQSmZ6KWX0ygw3gKDZMiNMf06UURLLYtRlGKSYY3WVj2u2UCmS9AAUR
+tB5Sb2JlcnQgSGFydGlsbCA8cm9iaEBpbWRiLmNvbT6JAJUDBRAx5eIAZWPa7ZQK
+ZL0BAU2XBACXfopMzC8kW3KEqq+N9W9fkGNgy//8XqQ77FmfPQPbO4X7Zn3cyO46
+MxvPP+92zSyN3dyj/xWZYoRLwll+ync9d4KUFwKw45DALAvz1CKHMOpQPD7dIWdE
+9poJQrcbKeOqLcGZTu/hY90gWBUZ++9umR8X8lyh/WEgcUolfgYHew==
+=upYh
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type Bits/KeyID    Date       User ID
+pub  1024/631B5749 1996/06/21 Randy Terbush <randy@zyzzyva.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3
+
+mQCNAzHLBS8AAAEEANGFXb9o0NPVfVjSLvQh1j3fN6cMeVNA5BGUJ6HZGP/NDxTE
+i8hwejJqakkU4ux/g6Kqckrx3h8WR7OXZZ+R8CsA0bg9Sr42ndEQCUISgArg+lXZ
+gRUniARPPA7tamTSq8v1mnxqy9s26Ht2rAG2D6IiK/7v0JlezKirDeBjG1dJAAUR
+tCFSYW5keSBUZXJidXNoIDxyYW5keUB6eXp6eXZhLmNvbT6JAJUDBRAxywUwqKsN
+4GMbV0kBAegnA/sH63WyfwMFmn3nWe8T/5IXO/QkMYoMGLS1i7IxMY9O8BVvKQM+
+oxEcJdFAG7zPZkpgKzTBxmExz5hMZ9hwJ42XhrslWoP7JVvADJcdthrUAYW9W+jx
+GcDYAW3qW5DpKsQchfvXq9QOBDxP+Kbbe2B8xGEyGUhLkacISFTrIhhQSg==
+=8P8s
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type Bits/KeyID    Date       User ID
+pub  1024/49A563D9 1997/02/24 Mark Cox <mark@awe.com>
+                              Mark Cox <mcox@c2.net>
+                              Mark Cox <mark@ukweb.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3ia
+
+mQCNAzMRY/IAAAEEAOloTOU0f4w7FDRMM6kA/6XazXxJ/HH8dsmb6E7RuYfVlXsd
+kCwxUBOkyW+AYhkHbYUwnB5qBoFUyLrbLGuwKHW1KnAwgbeZLTH5nqQLpA0RLGVZ
+v3tzImKUdyyxBphZWC4IeEgUbl9cc+piOsEJ8QzF7gnqwWo/Ku6tTP1JpWPZAAUR
+tBdNYXJrIENveCA8bWFya0Bhd2UuY29tPokAlQMFEDQvYTHurUz9SaVj2QEB/hMD
+/ix6pAa+4ZgFQNRAc7fC+I4uGWvXoI8N8wtgiJi//8Kc1vjtvTylLPKVBDsy1ihs
+bVOjD3NUEkH95TNI3QhVeCwJPl2e3GgFl253hj8Jai9snHj75pXjQXq0NxQ/JRSr
+EAqrFM7+yRLPs7zDwsMoc2Ox5emq4joVa3syZUEwW7LxtBZNYXJrIENveCA8bWNv
+eEBjMi5uZXQ+iQCVAwUQNHKlBO6tTP1JpWPZAQEA8QP9HSjVMLohfOVO0tHcLRDB
+eDfnRnBxgTeF7P2u8qB+eOeLqBzHNmE/gROWuZXOpkxeCqT0GG3oXqmSEmVOtDsJ
+K92sKvtTdJOAGq95UQI3t1Ix6iNHkVJfo11RkJyU2iL6XFR1953nS33xKGdbU6v7
+5KVCu3JTe1kDEDOyMVDdRmW0GU1hcmsgQ294IDxtYXJrQHVrd2ViLmNvbT6JAJUD
+BRAzEWPy7q1M/UmlY9kBAfN5A/43SdANs/NZ6ouyxAvKEWSPDnNkHI3rSPynbn7o
+kSrtFeCQ3Vwe0B0fkszBEAZ9zbnx/s/1LKnriUfyzhdZhJfkZfxgDwy6s6smagYW
+smz/LFaeDzG3Ej20VSe6ghseqcPscJL06PUg13LJC4LFlgYcCDEeGl81Nm37fe0x
+IUhlNA==
+=k8vP
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type Bits/KeyID    Date       User ID
+pub  1024/2F90A69D 1997/02/24 Paul Sutton <paul@ukweb.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3ia
+
+mQCNAzMRsB0AAAEEAKj2XYYEGcZhT69x4gskQ3xz+KMTLn7gKSqqcyyeinJ0ZjLl
+6AJjb1/68nGsF+IIY+IJS+5smq8do1qpC3UZcmw423Sg8F71GeqDO4HZXOAOieVy
+rpVs6S5TaXlJOcrC7zZCx+iql97+xJFjUGkkS7j/jIkx1AajzMNkSr0vkKadAAUR
+tBxQYXVsIFN1dHRvbiA8cGF1bEB1a3dlYi5jb20+iQCVAwUQMxGwHcNkSr0vkKad
+AQGrigP9F43zbiOigYel+JCMiB0HK/UdqSrf3xWxHIKWKNhQNjhnyeF+jKQwFld6
+7KQYsqZIpHsWLWmSk0AmKQOUIw+DxclDxBL2dT4p+CjgTgIAcbvPpahWkBAw/E+c
+EGTiYbe+Y3sHJhhP+d0TOLmsETG9tpi7gFZ6FfNcWPxFMdxGrf4=
+=0jQW
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type bits/keyID    Date       User ID
+pub  1024/BA20321D 1997/06/05 Chuck Murcko <chuck@topsail.org>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.2
+
+mQCNAzOW7moAAAEEAMYZlNOxWCjLR/PosadbG+xsrB2unid2LiYoakTFiDIBaZjx
+bu6hNmVZPYfKOXQcqrCu0EY3uVLP/L89bST5pfIZOzz8GTm33zrETgfzpXYyFdbX
+eZ5vc6aa3+7zmI7h/aU567P9ruB2C/RBLl1A59wmPRRVvjEIAkI4bAO6IDIdAAUR
+tCBDaHVjayBNdXJja28gPGNodWNrQHRvcHNhaWwub3JnPg==
+=vUdL
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type Bits/KeyID    Date       User ID
+pub  1024/26BB437D 1997/04/28 Ralf S. Engelschall <rse@engelschall.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3ia
+
+mQCNAzNko/QAAAEEANZ2kpN/oMkz4tqzxvKPZws/XwsD0Y+E5/y7P2DIw4uHS/4N
+syQbgkdrZhPBlXDv68DQioHXWsb904qyr7iZB1LC5ItK9MgqlK+Z2mvPqsGbHM8J
++oYib8kf2zJ6HvrYrP7NYB0tN9YYum2ICtx+hIi6aKGXdB1ATA5erwYmu0N9AAUR
+tClSYWxmIFMuIEVuZ2Vsc2NoYWxsIDxyc2VAZW5nZWxzY2hhbGwuY29tPokAlQMF
+EDNko/QOXq8GJrtDfQEBKVoD/2K/+4pcwhxok+FkuLwC5Pnuh/1oeOYHiKYwx0Z3
+p09RLvDtNldr6VD+aL9JltxdPTARzZ8M50UqoF9jMr25GifheFYhilww41OVZA3e
+cLXlLgda1+t0vWs3Eg/i2b0arQQDaIq7PeRdjdEDgwnG4xBaqaAqfgxwOXJ+LPWF
+hiXZ
+=K7lL
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type bits/keyID    Date       User ID
+pub  1024/45B91DF1 1996/03/02 Doug MacEachern <dougm@osf.org>      
+                                                            
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.2
+
+mQCNAzE4lesAAAEEAKJYS1vL2iB3owwiZdCxp3JyvSNaC7h1p2jQXcJvY10gqyZm
+VffDwFoSvJM1JdCx3o1mb3JpZ2OTV4SrDDkzcSpTXelgyh7k9O3HB7oG6pHTML9g
+Dq9ZKydShMIvIJos7KuLWoM/eeeejtkv7r/gWsGHAyKbT8fs3r7nlmxFuR3xAAUX
+tB9Eb3VnIE1hY0VhY2hlcm4gPGRvdWdtQG9zZi5vcmc+
+=yaR9
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type Bits/KeyID    Date       User ID
+pub  1023/163751F5 1997/08/18 Dean Gaudet <dgaudet@arctic.org>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3a
+
+mQCNAzP30QgAAAED/1k8hPKsJj8Il/TfhP1JIRGwnXuzfQ/etv+MZJMzeNeKa8OX
+Kw0d4e1S/KdJ+AZwWQp3ZMDoX2ghZ79X4DDDLEAc/Fmy0Gg8t89CP+xJk7b4EHjk
+F7HX69BRJp3On4aRTXRND3WviqEmn5ppzbBkTenF9WWudLRbqrc4NnoWN1H1AAUR
+tCBEZWFuIEdhdWRldCA8ZGdhdWRldEBhcmN0aWMub3JnPokAlQMFEDP30Qm3ODZ6
+FjdR9QEB9VQD/0+zumFj1zzYZ1+bS9Az36gijDUb8rlEVf/lBShx4VEvha8fsRRy
+vkwnmJyupYvGtrSIYAwB0VK+GZPZa7XfZvUCM83AZY9vGpE0LwW2Vcz9kWZdJ0t+
+B7zJElmBUrmj9aW6ICmSNbOBwVo1Y7hg6lPSFFMOOECFpT1WuTXXYpNA
+=KWcF
+-----END PGP PUBLIC KEY BLOCK-----
+
+
+Type bits/keyID    Date       User ID
+pub   768/8F394E3D 1995/08/08 Martin Kraemer <Martin.Kraemer@Mch.SNI.De>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6
+
+mQBtAzAnjA8AAAEDAKlpkRzZ7c4yDdVnW9fMHMXrMJ8gQ+UIzr1xt2+y7Sv71Nv9
+GfUuTeCWdOoynFUXvvBjyCuEIZ426s9UfrnWv94VppoS8sjFgLYkRIAhZiDMHYp0
+j8i1/f82KtdYjzlOPQAFEbQqTWFydGluIEtyYWVtZXIgPE1hcnRpbi5LcmFlbWVy
+QE1jaC5TTkkuRGU+
+=hcsR
+-----END PGP PUBLIC KEY BLOCK-----
+
+
+Type Bits/KeyID    Date       User ID
+pub  1024/EC140B81 1997/04/10 Dirk-Willem van Gulik <dirkx@webweaving.org>
+                              Dirk-Willem van Gulik <Dirk.vanGulik@jrc.it>
+                              Dirk-Willem van Gulik <dirkx@webweaving.nl>
+                              Dirk-Willem van Gulik <dirkx@dds.nl>
+                              Dirk-Willem van Gulik <dirkx@bigfoot.com>
+                              Dirk-Willem van Gulik <dirkx@technologist.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: 2.6.3i
+
+mQCNAzNNOsMAAAEEAJmwazRhNJB4mQkvp0rrxLkeOAxR9fGBXgJNa6HHdLv7YHwx
+mwMorHYDCAMypO1yuznNTaMVT1z3cS+yqhOkTVxwNI1mxW6Zts1kOJB9pWuU33sk
+sUuCkLHXMgyvP9cms6gcYgB5g3UP6M/aQ4T017+Gk/7crlH87DGmPZbsFAuBAAUR
+tCxEaXJrLVdpbGxlbSB2YW4gR3VsaWsgPGRpcmt4QHdlYndlYXZpbmcub3JnPokA
+lQMFEDRZ5+0xpj2W7BQLgQEB/KAD/1xniFNLHp+jxIVrEL6HcI06QZUYPvRuarWq
+3aI2gdeXej59Ry96MOo2MU3MsuQ+wW+6gEJAuyCp2jyYfzF/8winNcFWc738s/hX
+fRYCJe4bvtMcnhBV7GAlTgyw00fcrnaJaQ811+QwKnZvXXWb+QuoXC4ddTon25w4
+XHLjtDZHtCxEaXJrLVdpbGxlbSB2YW4gR3VsaWsgPERpcmsudmFuR3VsaWtAanJj
+Lml0PokAlQMFEDNNOsMxpj2W7BQLgQEBzW8EAItAEaeuIzPIVlKOk1LnHlYc4FyW
+aiNJC2+rRmftYu2bIp/JFuXu3xC0U0byyHu0p+Y1pcAnt2YrqmYUfM0d2cx1b4+L
+8RQR4SGKhq9jWKS3icfKoyMnGiD2CeI8/Xx8V6b8Xg0QqsdlS0kz//qGCDWMz0vi
+oxzasVEvFjqAse03tCtEaXJrLVdpbGxlbSB2YW4gR3VsaWsgPGRpcmt4QHdlYndl
+YXZpbmcubmw+iQCVAwUQNFnn1DGmPZbsFAuBAQE0vAP/aOb/rXsE256tpi0+CRp6
+cd9b1oBmw894UK+Cf4DeNHWehPWJog4y0eNFUcAMdLIdubDzc6Kfxw5QyJt2EAXr
+05XuJ2DJdG24S/aPzGq+6VzL7Nq7pylXuhrACTgeesaceEpUd/NeOCOyzNR7i8qM
+zbGFtU7fH1ipfJjN6fXLo5K0JERpcmstV2lsbGVtIHZhbiBHdWxpayA8ZGlya3hA
+ZGRzLm5sPokAlQMFEDRZ58Expj2W7BQLgQEBGRwD/jdUjCJXFcAbjx3Y2pWUkR7C
+hwJTohM2TvhFp80Ffbhh1xT961XGuHL5l41fRAIg9FEHjQKNVfXeisLH68Qh73cF
+5xuNE6c1x1VSqfDLl9fXZ6TA35qt0G599T67jmVai4F/LjHWDI1O6UvPRuZE3O7m
+eRaCfbPLAJ1ztFujtS3btClEaXJrLVdpbGxlbSB2YW4gR3VsaWsgPGRpcmt4QGJp
+Z2Zvb3QuY29tPokAlQMFEDRZ56Qxpj2W7BQLgQEBvOED/1LhhPP5OkeCCEMVnmyZ
+jZexzv6XOH2I5qH0iuozsI987sSK+zfv8O0wEBwjUOQqBuzlvjKImYQ/oqR89egQ
+AinPc4z1b3kgeGyqrmtea6ScmpKufcWUBbhH0qsXF41eU3ArKY4kB9znV+/PacCe
+VrOD8roFaxIDZ2nW9FS0mriOtC5EaXJrLVdpbGxlbSB2YW4gR3VsaWsgPGRpcmt4
+QHRlY2hub2xvZ2lzdC5jb20+iQCVAwUQNFnnjTGmPZbsFAuBAQEaHwP/Q2Rs6MIu
+z8all/xildFOPfRAX73InwBeInr1O4UU4l6yWRvuLkg+m6O8eJSHo21SNZBCu9gM
+FoQsd0jVOitUr8+w2WkypBlJo5wl1nCw/1sLU4AxtBb0jyADvJzxFCeje/FkxEvs
+6Y3eLxpJRBylbg6KFOsmSY46DyGc49B6cZo=
+=xUw/
+-----END PGP PUBLIC KEY BLOCK-----
+
+Type Bits KeyID      Created    Expires    Algorithm       Use
+sec+ 1024 0xF08E012A 1998-02-19 ---------- DSS             Sign & Encrypt
+sub  2048 0xD8F8125A 1998-02-19 ---------- Diffie-Hellman
+uid  Dean Gaudet <dgaudet@arctic.org>
+uid  Dean Gaudet <dgaudet-djg20@arctic.org>
+uid  Dean Gaudet <dgaudet@apache.org>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: PGPfreeware 5.0i for non-commercial use
+
+mQGiBDTsCJkRBADJmDUiJL0xUaxg0yw7+VqqFUL6sjWxZeZ7kQZs4dyN3R1ilBUG
+KmOXE6qSfb6Pi0qEmgCz1K7g1KaglMRrpANY4h1CjziEVmTH5s3ocxe77w2uaou1
+gHJERIqQuC4/z0DwFqq61ZVf5dUQTD8OmfOwG4pFs51Si9WS03ueVEFQFwCg/9Z2
+j6UzCLyUABpWeV1v4m0w82kEAK96GyKDcT20TymKJnMKuwya+ZwqrULH3Sdi2Mwi
+1GOH7aomG2fK4D2yxWx5xTiYhmYNnRoopgu/Kv5a4x43tOKS3zeADMnHIw9dMSn9
+4Kba8vfKbZnlOgt9veV+iWZv7N2aS2z7w/i53Y6LAlV1hAIMvGJ3zLfmShZs0LDI
+Ya18A/wNcdJazUk9mLGIoycCYOk5YhWL9sCaCBdmdfDPu++rLnqROSWkmfYkOTt+
+pG9SPnvv3XrX/SEwM8gYfpbZwrFDJFI9W63lc9hdSosFD+8xiRl6h2gKRwWvc1Ry
+xIt3+gUrZxovNxBOv98BoSf/j3lkldU+ZjDGlCplRHSndxlN/bQgRGVhbiBHYXVk
+ZXQgPGRnYXVkZXRAYXJjdGljLm9yZz6JAEsEEBECAAsFAjTsCJkECwMBAgAKCRB9
+bb/R8I4BKqqzAKDc/4H9iOXJxVE0yCEHeTQ2gAHfhgCg7VSq7eNhiJhBgblQav/R
+XOhaHj20JkRlYW4gR2F1ZGV0IDxkZ2F1ZGV0LWRqZzIwQGFyY3RpYy5vcmc+iQBL
+BBARAgALBQI07AjSBAsDAQIACgkQfW2/0fCOASoWOACfb+8OVvy6FCqN2MxdCqp6
+gffNbYgAoOxlTa4NjCUUO9dfLFFYpDfGrRy7tCBEZWFuIEdhdWRldCA8ZGdhdWRl
+dEBhcGFjaGUub3JnPokASwQQEQIACwUCNOwI/gQLAwECAAoJEH1tv9HwjgEqiC8A
+oJDu1HTuGOfChFSJJ31XvV8tnlo5AKCFceck4veIMP8pDC0f5UBGGC3mZLkCDQQ0
+7AiZEAgA9kJXtwh/CBdyorrWqULzBej5UxE5T7bxbrlLOCDaAadWoxTpj0BV89AH
+xstDqZSt90xkhkn4DIO9ZekX1KHTUPj1WV/cdlJPPT2N286Z4VeSWc39uK50T8X8
+dryDxUcwYc58yWb/Ffm7/ZFexwGq01uejaClcjrUGvC/RgBYK+X0iP1YTknbzSC0
+neSRBzZrM2w4DUUdD3yIsxx8Wy2O9vPJI8BD8KVbGI2Ou1WMuF040zT9fBdXQ6Md
+GGzeMyEstSr/POGxKUAYEY18hKcKctaGxAMZyAcpesqVDNmWn6vQClCbAkbTCD1m
+pF1Bn5x8vYlLIhkmuquiXsNV6TILOwACAggAhb3cBmR67H4+9Rj4FeTwJ8kflX6I
+pp2AeXXZiffiPVBv5cGzGn2RkGPAZqbp2AkrCb4TrJH//1GPdR8VmPeEGsm6u0uT
+0M404l/4IW1FFQ4JBpTENPn4NYBHkKBNkPcls/ip0lSjlmLGVQVOtDOaFD7n44xV
+hT4WpptCripg/5kymDmK9c8hv6rPUvNoVrDdWR4//MCvNAZvGq2bZGdFTyd5Tn6D
+AmwbvL/UwgiDnm95qBBfCZtmGkkFaoOePtBevWFaviFZM2pErPRcjY8A/1cZsycj
+JPMFYqBKGDIk76ulDSjU0Q8dqhCEDf0o2oQEg6msjDtetVFEDw9yJe0AGIkAPwMF
+GDTsCJl9bb/R8I4BKhECBKgAoNRtRaRMdYNwajSO7056eKazCGSDAKDShamaRjAe
+ThQ1KefmJKyzfcosZQ==
+=25Cv
+-----END PGP PUBLIC KEY BLOCK-----

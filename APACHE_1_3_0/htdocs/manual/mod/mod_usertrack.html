@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Apache module mod_usertrack</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Module mod_usertrack</H1>
+
+Previous releases of Apache have included a module which generates a
+'clickstream' log of user activity on a site using cookies. This was
+called the "cookies" module, mod_cookies. In Apache 1.2 and later this
+module has been renamed the "user tracking" module,
+mod_usertrack. This module has been simplified and new directives
+added.
+
+<HR>
+
+<H2>Logging</H2>
+
+Previously, the cookies module (now the user tracking module) did its
+own logging, using the <TT>CookieLog</TT> directive. In this release,
+this module does no logging at all. Instead, a configurable log
+format file should be used to log user click-streams. This is possible
+because the logging module now allows <A
+HREF="../multilogs.html">multiple log files</A>. The cookie itself is
+logged by using the text <TT>%{cookie}n </TT>
+
+in the log file format. For example:
+<PRE>
+CustomLog logs/clickstream "%{cookie}n %r %t"
+</PRE>
+
+For backward compatibility the configurable log module implements the
+old <TT>CookieLog</TT> directive, but this should be upgraded to the
+above <TT>CustomLog</TT> directive.
+
+<H2>Directives</H2>
+
+<UL>
+<LI><A HREF="#cookieexpires">CookieExpires</A>
+<LI><A HREF="#cookietracking">CookieTracking</A>
+</UL>
+
+<HR>
+
+<H2><A NAME="cookieexpires">CookieExpires</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> CookieExpires <EM>expiry-period</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> optional<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_usertrack<P>
+
+When used, this directive sets an expiry time on the cookie generated
+by the usertrack module. The <EM>expiry-period</EM> can be given either
+as a number of seconds, or in the format such as "2 weeks 3 days 7
+hours".  Valid denominations are: years, months, weeks, hours, minutes
+and seconds.  If the expiry time is in any format other than one
+number indicating the number of seconds, it must be enclosed by
+double quotes.
+
+<P>If this directive is not used, cookies last only for the current
+browser session.</P>
+
+<H2><A NAME="cookietracking">CookieTracking</A></H2>
+<A
+ HREF="directive-dict.html#Syntax"
+ REL="Help"
+><STRONG>Syntax:</STRONG></A> CookieTracking <EM>on | off</EM><BR>
+<A
+ HREF="directive-dict.html#Context"
+ REL="Help"
+><STRONG>Context:</STRONG></A> server config, virtual host, directory,
+.htaccess<BR>
+<A
+ HREF="directive-dict.html#Override"
+ REL="Help"
+><STRONG>Override:</STRONG></A> FileInfo<BR>
+<A
+ HREF="directive-dict.html#Status"
+ REL="Help"
+><STRONG>Status:</STRONG></A> optional<BR>
+<A
+ HREF="directive-dict.html#Module"
+ REL="Help"
+><STRONG>Module:</STRONG></A> mod_usertrack<P>
+
+When the user track module is compiled in, and "CookieTracking on" is
+set, Apache will start sending a user-tracking cookie for all new
+requests. This directive can be used to turn this behavior on or off
+on a per-server or per-directory basis.  By default, compiling
+mod_usertrack will not activate cookies.
+
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

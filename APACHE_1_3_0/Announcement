@@ -1,0 +1,22 @@
+
+ Apache 1.3.0 Released
+ =====================
+
+ The Apache Group is pleased to announce the release of the long
+ awaited 1.3.0 version of the Apache HTTP server.
+
+ To grab the latest Apache distribution, check out
+     http://www.apache.org/dist/
+ and the huge list of available "International Mirror Sites" at
+     http://www.apache.org/mirrors/
+
+ For a full list of specific code changes see src/CHANGES.
+
+ For an overview of new features in 1.3 please read the CHANGES file 
+ in the distribution and the "New Features with Apache 1.3" document at
+     http://www.apache.org/docs/new_features_1_3.html
+
+ In general, Apache 1.3.0 offers several substantial improvements
+ over previous versions, including better performance, reliability
+ and a wider-range of supported platforms, including Windows95 and
+ NT.

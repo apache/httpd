@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Source Re-organisation</TITLE>
+</HEAD>
+
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<BODY
+ BGCOLOR="#FFFFFF"
+ TEXT="#000000"
+ LINK="#0000FF"
+ VLINK="#000080"
+ ALINK="#FF0000"
+>
+<!--#include virtual="header.html" -->
+<H1 ALIGN="CENTER">Source Re-organisation</H1>
+
+As of 1.3, the Apache source directories have been re-organised. This
+re-organisation is designed to simplify the directory structure,
+make it easier to add additional modules, and to give module authors
+a way of specifying compile time options or distribute binary
+modules.
+
+<H2>Summary of Changes</H2>
+
+The source changes are:
+<UL>
+ <LI>The non-module source files have moved from <CODE>src</CODE> into
+     <CODE>src/main</CODE>
+ </LI>
+ <LI>The module source files previously in <CODE>src</CODE> have moved
+     to <CODE>src/modules/standard</CODE>
+ </LI>
+ <LI>The <CODE>support</CODE> directory is now in <CODE>src/support</CODE>
+ </LI>
+ <LI>The existing symbol names used for global Apache function and variable
+     identifiers have been renamed in the source. This way namespace conflicts
+     are avoided when linking Apache with third-party libraries.  See the file
+     <CODE>src/include/compat.h</CODE> both for the list of renamed symbol
+     names and for a way to get source backward compatibility in existing
+     third-party module sources.
+ </LI>
+</UL>
+
+In addition, the following enhancements have been made:
+
+<UL>
+ <LI>OS abstractions can be added in the <CODE>src/os</CODE> directory.
+     Currently this contains information for unix, OS/2 and Windows 32
+     platforms.
+ </LI>
+ <LI><CODE>Configuration</CODE> syntax has been simplified for adding new
+     modules. Users no longer need to enter the module's structure name.
+     In addition, new modules can be located anywhere on the
+     file system, or typically in new or existing directories under
+     <CODE>src/modules</CODE>.
+ </LI>
+ <LI>Module authors can give simpler instructions for adding their modules
+     to Apache compilation. They can also now provide compile time information
+     required by <CODE>Configure</CODE>, such as additional libraries
+     required.
+ </LI>
+ <LI>Module authors can distribute pre-compiled (.a or .o) versions of their
+     modules if required, along with a "module definition file" which
+     contains the information required by <CODE>Configure</CODE>.
+ </LI>
+ <LI>All the sub-directories (main, modules/* and os/*) are built as 
+     libraries.
+ </LI>
+ <LI>The new Apache Autoconf-style Interface (APACI) script named
+     <CODE>configure</CODE> replaced the old top-level <CODE>Makefile</CODE>
+     and <CODE>src/helpers/InstallApache</CODE> stuff.
+ </LI>
+</UL>
+
+<H2>Adding Modules</H2>
+
+Modules are added to Apache by adding a reference to them in
+<CODE>src/Configuration</CODE> then running <CODE>Configure</CODE> and
+<CODE>make</CODE>. In earlier version of Apache before 1.3, the
+line added to Configuration looked like this:
+
+<PRE>
+  Module    status_module    mod_status.o
+</PRE>
+
+From 1.3 onwards, the <CODE>AddModule</CODE> line should be used
+instead, and typically looks like this:
+
+<PRE>
+  AddModule    modules/standard/mod_status.o
+</PRE>
+
+The argument to AddModule is the path, relative to <CODE>src</CODE>, to
+the module file's source or object file.
+
+<P>
+
+Normally when adding a module you should follow the instructions of
+the module author. However if the module comes as a single source
+file, say mod_foo.c, then the recommended way to add the module to
+Apache is as follows:
+
+<UL>
+ <LI>Put <CODE>mod_foo.c</CODE> into the directory 
+     <CODE>src/modules/extra</CODE>
+ </LI>
+ <LI>Go to the <CODE>src</CODE> directory and add the following line
+     to <CODE>Configuration</CODE><BR>
+     <CODE>AddModule modules/extra/mod_foo.o</CODE>
+ </LI>
+ <LI>Run <CODE>./Configure</CODE></LI>
+ <LI>Run <CODE>make</CODE></LI>
+</UL>
+
+<H2>New Facilities for Module Authors</H2>
+
+In previous releases of Apache, new modules were added to the
+<CODE>src</CODE> directory, and if the module required any additional
+compilation options (such as libraries) they would have to be added
+to <CODE>Configuration</CODE>. Also the user would have to be
+told the module's structure name to add on the Module line
+of <CODE>Configuration</CODE>.
+
+<P>
+
+From Apache 1.3 onwards, module authors can make use of these new features:
+
+<UL>
+ <LI>Simplified <CODE>Configuration</CODE> command AddModule which only
+     requires a path to the module source or object file
+ </LI>
+ <LI>If the module requires compile time options (such as extra
+     libraries) these can be specified in the module file source
+     or an external "module definition file". 
+ </LI>
+ <LI>If a module is distributed as binary (.o or .a) then an external
+     "module definition file" can also be distributed which gives
+     the information Configure needs to add the module, such as extra
+     libraries and the module's structure name.
+ <LI>Modules can be installed anywhere on the file system, although a directory
+     under <CODE>src/modules</CODE> is recommended.
+ </LI>
+ <LI>If the module is in its own directory, Apache can automatically
+     create a Makefile to build the module given a file containing
+     the module's dependencies.
+ </LI>
+ <LI>For building a third-party module <STRONG>outside</STRONG> the
+     Apache source tree the new <CODE>apxs</CODE> support tool can be
+     used to compile the module into a <A HREF="dso.html">dynamic
+     shared object (DSO)</A>, install it into the existing Apache
+     installation and optionally activating it in the Apache
+     <CODE>httpd.conf</CODE> file.  The only requirement is that
+     Apache has DSO-support for the used platform and the module
+     <CODE><A HREF="mod/mod_so.html">mod_so</A></CODE> was built into
+     the server binary <CODE>httpd</CODE>.
+ </LI>
+</UL>
+
+The rest of this document shows how to package modules for Apache 1.3
+and later and what to tell end-users of the module.
+
+<H3>Building a simple source distribution</H3>
+
+Consider a simple add-on module, distributed as a single file. For
+example, say it is called mod_demo.c. The archive for this module
+should consist of two files, in a suitable directory name. For
+example:
+
+<UL>
+ <LI>mod_demo/mod_demo.c
+ <LI>mod_demo/Makefile.tmpl
+</UL>
+
+(Of course end-user instructions, README's, etc can also be supplied
+in the archive). The end user should be told to extract this archive
+in the <CODE>src/modules</CODE> directory of their Apache source
+tree. This will create a new directory
+<CODE>src/modules/mod_demo</CODE>. Then they need to add the following
+line to the <CODE>Configuration</CODE> file:
+
+<PRE>
+  AddModule  modules/mod_demo/mod_demo.o
+</PRE>
+
+then run <CODE>Configure</CODE> and <CODE>make</CODE> as normal.
+
+<P>
+
+The <CODE>mod_demo/Makefile.tmpl</CODE> should contain the dependencies
+of the module source. For example, a simple module which just interfaces to
+some standard Apache module API functions might look this this:
+
+<PRE>
+  mod_demo.o: mod_demo.c $(INCDIR)/httpd.h $(INCDIR)/http_protocol.h
+</PRE>
+
+When the user runs <CODE>Configure</CODE> Apache will create a full
+makefile to build this module. If this module also requires
+some additional built-time options to be given, such as libraries,
+see the next section.
+<P>
+
+If the module also comes with header files, these can be added to the
+archive. If the module consists of multiple source files it can be
+built into a library file using a supplied makefile. In this case,
+distribute the makefile as <CODE>mod_demo/Makefile</CODE> and <STRONG>do
+not</STRONG> include a <CODE>mod_demo/Makefile.tmpl</CODE>. If
+<CODE>Configure</CODE> sees a <CODE>Makefile.tmpl</CODE> it assumes it
+is safe to overwrite any existing <CODE>Makefile</CODE>.
+
+<P> 
+
+See the Apache <CODE>src/modules/standard</CODE> for an example of a
+module directory where the makefile is created automatically from a
+Makefile.tmpl file (note that this directory also shows how to
+distribute multiple modules in a single directory). See
+<CODE>src/modules/proxy</CODE> and <CODE>src/modules/example</CODE>
+for examples of modules built using custom makefiles (to build a
+library and an object file, respectively).
+
+<H3>Adding Compile time Information</H3>
+
+Apache source files (or module definition files, see below) can
+contain information used by <CODE>Configure</CODE> to add compile-time
+options such as additional libraries. For example, if mod_demo in the
+example above also requires that Apache be linked against a DBM
+library, then the following text could be inserted into the mod_demo.c
+source:
+
+<PRE>
+/*
+ * Module definition information - the part between the -START and -END
+ * lines below is used by Configure. This could be stored in a separate
+ * instead.
+ *
+ * MODULE-DEFINITION-START
+ * Name: demo_module
+ * ConfigStart
+    LIBS="$LIBS $DBM_LIB"
+    if [ "X$DBM_LIB" != "X" ]; then
+        echo " + using $DBM_LIB for mod_demo"
+    fi
+ * ConfigEnd
+ * MODULE-DEFINITION-END
+ */
+</PRE>
+
+Note that this is contained inside a C language comment to hide it
+from the compiler. Anything between the lines which contains
+<CODE>MODULE-DEFINITION-START</CODE> and
+<CODE>MODULE-DEFINITION-END</CODE> is used by <CODE>Configure</CODE>.
+The <CODE>Name:</CODE> line gives the module's structure name. This is
+not really necessary in this case since if not present
+<CODE>Configure</CODE> will guess at a name based on the filename
+(e.g. given "mod_demo" it will remove the leading "mod_" and append
+"_module" to get a structure name. This works with all modules
+distributed with Apache).
+
+<P>
+
+The lines between <CODE>ConfigStart</CODE> and <CODE>ConfigEnd</CODE>
+as executed by <CODE>Configure</CODE> and can be used to add
+compile-time options and libraries. In this case it adds the DBM
+library (from $DBM_LIB) to the standard compilation libraries ($LIB)
+and displays a message.
+
+<P>
+
+See the default distribution's mod_auth_dbm.c for an example of
+an embedded module definition.
+
+<H3>Module Definition Information for Binary Distribitions</H3>
+
+If the module is to be distributed as binary (object or library) rather
+than source, it is not possible to add the module definition
+information to the source file. In this case it can be placed in a
+separate file which has the same base name as the object or library
+file, but with a <CODE>.module</CODE> extension. So, for example, if
+the distributed module object file is mod_demo.o, the module
+definition file should be called mod_demo.module. It contains the same
+information as above, but does not need to be inside a C comment or
+delimited with <CODE>MODULE-DEFINITION-START</CODE> etc. For example:
+
+<PRE>
+Name: demo_module
+ConfigStart
+ LIBS="$LIBS $DBM_LIB"
+ if [ "X$DBM_LIB" != "X" ]; then
+     echo " + using $DBM_LIB for mod_demo"
+ fi
+ConfigEnd
+</PRE>
+
+See the default distribution's mod_auth_db.module for an example of
+a separate module definition file.
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>

@@ -1,0 +1,33 @@
+#!/bin/sh
+# Look for $1 somewhere in $PATH. As an extra bonus,
+#  if $AP_PPSEARCHPATH is set, this will look for $i
+#  in there instead. Will print out the full pathname unless
+#  called with the '-s' option
+#
+
+if [ "x$1" = "x-s" ]; then
+    shift
+else
+    echo="yes"
+fi
+
+if [ "x$AP_PPSEARCHPATH" = "x" ] ; then
+    AP_PPSEARCHPATH=$PATH
+fi
+
+for path in `echo $AP_PPSEARCHPATH |
+ sed 's/^;/.;/
+      s/;;/;.;/g
+      s/;$/;./
+      s/;/ /g
+      s/\\\\/\\//g' `
+do
+    if [ -r $path/$1.exe ] && [ ! -d $path/$1.exe ]; then
+        if [ "$echo" = "yes" ]; then
+	    echo $path/$1.exe
+	fi
+	exit 0
+    fi
+done
+exit 1
+
