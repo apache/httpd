@@ -548,7 +548,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
 		     (const char *) mp);
 	return (NULL);
     }
-    ctp->type = apr_pstrndup(p, mp, cp - mp);
+    ctp->type = apr_pstrmemdup(p, mp, cp - mp);
     ctp->type = zap_sp(ctp->type);
     if (ctp->type == NULL || *(ctp->type) == '\0' ||
 	strchr(ctp->type, ';') || strchr(ctp->type, ' ') ||
