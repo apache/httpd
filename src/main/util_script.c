@@ -817,13 +817,6 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	    grpname = gr->gr_name;
 	}
 
-	if (!can_exec(&r->finfo, pw->pw_uid, gr->gr_gid)) {
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			"file permissions deny server execution: %s",
-			r->filename);
-	    return -1;
-	}
-
 	if (shellcmd)
 	    execle(SUEXEC_BIN, SUEXEC_BIN, execuser, grpname, argv0, NULL, env);
 
@@ -838,13 +831,6 @@ API_EXPORT(int) call_exec(request_rec *r, char *argv0, char **env, int shellcmd)
 	}
     }
     else {
-	if (!can_exec(&r->finfo, user_id, group_id)) {
-	    aplog_error(APLOG_MARK, APLOG_ERR, r->server,
-			"file permissions deny server execution: %s",
-			r->filename);
-	    return -1;
-	}
-
 	if (shellcmd)
 	    execle(SHELL_PATH, SHELL_PATH, "-c", argv0, NULL, env);
 

@@ -393,6 +393,11 @@ static int cgi_handler(request_rec *r)
 	return log_scripterror(r, conf, NOT_FOUND, APLOG_NOERRNO,
 			       "script not found or unable to stat");
 #endif
+    if (!suexec_enabled) {
+	if (!can_exec(&r->finfo))
+	    return log_scripterror(r, conf, FORBIDDEN, APLOG_NOERRNO,
+				   "file permissions deny server execution");
+    }
 
     if ((retval = setup_client_block(r, REQUEST_CHUNKED_ERROR)))
 	return retval;

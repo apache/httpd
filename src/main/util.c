@@ -1070,7 +1070,7 @@ API_EXPORT(int) is_url(const char *u)
     return (x ? 1 : 0);		/* If the first character is ':', it's broken, too */
 }
 
-API_EXPORT(int) can_exec(const struct stat *finfo, uid_t uid, gid_t gid)
+API_EXPORT(int) can_exec(const struct stat *finfo)
 {
 #ifdef MULTIPLE_GROUPS
     int cnt;
@@ -1079,10 +1079,10 @@ API_EXPORT(int) can_exec(const struct stat *finfo, uid_t uid, gid_t gid)
     /* OS/2 dosen't have Users and Groups */
     return 1;
 #else
-    if (uid == finfo->st_uid)
+    if (user_id == finfo->st_uid)
 	if (finfo->st_mode & S_IXUSR)
 	    return 1;
-    if (gid == finfo->st_gid)
+    if (group_id == finfo->st_gid)
 	if (finfo->st_mode & S_IXGRP)
 	    return 1;
 #ifdef MULTIPLE_GROUPS

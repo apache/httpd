@@ -811,7 +811,7 @@ char *strerror(int err);
 API_EXPORT(uid_t) uname2id(const char *name);
 API_EXPORT(gid_t) gname2id(const char *name);
 API_EXPORT(int) is_directory(const char *name);
-API_EXPORT(int) can_exec(const struct stat *, uid_t, gid_t);
+API_EXPORT(int) can_exec(const struct stat *);
 API_EXPORT(void) chdir_file(const char *file);
 
 #ifndef HAVE_CANONICAL_FILENAME
