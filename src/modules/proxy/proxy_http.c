@@ -470,10 +470,14 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 	ap_table_set(resp_hdrs, "URI", proxy_location_reverse_map(r, datestr));
 
 /* check if NoCache directive on this host */
-    for (i = 0; i < conf->nocaches->nelts; i++) {
-	if ((ncent[i].name != NULL && strstr(desthost, ncent[i].name) != NULL)
-	    || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*')
-	    nocache = 1;
+    if (nocache == 0) {
+        for (i = 0; i < conf->nocaches->nelts; i++) {
+	    if ((ncent[i].name != NULL && strstr(desthost, ncent[i].name) != NULL)
+	        || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*') {
+               nocache = 1;
+	       break;
+	    }
+        }
     }
 
     i = ap_proxy_cache_update(c, resp_hdrs, !backasswards, nocache);
