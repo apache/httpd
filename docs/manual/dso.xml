@@ -1,8 +1,13 @@
-<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!--
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-              This file is generated from xml source: DO NOT EDIT
-        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Dynamic Shared Object (DSO) Support - Apache HTTP Server</title><link href="./style/manual.css" type="text/css" rel="stylesheet"></head><body><blockquote><div align="center"><img src="./images/sub.gif" alt="[APACHE DOCUMENTATION]"><h3>Apache HTTP Server Version 2.0</h3></div><h1 align="center">Dynamic Shared Object (DSO) Support</h1>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+
+<manualpage>
+  <relativepath href="."/>
+
+  <title>Dynamic Shared Object (DSO) Support</title>
+
+  <summary>
     <p>The Apache HTTP Server is a modular program where the
     administrator can choose the functionality to include in the
     server by selecting a set of modules. The modules can be
@@ -16,21 +21,32 @@
 
     <p>This document describes how to use DSO modules as well as
     the theory behind their use.</p>
-  <ul><li><a href="#implementation">Implementation</a></li><li><a href="#usage">Usage Summary</a></li><li><a href="#background">Background</a></li><li><a href="#advantages">Advantages and Disadvantages</a></li></ul><hr><h2><a name="implementation">Implementation</a></h2>
+  </summary>
 
-<table border="1"><tr><td valign="top"><strong>Related Modules</strong><br><br><code><a href="./mod/mod_so.html">mod_so</a></code><br></td><td valign="top"><strong>Related Directives</strong><br><br><a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a><br></td></tr></table>
+
+<section id="implementation"><title>Implementation</title>
+
+<related>
+<modulelist>
+<module>mod_so</module>
+</modulelist>
+<directivelist>
+<directive module="mod_so">LoadModule</directive>
+</directivelist>
+</related>
 
     <p>The DSO support for loading individual Apache modules is based
-    on a module named <code><a href="./mod/mod_so.html">mod_so</a></code> which must be statically
+    on a module named <module>mod_so</module> which must be statically
     compiled into the Apache core. It is the only module besides
-    <code><a href="./mod/core.html">core</a></code> which cannot be put into a DSO
+    <module>core</module> which cannot be put into a DSO
     itself. Practically all other distributed Apache modules can then
     be placed into a DSO by individually enabling the DSO build for
     them via <code>configure</code>'s
     <code>--enable-<em>module</em>=shared</code> option as disucussed
     in the <a href="install.html">install documentation</a>. After a
     module is compiled into a DSO named <code>mod_foo.so</code> you
-    can use <code><a href="./mod/mod_so.html">mod_so</a></code>'s <a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a> command in your
+    can use <module>mod_so</module>'s <directive
+    module="mod_so">LoadModule</directive> command in your
     <code>httpd.conf</code> file to load this module at server startup
     or restart.</p>
 
@@ -48,7 +64,9 @@
     source tree and without having to fiddle with the
     platform-dependent compiler and linker flags for DSO
     support.</p>
-<h2><a name="usage">Usage Summary</a></h2>
+</section>
+
+<section id="usage"><title>Usage Summary</title>
 
     <p>To give you an overview of the DSO features of Apache 2.0,
     here is a short and concise summary:</p>
@@ -59,10 +77,10 @@
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code>: 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-$ ./configure --prefix=/path/to/install --enable-foo=shared<br>
+<example>
+$ ./configure --prefix=/path/to/install --enable-foo=shared<br />
 $ make install
-</code></td></tr></table></blockquote>
+</example>
       </li>
 
       <li>
@@ -70,20 +88,20 @@ $ make install
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code>: 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c --enable-foo=shared<br>
+<example>
+$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c --enable-foo=shared<br />
 $ make install
-</code></td></tr></table></blockquote>
+</example>
       </li>
 
       <li>
         Configure Apache for <em>later installation</em> of shared
         modules: 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-$ ./configure --enable-so<br>
+<example>
+$ ./configure --enable-so<br />
 $ make install
-</code></td></tr></table></blockquote>
+</example>
       </li>
 
       <li>
@@ -92,19 +110,21 @@ $ make install
         <code>mod_foo.so</code> <em>outside of</em> the Apache
         source tree using <a href="programs/apxs.html">apxs</a>: 
 
-<blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><code>
-$ cd /path/to/3rdparty<br>
-$ apxs -c mod_foo.c<br>
+<example>
+$ cd /path/to/3rdparty<br />
+$ apxs -c mod_foo.c<br />
 $ apxs -i -a -n foo mod_foo.so
-</code></td></tr></table></blockquote>
+</example>
       </li>
     </ol>
 
     <p>In all cases, once the shared module is compiled, you must
-    use a <a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a>
+    use a <directive module="mod_so">LoadModule</directive>
     directive in <code>httpd.conf</code> to tell Apache to activate
     the module.</p>
-<h2><a name="background">Background</a></h2>
+</section>
+
+<section id="background"><title>Background</title>
 
     <p>On modern Unix derivatives there exists a nifty mechanism
     usually called dynamic linking/loading of <em>Dynamic Shared
@@ -204,7 +224,9 @@ $ apxs -i -a -n foo mod_foo.so
     modules into the Apache core functionality. So, Apache is
     really predestined for using DSO to load its modules at
     run-time.</p>
-<h2><a name="advantages">Advantages and Disadvantages</a></h2>
+</section>
+
+<section id="advantages"><title>Advantages and Disadvantages</title>
 
     <p>The above DSO based features have the following
     advantages:</p>
@@ -212,7 +234,7 @@ $ apxs -i -a -n foo mod_foo.so
     <ul>
       <li>The server package is more flexible at run-time because
       the actual server process can be assembled at run-time via
-      <a href="./mod/mod_so.html#loadmodule" class="directive"><code class="directive">LoadModule</code></a>
+      <directive module="mod_so">LoadModule</directive>
       <code>httpd.conf</code> configuration commands instead of
       <code>configure</code> options at build-time. For instance
       this way one is able to run different server instances
@@ -267,4 +289,6 @@ $ apxs -i -a -n foo mod_foo.so
       loading the code yourself via <code>dlopen()</code>.</li>
     </ul>
 
-<hr></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="./images/index.gif" alt="Index"></a><a href="./"><img src="./images/home.gif" alt="Home"></a></body></html>
+</section>
+
+</manualpage>
