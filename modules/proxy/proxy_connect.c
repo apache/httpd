@@ -58,8 +58,8 @@ allowed_port(proxy_server_conf *conf, int port)
     int *list = (int *) conf->allowed_connect_ports->elts;
 
     for(i = 0; i < conf->allowed_connect_ports->nelts; i++) {
-	if(port == list[i])
-	    return 1;
+    if(port == list[i])
+        return 1;
     }
     return 0;
 }
@@ -69,10 +69,10 @@ int ap_proxy_connect_canon(request_rec *r, char *url)
 {
 
     if (r->method_number != M_CONNECT) {
-	return DECLINED;
+    return DECLINED;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		 "proxy: CONNECT: canonicalising URL %s", url);
+         "proxy: CONNECT: canonicalising URL %s", url);
 
     return OK;
 }
@@ -104,11 +104,11 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
     /* is this for us? */
     if (r->method_number != M_CONNECT) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		     "proxy: CONNECT: declining URL %s", url);
-	return DECLINED;
+             "proxy: CONNECT: declining URL %s", url);
+    return DECLINED;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		 "proxy: CONNECT: serving URL %s", url);
+         "proxy: CONNECT: serving URL %s", url);
 
 
     /*
@@ -119,50 +119,50 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     /* we break the URL into host, port, uri */
     if (APR_SUCCESS != apr_uri_parse_hostinfo(p, url, &uri)) {
-	return ap_proxyerror(r, HTTP_BAD_REQUEST,
-			     apr_pstrcat(p, "URI cannot be parsed: ", url, NULL));
+    return ap_proxyerror(r, HTTP_BAD_REQUEST,
+                 apr_pstrcat(p, "URI cannot be parsed: ", url, NULL));
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		 "proxy: CONNECT: connecting %s to %s:%d", url, uri.hostname, uri.port);
+         "proxy: CONNECT: connecting %s to %s:%d", url, uri.hostname, uri.port);
 
     /* do a DNS lookup for the destination host */
     err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, p);
 
     /* are we connecting directly, or via a proxy? */
     if (proxyname) {
-	connectname = proxyname;
-	connectport = proxyport;
+    connectname = proxyname;
+    connectport = proxyport;
         err = apr_sockaddr_info_get(&connect_addr, proxyname, APR_UNSPEC, proxyport, 0, p);
     }
     else {
-	connectname = uri.hostname;
-	connectport = uri.port;
-	connect_addr = uri_addr;
+    connectname = uri.hostname;
+    connectport = uri.port;
+    connect_addr = uri_addr;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		 "proxy: CONNECT: connecting to remote proxy %s on port %d", connectname, connectport);
+         "proxy: CONNECT: connecting to remote proxy %s on port %d", connectname, connectport);
 
     /* check if ProxyBlock directive on this host */
     if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
-	return ap_proxyerror(r, HTTP_FORBIDDEN,
-			     "Connect to remote machine blocked");
+    return ap_proxyerror(r, HTTP_FORBIDDEN,
+                 "Connect to remote machine blocked");
     }
 
     /* Check if it is an allowed port */
     if (conf->allowed_connect_ports->nelts == 0) {
-	/* Default setting if not overridden by AllowCONNECT */
-	switch (uri.port) {
-	    case APR_URI_HTTPS_DEFAULT_PORT:
-	    case APR_URI_SNEWS_DEFAULT_PORT:
-		break;
-	    default:
+    /* Default setting if not overridden by AllowCONNECT */
+    switch (uri.port) {
+        case APR_URI_HTTPS_DEFAULT_PORT:
+        case APR_URI_SNEWS_DEFAULT_PORT:
+        break;
+        default:
                 /* XXX can we call ap_proxyerror() here to get a nice log message? */
-		return HTTP_FORBIDDEN;
-	}
+        return HTTP_FORBIDDEN;
+    }
     } else if(!allowed_port(conf, uri.port)) {
         /* XXX can we call ap_proxyerror() here to get a nice log message? */
-	return HTTP_FORBIDDEN;
+    return HTTP_FORBIDDEN;
     }
 
     /*
@@ -175,7 +175,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * until we get a successful connection
      */
     if (APR_SUCCESS != err) {
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
                              "DNS lookup failure for: ",
                              connectname, NULL));
     }
@@ -222,26 +222,26 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * the CONNECT request on to it.
      */
     if (proxyport) {
-	/* FIXME: Error checking ignored.
-	 */
+    /* FIXME: Error checking ignored.
+     */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		     "proxy: CONNECT: sending the CONNECT request to the remote proxy");
+             "proxy: CONNECT: sending the CONNECT request to the remote proxy");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-			      "CONNECT %s HTTP/1.0" CRLF, r->uri);
+                  "CONNECT %s HTTP/1.0" CRLF, r->uri);
         apr_socket_send(sock, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-			      "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+                  "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
         apr_socket_send(sock, buffer, &nbytes);
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		     "proxy: CONNECT: Returning 200 OK Status");
+             "proxy: CONNECT: Returning 200 OK Status");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-			      "HTTP/1.0 200 Connection Established" CRLF);
+                  "HTTP/1.0 200 Connection Established" CRLF);
         ap_xlate_proto_to_ascii(buffer, nbytes);
         apr_socket_send(client_socket, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-			      "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+                  "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
         ap_xlate_proto_to_ascii(buffer, nbytes);
         apr_socket_send(client_socket, buffer, &nbytes);
 #if 0
@@ -256,7 +256,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		 "proxy: CONNECT: setting up poll()");
+         "proxy: CONNECT: setting up poll()");
 
     /*
      * Step Four: Handle Data Transfer
@@ -268,7 +268,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     if ((rv = apr_pollset_create(&pollset, 2, r->pool, 0)) != APR_SUCCESS)
     {
-	apr_socket_close(sock);
+    apr_socket_close(sock);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
             "proxy: CONNECT: error apr_pollset_create()");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -288,7 +288,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
         if ((rv = apr_pollset_poll(pollset, -1, &pollcnt, &signalled)) != APR_SUCCESS) {
-	    apr_socket_close(sock);
+        apr_socket_close(sock);
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "proxy: CONNECT: error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -375,7 +375,7 @@ int ap_proxy_connect_handler(request_rec *r, proxy_worker *worker,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-		 "proxy: CONNECT: finished with poll() - cleaning up");
+         "proxy: CONNECT: finished with poll() - cleaning up");
 
     /*
      * Step Five: Clean Up
@@ -396,10 +396,10 @@ static void ap_proxy_connect_register_hook(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA proxy_connect_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,		/* create per-directory config structure */
-    NULL,		/* merge per-directory config structures */
-    NULL,		/* create per-server config structure */
-    NULL,		/* merge per-server config structures */
-    NULL,		/* command apr_table_t */
-    ap_proxy_connect_register_hook	/* register hooks */
+    NULL,       /* create per-directory config structure */
+    NULL,       /* merge per-directory config structures */
+    NULL,       /* create per-server config structure */
+    NULL,       /* merge per-server config structures */
+    NULL,       /* command apr_table_t */
+    ap_proxy_connect_register_hook  /* register hooks */
 };
