@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/10/11 03:42:53 $]
+Last modified at [$Date: 2001/10/11 20:04:16 $]
 
 Release:
 
@@ -93,9 +93,8 @@ RELEASE SHOWSTOPPERS:
       fix the bug where request body content will end up closing the
       connection (buggering up persistent conns).
       Status: Justin is working on this as fast as he can.
-              The core input filters, HTTP-related filters, and mod_ssl 
-              are switched to the new logic.  At this point, proxy may be
-              broken (Ian says it works, but dechunking is a bit shaky).  
+              The core input filters, HTTP-related filters, mod_ssl, and
+              mod_proxy are switched to the new logic.  
 
       - socket bucket and core input filter changes. see end of
         message ID (Feb 27): <20010227075326.S2297@lyra.org>
