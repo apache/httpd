@@ -18,7 +18,7 @@ APACHE_MODULE(rewrite, regex URL translation, , , most, [
 ])
 
 ap_old_cppflags=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include"
+CPPFLAGS="$CPPFLAGS -I$APR_SOURCE_DIR/include -I$abs_builddir/srclib/apr/include"
 AC_TRY_COMPILE([#include <apr.h>], 
 [#if !APR_HAS_DSO
 #error You need APR DSO support to use mod_so. 
