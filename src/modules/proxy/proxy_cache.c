@@ -905,6 +905,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
  * HEAD requests, or
  * requests with an Authorization header, or
  * protocol requests nocache (e.g. ftp with user/password)
+ * responses containing Set-Cookie headers
  */
 /* @@@ XXX FIXME: is the test "r->status != HTTP_MOVED_PERMANENTLY" correct?
  * or shouldn't it be "ap_is_HTTP_REDIRECT(r->status)" ? -MnKr */
@@ -914,6 +915,7 @@ int ap_proxy_cache_update(cache_req *c, table *resp_hdrs,
 	(r->status == HTTP_OK && lmods == NULL && is_HTTP1) ||
 	r->header_only ||
 	ap_table_get(r->headers_in, "Authorization") != NULL ||
+	ap_table_get(resp_hdrs, "Set-Cookie") != NULL ||
 	nocache) {
 	Explain1("Response is not cacheable, unlinking %s", c->filename);
 /* close the file */
