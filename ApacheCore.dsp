@@ -106,6 +106,10 @@ SOURCE=.\ap\ap_buckets_mmap.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ap\ap_buckets_pipe.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\ap\ap_buckets_refcount.c
 # End Source File
 # Begin Source File
@@ -155,14 +159,6 @@ SOURCE=.\main\http_request.c
 # Begin Source File
 
 SOURCE=.\main\http_vhost.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\main\iol_file.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\main\iol_socket.c
 # End Source File
 # Begin Source File
 
@@ -303,6 +299,10 @@ SOURCE=.\main\util_xml.c
 # Begin Source File
 
 SOURCE=.\include\ap_base64.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\ap_buckets.h
 # End Source File
 # Begin Source File
 
