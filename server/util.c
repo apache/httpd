@@ -71,9 +71,21 @@
 
 #define CORE_PRIVATE
 
+#include "apr.h"
+#include "apr_strings.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for EOF */
+#endif
+#if APR_HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+#if APR_HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+
 #include "ap_config.h"
 #include "ap_base64.h"
-#include "apr_strings.h"
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
@@ -81,17 +93,8 @@
 #include "http_config.h"
 #include "util_ebcdic.h"
 
-#ifdef HAVE_STDIO_H
-#include <stdio.h>
-#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
 #endif
 #ifdef HAVE_NETDB_H
 #include <netdb.h>

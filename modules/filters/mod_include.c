@@ -76,13 +76,16 @@
  * -Doug MacEachern
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_thread_proc.h"
+
 #define CORE_PRIVATE
 
 #ifdef USE_PERL_SSI
 #include "config.h"
 #include "modules/perl/mod_perl.h"
 #else
-#include "apr_strings.h"
 #include "ap_config.h"
 #include "util_filter.h"
 #include "httpd.h"
@@ -1083,7 +1086,9 @@ static int include_cmd(include_ctx_t *ctx, ap_bucket_brigade **bb, char *s,
         build_argv_list(&argv, r, r->pool);
         argv[0] = apr_pstrdup(r->pool, s);
         procnew = apr_pcalloc(r->pool, sizeof(*procnew));
-        rc = apr_create_process(procnew, s, argv, ap_create_environment(r->pool, env), procattr, r->pool);
+        rc = apr_create_process(procnew, s, (const char * const *) argv,
+                                (const char * const *)ap_create_environment(r->pool, env),
+                                procattr, r->pool);
 
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */

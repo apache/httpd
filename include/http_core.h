@@ -59,11 +59,17 @@
 #ifndef APACHE_HTTP_CORE_H
 #define APACHE_HTTP_CORE_H
 
+#include "apr.h"
+
+#if APR_HAVE_STRUCT_RLIMIT
+#include <sys/time.h>
+#include <sys/resource.h>
+#endif
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "apr_lib.h"
 
 /**
  * @package CORE HTTP Daemon

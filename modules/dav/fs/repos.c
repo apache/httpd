@@ -56,8 +56,13 @@
 ** DAV filesystem-based repository provider
 */
 
+#include "apr.h"
 #include "apr_file_io.h"
 #include "apr_strings.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for sprintf() */
+#endif
 
 #include "httpd.h"
 #include "http_log.h"
@@ -349,7 +354,7 @@ static dav_error * dav_fs_copymove_file(
 	    apr_close(inf);
 	    apr_close(outf);
 
-	    if (remove(dst) != 0) {
+	    if (apr_remove_file(dst, p) != 0) {
 		/* ### ACK! Inconsistent state... */
 
 		/* ### use something besides 500? */

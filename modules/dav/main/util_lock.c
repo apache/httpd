@@ -56,13 +56,18 @@
 ** DAV repository-independent lock functions
 */
 
+#include "apr.h"
+#include "apr_strings.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for sprintf() */
+#endif
+
 #include "mod_dav.h"
 #include "http_log.h"
 #include "http_config.h"
 #include "http_protocol.h"
 #include "http_core.h"
-#include "apr_strings.h"
-#include "memory.h"
 
 
 /* ---------------------------------------------------------------

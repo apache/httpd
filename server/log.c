@@ -63,22 +63,28 @@
  * 
  */
 
+#include "apr.h"
+#include "apr_general.h"        /* for signal stuff */
+#include "apr_strings.h"
+#include "apr_errno.h"
+#include "apr_thread_proc.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>
+#endif
+#if APR_HAVE_STDARG_H
+#include <stdarg.h>
+#endif
 
 #define CORE_PRIVATE
-#include "apr.h"  /* for apr_signal */
+
 #include "ap_config.h"
-#include "apr_strings.h"
-#include "apr_lib.h"
-#include "apr_portable.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
 #include "http_main.h"
 
-#ifdef APR_HAVE_STDARG_H
-#include <stdarg.h>
-#endif
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
@@ -199,7 +205,8 @@ static int log_child(apr_pool_t *p, const char *progname,
         apr_tokenize_to_argv(progname, &args, p);
         pname = apr_pstrdup(p, args[0]);
         procnew = (apr_proc_t *) apr_pcalloc(p, sizeof(*procnew));
-        rc = apr_create_process(procnew, pname, args, NULL, procattr, p);
+        rc = apr_create_process(procnew, pname, (const char * const *)args,
+                                NULL, procattr, p);
     
         if (rc == APR_SUCCESS) {
             apr_note_subprocess(p, procnew, kill_after_timeout);
@@ -589,7 +596,8 @@ static int piped_log_spawn(piped_log *pl)
         apr_tokenize_to_argv(pl->program, &args, pl->p);
         pname = apr_pstrdup(pl->p, args[0]);
         procnew = apr_pcalloc(pl->p, sizeof(apr_proc_t));
-        rc = apr_create_process(procnew, pname, args, NULL, procattr, pl->p);
+        rc = apr_create_process(procnew, pname, (const char * const *) args,
+                                NULL, procattr, pl->p);
     
         if (rc == APR_SUCCESS) {            
             /* pjr - This no longer happens inside the child, */

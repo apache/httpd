@@ -71,12 +71,18 @@
  *
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_portable.h"
+#include "apr_file_io.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>
+#endif
+
 #define CORE_PRIVATE
 
 #include "ap_config.h"
-#include "apr_portable.h"
-#include "apr_strings.h"
-#include "apr_file_io.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_protocol.h"

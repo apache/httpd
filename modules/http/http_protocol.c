@@ -63,11 +63,20 @@
  * and the Apache Software Foundation.
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for EOF, sscanf() */
+#endif
+#if APR_HAVE_STDARG_H
+#include <stdarg.h>
+#endif
+
 #define CORE_PRIVATE
 #include "ap_buckets.h"
 #include "util_filter.h"
 #include "ap_config.h"
-#include "apr_strings.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -81,9 +90,7 @@
 #include "util_charset.h"
 #include "util_ebcdic.h"
 #include "mpm_status.h"
-#ifdef APR_HAVE_STDARG_H
-#include <stdarg.h>
-#endif
+
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif

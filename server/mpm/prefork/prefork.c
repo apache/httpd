@@ -85,12 +85,24 @@
  * TODO: - clean up scoreboard stuff when we figure out how to do it in 2.0
  */
 
-#define CORE_PRIVATE
-
-#include "ap_config.h"
+#include "apr.h"
 #include "apr_portable.h"
 #include "apr_strings.h"
 #include "apr_thread_proc.h"
+
+#if APR_HAVE_STDIO_H
+#include <stdio.h>              /* for perror() */
+#endif
+#if APR_HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+#if APR_HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+
+#define CORE_PRIVATE
+
+#include "ap_config.h"
 #include "httpd.h"
 #include "mpm_default.h"
 #include "mpm_status.h"
@@ -108,12 +120,6 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-#ifdef HAVE_SYS_WAIT_H
-#include <sys/wait.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -130,6 +136,7 @@
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
+
 #include <signal.h>
 #include <sys/times.h>
 
