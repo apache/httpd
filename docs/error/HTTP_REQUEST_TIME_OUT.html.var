@@ -39,11 +39,11 @@ Body:----------es--
 Content-language: fr
 Content-type: text/html
 Body:----------fr--
-<!--#set var="TITLE" value="Pr&eacute;condition n&eacute;gative!" -->
+<!--#set var="TITLE" value="Requ&ecirc;te trop longue !" -->
 <!--#include virtual="include/top.html" -->
 
-    La pr&eacute;condition pour l'URL requise a &eacute;t&eacute;
-    &eacute;valu&eacute;e n&eacute;gativement.
+    Le serveur a ferm&eacute; la connection car le navigateur n'a pas 
+    fini la requ&ecirc;te dans le temps sp&eacute;cifi&eacute;.
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
