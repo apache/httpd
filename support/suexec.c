@@ -106,7 +106,6 @@ char *safe_env_lst[] =
     "DOCUMENT_PATH_INFO=",
     "DOCUMENT_ROOT=",
     "DOCUMENT_URI=",
-    "FILEPATH_INFO=",
     "GATEWAY_INTERFACE=",
     "HTTPS=",
     "LAST_MODIFIED=",
