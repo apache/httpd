@@ -1136,8 +1136,9 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
     return host != NULL && ap_strstr_c(host, This->name) != NULL;
 }
 
-int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r)
+apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r)
 {
+    apr_status_t rv;
     int i;
 
     for (i = 0; host[i] != '\0'; i++)
@@ -1149,20 +1150,18 @@ int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, reques
         apr_set_ipaddr(sock, APR_REMOTE, host);
         host = NULL;
     }
-    for(;;)
+
+    do
     {
-        apr_status_t rv = apr_connect(sock, host);
-        if (APR_STATUS_IS_EINTR(rv))
-            continue;
-        else if (rv == APR_SUCCESS)
-            return 0;
-        else {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                "proxy connect to %s port %d failed", host, port);
-            return -1;
-        }
+        rv = apr_connect(sock, host);
+    } while (APR_STATUS_IS_EINTR(rv));
+
+    if (rv != APR_SUCCESS)
+    {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "proxy connect to %s port %d failed", host, port);
     }
-    return -1;
+    return rv;
 }
 
 /* This function is called by ap_table_do() for all header lines */

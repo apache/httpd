@@ -273,7 +273,7 @@ int ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_domainname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_hostname(struct dirconn_entry *This, apr_pool_t *p);
 int ap_proxy_is_word(struct dirconn_entry *This, apr_pool_t *p);
-int ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r);
+apr_status_t ap_proxy_doconnect(apr_socket_t *sock, char *host, apr_uint32_t port, request_rec *r);
 int ap_proxy_garbage_init(server_rec *, apr_pool_t *);
 /* This function is called by ap_table_do() for all header lines */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
