@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/05/05 15:48:35 $]
+Last modified at [$Date: 2003/05/05 15:52:50 $]
 
 Release:
 
@@ -253,7 +253,7 @@ PATCHES TO PORT FROM 2.1
     * Hook mod_rewrite's type checker before mod_mime's one. That way the
       RewriteRule [T=...] Flag should work as expected now. PR 19626.
       modules/mappers/mod_rewrite.c r1.150
-      +1: nd
+      +1: nd, trawick
 
 CURRENT RELEASE NOTES:
 
