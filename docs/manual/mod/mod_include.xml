@@ -648,7 +648,7 @@ directive]&quot;</default>
     below:</p>
 
     <example><title>SSI directives with alternate start and end tags</title>
-      &lt;%#printenv %&gt;
+      &lt;%printenv %&gt;
     </example>
 </usage>
 <seealso><directive module="mod_include">SSIEndTag</directive></seealso>
