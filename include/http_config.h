@@ -789,7 +789,7 @@ AP_DECLARE(void) ap_show_modules(void);
  * @return The setup server_rec list.
  * @deffunc server_rec *ap_read_config(process_rec *process, apr_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree)
  */
-AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree);
+AP_DECLARE(server_rec *) ap_read_config(process_rec *process, apr_pool_t *temp_pool, const char *config_name, ap_directive_t **conftree);
 
 /**
  * Run all post config hooks for loaded modules.
