@@ -60,6 +60,11 @@
                                   others think that what you
                                   are doing is honourable.''
                                     -- Ben Laurie, Apache-SSL author */
+#include "httpd.h"
+#include "http_config.h"
+
+#if 0 /* XXX */
+
 #include "mod_ssl.h"
 
 /*  _________________________________________________________________
@@ -72,7 +77,7 @@
  *  identify the module to SCCS `what' and RCS `ident' commands
  */
 static char const sccsid[] = "@(#) mod_ssl/" MOD_SSL_VERSION " >";
-static char const rcsid[]  = "$Id: mod_ssl.c,v 1.2 2001/05/04 22:20:45 rse Exp $";
+static char const rcsid[]  = "$Id: mod_ssl.c,v 1.3 2001/05/05 09:25:52 rse Exp $";
 
 /*
  *  the table of configuration directives we provide
@@ -242,5 +247,17 @@ module MODULE_VAR_EXPORT ssl_module = {
     ssl_hook_RewriteCommand,  /* configuration command rewriting     */
     ssl_hook_NewConnection,   /* socket connection open              */
     ssl_hook_CloseConnection  /* socket connection close             */
+};
+
+#endif /* XXX */
+
+module AP_MODULE_DECLARE_DATA ssl_module = {
+    STANDARD20_MODULE_STUFF,
+    NULL,                       /* create per-directory config structure */
+    NULL,                       /* merge per-directory config structures */
+    NULL,                       /* create per-server config structure */
+    NULL,                       /* merge per-server config structures */
+    NULL,                       /* command apr_table_t */
+    NULL                        /* register hooks */
 };
 
