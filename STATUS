@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/23 15:07:08 $]
+Last modified at [$Date: 2004/03/24 02:58:02 $]
 
 Release:
 
@@ -87,6 +87,13 @@ PATCHES TO BACKPORT FROM 2.1
        there are no Listen directives.
            server/listen.c: r1.101
        +1: trawick, stoddard
+
+    *) Fix memory corruption problem with ap_custom_response()
+       function.  This turns Apache + a popular third-party module
+       into a crash-a-matic :(
+           include/http_core.h: r1.82
+           server/core.c: r1.268
+       +1: trawick
 
     *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
        segmentation fault.
