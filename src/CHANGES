@@ -1,6 +1,8 @@
 Changes with Apache 1.2b7
 
-  *) Extensive performance improvements. [Dean Gaudet]
+  *) Extensive performance improvements. Cleaned up inefficient use of
+     auto initializers, multiple is_matchexp calls on a static string,
+     and excessive merging of response_code_strings. [Dean Gaudet]
 
   *) Several fixes for suexec wrapper. [Randy Terbush]
      - Make wrapper work for files on NFS filesystem.
@@ -55,7 +57,11 @@ Changes with Apache 1.2b7
   *) Improved buffered output to the client by delaying the flush decision
      until the BUFF code is actually about to read the next request.
      This fixes a problem introduced in 1.2b5 with clients that send
-     an extra CRLF after a POST request. [Dean Gaudet]
+     an extra CRLF after a POST request. Also improved chunked output
+     performance by combining writes using writev() and removing as
+     many bflush() calls as possible.  NOTE: Platforms without writev()
+     must add -DNO_WRITEV to the compiler CFLAGS, either in Configuration
+     or Configure, unless we have already done so.  [Dean Gaudet]
 
   *) Fixed mod_rewrite bug which truncated the rewritten URL [Marc Slemko]
 

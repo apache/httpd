@@ -57,6 +57,9 @@
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
+#ifndef NO_WRITEV
+#include <sys/uio.h>
+#endif
 
 #include "conf.h"
 #include "alloc.h"
@@ -115,13 +118,16 @@ bcreate(pool *p, int flags)
     if (flags & B_RD) fb->inbase = palloc(p, fb->bufsiz);
     else fb->inbase = NULL;
 
-    if (flags & B_WR) fb->outbase = palloc(p, fb->bufsiz);
+    /* overallocate so that we can put a chunk trailer of CRLF into this
+     * buffer */
+    if (flags & B_WR) fb->outbase = palloc(p, fb->bufsiz + 2);
     else fb->outbase = NULL;
 
     fb->inptr = fb->inbase;
 
     fb->incnt = 0;
     fb->outcnt = 0;
+    fb->outchunk = -1;
     fb->error = NULL;
     fb->bytes_sent = 0L;
 
@@ -175,22 +181,105 @@ bgetopt(BUFF *fb, int optname, void *optval)
 }
 
 /*
+ * start chunked encoding
+ */
+static void
+start_chunk( BUFF *fb )
+{
+    char chunksize[16];	/* Big enough for practically anything */
+    int chunk_header_size;
+
+    if( fb->outchunk != -1 ) {
+	/* already chunking */
+	return;
+    }
+    if( !(fb->flags & B_WR) ) {
+	/* unbuffered writes */
+	return;
+    }
+
+    /* we know that the chunk header is going to take at least 3 bytes... */
+    chunk_header_size = ap_snprintf( chunksize, sizeof(chunksize),
+	"%x\015\012", fb->bufsiz - fb->outcnt - 3 );
+    /* we need at least the header_len + at least 1 data byte
+     * remember that we've overallocated fb->outbase so that we can always
+     * fit the two byte CRLF trailer
+     */
+    if( fb->bufsiz - fb->outcnt < chunk_header_size + 1 ) {
+	bflush(fb);
+    }
+    /* assume there's enough space now */
+    memcpy( &fb->outbase[fb->outcnt], chunksize, chunk_header_size );
+    fb->outchunk = fb->outcnt;
+    fb->outcnt += chunk_header_size;
+    fb->outchunk_header_size = chunk_header_size;
+}
+
+
+/*
+ * end a chunk -- tweak the chunk_header from start_chunk, and add a trailer
+ */
+static void
+end_chunk( BUFF *fb )
+{
+    int i;
+
+    if( fb->outchunk == -1 ) {
+	/* not chunking */
+	return;
+    }
+
+    if( fb->outchunk + fb->outchunk_header_size == fb->outcnt ) {
+	/* nothing was written into this chunk, and we can't write a 0 size
+	 * chunk because that signifies EOF, so just erase it
+	 */
+	fb->outcnt = fb->outchunk;
+	fb->outchunk = -1;
+	return;
+    }
+
+    /* we know this will fit because of how we wrote it in start_chunk() */
+    i = ap_snprintf( &fb->outbase[fb->outchunk], fb->outchunk_header_size,
+	"%x", fb->outcnt - fb->outchunk - fb->outchunk_header_size );
+
+    /* we may have to tack some trailing spaces onto the number we just wrote
+     * in case it was smaller than our estimated size.  We've also written
+     * a \0 into the buffer with ap_snprintf so we might have to put a
+     * \r back in.
+     */
+    i += fb->outchunk;
+    while( fb->outbase[i] != '\015' && fb->outbase[i] != '\012' ) {
+	fb->outbase[i++] = ' ';
+    }
+    if( fb->outbase[i] == '\012' ) {
+	/* we overwrote the \r, so put it back */
+	fb->outbase[i-1] = '\015';
+    }
+
+    /* tack on the trailing CRLF, we've reserved room for this */
+    fb->outbase[fb->outcnt++] = '\015';
+    fb->outbase[fb->outcnt++] = '\012';
+
+    fb->outchunk = -1;
+}
+
+
+/*
  * Set a flag on (1) or off (0).
  */
 int bsetflag(BUFF *fb, int flag, int value)
 {
-    if( flag & B_CHUNK ) {
-	/*
-	 * This shouldn't be true for much longer -djg
-	 * Currently, these flags work
-	 * as a function of the bcwrite() function, so we make sure to
-	 * flush before setting them one way or the other; otherwise
-	 * writes could end up with the wrong flag.
-	 */
-	bflush(fb);
+    if (value) {
+	fb->flags |= flag;
+	if( flag & B_CHUNK ) {
+	    start_chunk(fb);
+	}
+    } else {
+	fb->flags &= ~flag;
+	if( flag & B_CHUNK ) {
+	    end_chunk(fb);
+	}
     }
-    if (value) fb->flags |= flag;
-    else fb->flags &= ~flag;
     return value;
 }
 
@@ -542,30 +631,78 @@ write_it_all( int fd, const void *buf, int nbyte ) {
  * an interim solution pending a complete rewrite of all this stuff in
  * 2.0, using something like sfio stacked disciplines or BSD's funopen().
  */
-int bcwrite(BUFF *fb, const void *buf, int nbyte) {
+static int
+bcwrite(BUFF *fb, const void *buf, int nbyte) {
 
-    if (fb->flags & B_CHUNK) {
-	char chunksize[16];	/* Big enough for practically anything */
+    char chunksize[16];	/* Big enough for practically anything */
+#ifndef NO_WRITEV
+    struct iovec vec[3];
+    int i, rv;
+#endif
 
-	ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012", nbyte);
-	if( write_it_all(fb->fd, chunksize, strlen(chunksize)) == -1 ) {
-	    return( -1 );
-	}
-	if( write_it_all(fb->fd, buf, nbyte) == -1 ) {
-	    return( -1 );
-	}
-	if( write_it_all(fb->fd, "\015\012", 2) == -1 ) {
-	    return( -1 );
-	}
-	return( nbyte );
+    if( !(fb->flags & B_CHUNK) ) return write( fb->fd, buf, nbyte );
+
+#ifdef NO_WRITEV
+    /* without writev() this has poor performance, too bad */
+
+    ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012", nbyte);
+    if( write_it_all(fb->fd, chunksize, strlen(chunksize)) == -1 ) {
+	return( -1 );
     }
-    return( write(fb->fd, buf, nbyte) );
+    if( write_it_all(fb->fd, buf, nbyte) == -1 ) {
+	return( -1 );
+    }
+    if( write_it_all(fb->fd, "\015\012", 2) == -1 ) {
+	return( -1 );
+    }
+    return( nbyte );
+#else
+#define NVEC	(sizeof(vec)/sizeof(vec[0]))
+
+    vec[0].iov_base = chunksize;
+    vec[0].iov_len = ap_snprintf(chunksize, sizeof(chunksize), "%x\015\012",
+	nbyte);
+    vec[1].iov_base = (void *)buf;	/* cast is to avoid const warning */
+    vec[1].iov_len = nbyte;
+    vec[2].iov_base = "\r\n";
+    vec[2].iov_len = 2;
+    /* while it's nice an easy to build the vector and crud, it's painful
+     * to deal with a partial writev()
+     */
+    for( i = 0; i < NVEC; ) {
+	do rv = writev( fb->fd, &vec[i], NVEC - i );
+	while ( rv == -1 && errno == EINTR );
+	if( rv == -1 ) {
+	    return( -1 );
+	}
+	/* recalculate vec to deal with partial writes */
+	while( rv > 0 ) {
+	    if( rv <= vec[i].iov_len ) {
+		vec[i].iov_base = (char *)vec[i].iov_base + rv;
+		vec[i].iov_len -= rv;
+		rv = 0;
+		if( vec[i].iov_len == 0 ) {
+		    ++i;
+		}
+	    } else {
+		rv -= vec[i].iov_len;
+		++i;
+	    }
+	}
+    }
+    /* if we got here, we wrote it all */
+    return( nbyte );
+#undef NVEC
+#endif
 }
+
 
 /*
  * Write nbyte bytes.
  * Only returns fewer than nbyte if an error ocurred.
  * Returns -1 if no bytes were written before the error ocurred.
+ * It is worth noting that if an error occurs, the buffer is in an unknown
+ * state.
  */
 int
 bwrite(BUFF *fb, const void *buf, int nbyte)
@@ -577,7 +714,8 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 
     if (!(fb->flags & B_WR))
     {
-/* unbuffered write */
+/* unbuffered write -- have to use bcwrite since we aren't taking care
+ * of chunking any other way */
 	do i = bcwrite(fb, buf, nbyte);
 	while (i == -1 && errno == EINTR);
 	if (i > 0) fb->bytes_sent += i;
@@ -611,8 +749,17 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 	}
 
 /* the buffer must be full */
-	do i = bcwrite(fb, fb->outbase, fb->bufsiz);
-	while (i == -1 && errno == EINTR);
+	if( fb->flags & B_CHUNK ) {
+	    end_chunk(fb);
+	    /* it is just too painful to try to re-cram the buffer while
+	     * chunking
+	     */
+	    i = write_it_all( fb->fd, fb->outbase, fb->outcnt )
+		    ? -1 : fb->outcnt;
+	} else {
+	    do i = write(fb->fd, fb->outbase, fb->outcnt);
+	    while (i == -1 && errno == EINTR);
+	}
 	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)
 	{
@@ -629,21 +776,20 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 	    else return nwr;
 	}
 
-/*
- * we should have written all the data, however if the fd was in a
- * strange (non-blocking) mode, then we might not have done so.
- */
-	if (i < fb->bufsiz)
+	/* deal with a partial write */
+	if (i < fb->outcnt)
 	{
-	    int j, n=fb->bufsiz;
+	    int j, n=fb->outcnt;
 	    unsigned char *x=fb->outbase;
 	    for (j=i; j < n; j++) x[j-i] = x[j];
-	    fb->outcnt = fb->bufsiz - i;
+	    fb->outcnt -= i;
 	} else
 	    fb->outcnt = 0;
     }
 /* we have emptied the file buffer. Now try to write the data from the
- * original buffer until there is less than bufsiz left
+ * original buffer until there is less than bufsiz left.  Note that we
+ * use bcwrite() to do this for us, it will do the chunking so that
+ * we don't have to dink around building a chunk in our own buffer.
  */
     while (nbyte >= fb->bufsiz)
     {
@@ -670,8 +816,10 @@ bwrite(BUFF *fb, const void *buf, int nbyte)
 	nbyte -= i;
     }
 /* copy what's left to the file buffer */
-    if (nbyte > 0) memcpy(fb->outbase, buf, nbyte);
-    fb->outcnt = nbyte;
+    fb->outcnt = 0;
+    if( fb->flags & B_CHUNK ) start_chunk( fb );
+    if (nbyte > 0) memcpy(fb->outbase + fb->outcnt, buf, nbyte);
+    fb->outcnt += nbyte;
     nwr += nbyte;
     return nwr;
 }
@@ -689,10 +837,12 @@ bflush(BUFF *fb)
 
     if (fb->flags & B_WRERR) return -1;
     
+    if( fb->flags & B_CHUNK ) end_chunk(fb);
+
     while (fb->outcnt > 0)
     {
 /* the buffer must be full */
-	do i = bcwrite(fb, fb->outbase, fb->outcnt);
+	do i = write(fb->fd, fb->outbase, fb->outcnt);
 	while (i == -1 && errno == EINTR);
 	if (i > 0) fb->bytes_sent += i;
 	if (i == 0)

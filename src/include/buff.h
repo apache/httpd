@@ -79,6 +79,8 @@ struct buff_struct
     unsigned char *inptr;  /* pointer to next location to read */
     int incnt;             /* number of bytes left to read from input buffer;
 			    * always 0 if had a read error  */
+    int outchunk;	   /* location of chunk header when chunking */
+    int outchunk_header_size; /* how long the header is */
     int outcnt;            /* number of byte put in output buffer */
     unsigned char *inbase;
     unsigned char *outbase;
