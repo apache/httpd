@@ -246,6 +246,7 @@ API_EXPORT(void) aplog_error (const char *file, int line, int level,
     if (s->error_log) {
 	fprintf(s->error_log, "[%s] %s", get_time(), errstr);
 	vfprintf(s->error_log, fmt, args);
+	fprintf(s->error_log, "\n");
 	fflush(s->error_log);
     }
 #ifdef HAVE_SYSLOG
