@@ -761,6 +761,16 @@ API_EXPORT(configfile_t *) ap_pcfg_openfile(pool *p, const char *name)
         return NULL;
     }
 
+#if defined(WIN32)
+    if (!ap_os_is_filename_valid(name)) {
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, NULL,
+                    "Access to config file %s denied: not a valid filename",
+                    name);
+	errno = EACCES;
+        return NULL;
+    }
+#endif
+
     file = ap_pfopen(p, name, "r");
 #ifdef DEBUG
     saved_errno = errno;

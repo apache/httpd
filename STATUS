@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/05 07:08:59 $]
+  Last modified at [$Date: 1999/01/05 08:17:24 $]
 
 Release:
 
@@ -16,12 +16,6 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-    * Paul's [PATCH] Win32 device files
-        Message-ID: <Pine.LNX.4.00.9812021631410.21697-100000@ecstasy.localnet>
-                and <000401be2225$861f11b0$bf4d2509@wolfpad.raleigh.ibm.com>
-        Status: Someone who knows the current status of this thing should
-                apply it now, since the rest of us can't test it otherwise.
-      
     * long pathnames with many components and no AllowOverride None
         Status: Marc is looking at it
 

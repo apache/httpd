@@ -1,5 +1,9 @@
 Changes with Apache 1.3.4
 
+  *) SECURITY: ap_os_is_filename_valid() has been added to Win32
+     to detect and prevent access to special DOS device file names.
+     [Paul Sutton, Ken Parzygnat]
+     
   *) WIN32: Created new makefiles Makefile_win32.txt (normal build)
      and Makefile_win32_debug.txt (debug build) that work on Win95.
      Run each of the following from the src directory:

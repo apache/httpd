@@ -203,6 +203,7 @@ ap_null_cleanup
 ap_open_logs
 ap_open_piped_log
 ap_os_escape_path
+ap_os_is_filename_valid
 ap_os_is_path_absolute
 ap_overlay_tables
 ap_overlap_tables

@@ -195,12 +195,13 @@
  * 19990101             - renamed macro escape_uri() to ap_escape_uri()
  *                      - added MODULE_MAGIC_COOKIE to identify module structs
  * 19990103 (1.3.4-dev) - added ap_array_pstrcat()
+ * 19990105 (1.3.4-dev) - added ap_os_is_filename_valid() to Win32
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503133UL /* "AP13" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 19990103
+#define MODULE_MAGIC_NUMBER_MAJOR 19990105
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */

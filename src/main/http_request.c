@@ -179,7 +179,6 @@ static int get_path_info(request_rec *r)
     char *last_cp = NULL;
     int rv;
 #ifdef WIN32
-    char buf[5];
     BOOL bStripSlash=TRUE;
 #endif
 
@@ -189,16 +188,12 @@ static int get_path_info(request_rec *r)
     }
 
 #ifdef WIN32
-    /* If the path is x:/, then convert it to x:/., coz that's what stat
-     * needs to work properly
+    /* If the directory is x:\, then we don't want to strip
+     * the trailing slash since x: is not a valid directory.
      */
-    if (strlen(path) == 3 && path[1] == ':') {
-	strcpy(buf,path);
-	buf[3]='.';
-	buf[4]='\0';
-	path=buf;
-	end=buf+4;
-    }
+    if (strlen(path) == 3 && path[1] == ':' && path[2] == '/')
+        bStripSlash = FALSE;
+
 
     /* If UNC name == //machine/share/, do not 
      * advance over the trailing slash.  Any other
@@ -234,8 +229,25 @@ static int get_path_info(request_rec *r)
 
         *cp = '\0';
 
+#ifdef WIN32
+        /* We must not stat() filenames such as "/file/aux" since it can cause
+         * delays or lockups. So pretend that they do not exist by returning
+         * an ENOENT error. This will force us to drop that part of the path and
+         * keep looking back for a "real" file that exists, while still allowing
+         * the "invalid" path parts within the PATH_INFO.
+         */
+        if (!ap_os_is_filename_valid(path)) {
+            errno = ENOENT;
+            rv = -1;
+        }
+        else {
+            errno = 0;
+            rv = stat(path, &r->finfo);
+        }
+#else
         errno = 0;
         rv = stat(path, &r->finfo);
+#endif
 
         if (cp != end)
             *cp = '/';
@@ -315,7 +327,7 @@ static int directory_walk(request_rec *r)
     char *test_filename;
     char *test_dirname;
     int res;
-    unsigned i, num_dirs;
+    unsigned i, num_dirs, iStart;
     int j, test_filename_len;
 
     /*
@@ -395,6 +407,14 @@ static int directory_walk(request_rec *r)
     ap_no2slash(test_filename);
     num_dirs = ap_count_dirs(test_filename);
 
+#ifdef WIN32
+    if (!ap_os_is_filename_valid(r->filename)) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r,
+                      "Filename is not valid: %s", r->filename);
+        return HTTP_FORBIDDEN;
+    }
+#endif
+
     if ((res = check_safe_file(r))) {
         return res;
     }
@@ -415,9 +435,18 @@ static int directory_walk(request_rec *r)
      */
     test_dirname = ap_palloc(r->pool, test_filename_len + 2);
 
+    iStart = 1;
+#ifdef WIN32
+    /* If the name is a UNC name, then do not walk through the
+     * machine and share name (e.g. \\machine\share\)
+     */
+    if (num_dirs > 3 && test_filename[0] == '/' && test_filename[1] == '/')
+        iStart = 4;
+#endif
+
     /* j keeps track of which section we're on, see core_reorder_directories */
     j = 0;
-    for (i = 1; i <= num_dirs; ++i) {
+    for (i = iStart; i <= num_dirs; ++i) {
         int overrides_here;
         core_dir_config *core_dir = (core_dir_config *)
             ap_get_module_config(per_dir_defaults, &core_module);
@@ -803,7 +832,7 @@ API_EXPORT(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
         rnew->uri = ap_make_full_path(rnew->pool, udir, new_file);
         rnew->filename = ap_make_full_path(rnew->pool, fdir, new_file);
-	ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
+        ap_parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
         if (stat(rnew->filename, &rnew->finfo) < 0) {
             rnew->finfo.st_mode = 0;
         }
