@@ -1,3 +1,17 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Po¾adované URI je pøíli¹ velké!"
+--><!--#include virtual="include/top.html" -->
+
+    Délka po¾adovaného URL pøesahuje kapacitní limit tohoto
+    serveru. Po¾adavek nemù¾e být zpracován.
+   
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--

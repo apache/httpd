@@ -1,3 +1,16 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Nelze zpracovat po¾adavek!"
+--><!--#include virtual="include/top.html" -->
+
+    Server nepodporuje akci po¾adovanou prohlí¾eèem.
+   
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--

@@ -1,3 +1,17 @@
+Content-language: cs
+Content-type: text/html; charset=ISO-8859-2
+Body:----------cs--
+<!--#set var="CONTENT_LANGUAGE" value="cs"
+--><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Metoda nepovolena!"
+--><!--#include virtual="include/top.html" -->
+
+    Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    není pro po¾adované URL povolena.
+    
+<!--#include virtual="include/bottom.html" -->
+----------cs--
+
 Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
