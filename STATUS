@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/05/28 18:06:06 $]
+Last modified at [$Date: 2002/05/28 21:07:58 $]
 
 Release:
 
@@ -98,9 +98,6 @@ RELEASE SHOWSTOPPERS:
 
     * Find a better name for ap_signal_server()
       Message-ID: <m37kltilb3.fsf@rdu88-251-253.nc.rr.com>
-
-    * apr_brigade_write() is not flushing in all cases it should
-      Status: Cliff will fix this
 
     * /dev/random vs. /dev/urandom
       Status: Cliff is working on a patch to make this configurable.
