@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/23 18:19:28 $]
+Last modified at [$Date: 2004/09/24 13:11:35 $]
 
 Release:
 
@@ -75,19 +75,9 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
-    *) Fix Expires (freshness) handling in mod_cache
-       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/
-         cache_util.c?r1=1.33&r2=1.34
-         mod_cache.h?r1=1.49&r2=1.50
-         mod_cache.c?r1=1.89&r2=1.90
-         mod_mem_cache.c?r1=1.116&r2=1.117
-         mod_disk_cache.c?r1=1.60&r2=1.61
-         cache_storage.c?r1=1.36&r2=1.37
-       +1: stoddard, jerenkrantz, clar
-
     *) Fix mod_disk_cache race conditions in storing the response body.
        modules/experimental/mod_disk_cache.c: 1.61
-       +1: jerenkrantz
+       +1: jerenkrantz, stoddard
 
     *) Fix a segfault in the LDAP cache purge. PR 24801
          modules/ldap/util_ldap_cache_mgr.c: 1.9, 1.10

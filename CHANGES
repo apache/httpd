@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) mod_disk_cache: Fix races in saving responses.  [Justin Erenkrantz]
+
+  *) Fix Expires handling in mod_cache.  [Justin Erenkrantz]
 
 Changes with Apache 2.0.52
 
