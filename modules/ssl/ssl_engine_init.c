@@ -270,12 +270,10 @@ void ssl_init_Module(server_rec *s, pool *p)
  */
 void ssl_init_SSLLibrary(void)
 {
-#ifdef WIN32
     CRYPTO_malloc_init();
-#endif
     SSL_load_error_strings();
     SSL_library_init();
-    ssl_util_thread_setup();
+    /* XXX CRYPTO_set_locking_callback(); */
     X509V3_add_standard_extensions();
     return;
 }
