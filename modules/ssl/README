@@ -140,21 +140,3 @@
      mod_ssl automatically recognizes this OpenSSL variant and then can
      activate external crypto devices through SSLCryptoDevice directive.
 
- VENDOR EXTENSIONS
-
- Inside the mod_ssl sources you can enable various EAPI vendor hooks
- (`ap::mod_ssl::vendor::xxxx') by using the APACI --enable-rule=SSL_VENDOR
- option.  These hooks can be used to change or extend mod_ssl by a vendor
- without patching the source code. Grep for `ap::mod_ssl::vendor::'.
- Additionally vendors can add their own source code to files named
- ssl_vendor.c, ssl_vendor_XXX.c, etc.  The libssl.module script automatically
- picks these up under configuration time and mod_ssl under run-time calls the
- functions `void ssl_vendor_register(void)' and `void
- ssl_vendor_unregister(void)' inside these objects to bootstrap them.
-
- An ssl_vendor.c should at least contain the following contents:
-
-   |  #include "mod_ssl.h"
-   |  void ssl_vendor_register(void) { return; }
-   |  void ssl_vendor_unregister(void) { return; }
-

@@ -145,11 +145,6 @@ void ssl_init_Module(server_rec *s, pool *p)
         ssl_log(s, SSL_LOG_INFO, "Init: %d%s restart round (already detached)",
                 mc->nInitCount-2, (mc->nInitCount-2) == 1 ? "st" : "nd");
 
-#ifdef SSL_VENDOR
-    ap_hook_use("ap::mod_ssl::vendor::init_module",
-                AP_HOOK_SIG3(void,ptr,ptr), AP_HOOK_ALL, s, p);
-#endif
-
     /*
      *  The initialization phase inside the Apache API is totally bogus.
      *  We actually have three non-trivial problems:
@@ -829,12 +824,6 @@ void ssl_init_ConfigureServer(server_rec *s, pool *p, SSLSrvConfigRec *sc)
                 "server certificate chain (%d CA certificate%s)", cpVHostID,
                 n, n == 1 ? "" : "s");
     }
-
-#ifdef SSL_VENDOR
-    ap_hook_use("ap::mod_ssl::vendor::configure_server",
-                AP_HOOK_SIG4(void,ptr,ptr,ptr), AP_HOOK_ALL, 
-                s, p, sc);
-#endif
 
     return;
 }
