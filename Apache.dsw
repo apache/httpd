@@ -78,9 +78,6 @@ Package=<4>
     Project_Dep_Name mod_auth_digest
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_auth_ldap
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mod_authn_anon
     End Project Dependency
     Begin Project Dependency
@@ -91,6 +88,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authn_file
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_authnz_ldap
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authz_dbm
@@ -661,6 +661,30 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_authnz_ldap"=.\modules\aaa\mod_authnz_ldap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_ldap
     End Project Dependency
 }}}
 
@@ -1350,6 +1374,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_ldap"=.\modules\ldap\mod_ldap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_log_config"=.\modules\loggers\mod_log_config.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1894,27 +1939,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name aprutil
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "util_ldap"=.\modules\ldap\util_ldap.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
     End Project Dependency
 }}}
 
