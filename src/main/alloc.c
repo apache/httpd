@@ -2624,15 +2624,28 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
     return pid;
 }
 
+
+/* 
+ * Timing constants for killing subprocesses
+ * There is a total 3-second delay between sending a SIGINT 
+ * and sending of the final SIGKILL.
+ * TIMEOUT_INTERVAL should be set to TIMEOUT_USECS / 64
+ * for the exponetial timeout alogrithm.
+ */
+#define TIMEOUT_USECS    3000000
+#define TIMEOUT_INTERVAL   46875
+
 static void free_proc_chain(struct process_chain *procs)
 {
     /* Dispose of the subprocesses we've spawned off in the course of
      * whatever it was we're cleaning up now.  This may involve killing
      * some of them off...
      */
-
+    struct timeval tv;
     struct process_chain *p;
     int need_timeout = 0;
+    int timeout_interval;
+    int exit_int;
     int status;
 
     if (procs == NULL)
@@ -2694,18 +2707,49 @@ static void free_proc_chain(struct process_chain *procs)
 	if ((p->kill_how == kill_after_timeout)
 	    || (p->kill_how == kill_only_once)) {
 	    /* Subprocess may be dead already.  Only need the timeout if not. */
-	    if (ap_os_kill(p->pid, SIGTERM) != -1)
+	    if (ap_os_kill(p->pid, SIGTERM) == -1) {
+                p->kill_how = kill_never;
+            }
+            else {
 		need_timeout = 1;
+            }
 	}
 	else if (p->kill_how == kill_always) {
 	    kill(p->pid, SIGKILL);
 	}
     }
 
-    /* Sleep only if we have to... */
+    /* Sleep only if we have to. The sleep algorithm grows
+     * by a factor of two on each iteration. TIMEOUT_INTERVAL
+     * is equal to TIMEOUT_USECS / 64.
+     */
+    if (need_timeout) {
+        timeout_interval = TIMEOUT_INTERVAL;
+        tv.tv_sec = 0;
+        tv.tv_usec = timeout_interval;
+        select(0, NULL, NULL, NULL, &tv);
 
-    if (need_timeout)
-	sleep(3);
+        do {
+            need_timeout = 0;
+            for (p = procs; p; p = p->next) {
+                if (p->kill_how == kill_after_timeout) {
+                    if (waitpid(p->pid, (int *) 0, WNOHANG | WUNTRACED) > 0)
+                        p->kill_how = kill_never;
+                    else
+                        need_timeout = 1;
+                }
+            }
+            if (need_timeout) {
+                if (timeout_interval >= TIMEOUT_USECS) {
+                    break;
+                }
+                tv.tv_sec = timeout_interval / 1000000;
+                tv.tv_usec = timeout_interval % 1000000;
+                select(0, NULL, NULL, NULL, &tv);
+                timeout_interval *= 2;
+            }
+        } while (need_timeout);
+    }
 
     /* OK, the scripts we just timed out for have had a chance to clean up
      * --- now, just get rid of them, and also clean up the system accounting
@@ -2713,7 +2757,6 @@ static void free_proc_chain(struct process_chain *procs)
      */
 
     for (p = procs; p; p = p->next) {
-
 	if (p->kill_how == kill_after_timeout)
 	    kill(p->pid, SIGKILL);
 

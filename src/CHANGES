@@ -1,4 +1,12 @@
 Changes with Apache 1.3.28
+  *) Update timeout algorithm in free_proc_chain. If a subprocess
+     did not exit immediately, the thread would sleep for 3 seconds
+     before checking the subprocess exit status again. In a very
+     common case when the subprocess was an HTTP server CGI script,
+     the CGI script actually exited a fraction of a second into the 3
+     second sleep, which effectively limited the server to serving one 
+     CGI request every 3 seconds across a persistent connection.
+     PRs 6961, 8664 [Bill Stoddard]
 
   *) mod_setenvif: Add SERVER_ADDR special keyword to allow
      envariable setting according to the server IP address
