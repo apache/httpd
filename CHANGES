@@ -18,10 +18,6 @@ Changes with Apache 2.1.0-dev
      AUTH_GENERAL_ERROR.
      [Geoffrey Young]
 
-  *) fix "Expected </Foo>> but saw </Foo>" errors in nested,
-     argumentless containers.
-     ["Philippe M. Chiasson" <gozer cpan.org>]
-
   *) mod_isapi: GetServerVariable returned improperly terminated header 
      fields given "ALL_HTTP" or "ALL_RAW".  PR 20656.
      [Jesse Pelton <jsp pkc.com>]
@@ -172,9 +168,6 @@ Changes with Apache 2.1.0-dev
   *) mod_ext_filter: Add the ability to filter request bodies.
      [Philipp Reisner <philipp.reisner linbit.com>]
 
-  *) mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
-     [Glenn Nielsen <glenn apache.org>]
-
   *) Fix some broken log messages in WinNT MPM.  
      [Juan Rivera <Juan.Rivera citrix.com>]
 
@@ -278,6 +271,13 @@ Changes with Apache 2.1.0-dev
 
 Changes with Apache 2.0.49
 
+  *) SECURITY: CAN-2004-0113 (cve.mitre.org)
+     mod_ssl: Fix a memory leak in plain-HTTP-on-SSL-port handling.
+     PR 27106.  [Joe Orton]
+
+  *) mod_ssl: Fix bug in passphrase handling which could cause spurious
+     failures in SSL functions later.  PR 21160.  [Joe Orton]
+
   *) mod_log_config: Fix corruption of buffered logs with threaded
      MPMs.  PR 25520.  [Jeff Trawick]
 
@@ -293,8 +293,15 @@ Changes with Apache 2.0.49
      methods than the original request.  PR 25040.
      [Josh Dady <jpd indecisive.com>]
 
+  *) fix "Expected </Foo>> but saw </Foo>" errors in nested,
+     argumentless containers.
+     ["Philippe M. Chiasson" <gozer cpan.org>]
+
   *) mod_auth_ldap: Fix some segfaults in the cache logic.  PR 18756.
      [Matthieu Estrade <apache moresecurity.org>, Brad Nicholes]
+
+  *) mod_cgid: Restart the cgid daemon if it crashes.  PR 19849
+     [Glenn Nielsen <glenn apache.org>]
 
   *) The whole codebase was relicensed and is now available under
      the Apache License, Version 2.0 (http://www.apache.org/licenses).
