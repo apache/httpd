@@ -342,7 +342,7 @@ enum kill_conditions {
 };
 
 typedef struct child_info child_info;
-API_EXPORT(void) ap_note_subprocess(pool *a, int pid,
+API_EXPORT(void) ap_note_subprocess(pool *a, pid_t pid,
 				    enum kill_conditions how);
 API_EXPORT(int) ap_spawn_child(pool *, int (*)(void *, child_info *),
 				   void *, enum kill_conditions,

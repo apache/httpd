@@ -1998,8 +1998,8 @@ struct process_chain {
     struct process_chain *next;
 };
 
-API_EXPORT(void) ap_note_subprocess(pool *a, int pid, enum kill_conditions how)
-{
+API_EXPORT(void) ap_note_subprocess(pool *a, pid_t pid, enum kill_conditions 
+how) {
     struct process_chain *new =
     (struct process_chain *) ap_palloc(a, sizeof(struct process_chain));
 
@@ -2022,11 +2022,11 @@ API_EXPORT(void) ap_note_subprocess(pool *a, int pid, enum kill_conditions how)
 #define BINMODE
 #endif
 
-static int spawn_child_core(pool *p, int (*func) (void *, child_info *),
+static pid_t spawn_child_core(pool *p, int (*func) (void *, child_info *),
 			    void *data,enum kill_conditions kill_how,
 			    int *pipe_in, int *pipe_out, int *pipe_err)
 {
-    int pid;
+    pid_t pid;
     int in_fds[2];
     int out_fds[2];
     int err_fds[2];
@@ -2220,7 +2220,8 @@ API_EXPORT(int) ap_spawn_child(pool *p, int (*func) (void *, child_info *),
 			       FILE **pipe_err)
 {
     int fd_in, fd_out, fd_err;
-    int pid, save_errno;
+    pid_t pid;
+    int save_errno;
 
     ap_block_alarms();
 
@@ -2280,7 +2281,7 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
     HANDLE hPipeOutputReadDup = NULL;
     HANDLE hPipeErrorReadDup  = NULL;
     HANDLE hCurrentProcess;
-    int pid = 0;
+    pid_t pid = 0;
     child_info info;
 
 
@@ -2452,7 +2453,8 @@ API_EXPORT(int) ap_bspawn_child(pool *p, int (*func) (void *, child_info *), voi
 
 #else
     int fd_in, fd_out, fd_err;
-    int pid, save_errno;
+    pid_t pid;
+    int save_errno;
 
     ap_block_alarms();
 
