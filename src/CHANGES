@@ -1,5 +1,16 @@
 Changes with Apache 1.3.10
 
+  *) WIN32: The following bugs introduced in Apache 1.3.9 have been fixed
+     - CGIs broken if script calls other programs which deliver on stdout
+       (Search this file for "DETACHED")
+     - 16 bit CGIs should work now
+     - Server will not start if passed the -d option with spaces in the
+       argument. [Bill Stoddard]
+
+  *) WIN32: GetExtensionVersion() comparison in mod_isapi fails when
+     using some non-MS compilers [Bill Stoddard]
+     PR#3597, PR#3782, PR#3781, PR#4887
+
   *) Allow BeOS to use its native closesocket() call
      [David Reid <abb37@dial.pipex.com>]
 
