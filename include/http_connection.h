@@ -103,6 +103,34 @@ AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c, void *csd))
  */
 AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
 
+/* End Of Connection (EOC) bucket */
+
+AP_DECLARE_DATA extern const apr_bucket_type_t ap_bucket_type_eoc;
+
+/**
+ * Determine if a bucket is an End Of Connection (EOC) bucket
+ * @param e The bucket to inspect
+ * @return true or false
+ */
+#define AP_BUCKET_IS_EOC(e)         (e->type == &ap_bucket_type_eoc)
+
+/**
+ * Make the bucket passed in an End Of Connection (EOC) bucket
+ * @param b The bucket to make into an EOC bucket
+ * @return The new bucket, or NULL if allocation failed
+ * @deffunc apr_bucket *ap_bucket_eoc_make(apr_bucket *b)
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_eoc_make(apr_bucket *b);
+
+/**
+ * Create a bucket referring to an End Of Connection (EOC). This indicates
+ * that the connection will be closed.
+ * @param list The freelist from which this bucket should be allocated
+ * @return The new bucket, or NULL if allocation failed
+ * @deffunc apr_bucket *ap_bucket_eoc_create(apr_bucket_alloc_t *list)
+ */
+AP_DECLARE(apr_bucket *) ap_bucket_eoc_create(apr_bucket_alloc_t *list);
+
 #ifdef __cplusplus
 }
 #endif

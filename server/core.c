@@ -3854,6 +3854,9 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             if (APR_BUCKET_IS_EOS(e)) {
                 break;
             }
+            if (AP_BUCKET_IS_EOC(e)) {
+                apr_bucket_delete(e);
+            }
             if (APR_BUCKET_IS_FLUSH(e)) {
                 if (e != APR_BRIGADE_LAST(b)) {
                     more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
