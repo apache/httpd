@@ -73,6 +73,8 @@ program | img | cite | q | dfn | var | transnote | glossary | phonetic">
                      type   CDATA  #IMPLIED
                      status CDATA  #IMPLIED >
 
+<!ELEMENT program (#PCDATA)>
+
 <!ELEMENT p %Inline;>
 <!ATTLIST p class CDATA  #IMPLIED>
 
