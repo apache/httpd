@@ -620,7 +620,7 @@ API_EXPORT(void) ap_close_piped_log (piped_log *pl)
 }
 
 #else
-static int piped_log_child (void *cmd)
+static int piped_log_child (void *cmd, child_info *pinfo)
 {
     /* Child process code for 'TransferLog "|..."';
      * may want a common framework for this, since I expect it will
