@@ -222,7 +222,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     apr_off_t range_start;
     apr_off_t range_end;
     char *current;
-    const char *bound_head;
+    char *bound_head;
     int clength = 0;
     apr_status_t rv;
     int found = 0;
@@ -268,6 +268,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
                              make_content_type(r, r->content_type),
                              CRLF "Content-range: bytes ", 
                              NULL);
+    ap_xlate_proto_to_ascii(bound_head, strlen(bound_head));
 
     /* concat the passed brigade with our saved brigade */
     AP_BRIGADE_CONCAT(ctx->bb, bb);
@@ -370,7 +371,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
         }
 
         if (ctx->num_ranges > 1) {
-            const char *ts;
+            char *ts;
 
             e = ap_bucket_create_pool(bound_head,
                                       strlen(bound_head), r->pool);
@@ -378,6 +379,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
 
             ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
                               range_start, range_end, clength);
+            ap_xlate_proto_to_ascii(ts, strlen(ts));
             e = ap_bucket_create_pool(ts, strlen(ts), r->pool);
             AP_BRIGADE_INSERT_TAIL(bsend, e);
         }
@@ -393,10 +395,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
     }
 
     if (ctx->num_ranges > 1) {
-        const char *end;
+        char *end;
 
         /* add the final boundary */
         end = apr_pstrcat(r->pool, CRLF "--", r->boundary, "--" CRLF, NULL);
+        ap_xlate_proto_to_ascii(end, strlen(end));
         e = ap_bucket_create_pool(end, strlen(end), r->pool);
         AP_BRIGADE_INSERT_TAIL(bsend, e);
     }
