@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2002/02/01 16:53:07 $]
+Last modified at [$Date: 2002/02/01 17:51:17 $]
 
 Release:
 
@@ -124,6 +124,13 @@ RELEASE SHOWSTOPPERS:
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
+    * Should we always build binaries statically unless otherwise
+      indicated?
+        Message-ID: <20020129210006.B23512@Lithium.MeepZor.Com>
+
+      +1:  
+      -1:  Justin
+        
     * If the parent process dies, should the remaining child processes
       "gracefully" self-terminate.
         Message-ID: <3C58232C.FE91F19F@Golux.Com>
