@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/06 18:57:38 $]
+Last modified at [$Date: 2003/03/06 21:32:51 $]
 
 Release:
 
@@ -214,7 +214,7 @@ PATCHES TO PORT FROM 2.1
     * New Directive for mod_deflate (compressionlevel), and change to default
       compression level
       mod_deflate.c 1.31
-      +1: ianh, wrowe
+      +1: ianh, wrowe, nd
 
 CURRENT RELEASE NOTES:
 
