@@ -1,4 +1,3 @@
--- Begin New BaseAddr.ref --
 ; os/win32/BaseAddr.ref contains the central repository
 ;                       of all module base addresses
 ;                       to avoid relocation
