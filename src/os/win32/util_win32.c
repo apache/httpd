@@ -12,16 +12,10 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
     char *szFilePart;
     WIN32_FIND_DATA d;
     HANDLE h;
-    int add_trailing_slash = 0;
 
     n = GetFullPathName(szFile, sizeof buf, buf, &szFilePart);
     assert(n);
     assert(n < sizeof buf);
-
-    if (*szFile && szFile[strlen(szFile)-1] == '/') {
-        add_trailing_slash = 1;
-    }
-        
 
     if (!strchr(buf, '*') && !strchr(buf, '?')) {
         h = FindFirstFile(buf, &d);
@@ -58,17 +52,22 @@ static void sub_canonical_filename(char *szCanon, const char *szFile)
         strlwr(d.cFileName);
         strcat(szCanon, d.cFileName);
     }
-    if (add_trailing_slash) {
-        strcat(szCanon, "/");
-    }
 }
 
 API_EXPORT(char *) os_canonical_filename(pool *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
+    int add_trailing_slash = 0;
 
+    if (*szFile && szFile[strlen(szFile)-1] == '/')
+        add_trailing_slash = 1;
+        
     sub_canonical_filename(buf, szFile);
     buf[0]=tolower(buf[0]);
+
+    if (add_trailing_slash)
+        strcat(buf, "/");
+
     return pstrdup(pPool, buf);
 }
 

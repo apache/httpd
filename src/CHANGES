@@ -1,5 +1,8 @@
 Changes with Apache 1.3b6
 
+  *) WIN32: Preserve trailing slash in canonical path (and hence
+	   in PATH_INFO). [Paul Sutton, Ben Laurie]
+
   *) USE_PTHREAD_SERIALIZED_ACCEPT has proven unreliable depending on
      the rev of Solaris and what mixture of modules are in use.  So
      it has been disabled, and Solaris is back to using
