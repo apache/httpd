@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a misleading message from the some of the threaded MPMs when 
+     MaxClients has to be lowered due to the setting of ServerLimit.  
+     [Jeff Trawick]
+
   *) Switch to APR 1.0 API.
 
   *) Modify ap_get_client_block() to note if it has seen EOS.
