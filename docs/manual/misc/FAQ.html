@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.78 $ ($Date: 1997/07/05 15:01:17 $)
+  $Revision: 1.79 $ ($Date: 1997/07/05 15:46:46 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -261,8 +261,8 @@
   programmers that httpd didn't behave as they wanted it to behave.
   Apache is an entirely volunteer effort, completely funded by its 
   members, not by commercial sales.
-  <HR>
   </P>
+  <HR>
  </LI>
  <LI><A NAME="relate">
       <STRONG>How does The Apache Group's work relate to other
@@ -422,7 +422,7 @@
     the server error log.  Sometimes this is enough for you to diagnose 
     &amp; fix the problem yourself (such as file permissions or the like).
     The default location of the error log is 
-    <CODE>/usr/local/etc/httpd/logs/error_log</CODE>, but see the 
+    <SAMP>/usr/local/etc/httpd/logs/error_log</SAMP>, but see the 
     <A
      HREF="../mod/core.html#errorlog"
     ><SAMP>ErrorLog</SAMP></A>
@@ -872,21 +872,23 @@
   <a href="descriptors.html">More information is available.</a>
   </P>
   <HR>
+ </LI>
 
  <LI><A NAME="freebsd-setsize">
-      <STRONG>Can I increase FD_SETSIZE on FreeBSD?</STRONG>
+      <STRONG>Can I increase <SAMP>FD_SETSIZE</SAMP> on FreeBSD?</STRONG>
      </A>
   <P>
-    On FreeBSD 2.2 and older FD_SETSIZE, which limits the number of open
-    files on the system, is limted to 256. This can limit the number of
-    virtual hosts you are using; especially if they all use different log
-    files. Increasing this limit (and recompiling apache) is not enough
-    (As it is on some platforms, such as Solaris), as you also will have
-    to recompile libc with the changed setting.
+  On FreeBSD 2.2 and older <SAMP>FD_SETSIZE</SAMP>, which limits the
+  number of open 
+  files on the system, is limited to 256. This can restrict the number of
+  virtual hosts you can use; especially if they all use different log
+  files. Increasing this limit (and recompiling Apache) is not enough,
+  as it is on some platforms (such as Solaris), as you also will have
+  to recompile <SAMP>libc</SAMP> with the changed setting.
   </P>
-  <p>
-    On FreeBSD 3.0 the default is 1024, so the problem is lessened.
-  </p>
+  <P>
+  On FreeBSD 3.0 the default is 1024, so the problem is lessened.
+  </P>
   <HR>
  </LI>
 
@@ -965,6 +967,7 @@
   warranty, though, and you'll lose all accumulated UNIX guru points.
   </P>
   <HR>
+ </LI>
  <LI><A NAME="errordoc401">
       <STRONG>Why doesn't my <CODE>ErrorDocument 401</CODE> work?</STRONG>
      </A>
@@ -1105,7 +1108,7 @@
   ><CITE>Publishing Pages with PUT</CITE></A>.
   </P>
   <HR>
-  </LI>
+ </LI>
  <LI><A NAME="fastcgi">
       <STRONG>Why isn't FastCGI included with Apache any more?</STRONG>
      </A>
@@ -1141,7 +1144,7 @@
       peer</SAMP>&quot; in my error log?</STRONG>
      </A> 
   <P>
-  This is a normal message and nothing to be alarmed about.  It simply
+  This is a normal message and nothing about which to be alarmed.  It simply
   means that the client cancelled the connection before it had been
   completely set up - such as by the end-user pressing the &quot;Stop&quot;
   button.  People's patience being what it is, sites with response-time
@@ -1218,6 +1221,7 @@
   includes.  You need to make sure that the versions of both are matched
   properly.  There are two workarounds, either one will solve the problem:
   </P>
+  <P>
   <UL>
    <LI>Remove the definition of <CODE>struct iovec</CODE> from your C
     library includes.  It is located in <CODE>/usr/include/sys/uio.h</CODE>.  
@@ -1228,6 +1232,7 @@
     This hurts performance and should only be used as a last resort.
    </LI>
   </UL>
+  </P>
   <HR>
  </LI>
  <LI><A NAME="wheres-the-dump">
@@ -1335,8 +1340,8 @@
   ><CITE>Apache and Secure Transactions</CITE></A>.
   </P>
   <HR>
-  </LI>
-  <LI><A NAME="HPUX-core">
+ </LI>
+ <LI><A NAME="HPUX-core">
        <STRONG>Why do I get core dumps under HPUX using HP's ANSI 
                C compiler?</STRONG>
       </A>
@@ -1498,19 +1503,27 @@
   To resolve this, you can either make sure you use the include files
   and libraries that came with your system or make sure to use the
   new include files and libraries.  Adding <CODE>-lbind</CODE> to the
-  <CODE>EXTRA_LDFLAGS</CODE> line in your <CODE>Configuration</CODE> 
-  file, then re-running <CODE>Configure</CODE>, should resolve the
-  problem.  (Pre 1.3 Apache uses <CODE>EXTRA_LFLAGS</CODE> instead.)
+  <CODE>EXTRA_LDFLAGS</CODE> line in your <SAMP>Configuration</SAMP> 
+  file, then re-running <SAMP>Configure</SAMP>, should resolve the
+  problem.  (Apache versions 1.2.* and earlier use
+  <CODE>EXTRA_LFLAGS</CODE> instead.)
   </P>
-  <p><b>Note:</b> As of BIND 8.1.1, the bind libraries and files are
-  installed under <code>/usr/local/bind</code> by default.  So you
+  <P>
+  <STRONG>Note:</STRONG>As of BIND 8.1.1, the bind libraries and files are
+  installed under <SAMP>/usr/local/bind</SAMP> by default, so you
   should not run into this problem.  Should you want to use the bind
   resolvers you'll have to add the following to the respective lines:
-  <blockquote><pre>
-  EXTRA_CFLAGS=-I/usr/local/bind/include
-  EXTRA_LDFLAGS=-L/usr/local/bind/lib
-  EXTRA_LIBS=-lbind
-  </pre></blockquote>
+  </P>
+  <P>
+  <DL>
+   <DD><CODE>EXTRA_CFLAGS=-I/usr/local/bind/include
+    <BR>
+    EXTRA_LDFLAGS=-L/usr/local/bind/lib
+    <BR>
+    EXTRA_LIBS=-lbind</CODE>
+   </DD>
+  </DL>
+  </P>
   <HR>
  </LI>
  <LI><A NAME="set-servername">
@@ -1579,12 +1592,18 @@
   </P>
   <P>
   <DL>
-   <DD><CODE>deny from all<BR>
-    allow from .domain.com<BR>
-    AuthType Basic<BR>
-    AuthUserFile /usr/local/etc/httpd/conf/htpasswd.users<BR>
-    AuthName special directory<BR>
-    require valid-user<BR>
+   <DD><CODE>deny from all
+    <BR>
+    allow from .domain.com
+    <BR>
+    AuthType Basic
+    <BR>
+    AuthUserFile /usr/local/etc/httpd/conf/htpasswd.users
+    <BR>
+    AuthName special directory
+    <BR>
+    require valid-user
+    <BR>
     satisfy any</CODE>
    </DD>
   </DL>
@@ -1622,110 +1641,118 @@
   </P>
   <HR>
  </LI>
-
  <LI><A NAME="linux-shmget">
       <STRONG>When I run it under Linux I get "shmget:
       function not found", what should I do?</STRONG>
      </A>
   <P>
-    Your kernel has been built without SysV IPC support.  You will have to
-    rebuild the kernel with that support enabled (it's under the
-    "General Setup" submenu).  Documention for
-    kernel building is beyond the scope of this FAQ, you should consult
-    the <A HREF="http://www.linuxhq.com/HOWTO/Kernel-HOWTO.html">Kernel
-    HOWTO</A>, or the documentation provided with your distribution,
-    or a <A HREF="http://www.linuxhq.com/HOWTO/META-FAQ.html">Linux
-    newsgroup/mailing list</A>.  As a last resort workaround, you can
-    comment out the <CODE>#define HAVE_SHMGET</CODE> definition in the
-    <CODE>LINUX</CODE> section of
-    <CODE>src/conf.h</CODE> and rebuild the server.  This will produce
-    a server which is slower and less reliable.
+  Your kernel has been built without SysV IPC support.  You will have to
+  rebuild the kernel with that support enabled (it's under the
+  &quot;General Setup&quot; submenu).  Documentation for
+  kernel building is beyond the scope of this FAQ; you should consult
+  the
+  <A HREF="http://www.linuxhq.com/HOWTO/Kernel-HOWTO.html"
+  >Kernel HOWTO</A>,
+  or the documentation provided with your distribution, or a
+  <A HREF="http://www.linuxhq.com/HOWTO/META-FAQ.html"
+  >Linux newsgroup/mailing list</A>.
+  As a last-resort workaround, you can
+  comment out the <CODE>#define HAVE_SHMGET</CODE> definition in the
+  <SAMP>LINUX</SAMP> section of
+  <SAMP>src/conf.h</SAMP> and rebuild the server.  This will produce
+  a server which is slower and less reliable.
   </P>
   <HR>
  </LI>
-
  <LI><A NAME="authauthoritative">
       <STRONG>Why does my authentification give me a server error?</STRONG>
      </A>
   <P>
-    Under normal circumstances, the apache access control modules will
-    pass unrecognized userids on to the next access control module in
-    line.  Only if the userid is recognized, the password is validated
-    (or not) will it give the usual success or authentification failed
-    messages.
-  </p>
-  <p>
-    However if the last access module in line 'declines' the validation
-    request (because it has never heard of the userid or because it is not
-    configured) the http_request handler will give one of the following,
-    confusing, errors:
-  <UL>
-    <li> <code>check access</code>
-    <li> <code>check user.  No user file? </code>
-    <li> <code>check access.  No groups file? </code>
-  </ul> 
-    This does not mean that you have to add a 'AuthUserFile /dev/null'
-    line as some magazines suggest !
-  </p>
-  <p>
-    The solution is to ensure that at least the last module is authoritative
-    and <b>CONFIGURED</b>. By default <code>mod_auth</code> is authoritative
-    and will give an OK/Denied, but only if it is configured with the
-    proper AuthUserFile. Likewise if a valid group is required.  (Remember
-    that the modules are processed in the reverse order they appear in
-    your compile-time Configuration file.)
+  Under normal circumstances, the Apache access control modules will
+  pass unrecognized user IDs on to the next access control module in
+  line.  Only if the user ID is recognized and the password is validated
+  (or not) will it give the usual success or &quot;authentification
+  failed&quot; messages.
   </P>
-  <p>
-    A typical situation for this error is when you are using the
-    mod_auth_dbm, mod_auth_msql, mod_auth_mysql, mod_auth_anon or
-    mod_auth_cookie on their own.  These are by default <b>not</b>
-    authoritative, and this will pass the buck on to the (non-existent) next
-    authentification module when the user ID is not in their respective
-    database.  Just add the appropriate 'XXXAuthoritative yes' line to
-    the configuration.
-  </p>
-  <p>
-    In general it is a good idea (though not terribly efficient) to have the
-    file based mod_auth a module of last resort. This allows you to access
-    the web server with a few special passwords even if the databases are
-    down or corrupted.  This does cost a file-open/seek/close for each
-    request in a protected area.
-  </p>
+  <P>
+  However, if the last access module in line 'declines' the validation
+  request (because it has never heard of the user ID or because it is not
+  configured), the <SAMP>http_request</SAMP> handler will give one of
+  the following, confusing, errors:
+  </P>
+  <UL>
+   <LI><SAMP>check access</SAMP>
+   </LI>
+   <LI><SAMP>check user.  No user file?</SAMP>
+   </LI>
+   <LI><SAMP>check access.  No groups file?</SAMP>
+   </LI>
+  </UL>
+  <P>
+  This does <EM>not</EM> mean that you have to add an
+  '<SAMP>AuthUserFile&nbsp;/dev/null</SAMP>' line as some magazines suggest!
+  </P>
+  <P>
+  The solution is to ensure that at least the last module is authoritative
+  and <STRONG>CONFIGURED</STRONG>. By default, <SAMP>mod_auth</SAMP> is
+  authoritative and will give an OK/Denied, but only if it is configured
+  with the proper <SAMP>AuthUserFile</SAMP>.  Likewise, if a valid group
+  is required.  (Remember that the modules are processed in the reverse
+  order from that in which they appear in your compile-time
+  <SAMP>Configuration</SAMP> file.)
+  </P>
+  <P>
+  A typical situation for this error is when you are using the
+  <SAMP>mod_auth_dbm</SAMP, <SAMP>mod_auth_msql</SAMP>,
+  <SAMP<mod_auth_mysql</SAMP>, <SAMP>mod_auth_anon</SAMP> or
+  <SAMP>mod_auth_cookie</SAMP> modules on their own.  These are by
+  default <STRONG>not</STRONG> authoritative, and this will pass the
+  buck on to the (non-existent) next authentification module when the
+  user ID is not in their respective database.  Just add the appropriate
+  '<SAMP><EM>XXX</EM>Authoritative yes</SAMP>' line to the configuration.
+  </P>
+  <P>
+  In general it is a good idea (though not terribly efficient) to have the
+  file-based <SAMP>mod_auth</SAMP> a module of last resort. This allows
+  you to access the web server with a few special passwords even if the
+  databases are down or corrupted.  This does cost a
+  file open/seek/close for each request in a protected area.
+  </P>
   <HR>
  </LI>
-
  <LI><A NAME="auth-on-same-machine">
       <STRONG>Do I have to keep the (mSQL) authentification information
       on the same machine?</STRONG>
      </A>
-  <p>
-    Some organizations feel very strongly about keeping the authentification
-    information on a different machine than the webserver. With the
-    mod_auth_msql, mod_auth_mysql and other SQL modules connecting to
-    (R)DBMses this is quite well possible. Just configure an explicit host
-    to contact.
-  </p>
-  <p>
-    Be aware that with mSQL and Oracle, opening and closing these database
-    connections is very expensive and time consuming. You might want to
-    look at the code in the auth_modules and play with the compile time
-    flags to alleviate this somewhat; if your RDBMS licences alows for it.
-  </p>
+  <P>
+  Some organizations feel very strongly about keeping the authentification
+  information on a different machine than the webserver. With the
+  <SAMP>mod_auth_msql</SAMP>, <SAMP>mod_auth_mysql</SAMP>, and other SQL
+  modules connecting to (R)DBMses this is quite possible. Just configure
+  an explicit host to contact.
+  </P>
+  <P>
+  Be aware that with mSQL and Oracle, opening and closing these database
+  connections is very expensive and time consuming. You might want to
+  look at the code in the <SAMP>auth_*</SAMP> modules and play with the
+  compile time flags to alleviate this somewhat, if your RDBMS licences
+  allow for it.
+  </P>
   <HR>
  </LI>
-
  <LI><A NAME="msql-slow">
       <STRONG>Why is my mSQL authentification terribly slow?</STRONG>
      </A>
-  <p>
-    You have probably configured the Host by specificing a FQHN,
-    and thus the libmsql will use a full blown tcp/ip socket to talk to
-    the database, rather than a fast internal device. Both the libmsql,
-    the mSQL faq and the mod_auth_msql documentation warn you about this. If
-    you have to use different hosts, check out the mod_auth_msql code for
-    some compile time flags which might, or might not suit you.
-  </p>
- <HR>
+  <P>
+  You have probably configured the Host by specificing a FQHN,
+  and thus the libmsql will use a full blown tcp/ip socket to talk to
+  the database, rather than a fast internal device.  The
+  <SAMP>libmsql</SAMP>, the mSQL FAQ, and the <SAMP>mod_auth_msql</SAMP>
+  documentation warn you about this.  If you have to use different
+  hosts, check out the <SAMP>mod_auth_msql</SAMP> code for 
+  some compile time flags which might - or might not - suit you.
+  </P>
+  <HR>
  </LI>
 
   <!-- Don't forget to add HR tags at the end of each list item.. -->
