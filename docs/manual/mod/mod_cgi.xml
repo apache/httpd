@@ -10,9 +10,9 @@
 <identifier>cgi_module</identifier>
 
 <summary>
-    <!-- XXX: Should have references to CGI definition/RFC -->
-    <!-- XXX: Should mention Options ExecCGI  -->
-    <!-- XXX: Should mention AcceptPathInfo   -->
+    <!-- XXX: Should mention Options ExecCGI
+          is the link to howto/cgi not sufficient? -nd
+    -->
 
     <p>Any file that has the mime type
     <code>application/x-httpd-cgi</code> or handler
@@ -40,11 +40,13 @@
     identical.</p>
 </summary>
 
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
 <seealso><directive module="core">Options</directive></seealso>
 <seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
+<seealso><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Specification</a></seealso>
 
-<section><title>CGI Environment variables</title>
+<section id="env"><title>CGI Environment variables</title>
     <p>The server will set the CGI environment variables as described
     in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
     specification</a>, with the following provisions:</p>
@@ -54,13 +56,14 @@
 
       <dd>This will not be available if the <directive module="core"
       >AcceptPathInfo</directive> directive is explicitly set to
-      <code>off</code>.  The default behavior, if AcceptPathInfo is
-      not given, is that mod_cgi will accept path info (trailing
-      /more/path/info following the script filename in the URI), while
-      the core server will return a 404 NOT FOUND error for requests
-      with additional path info.  Omitting the AcceptPathInfo
-      directive has the same effect as setting it <code>on</code> for
-      mod_cgi requests.</dd>
+      <code>off</code>.  The default behavior, if <directive
+      >AcceptPathInfo</directive> is not given, is that <module
+      >mod_cgi</module> will accept path info (trailing <code>
+      /more/path/info</code> following the script filename in the URI),
+      while the core server will return a 404 NOT FOUND error for requests
+      with additional path info. Omitting the <directive
+      >AcceptPathInfo</directive> directive has the same effect as setting
+      it <code>On</code> for <module>mod_cgi</module> requests.</dd>
 
       <dt>REMOTE_HOST</dt>
 
@@ -86,51 +89,57 @@
     </dl>
 </section>
 
-<section id="cgi_debug"><title>CGI Debugging</title>
+<section id="cgi-debug"><title>CGI Debugging</title>
     <p>Debugging CGI scripts has traditionally been difficult, mainly
     because it has not been possible to study the output (standard
     output and error) for scripts which are failing to run
     properly. These directives, included in Apache 1.2 and later,
-    provide more detailed logging of errors when they occur. </p>
+    provide more detailed logging of errors when they occur.</p>
 
-<section><title>CGI Logfile Format</title>
-    <p>When configured, the CGI error log logs any CGI which does not
-    execute properly. Each CGI script which fails to operate causes
-    several lines of information to be logged. The first two lines
-    are always of the format:</p>
-<example>
-  %% [<em>time</em>] <em>request-line</em><br />
-  %% <em>HTTP-status</em> <em>CGI-script-filename</em>
-</example>
-    <p>If the error is that CGI script cannot be run, the log file
-    will contain an extra two lines:</p>
-<example>
-  %%error<br />
-  <em>error-message</em>
-</example>
-    <p>Alternatively, if the error is the result of the script
-    returning incorrect header information (often due to a bug in
-    the script), the following information is logged: </p>
-<example>
-  %request<br />
-  <em>All HTTP request headers received</em><br />
-  <em>POST or PUT entity (if any)</em><br />
-  %response<br />
-  <em>All headers output by the CGI script</em><br />
-  %stdout<br />
-  <em>CGI standard output</em><br />
-  %stderr<br />
-  <em>CGI standard error</em><br />
-</example>
-    <p>(The %stdout and %stderr parts may be missing if the script did
-    not output anything on standard output or standard error). </p>
-</section>
+    <section><title>CGI Logfile Format</title>
+      <p>When configured, the CGI error log logs any CGI which does not
+      execute properly. Each CGI script which fails to operate causes
+      several lines of information to be logged. The first two lines
+      are always of the format:</p>
+
+      <example>
+        %% [<var>time</var>] <var>request-line</var><br />
+        %% <var>HTTP-status</var> <var>CGI-script-filename</var>
+      </example>
+
+      <p>If the error is that CGI script cannot be run, the log file
+      will contain an extra two lines:</p>
+
+      <example>
+        %%error<br />
+        <var>error-message</var>
+      </example>
+
+      <p>Alternatively, if the error is the result of the script
+      returning incorrect header information (often due to a bug in
+      the script), the following information is logged:</p>
+
+      <example>
+        %request<br />
+        <var>All HTTP request headers received</var><br />
+        <var>POST or PUT entity (if any)</var><br />
+        %response<br />
+        <var>All headers output by the CGI script</var><br />
+        %stdout<br />
+        <var>CGI standard output</var><br />
+        %stderr<br />
+        <var>CGI standard error</var><br />
+      </example>
+
+      <p>(The %stdout and %stderr parts may be missing if the script did
+      not output anything on standard output or standard error).</p>
+    </section>
 </section>
 
 <directivesynopsis>
 <name>ScriptLog</name>
 <description>Location of the CGI script error logfile</description>
-<syntax>ScriptLog <em>file-path</em></syntax>
+<syntax>ScriptLog <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <modulelist><module>mod_cgi</module><module>mod_cgid</module>
@@ -138,18 +147,19 @@
 
 <usage>
     <p>The <directive>ScriptLog</directive> directive sets the CGI
-    script error logfile. If no ScriptLog is given, no error log is
-    created. If given, any CGI errors are logged into the filename
-    given as argument. If this is a relative file or path it is taken
-    relative to the <code>ServerRoot</code>.</p>
+    script error logfile. If no <directive>ScriptLog</directive> is given,
+    no error log is created. If given, any CGI errors are logged into the
+    filename given as argument. If this is a relative file or path it is
+    taken relative to the <directive module="core">ServerRoot</directive>.
+    </p>
 
     <example><title>Example</title>
-    ScriptLog logs/cgi_log
+      ScriptLog logs/cgi_log
     </example>
 
     <p>This log will be opened as the user the child processes run
-    as, ie. the user specified in the main <directive module="mpm_common"
-    >User</directive> directive. This means that
+    as, <em>i.e.</em> the user specified in the main <directive
+    module="mpm_common">User</directive> directive. This means that
     either the directory the script log is in needs to be writable
     by that user or the file needs to be manually created and set
     to be writable by that user. If you place the script log in
@@ -168,7 +178,7 @@
 <directivesynopsis>
 <name>ScriptLogLength</name>
 <description>Size limit of the CGI script logfile</description>
-<syntax>ScriptLogLength <em>bytes</em></syntax>
+<syntax>ScriptLogLength <var>bytes</var></syntax>
 <default>ScriptLogLength 10385760</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -190,7 +200,7 @@
 <name>ScriptLogBuffer</name>
 <description>Maximum amount of PUT or POST requests that will be recorded
 in the scriptlog</description>
-<syntax>ScriptLogBuffer <em>bytes</em></syntax>
+<syntax>ScriptLogBuffer <var>bytes</var></syntax>
 <default>ScriptLogBuffer 1024</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>

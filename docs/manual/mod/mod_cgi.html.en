@@ -10,8 +10,6 @@
                   </a></th><td>cgi_module</td></tr><tr><th><a href="module-dict.html#SourceFile">Source File:
                   </a></th><td>mod_cgi.c</td></tr></table><h3>Summary</h3>
     
-    
-    
 
     <p>Any file that has the mime type
     <code>application/x-httpd-cgi</code> or handler
@@ -40,7 +38,7 @@
 </div><div id="quickview"><h3 class="directives">Directives</h3><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#scriptlog">ScriptLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptloglength">ScriptLogLength</a></li>
-</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> CGI Environment variables</li><li><img alt="" src="../images/down.gif" /> <a href="#cgi_debug">CGI Debugging</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2>CGI Environment variables</h2>
+</ul><h3>Topics</h3><ul id="topics"><li><img alt="" src="../images/down.gif" /> <a href="#env">CGI Environment variables</a></li><li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">CGI Debugging</a></li></ul><h3>See also</h3><ul class="seealso"><li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI Specification</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="env" id="env">CGI Environment variables</a></h2>
     <p>The server will set the CGI environment variables as described
     in the <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
     specification</a>, with the following provisions:</p>
@@ -49,13 +47,11 @@
       <dt>PATH_INFO</dt>
 
       <dd>This will not be available if the <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> directive is explicitly set to
-      <code>off</code>.  The default behavior, if AcceptPathInfo is
-      not given, is that mod_cgi will accept path info (trailing
-      /more/path/info following the script filename in the URI), while
-      the core server will return a 404 NOT FOUND error for requests
-      with additional path info.  Omitting the AcceptPathInfo
-      directive has the same effect as setting it <code>on</code> for
-      mod_cgi requests.</dd>
+      <code>off</code>.  The default behavior, if <code class="directive">AcceptPathInfo</code> is not given, is that <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> will accept path info (trailing <code>
+      /more/path/info</code> following the script filename in the URI),
+      while the core server will return a 404 NOT FOUND error for requests
+      with additional path info. Omitting the <code class="directive">AcceptPathInfo</code> directive has the same effect as setting
+      it <code>On</code> for <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> requests.</dd>
 
       <dt>REMOTE_HOST</dt>
 
@@ -77,63 +73,70 @@
       <dd>This will only be set if the CGI script is subject to
       authentication.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cgi_debug" id="cgi_debug">CGI Debugging</a></h2>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a name="cgi-debug" id="cgi-debug">CGI Debugging</a></h2>
     <p>Debugging CGI scripts has traditionally been difficult, mainly
     because it has not been possible to study the output (standard
     output and error) for scripts which are failing to run
     properly. These directives, included in Apache 1.2 and later,
-    provide more detailed logging of errors when they occur. </p>
+    provide more detailed logging of errors when they occur.</p>
 
-<h3>CGI Logfile Format</h3>
-    <p>When configured, the CGI error log logs any CGI which does not
-    execute properly. Each CGI script which fails to operate causes
-    several lines of information to be logged. The first two lines
-    are always of the format:</p>
-<div class="example"><p><code>
-  %% [<em>time</em>] <em>request-line</em><br />
-  %% <em>HTTP-status</em> <em>CGI-script-filename</em>
-</code></p></div>
-    <p>If the error is that CGI script cannot be run, the log file
-    will contain an extra two lines:</p>
-<div class="example"><p><code>
-  %%error<br />
-  <em>error-message</em>
-</code></p></div>
-    <p>Alternatively, if the error is the result of the script
-    returning incorrect header information (often due to a bug in
-    the script), the following information is logged: </p>
-<div class="example"><p><code>
-  %request<br />
-  <em>All HTTP request headers received</em><br />
-  <em>POST or PUT entity (if any)</em><br />
-  %response<br />
-  <em>All headers output by the CGI script</em><br />
-  %stdout<br />
-  <em>CGI standard output</em><br />
-  %stderr<br />
-  <em>CGI standard error</em><br />
-</code></p></div>
-    <p>(The %stdout and %stderr parts may be missing if the script did
-    not output anything on standard output or standard error). </p>
+    <h3>CGI Logfile Format</h3>
+      <p>When configured, the CGI error log logs any CGI which does not
+      execute properly. Each CGI script which fails to operate causes
+      several lines of information to be logged. The first two lines
+      are always of the format:</p>
 
+      <div class="example"><p><code>
+        %% [<var>time</var>] <var>request-line</var><br />
+        %% <var>HTTP-status</var> <var>CGI-script-filename</var>
+      </code></p></div>
+
+      <p>If the error is that CGI script cannot be run, the log file
+      will contain an extra two lines:</p>
+
+      <div class="example"><p><code>
+        %%error<br />
+        <var>error-message</var>
+      </code></p></div>
+
+      <p>Alternatively, if the error is the result of the script
+      returning incorrect header information (often due to a bug in
+      the script), the following information is logged:</p>
+
+      <div class="example"><p><code>
+        %request<br />
+        <var>All HTTP request headers received</var><br />
+        <var>POST or PUT entity (if any)</var><br />
+        %response<br />
+        <var>All headers output by the CGI script</var><br />
+        %stdout<br />
+        <var>CGI standard output</var><br />
+        %stderr<br />
+        <var>CGI standard error</var><br />
+      </code></p></div>
+
+      <p>(The %stdout and %stderr parts may be missing if the script did
+      not output anything on standard output or standard error).</p>
+    
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Location of the CGI script error logfile</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptLog <em>file-path</em></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
+              </a></th><td><code>ScriptLog <var>file-path</var></code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
               </a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr></table>
     <p>The <code class="directive">ScriptLog</code> directive sets the CGI
-    script error logfile. If no ScriptLog is given, no error log is
-    created. If given, any CGI errors are logged into the filename
-    given as argument. If this is a relative file or path it is taken
-    relative to the <code>ServerRoot</code>.</p>
+    script error logfile. If no <code class="directive">ScriptLog</code> is given,
+    no error log is created. If given, any CGI errors are logged into the
+    filename given as argument. If this is a relative file or path it is
+    taken relative to the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
+    </p>
 
     <div class="example"><h3>Example</h3><p><code>
-    ScriptLog logs/cgi_log
+      ScriptLog logs/cgi_log
     </code></p></div>
 
     <p>This log will be opened as the user the child processes run
-    as, ie. the user specified in the main <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> directive. This means that
+    as, <em>i.e.</em> the user specified in the main <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> directive. This means that
     either the directory the script log is in needs to be writable
     by that user or the file needs to be manually created and set
     to be writable by that user. If you place the script log in
@@ -149,7 +152,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Maximum amount of PUT or POST requests that will be recorded
 in the scriptlog</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptLogBuffer <em>bytes</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>ScriptLogBuffer <var>bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ScriptLogBuffer 1024</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
@@ -161,7 +164,7 @@ in the scriptlog</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
     directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">Directive</a></h2><table class="directive"><tr><th><a href="directive-dict.html#Description">Description: 
               </a></th><td>Size limit of the CGI script logfile</td></tr><tr><th><a href="directive-dict.html#Syntax">Syntax:
-              </a></th><td><code>ScriptLogLength <em>bytes</em></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
+              </a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr><tr><th><a href="directive-dict.html#Default">Default: 
               </a></th><td><code>ScriptLogLength 10385760</code></td></tr><tr><th><a href="directive-dict.html#Context">Context:
               </a></th><td>server config, virtual host</td></tr><tr><th><a href="directive-dict.html#Status">Status:
               </a></th><td>Base</td></tr><tr><th><a href="directive-dict.html#Module">Module:
