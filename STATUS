@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/25 02:20:27 $]
+Last modified at [$Date: 2004/03/25 02:32:52 $]
 
 Release:
 
@@ -87,11 +87,6 @@ PATCHES TO BACKPORT FROM 2.1
        locks on some platforms. (especially Sparc!!!)
            modules/dav/fs/lock.c: r1.31
        +1: trawick
-
-    *) Michael Corcoran's patch to listen.c to avoid segfault when
-       there are no Listen directives.
-           server/listen.c: r1.101
-       +1: trawick, stoddard, rederpj
 
     *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
        segmentation fault.

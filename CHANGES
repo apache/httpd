@@ -1,5 +1,8 @@
 Changes with Apache 2.0.50
 
+  *) Fix crash when Apache was started with no Listen directives.
+     [Michael Corcoran <mcorcoran warpsolutions.com>]
+
   *) core_output_filter: Fix bug that could result in sending
      garbage over the network when module handlers construct
      bucket brigades containing multiple file buckets all referencing

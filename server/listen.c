@@ -335,7 +335,7 @@ static int ap_listen_open(apr_pool_t *pool, apr_port_t port)
      * is already forgotten about by the time we call accept, we won't
      * be hung until another connection arrives on that port
      */
-    if (ap_listeners->next) {
+    if (ap_listeners && ap_listeners->next) {
         for (lr = ap_listeners; lr; lr = lr->next) {
             apr_status_t status;
 
