@@ -1,23 +1,31 @@
 #! /bin/sh
 
-exec >$1
-exec <$2
+outfile=$1
+exec >$outfile
+shift
 
 echo "/* This is an ugly hack that needs to be here, so that libtool will"
 echo " * link all of the APR functions into server regardless of whether"
 echo " * the base server uses them."
 echo " */"
 echo ""
- 
-cd srclib/apr/include 
-for file in *.h
+
+for dir in srclib/apr/include srclib/apr-util/include
 do
-    echo "#include \"$file\""
+    cd $dir
+    for file in *.h
+    do
+        echo "#include \"$file\""
+    done
+    cd ../../../
 done
-cd ../../../
 echo ""
 
-awk -f build/buildexports.awk
+for file
+do
+    exec <$file
+    awk -f build/buildexports.awk
+done
 
 echo ""
 echo "void *ap_ugly_hack;"
