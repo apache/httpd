@@ -529,7 +529,14 @@ This information is logged in the access log. <em>Boolean</em> is either
 <code>on</code> or <code>off</code>.<p>
 
 The information should not be trusted in any way except for rudimentary usage
-tracking.<p><hr>
+tracking.<p>
+
+Note that this can cause serious latency problems accessing your server
+since every request requires one of these lookups to be performed.  When
+firewalls are involved each lookup might possibly fail and add 30 seconds
+of latency to each hit.  So in general this is not very useful on public
+servers accessible from the internet.
+<p><hr>
 
 <A NAME="ifmodule"><H2>&lt;IfModule&gt;</H2></A>
 <b>Syntax:</b> &lt;IfModule [!]<i>module-name</i>&gt; <i>...</i>
