@@ -79,12 +79,11 @@
         platform-dependend. The current state is this:
 
         o Out-of-the-box supported platforms are:
-           - Linux     - IRIX
-           - FreeBSD   - HPUX
-           - OpenBSD   - Digital UNIX
-           - NetBSD    - UnixWare
-           - SunOS     - AIX
-           - Solaris   - SCO
+           - Linux     - SunOS         - UnixWare    
+           - FreeBSD   - Solaris       - AIX         
+           - OpenBSD   - IRIX          - SCO         
+           - NetBSD    - HPUX        
+           - BSDI      - Digital Unix
 
         o Entirely unsupported platforms are:
            - Ultrix

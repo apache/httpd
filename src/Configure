@@ -955,6 +955,11 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB_EXPORT=""
             SHLIB_SUFFIX_DEPTH=2
             ;;
+        *-bsdi)
+            CFLAGS_SHLIB="-fPIC"
+            LDFLAGS_SHLIB="-shared"
+            LDFLAGS_SHLIB_EXPORT="-rdynamic"
+            ;;
         *-apple-rhapsody*)
             LD_SHLIB="cc"
             CFLAGS_SHLIB=""

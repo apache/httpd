@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
- 
+
+  *) PORT: Add Dynamic Shared Object (DSO) support for BSDI (v4.0).
+     [Tom Serkowski <tks@bsdi.com>] PR#3453
+
   *) Make generation of src/Configuration.apaci more robust: It failed to
      differenciate between modules when one module name was a postfix of
      another (e.g. cgi vs. fastcgi). We now check for mod_XXX, libXXX and even
