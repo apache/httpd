@@ -1,3 +1,5 @@
+Changes with Apache 1.3b4
+
 Changes with Apache 1.3b3
 
   *) WIN32: Work around brain-damaged spawn calls that can't deal
