@@ -68,7 +68,7 @@ extern "C" {
 API_EXPORT(char *) ap_md5(ap_pool_t *a, const unsigned char *string);
 API_EXPORT(char *) ap_md5_binary(ap_pool_t *a, const unsigned char *buf, int len);
 API_EXPORT(char *) ap_md5contextTo64(ap_pool_t *p, ap_md5_ctx_t *context);
-#ifdef CHARSET_EBCDIC
+#ifdef APACHE_XLATE
 API_EXPORT(char *) ap_md5digest(ap_pool_t *p, ap_file_t *infile,
                                 ap_xlate_t *xlate);
 #else
