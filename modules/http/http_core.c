@@ -2790,7 +2790,7 @@ static int default_handler(request_rec *r)
 #ifdef USE_MMAP_FILES
     }
     else {
-	char *addr;
+	unsigned char *addr;
         ap_mmap_offset((void**)&addr, mm ,0);
 
 	if (d->content_md5 & 1) {
