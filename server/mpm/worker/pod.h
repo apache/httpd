@@ -84,7 +84,6 @@ struct ap_pod_t {
     apr_file_t *pod_in;
     apr_file_t *pod_out;
     apr_pool_t *p;
-    apr_sockaddr_t *sa;
 };
 
 AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod);

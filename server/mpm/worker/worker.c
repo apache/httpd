@@ -184,6 +184,7 @@ typedef struct {
  */
 typedef struct {
     apr_thread_t **threads;
+    apr_thread_t *listener;
     int child_num_arg;
     apr_threadattr_t *threadattr;
 } thread_starter;
@@ -229,6 +230,7 @@ static apr_pool_t *pchild;                /* Pool for httpd child stuff */
 static pid_t ap_my_pid; /* Linux getpid() doesn't work except in main 
                            thread. Use this instead */
 static pid_t parent_pid;
+static apr_os_thread_t *listener_os_thread;
 
 /* Locks for accept serialization */
 static apr_proc_mutex_t *accept_mutex;
@@ -239,9 +241,33 @@ static apr_proc_mutex_t *accept_mutex;
 #define SAFE_ACCEPT(stmt) (stmt)
 #endif
 
+/* The LISTENER_SIGNAL signal will be sent from the main thread to the 
+ * listener thread to wake it up for graceful termination (what a child 
+ * process from an old generation does when the admin does "apachectl 
+ * graceful").  This signal will be blocked in all threads of a child
+ * process except for the listener thread.
+ */
+#define LISTENER_SIGNAL     SIGHUP
+
+static void wakeup_listener(void)
+{
+    /*
+     * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" and wake
+     * up the listener thread since it is the only thread with SIGHUP
+     * unblocked, but that doesn't work on Linux
+     */
+    pthread_kill(*listener_os_thread, LISTENER_SIGNAL);
+}
+
 static void signal_workers(void)
 {
     workers_may_exit = 1;
+
+    /* in case we weren't called from the listener thread, wake up the
+     * listener thread
+     */
+    wakeup_listener();
+
     /* XXX: This will happen naturally on a graceful, and we don't care 
      * otherwise.
     ap_queue_signal_all_wakeup(worker_queue); */
@@ -584,6 +610,13 @@ static void check_infinite_requests(void)
     }
 }
 
+static void unblock_the_listener(int sig)
+{
+    /* XXX If specifying SIG_IGN is guaranteed to unblock a syscall,
+     *     then we don't need this goofy function.
+     */
+}
+
 static void *listener_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
@@ -597,12 +630,29 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
     apr_pollfd_t *pollset;
     apr_status_t rv;
     ap_listen_rec *lr, *last_lr = ap_listeners;
+    struct sigaction sa;
+    sigset_t sig_mask;
 
     free(ti);
 
     apr_poll_setup(&pollset, num_listensocks, tpool);
     for(lr = ap_listeners ; lr != NULL ; lr = lr->next)
         apr_poll_socket_add(pollset, lr->sd, APR_POLLIN);
+
+    sigemptyset(&sig_mask);
+    /* Unblock the signal used to wake this thread up, and set a handler for
+     * it.
+     */
+    sigaddset(&sig_mask, LISTENER_SIGNAL);
+#if defined(SIGPROCMASK_SETS_THREAD_MASK)
+    sigprocmask(SIG_UNBLOCK, &sig_mask, NULL);
+#else
+    pthread_sigmask(SIG_UNBLOCK, &sig_mask, NULL);
+#endif
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sa.sa_handler = unblock_the_listener;
+    sigaction(LISTENER_SIGNAL, &sa, NULL);
 
     /* TODO: Switch to a system where threads reuse the results from earlier
        poll calls - manoj */
@@ -617,6 +667,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             != APR_SUCCESS) {
             int level = APLOG_EMERG;
 
+            if (workers_may_exit) {
+                break;
+            }
             if (ap_scoreboard_image->parent[process_slot].generation != 
                 ap_scoreboard_image->global->running_generation) {
                 level = APLOG_DEBUG; /* common to get these at restart time */
@@ -685,8 +738,8 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
             rv = lr->accept_func(&csd, lr, ptrans);
 
             /* If we were interrupted for whatever reason, just start
-             * the main loop over again. (The worker MPM still uses
-             * signals in the one_process case.) */
+             * the main loop over again.
+             */
             if (APR_STATUS_IS_EINTR(rv)) {
                 continue;
             }
@@ -699,6 +752,9 @@ static void *listener_thread(apr_thread_t *thd, void * dummy)
                 != APR_SUCCESS) {
                 int level = APLOG_EMERG;
 
+                if (workers_may_exit) {
+                    break;
+                }
                 if (ap_scoreboard_image->parent[process_slot].generation != 
                     ap_scoreboard_image->global->running_generation) {
                     level = APLOG_DEBUG; /* common to get these at restart time */
@@ -812,7 +868,6 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     apr_status_t rv;
     int i = 0;
     int threads_created = 0;
-    apr_thread_t *listener;
 
     /* We must create the fd queues before we start up the listener
      * and worker threads. */
@@ -828,7 +883,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     my_info->pid = my_child_num;
     my_info->tid = i;
     my_info->sd = 0;
-    rv = apr_thread_create(&listener, thread_attr, listener_thread,
+    rv = apr_thread_create(&ts->listener, thread_attr, listener_thread,
                            my_info, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, rv, ap_server_conf,
@@ -842,6 +897,7 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
         apr_sleep(10 * APR_USEC_PER_SEC);
         clean_child_exit(APEXIT_CHILDFATAL);
     }
+    apr_os_thread_get(&listener_os_thread, ts->listener);
     while (1) {
         /* ap_threads_per_child does not include the listener thread */
         for (i = 0; i < ap_threads_per_child; i++) {
@@ -901,11 +957,42 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
     return NULL;
 }
 
-static void join_workers(apr_thread_t **threads)
+static void join_workers(apr_thread_t *listener, apr_thread_t **threads)
 {
     int i;
     apr_status_t rv, thread_rv;
 
+    if (listener) {
+        int iter;
+        
+        /* deal with a rare timing window which affects waking up the
+         * listener thread...  if the signal sent to the listener thread
+         * is delivered between the time it verifies that the
+         * workers_may_exit flag is clear and the time it enters a
+         * blocking syscall, the signal didn't do any good...  work around
+         * that by sleeping briefly and sending it again
+         */
+
+        iter = 0;
+        while (iter < 10 && pthread_kill(*listener_os_thread, 0) == 0) {
+            /* listener not dead yet */
+            apr_sleep(APR_USEC_PER_SEC / 2);
+            wakeup_listener();
+            ++iter;
+        }
+        if (iter >= 10) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ap_server_conf,
+                         "the listener thread didn't exit");
+        }
+        else {
+            rv = apr_thread_join(&thread_rv, listener);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
+                             "apr_thread_join: unable to join listener thread");
+            }
+        }
+    }
+    
     for (i = 0; i < ap_threads_per_child; i++) {
         if (threads[i]) { /* if we ever created this thread */
             rv = apr_thread_join(&thread_rv, threads[i]);
@@ -1003,6 +1090,7 @@ static void child_main(int child_num_arg)
     apr_threadattr_detach_set(thread_attr, 0);
 
     ts->threads = threads;
+    ts->listener = NULL;
     ts->child_num_arg = child_num_arg;
     ts->threadattr = thread_attr;
 
@@ -1038,7 +1126,7 @@ static void child_main(int child_num_arg)
          *   If the worker hasn't exited, then this blocks until
          *   they have (then cleans up).
          */
-        join_workers(threads);
+        join_workers(ts->listener, threads);
     }
     else { /* !one_process */
         /* Watch for any messages from the parent over the POD */
@@ -1062,7 +1150,7 @@ static void child_main(int child_num_arg)
              *   If the worker hasn't exited, then this blocks until
              *   they have (then cleans up).
              */
-            join_workers(threads);
+            join_workers(ts->listener, threads);
         }
     }
 
