@@ -1040,6 +1040,7 @@ void init_config_globals (pool *p)
     daemons_limit = HARD_SERVER_LIMIT;
     pid_fname = DEFAULT_PIDLOG;
     scoreboard_fname = DEFAULT_SCOREBOARD;
+    lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     bind_address.s_addr = htonl(INADDR_ANY);
     listeners = NULL;

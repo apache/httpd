@@ -967,6 +967,11 @@ const char *set_scoreboard (cmd_parms *cmd, void *dummy, char *arg) {
     return NULL;
 }
 
+const char *set_lockfile (cmd_parms *cmd, void *dummy, char *arg) {
+    lock_fname = pstrdup (cmd->pool, arg);
+    return NULL;
+}
+
 const char *set_idcheck (cmd_parms *cmd, core_dir_config *d, int arg) {
     d->do_rfc1413 = arg;
     return NULL;
@@ -1216,6 +1221,8 @@ command_rec core_cmds[] = {
     "A file for logging the server process ID"},
 { "ScoreBoardFile", set_scoreboard, NULL, RSRC_CONF, TAKE1,
     "A file for Apache to maintain runtime process management information"},
+{ "LockFile", set_lockfile, NULL, RSRC_CONF, TAKE1,
+    "The lockfile used when Apache needs to lock the accept() call"},
 { "AccessConfig", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, access_confname), RSRC_CONF, TAKE1,
   "The filename of the access config file" },

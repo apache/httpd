@@ -25,6 +25,10 @@ Changes with Apache 1.2.1
      to the rule that symlink permissions are tested with the symlink
      options of the parent directory.  [Dean Gaudet] PR#353
 
+  *) CONFIG: The LockFile directive can be used to place the serializing
+     lockfile in any location.  It previously defaulted to /usr/tmp/htlock.
+     [Somehow it took three of us: Jim Jaglieski, Dean Gaudet, Marc Slemko]
+
   *) QUERY_STRING was unescaped in mod_include, it shouldn't be.
      [Dean Gaudet] PR#644
 
@@ -47,6 +51,9 @@ Changes with Apache 1.2.1
      problems is under Solaris with many virtualhosts and many Listen
      directives.  But using -DHIGH_SLACK_LINE=256 described above will
      work around this problem.  [Dean Gaudet]
+
+  *) USE_FLOCK_SERIALIZED_ACCEPT is now default for FreeBSD, A/UX, and
+     SunOS 4.
 
   *) Improved unix error response logging.  [Marc Slemko]
 

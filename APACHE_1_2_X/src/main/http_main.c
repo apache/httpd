@@ -138,6 +138,7 @@ gid_t group_id_list[NGROUPS_MAX];
 int max_requests_per_child;
 char *pid_fname;
 char *scoreboard_fname;
+char *lock_fname;
 char *server_argv0;
 struct in_addr bind_address;
 listen_rec *listeners;
@@ -181,6 +182,16 @@ int one_process = 0;
 #define ap_killpg(x, y)		(killpg ((x), (y)))
 #endif
 
+#if defined(USE_FCNTL_SERIALIZED_ACCEPT) || defined(USE_FLOCK_SERIALIZED_ACCEPT)
+static void expand_lock_fname(pool *p)
+{
+    char buf[20];
+
+    ap_snprintf( buf, sizeof(buf), ".%u", getpid() );
+    lock_fname = pstrcat (p, server_root_relative (p, lock_fname), buf, NULL);
+}
+#endif
+
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT)
 static struct flock lock_it;
 static struct flock unlock_it;
@@ -193,8 +204,7 @@ static int lock_fd=-1;
  */
 void
 accept_mutex_init(pool *p)
-    {
-    char lock_fname[256];
+{
 
     lock_it.l_whence = SEEK_SET;   /* from current point */
     lock_it.l_start  = 0;          /* -"- */
@@ -207,19 +217,7 @@ accept_mutex_init(pool *p)
     unlock_it.l_type   = F_UNLCK;  /* set exclusive/write lock */
     unlock_it.l_pid    = 0;        /* pid not actually interesting */
 
-#ifdef __MACHTEN__
-    strncpy(lock_fname, "/var/tmp/htlock.XXXXXX", sizeof(lock_fname)-1);
-#else
-    strncpy(lock_fname, "/usr/tmp/htlock.XXXXXX", sizeof(lock_fname)-1);
-#endif
-    lock_fname[sizeof(lock_fname)-1] = '\0';
-
-    if (mktemp(lock_fname) == NULL || lock_fname[0] == '\0')
-    {
-	fprintf (stderr, "Cannot assign name to lock file!\n");
-	exit (1);
-    }
-
+    expand_lock_fname (p);
     lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (lock_fd == -1)
     {
@@ -264,17 +262,8 @@ static int lock_fd=-1;
 void
 accept_mutex_init(pool *p)
 {
-    char lock_fname[256];
 
-    strncpy(lock_fname, "/usr/tmp/htlock.XXXXXX", sizeof(lock_fname)-1);
-    lock_fname[sizeof(lock_fname)-1] = '\0';
-    
-    if (mktemp(lock_fname) == NULL || lock_fname[0] == '\0')
-    {
-	fprintf (stderr, "Cannot assign name to lock file!\n");
-	exit (1);
-    }
-
+    expand_lock_fname (p);
     lock_fd = popenf(p, lock_fname, O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (lock_fd == -1)
     {

@@ -126,6 +126,7 @@
 #endif
 #define DEFAULT_PIDLOG "logs/httpd.pid"
 #define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
+#define DEFAULT_LOCKFILE "logs/accept.lock"
 
 /* Define this to be what your HTML directory content files are called */
 #define DEFAULT_INDEX "index.html"

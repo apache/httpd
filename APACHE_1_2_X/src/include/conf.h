@@ -89,6 +89,7 @@ char *mktemp(char *template);
 typedef int rlim_t;
 #define memmove(a,b,c) bcopy(b,a,c)
 #define NO_LINGCLOSE
+#define USE_FLOCK_SERIALIZED_ACCEPT
 
 #elif defined(SOLARIS2)
 #undef HAVE_GMTOFF
@@ -317,16 +318,16 @@ extern char *crypt();
 #define NEED_STRDUP
 #define JMP_BUF sigjmp_buf
 /* fcntl() locking is expensive with NFS */
-#undef USE_FLOCK_SERIALIZED_ACCEPT
+#define USE_FLOCK_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
-#define MOVEBREAK		0x4000000
 /*
  * NOTE: If when you run Apache under A/UX and you get a warning
- * that httpd couldn't move break, then the above value for
+ * that httpd couldn't move break, then the below value for
  * MOVEBREAK (64megs) is too large for your setup. Try reducing
  * to 0x2000000 which is still PLENTY of space. I doubt if
  * even on heavy systems sbrk() would be called at all...
  */
+#define MOVEBREAK		0x4000000
 #define NO_LINGCLOSE
 #define NO_SLACK
 
@@ -411,6 +412,7 @@ extern char *crypt();
 (defined(__FreeBSD_version) && (__FreeBSD_version < 220000))
 typedef quad_t rlim_t;
 #endif
+#define USE_FLOCK_SERIALIZED_ACCEPT
 
 #elif defined(QNX)
 #ifndef crypt
