@@ -1,5 +1,8 @@
 Changes with Apache 2.0.49
 
+  *) mod_proxy: Fix cases where an invalid status-line could be sent 
+     to the client.  PR 23998.  [Joe Orton]
+
   *) mod_ssl: Fix segfaults at startup if other modules which use OpenSSL
      are also loaded.  [Joe Orton]
 
