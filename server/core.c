@@ -2616,14 +2616,14 @@ static apr_status_t sendfile_it_all(conn_rec   *c,
 #endif
         
 /*
- * send_the_file()
+ * emulate_sendfile()
  * Sends the contents of file fd along with header/trailer bytes, if any,
- * to the network. send_the_file will return only when all the bytes have been
+ * to the network. emulate_sendfile will return only when all the bytes have been
  * sent (i.e., it handles partial writes) or on a network error condition.
  */
-static apr_status_t send_the_file(conn_rec *c, apr_file_t *fd, 
-                                  apr_hdtr_t *hdtr, apr_off_t offset, 
-                                  apr_size_t length, apr_size_t *nbytes) 
+static apr_status_t emulate_sendfile(conn_rec *c, apr_file_t *fd, 
+                                     apr_hdtr_t *hdtr, apr_off_t offset, 
+                                     apr_size_t length, apr_size_t *nbytes) 
 {
     apr_status_t rv = APR_SUCCESS;
     apr_int32_t togo;        /* Remaining number of bytes in the file to send */
@@ -3216,22 +3216,17 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                                    headers                */
                                  flags);   /* apr_sendfile flags        */
     
-            /* If apr_sendfile() returns APR_ENOTIMPL, call send_the_file()
-             * to loop on apr_file_read/apr_send to send the file. Our Windows 
-             * binary distributions (which work on Windows 9x/NT) are 
-             * compiled on Windows NT. TransmitFile is not available on 
-             * Windows 95/98 and we discover this at runtime when 
-             * apr_sendfile() returns APR_ENOTIMPL. Having apr_sendfile() 
-             * return APR_ENOTIMPL seems the cleanest way to handle this 
-             * case.
+            /* If apr_sendfile() returns APR_ENOTIMPL, call emulate_sendfile().
+             * emulate_sendfile() is useful to enable the same Apache binary 
+             * distribution to support Windows NT/2000 (supports TransmitFile) 
+             * and Win95/98 (do not support TransmitFile)
              */
             if (rv == APR_ENOTIMPL)
 #endif
             {
                 apr_size_t unused_bytes_sent;
-
-                rv = send_the_file(c, fd, &hdtr, foffset, flen,
-                                   &unused_bytes_sent);
+                rv = emulate_sendfile(c, fd, &hdtr, foffset, flen, 
+                                      &unused_bytes_sent);
             }
             fd = NULL;
         }
