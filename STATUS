@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/16 23:15:54 $]
+Last modified at [$Date: 2000/10/17 00:24:28 $]
 
 Release:
 
@@ -19,9 +19,7 @@ RELEASE SHOWSTOPPERS:
                 WIN32 and OS2 need review [William Rowe, Brian Harvard]
 
     * All of the bucket types must be implemented.  The list can be found
-      in src/include/ap_buckets.h. May need to implement a bucket type
-      to tell filters to flush any pending content. See http_protocol.c:
-      ap_rflush()
+      in src/include/ap_buckets.h.
 
     * Remove Buff from the code.  Some buff functionality is currently 
       missing: input translation filter, translation of protocol data for 

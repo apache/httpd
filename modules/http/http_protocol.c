@@ -2810,18 +2810,22 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 
 AP_DECLARE(int) ap_rflush(request_rec *r)
 {
-    /* ### this is probably incorrect, but we have no mechanism for telling
-       ### the filter chain to flush any content they may be holding.
-
-       ### add a FLUSH bucket type?
-    */
-
     apr_status_t rv;
 
     if ((rv = ap_bflush(r->connection->client)) != APR_SUCCESS) {
         check_first_conn_error(r, "rflush", rv);
         return EOF;
     }
+#if USE_FLUSH_BUCKET
+    /* we should be using a flush bucket to flush the stack, not buff code. */
+    ap_bucket_brigade *bb;
+    ap_bucket *b;
+
+    bb = ap_brigade_create(r->pool);
+    b = ap_bucket_create_flush();
+    AP_BRIGADE_INSERT_TAIL(bb, b);
+    ap_pass_brigade(r->output_filters, bb);
+#endif
     return 0;
 }
 
@@ -3155,7 +3159,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
 
         if (r->header_only) {
             ap_finalize_request_protocol(r);
-            ap_rflush(r);
             return;
         }
     }
@@ -3176,7 +3179,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         if (custom_response[0] == '\"') {
             ap_rputs(custom_response + 1, r);
             ap_finalize_request_protocol(r);
-            ap_rflush(r);
             return;
         }
         /*
@@ -3223,7 +3225,6 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         ap_rputs("</BODY></HTML>\n", r);
     }
     ap_finalize_request_protocol(r);
-    ap_rflush(r);
 }
 
 AP_IMPLEMENT_HOOK_RUN_ALL(int,post_read_request,
