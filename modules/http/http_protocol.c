@@ -484,7 +484,6 @@ AP_DECLARE(const char *) ap_method_name_of(int methnum)
 static long get_chunk_size(char *);
 
 typedef struct http_filter_ctx {
-    int status;
     apr_size_t remaining;
     enum {
         BODY_NONE,
@@ -493,8 +492,9 @@ typedef struct http_filter_ctx {
     } state;
 } http_ctx_t;
 
-/* Hi, I'm the main input filter for HTTP requests. 
- * I handle chunked and content-length bodies. */
+/* This is the input filter for HTTP requests.  It handles chunked and 
+ * content-length bodies.  This can only be inserted/used after the headers
+ * are successfully parsed. */
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_off_t *readbytes)
 {
     apr_bucket *e;
@@ -502,45 +502,32 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
     apr_status_t rv;
 
     if (!ctx) {
-        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
-        ctx->status = f->r->status;
-    }
+        const char *tenc, *lenp;
+        f->ctx = ctx = apr_palloc(f->r->pool, sizeof(*ctx));
+        ctx->state = BODY_NONE;
 
-    /* Basically, we have to stay out of the way until server/protocol.c
-     * says it is okay - which it does by setting r->status to OK. */
-    if (f->r->status != ctx->status)
-    {
-        int old_status;
-        /* Allow us to be reentrant! */
-        old_status = ctx->status;
-        ctx->status = f->r->status;
+        tenc = apr_table_get(f->r->headers_in, "Transfer-Encoding");
+        lenp = apr_table_get(f->r->headers_in, "Content-Length");
 
-        if (old_status == HTTP_REQUEST_TIME_OUT && f->r->status == HTTP_OK)
-        {
-            const char *tenc, *lenp;
-            tenc = apr_table_get(f->r->headers_in, "Transfer-Encoding");
-            lenp = apr_table_get(f->r->headers_in, "Content-Length");
-
-            if (tenc) {
-                if (!strcasecmp(tenc, "chunked")) {
-                    char line[30];
+        if (tenc) {
+            if (!strcasecmp(tenc, "chunked")) {
+                char line[30];
             
-                    if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
-                        return rv;
-                    }
-                    ctx->state = BODY_CHUNK;
-                    ctx->remaining = get_chunk_size(line);
+                if ((rv = ap_getline(line, sizeof(line), f->r, 0)) < 0) {
+                    return rv;
                 }
+                ctx->state = BODY_CHUNK;
+                ctx->remaining = get_chunk_size(line);
             }
-            else if (lenp) {
-                const char *pos = lenp;
+        }
+        else if (lenp) {
+            const char *pos = lenp;
 
-                while (apr_isdigit(*pos) || apr_isspace(*pos))
-                    ++pos;
-                if (*pos == '\0') {
-                    ctx->state = BODY_LENGTH;
-                    ctx->remaining = atol(lenp);
-                }
+            while (apr_isdigit(*pos) || apr_isspace(*pos))
+                ++pos;
+            if (*pos == '\0') {
+                ctx->state = BODY_LENGTH;
+                ctx->remaining = atol(lenp);
             }
         }
     }
@@ -575,6 +562,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode
 
                 if (!ctx->remaining)
                 {
+                    /* Handle trailers by calling get_mime_headers again! */
                     e = apr_bucket_eos_create();
                     APR_BRIGADE_INSERT_TAIL(b, e);
                     return APR_SUCCESS;
