@@ -1,5 +1,10 @@
 Changes with Apache 1.3.27
 
+  *) Fix a problem in proxy where headers from other modules were
+     added to the response headers when this was already done in the
+     core already. This resulted in header (and therefore cookie)
+     duplication. [Martijn Schoemaker <martijn@osp.nl>]
+
   *) Fix FileETags none operation.  PR 12202.
      [Justin Erenkrantz, Andrew Ho <andrew@tellme.com>]
 

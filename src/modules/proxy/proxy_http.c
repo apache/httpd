@@ -520,8 +520,6 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
             c->len = ap_strtol(content_length, NULL, 10);
         }
 
-        /* Now add out bound headers set by other modules */
-        resp_hdrs = ap_overlay_tables(r->pool, r->err_headers_out, resp_hdrs);
     }
     else {
         /* an http/0.9 response */
