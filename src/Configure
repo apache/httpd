@@ -779,6 +779,7 @@ TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 ####################################################################
 ## Check for user provided flags for shared object support
 ##
+TLD_SHLIB=`egrep '^LD_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TLDFLAGS_SHLIB=`egrep '^LDFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TLDFLAGS_SHLIB_EXPORT=`egrep '^LDFLAGS_SHLIB_EXPORT=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
@@ -788,6 +789,7 @@ TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{prin
 ## required.  For more platforms just add the required lines below.
 ##
 if [ "x$using_shlib" = "x1" ] ; then
+    LD_SHLIB="ld"
     DEF_SHARED_CORE=no
     SHLIB_SUFFIX_DEPTH=all
     SHLIB_EXPORT_FILES=no
@@ -1031,6 +1033,9 @@ fi
 if [ "x$using_shlib" = "x1" ] ; then
     if [ "x$TCFLAGS_SHLIB" = "x" ]; then
         echo "CFLAGS_SHLIB=$CFLAGS_SHLIB -DSHARED_MODULE" >> Makefile.config
+    fi
+    if [ "x$TLD_SHLIB" = "x" ]; then
+        echo "LD_SHLIB=$LD_SHLIB" >> Makefile.config
     fi
     if [ "x$TLDFLAGS_SHLIB" = "x" ]; then
         echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
@@ -1732,7 +1737,7 @@ $(LIB): $(OBJS)
 
 .c.so:
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $< && mv $*.o $*.lo
-	$(LD) $(LDFLAGS_SHLIB) -o $@ $*.lo
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $@ $*.lo
 
 clean:
 	rm -f $(LIB) $(OBJS) $(SHLIBS) $(OBJS_PIC)

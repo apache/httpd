@@ -132,9 +132,9 @@
      Reference:
 
      $ [CC=...]        [CFLAGS_SHLIB=...]         
-       [OPTIM=...]     [LDFLAGS_SHLIB=...]        
-       [CFLAGS=...]    [LDFLAGS_SHLIB_EXPORT=...] 
-       [INCLUDES=...] 
+       [OPTIM=...]     [LD_SHLIB=...]
+       [CFLAGS=...]    [LDFLAGS_SHLIB=...]        
+       [INCLUDES=...]  [LDFLAGS_SHLIB_EXPORT=...] 
        [LDFLAGS=...]   [RANLIB=...]  
        [LIBS=...] 
        ./configure [--quiet]   [--prefix=DIR]         [--enable-rule=NAME]    
@@ -157,9 +157,10 @@
                                                       [--without-support]  
 
      Use the CC, OPTIM, CFLAGS, INCLUDES, LDFLAGS, LIBS, CFLAGS_SHLIB,
-     LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment variables to
-     override the corresponding default entries in the src/Configuration.tmpl
-     file (see there for more information about their usage).
+     LD_SHLIB, LDFLAGS_SHLIB, LDFLAGS_SHLIB_EXPORT and RANLIB environment
+     variables to override the corresponding default entries in the
+     src/Configuration.tmpl file (see there for more information about their
+     usage).
 
          Note: The syntax ``KEY=VALUE ./configure ...'' (one single line!) is
                the GNU Autoconf compatible way of specifying defines and can

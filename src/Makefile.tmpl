@@ -41,7 +41,7 @@ libhttpd.ep: libhttpd.so
 
 libhttpd.so: subdirs modules.o
 	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
-	$(LD) $(LDFLAGS_SHLIB) -o libhttpd.so buildmark.o $(OBJS) $(REGLIB)
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o libhttpd.so buildmark.o $(OBJS) $(REGLIB)
 	@if [ ".$(SHLIB_SUFFIX_LIST)" != . ]; then \
 		rm -f libhttpd.so.*; \
 		for suffix in $(SHLIB_SUFFIX_LIST) ""; do \

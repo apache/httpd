@@ -1,5 +1,14 @@
 Changes with Apache 1.3b7
 
+  *) The Makefiles assumed that DSO files are build via $(LD). This
+     is broken for two reasons: First we never defined at least LD=ld
+     somewhere to make sure this works (it was silently assumed that most Make
+     provide a built-in LD definition - ARGL!) and second using the generic LD
+     variable is not the truth. Instead a special variable named LD_SHLIB is
+     reasonable because although "ld" is usually the default, the command for
+     building DSO files can be "libtool" or even "cc" on some systems.
+     [Ralf S. Engelschall]
+
   *) Replace the AddVersionPlatform directive with ServerTokens which
      provides for more control over the format of the Server:
      header line. SERVER_SUBVERSION is no longer supported;

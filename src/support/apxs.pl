@@ -69,9 +69,9 @@ package apxs;
 ##
 
 my $CFG_CC            = '@CC@';            # substituted via Makefile.tmpl
-my $CFG_LD            = '@LD@';            # substituted via Makefile.tmpl
 my $CFG_CFLAGS        = '@CFLAGS@';        # substituted via Makefile.tmpl
 my $CFG_CFLAGS_SHLIB  = '@CFLAGS_SHLIB@';  # substituted via Makefile.tmpl
+my $CFG_LD_SHLIB      = '@LD_SHLIB@';      # substituted via Makefile.tmpl
 my $CFG_LDFLAGS_SHLIB = '@LDFLAGS_SHLIB@'; # substituted via Makefile.tmpl 
 my $CFG_PREFIX        = '@prefix@';        # substituted via APACI install
 my $CFG_SBINDIR       = '@sbindir@';       # substituted via APACI install
@@ -262,7 +262,7 @@ if ($opt_q) {
         my $ok = 0;
         my $name;
         foreach $name (qw(
-            CC LD CFLAGS CFLAGS_SHLIB LDFLAGS_SHLIB 
+            CC LD_SHLIB CFLAGS CFLAGS_SHLIB LDFLAGS_SHLIB 
             PREFIX SBINDIR INCLUDEDIR LIBEXECDIR SYSCONFDIR
         )) {
             if ($arg eq $name or $arg eq lc($name)) {
@@ -338,7 +338,7 @@ if ($opt_c) {
     }
 
     #   create link command
-    my $cmd = "$CFG_LD $CFG_LDFLAGS_SHLIB -o $dso_file";
+    my $cmd = "$CFG_LD_SHLIB $CFG_LDFLAGS_SHLIB -o $dso_file";
     my $o;
     foreach $o (@objs) {
         $cmd .= " $o";
