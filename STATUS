@@ -66,6 +66,7 @@ Committed Code Changes:
     * Dean's [PATCH] mod_info minor cleanups (take 2)
     * Dean's [PATCH] mod_status cleanups
     * [PATCH] mod_digest/1599: proxy authentication using the digest auth scheme never succeeds (fwd)
+    * Paul's [PATCH] a bundle of multithreading changes
 
 Available Patches:
 
@@ -85,10 +86,6 @@ Available Patches:
     * Ben Hyde's [PATCH] WIN32 deserves a pid log file
 	<9712092027.AA15722@gensym1.gensym.com>
 	Status: Jim +1
-
-    * Paul's [PATCH] a bundle of multithreading changes
-	<Pine.LNX.3.96.971201110849.23994H-100000@ecstasy.localnet>
-	Status: Paul +1, Dean +1 (untested), Ben +1 (untested)
 
     * M.D.Parker's [PATCH] mod_status/1448: Status Information have version
 	<Pine.LNX.3.95dg3.971121113953.29532D-100000@twinlark.arctic.org>
