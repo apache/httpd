@@ -65,13 +65,16 @@
  */
 
 #include "apr_strings.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 typedef struct {
     const char *real;

@@ -88,6 +88,22 @@
 **      www.engelschall.com
 */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_user.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#define APR_WANT_IOVEC
+#include "apr_want.h"
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -96,28 +112,9 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "mod_rewrite.h"
-#include "apr_strings.h"
-#include "apr_user.h"
 
-#if !defined(OS2) && !defined(WIN32)
+#if !defined(OS2) && !defined(WIN32) && !defined(BEOS)
 #include "unixd.h"
-#endif
-
-#ifndef NO_WRITEV
-#ifndef NETWARE
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#endif
-#if APR_HAVE_SYS_UIO_H
-#include <sys/uio.h>
-#endif
-#endif
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
 #endif
 
 /*

@@ -56,31 +56,46 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "httpd.h"
 
 #ifdef AP_DEBUG
 # undef strchr
 
 char *ap_strchr(char *s, int c)
-{ return strchr(s,c); }
+{
+    return strchr(s,c);
+}
 
 const char *ap_strchr_c(const char *s, int c)
-{ return strchr(s,c); }
+{
+    return strchr(s,c);
+}
 
 # undef strrchr
 
 char *ap_strrchr(char *s, int c)
-{ return strrchr(s,c); }
+{
+    return strrchr(s,c);
+}
 
 const char *ap_strrchr_c(const char *s, int c)
-{ return strrchr(s,c); }
+{
+    return strrchr(s,c);
+}
 
 #undef strstr
 
 char *ap_strstr(char *s, char *c)
-{ return strstr(s,c); }
+{
+    return strstr(s,c);
+}
 
 const char *ap_strstr_c(const char *s, const char *c)
-{ return strstr(s,c); }
+{
+    return strstr(s,c);
+}
 
-#endif
+#endif /* AP_DEBUG */

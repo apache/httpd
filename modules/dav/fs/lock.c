@@ -61,6 +61,9 @@
 #include "apr_file_io.h"
 #include "apr_uuid.h"
 
+#define APR_WANT_MEMFUNC
+#include "apr_want.h"
+
 #include "httpd.h"
 #include "http_log.h"
 

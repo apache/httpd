@@ -179,24 +179,27 @@
  *
  * --- rst */
 
-#define DEFAULT_LOG_FORMAT "%h %l %u %t \"%r\" %>s %b"
-
 #include "apr_strings.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"          /* For REMOTE_NAME */
 #include "http_log.h"
 #include "http_protocol.h"
-#ifdef HAVE_UNISTD_H
+
+#if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
 #endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
+#define DEFAULT_LOG_FORMAT "%h %l %u %t \"%r\" %>s %b"
 
 module AP_MODULE_DECLARE_DATA config_log_module;
 

@@ -80,6 +80,11 @@
 **     so that we can keep the connection open.
 */
 
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -88,7 +93,6 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "util_script.h"
-#include "apr_strings.h"
 
 #include "mod_dav.h"
 

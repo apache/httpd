@@ -55,17 +55,18 @@
 #ifndef AP_FILTER_H
 #define AP_FILTER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "apr.h"
+#include "apr_buckets.h"
 
-#ifdef APR_HAVE_STDARG_H
+#include "httpd.h"
+
+#if APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
 
-#include "httpd.h"
-#include "apr.h"
-#include "apr_buckets.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @package Apache filter library

@@ -69,6 +69,7 @@
 #include "apr_thread_proc.h"
 #include "apr_hash.h"
 #include "apr_user.h"
+#include "apr_lib.h"
 
 #define CORE_PRIVATE
 

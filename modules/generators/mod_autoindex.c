@@ -64,9 +64,17 @@
  * 
  * Adapted to Apache by rst.
  *
- * Version sort added by Martin Pool <mbp@humbug.org.au>. */
+ * Version sort added by Martin Pool <mbp@humbug.org.au>.
+ */
 
 #include "apr_strings.h"
+#include "apr_fnmatch.h"
+#include "apr_strings.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -76,14 +84,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "util_script.h"
-#include "apr_fnmatch.h"
-#include "apr_strings.h"
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef HAVE_STRINGS_H
-#include <strings.h>
-#endif
+
 
 module AP_MODULE_DECLARE_DATA autoindex_module;
 

@@ -57,6 +57,11 @@
 **  - various utilities, repository-independent
 */
 
+#include "apr_strings.h"
+
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #include "mod_dav.h"
 
 #include "http_request.h"
@@ -64,8 +69,6 @@
 #include "http_vhost.h"
 #include "http_log.h"
 #include "http_protocol.h"
-
-#include "apr_strings.h"
 
 DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status, 
                                       int error_id, const char *desc)

@@ -56,8 +56,15 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#include "apr.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
+#include "apr_lib.h"
+
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_log.h"
@@ -67,9 +74,6 @@
 
 #include "mpm.h"
 #include "scoreboard.h"
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
 
 AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
 AP_DECLARE_DATA const char *ap_scoreboard_fname=NULL;

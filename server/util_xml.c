@@ -63,9 +63,9 @@
 #include "apr.h"
 #include "apr_strings.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for fprintf(), sprintf() */
-#endif
+#define APR_WANT_STDIO          /* for fprintf(), sprintf() */
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "httpd.h"
 #include "http_protocol.h"

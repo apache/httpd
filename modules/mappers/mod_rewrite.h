@@ -56,8 +56,8 @@
  * University of Illinois, Urbana-Champaign.
  */
 
-#ifndef _MOD_REWRITE_H
-#define _MOD_REWRITE_H 1
+#ifndef MOD_REWRITE_H
+#define MOD_REWRITE_H 1
 
 /*
 **                       _                            _ _
@@ -92,29 +92,31 @@
 **      www.engelschall.com
 */
 
+#include "apr.h"
+
+#define APR_WANT_STRFUNC
+#define APR_WANT_MEMFUNC
+#include "apr_want.h"
 
     /* Include from the underlaying Unix system ... */
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-#ifdef APR_HAVE_STDARG_H
+#if APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
-#ifdef HAVE_STDLIB_H
+#if APR_HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
+#if APR_HAVE_CTYPE_H
+#include <ctype.h>
+#endif
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+#include "ap_config.h"
+
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
-#ifdef HAVE_CTYPE_H
-#include <ctype.h>
-#endif
-#ifndef NETWARE
-#include <sys/types.h>
-#endif
-/* are these needed anymore?  rbb */
-#include <signal.h>
-#include <errno.h>
 
     /* Include from the Apache server ... */
 #define CORE_PRIVATE
@@ -472,6 +474,4 @@ static int compare_lexicography(char *cpNum1, char *cpNum2);
 static char *find_closing_bracket(char *s, int left, int right);
 static char *find_char_in_brackets(char *s, int c, int left, int right);
 
-#endif /* _MOD_REWRITE_H */
-
-/*EOF*/
+#endif /* MOD_REWRITE_H */

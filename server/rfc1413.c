@@ -82,17 +82,13 @@
 #include "apr.h"
 #include "apr_network_io.h"
 #include "apr_strings.h"
+#include "apr_lib.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>
-#endif
+#define APR_WANT_STDIO
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "ap_config.h"
-
-#ifdef HAVE_STRING_H
-#include <string.h>
-#endif
-
 #include "httpd.h"		/* for server_rec, conn_rec, etc. */
 #include "http_log.h"		/* for aplog_error */
 #include "rfc1413.h"

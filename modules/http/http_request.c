@@ -70,6 +70,9 @@
 #include "apr_file_io.h"
 #include "apr_fnmatch.h"
 
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
+
 #define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h"
@@ -84,7 +87,7 @@
 
 #include "mod_core.h"
 
-#ifdef APR_HAVE_STDARG_H
+#if APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
 
