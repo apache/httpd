@@ -2223,11 +2223,11 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 debug_pos += sprintf (&debug[debug_pos],
                                       "     Re Compare (%s) with /%s/\n",
                                       current->left->token.value,
-                                      &current->right->token.value[1]);
+                                      current->right->token.value);
 #endif
                 current->value =
                     re_check(r, ctx, current->left->token.value,
-                             &current->right->token.value[1]);
+                             current->right->token.value);
             }
             else {
 #ifdef DEBUG_INCLUDE
