@@ -15,7 +15,7 @@ Guidelines:
       or not, and if not, what changes are needed to make it right.
 
       Approve guidelines as written:
-         +1: Roy, Dean, Paul, Jim
+         +1: Roy, Dean, Paul, Jim, Martin
          +0:
          -1:
 
@@ -109,6 +109,7 @@ Committed Code Changes:
     * Ralf's change to make the shared object compilation command more portable
     * Dean's protect against FD_SETSIZE mismatches
     * Ralf's fallback stategy because of HIDE for loading shared object modules
+    * Martin's fix to allow %2F chars in proxy requests and in the uri query part
 
 Available Patches:
 
