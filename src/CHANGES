@@ -1,5 +1,8 @@
 Changes with Apache 1.3.4
 
+  *) Change the ap_assert macro to a variant that works on all platforms.
+     [Richard Prinz <richard.prinz@cso.net>] PR#2575
+
   *) In order to prevent some errant library code from setting an alarm
      on one request and having it affect some later connection, force the
      alarm to be cleared before each connection even if Apache's own

@@ -1080,7 +1080,7 @@ API_EXPORT(char *) ap_escape_quotes(pool *p, const char *instr);
  */
 API_EXPORT(void) ap_log_assert(const char *szExp, const char *szFile, int nLine)
 			    __attribute__((noreturn));
-#define ap_assert(exp) (void)( (exp) || (ap_log_assert(#exp, __FILE__, __LINE__), 0) )
+#define ap_assert(exp) ((exp) ? (void)0 : ap_log_assert(#exp,__FILE__,__LINE__))
 
 /* The optimized timeout code only works if we're not MULTITHREAD and we're
  * also not using a scoreboard file
