@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\regex" /I ".\core" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\regex" /I ".\main" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\regex" /I ".\core" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I ".\regex" /I ".\main" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
@@ -93,7 +93,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\core\alloc.c
+SOURCE=.\main\alloc.c
 # End Source File
 # Begin Source File
 
@@ -101,15 +101,15 @@ SOURCE=.\ApacheCore.def
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\buff.c
+SOURCE=.\main\buff.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\explain.c
+SOURCE=.\main\explain.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\fnmatch.c
+SOURCE=.\main\fnmatch.c
 # End Source File
 # Begin Source File
 
@@ -117,35 +117,35 @@ SOURCE=.\os\win32\getopt.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_bprintf.c
+SOURCE=.\main\http_bprintf.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_config.c
+SOURCE=.\main\http_config.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_core.c
+SOURCE=.\main\http_core.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_log.c
+SOURCE=.\main\http_log.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_main.c
+SOURCE=.\main\http_main.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_protocol.c
+SOURCE=.\main\http_protocol.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_request.c
+SOURCE=.\main\http_request.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\md5c.c
+SOURCE=.\main\md5c.c
 # End Source File
 # Begin Source File
 
@@ -233,7 +233,7 @@ SOURCE=.\os\win32\readdir.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\rfc1413.c
+SOURCE=.\main\rfc1413.c
 # End Source File
 # Begin Source File
 
@@ -241,23 +241,23 @@ SOURCE=.\os\win32\service.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\util.c
+SOURCE=.\main\util.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\util_date.c
+SOURCE=.\main\util_date.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\util_md5.c
+SOURCE=.\main\util_md5.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\util_script.c
+SOURCE=.\main\util_script.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\util_snprintf.c
+SOURCE=.\main\util_snprintf.c
 # End Source File
 # Begin Source File
 
@@ -269,23 +269,23 @@ SOURCE=.\os\win32\util_win32.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
 # Begin Source File
 
-SOURCE=.\core\alloc.h
+SOURCE=.\main\alloc.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\buff.h
+SOURCE=.\main\buff.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\conf.h
+SOURCE=.\main\conf.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\explain.h
+SOURCE=.\main\explain.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\fnmatch.h
+SOURCE=.\main\fnmatch.h
 # End Source File
 # Begin Source File
 
@@ -293,39 +293,39 @@ SOURCE=.\os\win32\getopt.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_conf_globals.h
+SOURCE=.\main\http_conf_globals.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_config.h
+SOURCE=.\main\http_config.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_core.h
+SOURCE=.\main\http_core.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_log.h
+SOURCE=.\main\http_log.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_main.h
+SOURCE=.\main\http_main.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_protocol.h
+SOURCE=.\main\http_protocol.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\http_request.h
+SOURCE=.\main\http_request.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\httpd.h
+SOURCE=.\main\httpd.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\md5.h
+SOURCE=.\main\md5.h
 # End Source File
 # Begin Source File
 
@@ -333,7 +333,7 @@ SOURCE=.\modules\standard\mod_mime.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\multithread.h
+SOURCE=.\main\multithread.h
 # End Source File
 # Begin Source File
 
@@ -345,11 +345,11 @@ SOURCE=.\regex\regex.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\rfc1413.h
+SOURCE=.\main\rfc1413.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\scoreboard.h
+SOURCE=.\main\scoreboard.h
 # End Source File
 # Begin Source File
 
@@ -357,15 +357,15 @@ SOURCE=.\os\win32\service.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\util_date.h
+SOURCE=.\main\util_date.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\util_md5.h
+SOURCE=.\main\util_md5.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\core\util_script.h
+SOURCE=.\main\util_script.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
