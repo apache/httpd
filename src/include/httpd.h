@@ -356,7 +356,7 @@
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/1.3b5"	/* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/1.3b6-dev"	/* SEE COMMENTS ABOVE */
 #ifdef SERVER_SUBVERSION
 #define SERVER_VERSION	SERVER_BASEVERSION " " SERVER_SUBVERSION
 #else
@@ -367,7 +367,7 @@ extern MODULE_VAR_EXPORT const char SERVER_BUILT[];
 /* Numeric release version identifier: major minor bugfix betaseq
  * Always increases along the same track as the source branch.
  */
-#define APACHE_RELEASE 1030005
+#define APACHE_RELEASE 1030006
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #ifndef SERVER_SUPPORT

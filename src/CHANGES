@@ -1,3 +1,5 @@
+Changes with Apache 1.3b6
+
 Changes with Apache 1.3b5
 
   *) Preserve the content encoding given by the AddEncoding directive
