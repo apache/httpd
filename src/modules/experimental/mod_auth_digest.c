@@ -642,7 +642,7 @@ static const command_rec digest_cmds[] =
      "The algorithm used for the hash calculation"},
     {"AuthDigestDomain", set_uri_list, NULL, OR_AUTHCFG, ITERATE,
      "A list of URI's which belong to the same protection space as the current URI"},
-    {NULL}
+    {NULL, NULL, NULL, 0, 0, NULL}
 };
 
 
@@ -1526,11 +1526,15 @@ static void copy_uri_components(uri_components *dst, uri_components *src,
 	dst->path = ap_pstrdup(r->pool, src->path);
 	ap_unescape_url(dst->path);
     }
+    else
+	dst->path = src->path;
 
     if (src->query && src->query[0] != '\0') {
 	dst->query = ap_pstrdup(r->pool, src->query);
 	ap_unescape_url(dst->query);
     }
+    else
+	dst->query = src->query;
 }
 
 /* These functions return 0 if client is OK, and proper error status
