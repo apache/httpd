@@ -102,14 +102,6 @@ int main(int argc, char *argv[])
             printf("\n    ");
 
         /* escape_shell_cmd */
-        if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
-            flags |= T_ESCAPE_SHELL_CMD;
-        }
-
-        if (!apr_isalnum(c) && !strchr("$-_.+!*'(),:@&=~", c)) {
-            flags |= T_ESCAPE_PATH_SEGMENT;
-        }
-
 #if defined(WIN32) || defined(OS2)
         /* Win32/OS2 have many of the same vulnerable characters
          * as Unix sh, plus the carriage return and percent char.
@@ -118,15 +110,21 @@ int main(int argc, char *argv[])
          * and neither lf nor cr can be escaped.  We escape unix 
          * specific as well, to assure that cross-compiled unix 
          * applications behave similiarly when invoked on win32/os2.
+         *
+         * Rem please keep in-sync with apr's list in win32/filesys.c
          */
         if (strchr("&;`'\"|*?~<>^()[]{}$\\\n\r%", c)) {
- 	    flags |= T_ESCAPE_SHELL_CMD;
- 	}
+            flags |= T_ESCAPE_SHELL_CMD;
+        }
 #else
         if (strchr("&;`'\"|*?~<>^()[]{}$\\\n", c)) {
-	    flags |= T_ESCAPE_SHELL_CMD;
-	}
+            flags |= T_ESCAPE_SHELL_CMD;
+        }
 #endif
+
+        if (!apr_isalnum(c) && !strchr("$-_.+!*'(),:@&=~", c)) {
+            flags |= T_ESCAPE_PATH_SEGMENT;
+        }
 
         if (!apr_isalnum(c) && !strchr("$-_.+!*'(),:@&=/~", c)) {
             flags |= T_OS_ESCAPE_PATH;
