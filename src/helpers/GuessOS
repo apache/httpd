@@ -53,9 +53,11 @@ if [ "x$XREL" != "x" ]; then
 		echo "whatever-whatever-unixware1"; exit 0
 		;;
 	    5)
-		if [ "x$VERSION" = "x7" ]; then
-		    echo "${MACHINE}-whatever-unixware7"; exit 0
-		fi
+	    	case "$VERSION" in
+		    7*)
+			echo "${MACHINE}-whatever-unixware7"; exit 0
+			;;
+		esac
 		;;
 	esac
     fi

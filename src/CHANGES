@@ -1,5 +1,8 @@
 Changes with Apache 1.3.3
- 
+
+  *) PORT: Allow GuessOS to recognize Unixware 7.0.1 [Steve Cameron
+     <steve.cameron@compaq.com>]
+
   *) Reconstructed the loop through multiple htaccess file names so
      that missing files are not confused with unreadable files.
      [Roy Fielding]
@@ -7,7 +10,7 @@ Changes with Apache 1.3.3
   *) The ap_pfopen and ap_pfdopen routines were failing to protect the
      errno on an error, which leads to one error being mistaken for
      another when reading non-existant .htaccess files.
-     [Jim Jagielski, Roy Fielding]
+     [Jim Jagielski]
 
   *) OS/2: The new header tests get things right, need to update
      ap_config.h.  [Brian Havard]
