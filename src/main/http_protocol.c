@@ -50,7 +50,7 @@
  *
  */
   
-/* $Id: http_protocol.c,v 1.54 1996/10/10 09:02:43 fielding Exp $ */
+/* $Id: http_protocol.c,v 1.55 1996/10/10 12:12:01 fielding Exp $ */
 
 /*
  * http_protocol.c --- routines which directly communicate with the
@@ -852,7 +852,7 @@ static char *status_lines[] = {
 int index_of_response(int status)
 {
     static int shortcut[6] = { 0, LEVEL_200, LEVEL_300, LEVEL_400,
-                               LEVEL_500, RESPONSE_CODES+1 };
+                               LEVEL_500, RESPONSE_CODES };
     int i, pos;
 
     if (status < 100)          /* Below 100 is illegal for HTTP status */

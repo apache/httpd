@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_core.h,v 1.11 1996/08/20 11:50:45 paul Exp $ */
+/* $Id: http_core.h,v 1.12 1996/10/10 12:11:59 fielding Exp $ */
 
 /*****************************************************************
  *
@@ -146,7 +146,7 @@ typedef struct {
     /* Custom response config. These can contain text or a URL to redirect to.
      */
   
-    char *response_code_strings[RESPONSE_CODES+1];
+    char *response_code_strings[RESPONSE_CODES];
 
     /* Hostname resolution etc */
     int hostname_lookups;

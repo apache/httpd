@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_core.c,v 1.34 1996/08/25 17:46:08 ben Exp $ */
+/* $Id: http_core.c,v 1.35 1996/10/10 12:12:00 fielding Exp $ */
 
 #define CORE_PRIVATE
 #include "httpd.h"
@@ -132,7 +132,7 @@ void *merge_core_dir_configs (pool *a, void *basev, void *newv)
     if (new->auth_name) conf->auth_name = new->auth_name;
     if (new->requires) conf->requires = new->requires;
 
-    for (i = 0; i <= RESPONSE_CODES; ++i)
+    for (i = 0; i < RESPONSE_CODES; ++i)
         if (new->response_code_strings[i] != NULL)
 	   conf->response_code_strings[i] = new->response_code_strings[i];
     if (new->hostname_lookups != 2)
