@@ -1901,12 +1901,15 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             case token_string:
                 if (current->token.value[0] != '\0') {
                     strncat(current->token.value, " ",
+                         /* XXX sizeof() use is FUBAR */
                          sizeof(current->token.value)
                             - strlen(current->token.value) - 1);
                 }
                 strncat(current->token.value, new->token.value,
+                         /* XXX sizeof() use is FUBAR */
                          sizeof(current->token.value)
                             - strlen(current->token.value) - 1);
+                /* XXX sizeof() use is FUBAR */
                 current->token.value[sizeof(current->token.value) - 1] = '\0';
                 break;
             case token_eq:
@@ -2211,8 +2214,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
 #endif
             buffer = ap_ssi_parse_string(r, ctx, current->token.value, NULL, 
                                          MAX_STRING_LEN, 0);
-            apr_cpystrn(current->token.value, buffer, 
-                        sizeof(current->token.value));
+            current->token.value = buffer;
             current->value = (current->token.value[0] != '\0');
             current->done = 1;
             current = current->parent;
@@ -2245,8 +2247,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 case token_string:
                     buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
                                                  NULL, MAX_STRING_LEN, 0);
-                    apr_cpystrn(current->left->token.value, buffer,
-                                sizeof(current->left->token.value));
+                    current->left->token.value = buffer;
                     current->left->value = 
                                        (current->left->token.value[0] != '\0');
                     current->left->done = 1;
@@ -2261,8 +2262,7 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
                 case token_string:
                     buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
                                                  NULL, MAX_STRING_LEN, 0);
-                    apr_cpystrn(current->right->token.value, buffer,
-                                sizeof(current->right->token.value));
+                    current->right->token.value = buffer;
                     current->right->value = 
                                       (current->right->token.value[0] != '\0');
                     current->right->done = 1;
@@ -2312,12 +2312,10 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             }
             buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
                                          NULL, MAX_STRING_LEN, 0);
-            apr_cpystrn(current->left->token.value, buffer,
-                        sizeof(current->left->token.value));
+            current->left->token.value = buffer;
             buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
                                          NULL, MAX_STRING_LEN, 0);
-            apr_cpystrn(current->right->token.value, buffer,
-                        sizeof(current->right->token.value));
+            current->right->token.value = buffer;
             if (current->right->token.type == token_re) {
 #ifdef DEBUG_INCLUDE
                 debug_pos += sprintf (&debug[debug_pos],
@@ -2371,12 +2369,10 @@ static int parse_expr(request_rec *r, include_ctx_t *ctx, const char *expr,
             }
             buffer = ap_ssi_parse_string(r, ctx, current->left->token.value,
                                          NULL, MAX_STRING_LEN, 0);
-            apr_cpystrn(current->left->token.value, buffer,
-                        sizeof(current->left->token.value));
+            current->left->token.value = buffer;
             buffer = ap_ssi_parse_string(r, ctx, current->right->token.value,
                                          NULL, MAX_STRING_LEN, 0);
-            apr_cpystrn(current->right->token.value, buffer,
-                        sizeof(current->right->token.value));
+            current->right->token.value = buffer;
 #ifdef DEBUG_INCLUDE
             debug_pos += sprintf (&debug[debug_pos],
                                   "     Compare (%s) with (%s)\n",
