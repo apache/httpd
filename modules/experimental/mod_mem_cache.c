@@ -626,14 +626,14 @@ static apr_status_t write_headers(cache_handle_t *h, request_rec *r, cache_info 
         if (!obj->info.content_type) {
             return APR_ENOMEM;
         }
-        strcpy((char*) obj->info.content_type, info->content_type);
+        strcpy(obj->info.content_type, info->content_type);
     }
     if ( info->filename) {
         obj->info.filename = (char*) calloc(1, strlen(info->filename) + 1);
         if (!obj->info.filename ) {
             return APR_ENOMEM;
         }
-        strcpy((char*) obj->info.filename, info->filename );
+        strcpy(obj->info.filename, info->filename );
     }
 
     return APR_SUCCESS;
