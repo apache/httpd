@@ -14,7 +14,7 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_auth_anon</H1>
 
-This module is contained in the <code>mod_auth_anon.c</code> file and
+This module is contained in the <CODE>mod_auth_anon.c</CODE> file and
 is not compiled in by default. It is only available in Apache 1.1 and
 later. It allows "anonymous" user access to authenticated areas.
 
@@ -23,114 +23,114 @@ later. It allows "anonymous" user access to authenticated areas.
 It does access control in a manner similar to anonymous-ftp sites; i.e.
 have a 'magic' user id 'anonymous' and the email address as a password.
 These email addresses can be logged.
-<p>
+<P>
 Combined with other (database) access control methods, this allows for
 effective user tracking and customization according to a user profile
 while still keeping the site open for 'unregistered' users. One advantage
 of using Auth-based user tracking is that, unlike magic-cookies and
 funny URL pre/postfixes, it is completely browser independent and it
 allows users to share URLs.
-<p>
+<P>
 
-<a href="#Directives">Directives</a> /
-<a href="#Example">Example</a> /
-<a href="#CompileTimeOptions">Compile time options</a> /
-<a href="#RevisionHistory">RevisionHistory</a> /
-<a href="#Person">Person to blame</a> /
-<a href="#Sourcecode">Sourcecode</a>
-<p>
+<A HREF="#Directives">Directives</A> /
+<A HREF="#Example">Example</A> /
+<A HREF="#CompileTimeOptions">Compile time options</A> /
+<A HREF="#RevisionHistory">RevisionHistory</A> /
+<A HREF="#Person">Person to blame</A> /
+<A HREF="#Sourcecode">Sourcecode</A>
+<P>
 
-<h2><a name="Directives">Directives</a></h2>
-<ul>
-<li><A HREF="#anonymous">Anonymous</A>
-<li><A HREF="#Authoritative">Anonymous_Authoritative</A>
-<li><A HREF="#LogEmail">Anonymous_LogEmail</A>
-<li><A HREF="#MustGiveEmail">Anonymous_MustGiveEmail</A>
-<li><A HREF="#NoUserID">Anonymous_NoUserID</A>
-<li><A HREF="#VerifyEmail">Anonymous_VerifyEmail</A>
-</ul>
+<h2><A name="Directives">Directives</A></h2>
+<UL>
+<LI><A HREF="#anonymous">Anonymous</A>
+<LI><A HREF="#Authoritative">Anonymous_Authoritative</A>
+<LI><A HREF="#LogEmail">Anonymous_LogEmail</A>
+<LI><A HREF="#MustGiveEmail">Anonymous_MustGiveEmail</A>
+<LI><A HREF="#NoUserID">Anonymous_NoUserID</A>
+<LI><A HREF="#VerifyEmail">Anonymous_VerifyEmail</A>
+</UL>
 
-<hr>
+<HR>
 
 <h2><A name="anonymous">Anonymous directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Anonymous} directive&gt; -->
-<strong>Syntax:</strong> Anonymous <em>user user ...</em><br>
-<strong>Default:</strong> none<br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
+<STRONG>Syntax:</STRONG> Anonymous <EM>user user ...</EM><BR>
+<STRONG>Default:</STRONG> none<BR>
+<STRONG>Context:</STRONG> directory, .htaccess<BR>
+<STRONG>Override:</STRONG> AuthConfig<BR>
+<STRONG>Status:</STRONG> Extension<BR>
+<STRONG>Module:</STRONG> mod_auth_anon<P>
 
         A list of one or more 'magic' userIDs which are allowed access
         without password verification. The userIDs are space separated.
         It is possible to use the ' and " quotes to allow a space in
         a userID as well as the \ escape character.
-        <p>
-        Please note that the comparison is <b>case-IN-sensitive</b>.
-        <br>
-        I strongly suggest that the magic username '<code>anonymous</code>'
+        <P>
+        Please note that the comparison is <STRONG>case-IN-sensitive</STRONG>.
+        <BR>
+        I strongly suggest that the magic username '<CODE>anonymous</CODE>'
         is always one of the allowed userIDs.
-        <p>
-        Example:<br>
-        <code>
+        <P>
+        Example:<BR>
+        <CODE>
         Anonymous anonymous "Not Registered" 'I don\'t know'
-        </code><p>
+        </CODE><P>
         This would allow the user to enter without password verification
         by using the userId's 'anonymous', 'AnonyMous','Not Registered' and
         'I Don't Know'.
 <HR>
 
 <h2><A name="Authoritative">Anonymous_Authoritative directive</A></h2>
-<strong>Syntax:</strong> Anonymous_Authoritative <em>on | off</em><br>
-<strong>Default:</strong> <code>Anonymous_Authoritative off</code><br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
+<STRONG>Syntax:</STRONG> Anonymous_Authoritative <EM>on | off</EM><BR>
+<STRONG>Default:</STRONG> <CODE>Anonymous_Authoritative off</CODE><BR>
+<STRONG>Context:</STRONG> directory, .htaccess<BR>
+<STRONG>Override:</STRONG> AuthConfig<BR>
+<STRONG>Status:</STRONG> Extension<BR>
+<STRONG>Module:</STRONG> mod_auth_anon<P>
 
         When set 'on', there is no
         fall-through to other authorization methods. So if a
         userID does not match the values specified in the
-        <code>Anonymous</code> directive, access is denied.
-        <p>
+        <CODE>Anonymous</CODE> directive, access is denied.
+        <P>
         Be sure you know what you are doing when you decide to switch
         it on. And remember that it is the linking order of the modules
         (in the Configuration / Make file) which details the order
         in which the Authorization modules are queried.
-<hr>
+<HR>
 
 <h2><A name="LogEmail">Anonymous_LogEmail directive</A></h2>
-<strong>Syntax:</strong> Anonymous_LogEmail <em>on | off</em><br>
-<strong>Default:</strong> <code>Anonymous_LogEmail on</code><br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
+<STRONG>Syntax:</STRONG> Anonymous_LogEmail <EM>on | off</EM><BR>
+<STRONG>Default:</STRONG> <CODE>Anonymous_LogEmail on</CODE><BR>
+<STRONG>Context:</STRONG> directory, .htaccess<BR>
+<STRONG>Override:</STRONG> AuthConfig<BR>
+<STRONG>Status:</STRONG> Extension<BR>
+<STRONG>Module:</STRONG> mod_auth_anon<P>
 
         When set 'on', the default, the 'password' entered (which hopefully
         contains a sensible email address) is logged in the httpd-log file.
-<hr>
+<HR>
 
 <h2><A name="MustGiveEmail">Anonymous_MustGiveEmail directive</A></h2>
 <!--%plaintext &lt;?INDEX {\tt Anonymous_MustGiveEmail} directive&gt; -->
-<strong>Syntax:</strong> Anonymous_MustGiveEmail <em>on</em> | <em>off</em><br>
-<strong>Default:</strong> <code>Anonymous_MustGiveEmail on</code><br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
+<STRONG>Syntax:</STRONG> Anonymous_MustGiveEmail <EM>on</EM> | <EM>off</EM><BR>
+<STRONG>Default:</STRONG> <CODE>Anonymous_MustGiveEmail on</CODE><BR>
+<STRONG>Context:</STRONG> directory, .htaccess<BR>
+<STRONG>Override:</STRONG> AuthConfig<BR>
+<STRONG>Status:</STRONG> Extension<BR>
+<STRONG>Module:</STRONG> mod_auth_anon<P>
 
         Specifies whether the user must specify an email
         address as the password.  This prohibits blank passwords.
 <HR>
 
 <h2><A name="NoUserID">Anonymous_NoUserID directive</A></h2>
-<strong>Syntax:</strong> Anonymous_NoUserID <em>on | off</em><br>
-<strong>Default:</strong> <code>Anonymous_NoUserID off</code><br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
+<STRONG>Syntax:</STRONG> Anonymous_NoUserID <EM>on | off</EM><BR>
+<STRONG>Default:</STRONG> <CODE>Anonymous_NoUserID off</CODE><BR>
+<STRONG>Context:</STRONG> directory, .htaccess<BR>
+<STRONG>Override:</STRONG> AuthConfig<BR>
+<STRONG>Status:</STRONG> Extension<BR>
+<STRONG>Module:</STRONG> mod_auth_anon<P>
 
         When set 'on', users can leave
         the userID (and perhaps the password field) empty. This
@@ -138,114 +138,114 @@ allows users to share URLs.
         just hit return or click directly on the OK button; which
         seems a natural reaction.
 
-<hr>
+<HR>
 
 <h2><A name="VerifyEmail">Anonymous_VerifyEmail directive</A></h2>
-<strong>Syntax:</strong> Anonymous_VerifyEmail <em>on | off</em><br>
-<strong>Default:</strong> <code>Anonymous_VerifyEmail off</code><br>
-<strong>Context:</strong> directory, .htaccess<br>
-<strong>Override:</strong> AuthConfig<br>
-<strong>Status:</strong> Extension<br>
-<strong>Module:</strong> mod_auth_anon<p>
+<STRONG>Syntax:</STRONG> Anonymous_VerifyEmail <EM>on | off</EM><BR>
+<STRONG>Default:</STRONG> <CODE>Anonymous_VerifyEmail off</CODE><BR>
+<STRONG>Context:</STRONG> directory, .htaccess<BR>
+<STRONG>Override:</STRONG> AuthConfig<BR>
+<STRONG>Status:</STRONG> Extension<BR>
+<STRONG>Module:</STRONG> mod_auth_anon<P>
 
         When set 'on' the 'password' entered is
         checked for at least one '@' and a '.' to encourage users to enter
-        valid email addresses (see the above <code>Auth_LogEmail</code>).
+        valid email addresses (see the above <CODE>Auth_LogEmail</CODE>).
 
-<hr>
-<h2><a name="Example">Example</A></h2>
+<HR>
+<h2><A name="Example">Example</A></h2>
 
 The example below (when combined with the Auth directives
 of a htpasswd-file based (or GDM, mSQL <EM>etc.</EM>) base access
 control system allows users in as 'guests' with the
 following properties:
-<ul>
-<li>
-It insists that the user enters a userId. (<code>Anonymous_NoUserId</code>)
-<li>
-It insists that the user enters a password. (<code>Anonymous_MustGiveEmail</code>)
-<li>
+<UL>
+<LI>
+It insists that the user enters a userId. (<CODE>Anonymous_NoUserId</CODE>)
+<LI>
+It insists that the user enters a password. (<CODE>Anonymous_MustGiveEmail</CODE>)
+<LI>
 The password entered must be a valid email address, ie. contain at least one '@' and a '.'.
-(<code>Anonymous_VerifyEmail</code>)
-<li>
-The userID must be one of <code>anonymous guest www test welcome</code>
-and comparison is <b>not</b> case sensitive.
-<li>
+(<CODE>Anonymous_VerifyEmail</CODE>)
+<LI>
+The userID must be one of <CODE>anonymous guest www test welcome</CODE>
+and comparison is <STRONG>not</STRONG> case sensitive.
+<LI>
 And the Email addresses entered in the passwd field are logged to
 the httpd-log file
-(<code>Anonymous_LogEmail</code>)
-</ul>
-<p>
+(<CODE>Anonymous_LogEmail</CODE>)
+</UL>
+<P>
 Excerpt of access.conf:
-<blockquote><code>
-Anonymous_NoUserId      off<br>
-Anonymous_MustGiveEmail on<br>
-Anonymous_VerifyEmail    on<br>
-Anonymous_LogEmail      on<br>
-Anonymous        anonymous guest www test welcome<p>
-<p>
-AuthName                Use 'anonymous' & Email address for guest entry<br>
+<BLOCKQUOTE><CODE>
+Anonymous_NoUserId      off<BR>
+Anonymous_MustGiveEmail on<BR>
+Anonymous_VerifyEmail    on<BR>
+Anonymous_LogEmail      on<BR>
+Anonymous        anonymous guest www test welcome<P>
+<P>
+AuthName                Use 'anonymous' & Email address for guest entry<BR>
 AuthType                basic
-<p>
-# An AuthUserFile/AuthDBUserFile/AuthDBMUserFile<br>
-# directive must be specified, or use<br>
-# Anonymous_Authoritative for public access.<br>
-# In the .htaccess for the public directory, add:<br>
-&lt;Files *&gt;<br>
-order deny,allow          <br>
-allow from all            <br>
-<p>
-require valid-user        <br>
-&lt;/Files&gt;<br>
-</code></blockquote>
+<P>
+# An AuthUserFile/AuthDBUserFile/AuthDBMUserFile<BR>
+# directive must be specified, or use<BR>
+# Anonymous_Authoritative for public access.<BR>
+# In the .htaccess for the public directory, add:<BR>
+&lt;Files *&gt;<BR>
+order deny,allow          <BR>
+allow from all            <BR>
+<P>
+require valid-user        <BR>
+&lt;/Files&gt;<BR>
+</CODE></BLOCKQUOTE>
 
 
-<hr>
-<h2><a name="CompileTimeOptions">Compile Time Options</a></h2>
+<HR>
+<h2><A name="CompileTimeOptions">Compile Time Options</A></h2>
 
 Currently there are no Compile options.
 
-<hr>
-<h2><a name="RevisionHistory">Revision History</a></h2>
+<HR>
+<h2><A name="RevisionHistory">Revision History</A></h2>
 
 This version: 23 Nov 1995, 24 Feb 1996, 16 May 1996.
 
-<dl>
+<DL>
 
-<dt>Version 0.4<br></dt>
-    <dd>First release
-    </dd>
-<dt>Version 0.5<br></dt>
-    <dd>Added 'VerifyEmail' and 'LogEmail' options. Multiple
+<DT>Version 0.4<BR></DT>
+    <DD>First release
+    </DD>
+<DT>Version 0.5<BR></DT>
+    <DD>Added 'VerifyEmail' and 'LogEmail' options. Multiple
         'anonymous' tokens allowed. more docs. Added Authoritative
         functionality.
-    </dd>
-</dl>
+    </DD>
+</DL>
 
 
-<hr>
-<h2><a name="Person">Contact/person to blame</a></h2>
+<HR>
+<h2><A name="Person">Contact/person to blame</A></h2>
 
 This module was written for the
-<a href="http://ewse.ceo.org">European Wide Service Exchange</a> by
-&lt<a href="mailto:Dirk.vanGulik@jrc.it"><code>Dirk.vanGulik@jrc.it</code></a>&gt.
+<A HREF="http://ewse.ceo.org">European Wide Service Exchange</A> by
+&lt<A HREF="mailto:Dirk.vanGulik@jrc.it"><CODE>Dirk.vanGulik@jrc.it</CODE></A>&gt.
 Feel free to contact me if you have any problems, ice-creams or bugs. This
-documentation, courtesy of Nick Himba, <a href="mailto:himba@cs.utwente.nl">
-<code>&lt;himba@cs.utwente.nl&gt;</code></a>.
-<p>
+documentation, courtesy of Nick Himba, <A HREF="mailto:himba@cs.utwente.nl">
+<CODE>&lt;himba@cs.utwente.nl&gt;</CODE></A>.
+<P>
 
 
-<hr>
-<h2><a NAME="Sourcecode">Sourcecode</a></h2>
+<HR>
+<h2><A NAME="Sourcecode">Sourcecode</A></h2>
 
-The source code can be found at <a href="http://www.apache.org"><code>
-http://www.apache.org</code></a>. A snapshot of a development version
-usually resides at <a href="http://me-www.jrc.it/~dirkx/mod_auth_anon.c"><code>
-http://me-www.jrc.it/~dirkx/mod_auth_anon.c</code></a>. Please make sure
+The source code can be found at <A HREF="http://www.apache.org"><CODE>
+http://www.apache.org</CODE></A>. A snapshot of a development version
+usually resides at <A HREF="http://me-www.jrc.it/~dirkx/mod_auth_anon.c"><CODE>
+http://me-www.jrc.it/~dirkx/mod_auth_anon.c</CODE></A>. Please make sure
 that you always quote the version you use when filing a bug report.
-<p>
+<P>
 
 <!--#include virtual="footer.html" -->
-</body>
-</html>
+</BODY>
+</HTML>
 

@@ -13,9 +13,9 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_dld</h1>
+<H1 ALIGN="CENTER">Module mod_dld</H1>
 
-This module is contained in the <code>mod_dld.c</code> file, and is not
+This module is contained in the <CODE>mod_dld.c</CODE> file, and is not
 compiled in by default. It provides for loading of executable code
 and modules into the server at start-up time, using the GNU dld library.
 
@@ -26,52 +26,52 @@ loads other modules into the server as it is configuring itself (the
 first time only; for now, rereading the config files cannot affect the
 state of loaded modules), using the GNU dynamic linking library, DLD.
 It isn't compiled into the server by default, since not everyone has
-DLD, but it works when I try it.  (Famous last words.)  <p>
+DLD, but it works when I try it.  (Famous last words.)  <P>
 
-Note that for some reason, <code>LoadFile /lib/libc.a</code> seems to be
-required for just about everything.<p>
+Note that for some reason, <CODE>LoadFile /lib/libc.a</CODE> seems to be
+required for just about everything.<P>
 
 Note: that DLD needs to read the symbol table out of the server binary
 when starting up; these commands will fail if the server can't find
-its own binary when it starts up, or if that binary is stripped.<p>
+its own binary when it starts up, or if that binary is stripped.<P>
 
 
 <h2>Directives</h2>
-<ul>
-<li><A HREF="#loadfile">LoadFile</A>
-<li><A HREF="#loadmodule">LoadModule</A>
-</ul>
-<hr>
+<UL>
+<LI><A HREF="#loadfile">LoadFile</A>
+<LI><A HREF="#loadmodule">LoadModule</A>
+</UL>
+<HR>
 
 
 <h2><A name="loadfile">LoadFile</A></h2>
 <!--%plaintext &lt;?INDEX {\tt LoadFile} directive&gt; -->
-<strong>Syntax:</strong> LoadFile <em>filename filename ...</em><br>
-<Strong>Context:</strong> server config<br>
-<strong>Status:</strong> Experimental<br>
-<strong>Module:</strong> mod_dld<p>
+<STRONG>Syntax:</STRONG> LoadFile <EM>filename filename ...</EM><BR>
+<Strong>Context:</STRONG> server config<BR>
+<STRONG>Status:</STRONG> Experimental<BR>
+<STRONG>Module:</STRONG> mod_dld<P>
 
 The LoadFile directive links in the named object files or libraries when
 the server is started; this is used to load additional code which
-may be required for some module to work. <em>Filename</em> is relative
-to <A HREF="core.html#serverroot">ServerRoot</A>.<p><hr>
+may be required for some module to work. <EM>Filename</EM> is relative
+to <A HREF="core.html#serverroot">ServerRoot</A>.<P><HR>
 
 <h2><A name="loadmodule">LoadModule</A></h2>
 <!--%plaintext &lt;?INDEX {\tt LoadModule} directive&gt; -->
-<strong>Syntax:</strong> LoadModule <em>module filename</em><br>
-<Strong>Context:</strong> server config<br>
-<strong>Status:</strong> Experimental<br>
-<strong>Module:</strong> mod_dld<p>
+<STRONG>Syntax:</STRONG> LoadModule <EM>module filename</EM><BR>
+<Strong>Context:</STRONG> server config<BR>
+<STRONG>Status:</STRONG> Experimental<BR>
+<STRONG>Module:</STRONG> mod_dld<P>
 
-The LoadModule directive links in the object file or library <em>filename</em>
-and adds the module structure named <em>module</em> to the list of active
-modules. <em>Module</em> is the name of the external variable of type
-<code>module</code> in the file. Example:
-<blockquote><code>
-LoadModule ai_backcompat_module modules/mod_ai_backcompat.o<br>
+The LoadModule directive links in the object file or library <EM>filename</EM>
+and adds the module structure named <EM>module</EM> to the list of active
+modules. <EM>Module</EM> is the name of the external variable of type
+<CODE>module</CODE> in the file. Example:
+<BLOCKQUOTE><CODE>
+LoadModule ai_backcompat_module modules/mod_ai_backcompat.o<BR>
 LoadFile /lib/libc.a
-</code></blockquote>
-loads the module in the modules subdirectory of the ServerRoot.<p>
+</CODE></BLOCKQUOTE>
+loads the module in the modules subdirectory of the ServerRoot.<P>
 
 
 <!--#include virtual="footer.html" -->

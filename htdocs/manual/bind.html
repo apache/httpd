@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html><head>
-<title>Setting which addresses and ports Apache uses</title>
-</head>
+<HTML><HEAD>
+<TITLE>Setting which addresses and ports Apache uses</TITLE>
+</HEAD>
 
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
 <BODY
@@ -12,71 +12,71 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<h1 ALIGN="CENTER">Setting which addresses and ports Apache uses</h1>
+<h1 ALIGN="CENTER">Setting which addresses and ports Apache uses</H1>
 
-<hr>
+<HR>
 
 When Apache starts, it connects to some port and address on the
 local machine and waits for incoming requests. By default, it
 listens to all addresses on the machine, and to the port
-as specified by the <tt>Port</tt> directive in the server configuration.
+as specified by the <TT>Port</TT> directive in the server configuration.
 However, it can be told to listen to more the one port, or to listen
 to only selected addresses, or a combination. This is often combined
 with the Virtual Host feature which determines how Apache
-responds to different IP addresses, hostnames and ports.<p>
+responds to different IP addresses, hostnames and ports.<P>
 
 There are two directives used to restrict or specify which addresses
 and ports Apache listens to.
 
-<ul>
-<li><a href="#bindaddress">BindAddress</a> is used to restrict the server to listening to
+<UL>
+<LI><A HREF="#bindaddress">BindAddress</A> is used to restrict the server to listening to
   a single address, and can be used to permit multiple Apache servers
   on the same machine listening to different IP addresses.
-<li><a href="#listen">Listen</a> can be used to make a single Apache server listen
+<LI><A HREF="#listen">Listen</A> can be used to make a single Apache server listen
   to more than one address and/or port.
-</ul>
+</UL>
 
-<h3><a name="bindaddress">BindAddress</a></h3>
-<strong>Syntax:</strong> BindAddress <em>[ * | IP-address | hostname ]</em><br>
-<strong>Default:</strong> <code>BindAddress *</code><br>
-<strong>Context:</strong> server config<br>
-<strong>Status:</strong> Core<p>
+<h3><A name="bindaddress">BindAddress</A></h3>
+<STRONG>Syntax:</STRONG> BindAddress <EM>[ * | IP-address | hostname ]</EM><BR>
+<STRONG>Default:</STRONG> <CODE>BindAddress *</CODE><BR>
+<STRONG>Context:</STRONG> server config<BR>
+<STRONG>Status:</STRONG> Core<P>
 
 Makes the server listen to just the specified address. If the argument
 is *, the server listens to all addresses. The port listened to
-is set with the <tt>Port</tt> directive. Only one BindAddress
+is set with the <TT>Port</TT> directive. Only one BindAddress
 should be used.
 
-<h3><a name="listen">Listen</a></h3>
-<strong>Syntax:</strong> Listen <em>[ port | IP-address:port ]</em><br>
-<strong>Default:</strong> <code>none</code><br>
-<strong>Context:</strong> server config<br>
-<strong>Status:</strong> Core<p>
+<h3><A name="listen">Listen</A></h3>
+<STRONG>Syntax:</STRONG> Listen <EM>[ port | IP-address:port ]</EM><BR>
+<STRONG>Default:</STRONG> <CODE>none</CODE><BR>
+<STRONG>Context:</STRONG> server config<BR>
+<STRONG>Status:</STRONG> Core<P>
 
-<tt>Listen</tt> can be used instead of <tt>BindAddress</tt> and
-<tt>Port</tt>. It tells the server to accept incoming requests on the
+<TT>Listen</TT> can be used instead of <TT>BindAddress</TT> and
+<TT>Port</TT>. It tells the server to accept incoming requests on the
 specified port or address-and-port combination. If the first format is
 used, with a port number only, the server listens to the given port on
-all interfaces, instead of the port given by the <tt>Port</tt>
+all interfaces, instead of the port given by the <TT>Port</TT>
 directive. If an IP address is given as well as a port, the server
-will listen on the given port and interface.  <p> Multiple Listen
+will listen on the given port and interface.  <P> Multiple Listen
 directives may be used to specify a number of addresses and ports to
 listen to. The server will respond to requests from any of the listed
-addresses and ports.<p>
+addresses and ports.<P>
 
 For example, to make the server accept connections on both port
 80 and port 8000, use:
-<pre>
+<PRE>
    Listen 80
    Listen 8000
-</pre>
+</PRE>
 
 To make the server accept connections on two specified
 interfaces and port numbers, use
-<pre>
+<PRE>
    Listen 192.170.2.1:80
    Listen 192.170.2.5:8000
-</pre>
+</PRE>
 
 <h2>How this works with Virtual Hosts</h2>
 
@@ -95,12 +95,12 @@ not listening to, it cannot be accessed.
 <h2>See also</h2>
 
 See also the documentation on
-<a href="vhosts/index.html">Virtual Hosts</a>,
-<a href="mod/core.html#bindaddress">BindAddress directive</a>,
-<a href="mod/core.html#port">Port directive</a>,
-<a href="dns-caveats.html">DNS Issues</a>
+<A HREF="vhosts/index.html">Virtual Hosts</A>,
+<A HREF="mod/core.html#bindaddress">BindAddress directive</A>,
+<A HREF="mod/core.html#port">Port directive</A>,
+<A HREF="dns-caveats.html">DNS Issues</A>
 and
-<a href="mod/core.html#virtualhost">&lt;VirtualHost&gt; section</a>.
+<A HREF="mod/core.html#virtualhost">&lt;VirtualHost&gt; section</A>.
 
 <!--#include virtual="footer.html" -->
 </BODY>

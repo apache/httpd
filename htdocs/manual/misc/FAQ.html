@@ -15,7 +15,7 @@
   <!--#include virtual="header.html" -->
   <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
   <P>
-  $Revision: 1.103 $ ($Date: 1998/01/26 07:09:13 $)
+  $Revision: 1.104 $ ($Date: 1998/01/26 16:53:48 $)
   </P>
   <P>
   The latest version of this FAQ is always available from the main
@@ -1957,7 +1957,7 @@
      </A>
   <P>
   Hmmm... there are a lot of reasons. First, mod_rewrite itself is a powerful
-  module which can help you in really <b>all</b> aspects of URL rewriting, so
+  module which can help you in really <STRONG>all</STRONG> aspects of URL rewriting, so
   it can be no trivial module per definition. To accomplish its hard job it
   uses software leverage and makes use of a powerful regular expression
   library by Henry Spencer which is an integral part of Apache since its
@@ -1967,7 +1967,7 @@
   <P>
   On the other hand mod_rewrite has to work inside the Apache API environment
   and needs to do some tricks to fit there. For instance the Apache API as of
-  1.x really was not designed for URL rewriting at the <tt>.htaccess</tt>
+  1.x really was not designed for URL rewriting at the <TT>.htaccess</TT>
   level of processing. Or the problem of multiple rewrites in sequence, which
   is also not handled by the API per design. To provide this features
   mod_rewrite has to do some special (but API compliant!) handling which leads

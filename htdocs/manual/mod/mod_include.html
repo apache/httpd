@@ -15,7 +15,7 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_include</H1>
 
-This module is contained in the <code>mod_include.c</code> file, and
+This module is contained in the <CODE>mod_include.c</CODE> file, and
 is compiled in by default. It provides for server-parsed html
 documents. Several directives beyond the original NCSA definition have been
 included in Apache 1.2 - these are flagged below with the phrase
@@ -49,107 +49,107 @@ directive can be used to parse normal (<CODE>text/html</CODE>) files,
 based on file permissions.  <P>
 
 For backwards compatibility, documents with mime type
-<code>text/x-server-parsed-html</code> or
-<code>text/x-server-parsed-html3</code> will also be parsed
-(and the resulting output given the mime type <code>text/html</code>).
+<CODE>text/x-server-parsed-html</CODE> or
+<CODE>text/x-server-parsed-html3</CODE> will also be parsed
+(and the resulting output given the mime type <CODE>text/html</CODE>).
 
 <h2>Basic Elements</h2>
 
 The document is parsed as an HTML document, with special commands embedded
 as SGML comments. A command has the syntax:
 
-<blockquote><code>
-&lt;!--#</code><em>element attribute=value attribute=value ...</em>
-<code> --&gt;
-</code></blockquote>
+<BLOCKQUOTE><CODE>
+&lt;!--#</CODE><EM>element attribute=value attribute=value ...</EM>
+<CODE> --&gt;
+</CODE></BLOCKQUOTE>
 
 The value will often be enclosed in double quotes; many commands only allow
 a single attribute-value pair.  Note that the comment terminator
 (<SAMP>--&gt;</SAMP>) should be preceded by whitespace to ensure that it
 isn't considered part of an SSI token.
-<p>
-The allowed elements are:<p>
+<P>
+The allowed elements are:<P>
 
-<dl>
+<DL>
 
-<dt><strong>config</strong>
-<dd>
+<DT><STRONG>config</STRONG>
+<DD>
 This command controls various aspects of the parsing. The valid attributes
 are:
-<dl>
-<dt>errmsg
-<dd>The value is a message that is sent back to the client if an error occurs
+<DL>
+<DT>errmsg
+<DD>The value is a message that is sent back to the client if an error occurs
 whilst parsing the document.
-<dt>sizefmt
-<dd>The value sets the format to be used which displaying the size of a file.
-Valid values are <code>bytes</code> for a count in bytes, or
-<code>abbrev</code> for a count in Kb or Mb as appropriate.
-<dt>timefmt
-<dd>The value is a string to be used by the <code>strftime(3)</code> library
+<DT>sizefmt
+<DD>The value sets the format to be used which displaying the size of a file.
+Valid values are <CODE>bytes</CODE> for a count in bytes, or
+<CODE>abbrev</CODE> for a count in Kb or Mb as appropriate.
+<DT>timefmt
+<DD>The value is a string to be used by the <CODE>strftime(3)</CODE> library
 routine when printing dates.
-</dl>
+</DL>
 
-<dt><strong>echo</strong>
-<dd>
+<DT><STRONG>echo</STRONG>
+<DD>
 This command prints one of the include variables, defined below.
-If the variable is unset, it is printed as <code>(none)</code>.
-Any dates printed are subject to the currently configured <code>timefmt</code>.
+If the variable is unset, it is printed as <CODE>(none)</CODE>.
+Any dates printed are subject to the currently configured <CODE>timefmt</CODE>.
 Attributes:
-<dl>
-<dt>var
-<dd>The value is the name of the variable to print.
-</dl>
+<DL>
+<DT>var
+<DD>The value is the name of the variable to print.
+</DL>
 
-<dt><strong>exec</strong>
-<dd>
+<DT><STRONG>exec</STRONG>
+<DD>
 The exec command executes a given shell command or CGI script.
 The IncludesNOEXEC <A HREF="core.html#options">Option</A> disables this command
 completely. The valid attributes are:
-<dl>
-<dt>cgi
-<dd>
+<DL>
+<DT>cgi
+<DD>
 The value specifies a (%-encoded) URL relative path to the CGI script.
 If the path does not begin with a (/), then it is taken to be relative to
 the current document. The document referenced by this path is invoked
 as a CGI script, even if the server would not normally recognize it as
 such. However, the directory containing the script must be enabled for
 CGI scripts (with <A HREF="mod_alias.html#scriptalias">ScriptAlias</A>
-or the ExecCGI <A HREF="core.html#options">Option</A>).<p>
+or the ExecCGI <A HREF="core.html#options">Option</A>).<P>
 The CGI script is given the PATH_INFO and query string (QUERY_STRING) of the
 original request from the client; these cannot be specified in the URL path.
 The include variables will be available to the script in addition to the
-standard <A HREF="mod_cgi.html">CGI</A> environment.<p>
+standard <A HREF="mod_cgi.html">CGI</A> environment.<P>
 If the script returns a Location: header instead of output, then this
-will be translated into an HTML anchor.<p>
-The <code>include virtual</code> element should be used in preference to
-<code>exec cgi</code>.
-<dt>cmd
-<dd>The server will execute the given string using <code>/bin/sh</code>.
+will be translated into an HTML anchor.<P>
+The <CODE>include virtual</CODE> element should be used in preference to
+<CODE>exec cgi</CODE>.
+<DT>cmd
+<DD>The server will execute the given string using <CODE>/bin/sh</CODE>.
 The include variables are available to the command.
-</dl>
+</DL>
 
-<dt><strong>fsize</strong>
-<dd>
+<DT><STRONG>fsize</STRONG>
+<DD>
 This command prints the size of the specified file, subject to the
-<code>sizefmt</code> format specification. Attributes:
-<dl>
-<dt>file
-<dd>The value is a path relative to the directory containing the current
+<CODE>sizefmt</CODE> format specification. Attributes:
+<DL>
+<DT>file
+<DD>The value is a path relative to the directory containing the current
 document being parsed.
-<dt>virtual
-<dd>The value is a (%-encoded) URL-path relative to the current document being
+<DT>virtual
+<DD>The value is a (%-encoded) URL-path relative to the current document being
 parsed. If it does not begin with a slash (/) then it is taken to be relative
 to the current document.
-</dl>
+</DL>
 
-<dt><strong>flastmod</strong>
-<dd>
+<DT><STRONG>flastmod</STRONG>
+<DD>
 This command prints the last modification date of the specified file,
-subject to the <code>timefmt</code> format specification. The attributes are
-the same as for the <code>fsize</code> command.
+subject to the <CODE>timefmt</CODE> format specification. The attributes are
+the same as for the <CODE>fsize</CODE> command.
 
-<dt><strong>include</strong>
-<dd>
+<DT><STRONG>include</STRONG>
+<DD>
 This command inserts the text of another document or file into the parsed
 file. Any included file is subject to the usual access control. If the
 directory containing the parsed file has the
@@ -159,68 +159,68 @@ to be executed, then it will not be included; this prevents the execution of
 CGI scripts. Otherwise CGI scripts are invoked as normal using the complete
 URL given in the command, including any query string.
 <!--%plaintext &lt;?INDEX CGI scripts, {\tt include} element and&gt; -->
-<p>
+<P>
 
 An attribute defines the location of the document; the inclusion is done for
 each attribute given to the include command. The valid attributes are:
-<dl>
-<dt>file
-<dd>The value is a path relative to the directory containing the current
-document being parsed. It cannot contain <code>../</code>, nor can it be an
-absolute path. The <code>virtual</code> attribute should always be used
+<DL>
+<DT>file
+<DD>The value is a path relative to the directory containing the current
+document being parsed. It cannot contain <CODE>../</CODE>, nor can it be an
+absolute path. The <CODE>virtual</CODE> attribute should always be used
 in preference to this one.
-<dt>virtual
-<dd>The value is a (%-encoded) URL relative to the current document being
+<DT>virtual
+<DD>The value is a (%-encoded) URL relative to the current document being
 parsed. The URL cannot contain a scheme or hostname, only a path and
 an optional query string. If it does not begin with a slash (/) then it
 is taken to be relative to the current document.
-</dl>
+</DL>
 A URL is constructed from the attribute, and the output the server
 would return if the URL were accessed by the client is included in the parsed
 output. Thus included files can be nested.
 
-<dt><strong>printenv</strong>
-<dd>This prints out a listing of all existing variables and their values.
+<DT><STRONG>printenv</STRONG>
+<DD>This prints out a listing of all existing variables and their values.
     No attributes.
-<dd>For example: <code>&lt;!--#printenv --&gt;</code>
-<dd>Apache 1.2 and above.
+<DD>For example: <CODE>&lt;!--#printenv --&gt;</CODE>
+<DD>Apache 1.2 and above.
 
-<dt><strong>set</strong>
-<dd>This sets the value of a variable.  Attributes:
-<dl>
-<dt>var
-<dd>The name of the variable to set.
-<dt>value
-<dd>The value to give a variable.
-</dl>
+<DT><STRONG>set</STRONG>
+<DD>This sets the value of a variable.  Attributes:
+<DL>
+<DT>var
+<DD>The name of the variable to set.
+<DT>value
+<DD>The value to give a variable.
+</DL>
 For example:
   <CODE>&lt;!--#set var="category" value="help" --&gt;</CODE>
-<dd>Apache 1.2 and above.
+<DD>Apache 1.2 and above.
 
-</dl>
+</DL>
 
 <h2>Include Variables</h2>
 
 In addition to the variables in the standard CGI environment, these are
-available for the <code>echo</code> command, for <code>if</code> and
-<code>elif</code>, and to any program invoked by the document.
+available for the <CODE>echo</CODE> command, for <CODE>if</CODE> and
+<CODE>elif</CODE>, and to any program invoked by the document.
 
-<dl>
-<dt>DATE_GMT
-<dd>The current date in Greenwich Mean Time.
-<dt>DATE_LOCAL
-<dd>The current date in the local time zone.
-<dt>DOCUMENT_NAME
-<dd>The filename (excluding directories) of the document requested by the
+<DL>
+<DT>DATE_GMT
+<DD>The current date in Greenwich Mean Time.
+<DT>DATE_LOCAL
+<DD>The current date in the local time zone.
+<DT>DOCUMENT_NAME
+<DD>The filename (excluding directories) of the document requested by the
 user.
-<dt>DOCUMENT_URI
-<dd>The (%-decoded) URL path of the document requested by the user. Note that
-in the case of nested include files, this is <em>not</em> then URL for the
+<DT>DOCUMENT_URI
+<DD>The (%-decoded) URL path of the document requested by the user. Note that
+in the case of nested include files, this is <EM>not</EM> then URL for the
 current document.
-<dt>LAST_MODIFIED
-<dd>The last modification date of the document requested by the user.
-</dl>
-<p>
+<DT>LAST_MODIFIED
+<DD>The last modification date of the document requested by the user.
+</DL>
+<P>
 
 <H2>Variable Substitution</H2>
 <P> Variable substitution is done within quoted strings in most cases
@@ -350,44 +350,44 @@ elements are:
     <EM>'string1    string2'</EM> results in <EM>string1    string2</EM>
 </PRE>
 
-<hr>
+<HR>
 <h2>Directives</h2>
-<ul>
-<li><A HREF="#xbithack">XBitHack</A>
-</ul>
-<hr>
+<UL>
+<LI><A HREF="#xbithack">XBitHack</A>
+</UL>
+<HR>
 
 
 <h2><A name="xbithack">XBitHack</A></h2>
 <!--%plaintext &lt;?INDEX {\tt XBitHack} directive&gt; -->
-<strong>Syntax:</strong> XBitHack <em>status</em><br>
-<strong>Default:</strong> <code>XBitHack off</code><br>
-<Strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
-<Strong>Override:</strong> Options<br>
-<strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_include<p>
+<STRONG>Syntax:</STRONG> XBitHack <EM>status</EM><BR>
+<STRONG>Default:</STRONG> <CODE>XBitHack off</CODE><BR>
+<Strong>Context:</STRONG> server config, virtual host, directory, .htaccess<BR>
+<Strong>Override:</STRONG> Options<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_include<P>
 
 The XBitHack directives controls the parsing of ordinary html documents.
 This directive only affects files associated with the MIME type
 <CODE>text/html</CODE>.
-<em>Status</em> can have the following values:
-<dl>
-<dt>off
-<dd>No special treatment of executable files.
-<dt>on
-<dd>Any file that has the user-execute bit set will be treated as a
+<EM>Status</EM> can have the following values:
+<DL>
+<DT>off
+<DD>No special treatment of executable files.
+<DT>on
+<DD>Any file that has the user-execute bit set will be treated as a
 server-parsed html document.
-<dt>full
-<dd>As for <code>on</code> but also test the group-execute bit. If it
+<DT>full
+<DD>As for <CODE>on</CODE> but also test the group-execute bit. If it
 is set, then set the Last-modified date of the returned file to be the
 last modified time of the file. If it is not set, then no last-modified date
 is sent. Setting this bit allows clients and proxies to cache the result of
 the request.
-<p><STRONG>Note:</STRONG> you would not want to use this, for example, when you
-<code>#include</code> a CGI that produces different output on each hit
+<P><STRONG>Note:</STRONG> you would not want to use this, for example, when you
+<CODE>#include</CODE> a CGI that produces different output on each hit
 (or potentially depends on the hit).
-</dl>
-<p>
+</DL>
+<P>
 
 <!--#include virtual="footer.html" -->
 </BODY>

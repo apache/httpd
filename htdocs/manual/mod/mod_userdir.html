@@ -13,33 +13,33 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_userdir</h1>
+<H1 ALIGN="CENTER">Module mod_userdir</H1>
 
-This module is contained in the <code>mod_userdir.c</code> file, and
+This module is contained in the <CODE>mod_userdir.c</CODE> file, and
 is compiled in by default. It provides for user-specific directories.
 
 
-<ul>
-<li><A HREF="#userdir">UserDir</A>
-</ul>
-<hr>
+<UL>
+<LI><A HREF="#userdir">UserDir</A>
+</UL>
+<HR>
 
 
 <h2><A name="userdir">UserDir</A></h2>
 <!--%plaintext &lt;?INDEX {\tt UserDir} directive&gt; -->
-<strong>Syntax:</strong> UserDir <em>directory/filename</em><br>
-<strong>Default:</strong> <code>UserDir public_html</code><br>
-<Strong>Context:</strong> server config, virtual host<br>
-<strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_userdir<br>
-<strong>Compatibility:</strong> All forms except the <code>UserDir
-public_html</code> form are only available in Apache 1.1 or above.  Use
+<STRONG>Syntax:</STRONG> UserDir <EM>directory/filename</EM><BR>
+<STRONG>Default:</STRONG> <CODE>UserDir public_html</CODE><BR>
+<Strong>Context:</STRONG> server config, virtual host<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_userdir<BR>
+<STRONG>Compatibility:</STRONG> All forms except the <CODE>UserDir
+public_html</CODE> form are only available in Apache 1.1 or above.  Use
 of the <SAMP>enabled</SAMP> keyword, or <SAMP>disabled</SAMP> with a
-list of usernames, is only available in Apache 1.3 and above.<p>
+list of usernames, is only available in Apache 1.3 and above.<P>
 
 The UserDir directive sets the real directory in a user's home directory
 to use when a request for a document for a user is received.
-<em>Directory/filename</em> is one of the following:
+<EM>Directory/filename</EM> is one of the following:
 </P>
 <UL>
  <LI>The name of a directory or a pattern such as those shown below.
@@ -64,18 +64,18 @@ If neither the <SAMP>enabled</SAMP> nor the <SAMP>disabled</SAMP>
 keywords appear in the <SAMP>Userdir</SAMP> directive, the argument is
 treated as a filename pattern, and is used to turn the name into a
 directory specification.  A request for
-<code>http://www.foo.com/~bob/one/two.html</code> will be translated to:
-<pre>
+<CODE>http://www.foo.com/~bob/one/two.html</CODE> will be translated to:
+<PRE>
 UserDir public_html     -&gt; ~bob/public_html/one/two.html
 UserDir /usr/web        -&gt; /usr/web/bob/one/two.html
 UserDir /home/*/www     -&gt; /home/bob/www/one/two.html
-</pre>
+</PRE>
 The following directives will send redirects to the client:
-<pre>
+<PRE>
 UserDir http://www.foo.com/users   -&gt; http//www.foo.com/users/bob/one/two.html
 UserDir http://www.foo.com/*/usr   -&gt; http://www.foo.com/bob/usr/one/two.html
 UserDir http://www.foo.com/~*/     -&gt; http://www.foo.com/~bob/one/two.html
-</pre>
+</PRE>
 </P>
 <BLOCKQUOTE>
  <STRONG>

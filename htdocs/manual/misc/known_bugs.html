@@ -44,24 +44,24 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
     (Neither do servers operating with the -X command line switch for
     debugging.)
     This will be corrected in a later beta.  A workaround for now is
-    to edit <code>src/main/httpd.h</code> and remove the definition
-    of <code>OPTIMIZE_TIMEOUTS</code> near the bottom.
-<LI><b>Win32 only:</b> Building from source may fail because the buildmark.obj
+    to edit <CODE>src/main/httpd.h</CODE> and remove the definition
+    of <CODE>OPTIMIZE_TIMEOUTS</CODE> near the bottom.
+<LI><STRONG>Win32 only:</STRONG> Building from source may fail because the buildmark.obj
     file does not exist. Edit <CODE>Makefile.nt</CODE> and replace the
     line <CODE>del CoreR\buildmark.obj</CODE> with <CODE>-del
     CoreR\buildmark.obj</CODE> (and similarly for <CODE>del
     CoreD\buildmark.obj</CODE>). See 
     <A HREF="http://bugs.apache.org/index/full/1473">PR#1473</A>.
-<LI><b>Solaris 2.6</b> users may have troubles compiling the server with
+<LI><STRONG>Solaris 2.6</STRONG> users may have troubles compiling the server with
     gcc.  As is frequently the case with gcc compilation troubles, this
     is the result of an improperly built gcc.  The gcc for solaris 2.6
-    found at <a href="http://www.sunfreeware.com/">www.sunfreeware.com</a> 
+    found at <A HREF="http://www.sunfreeware.com/">www.sunfreeware.com</A> 
     was built with a beta version of solaris 2.6.  The release version
     of solaris 2.6 changed a few header files enough that the beta-built
     gcc won't work with it.  There are two workarounds mentioned in
-    <a href="http://bugs.apache.org/index/full/1336">PR#1336</a>.
-    <b>This is not an Apache bug, and no code will be changed to deal with
-    it.</b>
+    <A HREF="http://bugs.apache.org/index/full/1336">PR#1336</A>.
+    <STRONG>This is not an Apache bug, and no code will be changed to deal with
+    it.</STRONG>
 </OL>
 
 <H2>Apache 1.3b2 Bugs</H2>
@@ -94,35 +94,35 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
 <H2>Apache 1.3a1 Bugs</H2>
 
 <OL>
-  <LI>The <code><a href="../mod/core.html#listen">Listen</a></code>
+  <LI>The <CODE><A HREF="../mod/core.html#listen">Listen</A></CODE>
       directive does not work when running under Windows.
-  <LI>For some reason, <a href="../mod/mod_isapi.html">mod_isapi</a>
+  <LI>For some reason, <A HREF="../mod/mod_isapi.html">mod_isapi</A>
       does not work (with Windows) when compiled using the
-      <code>Release</code> setting; it will crash the server whenever you
+      <CODE>Release</CODE> setting; it will crash the server whenever you
       access an ISA DLL. It works fine when the server is compiled with
-      <code>Debug</code>.
+      <CODE>Debug</CODE>.
 </OL>
       
 <H2>Apache 1.2 Bugs</H2>
 <H3>Bugs still present in 1.2.4</H3>
 <OL>
-    <LI><a name="listenbug">On some architectures</A>
+    <LI><A name="listenbug">On some architectures</A>
     if your configuration uses multiple
-    <a href="../mod/core.html#listen">Listen</a> directives then it is possible
+    <A HREF="../mod/core.html#listen">Listen</A> directives then it is possible
     that the server will starve one of the sockets while serving hits on
     another.  The work-around is to add
-    <code>-DUSE_FLOCK_SERIALIZED_ACCEPT</code> to the
-    <code>EXTRA_CFLAGS</code> line in your Configuration and rebuild.
+    <CODE>-DUSE_FLOCK_SERIALIZED_ACCEPT</CODE> to the
+    <CODE>EXTRA_CFLAGS</CODE> line in your Configuration and rebuild.
     (If you encounter problems with that, you can also try
-    <code>-DUSE_FCNTL_SERIALIZED_ACCEPT</code>.)
+    <CODE>-DUSE_FCNTL_SERIALIZED_ACCEPT</CODE>.)
     This affects any architecture that doesn't use one of the
-    <code>USE_xxxxx_SERIALIZED_ACCEPT</code> definitions, see the
-    source file <code>conf.h</code> for your architecture.
+    <CODE>USE_xxxxx_SERIALIZED_ACCEPT</CODE> definitions, see the
+    source file <CODE>conf.h</CODE> for your architecture.
     This is being tracked as
-    <a href="http://www.apache.org/bugdb.cgi/full/467">PR#467</a>.
+    <A HREF="http://www.apache.org/bugdb.cgi/full/467">PR#467</A>.
     <P>To resolve this problem, we are adding one of the above settings
     to the default settings for platforms as we discover which is 
-    appropriate for them.  <b>New as of 1.3b3:</b> the server will
+    appropriate for them.  <STRONG>New as of 1.3b3:</STRONG> the server will
     issue a warning when your architecture/config are subject to
     this bug.  The fixes and such are described in the PORTING
     file.  We are closing out this bug.
@@ -169,7 +169,7 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
 
     <LI>The message "<CODE>created shared memory segment #730499</CODE>"
     in error_log is not an error and should be ignored. See
-    <a href="http://www.apache.org/bugdb.cgi/full/696">PR#696</A>.
+    <A HREF="http://www.apache.org/bugdb.cgi/full/696">PR#696</A>.
     </LI><P>
 </OL>
 
@@ -177,41 +177,41 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
 <OL>
     <LI>
     On Solaris 2.x the server will stop running after receiving a
-    SIGHUP.  Four workarounds exist (choose one):<p>
-    <ul>
-	<li>Recommended: upgrade to 1.2.4.
-	<li>If you are running Apache 1.2.1, retrieve 
-	<a href="http://www.apache.org/dist/patches/apply_to_1.2.1/solaris_hup.patch">this patch</a>.
-	<code>cd</code> to your <code>apache_1.2.1</code> directory, and
-	type <code>patch -s -p1 &lt; /path/to/patchfile</code>.  Then rebuild
-	Apache.<p>
-	<li>Use SIGUSR1 instead of SIGHUP, see <a href="../stopping.html">
-	Stopping and Restarting Apache</a> for more details.<p>
-	<li>Add <code>-DNO_SLACK</code> to
-	<code>EXTRA_CFLAGS</code> in
-	your <code>Configuration</code> file, re-run <code>Configure</code>
+    SIGHUP.  Four workarounds exist (choose one):<P>
+    <UL>
+	<LI>Recommended: upgrade to 1.2.4.
+	<LI>If you are running Apache 1.2.1, retrieve 
+	<A HREF="http://www.apache.org/dist/patches/apply_to_1.2.1/solaris_hup.patch">this patch</A>.
+	<CODE>cd</CODE> to your <CODE>apache_1.2.1</CODE> directory, and
+	type <CODE>patch -s -p1 &lt; /path/to/patchfile</CODE>.  Then rebuild
+	Apache.<P>
+	<LI>Use SIGUSR1 instead of SIGHUP, see <A HREF="../stopping.html">
+	Stopping and Restarting Apache</A> for more details.<P>
+	<LI>Add <CODE>-DNO_SLACK</CODE> to
+	<CODE>EXTRA_CFLAGS</CODE> in
+	your <CODE>Configuration</CODE> file, re-run <CODE>Configure</CODE>
 	and rebuild your server.  This disables the
-	<a href="descriptors.html">descriptor slack workaround</a>
-    </ul><P>
+	<A HREF="descriptors.html">descriptor slack workaround</A>
+    </UL><P>
     This problem was tracked as
-    <a href="http://www.apache.org/bugdb.cgi/full/832">PR#832</a>.
-    </li><P>
+    <A HREF="http://www.apache.org/bugdb.cgi/full/832">PR#832</A>.
+    </LI><P>
 
     <LI>(Exists in 1.2.0 and in 1.2.1 after either of the
-    <code>NO_SLACK</code> or patch provided by the previous bug are applied.)
+    <CODE>NO_SLACK</CODE> or patch provided by the previous bug are applied.)
     Solaris 2.5.1 (and probably other versions of Solaris) appear to have
     a race condition completely unrelated to all the others.  It is possible
     during a SIGHUP that the server will fail to start because it will not
     be able to re-open its sockets.  To our knowledge this has only shown
     up during testing when we pummel the server with as many SIGHUP requests
     per second as we can.  This appears unrelated to the similar sounding bug
-    described in <a href="http://www.apache.org/bugdb.cgi/full/832">PR#832</a>.
+    described in <A HREF="http://www.apache.org/bugdb.cgi/full/832">PR#832</A>.
 </OL>
 <P>
 
 <H3>Fixed in 1.2.1</H3>
 <OL>
-    <LI><a href="descriptors.html"><B>Workaround added</B></a>
+    <LI><A HREF="descriptors.html"><STRONG>Workaround added</STRONG></A>
     There appears to be a problem on BSDI 2.1 with large numbers of
     virtual hosts. This appears similar to a file-descriptor limit
     but BSDI should not have this problem. This will be tracked as
@@ -219,14 +219,14 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
     See also the <A HREF="FAQ.html#fdlim">Apache FAQ</A>.
     </LI><P>
 
-    <LI><a href="descriptors.html"><b>Workaround added.</b></a>
+    <LI><A HREF="descriptors.html"><STRONG>Workaround added.</STRONG></A>
     Solaris 2 has problems with large numbers of virtual hosts. This is
     because of an operating system limit of 256 file pointers, not due
     to Apache.   See also the <A HREF="FAQ.html#fdlim">Apache FAQ</A>.
     </LI><P>
 
     <LI>
-    <a name="cnegbug">Apache's</A> <A HREF="../content-negotiation.html">Content
+    <A name="cnegbug">Apache's</A> <A HREF="../content-negotiation.html">Content
     Negotiation</A> should pick the smallest variant if there
     are several that are equally acceptable. A bug in 1.2 means it no
     longer does this unless all the variants have character sets.
@@ -234,12 +234,12 @@ and <A HREF="known_client_problems.html">our list of known client problems.</A><
     fixes this problem. It also fixes the problem which makes Apache
     pick the last equally acceptable variant instead of the first.
     This will be tracked as
-    <a href="http://www.apache.org/bugdb.cgi/full/94">PR#94</a>.
+    <A HREF="http://www.apache.org/bugdb.cgi/full/94">PR#94</A>.
     </LI><P>
 
     <LI><P>Compilation fails on SCO3 when using gcc instead of cc, complaining
     with "<CODE>gcc: noinline: No such file or directory</CODE>". Fix
-    is given in <a href="http://www.apache.org/bugdb.cgi/full/695">PR#695</A>.
+    is given in <A HREF="http://www.apache.org/bugdb.cgi/full/695">PR#695</A>.
     </LI>
 </OL>
 

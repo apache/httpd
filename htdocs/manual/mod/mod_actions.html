@@ -13,9 +13,9 @@
  ALINK="#FF0000"
 >
 <!--#include virtual="header.html" -->
-<H1 ALIGN="CENTER">Module mod_actions</h1>
+<H1 ALIGN="CENTER">Module mod_actions</H1>
 <P>
-This module is contained in the <code>mod_actions.c</code> file, and
+This module is contained in the <CODE>mod_actions.c</CODE> file, and
 is compiled in by default. It provides for
 executing CGI scripts based on media type or request method. It is not
 present in versions prior to Apache 1.1.
@@ -27,64 +27,64 @@ is requested. This makes it much easier to execute scripts that
 process files.
 </P>
 <h2>Directives</h2>
-<ul>
-<li><A HREF="#action">Action</A>
-<li><A HREF="#script">Script</A>
-</ul>
+<UL>
+<LI><A HREF="#action">Action</A>
+<LI><A HREF="#script">Script</A>
+</UL>
 
-<hr>
+<HR>
 
 <h2><A name="action">Action directive</A></h2>
 <P>
-<strong>Syntax:</strong> Action <em>mime-type cgi-script</em><br>
-<strong>Context:</strong> server config, virtual host, directory, .htaccess<br>
-<strong>Override:</strong> FileInfo<br>
-<strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_actions<br>
-<strong>Compatibility:</strong> Action is only available in Apache 1.1
+<STRONG>Syntax:</STRONG> Action <EM>mime-type cgi-script</EM><BR>
+<STRONG>Context:</STRONG> server config, virtual host, directory, .htaccess<BR>
+<STRONG>Override:</STRONG> FileInfo<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_actions<BR>
+<STRONG>Compatibility:</STRONG> Action is only available in Apache 1.1
 and later
-</p>
+</P>
 <P>
-This directive adds an action, which will activate <em>cgi-script</em> when
-a file of content type <em>mime-type</em> is requested. It sends the
+This directive adds an action, which will activate <EM>cgi-script</EM> when
+a file of content type <EM>mime-type</EM> is requested. It sends the
 URL and file path of the requested document using the standard
 CGI PATH_INFO and PATH_TRANSLATED environment variables.
 </P>
-<hr>
+<HR>
 
 <h2><A name="script">Script directive</A></h2>
 <P>
-<strong>Syntax:</strong> Script <em>method cgi-script</em><br>
-<strong>Context:</strong> server config, virtual host, directory<br>
-<strong>Status:</strong> Base<br>
-<strong>Module:</strong> mod_actions<br>
-<strong>Compatibility:</strong> Script is only available in Apache 1.1
+<STRONG>Syntax:</STRONG> Script <EM>method cgi-script</EM><BR>
+<STRONG>Context:</STRONG> server config, virtual host, directory<BR>
+<STRONG>Status:</STRONG> Base<BR>
+<STRONG>Module:</STRONG> mod_actions<BR>
+<STRONG>Compatibility:</STRONG> Script is only available in Apache 1.1
 and later
-</p>
+</P>
 
-<p>
-This directive adds an action, which will activate <em>cgi-script</em> when
-a file is requested using the method of <em>method</em>, which can be
-one of <code>GET</code>, <code>POST</code>, <code>PUT</code> or
-<code>DELETE</code>. It sends the
+<P>
+This directive adds an action, which will activate <EM>cgi-script</EM> when
+a file is requested using the method of <EM>method</EM>, which can be
+one of <CODE>GET</CODE>, <CODE>POST</CODE>, <CODE>PUT</CODE> or
+<CODE>DELETE</CODE>. It sends the
 URL and file path of the requested document using the standard
 CGI PATH_INFO and PATH_TRANSLATED environment variables.
 </P>
-<p>
+<P>
 Note that the Script command defines default actions only. If a CGI
 script is called, or some other resource that is capable of handling
 the requested method internally, it will do so. Also note that Script
-with a method of <code>GET</code> will only be called if there are
+with a method of <CODE>GET</CODE> will only be called if there are
 query arguments present (e.g. foo.html?hi). Otherwise, the request
 will proceed normally.
 </P>
-<p>
+<P>
 Examples:
 </P>
-<pre>
+<PRE>
     Script GET /cgi-bin/search     #e.g. for &lt;ISINDEX&gt;-style searching
     Script PUT /~bob/put.cgi
-</pre>
+</PRE>
 
 <!--#include virtual="footer.html" -->
 </BODY>
