@@ -2205,6 +2205,15 @@ static int volatile is_graceful;
 static int volatile generation;
 
 #ifdef WIN32
+/*
+ * signal_parent() tells the parent process to wake up and do something.
+ * Once woken it will look at shutdown_pending and restart_pending to decide
+ * what to do. If neither variable is set, it will do a shutdown. This function
+ * if called by start_shutdown() or start_restart() in the parent's process
+ * space, so that the variables get set. However it can also be called 
+ * by child processes to force the parent to exit in an emergency.
+ */
+
 static void signal_parent(void)
 {
     HANDLE e;
@@ -2214,6 +2223,10 @@ static void signal_parent(void)
      * to die, or for a signal on the "spache-signal" event. So set the
      * "apache-signal" event here.
      */
+
+    if (one_process) {
+	return;
+    }
 
     APD1("*** SIGNAL_PARENT SET ***");
 
@@ -2243,6 +2256,14 @@ static void signal_parent(void)
  * but we want to be able to start a shutdown/restart from other sources --
  * e.g. on Win32, from the service manager. Now the service manager can
  * call start_shutdown() or start_restart() as appropiate. 
+ *
+ * These should only be called from the parent process itself, since the
+ * parent process will use the shutdown_pending and restart_pending variables
+ * to determine whether to shutdown or restart. The child process should
+ * call signal_parent() directly to tell the parent to die -- this will
+ * cause neither of those variable to be set, which the parent will
+ * assume means something serious is wrong (which it will be, for the
+ * child to force an exit) and so do an exit anyway.
  */
 
 void start_shutdown(void)
@@ -2698,6 +2719,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif
     unblock_alarms();
 
+#ifndef WIN32
     /* protect various fd_sets */
     if (s >= FD_SETSIZE) {
 	aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_WARNING, NULL,
@@ -2708,6 +2730,8 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	close(s);
 	return -1;
     }
+#endif
+
     return s;
 }
 
@@ -4483,23 +4507,30 @@ void worker_main()
 	aplog_error(APLOG_MARK,APLOG_ERR|APLOG_WIN32ERROR, server_conf,
 	    "Waiting for start_mutex or exit_event -- process will exit");
 
-	child_exit_modules(pconf, server_conf);
 	destroy_pool(pchild);
-
 	cleanup_scoreboard();
 	exit(0);
     }
     if (rv == WAIT_OBJECT_0 + 1) {
 	/* exit event signalled - exit now */
-	child_exit_modules(pconf, server_conf);
 	destroy_pool(pchild);
-
 	cleanup_scoreboard();
 	exit(0);
     }
     /* start_mutex obtained, continue into the select() loop */
 
     setup_listeners(pconf);
+    if (listenmaxfd == -1) {
+	/* Help, no sockets were made, better log something and exit */
+	aplog_error(APLOG_MARK, APLOG_CRIT|APLOG_NOERRNO, NULL,
+		    "No sockets were created for listening");
+
+	signal_parent();	/* tell parent to die */
+
+	destroy_pool(pchild);
+	cleanup_scoreboard();
+	exit(0);
+    }
     set_signals();
 
     /*
