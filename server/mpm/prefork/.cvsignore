@@ -1,1 +1,4 @@
+Makefile.in
+*.lo
+*.la
 Makefile
