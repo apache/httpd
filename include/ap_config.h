@@ -132,6 +132,12 @@
  *
  * @deffunc module AP_MODULE_DECLARE_DATA mod_tag
  */
+#if defined(WIN32)
+#define AP_MODULE_DECLARE(type)            type __stdcall
+#else
+#define AP_MODULE_DECLARE(type)            type
+#endif
+#define AP_MODULE_DECLARE_NONSTD(type)     type
 #define AP_MODULE_DECLARE_DATA
 #else
 /**
@@ -144,7 +150,9 @@
  * @deffunc AP_MODULE_DECLARE_EXPORT
  */
 #define AP_MODULE_DECLARE_EXPORT
-#define AP_MODULE_DECLARE_DATA __declspec(dllexport)
+#define AP_MODULE_DECLARE(type)          __declspec(dllexport) type __stdcall
+#define AP_MODULE_DECLARE_NONSTD(type)   __declspec(dllexport) type
+#define AP_MODULE_DECLARE_DATA           __declspec(dllexport)
 #endif
 
 /**
