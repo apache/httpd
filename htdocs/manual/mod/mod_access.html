@@ -16,7 +16,9 @@ hostname or IP address.
 
 <menu>
 <li><A HREF="#allow">allow</A>
+<li><A HREF="#allowfromenv">allow from env=</A>
 <li><A HREF="#deny">deny</A>
+<li><A HREF="#denyfromenv">deny from env=</A>
 <li><A HREF="#order">order</A>
 </menu>
 <hr>
@@ -49,7 +51,30 @@ All hosts in the specified domain are allowed access.<p>
 Note that this compares whole components; <code>bar.edu</code>
 would not match <code>foobar.edu</code>.<p>
 
-See also <A HREF="#deny">deny</A> and <A HREF="#order">order</A>.<p><hr>
+See also <A HREF="#deny">deny</A>, <A HREF="#order">order</A>, and
+<a href="mod_browser.html#browsermatch">BrowserMatch</a>.<p>
+
+<a name="allowfromenv"><strong>Syntax:</strong> allow from env=<em>variablename</em></a><br>
+<Strong>Context:</strong> directory, .htaccess<br>
+<Strong>Override:</strong> Limit<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_access<br>
+<strong>Compatibility:</strong> Apache 1.2 and above<p>
+
+The allow from env directive controls access to a directory by the
+existance (or non-existance) of an environment variable.
+
+Example:<blockquote><pre>
+BrowserMatch ^KnockKnock/2.0 let_me_in
+&lt;Directory /docroot&gt;
+order allow,deny
+allow from env=let_me_in
+deny from all
+&lt;/Directory&gt;
+</pre></blockquote>
+
+See also <A HREF="#denyfromenv">deny from env</A>
+and <A HREF="#order">order</A>.<p><hr>
 
 <A name="deny"><h2>deny</h2></A>
 <!--%plaintext &lt;?INDEX {\tt deny} directive&gt; -->
@@ -78,7 +103,29 @@ All hosts in the specified network are denied access.<p>
 Note that this compares whole components; <code>bar.edu</code>
 would not match <code>foobar.edu</code>.<p>
 
-See also <A HREF="#allow">allow</A> and <A HREF="#order">order</A>.<p><hr>
+See also <A HREF="#allow">allow</A> and <A HREF="#order">order</A>.<p>
+
+<a name="denyfromenv"><strong>Syntax:</strong> deny from env=<em>variablename</em></a><br>
+<Strong>Context:</strong> directory, .htaccess<br>
+<Strong>Override:</strong> Limit<br>
+<strong>Status:</strong> Base<br>
+<strong>Module:</strong> mod_access<br>
+<strong>Compatibility:</strong> Apache 1.2 and above<p>
+
+The deny from env directive controls access to a directory by the
+existance (or non-existance) of an environment variable.
+
+Example:<blockquote><pre>
+BrowserMatch ^BadRobot/0.9 go_away
+&lt;Directory /docroot&gt;
+order deny,allow
+deny from env=go_away
+allow from all
+&lt;/Directory&gt;
+</pre></blockquote>
+
+See also <A HREF="#allowfromenv">allow from env</A>
+and <A HREF="#order">order</A>.<p><hr>
 
 <A name="order"><h2>order</h2></A>
 <!--%plaintext &lt;?INDEX {\tt order} directive&gt; -->
@@ -94,12 +141,14 @@ The order directive controls the order in which <A HREF="#allow">allow</A> and
 of
 <dl>
 <dt>deny,allow
-<dd>the deny directives are evaluated before the allow directives.
+<dd>the deny directives are evaluated before the allow directives.  (The
+initial state is OK.)
 <dt>allow,deny
-<dd>the allow directives are evaluated before the deny directives.
+<dd>the allow directives are evaluated before the deny directives.  (The
+initial state is FORBIDDEN.)
 <dt>mutual-failure
 <dd>Only those hosts which appear on the allow list and do not appear
-on the deny list are granted access.
+on the deny list are granted access.  (The initial state is irrelevant.)
 </dl>
 
 Example:
