@@ -72,24 +72,6 @@
 
 static const char ssl_io_filter[] = "SSL/TLS Filter";
 
-void ssl_io_register(void)
-{
-#if 0 /* XXX */
-    ap_hook_register("ap::buff::read",   ssl_io_hook_read,  AP_HOOK_NOCTX);
-    ap_hook_register("ap::buff::write",  ssl_io_hook_write, AP_HOOK_NOCTX);
-#endif /* XXX */
-    return;
-}
-
-void ssl_io_unregister(void)
-{
-#if 0 /* XXX */
-    ap_hook_unregister("ap::buff::read",   ssl_io_hook_read);
-    ap_hook_unregister("ap::buff::write",  ssl_io_hook_write);
-#endif /* XXX */
-    return;
-}
-
 static int ssl_io_hook_read(SSL *ssl, unsigned char *buf, int len)
 {
     conn_rec *c;
