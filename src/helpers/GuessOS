@@ -165,7 +165,8 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	;;
 
     OpenBSD:*)
-	echo "${MACHINE}-whatever-openbsd"; exit 0
+	OPENBSDVERS=`echo ${RELEASE}|sed -e 's/[-(].*//'`
+	echo "${MACHINE}-whatever-openbsd${OPENBSDVERS}"; exit 0
 	;;
 
     OSF1:*:*:*alpha*)
