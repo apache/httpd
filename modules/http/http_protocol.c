@@ -136,7 +136,14 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 	&& ((r->status == HTTP_NOT_MODIFIED)
 	    || (r->status == HTTP_NO_CONTENT)
 	    || r->header_only
+#if 0
+            /* this was right in 1.x, but in 2.x
+             * ap_content_length_filter has already set Content-Length
+             * before this function is called
+             * XXX: should there be a different check in place of this?
+             */
 	    || apr_table_get(r->headers_out, "Content-Length")
+#endif
 	    || ap_find_last_token(r->pool,
 				  apr_table_get(r->headers_out,
 						"Transfer-Encoding"),
@@ -1234,7 +1241,6 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(
     if (r->chunked) {
         apr_table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         apr_table_unset(r->headers_out, "Content-Length");
-
     }
 
     apr_table_setn(r->headers_out, "Content-Type", ap_make_content_type(r,
