@@ -299,7 +299,7 @@ static int AMCSocketInitialize(void)
 	return (s_iInitCount);
 
     /* s_iInitCount == 0. Do the initailization */
-    iVersionRequested = MAKEWORD(1, 1);
+    iVersionRequested = MAKEWORD(2, 0);
     err = WSAStartup((WORD) iVersionRequested, &wsaData);
     if (err) {
 	s_iInitCount = -1;
