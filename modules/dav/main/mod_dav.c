@@ -104,10 +104,10 @@ enum {
 
 /* per-dir configuration */
 typedef struct {
-    const char *provider;
+    const char *provider_name;
+    const dav_provider *provider;
     const char *dir;
     int locktimeout;
-    int handle_get;		/* cached from repository hook structure */
     int allow_depthinfinity;
 
     apr_table_t *d_params;	/* per-directory DAV config parameters */
@@ -132,7 +132,7 @@ static void dav_init_handler(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 {
     /* DBG0("dav_init_handler"); */
 
-    ap_add_version_component(p, "DAV/" DAV_VERSION);
+    ap_add_version_component(p, "DAV/2");
 }
 
 static void *dav_create_server_config(apr_pool_t *p, server_rec *s)
@@ -182,14 +182,15 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     /* DBG3("dav_merge_dir_config: new=%08lx  base=%08lx  overrides=%08lx",
        (long)newconf, (long)base, (long)overrides); */
 
-    newconf->provider = child->provider;
-    if (parent->provider != NULL) {
-        if (child->provider == NULL) {
+    newconf->provider_name = child->provider_name;
+    if (parent->provider_name != NULL) {
+        if (child->provider_name == NULL) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                          "\"DAV Off\" cannot be used to turn off a subtree "
                          "of a DAV-enabled location.");
         }
-        else if (strcasecmp(child->provider, parent->provider) != 0) {
+        else if (strcasecmp(child->provider_name,
+                            parent->provider_name) != 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
                          "A subtree cannot specify a different DAV provider "
                          "than its parent.");
@@ -204,6 +205,17 @@ static void *dav_merge_dir_config(apr_pool_t *p, void *base, void *overrides)
     newconf->d_params = apr_copy_table(p, parent->d_params);
     apr_overlap_tables(newconf->d_params, child->d_params,
 		      APR_OVERLAP_TABLES_SET);
+
+    if (newconf->provider_name == NULL)
+        newconf->provider = NULL;
+    else {
+        newconf->provider = dav_lookup_provider(newconf->provider_name);
+
+        if (newconf->provider == NULL) {
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, NULL,
+                         "Unknown DAV provider: %s", newconf->provider_name);
+        }
+    }
 
     return newconf;
 }
@@ -221,11 +233,12 @@ static const dav_provider * dav_get_provider(request_rec *r)
     dav_dir_conf *conf;
 
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
-    /* assert: conf->provider != NULL
-       (otherwise, DAV is disabled, and we wouldn't be here */
+    /* assert: conf->provider_name != NULL
+       (otherwise, DAV is disabled, and we wouldn't be here) */
 
-    /* ### assert that we find it? (return value != NULL) */
-    return dav_lookup_provider(conf->provider);
+    /* assert: conf->provider != NULL
+       (checked when conf->provider_name is set) */
+    return conf->provider;
 }
 
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r)
@@ -251,21 +264,27 @@ static const char *dav_cmd_dav(cmd_parms *cmd, void *config, const char *arg1)
     dav_dir_conf *conf = (dav_dir_conf *) config;
 
     if (strcasecmp(arg1, "on") == 0) {
-	conf->provider = DAV_DEFAULT_PROVIDER;
+	conf->provider_name = DAV_DEFAULT_PROVIDER;
     }
     else if (strcasecmp(arg1, "off") == 0) {
-	conf->provider = NULL;
+	conf->provider_name = NULL;
+        conf->provider = NULL;
     }
     else {
-        conf->provider = apr_pstrdup(cmd->pool, arg1);
+        conf->provider_name = apr_pstrdup(cmd->pool, arg1);
     }
-    if (conf->provider != NULL
-        && dav_lookup_provider(conf->provider) == NULL) {
 
-        /* by the time they use it, the provider should be loaded and
-           registered with us. */
-        return apr_psprintf(cmd->pool,
-                            "Unknown DAV provider: %s", conf->provider);
+    if (conf->provider_name != NULL) {
+        /* lookup and cache the actual provider now */
+        conf->provider = dav_lookup_provider(conf->provider_name);
+
+        if (conf->provider == NULL) {
+            /* by the time they use it, the provider should be loaded and
+               registered with us. */
+            return apr_psprintf(cmd->pool,
+                                "Unknown DAV provider: %s",
+                                conf->provider_name);
+        }
     }
 
     return NULL;
@@ -597,7 +616,6 @@ static int dav_get_resource(request_rec *r, int target_allowed,
 {
     void *data;
     dav_dir_conf *conf;
-    const dav_provider *provider;
     const char *workspace = NULL;
     const char *target_selector = NULL;
     int is_label = 0;
@@ -609,11 +627,6 @@ static int dav_get_resource(request_rec *r, int target_allowed,
         *res_p = data;
         return OK;
     }
-
-    conf = ap_get_module_config(r->per_dir_config, &dav_module);
-
-    /* assert: conf->provider != NULL */
-    provider = dav_lookup_provider(conf->provider);
 
     /* get any workspace header */
     if ((result = dav_get_workspace(r, &workspace)) != OK)
@@ -627,9 +640,12 @@ static int dav_get_resource(request_rec *r, int target_allowed,
 	    return result;
     }
 
+    conf = ap_get_module_config(r->per_dir_config, &dav_module);
+    /* assert: conf->provider != NULL */
+
     /* resolve the resource */
-    *res_p = (*provider->repos->get_resource)(r, conf->dir, workspace,
-                                              target_selector, is_label);
+    *res_p = (*conf->provider->repos->get_resource)(r, conf->dir, workspace,
+                                                    target_selector, is_label);
     if (*res_p == NULL) {
         /* Apache will supply a default error for this. */
         return HTTP_NOT_FOUND;
@@ -3177,7 +3193,7 @@ static int dav_type_checker(request_rec *r)
 	** ### this isn't quite right... taking over the response can break
 	** ### things like mod_negotiation. need to look into this some more.
 	*/
-	if (!conf->handle_get) {
+	if (!conf->provider->repos->handle_get) {
 	    return DECLINED;
         }
     }
