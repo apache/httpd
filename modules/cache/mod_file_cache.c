@@ -222,7 +222,10 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
 
 #if APR_HAS_MMAP
     if (mmap) {
-         /* MMAPFile directive. MMAP'ing the file */
+        /* MMAPFile directive. MMAP'ing the file
+         * XXX: APR_HAS_LARGE_FILES issue; need to reject this request if
+         * size is greater than MAX(apr_size_t) (perhaps greater than 1M?).
+         */
         if ((rc = apr_mmap_create(&new_file->mm, fd, 0, new_file->finfo.size,
                                   APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
             apr_file_close(fd);
