@@ -173,7 +173,7 @@ void ap_reclaim_child_processes(int terminate)
 #endif
 static int wait_or_timeout_counter;
 
-static ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
+ap_proc_t *ap_wait_or_timeout(ap_wait_t *status, ap_pool_t *p)
 {
     struct timeval tv;
     ap_status_t rv;
