@@ -94,7 +94,7 @@
  ***********************************************************************
  */
 
-#if defined(QNX)
+#if defined(QNX) || defined(_OSD_POSIX) || defined(MPE) || defined(SCO) || defined(BEOS)
 int initgroups(const char *name, gid_t basegid)
 {
 /* QNX and MPE do not appear to support supplementary groups. */
@@ -284,10 +284,18 @@ int main(int argc, char *argv[])
      * is the user allowed to do so as defined in
      * suexec.h.  If not the allowed user, error out.
      */
+#ifdef _OSD_POSIX
+    /* User name comparisons are case insensitive on BS2000/OSD */
+    if (strcasecmp(HTTPD_USER, pw->pw_name)) {
+	log_err("user mismatch (%s)\n", pw->pw_name);
+	exit(103);
+    }
+#else  /*_OSD_POSIX*/
     if (strcmp(HTTPD_USER, pw->pw_name)) {
 	log_err("user mismatch (%s)\n", pw->pw_name);
 	exit(103);
     }
+#endif /*_OSD_POSIX*/
 
     /*
      * Check for a leading '/' (absolute path) in the command to be executed,
@@ -477,6 +485,15 @@ int main(int argc, char *argv[])
 		dir_info.st_uid, dir_info.st_gid,
 		prg_info.st_uid, prg_info.st_gid);
 	exit(120);
+    }
+    /*
+     * Error out if the program is not executable for the user.
+     * Otherwise, she won't find any error in the logs except for
+     * "[error] Premature end of script headers: ..."
+     */
+    if (!(prg_info.st_mode & S_IXUSR)) {
+	log_err("file has no execute permission: (%s/%s)\n", cwd, cmd);
+	exit(121);
     }
 
     clean_env();
