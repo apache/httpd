@@ -2,27 +2,11 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) suexec: Be more pedantic when cleaning environment. Clean it
-     immediately after startup. PR 2790, 10449.
-     [Jeff Stewart <jws@purdue.edu>, André Malo]
-
   *) Return 413 if chunk-ext-header is too long rather than reading from
      the truncated line.  PR 15857.  [Justin Erenkrantz]
 
   *) If mod_mime_magic does not know the content-type, do not attempt to
      guess.  PR 16908.  [Andrew Gapon <agapon@telcordia.com>]
-
-  *) Fix apxs to insert LoadModule directives only outside of sections.
-     PR 9012.  [André Malo]
-
-  *) Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
-     mod_rewrite proxied URLs will not be escaped accidentally by
-     mod_proxy's fixup. PR 16368  [André Malo]
-
-  *) While processing filters on internal redirects, remember seen EOS
-     buckets also in the request structure of the redirect issuer(s). This
-     prevents filters (such as mod_deflate) from adding garbage to the
-     response. PR 14451.  [André Malo]
 
   *) Allow restart of httpd to occur even with syntax errors in the config
      file.  PR 16813.  [Justin Erenkrantz]
@@ -65,10 +49,6 @@ Changes with Apache 2.1.0-dev
   *) mod_cgi, mod_cgid, mod_ext_filter: Log errors when scripts cannot
      be started on Unix because of such problems as bad permissions,
      bad shebang line, etc.  [Jeff Trawick]
-
-  *) Fix suexec compile error under SUNOS4, where strerror() doesn't
-     exist. PR 5913, 9977.
-     [Jonathan W Miner <Jonathan.W.Miner@lmco.com>]
 
   *) Let suexec send a message to stderr, if it failed or its policy
      was violated. This message appears in the error log and allows
@@ -138,6 +118,26 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Hook mod_proxy's fixup before mod_rewrite's fixup, so that by
+     mod_rewrite proxied URLs will not be escaped accidentally by
+     mod_proxy's fixup. PR 16368  [André Malo]
+
+  *) While processing filters on internal redirects, remember seen EOS
+     buckets also in the request structure of the redirect issuer(s). This
+     prevents filters (such as mod_deflate) from adding garbage to the
+     response. PR 14451.  [André Malo]
+
+  *) suexec: Be more pedantic when cleaning environment. Clean it
+     immediately after startup. PR 2790, 10449.
+     [Jeff Stewart <jws@purdue.edu>, André Malo]
+
+  *) Fix apxs to insert LoadModule directives only outside of sections.
+     PR 8712, 9012.  [André Malo]
+
+  *) Fix suexec compile error under SUNOS4, where strerror() doesn't
+     exist. PR 5913, 9977.
+     [Jonathan W Miner <Jonathan.W.Miner@lmco.com>]
 
   *) Fix If header parsing when a non-mod_dav lock token is passed to it.
      PR 16452.  [Justin Erenkrantz]
