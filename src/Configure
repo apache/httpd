@@ -849,7 +849,7 @@ if [ "x$using_shlib" = "x1" ] ; then
         echo "** FAILURE: Sorry, no shared object support available."
         echo "** Either compile all modules statically (use AddModule instead"
         echo "** of SharedModule in the Configuration file) or at least provide"
-        echo "** us with the apropriate compiler and linker flags via the"
+        echo "** us with the appropriate compiler and linker flags via the"
         echo "** CFLAGS_SHLIB, LDFLAGS_SHLIB and LDFLAGS_SHLIB_EXPORT entries"
         echo "** in the Configuration file."
         echo ""
