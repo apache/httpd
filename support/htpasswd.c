@@ -391,6 +391,11 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ap_xlate_open(to ASCII)->%d\n", rv);
         exit(1);
     }
+    rv = ap_SHA1InitEBCDIC(to_ascii);
+    if (rv) {
+        fprintf(stderr, "ap_SHA1InitEBCDIC()->%d\n", rv);
+        exit(1);
+    }
     rv = ap_MD5InitEBCDIC(to_ascii);
     if (rv) {
         fprintf(stderr, "ap_MD5InitEBCDIC()->%d\n", rv);
