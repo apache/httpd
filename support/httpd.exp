@@ -1,4 +1,4 @@
-#!
+#! .
 ap_MD5Encode
 ap_MD5Final
 ap_MD5Init
