@@ -1145,7 +1145,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
         return rv;
     }
 
-    ap_rset_content_type("message/http", r);
+    ap_set_content_type(r, "message/http");
 
     /* Now we recreate the request, and echo it back */
 
@@ -1253,7 +1253,7 @@ static void fixup_vary(request_rec *r)
                        apr_array_pstrcat(r->pool, varies, ','));
     }
 }
-AP_DECLARE(void) ap_rset_content_type(const char *ct, request_rec *r)
+AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
 {
     r->content_type = ct;
 
@@ -2050,7 +2050,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         r->content_languages = NULL;
         r->content_encoding = NULL;
         r->clength = 0;
-        ap_rset_content_type("text/html; charset=iso-8859-1", r);
+        ap_set_content_type(r, "text/html; charset=iso-8859-1");
 
         if ((status == HTTP_METHOD_NOT_ALLOWED)
             || (status == HTTP_NOT_IMPLEMENTED)) {
@@ -2604,10 +2604,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
 
         if (num_ranges > 1) {
             ctx->orig_ct = r->content_type;
-            ap_rset_content_type(apr_pstrcat(r->pool, "multipart",
-                                             use_range_x(r) ? "/x-" : "/",
-                                             "byteranges; boundary=",
-                                             r->boundary, NULL), r);
+            ap_set_content_type(r, apr_pstrcat(r->pool, "multipart",
+                                               use_range_x(r) ? "/x-" : "/",
+                                               "byteranges; boundary=",
+                                               r->boundary, NULL));
         }
 
         /* create a brigade in case we never call ap_save_brigade() */

@@ -345,7 +345,7 @@ static int dav_error_response(request_rec *r, int status, const char *body)
     /* ### I really don't think this is needed; gotta test */
     r->status_line = ap_get_status_line(status);
 
-    ap_rset_content_type("text/html", r);
+    ap_set_content_type(r, "text/html");
 
     /* since we're returning DONE, ensure the request body is consumed. */
     (void) ap_discard_request_body(r);
@@ -382,7 +382,7 @@ static int dav_error_response_tag(request_rec *r,
     /* ### I really don't think this is needed; gotta test */
     r->status_line = ap_get_status_line(err->status);
 
-    ap_rset_content_type(DAV_XML_CONTENT_TYPE, r);
+    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
 
     /* since we're returning DONE, ensure the request body is consumed. */
     (void) ap_discard_request_body(r);
@@ -455,7 +455,7 @@ static void dav_send_multistatus(request_rec *r, int status,
 {
     /* Set the correct status and Content-Type */
     r->status = status;
-    ap_rset_content_type(DAV_XML_CONTENT_TYPE, r);
+    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
 
     /* Send the headers and actual multistatus response now... */
     ap_rputs(DAV_XML_HEADER DEBUG_CR
@@ -1693,7 +1693,7 @@ static int dav_method_options(request_rec *r)
 
     /* send the options response */
     r->status = HTTP_OK;
-    ap_rset_content_type(DAV_XML_CONTENT_TYPE, r);
+    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
 
     /* send the headers and response body */
     ap_rputs(DAV_XML_HEADER DEBUG_CR
@@ -2920,7 +2920,7 @@ static int dav_method_lock(request_rec *r)
     (*locks_hooks->close_lockdb)(lockdb);
 
     r->status = HTTP_OK;
-    ap_rset_content_type(DAV_XML_CONTENT_TYPE, r);
+    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
 
     ap_rputs(DAV_XML_HEADER DEBUG_CR "<D:prop xmlns:D=\"DAV:\">" DEBUG_CR, r);
     if (lock == NULL)
@@ -3878,7 +3878,7 @@ static int dav_method_report(request_rec *r)
 
     /* set up defaults for the report response */
     r->status = HTTP_OK;
-    ap_rset_content_type(DAV_XML_CONTENT_TYPE, r);
+    ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
 
     /* run report hook */
     if ((err = (*vsn_hooks->deliver_report)(r, resource, doc,
@@ -4125,7 +4125,7 @@ static int dav_method_merge(request_rec *r)
        is going to do something different (i.e. an error), then it must
        return a dav_error, and we'll reset these values properly. */
     r->status = HTTP_OK;
-    ap_rset_content_type("text/xml", r);
+    ap_set_content_type(r, "text/xml");
 
     /* ### should we do any preliminary response generation? probably not,
        ### because we may have an error, thus demanding something else in

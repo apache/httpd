@@ -386,7 +386,7 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     r->args = rr->args;
     r->finfo = rr->finfo;
     r->handler = rr->handler;
-    ap_rset_content_type(rr->content_type, r);
+    ap_set_content_type(r, rr->content_type);
     r->content_encoding = rr->content_encoding;
     r->content_languages = rr->content_languages;
     r->per_dir_config = rr->per_dir_config;
@@ -428,7 +428,7 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
     int access_status;
     request_rec *new = internal_internal_redirect(new_uri, r);
     if (r->handler)
-        ap_rset_content_type(r->content_type, new);
+        ap_set_content_type(new, r->content_type);
     access_status = ap_process_request_internal(new);
     if (access_status == OK) {
         if ((access_status = ap_invoke_handler(new)) != 0) {

@@ -801,7 +801,7 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
      * typing rules would have called it something else.
      */
 
-    ap_rset_content_type(CGI_MAGIC_TYPE, rr);
+    ap_set_content_type(rr, CGI_MAGIC_TYPE);
 
     /* Run it. */
 

@@ -1311,7 +1311,7 @@ static int hook_mimetype(request_rec *r)
     else {
         rewritelog(r, 1, "force filename %s to have MIME-type '%s'",
                    r->filename, t);
-        ap_rset_content_type(t, r);
+        ap_set_content_type(r, t);
         return OK;
     }
 }
@@ -1959,7 +1959,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
                  */
                 rewritelog(r, 1, "[per-dir %s] force %s to have MIME-type "
                            "'%s'", perdir, r->filename, p->forced_mimetype);
-                ap_rset_content_type(p->forced_mimetype, r);
+                ap_set_content_type(r, p->forced_mimetype);
             }
         }
         return 2;
