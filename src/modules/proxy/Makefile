@@ -54,11 +54,12 @@
 SHELL = /bin/sh
 
 INCDIR = ../../core
+MODDIR = ../../modules/standard
 
 LIB=libproxy.a
 
 # AUX_CFLAGS comes from higher level Makefile
-CFLAGS=-I$(INCDIR) $(AUX_CFLAGS)
+CFLAGS=-I$(INCDIR) -I$(MODDIR) $(AUX_CFLAGS)
 
 # Internal stuff, should not need changing.
 PROXYSRC=mod_proxy.c proxy_cache.c proxy_connect.c proxy_ftp.c proxy_http.c \
@@ -83,7 +84,8 @@ clean:
 
 # dependencies
 $(OBJS): mod_proxy.h $(INCDIR)/httpd.h $(INCDIR)/http_config.h $(INCDIR)/http_protocol.h
-proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o proxy_util.o: $(INCDIR)/http_main.h
+proxy_cache.o proxy_connect.o proxy_http.o proxy_util.o: $(INCDIR)/http_main.h
 proxy_cache.o proxy_connect.o proxy_http.o: $(INCDIR)/http_log.h
 proxy_cache.o proxy_http.o: $(INCDIR)/util_date.h
 proxy_cache.o proxy_util.o: $(INCDIR)/md5.h
+proxy_ftp.o: $(INCDIR)/http_main.h $(MODDIR)/mod_mime.h
