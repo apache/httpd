@@ -1,4 +1,6 @@
 Changes with Apache 2.0.32-dev
+  *) Win32: Get apache -k restart -n apache2 working reliabily again.
+     [Bill Stoddard]
  
   *) Remove all signals from the worker MPM's child process.  Instead,
      the parent uses the Pipe of Death for all communication with the

@@ -1496,7 +1496,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     }
 
     /* Child's initial stderr -> our main server error log (or, failing that, stderr) */
-    if (ap_server_conf->error_log) {
+    if (ap_server_conf->error_log) { /* Is this check really necessary?*/
         rv = apr_os_file_get(&hShareError, ap_server_conf->error_log);
         if (rv == APR_SUCCESS && hShareError != INVALID_HANDLE_VALUE) {
             if (DuplicateHandle(hCurrentProcess, hShareError, 
@@ -1524,9 +1524,9 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
             CloseHandle(hNullOutput);
             return -1;
         }
-        else {
-            hShareError = GetStdHandle(STD_ERROR_HANDLE);
-        }
+    }
+    else {
+        hShareError = GetStdHandle(STD_ERROR_HANDLE);
     }
 
     /* Create the child_exit_event */
