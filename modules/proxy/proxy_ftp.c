@@ -273,6 +273,8 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
     apr_bucket *e;
     apr_bucket_brigade *out = apr_brigade_create(p);
     apr_status_t rv;
+    regex_t *re = NULL; /* @@@ put this in the context */
+    regmatch_t re_result[3];
 
     register int n;
     char *dir, *path, *reldir, *site, *str;
@@ -281,12 +283,16 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
     const char *readme = apr_table_get(r->notes, "Directory-README");
 
     proxy_dir_ctx_t *ctx = f->ctx;
+
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(p, sizeof(*ctx));
         ctx->in = apr_brigade_create(p);
         ctx->buffer[0] = 0;
         ctx->state = HEADER;
     }
+
+    /* Compile the output format of "ls -s1" as a fallback for non-unix ftp listings */
+    re = ap_pregcomp(p, "^ *([0-9]+) +([^ ]+)$", REG_EXTENDED);
 
     /* combine the stored and the new */
     APR_BRIGADE_CONCAT(ctx->in, in);
@@ -477,6 +483,15 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
                                    ap_escape_uri(p, filename),
                                    ap_escape_html(p, filename));
             }
+        }
+        /* Try a fallback for listings in the format of "ls -s1" */
+        else if (0 == ap_regexec(re, ctx->buffer, 3, re_result, 0)) {
+
+            char *filename = apr_pstrndup(p, &ctx->buffer[re_result[2].rm_so], re_result[2].rm_eo - re_result[2].rm_so);
+
+            str = ap_pstrcat(p, ap_escape_html(p, apr_pstrndup(p, &ctx->buffer[0], re_result[2].rm_so)),
+                             "<a href=\"", ap_escape_uri(p, filename), "\">",
+                             ap_escape_html(p, filename), "</a>\n", NULL);
         }
         else {
             strcat(ctx->buffer, "\n"); /* re-append the newline */
