@@ -79,9 +79,30 @@ extern "C" {
  */
 apr_status_t ap_init_ebcdic(apr_pool_t *pool);
 
+/**
+ * Convert protocol data from the implementation character
+ * set to ASCII.
+ * @param buffer buffer to translate
+ * @param len number of bytes to translate
+ */
+void ap_xlate_proto_to_ascii(char *buffer, apr_size_t len);
+
+/**
+ * Convert protocol data to the implementation character
+ * set from ASCII.
+ * @param buffer buffer to translate
+ * @param len number of bytes to translate
+ */
+void ap_xlate_proto_from_ascii(char *buffer, apr_size_t len);
+
 #ifdef __cplusplus
 }
 #endif
+
+#else   /* CHARSET_EBCDIC */
+
+#define ap_xlate_proto_to_ascii(x,y)          /* NOOP */
+#define ap_xlate_proto_from_ascii(x,y)        /* NOOP */
 
 #endif  /* CHARSET_EBCDIC */
     

@@ -3279,15 +3279,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, ap_bucket_brigade *b)
             /* XXX might be nice to have APR_OFF_T_FMT_HEX */
             hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
                                    "%qx" CRLF, (apr_uint64_t)bytes);
-#ifdef CHARSET_EBCDIC
-            {
-                apr_size_t inbytes_left = hdr_len, outbytes_left = hdr_len;
-
-                apr_xlate_conv_buffer(ap_hdrs_to_ascii,
-                                      chunk_hdr, &inbytes_left,
-                                      chunk_hdr, &outbytes_left);
-            }
-#endif
+            ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
             e = ap_bucket_create_transient(chunk_hdr, hdr_len);
             AP_BRIGADE_INSERT_HEAD(b, e);
 
