@@ -80,6 +80,9 @@
        was identified for this denial of service exploit.
                                             
    The general bug fixes:
+     * Eliminate a potential segfault if an invalid floating point value
+       is passed to the ap_snprintf() function, on platforms supporting
+       isnan() and isinf().
      * Fix a possible segfault at startup in the detection of a default
        ServerName or IP string when no ServerName was specified.
      * Fixed mod_proxy to retain empty headers, as allowed by RFC2068.
@@ -125,3 +128,4 @@
        different implementation than the native calls in the win32 port.
      * Support for building modules with apxs under Win32.  cygwin builders 
        must use a cygwin build of perl to avoid MSVC handling.
+
