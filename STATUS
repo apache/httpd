@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/09/08 01:10:29 $]
+Last modified at [$Date: 2001/09/08 17:58:06 $]
 
 Release:
 
@@ -89,9 +89,9 @@ RELEASE SHOWSTOPPERS:
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * add mod_gz to httpd-2.0
-      +1: Greg, Justin, Cliff
-      -0: Doug, ben
+      +1: Greg, Justin, Cliff, ben
        0: Jim (premature decision at present, IMO)
+      -0: Doug
       -1: Ryan
       
       non-binding: Ian (+1)
