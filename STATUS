@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/06/04 16:01:47 $]
+  Last modified at [$Date: 1999/06/04 16:37:58 $]
 
 Release:
 
@@ -93,13 +93,9 @@ Documentation that needs writing:
 
 Available Patches:
 
-    * Ralf's [PATCH] to add EAPI to the base package
+    * Ralf's [PATCH] to add EAPI (ctx, hook, mm, etc.) to the base package
 	Message-ID: <19990414134729.A93825@engelschall.com>
 	Status: Jim +1, Mark +1, Dean -0, BenH +1
-
-    * Ralf's [PATCH] to add MM (shared memory API) to the base package
-	Message-ID: <19990414134729.A93825@engelschall.com>
-	Status: 
 
     * Tony Finch's patch to support mass virtual hosting
 	Message-ID: <E10kXMV-00011I-00@fanf.noc.demon.net>
