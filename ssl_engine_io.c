@@ -190,7 +190,7 @@ static apr_status_t churn_output(SSLFilterRec *ctx)
 #define bio_is_renegotiating(bio) \
 (((int)BIO_get_callback_arg(bio)) == SSL_ST_RENEGOTIATE)
 
-static apr_status_t churn(SSLFilterRec *pRec,
+static apr_status_t churn_input(SSLFilterRec *pRec,
         ap_input_mode_t eMode, apr_off_t *readbytes)
 {
     conn_rec *c = pRec->pInputFilter->c;
@@ -388,7 +388,7 @@ static apr_status_t ssl_io_filter_Input(ap_filter_t *f,
     }
 
     /* churn the state machine */
-    ret = churn(pRec, eMode, readbytes);
+    ret = churn_input(pRec, eMode, readbytes);
     if (ret != APR_SUCCESS)
 	return ret;
 
