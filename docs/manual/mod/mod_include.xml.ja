@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_include.xml.meta">
-<!-- English revision: 1.26 -->
+<!-- English revision: 1.27 -->
 
 <name>mod_include</name>
 <description>サーバがパースする html ドキュメント (Server Side Includes)</description>
@@ -85,7 +85,10 @@
     多くのコマンドは属性-値 (訳注: attribute-value) の組を一つだけ指定できます。
     コメントの終わり (<code>--&gt;</code>)
     の前には、SSI の句の一部だと解釈されないようにするために空白を
-    入れてください。要素 (訳注: element) を以下の表に示します。</p>
+    入れてください。最初の <code>&lt;!--#</code> はまとめて<em>一つ</em>の
+    句で、空白をふくんではいけないこと注意してください。</p>
+
+    <p>要素 (訳注: element) を以下の表に示します。</p>
 
     <table border="1">
     <tr><th>要素</th><th>説明</th></tr>
