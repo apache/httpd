@@ -15,7 +15,7 @@ Changes with Apache 1.3.28
      as well as "compact" version of the tracking cookie (the new
      'CookieFormat' directive), and the ability to prepend a string
      to the cookie via the 'CookiePrefix' directive.
-     [Pål Løberg <pallo@initio.no>]
+     [Pål Løberg <pallo@initio.no>, with cleanup by Jim Jagielski]
 
   *) Certain 3rd party modules would bypass the Apache API and not
      invoke ap_cleanup_for_exec() before creating sub-processes.
