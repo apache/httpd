@@ -30,6 +30,12 @@ q, em, var {
     font-style: italic;
 }
 
+span.transnote {
+    background-color: inherit;
+    color: #888;
+    font-size:90%;
+}
+
 /* fixup IE & Opera
  * otherwise they forget to inherit
  * the computed font-size value
