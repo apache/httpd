@@ -110,6 +110,7 @@ if [ -d srclib/apr ]; then
         echo "./buildconf failed for apr"
         exit 1
     }
+    rm -f srclib/apr/apr.spec
 fi
 
 if [ -d srclib/apr-util ]; then
@@ -118,6 +119,7 @@ if [ -d srclib/apr-util ]; then
         echo "./buildconf failed for apr-util" 
         exit 1
     }
+    rm -f srclib/apr-util/apr-util.spec
 fi
 
 echo copying build files
