@@ -90,7 +90,7 @@
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
  * specified value.
- * <PRE>
+ * <pre>
  * Useful for testing for features.
  * For example, suppose you wish to use the apr_table_overlap
  *    function.  You can do this:
@@ -100,7 +100,7 @@
  * #else
  *     ... alternative code which doesn't use apr_table_overlap()
  * #endif
- * </PRE>
+ * </pre>
  * @param major The major module magic number
  * @param minor The minor module magic number
  * @deffunc MODULE_MAGIC_AT_LEAST(int major, int minor)
