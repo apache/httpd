@@ -1166,7 +1166,7 @@ int ssl_hook_Access(request_rec *r)
 }
 
 /*
- *  Auth Handler:
+ *  Authentication Handler:
  *  Fake a Basic authentication from the X509 client certificate.
  *
  *  This must be run fairly early on to prevent a real authentication from
@@ -1174,7 +1174,7 @@ int ssl_hook_Access(request_rec *r)
  *  authenticates a user.  This means that the Module statement for this
  *  module should be LAST in the Configuration file.
  */
-int ssl_hook_Auth(request_rec *r)
+int ssl_hook_UserCheck(request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(r->server);
     SSLDirConfigRec *dc = myDirConfig(r);
@@ -1245,7 +1245,8 @@ int ssl_hook_Auth(request_rec *r)
     return DECLINED;
 }
 
-int ssl_hook_UserCheck(request_rec *r)
+/* authorization phase */
+int ssl_hook_Auth(request_rec *r)
 {
     SSLDirConfigRec *dc = myDirConfig(r);
 
