@@ -209,7 +209,11 @@ static void clean_env(void)
 	exit(120);
     }
 
-    for (ep = environ; *ep && cidx < AP_ENVBUF; ep++) {
+    sprintf(pathbuf, "PATH=%s", SAFE_PATH);
+    cleanenv[cidx] = strdup(pathbuf);
+    cidx++
+
+    for (ep = environ; *ep && cidx < AP_ENVBUF-1; ep++) {
 	if (!strncmp(*ep, "HTTP_", 5)) {
 	    cleanenv[cidx] = *ep;
 	    cidx++;
@@ -226,9 +230,7 @@ static void clean_env(void)
 	}
     }
 
-    sprintf(pathbuf, "PATH=%s", SAFE_PATH);
-    cleanenv[cidx] = strdup(pathbuf);
-    cleanenv[++cidx] = NULL;
+    cleanenv[cidx] = NULL;
 
     environ = cleanenv;
 }

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.2
 
+  *) Fix possible buffer overflow situation in suexec.c.
+     [Jeff Stewart <jws@purdue.edu>] PR#2790
+
   *) Add some more LIBS for the SCO5 platform which are needed for the already
      used -lprot. It's actually a bug in SCO5, of course.
      [Ronald Record <rr@sco.com>] PR#2533
