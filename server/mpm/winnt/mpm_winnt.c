@@ -1895,8 +1895,10 @@ void winnt_rewrite_args(process_rec *process)
          */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) {
             service_to_start_success = mpm_service_to_start(&service_name);
-            if (service_to_start_success == APR_SUCCESS)
+            if (service_to_start_success == APR_SUCCESS) {
                 service_set = APR_SUCCESS;
+                ap_open_stderr_log(process->pool);
+            }
         }
     }
 
