@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_mime.xml.meta">
 
-<!-- English revision: 1.17 -->
+<!-- English revision: 1.22 -->
 
 <name>mod_mime</name>
 <description>リクエストされたファイルの拡張子とファイルの振る舞い
@@ -19,8 +19,9 @@
     MIME タイプ、言語、文字セット、エンコーディングとを関連付けます。
     この情報はブラウザに送られますし、複数のファイルの中からユーザの好みの
     ものが選ばれるように、コンテントネゴシエーションでも使われます。
-    コンテントネゴシエーションに関する詳しい情報は <module>mod_negotiation</module>
-    を見てください。</p>
+    <a href="../content-negotiation.html">コンテントネゴシエーション</a>
+    に関する詳しい情報は <module>mod_negotiation</module>
+    をご覧下さい。</p>
 
     <p><directive module="mod_mime">AddCharset</directive> ディレクティブ、
     <directive module="mod_mime">AddEncoding</directive> ディレクティブ、
@@ -70,8 +71,8 @@
     (最終更新日を更新する) 必要があるかもしれません。</p>
 </summary>
 
-    <seealso><directive
-    module="mod_mime_magic">MimeMagicFile</directive></seealso>
+<seealso><directive
+module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
 <seealso><directive module="core">DefaultType</directive></seealso>
@@ -79,52 +80,51 @@
 <seealso><directive module="core">SetInputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
 
-<section id="multipleext">
-<title>複数の拡張子のあるファイル</title>
-
+<section id="multipleext"><title>複数の拡張子のあるファイル</title>
     <p>ファイルは複数の拡張子を持つことができ、拡張子の順番は<em
     >通常は</em>関係ありません。例えば、ファイル <code>welcome.html.fr</code>
-    がコンテントタイプは text/html
+    がコンテントタイプは <code>text/html</code>
     に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
     もまったく同じ情報にマップされます。
     同じメタ情報にマップされる拡張子が複数あるときには、
-    右側にあるものが使用されます。たとえば、".gif" が MIME タイプ
-    image/gif にマップされ、".html" が MIME タイプ text/html
+    右側にあるものが使用されます。たとえば、<code>.gif</code> が MIME
+    タイプ <code>image/gif</code> にマップされ、<code>.html</code>
+    が MIME タイプ <code>text/html</code>
     にマップされる場合は、ファイル <code>welcome.gif.html</code> は
-    MIME タイプ "text/html" に関連付けられます。</p>
+    MIME タイプ <code>text/html</code> に関連付けられます。</p>
 
     <p>複数の拡張子のあるファイルが MIME
     タイプとハンドラの両方に関連付けられているときは注意する必要があります。
     その場合、普通はリクエストがハンドラに関連付けられた
     モジュールによって扱われることになります。たとえば、拡張子
-    <code>.imap</code> が (mod_imap の) "imap-file" にマップされていて、
-    <code>.html</code> が MIME タイプ "text/html"
+    <code>.imap</code> が (mod_imap の) <code>imap-file</code>
+    にマップされていて、<code>.html</code> が MIME タイプ <code>text/html</code>
     にマップされているときは、ファイル <code>world.imap.html</code> は
-    "imap-file" ハンドラと "text/html" MIME
-    タイプに関連付けられます。ファイルが処理されるときは "imap-file"
-    ハンドラが使用されますので、そのファイルは mod_imap
+    <code>imap-file</code> ハンドラと <code>text/html</code> MIME
+    タイプに関連付けられます。ファイルが処理されるときは <code>imap-file</code>
+    ハンドラが使用されますので、そのファイルは <module>mod_imap</module>
     のイメージマップファイルとして扱われることになります。</p>
 </section>
 
 <section id="contentencoding"><title>コンテントエンコーディング</title>
-
     <p>特定の MIME タイプのファイルはインターネットでの転送を簡単にするために、
     さらに符号化することができます。これは通常は <code>gzip</code> の
     ような圧縮のことを指しますが、<code>pgp</code> のような暗号化や、
     バイナリファイルを ASCII (テキスト) 形式で送るために考案された
     UUencoding のことを指すこともあります。</p>
 
-    <p>MIME RFC は次のように言っています:</p>
+    <p><a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1 RFC</a> 
+    14.11 節では次のように記述されています。</p>
 
-    <note>
-      Content-Encoding エンティティヘッダフィールドはメディアタイプの
-      修飾子として使われます。それが存在していれば、値はリソースに
+    <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
+      <p>Content-Encoding エンティティヘッダフィールドはメディアタイプの
+      修飾子として使われます。それが存在していれば、値はエンティティボディに
       どの追加の符号化が適用されたかを示し、Content-Type ヘッダフィールドに
       書かれているメディアタイプを得るためにどの復号機構を適用すべきか、も
       示していることになります。Content-Encoding は主に、元のメディアタイプの
       同一性を失うことなくドキュメントを圧縮することを可能にするために
-      使用されます。
-    </note>
+      使用されます。</p>
+    </blockquote>
 
     <p>複数のファイル拡張子 (複数の拡張子については <a
     href="#multipleext">上の節</a> を参照) 使うことで、
@@ -143,13 +143,9 @@
     送ります。</p>
 
     <example>Content-encoding: pkzip</example>
-
 </section>
 
-<section id="charset-lang">
-
-<title>文字セットと言語</title>
-
+<section id="charset-lang"><title>文字セットと言語</title>
     <p>ファイルタイプとファイルエンコーディングの他に重要な情報は
     ドキュメントの書かれている言語と、どの文字セットでファイルが表示
     されるべきか、というものです。たとえば、ドキュメントはベトナムの
@@ -176,57 +172,48 @@
     使うことでマッチの
     処理に含めることも外すこともできます。</p>
 
-<section>
-<title>Charset</title>
+    <section id="charset"><title>Charset</title>
+      <p>さらに情報を伝えるために、Apache は文書の言語を
+      <code>Content-Language</code> ヘッダで送ることもあります。
+      また、情報を正しく表示するために使用すべき文字セットを示すために
+      <code>Conten-Type</code> ヘッダに情報を追加することもあります。</p>
 
-    <p>さらに情報を伝えるために、Apache は文書の言語を
-    <code>Content-Language</code> ヘッダで送ることもあります。
-    また、情報を正しく表示するために使用すべき文字セットを示すために
-    <code>Conten-Type</code> ヘッダに情報を追加することもあります。</p>
+      <example>
+        Content-Language: en, fr<br />
+	Content-Type: text/plain; charset=ISO-8859-1
+      </example>
 
-<example>
-Content-Language: en, fr<br />
-Content-Type: text/plain; charset=ISO-8859-2
-</example>
-
-    <p>言語の指定は二文字の短縮形で行なわれます。<code>charset</code> が
-    使用すべき文字セットの名前です。</p>
-</section>
+      <p>言語の指定は二文字の短縮形で行なわれます。<code>charset</code> が
+      使用すべき文字セットの名前です。</p>
+    </section>
 </section>
 
 <directivesynopsis>
 <name>AddCharset</name>
 <description>ファイル名の拡張子を指定された文字セットにマップする</description>
-<syntax>AddCharset <em>charset extension</em> 
-[<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<syntax>AddCharset <var>charset</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>AddCharset は Apache 1.3.10 以降でのみ使用可能</compatibility>
 
 <usage>
-
-    <p>AddCharset ディレクティブは、与えられた拡張子を指定された
-    charset にマップします。<em>charset</em> は、拡張子
-    <em>extension</em> を含んでいるファイル名の MIME charset
+    <p><directive>AddCharset</directive> ディレクティブは、
+    与えられた拡張子を指定された charset にマップします。<var>charset</var> 
+    は、拡張子 <var>extension</var> を含んでいるファイル名の MIME charset
     パラメータです。新しいマッピングは既にある他のマッピングに追加され、同じ拡張子
-    <em>extension</em> のためのマッピングを上書きします。</p>
+    <var>extension</var> のためのマッピングを上書きします。</p>
 
-    <p>例:</p>
-<example>
-    AddLanguage ja .ja<br />
-    AddCharset EUC-JP .euc<br />
-    AddCharset ISO-2022-JP .jis<br />
-    AddCharset SHIFT_JIS .sjis
-</example>
+    <example><title>例</title>
+      AddLanguage ja .ja<br />
+      AddCharset EUC-JP .euc<br />
+      AddCharset ISO-2022-JP .jis<br />
+      AddCharset SHIFT_JIS .sjis
+    </example>
 
     <p>この場合、ドキュメント <code>xxxx.ja.jis</code> は charset が
-    ISO-2022-JP の日本語のドキュメントとして扱われます
-    (<code>xxxx.jis.ja</code> も同様)。AddCharset
+    <code>ISO-2022-JP</code> の日本語のドキュメントとして扱われます
+    (<code>xxxx.jis.ja</code> も同様)。<directive>AddCharset</directive>
     ディレクティブは、ドキュメントが適切に解釈され表示されるように、
     ドキュメントの charset の情報をクライアントに教えるために役に立ちます。
     また、サーバがクライアントの charset
@@ -234,45 +221,39 @@ Content-Type: text/plain; charset=ISO-8859-2
     href="../content-negotiation.html"
     >コンテントネゴシエーション</a>のためにも役に立ちます。</p>
 
-    <p>引数 <em>extension</em>は大文字小文字を区別せず、
+    <p>引数 <var>extension</var>は大文字小文字を区別せず、
     最初のドットはあってもなくても構いません。</p>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
-
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddEncoding</name>
 <description>ファイル名の拡張子を指定されたエンコーディング
 にマップする</description>
-<syntax>AddEncoding
-    <em>MIME-enc extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<syntax>AddEncoding <var>MIME-enc</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
-
 <usage>
+    <p><directive>AddEncoding</directive> ディレクティブは、
+    与えられた拡張子を指定されたエンコーディングにマップします。
+    <var>MIME-enc</var> は、拡張子 <var>extension</var>
+    を含んだドキュメントに使用する MIME エンコーディングです。
+    この新しいマッピングは既にある他のマッピングに追加され、
+    同じ拡張子 <var>extension</var> のためのマッピングを上書きします。</p>
 
-    <p>AddEncoding ディレクティブは、与えられた拡張子を指定された
-    エンコーディングにマップします。<em>MIME-enc</em> は、拡張子
-    <em>extension</em> を含んだドキュメントに使用する MIME
-    エンコーディングです。この新しいマッピングは既にある他のマッピングに追加され、
-    同じ拡張子 <em>extension</em> のためのマッピングを上書きします。例:</p>
-
-    <example>
+    <example><title>例</title>
       <code>AddEncoding x-gzip .gz<br />
        AddEncoding x-compress .Z</code>
     </example>
 
-    <p>これは、拡張子 .gz を含むファイル名が x-gzip
-    エンコーディングを使ってエンコードされていることと、拡張子 .Z
-    を含むファイル名が x-compress
+    <p>これは、拡張子 <code>.gz</code> を含むファイル名が <code>x-gzip</code>
+    エンコーディングを使ってエンコードされていることと、拡張子 <code>.Z</code>
+    を含むファイル名が <code>x-compress</code>
     でエンコードされていることを指定します。</p>
 
     <p>古いクライアントは <code>x-zip</code> と <code>x-compress</code>
@@ -290,44 +271,39 @@ Content-Type: text/plain; charset=ISO-8859-2
     なしで指定してください。
     </p>
 
-    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
     最初のドットはあってもなくても構いません。</p>
-
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddHandler</name>
 <description>ファイル名の拡張子を指定されたハンドラにマップする</description>
-<syntax>AddHandler
-    <em>handler-name extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<syntax>AddHandler <var>handler-name</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>拡張子 <em>extension</em> が名前にあるファイルは指定された <a
+    <p>拡張子 <var>extension</var> が名前にあるファイルは指定された <a
     href="../handler.html">handler-name</a> に扱われます。
     この新しいマッピングは既にある他のマッピングに追加され、
-    同じ拡張子 <em>extension</em>
+    同じ拡張子 <var>extension</var>
     のためのマッピングを上書きします。たとえば、拡張子
     "<code>.cgi</code>" で終わるファイルを CGI
     スクリプトとして扱いたいときは、以下の設定をします。</p>
-<example>
-    AddHandler cgi-script .cgi
-</example>
 
-    <p>これを srm.conf か httpd.conf ファイルに記述することで、拡張子
-    "<code>.cgi</code>" を含むファイルは CGI プログラムとして扱われます。
+    <example>
+      AddHandler cgi-script .cgi
+    </example>
+
+    <p>これを httpd.conf ファイルに記述することで、拡張子
+    "<code>.cgi</code>" のファイルは CGI プログラムとして扱われます。
     </p>
 
-    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
     最初のドットはあってもなくても構いません。</p>
-
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
 </directivesynopsis>
@@ -336,70 +312,58 @@ Content-Type: text/plain; charset=ISO-8859-2
 <name>AddInputFilter</name>
 <description>ファイルの拡張子をクライアントのリクエストを処理する
     フィルタにマップする</description>
-<syntax>AddInputFilter
-    <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>AddInputFilter
-    は Apache 2.0.26 以降のみで使用可能。</compatibility>
+<syntax>AddInputFilter <var>filter</var>[;<var>filter</var>...]
+<var>extension</var> [<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>2.0.26 以降で使用可能</compatibility>
 
 <usage>
-
-    <p>AddInputFilter はファイルの拡張子 <em>extension</em> を
-    クライアントのリクエストや POST がサーバに来たときに
+    <p><directive>AddInputFilter</directive> はファイルの拡張子
+    <var>extension</var> をクライアントのリクエストや POST がサーバに来たときに
     処理をする<a href="../filter.html">フィルタ</a>にマップします。
-    これは、<a href="core.html#setinputfilter">SetInputFilter</a> ディレクティブも
+    これは、<directive module="core">SetInputFilter</directive> ディレクティブも
     含め、他の場所で定義されているフィルタに加えられます。
     このマッピングはすでにあるものより優先されてマージされ、
-    同じ <em>extension</em> に対する既存のマッピングを上書きします。</p>
+    同じ <var>extension</var> に対する既存のマッピングを上書きします。</p>
 
     <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
-    繋いで書く必要があります。フィルタと <em>extension</em> との
+    繋いで書く必要があります。フィルタと <var>extension</var> との
     両方の引数は大文字小文字を区別せず、拡張子の最初のドットは
     あってもなくても構いません。</p>
 </usage>
-
+<seealso><directive module="mod_mime">RemoveInputFilter</directive></seealso>
+<seealso><directive module="core">SetInputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddLanguage</name>
 <description>ファイル名を指定された言語にマップ</description>
-<syntax>AddLanguage
-    <em>MIME-lang extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<syntax>AddLanguage <var>MIME-lang</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-
-    <p>AddLanguage ディレクティブは、与えられた拡張子を指定された
-    content language にマップします。<em>MIME-lang</em> は、拡張子
-    <em>extension</em> を含んでいるファイル名の MIME における言語です。
+    <p><directive>AddLanguage</directive> ディレクティブは、与えられた拡張子を指定された
+    content language にマップします。<var>MIME-lang</var> は、拡張子
+    <var>extension</var> を含んでいるファイル名の MIME における言語です。
     この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
-    <em>extension</em> のためのマッピングを上書きします。
-    </p>
+    <var>extension</var> のためのマッピングを上書きします。</p>
 
-    <p>例:</p>
-
-    <example>
+    <example><title>例</title>
       AddEncoding x-compress .Z<br />
-       AddLanguage en .en<br />
-       AddLanguage fr .fr
+      AddLanguage en .en<br />
+      AddLanguage fr .fr
     </example>
 
     <p>この場合、<code>xxxx.en.Z</code> ドキュメントは compress
     された英語のドキュメントとして扱われます (<code>xxxx.Z.en</code>
     も同様)。content language はクライアントに通知されますが、
-    ブラウザがこの情報を使うことはおそらくありません。AddLanguage
+    ブラウザがこの情報を使うことはおそらくありません。
+    <directive>AddLanguage</directive>
     ディレクティブは、サーバがクライアントの言語の優先度に基づいて複数の
     ドキュメントの中からドキュメントを選ぶ<a
     href="../content-negotiation.html"
@@ -408,18 +372,17 @@ Content-Type: text/plain; charset=ISO-8859-2
     <p>複数の言語が同じ拡張子に割り当てられているときは、
     最後のものが使用されます。すなわち、次のような場合、</p>
 
-<example>
-    AddLanguage en .en<br />
-    AddLanguage en-uk .en<br />
-    AddLanguage en-us .en
-</example>
+    <example>
+      AddLanguage en .en<br />
+      AddLanguage en-uk .en<br />
+      AddLanguage en-us .en
+    </example>
 
-    <p>拡張子 "<code>.en</code>" のあるドキュメントは
-    "<code>en-us</code>" として扱われます。</p>
+    <p>拡張子 <code>.en</code> のあるドキュメントは
+    <code>en-us</code> として扱われます。</p>
 
-    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
     最初のドットはあってもなくても構いません。</p>
-
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
@@ -428,30 +391,25 @@ Content-Type: text/plain; charset=ISO-8859-2
 <name>AddOutputFilter</name>
 <description>ファイル名の拡張子をサーバからの応答を処理するフィルタに
     マップする</description>
-<syntax>AddOutputFilter
-    <em>filter</em>[<em>;filter</em>...] extension
-    [<em>extension</em> ...]</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<override></override>
-<compatibility>AddOutputFilter
-    は Apache 2.0.26 以降でのみ使用可能。</compatibility>
+<syntax>AddOutputFilter <var>filter</var>[;<var>filter</var>...]
+<var>extension</var> [<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>2.0.26 以降で使用可能</compatibility>
 
 <usage>
-
     <p><directive>AddOutputFilter</directive> ディレクティブは
-    拡張子 <em>extension</em> をサーバの応答がクライアントに送られる
+    拡張子 <var>extension</var> をサーバの応答がクライアントに送られる
     前に処理する<a href="../filter.html">フィルタ</a>を定義します。
-    これは <directive module="core">SetOutputFilter</directive> ディレクティブ
+    これは <directive module="core">SetOutputFilter</directive>
+    ディレクティブと <directive module="core"
+    >AddOutputFilterByType</directive> ディレクティブ
     を含め、他の場所で定義されているフィルタに加えられます。
     この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
-    <em>extension</em> のためのマッピングを上書きします。</p>
+    <var>extension</var> のためのマッピングを上書きします。</p>
 
-    <p>例えば、以下の設定はすべての .shtml ファイルを SSI で処理し、
+    <p>例えば、以下の設定はすべての <code>.shtml</code> ファイルを SSI で処理し、
     その出力を <module>mod_deflate</module> を使って圧縮します。</p>
 
     <example>
@@ -459,51 +417,46 @@ Content-Type: text/plain; charset=ISO-8859-2
     </example>
 
     <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
-    繋いで書く必要があります。フィルタと <em>extension</em> との
-    両方の引数は大文字小文字を区別せず、拡張子の最初のドットは
+    繋いで書く必要があります。<var>filter</var> と <var>extension</var> の
+    両引数は大文字小文字を区別せず、拡張子の最初のドットは
     あってもなくても構いません。</p>
-
 </usage>
+<seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
+<seealso><directive module="core">SetOutputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddType</name>
 <description>ファイル名の拡張子を指定されたコンテントタイプにマップ</description>
-<syntax>AddType <em>MIME-type
-    extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<syntax>AddType <var>MIME-type</var> <var>extension</var>
+[<var>extension</var>] ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-
-    <p>AddType ディレクティブは、
+    <p><directive>AddType</directive> ディレクティブは、
     与えられた拡張子を指定されたコンテントタイプにマップします。
-    <em>MIME-type</em> は拡張子 <em>extension</em>
+    <var>MIME-type</var> は拡張子 <var>extension</var>
     を含んだドキュメントに使用する MIME タイプです。
     この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
-    <em>extension</em> のためのマッピングを上書きします。
+    <var>extension</var> のためのマッピングを上書きします。
     このディレクティブは MIME タイプファイル (<directive
     module="mod_mime">TypesConfig</directive> ディレクティブを参照)
     に無いマッピングを追加するために使用することができます。</p>
 
-    <p>例:</p>
-
-    <example>
+    <example><title>例</title>
       AddType image/gif .gif
     </example>
 
-    <p>新しい MIME タイプは、<directive module="mod_mime">TypesConfig</directive>
-    ファイルを変更するのではなく、AddType
-    ディレクティブを使って追加することが推奨されています。</p>
+    <note>
+      新しい MIME タイプは、<directive module="mod_mime">TypesConfig</directive>
+      ファイルを変更するのではなく、<directive>AddType</directive>
+      ディレクティブを使って追加することが推奨されています。
+    </note>
 
-    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
     最初のドットはあってもなくても構いません。</p>
-
 </usage>
 <seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
@@ -513,119 +466,110 @@ Content-Type: text/plain; charset=ISO-8859-2
 <name>MultiviewsMatch</name>
 <description>MultiViews でのマッチングの検索に含ませる
 ファイルのタイプを指定する</description>
-<syntax>MultiviewsMatch
-    <em>[NegotiatedOnly] [Handlers] [Filters] [Any]</em></syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<syntax>MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
+[Handlers|Filters]</syntax>
+<default>MultiviewsMatch NegotiatedOnly</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 2.0.26 以降</compatibility>
+<compatibility>2.0.26 以降で使用可能</compatibility>
 
 <usage>
-
     <p><directive>MultiviewsMatch</directive> を使用することで、
     <a href="mod_negotiation.html">mod_negotiation</a> の
     Multiviews に 3 種類の異なる挙動をさせることができます。
-    Multiviews を使用すると、ファイル (例 index.html) に対するリクエストに対して、
-    ネゴシエーションする拡張子がベースに付いたもの
-    (index.html.en, index.html.fr や index.html.gz)
+    Multiviews を使用すると、ファイル (例 <code>index.html</code>)
+    に対するリクエストに対して、ネゴシエーションする拡張子がベースに付いたもの
+    (<code>index.html.en</code>, <code>index.html.fr</code> や
+    <code>index.html.gz</code>)
     をマッチさせることができます。</p>
 
-    <p><em>NegotiatedOnly</em> オプションでは、ベース名に続く拡張子全てが
+    <p><code>NegotiatedOnly</code> オプションでは、ベース名に続く拡張子全てが
     コンテントネゴシエーションで <module>mod_mime</module>
-    が認識する拡張子 (例 文字セット、コンテントタイプ、言語やエンコーディング)
+    が認識する拡張子 (<em>例</em> 文字セット、コンテントタイプ、言語やエンコーディング)
     に関連付けられていなければなりません。これは副作用の最も少ない
-    最も厳密な実装で、デフォルトになっています。</p>
+    最も的確な実装で、デフォルトになっています。</p>
 
     <p>ハンドラとフィルタの両方もしくは片方と関連付けられた拡張子を含めるには、
-    <directive>MultiviewsMatch</directive> ディレクティブに <em>Handler</em>,
-    <em>Filters</em> またはその両方のオプションをセットします。
+    <directive>MultiviewsMatch</directive> ディレクティブに <code>Handlers</code>,
+    <code>Filters</code> またはその両方のオプションをセットします。
     もし他の条件が同じであれば、最も小さいファイルが送信されます。
     例えば、500 文字の <code>index.html.cgi</code> と 1000 バイトの 
     <code>index.html.pl</code> であれば、<code>.cgi</code> 
     のファイルが優先されます。<code>.asis</code> ファイルを利用しているユーザは、
-    <code>.asis</code> ファイルが asis ハンドラに関連付けられているときには、
-    <em>Handler</em> オプションの使用を好むでしょう。</p>
+    <code>.asis</code> ファイルが <code>asis-handler</code> に関連付けられているときには、
+    ハンドラオプションの使用を好むでしょう。</p>
 
     <p>最後に、<module>mod_mime</module> が認識しない拡張子であろうとも、
-    どんな拡張子でもマッチさせるようにすることができます。この挙動は Apache 1.3 の
-    ときと同じもので、予期しない動作、例えば <code>.old</code> や
+    どんな拡張子でもマッチさせる <code>Any</code> が使用できます。
+    この挙動は Apache 1.3 のときと同じもので、予期しない動作、例えば <code>.old</code> や
     <code>.bak</code> ファイルといったウェブマスタが送信を意図していない
     ファイルを送信する、といった動作を行なう可能性があります。</p>
 
     <p>例えば次の設定では、ハンドラやフィルタが Multiviews に参加することが
     できますし、未知のファイルは除外することができます。</p>
-<example>
-MultiviewsMatch Handlers Filters
-</example>
+
+    <example>
+      MultiviewsMatch Handlers Filters
+    </example>
 
 </usage>
 <seealso><directive module="core">Options</directive></seealso>
+<seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DefaultLanguage</name>
 <description>あるスコープのすべてのファイルを指定された言語に
 設定する</description>
-<syntax>DefaultLanguage
-    <em>MIME-lang</em></syntax>
-<contextlist>
-<context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
+<syntax>DefaultLanguage <var>MIME-lang</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>DefaultLanguage
-    は Apache 1.3.4 のみで使用可能</compatibility>
 
 <usage>
-
-    <p>DefaultLanguage ディレクティブは、Apache
+    <p><directive>DefaultLanguage</directive> ディレクティブは、Apache
     がディレクティブのスコープ (<em>例えば</em>、その時点の
-    <code>&lt;Directory&gt;</code> の範囲) にある、明示的な言語拡張子
-    (<code>AddLanguage</code> で設定される <code>.fr</code> や
-    <code>.de</code>) のない全てのファイルを、指定された
-    <em>MIME-lang</em> 言語であるとみなすようにします。
+    <directive module="core" type="section">Directory</directive>
+    の範囲) にある、明示的な言語拡張子
+    (<directive module="mod_mime">AddLanguage</directive> で設定される
+    <code>.fr</code> や <code>.de</code>) のない全てのファイルを、指定された
+    <var>MIME-lang</var> 言語であるとみなすようにします。
     これにより、すべてのファイル名を変えることなく、
     ディレクトリがオランダ語のコンテントを含んでいる、
     というようなことを指定することができます。
     拡張子を使用して言語を指定する方法と違い、
-    <code>DefaultLanguage</code>
+    <directive>DefaultLanguage</directive>
     は一つの言語しか指定できないことに注意してください。</p>
 
-    <p><code>DefaultLanguage</code>
-    ディレクティブが有効でなく、ファイルに <code>AddLanguage</code>
+    <p><directive>DefaultLanguage</directive>
+    ディレクティブが有効でなく、ファイルに
+    <directive module="mod_mime">AddLanguage</directive>
     で設定された言語の拡張子がないときは、
     ファイルには言語属性がないとみなされます。</p>
 
-<example><title>例</title>
-DefaultLanguage en
-</example>
-
+    <example><title>例</title>
+      DefaultLanguage en
+    </example>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ModMimeUsePathInfo</name>
-<description>path_info コンポーネントをファイル名の一部として扱うように mod_mime
-に通知する</description>
+<description><code>path_info</code> コンポーネントをファイル名の一部として扱うように
+<module>mod_mime</module> に通知する</description>
 <syntax>ModMimeUsePathInfo On|Off</syntax>
-<contextlist>
-<context>directory</context>
-</contextlist>
+<default>ModMimeUsePathInfo Off</default>
+<contextlist><context>directory</context></contextlist>
 <compatibility>Apache 2.0.41 以降</compatibility>
 
 <usage>
     <p><directive>ModMimeUsePathInfo</directive> ディレクティブは、
     <module>mod_mime</module> の持つディレクティブを
-    リクエストに適用させるために、ファイル名と path_info URL 
+    リクエストに適用させるために、ファイル名と <code>path_info</code> URL 
     コンポーネントを結合させるために使用します。
-    デフォルトでは「 <code>off</code> 」で、path_info
+    デフォルトでは「 <code>Off</code> 」で、<code>path_info</code>
     コンポーネントは無視されます。</p>
 
     <p>このディレクティブは、バーチャルファイルシステムを使用している際に
@@ -636,28 +580,28 @@ DefaultLanguage en
     </example>
 
     <p><code>/bar</code> が存在して (foo.shtml は存在しない)
-    <directive>ModMimeUsePathInfo</directive> が有効であるとして、
+    <directive>ModMimeUsePathInfo</directive> が <code>On</code> であるとして、
     <code>/bar/foo.shtml</code> に対するリクエストを発行した場合、
     <module>mod_mime</module> は入ってきたリクエストを
     <code>/bar/foo.shtml</code> として扱い、
     <code>AddOutputFileter INCLUDES .shtml</code> のようなディレクティブは
-    INCLUDES フィルタをリクエストに付加させます。
+    <code>INCLUDES</code> フィルタをリクエストに付加させます。
     <directive>ModMimeUsePathInfo</directive> が設定されなければ、
-    icludes フィルタは付加されません。</p>
+    <code>INCLUDES</code> フィルタは付加されません。</p>
 </usage>
+<seealso><directive module="core">AcceptPathInfo</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveCharset</name>
 <description>ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</description>
-<syntax>RemoveCharset
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>RemoveCharset は Apache 2.0.24 以降で使用可能</compatibility>
+<syntax>RemoveCharset <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>2.0.24 以降で使用可能</compatibility>
 
 <usage>
     <p><directive>RemoveCharset</directive> ディレクティブ
@@ -666,13 +610,12 @@ DefaultLanguage en
     ファイルが親ディレクトリやサーバの設定ファイル
     から継承した関連付けを取り消すことができます。例えば:</p>
 
-    <p><em>extension</em> は大文字小文字を区別しません。
+    <p><var>extension</var> は大文字小文字を区別しません。
     また、最初のドットはあってもなくても構いません。</p>
 
-<example><title>例</title>
-RemoveCharset .html .shtml
-</example>
-
+    <example><title>例</title>
+      RemoveCharset .html .shtml
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -680,46 +623,43 @@ RemoveCharset .html .shtml
 <name>RemoveEncoding</name>
 <description>ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
 を解除する</description>
-<syntax>RemoveEncoding
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>RemoveEncoding
-    は Apache 1.3.13 のみで使用可能</compatibility>
+<syntax>RemoveEncoding <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
-
     <p><directive>RemoveEncoding</directive> ディレクティブは、
     与えられた拡張子に関連付けられたエンコーディングを取り消します。
     これにより、サブディレクトリにある <code>.htaccess</code>
     ファイルが親ディレクトリやサーバの設定ファイルから継承した関連付けを
-    取り消すことができます。例えば:</p>
+    取り消すことができます。</p>
 
-
-<example><title>/foo/.htaccess:</title>
-<pre>
-AddEncoding x-gzip .gz
-AddType text/plain .asc
-&lt;Files *.gz.asc&gt;
-  RemoveEncoding .gz
-&lt;/Files&gt;
-</pre></example>
+    <example><title>/foo/.htaccess:</title>
+      AddEncoding x-gzip .gz<br />
+      AddType text/plain .asc<br />
+      &lt;Files *.gz.asc&gt;<br />
+      <indent>
+        RemoveEncoding .gz<br />
+      </indent>
+      &lt;/Files&gt;
+    </example>
 
     <p>これは、<code>foo.gz</code> は gzip
     でエンコードされていることを指定しますが、<code>foo.gz.asc</code>
     はエンコードされていないプレーンテキストの
     ファイルであるということを指定します。</p>
 
-    <p><strong>注意:</strong> RemoveEncoding は
-    AddEncoding
-    ディレクティブの<em>後</em>で処理されますので、
-    同じディレクトリの設定中に両方が現れると、
-    後者の効果が打ち消される可能性があります。</p>
+    <note><title>注意</title>
+      <p><directive>RemoveEncoding</directive> は
+      <directive module="mod_mime">AddEncoding</directive>
+      ディレクティブの<em>後</em>で処理されますので、
+      同じディレクトリの設定中に両方が現れると、
+      後者の効果が打ち消される可能性があります。</p>
+    </note>
 
-    <p><em>extension</em> は大文字小文字を区別しません。
+    <p><var>extension</var> は大文字小文字を区別しません。
     また、最初のドットはあってもなくても構いません。</p>
 </usage>
 </directivesynopsis>
@@ -728,92 +668,79 @@ AddType text/plain .asc
 <name>RemoveHandler</name>
 <description>ファイルの拡張子に関連付けられたすべてのハンドラを
 解除する</description>
-<syntax>RemoveHandler
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>RemoveHandler は
-    Apache 1.3.4 以降でのみ使用可能</compatibility>
+<syntax>RemoveHandler <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
-
-    <p><code>RemoveHandler</code> ディレクティブ
+    <p><directive>RemoveHandler</directive> ディレクティブ
     は与えられた拡張子に関連付けられたハンドラを取り消します。
     これにより、サブディレクトリにある <code>.htaccess</code>
     ファイルが親ディレクトリやサーバの設定ファイル
     から継承した関連付けを取り消すことができます。たとえば:</p>
 
-<example><title>/foo/.htaccess:</title>
-AddHandler server-parsed .html
-</example>
+    <example><title>/foo/.htaccess:</title>
+      AddHandler server-parsed .html
+    </example>
 
-<example><title>/foo/bar/.htaccess:</title>
-RemoveHandler .html
-</example>
+    <example><title>/foo/bar/.htaccess:</title>
+      RemoveHandler .html
+    </example>
 
     <p>これは、<code>/foo/bar</code> ディレクトリの <code>.html</code>
-    ファイルは SSI ではなく (<a
-    href="mod_include.html"><code>mod_include</code></a> モジュール参照)、
+    ファイルは SSI (<module>mod_include</module> モジュール参照) ではなく、
     普通のファイルとして扱われるようにする効果があります。
     </p>
 
-    <p><em>extension</em> は大文字小文字を区別しません。
+    <p><var>extension</var> は大文字小文字を区別しません。
     また、最初のドットはあってもなくても構いません。</p>
 </usage>
 </directivesynopsis>
 
-
 <directivesynopsis>
 <name>RemoveInputFilter</name>
 <description>ファイル拡張子に関連付けられた入力フィルタを解除する</description>
-<syntax>RemoveInputFilter
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>Apache 2.0.26 以降</compatibility>
+<syntax>RemoveInputFilter <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>2.0.26 以降で使用可能</compatibility>
 
-<usage>   
-
+<usage>
     <p><directive>RemoveInputFilter</directive> ディレクティブは
     指定されたファイル拡張子に関連付けられた入力フィルタを解除します。
     これを利用することで、親ディレクトリやサーバ設定ファイルから
     継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
 
-    <p><em>extension</em> 引数は大文字小文字を区別しません。また、
+    <p><var>extension</var> 引数は大文字小文字を区別しません。また、
     最初のドットはあってもなくても構いません。</p>
-
 </usage>
+<seealso><directive module="mod_mime">AddInputFilter</directive></seealso>
+<seealso><directive module="core">SetInputFilter</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveLanguage</name>
 <description>ファイル拡張子に関連付けられた言語を解除する</description>
-<syntax>RemoveLanguage
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<compatibility>Apache 2.0.24 以降</compatibility>
-
+<syntax>RemoveLanguage <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>2.0.24 以降で使用可能</compatibility>
 
 <usage>
-
     <p><directive>RemoveLanguage</directive> ディレクティブは
     指定されたファイル拡張子に関連付けられた言語を解除します。
     これを利用することで、親ディレクトリやサーバ設定ファイルから
     継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
 
-    <p><em>extension</em> 引数は大文字小文字を区別しません。また、
+    <p><var>extension</var> 引数は大文字小文字を区別しません。また、
     最初のドットはついてもつかなくても構いません。</p>
 </usage>
 </directivesynopsis>
@@ -821,32 +748,26 @@ RemoveHandler .html
 <directivesynopsis>
 <name>RemoveOutputFilter</name>
 <description>ファイル拡張子に関連付けられた出力フィルタを解除する</description>
-<syntax>RemoveOutputFilter
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<override></override>
-<compatibility>RemoveOutputFilter は Apache
-2.0.26 以降でのみ使用可能</compatibility>
+<syntax>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>2.0.26 以降でのみ使用可能</compatibility>
 
-<usage>    
-
+<usage>
     <p><directive>RemoveOutputFilter</directive> ディレクティブは
     指定されたファイル拡張子に関連付けられた出力フィルタを解除します。
     これを利用することで、親ディレクトリやサーバ設定ファイルから
     継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
 
-    <p><em>extension</em> は大文字小文字を区別しません。
+    <p><var>extension</var> は大文字小文字を区別しません。
     また、最初のドットはあってもなくても構いません。</p>
 
     <example><title>例</title>
-    RemoveOutputFilter shtml
+      RemoveOutputFilter shtml
     </example>
-
 </usage>
 <seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
 </directivesynopsis>
@@ -855,65 +776,59 @@ RemoveHandler .html
 <name>RemoveType</name>
 <description>ファイルの拡張子と関連付けられたコンテントタイプを
 解除する</description>
-<syntax>RemoveType
-    <em>extension</em> [<em>extension</em>] ...</syntax>
-<contextlist>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context>
-</contextlist>
-<override></override>
-<compatibility>RemoveType は
-    Apache 1.3.13 以降でのみ使用可能。</compatibility>
+<syntax>RemoveType <var>extension</var> [<var>extension</var>]
+...</syntax>
+<contextlist><context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
 
 <usage>
-
     <p><directive>RemoveType</directive> ディレクティブは与えられた拡張子の
     MIME タイプの関連付けを取り消します。これにより、
     サブディレクトリにある <code>.htaccess</code>
     ファイルが親ディレクトリやサーバの設定ファイルから継承した
     関連付けを取り消すことができます。たとえば:</p>
 
-<example><title>/foo/.htaccess:</title>
-RemoveType .cgi
-</example>
+    <example><title>/foo/.htaccess:</title>
+      RemoveType .cgi
+    </example>
 
     <p>これは <code>/foo/</code> ディレクトリ以下の <code>.cgi</code>
-    ファイルの特別な扱いを取り消します。ファイルは<a
-    href="core.html#defaulttype"
-    >デフォルトタイプ</a>として扱われます。</p>
+    ファイルの特別な扱いを取り消します。ファイルは <directive
+    module="core">DefaultType</directive> として扱われます。</p>
 
-    <p><strong>注意:</strong> <directive>RemoveType</directive> ディレクティブは
-    <directive>AddType</directive> ディレクティブの<em>後</em>に処理されますので、
-    両方が同じディレクトリの設定中に現れた場合、
-    後者の効果が打ち消される可能性があります。</p>
+    <note><title>注意</title>
+      <p><directive>RemoveType</directive> ディレクティブは
+      <directive module="mod_mime">AddType</directive> 
+      ディレクティブの<em>後</em>に処理されますので、
+      両方が同じディレクトリの設定中に現れた場合、
+      後者の効果が打ち消される可能性があります。</p>
+    </note>
 
-    <p><em>extension</em> は大文字小文字を区別しません。
+    <p><var>extension</var> は大文字小文字を区別しません。
     また、最初のドットはあってもなくても構いません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>TypesConfig</name>
-<description>mime.types ファイルの位置</description>
-<syntax>TypesConfig <em>file-path</em></syntax>
+<description><code>mime.types</code> ファイルの位置</description>
+<syntax>TypesConfig <var>file-path</var></syntax>
 <default>TypesConfig conf/mime.types</default>
-<contextlist>
-<context>server config</context>
-</contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
-
-    <p>TypesConfig ディレクティブは、MIME
-    タイプ設定ファイルの位置を設定します。<em>filename</em> は
-    <a href="core.html#serverroot">ServerRoot</a> からの相対パスです。
+    <p><directive>TypesConfig</directive> ディレクティブは、MIME
+    タイプ設定ファイルの位置を設定します。<var>filename</var> は
+    <directive module="core">ServerRoot</directive> からの相対パスです。
     このファイルはファイルの拡張子からコンテントタイプへの
     デフォルトのマッピングを設定します。
     ほとんどの管理者は、よく使われるファイル名の拡張子を
     IANA に登録されたコンテントタイプに関連付けている、
     Apache の <code>mime.types</code> ファイルを使います。
-    現在の一覧は
-    <code>http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</code>
+    現在の一覧は <a href=
+    "http://www.isi.edu/in-notes/iana/assignments/media-types/media-types"
+    >http://www.isi.edu/in-notes/iana/assignments/media-types/media-types</a>
     で管理されています。これは、主要なメディアタイプの定義を提供して、
     必要ところを <directive module="mod_mime">AddType</directive> で
     上書きする、という方法で <code>httpd.conf</code> を簡略にします。
@@ -925,21 +840,24 @@ RemoveType .cgi
     ディレクティブの引数と同じ形式の行で構成されます。</p>
 
     <example>
-      MIME-type extension extension ...
+      <var>MIME-type</var> [<var>extension</var>] ...
     </example>
 
     <p>拡張子の大文字小文字は区別されません。空行やハッシュ (`#') 
     で始まる行は無視されます。</p>
 
-    <note>(1) IANA に既に登録されている、あるいは (2)
-    広く受け入れられていてプラットホーム間でファイル拡張子に衝突がない、
-    という場合でなければ、配布中の mime.types ファイルに新たなものを登録するように
-    Apache HTTP Server Project にリクエストしないでください。
-    category/x-subtype のリクエストは自動的に却下されますし、
-    言語や文字セットの名前空間で既に使用されていて、衝突の可能性のある
-    2 文字の拡張子も却下されます。</note>
-
+    <note>
+      (1) IANA に既に登録されている、あるいは (2)
+      広く受け入れられていてプラットホーム間でファイル拡張子に衝突がない、
+      という場合でなければ、配布中の <code>mime.types</code>
+      ファイルに新たなものを登録するように
+      Apache HTTP Server Project にリクエストしないでください。
+      <code>category/x-subtype</code> のリクエストは自動的に却下されますし、
+      言語や文字セットの名前空間で既に使用されていて、衝突の可能性のある
+      2 文字の拡張子も却下されます。
+    </note>
 </usage>
 <seealso><module>mod_mime_magic</module></seealso>
 </directivesynopsis>
+
 </modulesynopsis>

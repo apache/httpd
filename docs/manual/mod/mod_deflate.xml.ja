@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_deflate.xml.meta">
-<!-- English revision: 1.16 -->
+<!-- English revision: 1.18 -->
 
 <name>mod_deflate</name>
 <description>クライアントへ送られる前にコンテンツを圧縮する</description>
@@ -285,7 +285,7 @@
 <directivesynopsis>
 <name>DeflateCompressionLevel</name>
 <description>出力に対して行なう圧縮の程度</description>
-<syntax>DeflateCompressionLevel<var>value</var></syntax>
+<syntax>DeflateCompressionLevel <var>value</var></syntax>
 <default>Zlib のデフォルト</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
