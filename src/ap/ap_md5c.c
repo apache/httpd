@@ -92,6 +92,9 @@
 
 #include "conf.h"
 #include "md5.h"
+#ifdef CHARSET_EBCDIC
+#include "ebcdic.h"
+#endif /*CHARSET_EBCDIC*/
 
 /* Constants for MD5Transform routine.
  */
@@ -210,12 +213,12 @@ API_EXPORT(void) ap_MD5Update(AP_MD5_CTX * context, const unsigned char *input,
     memcpy(&context->buffer[idx], &input[i], inputLen - i);
 #else /*CHARSET_EBCDIC*/
     if (inputLen >= partLen) {
-	ebcdic2ascii(&context->buffer[idx], input, partLen);
+	ebcdic2ascii_strictly(&context->buffer[idx], input, partLen);
 	MD5Transform(context->state, context->buffer);
 
 	for (i = partLen; i + 63 < inputLen; i += 64) {
 	    unsigned char inp_tmp[64];
-	    ebcdic2ascii(inp_tmp, &input[i], 64);
+	    ebcdic2ascii_strictly(inp_tmp, &input[i], 64);
 	    MD5Transform(context->state, inp_tmp);
 	}
 
@@ -225,7 +228,7 @@ API_EXPORT(void) ap_MD5Update(AP_MD5_CTX * context, const unsigned char *input,
 	i = 0;
 
     /* Buffer remaining input */
-    ebcdic2ascii(&context->buffer[idx], &input[i], inputLen - i);
+    ebcdic2ascii_strictly(&context->buffer[idx], &input[i], inputLen - i);
 #endif /*CHARSET_EBCDIC*/
 }
 
@@ -237,8 +240,24 @@ API_EXPORT(void) ap_MD5Final(unsigned char digest[16], AP_MD5_CTX * context)
     unsigned char bits[8];
     unsigned int idx, padLen;
 
+
     /* Save number of bits */
     Encode(bits, context->count, 8);
+
+#ifdef CHARSET_EBCDIC
+    /* XXX: @@@: In order to make this no more complex than necessary,
+     * this kludge converts the bits[] array using the ascii-to-ebcdic
+     * table, because the following ap_MD5Update() re-translates
+     * its input (ebcdic-to-ascii).
+     * Otherwise, we would have to pass a "conversion" flag to ap_MD5Update()
+     */
+    ascii2ebcdic(bits,bits,8);
+
+    /* Since everything is converted to ascii within ap_MD5Update(), 
+     * the initial 0x80 (PADDING[0]) must be stored as 0x20 
+     */
+    PADDING[0] = os_toebcdic[0x80];
+#endif /*CHARSET_EBCDIC*/
 
     /* Pad out to 56 mod 64. */
     idx = (unsigned int) ((context->count[0] >> 3) & 0x3f);
