@@ -543,9 +543,10 @@ const char *dav_xml_get_cdata(const ap_xml_elem *elem, apr_pool_t *pool,
 ** supply. The provider MUST supply <repos> and <propdb>. The rest are
 ** optional and should contain NULL if that feature is not supplied.
 **
-** Note that a provider cannot pick and choose portions. There are too many
-** dependencies between a dav_resource (defined by <repos>) and the other
-** functionality.
+** Note that a provider cannot pick and choose portions from various
+** underlying implementations (which was theoretically possible in
+** mod_dav 1.0). There are too many dependencies between a dav_resource
+** (defined by <repos>) and the other functionality.
 **
 ** Live properties are not part of the dav_provider structure because they
 ** are handled through the APR_HOOK interface (to allow for multiple liveprop
