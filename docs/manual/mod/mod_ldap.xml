@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- $Revision: 1.13 $ -->
+<!-- $Revision: 1.14 $ -->
 
 <!--
  Copyright 2002-2004 The Apache Software Foundation
@@ -242,7 +242,7 @@ by other LDAP modules</description>
 
 <directivesynopsis>
 <name>LDAPSharedCacheFile</name>
-<description>Sets the shared memory chache file</description>
+<description>Sets the shared memory cache file</description>
 <syntax>LDAPSharedCacheFile <var>directory-path/filename</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
