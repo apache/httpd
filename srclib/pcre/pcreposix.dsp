@@ -97,23 +97,21 @@ SOURCE=.\config.hw
 
 !IF  "$(CFG)" == "pcreposix - Win32 Release"
 
-# Begin Custom Build
+# Begin Custom Build - Creating pcre config.h from config.hw 
 InputPath=.\config.hw
 
 ".\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy .\config.hw .\config.h >nul 
-	echo Created pcre config.h from config.hw 
+	type .\config.hw > .\config.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "pcreposix - Win32 Debug"
 
-# Begin Custom Build
+# Begin Custom Build - Creating pcre config.h from config.hw 
 InputPath=.\config.hw
 
 ".\config.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy .\config.hw .\config.h >nul 
-	echo Created pcre config.h from config.hw 
+	type .\config.hw > .\config.h
 	
 # End Custom Build
 
@@ -126,23 +124,21 @@ SOURCE=.\pcre.hw
 
 !IF  "$(CFG)" == "pcreposix - Win32 Release"
 
-# Begin Custom Build
+# Begin Custom Build - Creating pcre.h from pcre.hw 
 InputPath=.\pcre.hw
 
 ".\pcre.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy .\pcre.hw .\pcre.h >nul 
-	echo Created pcre.h from pcre.hw 
+	type .\pcre.hw > .\pcre.h
 	
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "pcreposix - Win32 Debug"
 
-# Begin Custom Build
+# Begin Custom Build - Creating pcre.h from pcre.hw 
 InputPath=.\pcre.hw
 
 ".\pcre.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy .\pcre.hw .\pcre.h >nul 
-	echo Created pcre.h from pcre.hw 
+	type .\pcre.hw > .\pcre.h
 	
 # End Custom Build
 
