@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(for extra modules)
 AC_ARG_WITH(module,
-  [  --with-module=location  Include the specified module.  location is the
-                          path to the new module.],
+  APACHE_HELP_STRING(--with-module=location,Include the specified module.  location is the
+                          path to the new module.),
   [
     modtype=`echo $withval | sed -e's/\(.*\):.*/\1/'`
     pkg=`echo $withval | sed -e's/.*:\(.*\)/\1/'`
