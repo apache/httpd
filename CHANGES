@@ -1,6 +1,7 @@
 Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
+
   *) Win32: Avoid busy wait (consuming all the CPU idle cycles) when
      all worker threads are busy. 
     [Igor Nazarenko <igor_nazarenko@hotmail.com>]
@@ -44,9 +45,6 @@ Changes with Apache 2.1.0-dev
 
   *) Allow apachectl to perform status with links and elinks as well.
      [Justin Erenkrantz]
-
-  *) Fix segfault which occurred when a section in an included configuration
-     file was not closed. PR 17093.  [André Malo]
 
   *) Extend the SetEnvIf directive to capture subexpressions of the
      matched value.  [André Malo]
@@ -137,6 +135,9 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.45
+
+  *) Fix segfault which occurred when a section in an included
+     configuration file was not closed. PR 17093.  [André Malo]
 
   *) Enhance the behavior of mod_isapi's WriteClient() callback to
      provide better emulation for isapi modules that presume that the
