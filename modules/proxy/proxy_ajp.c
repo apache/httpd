@@ -212,7 +212,6 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     output_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
     
     bufsiz = AJP13_MAX_SEND_BODY_SZ;
-    // while (result == CMD_AJP13_GET_BODY_CHUNK && bufsiz != 0) {
     while (isok) {
         switch (result) {
             case CMD_AJP13_GET_BODY_CHUNK:
