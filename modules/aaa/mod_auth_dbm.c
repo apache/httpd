@@ -153,7 +153,7 @@ static const command_rec dbm_auth_cmds[] =
     {NULL}
 };
 
-module auth_dbm_module;
+module MODULE_VAR_EXPORT auth_dbm_module;
 
 static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
 {
@@ -333,7 +333,7 @@ static void register_hooks(void)
     ap_hook_auth_checker(dbm_check_auth, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
-module auth_dbm_module =
+module MODULE_VAR_EXPORT auth_dbm_module =
 {
     STANDARD20_MODULE_STUFF,
     create_dbm_auth_dir_config,	/* dir config creater */
