@@ -876,6 +876,8 @@ static const char *
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass: ", err, NULL);
         }
+        if (conf->timeout_set)
+            worker->timeout = conf->timeout;
         for (i = 0; i < arr->nelts; i++) {
             const char *err = set_worker_param(worker, elts[i].key, elts[i].val);
             if (err)
@@ -1246,6 +1248,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if ((err = ap_proxy_add_worker(&worker, cmd->pool, conf, name)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL); 
     }
+    if (conf->timeout_set)
+        worker->timeout = conf->timeout;
 
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
