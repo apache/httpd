@@ -82,7 +82,6 @@
 #endif
 
 static scoreboard *ap_scoreboard_image = NULL;
-static char *ap_server_argv0=NULL;
 
 /*****************************************************************
  *
