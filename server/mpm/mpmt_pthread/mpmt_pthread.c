@@ -1768,8 +1768,6 @@ module MODULE_VAR_EXPORT mpm_mpmt_pthread_module = {
     NULL,			/* merge per-server config structures */
     mpmt_pthread_cmds,		/* command table */
     NULL,			/* handlers */
-    NULL,			/* translate_handler */
-    NULL,			/* check_user_id */
     NULL,			/* check auth */
     NULL,			/* check access */
     NULL,			/* type_checker */
