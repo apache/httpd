@@ -458,7 +458,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	user = "anonymous";
 	userlen = 9;
 
-	password = "proxy_user@apache_host.org";
+	password = "apache_proxy@";
 	passlen = strlen(password);
     }
 
