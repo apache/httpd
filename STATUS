@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/04 23:19:59 $]
+Last modified at [$Date: 2004/08/05 21:02:04 $]
 
 Release:
 
@@ -103,6 +103,9 @@ PATCHES TO BACKPORT FROM 2.1
                 are artificially kept out of 2.0; and any 2.0/2.2
                 issues are not valid reasons for keeping APR 1+ fixes/
                 enhancements out of APR 0.9
+       clar: +1, IMO all enhancements and RFCs fixes should go in 2.0 in order
+                 to move the caching modules out of the exp area and then maybe
+                 have more sites using them.
 
     *) Remove LDAP toolkit specific code from util_ldap and mod_auth_ldap.
          modules/experimental/mod_auth_ldap.c: 1.28
