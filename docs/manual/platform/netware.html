@@ -333,24 +333,7 @@
     NetWare</a></h2>
 
     <p>Compiling Apache requires MetroWerks CodeWarrior 6.x or
-    higher to be properly installed.</p>
-
-    <p>First, unpack the Apache distribution into an appropriate
-    directory. Then go to the <code>httpd and httpd/srclib/apr</code>
-    subdirectories of the
-    Apache distribution and unzip the files <code>ApacheNW.mcp.zip and
-    libaprnw.mcp.zip respectively</code>. You
-    may use a recent version of WinZip to accomplish this. The main Metrowerks project files for Apache
-    <code>(ApacheNW.mcp)and the Apache Portable Runtime (libaprnw.mcp)</code>
-    are now ready to use. Just double
-    click on them from within explorer and they should automatically
-    launch the MetroWerks CodeWarrior IDE.</p>
-
-    <p>All major pieces of Apache and APR are built using the
-    ApacheNW.mcp and LibAprNW.mcp project files. This includes modules such as
-    status, info, proxy, etc.</p>
-
-    <p>Once Apache has been built, it needs to be installed on a NetWare
+    higher to be properly installed.&nbsp; Once Apache has been built, it needs to be installed on a NetWare
     volume's root directory. The default is the
     <code>sys:/Apache2</code> directory.</p>
 
@@ -376,12 +359,18 @@
         for C (LibC)</a></li>
       <li><a href="http://developer.novell.com/ndk/ws2comp.htm">WinSock 2
         Developer Components for NetWare</a></li>
-      <li>AWK utility (awk, gawk or similar.) Brian Kernighan's <a href="http://cm.bell-labs.com/cm/cs/who/bwk/">http://cm.bell-labs.com/cm/cs/who/bwk/</a> site has a compiled native 
-   Win32 binary, <a href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe">http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a>. The
-   utility must be found in your windows path and must be rename to 
-   awk.exe.&nbsp;</li>
+      <li>To build using either the project file or the make files, requires an AWK utility (awk, gawk or
+        similar).&nbsp; AWK can be downloaded from&nbsp;&nbsp; <a href="http://developer.novell.com/ndk/apache.htm">http://developer.novell.com/ndk/apache.htm</a>. The
+   utility must be found in your windows path and must be named awk.exe.&nbsp;</li>
+      <li>To build using the makefiles, you will need GNU make version 3.78.1 (GMake)
+        available at <a href="http://developer.novell.com/ndk/apache.htm">http://developer.novell.com/ndk/apache.htm</a>.&nbsp;</li>
     </ul>
     <p><b><u>Building Apache using the Metrowerks Project Files:&nbsp;</u></b></p>
+
+    <p>All major pieces of Apache and APR are built using the
+    ApacheNW.mcp and LibAprNW.mcp project files. This includes modules such as
+    status, info, proxy, etc.</p>
+
     <ul>
       <li>Set the environment variable &quot;NovellLibC&quot; to the
         location of the NetWare Libraries for C SDK (ex. Set NovellLibC=c:\novell\ndk\libc).</li>
@@ -437,6 +426,75 @@
       <li>Select the target "Apache Full Debug&quot; or &quot;Apache Full
         Release&quot; in the IDE and build.  This will
      produce the file APACHE2.nlm along with all of the external module NLMs. </li>
+    </ul>
+
+    <p><b><u>Building Apache using the NetWare makefiles:&nbsp;</u></b></p>
+    <ul>
+      <li>Set the environment variable &quot;NOVELLLIBC&quot; to the
+        location of the NetWare Libraries for C SDK (ex. Set NOVELLLIBC=c:\novell\ndk\libc).</li>
+      <li>Set the environment variable &quot;METROWERKS&quot; to the
+        location where you installed the Metrowerks CodeWarrior compiler (ex. Set
+        METROWERKS=C:\Program Files\Metrowerks\CodeWarrior).&nbsp; If you
+        installed to the default location C:\Program
+        Files\Metrowerks\CodeWarrior, you don't need to set this.</li>
+      <li>Set the environment variable &quot;AP_WORK&quot; to the full path of
+        the \httpd directory.</li>
+      <li>Set the environment variable &quot;APR_WORK&quot; to the full path of
+        the \httpd\srclib\apr directory.</li>
+      <li>Make sure that the path to the AWK utility and the GNU make utility (gmake.exe)
+        have been included in the
+        system's PATH environment variable.</li>
+      <li>Download the source code and unzip to an appropriate directory on
+     your workstation.</li>
+      <li>Change directory to \httpd\srclib\apr-util\uri and build GENURI.nlm by
+        running &quot;gmake -f nwgnumakefile&quot;</li>
+      <li>Copy the file GENURI.nlm to the SYS: volume of a NetWare server and 
+     run using the following command:&nbsp;
+        <ul>
+          <li>SYS:\genuri&nbsp; &gt; sys:\uri_delims.h&nbsp;</li>
+        </ul>
+      </li>
+      <li>Copy the file "uri_delims.h" to the directory \httpd\srclib\apr-util\uri
+     on the build machine.&nbsp;</li>
+      <li>Change directory to \httpd\srclib\apr and build APR by running &quot;gmake
+        -f nwgnumakefile&quot;</li>
+      <li>Change directory to \httpd\srclib\pcre and build DFTABLES.nlm by
+        running &quot;gmake -f nwgnumakefile&quot;&nbsp;</li>
+      <li>Change directory to \httpd\server and build GNECHARS.nlm by running
+        &quot;gmake -f nwgnumakefile&quot;</li>
+      <li>Copy the files "GENCHARS.nlm" and "DFTABLES.nlm" from their respective
+        directories to the SYS:
+     volume of a NetWare server and run them using the following commands:&nbsp;
+        <ul>
+          <li>SYS:\genchars &gt; sys:\test_char.h&nbsp;</li>
+          <li>SYS:\dftables&nbsp; &gt; sys:\chartables.c&nbsp;</li>
+        </ul>
+      </li>
+      <li>Copy the files "test_char.h" and "chartables.c" to the directory
+     \httpd\os\netware on the build machine.&nbsp;</li>
+      <li>Change directory to \httpd and build Apache by running &quot;gmake -f
+        nwgnumakefile.&quot;&nbsp; You can create a distribution directory by
+        adding an install parameter to the command (ex. gmake -f nwgnumakefile
+        install).</li>
+    </ul>
+
+    <p><u>Additional make options</u></p>
+    <ul>
+      <li>gmake -f nwgnumakefile - Builds release versions of all of the
+        binaries and copies them to a \release destination directory.</li>
+      <li>gmake -f nwgnumakefile DEBUG=1 - Builds debug versions of all of the
+        binaries and copies them to a \debug destination directory.</li>
+      <li>gmake -f nwgnumakefile install - Creates a complete Apache
+        distribution with binaries, docs and additional support files in a
+        \dist\Apache2 directory.</li>
+      <li>gmake -f nwgnumakefile installdev - Same as install but also creates a
+        \lib and \include directory in the destination directory and copies
+        headers and import files.</li>
+      <li>gmake -f nwgnumakefile clean - Cleans all object files and binaries
+        from the \release or \debug build areas depending on whether DEBUG has
+        been defined.</li>
+      <li>gmake -f nwgnumakefile clobber_all - Same as clean and also deletes
+        the distribution directory if it exists.</li>
     </ul>
 
     <hr />
