@@ -167,6 +167,20 @@ caddr_t get_shared_heap(const char *);
 
 DEF_Explain
 
+/* Defining GPROF when compiling uses the moncontrol() function to
+ * disable gprof profiling in the parent, and enable it only for
+ * request processing in children (or in one_process mode).  It's
+ * absolutely required to get useful gprof results under linux
+ * because the profile itimers and such are disabled across a
+ * fork().  It's probably useful elsewhere as well.
+ */
+#ifdef GPROF
+extern void moncontrol(int);
+#define MONCONTROL(x) moncontrol(x)
+#else
+#define MONCONTROL(x)
+#endif
+
 #ifndef MULTITHREAD
 /* this just need to be anything non-NULL */
 void *dummy_mutex = &dummy_mutex;
@@ -3201,6 +3215,7 @@ static int make_child(server_rec *s, int slot, time_t now)
 
     if (!pid) {
 	RAISE_SIGSTOP(MAKE_CHILD);
+	MONCONTROL(1);
 	/* Disable the restart signal handlers and enable the just_die stuff.
 	 * Note that since restart() just notes that a restart has been
 	 * requested there's no race condition here.
@@ -3396,8 +3411,12 @@ void standalone_main(int argc, char **argv)
     is_graceful = 0;
     ++generation;
 
-    if (!one_process)
+    if (!one_process) {
 	detach();
+    }
+    else {
+	MONCONTROL(1);
+    }
 
     my_pid = getpid();
 
@@ -3607,6 +3626,8 @@ extern int optind;
 int main(int argc, char *argv[])
 {
     int c;
+
+    MONCONTROL(0);
 
 #ifdef AUX
     (void) set42sig();
