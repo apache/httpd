@@ -685,7 +685,7 @@ void ssl_init_ConfigureServer(server_rec *s,
                 ssl_log(s, SSL_LOG_INFO,
                         "Init: (%s) %s server certificate enables "
                         "Server Gated Cryptography (SGC)", 
-                        vhost_id, (i == SSL_AIDX_RSA ? "RSA" : "DSA"));
+                        vhost_id, ssl_asn1_keystr(i));
             }
 
             if (SSL_X509_getBC(sc->pPublicCert[i], &is_ca, &pathlen)) {
@@ -694,7 +694,7 @@ void ssl_init_ConfigureServer(server_rec *s,
                             "Init: (%s) %s server certificate "
                             "is a CA certificate "
                             "(BasicConstraints: CA == TRUE !?)",
-                            vhost_id, (i == SSL_AIDX_RSA ? "RSA" : "DSA"));
+                            vhost_id, ssl_asn1_keystr(i));
                 }
 
                 if (pathlen > 0) {
@@ -702,8 +702,7 @@ void ssl_init_ConfigureServer(server_rec *s,
                             "Init: (%s) %s server certificate "
                             "is not a leaf certificate "
                             "(BasicConstraints: pathlen == %d > 0 !?)",
-                            vhost_id, (i == SSL_AIDX_RSA ? "RSA" : "DSA"),
-                            pathlen);
+                            vhost_id, ssl_asn1_keystr(i), pathlen);
                 }
             }
 
@@ -718,16 +717,14 @@ void ssl_init_ConfigureServer(server_rec *s,
                             "Init: (%s) %s server certificate "
                             "wildcard CommonName (CN) `%s' "
                             "does NOT match server name!?",
-                            vhost_id, (i == SSL_AIDX_RSA ? "RSA" : "DSA"),
-                            cp);
+                            vhost_id, ssl_asn1_keystr(i), cp);
                 }
                 else if (strNE(s->server_hostname, cp)) {
                     ssl_log(s, SSL_LOG_WARN,
                             "Init: (%s) %s server certificate "
                             "CommonName (CN) `%s' "
                             "does NOT match server name!?",
-                            vhost_id, (i == SSL_AIDX_RSA ? "RSA" : "DSA"),
-                            cp);
+                            vhost_id, ssl_asn1_keystr(i), cp);
                 }
             }
         }

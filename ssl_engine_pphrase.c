@@ -336,7 +336,6 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  * are used to give a better idea as to what failed.
                  */
                 if (pkey_mtime) {
-                    const char *key_types[] = {"RSA", "DSA"};
                     int i;
 
                     for (i=0; i < SSL_AIDX_MAX; i++) {
@@ -349,7 +348,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                             ssl_log(pServ, SSL_LOG_INFO,
                                     "%s reusing existing "
                                     "%s private key on restart",
-                                    cpVHostID, key_types[i]);
+                                    cpVHostID, ssl_asn1_keystr(i));
                             return;
                         }
                     }
