@@ -264,6 +264,12 @@ static int check_speling(request_rec *r)
         return DECLINED;
     }
 
+    /* we default to reject path info (same as core handler) */
+    if ((r->used_path_info != AP_REQ_ACCEPT_PATH_INFO) &&
+        r->path_info && *r->path_info) {
+        return DECLINED;
+    }
+
     /*
      * The request should end up looking like this:
      * r->uri: /correct-url/mispelling/more

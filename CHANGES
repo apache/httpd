@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_speling: Recognize AcceptPathInfo setting for the particular
+     location. Default is to reject path information. PR 21059.
+     [André Malo]
+
   *) Update the header token parsing code to allow LWS between the
      token word and the ':' seperator.  [PR 16520]
      [submitted: Kris Verbeeck <kris.verbeeck@advalvas.be> and
