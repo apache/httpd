@@ -2,7 +2,8 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <manualpage metafile="cgi.xml.meta">
-<!-- English revision: 1.1 -->
+<!-- English revision: 1.5 -->
+  <parentdocument href="./">How-To / チュートリアル</parentdocument>
 
   <title>Apache Tutorial: CGI による動的コンテンツ</title>
 
@@ -12,15 +13,12 @@
     <related>
       <modulelist>
         <module>mod_alias</module>
-
         <module>mod_cgi</module>
       </modulelist>
 
       <directivelist>
         <directive module="mod_mime">AddHandler</directive>
-
         <directive module="core">Options</directive>
-
         <directive module="mod_alias">ScriptAlias</directive>
       </directivelist>
     </related>
@@ -55,19 +53,23 @@
       <p><directive module="mod_alias">ScriptAlias</directive>
       ディレクティブは以下のように使用します:</p>
 
-      <example>ScriptAlias /cgi-bin/ /usr/local/apache/cgi-bin/</example>
+      <example>
+        ScriptAlias /cgi-bin/ /usr/local/apache/cgi-bin/
+      </example>
 
       <p>デフォルト位置に Apache をインストールしたならば、
       この例はデフォルト状態の <code>httpd.conf</code>
-      設定ファイルに含まれています。<code>ScriptAlias</code>
+      設定ファイルに含まれています。
+      <directive module="mod_alias">ScriptAlias</directive>
       ディレクティブは、URL の前に付加するディレクトリを定義する
-      <code>Alias</code> ディレクティブとかなり似ています。
-      <code>Alias</code> と <code>ScriptAlias</code> は通常、
-      <code>DocumentRoot</code>
+      <directive module="mod_alias">Alias</directive>
+      ディレクティブとかなり似ています。
+      <directive>Alias</directive> と <directive>ScriptAlias</directive>
+      は通常、<directive module="core">DocumentRoot</directive>
       ディレクトリ外のディレクトリのために使用されます。
-      <code>Alias</code> と <code>ScriptAlias</code> との差は、
-      <code>ScriptAlias</code> が接頭辞で始まるすべての URL は
-      CGI プログラムとみなされるという追加の意味を含んでいることです。
+      <directive>Alias</directive> と <directive>ScriptAlias</directive>
+      との差は、<directive>ScriptAlias</directive> が接頭辞で始まるすべての
+      URL は CGI プログラムとみなされるという追加の意味を含んでいることです。
       従って、上記の例では、<code>/cgi-bin/</code>
       で始まるリソースへのあらゆるリクエストに対して、ディレクトリ
       <code>/usr/local/apache/cgi-bin/</code> から提供し、それらを
@@ -84,13 +86,14 @@
     <section id="nonscriptalias">
       <title>ScriptAlias ディレクトリ外の CGI</title>
 
-      <p>CGI プログラムは、セキュリティ上の理由から <code>ScriptAlias</code>
+      <p>CGI プログラムは、セキュリティ上の理由から 
+      <directive module="mod_alias">ScriptAlias</directive>
       されたディレクトリに制限されることがしばしばあります。この方法により、
       CGI プログラムを使用できるユーザを管理者が厳しく制御することができます。
       しかしながら、適切なセキュリティ事前対策がとられるならば、CGI
       プログラムを任意のディレクトリで実行できないようにする理由はありません。
-      例えば、ユーザに <code>UserDir</code> ディレクティブで
-      彼らのホームディレクトリ配下にウェブコンテンツを持たせたいとします。
+      例えば、ユーザに <directive module="mod_userdir">UserDir</directive>
+      ディレクティブで彼らのホームディレクトリ配下にウェブコンテンツを持たせたいとします。
       もし、彼らが CGI プログラムを持つことを望んでいても、メインの
       <code>cgi-bin</code> ディレクトリへのアクセスができない場合、
       CGI プログラムを実行することができる他の場所が必要になります。</p>
@@ -99,48 +102,61 @@
     <section id="options">
       <title>CGI の実行を可能にするために Options を明示的に使用する</title>
 
-      <p>サーバのメインの設定ファイル中で <code>Options</code>
+      <p>サーバのメインの設定ファイル中で <directive module="core">Options</directive>
       ディレクティブを明示的に使用することで、特定のディレクトリ配下で
       CGI の実行を許可するように指定することができます:</p>
 
-      <example>&lt;Directory /usr/local/apache/htdocs/somedir&gt; <br />
-      Options +ExecCGI<br />
-      &lt;/Directory&gt;</example>
+      <example>
+        &lt;Directory /usr/local/apache/htdocs/somedir&gt;<br />
+        <indent>
+          Options +ExecCGI<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
 
       <p>上記ディレクティブは、CGI ファイルの実行を可能にするよう
       Apache に伝えます。また、どのファイルが CGI ファイルかを
-      サーバに伝える必要があります。次の <code>AddHandler</code>
+      サーバに伝える必要があります。次の
+      <directive module="mod_mime">AddHandler</directive>
       ディレクティブの例では、<code>cgi</code> または <code>pl</code>
       を拡張子に持つすべてのファイルを CGI
       プログラムとしてみなすことをサーバに伝えます:</p>
 
-      <example>AddHandler cgi-script cgi pl</example>
+      <example>
+        AddHandler cgi-script cgi pl
+      </example>
     </section>
 
     <section id="htaccess">
       <title>.htaccess files</title>
 
-      <p><code>.htaccess</code>
-      ファイルは、ディレクトリ毎にディレクティブを指定する方法です。
+      <p><a href="htaccess.html"><code>.htaccess</code>
+      ファイル</a>は、ディレクトリ毎にディレクティブを指定する方法です。
       Apache は、リソースを提供するときに、
       提供するファイルが置かれているディレクトリ中の <code>.htaccess</code>
       というファイルを参照します。そのファイルを発見したら、
       その中で発見されたディレクティブが適用されます。
-      <code>.htaccess</code> ファイルは、<code>AllowOverride</code>
+      
+      <code>.htaccess</code> ファイルは、
+      <directive module="core">AllowOverride</directive>
       ディレクティブの指定により使えるようになります。
-      <code>AllowOverride</code> ディレクティブは、<code>.htaccess</code>
-      ファイルで設定できるディレクティブのタイプを指定します。
-      <code>AllowOverride</code> ディレクティブの指定がない場合、
-      まったく使えません。CGI の実行を許可するために必要となる
-      ディレクティブを指定可能にするには、
-      以下の設定がサーバのメインの設定で必要になります:</p>
+      <directive module="core">AllowOverride</directive> 
+      ディレクティブは、<code>.htaccess</code>
+      ファイルで、どのタイプのディレクティブが設定できるか、
+      あるいは全く指定できないかを指定します。
+      この目的に必要になるディレクティブを使用できるようにするには、
+      サーバのメインの設定で、以下の設定が必要になります:</p>
 
-      <example>AllowOverride Options</example>
+      <example>
+        AllowOverride Options
+      </example>
 
       <p><code>.htaccess</code>
       ファイルでは、次のディレクティブが必要となります:</p>
 
-      <example>Options +ExecCGI</example>
+      <example>
+        Options +ExecCGI
+      </example>
 
       <p>この設定では、このディレクトリにおける CGI
       プログラムの実行を許可するよう Apache に伝えます。</p>
@@ -158,7 +174,9 @@
     これはどのような種類のコンテンツを受け取っているかをクライアントに示す
     HTTP ヘッダです。ほとんどの場合では、次のように出力します:</p>
 
-    <example>Content-type: text/html</example>
+    <example>
+      Content-type: text/html
+    </example>
 
     <p>もう一つは、出力を HTML
     か、ブラウザが表示することができる何か他の形式にする必要があります。
@@ -176,9 +194,10 @@
       というファイルに保存し、それを <code>cgi-bin</code>
       ディレクトリに置いてください。</p>
 
-      <example>#!/usr/bin/perl<br />
-      print "Content-type: text/html\n\n";<br />
-      print "Hello, World.";
+      <example>
+        #!/usr/bin/perl<br />
+        print "Content-type: text/html\n\n";<br />
+        print "Hello, World.";
       </example>
 
       <p>Perl に精通していなくても、
@@ -189,12 +208,14 @@
       示します。2 行目は、前述したとおり content-type の定義を印字します。
       これには復帰改行の二つの組を後に付加します。
       これにより、ヘッダの終りに空行が置かれ、HTTP
-      ヘッダの終りとボディの始まりを示します。3 行目は、``Hello, World.''
+      ヘッダの終りとボディの始まりを示します。3 行目は、"Hello, World."
       という文字列を印字し、これで終りとなります。</p>
 
       <p>好みのブラウザを開き、アドレス</p>
 
-      <example>http://www.example.com/cgi-bin/first.pl</example>
+      <example>
+        http://www.example.com/cgi-bin/first.pl
+      </example>
 
       <p>あるいはファイルを置いたロケーションを指定すると、
       <code>Hello, World.</code>
@@ -213,13 +234,10 @@
 
     <dl>
       <dt>CGI プログラムの出力</dt>
-
-      <dd>素晴らしい ! それはすべてがうまく動いたことを意味します。
-      </dd>
+      <dd>素晴らしい ! それはすべてがうまく動いたことを意味します。</dd>
 
       <dt>CGI プログラムのソースコード、または "POST Method Not Allowed"
       というメッセージ</dt> 
-
       <dd>これは、CGI プログラムを処理できるよう Apache
       を適切に設定していなかったことを意味します。<a
       href="#configuringapachetopermitcgi">「CGI を許可するように
@@ -228,7 +246,6 @@
       </dd>
 
       <dt>メッセージが "Forbidden" で始まっている</dt>
-
       <dd>これはパーミッションの問題ということを意味します。
       <a href="#errorlogs">Apache のエラーログ</a>と、後述の<a
       href="#filepermissions">「ファイルのパーミッション」</a>
@@ -236,7 +253,6 @@
       </dd>
 
       <dt>"Internal Server Error" というメッセージ</dt>
-
       <dd><a href="#errorlogs">Apache
       のエラーログ</a>をチェックすると、"Premature end of script headers"
       というログが記録されていると思います。そして、おそらく CGI
@@ -250,13 +266,15 @@
       <title>ファイルのパーミッション</title>
 
       <p>サーバはあなたの権限で実行されていないのを忘れないように。
-      つまり、起動するとき、サーバは特権をもたないユーザ - 通常 ``nobody''
-      や ``www'' の権限で実行されます。したがって、あなたが所有する
+      つまり、起動するとき、サーバは特権をもたないユーザ - 通常 <code>nobody</code>
+      や <code>www</code> の権限で実行されます。したがって、あなたが所有する
       ファイルを実行するには別のパーミッションが必要となります。
-      通常、``nobody'' が実行するのに十分なパーミッションを与える方法は、
+      通常、<code>nobody</code> が実行するのに十分なパーミッションを与える方法は、
       ファイルに誰でも実行可能とするパーミッションを与えることです:</p>
 
-      <example>chmod a+x first.pl</example>
+      <example>
+        chmod a+x first.pl
+      </example>
 
       <p>また、もしあなたのプログラムが他のファイルを読み書きするならば、
       それらのファイルは、これが可能となる正しいパーミッション
@@ -291,7 +309,9 @@
       <p>同様なことは、スクリプトのインタプリタ (しばしば <code>perl</code>)
       へのパスで、CGI プログラムの 1 行目に次のように示されます:</p>
 
-      <example>#!/usr/bin/perl</example>
+      <example>
+        #!/usr/bin/perl
+      </example>
 
       <p>これがインタープリタへの実際のパスであることを確実にしておきます。</p>
     </section>
@@ -323,11 +343,11 @@
   <section id="behindscenes">
     <title>裏で何が起こっているのか?</title>
 
-    <p>CGI プログラミングに熟達すると、
-    裏で起こっていることについて更に理解することは有益になるでしょう。
+    <p>CGI プログラミングに習熟すると、
+    裏で起こっていることについて更に理解すること役に立ちます。
     ブラウザとサーバがどのように相互通信するかについては特にそうです。
-    なぜなら、``Hello, World.''
-    を印字するプログラムを書くことはまことに結構ですが、
+    なぜなら、"Hello, World."
+    を印字するプログラムを書くことはおおいに結構ですが、
     それは特に有益ではありません。</p>
 
     <section id="env">
@@ -338,16 +358,16 @@
       それらは、パス
       (コマンドをタイプしたときに実行する実際のファイルを探し出すところ)、
       ユーザ名、端末型などのような便利なものです。
-      通常の、毎日の環境変数の完全なリストを調べるには、コマンドプロンプトで
-      <code>env</code> を入力します。</p>
+      通常、普段使用している環境変数の完全なリストを調べるには、
+      コマンドプロンプトで <code>env</code> を入力します。</p>
 
       <p>CGI の処理中、サーバとブラウザも環境変数を設定し、
       それにより相互に通信することができるようになります。
       その環境変数は、ブラウザタイプ (Netscape, IE, Lynx)、サーバタイプ
       (Apache, IIS, WebSite)、実行されている CGI
-      プログラムの名前などのようなものです。</p>
+      プログラムの名前などです。</p>
 
-      <p>これらの変数は CGI プログラマが使用することができます。
+      <p>これらの変数は CGI プログラマが使用できます。
       そして、それはクライアントとサーバの通信の話の半分です。
       必要な変数の完全なリストは <a
       href="http://hoohoo.ncsa.uiuc.edu/cgi/env.html"
@@ -364,11 +384,14 @@
       多くの異なる方法を用意してします。</p>
 
       <example>
-      #!/usr/bin/perl<br />
-      print "Content-type: text/html\n\n";<br />
-      foreach $key (keys %ENV) {<br />
-        print "$key --&gt; $ENV{$key}&lt;br&gt;";<br />
-      }</example>
+        #!/usr/bin/perl<br />
+        print "Content-type: text/html\n\n";<br />
+        foreach $key (keys %ENV) {<br />
+        <indent>
+          print "$key --&gt; $ENV{$key}&lt;br&gt;";<br />
+        </indent>
+        }
+      </example>
     </section>
 
     <section id="stdin">
@@ -394,7 +417,7 @@
       </p>
 
       <example>
-      name=Rich%20Bowen&amp;city=Lexington&amp;state=KY&amp;sidekick=Squirrel%20Monkey
+        name=Rich%20Bowen&amp;city=Lexington&amp;state=KY&amp;sidekick=Squirrel%20Monkey
       </example>
 
       <p>時々、このような文字列が URL
@@ -420,22 +443,23 @@
 
     <p>Perl で CGI プログラムを書いているなら、モジュールは <a
     href="http://www.cpan.org/">CPAN</a> で提供されています。
-    この目的のための最も普及しているモジュールは CGI.pm です。
-    CGI::Lite も検討しましょう。これは、ほとんどのプログラム
+    この目的のための最も普及しているモジュールは <code>CGI.pm</code> です。
+    <code>CGI::Lite</code> も検討しましょう。これは、ほとんどのプログラム
     において必要とするすべての機能の最小セットの実装です。</p>
 
     <p>C で CGI プログラムを書いているなら、いろいろな
     オプションがあります。これらの内の一つは <a
     href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a>
-    で提供されている CGIC ライブラリです。</p>
+    で提供されている <code>CGIC</code> ライブラリです。</p>
   </section>
 
   <section id="moreinfo">
     <title>更なる情報</title>
 
     <p>CGI に関する情報はウェブで数多く提供されています。CGI
-    の問題については Usenet の comp.infosystems.www.authoring.cgi
-    で、他のユーザと論議することができます。HTML Writers Guide の
+    の問題については Usenet の <a href="news:comp.infosystems.www.authoring.cgi"
+    >comp.infosystems.www.authoring.cgi</a> で、
+    他のユーザと論議することができます。HTML Writers Guide の
     -servers メーリングリストは、あなたの質問に回答してくれる偉大なリソースです。
     <a href="http://www.hwg.org/lists/hwg-servers/"
     >http://www.hwg.org/lists/hwg-servers/</a>
