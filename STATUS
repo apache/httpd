@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/07/23 18:07:21 $]
+Last modified at [$Date: 2001/07/24 20:20:46 $]
 
 Release:
 
@@ -672,7 +672,7 @@ put them into 'the next release':
 	Status: 
 
     * PR#3594: os-windows
-      Please add an Apache icon to the systray instead of a DOS window
+      Please add an Apache icon to the win32 systray instead of a DOS window
 	Status: 
 
     * PR#3605: mod_proxy
@@ -711,7 +711,7 @@ put them into 'the next release':
 	Status: 
 
     * PR#5713: os-windows
-      [PATCH] install as service with domain account
+      [PATCH] install as win32 service with domain account
 	Status: 
 
     * PR#5993: general
