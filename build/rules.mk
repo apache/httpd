@@ -150,8 +150,8 @@ distclean-recursive clean-recursive depend-recursive all-recursive install-recur
 		for d in `find . -name Makefile`; do \
 			i=`dirname "$$d"`; \
 			target="$$otarget"; \
-			in_apr=`echo $$i|grep 'apr/.'`; \
-			if test "x$$in_apr" = "x"; then \
+			in_apr=`echo $$i|sed 's%^.*apr/.*$$%ignore_apr_subdirs%'`; \
+			if test "x$$in_apr" != "xignore_apr_subdirs"; then \
 				echo "Making $$target in $$i"; \
 				if test "$$i" = "."; then \
 					ok=yes; \
