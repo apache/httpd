@@ -1522,8 +1522,11 @@ main(int argc, char *argv[])
 	set_group_privs();
 	default_server_hostnames (server_conf);
 
-        user_id = getuid();
-        group_id = getgid();
+      /* Only try to switch if we're running as root */
+      if(!geteuid() && setuid(user_id) == -1) {
+          log_unixerr("setuid", NULL, "unable to change uid", server_conf);
+          exit (1);
+      }
 
 	c = sizeof(sa_client);
 	if ((getpeername(fileno(stdin), &sa_client, &c)) < 0)
