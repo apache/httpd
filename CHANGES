@@ -410,14 +410,14 @@ Changes with Apache 2.0.52
      freed twice, or reused after being freed.
      [J. Clar, W. Stoddard, G. Ames]
 
-Changes with Apache 2.0.51
-
   *) Add -l option to rotatelogs to let it use local time rather than
      UTC.  PR 24417.  [Ken Coar, Uli Zappe <uli ritual.org>]
 
   *) mod_log_config: Fix a bug which prevented request completion time
      from being logged for I_INSIST_ON_EXTRA_CYCLES_FOR_CLF_COMPLIANCE
      processing.  PR 29696.  [Alois Treindl <alois astro.ch>]
+
+Changes with Apache 2.0.51
 
   *) mod_include no longer checks for recursion, because that's done
      in the core. This allows for careful usage of recursive SSI.
