@@ -208,7 +208,7 @@ static int check_user_access(request_rec *r)
 
     if ((status = groups_for_user(r->pool, user, conf->groupfile,
                                   &grpstatus)) != APR_SUCCESS) {
-         ap_log_rerror(APLOG_MARK, APLOG_ERR, NULL, r,
+         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
                        "Could not open group file: %s", conf->groupfile);
          return HTTP_INTERNAL_SERVER_ERROR;
     };
