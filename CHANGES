@@ -1,7 +1,9 @@
 Changes with Apache 2.0.36
+
   *) Moved the call to apr_mmap_dup outside the error branch so
      that it would actually get called. This fixes a core dump
-     at init everytime you use the MMapFile directive. [Paul J. Reder]
+     at init everytime you use the MMapFile directive. PR 8314
+     [Paul J. Reder]
 
   *) Trigger an error when a LoadModule directive attempts to
      load a module which is built-in.  This is a common error when
