@@ -93,7 +93,7 @@ char *mktemp(char *template);
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 #define USE_MMAP_FILES
-#include <sys/time.h>     
+#include <sys/time.h>
 #define NEED_STRERROR
 typedef int rlim_t;
 #define memmove(a,b,c) bcopy(b,a,c)
@@ -109,8 +109,8 @@ typedef int rlim_t;
 #define HAVE_SYS_RESOURCE_H
 #define bzero(a,b) memset(a,0,b)
 #define JMP_BUF sigjmp_buf
-/*#define USE_FCNTL_SERIALIZED_ACCEPT*/
-/*#define USE_SYSVSEM_SERIALIZED_ACCEPT*/
+/*#define USE_FCNTL_SERIALIZED_ACCEPT */
+/*#define USE_SYSVSEM_SERIALIZED_ACCEPT */
 #if SOLARIS2 < 250
 #define USE_FCNTL_SERIALIZED_ACCEPT
 #else
@@ -130,7 +130,7 @@ int gethostname(char *name, int namelen);
 #define NO_KILLPG
 #undef NO_SETSID
 #define JMP_BUF sigjmp_buf
-/*#define USE_FCNTL_SERIALIZED_ACCEPT*/
+/*#define USE_FCNTL_SERIALIZED_ACCEPT */
 #define USE_SYSVSEM_SERIALIZED_ACCEPT
 #define HAVE_SHMGET
 #define USE_MMAP_FILES
@@ -197,8 +197,8 @@ typedef int rlim_t;
 #define ULTRIX_BRAIN_DEATH
 #define NEED_STRDUP
 /* If you have Ultrix 4.3, and are using cc, const is broken */
-#ifndef __ultrix__ /* Hack to check for pre-Ultrix 4.4 cc */
-#define const /* Not implemented */
+#ifndef __ultrix__		/* Hack to check for pre-Ultrix 4.4 cc */
+#define const			/* Not implemented */
 #endif
 #define JMP_BUF sigjmp_buf
 #define HAVE_SYSLOG
@@ -281,7 +281,7 @@ typedef unsigned short mode_t;
 #ifndef rlim_t
 typedef int rlim_t;
 #endif
-typedef u_long  n_long;
+typedef u_long n_long;
 #endif
 
 #define STDIN_FILENO  0
@@ -316,7 +316,7 @@ typedef int rlim_t;
 #undef NO_SETSID
 #undef NEED_STRDUP
 #define JMP_BUF sigjmp_buf
-#include <sys/time.h>     
+#include <sys/time.h>
 #define HAVE_SYSLOG
 
 #elif defined(SCO)
@@ -326,8 +326,8 @@ typedef int rlim_t;
 #define NEED_INITGROUPS
 #define NO_WRITEV
 #define JMP_BUF sigjmp_buf
-#define SIGURG SIGUSR1 /* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
-#include <sys/time.h>     
+#define SIGURG SIGUSR1		/* but note, this signal will be sent to a process group if enabled (for OOB data). It is not currently enabled. */
+#include <sys/time.h>
 #define HAVE_SYSLOG
 
 #elif defined(SCO5)
@@ -343,22 +343,22 @@ typedef int rlim_t;
 #define HAVE_SYSLOG
 
 /* Although SCO 5 defines these in <strings.h> (note the "s") they don't have
-consts. Sigh. */
-extern int strcasecmp(const char *,const char *);
-extern int strncasecmp(const char *,const char *,unsigned);
+   consts. Sigh. */
+extern int strcasecmp(const char *, const char *);
+extern int strncasecmp(const char *, const char *, unsigned);
 
 #elif defined(AUX)
 /* These are to let -Wall compile more cleanly */
 extern int strcasecmp(const char *, const char *);
-extern int strncasecmp(const char *,const char *,unsigned);
+extern int strncasecmp(const char *, const char *, unsigned);
 extern int set42sig(), getopt(), getpeername(), bzero();
 extern int listen(), bind(), socket(), getsockname();
 extern int accept(), gethostname(), connect(), lstat();
 extern int select(), killpg(), shutdown();
 extern int initgroups(), setsockopt();
 extern char *shmat();
-extern int  shmctl();
-extern int  shmget();
+extern int shmctl();
+extern int shmget();
 extern char *sbrk();
 extern char *crypt();
 #include <sys/time.h>
@@ -492,7 +492,7 @@ typedef quad_t rlim_t;
 char *crypt(const char *pw, const char *salt);
 #endif
 #ifndef initgroups
-int initgroups (char *, int);     
+int initgroups(char *, int);
 #endif
 #ifndef strncasecmp
 #define strncasecmp strnicmp
@@ -532,7 +532,7 @@ int initgroups (char *, int);
 #define USE_MMAP_FILES
 #define HAVE_CRYPT_H
 #define HAVE_SYSLOG
- 
+
 #elif defined(__EMX__)
 /* Defines required for EMX OS/2 port. */
 #define JMP_BUF sigjmp_buf
@@ -543,11 +543,11 @@ int initgroups (char *, int);
 #define NO_TIMES
 /* Add some drive name support */
 #define chdir _chdir2
-#include <sys/time.h>     
+#include <sys/time.h>
 #define MAXSOCKETS 4096
 #define HAVE_MMAP
 #define NO_RELIABLE_PIPED_LOGS
-    
+
 #elif defined(__MACHTEN__)
 typedef int rlim_t;
 #define JMP_BUF sigjmp_buf
@@ -584,7 +584,7 @@ typedef int rlim_t;
 typedef int rlim_t;
 
 #elif defined(ISC)
-#include <net/errno.h>     
+#include <net/errno.h>
 #define NO_KILLPG
 #undef NO_SETSID
 #define HAVE_SHMGET
@@ -628,13 +628,13 @@ typedef int rlim_t;
 #define NO_KILLPG
 #define NEED_INITGROUPS
 
-/* BeOS doesn't have a couple signals... redefine to close ones*/
+/* BeOS doesn't have a couple signals... redefine to close ones */
 #define SIGBUS SIGSEGV
 #define SIGURG SIGPIPE
 
 #define isascii(c)	(!((c) & ~0177))
 
-#elif defined(WIN32)     
+#elif defined(WIN32)
 
 /* All windows stuff is now in os/win32/os.h */
 
@@ -726,7 +726,7 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <netdb.h>
 #include <sys/ioctl.h>
 #if !defined(MPE) && !defined(BEOS)
-#include <arpa/inet.h>  /* for inet_ntoa */
+#include <arpa/inet.h>		/* for inet_ntoa */
 #endif
 #include <sys/wait.h>
 #include <pwd.h>
@@ -745,7 +745,7 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #include <fcntl.h>
 #endif /* ndef WIN32 */
 
-#include <time.h>  /* for ctime */
+#include <time.h>		/* for ctime */
 #include <signal.h>
 #include <errno.h>
 #if !defined(QNX) && !defined(CONVEXOS11) && !defined(NEXT)
@@ -762,8 +762,8 @@ API_EXPORT(int) ap_vsnprintf(char *buf, size_t len, const char *format,
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #ifdef SUNOS4
-int getrlimit( int, struct rlimit *);
-int setrlimit( int, struct rlimit *);
+int getrlimit(int, struct rlimit *);
+int setrlimit(int, struct rlimit *);
 #endif
 #endif
 #ifdef HAVE_MMAP
@@ -820,7 +820,7 @@ typedef void Sigfunc(int);
 #undef signal
 #endif
 #define signal(s,f)	ap_signal(s,f)
-Sigfunc *signal(int signo, Sigfunc *func);
+Sigfunc *signal(int signo, Sigfunc * func);
 #endif
 
 #include <setjmp.h>
@@ -866,13 +866,13 @@ Sigfunc *signal(int signo, Sigfunc *func);
 #define XtOffset(p_type,field) \
 	(sizeof(int)*((unsigned int)&(((p_type)NULL)->field)))
 
-#else	/* !CRAY2 */
+#else /* !CRAY2 */
 
 #define XtOffset(p_type,field) ((unsigned int)&(((p_type)NULL)->field))
 
-#endif	/* !CRAY2 */
-#endif  /* __STDC__ */
-#else	/* ! (CRAY || __arm) */
+#endif /* !CRAY2 */
+#endif /* __STDC__ */
+#else /* ! (CRAY || __arm) */
 
 #define XtOffset(p_type,field) \
 	((long) (((char *) (&(((p_type)NULL)->field))) - ((char *) NULL)))
@@ -899,52 +899,52 @@ Sigfunc *signal(int signo, Sigfunc *func);
  * Sun Quality Software.  Gotta love it.
  */
 
-int getopt (int, char **, char *);
+int getopt(int, char **, char *);
 
-int strcasecmp (char *, char *);
-int strncasecmp (char *, char *, int);
+int strcasecmp(char *, char *);
+int strncasecmp(char *, char *, int);
 int toupper(int);
-int tolower(int);     
-     
-int printf (char *, ...);     
-int fprintf (FILE *, char *, ...);
-int fputs (char *, FILE *);
-int fread (char *, int, int, FILE *);     
-int fwrite (char *, int, int, FILE *);     
-int fflush (FILE *);
-int fclose (FILE *);
-int ungetc (int, FILE *);
-int _filbuf (FILE *);		/* !!! */
-int _flsbuf (unsigned char, FILE *); /* !!! */
-int sscanf (char *, char *, ...);
-void setbuf (FILE *, char *);
-void perror (char *);
-     
-time_t time (time_t *);
-int strftime (char *, int, char *, struct tm *);
-     
-int initgroups (char *, int);     
-int wait3 (int *, int, void*);	/* Close enough for us... */
-int lstat (const char *, struct stat *);
-int stat (const char *, struct stat *);     
-int flock (int, int);
+int tolower(int);
+
+int printf(char *,...);
+int fprintf(FILE *, char *,...);
+int fputs(char *, FILE *);
+int fread(char *, int, int, FILE *);
+int fwrite(char *, int, int, FILE *);
+int fflush(FILE *);
+int fclose(FILE *);
+int ungetc(int, FILE *);
+int _filbuf(FILE *);	/* !!! */
+int _flsbuf(unsigned char, FILE *);	/* !!! */
+int sscanf(char *, char *,...);
+void setbuf(FILE *, char *);
+void perror(char *);
+
+time_t time(time_t *);
+int strftime(char *, int, char *, struct tm *);
+
+int initgroups(char *, int);
+int wait3(int *, int, void *);	/* Close enough for us... */
+int lstat(const char *, struct stat *);
+int stat(const char *, struct stat *);
+int flock(int, int);
 #ifndef NO_KILLPG
 int killpg(int, int);
 #endif
-int socket (int, int, int);     
-int setsockopt (int, int, int, const char*, int);
-int listen (int, int);     
-int bind (int, struct sockaddr *, int);     
-int connect (int, struct sockaddr *, int);
-int accept (int, struct sockaddr *, int *);
-int shutdown (int, int);     
+int socket(int, int, int);
+int setsockopt(int, int, int, const char *, int);
+int listen(int, int);
+int bind(int, struct sockaddr *, int);
+int connect(int, struct sockaddr *, int);
+int accept(int, struct sockaddr *, int *);
+int shutdown(int, int);
 
-int getsockname (int s, struct sockaddr *name, int *namelen);
-int getpeername (int s, struct sockaddr *name, int *namelen);
-int gethostname (char *name, int namelen);     
-void syslog (int, char *, ...);
-char *mktemp (char *);
-     
-long vfprintf (FILE *, char *, va_list);
-     
+int getsockname(int s, struct sockaddr *name, int *namelen);
+int getpeername(int s, struct sockaddr *name, int *namelen);
+int gethostname(char *name, int namelen);
+void syslog(int, char *,...);
+char *mktemp(char *);
+
+long vfprintf(FILE *, char *, va_list);
+
 #endif /* SUNOS_LIB_PROTOTYPES */

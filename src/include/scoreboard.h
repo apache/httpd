@@ -66,13 +66,13 @@
 
 #define SERVER_UNKNOWN (-1)	/* should never be in this state */
 #define SERVER_DEAD 0
-#define SERVER_READY 1          /* Waiting for connection (or accept() lock) */
-#define SERVER_STARTING 3       /* Server Starting up */
-#define SERVER_BUSY_READ 2      /* Reading a client request */
-#define SERVER_BUSY_WRITE 4     /* Processing a client request */
-#define SERVER_BUSY_KEEPALIVE 5 /* Waiting for more requests via keepalive */
-#define SERVER_BUSY_LOG 6       /* Logging the request */
-#define SERVER_BUSY_DNS 7       /* Looking up a hostname */
+#define SERVER_READY 1		/* Waiting for connection (or accept() lock) */
+#define SERVER_STARTING 3	/* Server Starting up */
+#define SERVER_BUSY_READ 2	/* Reading a client request */
+#define SERVER_BUSY_WRITE 4	/* Processing a client request */
+#define SERVER_BUSY_KEEPALIVE 5	/* Waiting for more requests via keepalive */
+#define SERVER_BUSY_LOG 6	/* Logging the request */
+#define SERVER_BUSY_DNS 7	/* Looking up a hostname */
 #define SERVER_GRACEFUL 8	/* server is gracefully finishing request */
 #define SERVER_NUM_STATUS 9	/* number of status settings */
 
@@ -118,17 +118,16 @@ typedef struct {
 #ifndef OPTIMIZE_TIMEOUTS
     time_t last_used;
 #endif
-    char client[32];	/* Keep 'em small... */
-    char request[64];	/* We just want an idea... */
-    char vhost[32];     /* What virtual host is being accessed? */
+    char client[32];		/* Keep 'em small... */
+    char request[64];		/* We just want an idea... */
+    char vhost[32];		/* What virtual host is being accessed? */
 #endif
 } short_score;
 
-typedef struct
-    {
+typedef struct {
     int exit_generation;	/* Set by the main process if a graceful
 				   restart is required */
-    } global_score;
+} global_score;
 
 /* stuff which the parent generally writes and the children rarely read */
 typedef struct {
@@ -139,17 +138,16 @@ typedef struct {
 #endif
 } parent_score;
 
-typedef struct
-    {
+typedef struct {
     short_score servers[HARD_SERVER_LIMIT];
     parent_score parent[HARD_SERVER_LIMIT];
     global_score global;
-    } scoreboard;
+} scoreboard;
 
 #define SCOREBOARD_SIZE		sizeof(scoreboard)
 
 API_EXPORT(void) sync_scoreboard_image(void);
-API_EXPORT(int) exists_scoreboard_image (void);
+API_EXPORT(int) exists_scoreboard_image(void);
 
 API_VAR_EXPORT extern scoreboard *scoreboard_image;
 
