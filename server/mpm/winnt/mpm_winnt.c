@@ -57,14 +57,14 @@
  */
 
 #define CORE_PRIVATE 
-#include "ap_config.h"
 #include "httpd.h" 
-#include "apr_portable.h"
 #include "http_main.h" 
 #include "http_log.h" 
 #include "http_config.h"	/* for read_config */ 
 #include "http_core.h"		/* for get_remote_host */ 
 #include "http_connection.h"
+#include "apr_portable.h"
+#include "apr_getopt.h"
 #include "ap_mpm.h"
 #include "ap_config.h"
 #include "ap_listen.h"
@@ -83,6 +83,11 @@ static int max_requests_per_child = 0;
 static HANDLE shutdown_event;	/* used to signal shutdown to parent */
 static HANDLE restart_event;	/* used to signal a restart to parent */
 
+#define MAX_SIGNAL_NAME 30  /* Long enough for apPID_shutdown, where PID is an int */
+char signal_name_prefix[MAX_SIGNAL_NAME];
+char signal_restart_name[MAX_SIGNAL_NAME]; 
+char signal_shutdown_name[MAX_SIGNAL_NAME];
+
 static struct fd_set listenfds;
 static int num_listenfds = 0;
 static SOCKET listenmaxfd = INVALID_SOCKET;
@@ -95,8 +100,9 @@ static server_rec *server_conf;
 static HANDLE AcceptExCompPort = NULL;
 
 static int one_process = 0;
+static char *signal_arg;
 
-static OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
+OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 
 int ap_max_requests_per_child=0;
 int ap_daemons_to_start=0;
@@ -106,7 +112,30 @@ HANDLE maintenance_event;
 ap_lock_t *start_mutex;
 DWORD my_pid;
 DWORD parent_pid;
-API_VAR_EXPORT ap_completion_t ap_mpm_init_complete = NULL;
+
+/* This is the helper code to resolve late bound entry points 
+ * missing from one or more releases of the Win32 API...
+ * but it sure would be nice if we didn't duplicate this code
+ * from the APR ;-)
+ */
+
+static const char* const lateDllName[DLL_defined] = {
+    "kernel32", "advapi32", "mswsock",  "ws2_32"  };
+static HMODULE lateDllHandle[DLL_defined] = {
+    NULL,       NULL,       NULL,       NULL      };
+
+FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal)
+{
+    if (!lateDllHandle[fnLib]) { 
+        lateDllHandle[fnLib] = LoadLibrary(lateDllName[fnLib]);
+        if (!lateDllHandle[fnLib])
+            return NULL;
+    }
+    if (ordinal)
+        return GetProcAddress(lateDllHandle[fnLib], (char *) ordinal);
+    else
+        return GetProcAddress(lateDllHandle[fnLib], fnName);
+}
 
 static ap_status_t socket_cleanup(void *sock)
 {
@@ -121,7 +150,6 @@ static ap_status_t socket_cleanup(void *sock)
 /* A bunch or routines from os/win32/multithread.c that need to be merged into APR
  * or thrown out entirely...
  */
-
 
 typedef void semaphore;
 typedef void event;
@@ -257,13 +285,11 @@ static DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
  * On entry, type gives the event to signal. 0 means shutdown, 1 means 
  * graceful restart.
  */
-static void signal_parent(int type)
+void signal_parent(int type)
 {
     HANDLE e;
     char *signal_name;
-    extern char signal_shutdown_name[];
-    extern char signal_restart_name[];
-
+    
     /* after updating the shutdown_pending or restart flags, we need
      * to wake up the parent process so it can see the changes. The
      * parent will normally be waiting for either a child process
@@ -315,11 +341,7 @@ API_EXPORT(void) ap_start_shutdown(void)
  * signal_restart_name and signal_shutdown_name.
  */
 
-#define MAX_SIGNAL_NAME 30  /* Long enough for apPID_shutdown, where PID is an int */
-char signal_name_prefix[MAX_SIGNAL_NAME];
-char signal_restart_name[MAX_SIGNAL_NAME]; 
-char signal_shutdown_name[MAX_SIGNAL_NAME];
-static void setup_signal_names(char *prefix)
+void setup_signal_names(char *prefix)
 {
     ap_snprintf(signal_name_prefix, sizeof(signal_name_prefix), prefix);    
     ap_snprintf(signal_shutdown_name, sizeof(signal_shutdown_name), 
@@ -456,7 +478,6 @@ static int setup_inherited_listeners(server_rec *s)
                 listenmaxfd = nsd;
             }
         }
-//        ap_register_cleanup(p, (void *)lr->sd, socket_cleanup, ap_null_cleanup);
         ap_put_os_sock(&lr->sd, &nsd, pconf);
         lr->count = 0;
     }
@@ -667,7 +688,6 @@ static void accept_and_queue_connections(void * dummy)
 	tv.tv_usec = 0;
 	memcpy(&main_fds, &listenfds, sizeof(fd_set));
 
-//	rc = ap_select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
 	rc = select(listenmaxfd + 1, &main_fds, NULL, NULL, &tv);
 
         if (rc == 0 || (rc == SOCKET_ERROR && h_errno == WSAEINTR)) {
@@ -741,8 +761,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         if (context->accept_socket == -1) {
             return NULL;
         }
-	//ap_note_cleanups_for_socket(ptrans, csd);
-        len = sizeof(struct sockaddr);
+	len = sizeof(struct sockaddr);
         context->sa_server = ap_palloc(context->ptrans, len);
         if (getsockname(context->accept_socket, 
                         context->sa_server, &len)== SOCKET_ERROR) {
@@ -1283,7 +1302,7 @@ static void child_main()
          */
         for (lr = ap_listeners; lr != NULL; lr = lr->next) {
             ap_get_os_sock(&nsd,lr->sd);
-            CancelIo(nsd);
+            CancelIo((HANDLE) nsd);
         }
 
         /* Drain the canceled contexts off the port */
@@ -1392,7 +1411,6 @@ static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *
 
 static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *processes)
 {
-
     int rv;
     char buf[1024];
     char *pCommand;
@@ -1401,13 +1419,17 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
     int i;
     int iEnvBlockLen;
     STARTUPINFO si;           /* Filled in prior to call to CreateProcess */
-    PROCESS_INFORMATION pi;   /* filled in on call to CreateProces */
+    PROCESS_INFORMATION pi;   /* filled in on call to CreateProcess */
 
     ap_listen_rec *lr;
     DWORD BytesWritten;
     HANDLE hPipeRead = NULL;
     HANDLE hPipeWrite = NULL;
     SECURITY_ATTRIBUTES sa = {0};  
+
+    HANDLE kill_event;
+    LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
+    HANDLE hDupedCompPort;
 
     sa.nLength = sizeof(sa);
     sa.bInheritHandle = TRUE;
@@ -1435,7 +1457,6 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
     }
 
     /* Build the environment, since Win9x disrespects the active env */
-    // SetEnvironmentVariable("AP_PARENT_PID",ap_psprintf(p,"%l",parent_pid));
     pEnvVar = ap_psprintf(p, "AP_PARENT_PID=%i", parent_pid);
     /*
      * Win32's CreateProcess call requires that the environment
@@ -1493,78 +1514,73 @@ static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *pr
         CloseHandle(pi.hThread);
         return -1;
     }
-    else {
-        HANDLE kill_event;
-        LPWSAPROTOCOL_INFO  lpWSAProtocolInfo;
-        HANDLE hDupedCompPort;
+    
+    ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
+                 "Parent: Created child process %d", pi.dwProcessId);
 
+    SetEnvironmentVariable("AP_PARENT_PID",NULL);
+
+    /* Create the exit_event, apCchild_pid */
+    sa.nLength = sizeof(sa);
+    sa.bInheritHandle = TRUE;
+    sa.lpSecurityDescriptor = NULL;        
+    kill_event = CreateEvent(&sa, TRUE, FALSE, ap_psprintf(pconf,"apC%d", pi.dwProcessId));
+    if (!kill_event) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+                     "Parent: Could not create exit event for child process");
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+        return -1;
+    }
+    
+    /* Assume the child process lives. Update the process and event tables */
+    handles[*processes] = pi.hProcess;
+    events[*processes] = kill_event;
+    (*processes)++;
+
+    /* We never store the thread's handle, so close it now. */
+    ResumeThread(pi.hThread);
+    CloseHandle(pi.hThread);
+ 
+    /* Run the chain of open sockets. For each socket, duplicate it 
+     * for the target process then send the WSAPROTOCOL_INFO 
+     * (returned by dup socket) to the child */
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        int nsd;
+        lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
+        ap_get_os_sock(&nsd,lr->sd);
         ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                     "Parent: Created child process %d", pi.dwProcessId);
-
-        SetEnvironmentVariable("AP_PARENT_PID",NULL);
-
-        /* Create the exit_event, apCchild_pid */
-        sa.nLength = sizeof(sa);
-        sa.bInheritHandle = TRUE;
-        sa.lpSecurityDescriptor = NULL;        
-        kill_event = CreateEvent(&sa, TRUE, FALSE, ap_psprintf(pconf,"apC%d", pi.dwProcessId));
-        if (!kill_event) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
-                         "Parent: Could not create exit event for child process");
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
+                     "Parent: Duplicating socket %d and sending it to child process %d", nsd, pi.dwProcessId);
+        if (WSADuplicateSocket(nsd, pi.dwProcessId,
+                               lpWSAProtocolInfo) == SOCKET_ERROR) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, h_errno, server_conf,
+                         "Parent: WSADuplicateSocket failed for socket %d.", lr->sd );
             return -1;
         }
-        
-        /* Assume the child process lives. Update the process and event tables */
-        handles[*processes] = pi.hProcess;
-        events[*processes] = kill_event;
-        (*processes)++;
 
-        /* We never store the thread's handle, so close it now. */
-        ResumeThread(pi.hThread);
-        CloseHandle(pi.hThread);
-
-        /* Run the chain of open sockets. For each socket, duplicate it 
-         * for the target process then send the WSAPROTOCOL_INFO 
-         * (returned by dup socket) to the child */
-        for (lr = ap_listeners; lr; lr = lr->next) {
-            int nsd;
-            lpWSAProtocolInfo = ap_pcalloc(p, sizeof(WSAPROTOCOL_INFO));
-            ap_get_os_sock(&nsd,lr->sd);
-            ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,
-                         "Parent: Duplicating socket %d and sending it to child process %d", nsd, pi.dwProcessId);
-            if (WSADuplicateSocket(nsd, pi.dwProcessId,
-                                   lpWSAProtocolInfo) == SOCKET_ERROR) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, h_errno, server_conf,
-                             "Parent: WSADuplicateSocket failed for socket %d.", lr->sd );
-                return -1;
-            }
-
-            if (!WriteFile(hPipeWrite, lpWSAProtocolInfo, (DWORD) sizeof(WSAPROTOCOL_INFO),
-                           &BytesWritten,
-                           (LPOVERLAPPED) NULL)) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
-                             "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
-                return -1;
-            }
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf,
-                         "Parent: BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
+        if (!WriteFile(hPipeWrite, lpWSAProtocolInfo, (DWORD) sizeof(WSAPROTOCOL_INFO),
+                       &BytesWritten,
+                       (LPOVERLAPPED) NULL)) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+                         "Parent: Unable to write duplicated socket %d to the child.", lr->sd );
+            return -1;
         }
-        if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
-            /* Now, send the AcceptEx completion port to the child */
-            if (!DuplicateHandle(GetCurrentProcess(), AcceptExCompPort, 
-                                 pi.hProcess, &hDupedCompPort,  0,
-                                 TRUE, DUPLICATE_SAME_ACCESS)) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
-                             "Parent: Unable to duplicate AcceptEx completion port. Shutting down.");
-                return -1;
-            }
-
-            WriteFile(hPipeWrite, &hDupedCompPort, (DWORD) sizeof(hDupedCompPort), &BytesWritten, (LPOVERLAPPED) NULL);
-        }
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf,
+                     "Parent: BytesWritten = %d WSAProtocolInfo = %x20", BytesWritten, *lpWSAProtocolInfo);
     }
+    if (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
+        /* Now, send the AcceptEx completion port to the child */
+        if (!DuplicateHandle(GetCurrentProcess(), AcceptExCompPort, 
+                             pi.hProcess, &hDupedCompPort,  0,
+                             TRUE, DUPLICATE_SAME_ACCESS)) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, GetLastError(), server_conf,
+                         "Parent: Unable to duplicate AcceptEx completion port. Shutting down.");
+            return -1;
+        }
 
+        WriteFile(hPipeWrite, &hDupedCompPort, (DWORD) sizeof(hDupedCompPort), &BytesWritten, (LPOVERLAPPED) NULL);
+    }
+    
     CloseHandle(hPipeRead);
     CloseHandle(hPipeWrite);        
 
@@ -1590,7 +1606,6 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     /* Create child process 
      * Should only be one in this version of Apache for WIN32 
      */
-    //service_set_status(SERVICE_START_PENDING);
     while (remaining_children_to_start--) {
         if (create_process(pconf, process_handles, process_kill_events, 
                            &current_live_processes) < 0) {
@@ -1600,10 +1615,12 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
             goto die_now;
         }
     }
-    //service_set_status(SERVICE_RUNNING);
-
-    restart_pending = shutdown_pending = 0;
     
+    restart_pending = shutdown_pending = 0;
+
+    if (!strcasecmp(signal_arg, "runservice"))
+        mpm_service_started();
+
     /* Wait for shutdown or restart events or for child death */
     process_handles[current_live_processes] = shutdown_event;
     process_handles[current_live_processes+1] = restart_event;
@@ -1666,6 +1683,8 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
          * TODO: Consider restarting the child immediately without looping through http_main
          * and without rereading the configuration. Will need this if we ever support multiple 
          * children. One option, create a parent thread which waits on child death and restarts it.
+         * Consider, however, that if the user makes httpd.conf invalid, we want to die before
+         * our child tries it... otherwise we have a nasty loop.
          */
         restart_pending = 1;
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf, 
@@ -1681,8 +1700,14 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
     }
 
 die_now:
-    if (shutdown_pending) {
+    if (shutdown_pending) 
+    {
         int tmstart = time(NULL);
+        
+        if (strcasecmp(signal_arg,"runservice")
+                && (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)) {
+            mpm_service_nt_stopping();
+        }
         /* Signal each child processes to die */
         for (i = 0; i < current_live_processes; i++) {
             printf("SetEvent handle = %d\n", process_kill_events[i]);
@@ -1711,12 +1736,42 @@ die_now:
     return 1;      /* Tell the caller we want a restart */
 }
 
-/* 
- * winnt_pre_config() hook
+
+#define SERVICE_UNNAMED -1
+
+/* service_nt_main_fn needs to append the StartService() args 
+ * outside of our call stack and thread as the service starts...
  */
-static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp) 
+ap_array_header_t *mpm_new_argv;
+
+/* Remember service_to_start failures to log and fail in pre_config.
+ * Remember inst_argc and inst_argv for installing or starting the
+ * service after we preflight the config.
+ */
+
+static ap_status_t service_to_start_success;
+static int inst_argc;
+static char **inst_argv;
+    
+void winnt_rewrite_args(process_rec *process) 
 {
+    /* Handle the following SCM aspects in this phase:
+     *
+     *   -k runservice [transition for WinNT, nothing for Win9x]
+     *   -k (!)install [error out if name is not installed]
+     *
+     * We can't leave this phase until we know our identity
+     * and modify the command arguments appropriately.
+     */
+    ap_status_t service_named = SERVICE_UNNAMED;
+    ap_status_t rv;
+    char *def_server_root;
+    char fnbuf[MAX_PATH];
+    char optbuf[3];
+    char **new_arg;
+    int fixed_args;
     char *pid;
+    int opt;
 
     one_process = !!getenv("ONE_PROCESS");
 
@@ -1725,14 +1780,205 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
 
     /* AP_PARENT_PID is only valid in the child */
     pid = getenv("AP_PARENT_PID");
-    if (pid) {
+    if (pid) 
+    {
         /* This is the child */
         parent_pid = (DWORD) atol(pid);
         my_pid = GetCurrentProcessId();
+
+        /* The parent is responsible for providing the
+         * COMPLETE ARGUMENTS REQUIRED to the child.
+         *
+         * No further argument parsing is needed, but
+         * for good measure we will provide a simple
+         * signal string for later testing.
+         */
+        signal_arg = "runchild";
+        return;
     }
-    else {
-        /* This is the parent */
-        parent_pid = my_pid = GetCurrentProcessId();
+    
+    /* This is the parent, we have a long way to go :-) */
+    parent_pid = my_pid = GetCurrentProcessId();
+    
+    /* Rewrite process->argv[]; 
+     *
+     * strip out -k signal into signal_arg
+     * strip out -n servicename into service_name & display_name
+     * add default -d serverroot from the path of this executable
+     * 
+     * The end result will look like:
+     *
+     * The invocation command ($0)
+     *     The -d serverroot default from the running executable
+     *         The requested service's (-n) registry ConfigArgs
+     *             The command line arguments from this process
+     *                 The WinNT SCM's StartService() args
+     */
+
+    if (!GetModuleFileName(NULL, fnbuf, sizeof(fnbuf))) {
+        /* WARNING: There is an implict assumption here that the
+         * executable resides in the ServerRoot!
+         */
+        ap_log_error(APLOG_MARK,APLOG_ERR, GetLastError(), NULL, 
+                     "Failed to get the running module's file name");
+        exit(1);
+    }
+    def_server_root = (char *) ap_filename_of_pathname(fnbuf);
+    if (def_server_root > fnbuf) {
+        *(def_server_root - 1) = '\0';
+        def_server_root = ap_os_canonical_filename(process->pool, fnbuf);
+    }
+
+    /* Use process->pool so that the rewritten argv
+     * lasts for the lifetime of the server process,
+     * because pconf will be destroyed after the 
+     * initial pre-flight of the config parser.
+     */
+
+    mpm_new_argv = ap_make_array(process->pool, process->argc + 2, sizeof(char *));
+    new_arg = (char**) ap_push_array(mpm_new_argv);
+    *new_arg = (char *) process->argv[0];
+    
+    new_arg = (char**) ap_push_array(mpm_new_argv);
+    *new_arg = "-d";
+    new_arg = (char**) ap_push_array(mpm_new_argv);
+    *new_arg = def_server_root;
+
+    fixed_args = mpm_new_argv->nelts;
+
+    optbuf[0] = '-'; optbuf[2] = '\0';
+    while (ap_getopt(process->argc, (char**) process->argv, 
+                     "n:k:iu" AP_SERVER_BASEARGS, 
+                     &opt, process->pool) == APR_SUCCESS) {
+        switch (opt) {
+        case 'n':
+            service_named = mpm_service_set_name(process->pool, ap_optarg);
+            break;
+        case 'k':
+            signal_arg = ap_optarg;
+            break;
+        case 'i':
+            /* TODO: warn of depreciated syntax, "use -k install instead" */
+            signal_arg = "install";
+            break;
+        case 'u':
+            /* TODO: warn of depreciated syntax, "use -k uninstall instead" */
+            signal_arg = "uninstall";
+            break;
+        default:
+            optbuf[1] = (char) opt;
+            new_arg = (char**) ap_push_array(mpm_new_argv);
+            *new_arg = ap_pstrdup(process->pool, optbuf);
+            if (ap_optarg) {
+                new_arg = (char**) ap_push_array(mpm_new_argv);
+                *new_arg = ap_optarg;
+            }
+            break;
+        }
+    }
+    /* Set optreset and optind to allow ap_getopt to work correctly
+     * when called from http_main.c
+     */
+    ap_optreset = 1;
+    ap_optind = 1;
+    
+    /* Track the number of args actually entered by the user */
+    inst_argc = mpm_new_argv->nelts - fixed_args;
+
+    /* Provide a default 'run' -k arg to simplify signal_arg tests */
+    if (!signal_arg)
+        signal_arg = "run";
+
+    if (!strcasecmp(signal_arg, "runservice")) 
+    {
+        /* Start the NT Service _NOW_ because the WinNT SCM is 
+         * expecting us to rapidly assume control of our own 
+         * process, the SCM will tell us our service name, and
+         * may have extra StartService() command arguments to
+         * add for us.
+         *
+         * Any other process has a console, so we don't to begin
+         * a Win9x service until the configuration is parsed and
+         * any command line errors are reported.
+         *
+         * We hold the return value so that we can die in pre_config
+         * after logging begins, and the failure can land in the log.
+         */
+        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+            service_to_start_success = mpm_service_to_start();
+            if (service_to_start_success == APR_SUCCESS)
+                service_named = APR_SUCCESS;
+        }
+    }
+
+    if (service_named == SERVICE_UNNAMED) {
+        service_named = mpm_service_set_name(process->pool, 
+                                             DEFAULT_SERVICE_NAME);
+    }
+
+    if (strcasecmp(signal_arg, "install")) /* not -k install */
+    {
+        if (service_named == APR_SUCCESS) 
+        {
+            rv = mpm_merge_service_args(process->pool, mpm_new_argv, 
+                                        fixed_args);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK,APLOG_ERR, rv, server_conf,
+                             "%s: ConfigArgs are missing from the registry.",
+                             display_name);
+            }
+        }
+        else
+        {
+            ap_log_error(APLOG_MARK,APLOG_ERR, APR_BADARG, server_conf,
+                 "%s: No installed service by that name.", display_name);
+            exit(1);
+        }
+    }
+    else /* -k install */
+    {
+        if (service_named == APR_SUCCESS) 
+        {
+            ap_log_error(APLOG_MARK,APLOG_ERR, APR_BADARG, server_conf,
+                 "%s: Service is already installed.", display_name);
+            exit(1);
+        }
+    }
+
+    /* Track the args actually entered by the user.
+     * These will be used for the -k install parameters, as well as
+     * for the -k start service override arguments.
+     */
+    inst_argv = (char**) mpm_new_argv->elts + mpm_new_argv->nelts - inst_argc;
+
+    process->argc = mpm_new_argv->nelts; 
+    process->argv = (char**) mpm_new_argv->elts;
+}
+
+
+static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp) 
+{
+    /* Handle the following SCM aspects in this phase:
+     *
+     *   -k runservice [WinNT errors logged from rewrite_args]
+     *   -k uninstall
+     *
+     * in both cases we -don't- care if httpd.conf is error-free
+     */
+    ap_status_t rv;
+
+    if (!strcasecmp(signal_arg, "runservice")
+            && (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+            && (service_to_start_success != APR_SUCCESS)) {
+        ap_log_error(APLOG_MARK,APLOG_ERR, service_to_start_success, 
+                     server_conf, "%s: Unable to start the service manager.",
+                     display_name);
+        exit(1);
+    }
+
+    if (!strcasecmp(signal_arg, "uninstall")) {
+        rv = mpm_service_uninstall();
+        exit(rv);
     }
 
     ap_listen_pre_config();
@@ -1742,16 +1988,57 @@ static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
-
 }
 
-static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec* server_conf)
+static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec* server)
 {
     static int restart_num = 0;
-    server_conf = server_conf;
+    ap_status_t rv;
 
-    if (parent_pid == my_pid) {
-        if (restart_num++ == 1) {
+    server_conf = server;
+    
+    /* Handle the following SCM aspects in this phase:
+     *
+     *   -k install
+     *   -k start
+     *   -k restart
+     *   -k stop
+     *   -k runservice [Win95, only once - after we parsed the config]
+     *
+     * because all of these signals are useful _only_ if there
+     * is a valid conf\httpd.conf environment to start.
+     *
+     * We reached this phase by avoiding errors that would cause
+     * these options to fail unexpectedly in another process.
+     */
+
+    if (!strcasecmp(signal_arg, "install")) {
+        mpm_service_install(ptemp, inst_argc, inst_argv);
+        exit(rv);
+    }
+
+    if (!strcasecmp(signal_arg, "start")) {
+        rv = mpm_service_start(ptemp, inst_argc, inst_argv);
+        exit(rv);
+    }
+
+    if (!strcasecmp(signal_arg, "restart")) {
+        mpm_signal_service(ptemp, ap_pid_fname, 1);
+        exit(0);
+    }
+
+    // TODO: This Stinks - but we needed the ap_pid_fname entry from 
+    //       the config!?!  Find a clean way to get the egg back into
+    //       into the chicken and shove this signal into pre_config
+    if (!strcasecmp(signal_arg, "stop")) {
+        mpm_signal_service(ptemp, ap_pid_fname, 0);
+        exit(0);
+    }
+
+    if (parent_pid == my_pid) 
+    {
+        if (restart_num++ == 1) 
+        {
             /* This code should be run once in the parent and not run
              * accross a restart
              */
@@ -1773,8 +2060,7 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
             }
 
             ap_log_pid(pconf, ap_pid_fname);
-            //service_set_status(SERVICE_START_PENDING);
-
+            
             /* Create shutdown event, apPID_shutdown, where PID is the parent 
              * Apache process ID. Shutdown is signaled by 'apache -k shutdown'.
              */
@@ -1799,8 +2085,27 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
             }
             CleanNullACL((void *)sa);
 
-            if (ap_mpm_init_complete)
-                ap_mpm_init_complete();
+            /* Now that we are flying at 15000 feet... 
+             * wipe out the Win95 service console,
+             * signal the SCM the WinNT service started, or
+             * if not a service, setup console handlers instead.
+             */
+            if (!strcasecmp(signal_arg, "runservice"))
+            {
+                if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT) 
+                {
+                    rv = mpm_service_to_start();
+                    if (rv != APR_SUCCESS) {
+                        ap_log_error(APLOG_MARK,APLOG_ERR, rv, server_conf,
+                                     "%s: Unable to start the service manager.",
+                                     display_name);
+                        exit(1);
+                    }            
+                }
+            }
+            else
+                mpm_start_console_handler();
+
 
             /* Create the start mutex, apPID, where PID is the parent Apache process ID.
              * Ths start mutex is used during a restart to prevent more than one 
@@ -1809,6 +2114,10 @@ static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptem
             ap_create_lock(&start_mutex,APR_MUTEX, APR_CROSS_PROCESS, signal_name_prefix,
                                server_conf->process->pool);
         }
+    }
+    else /* parent_pid != my_pid */
+    {
+        mpm_start_child_console_handler();
     }
 }
 
@@ -1845,8 +2154,6 @@ API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
 
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
-
-            //service_set_status(SERVICE_STOPPED);
 
             return 1;
         }
@@ -1967,9 +2274,9 @@ LISTEN_COMMANDS
 { NULL }
 };
 
-module MODULE_VAR_EXPORT mpm_winnt_module = {
+MODULE_VAR_EXPORT module mpm_winnt_module = {
     MPM20_MODULE_STUFF,
-    NULL,                       /* hook run before arguments are parsed */
+    winnt_rewrite_args,         /* hook to run before apache parses args */
     winnt_pre_config,           /* hook run before configuration is read */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
