@@ -1,6 +1,7 @@
 This is the current status of running indent on the source code.
 If you are about to edit a file, mark it as RESERVED below with your name.
-If a file has already been indent'd, or doesn't need it, mark it as DONE
+If a file has already been indent'd, or doesn't need it, mark it as DONE.
+AND don't forget to run expand on the file after it has been indent'd.
 
 ./main:				STATUS
    alloc.c			DONE by Dean
@@ -25,8 +26,8 @@ If a file has already been indent'd, or doesn't need it, mark it as DONE
    http_main.h			DONE by Dean
    http_protocol.c		DONE by Roy
    http_protocol.h		DONE by Roy
-   http_request.c		RESERVED while Roy is working on it
-   http_request.h		RESERVED while Roy is working on it
+   http_request.c		DONE by Roy
+   http_request.h		DONE by Roy
    httpd.h
    md5.h
    md5c.c
