@@ -672,7 +672,8 @@ browsers complain that they cannot verify the server certificate?</title>
 <li><a href="#adh">How to use Anonymous-DH ciphers</a></li>
 <li><a href="#sharedciphers">Why do I get 'no shared ciphers'?</a></li>
 <li><a href="#vhosts">HTTPS and name-based vhosts</a></li>
-<li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual Hosting to identify different SSL virtual hosts?</a></li>
+<li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual
+Hosting to identify different SSL virtual hosts?</a></li>
 <li><a href="#lockicon">The lock icon in Netscape locks very late</a></li>
 <li><a href="#msie">Why do I get I/O errors with MSIE clients?</a></li>
 <li><a href="#nn">Why do I get I/O errors with NS clients?</a></li>
@@ -762,10 +763,10 @@ I try to connect to my freshly installed server?</title>
     handshake phase. Bingo!</p>
 </section>
 
-<section id="vhosts2"><title>Why is it not possible to use Name-Based Virtual Hosting to identify
-different SSL virtual hosts?</title>
+<section id="vhosts2"><title>Why is it not possible to use Name-Based
+Virtual Hosting to identify different SSL virtual hosts?</title>
     <p>Name-Based Virtual Hosting is a very popular method of identifying
-    different virtual = hosts. It allows you to use the same IP address and
+    different virtual hosts. It allows you to use the same IP address and
     the same port number for many different sites. When people move on to
     SSL, it seems natural to assume that the same method can be used to have
     lots of different SSL virtual hosts on the same server.</p>
@@ -788,13 +789,13 @@ different SSL virtual hosts?</title>
     directive, e.g.</p> 
 
     <example>
-    <p>NameVirtualHost 192.168.1.1:80</p> 
+      NameVirtualHost 192.168.1.1:80
+    </example>
     
     <p>Other workaround solutions are: </p>
 
     <p>Use separate IP addresses for different SSL hosts. 
     Use different port numbers for different SSL hosts.</p> 
-    </example>
 </section>
 
 <section id="lockicon"><title>When I use Basic Authentication over HTTPS the lock icon in Netscape browsers
