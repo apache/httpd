@@ -3349,7 +3349,8 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 break;
             }
             else if (APR_BUCKET_IS_FILE(e)) {
-                apr_bucket_file *a = e->data;
+                apr_bucket_shared *s = e->data;
+                apr_bucket_file *a = s->data;
                 /* Assume there is at most one APR_BUCKET_FILE in the brigade */
                 fd = a->fd;
                 flen = e->length;
