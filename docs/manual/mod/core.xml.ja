@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 106851:149276 (outdated) -->
+<!-- English Revision: 149276 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -129,8 +129,8 @@
 
 <directivesynopsis>
 <name>AddDefaultCharset</name>
-<description>明示的に文字セットを指定していない応答に追加される
-デフォルトの文字セット</description>
+<description>レスポンスのコンテントタイプが <code>text/plain</code> あるいは
+<code>text/html</code> の場合に追加するデフォルトの charset パラメータ</description>
 <syntax>AddDefaultCharset On|Off|<var>charset</var></syntax>
 <default>AddDefaultCharset Off</default>
 <contextlist><context>server config</context>
@@ -139,19 +139,38 @@
 <override>FileInfo</override>
 
 <usage>
-    <p>このディレクティブは、HTTP ヘッダにコンテントタイプパラメータを
-    持たない応答に追加される文字セットの名前を指定します。
-    これは、ドキュメント内の META タグで指定されたどのような文字セット
-    も無効にします。
-    <code>AddDefaultCharset Off</code> という設定により、この機能は無効になります。
-    <code>AddDefaultCharset On</code> にすれば、ディレクティブの要求通り
-    Apache 内部のデフォルト文字セット <code>iso-8859-1</code> に設定します。
-    また、他の <var>charset</var> も指定できます。例えば:</p>
+    <p>レスポンスのコンテントタイプが <code>text/plain</code> 
+    あるいは <code>text/html</code> 
+    の場合に限りますが、レスポンスに追加するメディアタイプの文字セットパラメータ
+    (文字エンコーディングの名前) のデフォルト値を、このディレクティブで指定します。
+    これはレスポンス <transnote>レスポンスの HTML</transnote> 内で <code>META</code> 
+    要素で指定された、どのような文字セットも無効にしますが、
+    最終的な挙動はユーザのクライアント側の設定で決まります。
+    この機能は <code>AddDefaultCharset Off</code> という設定で無効になります。
+    <code>AddDefaultCharset On</code> にすれば、
+    Apache 内部のデフォルト文字セット <code>iso-8859-1</code> に設定されます。
+    その他 <var>charset</var> に指定できる値であれば、どんな値でも使えます。
+    指定する値は、MIME メディアタイプとして使われる
+    <a href="http://www.iana.org/assignments/character-sets">IANA 
+    に登録されている文字セット名</a>のうちの一つにすべきです。
+    例えば:</p>
 
     <example>
       AddDefaultCharset utf-8
     </example>
+
+    <p><directive>AddDefaultCharset</directive> を使うときは、全てのテキストリソースが
+    指定する文字エンコードになっていると分かっていて、かつ、
+    リソースの個々に文字セットを指定するのが大変な場合のみです。
+    例を挙げると、レガシーな CGI スクリプトなどの、動的に生成される
+    コンテンツを含むリソースに文字セットパラメータを追加する場合で、
+    ユーザの入力データが出力に入り、クロスサイトスクリプティングが
+    引き起こされうる場合です。デフォルト文字セットをセットしたとしても、
+    ブラウザの "文字エンコードの自動選択" 機能が有効になっているユーザを
+    守ることにはならないので、もちろんより良い解決策は単にスクリプトを修正
+    (あるいは削除) することです。</p>
 </usage>
+<seealso><directive module="mod_mime">AddCharset</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -300,7 +319,7 @@
       <directive module="core">AuthName</directive>, 
       <directive module="core">AuthType</directive>, <directive
       module="mod_authn_file">AuthUserFile</directive>, <directive
-      module="core">Require</directive> <em>など。</em>)。</dd>
+      module="core">Require</directive> <em>など</em>)。</dd>
 
       <dt>FileInfo</dt>
 
@@ -314,7 +333,7 @@
       module="core">SetInputFilter</directive>, <directive
       module="core">SetOutputFilter</directive>, 
       <module>mod_mime</module> の Add* と Remove*
-      ディレクティブ<em>など。</em>)。</dd>
+      ディレクティブ<em>など</em>)。</dd>
 
       <dt>Indexes</dt>
 
@@ -332,7 +351,7 @@
       module="mod_autoindex">IndexIgnore</directive>, <directive
       module="mod_autoindex">IndexOptions</directive>, <directive
       module="mod_autoindex">ReadmeName</directive>
-      <em>など。</em>)。</dd>
+      <em>など</em>)。</dd>
 
       <dt>Limit</dt>
 
@@ -683,7 +702,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     しかし、このディレクティブは引数として正規表現をとります。例えば:</p>
 
     <example>
-      &lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;
+      &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
     </example>
 
     <p>は /www/ 以下にある数字 3 文字のディレクトリにマッチします。</p>
@@ -1675,21 +1694,20 @@ module="core">Directory</directive></seealso>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>このディレクティブは、HTTP リクエストヘッダ内に含めることのできる
-    バイト数、<var>bytes</var> を
-    0 からコンパイル時に定義される定数
-    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (配布時には 8192 と指定)
-    で指定された値までの数字で指定します。</p>
+    <p>このディレクティブは、HTTP リクエストヘッダ一つで受付ける
+    バイト数 <var>bytes</var> を指定します。</p>
 
     <p><directive>LimitRequestFieldSize</directive> ディレクティブは、
-    サーバのコンパイル時に指定したインプットバッファ容量以下に
-    HTTP リクエストヘッダの許容されるサイズを制限することができます。
+    HTTP リクエストヘッダで許容されるサイズを増減させることができます。
     サーバは、このディレクティブの値として、
-    通常のクライアントリクエストから送られた個々のヘッダフィールドに
-    十分足る大きさを必要とします。
-    普通のリクエストヘッダのサイズは、個々のクライアントにより大きく変わり、
-    詳細なコンテントネゴシエーションをするためのブラウザの設定までにも
-    影響されることがあります。</p>
+    一般的なクライアントからリクエストが送られた際に、そのリクエストに
+    付属しているどのヘッダフィールドについても、
+    十分足りる大きさになっていなければなりません。
+    一般的なリクエストヘッダのサイズといっても、その大きさは個々の
+    クライアントの実装によって大きく異なり、
+    詳細なコンテントネゴシエーションをサポートするかどうかの、
+    ブラウザの設定にも影響されたりします。
+    SPENGO 認証ヘッダでは 12392 バイトにまで及ぶことすらあります。</p>
 
     <p>このディレクティブは、
     管理者にクライアントからの異常なリクエストを制御できるようにし、
@@ -1715,13 +1733,10 @@ module="core">Directory</directive></seealso>
 
 <usage>
     <p>このディレクティブは、HTTP リクエスト行内で許容されるバイト数
-    <var>bytes</var> を 0 からコンパイル時の定数
-    <code>DEFAULT_LIMIT_REQUEST_LINE</code> (配布時には 8190 と指定)
-    で指定された値までの数字で指定します。</p>
+    <var>bytes</var> を指定します。</p>
 
-    <p><directive>LimitRequestLine</directive> ディレクティブにより、サーバ管理者は
-    サーバのコンパイル時に指定したインプットバッファ容量以下に
-    クライアントからの HTTP リクエスト行のサイズの制限を行なうことができます。 
+    <p><directive>LimitRequestLine</directive> ディレクティブにより、
+    クライアントからの HTTP リクエスト行の許容サイズを増減できます。 
     リクエスト行は、HTTPメソッド、URI、プロトコルバージョンから成っており、
     <directive>LimitRequestLine</directive> はサーバへのリクエストに対して
     許容するリクエスト URI の長さを制限することになります。
@@ -2278,7 +2293,7 @@ module="core">Directory</directive></seealso>
 <override>AuthConfig</override>
 
 <usage>
-    <p>このディレクティブは、どの認証済みのユーザがディレクトリに
+    <p>このディレクティブは、どの認証済みのユーザがリソースに
     アクセスすることができるかを指定します。
     以下のような構文になります。</p>
 
@@ -2308,7 +2323,7 @@ module="core">Directory</directive></seealso>
 
     <example>
        AuthType Basic<br />
-       AuthName "Restricted Directory"<br />
+       AuthName "Restricted Resource"<br />
        AuthUserFile /web/users<br />
        AuthGroupFile /web/groups<br />
        Require group admin
@@ -2929,51 +2944,51 @@ module="core">Directory</directive></seealso>
 <usage>
     <p>多くの状況で Apache は<em>自己参照</em> URL、すなわち
     同じサーバを指す URL、を作成する必要があります。
-    <code>UseCanonicalName On</code> を使うと (1.3 より前の
-    すべてのバージョンでも) Apache は <a
-    href="#servername">ServerName</a> ディレクティブと <a href="#port">Port</a>
-    ディレクティブを使ってサーバの正式な名前を作成します。
-    この名前がすべての自己参照 URL で使われ、CGI の <code>SERVER_NAME</code>
-    と <code>SERVER_PORT</code> にも使われます。</p>
+    <code>UseCanonicalName On</code> の場合は、<directive 
+    module="core">ServerName</directive> ディレクティブで指定されている
+    ホスト名とポート番号を使って、その正規名 (自己参照の名前) を生成します。
+    この名前は、すべての自己参照 URL で使われますし、CGI の 
+    <code>SERVER_NAME</code> と <code>SERVER_PORT</code> でも使われます。</p>
 
-    <p><code>UseCanonicalName Off</code> では Apache は
-    クライアントがホスト名とポートを提供した場合には自己参照 URL を
-    それらを元に作成します (提供されていない場合は上で定義されているように
-    正式な名前を使います)。
+    <p><code>UseCanonicalName Off</code> の場合、
+    クライアントがホスト名とポートを指定したときには、
+    それらを元に自己参照 URL を作成します (指定がなかったときは
+    上の定義と同様にして正規名を解決します)。
     これらの値は<a href="../vhosts/name-based.html">名前ベースの
-    バーチャルホスト</a>を実装するのに使われているのと同じ値で、
-    同じクライアントから取得できる値です。CGI 変数 <code>SERVER_NAME</code>
-    と <code>SERVER_PORT</code> もクライアントから与えられた値から
-    作成されます。</p>
+    バーチャルホスト</a>を実装で使われているのと同じ値で、
+    同じクライアントで取得できる値になっています。
+    CGI 変数 <code>SERVER_NAME</code> と <code>SERVER_PORT</code> 
+    もクライアントから与えられた値から作成されます。</p>
 
-    <p>これが有用な場合の例は、イントラネットのサーバで、<code>www</code> の
-    ような短い名前でユーザがマシンに接続しているときです。
-    ユーザが短い名前を入力して、URL が<em>最後のスラッシュ無しの</em>ディレクトリ
-    へのものであるときに、Apache はリクエストを
-    <code>http://www.domain.com/splat/</code> へリダイレクトすることに
-    気付くでしょう。認証をするように設定していると、この場合
+    <p>このような挙動が便利な例は、イントラネットのサーバで <code>www</code>
+    のような短い名前でユーザがマシンに接続するときです。
+    ユーザの入力で短いホスト名が使われていて、URL が<em>最後のスラッシュ無しの</em>
+    ディレクトリになっている <code>http://www/splat</code> のようなとき、
+    Apache はリクエストを <code>http://www.domain.com/splat/</code> 
+    へリダイレクトします。
+    認証をするように設定していると、この場合
     ユーザは 2 回認証をしなければならなくなります (<code>www</code> に
-    対して 1 回、<code>www.domain.com</code> に対してもう一回 -- 
-    より詳しい情報は <a 
+    対して 1 回、<code>www.domain.com</code> に対してもう 1 回 -- 
+    詳細は <a 
     href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">この話題の
     FAQ</a> を参照してください)。
-    しかし、<directive>UseCanonicalName</directive> が <code>Off</code> になっていると、
-    Apache は <code>htttp://www/splat/</code> にリダイレクトします。</p>
+    しかし <directive>UseCanonicalName</directive> が <code>Off</code> になっていると、
+    Apache は <code>http://www/splat/</code> にリダイレクトします。</p>
 
     <p>三つ目のオプション <code>UseCanonicalName DNS</code> は、
-    <code>Host:</code> ヘッダを提供しない古いクライアントをサポートした
-    大規模な IP ベースのバーチャルホスティングで使用されることを
-    意図しています。このオプションでは、Apache はクライアントが
-    接続した IP アドレスに DNS の逆引きを行なって自己参照 URL を
-    作成します。</p>
+    大規模な IP ベースのバーチャルホスティングで、
+    <code>Host:</code> ヘッダを提供しない古いクライアントを
+    サポートする場合を想定しています。
+    このオプションでは Apache は、クライアントが接続した IP アドレスに対して
+    DNS の逆引きを行なって、自己参照 URL を作成します。</p>
 
     <note type="warning"><title>警告</title>
-    <p>CGI が <code>SERVER_NAME</code> に
-    関する仮定を行なっているときは、このオプションの設定で動作しなく
-    なるかもしれません。クライアントは実質的にはホスト名にとして
+    <p>CGI が <code>SERVER_NAME</code> に関して何らかの前提条件を
+    仮定しているときには、このオプションの設定によっては動作しなく
+    なるかもしれません。クライアントは実質的にはホスト名として
     何でも望みの値を指定することができます。CGI が
-    <code>SERVER_NAME</code> のみを使って自己参照 URL を作成している
-    場合はどの設定を行なっても大丈夫なはずです。</p></note>
+    <code>SERVER_NAME</code> を使って自己参照 URL を作成することしかしない
+    場合は、どの設定を行なっても大丈夫なはずです。</p></note>
 </usage>
 <seealso><directive module="core">ServerName</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
