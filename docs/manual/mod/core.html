@@ -43,6 +43,7 @@ always available.
 <li><A HREF="#keepalivetimeout">KeepAliveTimeout</A>
 <li><A HREF="#limit">&lt;Limit&gt;</A>
 <li><A HREF="#listen">Listen</A>
+<li><A HREF="#listenbacklog">ListenBacklog</A>
 <li><A HREF="#location">&lt;Location&gt;</A>
 <li><A HREF="#maxclients">MaxClients</A>
 <li><A HREF="#maxkeepaliverequests">MaxKeepAliveRequests</a>
@@ -657,6 +658,19 @@ directive.</p>
 <strong>See Also:</strong>
 <a href="../misc/known_bugs.html#listenbug">Known Bugs</a></p>
 <hr>
+
+<A NAME="listenbacklog"<H2>ListenBacklog</H2></A>
+<strong>Syntax:</strong> ListenBacklog <em>backlog</em><br>
+<strong>Default:</strong> <code>ListenBacklog 511</code><br>
+<strong>Context:</strong> server config<br>
+<strong>Status:</strong> Core<br>
+<strong>Compatibility:</strong> ListenBacklog is only available in Apache
+versions after 1.2.0.<p>
+
+The maximum length of the queue of pending connections.  Generally no
+tuning is needed or desired, however on some systems it is desirable
+to increase this when under a TCP SYN flood attack.  See 
+the backlog parameter to the <code>listen(2)</code> system call.
 
 <A name="limit"><h2>&lt;Limit&gt; directive</h2></A>
 <!--%plaintext &lt;?INDEX {\tt Limit} section directive&gt; -->
