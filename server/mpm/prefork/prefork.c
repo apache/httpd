@@ -612,7 +612,7 @@ static void child_main(int child_num_arg)
     	             * occasionally, and we'd loop forever due to it.
     	             */
     	            ap_log_error(APLOG_MARK, APLOG_ERR, status,
-                                 ap_server_conf, "apr_poll: (listen)");
+                                 ap_server_conf, "apr_pollset_poll: (listen)");
     	            clean_child_exit(1);
                 }
 
