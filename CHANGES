@@ -1,4 +1,10 @@
 Changes with Apache 2.0a9
+
+  *) Win32 now requires perl to complete the final install step for users
+     to build + install on Win32.  Makefile.win now rewrites @@ServerRoot@
+     and installs the conf, htdocs and htdocs/manual directories.
+     [William Rowe]
+
   *) Make mod_include use a hash table to associate directive tags with
      functions.  This allows modules to implement their own SSI tags easily.
      The idea is simple enough, a module can insert it's own tag and function
