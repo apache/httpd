@@ -21,15 +21,11 @@ gen_test_char_OBJECTS = gen_test_char.lo util_debug.lo
 gen_test_char: $(gen_test_char_OBJECTS)
 	$(LINK) $(EXTRA_LDFLAGS) $(gen_test_char_OBJECTS) $(EXTRA_LIBS)
 
-$(gen_uri_delims_OBJECTS) $(gen_test_char_OBJECTS): %.lo: %.c
-	$(BUILD_LT_COMPILE)
-	$(LT_COMPILE)
-
 uri_delims.h: gen_uri_delims
-	./build-gen_uri_delims > uri_delims.h
+	./gen_uri_delims > uri_delims.h
 
 test_char.h: gen_test_char
-	./build-gen_test_char > test_char.h
+	./gen_test_char > test_char.h
 
 util_uri.lo: uri_delims.h
 util.lo: test_char.h
