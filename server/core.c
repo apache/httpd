@@ -3663,6 +3663,7 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
     conn_rec *c = f->c;
     core_net_rec *net = f->ctx;
     core_output_filter_ctx_t *ctx = net->out_ctx;
+    apr_read_type_e eblock = APR_NONBLOCK_READ;
 
     if (ctx == NULL) {
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
@@ -3738,7 +3739,16 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 const char *str;
                 apr_size_t n;
 
-                rv = apr_bucket_read(e, &str, &n, APR_BLOCK_READ);
+                rv = apr_bucket_read(e, &str, &n, eblock);
+                if (APR_STATUS_IS_EAGAIN(rv)) {
+                    /* send what we have so far since we shouldn't expect more
+                     * output for a while...  next time we read, block
+                     */
+                    more = apr_brigade_split(b, e);
+                    eblock = APR_BLOCK_READ;
+                    break;
+                }
+                eblock = APR_NONBLOCK_READ;
                 if (n) {
                     if (!fd) {
                         if (nvec == MAX_IOVEC_TO_WRITE) {
