@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/17 07:09:00 $]
+Last modified at [$Date: 2002/02/17 19:21:31 $]
 
 Release:
 
@@ -74,10 +74,6 @@ FINAL RELEASE SHOWSTOPPERS:
     * API changes planned for 2.0 that should happen before the
       GA release:
           * Free lists for bucket allocation
-          * Removal of APR_BRIGADE_NORMALIZE from the public bucket API
-      Justin says: "APR_BRIGADE_NORMALIZE is not a showstopper since no
-                    one uses it except for core_input_filter.  If its
-                    use was prevalent, that'd be a different story."
 
 CURRENT VOTES:
 

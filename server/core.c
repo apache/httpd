@@ -3026,6 +3026,23 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
     return ap_get_brigade(f->next, b, mode, block, readbytes);
 }
 
+/**
+ * Remove all zero length buckets from the brigade.
+ */
+#define BRIGADE_NORMALIZE(b)       \
+do { \
+    apr_bucket *e = APR_BRIGADE_FIRST(b); \
+    do {  \
+        if (e->length == 0) { \
+            apr_bucket *d; \
+            d = APR_BUCKET_NEXT(e); \
+            apr_bucket_delete(e); \
+            e = d; \
+        } \
+        e = APR_BUCKET_NEXT(e); \
+    } while (!APR_BRIGADE_EMPTY(b) && (e != APR_BRIGADE_SENTINEL(b))); \
+} while (0)
+
 static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b, 
                              ap_input_mode_t mode, apr_read_type_e block,
                              apr_off_t readbytes)
@@ -3066,9 +3083,9 @@ static int core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     }
     
     /* ### This is bad. */
-    APR_BRIGADE_NORMALIZE(ctx->b);
+    BRIGADE_NORMALIZE(ctx->b);
 
-    /* check for empty brigade again *AFTER* APR_BRIGADE_NORMALIZE()
+    /* check for empty brigade again *AFTER* BRIGADE_NORMALIZE()
      * If we have lost our socket bucket (see above), we are EOF.
      *
      * Ideally, this should be returning SUCCESS with EOS bucket, but
