@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) apachectl: Fix a problem finding envvars if sbindir != bindir.
+     PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
+
   *) mod_ssl: Add SSL_CLIENT_V_REMAIN variable, representing the
      number of days until the client cert expires.  [Joe Orton]
 
