@@ -240,6 +240,14 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         if (apr_table_get(r->subprocess_env, "no-gzip")) {
             return ap_pass_brigade(f->next, bb);
         }
+        /* Some browsers might have problems with content types
+         * other than text/html, so set gzip-only-text/html
+         * (with browsermatch) for them
+         */
+        if (strncmp(r->content_type, "text/html", 9)
+            && apr_table_get(r->subprocess_env, "gzip-only-text/html")) {
+            return ap_pass_brigade(f->next, bb);
+        }
 
         /* if they don't have the line, then they can't play */
         accepts = apr_table_get(r->headers_in, "Accept-Encoding");
