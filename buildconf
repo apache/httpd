@@ -21,8 +21,8 @@
 # set a couple of defaults for where we should be looking for our support libs.
 # can be overridden with --with-apr=[dir] and --with-apr-util=[dir]
 
-apr_src_dir=srclib/apr
-apu_src_dir=srclib/apr-util
+apr_src_dir="srclib/apr ../apr"
+apu_src_dir="srclib/apr-util ../apr-util"
 
 while test $# -gt 0 
 do
@@ -52,10 +52,22 @@ done
 #
 
 should_exit=0
+apr_found=0
+apu_found=0
 
-if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
+for dir in $apr_src_dir
+do
+    if [ -d "${dir}" -a -f "${dir}/build/apr_common.m4" ]; then
+        echo "found apr source: ${dir}"
+        apr_src_dir=$dir
+        apr_found=1
+        break
+    fi
+done
+
+if [ $apr_found -lt 1 ]; then
     echo ""
-    echo "You don't have a copy of the apr source in $apr_src_dir. " 
+    echo "You don't have a copy of the apr source in srclib/apr. "
     echo "Please get the source using the following instructions," 
     echo "or specify the location of the source with " 
     echo "--with-apr=[path to apr] :"
@@ -64,9 +76,20 @@ if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     echo ""
     should_exit=1
 fi
-if [ ! -d "$apu_src_dir" -o ! -f "$apu_src_dir/Makefile.in" ]; then
+
+for dir in $apu_src_dir
+do
+    if [ -d "${dir}" -a -f "${dir}/Makefile.in" ]; then
+        echo "found apr-util source: ${dir}"
+        apu_src_dir=$dir
+        apu_found=1
+        break
+    fi
+done
+
+if [ $apu_found -lt 1 ]; then
     echo ""
-    echo "You don't have a copy of the apr-util source in $apu_src_dir. "
+    echo "You don't have a copy of the apr-util source in srclib/apr-util. "
     echo "Please get one the source using the following instructions, "
     echo "or specify the location of the source with "
     echo "--with-apr-util=[path to apr-util]:"
