@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/11/23 21:50:18 $]
+Last modified at [$Date: 2002/11/24 00:28:00 $]
 
 Release:
 
@@ -76,8 +76,8 @@ CURRENT VOTES:
     * Develop in Review-Then-Commit or Commit-Then-Review mode 
       on APACHE_2_0_BRANCH (no vetoes, this is a straight vote.)
        R-T-C:   trawick, wrowe
-       Abstain: BrianP
-       C-T-R:   
+       Abstain: 
+       C-T-R:   BrianP
 
     * httpd-std.conf and friends;
 
