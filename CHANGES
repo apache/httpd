@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) FreeBSD: Use the httpready accept filter instead of dataready on
+     newer levels of the OS.  [Paul Querna <chip force-elite.com>]
+
   *) Delete some make-generated files in the server directory during 
      "make clean" processing.  PR 26552.  [Jeff Trawick]
 

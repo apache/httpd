@@ -199,7 +199,13 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
 
 #if APR_HAS_SO_ACCEPTFILTER
 #ifndef ACCEPT_FILTER_NAME
+#define ACCEPT_FILTER_NAME "httpready"
+#ifdef __FreeBSD_version
+#if __FreeBSD_version < 411000 /* httpready broken before 4.1.1 */
+#undef ACCEPT_FILTER_NAME
 #define ACCEPT_FILTER_NAME "dataready"
+#endif
+#endif
 #endif
     apr_socket_accept_filter(s, ACCEPT_FILTER_NAME, "");
 #endif
