@@ -1670,10 +1670,14 @@ an IP address, e.g.
 
 <BLOCKQUOTE><CODE>NameVirtualHost 111.22.33.44</CODE></BLOCKQUOTE>
 
-With the NameVirtualHost directive the address to which your name-based
-virtual host names resolve.
-If you have multiple name-based hosts on multiple addresses,
-repeat the directive for each address.<P>
+With the NameVirtualHost directive you specify the address to which your
+name-based virtual host names resolve.  If you have multiple name-based
+hosts on multiple addresses, repeat the directive for each address.<P>
+
+Note: the "main server" and any _default_ servers will <b>never</b>
+be served for a request to a NameVirtualHost IP Address (unless for some
+reason you specify NameVirtualHost but then don't define any VirtualHosts
+for that address).<p>
 
 Optionally you can specify a port number on which the name-based
 virtual hosts should be used, e.g.
