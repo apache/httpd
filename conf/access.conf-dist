@@ -1,5 +1,5 @@
 # access.conf: Global access configuration
-# $Id: access.conf-dist,v 1.6 1996/08/20 13:18:55 paul Exp $
+# $Id: access.conf-dist,v 1.7 1996/10/08 21:12:05 brian Exp $
 # Online docs at http://www.apache.org/
 
 # This file defines server settings which affect which types of services
@@ -53,6 +53,17 @@ Options None
 #order deny,allow
 #deny from all
 #allow from .your_domain.com
+#</Location>
+
+# There have been reports of people trying to abuse an old bug from pre-1.1
+# days.  This bug involved a CGI script distributed as a part of Apache.
+# By uncommenting these lines you can redirect these attacks to a logging 
+# script on www.apache.org.  Or, you can record them yourself, using the script
+# contrib/phf_abuse_log.cgi.
+
+#<Location /cgi-bin/phf*>
+#deny from all
+#ErrorDocument 403 http://www.apache.org/phf_abuse_log.cgi
 #</Location>
 
 # You may place any other directories or locations you wish to have
