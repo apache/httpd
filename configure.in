@@ -1,0 +1,92 @@
+dnl ## Process this file with autoconf to produce a configure script
+
+AC_PREREQ(2.13)
+AC_INIT(main/http_main.c)
+AM_INIT_AUTOMAKE(apache, 2.0-dev)
+
+dnl This would be in src/include, but I think I've found an autoheader bug
+AM_CONFIG_HEADER(ap_config_auto.h)
+
+dnl ## This is the central place where Apache's version should be kept.
+
+APACHE_VERSION=$VERSION
+AC_SUBST(APACHE_VERSION)
+
+dnl XXX - doesn't actually work, because of the APACHE_OUTPUT_FILES error
+AM_MAINTAINER_MODE
+
+dnl We want this one before the checks, so the checks can modify CFLAGS
+test -z "$CFLAGS" && auto_cflags=1
+
+dnl Needed for APACHE_MODULE() to work
+cwd=`pwd`
+
+dnl ## Check for programs
+
+dnl AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+dnl AC_PROG_RANLIB
+dnl AC_PATH_PROG(PERL_PATH, perl)
+
+dnl info autoconf says AIX needs this. Okay.
+AC_AIX
+
+dnl ## Check for libraries
+
+dnl ## Check for header files
+
+dnl I think these are just used all over the place, so just check for
+dnl them at the base of the tree. If some are specific to a single
+dnl directory, they should be moved (Comment #Spoon)
+
+AC_CHECK_HEADERS( \
+unistd.h \
+sys/times.h \
+sys/time.h \
+)
+
+dnl ## Check for typedefs, structures, and compiler characteristics.
+
+AC_C_INLINE
+
+dnl ## Check for library functions
+
+dnl See Comment #Spoon
+
+AC_CHECK_FUNCS( \
+strdup \
+strcasecmp \
+strncasecmp \
+strstr \
+strerror \
+initgroups \
+waitpid \
+difftime \
+gettimeofday \
+memmove \
+)
+
+AM_PROG_LIBTOOL
+
+dnl ## Checking command-line options
+test -n "$GCC" && test "$USE_MAINTAINER_MODE" = "yes" && \
+    CFLAGS="$CFLAGS -g -Wall -Wmissing-prototypes -Wstrict-prototypes -Wmissing-declarations"
+
+INCLUDES="-I\$(top_srcdir)/include -I\$(top_srcdir)/lib/apr/include"
+AC_SUBST(INCLUDES)
+
+dnl reading config stubs
+esyscmd(./helpers/config-stubs .)
+
+INCLUDES="$INCLUDES -I\$(top_srcdir)/\$(OS_DIR)"
+AC_SUBST(EXTRA_LIBS)
+AC_SUBST(REGEX_DIR)
+AC_SUBST(REGEX_LIB)
+AC_SUBST(MPM_LIB)
+AC_SUBST(OS)
+AC_SUBST(OS_DIR)
+
+AC_OUTPUT([Makefile ap/Makefile main/Makefile lib/apr/Makefile os/Makefile
+          $APACHE_OUTPUT_FILES])
