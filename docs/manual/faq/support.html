@@ -1,0 +1,143 @@
+<!--#if expr="!$ONEPAGE" -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Support - Apache Server Frequently Asked Questions</TITLE>
+ </HEAD>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <BODY
+  BGCOLOR="#FFFFFF"
+  TEXT="#000000"
+  LINK="#0000FF"
+  VLINK="#000080"
+  ALINK="#FF0000"
+ >
+  <!--#include virtual="header.html" -->
+  <H1 ALIGN="CENTER">Apache Server Frequently Asked Questions</H1>
+<!--#endif -->
+
+  <H2><a name="support.html">Support</a></H2>
+
+<UL>
+   <LI><A HREF="#what2do">&quot;Why can't I ...?  Why won't ...
+        work?&quot;  What to do in case of problems</A>
+   </LI>
+   <LI><A HREF="#support">Whom do I contact for support?</A>
+   </LI>
+
+</UL>
+
+<HR>
+
+ <H3><A NAME="what2do">&quot;Why can't I ...?  Why won't ... work?&quot;  
+	What to do in case of problems</A></H3>
+  <P>
+  If you are having trouble with your Apache server software, you should
+  take the following steps:
+  </P>
+  <OL>
+   <LI><STRONG>Check the errorlog!</STRONG>
+    <P>
+    Apache tries to be helpful when it encounters a problem.  In many
+    cases, it will provide some details by writing one or messages to
+    the server error log.  Sometimes this is enough for you to diagnose
+    &amp; fix the problem yourself (such as file permissions or the like).
+    The default location of the error log is
+    <SAMP>/usr/local/apache/logs/error_log</SAMP>, but see the
+    <A HREF="../mod/core.html#errorlog"><SAMP>ErrorLog</SAMP></A>
+    directive in your config files for the location on your server.
+    </P>
+   </LI>
+   <LI><STRONG>Check the
+    <A HREF="http://httpd.apache.org/docs/misc/FAQ.html">FAQ</A>!</STRONG>
+    <P>
+    The latest version of the Apache Frequently-Asked Questions list can
+    always be found at the main Apache web site.
+    </P>
+   </LI>
+   <LI><STRONG>Check the Apache bug database</STRONG>
+    <P>
+    Most problems that get reported to The Apache Group are recorded in
+    the
+    <A HREF="http://bugs.apache.org/">bug database</A>.
+    <EM><STRONG>Please</STRONG> check the existing reports, open
+    <STRONG>and</STRONG> closed, before adding one.</EM>  If you find
+    that your issue has already been reported, please <EM>don't</EM> add
+    a &quot;me, too&quot; report.  If the original report isn't closed
+    yet, we suggest that you check it periodically.  You might also
+    consider contacting the original submitter, because there may be an
+    email exchange going on about the issue that isn't getting recorded
+    in the database.
+    </P>
+   </LI>
+   <LI><STRONG>Ask in the <SAMP>comp.infosystems.www.servers.unix</SAMP>
+    or <SAMP>comp.infosystems.www.servers.ms-windows</SAMP> USENET
+    newsgroup (as appropriate for the platform you use).</STRONG>
+    <P>
+    A lot of common problems never make it to the bug database because
+    there's already high Q&amp;A traffic about them in the
+    <A HREF="news:comp.infosystems.www.servers.unix"
+    ><SAMP>comp.infosystems.www.servers.unix</SAMP></A>
+    newsgroup.  Many Apache users, and some of the developers, can be
+    found roaming its virtual halls, so it is suggested that you seek
+    wisdom there.  The chances are good that you'll get a faster answer
+    there than from the bug database, even if you <EM>don't</EM> see
+    your question already posted.
+    </P>
+   </LI>
+   <LI><STRONG>If all else fails, report the problem in the bug
+    database</STRONG>
+    <P>
+    If you've gone through those steps above that are appropriate and
+    have obtained no relief, then please <EM>do</EM> let The Apache
+    Group know about the problem by
+    <A HREF="http://httpd.apache.org/bug_report.html">logging a bug report</A>.
+    </P>
+    <P>
+    If your problem involves the server crashing and generating a core
+    dump, please include a backtrace (if possible).  As an example,
+    </P>
+    <P>
+    <DL>
+     <DD><CODE># cd <EM>ServerRoot</EM><BR>
+      # dbx httpd core<BR>
+      (dbx) where</CODE>
+     </DD>
+    </DL>
+    <P></P>
+    <P>
+    (Substitute the appropriate locations for your
+    <SAMP>ServerRoot</SAMP> and your <SAMP>httpd</SAMP> and
+    <SAMP>core</SAMP> files.  You may have to use <CODE>gdb</CODE>
+    instead of <CODE>dbx</CODE>.)
+    </P>
+   </LI>
+  </OL>
+  <HR>
+
+ <H3><A NAME="support">Whom do I contact for support?</A></H3>
+  <P>
+  There is no official support for Apache. None of the developers want to
+  be swamped by a flood of trivial questions that can be resolved elsewhere.
+  Bug reports and suggestions should be sent <EM>via</EM>
+  <A HREF="http://www.apache.org/bug_report.html">the bug report page</A>.
+  Other questions should be directed to the
+  <A HREF="news:comp.infosystems.www.servers.unix"
+  >comp.infosystems.www.servers.unix</A> or <A HREF=
+  "news:comp.infosystems.www.servers.ms-windows"
+  >comp.infosystems.www.servers.ms-windows</A>
+  newsgroup (as appropriate for the platform you use), where some of the 
+  Apache team lurk, in the company of many other httpd gurus who 
+  should be able to help.
+  </P>
+  <P>
+  Commercial support for Apache is, however, available from a number
+  of third parties.
+  </P>
+
+<!--#if expr="!$ONEPAGE" -->
+
+<!--#include virtual="footer.html" -->
+</BODY>
+</HTML>
+<!--#endif -->
