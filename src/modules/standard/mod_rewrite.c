@@ -3190,11 +3190,11 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
 #if defined(WIN32)
     /* MS Windows */
     {
-        char *pCommand;
+        char pCommand[MAX_STRING_LEN];
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
 
-        pCommand = strcat(SHELL_PATH, " /C ", cmd, NULL);
+        sprintf(pCommand, "%s /C %s", SHELL_PATH, cmd);
 
         memset(&si, 0, sizeof(si));
         memset(&pi, 0, sizeof(pi));

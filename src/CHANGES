@@ -1,5 +1,9 @@
 Changes with Apache 1.3.1
 
+  *) Fix recently introduced Win32 child spawning code in mod_rewrite.c which
+     was broken because of invalid ap_pstrcat() -> strcat() transformation.
+     [Ralf S. Engelschall]
+
   *) Proxy Cache Fixes: account for directory sizes, fork off garbage collection
      to continue in background, use predefined types (off_t, size_t, time_t),
      log the current cache usage percentage at LogLevel debug
