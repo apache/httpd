@@ -197,15 +197,18 @@ static const char *get_addresses(apr_pool_t *p, const char *w_,
         }
     }
 
-    /* XXX Gotta go through *all* addresses for the host name! 
-     * Fix apr_sockaddr_info_get() to save them! */
+    /* Remember all addresses for the host */
 
-    sar = apr_pcalloc(p, sizeof(server_addr_rec));
-    **paddr = sar;
-    *paddr = &sar->next;
-    sar->host_addr = my_addr;
-    sar->host_port = port;
-    sar->virthost = host;
+    do {
+        sar = apr_pcalloc(p, sizeof(server_addr_rec));
+        **paddr = sar;
+        *paddr = &sar->next;
+        sar->host_addr = my_addr;
+        sar->host_port = port;
+        sar->virthost = host;
+        my_addr = my_addr->next;
+    } while (my_addr);
+
     return NULL;
 }
 
