@@ -378,7 +378,7 @@ extern "C" {
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 
-#define SERVER_BASEVERSION "Apache/mpm-dev"       /* SEE COMMENTS ABOVE */
+#define SERVER_BASEVERSION "Apache/2.0-dev"       /* SEE COMMENTS ABOVE */
 #define SERVER_VERSION  SERVER_BASEVERSION
 
 /* TODO: re-implement the server token/version stuff -- it's part of http_core
