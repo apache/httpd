@@ -131,8 +131,7 @@
 
 typedef struct digest_config_struct {
     const char  *dir_name;
-    const char *provider_name;
-    const authn_provider *provider;
+    authn_provider_list *providers;
     const char  *realm;
     char **qop_list;
     apr_sha1_ctx_t  nonce_ctx;
@@ -486,29 +485,46 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
                                       const char *arg)
 {
     digest_config_rec *conf = (digest_config_rec*)config;
-
+    authn_provider_list *newp;
+    const char *provider_name;
+    
     if (strcasecmp(arg, "on") == 0) {
-        conf->provider_name = AUTHN_DEFAULT_PROVIDER;
+        provider_name = AUTHN_DEFAULT_PROVIDER;
     }
     else if (strcasecmp(arg, "off") == 0) {
-        conf->provider_name = NULL;
-        conf->provider = NULL;
+        /* Clear all configured providers and return. */
+        conf->providers = NULL; 
+        return NULL;
     }
     else {
-        conf->provider_name = apr_pstrdup(cmd->pool, arg);
+        provider_name = apr_pstrdup(cmd->pool, arg);
     }
 
-    if (conf->provider_name != NULL) {
-        /* lookup and cache the actual provider now */
-        conf->provider = authn_lookup_provider(conf->provider_name);
+    newp = apr_pcalloc(cmd->pool, sizeof(authn_provider_list));
+    newp->provider_name = provider_name;
 
-        if (conf->provider == NULL) {
-            /* by the time they use it, the provider should be loaded and
-               registered with us. */
-            return apr_psprintf(cmd->pool,
-                                "Unknown Authn provider: %s",
-                                conf->provider_name);
+    /* lookup and cache the actual provider now */
+    newp->provider = authn_lookup_provider(newp->provider_name);
+
+    if (newp->provider == NULL) {
+       /* by the time they use it, the provider should be loaded and
+           registered with us. */
+        return apr_psprintf(cmd->pool,
+                            "Unknown Authn provider: %s",
+                            newp->provider_name);
+    }
+
+    /* Add it to the list now. */
+    if (!conf->providers) {
+        conf->providers = newp;
+    }
+    else {
+        authn_provider_list *last = conf->providers;
+
+        while (last->next) {
+            last = last->next;
         }
+        last->next = newp;
     }
 
     return NULL;
@@ -1447,23 +1463,45 @@ static const char *get_hash(request_rec *r, const char *user,
 {
     authn_status auth_result;
     char *password;
+    authn_provider_list *current_provider;
 
-    /* To be nice, if we make it this far and we don't have a provider set,
-     * we'll use the default provider.
-     */
-    if (!conf->provider) {
-        conf->provider = authn_lookup_provider(AUTHN_DEFAULT_PROVIDER);
-    }
+    current_provider = conf->providers;
+    do {
+        const authn_provider *provider;
 
-    /* We expect the password to be md5 hash of user:realm:password */
-    auth_result = conf->provider->get_realm_hash(r, user, conf->realm,
-                                                 &password);
+        /* For now, if a provider isn't set, we'll be nice and use the file
+         * provider.
+         */
+        if (!current_provider) {
+            provider = authn_lookup_provider(AUTHN_DEFAULT_PROVIDER);
+        }
+        else {
+            provider = current_provider->provider;
+        }
+
+        /* We expect the password to be md5 hash of user:realm:password */
+        auth_result = provider->get_realm_hash(r, user, conf->realm,
+                                               &password);
+
+        /* User is found.  Stop checking. */
+        if (auth_result == AUTH_USER_FOUND) {
+            break;
+        }
+
+        /* If we're not really configured for providers, stop now. */
+        if (!conf->providers) {
+           break;
+        }
+
+        current_provider = current_provider->next;
+    } while (current_provider);
 
     if (auth_result != AUTH_USER_FOUND) {
         return NULL;
     }
-
-    return password;
+    else {
+        return password;
+    }
 }
 
 static int check_nc(const request_rec *r, const digest_header_rec *resp,
@@ -1820,10 +1858,6 @@ static int authenticate_digest_user(request_rec *r)
                       resp->algorithm, r->uri);
         note_digest_auth_failure(r, conf, resp, 0);
         return HTTP_UNAUTHORIZED;
-    }
-
-    if (!conf->provider) {
-        return DECLINED;
     }
 
     if (!(conf->ha1 = get_hash(r, r->user, conf))) {

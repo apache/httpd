@@ -106,6 +106,15 @@ typedef struct {
                                    const char *realm, char **rethash);
 } authn_provider;
 
+/* A linked-list of authn providers. */
+typedef struct authn_provider_list authn_provider_list;
+
+struct authn_provider_list {
+    const char *provider_name;
+    const authn_provider *provider;
+    authn_provider_list *next;
+};
+
 AAA_DECLARE(void) authn_register_provider(apr_pool_t *p, const char *name,
                                          const authn_provider *provider);
 AAA_DECLARE(const authn_provider *) authn_lookup_provider(const char *name);

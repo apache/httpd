@@ -74,8 +74,7 @@
 #include "mod_auth.h"
 
 typedef struct {
-    const char *provider_name;
-    const authn_provider *provider;
+    authn_provider_list *providers;
     char *dir;
     int authoritative;
 } auth_basic_config_rec;
@@ -95,29 +94,46 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
                                       const char *arg)
 {
     auth_basic_config_rec *conf = (auth_basic_config_rec*)config;
+    authn_provider_list *newp;
+    const char *provider_name;
 
     if (strcasecmp(arg, "on") == 0) {
-        conf->provider_name = AUTHN_DEFAULT_PROVIDER;
+        provider_name = AUTHN_DEFAULT_PROVIDER;
     }
     else if (strcasecmp(arg, "off") == 0) {
-        conf->provider_name = NULL;
-        conf->provider = NULL;
+        /* Clear all configured providers and return. */
+        conf->providers = NULL;
+        return NULL;
     }
     else {
-        conf->provider_name = apr_pstrdup(cmd->pool, arg);
+        provider_name = apr_pstrdup(cmd->pool, arg);
     }
 
-    if (conf->provider_name != NULL) {
-        /* lookup and cache the actual provider now */
-        conf->provider = authn_lookup_provider(conf->provider_name);
+    newp = apr_pcalloc(cmd->pool, sizeof(authn_provider_list));
+    newp->provider_name = provider_name;
 
-        if (conf->provider == NULL) {
-            /* by the time they use it, the provider should be loaded and
-               registered with us. */
-            return apr_psprintf(cmd->pool,
-                                "Unknown Authn provider: %s",
-                                conf->provider_name);
+    /* lookup and cache the actual provider now */
+    newp->provider = authn_lookup_provider(newp->provider_name);
+
+    if (newp->provider == NULL) {
+        /* by the time they use it, the provider should be loaded and
+           registered with us. */
+        return apr_psprintf(cmd->pool,
+                            "Unknown Authn provider: %s",
+                            newp->provider_name);
+    }
+
+    /* Add it to the list now. */
+    if (!conf->providers) {
+        conf->providers = newp;
+    }
+    else {
+        authn_provider_list *last = conf->providers;
+
+        while (last->next) {
+            last = last->next;
         }
+        last->next = newp;
     }
 
     return NULL;
@@ -207,6 +223,7 @@ static int authenticate_basic_user(request_rec *r)
     const char *sent_user, *sent_pw, *current_auth;
     int res;
     authn_status auth_result;
+    authn_provider_list *current_provider;
 
     /* Are we configured to be Basic auth? */
     current_auth = ap_auth_type(r);
@@ -228,15 +245,35 @@ static int authenticate_basic_user(request_rec *r)
         return res;
     }
 
-    /* For now, if a provider isn't set, we'll be nice and use the file
-     * provider.
-     */
-    if (!conf->provider) {
-        conf->provider = authn_lookup_provider(AUTHN_DEFAULT_PROVIDER);
-    }
+    current_provider = conf->providers;
+    do {
+        const authn_provider *provider;
 
-    auth_result = conf->provider->check_password(r, sent_user, sent_pw);
+        /* For now, if a provider isn't set, we'll be nice and use the file
+         * provider.
+         */
+        if (!current_provider) {
+            provider = authn_lookup_provider(AUTHN_DEFAULT_PROVIDER);
+        }
+        else {
+            provider = current_provider->provider;
+        }
 
+        auth_result = provider->check_password(r, sent_user, sent_pw);
+
+        /* Access is granted.  Stop checking. */
+        if (auth_result == AUTH_GRANTED) {
+            break;
+        }
+
+        /* If we're not really configured for providers, stop now. */
+        if (!conf->providers) {
+            break;
+        }
+
+        current_provider = current_provider->next;
+    } while (current_provider);
+    
     if (auth_result != AUTH_GRANTED) {
         int return_code;
 
