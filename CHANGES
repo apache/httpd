@@ -1,5 +1,9 @@
 Changes with Apache 2.0.37
 
+  *) Allow mod_rewrite's set of "int:" internal RewriteMap functions
+     to be extended by third-party modules via an optional function.
+     [Tahiry Ramanamampanoharana <nomentsoa@hotmail.com>, Cliff Woolley]
+
   *) Fix mod_include expression parser's handling of unquoted strings
      followed immediately by a closing paren.  PR 8462.  [Brian Pane]
 
