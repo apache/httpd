@@ -33,4 +33,9 @@
     root). To maintain the security of communications with CGI
     scripts, it is important that no other user has permission to
     write in the directory where the socket is located.</p>
+
+    <blockquote><table cellpadding="10"><tr><td bgcolor="#eeeeee"><p align="center"><strong>Example</strong></p><code>
+    ScriptSock /var/run/cgid.sock
+    </code></td></tr></table></blockquote>
+
 <hr/></blockquote><h3 align="center">Apache HTTP Server Version 2.0</h3><a href="./"><img src="../images/index.gif" alt="Index"/></a><a href="../"><img src="../images/home.gif" alt="Home"/></a></body></html>
