@@ -1,5 +1,9 @@
 Changes with Apache 1.3b7
   
+  *) Add a note to httpd.conf-dist that apache will on some systems fail
+     to start when the Group # is set to a negative or large positive value.
+     [Martin Kraemer]
+
   *) Make sure the module execution order is correct even when some modules
      are loaded under runtime (`LoadModule') via the DSO mechanism:
      1. The list of loaded modules is now a dynamically allocated one
