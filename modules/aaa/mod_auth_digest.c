@@ -249,10 +249,7 @@ typedef union time_union {
     unsigned char arr[sizeof(apr_time_t)];
 } time_rec;
 
-
 static unsigned char secret[SECRET_LEN];
-static int call_cnt = 0;
-
 
 /* client-list, opaque, and one-time-nonce stuff */
 
@@ -302,7 +299,7 @@ static apr_status_t cleanup_tables(void *not_used)
     return APR_SUCCESS;
 }
 
-static void initialize_secret(server_rec *s)
+static apr_status_t initialize_secret(server_rec *s)
 {
     apr_status_t status;
 
@@ -315,15 +312,17 @@ static void initialize_secret(server_rec *s)
 #error APR random number support is missing; you probably need to install the truerand library.
 #endif
 
-    if (!(status == APR_SUCCESS)) {
+    if (status != APR_SUCCESS) {
         char buf[120];
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_CRIT, 0, s,
                      "Digest: error generating secret: %s", 
                      apr_strerror(status, buf, sizeof(buf)));
-        exit(1);
+        return status;
     }
 
     ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "Digest: done");
+
+    return APR_SUCCESS;
 }
 
 static void log_error_and_cleanup(char *msg, apr_status_t sts, server_rec *s)
@@ -409,18 +408,22 @@ static void initialize_tables(server_rec *s, apr_pool_t *ctx)
 
 
 static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
-                              apr_pool_t *ptemp, server_rec *s)
+                             apr_pool_t *ptemp, server_rec *s)
 {
-    /* keep from doing the init more than once at startup, and delay
-     * the init until the second round
-     */
-    if (++call_cnt < 2) {
+    void *data;
+    const char *userdata_key = "auth_digest_init";
+
+    /* initialize_module() will be called twice, and if it's a DSO
+     * then all static data from the first call will be lost. Only
+     * set up our static data on the second call. */
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (!data) {
+        apr_pool_userdata_setn((const void *)1, userdata_key,
+                               apr_pool_cleanup_null, s->process->pool);
         return OK;
     }
-
-    /* only initialize the secret on startup, not on restarts */
-    if (call_cnt == 2) {
-        initialize_secret(s);
+    if (initialize_secret(s) != APR_SUCCESS) {
+        return !OK;
     }
 
 #if APR_HAS_SHARED_MEMORY
