@@ -13,8 +13,8 @@
 
 #include "cache_pqueue.h"
 #define left(i) (2*(i))
-#define right(i) ((2*i)+1)
-#define parent(i) (i/2)
+#define right(i) ((2*(i))+1)
+#define parent(i) ((i)/2)
 /*
  *  Priority queue structure
  */
@@ -67,60 +67,62 @@ apr_ssize_t cache_pq_size(cache_pqueue_t *q)
     return q->size;
 }
 
-static void cache_pq_bubble_up(cache_pqueue_t*q, apr_ssize_t i)
+static void cache_pq_bubble_up(cache_pqueue_t *q, apr_ssize_t i)
 {
     apr_ssize_t parent_node;
-    parent_node = parent(i);
+    void *moving_node = q->d[i];
+    long moving_pri = q->pri(moving_node);
 
-    while (i > 1 && q->pri(q->d[parent_node]) < q->pri(q->d[i])) {
-        void *tmp;
-        tmp = q->d[i];
-
+    for (parent_node = parent(i);
+         ((i > 1) && (q->pri(q->d[parent_node]) < moving_pri));
+         i = parent_node, parent_node = parent(i))
+    {
         q->d[i] = q->d[parent_node];
-        q->d[parent_node] = tmp;
         q->set(q->d[i], i);
-        q->set(q->d[parent_node], parent_node);
-        i = parent_node;
-        parent_node = parent(i);
     }
+
+    q->d[i] = moving_node;
+    q->set(moving_node, i);
 }
 
 static apr_ssize_t minchild(cache_pqueue_t *q, apr_ssize_t i)
 {
-    apr_ssize_t y, minc;
-    minc = left(i);
-    if (minc >= q->size)
-        return -1;
+    apr_ssize_t child_node = left(i);
 
-    for (y = minc + 1; y <= right(i) && y < q->size; y++) {
-        if (q->pri(q->d[y]) > q->pri(q->d[minc]))
-            minc = y;
-    }
-    return minc;
-}
+    if (child_node >= q->size)
+        return 0;
 
-static void cache_pq_percolate_down(cache_pqueue_t*q, apr_ssize_t i)
-{
-    apr_ssize_t cx = minchild(q, i);
-    while ((cx != -1) && (q->pri(q->d[cx]) > q->pri(q->d[i])))
+    if ((child_node+1 < q->size) &&
+        (q->pri(q->d[child_node+1]) > q->pri(q->d[child_node])))
     {
-        void *tmp;
-
-        tmp = q->d[i];
-        q->d[i] = q->d[cx];
-        q->d[cx] = tmp;
-        q->set(q->d[i], i);
-        q->set(q->d[cx], cx);
-        i = cx;
-        cx = minchild(q, i);
+        child_node++; /* use right child instead of left */
     }
+
+    return child_node;
 }
 
-apr_status_t cache_pq_insert(cache_pqueue_t *q, void* d)
+static void cache_pq_percolate_down(cache_pqueue_t *q, apr_ssize_t i)
+{
+    apr_ssize_t child_node;
+    void *moving_node = q->d[i];
+    long moving_pri = q->pri(moving_node);
+
+    while ((child_node = minchild(q, i)) &&
+           (moving_pri < q->pri(q->d[child_node])))
+    {
+        q->d[i] = q->d[child_node];
+        q->set(q->d[i], i);
+        i = child_node;
+    }
+
+    q->d[i] = moving_node;
+    q->set(moving_node, i);
+}
+
+apr_status_t cache_pq_insert(cache_pqueue_t *q, void *d)
 {
     void *tmp;
     apr_ssize_t i;
-    apr_ssize_t parent_node;
     apr_ssize_t newsize;
 
     if (!q) return APR_EGENERAL;
@@ -137,26 +139,15 @@ apr_status_t cache_pq_insert(cache_pqueue_t *q, void* d)
 
     /* insert item */
     i = q->size++;
-    parent_node = parent(i);
-    /*
-     * this is an optimization of the bubble-up as it doesn't
-     * have to swap the member around
-     */
-    while ((i > 1) && q->pri(q->d[parent_node]) < q->pri(d)) {
-        q->d[i] = q->d[parent_node];
-        q->set(q->d[i], i);
-        i = parent_node;
-        parent_node = parent(i);
-    }
     q->d[i] = d;
-    q->set(q->d[i], i);
+    cache_pq_bubble_up(q, i);
     return APR_SUCCESS;
 }
 
 /*
  * move a existing entry to a new priority
  */
-void cache_pq_change_priority(cache_pqueue_t*q,
+void cache_pq_change_priority(cache_pqueue_t *q,
                               long old_priority,
                               long new_priority,
                               void *d)
@@ -170,7 +161,7 @@ void cache_pq_change_priority(cache_pqueue_t*q,
         cache_pq_percolate_down(q, posn);
 }
 
-apr_status_t cache_pq_remove(cache_pqueue_t *q, void* d)
+apr_status_t cache_pq_remove(cache_pqueue_t *q, void *d)
 {
     apr_ssize_t posn;
     void *popped = NULL;
@@ -241,6 +232,7 @@ static void cache_pq_set_null( void*d, apr_ssize_t val)
 {
     /* do nothing */
 }
+
 /*
  * this is a debug function.. so it's EASY not fast
  */
@@ -260,6 +252,7 @@ void cache_pq_dump(cache_pqueue_t *q,
         print(out, q->d[i]);
     }
 }
+
 /*
  * this is a debug function.. so it's EASY not fast
  */
