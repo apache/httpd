@@ -197,6 +197,28 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
     ap_run_pre_connection(c);
 
     ap_run_process_connection(c);
+
+    /*
+     * Close the connection, being careful to send out whatever is still
+     * in our buffers.  If possible, try to avoid a hard close until the
+     * client has ACKed our FIN and/or has stopped sending us data.
+     */
+
+#ifdef NO_LINGCLOSE
+    ap_bclose(c->client);	/* just close it */
+#else
+    if (r && r->connection
+	&& !r->connection->aborted
+	&& r->connection->client
+	&& (r->connection->client->fd >= 0)) {
+
+	lingering_close(r);
+    }
+    else {
+	ap_bsetflag(c->client, B_EOUT, 1);
+	ap_bclose(c->client);
+    }
+#endif
 }
 
 int ap_process_http_connection(conn_rec *c)
@@ -226,28 +248,6 @@ int ap_process_http_connection(conn_rec *c)
 	    return OK;
 	}
     }
-
-    /*
-     * Close the connection, being careful to send out whatever is still
-     * in our buffers.  If possible, try to avoid a hard close until the
-     * client has ACKed our FIN and/or has stopped sending us data.
-     */
-
-#ifdef NO_LINGCLOSE
-    ap_bclose(c->client);	/* just close it */
-#else
-    if (r && r->connection
-	&& !r->connection->aborted
-	&& r->connection->client
-	&& (r->connection->client->fd >= 0)) {
-
-	lingering_close(r);
-    }
-    else {
-	ap_bsetflag(c->client, B_EOUT, 1);
-	ap_bclose(c->client);
-    }
-#endif
 
     return OK;
 }
