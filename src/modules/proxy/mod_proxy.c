@@ -335,6 +335,7 @@ set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
 	get_module_config (s->module_config, &proxy_module);
     struct noproxy_entry *new;
     struct noproxy_entry *list=(struct noproxy_entry*)conf->noproxies->elts;
+    struct hostent hp;
     int found = 0;
     int i;
 
@@ -350,8 +351,10 @@ set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
 	new = push_array (conf->noproxies);
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
-        if (strchr(arg, '.') != NULL)
-            proxy_host2addr(new->name, &new->addr);
+	if (strchr(arg, '.') != NULL) {
+	    proxy_host2addr(new->name, &hp);
+	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
+	}
 	else
 	    new->addr.s_addr = 0;
     }
@@ -473,6 +476,7 @@ set_cache_exclude(cmd_parms *parms, void *dummy, char *arg)
 	get_module_config (s->module_config, &proxy_module);
     struct nocache_entry *new;
     struct nocache_entry *list=(struct nocache_entry*)conf->nocaches->elts;
+    struct hostent hp;
     int found = 0;
     int i;
 
@@ -488,8 +492,10 @@ set_cache_exclude(cmd_parms *parms, void *dummy, char *arg)
 	new = push_array (conf->nocaches);
 	new->name = arg;
 	/* Don't do name lookups on things that aren't dotted */
-	if (strchr(arg, '.') != NULL)
-	    proxy_host2addr(new->name, &new->addr);
+	if (strchr(arg, '.') != NULL) {
+	    proxy_host2addr(new->name, &hp);
+	    memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
+	}
 	else
 	    new->addr.s_addr= 0;
     }

@@ -88,11 +88,12 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
 {
     struct sockaddr_in server;
     struct in_addr destaddr;
+    struct hostent server_hp;
     const char *host, *err;
     char *p;
     int   port, sock;
     char buffer[HUGE_STRING_LEN];
-    int  nbytes, i;
+    int  nbytes, i, j;
     fd_set fds;
 
     void *sconf = r->server->module_config;
@@ -136,7 +137,7 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
     Explain2("CONNECT to %s on port %d", host, port);
  
     server.sin_port = htons(port);
-    err = proxy_host2addr(host, &server.sin_addr);
+    err = proxy_host2addr(host, &server_hp);
     if (err != NULL)
 	return proxyerror(r, err); /* give up */
  
@@ -148,7 +149,15 @@ proxy_connect_handler(request_rec *r, struct cache_req *c, char *url)
     }     
     note_cleanups_for_fd(r->pool, sock);
  
-    i = proxy_doconnect(sock, &server, r);
+    j = 0;
+    while (server_hp.h_addr_list[j] != NULL) {
+        memcpy(&server.sin_addr, server_hp.h_addr_list[j],
+            sizeof(struct in_addr));
+        i = proxy_doconnect(sock, &server, r);
+        if (i == 0)
+            break; 
+        j++;
+    }   
     if (i == -1 )
         return proxyerror(r, "Could not connect to remote machine");
  

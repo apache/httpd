@@ -360,10 +360,11 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 {
     char *host, *path, *p, *user, *password, *parms;
     const char *err;
-    int port, userlen, i, len, sock, dsock, rc, nocache;
+    int port, userlen, i, j, len, sock, dsock, rc, nocache;
     int passlen = 0;
     int csd = 0;
     struct sockaddr_in server;
+    struct hostent server_hp;
     struct hdr_entry *hdr;
     struct in_addr destaddr;
     array_header *resp_hdrs;
@@ -454,7 +455,7 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
     memset(&server, 0, sizeof(struct sockaddr_in));
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
-    err = proxy_host2addr(host, &server.sin_addr);
+    err = proxy_host2addr(host, &server_hp);
     if (err != NULL) return proxyerror(r, err); /* give up */
 
     sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -475,8 +476,17 @@ proxy_ftp_handler(request_rec *r, struct cache_req *c, char *url)
 	return SERVER_ERROR;
     }
 
-    i = proxy_doconnect(sock, &server, r);
-    if (i == -1) return proxyerror(r, "Could not connect to remote machine");
+    j = 0;
+    while (server_hp.h_addr_list[j] != NULL) {
+        memcpy(&server.sin_addr, server_hp.h_addr_list[j],
+            sizeof(struct in_addr));
+        i = proxy_doconnect(sock, &server, r);
+        if (i == 0)
+            break; 
+        j++;
+    }   
+    if (i == -1)
+	return proxyerror(r, "Could not connect to remote machine");
 
     f = bcreate(pool, B_RDWR);
     bpushfd(f, sock, sock);

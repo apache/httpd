@@ -143,11 +143,12 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
 {
     char *p;
     const char *err, *desthost;
-    int i, sock, len;
+    int i, j, sock, len;
     array_header *reqhdrs_arr, *resp_hdrs;
     table_entry *reqhdrs;
     struct sockaddr_in server;
     struct in_addr destaddr;
+    struct hostent server_hp;
     BUFF *f, *cache;
     struct hdr_entry *hdr;
     char buffer[HUGE_STRING_LEN], inprotocol[9], outprotocol[9];
@@ -208,12 +209,12 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     {
 	url = r->uri;			/* restore original URL */
 	server.sin_port = htons(proxyport);
-	err = proxy_host2addr(proxyhost, &server.sin_addr);
+	err = proxy_host2addr(proxyhost, &server_hp);
 	if (err != NULL) return DECLINED;  /* try another */
     } else
     {
 	server.sin_port = htons(destport);
-	err = proxy_host2addr(desthost, &server.sin_addr);
+	err = proxy_host2addr(desthost, &server_hp);
 	if (err != NULL) return proxyerror(r, err); /* give up */
     }
 
@@ -225,7 +226,16 @@ proxy_http_handler(request_rec *r, struct cache_req *c, char *url,
     }
     note_cleanups_for_fd(pool, sock);
 
-    i = proxy_doconnect(sock, &server, r);
+    
+    j = 0;
+    while (server_hp.h_addr_list[j] != NULL) {
+	memcpy(&server.sin_addr, server_hp.h_addr_list[j],
+	    sizeof(struct in_addr));
+        i = proxy_doconnect(sock, &server, r);
+	if (i == 0)
+	    break;
+	j++;
+    }
     if (i == -1)
     {
 	if (proxyhost != NULL) return DECLINED; /* try again another way */

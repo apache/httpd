@@ -690,10 +690,11 @@ proxyerror(request_rec *r, const char *message)
  * This routine returns its own error message
  */
 const char *
-proxy_host2addr(const char *host, struct in_addr *addr)
+proxy_host2addr(const char *host, struct hostent *reqhp)
 {
     int i;
-    unsigned long ipaddr;
+    struct in_addr ipaddr;
+    char *addr_str;
 
     for (i=0; host[i] != '\0'; i++)
 	if (!isdigit(host[i]) && host[i] != '.')
@@ -705,12 +706,13 @@ proxy_host2addr(const char *host, struct in_addr *addr)
 
 	hp = gethostbyname(host);
 	if (hp == NULL) return "Host not found";
-	memcpy(addr, hp->h_addr, sizeof(struct in_addr));
+	memcpy(reqhp, hp, sizeof(struct hostent));
     } else
     {
-	if ((ipaddr = inet_addr(host)) == -1)
+	if ((ipaddr.s_addr = inet_addr(host)) == -1)
 	    return "Bad IP address";
-	memcpy(addr, &ipaddr, sizeof(unsigned long));
+	Explain1("Address is %s", addr_str);
+	memcpy(reqhp->h_addr, &ipaddr, sizeof(struct in_addr));
     }
     return NULL;
 }
