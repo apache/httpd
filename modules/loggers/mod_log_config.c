@@ -384,7 +384,7 @@ static const char *log_env_var(request_rec *r, char *a)
 static const char *log_request_time(request_rec *r, char *a)
 {
     ap_exploded_time_t xt;
-    ap_status_t retcode;
+    ap_size_t retcode;
     char tstr[MAX_STRING_LEN];
 
     /*

@@ -1277,7 +1277,8 @@ static void output_directories(struct ent **ar, int n,
 			       autoindex_config_rec *d, request_rec *r,
 			       int autoindex_opts, char keyid, char direction)
 {
-    int x, rv;
+    int x;
+    ap_size_t rv;
     char *name = r->uri;
     char *tp;
     int static_columns = (autoindex_opts & SUPPRESS_COLSORT);
