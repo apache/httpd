@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/05/21 06:05:53 $
+Last modified: $Date: 2002/06/11 00:19:17 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -84,7 +84,7 @@ tutorial on how to get started with making your contribution.
     - Hebrew (.he.iso8859-8)
     - Italian (.it)
     - Japanese (.ja.iso2022-jp, .ja.jis)
-    - Korean (.kr.iso2022-kr, .kt.iso-kr)
+    - Korean (.ko.euc-kr)
     - Luxembourgish (.lb)
     - Dutch (.nl)
     - Norwegian (.no)

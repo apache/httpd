@@ -54,9 +54,9 @@ URI: index.html.ja.iso2022-jp
 Content-language: ja
 Content-type: text/html;charset=ISO-2022-JP
 
-URI: index.html.kr.iso2022-kr
-Content-language: kr
-Content-type: text/html;charset=ISO-2022-KR
+URI: index.html.ko.euc-kr
+Content-language: ko
+Content-type: text/html;charset=EUC-KR
 
 URI: index.html.ltz.utf8
 Content-language: ltz
