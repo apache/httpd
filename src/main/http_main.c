@@ -4484,7 +4484,7 @@ typedef struct globals_s {
 } globals;
 
 globals allowed_globals =
-{0, NULL, NULL, NULL, 0};
+{0, NULL, NULL, NULL, NULL, 0};
 
 /*
  * add_job()/remove_job() - add or remove an accepted socket from the

@@ -1,5 +1,8 @@
 Changes with Apache 1.3.1
 
+  *) Correct initialization of variable `allowed_globals' in http_main.c
+     [Justin Bradford <justin@ukans.edu>] PR#2400
+
   *) Apache would incorrectly downcase the entire Content-Type passed from
      CGIs.  This affected server-push scripts and such which use
      multipart/x-mixed-replace;boundary=ThisRandomString.
