@@ -157,7 +157,7 @@
 #endif
 #if !defined(USE_FCNTL) && !defined(USE_FLOCK)
 #define USE_FLOCK 1
-#if !defined(MPE) && !defined(WIN32)
+#if !defined(MPE) && !defined(WIN32) && !defined(__TANDEM)
 #include <sys/file.h>
 #endif
 #ifndef LOCK_UN

@@ -922,6 +922,12 @@ typedef int rlim_t;
 #undef  offsetof
 #define offsetof(s_type,field) ((size_t)&(((s_type*)0)->field))
 
+#elif defined(__TANDEM)
+#define NO_WRITEV
+#define NO_KILLPG
+#define NEED_INITGROUPS
+#define NO_SLACK
+
 #else
 /* Unknown system - Edit these to match */
 #ifdef BSD
@@ -1005,8 +1011,11 @@ typedef int rlim_t;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef __TANDEM
+#include <strings.h>
+#endif
 #include "ap_ctype.h"
-#if !defined(MPE) && !defined(WIN32) && !defined(TPF)
+#if !defined(MPE) && !defined(WIN32) && !defined(TPF) && !defined(__TANDEM)
 #include <sys/file.h>
 #endif
 #ifndef WIN32

@@ -70,7 +70,7 @@
 #include <sys/types.h>
 #include "ap.h"
 #include "ap_md5.h"
-#if defined(MPE) || defined(QNX) || defined(WIN32)
+#if defined(MPE) || defined(QNX) || defined(WIN32) || defined(__TANDEM)
 #include <signal.h>
 #else
 #include <sys/signal.h>

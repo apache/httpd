@@ -740,6 +740,11 @@ case "$PLAT" in
 	CC='cc'
 	RANLIB='true'
 	;;
+    *-tandem-oss)
+	OS='Tandem OSS'
+	CFLAGS="-D_TANDEM_SOURCE -D_XOPEN_SOURCE_EXTENDED=1 -g"
+	CC='c89'
+	;;
     *) # default: Catch systems we don't know about
 	OS='Unknown and unsupported OS'
     	echo Sorry, but we cannot grok \"$PLAT\"

@@ -69,6 +69,10 @@
 #endif /* WIN32 */
 #include "multithread.h"
 #include "ap_md5.h"
+#ifdef __TANDEM
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
 
 DEF_Explain
 
@@ -1140,6 +1144,8 @@ void ap_proxy_cache_tidy(cache_req *c)
 	    *p = '\0';
 #ifdef WIN32
 	    if (mkdir(c->filename) < 0 && errno != EEXIST)
+#elif defined(__TANDEM)
+	    if (mkdir(c->filename, S_IRWXU | S_IRWXG | S_IRWXO) < 0 && errno != EEXIST)
 #else
 	    if (mkdir(c->filename, S_IREAD | S_IWRITE | S_IEXEC) < 0 && errno != EEXIST)
 #endif /* WIN32 */

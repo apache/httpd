@@ -150,6 +150,10 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "${MACHINE}-dec-osf"; exit 0
 	;;
 
+	NONSTOP_KERNEL:*:*:*)
+	echo "${MACHINE}-tandem-oss"; exit 0; 
+	;;
+
     QNX:*)
 	if [ "$VERSION" -gt 422 ]; then
 	    echo "${MACHINE}-qssl-qnx32"
