@@ -1178,10 +1178,7 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         if (map->type != MAPTYPE_PRG) {
             continue;
         }
-        if (map->argv[0] == NULL
-            || *(map->argv[0]) == '\0'
-            || map->fpin  != NULL
-            || map->fpout != NULL        ) {
+        if (!(map->argv[0]) || !*(map->argv[0]) || map->fpin || map->fpout) {
             continue;
         }
 
