@@ -2740,7 +2740,7 @@ static const handler_rec negotiation_handlers[] =
 static void register_hooks(void)
 {
     ap_hook_fixups(fix_encoding,NULL,NULL,HOOK_MIDDLE);
-    ap_hook_type_checker(handle_multi,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_type_checker(handle_multi,NULL,NULL,HOOK_FIRST);
 }
 
 module MODULE_VAR_EXPORT negotiation_module =
