@@ -72,6 +72,16 @@ static unsigned char hex2c(const char* p) {
 }
 #endif
 
+#define PROXY_COPY_CONF_PARAMS(w, c) \
+    do {                             \
+        (w)->timeout              = (c)->timeout;               \
+        (w)->timeout_set          = (c)->timeout_set;           \
+        (w)->recv_buffer_size     = (c)->recv_buffer_size;      \
+        (w)->recv_buffer_size_set = (c)->recv_buffer_size_set;  \
+        (w)->io_buffer_size       = (c)->io_buffer_size;        \
+        (w)->io_buffer_size_set   = (c)->io_buffer_size_set;    \
+    } while (0)
+
 static const char *set_worker_param(proxy_worker *worker,
                                     const char *key,
                                     const char *val)
@@ -81,53 +91,66 @@ static const char *set_worker_param(proxy_worker *worker,
     if (!strcasecmp(key, "loadfactor")) {
         worker->lbfactor = atoi(val);
         if (worker->lbfactor < 1 || worker->lbfactor > 100)
-            return "loadfactor must be number between 1..100";
+            return "LoadFactor must be number between 1..100";
     }
     else if (!strcasecmp(key, "retry")) {
         ival = atoi(val);
         if (ival < 1)
-            return "retry must be al least one second";
+            return "Retry must be al least one second";
         worker->retry = apr_time_from_sec(ival);
     }
     else if (!strcasecmp(key, "ttl")) {
         ival = atoi(val);
         if (ival < 1)
-            return "ttl must be at least one second";
+            return "TTL must be at least one second";
         worker->ttl = apr_time_from_sec(ival);
     }
     else if (!strcasecmp(key, "min")) {
         ival = atoi(val);
         if (ival < 0)
-            return "min must be a positive number";
+            return "Min must be a positive number";
         worker->min = ival;
     }
     else if (!strcasecmp(key, "max")) {
         ival = atoi(val);
         if (ival < 0)
-            return "max must be a positive number";
+            return "Max must be a positive number";
         worker->hmax = ival;
     }
     /* XXX: More inteligent naming needed */
     else if (!strcasecmp(key, "smax")) {
         ival = atoi(val);
         if (ival < 0)
-            return "smax must be a positive number";
+            return "Smax must be a positive number";
         worker->smax = ival;
     }
     else if (!strcasecmp(key, "acquire")) {
         ival = atoi(val);
         if (ival < 1)
-            return "acquire must be at least one mili second";
+            return "Acquire must be at least one mili second";
         worker->acquire = apr_time_make(0, ival * 1000);
         worker->acquire_set = 1;
-     }
+    }
     else if (!strcasecmp(key, "timeout")) {
         ival = atoi(val);
         if (ival < 1)
-            return "timeout must be at least one second";
+            return "Timeout must be at least one second";
         worker->timeout = apr_time_from_sec(ival);
         worker->timeout_set = 1;
-     }
+    }
+    else if (!strcasecmp(key, "iobuffersize")) {
+        long s = atol(val);
+        worker->io_buffer_size = ((s > AP_IOBUFSIZE) ? s : AP_IOBUFSIZE);
+        worker->io_buffer_size_set = 1;
+    }
+    else if (!strcasecmp(key, "receivebuffersize")) {
+        ival = atoi(val);
+        if (ival < 512 && ival != 0) {
+            return "ReceiveBufferSize must be >= 512 bytes, or 0 for system default.";
+        }
+        worker->recv_buffer_size = ival;
+        worker->recv_buffer_size_set = 1;
+    }
     else {
         return "unknown parameter";
     }
@@ -866,8 +889,8 @@ static const char *
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass: ", err, NULL);
         }
-        if (conf->timeout_set)
-            worker->timeout = conf->timeout;
+        PROXY_COPY_CONF_PARAMS(worker, conf);
+
         for (i = 0; i < arr->nelts; i++) {
             const char *err = set_worker_param(worker, elts[i].key, elts[i].val);
             if (err)
@@ -1238,8 +1261,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if ((err = ap_proxy_add_worker(&worker, cmd->pool, conf, name)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember: ", err, NULL); 
     }
-    if ((worker->timeout_set = conf->timeout_set))
-        worker->timeout = conf->timeout;
+    PROXY_COPY_CONF_PARAMS(worker, conf);
     
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
