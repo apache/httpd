@@ -59,6 +59,8 @@
 #ifndef APACHE_OS_H
 #define APACHE_OS_H
 
+#ifdef WIN32
+
 /* 
  * Compile the server including all the Windows NT 4.0 header files by 
  * default. We still want the server to run on Win95/98 so use 
@@ -204,5 +206,7 @@ API_EXPORT(const char *) ap_os_dso_error(void);
 
 /* Other ap_os_ routines not used by this platform */
 #define ap_os_kill(pid, sig)                kill(pid, sig)
+
+#endif /* WIN32 */
 
 #endif   /* ! APACHE_OS_H */

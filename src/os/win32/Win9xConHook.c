@@ -56,6 +56,7 @@
  * University of Illinois, Urbana-Champaign.
  */
 
+#ifdef WIN32
 
 /*
  * Win9xConHook.dll - a hook proc to clean up Win95/98 console behavior.
@@ -735,4 +736,4 @@ VOID DbgPrintf(
 }
 #endif
 
-
+#endif /* WIN32 */

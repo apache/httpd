@@ -1292,5 +1292,5 @@ int ap_restart_service(SC_HANDLE schService)
         return TRUE;
     return FALSE;
 }
-#endif /* WIN32 */
 
+#endif /* WIN32 */

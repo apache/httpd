@@ -75,6 +75,8 @@
  * the ISA is in.
  */
 
+#ifdef WIN32
+
 /* A lousy hack to include ap_check_cmd_context(): */
 #define CORE_PRIVATE 
 
@@ -926,3 +928,5 @@ module isapi_module = {
    NULL,                        /* logger */
    NULL                         /* header parser */
 };
+
+#endif /* WIN32 */

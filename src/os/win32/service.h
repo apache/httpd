@@ -88,6 +88,7 @@ int send_signal_to_service(char *display_name, char *sig,
 BOOL isWindowsNT(void);
 void ap_start_console_monitor(void);
 void ap_start_child_console(int is_child_of_service);
+
 #endif /* WIN32 */
 
 #endif /* SERVICE_H */
