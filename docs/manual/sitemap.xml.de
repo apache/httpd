@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>-->
-<!-- English revision: 1.12 -->
+<?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
+<!-- English revision: 1.14 -->
 
 <sitemap>
   <relativepath href="."/>
@@ -61,7 +61,7 @@
 </category>
 
 <category id="ssl">
-<title>Apache-SSL/TLS-Verschl&#252;sselung</title>
+<title>SSL/TLS-Verschl&#252;sselung des Apache</title>
 <page separate="yes" href="ssl/">&#220;bersicht</page>
 <page href="ssl/ssl_intro.html">SSL/TLS-Verschl&#252;sselung: Einf&#252;hrung</page>
 <page href="ssl/ssl_compat.html">SSL/TLS-Verschl&#252;sselung: Kompatibilit&#228;t</page>
@@ -114,7 +114,7 @@ HPUX betreiben</page>
 <category id="misc">
 <title>Weitere Apache-Dokumentationen</title>
 <page separate="yes" href="misc/">&#220;bersicht</page>
-<page href="misc/custom_errordocs.html">International angepaﬂte Server-Fehlermeldungen</page>
+<page href="misc/custom_errordocs.html">International angepa&#223;te Server-Fehlermeldungen</page>
 <page href="misc/fin_wait_2.html">Verbindungen im FIN_WAIT_2 und Apache</page>
 <page href="misc/known_client_problems.html">Bekannte Client-Probleme</page>
 <page href="misc/descriptors.html">Deskriptoren und Apache</page>
@@ -187,12 +187,6 @@ HPUX betreiben</page>
   <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
   <modulefile>worker.xml</modulefile>
-
-  <modulefile>obs_mod_access.xml</modulefile>
-  <modulefile>obs_mod_auth.xml</modulefile>
-  <modulefile>obs_mod_auth_anon.xml</modulefile>
-  <modulefile>obs_mod_auth_dbm.xml</modulefile>
-  <modulefile>obs_mod_auth_digest.xml</modulefile>
 </modulefilelist>
 </category>
 
