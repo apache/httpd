@@ -146,14 +146,14 @@ _install:
 	copy support\$(LONG)\htdigest.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\logresolve.exe "$(INSTDIR)\bin"
 	copy support\$(LONG)\rotatelogs.exe "$(INSTDIR)\bin"
-        -xcopy ..\htdocs "$(INSTDIR)\htdocs" /s /d /q
+        -xcopy /Y ..\htdocs "$(INSTDIR)\htdocs" /s /d
 	copy ..\cgi-bin\printenv "$(INSTDIR)\cgi-bin\printenv.pl"
-	xcopy include\*.h "$(INSTDIR)\include" /d /q
-	xcopy os\win32\*.h "$(INSTDIR)\include" /d /q
-	xcopy regex\*.h "$(INSTDIR)\include\regex" /d /q
-	xcopy lib\sdbm\*.h "$(INSTDIR)\include\sdbm" /d /q
-	xcopy lib\expat-lite\*.h "$(INSTDIR)\include\xml" /d /q
-        -xcopy ..\icons "$(INSTDIR)\icons" /s /d /q
+	xcopy /Y include\*.h "$(INSTDIR)\include" /d
+	xcopy /Y os\win32\*.h "$(INSTDIR)\include" /d
+	xcopy /Y regex\*.h "$(INSTDIR)\include\regex" /d
+	xcopy /Y lib\sdbm\*.h "$(INSTDIR)\include\sdbm" /d
+	xcopy /Y lib\expat-lite\*.h "$(INSTDIR)\include\xml" /d
+        -xcopy /Y ..\icons "$(INSTDIR)\icons" /s /d
 	copy ap\Lib$(SHORT)\ap.lib "$(INSTDIR)\lib"
 	copy os\win32\Lib$(SHORT)\ApacheOS.lib "$(INSTDIR)\lib"
 	copy regex\Lib$(SHORT)\regex.lib "$(INSTDIR)\lib"
