@@ -153,7 +153,7 @@
         static void my_register_hooks()<br />
         {<br />
         <indent>
-          ap_hook_do_something(my_something_doer, NULL, NULL, HOOK_MIDDLE);<br />
+          ap_hook_do_something(my_something_doer, NULL, NULL, APR_HOOK_MIDDLE);<br />
         </indent>
         }<br />
         <br />
@@ -173,19 +173,19 @@
       There are two mechanisms for doing this. The first, rather
       crude, method, allows us to specify roughly where the hook is
       run relative to other modules. The final argument control this.
-      There are three possible values: <code>HOOK_FIRST</code>,
-      <code>HOOK_MIDDLE</code> and <code>HOOK_LAST</code>.</p>
+      There are three possible values: <code>APR_HOOK_FIRST</code>,
+      <code>APR_HOOK_MIDDLE</code> and <code>APR_HOOK_LAST</code>.</p>
 
       <p>All modules using any particular value may be run in any
       order relative to each other, but, of course, all modules using
-      <code>HOOK_FIRST</code> will be run before <code>HOOK_MIDDLE</code>
-      which are before <code>HOOK_LAST</code>. Modules that don't care
-      when they are run should use <code>HOOK_MIDDLE</code>. <em>(I spaced
-      these out so people could do stuff like <code>HOOK_FIRST-2</code>
+      <code>APR_HOOK_FIRST</code> will be run before <code>APR_HOOK_MIDDLE</code>
+      which are before <code>APR_HOOK_LAST</code>. Modules that don't care
+      when they are run should use <code>APR_HOOK_MIDDLE</code>. <em>(I spaced
+      these out so people could do stuff like <code>APR_HOOK_FIRST-2</code>
       to get in slightly earlier, but is this wise? - Ben)</em></p>
 
       <p>Note that there are two more values,
-      <code>HOOK_REALLY_FIRST</code> and <code>HOOK_REALLY_LAST</code>. These
+      <code>APR_HOOK_REALLY_FIRST</code> and <code>APR_HOOK_REALLY_LAST</code>. These
       should only be used by the hook exporter.</p>
 
       <p>The other method allows finer control. When a module knows
@@ -202,13 +202,13 @@
         <indent>
           static const char * const aszPre[] = { "mod_xyz.c", "mod_abc.c", NULL };<br />
           <br />
-          ap_hook_do_something(my_something_doer, aszPre, NULL, HOOK_MIDDLE);<br />
+          ap_hook_do_something(my_something_doer, aszPre, NULL, APR_HOOK_MIDDLE);<br />
         </indent>
         }
       </example>
 
       <p>Note that the sort used to achieve this is stable, so
-      ordering set by <code>HOOK_<var>ORDER</var></code> is preserved, as far
+      ordering set by <code>APR_HOOK_<var>ORDER</var></code> is preserved, as far
       as is possible.</p>
 
       <p class="cite"><cite>Ben Laurie</cite>, 15th August 1999</p>
