@@ -145,7 +145,9 @@ static void *create_core_dir_config(pool *a, char *dir)
 
     conf->limit_req_body = 0;
     conf->sec = ap_make_array(a, 2, sizeof(void *));
-
+#ifdef WIN32
+    conf->script_interpreter_source = INTERPRETER_SOURCE_UNSET;
+#endif
     return (void *)conf;
 }
 
@@ -262,6 +264,13 @@ static void *merge_core_dir_configs(pool *a, void *basev, void *newv)
     if (new->satisfy != SATISFY_NOSPEC) {
         conf->satisfy = new->satisfy;
     }
+
+#ifdef WIN32
+    if (new->script_interpreter_source != INTERPRETER_SOURCE_UNSET) {
+        conf->script_interpreter_source = new->script_interpreter_source;
+    }
+#endif
+
     return (void*)conf;
 }
 
@@ -724,6 +733,174 @@ API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r)
     
     return d->limit_req_body;
 }
+
+#ifdef WIN32
+static char* get_interpreter_from_win32_registry(pool *p, const char* ext) 
+{
+    char extension_path[] = "SOFTWARE\\Classes\\";
+    char executable_path[] = "\\SHELL\\OPEN\\COMMAND";
+
+    HKEY hkeyOpen;
+    DWORD type;
+    int size;
+    int result;
+    char *keyName;
+    char *buffer;
+    char *s;
+
+    if (!ext)
+        return NULL;
+    /* 
+     * Future optimization:
+     * When the registry is successfully searched, store the interpreter
+     * string in a table to make subsequent look-ups faster
+     */
+
+    /* Open the key associated with the script extension */
+    keyName = ap_pstrcat(p, extension_path, ext, NULL);
+
+    result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, KEY_QUERY_VALUE, 
+                          &hkeyOpen);
+
+    if (result != ERROR_SUCCESS) 
+        return NULL;
+
+    /* Read to NULL buffer to find value size */
+    size = 0;
+    result = RegQueryValueEx(hkeyOpen, "", NULL, &type, NULL, &size);
+
+    if (result == ERROR_SUCCESS) {
+        buffer = ap_palloc(p, size);
+        result = RegQueryValueEx(hkeyOpen, "", NULL, &type, buffer, &size);
+    }
+
+    RegCloseKey(hkeyOpen);
+
+    if (result != ERROR_SUCCESS)
+        return NULL;
+
+    /* Open the key associated with the interpreter path */
+    keyName = ap_pstrcat(p, extension_path, buffer, executable_path, NULL);
+
+    result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, keyName, 0, KEY_QUERY_VALUE, 
+                          &hkeyOpen);
+
+    if (result != ERROR_SUCCESS)
+        return NULL;
+
+    /* Read to NULL buffer to find value size */
+    size = 0;
+    result = RegQueryValueEx(hkeyOpen, "", 0, &type, NULL, &size);
+
+    if (result == ERROR_SUCCESS) {
+        buffer = ap_palloc(p, size);
+        result = RegQueryValueEx(hkeyOpen, "", 0, &type, buffer, &size);
+    }
+
+    RegCloseKey(hkeyOpen);
+
+    if (result != ERROR_SUCCESS)
+        return NULL;
+
+    /*
+     * The canonical way shell command entries are entered in the Win32 
+     * registry is as follows:
+     *   shell [options] "%1"
+     * where
+     *   shell - full path name to interpreter or shell to run.
+     *           E.g., c:\usr\local\ntreskit\perl\bin\perl.exe
+     *   options - optional switches
+     *              E.g., \C
+     *   "%1" - Place holder for file to run the shell against. 
+     *          Typically quoted.
+     *
+     * If we find a %1 or a quoted %1, lop it off. 
+     */
+    if (buffer && *buffer) {
+        if ((s = strstr(buffer, "\"%1")))
+            *s = '\0';
+        else if ((s = strstr(buffer, "%1"))) 
+            *s = '\0';
+    }
+
+    return buffer;
+}
+
+API_EXPORT (file_type_e) ap_get_win32_interpreter(const  request_rec *r, 
+                                                  char*  ext, 
+                                                  char** interpreter )
+{
+    HANDLE hFile;
+    DWORD nBytesRead;
+    BOOLEAN bResult;
+    char buffer[1024];
+    core_dir_config *d;
+    file_type_e fileType = FileTypeUNKNOWN;
+    int i;
+
+    d = (core_dir_config *)ap_get_module_config(r->per_dir_config, 
+                                                &core_module);
+
+    if (d->script_interpreter_source == INTERPRETER_SOURCE_REGISTRY) {
+        /* 
+         * Check the registry
+         */
+        *interpreter = get_interpreter_from_win32_registry(r->pool, ext);
+        if (*interpreter)
+            return FileTypeSCRIPT;
+        else {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, r->server,
+             "Win32InterpreterSource config directive set to \"registry\".\n\t"
+             "Registry was searched but interpreter not found. Trying the shebang line.");
+        }
+    }
+
+    /* 
+     * Look for a #! line in the script
+     */
+    hFile = CreateFile(r->filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if (hFile == INVALID_HANDLE_VALUE) {
+        return FileTypeUNKNOWN;
+    }
+
+    bResult = ReadFile(hFile, (void*) &buffer, sizeof(buffer), 
+                       &nBytesRead, NULL);
+    if (!bResult || (nBytesRead == 0)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
+                      "ReadFile(%s) failed", r->filename);
+        CloseHandle(hFile);
+        return (FileTypeUNKNOWN);
+    }
+    CloseHandle(hFile);
+    
+    buffer[nBytesRead] = '\0';
+    
+    if ((buffer[0] == '#') && (buffer[1] == '!')) {
+        fileType = FileTypeSCRIPT;
+        for (i = 2; i < sizeof(buffer); i++) {
+            if ((buffer[i] == '\r')
+                || (buffer[i] == '\n')) {
+                break;
+            }
+        }
+        buffer[i] = '\0';
+        for (i = 2; buffer[i] == ' '; ++i)
+            ;
+        *interpreter = ap_pstrdup(r->pool, buffer + i ); 
+    }
+    else {
+        /* Check to see if it's a executable */
+        IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)interpreter;
+        if (hdr->e_magic == IMAGE_DOS_SIGNATURE && hdr->e_cblp < 512) {
+            fileType = FileTypeEXE;
+        }
+    }
+
+    return fileType;
+}
+#endif
 
 /*****************************************************************
  *
@@ -2452,6 +2629,19 @@ static const char *set_limit_req_body(cmd_parms *cmd, core_dir_config *conf,
     return NULL;
 }
 
+static const char *set_interpreter_source(cmd_parms *cmd, core_dir_config *d,
+                                                char *arg)
+{
+    if (!strcasecmp(arg, "registry")) {
+        d->script_interpreter_source = INTERPRETER_SOURCE_REGISTRY;
+    } else if (!strcasecmp(arg, "shebang")) {
+        d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
+    } else {
+        d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
+    }
+    return NULL;
+}
+
 /* Note --- ErrorDocument will now work from .htaccess files.  
  * The AllowOverride of Fileinfo allows webmasters to turn it off
  */
@@ -2668,6 +2858,8 @@ static const command_rec core_cmds[] = {
   (void*)XtOffsetOf(core_dir_config, limit_req_body),
   OR_ALL, TAKE1,
   "Limit (in bytes) on maximum size of request message body" },
+{ "Win32InterpreterSource", set_interpreter_source, NULL, OR_FILEINFO, TAKE1,
+  "Where to find interpreter to run Win32 scripts (Registry or script shebang line)" },
 { NULL },
 };
 

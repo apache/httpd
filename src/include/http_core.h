@@ -152,6 +152,16 @@ API_EXPORT(const char *) ap_auth_name (request_rec *);
 API_EXPORT(int) ap_satisfies (request_rec *r);
 API_EXPORT(const array_header *) ap_requires (request_rec *);    
 
+#ifdef WIN32
+/* 
+ * CGI Script stuff for Win32...
+ */
+typedef enum { FileTypeUNKNOWN, FileTypeBIN, FileTypeEXE, FileTypeSCRIPT } file_type_e;
+typedef enum { INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY, 
+               INTERPRETER_SOURCE_SHEBANG } interpreter_source_e;
+API_EXPORT(file_type_e) ap_get_win32_interpreter(const request_rec *, char*, char **);
+#endif
+
 #ifdef CORE_PRIVATE
 
 /*
@@ -248,6 +258,11 @@ typedef struct {
     array_header *sec;
     regex_t *r;
 
+#ifdef WIN32
+    /* Where to find interpreter to run scripts */
+    interpreter_source_e script_interpreter_source;
+#endif    
+    
 } core_dir_config;
 
 /* Per-server core configuration */

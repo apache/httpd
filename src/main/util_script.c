@@ -820,31 +820,31 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
     }
 #elif defined(WIN32)
     {
-	/* Adapted from Alec Kloss' work for OS/2 */
-	int is_script = 0;
-	int is_binary = 0;
-	char interpreter[2048];	/* hope it's enough for the interpreter path */
-	FILE *program;
-	int i, sz;
-	char *dot;
-	char *exename;
+        /* Adapted from Alec Kloss' work for OS/2 */
+        char *interpreter = NULL;
+        char *arguments = NULL;
+        char *ext = NULL;
+        char *exename = NULL;
+        char *s = NULL;
         char *quoted_filename;
-	int is_exe = 0;
-	STARTUPINFO si;
-	PROCESS_INFORMATION pi;
         char *pCommand;
         char *pEnvBlock, *pNext;
+
+        int i;
         int iEnvBlockLen;
 
-	memset(&si, 0, sizeof(si));
-	memset(&pi, 0, sizeof(pi));
+        file_type_e fileType;
 
-	interpreter[0] = 0;
-	pid = -1;
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
 
-        quoted_filename = ap_pstrcat(r->pool, "\"", r->filename, "\"", NULL);
+        memset(&si, 0, sizeof(si));
+        memset(&pi, 0, sizeof(pi));
+
+        pid = -1;
 
         if (!shellcmd) {
+            /* Find the file name */
             exename = strrchr(r->filename, '/');
             if (!exename) {
                 exename = strrchr(r->filename, '\\');
@@ -855,66 +855,88 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
             else {
                 exename++;
             }
-            dot = strrchr(exename, '.');
-            if (dot) {
-                if (!strcasecmp(dot, ".BAT")
-                    || !strcasecmp(dot, ".CMD")
-                    || !strcasecmp(dot, ".EXE")
-                    ||  !strcasecmp(dot, ".COM")) {
-                    is_exe = 1;
-                }
+
+            ext = strrchr(exename, '.');
+            if ((ext) && (!strcasecmp(ext,".bat") ||
+                          !strcasecmp(ext,".cmd"))) {
+                fileType = FileTypeEXE;
+            }
+            else if ((ext) && (!strcasecmp(ext,".exe") ||
+                               !strcasecmp(ext,".com"))) {
+                /* 16 bit or 32 bit? */
+                fileType = FileTypeEXE;
+            }
+            else {
+                /* Maybe a script or maybe a binary.. */
+                fileType = ap_get_win32_interpreter(r, ext, &interpreter);
             }
 
-            if (!is_exe) {
-                program = fopen(r->filename, "rb");
-                if (!program) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                                 "fopen(%s) failed", r->filename);
-                    return (pid);
-                }
-                sz = fread(interpreter, 1, sizeof(interpreter) - 1, program);
-                if (sz < 0) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, r,
-                                 "fread of %s failed", r->filename);
-                    fclose(program);
-                    return (pid);
-                }
-                interpreter[sz] = 0;
-                fclose(program);
-                if (!strncmp(interpreter, "#!", 2)) {
-                    is_script = 1;
-                    for (i = 2; i < sizeof(interpreter); i++) {
-                        if ((interpreter[i] == '\r')
-                            || (interpreter[i] == '\n')) {
-                            break;
-                        }
-                    }
-                    interpreter[i] = 0;
-                    for (i = 2; interpreter[i] == ' '; ++i)
-                        ;
-                    memmove(interpreter+2,interpreter+i,strlen(interpreter+i)+1);
-                }
-                else {
-                    /* Check to see if it's a executable */
-                    IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)interpreter;
-                    if (hdr->e_magic == IMAGE_DOS_SIGNATURE && hdr->e_cblp < 512) {
-                        is_binary = 1;
-                    }
-                }
-            }
-            /* Bail out if we haven't figured out what kind of
-             * file this is by now..
-             */
-            if (!is_exe && !is_script && !is_binary) {
+            if (fileType == FileTypeUNKNOWN) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r,
-                             "%s is not executable; ensure interpreted scripts have "
-                             "\"#!\" first line", 
-                             r->filename);
+                              "%s is not executable; ensure interpreted scripts have "
+                              "\"#!\" first line", 
+                              r->filename);
                 return (pid);
             }
-        }
 
-        if (shellcmd) {
+            /*
+             * Look at the arguments...
+             */
+            arguments = "";
+            if ((r->args) && (r->args[0]) && !strchr(r->args, '=')) { 
+                /* If we are in this leg, there are some other arguments
+                 * that we must include in the execution of the CGI.
+                 * Because CreateProcess is the way it is, we have to
+                 * create a command line like format for the execution
+                 * of the CGI.  This means we need to create on long
+                 * string with the executable and arguments.
+                 *
+                 * The arguments string comes in the request structure,
+                 * and each argument is separated by a '+'.  We'll replace
+                 * these pluses with spaces.
+                 */
+
+                int iStringSize = 0;
+                int x;
+	    
+                /*
+                 *  Duplicate the request structure string so we don't change it.
+                 */                                   
+                arguments = ap_pstrdup(r->pool, r->args);
+                
+                /*
+                 *  Change the '+' to ' '
+                 */
+                for (x=0; arguments[x]; x++) {
+                    if ('+' == arguments[x]) {
+                        arguments[x] = ' ';
+                    }
+                }
+       
+                /*
+                 * We need to unescape any characters that are 
+                 * in the arguments list.
+                 */
+                ap_unescape_url(arguments);
+                arguments = ap_escape_shell_cmd(r->pool, arguments);
+            }
+
+            /*
+             * We have the interpreter (if there is one) and we have 
+             * the arguments (if there are any).
+             * Build the command string to pass to CreateProcess. 
+             */
+            quoted_filename = ap_pstrcat(r->pool, "\"", r->filename, "\"", NULL);
+            if (interpreter && *interpreter) {
+                pCommand = ap_pstrcat(r->pool, interpreter, " ", 
+                                      quoted_filename, " ", arguments, NULL);
+            }
+            else {
+                pCommand = ap_pstrcat(r->pool, quoted_filename, " ", arguments, NULL);
+            }
+
+         } else {
+
             char *shell_cmd = "CMD.EXE /C ";
             OSVERSIONINFO osver;
             osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -929,96 +951,17 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
             }       
             pCommand = ap_pstrcat(r->pool, shell_cmd, argv0, NULL);
         }
- 	else if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) { 
-	    if (is_exe || is_binary) {
-	        /*
-	         * When the CGI is a straight binary executable, 
-		 * we can run it as is
-	         */
-	        pCommand = quoted_filename;
-	    }
-	    else if (is_script) {
-                /* When an interpreter is needed, we need to create 
-                 * a command line that has the interpreter name
-                 * followed by the CGI script name.  
-		 */
-	        pCommand = ap_pstrcat(r->pool, interpreter + 2, " ", 
-				      quoted_filename, NULL);
-	    }
-	    else {
-	        /* If not an executable or script, just execute it
-                 * from a command prompt.  
-                 */
-	        pCommand = ap_pstrcat(r->pool, SHELL_PATH, " /C ", 
-				      quoted_filename, NULL);
-	    }
-	}
-	else {
 
-            /* If we are in this leg, there are some other arguments
-             * that we must include in the execution of the CGI.
-             * Because CreateProcess is the way it is, we have to
-             * create a command line like format for the execution
-             * of the CGI.  This means we need to create on long
-             * string with the executable and arguments.
-             *
-             * The arguments string comes in the request structure,
-             * and each argument is separated by a '+'.  We'll replace
-             * these pluses with spaces.
-	     */
-	    char *arguments=NULL;
-	    int iStringSize = 0;
-	    int x;
-	    
-	    /*
-	     *  Duplicate the request structure string so we don't change it.
-	     */                                   
-	    arguments = ap_pstrdup(r->pool, r->args);
-       
-	    /*
-	     *  Change the '+' to ' '
-	     */
-	    for (x=0; arguments[x]; x++) {
-	        if ('+' == arguments[x]) {
-		  arguments[x] = ' ';
-		}
-	    }
-       
-	    /*
-	     * We need to unescape any characters that are 
-             * in the arguments list.
-	     */
-	    ap_unescape_url(arguments);
-	    arguments = ap_escape_shell_cmd(r->pool, arguments);
-           
-	    /*
-	     * The argument list should now be good to use, 
-	     * so now build the command line.
-	     */
-	    if (is_exe || is_binary) {
-	        pCommand = ap_pstrcat(r->pool, quoted_filename, " ", 
-				      arguments, NULL);
-	    }
-	    else if (is_script) {
-	        pCommand = ap_pstrcat(r->pool, interpreter + 2, " ", 
-				      quoted_filename, " ", arguments, NULL);
-	    }
-	    else {
-	        pCommand = ap_pstrcat(r->pool, SHELL_PATH, " /C ", 
-				      quoted_filename, " ", arguments, NULL);
-	    }
-	}
-
-	/*
-	 * Make child process use hPipeOutputWrite as standard out,
-	 * and make sure it does not show on screen.
-	 */
-	si.cb = sizeof(si);
-	si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-	si.wShowWindow = SW_HIDE;
-	si.hStdInput   = pinfo->hPipeInputRead;
-	si.hStdOutput  = pinfo->hPipeOutputWrite;
-	si.hStdError   = pinfo->hPipeErrorWrite;
+        /*
+         * Make child process use hPipeOutputWrite as standard out,
+         * and make sure it does not show on screen.
+         */
+        si.cb = sizeof(si);
+        si.dwFlags     = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+        si.wShowWindow = SW_HIDE;
+        si.hStdInput   = pinfo->hPipeInputRead;
+        si.hStdOutput  = pinfo->hPipeOutputWrite;
+        si.hStdError   = pinfo->hPipeErrorWrite;
   
         /*
          * Win32's CreateProcess call requires that the environment
@@ -1052,50 +995,10 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
              */ 
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
-        } else {
-	    if (is_script) {
-		/* since we are doing magic to find what we are executing
-		 * if running a script, log what we think we should have
-		 * executed
-		 */
-		ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, r,
-			     "could not run script interpreter: %s", pCommand);
-	    }
-	}
-#if 0
-	if ((!r->args) || (!r->args[0]) || strchr(r->args, '=')) {
-	    if (is_exe || is_binary) {
-		pid = spawnle(_P_NOWAIT, r->filename, r->filename, NULL, env);
-	    }
-	    else if (is_script) {
-		pid = spawnle(_P_NOWAIT, interpreter + 2, interpreter + 2,
-			      r->filename, NULL, env);
-	    }
-	    else {
-		pid = spawnle(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/C",
-			      r->filename, NULL, env);
-	    }
-	}
-	else {
-	    if (is_exe || is_binary) {
-		pid = spawnve(_P_NOWAIT, r->filename,
-			      create_argv(r->pool, NULL, NULL, NULL, argv0, 
-					  r->args), env);
-	    }
-	    else if (is_script) {
-		pid = spawnve(_P_NOWAIT, interpreter + 2,
-			      create_argv(r->pool, interpreter + 2, NULL, NULL,
-					  r->filename, r->args), env);
-	    }
-	    else {
-		pid = spawnve(_P_NOWAIT, SHELL_PATH,
-			      create_argv_cmd(r->pool, argv0, r->args,
-					      r->filename), env);
-	    }
-	}
-#endif
-	return (pid);
+        }
+        return (pid);
     }
+
 #else
     if (ap_suexec_enabled
 	&& ((r->server->server_uid != ap_user_id)
