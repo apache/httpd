@@ -506,8 +506,7 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
             flags = REG_NOSUB;        /* we're not mod_rewrite:-) */
             for (c = rxend+1; *c; ++c) {
                 switch (*c) {
-                    case 'i': flags |= REG_ICASE; break;
-                    case 'x': flags |= REG_EXTENDED; break;
+                case 'i': flags |= REG_ICASE; break;
                 }
             }
             provider->match.regex = ap_pregcomp(cmd->pool,
