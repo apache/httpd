@@ -450,24 +450,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_headers"=".\modules\metadata\mod_headers.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "mod_generic_hook_import"=".\modules\experimental\mod_generic_hook_import.dsp" - Package Owner=<4>
 
 Package=<5>
@@ -502,6 +484,42 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_headers"=".\modules\metadata\mod_headers.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_info"=".\modules\generators\mod_info.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
