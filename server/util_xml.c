@@ -63,6 +63,7 @@
 #include "httpd.h"
 #include "http_protocol.h"
 #include "http_log.h"
+#include "http_core.h"
 
 #include "util_xml.h"
 
@@ -395,7 +396,7 @@ API_EXPORT(int) ap_xml_parse_input(request_rec * r, ap_xml_doc **pdoc)
 	char end;
 	int rv;
 	size_t total_read = 0;
-	size_t limit_xml_body = 1000000; /* ### fix this */
+	size_t limit_xml_body = ap_get_limit_xml_body(r);
 
 	/* allocate our working buffer */
 	buffer = ap_palloc(r->pool, AP_XML_READ_BLOCKSIZE);

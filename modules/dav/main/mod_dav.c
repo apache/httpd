@@ -107,7 +107,6 @@ typedef struct {
     int locktimeout;
     int handle_get;		/* cached from repository hook structure */
     int allow_depthinfinity;
-    long limit_xml_body;
 
     ap_table_t *d_params;	/* per-directory DAV config parameters */
 
@@ -121,10 +120,6 @@ typedef struct {
 
 #define DAV_INHERIT_VALUE(parent, child, field) \
 		((child)->field ? (child)->field : (parent)->field)
-
-/* LimitXMLRequestBody handling */
-#define DAV_LIMIT_UNSET                 ((long) -1)
-#define DAV_DEFAULT_LIMIT_XML_BODY      ((size_t)1000000)
 
 
 /* forward-declare for use in configuration lookup */
@@ -175,7 +170,6 @@ static void *dav_create_dir_config(ap_pool_t *p, char *dir)
     conf = (dav_dir_conf *) ap_pcalloc(p, sizeof(*conf));
     conf->dir = ap_pstrdup(p, dir);
     conf->d_params = ap_make_table(p, 1);
-    conf->limit_xml_body = DAV_LIMIT_UNSET;
 
     return conf;
 }
@@ -194,11 +188,6 @@ static void *dav_merge_dir_config(ap_pool_t *p, void *base, void *overrides)
     newconf->dir = DAV_INHERIT_VALUE(parent, child, dir);
     newconf->allow_depthinfinity = DAV_INHERIT_VALUE(parent, child,
                                                      allow_depthinfinity);
-
-    if (child->limit_xml_body != DAV_LIMIT_UNSET)
-        newconf->limit_xml_body = child->limit_xml_body;
-    else
-        newconf->limit_xml_body = parent->limit_xml_body;
 
     newconf->d_params = ap_copy_table(p, parent->d_params);
     ap_overlap_tables(newconf->d_params, child->d_params,
@@ -222,16 +211,6 @@ ap_table_t *dav_get_dir_params(const request_rec *r)
 
     conf = ap_get_module_config(r->per_dir_config, &dav_module);
     return conf->d_params;
-}
-
-size_t dav_get_limit_xml_body(const request_rec *r)
-{
-    dav_dir_conf *conf;
-
-    conf = ap_get_module_config(r->per_dir_config, &dav_module);
-    if (conf->limit_xml_body == DAV_LIMIT_UNSET)
-        return DAV_DEFAULT_LIMIT_XML_BODY;
-    return (size_t)conf->limit_xml_body;
 }
 
 const dav_hooks_locks *dav_get_lock_hooks(request_rec *r)
@@ -335,21 +314,6 @@ static const char *dav_cmd_davparam(cmd_parms *cmd, void *config,
     dav_dir_conf *conf = (dav_dir_conf *) config;
 
     ap_table_set(conf->d_params, arg1, arg2);
-
-    return NULL;
-}
-
-/*
- * Command handler for LimitXMLRequestBody directive, which is TAKE1
- */
-static const char *dav_cmd_limitxmlrequestbody(cmd_parms *cmd, void *config,
-                                               const char *arg1)
-{
-    dav_dir_conf *conf = (dav_dir_conf *) config;
-
-    conf->limit_xml_body = atol(arg1);
-    if (conf->limit_xml_body < 0)
-        return "LimitXMLRequestBody requires a non-negative integer.";
 
     return NULL;
 }
@@ -3138,12 +3102,6 @@ static const command_rec dav_cmds[] =
     AP_INIT_TAKE2("DAVParam", dav_cmd_davparam, NULL,
                   ACCESS_CONF|RSRC_CONF,
                   "DAVParam <parameter name> <parameter value>"),
-
-    /* per directory/location, or per server */
-    AP_INIT_TAKE1("LimitXMLRequestBody", dav_cmd_limitxmlrequestbody, NULL,
-                  ACCESS_CONF|RSRC_CONF,
-                  "Limit (in bytes) on maximum size of an XML-based request "
-                  "body"),
 
     { NULL }
 };
