@@ -122,7 +122,7 @@
 
     <dl>
       <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
-      (Draft standard)</dt>
+      (Standards Track)</dt>
 
       <dd>"HTTP/1.0", includes the specification for a Basic
       Access Authentication scheme.</dd>
