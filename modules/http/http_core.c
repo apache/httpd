@@ -3152,8 +3152,12 @@ static int core_filter(ap_filter_t *f, ap_bucket_brigade *b)
               * the bucket by definition represents the unfiltered contents
               * of a file. Thus it is acceptable to use apr_sendfile().
               */
-             rv = send_the_file(e->data, e->offset, e->length, r, &bytes_sent);
+             rv = send_the_file(e->data, e->offset, e->length, r, &written);
           
+             /* Returning on APR_SUCCESS is not the correct behaviour as there
+              * may be other buckets... Need to think about this awhile before
+              * I change it. wgs
+              */
              if (rv == APR_SUCCESS) {
                  ap_brigade_destroy(b);
                  return APR_SUCCESS;
