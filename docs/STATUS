@@ -1,5 +1,5 @@
 Apache HTTP Server 2.1 Documentation Status File.
-Last modified: $Date: 2003/07/18 18:33:06 $
+Last modified: $Date: 2003/07/21 12:05:09 $
 
 For more information on how to contribute to the Apache Documentation
 Project, please see http://httpd.apache.org/docs-project/
@@ -23,7 +23,7 @@ Decisions pending
     icons/readme
     icons/small/readme.txt
   Votes for a single top-level README reference?
-  +1: wrowe, slive
+  +1: wrowe, slive, nd
 
 
 Things That Need Fixing
@@ -34,7 +34,8 @@ Things That Need Fixing
     - "using apache" has been done, "compiling apache" is still open
     - hints on uninstalling apache (exit monitor, close directories,
       registry entries etc) (PR 10154)
-    - FAQ! UTF-8 config and URL encoding for non-ascii characters.
+    - FAQ: UTF-8 config and URL encoding for non-ascii characters.
+    - FAQ: AcceptEx failed / virusscanner, firewall fun
 
 - New Auth system
     - Much clean-up and enhancement of aaa howto
@@ -45,7 +46,7 @@ Things That Need Fixing
     - mod_proxy: updates for 2.0
     - mod_status: updates for 2.0
     - mod_example: updates for 2.0
-    - mod_rewrite: explain, when what variables are actually available
+    - mod_rewrite: explain, when which variables are actually available
       (PR 16402)
     
 - MPM documentation
