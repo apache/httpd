@@ -74,4 +74,10 @@ void update_vhost_given_ip(conn_rec *conn);
  */
 void update_vhost_from_headers(request_rec *r);
 
+/* return 1 if the host:port matches any of the aliases of r->server
+ * return 0 otherwise
+ */
+API_EXPORT(int) matches_request_vhost(request_rec *r, const char *host,
+    unsigned port);
+
 #endif	/* !APACHE_HTTP_VHOST_H */

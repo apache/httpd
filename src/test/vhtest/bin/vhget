@@ -4,18 +4,20 @@ require 5.002;
 use strict;
 use Socket;
 
-# vhget ipaddr port hostheader expect
+# vhget ipaddr port hostheader absurihost expect
 
-$#ARGV == 3 || die "usage: $0 ipaddr port hostheader expect\n";
+$#ARGV == 4 || die "usage: $0 ipaddr port hostheader absurihost expect\n";
 
 my ($remote,$port, $iaddr, $paddr, $proto, $line);
 
-$remote = shift;
-$port = shift;
-my $hostheader = shift;
-my $expect = shift;
+my ($hostheader, $expect, $absurihost);
 
-printf "%-20s %-20s %-15s: ", "$remote:$port", "'$hostheader'", "'$expect'";
+($remote, $port, $hostheader, $absurihost, $expect) = @ARGV;
+if ($absurihost ne '') {
+    $absurihost = "http://$absurihost";
+}
+
+printf "%-20s %-20s %-20s %-15s: ", "$remote:$port", "'$hostheader'", "'$absurihost'", "'$expect'";
 
 if ($port =~ /\D/) {
     $port = getservbyname($port, 'tcp');
@@ -29,16 +31,18 @@ connect(SOCK, $paddr)    || die "connect: $!";
 
 my $oldfh = select(SOCK); $| = 1; select($oldfh);
 
+$proto = ($absurihost ne '') ? "HTTP/1.1" : "HTTP/1.0";
+
 if ($hostheader ne '') {
     print SOCK <<EOR;
-GET /vhost.txt HTTP/1.0\r
+GET $absurihost/vhost.txt $proto\r
 Host: $hostheader\r
 Connection: close\r
 \r
 EOR
 } else {
     print SOCK <<EOR;
-GET /vhost.txt HTTP/1.0\r
+GET $absurihost/vhost.txt $proto\r
 Connection: close\r
 \r
 EOR
@@ -56,8 +60,9 @@ defined($line = <SOCK>) || die "error reading response: $!\n";
 
 chomp($line);
 
-my $death = "$remote:$port with " .
-	( $hostheader eq '' ? "no Host:" : "Host: $hostheader" )
+my $death = "$remote:$port with "
+	. ( $hostheader eq '' ? "no Host:" : "Host: $hostheader" )
+	. ( $absurihost eq '' ? " no absuri" : " and absuri $absurihost" )
 	. " expected $expect, but got $line\n";
 if ($line eq $expect) {
     print "passed\n";

@@ -302,19 +302,15 @@ static char *log_remote_user(request_rec *r, char *a)
 
 static char *log_request_line(request_rec *r, char *a)
 {
-#ifdef WITH_UTIL_URI
 	    /* NOTE: If the original request contained a password, we
 	     * re-write the request line here to contain XXXXXX instead:
 	     * (note the truncation before the protocol string for HTTP/0.9 requests)
 	     * (note also that r->the_request contains the unmodified request)
 	     */
-    return (r->parsed_uri.has_password) ? pstrcat(r->pool, r->method, " ",
-					 unparse_uri_components(r->pool, &r->parsed_uri, NULL, 0),
+    return (r->parsed_uri.password) ? pstrcat(r->pool, r->method, " ",
+					 unparse_uri_components(r->pool, &r->parsed_uri, 0),
 					 r->assbackwards ? NULL : " ", r->protocol, NULL)
 					: r->the_request;
-#else /*WITH_UTIL_URI*/
-    return r->the_request;
-#endif /*WITH_UTIL_URI*/
 }
 
 static char *log_request_file(request_rec *r, char *a)

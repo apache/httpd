@@ -368,17 +368,19 @@ static name_chain *new_name_chain(pool *p, server_rec *s, server_addr_rec *sar)
 }
 
 
-static ap_inline ipaddr_chain *find_ipaddr(struct in_addr server_ip,
+static ap_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
     unsigned port)
 {
     unsigned bucket;
     ipaddr_chain *trav;
+    unsigned s_addr;
 
     /* scan the hash table for an exact match first */
-    bucket = hash_inaddr(server_ip.s_addr);
+    s_addr = server_ip->s_addr;
+    bucket = hash_inaddr(s_addr);
     for (trav = iphash_table[bucket]; trav; trav = trav->next) {
 	server_addr_rec *sar = trav->sar;
-	if ((sar->host_addr.s_addr == server_ip.s_addr)
+	if ((sar->host_addr.s_addr == s_addr)
 	    && (sar->host_port == 0 || sar->host_port == port
 		|| port == 0)) {
 	    return trav;
@@ -475,7 +477,7 @@ void fini_vhost_config(pool *p, server_rec *main_s)
 	    }
 	    else {
 		/* see if it matches something we've already got */
-		ic = find_ipaddr(sar->host_addr, sar->host_port);
+		ic = find_ipaddr(&sar->host_addr, sar->host_port);
 
 		/* the first time we encounter a NameVirtualHost address
 		 * ic->server will be NULL, on subsequent encounters
@@ -608,6 +610,89 @@ static void fix_hostname(request_rec *r)
     r->hostname = host;
 }
 
+
+/* return 1 if host matches ServerName or ServerAliases */
+static int matches_aliases(server_rec *s, const char *host)
+{
+    int i;
+    array_header *names;
+
+    /* match ServerName */
+    if (!strcasecmp(host, s->server_hostname)) {
+	return 1;
+    }
+
+    /* search all the aliases from ServerAlias directive */
+    names = s->names;
+    if (names) {
+	char **name = (char **) names->elts;
+	for (i = 0; i < names->nelts; ++i) {
+	    if(!name[i]) continue;
+	    if (!strcasecmp(host, name[i]))
+		return 1;
+	}
+    }
+    names = s->wild_names;
+    if (names) {
+	char **name = (char **) names->elts;
+	for (i = 0; i < names->nelts; ++i) {
+	    if(!name[i]) continue;
+	    if (!strcasecmp_match(host, name[i]))
+		return 1;
+	}
+    }
+    return 0;
+}
+
+
+/* Suppose a request came in on the same socket as this r, and included
+ * a header "Host: host:port", would it map to r->server?  It's more
+ * than just that though.  When we do the normal matches for each request
+ * we don't even bother considering Host: etc on non-namevirtualhosts,
+ * we just call it a match.  But here we require the host:port to match
+ * the ServerName and/or ServerAliases.
+ */
+API_EXPORT(int) matches_request_vhost(request_rec *r, const char *host,
+    unsigned port)
+{
+    server_rec *s;
+    server_addr_rec *sar;
+
+    s = r->server;
+
+    /* search all the <VirtualHost> values */
+    /* XXX: If this is a NameVirtualHost then we may not be doing the Right Thing
+     * consider: 
+     *
+     *     NameVirtualHost 10.1.1.1
+     *     <VirtualHost 10.1.1.1>
+     *     ServerName v1
+     *     </VirtualHost>
+     *     <VirtualHost 10.1.1.1>
+     *     ServerName v2
+     *     </VirtualHost>
+     *
+     * Suppose r->server is v2, and we're asked to match "10.1.1.1".  We'll say
+     * "yup it's v2", when really it isn't... if a request came in for 10.1.1.1
+     * it would really go to v1.
+     */
+    for (sar = s->addrs; sar; sar = sar->next) {
+	if ((sar->host_port == 0 || port == sar->host_port)
+	    && !strcasecmp(host, sar->virthost)) {
+	    return 1;
+	}
+    }
+
+    /* the Port has to match now, because the rest don't have ports associated
+     * with them. */
+    if (port != s->port) {
+	return 0;
+    }
+
+    return matches_aliases(s, host);
+}
+
+
 static void check_hostalias(request_rec *r)
 {
     /*
@@ -641,7 +726,6 @@ static void check_hostalias(request_rec *r)
      */
 
     for (src = r->connection->vhost_lookup_data; src; src = src->next) {
-        const char *names;
         server_addr_rec *sar;
 
 	/* We only consider addresses on the name_chain which have a matching
@@ -667,34 +751,15 @@ static void check_hostalias(request_rec *r)
 	}
 	last_s = s;
 
-	/* match ServerName */
-        if (!strcasecmp(host, s->server_hostname)) {
+	if (matches_aliases(s, host)) {
 	    goto found;
-        }
-
-        /* search all the aliases from ServerAlias directive */
-        names = s->names;
-        if (names) {
-            while (*names) {
-                char *name = getword_conf(r->pool, &names);
-
-                if ((is_matchexp(name) && !strcasecmp_match(host, name)) ||
-                    (!strcasecmp(host, name))) {
-		    goto found;
-                }
-            }
-        }
+	}
     }
     return;
 
 found:
     /* s is the first matching server, we're done */
     r->server = r->connection->server = s;
-    if (r->hostlen && !strncasecmp(r->uri, "http://", 7)) {
-	r->uri += r->hostlen;
-	r->proxyreq = 0;
-	parse_uri(r, r->uri);
-    }
 }
 
 
@@ -709,7 +774,7 @@ void check_serverpath(request_rec *r)
      * This is in conjunction with the ServerPath code in http_core, so we
      * get the right host attached to a non- Host-sending request.
      *
-     * See the comment in check_hostaliases about how each vhost can be
+     * See the comment in check_hostalias about how each vhost can be
      * listed multiple times.
      */
 
@@ -760,24 +825,16 @@ void update_vhost_from_headers(request_rec *r)
  */
 void update_vhost_given_ip(conn_rec *conn)
 {
-    server_addr_rec *sar;
     ipaddr_chain *trav;
-    unsigned bucket;
-    struct in_addr server_ip = conn->local_addr.sin_addr;
     unsigned port = ntohs(conn->local_addr.sin_port);
 
     /* scan the hash table for an exact match first */
-    bucket = hash_inaddr(server_ip.s_addr);
-    for (trav = iphash_table[bucket]; trav; trav = trav->next) {
-	sar = trav->sar;
-	if ((sar->host_addr.s_addr == server_ip.s_addr)
-	    && (sar->host_port == 0 || sar->host_port == port)) {
-
-	    /* save the name_chain for later in case this is a name-vhost */
-	    conn->vhost_lookup_data = trav->names;
-	    conn->server = trav->server;
-	    return;
-	}
+    trav = find_ipaddr(&conn->local_addr.sin_addr, port);
+    if (trav) {
+	/* save the name_chain for later in case this is a name-vhost */
+	conn->vhost_lookup_data = trav->names;
+	conn->server = trav->server;
+	return;
     }
 
     /* There's certainly no name-vhosts with this address, they would have

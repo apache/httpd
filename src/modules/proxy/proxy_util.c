@@ -58,9 +58,7 @@
 #include "md5.h"
 #include "multithread.h"
 #include "http_log.h"
-#ifdef WITH_UTIL_URI
 #include "util_uri.h"
-#endif /*WITH_UTIL_URI*/
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -1124,11 +1122,7 @@ int proxy_is_hostname(struct dirconn_entry *This, pool *p)
     if (addr[i] != '\0' || proxy_host2addr(addr, &host) != NULL)
 	return 0;
 
-#ifdef WITH_UTIL_URI
     This->hostentry = pduphostent (p, &host);
-#else /*WITH_UTIL_URI*/
-    This->hostlist = host;    /*XXX: FIXME: This points to overwritten static storage!!! */
-#endif /*WITH_UTIL_URI*/
 
     /* Strip trailing dots */
     for (i = strlen(addr) - 1; i > 0 && addr[i] == '.'; --i)

@@ -1222,6 +1222,21 @@ const char *virtualhost_section (cmd_parms *cmd, void *dummy, char *arg)
     return errmsg;
 }
 
+const char *set_server_alias(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    if (!cmd->server->names)
+	return "ServerAlias only used in <VirtualHost>";
+    while (*arg) {
+	char **item, *name = getword_conf(cmd->pool, &arg);
+	if (is_matchexp(name))
+	    item = (char **) push_array(cmd->server->wild_names);
+	else
+	    item = (char **) push_array(cmd->server->names);
+	*item = name;
+    }
+    return NULL;
+}
+
 const char *add_module_command (cmd_parms *cmd, void *dummy, char *arg)
 {
     const char *err = check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1872,9 +1887,8 @@ command_rec core_cmds[] = {
 { "ResourceConfig", set_server_string_slot,
   (void *)XtOffsetOf (server_rec, srm_confname), RSRC_CONF, TAKE1,
   "The filename of the resource config file" },
-{ "ServerAlias", set_server_string_slot,
-   (void *)XtOffsetOf (server_rec, names), RSRC_CONF, RAW_ARGS,
-   "A name or names alternately used to access the server" },
+{ "ServerAlias", set_server_alias, NULL, RSRC_CONF, RAW_ARGS,
+  "A name or names alternately used to access the server" },
 { "ServerPath", set_serverpath, NULL, RSRC_CONF, TAKE1,
   "The pathname the server can be reached at" },
 { "Timeout", set_timeout, NULL, RSRC_CONF, TAKE1, "Timeout duration (sec)"},

@@ -109,6 +109,7 @@
 #include "http_request.h"
 #include "http_core.h"
 #include "http_log.h"
+#include "http_vhost.h"
 
     /* now our own stuff ... */
 #include "mod_rewrite.h"
@@ -2211,7 +2212,7 @@ static void reduce_uri(request_rec *r)
         }
 
         /* now check whether we could reduce it to a local path... */
-        if (is_this_our_host(r, host) && port == r->server->port) {
+	if (matches_request_vhost(r, host, port)) {
             /* this is our host, so only the URL remains */
             r->filename = pstrdup(r->pool, url);
             rewritelog(r, 3, "reduce %s -> %s", olduri, r->filename);
@@ -3730,139 +3731,6 @@ static int prefix_stat(const char *path, struct stat *sb)
     else
         return 0;
 }
-
-
-/*
-**
-**  special DNS lookup functions
-**
-*/
-
-static int is_this_our_host(request_rec *r, char *testhost)
-{
-    char **cppHNLour;
-    char **cppHNLtest;
-    char *ourhostname;
-    char *ourhostip;
-    const char *names;
-    char *name;
-    int i, j;
-    server_addr_rec *sar;
-
-    /* we can check:
-       r->
-            char *hostname            Host, as set by full URI or Host:
-            int hostlen               Length of http://host:port in full URI
-       r->server->
-            int is_virtual            0=main, 1=ip-virtual, 2=non-ip-virtual
-            char *server_hostname     used on compare to r->hostname
-            inet_ntoa(r->connection->local_addr.sin_addr)
-                                      used on compare to r->hostname
-            unsigned short port       for redirects
-            char *path                name of ServerPath
-            int pathlen               len of ServerPath
-            char *names               Wildcarded names for ServerAlias servers
-       r->server->addrs->
-            struct in_addr host_addr  The bound address, for this server
-            short host_port           The bound port, for this server
-            char *virthost            The name given in <VirtualHost>
-    */
-
-    ourhostname = r->server->server_hostname;
-    ourhostip   = inet_ntoa(r->connection->local_addr.sin_addr);
-
-    /* just a simple common case */
-    if (strcmp(testhost, ourhostname) == 0 ||
-        strcmp(testhost, ourhostip)   == 0   )
-       return YES;
-
-    /* now the complicated cases */
-    if (!r->server->is_virtual) {
-        /* main servers */
-
-        /* check for the alternative IP addresses */
-        if ((cppHNLour = resolv_ipaddr_list(r, ourhostname)) == NULL)
-            return NO;
-        if ((cppHNLtest = resolv_ipaddr_list(r, testhost)) == NULL)
-            return NO;
-        for (i = 0; cppHNLtest[i] != NULL; i++) {
-            for (j = 0; cppHNLour[j] != NULL; j++) {
-                if (strcmp(cppHNLtest[i], cppHNLour[j]) == 0) {
-                    return YES;
-                }
-            }
-        }
-    }
-    else if (r->server->is_virtual) {
-        /* virtual servers */
-
-        /* check for the names supplied in the VirtualHost directive */
-        for(sar = r->server->addrs; sar != NULL; sar = sar->next) {
-            if(strcasecmp(sar->virthost, testhost) == 0)
-                return YES;
-        }
-
-        /* check for the virtual-server aliases */
-        if (r->server->names != NULL && r->server->names[0] != '\0') {
-            names = r->server->names;
-            while (*names != '\0') {
-                name = getword_conf(r->pool, &names);
-                if ((is_matchexp(name) &&
-                    !strcasecmp_match(testhost, name)) ||
-                    (strcasecmp(testhost, name) == 0)    ) {
-                    return YES;
-                }
-            }
-        }
-    }
-    return NO;
-}
-
-static int isaddr(char *host)
-{
-    char *cp;
-
-    /* Null pointers and empty strings
-       are not addresses. */
-    if (host == NULL)
-        return NO;
-    if (*host == '\0')
-        return NO;
-    /* Make sure it has only digits and dots. */
-    for (cp = host; *cp; cp++) {
-        if (!isdigit(*cp) && *cp != '.')
-            return NO;
-    }
-    /* If it has a trailing dot,
-       don't treat it as an address. */
-    if (*(cp-1) == '.')
-       return NO;
-    return YES;
-}
-
-static char **resolv_ipaddr_list(request_rec *r, char *name)
-{
-    char **cppHNL;
-    struct hostent *hep;
-    int i;
-
-    if (isaddr(name))
-        hep = gethostbyaddr(name, sizeof(struct in_addr), AF_INET);
-    else
-        hep = gethostbyname(name);
-    if (hep == NULL)
-        return NULL;
-    for (i = 0; hep->h_addr_list[i]; i++)
-        ;
-    cppHNL = (char **)palloc(r->pool, sizeof(char *)*(i+1));
-    for (i = 0; hep->h_addr_list[i]; i++)
-        cppHNL[i] = pstrdup(r->pool,
-                            inet_ntoa(*((struct in_addr *)
-                            (hep->h_addr_list[i]))));
-    cppHNL[i] = NULL;
-    return cppHNL;
-}
-
 
 /*
 **

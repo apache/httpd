@@ -53,6 +53,7 @@
 
 #include "mod_proxy.h"
 #include "http_log.h"
+#include "http_vhost.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */
@@ -126,15 +127,28 @@ static int proxy_trans(request_rec *r)
     proxy_server_conf *conf =
     (proxy_server_conf *) get_module_config(sconf, &proxy_module);
 
-    if (r->proxyreq) {
-	if (!conf->req)
-	    return DECLINED;
-
+    if (conf->req) {
+	if (!r->parsed_uri.scheme) {
+	    return DECLINED; /* definately not a proxy request */
+	}
+	/* but it might be something vhosted */
+	if (r->parsed_uri.hostname
+	    && !strcasecmp(r->parsed_uri.scheme, http_method(r))
+	    && matches_request_vhost(r, r->parsed_uri.hostname,
+		r->parsed_uri.port_str ? r->parsed_uri.port : default_port(r))) {
+	    return DECLINED; /* it's a vhost request */
+	}
+	r->proxyreq = 1;
+	r->uri = r->unparsed_uri;
 	r->filename = pstrcat(r->pool, "proxy:", r->uri, NULL);
 	r->handler = "proxy-server";
 	return OK;
     }
     else {
+	/* XXX: since r->uri has been manipulated already we're not really
+	 * compliant with RFC1945 at this point.  But this probably isn't
+	 * an issue because this is a hybrid proxy/origin server.
+	 */
 	int i, len;
 	struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
 
@@ -161,17 +175,14 @@ static int proxy_trans(request_rec *r)
  */
 static int proxy_fixup(request_rec *r)
 {
-    char *url, *p;
-    int i;
+    char *url;
 
     if (!r->proxyreq || strncmp(r->filename, "proxy:", 6) != 0)
 	return DECLINED;
 
     url = &r->filename[6];
 
-#ifdef WITH_UTIL_URI
-
-    if (!r->parsed_uri.has_scheme) {
+    if (!r->parsed_uri.scheme) {
 	return DECLINED;
     }
 
@@ -182,25 +193,6 @@ static int proxy_fixup(request_rec *r)
 	return proxy_ftp_canon(r, url + 4);
     else
 	return OK;		/* otherwise; we've done the best we can */
-
-#else /*WITH_UTIL_URI*/
-
-/* lowercase the scheme */
-    p = strchr(url, ':');
-    if (p == NULL || p == url)
-	return HTTP_BAD_REQUEST;
-    for (i = 0; i != p - url; i++)
-	url[i] = tolower(url[i]);
-
-/* canonicalise each specific scheme */
-    if (strncmp(url, "http:", 5) == 0)
-	return proxy_http_canon(r, url + 5, "http", DEFAULT_HTTP_PORT);
-    else if (strncmp(url, "ftp:", 4) == 0)
-	return proxy_ftp_canon(r, url + 4);
-    else
-	return OK;		/* otherwise; we've done the best we can */
-
-#endif /*WITH_UTIL_URI*/
 }
 
 static void proxy_init(server_rec *r, pool *p)
@@ -218,13 +210,10 @@ static void proxy_init(server_rec *r, pool *p)
 /* The "ProxyDomain" directive determines what domain will be appended */
 static int proxy_needsdomain(request_rec *r, const char *url, const char *domain)
 {
-#ifdef WITH_UTIL_URI
     char *nuri, *ref;
-    char strport[10];
 
     /* We only want to worry about GETs */
-    if (!r->proxyreq || r->method_number != M_GET 
-	|| !r->parsed_uri.has_hostname)
+    if (!r->proxyreq || r->method_number != M_GET || !r->parsed_uri.hostname)
 	return DECLINED;
 
     /* If host does contain a dot already, or it is "localhost", decline */
@@ -240,81 +229,16 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
 				     domain, NULL);
     nuri = unparse_uri_components(r->pool,
 				  &r->parsed_uri,
-				  &r->parsed_uri.hostlen,
 				  UNP_REVEALPASSWORD);
 
     table_set(r->headers_out, "Location", nuri);
     aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
 		"Domain missing: %s sent to %s%s%s", r->uri,
 		unparse_uri_components(r->pool, &r->parsed_uri,
-		      &r->parsed_uri.hostlen, UNP_OMITUSERINFO),
+		      UNP_OMITUSERINFO),
 		ref ? " from " : "", ref ? ref : "");
 
     return HTTP_MOVED_PERMANENTLY;
-
-#else /*WITH_UTIL_URI*/
-
-    char *scheme = pstrdup(r->pool, url);
-    char *url_copy, *user = NULL, *password = NULL, *path, *err, *host;
-    int port = -1;
-
-    /* We only want to worry about GETs */
-    if (r->method_number != M_GET)
-	return DECLINED;
-
-    /* Set url to the first char after "scheme://" */
-    if ((url_copy = strchr(scheme, ':')) == NULL
-	|| url_copy[1] != '/' || url_copy[2] != '/')
-	return DECLINED;
-
-    *url_copy++ = '\0';		/* delimit scheme, make url_copy point to "//", which is what proxy_canon_netloc expects */
-
-    /* Save the path - it will be re-appended for the redirection later */
-    path = strchr(&url_copy[2], '/');
-    if (path != NULL)
-	++path;			/* leading '/' will be overwritten by proxy_canon_netloc */
-    else
-	path = "";
-
-    /* Split request into user, password, host, port */
-    err = proxy_canon_netloc(r->pool, &url_copy, &user, &password, &host, &port);
-
-    if (err != NULL) {
-	aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server, err);
-	return DECLINED;
-    }
-
-    /* If host does contain a dot already, or it is "localhost", decline */
-    if (strchr(host, '.') != NULL || strcasecmp(host, "localhost") == 0)
-	return DECLINED;	/* host name has a dot already */
-    else {
-	char *nuri;
-	char *ref = table_get(r->headers_in, "Referer");
-	char strport[10];
-
-	/* now, rebuild URL */
-	if (port == -1)
-	    strcpy(strport, "");
-	else
-	    ap_snprintf(strport, sizeof(strport), ":%d", port);
-
-	/* Reassemble the request, but insert the domain after the host name */
-	nuri = pstrcat(r->pool, scheme, "://", (user != NULL) ? user : "",
-		            (password != NULL) ? ":" : "",
-		            (password != NULL) ? password : "",
-		            (user != NULL) ? "@" : "",
-		       host, domain, strport, "/", path,
-		       NULL);
-
-	table_setn(r->headers_out, "Location", nuri);
-	aplog_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, r->server,
-		    "Domain missing: %s sent to %s%s%s", r->uri, nuri,
-		    ref ? " from " : "", ref ? ref : "");
-
-	return HTTP_MOVED_PERMANENTLY;
-    }
-
-#endif /*WITH_UTIL_URI*/
 }
 
 /* -------------------------------------------------------------- */
@@ -582,9 +506,7 @@ static const char *
     if (!found) {
 	New = push_array(conf->dirconn);
 	New->name = arg;
-#ifdef WITH_UTIL_URI
-	New->hostentry = NULL;;
-#endif /*WITH_UTIL_URI*/
+	New->hostentry = NULL;
 
 	if (proxy_is_ipaddr(New, parms->pool)) {
 #if DEBUGGING

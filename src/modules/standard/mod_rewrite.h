@@ -430,11 +430,6 @@ static int    parseargline(char *str, char **a1, char **a2, char **a3);
 static int    prefix_stat(const char *path, struct stat *sb);
 static void   add_env_variable(request_rec *r, char *s);
 
-    /* DNS functions */
-static int    is_this_our_host(request_rec *r, char *testhost);
-static int    isaddr(char *host);
-static char **resolv_ipaddr_list(request_rec *r, char *name);
-
     /* Proxy Module check */
 static int is_proxy_available(server_rec *s);
 

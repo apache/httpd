@@ -537,9 +537,7 @@ typedef struct server_rec server_rec;
 typedef struct request_rec request_rec;
 typedef struct listen_rec listen_rec;
 
-#ifdef WITH_UTIL_URI
 #include "util_uri.h"
-#endif
 
 struct request_rec {
 
@@ -564,12 +562,11 @@ struct request_rec {
 
     char *the_request;		/* First line of request, so we can log it */
     int assbackwards;		/* HTTP/0.9, "simple" request */
-    int proxyreq;		/* A proxy request */
+    int proxyreq;		/* A proxy request (calculated during translate_name) */
     int header_only;		/* HEAD request, as opposed to GET */
     char *protocol;		/* Protocol, as given to us, or HTTP/0.9 */
     int proto_num;		/* Number version of protocol; 1.1 = 1001 */
     char *hostname;		/* Host, as set by full URI or Host: */
-    int hostlen;		/* Length of http://host:port in full URI */
 
     time_t request_time;	/* When the request started */
 
@@ -654,15 +651,13 @@ struct request_rec {
      * or content-negotiation mapping).
      */
 
-    char *uri;			/* complete URI for a proxy req, or
-				   URL path for a non-proxy req */
+    char *unparsed_uri;		/* the uri without any parsing performed */
+    char *uri;			/* the path portion of the URI */
     char *filename;
     char *path_info;
     char *args;			/* QUERY_ARGS, if any */
     struct stat finfo;		/* ST_MODE set to zero if no such file */
-#ifdef WITH_UTIL_URI
-  uri_components parsed_uri;	/* components of uri, dismantled */
-#endif
+    uri_components parsed_uri;	/* components of uri, dismantled */
 
     /* Various other config info which may change with .htaccess files
      * These are config vectors, with one void* pointer for each module
@@ -782,7 +777,8 @@ struct server_rec {
     char *path;			/* Pathname for ServerPath */
     int pathlen;		/* Length of path */
 
-    char *names;		/* Wildcarded names for ServerAlias servers */
+    array_header *names;	/* Normal names for ServerAlias servers */
+    array_header *wild_names;	/* Wildcarded names for ServerAlias servers */
 
     uid_t server_uid;		/* effective user id when calling exec wrapper */
     gid_t server_gid;		/* effective group id when calling exec wrapper */

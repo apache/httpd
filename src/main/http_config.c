@@ -1175,7 +1175,8 @@ const char *init_virtual_host(pool *p, const char *hostname,
     s->next = NULL;
 
     s->is_virtual = 1;
-    s->names = NULL;
+    s->names = make_array(p, 4, sizeof(char **));
+    s->wild_names = make_array(p, 4, sizeof(char **));
 
     s->module_config = create_empty_config(p);
     s->lookup_defaults = create_per_dir_config(p);
@@ -1284,6 +1285,7 @@ server_rec *init_server_config(pool *p)
     /* NOT virtual host; don't match any real network interface */
     s->addrs->host_addr.s_addr = htonl(INADDR_ANY);
     s->addrs->host_port = 0;	/* matches any port */
+    s->names = s->wild_names = NULL;
 
     s->module_config = create_server_config(p, s);
     s->lookup_defaults = create_default_per_dir_config(p);

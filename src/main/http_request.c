@@ -749,9 +749,7 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
 
         rnew->uri = make_full_path(rnew->pool, udir, new_file);
         rnew->filename = make_full_path(rnew->pool, fdir, new_file);
-#ifdef WITH_UTIL_URI
 	parse_uri(rnew, rnew->uri);    /* fill in parsed_uri values */
-#endif
         if (stat(rnew->filename, &rnew->finfo) < 0) {
             rnew->finfo.st_mode = 0;
         }
@@ -797,10 +795,8 @@ API_EXPORT(request_rec *) sub_req_lookup_file(const char *new_file,
         }
     }
     else {
-#ifdef WITH_UTIL_URI
 	/* XXX: @@@: What should be done with the parsed_uri values? */
 	parse_uri(rnew, new_file);	/* fill in parsed_uri values */
-#endif
         /*
          * XXX: this should be set properly like it is in the same-dir case
          * but it's actually sometimes to impossible to do it... because the
@@ -1017,27 +1013,13 @@ void process_request_internal(request_rec *r)
         return;
     }
 
-    if (!r->proxyreq) {
-        /*
-         * We don't want TRACE to run through the normal handler set, we
-         * handle it specially.
-         */
-        if (r->method_number == M_TRACE) {
-            if ((access_status = send_http_trace(r)))
-                die(access_status, r);
-            else
-                finalize_request_protocol(r);
-            return;
-        }
-
-        access_status = unescape_url(r->uri);
-        if (access_status) {
-            die(access_status, r);
-            return;
-        }
-
-        getparents(r->uri);     /* OK --- shrinking transformations... */
+    access_status = unescape_url(r->uri);
+    if (access_status) {
+	die(access_status, r);
+	return;
     }
+
+    getparents(r->uri);     /* OK --- shrinking transformations... */
 
     if ((access_status = location_walk(r))) {
         die(access_status, r);
@@ -1047,6 +1029,20 @@ void process_request_internal(request_rec *r)
     if ((access_status = translate_name(r))) {
         decl_die(access_status, "translate", r);
         return;
+    }
+
+    if (!r->proxyreq) {
+	/*
+	 * We don't want TRACE to run through the normal handler set, we
+	 * handle it specially.
+	 */
+	if (r->method_number == M_TRACE) {
+	    if ((access_status = send_http_trace(r)))
+		die(access_status, r);
+	    else
+		finalize_request_protocol(r);
+	    return;
+	}
     }
 
     if (r->proto_num > HTTP_VERSION(1,0) && table_get(r->subprocess_env, "downgrade-1.0")) {
@@ -1229,7 +1225,6 @@ request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
     new->protocol        = r->protocol;
     new->proto_num       = r->proto_num;
     new->hostname        = r->hostname;
-    new->hostlen         = r->hostlen;
     new->request_time    = r->request_time;
     new->main            = r->main;
 

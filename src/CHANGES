@@ -1,5 +1,31 @@
 Changes with Apache 1.3b6
 
+  *) mod_test_util_uri.c created which tests the logic in util_uri.c.
+     [Dean Gaudet]
+
+  *) Rewrite of absoluteURI handling, and in particular how absoluteURIs
+     match vhosts.  Unless a request is a proxy request, a "http://host"
+     url is treated as if a similar "Host:" header had been supplied.
+     This change was made to support future HTTP/1.x protocols which
+     may require clients to send absoluteURIs for all requests.
+
+     In order to achieve this change subtle changes were made to the API.  In a
+     request_rec, r->hostlen has been removed.  r->unparsed_uri now exists so
+     that the unmodified uri can be retrieved easily.  r->proxyreq is not set
+     until the translate_names phase. 
+
+     Plus changes to the virtualhost test suite for absoluteURI testing.
+     [Dean Gaudet]
+
+  *) Cleanup of code in http_vhost.c, and remove vhost matching code from
+     mod_rewrite.  The vhost matching is now performed by a globally
+     available function matches_request_vhost().  [Dean Gaudet]
+
+  *) Reduce memory usage, and speed up ServerAlias support.  As a
+     side-effect users can list multiple ServerAlias directives
+     and they're all considered.
+     [Chia-liang Kao <clkao@cirx.org>] PR#1531
+
   *) The "poly" directive in image maps did not include the borders of the
      polygon, whereas the "rect" directive does.  Fix this inconsistency.
      [Konstantin Morshnev <moko@design.ru>] PR#1771
@@ -13,15 +39,14 @@ Changes with Apache 1.3b6
   *) Add the `%a' construct to LogFormat and CustomLog to log the client IP
      address. [Todd Eigenschink <eigenstr@mixi.net>, PR#1885]
 
-  *) For testing purposes, I added a new source called main/util_uri.c;
-     It contains a routine parse_uri_components_regex() and friends which
-     tries to break an URI into its parts. These parts are stored in a new
-     uri_components structure within each request_rec and are therefore
-     available to all routines which act on a request.
-     Additionally, an unparse routine is supplied which re-assembles the
-     URI components back to an URI, optionally hiding the username:password@
-     part from ftp proxy requests, and other useful routines.
-     Within the structure, you find on a ready-for-use basis:
+  *) A new source module main/util_uri.c; It contains a routine
+     parse_uri_components() and friends which breaks a URI into its component
+     parts.  These parts are stored in a uri_components structure called
+     parsed_uri within each request_rec, and are available to all modules.
+     Additionally, an unparse routine is supplied which re-assembles the URI
+     components back to an URI, optionally hiding the username:password@ part
+     from ftp proxy requests, and other useful routines.  Within the structure,
+     you find on a ready-for-use basis:
 	scheme;     /* scheme ("http"/"ftp"/...) */
 	hostinfo;   /* combined [user[:password]@]host[:port] */
 	user;       /* user name, as in http://user:passwd@host:port/ */
@@ -31,11 +56,9 @@ Changes with Apache 1.3b6
 	path;       /* the request path (or "/" if only scheme://host was given) */
 	query;      /* Everything after a '?' in the path, if present */
 	fragment;   /* Trailing "#fragment" string, if present */
-     plus flags to indicate whether the strings have valid values.
      This is meant to serve as the platform for *BIG* savings in
      code complexity for the proxy module (and maybe the vhost logic).
-     NOTE: This code is enabled only if the WITH_UTIL_URI define is set;
-     currently this is not enabled by default.  [Martin Kraemer]
+     [Martin Kraemer]
 
   *) Make all possible meta-construct expansions ($N, %N, %{NAME} and
      ${map:key}) available for all location where a string is created in

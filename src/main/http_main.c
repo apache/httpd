@@ -2887,9 +2887,6 @@ static void show_compile_settings(void)
 #ifdef NEED_HASHBANG_EMUL
     printf(" -D NEED_HASHBANG_EMUL\n");
 #endif
-#ifdef WITH_UTIL_URI
-    printf(" -D WITH_UTIL_URI\n");
-#endif
     printf("\n");
 }
 

@@ -91,20 +91,9 @@ typedef struct {
 
     struct hostent *hostent;
 
-    unsigned hostlen;		/* strlen("scheme://[user[:password]@]host[:port]") */
-    unsigned short port;	/* The port number, numeric */
+    unsigned short port;	/* The port number, numeric, valid only if port_str != NULL */
     
     unsigned is_initialized:1;
-
-    unsigned has_scheme:1;
-    unsigned has_hostinfo:1;
-    unsigned has_user:1;
-    unsigned has_password:1;
-    unsigned has_hostname:1;
-    unsigned has_port:1;
-    unsigned has_path:1;
-    unsigned has_query:1;
-    unsigned has_fragment:1;
 
     unsigned dns_looked_up:1;
     unsigned dns_resolved:1;
@@ -117,12 +106,8 @@ API_EXPORT(unsigned short) default_port_for_request(const request_rec *r);
 API_EXPORT(struct hostent *) pduphostent(pool *p, struct hostent *hp);
 API_EXPORT(struct hostent *) pgethostbyname(pool *p, const char *hostname);
 API_EXPORT(char *) unparse_uri_components(pool *p, const uri_components *uptr,
-	int *pHostlen, unsigned flags);
-API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *uptr,
-	int *pHostlen);
-API_EXPORT(int) parse_uri_components_regex(pool *p, const char *uri,
-	uri_components *uptr);
-
+    unsigned flags);
+API_EXPORT(int) parse_uri_components(pool *p, const char *uri, uri_components *uptr);
 /* called by the core in main() */
 extern void util_uri_init(void);
 
