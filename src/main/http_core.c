@@ -1241,6 +1241,7 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
 						  const char *arg)
 {
     const char *limited_methods = ap_getword(cmd->pool, &arg, '>');
+    void *tog = cmd->cmd->cmd_data;
     int limited = 0;
   
     const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
@@ -1249,7 +1250,7 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
     }
 
     /* XXX: NB: Currently, we have no way of checking
-     * whether <Limit> sections are closed properly.
+     * whether <Limit> or <LimitExcept> sections are closed properly.
      * (If we would add a srm_command_loop() here we might...)
      */
     
@@ -1257,26 +1258,31 @@ CORE_EXPORT_NONSTD(const char *) ap_limit_section(cmd_parms *cmd, void *dummy,
         char *method = ap_getword_conf(cmd->pool, &limited_methods);
         int  methnum = ap_method_number_of(method);
 
-        if (methnum == M_TRACE) {
+        if (methnum == M_TRACE && !tog) {
             return "TRACE cannot be controlled by <Limit>";
         }
         else if (methnum == M_INVALID) {
-            return ap_pstrcat(cmd->pool, "unknown method \"",
-                              method, "\" in <Limit>", NULL);
+            return ap_pstrcat(cmd->pool, "unknown method \"", method,
+                              "\" in <Limit", tog ? "Except>" : ">", NULL);
         }
         else {
             limited |= (1 << methnum);
         }
     }
 
-    cmd->limited = limited;
+    /* Killing two features with one function,
+     * if (tog == NULL) <Limit>, else <LimitExcept>
+     */
+    cmd->limited = tog ? ~limited : limited;
     return NULL;
 }
 
 static const char *endlimit_section(cmd_parms *cmd, void *dummy, void *dummy2)
 {
+    void *tog = cmd->cmd->cmd_data;
+
     if (cmd->limited == -1) {
-        return "</Limit> unexpected";
+        return tog ? "</LimitExcept> unexpected" : "</Limit> unexpected";
     }
     
     cmd->limited = -1;
@@ -2675,6 +2681,11 @@ static const command_rec core_cmds[] = {
   "authentication directives when accessed using specified HTTP methods" },
 { "</Limit>", endlimit_section, NULL, OR_ALL, NO_ARGS,
   "Marks end of <Limit>" },
+{ "<LimitExcept", ap_limit_section, (void*)1, OR_ALL, RAW_ARGS,
+  "Container for authentication directives to be applied when any HTTP "
+  "method other than those specified is used to access the resource" },
+{ "</LimitExcept>", endlimit_section, (void*)1, OR_ALL, NO_ARGS,
+  "Marks end of <LimitExcept>" },
 { "<IfModule", start_ifmod, NULL, OR_ALL, TAKE1,
   "Container for directives based on existance of specified modules" },
 { end_ifmodule_section, end_ifmod, NULL, OR_ALL, NO_ARGS,

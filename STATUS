@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/02/09 18:00:18 $]
+  Last modified at [$Date: 1999/02/09 20:20:22 $]
 
 Release:
 
@@ -60,18 +60,6 @@ Available Patches:
     * John Bley's [PATCH] malloc checks
         MID: <Pine.SOL.3.91.990202065837.23002A-100000@soc11.acpub.duke.edu>
         Status: Jim -0 (maybe the messages could be more detailed?)
-
-    * Tony Finch's [PATCH] <LimitExcept>
-        Message-ID: <E107LTU-0005ap-00@fanf.noc.demon.net>
-        Status: Roy [looks good, but we might be able to do better by using
-                     the same function as Limit and just checking cmd]
-
-    * Dean's [PATCH] etag continued (take 2)
-      Adds strong comparison functions to other checks.
-        MID: <Pine.LNX.3.96dg4.990128015459.16954J-100000@twinlark.arctic.org>
-        Status: Roy needs to fix ap_find_opaque_token() because it doesn't
-                do the right HTTP parsing anyway, so this will probably be
-                folded in at the same time.
 
     * Cliff's [PATCH] 500 errors not giving error-notes (related to PR #3455)
         Message-ID: <Pine.BSF.4.05.9901250208190.7930-100000@lazlo.steam.com>
