@@ -94,7 +94,8 @@ Content-type: text/html
 Body:----------nl--
 <!--#set var="TITLE" value="Toegang verboden!" -->
 <!--#include virtual="include/top.html" -->
-<!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
    U hebt niet de toestemming om toegang te krijgen tot de gevraagde map.
    Er is of wel geen index document of de map is beveiligd tegen lezen.

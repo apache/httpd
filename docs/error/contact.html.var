@@ -33,7 +33,7 @@ Content-language: nl
 Content-type: text/html
 Body:----------nl--
 Indien u van oordeel bent dat deze server in fout is, gelieve
-de <A HREF="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</A> te contacteren.
+de <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">webmaster</a> te contacteren.
 ----------nl--
 
 Content-language: sv
