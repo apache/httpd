@@ -180,6 +180,6 @@ install-suexec:
 	fi
 
 suexec:
-	cd support && make suexec
+	cd support && $(MAKE) suexec
 
 include $(top_srcdir)/os/os2/core.mk
