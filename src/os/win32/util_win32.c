@@ -19,8 +19,8 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon,
     const char *szFile;
 
     szFile = szInFile;
-    s=strrchr(szFile,'\\');
-    for(nSlashes=0 ; s > szFile && s[-1] == '\\' ; ++nSlashes,--s)
+    s = strrchr(szFile, '\\');
+    for (nSlashes = 0; s > szFile && s[-1] == '\\'; ++nSlashes, --s)
 	;
 
     n = GetFullPathName(szFile, sizeof buf, buf, &szFilePart);
@@ -39,30 +39,32 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon,
      */
     if (!s) {
         szFile = buf;
-        s=strrchr(szFile,'\\');
+        s = strrchr(szFile, '\\');
     }
 
     /* If we have \\machine\share, convert to \\machine\share\ */
     if (buf[0] == '\\' && buf[1] == '\\') {
-	char *s=strchr(buf+2,'\\');
-	if(s && !strchr(s+1,'\\'))
-	    strcat(s+1,"\\");
+	char *s = strchr(buf + 2, '\\');
+	if (s && !strchr(s + 1, '\\')) {
+	    strcat(s + 1, "\\");
+	}
     }
 
     if (!strchr(buf, '*') && !strchr(buf, '?')) {
         h = FindFirstFile(buf, &d);
-        if(h != INVALID_HANDLE_VALUE)
+        if (h != INVALID_HANDLE_VALUE) {
             FindClose(h);
+	}
     }
     else {
-        h=INVALID_HANDLE_VALUE;
+        h = INVALID_HANDLE_VALUE;
     }
 
-    if (szFilePart < buf+3) {
+    if (szFilePart < buf + 3) {
 	ap_assert(strlen(buf) < nCanon);
         strcpy(szCanon, buf);
 	/* a \ at the start means it is UNC, otherwise it is x: */
-	if(szCanon[0] != '\\') {
+	if (szCanon[0] != '\\') {
 	    ap_assert(ap_isalpha(szCanon[0]));
 	    ap_assert(szCanon[1] == ':');
 	    szCanon[2] = '/';
@@ -71,23 +73,25 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon,
 	    char *s;
 
 	    ap_assert(szCanon[1] == '\\');
-	    for(s=szCanon ; *s ; ++s)
-		if(*s == '\\')
-		    *s='/';
+	    for (s = szCanon; *s; ++s) {
+		if (*s == '\\') {
+		    *s = '/';
+		}
+	    }
 	}
         return TRUE;
     }
-    if (szFilePart != buf+3) {
+    if (szFilePart != buf + 3) {
         char b2[_MAX_PATH];
 	char b3[_MAX_PATH];
-        ap_assert(szFilePart > buf+3);
+        ap_assert(szFilePart > buf + 3);
 	/* avoid SEGVs on things like "Directory *" */
 	ap_assert(s >= szFile && "this is a known bug");
 
-	memcpy(b3,szFile,s-szFile);
-	b3[s-szFile]='\0';
+	memcpy(b3, szFile, s - szFile);
+	b3[s - szFile] = '\0';
 
-/*        szFilePart[-1]='\0'; */
+/*        szFilePart[-1] = '\0'; */
         sub_canonical_filename(b2, sizeof b2, b3);
 
 	ap_assert(strlen(b2)+1 < nCanon);
@@ -101,9 +105,10 @@ static BOOL sub_canonical_filename(char *szCanon, unsigned nCanon,
         szCanon[3] = '\0';
     }
     if (h == INVALID_HANDLE_VALUE) {
-	ap_assert(strlen(szCanon)+strlen(szFilePart)+nSlashes < nCanon);
-	for(n=0 ; n < nSlashes ; ++n)
+	ap_assert(strlen(szCanon) + strlen(szFilePart) + nSlashes < nCanon);
+	for (n = 0; n < nSlashes; ++n) {
 	    strcat(szCanon, "/");
+	}
         strcat(szCanon, szFilePart);
 	return FALSE;
     }
@@ -125,7 +130,7 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
     char b2[HUGE_STRING_LEN];
     const char *s;
     char *d;
-    int nSlashes=0;
+    int nSlashes = 0;
 
     ap_assert(strlen(szFile) < sizeof b2);
 
@@ -141,38 +146,44 @@ API_EXPORT(char *) ap_os_canonical_filename(pool *pPool, const char *szFile)
 	 * just pass that through to sub_canonical_filename.  Convert a
 	 * '/' to '\\' if necessary.
          */
-        if (szFile[0] == '/')
+        if (szFile[0] == '/') {
             b2[0] = '\\';
-        else
+	}
+        else {
             b2[0] = szFile[0];
+	}
 
         b2[1] = '\0';
     }
     else {
-        for(s=szFile,d=b2 ; (*d=*s) ; ++d,++s) {
-	          if(*s == '/')
-	              *d='\\';
-	          if(*s == '.' && (s[1] == '/' || s[1] == '\\' || !s[1])) {
-	              while(*d == '.')
-		                --d;
-	              if(*d == '\\')
-		                --d;
-	          }
-	      }
+        for (s = szFile, d = b2; (*d = *s); ++d, ++s) {
+	    if (*s == '/') {
+		*d = '\\';
+	    }
+	    if (*s == '.' && (s[1] == '/' || s[1] == '\\' || !s[1])) {
+		while (*d == '.') {
+		    --d;
+		}
+		if (*d == '\\') {
+		    --d;
+		}
+	    }
+	}
 
-        // Finally, a trailing slash(es) screws thing, so blow them away
-        for(nSlashes=0 ; d > b2 && d[-1] == '\\' ; --d,++nSlashes)
+        /* Finally, a trailing slash(es) screws thing, so blow them away */
+        for (nSlashes = 0; d > b2 && d[-1] == '\\'; --d, ++nSlashes)
 	    ;
         /* XXXX this breaks '/' and 'c:/' cases */
-        *d='\0';
+        *d = '\0';
     }
     sub_canonical_filename(buf, sizeof buf, b2);
 
-    buf[0]=ap_tolower(buf[0]);
+    buf[0] = ap_tolower(buf[0]);
 
     ap_assert(strlen(buf)+nSlashes < sizeof buf);
-    while(nSlashes--)
+    while (nSlashes--) {
         strcat(buf, "/");
+    }
 
     return ap_pstrdup(pPool, buf);
 }
@@ -195,37 +206,40 @@ API_EXPORT(int) os_stat(const char *szPath, struct stat *pStat)
      */
     if (szPath[1] != ':' && szPath[1] != '/') {
 	ap_log_error(APLOG_MARK, APLOG_ERR, NULL, 
-	    "Invalid path in os_stat: \"%s\", should have a drive letter "
-	    "or be a UNC path", szPath);
+		     "Invalid path in os_stat: \"%s\", "
+		     "should have a drive letter or be a UNC path",
+		     szPath);
 	return (-1);
     }
 
-    if(szPath[0] == '/') {
+    if (szPath[0] == '/') {
 	char buf[_MAX_PATH];
 	char *s;
-	int nSlashes=0;
+	int nSlashes = 0;
 
 	ap_assert(strlen(szPath) < _MAX_PATH);
-	strcpy(buf,szPath);
-	for(s=buf ; *s ; ++s)
-	    if(*s == '/') {
-		*s='\\';
+	strcpy(buf, szPath);
+	for (s = buf; *s; ++s) {
+	    if (*s == '/') {
+		*s = '\\';
 		++nSlashes;
 	    }
+	}
 	/* then we need to add one more to get \\machine\share\ */
-	if(nSlashes == 3)
-	    *s++='\\';
-	*s='\0';
-	return stat(buf,pStat);
+	if (nSlashes == 3) {
+	    *s++ = '\\';
+	}
+	*s = '\0';
+	return stat(buf, pStat);
     }
 
     n = strlen(szPath);
-    if(szPath[n-1] == '\\' || szPath[n-1] == '/') {
+    if (szPath[n - 1] == '\\' || szPath[n - 1] == '/') {
         char buf[_MAX_PATH];
         
         ap_assert(n < _MAX_PATH);
         strcpy(buf, szPath);
-        buf[n-1] = '\0';
+        buf[n - 1] = '\0';
         
         return stat(buf, pStat);
     }
@@ -250,28 +264,31 @@ API_EXPORT(int) os_spawnv(int mode, const char *cmdname,
     
     szCmd = _alloca(strlen(cmdname)+1);
     strcpy(szCmd, cmdname);
-    for (s = szCmd; *s; ++s)
-        if (*s == '/')
+    for (s = szCmd; *s; ++s) {
+        if (*s == '/') {
             *s = '\\';
-    
-    for (n=0; argv[n]; ++n)
+	}
+    }
+
+    for (n = 0; argv[n]; ++n)
         ;
 
-    aszArgs = _alloca((n+1)*sizeof(const char *));
+    aszArgs = _alloca((n + 1) * sizeof(const char *));
 
-    for (n = 0; szArg = argv[n]; ++n)
+    for (n = 0; szArg = argv[n]; ++n) {
         if (strchr(szArg, ' ')) {
             int l = strlen(szArg);
 
-            aszArgs[n] = _alloca(l+2+1);
+            aszArgs[n] = _alloca(l + 2 + 1);
             aszArgs[n][0] = '"';
             strcpy(&aszArgs[n][1], szArg);
-            aszArgs[n][l+1] = '"';
-            aszArgs[n][l+2] = '\0';
+            aszArgs[n][l + 1] = '"';
+            aszArgs[n][l + 2] = '\0';
         }
         else {
             aszArgs[n] = (char *)szArg;
         }
+    }
 
     aszArgs[n] = NULL;
 
@@ -290,35 +307,38 @@ API_EXPORT(int) os_spawnve(int mode, const char *cmdname,
     
     szCmd = _alloca(strlen(cmdname)+1);
     strcpy(szCmd, cmdname);
-    for (s = szCmd; *s; ++s)
-        if (*s == '/')
+    for (s = szCmd; *s; ++s) {
+        if (*s == '/') {
             *s = '\\';
+	}
+    }
     
-    for (n = 0; argv[n] ; ++n)
+    for (n = 0; argv[n]; ++n)
         ;
 
-    aszArgs = _alloca((n+1)*sizeof(const char *));
+    aszArgs = _alloca((n + 1)*sizeof(const char *));
 
-    for (n = 0; szArg=argv[n]; ++n)
+    for (n = 0; szArg = argv[n]; ++n){
         if (strchr(szArg, ' ')) {
             int l = strlen(szArg);
 
-            aszArgs[n] = _alloca(l+2+1);
+            aszArgs[n] = _alloca(l + 2 + 1);
             aszArgs[n][0] = '"';
             strcpy(&aszArgs[n][1], szArg);
-            aszArgs[n][l+1] = '"';
-            aszArgs[n][l+2] = '\0';
+            aszArgs[n][l + 1] = '"';
+            aszArgs[n][l + 2] = '\0';
         }
         else {
-            aszArgs[n]=(char *)szArg;
+            aszArgs[n] = (char *)szArg;
         }
+    }
 
     aszArgs[n] = NULL;
 
     return _spawnve(mode, szCmd, aszArgs, envp);
 }
 
-API_EXPORT(int) os_spawnle(int mode, const char *cmdname,...)
+API_EXPORT(int) os_spawnle(int mode, const char *cmdname, ...)
 {
     int n;
     va_list vlist;
@@ -330,31 +350,34 @@ API_EXPORT(int) os_spawnle(int mode, const char *cmdname,...)
     
     szCmd = _alloca(strlen(cmdname)+1);
     strcpy(szCmd, cmdname);
-    for (s = szCmd; *s; ++s)
-        if(*s == '/')
+    for (s = szCmd; *s; ++s) {
+        if (*s == '/') {
             *s = '\\';
+	}
+    }
 
     va_start(vlist, cmdname);
     for (n = 0; va_arg(vlist, const char *); ++n)
         ;
     va_end(vlist);
 
-    aszArgs = _alloca((n+1)*sizeof(const char *));
+    aszArgs = _alloca((n + 1) * sizeof(const char *));
 
     va_start(vlist, cmdname);
-    for (n = 0 ; szArg = va_arg(vlist, const char *) ; ++n)
-        if (strchr(szArg,' ')) {
+    for (n = 0; szArg = va_arg(vlist, const char *); ++n) {
+        if (strchr(szArg, ' ')) {
             int l = strlen(szArg);
 
-            aszArgs[n] = _alloca(l+2+1);
+            aszArgs[n] = _alloca(l + 2 + 1);
             aszArgs[n][0] = '"';
-            strcpy(&aszArgs[n][1],szArg);
-            aszArgs[n][l+1] = '"';
-            aszArgs[n][l+2] = '\0';
+            strcpy(&aszArgs[n][1], szArg);
+            aszArgs[n][l + 1] = '"';
+            aszArgs[n][l + 2] = '\0';
         }
         else {
-            aszArgs[n]=(char *)szArg;
+            aszArgs[n] = (char *)szArg;
         }
+    }
 
     aszArgs[n] = NULL;
 
