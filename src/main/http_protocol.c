@@ -123,25 +123,33 @@ static const char *make_content_type(request_rec *r, const char *type) {
 	"text/html",
 	NULL };
     char **pcset;
-    core_dir_config *conf = (core_dir_config *)ap_get_module_config(
-	r->per_dir_config, &core_module);
-    if (!type) type = ap_default_type(r);
-    if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) return type;
+    core_dir_config *conf;
+
+    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
+                                                   &core_module);
+    if (!type) {
+        type = ap_default_type(r);
+    }
+    if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) {
+        return type;
+    }
 
     if (ap_strcasestr(type, "charset=") != NULL) {
 	/* already has parameter, do nothing */
 	/* XXX we don't check the validity */
 	;
-    } else {
+    }
+    else {
     	/* see if it makes sense to add the charset. At present,
 	 * we only add it if the Content-type is one of needcset[]
 	 */
-	for (pcset = needcset; *pcset ; pcset++)
+	for (pcset = needcset; *pcset ; pcset++) {
 	    if (ap_strcasestr(type, *pcset) != NULL) {
 		type = ap_pstrcat(r->pool, type, "; charset=", 
-		    conf->add_default_charset_name, NULL);
+                                  conf->add_default_charset_name, NULL);
 		break;
 	    }
+        }
     }
     return type;
 }
