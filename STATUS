@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/07 14:59:25 $]
+Last modified at [$Date: 2003/03/07 16:06:24 $]
 
 Release:
 
@@ -149,7 +149,7 @@ PATCHES TO PORT FROM 2.1
       modules/experimental/mod_auth_ldap.c r1.12
       modules/experimental/util_ldap.c r1.11
       +1: bnicholes, wrowe (experimental, it can't hurt ;-), trawick
-          (same reasoning as wrowe)
+          (same reasoning as wrowe), jim (ditto)
        0: jerenkrantz (mod_ldap is experimental, no need to update it)
 
     * Fix a problem where a redirected subrequest doesn't have the
