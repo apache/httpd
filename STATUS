@@ -199,15 +199,19 @@ Open issues:
 
     * Provide consistant prefixes; suggestions:
 
-         ap_: (eg: ap_cpystrn)
-	   Apache provided general functions
-	 appublic_:
-	 appub_:
-	   Public API functions
-	 apprivate_: (eg: apprivate_new_connection)
-	 appri_:
-	   Private functions which we can't make static
-	   but should be.
+      Apache provided general functions (e.g., ap_cpystrn)
+	ap_xxx: Ken +1
+
+      Public API functions (e.g., palloc)
+	apapi_xxx: Ken +1
+	appublic_xxx:
+	appub_xxx:
+
+      Private functions which we can't make static
+      but should be (e.g., new_connection)
+	apprivate_xxx:
+	appri_xxx:
+	httpd_xxx: Ken +1
 
     * Maybe moving *all* of the *.h header files into a new
       src/include directory?
@@ -253,7 +257,6 @@ Open issues:
       appropriate environment. Marc and Alexei don't see any
       big deal.
 
-    * Ken suggests that new check_cmd_context() and related defines
       should be non-static and in util_* so modules can use 'em.  (He
       didn't notice this flaw during the review.)
 
