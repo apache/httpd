@@ -935,8 +935,16 @@ AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p, const char *des
     new_cfg->line_number = 0;
     return new_cfg;
 }
-
-
+   
+/* Read one character from a configfile_t */
+AP_DECLARE(int) ap_cfg_getc(ap_configfile_t *cfp)
+{
+    register int ch = cfp->getch(cfp->param);
+    if (ch == LF) 
+        ++cfp->line_number;
+    return ch;
+}
+  
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
 AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
