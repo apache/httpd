@@ -2173,9 +2173,15 @@ an IP address, <EM>e.g.</EM>
 
 <BLOCKQUOTE><CODE>NameVirtualHost 111.22.33.44</CODE></BLOCKQUOTE>
 
-With the NameVirtualHost directive you specify the address to which your
-name-based virtual host names resolve.  If you have multiple name-based
-hosts on multiple addresses, repeat the directive for each address.<P>
+With the NameVirtualHost directive you specify the IP address on which
+the server will receive requests for the name-based virtual hosts.
+This will usually be the address to which your name-based virtual host
+names resolve. In cases where a firewall or other proxy receives the
+requests and forwards them on a different IP address to the server,
+you must specify the IP address of the physical interface on the
+machine which will be servicing the requests.  If you have multiple
+name-based hosts on multiple addresses, repeat the directive for each
+address.<P>
 
 Note: the "main server" and any _default_ servers will <STRONG>never</STRONG>
 be served for a request to a NameVirtualHost IP Address (unless for some
