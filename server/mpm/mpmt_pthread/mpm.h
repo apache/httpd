@@ -73,7 +73,6 @@ extern int ap_max_requests_per_child;
 extern int ap_max_daemons_limit;
 extern unsigned int ap_my_pid;
 extern server_rec *ap_server_conf;
-extern scoreboard *ap_scoreboard_image;
 extern char ap_coredump_dir[MAX_STRING_LEN];
 
 #endif /* APACHE_MPM_MPMT_PTHREAD_H */

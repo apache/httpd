@@ -156,7 +156,9 @@ typedef struct {
     unsigned short timeout_len;	/* length of the timeout */
 #endif
     int thread_num;
+#if APR_HAS_THREADS
     apr_os_thread_t tid;
+#endif
     unsigned char status;
     unsigned long access_count;
     unsigned long bytes_served;
