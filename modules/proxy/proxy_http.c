@@ -181,14 +181,13 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 {
     request_rec *rp;
     apr_pool_t *p = r->connection->pool;
-    struct hostent *connecthost;
     const char *connectname;
     int connectport = 0;
     apr_sockaddr_t *uri_addr;
     apr_sockaddr_t *connect_addr;
     char server_portstr[32];
     apr_socket_t *sock;
-    int i, j, k, len, backasswards, close=0, failed=0, new=0;
+    int i, j, len, backasswards, close=0, failed=0, new=0;
     apr_status_t err;
     apr_array_header_t *headers_in_array;
     apr_table_entry_t *headers_in;
@@ -722,7 +721,7 @@ int ap_proxy_http_handler(request_rec *r, char *url,
 	if (ap_proxy_liststr((buf = apr_table_get(r->headers_out, "Transfer-Encoding")), "chunked")) {
 	    rp->read_chunked = 1;
 	    apr_table_unset(r->headers_out, "Transfer-Encoding");
-	    if (buf = ap_proxy_removestr(r->pool, buf, "chunked")) {
+	    if ((buf = ap_proxy_removestr(r->pool, buf, "chunked"))) {
 		apr_table_set(r->headers_out, "Transfer-Encoding", buf);
 	    }
 	    ap_add_input_filter("DECHUNK", NULL, rp, origin);

@@ -547,7 +547,6 @@ static const char *
     ap_get_module_config(s->module_config, &proxy_module);
     struct noproxy_entry *new;
     struct noproxy_entry *list = (struct noproxy_entry *) conf->noproxies->elts;
-    struct hostent hp;
     struct apr_sockaddr_t *addr;
     int found = 0;
     int i;

@@ -114,7 +114,6 @@ allowed_port(proxy_server_conf *conf, int port)
 int ap_proxy_connect_handler(request_rec *r, char *url,
 			  const char *proxyhost, int proxyport)
 {
-    struct in_addr destaddr;
     const char *host;
     char *p;
     int port;
