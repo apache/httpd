@@ -124,4 +124,5 @@
   height      CDATA   #IMPLIED
   width       CDATA   #IMPLIED >
 
-<!ELEMENT blockquote %BlockOrInline;>
+<!ELEMENT blockquote %Block;>
+<!ATTLIST blockquote cite CDATA #IMPLIED >
