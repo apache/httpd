@@ -788,10 +788,13 @@ int proxyerror(request_rec *r, const char *message)
     send_http_header(r);
     soft_timeout("proxy error", r);
 
-    rvputs(r, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\015\012\
-<html><head><title>Proxy Error</title><head>\015\012<body><h1>Proxy Error\
-</h1>\015\012The proxy server could not handle this request.\
-\015\012<p>\015\012Reason: <b>", message, "</b>\015\012</body><html>\015\012",
+    rvputs(r, "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n"
+	   "<html><head><title>Proxy Error</title><head>\n<body>"
+	   "<h1>Proxy Error</h1>\n"
+	   "The proxy server could not handle this request.\n<p>\n"
+	   "Reason: <b>", message, "</b>\n",
+	   psignature("<HR>\n", r),
+	   "</body><html>\n",
 	   NULL);
 
     kill_timeout(r);
