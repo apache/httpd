@@ -54,14 +54,14 @@
  * Info Module.  Display configuration information for the server and
  * all included modules.
  *
- * <Location /info>
+ * <Location /server-info>
  * SetHandler server-info
  * </Location>
  *
- * GET /info - Returns full configuration page for server and all modules
- * GET /info?server - Returns server configuration only
- * GET /info?module_name - Returns configuration for a single module
- * GET /info?list - Returns quick list of included modules
+ * GET /server-info - Returns full configuration page for server and all modules
+ * GET /server-info?server - Returns server configuration only
+ * GET /server-info?module_name - Returns configuration for a single module
+ * GET /server-info?list - Returns quick list of included modules
  *
  * Rasmus Lerdorf <rasmus@vex.net>, May 1996
  *

@@ -54,14 +54,21 @@
  * status information without having to worry where the scoreboard is
  * held.
  *
- * AddType application/x-httpd-status .status
- * You might like to do this in a .htaccess in a protected directory only
+ * To enable this, put the following in access.conf:
  *
- * GET /.status - Returns pretty page for system admin user
- * GET /.status?refresh - Returns page with 1 second refresh
- * GET /.status?refresh=6 - Returns page with refresh every 6 seconds
- * GET /.status?auto - Returns page with data for automatic parsing
- * GET /.status?notable - Returns page with no table niceties
+ * <Location /server-status>
+ * SetHandler server-status
+ * </Location>
+ *
+ * You may want to protect it by putting a <Limit> container directive
+ * right after the SetHandler directive.  You may perform the
+ * following types of queries:
+ *
+ * GET /server-status - Returns pretty page for system admin user
+ * GET /server-status?refresh - Returns page with 1 second refresh
+ * GET /server-status?refresh=6 - Returns page with refresh every 6 seconds
+ * GET /server-status?auto - Returns page with data for automatic parsing
+ * GET /server-status?notable - Returns page with no table niceties
  *
  * Mark Cox, mark@ukweb.com, November 1995
  *
@@ -78,8 +85,7 @@
  * 18.5.96  Adapted to use new rprintf() routine, incidentally fixing a missing
  *          piece in short reports [Ben Laurie]
  * 21.5.96  Additional Status codes (DNS and LOGGING only enabled if
-             extended STATUS is enabled) [George Burgyan/Jim J.]
- */
+             extended STATUS is enabled) [George Burgyan/Jim J.]  */
 
 #include "httpd.h"
 #include "http_config.h"
