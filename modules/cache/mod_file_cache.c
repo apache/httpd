@@ -130,7 +130,6 @@
 #include "apr_mmap.h"
 
 module MODULE_VAR_EXPORT file_cache_module;
-static ap_pool_t *pconf;
 static int once_through = 0;
 
 typedef struct {
@@ -188,7 +187,6 @@ static ap_status_t open_file(ap_file_t **file, const char *filename, int flg1, i
     return rv;
 }
 
-#if APR_HAS_SENDFILE
 static ap_status_t cleanup_file_cache(void *sconfv)
 {
     a_server_config *sconf = sconfv;
@@ -198,30 +196,18 @@ static ap_status_t cleanup_file_cache(void *sconfv)
     n = sconf->files->nelts;
     file = (a_file *)sconf->files->elts;
     while(n) {
-        ap_close(file->file);
-        ++file;
-        --n;
-    }
-    return APR_SUCCESS;
-}
-#endif
 #if APR_HAS_MMAP
-static ap_status_t cleanup_mmap(void *sconfv)
-{
-    a_server_config *sconf = sconfv;
-    size_t n;
-    a_file *file;
-
-    n = sconf->files->nelts;
-    file = (a_file *)sconf->files->elts;
-    while(n) {
+        if (file->is_mmapped) { 
 	    ap_mmap_delete(file->mm);
+        } 
+        else 
+#endif 
+            ap_close(file->file); 
 	    ++file;
 	    --n;
     }
     return APR_SUCCESS;
 }
-#endif
 
 static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 
@@ -235,7 +221,7 @@ static const char *cachefile(cmd_parms *cmd, void *dummy, const char *filename)
 
     /* canonicalize the file name? */
     /* os_canonical... */
-    if (ap_stat(&tmp.finfo, filename, NULL) != APR_SUCCESS) {
+    if (ap_stat(&tmp.finfo, filename, cmd->temp_pool) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "file_cache: unable to stat(%s), skipping", filename);
 	return NULL;
@@ -285,7 +271,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     a_file tmp;
     ap_file_t *fd = NULL;
 
-    if (ap_stat(&tmp.finfo, filename, pconf) != APR_SUCCESS) {
+    if (ap_stat(&tmp.finfo, filename, cmd->temp_pool) != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "mod_file_cache: unable to stat(%s), skipping", filename);
 	return NULL;
@@ -295,12 +281,13 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
 	    "mod_file_cache: %s isn't a regular file, skipping", filename);
 	return NULL;
     }
-    if (ap_open(&fd, filename, APR_READ, APR_OS_DEFAULT, pconf) != APR_SUCCESS) {
+    if (ap_open(&fd, filename, APR_READ, APR_OS_DEFAULT, cmd->temp_pool) 
+                != APR_SUCCESS) { 
 	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, cmd->server,
 	    "mod_file_cache: unable to open(%s, O_RDONLY), skipping", filename);
 	return NULL;
     }
-    if (ap_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, pconf) != APR_SUCCESS) {
+    if (ap_mmap_create(&tmp.mm, fd, 0, tmp.finfo.size, cmd->pool) != APR_SUCCESS) { 
 	int save_errno = errno;
 	ap_close(fd);
 	errno = save_errno;
@@ -315,7 +302,7 @@ static const char *mmapfile(cmd_parms *cmd, void *dummy, const char *filename)
     *new_file = tmp;
     if (sconf->files->nelts == 1) {
 	/* first one, register the cleanup */
-	ap_register_cleanup(cmd->pool, sconf, cleanup_mmap, ap_null_cleanup);
+       ap_register_cleanup(cmd->pool, sconf, cleanup_file_cache, ap_null_cleanup); 
     }
 
     new_file->is_mmapped = TRUE;
@@ -344,7 +331,6 @@ static void file_cache_post_config(ap_pool_t *p, ap_pool_t *plog,
     int nelts;
 
     once_through++;
-    pconf = p;    
 
     /* sort the elements of the main_server, by filename */
     sconf = ap_get_module_config(s->module_config, &file_cache_module);
@@ -421,6 +407,7 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
     struct iovec iov;
     ap_hdtr_t hdtr;
     ap_hdtr_t *phdtr = &hdtr;
+    ap_status_t rv; 
     ap_int32_t flags = 0;
 
     /* 
@@ -451,21 +438,29 @@ static int sendfile_handler(request_rec *r, a_file *file, int rangestatus)
             flags |= APR_SENDFILE_DISCONNECT_SOCKET;
         }
 
-        iol_sendfile(r->connection->client->iol,
+        rv = iol_sendfile(r->connection->client->iol, 
                      file->file,
                      phdtr,
                      &offset,
                      &length,
                      flags);
+        if (rv != APR_SUCCESS) { 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, 
+                          "mod_file_cache: iol_sendfile failed."); 
     }
+    } 
     else {
         while (ap_each_byterange(r, &offset, &length)) {
-            iol_sendfile(r->connection->client->iol, 
+            rv =iol_sendfile(r->connection->client->iol, 
                          file->file,
                          phdtr,
                          &offset,
                          &length,
-                         flags);
+                             0); 
+            if (rv != APR_SUCCESS) { 
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, 
+                              "mod_file_cache: iol_sendfile failed."); 
+            } 
             phdtr = NULL;
         }
     }
