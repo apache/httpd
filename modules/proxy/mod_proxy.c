@@ -1359,7 +1359,7 @@ static const char *
          * Parent directive arg is the worker/balancer name.
          */
         name = ap_getword_conf(cmd->temp_pool, &pargs);
-        if ((word = ap_strchr_c(name, '>')))
+        if ((word = ap_strchr(name, '>')))
             *word = '\0';
     }
     else {

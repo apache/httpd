@@ -427,8 +427,6 @@ static int balancer_handler(request_rec *r)
     void *sconf = r->server->module_config;
     proxy_server_conf *conf = (proxy_server_conf *)
         ap_get_module_config(sconf, &proxy_module);
-    apr_array_header_t *proxies = conf->proxies;
-    struct proxy_remote *ents = (struct proxy_remote *)proxies->elts;
     proxy_balancer *balancer, *bsel = NULL;
     proxy_runtime_worker *worker, *wsel = NULL;
     apr_table_t *params = apr_table_make(r->pool, 10);
@@ -447,9 +445,9 @@ static int balancer_handler(request_rec *r)
         char *args = apr_pstrdup(r->pool, r->args);
         char *tok, *val;
         while (args && *args) {
-            if ((val = ap_strchr_c(args, '='))) {
+            if ((val = ap_strchr(args, '='))) {
                 *val++ = '\0';
-                if ((tok = ap_strchr_c(val, '&')))
+                if ((tok = ap_strchr(val, '&')))
                     *tok++ = '\0';
                 if ((access_status = ap_unescape_url(val)) != OK)
                     return access_status;
