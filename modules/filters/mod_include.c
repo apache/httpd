@@ -182,6 +182,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                 if (ctx->head_start_index > 0) {
                     ctx->head_start_index  = 0;
                     ctx->head_start_bucket = tmp_bkt;
+                    ctx->parse_pos = 0;
+                    ctx->state = PRE_HEAD;
                 }
 
                 return tmp_bkt;
