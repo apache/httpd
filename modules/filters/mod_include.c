@@ -1896,6 +1896,9 @@ static const char *get_ptoken(request_rec *r, const char *string,
                 }
             }
         }
+        if (tkn_fnd) {
+            break;
+        }
     }
 
     /* If qs is still set, we have an unmatched quote */
