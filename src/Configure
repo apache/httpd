@@ -82,9 +82,14 @@ APLIBDIRS=""
 
 ####################################################################
 ## Now handle any arguments, which, for now, is -file
-## to select an alternate Configuration file
+## to select an alternate Configuration file and -v
+## to turn on verbose mode
 ##
 while [ "x$1" != "x" ]; do
+  if [ "x$1" = "x-v" ] ; then
+    shift 1;
+    vflag="-v";
+  fi
   if [ "x$1" = "x-file" ] ; then
     shift 1; file=$1; shift 1
     if [ ! -r $file ]; then
@@ -2138,14 +2143,13 @@ if [ "x$OS" = "xTPF" ] ; then
     :
 else
    echo " + doing sanity check on compiler and options"
-   if ./helpers/TestCompile sanity; then
+   if ./helpers/TestCompile $vflag sanity; then
       :
    else
    echo "** A test compilation with your Makefile configuration"
-   echo "** failed. This is most likely because your C compiler"
-   echo "** is not ANSI. Apache requires an ANSI C Compiler, such"
-   echo "** as gcc. The above error message from your compiler"
-   echo "** will also provide a clue."
+   echo "** failed.  Re-run your configure script with --verbose"
+   echo "** to get a better idea of what is failing.  Note that"
+   echo "** Apache requires an ANSI C Compiler, such as gcc. "
    echo " Aborting!"
    exitcode=1
    exit 1

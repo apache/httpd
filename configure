@@ -1469,10 +1469,13 @@ rm -f $tplconf 2>/dev/null
 ##  create all other Makefiles by running the proprietary 
 ##  $src/Configure script with our custom Configuration.apaci file
 ##
+if [ "x$verbose" = "xyes" ]; then
+    vflag="-v";
+fi
 if [ "x$quiet" = "xyes" ]; then
-    (cd $src; ./Configure -file Configuration.apaci >/dev/null);
+    (cd $src; ./Configure ${vflag} -file Configuration.apaci >/dev/null);
 else
-    (cd $src; ./Configure -file Configuration.apaci |\
+    (cd $src; ./Configure ${vflag} -file Configuration.apaci |\
      sed -e '/^Using config file:.*/d' \
          -e "s:Makefile in :Makefile in $src\\/:" \
          -e "s:Makefile\$:Makefile in $src:")
