@@ -221,8 +221,12 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     modie = (moduleinfo *)sconf->loaded_modules->elts;
     for (i = 0; i < sconf->loaded_modules->nelts; i++) {
         modi = &modie[i];
-        if (modi->name != NULL && strcmp(modi->name, modname) == 0)
+        if (modi->name != NULL && strcmp(modi->name, modname) == 0) {
+            ap_log_perror(APLOG_MARK, APLOG_WARNING|APLOG_NOERRNO, 0,
+                          cmd->pool, "module %s is already loaded, skipping",
+                          modname);
             return NULL;
+        }
     }
     modi = apr_array_push(sconf->loaded_modules);
     modi->name = modname;
