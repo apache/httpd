@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/15 14:20:27 $]
+  Last modified at [$Date: 2002/05/15 14:32:05 $]
 
 Release:
 
@@ -65,7 +65,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * long pathnames with many components and no AllowOverride None
       Workaround is to define <Directory /> with AllowOverride None,
       which is something all sites should do in any case.
-	Status: Marc was looking at it.
+	Status: Marc was looking at it.  (Will asks 'wasn't this patched?')
 
     * Ronald Tschalär's patch to mod_proxy to allow other modules to
       set headers too (needed by mod_auth_digest)
