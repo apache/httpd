@@ -315,6 +315,8 @@ static int status_handler(request_rec *r)
 	rputs("<HTML><HEAD>\n<TITLE>Apache Status</TITLE>\n</HEAD><BODY>\n", r);
 	rputs("<H1>Apache Server Status for ", r);
 	rvputs(r, server->server_hostname, "</H1>\n\n", NULL);
+	rvputs(r, "Server Version:", SERVER_VERSION, "<br>\n", NULL);
+	rvputs(r, "Server Built:", SERVER_BUILT, "<br>\n<hr>\n", NULL);
 	rvputs(r, "Current Time: ", asctime(localtime(&nowtime)), "<br>\n", NULL);
 	rvputs(r, "Restart Time: ", asctime(localtime(&restart_time)), "<br>\n",
 	       NULL);
