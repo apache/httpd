@@ -71,8 +71,8 @@ extern "C" {
  * @package Apache filter library
  */
 
-#define AP_NOBODY_WROTE         -1;
-#define AP_NOBODY_READ          -2;
+#define AP_NOBODY_WROTE         -1
+#define AP_NOBODY_READ          -2
 
 /*
  * FILTER CHAIN
@@ -226,20 +226,10 @@ struct ap_filter_t {
     conn_rec *c;
 };
 
-/* This function just passes the current bucket brigade down to the next
- * filter on the filter stack.  When a filter actually writes to the network
- * (usually either core or SSL), that filter should return the number of bytes
- * actually written and it will get propogated back up to the handler.  If
- * nobody writes the data to the network, then this function will most likely
- * seg fault.  I haven't come up with a good way to detect that case yet, and
- * it should never happen.  Regardless, it's an unrecoverable error for the
- * current request.  I would just rather it didn't take out the whole child
- * process.  
- */
 /**
  * Get the current bucket brigade from the next filter on the filter
  * stack.  The filter should return an apr_status_t value.  If the bottom-most 
- * filter doesn't write to the network, then AP_NOBODY_WROTE is returned.
+ * filter doesn't write to the network, then AP_NOBODY_READ is returned.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
  * @return apr_status_t value
