@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/04/08 19:52:26 $]
+Last modified at [$Date: 2002/04/08 23:56:58 $]
 
 Release:
 
@@ -48,12 +48,9 @@ CURRENT RELEASE NOTES:
     * 36 status:
 
 RELEASE SHOWSTOPPERS:
+
     * Daedalus segfaults with 2.0.35
       Greg and Cliff are working on this.
-
-    * mod_autoindex does not load on AIX because symbol
-      ap_subreq_core_filter_handle is not being properly exported.
-      Jeff is working on this.
 
 CURRENT VOTES:
 
