@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_logio: Account for some bytes handed to the network layer prior to
+     dropped connections.  [Jeff Trawick]
+
   *) Fix a problem with the display of empty variables ("SetEnv foo") in
      mod_include.  PR 24734  [Markus Julen <mj zermatt.net>]
 
