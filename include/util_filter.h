@@ -431,7 +431,9 @@ AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb);
  * @param bb The brigade to buffer into
  * @param ... The strings to write
  */
-AP_DECLARE_NONSTD(int) ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
+AP_DECLARE_NONSTD(apr_status_t) ap_fputstrs(ap_filter_t *f,
+                                            apr_bucket_brigade *bb,
+                                            ...);
 
 /**
  * Output data to the filter in printf format
@@ -440,7 +442,10 @@ AP_DECLARE_NONSTD(int) ap_fputstrs(ap_filter_t *f, apr_bucket_brigade *bb, ...);
  * @param fmt The format string
  * @param ... The argumets to use to fill out the format string
  */
-AP_DECLARE_NONSTD(int) ap_fprintf(ap_filter_t *f, apr_bucket_brigade *bb, const char *fmt, ...)
+AP_DECLARE_NONSTD(apr_status_t) ap_fprintf(ap_filter_t *f,
+                                           apr_bucket_brigade *bb,
+                                           const char *fmt,
+                                           ...)
         __attribute__((format(printf,3,4)));                                    
 
 #ifdef __cplusplus
