@@ -184,7 +184,7 @@ static void add_include_vars(request_rec *r, char *timefmt)
 
 static ap_bucket *find_string(ap_bucket *dptr, const char *str, ap_bucket *end)
 {
-    int len;
+    apr_ssize_t len;
     const char *c;
     const char *buf;
     int state = 0;
@@ -340,7 +340,7 @@ static char *get_tag(apr_pool_t *p, ap_bucket *in, char *tag, int tagbuf_len, in
     ap_bucket *dptr = in;
     const char *c;
     const char *str;
-    int length; 
+    apr_ssize_t length; 
     char *t = tag, *tag_val, term;
 
     /* makes code below a little less cluttered */
@@ -472,7 +472,7 @@ static int get_directive(ap_bucket *in, char *dest, size_t len, apr_pool_t *p)
     char *d = dest;
     const char *c;
     const char *str;
-    int length; 
+    apr_ssize_t length; 
 
     /* make room for nul terminator */
     --len;
