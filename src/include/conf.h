@@ -95,7 +95,7 @@ char *crypt(char *pw, char *salt);
 #define HAVE_CRYPT_H
 #define NO_LONG_DOUBLE
 
-#elif defined(HPUX)
+#elif defined(HPUX) || defined(HPUX10)
 #define HAVE_RESOURCE
 #undef HAVE_GMTOFF
 #define NO_KILLPG
@@ -103,7 +103,9 @@ char *crypt(char *pw, char *salt);
 #ifndef _HPUX_SOURCE
 #define _HPUX_SOURCE
 #endif
+#ifndef HPUX10
 #define getwd(d) getcwd(d,MAX_STRING_LEN)
+#endif
 #define JMP_BUF sigjmp_buf
 #define HAVE_MMAP
 

@@ -77,10 +77,6 @@
 #include "http_log.h" /* for log_unixerr */
 #include "rfc1413.h"
 
-#ifndef _HPUX_SOURCE
-#define _HPUX_SOURCE
-#endif
-
 /* System libraries. */
 
 #include <setjmp.h>
