@@ -3579,7 +3579,7 @@ static void register_hooks(void)
     ap_register_input_filter("HTTP_IN", ap_http_filter, AP_FTYPE_CONNECTION);
     ap_register_input_filter("DECHUNK", ap_dechunk_filter, AP_FTYPE_CONNECTION + 1);
     ap_register_input_filter("CORE_IN", core_input_filter, AP_FTYPE_CONNECTION);
-    ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, AP_FTYPE_CONTENT + 1);
+    ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, AP_FTYPE_CONTENT - 1);
     ap_register_output_filter("CORE", core_output_filter, AP_FTYPE_CONNECTION + 1);
     ap_register_output_filter("SUBREQ_CORE", ap_sub_req_output_filter, 
                               AP_FTYPE_CONTENT);
