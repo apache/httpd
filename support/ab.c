@@ -189,9 +189,8 @@ int concurrency = 1;        /* Number of multiple requests to make */
 int tlimit = 0;        		/* time limit in cs */
 int keepalive = 0;        	/* try and do keepalive connections */
 char servername[1024];      /* name that server reports */
-char hostname[1024];        /* host name */
+char *hostname;             /* host name from URL */
 char *host_field;               /* value of "Host:" header field */
-int family = APR_UNSPEC;        /* requested address family */
 char path[1024];        	/* path name */
 char postfile[1024];        /* name of file containing post data */
 char *postdata;        		/* *buffer containing data from postfile */
@@ -201,7 +200,7 @@ char cookie[1024],        	/* optional cookie line */
      auth[1024],        	/* optional (basic/uuencoded)
                              * authentification */
      hdrs[4096];        	/* optional arbitrary headers */
-int port = 80;        		/* port number */
+apr_port_t port;       		/* port number */
 apr_time_t aprtimeout = 30 * APR_USEC_PER_SEC; /* timeout value */
 
 int use_html = 0;        	/* use html in the report */
@@ -300,7 +299,7 @@ static void output_results(void)
     printf("\r                                                                           \r");
     printf("Server Software:        %s\n", servername);
     printf("Server Hostname:        %s\n", hostname);
-    printf("Server Port:            %d\n", port);
+    printf("Server Port:            %hd\n", port);
     printf("\n");
     printf("Document Path:          %s\n", path);
     printf("Document Length:        %d bytes\n", doclen);
@@ -382,7 +381,7 @@ static void output_html_results(void)
            "<td colspan=2 %s>%s</td></tr>\n",
            trstring, tdstring, tdstring, hostname);
     printf("<tr %s><th colspan=2 %s>Server Port:</th>"
-           "<td colspan=2 %s>%d</td></tr>\n",
+           "<td colspan=2 %s>%hd</td></tr>\n",
            trstring, tdstring, tdstring, port);
     printf("<tr %s><th colspan=2 %s>Document Path:</th>"
            "<td colspan=2 %s>%s</td></tr>\n",
@@ -504,7 +503,7 @@ static void start_connect(struct connection *c)
     c->cbx = 0;
     c->gotheader = 0;
 
-    if ((rv = apr_getaddrinfo(&destsa, hostname, family, port, 0, cntxt))
+    if ((rv = apr_getaddrinfo(&destsa, hostname, APR_UNSPEC, port, 0, cntxt))
          != APR_SUCCESS) {
         char buf[120];
 
@@ -514,7 +513,7 @@ static void start_connect(struct connection *c)
     }
     if ((rv = apr_create_socket(&c->aprsock, destsa->sa.sin.sin_family, 
                                 SOCK_STREAM, cntxt)) != APR_SUCCESS) {
-        apr_err("Socket:", rv);
+        apr_err("socket", rv);
     }
     c->start = apr_now();
     if ((rv = apr_connect(c->aprsock, destsa)) != APR_SUCCESS) {
@@ -895,14 +894,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.42 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AB_VERSION " <$Revision: 1.43 $> apache-2.0");
         printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.42 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AB_VERSION, "$Revision: 1.43 $");
         printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright (c) 1998-2000 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
@@ -946,51 +945,31 @@ static int parse_url(char *url)
 {
     char *cp;
     char *h;
-    char *p = NULL; /* points to port if url has it */
+    char *scope_id;
+    apr_status_t rv;
 
     if (strlen(url) > 7 && strncmp(url, "http://", 7) == 0)
         url += 7;
-    h = url;
-#if APR_HAVE_INET6
-    if (*url == '[') { /* RFC 2732 format */
-        h = url + 1;
-        url = strchr(h, ']');
-        if (!url) { /* malformed IPv6 literal address format */
-            return 1;
-        }
-        *url = '\0';
-        ++url;
-        /* According to RFC 2732, this syntax is allowed only for IPv6 numeric 
-         * address strings, so set the family passed to apr_getaddrinfo() so
-         * that it fails if the hostname is IPv4.
-         *
-         * It is certainly possible that the hostname parameter isn't a numeric 
-         * address string; that error won't be caught here.
-         */
-        family = APR_INET6;
-    }
-#endif /* APR_HAVE_INET6 */
-    if ((cp = strchr(url, ':')) != NULL) {
-        *cp++ = '\0';
-        p = cp;
-        url = cp;
-    }
     if ((cp = strchr(url, '/')) == NULL)
         return 1;
+    h = apr_palloc(cntxt, cp - url + 1);
+    memcpy(h, url, cp - url);
+    h[cp - url] = '\0';
+    rv = apr_parse_addr_port(&hostname, &scope_id, &port, h, cntxt);
+    if (rv != APR_SUCCESS || !hostname || scope_id) {
+        return 1;
+    }
     strcpy(path, cp);
     *cp = '\0';
-    strcpy(hostname, h);
-#if APR_HAVE_INET6
-    if (family == APR_INET6) {
-        host_field = apr_psprintf(cntxt, "[%s]",hostname);
+    if (*url == '[') { /* IPv6 numeric address string */
+        host_field = apr_psprintf(cntxt, "[%s]", hostname);
     }
-    else 
-#endif /* APR_HAVE_INET6 */
-    {
+    else {
         host_field = hostname;
     }
-    if (p != NULL)
-        port = atoi(p);
+    if (port == 0) { /* no port specified */
+        port = 80;
+    }
     return 0;
 }
 
