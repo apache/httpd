@@ -169,6 +169,15 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
          * If the first (only?) value isn't one of our keywords, just copy
          * the string to the userdir string.
          */
+        if (!ap_os_is_path_absolute(arg) && !strchr(arg, ':'))
+#if defined(WIN32) || defined(NETWARE)
+            return "UserDir must specify an absolute redirect or absolute "
+                   "file path";
+#else
+            if (strchr(arg, '*'))
+                 return "UserDir cannot specify a both a relative path and "
+                        "'*' substitution";
+#endif
         s_cfg->userdir = ap_pstrdup(cmd->pool, arg);
 #if defined(WIN32) || defined(OS2) || defined(NETWARE)
         /* This is an incomplete path, so we cannot canonicalize it yet.
@@ -207,7 +216,6 @@ static int translate_userdir(request_rec *r)
     const char *userdirs = s_cfg->userdir;
     const char *w, *dname;
     char *redirect;
-    char *x = NULL;
     struct stat statbuf;
 
     /*
@@ -266,43 +274,68 @@ static int translate_userdir(request_rec *r)
     while (*userdirs) {
         const char *userdir = ap_getword_conf(r->pool, &userdirs);
         char *filename = NULL;
-#if defined(NETWARE) || defined(HAVE_DRIVE_LETTERS)
         int is_absolute = ap_os_is_path_absolute(userdir);
-#endif		
 
-        if (strchr(userdir, '*'))
-            x = ap_getword(r->pool, &userdir, '*');
-
-	if (userdir[0] == '\0' || userdir[0] == '/') {
-            if (x) {
-#if defined(NETWARE) || defined(HAVE_DRIVE_LETTERS)
-                if (strchr(x, ':') && !is_absolute )
-#else /* !(NETWARE || HAVE_DRIVE_LETTERS) */
-                if (strchr(x, ':'))
-#endif
-		{
-                    redirect = ap_pstrcat(r->pool, x, w, userdir, dname, NULL);
-                    ap_table_setn(r->headers_out, "Location", redirect);
-                    return REDIRECT;
-                }
-                else
-                    filename = ap_pstrcat(r->pool, x, w, userdir, NULL);
+        if (strchr(userdir, '*')) {
+            /* token '*' embedded:
+             */
+            char *x = ap_getword(r->pool, &userdir, '*');
+            if (is_absolute) {
+                /* token '*' within absolute path
+                 * serves [UserDir arg-pre*][user][UserDir arg-post*]
+                 * /somepath/ * /somedir + /~smith -> /somepath/smith/somedir
+                 */
+                filename = ap_pstrcat(r->pool, x, w, userdir, NULL);
             }
+            else if (strchr(x, ':')) {
+                /* token '*' within a redirect path
+                 * serves [UserDir arg-pre*][user][UserDir arg-post*]
+                 * http://server/user/ * + /~smith/foo -> http://server/user/smith/foo
+                 */
+                redirect = ap_pstrcat(r->pool, x, w, userdir, dname, NULL);
+                ap_table_setn(r->headers_out, "Location", redirect);
+                return REDIRECT;
+            }
+            else {
+                /* Not a redirect, not an absolute path, '*' token:
+                 * serves [homedir]/[UserDir arg]
+                 * something/ * /public_html
+                 * Shouldn't happen, we trap for this in set_user_dir
+                 */
+                return DECLINED;
+            }
+        }
+        else if (is_absolute) {
+            /* An absolute path, no * token:
+             * serves [UserDir arg]/[user]
+             * /home + /~smith -> /home/smith
+             */
+            if (userdir[strlen(userdir) - 1] == '/')
+                filename = ap_pstrcat(r->pool, userdir, w, NULL);
             else
                 filename = ap_pstrcat(r->pool, userdir, "/", w, NULL);
         }
-#if defined(NETWARE) || defined(HAVE_DRIVE_LETTERS)
-        else if (strchr(userdir, ':') && !is_absolute ) {
-#else /* !(NETWARE || HAVE_DRIVE_LETTERS) */
         else if (strchr(userdir, ':')) {
-#endif
-            redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
+            /* A redirect, not an absolute path, no * token:
+             * serves [UserDir arg]/[user][dname]
+             * http://server/ + /~smith/foo -> http://server/smith/foo
+             */
+            if (userdir[strlen(userdir) - 1] == '/')
+                redirect = ap_pstrcat(r->pool, userdir, w, dname, NULL);
+            else
+                redirect = ap_pstrcat(r->pool, userdir, "/", w, dname, NULL);
             ap_table_setn(r->headers_out, "Location", redirect);
             return REDIRECT;
         }
         else {
+            /* Not a redirect, not an absolute path, no * token:
+             * serves [homedir]/[UserDir arg]
+             * e.g. /~smith -> /home/smith/public_html
+             */
 #if defined(WIN32) || defined(NETWARE)
-            /* Need to figure out home dirs on NT and NetWare */
+            /* Need to figure out home dirs on NT and NetWare 
+             * Shouldn't happen here, though, we trap for this in set_user_dir
+             */
             return DECLINED;
 #else                           /* WIN32 & NetWare */
             struct passwd *pw;
