@@ -589,8 +589,8 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
     mod_auth_ldap_config_t *sec = config;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-	         cmd->server, "Trying to parse an url `%s'", 
-	         url);
+	         cmd->server, "[%d] auth_ldap url parse: `%s'", 
+	         getpid(), url);
 
     result = ldap_url_parse(url, &(urld));
     if (result != LDAP_SUCCESS) {
@@ -610,20 +610,20 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
     sec->url = apr_pstrdup(cmd->pool, url);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-	         cmd->server, "Url parse: Host: %s", urld->lud_host);
+	         cmd->server, "[%d] auth_ldap url parse: Host: %s", getpid(), urld->lud_host);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-	         cmd->server, "Url parse: Port: %d", urld->lud_port);
+	         cmd->server, "[%d] auth_ldap url parse: Port: %d", getpid(), urld->lud_port);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-	         cmd->server, "Url parse: DN: %s", urld->lud_dn);
+	         cmd->server, "[%d] auth_ldap url parse: DN: %s", getpid(), urld->lud_dn);
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-	         cmd->server, "Url parse: Attrib: %s", urld->lud_attrs? urld->lud_attrs[0] : "(null)");
+	         cmd->server, "[%d] auth_ldap url parse: attrib: %s", getpid(), urld->lud_attrs? urld->lud_attrs[0] : "(null)");
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-	         cmd->server, "Url parse: Scope: %s", 
+	         cmd->server, "[%d] auth_ldap url parse: scope: %s", getpid(), 
 	         (urld->lud_scope == LDAP_SCOPE_SUBTREE? "subtree" : 
 		 urld->lud_scope == LDAP_SCOPE_BASE? "base" : 
 		 urld->lud_scope == LDAP_SCOPE_ONELEVEL? "onelevel" : "unknown"));
     ap_log_error(APLOG_MARK, APLOG_DEBUG|APLOG_NOERRNO, 0,
-	         cmd->server, "Url parse: Filter: %s", urld->lud_filter);
+	         cmd->server, "[%d] auth_ldap url parse: filter: %s", getpid(), urld->lud_filter);
 
     /* Set all the values, or at least some sane defaults */
     if (sec->host) {
