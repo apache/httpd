@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Fix a segfault when requests for shared memory fails and returns
+     NULL. Fix a segfault caused by a lack of bounds checking on the
+     cache. PR 24801 [Graham Leggett]
+
   *) Throw an error message if an attempt is made to use the LDAPTrustedCA
      or LDAPTrustedCAType directives in a VirtualHost. PR 26390
      [Brad Nicholes]
