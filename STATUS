@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/08/18 11:56:09 $]
+Last modified at [$Date: 2004/08/18 12:11:48 $]
 
 Release:
 
@@ -73,6 +73,16 @@ PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
 
+    *) Fix mod_userdir vs mod_suexec identity hook ordering.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/mappers/mod_userdir.c?r1=1.58&r2=1.59
+       PR: 18156
+       +1: jorton
+
+    *) [SECURITY] mod_ssl: Fix potential input filter segfaults in SPECULATIVE mode.
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.125&r2=1.126
+       PR: 30134
+       +1: jorton
+
     *) [SECURITY] mod_ssl: Fix potential infinite loop.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.124&r2=1.125
        PR: 29964
@@ -86,11 +96,11 @@ PATCHES TO BACKPORT FROM 2.1
     *) apachectl: Fix a problem finding envvars if sbindir != bindir.
        PR 30723.  [Friedrich Haubensak <hsk imb-jena.de>]
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/apachectl.in?r1=1.22&r2=1.23
-       +1: trawick
+       +1: trawick, jorton
 
     *) suexec: Pass the SERVER_SIGNATURE envvar through to CGIs.
          http://cvs.apache.org/viewcvs.cgi/httpd-2.0/support/suexec.c?r1=1.32&r2=1.33
-       +1: trawick
+       +1: trawick, jorton
 
     *) Proposal: Several folks want to aggressively backport changes
        from mod_cache, mod_mem_cache and mod_file_cache from Apache
@@ -205,14 +215,14 @@ PATCHES TO BACKPORT FROM 2.1
        Header was extended instead. Backport this from 2.1 and document
        this in the upgrading docs. A 2.0 patch is here:
          http://www.apache.org/~nd/header_always_2.0.diff
-       +1: nd, bnicholes
+       +1: nd, bnicholes, jorton
 
     *) mod_rewrite: Fix confused map cache (with maps in different VHs using
        the same name). PR 26462. (2.0 + 1.3)
        A patch for 1.3 is here (2.0 goes similar):
        <http://www.apache.org/~nd/mod_rewrite-confusion-1.3.patch>
          modules/mappers/mod_rewrite.c: r1.256
-       +1: nd, trawick
+       +1: nd, trawick, jorton
 
     *) mod_log_config: Cleanup log_header_out function to allow multiple headers
        like Set-Cookie to be logged properly. PR 27787 (2.0 + 1.3)
