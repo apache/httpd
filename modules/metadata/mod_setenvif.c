@@ -123,6 +123,7 @@
 
 #include "apr.h"
 #include "apr_strings.h"
+#include "apr_strmatch.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -149,6 +150,7 @@ typedef struct {
     regex_t *pnamereg;          /* compiled header name regex */
     char *regex;                /* regex to match against */
     regex_t *preg;              /* compiled regex */
+    const apr_strmatch_pattern *pattern; /* non-regex pattern to match */
     apr_table_t *features;      /* env vars to set (or unset) */
     enum special special_type;  /* is it a "special" header ? */
     int icase;                  /* ignoring case? */
@@ -219,10 +221,68 @@ static int is_header_regex(apr_pool_t *p, const char* name)
     }
     return 0;
 }
+
+/* If the input string does not take advantage of regular
+ * expression metacharacters, return a pointer to an equivalent
+ * string that can be searched using apr_strmatch().  (The
+ * returned string will often be the input string.  But if
+ * the input string contains escaped characters, the returned
+ * string will be a copy with the escapes removed.)
+ */
+static const char *non_regex_pattern(apr_pool_t *p, const char *s)
+{
+    const char *src = s;
+    int escapes_found = 0;
+    int in_escape = 0;
+
+    while (*src) {
+        if (in_escape) {
+            in_escape = 0;
+        }
+        else {
+            switch (*src) {
+            case '^':
+            case '.':
+            case '$':
+            case '|':
+            case '(':
+            case ')':
+            case '[':
+            case ']':
+            case '*':
+            case '+':
+            case '?':
+            case '{':
+            case '}':
+                return NULL;
+            case '\\':
+                in_escape = 1;
+                escapes_found = 1;
+            }
+        }
+        src++;
+    }
+    if (!escapes_found) {
+        return s;
+    }
+    else {
+        char *unescaped = (char *)apr_palloc(p, src - s + 1);
+        char *dst = unescaped;
+        src = s;
+        do {
+            if (*src == '\\') {
+                src++;
+            }
+        } while ((*dst++ = *src++));
+        return unescaped;
+    }
+}
+
 static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 				     char *fname, const char *args)
 {
     char *regex;
+    const char *simple_pattern;
     const char *feature;
     sei_cfg_rec *sconf;
     sei_entry *new;
@@ -279,13 +339,25 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 	new->name = fname;
 	new->regex = regex;
 	new->icase = icase;
-	new->preg = ap_pregcomp(cmd->pool, regex,
-				(REG_EXTENDED | REG_NOSUB
-				 | (icase ? REG_ICASE : 0)));
-	if (new->preg == NULL) {
-	    return apr_pstrcat(cmd->pool, cmd->cmd->name,
-			      " regex could not be compiled.", NULL);
-	}
+        if ((simple_pattern = non_regex_pattern(cmd->pool, regex))) {
+            new->pattern = apr_strmatch_precompile(cmd->pool,
+                                                   simple_pattern, 1);
+            if (new->pattern == NULL) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   " pattern could not be compiled.", NULL);
+            }
+            new->preg = NULL;
+        }
+        else {
+            new->preg = ap_pregcomp(cmd->pool, regex,
+                                    (REG_EXTENDED | REG_NOSUB
+                                     | (icase ? REG_ICASE : 0)));
+            if (new->preg == NULL) {
+                return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                   " regex could not be compiled.", NULL);
+            }
+            new->pattern = NULL;
+        }
 	new->features = apr_table_make(cmd->pool, 2);
 
 	if (!strcasecmp(fname, "remote_addr")) {
@@ -408,6 +480,7 @@ static int match_headers(request_rec *r)
     sei_entry *entries;
     const apr_table_entry_t *elts;
     const char *val;
+    apr_size_t val_len = 0;
     int i, j;
     char *last_name;
 
@@ -477,6 +550,7 @@ static int match_headers(request_rec *r)
                     }
                 }
 	    }
+            val_len = val ? strlen(val) : 0;
         }
 
 	/*
@@ -487,9 +561,11 @@ static int match_headers(request_rec *r)
 	 */
         if (val == NULL) {
             val = "";
+            val_len = 0;
         }
 
-        if (!ap_regexec(b->preg, val, 0, NULL, 0)) {
+        if (b->pattern ? apr_strmatch(b->pattern, val, val_len) :
+            !ap_regexec(b->preg, val, 0, NULL, 0)) {
 	    const apr_array_header_t *arr = apr_table_elts(b->features);
             elts = (const apr_table_entry_t *) arr->elts;
 
