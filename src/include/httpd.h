@@ -141,7 +141,11 @@ extern "C" {
 #define DEFAULT_HTTP_PORT	80
 #define DEFAULT_HTTPS_PORT	443
 #define ap_is_default_port(port,r)	((port) == ap_default_port(r))
+#ifdef NETWARE
+#define ap_http_method(r) ap_os_http_method(r)
+#else
 #define ap_http_method(r)	"http"
+#endif
 #define ap_default_port(r)	DEFAULT_HTTP_PORT
 
 /* --------- Default user name and group name running standalone ---------- */
