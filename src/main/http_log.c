@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: http_log.c,v 1.6 1996/08/20 11:50:45 paul Exp $ */
+/* $Id: http_log.c,v 1.7 1996/09/23 14:07:09 jim Exp $ */
 
 /*
  * http_log.c: Dealing with the logs and errors
@@ -86,16 +86,18 @@ void open_error_log(server_rec *s, pool *p)
   
     fname = server_root_relative (p, s->error_fname);
 
-    if (*fname == '|') {
+    if (*s->error_fname == '|') {
       FILE *dummy;
 
-      spawn_child(p, error_log_child, (void *)(fname+1),
+      spawn_child(p, error_log_child, (void *)(s->error_fname+1),
                     kill_after_timeout, &dummy, NULL);
 
         if (dummy == NULL) {
             fprintf (stderr, "Couldn't fork child for ErrorLog process\n");
             exit (1);
       }
+
+      s->error_log = dummy;
     } else {
         if(!(s->error_log = pfopen(p, fname, "a"))) {
             fprintf(stderr,"httpd: could not open error log file %s.\n", fname);
