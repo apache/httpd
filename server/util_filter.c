@@ -266,7 +266,7 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, apr_bucket_brigade **sa
     return APR_SUCCESS;
 }
 
-AP_DECLARE(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, void *ctx)
+AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, void *ctx)
 {
     ap_filter_t *f = ctx;
 
