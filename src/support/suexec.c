@@ -148,6 +148,7 @@ char *safe_env_lst[] =
     "SERVER_PORT",
     "SERVER_PROTOCOL",
     "SERVER_SOFTWARE",
+    "UNIQUE_ID",
     "USER_NAME",
     "TZ",
     NULL
