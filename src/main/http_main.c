@@ -678,6 +678,14 @@ Sigfunc *signal(int signo, Sigfunc * func)
 }
 #endif
 
+/* a clean exit from a child with proper cleanup */
+static void __attribute__((noreturn)) clean_child_exit(int code)
+{
+    child_exit_modules(pconf, server_conf);
+    destroy_pool(pconf);
+    exit(code);
+}
+
 void timeout(int sig)
 {				/* Also called on SIGPIPE */
     char errstr[MAX_STRING_LEN];
@@ -687,6 +695,9 @@ void timeout(int sig)
     if (alarms_blocked) {
 	alarm_pending = 1;
 	return;
+    }
+    if (exit_after_unblock) {
+	clean_child_exit(0);
     }
 
     if (!current_conn) {
@@ -760,10 +771,16 @@ API_EXPORT(void) unblock_alarms()
     --alarms_blocked;
     if (alarms_blocked == 0) {
 	if (exit_after_unblock) {
+	    /* We have a couple race conditions to deal with here, we can't
+	     * allow a timeout that comes in this small interval to allow
+	     * the child to jump back to the main loop.  Instead we block
+	     * alarms again, and then note that exit_after_unblock is
+	     * being dealt with.  We choose this way to solve this so that
+	     * the common path through unblock_alarms() is really short.
+	     */
+	    ++alarms_blocked;
 	    exit_after_unblock = 0;
-	    child_exit_modules(pconf, server_conf);
-	    destroy_pool(pconf);
-	    exit(0);
+	    clean_child_exit(0);
 	}
 	if (alarm_pending) {
 	    alarm_pending = 0;
@@ -1964,9 +1981,7 @@ void just_die(int sig)
 	exit_after_unblock = 1;
     }
     else {
-	child_exit_modules(pconf, server_conf);
-	destroy_pool(pconf);
-	exit(0);
+	clean_child_exit(0);
     }
 }
 
@@ -2668,16 +2683,12 @@ void child_main(int child_num_arg)
 
 	sync_scoreboard_image();
 	if (scoreboard_image->global.exit_generation >= generation) {
-	    child_exit_modules(pconf, server_conf);
-	    destroy_pool(pconf);
-	    exit(0);
+	    clean_child_exit(0);
 	}
 
 	if ((max_requests_per_child > 0
 	     && ++requests_this_child >= max_requests_per_child)) {
-	    child_exit_modules(pconf, server_conf);
-	    destroy_pool(pconf);
-	    exit(0);
+	    clean_child_exit(0);
 	}
 
 	(void) update_child_status(my_child_num, SERVER_READY, (request_rec *) NULL);
@@ -2700,9 +2711,7 @@ void child_main(int child_num_arg)
 		    if (errno == EFAULT) {
 			aplog_error(APLOG_MARK, APLOG_ERR, server_conf,
 				    "select: (listen) fatal, child exiting");
-			child_exit_modules(pconf, server_conf);
-			destroy_pool(pconf);
-			exit(1);
+			clean_child_exit(1);
 		    }
 #endif
 		    aplog_error(APLOG_MARK, APLOG_ERR, server_conf, "select: (listen)");
@@ -2733,9 +2742,7 @@ void child_main(int child_num_arg)
 		    break;
 		if (deferred_die) {
 		    /* we didn't get a socket, and we were told to die */
-		    child_exit_modules(pconf, server_conf);
-		    destroy_pool(pconf);
-		    exit(0);
+		    clean_child_exit(0);
 		}
 	    }
 
@@ -2758,18 +2765,14 @@ void child_main(int child_num_arg)
 	    usr1_just_die = 1;
 	    if (deferred_die) {
 		/* ok maybe not, see ya later */
-		child_exit_modules(pconf, server_conf);
-		destroy_pool(pconf);
-		exit(0);
+		clean_child_exit(0);
 	    }
 	    /* or maybe we missed a signal, you never know on systems
 	     * without reliable signals
 	     */
 	    sync_scoreboard_image();
 	    if (scoreboard_image->global.exit_generation >= generation) {
-		child_exit_modules(pconf, server_conf);
-		destroy_pool(pconf);
-		exit(0);
+		clean_child_exit(0);
 	    }
 	}
 
@@ -2855,9 +2858,7 @@ void child_main(int child_num_arg)
 	    sync_scoreboard_image();
 	    if (scoreboard_image->global.exit_generation >= generation) {
 		bclose(conn_io);
-		child_exit_modules(pconf, server_conf);
-		destroy_pool(pconf);
-		exit(0);
+		clean_child_exit(0);
 	    }
 
 	    /* In case we get a graceful restart while we're blocked

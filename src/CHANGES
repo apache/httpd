@@ -1,5 +1,8 @@
 Changes with Apache 1.3b3
 
+  *) A mild SIGTERM/SIGALRM race condition was eliminated.
+     [Dean Gaudet] PR#1211
+
   *) Warn user that default path has changed if /usr/local/etc/httpd
      is found on the system.  [Lars Eilebrecht]
 
