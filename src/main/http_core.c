@@ -2746,11 +2746,14 @@ API_EXPORT(const char *) ap_psignature(const char *prefix, request_rec *r)
 	return ap_pstrcat(r->pool, prefix, "<ADDRESS>" SERVER_BASEVERSION
 			  " Server at <A HREF=\"mailto:",
 			  r->server->server_admin, "\">",
-			  ap_get_server_name(r), "</A> Port ", sport,
+			  ap_escape_html(r->pool, ap_get_server_name(r)), 
+			  "</A> Port ", sport,
 			  "</ADDRESS>\n", NULL);
     }
     return ap_pstrcat(r->pool, prefix, "<ADDRESS>" SERVER_BASEVERSION
-		      " Server at ", ap_get_server_name(r), " Port ", sport,
+		      " Server at ", 
+		      ap_escape_html(r->pool, ap_get_server_name(r)), 
+		      " Port ", sport,
 		      "</ADDRESS>\n", NULL);
 }
 

@@ -1,25 +1,41 @@
 
-                            Apache 1.3.26 Released
+                            Apache 1.3.27 Released
 
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.26 of the Apache HTTP
-   Server.  This Announcement notes the significant changes in 1.3.26.
-   Apache 1.3.25 was not released.
+   pleased to announce the release of version 1.3.27 of the Apache HTTP
+   Server.  This Announcement notes the significant changes in 1.3.27
+   as compared to 1.3.26.
 
-   This version of Apache is principally a security and bug fix
-   release.  A summary of the bug fixes is given at the end of this document.
-   Of particular note is that 1.3.26 addresses and fixes the issues noted
-   in CAN-2002-0392 (mitre.org) [CERT VU#944335] regarding a vulnerability
-   in the handling of chunked transfer encoding.  We would like to thank
-   Mark Litchfield of ngssoftware.com for discovering and reporting the
-   vulnerability.
+   This version of Apache is principally a security and bug fix release.
+   A summary of the bug fixes is given at the end of this document.
+   Of particular note is that 1.3.27 addresses and fixes 3 security
+   vulnerabilities.
 
-   We consider Apache 1.3.26 to be the best version of Apache available
+   CAN-2002-0839 (cve.mitre.org): A vulnerability exists in all versions of
+   Apache prior to 1.3.27 on platforms using System V shared memory based
+   scoreboards.  This vulnerability allows an attacker who can execute under
+   the Apache UID to exploit the Apache shared memory scoreboard format and
+   send a signal to any process as root or cause a local denial of service
+   attack.  We thank iDefense for their responsible notification and 
+   disclosure of this issue.
+
+   CAN-2002-0840 (cve.mitre.org): Apache is susceptible to a cross site
+   scripting vulnerability in the default 404 page of any web server hosted
+   on a domain that allows wildcard DNS lookups.  We thank Matthew Murphy for
+   the responsible notification and disclosure of this issue.
+   
+   CAN-2002-0843 (cve.mitre.org): There were some possible overflows in ab.c
+   which could be exploited by a malicious server. Note that this
+   vulnerability is not in Apache itself, but rather one of the support
+   programs bundled with Apache. We thank David Wagner for the responsible
+   notification and disclosure of this issue.
+
+   We consider Apache 1.3.27 to be the best version of Apache 1.3 available
    and we strongly recommend that users of older versions, especially of
    the 1.1.x and 1.2.x family, upgrade as soon as possible.  No further
    releases will be made in the 1.2.x family.
 
-   Apache 1.3.26 is available for download from
+   Apache 1.3.27 is available for download from
    
        http://www.apache.org/dist/httpd/
 
@@ -35,21 +51,17 @@
 
        http://www.apache.org/mirrors/
 
-   As of Apache 1.3.17, Win32 binary distributions are now based on the
-   Microsoft Installer (.MSI) technology.  This change occurred in order to
-   resolve the many problems WinME and Win2K users experienced with the
-   older InstallShield-based installer.exe file.  While development
-   continues to make this new installation method more robust, questions
-   should be directed at the news:comp.infosystems.www.servers.ms-windows
-   newsgroup.
-
    As of Apache 1.3.12 binary distributions contain all standard Apache
    modules as shared objects (if supported by the platform) and include
    full source code.  Installation is easily done by executing the
    included install script.  See the README.bindist and INSTALL.bindist
    files for a complete explanation.  Please note that the binary
    distributions are only provided for your convenience and current
-   distributions for specific platforms are not always available.
+   distributions for specific platforms are not always available. Win32
+   binary distributions are based on the Microsoft Installer (.MSI)
+   technology.  While development continues to make this installation method
+   more robust, questions should be directed to the
+   news:comp.infosystems.www.servers.ms-windows newsgroup.
 
    For an overview of new features introduced after 1.2 please see
    
@@ -65,59 +77,89 @@
    of the servers on the Internet are running Apache or one of its
    variants.
 
-   IMPORTANT NOTE FOR WIN32 USERS: Over the years, many users have come
-   to trust Apache as a secure and stable server.  It must be realized
-   that the current Win32 code has not yet reached the levels of the Unix
-   version, but is of acceptable quality.  Win32 stability or security
-   problems do not reflect on the Unix version.
+   IMPORTANT NOTE FOR APACHE USERS:   Apache 1.3 was designed for Unix OS
+   variants.  While  the ports to non-Unix platforms (such as Win32, Netware
+   or OS2) are of an acceptable quality, Apache 1.3 is not optimized for
+   these platforms.  Security, stability, or performance issues on these
+   non-Unix ports do not generally apply to the Unix version, due to
+   software's Unix origin.
 
-                     Apache 1.3.26 Major changes
+   Apache 2.0 has been structured for multiple operating systems from its 
+   inception, by introducing the Apache Portability Library and MPM modules.
+   Users on non-Unix platforms are strongly encouraged to move up to 
+   Apache 2.0 for better performance, stability and security on their
+   platforms.
+
+                     Apache 1.3.27 Major changes
 
   Security vulnerabilities
 
-     * Fix the security vulnerability noted in CAN-2002-0392 (mitre.org)
-       regarding the handling of chunked transfer encoding.
+     * Fix the security vulnerability noted in CAN-2002-0839 (cve.mitre.org)
+       regarding ownership permissions of System V shared memory based
+       scoreboards.  The fix resulted in the new ShmemUIDisUser directive.
+
+     * Fix the security vulnerability noted in CAN-2002-0840 (cvs.mitre.org)
+       regarding a cross-site scripting vulnerability in the default error
+       page when using wildcard DNS.
+
+     * Fix the security vulnerability noted in CAN-2002-0843 (cve.mitre.org)
+       regarding some possible overflows in ab.c which could be exploited by
+       a malicious server.
 
   New features
 
-   The main new features in 1.3.26 (compared to 1.3.24) are:
+   The main new features in 1.3.27 (compared to 1.3.26) are:
 
-     * Add some popular types to the mime types magic file.
+     * The new ErrorHeader directive has been added.
+
+     * Configuration file globbing can now use simple pattern
+       matching.
+
+     * The protocol version (eg: HTTP/1.1) in the request line parsing
+       is now case insensitive.
+
+     * ap_snprintf() can now distinguish between an output which was
+       truncated, and an output which exactly filled the buffer.
+
+     * Add ProtocolReqCheck directive, which determines if Apache will
+       check for a valid protocol string in the request (eg: HTTP/1.1)
+       and return HTTP_BAD_REQUEST if not valid. Versions of Apache
+       prior to 1.3.26 would silently ignore bad protocol strings, but
+       1.3.26 included a more strict check. This makes it runtime
+       configurable.
+
+     * Added support for Berkeley-DB/4.x to mod_auth_db.
+
+     * httpd -V will now also print out the compile time defined
+       HARD_SERVER_LIMIT value.
 
    New features that relate to specific platforms:
 
-     * Unix: Added a '-F' flag which causes the supervisor process to
-       no longer fork down and detach and instead stay attached to
-       the tty - thus making live for automatic restart and exit checking
-       code easier.
+     * Support Caldera OpenUNIX 8.
+     
+     * Use SysV semaphores by default on OpenBSD.
+
+     * Implemented file locking in mod_rewrite for the NetWare
+       CLib platform.
 
   Bugs fixed
 
-   The following bugs were found in Apache 1.3.24 (or earlier) and have
-   been fixed in Apache 1.3.26:
+   The following bugs were found in Apache 1.3.26 (or earlier) and have
+   been fixed in Apache 1.3.27:
 
-     * Allow child processes sufficient time for cleanups but making
-       ap_select in reclaim_child_processes more "resistant" to
-       signal interupts.
+     * mod_proxy fixes:
+        - The cache in mod_proxy was incorrectly updating the Content-Length
+          value from 304 responses when doing validation.
+        - Fix a problem in proxy where headers from other modules were
+          added to the response headers when this was already done in the
+          core already.
 
-     * Fix for a problem in mod_rewrite which would lead to 400 Bad Request
-       responses for rewriting rules which resulted in a local path.
-       Note: This will also reject invalid requests as issued by
-       Netscape-4.x Roaming Profiles (on a DAV-enabled server)
+     * In 1.3.26, a null or all blank Content-Length field would be
+       triggered as an error; previous versions would silently ignore
+       this and assume 0.  1.3.27 restores this previous behavior.
 
-     * Recognize platform-specific root directories (other than
-       leading slash) in mod_rewrite for filename rewrite rules.
-
-     * Disallow anything but whitespace on the request line after the
-       HTTP/x.y protocol string to prevent arbitrary user input from
-       ending up in the access_log and error_log.  Also control characters
-       are now escaped.
-
-     * A large number of fixes in mod_proxy including: adding support
-       for dechunking chunked responses, correcting a timeout problem
-       which would force long or slow POST requests to close after 300
-       seconds, adding "X-Forwarded" headers, dealing correctly with the
-       multiple-cookie header bug, ability to handle unexpected
-       100-continue responses sent during PUT or POST commands, and a
-       change to tighten up the Server header overwrite bugfix.
+     * Win32: Fix one byte buffer overflow in ap_get_win32_interpreter
+       when a CGI script's #! line does not contain a \r or \n (i.e.
+       a line feed character) in the first 1023 bytes. The overflow
+       is always a '\0' (string termination) character.
 
