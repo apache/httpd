@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml"> ]
+  [ <!ENTITY sitemap SYSTEM "../sitemap.xml"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
@@ -22,5 +22,5 @@
     </p>
   </summary>
 
-  &allmodules;
+  &sitemap;
 </directiveindex>

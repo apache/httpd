@@ -632,12 +632,13 @@
   <!-- used in several documents                          -->
   <!--                                                    -->
   <xsl:template name="directive-startletters">
+  <xsl:param name="directives"/>
 
     <xsl:call-template name="_squeeze-letters">
       <xsl:with-param name="lastletter" select="''"/>
 
       <xsl:with-param name="letters">
-        <xsl:for-each select="document(/*/modulefilelist/modulefile)/modulesynopsis/directivesynopsis[not(@location)]">
+        <xsl:for-each select="$directives">
         <xsl:sort select="name"/>
           <xsl:value-of select="translate(substring(normalize-space(name),1,1),$lowercase,$uppercase)"/>
         </xsl:for-each>

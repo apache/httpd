@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd"
-  [ <!ENTITY allmodules SYSTEM "allmodules.xml"> ]
+  [ <!ENTITY sitemap SYSTEM "../sitemap.xml"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
@@ -14,5 +14,6 @@
       directives</a>.
     </p>
   </summary>
-  &allmodules;
+
+  &sitemap;
 </moduleindex>
