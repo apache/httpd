@@ -1,10 +1,10 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/11/05 14:53:32 $]
+  Last modified at [$Date: 1999/12/04 15:38:19 $]
 
 Release:
 
-    1.3.10-dev: Current
-
+    1.3.10-dev: Current. Proposal open to try to release on
+           Dec 19th, 1999. Jim offers to be RM.
     1.3.9: Tagged and rolled on Aug. 16. Released and announced on 19th.
     1.3.8: Not released.
     1.3.7: Not released.
@@ -16,7 +16,7 @@ Release:
     1.3.1: Tagged and rolled on July 19. Announced and released.
     1.3.0: Tagged and rolled on June 1.  Announced and released on the 6th.
            
-    2.0  : In pre-alpha development, see apache-2.0 and apache-apr repository
+    2.0  : In pre-alpha development, see apache-2.0 repository
 
 RELEASE SHOWSTOPPERS:
 
