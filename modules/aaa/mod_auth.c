@@ -317,8 +317,8 @@ static int check_user_access(request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_check_user_id(authenticate_basic_user,NULL,NULL,HOOK_MIDDLE);
-    ap_hook_auth_checker(check_user_access,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_check_user_id(authenticate_basic_user,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_auth_checker(check_user_access,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT auth_module =

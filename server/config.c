@@ -85,21 +85,21 @@
 #include "http_vhost.h"
 #include "util_cfgtree.h"
 
-HOOK_STRUCT(
-	    HOOK_LINK(header_parser)
-	    HOOK_LINK(post_config)
-	    HOOK_LINK(open_logs)
-	    HOOK_LINK(child_init)
+AP_HOOK_STRUCT(
+	    AP_HOOK_LINK(header_parser)
+	    AP_HOOK_LINK(post_config)
+	    AP_HOOK_LINK(open_logs)
+	    AP_HOOK_LINK(child_init)
 )
 
-IMPLEMENT_HOOK_RUN_ALL(int,header_parser,(request_rec *r),(r),OK,DECLINED)
-IMPLEMENT_HOOK_VOID(post_config,
+AP_IMPLEMENT_HOOK_RUN_ALL(int,header_parser,(request_rec *r),(r),OK,DECLINED)
+AP_IMPLEMENT_HOOK_VOID(post_config,
 		    (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s),
 		    (pconf,plog,ptemp,s))
-IMPLEMENT_HOOK_VOID(open_logs,
+AP_IMPLEMENT_HOOK_VOID(open_logs,
 		    (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s),
 		    (pconf,plog,ptemp,s))
-IMPLEMENT_HOOK_VOID(child_init,(ap_pool_t *pchild, server_rec *s),(pchild,s))
+AP_IMPLEMENT_HOOK_VOID(child_init,(ap_pool_t *pchild, server_rec *s),(pchild,s))
 
 /****************************************************************
  *

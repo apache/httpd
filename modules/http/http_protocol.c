@@ -78,11 +78,11 @@
 #include "mpm_status.h"
 #include <stdarg.h>
 
-HOOK_STRUCT(
-	    HOOK_LINK(post_read_request)
-	    HOOK_LINK(log_transaction)
-	    HOOK_LINK(http_method)
-	    HOOK_LINK(default_port)
+AP_HOOK_STRUCT(
+	    AP_HOOK_LINK(post_read_request)
+	    AP_HOOK_LINK(log_transaction)
+	    AP_HOOK_LINK(http_method)
+	    AP_HOOK_LINK(default_port)
 )
 
 #define SET_BYTES_SENT(r) \
@@ -2833,9 +2833,9 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
     ap_rflush(r);
 }
 
-IMPLEMENT_HOOK_RUN_ALL(int,post_read_request,(request_rec *r),(r),OK,DECLINED)
-IMPLEMENT_HOOK_RUN_ALL(int,log_transaction,(request_rec *r),(r),OK,DECLINED)
-IMPLEMENT_HOOK_RUN_FIRST(const char *,http_method,(const request_rec *r),(r),
+AP_IMPLEMENT_HOOK_RUN_ALL(int,post_read_request,(request_rec *r),(r),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int,log_transaction,(request_rec *r),(r),OK,DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(const char *,http_method,(const request_rec *r),(r),
 			 NULL)
-IMPLEMENT_HOOK_RUN_FIRST(unsigned short,default_port,(const request_rec *r),
+AP_IMPLEMENT_HOOK_RUN_FIRST(unsigned short,default_port,(const request_rec *r),
 			 (r),0)

@@ -2487,8 +2487,8 @@ static void register_hooks(void)
 
     /* mod_mime_magic should be run after mod_mime, if at all. */
 
-    ap_hook_type_checker(magic_find_ct, aszPre, NULL, HOOK_MIDDLE);
-    ap_hook_post_config(magic_init, NULL, NULL, HOOK_FIRST);
+    ap_hook_type_checker(magic_find_ct, aszPre, NULL, AP_HOOK_MIDDLE);
+    ap_hook_post_config(magic_init, NULL, NULL, AP_HOOK_FIRST);
 }
 
 /*

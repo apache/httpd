@@ -404,7 +404,7 @@ static int match_headers(request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_post_read_request(match_headers,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_post_read_request(match_headers,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT setenvif_module =

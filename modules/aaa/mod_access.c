@@ -392,7 +392,7 @@ static int check_dir_access(request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_access_checker(check_dir_access,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_access_checker(check_dir_access,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT access_module =

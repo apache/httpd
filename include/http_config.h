@@ -413,12 +413,12 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
 #endif
 
   /* Hooks */
-DECLARE_HOOK(int,header_parser,(request_rec *))
-DECLARE_HOOK(void,post_config,
+AP_DECLARE_HOOK(int,header_parser,(request_rec *))
+AP_DECLARE_HOOK(void,post_config,
 	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
-DECLARE_HOOK(void,open_logs,
+AP_DECLARE_HOOK(void,open_logs,
 	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
-DECLARE_HOOK(void,child_init,(ap_pool_t *pchild, server_rec *s))
+AP_DECLARE_HOOK(void,child_init,(ap_pool_t *pchild, server_rec *s))
 
 #ifdef __cplusplus
 }

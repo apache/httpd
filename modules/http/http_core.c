@@ -2519,15 +2519,15 @@ static unsigned short core_port(const request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_translate_name(core_translate,NULL,NULL,HOOK_REALLY_LAST);
+    ap_hook_translate_name(core_translate,NULL,NULL,AP_HOOK_REALLY_LAST);
     ap_hook_process_connection(ap_process_http_connection,NULL,NULL,
-			       HOOK_REALLY_LAST);
-    ap_hook_http_method(core_method,NULL,NULL,HOOK_REALLY_LAST);
-    ap_hook_default_port(core_port,NULL,NULL,HOOK_REALLY_LAST);
-    ap_hook_open_logs(core_open_logs,NULL,NULL,HOOK_MIDDLE);
+			       AP_HOOK_REALLY_LAST);
+    ap_hook_http_method(core_method,NULL,NULL,AP_HOOK_REALLY_LAST);
+    ap_hook_default_port(core_port,NULL,NULL,AP_HOOK_REALLY_LAST);
+    ap_hook_open_logs(core_open_logs,NULL,NULL,AP_HOOK_MIDDLE);
     /* FIXME: I suspect we can eliminate the need for these - Ben */
-    ap_hook_type_checker(do_nothing,NULL,NULL,HOOK_REALLY_LAST);
-    ap_hook_access_checker(do_nothing,NULL,NULL,HOOK_REALLY_LAST);
+    ap_hook_type_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
+    ap_hook_access_checker(do_nothing,NULL,NULL,AP_HOOK_REALLY_LAST);
 }
 
 API_VAR_EXPORT module core_module = {

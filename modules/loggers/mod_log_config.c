@@ -1139,8 +1139,8 @@ static void flush_all_logs(server_rec *s)
 
 static void register_hooks(void)
 {
-    ap_hook_open_logs(init_config_log,NULL,NULL,HOOK_MIDDLE);
-    ap_hook_log_transaction(multi_log_transaction,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_open_logs(init_config_log,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_log_transaction(multi_log_transaction,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT config_log_module =

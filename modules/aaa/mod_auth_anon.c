@@ -291,8 +291,8 @@ static int check_anon_access(request_rec *r)
 }
 static void register_hooks(void)
 {
-    ap_hook_check_user_id(anon_authenticate_basic_user,NULL,NULL,HOOK_MIDDLE);
-    ap_hook_auth_checker(check_anon_access,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_check_user_id(anon_authenticate_basic_user,NULL,NULL,AP_HOOK_MIDDLE);
+    ap_hook_auth_checker(check_anon_access,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT auth_anon_module =

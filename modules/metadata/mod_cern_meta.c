@@ -379,7 +379,7 @@ static int add_cern_meta_data(request_rec *r)
 }
 static void register_hooks(void)
 {
-    ap_hook_fixups(add_cern_meta_data,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_fixups(add_cern_meta_data,NULL,NULL,AP_HOOK_MIDDLE);
 }
 module MODULE_VAR_EXPORT cern_meta_module =
 {

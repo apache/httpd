@@ -1871,9 +1871,9 @@ static void register_hooks(void)
 
     ap_hook_post_config(initialize_module, NULL, cfgPost, 0);
     ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, 0);
-    ap_hook_check_user_id(authenticate_digest_user, NULL, NULL, HOOK_MIDDLE);
-    ap_hook_auth_checker(digest_check_auth, NULL, NULL, HOOK_MIDDLE);
-    ap_hook_fixups(add_auth_info, NULL, NULL, HOOK_MIDDLE);
+    ap_hook_check_user_id(authenticate_digest_user, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_auth_checker(digest_check_auth, NULL, NULL, AP_HOOK_MIDDLE);
+    ap_hook_fixups(add_auth_info, NULL, NULL, AP_HOOK_MIDDLE);
 }
 
 module MODULE_VAR_EXPORT auth_digest_module =

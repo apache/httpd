@@ -118,7 +118,7 @@ static const command_rec echo_cmds[] = {
 
 static void register_hooks(void)
 {
-    ap_hook_process_connection(process_echo_connection,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_process_connection(process_echo_connection,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 API_VAR_EXPORT module echo_module = {

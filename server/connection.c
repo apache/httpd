@@ -67,13 +67,13 @@
 #include "http_config.h"
 #include "http_vhost.h"
 
-HOOK_STRUCT(
-	    HOOK_LINK(pre_connection)
-	    HOOK_LINK(process_connection)
+AP_HOOK_STRUCT(
+	    AP_HOOK_LINK(pre_connection)
+	    AP_HOOK_LINK(process_connection)
 )
 
-IMPLEMENT_HOOK_VOID(pre_connection,(conn_rec *c),(c))
-IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
+AP_IMPLEMENT_HOOK_VOID(pre_connection,(conn_rec *c),(c))
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,process_connection,(conn_rec *c),(c),DECLINED)
 
 /*
  * More machine-dependent networking gooo... on some systems,

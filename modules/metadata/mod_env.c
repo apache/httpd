@@ -254,7 +254,7 @@ static int fixup_env_module(request_rec *r)
 
 static void register_hooks(void)
 {
-    ap_hook_fixups(fixup_env_module,NULL,NULL,HOOK_MIDDLE);
+    ap_hook_fixups(fixup_env_module,NULL,NULL,AP_HOOK_MIDDLE);
 }
 
 
