@@ -363,7 +363,7 @@ otilde\365oslash\370ugrave\371uacute\372yacute\375"     /* 6 */
  * the tag value is html decoded if dodecode is non-zero
  */
 
-static char *get_tag(ap_context_t *p, ap_file_t *in, char *tag, int tagbuf_len, int dodecode)
+static char *get_tag(ap_pool_t *p, ap_file_t *in, char *tag, int tagbuf_len, int dodecode)
 {
     char *t = tag, *tag_val, c, term;
 
@@ -449,7 +449,7 @@ static char *get_tag(ap_context_t *p, ap_file_t *in, char *tag, int tagbuf_len, 
     return ap_pstrdup(p, tag_val);
 }
 
-static int get_directive(ap_file_t *in, char *dest, size_t len, ap_context_t *p)
+static int get_directive(ap_file_t *in, char *dest, size_t len, ap_pool_t *p)
 {
     char *d = dest;
     char c;
@@ -779,7 +779,7 @@ typedef struct {
 
 
 
-static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_context_t *p)
+static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_pool_t *p)
 {
     int numwords, x, idx;
     char *w;
@@ -1413,14 +1413,14 @@ static int parse_expr(request_rec *r, const char *expr, const char *error)
     }         *root, *current, *new;
     const char *parse;
     char buffer[MAX_STRING_LEN];
-    ap_context_t *expr_pool;
+    ap_pool_t *expr_pool;
     int retval = 0;
 
     if ((parse = expr) == (char *) NULL) {
         return (0);
     }
     root = current = (struct parse_node *) NULL;
-    if (ap_create_context(&expr_pool, r->pool) != APR_SUCCESS)
+    if (ap_create_pool(&expr_pool, r->pool) != APR_SUCCESS)
 		return 0;
 
     /* Create Parse Tree */
@@ -2338,7 +2338,7 @@ enum xbithack {
 #define DEFAULT_XBITHACK xbithack_off
 #endif
 
-static void *create_includes_dir_config(ap_context_t *p, char *dummy)
+static void *create_includes_dir_config(ap_pool_t *p, char *dummy)
 {
     enum xbithack *result = (enum xbithack *) ap_palloc(p, sizeof(enum xbithack));
     *result = DEFAULT_XBITHACK;

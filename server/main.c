@@ -203,13 +203,13 @@ static process_rec *create_process(int argc, const char **argv)
     process_rec *process;
     
     {
-	ap_context_t *cntx;
+	ap_pool_t *cntx;
         ap_status_t stat;
 
-	stat = ap_create_context(&cntx, NULL);
+	stat = ap_create_pool(&cntx, NULL);
         if (stat != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, NULL,
-                         "ap_create_context() failed to create "
+                         "ap_create_pool() failed to create "
                          "initial context");
             ap_terminate();
             exit(1);
@@ -218,7 +218,7 @@ static process_rec *create_process(int argc, const char **argv)
 	process = ap_palloc(cntx, sizeof(process_rec));
 	process->pool = cntx;
     }
-    ap_create_context(&process->pconf, process->pool);
+    ap_create_pool(&process->pconf, process->pool);
     process->argc = argc;
     process->argv = argv;
     process->short_name = ap_filename_of_pathname(argv[0]);
@@ -276,7 +276,7 @@ static void usage(process_rec *process)
     destroy_and_exit_process(process, 1);
 }
 
-ap_context_t *g_pHookPool;
+ap_pool_t *g_pHookPool;
 
 #ifdef WIN32
 API_EXPORT_NONSTD(int) apache_main(int argc, char *argv[])
@@ -290,11 +290,11 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
     const char *def_server_root = HTTPD_ROOT;
     process_rec *process;
     server_rec *server_conf;
-    ap_context_t *pglobal;
-    ap_context_t *pconf;
-    ap_context_t *plog; /* Pool of log streams, reset _after_ each read of conf */
-    ap_context_t *ptemp; /* Pool for temporary config stuff, reset often */
-    ap_context_t *pcommands; /* Pool for -C and -c switches */
+    ap_pool_t *pglobal;
+    ap_pool_t *pconf;
+    ap_pool_t *plog; /* Pool of log streams, reset _after_ each read of conf */
+    ap_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
+    ap_pool_t *pcommands; /* Pool for -C and -c switches */
     module **mod;
 
 #ifndef WIN32 /* done in main_win32.c */
@@ -311,7 +311,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 
     ap_setup_prelinked_modules(process);
 
-    ap_create_context(&pcommands, pglobal);
+    ap_create_pool(&pcommands, pglobal);
     ap_server_pre_read_config  = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
@@ -356,8 +356,8 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	}
     }
 
-    ap_create_context(&plog, pglobal);
-    ap_create_context(&ptemp, pconf);
+    ap_create_pool(&plog, pglobal);
+    ap_create_pool(&ptemp, pconf);
 
     /* Note that we preflight the config file once
        before reading it _again_ in the main loop.
@@ -382,7 +382,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
 		ap_register_hooks(*mod);
 	}
-	ap_create_context(&ptemp, pconf);
+	ap_create_pool(&ptemp, pconf);
 	ap_server_root = def_server_root;
 	ap_run_pre_config(pconf, plog, ptemp);
 	server_conf = ap_read_config(process, ptemp, confname);

@@ -126,8 +126,8 @@ static ap_table_t *static_calls_made = NULL;
  * freed each time we modify the trace.  That way previous layers of trace
  * data don't get lost.
  */
-static ap_context_t *example_pool = NULL;
-static ap_context_t *example_subpool = NULL;
+static ap_pool_t *example_pool = NULL;
+static ap_pool_t *example_subpool = NULL;
 
 /*
  * Declare ourselves so the configuration routines can find and know us.
@@ -295,7 +295,7 @@ static void setup_module_cells()
      * If we haven't already allocated our module-private pool, do so now.
      */
     if (example_pool == NULL) {
-        ap_create_context(&example_pool, NULL);
+        ap_create_pool(&example_pool, NULL);
     };
     /*
      * Likewise for the ap_table_t of routine/environment pairs we visit outside of
@@ -315,7 +315,7 @@ static void setup_module_cells()
  * The list can be displayed by the example_handler() routine.
  *
  * If the call occurs within a request context (i.e., we're passed a request
- * record), we put the trace into the request ap_context_t and attach it to the
+ * record), we put the trace into the request ap_pool_t and attach it to the
  * request via the notes mechanism.  Otherwise, the trace gets added
  * to the static (non-request-specific) list.
  *
@@ -333,7 +333,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
     const char *sofar;
     char *addon;
     char *where;
-    ap_context_t *p;
+    ap_pool_t *p;
     const char *trace_copy;
 
     /*
@@ -360,7 +360,7 @@ static void trace_add(server_rec *s, request_rec *r, excfg *mconfig,
          * Make a new sub-pool and copy any existing trace to it.  Point the
          * trace cell at the copied value.
          */
-        ap_create_context(&p, example_pool);
+        ap_create_pool(&p, example_pool);
         if (trace != NULL) {
             trace = ap_pstrdup(p, trace);
         }
@@ -627,8 +627,8 @@ static int example_handler(request_rec *r)
 /*
  * All our module initialiser does is add its trace to the log.
  */
-static void example_init(ap_context_t *p, ap_context_t *ptemp, 
-                         ap_context_t *plog, server_rec *s)
+static void example_init(ap_pool_t *p, ap_pool_t *ptemp, 
+                         ap_pool_t *plog, server_rec *s)
 {
 
     char *note;
@@ -659,7 +659,7 @@ static void example_init(ap_context_t *p, ap_context_t *ptemp,
 /*
  * All our process initialiser does is add its trace to the log.
  */
-static void example_child_init(ap_context_t *p, server_rec *s)
+static void example_child_init(ap_pool_t *p, server_rec *s)
 {
 
     char *note;
@@ -690,7 +690,7 @@ static void example_child_init(ap_context_t *p, server_rec *s)
 /*
  * All our process-death routine does is add its trace to the log.
  */
-static void example_child_exit(server_rec *s, ap_context_t *p)
+static void example_child_exit(server_rec *s, ap_pool_t *p)
 {
 
     char *note;
@@ -717,7 +717,7 @@ static void example_child_exit(server_rec *s, ap_context_t *p)
  * The return value is a pointer to the created module-specific
  * structure.
  */
-static void *example_create_dir_config(ap_context_t *p, char *dirspec)
+static void *example_create_dir_config(ap_pool_t *p, char *dirspec)
 {
 
     excfg *cfg;
@@ -758,7 +758,7 @@ static void *example_create_dir_config(ap_context_t *p, char *dirspec)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_dir_config(ap_context_t *p, void *parent_conf,
+static void *example_merge_dir_config(ap_pool_t *p, void *parent_conf,
                                       void *newloc_conf)
 {
 
@@ -803,7 +803,7 @@ static void *example_merge_dir_config(ap_context_t *p, void *parent_conf,
  * The return value is a pointer to the created module-specific
  * structure.
  */
-static void *example_create_server_config(ap_context_t *p, server_rec *s)
+static void *example_create_server_config(ap_pool_t *p, server_rec *s)
 {
 
     excfg *cfg;
@@ -839,7 +839,7 @@ static void *example_create_server_config(ap_context_t *p, server_rec *s)
  * The return value is a pointer to the created module-specific structure
  * containing the merged values.
  */
-static void *example_merge_server_config(ap_context_t *p, void *server1_conf,
+static void *example_merge_server_config(ap_pool_t *p, void *server1_conf,
                                          void *server2_conf)
 {
 

@@ -89,9 +89,9 @@ INLINE int ap_os_is_path_absolute(const char *file);
 extern int ap_os_is_path_absolute(const char *file);
 #endif
 
-char *ap_os_canonical_filename(ap_context_t *p, const char *file);
-char *ap_os_case_canonical_filename(ap_context_t *p, const char *szFile);
-char *ap_os_systemcase_filename(ap_context_t *p, const char *szFile);
+char *ap_os_canonical_filename(ap_pool_t *p, const char *file);
+char *ap_os_case_canonical_filename(ap_pool_t *p, const char *szFile);
+char *ap_os_systemcase_filename(ap_pool_t *p, const char *szFile);
 /* FIXME: the following should be implemented on this platform */
 #define ap_os_is_filename_valid(f)         (1)
 

@@ -69,7 +69,7 @@
 #include <string.h>
 
 
-API_EXPORT(char *)ap_os_case_canonical_filename(ap_context_t *pPool, const char *szFile)
+API_EXPORT(char *)ap_os_case_canonical_filename(ap_pool_t *pPool, const char *szFile)
 {
     char buf[HUGE_STRING_LEN];
     char buf2[HUGE_STRING_LEN];
@@ -119,7 +119,7 @@ static void fix_component(char *path, char *lastcomp)
 
 
 
-char *ap_os_systemcase_canonical_filename(ap_context_t *pPool, const char *szFile)
+char *ap_os_systemcase_canonical_filename(ap_pool_t *pPool, const char *szFile)
 {
     char *szCanonicalFile = ap_os_case_canonical_filename(pPool, szFile);
     int startslash = 2, slashnum=0;
@@ -149,7 +149,7 @@ char *ap_os_systemcase_canonical_filename(ap_context_t *pPool, const char *szFil
 
 
 
-char *ap_os_canonical_filename(ap_context_t *pPool, const char *szFile)
+char *ap_os_canonical_filename(ap_pool_t *pPool, const char *szFile)
 {
     char *szCanonicalFile = ap_os_systemcase_canonical_filename(pPool, szFile);
     strlwr(szCanonicalFile);

@@ -73,7 +73,7 @@ typedef struct CompContext {
     BUFF *conn_io;
     char *recv_buf;
     int  recv_buf_size;
-    ap_context_t *ptrans;
+    ap_pool_t *ptrans;
     struct sockaddr *sa_server;
     int sa_server_len;
     struct sockaddr *sa_client;

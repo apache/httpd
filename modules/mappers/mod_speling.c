@@ -102,7 +102,7 @@ typedef struct {
  * bother to have such a function.
  */
 
-static void *mkconfig(ap_context_t *p)
+static void *mkconfig(ap_pool_t *p)
 {
     spconfig *cfg = ap_pcalloc(p, sizeof(spconfig));
 
@@ -114,7 +114,7 @@ static void *mkconfig(ap_context_t *p)
  * Respond to a callback to create configuration record for a server or
  * vhost environment.
  */
-static void *create_mconfig_for_server(ap_context_t *p, server_rec *s)
+static void *create_mconfig_for_server(ap_pool_t *p, server_rec *s)
 {
     return mkconfig(p);
 }
@@ -122,7 +122,7 @@ static void *create_mconfig_for_server(ap_context_t *p, server_rec *s)
 /*
  * Respond to a callback to create a config record for a specific directory.
  */
-static void *create_mconfig_for_directory(ap_context_t *p, char *dir)
+static void *create_mconfig_for_directory(ap_pool_t *p, char *dir)
 {
     return mkconfig(p);
 }
@@ -441,9 +441,9 @@ static int check_speling(request_rec *r)
          * returned.
          */
         else {
-            ap_context_t *p;
+            ap_pool_t *p;
             ap_table_t *notes;
-	    ap_context_t *sub_pool;
+	    ap_pool_t *sub_pool;
 	    ap_array_header_t *t;
 	    ap_array_header_t *v;
 
@@ -457,7 +457,7 @@ static int check_speling(request_rec *r)
                 notes = r->main->notes;
             }
 
-	    if (ap_create_context(&sub_pool, p) != APR_SUCCESS)
+	    if (ap_create_pool(&sub_pool, p) != APR_SUCCESS)
 		return DECLINED;
 
 	    t = ap_make_array(sub_pool, candidates->nelts * 8 + 8,

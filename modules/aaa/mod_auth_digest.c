@@ -434,8 +434,8 @@ failed:
 }
 #endif	/* HAVE_SHMEM_MM */
 
-static void initialize_module(ap_context_t *p, ap_context_t *plog,
-			      ap_context_t *ptemp, server_rec *s)
+static void initialize_module(ap_pool_t *p, ap_pool_t *plog,
+			      ap_pool_t *ptemp, server_rec *s)
 {
     /* keep from doing the init more than once at startup, and delay
      * the init until the second round
@@ -468,7 +468,7 @@ static void initialize_module(ap_context_t *p, ap_context_t *plog,
  * configuration code
  */
 
-static void *create_digest_dir_config(ap_context_t *p, char *dir)
+static void *create_digest_dir_config(ap_pool_t *p, char *dir)
 {
     digest_config_rec *conf;
 
@@ -999,7 +999,7 @@ static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
 
 /* The nonce has the format b64(time)+hash .
  */
-static const char *gen_nonce(ap_context_t *p, time_t now, const char *opaque,
+static const char *gen_nonce(ap_pool_t *p, time_t now, const char *opaque,
 			     const server_rec *server,
 			     const digest_config_rec *conf)
 {
@@ -1128,7 +1128,7 @@ static void clear_session(const digest_header_rec *resp)
  * Authorization challenge generation code (for WWW-Authenticate)
  */
 
-static const char *guess_domain(ap_context_t *p, const char *uri,
+static const char *guess_domain(ap_pool_t *p, const char *uri,
 				const char *filename, const char *dir)
 {
     size_t u_len = strlen(uri), f_len = strlen(filename), d_len = strlen(dir);
@@ -1193,7 +1193,7 @@ static const char *guess_domain(ap_context_t *p, const char *uri,
 }
 
 
-static const char *ltox(ap_context_t *p, unsigned long num)
+static const char *ltox(ap_pool_t *p, unsigned long num)
 {
     if (num != 0)
 	return ap_psprintf(p, "%lx", num);
@@ -1675,7 +1675,7 @@ static ap_table_t *groups_for_user(request_rec *r, const char *user,
 {
     configfile_t *f;
     ap_table_t *grps = ap_make_table(r->pool, 15);
-    ap_context_t *sp;
+    ap_pool_t *sp;
     char l[MAX_STRING_LEN];
     const char *group_name, *ll, *w;
     ap_status_t sts;
@@ -1686,7 +1686,7 @@ static ap_table_t *groups_for_user(request_rec *r, const char *user,
 	return NULL;
     }
 
-    if (ap_create_context(&sp, r->pool) != APR_SUCCESS)
+    if (ap_create_pool(&sp, r->pool) != APR_SUCCESS)
 		return NULL;
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, f))) {

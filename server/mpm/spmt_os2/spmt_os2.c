@@ -128,12 +128,12 @@ struct other_child_rec {
 static other_child_rec *other_children;
 #endif
 
-static ap_context_t *pconf;		/* Pool for config stuff */
+static ap_pool_t *pconf;		/* Pool for config stuff */
 static scoreboard *ap_scoreboard_image = NULL;
 
 struct thread_globals {
     int child_num;
-    ap_context_t *pchild;		/* Pool for httpd child stuff */
+    ap_pool_t *pchild;		/* Pool for httpd child stuff */
     int usr1_just_die;
 };
 
@@ -142,7 +142,7 @@ static struct thread_globals **ppthread_globals = NULL;
 #define THREAD_GLOBAL(gvar) ((*ppthread_globals)->gvar)
 
 
-void reinit_scoreboard(ap_context_t *p)
+void reinit_scoreboard(ap_pool_t *p)
 {
     if (ap_scoreboard_image == NULL) {
         ap_scoreboard_image = (scoreboard *) malloc(SCOREBOARD_SIZE);
@@ -190,7 +190,7 @@ static ap_status_t accept_mutex_cleanup(void *foo)
  * Initialize mutex lock.
  * Done by each child at it's birth
  */
-static void accept_mutex_child_init(ap_context_t *p)
+static void accept_mutex_child_init(ap_pool_t *p)
 {
     int rc = DosOpenMutexSem(NULL, &lock_sem);
 
@@ -207,7 +207,7 @@ static void accept_mutex_child_init(ap_context_t *p)
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(ap_context_t *p)
+static void accept_mutex_init(ap_pool_t *p)
 {
     int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, FALSE);
     
@@ -878,7 +878,7 @@ int ap_graceful_stop_signalled(void)
 
 
 
-static int setup_listeners(ap_context_t *pchild, ap_pollfd_t **listen_poll)
+static int setup_listeners(ap_pool_t *pchild, ap_pollfd_t **listen_poll)
 {
     ap_listen_rec *lr;
     int numfds = 0;
@@ -901,10 +901,10 @@ static void child_main(void *child_num_arg)
 {
     ap_listen_rec *lr = NULL;
     ap_listen_rec *first_lr = NULL;
-    ap_context_t *ptrans;
+    ap_pool_t *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
-    ap_context_t *pchild;
+    ap_pool_t *pchild;
     parent_score *sc_parent_rec;
     int requests_this_child = 0;
     ap_pollfd_t *listen_poll;
@@ -924,12 +924,12 @@ static void child_main(void *child_num_arg)
     /* Get a sub pool for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    ap_create_context(&pchild, pconf);
+    ap_create_pool(&pchild, pconf);
     *ppthread_globals = (struct thread_globals *)ap_palloc(pchild, sizeof(struct thread_globals));
     THREAD_GLOBAL(child_num) = (int)child_num_arg;
     sc_parent_rec = ap_scoreboard_image->parent + THREAD_GLOBAL(child_num);
     THREAD_GLOBAL(pchild) = pchild;
-    ap_create_context(&ptrans, pchild);
+    ap_create_pool(&ptrans, pchild);
 
     if (setup_listeners(pchild, &listen_poll)) {
 	clean_child_exit(1);
@@ -1392,7 +1392,7 @@ static void process_child_status(int tid, ap_wait_t status)
  * Executive routines.
  */
 
-int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
+int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     int i;
@@ -1612,7 +1612,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     return 0;
 }
 
-static void spmt_os2_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp)
+static void spmt_os2_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     one_process = !!getenv("ONE_PROCESS");
 

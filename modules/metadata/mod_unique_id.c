@@ -162,7 +162,7 @@ static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_total_size,
                       unique_id_rec_size_uu;
 
-static void unique_id_global_init(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *main_server)
+static void unique_id_global_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server)
 {
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256
@@ -246,7 +246,7 @@ static void unique_id_global_init(ap_context_t *p, ap_context_t *plog, ap_contex
 #endif
 }
 
-static void unique_id_child_init(ap_context_t *p, server_rec *s)
+static void unique_id_child_init(ap_pool_t *p, server_rec *s)
 {
     pid_t pid;
 #ifdef HAVE_GETTIMEOFDAY

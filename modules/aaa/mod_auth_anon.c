@@ -117,7 +117,7 @@ typedef struct {
 
 } anon_auth_config_rec;
 
-static void *create_anon_auth_dir_config(ap_context_t *p, char *d)
+static void *create_anon_auth_dir_config(ap_pool_t *p, char *d)
 {
     anon_auth_config_rec *sec = (anon_auth_config_rec *)
     ap_pcalloc(p, sizeof(anon_auth_config_rec));

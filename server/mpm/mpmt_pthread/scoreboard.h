@@ -216,7 +216,7 @@ typedef struct {
 #endif
 
 API_EXPORT(int) ap_exists_scoreboard_image(void);
-void reinit_scoareboard(ap_context_t *p);
+void reinit_scoareboard(ap_pool_t *p);
 void cleanup_scoreboard(void);
 API_EXPORT(void) ap_sync_scoreboard_image(void);
 void ap_mpmt_pthread_force_reset_connection_status(long conn_id);
@@ -228,10 +228,10 @@ caddr_t get_shared_heap(const char *Name);
 #elif defined(USE_POSIX_SCOREBOARD)
 static void cleanup_shared_mem(void *d);
 #else
-void reinit_scoreboard(ap_context_t *p);
+void reinit_scoreboard(ap_pool_t *p);
 #endif
 
-API_EXPORT(void) reopen_scoreboard(ap_context_t *p);
+API_EXPORT(void) reopen_scoreboard(ap_pool_t *p);
 
 ap_inline void ap_sync_scoreboard_image(void);
 void increment_counts(int child_num, int thread_num, request_rec *r);

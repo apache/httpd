@@ -963,11 +963,11 @@ static void get_mime_headers(request_rec *r)
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
-    ap_context_t *p;
+    ap_pool_t *p;
     const char *expect;
     int access_status;
 
-    ap_create_context(&p, conn->pool);
+    ap_create_pool(&p, conn->pool);
     r = ap_pcalloc(p, sizeof(request_rec));
     r->pool            = p;
     r->connection      = conn;

@@ -96,7 +96,7 @@
  * modified from the free "file" command.
  * - all-in-one file for compilation convenience when moving from one
  *   version of Apache to the next.
- * - Memory allocation is done through the Apache API's ap_context_t structure.
+ * - Memory allocation is done through the Apache API's ap_pool_t structure.
  * - All functions have had necessary Apache API request or server
  *   structures passed to them where necessary to call other Apache API
  *   routines.  (i.e. usually for logging, files, or memory allocation in
@@ -251,7 +251,7 @@ static int zmagic(request_rec *, unsigned char *, int);
 static int getvalue(server_rec *, struct magic *, char **);
 static int hextoint(int);
 static char *getstr(server_rec *, char *, char *, int, int *);
-static int parse(server_rec *, ap_context_t *p, char *, int);
+static int parse(server_rec *, ap_pool_t *p, char *, int);
 
 static int match(request_rec *, unsigned char *, int);
 static int mget(request_rec *, union VALUETYPE *, unsigned char *,
@@ -501,13 +501,13 @@ typedef struct {
 
 module mime_magic_module;
 
-static void *create_magic_server_config(ap_context_t *p, server_rec *d)
+static void *create_magic_server_config(ap_pool_t *p, server_rec *d)
 {
     /* allocate the config - use pcalloc because it needs to be zeroed */
     return ap_pcalloc(p, sizeof(magic_server_config_rec));
 }
 
-static void *merge_magic_server_config(ap_context_t *p, void *basev, void *addv)
+static void *merge_magic_server_config(ap_pool_t *p, void *basev, void *addv)
 {
     magic_server_config_rec *base = (magic_server_config_rec *) basev;
     magic_server_config_rec *add = (magic_server_config_rec *) addv;
@@ -935,7 +935,7 @@ static void tryit(request_rec *r, unsigned char *buf, int nb, int checkzmagic)
  * apprentice - load configuration from the magic file r
  *  API request record
  */
-static int apprentice(server_rec *s, ap_context_t *p)
+static int apprentice(server_rec *s, ap_pool_t *p)
 {
     ap_file_t *f = NULL;
     ap_status_t result;
@@ -1075,7 +1075,7 @@ static unsigned long signextend(server_rec *s, struct magic *m, unsigned long v)
 /*
  * parse one line from magic file, put into magic[index++] if valid
  */
-static int parse(server_rec *serv, ap_context_t *p, char *l, int lineno)
+static int parse(server_rec *serv, ap_pool_t *p, char *l, int lineno)
 {
     struct magic *m;
     char *t, *s;
@@ -2145,14 +2145,14 @@ struct uncompress_parms {
     int method;
 };
 
-static int uncompress_child(struct uncompress_parms *parm, ap_context_t *cntxt,
+static int uncompress_child(struct uncompress_parms *parm, ap_pool_t *cntxt,
                             BUFF **script_in)
 {
     int rc = 1;
     char *new_argv[4];
     char **env;
     request_rec *r = parm->r;
-    ap_context_t *child_context = cntxt;
+    ap_pool_t *child_context = cntxt;
     ap_procattr_t *procattr;
     ap_proc_t *procnew = NULL;
     ap_file_t *file = NULL;
@@ -2213,7 +2213,7 @@ static int uncompress(request_rec *r, int method,
 {
     struct uncompress_parms parm;
     BUFF *bout = NULL;
-    ap_context_t *sub_context;
+    ap_pool_t *sub_context;
     ap_status_t rv;
 
     parm.r = r;
@@ -2223,7 +2223,7 @@ static int uncompress(request_rec *r, int method,
      * there are cases (i.e. generating directory indicies with mod_autoindex)
      * where we would end up with LOTS of zombies.
      */
-    if (ap_create_context(&sub_context, r->pool) != APR_SUCCESS)
+    if (ap_create_pool(&sub_context, r->pool) != APR_SUCCESS)
         return -1;
 
     if ((rv = uncompress_child(&parm, sub_context, &bout)) != APR_SUCCESS) {
@@ -2393,7 +2393,7 @@ static int revision_suffix(request_rec *r)
 /*
  * initialize the module
  */
-static void magic_init(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *main_server)
+static void magic_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server)
 {
     int result;
     magic_server_config_rec *conf;

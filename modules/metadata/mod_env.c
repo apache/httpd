@@ -115,7 +115,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT env_module;
 
-static void *create_env_dir_config(ap_context_t *p, char *dummy)
+static void *create_env_dir_config(ap_pool_t *p, char *dummy)
 {
     env_dir_config_rec *new =
     (env_dir_config_rec *) ap_palloc(p, sizeof(env_dir_config_rec));
@@ -125,7 +125,7 @@ static void *create_env_dir_config(ap_context_t *p, char *dummy)
     return (void *) new;
 }
 
-static void *merge_env_dir_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_env_dir_configs(ap_pool_t *p, void *basev, void *addv)
 {
     env_dir_config_rec *base = (env_dir_config_rec *) basev;
     env_dir_config_rec *add = (env_dir_config_rec *) addv;

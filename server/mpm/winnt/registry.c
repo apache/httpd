@@ -126,13 +126,13 @@
  *
  * If ppValue is NULL, allocate space for the value and return it in
  * *pValue. The return value is the number of bytes in the value.
- * The first argument is the ap_context_t to use to allocate space for the value.
+ * The first argument is the ap_pool_t to use to allocate space for the value.
  *
  * If pValue is not NULL, assume it is a buffer of nSizeValue bytes,
  * and write the value into the buffer. The return value is the number
  * of bytes in the value (so if the return value is greater than
  * the supplied nSizeValue, the caller knows that *pValue is truncated).
- * The ap_context_t argument is ignored.
+ * The ap_pool_t argument is ignored.
  *
  * The return value is the number of bytes in the successfully retreived
  * key if everything worked, or:
@@ -149,7 +149,7 @@
  * message will be logged at priority "warning".
  */
 
-static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char *pBuffer, int nSizeBuffer, char **ppValue)
+static int ap_registry_get_key_int(ap_pool_t *p, char *key, char *name, char *pBuffer, int nSizeBuffer, char **ppValue)
 {
     long rv;
     HKEY hKey;
@@ -256,7 +256,7 @@ static int ap_registry_get_key_int(ap_context_t *p, char *key, char *name, char 
  * an error getting the key.
  */
 #if 0
-int ap_registry_get_server_root(ap_context_t *p, char *dir, int size)
+int ap_registry_get_server_root(ap_pool_t *p, char *dir, int size)
 {
     int rv;
 
@@ -268,7 +268,7 @@ int ap_registry_get_server_root(ap_context_t *p, char *dir, int size)
     return (rv < -1) ? -1 : 0;
 }
 #else
-int ap_registry_get_server_root(ap_context_t *p, char **buf)
+int ap_registry_get_server_root(ap_pool_t *p, char **buf)
 {
     int rv;
 
@@ -291,7 +291,7 @@ char *ap_get_service_key(char *service_name)
     return(key);
 }
 #if 0
-int ap_registry_get_service_conf(ap_context_t *p, char *dir, int size, char *service_name)
+int ap_registry_get_service_conf(ap_pool_t *p, char *dir, int size, char *service_name)
 {
     int rv;
     char *key = ap_get_service_key(service_name);
@@ -305,7 +305,7 @@ int ap_registry_get_service_conf(ap_context_t *p, char *dir, int size, char *ser
     return (rv < -1) ? -1 : 0;
 }
 #else
-int ap_registry_get_service_conf(ap_context_t *p, char **buf, char *service_name)
+int ap_registry_get_service_conf(ap_pool_t *p, char **buf, char *service_name)
 {
     int rv;
     char *key = ap_get_service_key(service_name);

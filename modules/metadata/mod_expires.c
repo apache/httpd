@@ -218,7 +218,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT expires_module;
 
-static void *create_dir_expires_config(ap_context_t *p, char *dummy)
+static void *create_dir_expires_config(ap_pool_t *p, char *dummy)
 {
     expires_dir_config *new =
     (expires_dir_config *) ap_pcalloc(p, sizeof(expires_dir_config));
@@ -244,7 +244,7 @@ static const char *set_expiresactive(cmd_parms *cmd, expires_dir_config * dir_co
  * string.  If we return NULL then real_code contains code converted
  * to the cnnnn format.
  */
-static char *check_code(ap_context_t *p, const char *code, char **real_code)
+static char *check_code(ap_pool_t *p, const char *code, char **real_code)
 {
     char *word;
     char base = 'X';
@@ -381,7 +381,7 @@ static const command_rec expires_cmds[] =
     {NULL}
 };
 
-static void *merge_expires_dir_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_expires_dir_configs(ap_pool_t *p, void *basev, void *addv)
 {
     expires_dir_config *new = (expires_dir_config *) ap_pcalloc(p, sizeof(expires_dir_config));
     expires_dir_config *base = (expires_dir_config *) basev;

@@ -128,7 +128,7 @@ static char tspecial[] = {
 
 module MODULE_VAR_EXPORT mime_module;
 
-static void *create_mime_dir_config(ap_context_t *p, char *dummy)
+static void *create_mime_dir_config(ap_pool_t *p, char *dummy)
 {
     mime_dir_config *new =
     (mime_dir_config *) ap_palloc(p, sizeof(mime_dir_config));
@@ -147,7 +147,7 @@ static void *create_mime_dir_config(ap_context_t *p, char *dummy)
     return new;
 }
 
-static void *merge_mime_dir_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_mime_dir_configs(ap_pool_t *p, void *basev, void *addv)
 {
     mime_dir_config *base = (mime_dir_config *) basev;
     mime_dir_config *add = (mime_dir_config *) addv;
@@ -298,7 +298,7 @@ static const command_rec mime_cmds[] =
 
 static ap_table_t *hash_buckets[MIME_HASHSIZE];
 
-static void mime_post_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *s)
+static void mime_post_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
 {
     configfile_t *f;
     char l[MAX_STRING_LEN];
@@ -396,7 +396,7 @@ static content_type *analyze_ct(request_rec *r, char *s)
     char *attribute, *value;
     int quoted = 0;
     server_rec * ss = r->server;
-    ap_context_t  * p = r->pool;
+    ap_pool_t  * p = r->pool;
 
     content_type *ctp;
     param *pp, *npp;

@@ -247,7 +247,7 @@ static ap_lock_t *rewrite_log_lock = NULL;
 **
 */
 
-static void *config_server_create(ap_context_t *p, server_rec *s)
+static void *config_server_create(ap_pool_t *p, server_rec *s)
 {
     rewrite_server_conf *a;
 
@@ -266,7 +266,7 @@ static void *config_server_create(ap_context_t *p, server_rec *s)
     return (void *)a;
 }
 
-static void *config_server_merge(ap_context_t *p, void *basev, void *overridesv)
+static void *config_server_merge(ap_pool_t *p, void *basev, void *overridesv)
 {
     rewrite_server_conf *a, *base, *overrides;
 
@@ -322,7 +322,7 @@ static void *config_server_merge(ap_context_t *p, void *basev, void *overridesv)
 **
 */
 
-static void *config_perdir_create(ap_context_t *p, char *path)
+static void *config_perdir_create(ap_pool_t *p, char *path)
 {
     rewrite_perdir_conf *a;
 
@@ -350,7 +350,7 @@ static void *config_perdir_create(ap_context_t *p, char *path)
     return (void *)a;
 }
 
-static void *config_perdir_merge(ap_context_t *p, void *basev, void *overridesv)
+static void *config_perdir_merge(ap_pool_t *p, void *basev, void *overridesv)
 {
     rewrite_perdir_conf *a, *base, *overrides;
 
@@ -425,7 +425,7 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
     return err;
 }
 
-static const char *cmd_rewriteoptions_setoption(ap_context_t *p, int *options,
+static const char *cmd_rewriteoptions_setoption(ap_pool_t *p, int *options,
                                                 char *name)
 {
     if (strcasecmp(name, "inherit") == 0) {
@@ -644,7 +644,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     return NULL;
 }
 
-static const char *cmd_rewritecond_parseflagfield(ap_context_t *p,
+static const char *cmd_rewritecond_parseflagfield(ap_pool_t *p,
                                                   rewritecond_entry *cfg,
                                                   char *str)
 {
@@ -696,7 +696,7 @@ static const char *cmd_rewritecond_parseflagfield(ap_context_t *p,
     return NULL;
 }
 
-static const char *cmd_rewritecond_setflag(ap_context_t *p, rewritecond_entry *cfg,
+static const char *cmd_rewritecond_setflag(ap_pool_t *p, rewritecond_entry *cfg,
                                            char *key, char *val)
 {
     if (   strcasecmp(key, "nocase") == 0
@@ -800,7 +800,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
     return NULL;
 }
 
-static const char *cmd_rewriterule_parseflagfield(ap_context_t *p,
+static const char *cmd_rewriterule_parseflagfield(ap_pool_t *p,
                                                   rewriterule_entry *cfg,
                                                   char *str)
 {
@@ -852,7 +852,7 @@ static const char *cmd_rewriterule_parseflagfield(ap_context_t *p,
     return NULL;
 }
 
-static const char *cmd_rewriterule_setflag(ap_context_t *p, rewriterule_entry *cfg,
+static const char *cmd_rewriterule_setflag(ap_pool_t *p, rewriterule_entry *cfg,
                                            char *key, char *val)
 {
     int status = 0;
@@ -957,9 +957,9 @@ static const char *cmd_rewriterule_setflag(ap_context_t *p, rewriterule_entry *c
 **
 */
 
-static void init_module(ap_context_t *p,
-                        ap_context_t *plog,
-                        ap_context_t *ptemp,
+static void init_module(ap_pool_t *p,
+                        ap_pool_t *plog,
+                        ap_pool_t *ptemp,
                         server_rec *s)
 {
     /* check if proxy module is available */
@@ -995,7 +995,7 @@ static void init_module(ap_context_t *p,
 **
 */
 
-static void init_child(ap_context_t *p, server_rec *s)
+static void init_child(ap_pool_t *p, server_rec *s)
 {
 
     if (lockname != NULL && *(lockname) != '\0')
@@ -2516,7 +2516,7 @@ static void fully_qualify_uri(request_rec *r)
 **
 */
 
-static void expand_backref_inbuffer(ap_context_t *p, char *buf, int nbuf,
+static void expand_backref_inbuffer(ap_pool_t *p, char *buf, int nbuf,
                                     backrefinfo *bri, char c)
 {
     register int i;
@@ -3146,7 +3146,7 @@ static char *select_random_value_part(request_rec *r, char *value)
 */
 
 
-static void open_rewritelog(server_rec *s, ap_context_t *p)
+static void open_rewritelog(server_rec *s, ap_pool_t *p)
 {
     rewrite_server_conf *conf;
     const char *fname;
@@ -3306,7 +3306,7 @@ static char *current_logtime(request_rec *r)
 
 #define REWRITELOCK_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
-static void rewritelock_create(server_rec *s, ap_context_t *p)
+static void rewritelock_create(server_rec *s, ap_pool_t *p)
 {
     ap_status_t rc;
 
@@ -3353,7 +3353,7 @@ static ap_status_t rewritelock_remove(void *data)
 ** +-------------------------------------------------------+
 */
 
-static void run_rewritemap_programs(server_rec *s, ap_context_t *p)
+static void run_rewritemap_programs(server_rec *s, ap_pool_t *p)
 {
     rewrite_server_conf *conf;
     ap_file_t *fpin = NULL;
@@ -3405,7 +3405,7 @@ static void run_rewritemap_programs(server_rec *s, ap_context_t *p)
 }
 
 /* child process code */
-static int rewritemap_program_child(ap_context_t *p, char *progname,
+static int rewritemap_program_child(ap_pool_t *p, char *progname,
                                     ap_file_t **fpout, ap_file_t **fpin,
                                     ap_file_t **fperr)
 {
@@ -3693,7 +3693,7 @@ static char *lookup_variable(request_rec *r, char *var)
             rsub = subrecfunc(r->filename, r); \
             /* now recursively lookup the variable in the sub_req */ \
             result = lookup_variable(rsub, var+5); \
-            /* copy it up to our scope before we destroy sub_req's ap_context_t */ \
+            /* copy it up to our scope before we destroy sub_req's ap_pool_t */ \
             result = ap_pstrdup(r->pool, result); \
             /* cleanup by destroying the subrequest */ \
             ap_destroy_sub_req(rsub); \
@@ -3790,12 +3790,12 @@ static char *lookup_header(request_rec *r, const char *name)
 */
 
 
-static cache *init_cache(ap_context_t *p)
+static cache *init_cache(ap_pool_t *p)
 {
     cache *c;
 
     c = (cache *)ap_palloc(p, sizeof(cache));
-    if (ap_create_context(&c->pool, p) != APR_SUCCESS)
+    if (ap_create_pool(&c->pool, p) != APR_SUCCESS)
 		return NULL;
     c->lists = ap_make_array(c->pool, 2, sizeof(cachelist));
     return c;

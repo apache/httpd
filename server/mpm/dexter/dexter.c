@@ -141,9 +141,9 @@ static int one_process = 0;
 int raise_sigstop_flags;
 #endif
 
-static ap_context_t *pconf;		/* Pool for config stuff */
-static ap_context_t *pchild;		/* Pool for httpd child stuff */
-static ap_context_t *thread_pool_parent; /* Parent of per-thread pools */
+static ap_pool_t *pconf;		/* Pool for config stuff */
+static ap_pool_t *pchild;		/* Pool for httpd child stuff */
+static ap_pool_t *thread_pool_parent; /* Parent of per-thread pools */
 static pthread_mutex_t thread_pool_parent_mutex;
 
 static int child_num;
@@ -593,7 +593,7 @@ int ap_graceful_stop_signalled(void)
  * Child process main loop.
  */
 
-static void process_socket(ap_context_t *p, ap_socket_t *sock, long conn_id)
+static void process_socket(ap_pool_t *p, ap_socket_t *sock, long conn_id)
 {
     BUFF *conn_io;
     conn_rec *current_conn;
@@ -699,8 +699,8 @@ static void check_pipe_of_death(void)
 static void *worker_thread(void *arg)
 {
     ap_socket_t *csd = NULL;
-    ap_context_t *tpool;		/* Pool for this thread           */
-    ap_context_t *ptrans;		/* Pool for per-transaction stuff */
+    ap_pool_t *tpool;		/* Pool for this thread           */
+    ap_pool_t *ptrans;		/* Pool for per-transaction stuff */
     ap_socket_t *sd = NULL;
     int srv;
     int curr_pollfd, last_pollfd = 0;
@@ -710,9 +710,9 @@ static void *worker_thread(void *arg)
     ap_status_t rv;
 
     pthread_mutex_lock(&thread_pool_parent_mutex);
-    ap_create_context(&tpool, thread_pool_parent);
+    ap_create_pool(&tpool, thread_pool_parent);
     pthread_mutex_unlock(&thread_pool_parent_mutex);
-    ap_create_context(&ptrans, tpool);
+    ap_create_pool(&ptrans, tpool);
 
     while (!workers_may_exit) {
         workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
@@ -857,7 +857,7 @@ static void child_main(int child_num_arg)
 
     my_pid = getpid();
     child_num = child_num_arg;
-    ap_create_context(&pchild, pconf);
+    ap_create_pool(&pchild, pconf);
 
     /*stuff to do before we switch id's, so we have permissions.*/
 
@@ -908,7 +908,7 @@ static void child_main(int child_num_arg)
     for (i = 0; i < max_threads; i++) {
         worker_thread_free_ids[i] = i;
     }
-    ap_create_context(&thread_pool_parent, pchild);
+    ap_create_pool(&thread_pool_parent, pchild);
     pthread_mutex_init(&thread_pool_parent_mutex, NULL);
     pthread_mutex_init(&idle_thread_count_mutex, NULL);
     pthread_mutex_init(&worker_thread_count_mutex, NULL);
@@ -1158,7 +1158,7 @@ static ap_status_t cleanup_fd(void *fdptr)
     return APR_SUCCESS;
 }
 
-int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
+int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
     int i;
@@ -1317,7 +1317,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     return 0;
 }
 
-static void dexter_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
+static void dexter_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     static int restart_num = 0;
 

@@ -289,11 +289,11 @@ int ap_proxy_http_handler(request_rec *r, cache_req *c, char *url,
 
 int ap_proxy_hex2c(const char *x);
 void ap_proxy_c2hex(int ch, char *x);
-char *ap_proxy_canonenc(ap_context_t *p, const char *x, int len, enum enctype t,
+char *ap_proxy_canonenc(ap_pool_t *p, const char *x, int len, enum enctype t,
 		     int isenc);
-char *ap_proxy_canon_netloc(ap_context_t *p, char **const urlp, char **userp,
+char *ap_proxy_canon_netloc(ap_pool_t *p, char **const urlp, char **userp,
 			 char **passwordp, char **hostp, int *port);
-const char *ap_proxy_date_canon(ap_context_t *p, const char *x);
+const char *ap_proxy_date_canon(ap_pool_t *p, const char *x);
 table *ap_proxy_read_headers(request_rec *r, char *buffer, int size, BUFF *f);
 long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c);
 void ap_proxy_send_headers(request_rec *r, const char *respline, ap_table_t *hdrs);
@@ -304,12 +304,12 @@ void ap_proxy_sec2hex(int t, char *y);
 cache_req *ap_proxy_cache_error(cache_req *r);
 int ap_proxyerror(request_rec *r, int statuscode, const char *message);
 const char *ap_proxy_host2addr(const char *host, struct hostent *reqhp);
-int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_context_t *p);
-int ap_proxy_is_domainname(struct dirconn_entry *This, ap_context_t *p);
-int ap_proxy_is_hostname(struct dirconn_entry *This, ap_context_t *p);
-int ap_proxy_is_word(struct dirconn_entry *This, ap_context_t *p);
+int ap_proxy_is_ipaddr(struct dirconn_entry *This, ap_pool_t *p);
+int ap_proxy_is_domainname(struct dirconn_entry *This, ap_pool_t *p);
+int ap_proxy_is_hostname(struct dirconn_entry *This, ap_pool_t *p);
+int ap_proxy_is_word(struct dirconn_entry *This, ap_pool_t *p);
 int ap_proxy_doconnect(int sock, struct sockaddr_in *addr, request_rec *r);
-int ap_proxy_garbage_init(server_rec *, ap_context_t *);
+int ap_proxy_garbage_init(server_rec *, ap_pool_t *);
 /* This function is called by ap_table_do() for all header lines */
 int ap_proxy_send_hdr_line(void *p, const char *key, const char *value);
 unsigned ap_proxy_bputs2(const char *data, BUFF *client, cache_req *cache);

@@ -86,7 +86,7 @@ static struct fd_set listenfds;
 static int num_listenfds = 0;
 static SOCKET listenmaxfd = INVALID_SOCKET;
 
-static ap_context_t *pconf;		/* Pool for config stuff */
+static ap_pool_t *pconf;		/* Pool for config stuff */
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -760,7 +760,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
                          "win9x_get_connection: ap_pcalloc() failed. Process will exit.");
             return NULL;
         }
-        ap_create_context(&context->ptrans, pconf);
+        ap_create_pool(&context->ptrans, pconf);
     }
     
 
@@ -837,7 +837,7 @@ static void drain_acceptex_complport(HANDLE hComplPort, BOOLEAN bCleanUp)
         }
     }
 }
-static int create_acceptex_context(ap_context_t *_pconf, ap_listen_rec *lr) 
+static int create_acceptex_context(ap_pool_t *_pconf, ap_listen_rec *lr) 
 {
     PCOMP_CONTEXT context;
     DWORD BytesRead;
@@ -866,7 +866,7 @@ static int create_acceptex_context(ap_context_t *_pconf, ap_listen_rec *lr)
                      "create_acceptex_context: socket() failed. Process will exit.");
         return -1;
     }
-    ap_create_context(&context->ptrans, _pconf);
+    ap_create_pool(&context->ptrans, _pconf);
     context->conn_io = ap_bcreate(context->ptrans, B_RDWR);
     context->recv_buf = context->conn_io->inbase;
     context->recv_buf_size = context->conn_io->bufsiz - 2*PADDED_ADDR_SIZE;
@@ -1148,7 +1148,7 @@ static void child_main()
     ap_status_t status;
     time_t end_time;
     int i;
-    ap_context_t *pchild;
+    ap_pool_t *pchild;
 
     /* This is the child process or we are running in single process
      * mode.
@@ -1177,7 +1177,7 @@ static void child_main()
     ap_assert(start_mutex);
     ap_assert(exit_event);
 
-    ap_create_context(&pchild, pconf);
+    ap_create_pool(&pchild, pconf);
 
 
     if (listenmaxfd == INVALID_SOCKET) {
@@ -1336,7 +1336,7 @@ static void cleanup_process(HANDLE *handles, HANDLE *events, int position, int *
     (*processes)--;
 }
 
-static int create_process(ap_context_t *p, HANDLE *handles, HANDLE *events, int *processes)
+static int create_process(ap_pool_t *p, HANDLE *handles, HANDLE *events, int *processes)
 {
 
     int rv;
@@ -1631,7 +1631,7 @@ die_now:
 /* 
  * winnt_pre_config() hook
  */
-static void winnt_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp) 
+static void winnt_pre_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp) 
 {
     char *pid;
 
@@ -1663,12 +1663,12 @@ static void winnt_pre_config(ap_context_t *pconf, ap_context_t *plog, ap_context
 
 }
 
-static void winnt_post_config(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec* server_conf)
+static void winnt_post_config(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec* server_conf)
 {
     server_conf = server_conf;
 }
 
-API_EXPORT(int) ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s )
+API_EXPORT(int) ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s )
 {
     static int restart = 0;            /* Default is "not a restart" */
 //    time_t tmstart;
@@ -1876,7 +1876,7 @@ API_EXPORT(void) ap_reset_connection_status(long conn_id)
     /* NOP */
 }
 
-API_EXPORT(ap_array_header_t *) ap_get_status_table(ap_context_t *p)
+API_EXPORT(ap_array_header_t *) ap_get_status_table(ap_pool_t *p)
 {
     /* NOP */
     return NULL;

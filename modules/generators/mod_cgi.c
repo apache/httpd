@@ -111,7 +111,7 @@ typedef struct {
     int bufbytes;
 } cgi_server_conf;
 
-static void *create_cgi_config(ap_context_t *p, server_rec *s)
+static void *create_cgi_config(ap_pool_t *p, server_rec *s)
 {
     cgi_server_conf *c =
     (cgi_server_conf *) ap_pcalloc(p, sizeof(cgi_server_conf));
@@ -123,7 +123,7 @@ static void *create_cgi_config(ap_context_t *p, server_rec *s)
     return c;
 }
 
-static void *merge_cgi_config(ap_context_t *p, void *basev, void *overridesv)
+static void *merge_cgi_config(ap_pool_t *p, void *basev, void *overridesv)
 {
     cgi_server_conf *base = (cgi_server_conf *) basev, *overrides = (cgi_server_conf *) overridesv;
 
@@ -291,7 +291,7 @@ static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
     return ret;
 }
 static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **script_err, 
-                                 char *command, char *const argv[], request_rec *r, ap_context_t *p)
+                                 char *command, char *const argv[], request_rec *r, ap_pool_t *p)
 {
     char **env;
     ap_procattr_t *procattr;
@@ -381,7 +381,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     ap_unblock_alarms();
     return (rc);
 }
-static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_context_t *p)
+static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_pool_t *p)
 {
     int numwords, x, idx;
     char *w;
@@ -416,7 +416,7 @@ static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_context_t *p
     return APR_SUCCESS;
 }
 
-static ap_status_t build_command_line(char **c, request_rec *r, ap_context_t *p)
+static ap_status_t build_command_line(char **c, request_rec *r, ap_pool_t *p)
 {
 #ifdef WIN32
     char *quoted_filename = NULL;
@@ -461,7 +461,7 @@ static int cgi_handler(request_rec *r)
     char argsbuffer[HUGE_STRING_LEN];
     int is_included = !strcmp(r->protocol, "INCLUDED");
     void *sconf = r->server->module_config;
-    ap_context_t *p;
+    ap_pool_t *p;
     cgi_server_conf *conf =
     (cgi_server_conf *) ap_get_module_config(sconf, &cgi_module);
 

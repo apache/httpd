@@ -139,7 +139,7 @@ static char *my_stpcpy(char *d, const char *s)
 static unsigned iterate_pieces(request_rec *r, const test_uri_t *pieces, int row)
 {
     unsigned u;
-    ap_context_t *sub;
+    ap_pool_t *sub;
     char *input_uri;
     char *strp;
     uri_components result;

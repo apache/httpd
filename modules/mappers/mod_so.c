@@ -150,7 +150,7 @@ typedef struct so_server_conf {
     ap_array_header_t *loaded_modules;
 } so_server_conf;
 
-static void *so_sconf_create(ap_context_t *p, server_rec *s)
+static void *so_sconf_create(ap_pool_t *p, server_rec *s)
 {
     so_server_conf *soc;
 
@@ -287,7 +287,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     ap_add_loaded_module(modp);
 
     /* 
-     * Register a cleanup in the config ap_context_t (normally pconf). When
+     * Register a cleanup in the config ap_pool_t (normally pconf). When
      * we do a restart (or shutdown) this cleanup will cause the
      * shared object to be unloaded.
      */

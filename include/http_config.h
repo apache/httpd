@@ -156,8 +156,8 @@ typedef struct {
 
     configfile_t *config_file;	/* Config file structure from pcfg_openfile() */
 
-    ap_context_t *pool;			/* Pool to allocate new storage in */
-    ap_context_t *temp_pool;		/* Pool for scratch memory; persists during
+    ap_pool_t *pool;			/* Pool to allocate new storage in */
+    ap_pool_t *temp_pool;		/* Pool for scratch memory; persists during
 				 * configuration, but wiped before the first
 				 * request is served...
 				 */
@@ -211,11 +211,11 @@ typedef struct module_struct {
                                  * It's mainly important for the DSO facility
                                  * (see also mod_so).
                                  */
-    void (*pre_config) (ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp);
-    void *(*create_dir_config) (ap_context_t *p, char *dir);
-    void *(*merge_dir_config) (ap_context_t *p, void *base_conf, void *new_conf);
-    void *(*create_server_config) (ap_context_t *p, server_rec *s);
-    void *(*merge_server_config) (ap_context_t *p, void *base_conf, void *new_conf);
+    void (*pre_config) (ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp);
+    void *(*create_dir_config) (ap_pool_t *p, char *dir);
+    void *(*merge_dir_config) (ap_pool_t *p, void *base_conf, void *new_conf);
+    void *(*create_server_config) (ap_pool_t *p, server_rec *s);
+    void *(*merge_server_config) (ap_pool_t *p, void *base_conf, void *new_conf);
 
     const command_rec *cmds;
     const handler_rec *handlers;
@@ -290,7 +290,7 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *, char *, char *);
  * it relativizes it wrt server_root.
  */
 
-API_EXPORT(const char *) ap_server_root_relative(ap_context_t *p, const char *fname);
+API_EXPORT(const char *) ap_server_root_relative(ap_pool_t *p, const char *fname);
 
 /* Finally, the hook for dynamically loading modules in... */
 
@@ -329,38 +329,38 @@ extern API_VAR_EXPORT module **ap_loaded_modules;
 
 /* For mod_so.c... */
 
-void ap_single_module_configure(ap_context_t *p, server_rec *s, module *m);
+void ap_single_module_configure(ap_pool_t *p, server_rec *s, module *m);
 
 /* For http_main.c... */
 
 void ap_setup_prelinked_modules(process_rec *process);
 void ap_show_directives(void);
 void ap_show_modules(void);
-server_rec *ap_read_config(process_rec *process, ap_context_t *temp_pool, const char *config_name);
-void ap_run_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp);
-void ap_post_config_hook(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s);
-void ap_child_init_hook(ap_context_t *pchild, server_rec *s);
+server_rec *ap_read_config(process_rec *process, ap_pool_t *temp_pool, const char *config_name);
+void ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s);
+void ap_child_init_hook(ap_pool_t *pchild, server_rec *s);
+
 void ap_register_hooks(module *m);
 void ap_hook_deregister_all(void);
 
 /* For http_request.c... */
 
-void *ap_create_request_config(ap_context_t *p);
-CORE_EXPORT(void *) ap_create_per_dir_config(ap_context_t *p);
-void *ap_merge_per_dir_configs(ap_context_t *p, void *base, void *new);
+void *ap_create_request_config(ap_pool_t *p);
+CORE_EXPORT(void *) ap_create_per_dir_config(ap_pool_t *p);
+void *ap_merge_per_dir_configs(ap_pool_t *p, void *base, void *new);
 
 /* For http_connection.c... */
 
-void *ap_create_conn_config(ap_context_t *p);
+void *ap_create_conn_config(ap_pool_t *p);
 
 /* For http_core.c... (<Directory> command and virtual hosts) */
 
 int ap_parse_htaccess(void **result, request_rec *r, int override,
 		const char *path, const char *access_name);
 
-CORE_EXPORT(const char *) ap_init_virtual_host(ap_context_t *p, const char *hostname,
+CORE_EXPORT(const char *) ap_init_virtual_host(ap_pool_t *p, const char *hostname,
 				server_rec *main_server, server_rec **);
-void ap_process_resource_config(server_rec *s, const char *fname, ap_context_t *p, ap_context_t *ptemp);
+void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, ap_pool_t *ptemp);
 
 /* Module-method dispatchers, also for http_request.c */
 
@@ -380,10 +380,10 @@ CORE_EXPORT(const char *) ap_handle_command(cmd_parms *parms, void *config, cons
   /* Hooks */
 DECLARE_HOOK(int,header_parser,(request_rec *))
 DECLARE_HOOK(void,post_config,
-	     (ap_context_t *pconf,ap_context_t *plog,ap_context_t *ptemp,server_rec *s))
+	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
 DECLARE_HOOK(void,open_logs,
-	     (ap_context_t *pconf,ap_context_t *plog,ap_context_t *ptemp,server_rec *s))
-DECLARE_HOOK(void,child_init,(ap_context_t *pchild, server_rec *s))
+	     (ap_pool_t *pconf,ap_pool_t *plog,ap_pool_t *ptemp,server_rec *s))
+DECLARE_HOOK(void,child_init,(ap_pool_t *pchild, server_rec *s))
 
 #ifdef __cplusplus
 }

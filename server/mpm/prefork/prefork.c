@@ -158,8 +158,8 @@ static int listenmaxfd;
 
 static int one_process = 0;
 
-static ap_context_t *pconf;		/* Pool for config stuff */
-static ap_context_t *pchild;		/* Pool for httpd child stuff */
+static ap_pool_t *pconf;		/* Pool for config stuff */
+static ap_pool_t *pchild;		/* Pool for httpd child stuff */
 
 static int my_pid;	/* it seems silly to call getpid all the time */
 #ifndef MULTITHREAD
@@ -226,7 +226,7 @@ static void clean_child_exit(int code)
 }
 
 #if defined(USE_FCNTL_SERIALIZED_ACCEPT) || defined(USE_FLOCK_SERIALIZED_ACCEPT)
-static void expand_lock_fname(ap_context_t *p)
+static void expand_lock_fname(ap_pool_t *p)
 {
     /* XXXX possibly bogus cast */
     ap_lock_fname = ap_psprintf(p, "%s.%lu",
@@ -242,7 +242,7 @@ static ulock_t uslock = NULL;
 
 #define accept_mutex_child_init(x)
 
-static void accept_mutex_init(ap_context_t *p)
+static void accept_mutex_init(ap_pool_t *p)
 {
     ptrdiff_t old;
     usptr_t *us;
@@ -320,7 +320,7 @@ static void accept_mutex_child_cleanup(void *foo)
     }
 }
 
-static void accept_mutex_child_init(ap_context_t *p)
+static void accept_mutex_child_init(ap_pool_t *p)
 {
     ap_register_cleanup(p, NULL, accept_mutex_child_cleanup, ap_null_cleanup);
 }
@@ -334,7 +334,7 @@ static void accept_mutex_cleanup(void *foo)
     accept_mutex = (void *)(caddr_t)-1;
 }
 
-static void accept_mutex_init(ap_context_t *p)
+static void accept_mutex_init(ap_pool_t *p)
 {
     pthread_mutexattr_t mattr;
     int fd;
@@ -453,7 +453,7 @@ static void accept_mutex_cleanup(void *foo)
 
 #define accept_mutex_child_init(x)
 
-static void accept_mutex_init(ap_context_t *p)
+static void accept_mutex_init(ap_pool_t *p)
 {
     union semun ick;
     struct semid_ds buf;
@@ -525,7 +525,7 @@ static int lock_fd = -1;
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(ap_context_t *p)
+static void accept_mutex_init(ap_pool_t *p)
 {
     ap_file_t *tempfile = NULL;
     lock_it.l_whence = SEEK_SET;	/* from current point */
@@ -600,7 +600,7 @@ static ap_status_t accept_mutex_cleanup(void *foo)
  * Initialize mutex lock.
  * Done by each child at it's birth
  */
-static void accept_mutex_child_init(ap_context_t *p)
+static void accept_mutex_child_init(ap_pool_t *p)
 {
     ap_file_t *tempfile = NULL;
     ap_status_t ret;
@@ -618,7 +618,7 @@ static void accept_mutex_child_init(ap_context_t *p)
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(ap_context_t *p)
+static void accept_mutex_init(ap_pool_t *p)
 {
     ap_file_t *tempfile = NULL;
     ap_status_t ret;
@@ -673,7 +673,7 @@ static void accept_mutex_cleanup(void *foo)
  * Initialize mutex lock.
  * Done by each child at it's birth
  */
-static void accept_mutex_child_init(ap_context_t *p)
+static void accept_mutex_child_init(ap_pool_t *p)
 {
     int rc = DosOpenMutexSem(NULL, &lock_sem);
 
@@ -690,7 +690,7 @@ static void accept_mutex_child_init(ap_context_t *p)
  * Initialize mutex lock.
  * Must be safe to call this on a restart.
  */
-static void accept_mutex_init(ap_context_t *p)
+static void accept_mutex_init(ap_pool_t *p)
 {
     int rc = DosCreateMutexSem(NULL, &lock_sem, DC_SEM_SHARED, FALSE);
 
@@ -737,7 +737,7 @@ static void accept_mutex_cleanup(void *foo)
 
 #define accept_mutex_init(x)
 
-static void accept_mutex_child_init(ap_context_t *p)
+static void accept_mutex_child_init(ap_pool_t *p)
 {
     ap_register_cleanup(p, NULL, accept_mutex_cleanup, ap_null_cleanup);
     tpf_core_held = 0;
@@ -796,7 +796,7 @@ static ap_status_t cleanup_shared_mem(void *d)
     return APR_SUCCESS;
 }
 
-static void setup_shared_mem(ap_context_t *p)
+static void setup_shared_mem(ap_pool_t *p)
 {
     char buf[512];
     const char *fname;
@@ -821,13 +821,13 @@ static void setup_shared_mem(ap_context_t *p)
     ap_scoreboard_image->global.running_generation = 0;
 }
 
-static void reopen_scoreboard(ap_context_t *p)
+static void reopen_scoreboard(ap_pool_t *p)
 {
 }
 #endif
 
 /* Called by parent process */
-static void reinit_scoreboard(ap_context_t *p)
+static void reinit_scoreboard(ap_pool_t *p)
 {
     int running_gen = 0;
     if (ap_scoreboard_image)
@@ -1405,7 +1405,7 @@ static void child_main(int child_num_arg)
     ap_listen_rec *lr;
     ap_listen_rec *last_lr;
     ap_listen_rec *first_lr;
-    ap_context_t *ptrans;
+    ap_pool_t *ptrans;
     conn_rec *current_conn;
     ap_iol *iol;
     ap_status_t stat;
@@ -1420,9 +1420,9 @@ static void child_main(int child_num_arg)
     /* Get a sub context for global allocations in this child, so that
      * we can have cleanups occur when the child exits.
      */
-    ap_create_context(&pchild, pconf);
+    ap_create_pool(&pchild, pconf);
 
-    ap_create_context(&ptrans, pchild);
+    ap_create_pool(&ptrans, pchild);
 
     /* needs to be done before we switch UIDs so we have permissions */
     reopen_scoreboard(pchild);
@@ -2034,7 +2034,7 @@ void ap_reset_connection_status(long conn_id)
  * Executive routines.
  */
 
-int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
+int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 {
     int remaining_children_to_start;
 
@@ -2247,7 +2247,7 @@ int ap_mpm_run(ap_context_t *_pconf, ap_context_t *plog, server_rec *s)
     return 0;
 }
 
-static void prefork_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
+static void prefork_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     static int restart_num = 0;
 
@@ -2445,7 +2445,7 @@ const char *ap_get_connection_status(long conn_id, const char *key)
     return NULL;
 }
 
-ap_array_header_t *ap_get_connections(ap_context_t *p)
+ap_array_header_t *ap_get_connections(ap_pool_t *p)
 {
     int i;
     ap_array_header_t *connection_list;
@@ -2464,7 +2464,7 @@ ap_array_header_t *ap_get_connections(ap_context_t *p)
     return connection_list;
 }
 
-ap_array_header_t *ap_get_connection_keys(ap_context_t *p, long conn_id)
+ap_array_header_t *ap_get_connection_keys(ap_pool_t *p, long conn_id)
 {
     int i = 0;
     status_table_entry *ss;
@@ -2516,7 +2516,7 @@ void ap_update_connection_status(long conn_id, const char *key,
     return;
 }
 
-ap_array_header_t *ap_get_status_table(ap_context_t *p)
+ap_array_header_t *ap_get_status_table(ap_pool_t *p)
 {
     int i, j;
     ap_array_header_t *server_status;

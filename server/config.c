@@ -94,12 +94,12 @@ HOOK_STRUCT(
 
 IMPLEMENT_HOOK_RUN_ALL(int,header_parser,(request_rec *r),(r),OK,DECLINED)
 IMPLEMENT_HOOK_VOID(post_config,
-		    (ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s),
+		    (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s),
 		    (pconf,plog,ptemp,s))
 IMPLEMENT_HOOK_VOID(open_logs,
-		    (ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s),
+		    (ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s),
 		    (pconf,plog,ptemp,s))
-IMPLEMENT_HOOK_VOID(child_init,(ap_context_t *pchild, server_rec *s),(pchild,s))
+IMPLEMENT_HOOK_VOID(child_init,(ap_pool_t *pchild, server_rec *s),(pchild,s))
 
 /****************************************************************
  *
@@ -120,8 +120,8 @@ API_VAR_EXPORT module *top_module = NULL;
 API_VAR_EXPORT module **ap_loaded_modules=NULL;
 
 typedef int (*handler_func) (request_rec *);
-typedef void *(*dir_maker_func) (ap_context_t *, char *);
-typedef void *(*merger_func) (ap_context_t *, void *, void *);
+typedef void *(*dir_maker_func) (ap_pool_t *, char *);
+typedef void *(*merger_func) (ap_pool_t *, void *, void *);
 
 /* Dealing with config vectors.  These are associated with per-directory,
  * per-server, and per-request configuration, and have a void* pointer for
@@ -150,14 +150,14 @@ API_EXPORT(void) ap_set_module_config(void *conf_vector, module *m, void *val)
 }
 #endif
 
-static void *create_empty_config(ap_context_t *p)
+static void *create_empty_config(ap_pool_t *p)
 {
     void **conf_vector = (void **) ap_pcalloc(p, sizeof(void *) *
 				    (total_modules + DYNAMIC_MODULE_LIMIT));
     return (void *) conf_vector;
 }
 
-static void *create_default_per_dir_config(ap_context_t *p)
+static void *create_default_per_dir_config(ap_pool_t *p)
 {
     void **conf_vector = (void **) ap_pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
@@ -173,7 +173,7 @@ static void *create_default_per_dir_config(ap_context_t *p)
 }
 
 void *
-     ap_merge_per_dir_configs(ap_context_t *p, void *base, void *new)
+     ap_merge_per_dir_configs(ap_pool_t *p, void *base, void *new)
 {
     void **conf_vector = (void **) ap_palloc(p, sizeof(void *) * total_modules);
     void **base_vector = (void **) base;
@@ -193,7 +193,7 @@ void *
     return (void *) conf_vector;
 }
 
-static void *create_server_config(ap_context_t *p, server_rec *s)
+static void *create_server_config(ap_pool_t *p, server_rec *s)
 {
     void **conf_vector = (void **) ap_pcalloc(p, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
     module *modp;
@@ -206,7 +206,7 @@ static void *create_server_config(ap_context_t *p, server_rec *s)
     return (void *) conf_vector;
 }
 
-static void merge_server_configs(ap_context_t *p, void *base, void *virt)
+static void merge_server_configs(ap_pool_t *p, void *base, void *virt)
 {
     /* Can reuse the 'virt' vector for the spine of it, since we don't
      * have to deal with the moral equivalent of .htaccess files here...
@@ -227,17 +227,17 @@ static void merge_server_configs(ap_context_t *p, void *base, void *virt)
     }
 }
 
-void *ap_create_request_config(ap_context_t *p)
+void *ap_create_request_config(ap_pool_t *p)
 {
     return create_empty_config(p);
 }
 
-void *ap_create_conn_config(ap_context_t *p)
+void *ap_create_conn_config(ap_pool_t *p)
 {
     return create_empty_config(p);
 }
 
-CORE_EXPORT(void *) ap_create_per_dir_config(ap_context_t *p)
+CORE_EXPORT(void *) ap_create_per_dir_config(ap_pool_t *p)
 {
     return create_empty_config(p);
 }
@@ -256,7 +256,7 @@ typedef struct {
 static fast_handler_rec *handlers;
 static fast_handler_rec *wildhandlers;
 
-static void init_handlers(ap_context_t *p)
+static void init_handlers(ap_pool_t *p)
 {
     module *modp;
     int nhandlers = 0;
@@ -966,7 +966,7 @@ API_EXPORT_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd, char *struct_pt
 static cmd_parms default_parms =
 {NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
-API_EXPORT(const char *) ap_server_root_relative(ap_context_t *p, const char *file)
+API_EXPORT(const char *) ap_server_root_relative(ap_pool_t *p, const char *file)
 {
     if(ap_os_is_path_absolute(file))
 	return file;
@@ -1014,8 +1014,8 @@ static int arr_elts_close(void *param)
     return 0;
 }
 
-static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_context_t *p,
-				    ap_context_t *ptemp)
+static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_pool_t *p,
+				    ap_pool_t *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
@@ -1044,7 +1044,7 @@ static void process_command_config(server_rec *s, ap_array_header_t *arr, ap_con
     ap_cfg_closefile(parms.config_file);
 }
 
-void ap_process_resource_config(server_rec *s, const char *fname, ap_context_t *p, ap_context_t *ptemp)
+void ap_process_resource_config(server_rec *s, const char *fname, ap_pool_t *p, ap_pool_t *ptemp)
 {
     const char *errmsg;
     cmd_parms parms;
@@ -1166,7 +1166,7 @@ int ap_parse_htaccess(void **result, request_rec *r, int override,
 }
 
 
-CORE_EXPORT(const char *) ap_init_virtual_host(ap_context_t *p, const char *hostname,
+CORE_EXPORT(const char *) ap_init_virtual_host(ap_pool_t *p, const char *hostname,
 			      server_rec *main_server, server_rec **ps)
 {
     server_rec *s = (server_rec *) ap_pcalloc(p, sizeof(server_rec));
@@ -1222,7 +1222,7 @@ CORE_EXPORT(const char *) ap_init_virtual_host(ap_context_t *p, const char *host
 }
 
 
-static void fixup_virtual_hosts(ap_context_t *p, server_rec *main_server)
+static void fixup_virtual_hosts(ap_pool_t *p, server_rec *main_server)
 {
     server_rec *virt;
 
@@ -1261,13 +1261,13 @@ static void fixup_virtual_hosts(ap_context_t *p, server_rec *main_server)
  * Getting *everything* configured... 
  */
 
-static void init_config_globals(ap_context_t *p)
+static void init_config_globals(ap_pool_t *p)
 {
     /* Global virtual host hash bucket pointers.  Init to null. */
     ap_init_vhost_config(p);
 }
 
-static server_rec *init_server_config(process_rec *process, ap_context_t *p)
+static server_rec *init_server_config(process_rec *process, ap_pool_t *p)
 {
     server_rec *s = (server_rec *) ap_pcalloc(p, sizeof(server_rec));
 
@@ -1300,9 +1300,9 @@ static server_rec *init_server_config(process_rec *process, ap_context_t *p)
 }
 
 
-server_rec *ap_read_config(process_rec *process, ap_context_t *ptemp, const char *confname)
+server_rec *ap_read_config(process_rec *process, ap_pool_t *ptemp, const char *confname)
 {
-    ap_context_t *p = process->pconf;
+    ap_pool_t *p = process->pconf;
     server_rec *s = init_server_config(process, p);
 
     init_config_globals(p);
@@ -1322,7 +1322,7 @@ server_rec *ap_read_config(process_rec *process, ap_context_t *ptemp, const char
     return s;
 }
 
-void ap_single_module_configure(ap_context_t *p, server_rec *s, module *m)
+void ap_single_module_configure(ap_pool_t *p, server_rec *s, module *m)
 {
     if (m->create_server_config)
         ap_set_module_config(s->module_config, m,
@@ -1332,7 +1332,7 @@ void ap_single_module_configure(ap_context_t *p, server_rec *s, module *m)
                              (*m->create_dir_config)(p, NULL));
 }
 
-void ap_run_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
+void ap_run_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     module *m;
 
@@ -1342,13 +1342,13 @@ void ap_run_pre_config(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp)
     init_handlers(p);
 }
 
-void ap_post_config_hook(ap_context_t *pconf, ap_context_t *plog, ap_context_t *ptemp, server_rec *s)
+void ap_post_config_hook(ap_pool_t *pconf, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *s)
 {
     ap_run_post_config(pconf,plog,ptemp,s); 
     init_handlers(pconf);
 }
 
-void ap_child_init_hook(ap_context_t *pchild, server_rec *s)
+void ap_child_init_hook(ap_pool_t *pchild, server_rec *s)
 {
     /* TODO: uh this seems ugly, is there a better way? */
     /*ap_child_init_alloc();    PUT THIS BACK IN XXXXX */

@@ -104,10 +104,10 @@ struct sockaddr_un {
 
 module MODULE_VAR_EXPORT cgid_module; 
 
-static void cgid_init(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *main_server); 
+static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server); 
 static int once_through = 0; 
 
-static ap_context_t *pcgi; 
+static ap_pool_t *pcgi; 
 
 /* KLUDGE --- for back-combatibility, we don't have to check Execcgid 
  * in ScriptAliased directories, which means we need to know if this 
@@ -150,7 +150,7 @@ typedef struct {
  * are handled in create_argv.
  *
  */
-static char **create_argv(ap_context_t *p, char *path, char *user, char *group,
+static char **create_argv(ap_pool_t *p, char *path, char *user, char *group,
                           char *av0, const char *args)
 {
     int x, numwords;
@@ -484,10 +484,10 @@ static int cgid_server_child(int sd)
     char *argv0; 
     char *filename; 
     char **env; 
-    ap_context_t *p; 
+    ap_pool_t *p; 
     request_rec *r; 
 
-    ap_create_context(&p, pcgi); 
+    ap_create_pool(&p, pcgi); 
     r = ap_pcalloc(p, sizeof(request_rec)); 
     r->pool = p; 
     dup2(sd, STDIN_FILENO); 
@@ -563,7 +563,7 @@ static int cgid_server(void *data)
     return -1; 
 } 
 
-static void cgid_init(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, server_rec *main_server) 
+static void cgid_init(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp, server_rec *main_server) 
 { 
     int pid; 
     int tempfd;
@@ -572,7 +572,7 @@ static void cgid_init(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, 
                        main_server->module_config, &cgid_module); 
 
     if (once_through > 0) { 
-        ap_create_context(&pcgi, p); 
+        ap_create_pool(&pcgi, p); 
         tempfd = creat(sconf->sockname, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
         close(tempfd);        
 
@@ -591,7 +591,7 @@ static void cgid_init(ap_context_t *p, ap_context_t *plog, ap_context_t *ptemp, 
     else once_through++; 
 } 
 
-static void *create_cgid_config(ap_context_t *p, server_rec *s) 
+static void *create_cgid_config(ap_pool_t *p, server_rec *s) 
 { 
     cgid_server_conf *c = 
     (cgid_server_conf *) ap_pcalloc(p, sizeof(cgid_server_conf)); 
@@ -604,7 +604,7 @@ static void *create_cgid_config(ap_context_t *p, server_rec *s)
     return c; 
 } 
 
-static void *merge_cgid_config(ap_context_t *p, void *basev, void *overridesv) 
+static void *merge_cgid_config(ap_pool_t *p, void *basev, void *overridesv) 
 { 
     cgid_server_conf *base = (cgid_server_conf *) basev, *overrides = (cgid_server_conf *) overridesv; 
 

@@ -309,7 +309,7 @@ typedef struct cachelist {
 } cachelist;
 
 typedef struct cache {
-    ap_context_t         *pool;
+    ap_pool_t         *pool;
     ap_array_header_t *lists;
 } cache;
 
@@ -331,10 +331,10 @@ typedef struct backrefinfo {
 */
 
     /* config structure handling */
-static void *config_server_create(ap_context_t *p, server_rec *s);
-static void *config_server_merge (ap_context_t *p, void *basev, void *overridesv);
-static void *config_perdir_create(ap_context_t *p, char *path);
-static void *config_perdir_merge (ap_context_t *p, void *basev, void *overridesv);
+static void *config_server_create(ap_pool_t *p, server_rec *s);
+static void *config_server_merge (ap_pool_t *p, void *basev, void *overridesv);
+static void *config_perdir_create(ap_pool_t *p, char *path);
+static void *config_perdir_merge (ap_pool_t *p, void *basev, void *overridesv);
 
     /* config directive handling */
 static const char *cmd_rewriteengine(cmd_parms *cmd,
@@ -342,7 +342,7 @@ static const char *cmd_rewriteengine(cmd_parms *cmd,
 static const char *cmd_rewriteoptions(cmd_parms *cmd,
                                       rewrite_perdir_conf *dconf,
                                       char *option);
-static const char *cmd_rewriteoptions_setoption(ap_context_t *p, int *options,
+static const char *cmd_rewriteoptions_setoption(ap_pool_t *p, int *options,
                                                 char *name);
 static const char *cmd_rewritelog     (cmd_parms *cmd, void *dconf, char *a1);
 static const char *cmd_rewriteloglevel(cmd_parms *cmd, void *dconf, char *a1);
@@ -353,25 +353,25 @@ static const char *cmd_rewritebase(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *a1);
 static const char *cmd_rewritecond(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *str);
-static const char *cmd_rewritecond_parseflagfield(ap_context_t *p,
+static const char *cmd_rewritecond_parseflagfield(ap_pool_t *p,
                                                   rewritecond_entry *new,
                                                   char *str);
-static const char *cmd_rewritecond_setflag(ap_context_t *p, rewritecond_entry *cfg,
+static const char *cmd_rewritecond_setflag(ap_pool_t *p, rewritecond_entry *cfg,
                                            char *key, char *val);
 static const char *cmd_rewriterule(cmd_parms *cmd, rewrite_perdir_conf *dconf,
                                    char *str);
-static const char *cmd_rewriterule_parseflagfield(ap_context_t *p,
+static const char *cmd_rewriterule_parseflagfield(ap_pool_t *p,
                                                   rewriterule_entry *new,
                                                   char *str);
-static const char *cmd_rewriterule_setflag(ap_context_t *p, rewriterule_entry *cfg,
+static const char *cmd_rewriterule_setflag(ap_pool_t *p, rewriterule_entry *cfg,
                                            char *key, char *val);
 
     /* initialisation */
-static void init_module(ap_context_t *p,
-                        ap_context_t *plog,
-                        ap_context_t *ptemp,
+static void init_module(ap_pool_t *p,
+                        ap_pool_t *plog,
+                        ap_pool_t *ptemp,
                         server_rec *s);
-static void init_child(ap_context_t *p, server_rec *s);
+static void init_child(ap_pool_t *p, server_rec *s);
 
     /* runtime hooks */
 static int hook_uri2file   (request_rec *r);
@@ -392,7 +392,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
 static void  splitout_queryargs(request_rec *r, int qsappend);
 static void  fully_qualify_uri(request_rec *r);
 static void  reduce_uri(request_rec *r);
-static void  expand_backref_inbuffer(ap_context_t *p, char *buf, int nbuf,
+static void  expand_backref_inbuffer(ap_pool_t *p, char *buf, int nbuf,
                                      backrefinfo *bri, char c);
 static char *expand_tildepaths(request_rec *r, char *uri);
 static void  expand_map_lookups(request_rec *r, char *uri, int uri_len);
@@ -417,18 +417,18 @@ static void  rewrite_rand_init(void);
 static int   rewrite_rand(int l, int h);
 
     /* rewriting logfile support */
-static void  open_rewritelog(server_rec *s, ap_context_t *p);
+static void  open_rewritelog(server_rec *s, ap_pool_t *p);
 static void  rewritelog(request_rec *r, int level, const char *text, ...)
                         __attribute__((format(printf,3,4)));
 static char *current_logtime(request_rec *r);
 
     /* rewriting lockfile support */
-static void rewritelock_create(server_rec *s, ap_context_t *p);
+static void rewritelock_create(server_rec *s, ap_pool_t *p);
 static ap_status_t rewritelock_remove(void *data);
 
     /* program map support */
-static void  run_rewritemap_programs(server_rec *s, ap_context_t *p);
-static int   rewritemap_program_child(ap_context_t *p, char *progname,
+static void  run_rewritemap_programs(server_rec *s, ap_pool_t *p);
+static int   rewritemap_program_child(ap_pool_t *p, char *progname,
                                     ap_file_t **fpout, ap_file_t **fpin,
                                     ap_file_t **fperr);
 
@@ -439,7 +439,7 @@ static char *lookup_variable(request_rec *r, char *var);
 static char *lookup_header(request_rec *r, const char *name);
 
     /* caching functions */
-static cache *init_cache(ap_context_t *p);
+static cache *init_cache(ap_pool_t *p);
 static char  *get_cache_string(cache *c, char *res, int mode, time_t mtime,
                                char *key);
 static void   set_cache_string(cache *c, char *res, int mode, time_t mtime,

@@ -88,7 +88,7 @@ typedef struct {
 
 module MODULE_VAR_EXPORT negotiation_module;
 
-static void *create_neg_dir_config(ap_context_t *p, char *dummy)
+static void *create_neg_dir_config(ap_pool_t *p, char *dummy)
 {
     neg_dir_config *new = (neg_dir_config *) ap_palloc(p, sizeof(neg_dir_config));
 
@@ -96,7 +96,7 @@ static void *create_neg_dir_config(ap_context_t *p, char *dummy)
     return new;
 }
 
-static void *merge_neg_dir_configs(ap_context_t *p, void *basev, void *addv)
+static void *merge_neg_dir_configs(ap_pool_t *p, void *basev, void *addv)
 {
     neg_dir_config *base = (neg_dir_config *) basev;
     neg_dir_config *add = (neg_dir_config *) addv;
@@ -217,7 +217,7 @@ typedef struct var_rec {
  */
 
 typedef struct {
-    ap_context_t *pool;
+    ap_pool_t *pool;
     request_rec *r;
     char *dir_name;
     int accept_q;               /* 1 if an Accept item has a q= param */
@@ -318,7 +318,7 @@ static void set_vlist_validator(request_rec *r, request_rec *vlistr)
  * enter the values we recognize into the argument accept_rec
  */
 
-static const char *get_entry(ap_context_t *p, accept_rec *result,
+static const char *get_entry(ap_pool_t *p, accept_rec *result,
                              const char *accept_line)
 {
     result->quality = 1.0f;
@@ -425,7 +425,7 @@ static const char *get_entry(ap_context_t *p, accept_rec *result,
  * where charset is only valid in Accept.
  */
 
-static ap_array_header_t *do_header_line(ap_context_t *p, const char *accept_line)
+static ap_array_header_t *do_header_line(ap_pool_t *p, const char *accept_line)
 {
     ap_array_header_t *accept_recs;
 
@@ -447,7 +447,7 @@ static ap_array_header_t *do_header_line(ap_context_t *p, const char *accept_lin
  * return an array containing the languages of this variant
  */
 
-static ap_array_header_t *do_languages_line(ap_context_t *p, const char **lang_line)
+static ap_array_header_t *do_languages_line(ap_pool_t *p, const char **lang_line)
 {
     ap_array_header_t *lang_recs = ap_make_array(p, 2, sizeof(char *));
 
