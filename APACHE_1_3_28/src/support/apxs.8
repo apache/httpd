@@ -1,0 +1,469 @@
+.TH apxs 8 "April 1998"
+.\" ====================================================================
+.\" The Apache Software License, Version 1.1
+.\"
+.\" Copyright (c) 2000-2003 The Apache Software Foundation.  All rights
+.\" reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\"
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\"
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in
+.\"    the documentation and/or other materials provided with the
+.\"    distribution.
+.\"
+.\" 3. The end-user documentation included with the redistribution,
+.\"    if any, must include the following acknowledgment:
+.\"       "This product includes software developed by the
+.\"        Apache Software Foundation (http://www.apache.org/)."
+.\"    Alternately, this acknowledgment may appear in the software itself,
+.\"    if and wherever such third-party acknowledgments normally appear.
+.\"
+.\" 4. The names "Apache" and "Apache Software Foundation" must
+.\"    not be used to endorse or promote products derived from this
+.\"    software without prior written permission. For written
+.\"    permission, please contact apache@apache.org.
+.\"
+.\" 5. Products derived from this software may not be called "Apache",
+.\"    nor may "Apache" appear in their name, without prior written
+.\"    permission of the Apache Software Foundation.
+.\"
+.\" THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+.\" WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+.\" OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+.\" DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+.\" ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+.\" SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+.\" LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+.\" USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+.\" ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+.\" OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+.\" OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\" ====================================================================
+.\"
+.\" This software consists of voluntary contributions made by many
+.\" individuals on behalf of the Apache Software Foundation.  For more
+.\" information on the Apache Software Foundation, please see
+.\" <http://www.apache.org/>.
+.\"
+.\" Portions of this software are based upon public domain software
+.\" originally written at the National Center for Supercomputing Applications,
+.\" University of Illinois, Urbana-Champaign.
+.\"
+.SH NAME
+apxs \- APache eXtenSion tool
+.SH SYNOPSIS
+.B apxs
+.B \-g
+[
+.BI \-S " variable=value
+]
+.BI \-n " name"
+
+.B apxs
+.B \-q
+[
+.BI \-S " variable=value
+]
+.IR query " ..."
+
+.B apxs
+.B \-c
+[
+.BI \-S " variable=value
+]
+[
+.BI \-o " dsofile"
+]
+[
+.BI \-I " incdir"
+]
+[
+.BI \-D " variable[=value]"
+]
+[
+.BI \-L " libdir"
+]
+[
+.BI \-l " libname"
+]
+[
+.BI \-Wc, "compiler-flags"
+]
+[
+.BI \-Wl, "linker-flags"
+]
+.IR files " ..."
+
+.B apxs
+.B \-i
+[
+.BI \-S " variable=value
+]
+[
+.BI \-n " name"
+]
+[
+.B \-a
+]
+[
+.B \-A
+]
+.IR dsofile " ..."
+
+.B apxs
+.B \-e
+[
+.BI \-S " variable=value
+]
+[
+.BI \-n " name"
+]
+[
+.B \-a
+]
+[
+.B \-A
+]
+.IR dsofile " ..."
+.PP
+.SH DESCRIPTION
+.B apxs
+is a tool for building and installing extension modules for the Apache
+HyperText Transfer Protocol (HTTP) server. This is achieved by building a
+Dynamic Shared Object (DSO) from one or more source or object
+.I files
+which then can be loaded into
+the Apache server under runtime via the
+.B LoadModule
+directive from
+.BR mod_so.
+
+So to use this extension mechanism, your platform has
+to support the DSO feature and your
+Apache
+.B httpd
+binary has to be built with the
+.B mod_so
+module.
+The
+.B apxs
+tool automatically complains if this is not the case.
+You can check this yourself by manually running the command
+
+.nf
+  $ httpd -l
+.fi
+
+The module
+.B mod_so
+should be part of the displayed list.
+If these requirements are fulfilled, you can easily extend
+your Apache server's functionality by installing your own
+modules with the DSO mechanism by the help of this
+.B apxs
+tool:
+
+.nf
+  $ apxs -i -a -c mod_foo.c
+  gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
+  ld -Bshareable -o mod_foo.so mod_foo.o
+  cp mod_foo.so /path/to/apache/libexec/mod_foo.so
+  chmod 755 /path/to/apache/libexec/mod_foo.so
+  [activating module `foo' in /path/to/apache/etc/httpd.conf]
+  $ apachectl restart
+  /path/to/apache/sbin/apachectl restart: httpd not running, trying to start
+  [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module
+  /path/to/apache/sbin/apachectl restart: httpd started
+  $ _
+.fi
+
+The arguments
+.I files
+can be any C source file (.c), a object file (.o) or
+even a library archive (.a). The
+.B apxs
+tool automatically recognizes these extensions and automatically uses the C
+source files for compilation while it just uses the object and archive files for
+the linking phase. But when using such pre-compiled objects, make sure they are
+compiled for Position Independend Code (PIC) to be able to use them for a
+DSO. For instance with GCC you always just have to use
+.BR -fpic .
+For other
+C compilers please consult its manual
+page or watch for the flags
+.B apxs
+uses to compile the object files.
+
+For more details about DSO support in Apache, first read the background
+information about DSO in htdocs/manual/dso.html, then read the documentation
+of
+.BR mod_so .
+
+.PP
+.SH OPTIONS
+Common options:
+.TP 12
+.BI \-n " name"
+This explicitly sets the module name for the
+.B \-i
+(install)
+and
+.B \-g
+(template generation) option. Use this to explicitly specify the module name.
+For option
+.B \-g
+this is required, for option
+.B \-i
+the
+.B apxs
+tool tries to determine the name from the source or (as a fallback) at least
+by guessing it from the filename.
+.PP
+Query options:
+.TP 12
+.B \-q 
+Performs a query for 
+.BR apxs 's
+knowledge about certain settings. The
+.I query
+parameters can be one or more of the following variable names:
+.nf
+  CC              TARGET
+  CFLAGS          SBINDIR    
+  CFLAGS_SHLIB    INCLUDEDIR 
+  LD_SHLIB        LIBEXECDIR 
+  LDFLAGS_SHLIB   SYSCONFDIR 
+  LIBS_SHLIB      PREFIX
+.fi
+Use this for manually determining settings. For instance use
+.nf
+  INC=-I`apxs -q INCLUDEDIR`
+.fi
+inside your own Makefiles if you need manual access
+to Apache's C header files.
+.PP
+Configuration options:
+.TP 12
+.BI \-S " variable=value"
+This option changes the 
+.B apxs 
+settings described above.
+.PP
+Template Generation options:
+.TP 12
+.B \-g
+This generates a subdirectory
+.I name
+(see option
+.BR \-n ")"
+and there two files: A sample module source file named
+.BI mod_ name.c
+which can be used as a template for creating your own modules or
+as a quick start for playing with the 
+.B apxs
+mechanism.
+And a corresponding
+.B Makefile
+for even easier building and installing of this module.
+.PP
+DSO compilation options:
+.TP 12
+.B \-c
+This indicates the compilation operation. It first compiles the C source
+files (.c) of
+.I files
+into corresponding object files (.o) and then builds a DSO in
+.I dsofile
+by linking these object files plus the remaining
+object files (.o and .a) of
+.I files
+If no
+.B \-o
+option is specified
+the output file is guessed from the first filename in
+.I files
+and thus usually defaults to
+.BI mod_ name.so
+.TP 12
+.BI \-o " dsofile"
+Explicitly specifies the filename of the created DSO file. If
+not specified and the name cannot be guessed from the
+.I files
+list, the fallback name
+.B mod_unknown.so
+is used.
+.TP 12
+.BI \-D " variable[=value]"
+This option is directly passed through to the compilation command(s).
+Use this to add your own defines to the build process.
+.TP 12
+.BI \-I " incdir"
+This option is directly passed through to the compilation command(s).
+Use this to add your own include directories to search to the build process.
+.TP 12
+.BI \-L " libdir"
+This option is directly passed through to the linker command.
+Use this to add your own library directories to search to the build process.
+.TP 12
+.BI \-l " libname"
+This option is directly passed through to the linker command.
+Use this to add your own libraries to search to the build process.
+.TP 12
+.BI \-Wc, "compiler-flags"
+This option passes 
+.I compiler-flags
+as additional flags to the compiler command.
+Use this to add local compiler-specific options.
+.TP 12
+.BI \-Wl, "linker-flags"
+This option passes 
+.I linker-flags
+as additional flags to the linker command.
+Use this to add local linker-specific options.
+.PP
+DSO installation and configuration options:
+.TP 12
+.B \-i
+This indicates the installation operation and installs one or more
+DSOs into the
+server's
+.I libexec
+directory.
+.TP 12
+.B \-a
+This activates the module by automatically adding a corresponding
+.B LoadModule
+line to Apache's
+.B httpd.conf
+configuration file, or by enabling it if it already exists.
+.TP 12
+.B \-A
+Same as option
+.B \-a
+but the created 
+.B LoadModule
+directive is prefixed with a hash sign (#), i.e. the module is
+just prepared for later activation but initially disabled. 
+.TP 12
+.B \-e
+This indicates the editing operation, which can be used with the
+.B \-a
+and
+.B \-A
+options similarly to the
+.B \-i
+operation to edit Apache's
+.B httpd.conf
+configuration file without attempting to install the module.
+.PD
+.SH EXAMPLES
+Assume you have an Apache module named mod_foo.c available which should extend
+Apache's server functionality. To accomplish this you first have to compile
+the C source into a DSO suitable for loading into the Apache server
+under runtime via the following command:
+
+.nf
+  $ apxs -c mod_foo.c
+  gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
+  ld -Bshareable -o mod_foo.so mod_foo.o
+  $ _
+.fi
+
+Then you have to update the Apache configuration by making sure a
+.B LoadModule
+directive is present to load this DSO. To simplify this
+step
+.B apxs
+provides an automatic way to install the DSO in the
+"libexec" directory and updating the
+.B httpd.conf
+file accordingly. This can be achieved by running:
+
+.nf
+  $ apxs -i -a mod_foo.c
+  cp mod_foo.so /path/to/apache/libexec/mod_foo.so
+  chmod 755 /path/to/apache/libexec/mod_foo.so
+  [activating module `foo' in /path/to/apache/etc/httpd.conf]
+  $ _
+.fi
+
+This way a line named
+
+.nf
+  LoadModule foo_module libexec/mod_foo.so
+.fi
+
+is added to the configuration file if still not present.
+If you want to have this operation to be disabled, use the
+.B \-A
+option, i.e.
+
+.nf
+  $ apxs -i -A mod_foo.c
+.fi
+
+For a quick test of the 
+.B apxs
+mechanism you can create a sample Apache module
+template plus a corresponding 
+.B Makefile 
+via:
+
+.nf
+  $ apxs -g -n foo
+  Creating [DIR]  foo
+  Creating [FILE] foo/Makefile
+  Creating [FILE] foo/mod_foo.c
+  $ _
+.fi
+
+Then you can immediately compile this sample module into a DSO and
+load it into the Apache server:
+
+.nf
+  $ cd foo
+  $ make all reload
+  apxs -c mod_foo.c
+  gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
+  ld -Bshareable -o mod_foo.so mod_foo.o
+  apxs -i -a -n "foo" mod_foo.so
+  cp mod_foo.so /path/to/apache/libexec/mod_foo.so
+  chmod 755 /path/to/apache/libexec/mod_foo.so
+  [activating module `foo' in /path/to/apache/etc/httpd.conf]
+  apachectl restart
+  /path/to/apache/sbin/apachectl restart: httpd not running, trying to start
+  [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module
+  /path/to/apache/sbin/apachectl restart: httpd started
+  $ _
+.fi
+
+You can even use
+.B apxs
+to compile complex modules outside the Apache source tree, like PHP3, because
+.B apxs 
+automatically recognized C source files and object files.  
+
+.nf
+  $ cd php3
+  $ ./configure --with-shared-apache=../apache-1.3
+  $ apxs -c -o libphp3.so mod_php3.c libmodphp3-so.a
+  gcc -fpic -DSHARED_MODULE -I/tmp/apache/include  -c mod_php3.c
+  ld -Bshareable -o libphp3.so mod_php3.o libmodphp3-so.a
+  $ _
+.fi
+
+Only C source files are compiled while remaining object files are used for the
+linking phase.
+
+.PD
+.SH SEE ALSO
+.BR apachectl(1),
+.BR httpd(8).
+.

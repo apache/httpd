@@ -1,0 +1,149 @@
+
+                            Apache 1.3.28 Released
+
+   The Apache Software Foundation and The Apache Server Project are
+   pleased to announce the release of version 1.3.28 of the Apache HTTP
+   Server.  This Announcement notes the significant changes in 1.3.28
+   as compared to 1.3.27.
+
+   This version of Apache is principally a bug and security fix release.
+   A partial summary of the bug fixes is given at the end of this document.
+   A full listing of changes can be found in the CHANGES file.  Of
+   particular note is that 1.3.28 addresses and fixes 3 potential
+   security issues:
+
+    o CAN-2003-0460 (cve.mitre.org): Fix the rotatelogs support program on
+      Win32 and OS/2 to ignore special control characters received over the
+      pipe.  Previously such characters could cause it to quit logging and
+      exit.  We would like to thank the Hitachi Incident Response team for
+      their responsible disclosure of this issue.
+
+    o VU#379828 : The server could crash when going into an infinite loop
+      due to too many subsequent internal redirects and nested subrequests. 
+   
+    o Eliminated leaks of several file descriptors to child processes, such
+      as CGI scripts.
+
+   We consider Apache 1.3.28 to be the best version of Apache 1.3 available
+   and we strongly recommend that users of older versions, especially of
+   the 1.1.x and 1.2.x family, upgrade as soon as possible.  No further
+   releases will be made in the 1.2.x family.
+
+   Apache 1.3.28 is available for download from
+   
+       http://httpd.apache.org/download.cgi
+                - or -
+       http://www.apache.org/dist/httpd/
+
+   Please see the CHANGES_1.3 file in the same directory for a full list
+   of changes.
+
+   Binary distributions are available from
+
+       http://www.apache.org/dist/httpd/binaries/
+
+   The source and binary distributions are also available via any of the
+   mirrors listed at
+
+       http://www.apache.org/mirrors/
+
+   As of Apache 1.3.12 binary distributions contain all standard Apache
+   modules as shared objects (if supported by the platform) and include
+   full source code.  Installation is easily done by executing the
+   included install script.  See the README.bindist and INSTALL.bindist
+   files for a complete explanation.  Please note that the binary
+   distributions are only provided for your convenience and current
+   distributions for specific platforms are not always available. Win32
+   binary distributions are based on the Microsoft Installer (.MSI)
+   technology.  While development continues to make this installation method
+   more robust, questions should be directed to the
+   news:comp.infosystems.www.servers.ms-windows newsgroup.
+
+   For an overview of new features introduced after 1.2 please see
+   
+   http://httpd.apache.org/docs/new_features_1_3.html
+
+   In general, Apache 1.3 offers several substantial improvements over
+   version 1.2, including better performance, reliability and a wider
+   range of supported platforms, including Windows NT and 2000 (which
+   fall under the "Win32" label), OS2, Netware, and TPE threaded
+   platforms.
+
+   Apache is the most popular web server in the known universe; over half
+   of the servers on the Internet are running Apache or one of its
+   variants.
+
+   IMPORTANT NOTE FOR APACHE USERS:   Apache 1.3 was designed for Unix OS
+   variants.  While  the ports to non-Unix platforms (such as Win32, Netware
+   or OS2) are of an acceptable quality, Apache 1.3 is not optimized for
+   these platforms.  Security, stability, or performance issues on these
+   non-Unix ports do not generally apply to the Unix version, due to
+   software's Unix origin.
+
+   Apache 2.0 has been structured for multiple operating systems from its 
+   inception, by introducing the Apache Portability Library and MPM modules.
+   Users on non-Unix platforms are strongly encouraged to move up to 
+   Apache 2.0 for better performance, stability and security on their
+   platforms.
+
+                     Apache 1.3.28 Major changes
+
+  Security vulnerabilities
+
+     * CAN-2003-0460 (cve.mitre.org): Fix the rotatelogs support program on
+       Win32 and OS/2 to ignore special control characters received over the
+       pipe.  Previously such characters could cause it to quit logging and
+       exit.  We would like to thank the Hitachi Incident Response team for
+       their responsible disclosure of this issue.
+
+     * VU#379828 : The server could crash when going into an infinite loop
+       due to too many subsequent internal redirects and nested subrequests. 
+   
+     * Eliminated leaks of several file descriptors to child processes, such
+       as CGI scripts.
+
+  New features
+
+   The main new features in 1.3.28 (compared to 1.3.27) are:
+
+     * Added new ap_register_cleanup_ex() API function which allows
+       for a "magic" cleanup function to be run at register time
+       rather than at cleanup time. 
+
+     * Improvements to mod_usertrack that allows for a regular (verbose)
+       as well as "compact" version of the tracking cookie (the new
+       'CookieFormat' directive), and the ability to prepend a string
+       to the cookie via the 'CookiePrefix' directive.
+
+   New features that relate to specific platforms:
+
+     * Introduce Win32 .pdb diagnostic symbols into the Apache 1.3 build
+       (as created in Apache 2.0.45 and later.)  which akes debugging and
+       analysis of crash dumps and Dr. Watson logs trivial.
+
+     * AIX: Change the default accept mechanism from pthread back to
+       fcntl.
+
+  Bugs fixed
+
+   The following noteworthy bugs were found in Apache 1.3.27 (or earlier)
+   and have been fixed in Apache 1.3.28:
+
+     * Make sure the accept mutex is released before calling child exit
+       hooks and cleanups.
+
+     * Fix mod_rewrite's handling of absolute URIs.  The escaping routines
+       now work scheme dependent and the query string will only be
+       appended if supported by the particular scheme.
+
+     * Prevent obscenely large values of precision in ap_vformatter
+       from clobbering a buffer.
+
+     * Update timeout algorithm in free_proc_chain. If a subprocess
+       did not exit immediately, the thread would sleep for 3 seconds
+       before checking the subprocess exit status again. In a very
+       common case when the subprocess was an HTTP server CGI script,
+       the CGI script actually exited a fraction of a second into the 3
+       second sleep, which effectively limited the server to serving one 
+       CGI request every 3 seconds across a persistent connection.
+

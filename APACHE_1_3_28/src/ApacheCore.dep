@@ -1,0 +1,747 @@
+# Microsoft Developer Studio Generated Dependency File, included by ApacheCore.mak
+
+.\main\alloc.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\multithread.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\buff.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\http_config.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\explain.h"\
+	".\include\fnmatch.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_request.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\http_core.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_md5.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\fnmatch.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\rfc1413.h"\
+	".\include\scoreboard.h"\
+	".\include\util_md5.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\http_log.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\http_main.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\explain.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\multithread.h"\
+	".\include\scoreboard.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\getopt.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	".\os\win32\registry.h"\
+	".\os\win32\service.h"\
+	
+
+.\main\http_protocol.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\util_date.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\http_request.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\fnmatch.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\scoreboard.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\http_vhost.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_log.h"\
+	".\include\http_protocol.h"\
+	".\include\http_vhost.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_access.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_actions.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_alias.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_asis.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_auth.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_protocol.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_autoindex.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\fnmatch.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_cgi.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_dir.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_env.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_imap.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_include.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\os\win32\mod_isapi.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_log_config.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_mime.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_negotiation.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_setenvif.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_so.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\modules\standard\mod_userdir.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\os\win32\modules.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_config.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\os\win32\multithread.c : \
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_mmn.h"\
+	".\include\hsregex.h"\
+	".\include\multithread.h"\
+	".\os\win32\os.h"\
+	
+
+.\os\win32\readdir.c : \
+	".\os\win32\readdir.h"\
+	
+
+.\os\win32\registry.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	".\os\win32\service.h"\
+	
+
+.\main\rfc1413.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\httpd.h"\
+	".\include\rfc1413.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\os\win32\service.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\httpd.h"\
+	".\include\multithread.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	".\os\win32\registry.h"\
+	".\os\win32\service.h"\
+	".\os\win32\Win9xConHook.h"\
+	
+
+.\main\util.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\main\test_char.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\util_date.c : \
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_mmn.h"\
+	".\include\hsregex.h"\
+	".\include\util_date.h"\
+	".\os\win32\os.h"\
+	
+
+.\main\util_md5.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_md5.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\httpd.h"\
+	".\include\util_md5.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\util_script.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_config.h"\
+	".\include\http_core.h"\
+	".\include\http_log.h"\
+	".\include\http_main.h"\
+	".\include\http_protocol.h"\
+	".\include\http_request.h"\
+	".\include\httpd.h"\
+	".\include\util_date.h"\
+	".\include\util_script.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\main\util_uri.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_conf_globals.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\main\uri_delims.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	
+
+.\os\win32\util_win32.c : \
+	".\include\ap.h"\
+	".\include\ap_alloc.h"\
+	".\include\ap_config.h"\
+	".\include\ap_ctype.h"\
+	".\include\ap_ebcdic.h"\
+	".\include\ap_mmn.h"\
+	".\include\buff.h"\
+	".\include\hsregex.h"\
+	".\include\http_log.h"\
+	".\include\httpd.h"\
+	".\include\util_uri.h"\
+	".\os\win32\os.h"\
+	".\os\win32\readdir.h"\
+	

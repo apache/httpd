@@ -1,0 +1,7 @@
+Makefile
+*.lo
+*.so
+*.dll
+*.def
+*.exp
+mod_*.c

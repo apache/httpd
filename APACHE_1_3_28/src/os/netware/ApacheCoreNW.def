@@ -1,0 +1,8 @@
+MODULE  CLIB.NLM
+MODULE  WS2_32.NLM
+IMPORT  KillMe
+IMPORT  kMutexAlloc
+IMPORT  kMutexFree
+IMPORT  kMutexLock
+IMPORT  kMutexUnlock
+EXPORT  @apachecore.imp
