@@ -6,7 +6,7 @@ Body:----------de--
 <!--#include virtual="include/top.html" -->
 
     Die Anfrage kann nicht beantwortet werden.
-    Bei Verwendung der <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->-Methode
+    Bei Verwendung der <!--#echo var="REDIRECT_REQUEST_METHOD"-->-Methode
     mu&szlig; ein korrekter <code>Content-Length</code>-Header
     angegeben werden. 
 
@@ -19,7 +19,7 @@ Body:----------en--
 <!--#set var="TITLE" value="Bad Content-Length!" -->
 <!--#include virtual="include/top.html" -->
 
-    A request with the <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    A request with the <!--#echo var="REDIRECT_REQUEST_METHOD"-->
     method requires a valid <code>Content-Length</code> header.
 
 <!--#include virtual="include/bottom.html" -->
@@ -32,7 +32,7 @@ Body:----------fr--
 <!--#set var="TITLE" value="Longueur du contenu ill&eacute;gal!" -->
 <!--#include virtual="include/top.html" -->
 
-    Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo var="REDIRECT_REQUEST_METHOD"-->
     n&eacute;cessite un header valable <code>Content-Length</code> (indiquant la longueur).
 
 <!--#include virtual="include/bottom.html" -->
@@ -45,7 +45,7 @@ Body:----------nl--
 <!--#set var="TITLE" value="Ongeldige lengte inhoud!" -->
 <!--#include virtual="include/top.html" -->
 
-    Een vraag met het <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    Een vraag met het <!--#echo var="REDIRECT_REQUEST_METHOD"-->
     type methode heeft een correcte <code>Content-Length</code> lijn nodig.
 
 <!--#include virtual="include/bottom.html" -->
@@ -58,7 +58,7 @@ Body:----------sv--
 <!--#set var="TITLE" value="Felaktig Content-Length!" -->
 <!--#include virtual="include/top.html" -->
 
-    En f&ouml;rfr&aring;gan med <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    En f&ouml;rfr&aring;gan med <!--#echo var="REDIRECT_REQUEST_METHOD"-->
     metoden kr&auml;ver ett korrekt <code>Content-Length</code> huvud.
 
 <!--#include virtual="include/bottom.html" -->
@@ -72,7 +72,7 @@ Body:----------it--
 <!--#include virtual="include/top.html" -->
 
     Una richiesta con il metodo
-    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    <!--#echo var="REDIRECT_REQUEST_METHOD"-->
     richiede che venga specificato un header <code>Content-Length</code> valido.
 
 <!--#include virtual="include/bottom.html" -->
@@ -85,7 +85,7 @@ Body:-------pt-br--
 <!--#include virtual="include/top.html" -->
 
     Uma requisi&ccedil;&atilde;o 
-    do m&eacute;todo <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
+    do m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD"-->
     requer um cabe&ccedil;alho <code>Content-Length</code> v&aacute;lido.
 
 <!--#include virtual="include/bottom.html" -->
