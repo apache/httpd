@@ -322,16 +322,10 @@ int ssl_hook_Access(request_rec *r)
     char *cp;
     int ok, i;
     BOOL renegotiate = FALSE, renegotiate_quick = FALSE;
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
-    BOOL reconfigured_locations = FALSE;
-    STACK_OF(X509_NAME) *ca_list;
-    char *ca_path, *ca_file;
-#endif
     X509 *cert;
-    STACK_OF(X509) *cert_stack;
-    X509_STORE *cert_store;
+    X509_STORE *cert_store = NULL;
     X509_STORE_CTX cert_store_ctx;
-    STACK_OF(SSL_CIPHER) *cipher_list_old=NULL, *cipher_list = NULL;
+    STACK_OF(SSL_CIPHER) *cipher_list_old = NULL, *cipher_list = NULL;
     SSL_CIPHER *cipher = NULL;
     int depth, verify_old, verify, n;
 
@@ -578,17 +572,13 @@ int ssl_hook_Access(request_rec *r)
     }
 
     /*
-     *  override SSLCACertificateFile & SSLCACertificatePath
-     *  This is tagged experimental because it has to use an ugly kludge: We
-     *  have to change the locations inside the SSL_CTX* (per-server global)
-     *  instead inside SSL* (per-connection local) and reconfigure it to the
-     *  old values later. That's problematic at least for the threaded process
-     *  model of Apache under Win32 or when an error occurs. But unless
-     *  OpenSSL provides a SSL_load_verify_locations() function we've no other
-     *  chance to provide this functionality...
+     * override SSLCACertificateFile & SSLCACertificatePath
+     * This is only enabled if the SSL_set_cert_store() function
+     * is available in the ssl library.  the 1.x based mod_ssl
+     * used SSL_CTX_set_cert_store which is not thread safe.
      */
 
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
+#if MODSSL_HAVE_SSL_SET_CERT_STORE
     /*
      * check if per-dir and per-server config field are not the same.
      * if f is defined in per-dir and not defined in per-server
@@ -597,27 +587,30 @@ int ssl_hook_Access(request_rec *r)
 #define MODSSL_CFG_NE(f) \
      (dc->f && (!sc->f || (sc->f && strNE(dc->f, sc->f))))
 
+#define MODSSL_CFG_CA(f) \
+     (dc->f ? dc->f : sc->f)
+
     if (MODSSL_CFG_NE(szCACertificateFile) ||
         MODSSL_CFG_NE(szCACertificatePath))
     {
-        ca_file = dc->szCACertificateFile ?
-            dc->szCACertificateFile : sc->szCACertificateFile;
+        STACK_OF(X509_NAME) *ca_list;
+        const char *ca_file = MODSSL_CFG_CA(szCACertificateFile);
+        const char *ca_path = MODSSL_CFG_CA(szCACertificatePath);
 
-        ca_path = dc->szCACertificatePath ?
-            dc->szCACertificatePath : sc->szCACertificatePath;
+        cert_store = X509_STORE_new();
 
-        /*
-           FIXME: This should be...
-           if (!SSL_load_verify_locations(ssl, ca_file, ca_path)) {
-           ...but OpenSSL still doesn't provide this!
-         */
-        if (!SSL_CTX_load_verify_locations(ctx, ca_file, ca_path)) {
+        if (!X509_STORE_load_locations(cert_store, ca_file, ca_path)) {
             ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
                     "Unable to reconfigure verify locations "
                     "for client authentication");
 
+            X509_STORE_free(cert_store);
+
             return HTTP_FORBIDDEN;
         }
+
+        /* SSL_free will free cert_store */
+        SSL_set_cert_store(ssl, cert_store);
 
         if (!(ca_list = ssl_init_FindCAList(r->server, r->pool,
                                             ca_file, ca_path)))
@@ -631,13 +624,12 @@ int ssl_hook_Access(request_rec *r)
 
         SSL_set_client_CA_list(ssl, ca_list);
         renegotiate = TRUE;
-        reconfigured_locations = TRUE;
 
         ssl_log(r->server, SSL_LOG_TRACE,
                 "Changed client verification locations "
                 "will force renegotiation");
     }
-#endif /* SSL_EXPERIMENTAL_PERDIRCA */
+#endif /* MODSSL_HAVE_SSL_SET_CERT_STORE */
 
     /* 
      * SSL renegotiations in conjunction with HTTP
@@ -726,23 +718,27 @@ int ssl_hook_Access(request_rec *r)
                 "Requesting connection re-negotiation");
 
         if (renegotiate_quick) {
+            STACK_OF(X509) *cert_stack;
+
             /* perform just a manual re-verification of the peer */
             ssl_log(r->server, SSL_LOG_TRACE,
                     "Performing quick renegotiation: "
                     "just re-verifying the peer");
-
-            if (!(cert_store = SSL_CTX_get_cert_store(ctx))) {
-                ssl_log(r->server, SSL_LOG_ERROR,
-                        "Cannot find certificate storage");
-
-                return HTTP_FORBIDDEN;
-            }
 
             cert_stack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
 
             if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
                 ssl_log(r->server, SSL_LOG_ERROR,
                         "Cannot find peer certificate chain");
+
+                return HTTP_FORBIDDEN;
+            }
+
+            if (!(cert_store ||
+                  (cert_store = SSL_CTX_get_cert_store(ctx))))
+            {
+                ssl_log(r->server, SSL_LOG_ERROR,
+                        "Cannot find certificate storage");
 
                 return HTTP_FORBIDDEN;
             }
@@ -835,27 +831,6 @@ int ssl_hook_Access(request_rec *r)
             }
         }
     }
-
-    /*
-     * Under old OpenSSL we had to change the X509_STORE inside the
-     * SSL_CTX instead inside the SSL structure, so we have to reconfigure it
-     * to the old values. This should be changed with forthcoming OpenSSL
-     * versions when better functionality is avaiable.
-     */
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
-    if (renegotiate && reconfigured_locations) {
-        if (!SSL_CTX_load_verify_locations(ctx,
-                                           sc->szCACertificateFile,
-                                           sc->szCACertificatePath))
-        {
-            ssl_log(r->server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                    "Unable to reconfigure verify locations "
-                    "to per-server configuration parameters");
-
-            return HTTP_FORBIDDEN;
-        }
-    }
-#endif /* SSL_EXPERIMENTAL_PERDIRCA */
 
     /*
      * Check SSLRequire boolean expressions

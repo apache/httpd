@@ -120,21 +120,12 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(CertificateChainFile, TAKE1,
                 "SSL Server CA Certificate Chain file "
                 "(`/path/to/file' - PEM encoded)")
-#ifdef SSL_EXPERIMENTAL_PERDIRCA
     SSL_CMD_ALL(CACertificatePath, TAKE1,
                 "SSL CA Certificate path "
                 "(`/path/to/dir' - contains PEM encoded files)")
     SSL_CMD_ALL(CACertificateFile, TAKE1,
                 "SSL CA Certificate file "
                 "(`/path/to/file' - PEM encoded)")
-#else
-    SSL_CMD_SRV(CACertificatePath, TAKE1,
-                "SSL CA Certificate path "
-                "(`/path/to/dir' - contains PEM encoded files)")
-    SSL_CMD_SRV(CACertificateFile, TAKE1,
-                "SSL CA Certificate file "
-                "(`/path/to/file' - PEM encoded)")
-#endif
     SSL_CMD_SRV(CARevocationPath, TAKE1,
                 "SSL CA Certificate Revocation List (CRL) path "
                 "(`/path/to/dir' - contains PEM encoded files)")
