@@ -288,7 +288,7 @@ dav_lookup_result dav_lookup_uri(const char *uri, request_rec * r,
        the current request. Therefore, we can use ap_sub_req_lookup_uri() */
 
     /* reconstruct a URI as just the path */
-    new_file = apr_uri_unparse_components(r->pool, &comp, UNP_OMITSITEPART);
+    new_file = apr_uri_unparse_components(r->pool, &comp, APR_URI_UNP_OMITSITEPART);
 
     /*
      * Lookup the URI and return the sub-request. Note that we use the
