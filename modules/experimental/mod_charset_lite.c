@@ -108,6 +108,7 @@ typedef enum {
     EES_LIMIT,      /* built-in restriction encountered */
     EES_INCOMPLETE_CHAR, /* incomplete multi-byte char at end of content */
     EES_BUCKET_READ,
+    EES_DOWNSTREAM, /* something bad happened in a filter below xlate */
     EES_BAD_INPUT   /* input data invalid */
 } ees_t;
 
@@ -456,22 +457,34 @@ static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t 
 {
     ap_bucket_brigade *bb;
     ap_bucket *b;
+    charset_filter_ctx_t *ctx = f->ctx;
+    apr_status_t rv;
 
     bb = ap_brigade_create(f->r->pool);
     b = ap_bucket_create_transient(tmp, len);
     AP_BRIGADE_INSERT_TAIL(bb, b);
-    return ap_pass_brigade(f->next, bb);
+    rv = ap_pass_brigade(f->next, bb);
+    if (rv != APR_SUCCESS) {
+        ctx->ees = EES_DOWNSTREAM;
+    }
+    return rv;
 }
 
 static apr_status_t send_eos(ap_filter_t *f)
 {
     ap_bucket_brigade *bb;
     ap_bucket *b;
+    charset_filter_ctx_t *ctx = f->ctx;
+    apr_status_t rv;
 
     bb = ap_brigade_create(f->r->pool);
     b = ap_bucket_create_eos();
     AP_BRIGADE_INSERT_TAIL(bb, b);
-    return ap_pass_brigade(f->next, bb);
+    rv = ap_pass_brigade(f->next, bb);
+    if (rv != APR_SUCCESS) {
+        ctx->ees = EES_DOWNSTREAM;
+    }
+    return rv;
 }
 
 static apr_status_t set_aside_partial_char(charset_filter_ctx_t *ctx, 
@@ -542,18 +555,22 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
     const char *msg;
     char msgbuf[100];
     int cur;
+    int flags = APLOG_ERR;
 
     switch(ctx->ees) {
     case EES_LIMIT:
+        flags |= APLOG_NOERRNO;
         msg = "xlate filter - a built-in restriction was encountered";
         break;
     case EES_BAD_INPUT:
+        flags |= APLOG_NOERRNO;
         msg = "xlate filter - an input character was invalid";
         break;
     case EES_BUCKET_READ:
         msg = "xlate filter - bucket read routine failed";
         break;
     case EES_INCOMPLETE_CHAR:
+        flags |= APLOG_NOERRNO;
         strcpy(msgbuf, "xlate filter - incomplete char at end of input - ");
         cur = 0;
         while (cur < ctx->saved) {
@@ -563,10 +580,13 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
         }
         msg = msgbuf;
         break;
+    case EES_DOWNSTREAM:
+        msg = "xlate filter - an error occurred in a lower filter";
+        break;
     default:
         msg = "xlate filter - returning error";
     }
-    ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, rv, f->r,
+    ap_log_rerror(APLOG_MARK, flags, rv, f->r,
                   "%s", msg);
 }
 
