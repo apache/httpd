@@ -1,5 +1,10 @@
 Changes with Apache 1.3b7
 
+  *) Workaround sed limitations in APACI's configure script by now
+     substituting in chunks of 50 commands (because for instance HPUX's vendor
+     sed has a limit of max. 98 commands)
+     [Ralf S. Engelschall] PR#2136
+
   *) Adding SOCKS5 support and fixing existing SOCKS4 support.
      [Ralf S. Engelschall] PR#2140
 

@@ -69,6 +69,7 @@ Committed Code Changes:
     * Ralf's workaround for braindead awk when generating ap_config.h, PR#2139
     * Ralf's manual renaming of forgotten non-ap_-symbols because of #define
     * Ralf's fix for SOCKS4 and adding of additional SOCKS5 support, PR#2140
+    * Ralf's workaround for sed limitation in configure script, PR#2136
 
 Available Patches:
 

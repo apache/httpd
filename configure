@@ -74,6 +74,9 @@ mkf=Makefile
 src=src
 aux=src/helpers
 
+sedsubst=src/.apaci.sedsubst
+addconf=src/.apaci.addconf
+
 ##
 ##  pre-determine runtime modes
 ##
@@ -185,7 +188,8 @@ IFS="$OIFS"
 rules=`echo $rules | sed -e 's/^://'`
 
 #   determine modules
-rm -f $src/Configuration.apaci 2>/dev/null
+rm -f $addconf 2>/dev/null
+touch $addconf
 modules=""
 modulelist=""
 OIFS="$IFS" IFS='
@@ -406,10 +410,10 @@ do
             if [ ".$file" != ".$src/modules/extra/$modfilec" ]; then
                 cp $file $src/modules/extra/$modfilec
             fi
-            echo "" >>$src/Configuration.apaci
-            echo "## On-the-fly added module" >>$src/Configuration.apaci
-            echo "## (configure --add-module=$file)" >>$src/Configuration.apaci
-            echo "AddModule modules/extra/$modfileo" >>$src/Configuration.apaci
+            echo "" >>$addconf
+            echo "## On-the-fly added module" >>$addconf
+            echo "## (configure --add-module=$file)" >>$addconf
+            echo "AddModule modules/extra/$modfileo" >>$addconf
             module=`echo "$modfileo" |\
                     sed -e 's%^.*/\(.*\)$%\1%' \
                         -e 's/\.[^.]*$//' \
@@ -432,10 +436,10 @@ do
                     ;;
             esac
             modfile=`echo $file | sed -e 's;^src/;;'`
-            echo "" >>$src/Configuration.apaci
-            echo "## On-the-fly activated module" >>$src/Configuration.apaci
-            echo "## (configure --activate-module=$file)" >>$src/Configuration.apaci
-            echo "AddModule $modfile" >>$src/Configuration.apaci
+            echo "" >>$addconf
+            echo "## On-the-fly activated module" >>$addconf
+            echo "## (configure --activate-module=$file)" >>$addconf
+            echo "AddModule $modfile" >>$addconf
             module=`echo "$modfile" |\
                     sed -e 's%^.*/\(.*\)$%\1%' \
                         -e 's/\.[^.]*$//' \
@@ -783,8 +787,8 @@ CFLAGS="$CFLAGS \\\`\$(SRCDIR)/apaci\\\`"
 if [ .$quiet = .no ]; then
     echo "Creating Configuration.apaci in $src"
 fi
-rm -f sedsubst 2>/dev/null
-touch sedsubst
+rm -f $sedsubst 2>/dev/null
+touch $sedsubst
 
 #   generate settings from imported environment variables
 OIFS="$IFS" IFS="$DIFS"
@@ -794,10 +798,10 @@ for var in CC OPTIM CFLAGS CFLAGS_SHLIB LDFLAGS LDFLAGS_SHLIB \
     if [ ".$val" != . ]; then
         case $var in 
             CFLAGS|LDFLAGS|LIBS|INCLUDES) 
-                echo "s%^#*\\(EXTRA_$var=\\).*%\\1$val%g" >>sedsubst
+                echo "s%^#*\\(EXTRA_$var=\\).*%\\1$val%g" >>$sedsubst
                 ;;
             *)
-                echo "s%^#*\\($var=\\).*%\\1$val%g" >>sedsubst
+                echo "s%^#*\\($var=\\).*%\\1$val%g" >>$sedsubst
                 ;;
         esac
         eval "$var=\"\"; export $var"
@@ -810,7 +814,7 @@ OIFS="$IFS" IFS=':'
 for rule in $rules; do
     name="`echo $rule | tr "a-z" "A-Z"`"
     eval "val=\$rule_$rule"
-    echo "s%^\\(Rule $name=\\).*%\\1$val%g" >>sedsubst
+    echo "s%^\\(Rule $name=\\).*%\\1$val%g" >>$sedsubst
     if [ $verbose = yes ]; then
         echo " + Rule $name=$val"
     fi
@@ -846,17 +850,17 @@ OIFS="$IFS" IFS=':'
 for module in $modules; do
     eval "add=\$module_$module"
     if [ $add = yes ]; then
-        echo "s%^.*\\(AddModule.*$module\\..*\\)%\\1%g" >>sedsubst
-        echo "s%^.*\\(SharedModule.*$module\\..*\\)%\\1%g" >>sedsubst
+        echo "s%^.*\\(AddModule.*$module\\..*\\)%\\1%g" >>$sedsubst
+        echo "s%^.*\\(SharedModule.*$module\\..*\\)%\\1%g" >>$sedsubst
         m="yes [static]"
     else
-        echo "s%^.*\\(AddModule.*$module\\..*\\)%# \\1%g" >>sedsubst
-        echo "s%^.*\\(SharedModule.*$module\\..*\\)%# \\1%g" >>sedsubst
+        echo "s%^.*\\(AddModule.*$module\\..*\\)%# \\1%g" >>$sedsubst
+        echo "s%^.*\\(SharedModule.*$module\\..*\\)%# \\1%g" >>$sedsubst
         m=no
     fi
     eval "share=\$shared_$module"
     if [ $share = yes ]; then
-        echo "s%^\\(.*\\)AddModule\\(.*$module\\.\\)[oa]\\(.*\\)%\\1SharedModule\\2so\\3%g" >>sedsubst
+        echo "s%^\\(.*\\)AddModule\\(.*$module\\.\\)[oa]\\(.*\\)%\\1SharedModule\\2so\\3%g" >>$sedsubst
         m="yes [shared]"
     fi
     if [ $verbose = yes ]; then
@@ -865,17 +869,35 @@ for module in $modules; do
 done
 IFS="$OIFS"
 
-#   and finally translate the config template according to our situation
-if [ -f $src/Configuration.apaci ]; then
-    (cat $src/Configuration.tmpl;
-     cat $src/Configuration.apaci ) |\
-    sed -f sedsubst >$src/Configuration.apaci.tmp
-    cp $src/Configuration.apaci.tmp $src/Configuration.apaci
-    rm -f $src/Configuration.apaci.tmp
-else
-    cat $src/Configuration.tmpl | sed -f sedsubst >$src/Configuration.apaci
-fi
-rm -f sedsubst 2>/dev/null
+#   split sedsubst into chunks of 50 commands
+#   to workaround limits in braindead seds
+files=`awk <$sedsubst '
+    BEGIN { line=0; cnt=0; }
+    {
+        if (line % 50 == 0) {
+            file = sedsubst "." cnt;
+            printf("%s\n", file);
+            cnt++;
+        }
+        line++;
+        print $0 >file;
+    }
+' "sedsubst=$sedsubst"`
+OIFS="$IFS" IFS="$DIFS"
+substcmd=""
+for file in $files; do
+    substcmd="${substcmd} sed -f $file |"
+done
+substcmd="${substcmd} cat"
+IFS="$OIFS"
+
+#   and finally translate the config template 
+#   according to our defined configuration
+eval "cat $src/Configuration.tmpl $addconf | $substcmd >$src/Configuration.apaci"
+
+#   cleanup
+rm -f $sedsubst $sedsubst.[0-9] 2>/dev/null
+rm -f $addconf 2>/dev/null
 
 ##
 ##  create all other Makefiles by running the proprietary 
