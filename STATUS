@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/10/17 21:53:41 $]
+Last modified at [$Date: 2000/10/18 23:11:48 $]
 
 Release:
 
@@ -596,15 +596,6 @@ put them into 'the next release':
     * PR#4658: os-windows
       The output of CGI scripts appears in the window that apache
       is running in
-	Status: 
-
-    * PR#4816: general
-      SSI in CGI
-	Status: 
-
-    * PR#5079: config
-      Apache header files should have a private name, e.g.
-      #include "apache/httpd.h"
 	Status: 
 
     * PR#5713: os-windows
