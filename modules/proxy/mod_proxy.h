@@ -110,9 +110,9 @@
 #include "http_config.h"
 #include "http_protocol.h"
 #include "ap_cache.h"
-
+/*   XXX There is no explain.h in Apache 2.0
 #include "explain.h"
-
+*/
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
@@ -171,8 +171,8 @@ struct proxy_remote {
 };
 
 struct proxy_alias {
-    char *real;
-    char *fake;
+    const char *real;
+    const char *fake;
 };
 
 struct dirconn_entry {
@@ -183,12 +183,12 @@ struct dirconn_entry {
 };
 
 struct noproxy_entry {
-    char *name;
+    const char *name;
     struct in_addr addr;
 };
 
 struct nocache_entry {
-    char *name;
+    const char *name;
     struct in_addr addr;
 };
 
@@ -200,7 +200,7 @@ typedef struct {
     apr_array_header_t *dirconn;
     apr_array_header_t *nocaches;
     apr_array_header_t *allowed_connect_ports;
-    char *domain;		/* domain name to use in absence of a domain name in the request */
+    const char *domain;		/* domain name to use in absence of a domain name in the request */
     int req;			/* true if proxy requests are enabled */
     float cache_completion;	/* Force cache completion after this point */
     enum {

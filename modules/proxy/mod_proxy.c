@@ -64,6 +64,7 @@
 #include "http_vhost.h"
 #include "http_request.h"
 #include "util_date.h"
+#include "apr_strings.h"
 
 /* Some WWW schemes and their default ports; this is basically /etc/services */
 /* This will become global when the protocol abstraction comes */
@@ -282,6 +283,7 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
 static int proxy_handler(request_rec *r)
 {
     char *url, *scheme, *p;
+    const char *p2;
     void *sconf = r->server->module_config;
     proxy_server_conf *conf = (proxy_server_conf *)
         ap_get_module_config(sconf, &proxy_module);
@@ -404,10 +406,10 @@ static int proxy_handler(request_rec *r)
 
     if (!direct_connect)
         for (i = 0; i < proxies->nelts; i++) {
-            p = strchr(ents[i].scheme, ':');    /* is it a partial URL? */
+            p2 = ap_strchr_c(ents[i].scheme, ':');  /* is it a partial URL? */
             if (strcmp(ents[i].scheme, "*") == 0 ||
-                (p == NULL && strcasecmp(scheme, ents[i].scheme) == 0) ||
-                (p != NULL &&
+                (p2 == NULL && strcasecmp(scheme, ents[i].scheme) == 0) ||
+                (p2 != NULL &&
                  strncasecmp(url, ents[i].scheme, strlen(ents[i].scheme)) == 0)) {
                 /* CONNECT is a special method that bypasses the normal
                  * proxy code.
@@ -468,15 +470,18 @@ static void *create_proxy_config(apr_pool_t *p, server_rec *s)
 }
 
 static const char *
-     add_proxy(cmd_parms *cmd, void *dummy, char *f, char *r)
+     add_proxy(cmd_parms *cmd, void *dummy, const char *f1, const char *r1)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
     struct proxy_remote *new;
     char *p, *q;
+    char *r, *f;
     int port;
 
+    r = apr_pstrdup(cmd->pool, r1);
+    f = apr_pstrdup(cmd->pool, f1);
     p = strchr(r, ':');
     if (p == NULL || p[1] != '/' || p[2] != '/' || p[3] == '\0')
     return "ProxyRemote: Bad syntax for a remote proxy server";
@@ -510,7 +515,7 @@ static const char *
 }
 
 static const char *
-     set_cache_exclude(cmd_parms *cmd, void *dummy, char *arg)
+     set_cache_exclude(cmd_parms *cmd, void *dummy, const char *arg)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *psf = (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
@@ -530,8 +535,9 @@ static const char *
         new = apr_push_array(psf->nocaches);
         new->name = arg;
         /* Don't do name lookups on things that aren't dotted */
-        if (strchr(arg, '.') != NULL && ap_proxy_host2addr(new->name, &hp) == NULL)
-            /*@@@FIXME: This copies only the first of (possibly many) IP addrs */
+        if (ap_strchr_c(arg, '.') != NULL && 
+            ap_proxy_host2addr(new->name, &hp) == NULL)
+           /*@@@FIXME: This copies only the first of (possibly many) IP addrs */
             memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
         else
             new->addr.s_addr = 0;
@@ -540,7 +546,7 @@ static const char *
 }
 
 static const char *
-     add_pass(cmd_parms *cmd, void *dummy, char *f, char *r)
+     add_pass(cmd_parms *cmd, void *dummy, const char *f, const char *r)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
@@ -554,7 +560,7 @@ static const char *
 }
 
 static const char *
-    add_pass_reverse(cmd_parms *cmd, void *dummy, char *f, char *r)
+    add_pass_reverse(cmd_parms *cmd, void *dummy, const char *f, const char *r)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf;
@@ -568,7 +574,7 @@ static const char *
     return NULL;
 }
 
-static const char *set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
+static const char *set_proxy_exclude(cmd_parms *parms, void *dummy, const char *arg)
 {
     server_rec *s = parms->server;
     proxy_server_conf *conf =
@@ -589,7 +595,7 @@ static const char *set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
     new = apr_push_array(conf->noproxies);
     new->name = arg;
     /* Don't do name lookups on things that aren't dotted */
-    if (strchr(arg, '.') != NULL && ap_proxy_host2addr(new->name, &hp) == NULL)
+    if (ap_strchr_c(arg, '.') != NULL && ap_proxy_host2addr(new->name, &hp) == NULL)
         /*@@@FIXME: This copies only the first of (possibly many) IP addrs */
         memcpy(&new->addr, hp.h_addr, sizeof(struct in_addr));
     else
@@ -602,7 +608,7 @@ static const char *set_proxy_exclude(cmd_parms *parms, void *dummy, char *arg)
  * Set the ports CONNECT can use
  */
 static const char *
-    set_allowed_ports(cmd_parms *parms, void *dummy, char *arg)
+    set_allowed_ports(cmd_parms *parms, void *dummy, const char *arg)
 {
     server_rec *s = parms->server;
     proxy_server_conf *conf =
@@ -621,7 +627,7 @@ static const char *
  * which should never be accessed via the configured ProxyRemote servers
  */
 static const char *
-     set_proxy_dirconn(cmd_parms *parms, void *dummy, char *arg)
+     set_proxy_dirconn(cmd_parms *parms, void *dummy, const char *arg)
 {
     server_rec *s = parms->server;
     proxy_server_conf *conf =
@@ -639,7 +645,7 @@ static const char *
 
     if (!found) {
     New = apr_push_array(conf->dirconn);
-    New->name = arg;
+    New->name = apr_pstrdup(parms->pool, arg);
     New->hostentry = NULL;
 
     if (ap_proxy_is_ipaddr(New, parms->pool)) {
@@ -676,7 +682,7 @@ static const char *
 }
 
 static const char *
-     set_proxy_domain(cmd_parms *parms, void *dummy, char *arg)
+     set_proxy_domain(cmd_parms *parms, void *dummy, const char *arg)
 {
     proxy_server_conf *psf =
     ap_get_module_config(parms->server->module_config, &proxy_module);
@@ -700,7 +706,7 @@ static const char *
 
 
 static const char *
-     set_recv_buffer_size(cmd_parms *parms, void *dummy, char *arg)
+     set_recv_buffer_size(cmd_parms *parms, void *dummy, const char *arg)
 {
     proxy_server_conf *psf =
     ap_get_module_config(parms->server->module_config, &proxy_module);
@@ -714,7 +720,7 @@ static const char *
 }
 
 static const char*
-    set_via_opt(cmd_parms *parms, void *dummy, char *arg)
+    set_via_opt(cmd_parms *parms, void *dummy, const char *arg)
 {
     proxy_server_conf *psf = ap_get_module_config(parms->server->module_config, &proxy_module);
 
@@ -735,7 +741,7 @@ static const char*
 }
 
 static const char*
-    set_cache_completion(cmd_parms *parms, void *dummy, char *arg)
+    set_cache_completion(cmd_parms *parms, void *dummy, const char *arg)
 {
     proxy_server_conf *psf = ap_get_module_config(parms->server->module_config, &proxy_module);
     int s = atoi(arg);
@@ -757,30 +763,30 @@ static const handler_rec proxy_handlers[] =
 
 static const command_rec proxy_cmds[] =
 {
-    {"ProxyRequests", set_proxy_req, NULL, RSRC_CONF, FLAG,
-     "on if the true proxy requests should be accepted"},
-    {"ProxyRemote", add_proxy, NULL, RSRC_CONF, TAKE2,
-     "a scheme, partial URL or '*' and a proxy server"},
-    {"ProxyPass", add_pass, NULL, RSRC_CONF, TAKE2,
-     "a virtual path and a URL"},
-    {"ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF, TAKE2,
-     "a virtual path and a URL for reverse proxy behaviour"},
-    {"ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF, ITERATE,
-     "A list of names, hosts or domains to which the proxy will not connect"},
-    {"ProxyReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF, TAKE1,
-     "Receive buffer size for outgoing HTTP and FTP connections in bytes"},
-    {"NoProxy", set_proxy_dirconn, NULL, RSRC_CONF, ITERATE,
-     "A list of domains, hosts, or subnets to which the proxy will connect directly"},
-    {"ProxyDomain", set_proxy_domain, NULL, RSRC_CONF, TAKE1,
-     "The default intranet domain name (in absence of a domain in the URL)"},
-    {"AllowCONNECT", set_allowed_ports, NULL, RSRC_CONF, ITERATE,
-     "A list of ports which CONNECT may connect to"},
-    {"ProxyVia", set_via_opt, NULL, RSRC_CONF, TAKE1,
-     "Configure Via: proxy header header to one of: on | off | block | full"},
-    {"ProxyNoCache", set_cache_exclude, NULL, RSRC_CONF, ITERATE,
-     "A list of names, hosts or domains for which caching is *not* provided"},
-    {"ProxyForceCacheCompletion", set_cache_completion, NULL, RSRC_CONF, TAKE1,
-     "Force a http cache completion after this percentage is loaded"},
+    AP_INIT_FLAG("ProxyRequests", set_proxy_req, NULL, RSRC_CONF,
+     "on if the true proxy requests should be accepted"),
+    AP_INIT_TAKE2("ProxyRemote", add_proxy, NULL, RSRC_CONF,
+     "a scheme, partial URL or '*' and a proxy server"),
+    AP_INIT_TAKE2("ProxyPass", add_pass, NULL, RSRC_CONF,
+     "a virtual path and a URL"),
+    AP_INIT_TAKE2("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF,
+     "a virtual path and a URL for reverse proxy behaviour"),
+    AP_INIT_ITERATE("ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF,
+     "A list of names, hosts or domains to which the proxy will not connect"),
+    AP_INIT_TAKE1("ProxyReceiveBufferSize", set_recv_buffer_size, NULL, RSRC_CONF,
+     "Receive buffer size for outgoing HTTP and FTP connections in bytes"),
+    AP_INIT_ITERATE("NoProxy", set_proxy_dirconn, NULL, RSRC_CONF,
+     "A list of domains, hosts, or subnets to which the proxy will connect directly"),
+    AP_INIT_TAKE1("ProxyDomain", set_proxy_domain, NULL, RSRC_CONF,
+     "The default intranet domain name (in absence of a domain in the URL)"),
+    AP_INIT_ITERATE("AllowCONNECT", set_allowed_ports, NULL, RSRC_CONF,
+     "A list of ports which CONNECT may connect to"),
+    AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
+     "Configure Via: proxy header header to one of: on | off | block | full"),
+    AP_INIT_ITERATE("ProxyNoCache", set_cache_exclude, NULL, RSRC_CONF,
+     "A list of names, hosts or domains for which caching is *not* provided"),
+    AP_INIT_TAKE1("ProxyForceCacheCompletion", set_cache_completion, NULL, RSRC_CONF,
+     "Force a http cache completion after this percentage is loaded"),
 
     {NULL}
 };

@@ -58,6 +58,7 @@
 
 /* FTP routines for Apache proxy */
 
+#include "apr_strings.h"
 #include "mod_proxy.h"
 #include "http_main.h"
 #include "http_log.h"
@@ -287,7 +288,7 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
     register int n, o, w;
     conn_rec *con = r->connection;
     char *dir, *path, *reldir, *site;
-    BUFF *cachefp = NULL;
+    apr_file_t *cachefp = NULL;
 
     if(c) ap_cache_el_data(c, &cachefp);
     
@@ -398,7 +399,8 @@ static long int send_dir(BUFF *f, request_rec *r, ap_cache_el  *c, char *cwd)
     o = 0;
     total_bytes_sent += n;
 
-    if (cachefp && ap_bwrite(cachefp, buf, n, &cntr) != n) {
+    cntr = n;
+    if (cachefp && apr_write(cachefp, buf, &cntr) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error writing to cache");
         ap_proxy_cache_error(&c);
@@ -468,7 +470,8 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
     int port, i, j, len, rc, nocache = 0;
     apr_socket_t *csd;
     struct in_addr destaddr;
-    BUFF *f, *cachefp = NULL;
+    BUFF *f;
+    apr_file_t *cachefp = NULL;
     BUFF *data = NULL;
     apr_pool_t *p = r->pool;
     int one = 1;
@@ -547,7 +550,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
 /* check if ProxyBlock directive on this host */
     destaddr.s_addr = apr_inet_addr(host);
     for (i = 0; i < conf->noproxies->nelts; i++) {
-    if ((npent[i].name != NULL && strstr(host, npent[i].name) != NULL)
+    if ((npent[i].name != NULL && ap_strstr_c(host, npent[i].name) != NULL)
         || destaddr.s_addr == npent[i].addr.s_addr || npent[i].name[0] == '*')
         return ap_proxyerror(r, HTTP_FORBIDDEN,
                  "Connect to remote machine blocked");
@@ -1116,7 +1119,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
     
 /* check if NoCache directive on this host */
     for (i = 0; i < conf->nocaches->nelts; i++) {
-    if ((ncent[i].name != NULL && strstr(host, ncent[i].name) != NULL)
+    if ((ncent[i].name != NULL && ap_strstr_c(host, ncent[i].name) != NULL)
         || destaddr.s_addr == ncent[i].addr.s_addr || ncent[i].name[0] == '*')
         nocache = 1;
     }
@@ -1156,7 +1159,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
 /* write status line */
     if (!r->assbackwards)
     ap_rvputs(r, "HTTP/1.0 ", r->status_line, CRLF, NULL);
-    if (cachefp    && ap_bvputs(cachefp, "HTTP/1.0 ", r->status_line, CRLF, NULL) == -1) {
+    if (cachefp    && apr_puts(apr_pstrcat(r->pool, "HTTP/1.0 ", r->status_line, CRLF, NULL), cachefp) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error writing CRLF to cache");
         ap_proxy_cache_error(&c);
@@ -1167,7 +1170,7 @@ int ap_proxy_ftp_handler(request_rec *r, ap_cache_el  *c, char *url)
     ap_cache_el_header_walk(c, ap_proxy_send_hdr_line, r, NULL);
     if (!r->assbackwards)
         ap_rputs(CRLF, r);
-    if (cachefp && ap_bputs(CRLF, cachefp) == -1) {
+    if (cachefp && apr_puts(CRLF, cachefp) == -1) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "proxy: error writing CRLF to cache");
         ap_proxy_cache_error(&c);
