@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/10/14 19:20:21 $]
+Last modified at [$Date: 2004/10/18 00:53:58 $]
 
 Release:
 
@@ -74,6 +74,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES TO BACKPORT FROM 2.1
   [ please place file names and revisions from HEAD here, so it is easy to
     identify exactly what the proposed changes are! ]
+
+    *) mod_cache: use the correct struct for CacheDisable.
+       Currently any use of CacheDisable disables all caching. 
+       http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/experimental/mod_cache.c?r1=1.93&r2=1.94
+       PR: 31128
+       +1: pquerna
 
     *) mod_ldap: Fix format strings to use %APR_PID_T_FMT instead of %d.
          modules/ldap/util_ldap.c: 1.16
