@@ -233,7 +233,8 @@ changes in third party modules not maintained by Apache.
    To avoid symbol clashes with third-party code compiled into the server, the
    general prefix `<CODE>ap_</CODE>' was globally applied to the following
    classes of symbols: Apache provided general functions (<EM>e.g.</EM>,
-   <CODE>ap_cpystrn</CODE>), public API functions (<EM>e.g.</EM>, <CODE>palloc</CODE>,
+   <CODE>ap_cpystrn</CODE>), public API functions (<EM>e.g.</EM>,
+   <CODE>palloc</CODE>,
    <CODE>bgets</CODE>) and private functions which can't be made static
    (because of cross-object usage) but should be (<EM>e.g.</EM>,
    <CODE>new_connection</CODE>).  For backward source compatibility with
