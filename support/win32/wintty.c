@@ -265,7 +265,7 @@ int main(int argc, char** argv)
         printerr("SetConsoleTitle() failed (%d)\n", GetLastError());
     }
 
-    conout = CreateFile("CONOUT$", GENERIC_WRITE, 
+    conout = CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, 
                         FILE_SHARE_READ | FILE_SHARE_WRITE, 
                         FALSE, OPEN_EXISTING, 0, NULL);
     if (!conout || conout == INVALID_HANDLE_VALUE) {
@@ -281,14 +281,14 @@ int main(int argc, char** argv)
         printerr("SetConsoleMode(CONOUT, 0x%x) failed (%d)\n", conmode, GetLastError());
     }
 
-    conin = CreateFile("CONIN$", GENERIC_READ, 
+    conin = CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, 
                        FILE_SHARE_READ | FILE_SHARE_WRITE, 
                        FALSE, OPEN_EXISTING, 0, NULL);
     if (!conin || conin == INVALID_HANDLE_VALUE) {
         printerr("GetStdHandle(STD_INPUT_HANDLE) failed (%d)\n", GetLastError());
     }
     else if (!GetConsoleMode(conin, &conmode)) {
-        printerr("GetConsoleMode(CONOUT) failed (%d)\n", GetLastError());
+        printerr("GetConsoleMode(CONIN) failed (%d)\n", GetLastError());
     }
     else if (!SetConsoleMode(conin, conmode = ((conmode | newinmode) & ~notinmode))) {
         printerr("SetConsoleMode(CONIN, 0x%x) failed (%d)\n", conmode, GetLastError());
