@@ -2,6 +2,9 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) Rewrite ap_xml_parse_input to use bucket brigades.  PR 16134.
+     [Justin Erenkrantz]
+
   *) Fix potential memory leaks in mod_deflate on malformed data.  PR 16046.
      [Justin Erenkrantz]
 
