@@ -749,9 +749,8 @@ accept_mutex_methods_s accept_mutex_pthread_s = {
 #include <sys/sem.h>
 
 #ifdef NEED_UNION_SEMUN
-/* it makes no sense, but this isn't defined on solaris */
 union semun {
-    long val;
+    int val;
     struct semid_ds *buf;
     ushort *array;
 };
