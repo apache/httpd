@@ -322,4 +322,5 @@ module usertrack_module = {
    NULL,		   /* type_checker */
    spot_cookie,		   /* fixups */
    NULL,                   /* logger */
+   NULL			   /* header parser */
 };

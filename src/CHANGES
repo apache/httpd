@@ -1,5 +1,8 @@
 Changes with Apache 1.2b8
 
+  *) Added table entry placeholder for new header_parser callback
+     in all of the distributed modules. [Ken Coar] PR #191
+
   *) Allow for cgi files without the .EXE extension on them under OS/2.
      [Garey Smiley] PR #59
 

@@ -2002,5 +2002,6 @@ module negotiation_module = {
    NULL,			/* check access */
    handle_multi,		/* type_checker */
    NULL,			/* fixups */
-   NULL				/* logger */
+   NULL,			/* logger */
+   NULL				/* header parser */
 };

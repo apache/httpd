@@ -278,5 +278,6 @@ module access_module = {
    check_dir_access,		/* check access */
    NULL,			/* type_checker */
    NULL,			/* fixups */
-   NULL				/* logger */
+   NULL,			/* logger */
+   NULL				/* header parser */
 };

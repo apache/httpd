@@ -184,5 +184,5 @@ module browser_module = {
    NULL,			/* type_checker */
    NULL,			/* fixups */
    NULL,			/* logger */
-   parse_headers_browser_module,/* header parser */
+   parse_headers_browser_module	/* header parser */
 };

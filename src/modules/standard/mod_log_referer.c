@@ -230,5 +230,6 @@ module referer_log_module = {
    NULL,			/* check access */
    NULL,			/* type_checker */
    NULL,			/* fixups */
-   referer_log_transaction	/* logger */
+   referer_log_transaction,	/* logger */
+   NULL				/* header parser */
 };

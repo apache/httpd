@@ -319,5 +319,6 @@ module mime_module = {
    NULL,			/* check access */
    find_ct,			/* type_checker */
    NULL,			/* fixups */
-   NULL				/* logger */
+   NULL,			/* logger */
+   NULL				/* header parser */
 };

@@ -185,5 +185,6 @@ module dld_module = {
    NULL,			/* check auth */
    NULL,			/* check access */
    NULL,			/* type_checker */
-   NULL				/* logger */
+   NULL,			/* logger */
+   NULL				/* header parser */
 };

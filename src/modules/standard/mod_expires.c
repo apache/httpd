@@ -473,4 +473,5 @@ module expires_module = {
    NULL,			/* type_checker */
    add_expires,			/* fixups */
    NULL,			/* logger */
+   NULL				/* header parser */
 };

@@ -319,5 +319,6 @@ module alias_module = {
    NULL,			/* check access */
    NULL,			/* type_checker */
    fixup_redir,			/* fixups */
-   NULL				/* logger */
+   NULL,			/* logger */
+   NULL				/* header parser */
 };

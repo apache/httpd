@@ -248,5 +248,6 @@ module headers_module = {
    NULL,			/* check access */
    NULL,			/* type_checker */
    fixup_headers,		/* fixups */
-   NULL				/* logger */
+   NULL,			/* logger */
+   NULL				/* header parser */
 };

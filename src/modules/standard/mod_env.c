@@ -257,4 +257,5 @@ module env_module = {
    NULL,			/* type_checker */
    fixup_env_module,		/* fixups */
    NULL,			/* logger */
+   NULL				/* header parser */
 };

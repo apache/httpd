@@ -1367,5 +1367,6 @@ module core_module = {
    do_nothing,			/* check access */
    do_nothing,			/* type_checker */
    NULL,			/* pre-run fixups */
-   NULL				/* logger */
+   NULL,			/* logger */
+   NULL				/* header parser */
 };

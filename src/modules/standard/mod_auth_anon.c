@@ -293,5 +293,6 @@ module anon_auth_module = {
    NULL,			/* check access */
    NULL,			/* type_checker */
    NULL,			/* fixups */
-   NULL				/* logger */
+   NULL,			/* logger */
+   NULL				/* header parser */
 };

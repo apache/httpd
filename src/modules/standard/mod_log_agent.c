@@ -192,5 +192,6 @@ module agent_log_module = {
    NULL,			/* check access */
    NULL,			/* type_checker */
    NULL,			/* fixups */
-   agent_log_transaction	/* logger */
+   agent_log_transaction,	/* logger */
+   NULL				/* header parser */
 };

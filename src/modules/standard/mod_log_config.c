@@ -781,5 +781,6 @@ module config_log_module = {
    NULL,			/* check access */
    NULL,			/* type_checker */
    NULL,			/* fixups */
-   multi_log_transaction	/* logger */
+   multi_log_transaction,	/* logger */
+   NULL				/* header parser */
 };

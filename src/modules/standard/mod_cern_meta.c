@@ -327,4 +327,5 @@ module cern_meta_module = {
    NULL,			/* type_checker */
    add_cern_meta_data,		/* fixups */
    NULL,			/* logger */
+   NULL				/* header parser */
 };
