@@ -636,8 +636,6 @@ static apr_inline void do_double_reverse (conn_rec *conn)
 AP_DECLARE(const char *) ap_get_remote_host(conn_rec *conn, void *dir_config,
 					    int type)
 {
-    struct in_addr *iaddr;
-    struct hostent *hptr;
     int hostname_lookups;
 
     /* If we haven't checked the host name, and we want to */
