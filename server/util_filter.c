@@ -536,6 +536,16 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next,
              * get two EOS buckets on the same request.
              */
             next->r->eos_sent = 1;
+
+            /* remember the eos for internal redirects, too */
+            if (next->r->prev) {
+                request_rec *prev = next->r->prev;
+
+                while (prev) {
+                    prev->eos_sent = 1;
+                    prev = prev->prev;
+                }
+            }
         }
         return next->frec->filter_func.out_func(next, bb);
     }
