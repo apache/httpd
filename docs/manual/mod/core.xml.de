@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 1.88 (outdated: 1.90) -->
+<!-- English Revision: 1.90 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -374,12 +374,16 @@ erlaubt sind.</description>
       module="mod_authz_host">Deny</directive> und <directive
       module="mod_authz_host">Order</directive>).</dd>
 
-      <dt>Options</dt>
+      <dt>Options[=<var>Option</var>,...]</dt>
 
       <dd>
       Erlaubt die Verwendung von Direktiven zur Steuerung spezieller
       Verzeichniseigenschaften (<directive module="core">Options</directive>
-      und <directive module="mod_include">XBitHack</directive>).</dd>
+      und <directive module="mod_include">XBitHack</directive>). Sie
+      k&ouml;nnen mit einem Gleichheitszeichen gefolgt von einer
+      kommaseparierten Liste (ohne Leerzeichen) angeben, welche Optionen mit
+      der <directive module="core">Options</directive>-Direktive gesetzt
+      werden d&uuml;rfen.</dd>
     </dl>
 
     <p>Beispiel:</p>
@@ -387,7 +391,7 @@ erlaubt sind.</description>
     <example>
       AllowOverride AuthConfig Indexes
     </example>
-
+    
     <p>Im obigen Beispiel erzeugen alle Direktiven einen internal server
       error <transnote>Server-interner Fehler</transnote>, die weder der
       Gruppe <code>AuthConfig</code> noch der Gruppe <code>Indexes</code>

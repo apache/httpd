@@ -25,9 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -427,12 +424,16 @@ erlaubt sind.</td></tr>
       Erlaubt die Verwendung von Direktiven zur Steuerung des
       Zugriffs von Hosts (<code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> und <code class="directive"><a href="../mod/mod_authz_host.html#order">Order</a></code>).</dd>
 
-      <dt>Options</dt>
+      <dt>Options[=<var>Option</var>,...]</dt>
 
       <dd>
       Erlaubt die Verwendung von Direktiven zur Steuerung spezieller
       Verzeichniseigenschaften (<code class="directive"><a href="#options">Options</a></code>
-      und <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>).</dd>
+      und <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>). Sie
+      können mit einem Gleichheitszeichen gefolgt von einer
+      kommaseparierten Liste (ohne Leerzeichen) angeben, welche Optionen mit
+      der <code class="directive"><a href="#options">Options</a></code>-Direktive gesetzt
+      werden dürfen.</dd>
     </dl>
 
     <p>Beispiel:</p>
@@ -440,7 +441,7 @@ erlaubt sind.</td></tr>
     <div class="example"><p><code>
       AllowOverride AuthConfig Indexes
     </code></p></div>
-
+    
     <p>Im obigen Beispiel erzeugen alle Direktiven einen internal server
       error <span class="transnote">(<em>Anm.d.Ü.:</em> Server-interner Fehler)</span>, die weder der
       Gruppe <code>AuthConfig</code> noch der Gruppe <code>Indexes</code>
