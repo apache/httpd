@@ -35,9 +35,6 @@ Changes with Apache 2.1.0-dev
      ap_add_module, ap_add_loaded_module, ap_setup_prelinked_modules,
      and ap_process_resource_config.  [André Malo]
 
-  *) htpasswd no longer refuses to process files that contain empty
-     lines.  [André Malo]
-
   *) Restore the ability to disable the use of AcceptEx on Win9x systems
      automatically. PR 28529.  [André Malo]
 
@@ -103,9 +100,6 @@ Changes with Apache 2.1.0-dev
 
   *) Allow RequestHeader directives to be conditional. PR 27951.
      [Vincent Deffontaines <vincent gryzor.com>, André Malo]
-
-  *) mod_logio no longer removes the EOS bucket. PR 27928.
-     [Bojan Smojver <bojan rexursive.com>]
 
   *) mod_rewrite no longer turns forward proxy requests into reverse proxy
      requests. PR 28125  [ast domdv.de, André Malo]
@@ -190,8 +184,8 @@ Changes with Apache 2.1.0-dev
   *) mod_dav: Disallow requests with an unescaped hash character in
      the Request-URI.  PR 21779.  [Amit Athavale <amit_athavale lycos.com>]
 
-  *) mod_proxy with ProxyErrorOverride On in a reverse-proxy configuration attaches
-     a body to the 302 response and a wrong Content-Length header. 
+  *) mod_proxy with ProxyErrorOverride On in a reverse-proxy configuration
+     attaches a body to the 302 response and a wrong Content-Length header.
      PR: 22951 [Ermanno Scaglione scaglione ..at.. starnetone.de]
 
   *) Bring ErrorHeader concept forward from 1.3, so that response
@@ -374,6 +368,12 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.50
+
+  *) mod_logio no longer removes the EOS bucket. PR 27928.
+     [Bojan Smojver <bojan rexursive.com>]
+
+  *) htpasswd no longer refuses to process files that contain empty
+     lines.  [André Malo]
 
   *) Regression from 1.3: At startup, suexec now will be checked for
      availability, the setuid bit and user root. The works only if
