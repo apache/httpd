@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<modulesynopsis>
+
+<name>mod_proxy_http</name>
+<description>HTTP support module for
+<module>mod_proxy</module></description>
+<status>Extension</status>
+<sourcefile>proxy_http.c</sourcefile>
+<identifier>proxy_http_module</identifier>
+
+<summary>
+    <p>This module <em>requires</em> the service of <module
+    >mod_proxy</module>. It provides the features used for
+    proxying HTTP requests. <module>mod_proxy_http</module>
+    supports HTTP/0.9, HTTP/1.0 and HTTP/1.1. It does <em>not</em>
+    provide any caching abilities. If you want to set up a caching
+    proxy, you might want to use the additional service of the
+    <module>mod_cache</module> module.</p>
+
+    <p>Thus, in order to get the ability of handling HTTP proxy requests,
+    <module>mod_proxy</module> and <module>mod_proxy_http</module>
+    have to be present in the server.</p>
+
+    <note type="warning"><title>Warning</title>
+      <p>Do not enable proxying until you have <a
+      href="mod_proxy.html#access">secured your server</a>. Open proxy
+      servers are dangerous both to your network and to the Internet at
+      large.</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_connect</module></seealso>
+
+</modulesynopsis>
