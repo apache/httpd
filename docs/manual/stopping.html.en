@@ -64,6 +64,11 @@ files and re-opens its log files.  As each child dies off the parent
 replaces it with a child from the new <i>generation</i> of the
 configuration, which begins serving new requests immediately.
 
+<p>Architectures that use an on disk <a
+href="mod/core.html#scoreboardfile">ScoreBoardFile</a> are not supported
+on graceful restarts.  See the ScoreBoardFile documentation for a method
+to determine if your architecture uses it.
+
 <p>This code is designed to always respect the
 <a href="mod/core.html#maxclients">MaxClients</a>,
 <a href="mod/core.html#minspareservers">MinSpareServers</a>,
@@ -109,12 +114,10 @@ certain architectures.
 
 <p>Architectures that use an on disk <a
 href="mod/core.html#scoreboardfile">ScoreBoardFile</a> have the potential
-to lose track of a child during graceful restart (you'll see an <a
-href="mod/core.html#errorlog">ErrorLog</a> message saying something about
-a <i>long lost child</i>).  The ScoreBoardFile directive explains how
-to figure out if your server uses a file, and possibly how to avoid it.
-There is also the potential that the scoreboard will be corrupted during
-any signalling, but this only has bad effects on graceful restart.
+to corrupt their scoreboards whenever a signal is received.  It is
+possible for the server to forget about some children when this happens.
+See the ScoreBoardFile documentation for a method to determine if your
+architecture uses it.
 
 <p><code>NEXT</code> and <code>MACHTEN</code> have small race conditions
 which can cause a restart/die signal to be lost, but should not cause the
