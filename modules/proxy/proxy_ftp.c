@@ -957,6 +957,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 	    if ((rv = apr_socket_create(&sock, connect_addr->family, SOCK_STREAM, r->pool)) != APR_SUCCESS) {
 		ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			      "proxy: FTP: error creating socket");
+                connect_addr = connect_addr->next;
 		continue;
 	    }
 
@@ -974,6 +975,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 #ifndef _OSD_POSIX              /* BS2000 has this option "always on" */
 		ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
 			      "proxy: FTP: error setting reuseaddr option: apr_socket_opt_set(APR_SO_REUSEADDR)");
+                connect_addr = connect_addr->next;
 		continue;
 #endif                          /* _OSD_POSIX */
 	    }

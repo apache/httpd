@@ -169,6 +169,11 @@ Changes with Apache 2.0.48
 
 Changes with Apache 2.0.47
 
+  *) SECURITY [CAN-2003-0254]: Fixed a bug in ftp proxy causing denial
+     of service when target host is IPv6 but proxy server can't create
+     IPv6 socket.  Fixed by the reporter.  [Yoshioka Tsuneo
+     <tsuneo.yoshioka@f-secure.com>]
+
   *) SECURITY [VU#379828] Prevent the server from crashing when entering
      infinite loops. The new LimitInternalRecursion directive configures
      limits of subsequent internal redirects and nested subrequests, after
