@@ -418,7 +418,7 @@ static const char *log_status(request_rec *r, char *a)
 
 static const char *clf_log_bytes_sent(request_rec *r, char *a)
 {
-    if (!r->sent_bodyct) {
+    if (!r->sent_bodyct || !r->bytes_sent) {
         return "-";
     }
     else {
@@ -428,7 +428,7 @@ static const char *clf_log_bytes_sent(request_rec *r, char *a)
 
 static const char *log_bytes_sent(request_rec *r, char *a)
 {
-    if (!r->sent_bodyct) {
+    if (!r->sent_bodyct || !r->bytes_sent) {
         return "0";
     }
     else {

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.48
 
+  *) mod_log_config: Fix %b log format to write really "-" when 0 bytes
+     were sent (e.g. with 304 or 204 response codes).  [Astrid Keﬂler]
+
   *) Modify ap_get_client_block() to note if it has seen EOS.
      [Justin Erenkrantz]
 
