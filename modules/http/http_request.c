@@ -367,7 +367,6 @@ static void check_pipeline_flush(request_rec *r)
        ### allow us to defer creation of the brigade to when we actually
        ### need to send a FLUSH. */
     apr_bucket_brigade *bb = apr_brigade_create(r->pool);
-    apr_size_t zero = 0;
 
     /* Flush the filter contents if:
      *
@@ -375,8 +374,9 @@ static void check_pipeline_flush(request_rec *r)
      *   2) there isn't a request ready to be read
      */
     /* ### shouldn't this read from the connection input filters? */
+    /* ### is zero correct? that means "read one line" */
     if (!r->connection->keepalive || 
-        ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK, &zero) != APR_SUCCESS) {
+        ap_get_brigade(r->input_filters, bb, AP_MODE_PEEK, 0) != APR_SUCCESS) {
         apr_bucket *e = apr_bucket_flush_create();
 
         /* We just send directly to the connection based filters.  At

@@ -208,8 +208,10 @@ AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
  * save data off to the side should probably create their own temporary
  * brigade especially for that use.
  */
-AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next, apr_bucket_brigade *bb, 
-                                        ap_input_mode_t mode, apr_size_t *readbytes)
+AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next,
+                                        apr_bucket_brigade *bb, 
+                                        ap_input_mode_t mode,
+                                        apr_size_t readbytes)
 {
     if (next) {
         return next->frec->filter_func.in_func(next, bb, mode, readbytes);

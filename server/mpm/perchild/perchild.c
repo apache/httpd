@@ -1362,7 +1362,6 @@ static int pass_request(request_rec *r)
                                                  &mpm_perchild_module);
     char *foo;
     apr_size_t len;
-    apr_size_t readbytes = 0;
 
     apr_pool_userdata_get((void **)&foo, "PERCHILD_BUFFER", r->connection->pool);
     len = strlen(foo);
@@ -1397,8 +1396,12 @@ static int pass_request(request_rec *r)
     }
 
     write(sconf->sd2, foo, len);
-   
-    while (ap_get_brigade(r->input_filters, bb, AP_MODE_NONBLOCKING, &readbytes) == APR_SUCCESS) {
+
+    /* ### this "read one line" doesn't seem right... shouldn't we be
+       ### reading large chunks of data or something?
+    */
+    while (ap_get_brigade(r->input_filters, bb, AP_MODE_NONBLOCKING,
+                          0 /* read one line */) == APR_SUCCESS) {
         apr_bucket *e;
         APR_BRIGADE_FOREACH(e, bb) {
             const char *str;
@@ -1492,7 +1495,7 @@ static int perchild_post_read(request_rec *r)
     return OK;
 }
 
-static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t *readbytes)
+static apr_status_t perchild_buffer(ap_filter_t *f, apr_bucket_brigade *b, ap_input_mode_t mode, apr_size_t readbytes)
 {
     apr_bucket *e;
     apr_status_t rv;
