@@ -14,28 +14,38 @@
 <!--#include virtual="header.html" -->
 <H1 ALIGN="CENTER">Module mod_auth_anon</H1>
 
-This module is contained in the <CODE>mod_auth_anon.c</CODE> file and
-is not compiled in by default. It is only available in Apache 1.1 and
-later. It allows "anonymous" user access to authenticated areas.
+This module allows "anonymous" user access to authenticated areas.
+
+<P><A
+HREF="module-dict.html#Status"
+REL="Help"
+><STRONG>Status:</STRONG></A> Extension
+<BR>
+<A
+HREF="module-dict.html#SourceFile"
+REL="Help"
+><STRONG>Source File:</STRONG></A> mod_auth_anon.c
+<BR>
+<A
+HREF="module-dict.html#ModuleIdentifier"
+REL="Help"
+><STRONG>Module Identifier:</STRONG></A> anon_auth_module
+</P>
+
 
 <H2>Summary</H2>
 
-It does access control in a manner similar to anonymous-ftp sites; <EM>i.e.</EM>
-have a 'magic' user id 'anonymous' and the email address as a password.
-These email addresses can be logged.
-<P>
-Combined with other (database) access control methods, this allows for
+<P>This module does access control in a manner similar to
+anonymous-ftp sites; <EM>i.e.</EM> have a 'magic' user id 'anonymous'
+and the email address as a password.  These email addresses can be
+logged.</p>
+
+<p>Combined with other (database) access control methods, this allows for
 effective user tracking and customization according to a user profile
 while still keeping the site open for 'unregistered' users. One advantage
 of using Auth-based user tracking is that, unlike magic-cookies and
 funny URL pre/postfixes, it is completely browser independent and it
-allows users to share URLs.
-<P>
-
-<A HREF="#Directives">Directives</A> /
-<A HREF="#Example">Example</A> /
-<A HREF="#CompileTimeOptions">Compile time options</A> /
-<P>
+allows users to share URLs.</p>
 
 <H2><A NAME="Directives">Directives</A></H2>
 <UL>
@@ -46,6 +56,53 @@ allows users to share URLs.
 <LI><A HREF="#NoUserID">Anonymous_NoUserID</A>
 <LI><A HREF="#VerifyEmail">Anonymous_VerifyEmail</A>
 </UL>
+
+<H2><A NAME="Example">Example</A></H2>
+
+The example below (when combined with the Auth directives
+of a htpasswd-file based (or GDM, mSQL <EM>etc.</EM>) base access
+control system allows users in as 'guests' with the
+following properties:
+<UL>
+<LI>
+It insists that the user enters a userId. (<CODE>Anonymous_NoUserId</CODE>)
+<LI>
+It insists that the user enters a password.
+(<CODE>Anonymous_MustGiveEmail</CODE>)
+<LI>
+The password entered must be a valid email address, ie. contain at least one
+'@' and a '.'. (<CODE>Anonymous_VerifyEmail</CODE>)
+<LI>
+The userID must be one of <CODE>anonymous guest www test welcome</CODE>
+and comparison is <STRONG>not</STRONG> case sensitive.
+<LI>
+And the Email addresses entered in the passwd field are logged to
+the error log file
+(<CODE>Anonymous_LogEmail</CODE>)
+</UL>
+<P>
+Excerpt of access.conf:
+<BLOCKQUOTE><CODE>
+Anonymous_NoUserId      off<BR>
+Anonymous_MustGiveEmail on<BR>
+Anonymous_VerifyEmail    on<BR>
+Anonymous_LogEmail      on<BR>
+Anonymous        anonymous guest www test welcome<P>
+<P>
+AuthName                "Use 'anonymous' &amp; Email address for guest entry"<BR>
+AuthType                basic
+<P>
+# An AuthUserFile/AuthDBUserFile/AuthDBMUserFile<BR>
+# directive must be specified, or use<BR>
+# Anonymous_Authoritative for public access.<BR>
+# In the .htaccess for the public directory, add:<BR>
+&lt;Files *&gt;<BR>
+Order Deny,Allow          <BR>
+Allow from all            <BR>
+<P>
+Require valid-user        <BR>
+&lt;/Files&gt;<BR>
+</CODE></BLOCKQUOTE>
 
 <HR>
 
@@ -258,58 +315,7 @@ allows users to share URLs.
         checked for at least one '@' and a '.' to encourage users to enter
         valid email addresses (see the above <CODE>Auth_LogEmail</CODE>).
 
-<HR>
-<H2><A NAME="Example">Example</A></H2>
 
-The example below (when combined with the Auth directives
-of a htpasswd-file based (or GDM, mSQL <EM>etc.</EM>) base access
-control system allows users in as 'guests' with the
-following properties:
-<UL>
-<LI>
-It insists that the user enters a userId. (<CODE>Anonymous_NoUserId</CODE>)
-<LI>
-It insists that the user enters a password.
-(<CODE>Anonymous_MustGiveEmail</CODE>)
-<LI>
-The password entered must be a valid email address, ie. contain at least one
-'@' and a '.'. (<CODE>Anonymous_VerifyEmail</CODE>)
-<LI>
-The userID must be one of <CODE>anonymous guest www test welcome</CODE>
-and comparison is <STRONG>not</STRONG> case sensitive.
-<LI>
-And the Email addresses entered in the passwd field are logged to
-the error log file
-(<CODE>Anonymous_LogEmail</CODE>)
-</UL>
-<P>
-Excerpt of access.conf:
-<BLOCKQUOTE><CODE>
-Anonymous_NoUserId      off<BR>
-Anonymous_MustGiveEmail on<BR>
-Anonymous_VerifyEmail    on<BR>
-Anonymous_LogEmail      on<BR>
-Anonymous        anonymous guest www test welcome<P>
-<P>
-AuthName                "Use 'anonymous' &amp; Email address for guest entry"<BR>
-AuthType                basic
-<P>
-# An AuthUserFile/AuthDBUserFile/AuthDBMUserFile<BR>
-# directive must be specified, or use<BR>
-# Anonymous_Authoritative for public access.<BR>
-# In the .htaccess for the public directory, add:<BR>
-&lt;Files *&gt;<BR>
-Order Deny,Allow          <BR>
-Allow from all            <BR>
-<P>
-Require valid-user        <BR>
-&lt;/Files&gt;<BR>
-</CODE></BLOCKQUOTE>
-
-<HR>
-<H2><A NAME="CompileTimeOptions">Compile Time Options</A></H2>
-
-Currently there are no Compile options.
 
 <!--#include virtual="footer.html" -->
 </BODY>
