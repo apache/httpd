@@ -1255,9 +1255,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
          * pass the whole bundle down the chain. 
          */
         APR_BRIGADE_CONCAT(ctx->bb, bb);
+        bb = ctx->bb;
+        ctx->bb = NULL;
     }
 
-    return ap_pass_brigade(f->next, ctx->bb);
+    return ap_pass_brigade(f->next, bb);
 }
 
 static apr_status_t buffer_output(request_rec *r,
