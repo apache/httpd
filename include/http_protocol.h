@@ -232,16 +232,6 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
                              size_t length);
 #endif
 
-/* The index of the first bit field that is used to index into a limit
- * bitmask. M_INVALID + 1 to METHOD_NUMBER_LAST.
- */
-#define METHOD_NUMBER_FIRST M_INVALID + 1
-
-/* The max method number. Method numbers are used to shift bitmasks,
- * so this cannot exceed 63, and all bits high is equal to -1, which is a
- * special flag, so the last bit used has index 62.
- */
-#define METHOD_NUMBER_LAST  62
 
 /**
  * Register a new request method, and return the offset that will be
@@ -571,23 +561,23 @@ AP_DECLARE(apr_status_t) ap_rgetline(char **s, apr_size_t n,
 AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n, 
                                           apr_size_t *read,
                                           request_rec *r, int fold);
+
 /**
  * Get the method number associated with the given string, assumed to
  * contain an HTTP method.  Returns M_INVALID if not recognized.
  * @param method A string containing a valid HTTP method
  * @return The method number
- * @deffunc int ap_method_number_of(const char *method)
  */
 AP_DECLARE(int) ap_method_number_of(const char *method);
 
 /**
  * Get the method name associated with the given internal method
  * number.  Returns NULL if not recognized.
+ * @param p A pool to use for temporary allocations.
  * @param methnum An integer value corresponding to an internal method number
  * @return The name corresponding to the method number
- * @deffunc const char *ap_method_name_of(int methnum)
  */
-AP_DECLARE(const char *) ap_method_name_of(int methnum);
+AP_DECLARE(const char *) ap_method_name_of(apr_pool_t *p, int methnum);
 
 
   /* Hooks */
