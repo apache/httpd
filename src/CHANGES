@@ -1,5 +1,11 @@
 Changes with Apache 1.2
 
+  *) If multiple requests on a single connection are used to retrieve
+     data from different virtual hosts, the virtual host list would be
+     scanned starting with the most recently used VH instead of the first,
+     causing most virtual hosts to be ignored.
+     [Paul Sutton and Martin Mares] PR#610
+
   *) The OS/2 handling of process group was broken by a porting patch for
      MPE, so restored prior code for OS/2.  [Roy Fielding and Garey Smiley]
 

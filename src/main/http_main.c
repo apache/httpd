@@ -1613,6 +1613,7 @@ conn_rec *new_connection (pool *p, server_rec *server, BUFF *inout,
     conn->local_addr = *saddr;
     conn->server = find_virtual_server(saddr->sin_addr, ntohs(saddr->sin_port),
 				       server);
+    conn->base_server = conn->server;
     conn->client = inout;
     
     conn->remote_addr = *remaddr;

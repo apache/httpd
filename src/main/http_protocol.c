@@ -761,6 +761,7 @@ request_rec *read_request (conn_rec *conn)
     request_rec *r = (request_rec *)pcalloc (conn->pool, sizeof(request_rec));
 
     r->connection = conn;
+    conn->server = conn->base_server;
     r->server = conn->server;
     r->pool = make_sub_pool(conn->pool);
 

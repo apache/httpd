@@ -533,6 +533,7 @@ struct conn_rec {
   
   pool *pool;
   server_rec *server;
+  server_rec *base_server;      /* Physical vhost this conn come in on */
   
   /* Information about the connection itself */
 
