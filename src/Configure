@@ -71,8 +71,11 @@ sed 's/#.*//' $file | \
  sed 's/^Rule[ 	]*/##Rule:/' | \
  sed 's/^[ 	]*AddModule/AddModule/' | \
  sed 's/^[        ]*%AddModule/%AddModule/' | \
+ sed 's/^[        ]*SharedModule/SharedModule/' | \
  sed 's/^[ 	]*Module/Module/' | \
  sed 's/^[        ]*%Module/%Module/' > $tmpfile
+
+using_shlib=`grep  '^SharedModule' $tmpfile >/dev/null && echo 1`
 
 #
 # Only "assignment" ("=") statements and Module lines
@@ -81,6 +84,7 @@ sed 's/#.*//' $file | \
 #
 if egrep -v '^%?Module[ 	]+[A-Za-z0-9_]+[ 	]+[^ 	]+$' $tmpfile \
  | egrep -v '^%?AddModule[ 	]+[^ 	]+$' \
+ | egrep -v '^SharedModule[ 	]+[^ 	]+$' \
  | grep -v = > /dev/null
 then
   echo "Syntax error --- The configuration file is used only to"
@@ -88,6 +92,7 @@ then
   echo "options or Configure rules, and I don't see that at all:"
   egrep -v '^%?Module[ 	]+[A-Za-z0-9_]+[ 	]+[^ 	]+$' $tmpfile \
    | egrep -v '^%?AddModule[ 	]+[^ 	]+$'  \
+   | egrep -v '^%?SharedModule[ 	]+[^ 	]+$'  \
    | grep -v =
   exitcode=1
   exit 1
@@ -316,11 +321,15 @@ case "$PLAT" in
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX=2"
 	LIBS="$LIBS -lm"
+	CFLAGS_SHLIB="-fpic"
+	LDFLAGS_SHLIB="-Bshareable"
 	;;
     *-linux1)
 	DEF_WANTHSREGEX=yes
 	OS='Linux'
 	CFLAGS="$CFLAGS -DLINUX=1"
+	CFLAGS_SHLIB="-fpic"
+	LDFLAGS_SHLIB="-Bshareable"
 	;;
     *-lynx-lynxos)
 	OS='LynxOS 2.x'
@@ -352,6 +361,8 @@ case "$PLAT" in
 	LIBS="$LIBS -lcrypt"
 	DBM_LIB=""
 	DB_LIB=""
+	CFLAGS_SHLIB="-fpic"
+	LDFLAGS_SHLIB="-Bshareable"
 	;;
     *-openbsd*)
 	OS='OpenBSD'
@@ -636,6 +647,8 @@ fi
 # Look for OPTIM and save for later
 #
 TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+TLDFLAGS_SHLIB=`egrep '^LDFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
+TCFLAGS_SHLIB=`egrep '^CFLAGS_SHLIB=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 
 ####################################################################
 # Set the value of CC if need be
@@ -643,6 +656,26 @@ TOPTIM=`egrep '^OPTIM=' Makefile.config | tail -1 | awk -F= '{print $2}'`
 if [ "x$TCC" = "x" ]; then
     echo "CC=$CC" >> Makefile.config
 fi
+
+if [ "x$using_shlib" = "x1" ] ; then
+    #
+    # Set the value of the shared libary flags, if they aren't explicitly
+    # set in the configuration file
+    #
+    if [ "x$TCFLAGS_SHLIB" = "x" ]; then
+        echo "CFLAGS_SHLIB=$CFLAGS_SHLIB" >> Makefile.config
+    fi
+    if [ "x$TLDFLAGS_SHLIB" = "x" ]; then
+        echo "LDFLAGS_SHLIB=$LDFLAGS_SHLIB" >> Makefile.config
+    fi
+    if [ "x$TLDFLAGS_SHLIB_EXPORT" = "x" ]; then
+        if [ "x$TCC" = "xgcc" ] ||
+    	[ "x$TCC" = "x" -a "x$CC" = "xgcc" ] ; then
+    	LDFLAGS_SHLIB_EXPORT=-rdynamic
+        fi
+        echo "LDFLAGS_SHLIB_EXPORT=$LDFLAGS_SHLIB_EXPORT" >> Makefile.config
+    fi
+fi	# end of $using_shlib section
 
 ####################################################################
 # Now we do some OS specific adjustments... for some OSs, we need
@@ -794,7 +827,7 @@ MODDIRS=`awk < $tmpfile '
 		SEEN[pp[2]] = 1
 	    }
     	}
-	($1 == "AddModule" && $2 ~ /^modules\//) { 
+	(($1 == "AddModule" || $1 == "SharedModule") && $2 ~ /^modules\//) { 
 	    split ($2, pp, "/")
 	    if (! SEEN[pp[2]]) {
 		printf "%s ", pp[2]
@@ -1089,10 +1122,35 @@ EOF
 		    printf "\n"
 		}'
 
-	    echo "LIB=lib$basedir.a" >> $moddir/Makefile
 	    $CAT << 'EOF' >> $moddir/Makefile
 
-all:	$(LIB)
+all: lib shlib
+
+EOF
+	    echo "LIB=lib$basedir.a" >> $moddir/Makefile
+	    awk >> $moddir/Makefile < $tmpfile '
+	    ($1 == "SharedModule" && $2 ~ /^modules\/'$basedir'\//) {
+		split($2, pp, "/")
+		shlibs=shlibs " " pp[3]
+		so=pp[3]
+		split(pp[3], parts, ".")
+		base=parts[1]
+		shlibsobj=shlibsobj " " base "-so.o"
+		comp=comp base ".so: " base "-so.o\n"
+		comp=comp "	$(LD) $(LDFLAGS) $(LDFLAGS_SHLIB) -o " base ".so $<\n"
+		comp=comp base "-so.o: " base ".c\n"
+		comp=comp "	$(CC) $(CFLAGS) $(INCLUDES) $(CFLAGS_SHLIB) -c -o " base "-so.o $<\n"
+	    }
+	    END { 
+		printf "SHLIBS=%s\n", shlibs;
+		printf "SHLIBS_OBJ=%s\n", shlibsobj;
+		print "\n" comp "\n" }'
+
+	    $CAT << 'EOF' >> $moddir/Makefile
+
+lib:	$(LIB) 
+
+shlib:	$(SHLIBS)
 
 $(LIB): $(OBJS)
 	rm -f $@
@@ -1103,9 +1161,9 @@ $(LIB): $(OBJS)
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(SPACER) $<
 
 clean:
-	rm -f *.o $(LIB)
+	rm -f *.o $(LIB) $(SHLIB)
 
-$(OBJS): Makefile
+$(OBJS) $(SHLIBS) $(SHLIBS_OBJ): Makefile
 EOF
 	fi
 
