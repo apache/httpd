@@ -3471,8 +3471,9 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             else {
                 include_handler_fn_t *handle_func;
 
-                handle_func = apr_hash_get(include_handlers, intern->directive,
-                                           intern->directive_len);
+                handle_func =
+                    (include_handler_fn_t *)apr_hash_get(include_handlers, intern->directive,
+                                                         intern->directive_len);
 
                 if (handle_func) {
                     DEBUG_INIT(ctx, f, pass_bb);
