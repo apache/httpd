@@ -222,6 +222,39 @@
   <EM>debug</EM>.
   </P>
 
+  <H2>Common Problems</H2>
+
+  <H3>Invalid character set names</H3>
+
+  <P>
+  The character set name parameters of CharsetSourceEnc and CharsetDefault
+  must be acceptable to the translation mechanism used by APR on the system
+  where mod_charset_lite is deployed.  These character set names are not 
+  standardized and are usually not the same as the corresponding values used 
+  in http headers.  Currently, APR can only use iconv(3), so you can easily
+  test your character set names using the iconv(1) program, as follows:
+  </P>
+
+  <PRE>
+  iconv -f charsetsourceenc-value -t charsetdefault-value
+  </PRE>
+
+  <H3>Mismatch between character set of content and translation rules</H3>
+
+  <P>
+  If the translation rules don't make sense for the content, translation
+  can fail in various ways, including:
+  </P>
+
+  <SL>
+  <LI>
+  The translation mechanism may return a bad return code, and the connection
+  will be aborted.
+  <LI>
+  The translation mechanism may silently place special characters (e.g., question
+  marks) in the output buffer when it cannot translate the input buffer.
+  </SL>
+
 <!--#include virtual="footer.html" -->
  </BODY>
 </HTML>
