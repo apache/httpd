@@ -18,7 +18,7 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.1</a> &gt; <a href="./">가상호스트</a></div><div id="page-content"><div id="preamble"><h1>가상호스트 찾기에 대한 자세한 설명</h1>
 <div class="toplang">
-<p><span>가능한 언어: </span><a href="../en/vhosts/details.html">&nbsp;en&nbsp;</a> | <a href="../ko/vhosts/details.html">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/vhosts/details.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ko/vhosts/details.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
 
@@ -371,7 +371,7 @@
 
 </div></div>
 <div class="bottomlang">
-<p><span>가능한 언어: </span><a href="../en/vhosts/details.html">&nbsp;en&nbsp;</a> | <a href="../ko/vhosts/details.html">&nbsp;ko&nbsp;</a></p>
+<p><span>가능한 언어: </span><a href="../en/vhosts/details.html" hreflang="en" title="English">&nbsp;en&nbsp;</a> | <a href="../ko/vhosts/details.html" hreflang="ko" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
