@@ -254,22 +254,6 @@ static void dav_format_time(int style, ap_time_t sec, char *buf)
            tms.tm_hour, tms.tm_min, tms.tm_sec);
 }
 
-static ap_status_t dav_sync_write(ap_file_t *f, const char *buf,
-                                  ap_size_t bufsize)
-{
-    ap_status_t status;
-    ap_ssize_t amt;
-    
-    do {
-	amt = bufsize;
-	status = ap_write(f, buf, &amt);
-	bufsize -= amt;
-	buf += amt;
-    } while (status == APR_SUCCESS && bufsize > 0);
-
-    return status;
-}
-
 static dav_error * dav_fs_copymove_file(
     int is_move,
     ap_pool_t * p,
@@ -328,7 +312,7 @@ static dav_error * dav_fs_copymove_file(
 	}
 
         /* write any bytes that were read (applies to APR_EOF, too) */
-        if (dav_sync_write(outf, pbuf->buf, len) != APR_SUCCESS) {
+        if (ap_full_write(outf, pbuf->buf, len, NULL) != APR_SUCCESS) {
             int save_errno = errno;
 
 	    ap_close(inf);
@@ -825,7 +809,7 @@ static dav_error * dav_fs_write_stream(dav_stream *stream,
 {
     ap_status_t status;
 
-    status = dav_sync_write(stream->f, buf, bufsize);
+    status = ap_full_write(stream->f, buf, bufsize, NULL);
     if (status == APR_ENOSPC) {
         return dav_new_error(stream->p, HTTP_INSUFFICIENT_STORAGE, 0,
                              "There is not enough storage to write to "
