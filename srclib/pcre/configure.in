@@ -48,15 +48,23 @@ AC_CHECK_FUNCS(memmove strerror)
 
 dnl Handle --enable-shared-libraries
 
-LIBTOOL=libtool
-LIBSUFFIX=la
+LIBTOOL=
+LIBSUFFIX=a
 AC_ARG_ENABLE(shared,
-[  --disable-shared        build PCRE as a static library],
-if test "$enableval" = "no"; then
-  LIBTOOL=
-  LIBSUFFIX=a
+[  --enable-shared        build PCRE as a shared library],
+if test "$enableval" = "yes"; then
+  LIBTOOL=libtool
+  LIBSUFFIX=la
 fi
 )
+
+PLATFORM=`uname -s`
+
+case "$PLATFORM" in
+*OS/2*)
+  CFLAGS="$CFLAGS -Zexe"
+  ;;
+esac
 
 dnl "Export" these variables
 

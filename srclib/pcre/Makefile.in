@@ -24,6 +24,7 @@
 # The pcretest program, as it is a test program, does not get installed
 # anywhere.
 
+SHELL=@SHELL@
 prefix = @prefix@
 exec_prefix = @exec_prefix@
 
@@ -180,7 +181,7 @@ install:        all
 # chartables.c shouldn't change, and if people have edited the tables by hand,
 # you don't want to throw them away.
 
-clean:;         -rm -rf *.o *.lo *.a *.la .libs pcretest pgrep testtry
+clean:;         -rm -rf *.o *.lo *.a *.la .libs pcretest pgrep testtry *.exe
 
 # But "make distclean" should get back to a virgin distribution
 
