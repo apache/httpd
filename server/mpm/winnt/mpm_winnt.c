@@ -1869,28 +1869,29 @@ void winnt_rewrite_args(process_rec *process)
      *         The requested service's (-n) registry ConfigArgs
      *             The WinNT SCM's StartService() args
      */
-
     if (!GetModuleFileName(NULL, fnbuf, sizeof(fnbuf))) {
-        /* WARNING: There is an implict assumption here that the
-         * executable resides in the ServerRoot!
-         */
         rv = apr_get_os_error();
         ap_log_error(APLOG_MARK,APLOG_ERR, rv, NULL, 
-                     "Failed to get the running module's file name");
+                     "Failed to get the path of Apache.exe");
         exit(1);
     }
+    /* WARNING: There is an implict assumption here that the
+     * executable resides in ServerRoot or ServerRoot\bin
+     */
     def_server_root = (char *) apr_filename_of_pathname(fnbuf);
     if (def_server_root > fnbuf) {
         *(def_server_root - 1) = '\0';
-        def_server_root = ap_os_canonical_filename(process->pool, fnbuf);
+        def_server_root = (char *) apr_filename_of_pathname(fnbuf);
+        if (!strcasecmp(def_server_root, "bin"))
+            *(def_server_root - 1) = '\0';
     }
+    def_server_root = ap_os_canonical_filename(process->pool, fnbuf);
 
     /* Use process->pool so that the rewritten argv
      * lasts for the lifetime of the server process,
      * because pconf will be destroyed after the 
      * initial pre-flight of the config parser.
      */
-
     mpm_new_argv = apr_make_array(process->pool, process->argc + 2,
                                   sizeof(const char *));
     *(const char **)apr_push_array(mpm_new_argv) = process->argv[0];
@@ -1989,11 +1990,11 @@ void winnt_rewrite_args(process_rec *process)
                              "Using ConfigArgs of the installed service "
                              "\"%s\".", display_name);
             }
-			else  {
+	    else  {
                 ap_log_error(APLOG_MARK,APLOG_INFO, rv, NULL,
                              "No installed ConfigArgs for the service "
                              "\"%s\", using Apache defaults.", display_name);
-			}
+	    }
         }
         else
         {
