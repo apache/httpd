@@ -53,7 +53,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "$(INTDIR)\buildmark.obj" /nologo /subsystem:windows /dll /map /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
+# Begin Special Build Tool
+IntDir=.\Release
+SOURCE="$(InputPath)"
+PreLink_Desc=Compiling buildmark.c
+PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"$(INTDIR)\buildmark.obj"
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
@@ -79,7 +85,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
-# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
+# ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "$(INTDIR)\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /base:@"os\win32\BaseAddr.ref",libhttpd
+# Begin Special Build Tool
+IntDir=.\Debug
+SOURCE="$(InputPath)"
+PreLink_Desc=Compiling buildmark.c
+PreLink_Cmds=cl.exe /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c server\buildmark.c /Fo"$(INTDIR)\buildmark.obj"
+# End Special Build Tool
 
 !ENDIF 
 
@@ -109,6 +121,7 @@ SOURCE=.\include\ap_release.h
 # Begin Source File
 
 SOURCE=.\server\buildmark.c
+# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
@@ -197,11 +210,11 @@ SOURCE=.\server\vhost.c
 # Begin Source File
 
 SOURCE=.\server\gen_test_char.exe
-USERDEP__GEN_T=".\include\os.h"	
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
+USERDEP__GEN_T=".\include\os.h"	
 # Begin Custom Build - Generating test_char.h from gen_test_char.exe
 InputPath=.\server\gen_test_char.exe
 
@@ -213,6 +226,7 @@ InputPath=.\server\gen_test_char.exe
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
 
 # PROP Ignore_Default_Tool 1
+USERDEP__GEN_T=".\include\os.h"	
 # Begin Custom Build - Generating test_char.h from gen_test_char.exe
 InputPath=.\server\gen_test_char.exe
 
