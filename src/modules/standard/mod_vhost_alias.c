@@ -82,26 +82,30 @@
 module MODULE_VAR_EXPORT vhost_alias_module;
 
 
-/* basic configuration things */
+/*
+ * basic configuration things
+ * we abbreviate "mod_vhost_alias" to "mva" for shorter names
+ */
 
 typedef enum {
     VHOST_ALIAS_UNSET, VHOST_ALIAS_NONE, VHOST_ALIAS_NAME, VHOST_ALIAS_IP
-} vhost_alias_mode;
+} mva_mode_e;
 
-typedef struct vhost_alias_server_conf {
+/*
+ * Per-server module config record.
+ */
+typedef struct mva_sconf_t {
     char *doc_root;
     char *cgi_root;
-    vhost_alias_mode doc_root_mode;
-    vhost_alias_mode cgi_root_mode;
-} vhost_alias_server_conf;
+    mva_mode_e doc_root_mode;
+    mva_mode_e cgi_root_mode;
+} mva_sconf_t;
 
-
-static void *vhost_alias_create_config(pool *p, server_rec *s)
+static void *mva_create_server_config(pool *p, server_rec *s)
 {
-    vhost_alias_server_conf *conf =
-	(vhost_alias_server_conf *)
-	ap_pcalloc(p, sizeof(vhost_alias_server_conf));
+    mva_sconf_t *conf;
 
+    conf = (mva_sconf_t *) ap_pcalloc(p, sizeof(mva_sconf_t));
     conf->doc_root = NULL;
     conf->cgi_root = NULL;
     conf->doc_root_mode = VHOST_ALIAS_UNSET;
@@ -109,13 +113,13 @@ static void *vhost_alias_create_config(pool *p, server_rec *s)
     return conf;
 }
 
-static void *vhost_alias_merge_config(pool *p, void *parentv, void *childv)
+static void *mva_merge_server_config(pool *p, void *parentv, void *childv)
 {
-    vhost_alias_server_conf *parent = (vhost_alias_server_conf *)parentv;
-    vhost_alias_server_conf *child = (vhost_alias_server_conf *)childv;
-    vhost_alias_server_conf *conf =
-	(vhost_alias_server_conf *) ap_pcalloc(p, sizeof(*conf));
+    mva_sconf_t *parent = (mva_sconf_t *) parentv;
+    mva_sconf_t *child = (mva_sconf_t *) childv;
+    mva_sconf_t *conf;
 
+    conf = (mva_sconf_t *) ap_pcalloc(p, sizeof(*conf));
     if (child->doc_root_mode == VHOST_ALIAS_UNSET) {
 	conf->doc_root_mode = parent->doc_root_mode;
 	conf->doc_root = parent->doc_root;
@@ -138,48 +142,51 @@ static void *vhost_alias_merge_config(pool *p, void *parentv, void *childv)
 
 /*
  * These are just here to tell us what vhost_alias_set should do.
+ * We don't put anything into them; we just use the cell addresses.
  */
-static int
-    vhost_alias_set_doc_root_ip,
+static int vhost_alias_set_doc_root_ip,
     vhost_alias_set_cgi_root_ip,
     vhost_alias_set_doc_root_name,
     vhost_alias_set_cgi_root_name;
 
 static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, char *map)
 {
-    vhost_alias_server_conf *conf =
-	(vhost_alias_server_conf *)
-	ap_get_module_config(cmd->server->module_config, &vhost_alias_module);
-    vhost_alias_mode mode, *pmode;
+    mva_sconf_t *conf;
+    mva_mode_e mode, *pmode;
     char **pmap;
     char *p;
   
+    conf = (mva_sconf_t *) ap_get_module_config(cmd->server->module_config,
+						&vhost_alias_module);
     /* there ought to be a better way of doing this */
     if (&vhost_alias_set_doc_root_ip == cmd->info) {
 	mode = VHOST_ALIAS_IP;
 	pmap = &conf->doc_root;
 	pmode = &conf->doc_root_mode;
-    } else
-    if (&vhost_alias_set_cgi_root_ip == cmd->info) {
+    }
+    else if (&vhost_alias_set_cgi_root_ip == cmd->info) {
 	mode = VHOST_ALIAS_IP;
 	pmap = &conf->cgi_root;
 	pmode = &conf->cgi_root_mode;
-    } else
-    if (&vhost_alias_set_doc_root_name == cmd->info) {
+    }
+    else if (&vhost_alias_set_doc_root_name == cmd->info) {
 	mode = VHOST_ALIAS_NAME;
 	pmap = &conf->doc_root;
 	pmode = &conf->doc_root_mode;
-    } else
-    if (&vhost_alias_set_cgi_root_name == cmd->info) {
+    }
+    else if (&vhost_alias_set_cgi_root_name == cmd->info) {
 	mode = VHOST_ALIAS_NAME;
 	pmap = &conf->cgi_root;
 	pmode = &conf->cgi_root_mode;
-    } else
+    }
+    else {
 	return "INTERNAL ERROR: unknown command info";
+    }
 
     if (*map != '/') {
-	if (strcasecmp(map, "none"))
+	if (strcasecmp(map, "none")) {
 	    return "format string must start with '/' or be 'none'";
+	}
 	*pmap = NULL;
 	*pmode = VHOST_ALIAS_NONE;
 	return NULL;
@@ -188,46 +195,56 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, char *map)
     /* sanity check */
     p = map;
     while (*p != '\0') {
-	if (*p++ != '%')
+	if (*p++ != '%') {
 	    continue;
+	}
 	/* we just found a '%' */
 	if (*p == 'p' || *p == '%') {
 	    ++p;
 	    continue;
 	}
 	/* optional dash */
-	if (*p == '-')
+	if (*p == '-') {
 	    ++p;
+	}
 	/* digit N */
-	if (ap_isdigit(*p))
+	if (ap_isdigit(*p)) {
 	    ++p;
-	else
+	}
+	else {
 	    return "syntax error in format string";
+	}
 	/* optional plus */
-	if (*p == '+')
+	if (*p == '+') {
 	    ++p;
+	}
 	/* do we end here? */
-	if (*p != '.')
+	if (*p != '.') {
 	    continue;
+	}
 	++p;
 	/* optional dash */
-	if (*p == '-')
+	if (*p == '-') {
 	    ++p;
+	}
 	/* digit M */
-	if (ap_isdigit(*p))
+	if (ap_isdigit(*p)) {
 	    ++p;
-	else
+	}
+	else {
 	    return "syntax error in format string";
+	}
 	/* optional plus */
-	if (*p == '+')
+	if (*p == '+') {
 	    ++p;
+	}
     }
     *pmap = map;
     *pmode = mode;
     return NULL;
 }
 
-static const command_rec vhost_alias_commands[] =
+static const command_rec mva_commands[] =
 {
     {"VirtualScriptAlias", vhost_alias_set, &vhost_alias_set_cgi_root_name,
      RSRC_CONF, TAKE1, "how to create a ScriptAlias based on the host"},
@@ -251,10 +268,12 @@ static ap_inline void vhost_alias_checkspace(request_rec *r, char *buf,
     /* XXX: what if size > HUGE_STRING_LEN? */
     if (*pdest + size > buf + HUGE_STRING_LEN) {
 	**pdest = '\0';
-	if (r->filename)
+	if (r->filename) {
 	    r->filename = ap_pstrcat(r->pool, r->filename, buf, NULL);
-	else
+	}
+	else {
 	    r->filename = ap_pstrdup(r->pool, buf);
+	}
 	*pdest = buf;
     }
 }
@@ -277,9 +296,11 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 
     ndots = 0;
     dots[ndots++] = name-1; /* slightly naughty */
-    for (p = name; *p; ++p)
-	if (*p == '.' && ndots < MAXDOTS)
+    for (p = name; *p; ++p){
+	if (*p == '.' && ndots < MAXDOTS) {
 	    dots[ndots++] = p;
+	}
+    }
     dots[ndots] = p;
 
     r->filename = NULL;
@@ -321,9 +342,13 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 	if (*map == '+') ++map, Np = 1;
 	if (*map == '.') {
 	    ++map;
-	    if (*map == '-') ++map, Md = 1;
+	    if (*map == '-') {
+		++map, Md = 1;
+	    }
 	    M = *map++ - '0';
-	    if (*map == '+') ++map, Mp = 1;
+	    if (*map == '+') {
+		++map, Mp = 1;
+	    }
 	}
 	/* note that N and M are one-based indices, not zero-based */
 	start = dots[0]+1; /* ptr to the first character */
@@ -332,13 +357,17 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 	    if (N > ndots) {
 		start = "_";
 		end = start+1;
-	    } else if (!Nd) {
+	    }
+	    else if (!Nd) {
 		start = dots[N-1]+1;
-		if (!Np)
+		if (!Np) {
 		    end = dots[N];
-	    } else {
-		if (!Np)
+		}
+	    }
+	    else {
+		if (!Np) {
 		    start = dots[ndots-N]+1;
+		}
 		end = dots[ndots-N+1];
 	    }
 	}
@@ -346,39 +375,47 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
 	    if (M > end - start) {
 		start = "_";
 		end = start+1;
-	    } else if (!Md) {
+	    }
+	    else if (!Md) {
 		start = start+M-1;
-		if (!Mp)
+		if (!Mp) {
 		    end = start+1;
-	    } else {
-		if (!Mp)
+		}
+	    }
+	    else {
+		if (!Mp) {
 		    start = end-M;
+		}
 		end = end-M+1;
 	    }
 	}
 	vhost_alias_checkspace(r, buf, &dest, end - start);
-	for (p = start; p < end; ++p)
+	for (p = start; p < end; ++p) {
 	    *dest++ = ap_tolower(*p);
+	}
     }
     *dest = '\0';
     /* no double slashes */
-    if (last == '/') 
+    if (last == '/') {
 	++uri;
-    if (r->filename)
+    }
+    if (r->filename) {
 	r->filename = ap_pstrcat(r->pool, r->filename, buf, uri, NULL);
-    else
+    }
+    else {
 	r->filename = ap_pstrcat(r->pool, buf, uri, NULL);
+    }
 }
 
-static int vhost_alias_translate(request_rec *r)
+static int mva_translate(request_rec *r)
 {
-    vhost_alias_server_conf *conf =
-	(vhost_alias_server_conf *)
-	ap_get_module_config(r->server->module_config, &vhost_alias_module);
+    mva_sconf_t *conf;
     const char *name, *map, *uri;
-    vhost_alias_mode mode;
+    mva_mode_e mode;
     int cgi;
   
+    conf = (mva_sconf_t *) ap_get_module_config(r->server->module_config,
+					      &vhost_alias_module);
     if (!strncmp(r->uri, "/cgi-bin/", 9)) {
 	mode = conf->cgi_root_mode;
 	map = conf->cgi_root;
@@ -388,21 +425,26 @@ static int vhost_alias_translate(request_rec *r)
 	 * call if the mode is wrong
 	 */
 	cgi = 1;
-    } else if (r->uri[0] == '/') {
+    }
+    else if (r->uri[0] == '/') {
 	mode = conf->doc_root_mode;
 	map = conf->doc_root;
 	uri = r->uri;
 	cgi = 0;
-    } else
+    }
+    else {
 	return DECLINED;
+    }
   
-    if (mode == VHOST_ALIAS_NAME)
+    if (mode == VHOST_ALIAS_NAME) {
 	name = ap_get_server_name(r);
-    else
-    if (mode == VHOST_ALIAS_IP)
+    }
+    else if (mode == VHOST_ALIAS_IP) {
 	name = r->connection->local_ip;
-    else
+    }
+    else {
 	return DECLINED;
+    }
 
     vhost_alias_interpolate(r, name, map, uri);
 
@@ -422,11 +464,11 @@ module MODULE_VAR_EXPORT vhost_alias_module =
     NULL,			/* initializer */
     NULL,			/* dir config creater */
     NULL,			/* dir merger --- default is to override */
-    vhost_alias_create_config,	/* server config */
-    vhost_alias_merge_config,	/* merge server configs */
-    vhost_alias_commands,	/* command table */
+    mva_create_server_config,	/* server config */
+    mva_merge_server_config,	/* merge server configs */
+    mva_commands,		/* command table */
     NULL,			/* handlers */
-    vhost_alias_translate,	/* filename translation */
+    mva_translate,		/* filename translation */
     NULL,			/* check_user_id */
     NULL,			/* check auth */
     NULL,			/* check access */
@@ -438,4 +480,3 @@ module MODULE_VAR_EXPORT vhost_alias_module =
     NULL,			/* child_exit */
     NULL			/* post read-request */
 };
-

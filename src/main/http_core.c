@@ -696,11 +696,14 @@ API_EXPORT(const char *) ap_get_server_name(request_rec *r)
 	    struct in_addr *iaddr;
 	    struct hostent *hptr;
             int old_stat;
-	    old_stat = ap_update_child_status(conn->child_num, SERVER_BUSY_DNS, r);
+	    old_stat = ap_update_child_status(conn->child_num,
+					      SERVER_BUSY_DNS, r);
 	    iaddr = &(conn->local_addr.sin_addr);
-	    hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr), AF_INET);
+	    hptr = gethostbyaddr((char *)iaddr, sizeof(struct in_addr),
+				 AF_INET);
 	    if (hptr != NULL) {
-	        conn->local_host = ap_pstrdup(conn->pool, (void *)hptr->h_name);
+	        conn->local_host = ap_pstrdup(conn->pool,
+					      (void *)hptr->h_name);
 		ap_str_tolower(conn->local_host);
 	    }
 	    else {
@@ -724,7 +727,7 @@ API_EXPORT(unsigned) ap_get_server_port(const request_rec *r)
     port = r->server->port ? r->server->port : ap_default_port(r);
 
     if (d->use_canonical_name == USE_CANONICAL_NAME_OFF
-     || d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
+	|| d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
         return r->hostname ? ntohs(r->connection->local_addr.sin_port)
 			   : port;
     }
@@ -2144,13 +2147,13 @@ static const char *set_use_canonical_name(cmd_parms *cmd, core_dir_config *d,
 	return err;
     }
 
-    if (!strcasecmp(arg, "on")) {
+    if (strcasecmp(arg, "on") == 0) {
         d->use_canonical_name = USE_CANONICAL_NAME_ON;
     }
-    else if (!strcasecmp(arg, "off")) {
+    else if (strcasecmp(arg, "off") == 0) {
         d->use_canonical_name = USE_CANONICAL_NAME_OFF;
     }
-    else if (!strcasecmp(arg, "dns")) {
+    else if (strcasecmp(arg, "dns") == 0) {
         d->use_canonical_name = USE_CANONICAL_NAME_DNS;
     }
     else {
