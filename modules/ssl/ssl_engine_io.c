@@ -323,7 +323,17 @@ apr_status_t ssl_io_filter_Output(ap_filter_t *f,apr_bucket_brigade *pbbIn)
 {
     SSLFilterRec *pRec=f->ctx;
     apr_bucket *pbktIn;
-conn_rec *c = SSL_get_app_data (pRec->pssl);
+    conn_rec *c = SSL_get_app_data (pRec->pssl);
+
+    if (!c) {
+        /* if this happens we have already called ssl_hook_CloseConnection
+         * if we dont return here, this routine will segv
+         * XXX: this doesnt seem right, ssl_hook_CloseConnection probably 
+         * is being called to early, but as the README:TODO says:
+         * "Cleanup ssl_engine_io.c !!"
+         */
+        return APR_EOF;
+    }
 
     APR_BRIGADE_FOREACH(pbktIn,pbbIn) {
 	const char *data;
