@@ -50,11 +50,17 @@ Changes with Apache 1.2
 
   *) Configure would create a broken Makefile if the configuration file
      contained a commented-out Rule.  [Roy Fielding]
-
+  
   *) Promote per_dir_config and subprocess_env from the subrequest to the
      main request in mod_negotiation.  In particular this fixes a bug
      where <Files> sections wouldn't properly apply to negotiated content.
      [Dean Gaudet]
+  
+  *) Fix a potential deadlock in mod_cgi script_err handling.
+     [Ralf S. Engelschall]
+  
+  *) rotatelogs zero-pads the logfile names to improve alphabetic sorting.
+     [Mitchell Blank Jr]
 
   *) Updated mod_rewrite to 3.0.4: Fixes HTTP redirects from within
      .htaccess files because the RewriteBase was not replaced correctly.
@@ -71,6 +77,12 @@ Changes with Apache 1.2
   *) Redirect did not preserve ?query_strings when present in the client's
      request.  [Dean Gaudet]
 
+  *) Configure was finding non-modules on EXTRA_LIBS. [Frank Cringle] PR#380
+  
+  *) Use /bin/sh5 on ultrix.  [P. Alejandro Lopez-Valencia] PR#369
+
+  *) Add UnixWare compile/install instructions.  [Chuck Murcko]
+
   *) Add mod_example (illustration of API techniques).  [Ken Coar]
 
   *) Add macro for memmove to conf.h for SUNOS4. [Marc Slemko]
@@ -81,6 +93,11 @@ Changes with Apache 1.2
   *) For hosts with multiple IP addresses, try all additional addresses if
      necessary to get a connect. Fail only if hostent address list is
      exhausted. [Chuck Murcko]
+
+  *) More signed/unsigned port fixes.  [Dean Gaudet]
+
+  *) HARD_SERVER_LIMIT can be defined in the Configuration file now.
+     [Dean Gaudet]
 
 Changes with Apache 1.2b8
 
