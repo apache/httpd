@@ -163,11 +163,6 @@ Apache 2.0</a></li></ul></div>
     
 
     <ul>
-      <li>The <code>httpd</code> command line option
-      <code>-S</code> which was used for printing the virtual host
-      configuration has been replaced by <code>-t -D
-      DUMP_VHOSTS</code>.</li>
-
       <li>The module <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code>, which was
       experimental in Apache 1.3, is now a standard module.</li>
 
