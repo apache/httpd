@@ -463,6 +463,14 @@ MIME-typing</A></STRONG>
     <CODE>ap_spawn_child</CODE> and <CODE>spawn_child_err_buff</CODE>
     with simply <CODE>ap_bspawn_child</CODE>.
 
+<DT><STRONG><CODE>ap_add_version_component()</CODE></STRONG>
+<DD>This API function allows for modules to add their own additional
+    server tokens which are printed on the on the <CODE>Server:</CODE>
+    header line. Previous 1.3beta versions had used a
+    <CODE>SERVER_SUBVERSION</CODE> compile-time <CODE>#define</CODE>
+    to perform this function. Whether the tokens are actually displayed
+    is controlled by the new <CODE>ServerTokens</CODE> directive.
+
 </DL>
 
 <P><HR>
@@ -573,12 +581,11 @@ MIME-typing</A></STRONG>
     system in the server identity</STRONG></A><BR>
 <DD>A new directive, <CODE>ServerTokens</CODE>, allows the Webmaster
     to change the value of the <CODE>Server</CODE> response header
-    field which is sent back to clients.  The
-    <CODE>ServerTokens</CODE> directive controls whether the server
-    will include a non-specific note in the server identity about the
-    type of operating system on which the server is running as well as
-    included module information.  As of Apache 1.3, this additional
-    information is included by default.
+    field which is sent back to clients.  The <CODE>ServerTokens</CODE>
+    directive controls whether the server will include a non-specific
+    note in the server identity about the type of operating system on
+    which the server is running as well as included module information.
+    As of Apache 1.3, this additional information is included by default.
 
 </DL>
 
