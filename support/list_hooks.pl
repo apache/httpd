@@ -61,7 +61,7 @@ sub scanFile {
 	    $::Hooks{$name}->{declared}=$file;
 	    $::Hooks{$name}->{ret}=$ret;
 	    $::Hooks{$name}->{args}=$args;
-	} elsif(/AP_DECLARE_HOOK\(([^,]+),([^,]+)/) {
+	} elsif(/AP_DECLARE_HOOK\((\s*[^,\s]+)\s*,\s*([^,\s]+)/) {
 # really we should swallow subsequent lines to get the arguments...
 	    my $name=$2;
 	    my $ret=$1;
