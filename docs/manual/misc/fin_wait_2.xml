@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <manualpage metafile="fin_wait_2.xml.meta">
-  <relativepath href=".." />
   <parentdocument href="./">Miscellaneous Documentation</parentdocument>
 
   <title>Connections in the FIN_WAIT_2 state and Apache</title>

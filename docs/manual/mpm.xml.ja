@@ -2,7 +2,6 @@
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <manualpage metafile="mpm.xml.meta">
-<relativepath href="."/>
 <!-- English revision: 1.2 -->
 
   <title>マルチプロセッシングモジュール (MPM)</title>

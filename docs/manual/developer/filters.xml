@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <manualpage metafile="filters.xml.meta">
-<relativepath href=".."/>
 <parentdocument href="./">Developer Documentation</parentdocument>
 
 <title>How filters work in Apache 2.0</title>

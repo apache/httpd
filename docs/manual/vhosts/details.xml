@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <manualpage metafile="details.xml.meta">
-<relativepath href=".."/>
 <parentdocument href="./">Virtual Hosts</parentdocument>
    <title>An In-Depth Discussion of Virtual Host Matching</title>
 

@@ -4,7 +4,6 @@
 <!-- English revision: 1.3 -->
 
 <manualpage metafile="handler.xml.meta">
-  <relativepath href="."/>
 
   <title>Apache のハンドラの使用</title>
 

@@ -444,7 +444,7 @@
       <dt><code>--disable-<em>MODULE</em></code></dt>
 
       <dd>通常はコンパイルされてインクルードされる
-      <em>MODULE</em> モジュールを除去します。</dd>
+      <em>MODULE</em> モジュールを除去します。</dd>
 
       <dt><code>--enable-modules=<em>MODULE-LIST</em></code></dt>
 

@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
 <manualpage metafile="suexec.xml.meta">
-  <relativepath href="."/>
 
   <title>suEXEC Support</title>
 

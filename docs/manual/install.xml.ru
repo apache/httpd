@@ -12,7 +12,6 @@
 
 <?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
 <manualpage metafile="install.xml.meta">
-<relativepath href="."/>
 
   <title>Компилирование и установка</title>
 

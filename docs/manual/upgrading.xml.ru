@@ -12,7 +12,6 @@
 
 <?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
 <manualpage metafile="upgrading.xml.meta">
-<relativepath href="."/>
 
 <title>Переход от версии 1.3 к версии 2.0</title>
 

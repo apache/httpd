@@ -4,7 +4,6 @@
 <!-- English revision: 1.3 -->
 
 <manualpage metafile="dso.xml.meta">
-  <relativepath href="."/>
 
   <title>動的共有オブジェクト (DSO) サポート</title>
 

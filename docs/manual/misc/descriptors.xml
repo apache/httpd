@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <manualpage metafile="descriptors.xml.meta">
-  <relativepath href=".." />
   <parentdocument href="./">Miscellaneous Documentation</parentdocument>
 
   <title>Descriptors and Apache</title>

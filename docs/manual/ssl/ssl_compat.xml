@@ -2,7 +2,6 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <manualpage metafile="ssl_compat.xml.meta">
-<relativepath href=".."/>
 <parentdocument href="./">SSL/TLS</parentdocument>
 
   <title>SSL/TLS Strong Encryption: Compatibility</title>

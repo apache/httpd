@@ -12,7 +12,6 @@
 
 <?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
 <manualpage metafile="stopping.xml.meta">
-<relativepath href="."/>
 
   <title>Останов и перезапуск</title>
 

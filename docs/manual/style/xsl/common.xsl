@@ -24,16 +24,7 @@
   </xsl:variable>
 
   <!-- relative path to /manual/ -->
-  <xsl:variable name="path">
-    <xsl:choose>
-      <xsl:when test="*/relativepath/@href">
-        <xsl:value-of select="*/relativepath/@href"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="'..'"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:variable>
+  <xsl:variable name="path" select="document(/*/@metafile)/metafile/relpath" />
 
   <!-- load outsourced page types -->
   <xsl:include href="moduleindex.xsl"/>

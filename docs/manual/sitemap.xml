@@ -5,7 +5,6 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 
 <sitemap metafile="sitemap.xml.meta">
-  <relativepath href="."/>
 
   <title>Sitemap</title>
 

@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <manualpage metafile="rewriteguide.xml.meta">
-  <relativepath href=".." />
   <parentdocument href="./">Miscellaneous Documentation</parentdocument>
 
   <title>URL Rewriting Guide</title>

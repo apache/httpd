@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <manualpage metafile="cgi.xml.meta">
 <!-- English revision: 1.1 -->
-  <relativepath href=".." />
 
   <title>Apache Tutorial: CGI による動的コンテンツ</title>
 

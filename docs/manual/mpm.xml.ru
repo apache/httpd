@@ -12,7 +12,6 @@
 
 <?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
 <manualpage metafile="mpm.xml.meta">
-<relativepath href="."/>
 
   <title>Мульти-процессные модули (МП-модули)</title>
 

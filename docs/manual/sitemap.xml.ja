@@ -6,7 +6,6 @@
 <!-- English revision: 1.12.2.5 -->
 
 <sitemap metafile="sitemap.xml.meta">
-  <relativepath href="."/>
 
   <title>Site Map</title>
 

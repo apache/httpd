@@ -4,7 +4,6 @@
 <!-- English revision: 1.1 -->
 
 <manualpage metafile="module-dict.xml.meta">
-  <relativepath href=".."/>
 
   <title>Apache モジュールの解説で使用する用語</title>
 

@@ -3,7 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 
 <manualpage metafile="ebcdic.xml.meta">
-  <relativepath href=".." />
   <parentdocument href="./">Platform Specific Notes</parentdocument>
 
   <title>The Apache EBCDIC Port</title>

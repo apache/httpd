@@ -4,7 +4,6 @@
 <!-- English revision: 1.3 -->
 
 <manualpage metafile="urlmapping.xml.meta">
-  <relativepath href="."/>
 
   <title>URL からファイルシステム上の位置へのマップ</title>
 

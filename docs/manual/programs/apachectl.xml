@@ -2,7 +2,6 @@
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <manualpage metafile="apachectl.xml.meta">
-<relativepath href=".."/>
 <parentdocument href="./">Programs</parentdocument>
 
   <title>apachectl - Apache HTTP Server Control Interface</title>
