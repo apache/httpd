@@ -1,6 +1,9 @@
-$Id: CHANGES,v 1.59 1996/08/24 11:33:47 ben Exp $
+$Id: CHANGES,v 1.60 1996/08/24 14:39:30 ben Exp $
 
 Changes with Apache 1.2b1:
+
+  *) Configuration flags should be either "on" or "off". Apache was not
+      enforcing this restriction. Fixed. [Ben Laurie]
 
   *) Really fix misspellings of Authoritative in various directives.
 
