@@ -241,6 +241,11 @@ void parse_uri (request_rec *r, char *uri)
      * But for now...
      */
 
+#ifdef __EMX__
+    /* Variable for OS/2 fix below. */
+    int loop;
+#endif
+
 /* A proxy request contains a ':' early on, but not as first character */
     for (s=uri; s != '\0'; s++)
 	if (!isalnum(*s) && *s != '+' && *s != '-' && *s != '.') break;
@@ -254,6 +259,17 @@ void parse_uri (request_rec *r, char *uri)
     {
 	r->proxyreq = 0;
 	r->uri = getword (r->pool, &uri, '?');
+
+#ifdef __EMX__
+    /* Handle path translations for OS/2 and plug security hole. */
+    /* This will prevent "http://www.wherever.com/..\..\/" from
+       returning a directory for the root drive. */
+    for (loop = 0; loop <= strlen(r->uri); ++loop) {
+        if (r->uri[loop] == '\\')
+            r->uri[loop] = '/';
+};
+#endif
+
 	if (*uri) r->args= uri;
 	else r->args = NULL;
     }

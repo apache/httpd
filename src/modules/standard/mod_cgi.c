@@ -379,7 +379,7 @@ int cgi_handler (request_rec *r)
 #ifdef __EMX__
     if (nph) {
         while (fgets(argsbuffer, HUGE_STRING_LEN-1, script_in) != NULL) {
-            fputs(argsbuffer, r->connection->client);
+            bputs(argsbuffer, r->connection->client);
         }
     }    
 #endif

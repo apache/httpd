@@ -2081,12 +2081,20 @@ cache_tidy(struct cache_req *c)
 	    *p='/';
 	    ++p;
 	    }
+#ifdef __EMX__
+        /* Under OS/2 use rename. */            
+        if (rename(c->tempfile, c->filename) == -1)
+            log_uerror("rename", c->filename, "proxy: error renaming cache file", s);
+}
+#else            
+
 	if (link(c->tempfile, c->filename) == -1)
 	    log_uerror("link", c->filename, "proxy: error linking cache file", s);
 	}
 
     if (unlink(c->tempfile) == -1)
 	log_uerror("unlink", c->tempfile, "proxy: error deleting temp file",s);
+#endif
 
     garbage_coll(c->req);
 }

@@ -889,14 +889,24 @@ int spawn_child (pool *p, void (*func)(void *), void *data,
   
   if (pipe_out) {
     close (out_fds[1]);
+#ifdef __EMX__
+    /* Need binary mode set for OS/2. */
+    *pipe_out = fdopen (out_fds[0], "rb");
+#else
     *pipe_out = fdopen (out_fds[0], "r");
-    
+#endif  
+  
     if (*pipe_out) note_cleanups_for_file (p, *pipe_out);
   }
 
   if (pipe_in) {
     close (in_fds[0]);
+#ifdef __EMX__
+    /* Need binary mode set for OS/2 */
+    *pipe_in = fdopen (in_fds[1], "wb");
+#else
     *pipe_in = fdopen (in_fds[1], "w");
+#endif
     
     if (*pipe_in) note_cleanups_for_file (p, *pipe_in);
   }
@@ -1040,14 +1050,16 @@ int spawn_child_os2 (pool *p, void (*func)(void *), void *data,
   
   if (pipe_out) {
     close (out_fds[1]);
-    *pipe_out = fdopen (out_fds[0], "r");
+    /* Need binary mode set for OS/2. */
+    *pipe_out = fdopen (out_fds[0], "rb");
     
     if (*pipe_out) note_cleanups_for_file (p, *pipe_out);
   }
 
   if (pipe_in) {
     close (in_fds[0]);
-    *pipe_in = fdopen (in_fds[1], "w");
+    /* Need binary mode set for OS/2. */
+    *pipe_in = fdopen (in_fds[1], "wb");
     
     if (*pipe_in) note_cleanups_for_file (p, *pipe_in);
   }
