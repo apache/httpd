@@ -32,7 +32,7 @@
   und Ports</a></seealso>
 
 <section id="how-it-works"><title>Arbeitsweise</title>
-    <p>Ein einzelner Steuerprozess ist f&uuml;r das Starten von
+    <p>Ein einzelner Steuerprozess ist f&uuml;r den Start von
     Kindprozessen verantwortlich, die auf Verbindungen warten und diese
     bedienen, sobald sie eintreffen. Der Apache versucht immer, mehrere
     <dfn>freie</dfn> oder unbesch&auml;ftigte Serverprozesse vorzuhalten,
@@ -69,8 +69,8 @@
     m&ouml;glich Rechte besitzen.</p>
 
     <p><directive module="mpm_common">MaxRequestsPerChild</directive>
-    bestimmt, wie h&auml;ufig der Server Prozesse durch Beendigung alter und
-    Starten neuer erneuert.</p>
+    bestimmt, wie h&auml;ufig der Server Prozesse erneuert, indem er alte
+    beendet und neue startet.</p>
 </section>
 
 <directivesynopsis location="mpm_common"><name>BS2000Account</name>
