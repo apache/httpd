@@ -304,6 +304,10 @@ AP_DECLARE_HOOK(int,auth_checker,(request_rec *r))
  */
 AP_DECLARE_HOOK(void,insert_filter,(request_rec *r))
 
+AP_DECLARE(int) directory_walk(request_rec *r);
+AP_DECLARE(int) location_walk(request_rec *r);
+AP_DECLARE(int) file_walk(request_rec *r);
+
 #ifdef __cplusplus
 }
 #endif

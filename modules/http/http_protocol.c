@@ -853,176 +853,6 @@ static void terminate_header(apr_bucket_brigade *bb)
     apr_brigade_puts(bb, NULL, NULL, crlf);
 }
 
-/*
- * Create a new method list with the specified number of preallocated
- * extension slots.
- */
-AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
-{
-    ap_method_list_t *ml;
-
-    ml = (ap_method_list_t *) apr_palloc(p, sizeof(ap_method_list_t));
-    ml->method_mask = 0;
-    ml->method_list = apr_array_make(p, sizeof(char *), nelts);
-    return ml;
-}
-
-/*
- * Make a copy of a method list (primarily for subrequests that may
- * subsequently change it; don't want them changing the parent's, too!).
- */
-AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
-				     ap_method_list_t *src)
-{
-    int i;
-    char **imethods;
-    char **omethods;
-
-    dest->method_mask = src->method_mask;
-    imethods = (char **) src->method_list->elts;
-    for (i = 0; i < src->method_list->nelts; ++i) {
-	omethods = (char **) apr_array_push(dest->method_list);
-	*omethods = apr_pstrdup(dest->method_list->cont, imethods[i]);
-    }
-}
-
-/*
- * Invoke a callback routine for each method in the specified list.
- */
-AP_DECLARE_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
-						       int mnum),
-				          void *rec,
-				          const ap_method_list_t *ml, ...)
-{
-    va_list vp;
-    va_start(vp, ml);
-    ap_method_list_vdo(comp, rec, ml, vp);
-    va_end(vp);  
-}
-
-AP_DECLARE(void) ap_method_list_vdo(int (*comp) (void *mrec,
-						 const char *mname,
-						 int mnum),
-				    void *rec, const ap_method_list_t *ml,
-				    va_list vp)
-{
-    
-}
-
-/*
- * Return true if the specified HTTP method is in the provided
- * method list.
- */
-AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
-{
-    int methnum;
-    int i;
-    char **methods;
-
-    /*
-     * If it's one of our known methods, use the shortcut and check the
-     * bitmask.
-     */
-    methnum = ap_method_number_of(method);
-    if (methnum != M_INVALID) {
-	return (l->method_mask & (1 << methnum));
-    }
-    /*
-     * Otherwise, see if the method name is in the array or string names
-     */
-    if ((l->method_list == NULL) || (l->method_list->nelts == 0)) {
-	return 0;
-    }
-    methods = (char **)l->method_list->elts;
-    for (i = 0; i < l->method_list->nelts; ++i) {
-	if (strcmp(method, methods[i]) == 0) {
-	    return 1;
-	}
-    }
-    return 0;
-}
-
-/*
- * Add the specified method to a method list (if it isn't already there).
- */
-AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
-{
-    int methnum;
-    int i;
-    const char **xmethod;
-    char **methods;
-
-    /*
-     * If it's one of our known methods, use the shortcut and use the
-     * bitmask.
-     */
-    methnum = ap_method_number_of(method);
-    l->method_mask |= (1 << methnum);
-    if (methnum != M_INVALID) {
-	return;
-    }
-    /*
-     * Otherwise, see if the method name is in the array of string names.
-     */
-    if (l->method_list->nelts != 0) {
-        methods = (char **)l->method_list->elts;
-	for (i = 0; i < l->method_list->nelts; ++i) {
-	    if (strcmp(method, methods[i]) == 0) {
-		return;
-	    }
-	}
-    }
-    xmethod = (const char **) apr_array_push(l->method_list);
-    *xmethod = method;
-}
-    
-/*
- * Remove the specified method from a method list.
- */
-AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
-				       const char *method)
-{
-    int methnum;
-    char **methods;
-
-    /*
-     * If it's one of our known methods, use the shortcut and use the
-     * bitmask.
-     */
-    methnum = ap_method_number_of(method);
-    l->method_mask |= ~(1 << methnum);
-    if (methnum != M_INVALID) {
-	return;
-    }
-    /*
-     * Otherwise, see if the method name is in the array of string names.
-     */
-    if (l->method_list->nelts != 0) {
-	register int i, j, k;
-        methods = (char **)l->method_list->elts;
-	for (i = 0; i < l->method_list->nelts; ) {
-	    if (strcmp(method, methods[i]) == 0) {
-		for (j = i, k = i + 1; k < l->method_list->nelts; ++j, ++k) {
-		    methods[j] = methods[k];
-		}
-		--l->method_list->nelts;
-	    }
-	    else {
-		++i;
-	    }
-	}
-    }
-}
-
-/*
- * Reset a method list to be completely empty.
- */
-AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
-{
-    l->method_mask = 0;
-    l->method_list->nelts = 0;
-}
-
 /* Build the Allow field-value from the request handler method mask.
  * Note that we always allow TRACE, since it is handled below.
  */
@@ -2060,4 +1890,174 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
     }
     ap_finalize_request_protocol(r);
 }
+
+/*
+ * Create a new method list with the specified number of preallocated
+ * extension slots.
+ */
+AP_DECLARE(ap_method_list_t *) ap_make_method_list(apr_pool_t *p, int nelts)
+{
+    ap_method_list_t *ml;
+ 
+    ml = (ap_method_list_t *) apr_palloc(p, sizeof(ap_method_list_t));
+    ml->method_mask = 0;
+    ml->method_list = apr_array_make(p, sizeof(char *), nelts);
+    return ml;
+}
+ 
+/*
+ * Make a copy of a method list (primarily for subrequests that may
+ * subsequently change it; don't want them changing the parent's, too!).
+ */
+AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
+                                     ap_method_list_t *src)
+{
+    int i;
+    char **imethods;
+    char **omethods;
+ 
+    dest->method_mask = src->method_mask;
+    imethods = (char **) src->method_list->elts;
+    for (i = 0; i < src->method_list->nelts; ++i) {
+        omethods = (char **) apr_array_push(dest->method_list);
+        *omethods = apr_pstrdup(dest->method_list->cont, imethods[i]);
+    }
+}
+ 
+/*
+ * Invoke a callback routine for each method in the specified list.
+ */
+AP_DECLARE_NONSTD(void) ap_method_list_do(int (*comp) (void *urec, const char *mname,
+                                                       int mnum),
+                                          void *rec, 
+                                          const ap_method_list_t *ml, ...)
+{
+    va_list vp;
+    va_start(vp, ml);
+    ap_method_list_vdo(comp, rec, ml, vp);
+    va_end(vp);
+}
+ 
+AP_DECLARE(void) ap_method_list_vdo(int (*comp) (void *mrec,
+                                                 const char *mname,
+                                                 int mnum),
+                                    void *rec, const ap_method_list_t *ml,
+                                    va_list vp)
+{
+ 
+}
+ 
+/*
+ * Return true if the specified HTTP method is in the provided
+ * method list.
+ */
+AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method)
+{
+    int methnum;
+    int i;
+    char **methods;
+ 
+    /*
+     * If it's one of our known methods, use the shortcut and check the
+     * bitmask.
+     */
+    methnum = ap_method_number_of(method);
+    if (methnum != M_INVALID) {
+        return (l->method_mask & (1 << methnum));
+    }
+    /*
+     * Otherwise, see if the method name is in the array or string names
+     */ 
+    if ((l->method_list == NULL) || (l->method_list->nelts == 0)) {
+        return 0;
+    }
+    methods = (char **)l->method_list->elts;
+    for (i = 0; i < l->method_list->nelts; ++i) {
+        if (strcmp(method, methods[i]) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+ 
+/*
+ * Add the specified method to a method list (if it isn't already there).
+ */
+AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method)
+{
+    int methnum;
+    int i;
+    const char **xmethod;
+    char **methods;
+ 
+    /*
+     * If it's one of our known methods, use the shortcut and use the
+     * bitmask.
+     */
+    methnum = ap_method_number_of(method);
+    l->method_mask |= (1 << methnum);
+    if (methnum != M_INVALID) {
+        return;
+    }
+    /*
+     * Otherwise, see if the method name is in the array of string names.
+     */
+    if (l->method_list->nelts != 0) {
+        methods = (char **)l->method_list->elts;
+        for (i = 0; i < l->method_list->nelts; ++i) {
+            if (strcmp(method, methods[i]) == 0) { 
+                return;
+            }
+        }
+    }
+    xmethod = (const char **) apr_array_push(l->method_list);
+    *xmethod = method;
+}
+ 
+/*
+ * Remove the specified method from a method list.
+ */
+AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
+                                       const char *method)
+{
+    int methnum;
+    char **methods;
+ 
+    /*
+     * If it's one of our known methods, use the shortcut and use the
+     * bitmask.
+     */
+    methnum = ap_method_number_of(method);
+    l->method_mask |= ~(1 << methnum);
+    if (methnum != M_INVALID) {
+        return;
+    }
+    /*
+     * Otherwise, see if the method name is in the array of string names.
+     */
+    if (l->method_list->nelts != 0) {
+        register int i, j, k;
+        methods = (char **)l->method_list->elts;
+        for (i = 0; i < l->method_list->nelts; ) {
+            if (strcmp(method, methods[i]) == 0) {
+                for (j = i, k = i + 1; k < l->method_list->nelts; ++j, ++k) {
+                    methods[j] = methods[k];
+                }
+                --l->method_list->nelts; 
+            }
+            else {
+                ++i;
+            }
+        }
+    }
+}
+ 
+/*
+ * Reset a method list to be completely empty.
+ */
+AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
+{
+    l->method_mask = 0;
+    l->method_list->nelts = 0;
+} 
 
