@@ -63,11 +63,11 @@ introduced in Apache 2.1</compatibility>
     </example>
 
     <p>In the first example, requests for files with a MIME content
-    type of <code>image/gif</code> will instead be handled by the
+    type of <code>image/gif</code> will be handled by the
     specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
 
     <p>In the second example, requests for files with a file extension of
-    <code>.xyz</code> are handled instead by the specified cgi script 
+    <code>.xyz</code> are handled by the specified cgi script 
     <code>/cgi-bin/program.cgi</code>.</p>
 
     <p>The optional <code>virtual</code> modifier turns off the check
@@ -104,7 +104,8 @@ method.</description>
     module="mod_alias">ScriptAlias</directive> or <directive
     module="mod_mime">AddHandler</directive>.  The URL and
     file path of the requested document is sent using the standard CGI
-    PATH_INFO and PATH_TRANSLATED environment variables.</p>
+    <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code> environment 
+    variables.</p>
 
     <note>
       Any arbitrary method name may be used. <strong>Method names are
@@ -113,11 +114,11 @@ method.</description>
       effects.
     </note>
 
-    <p>Note that the Script command defines default actions only.
-    If a CGI script is called, or some other resource that is
+    <p>Note that the <directive>Script</directive> command defines default 
+    actions only. If a CGI script is called, or some other resource that is
     capable of handling the requested method internally, it will do
-    so. Also note that Script with a method of <code>GET</code>
-    will only be called if there are query arguments present
+    so. Also note that <directive>Script</directive> with a method of 
+    <code>GET</code> will only be called if there are query arguments present
     (<em>e.g.</em>, foo.html?hi). Otherwise, the request will
     proceed normally.</p>
 
