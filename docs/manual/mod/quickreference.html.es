@@ -207,20 +207,9 @@ cache.</td></tr>
 <tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
 manager</td></tr>
-<tr><td><a href="mod_disk_cache.html#cacheexpirycheck">CacheExpiryCheck On|Off</a></td><td> On </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Indicates if the cache observes Expires dates when seeking
-files</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
-<tr><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <var>Percentage</var></a></td><td> 60 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Percentage of document served, after which the server
+<tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheforcecompletion">CacheForceCompletion <var>Percentage</var></a></td><td> 60 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Percentage of document served, after which the server
 will complete caching the file even if the request is cancelled.</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachegcclean">CacheGcClean <var>hours</var> <var>url-string</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The time to retain unchanged cached files that match a
-URL</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachegcdaily">CacheGcDaily <var>time</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The recurring time each day for garbage collection to be run.
-(24 hour clock)</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachegcinterval">CacheGcInterval <var>hours</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The interval between garbage collection attempts.</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachegcmemusage">CacheGcMemUsage <var>KBytes</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The maximum kilobytes of memory used for garbage
-collection</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachegcunused">CacheGcUnused <var>hours</var> <var>url-string</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The time to retain unreferenced cached files that match a
-URL.</td></tr>
 <tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Ignore the fact that the client requested the content not be
 cached.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
@@ -238,9 +227,6 @@ cache</td></tr>
 cached by proxy servers</td></tr>
 <tr><td><a href="mod_disk_cache.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The directory root under which cache files are
 stored</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachesize">CacheSize <var>KBytes</var></a></td><td> 1000000 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum amount of disk space that will be used by the
-cache in KBytes</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachetimemargin">CacheTimeMargin <var>?</var></a></td><td> ? </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">The minimum time margin to cache a document</td></tr>
 <tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-path</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique for locating the interpreter for CGI
 scripts</td></tr>
 <tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Charset to translate into</td></tr>

@@ -68,7 +68,7 @@
   <modulefile>mod_unique_id.xml.ja</modulefile>
   <modulefile>mod_userdir.xml.ja</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
-  <modulefile>mod_version.xml</modulefile>
+  <modulefile>mod_version.xml.ja</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
   <modulefile>beos.xml</modulefile>
   <modulefile>mpm_common.xml.ja</modulefile>
