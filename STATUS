@@ -131,18 +131,28 @@ Available Patches:
 Concepts:
 
    * Jim's [CONCEPT] platform.h header file. Instead of lumping
-	all OS stuff in conf.h, create a ./platforms/ sub-dir
-	and have Configure copy and modify platform.h as needed.
+     all OS stuff in conf.h, create a ./platforms/ sub-dir
+     and have Configure copy and modify platform.h as needed.
 	<199712272303.SAA16225@devsys.jaguNET.com>
 
 In progress:
 
     * Martin Kraemer's [PATCH] Parsing URI into its components 
-	This has "evolved" into a new module: util_uri. Martin
-	will post when it's at a state where he's happy with it.
+      This has "evolved" into a new module: util_uri. Martin
+      will post when it's at a state where he's happy with it.
+      Ken would like to see it in libap instead of libmain.
 
     * Ben's ASP work... All agree it sounds cool.
-    
+
+    * DDA's adding a tray application to the Windoze version for ease of
+      status/management.
+	<01BCDB29.2C04DEB0@caravan.individual.com>
+	<01BCDB2A.F8C09010@caravan.individual.com>
+	Status: Ken +1, Sameer +1, Martin +1, Ben +1 (as long as
+	we get a single executable)
+	Paul: No like Win95 specific stuff
+	Ken: What's W95-specific about it?
+
 Needs patch:
 
     * Dean's "locale" project
@@ -158,8 +168,8 @@ Closed issues:
 Open issues:
 
     * Paul would like to see a 'gdbm' option because he uses
-	it a lot. Dean notes that 'gdbm' include 'db' support
-	so we need to watch the library ordering.
+      it a lot. Dean notes that 'gdbm' include 'db' support
+      so we need to watch the library ordering.
 
 	Dean notes:  Check rev 1.72 -> rev 1.73 of
 	src/Configuration.tmpl.  I re-ordered mod_auth_dbm and
@@ -168,23 +178,25 @@ Open issues:
 	troubles if I automatically looked for gdbm.
 
     * What do we call the binary: apache or httpd? Under UNIX
-	it's httpd, under Win32 it's apache. Maybe rename it
-	to apache-httpd?
+      it's httpd, under Win32 it's apache. Maybe rename it
+      to apache-httpd?
+	apache-httpd: Ken +1
 
     * Maybe a http_paths.h file? See
 	<Pine.BSF.3.95q.971209222046.25627D-100000@valis.worldgate.com>
 
     * Release builds: Should we provide Configuration or not?
-	Should we 'make all suexec' in src/support?
-	
+      Should we 'make all suexec' in src/support?
+	Ken +1 (possible suexec path issue, though)
+
     * root's environment is inherited by the Apache server. Jim, Ken &
-	Dean thinks we should recommend using 'env' to build the
-	appropriate environment. Marc and Alexei don't see any
-	big deal.
+      Dean thinks we should recommend using 'env' to build the
+      appropriate environment. Marc and Alexei don't see any
+      big deal.
 
     * Ken suggests that new check_cmd_context() and related defines
-	should be non-static and in util_* so modules can use 'em.  (He
-	didn't notice this flaw during the review.)
+      should be non-static and in util_* so modules can use 'em.  (He
+      didn't notice this flaw during the review.)
 
     * Sameer's mod_so implemetation
 	See <199711092016.MAA17039@gabber.c2.net>
@@ -200,14 +212,9 @@ Open issues:
     * Marc's socket options like source routing (kill them?)
 	Marc, Dean, Martin say Yes
 
-    * DDA's adding a tray application to the Windoze version for ease of
-      status/management.
-	<01BCDB29.2C04DEB0@caravan.individual.com>
-	<01BCDB2A.F8C09010@caravan.individual.com>
-	Status: Ken +1, Sameer +1, Martin +1, Ben +1 (as long as
-	we get a single executable)
-	Paul: No like Win95 specific stuff
-
     * Marc's [BUG] include virtual and SCRIPT_NAME w/path_info
 	<Pine.BSF.3.95.970928122038.21692C-100000@alive.znep.com>
 
+    * Ken's PR#1053: an error when accessing a negotiated document
+      explicitly names the variant selected.  Should it do so, or should
+      the base input name be referenced?
