@@ -93,6 +93,12 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
+#include <pwd.h>
+
+/* The default directory in user's home dir */
+#ifndef DEFAULT_USER_DIR
+#define DEFAULT_USER_DIR "public_html"
+#endif
 
 module userdir_module;
 

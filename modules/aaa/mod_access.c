@@ -62,11 +62,13 @@
  * 
  */
 
+#include "apr_network_io.h"
 #include "httpd.h"
 #include "http_core.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
+#include <string.h>
 
 enum allowdeny_type {
     T_ENV,

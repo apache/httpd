@@ -63,6 +63,8 @@
 #include "http_main.h"
 #include "http_request.h"
 
+#define ASIS_MAGIC_TYPE "httpd/send-as-is"
+
 static int asis_handler(request_rec *r)
 {
     ap_file_t *f = NULL;

@@ -125,7 +125,6 @@
 #include "http_request.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#include "ap_config.h"
 #include "ap_ctype.h"
 #include "util_uri.h"
 #include "util_md5.h"

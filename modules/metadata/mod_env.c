@@ -101,6 +101,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_request.h"
+#include <stdlib.h>
 
 typedef struct {
     ap_table_t *vars;

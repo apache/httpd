@@ -77,6 +77,8 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "http_conf_globals.h"
+#include <sys/stat.h>
+#include <string.h>
 
 module MODULE_VAR_EXPORT cgi_module;
 

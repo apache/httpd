@@ -69,6 +69,8 @@
 #include "http_log.h"
 #include "http_request.h"
 
+#include <string.h>
+
 typedef struct handlers_info {
     char *name;
 } handlers_info;
@@ -248,7 +250,7 @@ static void mime_post_config(ap_context_t *p, ap_context_t *plog, ap_context_t *
     ap_status_t status;
 
     if (!types_confname)
-        types_confname = TYPES_CONFIG_FILE;
+        types_confname = AP_TYPES_CONFIG_FILE;
 
     types_confname = ap_server_root_relative(p, types_confname);
 

@@ -152,7 +152,7 @@ static int handle_dir(request_rec *r)
 	num_names = d->index_names->nelts;
     }
     else {
-	dummy_ptr[0] = DEFAULT_INDEX;
+	dummy_ptr[0] = AP_DEFAULT_INDEX;
 	names_ptr = dummy_ptr;
 	num_names = 1;
     }

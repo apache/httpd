@@ -99,6 +99,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "util_script.h"
+#include <string.h>
 
 #define IMAP_MAGIC_TYPE "application/x-httpd-imap"
 #define MAXVERTS 100
