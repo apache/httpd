@@ -1,9 +1,10 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2004/01/28 21:22:20 $]
+  Last modified at [$Date: 2004/02/18 15:00:46 $]
 
 Release:
 
-   1.3.30-dev: In development
+   1.3.30-dev: In development. Jim proposes a release around the
+               start of March, 2004.
    1.3.29: Tagged October 24, 2003. Announced Oct 29, 2003.
    1.3.28: Tagged July 16, 2003. Announced ??
    1.3.27: Tagged September 30, 2002. Announced Oct 3, 2002.
