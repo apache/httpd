@@ -1,3 +1,6 @@
+# gdb macros which may be useful for folks using gdb to debug
+# apache.  Delete it if it bothers you.
+
 define dump_table
     set $t = (table_entry *)((array_header *)$arg0)->elts
     set $n = ((array_header *)$arg0)->nelts
