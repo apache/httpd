@@ -538,7 +538,10 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         apr_brigade_length(input_brigade, 1, &bytes);
 
         if (bytes_spooled + bytes > MAX_MEM_SPOOL) {
-            /* can't spool any more in memory; write latest brigade to disk */
+            /* can't spool any more in memory; write latest brigade to disk;
+             * what we read into memory before reaching our threshold will
+             * remain there; we just write this and any subsequent data to disk
+             */
             if (tmpfile == NULL) {
                 const char *temp_dir;
                 char *template;
@@ -649,8 +652,8 @@ static apr_status_t send_request_body(apr_pool_t *p,
      * . if client sent C-L and there are no input resource filters, the
      *   the body size can't change so we send the same CL and stream the
      *   body
-     * . if client used chunked or proxy-sendchunks is set, we'll also
-     *   use chunked
+     * . if client used chunked or proxy-sendchunks is set, we'll use
+     *   chunked
      *
      * normal case:
      *   we have to compute content length by reading the entire request
