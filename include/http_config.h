@@ -166,9 +166,15 @@ typedef union {
 /** method of declaring a directive which takes multiple 2 arguments */
 # define AP_INIT_ITERATE2(directive, func, mconfig, where, help) \
     { directive, { .take2=func }, mconfig, where, ITERATE2, help }
+/** method of declaring a directive which takes 1 or 3 arguments */
+# define AP_INIT_TAKE13(directive, func, mconfig, where, help) \
+    { directive, { .take3=func }, mconfig, where, TAKE13, help }
 /** method of declaring a directive which takes 2 or 3 arguments */
 # define AP_INIT_TAKE23(directive, func, mconfig, where, help) \
     { directive, { .take3=func }, mconfig, where, TAKE23, help }
+/** method of declaring a directive which takes 1 to 3 arguments */
+# define AP_INIT_TAKE123(directive, func, mconfig, where, help) \
+    { directive, { .take3=func }, mconfig, where, TAKE123, help }
 /** method of declaring a directive which takes 3 arguments */
 # define AP_INIT_TAKE3(directive, func, mconfig, where, help) \
     { directive, { .take3=func }, mconfig, where, TAKE3, help }
@@ -201,8 +207,12 @@ typedef const char *(*cmd_func) ();
     { directive, func, mconfig, where, TAKE12, help }
 # define AP_INIT_ITERATE2(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, ITERATE2, help }
+# define AP_INIT_TAKE13(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE13, help }
 # define AP_INIT_TAKE23(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, TAKE23, help }
+# define AP_INIT_TAKE123(directive, func, mconfig, where, help) \
+    { directive, func, mconfig, where, TAKE123, help }
 # define AP_INIT_TAKE3(directive, func, mconfig, where, help) \
     { directive, func, mconfig, where, TAKE3, help }
 # define AP_INIT_FLAG(directive, func, mconfig, where, help) \
