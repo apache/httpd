@@ -5,7 +5,7 @@ Body:----------de--
 <!--#include virtual="include/top.html" -->
 
     Die Anfrage kann nicht beantwortet werden.
-    Bei Verwendung der <!--#echo encoding="none" var="REDIRECT_METHOD"-->-Methode
+    Bei Verwendung der <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->-Methode
     muﬂ ein korrekter <code>Content-Length</code>-Header
     angegeben werden. 
 
@@ -18,7 +18,7 @@ Body:----------en--
 <!--#set var="TITLE" value="Bad Content-Length!" -->
 <!--#include virtual="include/top.html" -->
 
-    A request with the <!--#echo encoding="none" var="REDIRECT_METHOD"-->
+    A request with the <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
     method requires a valid <code>Content-Length</code> header.
 
 <!--#include virtual="include/bottom.html" -->
@@ -30,7 +30,7 @@ Body:----------fr--
 <!--#set var="TITLE" value="Longueur du contenu ill&eacute;gal!" -->
 <!--#include virtual="include/top.html" -->
 
-    Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo encoding="none" var="REDIRECT_METHOD"-->
+    Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"-->
     n&eacute;cessite un header valable <code>Content-Length</code> (indiquant la longueur).
 
 <!--#include virtual="include/bottom.html" -->
