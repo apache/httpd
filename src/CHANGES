@@ -1,5 +1,13 @@
 Changes with Apache 1.3.13
 
+  *) Win32: Work around bug in Win32 select on network reads. Select
+     can indicate a socket has data to read, but the subsequent read
+     can return WSAEWOULDBLOCK. This problem has been observed
+     when running with SSL enabled Apache, specifically, browsers
+     sometimes cannot complete the SSL handshake when an SGC 
+     certificate is used, receiving a network error message.
+     [Richard Scholz richard.scholz@subito.de]
+
   *) Use "accept filtering" on recent versions of FreeBSD iff the
      kernel is configured to support them. This allows Apache to avoid
      having to handle new connections until the request has arrived.

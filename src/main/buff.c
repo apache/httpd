@@ -202,6 +202,7 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
     struct timeval tv;
     int err = WSAEWOULDBLOCK;
     int rv;
+    int retry;
 
     if (!(tv.tv_sec = ap_check_alarm()))
 	return (recv(sock, buf, len, flags));
@@ -214,24 +215,34 @@ int recvwithtimeout(int sock, char *buf, int len, int flags)
     if (rv == SOCKET_ERROR) {
 	err = WSAGetLastError();
 	if (err == WSAEWOULDBLOCK) {
-	    FD_ZERO(&fdset);
-	    FD_SET(sock, &fdset);
-	    tv.tv_usec = 0;
-	    rv = select(FD_SETSIZE, &fdset, NULL, NULL, &tv);
-	    if (rv == SOCKET_ERROR)
-		err = WSAGetLastError();
-	    else if (rv == 0) {
-		ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
-		ap_check_alarm();
-		WSASetLastError(WSAEWOULDBLOCK);
-		return (SOCKET_ERROR);
-	    }
-	    else {
-		rv = recv(sock, buf, len, flags);
-		if (rv == SOCKET_ERROR)
-		    err = WSAGetLastError();
-	    }
-	}
+            do {
+                retry = 0;
+                FD_ZERO(&fdset);
+                FD_SET(sock, &fdset);
+                tv.tv_usec = 0;
+                rv = select(FD_SETSIZE, &fdset, NULL, NULL, &tv);
+                if (rv == SOCKET_ERROR)
+                    err = WSAGetLastError();
+                else if (rv == 0) {
+                    ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
+                    ap_check_alarm();
+                    WSASetLastError(WSAEWOULDBLOCK);
+                    return (SOCKET_ERROR);
+                }
+                else {
+                    rv = recv(sock, buf, len, flags);
+                    if (rv == SOCKET_ERROR) {
+                        err = WSAGetLastError();
+                        if (err == WSAEWOULDBLOCK) {
+                            ap_log_error(APLOG_MARK, APLOG_DEBUG, NULL,
+                                         "select claimed we could read, but in fact we couldn't.");
+                            retry = 1;
+                            Sleep(100);
+                        }
+                    }
+                }
+            } while (retry);
+        }
     }
 
     ioctlsocket(sock, FIONBIO, (u_long*)&iostate);
