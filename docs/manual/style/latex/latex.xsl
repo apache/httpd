@@ -23,12 +23,12 @@
 
 <xsl:template match="sitemap">
 <xsl:text>
-\documentclass[11pt]{book}
+\documentclass[10pt]{book}
 \usepackage{times}
 \usepackage{longtable}
 \usepackage{style/latex/atbeginend}
 %\usepackage[pdftex]{color}
-\usepackage[colorlinks=true,letterpaper=true,linkcolor=green,urlcolor=blue]{hyperref}
+\usepackage[colorlinks=true,letterpaper=true,linkcolor=blue,urlcolor=blue]{hyperref}
 
 % Let LaTeX be lenient about very-bad line wrapping.
 \tolerance=9999 
@@ -50,7 +50,7 @@
 \addtolength{\parskip}{1.2ex}
 
 % Shrink the inter-item spaces
-\AfterBegin{itemize}{\addtolength{\itemsep}{-.6\baselineskip}}
+\AfterBegin{itemize}{\setlength{\itemsep}{0em}}
 
 \pagestyle{headings}
 
