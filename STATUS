@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 1999/01/05 05:14:49 $]
+  Last modified at [$Date: 1999/01/05 06:14:37 $]
 
 Release:
 
@@ -32,6 +32,8 @@ RELEASE SHOWSTOPPERS:
         Status: Marc is looking at it
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * RemoveHandler directive needs docs
 
     * Randy's proposed changes for binbuild:
     
