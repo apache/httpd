@@ -3,7 +3,7 @@
 
                          http://www.apache.org/
 
-                             September 1998
+                              February 1999
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -65,17 +65,20 @@ December 1, 1995.
 Less than a year after the group was formed, the Apache server passed
 NCSA's httpd as the #1 server on the Internet.
 
+The survey by Netcraft (http://www.netcraft.com/survey/) shows that Apache
+is today more widely used than all other web servers combined.
+
  ============================================================================
 
-Current Apache Group in alphabetical order as of 23 September 1998:
+Current Apache Group in alphabetical order as of 14 February 1999:
 
-   Brian Behlendorf       Organic Online, California 
+   Brian Behlendorf       O'Reilly and Associates, California 
    Ken Coar               IBM Corporation, Research Triangle Park, NC, USA
    Mark J. Cox            C2Net Europe, UK 
-   Lars Eilebrecht        Kreuztal, Germany 
+   Lars Eilebrecht        Cable & Wireless ECRC, Munich, Germany 
    Ralf S. Engelschall    Munich, Germany.
    Roy T. Fielding        UC Irvine, California 
-   Dean Gaudet            Transmeta Corporation, California 
+   Dean Gaudet            Critical Path, California 
    Rob Hartill            Internet Movie DB, UK 
    Ben Hyde               Gensym, Massachusetts
    Jim Jagielski          jaguNET ISP, Maryland 
@@ -85,11 +88,11 @@ Current Apache Group in alphabetical order as of 23 September 1998:
    Doug MacEachern        Freelance Consultant, Summer Seasons, Earth
    Aram W. Mirzadeh       Qosina Corporation, New York 
    Sameer Parekh          C2Net, California 
-   Marc Slemko            Canada 
    Cliff Skolnick         Freelance, California
+   Marc Slemko            Canada 
    Bill Stoddard          IBM Corp., Research Triangle Park, NC
    Paul Sutton            C2Net Europe, UK 
-   Randy Terbush          Zyzzyva ISP, Nebraska 
+   Randy Terbush          Covalent Technologies, Nebraska 
    Dirk-Willem van Gulik  Freelance Consultant, Italy 
 
 Apache Emeritae (old group members now off doing other things)
@@ -101,13 +104,15 @@ Apache Emeritae (old group members now off doing other things)
    
 Other major contributors
 
-   Rob McCool (original author of the NCSA httpd),
-   Brandon Long and Beth Frank (NCSA Server Development Team, post-1.3),
-   Paul Richards (convinced the group to use remote CVS after 1.0),
+   Howard Fear (mod_include), Florent Guillaume (language negotiation),
+   Koen Holtman (rewrite of mod_negotiation),
    Kevin Hughes (creator of all those nifty icons),
-   Henry Spencer (author of the regex library), Garey Smiley (OS/2 port),
-   Howard Fear (mod_include), Florent Guillaume (language negotiation), 
-   Ambarish Malpani (NT port).
+   Rasmus Lerdorf (mod_info, mod_php, mod_php3),
+   Brandon Long and Beth Frank (NCSA Server Development Team, post-1.3),
+   Ambarish Malpani (Beginning of the NT port),
+   Rob McCool (original author of the NCSA httpd 1.3),
+   Paul Richards (convinced the group to use remote CVS after 1.0),
+   Garey Smiley (OS/2 port), Henry Spencer (author of the regex library).
 
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:
@@ -233,5 +238,3 @@ Thanks for using Apache!
 
  ============================================================================
 Roy Fielding, June 1997
-
-If you are interested in other WWW history, see <http://www.webhistory.org/>
