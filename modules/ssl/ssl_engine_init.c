@@ -227,16 +227,16 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         /*
          * Create the server host:port string because we need it a lot
          */
-        sc->szVHostID = ssl_util_vhostid(p, s);
-        sc->nVHostID_length = strlen(sc->szVHostID);
+        sc->vhost_id = ssl_util_vhostid(p, s);
+        sc->vhost_id_len = strlen(sc->vhost_id);
 
         /* Fix up stuff that may not have been set */
-        if (sc->bEnabled == UNSET) {
-            sc->bEnabled = FALSE;
+        if (sc->enabled == UNSET) {
+            sc->enabled = FALSE;
         }
 
-        if (sc->nSessionCacheTimeout == UNSET) {
-            sc->nSessionCacheTimeout = SSL_SESSION_CACHE_TIMEOUT;
+        if (sc->session_cache_timeout == UNSET) {
+            sc->session_cache_timeout = SSL_SESSION_CACHE_TIMEOUT;
         }
 
         if (sc->nPassPhraseDialogType == SSL_PPTYPE_UNSET) {
@@ -302,7 +302,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
          * it or give out some information about what we're
          * configuring.
          */
-        if (!sc->bEnabled) {
+        if (!sc->enabled) {
             continue;
         }
 
@@ -488,7 +488,7 @@ static void ssl_init_ctx_callbacks(server_rec *s,
     SSL_CTX_set_tmp_rsa_callback(ctx, ssl_callback_TmpRSA);
     SSL_CTX_set_tmp_dh_callback(ctx,  ssl_callback_TmpDH);
 
-    if (sc->nLogLevel >= SSL_LOG_INFO) {
+    if (sc->log_level >= SSL_LOG_INFO) {
         /* this callback only logs if SSLLogLevel >= info */
         SSL_CTX_set_info_callback(ctx, ssl_callback_LogTracingState);
     }
@@ -830,7 +830,7 @@ static void ssl_init_server_certs(server_rec *s,
                                   SSLSrvConfigRec *sc)
 {
     const char *rsa_id, *dsa_id;
-    const char *vhost_id = sc->szVHostID;
+    const char *vhost_id = sc->vhost_id;
     int i;
     int have_rsa, have_dsa;
 
@@ -904,7 +904,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
 
-        if (sc->bEnabled && (s->port == DEFAULT_HTTP_PORT)) {
+        if (sc->enabled && (s->port == DEFAULT_HTTP_PORT)) {
             ssl_log(base_server, SSL_LOG_WARN,
                     "Init: (%s) You configured HTTPS(%d) "
                     "on the standard HTTP(%d) port!",
@@ -912,7 +912,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
                     DEFAULT_HTTPS_PORT, DEFAULT_HTTP_PORT);
         }
 
-        if (!sc->bEnabled && (s->port == DEFAULT_HTTPS_PORT)) {
+        if (!sc->enabled && (s->port == DEFAULT_HTTPS_PORT)) {
             ssl_log(base_server, SSL_LOG_WARN,
                     "Init: (%s) You configured HTTP(%d) "
                     "on the standard HTTPS(%d) port!",
@@ -932,7 +932,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     for (s = base_server; s; s = s->next) {
         sc = mySrvConfig(s);
 
-        if (!sc->bEnabled) {
+        if (!sc->enabled) {
             continue;
         }
 
