@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/09/15 08:26:44 $]
+Last modified at [$Date: 2004/09/15 10:31:16 $]
 
 Release:
 
@@ -75,7 +75,7 @@ PATCHES TO BACKPORT FROM 2.1
 
     *) ap_rgetline_core correctness fix.
        http://cvs.apache.org/viewcvs.cgi/httpd-2.0/server/protocol.c?r1=1.151&r2=1.152
-       +1: jorton, jerenkrantz
+       +1: jorton, jerenkrantz, trawick
 
     *) mod_rewrite: Fix 0 bytes write into random memory position. PR 31036.
        (2.0 + 1.3)
@@ -107,6 +107,11 @@ PATCHES TO BACKPORT FROM 2.1
          (1) is the use of APR_ASCII_* ebcdic-safe? I.e. shouldn't we use the
              native chars here and it will be converted later? (I'm not sure)
        jorton: I have no idea, let an EBCDIC-er complain if it breaks?
+       trawick: seems that '\r' and '\n' are the better chars to check
+                for; this is not raw data read from the network (or directly
+                from SSL) but instead it is either protocol data that has 
+                already been converted to the native charset or it is other
+                data which was created inside the server in the native charset
          (2) I'd put out (null) only if val is NULL, not if it's empty.
        jorton: ssl_var_lookup() returns "" in place of NULL, that was really
           a deliberate choice... but maybe you're right.
