@@ -77,7 +77,7 @@
 
  <!-- Used in headers and footers -->
  <message name="apachetitle">- Servidor HTTP Apache</message>
- <message name="apachehttpserver">Versi&#243;n 2.1 del Servidor HTTP Apache</message>
+ <message name="apachehttpserver">Versi&#243;n 2.0 del Servidor HTTP Apache</message>
  <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
  <message name="search">Buscar en Google</message> <!-- search button -->
  <message name="index">&#205;ndice</message> <!-- deprecated -->
@@ -87,7 +87,7 @@
  <message name="apache">Apache</message>
  <message name="http-server">Servidor HTTP</message>
  <message name="documentation">Documentaci&#243;n</message>
- <message name="version">Versi&#243;n 2.1</message>
+ <message name="version">Versi&#243;n 2.0</message>
 
  <!-- super menu -->
  <message name="modules">M&#243;dulos</message>

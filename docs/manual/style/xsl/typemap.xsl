@@ -84,6 +84,7 @@ The XSLT-Stylesheet won't work without modification.
 <xsl:template name="designations">
 <item lang="de"    charset="ISO-8859-1" >.de</item>
 <item lang="en"    charset="ISO-8859-1" >.en</item>
+<item lang="es"    charset="ISO-8859-1" >.es</item>
 <item lang="fr"    charset="ISO-8859-1" >.fr</item>
 <item lang="ja"    charset="ISO-2022-JP">.ja.jis</item>
 <item lang="ko"    charset="EUC-KR"     >.ko.euc-kr</item>
