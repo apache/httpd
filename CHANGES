@@ -2,6 +2,10 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
+  *) mod_negotiation: quality values are now parsed independent from
+     the current locale. level values are now really parsed as integers.
+     PR 17564.  [André Malo]
+
   *) mod_deflate: Check also err_headers_out for an already set
      Content-Encoding: gzip header. This prevents gzip compressed content
      from a CGI script from being compressed once more. PR 17797.

@@ -385,6 +385,65 @@ static void set_vlist_validator(request_rec *r, request_rec *vlistr)
  */
 
 /*
+ * parse quality value. atof(3) is not well-usable here, because it
+ * depends on the locale (argh).
+ *
+ * However, RFC 2616 states:
+ * 3.9 Quality Values
+ *
+ * [...] HTTP/1.1 applications MUST NOT generate more than three digits
+ * after the decimal point. User configuration of these values SHOULD also
+ * be limited in this fashion.
+ *
+ *     qvalue         = ( "0" [ "." 0*3DIGIT ] )
+ *                    | ( "1" [ "." 0*3("0") ] )
+ *
+ * This is quite easy. If the supplied string doesn't match the above
+ * definition (loosely), we simply return 1 (same as if there's no qvalue)
+ */
+
+static float atoq(const char *string)
+{
+    if (!string || !*string) {
+        return  1.0f;
+    }
+
+    while (*string && apr_isspace(*string)) {
+        ++string;
+    }
+
+    /* be tolerant and accept qvalues without leading zero
+     * (also for backwards compat, where atof() was in use)
+     */
+    if (*string != '.' && *string++ != '0') {
+        return 1.0f;
+    }
+
+    if (*string == '.') {
+        /* better only one division later, than dealing with fscking
+         * IEEE format 0.1 factors ...
+         */
+        int i = 0;        
+
+        if (*++string >= '0' && *string <= '9') {
+            i += (*string - '0') * 100;
+
+            if (*++string >= '0' && *string <= '9') {
+                i += (*string - '0') * 10;
+
+                if (*++string > '0' && *string <= '9') {
+                    i += (*string - '0');
+                }
+            }
+        }
+
+        return (float)i / 1000.0f;
+    }
+
+    return 0.0f;
+}
+
+/*
  * Get a single mime type entry --- one media type and parameters;
  * enter the values we recognize into the argument accept_rec
  */
@@ -467,10 +526,10 @@ static const char *get_entry(apr_pool_t *p, accept_rec *result,
 
         if (parm[0] == 'q'
             && (parm[1] == '\0' || (parm[1] == 's' && parm[2] == '\0'))) {
-            result->quality = (float)atof(cp);
+            result->quality = atoq(cp);
         }
         else if (parm[0] == 'l' && !strcmp(&parm[1], "evel")) {
-            result->level = (float)atof(cp);
+            result->level = (float)atoi(cp);
         }
         else if (!strcmp(parm, "charset")) {
             result->charset = cp;
