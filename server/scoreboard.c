@@ -355,7 +355,7 @@ void ap_time_process_request(int child_num, int thread_num, int status)
     put_scoreboard_info(child_num, thread_num, ws);
 }
 
-worker_score *ap_get_servers_scoreboard(int x, int y)
+AP_DECLARE(worker_score *) ap_get_servers_scoreboard(int x, int y)
 {
     if (((x < 0) || (HARD_SERVER_LIMIT < x)) ||
         ((y < 0) || (HARD_THREAD_LIMIT < y))) {
@@ -364,7 +364,7 @@ worker_score *ap_get_servers_scoreboard(int x, int y)
     return(&ap_scoreboard_image->servers[x][y]);
 }
 
-process_score *ap_get_parent_scoreboard(int x)
+AP_DECLARE(process_score *) ap_get_parent_scoreboard(int x)
 {
     if ((x < 0) || (HARD_SERVER_LIMIT < x)) {
         return(NULL); /* Out of range */
