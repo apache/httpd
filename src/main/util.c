@@ -1938,7 +1938,11 @@ char *ap_get_local_host(pool *a)
     char *server_hostname;
     struct hostent *p;
 
+#ifdef BEOS /* BeOS returns zero as an error for gethostname */
+    if (gethostname(str, sizeof(str) - 1) == 0) {
+#else    
     if (gethostname(str, sizeof(str) - 1) != 0) {
+#endif /* BeOS */
 	perror("Unable to gethostname");
 	exit(1);
     }

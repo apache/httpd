@@ -85,6 +85,8 @@ extern "C" {
 #elif defined(WIN32)
 /* Set default for Windows file system */
 #define HTTPD_ROOT "/apache"
+#elif defined(BEOS)
+#define HTTPD_ROOT "/boot/home/apache"
 #else
 #define HTTPD_ROOT "/usr/local/apache"
 #endif

@@ -259,6 +259,11 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
     }
     else
 	rv = ap_read(fb, buf, nbyte);
+#elif defined (BEOS)
+    if (fb->flags & B_SOCKET) {
+    rv = recv(fb->fd_in, buf, nbyte, 0);
+    } else
+    rv = ap_read(fb,buf,nbyte);
 #elif defined(TPF)
     fd_set fds;
     struct timeval tv;
@@ -315,6 +320,11 @@ static ap_inline int buff_write(BUFF *fb, const void *buf, int nbyte)
     }
     else
 	rv = ap_write(fb, buf, nbyte);
+#elif defined(BEOS)
+    if(fb->flags & B_SOCKET) {
+    rv = send(fb->fd, buf, nbyte, 0);
+    } else 
+    rv = ap_write(fb, buf,nbyte);
 #else
     rv = ap_write(fb, buf, nbyte);
 #endif /* WIN32 */
@@ -680,6 +690,7 @@ static int read_with_errors(BUFF *fb, void *buf, int nbyte)
     }
     return rv;
 }
+
 
 /*
  * Read up to nbyte bytes into buf.
@@ -1436,6 +1447,16 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	    rc3 = 0;
     }
     else {
+#elif defined(BEOS)
+    if (fb->flags & B_SOCKET) {
+	rc2 = ap_pclosesocket(fb->pool, fb->fd);
+	if (fb->fd_in != fb->fd) {
+	    rc3 = ap_pclosesocket(fb->pool, fb->fd_in);
+	}
+	else {
+	    rc3 = 0;
+	}
+    } else {
 #endif
 	rc2 = ap_pclosef(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
@@ -1444,7 +1465,7 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	else {
 	    rc3 = 0;
 	}
-#ifdef WIN32
+#if defined(WIN32) || defined (BEOS)
     }
 #endif
 

@@ -129,3 +129,24 @@
     logfiledir:    $localstatedir/logs
     proxycachedir: $localstatedir/proxy
 </Layout>
+
+#  BeOS layout...
+<Layout beos>
+    prefix:        /boot/home/apache
+    exec_prefix:   $prefix
+    bindir:        $exec_prefix/bin
+    sbindir:       $exec_prefix/bin
+    libexecdir:    $exec_prefix/libexec
+    mandir:        $prefix/man
+    sysconfdir:    $prefix/conf
+    datadir:       $prefix
+    iconsdir:      $datadir/icons
+    htdocsdir:     $datadir/htdocs
+    cgidir:        $datadir/cgi-bin
+    includedir:    $prefix/include
+    localstatedir: $prefix
+    runtimedir:    $localstatedir/logs
+    logfiledir:    $localstatedir/logs
+    proxycachedir: $localstatedir/proxy
+</Layout>
+

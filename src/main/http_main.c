@@ -3151,7 +3151,9 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 #endif
 
 #ifndef WORKAROUND_SOLARIS_BUG
+#ifndef BEOS /* this won't work for BeOS sockets!! */
     s = ap_slack(s, AP_SLACK_HIGH);
+#endif
 
     ap_note_cleanups_for_socket(p, s);	/* arrange to close on exec or restart */
 #ifdef TPF
@@ -3165,7 +3167,11 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &one, sizeof(int)) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_REUSEADDR)", addr);
+#ifdef BEOS
+    closesocket(s);
+#else
 	close(s);
+#endif
 	ap_unblock_alarms();
 	return -1;
     }
@@ -3175,7 +3181,12 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     if (setsockopt(s, SOL_SOCKET, SO_KEEPALIVE, (char *) &one, sizeof(int)) < 0) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 		    "make_sock: for %s, setsockopt: (SO_KEEPALIVE)", addr);
+#ifdef BEOS
+    closesocket(s);
+#else
 	close(s);
+#endif
+
 	ap_unblock_alarms();
 	return -1;
     }
@@ -3221,6 +3232,7 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     if (ntohs(server->sin_port) < 1024)
 	GETPRIVMODE();
 #endif
+
     if (bind(s, (struct sockaddr *) server, sizeof(struct sockaddr_in)) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_CRIT, server_conf,
 	    "make_sock: could not bind to %s", addr);
@@ -3228,7 +3240,12 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	if (ntohs(server->sin_port) < 1024)
 	    GETUSERMODE();
 #endif
+
+#ifdef BEOS
+    closesocket(s);
+#else
 	close(s);
+#endif
 	ap_unblock_alarms();
 	exit(1);
     }
@@ -3240,7 +3257,11 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
     if (listen(s, ap_listenbacklog) == -1) {
 	ap_log_error(APLOG_MARK, APLOG_ERR, server_conf,
 	    "make_sock: unable to listen for connections on %s", addr);
+#ifdef BEOS
+    closesocket(s);
+#else
 	close(s);
+#endif
 	ap_unblock_alarms();
 	exit(1);
     }
@@ -3260,7 +3281,11 @@ static int make_sock(pool *p, const struct sockaddr_in *server)
 	    "larger than FD_SETSIZE (%u) "
 	    "found, you probably need to rebuild Apache with a "
 	    "larger FD_SETSIZE", addr, s, FD_SETSIZE);
+#ifdef BEOS
+    closesocket(s);
+#else
 	close(s);
+#endif
 	return -1;
     }
 #endif
