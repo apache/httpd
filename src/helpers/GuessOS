@@ -72,6 +72,9 @@ if [ "x$XREL" != "x" ]; then
 		    7*)
 			echo "${MACHINE}-whatever-unixware7"; exit 0
 			;;
+		    8*)
+			echo "${MACHINE}-whatever-OpenUNIX"; exit 0
+			;;
 		esac
 		;;
 	esac

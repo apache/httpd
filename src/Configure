@@ -631,6 +631,12 @@ case "$PLAT" in
 	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen -lresolv"
 	DBM_LIB=""
 	;;
+    *-OpenUNIX)
+	OS='OpenUNIX'
+	CFLAGS="$CFLAGS -DUW=800"
+	LIBS="$LIBS -lsocket -lnsl -lcrypt -lgen -lresolv"
+	DBM_LIB=""
+	;;
     maxion-*-sysv4*)
     	OS='SVR4'
 	CFLAGS="$CFLAGS -DSVR4"
@@ -1267,6 +1273,16 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LDFLAGS_SHLIB="-Bdynamic -G"
 	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
 	    LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
+	    ;;
+	*-OpenUNIX*)
+	    case $CC in
+		*/gcc|gcc ) CFLAGS_SHLIB="-fpic" ;;
+		*/cc|cc   ) CFLAGS_SHLIB="-KPIC" ;;
+	    esac
+	    LDFLAGS_SHLIB="-Bdynamic -G"
+	    LDFLAGS_MOD_SHLIB=$LDFLAGS_SHLIB
+	    LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
+	    LD_SHLIB=$CC
 	    ;;
 	 *-sco5*)
 	     case $CC in
