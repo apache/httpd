@@ -136,6 +136,13 @@
       enabled in the correct order. The new Apache 2.0 API allows
       modules to explicitly specify their ordering, eliminating the
       need for these directives.</li>
+
+      <li>The <code>FancyIndexing</code> directive has been removed.
+      The same functionality is availble through the
+      <code>FancyIndexing</code> option to the <a
+      href="mod/mod_autoindex.html#indexoptions">IndexOptions</a>
+      directive.</li>
+
     </ul>
 
     <h3>Misc Changes</h3>
