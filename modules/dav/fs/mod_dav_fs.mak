@@ -251,11 +251,15 @@ DEP_CPP_DBM_C=\
 	"..\..\..\include\ap_release.h"\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
-	"..\..\..\include\util_uri.h"\
+	"..\..\..\include\util_filter.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
+	"..\..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_optional_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\..\srclib\apr-util\include\apr_xml.h"\
 	"..\..\..\srclib\apr-util\include\apu.h"\
 	"..\..\..\srclib\apr-util\include\apu_compat.h"\
@@ -266,6 +270,7 @@ DEP_CPP_DBM_C=\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\..\srclib\apr\include\apr_pools.h"\
 	"..\..\..\srclib\apr\include\apr_strings.h"\
@@ -291,11 +296,15 @@ DEP_CPP_LOCK_=\
 	"..\..\..\include\http_log.h"\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
-	"..\..\..\include\util_uri.h"\
+	"..\..\..\include\util_filter.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
+	"..\..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_optional_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\..\srclib\apr-util\include\apr_xml.h"\
 	"..\..\..\srclib\apr-util\include\apu.h"\
 	"..\..\..\srclib\apr-util\include\apu_compat.h"\
@@ -306,6 +315,7 @@ DEP_CPP_LOCK_=\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\..\srclib\apr\include\apr_pools.h"\
 	"..\..\..\srclib\apr\include\apr_strings.h"\
@@ -334,11 +344,15 @@ DEP_CPP_MOD_D=\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
 	"..\..\..\include\util_cfgtree.h"\
-	"..\..\..\include\util_uri.h"\
+	"..\..\..\include\util_filter.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
+	"..\..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_optional_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\..\srclib\apr-util\include\apr_xml.h"\
 	"..\..\..\srclib\apr-util\include\apu.h"\
 	"..\..\..\srclib\apr-util\include\apu_compat.h"\
@@ -349,6 +363,7 @@ DEP_CPP_MOD_D=\
 	"..\..\..\srclib\apr\include\apr_file_io.h"\
 	"..\..\..\srclib\apr\include\apr_general.h"\
 	"..\..\..\srclib\apr\include\apr_hash.h"\
+	"..\..\..\srclib\apr\include\apr_mmap.h"\
 	"..\..\..\srclib\apr\include\apr_network_io.h"\
 	"..\..\..\srclib\apr\include\apr_pools.h"\
 	"..\..\..\srclib\apr\include\apr_tables.h"\
@@ -376,13 +391,14 @@ DEP_CPP_REPOS=\
 	"..\..\..\include\httpd.h"\
 	"..\..\..\include\pcreposix.h"\
 	"..\..\..\include\util_filter.h"\
-	"..\..\..\include\util_uri.h"\
 	"..\..\..\include\util_xml.h"\
 	"..\..\..\os\win32\os.h"\
 	"..\..\..\srclib\apr-util\include\apr_buckets.h"\
 	"..\..\..\srclib\apr-util\include\apr_dbm.h"\
 	"..\..\..\srclib\apr-util\include\apr_hooks.h"\
+	"..\..\..\srclib\apr-util\include\apr_optional_hooks.h"\
 	"..\..\..\srclib\apr-util\include\apr_ring.h"\
+	"..\..\..\srclib\apr-util\include\apr_uri.h"\
 	"..\..\..\srclib\apr-util\include\apr_xml.h"\
 	"..\..\..\srclib\apr-util\include\apu.h"\
 	"..\..\..\srclib\apr-util\include\apu_compat.h"\
@@ -418,26 +434,26 @@ NODEP_CPP_REPOS=\
 !IF  "$(CFG)" == "mod_dav_fs - Win32 Release"
 
 "libapr - Win32 Release" : 
-   cd "..\../..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Release" 
+   cd "..\../../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\..\modules\dav\fs"
 
 "libapr - Win32 ReleaseCLEAN" : 
-   cd "..\../..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Release"\
+   cd "..\../../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\..\modules\dav\fs"
 
 !ELSEIF  "$(CFG)" == "mod_dav_fs - Win32 Debug"
 
 "libapr - Win32 Debug" : 
-   cd "..\../..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Debug" 
+   cd "..\../../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\..\modules\dav\fs"
 
 "libapr - Win32 DebugCLEAN" : 
-   cd "..\../..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Debug"\
+   cd "..\../../..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\..\modules\dav\fs"
 
@@ -446,13 +462,13 @@ NODEP_CPP_REPOS=\
 !IF  "$(CFG)" == "mod_dav_fs - Win32 Release"
 
 "libaprutil - Win32 Release" : 
-   cd "..\../..\srclib\apr-util"
+   cd "..\../../..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Release"\
  
    cd "..\..\modules\dav\fs"
 
 "libaprutil - Win32 ReleaseCLEAN" : 
-   cd "..\../..\srclib\apr-util"
+   cd "..\../../..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Release" RECURSE=1 
    cd "..\..\modules\dav\fs"
@@ -460,12 +476,12 @@ NODEP_CPP_REPOS=\
 !ELSEIF  "$(CFG)" == "mod_dav_fs - Win32 Debug"
 
 "libaprutil - Win32 Debug" : 
-   cd "..\../..\srclib\apr-util"
+   cd "..\../../..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\libaprutil.mak" CFG="libaprutil - Win32 Debug" 
    cd "..\..\modules\dav\fs"
 
 "libaprutil - Win32 DebugCLEAN" : 
-   cd "..\../..\srclib\apr-util"
+   cd "..\../../..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libaprutil.mak"\
  CFG="libaprutil - Win32 Debug" RECURSE=1 
    cd "..\..\modules\dav\fs"
@@ -475,26 +491,26 @@ NODEP_CPP_REPOS=\
 !IF  "$(CFG)" == "mod_dav_fs - Win32 Release"
 
 "libhttpd - Win32 Release" : 
-   cd "..\../.."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Release" 
+   cd "..\../../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd ".\modules\dav\fs"
 
 "libhttpd - Win32 ReleaseCLEAN" : 
-   cd "..\../.."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Release"\
- RECURSE=1 
+   cd "..\../../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
+ CFG="libhttpd - Win32 Release" RECURSE=1 
    cd ".\modules\dav\fs"
 
 !ELSEIF  "$(CFG)" == "mod_dav_fs - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
-   cd "..\../.."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Debug" 
+   cd "..\../../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd ".\modules\dav\fs"
 
 "libhttpd - Win32 DebugCLEAN" : 
-   cd "..\../.."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Debug"\
+   cd "..\../../..\httpd-2.0"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd ".\modules\dav\fs"
 
@@ -503,26 +519,26 @@ NODEP_CPP_REPOS=\
 !IF  "$(CFG)" == "mod_dav_fs - Win32 Release"
 
 "mod_dav - Win32 Release" : 
-   cd "..\../..\modules\dav\main"
-   $(MAKE) /$(MAKEFLAGS) /F .\mod_dav.mak CFG="mod_dav - Win32 Release" 
+   cd "..\../../..\httpd-2.0\modules\dav\main"
+   $(MAKE) /$(MAKEFLAGS) /F ".\mod_dav.mak" CFG="mod_dav - Win32 Release" 
    cd "..\fs"
 
 "mod_dav - Win32 ReleaseCLEAN" : 
-   cd "..\../..\modules\dav\main"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\mod_dav.mak CFG="mod_dav - Win32 Release"\
+   cd "..\../../..\httpd-2.0\modules\dav\main"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\mod_dav.mak" CFG="mod_dav - Win32 Release"\
  RECURSE=1 
    cd "..\fs"
 
 !ELSEIF  "$(CFG)" == "mod_dav_fs - Win32 Debug"
 
 "mod_dav - Win32 Debug" : 
-   cd "..\../..\modules\dav\main"
-   $(MAKE) /$(MAKEFLAGS) /F .\mod_dav.mak CFG="mod_dav - Win32 Debug" 
+   cd "..\../../..\httpd-2.0\modules\dav\main"
+   $(MAKE) /$(MAKEFLAGS) /F ".\mod_dav.mak" CFG="mod_dav - Win32 Debug" 
    cd "..\fs"
 
 "mod_dav - Win32 DebugCLEAN" : 
-   cd "..\../..\modules\dav\main"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\mod_dav.mak CFG="mod_dav - Win32 Debug"\
+   cd "..\../../..\httpd-2.0\modules\dav\main"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\mod_dav.mak" CFG="mod_dav - Win32 Debug"\
  RECURSE=1 
    cd "..\fs"
 

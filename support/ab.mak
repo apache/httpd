@@ -210,26 +210,27 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "ab - Win32 Release"
 
 "apr - Win32 Release" : 
-   cd "..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\apr.mak CFG="apr - Win32 Release" 
+   cd "..\..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Release" 
    cd "..\..\support"
 
 "apr - Win32 ReleaseCLEAN" : 
-   cd "..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\apr.mak CFG="apr - Win32 Release" RECURSE=1\
- 
+   cd "..\..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Release"\
+ RECURSE=1 
    cd "..\..\support"
 
 !ELSEIF  "$(CFG)" == "ab - Win32 Debug"
 
 "apr - Win32 Debug" : 
-   cd "..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\apr.mak CFG="apr - Win32 Debug" 
+   cd "..\..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Debug" 
    cd "..\..\support"
 
 "apr - Win32 DebugCLEAN" : 
-   cd "..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\apr.mak CFG="apr - Win32 Debug" RECURSE=1 
+   cd "..\..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Debug" RECURSE=1\
+ 
    cd "..\..\support"
 
 !ENDIF 
@@ -237,12 +238,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "ab - Win32 Release"
 
 "aprutil - Win32 Release" : 
-   cd "..\srclib\apr-util"
+   cd "..\..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Release" 
    cd "..\..\support"
 
 "aprutil - Win32 ReleaseCLEAN" : 
-   cd "..\srclib\apr-util"
+   cd "..\..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Release"\
  RECURSE=1 
    cd "..\..\support"
@@ -250,12 +251,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "ab - Win32 Debug"
 
 "aprutil - Win32 Debug" : 
-   cd "..\srclib\apr-util"
+   cd "..\..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Debug" 
    cd "..\..\support"
 
 "aprutil - Win32 DebugCLEAN" : 
-   cd "..\srclib\apr-util"
+   cd "..\..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Debug"\
  RECURSE=1 
    cd "..\..\support"

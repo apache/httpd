@@ -221,12 +221,12 @@ LINK32_OBJS= \
 
 "libapr - Win32 Release" : 
    cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Release" 
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Release" 
    cd "..\.."
 
 "libapr - Win32 ReleaseCLEAN" : 
    cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Release"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Release"\
  RECURSE=1 
    cd "..\.."
 
@@ -234,12 +234,12 @@ LINK32_OBJS= \
 
 "libapr - Win32 Debug" : 
    cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\libapr.mak CFG="libapr - Win32 Debug" 
+   $(MAKE) /$(MAKEFLAGS) /F ".\libapr.mak" CFG="libapr - Win32 Debug" 
    cd "..\.."
 
 "libapr - Win32 DebugCLEAN" : 
    cd ".\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libapr.mak CFG="libapr - Win32 Debug"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libapr.mak" CFG="libapr - Win32 Debug"\
  RECURSE=1 
    cd "..\.."
 
@@ -278,25 +278,25 @@ LINK32_OBJS= \
 
 "libhttpd - Win32 Release" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Release" 
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Release" 
    cd "."
 
 "libhttpd - Win32 ReleaseCLEAN" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Release"\
- RECURSE=1 
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak"\
+ CFG="libhttpd - Win32 Release" RECURSE=1 
    cd "."
 
 !ELSEIF  "$(CFG)" == "Apache - Win32 Debug"
 
 "libhttpd - Win32 Debug" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) /F .\libhttpd.mak CFG="libhttpd - Win32 Debug" 
+   $(MAKE) /$(MAKEFLAGS) /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug" 
    cd "."
 
 "libhttpd - Win32 DebugCLEAN" : 
    cd "."
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\libhttpd.mak CFG="libhttpd - Win32 Debug"\
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\libhttpd.mak" CFG="libhttpd - Win32 Debug"\
  RECURSE=1 
    cd "."
 
@@ -340,6 +340,7 @@ DEP_CPP_MAIN_=\
 	".\include\util_ebcdic.h"\
 	".\os\win32\os.h"\
 	".\srclib\apr-util\include\apr_hooks.h"\
+	".\srclib\apr-util\include\apr_optional_hooks.h"\
 	".\srclib\apr-util\include\apr_uri.h"\
 	".\srclib\apr-util\include\apu.h"\
 	".\srclib\apr\include\apr.h"\

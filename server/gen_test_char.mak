@@ -212,26 +212,27 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 "apr - Win32 Release" : 
-   cd "..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\apr.mak CFG="apr - Win32 Release" 
+   cd "..\..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Release" 
    cd "..\..\server"
 
 "apr - Win32 ReleaseCLEAN" : 
-   cd "..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\apr.mak CFG="apr - Win32 Release" RECURSE=1\
- 
+   cd "..\..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Release"\
+ RECURSE=1 
    cd "..\..\server"
 
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
 "apr - Win32 Debug" : 
-   cd "..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) /F .\apr.mak CFG="apr - Win32 Debug" 
+   cd "..\..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) /F ".\apr.mak" CFG="apr - Win32 Debug" 
    cd "..\..\server"
 
 "apr - Win32 DebugCLEAN" : 
-   cd "..\srclib\apr"
-   $(MAKE) /$(MAKEFLAGS) CLEAN /F .\apr.mak CFG="apr - Win32 Debug" RECURSE=1 
+   cd "..\..\httpd-2.0\srclib\apr"
+   $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\apr.mak" CFG="apr - Win32 Debug" RECURSE=1\
+ 
    cd "..\..\server"
 
 !ENDIF 
@@ -239,12 +240,12 @@ LINK32_OBJS= \
 !IF  "$(CFG)" == "gen_test_char - Win32 Release"
 
 "aprutil - Win32 Release" : 
-   cd "..\srclib\apr-util"
+   cd "..\..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Release" 
    cd "..\..\server"
 
 "aprutil - Win32 ReleaseCLEAN" : 
-   cd "..\srclib\apr-util"
+   cd "..\..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Release"\
  RECURSE=1 
    cd "..\..\server"
@@ -252,12 +253,12 @@ LINK32_OBJS= \
 !ELSEIF  "$(CFG)" == "gen_test_char - Win32 Debug"
 
 "aprutil - Win32 Debug" : 
-   cd "..\srclib\apr-util"
+   cd "..\..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) /F ".\aprutil.mak" CFG="aprutil - Win32 Debug" 
    cd "..\..\server"
 
 "aprutil - Win32 DebugCLEAN" : 
-   cd "..\srclib\apr-util"
+   cd "..\..\httpd-2.0\srclib\apr-util"
    $(MAKE) /$(MAKEFLAGS) CLEAN /F ".\aprutil.mak" CFG="aprutil - Win32 Debug"\
  RECURSE=1 
    cd "..\..\server"
@@ -271,9 +272,10 @@ DEP_CPP_GEN_T=\
 	"..\include\ap_release.h"\
 	"..\include\httpd.h"\
 	"..\include\pcreposix.h"\
-	"..\include\util_uri.h"\
 	"..\os\win32\os.h"\
 	"..\srclib\apr-util\include\apr_hooks.h"\
+	"..\srclib\apr-util\include\apr_optional_hooks.h"\
+	"..\srclib\apr-util\include\apr_uri.h"\
 	"..\srclib\apr-util\include\apu.h"\
 	"..\srclib\apr\include\apr.h"\
 	"..\srclib\apr\include\apr_errno.h"\
