@@ -922,11 +922,7 @@ apr_status_t http_filter(ap_filter_t *f, ap_bucket_brigade *b)
         pos = buff;
         while (pos < buff + length) {
             if (*pos == ASCII_LF) {
-                if (*(pos - 1) == ASCII_CR) {
-                    *(pos - 1) = ASCII_LF;
-                    *pos = '\0';
-                }
-                e->split(e, pos - buff + (*pos == '\0'));
+                e->split(e, pos - buff + 1);
                 bb = ap_brigade_split(b, AP_BUCKET_NEXT(e));
                 ctx->b = bb;
                 return APR_SUCCESS;
@@ -988,25 +984,19 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             break;
         }
 
-	/* check for line end using ascii encoding, even on an ebcdic box
-	 * since this is raw protocol data fresh from the network
-	 */
-        if ((toss = ap_strchr_c(temp, ASCII_LF)) != NULL) { 
-            length = (toss - temp) + (pos - s) + 1;
-            e->split(e, length + (temp[length] == '\0')); 
-            apr_cpystrn(pos, temp, length + 1);
+        if (length <= n) {
+            memcpy(pos, temp, length);
             AP_BUCKET_REMOVE(e);
             ap_bucket_destroy(e);
         }
         else {
-            apr_cpystrn(pos, temp, length + 1);
-            pos += length;
+            /* input line was larger than the caller's buffer */
             AP_BUCKET_REMOVE(e);
             ap_bucket_destroy(e);
-            continue;
+            total = -1;  /* ??? is this right ? */
+            break;
         }
-        c->input_data = b;
-        e = AP_BRIGADE_FIRST(b); 
+        
 /**** XXX
  *    Check for folding
  * Continue appending if line folding is desired and
@@ -1023,6 +1013,13 @@ static int getline(char *s, int n, conn_rec *c, int fold)
         total += length;        /* and how long s has become             */
 
         if (*pos == '\n') {     /* Did we get a full line of input?      */
+                
+            if (pos > s && *(pos - 1) == '\r') {
+                --pos;          /* zap optional CR before LF             */
+                --total;
+                ++n;
+            }
+                
             /*
              * Trim any extra trailing spaces or tabs except for the first
              * space or tab at the beginning of a blank string.  This makes
@@ -1041,9 +1038,9 @@ static int getline(char *s, int n, conn_rec *c, int fold)
             break;
         }
         else {
-	    break;       /* if not, input line exceeded buffer size */
+            pos++;              /* bump past end of incomplete line      */
+        }
 	}
-    }
     return total;
 }
 
@@ -1126,7 +1123,7 @@ static int read_request_line(request_rec *r)
     ap_bsetflag(conn->client, B_SAFEREAD, 1); 
     ap_bflush(conn->client);
     while ((len = getline(l, sizeof(l), conn, 0)) <= 0) {
-        if ((len < 0) || ap_bgetflag(conn->client, B_EOF)) {
+        if ((len < 0) || 1 /* ap_bgetflag(conn->client, B_EOF) */ ) {
 	    ap_bsetflag(conn->client, B_SAFEREAD, 0);
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
