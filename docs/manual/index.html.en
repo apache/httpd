@@ -39,7 +39,7 @@
 <LI><A HREF="dso.html">Dynamic Shared Object (DSO) support</A>
 <LI><A HREF="handler.html">Handlers</A>
 <LI><A HREF="content-negotiation.html">Content negotiation</A>
-<LI><A HREF="env.html">Special purpose environment variables</A>
+<LI><A HREF="env.html">Environment Variables</A>
 <LI><A HREF="misc/API.html">The Apache API</A>
 <LI><A HREF="suexec.html">Using SetUserID Execution for CGI</A>
 </UL>
