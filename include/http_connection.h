@@ -129,9 +129,19 @@ AP_DECLARE_HOOK(int,pre_connection,(conn_rec *c))
 AP_DECLARE_HOOK(int,process_connection,(conn_rec *c))
 
 /**
+ * This hook allows modules to create connections. After the connection
+ * has been accepted, the socket is passed to this function to actually
+ * insert all filters that operate on the network, and create the connection
+ * record. The first module to create a connection is the last module
+ * run
+ * @param p The pool from which to allocate the connection record
+ * @param csd The socket that has been accepted
+ * @param conn_id A unique identifier for this connection.  The ID only
+ *                needs to be unique at that time, not forever.
+ * @return An allocated connection record or NULL.
  */
 AP_DECLARE_HOOK(conn_rec *, create_connection,
-                (apr_pool_t *p, apr_socket_t *csd, int conn_ed))
+                (apr_pool_t *p, apr_socket_t *csd, int conn_id))
 
 #ifdef __cplusplus
 }
