@@ -88,6 +88,7 @@
 #define CORE_PRIVATE
 
 #include "httpd.h"
+#include "mpm_default.h"
 #include "http_main.h"
 #include "http_log.h"
 #include "http_config.h"
