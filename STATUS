@@ -1,5 +1,5 @@
   1.3 STATUS:
-  Last modified at [$Date: 2000/09/20 13:19:48 $]
+  Last modified at [$Date: 2000/09/20 20:30:27 $]
 
 Release:
 
@@ -28,7 +28,8 @@ RELEASE SHOWSTOPPERS:
     * multi-pass interpolation in mod_rewrite must be replaced
       by a single-pass implementation.
 	Message-Id: <E13OQB5-0004Xs-00@hand.dotat.at>
-      Status: fanf is working on it
+      Status: fanf has a patch
+	Message-ID: <20000918212739.C7495@hand.dotat.at>
 
     * Root all file systems with <Directory /> for WIN32/OS2/NW permissions 
       Status: Patch posted <000f01c021e3$a8bf0e40$92c0b0d0@roweclan.net>
