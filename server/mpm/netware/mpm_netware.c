@@ -1156,7 +1156,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
         }
         else {
             show_settings = 0;
-            if (!strnicmp("HELP",&szcommandLine[iCommandLen],3))
+            if (strnicmp("HELP",&szcommandLine[iCommandLen],3))
                 printf("Unknown APACHE2 command %s\n", &szcommandLine[iCommandLen]);
             printf("Usage: APACHE2 [command] [-p <instance ID>]\n");
             printf("Commands:\n");
