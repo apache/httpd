@@ -84,7 +84,6 @@
 <!-- documents not converted (yet?). -->
 <not-exists>
     <file>developer/API.xml</file>
-    <file>programs/apxs.xml</file>
     <file>programs/dbmmanage.xml</file>
     <file>programs/htdigest.xml</file>
     <file>programs/htpasswd.xml</file>
