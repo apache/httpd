@@ -435,23 +435,28 @@ static apr_datum_t dav_fs_build_fname_key(apr_pool_t *p, const char *pathname)
 ** dav_fs_build_key:  Given a resource, return a apr_datum_t key
 **    to look up lock information for this file.
 **
-**    (Win32 or file is lock-null):
+**    (inode/dev not supported or file is lock-null):
 **       apr_datum_t->dvalue = full path
 **
-**    (non-Win32 and file exists ):
-**       apr_datum_t->dvalue = inode, dev_major, dev_minor
+**    (inode/dev supported and file exists ):
+**       apr_datum_t->dvalue = inode, dev
 */
 static apr_datum_t dav_fs_build_key(apr_pool_t *p,
                                     const dav_resource *resource)
 {
     const char *file = dav_fs_pathname(resource);
-#ifndef WIN32
     apr_datum_t key;
     apr_finfo_t finfo;
+    apr_status_t rv;
 
     /* ### use lstat() ?? */
-    if (apr_stat(&finfo, file, APR_FINFO_NORM, p) == APR_SUCCESS) {
-
+    /*
+     * XXX: What for platforms with no IDENT (dev/inode)?
+     */
+    rv = apr_stat(&finfo, file, APR_FINFO_IDENT, p);
+    if ((rv == APR_SUCCESS || rv == APR_INCOMPLETE)
+        && ((finfo.valid & APR_FINFO_IDENT) == APR_FINFO_IDENT))
+    {
 	/* ### can we use a buffer for this? */
 	key.dsize = 1 + sizeof(finfo.inode) + sizeof(finfo.device);
 	key.dptr = apr_palloc(p, key.dsize);
@@ -462,7 +467,6 @@ static apr_datum_t dav_fs_build_key(apr_pool_t *p,
 
 	return key;
     }
-#endif
 
     return dav_fs_build_fname_key(p, file);
 }
@@ -664,9 +668,11 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
 		if (*key.dptr == DAV_TYPE_FNAME) {
 		    const char *fname = key.dptr + 1;
 		    apr_finfo_t finfo;
+                    apr_status_t rv;
 
 		    /* if we don't see the file, then it's a locknull */
-		    if (apr_lstat(&finfo, fname, APR_FINFO_NORM, p) != APR_SUCCESS) {
+                    rv = apr_lstat(&finfo, fname, APR_FINFO_MIN, p);
+		    if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
 			if ((err = dav_fs_remove_locknull_member(p, fname, &buf)) != NULL) {
                             /* ### push a higher-level description? */
                             return err;
@@ -821,6 +827,7 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
     apr_file_t *file = NULL;
     dav_error *err = NULL;
     apr_size_t amt;
+    apr_status_t rv;
 
     dav_buffer_init(p, pbuf, dirpath);
 
@@ -837,7 +844,8 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
 	return NULL;
     }
 
-    if (apr_file_info_get(&finfo, APR_FINFO_NORM, file) != APR_SUCCESS) {
+    rv = apr_file_info_get(&finfo, APR_FINFO_NORM, file);
+    if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
 	err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
 			    apr_psprintf(p,
 					"Opened but could not stat file %s",
@@ -1042,7 +1050,6 @@ static dav_error * dav_fs_remove_locknull_state(
 	return err;
     }
 
-#ifndef WIN32
     {
 	dav_lock_discovery *ld;
 	dav_lock_indirect  *id;
@@ -1071,7 +1078,6 @@ static dav_error * dav_fs_remove_locknull_state(
 	    return err;
         }
     }
-#endif
 
     return NULL;
 }

@@ -244,17 +244,43 @@ void dav_fs_dir_file_name(
             *fname_p = NULL;
     }
     else {
+        const char *testpath, *rootpath;
         char *dirpath = ap_make_dirstr_parent(ctx->pool, ctx->pathname);
         apr_size_t dirlen = strlen(dirpath);
+        apr_status_t rv = APR_SUCCESS;
 
-        if (fname_p != NULL)
-            *fname_p = ctx->pathname + dirlen;
-        *dirpath_p = dirpath;
+        testpath = dirpath;
+        if (dirlen > 0) {
+            rv = apr_filepath_root(&rootpath, &testpath, 0, ctx->pool);
+        }
+        
+        /* remove trailing slash from dirpath, unless it's a root path
+         */
+        if ((rv == APR_SUCCESS && testpath && *testpath)
+            || rv == APR_ERELATIVE) {
+            if (dirpath[dirlen - 1] == '/') {
+                dirpath[dirlen - 1] = '\0';
+            }
+        }
+        
+        /* ###: Looks like a response could be appropriate
+         *
+         * APR_SUCCESS     here tells us the dir is a root
+         * APR_ERELATIVE   told us we had no root (ok)
+         * APR_EINCOMPLETE an incomplete testpath told us
+         *                 there was no -file- name here!
+         * APR_EBADPATH    or other errors tell us this file
+         *                 path is undecipherable
+         */
 
-        /* remove trailing slash from dirpath, unless it's the root dir */
-        /* ### Win32 check */
-        if (dirlen > 1 && dirpath[dirlen - 1] == '/') {
-            dirpath[dirlen - 1] = '\0';
+        if (rv == APR_SUCCESS || rv == APR_ERELATIVE) {
+            *dirpath_p = dirpath;
+            if (fname_p != NULL)
+                *fname_p = ctx->pathname + dirlen;
+        }
+        else {
+            if (fname_p != NULL)
+                *fname_p = NULL;
         }
     }
 }
@@ -426,7 +452,8 @@ static dav_error * dav_fs_copymove_state(
     src = apr_pstrcat(p, src_dir, "/" DAV_FS_STATE_DIR "/", src_file, NULL);
 
     /* the source file doesn't exist */
-    if (apr_stat(&src_finfo, src, APR_FINFO_NORM, p) != APR_SUCCESS) {
+    rv = apr_stat(&src_finfo, src, APR_FINFO_NORM, p);
+    if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
 	return NULL;
     }
 
@@ -446,7 +473,8 @@ static dav_error * dav_fs_copymove_state(
     }
 
     /* get info about the state directory */
-    if (apr_stat(&dst_state_finfo, dst, APR_FINFO_NORM, p) != APR_SUCCESS) {
+    rv = apr_stat(&dst_state_finfo, dst, APR_FINFO_NORM, p);
+    if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
 	/* Ack! Where'd it go? */
 	/* ### use something besides 500? */
 	return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -705,16 +733,12 @@ static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
     dav_resource_private *ctx = resource->info;
     dav_resource_private *parent_ctx;
     dav_resource *parent_resource;
+    apr_status_t rv;
     char *dirpath;
 
     /* If given resource is root, then there is no parent */
     if (strcmp(resource->uri, "/") == 0 ||
-#ifdef WIN32
-        (strlen(ctx->pathname) == 3 && ctx->pathname[1] == ':' && ctx->pathname[2] == '/')
-#else
-        strcmp(ctx->pathname, "/") == 0
-#endif
-	) {
+        ap_os_is_path_absolute(ctx->pool, ctx->pathname)) {
         *result_parent = NULL;
         return NULL;
     }
@@ -745,8 +769,9 @@ static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
 	parent_resource->uri = uri;
     }
 
-    if (apr_stat(&parent_ctx->finfo, parent_ctx->pathname, 
-                 APR_FINFO_NORM, ctx->pool) == APR_SUCCESS) {
+    apr_stat(&parent_ctx->finfo, parent_ctx->pathname, 
+             APR_FINFO_NORM, ctx->pool);
+    if (rv == APR_SUCCESS || rv == APR_INCOMPLETE) {
         parent_resource->exists = 1;
     }
 
@@ -764,14 +789,13 @@ static int dav_fs_is_same_resource(
     if (res1->hooks != res2->hooks)
 	return 0;
 
-#ifdef WIN32
-    return stricmp(ctx1->pathname, ctx2->pathname) == 0;
-#else
-    if (ctx1->finfo.filetype != 0)
+    if ((ctx1->finfo.filetype != 0) && (ctx2->finfo.filetype != 0)
+        && (ctx1->finfo.valid & ctx2->finfo.valid & APR_FINFO_INODE)) {
         return ctx1->finfo.inode == ctx2->finfo.inode;
-    else
+    }
+    else {
         return strcmp(ctx1->pathname, ctx2->pathname) == 0;
-#endif
+    }
 }
 
 static int dav_fs_is_parent_resource(
@@ -1171,13 +1195,21 @@ static dav_error * dav_fs_move_resource(
     else {
 	const char *dirpath;
 	apr_finfo_t finfo;
+        apr_status_t rv;
 
 	/* destination does not exist, but the parent directory should,
 	 * so try it
 	 */
 	dirpath = ap_make_dirstr_parent(dstinfo->pool, dstinfo->pathname);
-	if (apr_stat(&finfo, dirpath, APR_FINFO_NORM, dstinfo->pool) == 0
-	    && finfo.device == srcinfo->finfo.device) {
+        /* 
+         * XXX: If missing dev ... then what test?
+         * Really need a try and failover for those platforms.
+         * 
+         */
+        rv = apr_stat(&finfo, dirpath, APR_FINFO_DEV, dstinfo->pool);
+	if ((rv == APR_SUCCESS || rv == APR_INCOMPLETE)
+            && (finfo.valid & srcinfo->finfo.valid & APR_FINFO_DEV)
+	    && (finfo.device == srcinfo->finfo.device)) {
 	    can_rename = 1;
 	}
     }
@@ -1868,11 +1900,11 @@ static int dav_fs_is_writable(const dav_resource *resource, int propid)
 {
     const dav_liveprop_spec *info;
 
-#ifndef WIN32
-    /* this property is not usable (writable) on the Win32 platform */
+    /* XXX this property is not usable (writable) on all platforms
+     * Need an abstract way to determine this.
+     */
     if (propid == DAV_PROPID_FS_executable && !resource->collection)
 	return 1;
-#endif
 
     (void) dav_get_liveprop_info(propid, &dav_fs_liveprop_group, &info);
     return info->is_writable;
@@ -2036,10 +2068,11 @@ static const dav_provider dav_fs_provider =
 
 void dav_fs_gather_propsets(apr_array_header_t *uris)
 {
-#ifndef WIN32
+    /* XXX: Need an abstract way to determine this on a per-filesystem basis
+     * This may change by uri (!) (think OSX HFS + unix mounts).
+     */
     *(const char **)apr_array_push(uris) =
         "<http://apache.org/dav/propset/fs/1>";
-#endif
 }
 
 int dav_fs_find_liveprop(const dav_resource *resource,
@@ -2077,16 +2110,8 @@ void dav_fs_insert_all_liveprops(request_rec *r, const dav_resource *resource,
 			      what, phdr);
     (void) dav_fs_insert_prop(resource, DAV_PROPID_getetag,
 			      what, phdr);
-
-#ifndef WIN32
-    /*
-    ** Note: this property is not defined on the Win32 platform.
-    **       dav_fs_insert_prop() won't insert it, but we may as
-    **       well not even call it.
-    */
     (void) dav_fs_insert_prop(resource, DAV_PROPID_FS_executable,
 			      what, phdr);
-#endif
 
     /* ### we know the others aren't defined as liveprops */
 }
