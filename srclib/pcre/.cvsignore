@@ -2,7 +2,6 @@
 *.lo
 .libs
 Makefile
-*.mak
 chartables.c
 config.h
 config.log
@@ -20,3 +19,6 @@ LibD
 LibR
 .deps
 pcre.h
+*.plg
+*.dep
+*.mak

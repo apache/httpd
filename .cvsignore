@@ -26,4 +26,8 @@ Apache.ncb
 Apache.opt
 apachecore.dll
 *.x
+*.aps
 *.plg
+*.dep
+*.mak
+*.rc

@@ -5,10 +5,12 @@ Makefile
 *.la
 test_char.h
 gen_test_char
-*.mak
 exports.c
 export_vars.h
 Debug
 Release
 apache.exports
 httpd.exp
+*.plg
+*.dep
+*.mak
