@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/01/31 02:17:29 $]
+Last modified at [$Date: 2003/02/01 14:10:51 $]
 
 Release:
 
@@ -85,6 +85,10 @@ PATCHES TO PORT FROM 2.1
       modules/dav/main/util.c: r1.45
       [ This one is under review.  Don't merge.  ]
       +1:
+
+    * Fix to apr_file_open() parms in mod_cern_meta for PR 12353
+      modules/metadata/mod_cern_meta.c: r1.40 
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
