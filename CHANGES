@@ -1,5 +1,8 @@
 Changes with Apache 2.0.37
 
+  *) Fix the display of the default name for the mime types config
+     file.  PR 9729  [Matthew Brecknell <mbrecknell@orchestream.com>]
+
   *) Fix the working directory *for WinNT/2K/XP services only* to
      change to the Apache directory (one level above the location 
      of Apache.exe, in the case that Apache.exe resides in bin/.)
