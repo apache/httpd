@@ -66,8 +66,9 @@
  * !!!This is an extremely cheap ripoff of mod_charset.c from Russian Apache!!!
  */
 
-#include <errno.h>
+#ifdef HAVE_STDIO_H
 #include <stdio.h>
+#endif
 
 #include "httpd.h"
 #include "http_config.h"

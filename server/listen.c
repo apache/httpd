@@ -64,7 +64,9 @@
 #include "http_config.h"
 #include "ap_listen.h"
 #include "http_log.h"
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
 
 ap_listen_rec *ap_listeners;
 static ap_listen_rec *old_listeners;

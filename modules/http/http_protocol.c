@@ -77,8 +77,12 @@
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include "util_charset.h"
 #include "mpm_status.h"
+#ifdef HAVE_STDARG_H
 #include <stdarg.h>
+#endif
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(post_read_request)

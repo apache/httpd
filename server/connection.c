@@ -67,8 +67,12 @@
 #include "http_config.h"
 #include "http_vhost.h"
 
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
 
 AP_HOOK_STRUCT(
 	    AP_HOOK_LINK(pre_connection)

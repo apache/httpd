@@ -60,7 +60,9 @@
 #define UNIXD_H
 
 #include "httpd.h"
+#ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
+#endif
 
 /* common stuff that unix MPMs will want */
 

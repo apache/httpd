@@ -62,11 +62,18 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "unixd.h"
+#ifdef HAVE_PWD_H
 #include <pwd.h>
+#endif
+#ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
-#include <sys/resource.h>
+#endif
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+#ifdef HAVE_GRP_H
 #include <grp.h>
+#endif
 
 unixd_config_rec unixd_config;
 

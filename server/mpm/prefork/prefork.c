@@ -105,12 +105,18 @@
 #include "iol_socket.h"
 #include "ap_listen.h"
 #include "ap_mmn.h"
-#include <sys/times.h>
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-
+#endif
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>	/* for TCP_NODELAY */
 #endif
@@ -119,6 +125,7 @@
 #include <bstring.h>		/* for IRIX, FD_SET calls bzero() */
 #endif
 #include <signal.h>
+#include <sys/times.h>
 
 /* config globals */
 

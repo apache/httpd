@@ -40,9 +40,13 @@
  */
 
 #include "ap_config.h"
-#include <ctype.h>
 #include <stdio.h>
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
+#endif
+#ifdef HAVE_NETDB_H
 #include <netdb.h>
+#endif
 
 #if !defined(MPE) && !defined(BEOS) && !defined(WIN32)
 #include <arpa/inet.h>

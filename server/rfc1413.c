@@ -86,7 +86,9 @@
 #include "http_main.h"		/* set_callback_and_alarm */
 #include "util_ebcdic.h"
 #include "apr_network_io.h"
+#ifdef HAVE_STRING_H
 #include <string.h>
+#endif
 
 /* Local stuff. */
 /* Semi-well-known port */

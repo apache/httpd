@@ -67,7 +67,9 @@
 #include "mpm_status.h"
 #include "scoreboard.h"
 #include "mpm.h" /* for ap_max_daemons_limit */
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
 static scoreboard *ap_scoreboard_image = NULL;
 API_VAR_EXPORT char *ap_scoreboard_fname;

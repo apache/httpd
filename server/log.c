@@ -75,7 +75,9 @@
 #include "http_log.h"
 #include "http_main.h"
 
+#ifdef HAVE_STDARG_H
 #include <stdarg.h>
+#endif
 
 typedef struct {
 	char	*t_name;
