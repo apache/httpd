@@ -21,7 +21,8 @@
 <p><span>Verfügbare Sprachen: </span><a href="../de/vhosts/" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/vhosts/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/vhosts/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/vhosts/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ru/vhosts/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
     <p>Der Begriff <cite>virtueller Host</cite> <span class="transnote">(<em>Anm.d.Ü.:</em> engl. 'virtual
@@ -99,7 +100,8 @@
 <p><span>Verfügbare Sprachen: </span><a href="../de/vhosts/" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/vhosts/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/vhosts/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/vhosts/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ru/vhosts/" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Gepflegt durch das <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p>
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/directives.html">Direktiven</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div>
