@@ -52,7 +52,6 @@ APACHE_MODPATH_INIT(ssl)
 dnl #  list of module object files
 ssl_objs="dnl
 mod_ssl.lo dnl
-ssl_engine_compat.lo dnl
 ssl_engine_config.lo dnl
 ssl_engine_dh.lo dnl
 ssl_engine_ds.lo dnl
@@ -74,7 +73,6 @@ ssl_scache_dbm.lo dnl
 ssl_scache_shmcb.lo dnl
 ssl_scache_shmht.lo dnl
 ssl_util.lo dnl
-ssl_util_sdbm.lo dnl
 ssl_util_ssl.lo dnl
 ssl_util_table.lo dnl
 "
