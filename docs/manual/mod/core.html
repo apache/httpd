@@ -739,7 +739,7 @@ then an access to <CODE>http://www.my.host.com/index.html</CODE> refers
 to <CODE>/usr/web/index.html</CODE>.
 
 <P>There appears to be a bug in mod_dir which causes problems when the
-DocumentRoot has a trailing slash (i.e. "DocumentRoot /usr/web/") so
+DocumentRoot has a trailing slash (<EM>i.e.</EM>, "DocumentRoot /usr/web/") so
 please avoid that.
 
 <P><HR>
@@ -1704,7 +1704,7 @@ from browsers at foo.com, you might use:
 character has special
 meaning depending on where in a URL it appears.  People may be used
 to its behaviour in the filesystem where multiple adjacent slashes are
-frequently collapsed to a single slash (i.e. <CODE>/home///foo</CODE>
+frequently collapsed to a single slash (<EM>i.e.</EM>, <CODE>/home///foo</CODE>
 is the same as <CODE>/home/foo</CODE>).  In URL-space this is not
 necessarily true.  The <CODE>&lt;LocationMatch&gt;</CODE> directive
 and the regex version of <CODE>&lt;Location&gt;</CODE> require you
@@ -2111,12 +2111,12 @@ Execution of CGI scripts is permitted.
 <DD>
 <!--%plaintext &lt;?INDEX {\tt FollowSymLinks} option&gt; -->
 The server will follow symbolic links in this directory.
-<br>
+<BR>
 <STRONG>Note</STRONG>: even though the server follows the symlink it
 does <EM>not</EM>
 change the pathname used to match against <CODE>&lt;Directory&gt;</CODE>
 sections.
-<br>
+<BR>
 <STRONG>Note</STRONG>: this option gets ignored if set inside a
 &lt;Location&gt; section.
 
@@ -2133,7 +2133,7 @@ Server-side includes are permitted, but the #exec command and
 <DD>
 <!--%plaintext &lt;?INDEX {\tt Indexes} option&gt; -->
 If a URL which maps to a directory is requested, and the there is no
-DirectoryIndex (e.g. index.html) in that directory, then the server will
+DirectoryIndex (<EM>e.g.</EM>, index.html) in that directory, then the server will
 return a formatted listing of the directory.
 <DT>MultiViews
 <DD>
@@ -2145,7 +2145,7 @@ allowed.
 <!--%plaintext &lt;?INDEX {\tt SymLinksIfOwnerMatch} option&gt; -->
 The server will only follow symbolic links for which the target
 file or directory is owned by the same user id as the link.
-<br>
+<BR>
 <STRONG>Note</STRONG>: this option gets ignored if set inside a
 &lt;Location&gt; section.
 </DL>
@@ -2258,7 +2258,7 @@ Apache).<P>
 In the absence of any <A HREF="#listen">Listen</A> or
 <A HREF="#bindaddress">BindAddress</A> directives specifying a port number,
 a Port directive given in the "main server"
-(i.e. outside any <A HREF="#virtualhost">&lt;VirtualHost&gt</A> section)
+(<EM>i.e.</EM>, outside any <A HREF="#virtualhost">&lt;VirtualHost&gt</A> section)
 sets the network port on which the server listens.
 If there are any Listen or BindAddress directives specifying
 <CODE>:number</CODE> then Port has no effect on what address the server
@@ -2608,7 +2608,7 @@ release. (Prior to 1.3b4, <CODE>HAVE_SHMGET</CODE> would have sufficed.)<P>
 
 The server will set the TCP buffer size to the number of bytes
 specified. Very useful to increase past standard OS defaults on high
-speed high latency (i.e. 100ms or so, such as transcontinental
+speed high latency (<EM>i.e.</EM>, 100ms or so, such as transcontinental
 fast pipes)
 <P><HR>
 
@@ -3085,7 +3085,7 @@ meant for httpd requests. It is recommended that you set up a new user and
 group specifically for running the server. Some admins use user
 <CODE>nobody</CODE>, but this is not always possible or desirable.
 For example mod_proxy's cache, when enabled, must be accessible to this user
-(see the <A href="mod_proxy.html#cacheroot"><CODE>CacheRoot</CODE>
+(see the <A HREF="mod_proxy.html#cacheroot"><CODE>CacheRoot</CODE>
 directive</A>).<P>
 
 Notes: If you start the server as a non-root user, it will fail to change

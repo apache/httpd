@@ -61,7 +61,7 @@ accomplished while remaining backwards-compatible.</P>
     <CODE>ap_should_client_block()</CODE>.
     This will tell the module whether or not to read input. If it is 0,
     the module should assume that the input is of a non-entity type
-    (e.g. a GET request). A nonzero response indicates that the module
+    (<EM>e.g.</EM>, a GET request). A nonzero response indicates that the module
     should proceed (to step 3).
     This step also sends a 100 Continue response
     to HTTP/1.1 clients, so should not be called until the module

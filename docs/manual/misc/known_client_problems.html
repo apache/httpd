@@ -245,19 +245,19 @@ BrowserMatch "Java1\.2beta[23]" nokeepalive
 is usually not a good idea; ideally it gets fixed, new betas or a final release
 comes out, and no one uses the broken old software anymore.  In theory.
 
-<h3><a name="content-type-persistence"><code>Content-Type</code> change
-is not noticed after reload</a></h3>
+<H3><A NAME="content-type-persistence"><CODE>Content-Type</CODE> change
+is not noticed after reload</A></H3>
 
-<p>Navigator (all versions?) will cache the <code>content-type</code>
+<P>Navigator (all versions?) will cache the <CODE>content-type</CODE>
 for an object "forever".  Using reload or shift-reload will not cause
-Navigator to notice a <code>content-type</code> change.  The only
+Navigator to notice a <CODE>content-type</CODE> change.  The only
 work-around is for the user to flush their caches (memory and disk).  By
-way of an example, some folks may be using an old <code>mime.types</code>
-file which does not map <code>.htm</code> to <code>text/html</code>,
-in this case Apache will default to sending <code>text/plain</code>.
-If the user requests the page and it is served as <code>text/plain</code>.
+way of an example, some folks may be using an old <CODE>mime.types</CODE>
+file which does not map <CODE>.htm</CODE> to <CODE>text/html</CODE>,
+in this case Apache will default to sending <CODE>text/plain</CODE>.
+If the user requests the page and it is served as <CODE>text/plain</CODE>.
 After the admin fixes the server, the user will have to flush their caches
-before the object will be shown with the correct <code>text/html</code>
+before the object will be shown with the correct <CODE>text/html</CODE>
 type.
 
 <!--#include virtual="footer.html" -->
