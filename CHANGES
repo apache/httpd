@@ -1,5 +1,15 @@
 Changes with Apache 2.0b1
 
+  *) Corrected an OS2'ism of apr_get_home_directory.  OS2 now returns the
+     proper directory, including the user's name.
+
+  *) Removed private os2errno.h and integrated the OS2 network error codes
+     into apr_errno.h for optimized error tests (APR_STATUS_IS_EFOO(rv)).
+     [William Rowe]
+
+  *) Moved inclusion of <os2.h> header from multiple modules into apr.h
+     [William Rowe]
+
   *) Replace configure --with-optim option by using and saving the
      environment variable OPTIM instead.  This is needed because configure
      options do not support multiple flags separated by spaces.
