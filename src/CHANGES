@@ -1,8 +1,48 @@
+  *) Much of cgi-bin and all of cgi-src has been removed, due to
+     various security holes found and that we could no longer support
+     them.  
+
+  *) The "Set-Cookie" header is now special-special-cased to not 
+     merge multiple instances, since certain popular browsers can not 
+     handle multiple Set-Cookie instructions in a single header.
+
+  *) rprintf() added to buffer code, occurances of sprintf removed.
+
+  *) CONNECT method for proxy module, which means tunning SSL should work.
+     (No crypto needed)  Also a NoCache config directive.
+
   *) Several API additions: pstrndup(), table_unset() and get_token()
      functions now available to modules.
 
+  *) mod_imap fixups, in particular Location: headers are now complete
+     URL's.
+
+  *) New "info" module which reports on installed module set through a 
+     special URL, a la mod_status
+
+  *) "ServerPath" directive added - allows for graceful transition
+     for Host:-header-based virtual hosts.
+
+  *) Anonymous authentication module improvements
+
+  *) MSQL authentication module improvements
+
+  *) Status module design improved - output now tables-based
+
   *) htdigest utility included for use with digest authentication
      module.
+ 
+  *) mod_negotiation: Accept values with wildcards to be treated with
+     less priority than those without wildcards at the same quality
+     value.
+
+  *) Bugs which were fixed:
+	a) numerous mod_proxy bugs
+	b) CGI early-termination bug 
+	c) Keepalives not working with virtual hosts
+	d) RefererIgnore problems
+	e) closing fd's twice in mod_include (causing core dumps on
+	   Linux and elsewhere).
 
 Changes with Apache 1.1b2.
 
