@@ -334,7 +334,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     int access_status;
     request_rec *new;
 
-    if (ap_is_redirect_limit_exceeded(r)) {
+    if (ap_is_recursion_limit_exceeded(r)) {
         ap_die(HTTP_INTERNAL_SERVER_ERROR, r);
         return NULL;
     }

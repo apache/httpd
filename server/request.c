@@ -1634,7 +1634,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
 
     /* We cannot return NULL without violating the API. So just turn this
      * subrequest into a 500 to indicate the failure. */
-    if (ap_is_subreq_limit_exceeded(r)) {
+    if (ap_is_recursion_limit_exceeded(r)) {
         rnew->status = HTTP_INTERNAL_SERVER_ERROR;
         return rnew;
     }
@@ -1774,7 +1774,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
 
     /* We cannot return NULL without violating the API. So just turn this
      * subrequest into a 500. */
-    if (ap_is_subreq_limit_exceeded(r)) {
+    if (ap_is_recursion_limit_exceeded(r)) {
         rnew->status = HTTP_INTERNAL_SERVER_ERROR;
         return rnew;
     }
@@ -1868,7 +1868,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 
     /* We cannot return NULL without violating the API. So just turn this
      * subrequest into a 500. */
-    if (ap_is_subreq_limit_exceeded(r)) {
+    if (ap_is_recursion_limit_exceeded(r)) {
         rnew->status = HTTP_INTERNAL_SERVER_ERROR;
         return rnew;
     }

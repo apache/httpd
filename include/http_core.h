@@ -264,20 +264,12 @@ AP_DECLARE(size_t) ap_get_limit_xml_body(const request_rec *r);
 AP_DECLARE(void) ap_custom_response(request_rec *r, int status, const char *string);
 
 /**
- * Check if the current request is beyond the configured max. number of redirects
+ * Check if the current request is beyond the configured max. number of redirects or subrequests
  * @param r The current request
  * @return true (is exceeded) or false
- * @deffunc int ap_is_redirect_limit_exceeded(const request_rec *r)
+ * @deffunc int ap_is_recursion_limit_exceeded(const request_rec *r)
  */
-AP_DECLARE(int) ap_is_redirect_limit_exceeded(const request_rec *r);
-
-/**
- * Check if the current request is beyond the configured subreq nesting level
- * @param r The current request
- * @return true (is exceeded) or false
- * @deffunc int ap_is_subreq_limit_exceeded(const request_rec *r)
- */
-AP_DECLARE(int) ap_is_subreq_limit_exceeded(const request_rec *r);
+AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r);
 
 /**
  * Check for a definition from the server command line
