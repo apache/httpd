@@ -222,7 +222,7 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
 #if APR_HAVE_IPV6
         if ((rv = apr_sockaddr_info_get(&sockaddr, str, AF_INET6, 0, 0, p)) == APR_SUCCESS) {
             memcpy(&global_in_addr,
-                   sockaddr->ipaddr_ptr + sockaddr->ipaddr_len - sizeof(global_in_addr),
+                   (char *)sockaddr->ipaddr_ptr + sockaddr->ipaddr_len - sizeof(global_in_addr),
                    sizeof(global_in_addr));
             ap_log_error(APLOG_MARK, APLOG_ALERT, rv, main_server,
                          "mod_unique_id: using low-order bits of IPv6 address "
