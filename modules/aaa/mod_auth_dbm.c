@@ -86,6 +86,7 @@
  * lines below is used by Configure. This could be stored in a separate
  * instead.
  *
+ * XXX: this needs updating for apache-2.0 configuration method
  * MODULE-DEFINITION-START
  * Name: auth_dbm_module
  * ConfigStart

@@ -83,6 +83,7 @@
  */
 
 /* The section for the Configure script:
+* XXX: this needs updating for apache-2.0 configuration method
  * MODULE-DEFINITION-START
  * Name: digest_auth_module
  * ConfigStart
