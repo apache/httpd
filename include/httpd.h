@@ -1536,12 +1536,6 @@ AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *name);
  */
 AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *name);
 /**
- * Given a pathname in file, extract the directory and chdir to that directory
- * @param file The file who's directory we wish to switch to
- * @deffunc void ap_chdir_file(const char *file)
- */
-AP_DECLARE(void) ap_chdir_file(const char *file);
-/**
  * Get the maximum number of daemons processes for this version of Apache
  * @return The maximum number of daemon processes
  * @deffunc int ap_get_max_daemons(void)

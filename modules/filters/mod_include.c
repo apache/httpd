@@ -752,7 +752,6 @@ static int include_cgi(char *s, request_rec *r, ap_filter_t *next,
     }
 
     ap_destroy_sub_req(rr);
-    ap_chdir_file(r->filename);
 
     return 0;
 }
@@ -901,7 +900,6 @@ static int handle_include(include_ctx_t *ctx, apr_bucket_brigade **bb, request_r
                         error_fmt = "unable to include \"%s\" in parsed file %s";
                     }
                 }
-                ap_chdir_file(r->filename);
                 if (error_fmt) {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
     			    0, r, error_fmt, tag_val, r->filename);
@@ -1113,7 +1111,6 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                         CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
                     }
                     /* just in case some stooge changed directories */
-                    ap_chdir_file(r->filename);
                 }
                 else if (!strcmp(tag, "cgi")) {
                     parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
@@ -1123,7 +1120,6 @@ static int handle_exec(include_ctx_t *ctx, apr_bucket_brigade **bb, request_rec 
                                     "invalid CGI ref \"%s\" in %s", tag_val, file);
                         CREATE_ERROR_BUCKET(ctx, tmp_buck, head_ptr, *inserted_head);
                     }
-                    ap_chdir_file(r->filename);
                 }
                 else {
                     ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
@@ -2615,7 +2611,6 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
     apr_bucket_brigade *tag_and_after;
     int ret;
 
-    ap_chdir_file(r->filename);
     if (r->args) {              /* add QUERY stuff to env cause it ain't yet */
         char *arg_copy = apr_pstrdup(r->pool, r->args);
 

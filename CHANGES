@@ -1,5 +1,8 @@
 Changes with Apache 2.0b1
 
+  *) Remove ap_chdir_file().  This function is not thread-safe,
+     and nobody is currently using it.  [Ryan Bloom]
+
   *) Do not try to run make depend if there are no .c files in the
      current directory, doing so makes `make depend` fail.
      [Ryan Bloom]

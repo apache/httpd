@@ -80,10 +80,6 @@ module AP_MODULE_DECLARE_DATA includes_module;
 /* just need some arbitrary non-NULL pointer which can't also be a request_rec */
 #define NESTED_INCLUDE_MAGIC	(&includes_module)
 
-/* TODO: changing directory should be handled by CreateProcess */
-#define ap_chdir_file(x) do {} while(0)
-
-
 /****************************************************************************
  * Used to keep context information during parsing of a request for SSI tags.
  * This is especially useful if the tag stretches across multiple buckets or
