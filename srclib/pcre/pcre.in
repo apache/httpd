@@ -7,8 +7,8 @@
 #ifndef _PCRE_H
 #define _PCRE_H
 
-/* The file pcre.h is build by "configure". Do not edit it; instead
-make changes to pcre.in. */
+/* The file pcre.h is build by "configure" or copied from pcre.hw
+Do not edit it; instead make changes to pcre.in and/or pcre.hw */
 
 #define PCRE_MAJOR @PCRE_MAJOR@
 #define PCRE_MINOR @PCRE_MINOR@
