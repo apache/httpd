@@ -258,8 +258,8 @@ API_EXPORT(void) ap_register_filter(const char *name,
  * list of filters.  Take note of that when adding your filter to the chain.
  */
 /**
- * Add a filter to the current request.  Filters are added in a LIFO manner.
- * The first filter added will be the last filter called.
+ * Add a filter to the current request.  Filters are added in a FIFO manner.
+ * The first filter added will be the first filter called.
  * @param name The name of the filter to add
  * @param ctx Any filter specific data to associate with the filter
  * @param r The request to add this filter for.
