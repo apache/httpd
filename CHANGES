@@ -1,5 +1,11 @@
 Changes with Apache 2.0.25-dev
 
+  *) Added the LDAP authentication module mod_auth_ldap.
+     [Dave Carrigan <dave@rudedog.org>, Graham Leggett]
+
+  *) Added the LDAP cache and connection pooling module mod_ldap.
+     [Dave Carrigan <dave@rudedog.org>, Graham Leggett]
+
   *) Fix --enable-modules=all breakage with mod_auth_db and mod_auth_digest
      by allowing a module to disable itself if its prerequisites are not
      met.  [Justin Erenkrantz]
