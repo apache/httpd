@@ -301,13 +301,16 @@ control block using the following example:<p>
 
 <pre>
 &lt;Directory proxy:*&gt;
-&lt;Limit GET&gt;
+&lt;Limit GET PUT POST DELETE CONNECT OPTIONS&gt;
 order deny,allow
 deny from [machines you'd like *not* to allow by IP address or name]
 allow from [machines you'd like to allow by IP address or name]
 &lt;/Limit&gt;
 &lt;/Directory&gt;
 </pre><p>
+
+A &lt;Files&gt; block will also work, and is the only method known to work
+for all possible URLs in Apache versions earlier than 1.2b10.<p>
 
 <h2><a name="shortname">Using Netscape hostname shortcuts</a></h2>
 
