@@ -267,5 +267,5 @@ int main(int argc, char *argv[])
 #endif
     system(command);
     unlink(tn);
-    exit(0);
+    return 0;
 }
