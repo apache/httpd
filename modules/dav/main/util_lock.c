@@ -417,6 +417,16 @@ static dav_error * dav_unlock_walker(dav_walk_resource *wres, int calltype)
     dav_walker_ctx *ctx = wres->walk_ctx;
     dav_error *err;
 
+    /* Before removing the lock, do any auto-checkin required */
+    if (wres->resource->working) {
+        /* ### get rid of this typecast */
+        if ((err = dav_auto_checkin(ctx->r, (dav_resource *) wres->resource,
+                                    0 /*undo*/, 1 /*unlock*/, NULL))
+            != NULL) {
+            return err;
+        }
+    }
+
     if ((err = (*ctx->w.lockdb->hooks->remove_lock)(ctx->w.lockdb,
                                                     wres->resource,
                                                     ctx->locktoken)) != NULL) {
@@ -521,6 +531,8 @@ int dav_unlock(request_rec *r, const dav_resource *resource,
     const dav_resource *lock_resource = resource;
     const dav_hooks_locks *hooks = DAV_GET_HOOKS_LOCKS(r);
     const dav_hooks_repository *repos_hooks = resource->hooks;
+    dav_walker_ctx ctx = { { 0 } };
+    dav_response *multi_status;
     dav_error *err;
 
     /* If no locks provider, then there is nothing to unlock. */
@@ -558,35 +570,21 @@ int dav_unlock(request_rec *r, const dav_resource *resource,
     /* At this point, lock_resource/locktoken refers to a direct lock (key), ie
      * the root of a depth > 0 lock, or locktoken is null.
      */
-    if ((err = (*hooks->remove_lock)(lockdb, lock_resource,
-				     locktoken)) != NULL) {
-	/* ### add a higher-level desc? */
-	/* ### return err! */
-	return HTTP_INTERNAL_SERVER_ERROR;
-    }
+    ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_LOCKNULL;
+    ctx.w.func = dav_unlock_walker;
+    ctx.w.walk_ctx = &ctx;
+    ctx.w.pool = r->pool;
+    ctx.w.root = lock_resource;
+    ctx.w.lockdb = lockdb;
 
-    if (lock_resource->collection) {
-        dav_walker_ctx ctx = { { 0 } };
-        dav_response *multi_status;
+    ctx.r = r;
+    ctx.locktoken = locktoken;
 
-	ctx.w.walk_type = DAV_WALKTYPE_NORMAL | DAV_WALKTYPE_LOCKNULL;
-	ctx.w.func = dav_unlock_walker;
-        ctx.w.walk_ctx = &ctx;
-	ctx.w.pool = r->pool;
-        ctx.w.root = lock_resource;
-	ctx.w.lockdb = lockdb;
+    err = (*repos_hooks->walk)(&ctx.w, DAV_INFINITY, &multi_status);
 
-	ctx.r = r;
-	ctx.locktoken = locktoken;
-
-	err = (*repos_hooks->walk)(&ctx.w, DAV_INFINITY, &multi_status);
-
-	/* ### fix this! */
-        /* ### do something with multi_status */
-	result = err == NULL ? OK : err->status;
-    }
-    else
-	result = OK;
+    /* ### fix this! */
+    /* ### do something with multi_status */
+    result = err == NULL ? OK : err->status;
 
     (*hooks->close_lockdb)(lockdb);
 

@@ -1001,9 +1001,9 @@ static int dav_method_put(request_rec *r)
     }
 
     /* make sure the resource can be modified (if versioning repository) */
-    if ((err = dav_ensure_resource_writable(r, resource,
-					    0 /* not parent_only */,
-					    &av_info)) != NULL) {
+    if ((err = dav_auto_checkout(r, resource,
+				 0 /* not parent_only */,
+				 &av_info)) != NULL) {
 	/* ### add a higher-level description? */
 	return dav_handle_err(r, err, NULL);
     }
@@ -1086,8 +1086,8 @@ static int dav_method_put(request_rec *r)
     }
 
     /* restore modifiability of resources back to what they were */
-    err2 = dav_revert_resource_writability(r, resource, err != NULL /* undo if error */,
-                                           &av_info);
+    err2 = dav_auto_checkin(r, resource, err != NULL /* undo if error */,
+                            0 /*unlock*/, &av_info);
 
     /* check for errors now */
     if (err != NULL) {
@@ -1097,7 +1097,7 @@ static int dav_method_put(request_rec *r)
 	/* just log a warning */
 	err2 = dav_push_error(r->pool, err->status, 0,
 			      "The PUT was successful, but there "
-			      "was a problem reverting the writability of "
+			      "was a problem automatically checking in "
 			      "the resource or its parent collection.",
 			      err2);
 	dav_log_err(r, err2, APLOG_WARNING);
@@ -1232,8 +1232,8 @@ static int dav_method_delete(request_rec *r)
     }
 
     /* if versioned resource, make sure parent is checked out */
-    if ((err = dav_ensure_resource_writable(r, resource, 1 /* parent_only */,
-					    &av_info)) != NULL) {
+    if ((err = dav_auto_checkout(r, resource, 1 /* parent_only */,
+				 &av_info)) != NULL) {
 	/* ### add a higher-level description? */
 	return dav_handle_err(r, err, NULL);
     }
@@ -1242,8 +1242,8 @@ static int dav_method_delete(request_rec *r)
     err = (*resource->hooks->remove_resource)(resource, &multi_response);
 
     /* restore writability of parent back to what it was */
-    err2 = dav_revert_resource_writability(r, NULL, err != NULL /* undo if error */,
-					   &av_info);
+    err2 = dav_auto_checkin(r, NULL, err != NULL /* undo if error */,
+			    0 /*unlock*/, &av_info);
 
     /* check for errors now */
     if (err != NULL) {
@@ -1258,8 +1258,8 @@ static int dav_method_delete(request_rec *r)
 	/* just log a warning */
 	err = dav_push_error(r->pool, err2->status, 0,
 			     "The DELETE was successful, but there "
-			     "was a problem reverting the writability of "
-			     "its parent collection.",
+			     "was a problem automatically checking in "
+			     "the parent collection.",
 			     err2);
 	dav_log_err(r, err, APLOG_WARNING);
     }
@@ -2146,6 +2146,7 @@ static int dav_method_proppatch(request_rec *r)
     ap_text *propstat_text;
     apr_array_header_t *ctx_list;
     dav_prop_ctx *ctx;
+    dav_auto_version_info av_info;
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
@@ -2178,8 +2179,19 @@ static int dav_method_proppatch(request_rec *r)
 	return dav_handle_err(r, err, NULL);
     }
 
+    /* make sure the resource can be modified (if versioning repository) */
+    if ((err = dav_auto_checkout(r, resource,
+				 0 /* not parent_only */,
+				 &av_info)) != NULL) {
+	/* ### add a higher-level description? */
+	return dav_handle_err(r, err, NULL);
+    }
+
     if ((err = dav_open_propdb(r, NULL, resource, 0, doc->namespaces,
 			       &propdb)) != NULL) {
+        /* undo any auto-checkout */
+        dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
+
 	err = dav_push_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
 			     apr_psprintf(r->pool,
 					 "Could not open the property "
@@ -2211,6 +2223,9 @@ static int dav_method_proppatch(request_rec *r)
 	/* make sure that a "prop" child exists for set/remove */
 	if ((prop_group = dav_find_child(child, "prop")) == NULL) {
 	    dav_close_propdb(propdb);
+
+            /* undo any auto-checkout */
+            dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
 
 	    /* This supplies additional information for the default message. */
 	    ap_log_rerror(APLOG_MARK, APLOG_ERR | APLOG_NOERRNO, 0, r,
@@ -2256,6 +2271,9 @@ static int dav_method_proppatch(request_rec *r)
 
     /* make sure this gets closed! */
     dav_close_propdb(propdb);
+
+    /* complete any auto-versioning */
+    dav_auto_checkin(r, resource, failure, 0 /*unlock*/, &av_info);
 
     /* log any errors that occurred */
     (void)dav_process_ctx_list(dav_prop_log_errors, ctx_list, 0, 0);
@@ -2384,8 +2402,8 @@ static int dav_method_mkcol(request_rec *r)
     }
 
     /* if versioned resource, make sure parent is checked out */
-    if ((err = dav_ensure_resource_writable(r, resource, 1 /* parent_only */,
-					    &av_info)) != NULL) {
+    if ((err = dav_auto_checkout(r, resource, 1 /* parent_only */,
+				 &av_info)) != NULL) {
 	/* ### add a higher-level description? */
 	return dav_handle_err(r, err, NULL);
     }
@@ -2395,8 +2413,8 @@ static int dav_method_mkcol(request_rec *r)
     err = (*resource->hooks->create_collection)(resource);
 
     /* restore modifiability of parent back to what it was */
-    err2 = dav_revert_resource_writability(r, NULL, err != NULL /* undo if error */,
-					   &av_info);
+    err2 = dav_auto_checkin(r, NULL, err != NULL /* undo if error */,
+			    0 /*unlock*/, &av_info);
 
     /* check for errors now */
     if (err != NULL) {
@@ -2406,8 +2424,8 @@ static int dav_method_mkcol(request_rec *r)
 	/* just log a warning */
 	err = dav_push_error(r->pool, err->status, 0,
 			     "The MKCOL was successful, but there "
-			     "was a problem reverting the writability of "
-			     "its parent collection.",
+			     "was a problem automatically checking in "
+			     "the parent collection.",
 			     err2);
 	dav_log_err(r, err, APLOG_WARNING);
     }
@@ -2450,9 +2468,9 @@ static int dav_method_mkcol(request_rec *r)
 static int dav_method_copymove(request_rec *r, int is_move)
 {
     dav_resource *resource;
-    dav_auto_version_info src_av_info = { 0 };
     dav_resource *resnew;
-    dav_auto_version_info dst_av_info;
+    dav_auto_version_info src_av_info = { 0 };
+    dav_auto_version_info dst_av_info = { 0 };
     const char *body;
     const char *dest;
     dav_error *err;
@@ -2465,8 +2483,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
     int depth;
     int result;
     dav_lockdb *lockdb;
-    int replaced;
-    int resource_state;
+    int replace_dest;
+    int resnew_state;
 
     /* Ask repository module to resolve the resource */
     err = dav_get_resource(r, !is_move /* label_allowed */,
@@ -2479,6 +2497,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* If not a file or collection resource, COPY/MOVE not allowed */
+    /* ### allow COPY/MOVE of DeltaV resource types */
     if (resource->type != DAV_RESOURCE_TYPE_REGULAR) {
         body = apr_psprintf(r->pool,
                            "Cannot COPY/MOVE resource %s.",
@@ -2686,13 +2705,10 @@ static int dav_method_copymove(request_rec *r, int is_move)
 	(void)dav_unlock(r, resource, NULL);
     }
 
-    /* remember whether target resource existed */
-    replaced = resnew->exists;
-
     /* if this is a move, then the source parent collection will be modified */
     if (is_move) {
-        if ((err = dav_ensure_resource_writable(r, resource, 1 /* parent_only */,
-						&src_av_info)) != NULL) {
+        if ((err = dav_auto_checkout(r, resource, 1 /* parent_only */,
+				     &src_av_info)) != NULL) {
 	    if (lockdb != NULL)
 		(*lockdb->hooks->close_lockdb)(lockdb);
 
@@ -2701,44 +2717,76 @@ static int dav_method_copymove(request_rec *r, int is_move)
         }
     }
 
-    /* prepare the destination collection for modification */
-    if ((err = dav_ensure_resource_writable(r, resnew, 1 /* parent_only */,
-					    &dst_av_info)) != NULL) {
-        /* could not make destination writable:
-	 * if move, restore state of source parent
-	 */
-        if (is_move) {
-            (void) dav_revert_resource_writability(r, NULL, 1 /* undo */,
-						   &src_av_info);
+    /*
+     * Remember the initial state of the destination, so the lock system
+     * can be notified as to how it changed.
+     */
+    resnew_state = dav_get_resource_state(lookup.rnew, resnew);
+
+    /* If destination does not exist, initialize resource object
+     * to be same type as the source.
+     */
+    if (!resnew->exists) {
+        resnew->type = resource->type;
+        resnew->collection = resource->collection;
+    }
+
+    /* In a MOVE operation, the destination is replaced by the source.
+     * In a COPY operation, if the destination exists, is under version
+     * control, and is the same resource type as the source,
+     * then it should not be replaced, but modified to be a copy of
+     * the source.
+     */
+    if (!resnew->exists)
+        replace_dest = 0;
+    else if (is_move || !resource->versioned)
+        replace_dest = 1;
+    else if (resource->type != resnew->type)
+        replace_dest = 1;
+    else if ((resource->collection == 0) != (resnew->collection == 0))
+        replace_dest = 1;
+    else
+        replace_dest = 0;
+
+    /* If the destination must be created or replaced,
+     * make sure the parent collection is writable
+     */
+    if (!resnew->exists || replace_dest) {
+        if ((err = dav_auto_checkout(r, resnew, 1 /*parent_only*/,
+				     &dst_av_info)) != NULL) {
+            /* could not make destination writable:
+	     * if move, restore state of source parent
+	     */
+            if (is_move) {
+                (void) dav_auto_checkin(r, NULL, 1 /* undo */,
+				        0 /*unlock*/, &src_av_info);
+            }
+
+	    if (lockdb != NULL)
+	        (*lockdb->hooks->close_lockdb)(lockdb);
+
+	    /* ### add a higher-level description? */
+	    return dav_handle_err(r, err, NULL);
         }
-
-	if (lockdb != NULL)
-	    (*lockdb->hooks->close_lockdb)(lockdb);
-
-	/* ### add a higher-level description? */
-	return dav_handle_err(r, err, NULL);
     }
 
     /* If source and destination parents are the same, then
-     * use the same object, so status updates to one are reflected
-     * in the other, when reverting their writable states.
+     * use the same resource object, so status updates to one are reflected
+     * in the other, when doing auto-versioning. Otherwise,
+     * we may try to checkin the parent twice.
      */
     if (src_av_info.parent_resource != NULL
+        && dst_av_info.parent_resource != NULL
         && (*src_av_info.parent_resource->hooks->is_same_resource)
             (src_av_info.parent_resource, dst_av_info.parent_resource)) {
 
         dst_av_info.parent_resource = src_av_info.parent_resource;
     }
 
-    /* New resource will be same kind as source */
-    resnew->collection = resource->collection;
-
-    resource_state = dav_get_resource_state(lookup.rnew, resnew);
-
-    /* If target exists, remove it first (we know Ovewrite must be TRUE).
-     * Then try to copy/move the resource.
+    /* If destination is being replaced, remove it first
+     * (we know Ovewrite must be TRUE). Then try to copy/move the resource.
      */
-    if (resnew->exists)
+    if (replace_dest)
 	err = (*resnew->hooks->remove_resource)(resnew, &multi_response);
 
     if (err == NULL) {
@@ -2750,13 +2798,13 @@ static int dav_method_copymove(request_rec *r, int is_move)
                                                     &multi_response);
     }
 
-    /* restore parent collection states */
-    err2 = dav_revert_resource_writability(r, NULL, err != NULL /* undo if error */,
-					   &dst_av_info);
+    /* perform any auto-versioning cleanup */
+    err2 = dav_auto_checkin(r, NULL, err != NULL /* undo if error */,
+			    0 /*unlock*/, &dst_av_info);
 
     if (is_move) {
-        err3 = dav_revert_resource_writability(r, NULL, err != NULL /* undo if error */,
-					       &src_av_info);
+        err3 = dav_auto_checkin(r, NULL, err != NULL /* undo if error */,
+				0 /*unlock*/, &src_av_info);
     }
     else
 	err3 = NULL;
@@ -2774,12 +2822,12 @@ static int dav_method_copymove(request_rec *r, int is_move)
 	return dav_handle_err(r, err, multi_response);
     }
 
-    /* check for errors from reverting writability */
+    /* check for errors from auto-versioning */
     if (err2 != NULL) {
 	/* just log a warning */
 	err = dav_push_error(r->pool, err2->status, 0,
 			     "The MOVE/COPY was successful, but there was a "
-			     "problem reverting the writability of the "
+			     "problem automatically checking in the "
 			     "source parent collection.",
 			     err2);
 	dav_log_err(r, err, APLOG_WARNING);
@@ -2788,8 +2836,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
 	/* just log a warning */
 	err = dav_push_error(r->pool, err3->status, 0,
 			     "The MOVE/COPY was successful, but there was a "
-			     "problem reverting the writability of the "
-			     "destination parent collection.",
+			     "problem automatically checking in the "
+			     "destination or its parent collection.",
 			     err3);
 	dav_log_err(r, err, APLOG_WARNING);
     }
@@ -2798,7 +2846,7 @@ static int dav_method_copymove(request_rec *r, int is_move)
     if (lockdb != NULL) {
 
 	/* notify lock system that we have created/replaced a resource */
-	err = dav_notify_created(r, lockdb, resnew, resource_state, depth);
+	err = dav_notify_created(r, lockdb, resnew, resnew_state, depth);
 
 	(*lockdb->hooks->close_lockdb)(lockdb);
 
@@ -2814,7 +2862,8 @@ static int dav_method_copymove(request_rec *r, int is_move)
     }
 
     /* return an appropriate response (HTTP_CREATED or HTTP_NO_CONTENT) */
-    return dav_created(r, lookup.rnew->uri, "Destination", replaced);
+    return dav_created(r, lookup.rnew->uri, "Destination",
+                       resnew_state == DAV_RESOURCE_EXISTS);
 }
 
 /* dav_method_lock:  Handler to implement the DAV LOCK method
@@ -3193,14 +3242,14 @@ static int dav_method_vsn_control(request_rec *r)
     }
 
     /* if in versioned collection, make sure parent is checked out */
-    if ((err = dav_ensure_resource_writable(r, resource, 1 /* parent_only */,
-					    &av_info)) != NULL) {
+    if ((err = dav_auto_checkout(r, resource, 1 /* parent_only */,
+				 &av_info)) != NULL) {
 	return dav_handle_err(r, err, NULL);
     }
 
     /* attempt to version-control the resource */
     if ((err = (*vsn_hooks->vsn_control)(resource, target)) != NULL) {
-        dav_revert_resource_writability(r, resource, 1 /*undo*/, &av_info);
+        dav_auto_checkin(r, resource, 1 /*undo*/, 0 /*unlock*/, &av_info);
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
 			     apr_psprintf(r->pool,
 					 "Could not VERSION-CONTROL resource %s.",
@@ -3210,12 +3259,12 @@ static int dav_method_vsn_control(request_rec *r)
     }
 
     /* revert writability of parent directory */
-    err = dav_revert_resource_writability(r, resource, 0 /*undo*/, &av_info);
+    err = dav_auto_checkin(r, resource, 0 /*undo*/, 0 /*unlock*/, &av_info);
     if (err != NULL) {
         /* just log a warning */
 	err = dav_push_error(r->pool, err->status, 0,
 			     "The VERSION-CONTROL was successful, but there "
-			     "was a problem reverting the writability of "
+			     "was a problem automatically checking in "
 			     "the parent collection.",
 			     err);
         dav_log_err(r, err, APLOG_WARNING);
@@ -3375,7 +3424,8 @@ static int dav_method_checkout(request_rec *r)
     /* ### do lock checks, once behavior is defined */
 
     /* Do the checkout */
-    if ((err = (*vsn_hooks->checkout)(resource, is_unreserved, is_fork_ok,
+    if ((err = (*vsn_hooks->checkout)(resource, 0 /*auto_checkout*/,
+                                      is_unreserved, is_fork_ok,
                                       create_activity, activities,
                                       &working_resource)) != NULL) {
 	err = dav_push_error(r->pool, HTTP_CONFLICT, 0,
@@ -3389,9 +3439,14 @@ static int dav_method_checkout(request_rec *r)
     /* set the Cache-Control header, per the spec */
     apr_table_setn(r->headers_out, "Cache-Control", "no-cache");
 
-    /* use appropriate URI for Location header */
-    if (working_resource == NULL)
-        working_resource = resource;
+    /* if no working resource created, return OK,
+     * else return CREATED with working resource URL in Location header
+     */
+    if (working_resource == NULL) {
+        /* no body */
+        ap_set_content_length(r, 0);
+        return DONE;
+    }
 
     return dav_created(r, working_resource->uri, "Checked-out resource", 0);
 }
@@ -3894,7 +3949,7 @@ static int dav_method_report(request_rec *r)
      * First determine whether a Target-Selector header is allowed
      * for this report.
      */
-    label_allowed = (*vsn_hooks->report_target_selector_allowed)(doc);
+    label_allowed = (*vsn_hooks->report_label_header_allowed)(doc);
     err = dav_get_resource(r, label_allowed, 0 /* use_checked_in */,
                            &resource);
     if (err != NULL)
@@ -4331,8 +4386,8 @@ static int dav_method_bind(request_rec *r)
     }
 
     /* prepare the destination collection for modification */
-    if ((err = dav_ensure_resource_writable(r, binding, 1 /* parent_only */,
-					    &av_info)) != NULL) {
+    if ((err = dav_auto_checkout(r, binding, 1 /* parent_only */,
+				 &av_info)) != NULL) {
         /* could not make destination writable */
 	return dav_handle_err(r, err, NULL);
     }
@@ -4348,9 +4403,9 @@ static int dav_method_bind(request_rec *r)
     }
 
     /* restore parent collection states */
-    err2 = dav_revert_resource_writability(r, NULL,
-					   err != NULL /* undo if error */,
-					   &av_info);
+    err2 = dav_auto_checkin(r, NULL,
+			    err != NULL /* undo if error */,
+			    0 /*unlock*/, &av_info);
 
     /* check for error from remove/bind operations */
     if (err != NULL) {
@@ -4367,7 +4422,7 @@ static int dav_method_bind(request_rec *r)
 	/* just log a warning */
 	err = dav_push_error(r->pool, err2->status, 0,
 			     "The BIND was successful, but there was a "
-			     "problem reverting the writability of the "
+			     "problem automatically checking in the "
 			     "source parent collection.",
 			     err2);
 	dav_log_err(r, err, APLOG_WARNING);
