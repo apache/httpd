@@ -35,21 +35,18 @@ These now need to be of type ap_status_t and return a value of that type.  Norma
 These should now be renamed to better signify where they sit in the overall process.  So the name gets a small change from mmap_init to mmap_post_config.  The arguments passed have undergone a radical change and now look like
 </p>
 <ul style="list-style:none">
-<li>apr_pools_t *p,</li>
-<li>apr_pools_t *plog,</li>
-<li>apr_pools_t *ptemp,</li>
+<li>apr_pool_t *p,</li>
+<li>apr_pool_t *plog,</li>
+<li>apr_pool_t *ptemp,</li>
 <li>server_rec *s</li>
 </ul>
-<p>
-Throughout Apache the old pools have been replced by the apr_pools_t, though their use remains remarkably similar.
-</p>
 
 <h3>Data Types</h3>
 <p>
 A lot of the data types have been moved into the APR.  This means that some have had a name change, such as the one shown above.  The following is a brief list of some of the changes that you are likely to have to make.
 <ul style="list-style:none">
-<li>pool becomes apr_pools_t</li>
-<li>table becomes ap_table_t</li>
+<li>pool becomes apr_pool_t</li>
+<li>table becomes apr_table_t</li>
 </ul>
 <hr>
 
@@ -61,7 +58,7 @@ The <em>messier</em> changes...
 The new architecture uses a series of hooks to provide for calling your functions.  These you'll need to add to your module by way of a new function, static void register_hooks(void).  The function is really reasonably straightforward once you understand what needs to be done.  Each function that needs calling at some stage in the processing of a request needs to be registered, handlers do not.  There are a number of phases where functions can be added, and for each you can specify with a high degree of control the relative order that the function will be called in.
 </p>
 <p>
-This is the code that was added to mod_mmap_static
+This is the code that was added to mod_mmap_static:
 </p>
 <pre>
 static void register_hooks(void)
@@ -156,7 +153,7 @@ The stages that read directly across :
 /* merge server config */ ==> /* merge per-server config structures     */
 </li>
 <li>
-/* command table */ ==> /* command ap_table_t */
+/* command table */ ==> /* command apr_table_t */
 </li>
 <li>
 /* handlers */ ==> /* handlers */
