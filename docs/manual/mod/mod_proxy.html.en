@@ -718,7 +718,7 @@ through</td></tr>
 <div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps remote servers into the local server URL-space</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -757,6 +757,26 @@ through</td></tr>
       <p>Order is important. you need to put the exclusions <em>before</em> the
       general <code class="directive">ProxyPass</code> directive.</p>
     </div>
+
+    <p>New in Apache 2.1, is the ability to use pooled connections to a 
+    backend server. Using the <code>key=value</code> parameters it is possible
+    to tune this connection pooling. The default for a <code>Hard Maximum</code>
+    for the number of connections is the number of threads per process in the 
+    active MPM. In the Prefork MPM, this is always 1, while with the Worker MPM
+    it is controlled by the <code class="directive">ThreadsPerChild</code>.</p>
+
+    <p>Setting <code>min</code> will determine how many connections will always 
+    be open to the backend server. Upto the Soft Maximum or <code>smax</code> 
+    number of connections will be created on demand. Any connections above 
+    <code>smax</code> are subject to a time to live or <code>ttl</code>.  Apache
+    will never create more than the Hard Maximum or <code>hmax</code> connections
+    to the backend server.</p>
+
+    <div class="example"><p><code>
+        ProxyPass /example http://backend.example.com min=0 smax=5 hmax=20 ttl=60
+    </code></p></div>
+
+    
 
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
