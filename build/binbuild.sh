@@ -151,10 +151,12 @@ else
     esac
     if [ "x$GZIP" != "x" ]; then
       $GZIP -9 ../httpd-$VER-$OS.tar
+      ARCHIVE=../httpd-$VER-$OS.tar.gz
     else
       echo "WARNING: Could not find a 'gzip' program!"
       echo "       Please execute the following command manually:"
       echo "         gzip -9 ../httpd-$VER-$OS.tar"
+      ARCHIVE=../httpd-$VER-$OS.tar
     fi
   else
     echo "ERROR: Could not find a 'tar' program!"
@@ -163,9 +165,9 @@ else
     echo "         gzip -9 ../httpd-$VER-$OS.tar"
   fi
 
-  if [ -f ../httpd-$VER-$OS.tar.gz ] && [ -f ../httpd-$VER-$OS.README ]; then
+  if [ -f $ARCHIVE ] && [ -f ../httpd-$VER-$OS.README ]; then
     echo "Ready."
-    echo "You can find the binary archive (httpd-$VER-$OS.tar.gz)"
+    echo "You can find the binary archive ($ARCHIVE)"
     echo "and the readme file (httpd-$VER-$OS.README) in the"
     echo "parent directory."
     exit 0;
