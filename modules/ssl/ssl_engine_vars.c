@@ -83,12 +83,7 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
 
 void ssl_var_register(void)
 {
-#if 0 /* XXX */
-    ap_hook_configure("ap::mod_ssl::var_lookup",
-                      AP_HOOK_SIG6(ptr,ptr,ptr,ptr,ptr,ptr), AP_HOOK_DECLINE(NULL));
-    ap_hook_register("ap::mod_ssl::var_lookup",
-                     ssl_var_lookup, AP_HOOK_NOCTX);
-#endif /* XXX */
+    APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
     return;
 }
 
