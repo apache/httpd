@@ -137,6 +137,7 @@ typedef struct include_filter_ctx {
     long         flags;    /* See the FLAG_XXXXX definitions. */
     int          if_nesting_level;
     apr_size_t   parse_pos;
+    int          bytes_parsed;
     
     apr_bucket   *head_start_bucket;
     apr_size_t   head_start_index;
@@ -189,6 +190,7 @@ if ((APR_BRIGADE_EMPTY(cntxt->ssi_tag_brigade)) &&                \
                                                                   \
     tag_plus = apr_brigade_split(brgd, cntxt->head_start_bucket); \
     ap_pass_brigade(next, brgd);                                  \
+    cntxt->bytes_parsed = 0;                                      \
     brgd = tag_plus;                                              \
 }
 

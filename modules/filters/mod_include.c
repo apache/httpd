@@ -81,6 +81,7 @@
 #include "util_filter.h"
 #include "httpd.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_request.h"
 #include "http_core.h"
 #include "http_protocol.h"
@@ -95,6 +96,7 @@ module AP_MODULE_DECLARE_DATA include_module;
 static apr_hash_t *include_hash;
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *ssi_pfn_register;
 
+#define BYTE_COUNT_THRESHOLD AP_MIN_BYTES_TO_WRITE
 
 /* ------------------------ Environment function -------------------------- */
 
@@ -148,6 +150,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
     const char *c;
     const char *buf;
     const char *str = STARTING_SEQUENCE;
+    apr_bucket *tmp_bkt;
+    apr_size_t  start_index;
 
     *do_cleanup = 0;
 
@@ -162,6 +166,27 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
         }
         c = buf;
         while (c - buf != len) {
+            if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+                apr_bucket *start_bucket;
+
+                if (ctx->head_start_index > 0) {
+                    start_index  = ctx->head_start_index;
+                    start_bucket = ctx->head_start_bucket;
+                }
+                else {
+                    start_index  = (c - buf);
+                    start_bucket = dptr;
+                }
+                apr_bucket_split(start_bucket, start_index);
+                tmp_bkt = APR_BUCKET_NEXT(start_bucket);
+                if (ctx->head_start_index > 0) {
+                    ctx->head_start_index  = 0;
+                    ctx->head_start_bucket = tmp_bkt;
+                }
+
+                return tmp_bkt;
+            }
+
             if (*c == str[ctx->parse_pos]) {
                 if (ctx->state == PRE_HEAD) {
                     ctx->state             = PARSE_HEAD;
@@ -172,10 +197,8 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
             }
             else {
                 if (str[ctx->parse_pos] == '\0') {
-                    apr_bucket   *tmp_bkt;
-                    apr_size_t  start_index;
-
                     /* We want to split the bucket at the '<'. */
+                    ctx->bytes_parsed++;
                     ctx->state            = PARSE_DIRECTIVE;
                     ctx->tag_length       = 0;
                     ctx->parse_pos        = 0;
@@ -216,6 +239,7 @@ static apr_bucket *find_start_sequence(apr_bucket *dptr, include_ctx_t *ctx,
                 }
             }
             c++;
+            ctx->bytes_parsed++;
         }
         dptr = APR_BUCKET_NEXT(dptr);
     } while (dptr != APR_BRIGADE_SENTINEL(bb));
@@ -245,6 +269,10 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
             c = buf;
         }
         while (c - buf != len) {
+            if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+                return dptr;
+            }
+
             if (*c == str[ctx->parse_pos]) {
                 if (ctx->state != PARSE_TAIL) {
                     ctx->state             = PARSE_TAIL;
@@ -284,6 +312,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
                          * end of the END_SEQUENCE is in the current bucket.
                          * The beginning might be in a previous bucket.
                          */
+                        ctx->bytes_parsed++;
                         ctx->state = PARSED;
                         if ((c - buf) > 0) {
                             apr_bucket_split(dptr, c - buf);
@@ -323,6 +352,7 @@ static apr_bucket *find_end_sequence(apr_bucket *dptr, include_ctx_t *ctx, apr_b
                 }
             }
             c++;
+            ctx->bytes_parsed++;
         }
         dptr = APR_BUCKET_NEXT(dptr);
     } while (dptr != APR_BRIGADE_SENTINEL(bb));
@@ -2381,6 +2411,14 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
                     dptr = APR_BRIGADE_SENTINEL(*bb);
                 }
             }
+            else if ((tmp_dptr != NULL) && (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD)) {
+                               /* Send the large chunk of pre-tag bytes...  */
+                tag_and_after = apr_brigade_split(*bb, tmp_dptr);
+                ap_pass_brigade(f->next, *bb);
+                *bb  = tag_and_after;
+                dptr = tmp_dptr;
+                ctx->bytes_parsed = 0;
+            }
             else if (tmp_dptr == NULL) { /* There was no possible SSI tag in the */
                 dptr = APR_BRIGADE_SENTINEL(*bb);  /* remainder of this brigade...    */
             }
@@ -2406,6 +2444,9 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
                     tag_and_after = apr_brigade_split(*bb, dptr);
                     APR_BRIGADE_CONCAT(ctx->ssi_tag_brigade, *bb);
                     *bb = tag_and_after;
+                }
+                else if (ctx->bytes_parsed >= BYTE_COUNT_THRESHOLD) {
+                    SPLIT_AND_PASS_PRETAG_BUCKETS(*bb, ctx, f->next);
                 }
             }
             else {
@@ -2578,6 +2619,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
         }
         else { /* Otherwise pass it along... */
             ap_pass_brigade(f->next, *bb);  /* No SSI tags in this brigade... */
+            ctx->bytes_parsed = 0;
         }
     }
     else if (ctx->state == PARSED) {     /* Invalid internal condition... */
@@ -2600,6 +2642,7 @@ static void send_parsed_content(apr_bucket_brigade **bb, request_rec *r,
             tag_and_after = apr_brigade_split(*bb, ctx->head_start_bucket);
             ap_save_brigade(f, &ctx->ssi_tag_brigade, &tag_and_after);
             ap_pass_brigade(f->next, *bb);
+            ctx->bytes_parsed = 0;
         }
     }
 }
@@ -2695,6 +2738,9 @@ static int includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
             ap_pass_brigade(f->next, b);
             return APR_ENOMEM;
         }
+    }
+    else {
+        ctx->bytes_parsed = 0;
     }
 
     /* Assure the platform supports Group protections */
