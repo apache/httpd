@@ -4,10 +4,10 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(generators)
 
-APACHE_MODULE(status, process/thread monitoring, , , no)
+APACHE_MODULE(status, process/thread monitoring, , , most)
 APACHE_MODULE(autoindex, directory listing, , , yes)
 APACHE_MODULE(asis, as-is filetypes, , , yes)
-APACHE_MODULE(info, server information, , , no)
+APACHE_MODULE(info, server information, , , most)
 APACHE_MODULE(suexec, set uid and gid for spawned processes, , , no, [
               other_targets=suexec ] )
 
