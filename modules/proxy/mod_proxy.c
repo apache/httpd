@@ -177,12 +177,13 @@ static int proxy_detect(request_rec *r)
 
 static int proxy_trans(request_rec *r)
 {
+#ifndef FIX_15207
     void *sconf = r->server->module_config;
     proxy_server_conf *conf =
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
-
+#endif
     if (r->proxyreq) {
         /* someone has already set up the proxy, it was possibly ourselves
          * in proxy_detect
@@ -1175,7 +1176,9 @@ static void register_hooks(apr_pool_t *p)
     /* fixup before mod_rewrite, so that the proxied url will not
      * escaped accidentally by our fixup.
      */
+#ifndef FIX_15207
     static const char * const aszSucc[]={ "mod_rewrite.c", NULL };
+#endif
 
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);

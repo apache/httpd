@@ -144,9 +144,9 @@ static const char *proxy_cookie_reverse_map(request_rec *r,
     const char* newdomain = NULL ;
     const char* pathp ;
     const char* domainp ;
-    const char* pathe ;
-    const char* domaine ;
-    size_t l1, l2, i, poffs, doffs ;
+    const char* pathe = NULL;
+    const char* domaine = NULL;
+    size_t l1, l2, i, poffs = 0, doffs = 0 ;
     int ddiff = 0 ;
     int pdiff = 0 ;
     char* ret ;
@@ -157,7 +157,7 @@ static const char *proxy_cookie_reverse_map(request_rec *r,
     if ( pathp = apr_strmatch(conf->cookie_path_str, str, len) , pathp ) {
         pathp += 5 ;
         poffs = pathp - str ;
-        pathe = strchr(pathp, ';') ;
+        pathe = ap_strchr_c(pathp, ';') ;
         l1 = pathe ? (pathe-pathp) : strlen(pathp) ;
         pathe = pathp + l1 ;
         ent = (struct proxy_alias *)conf->cookie_paths->elts;
@@ -173,7 +173,7 @@ static const char *proxy_cookie_reverse_map(request_rec *r,
     if ( domainp = apr_strmatch(conf->cookie_domain_str, str, len) , domainp ) {
         domainp += 7 ;
         doffs = domainp - str ;
-        domaine = strchr(domainp, ';') ;
+        domaine = ap_strchr_c(domainp, ';') ;
         l1 = domaine ? (domaine-domainp) : strlen(domainp) ;
         domaine = domainp + l1 ;
         ent = (struct proxy_alias *)conf->cookie_domains->elts;
@@ -1197,7 +1197,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * decide on the conversion of this buffer full of data.
              * However, chances are that we are not really talking to an
              * HTTP/0.9 server, but to some different protocol, therefore
-             * the best guess IMHO is to always treat the buffer as "text/*":
+             * the best guess IMHO is to always treat the buffer as "text/x":
              */
             ap_xlate_proto_to_ascii(buffer, len);
             e = apr_bucket_heap_create(buffer, cntr, NULL, c->bucket_alloc);
