@@ -21,9 +21,11 @@
 
 <!ELEMENT modulelist (module)+>
 
-<!ELEMENT section (section | title | %blocktags;)*>
-
-<!ATTLIST section id CDATA #IMPLIED>
+<!-- a page may have one or more sections. Each section is named by an
+     unique id. A section must have a title and some text. It may have
+     subsections and a list of related modules and directives -->
+<!ELEMENT section (title, (section | related | %blocktags;)*)>
+<!ATTLIST section id ID #IMPLIED>
 
 <!ELEMENT module (#PCDATA)>
 
