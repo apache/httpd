@@ -265,6 +265,18 @@ start_over:
                                   util_ldap_connection_destroy,
                                   apr_pool_cleanup_null);
 
+#if LDAP_VENDOR_VERSION >= 20000
+    /* set protocol version 3 on this connection */
+        {
+            int version = LDAP_VERSION3;
+
+            if ((result = ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION,
+                                         &version)) != LDAP_SUCCESS) {
+                /* setting LDAP version failed - ignore error */
+            }
+        }
+#endif
+
         /* Set the alias dereferencing option */
 #if LDAP_VERSION_MAX == 2
         ldc->ldap->ld_deref = ldc->deref;
@@ -301,14 +313,7 @@ start_over:
 
 #ifdef APU_HAS_LDAP_STARTTLS
         if (ldc->starttls) {
-            int version = LDAP_VERSION3;
-
-            /* Also we have to set the connection to use protocol version 3,
-             * since we're using TLS. */
-            if ((result = ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION,
-                                         &version)) != LDAP_SUCCESS) {
-		/* setting LDAP version failed - ignore error */
-            }
+            /* LDAP protocol version 3 is required for TLS */
 
             /* 
              * In util_ldap_connection_find, we compare ldc->withtls to
