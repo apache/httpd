@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
             flags |= T_ESCAPE_LOGITEM;
         }
 
-        /* For forensic logging, scape all control characters, top bit set,
+        /* For forensic logging, escape all control characters, top bit set,
          * :, | (used as delimiters) and % (used for escaping).
          */
         if (!apr_isprint(c) || c == ':' || c == '|' || c == '%'
