@@ -49,9 +49,9 @@ end
 
 define dump_brigade
     set $bb = $arg0
-    set $bucket = ((&((ap_bucket_brigade *)$bb)->list))->next
-    set $sentinel = ((char *)((&(((ap_bucket_brigade *)$bb)->list)) \
-                               - ((size_t) &((struct ap_bucket *)0)->link)))
+    set $bucket = ((&((apr_bucket_brigade *)$bb)->list))->next
+    set $sentinel = ((char *)((&(((apr_bucket_brigade *)$bb)->list)) \
+                               - ((size_t) &((struct apr_bucket *)0)->link)))
     set $i = 0
 
     printf "dump of brigade 0x%lx\n", (unsigned long)$bb
