@@ -1289,6 +1289,11 @@ static void child_main()
      */
     shutdown_in_progress = 1;
 
+    /* Tell the worker threads they may exit when done handling
+     * a connection.
+     */
+    workers_may_exit = 1;
+
     /* Close the listening sockets. */
     for (lr = ap_listeners; lr ; lr = lr->next) {
         apr_socket_close(lr->sd);
@@ -1307,11 +1312,6 @@ static void child_main()
         ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf, 
                      "Child %d: Failure releasing the start mutex", my_pid);
     }
-
-    /* Tell the worker threads they may exit when done handling
-     * a connection.
-     */
-    workers_may_exit = 1;
 
     /* Shutdown the worker threads */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
