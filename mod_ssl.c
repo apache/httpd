@@ -230,7 +230,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
 {
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;
-    char *cpVHostMD5;
+    char *vhost_md5;
     SSLConnRec *sslconn;
 
     /*
@@ -276,13 +276,13 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
         return DECLINED; /* XXX */
     }
 
-    cpVHostMD5 = ap_md5_binary(c->pool, sc->szVHostID, sc->nVHostID_length);
+    vhost_md5 = ap_md5_binary(c->pool, sc->szVHostID, sc->nVHostID_length);
 
-    if (!SSL_set_session_id_context(ssl, (unsigned char *)cpVHostMD5,
+    if (!SSL_set_session_id_context(ssl, (unsigned char *)vhost_md5,
                                     MD5_DIGESTSIZE*2))
     {
         ssl_log(c->base_server, SSL_LOG_ERROR|SSL_ADD_SSLERR,
-                "Unable to set session id context to `%s'", cpVHostMD5);
+                "Unable to set session id context to `%s'", vhost_md5);
 
         c->aborted = 1;
 
@@ -307,7 +307,7 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     return APR_SUCCESS;
 }
 
-static apr_status_t ssl_abort(SSLFilterRec *pRec, conn_rec *c)
+static apr_status_t ssl_abort(SSLFilterRec *filter, conn_rec *c)
 {
     SSLConnRec *sslconn = myConnConfig(c);
     /*
@@ -318,11 +318,11 @@ static apr_status_t ssl_abort(SSLFilterRec *pRec, conn_rec *c)
      * - block the socket, so Apache cannot operate any more
      */
 
-    SSL_set_shutdown(pRec->pssl, SSL_RECEIVED_SHUTDOWN);
-    SSL_smart_shutdown(pRec->pssl);
-    SSL_free(pRec->pssl);
+    SSL_set_shutdown(filter->pssl, SSL_RECEIVED_SHUTDOWN);
+    SSL_smart_shutdown(filter->pssl);
+    SSL_free(filter->pssl);
 
-    pRec->pssl = NULL; /* so filters know we've been shutdown */
+    filter->pssl = NULL; /* so filters know we've been shutdown */
     sslconn->ssl = NULL;
     c->aborted = 1;
 
@@ -336,18 +336,18 @@ static apr_status_t ssl_abort(SSLFilterRec *pRec, conn_rec *c)
  * Adv. if conn_rec * can be accepted is we can hook this function using the
  * ap_hook_process_connection hook.
  */
-int ssl_hook_process_connection(SSLFilterRec *pRec)
+int ssl_hook_process_connection(SSLFilterRec *filter)
 {
-    conn_rec *c         = (conn_rec *)SSL_get_app_data(pRec->pssl);
+    conn_rec *c         = (conn_rec *)SSL_get_app_data(filter->pssl);
     SSLConnRec *sslconn = myConnConfig(c);
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
-    X509 *xs;
+    X509 *cert;
     int n, err;
     long verify_result;
 
-    if (!SSL_is_init_finished(pRec->pssl)) {
-        if ((n = SSL_accept(pRec->pssl)) <= 0) {
-            err = SSL_get_error(pRec->pssl, n);
+    if (!SSL_is_init_finished(filter->pssl)) {
+        if ((n = SSL_accept(filter->pssl)) <= 0) {
+            err = SSL_get_error(filter->pssl, n);
 
             if (err == SSL_ERROR_ZERO_RETURN) {
                 /*
@@ -373,10 +373,10 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                  * Hmmmm...  Punt this out of here after removing our output
                  * filter.
                  */
-                ap_remove_output_filter(pRec->pOutputFilter);
+                ap_remove_output_filter(filter->pOutputFilter);
                 return HTTP_BAD_REQUEST;
             }
-            else if ((SSL_get_error(pRec->pssl, n) == SSL_ERROR_SYSCALL) &&
+            else if ((SSL_get_error(filter->pssl, n) == SSL_ERROR_SYSCALL) &&
                      (errno != EINTR))
             {
                 if (errno > 0) {
@@ -403,13 +403,13 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                         c->remote_ip ? c->remote_ip : "unknown");
             }
 
-            return ssl_abort(pRec, c);
+            return ssl_abort(filter, c);
         }
 
         /*
          * Check for failed client authentication
          */
-        verify_result = SSL_get_verify_result(pRec->pssl);
+        verify_result = SSL_get_verify_result(filter->pssl);
 
         if ((verify_result != X509_V_OK) ||
             sslconn->verify_error)
@@ -439,15 +439,15 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
                         "SSL client authentication failed: %s",
                         error ? error : "unknown");
 
-                return ssl_abort(pRec, c);
+                return ssl_abort(filter, c);
             }
         }
 
         /*
          * Remember the peer certificate's DN
          */
-        if ((xs = SSL_get_peer_certificate(pRec->pssl))) {
-            sslconn->client_cert = xs;
+        if ((cert = SSL_get_peer_certificate(filter->pssl))) {
+            sslconn->client_cert = cert;
             sslconn->client_dn = NULL;
         }
 
@@ -461,7 +461,7 @@ int ssl_hook_process_connection(SSLFilterRec *pRec)
             ssl_log(c->base_server, SSL_LOG_ERROR,
                     "No acceptable peer certificate available");
 
-            return ssl_abort(pRec, c);
+            return ssl_abort(filter, c);
         }
     }
 
