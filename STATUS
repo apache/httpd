@@ -115,7 +115,7 @@ Available Patches:
     * Ken's slight reworking of the Apache LICENSE to clarify the restricted
       nature of usage of the name "Apache" in derived products
 	Status: Ken +1, Paul +1, Ben +1, Jim +1, Randy +1, Roy +1,
-		Chuck +1, MarkC +1, Ralf +1, Sameer +1
+		Chuck +1, MarkC +1, Ralf +1, Sameer +1, Martin +1
 
     * Ralf's 
       Apache 1.3 Autoconf-*style* Interface (APACI)
@@ -263,10 +263,10 @@ Available Patches:
       worth adding it by weighting on the advantages and disadvantages.
       
       Votes for including APACI (in general): 
-         Ralf +1, Dean +1, Roy +1, Paul +1
+         Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1
 
       Votes for commit variants:
-         CV1: Ralf +1, Dean +1, Roy +1, Paul +1
+         CV1: Ralf +1, Dean +1, Roy +1, Paul +1, Martin +1
          CV2: Ralf +0
 
 Concepts:
@@ -388,7 +388,7 @@ Open issues:
 	  mod_mmap_static, and mod_php3 for example).  The proposal is to
 	  remove the child_exit() method and document cleanups as the method of
 	  handling this need.
-	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1, Jim +1
+	    Status: Dean +1, Rasmus +1, Paul +1, Roy +1, Jim +1, Martin +1
 
 Win32 specific issues:
 
