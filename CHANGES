@@ -1,5 +1,10 @@
 Changes with Apache 2.0.24-dev
 
+  *) The worker MPM now handles shutdown and restart requests.  It
+     definately isn't perfect, but we do stop the servers correctly.
+     The biggest problem right now is that SIGHUP causes the server to
+     just die.  [Ryan Bloom]
+
 Changes with Apache 2.0.23
 
   *) Use the prefork MPM by default on Unix.  [various]
