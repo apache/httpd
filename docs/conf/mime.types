@@ -50,7 +50,7 @@ application/news-message-id
 application/news-transmission
 application/ocsp-request
 application/ocsp-response
-application/octet-stream	bin dms lha lzh exe class so dll
+application/octet-stream	bin dms lha lzh exe class so dll dmg
 application/oda			oda
 application/ogg			ogg
 application/parityfec
@@ -582,7 +582,7 @@ video/smpte292m
 video/vnd.fvt
 video/vnd.motorola.video
 video/vnd.motorola.videop
-video/vnd.mpegurl		mxu
+video/vnd.mpegurl		mxu m4u
 video/vnd.nokia.interleaved-multimedia
 video/vnd.objectvideo
 video/vnd.vivo
