@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Ignore \r\n or \n when using PEEK mode for input filters.  The problem
+     is that some browsers send extra lines at the end of POST requests, and
+     we don't want to delay sending data back to the user just because the
+     browser isn't well behaved. [Ryan Bloom]
+
   *) Get SuEXEC working again.  We can't send absolute paths to suExec
      because it refuses to execute those programs.  SuEXEC also wasn't
      always recognizing configuration changes made using the autoconf
