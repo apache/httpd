@@ -327,7 +327,6 @@ static int should_proxy_garbage_coll(request_rec *r)
     else {
 	lastcheck = buf.st_mtime;       /* save the time */
         if (garbage_now < lastcheck + every) {
-            ap_unblock_alarms();
             return 0;
         }
         if (utime(filename, NULL) == -1)
