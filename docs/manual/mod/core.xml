@@ -917,6 +917,12 @@ ErrorLog logs/error.log (Windows and OS/2)</default>
     document for details on why your security could be compromised
     if the directory where logfiles are stored is writable by
     anyone other than the user that starts the server.</p>
+    <note type="warning"><title>Note</title>
+      <p>When entering a file path on non-Unix platforms, care should be taken
+      to make sure that only forward slashed are used even though the platform
+      may allow the use of back slashes. In general it is a good idea to always 
+      use forward slashes throughout the configuration files.</p>
+    </note>
 </usage>
 <seealso><directive module="core">LogLevel</directive></seealso>
 <seealso><a href="../logs.html">Apache Log Files</a></seealso>
