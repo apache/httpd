@@ -54,6 +54,7 @@
 #include "http_log.h"
 #include "http_main.h"
 #include "http_protocol.h"
+#include "http_connection.h"
 #include "http_request.h"
 #include "util_script.h"
 #include "ap_mpm.h"
@@ -71,7 +72,7 @@ typedef struct
 
 module AP_MODULE_DECLARE_DATA info_module;
 
-static void *create_info_config(apr_pool_t * p, server_rec *s)
+static void *create_info_config(apr_pool_t * p, server_rec * s)
 {
     info_svr_conf *conf =
         (info_svr_conf *) apr_pcalloc(p, sizeof(info_svr_conf));
@@ -92,7 +93,7 @@ static void *merge_info_config(apr_pool_t * p, void *basev, void *overridesv)
     return new;
 }
 
-static void put_int_flush_right(request_rec *r, int i, int field)
+static void put_int_flush_right(request_rec * r, int i, int field)
 {
     if (field > 1 || i > 9)
         put_int_flush_right(r, i / 10, field - 1);
@@ -102,7 +103,7 @@ static void put_int_flush_right(request_rec *r, int i, int field)
         ap_rputs("&nbsp;", r);
 }
 
-static void mod_info_indent(request_rec *r, int nest,
+static void mod_info_indent(request_rec * r, int nest,
                             const char *thisfn, int linenum)
 {
     int i;
@@ -127,7 +128,7 @@ static void mod_info_indent(request_rec *r, int nest,
     }
 }
 
-static void mod_info_show_cmd(request_rec *r, const ap_directive_t * dir,
+static void mod_info_show_cmd(request_rec * r, const ap_directive_t * dir,
                               int nest)
 {
     mod_info_indent(r, nest, dir->filename, dir->line_num);
@@ -136,7 +137,7 @@ static void mod_info_show_cmd(request_rec *r, const ap_directive_t * dir,
                ap_escape_html(r->pool, dir->args));
 }
 
-static void mod_info_show_open(request_rec *r, const ap_directive_t * dir,
+static void mod_info_show_open(request_rec * r, const ap_directive_t * dir,
                                int nest)
 {
     mod_info_indent(r, nest, dir->filename, dir->line_num);
@@ -145,7 +146,7 @@ static void mod_info_show_open(request_rec *r, const ap_directive_t * dir,
                ap_escape_html(r->pool, dir->args));
 }
 
-static void mod_info_show_close(request_rec *r, const ap_directive_t * dir,
+static void mod_info_show_close(request_rec * r, const ap_directive_t * dir,
                                 int nest)
 {
     const char *dirname = dir->directive;
@@ -159,7 +160,7 @@ static void mod_info_show_close(request_rec *r, const ap_directive_t * dir,
     }
 }
 
-static int mod_info_has_cmd(const command_rec *cmds, ap_directive_t * dir)
+static int mod_info_has_cmd(const command_rec * cmds, ap_directive_t * dir)
 {
     const command_rec *cmd;
     if (cmds == NULL)
@@ -171,7 +172,7 @@ static int mod_info_has_cmd(const command_rec *cmds, ap_directive_t * dir)
     return 0;
 }
 
-static void mod_info_show_parents(request_rec *r, ap_directive_t * node,
+static void mod_info_show_parents(request_rec * r, ap_directive_t * node,
                                   int from, int to)
 {
     if (from < to)
@@ -179,7 +180,7 @@ static void mod_info_show_parents(request_rec *r, ap_directive_t * node,
     mod_info_show_open(r, node, to);
 }
 
-static int mod_info_module_cmds(request_rec *r, const command_rec *cmds,
+static int mod_info_module_cmds(request_rec * r, const command_rec * cmds,
                                 ap_directive_t * node, int from, int level)
 {
     int shown = from;
@@ -232,21 +233,39 @@ typedef struct
     hook_get_t get;
 } hook_lookup_t;
 
-/* TODO: Find Any Missing Hooks */
+static hook_lookup_t startup_hooks[] = {
+    {"Pre-Config", ap_hook_get_pre_config},
+    {"Test Configuration", ap_hook_get_test_config},
+    {"Post Configuration", ap_hook_get_post_config},
+    {"Open Logs", ap_hook_get_open_logs},
+    {"Child Init", ap_hook_get_child_init},
+    {NULL},
+};
+
 static hook_lookup_t request_hooks[] = {
+    {"Pre-Connection", ap_hook_get_pre_connection},
+    {"Create Connection", ap_hook_get_create_connection},
+    {"Process Connection", ap_hook_get_process_connection},
+    {"Create Request", ap_hook_get_create_request},
     {"Post-Read Request", ap_hook_get_post_read_request},
     {"Header Parse", ap_hook_get_header_parser},
+    {"HTTP Method", ap_hook_get_http_method},
+    {"Default Port", ap_hook_get_default_port},
     {"Translate Path", ap_hook_get_translate_name},
+    {"Map to Storage", ap_hook_get_map_to_storage},
     {"Check Access", ap_hook_get_access_checker},
     {"Verify User ID", ap_hook_get_check_user_id},
     {"Verify User Access", ap_hook_get_auth_checker},
     {"Check Type", ap_hook_get_type_checker},
     {"Fixups", ap_hook_get_fixups},
+    {"Insert Filters", ap_hook_get_insert_filter},
+    {"Content Handlers", ap_hook_get_handler},
     {"Logging", ap_hook_get_log_transaction},
+    {"Insert Errors", ap_hook_get_insert_error_filter},
     {NULL},
 };
 
-static int module_find_hook(module *modp, hook_get_t hook_get)
+static int module_find_hook(module * modp, hook_get_t hook_get)
 {
     int i;
     apr_array_header_t *hooks = hook_get();
@@ -267,8 +286,8 @@ static int module_find_hook(module *modp, hook_get_t hook_get)
     return 0;
 }
 
-static void module_participate(request_rec *r,
-                               module *modp,
+static void module_participate(request_rec * r,
+                               module * modp,
                                hook_lookup_t * lookup, int *comma)
 {
     if (module_find_hook(modp, lookup->get)) {
@@ -280,7 +299,7 @@ static void module_participate(request_rec *r,
     }
 }
 
-static void module_request_hook_participate(request_rec *r, module *modp)
+static void module_request_hook_participate(request_rec * r, module * modp)
 {
     int i, comma = 0;
 
@@ -296,7 +315,7 @@ static void module_request_hook_participate(request_rec *r, module *modp)
     ap_rputs("</dt>\n", r);
 }
 
-static const char *find_more_info(server_rec *s, const char *module_name)
+static const char *find_more_info(server_rec * s, const char *module_name)
 {
     int i;
     info_svr_conf *conf =
@@ -316,7 +335,7 @@ static const char *find_more_info(server_rec *s, const char *module_name)
     return 0;
 }
 
-static int show_server_settings(request_rec *r)
+static int show_server_settings(request_rec * r)
 {
     server_rec *serv = r->server;
     int max_daemons, forked, threaded;
@@ -366,7 +385,7 @@ static int show_server_settings(request_rec *r)
     ap_rputs("<dt><strong>Server Built With:</strong>\n"
              "<tt style=\"white-space: pre;\">\n", r);
 
-    /* TODO: Not all of these are getting set like they do in main.c. 
+    /* TODO: Not all of these defines are getting set like they do in main.c. 
      *       Missing some headers? 
      */
 
@@ -515,7 +534,7 @@ static int show_server_settings(request_rec *r)
     return 0;
 }
 
-static int dump_a_hook(request_rec *r, hook_get_t hook_get)
+static int dump_a_hook(request_rec * r, hook_get_t hook_get)
 {
     int i;
     char qs;
@@ -537,16 +556,27 @@ static int dump_a_hook(request_rec *r, hook_get_t hook_get)
 
     for (i = 0; i < hooks->nelts; i++) {
         ap_rprintf(r,
-                       "&nbsp;&nbsp; %02d <a href=\"%c%s\">%s</a> <br/>",
-                       elts[i].nOrder, qs, elts[i].szName, elts[i].szName);
+                   "&nbsp;&nbsp; %02d <a href=\"%c%s\">%s</a> <br/>",
+                   elts[i].nOrder, qs, elts[i].szName, elts[i].szName);
     }
     return 0;
 }
 
-static int show_hooks_settings(request_rec *r)
+static int show_active_hooks(request_rec * r)
 {
     int i;
-    ap_rputs("<h2><a name=\"hooks\">Active Hooks</a></h2>\n<dl>", r);
+    ap_rputs("<h2><a name=\"startup_hooks\">Startup Hooks</a></h2>\n<dl>", r);
+
+    for (i = 0; startup_hooks[i].name; i++) {
+        ap_rprintf(r, "<dt><strong>%s:</strong>\n <br /><tt>\n",
+                   startup_hooks[i].name);
+        dump_a_hook(r, startup_hooks[i].get);
+        ap_rputs("\n  </tt>\n</dt>\n", r);
+    }
+
+    ap_rputs
+        ("</dl>\n<hr />\n<h2><a name=\"request_hooks\">Request Hooks</a></h2>\n<dl>",
+         r);
 
     for (i = 0; request_hooks[i].name; i++) {
         ap_rprintf(r, "<dt><strong>%s:</strong>\n <br /><tt>\n",
@@ -560,7 +590,7 @@ static int show_hooks_settings(request_rec *r)
     return 0;
 }
 
-static int display_info(request_rec *r)
+static int display_info(request_rec * r)
 {
     module *modp = NULL;
     server_rec *serv = r->server;
@@ -580,9 +610,7 @@ static int display_info(request_rec *r)
     ap_rputs(DOCTYPE_XHTML_1_0T
              "<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
              "<head>\n"
-             "  <title>Server Information</title>\n"
-             "</head>\n",
-             r);
+             "  <title>Server Information</title>\n" "</head>\n", r);
     ap_rputs("<body><h1 style=\"text-align: center\">"
              "Apache Server Information</h1>\n", r);
     if (!r->args || strcasecmp(r->args, "list")) {
@@ -596,7 +624,8 @@ static int display_info(request_rec *r)
 
             ap_rputs("<dl><dt><tt>Sections:<br />", r);
             ap_rputs("<a href=\"#server\">Server Settings</a>, "
-                     "<a href=\"#hooks\">Active Hooks</a>", r);
+                     "<a href=\"#startup_hooks\">Startup Hooks</a>, "
+                     "<a href=\"#request_hooks\">Request Hooks</a>", r);
             ap_rputs("</tt></dt></dl><hr />", r);
 
             ap_rputs("<dl><dt><tt>Loaded Modules: <br />", r);
@@ -616,7 +645,7 @@ static int display_info(request_rec *r)
         }
 
         if (!r->args || !strcasecmp(r->args, "hooks")) {
-            show_hooks_settings(r);
+            show_active_hooks(r);
         }
 
         if (r->args && 0 == strcasecmp(r->args, "config")) {
@@ -744,7 +773,7 @@ static int display_info(request_rec *r)
     return 0;
 }
 
-static const char *add_module_info(cmd_parms *cmd, void *dummy,
+static const char *add_module_info(cmd_parms * cmd, void *dummy,
                                    const char *name, const char *info)
 {
     server_rec *s = cmd->server;
