@@ -394,15 +394,16 @@ static void accept_mutex_init(pool *p)
 	exit(1);
     }
     close(fd);
-    if (pthread_mutexattr_init(&mattr)) {
+    if ((errno = pthread_mutexattr_init(&mattr))) {
 	perror("pthread_mutexattr_init");
 	exit(1);
     }
-    if (pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED)) {
+    if ((errno = pthread_mutexattr_setpshared(&mattr,
+						PTHREAD_PROCESS_SHARED))) {
 	perror("pthread_mutexattr_setpshared");
 	exit(1);
     }
-    if (pthread_mutex_init(accept_mutex, &mattr)) {
+    if ((errno = pthread_mutex_init(accept_mutex, &mattr))) {
 	perror("pthread_mutex_init");
 	exit(1);
     }
@@ -415,11 +416,14 @@ static void accept_mutex_init(pool *p)
 
 static void accept_mutex_on()
 {
+    int err;
+
     if (sigprocmask(SIG_BLOCK, &accept_block_mask, &accept_previous_mask)) {
 	perror("sigprocmask(SIG_BLOCK)");
 	exit (1);
     }
-    if (pthread_mutex_lock(accept_mutex)) {
+    if ((err = pthread_mutex_lock(accept_mutex))) {
+	errno = err;
 	perror("pthread_mutex_lock");
 	exit(1);
     }
@@ -428,7 +432,10 @@ static void accept_mutex_on()
 
 static void accept_mutex_off()
 {
-    if (pthread_mutex_unlock(accept_mutex)) {
+    int err;
+
+    if ((err = pthread_mutex_unlock(accept_mutex))) {
+	errno = err;
 	perror("pthread_mutex_unlock");
 	exit(1);
     }

@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) The pthread_mutex_* functions return an error code, and don't
+     set errno.  [Igor Tatarinov <tatarino@prairie.NoDak.edu>]
+
   *) WIN32: Allow spaces to prefix the interpreter in #! lines.
      [Ben Laurie] PR#1101
 
