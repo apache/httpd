@@ -275,6 +275,63 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 }
 
 
+/* Useful caching structures to repeat _walk/merge sequences as required
+ * when a subrequest or redirect reuses substantially the same config.
+ *
+ * Directive order in the httpd.conf file and its Includes significantly
+ * impact this optimization.  Grouping common blocks at the front of the
+ * config that are less likely to change between a request and 
+ * its subrequests, or between a request and its redirects reduced
+ * the work of these functions significantly.
+ */
+
+ typedef struct walk_walked_t {
+    ap_conf_vector_t *matched; /* A dir_conf sections we matched */
+    ap_conf_vector_t *merged;  /* The dir_conf merged result */
+} walk_walked_t;
+
+typedef struct walk_cache_t {
+    const char         *cached;         /* The identifier we matched */
+    ap_conf_vector_t  **dir_conf_tested;/* The sections we matched against */
+    ap_conf_vector_t   *per_dir_result; /* per_dir_config += walked result */
+    apr_array_header_t *walked;         /* The list of walk_walked_t results */
+} walk_cache_t;
+
+static walk_cache_t *prep_walk_cache(const char *cache_name, request_rec *r)
+{
+    walk_cache_t *cache;
+
+    /* Find the most relevant, recent entry to work from.  That would be
+     * this request (on the second call), or the parent request of a
+     * subrequest, or the prior request of an internal redirect.  Provide
+     * this _walk()er with a copy it is allowed to munge.  If there is no
+     * parent or prior cached request, then create a new walk cache.
+     */
+    if ((apr_pool_userdata_get((void **)&cache, 
+                               cache_name, r->pool)
+                != APR_SUCCESS) || !cache) 
+    {
+        if ((r->main && (apr_pool_userdata_get((void **)&cache, 
+                                               cache_name,
+                                               r->main->pool)
+                                 == APR_SUCCESS) && cache)
+         || (r->prev && (apr_pool_userdata_get((void **)&cache, 
+                                               cache_name,
+                                               r->prev->pool)
+                                 == APR_SUCCESS) && cache)) {
+            cache = apr_pmemdup(r->pool, cache, sizeof(*cache));
+            cache->walked = apr_array_copy(r->pool, cache->walked);
+        }
+        else {
+            cache = apr_pcalloc(r->pool, sizeof(*cache));
+            cache->walked = apr_array_make(r->pool, 4, sizeof(walk_walked_t));
+        }
+        apr_pool_userdata_set(cache, cache_name, 
+                              apr_pool_cleanup_null, r->pool);
+    }
+    return cache;
+}
+
 /*****************************************************************
  *
  * Getting and checking directory configuration.  Also checks the
@@ -1126,18 +1183,6 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
 #endif /* defined REPLACE_PATH_INFO_METHOD */
 
-typedef struct walk_walked_t {
-    ap_conf_vector_t *matched; /* A dir_conf sections we matched */
-    ap_conf_vector_t *merged;  /* The dir_conf merged result */
-} walk_walked_t;
-
-typedef struct walk_cache_t {
-    const char         *cached;         /* The identifier we matched */
-    ap_conf_vector_t  **dir_conf_tested;/* The sections we matched against */
-    ap_conf_vector_t   *per_dir_result; /* per_dir_config += walked result */
-    apr_array_header_t *walked;         /* The list of walk_walked_t results */
-} walk_cache_t;
-
 AP_DECLARE(int) ap_location_walk(request_rec *r)
 {
     ap_conf_vector_t *now_merged = NULL;
@@ -1151,32 +1196,7 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
     const char *entry_uri;
     int len, j;
 
-    /* Find the most relevant, recent entry to work from.  That would be
-     * this request (on the second call), or the parent request of a
-     * subrequest, or the prior request of an internal redirect.
-     */
-    if ((apr_pool_userdata_get((void **)&cache, 
-                               "ap_location_walk::cache", r->pool)
-                != APR_SUCCESS) || !cache) 
-    {
-        if ((r->main && (apr_pool_userdata_get((void **)&cache, 
-                                               "ap_location_walk::cache",
-                                               r->main->pool)
-                                 == APR_SUCCESS) && cache)
-         || (r->prev && (apr_pool_userdata_get((void **)&cache, 
-                                               "ap_location_walk::cache",
-                                               r->prev->pool)
-                                 == APR_SUCCESS) && cache)) {
-            cache = apr_pmemdup(r->pool, cache, sizeof(*cache));
-            cache->walked = apr_array_copy(r->pool, cache->walked);
-        }
-        else {
-            cache = apr_pcalloc(r->pool, sizeof(*cache));
-            cache->walked = apr_array_make(r->pool, 4, sizeof(walk_walked_t));
-        }
-        apr_pool_userdata_set(cache, "ap_location_walk::cache", 
-                              apr_pool_cleanup_null, r->pool);
-    }
+    cache = prep_walk_cache("ap_location_walk::cache", r);
     
     /* No tricks here, there are no <Locations > to parse in this vhost.
      * We won't destroy the cache, just in case _this_ redirect is later
