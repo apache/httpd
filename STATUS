@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/11/16 18:57:48 $]
+Last modified at [$Date: 2001/11/16 19:24:27 $]
 
 Release:
 
@@ -322,12 +322,13 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       link flags.
 
     * Remove the threaded MPM.
-      +1:   Ryan, Justin, Jeff, Ian
+      +1:   Ryan, Justin, Jeff, Ian, Aaron
       +0:
       -1:
 
     * Make the worker MPM the default MPM for threaded Unix boxes.
       +1:   Justin, Jeff, Ian
+      -0:   Aaron (premature decision, needs more discussion)
 
 PRs that have been suspended forever waiting for someone to
 put them into 'the next release':
