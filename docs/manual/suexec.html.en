@@ -394,24 +394,6 @@
       Apache normally runs. This is the only user allowed to
       execute this program.</dd>
 
-      <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
-
-      <dd>Define as the DocumentRoot set for Apache. This will be
-      the only hierarchy (aside from UserDirs) that can be used for
-      suEXEC behavior. The default directory is the --datadir value
-      with the suffix "/htdocs", <em>e.g.</em> if you configure
-      with "<code>--datadir=/home/apache</code>" the directory
-      "/home/apache/htdocs" is used as document root for the suEXEC
-      wrapper.</dd>
-
-      <dt><code>--with-suexec-logfile=<em>FILE</em></code></dt>
-
-      <dd>This defines the filename to which all suEXEC
-      transactions and errors are logged (useful for auditing and
-      debugging purposes). By default the logfile is named
-      "suexec_log" and located in your standard logfile directory
-      (--logfiledir).</dd>
-
       <dt><code>--with-suexec-userdir=<em>DIR</em></code></dt>
 
       <dd>Define to be the subdirectory under users' home
@@ -430,6 +412,16 @@
       this is not defined properly, "~userdir" cgi requests will
       not work!</strong></dd>
 
+      <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
+
+      <dd>Define as the DocumentRoot set for Apache. This will be
+      the only hierarchy (aside from UserDirs) that can be used for
+      suEXEC behavior. The default directory is the --datadir value
+      with the suffix "/htdocs", <em>e.g.</em> if you configure
+      with "<code>--datadir=/home/apache</code>" the directory
+      "/home/apache/htdocs" is used as document root for the suEXEC
+      wrapper.</dd>
+
       <dt><code>--with-suexec-uidmin=<em>UID</em></code></dt>
 
       <dd>Define this as the lowest UID allowed to be a target user
@@ -441,6 +433,14 @@
       <dd>Define this as the lowest GID allowed to be a target
       group for suEXEC. For most systems, 100 is common and
       therefore used as default value.</dd>
+
+      <dt><code>--with-suexec-logfile=<em>FILE</em></code></dt>
+
+      <dd>This defines the filename to which all suEXEC
+      transactions and errors are logged (useful for auditing and
+      debugging purposes). By default the logfile is named
+      "suexec_log" and located in your standard logfile directory
+      (--logfiledir).</dd>
 
       <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
