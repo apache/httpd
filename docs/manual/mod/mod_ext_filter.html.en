@@ -235,7 +235,7 @@ delivery to the client</td></tr>
     run and its arguments.</p>
 
     <p><var>filtername</var> specifies the name of the filter being
-    defined. This name can then be used in SetOutputFilter
+    defined. This name can then be used in <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
     directives. It must be unique among all registered filters.
     <em>At the present time, no error is reported by the
     register-filter API, so a problem with duplicate names isn't
@@ -253,7 +253,7 @@ delivery to the client</td></tr>
       external command to run. If there are arguments after the
       program name, the command line should be surrounded in
       quotation marks (<em>e.g.</em>, <code>cmd="<var>/bin/mypgm</var>
-      <var>arg1</var> <var>arg2</var>"</code>. Normal shell quoting is
+      <var>arg1</var> <var>arg2</var>"</code>.) Normal shell quoting is
       not necessary since the program is run directly, bypassing the shell.
       Program arguments are blank-delimited. A backslash can be used to
       escape blanks which should be part of a program argument. Any
