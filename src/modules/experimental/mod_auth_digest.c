@@ -536,7 +536,7 @@ static const char *set_group_file(cmd_parms *cmd, void *config,
 static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
 {
     digest_config_rec *conf = (digest_config_rec *) config;
-    const char **tmp;
+    char **tmp;
     int cnt;
 
     if (!strcasecmp(op, "none")) {
