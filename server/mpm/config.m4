@@ -25,8 +25,6 @@ if test "$apache_cv_mpm" = "threaded" -o "$apache_cv_mpm" = "perchild"; then
   fi
 fi
 
-APACHE_CHECK_SIGWAIT_ONE_ARG
-
 APACHE_FAST_OUTPUT(server/mpm/Makefile)
 
 MPM_NAME=$apache_cv_mpm
