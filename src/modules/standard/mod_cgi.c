@@ -521,6 +521,7 @@ int cgi_handler (request_rec *r)
 	send_http_header(r);
 	if (!r->header_only)
 	    send_fd(script_in, r);
+	pfclose (r->main ? r->main->pool : r->pool, script_in);
 
 	/* Soak up stderr */
 	soft_timeout("soaking script stderr", r);
@@ -528,8 +529,6 @@ int cgi_handler (request_rec *r)
 	       !r->connection->aborted)
 	    continue;
 	kill_timeout(r);
-
-	pfclose (r->main ? r->main->pool : r->pool, script_in);
 	pfclose (r->main ? r->main->pool : r->pool, script_err);
     }
 
