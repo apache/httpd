@@ -50,7 +50,7 @@
  *
  */
 
-/* $Id: ap_config.h,v 1.34 1996/08/20 11:50:39 paul Exp $ */
+/* $Id: ap_config.h,v 1.35 1996/08/21 18:40:03 akosut Exp $ */
 
 /*
  * conf.h: system-dependant #defines and includes...
@@ -324,6 +324,21 @@ typedef quad_t rlim_t;
 #define NEED_INITGROUPS
 #define JMP_BUF jmp_buf
 
+#elif defined(UXPDS)
+#undef NEED_STRCASECMP
+#undef NEED_STRNCASECMP
+#undef NEED_STRDUP
+#undef HAS_GMTOFF
+#define NO_KILLPG
+#undef NO_SETSID
+#define HAVE_RESOURCE 1
+#define bzero(a,b) memset(a,0,b)
+#define getwd(d) getcwd(d,MAX_STRING_LEN)
+#define JMP_BUF sigjmp_buf
+#define FCNTL_SERIALIZED_ACCEPT
+#define HAVE_MMAP
+#define HAVE_CRYPT_H
+ 
 #elif defined(__EMX__)
 /* Defines required for EMX OS/2 port. */
 #define JMP_BUF sigjmp_buf
