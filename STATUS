@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/03/06 21:32:51 $]
+Last modified at [$Date: 2003/03/06 23:17:49 $]
 
 Release:
 
@@ -215,6 +215,12 @@ PATCHES TO PORT FROM 2.1
       compression level
       mod_deflate.c 1.31
       +1: ianh, wrowe, nd
+
+    * mod_usertrack: don't set the cookie in subrequests. This works
+      around the problem that cookies were set twice during fast internal
+      redirects. PR 13211.
+      modules/metadata/mod_usertrack.c: r1.41
+      +1: nd
 
 CURRENT RELEASE NOTES:
 
