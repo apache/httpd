@@ -71,3 +71,16 @@ end
 document dump_brigade
     Print bucket brigade info
 end
+
+define dump_filters
+    set $f = $arg0
+    while $f
+        printf "%s(0x%lx): ctx=0x%lx, r=0x%lx, c=0x%lx\n", \
+        $f->frec->name, (unsigned long)$f, (unsigned long)$f->ctx, \
+        $f->r, $f->c
+        set $f = $f->next
+    end
+end
+document dump_filters
+    Print filter chain info
+end
