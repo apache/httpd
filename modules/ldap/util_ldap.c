@@ -1381,6 +1381,11 @@ static const int util_ldap_parse_cert_type(const char *type) {
         return APR_LDAP_CERT_TYPE_BASE64;
     }
 
+    /* Client cert file in PKCS#12 format */
+    else if (0 == strcasecmp("CERT_PFX", type)) {
+        return APR_LDAP_CERT_TYPE_PFX;
+    }
+
     /* Netscape client cert database file/directory */
     else if (0 == strcasecmp("CERT_KEY3_DB", type)) {
         return APR_LDAP_CERT_TYPE_KEY3_DB;
@@ -1399,6 +1404,11 @@ static const int util_ldap_parse_cert_type(const char *type) {
     /* Client cert key file in Base64 format */
     else if (0 == strcasecmp("KEY_BASE64", type)) {
         return APR_LDAP_KEY_TYPE_BASE64;
+    }
+
+    /* Client cert key file in PKCS#12 format */
+    else if (0 == strcasecmp("KEY_PFX", type)) {
+        return APR_LDAP_KEY_TYPE_PFX;
     }
 
     else {
@@ -1504,13 +1514,14 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd, void *confi
             return apr_psprintf(cmd->pool, "The certificate type \"%s\" is "
                                            "not recognised. It should be one "
                                            "of CERT_DER, CERT_BASE64, "
-                                           "CERT_NICKNAME, "
-                                           "KEY_DER, KEY_BASE64", type);
+                                           "CERT_NICKNAME, CERT_PFX,"
+                                           "KEY_DER, KEY_BASE64, KEY_PFX", type);
         }
         else if (APR_LDAP_CA_TYPE_DER == cert_type ||
                  APR_LDAP_CA_TYPE_BASE64 == cert_type ||
                  APR_LDAP_CA_TYPE_CERT7_DB == cert_type ||
                  APR_LDAP_CA_TYPE_SECMOD == cert_type ||
+                 APR_LDAP_CERT_TYPE_PFX == cert_type ||
                  APR_LDAP_CERT_TYPE_KEY3_DB == cert_type) {
             return apr_psprintf(cmd->pool, "The certificate type \"%s\" is "
                                            "only valid within a "
