@@ -30,10 +30,6 @@ Changes with Apache 2.1.0-dev
   *) prefork MPM: Use the right permissions for the directory created 
      for gprof support.  [Jim Carlson <jcarlson@jnous.com>]
 
-  *) By default, use the same CC and CPP with which APR was built.
-     The user can override with CC and CPP environment variables.
-     [Jeff Trawick]
-
   *) mod_log_config: Add the ability to log the id of the thread 
      processing the request via new %P formats.  [Jeff Trawick]
 
@@ -175,6 +171,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) By default, use the same CC and CPP with which APR was built.
+     The user can override with CC and CPP environment variables.
+     [Jeff Trawick]
 
   *) Fix ap_construct_url() so that it surrounds IPv6 literal address
      strings with [].  This fixes certain types of redirection.
