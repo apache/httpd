@@ -918,6 +918,15 @@ if [ "x$using_shlib" = "x1" ] ; then
             LDFLAGS_SHLIB="-Bdynamic -G"
             LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
             ;;
+         *-sco5*)
+             case $CC in
+                 */gcc*|gcc* ) CFLAGS_SHLIB="-fpic" ;;
+                 */cc*|cc*   ) CFLAGS_SHLIB="-KPIC" ;;
+             esac
+             LDFLAGS_SHLIB="-G"
+             LDFLAGS_SHLIB_EXPORT="-Wl,-Bexport"
+             SHLIB_SUFFIX_DEPTH=1
+             ;;
         RM*-sni-sysv4*)
             # MIPS hosts can take advantage of the LDFLAGS_SHLIB_EXPORT switch
             case $CC in

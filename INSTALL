@@ -84,7 +84,7 @@
            - OpenBSD   - OSF1
            - NetBSD    - UnixWare
            - SunOS     - AIX
-           - Solaris 
+           - Solaris   - SCO
 
         o Entirely unsupported platforms are:
            - Ultrix

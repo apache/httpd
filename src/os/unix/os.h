@@ -94,7 +94,8 @@ extern int ap_os_is_path_absolute(const char *f);
 #if defined(LINUX) || defined(__FreeBSD__) ||\
     defined(__OpenBSD__) || defined(__NetBSD__) || \
     defined(SOLARIS2) || defined(__bsdi__) || \
-    defined(IRIX) || defined(SVR4) || defined(OSF1)
+    defined(IRIX) || defined(SVR4) || defined(OSF1) ||\
+    defined(SCO5)
 #define HAVE_DLFCN_H 1
 #endif
 
