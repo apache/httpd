@@ -2117,12 +2117,27 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
     return OK;
 }
 
+/* This really should be a post_config hook, but the error log is already
+ * redirected by that point, so we need to do this in the open_logs phase.
+ */
+static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    pconf = p;
+    ap_server_conf = s;
+
+    if ((parent_pid == my_pid) || one_process) {
+        if (ap_setup_listeners(ap_server_conf) < 1) {
+            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ALERT|APLOG_STARTUP, 0, 
+                         NULL, "no listening sockets available, shutting down");
+            return DONE;
+        }
+    }
+    return OK;
+}
+
 AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 {
     static int restart = 0;            /* Default is "not a restart" */
-
-    pconf = _pconf;
-    ap_server_conf = s;
 
     if ((parent_pid != my_pid) || one_process) {
         /* Child process or in one_process (debug) mode */
@@ -2132,9 +2147,6 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
         if (one_process) {
             /* Set up the scoreboard. */
             if (ap_run_pre_mpm(pconf, SB_SHARED) != OK) {
-                return 1;
-            }
-            if (ap_setup_listeners(ap_server_conf) < 1) {
                 return 1;
             }
         }
@@ -2181,12 +2193,6 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
             return 1;
         }
 
-        /* Parent process */
-        if (ap_setup_listeners(ap_server_conf) < 1) {
-            ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, s,
-                         "no listening sockets available, shutting down");
-            return 1;
-        }
         if (!set_listeners_noninheritable(pconf)) {
             return 1;
         }
@@ -2215,9 +2221,16 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
 static void winnt_hooks(apr_pool_t *p)
 {
+    /* The prefork open_logs phase must run before the core's, or stderr
+     * will be redirected to a file, and the messages won't print to the
+     * console.
+     */
+    static const char *const aszSucc[] = {"core.c", NULL};
+
     ap_hook_pre_config(winnt_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(winnt_post_config, NULL, NULL, 0);
     ap_hook_child_init(winnt_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_open_logs(winnt_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
 }
 
 /* 
