@@ -299,11 +299,11 @@ typedef int ssl_algo_t;
  * Define IDs for the temporary RSA keys and DH params
  */
 
-#define SSL_TKPIDX_RSA512  (0)
-#define SSL_TKPIDX_RSA1024 (1)
-#define SSL_TKPIDX_DH512   (2)
-#define SSL_TKPIDX_DH1024  (3)
-#define SSL_TKPIDX_MAX     (4)
+#define SSL_TMP_KEY_RSA_512  (0)
+#define SSL_TMP_KEY_RSA_1024 (1)
+#define SSL_TMP_KEY_DH_512   (2)
+#define SSL_TMP_KEY_DH_1024  (3)
+#define SSL_TMP_KEY_MAX      (4)
 
 /*
  * Define the SSL options
@@ -513,7 +513,7 @@ typedef struct {
     apr_lock_t     *pMutex;
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
-    void           *pTmpKeys[SSL_TKPIDX_MAX];
+    void           *pTmpKeys[SSL_TMP_KEY_MAX];
     apr_hash_t     *tPublicCert;
     apr_hash_t     *tPrivateKey;
 #ifdef SSL_EXPERIMENTAL_ENGINE
