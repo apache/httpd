@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTCACHECLEAN" 8 "2004-11-06" "Apache HTTP Server" "htcacheclean"
+.TH "HTCACHECLEAN" 8 "2004-11-10" "Apache HTTP Server" "htcacheclean"
 
 .SH NAME
 htcacheclean \- Clean up the disk cache
@@ -36,7 +36,7 @@ htcacheclean \- Clean up the disk cache
 .SH "SUMMARY"
  
 .PP
-htcacheclean is used to keep the size of mod_disk_cache's storage within a certain limit\&. This tool can be either run manually or in daemon mode\&. When running in daemon mode, it sleeps in the background and checks the cache directories in regular intervals for stuff to be removed\&. You can stop the daemon cleanly, when sending him a TERM or INT signal\&.
+htcacheclean is used to keep the size of mod_disk_cache's storage within a certain limit\&. This tool can run either manually or in daemon mode\&. When running in daemon mode, it sleeps in the background and checks the cache directories at regular intervals for cached content to be removed\&. You can stop the daemon cleanly by sending it a TERM or INT signal\&.
  
 
 .SH "OPTIONS"
