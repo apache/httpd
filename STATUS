@@ -1,5 +1,5 @@
 Apache 2.0 STATUS:
-Last modified at [$Date: 2000/03/02 09:57:28 $]
+Last modified at [$Date: 2000/03/02 11:04:59 $]
 
 Release:
 
@@ -93,6 +93,11 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 	edit some Makefile.in
 	./config.status
 	now apaci is no longer executable and future makes fail
+
+    * the top-level configure.in appears to use $USE_MAINTAINER_MODE = yes
+	to set -Wall/etc. flags, and the APR configure.in appears to use
+	--with-debug.  both seem like more of a hardwired pain compaired
+	to the pre-2.0 method of setting EXTRA_CFLAGS.
 
     * Win32: Reuse accept socket after transmitfile/close
 	This is not a bug, but would be nice to get this feature in 
