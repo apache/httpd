@@ -59,6 +59,7 @@
 #define CORE_PRIVATE 
  
 #include "ap_config.h"
+#include "apr_hash.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
 #include "apr_file_io.h"
@@ -67,6 +68,7 @@
 #include "http_log.h" 
 #include "http_config.h"	/* for read_config */ 
 #include "http_core.h"		/* for get_remote_host */ 
+#include "http_protocol.h"
 #include "http_connection.h"
 #include "ap_mpm.h"
 #include "unixd.h"
@@ -90,9 +92,9 @@
 #include <grp.h>
 #include <pwd.h>
 #include <pthread.h>
+#include <sys/stat.h>
 #include <signal.h>
-
-typedef struct child_info_t child_info_t;
+#include <sys/un.h>
 
 /*
  * Actual definitions of config globals
@@ -115,8 +117,28 @@ struct child_info_t {
     uid_t uid;
     gid_t gid;
 };
+
+struct socket_info_t {
+    const char *sname;   /* The servername */
+    int        cnum;     /* The child number */
+};
+
+typedef struct {
+    const char *sockname;
+} perchild_server_conf;
+
+typedef struct child_info_t child_info_t;
+typedef struct socket_info_t socket_info_t;
+
+/* Tables used to determine the user and group each child process should
+ * run as.  The hash table is used to correlate a server name with a child
+ * process.
+ */
 static child_info_t child_info_table[HARD_SERVER_LIMIT];
-struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
+static ap_hash_t    *socket_info_table;
+
+
+struct ap_ctable    ap_child_table[HARD_SERVER_LIMIT];
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
@@ -129,6 +151,8 @@ struct ap_ctable ap_child_table[HARD_SERVER_LIMIT];
 int ap_max_daemons_limit = -1;
 
 char ap_coredump_dir[MAX_STRING_LEN];
+
+module MODULE_VAR_EXPORT mpm_perchild_module;
 
 static ap_file_t *pipe_of_death_in = NULL;
 static ap_file_t *pipe_of_death_out = NULL;
@@ -713,7 +737,7 @@ static int perchild_setup_child(int childnum)
 {
     child_info_t *ug = &child_info_table[childnum];
 
-    if (!ug) {
+    if (ug->uid == -1 && ug->gid == -1) {
         return unixd_setup_child();
     }
     if (set_group_privs(ug->uid, ug->gid)) {
@@ -733,6 +757,62 @@ static int perchild_setup_child(int childnum)
     return 0;
 }
 
+static int create_child_socket(int child_num, ap_pool_t *p)
+{
+    struct sockaddr_un unix_addr;
+    mode_t omask;
+    int rc;
+    int sd;
+    perchild_server_conf *sconf = (perchild_server_conf *)
+              ap_get_module_config(ap_server_conf->module_config, &mpm_perchild_module);
+    char *socket_name = ap_palloc(p, strlen(sconf->sockname) + 6);
+
+    ap_snprintf(socket_name, strlen(socket_name), "%s.%d", sconf->sockname, child_num);
+    if (unlink(socket_name) < 0 &&
+        errno != ENOENT) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
+                     "Couldn't unlink unix domain socket %s",
+                     socket_name);
+        /* Just a warning; don't bail out */
+    }
+
+    if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
+                     "Couldn't create unix domain socket");
+        return -1;
+    }
+
+    memset(&unix_addr, 0, sizeof(unix_addr));
+    unix_addr.sun_family = AF_UNIX;
+    strcpy(unix_addr.sun_path, socket_name);
+
+    omask = umask(0077); /* so that only Apache can use socket */
+    rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
+    umask(omask); /* can't fail, so can't clobber -1 */
+    if (rc < 0) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, -1, ap_server_conf,
+                     "Couldn't bind unix domain socket %s",
+                     socket_name);
+        return -1;
+    }
+
+    if (listen(sd, DEFAULT_PERCHILD_LISTENBACKLOG) < 0) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, -1, ap_server_conf,
+                     "Couldn't listen on unix domain socket");
+        return -1;
+    }
+
+    if (!geteuid()) {
+        if (chown(socket_name, unixd_config.user_id, -1) < 0) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, errno, ap_server_conf,
+                         "Couldn't change owner of unix domain socket %s",
+                         socket_name);
+            return -1;
+        }
+    }
+    return sd;
+}
+
 static void child_main(int child_num_arg)
 {
     sigset_t sig_mask;
@@ -740,6 +820,7 @@ static void child_main(int child_num_arg)
     int i;
     ap_listen_rec *lr;
     ap_status_t rv;
+    int sd;
 
     my_pid = getpid();
     child_num = child_num_arg;
@@ -754,6 +835,9 @@ static void child_main(int child_num_arg)
                      "Couldn't initialize cross-process lock in child");
         clean_child_exit(APEXIT_CHILDFATAL);
     }
+
+    /* Add the sockets for this child process's virtual hosts */
+    sd = create_child_socket(child_num, pchild);
 
     if (perchild_setup_child(child_num)) {
 	clean_child_exit(APEXIT_CHILDFATAL);
@@ -779,8 +863,10 @@ static void child_main(int child_num_arg)
 
     requests_this_child = max_requests_per_child;
     
-    /* Set up the pollfd array */
-    listenfds = ap_pcalloc(pchild, sizeof(*listenfds) * (num_listenfds + 1));
+    /* Set up the pollfd array, num_listenfds + 1 for the pipe and 1 for
+     * the child socket.
+     */
+    listenfds = ap_pcalloc(pchild, sizeof(*listenfds) * (num_listenfds + 2));
 #if APR_FILES_AS_SOCKETS
     ap_socket_from_file(&listenfds[0], pipe_of_death_in);
 #endif
@@ -1210,6 +1296,7 @@ int ap_mpm_run(ap_pool_t *_pconf, ap_pool_t *plog, server_rec *s)
 static void perchild_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
 {
     static int restart_num = 0;
+    int i;
 
     one_process = !!getenv("ONE_PROCESS");
 
@@ -1236,8 +1323,30 @@ static void perchild_pre_config(ap_pool_t *p, ap_pool_t *plog, ap_pool_t *ptemp)
     lock_fname = DEFAULT_LOCKFILE;
     max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_perchild_set_maintain_connection_status(1);
+    socket_info_table = ap_make_hash(p);
 
     ap_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+
+    for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+        child_info_table[i].uid = -1;
+        child_info_table[i].gid = -1;
+    }
+}
+
+static int perchild_post_read(request_rec *r)
+{
+    const char *hostname = ap_table_get(r->headers_in, "Host");
+    char *process_num;
+    int num;
+
+    process_num = ap_hash_get(socket_info_table, hostname, 0);
+    num = atoi(process_num);
+
+    if (num != child_num) {
+        /* package the request and send it to another child */
+        return DECLINED;
+    }
+    return OK;
 }
 
 static void perchild_hooks(void)
@@ -1246,6 +1355,12 @@ static void perchild_hooks(void)
     one_process = 0;
 
     ap_hook_pre_config(perchild_pre_config, NULL, NULL, AP_HOOK_MIDDLE); 
+    /* This must be run absolutely first.  If this request isn't for this
+     * server then we need to forward it to the proper child.  No sense
+     * tying up this server running more post_read request hooks if it is
+     * just going to be forwarded along.
+     */
+    ap_hook_post_read_request(perchild_post_read, NULL, NULL, AP_HOOK_REALLY_FIRST);
 }
 
 static const char *set_pidfile(cmd_parms *cmd, void *dummy, const char *arg) 
@@ -1443,7 +1558,7 @@ static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *p,
                                     const char *u, const char *g) 
 {
     int curr_child_num = atoi(p);
-    child_info_t *ug = &child_info_table[curr_child_num];
+    child_info_t *ug = &child_info_table[curr_child_num - 1];
 
     if (curr_child_num > num_daemons) {
         return "Trying to use more child ID's than NumServers.  Increase "
@@ -1455,34 +1570,22 @@ static const char *set_childprocess(cmd_parms *cmd, void *dummy, const char *p,
 
     return NULL;
 }
-    
 
-#if 0
-    if (unlink(sconf->sockname) < 0 &&
-        errno != ENOENT) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
-                     "Couldn't unlink unix domain socket %s",
-                     sconf->sockname);
-        /* JUSt a warning; don't bail out */
-    }
+static const char *set_socket_name(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    server_rec *s = cmd->server;
+    perchild_server_conf *conf = (perchild_server_conf *) 
+                  ap_get_module_config(s->module_config, &mpm_perchild_module);
 
-    if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
-                     "Couldn't create unix domain socket");
-        return errno;
-    }
-
-    memset(&unix_addr, 0, sizeof(unix_addr));
-    unix_addr.sun_family = AF_UNIX;
-    strcpy(unix_addr.sun_path, sconf->sockname);
-
-    omask = umask(0077); /* so that only Apache can use socket */
-    rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
+    conf->sockname = ap_server_root_relative(cmd->pool, arg);
+    return NULL;
 }
-#endif
-
-
-
+    
+static const char *assign_childprocess(cmd_parms *cmd, void *dummy, const char *p)
+{
+    ap_hash_set(socket_info_table, cmd->server->server_hostname, 0, p);
+    return NULL;
+}
 
 
 static const command_rec perchild_cmds[] = {
@@ -1512,15 +1615,30 @@ AP_INIT_TAKE1("CoreDumpDirectory", set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
 AP_INIT_TAKE3("ChildProcess", set_childprocess, NULL, RSRC_CONF,
               "Specify a User and Group for a specific child process."),
+AP_INIT_TAKE1("AssignChild", assign_childprocess, NULL, RSRC_CONF,
+              "Tie a virtual host to a specific child process."),
+AP_INIT_TAKE1("ChildSockName", set_socket_name, NULL, RSRC_CONF,
+              "the base name of the socket to use for communication between "
+              "child processes.  The actual socket will be "
+              "basename.childnum"),
 { NULL }
 };
+
+static void *perchild_create_config(ap_pool_t *p, server_rec *s)
+{
+    perchild_server_conf *c =
+    (perchild_server_conf *) ap_pcalloc(p, sizeof(perchild_server_conf));
+
+    c->sockname = ap_server_root_relative(p, DEFAULT_PERCHILD_SOCKET);
+    return c;
+}
 
 module MODULE_VAR_EXPORT mpm_perchild_module = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,			/* create per-directory config structure */
     NULL,			/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
+    perchild_create_config,	/* create per-server config structure */
     NULL,			/* merge per-server config structures */
     perchild_cmds,		/* command ap_table_t */
     NULL,			/* handlers */
