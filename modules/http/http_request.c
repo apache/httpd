@@ -843,7 +843,11 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
     rnew->server         = r->server;
+
     rnew->request_config = ap_create_request_config(rnew->pool);
+    ap_set_module_config(rnew->request_config, &core_module,
+              ap_get_module_config(r->request_config, &core_module));
+
     rnew->htaccess       = r->htaccess;
     rnew->per_dir_config = r->server->lookup_defaults;
     rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
@@ -941,7 +945,11 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
     rnew->server         = r->server;
+
     rnew->request_config = ap_create_request_config(rnew->pool);
+    ap_set_module_config(rnew->request_config, &core_module,
+              ap_get_module_config(r->request_config, &core_module));
+
     rnew->htaccess       = r->htaccess;
     rnew->chunked        = r->chunked;
     rnew->allowed_methods = ap_make_method_list(rnew->pool, 2);
