@@ -1775,7 +1775,7 @@ static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
 	if (resource->collection)
 	    return DAV_PROP_INSERT_NOTDEF;
 
-	(void) sprintf(buf, "%ld", resource->info->finfo.size);
+	(void) sprintf(buf, "%" APR_OFF_T_FMT, resource->info->finfo.size);
 	value = buf;
 	break;
 
