@@ -1,5 +1,5 @@
 APACHE 1.3 STATUS:						-*-text-*-
-  Last modified at [$Date: 2002/05/13 14:33:29 $]
+  Last modified at [$Date: 2002/05/15 14:00:32 $]
 
 Release:
 
@@ -78,11 +78,6 @@ Available Patches (Most likely, will be ported to 2.0 as appropriate):
    * Backport of 2.0 ForceLanguagePriority directive
        /dist/httpd/contrib/patches/1.3/force_language_priority.patch
        Message-ID: <B8BF87DD.14ABA%dyoung@nettonettech.com>
-       Status:
-
-   * Support for daemontools (already in 2.0):
-       http://www.apache.org/dist/httpd/contrib/patches/1.3/daemontools.patch
-       Message-ID: <20020225172644.P14643@monster.grendel.net>
        Status:
 
    *  A rewrite of ap_unparse_uri_components() by Jeffrey W. Baker
