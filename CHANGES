@@ -1,9 +1,13 @@
 Changes with Apache 2.0.45
 
-   *) Introduce debugging symbols for Win32 release builds, both .pdb 
-      and .dbg files (older debuggers and Dr. Watson-type utilities 
-      on WinNT or Win9x don't support the newer .pdb flavor.)
-      [Allen Edwards, William Rowe]
+  *) Fix mod_cern_meta to not create empty metafiles when the
+     metafile searched for does not exist.  PR 12353
+     [Owen Rees <owen_rees@hp.com>]
+
+  *) Introduce debugging symbols for Win32 release builds, both .pdb 
+     and .dbg files (older debuggers and Dr. Watson-type utilities 
+     on WinNT or Win9x don't support the newer .pdb flavor.)
+     [Allen Edwards, William Rowe]
  
   *) Fix bug where 'Satisfy Any' without an AuthType lost all MIME
      information (and more). Related to PR 9076.  [André Malo]
