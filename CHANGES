@@ -1,4 +1,7 @@
 Changes with Apache 2.0.37
+  *) Win32: During a graceful restart, threads in the new process
+     were accessing scoreboard slots still in use by active threads in 
+     the the old process. [Bill Stoddard]
 
 Changes with Apache 2.0.36
 

@@ -1103,9 +1103,7 @@ static void worker_main(long thread_num)
         conn_rec *c;
         apr_int32_t disconnected;
 
-        ap_update_child_status_from_indexes(0, thread_num, SERVER_READY, 
-                                            (request_rec *) NULL);
-
+        ap_update_child_status_from_indexes(0, thread_num, SERVER_READY, NULL);
 
         /* Grab a connection off the network */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
@@ -1170,12 +1168,33 @@ static void cleanup_thread(thread *handles, int *thread_cnt, int thread_to_clean
  * monitors the child process for maintenance and shutdown
  * events.
  */
+static void create_listener_thread()
+{
+    int tid;
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
+        _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) win9x_accept,
+                       NULL, 0, &tid);
+    } else {
+        /* Start an accept thread per listener */
+        SOCKET nlsd; /* native listening sock descriptor */
+        ap_listen_rec *lr;
+        for (lr = ap_listeners; lr; lr = lr->next) {
+            if (lr->sd != NULL) {
+                apr_os_sock_get(&nlsd, lr->sd);
+                _beginthreadex(NULL, 1000, (LPTHREAD_START_ROUTINE) winnt_accept,
+                               (void *) nlsd, 0, &tid);
+            }
+        }
+    }
+}
 static void child_main()
 {
     apr_status_t status;
+    apr_hash_t *ht;
     ap_listen_rec *lr;
     HANDLE child_events[2];
-    int nthreads = ap_threads_per_child;
+    int threads_created = 0;
+    int listener_started = 0;
     int tid;
     thread *child_handles;
     int rv;
@@ -1187,6 +1206,7 @@ static void child_main()
     apr_pool_tag(pchild, "pchild");
 
     ap_run_child_init(pchild, ap_server_conf);
+    ht = apr_hash_make(pchild);
 
     /* Initialize the child_events */
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -1233,32 +1253,49 @@ static void child_main()
      * Create the pool of worker threads
      */
     ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
-                 "Child %d: Starting %d worker threads.", my_pid, nthreads);
-    child_handles = (thread) alloca(nthreads * sizeof(int));
-    for (i = 0; i < nthreads; i++) {
-        ap_update_child_status_from_indexes(0, i, SERVER_STARTING, 
-                                            (request_rec *) NULL);
-        child_handles[i] = (thread) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
-                                                   (void *) i, 0, &tid);
-    }
-
-    /* 
-     * Start the accept thread
-     */
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-        _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) win9x_accept,
-                       (void *) i, 0, &tid);
-    } else {
-        /* Start an accept thread per listener */
-        SOCKET nlsd; /* native listening sock descriptor */
-        ap_listen_rec *lr;
-        for (lr = ap_listeners; lr; lr = lr->next) {
-            if (lr->sd != NULL) {
-                apr_os_sock_get(&nlsd, lr->sd);
-                _beginthreadex(NULL, 1000, (LPTHREAD_START_ROUTINE) winnt_accept,
-                               (void *) nlsd, 0, &tid);
+                 "Child %d: Starting %d worker threads.", my_pid, ap_threads_per_child);
+    child_handles = (thread) apr_pcalloc(pchild, ap_threads_per_child * sizeof(int));
+    while (1) {
+        for (i = 0; i < ap_threads_per_child; i++) {
+            int *score_idx;
+            int status = ap_scoreboard_image->servers[0][i].status;
+            if (status != SERVER_GRACEFUL && status != SERVER_DEAD) {
+                continue;
             }
+            ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
+            child_handles[i] = (thread) _beginthreadex(NULL, 0, (LPTHREAD_START_ROUTINE) worker_main,
+                                                       (void *) i, 0, &tid);
+            /* ToDo: Check for error */
+            if (child_handles[i] == 0) {
+                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+                             "Child %d: _beginthreadex failed. Unable to create all worker threads. "
+                             "Created %d of the %d threads requested with the ThreadsPerChild configuration directive.", 
+                             threads_created, ap_threads_per_child);
+                ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
+                goto shutdown;
+            }
+            threads_created++;
+            /* Save the score board index in ht keyed to the thread handle. We need this 
+             * when cleaning up threads down below...
+             */
+            score_idx = apr_pcalloc(pchild, sizeof(int));
+            *score_idx = i;
+            apr_hash_set(ht, &child_handles[i], sizeof(thread), score_idx);
         }
+        /* Start the listener only when workers are available */
+        if (!listener_started && threads_created) {
+            create_listener_thread();
+            listener_started = 1;
+        }
+        if (threads_created == ap_threads_per_child) {
+            break;
+        }
+        /* Check to see if the child has been told to exit */
+        if (WaitForSingleObject(exit_event, 0) != WAIT_TIMEOUT) {
+            break;
+        }
+        /* wait for previous generation to clean up an entry in the scoreboard */
+        apr_sleep(1 * APR_USEC_PER_SEC);
     }
 
     /* Wait for one of three events:
@@ -1305,6 +1342,11 @@ static void child_main()
         }
     }
 
+    /* 
+     * Time to shutdown the child process 
+     */
+
+ shutdown:
     /* Setting is_graceful will cause keep-alive connections to be closed
      * rather than block on the next network read.
      */
@@ -1342,7 +1384,7 @@ static void child_main()
 
     /* Shutdown the worker threads */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-        for (i = 0; i < nthreads; i++) {
+        for (i = 0; i < threads_created; i++) {
             add_job(-1);
         }
     }
@@ -1368,23 +1410,31 @@ static void child_main()
 
     /* Give busy worker threads a chance to service their connections */
     ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
-                 "Child %d: Waiting for %d worker threads to exit.", my_pid, nthreads);
+                 "Child %d: Waiting for %d worker threads to exit.", my_pid, threads_created);
     end_time = time(NULL) + 180;
-    while (nthreads) {
-        rv = wait_for_many_objects(nthreads, child_handles, end_time - time(NULL));
+    while (threads_created) {
+        rv = wait_for_many_objects(threads_created, child_handles, end_time - time(NULL));
         if (rv != WAIT_TIMEOUT) {
             rv = rv - WAIT_OBJECT_0;
-            ap_assert((rv >= 0) && (rv < nthreads));
-            cleanup_thread(child_handles, &nthreads, rv);
+            ap_assert((rv >= 0) && (rv < threads_created));
+            cleanup_thread(child_handles, &threads_created, rv);
             continue;
         }
         break;
     }
 
     /* Kill remaining threads off the hard way */
-    for (i = 0; i < nthreads; i++) {
+    if (threads_created) {
+        ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
+                     "Child %d: Terminating %d threads that failed to exit.", my_pid);
+    }
+    for (i = 0; i < threads_created; i++) {
+        int *score_idx;
         TerminateThread(child_handles[i], 1);
         CloseHandle(child_handles[i]);
+        /* Reset the scoreboard entry for the thread we just whacked */
+        score_idx = apr_hash_get(ht, &child_handles[i], sizeof(thread));
+        ap_update_child_status_from_indexes(0, *score_idx, SERVER_DEAD, NULL);        
     }
     ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                  "Child %d: All worker threads have exited.", my_pid);
@@ -1863,9 +1913,13 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
                          "Parent: child process exited with status %u -- Aborting.", exitcode);
         }
         else {
+            int i;
             restart_pending = 1;
             ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
                          "Parent: child process exited with status %u -- Restarting.", exitcode);
+            for (i = 0; i < ap_threads_per_child; i++) {
+                ap_update_child_status_from_indexes(0, i, SERVER_DEAD, NULL);
+            }
         }
         CloseHandle(event_handles[CHILD_HANDLE]);
         event_handles[CHILD_HANDLE] = NULL;
