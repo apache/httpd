@@ -2170,8 +2170,22 @@ static int handle_printenv(FILE *in, request_rec *r, const char *error)
 
 static void send_parsed_content(FILE *f, request_rec *r)
 {
+#ifdef NETWARE
+    /* NetWare has a fixed lengh stack.  Since MAX_STRING_LEN is set
+       to 8k, one call to this function allocates 24k of stack space.
+       During a server-side include evaluation this function is
+       called recusively, allocating 24k each time.  Obviously it 
+       doesn't take long to blow a 64k stack which is the default
+       for Apache for NetWare.  Since MAX_STRING_LEN is used all
+       throughout the Apache code, we should rethink using a default
+       of 8k especially in recursive functions.
+    */
+    char directive[512], error[512];
+    char timefmt[512];
+#else
     char directive[MAX_STRING_LEN], error[MAX_STRING_LEN];
     char timefmt[MAX_STRING_LEN];
+#endif
     int noexec = ap_allow_options(r) & OPT_INCNOEXEC;
     int ret, sizefmt;
     int if_nesting;
