@@ -2232,11 +2232,20 @@
     section specifies what hostname must appear in the request's
     <code>Host:</code> header to match this virtual host.</p>
 
-    <p>This directive now takes allows a port to be added to the
+    <p>This directive now allows a port to be added to the
     server name.  This allows an admin to assign the canonical
     port at the same time that the canonical name is assigned.
-    The Port directive, which used to perform this role, has also
-    been removed, easing configuration for all users. 
+    The Port directive in Apache-1.3, which used to perform this role, has also
+    been removed, easing configuration for all users.</p>
+
+    <p>If the port has been specified, then automatic redirections
+    (e.g., by the <a href="mod_dir.html">mod_dir</a> module) will
+    <em>always</em> use the given port, no matter what the actual
+    request's port number was. If no port number was specified, however,
+    the setting of <a href="#usecanonicalname">UseCanonicalName</a>
+    decides whether the default port (80 for http://, 443 for https://),
+    or the actual port the request came in on, will be used in redirections.
+    </p>
 
     <p><strong>See Also</strong>:<br />
      <a href="../dns-caveats.html">DNS Issues</a><br />
@@ -2547,10 +2556,12 @@
     <p>In many situations Apache has to construct a
     <em>self-referential</em> URL. That is, a URL which refers back
     to the same server. With <code>UseCanonicalName on</code> (and
-    in all versions prior to 1.3) Apache will use the <a
-    href="#servername">ServerName</a> and <a 
-    href="mpm_common.html#listen">Listen</a>
-    directives to construct a canonical name for the server. This
+    in all versions prior to 1.3) Apache will use the hostname and
+    port specified in the <a href="#servername">ServerName</a>
+    directive to construct a canonical name for the server.
+    (If no port was specified in the <a href="#servername">ServerName</a>
+    directive, Apache implies port 80 for http:// and port 443 for https://)
+    This
     name is used in all self-referential URLs, and for the values
     of <code>SERVER_NAME</code> and <code>SERVER_PORT</code> in
     CGIs.</p>
