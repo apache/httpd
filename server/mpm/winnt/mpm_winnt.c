@@ -292,26 +292,39 @@ void setup_signal_names(char *prefix)
 	"%s_restart", signal_name_prefix);    
 }
 
-void signal_parent(int type)
+static int volatile is_graceful = 0;
+AP_DECLARE(int) ap_graceful_stop_signalled(void)
+{
+    return is_graceful;
+}
+
+AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
 {
     HANDLE e;
     char *signal_name;
     
-    /* after updating the shutdown_pending or restart flags, we need
-     * to wake up the parent process so it can see the changes. The
-     * parent will normally be waiting for either a child process
-     * to die, or for a signal on the "spache-signal" event. So set the
-     * "apache-signal" event here.
-     */
     if (one_process) {
 	return;
     }
 
     switch(type) {
-    case 0: signal_name = signal_shutdown_name; break;
-    case 1: signal_name = signal_restart_name; break;
-    default: return;
+       case SIGNAL_PARENT_SHUTDOWN: 
+       {
+           signal_name = signal_shutdown_name; 
+           break;
+       }
+       /* This MPM supports only graceful restarts right now */
+       case SIGNAL_PARENT_RESTART: 
+       case SIGNAL_PARENT_RESTART_GRACEFUL:
+       {
+           signal_name = signal_restart_name;     
+           is_graceful = 1;
+           break;
+       }
+       default: 
+           return;
     }
+
     e = OpenEvent(EVENT_ALL_ACCESS, FALSE, signal_name);
     if (!e) {
 	/* Um, problem, can't signal the parent, which means we can't
@@ -330,25 +343,6 @@ void signal_parent(int type)
     }
     CloseHandle(e);
 }
-
-static int volatile is_graceful = 0;
-
-AP_DECLARE(int) ap_graceful_stop_signalled(void)
-{
-    return is_graceful;
-}
-
-AP_DECLARE(void) ap_start_shutdown(void)
-{
-    signal_parent(0);
-}
-
-AP_DECLARE(void) ap_start_restart(int gracefully)
-{
-    is_graceful = gracefully;
-    signal_parent(1);
-}
-
 
 /*
  * find_ready_listener()
@@ -409,7 +403,7 @@ static int get_listeners_from_parent(server_rec *s)
                       &BytesRead, (LPOVERLAPPED) NULL)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), server_conf,
                          "setup_inherited_listeners: Unable to read socket data from parent");
-            signal_parent(0);	/* tell parent to die */
+            ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
             exit(1);
         }
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_INFO, APR_SUCCESS, server_conf,
@@ -419,7 +413,7 @@ static int get_listeners_from_parent(server_rec *s)
         if (nsd == INVALID_SOCKET) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_netos_error(), server_conf,
                          "Child %d: setup_inherited_listeners(), WSASocket failed to open the inherited socket.", my_pid);
-            signal_parent(0);	/* tell parent to die */
+            ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
             exit(1);
         }
         apr_os_sock_put(&lr->sd, &nsd, pconf);
@@ -992,7 +986,7 @@ static void child_main()
     if (status != APR_SUCCESS) {
 	ap_log_error(APLOG_MARK,APLOG_ERR, status, server_conf,
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
-        signal_parent(0);	/* tell parent to die */
+        ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
 	exit(0);
     }
     ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, server_conf, 

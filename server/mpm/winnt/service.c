@@ -183,7 +183,7 @@ static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg,
     if ((msg == WM_ENDSESSION) 
             && (die_on_logoff || (lParam != ENDSESSION_LOGOFF)))
     {
-        signal_parent(0);
+        ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
 	if (wParam)
             /* Don't leave this message until we are dead! */
 	    WaitForSingleObject(globdat.mpm_thread, 30000);
@@ -274,7 +274,7 @@ static BOOL CALLBACK console_control_handler(DWORD ctrl_type)
     {
         case CTRL_BREAK_EVENT:
             fprintf(stderr, "Apache server restarting...\n");
-            signal_parent(1);
+            ap_signal_parent(SIGNAL_PARENT_RESTART);
             return TRUE;
         case CTRL_C_EVENT:
             fprintf(stderr, "Apache server interrupted...\n");
@@ -282,7 +282,7 @@ static BOOL CALLBACK console_control_handler(DWORD ctrl_type)
              * Tell the system we have dealt with the signal
              * without waiting for Apache to terminate.
              */
-            signal_parent(0);
+            ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
             return TRUE;
 
         case CTRL_CLOSE_EVENT:
@@ -295,7 +295,7 @@ static BOOL CALLBACK console_control_handler(DWORD ctrl_type)
              * THESE EVENTS WILL NOT OCCUR UNDER WIN9x!
              */
             fprintf(stderr, "Apache server shutdown initiated...\n");
-            signal_parent(0);
+            ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
             Sleep(30000);
             return TRUE;
     }
@@ -484,14 +484,14 @@ static VOID WINAPI service_nt_ctrl(DWORD dwCtrlCode)
 {
     if (dwCtrlCode == SERVICE_CONTROL_STOP)
     {
-        ap_start_shutdown();
+        ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
         globdat.ssStatus.dwCurrentState = SERVICE_STOP_PENDING;
         ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 3000);
         return;
     }
     if (dwCtrlCode == SERVICE_APACHE_RESTART)
     {
-        ap_start_restart(1);
+        ap_signal_parent(SIGNAL_PARENT_RESTART);
         globdat.ssStatus.dwCurrentState = SERVICE_START_PENDING;
         ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 3000);
         return;
@@ -1337,7 +1337,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         if (!signal) 
         {
             int ticks = 60;
-            ap_start_shutdown();
+            ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
             while (--ticks)
             {
                 if (!IsWindow(hwnd)) {
@@ -1360,7 +1360,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
             }
             else {
                 success = TRUE;
-                ap_start_restart(1);
+                ap_signal_parent(SIGNAL_PARENT_RESTART);
             }
         }
     }
