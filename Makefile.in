@@ -112,13 +112,7 @@ install-htdocs:
 	    echo Installing HTML documents ; \
 	    $(MKINSTALLDIRS) $(DESTDIR)$(htdocsdir) ; \
 	    test -d $(htdocs-srcdir) && (cd $(htdocs-srcdir) && cp -rp * $(DESTDIR)$(htdocsdir)) ; \
-	fi
-	-@if [ -d $(DESTDIR)$(manualdir) ]; then \
-           echo "[PRESERVING EXISTING MANUAL SUBDIR: $(DESTDIR)$(manualdir)]"; \
-        else \
-	    $(MKINSTALLDIRS) $(DESTDIR)$(manualdir) ; \
-	    test -d $(top_srcdir)/docs/manual && (cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir)) ; \
-	    test "x$(htdocsdir)" != "x" && cd $(DESTDIR)$(htdocsdir) && find . -name "CVS" -print | xargs rm -rf ; \
+	    cd $(DESTDIR)$(htdocsdir) && find . -name "CVS" -print | xargs rm -rf ; \
 	fi
 
 install-error:
@@ -187,12 +181,15 @@ install-include:
 	@chmod 644 $(DESTDIR)$(includedir)/*.h
 
 install-man:
-	@echo Installing man pages
+	@echo Installing man pages and online manual
 	@test -d $(DESTDIR)$(mandir)      || $(MKINSTALLDIRS) $(DESTDIR)$(mandir)
 	@test -d $(DESTDIR)$(mandir)/man1 || $(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man1
 	@test -d $(DESTDIR)$(mandir)/man8 || $(MKINSTALLDIRS) $(DESTDIR)$(mandir)/man8
+	@test -d $(DESTDIR)$(manualdir)   || $(MKINSTALLDIRS) $(DESTDIR)$(manualdir)
 	@cp -p $(top_srcdir)/docs/man/*.1 $(DESTDIR)$(mandir)/man1
 	@cp -p $(top_srcdir)/docs/man/*.8 $(DESTDIR)$(mandir)/man8
+	@(cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir))
+	@(cd $(DESTDIR)$(manualdir) && find . -name "CVS" -print | xargs rm -rf)
 
 install-suexec:
 	@if test -f $(builddir)/support/suexec; then \
