@@ -203,7 +203,7 @@ ThreadsPerChild 50
 #
 # [WHENEVER YOU CHANGE THE LOADMODULE SECTION ABOVE, UPDATE THIS TOO!]
 ClearModuleList
-AddModule mod_vhost_alias.c
+#AddModule mod_vhost_alias.c
 AddModule mod_env.c
 AddModule mod_log_config.c
 #AddModule mod_mime_magic.c
