@@ -88,6 +88,10 @@ Documentation that needs writing:
 
 Available Patches:
 
+    * PR#3541 Koen Holtman's cleanup of negociation
+	Message-ID: PR#3541
+	Status: 
+
     * PR#2575 problem with ap_assert macro
         Message-ID: <36717557.21E4C4E3@jrc.it>
         Status: 
@@ -131,15 +135,13 @@ In progress:
     * Ralf's take 2 for "MODULE_MAGIC_COOKIE field for module structure"
  
     * Mark Bixby's freshening up the MPE/iX port (mostly APACI)
-      Message-ID: <199811162227.OAA18137@spock.dis.cccd.edu>
-        Status: ???
-
-    * Addition of "cute little icons" to Apache's main icon groups.
-      See <4.1.19981024045505.00a9dce0@hyperreal.org>
-        Status: Ralf +1, Roy +1 (in "icons/small" subdirectory), Jim +1
-
-    * Ken's IndexFormat enhancement to mod_autoindex to allow
-      CustomLog-like tailoring of directory listing formats
+	Message-ID: <199811162227.OAA18137@spock.dis.cccd.edu>
+        Status: Mark says: "...currently waiting for HP to fix two OS bugs.
+		A fix for siglongjmp() is available and has been tested
+		successfully by me, but has yet to be included in a
+		public patch.  The likely cause of the "EINTR from
+		fopen()" bug has been identified, but analysis on how
+		to fix it continues."
 
 Needs patch:
 
