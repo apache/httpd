@@ -206,7 +206,6 @@ FILES_nlm_Ximports = \
 	@$(APR)/aprlib.imp \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
-	authn_register_provider \
 	$(EOLIST)
  
 #   
