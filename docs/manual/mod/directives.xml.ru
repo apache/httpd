@@ -3,7 +3,7 @@
   [ <!ENTITY allmodules SYSTEM "allmodules.xml.ru"> ]
 >
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
-<!-- English Revision: 1.7 (outdated: 1.7.2.4) -->
+<!-- English Revision: 1.7 (outdated: 1.7.2.5) -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
