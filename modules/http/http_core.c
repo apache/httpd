@@ -137,7 +137,7 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
 #define ASCII_CRLF  "\015\012"
 #define ASCII_ZERO  "\060"
-    apr_bucket_brigade *more = NULL;
+    apr_bucket_brigade *more;
     apr_bucket *e;
     apr_status_t rv;
 
@@ -145,6 +145,9 @@ static apr_status_t chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 	apr_off_t bytes = 0;
         apr_bucket *eos = NULL;
         apr_bucket *flush = NULL;
+        /* XXX: chunk_hdr must remain at this scope since it is used in a 
+         *      transient bucket.
+         */
         char chunk_hdr[20]; /* enough space for the snprintf below */
 
 	APR_BRIGADE_FOREACH(e, b) {
