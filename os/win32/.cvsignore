@@ -4,6 +4,5 @@
 *.plg
 *.dsw
 *.mak
-installer
 mod_*D
 mod_*R
