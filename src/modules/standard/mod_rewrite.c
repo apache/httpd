@@ -261,9 +261,9 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
     a->server  = overrides->server;
 
     if (a->options & OPTION_INHERIT) {
-        /* 
-         *  local directives override 
-         *  and anything else is inherited 
+        /*
+         *  local directives override
+         *  and anything else is inherited
          */
         a->rewriteloglevel = overrides->rewriteloglevel != 0 ?
                              overrides->rewriteloglevel : base->rewriteloglevel;
@@ -283,9 +283,9 @@ static void *config_server_merge(pool *p, void *basev, void *overridesv)
                                            base->rewriterules);
     }
     else {
-        /* 
-         *  local directives override 
-         *  and anything else gets defaults 
+        /*
+         *  local directives override
+         *  and anything else gets defaults
          */
         a->rewriteloglevel = overrides->rewriteloglevel;
         a->rewritelogfile  = overrides->rewritelogfile;
@@ -366,7 +366,7 @@ static void *config_perdir_merge(pool *p, void *basev, void *overridesv)
 **
 */
 
-static const char *cmd_rewriteengine(cmd_parms *cmd, 
+static const char *cmd_rewriteengine(cmd_parms *cmd,
                                      rewrite_perdir_conf *dconf, int flag)
 {
     rewrite_server_conf *sconf;
@@ -392,10 +392,10 @@ static const char *cmd_rewriteoptions(cmd_parms *cmd,
             ap_get_module_config(cmd->server->module_config, &rewrite_module);
 
     if (cmd->path == NULL) /* is server command */
-        err = cmd_rewriteoptions_setoption(cmd->pool, 
+        err = cmd_rewriteoptions_setoption(cmd->pool,
                                            &(sconf->options), option);
     else                   /* is per-directory command */
-        err = cmd_rewriteoptions_setoption(cmd->pool, 
+        err = cmd_rewriteoptions_setoption(cmd->pool,
                                            &(dconf->options), option);
 
     return err;
@@ -407,7 +407,7 @@ static const char *cmd_rewriteoptions_setoption(pool *p, int *options,
     if (strcasecmp(name, "inherit") == 0)
         *options |= OPTION_INHERIT;
     else
-        return ap_pstrcat(p, "RewriteOptions: unknown option '", 
+        return ap_pstrcat(p, "RewriteOptions: unknown option '",
                        name, "'\n", NULL);
     return NULL;
 }
@@ -966,7 +966,7 @@ static int hook_uri2file(request_rec *r)
     if (conf->state == ENGINE_DISABLED)
         return DECLINED;
 
-    /*  
+    /*
      *  check for the ugly API case of a virtual host section where no
      *  mod_rewrite directives exists. In this situation we became no chance
      *  by the API to setup our default per-server config so we have to
@@ -1046,10 +1046,10 @@ static int hook_uri2file(request_rec *r)
             /* make sure the QUERY_STRING and
              * PATH_INFO parts get incorporated
              */
-            if (r->path_info != NULL) 
+            if (r->path_info != NULL)
                 r->filename = ap_pstrcat(r->pool, r->filename, r->path_info, NULL);
-            if (r->args != NULL && 
-                r->uri == r->unparsed_uri /* see proxy_http:proxy_http_canon() */) 
+            if (r->args != NULL &&
+                r->uri == r->unparsed_uri /* see proxy_http:proxy_http_canon() */)
                 r->filename = ap_pstrcat(r->pool, r->filename, "?", r->args, NULL);
 
             /* now make sure the request gets handled by the proxy handler */
@@ -1293,7 +1293,7 @@ static int hook_fixup(request_rec *r)
              * rewriting engine because of the per-dir context!)
              */
             if (r->args != NULL &&
-                r->uri == r->unparsed_uri /* see proxy_http:proxy_http_canon() */) 
+                r->uri == r->unparsed_uri /* see proxy_http:proxy_http_canon() */)
                 r->filename = ap_pstrcat(r->pool, r->filename, "?", r->args, NULL);
 
             /* now make sure the request gets handled by the proxy handler */
@@ -1564,7 +1564,7 @@ static int apply_rewrite_list(request_rec *r, array_header *rewriterules,
              */
             if (p->flags & RULEFLAG_FORBIDDEN) {
                 rewritelog(r, 2, "forcing '%s' to be forbidden", r->filename);
-                r->filename = ap_pstrcat(r->pool, "forbidden:", 
+                r->filename = ap_pstrcat(r->pool, "forbidden:",
                                       r->filename, NULL);
                 changed = 1;
                 break;
@@ -2119,7 +2119,7 @@ static int apply_rewrite_cond(request_rec *r, rewritecond_entry *p,
     }
     else {
         /* it is really a regexp pattern, so apply it */
-        rc = (regexec(p->regexp, input, 
+        rc = (regexec(p->regexp, input,
                       p->regexp->re_nsub+1, regmatch,0) == 0);
 
         /* if it isn't a negated pattern and really matched
@@ -2289,7 +2289,7 @@ static void fully_qualify_uri(request_rec *r)
           || (i > 8 && strncasecmp(r->filename, "https://", 8)  == 0)
           || (i > 9 && strncasecmp(r->filename, "gopher://", 9) == 0)
           || (i > 6 && strncasecmp(r->filename, "ftp://", 6)    == 0))) {
-          
+
         thisserver = ap_get_server_name(r);
         port = ap_get_server_port(r);
         if (ap_is_default_port(port,r))
@@ -3030,7 +3030,7 @@ static void rewritelock_create(server_rec *s, pool *p)
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
     /* only operate if a lockfile is used */
-    if (conf->rewritelockfile == NULL 
+    if (conf->rewritelockfile == NULL
         || *(conf->rewritelockfile) == '\0')
         return;
 
@@ -3039,7 +3039,7 @@ static void rewritelock_create(server_rec *s, pool *p)
 
     /* create the lockfile */
     unlink(conf->rewritelockfile);
-    if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile, 
+    if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile,
                                       O_WRONLY|O_CREAT,
                                       REWRITELOCK_MODE)) < 0) {
         perror("open");
@@ -3057,12 +3057,12 @@ static void rewritelock_open(server_rec *s, pool *p)
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
     /* only operate if a lockfile is used */
-    if (conf->rewritelockfile == NULL 
+    if (conf->rewritelockfile == NULL
         || *(conf->rewritelockfile) == '\0')
         return;
 
     /* open the lockfile (once per child) to get a unique fd */
-    if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile, 
+    if ((conf->rewritelockfp = ap_popenf(p, conf->rewritelockfile,
                                       O_WRONLY,
                                       REWRITELOCK_MODE)) < 0) {
         perror("open");
@@ -3083,7 +3083,7 @@ static void rewritelock_remove(void *data)
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
     /* only operate if a lockfile is used */
-    if (conf->rewritelockfile == NULL 
+    if (conf->rewritelockfile == NULL
         || *(conf->rewritelockfile) == '\0')
         return;
 
@@ -3136,7 +3136,7 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
-    /*  If the engine isn't turned on, 
+    /*  If the engine isn't turned on,
      *  don't even try to do anything.
      */
     if (conf->state == ENGINE_DISABLED)
@@ -3148,15 +3148,15 @@ static void run_rewritemap_programs(server_rec *s, pool *p)
         map = &entries[i];
         if (map->type != MAPTYPE_PRG)
             continue;
-        if (map->datafile == NULL 
+        if (map->datafile == NULL
             || *(map->datafile) == '\0'
             || map->fpin  != -1
             || map->fpout != -1        )
             continue;
         fpin  = NULL;
         fpout = NULL;
-        rc = ap_spawn_child_err(p, rewritemap_program_child, 
-                                (void *)map->datafile, kill_after_timeout, 
+        rc = ap_spawn_child_err(p, rewritemap_program_child,
+                                (void *)map->datafile, kill_after_timeout,
                                 &fpin, &fpout, &fperr);
         if (rc == 0 || fpin == NULL || fpout == NULL) {
             perror("ap_spawn_child");
@@ -3176,15 +3176,15 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
 {
     int child_pid = 1;
 
-    /* 
-     * Prepare for exec 
+    /*
+     * Prepare for exec
      */
     ap_cleanup_for_exec();
 #ifdef SIGHUP
     signal(SIGHUP, SIG_IGN);
 #endif
 
-    /* 
+    /*
      * Exec() the child program
      */
 #if defined(WIN32)
@@ -3206,7 +3206,7 @@ static int rewritemap_program_child(void *cmd, child_info *pinfo)
         si.hStdOutput  = pinfo->hPipeOutputWrite;
         si.hStdError   = pinfo->hPipeErrorWrite;
 
-        if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0, 
+        if (CreateProcess(NULL, pCommand, NULL, NULL, TRUE, 0,
                           environ, NULL, &si, &pi)) {
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
