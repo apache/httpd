@@ -88,6 +88,7 @@ static int cache_url_handler(request_rec *r)
     const char *cc_in, *pragma, *auth;
     apr_uri_t uri = r->parsed_uri;
     char *url = r->unparsed_uri;
+    apr_size_t urllen;
     char *path = uri.path;
     const char *types;
     cache_info *info = NULL;
@@ -107,6 +108,17 @@ static int cache_url_handler(request_rec *r)
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
                  "cache: URL %s is being handled by %s", path, types);
+
+    urllen = strlen(url);
+    if (urllen > MAX_URL_LENGTH) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
+                     "cache: URL exceeds length threshold: %s", url);
+        return DECLINED;
+    }
+    /* DECLINE urls ending in / */
+    if (url[urllen-1] == '/') {
+        return DECLINED;
+    }
 
     /* make space for the per request config */
     cache = (cache_request_rec *) ap_get_module_config(r->request_config, 
@@ -143,11 +155,6 @@ static int cache_url_handler(request_rec *r)
      * - Any URLs whose length exceeds MAX_URL_LENGTH
      * - TODO: Make MAX_URL_LENGTH a config directive?
      */
-    if (strlen(url) > MAX_URL_LENGTH) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
-                     "cache: URL exceeds length threshold: %s", url);
-        return DECLINED;
-    }
     if (conf->ignorecachecontrol_set == 1 && conf->ignorecachecontrol == 1 && auth == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG | APLOG_NOERRNO, 0, r->server,
             "incoming request is asking for a uncached version of %s, but we know better and are ignoring it", url);
