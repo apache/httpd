@@ -63,24 +63,22 @@
                                          -- Unknown         */
 #include "mod_ssl.h"
 
-#if 0 /* XXX */
-
 /*  _________________________________________________________________
 **
 **  Data Structures which store _arbitrary_ data
 **  _________________________________________________________________
 */
 
-ssl_ds_array *ssl_ds_array_make(pool *p, int size)
+ssl_ds_array *ssl_ds_array_make(apr_pool_t *p, int size)
 {
     ssl_ds_array *a;
 
-    if ((a = (ssl_ds_array *)ap_palloc(p, sizeof(ssl_ds_array))) == NULL)
+    if ((a = (ssl_ds_array *)apr_palloc(p, sizeof(ssl_ds_array))) == NULL)
         return NULL;
     a->pPool = p;
-    if ((a->pSubPool = ap_make_sub_pool(p)) == NULL)
+    if ((a->pSubPool = apr_pool_sub_make(p, NULL)) != APR_SUCCESS)
         return NULL;
-    a->aData   = ap_make_array(a->pSubPool, 2, size);
+    a->aData = apr_array_make(a->pSubPool, 2, size);
     return a;
 }
 
@@ -96,7 +94,7 @@ void *ssl_ds_array_push(ssl_ds_array *a)
 {
     void *d;
 
-    d = (void *)ap_push_array(a->aData);
+    d = (void *)apr_array_push(a->aData);
     return d;
 }
 
@@ -119,23 +117,23 @@ void ssl_ds_array_wipeout(ssl_ds_array *a)
 
 void ssl_ds_array_kill(ssl_ds_array *a)
 {
-    ap_destroy_pool(a->pSubPool);
+    apr_pool_destroy(a->pSubPool);
     a->pSubPool = NULL;
     a->aData    = NULL;
     return;
 }
 
-ssl_ds_table *ssl_ds_table_make(pool *p, int size)
+ssl_ds_table *ssl_ds_table_make(apr_pool_t *p, int size)
 {
     ssl_ds_table *t;
 
-    if ((t = (ssl_ds_table *)ap_palloc(p, sizeof(ssl_ds_table))) == NULL)
+    if ((t = (ssl_ds_table *)apr_palloc(p, sizeof(ssl_ds_table))) == NULL)
         return NULL;
     t->pPool = p;
-    if ((t->pSubPool = ap_make_sub_pool(p)) == NULL)
+    if ((t->pSubPool = apr_pool_sub_make(p, NULL)) != APR_SUCCESS)
         return NULL;
-    t->aKey  = ap_make_array(t->pSubPool, 2, MAX_STRING_LEN);
-    t->aData = ap_make_array(t->pSubPool, 2, size);
+    t->aKey  = apr_array_make(t->pSubPool, 2, MAX_STRING_LEN);
+    t->aData = apr_array_make(t->pSubPool, 2, size);
     return t;
 }
 
@@ -152,9 +150,9 @@ void *ssl_ds_table_push(ssl_ds_table *t, char *key)
     char *k;
     void *d;
 
-    k = (char *)ap_push_array(t->aKey);
-    d = (void *)ap_push_array(t->aData);
-    ap_cpystrn(k, key, t->aKey->elt_size);
+    k = (char *)apr_array_push(t->aKey);
+    d = (void *)apr_array_push(t->aData);
+    apr_cpystrn(k, key, t->aKey->elt_size);
     return d;
 }
 
@@ -186,12 +184,10 @@ void ssl_ds_table_wipeout(ssl_ds_table *t)
 
 void ssl_ds_table_kill(ssl_ds_table *t)
 {
-    ap_destroy_pool(t->pSubPool);
+    apr_pool_destroy(t->pSubPool);
     t->pSubPool = NULL;
     t->aKey     = NULL;
     t->aData    = NULL;
     return;
 }
-
-#endif /* XXX */
 

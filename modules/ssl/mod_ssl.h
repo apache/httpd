@@ -127,6 +127,8 @@
 #include "apr.h"
 #include "apr_fnmatch.h"
 #include "apr_strings.h"
+#include "apr_pools.h"
+#include "apr_tables.h"
 #undef CORE_PRIVATE
 
 /* mod_ssl headers */
@@ -200,6 +202,7 @@
 
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
+#endif /* XXX */
 
 /*
  * SSL Logging
@@ -260,21 +263,23 @@
  * The own data structures
  */
 typedef struct {
-    pool *pPool;
-    pool *pSubPool;
-    array_header *aData;
+    apr_pool_t *pPool;
+    apr_pool_t *pSubPool;
+    apr_array_header_t *aData;
 } ssl_ds_array;
 
 typedef struct {
-    pool *pPool;
-    pool *pSubPool;
-    array_header *aKey;
-    array_header *aData;
+    apr_pool_t *pPool;
+    apr_pool_t *pSubPool;
+    apr_array_header_t *aKey;
+    apr_array_header_t *aData;
 } ssl_ds_table;
 
 /*
  * Define the certificate algorithm types
  */
+
+#if 0 /* XXX */
 
 typedef int ssl_algo_t;
 
@@ -635,13 +640,13 @@ DH           *ssl_dh_GetTmpParam(int);
 DH           *ssl_dh_GetParamFromFile(char *);
 
 /*  Data Structures */
-ssl_ds_array *ssl_ds_array_make(pool *, int);
+ssl_ds_array *ssl_ds_array_make(apr_pool_t *, int);
 BOOL          ssl_ds_array_isempty(ssl_ds_array *);
 void         *ssl_ds_array_push(ssl_ds_array *);
 void         *ssl_ds_array_get(ssl_ds_array *, int);
 void          ssl_ds_array_wipeout(ssl_ds_array *);
 void          ssl_ds_array_kill(ssl_ds_array *);
-ssl_ds_table *ssl_ds_table_make(pool *, int);
+ssl_ds_table *ssl_ds_table_make(apr_pool_t *, int);
 BOOL          ssl_ds_table_isempty(ssl_ds_table *);
 void         *ssl_ds_table_push(ssl_ds_table *, char *);
 void         *ssl_ds_table_get(ssl_ds_table *, char *);

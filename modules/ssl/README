@@ -29,7 +29,7 @@
  - mod_ssl.h ............... common header file of mod_ssl
  - ssl_engine_config.c ..... module configuration handling
  # ssl_engine_dh.c ......... DSA/DH support
- - ssl_engine_ds.c ......... data structures
+ # ssl_engine_ds.c ......... data structures
  - ssl_engine_ext.c ........ Extensions to other Apache parts
  - ssl_engine_init.c ....... module initialization
  - ssl_engine_io.c ......... I/O support
