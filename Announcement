@@ -1,37 +1,37 @@
 
 Apache 2.0alpha4 Released
-------------------------
+-------------------------
 
 The Apache Group is pleased to announce the release of the fourth public
 alpha release of Apache 2.0.  
 
 Apache 2.0 offers numerous enhancements, improvements and performance
 boosts over the 1.3 codebase. The most visible and noteworthy addition
-is the ability to run Apache in a hybrid thread/process mode on any 
+is the ability to run Apache in a hybrid thread/process mode on any
 platform that supports both threads and processes.  This has shown to
-improve the scalability of the Apache HTTPD server significantly in our
-early testing, on some versions of Unix.  This release also greatly 
-improves the performance and robustness of Apache on Windows Operating 
-Systems.  Lastly we are proud to announce support for BeOS in this 
-version of the server.
+improve the scalability of the Apache HTTPD server significantly in
+our early testing, on some versions of Unix.  This release also
+greatly improves the performance and robustness of Apache on the
+Microsoft Windows Operating Systems.  Lastly we are proud to announce
+support for BeOS in this version of the server.
 
-There is more than 40 bug fixes and enhancements since alpha 3.
+There are more than 45 bug fixes and enhancements since alpha 3. They
+are listed in the bottom of this announcement.
 
 Apache 2.0a4 under UNIX has undergone some testing, but there are some
 known issues in the current release (hey, it is an "alpha" for a
-reason!). This should be considered a ``developers version'' including
-only the source and no pre-compiled binaries. It is anticipated that a
-binary-release will be available for the first beta release.  If you
-do not feel comfortable compiling code, the Apache Group strongly
-recommends that you wait for a more stable beta release before you try
-this version.
+reason!). It is intended for developers and experienced Apache HTTPD
+administrators to play around with and work on. It is not a production
+release. If you do not feel comfortable compiling and working with
+code, the Apache Group strongly recommends that you wait for a more
+stable beta release before you try this version.
 
 Apache 2.0a4 under Windows has undergone some testing as well.  There
 are known issues in the current release with regards to Apache on windows
 95 and 98.  We are working through those problems, and hope to have them
 fixed for future releases of the 2.0 alpha.
 
-There is new snapshots of the Apache httpd source available every 6
+There are new snapshots of the Apache httpd source available every 6
 hours from http://dev.apache.org/from-cvs/apache-2.0/ - please
 download and test if you feel brave. We don't guarantee anything
 except that it will take up disk space, but if you have the time and
@@ -43,10 +43,194 @@ http://www.netcraft.co.uk/Survey/) found that more web servers were
 using Apache than any other software running on more than 60% of the
 Internet web servers.
 
-The Apache project has been organized in an attempt to answer some of
-the concerns regarding active development of a public domain HTTP server
-for UNIX. The goal of this project is to provide a secure, efficient and
-extensible server which provides HTTP services in sync with the current
-HTTP standards.
-
 For more information, please check out http://www.apache.org/httpd.html
+
+
+Changes with Apache 2.0a4 since Apache 2.0a3
+
+  *) EBCDIC: Rearrange calls to ap_checkconv() so that most handlers
+     won't need to call it.  [Greg Ames, Jeff Trawick]
+
+  *) Move pre_config hook call to between configuration read and config
+     tree walk.  This allows all modules to implement pre_config hooks
+     and know that they will be called at an appropriate time.
+     [Ryan Bloom] 
+
+  *) mod_cgi, mod_cgid: Make ScriptLog directive work again.  
+     [Jeff Trawick]
+
+  *) Add pre-config hooks back to all modules.
+     [Ryan Bloom]
+
+  *) Fix a SIGSEGV in ap_md5digest(), which is used when you have
+     ContentDigest enabled and we can't/don't mmap the file. 
+     [Jeff Trawick]
+
+  *) We now report the correct line number for syntax errors in config
+     files.  [Ryan Bloom, Greg Stein, Jeff Trawick]
+
+  *) Brought mod_auth_digest up to synch with 1.3, fixed ap_time_t-
+     related bugs, and changed shmem/locking to use apr API. Shared-mem
+     is currently disabled, however, because of problems with graceful
+     restarts. [Ronald Tschalär]
+
+  *) Fix corruption of IFS variable in --with-module= handling.  
+     Depending on the user's shell or customization thereof, there 
+     would be errors generating ap_config_auto.h later in the configure
+     procedure.  [Jeff Trawick]
+
+  *) mod_cgi: Restore logging of stderr from child process when ScriptLog 
+     isn't used (as in 1.3), except that on Unix it is now logged via 
+     ap_log_rerror() instead of by the child having STDERR_FILENO refer
+     to the error log.  [Greg Ames, Jeff Trawick]
+
+  *) Add '-D' argument processing for run time configuration defines.
+     [William Rowe]
+
+  *) Organize http_main.c as independent code, such that no code or
+     global data is exported from it.  WIN32 will dynamically link it
+     to the server core, so this will prevent mutual dependency.
+     [William Rowe]
+
+  *) Add separate dynamic linkage tags APR_EXPORT(), APR_EXPORT_NONSTD()
+     and APR_VAR_EXPORT to correctly resolve apr functions and globals.
+     [William Rowe]
+
+  *) Add Win9x service execution and Ctrl+C/Ctrl+Break/Shutdown handlers.
+     [William Rowe, Jan Just Keijser <KEIJSERJJ@logica.com>]
+
+  *) Add mod_charset_lite for configuring character set translation.
+     [Jeff Trawick]
+
+  *) Add '-n' option to htpasswd to make it print its user:pw record
+     on stdout rather than having to frob a text file.  [Ken Coar]
+
+  *) Fix saferead.  Basically, we flush the output buffer if a read on the
+     input will block.
+     [Ryan Bloom]
+ 
+  *) APR: Add ap_xlate_get_sb() so that an app can find out whether or not
+     a conversion is single-byte only. [Jeff Trawick]
+
+  *) BEOS: ap_shutdown should return APR_SUCCESS or errno. Note that
+     the BeOS 5.0 documentation says that shutdown doesn't work yet.
+     [Roy Fielding]
+
+  *) Fix some minor errors where pid was being manipulated as an int
+     instead of the portable pid_t.  [Roy Fielding]
+
+  *) Fix some error log prints that were printing the pointer to a
+     structure rather than the pid within the structure.
+     [Jeff Trawick, Roy Fielding]
+
+  *) ab: Fix a command-line processing bug; track bad headers in 
+     err_response; support reading headers up to 2K. 
+     [Ask Bjoern Hansen <ask@valueclick.com>]
+
+  *) Fix ap_resolve_env() so that it handles new function added in a prior
+     alpha (see "Added the capability to do ${ENVVAR} constructs in the
+     config file.") as well as the constructs used by mod_rewrite.
+     [Paul Reder <rederpj@raleigh.ibm.com>]
+
+  *) Apache 2.0 builds and runs on OS/390. [Jeff Trawick, Greg Ames]
+
+  *) Change the EBCDIC support in functions for MD5, SHA1, and base 64 to use
+     APR to perform translation, instead of accessing the hard-coded tables
+     in 1.3's ebcdic.c. [Jeff Trawick]
+
+  *) Fix some bugs (mostly lost 1.3 code) in ab's command-line processing. 
+     [Jeff Trawick]
+
+  *) Add the ability to hook into the config file reading phase.  Basically
+     if a directive is specified EXEC_ON_READ, then when that directive is
+     read from the config file, the assocaited function is executed.  This
+     should only be used for those directives that must muck with HOW the
+     server INTERPRETS the config.  This should not be used for directives
+     that re-order or replace items in the config tree.  Those changes should
+     be made in the pre-config step.
+     [Ryan Bloom]
+
+  *) Add mod_example to the build system.
+     [Tony Finch]
+
+  *) APR: Add ap_xlate_conv_byte() to convert one char between single-
+     byte character sets. [Jeff Trawick]
+
+  *) Pick up various EBCDIC fixes from 1.3 (from Martin
+     Kraemer and Oliver Reh originally according to the change log).
+     [Jeff Trawick]
+
+  *) Fix a couple of problems in RFC1413 support (controlled by the
+     IdentityCheck directive).  Apache did not build the request string
+     properly and more importantly Apache would loop forever if the 
+     would-be ident server dropped the connection before sending a
+     properly terminated response. [Jeff Trawick]
+
+  *) apxs works in 2.0.
+     [Ryan Bloom]
+
+  *) Reliable piped logs work in 2.0.
+     [Ryan Bloom]
+
+  *) Introduce a hash table implementation into APR to be used for
+     replacing tables and other random data structures in Apache.
+     [Tony Finch]
+
+  *) Add some more error reporting to htpasswd in the case of problems
+     generating or accessing the temporary file.  Also, pass in a
+     buffer if the implementation knows how to use it (i.e., if L_tmpnam
+     is defined).  [Ken Coar]
+
+  *) Configure creates config.nice now containing your configure
+     options. Syntax: ./config.nice [--more-options]
+     [Sascha Schumann]
+
+  *) Fix various return code problems in APR on Win32.  For most of
+     these, APR was returning APR_EEXIST instead of GetLastError()/
+     WSAGetLastError().  [Jeff Trawick]
+
+  *) Make piped logs work again in version 2.0
+     [Ryan Bloom]
+
+  *) Add VPATH support to UNIX build system of Apache and APR.
+     [Sascha Schumann]
+
+  *) Fix ap_tokenize_to_argv to respect the const arguments that are
+     passed to it.
+     [Ryan Bloom]
+
+  *) Fix mm's memcpy/memset macros, pointer arithmetic was broken.
+     Patch submitted to author.
+     [Sascha Schumann]
+
+  *) Fix mm configuration on Solaris 8 x86 and OS/390.  Don't require
+     /sbin in PATH on FreeBSD (all submitted to rse previously) 
+     [Jeff Trawick]
+
+  *) Fix building Pthread-based MPMs on OpenBSD
+     [Sascha Schumann] PR#26
+
+  *) Fix ap_readdir() problem on systems where d_name[] field in
+     struct dirent is declared with only one byte.  (This problem only 
+     affected multithreaded builds.)  This caused a segfault during
+     pool cleanup with mod_autoindex on Solaris (Solaris 8 x86, at 
+     least). [Jeff Trawick]
+
+  *) Fix some make-portability problems on at least Tru64, Irix
+     and UnixWare.
+     [Sascha Schumann] PR#18, PR#39
+
+  *) Add ap_sigwait() to support old-style sigwait() on systems
+     like OS/390 and UnixWare.
+     [Sascha Schumann] 
+
+  *) Add POSIX-thread flags for more platforms.
+     [Sascha Schumann]
+
+  *) Fix some minor bugs in ap_strerror().  Teach ap_strerror()
+     (on Unix, at least) to handle resolver errors.  Fix a bug in
+     the definition of APR_ENOMEM so that ap_strerror() can spit
+     out the correct error message for it.
+     [Jeff Trawick]
+
+
