@@ -400,20 +400,18 @@ const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
  */
 
 static apr_thread_mutex_t **lock_cs;
-/* FIXME: CRYPTO_NUM_LOCKS may vary between releases - replace with
-   CRYPT_num_locks() [Ben, Jan 2002] */
-static long                 lock_count[CRYPTO_NUM_LOCKS];
+static int                  lock_num_locks;
 
 static void ssl_util_thr_lock(int mode, int type,
-                              MODSSL_CRYPTO_CB_ARG_TYPE *file,
-                              int line)
+                              const char *file, int line)
 {
-    if (mode & CRYPTO_LOCK) {
-        apr_thread_mutex_lock(lock_cs[type]);
-        lock_count[type]++;
-    }
-    else {
-        apr_thread_mutex_unlock(lock_cs[type]);
+    if (type < lock_num_locks) {
+        if (mode & CRYPTO_LOCK) {
+            apr_thread_mutex_lock(lock_cs[type]);
+        }
+        else {
+            apr_thread_mutex_unlock(lock_cs[type]);
+        }
     }
 }
 
@@ -437,41 +435,21 @@ static unsigned long ssl_util_thr_id(void)
 
 static apr_status_t ssl_util_thread_cleanup(void *data)
 {
-    int i;
-
     CRYPTO_set_locking_callback(NULL);
 
-    for (i = 0; i < CRYPTO_NUM_LOCKS; i++) {
-        apr_thread_mutex_destroy(lock_cs[i]);
-    }
-
+    /* Let the registered mutex cleanups do their own thing 
+     */
     return APR_SUCCESS;
 }
 
-void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
+void ssl_util_thread_setup(apr_pool_t *p)
 {
-    int i, threaded_mpm;
-    /* This variable is not used? -aaron
-    SSLModConfigRec *mc = myModConfig(s);
-    */
+    int i;
 
-    ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded_mpm);
+    lock_num_locks = CRYPTO_num_locks();
+    lock_cs = apr_palloc(p, lock_num_locks * sizeof(*lock_cs));
 
-    if (!threaded_mpm) {
-        return;
-    }
-
-    lock_cs = apr_palloc(p, CRYPTO_NUM_LOCKS * sizeof(apr_thread_mutex_t *));
-
-    /*
-     * XXX: CRYPTO_NUM_LOCKS == 28
-     * should determine if there are lock types we do not need
-     * for example: debug_malloc, debug_malloc2 (see crypto/cryptlib.c)
-     */
-    for (i = 0; i < CRYPTO_NUM_LOCKS; i++) {
-        lock_count[i] = 0;
-        /* XXX: Can we remove the lock_count now that apr_thread_mutex_t
-         * can support nested (aka recursive) locks? -aaron */
+    for (i = 0; i < lock_num_locks; i++) {
         apr_thread_mutex_create(&(lock_cs[i]), APR_THREAD_MUTEX_DEFAULT, p);
     }
 
@@ -479,9 +457,7 @@ void ssl_util_thread_setup(server_rec *s, apr_pool_t *p)
 
     CRYPTO_set_locking_callback(ssl_util_thr_lock);
 
-    apr_pool_cleanup_register(p, NULL,
-                              ssl_util_thread_cleanup,
-                              apr_pool_cleanup_null);
-
+    apr_pool_cleanup_register(p, NULL, ssl_util_thread_cleanup,
+                                       apr_pool_cleanup_null);
 }
 #endif
