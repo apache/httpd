@@ -176,34 +176,40 @@ static int checked_bputs(const char *str, request_rec *r)
  *    - then, if there are no parameters on type, add the default charset
  *    - return type
  */
-static const char *make_content_type(request_rec *r, const char *type) {
+static const char *make_content_type(request_rec *r, const char *type)
+{
     static const char *needcset[] = {
 	"text/plain",
 	"text/html",
 	NULL };
     const char **pcset;
-    core_dir_config *conf = (core_dir_config *)ap_get_module_config(
-	r->per_dir_config, &core_module);
+    core_dir_config *conf =
+	(core_dir_config *)ap_get_module_config(r->per_dir_config,
+						&core_module);
 
-    if (!type)
-        type = ap_default_type(r);
-    if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON)
-        return type;
+    if (!type) {
+	type = ap_default_type(r);
+    }
+    if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) {
+	return type;
+    }
 
     if (ap_strcasestr(type, "charset=") != NULL) {
 	/* already has parameter, do nothing */
 	/* XXX we don't check the validity */
 	;
-    } else {
+    }
+    else {
     	/* see if it makes sense to add the charset. At present,
 	 * we only add it if the Content-type is one of needcset[]
 	 */
-	for (pcset = needcset; *pcset ; pcset++)
+	for (pcset = needcset; *pcset ; pcset++) {
 	    if (ap_strcasestr(type, *pcset) != NULL) {
 		type = apr_pstrcat(r->pool, type, "; charset=", 
-		    conf->add_default_charset_name, NULL);
+				   conf->add_default_charset_name, NULL);
 		break;
 	    }
+	}
     }
     return type;
 }
@@ -359,7 +365,8 @@ static int internal_byterange(int realreq, long *tlength, request_rec *r,
                  */
                 (void) checked_bputstrs(r, CRLF "--", r->boundary, "--" CRLF,
                                         NULL);
-            } else {
+            }
+	    else {
                 *tlength += 4 + strlen(r->boundary) + 4;
             }
         }
@@ -457,28 +464,28 @@ API_EXPORT(int) ap_set_keepalive(request_rec *r)
      *
      * Note that the condition evaluation order is extremely important.
      */
-    if ((r->connection->keepalive != -1) &&
-        ((r->status == HTTP_NOT_MODIFIED) ||
-         (r->status == HTTP_NO_CONTENT) ||
-         r->header_only ||
-         apr_table_get(r->headers_out, "Content-Length") ||
-         ap_find_last_token(r->pool,
-                         apr_table_get(r->headers_out, "Transfer-Encoding"),
-                         "chunked") ||
-         ((r->proto_num >= HTTP_VERSION(1,1)) &&
-	  (r->chunked = 1))) && /* THIS CODE IS CORRECT, see comment above. */
-        r->server->keep_alive &&
-        (r->server->keep_alive_timeout > 0) &&
-        ((r->server->keep_alive_max == 0) ||
-         (r->server->keep_alive_max > r->connection->keepalives)) &&
-        !ap_status_drops_connection(r->status) &&
-        !wimpy &&
-        !ap_find_token(r->pool, conn, "close") &&
-        (!apr_table_get(r->subprocess_env, "nokeepalive") ||
-         apr_table_get(r->headers_in, "Via")) &&
-        ((ka_sent = ap_find_token(r->pool, conn, "keep-alive")) ||
-         (r->proto_num >= HTTP_VERSION(1,1)))
-       ) {
+    if ((r->connection->keepalive != -1)
+	&& ((r->status == HTTP_NOT_MODIFIED)
+	    || (r->status == HTTP_NO_CONTENT)
+	    || r->header_only
+	    || apr_table_get(r->headers_out, "Content-Length")
+	    || ap_find_last_token(r->pool,
+				  apr_table_get(r->headers_out,
+						"Transfer-Encoding"),
+				  "chunked")
+	    || ((r->proto_num >= HTTP_VERSION(1,1))
+		&& (r->chunked = 1))) /* THIS CODE IS CORRECT, see comment above. */
+        && r->server->keep_alive
+	&& (r->server->keep_alive_timeout > 0)
+	&& ((r->server->keep_alive_max == 0)
+	    || (r->server->keep_alive_max > r->connection->keepalives))
+	&& !ap_status_drops_connection(r->status)
+	&& !wimpy
+	&& !ap_find_token(r->pool, conn, "close")
+	&& (!apr_table_get(r->subprocess_env, "nokeepalive")
+	    || apr_table_get(r->headers_in, "Via"))
+	&& ((ka_sent = ap_find_token(r->pool, conn, "keep-alive"))
+	    || (r->proto_num >= HTTP_VERSION(1,1)))) {
         int left = r->server->keep_alive_max - r->connection->keepalives;
 
         r->connection->keepalive = 1;
@@ -570,9 +577,9 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
      *     respond with a status of 412 (Precondition Failed).
      */
     if ((if_match = apr_table_get(r->headers_in, "If-Match")) != NULL) {
-        if (if_match[0] != '*' &&
-            (etag == NULL || etag[0] == 'W' ||
-             !ap_find_list_item(r->pool, if_match, etag))) {
+        if (if_match[0] != '*'
+	    && (etag == NULL || etag[0] == 'W'
+		|| !ap_find_list_item(r->pool, if_match, etag))) {
             return HTTP_PRECONDITION_FAILED;
         }
     }
@@ -607,12 +614,13 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
     if_nonematch = apr_table_get(r->headers_in, "If-None-Match");
     if (if_nonematch != NULL) {
         if (r->method_number == M_GET) {
-            if (if_nonematch[0] == '*')
-                return HTTP_NOT_MODIFIED;
+            if (if_nonematch[0] == '*') {
+		return HTTP_NOT_MODIFIED;
+	    }
             if (etag != NULL) {
                 if (apr_table_get(r->headers_in, "Range")) {
-                    if (etag[0] != 'W' &&
-                        ap_find_list_item(r->pool, if_nonematch, etag)) {
+                    if (etag[0] != 'W'
+			&& ap_find_list_item(r->pool, if_nonematch, etag)) {
                         return HTTP_NOT_MODIFIED;
                     }
                 }
@@ -621,9 +629,9 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
                 }
             }
         }
-        else if (if_nonematch[0] == '*' ||
-                 (etag != NULL &&
-                  ap_find_list_item(r->pool, if_nonematch, etag))) {
+        else if (if_nonematch[0] == '*'
+		 || (etag != NULL
+		     && ap_find_list_item(r->pool, if_nonematch, etag))) {
             return HTTP_PRECONDITION_FAILED;
         }
     }
@@ -636,7 +644,8 @@ API_EXPORT(int) ap_meets_conditions(request_rec *r)
      */
     else if ((r->method_number == M_GET)
              && ((if_modified_since =
-                  apr_table_get(r->headers_in, "If-Modified-Since")) != NULL)) {
+                  apr_table_get(r->headers_in,
+				"If-Modified-Since")) != NULL)) {
         apr_time_t ims = ap_parseHTTPdate(if_modified_since);
 
 	if ((ims >= mtime) && (ims <= r->request_time)) {
@@ -671,18 +680,19 @@ API_EXPORT(char *) ap_make_etag(request_rec *r, int force_weak)
      * would be incorrect.
      */
     
-    weak = ((r->request_time - r->mtime > APR_USEC_PER_SEC) && !force_weak) ? "" : "W/";
+    weak = ((r->request_time - r->mtime > APR_USEC_PER_SEC)
+	    && !force_weak) ? "" : "W/";
 
     if (r->finfo.protection != 0) {
         etag = apr_psprintf(r->pool,
-                    "%s\"%lx-%lx-%lx\"", weak,
-                    (unsigned long) r->finfo.inode,
-                    (unsigned long) r->finfo.size,
-                    (unsigned long) r->mtime);
+			    "%s\"%lx-%lx-%lx\"", weak,
+			    (unsigned long) r->finfo.inode,
+			    (unsigned long) r->finfo.size,
+			    (unsigned long) r->mtime);
     }
     else {
         etag = apr_psprintf(r->pool, "%s\"%lx\"", weak,
-                    (unsigned long) r->mtime);
+			    (unsigned long) r->mtime);
     }
 
     return etag;
@@ -815,7 +825,8 @@ API_EXPORT(int) ap_method_number_of(const char *method)
  * Turn a known method number into a name.  Doesn't work for
  * extension methods, obviously.
  */
-API_EXPORT(const char *) ap_method_name_of(int methnum) {
+API_EXPORT(const char *) ap_method_name_of(int methnum)
+{
     static const char *AP_HTTP_METHODS[METHODS] = { NULL };
 
     /*
@@ -910,7 +921,8 @@ static int getline(char *s, int n, BUFF *in, int fold)
              * it much easier to check field values for exact matches, and
              * saves memory as well.  Terminate string at end of line.
              */
-            while (pos > (s + 1) && (*(pos - 1) == ' ' || *(pos - 1) == '\t')) {
+            while (pos > (s + 1) && (*(pos - 1) == ' '
+				     || *(pos - 1) == '\t')) {
                 --pos;          /* trim extra trailing spaces or tabs      */
                 --total;        /* but not one at the beginning of line    */
                 ++n;
@@ -919,16 +931,17 @@ static int getline(char *s, int n, BUFF *in, int fold)
             --total;
             ++n;
         }
-        else
-            break;       /* if not, input line exceeded buffer size */
-
+        else {
+	    break;       /* if not, input line exceeded buffer size */
+	}
         /* Continue appending if line folding is desired and
          * the last line was not empty and we have room in the buffer and
          * the next line begins with a continuation character.
          */
-    } while (fold && (retval != 1) && (n > 1)
-                  && (next = ap_blookc(in))
-                  && ((next == ' ') || (next == '\t')));
+    } while (fold
+	     && (retval != 1) && (n > 1)
+	     && (next = ap_blookc(in))
+	     && ((next == ' ') || (next == '\t')));
 
 #ifdef APACHE_XLATE
     /* restore translation handle */
@@ -952,7 +965,8 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 
     if (r->method_number == M_CONNECT) {
 	status = ap_parse_hostinfo_components(r->pool, uri, &r->parsed_uri);
-    } else {
+    }
+    else {
 	/* Simple syntax Errors in URLs are trapped by parse_uri_components(). */
 	status = ap_parse_uri_components(r->pool, uri, &r->parsed_uri);
     }
@@ -962,7 +976,8 @@ CORE_EXPORT(void) ap_parse_uri(request_rec *r, const char *uri)
 	if (r->parsed_uri.scheme
 	    && !strcasecmp(r->parsed_uri.scheme, ap_http_method(r))) {
 	    r->hostname = r->parsed_uri.hostname;
-	} else if (r->method_number == M_CONNECT) {
+	}
+	else if (r->method_number == M_CONNECT) {
 	    r->hostname = r->parsed_uri.hostname;
 	}
 	r->args = r->parsed_uri.query;
@@ -1101,8 +1116,8 @@ static void get_mime_headers(request_rec *r)
             (++fields_read > r->server->limit_req_fields)) {
             r->status = HTTP_BAD_REQUEST;
             apr_table_setn(r->notes, "error-notes",
-                          "The number of request header fields exceeds "
-                          "this server's limit.<P>\n");
+			   "The number of request header fields exceeds "
+			   "this server's limit.<P>\n");
             return;
         }
         /* getline returns (size of max buffer - 1) if it fills up the
@@ -1111,9 +1126,13 @@ static void get_mime_headers(request_rec *r)
          */
         if (len > r->server->limit_req_fieldsize) {
             r->status = HTTP_BAD_REQUEST;
-            apr_table_setn(r->notes, "error-notes", apr_pstrcat(r->pool,
-                "Size of a request header field exceeds server limit.<P>\n"
-                "<PRE>\n", ap_escape_html(r->pool, field), "</PRE>\n", NULL));
+            apr_table_setn(r->notes, "error-notes",
+			   apr_pstrcat(r->pool,
+				       "Size of a request header field "
+				       "exceeds server limit.<P>\n"
+				       "<PRE>\n",
+				       ap_escape_html(r->pool, field),
+				       "</PRE>\n", NULL));
             return;
         }
         copy = apr_palloc(r->pool, len + 1);
@@ -1121,16 +1140,21 @@ static void get_mime_headers(request_rec *r)
 
         if (!(value = strchr(copy, ':'))) {     /* Find the colon separator */
             r->status = HTTP_BAD_REQUEST;       /* or abort the bad request */
-            apr_table_setn(r->notes, "error-notes", apr_pstrcat(r->pool,
-                "Request header field is missing colon separator.<P>\n"
-                "<PRE>\n", ap_escape_html(r->pool, copy), "</PRE>\n", NULL));
+            apr_table_setn(r->notes, "error-notes",
+			   apr_pstrcat(r->pool,
+				       "Request header field is missing "
+				       "colon separator.<P>\n"
+				       "<PRE>\n",
+				       ap_escape_html(r->pool, copy),
+				       "</PRE>\n", NULL));
             return;
         }
 
         *value = '\0';
         ++value;
-        while (*value == ' ' || *value == '\t')
+        while (*value == ' ' || *value == '\t') {
             ++value;            /* Skip to start of value   */
+	}
 
 	apr_table_addn(tmp_headers, copy, value);
     }
@@ -1188,7 +1212,7 @@ request_rec *ap_read_request(conn_rec *conn)
     if (!read_request_line(r)) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                         "request failed: URI too long");
+			  "request failed: URI too long");
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
             return r;
@@ -1197,13 +1221,13 @@ request_rec *ap_read_request(conn_rec *conn)
     }
     if (r->connection->keptalive) {
         ap_bsetopt(r->connection->client, BO_TIMEOUT,
-            &r->server->timeout);
+		   &r->server->timeout);
     }
     if (!r->assbackwards) {
         get_mime_headers(r);
         if (r->status != HTTP_REQUEST_TIME_OUT) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                         "request failed: error reading the headers");
+			  "request failed: error reading the headers");
             ap_send_error_response(r, 0);
             ap_run_log_transaction(r);
             return r;
@@ -1390,7 +1414,7 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
 
     if (!ap_auth_name(r)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR,
-		    0, r, "need AuthName: %s", r->uri);
+		      0, r, "need AuthName: %s", r->uri);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -1402,13 +1426,14 @@ API_EXPORT(int) ap_get_basic_auth_pw(request_rec *r, const char **pw)
     if (strcasecmp(ap_getword(r->pool, &auth_line, ' '), "Basic")) {
         /* Client tried to authenticate using wrong auth scheme */
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                    "client used wrong authentication scheme: %s", r->uri);
+		      "client used wrong authentication scheme: %s", r->uri);
         ap_note_basic_auth_failure(r);
         return HTTP_UNAUTHORIZED;
     }
 
-    while (*auth_line== ' ' || *auth_line== '\t')
+    while (*auth_line== ' ' || *auth_line== '\t') {
         auth_line++;
+    }
 
     t = ap_pbase64decode(r->pool, auth_line);
     /* Note that this allocation has to be made from r->connection->pool
@@ -1519,10 +1544,12 @@ API_EXPORT(int) ap_index_of_response(int status)
         status -= 100;
         if (status < 100) {
             pos = (status + shortcut[i]);
-            if (pos < shortcut[i + 1])
+            if (pos < shortcut[i + 1]) {
                 return pos;
-            else
+	    }
+            else {
                 return LEVEL_500;       /* status unknown (falls in gap) */
+	    }
         }
     }
     return LEVEL_500;           /* 600 or above is also illegal */
@@ -1565,8 +1592,9 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
         protocol = "HTTP/1.0";
         r->connection->keepalive = -1;
     }
-    else
+    else {
         protocol = AP_SERVER_PROTOCOL;
+    }
 
 #ifdef APACHE_XLATE
     { AP_PUSH_OUTPUTCONVERSION_STATE(r->connection->client,
@@ -1769,7 +1797,7 @@ static int uniq_field_values(void *d, const char *key, const char *val)
             }
         }
         if (i == values->nelts) {  /* if not found */
-           *(char **)apr_push_array(values) = start;
+	    *(char **)apr_push_array(values) = start;
         }
     } while (*e != '\0');
 
@@ -1798,7 +1826,7 @@ static void fixup_vary(request_rec *r)
 
     if (varies->nelts > 0) {
 	apr_table_setn(r->headers_out, "Vary",
-		      apr_array_pstrcat(r->pool, varies, ','));
+		       apr_array_pstrcat(r->pool, varies, ','));
     }
 }
 
@@ -1867,24 +1895,33 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
         ap_add_filter("CHUNK", NULL, r);
     }
 
-    if (r->byterange > 1)
+    if (r->byterange > 1) {
         apr_table_setn(r->headers_out, "Content-Type",
-                  apr_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
-                          "byteranges; boundary=", r->boundary, NULL));
-    else apr_table_setn(r->headers_out, "Content-Type", make_content_type(r, 
-	r->content_type));
+		       apr_pstrcat(r->pool, "multipart",
+				   use_range_x(r) ? "/x-" : "/",
+				   "byteranges; boundary=",
+				   r->boundary, NULL));
+    }
+    else {
+	apr_table_setn(r->headers_out, "Content-Type",
+		       make_content_type(r, r->content_type));
+    }
 
-    if (r->content_encoding)
-        apr_table_setn(r->headers_out, "Content-Encoding", r->content_encoding);
+    if (r->content_encoding) {
+        apr_table_setn(r->headers_out, "Content-Encoding",
+		       r->content_encoding);
+    }
 
     if (r->content_languages && r->content_languages->nelts) {
         for (i = 0; i < r->content_languages->nelts; ++i) {
             apr_table_mergen(r->headers_out, "Content-Language",
-                        ((char **) (r->content_languages->elts))[i]);
+			     ((char **) (r->content_languages->elts))[i]);
         }
     }
-    else if (r->content_language)
-        apr_table_setn(r->headers_out, "Content-Language", r->content_language);
+    else if (r->content_language) {
+        apr_table_setn(r->headers_out, "Content-Language",
+		       r->content_language);
+    }
 
     /*
      * Control cachability for non-cachable responses if not already set by
@@ -1897,17 +1934,17 @@ API_EXPORT(void) ap_send_http_header(request_rec *r)
     }
 
     apr_table_do((int (*) (void *, const char *, const char *)) ap_send_header_field,
-             (void *) r, r->headers_out, NULL);
+		 (void *) r, r->headers_out, NULL);
 
     terminate_header(r);
-
 
     ap_bsetopt(r->connection->client, BO_BYTECT, &zero);
     r->sent_bodyct = 1;         /* Whatever follows is real body stuff... */
 
     /* Set buffer flags for the body */
-    if (r->chunked)
+    if (r->chunked) {
         ap_bsetflag(r->connection->client, B_CHUNK, 1);
+    }
 #ifdef APACHE_XLATE
     AP_POP_OUTPUTCONVERSION_STATE(r->connection->client); }
 #endif /*APACHE_XLATE*/
@@ -1978,12 +2015,12 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
     if (tenc) {
         if (strcasecmp(tenc, "chunked")) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                        "Unknown Transfer-Encoding %s", tenc);
+			  "Unknown Transfer-Encoding %s", tenc);
             return HTTP_NOT_IMPLEMENTED;
         }
         if (r->read_body == REQUEST_CHUNKED_ERROR) {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                        "chunked Transfer-Encoding forbidden: %s", r->uri);
+			  "chunked Transfer-Encoding forbidden: %s", r->uri);
             return (lenp) ? HTTP_BAD_REQUEST : HTTP_LENGTH_REQUIRED;
         }
 
@@ -1992,11 +2029,12 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
     else if (lenp) {
         const char *pos = lenp;
 
-        while (apr_isdigit(*pos) || apr_isspace(*pos))
+        while (apr_isdigit(*pos) || apr_isspace(*pos)) {
             ++pos;
+	}
         if (*pos != '\0') {
             ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                        "Invalid Content-Length %s", lenp);
+			  "Invalid Content-Length %s", lenp);
             return HTTP_BAD_REQUEST;
         }
 
@@ -2006,15 +2044,15 @@ API_EXPORT(int) ap_setup_client_block(request_rec *r, int read_policy)
     if ((r->read_body == REQUEST_NO_BODY) &&
         (r->read_chunked || (r->remaining > 0))) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                    "%s with body is not allowed for %s", r->method, r->uri);
+		      "%s with body is not allowed for %s", r->method, r->uri);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
     max_body = ap_get_limit_req_body(r);
     if (max_body && (r->remaining > max_body)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-          "Request content-length of %s is larger than the configured "
-          "limit of %lu", lenp, max_body);
+		      "Request content-length of %s is larger than "
+		      "the configured limit of %lu", lenp, max_body);
         return HTTP_REQUEST_ENTITY_TOO_LARGE;
     }
 
@@ -2067,12 +2105,15 @@ static long get_chunk_size(char *b)
     while (apr_isxdigit(*b)) {
         int xvalue = 0;
 
-        if (*b >= '0' && *b <= '9')
+        if (*b >= '0' && *b <= '9') {
             xvalue = *b - '0';
-        else if (*b >= 'A' && *b <= 'F')
+	}
+        else if (*b >= 'A' && *b <= 'F') {
             xvalue = *b - 'A' + 0xa;
-        else if (*b >= 'a' && *b <= 'f')
+	}
+        else if (*b >= 'a' && *b <= 'f') {
             xvalue = *b - 'a' + 0xa;
+	}
 
         chunksize = (chunksize << 4) | xvalue;
         ++b;
@@ -2136,8 +2177,8 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     max_body = ap_get_limit_req_body(r);
     if (max_body && (r->read_length > max_body)) {
         ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-            "Chunked request body is larger than the configured limit of %lu",
-            max_body);
+		      "Chunked request body is larger than the "
+		      "configured limit of %lu", max_body);
         r->connection->keepalive = -1;
         return -1;
     }
@@ -2159,7 +2200,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
                 apr_snprintf(buffer, bufsiz, "%ld", r->read_length);
                 apr_table_unset(r->headers_in, "Transfer-Encoding");
                 apr_table_setn(r->headers_in, "Content-Length",
-                    apr_pstrdup(r->pool, buffer));
+			       apr_pstrdup(r->pool, buffer));
                 return 0;
             }
             r->remaining = -1;  /* Indicate footers in-progress */
@@ -2184,8 +2225,9 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     if (r->remaining == -1) {   /* reading footers until empty line  */
         len_read = chunk_start;
 
-        while ((bufsiz > 1) && ((len_read =
-                  getline(buffer, bufsiz, r->connection->client, 1)) > 0)) {
+        while ((bufsiz > 1)
+	       && ((len_read = getline(buffer, bufsiz, r->connection->client,
+				       1)) > 0)) {
 
             if (len_read != (bufsiz - 1)) {
                 buffer[len_read++] = CR;        /* Restore footer line end  */
@@ -2401,10 +2443,12 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
     }
 
     while (!r->connection->aborted) {
-        if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length)
+        if ((length > 0) && (total_bytes_sent + IOBUFSIZE) > length) {
             n = length - total_bytes_sent;
-        else
+	}
+        else {
             n = IOBUFSIZE;
+	}
         
         do {
             rv = apr_read(fd, buf, &n);
@@ -2416,8 +2460,9 @@ API_EXPORT(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r, apr_off_t of
         }
 
         o = ap_rwrite(buf, n, r);
-        if (o < 0)
+        if (o < 0) {
             break;
+	}
         total_bytes_sent += o;
     }
 
@@ -2538,8 +2583,9 @@ API_EXPORT(int) ap_rputc(int c, request_rec *r)
     ap_bucket *b;
     char c2 = (char)c;
 
-    if (r->connection->aborted)
-        return EOF;
+    if (r->connection->aborted) {
+	return EOF;
+    }
 
     bb = ap_brigade_create(r->pool);
     b = ap_bucket_create_transient(&c2, 1);
@@ -2681,7 +2727,7 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
     if (status == HTTP_NOT_MODIFIED) {
         if (!apr_is_empty_table(r->err_headers_out))
             r->headers_out = apr_overlay_tables(r->pool, r->err_headers_out,
-                                               r->headers_out);
+						r->headers_out);
         ap_basic_http_header(r);
         ap_set_keepalive(r);
 
@@ -2844,7 +2890,8 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	case HTTP_BAD_REQUEST:
 	    ap_rputs("Your browser sent a request that "
 	             "this server could not understand.<P>\n", r);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
+		!= NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2881,7 +2928,8 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	case HTTP_LENGTH_REQUIRED:
 	    ap_rvputs(r, "A request of the requested method ", r->method,
 		      " requires a valid Content-length.<P>\n", NULL);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
+		!= NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2894,14 +2942,16 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	    ap_rvputs(r, ap_escape_html(r->pool, r->method), " to ",
 		      ap_escape_html(r->pool, r->uri),
 		      " not supported.<P>\n", NULL);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
+		!= NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
 	case HTTP_BAD_GATEWAY:
 	    ap_rputs("The proxy server received an invalid" CRLF
 	             "response from an upstream server.<P>" CRLF, r);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
+		!= NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
@@ -2932,7 +2982,8 @@ API_EXPORT(void) ap_send_error_response(request_rec *r, int recursive_error)
 	case HTTP_REQUEST_URI_TOO_LARGE:
 	    ap_rputs("The requested URL's length exceeds the capacity\n"
 	             "limit for this server.<P>\n", r);
-	    if ((error_notes = apr_table_get(r->notes, "error-notes")) != NULL) {
+	    if ((error_notes = apr_table_get(r->notes, "error-notes"))
+		!= NULL) {
 		ap_rvputs(r, error_notes, "<P>\n", NULL);
 	    }
 	    break;
