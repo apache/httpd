@@ -1,6 +1,13 @@
 
 mod_proxy changes for httpd 2.0.18-dev
 
+  *) Get PORT working again in the ftp proxy.
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
+  *) Return result code check for FTP QUIT, after fixing
+     problems with passive connection handling.
+     [Victor Orlikowski <v.j.orlikowski@gte.net>]
+
   *) Reorganize ap_proxy_string_read() internally to not process eos
      buckets.
      [Chuck Murcko <chuck@topsail.org>]
