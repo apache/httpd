@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/06 18:35:44 $]
+Last modified at [$Date: 2004/03/07 22:03:15 $]
 
 Release:
 
@@ -102,12 +102,6 @@ PATCHES TO BACKPORT FROM 2.1
       PR: 27428
       +1: madhum, jerenkrantz, jorton
       (jorton: needs libhttpd.dsp change for Win32 too)
-
-    * mod_ssl: Fix nasty memory leak for each plain-HTTP-on-SSL-port request.
-      PR: 27106
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.117&r2=1.118
-      http://cvs.apache.org/viewcvs.cgi/httpd-2.0/modules/ssl/ssl_engine_io.c?r1=1.120&r2=1.121      
-      +1: jorton, trawick, jerenkrantz
 
     * mod_setenvif: remove support for remote_user variable which never
       worked at all. PR 25725 (2.0 + 1.3)

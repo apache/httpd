@@ -821,9 +821,11 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
                                sizeof(HTTP_ON_HTTPS_PORT) - 1, \
                                alloc)
 
-static void ssl_io_filter_disable(ap_filter_t *f)
+static void ssl_io_filter_disable(SSLConnRec *sslconn, ap_filter_t *f)
 {
     bio_filter_in_ctx_t *inctx = f->ctx;
+    SSL_free(inctx->ssl);
+    sslconn->ssl = NULL;
     inctx->ssl = NULL;
     inctx->filter_ctx->pssl = NULL;
 }
@@ -845,7 +847,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, f->c->base_server);
 
             sslconn->non_ssl_request = 1;
-            ssl_io_filter_disable(f);
+            ssl_io_filter_disable(sslconn, f);
 
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
