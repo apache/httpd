@@ -121,8 +121,6 @@ static void sock_enable_linger(int s)
 #define sock_enable_linger(s)	/* NOOP */
 #endif /* USE_SO_LINGER */
 
-#ifndef NO_LINGCLOSE
-
 /* we now proceed to read from the client until we get EOF, or until
  * MAX_SECS_TO_LINGER has passed.  the reasons for doing this are
  * documented in a draft:
@@ -134,13 +132,29 @@ static void sock_enable_linger(int s)
  * all the response data has been sent to the client.
  */
 
-static void lingering_close(conn_rec *c)
+void ap_lingering_close(conn_rec *c)
 {
     char dummybuf[512];
     ap_time_t start;
     ap_ssize_t nbytes;
     ap_status_t rc;
     int timeout;
+
+#ifdef NO_LINGCLOSE
+    ap_bclose(c->client);	/* just close it */
+    return;
+#endif
+
+    /* Close the connection, being careful to send out whatever is still
+     * in our buffers.  If possible, try to avoid a hard close until the
+     * client has ACKed our FIN and/or has stopped sending us data.
+     */
+
+    if (c->aborted || !(c->client)) {
+	ap_bsetflag(c->client, B_EOUT, 1);
+	ap_bclose(c->client);
+        return;
+    }
 
     /* Send any leftover data to the client, but never try to again */
 
@@ -182,8 +196,6 @@ static void lingering_close(conn_rec *c)
     ap_bclose(c->client);
 }
 
-#endif /* ndef NO_LINGCLOSE */
-
 CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 {
     ap_update_vhost_given_ip(c);
@@ -192,26 +204,6 @@ CORE_EXPORT(void) ap_process_connection(conn_rec *c)
 
     ap_run_process_connection(c);
 
-    /*
-     * Close the connection, being careful to send out whatever is still
-     * in our buffers.  If possible, try to avoid a hard close until the
-     * client has ACKed our FIN and/or has stopped sending us data.
-     */
-
-#ifdef NO_LINGCLOSE
-    ap_bclose(c->client);	/* just close it */
-#else
-    if (!c->aborted
-	&& c->client
-	/* && (c->client->fd >= 0) */ ) {
-
-	lingering_close(c);
-    }
-    else {
-	ap_bsetflag(c->client, B_EOUT, 1);
-	ap_bclose(c->client);
-    }
-#endif
 }
 
 int ap_process_http_connection(conn_rec *c)

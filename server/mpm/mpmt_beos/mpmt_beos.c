@@ -512,6 +512,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, in
                                          conn_id);
 
     ap_process_connection(current_conn);
+    ap_lingering_close(current_conn);
 }
 
 static int32 worker_thread(void * dummy)

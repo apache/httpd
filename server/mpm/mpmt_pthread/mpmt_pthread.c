@@ -634,6 +634,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, int my_child_num, in
                                          conn_id);
 
     ap_process_connection(current_conn);
+    ap_lingering_close(current_conn);
 }
 /* Sets workers_may_exit if we received a character on the pipe_of_death */
 static void check_pipe_of_death(void)

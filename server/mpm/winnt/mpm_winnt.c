@@ -1062,6 +1062,7 @@ static void worker_main(int child_num)
                                          child_num);
 
         ap_process_connection(current_conn);
+        ap_lingering_close(current_conn);
     }
 
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, server_conf,

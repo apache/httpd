@@ -632,6 +632,7 @@ static void process_socket(ap_pool_t *p, ap_socket_t *sock, long conn_id)
                                          conn_id);
 
     ap_process_connection(current_conn);
+    ap_lingering_close(current_conn);
 }
 
 static void *worker_thread(void *);
