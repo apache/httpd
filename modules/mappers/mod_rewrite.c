@@ -3181,7 +3181,7 @@ static void rewritelog(request_rec *r, int level, const char *text, ...)
         ruser = "\"\"";
     }
 
-    rhost = ap_get_remote_host(conn, r->server->module_config, 
+    rhost = ap_get_remote_host(conn, r->per_dir_config, 
                                REMOTE_NOLOOKUP, NULL);
     if (rhost == NULL) {
         rhost = "UNKNOWN-HOST";
