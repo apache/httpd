@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/05 02:34:27 $]
+Last modified at [$Date: 2003/11/06 21:00:08 $]
 
 Release:
 
@@ -321,6 +321,15 @@ PATCHES TO BACKPORT FROM 2.1
     * os/unix/unixd.c portability issue (ushort vs. unsigned short)
         os/unix/unixd.c: r1.61
       +1: trawick
+
+    * LDAP cache fixes from Matthieu Estrade; see PR 18756
+        include/util_ldap.h r1.12
+        modules/experimental/util_ldap.c r1.15
+        modules/experimental/util_ldap_cache.c r1.9
+        modules/experimental/util_ldap_cache.h r1.7
+        modules/experimental/util_ldap_cache_mgr.c r1.6
+      +1: trawick (this stuff can sure use more eyes, but some users 
+        have already tested the patch successfully)
 
 CURRENT RELEASE NOTES:
 
