@@ -2005,6 +2005,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
     char *token;
     register struct names *p;
     int small_nbytes;
+    char *strtok_state;
 
     /* these are easy, do them first */
 
@@ -2033,13 +2034,12 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
     /* look for tokens from names.h - this is expensive!, so we'll limit
      * ourselves to only SMALL_HOWMANY bytes */
     small_nbytes = (nbytes > SMALL_HOWMANY) ? SMALL_HOWMANY : nbytes;
-    /* make a copy of the buffer here because strtok() will destroy it */
+    /* make a copy of the buffer here because apr_strtok() will destroy it */
     s = (unsigned char *) memcpy(nbuf, buf, small_nbytes);
     s[small_nbytes] = '\0';
     has_escapes = (memchr(s, '\033', small_nbytes) != NULL);
-    /* XXX: not multithread safe */
-    while ((token = strtok((char *) s, " \t\n\r\f")) != NULL) {
-	s = NULL;		/* make strtok() keep on tokin' */
+    while ((token = apr_strtok((char *) s, " \t\n\r\f", &strtok_state)) != NULL) {
+	s = NULL;		/* make apr_strtok() keep on tokin' */
 	for (p = names; p < names + NNAMES; p++) {
 	    if (STREQ(p->name, token)) {
 		magic_rsl_puts(r, types[p->type]);
