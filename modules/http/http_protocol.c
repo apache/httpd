@@ -1223,23 +1223,9 @@ static int read_request_line(request_rec *r)
      * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
      * have to block during a read.
      */
-#if 0
-    /* XXX: I am 99% sure that these are already taken care of, but I want to
-     * really investigate them still.  Removing them from the code doesn't
-     * hurt however, because nothing is using BUFF anymore.
-     */
-    ap_bsetflag(conn->client, B_SAFEREAD, 1); 
-    ap_bflush(conn->client);
-#endif
+
     while ((len = ap_getline(l, sizeof(l), r, 0)) <= 0) {
         if (len < 0) {             /* includes EOF */
-#if 0
-    /* XXX: I am 99% sure that these are already taken care of, but I want to
-     * really investigate them still.  Removing them from the code doesn't
-     * hurt however, because nothing is using BUFF anymore.
-     */
-	    ap_bsetflag(conn->client, B_SAFEREAD, 0);
-#endif
 	    /* this is a hack to make sure that request time is set,
 	     * it's not perfect, but it's better than nothing 
 	     */
@@ -1260,17 +1246,10 @@ static int read_request_line(request_rec *r)
 #endif
     */
 
-#if 0
-    /* XXX: I am 99% sure that these are already taken care of, but I want to
-     * really investigate them still.  Removing them from the code doesn't
-     * hurt however, because nothing is using BUFF anymore.
-     */
-    ap_bsetflag(conn->client, B_SAFEREAD, 0);
-#endif
-
     r->request_time = apr_time_now();
     r->the_request = apr_pstrdup(r->pool, l);
     r->method = ap_getword_white(r->pool, &ll);
+
 #if 0
 /* XXX If we want to keep track of the Method, the protocol module should do
  * it.  That support isn't in the scoreboard yet.  Hopefully next week 
