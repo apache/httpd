@@ -31,3 +31,39 @@ end
 document dump_string_array
     Print all of the elements in an array of strings.
 end
+
+define dump_bucket
+    set $bucket = $arg0
+    printf "bucket=%s(0x%lx), length=%ld, data=0x%lx\n", \
+            $bucket->type->name, \
+            (unsigned long)$bucket, (long)$bucket->length, \
+            (unsigned long)$bucket->data
+end
+document dump_bucket
+    Print bucket info
+end
+
+define dump_brigade
+    set $bb = $arg0
+    set $bucket = ((&((ap_bucket_brigade *)$bb)->list))->next
+    set $sentinel = ((char *)((&(((ap_bucket_brigade *)$bb)->list)) \
+                               - ((size_t) &((struct ap_bucket *)0)->link)))
+    set $i = 0
+
+    printf "dump of brigade 0x%lx\n", (unsigned long)$bb
+    if $bucket == $sentinel
+        printf "brigade is empty\n"
+    end
+
+    while $bucket != $sentinel
+        printf "   %d: bucket=%s(0x%lx), length=%ld, data=0x%lx\n", \
+                $i, $bucket->type->name, \
+                (unsigned long)$bucket, (long)$bucket->length, \
+                (unsigned long)$bucket->data
+        set $i = $i + 1
+        set $bucket = $bucket->link.next
+    end
+end
+document dump_brigade
+    Print bucket brigade info
+end
