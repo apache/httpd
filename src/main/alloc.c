@@ -2858,11 +2858,14 @@ static void free_proc_chain(struct process_chain *procs)
     for (p = procs; p; p = p->next) {
 	if ((p->kill_how == kill_after_timeout)
 	    || (p->kill_how == kill_only_once)) {
-	    /* Subprocess may be dead already.  Only need the timeout if not. */
-	    if ( (ap_os_kill(p->pid, SIGTERM) == -1) && (errno == ESRCH) )
-	        p->kill_how = kill_never;
-	    else
-	        need_timeout = 1;
+	    /*
+	     * This is totally bogus, but seems to be the
+	     * only portable (as in reliable) way to accomplish
+	     * this. Note that this implies an unavoidable
+	     * delay.
+	     */
+	    ap_os_kill(p->pid, SIGTERM);
+	    need_timeout = 1;
 	}
 	else if (p->kill_how == kill_always) {
 	    kill(p->pid, SIGKILL);
