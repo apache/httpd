@@ -1046,7 +1046,7 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
 
     apr_allocator_create(&allocator);
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
-    apr_allocator_set_owner(allocator, ptrans);
+    apr_allocator_owner_set(allocator, ptrans);
 
     /* XXX: What happens if this is allocated from the
      * single-thread-optimized ptrans pool? -aaron */

@@ -538,7 +538,7 @@ static void child_main(int child_num_arg)
      */
     apr_allocator_create(&allocator);
     apr_pool_create_ex(&pchild, pconf, NULL, allocator);
-    apr_allocator_set_owner(allocator, pchild);
+    apr_allocator_owner_set(allocator, pchild);
 
     apr_pool_create(&ptrans, pchild);
     apr_pool_tag(ptrans, "transaction");

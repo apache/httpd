@@ -822,7 +822,7 @@ static void *worker_thread(apr_thread_t *thd, void * dummy)
 
     apr_allocator_create(&allocator);
     apr_pool_create_ex(&ptrans, NULL, NULL, allocator);
-    apr_allocator_set_owner(allocator, ptrans);
+    apr_allocator_owner_set(allocator, ptrans);
     bucket_alloc = apr_bucket_alloc_create(tpool);
 
     apr_poll_setup(&pollset, num_listensocks, tpool);
