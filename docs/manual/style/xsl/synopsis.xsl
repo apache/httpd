@@ -506,7 +506,7 @@
               </a>
             </th>
             <td>
-              <xsl:value-of select="compatibility"/>
+              <xsl:apply-templates select="compatibility"/>
             </td>
           </tr>
           </xsl:if>
