@@ -68,7 +68,7 @@ end
 define dump_bucket_ex
     # arg0 == bucket
     # arg1 == suppress header?
-    set $bucket = (apr_bucket *)$arg0
+    set $bucket = (struct apr_bucket *)$arg0
     set $sh = $arg1
     set $refcount = -1
 
@@ -202,7 +202,7 @@ define dump_brigade
     set $bb = (apr_bucket_brigade *)$arg0
     set $bucket = $bb->list.next
     set $sentinel = ((char *)((&($bb->list)) \
-                               - ((size_t) &((apr_bucket *)0)->link)))
+                               - ((size_t) &((struct apr_bucket *)0)->link)))
     printf "dump of brigade 0x%lx\n", (unsigned long)$bb
 
     printf "   | type     (address)    | length | "
