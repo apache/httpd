@@ -859,20 +859,22 @@ Name|Date|Size|Description</syntax>
     order.</p>
 </usage>
 </directivesynopsis>
+
 <directivesynopsis>
 <name>IndexStyleSheet</name>
-<description>Adds a CSS stylesheet to autoindexes output</description>
-<syntax>IndexStyleSheet<var>URI</var> </syntax>
+<description>Adds a CSS stylesheet to the directory index</description>
+<syntax>IndexStyleSheet <var>url-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
 
 <usage>
-    <p>The <directive>IndexStyleSheet</directive> directive adds a stylesheet
-    to the output of mod_authindex
+    <p>The <directive>IndexStyleSheet</directive> directive sets the name of
+    the file that will be used as the CSS for the index listing.
     </p>
     <example>
+      <title>Example</title>
       IndexStyleSheet "/css/style.css"
     </example>
 </usage>
