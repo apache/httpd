@@ -162,6 +162,9 @@ static int error_log_child(void *cmd, child_info *pinfo)
      * be common for other foo-loggers to want this sort of thing...
      */
     int child_pid = 0;
+#if defined(WIN32)
+    char *shellcmd;
+#endif
 
     ap_cleanup_for_exec();
 #ifdef SIGHUP
@@ -172,7 +175,10 @@ static int error_log_child(void *cmd, child_info *pinfo)
     child_pid = spawnlp(P_NOWAIT, SHELL_PATH, (char *)cmd);
     return(child_pid);
 #elif defined(WIN32)
-    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    shellcmd = getenv("COMSPEC");
+    if (!shellcmd)
+        shellcmd = SHELL_PATH;
+    child_pid = spawnl(_P_NOWAIT, shellcmd, shellcmd, "/c", (char *)cmd, NULL);
     return(child_pid);
 #elif defined(OS2)
     /* For OS/2 we need to use a '/' and spawn the child rather than exec as
@@ -735,6 +741,9 @@ static int piped_log_child(void *cmd, child_info *pinfo)
      * be common for other foo-loggers to want this sort of thing...
      */
     int child_pid = 1;
+#if defined(WIN32)
+    char *shellcmd;
+#endif
 
     ap_cleanup_for_exec();
 #ifdef SIGHUP
@@ -744,7 +753,10 @@ static int piped_log_child(void *cmd, child_info *pinfo)
     child_pid = spawnlp(P_NOWAIT, SHELL_PATH, (char *)cmd);
     return(child_pid);
 #elif defined(WIN32)
-    child_pid = spawnl(_P_NOWAIT, SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+    shellcmd = getenv("COMSPEC");
+    if (!shellcmd)
+        shellcmd = SHELL_PATH;
+    child_pid = spawnl(_P_NOWAIT, shellcmd, shellcmd, "/c", (char *)cmd, NULL);
     return(child_pid);
 #elif defined(OS2)
     /* For OS/2 we need to use a '/' and spawn the child rather than exec as

@@ -988,21 +988,11 @@ API_EXPORT(int) ap_call_exec(request_rec *r, child_info *pinfo, char *argv0,
                 pCommand = ap_pstrcat(r->pool, quoted_filename, " ", arguments, NULL);
             }
 
-         } else {
-
-            char *shell_cmd = "CMD.EXE /C ";
-            OSVERSIONINFO osver;
-            osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-         
-            /*
-             * Use CMD.EXE for NT, COMMAND.COM for WIN95
-             */
-            if (GetVersionEx(&osver)) {
-                if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT) {
-                    shell_cmd = "COMMAND.COM /C ";
-                }
-            }       
-            pCommand = ap_pstrcat(r->pool, shell_cmd, argv0, NULL);
+        } else {
+            char *shellcmd = getenv("COMSPEC");
+            if (!shellcmd)
+                shellcmd = SHELL_PATH;
+            pCommand = ap_pstrcat(r->pool, shellcmd, " /C ", argv0, NULL);
         }
 
         /*
