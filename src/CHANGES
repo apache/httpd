@@ -1,5 +1,8 @@
 Changes with Apache 1.3b4
 
+  *) A few cleanups in mod_info to make it thread-safe, and remove an
+     off-by-5 bug that could hammer \0 on the stack. [Dean Gaudet]
+
   *) no2slash() was O(n^2) in the length of the input.  Make it O(n).
      [Dean Gaudet]
 

@@ -119,27 +119,27 @@ static void *merge_info_config(pool *p, void *basev, void *overridesv)
     return new;
 }
 
-static char *mod_info_html_cmd_string(char *string)
+static char *mod_info_html_cmd_string(const char *string, char *buf, size_t buf_len)
 {
-    char *s, *t;
-    static char ret[256];       /* What is the max size of a command? */
-    char *end_ret;
+    const char *s;
+    char *t;
+    char *end_buf;
 
-    ret[0] = '\0';
     s = string;
-    t = ret;
-    end_ret = t + sizeof(ret);
-    while ((*s) && ((t - ret) < sizeof(ret))) {
+    t = buf;
+    /* keep space for \0 byte */
+    end_buf = buf + buf_len - 1;
+    while ((*s) && (t < end_buf)) {
         if (*s == '<') {
-            strncpy(t, "&lt;", end_ret - t);
+            strncpy(t, "&lt;", end_buf - t);
             t += 4;
         }
         else if (*s == '>') {
-            strncpy(t, "&gt;", end_ret - t);
+            strncpy(t, "&gt;", end_buf - t);
             t += 4;
         }
         else if (*s == '&') {
-            strncpy(t, "&amp;", end_ret - t);
+            strncpy(t, "&amp;", end_buf - t);
             t += 5;
         }
         else {
@@ -147,25 +147,33 @@ static char *mod_info_html_cmd_string(char *string)
         }
         s++;
     }
-    *t = '\0';
-    return (ret);
+    /* oops, overflowed... don't overwrite */
+    if (t > end_buf) {
+	*end_buf = '\0';
+    }
+    else {
+	*t = '\0';
+    }
+    return (buf);
 }
 
-static info_cfg_lines *mod_info_load_config(pool *p, char *filename,
+static info_cfg_lines *mod_info_load_config(pool *p, const char *filename,
                                             request_rec *r)
 {
     char s[MAX_STRING_LEN];
     configfile_t *fp;
-    info_cfg_lines *new, *ret = NULL, *prev = NULL;
-    char *t, *tt, o, *msg;
+    info_cfg_lines *new, *ret, *prev;
+    const char *t;
 
     fp = pcfg_openfile(p, filename);
     if (!fp) {
-        msg = pstrcat(r->pool, "mod_info: couldn't open config file ",
-                      filename, NULL);
-        aplog_error(APLOG_MARK, APLOG_WARNING, r->server, msg);
+        aplog_error(APLOG_MARK, APLOG_WARNING, r->server, 
+		    "mod_info: couldn't open config file %s",
+		    filename);
         return NULL;
     }
+    ret = NULL;
+    prev = NULL;
     while (!cfg_getline(s, MAX_STRING_LEN, fp)) {
         if (*s == '#') {
             continue;           /* skip comments */
@@ -178,25 +186,14 @@ static info_cfg_lines *mod_info_load_config(pool *p, char *filename,
         if (prev) {
             prev->next = new;
         }
-        t = strchr(s, ' ');
-        tt = strchr(s, '\t');
-        if (t && tt) {
-            t = (t < tt) ? t : tt;
-        }
-        else if (tt) {
-            t = tt;
-        }
-        if (t) {
-            o = *t;
-            *t = '\0';
-            new->cmd = pstrdup(p, s);
-            new->line = pstrdup(p, t + 1);
-            *t = o;
-        }
-        else {
-            new->cmd = pstrdup(p, s);
-            new->line = NULL;
-        }
+	t = s;
+	new->cmd = getword_conf(p, &t);
+	if (*t) {
+	    new->line = pstrdup(p, t);
+	}
+	else {
+	    new->line = NULL;
+	}
         prev = new;
     }
     cfg_closefile(fp);
@@ -210,6 +207,7 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
     info_cfg_lines *li = cfg, *li_st = NULL, *li_se = NULL;
     info_cfg_lines *block_start = NULL;
     int lab = 0, nest = 0;
+    char buf[MAX_STRING_LEN];
 
     while (li) {
         if (!strncasecmp(li->cmd, "<directory", 10) ||
@@ -237,10 +235,10 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
                     if (nest == 2) {
                         rputs("&nbsp;&nbsp;", r);
                     }
-                    rputs(mod_info_html_cmd_string(li->cmd), r);
+                    rputs(mod_info_html_cmd_string(li->cmd, buf, sizeof(buf)), r);
                     rputs(" ", r);
                     if (li->line) {
-                        rputs(mod_info_html_cmd_string(li->line), r);
+                        rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
                     }
                     rputs("</tt>\n", r);
                     nest--;
@@ -291,19 +289,19 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
                          strncasecmp(li->cmd, "</directory", 11) &&
                          strncasecmp(li->cmd, "</files", 7))) {
                         rputs("<dd><tt>", r);
-                        rputs(mod_info_html_cmd_string(li_st->cmd), r);
+                        rputs(mod_info_html_cmd_string(li_st->cmd, buf, sizeof(buf)), r);
                         rputs(" ", r);
                         if (li_st->line) {
-                            rputs(mod_info_html_cmd_string(li_st->line), r);
+                            rputs(mod_info_html_cmd_string(li_st->line, buf, sizeof(buf)), r);
                         }
                         rputs("</tt>\n", r);
                         block_start = li_st;
                         if (li_se) {
                             rputs("<dd><tt>&nbsp;&nbsp;", r);
-                            rputs(mod_info_html_cmd_string(li_se->cmd), r);
+                            rputs(mod_info_html_cmd_string(li_se->cmd, buf, sizeof(buf)), r);
                             rputs(" ", r);
                             if (li_se->line) {
-                                rputs(mod_info_html_cmd_string(li_se->line), r);
+                                rputs(mod_info_html_cmd_string(li_se->line, buf, sizeof(buf)), r);
                             }
                             rputs("</tt>\n", r);
                             block_start = li_se;
@@ -316,10 +314,10 @@ static void mod_info_module_cmds(request_rec *r, info_cfg_lines *cfg,
                     if (nest == 2) {
                         rputs("&nbsp;&nbsp;", r);
                     }
-                    rputs(mod_info_html_cmd_string(li->cmd), r);
+                    rputs(mod_info_html_cmd_string(li->cmd, buf, sizeof(buf)), r);
                     if (li->line) {
                         rputs(" <i>", r);
-                        rputs(mod_info_html_cmd_string(li->line), r);
+                        rputs(mod_info_html_cmd_string(li->line, buf, sizeof(buf)), r);
                         rputs("</i></tt>", r);
                     }
                 }
@@ -354,7 +352,7 @@ static char *find_more_info(server_rec *s, const char *module_name)
 static int display_info(request_rec *r)
 {
     module *modp = NULL;
-    char buf[512], *cfname;
+    char buf[MAX_STRING_LEN], *cfname;
     char *more_info;
     command_rec *cmd = NULL;
     handler_rec *hand = NULL;
@@ -383,9 +381,7 @@ static int display_info(request_rec *r)
         if (!r->args) {
             rputs("<tt><a href=\"#server\">Server Settings</a>, ", r);
             for (modp = top_module; modp; modp = modp->next) {
-                ap_snprintf(buf, sizeof(buf),
-                          "<a href=\"#%s\">%s</a>", modp->name, modp->name);
-                rputs(buf, r);
+                rprintf(r, "<a href=\"#%s\">%s</a>", modp->name, modp->name);
                 if (modp->next) {
                     rputs(", ", r);
                 }
@@ -394,102 +390,68 @@ static int display_info(request_rec *r)
 
         }
         if (!r->args || !strcasecmp(r->args, "server")) {
-            ap_snprintf(buf, sizeof(buf),
-                      "<a name=\"server\"><strong>Server Version:</strong> "
+            rprintf(r, "<a name=\"server\"><strong>Server Version:</strong> "
                         "<font size=+1><tt>%s</tt></a></font><br>\n",
                         SERVER_VERSION);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Server Built:</strong> "
+            rprintf(r, "<strong>Server Built:</strong> "
                         "<font size=+1><tt>%s</tt></a></font><br>\n",
                         SERVER_BUILT);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>API Version:</strong> "
+            rprintf(r, "<strong>API Version:</strong> "
                         "<tt>%d</tt><br>\n",
                         MODULE_MAGIC_NUMBER);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Run Mode:</strong> <tt>%s</tt><br>\n",
+            rprintf(r, "<strong>Run Mode:</strong> <tt>%s</tt><br>\n",
                         (standalone ? "standalone" : "inetd"));
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>User/Group:</strong> "
+            rprintf(r, "<strong>User/Group:</strong> "
                         "<tt>%s(%d)/%d</tt><br>\n",
                         user_name, (int) user_id, (int) group_id);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Hostname/port:</strong> "
+            rprintf(r, "<strong>Hostname/port:</strong> "
                         "<tt>%s:%u</tt><br>\n",
                         serv->server_hostname, serv->port);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Daemons:</strong> "
+            rprintf(r, "<strong>Daemons:</strong> "
                         "<tt>start: %d &nbsp;&nbsp; "
                         "min idle: %d &nbsp;&nbsp; "
                         "max idle: %d &nbsp;&nbsp; "
                         "max: %d</tt><br>\n",
                         daemons_to_start, daemons_min_free,
                         daemons_max_free, daemons_limit);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Max Requests:</strong> "
+            rprintf(r, "<strong>Max Requests:</strong> "
                         "<tt>per child: %d &nbsp;&nbsp; "
                         "keep alive: %s &nbsp;&nbsp; "
                         "max per connection: %d</tt><br>\n",
                         max_requests_per_child,
                         (serv->keep_alive ? "on" : "off"),
                         serv->keep_alive_max);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Threads:</strong> "
+            rprintf(r, "<strong>Threads:</strong> "
                         "<tt>per child: %d &nbsp;&nbsp; </tt><br>\n",
                         threads_per_child);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Excess requests:</strong> "
+            rprintf(r, "<strong>Excess requests:</strong> "
                         "<tt>per child: %d &nbsp;&nbsp; </tt><br>\n",
                         excess_requests_per_child);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Timeouts:</strong> "
+            rprintf(r, "<strong>Timeouts:</strong> "
                         "<tt>connection: %d &nbsp;&nbsp; "
                         "keep-alive: %d</tt><br>",
                         serv->timeout, serv->keep_alive_timeout);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Server Root:</strong> "
+            rprintf(r, "<strong>Server Root:</strong> "
                         "<tt>%s</tt><br>\n", server_root);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Config File:</strong> "
+            rprintf(r, "<strong>Config File:</strong> "
                         "<tt>%s</tt><br>\n", server_confname);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>PID File:</strong> "
+            rprintf(r, "<strong>PID File:</strong> "
                         "<tt>%s</tt><br>\n", pid_fname);
-            rputs(buf, r);
-            ap_snprintf(buf, sizeof(buf),
-                        "<strong>Scoreboard File:</strong> "
+            rprintf(r, "<strong>Scoreboard File:</strong> "
                         "<tt>%s</tt><br>\n", scoreboard_fname);
-            rputs(buf, r);
         }
         rputs("<hr><dl>", r);
         for (modp = top_module; modp; modp = modp->next) {
             if (!r->args || !strcasecmp(modp->name, r->args)) {
-                ap_snprintf(buf, sizeof(buf),
-                         "<dt><a name=\"%s\"><strong>Module Name:</strong> "
+                rprintf(r, "<dt><a name=\"%s\"><strong>Module Name:</strong> "
                             "<font size=+1><tt>%s</tt></a></font>\n",
                             modp->name, modp->name);
-                rputs(buf, r);
                 rputs("<dt><strong>Content handlers:</strong>", r);
                 hand = modp->handlers;
                 if (hand) {
                     while (hand) {
                         if (hand->content_type) {
-                            ap_snprintf(buf, sizeof(buf),
-                                      " <tt>%s</tt>\n", hand->content_type);
-                            rputs(buf, r);
+                            rprintf(r, " <tt>%s</tt>\n", hand->content_type);
                         }
                         else {
                             break;
@@ -617,10 +579,9 @@ static int display_info(request_rec *r)
                 if (cmd) {
                     while (cmd) {
                         if (cmd->name) {
-                            ap_snprintf(buf, sizeof(buf),
-                                        "<dd><tt>%s - <i>",
-                                        mod_info_html_cmd_string(cmd->name));
-                            rputs(buf, r);
+                            rprintf(r, "<dd><tt>%s - <i>",
+				    mod_info_html_cmd_string(cmd->name,
+					buf, sizeof(buf)));
                             if (cmd->errmsg) {
                                 rputs(cmd->errmsg, r);
                             }

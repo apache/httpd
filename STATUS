@@ -63,6 +63,7 @@ Committed Code Changes:
     * Jim's [PATCH] ap_cpystrn() function (replace strncpy) Take II
     * Dean's [PATCH] 1.3: "DoS" attack
     * Paul/Ben's [PATCH] 1.3: spaces in NT spawn* arguments
+    * Dean's [PATCH] mod_info minor cleanups (take 2)
 
 Available Patches:
 
@@ -79,10 +80,6 @@ Available Patches:
     * Dean's [PATCH] mod_status cleanups
 	<Pine.LNX.3.95dg3.971220023128.4924E-100000@twinlark.arctic.org>
 	Status: Dean +1, Jim +1
-
-    * Dean's [PATCH] mod_info minor cleanups (take 2)
-	<Pine.LNX.3.95dg3.971218190142.1275B-100000@twinlark.arctic.org>
-	Status: Dean +1, Brian +1
 
     * Martin's [PATCH] 36kB: Make apache compile & run on an EBCDIC mainframe
 	<19971217184646.62136@deejai.mch.sni.de>
