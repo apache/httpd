@@ -204,7 +204,7 @@ apache_need_expat=yes
 
 dnl AP_LIB_DIRS specifies the additional libs from srclib/ that we need
 dnl AP_LIBS specifies the actual libraries. note we have some required libs.
-AP_LIBS="srclib/pcre/libpcre.la srclib/apr-util/libaprutil.la"
+AP_LIBS="srclib/pcre/libpcre.la srclib/apr-util/libaprutil.la $AP_LIBS"
 
 if test "$apache_need_expat" = "yes"; then
   AP_LIB_DIRS="$AP_LIB_DIRS expat-lite"
@@ -256,6 +256,7 @@ RUN_SUBDIR_CONFIG_NOW(srclib/pcre)
 dnl get the exported vars from APRUTIL
 . ./srclib/apr-util/export_vars.sh
 EXTRA_LIBS="$EXTRA_LIBS $APRUTIL_EXPORT_LIBS"
+AP_LIBS="$AP_LIBS $LIBTOOL_LIBS"
 
 APACHE_GEN_CONFIG_VARS
 
