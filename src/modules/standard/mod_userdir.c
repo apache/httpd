@@ -6,7 +6,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -91,11 +91,11 @@
 module userdir_module;
 
 typedef struct userdir_config {
-    int     globally_disabled;
-    char    *userdir;
-    table   *enabled_users;
-    table   *disabled_users;
-} userdir_config;
+    int globally_disabled;
+    char *userdir;
+    table *enabled_users;
+    table *disabled_users;
+}              userdir_config;
 
 /*
  * Server config for this module: global disablement flag, a list of usernames
@@ -103,69 +103,70 @@ typedef struct userdir_config {
  * explicit) disablement, and the replacement string for all others.
  */
 
-static void *create_userdir_config (pool *p, server_rec *s) { 
+static void *create_userdir_config(pool *p, server_rec *s)
+{
     userdir_config
-            *newcfg = (userdir_config *) pcalloc (p, sizeof(userdir_config));
+    * newcfg = (userdir_config *) pcalloc(p, sizeof(userdir_config));
 
     newcfg->globally_disabled = 0;
     newcfg->userdir = DEFAULT_USER_DIR;
-    newcfg->enabled_users = make_table (p, 4);
-    newcfg->disabled_users = make_table (p, 4);
-    return (void *) newcfg; 
+    newcfg->enabled_users = make_table(p, 4);
+    newcfg->disabled_users = make_table(p, 4);
+    return (void *) newcfg;
 }
 
 #define O_DEFAULT 0
 #define O_ENABLE 1
 #define O_DISABLE 2
 
-static const char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
+static const char *set_user_dir(cmd_parms *cmd, void *dummy, char *arg)
 {
     userdir_config
-            *s_cfg = (userdir_config *) get_module_config
-                                            (
-                                                cmd->server->module_config,
-                                                &userdir_module
-                                            ); 
-    char    *username;
+    * s_cfg = (userdir_config *) get_module_config
+    (
+     cmd->server->module_config,
+     &userdir_module
+    );
+    char *username;
     const char
-            *usernames = arg;
-    char    *kw = getword_conf (cmd->pool, &usernames);
-    table   *usertable;
-    int     optype = O_DEFAULT;
+        *usernames = arg;
+    char *kw = getword_conf(cmd->pool, &usernames);
+    table *usertable;
+    int optype = O_DEFAULT;
 
     /*
      * Let's do the comparisons once.
      */
-    if ((! strcasecmp (kw, "disable")) || (! strcasecmp (kw, "disabled"))) {
+    if ((!strcasecmp(kw, "disable")) || (!strcasecmp(kw, "disabled"))) {
         optype = O_DISABLE;
         /*
          * If there are no usernames specified, this is a global disable - we
          * need do no more at this point than record the fact.
          */
-        if (strlen (usernames) == 0) {
+        if (strlen(usernames) == 0) {
             s_cfg->globally_disabled = 1;
             return NULL;
         }
         usertable = s_cfg->disabled_users;
     }
-    else if ((! strcasecmp (kw, "enable")) || (! strcasecmp (kw, "enabled"))) {
+    else if ((!strcasecmp(kw, "enable")) || (!strcasecmp(kw, "enabled"))) {
         /*
          * The "disable" keyword can stand alone or take a list of names, but
          * the "enable" keyword requires the list.  Whinge if it doesn't have
          * it.
          */
-        if (strlen (usernames) == 0) {
+        if (strlen(usernames) == 0) {
             return "UserDir \"enable\" keyword requires a list of usernames";
         }
         optype = O_ENABLE;
         usertable = s_cfg->enabled_users;
     }
     else {
-	/*
-	 * If the first (only?) value isn't one of our keywords, just copy the
-	 * string to the userdir string.
-	 */
-        s_cfg->userdir = pstrdup (cmd->pool, arg);
+        /*
+         * If the first (only?) value isn't one of our keywords, just copy
+         * the string to the userdir string.
+         */
+        s_cfg->userdir = pstrdup(cmd->pool, arg);
         return NULL;
     }
     /*
@@ -173,25 +174,25 @@ static const char *set_user_dir (cmd_parms *cmd, void *dummy, char *arg)
      * the appropriate table.
      */
     while (*usernames) {
-        username = getword_conf (cmd->pool, &usernames);
-        table_set (usertable, username, kw);
+        username = getword_conf(cmd->pool, &usernames);
+        table_set(usertable, username, kw);
     }
     return NULL;
 }
 
 static command_rec userdir_cmds[] = {
-{ "UserDir", set_user_dir, NULL, RSRC_CONF, RAW_ARGS,
-    "the public subdirectory in users' home directories, or 'disabled', or 'disabled username username...', or 'enabled username username...'" },
-{ NULL }
+    {"UserDir", set_user_dir, NULL, RSRC_CONF, RAW_ARGS,
+    "the public subdirectory in users' home directories, or 'disabled', or 'disabled username username...', or 'enabled username username...'"},
+    {NULL}
 };
 
-static int translate_userdir (request_rec *r)
+static int translate_userdir(request_rec *r)
 {
     void *server_conf = r->server->module_config;
     const userdir_config *s_cfg =
-            (userdir_config *) get_module_config (server_conf, &userdir_module);
+    (userdir_config *) get_module_config(server_conf, &userdir_module);
     char *name = r->uri;
-    const char *userdirs = pstrdup (r->pool, s_cfg->userdir);
+    const char *userdirs = pstrdup(r->pool, s_cfg->userdir);
     const char *w, *dname, *redirect;
     char *x = NULL;
     struct stat statbuf;
@@ -204,7 +205,7 @@ static int translate_userdir (request_rec *r)
         (s_cfg->userdir == NULL) ||
         (name[0] != '/') ||
         (name[1] != '~')
-       ) {
+        ) {
         return DECLINED;
     }
 
@@ -212,13 +213,12 @@ static int translate_userdir (request_rec *r)
     w = getword(r->pool, &dname, '/');
 
     /*
-     * The 'dname' funny business involves backing it up to capture
-     * the '/' delimiting the "/~user" part from the rest of the URL,
-     * in case there was one (the case where there wasn't being just
-     * "GET /~user HTTP/1.0", for which we don't want to tack on a
-     * '/' onto the filename).
+     * The 'dname' funny business involves backing it up to capture the '/'
+     * delimiting the "/~user" part from the rest of the URL, in case there
+     * was one (the case where there wasn't being just "GET /~user HTTP/1.0",
+     * for which we don't want to tack on a '/' onto the filename).
      */
-        
+
     if (dname[-1] == '/') {
         --dname;
     }
@@ -226,23 +226,23 @@ static int translate_userdir (request_rec *r)
     /*
      * If there's no username, it's not for us.
      */
-    if (! strcmp(w, "")) {
+    if (!strcmp(w, "")) {
         return DECLINED;
     }
     /*
      * Nor if there's an username but it's in the disabled list.
      */
-    if (table_get (s_cfg->disabled_users, w) != NULL) {
+    if (table_get(s_cfg->disabled_users, w) != NULL) {
         return DECLINED;
     }
     /*
-     * If there's a global interdiction on UserDirs, check to see if this name
-     * is one of the Blessed.
+     * If there's a global interdiction on UserDirs, check to see if this
+     * name is one of the Blessed.
      */
     if (
         s_cfg->globally_disabled &&
-        (table_get (s_cfg->enabled_users, w) == NULL)
-       ) {
+        (table_get(s_cfg->enabled_users, w) == NULL)
+        ) {
         return DECLINED;
     }
 
@@ -251,96 +251,96 @@ static int translate_userdir (request_rec *r)
      */
 
     while (*userdirs) {
-      const char *userdir = getword_conf (r->pool, &userdirs);
-      char *filename = NULL;
+        const char *userdir = getword_conf(r->pool, &userdirs);
+        char *filename = NULL;
 
-      if (strchr(userdir, '*'))
-        x = getword(r->pool, &userdir, '*');
+        if (strchr(userdir, '*'))
+            x = getword(r->pool, &userdir, '*');
 
 #if defined(__EMX__) || defined(WIN32)
-      /* Add support for OS/2 drive letters */
-      if ((userdir[0] == '/') || (userdir[1] == ':') || (userdir[0] == '\0')) {
+        /* Add support for OS/2 drive letters */
+        if ((userdir[0] == '/') || (userdir[1] == ':') || (userdir[0] == '\0')) {
 #else
-      if ((userdir[0] == '/') || (userdir[0] == '\0')) {
+        if ((userdir[0] == '/') || (userdir[0] == '\0')) {
 #endif
-        if (x) {
+            if (x) {
 #ifdef WIN32
-          /*
-           * Crummy hack. Need to figure out whether we have
-           * been redirected to a URL or to a file on some
-           * drive. Since I know of no protocols that are a
-           * single letter, if the : is the second character,
-           * I will assume a file was specified
-           */
-          if (strchr(x+2, ':')) {
+                /*
+                 * Crummy hack. Need to figure out whether we have been
+                 * redirected to a URL or to a file on some drive. Since I
+                 * know of no protocols that are a single letter, if the : is
+                 * the second character, I will assume a file was specified
+                 */
+                if (strchr(x + 2, ':')) {
 #else
-          if (strchr(x, ':')) {
-#endif /* WIN32 */
-            redirect = pstrcat(r->pool, x, w, userdir, dname, NULL);
-            table_set (r->headers_out, "Location", redirect);
+                if (strchr(x, ':')) {
+#endif                          /* WIN32 */
+                    redirect = pstrcat(r->pool, x, w, userdir, dname, NULL);
+                    table_set(r->headers_out, "Location", redirect);
+                    return REDIRECT;
+                }
+                else
+                    filename = pstrcat(r->pool, x, w, userdir, NULL);
+            }
+            else
+                filename = pstrcat(r->pool, userdir, "/", w, NULL);
+        }
+        else if (strchr(userdir, ':')) {
+            redirect = pstrcat(r->pool, userdir, "/", w, dname, NULL);
+            table_set(r->headers_out, "Location", redirect);
             return REDIRECT;
-          }
-          else
-            filename = pstrcat (r->pool, x, w, userdir, NULL);
         }
-        else
-          filename = pstrcat (r->pool, userdir, "/", w, NULL);
-      }
-      else if (strchr(userdir, ':')) {
-        redirect = pstrcat(r->pool, userdir, "/", w, dname, NULL);
-        table_set (r->headers_out, "Location", redirect);
-        return REDIRECT;
-      }
-      else {
+        else {
 #ifdef WIN32
-          /* Need to figure out home dirs on NT */
-          return DECLINED;
-#else /* WIN32 */
-        struct passwd *pw;
-        if ((pw = getpwnam(w))) {
+            /* Need to figure out home dirs on NT */
+            return DECLINED;
+#else                           /* WIN32 */
+            struct passwd *pw;
+            if ((pw = getpwnam(w))) {
 #ifdef __EMX__
-            /* Need to manually add user name for OS/2 */
-            filename = pstrcat (r->pool, pw->pw_dir, w, "/", userdir, NULL);
+                /* Need to manually add user name for OS/2 */
+                filename = pstrcat(r->pool, pw->pw_dir, w, "/", userdir, NULL);
 #else
-            filename = pstrcat (r->pool, pw->pw_dir, "/", userdir, NULL);
+                filename = pstrcat(r->pool, pw->pw_dir, "/", userdir, NULL);
 #endif
+            }
+#endif                          /* WIN32 */
         }
-#endif /* WIN32 */
-      }
 
-      /* Now see if it exists, or we're at the last entry. If we are at the
-       last entry, then use the filename generated (if there is one) anyway,
-       in the hope that some handler might handle it. This can be used, for
-       example, to run a CGI script for the user. 
-       */
-      if (filename && (!*userdirs || stat(filename, &statbuf) != -1)) {
-        r->filename = pstrcat(r->pool, filename, dname, NULL);
-	r->finfo = statbuf;
-        return OK;
-      }
+        /*
+         * Now see if it exists, or we're at the last entry. If we are at the
+         * last entry, then use the filename generated (if there is one)
+         * anyway, in the hope that some handler might handle it. This can be
+         * used, for example, to run a CGI script for the user.
+         */
+        if (filename && (!*userdirs || stat(filename, &statbuf) != -1)) {
+            r->filename = pstrcat(r->pool, filename, dname, NULL);
+            r->finfo = statbuf;
+            return OK;
+        }
     }
 
-  return DECLINED;    
+    return DECLINED;
 }
-    
+
 module userdir_module = {
-   STANDARD_MODULE_STUFF,
-   NULL,                        /* initializer */
-   NULL,                        /* dir config creater */
-   NULL,                        /* dir merger --- default is to override */
-   create_userdir_config,       /* server config */
-   NULL,                        /* merge server config */
-   userdir_cmds,                /* command table */
-   NULL,                        /* handlers */
-   translate_userdir,           /*filename translation */
-   NULL,                        /* check_user_id */
-   NULL,                        /* check auth */
-   NULL,                        /* check access */
-   NULL,                        /* type_checker */
-   NULL,                        /* fixups */
-   NULL,                        /* logger */
-   NULL,                        /* header parser */
-   NULL,			/* child_init */
-   NULL,			/* child_exit */
-   NULL				/* post read-request */
+    STANDARD_MODULE_STUFF,
+    NULL,                       /* initializer */
+    NULL,                       /* dir config creater */
+    NULL,                       /* dir merger --- default is to override */
+    create_userdir_config,      /* server config */
+    NULL,                       /* merge server config */
+    userdir_cmds,               /* command table */
+    NULL,                       /* handlers */
+    translate_userdir,          /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    NULL,                       /* type_checker */
+    NULL,                       /* fixups */
+    NULL,                       /* logger */
+    NULL,                       /* header parser */
+    NULL,                       /* child_init */
+    NULL,                       /* child_exit */
+    NULL                        /* post read-request */
 };

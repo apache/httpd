@@ -6,7 +6,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -72,7 +72,7 @@ typedef struct {
     unsigned int in_addr;
     unsigned int pid;
     unsigned short counter;
-} unique_id_rec;
+}      unique_id_rec;
 
 /* Comments:
  *
@@ -127,129 +127,136 @@ static unsigned global_in_addr;
 
 static APACHE_TLS unique_id_rec cur_unique_id;
 
-static void unique_id_global_init (server_rec *s, pool *p)
+static void unique_id_global_init(server_rec *s, pool *p)
 {
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 256
 #endif
-    char str[MAXHOSTNAMELEN+1];
+    char str[MAXHOSTNAMELEN + 1];
     struct hostent *hent;
 #ifndef NO_GETTIMEOFDAY
     struct timeval tv;
 #endif
 
-    /* First of all, verify some assumptions that have been made about
-     * the contents of unique_id_rec.  We do it this way because it
-     * isn't affected by trailing padding.
+    /*
+     * First of all, verify some assumptions that have been made about the
+     * contents of unique_id_rec.  We do it this way because it isn't
+     * affected by trailing padding.
      */
-    if (XtOffsetOf (unique_id_rec, counter) + sizeof (cur_unique_id.counter)
-	!= 14) {
-	aplog_error(APLOG_MARK, APLOG_ALERT, s,
-		    "mod_unique_id: sorry the size assumptions are wrong "
-		    "in mod_unique_id.c, please remove it from your server "
-		    "or fix the code!");
-	exit (1);
+    if (XtOffsetOf(unique_id_rec, counter) + sizeof(cur_unique_id.counter)
+        != 14) {
+        aplog_error(APLOG_MARK, APLOG_ALERT, s,
+                    "mod_unique_id: sorry the size assumptions are wrong "
+                    "in mod_unique_id.c, please remove it from your server "
+                    "or fix the code!");
+        exit(1);
     }
 
-    /* Now get the global in_addr.  Note that it is not sufficient to use
-     * one of the addresses from the main_server, since those aren't as likely
-     * to be unique as the physical address of the machine
+    /*
+     * Now get the global in_addr.  Note that it is not sufficient to use one
+     * of the addresses from the main_server, since those aren't as likely to
+     * be unique as the physical address of the machine
      */
-    if (gethostname (str, sizeof (str) - 1) != 0) {
-	aplog_error(APLOG_MARK, APLOG_ALERT, s,
-		    "gethostname: mod_unique_id requires the hostname of the server");
-	exit (1);
+    if (gethostname(str, sizeof(str) - 1) != 0) {
+        aplog_error(APLOG_MARK, APLOG_ALERT, s,
+          "gethostname: mod_unique_id requires the hostname of the server");
+        exit(1);
     }
 
-    if ((hent = gethostbyname (str)) == NULL) {
-	aplog_error(APLOG_MARK, APLOG_ALERT, s,
-		    "mod_unique_id: unable to gethostbyname(\"%s\")", str);
-	exit (1);
+    if ((hent = gethostbyname(str)) == NULL) {
+        aplog_error(APLOG_MARK, APLOG_ALERT, s,
+                    "mod_unique_id: unable to gethostbyname(\"%s\")", str);
+        exit(1);
     }
 
-    global_in_addr = ((struct in_addr *)hent->h_addr_list[0])->s_addr;
+    global_in_addr = ((struct in_addr *) hent->h_addr_list[0])->s_addr;
 
     aplog_error(APLOG_MARK, APLOG_INFO, s,
-		"mod_unique_id: using ip addr %s",
-		inet_ntoa (*(struct in_addr *)hent->h_addr_list[0]));
+                "mod_unique_id: using ip addr %s",
+                inet_ntoa(*(struct in_addr *) hent->h_addr_list[0]));
 
-    /* If the server is pummelled with restart requests we could possibly
-     * end up in a situation where we're starting again during the same
-     * second that has been used in previous identifiers.  Avoid that
-     * situation.
-     *
-     * In truth, for this to actually happen not only would it have to
-     * restart in the same second, but it would have to somehow get the
-     * same pids as one of the other servers that was running in that second.
-     * Which would mean a 64k wraparound on pids ... not very likely at
-     * all.
-     *
-     * But protecting against it is relatively cheap.  We just sleep into
-     * the next second.
+    /*
+     * If the server is pummelled with restart requests we could possibly end
+     * up in a situation where we're starting again during the same second
+     * that has been used in previous identifiers.  Avoid that situation.
+     * 
+     * In truth, for this to actually happen not only would it have to restart
+     * in the same second, but it would have to somehow get the same pids as
+     * one of the other servers that was running in that second. Which would
+     * mean a 64k wraparound on pids ... not very likely at all.
+     * 
+     * But protecting against it is relatively cheap.  We just sleep into the
+     * next second.
      */
 #ifdef NO_GETTIMEOFDAY
-    sleep (1);
+    sleep(1);
 #else
-    if (gettimeofday (&tv, NULL) == -1) {
-	sleep (1);
-    } else if (tv.tv_usec) {
-	tv.tv_sec = 0;
-	tv.tv_usec = 1000000 - tv.tv_usec;
-	select (0, NULL, NULL, NULL, &tv);
+    if (gettimeofday(&tv, NULL) == -1) {
+        sleep(1);
+    }
+    else if (tv.tv_usec) {
+        tv.tv_sec = 0;
+        tv.tv_usec = 1000000 - tv.tv_usec;
+        select(0, NULL, NULL, NULL, &tv);
     }
 #endif
 }
 
-static void unique_id_child_init (server_rec *s, pool *p)
+static void unique_id_child_init(server_rec *s, pool *p)
 {
     pid_t pid;
 #ifndef NO_GETTIMEOFDAY
     struct timeval tv;
 #endif
 
-    /* Note that we use the pid because it's possible that on the same
-     * physical machine there are multiple servers (i.e. using Listen).
-     * But it's guaranteed that none of them will share the same pids
-     * between children.
-     *
-     * XXX: for multithread this needs to use a pid/tid combo and probably
-     * XXX: needs to be expanded to 32 bits
+    /*
+     * Note that we use the pid because it's possible that on the same
+     * physical machine there are multiple servers (i.e. using Listen). But
+     * it's guaranteed that none of them will share the same pids between
+     * children.
+     * 
+     * XXX: for multithread this needs to use a pid/tid combo and probably XXX:
+     * needs to be expanded to 32 bits
      */
     pid = getpid();
     cur_unique_id.pid = pid;
 
-    /* Test our assumption that the pid is 16-bits.  But note we can't just
-     * test sizeof (pid_t) because on some machines pid_t is 32-bits but
-     * pids are actually only 16-bits.  It would have been really nice to
-     * test this during global_init ... but oh well.
+    /*
+     * Test our assumption that the pid is 16-bits.  But note we can't just
+     * test sizeof (pid_t) because on some machines pid_t is 32-bits but pids
+     * are actually only 16-bits.  It would have been really nice to test
+     * this during global_init ... but oh well.
      */
     if (cur_unique_id.pid != pid) {
-	aplog_error(APLOG_MARK, APLOG_DEBUG, s,
-		    "oh no! pids are greater than 16-bits!  I'm broken!");
+        aplog_error(APLOG_MARK, APLOG_DEBUG, s,
+                    "oh no! pids are greater than 16-bits!  I'm broken!");
     }
 
     cur_unique_id.in_addr = global_in_addr;
 
-    /* If we use 0 as the initial counter we have a little less protection
-     * against restart problems, and a little less protection against a
-     * clock going backwards in time.
+    /*
+     * If we use 0 as the initial counter we have a little less protection
+     * against restart problems, and a little less protection against a clock
+     * going backwards in time.
      */
 #ifndef NO_GETTIMEOFDAY
-    if (gettimeofday (&tv, NULL) == -1) {
-	cur_unique_id.counter = 0;
-    } else {
-	cur_unique_id.counter = tv.tv_usec;
+    if (gettimeofday(&tv, NULL) == -1) {
+        cur_unique_id.counter = 0;
+    }
+    else {
+        cur_unique_id.counter = tv.tv_usec;
     }
 #else
     cur_unique_id.counter = 0;
 #endif
 
-    /* We must always use network ordering for these bytes, so that identifiers
-     * are comparable between machines of different byte orderings.  Note
-     * in_addr is already in network order.
+    /*
+     * We must always use network ordering for these bytes, so that
+     * identifiers are comparable between machines of different byte
+     * orderings.  Note in_addr is already in network order.
      */
-    cur_unique_id.pid = htons (cur_unique_id.pid);
-    cur_unique_id.counter = htons (cur_unique_id.counter);
+    cur_unique_id.pid = htons(cur_unique_id.pid);
+    cur_unique_id.counter = htons(cur_unique_id.counter);
 }
 
 /* NOTE: This is *NOT* the same encoding used by uuencode ... the last two
@@ -265,17 +272,17 @@ static const char uuencoder[64] = {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', '-',
 };
 
-static int gen_unique_id (request_rec *r)
+static int gen_unique_id(request_rec *r)
 {
     /* when we uuencode it will take 19 bytes plus \0 */
     char str[19 + 1];
     const unsigned char *x;
     unsigned short counter;
 
-    cur_unique_id.stamp = htonl (r->request_time);
+    cur_unique_id.stamp = htonl(r->request_time);
 
     /* do the uuencoding */
-    x = (const unsigned char *)&cur_unique_id;
+    x = (const unsigned char *) &cur_unique_id;
     str[0] = uuencoder[x[0] >> 2];
     str[1] = uuencoder[((x[0] & 0x03) << 4) | ((x[1] & 0xf0) >> 4)];
     str[2] = uuencoder[((x[1] & 0x0f) << 2) | ((x[2] & 0xc0) >> 6)];
@@ -298,37 +305,37 @@ static int gen_unique_id (request_rec *r)
     x += 3;
     str[16] = uuencoder[x[0] >> 2];
     str[17] = uuencoder[((x[0] & 0x03) << 4) | ((x[1] & 0xf0) >> 4)];
-    str[18] = uuencoder[((x[1] & 0x0f) << 2) | ((   0 & 0xc0) >> 6)];
+    str[18] = uuencoder[((x[1] & 0x0f) << 2) | ((0 & 0xc0) >> 6)];
     str[19] = '\0';
 
-    table_set (r->subprocess_env, "UNIQUE_ID", str);
+    table_set(r->subprocess_env, "UNIQUE_ID", str);
 
     /* and increment the identifier for the next call */
-    counter = ntohs (cur_unique_id.counter) + 1;
-    cur_unique_id.counter = htons (counter);
+    counter = ntohs(cur_unique_id.counter) + 1;
+    cur_unique_id.counter = htons(counter);
 
     return DECLINED;
 }
 
 
 module MODULE_VAR_EXPORT unique_id_module = {
-   STANDARD_MODULE_STUFF,
-   unique_id_global_init,	/* initializer */
-   NULL,			/* dir config creater */
-   NULL,			/* dir merger --- default is to override */
-   NULL,			/* server config */
-   NULL,			/* merge server configs */
-   NULL,			/* command table */
-   NULL,			/* handlers */
-   NULL,			/* filename translation */
-   NULL,			/* check_user_id */
-   NULL,			/* check auth */
-   NULL,			/* check access */
-   NULL,			/* type_checker */
-   NULL,			/* fixups */
-   NULL,			/* logger */
-   NULL,			/* header parser */
-   unique_id_child_init,	/* child_init */
-   NULL,			/* child_exit */
-   gen_unique_id		/* post_read_request */
+    STANDARD_MODULE_STUFF,
+    unique_id_global_init,      /* initializer */
+    NULL,                       /* dir config creater */
+    NULL,                       /* dir merger --- default is to override */
+    NULL,                       /* server config */
+    NULL,                       /* merge server configs */
+    NULL,                       /* command table */
+    NULL,                       /* handlers */
+    NULL,                       /* filename translation */
+    NULL,                       /* check_user_id */
+    NULL,                       /* check auth */
+    NULL,                       /* check access */
+    NULL,                       /* type_checker */
+    NULL,                       /* fixups */
+    NULL,                       /* logger */
+    NULL,                       /* header parser */
+    unique_id_child_init,       /* child_init */
+    NULL,                       /* child_exit */
+    gen_unique_id               /* post_read_request */
 };

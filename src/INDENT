@@ -82,15 +82,15 @@ AND don't forget to run expand on the file after it has been indent'd.
    mod_log_referer.c
    mod_mime.c
    mod_mime.h
-   mod_mime_magic.c		RESERVED by Brian
+   mod_mime_magic.c		DONE by Brian
    mod_negotiation.c		DONE by Ken
    mod_rewrite.c
    mod_rewrite.h
    mod_setenvif.c		DONE by Ken
-   mod_speling.c		RESERVED by Brian
+   mod_speling.c		DONE by Brian
    mod_status.c
-   mod_unique_id.c		RESERVED by Brian
-   mod_userdir.c		RESERVED by Brian
+   mod_unique_id.c		DONE by Brian
+   mod_userdir.c		DONE by Brian
    mod_usertrack.c		DONE by Brian
 
 ./os/unix:
