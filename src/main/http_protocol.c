@@ -348,15 +348,54 @@ int set_last_modified(request_rec *r, time_t mtime)
     return OK;
 }
 
-static char *getline(char *s, int n, BUFF *in)
+/* Get a line of protocol input, including any continuation lines
+ * caused by MIME folding (or broken clients) if fold != 0, and place it
+ * in the buffer s, of size n bytes, without the ending newline.
+ *
+ * Returns -1 on error, or the length of s.
+ *
+ * Note: Because bgets uses 1 char for newline and 1 char for NUL,
+ *       the most we can get is (n - 2) actual characters if it
+ *       was ended by a newline, or (n - 1) characters if the line
+ *       length exceeded (n - 1).  So, if the result == (n - 1),
+ *       then the actual input line exceeded the buffer length,
+ *       and it would be a good idea for the caller to puke 400 or 414.
+ */
+static int getline(char *s, int n, BUFF *in, int fold)
 {
-    int retval = bgets (s, n, in);
+    char *pos, next;
+    int retval;
+    int total = 0;
 
-    if (retval == -1) return NULL;
+    pos = s;
 
-    if (retval > 0 && s[retval-1] == '\n') s[retval-1] = '\0';
+    do {
+        retval = bgets(pos, n, in);    /* retval == -1 if error, 0 if EOF */
 
-    return s;
+        if (retval <= 0)
+            return ((retval < 0) && (total == 0)) ? -1 : total;
+
+        /* retval is the number of characters read, not including NUL     */
+
+        n     -= retval;      /* Keep track of how much of s is full      */
+        pos   += (retval-1);  /*               and where s ends           */
+        total += retval;      /*               and how long s has become  */
+
+        if (*pos == '\n') {   /* Did we get a full line of input?         */
+            *pos = '\0';
+            --total; ++n;
+        }
+        else return total;    /* if not, input line exceeded buffer size  */
+
+    /* Continue appending if line folding is desired and
+     * the last line was not empty and we have room in the buffer and
+     * the next line begins with a continuation character.
+     */
+    } while (fold && (retval != 1) && (n > 1) &&
+             (blookc(&next, in) == 1) &&
+             ((next == ' ') || (next == '\t')));
+
+    return total;
 }
 
 void parse_uri (request_rec *r, const char *uri)
@@ -459,12 +498,17 @@ int read_request_line (request_rec *r)
     const char *ll = l, *uri;
     conn_rec *conn = r->connection;
     int major = 1, minor = 0;	/* Assume HTTP/1.0 if non-"HTTP" protocol*/
+    int len;
     
-    l[0] = '\0';
-    if(!getline(l, HUGE_STRING_LEN, conn->client))
-        return 0;
-    if(!l[0]) 
-        return 0;
+    /* Read past empty lines until we get a real request line,
+     * a read error, the connection closes (EOF), or we timeout.
+     */
+    while ((len = getline(l, HUGE_STRING_LEN, conn->client, 0)) <= 0) {
+        if ((len < 0) || bgetflag(conn->client, B_EOF))
+            return 0;
+    }
+    if (len == (HUGE_STRING_LEN - 1))
+        return 0;               /* Should be a 414 error status instead */
 
     r->the_request = pstrdup (r->pool, l);
     r->method = getword_white(r->pool, &ll);
@@ -480,49 +524,27 @@ int read_request_line (request_rec *r)
     return 1;
 }
 
-void get_mime_headers(request_rec *r)
+void get_mime_headers (request_rec *r)
 {
-    char w[MAX_STRING_LEN];
-    char *t;
     conn_rec *c = r->connection;
-    int len = 0;
-    char lookahead[2];
+    int len;
+    char *value;
+    char field[MAX_STRING_LEN];
 
-    if (getline(w, MAX_STRING_LEN-1, c->client)) {
-        do {
-	    if(!w[len])
-	        return;
-	    /* w[] contains the _current_ line. Lets read the
-	     * first char of the _next_ line into lookahead[] and see
-	     * if it is a continuation line */
-	    if (!getline(lookahead, 2, c->client) ||
-		*lookahead == '\0' ||
-		(*lookahead != ' ' && *lookahead != '\t')) {
- 	        /* Not a continuation line -- _next_ line is either
-		 * a read error, empty, or doesn't start with SPACE or TAB
-		 * -- so store the _current_ line now */
-		if(!(t = strchr(w,':')))
-		    continue;
-		*t++ = '\0';
-		while(isspace(*t)) ++t;
+    /* Read header lines until we get the empty separator line,
+     * a read error, the connection closes (EOF), or we timeout.
+     * Should we also check for overflow (len == MAX_STRING_LEN-1)?
+     */
+    while ((len = getline(field, MAX_STRING_LEN, c->client, 1)) > 0) {
 
-		table_merge (r->headers_in, w, t);
+        if (!(value = strchr(field,':')))     /* Find the colon separator */
+            continue;                         /*  or should puke 400 here */
 
-		if (!*lookahead) /* did we read an empty line? */
-		    return;
+        *value = '\0';
+        ++value;
+        while (isspace(*value)) ++value;      /* Skip to start of value   */
 
-		/* Put what we read as the start of the new _current_ line */
-		w[0] = '\0';
-	    }
-	    /* To get here, here have got a lookahead character in
-	     * *lookahead, so append it onto the end of w[], then
-	     * read the next line onto the end of that. Move
-	     * len on to point to the first char read from the next
-	     * line of input... we use this at the top of the loop
-	     * to check whether we actually read anything. */
- 	} while (len = strlen(w),
-		 w[len++] = *lookahead,
-		 getline (w+len, MAX_STRING_LEN-1-len, c->client));
+        table_merge(r->headers_in, field, value);
     }
 }
 

@@ -356,6 +356,50 @@ bgets(char *buff, int n, BUFF *fb)
 }
 
 /*
+ * Looks at the stream fb and places the first character into buff
+ * without removing it from the stream buffer.
+ *
+ * Returns 1 on success, zero on end of transmission, or -1 on an error.
+ *
+ */
+int blookc(char *buff, BUFF *fb)
+{
+    int i;
+
+    *buff = '\0';
+    
+    if (!(fb->flags & B_RD)) {   /* Can't do blookc on an unbuffered stream */
+        errno = EINVAL;
+        return -1;
+    }
+    if (fb->flags & B_RDERR) return -1;
+
+    if (fb->incnt == 0) {        /* no characters left in stream buffer */
+        fb->inptr = fb->inbase;
+        if (fb->flags & B_EOF)
+            return 0;
+
+        do {
+            i = read(fb->fd_in, fb->inptr, fb->bufsiz);
+        } while (i == -1 && errno == EINTR);
+
+        if (i == -1) {
+            if (errno != EAGAIN)
+                doerror(fb, B_RD);
+            return -1;
+        }
+        if (i == 0) {
+            fb->flags |= B_EOF;
+            return 0; /* EOF */
+        }
+        else fb->incnt = i;
+    }
+
+    *buff = fb->inptr[0];
+    return 1;
+}
+
+/*
  * Skip data until a linefeed character is read
  * Returns 1 on success, 0 if no LF found, or -1 on error
  */

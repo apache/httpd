@@ -112,6 +112,7 @@ extern void bonerror(BUFF *fb, void (*error)(BUFF *, int, void *),
 /* I/O */
 extern int bread(BUFF *fb, void *buf, int nbyte);
 extern int bgets(char *s, int n, BUFF *fb);
+extern int blookc(char *buff, BUFF *fb);
 extern int bskiplf(BUFF *fb);
 extern int bwrite(BUFF *fb, const void *buf, int nbyte);
 extern int bflush(BUFF *fb);
