@@ -968,7 +968,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
 
             mc->nSessionCacheDataSize = atoi(cp);
 
-            if (mc->nSessionCacheDataSize <= 8192) {
+            if (mc->nSessionCacheDataSize < 8192) {
                 return "SSLSessionCache: Invalid argument: "
                        "size has to be >= 8192 bytes";
             }
@@ -1010,7 +1010,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
 
             mc->nSessionCacheDataSize = atoi(cp);
 
-            if (mc->nSessionCacheDataSize <= 8192) {
+            if (mc->nSessionCacheDataSize < 8192) {
                 return "SSLSessionCache: Invalid argument: "
                        "size has to be >= 8192 bytes";
 
@@ -1024,9 +1024,9 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
 
             }
         }
-	else {
-            return "SSLSessionCache: Invalid argument";
-        }
+    }
+    else {
+        return "SSLSessionCache: Invalid argument";
     }
 
     return NULL;
