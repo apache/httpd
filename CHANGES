@@ -17,13 +17,6 @@ Changes with Apache 2.1.0-dev
   *) mod_ssl: Fix segfaults after renegotiation failure. PR 21370
      [Hartmut Keil <Hartmut.Keil@adnovum.ch>]
 
-  *) ab: Overlong credentials given via command line no longer clobber
-     the buffer. [André Malo]
-
-  *) mod_rewrite: Ignore RewriteRules in .htaccess files if the directory
-     containing the .htaccess file is requested without a trailing slash.
-     PR 20195.  [André Malo]
-
   *) mod_autoindex: If a directory contains a file listed in the
      DirectoryIndex directive, the folder icon is no longer replaced
      by the icon of that file. PR 9587.
@@ -196,6 +189,13 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.48
+
+  *) mod_rewrite: Ignore RewriteRules in .htaccess files if the directory
+     containing the .htaccess file is requested without a trailing slash.
+     PR 20195.  [André Malo]
+
+  *) ab: Overlong credentials given via command line no longer clobber
+     the buffer.  [André Malo]
 
   *) mod_deflate: Don't attempt to hold all of the response until we're
      done.  [Justin Erenkrantz]
