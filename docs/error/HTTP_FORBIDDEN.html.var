@@ -1,0 +1,84 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Zugriff verweigert!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL=//$/" -->
+
+    Der Zugriff auf das angeforderte Verzeichnis ist nicht möglich.
+    Entweder ist kein Index-Dokument vorhanden oder das Verzeichnis
+    ist zugriffsgeschützt.
+
+  <!--#else -->
+
+    Der Zugriff auf das angeforderte Objekt ist nicht möglich.
+    Entweder kann es vom Server nicht gelesen werden oder es
+    ist zugriffsgeschützt.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Access forbidden!" -->
+<!--#include virtual="include/top.html" -->
+<!--#if expr="$REDIRECT_URL=//$/" -->
+
+   You don't have permission to access the requested directory.
+   There is either no index document or the directory is read-protected.
+
+  <!--#else -->
+
+   You don't have permission to access the requested object.
+   It is either read-protected or not readable by the server.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Access forbidden!" -->
+<!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL=//$/" -->
+
+        Usted no tiene permiso para accesar a la direcci&oacute;n
+        solicitada. Existe la posibilidad de que el directorio
+        este protegido contra lectura o que no exista la
+        documentaci&oacute;n requerida.
+
+  <!--#else -->
+
+        Usted no tiene permiso de accesar al objeto solicitado.
+        Existe la posibilidad de que este protegido contra
+        lectura o que no haya podido ser leido por el servidor.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="Acc&egrave;s interdit!" -->
+<!--#include virtual="include/top.html" -->
+<!--#if expr="$REDIRECT_URL=//$/" -->
+Vous n'avez pas le droit d'acc&eacute;der au r&eacute;pertoire
+demand&eacute;. Soit il n'y a pas de document index soit le r&eacute;pertoire
+est prot&eacute;g&eacute;.
+<!--#else -->
+Vous n'avez pas le droit d'acc&eacute;der &agrave; l'objet
+demand&eacute;. Soit celui-ci est prot&eacute;g&eacute;, soit il ne peut
+&ecirc;tre lu par le serveur.
+<!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--

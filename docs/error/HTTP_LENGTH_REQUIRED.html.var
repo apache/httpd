@@ -1,0 +1,37 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Content-Length-Angabe fehlerhaft!" -->
+<!--#include virtual="include/top.html" -->
+
+    Die Anfrage kann nicht beantwortet werden.
+    Bei Verwendung der <!--#echo encoding="none" var="REDIRECT_METHOD"-->-Methode
+    muﬂ ein korrekter <code>Content-Length</code>-Header
+    angegeben werden. 
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Bad Content-Length!" -->
+<!--#include virtual="include/top.html" -->
+
+    A request with the <!--#echo encoding="none" var="REDIRECT_METHOD"-->
+    method requires a valid <code>Content-Length</code> header.
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="Longueur du contenu ill&eacute;gal!" -->
+<!--#include virtual="include/top.html" -->
+
+    Une requ&ecirc;te utilisant la m&eacute;thode <!--#echo encoding="none" var="REDIRECT_METHOD"-->
+    n&eacute;cessite un header valable <code>Content-Length</code> (indiquant la longueur).
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--

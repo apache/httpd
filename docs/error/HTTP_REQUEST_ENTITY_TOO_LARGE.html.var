@@ -1,0 +1,51 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Übergebene Daten zu groß!" -->
+<!--#include virtual="include/top.html" -->
+
+    Die bei der Anfrage übermittelnden Daten sind für
+    die <!--#echo encoding="none" var="REDIRECT_METHOD"-->-Methode nicht erlaubt
+    oder die Datenmenge hat das Maximum überschritten.
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Request entity too large!" -->
+<!--#include virtual="include/top.html" -->
+
+  The <!--#echo encoding="none" var="REDIRECT_METHOD"--> method does not allow the data
+  transmitted, or the data volume exceeds the capacity limit.
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Request entity too large!" -->
+<!--#include virtual="include/top.html" -->
+
+	Los recursos establecidos no permiten peticiones con
+	el <!--#echo encoding="none" var="REDIRECT_METHOD"--> m&eacute;todo 
+	suministrado por su solicitud, o, la cantidad de datos 
+	provistos exceden los l&iacute;mites de capacidad.
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="Volume de la demande trop grand!" -->
+<!--#include virtual="include/top.html" -->
+
+La m&eacute;thode <!--#echo encoding="none" var="REDIRECT_METHOD"--> 
+n'autorise pas le transfert de ces donn&eacute;es ou bien le volume
+des donn&eacute;es exc&egrave;de la limite de capacit&eacute;.
+
+<!--#include virtual="include/bottom.html" -->               
+----------fr--

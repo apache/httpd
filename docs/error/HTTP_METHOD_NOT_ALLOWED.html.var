@@ -1,0 +1,48 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Methode nicht erlaubt!" -->
+<!--#include virtual="include/top.html" -->
+
+    Die <!--#echo encoding="none" var="REDIRECT_METHOD"-->-Methode
+    ist für den angeforderten URL nicht erlaubt.
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Method not allowed!" -->
+<!--#include virtual="include/top.html" -->
+
+    The <!--#echo encoding="none" var="REDIRECT_METHOD"-->
+    method is not allowed for the requested URL.
+    
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Method not allowed!" -->
+<!--#include virtual="include/top.html" -->
+
+	El <!--#echo encoding="none" var="REDIRECT_METHOD"-->
+	m&eacute;todo utilizado por su solicitud no esta 
+	permitido por el URL.
+    
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="M&eacute;thode interdite!" -->
+<!--#include virtual="include/top.html" -->
+
+    La m&eacute;thode <!--#echo encoding="none" var="REDIRECT_METHOD"-->
+    n'est pas utilisable pour l'URL requise.
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--

@@ -1,0 +1,48 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Zeitlimit überschritten!" -->
+<!--#include virtual="include/top.html" -->
+
+    Der Server konnte nicht mehr länger auf die Beendigung
+    der Browseranfrage warten, die Netzwerkverbindung wurde
+    vom Server geschlossen.
+    
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Request time-out!" -->
+<!--#include virtual="include/top.html" -->
+
+   The server closed the network connection because the browser
+   didn't finish the request within the specified time.
+   
+<!--#include virtual="include/bottom.html" --> 
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Request time-out!" -->
+<!--#include virtual="include/top.html" -->
+
+	El servidor ha cerrado la conecci&oacute;n de red 
+	debido a que el buscador no termino la solicitud
+	dentro del tiempo especificado.
+    
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="Pr&eacute;condition n&eacute;gative!" -->
+<!--#include virtual="include/top.html" -->
+
+La pr&eacute;condition pour l'URL requise a &eacute;t&eacute; &eacute;valu&eacute;e n&eacute;gativement.
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--

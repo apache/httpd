@@ -1,0 +1,56 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Zugriff nicht möglich!" -->
+<!--#include virtual="include/top.html" -->
+
+    Der Server ist derzeit nicht in der Lage die Anfrage
+    zu bearbeiten. Entweder ist der Server derzeit überlastet
+    oder wegen Wartungsarbeiten nicht verfügbar.
+    Bitte versuchen Sie es später wieder. 
+    
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Service unavailable!" -->
+<!--#include virtual="include/top.html" -->
+
+    The server is temporarily unable to service your
+    request due to maintenance downtime or capacity
+    problems. Please try again later. 
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Service unavailable!" -->
+<!--#include virtual="include/top.html" -->
+
+	El servidor no puede atender su solicitud por
+	el momento debido a problemas de mantenimiento
+	o de capacidad.
+
+	Le solicitamos que porfavor repita la operaci&oacute;n
+	mas tarde.
+	
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="Service inaccessible!" -->
+<!--#include virtual="include/top.html" -->
+
+    En raison de travaux de maintenance ou de probl&egrave;mes de capacit&eacute;
+    le serveur n'est pas en mesure de r&eacute;pondre &agrave; votre requ&ecirc;te pour l'instant.
+    Veuillez r&eacute;essayer plus tard.
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--

@@ -1,0 +1,100 @@
+Content-language: de
+Content-type: text/html
+Body:----------de--
+<!--#set var="TITLE" value="Objekt nicht mehr verfügbar!" -->
+<!--#include virtual="include/top.html" -->
+
+    Der angeforderte URL existiert auf dem Server nicht mehr
+    und wurde dauerhaft entfernt.
+    Eine Weiterleitungsadresse ist nicht verfügbar.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Bitte informieren Sie den Autor der
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">verweisenden Seite</a>
+    das der Link nicht mehr aktuell ist.
+
+  <!--#else -->
+
+    Falls Sie einem Link von einer anderen Seite gefolgt sind,
+    informieren Sie bitte den Autor der Seite hierüber.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html
+Body:----------en--
+<!--#set var="TITLE" value="Resource is no longer available!" -->
+<!--#include virtual="include/top.html" -->
+
+   The requested URL is no longer available on this server and there is no
+   forwarding address.
+  
+  <!--#if expr="$HTTP_REFERER" -->
+  
+   Please inform the author of the
+   <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">referring
+   page</a> that the link is outdated.
+   
+  <!--#else -->
+  
+   If you followed a link from a foreign page, please contact the
+   author of this page.
+   
+  <!--#endif -->
+  
+<!--#include virtual="include/bottom.html" --> 
+----------en--
+
+Content-language: es
+Content-type: text/html
+Body:----------es--
+<!--#set var="TITLE" value="Resource is no longer available!" -->
+<!--#include virtual="include/top.html" -->
+
+	Los recursos solicitados ya no estan disponibles en
+	este servidor y no existe una direcci&oacute;n alterna.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+	Le solicitamos que comunique al autor de la 
+	<a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">p&aacute;gina 
+	referida</a> que el URL esta fuera de tiempo.
+
+  <!--#else -->
+	
+	Si usted siguio el URL desde una p&aacute;gina externa, 
+	porfavor contacte al autor de esa p&aacute;gina.
+
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------es--
+
+Content-language: fr
+Content-type: text/html
+Body:----------fr--
+<!--#set var="TITLE" value="Cette ressource n'existe plus!" -->
+<!--#include virtual="include/top.html" -->
+
+   L'URL demand&eacute;e n'est plus accessible sur ce serveur et il
+   n'y a pas d'adresse de suite. 
+
+  <!--#if expr="$HTTP_REFERER" --> 
+
+   Nous vous prions d'informer l'auteur de
+   <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">la 
+   page en question</a> que la r&eacute;f&eacute;rence n'est plus actuelle. 
+
+  <!--#else --> 
+
+   Si vous avez suivi une r&eacute;f&eacute;rence issue d'une page autre, 
+   veuillez contacter l'auteur de cette page.
+
+  <!--#endif -->
+<!--#include virtual="include/bottom.html" -->
+----------fr--
