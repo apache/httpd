@@ -77,7 +77,6 @@
 /*
  Todo list
  - Enforce MaxClients somehow
- - Catch thread exceptions & initiate graceful shutdown of child process
 */
 #define CORE_PRIVATE
 #define INCL_NOPMAPI

@@ -340,6 +340,39 @@ void add_worker()
 
 
 
+ULONG APIENTRY thread_exception_handler(EXCEPTIONREPORTRECORD *pReportRec,
+                                        EXCEPTIONREGISTRATIONRECORD *pRegRec,
+                                        CONTEXTRECORD *pContext,
+                                        PVOID p)
+{
+    int c;
+
+    if (pReportRec->fHandlerFlags & EH_NESTED_CALL) {
+        return XCPT_CONTINUE_SEARCH;
+    }
+
+    if (pReportRec->ExceptionNum == XCPT_ACCESS_VIOLATION ||
+        pReportRec->ExceptionNum == XCPT_INTEGER_DIVIDE_BY_ZERO) {
+        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_NOERRNO, 0, ap_server_conf,
+                     "caught exception in worker thread, initiating child shutdown pid=%d", getpid());
+        for (c=0; c<HARD_THREAD_LIMIT; c++) {
+            if (ap_scoreboard_image->servers[child_slot][c].tid == _gettid()) {
+                ap_scoreboard_image->servers[child_slot][c].status = SERVER_DEAD;
+                break;
+            }
+        }
+
+        /* Shut down process ASAP, it could be quite unhealthy & leaking resources */
+        shutdown_pending = 1;
+        ap_scoreboard_image->parent[child_slot].quiescing = 1;
+        DosUnwindException(UNWIND_ALL, 0, 0);
+    }
+  
+    return XCPT_CONTINUE_SEARCH;
+}
+
+
+
 static void worker_main(void *vpArg)
 {
     long conn_id;
@@ -353,6 +386,10 @@ static void worker_main(void *vpArg)
     ULONG len;
     BYTE priority;
     int thread_slot = (int)vpArg;
+    EXCEPTIONREGISTRATIONRECORD reg_rec = { NULL, thread_exception_handler };
+  
+    /* Trap exceptions in this thread so we don't take down the whole process */
+    DosSetExceptionHandler( &reg_rec );
 
     rc = DosOpenQueue(&owner, &workq,
                       apr_psprintf(pchild, "/queues/httpd/work.%d", getpid()));
