@@ -2,11 +2,16 @@ Changes with Apache 1.2b7
 
   *) Fix handling of unsigned ints in ap_snprintf() on some chips such
      as the DEC Alpha which is 64-bit but uses 32-bit ints. 
-     [Dean Gaudet, Ken the Rodent]
+     [Dean Gaudet, Ken Coar]
 
   *) Return a 302 response code to the client when sending a redirect
      due to a missing trailing '/' on a directory instead of a 301; now
      it is cacheable. [Markus Gyger]
+
+  *) Fix condition where, if a bad directive occurs in .htaccess, and
+     sub_request() goes first to this directory, then log_reason() will
+     SIGSEGV because it doesn't have initialized r->per_dir_config.
+     [PR#162 from Petr Lampa, fix by Marc Slemko and Dean Gaudet]
 
   *) Fix handling of lang_index in is_variant_better().  This was
      causing problems which resulted in the server sending the

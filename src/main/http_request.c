@@ -697,6 +697,7 @@ request_rec *sub_req_lookup_file (const char *new_file, const request_rec *r)
     rnew->server = r->server;
     rnew->request_config = create_request_config (rnew->pool);
     rnew->htaccess = r->htaccess; /* copy htaccess cache */
+    rnew->per_dir_config = r->server->lookup_defaults;
     set_sub_req_protocol (rnew, r);
 	
     rnew->uri = "INTERNALLY GENERATED file-relative req";

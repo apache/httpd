@@ -313,9 +313,10 @@ get_remote_host(conn_rec *conn, void *dir_config, int type)
     core_dir_config *dir_conf;
 
 /* If we haven't checked the host name, and we want to */
-    dir_conf = (core_dir_config *)get_module_config(dir_config, &core_module);
+    if (dir_config) 
+	dir_conf = (core_dir_config *)get_module_config(dir_config, &core_module);
 
-   if (type != REMOTE_NOLOOKUP && conn->remote_host == NULL && dir_conf->hostname_lookups)
+   if ((!dir_conf) || (type != REMOTE_NOLOOKUP && conn->remote_host == NULL && dir_conf->hostname_lookups))
     {
 #ifdef STATUS
 	int old_stat = update_child_status(conn->child_num,
