@@ -189,7 +189,7 @@ API_EXPORT(ap_bucket_brigade *) ap_get_saved_data(ap_filter_t *f,
 API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b)
 {
     ap_bucket_brigade *bb = (ap_bucket_brigade *)f->ctx;
-    ap_bucket *dptr = bb->head;
+    ap_bucket *e;
 
     /* If have never stored any data in the filter, then we had better
      * create an empty bucket brigade so that we can concat.
@@ -198,15 +198,9 @@ API_EXPORT(void) ap_save_data_to_filter(ap_filter_t *f, ap_bucket_brigade **b)
         bb = ap_brigade_create(f->r->pool);
     }
     
-    while (dptr) {
-        if (dptr->setaside) {
-            dptr->setaside(dptr);
-        }
+    AP_RING_FOREACH(e, &bb->list, ap_bucket, link) {
+	e->setaside(e);
     }
-
-    /* Apend b to bb.  This means b is now empty, and we can destory it safely. 
-     */
     ap_brigade_catenate(bb, *b);
-    ap_brigade_destroy(*b);
     f->ctx = bb;
 }
