@@ -147,7 +147,7 @@ parts of the server?</a></h3>
 
     <p>The key is to check for various ingredients of the client certficate.
     Usually this means to check the whole or part of the Distinguished
-    Name (DN) of the Subject. For this two methods exists: The <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> based variant and the <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code> variant. The first method is
+    Name (DN) of the Subject. For this two methods exists: The <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> based variant and the <code class="directive"><a href="../mod/mod_ssl.html#sslrequire">SSLRequire</a></code> variant. The first method is
     good when the clients are of totally different type, i.e. when their
     DNs have no common fields (usually the organisation, etc.). In this
     case you've to establish a password database containing <em>all</em>

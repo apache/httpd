@@ -471,7 +471,7 @@
 <h3><a name="dbm" id="dbm">DBM</a></h3>
 
     <p>Several Apache features, including
-    <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code> and <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>'s
+    <code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code> and <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>'s
     DBM <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> use
     simple key/value databases for quick lookups of information.  Apache
     includes SDBM with its source-code, so this database is always

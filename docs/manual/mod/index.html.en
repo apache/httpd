@@ -4,14 +4,14 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      --><title>Module Index - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="module-index"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="page-content"><div id="preamble"><h1>Module Index</h1>
+      --><title>Module Index - Apache HTTP Server</title><link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" /><link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" /><link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link href="../images/favicon.ico" rel="shortcut icon" /></head><body id="module-index"><div id="page-header"><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p><p class="apache">Apache HTTP Server Version 2.0</p><img alt="" src="../images/feather.gif" /></div><div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div><div id="path"><a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.0</a></div><div id="preamble"><h1>Module Index</h1>
     <p>
       Below is a list of all of the modules that come as part of
       the Apache distribution.  See also the complete
       alphabetical list of <a href="directives.html">all Apache
       directives</a>.
     </p>
-  </div><div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#core">Core Features and Multi-Processing Modules</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Other Modules</a></li><li><img alt="" src="../images/down.gif" /> <a href="#obsolete">Obsolete Modules</a></li></ul></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a id="core" name="core">Core Features and Multi-Processing Modules</a></h2><dl><dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a id="core" name="core">Core Features and Multi-Processing Modules</a></h2><dl><dt><a href="core.html">core</a></dt><dd>Core Apache HTTP Server features that are always
 available</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd>A collection of directives that are implemented by
 more than one multi-processing module (MPM)</dd>
@@ -25,25 +25,23 @@ more than one multi-processing module (MPM)</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implements a non-threaded, pre-forking web server</dd>
 <dt><a href="worker.html">worker</a></dt><dd>Multi-Processing Module implementing a hybrid
     multi-threaded multi-process web server</dd>
-</dl></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a id="other" name="other">Other Modules</a></h2><dl><dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
+</dl></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a id="other" name="other">Other Modules</a></h2><dl><dt><a href="mod_access.html">mod_access</a></dt><dd>Provides access control based on client hostname, IP
+address, or other characteristics of the client request.</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
 media type or request method.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
-<dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
+<dt><a href="mod_auth.html">mod_auth</a></dt><dd>User authentication using text files</dd>
+<dt><a href="mod_auth_anon.html">mod_auth_anon</a></dt><dd>Allows "anonymous" user access to authenticated
+areas</dd>
+<dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt><dd>Provides for user authentication using DBM
+    files</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd>
 <dt><a href="mod_auth_ldap.html">mod_auth_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
-<dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
-    areas</dd>
-<dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>User authentication using DBM files</dd>
-<dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>User authentication using text files</dd>
-<dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>Group authorization using plaintext files</dd>
-<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
-address)</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Generates directory indexes,
     automatically, similar to the Unix <code>ls</code> command or the
     Win32 <code>dir</code> shell command</dd>
@@ -114,13 +112,4 @@ identifier for each request</dd>
 </dd>
 <dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
 hosting</dd>
-</dl></div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div><div class="section"><h2><a id="obsolete" name="obsolete">Obsolete Modules</a></h2><dl><dt><a href="obs_mod_access.html">mod_access</a></dt><dd><em>(replaced by <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> since 2.0.44)</em><br />Provides access control based on client hostname, IP
-address, or other characteristics of the client request.</dd>
-<dt><a href="obs_mod_auth.html">mod_auth</a></dt><dd><em>(obsolete since 2.0.44)</em><br />User authentication using text files</dd>
-<dt><a href="obs_mod_auth_anon.html">mod_auth_anon</a></dt><dd><em>(replaced by <code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code> since 2.0.44)</em><br />Allows "anonymous" user access to authenticated
-    areas</dd>
-<dt><a href="obs_mod_auth_dbm.html">mod_auth_dbm</a></dt><dd><em>(obsolete since 2.0.44)</em><br />Provides for user authentication using DBM
-    files</dd>
-<dt><a href="obs_mod_auth_digest.html">mod_auth_digest</a></dt><dd><em>(obsolete since 2.0.44)</em><br />User authentication using MD5
-    Digest Authentication.</dd>
-</dl></div></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
+</dl></div><div id="footer"><p class="apache">Maintained by the <a href="http://httpd.apache.org/docs-project/">Apache HTTP Server Documentation Project</a></p><p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div></body></html>
