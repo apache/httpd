@@ -2,10 +2,6 @@ Changes with Apache 2.1.0-dev
 
   [Remove entries to the current 2.0 section below, when backported]
 
-  *) Add code to buildconf that produces an httpd.spec file from
-     httpd.spec.in, using build/get-version.sh from APR.
-     [Graham Leggett]
-
   *) ssl_toolkit_compat.h and code fixes to build clean on SSLC.
      [William Rowe, Madhusudan Mathihalli]
 
@@ -162,6 +158,10 @@ Changes with Apache 2.1.0-dev
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.46
+
+  *) Add code to buildconf that produces an httpd.spec file from
+     httpd.spec.in, using build/get-version.sh from APR.
+     [Graham Leggett]
 
   *) Fixed a segfault when multiple ProxyBlock directives were used.
      PR: 19023 [Sami Tikka <sami.tikka@f-secure.com>]
