@@ -88,13 +88,11 @@ static struct
 /* statics for atexit processing or shared between threads */
 static BOOL  die_on_logoff = FALSE;
 static DWORD monitor_thread_id = 0;
-static DWORD (WINAPI *RegisterServiceProcess)(DWORD, DWORD);
 static HINSTANCE monitor_hkernel = NULL;
 static DWORD dos_child_procid = 0;
 static HHOOK catch_term_hook = NULL;
 static HWND  console_wnd = NULL;
 static int   is_service = -1;
-
 
 static void WINAPI service_main_fn(DWORD, LPTSTR *);
 static void WINAPI service_ctrl(DWORD ctrlCode);
@@ -193,6 +191,9 @@ static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
             return TRUE;
 
         case CTRL_LOGOFF_EVENT:
+            if (!die_on_logoff)
+                return FALSE;
+
         case CTRL_CLOSE_EVENT:
         case CTRL_SHUTDOWN_EVENT:
             /* for Terminate signals, shut down the server.
@@ -211,135 +212,9 @@ static BOOL CALLBACK ap_control_handler(DWORD ctrl_type)
     return FALSE;
 }
 
-/* This is an experimental feature I'm playing with to intercept the
- * messages to the console process on Win9x.  It does nothing at all
- * so far (isn't even properly hooked yet).
- */
-static LRESULT CALLBACK HookCatchTerm(int nCode, WPARAM wParam, LPARAM lParam)
-{
-    LPMSG msg = (LPMSG) lParam;
-    if (msg->hwnd == console_wnd) {
-        if (msg->message == WM_QUERYENDSESSION 
-         || msg->message == WM_ENDSESSION)
-            DebugBreak();
-            msg->message = WM_NULL;
-    }
-    return CallNextHookEx(catch_term_hook, nCode, wParam, lParam);
-}
-
-/* This is the WndProc procedure for our invisible window.
- * When the user shuts down the system, this window is sent
- * a signal WM_QUERYENDSESSION with lParam == 0 to indicate
- * a system shutdown. We clean up by shutting down Apache and
- * indicate to the system that the message was received and
- * understood (return TRUE).
- * If a user logs off, the window is sent WM_QUERYENDSESSION 
- * as well, but with lParam != 0. We ignore this case.
- */
-LRESULT CALLBACK Service9xWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    if (message == WM_QUERYENDSESSION)
-    {
-        return (!(lParam & ENDSESSION_LOGOFF) || die_on_logoff);
-    }
-    if (message == WM_ENDSESSION)
-    {
-        /* Hmmm... not logging out, must be shutting down */
-        if (dos_child_procid) {
-            if (!(lParam & ENDSESSION_LOGOFF)) {
-                /* Release the winoldap window from the child so that it
-                 * won't interfere with the shutdown
-                 */
-                RegisterServiceProcess(dos_child_procid, 0);
-                dos_child_procid = 0;
-                FreeConsole();
-            }
-        }
-        else if (!(lParam & ENDSESSION_LOGOFF) || die_on_logoff)
-        {
-            /* Tell Apache to shut down gracefully and sleep it off 
-             */
-            ap_start_shutdown();
-   	    Sleep(60000);
-        }
-        return 0;
-    }
-    return (DefWindowProc(hWnd, message, wParam, lParam));
-}
-
-DWORD WINAPI WatchWindow(void *service_name)
-{
-    /* When running as a service under Windows 9x, ConsoleCtrlHandler 
-     * does not respond properly when the user logs off or the system 
-     * is shutdown.  If the WatchWindow thread is created with a NULL
-     * service_name argument, then the ...SystemMonitor window class is
-     * used to create the "Apache" window to watch for logoff and shutdown.
-     * If the service_name is provided, the ...ServiceMonitor window class
-     * is used to create the window named by the service_name argument,
-     * and the logoff message is ignored.
-     */
-    WNDCLASS wc;
-    HWND hwndMain;
-    MSG msg;
-    wc.style         = CS_GLOBALCLASS;
-    wc.lpfnWndProc   = (WNDPROC) Service9xWndProc; 
-    wc.cbClsExtra    = 0;
-    wc.cbWndExtra    = 0; 
-    wc.hInstance     = NULL;
-    wc.hIcon         = NULL;
-    wc.hCursor       = NULL;
-    wc.hbrBackground = NULL;
-    wc.lpszMenuName  = NULL;
-    if (service_name)
-	wc.lpszClassName = "ApacheWin95ServiceMonitor";
-    else if (!dos_child_procid)
-        wc.lpszClassName = "ApacheWin95ConsoleMonitor";
-    else
-	wc.lpszClassName = "ApacheWin95ChildMonitor";
-
-    /* hook window messages - ugly */
-//  if (dos_child_procid)
-//      catch_term_hook = SetWindowsHookEx(WH_GETMESSAGE, 
-//                                         HookCatchTerm, NULL, 0);
-
-    die_on_logoff = service_name ? FALSE : TRUE;
-
-    if (!RegisterClass(&wc)) 
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-                     "Could not register window class for WatchWindow");
-        return 0;
-    }
-
-    /* Create an invisible window */
-    hwndMain = CreateWindow(wc.lpszClassName, 
-			    service_name ? (char *) service_name : "Apache", 
-                            WS_OVERLAPPEDWINDOW & ~WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 
-                            CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, NULL, NULL);
-
-    if (!hwndMain)
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_WIN32ERROR, NULL,
-                     "Could not create WatchWindow");
-        return 0;
-    }
-    
-    while (GetMessage(&msg, NULL, 0, 0)) 
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-
-    /* unhook window messages - ugly */
-//  if (catch_term_hook)
-//      UnhookWindowsHookEx(catch_term_hook);
-
-    return 0;
-}
-
-/* This function only works on Win9x, and only when this process
- * is the active process (e.g. once it is running a child process,
- * it can no longer determine which console window is its own.)
+/* Once we are running a child process in our tty, it can no longer 
+ * determine which console window is our own, since the window
+ * reports that it is owned by the child process.
  */
 static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
 {
@@ -360,27 +235,19 @@ static BOOL CALLBACK EnumttyWindow(HWND wnd, LPARAM retwnd)
     return TRUE;
 }
 
+LRESULT WINAPI RegisterWindows9xService(BOOL is_service);
+BOOL WINAPI FixConsoleCtrlHandler(PHANDLER_ROUTINE phandler, BOOL add);
+BOOL WINAPI Windows9xServiceCtrlHandler(PHANDLER_ROUTINE phandler, BOOL add);
+
 void stop_child_monitor(void)
 {
     if (isWindowsNT()) {
-        SetConsoleCtrlHandler(ap_control_handler, FALSE);
+        /* Nothing to unhook */
         return;
     }
-
-    if (monitor_thread_id)
-        PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
-
-    if (dos_child_procid) {
-        RegisterServiceProcess(dos_child_procid, 0);
-        dos_child_procid = 0;
-    }
-
-    /* When the service quits, remove it from the 
-       system service table */
-    RegisterServiceProcess(0, 0);
-    
-    /* Free the kernel library */
-    FreeLibrary(monitor_hkernel);
+    FixConsoleCtrlHandler(ap_control_handler, FALSE);
+    if (!die_on_logoff)
+        RegisterWindows9xService(FALSE);
 }
 
 /*
@@ -392,9 +259,11 @@ void stop_child_monitor(void)
  */
 void ap_start_child_console(int is_child_of_service)
 {
-    HANDLE thread;
-
-    is_service = 0; /* The child is never exactly a service */
+    /* The child is never exactly a service */
+    is_service = 0;
+    
+    /* Prevent holding open the (hidden) console */
+    real_exit_code = 0;
 
     if (!is_child_of_service)
         die_on_logoff = TRUE;
@@ -426,70 +295,21 @@ void ap_start_child_console(int is_child_of_service)
         return;
     }
 
-    /* Obtain a handle to the kernel library */
-    monitor_hkernel = LoadLibrary("KERNEL32.DLL");
-    if (!monitor_hkernel)
-        return;
-    
-    /* Find the RegisterServiceProcess function */
-    RegisterServiceProcess = (DWORD (WINAPI *)(DWORD, DWORD))
-                   GetProcAddress(monitor_hkernel, "RegisterServiceProcess");
-    if (RegisterServiceProcess == NULL)
-        return;
-	
-    /* Register this process as a service */
-    if (!RegisterServiceProcess(0, 1))
-        return;
-
-    if (!is_child_of_service) {
-        /*
-         * Needs thorough testing, although the idea makes sense;
-         * Console mode Apache/Win9x might benefit from detaching
-         * from the parent console, creating and hiding it's own 
-         * console window.  No noticable difference yet, except
-         * that the flicker (when executing CGIs) does disappear.
-         */
-        FreeConsole();
-        AllocConsole();
-    }
-
-    EnumWindows(EnumttyWindow, (long)(&console_wnd));
-    if (console_wnd && !is_child_of_service)
-    {
-        /*
-         * Hide our newly created child console
-         */
-        ShowWindow(console_wnd, SW_HIDE);
-    }
-    if (console_wnd)
-    {
-        /*
-         * Locate our winoldap process, and tag it as a service process 
-         */
-        HWND console_child = GetWindow(console_wnd, GW_CHILD);
-        GetWindowThreadProcessId(console_child, &dos_child_procid);
-        if (dos_child_procid)
-            if (!RegisterServiceProcess(dos_child_procid, 1))
-                dos_child_procid = 0;
-    }
-
-    /* WatchWindow is NULL - that is - we are not the actual service,
-     * so we are not monitoring these events, nor will we respond to
-     * service requests to our window.
-     */
-    thread = CreateThread(NULL, 0, WatchWindow, NULL, 0, 
-			  &monitor_thread_id);
-    if (thread)
-        CloseHandle(thread);
-
-    atexit(stop_child_monitor);
+    FreeConsole();
+    AllocConsole();
+    while (!console_wnd)
+        EnumWindows(EnumttyWindow, (long)(&console_wnd));
+    ShowWindow(console_wnd, SW_HIDE);
+    if (!die_on_logoff)
+        RegisterWindows9xService(TRUE);    
+    FixConsoleCtrlHandler(ap_control_handler, TRUE);
 }
 
 
 void stop_console_monitor(void)
 {
-    if (!isWindowsNT() && monitor_thread_id)
-	PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
+    if (!isWindowsNT)
+        FixConsoleCtrlHandler(ap_control_handler, FALSE);
 
     /* Remove the control handler at the end of the day. */
     SetConsoleCtrlHandler(ap_control_handler, FALSE);
@@ -525,39 +345,19 @@ void ap_start_console_monitor(void)
                                         | ENABLE_ECHO_INPUT 
                                         | ENABLE_PROCESSED_INPUT);
         }
-        SetConsoleCtrlHandler(ap_control_handler, TRUE);
     }
     
-    /* Under 95/98 create a monitor window to watch for session end,
-     * pass NULL to WatchWindow so we do not appear to be a service.
-     */
-    if (!isWindowsNT()) {
-        HANDLE thread;
-        thread = CreateThread(NULL, 0, WatchWindow, NULL, 0, 
-                              &monitor_thread_id);
-        if (thread)
-            CloseHandle(thread);
-    }
+    SetConsoleCtrlHandler(ap_control_handler, TRUE);
+
+    if (!isWindowsNT())
+        FixConsoleCtrlHandler(ap_control_handler, TRUE);
 
     atexit(stop_console_monitor);
 }
 
 void stop_service_monitor(void)
 {
-    if (monitor_thread_id)
-        PostThreadMessage(monitor_thread_id, WM_QUIT, 0, 0);
-
-    /* When the service quits, remove it from the 
-       system service table */
-    RegisterServiceProcess(0, 0);
-    
-    if (dos_child_procid) {
-        RegisterServiceProcess(dos_child_procid, 0);
-        dos_child_procid = 0;
-    }
-
-    /* Free the kernel library */
-    FreeLibrary(monitor_hkernel);
+    Windows9xServiceCtrlHandler(ap_control_handler, FALSE);
 }
 
 int service95_main(int (*main_fn)(int, char **), int argc, char **argv, 
@@ -565,9 +365,8 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
 {
     /* Windows 95/98 */
     char *service_name;
-    HANDLE thread;
 
-    is_service = 1; /* The child is never exactly a service */
+    is_service = 1;
 
     /* Set up the Win9x server name, as WinNT would */
     ap_server_argv0 = globdat.name = display_name;
@@ -576,39 +375,17 @@ int service95_main(int (*main_fn)(int, char **), int argc, char **argv,
     service_name = strdup(display_name);
     ap_remove_spaces(service_name, display_name);
 
-    /* Obtain a handle to the kernel library */
-    monitor_hkernel = LoadLibrary("KERNEL32.DLL");
-    if (!monitor_hkernel)
-        return -1;
-    
-    /* Find the RegisterServiceProcess function */
-    RegisterServiceProcess = (DWORD (WINAPI *)(DWORD, DWORD))
-                   GetProcAddress(monitor_hkernel, "RegisterServiceProcess");
-    if (RegisterServiceProcess == NULL)
-        return -1;
-	
-    /* Register this process as a service */
-    if (!RegisterServiceProcess(0, 1))
-        return -1;
-
-    /* Prevent holding open the (nonexistant) console */
+    /* Prevent holding open the (hidden) console */
     real_exit_code = 0;
 
-    /* Hide the console of this Apache parent process
-     * (children must have a parent in order to properly execute
-     * 16-bit CGI processes or they will lock.)
-     */
-    FreeConsole();
-
-    thread = CreateThread(NULL, 0, WatchWindow, (LPVOID) service_name, 0, 
-			  &monitor_thread_id);
-    if (thread)
-        CloseHandle(thread);
+    Windows9xServiceCtrlHandler(ap_control_handler, TRUE);
 
     atexit(stop_service_monitor);
     
     /* Run the service */
     globdat.exit_status = main_fn(argc, argv);
+
+    return (globdat.exit_status);
 }
 
 int service_main(int (*main_fn)(int, char **), int argc, char **argv )

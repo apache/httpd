@@ -63,6 +63,7 @@ _build:
 #	echo LONG $(LONG) SHORT $(SHORT) x
 	cd os\win32
 	 $(MAKE) $(MAKEOPT) -f ApacheOS.mak CFG="ApacheOS - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f Win9xConHook.mak CFG="Win9xConHook - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd regex
 	 $(MAKE) $(MAKEOPT) -f regex.mak CFG="regex - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -76,13 +77,13 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f logresolve.mak CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f rotatelogs.mak CFG="rotatelogs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
-	cd lib/expat-lite
+	cd lib\expat-lite
 	 $(MAKE) $(MAKEOPT) -f xmltok.mak CFG="xmltok - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f xmlparse.mak CFG="xmlparse - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ../..
-	cd lib/sdbm
+	cd ..\..
+	cd lib\sdbm
 	 $(MAKE) $(MAKEOPT) -f sdbm.mak CFG="sdbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ../..
+	cd ..\..
 	cd main
 	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -117,6 +118,7 @@ _install:
 	-mkdir $(INSTDIR)\bin
 	copy Apache$(SHORT)\Apache.exe $(INSTDIR)
 	copy Core$(SHORT)\ApacheCore.dll $(INSTDIR)
+	copy os\win32\win9xconhook\$(LONG)\Win9xConHook.dll $(INSTDIR)
 	copy lib\expat-lite\$(LONG)\xmltok.dll $(INSTDIR)
 	copy lib\expat-lite\$(LONG)\xmlparse.dll $(INSTDIR)
 	copy os\win32\ApacheModuleStatus$(SHORT)\ApacheModuleStatus.dll $(INSTDIR)\modules

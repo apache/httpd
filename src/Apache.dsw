@@ -41,6 +41,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name regex
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Win9xConHook
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -323,6 +326,21 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name ApacheModuleAuthDBM
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Win9xConHook
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Win9xConHook"=".\os\win32\win9xconhook\Win9xConHook.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
