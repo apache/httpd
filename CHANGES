@@ -1,5 +1,9 @@
 Changes with Apache 2.0.19-dev
 
+  *) Fix reset_filter().  We need to be careful how we remove filters.
+     If we set r->output_filters to NULL, we also have to reset the
+     connection's filters.  [John Sterling]
+
   *) Optimise reset_filter() in http_protocol.c. [Greg Stein]
 
   *) Add a check to ap_die() to make sure the filter stack is sane and
