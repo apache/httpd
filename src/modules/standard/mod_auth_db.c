@@ -73,6 +73,11 @@
  * On some BSD systems (e.g. FreeBSD and NetBSD) dbm is automatically
  * mapped to Berkeley DB. You can use either mod_auth_dbm or
  * mod_auth_db. The latter makes it more obvious that it's Berkeley.
+ * On other platforms where you want to use the DB library you
+ * usually have to install it first. See http://www.sleepycat.com/
+ * for the distribution. The interface this module uses is the
+ * one from DB version 1.85 and 1.86, but DB version 2.x
+ * can also be used when compatibility mode is enabled.
  *
  * dirkx - Added Authoritative control to allow passing on to lower  
  *         modules if and only if the user-id is not known to this
