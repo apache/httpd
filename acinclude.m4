@@ -180,8 +180,10 @@ AC_DEFUN(APACHE_ONCE,[
   fi
 ])
 
-sinclude(srclib/apr/apr_common.m4)
-sinclude(srclib/apr/hints.m4)
+sinclude(srclib/apr/build/apr_common.m4)
+sinclude(srclib/apr/build/apr_network.m4)
+sinclude(srclib/apr/build/apr_threads.m4)
+sinclude(srclib/apr/build/apr_hints.m4)
 sinclude(hints.m4)
 
 AC_DEFUN(APACHE_CHECK_SIGWAIT_ONE_ARG,[

@@ -61,7 +61,7 @@
 STAMP = buildmk.stamp
 
 all: $(STAMP) generated_lists
-	@if [ ! -d srclib/apr -o ! -f srclib/apr/apr_common.m4 ]; then \
+	@if [ ! -d srclib/apr -o ! -f srclib/apr/build/apr_common.m4 ]; then \
 	    echo "" ; \
 	    echo "You don't have a srclib/apr/ subdirectory.  Please get one:" ; \
 	    echo "" ; \
