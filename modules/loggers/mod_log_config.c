@@ -209,9 +209,32 @@
 
 module AP_MODULE_DECLARE_DATA log_config_module;
 
+
 static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 static apr_hash_t *log_hash;
+static apr_status_t ap_default_log_writer(apr_pool_t *p,  
+                           void *handle, 
+                           const char **strs,
+                           int *strl,
+                           int nelts,
+                           apr_size_t len);
+static apr_status_t ap_buffered_log_writer(apr_pool_t *p,  
+                           void *handle, 
+                           const char **strs,
+                           int *strl,
+                           int nelts,
+                           apr_size_t len);
+static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s, 
+                                        const char* name);
+static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s, 
+                                        const char* name);
+
+static void ap_log_set_writer_init(ap_log_writer_init *handle);
+static void ap_log_set_writer(ap_log_writer *handle);
+static ap_log_writer *log_writer = ap_default_log_writer;
+static ap_log_writer_init *log_writer_init = ap_default_log_writer_init;
+static buffered_logs = 0; /* default unbuffered */
 
 /* POSIX.1 defines PIPE_BUF as the maximum number of bytes that is
  * guaranteed to be atomic when writing a pipe.  And PIPE_BUF >= 512
@@ -256,20 +279,23 @@ typedef struct {
  * be NULL, which means this module does no logging for this
  * request. format might be NULL, in which case the default_format
  * from the multi_log_state should be used, or if that is NULL as
- * well, use the CLF. log_fd is NULL before the log file is opened and
- * set to a valid fd after it is opened.
+ * well, use the CLF. 
+ * log_writer is NULL before the log file is opened and is
+ * set to a opaque structure (usually a fd) after it is opened.
+ 
  */
+typedef struct {
+    apr_file_t *handle;
+    apr_size_t outcnt;
+    char outbuf[LOG_BUFSIZE];
+} buffered_log;
 
 typedef struct {
     const char *fname;
     const char *format_string;
     apr_array_header_t *format;
-    apr_file_t *log_fd;
+    void *log_writer;
     char *condition_var;
-#ifdef BUFFERED_LOGS
-    apr_size_t outcnt;
-    char outbuf[LOG_BUFSIZE];
-#endif
 } config_log_state;
 
 /*
@@ -799,21 +825,19 @@ static const char *process_item(request_rec *r, request_rec *orig,
     return cp ? cp : "-";
 }
 
-#ifdef BUFFERED_LOGS
-static void flush_log(config_log_state *cls)
+static void flush_log(buffered_log *buf)
 {
-    if (cls->outcnt && cls->log_fd != NULL) {
-        apr_file_write(cls->log_fd, cls->outbuf, &cls->outcnt);
-        cls->outcnt = 0;
+    if (buf->outcnt && buf->handle != NULL) {
+        apr_file_write(buf->handle, buf->outbuf, &buf->outcnt);
+        buf->outcnt = 0;
     }
 }
-#endif
+
 
 static int config_log_transaction(request_rec *r, config_log_state *cls,
                                   apr_array_header_t *default_format)
 {
     log_format_item *items;
-    char *str, *s;
     const char **strs;
     int *strl;
     request_rec *orig;
@@ -821,6 +845,7 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     apr_size_t len = 0;
     apr_array_header_t *format;
     char *envar;
+    apr_status_t rv;
 
     if (cls->fname == NULL) {
         return DECLINED;
@@ -865,40 +890,13 @@ static int config_log_transaction(request_rec *r, config_log_state *cls,
     for (i = 0; i < format->nelts; ++i) {
         len += strl[i] = strlen(strs[i]);
     }
-
-#ifdef BUFFERED_LOGS
-    if (len + cls->outcnt > LOG_BUFSIZE) {
-        flush_log(cls);
+    if (!log_writer) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_EGENERAL, r,
+                "log writer isn't correctly setup");
+         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    if (len >= LOG_BUFSIZE) {
-        apr_size_t w;
-
-        str = apr_palloc(r->pool, len + 1);
-        for (i = 0, s = str; i < format->nelts; ++i) {
-            memcpy(s, strs[i], strl[i]);
-            s += strl[i];
-        }
-        w = len;
-        apr_file_write(cls->log_fd, str, &w);
-    }
-    else {
-        for (i = 0, s = &cls->outbuf[cls->outcnt]; i < format->nelts; ++i) {
-            memcpy(s, strs[i], strl[i]);
-            s += strl[i];
-        }
-        cls->outcnt += len;
-    }
-#else
-    str = apr_palloc(r->pool, len + 1);
-
-    for (i = 0, s = str; i < format->nelts; ++i) {
-        memcpy(s, strs[i], strl[i]);
-        s += strl[i];
-    }
-
-    apr_file_write(cls->log_fd, str, &len);
-#endif
-
+    rv = log_writer(r->pool, cls->log_writer, strs, strl, format->nelts, len);
+    /* xxx: do we return an error on log_writer? */
     return OK;
 }
 
@@ -1031,7 +1029,7 @@ static const char *add_custom_log(cmd_parms *cmd, void *dummy, const char *fn,
     else {
         cls->format = parse_log_string(cmd->pool, fmt, &err_string);
     }
-    cls->log_fd = NULL;
+    cls->log_writer = NULL;
 
     return err_string;
 }
@@ -1047,6 +1045,13 @@ static const char *set_cookie_log(cmd_parms *cmd, void *dummy, const char *fn)
     return add_custom_log(cmd, dummy, fn, "%{Cookie}n \"%r\" %t", NULL);
 }
 
+static const char *set_buffered_logs_on(cmd_parms *parms, void *dummy, int flag)
+{
+    buffered_logs = flag;
+    ap_log_set_writer_init(ap_buffered_log_writer_init);
+    ap_log_set_writer(ap_buffered_log_writer);
+    return NULL;
+}
 static const command_rec config_log_cmds[] =
 {
 AP_INIT_TAKE23("CustomLog", add_custom_log, NULL, RSRC_CONF,
@@ -1058,6 +1063,8 @@ AP_INIT_TAKE12("LogFormat", log_format, NULL, RSRC_CONF,
      "a log format string (see docs) and an optional format name"),
 AP_INIT_TAKE1("CookieLog", set_cookie_log, NULL, RSRC_CONF,
      "the filename of the cookie log"),
+AP_INIT_FLAG("BufferedLogs", set_buffered_logs_on, NULL, RSRC_CONF,
+                 "Enable Buffered Logging (experimental)"),
     {NULL}
 };
 
@@ -1065,7 +1072,6 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
                                          config_log_state *cls,
                                          apr_array_header_t *default_format)
 {
-    apr_status_t status;
     void *data;
     const char *userdata_key = "open_config_log";
 
@@ -1082,41 +1088,17 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
         }
     }
 
-    if (cls->log_fd != NULL) {
+    if (cls->log_writer != NULL) {
         return cls;             /* virtual config shared w/main server */
     }
 
     if (cls->fname == NULL) {
         return cls;             /* Leave it NULL to decline.  */
     }
-
-    if (*cls->fname == '|') {
-        piped_log *pl;
-
-        pl = ap_open_piped_log(p, cls->fname + 1);
-        if (pl == NULL) {
-            exit(1);
-        }
-        cls->log_fd = ap_piped_log_write_fd(pl);
-    }
-    else {
-        const char *fname = ap_server_root_relative(p, cls->fname);
-        if (!fname) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
-                         "invalid transfer log path %s.", cls->fname);
-            exit(1);
-        }
-        if ((status = apr_file_open(&cls->log_fd, fname, xfer_flags,
-                                    xfer_perms, p)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
-                         "could not open transfer log file %s.", fname);
-            exit(1);
-        }
-        apr_file_inherit_set(cls->log_fd);
-    }
-#ifdef BUFFERED_LOGS
-    cls->outcnt = 0;
-#endif
+    
+    cls->log_writer = log_writer_init(p, s, cls->fname);
+    if (cls->log_writer == NULL)
+        exit(1); 
 
     return cls;
 }
@@ -1175,15 +1157,19 @@ static config_log_state *open_multi_logs(server_rec *s, apr_pool_t *p)
     return NULL;
 }
 
-#ifdef BUFFERED_LOGS
+
 static apr_status_t flush_all_logs(void *data)
 {
     server_rec *s = data;
     multi_log_state *mls;
     apr_array_header_t *log_list;
     config_log_state *clsarray;
+    buffered_log *buf;
     int i;
 
+    if (!buffered_logs)
+        return APR_SUCCESS;
+    
     for (; s; s = s->next) {
         mls = ap_get_module_config(s->module_config, &log_config_module);
         log_list = NULL;
@@ -1196,13 +1182,14 @@ static apr_status_t flush_all_logs(void *data)
         if (log_list) {
             clsarray = (config_log_state *) log_list->elts;
             for (i = 0; i < log_list->nelts; ++i) {
-                flush_log(&clsarray[i]);
+                buf = clsarray[i].log_writer;
+                flush_log(buf);
             }
         }
     }
     return APR_SUCCESS;
 }
-#endif
+
 
 static int init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server_rec *s)
 {
@@ -1222,10 +1209,9 @@ static int init_config_log(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt, server
 
 static void init_child(apr_pool_t *p, server_rec *s)
 {
-#ifdef BUFFERED_LOGS
 	/* Now register the last buffer flush with the cleanup engine */
-	apr_pool_cleanup_register(p, s, flush_all_logs, flush_all_logs);
-#endif
+    if (buffered_logs)
+	    apr_pool_cleanup_register(p, s, flush_all_logs, flush_all_logs);
 }
 
 static void ap_register_log_handler(apr_pool_t *p, char *tag, 
@@ -1237,11 +1223,130 @@ static void ap_register_log_handler(apr_pool_t *p, char *tag,
 
     apr_hash_set(log_hash, tag, 1, (const void *)log_struct);
 }
+static void ap_log_set_writer_init(ap_log_writer_init *handle)
+{
+    log_writer_init = handle;
+
+}
+static void ap_log_set_writer(ap_log_writer *handle)
+{
+    log_writer = handle;
+}
+
+static apr_status_t ap_default_log_writer(apr_pool_t *p,  
+                           void *handle, 
+                           const char **strs,
+                           int *strl,
+                           int nelts,
+                           apr_size_t len)
+
+{
+    char *str;
+    char *s;
+    int i;
+    apr_status_t rv;
+
+    str = apr_palloc(p, len + 1);
+
+    for (i = 0, s = str; i < nelts; ++i) {
+        memcpy(s, strs[i], strl[i]);
+        s += strl[i];
+    }
+
+    rv = apr_file_write((apr_file_t*)handle, str, &len);
+
+    return rv;
+}
+static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s, 
+                                        const char* name)
+{
+    if (*name == '|') {
+        piped_log *pl;
+
+        pl = ap_open_piped_log(p, name + 1);
+        if (pl == NULL) {
+           return NULL;;
+        }
+        return ap_piped_log_write_fd(pl);
+    }
+    else {
+        const char *fname = ap_server_root_relative(p, name);
+        apr_file_t *fd;
+        apr_status_t rv;
+
+        if (!fname) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
+                            "invalid transfer log path %s.", name);
+            return NULL;
+        }
+        rv = apr_file_open(&fd, name, xfer_flags, xfer_perms, p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                            "could not open transfer log file %s.", name);
+            return NULL;
+        }
+        apr_file_inherit_set(fd);
+        return fd;
+    }
+}
+static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s, 
+                                        const char* name)
+{
+    buffered_log *b;
+    b = apr_palloc(p, sizeof(buffered_log));
+    b->handle = ap_default_log_writer_init(p, s, name);
+    b->outcnt = 0;
+    
+    if (b->handle)
+        return b;
+    else
+        return NULL;
+}
+static apr_status_t ap_buffered_log_writer(apr_pool_t *p,  
+                                           void *handle, 
+                                           const char **strs,
+                                           int *strl,
+                                           int nelts,
+                                           apr_size_t len)
+
+{
+    char *str;
+    char *s;
+    int i;
+    apr_status_t rv;
+    buffered_log *buf = (buffered_log*)handle;
+
+
+    if (len + buf->outcnt > LOG_BUFSIZE) {
+        flush_log(buf);
+    }
+    if (len >= LOG_BUFSIZE) {
+        apr_size_t w;
+
+        str = apr_palloc(p, len + 1);
+        for (i = 0, s = str; i < nelts; ++i) {
+            memcpy(s, strs[i], strl[i]);
+            s += strl[i];
+        }
+        w = len;
+        rv = apr_file_write(buf->handle, str, &w);
+        
+    }
+    else {
+        for (i = 0, s = &buf->outbuf[buf->outcnt]; i < nelts; ++i) {
+            memcpy(s, strs[i], strl[i]);
+            s += strl[i];
+        }
+        buf->outcnt += len;
+        rv = APR_SUCCESS;
+    }
+    return rv;
+}
 
 static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
-
+    
     log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
 
     if (log_pfn_register) {
@@ -1292,6 +1397,8 @@ static void register_hooks(apr_pool_t *p)
      */ 
     log_hash = apr_hash_make(p);
     APR_REGISTER_OPTIONAL_FN(ap_register_log_handler);
+    APR_REGISTER_OPTIONAL_FN(ap_log_set_writer_init);
+    APR_REGISTER_OPTIONAL_FN(ap_log_set_writer);
 }
 
 module AP_MODULE_DECLARE_DATA log_config_module =
@@ -1304,3 +1411,4 @@ module AP_MODULE_DECLARE_DATA log_config_module =
     config_log_cmds,            /* command apr_table_t */
     register_hooks              /* register hooks */
 };
+

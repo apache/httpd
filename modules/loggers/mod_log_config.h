@@ -63,7 +63,25 @@
 #ifndef _MOD_LOG_CONFIG_H
 #define _MOD_LOG_CONFIG_H 1
 
+/** 
+ * callback function prototype for a external log handler
+ */
 typedef const char *ap_log_handler_fn_t(request_rec *r, char *a);
+
+/**
+ * callback function prototype for a external writer initilization.
+ */
+typedef void *ap_log_writer_init(apr_pool_t *p, server_rec *s, 
+                                 const char *name);
+/**
+ * callback which gets called where there is a log line to write.
+ */
+typedef apr_status_t ap_log_writer(apr_pool_t *p, 
+                            void *handle, 
+                            const char **portions,
+                            int *lengths,
+                            int nelts,
+                            apr_size_t len);
 
 typedef struct ap_log_handler {
     ap_log_handler_fn_t *func;
@@ -71,6 +89,16 @@ typedef struct ap_log_handler {
 } ap_log_handler;
 
 APR_DECLARE_OPTIONAL_FN(void, ap_register_log_handler, 
-                        (apr_pool_t *p, char *tag, ap_log_handler_fn_t *func, int def));
+                        (apr_pool_t *p, char *tag, ap_log_handler_fn_t *func,
+                         int def));
+/**
+ * you will need to set your init handler *BEFORE* the open_logs 
+ * in mod_log_config gets executed
+ */
+APR_DECLARE_OPTIONAL_FN(void, ap_log_set_writer_init,(ap_log_writer_init *func));
+/** 
+ * you should probably set the writer at the same time (ie..before open_logs)
+ */
+APR_DECLARE_OPTIONAL_FN(void, ap_log_set_writer, (ap_log_writer* func));
 
 #endif /* MOD_LOG_CONFIG */
