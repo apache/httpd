@@ -84,6 +84,8 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
                          "Cannot create SSLMutex");
         return FALSE;
     }
+    if (mc->szMutexFile && mc->ChownMutexFile == TRUE)
+        chown(mc->szMutexFile, unixd_config.user_id, -1);
 
 #if APR_USE_SYSVSEM_SERIALIZE
     rv = unixd_set_global_mutex_perms(mc->pMutex);
