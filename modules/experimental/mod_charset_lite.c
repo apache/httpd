@@ -374,37 +374,27 @@ static int find_code_page(request_rec *r)
 }
 
 static int configured_in_list(request_rec *r, const char *filter_name,
-                              const char *filter_list)
+                              struct ap_filter_t *filter_list)
 {
-    const char *filter;
+    struct ap_filter_t *filter = filter_list;
 
-    if (filter_list) {
-        while ((filter = ap_getword(r->pool, &filter_list, ';')) && filter[0]) {
-            /* yeah, I'm an ass and expect them to type it correctly (all caps)
-             */
-            if (!strcmp(filter, filter_name))
-                return 1;
+    while (filter) {
+        if (!strcasecmp(filter_name, filter->frec->name)) {
+            return 1;
         }
+        filter = filter->next;
     }
     return 0;
 }
 
 static int configured_on_input(request_rec *r, const char *filter_name)
 {
-    core_dir_config *conf =
-        (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                &core_module);
-
-    return configured_in_list(r, filter_name, conf->input_filters);
+    return configured_in_list(r, filter_name, r->input_filters);
 }
 
 static int configured_on_output(request_rec *r, const char *filter_name)
 {
-    core_dir_config *conf =
-        (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                &core_module);
-
-    return configured_in_list(r, filter_name, conf->output_filters);
+    return configured_in_list(r, filter_name, r->output_filters);
 }
 
 /* xlate_insert_filter() is a filter hook which decides whether or not
@@ -428,7 +418,7 @@ static void xlate_insert_filter(request_rec *r)
                           "xlate output filter not added implicitly because %s",
                           !reqinfo->output_ctx ? 
                           "no output configuration available" :
-                          "SetOutputFilter was used to add the filter");
+                          "another module added the filter");
         }
 
         if (reqinfo->input_ctx && !configured_on_input(r, XLATEIN_FILTER_NAME)) {
@@ -440,7 +430,7 @@ static void xlate_insert_filter(request_rec *r)
                           "xlate input filter not added implicitly because %s",
                           !reqinfo->input_ctx ?
                           "no input configuration available" :
-                          "SetInputFilter was used to add the filter");
+                          "another module added the filter");
         }
     }
 }
@@ -1126,7 +1116,7 @@ static const command_rec cmds[] =
 static void charset_register_hooks(apr_pool_t *p)
 {
     ap_hook_fixups(find_code_page, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_insert_filter(xlate_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(xlate_insert_filter, NULL, NULL, APR_HOOK_REALLY_LAST);
     ap_register_output_filter(XLATEOUT_FILTER_NAME, xlate_out_filter, 
                               AP_FTYPE_CONTENT);
     ap_register_input_filter(XLATEIN_FILTER_NAME, xlate_in_filter, 
