@@ -28,6 +28,10 @@
                 href="faq/"><strong>FAQ</strong></a> </td>
 
                 <td align="center" bgcolor="#bebebe"><a
+                href="sitemap.html"><strong>SiteMap</strong></a>
+                </td>
+
+                <td align="center" bgcolor="#bebebe"><a
                 href="mod/directives.html"><strong>Directives</strong></a>
                 </td>
 
@@ -273,6 +277,11 @@
 
               <tr>
                 <td><a href="faq/">Frequently Asked Questions</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td><a href="sitemap.html">SiteMap</a>
                 </td>
               </tr>
 
