@@ -318,7 +318,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         length = i2d_DHparams(dh, NULL);
         ucp = ssl_asn1_table_set(mc->tTmpKeys, "DH:512", length);
         (void)i2d_DHparams(dh, &ucp); /* 2nd arg increments */
-        /* no need to free dh, it's static */
+        DH_free(dh);
 
         /* import 1024 bit DH param */
         if ((dh = ssl_dh_GetTmpParam(1024)) == NULL) {
@@ -329,7 +329,7 @@ void ssl_init_TmpKeysHandle(int action, server_rec *s, apr_pool_t *p)
         length = i2d_DHparams(dh, NULL);
         ucp = ssl_asn1_table_set(mc->tTmpKeys, "DH:1024", length);
         (void)i2d_DHparams(dh, &ucp); /* 2nd arg increments */
-        /* no need to free dh, it's static */
+        DH_free(dh);
     }
 
     /* Allocate Keys and Params */
