@@ -163,11 +163,11 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_asis.html">Apache-Modul mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Apache-Modul mod_auth_basic</a></li>
 <li><a href="mod/mod_auth_digest.html">Apache-Modul mod_auth_digest</a></li>
-<li><a href="mod/mod_auth_ldap.html">Apache-Modul mod_auth_ldap</a></li>
 <li><a href="mod/mod_authn_anon.html">Apache-Modul mod_authn_anon</a></li>
 <li><a href="mod/mod_authn_dbm.html">Apache-Modul mod_authn_dbm</a></li>
 <li><a href="mod/mod_authn_default.html">Apache-Modul mod_authn_default</a></li>
 <li><a href="mod/mod_authn_file.html">Apache-Modul mod_authn_file</a></li>
+<li><a href="mod/mod_authnz_ldap.html">Apache-Modul mod_authnz_ldap</a></li>
 <li><a href="mod/mod_authz_dbm.html">Apache-Modul mod_authz_dbm</a></li>
 <li><a href="mod/mod_authz_default.html">Apache-Modul mod_authz_default</a></li>
 <li><a href="mod/mod_authz_groupfile.html">Apache-Modul mod_authz_groupfile</a></li>

@@ -410,9 +410,9 @@
           <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>. This module uses plain text files
           to store the credentials.</dd>
 
-        <dt><code>--enable-auth-ldap</code></dt>
+        <dt><code>--enable-authnz-ldap</code></dt>
         <dd>Enable LDAP based authentication provided by
-          <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code>.</dd>
+          <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</dd>
           
         <dt><code>--enable-cache</code></dt>
         <dd>Enable dynamic file caching provided by
