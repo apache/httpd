@@ -332,7 +332,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         /*
          * Read the server certificate and key
          */
-        ssl_init_ConfigureServer(s, p, sc);
+        ssl_init_ConfigureServer(s, p, ptemp, sc);
     }
 
     /*
@@ -388,7 +388,9 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
 /*
  * Configure a particular server
  */
-void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p,
+void ssl_init_ConfigureServer(server_rec *s,
+                              apr_pool_t *p,
+                              apr_pool_t *ptemp,
                               SSLSrvConfigRec *sc)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -556,7 +558,7 @@ void ssl_init_ConfigureServer(server_rec *s, apr_pool_t *p,
             ssl_die();
         }
 
-        ca_list = ssl_init_FindCAList(s, p,
+        ca_list = ssl_init_FindCAList(s, ptemp,
                                       sc->szCACertificateFile,
                                       sc->szCACertificatePath);
         if (!ca_list) {
@@ -976,19 +978,11 @@ static void ssl_init_PushCAList(STACK_OF(X509_NAME) *ca_list,
 }
 
 STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
-                                         apr_pool_t *p,
+                                         apr_pool_t *ptemp,
                                          const char *ca_file,
                                          const char *ca_path)
 {
     STACK_OF(X509_NAME) *ca_list;
-    apr_pool_t *subpool;
-
-    /*
-     * Use a subpool so we don't bloat up the server pool which
-     * is remains in memory for the complete operation time of
-     * the server.
-     */
-    apr_pool_sub_make(&subpool, p, NULL);
 
     /*
      * Start with a empty stack/list where new
@@ -1011,7 +1005,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
         apr_finfo_t direntry;
         apr_int32_t finfo_flags = APR_FINFO_MIN|APR_FINFO_NAME;
 
-        if (apr_dir_open(&dir, ca_path, subpool) != APR_SUCCESS) {
+        if (apr_dir_open(&dir, ca_path, ptemp) != APR_SUCCESS) {
             ssl_log(s, SSL_LOG_ERROR|SSL_ADD_ERRNO,
                     "Init: Failed to open SSLCACertificatePath `%s'",
                     ca_path);
@@ -1023,7 +1017,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
             if (direntry.filetype == APR_DIR) {
                 continue; /* don't try to load directories */
             }
-            file = apr_pstrcat(subpool, ca_path, "/", direntry.name, NULL);
+            file = apr_pstrcat(ptemp, ca_path, "/", direntry.name, NULL);
             ssl_init_PushCAList(ca_list, s, file);
         }
 
@@ -1034,7 +1028,6 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
      * Cleanup
      */
     sk_X509_NAME_set_cmp_func(ca_list, NULL);
-    apr_pool_destroy(subpool);
 
     return ca_list;
 }
