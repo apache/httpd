@@ -343,4 +343,4 @@ EXPORTS
 	ap_standalone   @337
 	ap_server_confname   @338
 	ap_sub_req_method_uri   @339
-
+	ap_sha1_base64	@340

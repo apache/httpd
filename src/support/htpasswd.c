@@ -181,7 +181,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	    return ERR_PWMISMATCH;
 	}
 	pw = pwin;
-        bzero(pwv,sizeof(pwin));
+        memset(pwv, '\0', sizeof(pwin));
     }
     switch (alg) {
 
@@ -213,7 +213,7 @@ static int mkrecord(char *user, char *record, size_t rlen, char *passwd,
 	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
 	break;
     }
-    bzero(pw,strlen(pw));
+    memset(pw, '\0', strlen(pw));
 
     /*
      * Check to see if the buffer is large enough to hold the username,

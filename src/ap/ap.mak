@@ -50,6 +50,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ap_signal.obj"
 	-@erase "$(INTDIR)\ap_slack.obj"
 	-@erase "$(INTDIR)\ap_snprintf.obj"
+	-@erase "$(INTDIR)\ap_sha1.obj"
+	-@erase "$(INTDIR)\ap_checkpass.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ap.lib"
 
@@ -104,7 +106,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\ap_md5c.obj" \
 	"$(INTDIR)\ap_signal.obj" \
 	"$(INTDIR)\ap_slack.obj" \
-	"$(INTDIR)\ap_snprintf.obj"
+	"$(INTDIR)\ap_snprintf.obj" \
+	"$(INTDIR)\ap_sha1.obj" \
+	"$(INTDIR)\ap_checkpass.obj"
 
 "$(OUTDIR)\ap.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -136,6 +140,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ap_signal.obj"
 	-@erase "$(INTDIR)\ap_slack.obj"
 	-@erase "$(INTDIR)\ap_snprintf.obj"
+	-@erase "$(INTDIR)\ap_sha1.obj"
+	-@erase "$(INTDIR)\ap_checkpass.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\ap.lib"
 
@@ -190,7 +196,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\ap_md5c.obj" \
 	"$(INTDIR)\ap_signal.obj" \
 	"$(INTDIR)\ap_slack.obj" \
-	"$(INTDIR)\ap_snprintf.obj"
+	"$(INTDIR)\ap_snprintf.obj" \
+	"$(INTDIR)\ap_sha1.obj" \
+	"$(INTDIR)\ap_checkpass.obj"
 
 "$(OUTDIR)\ap.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -480,6 +488,82 @@ DEP_CPP_AP_MD=\
 
 !ENDIF 
 
+
+SOURCE=.\ap_checkpass.c
+
+!IF  "$(CFG)" == "ap - Win32 Release"
+
+DEP_CPP_AP_CH=\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_AP_CH=\
+	"..\include\ap_config_auto.h"\
+	"..\include\os.h"\
+	".\ebcdic.h"\
+	
+
+"$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "ap - Win32 Debug"
+
+DEP_CPP_AP_CH=\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+"$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
+
+
+!ENDIF 
+
+SOURCE=.\ap_sha1.c
+
+!IF  "$(CFG)" == "ap - Win32 Release"
+
+DEP_CPP_AP_SH=\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_sha1.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_AP_SH=\
+	"..\include\ap_config_auto.h"\
+	"..\include\os.h"\
+	".\ebcdic.h"\
+	
+
+"$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
+
+
+!ELSEIF  "$(CFG)" == "ap - Win32 Debug"
+
+DEP_CPP_AP_SH=\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_sha1.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+"$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
+
+
+!ENDIF 
 
 !ENDIF 
 

@@ -53,6 +53,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ap_getpass.obj"
 	-@erase "$(INTDIR)\ap_md5c.obj"
 	-@erase "$(INTDIR)\ap_snprintf.obj"
+	-@erase "$(INTDIR)\ap_sha1.obj"
+	-@erase "$(INTDIR)\ap_checkpass.obj"
 	-@erase "$(INTDIR)\htpasswd.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(OUTDIR)\htpasswd.exe"
@@ -78,6 +80,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\ap_getpass.obj" \
 	"$(INTDIR)\ap_md5c.obj" \
 	"$(INTDIR)\ap_snprintf.obj" \
+	"$(INTDIR)\ap_sha1.obj" \
+	"$(INTDIR)\ap_checkpass.obj" \
 	"$(INTDIR)\htpasswd.obj"
 
 "$(OUTDIR)\htpasswd.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -108,6 +112,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ap_getpass.obj"
 	-@erase "$(INTDIR)\ap_md5c.obj"
 	-@erase "$(INTDIR)\ap_snprintf.obj"
+	-@erase "$(INTDIR)\ap_sha1.obj"
+	-@erase "$(INTDIR)\ap_checkpass.obj"
 	-@erase "$(INTDIR)\htpasswd.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
@@ -137,6 +143,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\ap_getpass.obj" \
 	"$(INTDIR)\ap_md5c.obj" \
 	"$(INTDIR)\ap_snprintf.obj" \
+	"$(INTDIR)\ap_sha1.obj" \
+	"$(INTDIR)\ap_checkpass.obj" \
 	"$(INTDIR)\htpasswd.obj"
 
 "$(OUTDIR)\htpasswd.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -361,6 +369,90 @@ DEP_CPP_AP_SN=\
 	
 
 "$(INTDIR)\ap_snprintf.obj" : $(SOURCE) $(DEP_CPP_AP_SN) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\ap\ap_sha1.c
+
+!IF  "$(CFG)" == "htpasswd - Win32 Release"
+
+DEP_CPP_AP_SH=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_sha1.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_AP_SH=\
+	"..\ap\ebcdic.h"\
+	"..\include\ap_config_auto.h"\
+	"..\include\os.h"\
+	
+
+"$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "htpasswd - Win32 Debug"
+
+DEP_CPP_AP_SH=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_sha1.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+"$(INTDIR)\ap_sha1.obj" : $(SOURCE) $(DEP_CPP_AP_SH) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\ap\ap_checkpass.c
+
+!IF  "$(CFG)" == "htpasswd - Win32 Release"
+
+DEP_CPP_AP_CH=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	{$(INCLUDE)}"sys\stat.h"\
+	{$(INCLUDE)}"sys\types.h"\
+	
+NODEP_CPP_AP_CH=\
+	"..\ap\ebcdic.h"\
+	"..\include\ap_config_auto.h"\
+	"..\include\os.h"\
+	
+
+"$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "htpasswd - Win32 Debug"
+
+DEP_CPP_AP_CH=\
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+"$(INTDIR)\ap_checkpass.obj" : $(SOURCE) $(DEP_CPP_AP_CH) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
