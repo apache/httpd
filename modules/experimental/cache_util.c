@@ -207,7 +207,6 @@ const char *ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str)
         return apr_pstrndup(p, list, i);
     else
         return NULL;
-
 }
 
 /*
@@ -282,7 +281,7 @@ int file_cache_read_mydata(apr_file_t *fd, cache_info *info, request_rec *r)
     char * temp;
 
     if(!info->hdrsfile) {
-	return APR_NOTFOUND;
+        return APR_NOTFOUND;
     }
 
     /* read the data from the cache file */
@@ -291,16 +290,14 @@ int file_cache_read_mydata(apr_file_t *fd, cache_info *info, request_rec *r)
      * dates are stored as hex seconds since 1970
      */
     rv = apr_file_gets(&urlbuff[0], urllen, fd);
-    if (rv != APR_SUCCESS)
-    {
-	return rv;
+    if (rv != APR_SUCCESS) {
+        return rv;
     }
 
     if ((temp = strchr(&urlbuff[0], '\n')) != NULL) /* trim off new line character */
-	*temp = '\0';      /* overlay it with the null terminator */
+        *temp = '\0';      /* overlay it with the null terminator */
 
-    if (!apr_date_checkmask(urlbuff, "&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&"))
-    {
+    if (!apr_date_checkmask(urlbuff, "&&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&& &&&&&&&&&&&&&&&&")) {
         return APR_EGENERAL;
     }
 
@@ -312,20 +309,18 @@ int file_cache_read_mydata(apr_file_t *fd, cache_info *info, request_rec *r)
     
     /* check that we have the same URL */
     rv = apr_file_gets(&urlbuff[0], urllen, fd);
-    if (rv != APR_SUCCESS)
-    {
-	return rv;
+    if (rv != APR_SUCCESS) {
+        return rv;
     }
 
-    if ((temp = strchr(&urlbuff[0], '\n')) != NULL) /* trim off new line character */
-	*temp = '\0';      /* overlay it with the null terminator */
-
-    if (strncmp(urlbuff, "X-NAME: ", 7) != 0)
-    {
-	return APR_EGENERAL;
+    if ((temp = strchr(&urlbuff[0], '\n')) != NULL) { /* trim off new line character */
+        *temp = '\0';      /* overlay it with the null terminator */
     }
-    if (strcmp(urlbuff + 8, info->name) != 0)
-    {
+
+    if (strncmp(urlbuff, "X-NAME: ", 7) != 0) {
+        return APR_EGENERAL;
+    }
+    if (strcmp(urlbuff + 8, info->name) != 0) {
         return APR_EGENERAL;
     }
     
