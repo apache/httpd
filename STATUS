@@ -466,8 +466,6 @@ Delayed until after 1.3.2, unless someone happens to get to it:
         3) byte range error handling
         4) update the Accept-Encoding parser to allow q-values
 
-    * #ifdef __EMX__ --> #ifdef OS2.
-
     * use of spawnvp in uncompress_child in mod_mime_magic - doesn't
       use the new child_info structure, is this still safe?  Needs to be 
       looked at.
