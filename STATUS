@@ -138,6 +138,7 @@ Committed Code Changes:
     * Add more compile time diagnosis to main's -V switch
     * [Port] Fix CGI-Execution for EBCDIC hosts.
     * Martin's [PATCH] "Signing" server generated pages
+    * Dmitry's table_*n API addition
 
 Available Patches:
 

@@ -293,6 +293,12 @@ Allows additional information to be listed along with a specified module.
 	and IRIX.
     <LI><CODE><A HREF="mod/mod_log_config.html">mod_log_config</A></CODE>
 	can be compile-time configured to buffer writes.
+    <LI>Replaced <code>strncpy()</code> with <code>ap_cpystrn()</code>, a
+	routine which doesn't have to zero-fill the entire result.  This
+	has dramatic effects on <code>mod_include</code> speed.
+    <LI>Additions to the internal "table" API (used for keeping lists of
+	key/value string pairs) provide for up to 20% performance
+	improvement in many situations.
     </UL>
 
     <P>See <A HREF="misc/perf-tuning.html">the new performance
@@ -461,6 +467,18 @@ Allows additional information to be listed along with a specified module.
     is far more expensive and should only be used for testing with tools
     such as Electric Fence and Purify.  See <CODE>main/alloc.c</CODE>
     for more details.
+
+    <LI><strong><code>ap_cpystrn</code></strong><br>
+    The new <code>strncpy</code> "lookalike", with slightly different
+    semantics is much faster than <code>strncpy</code> because it
+    doesn't have to zero-fill the entire buffer.
+
+    <LI><strong><code>table_addn</code>, <code>table_setn</code>,
+    <code>table_mergen</code></strong><br>
+    These new functions do <b>not</b> call <code>pstrdup</code>
+    on their arguments.  This provides for big speedups.  There is
+    also some debugging support to ensure code uses them properly.
+    See <code>src/CHANGES</code> for more information.
 
     </UL>
 

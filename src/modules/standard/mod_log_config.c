@@ -764,7 +764,7 @@ static void *make_config_log_state(pool *p, server_rec *s)
     mls->default_format = NULL;
     mls->server_config_logs = NULL;
     mls->formats = make_table(p, 4);
-    table_set(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
+    table_setn(mls->formats, "CLF", DEFAULT_LOG_FORMAT);
 
     return mls;
 }

@@ -310,7 +310,7 @@ static int match_headers(request_rec *r)
                     table_unset(r->subprocess_env, elts[j].key);
                 }
                 else {
-                    table_set(r->subprocess_env, elts[j].key, elts[j].val);
+                    table_setn(r->subprocess_env, elts[j].key, elts[j].val);
                 }
             }
         }

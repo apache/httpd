@@ -205,9 +205,9 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 	 */
 
 	if (!strcasecmp(hdrs[i].key, "Content-type"))
-	    table_set(e, "CONTENT_TYPE", hdrs[i].val);
+	    table_setn(e, "CONTENT_TYPE", hdrs[i].val);
 	else if (!strcasecmp(hdrs[i].key, "Content-length"))
-	    table_set(e, "CONTENT_LENGTH", hdrs[i].val);
+	    table_setn(e, "CONTENT_LENGTH", hdrs[i].val);
 	/*
 	 * You really don't want to disable this check, since it leaves you
 	 * wide open to CGIs stealing passwords and people viewing them
@@ -218,7 +218,7 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 	    continue;
 #endif
 	else
-	    table_set(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
+	    table_setn(e, http2env(r->pool, hdrs[i].key), hdrs[i].val);
     }
 
     ap_snprintf(port, sizeof(port), "%u", s->port);
@@ -228,42 +228,42 @@ API_EXPORT(void) add_common_vars(request_rec *r)
 
 #ifdef WIN32
     if (env_temp = getenv("SystemRoot"))
-        table_set(e, "SystemRoot", env_temp);         
+        table_setn(e, "SystemRoot", env_temp);         
     if (env_temp = getenv("COMSPEC"))
-        table_set(e, "COMSPEC", env_temp);            
+        table_setn(e, "COMSPEC", env_temp);            
     if (env_temp = getenv("WINDIR"))
-        table_set(e, "WINDIR", env_temp);             
+        table_setn(e, "WINDIR", env_temp);             
 #endif
 
-    table_set(e, "PATH", env_path);
-    table_set(e, "SERVER_SOFTWARE", SERVER_VERSION);
-    table_set(e, "SERVER_NAME", s->server_hostname);
-    table_set(e, "SERVER_PORT", port);
-    table_set(e, "REMOTE_HOST",
-	      get_remote_host(c, r->per_dir_config, REMOTE_NAME));
-    table_set(e, "REMOTE_ADDR", c->remote_ip);
-    table_set(e, "DOCUMENT_ROOT", document_root(r));	/* Apache */
-    table_set(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
-    table_set(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
+    table_setn(e, "PATH", env_path);
+    table_setn(e, "SERVER_SOFTWARE", SERVER_VERSION);
+    table_setn(e, "SERVER_NAME", s->server_hostname);
+    table_setn(e, "SERVER_PORT", pstrdup(r->pool,port));
+    table_setn(e, "REMOTE_HOST",
+        pstrdup(r->pool, get_remote_host(c, r->per_dir_config, REMOTE_NAME)));
+    table_setn(e, "REMOTE_ADDR", c->remote_ip);
+    table_setn(e, "DOCUMENT_ROOT", document_root(r));	/* Apache */
+    table_setn(e, "SERVER_ADMIN", s->server_admin);	/* Apache */
+    table_setn(e, "SCRIPT_FILENAME", r->filename);	/* Apache */
 
     ap_snprintf(port, sizeof(port), "%d", ntohs(c->remote_addr.sin_port));
-    table_set(e, "REMOTE_PORT", port);	/* Apache */
+    table_setn(e, "REMOTE_PORT", pstrdup(r->pool, port)); /* Apache */
 
     if (c->user)
-	table_set(e, "REMOTE_USER", c->user);
+	table_setn(e, "REMOTE_USER", c->user);
     if (c->auth_type)
-	table_set(e, "AUTH_TYPE", c->auth_type);
+	table_setn(e, "AUTH_TYPE", c->auth_type);
     rem_logname = get_remote_logname(r);
     if (rem_logname)
-	table_set(e, "REMOTE_IDENT", rem_logname);
+	table_setn(e, "REMOTE_IDENT", pstrdup(r->pool, rem_logname));
 
     /* Apache custom error responses. If we have redirected set two new vars */
 
     if (r->prev) {
 	if (r->prev->args)
-	    table_set(e, "REDIRECT_QUERY_STRING", r->prev->args);
+	    table_setn(e, "REDIRECT_QUERY_STRING", r->prev->args);
 	if (r->prev->uri)
-	    table_set(e, "REDIRECT_URL", r->prev->uri);
+	    table_setn(e, "REDIRECT_URL", r->prev->uri);
     }
 }
 
@@ -316,11 +316,11 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
 {
     table *e = r->subprocess_env;
 
-    table_set(e, "GATEWAY_INTERFACE", "CGI/1.1");
-    table_set(e, "SERVER_PROTOCOL", r->protocol);
-    table_set(e, "REQUEST_METHOD", r->method);
-    table_set(e, "QUERY_STRING", r->args ? r->args : "");
-    table_set(e, "REQUEST_URI", original_uri(r));
+    table_setn(e, "GATEWAY_INTERFACE", "CGI/1.1");
+    table_setn(e, "SERVER_PROTOCOL", r->protocol);
+    table_setn(e, "REQUEST_METHOD", r->method);
+    table_setn(e, "QUERY_STRING", r->args ? r->args : "");
+    table_setn(e, "REQUEST_URI", original_uri(r));
 
     /* Note that the code below special-cases scripts run from includes,
      * because it "knows" that the sub_request has been hacked to have the
@@ -329,20 +329,20 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
      */
 
     if (!strcmp(r->protocol, "INCLUDED")) {
-	table_set(e, "SCRIPT_NAME", r->uri);
+	table_setn(e, "SCRIPT_NAME", r->uri);
 	if (r->path_info && *r->path_info)
-	    table_set(e, "PATH_INFO", r->path_info);
+	    table_setn(e, "PATH_INFO", r->path_info);
     }
     else if (!r->path_info || !*r->path_info) {
-	table_set(e, "SCRIPT_NAME", r->uri);
+	table_setn(e, "SCRIPT_NAME", r->uri);
     }
     else {
 	int path_info_start = find_path_info(r->uri, r->path_info);
 
-	table_set(e, "SCRIPT_NAME", pstrndup(r->pool, r->uri,
+	table_setn(e, "SCRIPT_NAME", pstrndup(r->pool, r->uri,
 					     path_info_start));
 
-	table_set(e, "PATH_INFO", r->path_info);
+	table_setn(e, "PATH_INFO", r->path_info);
     }
 
     if (r->path_info && r->path_info[0]) {
@@ -370,9 +370,9 @@ API_EXPORT(void) add_cgi_vars(request_rec *r)
 #ifdef WIN32
 	    /* We need to make this a real Windows path name */
 	    GetFullPathName(pt, HUGE_STRING_LEN, buffer, NULL);
-	    table_set(e, "PATH_TRANSLATED", buffer);
+	    table_setn(e, "PATH_TRANSLATED", pstrdup(r->pool, buffer));
 #else
-	    table_set(e, "PATH_TRANSLATED", pt);
+	    table_setn(e, "PATH_TRANSLATED", pt);
 #endif
 	}
     }
@@ -471,13 +471,13 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	    r->status_line = pstrdup(r->pool, l);
 	}
 	else if (!strcasecmp(w, "Location")) {
-	    table_set(r->headers_out, w, l);
+	    table_setn(r->headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
 	}
 	else if (!strcasecmp(w, "Content-Length")) {
-	    table_set(r->headers_out, w, l);
+	    table_setn(r->headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
 	}
 	else if (!strcasecmp(w, "Transfer-Encoding")) {
-	    table_set(r->headers_out, w, l);
+	    table_setn(r->headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
 	}
 	/*
 	 * If the script gave us a Last-Modified header, we can't just
@@ -494,7 +494,7 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	 * we'll use - otherwise we assume 200 OK.
 	 */
 	else if (!strcasecmp(w, "Status")) {
-	    table_set(r->headers_out, w, l);
+	    table_setn(r->headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
 	    cgi_status = atoi(l);
 	}
 
@@ -504,10 +504,10 @@ static int scan_script_header_err_core(request_rec *r, char *buffer,
 	 * separately.  Lets humour those browsers.
 	 */
 	else if (!strcasecmp(w, "Set-Cookie")) {
-	    table_add(r->err_headers_out, w, l);
+	    table_addn(r->err_headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
 	}
 	else {
-	    table_merge(r->err_headers_out, w, l);
+	    table_mergen(r->err_headers_out, pstrdup(r->pool,w), pstrdup(r->pool,l));
 	}
     }
 }

@@ -328,7 +328,7 @@ static char *try_alias_list(request_rec *r, array_header *aliases, int doesc, in
 	if (found) {
 	    if (p->handler) {	/* Set handler, and leave a note for mod_cgi */
 		r->handler = pstrdup(r->pool, p->handler);
-		table_set(r->notes, "alias-forced-type", p->handler);
+		table_setn(r->notes, "alias-forced-type", r->handler);
 	    }
 
 	    *status = p->redir_status;
@@ -363,7 +363,7 @@ static int translate_alias_redir(request_rec *r)
 	    if (r->args) {
 		ret = pstrcat(r->pool, ret, "?", r->args, NULL);
 	    }
-	    table_set(r->headers_out, "Location", ret);
+	    table_setn(r->headers_out, "Location", ret);
 	}
 	return status;
     }
@@ -388,7 +388,7 @@ static int fixup_redir(request_rec *r)
 
     if ((ret = try_alias_list(r, dirconf->redirects, 1, &status)) != NULL) {
 	if (is_HTTP_REDIRECT(status))
-	    table_set(r->headers_out, "Location", ret);
+	    table_setn(r->headers_out, "Location", ret);
 	return status;
     }
 

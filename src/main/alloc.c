@@ -88,6 +88,24 @@
  */
 /* #define ALLOC_USE_MALLOC */
 
+/* Pool debugging support.  This is intended to detect cases where the
+ * wrong pool is used when assigning data to an object in another pool.
+ * In particular, it causes the table_{set,add,merge}n routines to check
+ * that their arguments are safe for the table they're being placed in.
+ * It currently only works with the unix multiprocess model, but could
+ * be extended to others.
+ */
+/* #define POOL_DEBUG */
+
+#ifdef POOL_DEBUG
+#ifdef ALLOC_USE_MALLOC
+# error "sorry, no support for ALLOC_USE_MALLOC and POOL_DEBUG at the same time"
+#endif
+#ifdef MULTITHREAD
+# error "sorry, no support for MULTITHREAD and POOL_DEBUG at the same time"
+#endif
+#endif
+
 #ifdef ALLOC_USE_MALLOC
 #undef BLOCK_MINFREE
 #undef BLOCK_MINALLOC
@@ -124,12 +142,22 @@ union block_hdr {
 	char *endp;
 	union block_hdr *next;
 	char *first_avail;
+#ifdef POOL_DEBUG
+	union block_hdr *global_next;
+	struct pool *owning_pool;
+#endif
     } h;
 };
 
 union block_hdr *block_freelist = NULL;
 mutex *alloc_mutex = NULL;
 mutex *spawn_mutex = NULL;
+#ifdef POOL_DEBUG
+static char *known_stack_point;
+static int stack_direction;
+static union block_hdr *global_block_list;
+#define FREE_POOL	((struct pool *)(-1))
+#endif
 
 #ifdef ALLOC_DEBUG
 #define FILL_BYTE	((char)(0xa5))
@@ -170,16 +198,20 @@ union block_hdr *malloc_block(int size)
     blok->h.next = NULL;
     blok->h.first_avail = (char *) (blok + 1);
     blok->h.endp = size + blok->h.first_avail;
+#ifdef POOL_DEBUG
+    blok->h.global_next = global_block_list;
+    global_block_list = blok;
+    blok->h.owning_pool = NULL;
+#endif
 
     return blok;
 }
 
 
 
-void chk_on_blk_list(union block_hdr *blok, union block_hdr *free_blk)
+#ifdef ALLOC_DEBUG
+static void chk_on_blk_list(union block_hdr *blok, union block_hdr *free_blk)
 {
-    /* Debugging code.  Left in for the moment. */
-
     while (free_blk) {
 	if (free_blk == blok) {
 	    fprintf(stderr, "Ouch!  Freeing free block\n");
@@ -189,6 +221,9 @@ void chk_on_blk_list(union block_hdr *blok, union block_hdr *free_blk)
 	free_blk = free_blk->h.next;
     }
 }
+#else
+#define chk_on_blk_list(_x, _y)
+#endif
 
 /* Free a chain of blocks --- must be called with alarms blocked. */
 
@@ -226,12 +261,18 @@ void free_blocks(union block_hdr *blok)
 	chk_on_blk_list(blok, old_free_list);
 	blok->h.first_avail = (char *) (blok + 1);
 	debug_fill(blok->h.first_avail, blok->h.endp - blok->h.first_avail);
+#ifdef POOL_DEBUG
+	blok->h.owning_pool = FREE_POOL;
+#endif
 	blok = blok->h.next;
     }
 
     chk_on_blk_list(blok, old_free_list);
     blok->h.first_avail = (char *) (blok + 1);
     debug_fill(blok->h.first_avail, blok->h.endp - blok->h.first_avail);
+#ifdef POOL_DEBUG
+    blok->h.owning_pool = FREE_POOL;
+#endif
 
     /* Finally, reset next pointer to get the old free blocks back */
 
@@ -346,6 +387,9 @@ API_EXPORT(struct pool *) make_sub_pool(struct pool *p)
     blok = new_block(POOL_HDR_BYTES);
     new_pool = (pool *) blok->h.first_avail;
     blok->h.first_avail += POOL_HDR_BYTES;
+#ifdef POOL_DEBUG
+    blok->h.owning_pool = new_pool;
+#endif
 
     memset((char *) new_pool, '\0', sizeof(struct pool));
     new_pool->free_first_avail = blok->h.first_avail;
@@ -365,8 +409,28 @@ API_EXPORT(struct pool *) make_sub_pool(struct pool *p)
     return new_pool;
 }
 
+#ifdef POOL_DEBUG
+static void stack_var_init(char *s)
+{
+    char t;
+
+    if (s < &t) {
+	stack_direction = 1; /* stack grows up */
+    }
+    else {
+	stack_direction = -1; /* stack grows down */
+    }
+}
+#endif
+
 void init_alloc(void)
 {
+#ifdef POOL_DEBUG
+    char s;
+
+    known_stack_point = &s;
+    stack_var_init(&s);
+#endif
     alloc_mutex = create_mutex(NULL);
     spawn_mutex = create_mutex(NULL);
     permanent_pool = make_sub_pool(NULL);
@@ -442,6 +506,87 @@ API_EXPORT(long) bytes_in_free_blocks(void)
 }
 
 /*****************************************************************
+ * POOL_DEBUG support
+ */
+#ifdef POOL_DEBUG
+
+/* the unix linker defines this symbol as the last byte + 1 of
+ * the executable... so it includes TEXT, BSS, and DATA
+ */
+extern char _end;
+
+/* is ptr in the range [lo,hi) */
+#define is_ptr_in_range(ptr, lo, hi)	\
+    (((unsigned long)(ptr) - (unsigned long)(lo)) \
+	< \
+	(unsigned long)(hi) - (unsigned long)(lo))
+
+/* Find the pool that ts belongs to, return NULL if it doesn't
+ * belong to any pool.
+ */
+pool *find_pool(const void *ts)
+{
+    const char *s = ts;
+    union block_hdr **pb;
+    union block_hdr *b;
+
+    /* short-circuit stuff which is in TEXT, BSS, or DATA */
+    if (is_ptr_in_range(s, 0, &_end)) {
+	return NULL;
+    }
+    /* consider stuff on the stack to also be in the NULL pool...
+     * XXX: there's cases where we don't want to assume this
+     */
+    if ((stack_direction == -1 && is_ptr_in_range(s, &ts, known_stack_point))
+	|| (stack_direction == 1 && is_ptr_in_range(s, known_stack_point, &ts))) {
+	abort();
+	return NULL;
+    }
+    block_alarms();
+    /* search the global_block_list */
+    for (pb = &global_block_list; *pb; pb = &b->h.global_next) {
+	b = *pb;
+	if (is_ptr_in_range(s, b, b->h.endp)) {
+	    if (b->h.owning_pool == FREE_POOL) {
+		fprintf(stderr,
+		    "Ouch!  find_pool() called on pointer in a free block\n");
+		abort();
+		exit(1);
+	    }
+	    if (b != global_block_list) {
+		/* promote b to front of list, this is a hack to speed
+		 * up the lookup */
+		*pb = b->h.global_next;
+		b->h.global_next = global_block_list;
+		global_block_list = b;
+	    }
+	    unblock_alarms();
+	    return b->h.owning_pool;
+	}
+    }
+    unblock_alarms();
+    return NULL;
+}
+
+/* return TRUE iff a is an ancestor of b
+ * NULL is considered an ancestor of all pools
+ */
+int pool_is_ancestor(pool *a, pool *b)
+{
+    if (a == NULL) {
+	return 1;
+    }
+    while (b) {
+	if (a == b) {
+	    return 1;
+	}
+	b = b->parent;
+    }
+    return 0;
+}
+#endif
+
+/*****************************************************************
  *
  * Allocating stuff...
  */
@@ -501,6 +646,9 @@ API_EXPORT(void *) palloc(struct pool *a, int reqsize)
     blok = new_block(size);
     a->last->h.next = blok;
     a->last = blok;
+#ifdef POOL_DEBUG
+    blok->h.owning_pool = a;
+#endif
 
     (void) release_mutex(alloc_mutex);
 
@@ -523,10 +671,13 @@ API_EXPORT(void *) pcalloc(struct pool *a, int size)
 API_EXPORT(char *) pstrdup(struct pool *a, const char *s)
 {
     char *res;
+    size_t len;
+
     if (s == NULL)
 	return NULL;
-    res = palloc(a, strlen(s) + 1);
-    strcpy(res, s);
+    len = strlen(s) + 1;
+    res = palloc(a, len);
+    memcpy(res, s, len);
     return res;
 }
 
@@ -781,6 +932,52 @@ API_EXPORT(void) table_set(table *t, const char *key, const char *val)
     }
 }
 
+API_EXPORT(void) table_setn(table *t, char *key, char *val)
+{
+    register int i, j, k;
+    table_entry *elts = (table_entry *) t->a.elts;
+    int done = 0;
+
+#ifdef POOL_DEBUG
+    {
+	if (!pool_is_ancestor(find_pool(key), t->a.pool)) {
+	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
+	    abort();
+	}
+	if (!pool_is_ancestor(find_pool(val), t->a.pool)) {
+	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
+	    abort();
+	}
+    }
+#endif
+
+    for (i = 0; i < t->a.nelts; ) {
+	if (!strcasecmp(elts[i].key, key)) {
+	    if (!done) {
+		elts[i].val =  val;
+		done = 1;
+		++i;
+	    }
+	    else {		/* delete an extraneous element */
+		for (j = i, k = i + 1; k < t->a.nelts; ++j, ++k) {
+		    elts[j].key = elts[k].key;
+		    elts[j].val = elts[k].val;
+		}
+		--t->a.nelts;
+	    }
+	}
+	else {
+	    ++i;
+	}
+    }
+
+    if (!done) {
+	elts = (table_entry *) push_array(&t->a);
+	elts->key = key;
+	elts->val = val;
+    }
+}
+
 API_EXPORT(void) table_unset(table *t, const char *key)
 {
     register int i, j, k;
@@ -811,6 +1008,35 @@ API_EXPORT(void) table_merge(table *t, const char *key, const char *val)
     table_entry *elts = (table_entry *) t->a.elts;
     int i;
 
+    for (i = 0; i < t->a.nelts; ++i)
+	if (!strcasecmp(elts[i].key, key)) {
+	    elts[i].val = pstrcat(t->a.pool, elts[i].val, ", ", val, NULL);
+	    return;
+	}
+
+    elts = (table_entry *) push_array(&t->a);
+    elts->key = pstrdup(t->a.pool, key);
+    elts->val = pstrdup(t->a.pool, val);
+}
+
+API_EXPORT(void) table_mergen(table *t, char *key, char *val)
+{
+    table_entry *elts = (table_entry *) t->a.elts;
+    int i;
+
+#ifdef POOL_DEBUG
+    {
+	if (!pool_is_ancestor(find_pool(key), t->a.pool)) {
+	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
+	    abort();
+	}
+	if (!pool_is_ancestor(find_pool(val), t->a.pool)) {
+	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
+	    abort();
+	}
+    }
+#endif
+
     for (i = 0; i < t->a.nelts; ++i) {
 	if (!strcasecmp(elts[i].key, key)) {
 	    elts[i].val = pstrcat(t->a.pool, elts[i].val, ", ", val, NULL);
@@ -819,8 +1045,8 @@ API_EXPORT(void) table_merge(table *t, const char *key, const char *val)
     }
 
     elts = (table_entry *) push_array(&t->a);
-    elts->key = pstrdup(t->a.pool, key);
-    elts->val = pstrdup(t->a.pool, val);
+    elts->key = key;
+    elts->val = val;
 }
 
 API_EXPORT(void) table_add(table *t, const char *key, const char *val)
@@ -830,6 +1056,28 @@ API_EXPORT(void) table_add(table *t, const char *key, const char *val)
     elts = (table_entry *) push_array(&t->a);
     elts->key = pstrdup(t->a.pool, key);
     elts->val = pstrdup(t->a.pool, val);
+}
+
+API_EXPORT(void) table_addn(table *t, char *key, char *val)
+{
+    table_entry *elts = (table_entry *) t->a.elts;
+
+#ifdef POOL_DEBUG
+    {
+	if (!pool_is_ancestor(find_pool(key), t->a.pool)) {
+	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
+	    abort();
+	}
+	if (!pool_is_ancestor(find_pool(val), t->a.pool)) {
+	    fprintf(stderr, "table_set: key not in ancestor pool of t\n");
+	    abort();
+	}
+    }
+#endif
+
+    elts = (table_entry *) push_array(&t->a);
+    elts->key = key;
+    elts->val = val;
 }
 
 API_EXPORT(table *) overlay_tables(pool *p, const table *overlay, const table *base)

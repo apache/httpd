@@ -338,7 +338,7 @@ static int check_speling(request_rec *r)
             nuri = pstrcat(r->pool, url, variant[0].name,
                            r->path_info, NULL);
 
-            table_set(r->headers_out, "Location",
+            table_setn(r->headers_out, "Location",
                       construct_url(r->pool, nuri, r->server));
 
             aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
@@ -408,7 +408,7 @@ static int check_speling(request_rec *r)
                 ref, "\">referring page</a> about the broken link.\n", NULL);
 
             /* Pass our table to http_protocol.c (see mod_negotiation): */
-            table_set(notes, "variant-list", t);
+            table_setn(notes, "variant-list", t);
 
             aplog_error(APLOG_MARK, APLOG_NOERRNO | APLOG_INFO, r->server,
                         ref ? "Spelling fix: %s: %d candidates from %s"

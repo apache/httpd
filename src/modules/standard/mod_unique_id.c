@@ -311,7 +311,7 @@ static int gen_unique_id(request_rec *r)
     str[18] = uuencoder[((x[1] & 0x0f) << 2) | ((0 & 0xc0) >> 6)];
     str[19] = '\0';
 
-    table_set(r->subprocess_env, "UNIQUE_ID", str);
+    table_setn(r->subprocess_env, "UNIQUE_ID", pstrdup(r->pool, str));
 
     /* and increment the identifier for the next call */
     counter = ntohs(cur_unique_id.counter) + 1;

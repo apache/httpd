@@ -1,5 +1,25 @@
 Changes with Apache 1.3b4
 
+  *) table_add, table_merge, and table_set include implicit pstrdup()
+     of the key and value.  But in many cases this is not required
+     because the key/value is a constant, or the value has been built
+     by pstrcat() or other similar means.  New routines table_addn,
+     table_mergen, and table_setn have been added to the API, these
+     routines do not pstrdup() their arguments.  The core code and
+     standard modules were changed to take advantage of these routines.
+     The resulting server is up to 20% faster in some situations.
+
+     Note that it is easy to get code subtly wrong if you pass a key/value
+     which is in a pool other than the pool of the table.  The only
+     safe thing to do is to pass key/values which are in the pool of
+     the table, or in one of the ancestors of the pool of the table.
+     i.e. if the table is part of a subrequest, a value from the main
+     request's pool is OK since the subrequest pool is a sub_pool of the
+     main request's pool (and therefore has a lifespan at most as long as
+     the main pool).  There is debugging code which can detect improper
+     usage, enabled by defining POOL_DEBUG.  See alloc.c for more details.
+     [Dmitry Khrustalev <dima@bog.msu.su>, Dean Gaudet]
+
   *) More mod_mime_magic cleanup:  fewer syscalls; should handle "files"
      which don't exist on disk more gracefully; handles vhosts properly.
      Update documentation to reflect the code -- if there's no

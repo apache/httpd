@@ -903,7 +903,7 @@ void die(int type, request_rec *r)
              * status...
              */
             r->status = REDIRECT;
-            table_set(r->headers_out, "Location", custom_response);
+            table_setn(r->headers_out, "Location", custom_response);
         }
         else if (custom_response[0] == '/') {
             r->no_local_copy = 1;       /* Do NOT send USE_LOCAL_COPY for
@@ -912,7 +912,7 @@ void die(int type, request_rec *r)
              * This redirect needs to be a GET no matter what the original
              * method was.
              */
-            table_set(r->subprocess_env, "REQUEST_METHOD", r->method);
+            table_setn(r->subprocess_env, "REQUEST_METHOD", r->method);
             r->method = pstrdup(r->pool, "GET");
             r->method_number = M_GET;
             internal_redirect(custom_response, r);
@@ -1168,7 +1168,7 @@ table *rename_original_env(pool *p, table *t)
     for (i = 0; i < env_arr->nelts; ++i) {
         if (!elts[i].key)
             continue;
-        table_set(new, pstrcat(p, "REDIRECT_", elts[i].key, NULL),
+        table_setn(new, pstrcat(p, "REDIRECT_", elts[i].key, NULL),
                   elts[i].val);
     }
 
@@ -1228,7 +1228,7 @@ request_rec *internal_internal_redirect(const char *new_uri, request_rec *r)
     new->read_length     = r->read_length;     /* We can only read it once */
 
     ap_snprintf(t, sizeof(t), "%d", r->status);
-    table_set(new->subprocess_env, "REDIRECT_STATUS", t);
+    table_setn(new->subprocess_env, "REDIRECT_STATUS", pstrdup(r->pool, t));
 
     /*
      * XXX: hmm.  This is because mod_setenvif and mod_unique_id really need

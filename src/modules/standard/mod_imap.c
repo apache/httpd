@@ -543,7 +543,7 @@ static int imap_reply(request_rec *r, char *redirect)
         return HTTP_NO_CONTENT; /* tell the client to keep the page it has */
     }
     if (redirect && *redirect) {
-        table_set(r->headers_out, "Location", redirect);
+        table_setn(r->headers_out, "Location", redirect);
         return REDIRECT;        /* must be a URL, so redirect to it */
     }
     return SERVER_ERROR;

@@ -117,7 +117,7 @@ static int handle_dir(request_rec *r)
             ifile = pstrcat(r->pool, escape_uri(r->pool, r->uri),
                             "/", NULL);
 
-        table_set(r->headers_out, "Location",
+        table_setn(r->headers_out, "Location",
                   construct_url(r->pool, ifile, r->server));
         return HTTP_MOVED_PERMANENTLY;
     }

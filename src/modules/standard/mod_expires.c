@@ -473,11 +473,11 @@ static int add_expires(request_rec *r)
 
     expires = base + additional;
     ap_snprintf(age, sizeof(age), "max-age=%d", (int) expires - (int) r->request_time);
-    table_set(r->headers_out, "Cache-Control", age);
+    table_setn(r->headers_out, "Cache-Control", pstrdup(r->pool, age));
     tzset();                    /* redundant? called implicitly by localtime, at least 
                                  * under FreeBSD
                                  */
-    table_set(r->headers_out, "Expires", gm_timestr_822(r->pool, expires));
+    table_setn(r->headers_out, "Expires", gm_timestr_822(r->pool, expires));
     return OK;
 }
 

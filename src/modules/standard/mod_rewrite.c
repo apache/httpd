@@ -908,13 +908,13 @@ static int hook_uri2file(request_rec *r)
          var = pstrcat(r->pool, "REDIRECT_", ENVVAR_SCRIPT_URL, NULL);
          var = table_get(r->subprocess_env, var);
          if (var == NULL) 
-             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, r->uri);
+             table_setn(r->subprocess_env, ENVVAR_SCRIPT_URL, r->uri);
          else 
-             table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, var);
+             table_setn(r->subprocess_env, ENVVAR_SCRIPT_URL, var);
     } 
     else {
          var = table_get(r->main->subprocess_env, ENVVAR_SCRIPT_URL);
-         table_set(r->subprocess_env, ENVVAR_SCRIPT_URL, var);
+         table_setn(r->subprocess_env, ENVVAR_SCRIPT_URL, var);
     }
 
     /*
@@ -943,7 +943,7 @@ static int hook_uri2file(request_rec *r)
 #else
     var = pstrcat(r->pool, "http://", thisserver, thisport, thisurl, NULL);
 #endif
-    table_set(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
+    table_setn(r->subprocess_env, ENVVAR_SCRIPT_URI, var);
 
 
     /* if filename was not initially set,
@@ -1028,7 +1028,7 @@ static int hook_uri2file(request_rec *r)
                 n = REDIRECT;
 
             /* now do the redirection */
-            table_set(r->headers_out, "Location", r->filename);
+            table_setn(r->headers_out, "Location", r->filename);
             rewritelog(r, 1, "redirect to %s [REDIRECT/%d]", r->filename, n);
             return n;
         }
@@ -1298,7 +1298,7 @@ static int hook_fixup(request_rec *r)
                 n = REDIRECT;
 
             /* now do the redirection */
-            table_set(r->headers_out, "Location", r->filename);
+            table_setn(r->headers_out, "Location", r->filename);
             rewritelog(r, 1, "[per-dir %s] redirect to %s [REDIRECT/%d]",
                        dconf->directory, r->filename, n);
             return n;
@@ -1873,7 +1873,7 @@ static int apply_rewrite_rule(request_rec *r, rewriterule_entry *p,
      *  MIME API-hook function.
      */
     if (p->forced_mimetype != NULL) {
-        table_set(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
+        table_setn(r->notes, REWRITE_FORCED_MIMETYPE_NOTEVAR,
                   p->forced_mimetype);
         if (perdir == NULL)
             rewritelog(r, 2, "remember %s to have MIME-type '%s'",

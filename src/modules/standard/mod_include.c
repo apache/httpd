@@ -112,36 +112,36 @@ static void add_include_vars(request_rec *r, char *timefmt)
     char *t;
     time_t date = r->request_time;
 
-    table_set(e, "DATE_LOCAL", ht_time(r->pool, date, timefmt, 0));
-    table_set(e, "DATE_GMT", ht_time(r->pool, date, timefmt, 1));
-    table_set(e, "LAST_MODIFIED",
+    table_setn(e, "DATE_LOCAL", ht_time(r->pool, date, timefmt, 0));
+    table_setn(e, "DATE_GMT", ht_time(r->pool, date, timefmt, 1));
+    table_setn(e, "LAST_MODIFIED",
               ht_time(r->pool, r->finfo.st_mtime, timefmt, 0));
-    table_set(e, "DOCUMENT_URI", r->uri);
-    table_set(e, "DOCUMENT_PATH_INFO", r->path_info);
+    table_setn(e, "DOCUMENT_URI", r->uri);
+    table_setn(e, "DOCUMENT_PATH_INFO", r->path_info);
 #ifndef WIN32
     pw = getpwuid(r->finfo.st_uid);
     if (pw) {
-        table_set(e, "USER_NAME", pw->pw_name);
+        table_setn(e, "USER_NAME", pstrdup(r->pool, pw->pw_name));
     }
     else {
         char uid[16];
         ap_snprintf(uid, sizeof(uid), "user#%lu",
                     (unsigned long) r->finfo.st_uid);
-        table_set(e, "USER_NAME", uid);
+        table_setn(e, "USER_NAME", pstrdup(r->pool, uid));
     }
 #endif /* ndef WIN32 */
 
     if ((t = strrchr(r->filename, '/'))) {
-        table_set(e, "DOCUMENT_NAME", ++t);
+        table_setn(e, "DOCUMENT_NAME", ++t);
     }
     else {
-        table_set(e, "DOCUMENT_NAME", r->uri);
+        table_setn(e, "DOCUMENT_NAME", r->uri);
     }
     if (r->args) {
         char *arg_copy = pstrdup(r->pool, r->args);
 
         unescape_url(arg_copy);
-        table_set(e, "QUERY_STRING_UNESCAPED",
+        table_setn(e, "QUERY_STRING_UNESCAPED",
                   escape_shell_cmd(r->pool, arg_copy));
     }
 }
@@ -740,11 +740,11 @@ static int include_cmd_child(void *arg)
     if (r->path_info && r->path_info[0] != '\0') {
         request_rec *pa_req;
 
-        table_set(env, "PATH_INFO", escape_shell_cmd(r->pool, r->path_info));
+        table_setn(env, "PATH_INFO", escape_shell_cmd(r->pool, r->path_info));
 
         pa_req = sub_req_lookup_uri(escape_uri(r->pool, r->path_info), r);
         if (pa_req->filename) {
-            table_set(env, "PATH_TRANSLATED",
+            table_setn(env, "PATH_TRANSLATED",
                       pstrcat(r->pool, pa_req->filename, pa_req->path_info,
                               NULL));
         }
@@ -753,9 +753,9 @@ static int include_cmd_child(void *arg)
     if (r->args) {
         char *arg_copy = pstrdup(r->pool, r->args);
 
-        table_set(env, "QUERY_STRING", r->args);
+        table_setn(env, "QUERY_STRING", r->args);
         unescape_url(arg_copy);
-        table_set(env, "QUERY_STRING_UNESCAPED",
+        table_setn(env, "QUERY_STRING_UNESCAPED",
                   escape_shell_cmd(r->pool, arg_copy));
     }
 
@@ -941,9 +941,9 @@ static int handle_config(FILE *in, request_rec *r, char *error, char *tf,
             time_t date = r->request_time;
 
             parse_string(r, tag_val, tf, MAX_STRING_LEN, 0);
-            table_set(env, "DATE_LOCAL", ht_time(r->pool, date, tf, 0));
-            table_set(env, "DATE_GMT", ht_time(r->pool, date, tf, 1));
-            table_set(env, "LAST_MODIFIED",
+            table_setn(env, "DATE_LOCAL", ht_time(r->pool, date, tf, 0));
+            table_setn(env, "DATE_GMT", ht_time(r->pool, date, tf, 1));
+            table_setn(env, "LAST_MODIFIED",
                       ht_time(r->pool, r->finfo.st_mtime, tf, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
@@ -2005,7 +2005,7 @@ static int handle_set(FILE *in, request_rec *r, const char *error)
                 return -1;
             }
             parse_string(r, tag_val, parsed_string, sizeof(parsed_string), 0);
-            table_set(r->subprocess_env, var, parsed_string);
+            table_setn(r->subprocess_env, var, pstrdup(r->pool, parsed_string));
         }
         else {
             aplog_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, r->server,
@@ -2070,9 +2070,9 @@ static void send_parsed_content(FILE *f, request_rec *r)
     if (r->args) {              /* add QUERY stuff to env cause it ain't yet */
         char *arg_copy = pstrdup(r->pool, r->args);
 
-        table_set(r->subprocess_env, "QUERY_STRING", r->args);
+        table_setn(r->subprocess_env, "QUERY_STRING", r->args);
         unescape_url(arg_copy);
-        table_set(r->subprocess_env, "QUERY_STRING_UNESCAPED",
+        table_setn(r->subprocess_env, "QUERY_STRING_UNESCAPED",
                   escape_shell_cmd(r->pool, arg_copy));
     }
 

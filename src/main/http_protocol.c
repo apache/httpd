@@ -138,7 +138,7 @@ API_EXPORT(int) set_byterange(request_rec *r)
         range = table_get(r->headers_in, "Request-Range");
 
     if (!range || strncmp(range, "bytes=", 6)) {
-        table_set(r->headers_out, "Accept-Ranges", "bytes");
+        table_setn(r->headers_out, "Accept-Ranges", "bytes");
         return 0;
     }
 
@@ -165,9 +165,9 @@ API_EXPORT(int) set_byterange(request_rec *r)
 
         ap_snprintf(ts, sizeof(ts), "bytes %ld-%ld/%ld",
                     range_start, range_end, r->clength);
-        table_set(r->headers_out, "Content-Range", ts);
+        table_setn(r->headers_out, "Content-Range", pstrdup(r->pool, ts));
         ap_snprintf(ts, sizeof(ts), "%ld", range_end - range_start + 1);
-        table_set(r->headers_out, "Content-Length", ts);
+        table_setn(r->headers_out, "Content-Length", pstrdup(r->pool, ts));
     }
     else {
         /* a multiple range */
@@ -181,7 +181,7 @@ API_EXPORT(int) set_byterange(request_rec *r)
         r->boundary = pstrdup(r->pool, boundary);
         while (internal_byterange(0, &tlength, r, &r_range, NULL, NULL));
         ap_snprintf(ts, sizeof(ts), "%ld", tlength);
-        table_set(r->headers_out, "Content-Length", ts);
+        table_setn(r->headers_out, "Content-Length", pstrdup(r->pool, ts));
     }
 
     r->status = PARTIAL_CONTENT;
@@ -259,7 +259,7 @@ API_EXPORT(int) set_content_length(request_rec *r, long clength)
     r->clength = clength;
 
     ap_snprintf(ts, sizeof(ts), "%ld", clength);
-    table_set(r->headers_out, "Content-Length", ts);
+    table_setn(r->headers_out, "Content-Length", pstrdup(r->pool, ts));
 
     return 0;
 }
@@ -331,8 +331,8 @@ int set_keepalive(request_rec *r)
             else
                 ap_snprintf(header, sizeof(header), "timeout=%d",
                             r->server->keep_alive_timeout);
-            table_set(r->headers_out, "Keep-Alive", header);
-            table_merge(r->headers_out, "Connection", "Keep-Alive");
+            table_setn(r->headers_out, "Keep-Alive", pstrdup(r->pool, header));
+            table_mergen(r->headers_out, "Connection", "Keep-Alive");
         }
 
         return 1;
@@ -347,7 +347,7 @@ int set_keepalive(request_rec *r)
      * to a HTTP/1.1 client. Better safe than sorry.
      */
     if (!wimpy)
-      table_merge(r->headers_out, "Connection", "close");
+	table_mergen(r->headers_out, "Connection", "close");
 
     r->connection->keepalive = 0;
 
@@ -502,7 +502,7 @@ API_EXPORT(void) set_etag(request_rec *r)
     }
 
     etag = weak_etag + ((r->request_time - r->mtime > 1) ? 2 : 0);
-    table_set(r->headers_out, "ETag", etag);
+    table_setn(r->headers_out, "ETag", pstrdup(r->pool, etag));
 }
 
 /*
@@ -514,7 +514,7 @@ API_EXPORT(void) set_last_modified(request_rec *r)
 {
     time_t mod_time = rationalize_mtime(r, r->mtime);
 
-    table_set(r->headers_out, "Last-Modified",
+    table_setn(r->headers_out, "Last-Modified",
               gm_timestr_822(r->pool, mod_time));
 }
 
@@ -753,8 +753,10 @@ void get_mime_headers(request_rec *r)
      * overflow (len == MAX_STRING_LEN-1)?
      */
     while ((len = getline(field, MAX_STRING_LEN, c->client, 1)) > 0) {
+        char *copy = palloc(r->pool, len + 1);
+        memcpy(copy, field, len + 1);
 
-        if (!(value = strchr(field, ':')))      /* Find the colon separator */
+        if (!(value = strchr(copy, ':')))      /* Find the colon separator */
             continue;           /* or should puke 400 here */
 
         *value = '\0';
@@ -762,7 +764,7 @@ void get_mime_headers(request_rec *r)
         while (isspace(*value))
             ++value;            /* Skip to start of value   */
 
-        table_merge(r->headers_in, field, value);
+        table_mergen(r->headers_in, copy, value);
     }
 }
 
@@ -909,7 +911,7 @@ API_EXPORT(void) note_basic_auth_failure(request_rec *r)
     if (strcasecmp(auth_type(r), "Basic"))
         note_auth_failure(r);
     else
-        table_set(r->err_headers_out,
+        table_setn(r->err_headers_out,
                   r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
                   pstrcat(r->pool, "Basic realm=\"", auth_name(r), "\"",
                           NULL));
@@ -920,7 +922,7 @@ API_EXPORT(void) note_digest_auth_failure(request_rec *r)
     char nonce[256];
 
     ap_snprintf(nonce, sizeof(nonce), "%lu", r->request_time);
-    table_set(r->err_headers_out,
+    table_setn(r->err_headers_out,
               r->proxyreq ? "Proxy-Authenticate" : "WWW-Authenticate",
               pstrcat(r->pool, "Digest realm=\"", auth_name(r),
                       "\", nonce=\"", nonce, "\"", NULL));
@@ -1187,8 +1189,8 @@ int send_http_options(request_rec *r)
 
     basic_http_header(r);
 
-    table_set(r->headers_out, "Content-Length", "0");
-    table_set(r->headers_out, "Allow", make_allow(r));
+    table_setn(r->headers_out, "Content-Length", "0");
+    table_setn(r->headers_out, "Allow", make_allow(r));
     set_keepalive(r);
 
     table_do((int (*) (void *, const char *, const char *)) send_header_field,
@@ -1252,37 +1254,37 @@ API_EXPORT(void) send_http_header(request_rec *r)
     set_keepalive(r);
 
     if (r->chunked) {
-        table_merge(r->headers_out, "Transfer-Encoding", "chunked");
+        table_mergen(r->headers_out, "Transfer-Encoding", "chunked");
         table_unset(r->headers_out, "Content-Length");
     }
 
     if (r->byterange > 1)
-        table_set(r->headers_out, "Content-Type",
+        table_setn(r->headers_out, "Content-Type",
                   pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
                           "byteranges; boundary=", r->boundary, NULL));
     else if (r->content_type)
-        table_set(r->headers_out, "Content-Type", r->content_type);
+        table_setn(r->headers_out, "Content-Type", r->content_type);
     else
-        table_set(r->headers_out, "Content-Type", default_type(r));
+        table_setn(r->headers_out, "Content-Type", default_type(r));
 
     if (r->content_encoding)
-        table_set(r->headers_out, "Content-Encoding", r->content_encoding);
+        table_setn(r->headers_out, "Content-Encoding", r->content_encoding);
 
     if (r->content_languages && r->content_languages->nelts) {
         for (i = 0; i < r->content_languages->nelts; ++i) {
-            table_merge(r->headers_out, "Content-Language",
+            table_mergen(r->headers_out, "Content-Language",
                         ((char **) (r->content_languages->elts))[i]);
         }
     }
     else if (r->content_language)
-        table_set(r->headers_out, "Content-Language", r->content_language);
+        table_setn(r->headers_out, "Content-Language", r->content_language);
 
     /*
      * Control cachability for non-cachable responses if not already set by
      * some other part of the server configuration.
      */
     if (r->no_cache && !table_get(r->headers_out, "Expires"))
-        table_add(r->headers_out, "Expires",
+        table_addn(r->headers_out, "Expires",
                   gm_timestr_822(r->pool, r->request_time));
 
     /* Send the entire table of header fields, terminated by an empty line. */
@@ -1511,7 +1513,8 @@ API_EXPORT(long) get_client_block(request_rec *r, char *buffer, int bufsiz)
                 get_mime_headers(r);
                 ap_snprintf(buffer, bufsiz, "%ld", r->read_length);
                 table_unset(r->headers_in, "Transfer-Encoding");
-                table_set(r->headers_in, "Content-Length", buffer);
+                table_setn(r->headers_in, "Content-Length",
+                    pstrdup(r->pool, buffer));
                 return 0;
             }
             r->remaining = -1;  /* Indicate footers in-progress */
@@ -1996,7 +1999,7 @@ void send_error_response(request_rec *r, int recursive_error)
 
         if (location && *location
             && (is_HTTP_REDIRECT(status) || status == HTTP_CREATED))
-            table_set(r->headers_out, "Location", location);
+            table_setn(r->headers_out, "Location", location);
 
         r->content_language = NULL;
         r->content_languages = NULL;
@@ -2005,7 +2008,7 @@ void send_error_response(request_rec *r, int recursive_error)
         r->content_type = "text/html";
 
         if ((status == METHOD_NOT_ALLOWED) || (status == NOT_IMPLEMENTED))
-            table_set(r->headers_out, "Allow", make_allow(r));
+            table_setn(r->headers_out, "Allow", make_allow(r));
 
         send_http_header(r);
 

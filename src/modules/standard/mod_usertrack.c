@@ -135,8 +135,8 @@ static void make_cookie(request_rec *r)
     struct timezone tz = {0, 0};
 #endif
     /* 1024 == hardcoded constants */
-    char *new_cookie = palloc(r->pool, 1024);
-    char *cookiebuf = palloc(r->pool, 1024);
+    char new_cookie[1024];
+    char cookiebuf[1024];
     char *dot;
     const char *rname = pstrdup(r->pool,
                            get_remote_host(r->connection, r->per_dir_config,
@@ -200,8 +200,8 @@ static void make_cookie(request_rec *r)
     else
         ap_snprintf(new_cookie, 1024, "%s%s; path=/", COOKIE_NAME, cookiebuf);
 
-    table_set(r->headers_out, "Set-Cookie", new_cookie);
-    table_set(r->notes, "cookie", cookiebuf);   /* log first time */
+    table_setn(r->headers_out, "Set-Cookie", pstrdup(r->pool, new_cookie));
+    table_setn(r->notes, "cookie", pstrdup(r->pool, cookiebuf));   /* log first time */
     return;
 }
 
@@ -226,7 +226,7 @@ static int spot_cookie(request_rec *r)
                 *cookieend = '\0';      /* Ignore anything after a ; */
 
             /* Set the cookie in a note, for logging */
-            table_set(r->notes, "cookie", cookiebuf);
+            table_setn(r->notes, "cookie", cookiebuf);
 
             return DECLINED;    /* Theres already a cookie, no new one */
         }

@@ -194,7 +194,8 @@ static int translate_userdir(request_rec *r)
     (userdir_config *) get_module_config(server_conf, &userdir_module);
     char *name = r->uri;
     const char *userdirs = pstrdup(r->pool, s_cfg->userdir);
-    const char *w, *dname, *redirect;
+    const char *w, *dname;
+    char *redirect;
     char *x = NULL;
     struct stat statbuf;
 
@@ -277,7 +278,7 @@ static int translate_userdir(request_rec *r)
                 if (strchr(x, ':')) {
 #endif                          /* WIN32 */
                     redirect = pstrcat(r->pool, x, w, userdir, dname, NULL);
-                    table_set(r->headers_out, "Location", redirect);
+                    table_setn(r->headers_out, "Location", redirect);
                     return REDIRECT;
                 }
                 else
@@ -288,7 +289,7 @@ static int translate_userdir(request_rec *r)
         }
         else if (strchr(userdir, ':')) {
             redirect = pstrcat(r->pool, userdir, "/", w, dname, NULL);
-            table_set(r->headers_out, "Location", redirect);
+            table_setn(r->headers_out, "Location", redirect);
             return REDIRECT;
         }
         else {
