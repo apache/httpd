@@ -2395,7 +2395,6 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
     ap_bucket *b;
     ap_bucket_brigade *bb = ap_brigade_create(r->pool);
 
-
     if (!r->read_chunked) {     /* Content-length read */
         const char *tempbuf;
 
@@ -2409,15 +2408,15 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
                 apr_getsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, &timeout);
                 apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, 0);
                 r->connection->remaining = len_to_read;
-                rv = ap_get_brigade(r->input_filters, bb); 
-                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
-            }
-            if (AP_BRIGADE_EMPTY(bb)) {
-                if (rv != APR_SUCCESS) {
+                if (ap_get_brigade(r->input_filters, bb) != APR_SUCCESS) {
+                    /* if we actually fail here, we want to just return and
+                     * stop trying to read data from the client.
+                     */
+                    apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
                     r->connection->keepalive = -1;
                     return -1;
                 }
-                return 0;
+                apr_setsocketopt(r->connection->client->bsock, APR_SO_TIMEOUT, timeout);
             }
             b = AP_BRIGADE_FIRST(bb);
             
@@ -2445,7 +2444,7 @@ API_EXPORT(long) ap_get_client_block(request_rec *r, char *buffer, int bufsiz)
         r->remaining -= len_to_read;
         return len_to_read;
     }
-
+   
     /*
      * Handle chunked reading Note: we are careful to shorten the input
      * bufsiz so that there will always be enough space for us to add a CRLF
