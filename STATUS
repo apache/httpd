@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2004/03/24 05:59:21 $]
+Last modified at [$Date: 2004/03/24 19:50:56 $]
 
 Release:
 
@@ -86,14 +86,14 @@ PATCHES TO BACKPORT FROM 2.1
     *) Michael Corcoran's patch to listen.c to avoid segfault when
        there are no Listen directives.
            server/listen.c: r1.101
-       +1: trawick, stoddard
+       +1: trawick, stoddard, rederpj
 
     *) Fix memory corruption problem with ap_custom_response()
        function.  This turns Apache + a popular third-party module
        into a crash-a-matic :(
            include/http_core.h: r1.82
            server/core.c: r1.268
-       +1: trawick, stoddard
+       +1: trawick, stoddard, rederpj
 
     *) Limit the concurrency in 'ab' to MAX_CONCURRENCY to prevent a 
        segmentation fault.
