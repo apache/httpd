@@ -235,7 +235,7 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
     /*
      * Try to kill the internals of the SSL library.
      */
-#ifdef OPENSSL_VERSION_NUMBER
+#ifdef HAVE_OPENSSL
 #if OPENSSL_VERSION_NUMBER >= 0x00907001
     /* Corresponds to OPENSSL_load_builtin_modules():
      * XXX: borrowed from apps.h, but why not CONF_modules_free()
@@ -249,7 +249,11 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     ENGINE_cleanup();
 #endif
+#ifdef HAVE_OPENSSL
+#if OPENSSL_VERSION_NUMBER >= 0x00907001
     CRYPTO_cleanup_all_ex_data();
+#endif
+#endif
     ERR_remove_state(0);
     ERR_free_strings();
     /* 
@@ -257,6 +261,7 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
      *       (when enabled) at this late stage in the game:
      * CRYPTO_mem_leaks_fp(stderr);
      */
+    return APR_SUCCESS;
 }
 
 static int ssl_hook_pre_config(apr_pool_t *pconf,
@@ -267,12 +272,14 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
      * code can successfully test the SSL environment.
      */
     CRYPTO_malloc_init();
+#ifdef HAVE_OPENSSL
     ERR_load_crypto_strings();
+#endif
     SSL_library_init();
 #if HAVE_ENGINE_LOAD_BUILTIN_ENGINES
     ENGINE_load_builtin_engines();
 #endif
-#ifdef OPENSSL_VERSION_NUMBER
+#ifdef HAVE_OPENSSL
 #if OPENSSL_VERSION_NUMBER >= 0x00907001
     OPENSSL_load_builtin_modules();
 #endif
