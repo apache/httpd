@@ -1,4 +1,6 @@
 Changes with Apache 2.0.41
+  *) Implement ThreadLimit directive in the Windows MPM.
+     [Bill Stoddard]
 
   *) Remove CacheOn config directive since it is set but never checked.
      No sense wasting cycles on unused code. Besides, the only truly
