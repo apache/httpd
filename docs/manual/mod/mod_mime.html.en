@@ -419,7 +419,7 @@ language</td></tr>
 
     <div class="example"><p><code>
       AddLanguage en .en<br />
-      AddLanguage en-uk .en<br />
+      AddLanguage en-gb .en<br />
       AddLanguage en-us .en
     </code></p></div>
 
