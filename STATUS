@@ -27,8 +27,15 @@ FINAL RELEASE SHOWSTOPPERS:
       PATCH: Make the code wrapped by unvoted_DISALLOW_DEVICE_ACCESS
              the default in ap_pcfg_openfile()
       Status: Martin +1, Jim +1
-      -- This still doesn't fix it for htpasswd files... how about other files
-         like the mime types file?
+        Brian: This still doesn't fix it for htpasswd files...
+               how about other files like the mime types file?
+        Jim: It looks like it does fix it for htpasswd (assuming
+	     htpasswd files are accessed via get_pw()), and group
+	     files (assuming accessed by groups_for_user()), the
+	     mod_mime MIME-file, IMAP handler imap-file and digest
+	     password file. What others are we concerned about?
+        Dean: ap_pcfg_openfile() should use pfopen() instead of
+              fopen(). Jim agrees.
 
     * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
       See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
