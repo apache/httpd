@@ -183,12 +183,14 @@
  * 19980917 (1.3.2-dev) - bs2000: changed os_set_authfile() to os_set_account()
  * 19981108 (1.3.4-dev) - added ap_method_number_of()
  *                      - changed value of M_INVALID and added WebDAV methods
+ * 19981108.1           - ap_exists_config_define() is now public (minor bump)
+ *
  */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 19981108
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR	/* backward compat */
 
 /* Useful for testing for features. */

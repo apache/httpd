@@ -1421,7 +1421,7 @@ static const char *start_ifmod(cmd_parms *cmd, void *dummy, char *arg)
     return NULL;
 }
 
-static int ap_exists_config_define(char *name)
+API_EXPORT(int) ap_exists_config_define(char *name)
 {
     char **defines;
     int i;

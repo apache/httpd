@@ -133,6 +133,7 @@ API_EXPORT(const char *) ap_get_server_name(const request_rec *r);
 API_EXPORT(unsigned) ap_get_server_port(const request_rec *r);
 API_EXPORT(unsigned long) ap_get_limit_req_body(const request_rec *r);
 API_EXPORT(void) ap_custom_response(request_rec *r, int status, char *string);
+API_EXPORT(int) ap_exists_config_define(char *name);
 
 /* Authentication stuff.  This is one of the places where compatibility
  * with the old config files *really* hurts; they don't discriminate at
