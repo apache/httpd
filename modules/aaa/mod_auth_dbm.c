@@ -77,13 +77,13 @@
 #include "http_protocol.h"
 #include "http_request.h"   /* for ap_hook_(check_user_id | auth_checker)*/
 
-#if defined(WIN32) /* XXX: A better feature test is needed here */
-#include "sdbm.h"
-#define DBM SDBM
-#define datum sdbm_datum
-#define dbm_open sdbm_open
-#define dbm_fetch sdbm_fetch
-#define dbm_close sdbm_close
+#if defined(AP_AUTH_DBM_USE_APR)
+#include "apr_dbm.h"
+#define DBM apr_dbm_t
+#define datum apr_datum_t
+#define dbm_open apr_dbm_open
+#define dbm_fetch apr_dbm_fetch
+#define dbm_close apr_dbm_close
 #elif defined(__GLIBC__) && defined(__GLIBC_MINOR__) \
     && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
 #include <db1/ndbm.h>
@@ -160,7 +160,7 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
     DBM *f;
     datum d, q;
     char *pw = NULL;
-#ifdef WIN32 /* this is only used on Windows, so only define it on Windows */
+#ifdef AP_AUTH_DBM_USE_APR
     apr_status_t retval;
 #endif
     q.dptr = user;
@@ -170,19 +170,26 @@ static char *get_dbm_pw(request_rec *r, char *user, char *auth_dbmpwfile)
     q.dsize = strlen(q.dptr) + 1;
 #endif
 
-#ifdef WIN32 /* XXX: Same bad symbol here - need feature macro */
-    if (!(retval = dbm_open(&f, auth_dbmpwfile, O_RDONLY, 0664, r->pool))) {
+#ifdef AP_AUTH_DBM_USE_APR
+    if (!(retval = dbm_open(&f, auth_dbmpwfile, APR_DBM_READONLY, r->pool))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, retval, r,
 		    "could not open sdbm auth file: %s", auth_dbmpwfile);
+	return NULL;
+    }
+    if (dbm_fetch(f, q, &d) == APR_SUCCESS)
+        /* sorry for the obscurity ... falls through to the 
+         * if (d.dptr) {  block ...
+         */
+
 #else
     if (!(f = dbm_open(auth_dbmpwfile, O_RDONLY, 0664))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
 		    "could not open dbm auth file: %s", auth_dbmpwfile);
-#endif
 	return NULL;
     }
-
     d = dbm_fetch(f, q);
+
+#endif
 
     if (d.dptr) {
 	pw = apr_palloc(r->pool, d.dsize + 1);
