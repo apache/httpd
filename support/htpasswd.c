@@ -126,7 +126,6 @@
 #define ALG_CRYPT 1
 #define ALG_APMD5 2
 #define ALG_APSHA 3 
-#define ALG_APMD5_TRUE 4
 
 #define ERR_FILEPERM 1
 #define ERR_SYNTAX 2
@@ -207,23 +206,6 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         apr_md5_encode((const char *)pw, (const char *)salt,
                      cpw, sizeof(cpw));
         break;
-    case ALG_APMD5_TRUE:
-    {
-        const char *hex = "0123456789abcdef";
-        unsigned char hash[MD5_DIGESTSIZE];
-        char *r;
-        int i;
-
-        /* Take the MD5 hash of the string argument.  */
-        apr_md5(hash, (const unsigned char*)pw, strlen(pw));
-
-        for (i = 0, r = cpw; i < MD5_DIGESTSIZE; i++) {
-            *r++ = hex[hash[i] >> 4];
-            *r++ = hex[hash[i] & 0xF];
-        }
-        *r = '\0';
-        break;
-    }
 
     case ALG_PLAIN:
         /* XXX this len limitation is not in sync with any HTTPd len. */
@@ -274,8 +256,6 @@ static void usage(void)
         " (default)"
 #endif
         ".\n");
-    apr_file_printf(errfile, " -5  Force true MD5 encryption of the "
-                             "password.\n");
     apr_file_printf(errfile, " -d  Force CRYPT encryption of the password"
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
             " (default)"
@@ -363,9 +343,6 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
             }
             else if (*arg == 'm') {
                 *alg = ALG_APMD5;
-            }
-            else if (*arg == '5') {
-                *alg = ALG_APMD5_TRUE;
             }
             else if (*arg == 's') {
                 *alg = ALG_APSHA;
