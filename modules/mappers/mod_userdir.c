@@ -362,12 +362,6 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
         return NULL;
     }
 
-    /* XXX - NOT thread-safe! Need APR version of this function */
-    if ((pw = getpwnam(username)) == NULL) {
-        /* This should never happen. */
-        return NULL;
-    }
-    
     if ((ugid = apr_palloc(r->pool, sizeof(ap_unix_identity_t *))) == NULL) {
         return NULL;
     }
