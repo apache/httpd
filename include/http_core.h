@@ -447,6 +447,7 @@ typedef struct {
     const char *handler;         /* forced with SetHandler */
     const char *output_filters;  /* forced with SetOutputFilters */
     const char *input_filters;   /* forced with SetInputFilters */
+    int accept_path_info;
 } core_dir_config;
 
 /* Per-server core configuration */
