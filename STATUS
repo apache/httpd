@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/09/24 11:44:54 $]
+Last modified at [$Date: 2003/09/27 18:13:12 $]
 
 Release:
 
@@ -242,12 +242,12 @@ PATCHES TO PORT FROM 2.1
     * mod_ssl: Fix segfaults after renegotiation failure.  PR 21370
         modules/ssl/ssl_engine_io.c:  r1.110
         modules/ssl/ssl_engine_kernel.c: r1.196
-      +1: trawick, jorton
+      +1: trawick, jorton, striker
 
     * use the appropriate folder icon, even if there's a directoryindex
       listed file in the particular folder. PR 9587
         modules/generators/mod_autoindex.c r1.120
-      +1: nd, trawick
+      +1: nd, trawick, striker
 
     * More ab fixes; r1.129 fixes what looks like a trivial error in the 
       SSL support; r1.130 adds some state-handling fixes related to
@@ -333,7 +333,7 @@ PATCHES TO PORT FROM 2.1
     * mod_usertrack: use a regex instead of strstr() to fix false-positive
       matches on the user tracking cookie's name.
         modules/metadata/mod_usertrack.c r1.42
-      +1: jwoolley, trawick
+      +1: jwoolley, trawick, striker
 
 CURRENT RELEASE NOTES:
 
