@@ -892,16 +892,24 @@ static void process_socket(pool *p, struct sockaddr *sa_client, int csd)
 }
 
 static void *worker_thread(void *);
+static void *worker_thread_one_child(void *);
 
 /* Starts a thread as long as we're below max_threads */
 static int start_thread(worker_thread_info *thread_info)
 {
     pthread_t thread;
+    void *(*thread_function)(void *);
 
     pthread_mutex_lock(&worker_thread_count_mutex);
     if (worker_thread_count < max_threads) {
+        if (num_daemons == 1) {
+            thread_function = worker_thread_one_child;
+        }
+        else {
+            thread_function = worker_thread;
+        }
         worker_thread_count++;
-        if (pthread_create(&thread, &(thread_info->attr), worker_thread, thread_info)) {
+        if (pthread_create(&thread, &(thread_info->attr), thread_function, thread_info)) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, server_conf,
                          "pthread_create: unable to create worker thread");
             /* In case system resources are maxxed out, we don't want
@@ -954,6 +962,128 @@ static void check_pipe_of_death(void)
 
 /* idle_thread_count should be incremented before starting a worker_thread */
 
+static void *worker_thread_one_child(void *arg)
+{
+    struct sockaddr sa_client;
+    int csd = -1;
+    pool *tpool;                /* Pool for this thread           */
+    pool *ptrans;                /* Pool for per-transaction stuff */
+    int sd = -1;
+    int srv;
+    int poll_count = 0;
+    static int curr_pollfd = 0;
+    size_t len = sizeof(struct sockaddr);
+    worker_thread_info *thread_info = arg;
+    int thread_just_started = 1;
+
+    pthread_mutex_lock(&thread_info->mutex);
+    tpool = ap_make_sub_pool(thread_info->pool);
+    pthread_mutex_unlock(&thread_info->mutex);
+    ptrans = ap_make_sub_pool(tpool);
+
+    while (!workers_may_exit) {
+        workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
+        if (workers_may_exit) break;
+        if (!thread_just_started) {
+            pthread_mutex_lock(&idle_thread_count_mutex);
+            if (idle_thread_count < max_spare_threads) {
+                idle_thread_count++;
+                pthread_mutex_unlock(&idle_thread_count_mutex);
+            }
+            else {
+                pthread_mutex_unlock(&idle_thread_count_mutex);
+                break;
+            }
+        }
+        else {
+            thread_just_started = 0;
+        }
+        SAFE_ACCEPT(intra_mutex_on(0));
+        while (!workers_may_exit) {
+            if (poll_count > 0) {
+                /* Just check the pipe_of_death */
+                srv = poll(listenfds, 1, 0);
+            } else {
+                srv = poll_count = poll(listenfds, num_listenfds + 1, -1);
+                curr_pollfd = 0;
+            }
+            if (srv < 0) {
+                if (errno == EINTR) {
+                    continue;
+                }
+
+                /* poll() will only return errors in catastrophic
+                 * circumstances. Let's try exiting gracefully, for now. */
+                ap_log_error(APLOG_MARK, APLOG_ERR, (const server_rec *)
+                             ap_get_server_conf(), "poll: (listen)");
+                workers_may_exit = 1;
+            }
+            if (workers_may_exit) break;
+
+            if (listenfds[0].revents & POLLIN) {
+                /* A process got a signal on the shutdown pipe. Check if
+                 * we're the lucky process to die. */
+                check_pipe_of_death();
+                continue;
+            }
+
+            if (num_listenfds == 1) {
+                sd = ap_listeners->fd;
+                poll_count = 0;
+                goto got_fd;
+            }
+            else {
+                /* find a listener. */
+                for(;;) {
+                    curr_pollfd++;
+                    /* XXX: Should we check for POLLERR? */
+                    if (listenfds[curr_pollfd].revents & POLLIN) {
+                        poll_count--;
+                        sd = listenfds[curr_pollfd].fd;
+                        goto got_fd;
+                    }
+                }
+            }
+        }
+    got_fd:
+        if (!workers_may_exit) {
+            csd = ap_accept(sd, &sa_client, &len);
+            SAFE_ACCEPT(intra_mutex_off(0));
+            pthread_mutex_lock(&idle_thread_count_mutex);
+            if (idle_thread_count > min_spare_threads) {
+                idle_thread_count--;
+            }
+            else {
+                if (!start_thread(thread_info)) {
+                    idle_thread_count--;
+                }
+            }
+            pthread_mutex_unlock(&idle_thread_count_mutex);
+        } else {
+            SAFE_ACCEPT(intra_mutex_off(0));
+            pthread_mutex_lock(&idle_thread_count_mutex);
+            idle_thread_count--;
+            pthread_mutex_unlock(&idle_thread_count_mutex);
+            break;
+        }
+        process_socket(ptrans, &sa_client, csd);
+        ap_clear_pool(ptrans);
+        requests_this_child--;
+    }
+
+    ap_destroy_pool(tpool);
+    pthread_mutex_lock(&worker_thread_count_mutex);
+    worker_thread_count--;
+    if (worker_thread_count == 0) {
+        /* All the threads have exited, now finish the shutdown process
+         * by signalling the sigwait thread */
+        kill(my_pid, SIGTERM);
+    }
+    pthread_mutex_unlock(&worker_thread_count_mutex);
+
+    return NULL;
+}
+
 static void *worker_thread(void *arg)
 {
     struct sockaddr sa_client;
@@ -972,8 +1102,6 @@ static void *worker_thread(void *arg)
     pthread_mutex_unlock(&thread_info->mutex);
     ptrans = ap_make_sub_pool(tpool);
 
-    /* TODO: Switch to a system where threads reuse the results from earlier
-       poll calls - manoj */
     while (!workers_may_exit) {
         workers_may_exit |= (max_requests_per_child != 0) && (requests_this_child <= 0);
         if (workers_may_exit) break;
