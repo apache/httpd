@@ -282,8 +282,13 @@ static apr_status_t churn (SSLFilterRec *pRec,
         
         assert(n >= 0 && (apr_size_t)n == len);
 
-        ssl_hook_process_connection (pRec);
-
+        if ((ret = ssl_hook_process_connection(pRec)) != APR_SUCCESS) {
+            /* if this is the case, ssl connection has been shutdown
+             * and pRec->pssl has been freed
+             */
+            return ret;
+        }
+        
         /* pass along all of the current BIO */
         while ((n = ssl_io_hook_read(pRec->pssl,
                                      (unsigned char *)buf, sizeof(buf))) > 0)
