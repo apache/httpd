@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2002/10/04 15:51:40 $
+Last modified: $Date: 2002/10/05 20:38:15 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -150,8 +150,6 @@ http://httpd.apache.org/docs-project/docsformat.html
 
 index.html.en                      # leave in html?
 cgi_path.html.en
-howto/cgi.html.en
-howto/ssi.html.en
 howto/auth.html.en
 misc/custom_errordocs.html         # obsolete?
 misc/descriptors.html              # obsolete?
