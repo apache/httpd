@@ -378,18 +378,6 @@ DefaultType text/plain
 #ErrorDocument 402 http://www.example.com/subscription_info.html
 #
 
-<IfModule setenvif_module>
-    #
-    # The following directives modify normal HTTP response behavior to
-    # handle known problems with browser implementations.
-    #
-    BrowserMatch "Mozilla/2" nokeepalive
-    BrowserMatch "MSIE 4\.0b2;" nokeepalive downgrade-1.0 force-response-1.0
-    BrowserMatch "RealPlayer 4\.0" force-response-1.0
-    BrowserMatch "Java/1\.0" force-response-1.0
-    BrowserMatch "JDK/1\.0" force-response-1.0
-</IfModule>
-
 #
 # EnableMMAP and EnableSendfile: On systems that support it, 
 # memory-mapping or the sendfile syscall is used to deliver
