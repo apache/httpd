@@ -382,7 +382,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
         }
 
-        /* don't deflate responses with zero length e.g. proxied 304's */
+        /* don't deflate responses with zero length e.g. proxied 304's but
+         * we do set the header on eos_only at this point for headers_filter
+         */
         for (bkt = APR_BRIGADE_FIRST(bb);
              bkt != APR_BRIGADE_SENTINEL(bb);
              bkt = APR_BUCKET_NEXT(bkt))
@@ -393,6 +395,13 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
         }
         if (eos_only) {
+            if (!encoding || !strcasecmp(encoding, "identity")) {
+                apr_table_set(r->headers_out, "Content-Encoding", "gzip");
+            }
+            else {
+                apr_table_merge(r->headers_out, "Content-Encoding", "gzip");
+            }
+            apr_table_unset(r->headers_out, "Content-Length");
             return ap_pass_brigade(f->next, bb);
         }
 
