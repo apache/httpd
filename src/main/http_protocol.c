@@ -1513,6 +1513,7 @@ API_EXPORT_NONSTD(int) ap_send_header_field(request_rec *r,
 API_EXPORT(void) ap_basic_http_header(request_rec *r)
 {
     char *protocol;
+    const char *server;
 
     if (r->assbackwards)
         return;
@@ -1535,13 +1536,22 @@ API_EXPORT(void) ap_basic_http_header(request_rec *r)
     PUSH_EBCDIC_OUTPUTCONVERSION_STATE_r(r, 1);
 #endif /*CHARSET_EBCDIC*/
 
-    /* Output the HTTP/1.x Status-Line and the Date and Server fields */
-
+    /* output the HTTP/1.x Status-Line */
     ap_rvputs(r, protocol, " ", r->status_line, CRLF, NULL);
 
+    /* output the date header */
     ap_send_header_field(r, "Date", ap_gm_timestr_822(r->pool, r->request_time));
-    ap_send_header_field(r, "Server", ap_get_server_version());
 
+    /* keep a previously set server header (possible from proxy), otherwise
+     * generate a new server header */
+    if (server = ap_table_get(r->headers_out, "Server")) {
+        ap_send_header_field(r, "Server", server);
+    }
+    else {
+        ap_send_header_field(r, "Server", ap_get_server_version());
+    }
+
+    /* unset so we don't send them again */
     ap_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
     ap_table_unset(r->headers_out, "Server");
 #ifdef CHARSET_EBCDIC

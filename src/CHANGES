@@ -1,5 +1,9 @@
 Changes with Apache 1.3.24
 
+  *) When a proxied site was being served, Apache was replacing
+     the original site Server header with it's own, which is not
+     allowed by RFC2616. Fixed. [Graham Leggett]
+
   *) Change ap_construct_url() so that the r->hostname is used in
      the URL instead of the value of the ServerName directive. This
      stops Apache redirecting to a different website name to the
