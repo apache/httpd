@@ -1632,7 +1632,6 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
                        request_rec *r, ap_filter_t *f)
 {
     char **env; 
-    const char *location; 
     int sd;
     apr_status_t rc = APR_SUCCESS; 
     int retval;
@@ -1675,53 +1674,16 @@ static int include_cmd(include_ctx_t *ctx, apr_bucket_brigade **bb, char *comman
      */
     apr_os_pipe_put(&tempsock, &sd, r->pool);
 
-    if ((retval = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR))) 
-        return retval; 
-    
-    location = apr_table_get(r->headers_out, "Location"); 
+    /* Passing our socket down the filter chain in a pipe bucket
+     * gives up the responsibility of closing the socket, so
+     * get rid of the cleanup.
+     */
+    apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
 
-    if (location && location[0] == '/' && r->status == 200) { 
-        char argsbuffer[HUGE_STRING_LEN]; 
-
-        /* Soak up all the script output */ 
-        while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
-                             tempsock) == APR_SUCCESS) { 
-            continue; 
-        } 
-        /* This redirect needs to be a GET no matter what the original 
-         * method was. 
-         */ 
-        r->method = apr_pstrdup(r->pool, "GET"); 
-        r->method_number = M_GET; 
-
-        /* We already read the message body (if any), so don't allow 
-         * the redirected request to think it has one. We can ignore 
-         * Transfer-Encoding, since we used REQUEST_CHUNKED_ERROR. 
-         */ 
-        apr_table_unset(r->headers_in, "Content-Length"); 
-
-        ap_internal_redirect_handler(location, r); 
-        return OK; 
-    } 
-    else if (location && r->status == 200) { 
-        /* XX Note that if a script wants to produce its own Redirect 
-         * body, it now has to explicitly *say* "Status: 302" 
-         */ 
-        return HTTP_MOVED_TEMPORARILY; 
-    } 
-
-    if (!r->header_only) { 
-        /* Passing our socket down the filter chain in a pipe bucket
-         * gives up the responsibility of closing the socket, so
-         * get rid of the cleanup.
-         */
-        apr_pool_cleanup_kill(r->pool, (void *)sd, close_unix_socket);
-
-        bcgi = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-        b    = apr_bucket_pipe_create(tempsock, r->connection->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bcgi, b);
-        ap_pass_brigade(f->next, bcgi);
-    } 
+    bcgi = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    b    = apr_bucket_pipe_create(tempsock, r->connection->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bcgi, b);
+    ap_pass_brigade(f->next, bcgi);
 
     return 0;
 }
