@@ -1,5 +1,3 @@
-$Id: RULES.CVS,v 1.2 1996/08/20 13:16:37 paul Exp $
-
 1. Don't commit several unrelated changes in one go. Each change should be
 committed separately (that is, it can affect multiple files, but it should all
 be part of a single change).

@@ -1,5 +1,3 @@
-$Id: INSTALL,v 1.9 1996/10/24 21:17:34 jim Exp $
-
 This release of Apache supports the notion of "optional modules".
 However, the server has to know which modules are compiled into it, in
 order for those modules to be effective; this requires generation of a

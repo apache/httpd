@@ -1,5 +1,3 @@
-$Id: TODO,v 1.13 1996/08/20 11:50:37 paul Exp $
-
 *) Random stray failures to get_local_addr --- it's returning EINVAL, of all
    things.  Are these clients aborting really, really early or what?
 

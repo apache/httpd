@@ -1,5 +1,3 @@
-$Id: CHANGES,v 1.70 1996/10/09 17:36:15 chuck Exp $
-
 Changes with Apache 1.2b1:
 
   *) Allow directives to have any number of arguments between one
