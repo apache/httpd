@@ -186,7 +186,7 @@ static void add_password(char *user, char *realm, apr_file_t *f)
 
     apr_MD5Init(&context);
 #ifdef CHARSET_EBCDIC
-    ap_MD5SetXlate(&context, to_ascii);
+    apr_MD5SetXlate(&context, to_ascii);
 #endif
     apr_MD5Update(&context, (unsigned char *) string, strlen(string));
     apr_MD5Final(digest, &context);

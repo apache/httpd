@@ -384,9 +384,9 @@ int main(int argc, char *argv[])
     atexit(apr_terminate);
     apr_create_pool(&pool, NULL);
 
-    rv = ap_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
+    rv = apr_xlate_open(&to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
     if (rv) {
-        fprintf(stderr, "ap_xlate_open(to ASCII)->%d\n", rv);
+        fprintf(stderr, "apr_xlate_open(to ASCII)->%d\n", rv);
         exit(1);
     }
     rv = ap_SHA1InitEBCDIC(to_ascii);
@@ -394,9 +394,9 @@ int main(int argc, char *argv[])
         fprintf(stderr, "ap_SHA1InitEBCDIC()->%d\n", rv);
         exit(1);
     }
-    rv = ap_MD5InitEBCDIC(to_ascii);
+    rv = apr_MD5InitEBCDIC(to_ascii);
     if (rv) {
-        fprintf(stderr, "ap_MD5InitEBCDIC()->%d\n", rv);
+        fprintf(stderr, "apr_MD5InitEBCDIC()->%d\n", rv);
         exit(1);
     }
 #endif /*CHARSET_EBCDIC*/

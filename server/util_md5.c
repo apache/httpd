@@ -106,7 +106,7 @@ API_EXPORT(char *) ap_md5_binary(apr_pool_t *p, const unsigned char *buf, int le
 
     apr_MD5Init(&my_md5);
 #ifdef CHARSET_EBCDIC
-    ap_MD5SetXlate(&my_md5, ap_hdrs_to_ascii);
+    apr_MD5SetXlate(&my_md5, ap_hdrs_to_ascii);
 #endif
     apr_MD5Update(&my_md5, buf, (unsigned int)length);
     apr_MD5Final(hash, &my_md5);
@@ -208,7 +208,7 @@ API_EXPORT(char *) ap_md5digest(apr_pool_t *p, apr_file_t *infile,
 
     apr_MD5Init(&context);
     if (xlate) {
-        ap_MD5SetXlate(&context, xlate);
+        apr_MD5SetXlate(&context, xlate);
     }
     nbytes = sizeof(buf);
     while (apr_read(infile, buf, &nbytes) == APR_SUCCESS) {

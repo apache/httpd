@@ -2850,7 +2850,7 @@ static int default_handler(request_rec *r)
 	    apr_MD5Init(&context);
 #ifdef APACHE_XLATE
             if (r->rrx->to_net) {
-                ap_MD5SetXlate(&context, r->rrx->to_net);
+                apr_MD5SetXlate(&context, r->rrx->to_net);
             }
 #endif
 	    apr_MD5Update(&context, addr, (unsigned int)r->finfo.size);

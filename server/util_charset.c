@@ -104,7 +104,7 @@ API_EXPORT(apr_status_t) ap_set_content_xlate(request_rec *r, int output,
     if (output) {
         r->rrx->to_net = xlate;
         if (xlate) {
-            ap_xlate_get_sb(r->rrx->to_net, &r->rrx->to_net_sb);
+            apr_xlate_get_sb(r->rrx->to_net, &r->rrx->to_net_sb);
         }
         rv = ap_bsetopt(r->connection->client, BO_WXLATE, &xlate);
     }

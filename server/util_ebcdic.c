@@ -70,38 +70,38 @@ apr_status_t ap_init_ebcdic(apr_pool_t *pool)
     apr_status_t rv;
     char buf[80];
 
-    rv = ap_xlate_open(&ap_hdrs_to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
+    rv = apr_xlate_open(&ap_hdrs_to_ascii, "ISO8859-1", APR_DEFAULT_CHARSET, pool);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                     "ap_xlate_open() failed");
+                     "apr_xlate_open() failed");
         return rv;
     }
 
-    rv = ap_xlate_open(&ap_hdrs_from_ascii, APR_DEFAULT_CHARSET, "ISO8859-1", pool);
+    rv = apr_xlate_open(&ap_hdrs_from_ascii, APR_DEFAULT_CHARSET, "ISO8859-1", pool);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                     "ap_xlate_open() failed");
+                     "apr_xlate_open() failed");
         return rv;
     }
 
-    rv = ap_xlate_open(&ap_locale_to_ascii, "ISO8859-1", APR_LOCALE_CHARSET, pool);
+    rv = apr_xlate_open(&ap_locale_to_ascii, "ISO8859-1", APR_LOCALE_CHARSET, pool);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                     "ap_xlate_open() failed");
+                     "apr_xlate_open() failed");
         return rv;
     }
 
-    rv = ap_xlate_open(&ap_locale_from_ascii, APR_LOCALE_CHARSET, "ISO8859-1", pool);
+    rv = apr_xlate_open(&ap_locale_from_ascii, APR_LOCALE_CHARSET, "ISO8859-1", pool);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                     "ap_xlate_open() failed");
+                     "apr_xlate_open() failed");
         return rv;
     }
 
-    rv = ap_MD5InitEBCDIC(ap_hdrs_to_ascii);
+    rv = apr_MD5InitEBCDIC(ap_hdrs_to_ascii);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
-                     "ap_MD5InitEBCDIC() failed");
+                     "apr_MD5InitEBCDIC() failed");
         return rv;
     }
     
