@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/01 22:33:10 $]
+Last modified at [$Date: 2003/11/01 23:04:09 $]
 
 Release:
 
@@ -282,6 +282,11 @@ PATCHES TO BACKPORT FROM 2.1
     * Let mod_autoindex show filenames containing special characters.
       PR 13598.
         server/request.c: r1.130
+      +1: nd
+
+    * mod_autoindex: Don't omit the <tr> start tag if the SuppressIcon
+      option is set. PR 21668.
+        modules/generators/mod_autoindex.c: r1.123
       +1: nd
 
 CURRENT RELEASE NOTES:
