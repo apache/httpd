@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/04/17 18:46:24 $]
+Last modified at [$Date: 2003/04/17 20:23:48 $]
 
 Release:
 
@@ -70,13 +70,6 @@ PATCHES TO PORT FROM 2.1
       CHANGES 1.1145 
       server/mpm_common.c 1.107
       +1: ake, trawick, stoddard, wrowe
-          wrowe notes: /me misunderstood the breakage.  We explicitly excluded
-                       the implementation, but not the prototype(!), for the
-                       ap_sock_disable_nagle() function.  APR isn't implicated
-                       at all, this was a latent bug.  I'm just asking that we
-                       first commit a patch excluding the prototype in favor of
-                       the /*NOOP*/ define, just to document the progression
-                       from no-nagling to an implemented ap_sock_disable_nagle.
                        
 
     * AllowEncodedSlashes patch to permit %2f in path-info.
