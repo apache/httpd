@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/12/03 18:05:22 $]
+Last modified at [$Date: 2002/12/10 23:53:50 $]
 
 Release:
 
@@ -54,6 +54,9 @@ on related projects:
 Contributors looking for a mission:
 
     * just do an egrep on "TODO", "XXX" and see what's there
+
+PATCHES TO PORT FROM 2.1
+    * stoddard: All mod_cache (and related) patches as of 12/10/02.
 
 CURRENT RELEASE NOTES:
 
