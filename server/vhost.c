@@ -760,7 +760,7 @@ static void fix_hostname(request_rec *r)
          * here to judge; apr_parse_addr_port() would think we had a port
          * but no address
          */
-        host = apr_psprintf(r->pool, "%d", (int)port);
+        host = apr_itoa(r->pool, (int)port);
     }
     else if (port) {
         /* Don't throw the Host: header's port number away:
@@ -769,7 +769,7 @@ static void fix_hostname(request_rec *r)
 	 *         Like r->hostname, there should be a r->portno
 	 */
         r->parsed_uri.port = port;
-	r->parsed_uri.port_str = apr_psprintf(r->pool, "%d", (int)port);
+	r->parsed_uri.port_str = apr_itoa(r->pool, (int)port);
     }
 
     /* if the hostname is an IPv6 numeric address string, it was validated 
