@@ -857,7 +857,7 @@ struct request_rec {
     char *path_info;
     /** The QUERY_ARGS extracted from this request */
     char *args;	
-    /** ST_MODE set to zero if no such file */
+    /**  finfo.protection (st_mode) set to zero if no such file */
     apr_finfo_t finfo;
     /** A struct containing the components of URI */
     apr_uri_t parsed_uri;
@@ -981,10 +981,11 @@ struct conn_rec {
 
     /** ID of this connection; unique at any point in time */
     long id; 
-    /** Notes on *this* connection */
+    /** Config vector containing pointers to connections per-server
+     *  config structures. */
     struct ap_conf_vector_t *conn_config;
-    /** send note from one module to another, must remain valid for all
-     *  requests on this conn */
+    /** Notes on *this* connection: send note from one module to
+     *  another. must remain valid for all requests on this conn */
     apr_table_t *notes;
     /** A list of input filters to be used for this connection */
     struct ap_filter_t *input_filters;
