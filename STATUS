@@ -172,10 +172,11 @@ PATCHES TO BACKPORT FROM TRUNK:
        <http://www.apache.org/~clar/detach-addrspace_HTTP_2_0.patch>
        <http://www.apache.org/~clar/detach-addrspace_APR_0_9.patch>
        +1: jjclar, bnicholes, trawick
-       trawick notes: some folks want feature checks for uses of new APR
-                      functions in httpd 2.0; I dunno how to check for
-                      availability of apr_procattr_addrspace_set()
        jerenkrantz: I'm confused as to the status of this backport.
+       trawick: Somebody commits the APR 0.9 patch, then:
+         do we have to wait for later APR 0.x release before putting
+         calls to apr_procattr_addrspace_set() into httpd-2.0.x, or
+         do we go ahead and introduce the prerequisite?
 
     *) mod_actions: Regression from 1.3: the file referred to must exist.
        Solve this by introducing the "virtual" modifier to the Action
@@ -245,6 +246,15 @@ PATCHES TO BACKPORT FROM TRUNK:
                    mod_log_forensic), I think it's still worth it to backport
                    it as-is.  For the one or two platforms that don't like 
                    which, they can write their own version of the script.
+
+    * worker MPM: Fix a problem which could cause httpd processes to
+      remain active after shutdown.  (Reliability issue.)
+      Unix MPMs: Shut down the server more quickly when child processes are
+      slow to exit.  (Nice-to-have, but code intersects with the
+      reliability issue)
+      http://svn.apache.org/viewcvs.cgi?rev=109510&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=105195&view=rev
+      +1: trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
