@@ -97,7 +97,7 @@ void ap_os_dso_init(void)
 
 void *ap_os_dso_load(const char *path)
 {
-#if defined(HPUX) || defined(HPUX10)
+#if defined(HPUX) || defined(HPUX10) || defined(HPUX11)
     shl_t handle;
     handle = shl_load(path, BIND_IMMEDIATE|BIND_VERBOSE|BIND_NOSTART, 0L);
     return (void *)handle;
@@ -120,7 +120,7 @@ void *ap_os_dso_load(const char *path)
 
 void ap_os_dso_unload(void *handle)
 {
-#if defined(HPUX) || defined(HPUX10)
+#if defined(HPUX) || defined(HPUX10) || defined(HPUX11)
     shl_unload((shl_t)handle);
 
 #elif defined(HAVE_DYLD)
@@ -135,7 +135,7 @@ void ap_os_dso_unload(void *handle)
 
 void *ap_os_dso_sym(void *handle, const char *symname)
 {
-#if defined(HPUX) || defined(HPUX10)
+#if defined(HPUX) || defined(HPUX10) || defined(HPUX11)
     void *symaddr = NULL;
     int status;
 
@@ -171,7 +171,7 @@ void *ap_os_dso_sym(void *handle, const char *symname)
 
 const char *ap_os_dso_error(void)
 {
-#if defined(HPUX) || defined(HPUX10)
+#if defined(HPUX) || defined(HPUX10) || defined(HPUX11)
     return strerror(errno);
 #elif defined(HAVE_DYLD)
     return NULL;

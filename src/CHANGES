@@ -1,5 +1,8 @@
 Changes with Apache 1.3.10
 
+  *) Support DSOs properly on 32-bit HP-UX 11.0
+     [Dilip Khandekar <dilip@cup.hp.com>]
+
   *) Fix problem with proxy configuration where globally set configuration
      options were overridden inside virtual hosts.
      [Graham Leggett <minfrin@sharp.fm>]
