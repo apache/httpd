@@ -1362,10 +1362,12 @@ extern int ap_execve(const char *filename, char * const argv[],
 
 #endif /* !CRAY */
 
+#ifndef XtOffsetOf
 #ifdef offsetof
 #define XtOffsetOf(s_type,field) offsetof(s_type,field)
 #else
 #define XtOffsetOf(s_type,field) XtOffset(s_type*,field)
+#endif
 #endif
 
 /*
