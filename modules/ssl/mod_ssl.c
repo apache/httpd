@@ -255,7 +255,11 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
 #endif
 #endif
     ERR_remove_state(0);
-    ERR_free_strings();
+
+    /* Don't call ERR_free_strings here; ERR_load_*_strings only
+     * actually load the error strings once per process due to static
+     * variable abuse in OpenSSL. */
+
     /* 
      * TODO: determine somewhere we can safely shove out diagnostics 
      *       (when enabled) at this late stage in the game:
