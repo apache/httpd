@@ -76,7 +76,7 @@ module AP_MODULE_DECLARE_DATA mem_cache_module;
  */
 typedef enum {
     CACHE_TYPE_FILE = 1,
-    CACHE_TYPE_MALLOC,
+    CACHE_TYPE_HEAP,
     CACHE_TYPE_MMAP
 } cache_type_e;
 
@@ -141,7 +141,7 @@ static void cleanup_cache_object(cache_object_t *obj)
     */
 
     if (obj->info.content_type)
-        free(obj->info.content_type);
+        free((char*) obj->info.content_type);
     if (obj->key)
         free(obj->key);
     if (obj->m)
@@ -192,7 +192,7 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
 
 static int create_entity(cache_handle **hp, const char *type, char *key, apr_size_t len) 
 {
-    cache_object_t *obj;
+    cache_object_t *obj, *eobj = NULL;
     cache_handle *h;
 
     /* Create the cache handle and begin populating it.
@@ -234,8 +234,9 @@ static int create_entity(cache_handle **hp, const char *type, char *key, apr_siz
         free(h);
         return DECLINED;
     }
+    memset(obj,'\0', sizeof(*obj));
 
-    obj->key = malloc(strlen(key));
+    obj->key = malloc(strlen(key) + 1);
     if (!obj->key) {
         /* XXX Uuugh, there has got to be a better way to manage memory.
          */
@@ -245,7 +246,7 @@ static int create_entity(cache_handle **hp, const char *type, char *key, apr_siz
     }
     obj->m_len = len;     /* One of these len fields can go */
     obj->info.len = len;
-    strcpy(obj->key, key);
+    strncpy(obj->key, key, strlen(key) + 1);
     h->cache_obj = (void *) obj;
     
     /* Mark the cache object as incomplete and put it into the cache */
@@ -255,9 +256,28 @@ static int create_entity(cache_handle **hp, const char *type, char *key, apr_siz
     if (sconf->lock) {
         apr_lock_acquire(sconf->lock);
     }
-    apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
+    /* Do not allow the new cache object to replace an existing cache object.
+     * We should find eobj only when another thread is in the process of
+     * caching the same object as this thread. If we hit this case, decline
+     * the request.
+     */
+    eobj = (cache_object_t *) apr_hash_get(sconf->cacheht, key, APR_HASH_KEY_STRING);
+    if (!eobj) {
+        apr_hash_set(sconf->cacheht, obj->key, strlen(obj->key), obj);
+    }
     if (sconf->lock) {
         apr_lock_release(sconf->lock);
+    }
+
+    if (eobj) {
+        /* This thread collided with another thread loading the same object
+         * into the cache at the same time. Defer to the other thread which 
+         * is further along.
+         */
+        cleanup_cache_object(obj);
+        free(h);
+        *hp = NULL;
+        return DECLINED;
     }
 
     return OK;
@@ -394,7 +414,7 @@ static int write_headers(cache_handle *h, request_rec *r, cache_info *info)
     if (info->content_type) {
         obj->info.content_type = (char*) malloc(strlen(info->content_type));
         if (obj->info.content_type)
-            strcpy(obj->info.content_type, info->content_type);
+            strcpy((char*) obj->info.content_type, info->content_type);
     }
 
     return OK;
@@ -406,38 +426,47 @@ static int write_body(cache_handle *h, apr_bucket_brigade *b)
     cache_object_t *obj = (cache_object_t *) h->cache_obj;
     apr_read_type_e eblock = APR_BLOCK_READ;
     apr_bucket *e;
-
+    char *cur;
+    
     /* XXX mmap, malloc or file? 
      * Enable this decision to be configured....
+     * XXX cache buckets...
      */
-    char *m = malloc(obj->m_len);
-    obj->m = m;
-    if (!m) {
-        /* Cleanup cache entry and return */
+    if (obj->m == NULL) {
+        obj->m = malloc(obj->m_len);
+        if (obj->m == NULL) {
+            /* Cleanup cache entry and return */
+        }
+        obj->type = CACHE_TYPE_HEAP;
+        h->count = 0;
     }
-    obj->type = CACHE_TYPE_MALLOC;
+    cur = (char*) obj->m + h->count;
 
     /* Iterate accross the brigade and populate the cache storage */
-    /* XXX doesn't handle multiple brigades */
     APR_BRIGADE_FOREACH(e, b) {
         const char *s;
         apr_size_t len;
 
+        if (APR_BUCKET_IS_EOS(e)) {
+            obj->complete = 1;
+            break;
+        }
         rv = apr_bucket_read(e, &s, &len, eblock);
         if (rv != APR_SUCCESS) {
             /* Big problem!  Cleanup cache entry and return */
         }
         /* XXX Check for overflow */
         if (len ) {
-            memcpy(m, s, len);
-            m+=len;
+            memcpy(cur, s, len);
+            cur+=len;
+            h->count+=len;
         }
+        /* This should not happen, but if it does, we are in BIG trouble
+         * cause we just stomped all over the heap.
+         */
+        AP_DEBUG_ASSERT(h->count > obj->m_len);
     }
 
-    /* XXX - Check for EOS before setting obj->complete
-     * Open for business. This entry can be served from the cache 
-     */
-    obj->complete = 1;
     return OK;
 }
 
