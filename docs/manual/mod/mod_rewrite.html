@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <!--%hypertext -->
 <!-- mod_rewrite.html                                 -->
 <!-- Documentation for the mod_rewrite Apache module  -->
@@ -731,15 +731,21 @@ RewriteMap servers rnd:/path/to/file/map.txt
 ##  txt2dbm -- convert txt map to dbm format
 ##
 
+use NDBM_File;
+use Fcntl;
+
 ($txtmap, $dbmmap) = @ARGV;
-open(TXT, "&lt;$txtmap");
-dbmopen(%DB, $dbmmap, 0644);
+
+open(TXT, "&lt;$txtmap") or die "Couldn't open $txtmap!\n";
+tie (%DB, 'NDBM_File', $dbmmap,O_RDWR|O_TRUNC|O_CREAT, 0644) or die "Couldn't create $dbmmap!\n";
+
 while (&lt;TXT&gt;) {
-    next if (m|^s*#.*| or m|^s*$|);
-    $DB{$1} = $2 if (m|^\s*(\S+)\s+(\S+)$|);
+  next if (/^\s*#/ or /^\s*$/);
+  $DB{$1} = $2 if (/^\s*(\S+)\s+(\S+)/);
 }
-dbmclose(%DB);
-close(TXT)
+
+untie %DB;
+close(TXT);
 </pre>
               </td>
             </tr>
