@@ -139,22 +139,22 @@ static const char *set_db_slot(cmd_parms *cmd, void *offset, char *f, char *t)
 
 static const command_rec db_auth_cmds[] =
 {
-    {"AuthDBUserFile", ap_set_file_slot,
+    AP_INIT_TAKE1("AuthDBUserFile", ap_set_file_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
-     OR_AUTHCFG, TAKE1, NULL},
-    {"AuthDBGroupFile", ap_set_file_slot,
+     OR_AUTHCFG, NULL),
+    AP_INIT_TAKE1("AuthDBGroupFile", ap_set_file_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
-     OR_AUTHCFG, TAKE1, NULL},
-    {"AuthUserFile", set_db_slot,
+     OR_AUTHCFG, NULL),
+    AP_INIT_TAKE12("AuthUserFile", set_db_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbpwfile),
-     OR_AUTHCFG, TAKE12, NULL},
-    {"AuthGroupFile", set_db_slot,
+     OR_AUTHCFG, NULL),
+    AP_INIT_TAKE12("AuthGroupFile", set_db_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbgrpfile),
-     OR_AUTHCFG, TAKE12, NULL},
-    {"AuthDBAuthoritative", ap_set_flag_slot,
+     OR_AUTHCFG, NULL),
+    AP_INIT_FLAG("AuthDBAuthoritative", ap_set_flag_slot,
      (void *) XtOffsetOf(db_auth_config_rec, auth_dbauthoritative),
-     OR_AUTHCFG, FLAG,
-     "Set to 'no' to allow access control to be passed along to lower modules if the userID is not known to this module"},
+     OR_AUTHCFG,
+     "Set to 'no' to allow access control to be passed along to lower modules if the userID is not known to this module"),
     {NULL}
 };
 
