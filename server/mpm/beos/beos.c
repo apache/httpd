@@ -90,7 +90,7 @@
  */
 
 int ap_threads_per_child=HARD_THREAD_LIMIT;         /* Worker threads per child */
-int ap_max_requests_per_child=0;
+static int ap_max_requests_per_child=0;
 static const char *ap_pid_fname=NULL;
 static int ap_threads_to_start=0;
 static int min_spare_threads=0;
