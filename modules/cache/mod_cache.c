@@ -532,12 +532,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             /* Oh, hey.  It isn't that stale!  Yay! */
             cache->handle = cache->stale_handle;
             info = &cache->handle->cache_obj->info;
-            /* Load in the saved status. */
-            r->status = info->status;
-            /* The cached response will override our err_headers_out. */
-            apr_table_clear(r->err_headers_out);
-            /* Merge in our headers. */
-            ap_cache_accept_headers(cache->handle, r);
             rv = OK;
         }
         else {
@@ -636,6 +630,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      *      expire date = date + defaultexpire
      */
     if (exp == APR_DATE_BAD) {
+        char expire_hdr[APR_RFC822_DATE_LEN];
+
         /* if lastmod == date then you get 0*conf->factor which results in
          *   an expiration time of now. This causes some problems with
          *   freshness calculations, so we choose the else path...
@@ -647,19 +643,50 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 x = conf->maxex;
             }
             exp = date + x;
+            apr_rfc822_date(expire_hdr, exp);
+            apr_table_set(r->headers_out, "Expires", expire_hdr);
         }
         else {
             exp = date + conf->defex;
+            apr_rfc822_date(expire_hdr, exp);
+            apr_table_set(r->headers_out, "Expires", expire_hdr);
         }
     }
     info->expire = exp;
 
-    /*
-     * Write away header information to cache.
-     */
+    /* We found a stale entry which wasn't really stale. */
+    if (cache->stale_handle) {
+        /* Load in the saved status and clear the status line. */
+        r->status = info->status;
+        r->status_line = NULL;
+
+        /* RFC 2616 10.3.5 states that entity headers are not supposed
+         * to be in the 304 response.  Therefore, we need to load in the
+         * cached headers before we update the cached headers.
+         *
+         * However, before doing that, we need to first merge in
+         * err_headers_out and we also need to strip any hop-by-hop
+         * headers that might have snuck in.
+         */
+        r->headers_out = apr_table_overlay(r->pool, r->headers_out,
+                                           r->err_headers_out);
+        r->headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
+                                                     r->server);
+        apr_table_clear(r->err_headers_out);
+
+        /* Merge in our cached headers.  However, keep any updated values. */
+        ap_cache_accept_headers(cache->handle, r, 1);
+    }
+
+    /* Write away header information to cache. */
     rv = cache->provider->store_headers(cache->handle, r, info);
 
-    /* Did we actually find an entity before, but it wasn't really stale? */
+    /* Did we just update the cached headers on a revalidated response?
+     *
+     * If so, we can now decide what to serve to the client:
+     * - If the original request was conditional and is satisified, send 304.
+     * - Otherwise, send the cached body.
+    */
     if (rv == APR_SUCCESS && cache->stale_handle) {
         apr_bucket_brigade *bb;
         apr_bucket *bkt;
@@ -668,14 +695,15 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         /* Were we initially a conditional request? */
         if (ap_cache_request_is_conditional(cache->stale_headers)) {
-            /* FIXME: Should we now go and make sure it's really not
-             * modified since what the user thought?
-             */
+            /* FIXME: We must ensure that the request meets conditions. */
+
+            /* Set the status to be a 304. */
+            r->status = HTTP_NOT_MODIFIED;
+
             bkt = apr_bucket_flush_create(bb->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, bkt);
         }
         else {
-            r->status = info->status;
             cache->provider->recall_body(cache->handle, r->pool, bb);
         }
 
