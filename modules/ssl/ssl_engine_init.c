@@ -395,7 +395,8 @@ void ssl_init_ConfigureServer(server_rec *s,
 {
     SSLModConfigRec *mc = myModConfig(s);
     int verify = SSL_VERIFY_NONE;
-    char *cp, *vhost_id;
+    char *cp;
+    const char *vhost_id, *rsa_id, *dsa_id;
     EVP_PKEY *pkey;
     SSL_CTX *ctx;
     STACK_OF(X509_NAME) *ca_list;
@@ -611,9 +612,10 @@ void ssl_init_ConfigureServer(server_rec *s,
     /*
      *  Configure server certificate(s)
      */
-    cp = apr_psprintf(p, "%s:RSA", vhost_id);
+    rsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_RSA);
+    dsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_DSA);
 
-    if ((asn1 = ssl_asn1_table_get(mc->tPublicCert, cp))) {
+    if ((asn1 = ssl_asn1_table_get(mc->tPublicCert, rsa_id))) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring RSA server certificate",
                 vhost_id);
@@ -638,9 +640,7 @@ void ssl_init_ConfigureServer(server_rec *s,
         ok = TRUE;
     }
 
-    cp = apr_psprintf(p, "%s:DSA", vhost_id);
-
-    if ((asn1 = ssl_asn1_table_get(mc->tPublicCert, cp))) {
+    if ((asn1 = ssl_asn1_table_get(mc->tPublicCert, dsa_id))) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring DSA server certificate",
                 vhost_id);
@@ -737,9 +737,8 @@ void ssl_init_ConfigureServer(server_rec *s,
      *  Configure server private key(s)
      */
     ok = FALSE;
-    cp = apr_psprintf(p, "%s:RSA", vhost_id);
 
-    if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, cp))) {
+    if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, rsa_id))) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring RSA server private key",
                 vhost_id);
@@ -764,9 +763,7 @@ void ssl_init_ConfigureServer(server_rec *s,
         ok = TRUE;
     }
 
-    cp = apr_psprintf(p, "%s:DSA", vhost_id);
-
-    if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, cp))) {
+    if ((asn1 = ssl_asn1_table_get(mc->tPrivateKey, dsa_id))) {
         ssl_log(s, SSL_LOG_TRACE,
                 "Init: (%s) Configuring DSA server private key",
                 vhost_id);
