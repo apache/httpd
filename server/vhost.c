@@ -184,7 +184,7 @@ void ap_init_vhost_config(apr_pool_t *p)
  * port is the default port to assume
  */
 static const char *get_addresses(apr_pool_t *p, const char *w_,
-				 server_addr_rec ***paddr, unsigned port)
+				 server_addr_rec ***paddr, apr_port_t port)
 {
     struct hostent *hep;
     unsigned long my_addr;
@@ -389,7 +389,7 @@ static name_chain *new_name_chain(apr_pool_t *p, server_rec *s, server_addr_rec 
 
 
 static apr_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
-    unsigned port)
+    apr_port_t port)
 {
     unsigned bucket;
     ipaddr_chain *trav;
@@ -410,7 +410,7 @@ static apr_inline ipaddr_chain *find_ipaddr(struct in_addr *server_ip,
 }
 
 
-static ipaddr_chain *find_default_server(unsigned port)
+static ipaddr_chain *find_default_server(apr_port_t port)
 {
     server_addr_rec *sar;
     ipaddr_chain *trav;
@@ -975,7 +975,8 @@ void ap_update_vhost_from_headers(request_rec *r)
 void ap_update_vhost_given_ip(conn_rec *conn)
 {
     ipaddr_chain *trav;
-    unsigned port = ntohs(conn->local_addr.sin_port);
+    apr_port_t port;
+    apr_get_local_port(&port, conn->client_socket);
 
     /* scan the hash apr_table_t for an exact match first */
     trav = find_ipaddr(&conn->local_addr.sin_addr, port);
