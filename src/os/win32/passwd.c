@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "passwd.h"
 
 /* Very tacky implementation */
