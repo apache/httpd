@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="EUC-KR"?>
-<!-- English revision: 1.11 -->
+<!-- English revision: 1.6.2.3 -->
 <!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
 
 <!--                  -->
@@ -65,7 +65,7 @@
 
  <!-- Used in headers and footers -->
  <message name="apachetitle">- Apache HTTP Server</message>
- <message name="apachehttpserver">Apache HTTP Server Version 2.1</message>
+ <message name="apachehttpserver">Apache HTTP Server Version 2.0</message>
  <message name="apachedocalt">[APACHE DOCUMENTATION]</message>
  <message name="search">Google 검색</message> <!-- search button -->
  <message name="index">Index</message> <!-- deprecated -->
@@ -75,7 +75,7 @@
  <message name="apache">Apache</message>
  <message name="http-server">HTTP Server</message>
  <message name="documentation">Documentation</message>
- <message name="version">Version 2.1</message>
+ <message name="version">Version 2.0</message>
 
  <!-- super menu -->
  <message name="modules">모듈</message>
@@ -85,5 +85,4 @@
 
  <!-- footer line -->
  <message name="maintainedby">Maintained by the</message>
- <message name="langavail">가능한 언어</message>
 </messages>
