@@ -59,6 +59,18 @@
 #ifndef AP_RELEASE_H
 #define AP_RELEASE_H
 
+/*
+ * The below defines the base string of the Server: header. Additional
+ * tokens can be added via the ap_add_version_component() API call.
+ *
+ * The tokens are listed in order of their significance for identifying the
+ * application.
+ *
+ * "Product tokens should be short and to the point -- use of them for 
+ * advertizing or other non-essential information is explicitly forbidden."
+ *
+ * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
+ */
 #define AP_SERVER_BASEVENDOR "Apache Software Foundation"
 #define AP_SERVER_BASEPRODUCT "Apache"
 #define AP_SERVER_BASEREVISION "2.0b1-dev"
