@@ -475,6 +475,7 @@ extern char *crypt();
 #define _POSIX_SOURCE
 #define NET_SIZE_T size_t
 #define HAVE_SYSLOG
+#define USE_FCNTL_SERIALIZED_ACCEPT
 
 #elif defined(DGUX)
 #define NO_KILLPG

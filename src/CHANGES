@@ -1,6 +1,9 @@
 Changes with Apache 1.3b4
 
-  *) [PORT] A/UX can handle single-listen accepts without mutex
+  *) PORT: UnixWare 2.1.2 SMP appears to require USE_FCNTL_SERIALIZED_ACCEPT.
+     It should be safe on all versions.  [Dean Gaudet] PR#1553
+
+  *) PORT: A/UX can handle single-listen accepts without mutex
      locking, so we add SAFE_UNSERIALIZED_ACCEPT. [Jim Jagielski]
 
   *) When die() happens we need to eat any request body if one exists.
