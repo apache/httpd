@@ -1,4 +1,4 @@
-# $Id: Configuration.tmpl,v 1.38 1996/09/27 08:46:48 mjc Exp $
+# $Id: Configuration.tmpl,v 1.39 1996/09/27 08:55:50 mjc Exp $
 # Config file for the Apache httpd.
 
 # Configuration.tmpl is the template for Configuration. Configuration should
@@ -219,6 +219,9 @@ Module browser_module      mod_browser.o
 ## uses Netscape cookies to automatically construct and log accurate
 ## click-trails from Netscape cookies, for compatible clients who
 ## aren't coming in via proxy.   
+##
+## You do not need this, or any other module to allow your site
+## to use Cookies.  This module is for user tracking only
 
 # Module usertrack_module      mod_usertrack.o
 
