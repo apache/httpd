@@ -1154,6 +1154,7 @@ CORE_EXPORT(const char *) ap_init_virtual_host(ap_context_t *p, const char *host
 #endif
 
     /* TODO: this crap belongs in http_core */
+    s->process = main_server->process;
     s->server_admin = NULL;
     s->server_hostname = NULL;
     s->error_fname = NULL;
@@ -1242,11 +1243,12 @@ static void init_config_globals(ap_context_t *p)
     ap_init_vhost_config(p);
 }
 
-static server_rec *init_server_config(ap_context_t *p)
+static server_rec *init_server_config(process_rec *process, ap_context_t *p)
 {
     int errfile = STDERR_FILENO;
     server_rec *s = (server_rec *) ap_pcalloc(p, sizeof(server_rec));
 
+    s->process = process;
     s->port = 0;
     s->server_admin = DEFAULT_ADMIN;
     s->server_hostname = NULL;
@@ -1278,9 +1280,10 @@ static server_rec *init_server_config(ap_context_t *p)
 }
 
 
-server_rec *ap_read_config(ap_context_t *p, ap_context_t *ptemp, const char *confname)
+server_rec *ap_read_config(process_rec *process, ap_context_t *ptemp, const char *confname)
 {
-    server_rec *s = init_server_config(p);
+    ap_context_t *p = process->pconf;
+    server_rec *s = init_server_config(process, p);
 
     init_config_globals(p);
 

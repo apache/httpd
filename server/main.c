@@ -195,8 +195,39 @@ static void show_compile_settings(void)
 #endif
 }
 
-static void usage(char *bin)
+static void destroy_and_exit_process(process_rec *process, int process_exit_value)
 {
+    ap_destroy_pool(process->pool); /* and destroy all descendent pools */
+    exit(process_exit_value);
+}
+
+#define PATHSEPARATOR '/'  /* Belongs in some apr os include file */
+
+static process_rec *create_process(int argc, const char **argv)
+{
+    process_rec *process;
+    
+    {
+	ap_context_t *cntx;
+
+	ap_create_context(&cntx, NULL);
+	process = ap_palloc(cntx, sizeof(process_rec));
+	process->pool = cntx;
+    }
+    ap_create_context(&process->pconf, process->pool);
+    process->argc = argc;
+    process->argv = argv;
+    {
+        char *s = strrchr(argv[0], PATHSEPARATOR);
+
+	process->short_name = s ? ++s : argv[0];
+    }
+    return process;
+}
+
+static void usage(process_rec *process)
+{
+    const char *bin = process->argv[0];
     char pad[MAX_STRING_LEN];
     unsigned i;
 
@@ -229,8 +260,12 @@ static void usage(char *bin)
     fprintf(stderr, "  -t               : run syntax check for config files (with docroot check)\n");
     fprintf(stderr, "  -T               : run syntax check for config files (without docroot check)\n");
     /* TODOC: -X goes away, expect MPMs to use -D options */
-    exit(1);
+    destroy_and_exit_process(process, 1);
 }
+
+
+
+
 
 ap_context_t *g_pHookPool;
 
@@ -244,28 +279,18 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 {
     int c;
     int configtestonly = 0;
-    char *s;
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
+    process_rec *process = create_process(argc, (const char **)argv);
     server_rec *server_conf;
-    ap_context_t *pglobal;           	/* Global pool */
-    ap_context_t *pconf;		/* Pool for config stuff */
+    ap_context_t *pglobal = process->pool;
+    ap_context_t *pconf = process->pconf;
     ap_context_t *plog;			/* Pool for error-logging files */
-    ap_context_t *ptemp;		/* Pool for temporart config stuff */
+    ap_context_t *ptemp;		/* Pool for temporary config stuff */
     ap_context_t *pcommands;		/* Pool for -C and -c switches */
-
-    /* TODO: PATHSEPARATOR should be one of the os defines */
-#define PATHSEPARATOR '/'
-    if ((s = strrchr(argv[0], PATHSEPARATOR)) != NULL) {
-	ap_server_argv0 = ++s;
-    }
-    else {
-	ap_server_argv0 = argv[0];
-    }
 
     ap_util_uri_init();
 
-    ap_create_context(&pglobal, NULL);
     g_pHookPool=pglobal;
 
     ap_create_context(&pcommands, pglobal);
@@ -295,27 +320,26 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	case 'v':
 	    printf("Server version: %s\n", ap_get_server_version());
 	    printf("Server built:   %s\n", ap_get_server_built());
-	    exit(0);
+	    destroy_and_exit_process(process, 0);
 	case 'V':
 	    show_compile_settings();
-	    exit(0);
+	    destroy_and_exit_process(process, 0);
 	case 'l':
 	    ap_show_modules();
-	    exit(0);
+	    destroy_and_exit_process(process, 0);
 	case 'L':
 	    ap_show_directives();
-	    exit(0);
+	    destroy_and_exit_process(process, 0);
 	case 't':
 	    configtestonly = 1;
 	    break;
 	case 'h':
-	    usage(argv[0]);
+	    usage(process);
 	case '?':
-	    usage(argv[0]);
+	    usage(process);
 	}
     }
 
-    ap_create_context(&pconf, pglobal);
     ap_create_context(&plog, pglobal);
     ap_create_context(&ptemp, pconf);
 
@@ -324,11 +348,11 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 
     ap_server_root = def_server_root;
     ap_run_pre_config(pconf, plog, ptemp);
-    server_conf = ap_read_config(pconf, ptemp, confname);
+    server_conf = ap_read_config(process, ptemp, confname);
 
     if (configtestonly) {
 	fprintf(stderr, "Syntax OK\n");
-	exit(0);
+	destroy_and_exit_process(process, 0);
     }
 
     ap_clear_pool(plog);
@@ -341,7 +365,7 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 	ap_create_context(&ptemp, pconf);
 	ap_server_root = def_server_root;
 	ap_run_pre_config(pconf, plog, ptemp);
-	server_conf = ap_read_config(pconf, ptemp, confname);
+	server_conf = ap_read_config(process, ptemp, confname);
 	ap_clear_pool(plog);
 	ap_run_open_logs(pconf, plog, ptemp, server_conf);
 	ap_post_config_hook(pconf, plog, ptemp, server_conf);
@@ -349,8 +373,8 @@ API_EXPORT_NONSTD(int)        main(int argc, char *argv[])
 
 	if (ap_mpm_run(pconf, plog, server_conf)) break;
     }
-    ap_destroy_pool(pglobal); /* and destroy all descendent pools */
-    exit(0);
+    destroy_and_exit_process(process, 0);
+    return 0; /* Supress compiler warning. */
 }
 
 /* force Expat to be linked into the server executable */
