@@ -59,6 +59,7 @@ pwd.h \
 grp.h \
 )
 AC_HEADER_SYS_WAIT
+AC_STRUCT_TM
 
 dnl ## Check for C preprocessor symbols
 
@@ -90,6 +91,7 @@ bzero \
 AC_CHECK_LIB(nsl, gethostbyname)
 AC_CHECK_LIB(nsl, gethostname)
 AC_CHECK_LIB(socket, socket)
+AC_CHECK_LIB(resolv, sethostent)
 
 AC_CHECK_FUNCS(inet_addr inet_network, break, [
   AC_MSG_ERROR(inet_addr function not found)
