@@ -88,6 +88,25 @@
 #define PLATFORM "Cygwin"
 #endif
 
+/* 
+ * Define winsock.h and winsock2.h stuff taken from Win32 API in case we  
+ * want to do socket communication in Win32 native way rather then using 
+ * Cygwin's POSIX wrapper to the native ones. These are needed for 
+ * main/buff.c and main/http_main.c. They are linked against libwsock32.a 
+ * for the import declarations of the corresponding Win32 native DLLs. 
+ */ 
+#ifdef CYGWIN_WINSOCK 
+#define WSAEWOULDBLOCK (10035) 
+#define SOCKET_ERROR (-1) 
+ 
+#define WIN32API_IMPORT(type)  __declspec(dllimport) type __stdcall 
+ 
+WIN32API_IMPORT(int) WSAGetLastError(void); 
+WIN32API_IMPORT(int) WSASetLastError(int); 
+WIN32API_IMPORT(int) ioctlsocket(unsigned int, long, unsigned long *); 
+WIN32API_IMPORT(void) Sleep(unsigned int); 
+#endif /* CYGWIN_WINSOCK */ 
+
 /*
  * This file in included in all Apache source code. It contains definitions
  * of facilities available on _this_ operating system (HAVE_* macros),

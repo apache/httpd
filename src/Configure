@@ -235,6 +235,7 @@ RULE_IRIXNIS=`./helpers/CutRule IRIXNIS $file`
 RULE_IRIXN32=`./helpers/CutRule IRIXN32 $file`
 RULE_PARANOID=`./helpers/CutRule PARANOID $file`
 RULE_EXPAT=`./helpers/CutRule EXPAT $file`
+RULE_CYGWIN_WINSOCK=`./helpers/CutRule CYGWIN_WINSOCK $file` 
 RULE_SHARED_CORE=`./helpers/CutRule SHARED_CORE $file`
 RULE_SHARED_CHAIN=`./helpers/CutRule SHARED_CHAIN $file`
 
@@ -849,6 +850,11 @@ case "$PLAT" in
 	DEF_WANTHSREGEX=yes
 	DBM_LIB="-lgdbm"
 	LIBS="$LIBS -lcrypt $DBM_LIB"
+	if [ "x$RULE_CYGWIN_WINSOCK" = "xyes" ]; then 
+	    CFLAGS="$CFLAGS -DCYGWIN_WINSOCK" 
+	    LIBS="$LIBS -lwsock32" 
+	fi 
+
 	;;
     *atheos*)
 	DEF_WANTSREGEX=yes
@@ -1419,7 +1425,7 @@ if [ "x$using_shlib" = "x1" ] ; then
 	    LIBS_SHLIB='$(EXTRA_LIBS)'
 	    SHARED_CORE_EP='lib$(TARGET).ep'
 	    SHCORE_IMPLIB='lib$(TARGET).dll'
-	    OS_MODULE_INCLUDE='Makefile.Cygwin'
+	    OS_MODULE_INCLUDE='$(SRCDIR)/modules/standard/Makefile.Cygwin'
 	    ;;
 	*)
 	    ##  ok, no known explict support for shared objects

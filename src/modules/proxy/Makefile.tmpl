@@ -21,10 +21,18 @@ libproxy.so: $(OBJS_PIC)
 	rm -f $@
 	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $@ $(OBJS_PIC) $(LIBS_SHLIB)
 
-libproxy.dll: $(OBJS_PIC) mod_proxy.def
-	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $* $(OBJS_PIC) $(LIBS_SHLIB)
-	emxbind -b -q -s -h0 -dmod_proxy.def $* && \
-	rm $*
+libproxy.dll: $(OBJS_PIC) mod_proxy.def 
+	if [ "x$(OS)" = "xCygwin" ]; then \
+	    rm -f $@; \
+	    if [ -f "$(SRCDIR)/$(SHCORE_IMPLIB)" ]; then \
+	    $(LD_SHLIB) $(LDFLAGS_SHLIB) -o $*.dll $(OBJS_PIC) $(LIBS_SHLIB) \
+	    $(SRCDIR)/$(SHCORE_IMPLIB) $(LIBS1); \
+	    fi \
+	else \
+	    $(LD_SHLIB) $(LDFLAGS_SHLIB) -o $* $(OBJS_PIC) $(LIBS_SHLIB); \
+	    emxbind -b -q -s -h0 -dmod_proxy.def $* && \
+	    rm $*; \
+	fi
 
 .SUFFIXES: .o .lo .dll
 

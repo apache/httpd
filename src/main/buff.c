@@ -122,7 +122,7 @@
  * futher I/O will be done
  */
 
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
 
 /*
   select() sometimes returns 1 even though the write will block. We must work around this.
@@ -282,7 +282,7 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
 {
     int rv;
 
-#if defined (WIN32) || defined(NETWARE)
+#if defined (WIN32) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
     if (fb->flags & B_SOCKET) {
 	rv = recvwithtimeout(fb->fd_in, buf, nbyte, 0);
 	if (rv == SOCKET_ERROR)
@@ -1477,7 +1477,7 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	rc1 = ap_bflush(fb);
     else
 	rc1 = 0;
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
     if (fb->flags & B_SOCKET) {
 	rc2 = ap_pclosesocket(fb->pool, fb->fd);
 	if (fb->fd_in != fb->fd) {
@@ -1487,7 +1487,7 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	    rc3 = 0;
 	}
     }
-#ifndef NETWARE
+#if !defined(NETWARE) && !defined(CYGWIN_WINSOCK) 
     else if (fb->hFH != INVALID_HANDLE_VALUE) {
         rc2 = ap_pcloseh(fb->pool, fb->hFH);
         rc3 = 0;
@@ -1512,7 +1512,7 @@ API_EXPORT(int) ap_bclose(BUFF *fb)
 	else {
 	    rc3 = 0;
 	}
-#if defined(WIN32) || defined (BEOS) || defined(NETWARE)
+#if defined(WIN32) || defined (BEOS) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
     }
 #endif
 

@@ -662,11 +662,16 @@ static void accept_mutex_init_pthread(pool *p)
 	perror("pthread_mutexattr_init");
 	exit(APEXIT_INIT);
     }
+#if !defined(CYGWIN)
+    /* Cygwin has problems with this pthread call claiming that these 
+     * are "Invalid arguements", Stipe Tolj <tolj@wapme-systems.de>
+     */
     if ((errno = pthread_mutexattr_setpshared(&mattr,
 						PTHREAD_PROCESS_SHARED))) {
 	perror("pthread_mutexattr_setpshared");
 	exit(APEXIT_INIT);
     }
+#endif
     if ((errno = pthread_mutex_init(accept_mutex, &mattr))) {
 	perror("pthread_mutex_init");
 	exit(APEXIT_INIT);
@@ -1564,7 +1569,7 @@ API_EXPORT(void) ap_unblock_alarms(void)
 #ifndef NETWARE
 static APACHE_TLS void (*volatile alarm_fn) (int) = NULL;
 #endif
-#ifdef WIN32
+#if defined(WIN32) || defined(CYGWIN_WINSOCK) 
 static APACHE_TLS unsigned int alarm_expiry_time = 0;
 #endif /* WIN32 */
 
@@ -1624,7 +1629,7 @@ API_EXPORT_NONSTD(unsigned int) ap_set_callback_and_alarm(void (*fn) (int), int 
 }
 
 
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || defined(NETWARE) || defined(CYGWIN_WINSOCK) 
 API_EXPORT(int) ap_check_alarm(void)
 {
 #ifdef NETWARE
@@ -4067,6 +4072,9 @@ static void show_compile_settings(void)
 #ifdef AP_ACCEPTFILTER_OFF
     printf(" -D AP_ACCEPTFILTER_OFF\n");
 #endif
+#ifdef CYGWIN_WINSOCK 
+    printf(" -D CYGWIN_WINSOCK\n"); 
+#endif 
 
 /* This list displays the compiled-in default paths: */
 #ifdef HTTPD_ROOT

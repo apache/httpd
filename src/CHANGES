@@ -1,5 +1,13 @@
 Changes with Apache 1.3.23
 
+  *) PORT: Numerous additions to Cygwin, including: defaulting
+     to Posix thread accept mutex, excluding the call to
+     pthread_mutexattr_setpshared(), better proxy and DBM support, and
+     allowing the use of native Win32 socket ops instead of
+     Cygwin's Posix wrapper (for better performance). The last
+     item required the addition of a new Configure Rule: CYGWIN_WINSOCK.
+     [Stipe Tolj <tolj@wapme-systems.de>]
+
   *) Use "httpready" accept filter rather than "dataready" on
      FreeBSD after 4.1.1-RELEASE where it works correctly.
      [Tony Finch]

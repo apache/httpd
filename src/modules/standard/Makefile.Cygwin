@@ -28,23 +28,30 @@ define shared_dll
         $(SRCDIR)/$(SHCORE_IMPLIB) $(LIBS1)
 endef
 
+%.def : %.c
+	touch $*.def
+
 %.lo : %.c
 	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $< && mv $*.o $*.lo
 
 %.dll : %.lo
 	@if [ -f "$(SRCDIR)/$(SHCORE_IMPLIB)" ]; then \
+        rm -f $(SRCDIR)/$(SHCORE_IMPLIB).$$; \
         echo $(shared_dll); \
 		$(shared_dll); \
 	else \
-	    echo "+--------------------------------------------------------+"; \
-		echo "| There is no shared core 'libhttpd.dll' available!      |"; \
-		echo "|                                                        |"; \
-		echo "| This is obviously your first 'make' run with configure |"; \
-		echo "| flag SHARED_CORE enabled and shared modules.           |"; \
-		echo "|                                                        |"; \
-		echo "| You will have to re-run 'make' after this run builds   |"; \
-		echo "| the required shared import library!                    |"; \
-	    echo "+--------------------------------------------------------+"; \
-        sleep 10; \
+        if [ ! -f "$(SRCDIR)/$(SHCORE_IMPLIB).$$" ]; then \
+	      echo "+--------------------------------------------------------+"; \
+		  echo "| There is no shared core 'libhttpd.dll' available!      |"; \
+		  echo "|                                                        |"; \
+		  echo "| This is obviously your first 'make' run with configure |"; \
+		  echo "| flag SHARED_CORE enabled and shared modules.           |"; \
+		  echo "|                                                        |"; \
+		  echo "| You will have to re-run 'make' after this run builds   |"; \
+		  echo "| the required shared import library!                    |"; \
+		  echo "+--------------------------------------------------------+"; \
+		  sleep 10; \
+          touch $(SRCDIR)/$(SHCORE_IMPLIB).$$; \
+        fi; \
 	fi;
 

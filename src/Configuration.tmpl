@@ -173,6 +173,13 @@ Rule SHARED_CHAIN=default
 #  Rule EXPAT=default   : If Expat can be found at the system or
 #                         in lib/expat-lite, use it; otherwise
 #                         skip it
+# 
+# CYGWIN_WINSOCK: 
+#  Use Win32 API system calls for socket communication instead 
+#  of Cygwin's POSIX.1 wrappers. This avoids the Cygwin specific
+#  implementation and uses the Win32 native calls. Should be faster
+#  and more reliable for high-load systems.  
+# 
 
 Rule SOCKS4=no
 Rule SOCKS5=no
@@ -180,6 +187,7 @@ Rule IRIXNIS=no
 Rule IRIXN32=yes
 Rule PARANOID=no
 Rule EXPAT=default
+Rule CYGWIN_WINSOCK=no 
 
 # DEV_RANDOM:
 #  Note: this rule is only used when compiling mod_auth_digest.

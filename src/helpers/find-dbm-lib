@@ -31,6 +31,15 @@ if [ "x$found_dbm" = "x" ]; then
 		    found_dbm=1
 		fi
 		;;
+        *-cygwin*)
+        # we use the shared DLL version of gdbm if available
+        DBM_LIB=""
+        if ./helpers/TestCompile lib gdbm dbm_open; then
+            DBM_LIB="-lgdbm"
+            LIBS="$LIBS $DBM_LIB"
+            found_dbm=1
+        fi
+        ;;
 	    *)
 		if [ "x$DBM_LIB" != "x" ]; then
 		    oldLIBS="$LIBS"
