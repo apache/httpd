@@ -1070,11 +1070,6 @@ static void * APR_THREAD_FUNC start_threads(apr_thread_t *thd, void *dummy)
      *  "life_status" is almost right, but it's in the worker's structure, and 
      *  the name could be clearer.   gla
      */
-/*
-    while (1) {
-      apr_sleep(apr_time_from_sec(10));
-    }
-*/
     apr_thread_exit(thd, APR_SUCCESS);
     return NULL;
 }
