@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
 [  --with-mpm=MPM          Choose the process model for Apache to use.
-               MPM={dexter,mpmt_beos,mpmt_pthread,prefork,spmt_os2,perchild}],[
+               MPM={mpmt_beos,mpmt_pthread,prefork,spmt_os2,perchild}],[
   APACHE_MPM=$withval
 ],[
   if test "x$APACHE_MPM" = "x"; then
@@ -12,7 +12,7 @@ AC_MSG_RESULT($APACHE_MPM)
 
 apache_cv_mpm=$APACHE_MPM
 	
-if test "$apache_cv_mpm" = "mpmt_pthread" -o "$apache_cv_mpm" = "dexter" -o "$apache_cv_mpm" = "perchild"; then
+if test "$apache_cv_mpm" = "mpmt_pthread" -o "$apache_cv_mpm" = "perchild"; then
   PTHREADS_CHECK
   AC_MSG_CHECKING([for which threading library to use])
   AC_MSG_RESULT($threads_result)

@@ -325,8 +325,6 @@
           mpmt_pthread ..... Mutli-process(dynamic) Multi-threaded(static) 
                              Unix MPM
           prefork .......... Preforking Unix MPM
-          dexter ........... Multi-process(static) Multi-threaded(dynamic)
-                             Unix MPM
           perchild ......... Multi-process(static) Multi-threaded(dynamic)
                              Unix MPM, that allows a User per child process
 

@@ -1,5 +1,0 @@
-
-LTLIBRARY_NAME    = libdexter.la
-LTLIBRARY_SOURCES = dexter.c
-
-include $(top_srcdir)/build/ltlib.mk
