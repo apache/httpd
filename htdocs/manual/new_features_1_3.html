@@ -256,6 +256,12 @@ directives added to proxy, useful for intranets.</STRONG>
 directive added to <A HREF="mod/mod_info.html">mod_info</A></STRONG><BR>
 Allows additional information to be listed along with a specified module.
 
+<LI><STRONG>Experimental module to load modules at runtime on Unix</STRONG><BR>
+    The new module <SAMP><A HREF="mod/mod_so.html">mod_so</A></SAMP>
+    enables the addition of modules when Apache is started, rather
+    than requiring a recompilation.  This is currently experimental,
+    and replaces the old <SAMP>mod_dld</SAMP> module.
+
 <LI><STRONG>Performance Improvements</STRONG>
     <UL>
     <LI>IP-based virtual hosts are looked up via hash table,
