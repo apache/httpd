@@ -3167,18 +3167,8 @@ static int default_handler(request_rec *r)
         return errstatus;
     }
 
-    if (r->method_number == M_INVALID) {
-        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
-                      "Invalid method in request %s", r->the_request);
-        return HTTP_NOT_IMPLEMENTED;
-    }
-
-    if (r->method_number == M_OPTIONS) {
-        return ap_send_http_options(r);
-    }
-
     if (r->method_number != M_GET && r->method_number != M_POST) {
-        return HTTP_METHOD_NOT_ALLOWED;
+        goto unusual_method;
     }
 
     if (r->finfo.filetype == 0) {
@@ -3248,6 +3238,18 @@ static int default_handler(request_rec *r)
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     return ap_pass_brigade(r->output_filters, bb);
+
+unusual_method:
+    if (r->method_number == M_INVALID) {
+        ap_log_rerror(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, 0, r,
+                      "Invalid method in request %s", r->the_request);
+        return HTTP_NOT_IMPLEMENTED;
+    }
+
+    if (r->method_number == M_OPTIONS) {
+        return ap_send_http_options(r);
+    }
+    return HTTP_METHOD_NOT_ALLOWED;
 }
 
 static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
