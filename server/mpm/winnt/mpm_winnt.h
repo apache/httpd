@@ -102,6 +102,7 @@ void mpm_nt_eventlog_stderr_flush(void);
 /* From winnt.c: */
 
 extern int use_acceptex;
+extern int winnt_mpm_state;
 extern OSVERSIONINFO osver;
 extern void clean_child_exit(int);
 
