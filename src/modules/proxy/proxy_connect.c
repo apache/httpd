@@ -226,10 +226,10 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	Explain0("Sending the CONNECT request to the remote proxy");
 	ap_snprintf(buffer, sizeof(buffer), "CONNECT %s HTTP/1.0" CRLF,
 		    r->uri);
-	write(sock, buffer, strlen(buffer));
+	send(sock, buffer, strlen(buffer),0);
 	ap_snprintf(buffer, sizeof(buffer),
 		    "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
-	write(sock, buffer, strlen(buffer));
+	send(sock, buffer, strlen(buffer),0);
     }
     else {
 	Explain0("Returning 200 OK Status");
@@ -252,10 +252,10 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	if (i) {
 	    if (FD_ISSET(sock, &fds)) {
 		Explain0("sock was set");
-		if ((nbytes = read(sock, buffer, HUGE_STRING_LEN)) != 0) {
+		if ((nbytes = recv(sock, buffer, HUGE_STRING_LEN,0)) != 0) {
 		    if (nbytes == -1)
 			break;
-		    if (write(ap_bfileno(r->connection->client, B_WR), buffer, nbytes) == EOF)
+		    if (send(ap_bfileno(r->connection->client, B_WR), buffer, nbytes,0) == EOF)
 			break;
 		    Explain1("Wrote %d bytes to client", nbytes);
 		}
@@ -264,11 +264,11 @@ int ap_proxy_connect_handler(request_rec *r, cache_req *c, char *url,
 	    }
 	    else if (FD_ISSET(ap_bfileno(r->connection->client, B_WR), &fds)) {
 		Explain0("client->fd was set");
-		if ((nbytes = read(ap_bfileno(r->connection->client, B_WR), buffer,
-				   HUGE_STRING_LEN)) != 0) {
+		if ((nbytes = recv(ap_bfileno(r->connection->client, B_WR), buffer,
+				   HUGE_STRING_LEN, 0)) != 0) {
 		    if (nbytes == -1)
 			break;
-		    if (write(sock, buffer, nbytes) == EOF)
+		    if (send(sock, buffer, nbytes, 0) == EOF)
 			break;
 		    Explain1("Wrote %d bytes to server", nbytes);
 		}

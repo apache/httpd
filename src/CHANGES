@@ -1,5 +1,8 @@
 Changes with Apache 1.3.13
 
+  *) use send/recv instead of write/read in proxy_connect -- fixes
+     https through proxy on NT.  [willem.vanpelt@philips.com]
+
   *) [EBCDIC] Make chunked encoding work again; it was broken by the
      recent CRLF macro changes. An oversight. [Martin Kraemer]
 
