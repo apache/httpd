@@ -72,7 +72,7 @@
 <div class="section">
 <h2><a name="using" id="using">Using Name-based Virtual Hosts</a></h2>
 
-<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
 	<p>To use name-based virtual hosting, you must designate the IP
 	address (and possibly port) on the server that will be accepting
@@ -192,10 +192,10 @@
     (the <cite>primary</cite> name-based virtual host).</p>
 
     <div class="note"><h3>How much older?</h3>
-    Please note that when we say older, we really do mean older. You are
+    <p>Please note that when we say older, we really do mean older. You are
     very unlikely to encounter one of these browsers in use today. All
     current versions of any browser send the <code>Host</code> header as
-    required for name-based virtual hosts.
+    required for name-based virtual hosts.</p>
     </div>
 
     <p>There is a possible workaround with the <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>

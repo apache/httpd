@@ -68,7 +68,7 @@
 	<directive module="core">ServerAlias</directive>
 	<directive module="core">ServerName</directive>
 	<directive module="core">ServerPath</directive>
-	<directive module="core">VirtualHost</directive>
+	<directive module="core" type="section">VirtualHost</directive>
     </directivelist>
 </related>
 
@@ -208,10 +208,10 @@
     (the <cite>primary</cite> name-based virtual host).</p>
 
     <note><title>How much older?</title>
-    Please note that when we say older, we really do mean older. You are
+    <p>Please note that when we say older, we really do mean older. You are
     very unlikely to encounter one of these browsers in use today. All
     current versions of any browser send the <code>Host</code> header as
-    required for name-based virtual hosts.
+    required for name-based virtual hosts.</p>
     </note>
 
     <p>There is a possible workaround with the <directive
