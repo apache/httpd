@@ -428,7 +428,7 @@ static void start_chunk(BUFF *fb)
 static void end_chunk(BUFF *fb)
 {
     int i;
-    char *strp;
+    unsigned char *strp;
 
     if (fb->outchunk == -1) {
 	/* not chunking */
