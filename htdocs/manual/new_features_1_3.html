@@ -336,6 +336,11 @@ Allows additional information to be listed along with a specified module.
     real-time splitting of multiple vhosts into separate logs, and
     asynchronous DNS resolving on the fly.
 
+<LI><STRONG>LogLevel and syslog support</STRONG><BR>
+    Apache now has <A HREF="mod/core.html#loglevel">configurable error
+    logging levels</A> and supports <A HREF="mod/core.html#errorlog">error
+    logging via syslogd(8)</A>. 
+    
 <LI><STRONG>ServerRoot relative auth filenames</STRONG><BR>
     Auth filenames for the various authentication modules are now treated
     as relative to the ServerRoot if they are not full paths.
