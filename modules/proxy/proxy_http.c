@@ -665,7 +665,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             }
 
             /* We can't pass this EOS to the output_filters. */
-            APR_BUCKET_REMOVE(APR_BRIGADE_LAST(bb));
+            e = APR_BRIGADE_LAST(bb);
+            apr_bucket_delete(e);
             seen_eos = 1;
         }
 

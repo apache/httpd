@@ -1,4 +1,8 @@
 Changes with Apache 2.0.49
+
+  *) Fix memory leak in handling of request bodies during reverse
+     proxy operations.  PR 24991. [Larry Toppi <larry.toppi citrix.com>]
+
   *) Win32 MPM: Implement MaxMemFree to enable setting an upper
      limit on the amount of storage used by the bucket brigades
      in each server thread. [Bill Stoddard]
