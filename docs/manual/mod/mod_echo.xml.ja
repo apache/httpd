@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.2 -->
+<!-- English revision: 1.3 -->
 
 <name>mod_echo</name>
 <description>プロトコルモジュールの概要を示すための単純なエコーサーバ
@@ -22,7 +22,7 @@
 
 <name>ProtocolEcho</name>
 <description>エコーサーバの有効無効を設定します。</description>
-<syntax>ProtocolEcho <em>On|Off</em></syntax>
+<syntax>ProtocolEcho On|Off</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Apache 2.0 以降</compatibility>
@@ -31,11 +31,9 @@
     <p><directive>ProtocolEcho</directive> ディレクティブで
     エコーサーバの有効無効を設定します。</p>
 
-    <example>
-    <title>例</title>
-    ProtocolEcho On
+    <example><title>例</title>
+      ProtocolEcho On
     </example>
-
 </usage>
 
 </directivesynopsis>
