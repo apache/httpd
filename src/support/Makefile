@@ -10,7 +10,7 @@ CFLAGS= -g
 # For SCO ODT
 #EXTRA_LIBS= -lcrypt_i
 # For OS/2 port
-#EXTRA_LIBS= -llibufc
+#EXTRA_LIBS= -llibufc -lsocket
 
 
 INCLUDES= -I../src
@@ -69,7 +69,7 @@ rotatelogs: rotatelogs.c
 	$(CC) $(INCLUDES) $(CFLAGS) rotatelogs.c -o rotatelogs
 
 logresolve: logresolve.c
-	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve
+	$(CC) $(INCLUDES) $(CFLAGS) logresolve.c -o logresolve $(EXTRA_LIBS)
 
 clean:
 	rm -f $(TARGETS)
