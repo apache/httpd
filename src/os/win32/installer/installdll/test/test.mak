@@ -207,23 +207,12 @@ LINK32_OBJS= \
 
 !IF "$(CFG)" == "test - Win32 Release" || "$(CFG)" == "test - Win32 Debug"
 SOURCE=.\test.c
-
-!IF  "$(CFG)" == "test - Win32 Release"
-
-
-"$(INTDIR)\test.obj" : $(SOURCE) "$(INTDIR)"
-
-
-!ELSEIF  "$(CFG)" == "test - Win32 Debug"
-
 DEP_CPP_TEST_=\
 	".\test.h"\
 	
 
 "$(INTDIR)\test.obj" : $(SOURCE) $(DEP_CPP_TEST_) "$(INTDIR)"
 
-
-!ENDIF 
 
 SOURCE=.\test.rc
 DEP_RSC_TEST_R=\

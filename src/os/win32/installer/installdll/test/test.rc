@@ -41,13 +41,10 @@ IDI_TEST                ICON    DISCARDABLE     "test.ico"
 
 IDM_TEST MENU DISCARDABLE 
 BEGIN
-    POPUP "&File"
+    POPUP "&Configure"
     BEGIN
+        MENUITEM "&Configure",                  IDM_CONFIGURE
         MENUITEM "E&xit",                       IDM_EXIT
-    END
-    POPUP "&Test"
-    BEGIN
-        MENUITEM "Call &BeforeExit",            IDM_BEFOREEXIT
     END
     POPUP "&Help"
     BEGIN
@@ -91,14 +88,27 @@ END
 // Dialog
 //
 
-IDD_ABOUT DIALOG DISCARDABLE  0, 0, 186, 47
+IDD_ABOUT DIALOG DISCARDABLE  0, 0, 186, 62
 STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 8, "MS Sans Serif"
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,129,26,50,14
-    LTEXT           "Apache Install DLL Tester",IDC_STATIC,7,7,172,14,NOT 
-                    WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,129,41,50,14
+    LTEXT           "Apache post-install configuration tester",IDC_STATIC,7,
+                    7,172,10,NOT WS_GROUP
+    LTEXT           "Copyright 1999 The Apache Group",IDC_STATIC,7,21,172,9
+END
+
+IDD_SETDIRECTORY DIALOG DISCARDABLE  0, 0, 186, 63
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Configure Apache"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,39,42,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,95,42,50,14
+    LTEXT           "Directory where Apache was installled",IDC_STATIC,7,7,
+                    164,11
+    EDITTEXT        IDC_DIRECTORY,7,22,172,12,ES_AUTOHSCROLL
 END
 
 
@@ -115,7 +125,15 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 179
         TOPMARGIN, 7
-        BOTTOMMARGIN, 40
+        BOTTOMMARGIN, 55
+    END
+
+    IDD_SETDIRECTORY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 56
     END
 END
 #endif    // APSTUDIO_INVOKED
