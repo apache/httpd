@@ -1,5 +1,10 @@
 Changes with Apache 2.0b1
 
+  *) Get SuEXEC working again.  We can't send absolute paths to suExec
+     because it refuses to execute those programs.  SuEXEC also wasn't
+     always recognizing configuration changes made using the autoconf
+     setup.  [Ryan Bloom]
+
   *) Allow the buildconf process to find the config.m4 files in the correct
      order.  Basically, we can now name config.m4 files as config\d\d.m4,
      and we will sort them correctly when inserting them into the build

@@ -57,6 +57,7 @@
  */
 
 #include "ap_config.h"
+#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_main.h"
