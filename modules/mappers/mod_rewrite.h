@@ -97,7 +97,7 @@
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
-#ifdef HAVE_STDARG_H
+#ifdef APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
 #ifdef HAVE_STDLIB_H

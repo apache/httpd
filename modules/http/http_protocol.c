@@ -77,7 +77,7 @@
 #include "util_date.h"          /* For parseHTTPdate and BAD_DATE */
 #include "util_charset.h"
 #include "mpm_status.h"
-#ifdef HAVE_STDARG_H
+#ifdef APR_HAVE_STDARG_H
 #include <stdarg.h>
 #endif
 #ifdef HAVE_UNISTD_H
