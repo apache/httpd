@@ -112,14 +112,6 @@ PATCHES TO BACKPORT FROM 2.1
        svn rev 124556
        +1: wrowe
 
-    *) modules: Include mod_dumpio to the modules/experimental
-       tree. Module included in 2.1:modules/debug.
-       http://www.apache.org/~jim/mod_dumpio.c
-       jerenkrantz notes: I won't merge this myself because of the build system
-                          tweaks required to add the module.
-       +1: jim, trawick, jerenkrantz
-       -0: nd (suggests the experimental directory instead)
-
     *) Fix the RPM spec file so that an RPM build now works. An RPM
        build now requires system installations of APR and APR-util.
        http://svn.apache.org/~minfrin/httpd-2.0.53-rpm.diff

@@ -1,5 +1,8 @@
 Changes with Apache 2.0.53
 
+  *) mod_dumpio, an I/O logging/dumping module, added to the
+     modules/expermimental subdirectory.  [Jim Jagielski]
+
   *) mod_auth_ldap: Handle the inconsistent way in which the MS LDAP
      library handles special characters.  PR 24437.  [Jess Holle]
 

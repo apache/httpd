@@ -28,6 +28,7 @@ APACHE_MODULE(mem_cache, memory caching module, $mem_cache_objs, , no)
 APACHE_MODULE(example, example and demo module, , , no)
 APACHE_MODULE(case_filter, example uppercase conversion filter, , , no)
 APACHE_MODULE(case_filter_in, example uppercase conversion input filter, , , no)
+APACHE_MODULE(dumpio, I/O dump filter, , , no)
 
 ldap_objects="util_ldap.lo util_ldap_cache.lo util_ldap_cache_mgr.lo"
 APACHE_MODULE(ldap, LDAP caching and connection pooling services, $ldap_objects, , no)
