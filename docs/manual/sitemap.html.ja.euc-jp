@@ -184,6 +184,7 @@
 <li><a href="mod/mod_deflate.html">Apache モジュール mod_deflate</a></li>
 <li><a href="mod/mod_dir.html">Apache モジュール mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Apache モジュール mod_disk_cache</a></li>
+<li><a href="mod/mod_dumpio.html">Apache モジュール mod_dumpio</a></li>
 <li><a href="mod/mod_echo.html">Apache モジュール mod_echo</a></li>
 <li><a href="mod/mod_env.html">Apache モジュール mod_env</a></li>
 <li><a href="mod/mod_example.html">Apache モジュール mod_example</a></li>

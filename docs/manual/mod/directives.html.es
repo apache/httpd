@@ -162,6 +162,8 @@
 <li><a href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
 <li><a href="mod_dir.html#directoryslash">DirectorySlash</a></li>
 <li><a href="core.html#documentroot">DocumentRoot</a></li>
+<li><a href="mod_dumpio.html#dumpioinput">DumpIOInput</a></li>
+<li><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput</a></li>
 <li><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook</a></li>
 <li><a href="core.html#enablemmap">EnableMMAP</a></li>
 <li><a href="core.html#enablesendfile">EnableSendfile</a></li>
