@@ -1,5 +1,12 @@
 Changes with Apache 1.3b6
  
+  *) Allow %2F in two situations: 1) it is in the query part of the URI,
+     therefore not exposed to %2F -> '/' translations and 2) the request
+     is a proxy request, so we're not dealing with a local resource anyway.
+     Without this, the proxy would fail to work for any URL's with
+     %2f in them (occurs quite often in
+     http://.../cgi-bin/...?http%3A%2F%2F... references) [Martin Kraemer]
+
   *) Finally fix the shared object loading by using a fallback strategy to
      overcome the HIDE feature problematic without loosing special cases. Also
      a huge comment was added to mod_so.c to make the situation more clear
