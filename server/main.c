@@ -561,8 +561,7 @@ int main(int argc, const char * const argv[])
     ap_fini_vhost_config(pconf, server_conf);
     apr_sort_hooks();
     if (configtestonly) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "Syntax OK\n");
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, "Syntax OK");
         destroy_and_exit_process(process, 0);
     }
 
