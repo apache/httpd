@@ -16,6 +16,7 @@
 <xsl:include href="common.xsl" />
 <xsl:include href="html.xsl" />
 <xsl:include href="synopsis.xsl" />
+<xsl:include href="moduleindex.xsl" />
 
 <xsl:template match="sitemap">
 <xsl:text>
@@ -276,6 +277,5 @@
     </xsl:call-template>
 
 </xsl:template>
-
 
 </xsl:stylesheet>

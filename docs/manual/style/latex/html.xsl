@@ -118,32 +118,42 @@ interpreted in pre -->
 <!-- XXX: We need to deal with table headers -->
 
 <xsl:template match="table">
-<xsl:text>\begin{tabular}{</xsl:text>
+<xsl:text>\fbox{\begin{tabular}{</xsl:text>
 <xsl:choose>
 <xsl:when test="columnspec">
   <xsl:for-each select="columnspec/column">
     <xsl:text>l</xsl:text>
+    <xsl:if test="../../@border and not(position()=last())">
+      <xsl:text>|</xsl:text>
+    </xsl:if>
   </xsl:for-each>
 </xsl:when>
 <xsl:otherwise>
   <xsl:for-each select="tr[1]/*">
     <xsl:text>l</xsl:text>
+    <xsl:if test="../../@border and not(position()=last())">
+      <xsl:text>|</xsl:text>
+    </xsl:if>
   </xsl:for-each>
 </xsl:otherwise>
 </xsl:choose>
 <xsl:text>}</xsl:text>
 <xsl:apply-templates select="tr"/>
-<xsl:text>\end{tabular}
+<xsl:text>\end{tabular}}
 </xsl:text>
 </xsl:template>
 
 <xsl:template match="tr">
-  <xsl:apply-templates select="td"/>
-  <xsl:text>\\
+  <xsl:apply-templates select="td|th"/>
+  <xsl:text>\\</xsl:text>
+  <xsl:if test="../@border and not(position()=last())">
+    <xsl:text>\hline</xsl:text>
+  </xsl:if>
+  <xsl:text>
 </xsl:text>
 </xsl:template>
 
-<xsl:template match="td">
+<xsl:template match="td|th">
     <xsl:variable name="pos" select="position()"/>
     <xsl:text>\begin{minipage}[t]{</xsl:text>
     <xsl:choose>
@@ -203,7 +213,7 @@ interpreted in pre -->
       <xsl:text>\href{</xsl:text>
       <xsl:value-of select="@href"/>
       <xsl:text>}{</xsl:text>
-    <xsl:call-template name="htescape">
+    <xsl:call-template name="ltescape">
       <xsl:with-param name="string" select="@href"/>
     </xsl:call-template>
     <xsl:text>}}</xsl:text>
