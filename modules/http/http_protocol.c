@@ -2032,3 +2032,391 @@ AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l)
     l->method_list->nelts = 0;
 } 
 
+/*
+ * Construct an entity tag (ETag) from resource information.  If it's a real
+ * file, build in some of the file characteristics.  If the modification time
+ * is newer than (request-time minus 1 second), mark the ETag as weak - it
+ * could be modified again in as short an interval.  We rationalize the
+ * modification time we're given to keep it from being in the future.
+ */
+AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
+{
+    char *etag;
+    char *weak;
+
+    /*
+     * Make an ETag header out of various pieces of information. We use
+     * the last-modified date and, if we have a real file, the
+     * length and inode number - note that this doesn't have to match
+     * the content-length (i.e. includes), it just has to be unique
+     * for the file.
+     *
+     * If the request was made within a second of the last-modified date,
+     * we send a weak tag instead of a strong one, since it could
+     * be modified again later in the second, and the validation
+     * would be incorrect.
+     */
+    
+    weak = ((r->request_time - r->mtime > APR_USEC_PER_SEC)
+	    && !force_weak) ? "" : "W/";
+
+    if (r->finfo.filetype != 0) {
+        etag = apr_psprintf(r->pool,
+			    "%s\"%lx-%lx-%lx\"", weak,
+			    (unsigned long) r->finfo.inode,
+			    (unsigned long) r->finfo.size,
+			    (unsigned long) r->mtime);
+    }
+    else {
+        etag = apr_psprintf(r->pool, "%s\"%lx\"", weak,
+			    (unsigned long) r->mtime);
+    }
+
+    return etag;
+}
+
+AP_DECLARE(void) ap_set_etag(request_rec *r)
+{
+    char *etag;
+    char *variant_etag, *vlv;
+    int vlv_weak;
+
+    if (!r->vlist_validator) {
+        etag = ap_make_etag(r, 0);
+    }
+    else {
+        /* If we have a variant list validator (vlv) due to the
+         * response being negotiated, then we create a structured
+         * entity tag which merges the variant etag with the variant
+         * list validator (vlv).  This merging makes revalidation
+         * somewhat safer, ensures that caches which can deal with
+         * Vary will (eventually) be updated if the set of variants is
+         * changed, and is also a protocol requirement for transparent
+         * content negotiation.
+         */
+
+        /* if the variant list validator is weak, we make the whole
+         * structured etag weak.  If we would not, then clients could
+         * have problems merging range responses if we have different
+         * variants with the same non-globally-unique strong etag.
+         */
+
+        vlv = r->vlist_validator;
+        vlv_weak = (vlv[0] == 'W');
+               
+        variant_etag = ap_make_etag(r, vlv_weak);
+
+        /* merge variant_etag and vlv into a structured etag */
+
+        variant_etag[strlen(variant_etag) - 1] = '\0';
+        if (vlv_weak)
+            vlv += 3;
+        else
+            vlv++;
+        etag = apr_pstrcat(r->pool, variant_etag, ";", vlv, NULL);
+    }
+
+    apr_table_setn(r->headers_out, "ETag", etag);
+}
+
+static int parse_byterange(char *range, apr_off_t clength,
+                           apr_off_t *start, apr_off_t *end)
+{
+    char *dash = strchr(range, '-');
+
+    if (!dash)
+        return 0;
+
+    if ((dash == range)) {
+        /* In the form "-5" */
+        *start = clength - atol(dash + 1);
+        *end = clength - 1;
+    }
+    else {
+        *dash = '\0';
+        dash++;
+        *start = atol(range);
+        if (*dash)
+            *end = atol(dash);
+        else                    /* "5-" */
+            *end = clength - 1;
+    }
+
+    if (*start < 0)
+	*start = 0;
+
+    if (*end >= clength)
+        *end = clength - 1;
+
+    if (*start > *end)
+	return -1;
+
+    return (*start > 0 || *end < clength);
+}
+
+static int ap_set_byterange(request_rec *r);
+
+typedef struct byterange_ctx {
+    apr_bucket_brigade *bb;
+    int num_ranges;
+    const char *orig_ct;
+} byterange_ctx;
+
+/*
+ * Here we try to be compatible with clients that want multipart/x-byteranges
+ * instead of multipart/byteranges (also see above), as per HTTP/1.1. We
+ * look for the Request-Range header (e.g. Netscape 2 and 3) as an indication
+ * that the browser supports an older protocol. We also check User-Agent
+ * for Microsoft Internet Explorer 3, which needs this as well.
+ */
+static int use_range_x(request_rec *r)
+{
+    const char *ua;
+    return (apr_table_get(r->headers_in, "Request-Range") ||
+            ((ua = apr_table_get(r->headers_in, "User-Agent"))
+             && ap_strstr_c(ua, "MSIE 3")));
+}
+
+#define BYTERANGE_FMT "%" APR_OFF_T_FMT "-%" APR_OFF_T_FMT "/%" APR_OFF_T_FMT
+
+AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(
+    ap_filter_t *f,
+    apr_bucket_brigade *bb)
+{
+#define MIN_LENGTH(len1, len2) ((len1 > len2) ? len2 : len1)
+    request_rec *r = f->r;
+    byterange_ctx *ctx = f->ctx;
+    apr_bucket *e;
+    apr_bucket_brigade *bsend;
+    apr_off_t range_start;
+    apr_off_t range_end;
+    char *current;
+    char *bound_head;
+    apr_ssize_t bb_length;
+    apr_off_t clength = 0;
+    apr_status_t rv;
+    int found = 0;
+
+    if (!ctx) {
+        int num_ranges = ap_set_byterange(r);
+ 
+        if (num_ranges == -1) {
+            ap_remove_output_filter(f);
+            bsend = apr_brigade_create(r->pool);
+            e = ap_bucket_error_create(HTTP_RANGE_NOT_SATISFIABLE, NULL, r->pool);
+            APR_BRIGADE_INSERT_TAIL(bsend, e);
+            e = apr_bucket_eos_create();
+            APR_BRIGADE_INSERT_TAIL(bsend, e);
+            return ap_pass_brigade(f->next, bsend);
+        }
+        if (num_ranges == 0) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
+        }
+
+        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+        ctx->num_ranges = num_ranges;
+
+        if (num_ranges > 1) {
+            ctx->orig_ct = r->content_type;
+            r->content_type = 
+                 apr_pstrcat(r->pool, "multipart", use_range_x(r) ? "/x-" : "/",
+                          "byteranges; boundary=", r->boundary, NULL);
+        }
+
+        /* create a brigade in case we never call ap_save_brigade() */
+        ctx->bb = apr_brigade_create(r->pool);
+    }
+
+    /* We can't actually deal with byte-ranges until we have the whole brigade
+     * because the byte-ranges can be in any order, and according to the RFC,
+     * we SHOULD return the data in the same order it was requested. 
+     */
+    if (!APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+        ap_save_brigade(f, &ctx->bb, &bb);
+        return APR_SUCCESS;
+    }
+
+    /* compute this once (it is an invariant) */
+    bound_head = apr_pstrcat(r->pool,
+                             CRLF "--", r->boundary,
+                             CRLF "Content-type: ",
+                             ap_make_content_type(r, ctx->orig_ct),
+                             CRLF "Content-range: bytes ", 
+                             NULL);
+    ap_xlate_proto_to_ascii(bound_head, strlen(bound_head));
+
+    /* If we have a saved brigade from a previous run, concat the passed
+     * brigade with our saved brigade.  Otherwise just continue.  
+     */
+    if (ctx->bb) {
+        APR_BRIGADE_CONCAT(ctx->bb, bb);
+        bb = ctx->bb;
+        ctx->bb = NULL;     /* ### strictly necessary? call brigade_destroy? */
+    }
+
+    /* It is possible that we won't have a content length yet, so we have to
+     * compute the length before we can actually do the byterange work.
+     */
+    (void) apr_brigade_length(bb, 1, &bb_length);
+    clength = (apr_off_t)bb_length;
+
+    /* this brigade holds what we will be sending */
+    bsend = apr_brigade_create(r->pool);
+
+    while ((current = ap_getword(r->pool, &r->range, ',')) &&
+           (rv = parse_byterange(current, clength, &range_start, &range_end))) {
+        apr_bucket *e2;
+        apr_bucket *ec;
+
+        if (rv == -1) {
+            continue;
+        }        
+        else {
+            found = 1;
+        }
+
+        if (ctx->num_ranges > 1) {
+            char *ts;
+
+            e = apr_bucket_pool_create(bound_head,
+                                      strlen(bound_head), r->pool);
+            APR_BRIGADE_INSERT_TAIL(bsend, e);
+
+            ts = apr_psprintf(r->pool, BYTERANGE_FMT CRLF CRLF,
+                              range_start, range_end, clength);
+            ap_xlate_proto_to_ascii(ts, strlen(ts));
+            e = apr_bucket_pool_create(ts, strlen(ts), r->pool);
+            APR_BRIGADE_INSERT_TAIL(bsend, e);
+        }
+        
+        e = apr_brigade_partition(bb, range_start);
+        e2 = apr_brigade_partition(bb, range_end + 1);
+        
+        ec = e;
+        do {
+            apr_bucket *foo;
+            const char *str;
+            apr_size_t len;
+
+            if (apr_bucket_copy(ec, &foo) != APR_SUCCESS) {
+                apr_bucket_read(ec, &str, &len, APR_BLOCK_READ);
+                foo = apr_bucket_heap_create(str, len, 0, NULL);
+            }
+            APR_BRIGADE_INSERT_TAIL(bsend, foo);
+            ec = APR_BUCKET_NEXT(ec);
+        } while (ec != e2);
+    }
+
+    if (found == 0) {
+        ap_remove_output_filter(f);
+        r->status = HTTP_OK;
+        return HTTP_RANGE_NOT_SATISFIABLE;
+    }
+
+    if (ctx->num_ranges > 1) {
+        char *end;
+
+        /* add the final boundary */
+        end = apr_pstrcat(r->pool, CRLF "--", r->boundary, "--" CRLF, NULL);
+        ap_xlate_proto_to_ascii(end, strlen(end));
+        e = apr_bucket_pool_create(end, strlen(end), r->pool);
+        APR_BRIGADE_INSERT_TAIL(bsend, e);
+    }
+
+    e = apr_bucket_eos_create();
+    APR_BRIGADE_INSERT_TAIL(bsend, e);
+
+    /* we're done with the original content */
+    apr_brigade_destroy(bb);
+
+    /* send our multipart output */
+    return ap_pass_brigade(f->next, bsend); 
+}    
+
+static int ap_set_byterange(request_rec *r)
+{
+    const char *range;
+    const char *if_range;
+    const char *match;
+    const char *ct;
+    apr_off_t range_start;
+    apr_off_t range_end;
+    int num_ranges;
+
+    if (r->assbackwards)
+        return 0;
+
+    /* Check for Range request-header (HTTP/1.1) or Request-Range for
+     * backwards-compatibility with second-draft Luotonen/Franks
+     * byte-ranges (e.g. Netscape Navigator 2-3).
+     *
+     * We support this form, with Request-Range, and (farther down) we
+     * send multipart/x-byteranges instead of multipart/byteranges for
+     * Request-Range based requests to work around a bug in Netscape
+     * Navigator 2-3 and MSIE 3.
+     */
+
+    if (!(range = apr_table_get(r->headers_in, "Range")))
+        range = apr_table_get(r->headers_in, "Request-Range");
+
+    if (!range || strncasecmp(range, "bytes=", 6)) {
+        return 0;
+    }
+
+    /* Check the If-Range header for Etag or Date.
+     * Note that this check will return false (as required) if either
+     * of the two etags are weak.
+     */
+    if ((if_range = apr_table_get(r->headers_in, "If-Range"))) {
+        if (if_range[0] == '"') {
+            if (!(match = apr_table_get(r->headers_out, "Etag")) ||
+                (strcmp(if_range, match) != 0))
+                return 0;
+        }
+        else if (!(match = apr_table_get(r->headers_out, "Last-Modified")) ||
+                 (strcmp(if_range, match) != 0))
+            return 0;
+    }
+
+    /* would be nice to pick this up from f->ctx */
+    ct = ap_make_content_type(r, r->content_type);
+
+    if (!ap_strchr_c(range, ',')) {
+        int rv;
+        /* A single range */
+
+        /* rvarse_byterange() modifies the contents, so make a copy */
+        if ((rv = parse_byterange(apr_pstrdup(r->pool, range + 6), r->clength,
+                             &range_start, &range_end)) <= 0) {
+            return rv;
+        }
+        apr_table_setn(r->headers_out, "Content-Range",
+                       apr_psprintf(r->pool, "bytes " BYTERANGE_FMT,
+                                    range_start, range_end, r->clength));
+	apr_table_setn(r->headers_out, "Content-Type", ct);
+
+        num_ranges = 1;
+    }
+    else {
+        /* a multiple range */
+
+        num_ranges = 2;
+
+        /* ### it would be nice if r->boundary was in f->ctx */
+        r->boundary = apr_psprintf(r->pool, "%qx%lx",
+                                   r->request_time, (long) getpid());
+
+        apr_table_setn(r->headers_out, "Content-Type",
+		       apr_pstrcat(r->pool,
+                                   "multipart", use_range_x(r) ? "/x-" : "/",
+				   "byteranges; boundary=", r->boundary,
+                                   NULL));
+    }
+
+    r->status = HTTP_PARTIAL_CONTENT;
+    r->range = range + 6;
+
+    return num_ranges;
+}
+

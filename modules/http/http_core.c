@@ -309,6 +309,8 @@ static void register_hooks(apr_pool_t *p)
     ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 
                               AP_FTYPE_HTTP_HEADER);
     ap_register_output_filter("CHUNK", chunk_filter, AP_FTYPE_TRANSCODE);
+    ap_register_output_filter("BYTERANGE", ap_byterange_filter,
+                              AP_FTYPE_HTTP_HEADER);
 }
 
 AP_DECLARE_DATA module http_module = {
