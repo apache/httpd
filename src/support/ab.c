@@ -255,6 +255,7 @@ char *gnuplot;			/* GNUplot file */
 char *csvperc;			/* CSV Percentile file */
 char url[1024];
 char fullurl[1024];
+char colonport[1024];
 int postlen = 0;		/* length of data to be POSTed */
 char content_type[1024];	/* content type to put in POST header */
 char cookie[1024],		/* optional cookie line */
@@ -288,7 +289,7 @@ int err_response = 0;
 struct timeval start, endtime;
 
 /* global request (and its length) */
-char request[512];
+char request[1024];
 int reqlen;
 
 /* one global throw-away buffer to read stuff into */
@@ -344,7 +345,7 @@ static void write_request(struct connection * c)
  */
 #if !NO_WRITEV && !USE_SSL
     struct iovec out[2];
-    int outcnt = 1;
+    int outcnt = 1, snd = 0;
 #endif
     gettimeofday(&c->connect, 0);
 #if !NO_WRITEV && !USE_SSL
@@ -357,18 +358,28 @@ static void write_request(struct connection * c)
 	outcnt = 2;
 	totalposted += (reqlen + postlen);
     }
-    writev(c->fd, out, outcnt);
+    snd = writev(c->fd, out, outcnt);
 #else
-    s_write(c, request, reqlen);
+    snd = s_write(c, request, reqlen);
     if (posting > 0) {
-	s_write(c, postdata, postlen);
+	snd += s_write(c, postdata, postlen);
 	totalposted += (reqlen + postlen);
     }
 #endif
-
-    c->state = STATE_READ;
+    if (snd < 0) {
+	bad++; 
+	err_conn++;
+        close_connection(c);
+	return;
+    } else
+    if (snd != (reqlen + postlen)) {
+	/* We cannot cope with this. */
+	fprintf(stderr,"The entire post RQ could not be transmitted to the socket.\n");
+	exit(1);
+    }
     FD_SET(c->fd, &readbits);
     FD_CLR(c->fd, &writebits);
+    c->state = STATE_READ;
     gettimeofday(&c->endwrite, 0);
 }
 
@@ -865,7 +876,7 @@ static void start_connect(struct connection * c)
     c->fd = socket(AF_INET, SOCK_STREAM, 0);
     if (c->fd < 0) {
 	what = "SOCKET";
-	goto bad;
+	goto _bad;
     };
 
 #if USE_SSL
@@ -880,18 +891,12 @@ static void start_connect(struct connection * c)
 again:
     gettimeofday(&c->start, 0);
     if (connect(c->fd, (struct sockaddr *) & server, sizeof(server)) < 0) {
-	if (errno == EINPROGRESS) {
-	    c->state = STATE_CONNECTING;
-	}
-	else {
+	if (errno != EINPROGRESS) {
 	    what = "CONNECT";
-	    goto bad;
+	    goto _bad;
 	};
     }
-    else {
-	/* connected first time */
-	c->state = STATE_CONNECTING;
-    }
+    c->state = STATE_CONNECTING;
 
 #ifdef USE_SSL
     /* XX no proper freeing in error's */
@@ -904,18 +909,18 @@ again:
 	if (!(c->ssl = SSL_new(ctx))) {
 	    fprintf(stderr, "Failed to set up new SSL context ");
 	    ERR_print_errors_fp(stderr);
-	    goto bad;
+	    goto _bad;
 	};
 	SSL_set_connect_state(c->ssl);
 	if ((e = SSL_set_fd(c->ssl, c->fd)) == -1) {
 	    fprintf(stderr, "SSL fd init failed ");
 	    ERR_print_errors_fp(stderr);
-	    goto bad;
+	    goto _bad;
 	};
 	if ((e = SSL_connect(c->ssl)) == -1) {
 	    fprintf(stderr, "SSL connect failed ");
 	    ERR_print_errors_fp(stderr);
-	    goto bad;
+	    goto _bad;
 	};
 	if (verbosity >= 1)
 	    fprintf(stderr, "SSL connection OK: %s\n", SSL_get_cipher(c->ssl));
@@ -928,10 +933,11 @@ again:
     FD_SET(c->fd, &writebits);
     return;
 
-bad:
+_bad:
     ab_close(c->fd);
     err_conn++;
-    if (bad++ > 10) {
+    bad++;
+    if (bad > 10) {
 	err("\nTest aborted after 10 failures\n\n");
     }
     goto again;
@@ -1172,7 +1178,8 @@ static void test(void)
     fd_set sel_read, sel_except, sel_write;
     long i;
     int connectport;
-    char * url_on_request, * host;
+    char * connecthost;
+    char * url_on_request;
 
     /* There are four hostname's involved:
      * The 'hostname' from the URL, the
@@ -1182,11 +1189,15 @@ static void test(void)
      */
     if (isproxy) {
 	/* Connect to proxyhost:proxyport
-         * And set Host: to the hostname of
-         * the proxy - whistl quoting the
-	 * full URL in the GET/POST line.
+         * And set Host: to the hostname and
+	 * if not default :port of the URL.
+	 * See RFC2616 - $14.23. But then in
+	 * $5.2.1 it says that the Host: field
+	 * when passed on MUST be ignored. So	
+	 * perhaps we should NOT send any
+	 * when we are proxying.
 	 */
-	host  = proxyhost;
+	connecthost  = proxyhost;
 	connectport = proxyport;
     	url_on_request = fullurl;
     }
@@ -1197,11 +1208,11 @@ static void test(void)
 	 * header; and do not quote a full
 	 * URL in the GET/POST line.
 	 */
-	host  = hostname;
+	connecthost  = hostname;
 	connectport = port;
     	url_on_request = path;
     }
-
+    
     if (!use_html) {
 	printf("Benchmarking %s (be patient)%s",
 	       hostname, (heartbeatres ? "\n" : "..."));
@@ -1210,10 +1221,11 @@ static void test(void)
     {
 	/* get server information */
 	struct hostent *he;
-	he = gethostbyname(host);
+	he = gethostbyname(connecthost);
 	if (!he) {
 	    char theerror[1024];
-	    sprintf(theerror, "Bad hostname: %s\n", host);
+	    snprintf(theerror, sizeof(theerror),
+		"Bad hostname: %s\n", connecthost);
 	    err(theerror);
 	}
 	server.sin_family = he->h_addrtype;
@@ -1231,10 +1243,11 @@ static void test(void)
 
     /* setup request */
     if (posting <= 0) {
-	sprintf(request, "%s %s HTTP/1.0\r\n"
+	snprintf(request, sizeof(request), 
+		"%s %s HTTP/1.0\r\n"
 		"User-Agent: ApacheBench/%s\r\n"
 		"%s" "%s" "%s"
-		"Host: %s\r\n"
+		"Host: %s%s\r\n"
 		"Accept: */*\r\n"
 		"%s" "\r\n",
 		(posting == 0) ? "GET" : "HEAD",
@@ -1242,10 +1255,11 @@ static void test(void)
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth, 
-		host, hdrs);
+		hostname,colonport, hdrs);
     }
     else {
-	sprintf(request, "POST %s HTTP/1.0\r\n"
+	snprintf(request, sizeof(request),
+		"POST %s HTTP/1.0\r\n"
 		"User-Agent: ApacheBench/%s\r\n"
 		"%s" "%s" "%s"
 		"Host: %s\r\n"
@@ -1258,7 +1272,7 @@ static void test(void)
 		VERSION,
 		keepalive ? "Connection: Keep-Alive\r\n" : "",
 		cookie, auth,
-		host, postlen,
+		hostname, colonport, postlen,
 		(content_type[0]) ? content_type : "text/plain", hdrs);
     }
 
@@ -1332,14 +1346,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.60 $> apache-1.3");
+	printf("This is ApacheBench, Version %s\n", VERSION " <$Revision: 1.61 $> apache-1.3");
 	printf("Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
 	printf("Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/\n");
 	printf("\n");
     }
     else {
 	printf("<p>\n");
-	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.60 $");
+	printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-1.3<br>\n", VERSION, "$Revision: 1.61 $");
 	printf(" Copyright (c) 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
 	printf(" Copyright (c) 1998-2002 The Apache Software Foundation, http://www.apache.org/<br>\n");
 	printf("</p>\n<p>\n");
@@ -1426,7 +1440,18 @@ static int parse_url(char * purl)
     strcpy(hostname, h);
     if (p != NULL)
 	port = atoi(p);
-    return 0;
+
+    if ((
+#if USE_SSL
+	(ssl != 0) && (port != 443)) || ((ssl == 0) && 
+#endif
+	(port != 80))) 
+   {
+	snprintf(colonport,sizeof(colonport),":%d",port);
+   } else {
+	colonport[0] = '\0';
+   }
+   return 0;
 }
 
 /* ------------------------------------------------------- */

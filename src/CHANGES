@@ -1,5 +1,8 @@
 Changes with Apache 1.3.25
 
+  *) Made AB's use of the Host: header rfc2616 compliant
+     by Taisuke Yamada <tai@iij.ad.jp> [Dirl-Willem van Gulik].
+     
   *) Update the Redhat Layout to match Redhat version 7. PR BZ-7422
      [Joe Orton] 
 
