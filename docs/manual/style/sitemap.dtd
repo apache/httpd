@@ -4,12 +4,12 @@
 %common;
 
 <!-- <sitemap> is the root element -->
-<!ELEMENT sitemap (relativepath, title, summary?, seealso*, category*)>
+<!ELEMENT sitemap (title, summary?, seealso*, category*)>
 
 <!ATTLIST sitemap metafile CDATA  #REQUIRED>
 
 <!-- <indexpage> is another root element -->
-<!ELEMENT indexpage (relativepath, parentdocument, title, category*)>
+<!ELEMENT indexpage (parentdocument, title, category*)>
 
 <!ATTLIST indexpage metafile CDATA  #REQUIRED>
 

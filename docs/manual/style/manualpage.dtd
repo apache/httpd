@@ -4,7 +4,7 @@
 %common;
 
 <!-- <manualpage> is the root element -->
-<!ELEMENT manualpage (relativepath, parentdocument?, title, summary?,
+<!ELEMENT manualpage (parentdocument?, title, summary?,
 seealso*, section*)>
 
 <!ATTLIST manualpage metafile CDATA  #REQUIRED>
