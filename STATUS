@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/10/29 14:40:24 $]
+Last modified at [$Date: 2003/10/29 16:23:47 $]
 
 Release:
 
@@ -273,6 +273,11 @@ PATCHES TO BACKPORT FROM 2.1
       server->port or ap_default_port()
         server/core.c r1.247
       +1: bnicholes
+
+    * Tag the pools created for requests and subrequests.
+        server/request.c r1.129
+        server/protocol.c r1.137
+      +1: trawick
 
 CURRENT RELEASE NOTES:
 
