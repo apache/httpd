@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2002/02/27 17:16:29 $]
+Last modified at [$Date: 2002/02/28 18:37:45 $]
 
 Release:
 
@@ -43,7 +43,10 @@ on related projects:
 
 CURRENT RELEASE NOTES:
 
-    * 32 status: Released as beta.  Enjoy.
+    * 33 status: tag on 3/7/2002?  Ideally, this release should have all
+                 showstoppers removed.  Are we dreaming?  Can the horde
+                 of developers actually focus on removing them in a week?
+                 (Note: Win32 had its .32 yanked due to a mmap() bug.)
 
 FINAL RELEASE SHOWSTOPPERS:
 
@@ -80,6 +83,7 @@ FINAL RELEASE SHOWSTOPPERS:
     * API changes planned for 2.0 that should happen before the
       GA release:
           * Free lists for bucket allocation
+          * Pool allocator change
 
     * Graceful restart is broken in the worker MPM.
         Message-ID: <m3g03tnrkv.fsf@rdu163-40-092.nc.rr.com>
