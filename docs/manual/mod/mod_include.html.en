@@ -687,10 +687,11 @@ directive]"</code></td></tr>
     different times).</p> 
 
     <div class="example"><h3>Example</h3><p><code>
-      SSIStartTag "&lt;%"
+      SSIStartTag "&lt;%"<br />
+      SSIEndTag   "%&gt;"
     </code></p></div>
 
-    <p>The example given above, in conjunction with a matching
+    <p>The example given above, which also specifies a matching
     <code class="directive"><a href="#ssiendtag">SSIEndTag</a></code>, will 
     allow you to use SSI directives as shown in the example 
     below:</p>
