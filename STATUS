@@ -83,12 +83,13 @@ Available Patches:
         <Pine.LNX.3.95dg3.980106142612.1054W-100000@twinlark.arctic.org>
 	Status: Dean +1, Jim +1, Martin +1
 
-    * Doug's httpd -MApache::httpd_conf
-	<34AFFF3D.3E932275@telebusiness.co.nz>
-	Status: Doug +1, Randy +1, Dean would really prefer Ben's proposal
-	of httpd -M "config file directive" if it works.
-	Jim would prefer Ben's solution as well.
-	So would Ken (does it obviate -d and -f if present?)
+    * Doug's [PATCH] add -c and -C switches
+	<34B337FD.999DE268@telebusiness.co.nz>
+	Doug, Randy and Jim were +1 on original -MApache::httpd_conf
+	patch, which was recinded in favor of this patch prompted by
+	ideas from Ben and Dean.  Marc, Ken and Jim were also in favor
+	of this over -M
+	Status: Doug +1, Martin +1
 
     * Martin's [PATCH] <Location > within .htaccess?
 	<19980105152218.30720@deejai.mch.sni.de>
