@@ -1,0 +1,114 @@
+
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
+
+OBJS= \
+  modules.o \
+  $(MODULES) \
+  main/libmain.a \
+  $(OSDIR)/libos.a \
+  ap/libap.a
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
+
+all: @@Configuration@@ $(TARGET)
+
+@@Configuration@@: Configuration.tmpl
+	@echo "@@Configuration@@ older than Configuration.tmpl, or doesn't exist."
+	@echo "Consider copying Configuration.tmpl to @@Configuration@@, editing and rerunning"
+	@echo "Configure."
+	@echo "If not, you will at least have to touch @@Configuration@@."
+	@false
+
+$(TARGET): $(SUBTARGET)
+
+target_static: subdirs modules.o
+	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(LIBS)
+
+target_shared: libhttpd.ep
+	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o $(TARGET) -DSHARED_CORE_BOOTSTRAP main/http_main.c
+
+libhttpd.ep: libhttpd.so
+	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o libhttpd.ep -DSHARED_CORE_TIESTATIC main/http_main.c \
+		  -L. -lhttpd $(LIBS)
+
+libhttpd.so: subdirs modules.o
+	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o libhttpd.so buildmark.o $(OBJS) $(REGLIB)
+	@if [ ".$(SHLIB_SUFFIX_LIST)" != . ]; then \
+		rm -f libhttpd.so.*; \
+		for suffix in $(SHLIB_SUFFIX_LIST) ""; do \
+			[ ".$$suffix" = . ] && continue; \
+		    echo "ln libhttpd.so libhttpd.so.$$suffix"; \
+		    ln libhttpd.so libhttpd.so.$$suffix; \
+		done; \
+	fi
+
+subdirs:
+	@for i in $(SUBDIRS); do \
+		echo "===> $(SDP)$$i"; \
+		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)') || exit 1; \
+		echo "<=== $(SDP)$$i"; \
+	done
+
+support: support-dir
+
+support-dir:
+	@echo "===> $(SDP)support"; \
+	cd support; $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)'; \
+	echo "<=== $(SDP)support"
+
+clean:
+	rm -f $(TARGET) libhttpd.* *.o
+	@for i in $(SUBDIRS); do \
+		echo "===> $(SDP)$$i"; \
+		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
+		echo "<=== $(SDP)$$i"; \
+	done
+
+distclean:
+	-rm -f $(TARGET) *.o
+	@for i in $(SUBDIRS); do \
+		echo "===> $(SDP)$$i"; \
+		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
+		echo "<=== $(SDP)$$i"; \
+	done
+	-rm -f include/ap_config.h
+	-rm -f modules.c
+	-rm -f modules/Makefile
+	-rm -f regex/Makefile
+	-rm -f Makefile.config
+	-rm -f Makefile
+
+# We really don't expect end users to use this rule.  It works only with
+# gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
+# using it.
+depend:
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
+	for i in $(SUBDIRS); do \
+	    ( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' depend ) || exit 1; \
+	done
+
+#Dependencies
+
+$(OBJS): Makefile
+
+# DO NOT REMOVE
+buildmark.o: buildmark.c include/conf.h os/unix/os.h include/httpd.h \
+ include/alloc.h include/buff.h include/ap.h include/util_uri.h
+modules.o: modules.c include/httpd.h include/conf.h os/unix/os.h \
+ include/alloc.h include/buff.h include/ap.h include/util_uri.h \
+ include/http_config.h
