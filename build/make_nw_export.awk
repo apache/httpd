@@ -2,33 +2,14 @@
 # based on Ryan Bloom's make_export.pl
 
 # List of functions that we don't support, yet??
-/ap_get_module_config/{next}
-/ap_gname2id/{next}
-/ap_mpm_pod_check/{next}
-/ap_mpm_pod_close/{next}
-/ap_mpm_pod_killpg/{next}
-/ap_mpm_pod_open/{next}
-/ap_mpm_pod_signal/{next}
-/ap_os_create_privileged_process/{next}
-/ap_send_mmap/{next}
-/ap_set_module_config/{next}
-/ap_uname2id/{next}
-/ap_strchr/{next}
-/ap_strchr_c/{next}
-/ap_strstr/{next}
-/ap_strstr_c/{next}
-/ap_strrchr/{next}
-/ap_strrchr_c/{next}
-
+#/ap_some_name/{next}
 
 
 function add_symbol (sym_name) {
 	if (count) {
 		found++
 	}
-#	for (i = 0; i < count; i++) {
-#		line = line "\t"
-#	}
+    gsub (/ /, "", sym_name)
 	line = line sym_name ",\n"
 
 	if (count == 0) {
@@ -55,13 +36,6 @@ function add_symbol (sym_name) {
     add_symbol("ap_hook_" symbol)
     add_symbol("ap_hook_get_" symbol)
     add_symbol("ap_run_" symbol)
-    next
-}
-
-/^[ \t]*APR_POOL_DECLARE_ACCESSOR[^(]*[(][^)]*[)]/ {
-    sub("[ \t]*APR_POOL_DECLARE_ACCESSOR[^(]*[(]", "", $0)
-    sub("[)].*$", "", $0)
-    add_symbol("apr_" $0 "_pool_get")
     next
 }
 
