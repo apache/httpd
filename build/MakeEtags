@@ -2,7 +2,7 @@
 
 # This file illustrates how to generate a useful TAGS file via etags
 # for emacs.  This should be invoked from the src directory i.e.:
-#   > helpers/MakeEtags
+#   > build/MakeEtags
 # and will create a TAGS file in the src directory.
 
 # This script falls under the Apache License.

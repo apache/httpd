@@ -9,7 +9,7 @@ echo " * the base server uses them."
 echo " */"
 echo ""
  
-cd lib/apr/include 
+cd srclib/apr/include 
 for file in *.h
 do
     echo "#include \"$file\""

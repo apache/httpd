@@ -61,10 +61,10 @@ TOUCH_FILES = mkinstalldirs install-sh missing
 LT_TARGETS = ltconfig ltmain.sh config.guess config.sub
 
 config_h_in = include/ap_config_auto.h.in
-apr_private.h_in = lib/apr/include/apr_private.h.in
-apr_configure = lib/apr/configure
-mm_configure = lib/apr/shmem/unix/mm/configure
-pcre_configure = lib/pcre/configure
+apr_private.h_in = srclib/apr/include/apr_private.h.in
+apr_configure = srclib/apr/configure
+mm_configure = srclib/apr/shmem/unix/mm/configure
+pcre_configure = srclib/pcre/configure
 
 APACHE_TARGETS = $(TOUCH_FILES) $(LT_TARGETS) configure $(config_h_in)
 
@@ -83,12 +83,12 @@ all: $(targets)
 
 libtool_m4 = $(libtool_prefix)/share/aclocal/libtool.m4
 
-aclocal.m4: acinclude.m4 lib/apr/apr_common.m4 lib/apr/hints.m4 $(libtool_m4)
+aclocal.m4: acinclude.m4 srclib/apr/apr_common.m4 srclib/apr/hints.m4 $(libtool_m4)
 	@echo rebuilding $@
 	@cat acinclude.m4 $(libtool_m4) > $@
 
 export_lists:
-	@build/buildexports.sh main/exports.c lib/apr/apr.exports
+	@build/buildexports.sh server/exports.c srclib/apr/apr.exports
 
 $(LT_TARGETS):
 	libtoolize $(AMFLAGS) --force
@@ -112,19 +112,19 @@ configure: aclocal.m4 configure.in $(config_m4_files)
 	### to preserve autoconf's exit across the grep?
 	-autoconf 2>&1 | grep -v $(cross_compile_warning)
 
-$(apr_private.h_in): $(apr_configure) lib/apr/acconfig.h
+$(apr_private.h_in): $(apr_configure) srclib/apr/acconfig.h
 	@echo rebuilding $@
 	@rm -f $@
-	(cd lib/apr && autoheader)
+	(cd srclib/apr && autoheader)
 
-$(apr_configure): lib/apr/aclocal.m4 lib/apr/configure.in lib/apr/apr_common.m4 lib/apr/hints.m4
+$(apr_configure): srclib/apr/aclocal.m4 srclib/apr/configure.in srclib/apr/apr_common.m4 srclib/apr/hints.m4
 	@echo rebuilding $@
-	(cd lib/apr && ./buildconf)
+	(cd srclib/apr && ./buildconf)
 
-$(pcre_configure): lib/pcre/configure.in
+$(pcre_configure): srclib/pcre/configure.in
 	@echo rebuilding $@
-	(cd lib/pcre && autoconf)
+	(cd srclib/pcre && autoconf)
 
 $(mm_configure): $(mm_configure).in
 	@echo rebuilding $@
-	(cd lib/apr/shmem/unix/mm && autoconf)
+	(cd srclib/apr/shmem/unix/mm && autoconf)

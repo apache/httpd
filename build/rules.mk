@@ -78,8 +78,8 @@ SH_LINK = $(SH_LIBTOOL) --mode=link $(COMPILE) $(LTFLAGS) $(LDFLAGS) -o $@
 # Helper programs
 
 SH_LIBTOOL = $(SHELL) $(top_builddir)/shlibtool --silent
-MKINSTALLDIRS = $(abs_srcdir)/helpers/mkdir.sh
-INSTALL = $(abs_srcdir)/helpers/install.sh -c
+MKINSTALLDIRS = $(abs_srcdir)/build/mkdir.sh
+INSTALL = $(abs_srcdir)/build/install.sh -c
 INSTALL_DATA = $(INSTALL) -m 644
 INSTALL_PROGRAM = $(INSTALL) -m 755
 
