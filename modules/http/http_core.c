@@ -98,6 +98,8 @@
 #define AP_LIMIT_UNSET                  ((long) -1)
 #define AP_DEFAULT_LIMIT_XML_BODY       ((size_t)1000000)
 
+#define AP_MIN_SENDFILE_BYTES           (8*1024)
+
 /* Server core module... This module provides support for really basic
  * server operations, including options and commands which control the
  * operation of other modules.  Consider this the bureaucracy module.
@@ -3348,13 +3350,15 @@ static apr_status_t core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             if (APR_BUCKET_IS_EOS(e) || APR_BUCKET_IS_FLUSH(e)) {
                 break;
             }
-            else if (APR_BUCKET_IS_FILE(e)) {
+            /* It doesn't make any sense to use sendfile for a file bucket
+             * that represents 10 bytes.
+             */
+            else if (APR_BUCKET_IS_FILE(e) && (e->length >= AP_MIN_SENDFILE_BYTES)) {
                 apr_bucket_shared *s = e->data;
                 apr_bucket_file *a = s->data;
-                /* Assume there is at most one APR_BUCKET_FILE in the brigade */
                 fd = a->fd;
                 flen = e->length;
-                foffset = a->offset;
+                foffset = s->start;
             }
             else {
                 const char *str;
