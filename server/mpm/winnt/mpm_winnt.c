@@ -94,6 +94,8 @@ static char ap_coredump_dir[MAX_STRING_LEN];
 static server_rec *server_conf;
 
 static int one_process = 0;
+
+static OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 event *exit_event;
 mutex *start_mutex;
 int my_pid;
@@ -767,12 +769,12 @@ static void child_main(int child_num)
 	ap_clear_pool(lpCompContext->ptrans);
         lpCompContext->conn_io =  ap_bcreate(lpCompContext->ptrans, B_RDWR);
 
+        /* Grab a connection off the network */
+        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+            lpCompContext = winnt_get_connection(lpCompContext);
+        else
+            lpCompContext = win9x_get_connection(lpCompContext);
 
-#ifdef QUEUED_ACCEPT
-        lpCompContext = win9x_get_connection(lpCompContext);
-#else
-        lpCompContext = winnt_get_connection(lpCompContext);
-#endif
 
         if (!lpCompContext)
             break;
@@ -954,10 +956,9 @@ static void worker_main()
 	child_handles[i] = create_thread((void (*)(void *)) child_main, (void *) i);
     }
 
-#ifdef QUEUED_ACCEPT
-    /* spawn off accept thread */
-    create_thread((void (*)(void *)) accept_and_queue_connections, (void *) NULL);
-#endif
+    /* spawn off accept thread (WIN9x only) */
+    if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT)
+        create_thread((void (*)(void *)) accept_and_queue_connections, (void *) NULL);
 
     rv = WaitForSingleObject(exit_event, INFINITE);
     printf("exit event signalled \n");
@@ -965,11 +966,17 @@ static void worker_main()
 
     /* Get ready to shutdown and exit */
     ap_release_mutex(start_mutex);
-#ifdef QUEUED_ACCEPT
-    for (i = 0; i < nthreads; i++) {
-	add_job(-1);
+
+    if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT) {
+        /* This is only needed for platforms that use the accept queue code 
+         * (WIN9x only). It should work on NT but not as efficiently as the 
+         * code written specifically for Windows NT.
+         */
+        for (i = 0; i < nthreads; i++) {
+            add_job(-1);
+        }
     }
-#endif
+
     /* Wait for all your children */
     end_time = time(NULL) + 180;
     while (nthreads) {
@@ -1359,6 +1366,9 @@ static void winnt_pre_config(pool *pconf, pool *plog, pool *ptemp)
 {
     char *pid;
     one_process=1;//!!getenv("ONE_PROCESS");
+
+    osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    GetVersionEx(&osver);
 
     /* AP_PARENT_PID is only valid in the child */
     pid = getenv("AP_PARENT_PID");
