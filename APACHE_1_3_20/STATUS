@@ -1,0 +1,376 @@
+APACHE 1.3 STATUS:						-*-text-*-
+  Last modified at [$Date: 2001/05/15 15:35:59 $]
+
+Release:
+
+   1.3.20: Will offers to RM, target release date of 5/18.
+   1.3.19: Tagged and rolled Feb 26, 2001. Announced Mar 01, 2001.
+   1.3.18: Not released.
+             (Pulled because of an incorrect unescaping fix. t/r Feb 19, 2001)
+   1.3.17: Tagged and rolled Jan 26, 2001. Announced Jan 29, 2001.
+   1.3.16: Not released.
+             (Pulled because of vhosting bug. t/r Jan 20, 2001)
+   1.3.15: Not released.
+             (Pulled due to CVS dumping core during the tagging when it
+              reached src/os/win32/)
+   1.3.14: Tagged and Rolled Oct 10, 2000.  Released/announced on the 13th.
+   1.3.13: Not released.
+             (Pulled in the "first minutes" due to a Netware build bug)
+   1.3.12: Tagged and rolled Feb. 23, 2000. Released/announced on the 25th.
+   1.3.11: Tagged and rolled Jan. 19, 2000. Released/announced on the 21st.
+   1.3.10: Not released.
+             (Pulled at "last minute" due to a build bug in the MPE port)
+    1.3.9: Tagged and rolled on Aug. 16. Released and announced on 19th.
+    1.3.8: Not released.
+    1.3.7: Not released.
+    1.3.6: Tagged and rolled on Mar. 22. Released and announced on 24th.
+    1.3.5: Not released.
+    1.3.4: Tagged and rolled on Jan. 9.  Released on 11th, announced on 12th.
+    1.3.3: Tagged and rolled on Oct. 7.  Released on 9th, announced on 10th.
+    1.3.2: Tagged and rolled on Sep. 21. Announced and released on 23rd.
+    1.3.1: Tagged and rolled on July 19. Announced and released.
+    1.3.0: Tagged and rolled on June 1.  Announced and released on the 6th.
+           
+    2.0  : In alpha development, see httpd-2.0 repository
+
+RELEASE SHOWSTOPPERS:
+
+    None at present 
+
+RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * htpasswd.c and htdigest.c use tmpnam()... consider using
+      mkstemp() when available.
+        Message-ID: <Pine.LNX.4.30.0102191441100.22500-100000@dax.joh.cam.ac.uk>
+	Status:
+        
+    * Dean's "unescaping hell" (unescaping the various URI components
+      at the right time and place, esp. unescaping the host name).
+        Message-ID: <Pine.LNX.4.33.0102231235031.11699-100000@twinlark.arctic.org>
+        Status:
+
+    * Martin observed a core dump because a ipaddr_chain struct contains
+      a NULL-"server" pointer when being dereferenced by invoking "httpd -S".
+        Message-ID: <20010213231854.A20932@deejai2.mch.fsc.net>
+        Status: Workaround enabled. Clean solution can come after 1.3.19
+
+    * long pathnames with many components and no AllowOverride None
+      Workaround is to define <Directory /> with AllowOverride None,
+      which is something all sites should do in any case.
+	Status: Marc was looking at it.
+
+    * Ronald Tschalär's patch to mod_proxy to allow other modules to
+      set headers too (needed by mod_auth_digest)
+        Message-ID: <199907080712.JAA28269@chill.innovation.ch>
+        Status:
+
+
+Documentation that needs writing:
+
+
+Available Patches (Most likely, these will not be added to the official
+1.3 tree, but instead should be ported to 2.0):
+
+   *  A rewrite of ap_unparse_uri_components() by Jeffrey W. Baker
+     <jwbaker@acm.org> to more fully close some segfault potential.
+        Message-ID: <Pine.LNX.4.21.0102102350060.6815-200000@desktop>
+        Status:  Jim +1 (for 1.3.19), Martin +0
+
+    * Patch from "C. Bottelier" <c.bottelier@quicknet.nl> to run
+	Apache without daemonizing the parent process. PR#7040
+	Status: fanf +1 (except it needs docs)
+
+    * Andrew Ford's patch (1999/12/05) to add absolute times to mod_expires
+	Message-ID: <m3wvqtcoqx.fsf@icarus.demon.co.uk>
+	Status: Martin +1, Jim +1, Ken +1 (on concept)
+
+    * Raymond S Brand's path to mod_autoindex to fix the header/readme
+      include processing so the envariables are correct for the included
+      documents.  (Actually, there are two variants in the patch message,
+      for two different ways of doing it.)
+	Message-ID: <384AA242.B93F8B5@rsbx.net>
+	Status: Martin +1(concept)
+
+    * Jayaram's patch (10/27/99) for changes to mod_autoindex
+ 
+	Problem 1:
+	------------------------
+	AddIcon (<alttext>,<icon>) ^^DIRECTORY^^ 
+	and 
+	AddIcon (<alttext>,<icon>) ^^BLANKICON^^ 
+	should be able to set the alternate text and icon file for any
+	directory/blankicon in a directory listing. This was not happening
+	because the alternate text for ^^DIRECTORY^^ and ^^BLANKICON^^ were
+	hardcoded to  "DIR" and "   " respectively.
+
+	Problem 2:
+	-------------------------
+	IndexIgnore <file-extension> should hide the files with this file-
+	extension in directory listings. This was NOT happening because the 
+	total filename was being compared with the file-extension.
+
+	Status: Martin +1(untested), Ken +1(untested)
+       
+    * Salvador Ortiz Garcia <sog@msg.com.mx>' patch to allow DirectoryIndex
+      to refer to URIs for non-static resources.
+	MID: <Pine.LNX.4.10.9906041415330.15776-100000@xiomara.msg.com.mx>
+	Status: Ken +1 (on concept), Lars +1 (on concept)
+
+    * Brian Havard's patch to remove dependency of mod_auth_dbm on mod_auth.
+      (PR#2598)
+	Message-ID: <199905170830.SAA31549@silk.apana.org.au>
+	Status: Lars +1 (on concept), Ken +1 (on concept), Martin +1(untested)
+
+    * Aidan Cully's patch to allow assignment of 'ownership' of resources
+      to either the server UID or the file's owner.
+	Message-ID: <37306CB4.8EA9D76C@Golux.Com>
+	Status: Ken +1, Dean +1, Randy +1, Lars +0, Jim +1
+
+In progress:
+
+    * Doug MacEachern's libapr - Generic Apache Request Library (Alpha)
+      This package contains modules for manipulating client request data
+      via the Apache API with Perl and C.
+        Status: http://perl.apache.org/dist/ (look for the latest libapr-* file)
+
+    * David Harris' note of odd size memory allocations.  Dean notes
+      that this is due to BLOCK_MIN_ALLOC.  Should we reduce it to 1024?
+      Discussion in thread following message-ID below.
+	Message-ID: <00a001bedc00$fbc5af60$0500a8c0@delf>
+	Status: 
+
+Needs patch:
+
+    * MaxRequestsPerChild doesn't count requests, only the
+      number of connections processed.
+      We can either 'fix' it by renaming the directive to
+      MaxConnectionsPerChild or really fix it to actually count
+      the number of requests.
+      Status: Will be fixed in 2.0
+
+    * get_path_info bug; ap_get_remote_host should be ap_vformatter instead.
+      See: <Pine.LNX.3.96dg4.980427034301.16648P-100000@twinlark.arctic.org>
+
+    * URI issues
+	- RFC2068 requires a server to recognize its own IP addr(s) in dot
+	notation, we do this fine if the user follows the dns-caveats
+	documentation... we should handle it in the case the user doesn't ever
+	supply a dot-notation address.
+
+    * Problems dealing with .-rooted domain names such as "twinlark." versus
+	"twinlark.arctic.org.".  See the thread containing
+	Message-ID: <19980203211817.06723@deejai.mch.sni.de> for more details.
+	In particular this affects the correctness of the proxy and the
+	vhost mechanism.
+
+    * proxy_*_canon routines use r->proxyreq incorrectly.  See
+	<Pine.LNX.3.96dg4.980304030057.13656O-100000@twinlark.arctic.org>
+
+    * Should we disallow requests with bogus characters in the method?
+      See <Pine.LNX.3.96dg4.990107093844.14158A-100000@twinlark.arctic.org>
+
+Open issues:
+
+    * Should we provide a way to force CustomError responses past IE's
+      'prettify-if-less-than-N-bytes' bogosity?
+
+    * there are still some PRs about inetd mode
+      Should we deprecate "ServerType inetd" if the next release is 1.4.0?
+        +1: Lars
+	-0: Martin (ISTR someone volunteered to "keep it working". I fear
+	    some exotic platforms may require it)
+
+    * general/3787: SERVER_PORT is always 80 if client comes to any port
+      => needs review by the protocol guys, I think.
+
+    * All DBMs suffer from confusion in dbmmanage (perl script) since the
+        dbmmanage creates in the first-matched dbm format.  This is not
+        necessarily the library that Apache was built with.  Aught to
+        rewrite dbmmanage with the proper library for clean administration.
+
+    * SDBM is now distributed in src/lib, as distributed with perl, but
+      is only incorporated into the Win32 build.  Extra cleanup and build 
+      mechanics are still needed for other platforms.
+
+    * Release builds: Should we provide Configuration or not?
+      Should we 'make all suexec' in src/support?
+	+1: Brian, Jim, Dirkx, Ken +1 (possible suexec path issue, though)
+
+    * root's environment is inherited by the Apache server. Jim & Ken
+      think we should recommend using 'env' to build the
+      appropriate environment. Marc and Alexei don't see any
+      big deal. Martin says that not every "env" has a -u flag. 
+      Also:  TZ should not be dealt with specially any longer now that we 
+      "have PassEnv".  See
+      <Pine.LNX.3.96dg4.980309224241.11283X-100000@twinlark.arctic.org>
+      Status: To be handled in 2.0
+
+    * Marc's socket options like source routing (kill them?)
+	Marc, Martin say Yes
+
+    * Proposed API Changes:
+
+	- r->content_language is for backwards compatibility... with modules
+	  that may not link any longer without some minor editing.  The new
+	  field is r->content_languages.  Heck it's not even mentioned in
+	  apache-devsite/mmn.txt when we got content_languages (note the s!).
+	  The proposal is to remove r->content_language:
+	    Status: Paul +1, Ralf +1, Ken +1, Martin +1, Dirkx +1 (I could
+		not find ANY module which uses it and which (still) compiles
+		after the config change.)
+
+	- child_exit() is redundant, it can be implemented via cleanups.  It is
+	  not "symmetric" in the sense that there is no exit API method to go
+	  along with the init() API method.  There is no need for an exit
+	  method, there are already modules using cleanups to perform this (see
+	  mod_mmap_static, and mod_php3 for example).  The proposal is to
+	  remove the child_exit() method and document cleanups as the method of
+	  handling this need.
+	    Status: Rasmus +1, Paul +1, Jim +1, 
+	            Martin +1, Ralf +1, Ken +1, 
+		    Dirkx +1 (with doc change)
+
+    * Should we re-enable nagle now that we're non-buffering CGIs?  See
+      various messages from Marc in March 98.
+  
+    * In ap_bclose() there's no test that (fb->fd != -1) -- so it's
+      possible that it'll do something completely bogus when it's 
+      used for read-only things. - Dean Gaudet
+
+    * Roy's HTTP/1.1 Wishlist items:
+        1) byte range error handling
+
+    * use of spawnvp in uncompress_child in mod_mime_magic - doesn't
+      use the new child_info structure, is this still safe?  Needs to be 
+      looked at.
+
+    * suexec doesn't understand argv parameters; e.g.
+
+        <!--#exec cmd="./ls -l" -->
+
+      fails even when "ls" is in the same directory because suexec is trying
+      to stat a file called "ls -l".  A patch for this is available at
+
+        http://www.xnet.com/~emarshal/suexec.diff
+
+      and it's not bad except that it doesn't handle programs with spaces in
+      the filename (think win32, or samba-mounted filesystems).  There are
+      several PR's to this and I don't see for security reasons why we can't
+      accomodate it, though it does add complexity to suexec.c.
+      Accepting quoted executable names solves that issue, except that the
+      exec cmd="" parsing needs to accept escaped quotes.
+      PR #1120
+      Brian: +1
+      
+Win32 specific issues:
+
+    * Adding a tray application to the Windoze version for ease of
+      status/management.  (PR3594, PR4873)
+        No one has implemented a pure C language WinAPI (no MFC) 
+        multiple-services aware taskbar app for both WinNT and Win95,
+        since multiple-services are recent and Win9x is even more
+        recent.  Open to anyone proposing something complete.
+        If it comes between releases, add it to contrib right away!
+        See src/os/win32/monitoring-services.txt for details.
+        Status: both Brian Moon and William Rowe are experimenting.
+
+    * chdir() for CGI scripts and mod_include #exec needs to be 
+      re-implemented now that CreateProcess is being used.
+
+    * process/thread model
+	- need dynamic thread creation/destruction, similar to 
+	  Unix process model
+
+    * handle bugs that make it pop up errors on console, ie. segv 
+      equiv?  Can we do this?  Need to make it robust.
+      This is done for mod_isapi by the ap_load_dso code on win32,
+      look there for an example ... probably not appropriate everywhere,
+      but only where the client is affecting the state of the machine.
+      What the operator does is a different matter.
+
+    * install
+	- make installshield work
+	- config in cvs tree?
+	- install docs, etc.?
+	- location for install
+
+    * the mutex should be critical-regions, since the current design
+      is creating a mess of SO calls that are unnecessary
+
+    * performance
+
+    * modules that need to be made to work on win32
+        - mod_example isn't multithreadreded
+	- mod_unique_id (needs mt changes, use win32 com UUID's)
+	- mod_log_agent.c
+	- mod_log_referer.c
+	- mod_mime_magic.c (needs access to mod_mime API stage...)
+
+    * do something to disable bogus warnings ... Will asks "Which warnings?"
+
+    * rfc1413.c has static storage which won't work multithreaded
+
+    * apparently either "BrowserMatch" or the "nokeepalive" variable
+      cause instability - see PR#1729.
+
+
+Binaries (1.3.20):
+
+ Platform                      Avail.  Volunteer
+ ------------------------------------------------------------------------------
+ alpha-dec-osf3.0              no      Sameer Parekh
+ alpha-dec-osf4.0              no      Lars Eilebrecht, Ken Coar, Randy Terbush
+ alpha-whatever-linux2         no      Randy Terbush
+ armv4l-whatever-linux2        no      Rasmus Lerdorf
+ hppa1.1-hp-hpux-10.x          no      Rob Hartill, Randy Terbush
+ i386-be-beos                  no      David Reid
+ i386-slackware-linux(a.out)   no      Sameer Parekh
+ i386-sun-solaris2.5           no      Sameer Parekh
+ i386-sun-solaris2.6           no      Randy Terbush
+ i386-sun-solaris2.7           no      Cliff Skolnick
+ i386-unixware-svr4            no      Sameer Parekh, Randy Terbush
+ i386-unknown-freebsd2.1       no      Andrew Wilson, Brian Tao
+ i386-unknown-freebsd2.2.8     no      Jim Jagielski
+ i386-whatever-bsdi            no      David Reid
+ i386-whatever-freebsd3.0      no      Ken Coar
+ i386-whatever-freebsd3.0      no      Dirk-Willem van Gulik
+ i386-whatever-freebsd3.3      no      Ask Bjoern Hansen
+ i386-whatever-freebsd4.0      no      Ask Bjoern Hansen
+ i686-pc-freebsd3.1            no      Ralf S. Engelschall
+ i586-unknown-linux2           no      Ralf S. Engelschall, Lars Eilebrecht, Randy Terbush
+ i686-unknown-linux2           no      Lars Eilebrecht
+ i686-whatever-linux2          no      Ken Coar, Randy Terbush
+ i386-unknown-linux(ELF)       no      Aram Mirzadeh, Michael Douglass
+ i386-unknown-netBSD-1.3.2     no      Lars Eilebrecht, Randy Terbush
+ i386-unknown-sco3             no      Ben Laurie
+ i386-unknown-sco5             no      Ben Laurie
+ i386-siemens-sinix5.4         no      Martin Kraemer
+ i386-dg-dgux5.4R2.01          no      Randy Terbush
+ x86-qnx-4.x                   no      Randy Terbush
+ x86-bsdos-3.x                 no      Randy Terbush
+ x86-bsdos-4.x                 no      Randy Terbush
+ x86-openbsd-2.x               no      Randy Terbush
+ m68k-apple-aux3.1.1           no      Jim Jagielski
+ m88k-dg-dgux5.4R2.01          no      Sameer parekh
+ m88k-next-next                no      Rob Hartill
+ mips-dec-ultrix4.4            no      Sameer Parekh
+ mips-unknown-linux            no      Lars Eilebrecht
+ mips-sgi-irix5.3              no      Mark Imbrianco, Randy Terbush
+ mips-sgi-irix6.2              no      Lars Eilebrecht, Randy Terbush
+ mips-sgi-irix6.4              no      Lars Eilebrecht
+ mips-siemens-reliantunix5.4   no      Martin Kraemer
+ netware                       no      Brad Nicholes <bnicholes@novell.com>
+ OS/2                          no      Brian Havard
+ OS/390-09.00-02               no                     
+ powerpc+i386-apple-darwin1.2  no      Wilfredo Sanchez
+ powerpc-apple-rhapsody5.5     no      Wilfredo Sanchez
+ rs6000-ibm-aix3.2.5           no      Sameer Parekh
+ rs6000-ibm-aix4.1             no      Lars Eilebrecht
+ rs6000-ibm-aix4.2             no      Bill Stoddard
+ rs6000-ibm-aix4.3.x           no      Bill Stoddard, Randy Terbush
+ sparc-sun-solaris2.5          no      Lars Eilebrecht, Randy Terbush
+ sparc-sun-solaris2.6          no      Lars Eilebrecht
+ sparc-sun-solaris2.7          no      Cliff Skolnick
+ sparc-sun-sunos4.1.3_U1       no      Sameer Parekh
+ sparc-unknown-linux           no      Lars Eilebrecht, Randy Terbush
+ win32                         no      William Rowe
