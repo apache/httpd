@@ -618,6 +618,7 @@ static int piped_log_spawn(piped_log *pl)
             /*   successful that the child is running.        */
             RAISE_SIGSTOP(PIPED_LOG_SPAWN); 
             pl->pid = procnew;
+            ap_piped_log_write_fd(pl) = procnew->in;
             ap_register_other_child(procnew, piped_log_maintenance, pl, 
                                     ap_piped_log_write_fd(pl), pl->p);
         }
