@@ -130,6 +130,10 @@ FINAL RELEASE SHOWSTOPPERS:
 	     some sort of error-code be placed in scoreboard that
 	     the parent could act on? Of course, we already use
 	     waitpid() so we have the status already...
+	     Some of these "we should stop errors" are kinda obvious,
+	     like a bad lockfile... some I would have no idea.
+	     I'll generate a list of what I think are these Abort
+	     errors and ask for feedback.
 
     * The DoS issue about symlinks to /dev/zero is still present.
       A device checker patch had been sent to the list a while ago.
