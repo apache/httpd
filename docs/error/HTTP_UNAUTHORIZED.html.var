@@ -2,7 +2,7 @@ Content-language: de
 Content-type: text/html; charset=ISO-8859-1
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de" -->
-<!--#set var="TITLE" value="Authentikation fehlgeschlagen!" -->
+<!--#set var="TITLE" value="Authentisierung fehlgeschlagen!" -->
 <!--#include virtual="include/top.html" -->
 
     Der Server konnte nicht verifizieren, ob Sie authorisiert sind,
