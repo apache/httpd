@@ -1,5 +1,9 @@
 Changes with Apache 2.0.34-dev
 
+  *) Add a missing errordir entry in the Debian config.layout. PR: 10067
+     [Dirk-Jan Faber <dirk-jan@selwerd.nl>, Aaron Bannert,
+      Thom May <thom@planetarytramp.net>]
+
   *) Rename the filter ordering priorities.  The recent filtering fixes
      have showcased problems with their usage.  Therefore, we need to
      rename them to increase the clarity.  (CONTENT->RESOURCE,
