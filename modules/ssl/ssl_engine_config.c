@@ -174,10 +174,10 @@ void *ssl_config_server_create(apr_pool_t *p, server_rec *s)
     sc->pSSLProxyCtx                  = NULL;
 #endif
 
-    memset(sc->szPublicCertFile, 0, sizeof(sc->szPublicCertFile));
-    memset(sc->szPrivateKeyFile, 0, sizeof(sc->szPrivateKeyFile));
-    memset(sc->pPublicCert,      0, sizeof(sc->pPublicCert));
-    memset(sc->pPrivateKey,      0, sizeof(sc->pPrivateKey));
+    memset((void*)sc->szPublicCertFiles, 0, sizeof(sc->szPublicCertFiles));
+    memset((void*)sc->szPrivateKeyFiles, 0, sizeof(sc->szPrivateKeyFiles));
+    memset(sc->pPublicCert,       0, sizeof(sc->pPublicCert));
+    memset(sc->pPrivateKey,       0, sizeof(sc->pPrivateKey));
 
     return sc;
 }
@@ -214,8 +214,8 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(pRevocationStore, NULL);
 
     for (i = 0; i < SSL_AIDX_MAX; i++) {
-        cfgMergeString(szPublicCertFile[i]);
-        cfgMergeString(szPrivateKeyFile[i]);
+        cfgMergeString(szPublicCertFiles[i]);
+        cfgMergeString(szPrivateKeyFiles[i]);
         cfgMerge(pPublicCert[i], NULL);
         cfgMerge(pPrivateKey[i], NULL);
     }
@@ -601,11 +601,11 @@ static const char *ssl_cmd_check_aidx_max(cmd_parms *parms,
     switch (idx) {
       case SSL_AIDX_CERTS:
         desc = "certificates";
-        files = sc->szPublicCertFile;
+        files = sc->szPublicCertFiles;
         break;
       case SSL_AIDX_KEYS:
         desc = "private keys";
-        files = sc->szPrivateKeyFile;
+        files = sc->szPrivateKeyFiles;
         break;
     }
 
