@@ -1,234 +1,23 @@
-<html>
-<head>
-<title>mod_ssl: Compatibility</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!--
-  Copyright (c) 1998-2001 Ralf S. Engelschall. All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-
-  1. Redistributions of source code must retain the above
-     copyright notice, this list of conditions and the following
-     disclaimer. 
- 
-  2. Redistributions in binary form must reproduce the above
-     copyright notice, this list of conditions and the following
-     disclaimer in the documentation and/or other materials
-     provided with the distribution.
- 
-  3. All advertising materials mentioning features or use of this
-     software must display the following acknowledgment: 
-     "This product includes software developed by 
-      Ralf S. Engelschall <rse@engelschall.com> for use in the
-      mod_ssl project (http://www.modssl.org/)."
- 
-  4. The name "mod_ssl" must not be used to endorse or promote
-     products derived from this software without prior written
-     permission.  
-
-  5. Redistributions of any form whatsoever must retain the
-     following acknowledgment:
-     "This product includes software developed by 
-      Ralf S. Engelschall <rse@engelschall.com> for use in the
-      mod_ssl project (http://www.modssl.org/)."
- 
-  THIS SOFTWARE IS PROVIDED BY RALF S. ENGELSCHALL ``AS IS'' AND ANY
-  EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-  PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL RALF S. ENGELSCHALL OR
-  HIS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-  STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-  OF THE POSSIBILITY OF SUCH DAMAGE.
--->
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+<title>Apache SSL/TLS Encryption: Compatibility</title>
 <style type="text/css"><!--
-A:link {
-    text-decoration: none;
-    color: #6666cc;
-}
-A:active {
-    text-decoration: none;
-    color: #6666cc;
-}
-A:visited {
-    text-decoration: none;
-    color: #6666cc;
-}
-#sf {
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H1 {
-    font-weight: bold;
-    font-size: 24pt;
-    line-height: 24pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H2 {
-    font-weight: bold;
-    font-size: 18pt;
-    line-height: 18pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H3 {
-    font-weight: bold;
-    font-size: 14pt;
-    line-height: 14pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-H4 {
-    font-weight: bold;
-    font-size: 12pt;
-    line-height: 12pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
 #H {
 }
 #D {
     background-color: #f0f0f0;
 }
-#faq {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-#howto {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
-#term {
-    font-weight: bold;
-    font-size: 16pt;
-    line-height: 16pt;
-    font-family: arial,helvetica;
-    font-variant: normal;
-    font-style: normal;
-}
 --></style>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-function ro_imgNormal(imgName) {
-    if (document.images) {
-        document[imgName].src = eval(imgName + '_n.src');
-        self.status = '';
-    }
-}
-function ro_imgOver(imgName, descript) {
-    if (document.images) {
-        document[imgName].src = eval(imgName + '_o.src');
-        self.status = descript;
-    }
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_prev_top_n = new Image();
-    ro_img_prev_top_n.src = 'ssl_template.navbut-prev-n.gif';
-    ro_img_prev_top_o = new Image();
-    ro_img_prev_top_o.src = 'ssl_template.navbut-prev-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_prev_bot_n = new Image();
-    ro_img_prev_bot_n.src = 'ssl_template.navbut-prev-n.gif';
-    ro_img_prev_bot_o = new Image();
-    ro_img_prev_bot_o.src = 'ssl_template.navbut-prev-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_next_top_n = new Image();
-    ro_img_next_top_n.src = 'ssl_template.navbut-next-n.gif';
-    ro_img_next_top_o = new Image();
-    ro_img_next_top_o.src = 'ssl_template.navbut-next-s.gif';
-}
-// done hiding -->
-</script>
-<script type="text/javascript" language="JavaScript">
-<!-- Hiding the code
-if (document.images) {
-    ro_img_next_bot_n = new Image();
-    ro_img_next_bot_n.src = 'ssl_template.navbut-next-n.gif';
-    ro_img_next_bot_o = new Image();
-    ro_img_next_bot_o.src = 'ssl_template.navbut-next-s.gif';
-}
-// done hiding -->
-</script>
 </head>
-<body bgcolor="#ffffff" text="#000000" link="#333399" alink="#9999ff" vlink="#000066">
-<div align="center">
-<table width="600" cellspacing="0" cellpadding="0" border="0" summary="">
-<tr>
-  <td>
-      <img src="ssl_template.imgdot-1x1-transp.gif" alt="" width="600" height="1" align="bottom" border="0"><br>
-      <table width="600" cellspacing="0" cellpadding="0" summary="">
-      <tr>
-        <td>
-        <table width="600" summary="">
-        <tr>
-            <td align="left" valign="bottom">
-            <font face="Arial,Helvetica" size="+2"><b>mod_ssl</b></font>
-            </td>
-            <td align="right">
-              <img src="ssl_template.head-chapter.gif" alt="Chapter" width="175" height="94"> <img src="ssl_template.head-num-4.gif" alt="4" width="74" height="89">
-            </td>
-        </tr>
-        </table>
-        </td>
-      </tr>
-      <tr>
-        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
-      </tr>
-      <tr>
-        <td>
-           <table width="600" border="0" summary="">
-           <tr>
-            <td valign="top" align="left" width="250">
-<a href="ssl_reference.html" onmouseover="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_top'); return true" onfocus="ro_imgOver('ro_img_prev_top', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_top'); return true"><img name="ro_img_prev_top" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">Reference</font>
-            </td>
-            <td valign="top" align="right" width="250">
-<a href="ssl_howto.html" onmouseover="ro_imgOver('ro_img_next_top', 'next page'); return true" onmouseout="ro_imgNormal('ro_img_next_top'); return true" onfocus="ro_imgOver('ro_img_next_top', 'next page'); return true" onblur="ro_imgNormal('ro_img_next_top'); return true"><img name="ro_img_next_top" src="ssl_template.navbut-next-n.gif" alt="next page" width="70" height="18" border="0"></a><br><font color="#000000">HowTo</font>
-            </td>
-           </tr>
-           </table>
-         </td>
-      </tr>
-      <tr>
-        <td>
-          <br>
-          <img src="ssl_template.title-compat.gif" alt="Compatibility" width="456" height="60">
-        </td>
-      </tr>
-      </table>
+
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080" alink="#FF0000"> 
+<!--#include virtual="header.html" -->
+
+<h1 align="CENTER">SSL/TLS Strong Encryption: Compatibility</h1>
+
 <div align="right">
 <table cellspacing="0" cellpadding="0" width="200" summary="">
 <tr>
@@ -249,11 +38,7 @@ Unknown
 </table>
 </div>
 <p>
-<table cellspacing="0" cellpadding="0" border="0" summary="">
-<tr valign="bottom">
-<td>
-<img src="ssl_compat.gfont000.gif" alt="H" width="40" height="34" border="0" align="left">
-ere we talk about backward compatibility to other SSL solutions. As you
+Here we talk about backward compatibility to other SSL solutions. As you
 perhaps know, mod_ssl is not the only existing SSL solution for Apache.
 Actually there are four additional major products available on the market: Ben
 Laurie's freely available <a href="http://www.apache-ssl.org/">Apache-SSL</a>
@@ -264,41 +49,21 @@ href="http://raven.covalent.net/">Raven SSL Module</a> (also based on mod_ssl)
 and finally C2Net's commercial product <a
 href="http://www.c2.net/products/stronghold/">Stronghold</a> (based on a
 different evolution branch named Sioux up to Stronghold 2.x and based on
-mod_ssl since Stronghold 3.x).
-</td>
-<td>
-&nbsp;&nbsp;
-</td>
-<td>
-<div align="right">
-<table cellspacing="0" cellpadding="5" border="0" bgcolor="#ccccff" summary="">
-<tr>
-<td bgcolor="#333399">
-<font face="Arial,Helvetica" color="#ccccff">
-<b>Table Of Contents</b>
-</font>
-</td>
-</tr>
-<tr>
-<td>
-<font face="Arial,Helvetica" size="-1">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC1"><strong>Configuration Directives</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC2"><strong>Environment Variables</strong></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#ToC3"><strong>Custom Log Functions</strong></a><br>
-</font>
-</td>
-</tr>
-</table>
-</div>
-</td>
-</tr>
-</table>
+mod_ssl since Stronghold 3.x).</p>
+
 <p>
 The idea in mod_ssl is mainly the following: because mod_ssl provides mostly a
 superset of the functionality of all other solutions we can easily provide
 backward compatibility for most of the cases. Actually there are three
 compatibility areas we currently address: configuration directives,
 environment variables and custom log functions.
+
+<ul>
+<li><a href="#ToC1">Configuration Directives</a></li>
+<li><a href="#ToC2">Environment Variables</a></li>
+<li><a href="#ToC3">Custom Log Functions</a></li>
+</ul>
+
 <h2><a name="ToC1">Configuration Directives</a></h2>
 For backward compatibility to the configuration directives of other SSL
 solutions we do an on-the-fly mapping: directives which have a direct
@@ -308,7 +73,9 @@ is listed in <a href="#table1">Table 1</a>. Currently full backward
 compatibilty is provided only for Apache-SSL 1.x and mod_ssl 2.0.x.
 Compatibility to Sioux 1.x and Stronghold 2.x is only partial because of
 special functionality in these interfaces which mod_ssl (still) doesn't
-provide.
+provide.</p>
+
+
 <p>
 <div align="center">
 <a name="table1"></a>
@@ -472,8 +239,8 @@ href="#table2">Table 2</a>.
 <h2><a name="ToC3">Custom Log Functions</a></h2>
 When mod_ssl is built into Apache or at least loaded (under DSO situation)
 additional functions exist for the <a
-href="../mod_log_config.html#formats">Custom Log Format</a> of <a
-href="../mod_log_config.html">mod_log_config</a> as documented in the Reference
+href="../mod/mod_log_config.html#formats">Custom Log Format</a> of <a
+href="../mod/mod_log_config.html">mod_log_config</a> as documented in the Reference
 Chapter. Beside the ``<code>%{</code><em>varname</em><code>}x</code>''
 eXtension format function which can be used to expand any variables provided
 by any module, an additional Cryptography
@@ -504,48 +271,6 @@ are listed in <a href="#table3">Table 3</a>.
 </tr></table>
 </td></tr></table>
 </div>
-      <p>
-      <br>
-      <table summary="">
-      <tr>
-        <td>
-           <table width="600" border="0" summary="">
-           <tr>
-            <td valign="top" align="left" width="250">
-<a href="ssl_reference.html" onmouseover="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onmouseout="ro_imgNormal('ro_img_prev_bot'); return true" onfocus="ro_imgOver('ro_img_prev_bot', 'previous page'); return true" onblur="ro_imgNormal('ro_img_prev_bot'); return true"><img name="ro_img_prev_bot" src="ssl_template.navbut-prev-n.gif" alt="previous page" width="70" height="18" border="0"></a><br><font color="#000000">Reference</font>
-            </td>
-            <td valign="top" align="right" width="250">
-<a href="ssl_howto.html" onmouseover="ro_imgOver('ro_img_next_bot', 'next page'); return true" onmouseout="ro_imgNormal('ro_img_next_bot'); return true" onfocus="ro_imgOver('ro_img_next_bot', 'next page'); return true" onblur="ro_imgNormal('ro_img_next_bot'); return true"><img name="ro_img_next_bot" src="ssl_template.navbut-next-n.gif" alt="next page" width="70" height="18" border="0"></a><br><font color="#000000">HowTo</font>
-            </td>
-           </tr>
-           </table>
-         </td>
-      </tr>
-      <tr>
-        <td><img src="ssl_template.imgdot-1x1-000000.gif" alt="" width="600" height="2" align="bottom" border="0"></td>
-      </tr>
-      <tr>
-        <td><table width="598" summary="">
-        <tr>
-        <td align="left"><font face="Arial,Helvetica">
-        <a href="http://www.modssl.org/">mod_ssl</a> 2.8, User Manual<br>
-        The Apache Interface to OpenSSL
-        </font>
-        </td>
-        <td align="right"><font face="Arial,Helvetica">
-        Copyright &copy; 1998-2001
-        <a href="http://www.engelschall.com/">Ralf S. Engelschall</a><br>
-        All Rights Reserved<br>
-        </font>
-        </td>
-        </tr>
-        </table>
-        </td>
-      </tr>
-      </table>
-  </td>
-</tr>
-</table>
-</div>
-</body>
+<p><!--#include virtual="footer.html" --> </p>
+  </body>
 </html>
