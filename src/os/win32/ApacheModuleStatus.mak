@@ -204,8 +204,23 @@ DEP_CPP_MOD_S=\
 
 !ELSEIF  "$(CFG)" == "ApacheModuleStatus - Win32 Debug"
 
+DEP_CPP_MOD_S=\
+	"..\..\main\alloc.h"\
+	"..\..\main\buff.h"\
+	"..\..\main\conf.h"\
+	"..\..\main\http_config.h"\
+	"..\..\main\http_core.h"\
+	"..\..\main\http_log.h"\
+	"..\..\main\http_main.h"\
+	"..\..\main\http_protocol.h"\
+	"..\..\main\httpd.h"\
+	"..\..\main\scoreboard.h"\
+	"..\..\main\util_script.h"\
+	"..\..\regex\regex.h"\
+	".\readdir.h"\
+	
 
-"$(INTDIR)\mod_status.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\mod_status.obj" : $(SOURCE) $(DEP_CPP_MOD_S) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

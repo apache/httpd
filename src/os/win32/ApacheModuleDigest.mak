@@ -216,11 +216,6 @@ DEP_CPP_MOD_D=\
 	"..\..\main\util_md5.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_D=\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_digest.obj" : $(SOURCE) $(DEP_CPP_MOD_D) "$(INTDIR)"

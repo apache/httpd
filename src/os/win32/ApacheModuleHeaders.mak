@@ -206,11 +206,6 @@ DEP_CPP_MOD_H=\
 	"..\..\main\httpd.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_H=\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_headers.obj" : $(SOURCE) $(DEP_CPP_MOD_H) "$(INTDIR)"

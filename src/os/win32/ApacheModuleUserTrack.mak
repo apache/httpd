@@ -208,11 +208,6 @@ DEP_CPP_MOD_U=\
 	"..\..\main\httpd.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_U=\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_usertrack.obj" : $(SOURCE) $(DEP_CPP_MOD_U) "$(INTDIR)"

@@ -208,11 +208,6 @@ DEP_CPP_MOD_E=\
 	"..\..\main\httpd.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_E=\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_expires.obj" : $(SOURCE) $(DEP_CPP_MOD_E) "$(INTDIR)"

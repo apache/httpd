@@ -214,11 +214,6 @@ DEP_CPP_MOD_A=\
 	"..\..\main\httpd.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_A=\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_auth_anon.obj" : $(SOURCE) $(DEP_CPP_MOD_A) "$(INTDIR)"

@@ -212,11 +212,6 @@ DEP_CPP_MOD_C=\
 	"..\..\main\util_script.h"\
 	"..\..\regex\regex.h"\
 	".\readdir.h"\
-	{$(INCLUDE)}"sys\stat.h"\
-	{$(INCLUDE)}"sys\types.h"\
-	
-NODEP_CPP_MOD_C=\
-	"..\..\main\sfio.h"\
 	
 
 "$(INTDIR)\mod_cern_meta.obj" : $(SOURCE) $(DEP_CPP_MOD_C) "$(INTDIR)"
