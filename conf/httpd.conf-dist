@@ -1,6 +1,5 @@
 # This is the main server configuration file. See URL http://www.apache.org/
 # for instructions.
-# $Id: httpd.conf-dist,v 1.8 1996/09/17 20:02:17 chuck Exp $
 
 # Do NOT simply read the instructions in here without understanding
 # what they do, if you are unsure consult the online docs. You have been

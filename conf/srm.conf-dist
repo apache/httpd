@@ -2,8 +2,6 @@
 # server.  This file also defines server settings which affect how requests are
 # serviced, and how results should be formatted. 
 
-# $Id: srm.conf-dist,v 1.9 1996/08/20 13:18:56 paul Exp $
-  
 # See the tutorials at http://www.apache.org/ for
 # more information.
 
