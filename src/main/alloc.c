@@ -519,7 +519,7 @@ pool *ap_init_alloc(void)
     return permanent_pool;
 }
 
-void ap_cleanup_alloc()
+void ap_cleanup_alloc(void)
 {
     ap_destroy_mutex(alloc_mutex);
     ap_destroy_mutex(spawn_mutex);
