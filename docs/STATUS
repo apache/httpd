@@ -1,5 +1,5 @@
 Apache HTTP Server 2.0 Documentation Status File.
-Last modified: $Date: 2001/08/31 19:54:07 $
+Last modified: $Date: 2001/09/17 18:32:45 $
 
 If you are interested in helping accomplish some of the tasks on this
 list or otherwise improving the documentation, please join the
@@ -134,3 +134,12 @@ Documentation improvements
   - We'll need to audit these and find out which ones need munging, as
     some of it looks ok.  --jsl
 
+* Making site-specific enhancements easier, including a documented
+  and robust way for 3P module docco to be added -- and have it
+  survive a server docco upgrade
+
+  - This could be something a simple and hackish as a manual/extra/
+    directory (a la the 1.3 src/modules/extra/ directory) and a
+    script in the support directory that scans the files there and
+    updates the manual indices.  (We do something like that now for
+    httpd.conf file with apxs [LoadModule, etc.].)
