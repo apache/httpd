@@ -1373,7 +1373,7 @@ static void output_directories(struct ent **ar, int n,
 	char *anchor, *t, *t2;
 	int nwidth;
 
-	apr_clear_pool(scratch);
+	apr_pool_clear(scratch);
 
 	if (is_parent(ar[x]->name)) {
 	    t = ap_make_full_path(scratch, name, "../");

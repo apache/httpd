@@ -571,7 +571,7 @@ static void child_main(int child_num_arg)
 
 	current_conn = NULL;
 
-	apr_clear_pool(ptrans);
+	apr_pool_clear(ptrans);
 
 	if ((ap_max_requests_per_child > 0
 	     && requests_this_child++ >= ap_max_requests_per_child)) {

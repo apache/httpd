@@ -563,7 +563,7 @@ static void * worker_thread(void * dummy)
             }
             break;
         }
-        apr_clear_pool(ptrans);
+        apr_pool_clear(ptrans);
     }
 
     apr_pool_destroy(tpool);

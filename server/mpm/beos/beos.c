@@ -428,7 +428,7 @@ static int32 worker_thread(void * dummy)
             apr_lock_release(accept_mutex);
             break;
         }
-        apr_clear_pool(ptrans);
+        apr_pool_clear(ptrans);
     }
 
     ap_update_child_status(0, child_slot, SERVER_DEAD, (request_rec*)NULL);
