@@ -2082,6 +2082,9 @@ void winnt_rewrite_args(process_rec *process)
         my_pid = GetCurrentProcessId();
         parent_pid = (DWORD) atol(pid);
 
+        /* Prevent holding open the (nonexistant) console */
+        real_exit_code = 0;
+
         /* The parent is responsible for providing the
          * COMPLETE ARGUMENTS REQUIRED to the child.
          *
@@ -2145,16 +2148,27 @@ void winnt_rewrite_args(process_rec *process)
     optbuf[2] = '\0';
     apr_getopt_init(&opt, process->pool, process->argc, (char**) process->argv);
     opt->errfn = NULL;
-    while ((rv = apr_getopt(opt, "n:k:iu" AP_SERVER_BASEARGS, 
+    while ((rv = apr_getopt(opt, "wn:k:" AP_SERVER_BASEARGS, 
                             optbuf + 1, &optarg)) == APR_SUCCESS) {
         switch (optbuf[1]) {
+
+        /* Shortcuts; include the -w option to hold the window open on error.
+         * This must not be toggled once we reset real_exit_code to 0!
+         */
+        case 'w':
+            if (real_exit_code)
+                real_exit_code = 2;
+            break;
+
         case 'n':
             service_set = mpm_service_set_name(process->pool, &service_name, 
                                                optarg);
             break;
+
         case 'k':
             signal_arg = optarg;
             break;
+
         case 'E':
             errout = 1;
             /* Fall through so the Apache main() handles the 'E' arg */
@@ -2307,7 +2321,10 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
     /* Initialize shared static objects. 
      */
     pconf = pconf_;
-    
+
+    /* This behavior is voided by setting real_exit_code to 0 */
+    atexit(hold_console_open_on_error);
+
     if (ap_exists_config_define("ONE_PROCESS") ||
         ap_exists_config_define("DEBUG"))
         one_process = -1;

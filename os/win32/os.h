@@ -69,8 +69,8 @@
  * windows.h prior to any other Apache header files.
  */
 
-#ifndef _WIN32
-#define _WIN32
+#ifndef ap_os_h
+#define ap_os_h
 #endif
 
 #include <io.h>
@@ -87,4 +87,17 @@
 
 #include <stddef.h>
 
-#endif   /* ! APACHE_OS_H */
+/* BIG RED WARNING: exit() is mapped to allow us to capture the exit
+ * status.  This header must only be included from modules linked into
+ * the ApacheCore.dll - since it's a horrible behavior to exit() from
+ * any module outside the main() block, and we -will- assume it's a
+ * fatal error.  No dynamically linked module will ever be able to find
+ * the real_exit_code, and _will_ GP fault if it tries this macro.
+ */
+
+AP_DECLARE_DATA extern int real_exit_code;
+
+#define exit(status) ((exit)((real_exit_code==2) ? (real_exit_code = (status)) \
+                                                 : ((real_exit_code = 0), (status))))
+
+#endif   /* ! ap_os_h */
