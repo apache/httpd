@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:						-*-text-*-
-Last modified at [$Date: 2001/04/10 17:32:08 $]
+Last modified at [$Date: 2001/04/10 17:54:35 $]
 
 Release:
 
@@ -97,7 +97,28 @@ RELEASE SHOWSTOPPERS:
         MsgId: <20010227104646.E2297@lyra.org>
         MsgId: <3A9C0097.9C83F07C@Golux.Com>
 
+    * Usability: Sanitize the MPM config directives.  MaxClients in 
+      the threaded MPM is totally misleading now as it has little to
+      do with limiting the number of clients (it limits the number
+      of child processes). Bill proposed nomenclature change to
+      something like "StartWorkers, MaxWorkers, etc." that could 
+      apply to most all the MPMs (with some notable exceptions).
+      Bill would be happy with changing MaxClients to MaxServers
+      to make it agree with the operation of the StartServers
+      directive.
+
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+    * mod_tls is very specific to OpenSSL. Make the API calls
+      more generic to support other encryption libraries.
+
+    * Performance & Debug: Eliminate most (and perhaps all) of the 
+      malloc/calloc/frees in the bucket brigade code.  Need some 
+      light weight memory management functions that allow freeing 
+      memory (putting it back into a memory pool) when it is no 
+      longer needed. Enabling simple debugging features like guard
+      bands, double free detection, etc. would be cool but certainly
+      not a hard requirement.
 
     * Eliminate unnecessary creation of pipes in mod_cgid
 
