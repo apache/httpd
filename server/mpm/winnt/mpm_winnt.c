@@ -340,7 +340,15 @@ static void signal_parent(int type)
     }
     CloseHandle(e);
 }
-
+static int volatile is_graceful = 0;
+API_EXPORT(int) ap_graceful_stop_signalled(void)
+{
+    return is_graceful;
+}
+void ap_start_shutdown(void)
+{
+    signal_parent(0);
+}
 /*
  * Initialise the signal names, in the global variables signal_name_prefix, 
  * signal_restart_name and signal_shutdown_name.
