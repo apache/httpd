@@ -176,10 +176,6 @@ struct process_score{
     pid_t pid;
     ap_generation_t generation;	/* generation of this child */
     ap_scoreboard_e sb_type;
-    unsigned short process_status;    /* Either SB_WORKING or SB_IDLE_DIE */
-    int worker_threads;
-    worker_score *worker_head;
-    process_score *next;
 };
 
 typedef struct {

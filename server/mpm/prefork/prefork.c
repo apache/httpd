@@ -844,7 +844,6 @@ static int make_child(server_rec *s, int slot)
 	apr_signal(SIGQUIT, SIG_DFL);
 #endif
 	apr_signal(SIGTERM, just_die);
-        ap_scoreboard_image->parent[slot].process_status = SB_WORKING;
 	child_main(slot);
     }
 
@@ -896,7 +895,6 @@ static int make_child(server_rec *s, int slot)
          * pod is used for signalling graceful restart.
          */
         apr_signal(SIGWINCH, SIG_IGN);
-        ap_scoreboard_image->parent[slot].process_status = SB_WORKING;
 	child_main(slot);
     }
 
@@ -1263,10 +1261,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_scoreboard_image->global.running_generation = ap_my_generation;
     update_scoreboard_global();
     
-    for (index = 0; index < ap_daemons_limit; ++index) {
-        ap_scoreboard_image->parent[index].process_status = SB_IDLE_DIE;
-    }
-
     if (is_graceful) {
 	ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, ap_server_conf,
 		    "Graceful restart requested, doing restart");
