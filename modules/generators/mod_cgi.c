@@ -373,7 +373,7 @@ static ap_status_t run_cgi_child(BUFF **script_out, BUFF **script_in, BUFF **scr
     ap_unblock_alarms();
     return (rc);
 }
-static ap_status_t build_argv_list(char *argv[], request_rec *r, ap_context_t *p) 
+static ap_status_t build_argv_list(char ***argv, request_rec *r, ap_context_t *p)
 {
     int numwords, x, idx;
     char *w;
@@ -392,14 +392,14 @@ static ap_status_t build_argv_list(char *argv[], request_rec *r, ap_context_t *p
         if (numwords > APACHE_ARG_MAX) {
             numwords = APACHE_ARG_MAX;	/* Truncate args to prevent overrun */
         }
-        argv = (char **) ap_palloc(p, (numwords + 1) * sizeof(char *));
+        *argv = (char **) ap_palloc(p, (numwords + 1) * sizeof(char *));
 
         for (x = 1, idx = 0; x <= numwords; x++) {
             w = ap_getword_nulls(p, &args, '+');
             ap_unescape_url(w);
-            argv[idx++] = ap_escape_shell_cmd(p, w);
+            (*argv)[idx++] = ap_escape_shell_cmd(p, w);
         }
-        argv[idx] = NULL;
+        (*argv)[idx] = NULL;
     }
 
     return APR_SUCCESS;
@@ -444,7 +444,7 @@ static int cgi_handler(request_rec *r)
     int retval, nph, dbpos = 0;
     char *argv0, *dbuf = NULL;
     char *command;
-    char *argv = NULL;
+    char **argv = NULL;
 
     BUFF *script_out = NULL, *script_in = NULL, *script_err = NULL;
     char argsbuffer[HUGE_STRING_LEN];
@@ -527,7 +527,7 @@ static int cgi_handler(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* run the script in its own process */
-    else if (run_cgi_child(&script_out, &script_in, &script_err, command, &argv, r, p) != APR_SUCCESS) {
+    else if (run_cgi_child(&script_out, &script_in, &script_err, command, argv, r, p) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
                       "couldn't spawn child process: %s", r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
