@@ -140,6 +140,7 @@ enum special {
 };
 typedef struct {
     char *name;                 /* header name */
+    regex_t *pnamereg;          /* compiled header name regex */
     char *regex;                /* regex to match against */
     regex_t *preg;              /* compiled regex */
     apr_table_t *features;      /* env vars to set (or unset) */
@@ -197,6 +198,21 @@ static void *merge_setenvif_config(apr_pool_t *p, void *basev, void *overridesv)
 #define ICASE_MAGIC	((void *)(&setenvif_module))
 #define SEI_MAGIC_HEIRLOOM "setenvif-phase-flag"
 
+static int is_header_regex(apr_pool_t *p, const char* name) 
+{
+    /* If a Header name contains characters other than:
+     *    -,_,[A-Z\, [a-z] and [0-9].
+     * assume the header name is a regular expression.
+     */
+    regex_t *preg = ap_pregcomp(p, "^[-A-Za-z0-9_]*$",
+                                (REG_EXTENDED | REG_NOSUB ));
+    if (preg) {
+        if (ap_regexec(preg, name, 0, NULL, 0)) {
+            return 1;
+        }
+    }
+    return 0;
+}
 static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 				     char *fname, const char *args)
 {
@@ -286,6 +302,21 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 	}
 	else {
 	    new->special_type = SPECIAL_NOT;
+            /* Handle fname as a regular expression.
+             * If fname a simple header string, identify as such (new->pnamereg = NULL)
+             * to avoid the overhead of searching through headers_in for a regex match.
+             */
+            if (is_header_regex(cmd->pool, fname)) {
+                new->pnamereg = ap_pregcomp(cmd->pool, fname,
+                                            (REG_EXTENDED | REG_NOSUB
+                                             | (icase ? REG_ICASE : 0)));
+                if (new->pnamereg == NULL)
+                    return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                                       "Header name regex could not be compiled.", NULL);
+            }
+            else {
+                new->pnamereg = NULL;
+            }
 	}
     }
     else {
@@ -417,11 +448,27 @@ static int match_headers(request_rec *r)
 		val = r->protocol;
 		break;
 	    case SPECIAL_NOT:
-		val = apr_table_get(r->headers_in, b->name);
-		if (val == NULL) {
-		    val = apr_table_get(r->subprocess_env, b->name);
-		}
-		break;
+                if (b->pnamereg) {
+                    /* Matching headers_in against a regex. Iterate through
+                     * the headers_in until we find a match or run out of
+                     * headers.
+                     */
+                    apr_array_header_t *arr = apr_table_elts(r->headers_in);
+                    elts = (apr_table_entry_t *) arr->elts;
+                    val = NULL;
+                    for (j = 0; j < arr->nelts; ++j) {
+                        if (!ap_regexec(b->pnamereg, elts[j].key, 0, NULL, 0)) { 
+                            val = elts[j].val;
+                        }
+                    }
+                }
+                else {
+                    /* Not matching against a regex */
+                    val = apr_table_get(r->headers_in, b->name);
+                    if (val == NULL) {
+                        val = apr_table_get(r->subprocess_env, b->name);
+                    }
+                }
 	    }
         }
 
