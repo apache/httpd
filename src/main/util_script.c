@@ -462,6 +462,29 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 #endif
     
 #ifdef __EMX__    
+    {
+        /* Additions by Alec Kloss, to allow exec'ing of scripts under OS/2 */
+        int is_script;
+        char interpreter[2048]; /* hope this is large enough for the interpreter path */
+        FILE * program;
+        program = fopen (r->filename, "r");
+        if (!program) {
+            char err_string[HUGE_STRING_LEN];
+            sprintf(err_string, "open of %s failed, errno is %d\n", r->filename, errno);
+            /* write(2, err_string, strlen(err_string)); */
+            /* exit(0); */
+            log_unixerr("fopen", NULL, err_string, r->server);
+            return;
+        }
+        fgets (interpreter, 2048, program);
+        fclose (program);
+        if (!strncmp (interpreter, "#!", 2)) {
+            is_script = 1;
+            interpreter[strlen(interpreter)-1] = '\0';
+        } else {
+            is_script = 0;
+        }
+
     if ((!r->args) || (!r->args[0]) || (ind(r->args,'=') >= 0)) {
 	int emxloop;
 	char *emxtemp;
@@ -472,6 +495,12 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	for (emxloop=0; ((emxtemp = env[emxloop]) != NULL); emxloop++)
 	    putenv(emxtemp);
                 
+    /* Additions by Alec Kloss, to allow exec'ing of scripts under OS/2 */
+    if (is_script) {
+        /* here's the stuff to run the interpreter */
+        execl (interpreter+2, interpreter+2, r->filename, NULL);
+    } else
+
 	if (strstr(strupr(r->filename), ".CMD") > 0) {
 	    /* Special case to allow use of REXX commands as scripts. */
 	    os2pathname(r->filename);
@@ -498,6 +527,7 @@ void call_exec (request_rec *r, char *argv0, char **env, int shellcmd)
 	}
 	else
 	    execv(r->filename, create_argv(r, argv0, r->args, NULL));
+    }
     }
 #else
     if ( suexec_enabled &&

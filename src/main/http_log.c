@@ -74,7 +74,12 @@ void error_log_child (void *cmd)
     
     cleanup_for_exec();
     signal (SIGHUP, SIG_IGN);
+#ifdef __EMX__
+    /* For OS/2 we need to use a '/' */
+    execl (SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+#else    
     execl (SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+#endif    
     exit (1);
 }
 

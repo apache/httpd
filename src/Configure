@@ -179,7 +179,8 @@ case "$PLAT" in
         DEF_WANTHSREGEX=yes
 	OS='EMX OS/2'
         CFLAGS="$CFLAGS -Zbsd-signals -Zbin-files -DTCPIPV4 -g"
-	LIBS="$LIBS -lsocket -llibufc -lgdbm -lbsd"
+	LIBS="$LIBS -lsocket -llibufc -lbsd"
+	DBM_LIB="-lgdbm"
 	;;
     *-hp-hpux10.*)
 	OS='HP-UX 10'

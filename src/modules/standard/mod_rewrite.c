@@ -110,6 +110,11 @@
     /* now our own stuff ... */
 #include "mod_rewrite.h"
 
+#ifdef __EMX__
+/* OS/2 dosen't support links. */
+#define S_ISLNK
+#endif
+
  
 
 
@@ -2162,7 +2167,12 @@ static void rewritelog_child(void *cmd)
 {
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
+#ifdef __EMX__
+    /* For OS/2 we need to use a '/' */
+    execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+#else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+#endif
     exit(1);
 }
 
@@ -2301,7 +2311,12 @@ static void rewritemap_program_child(void *cmd)
 {
     cleanup_for_exec();
     signal(SIGHUP, SIG_IGN);
+#ifdef __EMX__
+    /* For OS/2 we need to use a '/' */
+    execl(SHELL_PATH, SHELL_PATH, "/c", (char *)cmd, NULL);
+#else
     execl(SHELL_PATH, SHELL_PATH, "-c", (char *)cmd, NULL);
+#endif    
     exit(1);
 }
 

@@ -409,7 +409,6 @@ typedef quad_t rlim_t;
 #define chdir _chdir2
 #include <sys/time.h>     
 #define MAXSOCKETS 4096
-#define ARG_MAX    _POSIX_ARG_MAX
 #define HAVE_MMAP
     
 #elif defined(__MACHTEN__)
@@ -552,7 +551,10 @@ int setrlimit( int, struct rlimit *);
 #endif
 
 #ifndef S_ISLNK
+#ifndef __EMX__
+/* Don't define this for OS/2 */
 #define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
+#endif
 #endif
 
 #ifndef INADDR_NONE
