@@ -7,7 +7,7 @@
 <!-- Include constants, variables, and macros -->
 <xsl:import href="settings.xsl" />
 
-<xsl:output method="html" encoding="iso-8859-1" indent="yes"/>
+<xsl:output method="html" encoding="iso-8859-1" indent="no"/>
 
  <!-- Process an entire document into an HTML page -->
  <xsl:template match="modulesynopsis">
@@ -283,10 +283,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </xsl:variable>
       <xsl:variable name="lowerdirective" select="translate($directive, $uppercase, $lowercase)" />
       <xsl:if test="@module=/modulesynopsis/name">
-        <code class="directive"><a class="directive" href="#{$lowerdirective}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></a></code>
+        <a class="directive" href="#{$lowerdirective}"><code class="directive"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></code></a>
       </xsl:if>
       <xsl:if test="@module!=/modulesynopsis/name">
-        <code class="directive"><a class="directive" href="{$module}.html#{$lowerdirective}"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></a></code>
+        <a class="directive" href="{$module}.html#{$lowerdirective}"><code class="directive"><xsl:if test="./@type='section'">&lt;</xsl:if><xsl:value-of select="."/><xsl:if test="./@type='section'">&gt;</xsl:if></code></a>
       </xsl:if>
     </xsl:if>
     <xsl:if test="not(@module)">
