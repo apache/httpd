@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.15 -->
+<!-- English revision: 1.16 -->
 
 <name>mpm_common</name>
 <description>二つ以上のマルチプロセッシングモジュール (MPM)
@@ -227,36 +227,36 @@
 <description>リクエストに応答するために作成される
 子プロセスの最大個数</description>
 <syntax>MaxClients <em>number</em></syntax>
-<default>MaxClients
-    8 (スレッドがある場合) MaxClients 256</default>
 <contextlist><context>サーバ設定ファイル</context></contextlist>
 <modulelist><module>worker</module><module>prefork</module>
 </modulelist>
 
 <usage>
     <p><directive>MaxClients</directive> ディレクティブは、
-    リクエストに応答するために作成される、子プロセスの制限数を設定します。
-    スレッド処理不採用でサーバをビルドした場合は、
-    この数字以上のクライアントに同時に応答することはできません。
-    prefork MPM で 256 クライアントを越える設定にするのならば、
-    <directive module="mpm_common">ServerLimit</directive>
-    ディレクティブを使用しなければなりません。
-    worker MPM で 1024 クライアントを越える設定にするのならば、
-    <directive module="mpm_common">ServerLimit</directive>
-    ディレクティブと
-    <directive module="mpm_common">ThreadLimit</directive>
-    ディレクティブを使用しなければなりません。</p>
+    応答することのできる同時リクエスト数を設定します。
+    <directive>MaxClients</directive> 制限数を越えるコネクションは通常、
+    <directive module="mpm_common">ListenBacklog</directive>
+    ディレクティブで設定した数までキューに入ります。
+    他のリクエストの最後まで達して子プロセスが空くと、
+    次のコネクションに応答します。</p>
 
-    <p><directive>MaxClients</directive> の制限を越えたコネクションは、
-    通常は <directive module="mpm_common">ListenBacklog</directive>
-    ディレクティブに基づいた数までキューされます。
-    子プロセスが他のリクエストの最後まで行って解放されたら、
-    キューに入ったこのコネクションに対して応答が行われます。</p>
+    <p>スレッドを用いないサーバ (すなわち <module>prefork</module>)
+    では、<directive>MaxClients</directive>
+    は、リクエストに応答するために起動される
+    子プロセスの最大数となります。
+    デフォルト値は 256 で、これを増加させたい場合は、
+    <directive module="mpm_common">ServerLimit</directive>
+    の値も増加させる必要があります。</p>
 
-    <p>サーバがスレッド処理採用でコンパイルされた場合は、
-    応答可能な同時リクエスト数の最大数は、このディレクティブの値を
+    <p>スレッドを用いるサーバ (すなわち <module>worker</module>)
+    では、<directive>MaxClients</directive> 
+    は、クライアントに応答できるスレッドの総数を制限します。
+    デフォルト値は
     <directive module="mpm_common">ThreadsPerChild</directive>
-    倍して得られます。</p>
+    を 16 倍した値になります。<directive>MaxClients</directive>
+    を 16 プロセス以上必要な値まで増加させたい場合は、
+    <directive module="mpm_common">ServerLimit</directive>
+    も増加させる必要があります。</p>
 </usage>
 </directivesynopsis>
 

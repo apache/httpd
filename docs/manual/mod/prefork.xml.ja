@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis>
-<!-- English revision: 1.5 -->
+<!-- English revision: 1.6 -->
 <name>prefork</name>
 <description>スレッドを使わず、先行して fork を行なうウェブサーバを実装
 </description>
@@ -102,14 +102,6 @@
 
 <directivesynopsis location="mpm_common">
 <name>MaxRequestsPerChild</name>
-</directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>MaxSpareServers</name>
-</directivesynopsis>
-
-<directivesynopsis location="mpm_common">
-<name>MinSpareServers</name>
 </directivesynopsis>
 
 <directivesynopsis location="mpm_common">
