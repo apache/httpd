@@ -495,6 +495,14 @@ SOURCE=.\modules\arch\win32\mod_win32.c
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\os\win32\ap_regkey.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\os\win32\ap_regkey.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\error_bucket.c
 # End Source File
 # Begin Source File
