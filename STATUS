@@ -1,5 +1,5 @@
 APACHE 2.0 STATUS:                                              -*-text-*-
-Last modified at [$Date: 2003/11/25 22:10:38 $]
+Last modified at [$Date: 2003/12/02 10:44:48 $]
 
 Release:
 
@@ -367,6 +367,11 @@ PATCHES TO BACKPORT FROM 2.1
     * Fix display of empty variables via mod_include.  PR 24734.
         modules/metadata/mod_env.c r1.31
       +1: trawick, nd
+
+    * Fix htdbm to generate comment fields in the DBM files correctly.
+      (This causes DBMAuthGroupFile to break)
+        support/htdbm.c r1.11
+      +1: jerenkrantz
 
 CURRENT RELEASE NOTES:
 
