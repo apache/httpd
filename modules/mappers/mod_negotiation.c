@@ -2703,6 +2703,12 @@ static int handle_multi(request_rec *r)
     /* now do a "fast redirect" ... promotes the sub_req into the main req */
     ap_internal_fast_redirect(sub_req, r);
 
+    /* give no advise for time on this subrequest.  Perhaps we
+     * should tally the last mtime amoung all variants, and date
+     * the most recent, but that could confuse the proxies.
+     */
+    r->mtime = 0;
+    
     /* clean up all but our favorite variant, since that sub_req
      * is now merged into the main request!
      */
