@@ -1616,7 +1616,6 @@ AP_DECLARE(int) ap_is_rdirectory(apr_pool_t *p, const char *name);
 AP_DECLARE(int) ap_is_directory(apr_pool_t *p, const char *name);
 
 #ifdef _OSD_POSIX
-extern const char *os_set_account(apr_pool_t *p, const char *account);
 extern int os_init_job_environment(server_rec *s, const char *user_name, int one_process);
 #endif /* _OSD_POSIX */
 
