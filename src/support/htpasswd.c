@@ -1,3 +1,60 @@
+/* ====================================================================
+ * Copyright (c) 1995-1999 The Apache Group.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. All advertising materials mentioning features or use of this
+ *    software must display the following acknowledgment:
+ *    "This product includes software developed by the Apache Group
+ *    for use in the Apache HTTP server project (http://www.apache.org/)."
+ *
+ * 4. The names "Apache Server" and "Apache Group" must not be used to
+ *    endorse or promote products derived from this software without
+ *    prior written permission. For written permission, please contact
+ *    apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache"
+ *    nor may "Apache" appear in their names without prior written
+ *    permission of the Apache Group.
+ *
+ * 6. Redistributions of any form whatsoever must retain the following
+ *    acknowledgment:
+ *    "This product includes software developed by the Apache Group
+ *    for use in the Apache HTTP server project (http://www.apache.org/)."
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+ * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Group and was originally based
+ * on public domain software written at the National Center for
+ * Supercomputing Applications, University of Illinois, Urbana-Champaign.
+ * For more information on the Apache Group and the Apache HTTP server
+ * project, please see <http://www.apache.org/>.
+ *
+ */
+
 /******************************************************************************
  ******************************************************************************
  * NOTE! This program is not safe as a setuid executable!  Do not make it
@@ -5,14 +62,23 @@
  ******************************************************************************
  *****************************************************************************/
 /*
- * htpasswd.c: simple program for manipulating password file for NCSA httpd
+ * htpasswd.c: simple program for manipulating password file for
+ * the Apache HTTP server
  * 
- * Rob McCool
+ * Originally by Rob McCool
+ *
+ * Exit values:
+ *  0: Success
+ *  1: Failure; file permission problem
+ *  2: Failure; command line syntax problem (usage message issued)
+ *  3: Failure; password verification failure
+ *  4: Failure; operation interrupted (such as with CTRL/C)
  */
 
 #include "ap_config.h"
 #include <sys/types.h>
 #include <signal.h>
+#include <errno.h>
 #include "ap.h"
 #include "ap_md5.h"
 
@@ -31,9 +97,23 @@
 #endif /*CHARSET_EBCDIC*/
 
 #define MAX_STRING_LEN 256
+#define ALG_CRYPT 1
+#define ALG_APMD5 2
 
-char *tn;
+#define ERR_FILEPERM 1
+#define ERR_SYNTAX 2
+#define ERR_PWMISMATCH 3
+#define ERR_INTERRUPTED 4
 
+/*
+ * This needs to be declared statically so the signal handler can
+ * access it.
+ */
+static char *tempfilename;
+
+/*
+ * Duplicate a string into memory malloc()ed for it.
+ */
 static char *strd(char *s)
 {
     char *d;
@@ -41,24 +121,6 @@ static char *strd(char *s)
     d = (char *) malloc(strlen(s) + 1);
     strcpy(d, s);
     return (d);
-}
-
-static void getword(char *word, char *line, char stop)
-{
-    int x = 0, y;
-
-    for (x = 0; ((line[x]) && (line[x] != stop)); x++) {
-	word[x] = line[x];
-    }
-
-    word[x] = '\0';
-    if (line[x]) {
-	++x;
-    }
-    y = 0;
-
-    while ((line[y++] = line[x++]))
-	;
 }
 
 static int getline(char *s, int n, FILE *f)
@@ -93,7 +155,7 @@ static void putline(FILE *f, char *l)
 
 /* From local_passwd.c (C) Regents of Univ. of California blah blah */
 static unsigned char itoa64[] =	/* 0 ... 63 => ascii - 64 */
-"./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
 static void to64(register char *s, register long v, register int n)
 {
@@ -104,7 +166,8 @@ static void to64(register char *s, register long v, register int n)
 }
 
 #ifdef MPE
-/* MPE lacks getpass() and a way to suppress stdin echo.  So for now, just
+/*
+ * MPE lacks getpass() and a way to suppress stdin echo.  So for now, just
  * issue the prompt and read the results with echo.  (Ugh).
  */
 
@@ -125,7 +188,8 @@ static char *getpass(const char *prompt)
 #endif
 
 #ifdef WIN32
-/* Windows lacks getpass().  So we'll re-implement it here.
+/*
+ * Windows lacks getpass().  So we'll re-implement it here.
  */
 
 static char *getpass(const char *prompt)
@@ -158,170 +222,338 @@ static char *getpass(const char *prompt)
 }
 #endif
 
-static void add_password(char *user, FILE *f, int use_md5)
+/*
+ * Make a password record from the given information.  A true return
+ * indicates success; failure means that the output buffer contains an
+ * error message instead.
+ */
+static int mkrecord(char *user, char *record, size_t rlen, int alg)
 {
-    char *pw, cpw[120], salt[9];
+    char *pw;
+    char cpw[120];
+    char salt[9];
 
-    pw = strd((char *) getpass("New password:"));
-    if (strcmp(pw, (char *) getpass("Re-type new password:"))) {
-	fprintf(stderr, "They don't match, sorry.\n");
-	if (tn) {
-	    unlink(tn);
-	}
-	exit(1);
+    pw = strd((char *) getpass("New password: "));
+    if (strcmp(pw, (char *) getpass("Re-type new password: "))) {
+	ap_cpystrn(record, "password verification error", (rlen - 1));
+	return 0;
     }
     (void) srand((int) time((time_t *) NULL));
     to64(&salt[0], rand(), 8);
     salt[8] = '\0';
 
-    if (use_md5) {
-        ap_MD5Encode(pw, salt, cpw, sizeof(cpw));
-    }
-    else {
+    switch (alg) {
+    case ALG_APMD5:
+	ap_MD5Encode(pw, salt, cpw, sizeof(cpw));
+	break;
+    case ALG_CRYPT:
 	ap_cpystrn(cpw, (char *)crypt(pw, salt), sizeof(cpw) - 1);
+	break;
     }
+    /*
+     * Now that we have the smashed password, we don't need the
+     * plaintext one any more.
+     */
     free(pw);
-    fprintf(f, "%s:%s\n", user, cpw);
+    /*
+     * Check to see if the buffer is large enough to hold the username,
+     * hash, and delimiters.
+     */
+    if ((strlen(user) + 1 + strlen(cpw)) > (rlen - 1)) {
+	ap_cpystrn(record, "resultant record too long", (rlen - 1));
+	return 0;
+    }
+    strcpy(record, user);
+    strcat(record, ":");
+    strcat(record, cpw);
+    return 1;
 }
 
-static void usage(void)
+static int usage(void)
 {
     fprintf(stderr, "Usage: htpasswd [-cm] passwordfile username\n");
     fprintf(stderr, "The -c flag creates a new file.\n");
-    fprintf(stderr, "The -m flag creates a md5 encrypted file.\n");
+    fprintf(stderr, "The -m flag forces MD5 encryption of the password.\n");
     fprintf(stderr, "On Windows systems the -m flag is used by default.\n");
-    exit(1);
+    return ERR_SYNTAX;
 }
 
 static void interrupted(void)
 {
     fprintf(stderr, "Interrupted.\n");
-    if (tn) {
-	unlink(tn);
+    if (tempfilename != NULL) {
+	unlink(tempfilename);
     }
-    exit(1);
+    exit(ERR_INTERRUPTED);
 }
 
+/*
+ * Check to see if the specified file can be opened for the given
+ * access.
+ */
+int accessible(char *fname, char *mode)
+{
+    FILE *s;
+
+    s = fopen(fname, mode);
+    if (s == NULL) {
+	return 0;
+    }
+    fclose(s);
+    return 1;
+}
+
+/*
+ * Return true if a file is readable.
+ */
+int readable(char *fname)
+{
+    return accessible(fname, "r");
+}
+
+/*
+ * Return true if the specified file can be opened for write access.
+ */
+int writable(char *fname)
+{
+    return accessible(fname, "a");
+}
+
+/*
+ * Return true if the named file exists, regardless of permissions.
+ */
+int exists(char *fname)
+{
+#ifdef WIN32
+    struct _stat sbuf;
+#else
+    struct stat sbuf;
+#endif
+    int check;
+
+#ifdef WIN32
+    check = _stat(fname, &sbuf);
+#else
+    check = stat(fname, &sbuf);
+#endif
+    return ((check == -1) && (errno == ENOENT)) ? 0 : 1;
+}
+
+/*
+ * Copy from the current position of one file to the current position
+ * of another.
+ */
+void copy_file(FILE *target, FILE *source)
+{
+    static char line[MAX_STRING_LEN];
+
+    while (fgets(line, sizeof(line), source) != NULL) {
+	fputs(line, target);
+    }
+}
+
+/*
+ * Let's do it.  We end up doing a lot of file opening and closing,
+ * but what do we care?  This application isn't run constantly.
+ */
 int main(int argc, char *argv[])
 {
-    FILE *tfp, *f;
+    FILE *ftemp = NULL;
+    FILE *fpw = NULL;
     char user[MAX_STRING_LEN];
+    char record[MAX_STRING_LEN];
     char line[MAX_STRING_LEN];
-    char l[MAX_STRING_LEN];
-    char w[MAX_STRING_LEN];
-    char command[MAX_STRING_LEN];
-    char filename[MAX_STRING_LEN];
-    int found;
-    int use_md5 = 0;
+    char pwfilename[MAX_STRING_LEN];
+    char *arg;
+    int found = 0;
+    int alg = ALG_CRYPT;
     int newfile = 0;
-    int currarg = 1;
-    int filearg;
+    int i;
 
-    tn = NULL;
+    tempfilename = NULL;
     signal(SIGINT, (void (*)(int)) interrupted);
 
-    /* preliminary check to make sure they provided at least
+    /*
+     * Preliminary check to make sure they provided at least
      * three arguments, we'll do better argument checking as 
      * we parse the command line.
      */
     if (argc < 3) {
-	    usage();
+	return usage();
     }
 
-    /* I would rather use getopt, but Windows and UNIX seem to handle getopt
-     * differently, so I am doing the argument checking by hand.
+    /*
+     * Go through the argument list and pick out any options.  They
+     * have to precede any other arguments.
      */
-    
-    if (!strcmp(argv[1],"-c") || !strcmp(argv[2],"-c")) {
-        newfile = 1;
-        currarg++;
-    }
-    if (!strcmp(argv[1],"-m") || !strcmp(argv[2],"-m")) {
-        use_md5 = 1;
-        currarg++;
+    for (i = 1; i < argc; i++) {
+	arg = argv[i];
+	if (*arg != '-') {
+	    break;
+	}
+	while (*++arg != '\0') {
+	    if (*arg == 'c') {
+		newfile++;
+	    }
+	    else if (*arg == 'm') {
+		alg = ALG_APMD5;
+	    }
+	    else {
+		return usage();
+	    }
+	}
     }
 
-    if (!strcmp(argv[1], "-cm") || !strcmp(argv[2], "-mc")) {
-        use_md5 = 1;
-        newfile = 1;
-        currarg++;
+    /*
+     * Make sure we still have exactly two arguments left (the filename
+     * and the username).
+     */
+    if ((argc - i) != 2) {
+	return usage();
     }
-
-    strcpy(filename, argv[currarg]);
-    filearg = currarg++;
-
-    if (argc <= filearg + 1) {
-        usage();
+    if (strlen(argv[i]) > (sizeof(pwfilename) - 1)) {
+	fprintf(stderr, "%s: filename too long\n", argv[0]);
+	return 1;
     }
+    strcpy(pwfilename, argv[i]);
+    if (strlen(argv[i + 1]) > (sizeof(user) - 1)) {
+	fprintf(stderr, "%s: username too long\n", argv[0]);
+	return 1;
+    }
+    strcpy(user, argv[i + 1]);
 
 #ifdef WIN32
-    if (!use_md5) {
-	use_md5 = 1;
-	fprintf(stderr,"Automatically using md5 format on Windows.\n");
+    if (alg == ALG_CRYPT) {
+	alg = ALG_APMD5;
+	fprintf(stderr, "Automatically using MD5 format on Windows.\n");
     }
 #endif
-    if (newfile) {
-        if (!(tfp = fopen(filename, "w+"))) {
-            fprintf(stderr, "Could not open password file %s for writing.\n",
-                    filename);
-	    perror("fopen");
-	    exit(1);
+
+    /*
+     * Verify that the file exists if -c was omitted.  We give a special
+     * message if it doesn't.
+     */
+    if ((! newfile) && (! exists(pwfilename))) {
+	fprintf(stderr, "%s: cannot modify file %s; use '-c' to create it\n",
+		argv[0], pwfilename);
+	perror("fopen");
+	exit(ERR_FILEPERM);
+    }
+    /*
+     * Verify that we can read the existing file in the case of an update
+     * to it (rather than creation of a new one).
+     */
+    if ((! newfile) && (! readable(pwfilename))) {
+	fprintf(stderr, "%s: cannot open file %s for read access\n",
+		argv[0], pwfilename);
+	perror("fopen");
+	exit(ERR_FILEPERM);
+    }
+    /*
+     * Now check to see if we can preserve an existing file in case
+     * of password verification errors on a -c operation.
+     */
+    if (newfile && exists(pwfilename) && (! readable(pwfilename))) {
+	fprintf(stderr, "%s: cannot open file %s for read access\n"
+		"%s: existing auth data would be lost on password mismatch",
+		argv[0], pwfilename, argv[0]);
+	perror("fopen");
+	exit(ERR_FILEPERM);
+    }
+    /*
+     * Now verify that the file is writable!
+     */
+    if (! writable(pwfilename)) {
+	fprintf(stderr, "%s: cannot open file %s for write access\n",
+		argv[0], pwfilename);
+	perror("fopen");
+	exit(ERR_FILEPERM);
+    }
+
+    /*
+     * All the file access checks have been made.  Time to go to work;
+     * try to create the record for the username in question.  If that
+     * fails, there's no need to waste any time on file manipulations.
+     * Any error message text is returned in the record buffer, since
+     * the mkrecord() routine doesn't have access to argv[].
+     */
+    if (! mkrecord(user, record, sizeof(record) - 1, alg)) {
+	fprintf(stderr, "%s: %s\n", argv[0], record);
+	exit(ERR_PWMISMATCH);
+    }
+
+    /*
+     * We can access the files the right way, and we have a record
+     * to add or update.  Let's do it..
+     */
+    tempfilename = tmpnam(NULL);
+    ftemp = fopen(tempfilename, "w+");
+    if (ftemp == NULL) {
+	fprintf(stderr, "%s: unable to create temporary file\n", argv[0]);
+	perror("fopen");
+	exit(ERR_FILEPERM);
+    }
+    /*
+     * If we're not creating a new file, copy records from the existing
+     * one to the temporary file until we find the specified user.
+     */
+    if (! newfile) {
+	char scratch[MAX_STRING_LEN];
+
+	fpw = fopen(pwfilename, "r");
+	while (! (getline(line, sizeof(line), fpw))) {
+	    char *colon;
+
+	    if ((line[0] == '#') || (line[0] == '\0')) {
+		putline(ftemp, line);
+		continue;
+	    }
+	    strcpy(scratch, line);
+	    /*
+	     * See if this is our user.
+	     */
+	    colon = strchr(scratch, ':');
+	    if (colon != NULL) {
+		*colon = '\0';
+	    }
+	    if (strcmp(user, scratch) != 0) {
+		putline(ftemp, line);
+		continue;
+	    }
+	    found++;
+	    break;
 	}
-	printf("Adding password for %s.\n", argv[currarg]);
-	add_password(argv[currarg], tfp, use_md5);
-	fclose(tfp);
-	return(0);
     }
-
-    tn = tmpnam(NULL);
-    if (!(tfp = fopen(tn, "w+"))) {
-	fprintf(stderr, "Could not open temp file.\n");
-	exit(1);
+    if (found) {
+	fprintf(stderr, "Updating ");
     }
-
-    if (!(f = fopen(argv[filearg], "r+"))) {
-        fprintf(stderr, "Could not open password file %s for reading.\n",
-                argv[filearg]);
-        fprintf(stderr, "Use -c option to create a new one\n");
-	fclose(tfp);
-	unlink(tn);
-	exit(1);
+    else {
+	fprintf(stderr, "Adding ");
     }
-    strcpy(user, argv[currarg]);
-
-    found = 0;
-    while (!(getline(line, MAX_STRING_LEN, f))) {
-	if (found || (line[0] == '#') || (!line[0])) {
-	    putline(tfp, line);
-	    continue;
-	}
-	strcpy(l, line);
-	getword(w, l, ':');
-	if (strcmp(user, w)) {
-	    putline(tfp, line);
-	    continue;
-        }
-	else {
-	    printf("Changing password for user %s\n", user);
-            add_password(user, tfp, use_md5);
-	    found = 1;
-	}
+    fprintf(stderr, "password for user %s\n", user);
+    /*
+     * Now add the user record we created.
+     */
+    putline(ftemp, record);
+    /*
+     * If we're updating an existing file, there may be additional
+     * records beyond the one we're updating, so copy them.
+     */
+    if (! newfile) {
+	copy_file(ftemp, fpw);
+	fclose(fpw);
     }
-    if (!found) {
-	printf("Adding user %s\n", user);
-        add_password(user, tfp, use_md5);
-    }
-/*
- * make a copy from the tmp file to the actual file
- */  
-    f = fopen(filename, "w+");
-    rewind(tfp);
-    while (fgets(command, MAX_STRING_LEN, tfp) != NULL) {
-	fputs(command, f);
-    }
-
-    fclose(f);
-    fclose(tfp);
-    unlink(tn);
-    return(0);
+    /*
+     * The temporary file now contains the information that should be
+     * in the actual password file.  Close the open files, re-open them
+     * in the appropriate mode, and copy them file to the real one.
+     */
+    fclose(ftemp);
+    fpw = fopen(pwfilename, "w+");
+    ftemp = fopen(tempfilename, "r");
+    copy_file(fpw, ftemp);
+    fclose(fpw);
+    fclose(ftemp);
+    unlink(tempfilename);
+    return 0;
 }
