@@ -252,7 +252,7 @@ case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
 	echo "pyramid-pyramid-svr4"; exit 0;
 	;;
 
-    *:*:*:DRS 6000)
+    *:*:*:"DRS 6000")
         echo "drs6000-whatever-whatever"; exit 0;
 	;;
 esac
