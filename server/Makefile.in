@@ -32,8 +32,8 @@ test_char.h: gen_test_char
 
 util.lo: test_char.h
 
-EXPORT_FILES = $(top_srcdir)/srclib/apr/apr.exports \
-	$(top_srcdir)/srclib/apr-util/aprutil.exports \
+EXPORT_FILES = $(top_builddir)/srclib/apr/apr.exports \
+	$(top_builddir)/srclib/apr-util/aprutil.exports \
 	$(TARGET_EXPORTS)
 
 delete-exports:
