@@ -66,7 +66,7 @@ hosting</description>
     by <code>printf</code> which have a number of formats:</p>
 
 <table>
-
+<columnspec><column width=".2"/><column width=".6"/></columnspec>
 <tr><td><code>%%</code></td>
 <td>insert a <code>%</code></td></tr>
 
@@ -87,6 +87,7 @@ hosting</description>
     is present. The interpretation is as follows:</p>
 
     <table>
+      <columnspec><column width=".1"/><column width=".4"/></columnspec>
       <tr><td><code>0</code></td>
       <td>the whole name</td></tr>
 

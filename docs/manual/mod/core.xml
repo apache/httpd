@@ -1897,6 +1897,8 @@ matching URLs</description>
     significance:</p>
 
     <table border="1">
+    <columnspec><column width=".2"/><column width=".3"/><column width=".5"/>
+    </columnspec>
       <tr>
         <th><strong>Level</strong> </th>
 
