@@ -1,0 +1,373 @@
+<?xml version='1.0' encoding='iso-2022-jp' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English revision: 1.5 -->
+
+<manualpage metafile="auth.xml.meta">
+<parentdocument href="./">How-To / チュートリアル</parentdocument>
+
+<title>認証、承認、アクセス制御</title>
+
+<summary>
+    <p>「認証」とは、誰かが自分は誰であるかを主張した場合に、
+    それを確認するための全過程を指します。「承認」とは、
+    誰かが行きたい場所に行けるように、あるいは欲しい情報を
+    得ることができるようにするための全過程を指します。</p>
+</summary>
+  
+<section id="related"><title>関連するモジュールとディレクティブ</title>
+    <related>
+      <modulelist>
+        <module>mod_auth_basic</module>
+        <module>mod_authn_file</module>
+        <module>mod_authz_groupfile</module>
+        <module>mod_authz_host</module>
+      </modulelist>
+
+      <directivelist>
+        <directive module="mod_authz_host">Allow</directive>
+        <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+        <directive module="core">AuthName</directive>
+        <directive module="core">AuthType</directive>
+        <directive module="mod_authn_file">AuthUserFile</directive>
+        <directive module="mod_authz_host">Deny</directive>
+        <directive module="core">Options</directive>
+        <directive module="core">Require</directive>
+      </directivelist>
+    </related>
+</section>
+
+<section id="introduction"><title>はじめに</title>
+    <p>もし機密の情報や、ごくごく少数グループの人向けの情報を
+    ウェブサイトに置くのであれば、この文書に書かれている
+    テクニックを使うことで、そのページを見ている人たちが
+    望みの人たちであることを確実にできるでしょう。</p>
+
+    <p>この文書では、多くの人が採用するであろう、
+    ウェブサイトの一部分を保護する「一般的な」
+    方法についてカバーしています。</p>
+</section>
+
+<section id="theprerequisites"><title>準備</title>
+    <p>この文書で取り扱われるディレクティブは、
+    メインサーバ設定ファイル (普通は 
+    <directive module="core" type="section">Directory</directive>
+    セクション中) か、あるいはディレクトリ毎の設定ファイル 
+    (<code>.htaccess</code> ファイル) かで用います。</p>
+
+    <p><code>.htaccess</code> ファイルを用いるのであれば、
+    これらのファイルに認証用のディレクティブを置けるように
+    サーバの設定をしないといけないでしょう。これは
+    <directive module="core">AllowOverride</directive>
+    ディレクティブで可能になります。
+    <directive module="core">AllowOverride</directive>
+    ディレクティブでは、ディレクトリ毎の設定ファイル中に置くことのできる
+    ディレクティブを、もしあれば、指定します。</p>
+
+    <p>認証について話を進めているので、次のような
+    <directive module="core">AllowOverride</directive>
+    ディレクティブが必要になるでしょう。</p>
+
+    <example>
+      AllowOverride AuthConfig
+    </example>
+
+    <p>そうでなく、メインサーバ設定ファイルの中に
+    直接置くのであれば、当然ながらそのファイルへの書き込み
+    権限を持っていなければならないでしょう。</p>
+
+    <p>また、どのファイルがどこに保存されているか知るために、
+    サーバのディレクトリ構造について少し知っておく
+    必要があるでしょう。
+    これはそんなに難しくないので、この文書中で
+    ディレクトリ構造について知っておく必要がある場面では、
+    明らかになるようにします。</p>
+</section>
+
+<section id="gettingitworking"><title>動作させる</title>
+    <p>では、サーバ上のあるディレクトリをパスワードで保護する
+    基本手順を示します。</p>
+
+    <p>パスワードファイルを作る必要があります。
+    このファイルは、ウェブからアクセスできる場所に
+    置くべきではありません。他の人がパスワードファイルを
+    ダウンロードできないようにするためです。例えば、
+    <code>/usr/local/apache/htdocs</code> でドキュメントを
+    提供しているのであれば、パスワードファイルは
+    <code>/usr/local/apache/passwd</code>
+    などに置いた方が良いでしょう。</p>
+
+    <p>ファイルを作るためには、Apache 付属の <a
+    href="../programs/htpasswd.html">htpasswd</a> 
+    を使います。このコマンドは Apache をどこにインストールしようとも、
+    インストールディレクトリの <code>bin</code> 
+    ディレクトリ以下に置かれます。ファイルを作るには、次のように
+    タイプしてください。</p>
+
+    <example>
+      htpasswd -c /usr/local/apache/passwd/passwords rbowen
+    </example>
+
+    <p><code>htpasswd</code> は、パスワードを要求し、その後
+    確認のためにもう一度入力するように要求してきます。</p>
+
+    <example>
+      # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
+      New password: mypassword<br />
+      Re-type new password: mypassword<br />
+      Adding password for user rbowen
+    </example>
+
+    <p>もし <code>htpasswd</code> がパスの中に入っていない場合は、
+    もちろん、実行するためにプログラムまでのフルパスを
+    タイプする必要があります。私のサーバであれば、
+    <code>/usr/local/apache/bin/htpasswd</code>
+    にプログラムが置かれています。</p>
+
+    <p>次に、サーバがパスワードを要求するように設定して、
+    どのユーザがアクセスを許されているかをサーバに知らせなければ
+    なりません。 <code>httpd.conf</code> を編集するか
+    <code>.htaccess</code> ファイルを使用するかで
+    設定します。例えば、ディレクトリ
+    <code>/usr/local/apache/htdocs/secret</code>
+    を保護したい場合は、
+    <code>/usr/local/apache/htdocs/secret/.htaccess</code>
+    か httpd.conf 中の &lt;Directory
+    /usr/local/apache/apache/htdocs/secret&gt; セクションに
+    配置して、次のディレクティブを使うことができます。</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "Restricted Files"<br />
+      AuthUserFile /usr/local/apache/passwd/passwords<br />
+      Require user rbowen
+    </example>
+
+    <p>個々のディレクティブについて見てみましょう。
+    <directive module="core">AuthType</directive>
+    ディレクティブはどういう認証方法でユーザの認証を行うかを
+    選択します。最も一般的な方法は <code>Basic</code>
+    で、これは <module>mod_auth_basic</module>
+    で実装されています。しかしながら、
+    これは気を付けるべき重要なポイントなのですが、
+    Basic 認証はクライアントからブラウザへ、
+    パスワードを暗号化せずに送ります。ですから、
+    この方法は特に機密性の高いデータに対しては用いるべきでは
+    ありません。 Apache ではもう一つ別の認証方法:
+    <code>AuthType Digest</code> をサポートしています。
+    この方法は <module>mod_auth_digest</module>
+    で実装されていて、もっと安全です。
+    ごくごく最近のクライアントしか Digest
+    認証をサポートしていないようです。</p>
+
+    <p><directive module="core">AuthName</directive>
+    ディレクティブでは、認証に使う <dfn>Realm</dfn> (訳注: 領域)
+    を設定します。Realm は大きく分けて二つの機能を提供します。
+    一つ目は、クライアントがパスワードダイアログボックスの
+    一部としてユーザにこの情報をよく提示する、というものです。
+    二つ目には、クライアントが与えられた認証領域に対してどのパスワードを
+    送信すれば良いのかを決定するために使われる、という機能です。</p>
+
+    <p>例えば、<code>"Restricted Files"</code> 領域中で
+    一度認証されれば、同一サーバ上で <code>"Restricted Files"</code>
+    Realm としてマークされたどんな領域でも、クライアントは
+    自動的に同じパスワードを使おうと試みます。
+    このおかげで、複数の制限領域に同じ realm を共有させて、
+    ユーザがパスワードを何度も要求される事態を
+    防ぐことができます。もちろん、セキュリティ上の理由から、
+    サーバのホスト名が変わればいつでも必ず、
+    クライアントは再びパスワードを尋ねる必要があります。</p>
+
+    <p><directive module="mod_authn_file">AuthUserFile</directive>
+    ディレクティブは <code>htpasswd</code> で作った
+    パスワードファイルへのパスを設定します。
+    ユーザ数が多い場合は、リクエスト毎のユーザの認証のための
+    プレーンテキストの探索が非常に遅くなることがあります。
+    Apache ではユーザ情報を高速なデータベースファイルに
+    保管することもできます。
+    <module>mod_auth_dbm</module> モジュールが
+    <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
+    ディレクティブを提供します。これらのファイルは <a
+    href="../programs/dbmmanage.html">dbmmanage</a>
+    プログラムで作成したり操作したりできます。
+    <a href="http://modules.apache.org/">Apache 
+    モジュールデータベース</a>中にあるサードパーティー製の
+    モジュールで、その他多くのタイプの認証オプションが
+    利用可能です。</p>
+
+    <p>最後に、<directive module="core">Require</directive>
+    ディレクティブが、サーバのこの領域にアクセスできるユーザを
+    指定することによって、プロセスの承認部分を提供します。
+    次のセクションでは、<directive module="core">Require</directive>
+    ディレクティブの様々な用法について述べます。</p>
+</section>
+
+<section id="lettingmorethanonepersonin"><title>
+複数の人が入れるようにする</title>
+    <p>上記のディレクティブは、ただ一人 (具体的にはユーザ名
+    <code>rbowen</code> の誰か) がディレクトリに
+    入れるようにします。多くの場合は、複数の人が
+    入れるようにしたいでしょう。ここで
+    <directive module="mod_authz_groupfile">AuthGroupFile</directive>
+    の登場です。</p>
+
+    <p>もし複数の人が入れるようにしたいのであれば、
+    グループに属するユーザの一覧の入っている、グループ名のついた
+    グループファイルを作る必要があります。このファイルの
+    書式はきわめて単純で、お好みのエディタで生成できます。
+    ファイルの中身は次のようなものです。</p>
+
+   <example>
+     GroupName: rbowen dpitts sungo rshersey
+   </example>
+
+    <p>一行にスペース区切りで、グループに所属するメンバーの
+    一覧をならべるだけです。</p>
+
+    <p>既に存在するパスワードファイルにユーザを加える場合は、
+    次のようにタイプしてください。</p>
+
+    <example>
+      htpasswd /usr/local/apache/passwd/password dpitts
+    </example>
+
+    <p>以前と同じ応答が返されますが、新しいファイルを
+    作るのではなく、既にあるファイルに追加されています。
+    (新しいパスワードファイルを作るには <code>-c</code>
+    を使います。)</p>
+
+    <p>ここで次のようにして <code>.htaccess</code> ファイルを
+    修正する必要があります。</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "By Invitation Only"<br />
+      AuthUserFile /usr/local/apache/passwd/passwords<br />
+      AuthGroupFile /usr/local/apache/passwd/groups<br />
+      Require group GroupName
+    </example>
+
+    <p>これで、グループ <code>GroupName</code> にリストされていて、
+    <code>password</code> ファイルにエントリがある人は、
+    正しいパスワードをタイプすれば入ることができるでしょう。</p>
+
+    <p>もっと特定せずに複数のユーザが入れるようにする、
+    もう一つの方法があります。グループファイルを作るのではなく、
+    次のディレクティブを使えばできます。</p>
+
+    <example>
+      Require valid-user
+    </example>
+
+    <p><code>require user rbowen</code> 行でなく、上記を使うと、
+    パスワードファイルにリストされている人であれば誰でも
+    許可されます。
+    単にパスワードファイルをグループ毎に分けておくことで、
+    グループのような振る舞いをさせることもできます。
+    このアプローチの利点は、Apache は二つではなく、
+    ただ一つのファイルだけを検査すればよいという点です。
+    欠点は、たくさんのパスワードファイルを管理して、その中から
+    <directive module="mod_authn_file">AuthUserFile</directive>
+    ディレクティブに正しいファイルを参照させなければならない点です。</p>
+</section>
+
+<section id="possibleproblems"><title>起こりえる問題</title>
+    <p>Basic 認証が指定されている場合は、
+    サーバにドキュメントをリクエストする度に
+    ユーザ名とパスワードを検査しなければなりません。
+    これは同じページ、ページにある全ての画像を
+    リロードする場合であっても該当します
+     (もし画像も保護されたディレクトリから来るのであれば) 。
+    予想される通り、これは動作を多少遅くします。
+    遅くなる程度はパスワードファイルの大きさと比例しますが、
+    これは、ファイルを開いてあなたの名前を発見するまで
+    ユーザ名のリストを読まなければならないからです。
+    そして、ページがロードされる度にこれを行わなければ
+    なりません。</p>
+
+    <p>結論としては、一つのパスワードファイルに置くことのできる
+    ユーザ数には実質的な限界があります。
+    この限界はサーバマシンの性能に依存して変わりますが、
+    数百のエントリを越えたあたりから速度低下が見られると予期されています。
+    その時は他の認証方法を考慮に入れた方が良いでしょう。</p>
+</section>
+
+<section id="whatotherneatstuffcanido"><title>もっと巧みに制御できない
+?</title>
+    <p>ユーザ名とパスワードによる認証は認証の一つの方法に過ぎません。
+    しばしば誰であるかということとは違う何かに基づいて、
+    入れるようにしたくなることもあるでしょう。
+    例えばその人がどこから来ているかといったことです。</p>
+
+    <p><directive module="mod_authz_host">Allow</directive> と
+    <directive module="mod_authz_host">Deny</directive>
+    ディレクティブを使って、ドキュメントを要求してきたマシンの
+    ホスト名やホストアドレスに基づいて許可不許可を制御できます。
+    <directive module="mod_authz_host">Order</directive>
+    ディレクティブはこの二つと連携して動作し、Apache 
+    にどの順番でフィルタを適用するかを知らせます。</p>
+
+    <p>これらのディレクティブの使い方は次のようになります。</p>
+
+    <example>
+      Allow from <var>address</var>
+    </example>
+
+    <p>ここで、<var>address</var> は IP アドレス
+    (または IP アドレスの一部)、あるいは完全修飾ドメイン名
+    (またはドメイン名の一部) です。
+    必要であれば複数のアドレスやドメイン名を指定できます。</p>
+
+    <p>例えば、もし誰かが掲示板を攻撃していて、
+    その人を閉め出したいのであれば、
+    次のようにすることができます。</p>
+
+    <example>
+      Deny from 205.252.46.165
+    </example>
+
+    <p>このアドレスから来る人は、このディレクティブの範囲内の
+    コンテンツを見ることができないません。もし IP
+    アドレスの代わりにマシン名があれば、それを使えます。</p>
+
+    <example>
+      Deny from <var>host.example.com</var>
+    </example>
+
+    <p>ドメイン全体からのアクセスを防ぎたければ、
+    単にアドレスやドメイン名の一部を指定することができます。</p>
+
+    <example>
+      Deny from <var>192.101.205</var><br />
+      Deny from <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
+      Deny from ke
+    </example>
+
+    <p><directive module="mod_authz_host">Order</directive> を使うことで、
+    <directive module="mod_authz_host">Deny</directive> と
+    <directive module="mod_authz_host">Allow</directive> の組み合わせで
+    入っても良いグループが本当に確実に限定できているようにできます。</p>
+
+    <example>
+      Order deny,allow<br />
+      Deny from all<br />
+      Allow from <var>dev.example.com</var>
+    </example>
+
+    <p><directive module="mod_authz_host">Allow</directive>
+    ディレクティブを単純に列挙するのでは望みの動作をしないでしょう。
+    なぜなら、全ての人が入れるということに加えて、
+    指定したホストからの人が入れるようにするからです。
+    やりたいことは、指定した人たち<em>だけ</em>が入れるように
+    することです。</p>
+</section>
+
+<section id="moreinformation"><title>追加情報</title>
+    <p>これら全てがどのように動作するかについて
+    もっと多くの情報が書かれている <module>mod_auth</module> と
+    <module>mod_access</module>
+    の文書も読むとよいでしょう。</p>
+</section>
+
+</manualpage>
+
