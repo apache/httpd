@@ -167,6 +167,7 @@
 #define sk_X509_num sk_num
 #define sk_X509_value (X509 *)sk_value
 #define sk_X509_INFO_value (X509_INFO *)sk_value
+#define sk_X509_INFO_free sk_free
 #define sk_X509_INFO_pop_free sk_pop_free 
 #define sk_X509_INFO_num sk_num
 #define sk_X509_INFO_new_null sk_new_null
