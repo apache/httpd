@@ -1,5 +1,10 @@
 Changes with Apache 1.2b4:
 
+  *) Fix awk compatibilty problem in Configure.
+
+  *) Fix portablity problem in util_script where ARG_MAX may not be
+     defined for some systems.
+
   *) Add changes to allow compilation on Machten 4.0.3 for PowerPC.
      [Randal Schwartz]
 
@@ -11,7 +16,7 @@ Changes with Apache 1.2b4:
 
   *) Fix initgroups() business in suexec wrapper. [Jason Dour]
 
-  *) Fix month off by one in suexec wrapper logging
+  *) Fix month off by one in suexec wrapper logging.
 
 Changes with Apache 1.2b3:
 
