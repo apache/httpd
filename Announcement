@@ -1,20 +1,22 @@
 
-                            Apache 1.3.14 Released
+                            Apache 1.3.15 Released
                                        
    The Apache Software Foundation and The Apache Server Project are
-   pleased to announce the release of version 1.3.14 of the Apache HTTP
-   server.  Version 1.3.13 was never released.
+   pleased to announce the release of version 1.3.15 of the Apache HTTP
+   server.
    
-   This version of Apache is primarily a security fix and bug fix
-   release, but there are a few new features and improvements. A summary
-   of the new features is given at the end of this document.
+   This version of Apache is primarily a bug fix release, addressing
+   some broken functionality present in the 1.3.14 release and
+   various Win32 issues. There are, however, a few new features and
+   improvements. A summary of the new features is given at the end of
+   this document.
    
-   We consider Apache 1.3.14 to be the best version of Apache available
+   We consider Apache 1.3.15 to be the best version of Apache available
    and we strongly recommend that users of older versions, especially of
    the 1.1.x and 1.2.x family, upgrade as soon as possible. No further
    releases will be made in the 1.2.x family.
    
-   Apache 1.3.14 is available for download from
+   Apache 1.3.15 is available for download from
    
      http://httpd.apache.org/dist/
      
@@ -57,66 +59,25 @@
    version, but is of acceptable quality. Any Win32 stability or security
    problems do not impact, in any way, Apache on other platforms.
    
-                          Apache 1.3.14 Major changes
+                          Apache 1.3.15 Major changes
                                        
-   The security fixes are:
-     * A problem with the Rewrite module, mod_rewrite, allowed access to
-       any file on the web server under certain circumstances
-     * The handling of Host: headers in mass virtual hosting
-       configurations, mod_vhost_alias, could allow access to any file on
-       the server
-     * If a cgi-bin directory is under the document root, the source to
-       the scripts inside it could be sent if using mass virtual hosting
+   The bug fixes are:
+     * Restore functionality broken by the mod_rewrite security fix:
+       rewrite map lookup keys and default values are now expanded
+       so that the lookup can depend on the requested URI etc.
+     * PHP now works under Unixware 7.
+     * Eliminate caching problems of mod_autoindex results.
+     * Win32 console and service fixes.
        
    The main new features include:
-     * Support for a directory-based configuration system. If any of the
-       configuration directives point to directories instead of files,
-       all files in that directory (and in subdirectories) will be also
-       parsed as configuration files
-     * Support name-based virtual hosting without needing to specify an
-       IP address in the Apache configuration file. This enables sites
-       that use dynamic IP addresses to support name-based virtual
-       hosting as well as allowing identical machines to share a
-       configuration file, say in a load-balanced cluster
-     * The SetEnvIf and BrowserMatch range of directives are now able to
-       be used in .htaccess files.
-     * Administrators who are nervous about their full server version
-       details being public can use the new keyword 'ProductOnly' in the
-       ServerTokens directive. This keyword forces the server to only
-       return the string "Apache" as the server version.
-     * The new digest authentication module, mod_auth_digest has had a
-       number of fixes and upgrades applied
-       
+     * Add a new LogFormat directive, %c.
+     * mod_status now respects ?refresh=n of 1 or greater.
+
    Selected new features that relate to windows platforms:
-     * The project files have been converted to work with Microsoft
-       Visual C 6.0
-     * The DBM package "sdbm" is now bundled with Apache
-     * Windows 95 and 98 can now benefit from an emulation of the NT
-       services, including install and uninstall options. The Apache
-       server therefore can start when the OS loads and will not stop if
-       the current user logs off for example
-     * A comprehensive review of the Windows documentation has been
-       performed.
-     * Preparations for allowing Apache to be built using the free
-       Borland bcc 5.5 compiler
+     *The ScriptInterpreterSource Registry source now handles any
+      post-scriptname arguments, substitutes environment variables,
+      and uses the short or long path name as appropriate
        
    Selected new features relating to other platforms:
-     * Support for the new FreeBSD accept filters feature. This feature
-       postpones the requirement for a child process to handle a new
-       connection until a HTTP request has arrived, therefore increasing
-       the number of connections that a given number of child processes
-       can handle
-     * A number of alterations for the MPE platform including fixing
-       error reporting, updating the DSO code to be compatible with a
-       recent OS patch, refining user and group management, and initial
-       support for the proxy module
-     * The default serialised accept has been changed for AIX 4.3 to
-       provide a substantial performance improvement on multiple CPU
-       machines serving large numbers of concurrent clients
-     * DSO support added for BS2000 and OS/390 USS platforms
-     * A directory layout for Solaris 8 has been added to the
-       configuration system
-     * The proxy module mod_proxy has been patched so that it can be
-       built on BeOS 4.5.2
-     * Updated configuration script to allow building on IBM's IA-64
-       version of AIX
+     * Better discovery of dbm_open() under Linux.
+     * Linux 2.2.x and later do not need a serialised single listener.
