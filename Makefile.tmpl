@@ -277,6 +277,8 @@ install-programs:
 	-@if [ ".`grep '^[ 	]*AddModule.*mod_so\.o' $(TOP)/$(SRC)/Configuration.apaci`" != . ]; then \
 		echo "$(INSTALL_CORE) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET)"; \
 		$(INSTALL_CORE) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET); \
+		$(CP) $(TOP)/$(SRC)/support/httpd.exp $(root)$(libexecdir)/; \
+		chmod 644 $(root)$(libexecdir)/httpd.exp; \
 	else \
 		echo "$(INSTALL_PROGRAM) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET)"; \
 		$(INSTALL_PROGRAM) $(TOP)/$(SRC)/$(TARGET) $(root)$(sbindir)/$(TARGET); \
