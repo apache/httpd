@@ -443,9 +443,11 @@ dnl ## Build modules.c
 rm -f modules.c
 echo $MODLIST | $AWK -f $srcdir/build/build-modules-c.awk > modules.c
 
-AC_DEFINE_UNQUOTED(HTTPD_ROOT, "$prefix",
+APR_EXPAND_VAR(ap_prefix, $prefix)
+AC_DEFINE_UNQUOTED(HTTPD_ROOT, "${ap_prefix}",
 	[Root directory of the Apache install area])
-AC_DEFINE_UNQUOTED(SERVER_CONFIG_FILE, "conf/$progname.conf",
+APR_EXPAND_VAR(ap_sysconfdir, $sysconfdir)
+AC_DEFINE_UNQUOTED(SERVER_CONFIG_FILE, "${ap_sysconfdir}/${progname}.conf",
 	[Location of the config file, relative to the Apache root directory])
 AC_DEFINE_UNQUOTED(APACHE_MPM_DIR, "$MPM_DIR",
 	[Location of the source for the current MPM])
